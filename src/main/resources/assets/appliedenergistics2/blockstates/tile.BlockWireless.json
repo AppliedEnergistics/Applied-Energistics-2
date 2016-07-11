@@ -1,0 +1,5 @@
+{
+    "variants": {
+        "normal": { "model": "appliedenergistics2:tile.BlockWireless", "y": 180 }
+    }
+}

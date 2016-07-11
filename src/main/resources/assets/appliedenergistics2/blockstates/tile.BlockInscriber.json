@@ -1,8 +1,5 @@
 {
     "variants": {
-        "forward=north": { "model": "appliedenergistics2:tile.BlockInscriber", "y": 180 },
-		"forward=south": { "model": "appliedenergistics2:tile.BlockInscriber", "y": 0 },
-		"forward=east": { "model": "appliedenergistics2:tile.BlockInscriber", "y": 90 },
-		"forward=west": { "model": "appliedenergistics2:tile.BlockInscriber", "y": 270 }
+        "normal": { "model": "appliedenergistics2:tile.BlockInscriber", "y": 180 }
     }
 }
