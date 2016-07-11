@@ -33,7 +33,6 @@ import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
-import appeng.util.Platform;
 
 
 public class TileSkyChest extends AEBaseInvTile
@@ -42,10 +41,11 @@ public class TileSkyChest extends AEBaseInvTile
 	private final int[] sides = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35 };
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 9 * 4 );
 	// server
-	private int playerOpen;
+	private int numPlayersUsing;
 	// client..
 	private long lastEvent;
 	private float lidAngle;
+	private float prevLidAngle;
 
 	@TileEvent( TileEventType.NETWORK_WRITE )
 	public void writeToStream_TileSkyChest( final ByteBuf data )
@@ -74,6 +74,12 @@ public class TileSkyChest extends AEBaseInvTile
 	}
 
 	@Override
+	public boolean canRenderBreaking()
+	{
+		return true;
+	}
+
+	@Override
 	public IInventory getInternalInventory()
 	{
 		return this.inv;
@@ -82,39 +88,78 @@ public class TileSkyChest extends AEBaseInvTile
 	@Override
 	public void openInventory( final EntityPlayer player )
 	{
-		if( Platform.isClient() )
+		if( !player.isSpectator() )
 		{
-			return;
-		}
+			this.setPlayerOpen( this.getPlayerOpen() + 1 );
+			this.worldObj.addBlockEvent( this.pos, this.getBlockType(), 1, this.numPlayersUsing );
+			this.worldObj.notifyNeighborsOfStateChange( this.pos, this.getBlockType() );
+			this.worldObj.notifyNeighborsOfStateChange( this.pos.down(), this.getBlockType() );
 
-		this.setPlayerOpen( this.getPlayerOpen() + 1 );
-
-		if( this.getPlayerOpen() == 1 )
-		{
-			this.getWorld().playSound( player, this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, this.getWorld().rand.nextFloat() * 0.1F + 0.9F );
-			this.markForUpdate();
+			if( this.getPlayerOpen() == 1 )
+			{
+				this.getWorld().playSound( player, this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, this.getWorld().rand.nextFloat() * 0.1F + 0.9F );
+				this.markForUpdate();
+			}
 		}
 	}
 
 	@Override
 	public void closeInventory( final EntityPlayer player )
 	{
-		if( Platform.isClient() )
+		if( !player.isSpectator() )
 		{
-			return;
+			this.setPlayerOpen( this.getPlayerOpen() - 1 );
+			this.worldObj.addBlockEvent( this.pos, this.getBlockType(), 1, this.numPlayersUsing );
+			this.worldObj.notifyNeighborsOfStateChange( this.pos, this.getBlockType() );
+			this.worldObj.notifyNeighborsOfStateChange( this.pos.down(), this.getBlockType() );
+
+			if( this.getPlayerOpen() < 0 )
+			{
+				this.setPlayerOpen( 0 );
+			}
+
+			if( this.getPlayerOpen() == 0 )
+			{
+				this.getWorld().playSound( player, this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, this.getWorld().rand.nextFloat() * 0.1F + 0.9F );
+				this.markForUpdate();
+			}
 		}
+	}
 
-		this.setPlayerOpen( this.getPlayerOpen() - 1 );
+	@TileEvent( TileEventType.TICK )
+	public void tick()
+	{
+		int i = this.pos.getX();
+		int j = this.pos.getY();
+		int k = this.pos.getZ();
 
-		if( this.getPlayerOpen() < 0 )
+		this.prevLidAngle = this.lidAngle;
+		float f1 = 0.1F;
+
+		if( this.numPlayersUsing == 0 && this.lidAngle > 0.0F || this.numPlayersUsing > 0 && this.lidAngle < 1.0F )
 		{
-			this.setPlayerOpen( 0 );
-		}
+			float f2 = this.lidAngle;
 
-		if( this.getPlayerOpen() == 0 )
-		{
-			this.getWorld().playSound( player, this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, this.getWorld().rand.nextFloat() * 0.1F + 0.9F );
-			this.markForUpdate();
+			if( this.numPlayersUsing > 0 )
+			{
+				this.lidAngle += 0.1F;
+			}
+			else
+			{
+				this.lidAngle -= 0.1F;
+			}
+
+			if( this.lidAngle > 1.0F )
+			{
+				this.lidAngle = 1.0F;
+			}
+
+			float f3 = 0.5F;
+
+			if( this.lidAngle < 0.0F )
+			{
+				this.lidAngle = 0.0F;
+			}
 		}
 	}
 
@@ -132,6 +177,7 @@ public class TileSkyChest extends AEBaseInvTile
 
 	public float getLidAngle()
 	{
+		// System.out.println( lidAngle );
 		return this.lidAngle;
 	}
 
@@ -140,14 +186,24 @@ public class TileSkyChest extends AEBaseInvTile
 		this.lidAngle = lidAngle;
 	}
 
+	public float getPrevLidAngle()
+	{
+		return prevLidAngle;
+	}
+
+	public void setPrevLidAngle( float prevLidAngle )
+	{
+		this.prevLidAngle = prevLidAngle;
+	}
+
 	public int getPlayerOpen()
 	{
-		return this.playerOpen;
+		return this.numPlayersUsing;
 	}
 
 	private void setPlayerOpen( final int playerOpen )
 	{
-		this.playerOpen = playerOpen;
+		this.numPlayersUsing = playerOpen;
 	}
 
 	public long getLastEvent()

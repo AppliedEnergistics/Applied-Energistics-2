@@ -61,22 +61,9 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	}
 
 	@Override
-	public int getMetaFromState( final IBlockState state )
-	{
-		return 0;
-	}
-
-	@Override
-	public IBlockState getStateFromMeta( final int meta )
-	{
-		return this.getDefaultState();
-	}
-
-	@Override
 	protected IProperty[] getAEStates()
 	{
-		//TODO 1.10-R - wtf?
-		return new IProperty[] { AE_BLOCK_FORWARD, AE_BLOCK_UP, BlockTorch.FACING };
+		return new IProperty[] { AE_BLOCK_FORWARD, AE_BLOCK_UP };
 	}
 
 	@Override
@@ -173,12 +160,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	@Override
 	public boolean usesMetadata()
 	{
-		return true;
+		return false;
 	}
 
-	@Override
-	public IOrientable getOrientable( final IBlockAccess w, final BlockPos pos )
-	{
-		return new MetaRotation( w, pos, true );
-	}
 }

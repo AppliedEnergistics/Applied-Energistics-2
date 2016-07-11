@@ -34,8 +34,8 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -49,10 +49,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
@@ -86,29 +84,40 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	{
 		super( mat, subName );
 	}
-	
+
 	public static final PropertyDirection AE_BLOCK_FORWARD = PropertyDirection.create( "forward" );
 	public static final PropertyDirection AE_BLOCK_UP = PropertyDirection.create( "up" );
-	
+
 	@Override
 	protected IProperty[] getAEStates()
 	{
 		return new IProperty[] { AE_BLOCK_FORWARD, AE_BLOCK_UP };
 	}
-	
+
 	@Override
 	public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
 	{
 		AEBaseTile tile = (AEBaseTile) world.getTileEntity( pos );
-		return super.getActualState( state, world, pos ).withProperty( AE_BLOCK_FORWARD, tile.getForward()).withProperty( AE_BLOCK_UP, tile.getUp() );
+		return super.getActualState( state, world, pos ).withProperty( AE_BLOCK_FORWARD, tile.getForward() ).withProperty( AE_BLOCK_UP, tile.getUp() );
 	}
-	
+
 	@Override
 	public int getMetaFromState( IBlockState state )
 	{
 		return 0;
 	}
-	
+
+	@SideOnly( Side.CLIENT )
+	public TileEntitySpecialRenderer<? extends AEBaseTile> getTESR()
+	{
+		return null;
+	}
+
+	public boolean hasItemTESR()
+	{
+		return false;
+	}
+
 	@Override
 	protected void setFeature( final EnumSet<AEFeature> f )
 	{
@@ -120,13 +129,12 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	{
 		this.tileEntityType = c;
 		this.setInventory( IInventory.class.isAssignableFrom( c ) );
-		this.setTileProvider( this.hasBlockTileEntity() );
 	}
 
-	// update Block value.
-	private void setTileProvider( final boolean b )
+	@Override
+	public boolean hasTileEntity( IBlockState state )
 	{
-		ReflectionHelper.setPrivateValue( Block.class, this, b, "isTileProvider" );
+		return hasBlockTileEntity();
 	}
 
 	private boolean hasBlockTileEntity()
@@ -134,7 +142,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 		return this.tileEntityType != null;
 	}
 
-	public Class<? extends TileEntity> getTileEntityClass()
+	public Class<? extends AEBaseTile> getTileEntityClass()
 	{
 		return this.tileEntityType;
 	}
@@ -283,7 +291,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 			{
 				if( Platform.isWrench( player, heldItem, pos ) && player.isSneaking() )
 				{
-					final IBlockState ids = w.getBlockState( pos ); 
+					final IBlockState ids = w.getBlockState( pos );
 					final Block id = ids.getBlock();
 					if( id != null )
 					{

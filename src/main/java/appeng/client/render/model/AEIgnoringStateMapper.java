@@ -40,6 +40,8 @@ public class AEIgnoringStateMapper extends StateMapperBase implements IResourceM
 		try
 		{
 			ignored.clear();
+			ignored.add( "forward" );
+			ignored.add( "up" );
 			ignored.addAll( IOUtils.readLines( resourceManager.getResource( ignoredRL ).getInputStream() ) );
 		}
 		catch( IOException e )

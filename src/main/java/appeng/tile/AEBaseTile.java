@@ -43,6 +43,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -62,7 +63,7 @@ import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 
-public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, ICustomNameObject
+public class AEBaseTile extends TileEntity implements ITickable, IOrientable, ICommonTile, ICustomNameObject
 {
 
 	private static final ThreadLocal<WeakReference<AEBaseTile>> DROP_NO_ITEMS = new ThreadLocal<WeakReference<AEBaseTile>>();

@@ -29,10 +29,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.IRegistry;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -103,7 +106,16 @@ public final class AETileBlockFeatureHandler implements IFeatureHandler
 
 			if( side == Side.CLIENT )
 			{
+				TileEntitySpecialRenderer tesr = this.featured.getTESR();
 				ModelBakery.registerItemVariants( this.definition.maybeItem().get(), registryName );
+				if( tesr != null )
+				{
+					ClientRegistry.bindTileEntitySpecialRenderer( this.featured.getTileEntityClass(), tesr );
+					if( this.featured.hasItemTESR() )
+					{
+						ForgeHooksClient.registerTESRItemStack( this.definition.maybeItem().get(), 0, this.featured.getTileEntityClass() );
+					}
+				}
 			}
 		}
 	}

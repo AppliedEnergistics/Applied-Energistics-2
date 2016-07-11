@@ -5,7 +5,6 @@ package appeng.client.render.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
@@ -26,12 +25,13 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.QuadGatheringTransformer;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
-import net.minecraftforge.common.model.TRSRTransformation;
 
 import appeng.block.AEBaseTileBlock;
+import appeng.client.render.FacingToRotation;
 
 
 public class CachingRotatingBakedModel implements IBakedModel
@@ -51,18 +51,20 @@ public class CachingRotatingBakedModel implements IBakedModel
 			{
 				final EnumFacing forward = key.getLeft().getValue( AEBaseTileBlock.AE_BLOCK_FORWARD );
 				final EnumFacing up = key.getLeft().getValue( AEBaseTileBlock.AE_BLOCK_UP );
-				final Matrix4f mat = FacingToRotation.get( forward, up ).getMat();
+				final FacingToRotation f2r = FacingToRotation.get( forward, up );
 
-				List<BakedQuad> original = CachingRotatingBakedModel.this.parent.getQuads( key.getLeft(), key.getRight(), 0 );
+				List<BakedQuad> original = CachingRotatingBakedModel.this.parent.getQuads( key.getLeft(), f2r.resultingRotate( key.getRight() ), 0 );
 				List<BakedQuad> rotated = new ArrayList<>();
 				for( BakedQuad quad : original )
 				{
 					VertexFormat format = quad.getFormat();
 					UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder( format );
-					VertexRotator rot = new VertexRotator( mat );
+					VertexRotator rot = new VertexRotator( f2r, quad.getFace() );
 					rot.setParent( builder );
 					quad.pipe( rot );
-					rotated.add( builder.build() );
+					builder.setQuadOrientation( f2r.rotate( quad.getFace() ) );
+					BakedQuad q = builder.build();
+					rotated.add( q );
 				}
 				return rotated;
 			}
@@ -116,75 +118,15 @@ public class CachingRotatingBakedModel implements IBakedModel
 		return quadCache.getUnchecked( new ImmutablePair<IBlockState, EnumFacing>( state, side ) );
 	}
 
-	public enum FacingToRotation
-	{
-
-		// DUNSWE
-		//@formatter:off
-		DOWN_DOWN	( new Vector3f(	0,		0,		0	) ), //NOOP
-		DOWN_UP		( new Vector3f(	0,		0,		0	) ), //NOOP
-		DOWN_NORTH	( new Vector3f(	-90,	0,		0	) ),
-		DOWN_SOUTH	( new Vector3f(	-90,	0,		180	) ),
-		DOWN_WEST	( new Vector3f(	-90,	0,		90	) ),
-		DOWN_EAST	( new Vector3f(	-90,	0,		-90	) ),
-		UP_DOWN		( new Vector3f(	0,		0,		0	) ), //NOOP
-		UP_UP		( new Vector3f(	0,		0,		0	) ), //NOOP
-		UP_NORTH	( new Vector3f(	90,		0,		180	) ),
-		UP_SOUTH	( new Vector3f(	90,		0,		0	) ),
-		UP_WEST		( new Vector3f(	90,		0,		90	) ),
-		UP_EAST		( new Vector3f(	90,		0,		-90	) ),
-		NORTH_DOWN	( new Vector3f(	0,		0,		180	) ),
-		NORTH_UP	( new Vector3f(	0,		0,		0	) ),
-		NORTH_NORTH	( new Vector3f(	0,		0,		0	) ), //NOOP
-		NORTH_SOUTH	( new Vector3f(	0,		0,		0	) ), //NOOP
-		NORTH_WEST	( new Vector3f(	0,		0,		90	) ),
-		NORTH_EAST	( new Vector3f(	0,		0,		-90	) ),
-		SOUTH_DOWN	( new Vector3f(	0,		180,	180	) ),
-		SOUTH_UP	( new Vector3f(	0,		180,	0	) ),
-		SOUTH_NORTH	( new Vector3f(	0,		0,		0	) ), //NOOP
-		SOUTH_SOUTH	( new Vector3f(	0,		0,		0	) ), //NOOP
-		SOUTH_WEST	( new Vector3f(	0,		180,	-90	) ),
-		SOUTH_EAST	( new Vector3f(	0,		180,	90	) ),
-		WEST_DOWN	( new Vector3f(	0,		90,		180	) ),
-		WEST_UP		( new Vector3f(	0,		90,		0	) ),
-		WEST_NORTH	( new Vector3f(	0,		90,		-90	) ),
-		WEST_SOUTH	( new Vector3f(	0,		90,		90	) ),
-		WEST_WEST	( new Vector3f(	0,		0,		0	) ), //NOOP
-		WEST_EAST	( new Vector3f(	0,		0,		0	) ), //NOOP
-		EAST_DOWN	( new Vector3f(	0,		-90,	180	) ),
-		EAST_UP		( new Vector3f(	0,		-90,	0	) ),
-		EAST_NORTH	( new Vector3f(	0,		-90,	90	) ),
-		EAST_SOUTH	( new Vector3f(	0,		-90,	-90	) ),
-		EAST_WEST	( new Vector3f(	0,		0,		0	) ), //NOOP
-		EAST_EAST	( new Vector3f(	0,		0,		0	) ); //NOOP
-		//@formatter:on
-
-		private final Matrix4f mat;
-
-		private FacingToRotation( Vector3f rot )
-		{
-			this.mat = TRSRTransformation.toVecmath( new org.lwjgl.util.vector.Matrix4f().rotate( (float) Math.toRadians( rot.x ), new org.lwjgl.util.vector.Vector3f( 1, 0, 0 ) ).rotate( (float) Math.toRadians( rot.y ), new org.lwjgl.util.vector.Vector3f( 0, 1, 0 ) ).rotate( (float) Math.toRadians( rot.z ), new org.lwjgl.util.vector.Vector3f( 0, 0, 1 ) ) );
-		}
-
-		public Matrix4f getMat()
-		{
-			return new Matrix4f( this.mat );
-		}
-
-		public static FacingToRotation get( EnumFacing forward, EnumFacing up )
-		{
-			return values()[forward.ordinal() * 6 + up.ordinal()];
-		}
-
-	}
-
 	public class VertexRotator extends QuadGatheringTransformer
 	{
-		private final Matrix4f mat;
+		private final FacingToRotation f2r;
+		private final EnumFacing face;
 
-		public VertexRotator( Matrix4f mat )
+		public VertexRotator( FacingToRotation f2r, EnumFacing face )
 		{
-			this.mat = mat;
+			this.f2r = f2r;
+			this.face = face;
 		}
 
 		@Override
@@ -213,6 +155,10 @@ public class CachingRotatingBakedModel implements IBakedModel
 					{
 						parent.put( e, transform( quadData[e][v] ) );
 					}
+					else if( element.getUsage() == VertexFormatElement.EnumUsage.NORMAL )
+					{
+						parent.put( e, transformNormal( quadData[e][v] ) );
+					}
 					else
 					{
 						parent.put( e, quadData[e][v] );
@@ -230,7 +176,7 @@ public class CachingRotatingBakedModel implements IBakedModel
 					vec.x -= 0.5f;
 					vec.y -= 0.5f;
 					vec.z -= 0.5f;
-					mat.transform( vec );
+					f2r.getMat().transform( vec );
 					vec.x += 0.5f;
 					vec.y += 0.5f;
 					vec.z += 0.5f;
@@ -240,11 +186,28 @@ public class CachingRotatingBakedModel implements IBakedModel
 					vecc.x -= 0.5f;
 					vecc.y -= 0.5f;
 					vecc.z -= 0.5f;
-					mat.transform( vecc );
+					f2r.getMat().transform( vecc );
 					vecc.x += 0.5f;
 					vecc.y += 0.5f;
 					vecc.z += 0.5f;
 					return new float[] { vecc.x, vecc.y, vecc.z, vecc.w };
+
+				default:
+					return fs;
+			}
+		}
+
+		private float[] transformNormal( float[] fs )
+		{
+			switch( fs.length )
+			{
+				case 3:
+					Vec3i vec = f2r.rotate( face ).getDirectionVec();
+					return new float[] { vec.getX(), vec.getY(), vec.getZ() };
+				case 4:
+					Vector4f veccc = new Vector4f( fs[0], fs[1], fs[2], fs[3] );
+					Vec3i vecc = f2r.rotate( face ).getDirectionVec();
+					return new float[] { vecc.getX(), vecc.getY(), vecc.getZ(), veccc.w };
 
 				default:
 					return fs;
