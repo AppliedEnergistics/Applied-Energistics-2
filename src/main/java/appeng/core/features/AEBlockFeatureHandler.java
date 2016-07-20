@@ -23,6 +23,7 @@ import java.util.EnumSet;
 
 import com.google.common.base.Optional;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelBakery;
@@ -35,7 +36,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import appeng.api.definitions.IBlockDefinition;
-import appeng.block.AEBaseBlock;
 import appeng.client.render.model.AEIgnoringStateMapper;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
@@ -43,14 +43,14 @@ import appeng.core.CreativeTab;
 
 public final class AEBlockFeatureHandler implements IFeatureHandler
 {
-	private final AEBaseBlock featured;
+	private final Block featured;
 	private final FeatureNameExtractor extractor;
 	private final boolean enabled;
 	private final BlockDefinition definition;
 
 	private ResourceLocation registryName;
 
-	public AEBlockFeatureHandler( final EnumSet<AEFeature> features, final AEBaseBlock featured, final Optional<String> subName )
+	public AEBlockFeatureHandler( final EnumSet<AEFeature> features, final Block featured, final Optional<String> subName )
 	{
 		final ActivityState state = new FeaturedActiveChecker( features ).getActivityState();
 

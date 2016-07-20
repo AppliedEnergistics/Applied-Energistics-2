@@ -27,10 +27,10 @@ import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockStairs;
 
+import appeng.core.features.AEBlockFeatureHandler;
 import appeng.core.features.AEFeature;
 import appeng.core.features.IAEFeature;
 import appeng.core.features.IFeatureHandler;
-import appeng.core.features.StairBlockFeatureHandler;
 
 
 public abstract class AEBaseStairBlock extends BlockStairs implements IAEFeature
@@ -45,7 +45,7 @@ public abstract class AEBaseStairBlock extends BlockStairs implements IAEFeature
 		Preconditions.checkNotNull( block.getUnlocalizedName() );
 		Preconditions.checkArgument( block.getUnlocalizedName().length() > 0 );
 
-		this.features = new StairBlockFeatureHandler( features, this, Optional.of( type ) );
+		this.features = new AEBlockFeatureHandler( features, this, Optional.of( type ) );
 
 		this.setUnlocalizedName( "stair." + type );
 		this.setLightOpacity( 0 );

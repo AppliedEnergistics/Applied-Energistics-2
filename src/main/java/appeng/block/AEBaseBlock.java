@@ -48,9 +48,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -66,6 +63,7 @@ import appeng.helpers.ICustomCollision;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
 
+
 public abstract class AEBaseBlock extends Block implements IAEFeature
 {
 
@@ -78,8 +76,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	private boolean hasSubtypes = false;
 	private boolean isInventory = false;
 	private IFeatureHandler handler;
-	private String textureName;
-	
+
 	protected AxisAlignedBB boundingBox = FULL_BLOCK_AABB;
 
 	@Override
@@ -131,7 +128,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
-		return new ExtendedBlockState( this, this.getAEStates(), new IUnlistedProperty[] {} );
+		return new BlockStateContainer( this, this.getAEStates() );
 	}
 
 	protected IProperty[] getAEStates()
@@ -168,7 +165,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	}
 
 	@Override
-	public boolean isNormalCube(IBlockState state)
+	public boolean isNormalCube( IBlockState state )
 	{
 		return this.isFullSize() && this.isOpaque();
 	}
@@ -187,7 +184,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	{
 		return boundingBox;
 	}
-	
+
 	@Override
 	public void addCollisionBoxToList( final IBlockState state, final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
 	{
@@ -211,7 +208,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 			super.addCollisionBoxToList( state, w, pos, bb, out, e );
 		}
 	}
-	
+
 	@Override
 	@SideOnly( Side.CLIENT )
 	public AxisAlignedBB getSelectedBoundingBox( IBlockState state, final World w, final BlockPos pos )
@@ -297,7 +294,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	}
 
 	@Override
-	public final boolean isOpaqueCube(IBlockState state)
+	public final boolean isOpaqueCube( IBlockState state )
 	{
 		return this.isOpaque();
 	}
@@ -363,7 +360,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	}
 
 	@Override
-	public boolean hasComparatorInputOverride(IBlockState state)
+	public boolean hasComparatorInputOverride( IBlockState state )
 	{
 		return this.isInventory();
 	}
@@ -539,16 +536,6 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		}
 
 		return null;
-	}
-
-	public void setBlockTextureName( final String texture )
-	{
-		this.textureName = texture;
-	}
-
-	private String getTextureName()
-	{
-		return this.textureName;
 	}
 
 	public boolean isFullSize()
