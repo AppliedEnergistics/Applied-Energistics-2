@@ -89,7 +89,6 @@ public final class AETileBlockFeatureHandler implements IFeatureHandler
 			final String name = this.extractor.get();
 			this.featured.setCreativeTab( CreativeTab.instance );
 			this.featured.setUnlocalizedName( /* "tile." */"appliedenergistics2." + name );
-			this.featured.setBlockTextureName( name );
 
 			if( Platform.isClient() )
 			{
@@ -140,7 +139,7 @@ public final class AETileBlockFeatureHandler implements IFeatureHandler
 		Set<ModelResourceLocation> keys = Sets.newHashSet( modelRegistry.getKeys() );
 		for( ModelResourceLocation model : keys )
 		{
-			if( model.getResourcePath().equals( registryName.getResourcePath() ) )
+			if( model.getResourceDomain().equals( registryName.getResourceDomain() ) && model.getResourcePath().equals( registryName.getResourcePath() ) )
 			{
 				modelRegistry.putObject( model, new CachingRotatingBakedModel( modelRegistry.getObject( model ) ) );
 			}

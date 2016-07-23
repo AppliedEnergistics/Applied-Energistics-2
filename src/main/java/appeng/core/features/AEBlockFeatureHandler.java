@@ -81,7 +81,6 @@ public final class AEBlockFeatureHandler implements IFeatureHandler
 			final String name = this.extractor.get();
 			this.featured.setCreativeTab( CreativeTab.instance );
 			this.featured.setUnlocalizedName( "appliedenergistics2." + name );
-			this.featured.setBlockTextureName( name );
 
 			registryName = new ResourceLocation( AppEng.MOD_ID, name );
 			GameRegistry.register( this.featured.setRegistryName( registryName ) );

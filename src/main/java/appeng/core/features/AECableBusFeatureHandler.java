@@ -84,7 +84,6 @@ public final class AECableBusFeatureHandler implements IFeatureHandler
 			final String name = this.extractor.get();
 			this.featured.setCreativeTab( CreativeTab.instance );
 			this.featured.setUnlocalizedName( /* "tile." */"appliedenergistics2." + name );
-			this.featured.setBlockTextureName( name );
 
 			if( Platform.isClient() )
 			{
