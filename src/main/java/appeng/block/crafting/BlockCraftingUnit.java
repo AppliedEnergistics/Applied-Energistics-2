@@ -71,6 +71,12 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
+	protected IProperty[] getAEStates()
+	{
+		return new IProperty[] { AE_BLOCK_FORWARD, AE_BLOCK_UP, POWERED, FORMED };
+	}
+	
+	@Override
 	public IBlockState getStateFromMeta( final int meta )
 	{
 		return this.getDefaultState().withProperty( POWERED, ( meta & 1 ) == 1 ).withProperty( FORMED, ( meta & 2 ) == 2 );
@@ -128,36 +134,6 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 		}
 
 		return false;
-	}
-
-	protected String getItemUnlocalizedName( final ItemStack is )
-	{
-		return super.getUnlocalizedName( is );
-	}
-
-	@Override
-	protected IProperty[] getAEStates()
-	{
-		return new IProperty[] { AE_BLOCK_FORWARD, AE_BLOCK_UP, POWERED, FORMED };
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void getCheckedSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
-	{
-		itemStacks.add( new ItemStack( this, 1, 0 ) );
-		itemStacks.add( new ItemStack( this, 1, 1 ) );
-	}
-
-	@Override
-	public String getUnlocalizedName( final ItemStack is )
-	{
-		if( is.getItemDamage() == 1 )
-		{
-			return "tile.appliedenergistics2.BlockCraftingAccelerator";
-		}
-
-		return this.getItemUnlocalizedName( is );
 	}
 
 	public enum CraftingUnitType
