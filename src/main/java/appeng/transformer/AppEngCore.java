@@ -127,4 +127,10 @@ public final class AppEngCore extends DummyModContainer implements IFMLLoadingPl
 	{
 		return this.getVersion();
 	}
+	
+	@Override
+	public String toString()
+	{
+		return this.getModId();
+	}
 }
