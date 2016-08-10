@@ -231,6 +231,12 @@ public class CachingRotatingBakedModel implements IBakedModel
 
 		}
 
+		@Override
+		public void setTexture( TextureAtlasSprite texture )
+		{
+
+		}
+
 	}
 
 }
