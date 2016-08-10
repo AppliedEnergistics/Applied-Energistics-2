@@ -45,7 +45,8 @@ public class BlockMolecularAssembler extends AEBaseBlock
 
 	public BlockMolecularAssembler()
 	{
-		super( BlockMolecularAssembler.class, Material.iron );
+		super( Material.iron );
+	
 		this.setTileEntity( TileMolecularAssembler.class );
 		this.isOpaque = false;
 		this.lightOpacity = 1;

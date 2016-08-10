@@ -35,7 +35,7 @@ public class BlockPhantomNode extends AEBaseBlock
 
 	public BlockPhantomNode()
 	{
-		super( BlockPhantomNode.class, Material.iron );
+		super( Material.iron );
 		this.setTileEntity( TilePhantomNode.class );
 		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}

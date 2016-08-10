@@ -71,7 +71,7 @@ public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock
 
 	public BlockSkyStone()
 	{
-		super( BlockSkyStone.class, Material.rock );
+		super( Material.rock );
 		this.setHardness( 50 );
 		this.hasSubtypes = true;
 		this.blockResistance = 150.0f;

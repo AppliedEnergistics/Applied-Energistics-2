@@ -46,12 +46,7 @@ public class OreQuartz extends AEBaseBlock
 
 	public OreQuartz()
 	{
-		this( OreQuartz.class );
-	}
-
-	public OreQuartz( Class<? extends OreQuartz> self )
-	{
-		super( self, Material.rock );
+		super( Material.rock );
 		this.setHardness( 3.0F );
 		this.setResistance( 5.0F );
 		this.boostBrightnessLow = 0;

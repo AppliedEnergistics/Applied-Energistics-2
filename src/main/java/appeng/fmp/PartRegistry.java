@@ -19,6 +19,8 @@
 package appeng.fmp;
 
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 
 import codechicken.multipart.TMultiPart;
@@ -31,7 +33,8 @@ import appeng.core.Api;
 
 public enum PartRegistry
 {
-	QuartzTorchPart( "ae2_torch", BlockQuartzTorch.class, QuartzTorchPart.class ), CableBusPart( "ae2_cablebus", BlockCableBus.class, CableBusPart.class );
+	QuartzTorchPart( "ae2_torch", BlockQuartzTorch.class, QuartzTorchPart.class ),
+	CableBusPart( "ae2_cablebus", BlockCableBus.class, CableBusPart.class );
 
 	private final String name;
 	private final Class<? extends AEBaseBlock> blk;
@@ -44,20 +47,7 @@ public enum PartRegistry
 		this.part = part;
 	}
 
-	public static String getPartName( TMultiPart part )
-	{
-		Class c = part.getClass();
-		for( PartRegistry pr : values() )
-		{
-			if( pr.equals( c ) )
-			{
-				return pr.name;
-			}
-		}
-
-		throw new IllegalStateException( "Invalid PartName" );
-	}
-
+	@Nullable
 	public static TMultiPart getPartByBlock( Block block, int meta )
 	{
 		for( PartRegistry pr : values() )
@@ -87,18 +77,6 @@ public enum PartRegistry
 		{
 			throw new IllegalStateException( t );
 		}
-	}
-
-	public static boolean isPart( Block block )
-	{
-		for( PartRegistry pr : values() )
-		{
-			if( pr.blk.isInstance( block ) )
-			{
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public String getName()

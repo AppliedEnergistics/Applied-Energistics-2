@@ -36,7 +36,7 @@ public class BlockQuartzPillar extends AEBaseBlock implements IOrientableBlock
 
 	public BlockQuartzPillar()
 	{
-		super( BlockQuartzPillar.class, Material.rock );
+		super( Material.rock );
 		this.setFeature( EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
 	}
 

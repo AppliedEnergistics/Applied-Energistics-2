@@ -49,7 +49,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -102,9 +101,9 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 	@Nullable
 	private Class<? extends TileEntity> tileEntityType = null;
 
-	protected AEBaseBlock( Class<? extends AEBaseBlock> c, Material mat )
+	protected AEBaseBlock( Material mat )
 	{
-		this( c, mat, Optional.<String>absent() );
+		this( mat, Optional.<String>absent() );
 		this.setLightOpacity( 255 );
 		this.setLightLevel( 0 );
 		this.setHardness( 2.2F );
@@ -112,7 +111,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		this.setHarvestLevel( "pickaxe", 0 );
 	}
 
-	protected AEBaseBlock( Class<?> c, Material mat, Optional<String> subName )
+	protected AEBaseBlock( Material mat, Optional<String> subName )
 	{
 		super( mat );
 
@@ -133,7 +132,7 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 			this.setStepSound( Block.soundTypeMetal );
 		}
 
-		this.featureFullName = new FeatureNameExtractor( c, subName ).get();
+		this.featureFullName = new FeatureNameExtractor( this.getClass(), subName ).get();
 		this.featureSubName = subName;
 	}
 
@@ -197,7 +196,6 @@ public class AEBaseBlock extends BlockContainer implements IAEFeature
 		this.tileEntityType = c;
 
 		AEBaseTile.registerTileItem( c, new ItemStackSrc( this, 0 ) );
-		GameRegistry.registerTileEntity( this.tileEntityType, this.featureFullName );
 		this.isInventory = IInventory.class.isAssignableFrom( c );
 		this.setTileProvider( this.hasBlockTileEntity() );
 	}

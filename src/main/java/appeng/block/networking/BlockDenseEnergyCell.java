@@ -33,7 +33,6 @@ public class BlockDenseEnergyCell extends BlockEnergyCell
 
 	public BlockDenseEnergyCell()
 	{
-		super( BlockDenseEnergyCell.class );
 		this.setTileEntity( TileDenseEnergyCell.class );
 		this.setFeature( EnumSet.of( AEFeature.DenseEnergyCells ) );
 	}

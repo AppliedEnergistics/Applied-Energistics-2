@@ -39,7 +39,6 @@ public class BlockQuartzLamp extends BlockQuartzGlass
 
 	public BlockQuartzLamp()
 	{
-		super( BlockQuartzLamp.class );
 		this.setLightLevel( 1.0f );
 		this.setBlockTextureName( "BlockQuartzGlass" );
 		this.setFeature( EnumSet.of( AEFeature.DecorativeQuartzBlocks, AEFeature.DecorativeLights ) );
