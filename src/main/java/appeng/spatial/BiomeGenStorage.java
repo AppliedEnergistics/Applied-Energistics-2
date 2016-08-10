@@ -31,7 +31,7 @@ public class BiomeGenStorage extends BiomeGenBase
 		this.setBiomeName( "Storage Cell" );
 
 		this.setDisableRain();
-		this.temperature = -100;
+		this.temperature = 0.5F;
 
 		this.theBiomeDecorator.treesPerChunk = 0;
 		this.theBiomeDecorator.flowersPerChunk = 0;
