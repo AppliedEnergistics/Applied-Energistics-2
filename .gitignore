@@ -22,3 +22,6 @@
 
 # code format to reduce noise in git commits
 !codeformat/
+
+# include checkstyle
+!guidelines/

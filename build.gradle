@@ -17,6 +17,7 @@
  */
 
 apply plugin: 'forge'
+apply plugin: 'checkstyle'
 
 apply from: 'gradle/scripts/dependencies.gradle'
 apply from: 'gradle/scripts/artifacts.gradle'
@@ -76,6 +77,10 @@ jar {
     include "assets/**"
     include "mcmod.info"
     include "pack.mcmeta"
+}
+
+checkstyle {
+    configFile = file('guidelines/ae.checkstyle')
 }
 
 minecraft {
