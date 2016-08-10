@@ -103,7 +103,9 @@ sourceSets {
                     "assets/appliedenergistics2/textures/blocks/*",
                     "assets/appliedenergistics2/textures/guis/*",
                     "assets/appliedenergistics2/textures/models/*",
-                    "assets/appliedenergistics2/textures/items/*"
+                    "assets/appliedenergistics2/textures/items/*",
+                    "mcmod.info",
+                    "pack.mcmeta"
         }
     }
 }
@@ -113,6 +115,5 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
         expand 'version': project.version, 'mcversion': minecraft_version
-        include 'pack.mcmeta'
     }
 }
