@@ -41,6 +41,7 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import appeng.api.definitions.ITileDefinition;
 import appeng.block.AEBaseTileBlock;
+import appeng.block.IHasSpecialItemModel;
 import appeng.client.render.model.AEIgnoringStateMapper;
 import appeng.client.render.model.CachingRotatingBakedModel;
 import appeng.core.AppEng;
@@ -122,7 +123,14 @@ public final class AETileBlockFeatureHandler implements IFeatureHandler
 	@Override
 	public void registerModel()
 	{
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this.definition.maybeItem().get(), 0, new ModelResourceLocation( registryName, "normal" ) );
+		if( !featured.getBlockState().getProperties().isEmpty() || featured instanceof IHasSpecialItemModel )
+		{
+			Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this.definition.maybeItem().get(), 0, new ModelResourceLocation( registryName, "inventory" ) );
+		}
+		else
+		{
+			Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this.definition.maybeItem().get(), 0, new ModelResourceLocation( registryName, "normal" ) );
+		}
 	}
 
 	@Override

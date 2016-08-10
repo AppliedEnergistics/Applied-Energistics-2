@@ -49,7 +49,15 @@ public class SkyChestTESR extends TileEntitySpecialRenderer<TileSkyChest>
 		}
 		else
 		{
-			this.bindTexture( ( (BlockSkyChest) te.getBlockType() ).type == SkyChestType.STONE ? TEXTURE_STONE : TEXTURE_BLOCK );
+			// TODO 1.10.2-R - So this is weirdly half working. Either fix it or deal with it.
+			if( te != null )
+			{
+				this.bindTexture( ( (BlockSkyChest) te.getBlockType() ).type == SkyChestType.STONE ? TEXTURE_STONE : TEXTURE_BLOCK );
+			}
+			else
+			{
+				this.bindTexture( TEXTURE_BLOCK );
+			}
 		}
 
 		GlStateManager.pushMatrix();
@@ -64,9 +72,12 @@ public class SkyChestTESR extends TileEntitySpecialRenderer<TileSkyChest>
 		GlStateManager.scale( 1.0F, -1.0F, -1.0F );
 		GlStateManager.translate( 0.5F, 0.5F, 0.5F );
 
-		FacingToRotation.get( te.getForward(), te.getUp() ).glRotateCurrentMat();
+		if( te != null )
+		{
+			FacingToRotation.get( te.getForward(), te.getUp() ).glRotateCurrentMat();
+		}
 		GlStateManager.translate( -0.5F, -0.5F, -0.5F );
-		float f = te.getPrevLidAngle() + ( te.getLidAngle() - te.getPrevLidAngle() ) * partialTicks;
+		float f = te != null ? te.getPrevLidAngle() + ( te.getLidAngle() - te.getPrevLidAngle() ) * partialTicks : 0;
 
 		f = 1.0F - f;
 		f = 1.0F - f * f * f;

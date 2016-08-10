@@ -44,6 +44,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
+import appeng.block.IHasSpecialItemModel;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
@@ -52,7 +53,7 @@ import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
 
 
-public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
+public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision, IHasSpecialItemModel
 {
 
 	public static enum SkyChestType

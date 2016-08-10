@@ -33,7 +33,7 @@ import appeng.core.features.IAEFeature;
 import appeng.core.features.IFeatureHandler;
 
 
-public abstract class AEBaseStairBlock extends BlockStairs implements IAEFeature
+public abstract class AEBaseStairBlock extends BlockStairs implements IAEFeature, IHasSpecialItemModel
 {
 	private final IFeatureHandler features;
 
