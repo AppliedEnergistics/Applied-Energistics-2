@@ -1,4 +1,5 @@
 {
+    "parent": "block/block",
     "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
     "textures": {
         "0": "blocks/tnt_side",
