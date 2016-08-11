@@ -24,6 +24,7 @@ import java.util.EnumSet;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
@@ -34,7 +35,6 @@ import appeng.core.features.AEFeature;
 import appeng.helpers.MetaRotation;
 
 
-// TODO Quartz Rotation.
 public class QuartzPillarBlock extends AEBaseBlock implements IOrientableBlock
 {
 
@@ -47,13 +47,15 @@ public class QuartzPillarBlock extends AEBaseBlock implements IOrientableBlock
 	@Override
 	public int getMetaFromState( final IBlockState state )
 	{
-		return 0;
+		return state.getValue(AXIS_ORIENTATION).ordinal();
 	}
 
 	@Override
 	public IBlockState getStateFromMeta( final int meta )
 	{
-		return this.getDefaultState();
+	    // Simply use the ordinal here
+	    EnumFacing.Axis axis = EnumFacing.Axis.values()[meta];
+		return this.getDefaultState().withProperty(AXIS_ORIENTATION, axis);
 	}
 
 	@Override
@@ -71,7 +73,7 @@ public class QuartzPillarBlock extends AEBaseBlock implements IOrientableBlock
 	@Override
 	public IOrientable getOrientable( final IBlockAccess w, final BlockPos pos )
 	{
-		return new MetaRotation( w, pos, false );
+		return new MetaRotation( w, pos, null );
 	}
 
 }

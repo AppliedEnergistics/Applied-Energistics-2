@@ -19,7 +19,7 @@
 package appeng.helpers;
 
 
-import net.minecraft.block.BlockTorch;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -34,15 +34,15 @@ import appeng.block.AEBaseBlock;
 public class MetaRotation implements IOrientable
 {
 
-	private final boolean useFacing;
+	private final IProperty<EnumFacing> facingProp;
 	private final IBlockAccess w;
 	private final BlockPos pos;
 
-	public MetaRotation( final IBlockAccess world, final BlockPos pos, final boolean FullFacing )
+	public MetaRotation( final IBlockAccess world, final BlockPos pos, final IProperty<EnumFacing> facingProp )
 	{
 		this.w = world;
 		this.pos = pos;
-		this.useFacing = FullFacing;
+		this.facingProp = facingProp;
 	}
 
 	@Override
@@ -66,13 +66,12 @@ public class MetaRotation implements IOrientable
 	{
 		final IBlockState state = this.w.getBlockState( this.pos );
 
-		if( this.useFacing )
+		if( this.facingProp != null )
 		{
-			final EnumFacing f = state == null ? EnumFacing.UP : (EnumFacing) state.getValue( BlockTorch.FACING );
-			return f;
+			return state.getValue( facingProp );
 		}
 
-		Axis a = state == null ? null : (Axis) state.getValue( AEBaseBlock.AXIS_ORIENTATION );
+		Axis a = state.getValue( AEBaseBlock.AXIS_ORIENTATION );
 
 		if( a == null )
 		{
@@ -96,9 +95,9 @@ public class MetaRotation implements IOrientable
 	{
 		if( this.w instanceof World )
 		{
-			if( this.useFacing )
+			if( facingProp != null )
 			{
-				( (World) this.w ).setBlockState( this.pos, this.w.getBlockState( this.pos ).withProperty( BlockTorch.FACING, up ) );
+				( (World) this.w ).setBlockState( this.pos, this.w.getBlockState( this.pos ).withProperty( facingProp, up ) );
 			}
 			else
 			{
