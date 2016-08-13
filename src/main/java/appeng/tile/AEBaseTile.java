@@ -205,6 +205,41 @@ public class AEBaseTile extends TileEntity implements ITickable, IOrientable, IC
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket()
 	{
+		return new SPacketUpdateTileEntity( this.pos, 64, getUpdateTag() );
+	}
+
+	private boolean hasHandlerFor( final TileEventType type )
+	{
+		final List<AETileEventHandler> list = this.getHandlerListFor( type );
+
+		return !list.isEmpty();
+	}
+
+	@Override
+	public void onDataPacket( final NetworkManager net, final SPacketUpdateTileEntity pkt )
+	{
+		// / pkt.actionType
+		if( pkt.getTileEntityType() == 64 )
+		{
+			handleUpdateTag( pkt.getNbtCompound() );
+		}
+	}
+
+	@Override
+	public void onChunkUnload()
+	{
+		if( !this.isInvalid() )
+		{
+			this.invalidate();
+		}
+	}
+
+	/**
+	 * This builds a tag with the actual data that should be sent to the client for update syncs.
+	 * If the tile entity doesn't need update syncs, it returns null.
+	 */
+	private NBTTagCompound writeUpdateData()
+	{
 		final NBTTagCompound data = new NBTTagCompound();
 
 		final ByteBuf stream = Unpooled.buffer();
@@ -224,36 +259,37 @@ public class AEBaseTile extends TileEntity implements ITickable, IOrientable, IC
 
 		stream.capacity( stream.readableBytes() );
 		data.setByteArray( "X", stream.array() );
-		return new SPacketUpdateTileEntity( this.pos, 64, data );
+		return data;
 	}
 
-	private boolean hasHandlerFor( final TileEventType type )
-	{
-		final List<AETileEventHandler> list = this.getHandlerListFor( type );
-
-		return !list.isEmpty();
-	}
-
+	/**
+	 * Handles tile entites that are being sent to the client as part of a full chunk.
+	 */
 	@Override
-	public void onDataPacket( final NetworkManager net, final SPacketUpdateTileEntity pkt )
+	public NBTTagCompound getUpdateTag()
 	{
-		// / pkt.actionType
-		if( pkt.getTileEntityType() == 64 )
-		{
-			final ByteBuf stream = Unpooled.copiedBuffer( pkt.getNbtCompound().getByteArray( "X" ) );
-			if( this.readFromStream( stream ) )
-			{
-				this.markForUpdate();
-			}
+		final NBTTagCompound data = writeUpdateData();
+
+		if (data == null) {
+			return new NBTTagCompound();
 		}
+
+		data.setInteger( "x", pos.getX() );
+		data.setInteger( "y", pos.getY() );
+		data.setInteger( "z", pos.getZ() );
+		return data;
 	}
 
+	/**
+	 * Handles tile entites that are being received by the client as part of a full chunk.
+	 */
 	@Override
-	public void onChunkUnload()
+	public void handleUpdateTag( NBTTagCompound tag )
 	{
-		if( !this.isInvalid() )
+		final ByteBuf stream = Unpooled.copiedBuffer( tag.getByteArray( "X" ) );
+		if( this.readFromStream( stream ) )
 		{
-			this.invalidate();
+			this.markForUpdate();
 		}
 	}
 
