@@ -23,7 +23,9 @@ import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
@@ -37,6 +39,7 @@ import appeng.helpers.MetaRotation;
 // TODO Quartz Rotation.
 public class QuartzPillarBlock extends AEBaseBlock implements IOrientableBlock
 {
+	public static final PropertyEnum AXIS_ORIENTATION = PropertyEnum.create( "axis", EnumFacing.Axis.class );
 
 	public QuartzPillarBlock()
 	{
