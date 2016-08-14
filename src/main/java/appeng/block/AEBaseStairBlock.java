@@ -39,7 +39,7 @@ public abstract class AEBaseStairBlock extends BlockStairs implements IAEFeature
 
 	protected AEBaseStairBlock( final Block block, final EnumSet<AEFeature> features, final String type )
 	{
-		super( block.getStateFromMeta( 0 ) );
+		super( block.getDefaultState() );
 
 		Preconditions.checkNotNull( block );
 		Preconditions.checkNotNull( block.getUnlocalizedName() );

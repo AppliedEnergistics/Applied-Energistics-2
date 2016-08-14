@@ -1,0 +1,8 @@
+{
+  "parent": "block/stairs",
+  "textures": {
+    "side": "appliedenergistics2:blocks/SkyStoneBlock.SMALL_BRICK",
+    "top": "appliedenergistics2:blocks/SkyStoneBlock.SMALL_BRICK",
+    "bottom": "appliedenergistics2:blocks/SkyStoneBlock.SMALL_BRICK"
+  }
+}

@@ -90,11 +90,11 @@ public final class AEBlockFeatureHandler implements IFeatureHandler
 			if( this.definition.maybeItem().isPresent() )
 			{
 				GameRegistry.register( this.definition.maybeItem().get().setRegistryName( registryName ) );
-			}
 
-			if( side == Side.CLIENT )
-			{
-				ModelBakery.registerItemVariants( this.definition.maybeItem().get(), registryName );
+				if( side == Side.CLIENT )
+				{
+					ModelBakery.registerItemVariants( this.definition.maybeItem().get(), registryName );
+				}
 			}
 		}
 	}
