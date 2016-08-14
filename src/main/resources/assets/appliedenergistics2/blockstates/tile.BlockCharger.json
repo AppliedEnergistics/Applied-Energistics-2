@@ -1,5 +1,5 @@
 {
     "variants": {
-		"normal": { "model": "appliedenergistics2:tile.BlockCharger", "y":180}
+		"normal": { "model": "appliedenergistics2:tile.BlockCharger" }
     }
 }
