@@ -21,10 +21,11 @@ package appeng.block.misc;
 
 import java.util.EnumSet;
 import java.util.Random;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -32,6 +33,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
@@ -47,12 +49,32 @@ import appeng.util.Platform;
 public final class BlockVibrationChamber extends AEBaseTileBlock
 {
 
+	// Indicates that the vibration chamber is currently working
+	private static final PropertyBool ACTIVE = PropertyBool.create( "active" );
+
 	public BlockVibrationChamber()
 	{
 		super( Material.IRON );
 		this.setTileEntity( TileVibrationChamber.class );
 		this.setHardness( 4.2F );
 		this.setFeature( EnumSet.of( AEFeature.PowerGen ) );
+		this.setDefaultState( getDefaultState().withProperty( ACTIVE, false ) );
+	}
+
+	@Override
+	public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
+	{
+		TileVibrationChamber te = this.getTileEntity( world, pos );
+		boolean active = te != null && te.isOn;
+
+		return super.getActualState( state, world, pos )
+				.withProperty( ACTIVE, active );
+	}
+
+	@Override
+	protected IProperty[] getAEStates()
+	{
+		return new IProperty[]{ AE_BLOCK_FORWARD, AE_BLOCK_UP, ACTIVE };
 	}
 
 	@Override

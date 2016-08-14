@@ -1,0 +1,6 @@
+{
+    "parent": "appliedenergistics2:block/tile.BlockVibrationChamber.off",
+    "textures": {
+        "front": "appliedenergistics2:blocks/BlockVibrationChamberFrontOn"
+    }
+}

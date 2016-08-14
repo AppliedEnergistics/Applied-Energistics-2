@@ -1,0 +1,6 @@
+{
+    "variants": {
+        "active=false": { "model": "appliedenergistics2:tile.BlockVibrationChamber.off" },
+        "active=true": { "model": "appliedenergistics2:tile.BlockVibrationChamber.on" }
+    }
+}
