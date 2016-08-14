@@ -67,8 +67,11 @@ import appeng.util.Platform;
 public abstract class AEBaseBlock extends Block implements IAEFeature
 {
 
+<<<<<<< HEAD
 	public static final PropertyEnum<EnumFacing.Axis> AXIS_ORIENTATION = PropertyEnum.create( "axis", EnumFacing.Axis.class );
 
+=======
+>>>>>>> refs/heads/pr/38
 	private final String featureFullName;
 	private final Optional<String> featureSubName;
 	private boolean isOpaque = true;
