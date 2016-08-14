@@ -24,10 +24,13 @@ import java.util.Random;
 
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -41,12 +44,32 @@ import appeng.util.Platform;
 
 public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock
 {
+
+	private static final PropertyBool POWERED = PropertyBool.create( "powered" );
+
 	public BlockQuartzGrowthAccelerator()
 	{
 		super( Material.ROCK );
 		this.setSoundType( SoundType.METAL );
 		this.setTileEntity( TileQuartzGrowthAccelerator.class );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
+		this.setDefaultState( getDefaultState().withProperty( POWERED, false ) );
+	}
+
+	@Override
+	public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
+	{
+		TileQuartzGrowthAccelerator te = getTileEntity( world, pos );
+		boolean powered = te != null && te.isPowered();
+
+		return super.getActualState( state, world, pos )
+				.withProperty( POWERED, powered );
+	}
+
+	@Override
+	protected IProperty[] getAEStates()
+	{
+		return new IProperty[] { AE_BLOCK_FORWARD, AE_BLOCK_UP, POWERED };
 	}
 
 	@Override
