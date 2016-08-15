@@ -309,6 +309,7 @@ public enum UVLModelLoader implements ICustomModelLoader
 					};
 					trans.setParent( builder );
 					quad.pipe( trans );
+					builder.setQuadOrientation( quad.getFace() );
 					return builder.build();
 				}
 				else

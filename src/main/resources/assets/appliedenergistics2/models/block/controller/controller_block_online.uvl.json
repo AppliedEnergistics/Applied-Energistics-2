@@ -1,0 +1,42 @@
+{
+    "parent": "block/block",
+    "display": {
+        "firstperson_righthand": {
+            "rotation": [ 0, 135, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 0.40, 0.40, 0.40 ]
+        }
+    },
+    "textures": {
+        "particle": "#block",
+        "block": "appliedenergistics2:blocks/BlockControllerPowered",
+        "lights": "appliedenergistics2:blocks/BlockControllerLights"
+    },
+    "elements": [
+        {
+            "from": [ 0, 0, 0 ],
+            "to": [ 16, 16, 16 ],
+            "shade": false,
+            "faces": {
+                "down":  { "uv": [ 0, 0, 16, 16 ], "texture": "#lights", "uvlightmap": { "sky": 0.007, "block": 0.007 }},
+                "up":    { "uv": [ 0, 0, 16, 16 ], "texture": "#lights", "uvlightmap": { "sky": 0.007, "block": 0.007 }},
+                "north": { "uv": [ 0, 0, 16, 16 ], "texture": "#lights", "uvlightmap": { "sky": 0.007, "block": 0.007 }},
+                "south": { "uv": [ 0, 0, 16, 16 ], "texture": "#lights", "uvlightmap": { "sky": 0.007, "block": 0.007 }},
+                "west":  { "uv": [ 0, 0, 16, 16 ], "texture": "#lights", "uvlightmap": { "sky": 0.007, "block": 0.007 }},
+                "east":  { "uv": [ 0, 0, 16, 16 ], "texture": "#lights", "uvlightmap": { "sky": 0.007, "block": 0.007 }}
+            }
+        },
+        {
+            "from": [ 0, 0, 0 ],
+            "to": [ 16, 16, 16 ],
+            "faces": {
+                "down":  { "uv": [ 0, 0, 16, 16 ], "texture": "#block"},
+                "up":    { "uv": [ 0, 0, 16, 16 ], "texture": "#block"},
+                "north": { "uv": [ 0, 0, 16, 16 ], "texture": "#block"},
+                "south": { "uv": [ 0, 0, 16, 16 ], "texture": "#block"},
+                "west":  { "uv": [ 0, 0, 16, 16 ], "texture": "#block"},
+                "east":  { "uv": [ 0, 0, 16, 16 ], "texture": "#block"}
+            }
+        }
+    ]
+}
