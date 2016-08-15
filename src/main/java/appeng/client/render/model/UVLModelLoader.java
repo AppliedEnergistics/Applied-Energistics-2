@@ -57,7 +57,6 @@ import net.minecraftforge.client.model.ICustomModelLoader;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.animation.ModelBlockAnimation;
-import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.client.model.pipeline.VertexLighterFlat;
 import net.minecraftforge.common.model.IModelState;
@@ -68,6 +67,8 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 public enum UVLModelLoader implements ICustomModelLoader
 {
 	INSTANCE;
+
+	private static final Gson gson = new Gson();
 
 	private static final Constructor<? extends IModel> vanillaModelWrapper;
 	private static final Field faceBakery;
@@ -153,7 +154,15 @@ public enum UVLModelLoader implements ICustomModelLoader
 	@Override
 	public boolean accepts( ResourceLocation modelLocation )
 	{
-		return modelLocation.getResourcePath().endsWith( ".uvl" );
+		try
+		{
+			return gson.fromJson( new InputStreamReader( Minecraft.getMinecraft().getResourceManager().getResource( modelLocation ).getInputStream() ), UVLMarker.class ).uvlMarker;
+		}
+		catch( IOException e )
+		{
+
+		}
+		return false;
 	}
 
 	@Override
@@ -320,6 +329,11 @@ public enum UVLModelLoader implements ICustomModelLoader
 
 		}
 
+	}
+
+	class UVLMarker
+	{
+		boolean uvlMarker = false;
 	}
 
 }

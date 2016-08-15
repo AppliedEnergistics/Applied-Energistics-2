@@ -1,4 +1,6 @@
+
 package appeng.client.render;
+
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -14,21 +16,18 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import appeng.client.render.model.UVLModelLoader;
 
-@Mod(modid = "UVLightmapJsonTest", name = "UVLightmapJsonTest", version ="0.0.0")
+@Mod( modid = "UVLightmapJsonTest", name = "UVLightmapJsonTest", version = "0.0.0" )
 public class UVLightmapJsonTest
 {
 
-	private static final ModelResourceLocation uvlblockModel = new ModelResourceLocation( new ResourceLocation( "UVLightmapJsonTest", "uvlblock" ), "normal" );
+	private static final ResourceLocation uvlblockR = new ResourceLocation( "UVLightmapJsonTest", "uvlblock" );
 
 	public static Block uvlblock;
 	public static Item uvlblockItem;
@@ -40,17 +39,17 @@ public class UVLightmapJsonTest
 
 			final AxisAlignedBB box = new AxisAlignedBB( 0.25, 0, 7 / 16d, 0.75, 1, 9 / 16d );
 
-			public boolean isFullBlock(IBlockState state)
+			public boolean isFullBlock( IBlockState state )
 			{
 				return false;
 			}
 
-			public boolean isOpaqueCube(IBlockState state)
+			public boolean isOpaqueCube( IBlockState state )
 			{
 				return false;
 			}
 
-			public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) 
+			public AxisAlignedBB getBoundingBox( IBlockState state, IBlockAccess source, BlockPos pos )
 			{
 				return box;
 			}
@@ -60,17 +59,17 @@ public class UVLightmapJsonTest
 				return BlockRenderLayer.CUTOUT;
 			}
 
-		}.setLightLevel( 0.2f ).setCreativeTab( CreativeTabs.DECORATIONS ).setRegistryName( new ResourceLocation( "UVLightmapJsonTest", "uvlblock" ) ) );
-		GameRegistry.register( uvlblockItem = new ItemBlock( uvlblock ).setRegistryName( new ResourceLocation( "UVLightmapJsonTest", "uvlblock" ) ) );
+		}.setLightLevel( 0.2f ).setCreativeTab( CreativeTabs.DECORATIONS ).setRegistryName( uvlblockR ) );
+		GameRegistry.register( uvlblockItem = new ItemBlock( uvlblock ).setRegistryName( uvlblockR ) );
 
-		ModelBakery.registerItemVariants( uvlblockItem, uvlblockModel );
+		ModelBakery.registerItemVariants( uvlblockItem, uvlblockR );
 
 	}
 
 	@EventHandler
 	public void init( FMLInitializationEvent event )
 	{
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(uvlblockItem, 0, uvlblockModel);
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( uvlblockItem, 0, new ModelResourceLocation( uvlblockR, "inventory" ) );
 	}
 
 }

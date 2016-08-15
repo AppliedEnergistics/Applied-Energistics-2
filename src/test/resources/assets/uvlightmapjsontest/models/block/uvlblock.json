@@ -1,4 +1,5 @@
 {
+    "uvlMarker": true,
     "textures": {
         "0": "blocks/obsidian",
         "1": "uvlightmapjsontest:blocks/BlockControllerLights"
