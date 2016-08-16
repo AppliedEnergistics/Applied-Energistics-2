@@ -62,6 +62,7 @@ import appeng.client.render.effects.EnergyFx;
 import appeng.client.render.effects.LightningArcFX;
 import appeng.client.render.effects.LightningFX;
 import appeng.client.render.effects.VibrantFX;
+import appeng.client.render.model.GlassModelLoader;
 import appeng.client.render.model.UVLModelLoader;
 import appeng.client.render.textures.ParticleTextures;
 import appeng.core.AEConfig;
@@ -93,6 +94,7 @@ public class ClientHelper extends ServerHelper
 	{
 		MinecraftForge.EVENT_BUS.register( this );
 		ModelLoaderRegistry.registerLoader( UVLModelLoader.INSTANCE );
+		ModelLoaderRegistry.registerLoader( new GlassModelLoader() );
 		for( IAEFeature feature : Api.INSTANCE.definitions().getFeatureRegistry().getRegisteredFeatures() )
 		{
 			feature.handler().registerStateMapper();
