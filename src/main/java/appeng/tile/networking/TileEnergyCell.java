@@ -60,19 +60,17 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	public void onReady()
 	{
 		super.onReady();
-		final int value = (Integer) this.worldObj.getBlockState( this.pos ).getValue( BlockEnergyCell.ENERGY_STORAGE );
+		final int value = this.worldObj.getBlockState( this.pos ).getValue( BlockEnergyCell.ENERGY_STORAGE );
 		this.currentMeta = (byte) value;
 		this.changePowerLevel();
 	}
 
-	private void changePowerLevel()
-	{
-		if( this.notLoaded() )
-		{
-			return;
-		}
-
-		byte boundMetadata = (byte) ( 8.0 * ( this.internalCurrentPower / this.getInternalMaxPower() ) );
+	/**
+	 * Given a fill factor, return the storage level (0-7) used for the state of the block.
+	 * This is also used for determining the item model.
+	 */
+	public static int getStorageLevelFromFillFactor( double fillFactor ) {
+		byte boundMetadata = (byte) ( 8.0 * ( fillFactor ) );
 
 		if( boundMetadata > 7 )
 		{
@@ -82,11 +80,22 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 		{
 			boundMetadata = 0;
 		}
+		return boundMetadata;
+	}
 
-		if( this.currentMeta != boundMetadata )
+	private void changePowerLevel()
+	{
+		if( this.notLoaded() )
 		{
-			this.currentMeta = boundMetadata;
-			this.worldObj.setBlockState( this.pos, this.worldObj.getBlockState( this.pos ).withProperty( BlockEnergyCell.ENERGY_STORAGE, (int) boundMetadata ) );
+			return;
+		}
+
+		int storageLevel = getStorageLevelFromFillFactor( this.internalCurrentPower / this.getInternalMaxPower() );
+
+		if( this.currentMeta != storageLevel )
+		{
+			this.currentMeta = (byte) storageLevel;
+			this.worldObj.setBlockState( this.pos, this.worldObj.getBlockState( this.pos ).withProperty( BlockEnergyCell.ENERGY_STORAGE, storageLevel ) );
 		}
 	}
 

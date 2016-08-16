@@ -25,10 +25,13 @@ import com.google.common.base.Optional;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.IRegistry;
 import net.minecraftforge.client.model.ModelLoader;
@@ -36,6 +39,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import appeng.api.definitions.IBlockDefinition;
+import appeng.block.AEBaseBlock;
 import appeng.block.IHasSpecialItemModel;
 import appeng.client.render.model.AEIgnoringStateMapper;
 import appeng.core.AppEng;
@@ -102,13 +106,28 @@ public final class AEBlockFeatureHandler implements IFeatureHandler
 	@Override
 	public void registerModel()
 	{
-		if( !featured.getBlockState().getProperties().isEmpty() || featured instanceof IHasSpecialItemModel )
+		ItemModelMesher itemModelMesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
+		Item item = this.definition.maybeItem().get();
+
+		// Retrieve a custom item mesh definition, if the block defines one
+		ItemMeshDefinition itemMeshDefinition = null;
+		if( featured instanceof AEBaseBlock )
 		{
-			Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this.definition.maybeItem().get(), 0, new ModelResourceLocation( registryName, "inventory" ) );
+			itemMeshDefinition = ( (AEBaseBlock) featured ).getItemMeshDefinition();
+		}
+
+		if ( itemMeshDefinition != null )
+		{
+			// This block has a custom item mesh definition, so register it instead of the resource location
+			itemModelMesher.register( item, itemMeshDefinition );
+		}
+		else if( !featured.getBlockState().getProperties().isEmpty() || featured instanceof IHasSpecialItemModel )
+		{
+			itemModelMesher.register( item, 0, new ModelResourceLocation( registryName, "inventory" ) );
 		}
 		else
 		{
-			Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this.definition.maybeItem().get(), 0, new ModelResourceLocation( registryName, "normal" ) );
+			itemModelMesher.register( item, 0, new ModelResourceLocation( registryName, "normal" ) );
 		}
 	}
 
