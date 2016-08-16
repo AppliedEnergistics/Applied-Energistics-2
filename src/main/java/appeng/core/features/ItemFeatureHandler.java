@@ -24,6 +24,7 @@ import java.util.EnumSet;
 import com.google.common.base.Optional;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -37,6 +38,7 @@ import appeng.api.definitions.IItemDefinition;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
 import appeng.core.CreativeTabFacade;
+import appeng.items.AEBaseItem;
 import appeng.items.parts.ItemFacade;
 
 
@@ -105,7 +107,18 @@ public final class ItemFeatureHandler implements IFeatureHandler
 
 			if( side == Side.CLIENT )
 			{
-				ModelBakery.registerItemVariants( item, registryName );
+				if( item instanceof AEBaseItem )
+				{
+					AEBaseItem baseItem = (AEBaseItem) item;
+
+					// Handle registration of item variants
+					ResourceLocation[] variants = baseItem.getItemVariants().toArray( new ResourceLocation[0] );
+					ModelBakery.registerItemVariants( item, variants );
+				}
+				else
+				{
+					ModelBakery.registerItemVariants( item, registryName );
+				}
 			}
 		}
 	}
@@ -113,7 +126,23 @@ public final class ItemFeatureHandler implements IFeatureHandler
 	@Override
 	public void registerModel()
 	{
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( item, 0, new ModelResourceLocation( registryName, "inventory" ) );
+		ItemMeshDefinition meshDefinition = null;
+
+		// Register a custom item model handler if the item wants one
+		if( item instanceof AEBaseItem )
+		{
+			AEBaseItem baseItem = (AEBaseItem) item;
+			meshDefinition = baseItem.getItemMeshDefinition();
+		}
+
+		if( meshDefinition != null )
+		{
+			Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( item, meshDefinition );
+		}
+		else
+		{
+			Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( item, 0, new ModelResourceLocation( registryName, "inventory" ) );
+		}
 	}
 
 	@Override
