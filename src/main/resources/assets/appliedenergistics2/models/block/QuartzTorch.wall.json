@@ -1,0 +1,87 @@
+{
+  "ambientocclusion": false,
+  "textures": {
+    "quartz": "appliedenergistics2:blocks/BlockQuartzTorch",
+    "metal": "appliedenergistics2:blocks/BlockQuartzTorchMetal"
+  },
+  "elements": [
+    {
+      "name": "Connecting Strut",
+      "from": [ 7.0, 7.0, 14.0 ],
+      "to": [ 8.0, 8.0, 16.0 ],
+      "faces": {
+        "north": { "texture": "#metal" },
+        "east": { "texture": "#metal" },
+        "south": { "texture": "#metal" },
+        "west": { "texture": "#metal" },
+        "up": { "texture": "#metal" },
+        "down": { "texture": "#metal" }
+      }
+    },
+    {
+      "name": "Middle Plate",
+      "from": [ 6.0, 7.0, 10.0 ],
+      "to": [ 10.0, 8.0, 14.0 ],
+      "faces": {
+        "north": { "texture": "#metal" },
+        "east": { "texture": "#metal" },
+        "south": { "texture": "#metal" },
+        "west": { "texture": "#metal" },
+        "up": { "texture": "#metal" },
+        "down": { "texture": "#metal" }
+      }
+    },
+    {
+      "name": "Lower Quartz Block",
+      "from": [ 7.0, 5.0, 11.0 ],
+      "to": [ 9.0, 7.0, 13.0 ],
+      "faces": {
+        "north": { "texture": "#quartz" },
+        "east": { "texture": "#quartz" },
+        "south": { "texture": "#quartz" },
+        "west": { "texture": "#quartz" },
+        "up": { "texture": "#quartz" },
+        "down": { "texture": "#quartz" }
+      }
+    },
+    {
+      "name": "Lower Quartz Tip",
+      "from": [ 7.0, 4.0, 11.0 ],
+      "to": [ 8.0, 5.0, 12.0 ],
+      "faces": {
+        "north": { "texture": "#quartz" },
+        "east": { "texture": "#quartz" },
+        "south": { "texture": "#quartz" },
+        "west": { "texture": "#quartz" },
+        "up": { "texture": "#quartz" },
+        "down": { "texture": "#quartz" }
+      }
+    },
+    {
+      "name": "Upper Quartz Block",
+      "from": [ 7.0, 8.0, 11.0 ],
+      "to": [ 9.0, 10.0, 13.0 ],
+      "faces": {
+        "north": { "texture": "#quartz" },
+        "east": { "texture": "#quartz" },
+        "south": { "texture": "#quartz" },
+        "west": { "texture": "#quartz" },
+        "up": { "texture": "#quartz" },
+        "down": { "texture": "#quartz" }
+      }
+    },
+    {
+      "name": "Upper Quartz Tip",
+      "from": [ 8.0, 10.0, 12.0 ],
+      "to": [ 9.0, 11.0, 13.0 ],
+      "faces": {
+        "north": { "texture": "#quartz" },
+        "east": { "texture": "#quartz" },
+        "south": { "texture": "#quartz" },
+        "west": { "texture": "#quartz" },
+        "up": { "texture": "#quartz" },
+        "down": { "texture": "#quartz" }
+      }
+    }
+  ]
+}

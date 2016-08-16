@@ -1,0 +1,125 @@
+{
+  "textures": {
+    "quartz": "appliedenergistics2:blocks/BlockQuartzTorch",
+    "metal": "appliedenergistics2:blocks/BlockQuartzTorchMetal"
+  },
+  "elements": [
+    {
+      "name": "Middle Plate",
+      "from": [ 6.0, 3.0, 6.0 ],
+      "to": [ 10.0, 4.0, 10.0 ],
+      "faces": {
+        "north": { "texture": "#metal" },
+        "east": { "texture": "#metal" },
+        "south": { "texture": "#metal" },
+        "west": { "texture": "#metal" },
+        "up": { "texture": "#metal" },
+        "down": { "texture": "#metal" }
+      }
+    },
+    {
+      "name": "Lower Quartz Block",
+      "from": [ 7.0, 1.0, 7.0 ],
+      "to": [ 9.0, 3.0, 9.0 ],
+      "faces": {
+        "north": { "texture": "#quartz" },
+        "east": { "texture": "#quartz" },
+        "south": { "texture": "#quartz" },
+        "west": { "texture": "#quartz" },
+        "up": { "texture": "#quartz" },
+        "down": { "texture": "#quartz" }
+      }
+    },
+    {
+      "name": "Lower Quartz Tip",
+      "from": [ 7.0, 0.0, 7.0 ],
+      "to": [ 8.0, 1.0, 8.0 ],
+      "faces": {
+        "north": { "texture": "#quartz" },
+        "east": { "texture": "#quartz" },
+        "south": { "texture": "#quartz" },
+        "west": { "texture": "#quartz" },
+        "up": { "texture": "#quartz" },
+        "down": { "texture": "#quartz" }
+      }
+    },
+    {
+      "name": "Upper Quartz Block",
+      "from": [ 7.0, 4.0, 7.0 ],
+      "to": [ 9.0, 6.0, 9.0 ],
+      "faces": {
+        "north": { "texture": "#quartz" },
+        "east": { "texture": "#quartz" },
+        "south": { "texture": "#quartz" },
+        "west": { "texture": "#quartz" },
+        "up": { "texture": "#quartz" },
+        "down": { "texture": "#quartz" }
+      }
+    },
+    {
+      "name": "Upper Quartz Tip",
+      "from": [ 8.0, 6.0, 8.0 ],
+      "to": [ 9.0, 7.0, 9.0 ],
+      "faces": {
+        "north": { "texture": "#quartz" },
+        "east": { "texture": "#quartz" },
+        "south": { "texture": "#quartz" },
+        "west": { "texture": "#quartz" },
+        "up": { "texture": "#quartz" },
+        "down": { "texture": "#quartz" }
+      }
+    },
+    {
+      "name": "NW Feet",
+      "from": [ 6.0, 0.0, 6.0 ],
+      "to": [ 7.0, 3.0, 7.0 ],
+      "faces": {
+        "north": { "texture": "#metal" },
+        "east": { "texture": "#metal" },
+        "south": { "texture": "#metal" },
+        "west": { "texture": "#metal" },
+        "up": { "texture": "#metal" },
+        "down": { "texture": "#metal" }
+      }
+    },
+    {
+      "name": "NE Feet",
+      "from": [ 6.0, 0.0, 9.0 ],
+      "to": [ 7.0, 3.0, 10.0 ],
+      "faces": {
+        "north": { "texture": "#metal" },
+        "east": { "texture": "#metal" },
+        "south": { "texture": "#metal" },
+        "west": { "texture": "#metal" },
+        "up": { "texture": "#metal" },
+        "down": { "texture": "#metal" }
+      }
+    },
+    {
+      "name": "SW Feet",
+      "from": [ 9.0, 0.0, 6.0 ],
+      "to": [ 10.0, 3.0, 7.0 ],
+      "faces": {
+        "north": { "texture": "#metal" },
+        "east": { "texture": "#metal" },
+        "south": { "texture": "#metal" },
+        "west": { "texture": "#metal" },
+        "up": { "texture": "#metal" },
+        "down": { "texture": "#metal" }
+      }
+    },
+    {
+      "name": "SE Feet",
+      "from": [ 9.0, 0.0, 9.0 ],
+      "to": [ 10.0, 3.0, 10.0 ],
+      "faces": {
+        "north": { "texture": "#metal" },
+        "east": { "texture": "#metal" },
+        "south": { "texture": "#metal" },
+        "west": { "texture": "#metal" },
+        "up": { "texture": "#metal" },
+        "down": { "texture": "#metal" }
+      }
+    }
+  ]
+}

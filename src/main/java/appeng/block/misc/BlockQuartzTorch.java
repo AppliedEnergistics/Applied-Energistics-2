@@ -27,10 +27,12 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -52,15 +54,18 @@ import appeng.helpers.MetaRotation;
 
 public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, ICustomCollision
 {
-	
+
 	// Cannot use the vanilla FACING property here because it excludes facing DOWN
-	public static final PropertyDirection FACING = PropertyDirection.create("facing");
-	
+	public static final PropertyDirection FACING = PropertyDirection.create( "facing" );
+
+	// Used to alternate between two variants of the torch on adjacent blocks
+	public static final PropertyBool ODD = PropertyBool.create( "odd" );
+
 	public BlockQuartzTorch()
 	{
 		super( Material.CIRCUITS );
 
-		this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.UP));
+		this.setDefaultState( this.blockState.getBaseState().withProperty( FACING, EnumFacing.UP ).withProperty( ODD, false ) );
 		this.setFeature( EnumSet.of( AEFeature.DecorativeLights ) );
 		this.setLightLevel( 0.9375F );
 		this.setLightOpacity( 0 );
@@ -68,10 +73,22 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 		this.setOpaque( false );
 	}
 
+	/**
+	 * Sets the "ODD" property of the block state according to the placement of the block.
+	 */
+	@Override
+	public IBlockState getActualState( IBlockState state, IBlockAccess worldIn, BlockPos pos )
+	{
+		boolean oddPlacement = ((pos.getX() + pos.getY() + pos.getZ()) % 2) != 0;
+
+		return super.getActualState( state, worldIn, pos )
+				.withProperty( ODD, oddPlacement );
+	}
+
 	@Override
 	public int getMetaFromState( final IBlockState state )
 	{
-		return state.getValue(FACING).ordinal();
+		return state.getValue( FACING ).ordinal();
 	}
 
 	@Override
@@ -84,7 +101,7 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	@Override
 	protected IProperty[] getAEStates()
 	{
-		return new IProperty[] { FACING };
+		return new IProperty[] { FACING, ODD };
 	}
 
 	@Override
@@ -188,4 +205,23 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 	{
 		return new MetaRotation( w, pos, FACING );
 	}
+
+	@Override
+	public boolean isOpaque()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isFullCube( IBlockState state )
+	{
+		return false;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public BlockRenderLayer getBlockLayer()
+	{
+		return BlockRenderLayer.CUTOUT;
+	}
+
 }
