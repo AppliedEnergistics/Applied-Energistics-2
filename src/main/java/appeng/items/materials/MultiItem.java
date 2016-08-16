@@ -30,10 +30,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -46,6 +48,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -61,7 +64,6 @@ import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
-import appeng.client.ClientHelper;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.features.IStackSrc;
@@ -143,11 +145,8 @@ public final class MultiItem extends AEBaseItem implements IStorageComponent, IU
 
 	public MaterialType getTypeByStack( final ItemStack is )
 	{
-		if( this.dmgToMaterial.containsKey( is.getItemDamage() ) )
-		{
-			return this.dmgToMaterial.get( is.getItemDamage() );
-		}
-		return MaterialType.InvalidType;
+		MaterialType type = this.dmgToMaterial.get( is.getItemDamage() );
+		return (type != null) ? type : MaterialType.InvalidType;
 	}
 
 	@Override
@@ -446,4 +445,23 @@ public final class MultiItem extends AEBaseItem implements IStorageComponent, IU
 			return o1.compareTo( o2 );
 		}
 	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public List<ResourceLocation> getItemVariants()
+	{
+		// Register a resource location for every material type
+		return Arrays.stream( MaterialType.values() )
+				.map( MaterialType::getModel )
+				.collect( Collectors.toList() );
+
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public ItemMeshDefinition getItemMeshDefinition()
+	{
+		return is -> getTypeByStack( is ).getModel();
+	}
+
 }
