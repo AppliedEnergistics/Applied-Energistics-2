@@ -154,9 +154,14 @@ public enum UVLModelLoader implements ICustomModelLoader
 	@Override
 	public boolean accepts( ResourceLocation modelLocation )
 	{
-		try
+		String modelPath = modelLocation.getResourcePath();
+		if( modelLocation.getResourcePath().startsWith( "models/" ) )
 		{
-			return gson.fromJson( new InputStreamReader( Minecraft.getMinecraft().getResourceManager().getResource( modelLocation ).getInputStream() ), UVLMarker.class ).uvlMarker;
+			modelPath = modelPath.substring( "models/".length() );
+		}
+		try( InputStreamReader io = new InputStreamReader( Minecraft.getMinecraft().getResourceManager().getResource( new ResourceLocation( modelLocation.getResourceDomain(), "models/" + modelPath + ".json" ) ).getInputStream() ) )
+		{
+			return gson.fromJson( io, UVLMarker.class ).uvlMarker;
 		}
 		catch( IOException e )
 		{
