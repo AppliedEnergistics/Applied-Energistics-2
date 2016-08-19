@@ -1,0 +1,48 @@
+{
+    "variants": {
+        "facing=down,odd=false": {
+            "model": "appliedenergistics2:quartz_torch_standing",
+            "x": 180
+        },
+        "facing=down,odd=true": {
+            "model": "appliedenergistics2:quartz_torch_standing_odd",
+            "x": 180
+        },
+        "facing=east,odd=false": {
+            "model": "appliedenergistics2:quartz_torch_wall",
+            "y": 90
+        },
+        "facing=east,odd=true": {
+            "model": "appliedenergistics2:quartz_torch_wall_odd",
+            "y": 90
+        },
+        "facing=north,odd=false": {
+            "model": "appliedenergistics2:quartz_torch_wall"
+        },
+        "facing=north,odd=true": {
+            "model": "appliedenergistics2:quartz_torch_wall_odd"
+        },
+        "facing=south,odd=false": {
+            "model": "appliedenergistics2:quartz_torch_wall",
+            "y": 180
+        },
+        "facing=south,odd=true": {
+            "model": "appliedenergistics2:quartz_torch_wall_odd",
+            "y": 180
+        },
+        "facing=up,odd=false": {
+            "model": "appliedenergistics2:quartz_torch_standing"
+        },
+        "facing=up,odd=true": {
+            "model": "appliedenergistics2:quartz_torch_standing_odd"
+        },
+        "facing=west,odd=false": {
+            "model": "appliedenergistics2:quartz_torch_wall",
+            "y": 270
+        },
+        "facing=west,odd=true": {
+            "model": "appliedenergistics2:quartz_torch_wall_odd",
+            "y": 270
+        }
+    }
+}

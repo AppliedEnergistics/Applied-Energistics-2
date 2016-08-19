@@ -21,13 +21,11 @@ package appeng.items.materials;
 
 import java.util.EnumSet;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
@@ -118,9 +116,7 @@ public enum MaterialType
 	CardCrafting( 53 );
 
 	private final EnumSet<AEFeature> features;
-	// TextureAtlasSprite for the material.
-	@SideOnly( Side.CLIENT )
-	private TextureAtlasSprite IIcon;
+	private final ModelResourceLocation model = new ModelResourceLocation( "appliedenergistics2:ItemMaterial." + name() );
 	private Item itemInstance;
 	private int damageValue;
 	// stack!
@@ -221,16 +217,6 @@ public enum MaterialType
 		this.itemInstance = itemInstance;
 	}
 
-	TextureAtlasSprite getIIcon()
-	{
-		return this.IIcon;
-	}
-
-	void setIIcon( final TextureAtlasSprite iIcon )
-	{
-		this.IIcon = iIcon;
-	}
-
 	MaterialStackSrc getStackSrc()
 	{
 		return this.stackSrc;
@@ -239,6 +225,10 @@ public enum MaterialType
 	void setStackSrc( final MaterialStackSrc stackSrc )
 	{
 		this.stackSrc = stackSrc;
+	}
+
+	public ModelResourceLocation getModel() {
+		return model;
 	}
 
 }

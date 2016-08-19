@@ -22,7 +22,6 @@ package appeng.block;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 import com.google.common.base.Optional;
@@ -35,6 +34,7 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -572,4 +572,16 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	{
 		this.hasSubtypes = hasSubtypes;
 	}
+
+	/**
+	 * Return the item mesh definition that should be used to determine the item model of an item stack,
+	 * instead of the default model. Return null if your Block doesn't use a custom ItemMeshDefinition (the default).
+	 * The returned ItemMeshDefinition will automatically be registered with the ItemModelMesher during the registration of the block.
+	 */
+	@SideOnly( Side.CLIENT )
+	public ItemMeshDefinition getItemMeshDefinition()
+	{
+		return null;
+	}
+
 }

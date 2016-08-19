@@ -26,6 +26,8 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -128,13 +130,22 @@ public final class AETileBlockFeatureHandler implements IFeatureHandler
 	@Override
 	public void registerModel()
 	{
-		if( !featured.getBlockState().getProperties().isEmpty() || featured instanceof IHasSpecialItemModel )
+		ItemModelMesher itemModelMesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
+		Item item = this.definition.maybeItem().get();
+		ItemMeshDefinition itemMeshDefinition = featured.getItemMeshDefinition();
+
+		if( itemMeshDefinition != null )
 		{
-			Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this.definition.maybeItem().get(), 0, new ModelResourceLocation( registryName, "inventory" ) );
+			// This block has a custom item mesh definition, so register it instead of the resource location
+			itemModelMesher.register( item, itemMeshDefinition );
+		}
+		else if( !featured.getBlockState().getProperties().isEmpty() || featured instanceof IHasSpecialItemModel )
+		{
+			itemModelMesher.register( item, 0, new ModelResourceLocation( registryName, "inventory" ) );
 		}
 		else
 		{
-			Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( this.definition.maybeItem().get(), 0, new ModelResourceLocation( registryName, "normal" ) );
+			itemModelMesher.register( item, 0, new ModelResourceLocation( registryName, "normal" ) );
 		}
 	}
 

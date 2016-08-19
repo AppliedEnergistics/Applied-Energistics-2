@@ -320,9 +320,15 @@ public enum UVLModelLoader implements ICustomModelLoader
 							lightmap[1] = brightness.getLeft();
 						}
 
+						@Override
+						public void setQuadTint( int tint )
+						{
+							// Tint requires a block state which we don't have at this point
+						}
 					};
 					trans.setParent( builder );
 					quad.pipe( trans );
+					builder.setQuadTint( quad.getTintIndex() );
 					builder.setQuadOrientation( quad.getFace() );
 					return builder.build();
 				}
