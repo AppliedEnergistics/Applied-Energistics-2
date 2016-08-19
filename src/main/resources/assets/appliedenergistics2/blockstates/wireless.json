@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "normal": {
+            "model": "appliedenergistics2:wireless",
+            "y": 180
+        }
+    }
+}

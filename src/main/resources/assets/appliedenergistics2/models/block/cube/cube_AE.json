@@ -1,25 +1,58 @@
 {
-	"parent": "block/block",
-	"ambientocclusion": false,
-	"display": {
+    "ambientocclusion": false,
+    "display": {
         "firstperson_righthand": {
-            "rotation": [ 0, 135, 0 ],
-            "translation": [ 0, 0, 0 ],
-            "scale": [ 0.40, 0.40, 0.40 ]
+            "rotation": [
+                0,
+                135,
+                0
+            ],
+            "scale": [
+                0.40,
+                0.40,
+                0.40
+            ],
+            "translation": [
+                0,
+                0,
+                0
+            ]
         }
     },
-	"elements": [
-        {   "from": [ 0, 0, 0 ],
-            "to": [ 16, 16, 16 ],
-			"shade": false,
+    "elements": [
+        {
             "faces": {
-                "down":  { "texture": "#down"},
-                "up":    { "texture": "#up"},
-                "north": { "texture": "#north"},
-                "south": { "texture": "#south"},
-                "west":  { "texture": "#west"},
-                "east":  { "texture": "#east"}
-            }
+                "down": {
+                    "texture": "#down"
+                },
+                "east": {
+                    "texture": "#east"
+                },
+                "north": {
+                    "texture": "#north"
+                },
+                "south": {
+                    "texture": "#south"
+                },
+                "up": {
+                    "texture": "#up"
+                },
+                "west": {
+                    "texture": "#west"
+                }
+            },
+            "from": [
+                0,
+                0,
+                0
+            ],
+            "shade": false,
+            "to": [
+                16,
+                16,
+                16
+            ]
         }
-    ]
+    ],
+    "parent": "block/block"
 }

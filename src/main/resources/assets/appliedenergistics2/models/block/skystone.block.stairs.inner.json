@@ -1,8 +1,0 @@
-{
-  "parent": "block/inner_stairs",
-  "textures": {
-    "side": "appliedenergistics2:blocks/SkyStoneBlock.BLOCK",
-    "top": "appliedenergistics2:blocks/SkyStoneBlock.BLOCK",
-    "bottom": "appliedenergistics2:blocks/SkyStoneBlock.BLOCK"
-  }
-}

@@ -19,6 +19,7 @@
 package appeng.core.features;
 
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Optional;
@@ -30,6 +31,9 @@ public class FeatureNameExtractor
 	private static final Pattern PATTERN_ITEM_MULTI_MATERIAL = Pattern.compile( "ItemMultiMaterial", Pattern.LITERAL );
 	private static final Pattern PATTERN_QUARTZ = Pattern.compile( "Quartz", Pattern.LITERAL );
 
+	private static final Pattern PATTERN_LOWERCASE = Pattern.compile( "([\\p{Upper}])([\\p{Upper}]+)" );
+	private static final Pattern PATTERN_LOWERCASER = Pattern.compile( "(.)?([\\p{Upper}])" );
+
 	private final Class<?> clazz;
 	private final Optional<String> subName;
 
@@ -40,6 +44,60 @@ public class FeatureNameExtractor
 	}
 
 	public String get()
+	{
+		String ret;
+		String name = this.clazz.getSimpleName().replaceFirst( "\\p{Upper}[\\p{Lower}]*(\\p{Upper})", "$1" );
+
+		if( this.subName.isPresent() )
+		{
+			final String subName = this.subName.get();
+			// simple hack to allow me to do get nice names for these without
+			// mode code outside of AEBaseItem
+			if( subName.startsWith( "P2PTunnel" ) )
+			{
+				ret = "p2ptunnel";
+			}
+			else if( subName.equals( "CertusQuartzTools" ) )
+			{
+				ret = PATTERN_QUARTZ.matcher( name ).replaceAll( "CertusQuartz" );
+			}
+			else if( subName.equals( "NetherQuartzTools" ) )
+			{
+				ret = PATTERN_QUARTZ.matcher( name ).replaceAll( "NetherQuartz" );
+			}
+			else
+			{
+				ret = name + '_' + subName;
+			}
+		}
+		else
+		{
+			ret = name;
+		}
+
+		System.out.println( ret );
+		StringBuffer buffer = new StringBuffer();
+		Matcher m = PATTERN_LOWERCASE.matcher( ret );
+		while( m.find() )
+		{
+			m.appendReplacement( buffer, m.group( 1 ) + m.group( 2 ).toLowerCase() );
+		}
+		m.appendTail( buffer );
+		m = PATTERN_LOWERCASER.matcher( buffer.toString() );
+		buffer = new StringBuffer();
+		while( m.find() )
+		{
+			m.appendReplacement( buffer, ( m.group( 1 ) != null ? m.group( 1 ) + '_' : "" ) + m.group( 2 ).toLowerCase() );
+		}
+		m.appendTail( buffer );
+		ret = buffer.toString().replace( '.', '_' ).replaceAll( "_+", "_" );
+		System.out.println( ret );
+		return ret;
+	}
+
+	// To Convert devs' test worlds
+	@Deprecated
+	public String getOld()
 	{
 		String name = this.clazz.getSimpleName();
 

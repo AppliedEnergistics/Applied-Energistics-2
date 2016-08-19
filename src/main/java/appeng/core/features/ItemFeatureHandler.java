@@ -77,7 +77,10 @@ public final class ItemFeatureHandler implements IFeatureHandler
 		if( this.enabled )
 		{
 			String name = this.extractor.get();
-			final String itemPhysicalName = name;
+			if( Item.REGISTRY.containsKey( new ResourceLocation( AppEng.MOD_ID, name ) ) )
+			{
+				name += "_item";
+			}
 
 			// this.item.setTextureName( "appliedenergistics2:" + name );
 			this.item.setUnlocalizedName( "appliedenergistics2." + name );
@@ -89,15 +92,6 @@ public final class ItemFeatureHandler implements IFeatureHandler
 			else
 			{
 				this.item.setCreativeTab( CreativeTab.instance );
-			}
-
-			if( name.equals( "ItemMaterial" ) )
-			{
-				name = "ItemMultiMaterial";
-			}
-			else if( name.equals( "ItemPart" ) )
-			{
-				name = "ItemMultiPart";
 			}
 
 			registryName = new ResourceLocation( AppEng.MOD_ID, name );

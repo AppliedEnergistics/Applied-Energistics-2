@@ -1,0 +1,9 @@
+{
+    "parent": "appliedenergistics2:block/cube/cube_ae_machine",
+    "textures": {
+        "bottom": "appliedenergistics2:blocks/vibration_chamber",
+        "front": "appliedenergistics2:blocks/vibration_chamber_front",
+        "side": "appliedenergistics2:blocks/vibration_chamber",
+        "top": "appliedenergistics2:blocks/vibration_chamber"
+    }
+}

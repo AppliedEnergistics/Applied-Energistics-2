@@ -29,6 +29,7 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.IRegistry;
 import net.minecraftforge.client.model.ModelLoader;
@@ -79,7 +80,11 @@ public final class AEBlockFeatureHandler implements IFeatureHandler
 	{
 		if( this.enabled )
 		{
-			final String name = this.extractor.get();
+			String name = this.extractor.get();
+			if( Item.REGISTRY.containsKey( new ResourceLocation( AppEng.MOD_ID, name ) ) )
+			{
+				name += "_block";
+			}
 			this.featured.setCreativeTab( CreativeTab.instance );
 			this.featured.setUnlocalizedName( "appliedenergistics2." + name );
 

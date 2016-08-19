@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "normal": {
+            "model": "appliedenergistics2:EnergyCell/creative_energy_cell"
+        }
+    }
+}

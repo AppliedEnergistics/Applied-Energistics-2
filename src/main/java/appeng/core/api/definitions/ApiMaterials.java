@@ -23,7 +23,7 @@ import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
 import appeng.core.features.DamagedItemDefinition;
 import appeng.items.materials.MaterialType;
-import appeng.items.materials.MultiItem;
+import appeng.items.materials.ItemMultiItem;
 
 
 /**
@@ -105,7 +105,7 @@ public final class ApiMaterials implements IMaterials
 
 	public ApiMaterials( final DefinitionConstructor constructor )
 	{
-		final MultiItem materials = new MultiItem();
+		final ItemMultiItem materials = new ItemMultiItem();
 		constructor.registerItemDefinition( materials );
 
 		this.cell2SpatialPart = new DamagedItemDefinition( "material.cell.spatial.2", materials.createMaterial( MaterialType.Cell2SpatialPart ) );

@@ -1,0 +1,6 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "appliedenergistics2:items/spatial_storage_cell_16_cubed"
+    }
+}

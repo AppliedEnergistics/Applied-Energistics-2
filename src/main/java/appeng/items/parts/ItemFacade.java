@@ -48,7 +48,7 @@ import appeng.api.parts.IAlphaPassItem;
 import appeng.api.util.AEPartLocation;
 import appeng.core.FacadeConfig;
 import appeng.core.features.AEFeature;
-import appeng.decorative.solid.QuartzOreBlock;
+import appeng.decorative.solid.BlockQuartzOre;
 import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
 import appeng.items.AEBaseItem;
@@ -150,7 +150,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 		final boolean hasTile = b.hasTileEntity( b.getStateFromMeta( metadata ) );
 		final boolean enableGlass = b instanceof BlockGlass || b instanceof BlockStainedGlass;
-		final boolean disableOre = b instanceof QuartzOreBlock;
+		final boolean disableOre = b instanceof BlockQuartzOre;
 
 		final boolean defaultValue = ( b.isOpaqueCube(b.getDefaultState()) && !b.getTickRandomly() && !hasTile && !disableOre ) || enableGlass;
 		if( FacadeConfig.instance.checkEnabled( b, metadata, defaultValue ) )

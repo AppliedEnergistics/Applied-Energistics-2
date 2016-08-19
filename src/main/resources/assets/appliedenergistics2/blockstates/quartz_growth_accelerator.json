@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "powered=false": {
+            "model": "appliedenergistics2:quartz_growth_accelerator_off"
+        },
+        "powered=true": {
+            "model": "appliedenergistics2:quartz_growth_accelerator_on"
+        }
+    }
+}

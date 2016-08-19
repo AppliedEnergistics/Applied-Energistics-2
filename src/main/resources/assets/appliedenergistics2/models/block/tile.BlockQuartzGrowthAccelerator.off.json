@@ -1,8 +1,0 @@
-{
-  "parent": "block/cube_bottom_top",
-  "textures": {
-    "side": "appliedenergistics2:blocks/BlockQuartzGrowthAcceleratorSide",
-    "bottom": "appliedenergistics2:blocks/BlockQuartzGrowthAccelerator",
-    "top": "appliedenergistics2:blocks/BlockQuartzGrowthAccelerator"
-  }
-}

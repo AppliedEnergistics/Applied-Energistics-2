@@ -31,6 +31,7 @@ import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.IRegistry;
 import net.minecraftforge.client.ForgeHooksClient;
@@ -87,22 +88,26 @@ public final class AETileBlockFeatureHandler implements IFeatureHandler
 	{
 		if( this.enabled )
 		{
-			final String name = this.extractor.get();
+			String name = this.extractor.get();
+			if( Item.REGISTRY.containsKey( new ResourceLocation( AppEng.MOD_ID, name ) ) )
+			{
+				name += "_block";
+			}
 			this.featured.setCreativeTab( CreativeTab.instance );
-			this.featured.setUnlocalizedName( /* "tile." */"appliedenergistics2." + name );
+			this.featured.setUnlocalizedName( "appliedenergistics2." + name );
 
 			if( Platform.isClient() )
 			{
 				CommonHelper.proxy.bindTileEntitySpecialRenderer( this.featured.getTileEntityClass(), this.featured );
 			}
 
-			registryName = new ResourceLocation( AppEng.MOD_ID, "tile." + name );
+			registryName = new ResourceLocation( AppEng.MOD_ID, name );
 
 			GameRegistry.register( this.featured.setRegistryName( registryName ) );
 			GameRegistry.register( this.definition.maybeItem().get().setRegistryName( registryName ) );
 			AEBaseTile.registerTileItem( this.featured.getTileEntityClass(), new BlockStackSrc( this.featured, 0, ActivityState.from( this.isFeatureAvailable() ) ) );
 
-			GameRegistry.registerTileEntity( this.featured.getTileEntityClass(), this.featured.toString() );
+			GameRegistry.registerTileEntityWithAlternatives( this.featured.getTileEntityClass(), this.featured.toString() );
 
 			if( side == Side.CLIENT )
 			{

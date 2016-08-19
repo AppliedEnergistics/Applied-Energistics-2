@@ -1,0 +1,190 @@
+{
+    "display": {
+        "firstperson_righthand": {
+            "rotation": [
+                0,
+                135,
+                0
+            ],
+            "scale": [
+                0.40,
+                0.40,
+                0.40
+            ],
+            "translation": [
+                0,
+                0,
+                0
+            ]
+        }
+    },
+    "elements": [
+        {
+            "faces": {
+                "down": {
+                    "texture": "#lights",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ],
+                    "uvlightmap": {
+                        "block": 0.007,
+                        "sky": 0.007
+                    }
+                },
+                "east": {
+                    "texture": "#lights",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ],
+                    "uvlightmap": {
+                        "block": 0.007,
+                        "sky": 0.007
+                    }
+                },
+                "north": {
+                    "texture": "#lights",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ],
+                    "uvlightmap": {
+                        "block": 0.007,
+                        "sky": 0.007
+                    }
+                },
+                "south": {
+                    "texture": "#lights",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ],
+                    "uvlightmap": {
+                        "block": 0.007,
+                        "sky": 0.007
+                    }
+                },
+                "up": {
+                    "texture": "#lights",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ],
+                    "uvlightmap": {
+                        "block": 0.007,
+                        "sky": 0.007
+                    }
+                },
+                "west": {
+                    "texture": "#lights",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ],
+                    "uvlightmap": {
+                        "block": 0.007,
+                        "sky": 0.007
+                    }
+                }
+            },
+            "from": [
+                0,
+                0,
+                0
+            ],
+            "shade": false,
+            "to": [
+                16,
+                16,
+                16
+            ]
+        },
+        {
+            "faces": {
+                "down": {
+                    "texture": "#block",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ]
+                },
+                "east": {
+                    "texture": "#block",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ]
+                },
+                "north": {
+                    "texture": "#block",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ]
+                },
+                "south": {
+                    "texture": "#block",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ]
+                },
+                "up": {
+                    "texture": "#block",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ]
+                },
+                "west": {
+                    "texture": "#block",
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ]
+                }
+            },
+            "from": [
+                0,
+                0,
+                0
+            ],
+            "to": [
+                16,
+                16,
+                16
+            ]
+        }
+    ],
+    "parent": "block/block",
+    "textures": {
+        "block": "appliedenergistics2:blocks/controller_column_powered",
+        "lights": "appliedenergistics2:blocks/controller_column_conflict",
+        "particle": "#block"
+    }
+}

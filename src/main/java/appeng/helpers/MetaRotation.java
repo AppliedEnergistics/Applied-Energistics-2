@@ -29,7 +29,7 @@ import net.minecraft.world.World;
 
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseBlock;
-import appeng.decorative.solid.QuartzPillarBlock;
+import appeng.decorative.solid.BlockQuartzPillar;
 
 
 public class MetaRotation implements IOrientable
@@ -73,7 +73,7 @@ public class MetaRotation implements IOrientable
 		}
 
 		//TODO 1.10.2-R - Temp
-		Axis a = state.getValue( QuartzPillarBlock.AXIS_ORIENTATION );
+		Axis a = state.getValue( BlockQuartzPillar.AXIS_ORIENTATION );
 
 		if( a == null )
 		{
@@ -104,7 +104,7 @@ public class MetaRotation implements IOrientable
 			else
 			{
 				//TODO 1.10.2-R - Temp
-				( (World) this.w ).setBlockState( this.pos, this.w.getBlockState( this.pos ).withProperty( QuartzPillarBlock.AXIS_ORIENTATION, up.getAxis() ) );
+				( (World) this.w ).setBlockState( this.pos, this.w.getBlockState( this.pos ).withProperty( BlockQuartzPillar.AXIS_ORIENTATION, up.getAxis() ) );
 			}
 		}
 		else

@@ -1,8 +1,0 @@
-{
-    "variants": {
-        "facing=north": { "model": "appliedenergistics2:tile.BlockDrive", "y": 180 },
-        "facing=south": { "model": "appliedenergistics2:tile.BlockDrive", "y": 0 },
-        "facing=west":  { "model": "appliedenergistics2:tile.BlockDrive", "y": 90 },
-        "facing=east":  { "model": "appliedenergistics2:tile.BlockDrive", "y": 270 }
-    }
-}

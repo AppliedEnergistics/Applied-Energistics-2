@@ -1,6 +1,0 @@
-{
-  "variants": {
-    "powered=false": { "model": "appliedenergistics2:tile.BlockQuartzGrowthAccelerator.off" },
-    "powered=true": { "model": "appliedenergistics2:tile.BlockQuartzGrowthAccelerator.on" }
-  }
-}

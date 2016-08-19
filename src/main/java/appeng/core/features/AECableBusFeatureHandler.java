@@ -83,14 +83,14 @@ public final class AECableBusFeatureHandler implements IFeatureHandler
 		{
 			final String name = this.extractor.get();
 			this.featured.setCreativeTab( CreativeTab.instance );
-			this.featured.setUnlocalizedName( /* "tile." */"appliedenergistics2." + name );
+			this.featured.setUnlocalizedName( "appliedenergistics2." + name );
 
 			if( Platform.isClient() )
 			{
 				CommonHelper.proxy.bindTileEntitySpecialRenderer( this.featured.getTileEntityClass(), this.featured );
 			}
 
-			registryName = new ResourceLocation( AppEng.MOD_ID, "tile." + name );
+			registryName = new ResourceLocation( AppEng.MOD_ID, name );
 
 			// Bypass the forge magic with null to register our own itemblock later.
 			GameRegistry.register( this.featured.setRegistryName( registryName ) );

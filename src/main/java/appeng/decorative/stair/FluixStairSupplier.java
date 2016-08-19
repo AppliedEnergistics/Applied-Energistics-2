@@ -27,8 +27,8 @@ public class FluixStairSupplier implements Supplier<BlockStairs>
 	}
 
 	@Override
-	public FluixStairBlock get()
+	public BlockFluixStair get()
 	{
-		return new FluixStairBlock( this.fluixBlockSupplier.get(), "fluix" );
+		return new BlockFluixStair( this.fluixBlockSupplier.get(), "fluix" );
 	}
 }
