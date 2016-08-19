@@ -216,7 +216,7 @@ public class CachingRotatingBakedModel implements IBakedModel
 
 		public void setQuadTint( int tint )
 		{
-
+			parent.setQuadTint( tint );
 		}
 
 		@Override
@@ -228,13 +228,13 @@ public class CachingRotatingBakedModel implements IBakedModel
 		@Override
 		public void setApplyDiffuseLighting( boolean diffuse )
 		{
-
+			parent.setApplyDiffuseLighting( diffuse );
 		}
 
 		@Override
 		public void setTexture( TextureAtlasSprite texture )
 		{
-
+			parent.setTexture( texture );
 		}
 
 	}
