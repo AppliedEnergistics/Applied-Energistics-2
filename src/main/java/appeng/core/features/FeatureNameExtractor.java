@@ -75,7 +75,6 @@ public class FeatureNameExtractor
 			ret = name;
 		}
 
-		System.out.println( ret );
 		StringBuffer buffer = new StringBuffer();
 		Matcher m = PATTERN_LOWERCASE.matcher( ret );
 		while( m.find() )
@@ -91,54 +90,7 @@ public class FeatureNameExtractor
 		}
 		m.appendTail( buffer );
 		ret = buffer.toString().replace( '.', '_' ).replaceAll( "_+", "_" );
-		System.out.println( ret );
 		return ret;
 	}
 
-	// To Convert devs' test worlds
-	@Deprecated
-	public String getOld()
-	{
-		String name = this.clazz.getSimpleName();
-
-		if( name.startsWith( "ItemMultiPart" ) )
-		{
-			name = PATTERN_ITEM_MULTI_PART.matcher( name ).replaceAll( "ItemPart" );
-		}
-		else if( name.startsWith( "ItemMultiMaterial" ) )
-		{
-			name = PATTERN_ITEM_MULTI_MATERIAL.matcher( name ).replaceAll( "ItemMaterial" );
-		}
-		else if( name.startsWith( "BlockStairCommon" ) )
-		{
-			name = "stair";
-		}
-		else if( name.startsWith( "BlockFluix" ) )
-		{
-			name = "fluix";
-		}
-
-		if( this.subName.isPresent() )
-		{
-			final String subName = this.subName.get();
-			// simple hack to allow me to do get nice names for these without
-			// mode code outside of AEBaseItem
-			if( subName.startsWith( "P2PTunnel" ) )
-			{
-				return "ItemPart.P2PTunnel";
-			}
-			else if( subName.equals( "CertusQuartzTools" ) )
-			{
-				return PATTERN_QUARTZ.matcher( name ).replaceAll( "CertusQuartz" );
-			}
-			else if( subName.equals( "NetherQuartzTools" ) )
-			{
-				return PATTERN_QUARTZ.matcher( name ).replaceAll( "NetherQuartz" );
-			}
-
-			name += '.' + subName;
-		}
-
-		return name;
-	}
 }
