@@ -159,7 +159,7 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public int cableConnectionRenderTo()
+	public int getCableConnectionLength()
 	{
 		return 5;
 	}

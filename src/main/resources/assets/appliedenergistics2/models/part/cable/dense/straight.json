@@ -1,0 +1,34 @@
+{
+    "textures": {
+        "base": "appliedenergistics2:parts/cable/dense/${color}",
+        "channels": "appliedenergistics2:parts/cable/dense/${channels}"
+    },
+    "elements": [
+        {
+            "name": "Base",
+            "from": [ 3.0, 3.0, 0.0 ], 
+            "to": [ 13.0, 13.0, 16.0 ], 
+            "faces": {
+                "north": { "texture": "#base", "uv": [ 5.0, 5.0, 11.0, 11.0 ] },
+                "east": { "texture": "#base", "uv": [ 0.0, 5.0, 5.0, 11.0 ] },
+                "south": { "texture": "#base", "uv": [ 11.0, 5.0, 5.0, 11.0 ] },
+                "west": { "texture": "#base", "uv": [ 5.0, 5.0, 0.0, 11.0 ] },
+                "up": { "texture": "#base", "uv": [ 5.0, 0.0, 11.0, 5.0 ] },
+                "down": { "texture": "#base", "uv": [ 5.0, 11.0, 11.0, 16.0 ] }
+            }
+        },
+        {
+            "name": "Channels",
+            "from": [ 3.0, 3.0, 0.0 ], 
+            "to": [ 13.0, 13.0, 16.0 ], 
+            "faces": {
+                "north": { "texture": "#channels", "uv": [ 5.0, 5.0, 11.0, 11.0 ] },
+                "east": { "texture": "#channels", "uv": [ 0.0, 5.0, 5.0, 11.0 ] },
+                "south": { "texture": "#channels", "uv": [ 11.0, 5.0, 5.0, 11.0 ] },
+                "west": { "texture": "#channels", "uv": [ 5.0, 5.0, 0.0, 11.0 ] },
+                "up": { "texture": "#channels", "uv": [ 5.0, 0.0, 11.0, 5.0 ] },
+                "down": { "texture": "#channels", "uv": [ 5.0, 11.0, 11.0, 16.0 ] }
+            }
+        }
+    ]
+}

@@ -425,7 +425,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public int cableConnectionRenderTo()
+	public int getCableConnectionLength()
 	{
 		return 16;
 	}

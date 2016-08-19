@@ -45,7 +45,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
-import appeng.block.networking.BlockCableBus;
 import appeng.helpers.AEMultiTile;
 import appeng.helpers.ICustomCollision;
 import appeng.hooks.TickHandler;
@@ -64,10 +63,6 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 
 	private CableBusContainer cb = new CableBusContainer( this );
 
-	/**
-	 * Immibis MB Support
-	 */
-	private final boolean ImmibisMicroblocks_TransformableTileEntityMarker = true;
 	private int oldLV = -1; // on re-calculate light when it changes
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
@@ -94,25 +89,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 			this.worldObj.checkLight( this.pos );
 		}
 
-		this.updateTileSetting();
 		return ret;
-	}
-
-	protected void updateTileSetting()
-	{
-		if( this.getCableBus().isRequiresDynamicRender() )
-		{
-			try
-			{
-				final TileCableBus tcb = (TileCableBus) BlockCableBus.getTesrTile().newInstance();
-				tcb.copyFrom( this );
-				this.getWorld().setTileEntity( this.pos, tcb );
-			}
-			catch( final Throwable ignored )
-			{
-
-			}
-		}
 	}
 
 	protected void copyFrom( final TileCableBus oldTile )
@@ -285,7 +262,8 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	@Override
 	public boolean isBlocked( final EnumFacing side )
 	{
-		return !this.ImmibisMicroblocks_isSideOpen( side );
+		//TODO 1.10.2-R - Stuff.
+		return false;
 	}
 
 	@Override
@@ -367,16 +345,6 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	public boolean isInWorld()
 	{
 		return this.getCableBus().isInWorld();
-	}
-
-	private boolean ImmibisMicroblocks_isSideOpen( final EnumFacing side )
-	{
-		return true;
-	}
-
-	public void ImmibisMicroblocks_onMicroblocksChanged()
-	{
-		this.getCableBus().updateConnections();
 	}
 
 	@Override

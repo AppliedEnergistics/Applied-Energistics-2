@@ -48,7 +48,6 @@ import appeng.api.parts.IAlphaPassItem;
 import appeng.api.util.AEPartLocation;
 import appeng.core.FacadeConfig;
 import appeng.core.features.AEFeature;
-import appeng.decorative.solid.BlockQuartzOre;
 import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
 import appeng.items.AEBaseItem;
@@ -68,7 +67,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	@Override
 	public EnumActionResult onItemUseFirst( final ItemStack is, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
-		return AEApi.instance().partHelper().placeBus( is, pos, side, player, hand, world ) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
+		return AEApi.instance().partHelper().placeBus( is, pos, side, player, hand, world );
 	}
 
 	@Override
@@ -148,11 +147,8 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 		final int metadata = l.getItem().getMetadata( l.getItemDamage() );
 
-		final boolean hasTile = b.hasTileEntity( b.getStateFromMeta( metadata ) );
-		final boolean enableGlass = b instanceof BlockGlass || b instanceof BlockStainedGlass;
-		final boolean disableOre = b instanceof BlockQuartzOre;
-
-		final boolean defaultValue = ( b.isOpaqueCube(b.getDefaultState()) && !b.getTickRandomly() && !hasTile && !disableOre ) || enableGlass;
+		// TODO 1.10.2-R - XD
+		final boolean defaultValue = true || b instanceof BlockGlass || b instanceof BlockStainedGlass;
 		if( FacadeConfig.instance.checkEnabled( b, metadata, defaultValue ) )
 		{
 			if( returnItem )

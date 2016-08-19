@@ -86,4 +86,5 @@ public interface IPartCable extends IPart, IGridHost
 	 * @return true if this side is currently connects to an external block.
 	 */
 	boolean isConnected( EnumFacing side );
+
 }

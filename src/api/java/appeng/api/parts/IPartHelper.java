@@ -26,6 +26,7 @@ package appeng.api.parts;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -72,7 +73,7 @@ public interface IPartHelper
 	 *
 	 * @return true if placing was successful
 	 */
-	boolean placeBus( ItemStack is, BlockPos pos, EnumFacing side, EntityPlayer player, EnumHand hand, World world );
+	EnumActionResult placeBus( ItemStack is, BlockPos pos, EnumFacing side, EntityPlayer player, EnumHand hand, World world );
 
 	/**
 	 * @return the render mode

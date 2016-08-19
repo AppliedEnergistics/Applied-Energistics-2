@@ -1,0 +1,34 @@
+{
+    "textures": {
+        "base": "appliedenergistics2:parts/cable/dense/${color}",
+        "channels": "appliedenergistics2:parts/cable/dense/${channels}"
+    },
+    "elements": [
+        {
+            "name": "Base",
+            "from": [ 4.0, 4.0, 0.0 ], 
+            "to": [ 12.0, 12.0, 3.0 ], 
+            "faces": {
+                "north": { "texture": "#base", "uv": [ 5.5, 5.5, 10.5, 10.5 ] },
+                "east": { "texture": "#base", "uv": [ 11.0, 5.5, 16.0, 10.5 ] },
+                "south": { "texture": "#base", "uv": [ 10.5, 10.5, 5.5, 5.5 ] },
+                "west": { "texture": "#base", "uv": [ 16.0, 5.5, 11.0, 10.5 ] },
+                "up": { "texture": "#base", "uv": [ 5.5, 0.0, 10.5, 5.0 ] },
+                "down": { "texture": "#base", "uv": [ 5.5, 11.0, 10.5, 16.0 ] }
+            }
+        },
+        {
+            "name": "Channels",
+            "from": [ 4.0, 4.0, 0.0 ], 
+            "to": [ 12.0, 12.0, 3.0 ], 
+            "faces": {
+                "north": { "texture": "#channels", "uv": [ 5.5, 5.5, 10.5, 10.5 ] },
+                "east": { "texture": "#channels", "uv": [ 11.0, 5.5, 16.0, 10.5 ] },
+                "south": { "texture": "#channels", "uv": [ 10.5, 10.5, 5.5, 5.5 ] },
+                "west": { "texture": "#channels", "uv": [ 16.0, 5.5, 11.0, 10.5 ] },
+                "up": { "texture": "#channels", "uv": [ 5.5, 0.0, 10.5, 5.0 ] },
+                "down": { "texture": "#channels", "uv": [ 5.5, 11.0, 10.5, 16.0 ] }
+            }
+        }
+    ]
+}

@@ -149,7 +149,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	}
 
 	@Override
-	public int cableConnectionRenderTo()
+	public int getCableConnectionLength()
 	{
 		return 1;
 	}

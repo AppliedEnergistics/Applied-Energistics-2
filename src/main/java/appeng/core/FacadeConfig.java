@@ -58,7 +58,7 @@ public class FacadeConfig extends Configuration
 				{
 					if( f.get( Block.class ) == id )
 					{
-						return this.get( "minecraft", f.getName() + ( metadata == 0 ? "" : "." + metadata ), automatic ).getBoolean( automatic );
+						return this.get( "minecraft", f.getName() + ( metadata == 0 ? "" : "/" + metadata ), automatic ).getBoolean( automatic );
 					}
 				}
 				catch( final Throwable e )

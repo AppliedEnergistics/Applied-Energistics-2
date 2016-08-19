@@ -184,7 +184,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public int cableConnectionRenderTo()
+	public int getCableConnectionLength()
 	{
 		return 5;
 	}

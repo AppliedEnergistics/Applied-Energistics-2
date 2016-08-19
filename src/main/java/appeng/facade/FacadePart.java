@@ -19,27 +19,48 @@
 package appeng.facade;
 
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
+
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
+import appeng.api.client.BakingPipeline;
 import appeng.api.parts.IBoxProvider;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
+import appeng.client.render.model.ModelsCache;
+import appeng.client.render.model.pipeline.MatVecApplicator;
+import appeng.client.render.model.pipeline.ParentQuads;
+import appeng.client.render.model.pipeline.StatePosRecolorator;
+import appeng.client.render.model.pipeline.TypeTransformer;
+import appeng.core.AppEng;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBuildCraftTransport;
@@ -147,7 +168,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 		final ItemStack is = this.getTexture();
 		final Block blk = Block.getBlockFromItem( is.getItem() );
 
-		return !blk.isOpaqueCube(blk.getDefaultState());
+		return !blk.isOpaqueCube( blk.getDefaultState() );
 	}
 
 	@Nullable
@@ -237,7 +258,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 		 * if ( out.contains( AEPartLocation.EAST ) && (side.offsetY != 0) ) { IFacadePart fp = fc.getFacade(
 		 * AEPartLocation.EAST ); if ( fp != null && (fp.isTransparent() == facade.isTransparent()) ) out.remove(
 		 * AEPartLocation.EAST ); }
-		 * if ( out.contains( AEPartLocation.WEST ) && (side.offsetY != 0) ) { IFacadePart fp = fc.getFacade(
+		 * if ( out.contains( AEPartLocation.WEST ) && (side.offsetY != 0) ) { IFacadePart fp = fc.getFacade(s
 		 * AEPartLocation.WEST ); if ( fp != null && (fp.isTransparent() == facade.isTransparent()) ) out.remove(
 		 * AEPartLocation.WEST ); }
 		 */
@@ -261,5 +282,25 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	public void getBoxes( final IPartCollisionHelper bch )
 	{
 		this.getBoxes( bch, null );
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public List<BakedQuad> getOrBakeQuads( IPartHost host, BakingPipeline<BakedQuad, BakedQuad> rotatingPipeline, IBlockState state, EnumFacing side, long rand )
+	{
+		List<BakedQuad> elements = new ArrayList();
+		elements.addAll( rotatingPipeline.pipe( ModelsCache.INSTANCE.getOrLoadBakedModel( new ResourceLocation( AppEng.MOD_ID, "part/cable_facade" ) ).getQuads( state, side, rand ), null, state, getSide().getFacing(), rand ) );
+
+		ItemStack titem = getTexture();
+		if( titem != null && titem.getItem() != null && Block.getBlockFromItem( titem.getItem() ) != null )
+		{
+			Block tblock = Block.getBlockFromItem( titem.getItem() );
+			IBlockState tstate = tblock.getStateFromMeta( titem.getItem().getMetadata( titem.getItemDamage() ) );
+			Vec3i s = getSide().getFacing().getDirectionVec();
+			Vector3f scale = new Vector3f( s.getX() == 0 ? 0.9999f : 0.125f, s.getY() == 0 ? 0.9999f : 0.125f, s.getZ() == 0 ? 0.9999f : 0.125f );
+			Vector3f trans = new Vector3f( s.getX() * 3.5f, s.getY() * 3.5f, s.getZ() * 3.5f );
+			elements.addAll( new BakingPipeline( new ParentQuads(), TypeTransformer.quads2vecs, new MatVecApplicator( TRSRTransformation.toVecmath( new Matrix4f().scale( scale ).translate( trans ) ), true ), new StatePosRecolorator( host.getTile().getWorld(), host.getLocation().getPos(), tstate ), TypeTransformer.vecs2quads ).pipe( new ArrayList<>(), Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState( tstate ), tstate, side, rand ) );
+		}
+		return elements;
 	}
 }

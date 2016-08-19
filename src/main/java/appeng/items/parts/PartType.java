@@ -24,7 +24,10 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
+import net.minecraft.util.ResourceLocation;
+
 import appeng.api.parts.IPart;
+import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.integration.IntegrationType;
@@ -62,9 +65,9 @@ import appeng.parts.reporting.PartTerminal;
 
 public enum PartType
 {
-	InvalidType( -1, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), null ),
+	InvalidType( -1, new ResourceLocation( AppEng.MOD_ID, "invalid" ), EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), null ),
 
-	CableGlass( 0, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartCableGlass.class )
+	CableGlass( 0, new ResourceLocation( AppEng.MOD_ID, "cable_glass" ), EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartCableGlass.class )
 	{
 		@Override
 		public boolean isCable()
@@ -73,7 +76,7 @@ public enum PartType
 		}
 	},
 
-	CableCovered( 20, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartCableCovered.class )
+	CableCovered( 20, new ResourceLocation( AppEng.MOD_ID, "cable_covered" ), EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartCableCovered.class )
 	{
 		@Override
 		public boolean isCable()
@@ -82,7 +85,7 @@ public enum PartType
 		}
 	},
 
-	CableSmart( 40, EnumSet.of( AEFeature.Channels ), EnumSet.noneOf( IntegrationType.class ), PartCableSmart.class )
+	CableSmart( 40, new ResourceLocation( AppEng.MOD_ID, "cable_smart" ), EnumSet.of( AEFeature.Channels ), EnumSet.noneOf( IntegrationType.class ), PartCableSmart.class )
 	{
 		@Override
 		public boolean isCable()
@@ -91,7 +94,7 @@ public enum PartType
 		}
 	},
 
-	CableDense( 60, EnumSet.of( AEFeature.Channels ), EnumSet.noneOf( IntegrationType.class ), PartDenseCable.class )
+	CableDense( 60, new ResourceLocation( AppEng.MOD_ID, "cable_dense" ), EnumSet.of( AEFeature.Channels ), EnumSet.noneOf( IntegrationType.class ), PartDenseCable.class )
 	{
 		@Override
 		public boolean isCable()
@@ -100,53 +103,53 @@ public enum PartType
 		}
 	},
 
-	ToggleBus( 80, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartToggleBus.class ),
+	ToggleBus( 80, new ResourceLocation( AppEng.MOD_ID, "toggle_bus" ), EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartToggleBus.class ),
 
-	InvertedToggleBus( 100, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartInvertedToggleBus.class ),
+	InvertedToggleBus( 100, new ResourceLocation( AppEng.MOD_ID, "inverted_toggle_bus" ), EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartInvertedToggleBus.class ),
 
-	CableAnchor( 120, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartCableAnchor.class ),
+	CableAnchor( 120, new ResourceLocation( AppEng.MOD_ID, "cable_anchor" ), EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartCableAnchor.class ),
 
-	QuartzFiber( 140, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartQuartzFiber.class ),
+	QuartzFiber( 140, new ResourceLocation( AppEng.MOD_ID, "quartz_fiber" ), EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartQuartzFiber.class ),
 
-	Monitor( 160, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartPanel.class ),
+	Monitor( 160, new ResourceLocation( AppEng.MOD_ID, "monitor" ), EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartPanel.class ),
 
-	SemiDarkMonitor( 180, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartSemiDarkPanel.class ),
+	SemiDarkMonitor( 180, new ResourceLocation( AppEng.MOD_ID, "semi_dark_monitor" ), EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartSemiDarkPanel.class ),
 
-	DarkMonitor( 200, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartDarkPanel.class ),
+	DarkMonitor( 200, new ResourceLocation( AppEng.MOD_ID, "dark_monitor" ), EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartDarkPanel.class ),
 
-	StorageBus( 220, EnumSet.of( AEFeature.StorageBus ), EnumSet.noneOf( IntegrationType.class ), PartStorageBus.class ),
+	StorageBus( 220, new ResourceLocation( AppEng.MOD_ID, "storage_bus" ), EnumSet.of( AEFeature.StorageBus ), EnumSet.noneOf( IntegrationType.class ), PartStorageBus.class ),
 
-	ImportBus( 240, EnumSet.of( AEFeature.ImportBus ), EnumSet.noneOf( IntegrationType.class ), PartImportBus.class ),
+	ImportBus( 240, new ResourceLocation( AppEng.MOD_ID, "import_bus" ), EnumSet.of( AEFeature.ImportBus ), EnumSet.noneOf( IntegrationType.class ), PartImportBus.class ),
 
-	ExportBus( 260, EnumSet.of( AEFeature.ExportBus ), EnumSet.noneOf( IntegrationType.class ), PartExportBus.class ),
+	ExportBus( 260, new ResourceLocation( AppEng.MOD_ID, "export_bus" ), EnumSet.of( AEFeature.ExportBus ), EnumSet.noneOf( IntegrationType.class ), PartExportBus.class ),
 
-	LevelEmitter( 280, EnumSet.of( AEFeature.LevelEmitter ), EnumSet.noneOf( IntegrationType.class ), PartLevelEmitter.class ),
+	LevelEmitter( 280, new ResourceLocation( AppEng.MOD_ID, "level_emitter" ), EnumSet.of( AEFeature.LevelEmitter ), EnumSet.noneOf( IntegrationType.class ), PartLevelEmitter.class ),
 
-	AnnihilationPlane( 300, EnumSet.of( AEFeature.AnnihilationPlane ), EnumSet.noneOf( IntegrationType.class ), PartAnnihilationPlane.class ),
+	AnnihilationPlane( 300, new ResourceLocation( AppEng.MOD_ID, "annihilation_plane" ), EnumSet.of( AEFeature.AnnihilationPlane ), EnumSet.noneOf( IntegrationType.class ), PartAnnihilationPlane.class ),
 
-	IdentityAnnihilationPlane( 301, EnumSet.of( AEFeature.AnnihilationPlane, AEFeature.IdentityAnnihilationPlane ), EnumSet.noneOf( IntegrationType.class ), PartIdentityAnnihilationPlane.class ),
+	IdentityAnnihilationPlane( 301, new ResourceLocation( AppEng.MOD_ID, "identity_annihilation_plane" ), EnumSet.of( AEFeature.AnnihilationPlane, AEFeature.IdentityAnnihilationPlane ), EnumSet.noneOf( IntegrationType.class ), PartIdentityAnnihilationPlane.class ),
 
-	FormationPlane( 320, EnumSet.of( AEFeature.FormationPlane ), EnumSet.noneOf( IntegrationType.class ), PartFormationPlane.class ),
+	FormationPlane( 320, new ResourceLocation( AppEng.MOD_ID, "formation_plane" ), EnumSet.of( AEFeature.FormationPlane ), EnumSet.noneOf( IntegrationType.class ), PartFormationPlane.class ),
 
-	PatternTerminal( 340, EnumSet.of( AEFeature.Patterns ), EnumSet.noneOf( IntegrationType.class ), PartPatternTerminal.class ),
+	PatternTerminal( 340, new ResourceLocation( AppEng.MOD_ID, "pattern_terminal" ), EnumSet.of( AEFeature.Patterns ), EnumSet.noneOf( IntegrationType.class ), PartPatternTerminal.class ),
 
-	CraftingTerminal( 360, EnumSet.of( AEFeature.CraftingTerminal ), EnumSet.noneOf( IntegrationType.class ), PartCraftingTerminal.class ),
+	CraftingTerminal( 360, new ResourceLocation( AppEng.MOD_ID, "crafting_terminal" ), EnumSet.of( AEFeature.CraftingTerminal ), EnumSet.noneOf( IntegrationType.class ), PartCraftingTerminal.class ),
 
-	Terminal( 380, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartTerminal.class ),
+	Terminal( 380, new ResourceLocation( AppEng.MOD_ID, "terminal" ), EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartTerminal.class ),
 
-	StorageMonitor( 400, EnumSet.of( AEFeature.StorageMonitor ), EnumSet.noneOf( IntegrationType.class ), PartStorageMonitor.class ),
+	StorageMonitor( 400, new ResourceLocation( AppEng.MOD_ID, "storage_monitor" ), EnumSet.of( AEFeature.StorageMonitor ), EnumSet.noneOf( IntegrationType.class ), PartStorageMonitor.class ),
 
-	ConversionMonitor( 420, EnumSet.of( AEFeature.PartConversionMonitor ), EnumSet.noneOf( IntegrationType.class ), PartConversionMonitor.class ),
+	ConversionMonitor( 420, new ResourceLocation( AppEng.MOD_ID, "conversion_monitor" ), EnumSet.of( AEFeature.PartConversionMonitor ), EnumSet.noneOf( IntegrationType.class ), PartConversionMonitor.class ),
 
-	Interface( 440, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartInterface.class ),
+	Interface( 440, new ResourceLocation( AppEng.MOD_ID, "interface" ), EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartInterface.class ),
 
-	P2PTunnelME( 460, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelME ), EnumSet.noneOf( IntegrationType.class ), PartP2PTunnelME.class, GuiText.METunnel ),
+	P2PTunnelME( 460, new ResourceLocation( AppEng.MOD_ID, "p2p_tunnel_me" ), EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelME ), EnumSet.noneOf( IntegrationType.class ), PartP2PTunnelME.class, GuiText.METunnel ),
 
-	P2PTunnelRedstone( 461, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelRedstone ), EnumSet.noneOf( IntegrationType.class ), PartP2PRedstone.class, GuiText.RedstoneTunnel ),
+	P2PTunnelRedstone( 461, new ResourceLocation( AppEng.MOD_ID, "p2p_tunnel_redstone" ), EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelRedstone ), EnumSet.noneOf( IntegrationType.class ), PartP2PRedstone.class, GuiText.RedstoneTunnel ),
 
-	P2PTunnelItems( 462, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelItems ), EnumSet.noneOf( IntegrationType.class ), PartP2PItems.class, GuiText.ItemTunnel ),
+	P2PTunnelItems( 462, new ResourceLocation( AppEng.MOD_ID, "p2p_tunnel_items" ), EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelItems ), EnumSet.noneOf( IntegrationType.class ), PartP2PItems.class, GuiText.ItemTunnel ),
 
-	P2PTunnelLiquids( 463, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelLiquids ), EnumSet.noneOf( IntegrationType.class ), PartP2PLiquids.class, GuiText.FluidTunnel ),
+	P2PTunnelLiquids( 463, new ResourceLocation( AppEng.MOD_ID, "p2p_tunnel_liquids" ), EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelLiquids ), EnumSet.noneOf( IntegrationType.class ), PartP2PLiquids.class, GuiText.FluidTunnel ),
 
 	// P2PTunnelEU( 465, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelEU ), EnumSet.of( IntegrationType.IC2 ),
 	// PartP2PIC2Power.class, GuiText.EUTunnel ),
@@ -154,7 +157,7 @@ public enum PartType
 	// P2PTunnelRF( 466, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelRF ), EnumSet.of( IntegrationType.RF ),
 	// PartP2PRFPower.class, GuiText.RFTunnel ),
 
-	P2PTunnelLight( 467, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelLight ), EnumSet.noneOf( IntegrationType.class ), PartP2PLight.class, GuiText.LightTunnel ),
+	P2PTunnelLight( 467, new ResourceLocation( AppEng.MOD_ID, "p2p_tunnel_light" ), EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelLight ), EnumSet.noneOf( IntegrationType.class ), PartP2PLight.class, GuiText.LightTunnel ),
 
 	// P2PTunnelOpenComputers( 468, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelOpenComputers ), EnumSet.of(
 	// IntegrationType.OpenComputers ), PartP2POpenComputers.class, GuiText.OCTunnel ),
@@ -162,27 +165,44 @@ public enum PartType
 	// P2PTunnelPressure( 469, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelPressure ), EnumSet.of(
 	// IntegrationType.PneumaticCraft ), PartP2PPressure.class, GuiText.PressureTunnel ),
 
-	InterfaceTerminal( 480, EnumSet.of( AEFeature.InterfaceTerminal ), EnumSet.noneOf( IntegrationType.class ), PartInterfaceTerminal.class );
+	InterfaceTerminal( 480, new ResourceLocation( AppEng.MOD_ID, "interface_terminal" ), EnumSet.of( AEFeature.InterfaceTerminal ), EnumSet.noneOf( IntegrationType.class ), PartInterfaceTerminal.class );
 
 	private final int baseDamage;
+	private final ResourceLocation name;
 	private final Set<AEFeature> features;
 	private final Set<IntegrationType> integrations;
 	private final Class<? extends IPart> myPart;
 	private final GuiText extraName;
 	private Constructor<? extends IPart> constructor;
 
-	PartType( final int baseMetaValue, final Set<AEFeature> features, final Set<IntegrationType> integrations, final Class<? extends IPart> c )
+	PartType( final int baseMetaValue, final ResourceLocation name, final Set<AEFeature> features, final Set<IntegrationType> integrations, final Class<? extends IPart> c )
 	{
-		this( baseMetaValue, features, integrations, c, null );
+		this( baseMetaValue, name, features, integrations, c, null );
 	}
 
-	PartType( final int baseMetaValue, final Set<AEFeature> features, final Set<IntegrationType> integrations, final Class<? extends IPart> c, final GuiText en )
+	PartType( final int baseMetaValue, final ResourceLocation name, final Set<AEFeature> features, final Set<IntegrationType> integrations, final Class<? extends IPart> c, final GuiText en )
 	{
+		this.baseDamage = baseMetaValue;
+		this.name = name;
 		this.features = Collections.unmodifiableSet( features );
 		this.integrations = Collections.unmodifiableSet( integrations );
 		this.myPart = c;
 		this.extraName = en;
-		this.baseDamage = baseMetaValue;
+	}
+
+	int getBaseDamage()
+	{
+		return this.baseDamage;
+	}
+
+	public ResourceLocation getName()
+	{
+		return name;
+	}
+
+	public ResourceLocation getModel()
+	{
+		return new ResourceLocation( name.getResourceDomain(), "part/" + name.getResourcePath() );
 	}
 
 	public boolean isCable()
@@ -218,11 +238,6 @@ public enum PartType
 	void setConstructor( final Constructor<? extends IPart> constructor )
 	{
 		this.constructor = constructor;
-	}
-
-	int getBaseDamage()
-	{
-		return this.baseDamage;
 	}
 
 }

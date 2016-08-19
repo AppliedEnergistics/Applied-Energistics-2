@@ -138,7 +138,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public int cableConnectionRenderTo()
+	public int getCableConnectionLength()
 	{
 		return 4;
 	}

@@ -30,17 +30,23 @@ import java.util.Random;
 
 import io.netty.buffer.ByteBuf;
 
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+import appeng.api.client.BakingPipeline;
 import appeng.api.networking.IGridNode;
 import appeng.api.util.AEPartLocation;
 
@@ -216,9 +222,10 @@ public interface IPart extends IBoxProvider
 	void getDrops( List<ItemStack> drops, boolean wrenched );
 
 	/**
-	 * @return 0 - 8, reasonable default 3-4, this controls the cable connection to the node.
+	 * @return 0 - 8, reasonable default 3-4, this controls the cable connection to the node. -1 to render connection
+	 * yourself.
 	 */
-	int cableConnectionRenderTo();
+	int getCableConnectionLength();
 
 	/**
 	 * same as Block.randomDisplayTick, for but parts.
@@ -246,4 +253,8 @@ public interface IPart extends IBoxProvider
 	 * @return true if the part can be placed on this support.
 	 */
 	boolean canBePlacedOn( BusSupport what );
+
+	@SideOnly( Side.CLIENT )
+	public List<BakedQuad> getOrBakeQuads( BakingPipeline<BakedQuad, BakedQuad> rotatingPipeline, IBlockState state, EnumFacing side, long rand );
+
 }

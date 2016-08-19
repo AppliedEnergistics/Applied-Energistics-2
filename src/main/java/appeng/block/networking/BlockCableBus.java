@@ -26,6 +26,8 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.creativetab.CreativeTabs;
@@ -44,6 +46,9 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -55,11 +60,9 @@ import appeng.api.util.AEColor;
 import appeng.block.AEBaseTileBlock;
 import appeng.core.AEConfig;
 import appeng.core.Api;
-import appeng.core.CommonHelper;
 import appeng.core.features.AECableBusFeatureHandler;
 import appeng.core.features.AEFeature;
 import appeng.helpers.AEGlassMaterial;
-import appeng.helpers.Reflected;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IFMP;
@@ -67,30 +70,14 @@ import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
 import appeng.tile.AEBaseTile;
 import appeng.tile.networking.TileCableBus;
-import appeng.tile.networking.TileCableBusTESR;
 import appeng.util.Platform;
 
 
-// TODO: MFR INTEGRATION
-//@Interface( iface = "powercrystals.minefactoryreloaded.api.rednet.connectivity.IRedNetConnection", iname = IntegrationType.MFR )
-public class BlockCableBus extends AEBaseTileBlock // implements
-// IRedNetConnection
+public class BlockCableBus extends AEBaseTileBlock
 {
 
 	private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 	private static Class<? extends AEBaseTile> noTesrTile;
-	private static Class<? extends AEBaseTile> tesrTile;
-
-	/**
-	 * Immibis MB Support.
-	 *
-	 * It will look for a field named
-	 * ImmibisMicroblocks_TransformableBlockMarker or
-	 * ImmibisMicroblocks_TransformableTileEntityMarker, modifiers, type, etc
-	 * can be ignored.
-	 */
-	@Reflected
-	private static final boolean ImmibisMicroblocks_TransformableBlockMarker = true;
 
 	public BlockCableBus()
 	{
@@ -102,6 +89,26 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 		// combined layers
 		this.setTileEntity( TileCableBus.class );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
+	}
+
+	public static final CableBusContainerUnlistedProperty cableBus = new CableBusContainerUnlistedProperty();
+
+	@Override
+	protected BlockStateContainer createBlockState()
+	{
+		return new ExtendedBlockState( this, new IProperty[0], new IUnlistedProperty[] { cableBus } );
+	}
+
+	@Override
+	public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
+	{
+		return state;
+	}
+
+	@Override
+	public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
+	{
+		return ( (IExtendedBlockState) state ).withProperty( cableBus, ( (TileCableBus) world.getTileEntity( pos ) ).getCableBus() );
 	}
 
 	@Override
@@ -146,8 +153,8 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	public int getStrongPower( final IBlockState state, final IBlockAccess w, final BlockPos pos, final EnumFacing side )
 	{
 		return this.cb( w, pos ).isProvidingStrongPower( side.getOpposite() ); // TODO:
-																				// IS
-																				// OPPOSITE!?
+		// IS
+		// OPPOSITE!?
 	}
 
 	@Override
@@ -236,7 +243,7 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 
 		return null;
 	}
-	
+
 	@Override
 	@SideOnly( Side.CLIENT )
 	public boolean addHitEffects( final IBlockState state, final World world, final RayTraceResult target, final ParticleManager effectRenderer )
@@ -353,24 +360,6 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 	}
 
 	@Override
-	public <T extends AEBaseTile> T getTileEntity( final IBlockAccess w, final BlockPos pos )
-	{
-		final TileEntity te = w.getTileEntity( pos );
-
-		if( noTesrTile.isInstance( te ) )
-		{
-			return (T) te;
-		}
-
-		if( tesrTile != null && tesrTile.isInstance( te ) )
-		{
-			return (T) te;
-		}
-
-		return null;
-	}
-
-	@Override
 	protected void setFeature( final EnumSet<AEFeature> f )
 	{
 		final AECableBusFeatureHandler featureHandler = new AECableBusFeatureHandler( f, this, this.getFeatureSubName() );
@@ -382,17 +371,6 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 		noTesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBus.class.getName() );
 		this.setTileEntity( noTesrTile );
 		GameRegistry.registerTileEntity( noTesrTile, "BlockCableBus" );
-		if( Platform.isClient() )
-		{
-			tesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBusTESR.class.getName() );
-			GameRegistry.registerTileEntity( tesrTile, "ClientOnly_TESR_CableBus" );
-			CommonHelper.proxy.bindTileEntitySpecialRenderer( tesrTile, this );
-		}
-	}
-
-	public static Class<? extends AEBaseTile> getTesrTile()
-	{
-		return tesrTile;
 	}
 
 	public static Class<? extends AEBaseTile> getNoTesrTile()
@@ -400,19 +378,4 @@ public class BlockCableBus extends AEBaseTileBlock // implements
 		return noTesrTile;
 	}
 
-	// TODO MFR Integration
-	// @Override
-	// @Method( iname = IntegrationType.MFR )
-	// public RedNetConnectionType getConnectionType( World world, int x, int y,
-	// int z, ForgeDirection side )
-	// {
-	// return this.cb( world, x, y, z ).canConnectRedstone( EnumSet.allOf(
-	// ForgeDirection.class ) ) ?
-	// RedNetConnectionType.CableSingle : RedNetConnectionType.None;
-	// }
-	//
-	// public void setRenderColor( int color )
-	// {
-	// this.myColorMultiplier = color;
-	// }
 }

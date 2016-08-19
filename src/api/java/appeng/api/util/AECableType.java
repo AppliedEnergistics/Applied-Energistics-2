@@ -24,31 +24,71 @@
 package appeng.api.util;
 
 
+import net.minecraft.util.ResourceLocation;
+
+
 public enum AECableType
 {
 	/**
 	 * No Cable present.
 	 */
-	NONE,
+	NONE( null, 0 ),
 
 	/**
 	 * Connections to this block should render as glass.
 	 */
-	GLASS,
+	GLASS( "glass", 0 ),
 
 	/**
 	 * Connections to this block should render as covered.
 	 */
-	COVERED,
+	COVERED( "covered", 0 ),
 
 	/**
 	 * Connections to this block should render as smart.
 	 */
-	SMART,
+	SMART( "smart", 8 ),
 
 	/**
 	 * Dense Cable, represents a tier 2 block that can carry 32 channels.
 	 */
-	DENSE,
+	DENSE( "dense", 32 );
+
+	public static final AECableType[] VALIDCABLES = { GLASS, COVERED, SMART, DENSE };
+
+	private final String type;
+	private final int displayedChannels;
+	private final ResourceLocation model;
+	private final ResourceLocation connectionModel;
+	private final ResourceLocation straightModel;
+
+	private AECableType( String type, int displayedChannels )
+	{
+		this.type = type;
+		this.displayedChannels = displayedChannels;
+		this.model = new ResourceLocation( "appliedenergistics2", "part/cable/" + type + "/center" );
+		this.connectionModel = new ResourceLocation( "appliedenergistics2", "part/cable/" + type + "/connection" );
+		this.straightModel = new ResourceLocation( "appliedenergistics2", "part/cable/" + type + "/straight" );
+	}
+
+	public int displayedChannels()
+	{
+		return displayedChannels;
+	}
+
+	public ResourceLocation getModel()
+	{
+		return model;
+	}
+
+	public ResourceLocation getConnectionModel()
+	{
+		return connectionModel;
+	}
+
+	public ResourceLocation getStraightModel()
+	{
+		return straightModel;
+	}
 
 }

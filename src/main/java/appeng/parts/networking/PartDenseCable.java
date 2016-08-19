@@ -19,8 +19,11 @@
 package appeng.parts.networking;
 
 
+import com.google.common.collect.ImmutableMap.Builder;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridHost;
@@ -168,4 +171,11 @@ public class PartDenseCable extends PartCable
 	{
 		this.getHost().markForUpdate();
 	}
+
+	@Override
+	protected Builder<String, String> propertiesForModel( EnumFacing facing )
+	{
+		return facing != null ? super.propertiesForModel( facing ).put( "channels", String.valueOf( getChannelsOnSide( facing.ordinal() ) ) ) : super.propertiesForModel( facing );
+	}
+
 }

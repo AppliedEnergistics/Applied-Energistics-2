@@ -35,6 +35,8 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -79,6 +81,12 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		this.setHasSubtypes( true );
 
 		instance = this;
+	}
+
+	@Override
+	public ItemMeshDefinition getItemMeshDefinition()
+	{
+		return itemstack -> new ModelResourceLocation( getTypeByStack( itemstack ).getModel(), null );
 	}
 
 	@Nonnull
@@ -177,7 +185,7 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 			return EnumActionResult.PASS;
 		}
 
-		return AEApi.instance().partHelper().placeBus( is, pos, side, player, hand, w ) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
+		return AEApi.instance().partHelper().placeBus( is, pos, side, player, hand, w );
 	}
 
 	@Override

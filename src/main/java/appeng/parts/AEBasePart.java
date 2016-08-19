@@ -24,11 +24,17 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 
 import io.netty.buffer.ByteBuf;
 
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
@@ -40,6 +46,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -47,6 +54,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
+import appeng.api.client.BakingPipeline;
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.implementations.IUpgradeableHost;
@@ -64,8 +72,11 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
+import appeng.client.render.model.ModelsCache;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
+import appeng.items.parts.ItemMultiPart;
+import appeng.items.parts.PartType;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
 import appeng.parts.networking.PartCable;
@@ -76,6 +87,35 @@ import appeng.util.SettingsFrom;
 
 public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, IUpgradeableHost, ICustomNameObject
 {
+
+	private static final Pattern PROPERTY_PATTERN = Pattern.compile( "\\$\\{([\\p{Alnum}_\\-\\.]+)\\}" );
+
+	public static final ResourceLocation replaceProperties( ResourceLocation location, ImmutableMap<String, String> properties )
+	{
+		Matcher m = PROPERTY_PATTERN.matcher( location.getResourcePath() );
+		StringBuffer buffer = new StringBuffer();
+		while( m.find() )
+		{
+			m.appendReplacement( buffer, properties.get( m.group( 1 ) ) );
+		}
+		m.appendTail( buffer );
+		return new ResourceLocation( location.getResourceDomain(), buffer.toString() );
+	}
+
+	protected static final Function<ResourceLocation, TextureAtlasSprite> propertyTextureGetter( ImmutableMap<String, String> properties )
+	{
+		return location -> ModelsCache.DEFAULTTEXTUREGETTER.apply( replaceProperties( location, properties ) );
+	}
+
+	protected static final Function<ResourceLocation, TextureAtlasSprite> propertyTextureGetter( ImmutableMap.Builder<String, String> properties )
+	{
+		return propertyTextureGetter( properties.build() );
+	}
+
+	protected static final ResourceLocation withProperties( ResourceLocation location, ImmutableMap.Builder<String, String> properties )
+	{
+		return new ResourceLocation( location.getResourceDomain(), location.getResourcePath() + properties.build().toString() );
+	}
 
 	private final AENetworkProxy proxy;
 	private final ItemStack is;
@@ -95,6 +135,16 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	public IPartHost getHost()
 	{
 		return this.host;
+	}
+
+	public PartType getType()
+	{
+		return ItemMultiPart.instance.getTypeByStack( is );
+	}
+
+	public ResourceLocation getDefaultModelLocation()
+	{
+		return getType().getModel();
 	}
 
 	@Override
@@ -319,7 +369,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public int cableConnectionRenderTo()
+	public int getCableConnectionLength()
 	{
 		return 3;
 	}
@@ -513,6 +563,18 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	public boolean requireDynamicRender()
 	{
 		return false;
+	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public List<BakedQuad> getOrBakeQuads( BakingPipeline<BakedQuad, BakedQuad> rotatingPipeline, IBlockState state, EnumFacing side, long rand )
+	{
+		return rotatingPipeline.pipe( ModelsCache.INSTANCE.getOrLoadModel( withProperties( getDefaultModelLocation(), propertiesForModel( getSide().getFacing() ) ), getDefaultModelLocation(), propertyTextureGetter( propertiesForModel( getSide().getFacing() ) ) ).getQuads( state, side, rand ), null, state, getSide().getFacing(), rand );
+	}
+
+	protected ImmutableMap.Builder<String, String> propertiesForModel( EnumFacing facing )
+	{
+		return ImmutableMap.<String, String>builder().put( "color", getColor().name() );
 	}
 
 	public AEPartLocation getSide()

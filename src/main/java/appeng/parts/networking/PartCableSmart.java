@@ -19,7 +19,10 @@
 package appeng.parts.networking;
 
 
+import com.google.common.collect.ImmutableMap;
+
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -102,4 +105,11 @@ public class PartCableSmart extends PartCable
 			}
 		}
 	}
+
+	@Override
+	protected ImmutableMap.Builder<String, String> propertiesForModel( EnumFacing facing )
+	{
+		return facing != null ? super.propertiesForModel( facing ).put( "channels", String.valueOf( getChannelsOnSide( facing.ordinal() ) ) ) : super.propertiesForModel( facing );
+	}
+
 }

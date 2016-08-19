@@ -80,6 +80,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	private final EnumSet<LayerFlags> myLayerFlags = EnumSet.noneOf( LayerFlags.class );
 	private YesNo hasRedstone = YesNo.UNDECIDED;
 	private IPartHost tcb;
+	//TODO 1.10.2-R - does somebody seriously want to make parts TESR??? Hope not.
 	private boolean requiresDynamicRender = false;
 	private boolean inWorld = false;
 

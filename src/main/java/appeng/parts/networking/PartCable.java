@@ -20,16 +20,29 @@ package appeng.parts.networking;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
+
+import com.google.common.collect.ImmutableSet;
+
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 import io.netty.buffer.ByteBuf;
 
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
+import appeng.api.client.BakingPipeline;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.definitions.IParts;
 import appeng.api.implementations.parts.IPartCable;
@@ -45,6 +58,10 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IReadOnlyCollection;
+import appeng.client.render.model.ModelsCache;
+import appeng.client.render.model.pipeline.FacingQuadRotator;
+import appeng.client.render.model.pipeline.MatVecApplicator;
+import appeng.client.render.model.pipeline.TypeTransformer;
 import appeng.items.parts.ItemMultiPart;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
@@ -53,6 +70,8 @@ import appeng.util.Platform;
 
 public class PartCable extends AEBasePart implements IPartCable
 {
+
+	private static final ImmutableSet<AEPartLocation> STRAIGHT_PART_LOCATIONS = ImmutableSet.of( AEPartLocation.DOWN, AEPartLocation.NORTH, AEPartLocation.EAST );
 
 	private final int[] channelsOnSide = { 0, 0, 0, 0, 0, 0 };
 
@@ -180,7 +199,7 @@ public class PartCable extends AEBasePart implements IPartCable
 				final IPart p = ph.getPart( dir );
 				if( p instanceof IGridHost )
 				{
-					final double dist = p.cableConnectionRenderTo();
+					final double dist = p.getCableConnectionLength();
 
 					if( dist > 8 )
 					{
@@ -281,14 +300,7 @@ public class PartCable extends AEBasePart implements IPartCable
 						final IReadOnlyCollection<IGridConnection> set = part.getGridNode().getConnections();
 						for( final IGridConnection gc : set )
 						{
-							if( this.getProxy().getNode().hasFlag( GridFlags.DENSE_CAPACITY ) && gc.getOtherSide( this.getProxy().getNode() ).hasFlag( GridFlags.DENSE_CAPACITY ) )
-							{
-								sideOut |= ( gc.getUsedChannels() / 4 ) << ( 4 * thisSide.ordinal() );
-							}
-							else
-							{
-								sideOut |= ( gc.getUsedChannels() ) << ( 4 * thisSide.ordinal() );
-							}
+							sideOut |= ( gc.getUsedChannels() ) << ( 5 * thisSide.ordinal() );
 						}
 					}
 				}
@@ -299,17 +311,7 @@ public class PartCable extends AEBasePart implements IPartCable
 				final AEPartLocation side = gc.getDirection( n );
 				if( side != AEPartLocation.INTERNAL )
 				{
-					final boolean isTier2a = this.getProxy().getNode().hasFlag( GridFlags.DENSE_CAPACITY );
-					final boolean isTier2b = gc.getOtherSide( this.getProxy().getNode() ).hasFlag( GridFlags.DENSE_CAPACITY );
-
-					if( isTier2a && isTier2b )
-					{
-						sideOut |= ( gc.getUsedChannels() / 4 ) << ( 4 * side.ordinal() );
-					}
-					else
-					{
-						sideOut |= gc.getUsedChannels() << ( 4 * side.ordinal() );
-					}
+					sideOut |= gc.getUsedChannels() << ( 5 * side.ordinal() );
 					cs |= ( 1 << side.ordinal() );
 				}
 			}
@@ -346,7 +348,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		{
 			if( d != AEPartLocation.INTERNAL )
 			{
-				final int ch = ( sideOut >> ( d.ordinal() * 4 ) ) & 0xF;
+				final int ch = ( sideOut >> ( d.ordinal() * 5 ) ) & 0x1F;
 				if( ch != this.getChannelsOnSide( d.ordinal() ) )
 				{
 					channelsChanged = true;
@@ -379,9 +381,53 @@ public class PartCable extends AEBasePart implements IPartCable
 		return !myC.equals( this.getConnections() ) || wasPowered != this.powered || channelsChanged;
 	}
 
-	protected boolean nonLinear( final EnumSet<AEPartLocation> sides )
+	@Override
+	@SideOnly( Side.CLIENT )
+	public List<BakedQuad> getOrBakeQuads( BakingPipeline rotatingPipeline, IBlockState state, EnumFacing side, long rand )
 	{
-		return ( sides.contains( AEPartLocation.EAST ) && sides.contains( AEPartLocation.WEST ) ) || ( sides.contains( AEPartLocation.NORTH ) && sides.contains( AEPartLocation.SOUTH ) ) || ( sides.contains( AEPartLocation.UP ) && sides.contains( AEPartLocation.DOWN ) );
+		List<BakedQuad> elements = new ArrayList<>();
+		if( isStraight( getHost(), connections ) )
+		{
+			EnumFacing facing = getConnections().contains( AEPartLocation.DOWN ) ? EnumFacing.DOWN : getConnections().contains( AEPartLocation.NORTH ) ? EnumFacing.NORTH : getConnections().contains( AEPartLocation.EAST ) ? EnumFacing.EAST : EnumFacing.NORTH;
+			elements.addAll( rotatingPipeline.pipe( ModelsCache.INSTANCE.getOrLoadModel( withProperties( getCableConnectionType().getStraightModel(), propertiesForModel( facing ) ), getCableConnectionType().getStraightModel(), propertyTextureGetter( propertiesForModel( facing ) ) ).getQuads( state, side, rand ), null, state, connections.contains( AEPartLocation.DOWN ) ? EnumFacing.DOWN : connections.contains( AEPartLocation.NORTH ) ? EnumFacing.NORTH : connections.contains( AEPartLocation.EAST ) ? EnumFacing.EAST : EnumFacing.NORTH, rand ) );
+		}
+		else
+		{
+			elements.addAll( ModelsCache.INSTANCE.getOrLoadModel( withProperties( getCableConnectionType().getModel(), propertiesForModel( null ) ), getCableConnectionType().getModel(), propertyTextureGetter( propertiesForModel( null ) ) ).getQuads( state, side, rand ) );
+			for( EnumFacing facing : EnumFacing.values() )
+			{
+				if( isConnected( facing ) )
+				{
+					elements.addAll( rotatingPipeline.pipe( ModelsCache.INSTANCE.getOrLoadModel( withProperties( getCableConnectionType().getConnectionModel(), propertiesForModel( facing ) ), getCableConnectionType().getConnectionModel(), propertyTextureGetter( propertiesForModel( facing ) ) ).getQuads( state, side, rand ), null, state, facing, rand ) );
+				}
+				else if( getHost().getPart( facing ) != null )
+				{
+					IPart part = getHost().getPart( facing );
+					if( part.getCableConnectionLength() != -1 )
+					{
+						elements.addAll( new BakingPipeline( TypeTransformer.quads2vecs, new MatVecApplicator( TRSRTransformation.toVecmath( new Matrix4f().scale( new Vector3f( 1, 1, part.getCableConnectionLength() / 4f ) ) ) ), new FacingQuadRotator( facing ), TypeTransformer.vecs2quads ).pipe( ModelsCache.INSTANCE.getOrLoadModel( withProperties( getCableConnectionType().getConnectionModel(), propertiesForModel( facing ) ), getCableConnectionType().getConnectionModel(), propertyTextureGetter( propertiesForModel( facing ) ) ).getQuads( state, side, rand ), null, state, facing, rand ) );
+					}
+				}
+			}
+		}
+		return elements;
+	}
+
+	protected boolean isStraight( IPartHost host, final EnumSet<AEPartLocation> sides )
+	{
+		boolean b = false;
+		for( EnumFacing facing : EnumFacing.values() )
+		{
+			b |= host.getPart( facing ) != null;
+		}
+		if( !b && sides.size() == 2 )
+		{
+			return ( sides.contains( AEPartLocation.EAST ) && sides.contains( AEPartLocation.WEST ) ) || ( sides.contains( AEPartLocation.NORTH ) && sides.contains( AEPartLocation.SOUTH ) ) || ( sides.contains( AEPartLocation.UP ) && sides.contains( AEPartLocation.DOWN ) );
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	int getChannelsOnSide( final int i )

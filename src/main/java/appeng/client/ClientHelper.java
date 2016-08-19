@@ -24,15 +24,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -40,20 +41,21 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import appeng.api.parts.CableRenderMode;
+import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.effects.AssemblerFX;
@@ -63,11 +65,13 @@ import appeng.client.render.effects.LightningArcFX;
 import appeng.client.render.effects.LightningFX;
 import appeng.client.render.effects.VibrantFX;
 import appeng.client.render.model.GlassModelLoader;
+import appeng.client.render.model.ModelsCache;
 import appeng.client.render.model.UVLModelLoader;
 import appeng.client.render.textures.ParticleTextures;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.Api;
+import appeng.core.AppEng;
 import appeng.core.CommonHelper;
 import appeng.core.features.IAEFeature;
 import appeng.core.sync.network.NetworkHandler;
@@ -81,6 +85,8 @@ import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.TickHandler;
 import appeng.hooks.TickHandler.PlayerColor;
 import appeng.items.misc.ItemPaintBall;
+import appeng.items.parts.PartType;
+import appeng.parts.AEBasePart;
 import appeng.server.ServerHelper;
 import appeng.transformer.MissingCoreMod;
 import appeng.util.Platform;
@@ -95,6 +101,7 @@ public class ClientHelper extends ServerHelper
 		MinecraftForge.EVENT_BUS.register( this );
 		ModelLoaderRegistry.registerLoader( UVLModelLoader.INSTANCE );
 		ModelLoaderRegistry.registerLoader( new GlassModelLoader() );
+		( (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager() ).registerReloadListener( ModelsCache.INSTANCE );
 		for( IAEFeature feature : Api.INSTANCE.definitions().getFeatureRegistry().getRegisteredFeatures() )
 		{
 			feature.handler().registerStateMapper();
@@ -125,10 +132,6 @@ public class ClientHelper extends ServerHelper
 		for( IAEFeature feature : Api.INSTANCE.definitions().getFeatureRegistry().getRegisteredFeatures() )
 		{
 			feature.handler().registerModel();
-			if( feature instanceof AEBaseBlock )
-			{
-				Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler( new AEBaseBlockColor(), (Block) feature );
-			}
 		}
 
 		// Register color handling for paintball items
@@ -297,12 +300,6 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@SubscribeEvent
-	public void modelsBake( ModelBakeEvent event )
-	{
-		UVLModelLoader.INSTANCE.setLoader( event.getModelLoader() );
-	}
-	
-	@SubscribeEvent
 	public void postPlayerRender( final RenderLivingEvent.Pre p )
 	{
 		final PlayerColor player = TickHandler.INSTANCE.getPlayerColors().get( p.getEntity().getEntityId() );
@@ -383,9 +380,10 @@ public class ClientHelper extends ServerHelper
 	@SubscribeEvent
 	public void onModelBakeEvent( final ModelBakeEvent event )
 	{
+		UVLModelLoader.INSTANCE.setLoader( event.getModelLoader() );
 		for( IAEFeature feature : Api.INSTANCE.definitions().getFeatureRegistry().getRegisteredFeatures() )
 		{
-			feature.handler().registerCustomModelOverride(event.getModelRegistry());
+			feature.handler().registerCustomModelOverride( event.getModelRegistry() );
 		}
 	}
 
@@ -432,6 +430,48 @@ public class ClientHelper extends ServerHelper
 	public void onTextureStitch( final TextureStitchEvent.Pre event )
 	{
 		ParticleTextures.registerSprite( event );
+		for( AECableType type : AECableType.VALIDCABLES )
+		{
+			for( IModel model : new IModel[] { ModelsCache.INSTANCE.getOrLoadModel( type.getModel() ), ModelsCache.INSTANCE.getOrLoadModel( type.getConnectionModel() ), ModelsCache.INSTANCE.getOrLoadModel( type.getStraightModel() ) } )
+			{
+				for( ResourceLocation location : model.getTextures() )
+				{
+					for( AEColor color : AEColor.values() )
+					{
+						if( type.displayedChannels() > 0 )
+						{
+							for( int i = 0; i <= type.displayedChannels(); i++ )
+							{
+								event.getMap().registerSprite( AEBasePart.replaceProperties( location, ImmutableMap.of( "color", color.name(), "channels", String.valueOf( i ) ) ) );
+							}
+						}
+						else
+						{
+							event.getMap().registerSprite( AEBasePart.replaceProperties( location, ImmutableMap.of( "color", color.name() ) ) );
+						}
+					}
+				}
+			}
+		}
+		for( PartType part : PartType.values() )
+		{
+			if( !part.isCable() )
+			{
+				IModel model = ModelsCache.INSTANCE.getOrLoadModel( part.getModel() );
+				for( ResourceLocation location : model.getTextures() )
+				{
+					for( AEColor color : AEColor.values() )
+					{
+						event.getMap().registerSprite( AEBasePart.replaceProperties( location, ImmutableMap.of( "color", color.name() ) ) );
+					}
+				}
+			}
+		}
+
+		for( ResourceLocation location : ModelsCache.INSTANCE.getOrLoadModel( new ResourceLocation( AppEng.MOD_ID, "part/cable_facade" ) ).getTextures() )
+		{
+			event.getMap().registerSprite( location );
+		}
 	}
 
 	private static class IconReg
@@ -458,15 +498,29 @@ public class ClientHelper extends ServerHelper
 		}
 	}
 
-
-	public static class AEBaseBlockColor implements IBlockColor
+	public class ItemPaintBallColor implements IItemColor
 	{
 
 		@Override
-		public int colorMultiplier( IBlockState state, IBlockAccess worldIn, BlockPos pos, int tintIndex )
+		public int getColorFromItemstack( ItemStack stack, int tintIndex )
 		{
-			return tintIndex;
+			final AEColor col = ( (ItemPaintBall) stack.getItem() ).getColor( stack );
+
+			final int colorValue = stack.getItemDamage() >= 20 ? col.mediumVariant : col.mediumVariant;
+			final int r = ( colorValue >> 16 ) & 0xff;
+			final int g = ( colorValue >> 8 ) & 0xff;
+			final int b = ( colorValue ) & 0xff;
+
+			if( stack.getItemDamage() >= 20 )
+			{
+				final float fail = 0.7f;
+				final int full = (int) ( 255 * 0.3 );
+				return (int) ( full + r * fail ) << 16 | (int) ( full + g * fail ) << 8 | (int) ( full + b * fail ) | 0xff << 24;
+			}
+			else
+			{
+				return r << 16 | g << 8 | b | 0xff << 24;
+			}
 		}
 	}
-
 }

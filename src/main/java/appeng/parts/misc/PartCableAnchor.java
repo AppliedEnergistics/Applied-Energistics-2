@@ -25,17 +25,23 @@ import java.util.Random;
 
 import io.netty.buffer.ByteBuf;
 
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+import appeng.api.client.BakingPipeline;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
@@ -204,7 +210,7 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public int cableConnectionRenderTo()
+	public int getCableConnectionLength()
 	{
 		return 0;
 	}
@@ -226,4 +232,12 @@ public class PartCableAnchor implements IPart
 	{
 		return what == BusSupport.CABLE || what == BusSupport.DENSE_CABLE;
 	}
+
+	@Override
+	@SideOnly( Side.CLIENT )
+	public List<BakedQuad> getOrBakeQuads( BakingPipeline<BakedQuad, BakedQuad> rotatingPipeline, IBlockState state, EnumFacing side, long rand )
+	{
+		return null;
+	}
+
 }
