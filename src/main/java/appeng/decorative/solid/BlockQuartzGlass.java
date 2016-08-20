@@ -22,6 +22,8 @@ package appeng.decorative.solid;
 import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -30,11 +32,18 @@ import net.minecraft.world.IBlockAccess;
 
 import appeng.block.AEBaseBlock;
 import appeng.core.features.AEFeature;
-import appeng.helpers.AEGlassMaterial;
 
 
 public class BlockQuartzGlass extends AEBaseBlock
 {
+
+	public static final PropertyBool[] props = { PropertyBool.create( "down" ), PropertyBool.create( "up" ), PropertyBool.create( "north" ), PropertyBool.create( "south" ), PropertyBool.create( "west" ), PropertyBool.create( "east" ) };
+
+	private static boolean isGlassBlock( IBlockAccess world, BlockPos pos, EnumFacing facing )
+	{
+		return world.getBlockState( pos.offset( facing ) ).getBlock() instanceof BlockQuartzGlass;
+	}
+
 	public BlockQuartzGlass()
 	{
 		super( Material.GLASS );
@@ -43,9 +52,26 @@ public class BlockQuartzGlass extends AEBaseBlock
 		this.setFeature( EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
 	}
 
-	private static boolean isGlassBlock( IBlockAccess world, BlockPos pos, EnumFacing facing )
+	@Override
+	protected IProperty[] getAEStates()
 	{
-		return world.getBlockState( pos.offset( facing ) ).getBlock() instanceof BlockQuartzGlass;
+		return props;
+	}
+
+	@Override
+	public int getMetaFromState( IBlockState state )
+	{
+		return 0;
+	}
+
+	@Override
+	public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
+	{
+		for( EnumFacing facing : EnumFacing.values() )
+		{
+			state = state.withProperty( props[facing.ordinal()], isGlassBlock( world, pos, facing ) );
+		}
+		return state;
 	}
 
 	@Override
@@ -57,15 +83,7 @@ public class BlockQuartzGlass extends AEBaseBlock
 	@Override
 	public boolean shouldSideBeRendered( final IBlockState state, final IBlockAccess w, final BlockPos pos, final EnumFacing side )
 	{
-		final Material mat = w.getBlockState( pos ).getBlock().getMaterial( state );
-		if( mat == Material.GLASS || mat == AEGlassMaterial.INSTANCE )
-		{
-			if( w.getBlockState( pos ).getBlock().getRenderType( state ) == this.getRenderType( state ) )
-			{
-				return false;
-			}
-		}
-		return super.shouldSideBeRendered( state, w, pos, side );
+		return !isGlassBlock( w, pos, side ) && super.shouldSideBeRendered( state, w, pos, side );
 	}
 
 	@Override
