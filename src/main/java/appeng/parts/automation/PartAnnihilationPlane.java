@@ -53,6 +53,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.core.settings.TickRates;
 import appeng.core.sync.packets.PacketTransitionEffect;
@@ -208,7 +209,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	}
 
 	@Override
-	public int getCableConnectionLength()
+	public float getCableConnectionLength( AECableType cable )
 	{
 		return 1;
 	}

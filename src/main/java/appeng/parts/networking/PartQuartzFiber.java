@@ -110,7 +110,7 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	}
 
 	@Override
-	public int getCableConnectionLength()
+	public float getCableConnectionLength( AECableType cable )
 	{
 		return 16;
 	}

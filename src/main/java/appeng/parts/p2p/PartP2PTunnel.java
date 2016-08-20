@@ -45,6 +45,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartItemStack;
+import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AEConfig;
 import appeng.me.GridAccessException;
@@ -149,7 +150,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	}
 
 	@Override
-	public int getCableConnectionLength()
+	public float getCableConnectionLength( AECableType cable )
 	{
 		return 1;
 	}

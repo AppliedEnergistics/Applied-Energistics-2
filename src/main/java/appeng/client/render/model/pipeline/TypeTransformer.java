@@ -2,6 +2,7 @@
 package appeng.client.render.model.pipeline;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -24,7 +25,7 @@ public class TypeTransformer
 		@Override
 		public List<QuadVertexData> pipe( List<BakedQuad> elements, IBakedModel parent, IBlockState state, EnumFacing side, long rand )
 		{
-			return Lists.transform( elements, ( quad ) -> {
+			return Lists.transform( elements != null ? elements : new ArrayList<>(), ( quad ) -> {
 				if( quad instanceof UnpackedBakedQuad )
 				{
 					return new QuadVertexData( (UnpackedBakedQuad) quad );
@@ -53,9 +54,7 @@ public class TypeTransformer
 		@Override
 		public List<BakedQuad> pipe( List<QuadVertexData> elements, IBakedModel parent, IBlockState state, EnumFacing side, long rand )
 		{
-			return Lists.transform( elements, ( data ) -> {
-				return data.toQuad();
-			} );
+			return Lists.transform( elements != null ? elements : new ArrayList<>(), data -> data.toQuad() );
 		}
 
 	};

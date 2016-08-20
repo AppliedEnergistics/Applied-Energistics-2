@@ -39,11 +39,11 @@ import appeng.api.util.DimensionalCoord;
 
 
 /**
- * Implemented on AE's TileEntity or AE's FMP Part.
+ * Implemented on AE's TileEntity.
  *
  * Do Not Implement
  */
-public interface IPartHost
+public interface IPartHost extends ICustomCableConnection
 {
 
 	/**

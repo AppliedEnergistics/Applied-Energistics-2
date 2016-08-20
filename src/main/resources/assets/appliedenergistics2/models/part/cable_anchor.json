@@ -1,12 +1,12 @@
 {
     "textures": {
-        "0": "appliedenergistics2:parts/CableAnchor"
+        "0": "appliedenergistics2:parts/cable_anchor"
     },
     "elements": [
         {
             "name": "Element",
             "from": [ 7.0, 7.0, 0.0 ], 
-            "to": [ 9.0, 9.0, 6.0 ], 
+            "to": [ 9.0, 9.0, 6 ], 
             "faces": {
                 "north": { "texture": "#0", "uv": [ 0.0, 0.0, 2.0, 2.0 ] },
                 "east": { "texture": "#0", "uv": [ 0.0, 0.0, 6.0, 2.0 ] },

@@ -425,7 +425,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public int getCableConnectionLength()
+	public float getCableConnectionLength( AECableType cable )
 	{
 		return 16;
 	}

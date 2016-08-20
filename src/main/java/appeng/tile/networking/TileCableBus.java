@@ -139,6 +139,12 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
+	public float getCableConnectionLength( AECableType cable )
+	{
+		return this.getCableBus().getCableConnectionLength( cable );
+	}
+
+	@Override
 	public void onChunkUnload()
 	{
 		super.onChunkUnload();
@@ -262,7 +268,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	@Override
 	public boolean isBlocked( final EnumFacing side )
 	{
-		//TODO 1.10.2-R - Stuff.
+		// TODO 1.10.2-R - Stuff.
 		return false;
 	}
 

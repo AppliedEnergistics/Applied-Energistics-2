@@ -67,6 +67,7 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.core.AEConfig;
@@ -274,7 +275,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	public int getCableConnectionLength()
+	public float getCableConnectionLength( AECableType cable )
 	{
 		return 1;
 	}

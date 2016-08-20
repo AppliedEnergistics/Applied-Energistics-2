@@ -55,6 +55,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.DualityInterface;
@@ -138,7 +139,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public int getCableConnectionLength()
+	public float getCableConnectionLength( AECableType cable )
 	{
 		return 4;
 	}

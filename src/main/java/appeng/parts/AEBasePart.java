@@ -369,7 +369,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public int getCableConnectionLength()
+	public float getCableConnectionLength( AECableType cable )
 	{
 		return 3;
 	}

@@ -20,6 +20,7 @@ package appeng.parts.misc;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -35,6 +36,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -48,7 +50,10 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartItemStack;
+import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
+import appeng.client.render.model.ModelsCache;
+import appeng.core.AppEng;
 
 
 public class PartCableAnchor implements IPart
@@ -210,7 +215,7 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public int getCableConnectionLength()
+	public float getCableConnectionLength( AECableType cable )
 	{
 		return 0;
 	}
@@ -237,7 +242,7 @@ public class PartCableAnchor implements IPart
 	@SideOnly( Side.CLIENT )
 	public List<BakedQuad> getOrBakeQuads( BakingPipeline<BakedQuad, BakedQuad> rotatingPipeline, IBlockState state, EnumFacing side, long rand )
 	{
-		return null;
+		return rotatingPipeline.pipe( ModelsCache.INSTANCE.getOrLoadBakedModel( new ResourceLocation( AppEng.MOD_ID, "part/cable_anchor" ) ).getQuads( state, side, rand ), null, state, mySide.getFacing(), rand );
 	}
 
 }

@@ -80,7 +80,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	private final EnumSet<LayerFlags> myLayerFlags = EnumSet.noneOf( LayerFlags.class );
 	private YesNo hasRedstone = YesNo.UNDECIDED;
 	private IPartHost tcb;
-	//TODO 1.10.2-R - does somebody seriously want to make parts TESR??? Hope not.
+	// TODO 1.10.2-R - does somebody seriously want to make parts TESR??? Hope not.
 	private boolean requiresDynamicRender = false;
 	private boolean inWorld = false;
 
@@ -179,7 +179,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public AEPartLocation addPart( ItemStack is, final AEPartLocation side, final @Nullable EntityPlayer player, final @Nullable EnumHand hand  )
+	public AEPartLocation addPart( ItemStack is, final AEPartLocation side, final @Nullable EntityPlayer player, final @Nullable EnumHand hand )
 	{
 		if( this.canAddPart( is, side ) )
 		{
@@ -708,6 +708,12 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			return c.getCableConnectionType();
 		}
 		return AECableType.NONE;
+	}
+
+	@Override
+	public float getCableConnectionLength( AECableType cable )
+	{
+		return getPart( AEPartLocation.INTERNAL ) instanceof IPartCable ? getPart( AEPartLocation.INTERNAL ).getCableConnectionLength( cable ) : -1;
 	}
 
 	@Override

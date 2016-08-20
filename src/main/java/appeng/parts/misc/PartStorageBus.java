@@ -61,6 +61,7 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.core.settings.TickRates;
@@ -265,7 +266,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public int getCableConnectionLength()
+	public float getCableConnectionLength( AECableType cable )
 	{
 		return 4;
 	}

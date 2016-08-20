@@ -159,7 +159,7 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public int getCableConnectionLength()
+	public float getCableConnectionLength( AECableType cable )
 	{
 		return 5;
 	}

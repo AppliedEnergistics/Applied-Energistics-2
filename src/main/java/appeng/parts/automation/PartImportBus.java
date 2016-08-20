@@ -42,6 +42,7 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.util.AECableType;
 import appeng.core.settings.TickRates;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.Reflected;
@@ -95,7 +96,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	}
 
 	@Override
-	public int getCableConnectionLength()
+	public float getCableConnectionLength( AECableType cable )
 	{
 		return 5;
 	}

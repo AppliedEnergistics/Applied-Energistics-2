@@ -388,7 +388,7 @@ public class ClientHelper extends ServerHelper
 	@SubscribeEvent
 	public void wheelEvent( final MouseEvent me )
 	{
-		if( me.isCanceled() || me.getDwheel() == 0 )
+		if( me.getDwheel() == 0 )
 		{
 			return;
 		}

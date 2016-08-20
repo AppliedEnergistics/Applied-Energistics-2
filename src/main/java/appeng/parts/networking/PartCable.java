@@ -36,6 +36,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -51,6 +52,7 @@ import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.BusSupport;
+import appeng.api.parts.ICustomCableConnection;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
@@ -102,6 +104,23 @@ public class PartCable extends AEBasePart implements IPartCable
 	public AECableType getCableConnectionType()
 	{
 		return AECableType.GLASS;
+	}
+
+	@Override
+	public float getCableConnectionLength( AECableType cable )
+	{
+		if( cable == this.getCableConnectionType() )
+		{
+			return 4;
+		}
+		else if( cable.ordinal() >= this.getCableConnectionType().ordinal() )
+		{
+			return -1;
+		}
+		else
+		{
+			return 8;
+		}
 	}
 
 	@Override
@@ -199,7 +218,7 @@ public class PartCable extends AEBasePart implements IPartCable
 				final IPart p = ph.getPart( dir );
 				if( p instanceof IGridHost )
 				{
-					final double dist = p.getCableConnectionLength();
+					final double dist = p.getCableConnectionLength( this.getCableConnectionType() );
 
 					if( dist > 8 )
 					{
@@ -396,16 +415,24 @@ public class PartCable extends AEBasePart implements IPartCable
 			elements.addAll( ModelsCache.INSTANCE.getOrLoadModel( withProperties( getCableConnectionType().getModel(), propertiesForModel( null ) ), getCableConnectionType().getModel(), propertyTextureGetter( propertiesForModel( null ) ) ).getQuads( state, side, rand ) );
 			for( EnumFacing facing : EnumFacing.values() )
 			{
-				if( isConnected( facing ) )
+				if( isConnected( facing ) || getHost().getPart( facing ) != null )
 				{
-					elements.addAll( rotatingPipeline.pipe( ModelsCache.INSTANCE.getOrLoadModel( withProperties( getCableConnectionType().getConnectionModel(), propertiesForModel( facing ) ), getCableConnectionType().getConnectionModel(), propertyTextureGetter( propertiesForModel( facing ) ) ).getQuads( state, side, rand ), null, state, facing, rand ) );
-				}
-				else if( getHost().getPart( facing ) != null )
-				{
-					IPart part = getHost().getPart( facing );
-					if( part.getCableConnectionLength() != -1 )
+					float f = 4;
+					if( getHost().getPart( facing ) != null )
 					{
-						elements.addAll( new BakingPipeline( TypeTransformer.quads2vecs, new MatVecApplicator( TRSRTransformation.toVecmath( new Matrix4f().scale( new Vector3f( 1, 1, part.getCableConnectionLength() / 4f ) ) ) ), new FacingQuadRotator( facing ), TypeTransformer.vecs2quads ).pipe( ModelsCache.INSTANCE.getOrLoadModel( withProperties( getCableConnectionType().getConnectionModel(), propertiesForModel( facing ) ), getCableConnectionType().getConnectionModel(), propertyTextureGetter( propertiesForModel( facing ) ) ).getQuads( state, side, rand ), null, state, facing, rand ) );
+						f = getHost().getPart( facing ).getCableConnectionLength( this.getCableConnectionType() );
+					}
+					else
+					{
+						TileEntity to = getHost().getTile().getWorld().getTileEntity( getHost().getTile().getPos().offset( facing ) );
+						if( to instanceof ICustomCableConnection )
+						{
+							f = ( (ICustomCableConnection) to ).getCableConnectionLength( this.getCableConnectionType() );
+						}
+					}
+					if( f != -1 )
+					{
+						elements.addAll( new BakingPipeline( TypeTransformer.quads2vecs, new MatVecApplicator( TRSRTransformation.toVecmath( new Matrix4f().scale( new Vector3f( 1, 1, f / 4f ) ) ) ), new FacingQuadRotator( facing ), TypeTransformer.vecs2quads ).pipe( ModelsCache.INSTANCE.getOrLoadModel( withProperties( getCableConnectionType().getConnectionModel(), propertiesForModel( facing ) ), getCableConnectionType().getConnectionModel(), propertyTextureGetter( propertiesForModel( facing ) ) ).getQuads( state, side, rand ), null, state, facing, rand ) );
 					}
 				}
 			}
@@ -422,12 +449,18 @@ public class PartCable extends AEBasePart implements IPartCable
 		}
 		if( !b && sides.size() == 2 )
 		{
-			return ( sides.contains( AEPartLocation.EAST ) && sides.contains( AEPartLocation.WEST ) ) || ( sides.contains( AEPartLocation.NORTH ) && sides.contains( AEPartLocation.SOUTH ) ) || ( sides.contains( AEPartLocation.UP ) && sides.contains( AEPartLocation.DOWN ) );
+			AEPartLocation[] sa = sides.toArray( new AEPartLocation[0] );
+			if( sa[0] == sa[1].getOpposite() )
+			{
+				for( AEPartLocation side : sides )
+				{
+					TileEntity to = host.getTile().getWorld().getTileEntity( host.getTile().getPos().offset( side.getFacing() ) );
+					b |= to instanceof IPartHost && ( (IPartHost) to ).getPart( AEPartLocation.INTERNAL ) instanceof IPartCable && ( (IPartCable) ( (IPartHost) to ).getPart( AEPartLocation.INTERNAL ) ).getCableConnectionType() == getCableConnectionType();
+				}
+				return !b;
+			}
 		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 
 	int getChannelsOnSide( final int i )

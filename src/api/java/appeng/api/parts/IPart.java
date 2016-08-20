@@ -48,10 +48,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.client.BakingPipeline;
 import appeng.api.networking.IGridNode;
+import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 
 
-public interface IPart extends IBoxProvider
+public interface IPart extends IBoxProvider, ICustomCableConnection
 {
 
 	/**
@@ -225,7 +226,7 @@ public interface IPart extends IBoxProvider
 	 * @return 0 - 8, reasonable default 3-4, this controls the cable connection to the node. -1 to render connection
 	 * yourself.
 	 */
-	int getCableConnectionLength();
+	public float getCableConnectionLength( AECableType cable );
 
 	/**
 	 * same as Block.randomDisplayTick, for but parts.
