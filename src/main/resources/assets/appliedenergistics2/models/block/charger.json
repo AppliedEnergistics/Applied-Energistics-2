@@ -349,6 +349,7 @@
     ],
     "parent": "block/orientable",
     "textures": {
+		"particle": "appliedenergistics2:blocks/charger",
         "0": "appliedenergistics2:blocks/charger_side",
         "1": "appliedenergistics2:blocks/charger",
         "2": "appliedenergistics2:blocks/charger_inside"

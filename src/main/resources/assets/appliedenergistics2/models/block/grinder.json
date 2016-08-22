@@ -1,5 +1,4 @@
 {
-    "ambientocclusion": false,
     "parent": "appliedenergistics2:block/cube/cube_ae_machine",
     "textures": {
         "bottom": "appliedenergistics2:blocks/grinder_bottom",

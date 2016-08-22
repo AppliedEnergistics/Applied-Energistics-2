@@ -487,6 +487,7 @@
     ],
     "parent": "block/orientable",
     "textures": {
+		"particle": "appliedenergistics2:blocks/inscriber",
         "0": "appliedenergistics2:blocks/inscriber"
     }
 }

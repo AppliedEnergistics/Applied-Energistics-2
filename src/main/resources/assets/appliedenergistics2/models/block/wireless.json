@@ -762,6 +762,7 @@
         }
     ],
     "textures": {
+		"particle": "appliedenergistics2:blocks/wireless_inside",
         "0": "appliedenergistics2:blocks/wireless_inside",
         "1": "appliedenergistics2:blocks/wireless"
     }

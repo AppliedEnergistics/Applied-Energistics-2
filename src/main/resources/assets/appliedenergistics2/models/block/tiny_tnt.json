@@ -73,6 +73,7 @@
     ],
     "parent": "block/block",
     "textures": {
+		"particle": "blocks/tnt_bottom",
         "0": "blocks/tnt_side",
         "1": "blocks/tnt_top",
         "2": "blocks/tnt_bottom"
