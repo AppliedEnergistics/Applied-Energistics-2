@@ -260,19 +260,19 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	private static final ModelResourceLocation[] MODELS_CERTUS = {
-		new ModelResourceLocation( "appliedenergistics2:ItemCrystalSeed.Certus" ),
-		new ModelResourceLocation( "appliedenergistics2:ItemCrystalSeed.Certus2" ),
-		new ModelResourceLocation( "appliedenergistics2:ItemCrystalSeed.Certus3" )
+		new ModelResourceLocation( "appliedenergistics2:crystal_seed_certus" ),
+		new ModelResourceLocation( "appliedenergistics2:crystal_seed_certus2" ),
+		new ModelResourceLocation( "appliedenergistics2:crystal_seed_certus3" )
 	};
 	private static final ModelResourceLocation[] MODELS_FLUIX = {
-		new ModelResourceLocation( "appliedenergistics2:ItemCrystalSeed.Fluix" ),
-		new ModelResourceLocation( "appliedenergistics2:ItemCrystalSeed.Fluix2" ),
-		new ModelResourceLocation( "appliedenergistics2:ItemCrystalSeed.Fluix3" )
+		new ModelResourceLocation( "appliedenergistics2:crystal_seed_fluix" ),
+		new ModelResourceLocation( "appliedenergistics2:crystal_seed_fluix2" ),
+		new ModelResourceLocation( "appliedenergistics2:crystal_seed_fluix3" )
 	};
 	private static final ModelResourceLocation[] MODELS_NETHER = {
-		new ModelResourceLocation( "appliedenergistics2:ItemCrystalSeed.Nether" ),
-		new ModelResourceLocation( "appliedenergistics2:ItemCrystalSeed.Nether2" ),
-		new ModelResourceLocation( "appliedenergistics2:ItemCrystalSeed.Nether3" )
+		new ModelResourceLocation( "appliedenergistics2:crystal_seed_nether" ),
+		new ModelResourceLocation( "appliedenergistics2:crystal_seed_nether2" ),
+		new ModelResourceLocation( "appliedenergistics2:crystal_seed_nether3" )
 	};
 
 	@Override
