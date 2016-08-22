@@ -19,11 +19,8 @@
 package appeng.items.storage;
 
 
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-
-import com.google.common.base.Optional;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -69,9 +66,6 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 
 	public ItemBasicStorageCell( final MaterialType whichCell, final int kilobytes )
 	{
-		super( Optional.of( kilobytes + "k" ) );
-
-		this.setFeature( EnumSet.of( AEFeature.StorageCells ) );
 		this.setMaxStackSize( 1 );
 		this.totalBytes = kilobytes * 1024;
 		this.component = whichCell;

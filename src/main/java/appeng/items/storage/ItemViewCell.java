@@ -19,8 +19,6 @@
 package appeng.items.storage;
 
 
-import java.util.EnumSet;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
@@ -31,7 +29,6 @@ import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.ICellWorkbenchItem;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.core.features.AEFeature;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
@@ -47,7 +44,6 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 {
 	public ItemViewCell()
 	{
-		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setMaxStackSize( 1 );
 	}
 

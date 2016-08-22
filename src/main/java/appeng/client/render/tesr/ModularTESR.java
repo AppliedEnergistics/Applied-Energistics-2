@@ -5,12 +5,14 @@ package appeng.client.render.tesr;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.renderable.Renderable;
 import appeng.tile.AEBaseTile;
 
-
+@SideOnly( Side.CLIENT )
 public class ModularTESR<T extends AEBaseTile> extends TileEntitySpecialRenderer<T>
 {
 

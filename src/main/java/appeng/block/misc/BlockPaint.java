@@ -19,7 +19,6 @@
 package appeng.block.misc;
 
 
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
@@ -39,10 +38,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.core.features.AEFeature;
 import appeng.tile.misc.TilePaint;
 import appeng.util.Platform;
-
 
 public class BlockPaint extends AEBaseTileBlock
 {
@@ -55,7 +52,6 @@ public class BlockPaint extends AEBaseTileBlock
 		this.setLightOpacity( 0 );
 		this.setFullSize( false );
 		this.setOpaque( false );
-		this.setFeature( EnumSet.of( AEFeature.PaintBalls ) );
 	}
 
 	@Override

@@ -23,20 +23,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -75,18 +71,11 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	{
 		Preconditions.checkNotNull( partHelper );
 
-		this.registered = new HashMap<Integer, PartTypeWithVariant>( INITIAL_REGISTERED_CAPACITY );
+		this.registered = new HashMap<>( INITIAL_REGISTERED_CAPACITY );
 
-		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setHasSubtypes( true );
 
 		instance = this;
-	}
-
-	@Override
-	public ItemMeshDefinition getItemMeshDefinition()
-	{
-		return itemstack -> new ModelResourceLocation( getTypeByStack( itemstack ).getModel(), null );
 	}
 
 	@Nonnull

@@ -29,15 +29,11 @@ import com.google.common.collect.ImmutableMap;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
@@ -69,10 +65,8 @@ import appeng.client.render.model.UVLModelLoader;
 import appeng.client.render.textures.ParticleTextures;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.CommonHelper;
-import appeng.core.features.IAEFeature;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketAssemblerAnimation;
 import appeng.core.sync.packets.PacketValueConfig;
@@ -83,7 +77,6 @@ import appeng.entity.RenderTinyTNTPrimed;
 import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.TickHandler;
 import appeng.hooks.TickHandler.PlayerColor;
-import appeng.items.misc.ItemPaintBall;
 import appeng.items.parts.PartType;
 import appeng.parts.AEBasePart;
 import appeng.server.ServerHelper;
@@ -100,10 +93,6 @@ public class ClientHelper extends ServerHelper
 		MinecraftForge.EVENT_BUS.register( this );
 		ModelLoaderRegistry.registerLoader( UVLModelLoader.INSTANCE );
 		( (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager() ).registerReloadListener( ModelsCache.INSTANCE );
-		for( IAEFeature feature : Api.INSTANCE.definitions().getFeatureRegistry().getRegisteredFeatures() )
-		{
-			feature.handler().registerStateMapper();
-		}
 	}
 
 	@Override
@@ -127,15 +116,7 @@ public class ClientHelper extends ServerHelper
 		// AELog.info( "Registering with %s with unlocalized %s", item, item.getUnlocalizedName() );
 		// mesher.register( item, DEFAULT_ITEM_SUBTYPE, fluixStairModel );
 		// }
-		for( IAEFeature feature : Api.INSTANCE.definitions().getFeatureRegistry().getRegisteredFeatures() )
-		{
-			feature.handler().registerModel();
-		}
 
-		// Register color handling for paintball items
-		ItemColors itemColors = Minecraft.getMinecraft().getItemColors();
-		Item paintballItem = Api.INSTANCE.definitions().items().paintBall().maybeItem().get();
-		itemColors.registerItemColorHandler( ItemPaintBall::getColorFromItemstack, paintballItem );
 	}
 
 	@Override
@@ -379,10 +360,6 @@ public class ClientHelper extends ServerHelper
 	public void onModelBakeEvent( final ModelBakeEvent event )
 	{
 		UVLModelLoader.INSTANCE.setLoader( event.getModelLoader() );
-		for( IAEFeature feature : Api.INSTANCE.definitions().getFeatureRegistry().getRegisteredFeatures() )
-		{
-			feature.handler().registerCustomModelOverride( event.getModelRegistry() );
-		}
 	}
 
 	@SubscribeEvent
@@ -469,56 +446,6 @@ public class ClientHelper extends ServerHelper
 		for( ResourceLocation location : ModelsCache.INSTANCE.getOrLoadModel( new ResourceLocation( AppEng.MOD_ID, "part/cable_facade" ) ).getTextures() )
 		{
 			event.getMap().registerSprite( location );
-		}
-	}
-
-	private static class IconReg
-	{
-		public final String name;
-		public final Object item;
-		public final int meta;
-		public final ModelResourceLocation loc;
-
-		public IconReg( final Object item2, final int meta2, final String name2 )
-		{
-			this.meta = meta2;
-			this.name = name2;
-			this.item = item2;
-			this.loc = null;
-		}
-
-		public IconReg( final Item item2, final int meta2, final String name2, final ModelResourceLocation res )
-		{
-			this.meta = meta2;
-			this.name = name2;
-			this.item = item2;
-			this.loc = res;
-		}
-	}
-
-	public class ItemPaintBallColor implements IItemColor
-	{
-
-		@Override
-		public int getColorFromItemstack( ItemStack stack, int tintIndex )
-		{
-			final AEColor col = ( (ItemPaintBall) stack.getItem() ).getColor( stack );
-
-			final int colorValue = stack.getItemDamage() >= 20 ? col.mediumVariant : col.mediumVariant;
-			final int r = ( colorValue >> 16 ) & 0xff;
-			final int g = ( colorValue >> 8 ) & 0xff;
-			final int b = ( colorValue ) & 0xff;
-
-			if( stack.getItemDamage() >= 20 )
-			{
-				final float fail = 0.7f;
-				final int full = (int) ( 255 * 0.3 );
-				return (int) ( full + r * fail ) << 16 | (int) ( full + g * fail ) << 8 | (int) ( full + b * fail ) | 0xff << 24;
-			}
-			else
-			{
-				return r << 16 | g << 8 | b | 0xff << 24;
-			}
 		}
 	}
 }

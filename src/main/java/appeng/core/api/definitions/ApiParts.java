@@ -23,9 +23,14 @@ import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IParts;
 import appeng.api.exceptions.MissingDefinition;
 import appeng.api.parts.IPartHelper;
+import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
+import appeng.bootstrap.FeatureFactory;
+import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.DamagedItemDefinition;
+import appeng.core.features.ItemStackSrc;
 import appeng.items.parts.ItemMultiPart;
+import appeng.items.parts.ItemMultipartRendering;
 import appeng.items.parts.PartType;
 
 
@@ -73,15 +78,17 @@ public final class ApiParts implements IParts
 	private final IItemDefinition storageMonitor;
 	private final IItemDefinition conversionMonitor;
 
-	public ApiParts( final DefinitionConstructor constructor, final IPartHelper partHelper )
+	public ApiParts( FeatureFactory registry, IPartHelper partHelper )
 	{
 		final ItemMultiPart itemMultiPart = new ItemMultiPart( partHelper );
-		constructor.registerItemDefinition( itemMultiPart );
+		registry.item( "multipart", () -> itemMultiPart )
+				.rendering( new ItemMultipartRendering( itemMultiPart ) )
+				.build();
 
-		this.cableSmart = constructor.constructColoredDefinition( itemMultiPart, PartType.CableSmart );
-		this.cableCovered = constructor.constructColoredDefinition( itemMultiPart, PartType.CableCovered );
-		this.cableGlass = constructor.constructColoredDefinition( itemMultiPart, PartType.CableGlass );
-		this.cableDense = constructor.constructColoredDefinition( itemMultiPart, PartType.CableDense );
+		this.cableSmart = constructColoredDefinition( itemMultiPart, PartType.CableSmart );
+		this.cableCovered = constructColoredDefinition( itemMultiPart, PartType.CableCovered );
+		this.cableGlass = constructColoredDefinition( itemMultiPart, PartType.CableGlass );
+		this.cableDense = constructColoredDefinition( itemMultiPart, PartType.CableDense );
 		// this.lumenCableSmart = Optional.absent(); // has yet to be implemented, no PartType defined for it yet
 		// this.lumenCableCovered = Optional.absent(); // has yet to be implemented, no PartType defined for it yet
 		// this.lumenCableGlass = Optional.absent(); // has yet to be implemented, no PartType defined for it yet
@@ -118,6 +125,20 @@ public final class ApiParts implements IParts
 		this.terminal = new DamagedItemDefinition( "part.terminal", itemMultiPart.createPart( PartType.Terminal ) );
 		this.storageMonitor = new DamagedItemDefinition( "part.monitor.storage", itemMultiPart.createPart( PartType.StorageMonitor ) );
 		this.conversionMonitor = new DamagedItemDefinition( "part.monitor.conversion", itemMultiPart.createPart( PartType.ConversionMonitor ) );
+	}
+
+	private static AEColoredItemDefinition constructColoredDefinition( final ItemMultiPart target, final PartType type )
+	{
+		final ColoredItemDefinition definition = new ColoredItemDefinition();
+
+		for( final AEColor color : AEColor.values() )
+		{
+			final ItemStackSrc multiPartSource = target.createPart( type, color );
+
+			definition.add( color, multiPartSource );
+		}
+
+		return definition;
 	}
 
 	@Override

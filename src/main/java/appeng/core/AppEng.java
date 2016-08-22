@@ -196,7 +196,6 @@ public final class AppEng
 
 		this.registration.initialize( event, this.recipeDirectory, this.customRecipeConfig );
 		IntegrationRegistry.INSTANCE.init();
-		CommonHelper.proxy.init();
 
 		AELog.info( "Initialization ( ended after " + start.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}

@@ -19,11 +19,8 @@
 package appeng.items.tools.powered;
 
 
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-
-import com.google.common.base.Optional;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -49,7 +46,6 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
 import appeng.items.contents.CellConfig;
@@ -64,8 +60,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 {
 	public ToolPortableCell()
 	{
-		super( AEConfig.instance.portableCellBattery, Optional.<String>absent() );
-		this.setFeature( EnumSet.of( AEFeature.PortableCell, AEFeature.StorageCells, AEFeature.PoweredTools ) );
+		super( AEConfig.instance.portableCellBattery );
 	}
 
 	@Override

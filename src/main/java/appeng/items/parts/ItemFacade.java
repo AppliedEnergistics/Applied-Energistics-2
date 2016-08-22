@@ -20,7 +20,6 @@ package appeng.items.parts;
 
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -47,7 +46,6 @@ import appeng.api.exceptions.MissingDefinition;
 import appeng.api.parts.IAlphaPassItem;
 import appeng.api.util.AEPartLocation;
 import appeng.core.FacadeConfig;
-import appeng.core.features.AEFeature;
 import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
 import appeng.items.AEBaseItem;
@@ -60,7 +58,6 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 	public ItemFacade()
 	{
-		this.setFeature( EnumSet.of( AEFeature.Facades ) );
 		this.setHasSubtypes( true );
 	}
 

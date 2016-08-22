@@ -19,12 +19,9 @@
 package appeng.debug;
 
 
-import java.util.EnumSet;
-
 import net.minecraft.block.material.Material;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.core.features.AEFeature;
 
 
 public class BlockItemGen extends AEBaseTileBlock
@@ -34,7 +31,6 @@ public class BlockItemGen extends AEBaseTileBlock
 	{
 		super( Material.IRON );
 		this.setTileEntity( TileItemGen.class );
-		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
 
 }

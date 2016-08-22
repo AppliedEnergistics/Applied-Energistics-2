@@ -19,18 +19,15 @@
 package appeng.decorative.stair;
 
 
-import java.util.EnumSet;
-
 import net.minecraft.block.Block;
 
 import appeng.block.AEBaseStairBlock;
-import appeng.core.features.AEFeature;
 
 
 public class BlockStairCommon extends AEBaseStairBlock
 {
 	public BlockStairCommon( final Block block, final String type )
 	{
-		super( block, EnumSet.of( AEFeature.DecorativeQuartzBlocks ), type );
+		super( block, type );
 	}
 }

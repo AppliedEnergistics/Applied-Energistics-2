@@ -19,10 +19,6 @@
 package appeng.items.tools;
 
 
-import java.util.EnumSet;
-
-import com.google.common.base.Optional;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -48,7 +44,6 @@ import appeng.api.util.DimensionalCoord;
 import appeng.api.util.INetworkToolAgent;
 import appeng.client.ClientHelper;
 import appeng.container.AEBaseContainer;
-import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketClick;
@@ -64,9 +59,6 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 
 	public ToolNetworkTool()
 	{
-		super( Optional.<String>absent() );
-
-		this.setFeature( EnumSet.of( AEFeature.NetworkTool ) );
 		this.setMaxStackSize( 1 );
 		this.setHarvestLevel( "wrench", 0 );
 	}

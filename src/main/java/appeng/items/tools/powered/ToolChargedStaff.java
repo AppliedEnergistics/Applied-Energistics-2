@@ -19,17 +19,12 @@
 package appeng.items.tools.powered;
 
 
-import java.util.EnumSet;
-
-import com.google.common.base.Optional;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
 import appeng.core.sync.packets.PacketLightning;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.server.ServerHelper;
@@ -41,8 +36,7 @@ public class ToolChargedStaff extends AEBasePoweredItem
 
 	public ToolChargedStaff()
 	{
-		super( AEConfig.instance.chargedStaffBattery, Optional.<String>absent() );
-		this.setFeature( EnumSet.of( AEFeature.ChargedStaff, AEFeature.PoweredTools ) );
+		super( AEConfig.instance.chargedStaffBattery );
 	}
 
 	@Override

@@ -21,6 +21,7 @@ package appeng.core;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -300,6 +301,11 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	public boolean isFeatureEnabled( final AEFeature f )
 	{
 		return this.featureFlags.contains( f );
+	}
+
+	public boolean areFeaturesEnabled( Collection<AEFeature> features )
+	{
+		return this.featureFlags.containsAll( features );
 	}
 
 	public double wireless_getDrainRate( final double range )

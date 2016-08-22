@@ -31,10 +31,4 @@ public class BlockCraftingStorage extends BlockCraftingUnit
 		this.setTileEntity( TileCraftingStorageTile.class );
 	}
 
-	@Override
-	public Class<ItemCraftingStorage> getItemBlockClass()
-	{
-		return ItemCraftingStorage.class;
-	}
-
 }

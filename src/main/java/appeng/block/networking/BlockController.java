@@ -19,8 +19,6 @@
 package appeng.block.networking;
 
 
-import java.util.EnumSet;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -32,11 +30,10 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.IExtendedBlockState;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.core.features.AEFeature;
 import appeng.tile.networking.TileController;
-
 
 public class BlockController extends AEBaseTileBlock
 {
@@ -77,7 +74,7 @@ public class BlockController extends AEBaseTileBlock
 	@Override
 	protected IProperty[] getAEStates()
 	{
-		return new IProperty[] { AE_BLOCK_FORWARD, AE_BLOCK_UP, CONTROLLER_STATE, CONTROLLER_TYPE };
+		return new IProperty[] { CONTROLLER_STATE, CONTROLLER_TYPE };
 	}
 
 	/**
@@ -90,8 +87,6 @@ public class BlockController extends AEBaseTileBlock
 	{
 
 		// Only used for columns, really
-		EnumFacing up = EnumFacing.UP;
-		EnumFacing forward = EnumFacing.NORTH;
 		ControllerRenderType type = ControllerRenderType.block;
 
 		int x = pos.getX();
@@ -105,20 +100,14 @@ public class BlockController extends AEBaseTileBlock
 
 		if( xx && !yy && !zz )
 		{
-			up = EnumFacing.EAST;
-			forward = EnumFacing.UP;
 			type = ControllerRenderType.column;
 		}
 		else if( !xx && yy && !zz )
 		{
-			up = EnumFacing.UP;
-			forward = EnumFacing.NORTH;
 			type = ControllerRenderType.column;
 		}
 		else if( !xx && !yy && zz )
 		{
-			up = EnumFacing.NORTH;
-			forward = EnumFacing.UP;
 			type = ControllerRenderType.column;
 		}
 		else if( ( xx ? 1 : 0 ) + ( yy ? 1 : 0 ) + ( zz ? 1 : 0 ) >= 2 )
@@ -137,7 +126,43 @@ public class BlockController extends AEBaseTileBlock
 			}
 		}
 
-		return state.withProperty( AE_BLOCK_FORWARD, forward ).withProperty( AE_BLOCK_UP, up ).withProperty( CONTROLLER_TYPE, type );
+		return state.withProperty( CONTROLLER_TYPE, type );
+	}
+
+	@Override
+	public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
+	{
+		// Only used for columns, really
+		EnumFacing up = EnumFacing.UP;
+		EnumFacing forward = EnumFacing.NORTH;
+
+		int x = pos.getX();
+		int y = pos.getY();
+		int z = pos.getZ();
+
+		// Detect whether controllers are on both sides of the x, y, and z axes
+		final boolean xx = this.getTileEntity( world, x - 1, y, z ) instanceof TileController && this.getTileEntity( world, x + 1, y, z ) instanceof TileController;
+		final boolean yy = this.getTileEntity( world, x, y - 1, z ) instanceof TileController && this.getTileEntity( world, x, y + 1, z ) instanceof TileController;
+		final boolean zz = this.getTileEntity( world, x, y, z - 1 ) instanceof TileController && this.getTileEntity( world, x, y, z + 1 ) instanceof TileController;
+
+		if( xx && !yy && !zz )
+		{
+			up = EnumFacing.EAST;
+			forward = EnumFacing.UP;
+		}
+		else if( !xx && yy && !zz )
+		{
+			up = EnumFacing.UP;
+			forward = EnumFacing.NORTH;
+		}
+		else if( !xx && !yy && zz )
+		{
+			up = EnumFacing.NORTH;
+			forward = EnumFacing.UP;
+		}
+
+		IExtendedBlockState extState = (IExtendedBlockState) super.getExtendedState( state, world, pos );
+		return extState.withProperty( FORWARD, forward ).withProperty( UP, up );
 	}
 
 	@Override
@@ -164,7 +189,6 @@ public class BlockController extends AEBaseTileBlock
 		super( Material.IRON );
 		this.setTileEntity( TileController.class );
 		this.setHardness( 6 );
-		this.setFeature( EnumSet.of( AEFeature.Channels ) );
 		this.setDefaultState( getDefaultState().withProperty( CONTROLLER_STATE, ControllerBlockState.offline ).withProperty( CONTROLLER_TYPE, ControllerRenderType.block ) );
 	}
 

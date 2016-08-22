@@ -22,7 +22,6 @@ package appeng.block.networking;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
@@ -60,7 +59,6 @@ import appeng.api.util.AEColor;
 import appeng.block.AEBaseTileBlock;
 import appeng.core.AEConfig;
 import appeng.core.Api;
-import appeng.core.features.AECableBusFeatureHandler;
 import appeng.core.features.AEFeature;
 import appeng.helpers.AEGlassMaterial;
 import appeng.integration.IntegrationRegistry;
@@ -88,7 +86,6 @@ public class BlockCableBus extends AEBaseTileBlock
 		// this will actually be overwritten later through setupTile and the
 		// combined layers
 		this.setTileEntity( TileCableBus.class );
-		this.setFeature( EnumSet.of( AEFeature.Core ) );
 	}
 
 	public static final CableBusContainerUnlistedProperty cableBus = new CableBusContainerUnlistedProperty();
@@ -96,19 +93,14 @@ public class BlockCableBus extends AEBaseTileBlock
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
-		return new ExtendedBlockState( this, new IProperty[0], new IUnlistedProperty[] { cableBus } );
-	}
-
-	@Override
-	public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
-	{
-		return state;
+		return new ExtendedBlockState( this, new IProperty[0], new IUnlistedProperty[] { FORWARD, UP, cableBus } );
 	}
 
 	@Override
 	public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
 	{
-		return ( (IExtendedBlockState) state ).withProperty( cableBus, ( (TileCableBus) world.getTileEntity( pos ) ).getCableBus() );
+		return ( (IExtendedBlockState) super.getExtendedState( state, world, pos ) )
+				.withProperty( cableBus, ( (TileCableBus) world.getTileEntity( pos ) ).getCableBus() );
 	}
 
 	@Override
@@ -357,13 +349,6 @@ public class BlockCableBus extends AEBaseTileBlock
 	public void getCheckedSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
 	{
 		// do nothing
-	}
-
-	@Override
-	protected void setFeature( final EnumSet<AEFeature> f )
-	{
-		final AECableBusFeatureHandler featureHandler = new AECableBusFeatureHandler( f, this, this.getFeatureSubName() );
-		this.setHandler( featureHandler );
 	}
 
 	public void setupTile()

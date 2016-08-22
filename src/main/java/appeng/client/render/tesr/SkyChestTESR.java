@@ -6,6 +6,8 @@ import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.block.storage.BlockSkyChest;
 import appeng.block.storage.BlockSkyChest.SkyChestType;
@@ -13,7 +15,7 @@ import appeng.client.render.FacingToRotation;
 import appeng.core.AppEng;
 import appeng.tile.storage.TileSkyChest;
 
-
+@SideOnly( Side.CLIENT )
 public class SkyChestTESR extends TileEntitySpecialRenderer<TileSkyChest>
 {
 

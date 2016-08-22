@@ -19,10 +19,6 @@
 package appeng.decorative.solid;
 
 
-import java.util.EnumSet;
-
-import com.google.common.base.Optional;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -34,7 +30,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import appeng.block.AEBaseBlock;
-import appeng.core.features.AEFeature;
 import appeng.core.worlddata.WorldData;
 import appeng.util.Platform;
 
@@ -48,7 +43,7 @@ public class BlockSkyStone extends AEBaseBlock
 
 	public BlockSkyStone( final SkystoneType type )
 	{
-		super( Material.ROCK, Optional.of( type.name() ) );
+		super( Material.ROCK );
 		this.setHardness( 50 );
 		this.setHasSubtypes( true );
 		this.blockResistance = BLOCK_RESISTANCE;
@@ -56,7 +51,6 @@ public class BlockSkyStone extends AEBaseBlock
 		{
 			this.setHarvestLevel( "pickaxe", 3 );
 		}
-		this.setFeature( EnumSet.of( AEFeature.Core ) );
 
 		this.type = type;
 

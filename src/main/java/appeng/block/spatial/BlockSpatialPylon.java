@@ -19,8 +19,6 @@
 package appeng.block.spatial;
 
 
-import java.util.EnumSet;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
@@ -28,10 +26,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.core.features.AEFeature;
 import appeng.helpers.AEGlassMaterial;
 import appeng.tile.spatial.TileSpatialPylon;
-
 
 public class BlockSpatialPylon extends AEBaseTileBlock
 {
@@ -40,7 +36,6 @@ public class BlockSpatialPylon extends AEBaseTileBlock
 	{
 		super( AEGlassMaterial.INSTANCE );
 		this.setTileEntity( TileSpatialPylon.class );
-		this.setFeature( EnumSet.of( AEFeature.SpatialIO ) );
 	}
 
 	@Override

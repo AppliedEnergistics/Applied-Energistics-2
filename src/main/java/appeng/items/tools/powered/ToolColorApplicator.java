@@ -21,14 +21,11 @@ package appeng.items.tools.powered;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.google.common.base.Optional;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
@@ -67,7 +64,6 @@ import appeng.api.util.DimensionalCoord;
 import appeng.block.misc.BlockPaint;
 import appeng.block.networking.BlockCableBus;
 import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.DispenserBlockTool;
@@ -104,8 +100,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 	public ToolColorApplicator()
 	{
-		super( AEConfig.instance.colorApplicatorBattery, Optional.<String>absent() );
-		this.setFeature( EnumSet.of( AEFeature.ColorApplicator, AEFeature.PoweredTools ) );
+		super( AEConfig.instance.colorApplicatorBattery );
 		if( Platform.isClient() )
 		{
 			// TODO - color applicator
@@ -113,10 +108,9 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		}
 	}
 
-	@Override
 	public void postInit()
 	{
-		super.postInit();
+		// TODO BOOTSTRAP
 		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( this, new DispenserBlockTool() );
 	}
 

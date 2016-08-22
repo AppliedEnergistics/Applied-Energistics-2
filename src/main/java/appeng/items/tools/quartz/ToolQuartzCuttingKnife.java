@@ -19,10 +19,6 @@
 package appeng.items.tools.quartz;
 
 
-import java.util.EnumSet;
-
-import com.google.common.base.Optional;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -48,10 +44,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 
 	public ToolQuartzCuttingKnife( final AEFeature type )
 	{
-		super( Optional.of( type.name() ) );
-
 		this.type = type;
-		this.setFeature( EnumSet.of( type, AEFeature.QuartzKnife ) );
 		this.setMaxDamage( 50 );
 		this.setMaxStackSize( 1 );
 	}

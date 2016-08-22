@@ -19,10 +19,7 @@
 package appeng.items.storage;
 
 
-import java.util.EnumSet;
 import java.util.List;
-
-import com.google.common.base.Optional;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -33,7 +30,6 @@ import net.minecraftforge.common.DimensionManager;
 import appeng.api.implementations.TransitionResult;
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.util.WorldCoord;
-import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.core.worlddata.WorldData;
 import appeng.items.AEBaseItem;
@@ -48,8 +44,6 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 
 	public ItemSpatialStorageCell( final int spatialScale )
 	{
-		super( Optional.of( spatialScale + "Cubed" ) );
-		this.setFeature( EnumSet.of( AEFeature.SpatialIO ) );
 		this.setMaxStackSize( 1 );
 		this.maxRegion = spatialScale;
 	}

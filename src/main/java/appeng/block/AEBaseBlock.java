@@ -20,21 +20,16 @@ package appeng.block;
 
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import javax.annotation.Nullable;
-
-import com.google.common.base.Optional;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -53,27 +48,19 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
-import appeng.core.features.AEBlockFeatureHandler;
-import appeng.core.features.AEFeature;
-import appeng.core.features.FeatureNameExtractor;
-import appeng.core.features.IAEFeature;
-import appeng.core.features.IFeatureHandler;
 import appeng.helpers.AEGlassMaterial;
 import appeng.helpers.ICustomCollision;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
 
 
-public abstract class AEBaseBlock extends Block implements IAEFeature
+public abstract class AEBaseBlock extends Block
 {
 
-	private final String featureFullName;
-	private final Optional<String> featureSubName;
 	private boolean isOpaque = true;
 	private boolean isFullSize = true;
 	private boolean hasSubtypes = false;
 	private boolean isInventory = false;
-	private IFeatureHandler handler;
 
 	protected AxisAlignedBB boundingBox = FULL_BLOCK_AABB;
 
@@ -84,15 +71,6 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	}
 
 	protected AEBaseBlock( final Material mat )
-	{
-		this( mat, Optional.<String>absent() );
-		this.setLightOpacity( 255 );
-		this.setLightLevel( 0 );
-		this.setHardness( 2.2F );
-		this.setHarvestLevel( "pickaxe", 0 );
-	}
-
-	protected AEBaseBlock( final Material mat, final Optional<String> subName )
 	{
 		super( mat );
 
@@ -113,14 +91,17 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 			this.setSoundType( SoundType.METAL );
 		}
 
-		this.featureFullName = new FeatureNameExtractor( this.getClass(), subName ).get();
-		this.featureSubName = subName;
+		this.setLightOpacity( 255 );
+		this.setLightLevel( 0 );
+		this.setHardness( 2.2F );
+		this.setHarvestLevel( "pickaxe", 0 );
 	}
 
 	@Override
 	public String toString()
 	{
-		return this.featureFullName;
+		String regName = getRegistryName() != null ? getRegistryName().getResourcePath() : "unregistered";
+		return getClass().getSimpleName() + "[" + regName + "]";
 	}
 
 	@Override
@@ -132,29 +113,6 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	protected IProperty[] getAEStates()
 	{
 		return new IProperty[0];
-	}
-
-	protected void setFeature( final EnumSet<AEFeature> f )
-	{
-		final AEBlockFeatureHandler featureHandler = new AEBlockFeatureHandler( f, this, this.getFeatureSubName() );
-		this.setHandler( featureHandler );
-	}
-
-	@Override
-	public final IFeatureHandler handler()
-	{
-		return this.handler;
-	}
-
-	protected final void setHandler( final IFeatureHandler handler )
-	{
-		this.handler = handler;
-	}
-
-	@Override
-	public void postInit()
-	{
-		// override!
 	}
 
 	public boolean isOpaque()
@@ -379,7 +337,8 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	{
 		if( this instanceof IOrientableBlock )
 		{
-			return ( (IOrientableBlock) this ).getOrientable( w, pos );
+			IOrientableBlock orientable = (IOrientableBlock) this;
+			return orientable.getOrientable( w, pos );
 		}
 		return null;
 	}
@@ -445,12 +404,6 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		super.getSubBlocks( item, tabs, itemStacks );
 	}
 
-	@SideOnly( Side.CLIENT )
-	public void setRenderStateByMeta( final int itemDamage )
-	{
-
-	}
-
 	public String getUnlocalizedName( final ItemStack is )
 	{
 		return this.getUnlocalizedName();
@@ -459,11 +412,6 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	public void addInformation( final ItemStack is, final EntityPlayer player, final List<String> lines, final boolean advancedItemTooltips )
 	{
 
-	}
-
-	public Class<? extends AEBaseItemBlock> getItemBlockClass()
-	{
-		return AEBaseItemBlock.class;
 	}
 
 	public boolean hasSubtypes()
@@ -553,11 +501,6 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 		return isOpaque;
 	}
 
-	public Optional<String> getFeatureSubName()
-	{
-		return this.featureSubName;
-	}
-
 	public boolean isInventory()
 	{
 		return this.isInventory;
@@ -571,17 +514,6 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	public void setHasSubtypes( final boolean hasSubtypes )
 	{
 		this.hasSubtypes = hasSubtypes;
-	}
-
-	/**
-	 * Return the item mesh definition that should be used to determine the item model of an item stack,
-	 * instead of the default model. Return null if your Block doesn't use a custom ItemMeshDefinition (the default).
-	 * The returned ItemMeshDefinition will automatically be registered with the ItemModelMesher during the registration of the block.
-	 */
-	@SideOnly( Side.CLIENT )
-	public ItemMeshDefinition getItemMeshDefinition()
-	{
-		return null;
 	}
 
 }

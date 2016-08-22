@@ -19,8 +19,6 @@
 package appeng.block.qnb;
 
 
-import java.util.EnumSet;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -30,10 +28,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.qnb.TileQuantumBridge;
-
 
 public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICustomCollision
 {
@@ -46,7 +42,6 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 		this.boundingBox = new AxisAlignedBB( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );
 		this.setLightOpacity( 0 );
 		this.setFullSize( this.setOpaque( false ) );
-		this.setFeature( EnumSet.of( AEFeature.QuantumNetworkBridge ) );
 	}
 
 	@Override

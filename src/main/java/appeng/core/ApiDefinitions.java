@@ -21,11 +21,11 @@ package appeng.core;
 
 import appeng.api.definitions.IDefinitions;
 import appeng.api.parts.IPartHelper;
+import appeng.bootstrap.FeatureFactory;
 import appeng.core.api.definitions.ApiBlocks;
 import appeng.core.api.definitions.ApiItems;
 import appeng.core.api.definitions.ApiMaterials;
 import appeng.core.api.definitions.ApiParts;
-import appeng.core.api.definitions.DefinitionConstructor;
 
 
 /**
@@ -37,31 +37,22 @@ public final class ApiDefinitions implements IDefinitions
 	private final ApiItems items;
 	private final ApiMaterials materials;
 	private final ApiParts parts;
-	private final FeatureHandlerRegistry handlers;
-	private final FeatureRegistry features;
+
+	private final FeatureFactory registry = new FeatureFactory();
 
 	public ApiDefinitions( final IPartHelper partHelper )
 	{
-		this.features = new FeatureRegistry();
-		this.handlers = new FeatureHandlerRegistry();
-
-		final DefinitionConstructor constructor = new DefinitionConstructor( this.features, this.handlers );
-
-		this.blocks = new ApiBlocks( constructor );
-		this.items = new ApiItems( constructor );
-		this.materials = new ApiMaterials( constructor );
-		this.parts = new ApiParts( constructor, partHelper );
+		this.blocks = new ApiBlocks( registry );
+		this.items = new ApiItems( registry );
+		this.materials = new ApiMaterials( registry );
+		this.parts = new ApiParts( registry, partHelper );
 	}
 
-	FeatureHandlerRegistry getFeatureHandlerRegistry()
+	public FeatureFactory getRegistry()
 	{
-		return this.handlers;
+		return registry;
 	}
 
-	public FeatureRegistry getFeatureRegistry()
-	{
-		return this.features;
-	}
 
 	@Override
 	public ApiBlocks blocks()

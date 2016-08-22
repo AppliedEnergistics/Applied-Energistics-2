@@ -19,12 +19,8 @@
 package appeng.items.tools.powered;
 
 
-import java.util.EnumSet;
 import java.util.List;
-
 import javax.annotation.Nullable;
-
-import com.google.common.base.Optional;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
@@ -89,14 +85,12 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 
 	public ToolMassCannon()
 	{
-		super( AEConfig.instance.matterCannonBattery, Optional.<String>absent() );
-		this.setFeature( EnumSet.of( AEFeature.MatterCannon, AEFeature.PoweredTools ) );
+		super( AEConfig.instance.matterCannonBattery );
 	}
 
-	@Override
 	public void postInit()
 	{
-		super.postInit();
+		// TODO BOOTSTRAP
 		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( this, new DispenserMatterCannon() );
 	}
 

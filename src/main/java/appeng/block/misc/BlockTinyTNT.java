@@ -20,13 +20,10 @@ package appeng.block.misc;
 
 
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -36,7 +33,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -49,12 +45,9 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 import appeng.block.AEBaseBlock;
 import appeng.core.AppEng;
-import appeng.core.features.AEFeature;
 import appeng.entity.EntityIds;
 import appeng.entity.EntityTinyTNTPrimed;
 import appeng.helpers.ICustomCollision;
-import appeng.hooks.DispenserBehaviorTinyTNT;
-
 
 public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 {
@@ -67,16 +60,8 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 		this.setFullSize( this.setOpaque( false ) );
 		this.setSoundType( SoundType.GROUND );
 		this.setHardness( 0F );
-		this.setFeature( EnumSet.of( AEFeature.TinyTNT ) );
 
 		EntityRegistry.registerModEntity( EntityTinyTNTPrimed.class, "EntityTinyTNTPrimed", EntityIds.get( EntityTinyTNTPrimed.class ), AppEng.instance(), 16, 4, true );
-	}
-
-	@Override
-	public void postInit()
-	{
-		super.postInit();
-		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( Item.getItemFromBlock( this ), new DispenserBehaviorTinyTNT() );
 	}
 
 	@Override

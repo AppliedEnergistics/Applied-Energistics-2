@@ -19,7 +19,6 @@
 package appeng.decorative.solid;
 
 
-import java.util.EnumSet;
 import java.util.Random;
 
 import net.minecraft.block.material.Material;
@@ -31,12 +30,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinition;
 import appeng.block.AEBaseBlock;
-import appeng.core.features.AEFeature;
 
 
 public class BlockQuartzOre extends AEBaseBlock
@@ -53,19 +50,12 @@ public class BlockQuartzOre extends AEBaseBlock
 		this.boostBrightnessLow = 0;
 		this.boostBrightnessHigh = 1;
 		this.enhanceBrightness = false;
-		this.setFeature( EnumSet.of( AEFeature.Core ) );
 	}
 
 	@Override
 	public BlockRenderLayer getBlockLayer()
 	{
 		return BlockRenderLayer.CUTOUT;
-	}
-
-	@Override
-	public void postInit()
-	{
-		OreDictionary.registerOre( "oreCertusQuartz", new ItemStack( this ) );
 	}
 
 	@Override

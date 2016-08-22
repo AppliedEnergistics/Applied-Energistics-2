@@ -19,7 +19,6 @@
 package appeng.block.misc;
 
 
-import java.util.EnumSet;
 import java.util.Random;
 
 import net.minecraft.block.SoundType;
@@ -32,12 +31,13 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
-import appeng.core.features.AEFeature;
 import appeng.tile.misc.TileQuartzGrowthAccelerator;
 import appeng.util.Platform;
 
@@ -52,7 +52,6 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock
 		super( Material.ROCK );
 		this.setSoundType( SoundType.METAL );
 		this.setTileEntity( TileQuartzGrowthAccelerator.class );
-		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setDefaultState( getDefaultState().withProperty( POWERED, false ) );
 	}
 
@@ -69,9 +68,10 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock
 	@Override
 	protected IProperty[] getAEStates()
 	{
-		return new IProperty[] { AE_BLOCK_FORWARD, AE_BLOCK_UP, POWERED };
+		return new IProperty[] { POWERED };
 	}
 
+	@SideOnly( Side.CLIENT )
 	@Override
 	public void randomDisplayTick( final IBlockState state, final World w, final BlockPos pos, final Random r )
 	{

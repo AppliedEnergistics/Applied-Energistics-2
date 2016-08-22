@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -37,21 +38,11 @@ public class ItemDefinition implements IItemDefinition
 	private final String identifier;
 	private final Optional<Item> item;
 
-	public ItemDefinition( final String identifier, final Item item, final ActivityState state )
+	public ItemDefinition( String registryName, Item item )
 	{
-		this.identifier = Preconditions.checkNotNull( identifier );
-		Preconditions.checkArgument( !identifier.isEmpty() );
-		Preconditions.checkNotNull( item );
-		Preconditions.checkNotNull( state );
-
-		if( state == ActivityState.Enabled )
-		{
-			this.item = Optional.of( item );
-		}
-		else
-		{
-			this.item = Optional.absent();
-		}
+		Preconditions.checkArgument( !Strings.isNullOrEmpty( registryName ), "registryName" );
+		this.identifier = registryName;
+		this.item = Optional.fromNullable( item );
 	}
 
 	@Nonnull

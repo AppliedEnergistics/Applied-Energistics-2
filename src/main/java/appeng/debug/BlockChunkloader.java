@@ -19,7 +19,6 @@
 package appeng.debug;
 
 
-import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.block.material.Material;
@@ -30,7 +29,6 @@ import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.core.AppEng;
-import appeng.core.features.AEFeature;
 
 
 public class BlockChunkloader extends AEBaseTileBlock implements LoadingCallback
@@ -41,7 +39,6 @@ public class BlockChunkloader extends AEBaseTileBlock implements LoadingCallback
 		super( Material.IRON );
 		this.setTileEntity( TileChunkLoader.class );
 		ForgeChunkManager.setForcedChunkLoadingCallback( AppEng.instance(), this );
-		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
 
 	@Override

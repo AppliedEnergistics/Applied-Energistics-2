@@ -1,7 +1,31 @@
 {
-    "variants": {
-        "normal": {
-            "model": "appliedenergistics2:builtin/connected_glass"
+    "multipart": [
+        {
+            "apply": [{ "model": "appliedenergistics2:quartz_glass_1" }, { "model": "appliedenergistics2:quartz_glass_2" }, { "model": "appliedenergistics2:quartz_glass_3" }, { "model": "appliedenergistics2:quartz_glass_4" }]
+        },
+        {
+            "when": { "down": "false" },
+            "apply": { "model": "appliedenergistics2:quartz_glass_frame", "x": 90 }
+        },
+        {
+            "when": { "up": "false" },
+            "apply": { "model": "appliedenergistics2:quartz_glass_frame", "x": -90 }
+        },
+        {
+            "when": { "north": "false" },
+            "apply": { "model": "appliedenergistics2:quartz_glass_frame"}
+        },
+        {
+            "when": { "south": "false" },
+            "apply": { "model": "appliedenergistics2:quartz_glass_frame", "y": 180 }
+        },
+        {
+            "when": { "west": "false" },
+            "apply": { "model": "appliedenergistics2:quartz_glass_frame", "y": -90 }
+        },
+        {
+            "when": { "east": "false" },
+            "apply": { "model": "appliedenergistics2:quartz_glass_frame", "y": 90 }
         }
-    }
+    ]
 }

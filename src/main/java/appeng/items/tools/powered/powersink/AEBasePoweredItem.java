@@ -19,14 +19,11 @@
 package appeng.items.tools.powered.powersink;
 
 
-import com.google.common.base.Optional;
-
-
 public abstract class AEBasePoweredItem extends AERootPoweredItem
 {
-	public AEBasePoweredItem( final double powerCapacity, final Optional<String> subName )
+	public AEBasePoweredItem( final double powerCapacity )
 	{
-		super( powerCapacity, subName );
+		super( powerCapacity );
 
 		this.setMaxStackSize( 1 );
 	}

@@ -19,7 +19,6 @@
 package appeng.block.misc;
 
 
-import java.util.EnumSet;
 import java.util.Random;
 import javax.annotation.Nullable;
 
@@ -39,12 +38,10 @@ import net.minecraft.world.World;
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
 import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.AEBaseTile;
 import appeng.tile.misc.TileVibrationChamber;
 import appeng.util.Platform;
-
 
 public final class BlockVibrationChamber extends AEBaseTileBlock
 {
@@ -57,7 +54,6 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 		super( Material.IRON );
 		this.setTileEntity( TileVibrationChamber.class );
 		this.setHardness( 4.2F );
-		this.setFeature( EnumSet.of( AEFeature.PowerGen ) );
 		this.setDefaultState( getDefaultState().withProperty( ACTIVE, false ) );
 	}
 
@@ -74,7 +70,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 	@Override
 	protected IProperty[] getAEStates()
 	{
-		return new IProperty[]{ AE_BLOCK_FORWARD, AE_BLOCK_UP, ACTIVE };
+		return new IProperty[]{ ACTIVE };
 	}
 
 	@Override

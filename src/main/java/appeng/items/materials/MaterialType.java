@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 import appeng.core.AppEng;
@@ -37,86 +38,86 @@ import appeng.entity.EntitySingularity;
 
 public enum MaterialType
 {
-	InvalidType( -1, AEFeature.Core ),
+	InvalidType( -1, "material_invalid_type", AEFeature.Core ),
 
-	CertusQuartzCrystal( 0, AEFeature.Core, "crystalCertusQuartz" ),
-	CertusQuartzCrystalCharged( 1, AEFeature.Core, EntityChargedQuartz.class ),
+	CertusQuartzCrystal( 0, "material_certus_quartz_crystal", AEFeature.Core, "crystalCertusQuartz" ),
+	CertusQuartzCrystalCharged( 1, "material_certus_quartz_crystal_charged", AEFeature.Core, EntityChargedQuartz.class ),
 
-	CertusQuartzDust( 2, AEFeature.Core, "dustCertusQuartz" ),
-	NetherQuartzDust( 3, AEFeature.Core, "dustNetherQuartz" ),
-	Flour( 4, AEFeature.Flour, "dustWheat" ),
-	GoldDust( 51, AEFeature.Core, "dustGold" ),
-	IronDust( 49, AEFeature.Core, "dustIron" ),
-	IronNugget( 50, AEFeature.Core, "nuggetIron" ),
+	CertusQuartzDust( 2, "material_certus_quartz_dust", AEFeature.Core, "dustCertusQuartz" ),
+	NetherQuartzDust( 3, "material_nether_quartz_dust", AEFeature.Core, "dustNetherQuartz" ),
+	Flour( 4, "material_flour", AEFeature.Flour, "dustWheat" ),
+	GoldDust( 51, "material_gold_dust", AEFeature.Core, "dustGold" ),
+	IronDust( 49, "material_iron_dust", AEFeature.Core, "dustIron" ),
+	IronNugget( 50, "material_iron_nugget", AEFeature.Core, "nuggetIron" ),
 
-	Silicon( 5, AEFeature.Core, "itemSilicon" ),
-	MatterBall( 6 ),
+	Silicon( 5, "material_silicon", AEFeature.Core, "itemSilicon" ),
+	MatterBall( 6, "material_matter_ball" ),
 
-	FluixCrystal( 7, AEFeature.Core, "crystalFluix" ),
-	FluixDust( 8, AEFeature.Core, "dustFluix" ),
-	FluixPearl( 9, AEFeature.Core, "pearlFluix" ),
+	FluixCrystal( 7, "material_fluix_crystal", AEFeature.Core, "crystalFluix" ),
+	FluixDust( 8, "material_fluix_dust", AEFeature.Core, "dustFluix" ),
+	FluixPearl( 9, "material_fluix_pearl", AEFeature.Core, "pearlFluix" ),
 
-	PurifiedCertusQuartzCrystal( 10 ),
-	PurifiedNetherQuartzCrystal( 11 ),
-	PurifiedFluixCrystal( 12 ),
+	PurifiedCertusQuartzCrystal( 10, "material_purified_certus_quartz_crystal" ),
+	PurifiedNetherQuartzCrystal( 11, "material_purified_nether_quartz_crystal" ),
+	PurifiedFluixCrystal( 12, "material_purified_fluix_crystal" ),
 
-	CalcProcessorPress( 13 ),
-	EngProcessorPress( 14 ),
-	LogicProcessorPress( 15 ),
+	CalcProcessorPress( 13, "material_calc_processor_press" ),
+	EngProcessorPress( 14, "material_eng_processor_press" ),
+	LogicProcessorPress( 15, "material_logic_processor_press" ),
 
-	CalcProcessorPrint( 16 ),
-	EngProcessorPrint( 17 ),
-	LogicProcessorPrint( 18 ),
+	CalcProcessorPrint( 16, "material_calc_processor_print" ),
+	EngProcessorPrint( 17, "material_eng_processor_print" ),
+	LogicProcessorPrint( 18, "material_logic_processor_print" ),
 
-	SiliconPress( 19 ),
-	SiliconPrint( 20 ),
+	SiliconPress( 19, "material_silicon_press" ),
+	SiliconPrint( 20, "material_silicon_print" ),
 
-	NamePress( 21 ),
+	NamePress( 21, "material_name_press" ),
 
-	LogicProcessor( 22 ),
-	CalcProcessor( 23 ),
-	EngProcessor( 24 ),
+	LogicProcessor( 22, "material_logic_processor" ),
+	CalcProcessor( 23, "material_calc_processor" ),
+	EngProcessor( 24, "material_eng_processor" ),
 
 	// Basic Cards
-	BasicCard( 25 ),
-	CardRedstone( 26 ),
-	CardCapacity( 27 ),
+	BasicCard( 25, "material_basic_card" ),
+	CardRedstone( 26, "material_card_redstone" ),
+	CardCapacity( 27, "material_card_capacity" ),
 
 	// Adv Cards
-	AdvCard( 28 ),
-	CardFuzzy( 29 ),
-	CardSpeed( 30 ),
-	CardInverter( 31 ),
+	AdvCard( 28, "material_adv_card" ),
+	CardFuzzy( 29, "material_card_fuzzy" ),
+	CardSpeed( 30, "material_card_speed" ),
+	CardInverter( 31, "material_card_inverter" ),
 
-	Cell2SpatialPart( 32, AEFeature.SpatialIO ),
-	Cell16SpatialPart( 33, AEFeature.SpatialIO ),
-	Cell128SpatialPart( 34, AEFeature.SpatialIO ),
+	Cell2SpatialPart( 32, "material_cell2_spatial_part", AEFeature.SpatialIO ),
+	Cell16SpatialPart( 33, "material_cell16_spatial_part", AEFeature.SpatialIO ),
+	Cell128SpatialPart( 34, "material_cell128_spatial_part", AEFeature.SpatialIO ),
 
-	Cell1kPart( 35, AEFeature.StorageCells ),
-	Cell4kPart( 36, AEFeature.StorageCells ),
-	Cell16kPart( 37, AEFeature.StorageCells ),
-	Cell64kPart( 38, AEFeature.StorageCells ),
-	EmptyStorageCell( 39, AEFeature.StorageCells ),
+	Cell1kPart( 35, "material_cell1k_part", AEFeature.StorageCells ),
+	Cell4kPart( 36, "material_cell4k_part", AEFeature.StorageCells ),
+	Cell16kPart( 37, "material_cell16k_part", AEFeature.StorageCells ),
+	Cell64kPart( 38, "material_cell64k_part", AEFeature.StorageCells ),
+	EmptyStorageCell( 39, "material_empty_storage_cell", AEFeature.StorageCells ),
 
-	WoodenGear( 40, AEFeature.GrindStone, "gearWood" ),
+	WoodenGear( 40, "material_wooden_gear", AEFeature.GrindStone, "gearWood" ),
 
-	Wireless( 41, AEFeature.WirelessAccessTerminal ),
-	WirelessBooster( 42, AEFeature.WirelessAccessTerminal ),
+	Wireless( 41, "material_wireless", AEFeature.WirelessAccessTerminal ),
+	WirelessBooster( 42, "material_wireless_booster", AEFeature.WirelessAccessTerminal ),
 
-	FormationCore( 43 ),
-	AnnihilationCore( 44 ),
+	FormationCore( 43, "material_formation_core" ),
+	AnnihilationCore( 44, "material_annihilation_core" ),
 
-	SkyDust( 45, AEFeature.Core ),
+	SkyDust( 45, "material_sky_dust", AEFeature.Core ),
 
-	EnderDust( 46, AEFeature.QuantumNetworkBridge, "dustEnder,dustEnderPearl", EntitySingularity.class ),
-	Singularity( 47, AEFeature.QuantumNetworkBridge, EntitySingularity.class ),
-	QESingularity( 48, AEFeature.QuantumNetworkBridge, EntitySingularity.class ),
+	EnderDust( 46, "material_ender_dust", AEFeature.QuantumNetworkBridge, "dustEnder,dustEnderPearl", EntitySingularity.class ),
+	Singularity( 47, "material_singularity", AEFeature.QuantumNetworkBridge, EntitySingularity.class ),
+	QESingularity( 48, "material_qesingularity", AEFeature.QuantumNetworkBridge, EntitySingularity.class ),
 
-	BlankPattern( 52 ),
-	CardCrafting( 53 );
+	BlankPattern( 52, "material_blank_pattern" ),
+	CardCrafting( 53, "material_card_crafting" );
 
 	private final EnumSet<AEFeature> features;
-	private final ModelResourceLocation model = new ModelResourceLocation( "appliedenergistics2:ItemMaterial." + name() );
+	private final ModelResourceLocation model;
 	private Item itemInstance;
 	private int damageValue;
 	// stack!
@@ -125,40 +126,37 @@ public enum MaterialType
 	private Class<? extends Entity> droppedEntity;
 	private boolean isRegistered = false;
 
-	MaterialType( final int metaValue )
+	MaterialType( final int metaValue, String modelName )
 	{
-		this.setDamageValue( metaValue );
-		this.features = EnumSet.of( AEFeature.Core );
+		this( metaValue, modelName, AEFeature.Core );
 	}
 
-	MaterialType( final int metaValue, final AEFeature part )
+	MaterialType( final int metaValue, String modelName, final AEFeature part )
 	{
 		this.setDamageValue( metaValue );
 		this.features = EnumSet.of( part );
+		this.model = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, modelName ), "inventory" );
 	}
 
-	MaterialType( final int metaValue, final AEFeature part, final Class<? extends Entity> c )
+	MaterialType( final int metaValue, String modelName, final AEFeature part, final Class<? extends Entity> c )
 	{
-		this.features = EnumSet.of( part );
-		this.setDamageValue( metaValue );
+		this( metaValue, modelName, part );
 		this.droppedEntity = c;
 
 		EntityRegistry.registerModEntity( this.droppedEntity, this.droppedEntity.getSimpleName(), EntityIds.get( this.droppedEntity ), AppEng.instance(), 16, 4, true );
 	}
 
-	MaterialType( final int metaValue, final AEFeature part, final String oreDictionary, final Class<? extends Entity> c )
+	MaterialType( final int metaValue, String modelName, final AEFeature part, final String oreDictionary, final Class<? extends Entity> c )
 	{
-		this.features = EnumSet.of( part );
-		this.setDamageValue( metaValue );
+		this( metaValue, modelName, part );
 		this.oreName = oreDictionary;
 		this.droppedEntity = c;
 		EntityRegistry.registerModEntity( this.droppedEntity, this.droppedEntity.getSimpleName(), EntityIds.get( this.droppedEntity ), AppEng.instance(), 16, 4, true );
 	}
 
-	MaterialType( final int metaValue, final AEFeature part, final String oreDictionary )
+	MaterialType( final int metaValue, String modelName, final AEFeature part, final String oreDictionary )
 	{
-		this.features = EnumSet.of( part );
-		this.setDamageValue( metaValue );
+		this( metaValue, modelName, part );
 		this.oreName = oreDictionary;
 	}
 

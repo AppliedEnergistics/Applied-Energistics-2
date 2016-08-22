@@ -22,8 +22,6 @@ package appeng.items.tools.powered.powersink;
 import java.text.MessageFormat;
 import java.util.List;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -43,9 +41,8 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 	private static final String POWER_NBT_KEY = "internalCurrentPower";
 	private final double powerCapacity;
 
-	public AERootPoweredItem( final double powerCapacity, final Optional<String> subName )
+	public AERootPoweredItem( final double powerCapacity )
 	{
-		super( subName );
 		this.setMaxDamage( 32 );
 		this.hasSubtypes = false;
 		this.setFull3D();

@@ -19,7 +19,6 @@
 package appeng.debug;
 
 
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -45,7 +44,6 @@ import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
-import appeng.core.features.AEFeature;
 import appeng.hooks.TickHandler;
 import appeng.items.AEBaseItem;
 import appeng.me.Grid;
@@ -58,11 +56,6 @@ import appeng.util.Platform;
 
 public class ToolDebugCard extends AEBaseItem
 {
-	public ToolDebugCard()
-	{
-		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
-	}
-
 	@Override
 	public EnumActionResult onItemUseFirst( final ItemStack heldItem, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{

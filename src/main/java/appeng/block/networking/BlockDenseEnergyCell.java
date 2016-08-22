@@ -19,11 +19,7 @@
 package appeng.block.networking;
 
 
-import java.util.EnumSet;
-
-import appeng.core.features.AEFeature;
 import appeng.tile.networking.TileDenseEnergyCell;
-
 
 public class BlockDenseEnergyCell extends BlockEnergyCell
 {
@@ -31,7 +27,6 @@ public class BlockDenseEnergyCell extends BlockEnergyCell
 	public BlockDenseEnergyCell()
 	{
 		this.setTileEntity( TileDenseEnergyCell.class );
-		this.setFeature( EnumSet.of( AEFeature.DenseEnergyCells ) );
 	}
 
 	@Override

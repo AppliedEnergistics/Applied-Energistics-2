@@ -19,8 +19,6 @@
 package appeng.block.storage;
 
 
-import java.util.EnumSet;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.material.Material;
@@ -34,7 +32,6 @@ import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
-import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.storage.TileDrive;
 import appeng.util.Platform;
@@ -47,7 +44,6 @@ public class BlockDrive extends AEBaseTileBlock
 	{
 		super( Material.IRON );
 		this.setTileEntity( TileDrive.class );
-		this.setFeature( EnumSet.of( AEFeature.StorageCells, AEFeature.MEDrive ) );
 	}
 
 	@Override

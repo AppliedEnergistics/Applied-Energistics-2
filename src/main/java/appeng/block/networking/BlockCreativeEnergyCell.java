@@ -19,13 +19,9 @@
 package appeng.block.networking;
 
 
-import java.util.EnumSet;
-
 import appeng.block.AEBaseTileBlock;
-import appeng.core.features.AEFeature;
 import appeng.helpers.AEGlassMaterial;
 import appeng.tile.networking.TileCreativeEnergyCell;
-
 
 public class BlockCreativeEnergyCell extends AEBaseTileBlock
 {
@@ -34,6 +30,5 @@ public class BlockCreativeEnergyCell extends AEBaseTileBlock
 	{
 		super( AEGlassMaterial.INSTANCE );
 		this.setTileEntity( TileCreativeEnergyCell.class );
-		this.setFeature( EnumSet.of( AEFeature.Creative ) );
 	}
 }

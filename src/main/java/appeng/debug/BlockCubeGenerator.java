@@ -19,8 +19,6 @@
 package appeng.debug;
 
 
-import java.util.EnumSet;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.material.Material;
@@ -32,7 +30,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.core.features.AEFeature;
 
 
 public class BlockCubeGenerator extends AEBaseTileBlock
@@ -42,7 +39,6 @@ public class BlockCubeGenerator extends AEBaseTileBlock
 	{
 		super( Material.IRON );
 		this.setTileEntity( TileCubeGenerator.class );
-		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
 	}
 
 	@Override

@@ -20,9 +20,7 @@ package appeng.block.networking;
 
 
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.state.IBlockState;
@@ -38,13 +36,11 @@ import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
-import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.AEGlassMaterial;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.networking.TileWireless;
 import appeng.util.Platform;
-
 
 public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 {
@@ -56,7 +52,6 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 		this.setLightOpacity( 0 );
 		this.setFullSize( false );
 		this.setOpaque( false );
-		this.setFeature( EnumSet.of( AEFeature.Core, AEFeature.WirelessAccessTerminal ) );
 	}
 
 	@Override

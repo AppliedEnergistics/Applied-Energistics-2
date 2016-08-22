@@ -19,25 +19,16 @@
 package appeng.block;
 
 
-import java.util.EnumSet;
-
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockStairs;
 
-import appeng.core.features.AEBlockFeatureHandler;
-import appeng.core.features.AEFeature;
-import appeng.core.features.IAEFeature;
-import appeng.core.features.IFeatureHandler;
 
-
-public abstract class AEBaseStairBlock extends BlockStairs implements IAEFeature, IHasSpecialItemModel
+public abstract class AEBaseStairBlock extends BlockStairs
 {
-	private final IFeatureHandler features;
 
-	protected AEBaseStairBlock( final Block block, final EnumSet<AEFeature> features, final String type )
+	protected AEBaseStairBlock( final Block block, final String type )
 	{
 		super( block.getDefaultState() );
 
@@ -45,21 +36,15 @@ public abstract class AEBaseStairBlock extends BlockStairs implements IAEFeature
 		Preconditions.checkNotNull( block.getUnlocalizedName() );
 		Preconditions.checkArgument( block.getUnlocalizedName().length() > 0 );
 
-		this.features = new AEBlockFeatureHandler( features, this, Optional.of( type ) );
-
 		this.setUnlocalizedName( "stair." + type );
 		this.setLightOpacity( 0 );
 	}
 
 	@Override
-	public IFeatureHandler handler()
+	public String toString()
 	{
-		return this.features;
+		String regName = getRegistryName() != null ? getRegistryName().getResourcePath() : "unregistered";
+		return getClass().getSimpleName() + "[" + regName + "]";
 	}
 
-	@Override
-	public void postInit()
-	{
-		// Override to do stuff
-	}
 }

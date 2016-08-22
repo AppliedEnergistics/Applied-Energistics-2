@@ -20,7 +20,6 @@ package appeng.block.misc;
 
 
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -33,10 +32,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.misc.TileSkyCompass;
-
 
 public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 {
@@ -47,7 +44,6 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 		this.setTileEntity( TileSkyCompass.class );
 		this.setOpaque( this.setFullSize( false ) );
 		this.lightOpacity = 0;
-		this.setFeature( EnumSet.of( AEFeature.MeteoriteCompass ) );
 	}
 
 	@Override

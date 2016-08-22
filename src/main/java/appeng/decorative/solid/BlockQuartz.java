@@ -19,12 +19,9 @@
 package appeng.decorative.solid;
 
 
-import java.util.EnumSet;
-
 import net.minecraft.block.material.Material;
 
 import appeng.block.AEDecorativeBlock;
-import appeng.core.features.AEFeature;
 
 
 public final class BlockQuartz extends AEDecorativeBlock
@@ -32,7 +29,5 @@ public final class BlockQuartz extends AEDecorativeBlock
 	public BlockQuartz()
 	{
 		super( Material.ROCK );
-
-		this.setFeature( EnumSet.of( AEFeature.DecorativeQuartzBlocks ) );
 	}
 }

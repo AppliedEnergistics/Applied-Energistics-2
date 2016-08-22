@@ -19,10 +19,7 @@
 package appeng.items.tools.powered;
 
 
-import java.util.EnumSet;
 import java.util.List;
-
-import com.google.common.base.Optional;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -43,7 +40,6 @@ import appeng.api.config.ViewItems;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.util.IConfigManager;
 import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.ConfigManager;
@@ -56,8 +52,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 
 	public ToolWirelessTerminal()
 	{
-		super( AEConfig.instance.wirelessTerminalBattery, Optional.<String>absent() );
-		this.setFeature( EnumSet.of( AEFeature.WirelessAccessTerminal, AEFeature.PoweredTools ) );
+		super( AEConfig.instance.wirelessTerminalBattery );
 	}
 
 	@Override

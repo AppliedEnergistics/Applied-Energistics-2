@@ -20,7 +20,6 @@ package appeng.block.misc;
 
 
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
@@ -47,10 +46,8 @@ import appeng.block.AEBaseBlock;
 import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
-import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
 import appeng.helpers.MetaRotation;
-
 
 public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, ICustomCollision
 {
@@ -66,7 +63,6 @@ public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, I
 		super( Material.CIRCUITS );
 
 		this.setDefaultState( this.blockState.getBaseState().withProperty( FACING, EnumFacing.UP ).withProperty( ODD, false ) );
-		this.setFeature( EnumSet.of( AEFeature.DecorativeLights ) );
 		this.setLightLevel( 0.9375F );
 		this.setLightOpacity( 0 );
 		this.setFullSize( false );

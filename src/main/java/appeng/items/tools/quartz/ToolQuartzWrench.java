@@ -19,10 +19,6 @@
 package appeng.items.tools.quartz;
 
 
-import java.util.EnumSet;
-
-import com.google.common.base.Optional;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -35,7 +31,6 @@ import net.minecraft.world.World;
 
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.util.DimensionalCoord;
-import appeng.core.features.AEFeature;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
@@ -45,11 +40,8 @@ import appeng.util.Platform;
 public class ToolQuartzWrench extends AEBaseItem implements IAEWrench /* , IToolWrench */
 {
 
-	public ToolQuartzWrench( final AEFeature type )
+	public ToolQuartzWrench()
 	{
-		super( Optional.of( type.name() ) );
-
-		this.setFeature( EnumSet.of( type, AEFeature.QuartzWrench ) );
 		this.setMaxStackSize( 1 );
 		this.setHarvestLevel( "wrench", 0 );
 	}

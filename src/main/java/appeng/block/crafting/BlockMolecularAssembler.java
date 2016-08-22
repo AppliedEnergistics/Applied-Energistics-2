@@ -19,8 +19,6 @@
 package appeng.block.crafting;
 
 
-import java.util.EnumSet;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.material.Material;
@@ -35,11 +33,9 @@ import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
-import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.util.Platform;
-
 
 public class BlockMolecularAssembler extends AEBaseTileBlock
 {
@@ -51,7 +47,6 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 		this.setTileEntity( TileMolecularAssembler.class );
 		this.setOpaque( false );
 		this.lightOpacity = 1;
-		this.setFeature( EnumSet.of( AEFeature.MolecularAssembler ) );
 	}
 
 	@Override

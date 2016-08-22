@@ -38,7 +38,6 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.networking.security.ISecurityRegistry;
-import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
@@ -48,7 +47,6 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 {
 	public ToolBiometricCard()
 	{
-		this.setFeature( EnumSet.of( AEFeature.Security ) );
 		this.setMaxStackSize( 1 );
 
 		if( Platform.isClient() )

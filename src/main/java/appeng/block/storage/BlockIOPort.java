@@ -19,8 +19,6 @@
 package appeng.block.storage;
 
 
-import java.util.EnumSet;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
@@ -35,7 +33,6 @@ import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
-import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.storage.TileIOPort;
 import appeng.util.Platform;
@@ -48,7 +45,6 @@ public class BlockIOPort extends AEBaseTileBlock
 	{
 		super( Material.IRON );
 		this.setTileEntity( TileIOPort.class );
-		this.setFeature( EnumSet.of( AEFeature.StorageCells, AEFeature.IOPort ) );
 	}
 
 	@Override

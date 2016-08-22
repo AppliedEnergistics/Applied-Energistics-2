@@ -20,19 +20,17 @@ package appeng.block.misc;
 
 
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
-
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -53,7 +51,6 @@ import appeng.client.render.renderable.ItemRenderable;
 import appeng.client.render.tesr.ModularTESR;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
-import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.AEBaseTile;
 import appeng.tile.misc.TileCharger;
@@ -70,7 +67,6 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 		this.setTileEntity( TileCharger.class );
 		this.setLightOpacity( 2 );
 		this.setFullSize( this.setOpaque( false ) );
-		this.setFeature( EnumSet.of( AEFeature.Core ) );
 	}
 
 	@Override
@@ -128,13 +124,6 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 				}
 			}
 		}
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public TileEntitySpecialRenderer<TileCharger> getTESR()
-	{
-		return new ModularTESR( new ItemRenderable<TileCharger>( tile -> new ImmutablePair( tile.getStackInSlot( 0 ), new Matrix4f().translate( new Vector3f( 0.5f, 0.4f, 0.5f ) ) ) ) );
 	}
 
 	@Override
@@ -197,5 +186,11 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
 	{
 		out.add( new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
+	}
+
+	@SideOnly( Side.CLIENT )
+	public static TileEntitySpecialRenderer<TileCharger> createTesr()
+	{
+		return new ModularTESR<>( new ItemRenderable<TileCharger>( tile -> new ImmutablePair<>( tile.getStackInSlot( 0 ), new Matrix4f().translate( new Vector3f( 0.5f, 0.4f, 0.5f ) ) ) ) );
 	}
 }

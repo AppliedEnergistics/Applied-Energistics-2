@@ -22,7 +22,6 @@ package appeng.items.materials;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,12 +29,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -48,12 +45,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.config.Upgrades;
@@ -79,11 +73,10 @@ public final class ItemMultiItem extends AEBaseItem implements IStorageComponent
 
 	private static final int KILO_SCALAR = 1024;
 
-	private final Map<Integer, MaterialType> dmgToMaterial = new HashMap<Integer, MaterialType>();
+	private final Map<Integer, MaterialType> dmgToMaterial = new HashMap<>();
 
 	public ItemMultiItem()
 	{
-		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setHasSubtypes( true );
 		instance = this;
 	}
@@ -444,24 +437,6 @@ public final class ItemMultiItem extends AEBaseItem implements IStorageComponent
 			}
 			return o1.compareTo( o2 );
 		}
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public List<ResourceLocation> getItemVariants()
-	{
-		// Register a resource location for every material type
-		return Arrays.stream( MaterialType.values() )
-				.map( MaterialType::getModel )
-				.collect( Collectors.toList() );
-
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public ItemMeshDefinition getItemMeshDefinition()
-	{
-		return is -> getTypeByStack( is ).getModel();
 	}
 
 }

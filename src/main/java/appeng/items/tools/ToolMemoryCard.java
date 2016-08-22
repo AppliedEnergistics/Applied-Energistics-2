@@ -19,7 +19,6 @@
 package appeng.items.tools;
 
 
-import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -35,7 +34,6 @@ import net.minecraft.world.World;
 
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
-import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.items.AEBaseItem;
@@ -46,7 +44,6 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 {
 	public ToolMemoryCard()
 	{
-		this.setFeature( EnumSet.of( AEFeature.Core ) );
 		this.setMaxStackSize( 1 );
 	}
 

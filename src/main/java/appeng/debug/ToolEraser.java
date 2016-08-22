@@ -19,7 +19,6 @@
 package appeng.debug;
 
 
-import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,7 +32,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.core.AELog;
-import appeng.core.features.AEFeature;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
@@ -42,11 +40,6 @@ public class ToolEraser extends AEBaseItem
 {
 
 	private static final int BLOCK_ERASE_LIMIT = 90000;
-
-	public ToolEraser()
-	{
-		this.setFeature( EnumSet.of( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ) );
-	}
 
 	@Override
 	public EnumActionResult onItemUseFirst( final ItemStack heldItem, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
