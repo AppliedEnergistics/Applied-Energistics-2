@@ -110,7 +110,7 @@ public class ClientHelper extends ServerHelper
 		// final ModelResourceLocation fluixStairModel = new ModelResourceLocation( resource, "inventory" );
 		// AELog.info( "FluixStairModel: " + fluixStairModel );
 		//
-		// final Set<Item> items = AEApi.instance().definitions().blocks().fluixStair().maybeItem().asSet();
+		// final Set<Item> items = AEApi.instance().definitions().blocks().fluixStairs().maybeItem().asSet();
 		// for( Item item : items )
 		// {
 		// AELog.info( "Registering with %s with unlocalized %s", item, item.getUnlocalizedName() );

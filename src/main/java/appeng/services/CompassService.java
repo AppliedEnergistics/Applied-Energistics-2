@@ -133,7 +133,7 @@ public final class CompassService
 		// lower level...
 		final Chunk c = w.getChunkFromChunkCoords( cx, cz );
 
-		for( final Block skyStoneBlock : AEApi.instance().definitions().blocks().skyStone().maybeBlock().asSet() )
+		for( final Block skyStoneBlock : AEApi.instance().definitions().blocks().skyStoneBlock().maybeBlock().asSet() )
 		{
 			for( int i = 0; i < CHUNK_SIZE; i++ )
 			{

@@ -104,27 +104,27 @@ public final class ApiBlocks implements IBlocks
 	private final IBlockDefinition quartzOre;
 	private final IBlockDefinition quartzOreCharged;
 	private final IBlockDefinition matrixFrame;
-	private final IBlockDefinition quartz;
+	private final IBlockDefinition quartzBlock;
 	private final IBlockDefinition quartzPillar;
-	private final IBlockDefinition quartzChiseled;
+	private final IBlockDefinition chiseledQuartzBlock;
 	private final IBlockDefinition quartzGlass;
 	private final IBlockDefinition quartzVibrantGlass;
-	private final IBlockDefinition quartzTorch;
-	private final IBlockDefinition fluix;
-	private final IBlockDefinition skyStone_stone;
-	private final IBlockDefinition skyStone_block;
-	private final IBlockDefinition skyStone_brick;
-	private final IBlockDefinition skyStone_smallbrick;
-	private final IBlockDefinition skyChest;
-	private final IBlockDefinition skyChestBlock;
+	private final IBlockDefinition quartzFixture;
+	private final IBlockDefinition fluixBlock;
+	private final IBlockDefinition skyStoneBlock;
+	private final IBlockDefinition smoothSkyStoneBlock;
+	private final IBlockDefinition skyStoneBrick;
+	private final IBlockDefinition skyStoneSmallBrick;
+	private final IBlockDefinition skyStoneChest;
+	private final IBlockDefinition smoothSkyStoneChest;
 	private final IBlockDefinition skyCompass;
-	private final ITileDefinition grindStone;
-	private final ITileDefinition crankHandle;
+	private final ITileDefinition grindstone;
+	private final ITileDefinition crank;
 	private final ITileDefinition inscriber;
-	private final ITileDefinition wireless;
+	private final ITileDefinition wirelessAccessPoint;
 	private final ITileDefinition charger;
 	private final IBlockDefinition tinyTNT;
-	private final ITileDefinition security;
+	private final ITileDefinition securityStation;
 	private final ITileDefinition quantumRing;
 	private final ITileDefinition quantumLink;
 	private final ITileDefinition spatialPylon;
@@ -153,14 +153,14 @@ public final class ApiBlocks implements IBlocks
 	private final ITileDefinition molecularAssembler;
 	private final ITileDefinition lightDetector;
 	private final ITileDefinition paint;
-	private final IBlockDefinition skyStoneStair;
-	private final IBlockDefinition skyStoneBlockStair;
-	private final IBlockDefinition skyStoneBrickStair;
-	private final IBlockDefinition skyStoneSmallBrickStair;
-	private final IBlockDefinition fluixStair;
-	private final IBlockDefinition quartzStair;
-	private final IBlockDefinition chiseledQuartzStair;
-	private final IBlockDefinition quartzPillarStair;
+	private final IBlockDefinition skyStoneStairs;
+	private final IBlockDefinition smoothSkyStoneStairs;
+	private final IBlockDefinition skyStoneBrickStairs;
+	private final IBlockDefinition skyStoneSmallBrickStairs;
+	private final IBlockDefinition fluixStairs;
+	private final IBlockDefinition quartzStairs;
+	private final IBlockDefinition chiseledQuartzStairs;
+	private final IBlockDefinition quartzPillarStairs;
 	/*
 	 * private final IBlockDefinition skyStoneSlab;
 	 * private final IBlockDefinition skyStoneBlockSlab;
@@ -195,33 +195,33 @@ public final class ApiBlocks implements IBlocks
 		this.matrixFrame = registry.block( "matrix_frame", BlockMatrixFrame::new ).features( AEFeature.SpatialIO ).build();
 
 		FeatureFactory deco = registry.features( AEFeature.DecorativeQuartzBlocks );
-		this.quartz = deco.block( "quartz", BlockQuartz::new ).build();
+		this.quartzBlock = deco.block( "quartz_block", BlockQuartz::new ).build();
 		this.quartzPillar = deco.block( "quartz_pillar", BlockQuartzPillar::new ).build();
-		this.quartzChiseled = deco.block( "chiseled_quartz", BlockChiseledQuartz::new ).build();
+		this.chiseledQuartzBlock = deco.block( "chiseled_quartz_block", BlockChiseledQuartz::new ).build();
 		this.quartzGlass = deco.block( "quartz_glass", BlockQuartzGlass::new ).build();
-		this.quartzVibrantGlass = deco.block( "quartz_lamp", BlockQuartzLamp::new ).addFeatures( AEFeature.DecorativeLights ).build();
-		this.quartzTorch = registry.block( "quartz_torch", BlockQuartzTorch::new ).features( AEFeature.DecorativeLights ).build();
+		this.quartzVibrantGlass = deco.block( "quartz_vibrant_glass", BlockQuartzLamp::new ).addFeatures( AEFeature.DecorativeLights ).build();
+		this.quartzFixture = registry.block( "quartz_fixture", BlockQuartzTorch::new ).features( AEFeature.DecorativeLights ).build();
 
-		this.fluix = deco.block( "fluix", BlockFluix::new ).build();
-		this.skyStone_stone = deco.block( "sky_stone_block_stone", () -> new BlockSkyStone( SkystoneType.STONE ) ).build();
-		this.skyStone_block = deco.block( "sky_stone_block_block", () -> new BlockSkyStone( SkystoneType.BLOCK ) ).build();
-		this.skyStone_brick = deco.block( "sky_stone_block_brick", () -> new BlockSkyStone( SkystoneType.BRICK ) ).build();
-		this.skyStone_smallbrick = deco.block( "sky_stone_block_small_brick", () -> new BlockSkyStone( SkystoneType.SMALL_BRICK ) ).build();
+		this.fluixBlock = deco.block( "fluix_block", BlockFluix::new ).build();
+		this.skyStoneBlock = deco.block( "sky_stone_block", () -> new BlockSkyStone( SkystoneType.STONE ) ).build();
+		this.smoothSkyStoneBlock = deco.block( "smooth_skystone", () -> new BlockSkyStone( SkystoneType.BLOCK ) ).build();
+		this.skyStoneBrick = deco.block( "skystone_brick", () -> new BlockSkyStone( SkystoneType.BRICK ) ).build();
+		this.skyStoneSmallBrick = deco.block( "skystone_small_brick", () -> new BlockSkyStone( SkystoneType.SMALL_BRICK ) ).build();
 
-		this.skyChest = registry.block( "sky_chest_stone", () -> new BlockSkyChest( SkyChestType.STONE ) )
+		this.skyStoneChest = registry.block( "skystone_chest", () -> new BlockSkyChest( SkyChestType.STONE ) )
 				.features( AEFeature.SkyStoneChests )
 				.rendering( new SkyChestRenderingCustomizer( SkyChestType.STONE ) )
 				.build();
-		this.skyChestBlock = registry.block( "sky_chest_block", () -> new BlockSkyChest( SkyChestType.BLOCK ) )
+		this.smoothSkyStoneChest = registry.block( "smooth_skystone_chest", () -> new BlockSkyChest( SkyChestType.BLOCK ) )
 				.features( AEFeature.SkyStoneChests )
 				.rendering( new SkyChestRenderingCustomizer( SkyChestType.BLOCK ) )
 				.build();
 
 		this.skyCompass = registry.block( "sky_compass", BlockSkyCompass::new ).features( AEFeature.MeteoriteCompass ).build();
-		this.grindStone = registry.block( "grinder", BlockGrinder::new ).features( AEFeature.GrindStone ).build();
-		this.crankHandle = registry.block( "crank", BlockCrank::new ).features( AEFeature.GrindStone ).build();
+		this.grindstone = registry.block( "grindstone", BlockGrinder::new ).features( AEFeature.GrindStone ).build();
+		this.crank = registry.block( "crank", BlockCrank::new ).features( AEFeature.GrindStone ).build();
 		this.inscriber = registry.block( "inscriber", BlockInscriber::new ).features( AEFeature.Inscriber ).build();
-		this.wireless = registry.block( "wireless", BlockWireless::new ).features( AEFeature.WirelessAccessTerminal ).build();
+		this.wirelessAccessPoint = registry.block( "wireless_access_point", BlockWireless::new ).features( AEFeature.WirelessAccessTerminal ).build();
 		this.charger = registry.block( "charger", BlockCharger::new )
 				.rendering( new BlockRenderingCustomizer()
 				{
@@ -238,7 +238,7 @@ public final class ApiBlocks implements IBlocks
 					BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( item, new DispenserBehaviorTinyTNT() );
 				} )
 				.build();
-		this.security = registry.block( "security", BlockSecurity::new ).features( AEFeature.Security ).build();
+		this.securityStation = registry.block( "security_station", BlockSecurity::new ).features( AEFeature.Security ).build();
 		this.quantumRing = registry.block( "quantum_ring", BlockQuantumRing::new ).features( AEFeature.QuantumNetworkBridge ).build();
 		this.quantumLink = registry.block( "quantum_link", BlockQuantumLinkChamber::new ).features( AEFeature.QuantumNetworkBridge ).build();
 		this.spatialPylon = registry.block( "spatial_pylon", BlockSpatialPylon::new ).features( AEFeature.SpatialIO ).build();
@@ -247,7 +247,7 @@ public final class ApiBlocks implements IBlocks
 		this.drive = registry.block( "drive", BlockDrive::new ).features( AEFeature.StorageCells, AEFeature.MEDrive ).build();
 		this.chest = registry.block( "chest", BlockChest::new ).features( AEFeature.StorageCells, AEFeature.MEChest ).build();
 		this.iface = registry.block( "interface", BlockInterface::new ).build();
-		this.cellWorkbench = registry.block( "cell_work_bench", BlockCellWorkbench::new ).features( AEFeature.StorageCells ).build();
+		this.cellWorkbench = registry.block( "cell_workbench", BlockCellWorkbench::new ).features( AEFeature.StorageCells ).build();
 		this.iOPort = registry.block( "ioport", BlockIOPort::new ).features( AEFeature.StorageCells, AEFeature.IOPort ).build();
 		this.condenser = registry.block( "condenser", BlockCondenser::new ).build();
 		this.energyAcceptor = registry.block( "energy_acceptor", BlockEnergyAcceptor::new ).build();
@@ -288,14 +288,14 @@ public final class ApiBlocks implements IBlocks
 		this.lightDetector = registry.block( "light_detector", BlockLightDetector::new ).features( AEFeature.LightDetector ).build();
 		this.paint = registry.block( "paint", BlockPaint::new ).features( AEFeature.PaintBalls ).build();
 
-		this.skyStoneStair = makeStairs( "stair_skystone_stone", registry, this.skyStone() );
-		this.skyStoneBlockStair = makeStairs( "stair_skystone_block", registry, this.skyStoneBlock() );
-		this.skyStoneBrickStair = makeStairs( "stair_skystone_brick", registry, this.skyStoneBrick() );
-		this.skyStoneSmallBrickStair = makeStairs( "stair_skystone_brick_small", registry, this.skyStoneSmallBrick() );
-		this.fluixStair = makeStairs( "stair_fluix", registry, this.fluix() );
-		this.quartzStair = makeStairs( "stair_quartz_certus", registry, this.quartz() );
-		this.chiseledQuartzStair = makeStairs( "stair_quartz_certus_chiseled", registry, this.quartzChiseled() );
-		this.quartzPillarStair = makeStairs( "stair_quartz_certus_pillar", registry, this.quartzPillar() );
+		this.skyStoneStairs = makeStairs( "skystone_stairs", registry, this.skyStoneBlock() );
+		this.smoothSkyStoneStairs = makeStairs( "smooth_skystone_stairs", registry, this.smoothSkyStoneBlock() );
+		this.skyStoneBrickStairs = makeStairs( "skystone_brick_stairs", registry, this.skyStoneBrick() );
+		this.skyStoneSmallBrickStairs = makeStairs( "skystone_small_brick_stairs", registry, this.skyStoneSmallBrick() );
+		this.fluixStairs = makeStairs( "fluix_stairs", registry, this.fluixBlock() );
+		this.quartzStairs = makeStairs( "quartz_stairs", registry, this.quartzBlock() );
+		this.chiseledQuartzStairs = makeStairs( "chiseled_quartz_stairs", registry, this.chiseledQuartzBlock() );
+		this.quartzPillarStairs = makeStairs( "quartz_pillar_stairs", registry, this.quartzPillar() );
 
 		this.multiPart = registry.block( "multipart_block", BlockCableBus::new )
 				.rendering( new BlockRenderingCustomizer()
@@ -324,7 +324,7 @@ public final class ApiBlocks implements IBlocks
 		 * EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "FluixSlabBlock" ) );
 		 * this.quartzSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( quartzBlock,
 		 * EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "QuartzSlabBlock" ) );
-		 * this.chiseledQuartzSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( chiseledQuartz,
+		 * this.chiseledQuartzSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( chiseledQuartzBlock,
 		 * EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "ChiseledQuartzSlabBlock" ) );
 		 * this.quartzPillarSlab = constructor.registerBlockDefinition( new AEBaseSlabBlock( quartzPillar,
 		 * EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "QuartzPillarSlabBlock" ) )
@@ -362,9 +362,9 @@ public final class ApiBlocks implements IBlocks
 	}
 
 	@Override
-	public IBlockDefinition quartz()
+	public IBlockDefinition quartzBlock()
 	{
-		return this.quartz;
+		return this.quartzBlock;
 	}
 
 	@Override
@@ -374,9 +374,9 @@ public final class ApiBlocks implements IBlocks
 	}
 
 	@Override
-	public IBlockDefinition quartzChiseled()
+	public IBlockDefinition chiseledQuartzBlock()
 	{
-		return this.quartzChiseled;
+		return this.chiseledQuartzBlock;
 	}
 
 	@Override
@@ -392,51 +392,51 @@ public final class ApiBlocks implements IBlocks
 	}
 
 	@Override
-	public IBlockDefinition quartzTorch()
+	public IBlockDefinition quartzFixture()
 	{
-		return this.quartzTorch;
+		return this.quartzFixture;
 	}
 
 	@Override
-	public IBlockDefinition fluix()
+	public IBlockDefinition fluixBlock()
 	{
-		return this.fluix;
-	}
-
-	@Override
-	public IBlockDefinition skyStone()
-	{
-		return this.skyStone_stone;
+		return this.fluixBlock;
 	}
 
 	@Override
 	public IBlockDefinition skyStoneBlock()
 	{
-		return this.skyStone_block;
+		return this.skyStoneBlock;
+	}
+
+	@Override
+	public IBlockDefinition smoothSkyStoneBlock()
+	{
+		return this.smoothSkyStoneBlock;
 	}
 
 	@Override
 	public IBlockDefinition skyStoneBrick()
 	{
-		return this.skyStone_brick;
+		return this.skyStoneBrick;
 	}
 
 	@Override
 	public IBlockDefinition skyStoneSmallBrick()
 	{
-		return this.skyStone_smallbrick;
+		return this.skyStoneSmallBrick;
 	}
 
 	@Override
-	public IBlockDefinition skyChest()
+	public IBlockDefinition skyStoneChest()
 	{
-		return this.skyChest;
+		return this.skyStoneChest;
 	}
 
 	@Override
-	public IBlockDefinition skyChestBlock()
+	public IBlockDefinition smoothSkyStoneChest()
 	{
-		return this.skyChestBlock;
+		return this.smoothSkyStoneChest;
 	}
 
 	@Override
@@ -446,51 +446,51 @@ public final class ApiBlocks implements IBlocks
 	}
 
 	@Override
-	public IBlockDefinition skyStoneStair()
+	public IBlockDefinition skyStoneStairs()
 	{
-		return this.skyStoneStair;
+		return this.skyStoneStairs;
 	}
 
 	@Override
-	public IBlockDefinition skyStoneBlockStair()
+	public IBlockDefinition smoothSkyStoneStairs()
 	{
-		return this.skyStoneBlockStair;
+		return this.smoothSkyStoneStairs;
 	}
 
 	@Override
-	public IBlockDefinition skyStoneBrickStair()
+	public IBlockDefinition skyStoneBrickStairs()
 	{
-		return this.skyStoneBrickStair;
+		return this.skyStoneBrickStairs;
 	}
 
 	@Override
-	public IBlockDefinition skyStoneSmallBrickStair()
+	public IBlockDefinition skyStoneSmallBrickStairs()
 	{
-		return this.skyStoneSmallBrickStair;
+		return this.skyStoneSmallBrickStairs;
 	}
 
 	@Override
-	public IBlockDefinition fluixStair()
+	public IBlockDefinition fluixStairs()
 	{
-		return this.fluixStair;
+		return this.fluixStairs;
 	}
 
 	@Override
-	public IBlockDefinition quartzStair()
+	public IBlockDefinition quartzStairs()
 	{
-		return this.quartzStair;
+		return this.quartzStairs;
 	}
 
 	@Override
-	public IBlockDefinition chiseledQuartzStair()
+	public IBlockDefinition chiseledQuartzStairs()
 	{
-		return this.chiseledQuartzStair;
+		return this.chiseledQuartzStairs;
 	}
 
 	@Override
-	public IBlockDefinition quartzPillarStair()
+	public IBlockDefinition quartzPillarStairs()
 	{
-		return this.quartzPillarStair;
+		return this.quartzPillarStairs;
 	}
 
 	/*
@@ -537,15 +537,15 @@ public final class ApiBlocks implements IBlocks
 	 */
 
 	@Override
-	public ITileDefinition grindStone()
+	public ITileDefinition grindstone()
 	{
-		return this.grindStone;
+		return this.grindstone;
 	}
 
 	@Override
-	public ITileDefinition crankHandle()
+	public ITileDefinition crank()
 	{
-		return this.crankHandle;
+		return this.crank;
 	}
 
 	@Override
@@ -555,9 +555,9 @@ public final class ApiBlocks implements IBlocks
 	}
 
 	@Override
-	public ITileDefinition wireless()
+	public ITileDefinition wirelessAccessPoint()
 	{
-		return this.wireless;
+		return this.wirelessAccessPoint;
 	}
 
 	@Override
@@ -573,9 +573,9 @@ public final class ApiBlocks implements IBlocks
 	}
 
 	@Override
-	public ITileDefinition security()
+	public ITileDefinition securityStation()
 	{
-		return this.security;
+		return this.securityStation;
 	}
 
 	@Override

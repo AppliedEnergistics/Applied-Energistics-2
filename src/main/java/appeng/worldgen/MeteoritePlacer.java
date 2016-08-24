@@ -75,8 +75,8 @@ public final class MeteoritePlacer
 	{
 		final IBlocks blocks = AEApi.instance().definitions().blocks();
 
-		this.skyChestDefinition = blocks.skyChest();
-		this.skyStoneDefinition = blocks.skyStone();
+		this.skyChestDefinition = blocks.skyStoneChest();
+		this.skyStoneDefinition = blocks.skyStoneBlock();
 
 		this.validSpawn.add( Blocks.STONE );
 		this.validSpawn.add( Blocks.COBBLESTONE );

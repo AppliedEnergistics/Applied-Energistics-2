@@ -41,49 +41,49 @@ public interface IBlocks
 	/*
 	 * decorative
 	 */
-	IBlockDefinition quartz();
+	IBlockDefinition quartzBlock();
 
 	IBlockDefinition quartzPillar();
 
-	IBlockDefinition quartzChiseled();
+	IBlockDefinition chiseledQuartzBlock();
 
 	IBlockDefinition quartzGlass();
 
 	IBlockDefinition quartzVibrantGlass();
 
-	IBlockDefinition quartzTorch();
+	IBlockDefinition quartzFixture();
 
-	IBlockDefinition fluix();
-
-	IBlockDefinition skyStone();
+	IBlockDefinition fluixBlock();
 
 	IBlockDefinition skyStoneBlock();
+
+	IBlockDefinition smoothSkyStoneBlock();
 
 	IBlockDefinition skyStoneBrick();
 
 	IBlockDefinition skyStoneSmallBrick();
 
-	IBlockDefinition skyChest();
+	IBlockDefinition skyStoneChest();
 
-	IBlockDefinition skyChestBlock();
+	IBlockDefinition smoothSkyStoneChest();
 
 	IBlockDefinition skyCompass();
 
-	IBlockDefinition skyStoneStair();
+	IBlockDefinition skyStoneStairs();
 
-	IBlockDefinition skyStoneBlockStair();
+	IBlockDefinition smoothSkyStoneStairs();
 
-	IBlockDefinition skyStoneBrickStair();
+	IBlockDefinition skyStoneBrickStairs();
 
-	IBlockDefinition skyStoneSmallBrickStair();
+	IBlockDefinition skyStoneSmallBrickStairs();
 
-	IBlockDefinition fluixStair();
+	IBlockDefinition fluixStairs();
 
-	IBlockDefinition quartzStair();
+	IBlockDefinition quartzStairs();
 
-	IBlockDefinition chiseledQuartzStair();
+	IBlockDefinition chiseledQuartzStairs();
 
-	IBlockDefinition quartzPillarStair();
+	IBlockDefinition quartzPillarStairs();
 
 	/*
 	 * IBlockDefinition skyStoneSlab();
@@ -99,19 +99,19 @@ public interface IBlocks
 	/*
 	 * misc
 	 */
-	ITileDefinition grindStone();
+	ITileDefinition grindstone();
 
-	ITileDefinition crankHandle();
+	ITileDefinition crank();
 
 	ITileDefinition inscriber();
 
-	ITileDefinition wireless();
+	ITileDefinition wirelessAccessPoint();
 
 	ITileDefinition charger();
 
 	IBlockDefinition tinyTNT();
 
-	ITileDefinition security();
+	ITileDefinition securityStation();
 
 	/*
 	 * quantum Network Bridge
