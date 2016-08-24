@@ -68,9 +68,9 @@ public class FeatureFactory
 
 	public AEColoredItemDefinition colored( IItemDefinition target, int offset )
 	{
-		final ColoredItemDefinition definition = new ColoredItemDefinition();
+		ColoredItemDefinition definition = new ColoredItemDefinition();
 
-		for( final Item targetItem : target.maybeItem().asSet() )
+		target.maybeItem().ifPresent( targetItem ->
 		{
 			for( final AEColor color : AEColor.VALID_COLORS )
 			{
@@ -78,7 +78,7 @@ public class FeatureFactory
 
 				definition.add( color, new ItemStackSrc( targetItem, offset + color.ordinal(), state ) );
 			}
-		}
+		} );
 
 		return definition;
 	}

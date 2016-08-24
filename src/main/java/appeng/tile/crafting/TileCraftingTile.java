@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Optional;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
@@ -79,15 +80,14 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	@Override
 	protected ItemStack getItemFromTile( final Object obj )
 	{
+		Optional<ItemStack> is = Optional.empty();
+
 		if( ( (TileCraftingTile) obj ).isAccelerator() )
 		{
-			for( final ItemStack accelerator : AEApi.instance().definitions().blocks().craftingAccelerator().maybeStack( 1 ).asSet() )
-			{
-				return accelerator;
-			}
+			is = AEApi.instance().definitions().blocks().craftingAccelerator().maybeStack( 1 );
 		}
 
-		return super.getItemFromTile( obj );
+		return is.orElseGet( () -> super.getItemFromTile( obj ) );
 	}
 
 	@Override

@@ -21,17 +21,13 @@ package appeng.parts.p2p;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
-import com.google.common.base.Optional;
-
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -216,17 +212,14 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		}
 		else if( tt != null ) // attunement
 		{
-			ItemStack newType = null;
+			final ItemStack newType;
 
 			final IParts parts = AEApi.instance().definitions().parts();
 
 			switch( tt )
 			{
 				case LIGHT:
-					for( final ItemStack stack : parts.p2PTunnelLight().maybeStack( 1 ).asSet() )
-					{
-						newType = stack;
-					}
+					newType = parts.p2PTunnelLight().maybeStack( 1 ).orElse( null );
 					break;
 
 				/*
@@ -239,10 +232,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 				 */
 
 				case FLUID:
-					for( final ItemStack stack : parts.p2PTunnelLiquids().maybeStack( 1 ).asSet() )
-					{
-						newType = stack;
-					}
+					newType = parts.p2PTunnelLiquids().maybeStack( 1 ).orElse( null );
 					break;
 
 				/*
@@ -255,24 +245,15 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 				 */
 
 				case ITEM:
-					for( final ItemStack stack : parts.p2PTunnelItems().maybeStack( 1 ).asSet() )
-					{
-						newType = stack;
-					}
+					newType = parts.p2PTunnelItems().maybeStack( 1 ).orElse( null );
 					break;
 
 				case ME:
-					for( final ItemStack stack : parts.p2PTunnelME().maybeStack( 1 ).asSet() )
-					{
-						newType = stack;
-					}
+					newType = parts.p2PTunnelME().maybeStack( 1 ).orElse( null );
 					break;
 
 				case REDSTONE:
-					for( final ItemStack stack : parts.p2PTunnelRedstone().maybeStack( 1 ).asSet() )
-					{
-						newType = stack;
-					}
+					newType = parts.p2PTunnelRedstone().maybeStack( 1 ).orElse( null );
 					break;
 
 				/*
@@ -291,6 +272,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 				 */
 
 				default:
+					newType = null;
 					break;
 			}
 

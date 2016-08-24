@@ -29,7 +29,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
@@ -90,7 +89,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 
 		if( this.isInWater() && Platform.isServer() ) // put out the fuse.
 		{
-			for( final ItemStack tntStack : AEApi.instance().definitions().blocks().tinyTNT().maybeStack( 1 ).asSet() )
+			AEApi.instance().definitions().blocks().tinyTNT().maybeStack( 1 ).ifPresent( tntStack ->
 			{
 				final EntityItem item = new EntityItem( this.worldObj, this.posX, this.posY, this.posZ, tntStack );
 
@@ -103,7 +102,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 
 				this.worldObj.spawnEntityInWorld( item );
 				this.setDead();
-			}
+			} );
 		}
 
 		if( this.getFuse() <= 0 )

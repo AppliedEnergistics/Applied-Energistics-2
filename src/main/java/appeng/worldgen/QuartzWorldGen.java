@@ -48,8 +48,8 @@ public final class QuartzWorldGen implements IWorldGenerator
 		final IBlockDefinition oreDefinition = blocks.quartzOre();
 		final IBlockDefinition chargedDefinition = blocks.quartzOreCharged();
 
-		final Block ore = oreDefinition.maybeBlock().orNull();
-		final Block charged = chargedDefinition.maybeBlock().orNull();
+		final Block ore = oreDefinition.maybeBlock().orElse( null );
+		final Block charged = chargedDefinition.maybeBlock().orElse( null );
 
 		this.oreNormal = new WorldGenMinable( ore.getDefaultState(), AEConfig.instance.quartzOresPerCluster );
 		this.oreCharged = new WorldGenMinable( charged.getDefaultState(), AEConfig.instance.quartzOresPerCluster );

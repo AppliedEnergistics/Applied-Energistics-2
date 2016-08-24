@@ -172,9 +172,6 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 
 	private void addNewAttunement( final IItemDefinition definition, final TunnelType type )
 	{
-		for( final ItemStack definitionStack : definition.maybeStack( 1 ).asSet() )
-		{
-			this.addNewAttunement( definitionStack, type );
-		}
+		definition.maybeStack( 1 ).ifPresent( definitionStack -> addNewAttunement( definitionStack, type ) );
 	}
 }

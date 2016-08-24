@@ -25,7 +25,6 @@ import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
 import appeng.api.config.FullnessMode;
@@ -94,15 +93,9 @@ public class GuiIOPort extends GuiUpgradeable
 
 		final IDefinitions definitions = AEApi.instance().definitions();
 
-		for( final ItemStack cell1kStack : definitions.items().cell1k().maybeStack( 1 ).asSet() )
-		{
-			this.drawItem( offsetX + 66 - 8, offsetY + 17, cell1kStack );
-		}
+		definitions.items().cell1k().maybeStack( 1 ).ifPresent( cell1kStack -> this.drawItem( offsetX + 66 - 8, offsetY + 17, cell1kStack ) );
 
-		for( final ItemStack driveStack : definitions.blocks().drive().maybeStack( 1 ).asSet() )
-		{
-			this.drawItem( offsetX + 94 + 8, offsetY + 17, driveStack );
-		}
+		definitions.blocks().drive().maybeStack( 1 ).ifPresent( driveStack -> this.drawItem( offsetX + 94 + 8, offsetY + 17, driveStack ) );
 	}
 
 	@Override

@@ -19,9 +19,8 @@
 package appeng.core.features;
 
 
+import java.util.Optional;
 import javax.annotation.Nonnull;
-
-import com.google.common.base.Optional;
 
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
@@ -38,12 +37,12 @@ public final class TileDefinition extends BlockDefinition implements ITileDefini
 	public TileDefinition( @Nonnull String registryName, AEBaseTileBlock block, ItemBlock item )
 	{
 		super( registryName, block, item );
-		this.block = Optional.fromNullable( block );
+		this.block = Optional.ofNullable( block );
 	}
 
 	@Override
 	public Optional<? extends Class<? extends TileEntity>> maybeEntity()
 	{
-		return this.block.transform( AEBaseTileBlock::getTileEntityClass );
+		return this.block.map( AEBaseTileBlock::getTileEntityClass );
 	}
 }

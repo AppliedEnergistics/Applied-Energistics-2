@@ -27,8 +27,6 @@ package appeng.api.config;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.item.ItemStack;
 
 import appeng.api.definitions.IItemDefinition;
@@ -70,11 +68,7 @@ public enum Upgrades
 	 */
 	public void registerItem( final IItemDefinition item, final int maxSupported )
 	{
-		final Optional<ItemStack> maybeStack = item.maybeStack( 1 );
-		for( final ItemStack stack : maybeStack.asSet() )
-		{
-			this.registerItem( stack, maxSupported );
-		}
+		item.maybeStack( 1 ).ifPresent( is -> this.registerItem( is, maxSupported ) );
 	}
 
 	/**

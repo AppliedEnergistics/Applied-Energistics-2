@@ -42,13 +42,12 @@ public class StorageChunkProvider extends ChunkProviderOverworld
 	{
 		BLOCKS = new Block[255 * SQUARE_CHUNK_SIZE];
 
-		for( final Block matrixFrameBlock : AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().asSet() )
-		{
+		AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().ifPresent( matrixFrameBlock -> {
 			for( int x = 0; x < BLOCKS.length; x++ )
 			{
 				BLOCKS[x] = matrixFrameBlock;
 			}
-		}
+		} );
 	}
 
 	private final World world;

@@ -68,19 +68,17 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 	{
 		final Block blockID = Block.getBlockFromItem( this );
 		final IBlockDefinition energyCell = Api.INSTANCE.definitions().blocks().energyCell();
-		for( final Block block : energyCell.maybeBlock().asSet() )
-		{
-			if( blockID == block )
-			{
-				return 200000;
-			}
-			else
-			{
-				return 8 * 200000;
-			}
-		}
-
-		return 0;
+		return energyCell.maybeBlock().map( block -> {
+					if( blockID == block )
+					{
+						return 200000;
+					}
+					else
+					{
+						return 8 * 200000;
+					}
+				}
+		).orElse( 0 );
 	}
 
 	@Override

@@ -19,10 +19,9 @@
 package appeng.core.features;
 
 
+import java.util.Optional;
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.item.Item;
@@ -34,7 +33,6 @@ import appeng.api.definitions.IItemDefinition;
 public final class DamagedItemDefinition implements IItemDefinition
 {
 	private final String identifier;
-	private static final ItemTransformer ITEM_TRANSFORMER = new ItemTransformer();
 	private final Optional<IStackSrc> source;
 
 	public DamagedItemDefinition( @Nonnull final String identifier, @Nonnull final IStackSrc source )
@@ -48,7 +46,7 @@ public final class DamagedItemDefinition implements IItemDefinition
 		}
 		else
 		{
-			this.source = Optional.absent();
+			this.source = Optional.empty();
 		}
 	}
 
@@ -62,13 +60,13 @@ public final class DamagedItemDefinition implements IItemDefinition
 	@Override
 	public Optional<Item> maybeItem()
 	{
-		return this.source.transform( ITEM_TRANSFORMER );
+		return this.source.map( IStackSrc::getItem );
 	}
 
 	@Override
 	public Optional<ItemStack> maybeStack( final int stackSize )
 	{
-		return this.source.transform( new ItemStackTransformer( stackSize ) );
+		return this.source.map( input -> input.stack( stackSize ));
 	}
 
 	@Override
@@ -88,30 +86,4 @@ public final class DamagedItemDefinition implements IItemDefinition
 		return this.isEnabled() && comparableStack.getItem() == this.source.get().getItem() && comparableStack.getItemDamage() == this.source.get().getDamage();
 	}
 
-	private static class ItemTransformer implements Function<IStackSrc, Item>
-	{
-		@Override
-		public Item apply( final IStackSrc input )
-		{
-			return input.getItem();
-		}
-	}
-
-	private static class ItemStackTransformer implements Function<IStackSrc, ItemStack>
-	{
-		private final int stackSize;
-
-		public ItemStackTransformer( final int stackSize )
-		{
-			Preconditions.checkArgument( stackSize > 0 );
-
-			this.stackSize = stackSize;
-		}
-
-		@Override
-		public ItemStack apply( final IStackSrc input )
-		{
-			return input.stack( this.stackSize );
-		}
-	}
 }

@@ -9,7 +9,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 import net.minecraft.item.ItemStack;
 
@@ -47,8 +47,8 @@ public class InscriberRecipe implements IInscriberRecipe
 		this.inputs.addAll( inputs );
 
 		this.output = output;
-		this.maybeTop = Optional.fromNullable( top );
-		this.maybeBot = Optional.fromNullable( bot );
+		this.maybeTop = Optional.ofNullable( top );
+		this.maybeBot = Optional.ofNullable( bot );
 
 		this.type = type;
 	}

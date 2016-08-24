@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 import net.minecraft.item.ItemStack;
 

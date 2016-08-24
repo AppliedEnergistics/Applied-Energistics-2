@@ -124,7 +124,7 @@ public enum Achievements
 
 	Achievements( final int x, final int y, final IItemDefinition which, final AchievementType type )
 	{
-		this.stack = which.maybeStack( 1 ).orNull();
+		this.stack = which.maybeStack( 1 ).orElse( null );
 		this.type = type;
 		this.x = x;
 		this.y = y;

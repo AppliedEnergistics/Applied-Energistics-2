@@ -399,11 +399,11 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 		{
 
-			final boolean matchA = ( plateA == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( plateA, recipe.getTopOptional().orNull() ) ) && // and...
-			( plateB == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( plateB, recipe.getBottomOptional().orNull() ) );
+			final boolean matchA = ( plateA == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( plateA, recipe.getTopOptional().orElse( null ) ) ) && // and...
+			( plateB == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( plateB, recipe.getBottomOptional().orElse( null ) ) );
 
-			final boolean matchB = ( plateB == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( plateB, recipe.getTopOptional().orNull() ) ) && // and...
-			( plateA == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( plateA, recipe.getBottomOptional().orNull() ) );
+			final boolean matchB = ( plateB == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( plateB, recipe.getTopOptional().orElse( null ) ) ) && // and...
+			( plateA == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( plateA, recipe.getBottomOptional().orElse( null ) ) );
 
 			if( matchA || matchB )
 			{

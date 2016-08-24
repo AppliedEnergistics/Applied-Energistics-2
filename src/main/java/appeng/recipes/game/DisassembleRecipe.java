@@ -21,11 +21,9 @@ package appeng.recipes.game;
 
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import com.google.common.base.Optional;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
@@ -100,8 +98,10 @@ public final class DisassembleRecipe implements IRecipe
 				}
 
 				// handle storage cells
-				for( final ItemStack storageCellStack : this.getCellOutput( stackInSlot ).asSet() )
+				Optional<ItemStack> maybeCellOutput = this.getCellOutput( stackInSlot );
+				if( maybeCellOutput.isPresent() )
 				{
+					ItemStack storageCellStack = maybeCellOutput.get();
 					// make sure the storage cell stackInSlot empty...
 					final IMEInventory<IAEItemStack> cellInv = AEApi.instance().registries().cell().getCellInventory( stackInSlot, null, StorageChannel.ITEMS );
 					if( cellInv != null )
@@ -117,10 +117,7 @@ public final class DisassembleRecipe implements IRecipe
 				}
 
 				// handle crafting storage blocks
-				for( final ItemStack craftingStorageStack : this.getNonCellOutput( stackInSlot ).asSet() )
-				{
-					output = craftingStorageStack;
-				}
+				output = getNonCellOutput( stackInSlot ).orElse( output );
 			}
 		}
 
@@ -138,7 +135,7 @@ public final class DisassembleRecipe implements IRecipe
 			}
 		}
 
-		return Optional.absent();
+		return Optional.empty();
 	}
 
 	@Nonnull
@@ -152,7 +149,7 @@ public final class DisassembleRecipe implements IRecipe
 			}
 		}
 
-		return Optional.absent();
+		return Optional.empty();
 	}
 
 	@Nullable

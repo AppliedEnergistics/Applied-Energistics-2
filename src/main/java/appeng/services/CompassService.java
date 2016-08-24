@@ -22,12 +22,12 @@ package appeng.services;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
@@ -133,8 +133,10 @@ public final class CompassService
 		// lower level...
 		final Chunk c = w.getChunkFromChunkCoords( cx, cz );
 
-		for( final Block skyStoneBlock : AEApi.instance().definitions().blocks().skyStoneBlock().maybeBlock().asSet() )
+		Optional<Block> maybeBlock = AEApi.instance().definitions().blocks().skyStoneBlock().maybeBlock();
+		if( maybeBlock.isPresent() )
 		{
+			Block skyStoneBlock = maybeBlock.get();
 			for( int i = 0; i < CHUNK_SIZE; i++ )
 			{
 				for( int j = 0; j < CHUNK_SIZE; j++ )

@@ -19,6 +19,8 @@
 package appeng.tile.crafting;
 
 
+import java.util.Optional;
+
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
@@ -36,29 +38,25 @@ public class TileCraftingStorageTile extends TileCraftingTile
 		final IBlocks blocks = AEApi.instance().definitions().blocks();
 		final int storage = ( (TileCraftingTile) obj ).getStorageBytes() / KILO_SCALAR;
 
+		Optional<ItemStack> is;
+
 		switch( storage )
 		{
 			case 4:
-				for( final ItemStack stack : blocks.craftingStorage4k().maybeStack( 1 ).asSet() )
-				{
-					return stack;
-				}
+				is = blocks.craftingStorage4k().maybeStack( 1 );
 				break;
 			case 16:
-				for( final ItemStack stack : blocks.craftingStorage16k().maybeStack( 1 ).asSet() )
-				{
-					return stack;
-				}
+				is = blocks.craftingStorage16k().maybeStack( 1 );
 				break;
 			case 64:
-				for( final ItemStack stack : blocks.craftingStorage64k().maybeStack( 1 ).asSet() )
-				{
-					return stack;
-				}
+				is = blocks.craftingStorage64k().maybeStack( 1 );
+				break;
+			default:
+				is = Optional.empty();
 				break;
 		}
 
-		return super.getItemFromTile( obj );
+		return is.orElseGet( () -> super.getItemFromTile( obj ) );
 	}
 
 	@Override

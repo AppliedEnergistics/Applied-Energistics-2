@@ -19,7 +19,7 @@
 package appeng.items.tools.powered.powersink;
 
 
-//import com.google.common.base.Optional;
+//import java.util.Optional;
 //
 //import net.minecraft.item.ItemStack;
 //

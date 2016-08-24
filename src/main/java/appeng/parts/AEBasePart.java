@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -479,9 +480,10 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 			final IDefinitions definitions = AEApi.instance().definitions();
 			if( definitions.parts().iface().isSameAs( is ) )
 			{
-				for( final ItemStack iface : definitions.blocks().iface().maybeStack( 1 ).asSet() )
+				Optional<ItemStack> iface = definitions.blocks().iface().maybeStack( 1 );
+				if( iface.isPresent() )
 				{
-					is = iface;
+					is = iface.get();
 				}
 			}
 

@@ -19,7 +19,7 @@
 package appeng.core.features;
 
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.block.Block;
@@ -38,7 +38,7 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	public BlockDefinition( String registryName, Block block, ItemBlock item )
 	{
 		super( registryName, item );
-		this.block = Optional.fromNullable( block );
+		this.block = Optional.ofNullable( block );
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	@Override
 	public final Optional<ItemBlock> maybeItemBlock()
 	{
-		return this.block.transform( ItemBlock::new );
+		return this.block.map( ItemBlock::new );
 	}
 
 	@Override
@@ -58,12 +58,12 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	{
 		Preconditions.checkArgument( stackSize > 0 );
 
-		return this.block.transform( b -> new ItemStack( b, stackSize ) );
+		return this.block.map( b -> new ItemStack( b, stackSize ) );
 	}
 
 	@Override
 	public final boolean isSameAs( final IBlockAccess world, final BlockPos pos )
 	{
-		return this.isEnabled() && world.getBlockState( pos ).getBlock() == this.block.get();
+		return block.isPresent() && world.getBlockState( pos ).getBlock() == this.block.get();
 	}
 }

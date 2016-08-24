@@ -126,11 +126,11 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 
 			for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 			{
-				final boolean matchA = ( top == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( top, recipe.getTopOptional().orNull() ) ) && // and...
-				( bot == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( bot, recipe.getBottomOptional().orNull() ) );
+				final boolean matchA = ( top == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( top, recipe.getTopOptional().orElse( null ) ) ) && // and...
+				( bot == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( bot, recipe.getBottomOptional().orElse( null ) ) );
 
-				final boolean matchB = ( bot == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( bot, recipe.getTopOptional().orNull() ) ) && // and...
-				( top == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( top, recipe.getBottomOptional().orNull() ) );
+				final boolean matchB = ( bot == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( bot, recipe.getTopOptional().orElse( null ) ) ) && // and...
+				( top == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( top, recipe.getBottomOptional().orElse( null ) ) );
 
 				if( matchA || matchB )
 				{
@@ -174,13 +174,13 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 			boolean isValid = false;
 			for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 			{
-				if( Platform.isSameItemPrecise( recipe.getTopOptional().orNull(), otherSlot ) )
+				if( Platform.isSameItemPrecise( recipe.getTopOptional().orElse( null ), otherSlot ) )
 				{
-					isValid = Platform.isSameItemPrecise( is, recipe.getBottomOptional().orNull() );
+					isValid = Platform.isSameItemPrecise( is, recipe.getBottomOptional().orElse( null ) );
 				}
-				else if( Platform.isSameItemPrecise( recipe.getBottomOptional().orNull(), otherSlot ) )
+				else if( Platform.isSameItemPrecise( recipe.getBottomOptional().orElse( null ), otherSlot ) )
 				{
-					isValid = Platform.isSameItemPrecise( is, recipe.getTopOptional().orNull() );
+					isValid = Platform.isSameItemPrecise( is, recipe.getTopOptional().orElse( null ) );
 				}
 
 				if( isValid )

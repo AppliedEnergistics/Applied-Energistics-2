@@ -2,7 +2,6 @@
 package appeng.worldgen.meteorite;
 
 
-import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 
 import appeng.api.definitions.IBlockDefinition;
@@ -63,10 +62,7 @@ public class Fallout
 		}
 		else if( a > 0.6 )
 		{
-			for( final Block skyStoneBlock : this.skyStoneDefinition.maybeBlock().asSet() )
-			{
-				this.putter.put( w, x, y, z, skyStoneBlock );
-			}
+			skyStoneDefinition.maybeBlock().ifPresent( block -> this.putter.put( w, x, y, z, block ) );
 		}
 		else if( a > 0.5 )
 		{

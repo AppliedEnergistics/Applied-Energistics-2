@@ -34,7 +34,7 @@ import java.util.zip.ZipOutputStream;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 

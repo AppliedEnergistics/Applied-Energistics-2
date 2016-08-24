@@ -19,6 +19,8 @@
 package appeng.core;
 
 
+import java.util.Optional;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -67,9 +69,10 @@ public final class CreativeTab extends CreativeTabs
 	{
 		for( final IItemDefinition definition : choices )
 		{
-			for( final ItemStack definitionStack : definition.maybeStack( 1 ).asSet() )
+			Optional<ItemStack> maybeIs = definition.maybeStack( 1 );
+			if( maybeIs.isPresent() )
 			{
-				return definitionStack;
+				return maybeIs.get();
 			}
 		}
 

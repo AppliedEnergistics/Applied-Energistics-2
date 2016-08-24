@@ -22,7 +22,7 @@ package appeng.util;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 import appeng.core.AELog;
 
@@ -82,7 +82,7 @@ public class ClassInstantiation<T>
 			}
 		}
 
-		return Optional.absent();
+		return Optional.empty();
 	}
 
 	private boolean isClassMatch( Class<?> expected, Class<?> got, final Object value )

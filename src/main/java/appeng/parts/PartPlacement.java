@@ -22,7 +22,7 @@ package appeng.parts;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -379,12 +379,11 @@ public class PartPlacement
 			final AEPartLocation mySide = host.addPart( held, AEPartLocation.fromFacing( side ), player, hand );
 			if( mySide != null )
 			{
-				for( final Block multiPartBlock : multiPart.maybeBlock().asSet() )
-				{
+				multiPart.maybeBlock().ifPresent( multiPartBlock -> {
 					final SoundType ss = multiPartBlock.getSoundType();
 
 					world.playSound( player, 0.5 + pos.getX(), 0.5 + pos.getY(), 0.5 + pos.getZ(), ss.getPlaceSound(), SoundCategory.BLOCKS, ( ss.getVolume() + 1.0F ) / 2.0F, ss.getPitch() * 0.8F );
-				}
+				});
 
 				if( !player.capabilities.isCreativeMode )
 				{

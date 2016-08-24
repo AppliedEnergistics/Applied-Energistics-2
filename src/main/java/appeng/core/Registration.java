@@ -26,9 +26,6 @@ import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.MinecraftForge;
@@ -297,12 +294,12 @@ public final class Registration
 		registries.cell().addCellHandler( new BasicCellHandler() );
 		registries.cell().addCellHandler( new CreativeCellHandler() );
 
-		for( final ItemStack ammoStack : api.definitions().materials().matterBall().maybeStack( 1 ).asSet() )
+		api.definitions().materials().matterBall().maybeStack( 1 ).ifPresent( ammoStack ->
 		{
 			final double weight = 32;
 
 			registries.matterCannon().registerAmmo( ammoStack, weight );
-		}
+		} );
 
 		this.recipeHandler.injectRecipes();
 
@@ -342,10 +339,7 @@ public final class Registration
 		GuiText.values();
 
 		Api.INSTANCE.partHelper().initFMPSupport();
-		for( final Block block : blocks.multiPart().maybeBlock().asSet() )
-		{
-			( (BlockCableBus) block ).setupTile();
-		}
+		blocks.multiPart().maybeBlock().ifPresent( block -> ( (BlockCableBus) block ).setupTile() );
 
 		definitions.getRegistry().getBootstrapComponents().forEach( b -> b.postInitialize( event.getSide() ) );
 
@@ -414,10 +408,10 @@ public final class Registration
 		// Inscriber
 		Upgrades.SPEED.registerItem( blocks.inscriber(), 3 );
 
-		for( final Item wirelessTerminalItem : items.wirelessTerminal().maybeItem().asSet() )
+		items.wirelessTerminal().maybeItem().ifPresent( terminal ->
 		{
-			registries.wireless().registerWirelessHandler( (IWirelessTermHandler) wirelessTerminalItem );
-		}
+			registries.wireless().registerWirelessHandler( (IWirelessTermHandler) terminal );
+		} );
 
 		// add villager trading to black smiths for a few basic materials
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.VillagerTrading ) )

@@ -24,7 +24,7 @@ import java.util.UUID;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.base.Preconditions;
 
 import net.minecraftforge.common.config.ConfigCategory;
@@ -57,7 +57,7 @@ final class PlayerMapping implements IWorldPlayerMapping
 	{
 		final UUID maybe = this.mappings.get( id );
 
-		return Optional.fromNullable( maybe );
+		return Optional.ofNullable( maybe );
 	}
 
 	@Override

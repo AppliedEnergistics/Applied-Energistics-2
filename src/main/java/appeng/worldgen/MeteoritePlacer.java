@@ -94,10 +94,7 @@ public final class MeteoritePlacer
 		this.validSpawn.add( Blocks.SNOW );
 		this.validSpawn.add( Blocks.STAINED_HARDENED_CLAY );
 
-		for( final Block skyStoneBlock : this.skyStoneDefinition.maybeBlock().asSet() )
-		{
-			this.invalidSpawn.add( skyStoneBlock );
-		}
+		this.skyStoneDefinition.maybeBlock().ifPresent( this.invalidSpawn::add );
 		this.invalidSpawn.add( Blocks.PLANKS );
 		this.invalidSpawn.add( Blocks.IRON_DOOR );
 		this.invalidSpawn.add( Blocks.IRON_BARS );
@@ -216,39 +213,14 @@ public final class MeteoritePlacer
 
 	private void placeMeteorite( final IMeteoriteWorld w, final int x, final int y, final int z )
 	{
-		final int meteorXLength = w.minX( x - 8 );
-		final int meteorXHeight = w.maxX( x + 8 );
-		final int meteorZLength = w.minZ( z - 8 );
-		final int meteorZHeight = w.maxZ( z + 8 );
+
 
 		// spawn meteor
-		for( int i = meteorXLength; i < meteorXHeight; i++ )
-		{
-			for( int j = y - 8; j < y + 8; j++ )
-			{
-				for( int k = meteorZLength; k < meteorZHeight; k++ )
-				{
-					final double dx = i - x;
-					final double dy = j - y;
-					final double dz = k - z;
-
-					if( dx * dx * 0.7 + dy * dy * ( j > y ? 1.4 : 0.8 ) + dz * dz * 0.7 < this.squaredMeteoriteSize )
-					{
-						for( final Block skyStoneBlock : this.skyStoneDefinition.maybeBlock().asSet() )
-						{
-							this.putter.put( w, i, j, k, skyStoneBlock );
-						}
-					}
-				}
-			}
-		}
+		this.skyStoneDefinition.maybeBlock().ifPresent( block -> placeMeteoriteSkyStone( w, x, y, z, block ) );
 
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.SpawnPressesInMeteorites ) )
 		{
-			for( final Block skyChestBlock : this.skyChestDefinition.maybeBlock().asSet() )
-			{
-				this.putter.put( w, x, y, z, skyChestBlock );
-			}
+			this.skyChestDefinition.maybeBlock().ifPresent( block -> this.putter.put( w, x, y, z, block ) );
 
 			final TileEntity te = w.getTileEntity( x, y, z );
 			if( te instanceof IInventory )
@@ -264,8 +236,8 @@ public final class MeteoritePlacer
 
 				for( int zz = 0; zz < primary; zz++ )
 				{
-					int r = 0;
-					boolean duplicate = false;
+					int r;
+					boolean duplicate;
 
 					do
 					{
@@ -286,28 +258,16 @@ public final class MeteoritePlacer
 						switch( r % 4 )
 						{
 							case 0:
-								for( final ItemStack calc : materials.calcProcessorPress().maybeStack( 1 ).asSet() )
-								{
-									toAdd = calc;
-								}
+								toAdd = materials.calcProcessorPress().maybeStack( 1 ).orElse( null );
 								break;
 							case 1:
-								for( final ItemStack calc : materials.engProcessorPress().maybeStack( 1 ).asSet() )
-								{
-									toAdd = calc;
-								}
+								toAdd = materials.engProcessorPress().maybeStack( 1 ).orElse( null );
 								break;
 							case 2:
-								for( final ItemStack calc : materials.logicProcessorPress().maybeStack( 1 ).asSet() )
-								{
-									toAdd = calc;
-								}
+								toAdd = materials.logicProcessorPress().maybeStack( 1 ).orElse( null );
 								break;
 							case 3:
-								for( final ItemStack calc : materials.siliconPress().maybeStack( 1 ).asSet() )
-								{
-									toAdd = calc;
-								}
+								toAdd = materials.siliconPress().maybeStack( 1 ).orElse( null );
 								break;
 							default:
 						}
@@ -334,10 +294,7 @@ public final class MeteoritePlacer
 					{
 						case 0:
 							final int amount = (int) ( ( Math.random() * SKYSTONE_SPAWN_LIMIT ) + 1 );
-							for( final ItemStack skyStoneStack : this.skyStoneDefinition.maybeStack( amount ).asSet() )
-							{
-								ap.addItems( skyStoneStack );
-							}
+							this.skyStoneDefinition.maybeStack( amount ).ifPresent( ap::addItems );
 							break;
 						case 1:
 							final List<ItemStack> possibles = new LinkedList<ItemStack>();
@@ -360,6 +317,32 @@ public final class MeteoritePlacer
 								ap.addItems( nugget );
 							}
 							break;
+					}
+				}
+			}
+		}
+	}
+
+	private void placeMeteoriteSkyStone( IMeteoriteWorld w, int x, int y, int z, Block block )
+	{
+		final int meteorXLength = w.minX( x - 8 );
+		final int meteorXHeight = w.maxX( x + 8 );
+		final int meteorZLength = w.minZ( z - 8 );
+		final int meteorZHeight = w.maxZ( z + 8 );
+
+		for( int i = meteorXLength; i < meteorXHeight; i++ )
+		{
+			for( int j = y - 8; j < y + 8; j++ )
+			{
+				for( int k = meteorZLength; k < meteorZHeight; k++ )
+				{
+					final double dx = i - x;
+					final double dy = j - y;
+					final double dz = k - z;
+
+					if( dx * dx * 0.7 + dy * dy * ( j > y ? 1.4 : 0.8 ) + dz * dz * 0.7 < this.squaredMeteoriteSize )
+					{
+						this.putter.put( w, i, j, k, block );
 					}
 				}
 			}

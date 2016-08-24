@@ -20,6 +20,7 @@ package appeng.items.misc;
 
 
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
@@ -66,16 +67,16 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	@Nullable
 	public static ResolverResult getResolver( final int certus2 )
 	{
-		ResolverResult resolver = null;
 
-		for( ItemStack crystalSeedStack : AEApi.instance().definitions().items().crystalSeed().maybeStack( 1 ).asSet() )
-		{
-			crystalSeedStack.setItemDamage( certus2 );
-			crystalSeedStack = newStyle( crystalSeedStack );
-			resolver = new ResolverResult( "ItemCrystalSeed", crystalSeedStack.getItemDamage(), crystalSeedStack.getTagCompound() );
-		}
+		return AEApi.instance().definitions().items().crystalSeed().maybeStack( 1 )
+				.map( crystalSeedStack ->
+				{
+					crystalSeedStack.setItemDamage( certus2 );
+					crystalSeedStack = newStyle( crystalSeedStack );
+					return new ResolverResult( "ItemCrystalSeed", crystalSeedStack.getItemDamage(), crystalSeedStack.getTagCompound() );
+				} )
+				.orElse( null );
 
-		return resolver;
 	}
 
 	private static ItemStack newStyle( final ItemStack itemStack )
@@ -110,23 +111,26 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 
 		if( newDamage == CERTUS + SINGLE_OFFSET )
 		{
-			for( final ItemStack quartzStack : materials.purifiedCertusQuartzCrystal().maybeStack( size ).asSet() )
+			Optional<ItemStack> quartzStack = materials.purifiedCertusQuartzCrystal().maybeStack( size );
+			if( quartzStack.isPresent() )
 			{
-				return quartzStack;
+				return quartzStack.get();
 			}
 		}
 		if( newDamage == NETHER + SINGLE_OFFSET )
 		{
-			for( final ItemStack quartzStack : materials.purifiedNetherQuartzCrystal().maybeStack( size ).asSet() )
+			Optional<ItemStack> quartzStack = materials.purifiedNetherQuartzCrystal().maybeStack( size );
+			if( quartzStack.isPresent() )
 			{
-				return quartzStack;
+				return quartzStack.get();
 			}
 		}
 		if( newDamage == FLUIX + SINGLE_OFFSET )
 		{
-			for( final ItemStack quartzStack : materials.purifiedFluixCrystal().maybeStack( size ).asSet() )
+			Optional<ItemStack> quartzStack = materials.purifiedFluixCrystal().maybeStack( size );
+			if( quartzStack.isPresent() )
 			{
-				return quartzStack;
+				return quartzStack.get();
 			}
 		}
 		if( newDamage > FINAL_STAGE )

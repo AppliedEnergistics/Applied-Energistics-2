@@ -19,7 +19,7 @@
 package appeng.core;
 
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;

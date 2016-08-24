@@ -20,8 +20,7 @@ package appeng.tile.qnb;
 
 
 import java.util.EnumSet;
-
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 import io.netty.buffer.ByteBuf;
 
@@ -143,12 +142,9 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	private boolean isCenter()
 	{
-		for( final Block link : AEApi.instance().definitions().blocks().quantumLink().maybeBlock().asSet() )
-		{
-			return this.getBlockType() == link;
-		}
-
-		return false;
+		return AEApi.instance().definitions().blocks().quantumLink().maybeBlock()
+				.map( link -> getBlockType() == link )
+				.orElse( false );
 	}
 
 	@MENetworkEventSubscribe

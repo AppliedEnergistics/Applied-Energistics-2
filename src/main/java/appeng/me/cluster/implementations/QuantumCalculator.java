@@ -19,7 +19,6 @@
 package appeng.me.cluster.implementations;
 
 
-import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -165,11 +164,6 @@ public class QuantumCalculator extends MBCalculator
 
 	private boolean isBlockAtLocation( final IBlockAccess w, final BlockPos pos, final IBlockDefinition def )
 	{
-		for( final Block block : def.maybeBlock().asSet() )
-		{
-			return block == w.getBlockState( pos ).getBlock();
-		}
-
-		return false;
+		return def.maybeBlock().map( block -> block == w.getBlockState( pos ).getBlock() ).orElse( false );
 	}
 }

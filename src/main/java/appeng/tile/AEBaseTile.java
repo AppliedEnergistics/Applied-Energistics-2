@@ -68,7 +68,7 @@ public class AEBaseTile extends TileEntity implements ITickable, IOrientable, IC
 
 	private static final ThreadLocal<WeakReference<AEBaseTile>> DROP_NO_ITEMS = new ThreadLocal<WeakReference<AEBaseTile>>();
 	private static final Map<Class<? extends AEBaseTile>, Map<TileEventType, List<AETileEventHandler>>> HANDLERS = new HashMap<Class<? extends AEBaseTile>, Map<TileEventType, List<AETileEventHandler>>>();
-	private static final Map<Class<? extends TileEntity>, IStackSrc> ITEM_STACKS = new HashMap<Class<? extends TileEntity>, IStackSrc>();
+	private static final Map<Class<? extends TileEntity>, IStackSrc> ITEM_STACKS = new HashMap<>();
 	private int renderFragment = 0;
 	@Nullable
 	private String customName;

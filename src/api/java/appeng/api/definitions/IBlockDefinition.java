@@ -2,7 +2,7 @@
 package appeng.api.definitions;
 
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;

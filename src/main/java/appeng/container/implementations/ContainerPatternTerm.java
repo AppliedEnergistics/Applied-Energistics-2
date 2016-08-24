@@ -21,6 +21,7 @@ package appeng.container.implementations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -216,9 +217,10 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			}
 
 			// add a new encoded pattern.
-			for( final ItemStack encodedPatternStack : AEApi.instance().definitions().items().encodedPattern().maybeStack( 1 ).asSet() )
+			Optional<ItemStack> maybePattern = AEApi.instance().definitions().items().encodedPattern().maybeStack( 1 );
+			if( maybePattern.isPresent() )
 			{
-				output = encodedPatternStack;
+				output = maybePattern.get();
 				this.patternSlotOUT.putStack( output );
 			}
 		}

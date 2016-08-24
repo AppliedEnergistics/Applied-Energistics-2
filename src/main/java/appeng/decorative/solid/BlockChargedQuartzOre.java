@@ -24,7 +24,6 @@ import java.util.Random;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -49,27 +48,20 @@ public final class BlockChargedQuartzOre extends BlockQuartzOre
 	@Override
 	public Item getItemDropped( final IBlockState state, final Random rand, final int fortune )
 	{
-		for( final Item charged : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeItem().asSet() )
-		{
-			return charged;
-		}
-
-		throw new MissingDefinition( "Tried to access charged certus quartz crystal, even though they are disabled" );
+		return AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeItem()
+				.orElseThrow( () -> new MissingDefinition( "Tried to access charged certus quartz crystal, even though they are disabled" ) );
 	}
 
 	@Override
 	public int damageDropped( final IBlockState state )
 	{
-		for( final ItemStack crystalStack : AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeStack( 1 ).asSet() )
-		{
-			return crystalStack.getItemDamage();
-		}
-
-		throw new MissingDefinition( "Tried to access charged certus quartz crystal, even though they are disabled" );
+		return AEApi.instance().definitions().materials().certusQuartzCrystalCharged().maybeStack( 1 )
+				.orElseThrow( () -> new MissingDefinition( "Tried to access charged certus quartz crystal, even though they are disabled" ) )
+				.getItemDamage();
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	public void randomDisplayTick( final IBlockState state, final World w, final BlockPos pos, final Random r )
 	{
 		if( !AEConfig.instance.enableEffects )

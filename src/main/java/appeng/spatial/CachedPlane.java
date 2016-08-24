@@ -403,13 +403,13 @@ public class CachedPlane
 
 		private void setBlockIDWithMetadata( final int y, final Object[] blk )
 		{
-			for( final Block matrixFrameBlock : CachedPlane.this.matrixFrame.maybeBlock().asSet() )
+			CachedPlane.this.matrixFrame.maybeBlock().ifPresent( matrixFrameBlock ->
 			{
 				if( blk[0] == matrixFrameBlock )
 				{
 					blk[0] = Platform.AIR_BLOCK;
 				}
-			}
+			} );
 
 			final ExtendedBlockStorage extendedBlockStorage = this.storage[y >> 4];
 			extendedBlockStorage.set( this.x, y & 15, this.z, (IBlockState) blk[0] );

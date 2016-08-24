@@ -128,7 +128,7 @@ public final class EntitySingularity extends AEBaseEntityItem
 									e.setDead();
 								}
 
-								for( final ItemStack singularityStack : materials.qESingularity().maybeStack( 2 ).asSet() )
+								materials.qESingularity().maybeStack( 2 ).ifPresent( singularityStack ->
 								{
 									final NBTTagCompound cmp = Platform.openNbtData( singularityStack );
 									cmp.setLong( "freq", ( new Date() ).getTime() * 100 + ( randTickSeed ) % 100 );
@@ -137,7 +137,7 @@ public final class EntitySingularity extends AEBaseEntityItem
 
 									final EntitySingularity entity = new EntitySingularity( this.worldObj, this.posX, this.posY, this.posZ, singularityStack );
 									this.worldObj.spawnEntityInWorld( entity );
-								}
+								} );
 							}
 
 							if( item.stackSize <= 0 )

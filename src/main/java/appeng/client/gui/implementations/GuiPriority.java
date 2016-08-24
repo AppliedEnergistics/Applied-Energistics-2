@@ -100,58 +100,37 @@ public class GuiPriority extends AEBaseGui
 
 		if( target instanceof PartStorageBus )
 		{
-			for( final ItemStack storageBusStack : parts.storageBus().maybeStack( 1 ).asSet() )
-			{
-				myIcon = storageBusStack;
-			}
+			myIcon = parts.storageBus().maybeStack( 1 ).orElse( myIcon );
 			this.OriginalGui = GuiBridge.GUI_STORAGEBUS;
 		}
 
 		if( target instanceof PartFormationPlane )
 		{
-			for( final ItemStack formationPlaneStack : parts.formationPlane().maybeStack( 1 ).asSet() )
-			{
-				myIcon = formationPlaneStack;
-			}
+			myIcon = parts.formationPlane().maybeStack( 1 ).orElse( myIcon );
 			this.OriginalGui = GuiBridge.GUI_FORMATION_PLANE;
 		}
 
 		if( target instanceof TileDrive )
 		{
-			for( final ItemStack driveStack : blocks.drive().maybeStack( 1 ).asSet() )
-			{
-				myIcon = driveStack;
-			}
-
+			myIcon = blocks.drive().maybeStack( 1 ).orElse( myIcon );
 			this.OriginalGui = GuiBridge.GUI_DRIVE;
 		}
 
 		if( target instanceof TileChest )
 		{
-			for( final ItemStack chestStack : blocks.chest().maybeStack( 1 ).asSet() )
-			{
-				myIcon = chestStack;
-			}
-
+			myIcon = blocks.chest().maybeStack( 1 ).orElse( myIcon );
 			this.OriginalGui = GuiBridge.GUI_CHEST;
 		}
 
 		if( target instanceof TileInterface )
 		{
-			for( final ItemStack interfaceStack : blocks.iface().maybeStack( 1 ).asSet() )
-			{
-				myIcon = interfaceStack;
-			}
-
+			myIcon = blocks.iface().maybeStack( 1 ).orElse( myIcon );
 			this.OriginalGui = GuiBridge.GUI_INTERFACE;
 		}
 
 		if( target instanceof PartInterface )
 		{
-			for( final ItemStack interfaceStack : parts.iface().maybeStack( 1 ).asSet() )
-			{
-				myIcon = interfaceStack;
-			}
+			myIcon = parts.iface().maybeStack( 1 ).orElse( myIcon );
 			this.OriginalGui = GuiBridge.GUI_INTERFACE;
 		}
 
