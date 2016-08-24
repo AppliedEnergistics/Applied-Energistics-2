@@ -35,6 +35,7 @@ public class LightningFX extends Particle
 
 	private static final Random RANDOM_GENERATOR = new Random();
 	private static final int STEPS = 5;
+	private static final int BRIGHTNESS = 13 << 4;
 
 	private final double[][] precomputedSteps;
 	private final double[] vertices = new double[3];
@@ -75,13 +76,6 @@ public class LightningFX extends Particle
 		return LightningFX.STEPS;
 	}
 
-	@Override
-	public int getBrightnessForRender( final float par1 )
-	{
-		final int j1 = 13;
-		return j1 << 20 | j1 << 4;
-	}
-	
 	@Override
 	public void onUpdate()
 	{
@@ -232,10 +226,10 @@ public class LightningFX extends Particle
 	{
 		if( this.hasData )
 		{
-			tess.color( red, green, blue, this.particleAlpha ).pos( a[0], a[1], a[2] ).tex( f6, f8 ).endVertex();
-			tess.color( red, green, blue, this.particleAlpha ).pos( this.vertices[0], this.vertices[1], this.vertices[2] ).tex( f6, f8 ).endVertex();
-			tess.color( red, green, blue, this.particleAlpha ).pos( this.verticesWithUV[0], this.verticesWithUV[1], this.verticesWithUV[2] ).tex( f6, f8 ).endVertex();
-			tess.color( red, green, blue, this.particleAlpha ).pos( b[0], b[1], b[2] ).tex( f6, f8 ).endVertex();
+			tess.pos( a[0], a[1], a[2] ).tex( f6, f8 ).color( red, green, blue, this.particleAlpha ).lightmap( BRIGHTNESS, BRIGHTNESS ).endVertex();
+			tess.pos( this.vertices[0], this.vertices[1], this.vertices[2] ).tex( f6, f8 ).color( red, green, blue, this.particleAlpha ).lightmap( BRIGHTNESS, BRIGHTNESS ).endVertex();
+			tess.pos( this.verticesWithUV[0], this.verticesWithUV[1], this.verticesWithUV[2] ).tex( f6, f8 ).color( red, green, blue, this.particleAlpha ).lightmap( BRIGHTNESS, BRIGHTNESS ).endVertex();
+			tess.pos( b[0], b[1], b[2] ).tex( f6, f8 ).color( red, green, blue, this.particleAlpha ).lightmap( BRIGHTNESS, BRIGHTNESS ).endVertex();
 		}
 		this.hasData = true;
 		for( int x = 0; x < 3; x++ )

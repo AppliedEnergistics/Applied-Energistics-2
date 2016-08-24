@@ -93,12 +93,16 @@ public class CraftingFx extends ParticleBreaking
 			offY -= interpPosY;
 			offZ -= interpPosZ;
 
+			int i = this.getBrightnessForRender(partialTick);
+			int j = i >> 16 & 65535;
+			int k = i & 65535;
+
 			// AELog.info( "" + partialTick );
 			final float f14 = 1.0F;
-			par1Tessellator.color( this.particleRed * f14, this.particleGreen * f14, this.particleBlue * f14, this.particleAlpha ).pos( offX - x * scale - rx * scale, offY - y * scale, offZ - z * scale - rz * scale ).tex( f7, f9 ).endVertex();
-			par1Tessellator.color( this.particleRed * f14, this.particleGreen * f14, this.particleBlue * f14, this.particleAlpha ).pos( offX - x * scale + rx * scale, offY + y * scale, offZ - z * scale + rz * scale ).tex( f7, f8 ).endVertex();
-			par1Tessellator.color( this.particleRed * f14, this.particleGreen * f14, this.particleBlue * f14, this.particleAlpha ).pos( offX + x * scale + rx * scale, offY + y * scale, offZ + z * scale + rz * scale ).tex( f6, f8 ).endVertex();
-			par1Tessellator.color( this.particleRed * f14, this.particleGreen * f14, this.particleBlue * f14, this.particleAlpha ).pos( offX + x * scale - rx * scale, offY - y * scale, offZ + z * scale - rz * scale ).tex( f6, f9 ).endVertex();
+			par1Tessellator.pos( offX - x * scale - rx * scale, offY - y * scale, offZ - z * scale - rz * scale ).tex( f7, f9 ).color( this.particleRed * f14, this.particleGreen * f14, this.particleBlue * f14, this.particleAlpha ).lightmap( j, k ).endVertex();
+			par1Tessellator.pos( offX - x * scale + rx * scale, offY + y * scale, offZ - z * scale + rz * scale ).tex( f7, f8 ).color( this.particleRed * f14, this.particleGreen * f14, this.particleBlue * f14, this.particleAlpha ).lightmap( j, k ).endVertex();
+			par1Tessellator.pos( offX + x * scale + rx * scale, offY + y * scale, offZ + z * scale + rz * scale ).tex( f6, f8 ).color( this.particleRed * f14, this.particleGreen * f14, this.particleBlue * f14, this.particleAlpha ).lightmap( j, k ).endVertex();
+			par1Tessellator.pos( offX + x * scale - rx * scale, offY - y * scale, offZ + z * scale - rz * scale ).tex( f6, f9 ).color( this.particleRed * f14, this.particleGreen * f14, this.particleBlue * f14, this.particleAlpha ).lightmap( j, k ).endVertex();
 		}
 	}
 
