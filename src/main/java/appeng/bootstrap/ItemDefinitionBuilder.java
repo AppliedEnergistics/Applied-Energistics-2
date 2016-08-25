@@ -1,8 +1,11 @@
 package appeng.bootstrap;
 
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -30,6 +33,12 @@ class ItemDefinitionBuilder implements IItemBuilder
 
 	private final EnumSet<AEFeature> features = EnumSet.noneOf( AEFeature.class );
 
+	private final List<Consumer<Item>> preInitCallbacks = new ArrayList<>();
+
+	private final List<Consumer<Item>> initCallbacks = new ArrayList<>();
+
+	private final List<Consumer<Item>> postInitCallbacks = new ArrayList<>();
+
 	@SideOnly( Side.CLIENT )
 	private ItemRendering itemRendering;
 
@@ -44,6 +53,27 @@ class ItemDefinitionBuilder implements IItemBuilder
 		{
 			itemRendering = new ItemRendering();
 		}
+	}
+
+	@Override
+	public ItemDefinitionBuilder preInit( Consumer<Item> callback )
+	{
+		preInitCallbacks.add( callback );
+		return this;
+	}
+
+	@Override
+	public ItemDefinitionBuilder init( Consumer<Item> callback )
+	{
+		initCallbacks.add( callback );
+		return this;
+	}
+
+	@Override
+	public ItemDefinitionBuilder postInit( Consumer<Item> callback )
+	{
+		postInitCallbacks.add( callback );
+		return this;
 	}
 
 	@Override
@@ -99,6 +129,11 @@ class ItemDefinitionBuilder implements IItemBuilder
 
 		item.setUnlocalizedName( "appliedenergistics2." + registryName );
 		item.setCreativeTab( creativeTab );
+
+		// Register all extra handlers
+		preInitCallbacks.forEach( consumer -> factory.addPreInit( side -> consumer.accept( item ) ) );
+		initCallbacks.forEach( consumer -> factory.addInit( side -> consumer.accept( item ) ) );
+		postInitCallbacks.forEach( consumer -> factory.addPostInit( side -> consumer.accept( item ) ) );
 
 		factory.addPreInit( side -> GameRegistry.register( item ) );
 

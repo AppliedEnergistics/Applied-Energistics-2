@@ -1,11 +1,13 @@
 package appeng.bootstrap;
 
 
+import java.util.function.Consumer;
+
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 
 import appeng.core.features.AEFeature;
 import appeng.core.features.ItemDefinition;
-import appeng.util.Platform;
 
 
 /**
@@ -14,6 +16,12 @@ import appeng.util.Platform;
  */
 public interface IItemBuilder
 {
+
+	IItemBuilder preInit( Consumer<Item> callback );
+
+	IItemBuilder init( Consumer<Item> callback );
+
+	IItemBuilder postInit( Consumer<Item> callback );
 
 	IItemBuilder features( AEFeature... features );
 
@@ -24,5 +32,4 @@ public interface IItemBuilder
 	IItemBuilder rendering( ItemRenderingCustomizer callback );
 
 	ItemDefinition build();
-
 }
