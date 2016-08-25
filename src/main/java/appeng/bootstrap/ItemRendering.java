@@ -104,10 +104,10 @@ class ItemRendering implements IItemRendering
 			else
 			{
 				model = new ModelResourceLocation( item.getRegistryName(), "inventory" );
+				resources.add( model );
 			}
 
 			factory.addBootstrapComponent( new ItemModelComponent( item, ImmutableMap.of( 0, model ) ) );
-			resources.add( model );
 		}
 
 		if( !resources.isEmpty() )
