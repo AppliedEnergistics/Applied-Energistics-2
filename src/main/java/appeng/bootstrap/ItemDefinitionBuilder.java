@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import net.minecraft.block.BlockDispenser;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.dispenser.IBehaviorDispenseItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -38,6 +40,8 @@ class ItemDefinitionBuilder implements IItemBuilder
 	private final List<Consumer<Item>> initCallbacks = new ArrayList<>();
 
 	private final List<Consumer<Item>> postInitCallbacks = new ArrayList<>();
+
+	private Supplier<IBehaviorDispenseItem> dispenserBehaviorSupplier;
 
 	@SideOnly( Side.CLIENT )
 	private ItemRendering itemRendering;
@@ -109,6 +113,13 @@ class ItemDefinitionBuilder implements IItemBuilder
 		return this;
 	}
 
+	@Override
+	public IItemBuilder dispenserBehavior( Supplier<IBehaviorDispenseItem> behavior )
+	{
+		this.dispenserBehaviorSupplier = behavior;
+		return this;
+	}
+
 	@SideOnly( Side.CLIENT )
 	private void customizeForClient( ItemRenderingCustomizer callback )
 	{
@@ -134,6 +145,16 @@ class ItemDefinitionBuilder implements IItemBuilder
 		preInitCallbacks.forEach( consumer -> factory.addPreInit( side -> consumer.accept( item ) ) );
 		initCallbacks.forEach( consumer -> factory.addInit( side -> consumer.accept( item ) ) );
 		postInitCallbacks.forEach( consumer -> factory.addPostInit( side -> consumer.accept( item ) ) );
+
+		// Register custom dispenser behavior if requested
+		if( dispenserBehaviorSupplier != null )
+		{
+			factory.addPostInit( side ->
+			{
+				IBehaviorDispenseItem behavior = dispenserBehaviorSupplier.get();
+				BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( item, behavior );
+			} );
+		}
 
 		factory.addPreInit( side -> GameRegistry.register( item ) );
 

@@ -2,8 +2,10 @@ package appeng.bootstrap;
 
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.dispenser.IBehaviorDispenseItem;
 import net.minecraft.item.Item;
 
 import appeng.core.features.AEFeature;
@@ -30,6 +32,11 @@ public interface IItemBuilder
 	IItemBuilder creativeTab( CreativeTabs tab );
 
 	IItemBuilder rendering( ItemRenderingCustomizer callback );
+
+	/**
+	 * Registers a custom dispenser behavior for this item.
+	 */
+	IItemBuilder dispenserBehavior( Supplier<IBehaviorDispenseItem> behavior );
 
 	ItemDefinition build();
 }

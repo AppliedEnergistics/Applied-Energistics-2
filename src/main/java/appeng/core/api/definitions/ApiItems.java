@@ -29,6 +29,8 @@ import appeng.debug.ToolDebugCard;
 import appeng.debug.ToolEraser;
 import appeng.debug.ToolMeteoritePlacer;
 import appeng.debug.ToolReplicatorCard;
+import appeng.hooks.DispenserBlockTool;
+import appeng.hooks.DispenserMatterCannon;
 import appeng.items.materials.MaterialType;
 import appeng.items.misc.ItemCrystalSeed;
 import appeng.items.misc.ItemCrystalSeedRendering;
@@ -138,12 +140,21 @@ public final class ApiItems implements IItems
 		this.netherQuartzKnife = netherTools.item( "nether_quartz_cutting_knife", () -> new ToolQuartzCuttingKnife( AEFeature.NetherQuartzTools ) ).addFeatures( AEFeature.QuartzKnife ).build();
 
 		FeatureFactory powerTools = registry.features( AEFeature.PoweredTools );
-		this.entropyManipulator = powerTools.item( "entropy_manipulator", ToolEntropyManipulator::new ).addFeatures( AEFeature.EntropyManipulator ).build();
+		this.entropyManipulator = powerTools.item( "entropy_manipulator", ToolEntropyManipulator::new )
+				.addFeatures( AEFeature.EntropyManipulator )
+				.dispenserBehavior( DispenserBlockTool::new )
+				.build();
 		this.wirelessTerminal = powerTools.item( "wireless_terminal", ToolWirelessTerminal::new ).addFeatures( AEFeature.WirelessAccessTerminal ).build();
 		this.chargedStaff = powerTools.item( "charged_staff", ToolChargedStaff::new ).addFeatures( AEFeature.ChargedStaff ).build();
-		this.massCannon = powerTools.item( "mass_cannon", ToolMassCannon::new ).addFeatures( AEFeature.MatterCannon ).build();
+		this.massCannon = powerTools.item( "mass_cannon", ToolMassCannon::new )
+				.addFeatures( AEFeature.MatterCannon )
+				.dispenserBehavior( DispenserMatterCannon::new )
+				.build();
 		this.portableCell = powerTools.item( "portable_cell", ToolPortableCell::new ).addFeatures( AEFeature.PortableCell, AEFeature.StorageCells ).build();
-		this.colorApplicator = powerTools.item( "color_applicator", ToolColorApplicator::new ).addFeatures( AEFeature.ColorApplicator ).build();
+		this.colorApplicator = powerTools.item( "color_applicator", ToolColorApplicator::new )
+				.addFeatures( AEFeature.ColorApplicator )
+				.dispenserBehavior( DispenserBlockTool::new )
+				.build();
 
 		this.biometricCard = registry.item( "biometric_card", ToolBiometricCard::new ).features( AEFeature.Security ).build();
 		this.memoryCard = registry.item( "memory_card", ToolMemoryCard::new ).build();

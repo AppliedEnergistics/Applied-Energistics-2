@@ -23,7 +23,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -67,7 +66,6 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMatterCannon;
-import appeng.hooks.DispenserMatterCannon;
 import appeng.hooks.TickHandler;
 import appeng.hooks.TickHandler.PlayerColor;
 import appeng.items.contents.CellConfig;
@@ -86,12 +84,6 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 	public ToolMassCannon()
 	{
 		super( AEConfig.instance.matterCannonBattery );
-	}
-
-	public void postInit()
-	{
-		// TODO BOOTSTRAP
-		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( this, new DispenserMatterCannon() );
 	}
 
 	@Override

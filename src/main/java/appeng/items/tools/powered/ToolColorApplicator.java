@@ -29,7 +29,6 @@ import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
-import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.BlockStainedGlass;
 import net.minecraft.block.BlockStainedGlassPane;
 import net.minecraft.block.state.IBlockState;
@@ -66,7 +65,6 @@ import appeng.block.networking.BlockCableBus;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.helpers.IMouseWheelItem;
-import appeng.hooks.DispenserBlockTool;
 import appeng.hooks.IBlockTool;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
@@ -106,12 +104,6 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			// TODO - color applicator
 			// MinecraftForgeClient.registerItemRenderer( this, new ToolColorApplicatorRender() );
 		}
-	}
-
-	public void postInit()
-	{
-		// TODO BOOTSTRAP
-		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( this, new DispenserBlockTool() );
 	}
 
 	@Override

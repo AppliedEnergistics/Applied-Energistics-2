@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.BlockTNT;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -49,7 +48,6 @@ import net.minecraft.world.World;
 import appeng.api.util.DimensionalCoord;
 import appeng.block.misc.BlockTinyTNT;
 import appeng.core.AEConfig;
-import appeng.hooks.DispenserBlockTool;
 import appeng.hooks.IBlockTool;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.InWorldToolOperationResult;
@@ -83,12 +81,6 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.FLOWING_WATER, true ), new InWorldToolOperationResult() );
 		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.WATER, true ), new InWorldToolOperationResult() );
 		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.SNOW, true ), new InWorldToolOperationResult( new ItemStack( Blocks.FLOWING_WATER ) ) );
-	}
-
-	public void postInit()
-	{
-		// TODO BOOTSTRAP
-		BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( this, new DispenserBlockTool() );
 	}
 
 	private static class InWorldToolOperationIngredient
