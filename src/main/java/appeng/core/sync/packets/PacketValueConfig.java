@@ -50,7 +50,7 @@ import appeng.container.implementations.ContainerNetworkTool;
 import appeng.container.implementations.ContainerPatternTerm;
 import appeng.container.implementations.ContainerPriority;
 import appeng.container.implementations.ContainerQuartzKnife;
-import appeng.container.implementations.ContainerSecurity;
+import appeng.container.implementations.ContainerSecurityStation;
 import appeng.container.implementations.ContainerStorageBus;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -143,9 +143,9 @@ public class PacketValueConfig extends AppEngPacket
 			final ContainerQuartzKnife qk = (ContainerQuartzKnife) c;
 			qk.setName( this.Value );
 		}
-		else if( this.Name.equals( "TileSecurity.ToggleOption" ) && c instanceof ContainerSecurity )
+		else if( this.Name.equals( "TileStationSecurity.ToggleOption" ) && c instanceof ContainerSecurityStation )
 		{
-			final ContainerSecurity sc = (ContainerSecurity) c;
+			final ContainerSecurityStation sc = (ContainerSecurityStation) c;
 			sc.toggleSetting( this.Value, player );
 		}
 		else if( this.Name.equals( "PriorityHost.Priority" ) && c instanceof ContainerPriority )

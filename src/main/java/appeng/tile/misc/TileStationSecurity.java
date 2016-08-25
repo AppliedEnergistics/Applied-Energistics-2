@@ -67,7 +67,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.helpers.PlayerSecurityWrapper;
 import appeng.me.GridAccessException;
-import appeng.me.storage.SecurityInventory;
+import appeng.me.storage.SecurityStationInventory;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
@@ -80,19 +80,19 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 
-public class TileSecurity extends AENetworkTile implements ITerminalHost, IAEAppEngInventory, ILocatable, IConfigManagerHost, ISecurityProvider, IColorableTile
+public class TileStationSecurity extends AENetworkTile implements ITerminalHost, IAEAppEngInventory, ILocatable, IConfigManagerHost, ISecurityProvider, IColorableTile
 {
 
 	private static int difference = 0;
 	private final AppEngInternalInventory configSlot = new AppEngInternalInventory( this, 1 );
 	private final IConfigManager cm = new ConfigManager( this );
-	private final SecurityInventory inventory = new SecurityInventory( this );
+	private final SecurityStationInventory inventory = new SecurityStationInventory( this );
 	private final MEMonitorHandler<IAEItemStack> securityMonitor = new MEMonitorHandler<IAEItemStack>( this.inventory );
 	private long securityKey;
 	private AEColor paintedColor = AEColor.Transparent;
 	private boolean isActive = false;
 
-	public TileSecurity()
+	public TileStationSecurity()
 	{
 		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
 		this.getProxy().setIdlePowerUsage( 2.0 );

@@ -27,14 +27,14 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
 import appeng.api.storage.ITerminalHost;
 import appeng.client.gui.widgets.GuiToggleButton;
-import appeng.container.implementations.ContainerSecurity;
+import appeng.container.implementations.ContainerSecurityStation;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
 
 
-public class GuiSecurity extends GuiMEMonitorable
+public class GuiSecurityStation extends GuiMEMonitorable
 {
 
 	private GuiToggleButton inject;
@@ -43,9 +43,9 @@ public class GuiSecurity extends GuiMEMonitorable
 	private GuiToggleButton build;
 	private GuiToggleButton security;
 
-	public GuiSecurity( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
+	public GuiSecurityStation( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
-		super( inventoryPlayer, te, new ContainerSecurity( inventoryPlayer, te ) );
+		super( inventoryPlayer, te, new ContainerSecurityStation( inventoryPlayer, te ) );
 		this.setCustomSortOrder( false );
 		this.setReservedSpace( 33 );
 
@@ -86,7 +86,7 @@ public class GuiSecurity extends GuiMEMonitorable
 		{
 			try
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "TileSecurity.ToggleOption", toggleSetting.name() ) );
+				NetworkHandler.instance.sendToServer( new PacketValueConfig( "TileStationSecurity.ToggleOption", toggleSetting.name() ) );
 			}
 			catch( final IOException e )
 			{
@@ -122,7 +122,7 @@ public class GuiSecurity extends GuiMEMonitorable
 	@Override
 	protected String getBackground()
 	{
-		final ContainerSecurity cs = (ContainerSecurity) this.inventorySlots;
+		final ContainerSecurityStation cs = (ContainerSecurityStation) this.inventorySlots;
 
 		this.inject.setState( ( cs.getPermissionMode() & ( 1 << SecurityPermissions.INJECT.ordinal() ) ) > 0 );
 		this.extract.setState( ( cs.getPermissionMode() & ( 1 << SecurityPermissions.EXTRACT.ordinal() ) ) > 0 );
@@ -130,7 +130,7 @@ public class GuiSecurity extends GuiMEMonitorable
 		this.build.setState( ( cs.getPermissionMode() & ( 1 << SecurityPermissions.BUILD.ordinal() ) ) > 0 );
 		this.security.setState( ( cs.getPermissionMode() & ( 1 << SecurityPermissions.SECURITY.ordinal() ) ) > 0 );
 
-		return "guis/security.png";
+		return "guis/security_station.png";
 	}
 
 	@Override

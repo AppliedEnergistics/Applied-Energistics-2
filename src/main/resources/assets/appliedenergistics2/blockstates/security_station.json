@@ -1,7 +1,7 @@
 {
     "variants": {
         "normal": {
-            "model": "appliedenergistics2:security"
+            "model": "appliedenergistics2:security_station"
         }
     }
 }

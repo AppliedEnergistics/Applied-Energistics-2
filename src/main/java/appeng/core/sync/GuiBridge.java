@@ -84,7 +84,7 @@ import appeng.container.implementations.ContainerPatternTerm;
 import appeng.container.implementations.ContainerPriority;
 import appeng.container.implementations.ContainerQNB;
 import appeng.container.implementations.ContainerQuartzKnife;
-import appeng.container.implementations.ContainerSecurity;
+import appeng.container.implementations.ContainerSecurityStation;
 import appeng.container.implementations.ContainerSkyChest;
 import appeng.container.implementations.ContainerSpatialIOPort;
 import appeng.container.implementations.ContainerStorageBus;
@@ -109,7 +109,7 @@ import appeng.tile.grindstone.TileGrinder;
 import appeng.tile.misc.TileCellWorkbench;
 import appeng.tile.misc.TileCondenser;
 import appeng.tile.misc.TileInscriber;
-import appeng.tile.misc.TileSecurity;
+import appeng.tile.misc.TileStationSecurity;
 import appeng.tile.misc.TileVibrationChamber;
 import appeng.tile.networking.TileWireless;
 import appeng.tile.qnb.TileQuantumBridge;
@@ -167,7 +167,7 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_PRIORITY( ContainerPriority.class, IPriorityHost.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
-	GUI_SECURITY( ContainerSecurity.class, TileSecurity.class, GuiHostType.WORLD, SecurityPermissions.SECURITY ),
+	GUI_SECURITY( ContainerSecurityStation.class, TileStationSecurity.class, GuiHostType.WORLD, SecurityPermissions.SECURITY ),
 
 	GUI_CRAFTING_TERMINAL( ContainerCraftingTerm.class, PartCraftingTerminal.class, GuiHostType.WORLD, SecurityPermissions.CRAFT ),
 

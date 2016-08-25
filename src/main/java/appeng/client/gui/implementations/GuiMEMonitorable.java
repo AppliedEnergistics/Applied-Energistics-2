@@ -63,7 +63,7 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.parts.reporting.AbstractPartTerminal;
-import appeng.tile.misc.TileSecurity;
+import appeng.tile.misc.TileStationSecurity;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
@@ -126,7 +126,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		this.viewCell = te instanceof IViewCellStorage;
 
-		if( te instanceof TileSecurity )
+		if( te instanceof TileStationSecurity )
 		{
 			this.myName = GuiText.Security;
 		}
@@ -401,7 +401,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		final int x_width = 197;
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, x_width, 18 );
 
-		if( this.viewCell || ( this instanceof GuiSecurity ) )
+		if( this.viewCell || ( this instanceof GuiSecurityStation ) )
 		{
 			this.drawTexturedModalRect( offsetX + x_width, offsetY, x_width, 0, 46, 128 );
 		}

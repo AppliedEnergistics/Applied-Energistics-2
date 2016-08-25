@@ -47,7 +47,7 @@ import appeng.block.misc.BlockLightDetector;
 import appeng.block.misc.BlockPaint;
 import appeng.block.misc.BlockQuartzGrowthAccelerator;
 import appeng.block.misc.BlockQuartzTorch;
-import appeng.block.misc.BlockSecurity;
+import appeng.block.misc.BlockSecurityStation;
 import appeng.block.misc.BlockSkyCompass;
 import appeng.block.misc.BlockTinyTNT;
 import appeng.block.misc.BlockVibrationChamber;
@@ -238,7 +238,7 @@ public final class ApiBlocks implements IBlocks
 					BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( item, new DispenserBehaviorTinyTNT() );
 				} )
 				.build();
-		this.securityStation = registry.block( "security_station", BlockSecurity::new ).features( AEFeature.Security ).build();
+		this.securityStation = registry.block( "security_station", BlockSecurityStation::new ).features( AEFeature.Security ).build();
 		this.quantumRing = registry.block( "quantum_ring", BlockQuantumRing::new ).features( AEFeature.QuantumNetworkBridge ).build();
 		this.quantumLink = registry.block( "quantum_link", BlockQuantumLinkChamber::new ).features( AEFeature.QuantumNetworkBridge ).build();
 		this.spatialPylon = registry.block( "spatial_pylon", BlockSpatialPylon::new ).features( AEFeature.SpatialIO ).build();

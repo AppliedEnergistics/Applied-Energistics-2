@@ -37,10 +37,10 @@ import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
-import appeng.tile.misc.TileSecurity;
+import appeng.tile.misc.TileStationSecurity;
 
 
-public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppEngInventory
+public class ContainerSecurityStation extends ContainerMEMonitorable implements IAEAppEngInventory
 {
 
 	private final SlotRestrictedInput configSlot;
@@ -50,15 +50,15 @@ public class ContainerSecurity extends ContainerMEMonitorable implements IAEAppE
 	private final SlotRestrictedInput wirelessIn;
 	private final SlotOutput wirelessOut;
 
-	private final TileSecurity securityBox;
+	private final TileStationSecurity securityBox;
 	@GuiSync( 0 )
 	public int permissionMode = 0;
 
-	public ContainerSecurity( final InventoryPlayer ip, final ITerminalHost monitorable )
+	public ContainerSecurityStation( final InventoryPlayer ip, final ITerminalHost monitorable )
 	{
 		super( ip, monitorable, false );
 
-		this.securityBox = (TileSecurity) monitorable;
+		this.securityBox = (TileStationSecurity) monitorable;
 
 		this.addSlotToContainer( this.configSlot = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.BIOMETRIC_CARD, this.securityBox.getConfigSlot(), 0, 37, -33, ip ) );
 
