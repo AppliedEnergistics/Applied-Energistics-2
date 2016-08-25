@@ -10,9 +10,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -115,6 +117,22 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		{
 			customizeForClient( callback );
 		}
+
+		return this;
+	}
+
+	@Override
+	public IBlockBuilder useCustomItemModel()
+	{
+		rendering( new BlockRenderingCustomizer()
+		{
+			@Override
+			@SideOnly( Side.CLIENT )
+			public void customize( IBlockRendering rendering, IItemRendering itemRendering )
+			{
+				itemRendering.model( new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, registryName ), "inventory" ) );
+			}
+		} );
 
 		return this;
 	}

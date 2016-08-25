@@ -27,8 +27,13 @@ public interface IBlockBuilder
 
 	IBlockBuilder rendering( BlockRenderingCustomizer callback );
 
+	/**
+	 * Forces this block's item to uses a custom model, instead of using the default block state as the item model.
+	 * The model has the same name as the registry name.
+	 */
+	IBlockBuilder useCustomItemModel();
+
 	IBlockBuilder item( Function<Block, ItemBlock> factory );
 
 	<T extends IBlockDefinition> T build();
-
 }
