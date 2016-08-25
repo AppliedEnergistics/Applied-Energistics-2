@@ -61,7 +61,7 @@ public class BlockQuartzGlass extends AEBaseBlock
 	}
 
 	@Override
-	public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
+	public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
 	{
 		for( EnumFacing facing : EnumFacing.values() )
 		{
