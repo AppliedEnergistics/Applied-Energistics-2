@@ -49,16 +49,16 @@ import appeng.core.CommonHelper;
 import appeng.helpers.ICustomCollision;
 import appeng.helpers.MetaRotation;
 
-public class BlockQuartzTorch extends AEBaseBlock implements IOrientableBlock, ICustomCollision
+public class BlockQuartzFixture extends AEBaseBlock implements IOrientableBlock, ICustomCollision
 {
 
 	// Cannot use the vanilla FACING property here because it excludes facing DOWN
 	public static final PropertyDirection FACING = PropertyDirection.create( "facing" );
 
-	// Used to alternate between two variants of the torch on adjacent blocks
+	// Used to alternate between two variants of the fixture on adjacent blocks
 	public static final PropertyBool ODD = PropertyBool.create( "odd" );
 
-	public BlockQuartzTorch()
+	public BlockQuartzFixture()
 	{
 		super( Material.CIRCUITS );
 

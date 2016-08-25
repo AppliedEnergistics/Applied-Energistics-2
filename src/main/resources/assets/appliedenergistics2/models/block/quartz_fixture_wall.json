@@ -122,15 +122,15 @@
                 }
             },
             "from": [
-                8.0,
+                7.0,
                 4.0,
-                12.0
+                11.0
             ],
             "name": "Lower Quartz Tip",
             "to": [
-                9.0,
+                8.0,
                 5.0,
-                13.0
+                12.0
             ]
         },
         {
@@ -188,21 +188,21 @@
                 }
             },
             "from": [
-                7.0,
+                8.0,
                 10.0,
-                11.0
+                12.0
             ],
             "name": "Upper Quartz Tip",
             "to": [
-                8.0,
+                9.0,
                 11.0,
-                12.0
+                13.0
             ]
         }
     ],
     "textures": {
-		"particle": "appliedenergistics2:blocks/quartz_torch",
-        "metal": "appliedenergistics2:blocks/quartz_torch_metal",
-        "quartz": "appliedenergistics2:blocks/quartz_torch"
+		"particle": "appliedenergistics2:blocks/quartz_fixture",
+        "metal": "appliedenergistics2:blocks/quartz_fixture_metal",
+        "quartz": "appliedenergistics2:blocks/quartz_fixture"
     }
 }

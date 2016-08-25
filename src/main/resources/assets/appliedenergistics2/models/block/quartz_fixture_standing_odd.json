@@ -299,8 +299,8 @@
         }
     ],
     "textures": {
-		"particle": "appliedenergistics2:blocks/quartz_torch",
-        "metal": "appliedenergistics2:blocks/quartz_torch_metal",
-        "quartz": "appliedenergistics2:blocks/quartz_torch"
+		"particle": "appliedenergistics2:blocks/quartz_fixture",
+        "metal": "appliedenergistics2:blocks/quartz_fixture_metal",
+        "quartz": "appliedenergistics2:blocks/quartz_fixture"
     }
 }

@@ -46,7 +46,7 @@ import appeng.block.misc.BlockInterface;
 import appeng.block.misc.BlockLightDetector;
 import appeng.block.misc.BlockPaint;
 import appeng.block.misc.BlockQuartzGrowthAccelerator;
-import appeng.block.misc.BlockQuartzTorch;
+import appeng.block.misc.BlockQuartzFixture;
 import appeng.block.misc.BlockSecurityStation;
 import appeng.block.misc.BlockSkyCompass;
 import appeng.block.misc.BlockTinyTNT;
@@ -200,7 +200,7 @@ public final class ApiBlocks implements IBlocks
 		this.chiseledQuartzBlock = deco.block( "chiseled_quartz_block", BlockChiseledQuartz::new ).build();
 		this.quartzGlass = deco.block( "quartz_glass", BlockQuartzGlass::new ).build();
 		this.quartzVibrantGlass = deco.block( "quartz_vibrant_glass", BlockQuartzLamp::new ).addFeatures( AEFeature.DecorativeLights ).build();
-		this.quartzFixture = registry.block( "quartz_fixture", BlockQuartzTorch::new ).features( AEFeature.DecorativeLights ).build();
+		this.quartzFixture = registry.block( "quartz_fixture", BlockQuartzFixture::new ).features( AEFeature.DecorativeLights ).build();
 
 		this.fluixBlock = deco.block( "fluix_block", BlockFluix::new ).build();
 		this.skyStoneBlock = deco.block( "sky_stone_block", () -> new BlockSkyStone( SkystoneType.STONE ) ).build();
