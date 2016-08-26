@@ -1,7 +1,7 @@
 {
     "variants": {
         "normal": {
-            "model": "appliedenergistics2:sky_stone_block_block"
+            "model": "appliedenergistics2:smooth_sky_stone_block"
         }
     }
 }

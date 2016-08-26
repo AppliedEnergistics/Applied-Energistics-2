@@ -198,28 +198,39 @@ public final class ApiBlocks implements IBlocks
 		this.quartzBlock = deco.block( "quartz_block", BlockQuartz::new ).build();
 		this.quartzPillar = deco.block( "quartz_pillar", BlockQuartzPillar::new ).build();
 		this.chiseledQuartzBlock = deco.block( "chiseled_quartz_block", BlockChiseledQuartz::new ).build();
-		this.quartzGlass = deco.block( "quartz_glass", BlockQuartzGlass::new ).build();
-		this.quartzVibrantGlass = deco.block( "quartz_vibrant_glass", BlockQuartzLamp::new ).addFeatures( AEFeature.DecorativeLights ).build();
-		this.quartzFixture = registry.block( "quartz_fixture", BlockQuartzFixture::new ).features( AEFeature.DecorativeLights ).build();
+		this.quartzGlass = deco.block( "quartz_glass", BlockQuartzGlass::new )
+				.useCustomItemModel()
+				.build();
+		this.quartzVibrantGlass = deco.block( "quartz_vibrant_glass", BlockQuartzLamp::new )
+				.addFeatures( AEFeature.DecorativeLights )
+				.useCustomItemModel()
+				.build();
+		this.quartzFixture = registry.block( "quartz_fixture", BlockQuartzFixture::new )
+				.features( AEFeature.DecorativeLights )
+				.useCustomItemModel()
+				.build();
 
 		this.fluixBlock = deco.block( "fluix_block", BlockFluix::new ).build();
 		this.skyStoneBlock = deco.block( "sky_stone_block", () -> new BlockSkyStone( SkystoneType.STONE ) ).build();
-		this.smoothSkyStoneBlock = deco.block( "smooth_skystone", () -> new BlockSkyStone( SkystoneType.BLOCK ) ).build();
-		this.skyStoneBrick = deco.block( "skystone_brick", () -> new BlockSkyStone( SkystoneType.BRICK ) ).build();
-		this.skyStoneSmallBrick = deco.block( "skystone_small_brick", () -> new BlockSkyStone( SkystoneType.SMALL_BRICK ) ).build();
+		this.smoothSkyStoneBlock = deco.block( "smooth_sky_stone_block", () -> new BlockSkyStone( SkystoneType.BLOCK ) ).build();
+		this.skyStoneBrick = deco.block( "sky_stone_brick", () -> new BlockSkyStone( SkystoneType.BRICK ) ).build();
+		this.skyStoneSmallBrick = deco.block( "sky_stone_small_brick", () -> new BlockSkyStone( SkystoneType.SMALL_BRICK ) ).build();
 
-		this.skyStoneChest = registry.block( "skystone_chest", () -> new BlockSkyChest( SkyChestType.STONE ) )
+		this.skyStoneChest = registry.block( "sky_stone_chest", () -> new BlockSkyChest( SkyChestType.STONE ) )
 				.features( AEFeature.SkyStoneChests )
 				.rendering( new SkyChestRenderingCustomizer( SkyChestType.STONE ) )
 				.build();
-		this.smoothSkyStoneChest = registry.block( "smooth_skystone_chest", () -> new BlockSkyChest( SkyChestType.BLOCK ) )
+		this.smoothSkyStoneChest = registry.block( "smooth_sky_stone_chest", () -> new BlockSkyChest( SkyChestType.BLOCK ) )
 				.features( AEFeature.SkyStoneChests )
 				.rendering( new SkyChestRenderingCustomizer( SkyChestType.BLOCK ) )
 				.build();
 
 		this.skyCompass = registry.block( "sky_compass", BlockSkyCompass::new ).features( AEFeature.MeteoriteCompass ).build();
 		this.grindstone = registry.block( "grindstone", BlockGrinder::new ).features( AEFeature.GrindStone ).build();
-		this.crank = registry.block( "crank", BlockCrank::new ).features( AEFeature.GrindStone ).build();
+		this.crank = registry.block( "crank", BlockCrank::new )
+				.features( AEFeature.GrindStone )
+				.useCustomItemModel()
+				.build();
 		this.inscriber = registry.block( "inscriber", BlockInscriber::new ).features( AEFeature.Inscriber ).build();
 		this.wirelessAccessPoint = registry.block( "wireless_access_point", BlockWireless::new ).features( AEFeature.WirelessAccessTerminal ).build();
 		this.charger = registry.block( "charger", BlockCharger::new )
@@ -288,10 +299,10 @@ public final class ApiBlocks implements IBlocks
 		this.lightDetector = registry.block( "light_detector", BlockLightDetector::new ).features( AEFeature.LightDetector ).build();
 		this.paint = registry.block( "paint", BlockPaint::new ).features( AEFeature.PaintBalls ).build();
 
-		this.skyStoneStairs = makeStairs( "skystone_stairs", registry, this.skyStoneBlock() );
-		this.smoothSkyStoneStairs = makeStairs( "smooth_skystone_stairs", registry, this.smoothSkyStoneBlock() );
-		this.skyStoneBrickStairs = makeStairs( "skystone_brick_stairs", registry, this.skyStoneBrick() );
-		this.skyStoneSmallBrickStairs = makeStairs( "skystone_small_brick_stairs", registry, this.skyStoneSmallBrick() );
+		this.skyStoneStairs = makeStairs( "sky_stone_stairs", registry, this.skyStoneBlock() );
+		this.smoothSkyStoneStairs = makeStairs( "smooth_sky_stone_stairs", registry, this.smoothSkyStoneBlock() );
+		this.skyStoneBrickStairs = makeStairs( "sky_stone_brick_stairs", registry, this.skyStoneBrick() );
+		this.skyStoneSmallBrickStairs = makeStairs( "sky_stone_small_brick_stairs", registry, this.skyStoneSmallBrick() );
 		this.fluixStairs = makeStairs( "fluix_stairs", registry, this.fluixBlock() );
 		this.quartzStairs = makeStairs( "quartz_stairs", registry, this.quartzBlock() );
 		this.chiseledQuartzStairs = makeStairs( "chiseled_quartz_stairs", registry, this.chiseledQuartzBlock() );

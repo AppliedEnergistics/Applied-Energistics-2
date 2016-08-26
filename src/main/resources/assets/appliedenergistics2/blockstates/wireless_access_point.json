@@ -1,7 +1,7 @@
 {
     "variants": {
         "normal": {
-            "model": "appliedenergistics2:wireless",
+            "model": "appliedenergistics2:wireless_access_point",
             "y": 180
         }
     }

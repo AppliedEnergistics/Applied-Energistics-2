@@ -39,10 +39,10 @@ public class SkyChestRenderingCustomizer extends BlockRenderingCustomizer
 		{
 			default:
 			case STONE:
-				modelName = "sky_chest_stone";
+				modelName = "sky_stone_chest";
 				break;
 			case BLOCK:
-				modelName = "sky_chest_block";
+				modelName = "smooth_sky_stone_chest";
 				break;
 		}
 		return modelName;

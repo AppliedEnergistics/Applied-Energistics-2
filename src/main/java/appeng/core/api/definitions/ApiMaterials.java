@@ -136,7 +136,7 @@ public final class ApiMaterials implements IMaterials
 		this.cell128SpatialPart = new DamagedItemDefinition( "material.cell.spatial.128", materials.createMaterial( MaterialType.Cell128SpatialPart ) );
 
 		this.silicon = new DamagedItemDefinition( "material.silicon", materials.createMaterial( MaterialType.Silicon ) );
-		this.skyDust = new DamagedItemDefinition( "material.dust.skystone", materials.createMaterial( MaterialType.SkyDust ) );
+		this.skyDust = new DamagedItemDefinition( "material.dust.sky_stone", materials.createMaterial( MaterialType.SkyDust ) );
 
 		this.calcProcessorPress = new DamagedItemDefinition( "material.press.processor.calculation", materials.createMaterial( MaterialType.CalcProcessorPress ) );
 		this.engProcessorPress = new DamagedItemDefinition( "material.press.processor.engineering", materials.createMaterial( MaterialType.EngProcessorPress ) );

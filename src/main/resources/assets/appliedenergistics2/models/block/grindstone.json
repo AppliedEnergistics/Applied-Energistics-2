@@ -1,0 +1,9 @@
+{
+    "parent": "appliedenergistics2:block/cube/cube_ae_machine",
+    "textures": {
+        "bottom": "appliedenergistics2:blocks/grindstone_bottom",
+        "front": "appliedenergistics2:blocks/grindstone_front",
+        "side": "appliedenergistics2:blocks/grindstone_side",
+        "top": "appliedenergistics2:blocks/grindstone"
+    }
+}
