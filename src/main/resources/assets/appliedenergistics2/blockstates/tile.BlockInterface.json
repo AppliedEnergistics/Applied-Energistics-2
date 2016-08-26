@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "omnidirectional=true": { "model": "appliedenergistics2:tile.BlockInterface" },
+    "omnidirectional=false": { "model": "appliedenergistics2:tile.BlockInterfaceOriented", "x": 90 }
+  }
+}

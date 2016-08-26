@@ -20,15 +20,18 @@ package appeng.block.misc;
 
 
 import java.util.EnumSet;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
@@ -43,12 +46,34 @@ import appeng.util.Platform;
 public class BlockInterface extends AEBaseTileBlock
 {
 
+	private static final PropertyBool OMNIDIRECTIONAL = PropertyBool.create( "omnidirectional" );
+
 	public BlockInterface()
 	{
 		super( Material.IRON );
 
 		this.setTileEntity( TileInterface.class );
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
+	}
+
+	@Override
+	protected IProperty[] getAEStates()
+	{
+		return new IProperty[] { AE_BLOCK_FORWARD, AE_BLOCK_UP, OMNIDIRECTIONAL };
+	}
+
+	@Override
+	public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
+	{
+		// Determine whether the interface is omni-directional or not
+		TileInterface te = getTileEntity( world, pos );
+		boolean omniDirectional = true; // The default
+		if (te != null) {
+			omniDirectional = te.isOmniDirectional();
+		}
+
+		return super.getActualState( state, world, pos )
+				.withProperty( OMNIDIRECTIONAL, omniDirectional );
 	}
 
 	@Override
@@ -82,7 +107,8 @@ public class BlockInterface extends AEBaseTileBlock
 	{
 		if( rotatable instanceof TileInterface )
 		{
-			( (TileInterface) rotatable ).setSide( AEPartLocation.fromFacing( axis ) );
+			( (TileInterface) rotatable ).setSide( axis );
 		}
 	}
+
 }

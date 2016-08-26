@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "particle": "appliedenergistics2:blocks/BlockInterface",
+    "down": "appliedenergistics2:blocks/BlockInterfaceAlternate",
+    "up": "appliedenergistics2:blocks/BlockInterface",
+    "north": "appliedenergistics2:blocks/BlockInterfaceAlternateArrow",
+    "south": "appliedenergistics2:blocks/BlockInterfaceAlternateArrow",
+    "east": "appliedenergistics2:blocks/BlockInterfaceAlternateArrow",
+    "west": "appliedenergistics2:blocks/BlockInterfaceAlternateArrow"
+  }
+}

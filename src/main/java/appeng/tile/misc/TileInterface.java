@@ -24,6 +24,8 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableSet;
 
+import io.netty.buffer.ByteBuf;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -70,7 +72,9 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 {
 
 	private final DualityInterface duality = new DualityInterface( this.getProxy(), this );
-	private AEPartLocation pointAt = AEPartLocation.INTERNAL;
+
+	// Indicates that this interface has no specific direction set
+	private boolean omniDirectional = true;
 
 	@MENetworkEventSubscribe
 	public void stateChange( final MENetworkChannelsChanged c )
@@ -84,37 +88,45 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 		this.duality.notifyNeighbors();
 	}
 
-	public void setSide( final AEPartLocation axis )
+	public void setSide( final EnumFacing facing )
 	{
 		if( Platform.isClient() )
 		{
 			return;
 		}
 
-		if( this.pointAt == axis.getOpposite() )
+		EnumFacing newForward = facing;
+
+		if( !omniDirectional && getForward() == facing.getOpposite() )
 		{
-			this.pointAt = axis;
+			newForward = facing;
 		}
-		else if( this.pointAt == axis || this.pointAt == axis.getOpposite() )
+		else if( !omniDirectional && ( getForward() == facing || getForward() == facing.getOpposite() ) )
 		{
-			this.pointAt = AEPartLocation.INTERNAL;
+			omniDirectional = true;
 		}
-		else if( this.pointAt == AEPartLocation.INTERNAL )
+		else if( omniDirectional )
 		{
-			this.pointAt = axis.getOpposite();
+			newForward = facing.getOpposite();
+			omniDirectional = false;
 		}
 		else
 		{
-			this.pointAt = Platform.rotateAround( this.pointAt, axis );
+			newForward = Platform.rotateAround( getForward(), facing );
 		}
 
-		if( AEPartLocation.INTERNAL == this.pointAt )
+		if( omniDirectional )
 		{
-			this.setOrientation( EnumFacing.UP, EnumFacing.UP );
+			this.setOrientation( EnumFacing.NORTH, EnumFacing.UP );
 		}
 		else
 		{
-			this.setOrientation( this.pointAt.yOffset != 0 ? EnumFacing.SOUTH : EnumFacing.UP, this.pointAt.getOpposite().getFacing() );
+			EnumFacing newUp = EnumFacing.UP;
+			if( newForward == EnumFacing.UP || newForward == EnumFacing.DOWN )
+			{
+				newUp = EnumFacing.NORTH;
+			}
+			this.setOrientation( newForward, newUp );
 		}
 
 		this.configureNodeSides();
@@ -124,13 +136,13 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 
 	private void configureNodeSides()
 	{
-		if( this.pointAt == AEPartLocation.INTERNAL )
+		if( omniDirectional )
 		{
 			this.getProxy().setValidSides( EnumSet.allOf( EnumFacing.class ) );
 		}
 		else
 		{
-			this.getProxy().setValidSides( EnumSet.complementOf( EnumSet.of( this.pointAt.getFacing() ) ) );
+			this.getProxy().setValidSides( EnumSet.complementOf( EnumSet.of( getForward() ) ) );
 		}
 	}
 
@@ -164,25 +176,30 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
 	public void writeToNBT_TileInterface( final NBTTagCompound data )
 	{
-		data.setInteger( "pointAt", this.pointAt.ordinal() );
+		data.setBoolean( "omniDirectional", omniDirectional );
 		this.duality.writeToNBT( data );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
 	public void readFromNBT_TileInterface( final NBTTagCompound data )
 	{
-		final int val = data.getInteger( "pointAt" );
-
-		if( val >= 0 && val < AEPartLocation.values().length )
-		{
-			this.pointAt = AEPartLocation.values()[val];
-		}
-		else
-		{
-			this.pointAt = AEPartLocation.INTERNAL;
-		}
+		this.omniDirectional = data.getBoolean( "omniDirectional" );
 
 		this.duality.readFromNBT( data );
+	}
+
+	@TileEvent( TileEventType.NETWORK_READ )
+	public boolean readFromStream_TileInterface( final ByteBuf data )
+	{
+		boolean oldOmniDirectional = this.omniDirectional;
+		this.omniDirectional = data.readBoolean();
+		return oldOmniDirectional != omniDirectional;
+	}
+
+	@TileEvent( TileEventType.NETWORK_WRITE )
+	public void writeToStream_TileInterface( final ByteBuf data )
+	{
+		data.writeBoolean( omniDirectional );
 	}
 
 	@Override
@@ -260,11 +277,11 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	@Override
 	public EnumSet<EnumFacing> getTargets()
 	{
-		if( this.pointAt == null || this.pointAt == AEPartLocation.INTERNAL )
+		if( omniDirectional )
 		{
 			return EnumSet.allOf( EnumFacing.class );
 		}
-		return EnumSet.of( this.pointAt.getFacing() );
+		return EnumSet.of( getForward() );
 	}
 
 	@Override
@@ -338,4 +355,13 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	{
 		this.duality.setPriority( newValue );
 	}
+
+	/**
+	 * @return True if this interface is omni-directional.
+	 */
+	public boolean isOmniDirectional()
+	{
+		return this.omniDirectional;
+	}
+
 }
