@@ -63,7 +63,7 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.parts.reporting.AbstractPartTerminal;
-import appeng.tile.misc.TileStationSecurity;
+import appeng.tile.misc.TileSecurityStation;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
@@ -126,7 +126,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		this.viewCell = te instanceof IViewCellStorage;
 
-		if( te instanceof TileStationSecurity )
+		if( te instanceof TileSecurityStation )
 		{
 			this.myName = GuiText.Security;
 		}

@@ -86,7 +86,7 @@ public class GuiSecurityStation extends GuiMEMonitorable
 		{
 			try
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "TileStationSecurity.ToggleOption", toggleSetting.name() ) );
+				NetworkHandler.instance.sendToServer( new PacketValueConfig( "TileSecurityStation.ToggleOption", toggleSetting.name() ) );
 			}
 			catch( final IOException e )
 			{

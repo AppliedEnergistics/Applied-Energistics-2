@@ -80,7 +80,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 
-public class TileStationSecurity extends AENetworkTile implements ITerminalHost, IAEAppEngInventory, ILocatable, IConfigManagerHost, ISecurityProvider, IColorableTile
+public class TileSecurityStation extends AENetworkTile implements ITerminalHost, IAEAppEngInventory, ILocatable, IConfigManagerHost, ISecurityProvider, IColorableTile
 {
 
 	private static int difference = 0;
@@ -92,7 +92,7 @@ public class TileStationSecurity extends AENetworkTile implements ITerminalHost,
 	private AEColor paintedColor = AEColor.Transparent;
 	private boolean isActive = false;
 
-	public TileStationSecurity()
+	public TileSecurityStation()
 	{
 		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
 		this.getProxy().setIdlePowerUsage( 2.0 );

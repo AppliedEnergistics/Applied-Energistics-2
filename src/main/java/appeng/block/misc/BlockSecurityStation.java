@@ -33,7 +33,7 @@ import net.minecraft.world.World;
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
 import appeng.core.sync.GuiBridge;
-import appeng.tile.misc.TileStationSecurity;
+import appeng.tile.misc.TileSecurityStation;
 import appeng.util.Platform;
 
 public class BlockSecurityStation extends AEBaseTileBlock
@@ -43,7 +43,7 @@ public class BlockSecurityStation extends AEBaseTileBlock
 	{
 		super( Material.IRON );
 
-		this.setTileEntity( TileStationSecurity.class );
+		this.setTileEntity( TileSecurityStation.class );
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class BlockSecurityStation extends AEBaseTileBlock
 			return false;
 		}
 
-		final TileStationSecurity tg = this.getTileEntity( w, pos );
+		final TileSecurityStation tg = this.getTileEntity( w, pos );
 		if( tg != null )
 		{
 			if( Platform.isClient() )

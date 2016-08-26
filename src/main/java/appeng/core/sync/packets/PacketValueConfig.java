@@ -143,7 +143,7 @@ public class PacketValueConfig extends AppEngPacket
 			final ContainerQuartzKnife qk = (ContainerQuartzKnife) c;
 			qk.setName( this.Value );
 		}
-		else if( this.Name.equals( "TileStationSecurity.ToggleOption" ) && c instanceof ContainerSecurityStation )
+		else if( this.Name.equals( "TileSecurityStation.ToggleOption" ) && c instanceof ContainerSecurityStation )
 		{
 			final ContainerSecurityStation sc = (ContainerSecurityStation) c;
 			sc.toggleSetting( this.Value, player );
