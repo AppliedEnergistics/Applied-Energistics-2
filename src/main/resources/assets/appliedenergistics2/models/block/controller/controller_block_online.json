@@ -1,5 +1,11 @@
 {
     "uvlMarker": true,
+    "parent": "block/block",
+    "textures": {
+        "block": "appliedenergistics2:blocks/controller_powered",
+        "lights": "appliedenergistics2:blocks/controller_lights",
+        "particle": "appliedenergistics2:blocks/controller"
+    },
     "elements": [
         {
             "faces": {
@@ -162,11 +168,5 @@
                 16
             ]
         }
-    ],
-    "parent": "block/block",
-    "textures": {
-        "block": "appliedenergistics2:blocks/controller_powered",
-        "lights": "appliedenergistics2:blocks/controller_lights",
-        "particle": "#block"
-    }
+    ]
 }
