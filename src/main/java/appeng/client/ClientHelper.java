@@ -41,7 +41,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -354,12 +353,6 @@ public class ClientHelper extends ServerHelper
 	{
 		final LightningFX fx = new LightningArcFX( worldObj, posX, posY, posZ, second.xCoord, second.yCoord, second.zCoord, 0.0f, 0.0f, 0.0f );
 		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
-	}
-
-	@SubscribeEvent
-	public void onModelBakeEvent( final ModelBakeEvent event )
-	{
-		UVLModelLoader.INSTANCE.setLoader( event.getModelLoader() );
 	}
 
 	@SubscribeEvent

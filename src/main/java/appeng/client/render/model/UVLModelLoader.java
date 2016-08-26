@@ -6,6 +6,8 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -13,7 +15,6 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.annotation.Nullable;
 
 import com.google.common.base.Charsets;
@@ -72,6 +73,8 @@ public enum UVLModelLoader implements ICustomModelLoader
 
 	private static final Constructor<? extends IModel> vanillaModelWrapper;
 	private static final Field faceBakery;
+	private static final Object vanillaLoader;
+	private static final MethodHandle loaderGetter;
 
 	static
 	{
@@ -86,6 +89,14 @@ public enum UVLModelLoader implements ICustomModelLoader
 			Class clas = Class.forName( ModelLoader.class.getName() + "$VanillaModelWrapper" );
 			vanillaModelWrapper = clas.getDeclaredConstructor( ModelLoader.class, ResourceLocation.class, ModelBlock.class, boolean.class, ModelBlockAnimation.class );
 			vanillaModelWrapper.setAccessible( true );
+
+			Class<?> vanillaLoaderClass = Class.forName( ModelLoader.class.getName() + "$VanillaLoader" );
+			Field instanceField = vanillaLoaderClass.getField( "INSTANCE" );
+			// Static field
+			vanillaLoader = instanceField.get( null );
+			Field loaderField = vanillaLoaderClass.getDeclaredField( "loader" );
+			loaderField.setAccessible( true );
+			loaderGetter = MethodHandles.lookup().unreflectGetter( loaderField );
 		}
 		catch( Exception e )
 		{
@@ -133,16 +144,17 @@ public enum UVLModelLoader implements ICustomModelLoader
 	}
 
 	private IResourceManager resourceManager;
-	private ModelLoader loader;
 
 	public ModelLoader getLoader()
 	{
-		return loader;
-	}
-
-	public void setLoader( ModelLoader loader )
-	{
-		this.loader = loader;
+		try
+		{
+			return (ModelLoader) loaderGetter.invoke( vanillaLoader );
+		}
+		catch( Throwable throwable )
+		{
+			throw new RuntimeException( throwable );
+		}
 	}
 
 	@Override

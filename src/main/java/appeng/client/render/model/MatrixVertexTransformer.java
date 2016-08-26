@@ -55,7 +55,7 @@ final class MatrixVertexTransformer extends QuadGatheringTransformer
 				VertexFormatElement element = format.getElement( e );
 				if( element.getUsage() == VertexFormatElement.EnumUsage.POSITION )
 				{
-					parent.put( e, transform( quadData[e][v] ) );
+					parent.put( e, transform( quadData[e][v], element.getElementCount() ) );
 				}
 				else if( element.getUsage() == VertexFormatElement.EnumUsage.NORMAL )
 				{
@@ -93,7 +93,7 @@ final class MatrixVertexTransformer extends QuadGatheringTransformer
 		parent.setTexture( texture );
 	}
 
-	private float[] transform( float[] fs )
+	private float[] transform( float[] fs, int elemCount )
 	{
 		switch( fs.length )
 		{
@@ -113,6 +113,10 @@ final class MatrixVertexTransformer extends QuadGatheringTransformer
 				};
 			case 4:
 				Vector4f vecc = new Vector4f( fs[0], fs[1], fs[2], fs[3] );
+				// Otherwise all translation is lost
+				if (elemCount == 3) {
+					vecc.w = 1;
+				}
 				vecc.x -= 0.5f;
 				vecc.y -= 0.5f;
 				vecc.z -= 0.5f;

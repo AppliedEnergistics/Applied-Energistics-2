@@ -693,8 +693,8 @@
         }
     ],
     "textures": {
-        "0": "blocks/BlockDriveSide",
-        "1": "blocks/BlockDriveFront",
-        "2": "blocks/BlockDrive"
+        "0": "blocks/drive_side",
+        "1": "blocks/drive_front",
+        "2": "blocks/drive_top"
     }
 }

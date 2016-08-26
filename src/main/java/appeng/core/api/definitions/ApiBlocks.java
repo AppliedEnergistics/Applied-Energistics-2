@@ -73,6 +73,7 @@ import appeng.block.storage.BlockDrive;
 import appeng.block.storage.BlockIOPort;
 import appeng.block.storage.BlockSkyChest;
 import appeng.block.storage.BlockSkyChest.SkyChestType;
+import appeng.block.storage.DriveRendering;
 import appeng.block.storage.SkyChestRenderingCustomizer;
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.FeatureFactory;
@@ -270,7 +271,11 @@ public final class ApiBlocks implements IBlocks
 		this.spatialPylon = registry.block( "spatial_pylon", BlockSpatialPylon::new ).features( AEFeature.SpatialIO ).build();
 		this.spatialIOPort = registry.block( "spatial_ioport", BlockSpatialIOPort::new ).features( AEFeature.SpatialIO ).build();
 		this.controller = registry.block( "controller", BlockController::new ).features( AEFeature.Channels ).build();
-		this.drive = registry.block( "drive", BlockDrive::new ).features( AEFeature.StorageCells, AEFeature.MEDrive ).build();
+		this.drive = registry.block( "drive", BlockDrive::new )
+				.features( AEFeature.StorageCells, AEFeature.MEDrive )
+				.useCustomItemModel()
+				.rendering( new DriveRendering() )
+				.build();
 		this.chest = registry.block( "chest", BlockChest::new ).features( AEFeature.StorageCells, AEFeature.MEChest ).build();
 		this.iface = registry.block( "interface", BlockInterface::new ).build();
 		this.cellWorkbench = registry.block( "cell_workbench", BlockCellWorkbench::new ).features( AEFeature.StorageCells ).build();
