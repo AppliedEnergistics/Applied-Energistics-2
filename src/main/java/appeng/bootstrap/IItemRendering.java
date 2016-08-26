@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -66,4 +67,11 @@ public interface IItemRendering
 	 */
 	@SideOnly( Side.CLIENT )
 	IItemRendering color( IItemColor itemColor );
+
+	/**
+	 * Registers a built-in model under the given resource path.
+	 */
+	@SideOnly( Side.CLIENT )
+	IItemRendering builtInModel( String name, IModel model );
+
 }

@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -41,6 +42,9 @@ class ItemRendering implements IItemRendering
 
 	@SideOnly( Side.CLIENT )
 	private Set<ResourceLocation> variants = new HashSet<>();
+
+	@SideOnly( Side.CLIENT )
+	private Map<String, IModel> builtInModels = new HashMap<>();
 
 	@Override
 	@SideOnly( Side.CLIENT )
@@ -70,6 +74,13 @@ class ItemRendering implements IItemRendering
 	public IItemRendering color( IItemColor itemColor )
 	{
 		this.itemColor = itemColor;
+		return this;
+	}
+
+	@Override
+	public IItemRendering builtInModel( String name, IModel model )
+	{
+		this.builtInModels.put( name, model );
 		return this;
 	}
 
@@ -109,6 +120,8 @@ class ItemRendering implements IItemRendering
 
 			factory.addBootstrapComponent( new ItemModelComponent( item, ImmutableMap.of( 0, model ) ) );
 		}
+
+		builtInModels.forEach( factory::addBuiltInModel );
 
 		if( !resources.isEmpty() )
 		{

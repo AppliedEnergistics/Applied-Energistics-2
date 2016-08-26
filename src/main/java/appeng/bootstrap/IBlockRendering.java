@@ -7,8 +7,8 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -30,5 +30,11 @@ public interface IBlockRendering
 
 	@SideOnly( Side.CLIENT )
 	IBlockRendering tesr( TileEntitySpecialRenderer<?> tesr );
+
+	/**
+	 * Registers a built-in model under the given resource path.
+	 */
+	@SideOnly( Side.CLIENT )
+	IBlockRendering builtInModel( String name, IModel model );
 
 }

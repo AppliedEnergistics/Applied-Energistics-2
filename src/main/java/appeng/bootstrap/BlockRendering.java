@@ -1,6 +1,8 @@
 package appeng.bootstrap;
 
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.BiFunction;
 
 import net.minecraft.block.Block;
@@ -9,6 +11,7 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -35,6 +38,9 @@ class BlockRendering implements IBlockRendering
 	private IStateMapper stateMapper;
 
 	@SideOnly( Side.CLIENT )
+	private Map<String, IModel> builtInModels = new HashMap<>();
+
+	@SideOnly( Side.CLIENT )
 	public IBlockRendering modelCustomizer( BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> customizer )
 	{
 		modelCustomizer = customizer;
@@ -57,6 +63,13 @@ class BlockRendering implements IBlockRendering
 		return this;
 	}
 
+	@Override
+	public IBlockRendering builtInModel( String name, IModel model )
+	{
+		this.builtInModels.put( name, model );
+		return this;
+	}
+
 	@SideOnly( Side.CLIENT )
 	@Override
 	public IBlockRendering stateMapper( IStateMapper mapper )
@@ -65,7 +78,7 @@ class BlockRendering implements IBlockRendering
 		return this;
 	}
 
-	void apply( FeatureFactory registry, Block block, Class<?> tileEntityClass )
+	void apply( FeatureFactory factory, Block block, Class<?> tileEntityClass )
 	{
 		if( tesr != null )
 		{
@@ -73,27 +86,29 @@ class BlockRendering implements IBlockRendering
 			{
 				throw new IllegalStateException( "Tried to register a TESR for " + block + " even though no tile entity has been specified." );
 			}
-			registry.addBootstrapComponent( new TesrComponent( tileEntityClass, tesr ) );
+			factory.addBootstrapComponent( new TesrComponent( tileEntityClass, tesr ) );
 		}
 
 		if( modelCustomizer != null )
 		{
-			registry.modelOverrideComponent.addOverride( block.getRegistryName().getResourcePath(), modelCustomizer );
+			factory.modelOverrideComponent.addOverride( block.getRegistryName().getResourcePath(), modelCustomizer );
 		}
 		else if ( block instanceof AEBaseTileBlock )
 		{
 			// This is a default rotating model if the base-block uses an AE tile entity which exposes UP/FRONT as extended props
-			registry.modelOverrideComponent.addOverride( block.getRegistryName().getResourcePath(), ( l, m ) -> new CachingRotatingBakedModel( m ) );
+			factory.modelOverrideComponent.addOverride( block.getRegistryName().getResourcePath(), ( l, m ) -> new CachingRotatingBakedModel( m ) );
 		}
+
+		builtInModels.forEach( factory::addBuiltInModel );
 
 		if( blockColor != null )
 		{
-			registry.addBootstrapComponent( new BlockColorComponent( block, blockColor ) );
+			factory.addBootstrapComponent( new BlockColorComponent( block, blockColor ) );
 		}
 
 		if( stateMapper != null )
 		{
-			registry.addBootstrapComponent( new StateMapperComponent( block, stateMapper ) );
+			factory.addBootstrapComponent( new StateMapperComponent( block, stateMapper ) );
 		}
 	}
 }

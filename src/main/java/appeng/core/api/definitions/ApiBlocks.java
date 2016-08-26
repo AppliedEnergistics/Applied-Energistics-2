@@ -46,8 +46,8 @@ import appeng.block.misc.BlockInscriber;
 import appeng.block.misc.BlockInterface;
 import appeng.block.misc.BlockLightDetector;
 import appeng.block.misc.BlockPaint;
-import appeng.block.misc.BlockQuartzGrowthAccelerator;
 import appeng.block.misc.BlockQuartzFixture;
+import appeng.block.misc.BlockQuartzGrowthAccelerator;
 import appeng.block.misc.BlockSecurityStation;
 import appeng.block.misc.BlockSkyCompass;
 import appeng.block.misc.BlockTinyTNT;
@@ -77,6 +77,7 @@ import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.FeatureFactory;
 import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;
+import appeng.client.render.model.GlassModel;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.debug.BlockChunkloader;
@@ -201,6 +202,15 @@ public final class ApiBlocks implements IBlocks
 		this.chiseledQuartzBlock = deco.block( "chiseled_quartz_block", BlockChiseledQuartz::new ).build();
 		this.quartzGlass = deco.block( "quartz_glass", BlockQuartzGlass::new )
 				.useCustomItemModel()
+				.rendering( new BlockRenderingCustomizer()
+				{
+					@Override
+					@SideOnly( Side.CLIENT )
+					public void customize( IBlockRendering rendering, IItemRendering itemRendering )
+					{
+						rendering.builtInModel( "models/block/builtin/quartz_glass", new GlassModel() );
+					}
+				} )
 				.build();
 		this.quartzVibrantGlass = deco.block( "quartz_vibrant_glass", BlockQuartzLamp::new )
 				.addFeatures( AEFeature.DecorativeLights )

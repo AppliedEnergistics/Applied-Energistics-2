@@ -7,12 +7,14 @@ import java.util.function.Supplier;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
+import appeng.bootstrap.components.BuiltInModelComponent;
 import appeng.bootstrap.components.InitComponent;
 import appeng.bootstrap.components.ModelOverrideComponent;
 import appeng.bootstrap.components.PostInitComponent;
@@ -34,6 +36,9 @@ public class FeatureFactory
 	@SideOnly( Side.CLIENT )
 	ModelOverrideComponent modelOverrideComponent;
 
+	@SideOnly( Side.CLIENT )
+	private BuiltInModelComponent builtInModelComponent;
+
 	public FeatureFactory()
 	{
 		this.defaultFeatures = new AEFeature[] { AEFeature.Core };
@@ -42,7 +47,10 @@ public class FeatureFactory
 		if( Platform.isClient() )
 		{
 			modelOverrideComponent = new ModelOverrideComponent();
-			this.bootstrapComponents.add( modelOverrideComponent );
+			bootstrapComponents.add( modelOverrideComponent );
+
+			builtInModelComponent = new BuiltInModelComponent();
+			bootstrapComponents.add( builtInModelComponent );
 		}
 	}
 
@@ -53,6 +61,7 @@ public class FeatureFactory
 		if( Platform.isClient() )
 		{
 			this.modelOverrideComponent = parent.modelOverrideComponent;
+			this.builtInModelComponent = parent.builtInModelComponent;
 		}
 	}
 
@@ -108,9 +117,14 @@ public class FeatureFactory
 		this.bootstrapComponents.add( component );
 	}
 
+	@SideOnly( Side.CLIENT )
+	void addBuiltInModel( String path, IModel model )
+	{
+		builtInModelComponent.addModel( path, model );
+	}
+
 	public List<IBootstrapComponent> getBootstrapComponents()
 	{
 		return bootstrapComponents;
 	}
-
 }
