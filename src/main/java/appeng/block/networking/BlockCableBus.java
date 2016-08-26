@@ -81,7 +81,8 @@ public class BlockCableBus extends AEBaseTileBlock
 	{
 		super( AEGlassMaterial.INSTANCE );
 		this.setLightOpacity( 0 );
-		this.setFullSize( this.setOpaque( false ) );
+		this.setFullSize( false );
+		this.setOpaque( false );
 
 		// this will actually be overwritten later through setupTile and the
 		// combined layers
@@ -89,6 +90,12 @@ public class BlockCableBus extends AEBaseTileBlock
 	}
 
 	public static final CableBusContainerUnlistedProperty cableBus = new CableBusContainerUnlistedProperty();
+
+	@Override
+	public boolean isFullCube( IBlockState state )
+	{
+		return false;
+	}
 
 	@Override
 	protected BlockStateContainer createBlockState()
