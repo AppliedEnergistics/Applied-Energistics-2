@@ -1,43 +1,16 @@
 {
-  "parent": "block/block",
+  "parent": "appliedenergistics2:item/part/part",
   "elements": [
     {
-      "name": "Element",
-      "from": [ 6.0, 6.0, 6.0 ],
-      "to": [ 10.0, 10.0, 10.0 ],
+      "from": [ 6.0, 6.0, 2.0 ],
+      "to": [ 10.0, 10.0, 14.0 ],
       "faces": {
-        "north": { "texture": "#base", "uv": [ 6.0, 6.0, 10.0, 10.0 ] },
-        "east": { "texture": "#base", "uv": [ 6.0, 6.0, 10.0, 10.0 ] },
-        "south": { "texture": "#base", "uv": [ 10.0, 6.0, 6.0, 10.0 ] },
-        "west": { "texture": "#base", "uv": [ 10.0, 6.0, 6.0, 10.0 ] },
-        "up": { "texture": "#base", "uv": [ 6.0, 6.0, 10.0, 10.0 ] },
-        "down": { "texture": "#base", "uv": [ 6.0, 6.0, 10.0, 10.0 ] }
-      }
-    },
-    {
-      "name": "Element",
-      "from": [ 6.0, 6.0, 0.0 ],
-      "to": [ 10.0, 10.0, 6.0 ],
-      "faces": {
-        "north": { "texture": "#base", "uv": [ 6.0, 6.0, 10.0, 10.0 ] },
-        "east": { "texture": "#base", "uv": [ 10.0, 6.0, 16.0, 10.0 ] },
-        "south": { "texture": "#base", "uv": [ 10.0, 6.0, 6.0, 10.0 ] },
-        "west": { "texture": "#base", "uv": [ 16.0, 6.0, 10.0, 10.0 ] },
-        "up": { "texture": "#base", "uv": [ 6.0, 0.0, 10.0, 6.0 ] },
-        "down": { "texture": "#base", "uv": [ 6.0, 10.0, 10.0, 16.0 ] }
-      }
-    },
-    {
-      "name": "Element",
-      "from": [ 6.0, 6.0, 10.0 ],
-      "to": [ 10.0, 10.0, 16.0 ],
-      "faces": {
-        "north": { "texture": "#base", "uv": [ 6.0, 6.0, 10.0, 10.0 ] },
-        "east": { "texture": "#base", "uv": [ 0.0, 6.0, 6.0, 10.0 ] },
-        "south": { "texture": "#base", "uv": [ 10.0, 6.0, 6.0, 10.0 ] },
-        "west": { "texture": "#base", "uv": [ 6.0, 6.0, 0.0, 10.0 ] },
-        "up": { "texture": "#base", "uv": [ 6.0, 10.0, 10.0, 16.0 ] },
-        "down": { "texture": "#base", "uv": [ 6.0, 0.0, 10.0, 6.0 ] }
+        "north": { "texture": "#base" },
+        "east": { "texture": "#base" },
+        "south": { "texture": "#base" },
+        "west": { "texture": "#base" },
+        "up": { "texture": "#base" },
+        "down": { "texture": "#base" }
       }
     }
   ]

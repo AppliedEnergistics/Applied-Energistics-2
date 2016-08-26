@@ -1,13 +1,13 @@
 {
-  "parent": "block/block",
+  "parent": "appliedenergistics2:item/part/part",
   "textures": {
     "channels": "appliedenergistics2:parts/cable/smart/0"
   },
   "elements": [
     {
       "name": "Element",
-      "from": [ 5.0, 5.0, 0.0 ],
-      "to": [ 11.0, 11.0, 16.0 ],
+      "from": [ 5.0, 5.0, 2.0 ],
+      "to": [ 11.0, 11.0, 14.0 ],
       "faces": {
         "north": { "texture": "#base", "uv": [ 5.0, 5.0, 11.0, 11.0 ] },
         "east": { "texture": "#base", "uv": [ 0.0, 5.0, 5.0, 11.0 ] },
@@ -19,8 +19,8 @@
     },
     {
       "name": "Channels",
-      "from": [ 5.0, 5.0, 0.0 ],
-      "to": [ 11.0, 11.0, 16.0 ],
+      "from": [ 5.0, 5.0, 2.0 ],
+      "to": [ 11.0, 11.0, 14.0 ],
       "faces": {
         "north": { "texture": "#channels", "uv": [ 5.0, 5.0, 11.0, 11.0 ] },
         "east": { "texture": "#channels", "uv": [ 0.0, 5.0, 5.0, 11.0 ] },
