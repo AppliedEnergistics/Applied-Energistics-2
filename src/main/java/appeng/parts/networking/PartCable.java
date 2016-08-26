@@ -22,6 +22,7 @@ package appeng.parts.networking;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
 
 import com.google.common.collect.ImmutableSet;
@@ -440,27 +441,39 @@ public class PartCable extends AEBasePart implements IPartCable
 		return elements;
 	}
 
+	/**
+	 * A cable connection is considered straight, if there are exactly two connection points on opposite sides,
+	 * and the cable has no attached busses.
+	 */
 	protected boolean isStraight( IPartHost host, final EnumSet<AEPartLocation> sides )
 	{
-		boolean b = false;
+		if (sides.size() != 2) {
+			return false;
+		}
+
+		Iterator<AEPartLocation> it = sides.iterator();
+		EnumFacing firstSide = it.next().getFacing();
+		EnumFacing secondSide = it.next().getFacing();
+
+		// Not on opposite sides
+		if (firstSide.getOpposite() != secondSide) {
+			return false;
+		}
+
+		// Check any other point for attachments
 		for( EnumFacing facing : EnumFacing.values() )
 		{
-			b |= host.getPart( facing ) != null;
-		}
-		if( !b && sides.size() == 2 )
-		{
-			AEPartLocation[] sa = sides.toArray( new AEPartLocation[0] );
-			if( sa[0] == sa[1].getOpposite() )
+			if( facing != firstSide && facing != secondSide )
 			{
-				for( AEPartLocation side : sides )
+				// Check for an attached part here
+				if( host.getPart( facing ) != null )
 				{
-					TileEntity to = host.getTile().getWorld().getTileEntity( host.getTile().getPos().offset( side.getFacing() ) );
-					b |= to instanceof IPartHost && ( (IPartHost) to ).getPart( AEPartLocation.INTERNAL ) instanceof IPartCable && ( (IPartCable) ( (IPartHost) to ).getPart( AEPartLocation.INTERNAL ) ).getCableConnectionType() == getCableConnectionType();
+					return false;
 				}
-				return !b;
 			}
 		}
-		return false;
+
+		return true;
 	}
 
 	int getChannelsOnSide( final int i )
