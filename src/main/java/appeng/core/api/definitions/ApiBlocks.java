@@ -20,6 +20,7 @@ package appeng.core.api.definitions;
 
 
 import net.minecraft.block.BlockDispenser;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -351,6 +352,15 @@ public final class ApiBlocks implements IBlocks
 	{
 		return registry.block( registryName, () -> new BlockStairCommon( block.maybeBlock().get(), block.identifier() ) )
 				.features( AEFeature.DecorativeQuartzBlocks )
+				.rendering( new BlockRenderingCustomizer()
+				{
+					@Override
+					@SideOnly( Side.CLIENT )
+					public void customize( IBlockRendering rendering, IItemRendering itemRendering )
+					{
+						itemRendering.model( new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, registryName ), "facing=east,half=bottom,shape=straight" ) );
+					}
+				} )
 				.build();
 	}
 
