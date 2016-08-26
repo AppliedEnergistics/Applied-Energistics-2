@@ -277,6 +277,7 @@ public final class ApiBlocks implements IBlocks
 		this.spatialIOPort = registry.block( "spatial_ioport", BlockSpatialIOPort::new ).features( AEFeature.SpatialIO ).build();
 		this.controller = registry.block( "controller", BlockController::new )
 				.features( AEFeature.Channels )
+				.useCustomItemModel()
 				.rendering( new ControllerRendering() )
 				.build();
 		this.drive = registry.block( "drive", BlockDrive::new )
