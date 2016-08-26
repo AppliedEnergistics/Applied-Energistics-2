@@ -22,12 +22,16 @@ package appeng.block.misc;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
@@ -39,17 +43,40 @@ import appeng.util.Platform;
 public class BlockSecurityStation extends AEBaseTileBlock
 {
 
+	private static final PropertyBool POWERED = PropertyBool.create( "powered" );
+
 	public BlockSecurityStation()
 	{
 		super( Material.IRON );
 
 		this.setTileEntity( TileSecurityStation.class );
+		this.setDefaultState( getDefaultState().withProperty( POWERED, false ) );
+	}
+
+	@Override
+	protected IProperty[] getAEStates()
+	{
+		return new IProperty[] { POWERED };
 	}
 
 	@Override
 	public BlockRenderLayer getBlockLayer()
 	{
 		return BlockRenderLayer.CUTOUT;
+	}
+
+	@Override
+	public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
+	{
+		boolean powered = false;
+		TileSecurityStation te = getTileEntity( world, pos );
+		if( te != null )
+		{
+			powered = te.isActive();
+		}
+
+		return super.getActualState( state, world, pos )
+				.withProperty( POWERED, powered );
 	}
 
 	@Override
