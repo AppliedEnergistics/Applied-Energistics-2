@@ -1,6 +1,7 @@
 {
-    "parent": "block/cube_all",
+    "parent": "block/cube_column",
     "textures": {
-        "all": "appliedenergistics2:blocks/controller_column"
+        "side": "appliedenergistics2:blocks/controller_column",
+        "end": "appliedenergistics2:blocks/controller"
     }
 }

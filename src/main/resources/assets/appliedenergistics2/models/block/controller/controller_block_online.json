@@ -1,23 +1,5 @@
 {
-    "display": {
-        "firstperson_righthand": {
-            "rotation": [
-                0,
-                135,
-                0
-            ],
-            "scale": [
-                0.40,
-                0.40,
-                0.40
-            ],
-            "translation": [
-                0,
-                0,
-                0
-            ]
-        }
-    },
+    "uvlMarker": true,
     "elements": [
         {
             "faces": {

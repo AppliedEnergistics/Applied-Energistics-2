@@ -64,6 +64,7 @@ import appeng.block.networking.BlockEnergyCellRendering;
 import appeng.block.networking.BlockWireless;
 import appeng.block.networking.CableBusColor;
 import appeng.block.networking.CableModelCustomizer;
+import appeng.block.networking.ControllerRendering;
 import appeng.block.qnb.BlockQuantumLinkChamber;
 import appeng.block.qnb.BlockQuantumRing;
 import appeng.block.spatial.BlockMatrixFrame;
@@ -274,7 +275,10 @@ public final class ApiBlocks implements IBlocks
 		this.quantumLink = registry.block( "quantum_link", BlockQuantumLinkChamber::new ).features( AEFeature.QuantumNetworkBridge ).build();
 		this.spatialPylon = registry.block( "spatial_pylon", BlockSpatialPylon::new ).features( AEFeature.SpatialIO ).build();
 		this.spatialIOPort = registry.block( "spatial_ioport", BlockSpatialIOPort::new ).features( AEFeature.SpatialIO ).build();
-		this.controller = registry.block( "controller", BlockController::new ).features( AEFeature.Channels ).build();
+		this.controller = registry.block( "controller", BlockController::new )
+				.features( AEFeature.Channels )
+				.rendering( new ControllerRendering() )
+				.build();
 		this.drive = registry.block( "drive", BlockDrive::new )
 				.features( AEFeature.StorageCells, AEFeature.MEDrive )
 				.useCustomItemModel()

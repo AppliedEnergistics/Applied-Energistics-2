@@ -1,23 +1,5 @@
 {
-    "display": {
-        "firstperson_righthand": {
-            "rotation": [
-                0,
-                135,
-                0
-            ],
-            "scale": [
-                0.40,
-                0.40,
-                0.40
-            ],
-            "translation": [
-                0,
-                0,
-                0
-            ]
-        }
-    },
+    "uvlMarker": true,
     "elements": [
         {
             "faces": {
@@ -183,8 +165,8 @@
     ],
     "parent": "block/block",
     "textures": {
-        "block": "appliedenergistics2:blocks/controller_column_powered",
-        "lights": "appliedenergistics2:blocks/controller_column_lights",
+        "block": "appliedenergistics2:blocks/controller_powered",
+        "lights": "appliedenergistics2:blocks/controller_conflict",
         "particle": "#block"
     }
 }
