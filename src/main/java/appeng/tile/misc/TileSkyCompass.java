@@ -30,4 +30,11 @@ public class TileSkyCompass extends AEBaseTile
 	{
 		return true;
 	}
+
+	@Override
+	public boolean hasFastRenderer()
+	{
+		return true;
+	}
+
 }

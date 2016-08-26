@@ -52,6 +52,7 @@ import appeng.block.misc.BlockSecurityStation;
 import appeng.block.misc.BlockSkyCompass;
 import appeng.block.misc.BlockTinyTNT;
 import appeng.block.misc.BlockVibrationChamber;
+import appeng.block.misc.SkyCompassRendering;
 import appeng.block.networking.BlockCableBus;
 import appeng.block.networking.BlockController;
 import appeng.block.networking.BlockCreativeEnergyCell;
@@ -236,7 +237,10 @@ public final class ApiBlocks implements IBlocks
 				.rendering( new SkyChestRenderingCustomizer( SkyChestType.BLOCK ) )
 				.build();
 
-		this.skyCompass = registry.block( "sky_compass", BlockSkyCompass::new ).features( AEFeature.MeteoriteCompass ).build();
+		this.skyCompass = registry.block( "sky_compass", BlockSkyCompass::new )
+				.features( AEFeature.MeteoriteCompass )
+				.rendering( new SkyCompassRendering() )
+				.build();
 		this.grindstone = registry.block( "grindstone", BlockGrinder::new ).features( AEFeature.GrindStone ).build();
 		this.crank = registry.block( "crank", BlockCrank::new )
 				.features( AEFeature.GrindStone )

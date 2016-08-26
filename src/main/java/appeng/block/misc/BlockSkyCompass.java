@@ -24,12 +24,17 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.common.property.PropertyFloat;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.ICustomCollision;
@@ -38,12 +43,22 @@ import appeng.tile.misc.TileSkyCompass;
 public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 {
 
+	// Rotation is expressed as radians
+	public static final PropertyFloat ROTATION = new PropertyFloat( "rotation" );
+
 	public BlockSkyCompass()
 	{
-		super( Material.IRON );
+		super( Material.CIRCUITS );
 		this.setTileEntity( TileSkyCompass.class );
-		this.setOpaque( this.setFullSize( false ) );
-		this.lightOpacity = 0;
+		this.setLightOpacity( 0 );
+		this.setFullSize( false );
+		this.setOpaque( false );
+	}
+
+	@Override
+	protected BlockStateContainer createBlockState()
+	{
+		return new ExtendedBlockState( this, getAEStates(), new IUnlistedProperty[] { ROTATION } );
 	}
 
 	@Override
@@ -66,7 +81,7 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	public void neighborChanged( final IBlockState state, final World w, final BlockPos pos, final Block neighborBlock )
 	{
 		final TileSkyCompass sc = this.getTileEntity( w, pos );
-		final EnumFacing up = sc.getForward();
+		final EnumFacing up = sc.getUp();
 		if( !this.canPlaceAt( w, pos, up.getOpposite() ) )
 		{
 			this.dropTorch( w, pos );
@@ -99,7 +114,7 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 		final TileSkyCompass tile = this.getTileEntity( w, pos );
 		if( tile != null )
 		{
-			final EnumFacing forward = tile.getForward();
+			final EnumFacing forward = tile.getUp();
 
 			double minX = 0;
 			double minY = 0;
@@ -160,4 +175,17 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	{
 
 	}
+
+	@Override
+	public EnumBlockRenderType getRenderType( IBlockState state )
+	{
+		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+	}
+
+	@Override
+	public boolean isFullBlock( IBlockState state )
+	{
+		return false;
+	}
+
 }
