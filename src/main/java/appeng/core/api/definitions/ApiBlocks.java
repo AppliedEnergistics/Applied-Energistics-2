@@ -62,8 +62,7 @@ import appeng.block.networking.BlockEnergyAcceptor;
 import appeng.block.networking.BlockEnergyCell;
 import appeng.block.networking.BlockEnergyCellRendering;
 import appeng.block.networking.BlockWireless;
-import appeng.block.networking.CableBusColor;
-import appeng.block.networking.CableModelCustomizer;
+import appeng.block.networking.CableBusRendering;
 import appeng.block.networking.ControllerRendering;
 import appeng.block.qnb.BlockQuantumLinkChamber;
 import appeng.block.qnb.BlockQuantumRing;
@@ -338,16 +337,7 @@ public final class ApiBlocks implements IBlocks
 		this.quartzPillarStairs = makeStairs( "quartz_pillar_stairs", registry, this.quartzPillar() );
 
 		this.multiPart = registry.block( "multipart_block", BlockCableBus::new )
-				.rendering( new BlockRenderingCustomizer()
-				{
-					@Override
-					@SideOnly( Side.CLIENT )
-					public void customize( IBlockRendering rendering, IItemRendering itemRendering )
-					{
-						rendering.modelCustomizer( new CableModelCustomizer()::customizeModel )
-								.blockColor( new CableBusColor() );
-					}
-				} )
+				.rendering( new CableBusRendering() )
 				.build();
 
 		// TODO Re-Add Slabs...

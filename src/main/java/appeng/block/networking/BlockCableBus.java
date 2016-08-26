@@ -152,13 +152,9 @@ public class BlockCableBus extends AEBaseTileBlock
 	@Override
 	public int getLightValue( final IBlockState state, final IBlockAccess world, final BlockPos pos )
 	{
-		if( state != null && state.getBlock() != this )
+		if( state.getBlock() != this )
 		{
 			return state.getBlock().getLightValue( state, world, pos );
-		}
-		if( state == null )
-		{
-			return 0;
 		}
 		return this.cb( world, pos ).getLightValue();
 	}

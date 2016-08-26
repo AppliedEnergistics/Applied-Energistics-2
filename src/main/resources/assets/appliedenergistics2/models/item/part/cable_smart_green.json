@@ -1,0 +1,6 @@
+{
+  "parent": "appliedenergistics2:item/part/cable_smart_base",
+  "textures": {
+    "base": "appliedenergistics2:parts/cable/smart/green"
+  }
+}
