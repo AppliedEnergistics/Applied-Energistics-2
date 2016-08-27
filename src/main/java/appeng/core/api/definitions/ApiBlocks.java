@@ -343,7 +343,9 @@ public final class ApiBlocks implements IBlocks
 				.build();
 
 		this.molecularAssembler = registry.block( "molecular_assembler", BlockMolecularAssembler::new ).features( AEFeature.MolecularAssembler ).build();
-		this.lightDetector = registry.block( "light_detector", BlockLightDetector::new ).features( AEFeature.LightDetector ).build();
+		this.lightDetector = registry.block( "light_detector", BlockLightDetector::new ).features( AEFeature.LightDetector )
+				.useCustomItemModel()
+				.build();
 		this.paint = registry.block( "paint", BlockPaint::new ).features( AEFeature.PaintBalls ).build();
 
 		this.skyStoneStairs = makeStairs( "sky_stone_stairs", registry, this.skyStoneBlock() );

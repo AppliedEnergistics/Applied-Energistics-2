@@ -25,31 +25,65 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.ICustomCollision;
+import appeng.helpers.MetaRotation;
 import appeng.tile.misc.TileLightDetector;
 
 public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBlock, ICustomCollision
 {
 
+	// Cannot use the vanilla FACING property here because it excludes facing DOWN
+	public static final PropertyDirection FACING = PropertyDirection.create( "facing" );
+
+	// Used to alternate between two variants of the fixture on adjacent blocks
+	public static final PropertyBool ODD = PropertyBool.create( "odd" );
+
 	public BlockLightDetector()
 	{
 		super( Material.CIRCUITS );
 
+		this.setDefaultState( this.blockState.getBaseState().withProperty( FACING, EnumFacing.UP ).withProperty( ODD, false ) );
 		this.setLightOpacity( 0 );
 		this.setFullSize( false );
 		this.setOpaque( false );
 
 		this.setTileEntity( TileLightDetector.class );
+	}
+
+	@Override
+	public int getMetaFromState( final IBlockState state )
+	{
+		return state.getValue( FACING ).ordinal();
+	}
+
+	@Override
+	public IBlockState getStateFromMeta( final int meta )
+	{
+		EnumFacing facing = EnumFacing.values()[meta];
+		return getDefaultState().withProperty(FACING, facing);
+	}
+
+	@Override
+	protected IProperty[] getAEStates()
+	{
+		return new IProperty[] { FACING, ODD };
 	}
 
 	@Override
@@ -147,6 +181,24 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	public boolean usesMetadata()
 	{
 		return false;
+	}
+
+	@Override
+	public boolean isFullCube( IBlockState state )
+	{
+		return false;
+	}
+
+	@SideOnly( Side.CLIENT)
+	public BlockRenderLayer getBlockLayer()
+	{
+		return BlockRenderLayer.CUTOUT;
+	}
+
+	@Override
+	public IOrientable getOrientable( final IBlockAccess w, final BlockPos pos )
+	{
+		return new MetaRotation( w, pos, FACING );
 	}
 
 }
