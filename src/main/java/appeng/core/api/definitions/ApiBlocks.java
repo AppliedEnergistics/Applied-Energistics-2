@@ -273,7 +273,10 @@ public final class ApiBlocks implements IBlocks
 				.build();
 		this.quantumRing = registry.block( "quantum_ring", BlockQuantumRing::new ).features( AEFeature.QuantumNetworkBridge ).build();
 		this.quantumLink = registry.block( "quantum_link", BlockQuantumLinkChamber::new ).features( AEFeature.QuantumNetworkBridge ).build();
-		this.spatialPylon = registry.block( "spatial_pylon", BlockSpatialPylon::new ).features( AEFeature.SpatialIO ).build();
+		this.spatialPylon = registry.block( "spatial_pylon", BlockSpatialPylon::new )
+				.features( AEFeature.SpatialIO )
+				.useCustomItemModel()
+				.build();
 		this.spatialIOPort = registry.block( "spatial_ioport", BlockSpatialIOPort::new ).features( AEFeature.SpatialIO ).build();
 		this.controller = registry.block( "controller", BlockController::new )
 				.features( AEFeature.Channels )
