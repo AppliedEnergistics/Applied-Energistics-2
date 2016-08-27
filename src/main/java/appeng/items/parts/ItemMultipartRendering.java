@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
 
+import appeng.api.util.AEColor;
 import appeng.bootstrap.IItemRendering;
 import appeng.bootstrap.ItemRenderingCustomizer;
+import appeng.client.render.StaticItemColor;
 
 
 public class ItemMultipartRendering extends ItemRenderingCustomizer
@@ -26,6 +28,8 @@ public class ItemMultipartRendering extends ItemRenderingCustomizer
 	{
 
 		rendering.meshDefinition( this::getItemMeshDefinition );
+
+		rendering.color( new StaticItemColor( AEColor.Transparent ) );
 
 		// Register all item models as variants so they get loaded
 		rendering.variants( Arrays.stream( PartType.values() )
