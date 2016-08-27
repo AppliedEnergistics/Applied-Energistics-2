@@ -1,3 +1,9 @@
 {
-    "parent": "appliedenergistics2:part/crafting_terminal"
+    "parent": "appliedenergistics2:item/part/display",
+    "textures": {
+        "front": "appliedenergistics2:items/part/crafting_terminal",
+        "front_bright": "appliedenergistics2:parts/crafting_terminal/l2",
+        "front_medium": "appliedenergistics2:parts/crafting_terminal/l1",
+        "front_dark": "appliedenergistics2:parts/crafting_terminal/l0"
+    }
 }
