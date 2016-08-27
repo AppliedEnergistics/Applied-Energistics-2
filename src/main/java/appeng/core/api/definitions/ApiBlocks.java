@@ -39,6 +39,7 @@ import appeng.block.crafting.BlockMolecularAssembler;
 import appeng.block.crafting.ItemCraftingStorage;
 import appeng.block.grindstone.BlockCrank;
 import appeng.block.grindstone.BlockGrinder;
+import appeng.block.grindstone.CrankRendering;
 import appeng.block.misc.BlockCellWorkbench;
 import appeng.block.misc.BlockCharger;
 import appeng.block.misc.BlockCondenser;
@@ -246,7 +247,7 @@ public final class ApiBlocks implements IBlocks
 		this.grindstone = registry.block( "grindstone", BlockGrinder::new ).features( AEFeature.GrindStone ).build();
 		this.crank = registry.block( "crank", BlockCrank::new )
 				.features( AEFeature.GrindStone )
-				.useCustomItemModel()
+				.rendering( new CrankRendering() )
 				.build();
 		this.inscriber = registry.block( "inscriber", BlockInscriber::new ).features( AEFeature.Inscriber ).build();
 		this.wirelessAccessPoint = registry.block( "wireless_access_point", BlockWireless::new ).features( AEFeature.WirelessAccessTerminal ).build();

@@ -4,7 +4,6 @@ package appeng.client.render.model.pipeline;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
@@ -29,8 +28,16 @@ public class DoubleFacingQuadRotator implements BakingPipelineElement<QuadVertex
 		{
 			IExtendedBlockState extState = (IExtendedBlockState) state;
 
-			final EnumFacing forward = extState.getValue( AEBaseTileBlock.FORWARD );
-			final EnumFacing up = extState.getValue( AEBaseTileBlock.UP );
+			EnumFacing forward = extState.getValue( AEBaseTileBlock.FORWARD );
+			if( forward == null )
+			{
+				forward = EnumFacing.NORTH;
+			}
+			EnumFacing up = extState.getValue( AEBaseTileBlock.UP );
+			if( up == null )
+			{
+				up = EnumFacing.UP;
+			}
 			final FacingToRotation f2r = FacingToRotation.get( forward, up );
 			List<QuadVertexData> rotated = new ArrayList<>();
 			for( QuadVertexData data : elements )
