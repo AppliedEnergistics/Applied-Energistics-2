@@ -311,21 +311,31 @@ public final class ApiBlocks implements IBlocks
 				.build();
 
 		FeatureFactory crafting = registry.features( AEFeature.CraftingCPU );
-		this.craftingUnit = crafting.block( "crafting_unit", () -> new BlockCraftingUnit( CraftingUnitType.UNIT ) ).build();
-		this.craftingAccelerator = crafting.block( "crafting_accelerator", () -> new BlockCraftingUnit( CraftingUnitType.ACCELERATOR ) ).build();
+		this.craftingUnit = crafting.block( "crafting_unit", () -> new BlockCraftingUnit( CraftingUnitType.UNIT ) )
+				.useCustomItemModel()
+				.build();
+		this.craftingAccelerator = crafting.block( "crafting_accelerator", () -> new BlockCraftingUnit( CraftingUnitType.ACCELERATOR ) )
+				.useCustomItemModel()
+				.build();
 		this.craftingStorage1k = crafting.block( "crafting_storage_1k", () -> new BlockCraftingStorage( CraftingUnitType.STORAGE_1K ) )
 				.item( ItemCraftingStorage::new )
+				.useCustomItemModel()
 				.build();
 		this.craftingStorage4k = crafting.block( "crafting_storage_4k", () -> new BlockCraftingStorage( CraftingUnitType.STORAGE_4K ) )
 				.item( ItemCraftingStorage::new )
+				.useCustomItemModel()
 				.build();
 		this.craftingStorage16k = crafting.block( "crafting_storage_16k", () -> new BlockCraftingStorage( CraftingUnitType.STORAGE_16K ) )
 				.item( ItemCraftingStorage::new )
+				.useCustomItemModel()
 				.build();
 		this.craftingStorage64k = crafting.block( "crafting_storage_64k", () -> new BlockCraftingStorage( CraftingUnitType.STORAGE_64K ) )
 				.item( ItemCraftingStorage::new )
+				.useCustomItemModel()
 				.build();
-		this.craftingMonitor = crafting.block( "crafting_monitor", BlockCraftingMonitor::new ).build();
+		this.craftingMonitor = crafting.block( "crafting_monitor", BlockCraftingMonitor::new )
+				.useCustomItemModel()
+				.build();
 
 		this.molecularAssembler = registry.block( "molecular_assembler", BlockMolecularAssembler::new ).features( AEFeature.MolecularAssembler ).build();
 		this.lightDetector = registry.block( "light_detector", BlockLightDetector::new ).features( AEFeature.LightDetector ).build();
