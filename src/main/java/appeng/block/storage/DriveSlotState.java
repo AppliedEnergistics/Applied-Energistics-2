@@ -19,25 +19,57 @@
 package appeng.block.storage;
 
 
+import net.minecraft.util.IStringSerializable;
+
+
 /**
  * Describes the different states a single slot of a BlockDrive can be in in terms of rendering.
  */
-public enum DriveSlotState
+public enum DriveSlotState implements IStringSerializable
 {
 
 	// No cell in slot
-	EMPTY,
+	EMPTY( "empty" ),
 
 	// Cell in slot, but unpowered
-	OFFLINE,
+	OFFLINE( "offline" ),
 
 	// Online and free space
-	ONLINE,
+	ONLINE( "online" ),
 
 	// Types full, space left
-	TYPES_FULL,
+	TYPES_FULL( "types_full" ),
 
 	// Completely full
-	FULL
+	FULL( "full" );
+
+	private final String name;
+
+	DriveSlotState( String name )
+	{
+		this.name = name;
+	}
+
+	@Override
+	public String getName()
+	{
+		return name;
+	}
+
+	public static DriveSlotState fromCellStatus( int cellStatus )
+	{
+		switch( cellStatus )
+		{
+			default:
+			case 0:
+				return DriveSlotState.EMPTY;
+			case 1:
+				return DriveSlotState.ONLINE;
+			case 2:
+				return DriveSlotState.TYPES_FULL;
+			case 3:
+				return DriveSlotState.FULL;
+		}
+	}
 
 }

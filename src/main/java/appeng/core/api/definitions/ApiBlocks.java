@@ -75,6 +75,7 @@ import appeng.block.storage.BlockDrive;
 import appeng.block.storage.BlockIOPort;
 import appeng.block.storage.BlockSkyChest;
 import appeng.block.storage.BlockSkyChest.SkyChestType;
+import appeng.block.storage.ChestRendering;
 import appeng.block.storage.DriveRendering;
 import appeng.block.storage.SkyChestRenderingCustomizer;
 import appeng.bootstrap.BlockRenderingCustomizer;
@@ -288,7 +289,11 @@ public final class ApiBlocks implements IBlocks
 				.useCustomItemModel()
 				.rendering( new DriveRendering() )
 				.build();
-		this.chest = registry.block( "chest", BlockChest::new ).features( AEFeature.StorageCells, AEFeature.MEChest ).build();
+		this.chest = registry.block( "chest", BlockChest::new )
+				.features( AEFeature.StorageCells, AEFeature.MEChest )
+				.useCustomItemModel()
+				.rendering( new ChestRendering() )
+				.build();
 		this.iface = registry.block( "interface", BlockInterface::new ).build();
 		this.cellWorkbench = registry.block( "cell_workbench", BlockCellWorkbench::new ).features( AEFeature.StorageCells ).build();
 		this.iOPort = registry.block( "ioport", BlockIOPort::new ).features( AEFeature.StorageCells, AEFeature.IOPort ).build();

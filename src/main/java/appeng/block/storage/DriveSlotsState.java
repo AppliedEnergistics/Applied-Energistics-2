@@ -70,22 +70,7 @@ public class DriveSlotsState
 			}
 			else
 			{
-				switch( chestOrDrive.getCellStatus( i ) )
-				{
-					default:
-					case 0:
-						slots[i] = DriveSlotState.EMPTY;
-						break;
-					case 1:
-						slots[i] = DriveSlotState.ONLINE;
-						break;
-					case 2:
-						slots[i] = DriveSlotState.TYPES_FULL;
-						break;
-					case 3:
-						slots[i] = DriveSlotState.FULL;
-						break;
-				}
+				slots[i] = DriveSlotState.fromCellStatus( chestOrDrive.getCellStatus( i ) );
 			}
 		}
 		return new DriveSlotsState( slots );

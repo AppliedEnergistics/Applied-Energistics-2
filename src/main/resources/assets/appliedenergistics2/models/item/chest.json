@@ -1,0 +1,11 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "up": "appliedenergistics2:blocks/chest/top_item",
+    "down": "appliedenergistics2:blocks/chest/bottom",
+    "north": "appliedenergistics2:blocks/chest/front_item",
+    "east": "appliedenergistics2:blocks/chest/side",
+    "south": "appliedenergistics2:blocks/chest/side",
+    "west": "appliedenergistics2:blocks/chest/side"
+  }
+}
