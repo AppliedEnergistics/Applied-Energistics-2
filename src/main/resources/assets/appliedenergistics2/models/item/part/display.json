@@ -31,7 +31,7 @@
       "from": [ 2, 2, 8 ],
       "to": [ 14, 14, 9 ],
       "faces": {
-        "north": { "texture": "#front_medium", "tintindex": 1 }
+        "north": { "texture": "#front_medium", "tintindex": 2 }
       }
     },
     {
@@ -39,7 +39,7 @@
       "from": [ 2, 2, 8 ],
       "to": [ 14, 14, 9 ],
       "faces": {
-        "north": { "texture": "#front_dark", "tintindex": 2 }
+        "north": { "texture": "#front_dark", "tintindex": 1 }
       }
     },
     {
