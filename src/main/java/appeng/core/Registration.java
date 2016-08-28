@@ -65,6 +65,7 @@ import appeng.core.localization.PlayerMessages;
 import appeng.core.stats.PlayerStatsRegistration;
 import appeng.hooks.TickHandler;
 import appeng.items.materials.ItemMultiItem;
+import appeng.items.parts.ItemFacade;
 import appeng.loot.ChestLoot;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cache.EnergyGridCache;
@@ -315,8 +316,10 @@ public final class Registration
 
 		if( AEConfig.instance.isFeatureEnabled( AEFeature.EnableFacadeCrafting ) )
 		{
-			GameRegistry.addRecipe( new FacadeRecipe() );
-			RecipeSorter.register( "appliedenergistics2:facade", FacadeRecipe.class, Category.SHAPED, "after:minecraft:shaped" );
+			definitions.items().facade().maybeItem().ifPresent( facadeItem -> {
+				GameRegistry.addRecipe( new FacadeRecipe( (ItemFacade) facadeItem ) );
+				RecipeSorter.register( "appliedenergistics2:facade", FacadeRecipe.class, Category.SHAPED, "after:minecraft:shaped" );
+			} );
 		}
 	}
 

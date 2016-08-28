@@ -19,12 +19,10 @@
 package appeng.recipes.game;
 
 
-import java.util.Optional;
 import javax.annotation.Nullable;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
@@ -39,13 +37,13 @@ import appeng.items.parts.ItemFacade;
 public final class FacadeRecipe implements IRecipe
 {
 	private final IComparableDefinition anchor;
-	private final Optional<Item> maybeFacade;
+	private final ItemFacade facade;
 
-	public FacadeRecipe()
+	public FacadeRecipe( ItemFacade facade )
 	{
+		this.facade = facade;
 		final IDefinitions definitions = AEApi.instance().definitions();
 
-		this.maybeFacade = definitions.items().facade().maybeItem();
 		this.anchor = definitions.parts().cableAnchor();
 	}
 
@@ -62,17 +60,12 @@ public final class FacadeRecipe implements IRecipe
 		{
 			if( this.anchor.isSameAs( inv.getStackInSlot( 1 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 3 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 5 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 7 ) ) )
 			{
-				return this.maybeFacade.map( facadeItemDefinition ->
+				final ItemStack facades = facade.createFacadeForItem( inv.getStackInSlot( 4 ), !createFacade );
+				if( facades != null && createFacade )
 				{
-					final ItemFacade facade = (ItemFacade) facadeItemDefinition;
-
-					final ItemStack facades = facade.createFacadeForItem( inv.getStackInSlot( 4 ), !createFacade );
-					if( facades != null && createFacade )
-					{
-						facades.stackSize = 4;
-					}
-					return facades;
-				} ).orElse( null );
+					facades.stackSize = 4;
+				}
+				return facades;
 			}
 		}
 

@@ -25,6 +25,10 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockGlass;
 import net.minecraft.block.BlockStainedGlass;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -34,6 +38,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -45,7 +50,9 @@ import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinition;
 import appeng.api.parts.IAlphaPassItem;
 import appeng.api.util.AEPartLocation;
+import appeng.core.AELog;
 import appeng.core.FacadeConfig;
+import appeng.decorative.solid.BlockQuartzOre;
 import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
 import appeng.items.AEBaseItem;
@@ -129,6 +136,35 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		}
 	}
 
+	private static boolean hasSimpleModel( Block b, IBlockState blockState )
+	{
+		if( b.getRenderType( blockState ) != EnumBlockRenderType.MODEL )
+		{
+			return false;
+		}
+
+		IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState( blockState );
+
+		for( EnumFacing facing : EnumFacing.values() )
+		{
+			List<BakedQuad> quads = model.getQuads( blockState, facing, 0 );
+			if( quads.size() != 1 )
+			{
+				return false;
+			}
+
+			BakedQuad q = quads.get( 0 );
+			if( q.getFace() != facing )
+			{
+				return false;
+			}
+
+			// TODO We could also check that the quad is fully encompassing the side
+		}
+
+		return true;
+	}
+
 	public ItemStack createFacadeForItem( final ItemStack l, final boolean returnItem )
 	{
 		if( l == null )
@@ -144,8 +180,24 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 		final int metadata = l.getItem().getMetadata( l.getItemDamage() );
 
-		// TODO 1.10.2-R - XD
-		final boolean defaultValue = true || b instanceof BlockGlass || b instanceof BlockStainedGlass;
+		final boolean hasTile = b.hasTileEntity( b.getDefaultState() );
+		final boolean enableGlass = b instanceof BlockGlass || b instanceof BlockStainedGlass;
+		final boolean disableOre = b instanceof BlockQuartzOre;
+
+		// Try to get the block state based on the item stack's meta. If this fails, don't consider it for a facade
+		// This for example fails for Pistons because they hardcoded an invalid meta value in vanilla
+		IBlockState blockState;
+		try
+		{
+			blockState = b.getStateFromMeta( metadata );
+		}
+		catch( Exception e )
+		{
+			AELog.debug( e, "Cannot create a facade for " + b.getRegistryName() );
+			return null;
+		}
+
+		final boolean defaultValue = ( b.isFullyOpaque( blockState ) && hasSimpleModel( b, blockState ) && !b.getTickRandomly() && !hasTile && !disableOre ) || enableGlass;
 		if( FacadeConfig.instance.checkEnabled( b, metadata, defaultValue ) )
 		{
 			if( returnItem )
