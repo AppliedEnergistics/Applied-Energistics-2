@@ -57,7 +57,7 @@ public class FacadeWithBlockBakedModel implements IBakedModel
 	@Override
 	public boolean isGui3d()
 	{
-		return baseModel.isGui3d();
+		return false;
 	}
 
 	@Override
