@@ -29,6 +29,7 @@ import appeng.api.storage.IStorageHelper;
 import appeng.api.util.AEPartLocation;
 import appeng.core.api.ApiPart;
 import appeng.core.api.ApiStorage;
+import appeng.core.features.registries.PartModels;
 import appeng.core.features.registries.RegistryContainer;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
@@ -51,7 +52,7 @@ public final class Api implements IAppEngApi
 		this.storageHelper = new ApiStorage();
 		this.registryContainer = new RegistryContainer();
 		this.partHelper = new ApiPart();
-		this.definitions = new ApiDefinitions( this.partHelper );
+		this.definitions = new ApiDefinitions( (PartModels) this.registryContainer.partModels() );
 	}
 
 	@Override

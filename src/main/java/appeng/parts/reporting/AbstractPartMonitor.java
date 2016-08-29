@@ -20,22 +20,21 @@ package appeng.parts.reporting;
 
 
 import java.io.IOException;
+import java.util.List;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
@@ -52,7 +51,6 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
 import appeng.client.ClientHelper;
-import appeng.core.AELog;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.Reflected;
 import appeng.me.GridAccessException;
@@ -80,10 +78,6 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	private String lastHumanReadableText;
 	private boolean isLocked;
 	private IStackWatcher myWatcher;
-	@SideOnly( Side.CLIENT )
-	private boolean updateList;
-	@SideOnly( Side.CLIENT )
-	private Integer dspList;
 
 	@Reflected
 	public AbstractPartMonitor( final ItemStack is )
@@ -150,8 +144,6 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		{
 			this.configuredItem = null;
 		}
-
-		this.updateList = true;
 
 		return needRedraw;
 	}
@@ -246,34 +238,26 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	protected void finalize() throws Throwable
+	public void renderDynamic( double x, double y, double z, float partialTicks, int destroyStage )
 	{
-		super.finalize();
 
-		if( this.dspList != null )
+		if( ( this.getClientFlags() & ( PartPanel.POWERED_FLAG | PartPanel.CHANNEL_FLAG ) ) != ( PartPanel.POWERED_FLAG | PartPanel.CHANNEL_FLAG ) )
 		{
-			GLAllocation.deleteDisplayLists( this.dspList );
+			return;
 		}
-	}
 
-	@Override
-	public boolean requireDynamicRender()
-	{
-		return true;
-	}
+		final IAEItemStack ais = (IAEItemStack) this.getDisplayed();
 
-	@Override
-	public IAEStack<?> getDisplayed()
-	{
-		return this.configuredItem;
-	}
+		if( ais == null )
+		{
+			return;
+		}
 
-	private void tesrRenderScreen( final VertexBuffer wr, final IAEItemStack ais )
-	{
-		// GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
+		GlStateManager.pushMatrix();
+		GL11.glTranslated( x + 0.5, y + 0.5, z + 0.5 );
 
 		final AEPartLocation d = this.getSide();
-		GL11.glTranslated( d.xOffset * 0.77, d.yOffset * 0.77, d.zOffset * 0.77 );
+		GL11.glTranslated( d.xOffset * 0.50, d.yOffset * 0.50, d.zOffset * 0.50 );
 
 		switch( d )
 		{
@@ -312,46 +296,33 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 				break;
 		}
 
-		try
-		{
-			final ItemStack sis = ais.getItemStack();
-			sis.stackSize = 1;
-
-			final int br = 16 << 20 | 16 << 4;
-			final int var11 = br % 65536;
-			final int var12 = br / 65536;
-			OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, var11 * 0.8F, var12 * 0.8F );
-
-			GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-
-			GL11.glDisable( GL11.GL_LIGHTING );
-			GL11.glDisable( GL12.GL_RESCALE_NORMAL );
-			// RenderHelper.enableGUIStandardItemLighting();
-
-			ClientHelper.proxy.doRenderItem( sis, this.getTile().getWorld() );
-		}
-		catch( final Exception e )
-		{
-			AELog.debug( e );
-		}
-		finally
-		{
-			GL11.glEnable( GL11.GL_LIGHTING );
-			GL11.glEnable( GL12.GL_RESCALE_NORMAL );
-		}
-
-		GL11.glTranslatef( 0.0f, 0.14f, -0.24f );
-		GL11.glScalef( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );
+		ClientHelper.proxy.doRenderItem( ais.getItemStack() );
 
 		final long stackSize = ais.getStackSize();
 		final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm( stackSize );
 
+		// Render the item count
 		final FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
 		final int width = fr.getStringWidth( renderedStackSize );
-		GL11.glTranslatef( -0.5f * width, 0.0f, -1.0f );
+		GL11.glTranslatef( 0.0f, 0.17f, 0 );
+		GL11.glScalef( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );
+		GL11.glTranslatef( -0.5f * width, 0.0f, 0.5f );
 		fr.drawString( renderedStackSize, 0, 0, 0 );
 
-		// GL11.glPopAttrib();
+		GlStateManager.popMatrix();
+
+	}
+
+	@Override
+	public boolean requireDynamicRender()
+	{
+		return true;
+	}
+
+	@Override
+	public IAEStack<?> getDisplayed()
+	{
+		return this.configuredItem;
 	}
 
 	@Override
@@ -397,4 +368,42 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	{
 		return false;
 	}
+
+	protected List<ResourceLocation> selectModel(List<ResourceLocation> off, List<ResourceLocation> on, List<ResourceLocation> hasChannel,
+			List<ResourceLocation> lockedOff, List<ResourceLocation> lockedOn, List<ResourceLocation> lockedHasChannel) {
+		if( isActive() )
+		{
+			if( isLocked() )
+			{
+				return lockedHasChannel;
+			}
+			else
+			{
+				return hasChannel;
+			}
+		}
+		else if( isPowered() )
+		{
+			if( isLocked() )
+			{
+				return lockedOn;
+			}
+			else
+			{
+				return on;
+			}
+		}
+		else
+		{
+			if( isLocked() )
+			{
+				return lockedOff;
+			}
+			else
+			{
+				return off;
+			}
+		}
+	}
+
 }

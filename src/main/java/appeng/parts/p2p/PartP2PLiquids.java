@@ -27,16 +27,26 @@ import java.util.Stack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
+import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 
 
 public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFluidHandler
 {
+
+	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_liquids" );
+
+	@PartModels
+	public static List<ResourceLocation> getModels()
+	{
+		return MODELS.getModels();
+	}
 
 	private static final ThreadLocal<Stack<PartP2PLiquids>> DEPTH = new ThreadLocal<Stack<PartP2PLiquids>>();
 	private static final FluidTankInfo[] ACTIVE_TANK = { new FluidTankInfo( null, 10000 ) };
@@ -292,4 +302,11 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		}
 		return INACTIVE_TANK;
 	}
+
+	@Override
+	public List<ResourceLocation> getStaticModels()
+	{
+		return MODELS.getModel( isPowered(), isActive() );
+	}
+
 }

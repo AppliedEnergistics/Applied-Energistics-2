@@ -20,9 +20,16 @@ package appeng.items.parts;
 
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,6 +41,7 @@ import net.minecraft.util.ResourceLocation;
 
 import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
+import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
@@ -213,6 +221,7 @@ public enum PartType
 	private final Class<? extends IPart> myPart;
 	private final GuiText extraName;
 	private final List<ModelResourceLocation> itemModels;
+	private final Set<ResourceLocation> models;
 	private Constructor<? extends IPart> constructor;
 
 	PartType( final int baseMetaValue, final String name, final Set<AEFeature> features, final Set<IntegrationType> integrations, final Class<? extends IPart> c )
@@ -229,6 +238,14 @@ public enum PartType
 		this.myPart = c;
 		this.extraName = en;
 		this.itemModels = createItemModels( name );
+		if( c != null )
+		{
+			this.models = new HashSet<>( createModels( c ) );
+		}
+		else
+		{
+			this.models = Collections.emptySet();
+		}
 	}
 
 	protected List<ModelResourceLocation> createItemModels( String baseName )
@@ -295,5 +312,125 @@ public enum PartType
 	{
 		return itemModels;
 	}
-	
+
+	public Set<ResourceLocation> getModels()
+	{
+		return models;
+	}
+
+	private List<ResourceLocation> createModels( Class<?> clazz )
+	{
+		List<ResourceLocation> locations = new ArrayList<>(  );
+
+		// Check all static fields for used models
+		Field[] fields = clazz.getDeclaredFields();
+		for( Field field : fields )
+		{
+			if( field.getAnnotation( PartModels.class ) == null )
+			{
+				continue;
+			}
+
+
+			if( !Modifier.isStatic( field.getModifiers() ) )
+			{
+				AELog.error( "The @PartModels annotation can only be used on static fields or methods. Was seen on: " + field );
+				continue;
+			}
+
+			Object value;
+			try
+			{
+				field.setAccessible( true );
+				value = field.get( null );
+			}
+			catch( IllegalAccessException e )
+			{
+				AELog.error( e, "Cannot access field annotated with @PartModels: " + field );
+				continue;
+			}
+
+			convertAndAddLocation( field, value, locations );
+		}
+
+		// Check all static methods for the annotation
+		for( Method method : clazz.getDeclaredMethods() )
+		{
+			if( method.getAnnotation( PartModels.class ) == null )
+			{
+				continue;
+			}
+
+			if( !Modifier.isStatic( method.getModifiers() ) )
+			{
+				AELog.error( "The @PartModels annotation can only be used on static fields or methods. Was seen on: " + method );
+				continue;
+			}
+
+			// Check for parameter count
+			if( method.getParameters().length != 0 )
+			{
+				AELog.error( "The @PartModels annotation can only be used on static methods without parameters. Was seen on: " + method );
+				continue;
+			}
+
+			// Make sure we can handle the return type
+			Class<?> returnType = method.getReturnType();
+			if( !ResourceLocation.class.isAssignableFrom( returnType ) && !Collection.class.isAssignableFrom( returnType ) )
+			{
+				AELog.error( "The @PartModels annotation can only be used on static methods that return a ResourceLocation or Collection of "
+						+ "ResourceLocations. Was seen on: " + method );
+				continue;
+			}
+
+			Object value = null;
+			try
+			{
+				method.setAccessible( true );
+				value = method.invoke( null );
+			}
+			catch( IllegalAccessException | InvocationTargetException e )
+			{
+				AELog.error( e, "Failed to invoke the @PartModels annotated method " + method );
+				continue;
+			}
+
+			convertAndAddLocation( method, value, locations );
+		}
+
+		if( clazz.getSuperclass() != null )
+		{
+			locations.addAll( createModels( clazz.getSuperclass() ) );
+		}
+
+		return locations;
+	}
+
+	private void convertAndAddLocation( Object source, Object value, List<ResourceLocation> locations )
+	{
+		if( value == null )
+		{
+			return;
+		}
+
+		if( value instanceof ResourceLocation )
+		{
+			locations.add( (ResourceLocation) value );
+		}
+		else if( value instanceof Collection )
+		{
+			// Check that each object is a ResourceLocation
+			Collection values = (Collection) value;
+			for( Object candidate : values )
+			{
+				if ( !( candidate instanceof ResourceLocation )) {
+					AELog.error( "List of locations obtained from {} contains a non resource location: {}", source, candidate );
+					continue;
+				}
+
+				locations.add( (ResourceLocation) candidate );
+			}
+		}
+	}
+
 }

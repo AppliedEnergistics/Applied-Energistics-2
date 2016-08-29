@@ -24,33 +24,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.resources.IReloadableResourceManager;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import appeng.api.parts.CableRenderMode;
-import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.effects.AssemblerFX;
@@ -59,12 +54,10 @@ import appeng.client.render.effects.EnergyFx;
 import appeng.client.render.effects.LightningArcFX;
 import appeng.client.render.effects.LightningFX;
 import appeng.client.render.effects.VibrantFX;
-import appeng.client.render.model.ModelsCache;
 import appeng.client.render.model.UVLModelLoader;
 import appeng.client.render.textures.ParticleTextures;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.AppEng;
 import appeng.core.CommonHelper;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketAssemblerAnimation;
@@ -76,8 +69,6 @@ import appeng.entity.RenderTinyTNTPrimed;
 import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.TickHandler;
 import appeng.hooks.TickHandler.PlayerColor;
-import appeng.items.parts.PartType;
-import appeng.parts.AEBasePart;
 import appeng.server.ServerHelper;
 import appeng.transformer.MissingCoreMod;
 import appeng.util.Platform;
@@ -91,7 +82,6 @@ public class ClientHelper extends ServerHelper
 	{
 		MinecraftForge.EVENT_BUS.register( this );
 		ModelLoaderRegistry.registerLoader( UVLModelLoader.INSTANCE );
-		( (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager() ).registerReloadListener( ModelsCache.INSTANCE );
 	}
 
 	@Override
@@ -204,26 +194,26 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@Override
-	public void doRenderItem( final ItemStack itemstack, final World w )
+	public void doRenderItem( final ItemStack itemstack )
 	{
 		if( itemstack != null )
 		{
-			final EntityItem entityitem = new EntityItem( w, 0.0D, 0.0D, 0.0D, itemstack );
-			entityitem.getEntityItem().stackSize = 1;
 
-			// set all this stuff and then do shit? meh?
-			entityitem.hoverStart = 0;
-			entityitem.setNoDespawn();
-			entityitem.rotationYaw = 0;
+			GlStateManager.pushMatrix();
 
-			GL11.glPushMatrix();
-			GL11.glTranslatef( 0, -0.04F, 0 );
-			GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-			// GL11.glDisable( GL11.GL_CULL_FACE );
+			// The Z-scaling by 0.0001 causes the model to be visually "flattened"
+			// This cannot replace a proper projection, but it's cheap and gives the desired
+			// effect at least from head-on
+			final float scale = 0.8f;
+			GlStateManager.scale( scale / 32.0f, scale / 32.0f, 0.0001f );
+			// Position the item icon at the top middle of the panel
+			GlStateManager.translate( -8, -11, 0 );
 
-			// TODO RENDER ITEM FOR STORAGE MONITOR!
+			RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
+			renderItem.renderItemAndEffectIntoGUI(itemstack, 0, 0);
 
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
+
 		}
 	}
 
@@ -398,47 +388,5 @@ public class ClientHelper extends ServerHelper
 	public void onTextureStitch( final TextureStitchEvent.Pre event )
 	{
 		ParticleTextures.registerSprite( event );
-		for( AECableType type : AECableType.VALIDCABLES )
-		{
-			for( IModel model : new IModel[] { ModelsCache.INSTANCE.getOrLoadModel( type.getModel() ), ModelsCache.INSTANCE.getOrLoadModel( type.getConnectionModel() ), ModelsCache.INSTANCE.getOrLoadModel( type.getStraightModel() ) } )
-			{
-				for( ResourceLocation location : model.getTextures() )
-				{
-					for( AEColor color : AEColor.values() )
-					{
-						if( type.displayedChannels() > 0 )
-						{
-							for( int i = 0; i <= type.displayedChannels(); i++ )
-							{
-								event.getMap().registerSprite( AEBasePart.replaceProperties( location, ImmutableMap.of( "color", color.name(), "channels", String.valueOf( i ) ) ) );
-							}
-						}
-						else
-						{
-							event.getMap().registerSprite( AEBasePart.replaceProperties( location, ImmutableMap.of( "color", color.name() ) ) );
-						}
-					}
-				}
-			}
-		}
-		for( PartType part : PartType.values() )
-		{
-			if( !part.isCable() )
-			{
-				IModel model = ModelsCache.INSTANCE.getOrLoadModel( part.getModel() );
-				for( ResourceLocation location : model.getTextures() )
-				{
-					for( AEColor color : AEColor.values() )
-					{
-						event.getMap().registerSprite( AEBasePart.replaceProperties( location, ImmutableMap.of( "color", color.name() ) ) );
-					}
-				}
-			}
-		}
-
-		for( ResourceLocation location : ModelsCache.INSTANCE.getOrLoadModel( new ResourceLocation( AppEng.MOD_ID, "part/cable_facade" ) ).getTextures() )
-		{
-			event.getMap().registerSprite( location );
-		}
 	}
 }

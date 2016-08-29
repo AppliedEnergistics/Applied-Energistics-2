@@ -45,6 +45,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
+import appeng.block.networking.BlockCableBus;
 import appeng.helpers.AEMultiTile;
 import appeng.helpers.ICustomCollision;
 import appeng.hooks.TickHandler;
@@ -89,7 +90,28 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 			this.worldObj.checkLight( this.pos );
 		}
 
+		this.updateTileSetting();
 		return ret;
+	}
+
+	/**
+	 * Changes this tile to the TESR version if any of the parts require dynamic rendering.
+	 */
+	protected void updateTileSetting()
+	{
+		if( this.getCableBus().isRequiresDynamicRender() )
+		{
+			try
+			{
+				final TileCableBus tcb = (TileCableBus) BlockCableBus.getTesrTile().newInstance();
+				tcb.copyFrom( this );
+				this.getWorld().setTileEntity( pos, tcb );
+			}
+			catch( final Throwable ignored )
+			{
+
+			}
+		}
 	}
 
 	protected void copyFrom( final TileCableBus oldTile )

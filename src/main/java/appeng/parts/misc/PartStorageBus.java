@@ -23,12 +23,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
 import appeng.api.AEApi;
@@ -64,12 +67,14 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
+import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.core.stats.Achievements;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.helpers.Reflected;
+import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.me.storage.MEMonitorIInventory;
@@ -88,6 +93,24 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 																																	 * IPipeConnection
 																																	 */, IPriorityHost
 {
+
+	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_base" );
+	@PartModels
+	public static final List<ResourceLocation> MODELS_OFF = ImmutableList.of(
+			MODEL_BASE,
+			new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_off" )
+	);
+	@PartModels
+	public static final List<ResourceLocation> MODELS_ON = ImmutableList.of(
+			MODEL_BASE,
+			new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_on" )
+	);
+	@PartModels
+	public static final List<ResourceLocation> MODELS_HAS_CHANNEL = ImmutableList.of(
+			MODEL_BASE,
+			new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_has_channel" )
+	);
+	
 	private final BaseActionSource mySrc;
 	private final AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
 	private int priority = 0;
@@ -530,4 +553,22 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	{
 		// nope!
 	}
+
+	@Override
+	public List<ResourceLocation> getStaticModels()
+	{
+		if( isActive() && isPowered() )
+		{
+			return MODELS_HAS_CHANNEL;
+		}
+		else if( isPowered() )
+		{
+			return MODELS_ON;
+		}
+		else
+		{
+			return MODELS_OFF;
+		}
+	}
+	
 }

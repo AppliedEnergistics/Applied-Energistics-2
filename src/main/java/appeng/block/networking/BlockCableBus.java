@@ -28,7 +28,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.ParticleDigging;
 import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -57,6 +61,8 @@ import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseTileBlock;
+import appeng.client.render.cablebus.CableBusBakedModel;
+import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.features.AEFeature;
@@ -68,14 +74,20 @@ import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
 import appeng.tile.AEBaseTile;
 import appeng.tile.networking.TileCableBus;
+import appeng.tile.networking.TileCableBusTESR;
 import appeng.util.Platform;
 
 
 public class BlockCableBus extends AEBaseTileBlock
 {
 
+	public static final CableBusRenderStateProperty RENDER_STATE_PROPERTY = new CableBusRenderStateProperty();
+
 	private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
+
 	private static Class<? extends AEBaseTile> noTesrTile;
+
+	private static Class<? extends AEBaseTile> tesrTile;
 
 	public BlockCableBus()
 	{
@@ -89,8 +101,6 @@ public class BlockCableBus extends AEBaseTileBlock
 		this.setTileEntity( TileCableBus.class );
 	}
 
-	public static final CableBusContainerUnlistedProperty cableBus = new CableBusContainerUnlistedProperty();
-
 	@Override
 	public boolean isFullCube( IBlockState state )
 	{
@@ -100,14 +110,15 @@ public class BlockCableBus extends AEBaseTileBlock
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
-		return new ExtendedBlockState( this, new IProperty[0], new IUnlistedProperty[] { FORWARD, UP, cableBus } );
+		return new ExtendedBlockState( this, new IProperty[0], new IUnlistedProperty[] { RENDER_STATE_PROPERTY } );
 	}
 
 	@Override
 	public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
 	{
-		return ( (IExtendedBlockState) super.getExtendedState( state, world, pos ) )
-				.withProperty( cableBus, ( (TileCableBus) world.getTileEntity( pos ) ).getCableBus() );
+		CableBusRenderState renderState = cb( world, pos ).getRenderState();
+		return ( (IExtendedBlockState) state )
+				.withProperty( RENDER_STATE_PROPERTY, renderState );
 	}
 
 	@Override
@@ -274,24 +285,40 @@ public class BlockCableBus extends AEBaseTileBlock
 	@Override
 	public boolean addDestroyEffects( final World world, final BlockPos pos, final ParticleManager effectRenderer )
 	{
-		final Object object = this.cb( world, pos );
-		if( object instanceof IPartHost )
-		{
-			final IPartHost host = (IPartHost) object;
+		ICableBusContainer cb = this.cb( world, pos );
 
-			// TODO DESTROY EFFECTS
-			/*
-			 * for( AEPartLocation side : AEPartLocation.values() ) { IPart p =
-			 * host.getPart( side ); TextureAtlasSprite ico = this.getIcon( p );
-			 * if( ico == null ) { continue; } byte b0 = 3; for( int i1 = 0; i1
-			 * < b0; ++i1 ) { for( int j1 = 0; j1 < b0; ++j1 ) { for( int k1 =
-			 * 0; k1 < b0; ++k1 ) { double d0 = x + ( i1 + 0.5D ) / b0; double
-			 * d1 = y + ( j1 + 0.5D ) / b0; double d2 = z + ( k1 + 0.5D ) / b0;
-			 * EntityDiggingFX fx = ( new EntityDiggingFX( world, d0, d1, d2, d0
-			 * - x - 0.5D, d1 - y - 0.5D, d2 - z - 0.5D, this, meta )
-			 * ).applyColourMultiplier( x, y, z ); fx.setParticleIcon( ico );
-			 * effectRenderer.addEffect( fx ); } } } }
-			 */
+		// Our built-in model has the actual baked sprites we need
+		IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState( getDefaultState() );
+
+		// We cannot add the effect if we dont have the model
+		if( !( model instanceof CableBusBakedModel ) )
+		{
+			return true;
+		}
+
+		CableBusBakedModel cableBusModel = (CableBusBakedModel) model;
+
+		CableBusRenderState renderState = cb.getRenderState();
+
+		for( TextureAtlasSprite texture : cableBusModel.getParticleTextures( renderState ) )
+		{
+			// Shamelessly inspired by ParticleManager.addBlockDestroyEffects
+			for( int j = 0; j < 4; ++j )
+			{
+				for( int k = 0; k < 4; ++k )
+				{
+					for( int l = 0; l < 4; ++l )
+					{
+						double d0 = (double) pos.getX() + ( (double) j + 0.5D ) / 4.0D;
+						double d1 = (double) pos.getY() + ( (double) k + 0.5D ) / 4.0D;
+						double d2 = (double) pos.getZ() + ( (double) l + 0.5D ) / 4.0D;
+						ParticleDigging particle = new DestroyFX( world, d0, d1, d2, d0 - (double) pos.getX() - 0.5D, d1 - (double) pos.getY() - 0.5D, d2 - (double) pos.getZ() - 0.5D, getDefaultState() )
+								.setBlockPos( pos );
+						particle.setParticleTexture( texture );
+						effectRenderer.addEffect( particle );
+					}
+				}
+			}
 		}
 
 		return true;
@@ -356,9 +383,14 @@ public class BlockCableBus extends AEBaseTileBlock
 
 	public void setupTile()
 	{
-		noTesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBus.class.getName() );
+		noTesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBus.class );
 		this.setTileEntity( noTesrTile );
 		GameRegistry.registerTileEntity( noTesrTile, "BlockCableBus" );
+		if( Platform.isClient() )
+		{
+			tesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBusTESR.class );
+			GameRegistry.registerTileEntity( tesrTile, "ClientOnly_TESR_CableBus" );
+		}
 	}
 
 	public static Class<? extends AEBaseTile> getNoTesrTile()
@@ -366,4 +398,17 @@ public class BlockCableBus extends AEBaseTileBlock
 		return noTesrTile;
 	}
 
+	public static Class<? extends AEBaseTile> getTesrTile()
+	{
+		return tesrTile;
+	}
+
+	// Helper to get access to the protected constructor
+	private static class DestroyFX extends ParticleDigging
+	{
+		DestroyFX( World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, IBlockState state )
+		{
+			super( worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn, state );
+		}
+	}
 }

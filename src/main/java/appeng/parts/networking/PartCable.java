@@ -20,31 +20,18 @@ package appeng.parts.networking;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.List;
 
 import com.google.common.collect.ImmutableSet;
 
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
-
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.model.TRSRTransformation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
-import appeng.api.client.BakingPipeline;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.definitions.IParts;
 import appeng.api.implementations.parts.IPartCable;
@@ -53,7 +40,6 @@ import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.BusSupport;
-import appeng.api.parts.ICustomCableConnection;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
@@ -61,10 +47,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IReadOnlyCollection;
-import appeng.client.render.model.ModelsCache;
-import appeng.client.render.model.pipeline.FacingQuadRotator;
-import appeng.client.render.model.pipeline.MatVecApplicator;
-import appeng.client.render.model.pipeline.TypeTransformer;
 import appeng.items.parts.ItemMultiPart;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
@@ -401,84 +383,14 @@ public class PartCable extends AEBasePart implements IPartCable
 		return !myC.equals( this.getConnections() ) || wasPowered != this.powered || channelsChanged;
 	}
 
-	@Override
-	@SideOnly( Side.CLIENT )
-	public List<BakedQuad> getOrBakeQuads( BakingPipeline rotatingPipeline, IBlockState state, EnumFacing side, long rand )
-	{
-		List<BakedQuad> elements = new ArrayList<>();
-		if( isStraight( getHost(), connections ) )
-		{
-			EnumFacing facing = getConnections().contains( AEPartLocation.DOWN ) ? EnumFacing.DOWN : getConnections().contains( AEPartLocation.NORTH ) ? EnumFacing.NORTH : getConnections().contains( AEPartLocation.EAST ) ? EnumFacing.EAST : EnumFacing.NORTH;
-			elements.addAll( rotatingPipeline.pipe( ModelsCache.INSTANCE.getOrLoadModel( withProperties( getCableConnectionType().getStraightModel(), propertiesForModel( facing ) ), getCableConnectionType().getStraightModel(), propertyTextureGetter( propertiesForModel( facing ) ) ).getQuads( state, side, rand ), null, state, connections.contains( AEPartLocation.DOWN ) ? EnumFacing.DOWN : connections.contains( AEPartLocation.NORTH ) ? EnumFacing.NORTH : connections.contains( AEPartLocation.EAST ) ? EnumFacing.EAST : EnumFacing.NORTH, rand ) );
-		}
-		else
-		{
-			elements.addAll( ModelsCache.INSTANCE.getOrLoadModel( withProperties( getCableConnectionType().getModel(), propertiesForModel( null ) ), getCableConnectionType().getModel(), propertyTextureGetter( propertiesForModel( null ) ) ).getQuads( state, side, rand ) );
-			for( EnumFacing facing : EnumFacing.values() )
-			{
-				if( isConnected( facing ) || getHost().getPart( facing ) != null )
-				{
-					float f = 4;
-					if( getHost().getPart( facing ) != null )
-					{
-						f = getHost().getPart( facing ).getCableConnectionLength( this.getCableConnectionType() );
-					}
-					else
-					{
-						TileEntity to = getHost().getTile().getWorld().getTileEntity( getHost().getTile().getPos().offset( facing ) );
-						if( to instanceof ICustomCableConnection )
-						{
-							f = ( (ICustomCableConnection) to ).getCableConnectionLength( this.getCableConnectionType() );
-						}
-					}
-					if( f != -1 )
-					{
-						elements.addAll( new BakingPipeline( TypeTransformer.quads2vecs, new MatVecApplicator( TRSRTransformation.toVecmath( new Matrix4f().scale( new Vector3f( 1, 1, f / 4f ) ) ) ), new FacingQuadRotator( facing ), TypeTransformer.vecs2quads ).pipe( ModelsCache.INSTANCE.getOrLoadModel( withProperties( getCableConnectionType().getConnectionModel(), propertiesForModel( facing ) ), getCableConnectionType().getConnectionModel(), propertyTextureGetter( propertiesForModel( facing ) ) ).getQuads( state, side, rand ), null, state, facing, rand ) );
-					}
-				}
-			}
-		}
-		return elements;
-	}
-
-	/**
-	 * A cable connection is considered straight, if there are exactly two connection points on opposite sides,
-	 * and the cable has no attached busses.
-	 */
-	protected boolean isStraight( IPartHost host, final EnumSet<AEPartLocation> sides )
-	{
-		if (sides.size() != 2) {
-			return false;
-		}
-
-		Iterator<AEPartLocation> it = sides.iterator();
-		EnumFacing firstSide = it.next().getFacing();
-		EnumFacing secondSide = it.next().getFacing();
-
-		// Not on opposite sides
-		if (firstSide.getOpposite() != secondSide) {
-			return false;
-		}
-
-		// Check any other point for attachments
-		for( EnumFacing facing : EnumFacing.values() )
-		{
-			if( facing != firstSide && facing != secondSide )
-			{
-				// Check for an attached part here
-				if( host.getPart( facing ) != null )
-				{
-					return false;
-				}
-			}
-		}
-
-		return true;
-	}
-
 	int getChannelsOnSide( final int i )
 	{
 		return this.channelsOnSide[i];
+	}
+
+	public int getChannelsOnSide( EnumFacing side )
+	{
+		return this.channelsOnSide[side.ordinal()];
 	}
 
 	void setChannelsOnSide( final int i, final int channels )

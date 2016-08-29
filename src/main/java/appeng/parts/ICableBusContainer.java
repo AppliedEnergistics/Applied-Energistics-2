@@ -35,6 +35,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
+import appeng.client.render.cablebus.CableBusRenderState;
 
 
 public interface ICableBusContainer
@@ -66,4 +67,7 @@ public interface ICableBusContainer
 	void randomDisplayTick( World world, BlockPos pos, Random r );
 
 	int getLightValue();
+
+	CableBusRenderState getRenderState();
+
 }

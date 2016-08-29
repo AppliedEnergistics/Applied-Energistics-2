@@ -37,6 +37,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -73,6 +74,7 @@ import appeng.api.util.IConfigManager;
 import appeng.core.AEConfig;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.IPriorityHost;
+import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.tile.inventory.AppEngInternalAEInventory;
@@ -84,6 +86,15 @@ import appeng.util.prioitylist.PrecisePriorityList;
 
 public class PartFormationPlane extends PartUpgradeable implements ICellContainer, IPriorityHost, IMEInventory<IAEItemStack>
 {
+
+	private static final PlaneModels MODELS = new PlaneModels( "part/formation_plane_", "part/formation_plane_on_" );
+
+	@PartModels
+	public static List<ResourceLocation> getModels()
+	{
+		return MODELS.getModels();
+	}
+
 	private final MEInventoryHandler myHandler = new MEInventoryHandler( this, StorageChannel.ITEMS );
 	private final AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
 	private int priority = 0;
@@ -260,6 +271,79 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 		bch.addBox( 5, 5, 14, 11, 11, 15 );
 		bch.addBox( minX, minY, 15, maxX, maxY, 16 );
+	}
+
+	// TODO: Consolidate this with the impl in PartAnnihilationPlane
+	/**
+	 * @return An object describing which adjacent planes this plane connects to visually.
+	 */
+	public PlaneConnections getConnections()
+	{
+
+		final EnumFacing facingRight, facingUp;
+		AEPartLocation location = getSide();
+		switch( location )
+		{
+			case UP:
+				facingRight = EnumFacing.EAST;
+				facingUp = EnumFacing.NORTH;
+				break;
+			case DOWN:
+				facingRight = EnumFacing.WEST;
+				facingUp = EnumFacing.NORTH;
+				break;
+			case NORTH:
+				facingRight = EnumFacing.WEST;
+				facingUp = EnumFacing.UP;
+				break;
+			case SOUTH:
+				facingRight = EnumFacing.EAST;
+				facingUp = EnumFacing.UP;
+				break;
+			case WEST:
+				facingRight = EnumFacing.SOUTH;
+				facingUp = EnumFacing.UP;
+				break;
+			case EAST:
+				facingRight = EnumFacing.NORTH;
+				facingUp = EnumFacing.UP;
+				break;
+			default:
+			case INTERNAL:
+				return PlaneConnections.of( false, false, false, false );
+		}
+
+		boolean left = false, right = false, down = false, up = false;
+
+		final IPartHost host = this.getHost();
+		if( host != null )
+		{
+			final TileEntity te = host.getTile();
+
+			final BlockPos pos = te.getPos();
+
+			if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( facingRight.getOpposite() ) ), this.getSide() ) )
+			{
+				left = true;
+			}
+
+			if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( facingRight ) ), this.getSide() ) )
+			{
+				right = true;
+			}
+
+			if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( facingUp.getOpposite() ) ), this.getSide() ) )
+			{
+				down = true;
+			}
+
+			if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( facingUp ) ), this.getSide() ) )
+			{
+				up = true;
+			}
+		}
+
+		return PlaneConnections.of( up, right, down, left );
 	}
 
 	@Override
@@ -525,4 +609,11 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	{
 		// nope!
 	}
+
+	@Override
+	public List<ResourceLocation> getStaticModels()
+	{
+		return MODELS.getModel( getConnections(), isPowered(), isActive() );
+	}
+
 }

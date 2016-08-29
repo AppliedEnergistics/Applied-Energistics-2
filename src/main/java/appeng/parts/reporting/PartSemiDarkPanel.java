@@ -19,13 +19,27 @@
 package appeng.parts.reporting;
 
 
-import net.minecraft.item.ItemStack;
+import java.util.List;
 
+import com.google.common.collect.ImmutableList;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+
+import appeng.core.AppEng;
 import appeng.helpers.Reflected;
+import appeng.items.parts.PartModels;
 
 
 public class PartSemiDarkPanel extends AbstractPartPanel
 {
+	@PartModels
+	public static final ResourceLocation MODEL_OFF = new ResourceLocation( AppEng.MOD_ID, "part/monitor_medium_off" );
+	@PartModels
+	public static final ResourceLocation MODEL_ON = new ResourceLocation( AppEng.MOD_ID, "part/monitor_medium_on" );
+
+	public static final List<ResourceLocation> MODELS_OFF = ImmutableList.of( MODEL_BASE, MODEL_OFF );
+	public static final List<ResourceLocation> MODELS_ON = ImmutableList.of( MODEL_BASE, MODEL_ON );
 
 	@Reflected
 	public PartSemiDarkPanel( final ItemStack is )
@@ -40,4 +54,11 @@ public class PartSemiDarkPanel extends AbstractPartPanel
 		final int dark = this.getColor().mediumVariant;
 		return ( ( ( ( ( light >> 16 ) & 0xff ) + ( ( dark >> 16 ) & 0xff ) ) / 2 ) << 16 ) | ( ( ( ( ( light >> 8 ) & 0xff ) + ( ( dark >> 8 ) & 0xff ) ) / 2 ) << 8 ) | ( ( ( ( light ) & 0xff ) + ( ( dark ) & 0xff ) ) / 2 );
 	}
+
+	@Override
+	public List<ResourceLocation> getStaticModels()
+	{
+		return isPowered() ? MODELS_ON : MODELS_OFF;
+	}
+
 }

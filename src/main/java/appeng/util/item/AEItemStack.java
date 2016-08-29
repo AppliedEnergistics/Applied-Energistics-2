@@ -26,7 +26,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
@@ -153,7 +152,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		// don't send this...
 		final NBTTagCompound d = new NBTTagCompound();
 
-		d.setShort( "id", data.readShort() );
+		// For some insane reason, Vanilla can only parse numeric item ids if they are strings
+		short itemNumericId = data.readShort();
+		d.setString( "id", String.valueOf( itemNumericId ) );
 		d.setShort( "Damage", data.readShort() );
 		d.setByte( "Count", (byte) 0 );
 
@@ -217,7 +218,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		/*
 		 * if ( id != null && id instanceof NBTTagShort ) ((NBTTagShort) id).data = (short) this.def.item.itemID; else
 		 */
-		i.setShort( "id", (short) Item.REGISTRY.getIDForObject( this.getDefinition().getItem() ) );
+		// i.setShort( "id", (short) Item.REGISTRY.getIDForObject( this.getDefinition().getItem() ) );
+		ResourceLocation resourcelocation = Item.REGISTRY.getNameForObject( this.getItem() );
+		i.setString( "id", resourcelocation == null ? "minecraft:air" : resourcelocation.toString() );
 
 		/*
 		 * if ( Count != null && Count instanceof NBTTagByte ) ((NBTTagByte) Count).data = (byte) 0; else

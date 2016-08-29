@@ -33,6 +33,7 @@ import net.minecraft.world.World;
 
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
+import appeng.client.render.cablebus.CableBusRenderState;
 
 
 public class NullCableBusContainer implements ICableBusContainer
@@ -115,4 +116,11 @@ public class NullCableBusContainer implements ICableBusContainer
 	{
 		return 0;
 	}
+
+	@Override
+	public CableBusRenderState getRenderState()
+	{
+		return new CableBusRenderState();
+	}
+
 }

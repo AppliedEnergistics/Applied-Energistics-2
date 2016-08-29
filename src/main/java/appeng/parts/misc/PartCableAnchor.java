@@ -20,30 +20,22 @@ package appeng.parts.misc;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.api.client.BakingPipeline;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
@@ -52,8 +44,6 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
-import appeng.client.render.model.ModelsCache;
-import appeng.core.AppEng;
 
 
 public class PartCableAnchor implements IPart
@@ -236,13 +226,6 @@ public class PartCableAnchor implements IPart
 	public boolean canBePlacedOn( final BusSupport what )
 	{
 		return what == BusSupport.CABLE || what == BusSupport.DENSE_CABLE;
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public List<BakedQuad> getOrBakeQuads( BakingPipeline<BakedQuad, BakedQuad> rotatingPipeline, IBlockState state, EnumFacing side, long rand )
-	{
-		return rotatingPipeline.pipe( ModelsCache.INSTANCE.getOrLoadBakedModel( new ResourceLocation( AppEng.MOD_ID, "part/cable_anchor" ) ).getQuads( state, side, rand ), null, state, mySide.getFacing(), rand );
 	}
 
 }

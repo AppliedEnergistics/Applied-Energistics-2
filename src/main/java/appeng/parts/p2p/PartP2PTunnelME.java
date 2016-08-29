@@ -22,12 +22,14 @@ package appeng.parts.p2p;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 
 import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnection;
@@ -42,6 +44,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
 import appeng.core.settings.TickRates;
 import appeng.hooks.TickHandler;
+import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.Connections;
 import appeng.me.cache.helpers.TunnelConnection;
@@ -50,6 +53,14 @@ import appeng.me.helpers.AENetworkProxy;
 
 public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements IGridTickable
 {
+
+	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_me" );
+
+	@PartModels
+	public static List<ResourceLocation> getModels()
+	{
+		return MODELS.getModels();
+	}
 
 	private final Connections connection = new Connections( this );
 	private final AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", null, true );
@@ -246,4 +257,11 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 			}
 		}
 	}
+
+	@Override
+	public List<ResourceLocation> getStaticModels()
+	{
+		return MODELS.getModel( isPowered(), isActive() );
+	}
+
 }

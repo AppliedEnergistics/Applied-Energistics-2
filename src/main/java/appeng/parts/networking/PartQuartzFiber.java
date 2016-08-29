@@ -19,7 +19,9 @@
 package appeng.parts.networking;
 
 
+import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,6 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
@@ -37,6 +40,8 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
+import appeng.core.AppEng;
+import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.parts.AEBasePart;
@@ -44,6 +49,9 @@ import appeng.parts.AEBasePart;
 
 public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 {
+
+	@PartModels
+	private static final List<ResourceLocation> MODELS = Collections.singletonList( new ResourceLocation( AppEng.MOD_ID, "part/quartz_fiber" ) );
 
 	private final AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", this.getProxy().getMachineRepresentation(), true );
 
@@ -209,5 +217,11 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 		}
 
 		return demand;
+	}
+
+	@Override
+	public List<ResourceLocation> getStaticModels()
+	{
+		return MODELS;
 	}
 }

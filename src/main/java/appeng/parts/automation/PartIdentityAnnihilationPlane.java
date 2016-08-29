@@ -26,6 +26,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
@@ -34,10 +35,19 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
+import appeng.items.parts.PartModels;
 
 
 public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 {
+
+	private static final PlaneModels MODELS = new PlaneModels( "part/identity_annihilation_plane_", "part/identity_annihilation_plane_on_" );
+
+	@PartModels
+	public static List<ResourceLocation> getModels()
+	{
+		return MODELS.getModels();
+	}
 
 	private static final float SILK_TOUCH_FACTOR = 16;
 
@@ -93,4 +103,11 @@ public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 			return super.obtainBlockDrops( w, pos );
 		}
 	}
+
+	@Override
+	public List<ResourceLocation> getStaticModels()
+	{
+		return MODELS.getModel( getConnections(), isPowered(), isActive() );
+	}
+
 }

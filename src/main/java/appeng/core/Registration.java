@@ -55,7 +55,6 @@ import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPartHelper;
-import appeng.block.networking.BlockCableBus;
 import appeng.core.features.AEFeature;
 import appeng.core.features.registries.P2PTunnelRegistry;
 import appeng.core.features.registries.entries.BasicCellHandler;
@@ -145,7 +144,6 @@ public final class Registration
 
 		// Register all detected handlers and features (items, blocks) in pre-init
 		definitions.getRegistry().getBootstrapComponents().forEach( b -> b.preInitialize( event.getSide() ) );
-
 	}
 
 	private void registerSpatial( final boolean force )
@@ -342,7 +340,6 @@ public final class Registration
 		GuiText.values();
 
 		Api.INSTANCE.partHelper().initFMPSupport();
-		blocks.multiPart().maybeBlock().ifPresent( block -> ( (BlockCableBus) block ).setupTile() );
 
 		definitions.getRegistry().getBootstrapComponents().forEach( b -> b.postInitialize( event.getSide() ) );
 

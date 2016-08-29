@@ -23,6 +23,7 @@ import net.minecraft.block.BlockDispenser;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
@@ -85,6 +86,7 @@ import appeng.bootstrap.IItemRendering;
 import appeng.client.render.model.GlassModel;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
+import appeng.core.features.registries.PartModels;
 import appeng.debug.BlockChunkloader;
 import appeng.debug.BlockCubeGenerator;
 import appeng.debug.BlockItemGen;
@@ -101,6 +103,8 @@ import appeng.decorative.solid.BlockSkyStone;
 import appeng.decorative.solid.BlockSkyStone.SkystoneType;
 import appeng.decorative.stair.BlockStairCommon;
 import appeng.hooks.DispenserBehaviorTinyTNT;
+import appeng.tile.networking.CableBusTESR;
+import appeng.util.Platform;
 
 
 /**
@@ -184,7 +188,7 @@ public final class ApiBlocks implements IBlocks
 	private final IBlockDefinition phantomNode;
 	private final IBlockDefinition cubeGenerator;
 
-	public ApiBlocks( FeatureFactory registry )
+	public ApiBlocks( FeatureFactory registry, PartModels partModels )
 	{
 		// this.quartzOre = new BlockDefinition( "ore.quartz", new OreQuartz() );
 		this.quartzOre = registry.block( "quartz_ore", BlockQuartzOre::new )
@@ -357,8 +361,15 @@ public final class ApiBlocks implements IBlocks
 		this.chiseledQuartzStairs = makeStairs( "chiseled_quartz_stairs", registry, this.chiseledQuartzBlock() );
 		this.quartzPillarStairs = makeStairs( "quartz_pillar_stairs", registry, this.quartzPillar() );
 
-		this.multiPart = registry.block( "multipart_block", BlockCableBus::new )
-				.rendering( new CableBusRendering() )
+		this.multiPart = registry.block( "cable_bus", BlockCableBus::new )
+				.rendering( new CableBusRendering( partModels ) )
+				.postInit( (block, item) -> {
+					( (BlockCableBus) block ).setupTile();
+					if( Platform.isClient() )
+					{
+						ClientRegistry.bindTileEntitySpecialRenderer( BlockCableBus.getTesrTile(), new CableBusTESR() );
+					}
+				} )
 				.build();
 
 		// TODO Re-Add Slabs...

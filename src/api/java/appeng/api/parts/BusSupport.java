@@ -28,7 +28,6 @@ public enum BusSupport
 {
 	CABLE,
 
-	DENSE_CABLE,
-
-	NO_PARTS
+	DENSE_CABLE
+	
 }

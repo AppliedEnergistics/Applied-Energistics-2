@@ -21,18 +21,33 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
+import appeng.core.AppEng;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.Reflected;
+import appeng.items.parts.PartModels;
 import appeng.tile.inventory.AppEngInternalInventory;
 
 
 public class PartCraftingTerminal extends AbstractPartTerminal
 {
+
+	@PartModels
+	public static final ResourceLocation MODEL_OFF = new ResourceLocation( AppEng.MOD_ID, "part/terminal_off" );
+	@PartModels
+	public static final ResourceLocation MODEL_ON = new ResourceLocation( AppEng.MOD_ID, "part/terminal_on" );
+
+	public static final List<ResourceLocation> MODELS_OFF = ImmutableList.of( MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF );
+	public static final List<ResourceLocation> MODELS_ON = ImmutableList.of( MODEL_BASE, MODEL_ON, MODEL_STATUS_ON );
+	public static final List<ResourceLocation> MODELS_HAS_CHANNEL = ImmutableList.of( MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL );
+
 	private final AppEngInternalInventory craftingGrid = new AppEngInternalInventory( this, 9 );
 
 	@Reflected
@@ -98,4 +113,11 @@ public class PartCraftingTerminal extends AbstractPartTerminal
 		}
 		return super.getInventoryByName( name );
 	}
+
+	@Override
+	public List<ResourceLocation> getStaticModels()
+	{
+		return selectModel( MODELS_OFF, MODELS_ON, MODELS_HAS_CHANNEL );
+	}
+
 }

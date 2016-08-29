@@ -20,11 +20,12 @@ package appeng.core;
 
 
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.Lists;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -41,6 +42,7 @@ import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
+import appeng.api.AEApi;
 import appeng.core.crash.CrashInfo;
 import appeng.core.crash.IntegrationCrashEnhancement;
 import appeng.core.crash.ModCrashEnhancement;
@@ -169,6 +171,12 @@ public final class AppEng
 		}
 
 		AELog.info( "Pre Initialization ( ended after " + watch.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
+
+		// Instantiate all Plugins
+		List<Object> injectables = Lists.newArrayList(
+				AEApi.instance()
+		);
+		new PluginLoader().loadPlugins( injectables, event.getAsmData() );
 	}
 
 	private void startService( final String serviceName, final Thread thread )

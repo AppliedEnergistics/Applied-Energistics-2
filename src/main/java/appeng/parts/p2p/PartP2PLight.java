@@ -20,12 +20,14 @@ package appeng.parts.p2p;
 
 
 import java.io.IOException;
+import java.util.List;
 
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGridNode;
@@ -35,11 +37,20 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.core.settings.TickRates;
+import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 
 
 public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTickable
 {
+
+	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_light" );
+
+	@PartModels
+	public static List<ResourceLocation> getModels()
+	{
+		return MODELS.getModels();
+	}
 
 	private int lastValue = 0;
 	private float opacity = -1;
@@ -213,4 +224,11 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	{
 		return 0.5f;
 	}
+
+	@Override
+	public List<ResourceLocation> getStaticModels()
+	{
+		return MODELS.getModel( isPowered(), isActive() );
+	}
+
 }

@@ -135,7 +135,7 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public void doRenderItem( final ItemStack sis, final World tile )
+	public void doRenderItem( final ItemStack sis )
 	{
 
 	}

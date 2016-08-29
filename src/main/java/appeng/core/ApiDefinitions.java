@@ -20,12 +20,12 @@ package appeng.core;
 
 
 import appeng.api.definitions.IDefinitions;
-import appeng.api.parts.IPartHelper;
 import appeng.bootstrap.FeatureFactory;
 import appeng.core.api.definitions.ApiBlocks;
 import appeng.core.api.definitions.ApiItems;
 import appeng.core.api.definitions.ApiMaterials;
 import appeng.core.api.definitions.ApiParts;
+import appeng.core.features.registries.PartModels;
 
 
 /**
@@ -40,12 +40,12 @@ public final class ApiDefinitions implements IDefinitions
 
 	private final FeatureFactory registry = new FeatureFactory();
 
-	public ApiDefinitions( final IPartHelper partHelper )
+	public ApiDefinitions( final PartModels partModels )
 	{
-		this.blocks = new ApiBlocks( registry );
+		this.blocks = new ApiBlocks( registry, partModels );
 		this.items = new ApiItems( registry );
 		this.materials = new ApiMaterials( registry );
-		this.parts = new ApiParts( registry, partHelper );
+		this.parts = new ApiParts( registry, partModels );
 	}
 
 	public FeatureFactory getRegistry()

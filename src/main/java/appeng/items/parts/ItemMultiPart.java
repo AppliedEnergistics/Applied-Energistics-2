@@ -46,7 +46,6 @@ import net.minecraft.world.World;
 import appeng.api.AEApi;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.parts.IPart;
-import appeng.api.parts.IPartHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
@@ -67,10 +66,8 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	public static ItemMultiPart instance;
 	private final Map<Integer, PartTypeWithVariant> registered;
 
-	public ItemMultiPart( final IPartHelper partHelper )
+	public ItemMultiPart()
 	{
-		Preconditions.checkNotNull( partHelper );
-
 		this.registered = new HashMap<>( INITIAL_REGISTERED_CAPACITY );
 
 		this.setHasSubtypes( true );

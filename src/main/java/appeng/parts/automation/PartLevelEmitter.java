@@ -20,7 +20,10 @@ package appeng.parts.automation;
 
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Random;
+
+import com.google.common.collect.ImmutableList;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -30,6 +33,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -67,8 +71,10 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
+import appeng.core.AppEng;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.Reflected;
+import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.InvOperation;
@@ -77,6 +83,24 @@ import appeng.util.Platform;
 
 public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherHost, IStackWatcherHost, ICraftingWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider
 {
+
+	@PartModels
+	public static final ResourceLocation MODEL_BASE_OFF = new ResourceLocation( AppEng.MOD_ID, "part/level_emitter_base_off" );
+	@PartModels
+	public static final ResourceLocation MODEL_BASE_ON = new ResourceLocation( AppEng.MOD_ID, "part/level_emitter_base_on" );
+	@PartModels
+	public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation( AppEng.MOD_ID, "part/level_emitter_status_off" );
+	@PartModels
+	public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation( AppEng.MOD_ID, "part/level_emitter_status_on" );
+	@PartModels
+	public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation( AppEng.MOD_ID, "part/level_emitter_status_has_channel" );
+
+	public static final List<ResourceLocation> MODEL_OFF_OFF = ImmutableList.of( MODEL_BASE_OFF, MODEL_STATUS_OFF );
+	public static final List<ResourceLocation> MODEL_OFF_ON = ImmutableList.of( MODEL_BASE_OFF, MODEL_STATUS_ON );
+	public static final List<ResourceLocation> MODEL_OFF_HAS_CHANNEL = ImmutableList.of( MODEL_BASE_OFF, MODEL_STATUS_HAS_CHANNEL );
+	public static final List<ResourceLocation> MODEL_ON_OFF = ImmutableList.of( MODEL_BASE_ON, MODEL_STATUS_OFF );
+	public static final List<ResourceLocation> MODEL_ON_ON = ImmutableList.of( MODEL_BASE_ON, MODEL_STATUS_ON );
+	public static final List<ResourceLocation> MODEL_ON_HAS_CHANNEL = ImmutableList.of( MODEL_BASE_ON, MODEL_STATUS_HAS_CHANNEL );
 
 	private static final int FLAG_ON = 4;
 
@@ -142,7 +166,8 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		}
 	}
 
-	private boolean isLevelEmitterOn()
+	// TODO: Make private again
+	public boolean isLevelEmitterOn()
 	{
 		if( Platform.isClient() )
 		{
@@ -532,6 +557,23 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 					craftingTracker.setEmitable( what );
 				}
 			}
+		}
+	}
+
+	@Override
+	public List<ResourceLocation> getStaticModels()
+	{
+		if( isActive() && isPowered() )
+		{
+			return isLevelEmitterOn() ? MODEL_ON_HAS_CHANNEL : MODEL_OFF_HAS_CHANNEL;
+		}
+		else if( isPowered() )
+		{
+			return isLevelEmitterOn() ? MODEL_ON_ON : MODEL_OFF_ON;
+		}
+		else
+		{
+			return isLevelEmitterOn() ? MODEL_ON_OFF : MODEL_OFF_OFF;
 		}
 	}
 }

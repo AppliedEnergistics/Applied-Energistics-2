@@ -10,10 +10,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
-import appeng.parts.CableBusContainer;
+import appeng.client.render.cablebus.CableBusRenderState;
 
 
+/**
+ * Exposes the cable bus color as tint indices 0 (dark variant), 1 (medium variant) and 2 (bright variant).
+ */
 @SideOnly( Side.CLIENT )
 public class CableBusColor implements IBlockColor
 {
@@ -22,32 +24,18 @@ public class CableBusColor implements IBlockColor
 	public int colorMultiplier( IBlockState state, IBlockAccess worldIn, BlockPos pos, int color )
 	{
 
-		boolean active = true;
 		AEColor busColor = AEColor.Transparent;
 
 		if( state instanceof IExtendedBlockState )
 		{
-			AEPartLocation side = AEPartLocation.fromOrdinal( ( color >> 2 ) & 7 );
-			CableBusContainer bus = ( (IExtendedBlockState) state ).getValue( BlockCableBus.cableBus );
-			if( bus != null )
+			CableBusRenderState renderState = ( (IExtendedBlockState) state ).getValue( BlockCableBus.RENDER_STATE_PROPERTY );
+			if( renderState != null )
 			{
-				active = bus.getGridNode( side ) != null && bus.getGridNode( side ).isActive();
-				busColor = bus.getColor();
+				busColor = renderState.getCableColor();
 			}
 		}
 
-		switch( color & 3 )
-		{
-			case 0:
-				return active ? 0xffffff : 0;
-			case 1:
-				return busColor.blackVariant;
-			case 2:
-				return busColor.mediumVariant;
-			case 3:
-				return busColor.whiteVariant;
-			default:
-				return color;
-		}
+		return busColor.getVariantByTintIndex( color );
+
 	}
 }

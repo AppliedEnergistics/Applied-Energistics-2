@@ -7,7 +7,7 @@
       "from": [0, 0, 0],
       "to": [16, 16, 16],
       "faces": {
-        "up": { "texture": "#lights", "tintindex": 0 }
+        "up": { "texture": "#lights", "tintindex": 3 }
       }
     }
   ]

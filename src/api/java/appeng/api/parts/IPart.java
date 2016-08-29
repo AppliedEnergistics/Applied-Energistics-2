@@ -25,30 +25,29 @@ package appeng.api.parts;
 
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.api.client.BakingPipeline;
 import appeng.api.networking.IGridNode;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 
 
@@ -68,6 +67,15 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 	 * @return item of part
 	 */
 	ItemStack getItemStack( PartItemStack type );
+
+	/**
+	 * Render dynamic portions of this part, as part of the cable bus TESR. This part has to return true for {@link #requireDynamicRender()} in order for
+	 * this method to be called.
+	 */
+	@SideOnly( Side.CLIENT )
+	default void renderDynamic( double x, double y, double z, float partialTicks, int destroyStage )
+	{
+	}
 
 	/**
 	 * return true only if your part require dynamic rendering, must be consistent.
@@ -255,7 +263,27 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 	 */
 	boolean canBePlacedOn( BusSupport what );
 
-	@SideOnly( Side.CLIENT )
-	public List<BakedQuad> getOrBakeQuads( BakingPipeline<BakedQuad, BakedQuad> rotatingPipeline, IBlockState state, EnumFacing side, long rand );
+	/**
+	 * This method is used when a chunk is rebuilt to determine how this part should be rendered. The returned models should represent the
+	 * part oriented north. They will be automatically rotated to match the part's actual orientation. Tint indices 1-4 can be used in the
+	 * models to access the parts color.
+	 *
+	 * <dl>
+	 * <dt>Tint Index 1</dt>
+	 * <dd>The {@link AEColor#blackVariant dark variant color} of the cable that this part is attached to.</dd>
+	 * <dt>Tint Index 2</dt>
+	 * <dd>The {@link AEColor#mediumVariant color} of the cable that this part is attached to.</dd>
+	 * <dt>Tint Index 3</dt>
+	 * <dd>The {@link AEColor#whiteVariant bright variant color} of the cable that this part is attached to.</dd>
+	 * <dt>Tint Index 4</dt>
+	 * <dd>A color variant that is between the cable's {@link AEColor#mediumVariant color} and its {@link AEColor#whiteVariant bright variant}.</dd>
+	 * </dl>
+	 *
+	 * <b>Important:</b> All models must have been registered via the {@link IPartModels} API before use.
+	 */
+	default List<ResourceLocation> getStaticModels()
+	{
+		return Collections.emptyList();
+	}
 
 }

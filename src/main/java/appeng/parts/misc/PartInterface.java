@@ -22,6 +22,7 @@ package appeng.parts.misc;
 import java.util.EnumSet;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,6 +34,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 
@@ -57,11 +59,13 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
+import appeng.core.AppEng;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.helpers.Reflected;
+import appeng.items.parts.PartModels;
 import appeng.parts.PartBasicState;
 import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
@@ -71,6 +75,23 @@ import appeng.util.inv.IInventoryDestination;
 
 public class PartInterface extends PartBasicState implements IGridTickable, IStorageMonitorable, IInventoryDestination, IInterfaceHost, ISidedInventory, IAEAppEngInventory, ITileStorageMonitorable, IPriorityHost
 {
+
+	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/interface_base" );
+	@PartModels
+	public static final List<ResourceLocation> MODELS_OFF = ImmutableList.of(
+			MODEL_BASE,
+			new ResourceLocation( AppEng.MOD_ID, "part/interface_off" )
+	);
+	@PartModels
+	public static final List<ResourceLocation> MODELS_ON = ImmutableList.of(
+			MODEL_BASE,
+			new ResourceLocation( AppEng.MOD_ID, "part/interface_on" )
+	);
+	@PartModels
+	public static final List<ResourceLocation> MODELS_HAS_CHANNEL = ImmutableList.of(
+			MODEL_BASE,
+			new ResourceLocation( AppEng.MOD_ID, "part/interface_has_channel" )
+	);
 
 	private final DualityInterface duality = new DualityInterface( this.getProxy(), this );
 
@@ -405,4 +426,22 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	{
 		return null;
 	}
+
+	@Override
+	public List<ResourceLocation> getStaticModels()
+	{
+		if( isActive() && isPowered() )
+		{
+			return MODELS_HAS_CHANNEL;
+		}
+		else if( isPowered() )
+		{
+			return MODELS_ON;
+		}
+		else
+		{
+			return MODELS_OFF;
+		}
+	}
+
 }

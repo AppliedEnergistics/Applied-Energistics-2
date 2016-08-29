@@ -1,7 +1,8 @@
 {
   "parent": "appliedenergistics2:item/part/part",
   "textures": {
-    "channels": "appliedenergistics2:parts/cable/smart/0"
+    "channelsOdd": "appliedenergistics2:parts/cable/smart/channels_00",
+    "channelsEven": "appliedenergistics2:parts/cable/smart/channels_10"
   },
   "elements": [
     {
@@ -18,16 +19,29 @@
       }
     },
     {
-      "name": "Channels",
+      "name": "Channels Odd",
       "from": [ 5.0, 5.0, 2.0 ],
       "to": [ 11.0, 11.0, 14.0 ],
       "faces": {
-        "north": { "texture": "#channels", "uv": [ 5.0, 5.0, 11.0, 11.0 ] },
-        "east": { "texture": "#channels", "uv": [ 0.0, 5.0, 5.0, 11.0 ] },
-        "south": { "texture": "#channels", "uv": [ 11.0, 5.0, 5.0, 11.0 ] },
-        "west": { "texture": "#channels", "uv": [ 5.0, 5.0, 0.0, 11.0 ] },
-        "up": { "texture": "#channels", "uv": [ 5.0, 0.0, 11.0, 5.0 ] },
-        "down": { "texture": "#channels", "uv": [ 5.0, 11.0, 11.0, 16.0 ] }
+        "north": { "texture": "#channelsOdd", "uv": [ 5.0, 5.0, 11.0, 11.0 ] },
+        "east": { "texture": "#channelsOdd", "uv": [ 0.0, 5.0, 5.0, 11.0 ] },
+        "south": { "texture": "#channelsOdd", "uv": [ 11.0, 5.0, 5.0, 11.0 ] },
+        "west": { "texture": "#channelsOdd", "uv": [ 5.0, 5.0, 0.0, 11.0 ] },
+        "up": { "texture": "#channelsOdd", "uv": [ 5.0, 0.0, 11.0, 5.0 ] },
+        "down": { "texture": "#channelsOdd", "uv": [ 5.0, 11.0, 11.0, 16.0 ] }
+      }
+    },
+    {
+      "name": "Channels Even",
+      "from": [ 5.0, 5.0, 2.0 ],
+      "to": [ 11.0, 11.0, 14.0 ],
+      "faces": {
+        "north": { "texture": "#channelsEven", "uv": [ 5.0, 5.0, 11.0, 11.0 ] },
+        "east": { "texture": "#channelsEven", "uv": [ 0.0, 5.0, 5.0, 11.0 ] },
+        "south": { "texture": "#channelsEven", "uv": [ 11.0, 5.0, 5.0, 11.0 ] },
+        "west": { "texture": "#channelsEven", "uv": [ 5.0, 5.0, 0.0, 11.0 ] },
+        "up": { "texture": "#channelsEven", "uv": [ 5.0, 0.0, 11.0, 5.0 ] },
+        "down": { "texture": "#channelsEven", "uv": [ 5.0, 11.0, 11.0, 16.0 ] }
       }
     }
   ]

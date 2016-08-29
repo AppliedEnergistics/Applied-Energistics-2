@@ -19,13 +19,28 @@
 package appeng.parts.reporting;
 
 
-import net.minecraft.item.ItemStack;
+import java.util.List;
 
+import com.google.common.collect.ImmutableList;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+
+import appeng.core.AppEng;
 import appeng.helpers.Reflected;
+import appeng.items.parts.PartModels;
 
 
 public class PartDarkPanel extends AbstractPartPanel
 {
+
+	@PartModels
+	public static final ResourceLocation MODEL_OFF = new ResourceLocation( AppEng.MOD_ID, "part/monitor_dark_off" );
+	@PartModels
+	public static final ResourceLocation MODEL_ON = new ResourceLocation( AppEng.MOD_ID, "part/monitor_dark_on" );
+
+	public static final List<ResourceLocation> MODELS_OFF = ImmutableList.of( MODEL_BASE, MODEL_OFF );
+	public static final List<ResourceLocation> MODELS_ON = ImmutableList.of( MODEL_BASE, MODEL_ON );
 
 	@Reflected
 	public PartDarkPanel( final ItemStack is )
@@ -38,4 +53,11 @@ public class PartDarkPanel extends AbstractPartPanel
 	{
 		return this.getColor().mediumVariant;
 	}
+
+	@Override
+	public List<ResourceLocation> getStaticModels()
+	{
+		return isPowered() ? MODELS_ON : MODELS_OFF;
+	}
+
 }

@@ -57,13 +57,14 @@ import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IFMP;
 import appeng.parts.PartPlacement;
+import appeng.tile.AEBaseTile;
 import appeng.tile.networking.TileCableBus;
 
 
 public class ApiPart implements IPartHelper
 {
 
-	private final Map<String, Class> tileImplementations = new HashMap<String, Class>();
+	private final Map<String, Class<? extends AEBaseTile>> tileImplementations = new HashMap<>();
 	private final Map<Class<?>, String> interfaces2Layer = new HashMap<Class<?>, String>();
 	private final Map<String, Class> roots = new HashMap<String, Class>();
 	private final List<String> desc = new LinkedList<String>();
@@ -79,18 +80,13 @@ public class ApiPart implements IPartHelper
 		}
 	}
 
-	public Class getCombinedInstance( final String base )
+	public Class<? extends AEBaseTile> getCombinedInstance( final Class<? extends AEBaseTile> baseClass )
 	{
+		String base = baseClass.getName();
+
 		if( this.desc.isEmpty() )
 		{
-			try
-			{
-				return Class.forName( base );
-			}
-			catch( final ClassNotFoundException e )
-			{
-				throw new IllegalStateException( e );
-			}
+			return baseClass;
 		}
 
 		final String description = base + ':' + Joiner.on( ";" ).skipNulls().join( this.desc.iterator() );
@@ -101,25 +97,8 @@ public class ApiPart implements IPartHelper
 		}
 
 		String f = base;// TileCableBus.class.getName();
-		String Addendum = "";
-		try
-		{
-			Addendum = Class.forName( base ).getSimpleName();
-		}
-		catch( final ClassNotFoundException e )
-		{
-			AELog.debug( e );
-		}
-		Class myCLass;
-
-		try
-		{
-			myCLass = Class.forName( f );
-		}
-		catch( final ClassNotFoundException e )
-		{
-			throw new IllegalStateException( e );
-		}
+		String Addendum = baseClass.getSimpleName();
+		Class<? extends AEBaseTile> myClass = baseClass;
 
 		String path = f;
 
@@ -128,21 +107,20 @@ public class ApiPart implements IPartHelper
 			try
 			{
 				final String newPath = path + ';' + name;
-				myCLass = this.getClassByDesc( Addendum, newPath, f, this.interfaces2Layer.get( Class.forName( name ) ) );
+				myClass = this.getClassByDesc( baseClass.getSimpleName(), newPath, f, this.interfaces2Layer.get( Class.forName( name ) ) );
 				path = newPath;
 			}
 			catch( final Throwable t )
 			{
 				AELog.warn( "Error loading " + name );
 				AELog.debug( t );
-				// throw new RuntimeException( t );
 			}
-			f = myCLass.getName();
+			f = myClass.getName();
 		}
 
-		this.tileImplementations.put( description, myCLass );
+		this.tileImplementations.put( description, myClass );
 
-		return myCLass;
+		return myClass;
 	}
 
 	private Class getClassByDesc( final String addendum, final String fullPath, final String root, final String next )

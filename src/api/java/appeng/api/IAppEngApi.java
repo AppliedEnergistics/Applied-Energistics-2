@@ -33,7 +33,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPartHelper;
 import appeng.api.storage.IStorageHelper;
 
-
+@AEInjectable
 public interface IAppEngApi
 {
 	/**

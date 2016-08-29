@@ -19,7 +19,7 @@ import appeng.block.AEBaseTileBlock;
 import appeng.bootstrap.components.BlockColorComponent;
 import appeng.bootstrap.components.StateMapperComponent;
 import appeng.bootstrap.components.TesrComponent;
-import appeng.client.render.model.CachingRotatingBakedModel;
+import appeng.client.render.model.AutoRotatingModel;
 
 
 class BlockRendering implements IBlockRendering
@@ -96,7 +96,7 @@ class BlockRendering implements IBlockRendering
 		else if ( block instanceof AEBaseTileBlock )
 		{
 			// This is a default rotating model if the base-block uses an AE tile entity which exposes UP/FRONT as extended props
-			factory.modelOverrideComponent.addOverride( block.getRegistryName().getResourcePath(), ( l, m ) -> new CachingRotatingBakedModel( m ) );
+			factory.modelOverrideComponent.addOverride( block.getRegistryName().getResourcePath(), ( l, m ) -> new AutoRotatingModel( m ) );
 		}
 
 		builtInModels.forEach( factory::addBuiltInModel );

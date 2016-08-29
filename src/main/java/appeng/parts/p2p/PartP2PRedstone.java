@@ -19,12 +19,15 @@
 package appeng.parts.p2p;
 
 
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRedstoneWire;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -32,12 +35,21 @@ import appeng.api.networking.events.MENetworkBootingStatusChange;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.util.Platform;
 
 
 public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 {
+
+	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_redstone" );
+
+	@PartModels
+	public static List<ResourceLocation> getModels()
+	{
+		return MODELS.getModels();
+	}
 
 	private int power;
 	private boolean recursive = false;
@@ -195,4 +207,11 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 			// :P
 		}
 	}
+
+	@Override
+	public List<ResourceLocation> getStaticModels()
+	{
+		return MODELS.getModel( isPowered(), isActive() );
+	}
+
 }

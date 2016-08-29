@@ -20,6 +20,7 @@ package appeng.parts.reporting;
 
 
 import java.io.IOException;
+import java.util.List;
 
 import io.netty.buffer.ByteBuf;
 
@@ -28,6 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -286,6 +288,22 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 		else
 		{
 			return this.isPowered();
+		}
+	}
+
+	protected List<ResourceLocation> selectModel( List<ResourceLocation> offModels, List<ResourceLocation> onModels, List<ResourceLocation> hasChannelModels )
+	{
+		if( isActive() )
+		{
+			return hasChannelModels;
+		}
+		else if( isPowered() )
+		{
+			return onModels;
+		}
+		else
+		{
+			return offModels;
 		}
 	}
 

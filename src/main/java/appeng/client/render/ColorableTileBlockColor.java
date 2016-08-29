@@ -53,15 +53,6 @@ public class ColorableTileBlockColor implements IBlockColor
 			}
 		}
 
-		switch( tintIndex )
-		{
-			default:
-			case 0:
-				return color.whiteVariant;
-			case 1:
-				return color.mediumVariant;
-			case 2:
-				return color.blackVariant;
-		}
+		return color.getVariantByTintIndex( tintIndex );
 	}
 }

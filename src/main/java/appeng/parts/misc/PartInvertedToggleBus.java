@@ -19,13 +19,27 @@
 package appeng.parts.misc;
 
 
-import net.minecraft.item.ItemStack;
+import java.util.List;
 
+import com.google.common.collect.ImmutableList;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+
+import appeng.core.AppEng;
 import appeng.helpers.Reflected;
+import appeng.items.parts.PartModels;
 
 
 public class PartInvertedToggleBus extends PartToggleBus
 {
+	@PartModels
+	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/inverted_toggle_bus_base" );
+
+	public static final List<ResourceLocation> MODELS_OFF = ImmutableList.of(MODEL_BASE, MODEL_STATUS_OFF);
+	public static final List<ResourceLocation> MODELS_ON = ImmutableList.of(MODEL_BASE, MODEL_STATUS_ON);
+	public static final List<ResourceLocation> MODELS_HAS_CHANNEL = ImmutableList.of(MODEL_BASE, MODEL_STATUS_HAS_CHANNEL);
+
 	@Reflected
 	public PartInvertedToggleBus( final ItemStack is )
 	{
@@ -41,4 +55,22 @@ public class PartInvertedToggleBus extends PartToggleBus
 	{
 		return !super.getIntention();
 	}
+
+	@Override
+	public List<ResourceLocation> getStaticModels()
+	{
+		if( hasRedstoneFlag() && isActive() && isPowered() )
+		{
+			return MODELS_HAS_CHANNEL;
+		}
+		else if( hasRedstoneFlag() && isPowered() )
+		{
+			return MODELS_ON;
+		}
+		else
+		{
+			return MODELS_OFF;
+		}
+	}
+
 }

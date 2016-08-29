@@ -23,16 +23,14 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
+import com.google.common.collect.ImmutableList;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.ResourceLocation;
 
 import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnection;
@@ -42,7 +40,9 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
+import appeng.core.AppEng;
 import appeng.helpers.Reflected;
+import appeng.items.parts.PartModels;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.parts.PartBasicState;
 import appeng.util.Platform;
@@ -50,6 +50,20 @@ import appeng.util.Platform;
 
 public class PartToggleBus extends PartBasicState
 {
+
+	@PartModels
+	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/toggle_bus_base" );
+	@PartModels
+	public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation( AppEng.MOD_ID, "part/toggle_bus_status_off" );
+	@PartModels
+	public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation( AppEng.MOD_ID, "part/toggle_bus_status_on" );
+	@PartModels
+	public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation( AppEng.MOD_ID, "part/toggle_bus_status_has_channel" );
+
+	public static final List<ResourceLocation> MODELS_OFF = ImmutableList.of(MODEL_BASE, MODEL_STATUS_OFF);
+	public static final List<ResourceLocation> MODELS_ON = ImmutableList.of(MODEL_BASE, MODEL_STATUS_ON);
+	public static final List<ResourceLocation> MODELS_HAS_CHANNEL = ImmutableList.of(MODEL_BASE, MODEL_STATUS_HAS_CHANNEL);
+
 	private static final int REDSTONE_FLAG = 4;
 	private final AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", null, true );
 	private IGridConnection connection;
@@ -70,6 +84,10 @@ public class PartToggleBus extends PartBasicState
 	protected int populateFlags( final int cf )
 	{
 		return cf | ( this.getIntention() ? REDSTONE_FLAG : 0 );
+	}
+
+	public boolean hasRedstoneFlag() {
+		return (getClientFlags() & REDSTONE_FLAG) == REDSTONE_FLAG;
 	}
 
 	protected boolean getIntention()
@@ -201,5 +219,22 @@ public class PartToggleBus extends PartBasicState
 	AENetworkProxy getOuterProxy()
 	{
 		return this.outerProxy;
+	}
+
+	@Override
+	public List<ResourceLocation> getStaticModels()
+	{
+		if( hasRedstoneFlag() && isActive() && isPowered() )
+		{
+			return MODELS_HAS_CHANNEL;
+		}
+		else if( hasRedstoneFlag() && isPowered() )
+		{
+			return MODELS_ON;
+		}
+		else
+		{
+			return MODELS_OFF;
+		}
 	}
 }

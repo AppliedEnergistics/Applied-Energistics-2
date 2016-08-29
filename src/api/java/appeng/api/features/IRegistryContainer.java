@@ -24,8 +24,10 @@
 package appeng.api.features;
 
 
+import appeng.api.AEInjectable;
 import appeng.api.movable.IMovableRegistry;
 import appeng.api.networking.IGridCacheRegistry;
+import appeng.api.parts.IPartModels;
 import appeng.api.storage.ICellRegistry;
 import appeng.api.storage.IExternalStorageRegistry;
 
@@ -36,6 +38,7 @@ import appeng.api.storage.IExternalStorageRegistry;
  * @version rv2
  * @since rv0
  */
+@AEInjectable
 public interface IRegistryContainer
 {
 
@@ -109,4 +112,9 @@ public interface IRegistryContainer
 	 * get access to the world-gen api.
 	 */
 	IWorldGen worldgen();
+
+	/**
+	 * Register your IPart models before using them.
+	 */
+	IPartModels partModels();
 }

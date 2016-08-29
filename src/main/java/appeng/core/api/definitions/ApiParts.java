@@ -22,13 +22,13 @@ package appeng.core.api.definitions;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IParts;
 import appeng.api.exceptions.MissingDefinition;
-import appeng.api.parts.IPartHelper;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.bootstrap.FeatureFactory;
 import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.DamagedItemDefinition;
 import appeng.core.features.ItemStackSrc;
+import appeng.core.features.registries.PartModels;
 import appeng.items.parts.ItemMultiPart;
 import appeng.items.parts.ItemMultipartRendering;
 import appeng.items.parts.PartType;
@@ -78,12 +78,18 @@ public final class ApiParts implements IParts
 	private final IItemDefinition storageMonitor;
 	private final IItemDefinition conversionMonitor;
 
-	public ApiParts( FeatureFactory registry, IPartHelper partHelper )
+	public ApiParts( FeatureFactory registry, PartModels partModels )
 	{
-		final ItemMultiPart itemMultiPart = new ItemMultiPart( partHelper );
+		final ItemMultiPart itemMultiPart = new ItemMultiPart();
 		registry.item( "multipart", () -> itemMultiPart )
-				.rendering( new ItemMultipartRendering( itemMultiPart ) )
+				.rendering( new ItemMultipartRendering( partModels, itemMultiPart ) )
 				.build();
+
+		// Register all part models
+		for( PartType partType : PartType.values() )
+		{
+			partModels.registerModels( partType.getModels() );
+		}
 
 		this.cableSmart = constructColoredDefinition( itemMultiPart, PartType.CableSmart );
 		this.cableCovered = constructColoredDefinition( itemMultiPart, PartType.CableCovered );

@@ -32,6 +32,7 @@ import appeng.api.features.IWirelessTermRegistry;
 import appeng.api.features.IWorldGen;
 import appeng.api.movable.IMovableRegistry;
 import appeng.api.networking.IGridCacheRegistry;
+import appeng.api.parts.IPartModels;
 import appeng.api.storage.ICellRegistry;
 import appeng.api.storage.IExternalStorageRegistry;
 
@@ -59,6 +60,7 @@ public class RegistryContainer implements IRegistryContainer
 	private final IMatterCannonAmmoRegistry matterCannonReg = new MatterCannonAmmoRegistry();
 	private final IPlayerRegistry playerRegistry = new PlayerRegistry();
 	private final IRecipeHandlerRegistry recipeReg = new RecipeHandlerRegistry();
+	private final IPartModels partModels = new PartModels();
 
 	@Override
 	public IMovableRegistry movable()
@@ -143,4 +145,11 @@ public class RegistryContainer implements IRegistryContainer
 	{
 		return WorldGenRegistry.INSTANCE;
 	}
+
+	@Override
+	public IPartModels partModels()
+	{
+		return partModels;
+	}
+
 }

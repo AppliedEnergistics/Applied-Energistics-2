@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-
 import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
@@ -63,6 +62,8 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
+import appeng.client.render.cablebus.CableBusRenderState;
+import appeng.client.render.cablebus.CableCoreType;
 import appeng.core.AELog;
 import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiTile;
@@ -70,6 +71,7 @@ import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.ICLApi;
 import appeng.me.GridConnection;
+import appeng.parts.networking.PartCable;
 import appeng.util.Platform;
 
 
@@ -1148,4 +1150,95 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	{
 		this.requiresDynamicRender = requiresDynamicRender;
 	}
+
+	@Override
+	public CableBusRenderState getRenderState()
+	{
+		// TODO: Inspect whether this is a problem. PartCable is the only implementor of IPartCable, which is not part of the public API
+		PartCable cable = (PartCable) getCenter();
+
+		CableBusRenderState renderState = new CableBusRenderState();
+
+		if( cable != null )
+		{
+			renderState.setCableColor( cable.getCableColor() );
+			renderState.setCableType( cable.getCableConnectionType() );
+			renderState.setCoreType( cable.getCableConnectionType().getCoreType() );
+
+			// Check each outgoing connection for the desired characteristics
+			for( EnumFacing facing : EnumFacing.values() )
+			{
+				// Is there a connection?
+				if( !cable.isConnected( facing ) )
+				{
+					continue;
+				}
+
+				// If there is one, check out which type it has, but default to this cable's type
+				AECableType connectionType = cable.getCableConnectionType();
+
+				// Only use the incoming cable-type of the adjacent block, if it's not a cable bus itself
+				// Dense cables however also respect the adjacent cable-type since their outgoing connection
+				// point would look too big for other cable types
+				BlockPos adjacentPos = this.getTile().getPos().offset( facing );
+				TileEntity adjacentTe = this.getTile().getWorld().getTileEntity( adjacentPos );
+				if( adjacentTe instanceof IGridHost )
+				{
+					if( !( adjacentTe instanceof IPartHost ) || cable.getCableConnectionType() == AECableType.DENSE )
+					{
+						IGridHost gridHost = (IGridHost) adjacentTe;
+						connectionType = gridHost.getCableConnectionType( AEPartLocation.fromFacing( facing.getOpposite() ) );
+					}
+				}
+
+				// Check if the adjacent TE is a cable bus or not
+				if( adjacentTe instanceof IPartHost )
+				{
+					renderState.getCableBusAdjacent().add( facing );
+				}
+
+				renderState.getConnectionTypes().put( facing, connectionType );
+			}
+
+			// Collect the number of channels used per side
+			// We have to do this even for non-smart cables since a glass cable can display a connection as smart if the adjacent tile requires it
+			for( EnumFacing facing : EnumFacing.values() )
+			{
+				int channels = cable.getChannelsOnSide( facing );
+				renderState.getChannelsOnSide().put( facing, channels );
+			}
+		}
+
+		for( EnumFacing facing : EnumFacing.values() )
+		{
+			IPart part = getPart( facing );
+
+			if( part == null )
+			{
+				continue;
+			}
+
+			if( part instanceof IGridHost )
+			{
+				// Some attachments want a thicker cable than glass, account for that
+				IGridHost gridHost = (IGridHost) part;
+				AECableType desiredType = gridHost.getCableConnectionType( AEPartLocation.INTERNAL );
+				if( renderState.getCoreType() == CableCoreType.GLASS && ( desiredType == AECableType.SMART || desiredType == AECableType.COVERED ) )
+				{
+					renderState.setCoreType( CableCoreType.COVERED );
+				}
+
+				int length = (int) part.getCableConnectionLength( null );
+				if( length > 0 && length <= 8 )
+				{
+					renderState.getAttachmentConnections().put( facing, length );
+				}
+			}
+
+			renderState.getAttachments().put( facing, part.getStaticModels() );
+		}
+
+		return renderState;
+	}
+
 }

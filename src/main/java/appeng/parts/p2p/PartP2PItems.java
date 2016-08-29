@@ -29,6 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.networking.IGridNode;
@@ -43,6 +44,7 @@ import appeng.core.settings.TickRates;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBuildCraftTransport;
+import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.tile.inventory.AppEngNullInventory;
@@ -56,6 +58,14 @@ import appeng.util.inv.WrapperMCISidedInventory;
 //@Interface( iface = "buildcraft.api.transport.IPipeConnection", iname = IntegrationType.BuildCraftTransport )
 public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPipeConnection, */ISidedInventory, IGridTickable
 {
+
+	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_items" );
+
+	@PartModels
+	public static List<ResourceLocation> getModels()
+	{
+		return MODELS.getModels();
+	}
 
 	private final LinkedList<IInventory> which = new LinkedList<IInventory>();
 	private int oldSize = 0;
@@ -412,4 +422,11 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPip
 	// {
 	// return this.side == with && type == PipeType.ITEM ? ConnectOverride.CONNECT : ConnectOverride.DEFAULT;
 	// }
+
+	@Override
+	public List<ResourceLocation> getStaticModels()
+	{
+		return MODELS.getModel( isPowered(), isActive() );
+	}
+
 }

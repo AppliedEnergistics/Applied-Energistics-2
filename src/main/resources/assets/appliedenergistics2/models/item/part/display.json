@@ -2,7 +2,8 @@
   "parent": "appliedenergistics2:item/part/part",
   "textures": {
     "sides": "appliedenergistics2:parts/monitor_sides",
-    "back": "appliedenergistics2:parts/monitor_back"
+    "back": "appliedenergistics2:parts/monitor_back",
+    "front_medium_bright": "appliedenergistics2:parts/monitor_colored"
   },
   "elements": [
     {
@@ -23,7 +24,15 @@
       "from": [ 2, 2, 8 ],
       "to": [ 14, 14, 9 ],
       "faces": {
-        "north": { "texture": "#front_bright", "tintindex": 0 }
+        "north": { "texture": "#front_bright", "tintindex": 3 }
+      }
+    },
+    {
+      "name": "Front Medium Bright",
+      "from": [ 2, 2, 8 ],
+      "to": [ 14, 14, 9 ],
+      "faces": {
+        "north": { "texture": "#front_medium_bright", "tintindex": 4 }
       }
     },
     {

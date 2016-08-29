@@ -27,6 +27,7 @@ package appeng.api.util;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.text.translation.I18n;
 
@@ -76,6 +77,27 @@ public enum AEColor
 	public static final List<AEColor> VALID_COLORS = Arrays.asList( White, Orange, Magenta, LightBlue, Yellow, Lime, Pink, Gray, LightGray, Cyan, Purple, Blue, Brown, Green, Red, Black );
 
 	/**
+	 * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get the {@link #blackVariant dark variant} of the apprioriate AE color.
+	 */
+	public static final int TINTINDEX_DARK = 1;
+
+	/**
+	 * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get the {@link #mediumVariant medium variant} of the apprioriate AE color.
+	 */
+	public static final int TINTINDEX_MEDIUM = 2;
+
+	/**
+	 * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get the {@link #whiteVariant bright variant} of the apprioriate AE color.
+	 */
+	public static final int TINTINDEX_BRIGHT = 3;
+
+	/**
+	 * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get a color between the {@link #mediumVariant medium}
+	 * and {@link #whiteVariant bright variant} of the apprioriate AE color.
+	 */
+	public static final int TINTINDEX_MEDIUM_BRIGHT = 4;
+
+	/**
 	 * Unlocalized name for color.
 	 */
 	public final String unlocalizedName;
@@ -107,6 +129,35 @@ public enum AEColor
 		this.mediumVariant = medHex;
 		this.whiteVariant = whiteHex;
 		this.dye = dye;
+	}
+
+	/**
+	 * Will return a variant of this color based on the given tint index.
+	 *
+	 * @param tintIndex A tint index as it can be used for {@link BakedQuad#getTintIndex()}.
+	 * @return The appropriate color variant, or -1.
+	 */
+	public int getVariantByTintIndex( int tintIndex )
+	{
+		switch( tintIndex )
+		{
+			// Please note that tintindex 0 is hardcoded for the block breaking particles. Returning anything other than -1 for tintindex=0 here
+			// will cause issues with those particles
+			case 0:
+				return -1;
+			case TINTINDEX_DARK:
+				return blackVariant;
+			case TINTINDEX_MEDIUM:
+				return mediumVariant;
+			case TINTINDEX_BRIGHT:
+				return whiteVariant;
+			case TINTINDEX_MEDIUM_BRIGHT:
+				final int light = whiteVariant;
+				final int dark = mediumVariant;
+				return ( ( ( ( ( light >> 16 ) & 0xff ) + ( ( dark >> 16 ) & 0xff ) ) / 2 ) << 16 ) | ( ( ( ( ( light >> 8 ) & 0xff ) + ( ( dark >> 8 ) & 0xff ) ) / 2 ) << 8 ) | ( ( ( ( light ) & 0xff ) + ( ( dark ) & 0xff ) ) / 2 );
+			default:
+				return -1;
+		}
 	}
 
 	/**

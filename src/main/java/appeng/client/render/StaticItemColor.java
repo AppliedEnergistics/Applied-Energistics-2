@@ -23,16 +23,7 @@ public class StaticItemColor implements IItemColor
 	@Override
 	public int getColorFromItemstack( ItemStack stack, int tintIndex )
 	{
-		switch( tintIndex )
-		{
-			default:
-			case 0:
-				return color.whiteVariant;
-			case 1:
-				return color.mediumVariant;
-			case 2:
-				return color.blackVariant;
-		}
+		return color.getVariantByTintIndex( tintIndex );
 	}
 
 }

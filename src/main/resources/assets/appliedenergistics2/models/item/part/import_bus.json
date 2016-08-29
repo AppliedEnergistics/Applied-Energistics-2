@@ -1,7 +1,7 @@
 {
   "parent": "appliedenergistics2:item/part/part",
   "textures": {
-    "sides": "appliedenergistics2:parts/import_sides",
+    "sides": "appliedenergistics2:parts/import_bus_sides",
     "back": "appliedenergistics2:parts/monitor_back",
     "front": "appliedenergistics2:items/part/import_bus"
   },
