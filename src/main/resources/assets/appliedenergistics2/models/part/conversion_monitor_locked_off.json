@@ -2,7 +2,7 @@
   "parent": "appliedenergistics2:part/display_off",
   "textures": {
     "lightsBright": "appliedenergistics2:parts/conversion_monitor_bright",
-    "lightsMedium": "appliedenergistics2:parts/conversion_monitor_medium",
-    "lightsDark": "appliedenergistics2:parts/conversion_monitor_dark_locked"
+    "lightsMedium": "appliedenergistics2:parts/conversion_monitor_medium_locked",
+    "lightsDark": "appliedenergistics2:parts/conversion_monitor_dark"
   }
 }
