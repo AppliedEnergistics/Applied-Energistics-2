@@ -392,10 +392,22 @@ public final class ApiBlocks implements IBlocks
 		 * EnumSet.of(AEFeature.DecorativeQuartzBlocks), false, "QuartzPillarSlabBlock" ) )
 		 */
 
-		this.itemGen = registry.block( "debug_item_gen", BlockItemGen::new ).features( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ).build();
-		this.chunkLoader = registry.block( "debug_chunk_loader", BlockChunkloader::new ).features( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ).build();
-		this.phantomNode = registry.block( "debug_phantom_node", BlockPhantomNode::new ).features( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ).build();
-		this.cubeGenerator = registry.block( "debug_cube_gen", BlockCubeGenerator::new ).features( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative ).build();
+		this.itemGen = registry.block( "debug_item_gen", BlockItemGen::new )
+				.features( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative )
+				.useCustomItemModel()
+				.build();
+		this.chunkLoader = registry.block( "debug_chunk_loader", BlockChunkloader::new )
+				.features( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative )
+				.useCustomItemModel()
+				.build();
+		this.phantomNode = registry.block( "debug_phantom_node", BlockPhantomNode::new )
+				.features( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative )
+				.useCustomItemModel()
+				.build();
+		this.cubeGenerator = registry.block( "debug_cube_gen", BlockCubeGenerator::new )
+				.features( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative )
+				.useCustomItemModel()
+				.build();
 	}
 
 	private static IBlockDefinition makeStairs( String registryName, FeatureFactory registry, IBlockDefinition block )
