@@ -2,6 +2,7 @@ package appeng.bootstrap;
 
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -126,6 +127,16 @@ class ItemRendering implements IItemRendering
 		if( !resources.isEmpty() )
 		{
 			factory.addBootstrapComponent( new ItemVariantsComponent( item, resources ) );
+		}
+		else if( !this.itemModels.isEmpty() || itemMeshDefinition != null )
+		{
+			// Adding an empty variant list here will prevent Vanilla from trying to load the default item model in this case
+			factory.addBootstrapComponent( new ItemVariantsComponent( item, Collections.emptyList() ) );
+		}
+		else if( item instanceof ItemBlock )
+		{
+			// The default for block items is to register the block model
+			factory.addBootstrapComponent( new ItemVariantsComponent( item, Collections.emptyList() ) );
 		}
 
 		if( itemColor != null )

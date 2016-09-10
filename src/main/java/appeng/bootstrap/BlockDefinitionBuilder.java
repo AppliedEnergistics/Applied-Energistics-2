@@ -130,7 +130,8 @@ class BlockDefinitionBuilder implements IBlockBuilder
 			@SideOnly( Side.CLIENT )
 			public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 			{
-				itemRendering.model( new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, registryName ), "inventory" ) );
+				ModelResourceLocation model = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, registryName ), "inventory" );
+				itemRendering.model( model ).variants( model );
 			}
 		} );
 

@@ -29,7 +29,8 @@ public class SkyChestRenderingCustomizer extends BlockRenderingCustomizer
 
 		// Register a custom non-tesr item model
 		String modelName = getModelFromType();
-		itemRendering.model( new ModelResourceLocation( "appliedenergistics2:" + modelName, "inventory" ) );
+		ModelResourceLocation model = new ModelResourceLocation( "appliedenergistics2:" + modelName, "inventory" );
+		itemRendering.model( model ).variants( model );
 	}
 
 	private String getModelFromType()

@@ -43,10 +43,10 @@ public class ItemMultipartRendering extends ItemRenderingCustomizer
 
 		// Register all item models as variants so they get loaded
 		rendering.variants( Arrays.stream( PartType.values() )
+				.filter( f -> f != PartType.InvalidType )
 				.flatMap( part -> part.getItemModels().stream() )
 				.collect( Collectors.toList() ) );
 
-		// TODO All of this has to go somewhere else! (I.e. when the part is registered)
 		// Register the built-in models for annihilation planes
 		ResourceLocation annihilationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "items/part/annihilation_plane" );
 		ResourceLocation annihilationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/annihilation_plane_on" );

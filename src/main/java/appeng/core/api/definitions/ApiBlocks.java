@@ -420,7 +420,8 @@ public final class ApiBlocks implements IBlocks
 					@SideOnly( Side.CLIENT )
 					public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 					{
-						itemRendering.model( new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, registryName ), "facing=east,half=bottom,shape=straight" ) );
+						ModelResourceLocation model = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, registryName ), "facing=east,half=bottom,shape=straight" );
+						itemRendering.model( model );
 					}
 				} )
 				.build();
