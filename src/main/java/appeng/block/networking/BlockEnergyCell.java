@@ -40,12 +40,12 @@ import appeng.util.Platform;
 public class BlockEnergyCell extends AEBaseTileBlock
 {
 
-	public static final PropertyInteger ENERGY_STORAGE = PropertyInteger.create( "fullness", 0, 8 );
+	public static final PropertyInteger ENERGY_STORAGE = PropertyInteger.create( "fullness", 0, 7 );
 
 	@Override
 	public int getMetaFromState( final IBlockState state )
 	{
-		return (int) state.getValue( ENERGY_STORAGE );
+		return state.getValue( ENERGY_STORAGE );
 	}
 
 	@Override
