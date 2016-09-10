@@ -22,6 +22,8 @@ import appeng.core.AppEng;
 public class ModelOverrideComponent implements PreInitComponent
 {
 
+	private static final ModelResourceLocation MODEL_MISSING = new ModelResourceLocation("builtin/missing", "missing");
+
 	// Maps from resource path to customizer
 	private final Map<String, BiFunction<ModelResourceLocation, IBakedModel, IBakedModel>> customizer = new HashMap<>();
 
@@ -41,6 +43,7 @@ public class ModelOverrideComponent implements PreInitComponent
 	{
 		IRegistry<ModelResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
 		Set<ModelResourceLocation> keys = Sets.newHashSet( modelRegistry.getKeys() );
+		IBakedModel missingModel = modelRegistry.getObject( MODEL_MISSING );
 
 		for( ModelResourceLocation location : keys )
 		{
@@ -49,10 +52,17 @@ public class ModelOverrideComponent implements PreInitComponent
 				continue;
 			}
 
+			IBakedModel orgModel = modelRegistry.getObject( location );
+
+			// Don't customize the missing model. This causes Forge to swallow exceptions
+			if( orgModel == missingModel )
+			{
+				continue;
+			}
+
 			BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> customizer = this.customizer.get( location.getResourcePath() );
 			if( customizer != null )
 			{
-				IBakedModel orgModel = modelRegistry.getObject( location );
 				IBakedModel newModel = customizer.apply( location, orgModel );
 
 				if( newModel != orgModel )
