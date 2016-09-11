@@ -61,6 +61,7 @@ import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseTileBlock;
+import appeng.client.UnlistedProperty;
 import appeng.client.render.cablebus.CableBusBakedModel;
 import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.core.AEConfig;
@@ -81,7 +82,8 @@ import appeng.util.Platform;
 public class BlockCableBus extends AEBaseTileBlock
 {
 
-	public static final CableBusRenderStateProperty RENDER_STATE_PROPERTY = new CableBusRenderStateProperty();
+	public static final UnlistedProperty<CableBusRenderState> RENDER_STATE_PROPERTY =
+			new UnlistedProperty<>( "cable_bus_render_state", CableBusRenderState.class );
 
 	private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 

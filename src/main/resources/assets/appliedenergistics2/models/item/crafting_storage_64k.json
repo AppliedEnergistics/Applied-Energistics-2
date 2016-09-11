@@ -1,6 +1,3 @@
 {
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "appliedenergistics2:blocks/crafting/storage_64k"
-  }
+  "parent": "appliedenergistics2:block/crafting/storage_64k"
 }

@@ -21,21 +21,62 @@ package appeng.block.crafting;
 
 import java.util.List;
 
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import appeng.api.util.AEColor;
+import appeng.client.UnlistedProperty;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 
 
 public class BlockCraftingMonitor extends BlockCraftingUnit
 {
+
+	public static final UnlistedProperty<AEColor> COLOR = new UnlistedProperty<>( "color", AEColor.class );
+
+	public static final UnlistedProperty<EnumFacing> FORWARD = new UnlistedProperty<>( "forward", EnumFacing.class );
+
 	public BlockCraftingMonitor()
 	{
 		super( CraftingUnitType.MONITOR );
 		this.setTileEntity( TileCraftingMonitorTile.class );
+	}
+
+	@Override
+	protected BlockStateContainer createBlockState()
+	{
+		return new ExtendedBlockState( this, getAEStates(), new IUnlistedProperty[] {
+				STATE,
+				COLOR,
+				FORWARD
+		} );
+	}
+
+	@Override
+	public IExtendedBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
+	{
+		AEColor color = AEColor.Transparent;
+		EnumFacing forward = EnumFacing.NORTH;
+
+		TileCraftingMonitorTile te = getTileEntity( world, pos );
+		if( te != null )
+		{
+			color = te.getColor();
+			forward = te.getForward();
+		}
+
+		return super.getExtendedState( state, world, pos ).withProperty( COLOR, color ).withProperty( FORWARD, forward );
 	}
 
 	@Override

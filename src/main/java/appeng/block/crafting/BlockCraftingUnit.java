@@ -19,12 +19,14 @@
 package appeng.block.crafting;
 
 
+import java.util.EnumSet;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -32,10 +34,16 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
+import appeng.client.UnlistedProperty;
+import appeng.client.render.crafting.CraftingCubeState;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
@@ -43,8 +51,9 @@ import appeng.util.Platform;
 
 public class BlockCraftingUnit extends AEBaseTileBlock
 {
-	public static final PropertyBool POWERED = PropertyBool.create( "powered" );
 	public static final PropertyBool FORMED = PropertyBool.create( "formed" );
+	public static final PropertyBool POWERED = PropertyBool.create( "powered" );
+	public static final UnlistedProperty<CraftingCubeState> STATE = new UnlistedProperty<>( "state", CraftingCubeState.class );
 
 	public final CraftingUnitType type;
 
@@ -61,7 +70,38 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	{
 		return new IProperty[] { POWERED, FORMED };
 	}
-	
+
+	@Override
+	public IExtendedBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
+	{
+
+		EnumSet<EnumFacing> connections = EnumSet.noneOf( EnumFacing.class );
+
+		for( EnumFacing facing : EnumFacing.values() )
+		{
+			if( isConnected( world, pos, facing ) )
+			{
+				connections.add( facing );
+			}
+		}
+
+		IExtendedBlockState extState = (IExtendedBlockState) state;
+
+		return extState.withProperty( STATE, new CraftingCubeState( connections ) );
+	}
+
+	private boolean isConnected( IBlockAccess world, BlockPos pos, EnumFacing side )
+	{
+		BlockPos adjacentPos = pos.offset( side );
+		return world.getBlockState( adjacentPos ).getBlock() instanceof BlockCraftingUnit;
+	}
+
+	@Override
+	protected BlockStateContainer createBlockState()
+	{
+		return new ExtendedBlockState( this, getAEStates(), new IUnlistedProperty[] { STATE } );
+	}
+
 	@Override
 	public IBlockState getStateFromMeta( final int meta )
 	{
@@ -71,8 +111,8 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	@Override
 	public int getMetaFromState( final IBlockState state )
 	{
-		final boolean p = (boolean) state.getValue( POWERED );
-		final boolean f = (boolean) state.getValue( FORMED );
+		boolean p = state.getValue( POWERED );
+		boolean f = state.getValue( FORMED );
 		return ( p ? 1 : 0 ) | ( f ? 2 : 0 );
 	}
 

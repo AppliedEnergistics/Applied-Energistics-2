@@ -38,6 +38,7 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
+import appeng.client.UnlistedProperty;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.storage.TileDrive;
 import appeng.util.Platform;
@@ -46,7 +47,7 @@ import appeng.util.Platform;
 public class BlockDrive extends AEBaseTileBlock
 {
 
-	public static final DriveSlotsStateProperty SLOTS_STATE = new DriveSlotsStateProperty();
+	public static final UnlistedProperty<DriveSlotsState> SLOTS_STATE = new UnlistedProperty<>("drive_slots_state", DriveSlotsState.class);
 
 	public BlockDrive()
 	{

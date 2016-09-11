@@ -465,6 +465,10 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	private TileCraftingTile getCore()
 	{
+		if( this.machineSrc == null )
+		{
+			return null;
+		}
 		return (TileCraftingTile) this.machineSrc.via;
 	}
 

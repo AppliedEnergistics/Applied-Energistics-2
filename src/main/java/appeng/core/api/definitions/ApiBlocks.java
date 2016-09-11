@@ -83,6 +83,7 @@ import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.FeatureFactory;
 import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;
+import appeng.client.render.crafting.CraftingCubeRendering;
 import appeng.client.render.model.GlassModel;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
@@ -321,28 +322,35 @@ public final class ApiBlocks implements IBlocks
 
 		FeatureFactory crafting = registry.features( AEFeature.CraftingCPU );
 		this.craftingUnit = crafting.block( "crafting_unit", () -> new BlockCraftingUnit( CraftingUnitType.UNIT ) )
+				.rendering( new CraftingCubeRendering( "crafting_unit", CraftingUnitType.UNIT ) )
 				.useCustomItemModel()
 				.build();
 		this.craftingAccelerator = crafting.block( "crafting_accelerator", () -> new BlockCraftingUnit( CraftingUnitType.ACCELERATOR ) )
+				.rendering( new CraftingCubeRendering( "crafting_accelerator", CraftingUnitType.ACCELERATOR ) )
 				.useCustomItemModel()
 				.build();
 		this.craftingStorage1k = crafting.block( "crafting_storage_1k", () -> new BlockCraftingStorage( CraftingUnitType.STORAGE_1K ) )
 				.item( ItemCraftingStorage::new )
+				.rendering( new CraftingCubeRendering( "crafting_storage_1k", CraftingUnitType.STORAGE_1K ) )
 				.useCustomItemModel()
 				.build();
 		this.craftingStorage4k = crafting.block( "crafting_storage_4k", () -> new BlockCraftingStorage( CraftingUnitType.STORAGE_4K ) )
 				.item( ItemCraftingStorage::new )
+				.rendering( new CraftingCubeRendering( "crafting_storage_4k", CraftingUnitType.STORAGE_4K ) )
 				.useCustomItemModel()
 				.build();
 		this.craftingStorage16k = crafting.block( "crafting_storage_16k", () -> new BlockCraftingStorage( CraftingUnitType.STORAGE_16K ) )
 				.item( ItemCraftingStorage::new )
+				.rendering( new CraftingCubeRendering( "crafting_storage_16k", CraftingUnitType.STORAGE_16K ) )
 				.useCustomItemModel()
 				.build();
 		this.craftingStorage64k = crafting.block( "crafting_storage_64k", () -> new BlockCraftingStorage( CraftingUnitType.STORAGE_64K ) )
 				.item( ItemCraftingStorage::new )
+				.rendering( new CraftingCubeRendering( "crafting_storage_64k", CraftingUnitType.STORAGE_64K ) )
 				.useCustomItemModel()
 				.build();
 		this.craftingMonitor = crafting.block( "crafting_monitor", BlockCraftingMonitor::new )
+				.rendering( new CraftingCubeRendering( "crafting_monitor", CraftingUnitType.MONITOR ) )
 				.useCustomItemModel()
 				.build();
 

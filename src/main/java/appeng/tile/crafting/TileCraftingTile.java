@@ -158,11 +158,18 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		}
 
 		final IBlockState current = this.worldObj.getBlockState( this.pos );
-		final IBlockState newState = current.withProperty( BlockCraftingUnit.POWERED, power ).withProperty( BlockCraftingUnit.FORMED, formed );
 
-		if( current != newState )
+		// The tile might try to update while being destroyed
+		if( current.getBlock() instanceof BlockCraftingUnit )
 		{
-			this.worldObj.setBlockState( this.pos, newState );
+			final IBlockState newState = current.withProperty( BlockCraftingUnit.POWERED, power ).withProperty( BlockCraftingUnit.FORMED, formed );
+
+			if( current != newState )
+			{
+				// Not using flag 2 here (only send to clients, prevent block update) will cause infinite loops
+				// In case there is an inconsistency in the crafting clusters.
+				this.worldObj.setBlockState( this.pos, newState, 2 );
+			}
 		}
 
 		if( updateFormed )

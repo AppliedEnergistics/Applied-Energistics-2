@@ -136,10 +136,10 @@ public class CubeBuilder {
                     v2 = texture.getInterpolatedV( 16 - y2 * 16 );
                 }
 
-                putVertex(builder, face, x2, y2, z1, u1, v2);
-                putVertex(builder, face, x2, y1, z1, u1, v1);
-                putVertex(builder, face, x1, y1, z1, u2, v1);
-                putVertex(builder, face, x1, y2, z1, u2, v2);
+                putVertex(builder, face, x2, y2, z1, u2, v2);
+                putVertex(builder, face, x2, y1, z1, u2, v1);
+                putVertex(builder, face, x1, y1, z1, u1, v1);
+                putVertex(builder, face, x1, y2, z1, u1, v2);
                 break;
             case SOUTH:
                 if (customUv == null)
@@ -178,10 +178,10 @@ public class CubeBuilder {
                     v2 = texture.getInterpolatedV( 16 - y2 * 16 );
                 }
 
-                putVertex(builder, face, x2, y2, z1, u1, v2);
-                putVertex(builder, face, x2, y2, z2, u2, v2);
-                putVertex(builder, face, x2, y1, z2, u2, v1);
-                putVertex(builder, face, x2, y1, z1, u1, v1);
+                putVertex(builder, face, x2, y2, z1, u2, v2);
+                putVertex(builder, face, x2, y2, z2, u1, v2);
+                putVertex(builder, face, x2, y1, z2, u1, v1);
+                putVertex(builder, face, x2, y1, z1, u2, v1);
                 break;
         }
 
