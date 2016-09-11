@@ -277,7 +277,7 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		return null;
+		return ringCorner;
 	}
 
 	@Override
