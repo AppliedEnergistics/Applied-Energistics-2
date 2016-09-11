@@ -25,6 +25,7 @@ import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -46,7 +47,7 @@ public final class DispenserBlockTool extends BehaviorDefaultDispenseItem
 			final World w = dispenser.getWorld();
 			if( w instanceof WorldServer )
 			{
-				tm.onItemUse( dispensedItem, Platform.getPlayer( (WorldServer) w ), w, dispenser.getBlockPos().offset( enumfacing ), enumfacing, 0.5f, 0.5f, 0.5f );
+				tm.onItemUse( dispensedItem, Platform.getPlayer( (WorldServer) w ), w, dispenser.getBlockPos().offset( enumfacing ), EnumHand.MAIN_HAND, enumfacing, 0.5f, 0.5f, 0.5f );
 			}
 		}
 		return dispensedItem;

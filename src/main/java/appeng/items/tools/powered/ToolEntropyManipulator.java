@@ -226,7 +226,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 				{
 					if( Platform.hasPermissions( new DimensionalCoord( w, target.getBlockPos() ), p ) )
 					{
-						this.onItemUse( item, p, w, target.getBlockPos(), EnumFacing.UP, 0.0F, 0.0F, 0.0F );
+						this.onItemUse( item, p, w, target.getBlockPos(), hand, EnumFacing.UP, 0.0F, 0.0F, 0.0F );
 					}
 				}
 			}
@@ -236,13 +236,13 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	}
 
 	@Override
-	public boolean onItemUse( final ItemStack item, final EntityPlayer p, final World w, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public EnumActionResult onItemUse( ItemStack item, EntityPlayer p, World w, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ )
 	{
 		if( this.getAECurrentPower( item ) > 1600 )
 		{
 			if( !p.canPlayerEdit( pos, side, item ) )
 			{
-				return false;
+				return EnumActionResult.FAIL;
 			}
 
 			final IBlockState state = w.getBlockState( pos );
@@ -254,7 +254,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 				{
 					this.extractAEPower( item, 1600 );
 					this.cool( state, w, pos );
-					return true;
+					return EnumActionResult.SUCCESS;
 				}
 			}
 			else
@@ -263,21 +263,21 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 				{
 					w.setBlockToAir( pos );
 					( (BlockTNT) blockID ).explode( w, pos, state, p );
-					return true;
+					return EnumActionResult.SUCCESS;
 				}
 
 				if( blockID instanceof BlockTinyTNT )
 				{
 					w.setBlockToAir( pos );
 					( (BlockTinyTNT) blockID ).startFuse( w, pos, p );
-					return true;
+					return EnumActionResult.SUCCESS;
 				}
 
 				if( this.canHeat( state ) )
 				{
 					this.extractAEPower( item, 1600 );
 					this.heat( state, w, pos );
-					return true;
+					return EnumActionResult.SUCCESS;
 				}
 
 				final ItemStack[] stack = Platform.getBlockDrops( w, pos );
@@ -329,7 +329,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 						Platform.spawnDrops( w, pos, or.getDrops() );
 					}
 
-					return true;
+					return EnumActionResult.SUCCESS;
 				}
 				else
 				{
@@ -337,7 +337,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 					if( !p.canPlayerEdit( offsetPos, side, item ) )
 					{
-						return false;
+						return EnumActionResult.FAIL;
 					}
 
 					if( w.isAirBlock( offsetPos ) )
@@ -347,11 +347,11 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 						w.setBlockState( offsetPos, Blocks.FIRE.getDefaultState() );
 					}
 
-					return true;
+					return EnumActionResult.SUCCESS;
 				}
 			}
 		}
 
-		return false;
+		return EnumActionResult.PASS;
 	}
 }

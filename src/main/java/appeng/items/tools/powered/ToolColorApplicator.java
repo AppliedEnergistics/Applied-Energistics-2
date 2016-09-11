@@ -40,7 +40,9 @@ import net.minecraft.item.ItemSnowball;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
@@ -107,7 +109,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	}
 
 	@Override
-	public boolean onItemUse( final ItemStack is, final EntityPlayer p, final World w, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public EnumActionResult onItemUse( ItemStack is, EntityPlayer p, World w, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ )
 	{
 		final Block blk = w.getBlockState( pos ).getBlock();
 
@@ -130,7 +132,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 			if( !Platform.hasPermissions( new DimensionalCoord( w, pos ), p ) )
 			{
-				return false;
+				return EnumActionResult.FAIL;
 			}
 
 			final double powerPerUse = 100;
@@ -146,7 +148,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 						{
 							inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
 							this.extractAEPower( is, powerPerUse );
-							return true;
+							return EnumActionResult.SUCCESS;
 						}
 					}
 				}
@@ -159,7 +161,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 					inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
 					this.extractAEPower( is, powerPerUse );
 					( (TilePaint) painted ).cleanSide( side.getOpposite() );
-					return true;
+					return EnumActionResult.SUCCESS;
 				}
 			}
 			else if( paintBall != null )
@@ -172,7 +174,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 					{
 						inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
 						this.extractAEPower( is, powerPerUse );
-						return true;
+						return EnumActionResult.SUCCESS;
 					}
 				}
 			}
@@ -183,7 +185,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			this.cycleColors( is, paintBall, 1 );
 		}
 
-		return false;
+		return EnumActionResult.FAIL;
 	}
 
 	@Override
