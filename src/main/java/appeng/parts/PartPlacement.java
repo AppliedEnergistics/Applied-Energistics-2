@@ -399,7 +399,6 @@ public class PartPlacement
 		else
 		{
 			player.swingArm( hand );
-			NetworkHandler.instance.sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ), hand ) );
 		}
 		return EnumActionResult.SUCCESS;
 	}

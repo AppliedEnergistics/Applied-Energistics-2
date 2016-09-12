@@ -168,7 +168,7 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	{
 		if( this.getTypeByStack( is ) == PartType.InvalidType )
 		{
-			return EnumActionResult.PASS;
+			return EnumActionResult.FAIL;
 		}
 
 		return AEApi.instance().partHelper().placeBus( is, pos, side, player, hand, w );
