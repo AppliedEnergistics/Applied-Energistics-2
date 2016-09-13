@@ -8,6 +8,7 @@
 !gradlew.bat
 !build.gradle
 !gradle.properties
+!.travis.yml
 
 # include markdowns
 !README.md

@@ -1,0 +1,9 @@
+language: java
+
+# Disable the install step because gradlew assemble would actually run the entirety of the build
+install: true
+
+script: ./gradlew setupCiWorkspace build
+
+jdk:
+  - oraclejdk8
