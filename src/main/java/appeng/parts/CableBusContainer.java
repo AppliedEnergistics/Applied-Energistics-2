@@ -1163,7 +1163,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		{
 			renderState.setCableColor( cable.getCableColor() );
 			renderState.setCableType( cable.getCableConnectionType() );
-			renderState.setCoreType( cable.getCableConnectionType().getCoreType() );
+			renderState.setCoreType( CableCoreType.fromCableType( cable.getCableConnectionType() ) );
 
 			// Check each outgoing connection for the desired characteristics
 			for( EnumFacing facing : EnumFacing.values() )

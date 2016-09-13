@@ -17,6 +17,7 @@ import net.minecraft.util.ResourceLocation;
 
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
+import appeng.core.AppEng;
 
 
 /**
@@ -60,13 +61,36 @@ class CableBuilder
 
 			for( AEColor color : AEColor.values() )
 			{
-				colorTextures.put( color, bakedTextureGetter.apply( type.getConnectionTexture( color ) ) );
+				colorTextures.put( color, bakedTextureGetter.apply( getConnectionTexture( type, color ) ) );
 			}
 
 			connectionTextures.put( type, colorTextures );
 		}
 
 		smartCableTextures = new SmartCableTextures( bakedTextureGetter );
+	}
+
+	static ResourceLocation getConnectionTexture( AECableType cableType, AEColor color )
+	{
+		String textureFolder;
+		switch (cableType) {
+			case GLASS:
+				textureFolder = "parts/cable/glass/";
+				break;
+			case COVERED:
+				textureFolder = "parts/cable/covered/";
+				break;
+			case SMART:
+				textureFolder = "parts/cable/smart/";
+				break;
+			case DENSE:
+				textureFolder = "parts/cable/dense/";
+				break;
+			default:
+				throw new IllegalStateException( "Cable type " + cableType + " does not support connections." );
+		}
+
+		return new ResourceLocation( AppEng.MOD_ID, textureFolder + color.name().toLowerCase() );
 	}
 
 	/**
@@ -656,7 +680,7 @@ class CableBuilder
 		{
 			for( AEColor color : AEColor.values() )
 			{
-				locations.add( cableType.getConnectionTexture( color ) );
+				locations.add( getConnectionTexture( cableType, color ) );
 			}
 		}
 

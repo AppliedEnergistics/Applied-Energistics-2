@@ -195,7 +195,7 @@ public class CableBusBakedModel implements IBakedModel
 	 */
 	public List<TextureAtlasSprite> getParticleTextures( CableBusRenderState renderState )
 	{
-		CableCoreType coreType = renderState.getCableType().getCoreType();
+		CableCoreType coreType = CableCoreType.fromCableType( renderState.getCableType() );
 		AEColor cableColor = renderState.getCableColor();
 
 		if( coreType != null )
