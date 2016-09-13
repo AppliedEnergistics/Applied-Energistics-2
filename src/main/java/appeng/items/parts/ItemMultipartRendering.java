@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.util.AEColor;
 import appeng.bootstrap.IItemRendering;
@@ -34,6 +36,7 @@ public class ItemMultipartRendering extends ItemRenderingCustomizer
 	}
 
 	@Override
+	@SideOnly( Side.CLIENT )
 	public void customize( IItemRendering rendering )
 	{
 

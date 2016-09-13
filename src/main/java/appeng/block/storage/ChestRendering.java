@@ -1,6 +1,9 @@
 package appeng.block.storage;
 
 
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 import appeng.api.util.AEColor;
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.IBlockRendering;
@@ -13,6 +16,7 @@ public class ChestRendering extends BlockRenderingCustomizer
 {
 
 	@Override
+	@SideOnly( Side.CLIENT )
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{
 		// I checked, the ME chest doesn't keep its color in item form

@@ -8,6 +8,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.block.crafting.BlockCraftingUnit;
 import appeng.bootstrap.BlockRenderingCustomizer;
@@ -33,6 +35,7 @@ public class CraftingCubeRendering extends BlockRenderingCustomizer
 	}
 
 	@Override
+	@SideOnly( Side.CLIENT )
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{
 		ResourceLocation baseName = new ResourceLocation( AppEng.MOD_ID, registryName );
@@ -50,6 +53,12 @@ public class CraftingCubeRendering extends BlockRenderingCustomizer
 		rendering.builtInModel( builtInName, new CraftingCubeModel( type ) );
 
 		rendering.stateMapper( block -> mapState( block, defaultModel, builtInModelName ) );
+
+		if( type == BlockCraftingUnit.CraftingUnitType.MONITOR )
+		{
+			rendering.tesr( new CraftingMonitorTESR() );
+		}
+
 	}
 
 	private Map<IBlockState, ModelResourceLocation> mapState( Block block, ModelResourceLocation defaultModel, ModelResourceLocation formedModel )

@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -58,8 +57,6 @@ public abstract class CommonHelper
 	public abstract boolean shouldAddParticles( Random r );
 
 	public abstract RayTraceResult getRTR();
-
-	public abstract void doRenderItem( ItemStack itemstack );
 
 	public abstract void postInit();
 

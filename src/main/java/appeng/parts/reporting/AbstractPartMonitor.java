@@ -26,13 +26,12 @@ import org.lwjgl.opengl.GL11;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
@@ -49,8 +48,7 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.api.util.AEPartLocation;
-import appeng.client.ClientHelper;
+import appeng.client.render.TesrRenderHelper;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.Reflected;
 import appeng.me.GridAccessException;
@@ -256,58 +254,11 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		GlStateManager.pushMatrix();
 		GL11.glTranslated( x + 0.5, y + 0.5, z + 0.5 );
 
-		final AEPartLocation d = this.getSide();
-		GL11.glTranslated( d.xOffset * 0.50, d.yOffset * 0.50, d.zOffset * 0.50 );
+		EnumFacing facing = this.getSide().getFacing();
 
-		switch( d )
-		{
-			case UP:
-				GL11.glScalef( 1.0f, -1.0f, 1.0f );
-				GL11.glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
-				GL11.glRotatef( this.getSpin() * 90.0F, 0, 0, 1 );
-				break;
-
-			case DOWN:
-				GL11.glScalef( 1.0f, -1.0f, 1.0f );
-				GL11.glRotatef( -90.0f, 1.0f, 0.0f, 0.0f );
-				GL11.glRotatef( this.getSpin() * -90.0F, 0, 0, 1 );
-				break;
-
-			case EAST:
-				GL11.glScalef( -1.0f, -1.0f, -1.0f );
-				GL11.glRotatef( -90.0f, 0.0f, 1.0f, 0.0f );
-				break;
-
-			case WEST:
-				GL11.glScalef( -1.0f, -1.0f, -1.0f );
-				GL11.glRotatef( 90.0f, 0.0f, 1.0f, 0.0f );
-				break;
-
-			case NORTH:
-				GL11.glScalef( -1.0f, -1.0f, -1.0f );
-				break;
-
-			case SOUTH:
-				GL11.glScalef( -1.0f, -1.0f, -1.0f );
-				GL11.glRotatef( 180.0f, 0.0f, 1.0f, 0.0f );
-				break;
-
-			default:
-				break;
-		}
-
-		ClientHelper.proxy.doRenderItem( ais.getItemStack() );
-
-		final long stackSize = ais.getStackSize();
-		final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm( stackSize );
-
-		// Render the item count
-		final FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
-		final int width = fr.getStringWidth( renderedStackSize );
-		GL11.glTranslatef( 0.0f, 0.17f, 0 );
-		GL11.glScalef( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );
-		GL11.glTranslatef( -0.5f * width, 0.0f, 0.5f );
-		fr.drawString( renderedStackSize, 0, 0, 0 );
+		TesrRenderHelper.moveToFace( facing );
+		TesrRenderHelper.rotateToFace( facing, getSpin() );
+		TesrRenderHelper.renderItem2dWithAmount( ais, 0.8f, 0.17f );
 
 		GlStateManager.popMatrix();
 

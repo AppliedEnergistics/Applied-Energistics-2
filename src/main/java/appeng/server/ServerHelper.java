@@ -30,7 +30,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -132,12 +131,6 @@ public class ServerHelper extends CommonHelper
 	public RayTraceResult getRTR()
 	{
 		return null;
-	}
-
-	@Override
-	public void doRenderItem( final ItemStack sis )
-	{
-
 	}
 
 	@Override

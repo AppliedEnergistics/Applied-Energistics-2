@@ -23,7 +23,6 @@ import net.minecraft.block.BlockDispenser;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
@@ -104,8 +103,6 @@ import appeng.decorative.solid.BlockSkyStone;
 import appeng.decorative.solid.BlockSkyStone.SkystoneType;
 import appeng.decorative.stair.BlockStairCommon;
 import appeng.hooks.DispenserBehaviorTinyTNT;
-import appeng.tile.networking.CableBusTESR;
-import appeng.util.Platform;
 
 
 /**
@@ -261,6 +258,7 @@ public final class ApiBlocks implements IBlocks
 				.rendering( new BlockRenderingCustomizer()
 				{
 					@Override
+					@SideOnly( Side.CLIENT )
 					public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 					{
 						rendering.tesr( BlockCharger.createTesr() );
@@ -373,10 +371,6 @@ public final class ApiBlocks implements IBlocks
 				.rendering( new CableBusRendering( partModels ) )
 				.postInit( (block, item) -> {
 					( (BlockCableBus) block ).setupTile();
-					if( Platform.isClient() )
-					{
-						ClientRegistry.bindTileEntitySpecialRenderer( BlockCableBus.getTesrTile(), new CableBusTESR() );
-					}
 				} )
 				.build();
 

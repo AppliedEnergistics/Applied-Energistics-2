@@ -27,8 +27,6 @@ import java.util.Random;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -191,30 +189,6 @@ public class ClientHelper extends ServerHelper
 	public RayTraceResult getRTR()
 	{
 		return Minecraft.getMinecraft().objectMouseOver;
-	}
-
-	@Override
-	public void doRenderItem( final ItemStack itemstack )
-	{
-		if( itemstack != null )
-		{
-
-			GlStateManager.pushMatrix();
-
-			// The Z-scaling by 0.0001 causes the model to be visually "flattened"
-			// This cannot replace a proper projection, but it's cheap and gives the desired
-			// effect at least from head-on
-			final float scale = 0.8f;
-			GlStateManager.scale( scale / 32.0f, scale / 32.0f, 0.0001f );
-			// Position the item icon at the top middle of the panel
-			GlStateManager.translate( -8, -11, 0 );
-
-			RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
-			renderItem.renderItemAndEffectIntoGUI(itemstack, 0, 0);
-
-			GlStateManager.popMatrix();
-
-		}
 	}
 
 	@Override

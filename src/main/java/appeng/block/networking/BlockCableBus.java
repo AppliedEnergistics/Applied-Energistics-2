@@ -52,6 +52,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -74,6 +75,7 @@ import appeng.integration.abstraction.IFMP;
 import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
 import appeng.tile.AEBaseTile;
+import appeng.tile.networking.CableBusTESR;
 import appeng.tile.networking.TileCableBus;
 import appeng.tile.networking.TileCableBusTESR;
 import appeng.util.Platform;
@@ -285,6 +287,7 @@ public class BlockCableBus extends AEBaseTileBlock
 	}
 
 	@Override
+	@SideOnly( Side.CLIENT )
 	public boolean addDestroyEffects( final World world, final BlockPos pos, final ParticleManager effectRenderer )
 	{
 		ICableBusContainer cb = this.cb( world, pos );
@@ -390,9 +393,15 @@ public class BlockCableBus extends AEBaseTileBlock
 		GameRegistry.registerTileEntity( noTesrTile, "BlockCableBus" );
 		if( Platform.isClient() )
 		{
-			tesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBusTESR.class );
-			GameRegistry.registerTileEntity( tesrTile, "ClientOnly_TESR_CableBus" );
+			setupTesr();
 		}
+	}
+
+	@SideOnly( Side.CLIENT )
+	private static void setupTesr() {
+		tesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBusTESR.class );
+		GameRegistry.registerTileEntity( tesrTile, "ClientOnly_TESR_CableBus" );
+		ClientRegistry.bindTileEntitySpecialRenderer( BlockCableBus.getTesrTile(), new CableBusTESR() );
 	}
 
 	public static Class<? extends AEBaseTile> getNoTesrTile()
@@ -406,6 +415,7 @@ public class BlockCableBus extends AEBaseTileBlock
 	}
 
 	// Helper to get access to the protected constructor
+	@SideOnly( Side.CLIENT )
 	private static class DestroyFX extends ParticleDigging
 	{
 		DestroyFX( World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, IBlockState state )
