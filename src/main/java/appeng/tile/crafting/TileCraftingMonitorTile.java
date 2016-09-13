@@ -24,8 +24,6 @@ import java.io.IOException;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
@@ -134,7 +132,7 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 
 	public IAEItemStack getJobProgress()
 	{
-		return AEItemStack.create( new ItemStack( Items.DIAMOND, 64 ) ); // this.dspPlay;//
+		return this.dspPlay; // AEItemStack.create( new ItemStack( Items.DIAMOND, 64 ) );
 	}
 
 	@Override
