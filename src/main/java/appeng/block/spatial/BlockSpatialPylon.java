@@ -20,22 +20,45 @@ package appeng.block.spatial;
 
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 
 import appeng.block.AEBaseTileBlock;
+import appeng.client.render.spatial.SpatialPylonStateProperty;
 import appeng.helpers.AEGlassMaterial;
 import appeng.tile.spatial.TileSpatialPylon;
 
+
 public class BlockSpatialPylon extends AEBaseTileBlock
 {
+
+	public static final SpatialPylonStateProperty STATE = new SpatialPylonStateProperty();
 
 	public BlockSpatialPylon()
 	{
 		super( AEGlassMaterial.INSTANCE );
 		this.setTileEntity( TileSpatialPylon.class );
+	}
+
+	@Override
+	protected BlockStateContainer createBlockState()
+	{
+		return new ExtendedBlockState( this, getAEStates(), new IUnlistedProperty[] { STATE } );
+	}
+
+	@Override
+	public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
+	{
+		IExtendedBlockState extState = (IExtendedBlockState) state;
+
+		return extState.withProperty( STATE, getDisplayState( world, pos ) );
 	}
 
 	@Override
@@ -58,4 +81,23 @@ public class BlockSpatialPylon extends AEBaseTileBlock
 		}
 		return super.getLightValue( state, w, pos );
 	}
+
+	private int getDisplayState( IBlockAccess world, BlockPos pos )
+	{
+		TileSpatialPylon te = getTileEntity( world, pos );
+
+		if( te == null )
+		{
+			return 0;
+		}
+
+		return te.getDisplayBits();
+	}
+
+	@Override
+	public BlockRenderLayer getBlockLayer()
+	{
+		return BlockRenderLayer.CUTOUT;
+	}
+
 }

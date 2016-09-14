@@ -84,6 +84,7 @@ import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;
 import appeng.client.render.crafting.CraftingCubeRendering;
 import appeng.client.render.model.GlassModel;
+import appeng.client.render.spatial.SpatialPylonRendering;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.features.registries.PartModels;
@@ -280,6 +281,7 @@ public final class ApiBlocks implements IBlocks
 		this.spatialPylon = registry.block( "spatial_pylon", BlockSpatialPylon::new )
 				.features( AEFeature.SpatialIO )
 				.useCustomItemModel()
+				.rendering( new SpatialPylonRendering() )
 				.build();
 		this.spatialIOPort = registry.block( "spatial_ioport", BlockSpatialIOPort::new ).features( AEFeature.SpatialIO ).build();
 		this.controller = registry.block( "controller", BlockController::new )
