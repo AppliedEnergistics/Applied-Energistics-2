@@ -1,11 +1,20 @@
+sudo: required
+dist: trusty
+
 language: java
-
-# Disable the install step because gradlew assemble would actually run the entirety of the build
-install: true
-
-script:
-  - ./gradlew setupCiWorkspace build
-
 jdk:
   - oraclejdk8
+  - openjdk8
 
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+  - rm -f  $HOME/.gradle/caches/minecraft/deobfedDeps/providedDummy.jar
+  - rm -f  $HOME/.gradle/caches/minecraft/deobfedDeps/compileDummy.jar
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
+install: "./gradlew setupCIWorkspace"
+script: "./gradlew build test"
