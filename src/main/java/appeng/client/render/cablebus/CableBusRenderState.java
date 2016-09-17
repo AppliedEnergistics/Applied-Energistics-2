@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.client.render.cablebus;
 
 
@@ -30,8 +48,10 @@ public class CableBusRenderState
 	// Describes the outgoing connections of this cable bus to other blocks, and how they should be rendered
 	private EnumMap<EnumFacing, AECableType> connectionTypes = new EnumMap<>( EnumFacing.class );
 
-	// Indicate on which sides signified by connectionTypes above, there is another cable bus. If a side is connected, but it is absent from this
-	// set, then it means that there is a Grid host, but not a cable bus on that side (i.e. an interface, a controller, etc.)
+	// Indicate on which sides signified by connectionTypes above, there is another cable bus. If a side is connected,
+	// but it is absent from this
+	// set, then it means that there is a Grid host, but not a cable bus on that side (i.e. an interface, a controller,
+	// etc.)
 	private EnumSet<EnumFacing> cableBusAdjacent = EnumSet.noneOf( EnumFacing.class );
 
 	// Specifies the number of channels used for the connection to a given side. Only contains entries if

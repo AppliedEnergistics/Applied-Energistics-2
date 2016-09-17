@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.client.render.crafting;
 
 
@@ -176,7 +194,7 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 				// crafting cube blocks, we'd have to check for a, side, and the perpendicular direction. But in this
 				// block, we've already checked for side (due to face culling) and a (see above).
 				EnumFacing perpendicular = a.rotateAround( side.getAxis() );
-				for ( EnumFacing cornerCandidate: EnumSet.of(perpendicular, perpendicular.getOpposite()))
+				for( EnumFacing cornerCandidate : EnumSet.of( perpendicular, perpendicular.getOpposite() ) )
 				{
 					if( !connections.contains( cornerCandidate ) )
 					{
@@ -226,12 +244,12 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 			return;
 		}
 
-		float x1 = (west == EnumFacing.WEST ? 0 : 13);
-		float y1 = (down == EnumFacing.DOWN ? 0 : 13);
-		float z1 = (north == EnumFacing.NORTH ? 0 : 13);
-		float x2 = (west == EnumFacing.WEST ? 3 : 16);
-		float y2 = (down == EnumFacing.DOWN ? 3 : 16);
-		float z2 = (north == EnumFacing.NORTH ? 3 : 16);
+		float x1 = ( west == EnumFacing.WEST ? 0 : 13 );
+		float y1 = ( down == EnumFacing.DOWN ? 0 : 13 );
+		float z1 = ( north == EnumFacing.NORTH ? 0 : 13 );
+		float x2 = ( west == EnumFacing.WEST ? 3 : 16 );
+		float y2 = ( down == EnumFacing.DOWN ? 3 : 16 );
+		float z2 = ( north == EnumFacing.NORTH ? 3 : 16 );
 		builder.addCube( x1, y1, z1, x2, y2, z2 );
 	}
 

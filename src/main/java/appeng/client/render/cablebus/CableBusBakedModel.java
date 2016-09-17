@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.client.render.cablebus;
 
 
@@ -82,7 +100,6 @@ public class CableBusBakedModel implements IBakedModel
 		return quads;
 	}
 
-
 	// Determines whether a cable is connected to exactly two sides that are opposite each other
 	private static boolean isStraightLine( Set<EnumFacing> sides )
 	{
@@ -121,7 +138,8 @@ public class CableBusBakedModel implements IBakedModel
 		{
 			EnumFacing facing = connectionTypes.keySet().iterator().next();
 
-			switch (cableType) {
+			switch( cableType )
+			{
 				case GLASS:
 					cableBuilder.addStraightGlassConnection( facing, cableColor, quadsOut );
 					break;
@@ -129,10 +147,10 @@ public class CableBusBakedModel implements IBakedModel
 					cableBuilder.addStraightCoveredConnection( facing, cableColor, quadsOut );
 					break;
 				case SMART:
-					cableBuilder.addStraightSmartConnection( facing, cableColor, renderState.getChannelsOnSide().get(facing), quadsOut );
+					cableBuilder.addStraightSmartConnection( facing, cableColor, renderState.getChannelsOnSide().get( facing ), quadsOut );
 					break;
 				case DENSE:
-					cableBuilder.addStraightDenseConnection( facing, cableColor, renderState.getChannelsOnSide().get(facing), quadsOut );
+					cableBuilder.addStraightDenseConnection( facing, cableColor, renderState.getChannelsOnSide().get( facing ), quadsOut );
 					break;
 			}
 

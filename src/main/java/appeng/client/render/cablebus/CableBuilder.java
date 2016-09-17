@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.client.render.cablebus;
 
 
@@ -73,7 +91,8 @@ class CableBuilder
 	static ResourceLocation getConnectionTexture( AECableType cableType, AEColor color )
 	{
 		String textureFolder;
-		switch (cableType) {
+		switch( cableType )
+		{
 			case GLASS:
 				textureFolder = "parts/cable/glass/";
 				break;
@@ -275,8 +294,6 @@ class CableBuilder
 
 		addStraightCoveredCableSizedCube( facing, cubeBuilder );
 
-
-
 	}
 
 	private static void setStraightCableUVs( CubeBuilder cubeBuilder, EnumFacing facing, int x, int y )
@@ -374,8 +391,11 @@ class CableBuilder
 		cubeBuilder.setColorRGB( cableColor.whiteVariant );
 		addCoveredCableSizedCube( facing, cubeBuilder );
 
-	/*	TODO: this.setSmartConnectionRotations( of, renderer );
-		renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth = renderer.uvRotateTop = renderer.uvRotateWest = 0;*/
+		/*
+		 * TODO: this.setSmartConnectionRotations( of, renderer );
+		 * renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth =
+		 * renderer.uvRotateTop = renderer.uvRotateWest = 0;
+		 */
 	}
 
 	public void addStraightSmartConnection( EnumFacing facing, AEColor cableColor, int channels, List<BakedQuad> quadsOut )
@@ -460,7 +480,7 @@ class CableBuilder
 		addDenseCableSizedCube( facing, cubeBuilder );
 
 		// Dense cables show used channels in groups of 4, rounded up
-		channels = (channels + 3) / 4;
+		channels = ( channels + 3 ) / 4;
 
 		TextureAtlasSprite oddChannel = smartCableTextures.getOddTextureForChannels( channels );
 		TextureAtlasSprite evenChannel = smartCableTextures.getEvenTextureForChannels( channels );
@@ -494,7 +514,7 @@ class CableBuilder
 		addStraightDenseCableSizedCube( facing, cubeBuilder );
 
 		// Dense cables show used channels in groups of 4, rounded up
-		channels = (channels + 3) / 4;
+		channels = ( channels + 3 ) / 4;
 
 		TextureAtlasSprite oddChannel = smartCableTextures.getOddTextureForChannels( channels );
 		TextureAtlasSprite evenChannel = smartCableTextures.getEvenTextureForChannels( channels );
@@ -510,7 +530,6 @@ class CableBuilder
 		cubeBuilder.setColorRGB( cableColor.whiteVariant );
 		addStraightDenseCableSizedCube( facing, cubeBuilder );
 	}
-
 
 	private static void addDenseCableSizedCube( EnumFacing facing, CubeBuilder cubeBuilder )
 	{
@@ -537,7 +556,8 @@ class CableBuilder
 		}
 	}
 
-	// Adds a cube to the given cube builder that has the size of a dense cable connection and spans the entire block for the given direction
+	// Adds a cube to the given cube builder that has the size of a dense cable connection and spans the entire block
+	// for the given direction
 	private static void addStraightDenseCableSizedCube( EnumFacing facing, CubeBuilder cubeBuilder )
 	{
 		switch( facing )
@@ -548,8 +568,10 @@ class CableBuilder
 				break;
 			case EAST:
 			case WEST:
-				/*renderer.uvRotateEast = renderer.uvRotateWest = 1;
-				renderer.uvRotateBottom = renderer.uvRotateTop = 1;*/
+				/*
+				 * renderer.uvRotateEast = renderer.uvRotateWest = 1;
+				 * renderer.uvRotateBottom = renderer.uvRotateTop = 1;
+				 */
 				cubeBuilder.addCube( 0, 3, 3, 16, 13, 13 );
 				break;
 			case NORTH:
@@ -560,7 +582,8 @@ class CableBuilder
 		}
 	}
 
-	// Adds a cube to the given cube builder that has the size of a covered cable connection from the core of the cable to the given face
+	// Adds a cube to the given cube builder that has the size of a covered cable connection from the core of the cable
+	// to the given face
 	private static void addCoveredCableSizedCube( EnumFacing facing, CubeBuilder cubeBuilder )
 	{
 		switch( facing )
@@ -586,7 +609,8 @@ class CableBuilder
 		}
 	}
 
-	// Adds a cube to the given cube builder that has the size of a covered cable connection and spans the entire block for the given direction
+	// Adds a cube to the given cube builder that has the size of a covered cable connection and spans the entire block
+	// for the given direction
 	private static void addStraightCoveredCableSizedCube( EnumFacing facing, CubeBuilder cubeBuilder )
 	{
 		switch( facing )
@@ -597,8 +621,10 @@ class CableBuilder
 				break;
 			case EAST:
 			case WEST:
-				/*renderer.uvRotateEast = renderer.uvRotateWest = 1;
-				renderer.uvRotateBottom = renderer.uvRotateTop = 1;*/
+				/*
+				 * renderer.uvRotateEast = renderer.uvRotateWest = 1;
+				 * renderer.uvRotateBottom = renderer.uvRotateTop = 1;
+				 */
 				cubeBuilder.addCube( 0, 5, 5, 16, 11, 11 );
 				break;
 			case NORTH:
@@ -635,8 +661,10 @@ class CableBuilder
 	}
 
 	/**
-	 * This renders a slightly bigger covered cable connection to the specified side. This is used to connect cable cores with adjacent machines
-	 * that do not want to be connected to using a glass cable connection. This applies to most machines (interfaces, etc.)
+	 * This renders a slightly bigger covered cable connection to the specified side. This is used to connect cable
+	 * cores with adjacent machines
+	 * that do not want to be connected to using a glass cable connection. This applies to most machines (interfaces,
+	 * etc.)
 	 */
 	private void addBigCoveredCableSizedCube( EnumFacing facing, CubeBuilder cubeBuilder )
 	{

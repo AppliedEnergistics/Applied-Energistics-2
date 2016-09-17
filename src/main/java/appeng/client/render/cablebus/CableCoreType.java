@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.client.render.cablebus;
 
 
@@ -22,9 +40,7 @@ import appeng.core.AppEng;
  */
 public enum CableCoreType
 {
-	GLASS( "parts/cable/core/glass" ),
-	COVERED( "parts/cable/core/covered" ),
-	DENSE( "parts/cable/core/dense" );
+	GLASS( "parts/cable/core/glass" ), COVERED( "parts/cable/core/covered" ), DENSE( "parts/cable/core/dense" );
 
 	private static final Map<AECableType, CableCoreType> cableMapping = generateCableMapping();
 
@@ -52,7 +68,8 @@ public enum CableCoreType
 	}
 
 	/**
-	 * @return The type of core that should be rendered when the given cable isn't straight and needs to have a core to attach connections to.
+	 * @return The type of core that should be rendered when the given cable isn't straight and needs to have a core to
+	 * attach connections to.
 	 * Is null for the NULL cable.
 	 */
 	public static CableCoreType fromCableType( AECableType cableType )

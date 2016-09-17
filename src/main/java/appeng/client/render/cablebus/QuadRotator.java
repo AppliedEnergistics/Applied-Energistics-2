@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.client.render.cablebus;
 
 
@@ -17,7 +35,8 @@ import appeng.core.AELog;
 
 
 /**
- * Assuming a default-orientation of forward=NORTH and up=UP, this class rotates a given list of quads to the desired facing
+ * Assuming a default-orientation of forward=NORTH and up=UP, this class rotates a given list of quads to the desired
+ * facing
  */
 public class QuadRotator
 {
@@ -42,10 +61,14 @@ public class QuadRotator
 	private BakedQuad rotateQuad( BakedQuad quad, EnumFacing forward, EnumFacing up )
 	{
 		// Sanitize forward/up
-		if (forward.getAxis() == up.getAxis()) {
-			if (up.getAxis() == EnumFacing.Axis.Y) {
+		if( forward.getAxis() == up.getAxis() )
+		{
+			if( up.getAxis() == EnumFacing.Axis.Y )
+			{
 				up = EnumFacing.NORTH;
-			} else {
+			}
+			else
+			{
 				up = EnumFacing.UP;
 			}
 		}
@@ -77,11 +100,7 @@ public class QuadRotator
 
 		for( int i = 0; i < 4; i++ )
 		{
-			Point3f pos = new Point3f(
-					Float.intBitsToFloat( newData[i * stride + posIdx] ) - 0.5f,
-					Float.intBitsToFloat( newData[i * stride + posIdx + 1] ) - 0.5f,
-					Float.intBitsToFloat( newData[i * stride + posIdx + 2] ) - 0.5f
-			);
+			Point3f pos = new Point3f( Float.intBitsToFloat( newData[i * stride + posIdx] ) - 0.5f, Float.intBitsToFloat( newData[i * stride + posIdx + 1] ) - 0.5f, Float.intBitsToFloat( newData[i * stride + posIdx + 2] ) - 0.5f );
 
 			// Rotate stuff around
 			mat.transform( pos );
@@ -92,14 +111,11 @@ public class QuadRotator
 			newData[i * stride + posIdx + 2] = Float.floatToIntBits( pos.getZ() + 0.5f );
 
 			// Transform the normal if one is present
-			if ( normalIdx != -1 ) {
+			if( normalIdx != -1 )
+			{
 				if( normalType == VertexFormatElement.EnumType.FLOAT )
 				{
-					Vector3f normal = new Vector3f(
-							Float.intBitsToFloat( newData[i * stride + normalIdx] ),
-							Float.intBitsToFloat( newData[i * stride + normalIdx + 1] ),
-							Float.intBitsToFloat( newData[i * stride + normalIdx + 2] )
-					);
+					Vector3f normal = new Vector3f( Float.intBitsToFloat( newData[i * stride + normalIdx] ), Float.intBitsToFloat( newData[i * stride + normalIdx + 1] ), Float.intBitsToFloat( newData[i * stride + normalIdx + 2] ) );
 
 					// Rotate stuff around
 					mat.transform( normal );
@@ -145,7 +161,7 @@ public class QuadRotator
 		int idx = offset / 4;
 		int subOffset = offset % 4;
 		int mask = 0xFF << ( subOffset * 8 );
-		data[idx] = data[idx] & ( ~mask ) | ( (value & 0xFF) << (subOffset * 8) );
+		data[idx] = data[idx] & ( ~mask ) | ( ( value & 0xFF ) << ( subOffset * 8 ) );
 	}
 
 	private int findPositionOffset( VertexFormat format )

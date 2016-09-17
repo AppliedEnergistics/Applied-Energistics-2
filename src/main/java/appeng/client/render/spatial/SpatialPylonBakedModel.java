@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.client.render.spatial;
 
 
@@ -110,14 +128,7 @@ class SpatialPylonBakedModel implements IBakedModel
 				}
 			}
 
-			builder.setTextures(
-					textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.UP ) ),
-					textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.DOWN ) ),
-					textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.NORTH ) ),
-					textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.SOUTH ) ),
-					textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.EAST ) ),
-					textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.WEST ) )
-			);
+			builder.setTextures( textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.UP ) ), textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.DOWN ) ), textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.NORTH ) ), textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.SOUTH ) ), textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.EAST ) ), textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.WEST ) ) );
 			builder.addCube( 0, 0, 0, 16, 16, 16 );
 
 			if( ( flags & TileSpatialPylon.DISPLAY_POWERED_ENABLED ) == TileSpatialPylon.DISPLAY_POWERED_ENABLED )
@@ -125,14 +136,7 @@ class SpatialPylonBakedModel implements IBakedModel
 				builder.setRenderFullBright( true );
 			}
 
-			builder.setTextures(
-					textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.UP ) ),
-					textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.DOWN ) ),
-					textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.NORTH ) ),
-					textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.SOUTH ) ),
-					textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.EAST ) ),
-					textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.WEST ) )
-			);
+			builder.setTextures( textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.UP ) ), textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.DOWN ) ), textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.NORTH ) ), textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.SOUTH ) ), textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.EAST ) ), textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.WEST ) ) );
 			builder.addCube( 0, 0, 0, 16, 16, 16 );
 		}
 		else

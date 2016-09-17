@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.core;
 
 
@@ -68,7 +86,8 @@ class PluginLoader
 
 		if( constructors.length == 0 )
 		{
-			// This is the default no-arg constructor, although it seems pointless to instantiate anything but not take any AE dependencies as parameters
+			// This is the default no-arg constructor, although it seems pointless to instantiate anything but not take
+			// any AE dependencies as parameters
 			return aClass.newInstance();
 		}
 		else if( constructors.length != 1 )
@@ -95,8 +114,7 @@ class PluginLoader
 			args[i] = injectableMap.get( types[i] );
 			if( args[i] == null )
 			{
-				throw new IllegalArgumentException( "Constructor has parameter of type " + types[i] + " which is not an injectable type."
-						+ " Please see the documentation for @AEPlugin." );
+				throw new IllegalArgumentException( "Constructor has parameter of type " + types[i] + " which is not an injectable type." + " Please see the documentation for @AEPlugin." );
 			}
 		}
 
@@ -125,9 +143,7 @@ class PluginLoader
 		Set<Class<?>> hierarchy = new HashSet<>();
 		getFullHierarchy( aClass, hierarchy );
 
-		return hierarchy.stream()
-				.filter( c -> c.getAnnotation( AEInjectable.class ) != null )
-				.collect( Collectors.toSet() );
+		return hierarchy.stream().filter( c -> c.getAnnotation( AEInjectable.class ) != null ).collect( Collectors.toSet() );
 	}
 
 	// Recursively gather all superclasses and superinterfaces of the given class and put them into the given collection

@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.client.render.cablebus;
 
 
@@ -60,7 +78,8 @@ public class CubeBuilder
 		y2 /= 16.0f;
 		z2 /= 16.0f;
 
-		// If brightness is forced to specific values, extend the vertex format to contain the multi-texturing lightmap offset
+		// If brightness is forced to specific values, extend the vertex format to contain the multi-texturing lightmap
+		// offset
 		VertexFormat savedFormat = null;
 		if( renderFullBright )
 		{
@@ -92,10 +111,7 @@ public class CubeBuilder
 		float v2;
 	}
 
-	private void putFace( EnumFacing face,
-			float x1, float y1, float z1,
-			float x2, float y2, float z2
-	)
+	private void putFace( EnumFacing face, float x1, float y1, float z1, float x2, float y2, float z2 )
 	{
 
 		TextureAtlasSprite texture = textures.get( face );
@@ -164,9 +180,7 @@ public class CubeBuilder
 		output.add( new BakedQuad( vertexData, -1, face, texture, true, format ) );
 	}
 
-	private UvVector getDefaultUv( EnumFacing face, TextureAtlasSprite texture,
-			float x1, float y1, float z1,
-			float x2, float y2, float z2 )
+	private UvVector getDefaultUv( EnumFacing face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2, float y2, float z2 )
 	{
 
 		UvVector uv = new UvVector();
@@ -219,7 +233,8 @@ public class CubeBuilder
 	{
 		float u, v;
 
-		switch (uvRotations[face.ordinal()]) {
+		switch( uvRotations[face.ordinal()] )
+		{
 			default:
 			case 0:
 				u = uv.u1;
@@ -239,7 +254,7 @@ public class CubeBuilder
 				break;
 		}
 
-		putVertex(builder, face, x, y, z, u, v );
+		putVertex( builder, face, x, y, z, u, v );
 	}
 
 	// uv.u2, uv.v1
@@ -248,7 +263,8 @@ public class CubeBuilder
 		float u;
 		float v;
 
-		switch (uvRotations[face.ordinal()]) {
+		switch( uvRotations[face.ordinal()] )
+		{
 			default:
 			case 0:
 				u = uv.u2;
@@ -267,7 +283,7 @@ public class CubeBuilder
 				v = uv.v2;
 				break;
 		}
-		putVertex(builder, face, x, y, z, u, v );
+		putVertex( builder, face, x, y, z, u, v );
 	}
 
 	// uv.u2, uv.v2
@@ -277,7 +293,8 @@ public class CubeBuilder
 		float u;
 		float v;
 
-		switch (uvRotations[face.ordinal()]) {
+		switch( uvRotations[face.ordinal()] )
+		{
 			default:
 			case 0:
 				u = uv.u2;
@@ -297,7 +314,7 @@ public class CubeBuilder
 				break;
 		}
 
-		putVertex(builder, face, x, y, z, u, v );
+		putVertex( builder, face, x, y, z, u, v );
 	}
 
 	// uv.u1, uv.v2
@@ -307,7 +324,8 @@ public class CubeBuilder
 		float u;
 		float v;
 
-		switch (uvRotations[face.ordinal()]) {
+		switch( uvRotations[face.ordinal()] )
+		{
 			default:
 			case 0:
 				u = uv.u1;
@@ -327,7 +345,7 @@ public class CubeBuilder
 				break;
 		}
 
-		putVertex(builder, face, x, y, z, u, v );
+		putVertex( builder, face, x, y, z, u, v );
 	}
 
 	private void putVertex( UnpackedBakedQuad.Builder builder, EnumFacing face, float x, float y, float z, float u, float v )
@@ -343,10 +361,7 @@ public class CubeBuilder
 					builder.put( i, x, y, z );
 					break;
 				case NORMAL:
-					builder.put( i,
-							face.getFrontOffsetX(),
-							face.getFrontOffsetY(),
-							face.getFrontOffsetZ() );
+					builder.put( i, face.getFrontOffsetX(), face.getFrontOffsetY(), face.getFrontOffsetZ() );
 					break;
 				case COLOR:
 					// Color format is RGBA
@@ -425,9 +440,12 @@ public class CubeBuilder
 
 	public void setUvRotation( EnumFacing facing, int rotation )
 	{
-		if ( rotation == 2 ) {
+		if( rotation == 2 )
+		{
 			rotation = 3;
-		} else if ( rotation == 3 ) {
+		}
+		else if( rotation == 3 )
+		{
 			rotation = 2;
 		}
 		Preconditions.checkArgument( rotation >= 0 && rotation <= 3, "rotation" );

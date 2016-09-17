@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.client.render;
 
 
@@ -25,7 +43,8 @@ public class TesrRenderHelper
 	private static final IWideReadableNumberConverter NUMBER_CONVERTER = ReadableNumberConverter.INSTANCE;
 
 	/**
-	 * Move the current coordinate system to the center of the given block face, assuming that the origin is currently at the center of a block.
+	 * Move the current coordinate system to the center of the given block face, assuming that the origin is currently
+	 * at the center of a block.
 	 */
 	public static void moveToFace( EnumFacing face )
 	{
@@ -33,7 +52,8 @@ public class TesrRenderHelper
 	}
 
 	/**
-	 * Rotate the current coordinate system so it is on the face of the given block side. This can be used to render on the given face as if it was
+	 * Rotate the current coordinate system so it is on the face of the given block side. This can be used to render on
+	 * the given face as if it was
 	 * a 2D canvas.
 	 */
 	public static void rotateToFace( EnumFacing face, byte spin )
@@ -103,9 +123,11 @@ public class TesrRenderHelper
 
 	/**
 	 * Render an item in 2D and the given text below it.
+	 * 
 	 * @param spacing Specifies how far apart the item and the item stack amount are rendered.
 	 */
-	public static void renderItem2dWithAmount( IAEItemStack itemStack, float itemScale, float spacing ) {
+	public static void renderItem2dWithAmount( IAEItemStack itemStack, float itemScale, float spacing )
+	{
 
 		TesrRenderHelper.renderItem2d( itemStack.getItemStack(), itemScale );
 

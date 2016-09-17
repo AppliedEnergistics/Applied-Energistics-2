@@ -1,3 +1,20 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
 
 package appeng.client.render.model;
 
@@ -41,8 +58,7 @@ public class AutoRotatingModel implements IBakedModel
 	{
 		this.parent = parent;
 		// 6 (DUNSWE) * 6 (DUNSWE) * 7 (DUNSWE + null) = 252
-		this.quadCache = CacheBuilder.newBuilder().maximumSize( 252 ).build( new CacheLoader<AutoRotatingCacheKey, List<BakedQuad>>()
-		{
+		this.quadCache = CacheBuilder.newBuilder().maximumSize( 252 ).build( new CacheLoader<AutoRotatingCacheKey, List<BakedQuad>>(){
 			@Override
 			public List<BakedQuad> load( AutoRotatingCacheKey key ) throws Exception
 			{
@@ -124,8 +140,10 @@ public class AutoRotatingModel implements IBakedModel
 			return parent.getQuads( state, side, rand );
 		}
 
-		// The model has other properties than just forward/up, so it would cause our cache to inadvertendly also cache these
-		// additional states, possibly leading to huge isseus if the other extended state properties do not implement equals/hashCode correctly
+		// The model has other properties than just forward/up, so it would cause our cache to inadvertendly also cache
+		// these
+		// additional states, possibly leading to huge isseus if the other extended state properties do not implement
+		// equals/hashCode correctly
 		if( extState.getUnlistedProperties().size() != 2 )
 		{
 			return getRotatedModel( extState, side, forward, up );
@@ -198,10 +216,7 @@ public class AutoRotatingModel implements IBakedModel
 					vec.x += 0.5f;
 					vec.y += 0.5f;
 					vec.z += 0.5f;
-					return new float[] {
-							vec.x,
-							vec.y,
-							vec.z
+					return new float[] { vec.x, vec.y, vec.z
 					};
 				case 4:
 					Vector4f vecc = new Vector4f( fs[0], fs[1], fs[2], fs[3] );
@@ -212,11 +227,7 @@ public class AutoRotatingModel implements IBakedModel
 					vecc.x += 0.5f;
 					vecc.y += 0.5f;
 					vecc.z += 0.5f;
-					return new float[] {
-							vecc.x,
-							vecc.y,
-							vecc.z,
-							vecc.w
+					return new float[] { vecc.x, vecc.y, vecc.z, vecc.w
 					};
 
 				default:
@@ -230,19 +241,12 @@ public class AutoRotatingModel implements IBakedModel
 			{
 				case 3:
 					Vec3i vec = f2r.rotate( face ).getDirectionVec();
-					return new float[] {
-							vec.getX(),
-							vec.getY(),
-							vec.getZ()
+					return new float[] { vec.getX(), vec.getY(), vec.getZ()
 					};
 				case 4:
 					Vector4f veccc = new Vector4f( fs[0], fs[1], fs[2], fs[3] );
 					Vec3i vecc = f2r.rotate( face ).getDirectionVec();
-					return new float[] {
-							vecc.getX(),
-							vecc.getY(),
-							vecc.getZ(),
-							veccc.w
+					return new float[] { vecc.getX(), vecc.getY(), vecc.getZ(), veccc.w
 					};
 
 				default:
