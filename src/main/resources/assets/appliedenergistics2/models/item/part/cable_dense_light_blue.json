@@ -1,6 +1,6 @@
 {
   "parent": "appliedenergistics2:item/part/cable_dense_base",
   "textures": {
-    "base": "appliedenergistics2:parts/cable/dense/lightgray"
+    "base": "appliedenergistics2:parts/cable/dense/light_blue"
   }
 }
