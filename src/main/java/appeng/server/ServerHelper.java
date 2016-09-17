@@ -144,7 +144,7 @@ public class ServerHelper extends CommonHelper
 	{
 		if( this.renderModeBased == null )
 		{
-			return CableRenderMode.Standard;
+			return CableRenderMode.STANDARD;
 		}
 
 		return this.renderModeForPlayer( this.renderModeBased );
@@ -181,12 +181,12 @@ public class ServerHelper extends CommonHelper
 					final NBTTagCompound c = is.getTagCompound();
 					if( c != null && c.getBoolean( "hideFacades" ) )
 					{
-						return CableRenderMode.CableView;
+						return CableRenderMode.CABLE_VIEW;
 					}
 				}
 			}
 		}
 
-		return CableRenderMode.Standard;
+		return CableRenderMode.STANDARD;
 	}
 }

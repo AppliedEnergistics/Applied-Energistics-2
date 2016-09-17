@@ -61,7 +61,7 @@ public class AENetworkProxy implements IGridBlock
 	private final IGridProxyable gp;
 	private final boolean worldNode;
 	private final String nbtName; // name
-	private AEColor myColor = AEColor.Transparent;
+	private AEColor myColor = AEColor.TRANSPARENT;
 	private NBTTagCompound data = null; // input
 	private ItemStack myRepInstance;
 	private boolean isReady = false;

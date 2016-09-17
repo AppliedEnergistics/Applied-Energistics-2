@@ -67,7 +67,7 @@ public class TickHandler
 	private final HandlerRep client = new HandlerRep();
 	private final HashMap<Integer, PlayerColor> cliPlayerColors = new HashMap<Integer, PlayerColor>();
 	private final HashMap<Integer, PlayerColor> srvPlayerColors = new HashMap<Integer, PlayerColor>();
-	private CableRenderMode crm = CableRenderMode.Standard;
+	private CableRenderMode crm = CableRenderMode.STANDARD;
 
 	public HashMap<Integer, PlayerColor> getPlayerColors()
 	{

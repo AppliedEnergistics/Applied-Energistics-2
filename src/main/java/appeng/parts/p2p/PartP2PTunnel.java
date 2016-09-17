@@ -115,7 +115,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	@Override
 	public ItemStack getItemStack( final PartItemStack type )
 	{
-		if( type == PartItemStack.World || type == PartItemStack.Network || type == PartItemStack.Wrench || type == PartItemStack.Pick )
+		if( type == PartItemStack.WORLD || type == PartItemStack.NETWORK || type == PartItemStack.WRENCH || type == PartItemStack.PICK )
 		{
 			return super.getItemStack( type );
 		}
@@ -339,7 +339,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
 			this.onTunnelConfigChange();
 
-			final ItemStack p2pItem = this.getItemStack( PartItemStack.Wrench );
+			final ItemStack p2pItem = this.getItemStack( PartItemStack.WRENCH );
 			final String type = p2pItem.getUnlocalizedName();
 
 			p2pItem.writeToNBT( data );

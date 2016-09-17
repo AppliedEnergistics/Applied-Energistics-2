@@ -390,7 +390,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				}
 
 				final List<ItemStack> inputs = Lists.newArrayList( startingItem );
-				final InscriberProcessType type = InscriberProcessType.Inscribe;
+				final InscriberProcessType type = InscriberProcessType.INSCRIBE;
 
 				return new InscriberRecipe( inputs, renamedItem, plateA, plateB, type );
 			}
@@ -436,7 +436,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 					if( ad.addItems( outputCopy ) == null )
 					{
 						this.setProcessingTime( 0 );
-						if( out.getProcessType() == InscriberProcessType.Press )
+						if( out.getProcessType() == InscriberProcessType.PRESS )
 						{
 							this.setInventorySlotContents( 0, null );
 							this.setInventorySlotContents( 1, null );

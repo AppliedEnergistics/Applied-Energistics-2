@@ -26,13 +26,13 @@ package appeng.api.parts;
 
 public enum PartItemStack
 {
-	Pick,
+	PICK,
 
-	Break,
+	BREAK,
 
-	Wrench,
+	WRENCH,
 
-	Network,
+	NETWORK,
 
-	World
+	WORLD
 }

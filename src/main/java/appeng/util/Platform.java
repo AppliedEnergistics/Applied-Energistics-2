@@ -2104,22 +2104,22 @@ public class Platform
 
 		for( final ItemStack stack : is )
 		{
-			if( parts.cableGlass().sameAs( AEColor.Transparent, stack ) )
+			if( parts.cableGlass().sameAs( AEColor.TRANSPARENT, stack ) )
 			{
 				return stack;
 			}
 
-			if( parts.cableCovered().sameAs( AEColor.Transparent, stack ) )
+			if( parts.cableCovered().sameAs( AEColor.TRANSPARENT, stack ) )
 			{
 				return stack;
 			}
 
-			if( parts.cableSmart().sameAs( AEColor.Transparent, stack ) )
+			if( parts.cableSmart().sameAs( AEColor.TRANSPARENT, stack ) )
 			{
 				return stack;
 			}
 
-			if( parts.cableDense().sameAs( AEColor.Transparent, stack ) )
+			if( parts.cableDense().sameAs( AEColor.TRANSPARENT, stack ) )
 			{
 				return stack;
 			}

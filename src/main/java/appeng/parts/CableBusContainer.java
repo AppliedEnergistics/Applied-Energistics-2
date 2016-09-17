@@ -388,7 +388,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			final IPartCable c = this.getCenter();
 			return c.getCableColor();
 		}
-		return AEColor.Transparent;
+		return AEColor.TRANSPARENT;
 	}
 
 	@Override
@@ -928,7 +928,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			final IPart p = this.getPart( AEPartLocation.fromOrdinal( x ) );
 			if( p != null )
 			{
-				final ItemStack is = p.getItemStack( PartItemStack.Network );
+				final ItemStack is = p.getItemStack( PartItemStack.NETWORK );
 
 				data.writeShort( Item.getIdFromItem( is.getItem() ) );
 				data.writeShort( is.getItemDamage() );
@@ -958,7 +958,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 				final Item myItem = Item.getItemById( itemID );
 
-				final ItemStack current = p != null ? p.getItemStack( PartItemStack.Network ) : null;
+				final ItemStack current = p != null ? p.getItemStack( PartItemStack.NETWORK ) : null;
 				if( current != null && current.getItem() == myItem && current.getItemDamage() == dmgValue )
 				{
 					if( p.readFromStream( data ) )
@@ -1008,7 +1008,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			if( part != null )
 			{
 				final NBTTagCompound def = new NBTTagCompound();
-				part.getItemStack( PartItemStack.World ).writeToNBT( def );
+				part.getItemStack( PartItemStack.WORLD ).writeToNBT( def );
 
 				final NBTTagCompound extra = new NBTTagCompound();
 				part.writeToNBT( extra );
@@ -1061,7 +1061,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 					continue;
 				}
 
-				final ItemStack current = p == null ? null : p.getItemStack( PartItemStack.World );
+				final ItemStack current = p == null ? null : p.getItemStack( PartItemStack.WORLD );
 
 				if( Platform.isSameItemType( iss, current ) )
 				{
@@ -1098,7 +1098,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			final IPart part = this.getPart( s );
 			if( part != null )
 			{
-				drops.add( part.getItemStack( PartItemStack.Break ) );
+				drops.add( part.getItemStack( PartItemStack.BREAK ) );
 				part.getDrops( drops, false );
 			}
 

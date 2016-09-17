@@ -25,7 +25,7 @@ public class CableBusRenderState
 	// The type to use for rendering the core of the cable.
 	private CableCoreType coreType;
 
-	private AEColor cableColor = AEColor.Transparent;
+	private AEColor cableColor = AEColor.TRANSPARENT;
 
 	// Describes the outgoing connections of this cable bus to other blocks, and how they should be rendered
 	private EnumMap<EnumFacing, AECableType> connectionTypes = new EnumMap<>( EnumFacing.class );

@@ -24,7 +24,7 @@ public class CableBusColor implements IBlockColor
 	public int colorMultiplier( IBlockState state, IBlockAccess worldIn, BlockPos pos, int color )
 	{
 
-		AEColor busColor = AEColor.Transparent;
+		AEColor busColor = AEColor.TRANSPARENT;
 
 		if( state instanceof IExtendedBlockState )
 		{

@@ -42,7 +42,7 @@ public class ColorableTileBlockColor implements IBlockColor
 	@Override
 	public int colorMultiplier( IBlockState state, @Nullable IBlockAccess worldIn, @Nullable BlockPos pos, int tintIndex )
 	{
-		AEColor color = AEColor.Transparent; // Default to a neutral color
+		AEColor color = AEColor.TRANSPARENT; // Default to a neutral color
 
 		if( worldIn != null && pos != null )
 		{

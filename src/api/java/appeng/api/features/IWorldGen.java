@@ -41,6 +41,6 @@ public interface IWorldGen
 
 	enum WorldGenType
 	{
-		CertusQuartz, ChargedCertusQuartz, Meteorites
+		CERTUS_QUARTZ, CHARGED_CERTUS_QUARTZ, METEORITES
 	}
 }

@@ -23,6 +23,6 @@ public class InscriberInscribeRecipe extends InscriberRecipe
 {
 	public InscriberInscribeRecipe( @Nonnull final Collection<ItemStack> inputs, @Nonnull final ItemStack output, @Nullable final ItemStack top, @Nullable final ItemStack bot )
 	{
-		super( inputs, output, top, bot, InscriberProcessType.Inscribe );
+		super( inputs, output, top, bot, InscriberProcessType.INSCRIBE );
 	}
 }

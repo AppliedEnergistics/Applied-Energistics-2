@@ -156,10 +156,10 @@ public class AEItemResolver implements ISubItemResolver
 		}
 		catch( final Throwable t )
 		{
-			col = AEColor.Transparent;
+			col = AEColor.TRANSPARENT;
 		}
 
-		if( col == AEColor.Transparent )
+		if( col == AEColor.TRANSPARENT )
 		{
 			return null;
 		}
@@ -178,7 +178,7 @@ public class AEItemResolver implements ISubItemResolver
 		}
 		catch( final Throwable t )
 		{
-			col = AEColor.Transparent;
+			col = AEColor.TRANSPARENT;
 		}
 
 		final ItemStack is = partType.stack( col, 1 );

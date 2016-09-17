@@ -40,41 +40,41 @@ import net.minecraft.util.text.translation.I18n;
 public enum AEColor
 {
 
-	White( "gui.appliedenergistics2.White", EnumDyeColor.WHITE, 0xBEBEBE, 0xDBDBDB, 0xFAFAFA ),
+	WHITE( "gui.appliedenergistics2.White", EnumDyeColor.WHITE, 0xBEBEBE, 0xDBDBDB, 0xFAFAFA ),
 
-	Orange( "gui.appliedenergistics2.Orange", EnumDyeColor.ORANGE, 0xF99739, 0xFAAE44, 0xF4DEC3 ),
+	ORANGE( "gui.appliedenergistics2.Orange", EnumDyeColor.ORANGE, 0xF99739, 0xFAAE44, 0xF4DEC3 ),
 
-	Magenta( "gui.appliedenergistics2.Magenta", EnumDyeColor.MAGENTA, 0x821E82, 0xB82AB8, 0xC598C8 ),
+	MAGENTA( "gui.appliedenergistics2.Magenta", EnumDyeColor.MAGENTA, 0x821E82, 0xB82AB8, 0xC598C8 ),
 
-	LightBlue( "gui.appliedenergistics2.LightBlue", EnumDyeColor.LIGHT_BLUE, 0x628DCB, 0x82ACE7, 0xD8F6FF ),
+	LIGHT_BLUE( "gui.appliedenergistics2.LightBlue", EnumDyeColor.LIGHT_BLUE, 0x628DCB, 0x82ACE7, 0xD8F6FF ),
 
-	Yellow( "gui.appliedenergistics2.Yellow", EnumDyeColor.YELLOW, 0xFFF7AA, 0xF8FF4A, 0xFFFFE8 ),
+	YELLOW( "gui.appliedenergistics2.Yellow", EnumDyeColor.YELLOW, 0xFFF7AA, 0xF8FF4A, 0xFFFFE8 ),
 
-	Lime( "gui.appliedenergistics2.Lime", EnumDyeColor.LIME, 0x7CFF4A, 0xBBFF51, 0xE7F7D7 ),
+	LIME( "gui.appliedenergistics2.Lime", EnumDyeColor.LIME, 0x7CFF4A, 0xBBFF51, 0xE7F7D7 ),
 
-	Pink( "gui.appliedenergistics2.Pink", EnumDyeColor.PINK, 0xDC8DB5, 0xF8B5D7, 0xF7DEEB ),
+	PINK( "gui.appliedenergistics2.Pink", EnumDyeColor.PINK, 0xDC8DB5, 0xF8B5D7, 0xF7DEEB ),
 
-	Gray( "gui.appliedenergistics2.Gray", EnumDyeColor.GRAY, 0x7C7C7C, 0xA0A0A0, 0xC9C9C9 ),
+	GRAY( "gui.appliedenergistics2.Gray", EnumDyeColor.GRAY, 0x7C7C7C, 0xA0A0A0, 0xC9C9C9 ),
 
-	LightGray( "gui.appliedenergistics2.LightGray", EnumDyeColor.SILVER, 0x9D9D9D, 0xCDCDCD, 0xEFEFEF ),
+	LIGHT_GRAY( "gui.appliedenergistics2.LightGray", EnumDyeColor.SILVER, 0x9D9D9D, 0xCDCDCD, 0xEFEFEF ),
 
-	Cyan( "gui.appliedenergistics2.Cyan", EnumDyeColor.CYAN, 0x2F9BA5, 0x51AAC6, 0xAEDDF4 ),
+	CYAN( "gui.appliedenergistics2.Cyan", EnumDyeColor.CYAN, 0x2F9BA5, 0x51AAC6, 0xAEDDF4 ),
 
-	Purple( "gui.appliedenergistics2.Purple", EnumDyeColor.PURPLE, 0x8230B2, 0xA453CE, 0xC7A3CC ),
+	PURPLE( "gui.appliedenergistics2.Purple", EnumDyeColor.PURPLE, 0x8230B2, 0xA453CE, 0xC7A3CC ),
 
-	Blue( "gui.appliedenergistics2.Blue", EnumDyeColor.BLUE, 0x2D29A0, 0x514AFF, 0xDDE6FF ),
+	BLUE( "gui.appliedenergistics2.Blue", EnumDyeColor.BLUE, 0x2D29A0, 0x514AFF, 0xDDE6FF ),
 
-	Brown( "gui.appliedenergistics2.Brown", EnumDyeColor.BROWN, 0x724E35, 0xB7967F, 0xE0D2C8 ),
+	BROWN( "gui.appliedenergistics2.Brown", EnumDyeColor.BROWN, 0x724E35, 0xB7967F, 0xE0D2C8 ),
 
-	Green( "gui.appliedenergistics2.Green", EnumDyeColor.GREEN, 0x45A021, 0x60E32E, 0xE3F2E3 ),
+	GREEN( "gui.appliedenergistics2.Green", EnumDyeColor.GREEN, 0x45A021, 0x60E32E, 0xE3F2E3 ),
 
-	Red( "gui.appliedenergistics2.Red", EnumDyeColor.RED, 0xA50029, 0xFF003C, 0xFFE6ED ),
+	RED( "gui.appliedenergistics2.Red", EnumDyeColor.RED, 0xA50029, 0xFF003C, 0xFFE6ED ),
 
-	Black( "gui.appliedenergistics2.Black", EnumDyeColor.BLACK, 0x2B2B2B, 0x565656, 0x848484 ),
+	BLACK( "gui.appliedenergistics2.Black", EnumDyeColor.BLACK, 0x2B2B2B, 0x565656, 0x848484 ),
 
-	Transparent( "gui.appliedenergistics2.Fluix", null, 0x1B2344, 0x895CA8, 0xD7BBEC );
+	TRANSPARENT( "gui.appliedenergistics2.Fluix", null, 0x1B2344, 0x895CA8, 0xD7BBEC );
 
-	public static final List<AEColor> VALID_COLORS = Arrays.asList( White, Orange, Magenta, LightBlue, Yellow, Lime, Pink, Gray, LightGray, Cyan, Purple, Blue, Brown, Green, Red, Black );
+	public static final List<AEColor> VALID_COLORS = Arrays.asList( WHITE, ORANGE, MAGENTA, LIGHT_BLUE, YELLOW, LIME, PINK, GRAY, LIGHT_GRAY, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK );
 
 	/**
 	 * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get the {@link #blackVariant dark variant} of the apprioriate AE color.
@@ -165,7 +165,7 @@ public enum AEColor
 	 */
 	public boolean matches( final AEColor color )
 	{
-		return this == Transparent || color == Transparent || this == color;
+		return this == TRANSPARENT || color == TRANSPARENT || this == color;
 	}
 
 	@Override

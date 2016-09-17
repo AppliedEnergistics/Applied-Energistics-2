@@ -47,7 +47,7 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	private boolean updateList;
 
 	private IAEItemStack dspPlay;
-	private AEColor paintedColor = AEColor.Transparent;
+	private AEColor paintedColor = AEColor.TRANSPARENT;
 
 	@TileEvent( TileEventType.NETWORK_READ )
 	public boolean readFromStream_TileCraftingMonitorTile( final ByteBuf data ) throws IOException

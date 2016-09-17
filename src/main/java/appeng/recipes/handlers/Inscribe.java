@@ -61,7 +61,7 @@ public final class Inscribe extends InscriberProcess
 		final ItemStack top = ( this.getTopOptional() == null ) ? null : this.getTopOptional().getItemStack();
 		final ItemStack bot = ( this.getBotOptional() == null ) ? null : this.getBotOptional().getItemStack();
 		final ItemStack output = this.getOutput().getItemStack();
-		final InscriberProcessType type = InscriberProcessType.Inscribe;
+		final InscriberProcessType type = InscriberProcessType.INSCRIBE;
 
 		final IInscriberRecipe recipe = new InscriberRecipe( inputs, output, top, bot, type );
 

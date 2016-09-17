@@ -140,7 +140,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	{
 		if( this.host == null )
 		{
-			return AEColor.Transparent;
+			return AEColor.TRANSPARENT;
 		}
 		return this.host.getColor();
 	}
@@ -212,7 +212,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	@Override
 	public ItemStack getItemStack( final PartItemStack type )
 	{
-		if( type == PartItemStack.Network )
+		if( type == PartItemStack.NETWORK )
 		{
 			final ItemStack copy = this.is.copy();
 			copy.setTagCompound( null );
@@ -437,7 +437,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 		{
 			final IMemoryCard memoryCard = (IMemoryCard) memCardIS.getItem();
 
-			ItemStack is = this.getItemStack( PartItemStack.Network );
+			ItemStack is = this.getItemStack( PartItemStack.NETWORK );
 
 			// Blocks and parts share the same soul!
 			final IDefinitions definitions = AEApi.instance().definitions();

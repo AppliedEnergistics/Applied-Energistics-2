@@ -482,7 +482,7 @@ public final class Registration
 		// whitelist from config
 		for( final int dimension : AEConfig.instance.meteoriteDimensionWhitelist )
 		{
-			registries.worldgen().enableWorldGenForDimension( WorldGenType.Meteorites, dimension );
+			registries.worldgen().enableWorldGenForDimension( WorldGenType.METEORITES, dimension );
 		}
 
 		/*

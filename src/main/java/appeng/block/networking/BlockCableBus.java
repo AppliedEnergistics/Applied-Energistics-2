@@ -244,7 +244,7 @@ public class BlockCableBus extends AEBaseTileBlock
 
 		if( sp.part != null )
 		{
-			return sp.part.getItemStack( PartItemStack.Pick );
+			return sp.part.getItemStack( PartItemStack.PICK );
 		}
 		else if( sp.facade != null )
 		{

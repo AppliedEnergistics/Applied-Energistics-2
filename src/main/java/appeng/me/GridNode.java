@@ -106,7 +106,7 @@ public class GridNode implements IGridNode, IPathItem
 		this.connections.add( gridConnection );
 		if( gridConnection.hasDirection() )
 		{
-			this.gridProxy.onGridNotification( GridNotification.ConnectionsChanged );
+			this.gridProxy.onGridNotification( GridNotification.CONNECTIONS_CHANGED );
 		}
 
 		final IGridNode gn = this;
@@ -119,7 +119,7 @@ public class GridNode implements IGridNode, IPathItem
 		this.connections.remove( gridConnection );
 		if( gridConnection.hasDirection() )
 		{
-			this.gridProxy.onGridNotification( GridNotification.ConnectionsChanged );
+			this.gridProxy.onGridNotification( GridNotification.CONNECTIONS_CHANGED );
 		}
 	}
 

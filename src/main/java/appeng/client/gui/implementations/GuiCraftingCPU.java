@@ -250,7 +250,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 				if( AEConfig.instance.useColoredCraftingStatus && ( active || scheduled ) )
 				{
-					final int bgColor = ( active ? AEColor.Green.blackVariant : AEColor.Yellow.blackVariant ) | BACKGROUND_ALPHA;
+					final int bgColor = ( active ? AEColor.GREEN.blackVariant : AEColor.YELLOW.blackVariant ) | BACKGROUND_ALPHA;
 					final int startX = ( x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET ) * 2;
 					final int startY = ( ( y * offY + ITEMSTACK_TOP_OFFSET ) - 3 ) * 2;
 					drawRect( startX, startY, startX + ( SECTION_LENGTH * 2 ), startY + ( offY * 2 ) - 2, bgColor );

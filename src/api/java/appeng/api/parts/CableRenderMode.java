@@ -26,9 +26,9 @@ package appeng.api.parts;
 
 public enum CableRenderMode
 {
-	Standard( false ),
+	STANDARD( false ),
 
-	CableView( true );
+	CABLE_VIEW( true );
 
 	public final boolean transparentFacades;
 	public final boolean opaqueFacades;

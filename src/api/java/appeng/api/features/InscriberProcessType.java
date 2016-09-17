@@ -24,10 +24,10 @@ public enum InscriberProcessType
 	/**
 	 * uses the optionals as catalyst
 	 */
-	Inscribe,
+	INSCRIBE,
 
 	/**
 	 * spends the optionals
 	 */
-	Press
+	PRESS
 }

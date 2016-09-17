@@ -42,7 +42,7 @@ public class ItemMultipartRendering extends ItemRenderingCustomizer
 
 		rendering.meshDefinition( this::getItemMeshDefinition );
 
-		rendering.color( new StaticItemColor( AEColor.Transparent ) );
+		rendering.color( new StaticItemColor( AEColor.TRANSPARENT ) );
 
 		// Register all item models as variants so they get loaded
 		rendering.variants( Arrays.stream( PartType.values() )

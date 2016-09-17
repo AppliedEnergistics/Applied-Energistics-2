@@ -96,7 +96,7 @@ class MonitorBakedModel extends CraftingCubeBakedModel
 			}
 		}
 
-		return AEColor.Transparent;
+		return AEColor.TRANSPARENT;
 	}
 
 	private static EnumFacing getForward( IBlockState state )

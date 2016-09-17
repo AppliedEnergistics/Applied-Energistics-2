@@ -48,7 +48,14 @@ public class LocatableEventAnnounce extends Event
 
 	public enum LocatableEvent
 	{
-		Register, // Adds the locatable to the registry
-		Unregister // Removes the locatable from the registry
+		/**
+		 * Adds the locatable to the registry
+		 */
+		REGISTER,
+
+		/**
+		 * Removes the locatable from the registry
+		 */
+		UNREGISTER
 	}
 }

@@ -108,7 +108,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	private int priority = 0;
 	private int state = 0;
 	private boolean wasActive = false;
-	private AEColor paintedColor = AEColor.Transparent;
+	private AEColor paintedColor = AEColor.TRANSPARENT;
 	private boolean isCached = false;
 	private ICellHandler cellHandler;
 	private MEMonitorHandler itemCell;

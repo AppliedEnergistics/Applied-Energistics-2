@@ -89,7 +89,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 	private final SecurityStationInventory inventory = new SecurityStationInventory( this );
 	private final MEMonitorHandler<IAEItemStack> securityMonitor = new MEMonitorHandler<IAEItemStack>( this.inventory );
 	private long securityKey;
-	private AEColor paintedColor = AEColor.Transparent;
+	private AEColor paintedColor = AEColor.TRANSPARENT;
 	private boolean isActive = false;
 
 	public TileSecurityStation()
@@ -234,7 +234,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 	public void onChunkUnload()
 	{
 		super.onChunkUnload();
-		MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.Unregister ) );
+		MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.UNREGISTER ) );
 		this.isActive = false;
 	}
 
@@ -245,7 +245,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 		if( Platform.isServer() )
 		{
 			this.isActive = true;
-			MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.Register ) );
+			MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.REGISTER ) );
 		}
 	}
 
@@ -253,7 +253,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 	public void invalidate()
 	{
 		super.invalidate();
-		MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.Unregister ) );
+		MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.UNREGISTER ) );
 		this.isActive = false;
 	}
 

@@ -66,7 +66,7 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 	@Override
 	public IExtendedBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
 	{
-		AEColor color = AEColor.Transparent;
+		AEColor color = AEColor.TRANSPARENT;
 		EnumFacing forward = EnumFacing.NORTH;
 
 		TileCraftingMonitorTile te = getTileEntity( world, pos );

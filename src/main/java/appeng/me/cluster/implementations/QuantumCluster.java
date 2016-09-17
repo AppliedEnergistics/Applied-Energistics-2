@@ -87,7 +87,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 			{
 				if( this.thisSide != 0 )
 				{
-					MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.Unregister ) );
+					MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.UNREGISTER ) );
 				}
 
 				if( this.canUseNode( -qe ) )
@@ -101,11 +101,11 @@ public class QuantumCluster implements ILocatable, IAECluster
 					this.otherSide = -qe;
 				}
 
-				MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.Register ) );
+				MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.REGISTER ) );
 			}
 			else
 			{
-				MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.Unregister ) );
+				MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.UNREGISTER ) );
 
 				this.otherSide = 0;
 				this.thisSide = 0;
@@ -243,7 +243,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 		if( this.thisSide != 0 )
 		{
 			this.updateStatus( true );
-			MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.Unregister ) );
+			MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.UNREGISTER ) );
 		}
 
 		this.center.updateStatus( null, (byte) -1, this.isUpdateStatus() );

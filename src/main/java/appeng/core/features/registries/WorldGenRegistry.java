@@ -104,7 +104,7 @@ public final class WorldGenRegistry implements IWorldGen
 			return false;
 		}
 
-		if( !isGoodDimension && type == WorldGenType.Meteorites )
+		if( !isGoodDimension && type == WorldGenType.METEORITES )
 		{
 			return false;
 		}

@@ -89,7 +89,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 		for( final AEColor col : AEColor.values() )
 		{
-			if( col == AEColor.Transparent )
+			if( col == AEColor.TRANSPARENT )
 			{
 				continue;
 			}
@@ -142,9 +142,9 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				// clean cables.
 				if( te instanceof IColorableTile )
 				{
-					if( this.getAECurrentPower( is ) > powerPerUse && ( (IColorableTile) te ).getColor() != AEColor.Transparent )
+					if( this.getAECurrentPower( is ) > powerPerUse && ( (IColorableTile) te ).getColor() != AEColor.TRANSPARENT )
 					{
-						if( ( (IColorableTile) te ).recolourBlock( side, AEColor.Transparent, p ) )
+						if( ( (IColorableTile) te ).recolourBlock( side, AEColor.TRANSPARENT, p ) )
 						{
 							inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
 							this.extractAEPower( is, powerPerUse );
@@ -170,7 +170,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 				if( color != null && this.getAECurrentPower( is ) > powerPerUse )
 				{
-					if( color != AEColor.Transparent && this.recolourBlock( blk, side, w, pos, side, color, p ) )
+					if( color != AEColor.TRANSPARENT && this.recolourBlock( blk, side, w, pos, side, color, p ) )
 					{
 						inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
 						this.extractAEPower( is, powerPerUse );
@@ -217,7 +217,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 		if( paintBall.getItem() instanceof ItemSnowball )
 		{
-			return AEColor.Transparent;
+			return AEColor.TRANSPARENT;
 		}
 
 		if( paintBall.getItem() instanceof ItemPaintBall )

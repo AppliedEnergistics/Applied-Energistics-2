@@ -50,11 +50,11 @@ public final class LocatableRegistry implements ILocatableRegistry
 			return; // IGNORE!
 		}
 
-		if( e.change == LocatableEvent.Register )
+		if( e.change == LocatableEvent.REGISTER )
 		{
 			this.set.put( e.target.getLocatableSerial(), e.target );
 		}
-		else if( e.change == LocatableEvent.Unregister )
+		else if( e.change == LocatableEvent.UNREGISTER )
 		{
 			this.set.remove( e.target.getLocatableSerial() );
 		}

@@ -116,7 +116,7 @@ public enum Achievements
 
 	Achievements( final int x, final int y, final AEColoredItemDefinition which, final AchievementType type )
 	{
-		this.stack = ( which != null ) ? which.stack( AEColor.Transparent, 1 ) : null;
+		this.stack = ( which != null ) ? which.stack( AEColor.TRANSPARENT, 1 ) : null;
 		this.type = type;
 		this.x = x;
 		this.y = y;

@@ -113,7 +113,7 @@ public class PartPlacement
 
 						if( sp.part != null )
 						{
-							is.add( sp.part.getItemStack( PartItemStack.Wrench ) );
+							is.add( sp.part.getItemStack( PartItemStack.WRENCH ) );
 							sp.part.getDrops( is, true );
 							host.removePart( sp.side, false );
 						}

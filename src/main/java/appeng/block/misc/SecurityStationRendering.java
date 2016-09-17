@@ -20,6 +20,6 @@ public class SecurityStationRendering extends BlockRenderingCustomizer
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{
 		rendering.blockColor( ColorableTileBlockColor.INSTANCE );
-		itemRendering.color( new StaticItemColor( AEColor.Transparent ) );
+		itemRendering.color( new StaticItemColor( AEColor.TRANSPARENT ) );
 	}
 }

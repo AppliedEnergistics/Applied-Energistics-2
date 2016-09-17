@@ -61,7 +61,7 @@ public class ItemPaintBall extends AEBaseItem
 
 		if( dmg >= AEColor.values().length )
 		{
-			return AEColor.Transparent;
+			return AEColor.TRANSPARENT;
 		}
 
 		return AEColor.values()[dmg];
@@ -72,7 +72,7 @@ public class ItemPaintBall extends AEBaseItem
 	{
 		for( final AEColor c : AEColor.values() )
 		{
-			if( c != AEColor.Transparent )
+			if( c != AEColor.TRANSPARENT )
 			{
 				itemStacks.add( new ItemStack( this, 1, c.ordinal() ) );
 			}
@@ -80,7 +80,7 @@ public class ItemPaintBall extends AEBaseItem
 
 		for( final AEColor c : AEColor.values() )
 		{
-			if( c != AEColor.Transparent )
+			if( c != AEColor.TRANSPARENT )
 			{
 				itemStacks.add( new ItemStack( this, 1, DAMAGE_THRESHOLD + c.ordinal() ) );
 			}
