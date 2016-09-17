@@ -23,7 +23,9 @@
 
 package appeng.api.networking.security;
 
-
+/**
+ * TODO: Consider refactoring.
+ */
 public class BaseActionSource
 {
 

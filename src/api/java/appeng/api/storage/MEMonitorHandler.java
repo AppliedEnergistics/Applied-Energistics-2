@@ -42,7 +42,11 @@ import appeng.api.storage.data.IItemList;
  * listeners.
  *
  * @param <StackType>
+ * @deprecated
+ *
+ * TODO: Needs to be redesigned to solve performance issues. Also should not be part of the API as class.
  */
+@Deprecated
 public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<StackType>
 {
 

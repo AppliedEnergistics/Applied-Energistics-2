@@ -26,7 +26,9 @@ package appeng.api.networking.security;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-
+/**
+ * TODO: Consider refactoring.
+ */
 public class PlayerSource extends BaseActionSource
 {
 

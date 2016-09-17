@@ -32,7 +32,12 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.util.EnumFacing;
 
-
+/**
+ * TODO: Needs to be moved to an internal class. API is only allowed to contain interfaces and/or data.
+ *
+ * @deprecated
+ */
+@Deprecated
 public class BakingPipeline<F, T> implements BakingPipelineElement<F, T>
 {
 
@@ -43,6 +48,9 @@ public class BakingPipeline<F, T> implements BakingPipelineElement<F, T>
 		this.pipeline = ImmutableList.copyOf( pipeline );
 	}
 
+	/**
+	 * TODO: fix generics
+	 */
 	public List pipe( List things, IBakedModel parent, IBlockState state, EnumFacing side, long rand )
 	{
 		for( BakingPipelineElement pipe : pipeline )

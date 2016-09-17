@@ -28,7 +28,8 @@ import appeng.api.util.AEPartLocation;
 
 
 /**
- * Reports a selected part from th IPartHost
+ * Reports a selected part from the IPartHost
+ *
  */
 public class SelectedPart
 {

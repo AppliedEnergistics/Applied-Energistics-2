@@ -35,6 +35,8 @@ import appeng.api.util.AEPartLocation;
 /**
  * All Layers must extends this, this get part implementation is provided to interface with the parts, however a real
  * implementation will be used at runtime.
+ *
+ * TODO: Consider removing and replacing with capabilities.
  */
 public abstract class LayerBase extends TileEntity // implements IPartHost
 {

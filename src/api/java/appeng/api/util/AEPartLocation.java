@@ -94,7 +94,7 @@ public enum AEPartLocation
 
 	/**
 	 * 100% chance of success.
-	 * 
+	 *
 	 * @param side
 	 * @return proper Part Location for a facing enum.
 	 */

@@ -24,6 +24,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 
 /**
  * Mutable stand in for Axis Aligned BB, this was used to prevent GC Thrashing.. Related code could also be re-written.
+ *
+ * TODO: Replace with interface and maybe factory should it ever be needed for addons.
  */
 public class AEAxisAlignedBB
 {
