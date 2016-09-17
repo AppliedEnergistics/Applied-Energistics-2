@@ -32,6 +32,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.Nullable;
 
 import com.google.common.base.Charsets;

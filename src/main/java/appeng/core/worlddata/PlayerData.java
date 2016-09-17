@@ -19,12 +19,12 @@
 package appeng.core.worlddata;
 
 
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import java.util.Optional;
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 

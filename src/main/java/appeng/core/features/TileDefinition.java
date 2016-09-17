@@ -20,6 +20,7 @@ package appeng.core.features;
 
 
 import java.util.Optional;
+
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemBlock;

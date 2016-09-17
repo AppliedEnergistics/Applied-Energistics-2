@@ -20,10 +20,9 @@ package appeng.api.features;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
-
-import java.util.Optional;
 
 import net.minecraft.item.ItemStack;
 

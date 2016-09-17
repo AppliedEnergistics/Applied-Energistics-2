@@ -22,6 +22,7 @@ package appeng.client.render.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import javax.annotation.Nullable;
 import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Matrix4f;

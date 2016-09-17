@@ -21,7 +21,6 @@ package appeng.parts;
 
 import java.util.LinkedList;
 import java.util.List;
-
 import java.util.Optional;
 
 import net.minecraft.block.Block;

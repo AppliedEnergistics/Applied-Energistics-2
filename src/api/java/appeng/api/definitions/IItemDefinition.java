@@ -24,9 +24,9 @@
 package appeng.api.definitions;
 
 
-import javax.annotation.Nonnull;
-
 import java.util.Optional;
+
+import javax.annotation.Nonnull;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

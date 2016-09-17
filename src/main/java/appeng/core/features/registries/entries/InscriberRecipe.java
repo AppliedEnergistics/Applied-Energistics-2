@@ -22,11 +22,10 @@ package appeng.core.features.registries.entries;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import java.util.Optional;
 
 import net.minecraft.item.ItemStack;
 

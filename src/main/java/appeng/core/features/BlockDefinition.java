@@ -20,6 +20,7 @@ package appeng.core.features;
 
 
 import java.util.Optional;
+
 import com.google.common.base.Preconditions;
 
 import net.minecraft.block.Block;

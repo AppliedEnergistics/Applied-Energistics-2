@@ -21,6 +21,7 @@ package appeng.client.render.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 

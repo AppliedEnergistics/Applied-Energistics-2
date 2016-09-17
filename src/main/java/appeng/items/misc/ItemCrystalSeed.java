@@ -21,6 +21,7 @@ package appeng.items.misc;
 
 import java.util.List;
 import java.util.Optional;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;

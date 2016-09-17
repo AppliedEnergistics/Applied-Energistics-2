@@ -24,13 +24,14 @@
 package appeng.api.features;
 
 
+import net.minecraftforge.items.IItemHandler;
+
 import appeng.api.AEInjectable;
 import appeng.api.movable.IMovableRegistry;
 import appeng.api.networking.IGridCacheRegistry;
 import appeng.api.parts.IPartModels;
 import appeng.api.storage.ICellRegistry;
 import appeng.api.storage.IExternalStorageRegistry;
-import net.minecraftforge.items.IItemHandler;
 
 
 /**

@@ -21,6 +21,7 @@ package appeng.client.render.cablebus;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;

@@ -20,6 +20,7 @@ package appeng.items.tools.powered;
 
 
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;

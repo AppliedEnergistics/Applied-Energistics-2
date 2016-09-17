@@ -21,6 +21,7 @@ package appeng.block;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;

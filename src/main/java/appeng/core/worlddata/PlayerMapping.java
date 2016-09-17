@@ -20,11 +20,11 @@ package appeng.core.worlddata;
 
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
 
-import java.util.Optional;
 import com.google.common.base.Preconditions;
 
 import net.minecraftforge.common.config.ConfigCategory;

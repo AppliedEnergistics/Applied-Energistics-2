@@ -32,7 +32,6 @@ import net.minecraftforge.fml.common.discovery.ASMDataTable;
 
 import appeng.api.AEInjectable;
 import appeng.api.AEPlugin;
-import appeng.api.exceptions.AppEngException;
 
 
 /**

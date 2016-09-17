@@ -20,6 +20,7 @@ package appeng.bootstrap.components;
 
 
 import java.util.Map;
+
 import javax.annotation.Nonnull;
 
 import net.minecraft.client.Minecraft;
