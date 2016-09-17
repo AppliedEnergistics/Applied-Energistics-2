@@ -36,7 +36,19 @@ public enum ExtraItemTextures
 
 	ToolColorApplicatorTip_Dark( "ToolColorApplicatorTip_Dark" ),
 
-	ToolColorApplicatorTip_Light( "ToolColorApplicatorTip_Light" );
+	ToolColorApplicatorTip_Light( "ToolColorApplicatorTip_Light" ),
+
+	WirelessTerminal_Border( "ToolWirelessTerminalBorder" ),
+
+	WirelessTerminal_Border_Inactive( "ToolWirelessTerminalBorderInactive" ),
+
+	WirelessTerminal_ScrollBar( "ToolWirelessTerminalMedium" ),
+
+	WirelessTerminal_Icons( "ToolWirelessTerminalIcons" ),
+
+	WirelessTerminal_Screen( "ToolWirelessTerminalScreen" );
+
+
 
 	private final String name;
 	private IIcon IIcon;

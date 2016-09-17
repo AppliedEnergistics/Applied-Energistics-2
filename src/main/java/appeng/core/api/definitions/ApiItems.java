@@ -76,7 +76,7 @@ public final class ApiItems implements IItems
 	private final IItemDefinition netherQuartzKnife;
 
 	private final IItemDefinition entropyManipulator;
-	private final IItemDefinition wirelessTerminal;
+	private final AEColoredItemDefinition wirelessTerminal;
 	private final IItemDefinition biometricCard;
 	private final IItemDefinition chargedStaff;
 	private final IItemDefinition massCannon;
@@ -132,7 +132,8 @@ public final class ApiItems implements IItems
 		this.netherQuartzKnife = constructor.registerItemDefinition( new ToolQuartzCuttingKnife( AEFeature.NetherQuartzTools ) );
 
 		this.entropyManipulator = constructor.registerItemDefinition( new ToolEntropyManipulator() );
-		this.wirelessTerminal = constructor.registerItemDefinition( new ToolWirelessTerminal() );
+		final IItemDefinition wirelessTerminalbase = constructor.registerItemDefinition( new ToolWirelessTerminal() );
+		this.wirelessTerminal = constructor.constructColoredDefinition( wirelessTerminalbase, 0 );
 		this.biometricCard = constructor.registerItemDefinition( new ToolBiometricCard() );
 		this.chargedStaff = constructor.registerItemDefinition( new ToolChargedStaff() );
 		this.massCannon = constructor.registerItemDefinition( new ToolMassCannon() );
@@ -260,7 +261,7 @@ public final class ApiItems implements IItems
 	}
 
 	@Override
-	public IItemDefinition wirelessTerminal()
+	public AEColoredItemDefinition wirelessTerminal()
 	{
 		return this.wirelessTerminal;
 	}

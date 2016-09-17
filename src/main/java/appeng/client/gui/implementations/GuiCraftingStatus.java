@@ -35,6 +35,7 @@ import appeng.api.AEApi;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IParts;
 import appeng.api.storage.ITerminalHost;
+import appeng.api.util.AEColor;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerCraftingStatus;
 import appeng.core.AELog;
@@ -70,10 +71,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 
 		if( target instanceof WirelessTerminalGuiObject )
 		{
-			for( final ItemStack wirelessTerminalStack : definitions.items().wirelessTerminal().maybeStack( 1 ).asSet() )
-			{
-				this.myIcon = wirelessTerminalStack;
-			}
+			this.myIcon = definitions.items().wirelessTerminal().stack( AEColor.White, 1 );
 
 			this.originalGui = GuiBridge.GUI_WIRELESS_TERM;
 		}

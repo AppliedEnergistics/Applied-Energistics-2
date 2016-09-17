@@ -27,6 +27,7 @@ import appeng.api.AEApi;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IParts;
 import appeng.api.storage.ITerminalHost;
+import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiNumberBox;
 import appeng.client.gui.widgets.GuiTabButton;
@@ -98,10 +99,7 @@ public class GuiCraftAmount extends AEBaseGui
 
 		if( target instanceof WirelessTerminalGuiObject )
 		{
-			for( final ItemStack wirelessTerminalStack : definitions.items().wirelessTerminal().maybeStack( 1 ).asSet() )
-			{
-				myIcon = wirelessTerminalStack;
-			}
+			myIcon = definitions.items().wirelessTerminal().stack( AEColor.White, 1 );
 
 			this.originalGui = GuiBridge.GUI_WIRELESS_TERM;
 		}
