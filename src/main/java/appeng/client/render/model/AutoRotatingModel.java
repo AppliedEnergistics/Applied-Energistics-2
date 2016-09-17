@@ -254,6 +254,7 @@ public class AutoRotatingModel implements IBakedModel
 			}
 		}
 
+		@Override
 		public void setQuadTint( int tint )
 		{
 			parent.setQuadTint( tint );

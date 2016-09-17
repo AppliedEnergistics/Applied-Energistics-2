@@ -189,6 +189,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 		return false;
 	}
 
+	@Override
 	@SideOnly( Side.CLIENT)
 	public BlockRenderLayer getBlockLayer()
 	{

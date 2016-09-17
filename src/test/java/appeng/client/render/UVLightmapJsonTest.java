@@ -39,21 +39,25 @@ public class UVLightmapJsonTest
 
 			final AxisAlignedBB box = new AxisAlignedBB( 0.25, 0, 7 / 16d, 0.75, 1, 9 / 16d );
 
+			@Override
 			public boolean isFullBlock( IBlockState state )
 			{
 				return false;
 			}
 
+			@Override
 			public boolean isOpaqueCube( IBlockState state )
 			{
 				return false;
 			}
 
+			@Override
 			public AxisAlignedBB getBoundingBox( IBlockState state, IBlockAccess source, BlockPos pos )
 			{
 				return box;
 			}
 
+			@Override
 			public BlockRenderLayer getBlockLayer()
 			{
 				return BlockRenderLayer.CUTOUT;

@@ -234,6 +234,7 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 	 * @return 0 - 8, reasonable default 3-4, this controls the cable connection to the node. -1 to render connection
 	 * yourself.
 	 */
+	@Override
 	public float getCableConnectionLength( AECableType cable );
 
 	/**

@@ -214,6 +214,7 @@ public class BlockQuartzFixture extends AEBaseBlock implements IOrientableBlock,
 		return false;
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public BlockRenderLayer getBlockLayer()
 	{

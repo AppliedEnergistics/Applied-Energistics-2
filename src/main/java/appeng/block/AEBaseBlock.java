@@ -409,6 +409,7 @@ public abstract class AEBaseBlock extends Block
 		return this.getUnlocalizedName();
 	}
 
+	@Override
 	public void addInformation( final ItemStack is, final EntityPlayer player, final List<String> lines, final boolean advancedItemTooltips )
 	{
 

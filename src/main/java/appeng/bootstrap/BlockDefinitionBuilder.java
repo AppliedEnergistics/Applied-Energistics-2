@@ -129,6 +129,7 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		return this;
 	}
 
+	@Override
 	public BlockDefinitionBuilder rendering( BlockRenderingCustomizer callback )
 	{
 		if( Platform.isClient() )

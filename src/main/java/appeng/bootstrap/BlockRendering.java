@@ -58,6 +58,7 @@ class BlockRendering implements IBlockRendering
 	@SideOnly( Side.CLIENT )
 	private Map<String, IModel> builtInModels = new HashMap<>();
 
+	@Override
 	@SideOnly( Side.CLIENT )
 	public IBlockRendering modelCustomizer( BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> customizer )
 	{

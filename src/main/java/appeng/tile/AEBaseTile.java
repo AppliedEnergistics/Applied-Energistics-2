@@ -194,6 +194,7 @@ public class AEBaseTile extends TileEntity implements ITickable, IOrientable, IC
 		return data;
 	}
 
+	@Override
 	public final void update()
 	{
 		for( final AETileEventHandler h : this.getHandlerListFor( TileEventType.TICK ) )

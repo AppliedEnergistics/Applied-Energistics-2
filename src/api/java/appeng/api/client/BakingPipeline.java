@@ -51,6 +51,7 @@ public class BakingPipeline<F, T> implements BakingPipelineElement<F, T>
 	/**
 	 * TODO: fix generics
 	 */
+	@Override
 	public List pipe( List things, IBakedModel parent, IBlockState state, EnumFacing side, long rand )
 	{
 		for( BakingPipelineElement pipe : pipeline )

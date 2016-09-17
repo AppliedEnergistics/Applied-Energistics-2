@@ -144,6 +144,7 @@ class ItemDefinitionBuilder implements IItemBuilder
 		callback.customize( itemRendering );
 	}
 
+	@Override
 	public ItemDefinition build()
 	{
 		if( !AEConfig.instance.areFeaturesEnabled( features ) )
