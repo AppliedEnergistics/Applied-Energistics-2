@@ -26,7 +26,7 @@ package appeng.api.storage;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-
+import net.minecraftforge.items.IItemHandler;
 import appeng.api.IAppEngApi;
 import appeng.api.networking.security.BaseActionSource;
 
@@ -35,7 +35,10 @@ import appeng.api.networking.security.BaseActionSource;
  * A Registry of External Storage handlers.
  *
  * Do not implement obtain via {@link IAppEngApi}.registries().getExternalStorageRegistry()
+ * 
+ * @deprecated in favour of {@link IItemHandler}
  */
+@Deprecated
 public interface IExternalStorageRegistry
 {
 
@@ -44,6 +47,7 @@ public interface IExternalStorageRegistry
 	 *
 	 * @param esh storage handler
 	 */
+	@Deprecated
 	void addExternalStorageInterface( IExternalStorageHandler esh );
 
 	/**
@@ -54,5 +58,6 @@ public interface IExternalStorageRegistry
 	 *
 	 * @return the handler for a given tile / forge direction
 	 */
+	@Deprecated
 	IExternalStorageHandler getHandler( TileEntity te, EnumFacing opposite, StorageChannel channel, BaseActionSource mySrc );
 }

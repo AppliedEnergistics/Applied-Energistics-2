@@ -30,6 +30,7 @@ import appeng.api.networking.IGridCacheRegistry;
 import appeng.api.parts.IPartModels;
 import appeng.api.storage.ICellRegistry;
 import appeng.api.storage.IExternalStorageRegistry;
+import net.minecraftforge.items.IItemHandler;
 
 
 /**
@@ -55,7 +56,10 @@ public interface IRegistryContainer
 	/**
 	 * Add additional storage bus handlers to improve interplay with mod blocks that contains special inventories that
 	 * function unlike vanilla chests. AE uses this internally for barrels, DSU's, quantum chests, AE Networks and more.
+	 * 
+	 * @deprecated in favour of {@link IItemHandler}
 	 */
+	@Deprecated
 	IExternalStorageRegistry externalStorage();
 
 	/**

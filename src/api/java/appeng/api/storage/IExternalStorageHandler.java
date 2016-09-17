@@ -26,13 +26,16 @@ package appeng.api.storage;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-
+import net.minecraftforge.items.IItemHandler;
 import appeng.api.networking.security.BaseActionSource;
 
 
 /**
  * A Registration Record for {@link IExternalStorageRegistry}
+ * 
+ * @deprecated in favour of {@link IItemHandler}
  */
+@Deprecated
 public interface IExternalStorageHandler
 {
 
@@ -45,6 +48,7 @@ public interface IExternalStorageHandler
 	 *
 	 * @return true, if it can get a handler via getInventory
 	 */
+	@Deprecated
 	boolean canHandle( TileEntity te, EnumFacing d, StorageChannel channel, BaseActionSource mySrc );
 
 	/**
@@ -60,5 +64,6 @@ public interface IExternalStorageHandler
 	 *
 	 * @return The Handler for the inventory
 	 */
+	@Deprecated
 	IMEInventory getInventory( TileEntity te, EnumFacing d, StorageChannel channel, BaseActionSource src );
 }
