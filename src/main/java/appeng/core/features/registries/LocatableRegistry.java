@@ -60,16 +60,6 @@ public final class LocatableRegistry implements ILocatableRegistry
 		}
 	}
 
-	/**
-	 * Find a locate-able object by its serial.
-	 */
-	@Override
-	@Deprecated
-	public Object findLocatableBySerial( final long ser )
-	{
-		return this.set.get( ser );
-	}
-
 	@Override
 	public ILocatable getLocatableBy( final long serial )
 	{
