@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -61,7 +62,10 @@ public class CableBusModel implements IModel
 	@Override
 	public Collection<ResourceLocation> getTextures()
 	{
-		return CableBuilder.getTextures();
+		return ImmutableList.<ResourceLocation>builder()
+				.addAll( CableBuilder.getTextures() )
+				.addAll( FacadeBuilder.getTextures() )
+				.build();
 	}
 
 	@Override
@@ -71,7 +75,9 @@ public class CableBusModel implements IModel
 		Map<ResourceLocation, IBakedModel> partModels = loadPartModels( state, format, bakedTextureGetter );
 
 		CableBuilder cableBuilder = new CableBuilder( format, bakedTextureGetter );
-		return new CableBusBakedModel( cableBuilder, partModels );
+		FacadeBuilder facadeBuilder = new FacadeBuilder( format, bakedTextureGetter );
+
+		return new CableBusBakedModel( cableBuilder, facadeBuilder, partModels );
 	}
 
 	private Map<ResourceLocation, IBakedModel> loadPartModels( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )

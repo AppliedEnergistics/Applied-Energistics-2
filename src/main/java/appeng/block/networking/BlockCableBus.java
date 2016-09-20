@@ -58,6 +58,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import appeng.api.AEApi;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
@@ -403,6 +404,19 @@ public class BlockCableBus extends AEBaseTileBlock
 		tesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBusTESR.class );
 		GameRegistry.registerTileEntity( tesrTile, "ClientOnly_TESR_CableBus" );
 		ClientRegistry.bindTileEntitySpecialRenderer( BlockCableBus.getTesrTile(), new CableBusTESR() );
+	}
+
+	@Override
+	public boolean canRenderInLayer( IBlockState state, BlockRenderLayer layer )
+	{
+		if( AEApi.instance().partHelper().getCableRenderMode().transparentFacades )
+		{
+			return layer == BlockRenderLayer.TRANSLUCENT;
+		}
+		else
+		{
+			return layer == BlockRenderLayer.CUTOUT;
+		}
 	}
 
 	public static Class<? extends AEBaseTile> getNoTesrTile()

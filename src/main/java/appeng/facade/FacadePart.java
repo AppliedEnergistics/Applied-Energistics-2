@@ -22,21 +22,18 @@ package appeng.facade;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.AxisAlignedBB;
 
 import appeng.api.AEApi;
 import appeng.api.parts.IBoxProvider;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AEPartLocation;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
-import appeng.integration.abstraction.IBuildCraftTransport;
-import appeng.util.Platform;
 
 
 public class FacadePart implements IFacadePart, IBoxProvider
@@ -44,7 +41,6 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 	private final ItemStack facade;
 	private final AEPartLocation side;
-	private int thickness = 2;
 
 	public FacadePart( final ItemStack facade, final AEPartLocation side )
 	{
@@ -90,15 +86,9 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	}
 
 	@Override
-	public AxisAlignedBB getPrimaryBox()
-	{
-		return Platform.getPrimaryBox( this.side, this.thickness );
-	}
-
-	@Override
 	public Item getItem()
 	{
-		final ItemStack is = this.getTexture();
+		final ItemStack is = this.getTextureItem();
 		if( is == null )
 		{
 			return null;
@@ -109,7 +99,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	@Override
 	public int getItemDamage()
 	{
-		final ItemStack is = this.getTexture();
+		final ItemStack is = this.getTextureItem();
 		if( is == null )
 		{
 			return 0;
@@ -124,12 +114,6 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	}
 
 	@Override
-	public void setThinFacades( final boolean useThinFacades )
-	{
-		this.thickness = useThinFacades ? 1 : 2;
-	}
-
-	@Override
 	public boolean isTransparent()
 	{
 		if( AEApi.instance().partHelper().getCableRenderMode().transparentFacades )
@@ -137,14 +121,15 @@ public class FacadePart implements IFacadePart, IBoxProvider
 			return true;
 		}
 
-		final ItemStack is = this.getTexture();
+		final ItemStack is = this.getTextureItem();
 		final Block blk = Block.getBlockFromItem( is.getItem() );
 
 		return !blk.isOpaqueCube( blk.getDefaultState() );
 	}
 
 	@Nullable
-	private ItemStack getTexture()
+	@Override
+	public ItemStack getTextureItem()
 	{
 		final Item maybeFacade = this.facade.getItem();
 
@@ -155,14 +140,32 @@ public class FacadePart implements IFacadePart, IBoxProvider
 
 			return facade.getTextureItem( this.facade );
 		}
-		else if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
-		{
-			final IBuildCraftTransport bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
-
-			return bc.getTextureForFacade( this.facade );
-		}
 
 		return null;
+	}
+
+	@Override
+	public IBlockState getBlockState()
+	{
+		ItemStack itemStack = getTextureItem();
+
+		if( !(itemStack.getItem() instanceof ItemBlock ) )
+		{
+			return null;
+		}
+
+		ItemBlock itemBlock = (ItemBlock) itemStack.getItem();
+
+		// Try to get the block state based on the item stack's meta. If this fails, don't consider it for a facade
+		// This for example fails for Pistons because they hardcoded an invalid meta value in vanilla
+		try
+		{
+			return itemBlock.getBlock().getStateFromMeta( itemStack.getItemDamage() );
+		}
+		catch( Exception e )
+		{
+			return null;
+		}
 	}
 
 	@Override

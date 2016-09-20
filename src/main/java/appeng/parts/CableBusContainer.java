@@ -25,11 +25,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-
 import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -42,6 +42,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -65,6 +66,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.client.render.cablebus.CableCoreType;
+import appeng.client.render.cablebus.FacadeRenderState;
 import appeng.core.AELog;
 import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiTile;
@@ -1155,7 +1157,6 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	@Override
 	public CableBusRenderState getRenderState()
 	{
-		// TODO: Inspect whether this is a problem. PartCable is the only implementor of IPartCable, which is not part of the public API
 		PartCable cable = (PartCable) getCenter();
 
 		CableBusRenderState renderState = new CableBusRenderState();
@@ -1210,14 +1211,27 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			}
 		}
 
+		// Determine attachments and facades
 		for( EnumFacing facing : EnumFacing.values() )
 		{
+
+			FacadeRenderState facadeState = getFacadeRenderState( facing );
+			if ( facadeState != null )
+			{
+				renderState.getFacades().put( facing, facadeState );
+			}
+
 			IPart part = getPart( facing );
 
 			if( part == null )
 			{
 				continue;
 			}
+
+			// This will add the part's bounding boxes to the render state, which is required for facades
+			AEPartLocation loc = AEPartLocation.fromFacing( facing );
+			IPartCollisionHelper bch = new BusCollisionHelper( renderState.getBoundingBoxes(), loc, null, true );
+			part.getBoxes( bch );
 
 			if( part instanceof IGridHost )
 			{
@@ -1241,5 +1255,90 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 		return renderState;
 	}
+
+	private FacadeRenderState getFacadeRenderState( EnumFacing side ) {
+		// Store the "masqueraded" itemstack for the given side, if there is a facade
+		IFacadePart facade = getFacade( side.ordinal() );
+		if( facade != null )
+		{
+
+			IBlockState blockState = facade.getBlockState();
+			if( blockState != null )
+			{
+				EnumSet<EnumFacing> openFaces = calculateFaceOpenFaces( side );
+				return new FacadeRenderState( blockState, openFaces );
+			}
+		}
+
+		return null;
+	}
+
+	private EnumSet<EnumFacing> calculateFaceOpenFaces( EnumFacing side )
+	{
+		final EnumSet<EnumFacing> out = EnumSet.of( side, side.getOpposite() );
+		final IFacadePart facade = getFacade( side.ordinal() );
+
+		IBlockAccess blockAccess = getTile().getWorld();
+		BlockPos pos = getTile().getPos();
+		for( final EnumFacing it : EnumFacing.values() )
+		{
+			if( !out.contains( it ) && this.hasAlphaDiff( blockAccess.getTileEntity( pos.offset( it ) ), side, facade ) )
+			{
+				out.add( it );
+			}
+		}
+
+		if( out.contains( EnumFacing.UP ) && ( side.getFrontOffsetX() != 0 || side.getFrontOffsetZ() != 0 ) )
+		{
+			final IFacadePart fp = getFacade( EnumFacing.UP.ordinal() );
+			if( fp != null && ( fp.isTransparent() == facade.isTransparent() ) )
+			{
+				out.remove( EnumFacing.UP );
+			}
+		}
+
+		if( out.contains( EnumFacing.DOWN ) && ( side.getFrontOffsetX() != 0 || side.getFrontOffsetZ() != 0 ) )
+		{
+			final IFacadePart fp = getFacade( EnumFacing.DOWN.ordinal() );
+			if( fp != null && ( fp.isTransparent() == facade.isTransparent() ) )
+			{
+				out.remove( EnumFacing.DOWN );
+			}
+		}
+
+		if( out.contains( EnumFacing.SOUTH ) && ( side.getFrontOffsetX() != 0 ) )
+		{
+			final IFacadePart fp = getFacade( EnumFacing.SOUTH.ordinal() );
+			if( fp != null && ( fp.isTransparent() == facade.isTransparent() ) )
+			{
+				out.remove( EnumFacing.SOUTH );
+			}
+		}
+
+		if( out.contains( EnumFacing.NORTH ) && ( side.getFrontOffsetX() != 0 ) )
+		{
+			final IFacadePart fp = getFacade( EnumFacing.NORTH.ordinal() );
+			if( fp != null && ( fp.isTransparent() == facade.isTransparent() ) )
+			{
+				out.remove( EnumFacing.NORTH );
+			}
+		}
+
+		return out;
+	}
+
+	private boolean hasAlphaDiff( final TileEntity tileEntity, final EnumFacing side, final IFacadePart facade )
+	{
+		if( tileEntity instanceof IPartHost )
+		{
+			final IPartHost ph = (IPartHost) tileEntity;
+			final IFacadePart fp = ph.getFacadeContainer().getFacade( AEPartLocation.fromFacing( side ) );
+
+			return fp == null || ( fp.isTransparent() != facade.isTransparent() );
+		}
+
+		return true;
+	}
+
 
 }

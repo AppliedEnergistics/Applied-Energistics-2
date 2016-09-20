@@ -24,10 +24,12 @@
 package appeng.api.parts;
 
 
+import javax.annotation.Nullable;
+
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.AxisAlignedBB;
 
 import appeng.api.util.AEPartLocation;
 
@@ -58,18 +60,23 @@ public interface IFacadePart
 	 */
 	AEPartLocation getSide();
 
-	/**
-	 * @return the box for the face of the facade
-	 */
-	AxisAlignedBB getPrimaryBox();
-
 	Item getItem();
 
 	int getItemDamage();
 
 	boolean notAEFacade();
 
-	void setThinFacades( boolean useThinFacades );
-
 	boolean isTransparent();
+
+	/**
+	 * The item that this facade masquerades as.
+	 */
+	@Nullable
+	ItemStack getTextureItem();
+
+	/**
+	 * @return The block state used for rendering.
+	 */
+	IBlockState getBlockState();
+
 }

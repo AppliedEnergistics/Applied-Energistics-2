@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.state.IBlockState;
@@ -49,11 +48,14 @@ public class CableBusBakedModel implements IBakedModel
 
 	private final CableBuilder cableBuilder;
 
+	private final FacadeBuilder facadeBuilder;
+
 	private final Map<ResourceLocation, IBakedModel> partModels;
 
-	CableBusBakedModel( CableBuilder cableBuilder, Map<ResourceLocation, IBakedModel> partModels )
+	CableBusBakedModel( CableBuilder cableBuilder, FacadeBuilder facadeBuilder, Map<ResourceLocation, IBakedModel> partModels )
 	{
 		this.cableBuilder = cableBuilder;
+		this.facadeBuilder = facadeBuilder;
 		this.partModels = partModels;
 	}
 
@@ -97,6 +99,14 @@ public class CableBusBakedModel implements IBakedModel
 				quads.addAll( partQuads );
 			}
 		}
+
+		facadeBuilder.addFacades(
+				renderState.getFacades(),
+				renderState.getBoundingBoxes(),
+				renderState.getAttachments().keySet(),
+				rand,
+				quads
+		);
 
 		return quads;
 	}

@@ -2155,28 +2155,6 @@ public class Platform
 		}
 	}
 
-	public static AxisAlignedBB getPrimaryBox( final AEPartLocation side, final int facadeThickness )
-	{
-		switch( side )
-		{
-			case DOWN:
-				return new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, ( facadeThickness ) / 16.0, 1.0 );
-			case EAST:
-				return new AxisAlignedBB( ( 16.0 - facadeThickness ) / 16.0, 0.0, 0.0, 1.0, 1.0, 1.0 );
-			case NORTH:
-				return new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, 1.0, ( facadeThickness ) / 16.0 );
-			case SOUTH:
-				return new AxisAlignedBB( 0.0, 0.0, ( 16.0 - facadeThickness ) / 16.0, 1.0, 1.0, 1.0 );
-			case UP:
-				return new AxisAlignedBB( 0.0, ( 16.0 - facadeThickness ) / 16.0, 0.0, 1.0, 1.0, 1.0 );
-			case WEST:
-				return new AxisAlignedBB( 0.0, 0.0, 0.0, ( facadeThickness ) / 16.0, 1.0, 1.0 );
-			default:
-				break;
-		}
-		return new AxisAlignedBB( 0, 0, 0, 1, 1, 1 );
-	}
-
 	public static float getEyeOffset( final EntityPlayer player )
 	{
 		assert player.worldObj.isRemote : "Valid only on client";

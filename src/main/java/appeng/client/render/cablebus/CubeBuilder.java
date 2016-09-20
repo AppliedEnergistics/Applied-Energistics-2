@@ -411,6 +411,11 @@ public class CubeBuilder
 		textures.put( EnumFacing.WEST, west );
 	}
 
+	public void setTexture( EnumFacing facing, TextureAtlasSprite sprite )
+	{
+		textures.put( facing, sprite );
+	}
+
 	public void setDrawFaces( EnumSet<EnumFacing> drawFaces )
 	{
 		this.drawFaces = drawFaces;
