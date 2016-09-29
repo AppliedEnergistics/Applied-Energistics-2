@@ -34,9 +34,9 @@ public class PartTerminal extends AbstractPartTerminal
 {
 
 	@PartModels
-	public static final ResourceLocation MODEL_OFF = new ResourceLocation( AppEng.MOD_ID, "part/crafting_terminal_off" );
+	public static final ResourceLocation MODEL_OFF = new ResourceLocation( AppEng.MOD_ID, "part/terminal_off" );
 	@PartModels
-	public static final ResourceLocation MODEL_ON = new ResourceLocation( AppEng.MOD_ID, "part/crafting_terminal_on" );
+	public static final ResourceLocation MODEL_ON = new ResourceLocation( AppEng.MOD_ID, "part/terminal_on" );
 
 	public static final List<ResourceLocation> MODELS_OFF = ImmutableList.of( MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF );
 	public static final List<ResourceLocation> MODELS_ON = ImmutableList.of( MODEL_BASE, MODEL_ON, MODEL_STATUS_ON );
