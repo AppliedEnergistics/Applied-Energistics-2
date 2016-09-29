@@ -381,10 +381,10 @@ public class GuiCraftConfirm extends AEBaseGui
 			}
 		}
 
-		if( this.tooltip >= 0 && dspToolTip.length() > 0 )
+		if( this.tooltip >= 0 && !dspToolTip.isEmpty() )
 		{
 			GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
-			this.drawTooltip( toolPosX, toolPosY + 10, 0, dspToolTip );
+			this.drawTooltip( toolPosX, toolPosY + 10, dspToolTip );
 			GL11.glPopAttrib();
 		}
 	}

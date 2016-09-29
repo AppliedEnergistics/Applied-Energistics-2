@@ -130,13 +130,13 @@ public abstract class AEBaseMEGui extends AEBaseGui
 					currentToolTip.add( "Items Requestable: " + NumberFormat.getNumberInstance( Locale.US ).format( myStack.getCountRequestable() ) );
 				}
 
-				this.drawTooltip( x, y, 0, join( currentToolTip, "\n" ) );
+				this.drawTooltip( x, y, currentToolTip );
 			}
 			else if( stack.stackSize > BigNumber )
 			{
-				final List var4 = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
+				List<String> var4 = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
 				var4.add( "Items Stored: " + NumberFormat.getNumberInstance( Locale.US ).format( stack.stackSize ) );
-				this.drawTooltip( x, y, 0, join( var4, "\n" ) );
+				this.drawTooltip( x, y, var4 );
 				return;
 			}
 		}

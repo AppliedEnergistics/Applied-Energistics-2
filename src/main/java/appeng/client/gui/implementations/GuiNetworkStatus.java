@@ -204,7 +204,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 		if( this.tooltip >= 0 && toolTip.length() > 0 )
 		{
 			GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
-			this.drawTooltip( toolPosX, toolPosY + 10, 0, toolTip );
+			this.drawTooltip( toolPosX, toolPosY + 10, toolTip );
 			GL11.glPopAttrib();
 		}
 	}
@@ -286,7 +286,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 			if( myStack != null )
 			{
-				final List currentToolTip = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
+				List<String> currentToolTip = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
 
 				while( currentToolTip.size() > 1 )
 				{
@@ -296,7 +296,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 				currentToolTip.add( GuiText.Installed.getLocal() + ": " + ( myStack.getStackSize() ) );
 				currentToolTip.add( GuiText.EnergyDrain.getLocal() + ": " + Platform.formatPowerLong( myStack.getCountRequestable(), true ) );
 
-				this.drawTooltip( x, y, 0, join( currentToolTip, "\n" ) );
+				this.drawTooltip( x, y, currentToolTip );
 			}
 		}
 		// super.drawItemStackTooltip( stack, x, y );
