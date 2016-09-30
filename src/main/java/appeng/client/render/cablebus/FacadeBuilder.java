@@ -144,7 +144,7 @@ class FacadeBuilder
 		int color = 0xffffff;
 		try
 		{
-			blockColors.func_189991_a( blockState );
+			blockColors.getColor( blockState );
 		}
 		catch( final Throwable ignored )
 		{

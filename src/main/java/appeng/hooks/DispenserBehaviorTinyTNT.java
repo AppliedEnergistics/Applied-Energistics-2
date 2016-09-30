@@ -35,7 +35,7 @@ public final class DispenserBehaviorTinyTNT extends BehaviorDefaultDispenseItem
 	@Override
 	protected ItemStack dispenseStack( final IBlockSource dispenser, final ItemStack dispensedItem )
 	{
-		final EnumFacing enumfacing = dispenser.func_189992_e().getValue( BlockDispenser.FACING );
+		final EnumFacing enumfacing = dispenser.getBlockState().getValue( BlockDispenser.FACING );
 		final World world = dispenser.getWorld();
 		final int i = dispenser.getBlockPos().getX() + enumfacing.getFrontOffsetX();
 		final int j = dispenser.getBlockPos().getY() + enumfacing.getFrontOffsetY();
