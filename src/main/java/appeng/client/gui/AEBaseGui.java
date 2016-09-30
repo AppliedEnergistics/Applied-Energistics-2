@@ -716,9 +716,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 				if( !this.isPowered() )
 				{
-					GL11.glDisable( GL11.GL_LIGHTING );
 					drawRect( s.xDisplayPosition, s.yDisplayPosition, 16 + s.xDisplayPosition, 16 + s.yDisplayPosition, 0x66111111 );
-					GL11.glEnable( GL11.GL_LIGHTING );
 				}
 
 				this.zLevel = 0.0F;
