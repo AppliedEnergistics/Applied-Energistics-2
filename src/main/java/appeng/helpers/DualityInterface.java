@@ -43,6 +43,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -129,6 +133,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	private List<ItemStack> waitingToSend = null;
 	private IMEInventory<IAEItemStack> destination;
 	private boolean isWorking = false;
+	private IItemHandler itemHandler = null;
 
 	public DualityInterface( final AENetworkProxy networkProxy, final IInterfaceHost ih )
 	{
@@ -1262,6 +1267,25 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 	}
 
+	public boolean hasCapability( Capability<?> capabilityClass, EnumFacing facing )
+	{
+		return capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+	}
+
+	@SuppressWarnings( "unchecked" )
+	public <T> T getCapability( Capability<T> capabilityClass, EnumFacing facing )
+	{
+		if( capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
+		{
+			if( itemHandler == null )
+			{
+				itemHandler = new InvWrapper( storage );
+			}
+			return (T) itemHandler;
+		}
+		return null;
+	}
+
 	private class InterfaceRequestSource extends MachineSource
 	{
 
@@ -1302,4 +1326,5 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			return super.extractItems( request, type, src );
 		}
 	}
+
 }

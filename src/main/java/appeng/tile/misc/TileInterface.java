@@ -22,6 +22,8 @@ package appeng.tile.misc;
 import java.util.EnumSet;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableSet;
 
 import io.netty.buffer.ByteBuf;
@@ -34,6 +36,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
@@ -362,6 +365,18 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	public boolean isOmniDirectional()
 	{
 		return this.omniDirectional;
+	}
+
+	@Override
+	public boolean hasCapability( Capability<?> capability, @Nullable EnumFacing facing )
+	{
+		return this.duality.hasCapability( capability, facing );
+	}
+
+	@Override
+	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
+	{
+		return this.duality.getCapability( capability, facing );
 	}
 
 }

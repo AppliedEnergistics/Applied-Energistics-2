@@ -37,6 +37,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
@@ -442,6 +444,18 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 		{
 			return MODELS_OFF;
 		}
+	}
+
+	@Override
+	public boolean hasCapability( Capability<?> capabilityClass )
+	{
+		return this.duality.hasCapability( capabilityClass, getSide().getFacing() );
+	}
+
+	@Override
+	public <T> T getCapability( Capability<T> capabilityClass )
+	{
+		return this.duality.getCapability( capabilityClass, getSide().getFacing() );
 	}
 
 }

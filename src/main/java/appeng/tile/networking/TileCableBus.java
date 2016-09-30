@@ -22,6 +22,7 @@ package appeng.tile.networking;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
 
@@ -35,6 +36,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
@@ -389,6 +391,26 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	private void setCableBus( final CableBusContainer cb )
 	{
 		this.cb = cb;
+	}
+
+	@Override
+	public boolean hasCapability( Capability<?> capabilityClass, @Nullable EnumFacing fromSide )
+	{
+		// Note that null will be translated to INTERNAL here
+		AEPartLocation partLocation = AEPartLocation.fromFacing( fromSide );
+
+		IPart part = getPart( partLocation );
+		return part != null && part.hasCapability( capabilityClass );
+	}
+
+	@Override
+	public <T> T getCapability( Capability<T> capabilityClass, @Nullable EnumFacing fromSide )
+	{
+		// Note that null will be translated to INTERNAL here
+		AEPartLocation partLocation = AEPartLocation.fromFacing( fromSide );
+
+		IPart part = getPart( partLocation );
+		return part == null ? null : part.getCapability( capabilityClass );
 	}
 
 }

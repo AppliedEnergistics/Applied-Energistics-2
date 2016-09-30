@@ -37,11 +37,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -285,6 +287,32 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 	default List<ResourceLocation> getStaticModels()
 	{
 		return Collections.emptyList();
+	}
+
+	/**
+	 * Implement this method if your part exposes capabilitys. Any requests for capabilities on the cable bus will be forwarded to parts on the appropriate
+	 * side.
+	 *
+	 * @see TileEntity#hasCapability(Capability, EnumFacing)
+	 *
+	 * @return True if your part has the requested capability.
+	 */
+	default boolean hasCapability( Capability<?> capabilityClass )
+	{
+		return false;
+	}
+
+	/**
+	 * Implement this method if your part exposes capabilitys. Any requests for capabilities on the cable bus will be forwarded to parts on the appropriate
+	 * side.
+	 *
+	 * @see TileEntity#getCapability(Capability, EnumFacing)
+	 *
+	 * @return The capability or null.
+	 */
+	default <T> T getCapability( Capability<T> capabilityClass )
+	{
+		return null;
 	}
 
 }
