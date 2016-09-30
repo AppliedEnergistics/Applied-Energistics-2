@@ -26,6 +26,7 @@ import java.util.Locale;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextFormatting;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.me.SlotME;
@@ -69,7 +70,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 						final String formattedAmount = NumberFormat.getNumberInstance( Locale.US ).format( myStack.getStackSize() );
 						final String format = String.format( local, formattedAmount );
 
-						currentToolTip.add( "\u00a77" + format );
+						currentToolTip.add( TextFormatting.GRAY + format );
 					}
 
 					if( myStack.getCountRequestable() > 0 )
@@ -78,7 +79,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 						final String formattedAmount = NumberFormat.getNumberInstance( Locale.US ).format( myStack.getCountRequestable() );
 						final String format = String.format( local, formattedAmount );
 
-						currentToolTip.add( "\u00a77" + format );
+						currentToolTip.add( TextFormatting.GRAY + format );
 					}
 				}
 				else if( stack.stackSize > BigNumber || ( stack.stackSize > 1 && stack.isItemDamaged() ) )
@@ -87,7 +88,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 					final String formattedAmount = NumberFormat.getNumberInstance( Locale.US ).format( stack.stackSize );
 					final String format = String.format( local, formattedAmount );
 
-					currentToolTip.add( "\u00a77" + format );
+					currentToolTip.add( TextFormatting.GRAY + format );
 				}
 			}
 		}

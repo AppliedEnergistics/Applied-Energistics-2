@@ -54,6 +54,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import appeng.api.storage.data.IAEItemStack;
@@ -62,7 +63,7 @@ import appeng.client.gui.widgets.ITooltip;
 import appeng.client.me.InternalSlotME;
 import appeng.client.me.SlotDisconnected;
 import appeng.client.me.SlotME;
-import appeng.client.render.AppEngRenderItem;
+import appeng.client.render.StackSizeRenderer;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.AppEngCraftingSlot;
 import appeng.container.slot.AppEngSlot;
@@ -76,6 +77,7 @@ import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotPatternTerm;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.sync.packets.PacketSwapSlots;
@@ -91,7 +93,7 @@ public abstract class AEBaseGui extends GuiContainer
 	private final List<InternalSlotME> meSlots = new LinkedList<InternalSlotME>();
 	// drag y
 	private final Set<Slot> drag_click = new HashSet<Slot>();
-	private final AppEngRenderItem aeRenderItem = new AppEngRenderItem( Minecraft.getMinecraft().renderEngine, Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getModelManager(), Minecraft.getMinecraft().getItemColors() );
+	private final StackSizeRenderer stackSizeRenderer = new StackSizeRenderer();
 	private GuiScrollbar myScrollBar = null;
 	private boolean disableShiftClick = false;
 	private Stopwatch dbl_clickTimer = Stopwatch.createStarted();
@@ -215,12 +217,12 @@ public abstract class AEBaseGui extends GuiContainer
 		lines = Lists.newArrayList( lines ); // Make a copy
 
 		// Make the first line white
-		lines.set( 0, "\u00a7f" + lines.get( 0 ) );
+		lines.set( 0, TextFormatting.WHITE + lines.get( 0 ) );
 
 		// All lines after the first are colored gray
 		for( int i = 1; i < lines.size(); i++ )
 		{
-			lines.set(i, "\u00a77" + lines.get(i));
+			lines.set(i, TextFormatting.GRAY + lines.get(i));
 		}
 
 		this.drawHoveringText( lines, x, y, fontRendererObj );
@@ -699,11 +701,14 @@ public abstract class AEBaseGui extends GuiContainer
 		return ( (AEBaseContainer) this.inventorySlots ).getCustomName();
 	}
 
-	private void drawSlot( final Slot s )
+	/**
+	 * This overrides the base-class method through some access transformer hackery...
+	 */
+	public void drawSlot( final Slot s )
 	{
 		if( s instanceof SlotME )
 		{
-			final RenderItem pIR = this.setItemRender( this.aeRenderItem );
+
 			try
 			{
 				this.zLevel = 100.0F;
@@ -719,15 +724,17 @@ public abstract class AEBaseGui extends GuiContainer
 				this.zLevel = 0.0F;
 				this.itemRender.zLevel = 0.0F;
 
-				this.aeRenderItem.setAeStack( ( (SlotME) s ).getAEStack() );
+				// Annoying but easier than trying to splice into render item
+				this.safeDrawSlot( new Size1Slot( s ) );
 
-				this.safeDrawSlot( s );
+				stackSizeRenderer.renderStackSize( fontRendererObj, ( (SlotME) s ).getAEStack(), s.getStack(), s.xDisplayPosition, s.yDisplayPosition );
+
 			}
 			catch( final Exception err )
 			{
 				AELog.warn( "[AppEng] AE prevented crash while drawing slot: " + err.toString() );
 			}
-			this.setItemRender( pIR );
+
 			return;
 		}
 		else
@@ -759,18 +766,18 @@ public abstract class AEBaseGui extends GuiContainer
 							final float par4 = uv_y * 16;
 
 							final Tessellator tessellator = Tessellator.getInstance();
-							final VertexBuffer VertexBuffer = tessellator.getBuffer();
+							final VertexBuffer vb = tessellator.getBuffer();
 
-							VertexBuffer.begin( GL11.GL_QUADS, DefaultVertexFormats.ITEM );
-							;
+							vb.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR );
+
 							final float f1 = 0.00390625F;
 							final float f = 0.00390625F;
 							final float par6 = 16;
-							VertexBuffer.color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).pos( par1 + 0, par2 + par6, this.zLevel ).tex( ( par3 + 0 ) * f, ( par4 + par6 ) * f1 ).endVertex();
+							vb.pos( par1 + 0, par2 + par6, this.zLevel ).tex( ( par3 + 0 ) * f, ( par4 + par6 ) * f1 ).color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).endVertex();
 							final float par5 = 16;
-							VertexBuffer.color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).pos( par1 + par5, par2 + par6, this.zLevel ).tex( ( par3 + par5 ) * f, ( par4 + par6 ) * f1 ).endVertex();
-							VertexBuffer.color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).pos( par1 + par5, par2 + 0, this.zLevel ).tex( ( par3 + par5 ) * f, ( par4 + 0 ) * f1 ).endVertex();
-							VertexBuffer.color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).pos( par1 + 0, par2 + 0, this.zLevel ).tex( ( par3 + 0 ) * f, ( par4 + 0 ) * f1 ).endVertex();
+							vb.pos( par1 + par5, par2 + par6, this.zLevel ).tex( ( par3 + par5 ) * f, ( par4 + par6 ) * f1 ).color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).endVertex();
+							vb.pos( par1 + par5, par2 + 0, this.zLevel ).tex( ( par3 + par5 ) * f, ( par4 + 0 ) * f1 ).color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).endVertex();
+							vb.pos( par1 + 0, par2 + 0, this.zLevel ).tex( ( par3 + 0 ) * f, ( par4 + 0 ) * f1 ).color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).endVertex();
 							tessellator.draw();
 						}
 						catch( final Exception err )
@@ -866,7 +873,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 	public void bindTexture( final String file )
 	{
-		final ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/" + file );
+		final ResourceLocation loc = new ResourceLocation( AppEng.MOD_ID, "textures/" + file );
 		this.mc.getTextureManager().bindTexture( loc );
 	}
 	protected GuiScrollbar getScrollBar()

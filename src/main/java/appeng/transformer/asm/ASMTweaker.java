@@ -20,7 +20,6 @@ package appeng.transformer.asm;
 
 
 import java.util.Iterator;
-
 import javax.annotation.Nullable;
 
 import com.google.common.collect.HashMultimap;
@@ -52,6 +51,7 @@ public final class ASMTweaker implements IClassTransformer
 	@Reflected
 	public ASMTweaker()
 	{
+		this.privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", new PublicLine( "drawSlot", "(Lnet/minecraft/inventory/Slot;)V" ) );
 		this.privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", new PublicLine( "func_146977_a", "(Lnet/minecraft/inventory/Slot;)V" ) );
 		this.privateToPublicMethods.put( "net.minecraft.client.gui.inventory.GuiContainer", new PublicLine( "a", "(Lzk;)V" ) );
 
@@ -91,7 +91,7 @@ public final class ASMTweaker implements IClassTransformer
 				{
 					for( final MethodNode mn : classNode.methods )
 					{
-						if( mn.name.equals( "func_146977_a" ) || ( mn.name.equals( "a" ) && mn.desc.equals( "(Lzk;)V" ) ) )
+						if( mn.name.equals( "drawSlot" ) || mn.name.equals( "func_146977_a" ) || ( mn.name.equals( "a" ) && mn.desc.equals( "(Lzk;)V" ) ) )
 						{
 							final MethodNode newNode = new MethodNode( Opcodes.ACC_PUBLIC, "func_146977_a_original", mn.desc, mn.signature, EXCEPTIONS );
 							newNode.instructions.add( new VarInsnNode( Opcodes.ALOAD, 0 ) );
@@ -115,7 +115,7 @@ public final class ASMTweaker implements IClassTransformer
 								if( in.getOpcode() == Opcodes.INVOKESPECIAL )
 								{
 									final MethodInsnNode n = (MethodInsnNode) in;
-									if( n.name.equals( "func_146977_a" ) || ( n.name.equals( "a" ) && n.desc.equals( "(Lzk;)V" ) ) )
+									if( n.name.equals( "drawSlot" ) || n.name.equals( "func_146977_a" ) || ( n.name.equals( "a" ) && n.desc.equals( "(Lzk;)V" ) ) )
 									{
 										this.log( n.name + n.desc + " - Invoke Virtual" );
 										mn.instructions.insertBefore( n, new MethodInsnNode( Opcodes.INVOKEVIRTUAL, n.owner, n.name, n.desc, false ) );
