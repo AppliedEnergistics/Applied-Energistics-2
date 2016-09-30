@@ -19,6 +19,7 @@
 package appeng.tile;
 
 
+import java.util.EnumMap;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
@@ -31,6 +32,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
 import appeng.block.AEBaseBlock;
 import appeng.tile.events.TileEventType;
@@ -40,6 +46,11 @@ import appeng.tile.inventory.InvOperation;
 
 public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventory, IAEAppEngInventory
 {
+
+	private EnumMap<EnumFacing, IItemHandler> sidedItemHandler = new EnumMap<>( EnumFacing.class );
+
+	private IItemHandler itemHandler;
+
 	@Override
 	public String getName()
 	{
@@ -212,4 +223,33 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	}
 
 	public abstract int[] getAccessibleSlotsBySide( EnumFacing whichSide );
+
+	@Override
+	public boolean hasCapability( Capability<?> capability, EnumFacing facing )
+	{
+		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability( capability, facing );
+	}
+
+	@SuppressWarnings( "unchecked" )
+	@Override
+	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
+	{
+		if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
+		{
+			if( facing == null )
+			{
+				if( itemHandler == null )
+				{
+					itemHandler = new InvWrapper( getInternalInventory() );
+				}
+				return (T) itemHandler;
+			}
+			else
+			{
+				return (T) sidedItemHandler.computeIfAbsent( facing, side -> new SidedInvWrapper( this, side ) );
+			}
+		}
+		return super.getCapability( capability, facing );
+	}
+
 }
