@@ -400,7 +400,9 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		AEPartLocation partLocation = AEPartLocation.fromFacing( fromSide );
 
 		IPart part = getPart( partLocation );
-		return part != null && part.hasCapability( capabilityClass );
+		boolean result = part != null && part.hasCapability( capabilityClass );
+
+		return result || super.hasCapability( capabilityClass, fromSide );
 	}
 
 	@Override
@@ -410,7 +412,14 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		AEPartLocation partLocation = AEPartLocation.fromFacing( fromSide );
 
 		IPart part = getPart( partLocation );
-		return part == null ? null : part.getCapability( capabilityClass );
+		T result = part == null ? null : part.getCapability( capabilityClass );
+
+		if( result != null )
+		{
+			return result;
+		}
+
+		return super.getCapability( capabilityClass, fromSide );
 	}
 
 }
