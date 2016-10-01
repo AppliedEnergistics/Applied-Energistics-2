@@ -12,4 +12,4 @@ gui.appliedenergistics2.Gray=Grey
 gui.appliedenergistics2.LightGray=Light Grey
 
 // Items
-item.appliedenergistics2.ToolColorApplicator.name=Colour Applicator
+item.appliedenergistics2.color_applicator.name=Colour Applicator

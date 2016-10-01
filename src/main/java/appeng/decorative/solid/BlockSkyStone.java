@@ -98,22 +98,6 @@ public class BlockSkyStone extends AEBaseBlock
 		}
 	}
 
-	@Override
-	public String getUnlocalizedName( final ItemStack is )
-	{
-		switch( this.type )
-		{
-			case BLOCK:
-				return this.getUnlocalizedName() + ".Block";
-			case BRICK:
-				return this.getUnlocalizedName() + ".Brick";
-			case SMALL_BRICK:
-				return this.getUnlocalizedName() + ".SmallBrick";
-			default:
-				return this.getUnlocalizedName();
-		}
-	}
-
 	public enum SkystoneType
 	{
 		STONE, BLOCK, BRICK, SMALL_BRICK

@@ -253,7 +253,7 @@ public final class ItemMultiItem extends AEBaseItem implements IStorageComponent
 	@Override
 	public String getUnlocalizedName( final ItemStack is )
 	{
-		return "item.appliedenergistics2." + this.nameOf( is );
+		return "item.appliedenergistics2.multi_material." + this.nameOf( is );
 	}
 
 	@Override

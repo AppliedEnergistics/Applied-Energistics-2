@@ -183,13 +183,37 @@ public enum PartType
 
 	Interface( 440, "interface" , EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartInterface.class ),
 
-	P2PTunnelME( 460, "p2p_tunnel_me" , EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelME ), EnumSet.noneOf( IntegrationType.class ), PartP2PTunnelME.class, GuiText.METunnel ),
+	P2PTunnelME( 460, "p2p_tunnel_me" , EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelME ), EnumSet.noneOf( IntegrationType.class ), PartP2PTunnelME.class, GuiText.METunnel ) {
+		@Override
+		String getUnlocalizedName()
+		{
+			return "P2PTunnel";
+		}
+	},
 
-	P2PTunnelRedstone( 461, "p2p_tunnel_redstone" , EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelRedstone ), EnumSet.noneOf( IntegrationType.class ), PartP2PRedstone.class, GuiText.RedstoneTunnel ),
+	P2PTunnelRedstone( 461, "p2p_tunnel_redstone" , EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelRedstone ), EnumSet.noneOf( IntegrationType.class ), PartP2PRedstone.class, GuiText.RedstoneTunnel ) {
+		@Override
+		String getUnlocalizedName()
+		{
+			return "P2PTunnel";
+		}
+	},
 
-	P2PTunnelItems( 462, "p2p_tunnel_items" , EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelItems ), EnumSet.noneOf( IntegrationType.class ), PartP2PItems.class, GuiText.ItemTunnel ),
+	P2PTunnelItems( 462, "p2p_tunnel_items" , EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelItems ), EnumSet.noneOf( IntegrationType.class ), PartP2PItems.class, GuiText.ItemTunnel ) {
+		@Override
+		String getUnlocalizedName()
+		{
+			return "P2PTunnel";
+		}
+	},
 
-	P2PTunnelLiquids( 463, "p2p_tunnel_liquids" , EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelLiquids ), EnumSet.noneOf( IntegrationType.class ), PartP2PLiquids.class, GuiText.FluidTunnel ),
+	P2PTunnelLiquids( 463, "p2p_tunnel_liquids" , EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelLiquids ), EnumSet.noneOf( IntegrationType.class ), PartP2PLiquids.class, GuiText.FluidTunnel ) {
+		@Override
+		String getUnlocalizedName()
+		{
+			return "P2PTunnel";
+		}
+	},
 
 	// P2PTunnelEU( 465, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelEU ), EnumSet.of( IntegrationType.IC2 ),
 	// PartP2PIC2Power.class, GuiText.EUTunnel ),
@@ -197,7 +221,13 @@ public enum PartType
 	// P2PTunnelRF( 466, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelRF ), EnumSet.of( IntegrationType.RF ),
 	// PartP2PRFPower.class, GuiText.RFTunnel ),
 
-	P2PTunnelLight( 467, "p2p_tunnel_light" , EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelLight ), EnumSet.noneOf( IntegrationType.class ), PartP2PLight.class, GuiText.LightTunnel ),
+	P2PTunnelLight( 467, "p2p_tunnel_light" , EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelLight ), EnumSet.noneOf( IntegrationType.class ), PartP2PLight.class, GuiText.LightTunnel ) {
+		@Override
+		String getUnlocalizedName()
+		{
+			return "P2PTunnel";
+		}
+	},
 
 	// P2PTunnelOpenComputers( 468, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelOpenComputers ), EnumSet.of(
 	// IntegrationType.OpenComputers ), PartP2POpenComputers.class, GuiText.OCTunnel ),
@@ -272,6 +302,10 @@ public enum PartType
 	Class<? extends IPart> getPart()
 	{
 		return this.myPart;
+	}
+
+	String getUnlocalizedName() {
+		return name();
 	}
 
 	GuiText getExtraName()

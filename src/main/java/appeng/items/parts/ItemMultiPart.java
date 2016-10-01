@@ -178,7 +178,8 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 	@Override
 	public String getUnlocalizedName( final ItemStack is )
 	{
-		return "item.appliedenergistics2." + this.getName( is );
+		Preconditions.checkNotNull( is );
+		return "item.appliedenergistics2.multi_part." + getTypeByStack( is ).getUnlocalizedName();
 	}
 
 	@Override
@@ -216,16 +217,6 @@ public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemG
 		{
 			itemStacks.add( new ItemStack( this, 1, part.getKey() ) );
 		}
-	}
-
-	private String getName( final ItemStack is )
-	{
-		Preconditions.checkNotNull( is );
-
-		final PartType stackType = this.getTypeByStack( is );
-		final String typeName = stackType.name();
-
-		return typeName;
 	}
 
 	@Nonnull
