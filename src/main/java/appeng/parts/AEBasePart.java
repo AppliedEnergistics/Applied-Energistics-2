@@ -41,7 +41,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -104,11 +103,6 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	public PartType getType()
 	{
 		return ItemMultiPart.instance.getTypeByStack( is );
-	}
-
-	public ResourceLocation getDefaultModelLocation()
-	{
-		return getType().getModel();
 	}
 
 	@Override
