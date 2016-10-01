@@ -390,6 +390,10 @@ public class PartCable extends AEBasePart implements IPartCable
 
 	public int getChannelsOnSide( EnumFacing side )
 	{
+		if( !powered )
+		{
+			return 0;
+		}
 		return this.channelsOnSide[side.ordinal()];
 	}
 
