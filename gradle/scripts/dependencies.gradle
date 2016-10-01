@@ -61,6 +61,11 @@ repositories {
         url = "http://maven.k-4u.nl/"
     }
 
+    maven {
+        name = "JEI repo"
+        url "http://dvs1.progwml6.com/files/maven"
+    }
+
     ivy {
         name "BuildCraft"
         artifactPattern "http://www.mod-buildcraft.com/releases/BuildCraft/[revision]/[module]-[revision]-[classifier].[ext]"
@@ -94,7 +99,7 @@ configurations {
 
 dependencies {
     // installable
-//    mods "mcp.mobius.waila:Waila:${waila_version}_1.8.1:dev"
+    mods "mcp.mobius.waila:Waila:${waila_version}_1.9.4:dev"
 //    mods "mcp.mobius.jabba:Jabba:${jabba_version}_${minecraft_version}:dev"
 //    mods "codechicken:EnderStorage:${minecraft_version}-${enderstorage_version}:dev"
 //    mods "codechicken:Translocator:${minecraft_version}-${translocator_version}:dev"
@@ -134,6 +139,12 @@ dependencies {
 //    compile(group: 'api', name: 'mfr', version: "${api_mfr_version}")
 //    compile(group: 'api', name: 'railcraft', version: "${api_railcraft_version}")
 //    compile(group: 'api', name: 'rf', version: "${api_rf_version}")
+
+    // compile against the JEI API
+    compile "mezz.jei:jei_1.10.2:${jei_version}:api"
+
+    // at runtime, use the full JEI jar
+    runtime "mezz.jei:jei_1.10.2:${jei_version}"
 
     testCompile "junit:junit:4.12"
 }

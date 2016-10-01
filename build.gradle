@@ -42,11 +42,11 @@ dependencies {
     testCompile "junit:junit:4.12"
 }
 
-//apply from: 'gradle/scripts/dependencies.gradle'
+apply from: 'gradle/scripts/dependencies.gradle'
 apply from: 'gradle/scripts/artifacts.gradle'
 //apply from: 'gradle/scripts/autoinstallruntime.gradle'
 apply from: 'gradle/scripts/integration.gradle'
-//apply from: 'gradle/scripts/optional.gradle'
+apply from: 'gradle/scripts/optional.gradle'
 
 
 sourceCompatibility = JavaVersion.VERSION_1_8
