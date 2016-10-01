@@ -1,4 +1,4 @@
-[![Latest Build](https://img.shields.io/teamcity/http/ci.tsr.me/s/AppliedEnergistics_AutoHeadBuild.svg?label=Latest Build&style=flat-square)](http://ci.tsr.me/viewType.html?buildTypeId=AppliedEnergistics_AutoHeadBuild&tab=buildTypeStatusDiv)
+[![Travis](https://img.shields.io/travis/AppliedEnergistics/Applied-Energistics-2.svg?maxAge=2592000?style=flat-square)](https://travis-ci.org/AppliedEnergistics/Applied-Energistics-2)
 [![Latest Tag](https://img.shields.io/github/tag/AppliedEnergistics/Applied-Energistics-2.svg?label=Latest Tag&style=flat-square)](https://github.com/AppliedEnergistics/Applied-Energistics-2/tags)
 [![Latest Release](https://img.shields.io/github/release/AppliedEnergistics/Applied-Energistics-2.svg?label=Latest Release&style=flat-square)](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases)
 
