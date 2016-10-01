@@ -5,7 +5,6 @@ idea {
         inheritOutputDirs = true
 
         // excludes integration due to not being available upon port
-        excludeDirs += file('src/main/java/appeng/integration/modules/')
         excludeDirs += file('src/main/java/appeng/fmp/')
         excludeDirs += file('src/main/java/appeng/parts/layers/')
     }
