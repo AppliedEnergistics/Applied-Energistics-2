@@ -29,9 +29,9 @@ import java.util.List;
 import com.google.common.base.Joiner;
 
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -246,8 +246,8 @@ public class GuiCraftConfirm extends AEBaseGui
 			final IAEItemStack refStack = this.visual.get( z );// repo.getReferenceItem( z );
 			if( refStack != null )
 			{
-				GL11.glPushMatrix();
-				GL11.glScaled( 0.5, 0.5, 0.5 );
+				GlStateManager.pushMatrix();
+				GlStateManager.scale( 0.5, 0.5, 0.5 );
 
 				final IAEItemStack stored = this.storage.findPrecise( refStack );
 				final IAEItemStack pendingStack = this.pending.findPrecise( refStack );
@@ -259,7 +259,7 @@ public class GuiCraftConfirm extends AEBaseGui
 				{
 					lines++;
 				}
-				if( pendingStack != null && pendingStack.getStackSize() > 0 )
+				if( missingStack != null && missingStack.getStackSize() > 0 )
 				{
 					lines++;
 				}
@@ -343,7 +343,7 @@ public class GuiCraftConfirm extends AEBaseGui
 					}
 				}
 
-				GL11.glPopMatrix();
+				GlStateManager.popMatrix();
 				final int posX = x * ( 1 + sectionLength ) + xo + sectionLength - 19;
 				final int posY = y * offY + yo;
 
@@ -383,9 +383,7 @@ public class GuiCraftConfirm extends AEBaseGui
 
 		if( this.tooltip >= 0 && !dspToolTip.isEmpty() )
 		{
-			GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 			this.drawTooltip( toolPosX, toolPosY + 10, dspToolTip );
-			GL11.glPopAttrib();
 		}
 	}
 

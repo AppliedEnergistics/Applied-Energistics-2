@@ -38,7 +38,6 @@ import com.google.common.collect.Lists;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -670,13 +669,8 @@ public abstract class AEBaseGui extends GuiContainer
 		this.zLevel = 100.0F;
 		this.itemRender.zLevel = 100.0F;
 
-		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
-		GL11.glEnable( GL11.GL_LIGHTING );
-		GL11.glEnable( GL12.GL_RESCALE_NORMAL );
-		GL11.glEnable( GL11.GL_DEPTH_TEST );
 		RenderHelper.enableGUIStandardItemLighting();
 		this.itemRender.renderItemAndEffectIntoGUI( is, x, y );
-		GL11.glPopAttrib();
 
 		this.itemRender.zLevel = 0.0F;
 		this.zLevel = 0.0F;
