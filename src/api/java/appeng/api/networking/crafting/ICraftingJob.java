@@ -54,4 +54,10 @@ public interface ICraftingJob
 	 * @return the final output of the job.
 	 */
 	IAEItemStack getOutput();
+
+	/**
+	 * @return if this job can be fulfilled via an external request
+	 */
+	boolean isExternalRequest();
+
 }

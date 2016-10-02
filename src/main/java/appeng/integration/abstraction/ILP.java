@@ -24,6 +24,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
+import appeng.api.config.Actionable;
 import appeng.api.storage.IMEInventory;
 
 
@@ -36,7 +37,7 @@ public interface ILP
 
 	boolean isRequestPipe( TileEntity te );
 
-	List<ItemStack> performRequest( TileEntity te, ItemStack wanted );
+	List<ItemStack> performRequest( TileEntity te, ItemStack wanted, Actionable mode );
 
 	IMEInventory getInv( TileEntity te );
 

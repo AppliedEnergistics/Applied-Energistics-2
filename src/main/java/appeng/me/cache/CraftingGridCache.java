@@ -121,6 +121,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	private final Map<ICraftingPatternDetails, List<ICraftingMedium>> craftingMethods = new HashMap<ICraftingPatternDetails, List<ICraftingMedium>>();
 	private final Map<IAEItemStack, ImmutableList<ICraftingPatternDetails>> craftableItems = new HashMap<IAEItemStack, ImmutableList<ICraftingPatternDetails>>();
 	private final Set<IAEItemStack> emitableItems = new HashSet<IAEItemStack>();
+	private final Map<IAEItemStack, List<ICraftingMedium>> requestableItems = new HashMap<IAEItemStack, List<ICraftingMedium>>();
 	private final Map<String, CraftingLinkNexus> craftingLinks = new HashMap<String, CraftingLinkNexus>();
 	private final Multimap<IAEStack, CraftingWatcher> interests = HashMultimap.create();
 	private final GenericInterestManager<CraftingWatcher> interestManager = new GenericInterestManager<CraftingWatcher>( this.interests );
@@ -261,6 +262,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		this.craftingMethods.clear();
 		this.craftableItems.clear();
 		this.emitableItems.clear();
+		this.requestableItems.clear();
 
 		// update the stuff that was in the list...
 		this.storageGrid.postAlterationOfStoredItems( StorageChannel.ITEMS, oldItems.keySet(), new BaseActionSource() );
@@ -373,6 +375,22 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	}
 
 	@Override
+	public void addRequestOption( final ICraftingMedium medium, final IAEItemStack someItem )
+	{
+		List<ICraftingMedium> mediums = this.requestableItems.get( someItem );
+		if( mediums == null )
+		{
+			mediums = new ArrayList<ICraftingMedium>();
+			mediums.add( medium );
+			this.requestableItems.put( someItem.copy(), mediums );
+		}
+		else
+		{
+			mediums.add( medium );
+		}
+	}
+
+	@Override
 	public List<IMEInventoryHandler> getCellArray( final StorageChannel channel )
 	{
 		final List<IMEInventoryHandler> list = new ArrayList<IMEInventoryHandler>( 1 );
@@ -460,6 +478,19 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			out.addCrafting( st );
 		}
 
+		for( final IAEItemStack st : this.requestableItems.keySet() )
+		{
+			if( st.getCountRequestable() > 0 )
+			{
+				out.addRequestable( st );
+			}
+
+			if( st.isCraftable() )
+			{
+				out.addCrafting( st );
+			}
+		}
+
 		return out;
 	}
 
@@ -514,6 +545,18 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	{
 		if( job.isSimulation() )
 		{
+			return null;
+		}
+
+		if( job.isExternalRequest() )
+		{
+			for( final ICraftingMedium m : this.getRequestMediums( job.getOutput() ) )
+			{
+				if( !m.isBusy() && m.pushRequest( job.getOutput(), Actionable.MODULATE ) )
+				{
+					break;
+				}
+			}
 			return null;
 		}
 
@@ -586,6 +629,20 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	}
 
 	@Override
+	public boolean canRequestFor( final IAEItemStack someItem )
+	{
+		for( final ICraftingMedium m : this.getRequestMediums( someItem ) )
+		{
+			if( !m.isBusy() && m.pushRequest( someItem, Actionable.SIMULATE ) )
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	@Override
 	public boolean isRequesting( final IAEItemStack what )
 	{
 		for( final CraftingCPUCluster cluster : this.craftingCPUClusters )
@@ -602,6 +659,18 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	public List<ICraftingMedium> getMediums( final ICraftingPatternDetails key )
 	{
 		List<ICraftingMedium> mediums = this.craftingMethods.get( key );
+
+		if( mediums == null )
+		{
+			mediums = ImmutableList.of();
+		}
+
+		return mediums;
+	}
+
+	public List<ICraftingMedium> getRequestMediums( final IAEItemStack key )
+	{
+		List<ICraftingMedium> mediums = this.requestableItems.get( key );
 
 		if( mediums == null )
 		{

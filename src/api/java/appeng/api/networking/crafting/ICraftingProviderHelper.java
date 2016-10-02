@@ -42,4 +42,9 @@ public interface ICraftingProviderHelper
 	 * Set an item can Emitable
 	 */
 	void setEmitable( IAEItemStack what );
+
+	/**
+	 * Set an item as requestable via external crafting or storage
+	 */
+	void addRequestOption( ICraftingMedium medium, IAEItemStack is );
 }

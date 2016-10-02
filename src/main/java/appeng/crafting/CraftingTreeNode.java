@@ -55,8 +55,10 @@ public class CraftingTreeNode
 	private final ArrayList<CraftingTreeProcess> nodes = new ArrayList<CraftingTreeProcess>();
 	private int bytes = 0;
 	private boolean canEmit = false;
+	private boolean canRequest = false;
 	private long missing = 0;
 	private long howManyEmitted = 0;
+	private long howManyRequested = 0;
 	private boolean exhausted = false;
 
 	private boolean sim;
@@ -71,10 +73,11 @@ public class CraftingTreeNode
 		this.sim = false;
 
 		this.canEmit = cc.canEmitFor( this.what );
+		this.canRequest = cc.canRequestFor( this.what );
 
-		if( this.canEmit )
+		if( this.canEmit || this.canRequest )
 		{
-			return; // if you can emit for something, you can't make it with patterns.
+			return; // if you can emit or externally request for something, you can't make it with patterns.
 		}
 
 		for( final ICraftingPatternDetails details : cc.getCraftingFor( this.what, this.parent == null ? null : this.parent.details, slot, this.world ) )// in
@@ -205,6 +208,16 @@ public class CraftingTreeNode
 			}
 		}
 
+		if( this.canRequest )
+		{
+			final IAEItemStack wat = this.what.copy();
+			wat.setStackSize( l );
+
+			this.howManyRequested = wat.getStackSize();
+			this.bytes += wat.getStackSize();
+			return wat;
+		}
+
 		if( this.canEmit )
 		{
 			final IAEItemStack wat = this.what.copy();
@@ -317,6 +330,12 @@ public class CraftingTreeNode
 		}
 		// missing = 0;
 
+		if( this.howManyRequested > 0 && job.getTree().canRequest )
+		{
+			// only set entire job as external request if tree can request output item
+			job.setExternalRequest( true );
+		}
+
 		job.addBytes( 8 + this.bytes );
 
 		for( final CraftingTreeProcess pro : this.nodes )
@@ -360,6 +379,13 @@ public class CraftingTreeNode
 			craftingCPUCluster.addStorage( ex );
 		}
 
+		if( this.howManyRequested > 0 )
+		{
+			final IAEItemStack i = this.what.copy();
+			i.setStackSize( this.howManyRequested );
+			craftingCPUCluster.addRequestable( i );
+		}
+
 		if( this.howManyEmitted > 0 )
 		{
 			final IAEItemStack i = this.what.copy();
@@ -380,6 +406,13 @@ public class CraftingTreeNode
 			final IAEItemStack o = this.what.copy();
 			o.setStackSize( this.missing );
 			plan.add( o );
+		}
+
+		if( this.howManyRequested > 0 )
+		{
+			final IAEItemStack i = this.what.copy();
+			i.setCountRequestable( this.howManyRequested );
+			plan.addRequestable( i );
 		}
 
 		if( this.howManyEmitted > 0 )

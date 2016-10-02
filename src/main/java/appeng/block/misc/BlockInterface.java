@@ -21,6 +21,7 @@ package appeng.block.misc;
 
 import java.util.EnumSet;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -34,6 +35,7 @@ import appeng.block.AEBaseTileBlock;
 import appeng.client.render.blocks.RenderBlockInterface;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
+import appeng.tile.AEBaseTile;
 import appeng.tile.misc.TileInterface;
 import appeng.util.Platform;
 
@@ -88,6 +90,17 @@ public class BlockInterface extends AEBaseTileBlock
 		if( rotatable instanceof TileInterface )
 		{
 			( (TileInterface) rotatable ).setSide( axis );
+		}
+	}
+
+	@Override
+	public void onNeighborBlockChange( final World w, final int x, final int y, final int z, final Block neighbor )
+	{
+		final AEBaseTile tile = this.getTileEntity( w, x, y, z );
+		if( tile instanceof TileInterface )
+		{
+			final TileInterface iface = (TileInterface) tile;
+			iface.onNeighborChanged();
 		}
 	}
 }

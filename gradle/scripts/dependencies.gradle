@@ -126,6 +126,7 @@ dependencies {
     compile "appeng:RotaryCraft:${rotarycraft_version}:api"
     compile "appeng:mekanism:${minecraft_version}-${mekansim_version}:api"
     compile "appeng:InventoryTweaks:${invtweaks_version}:api"
+    compile "appeng:logistics-pipes-api:${logisticspipes_version}"
 
     // self compiled stubs
     compile(group: 'api', name: 'coloredlightscore', version: "${api_coloredlightscore_version}")

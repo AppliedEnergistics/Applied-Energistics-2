@@ -323,4 +323,15 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	{
 		this.duality.setPriority( newValue );
 	}
+
+	public void onNeighborChanged()
+	{
+		this.duality.onNeighborChanged();
+	}
+
+	@Override
+	public boolean pushRequest( final IAEItemStack item, final Actionable mode )
+	{
+		return this.duality.pushRequest( item, mode );
+	}
 }

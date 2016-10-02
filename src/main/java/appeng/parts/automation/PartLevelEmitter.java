@@ -38,6 +38,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
 import appeng.api.config.RedstoneMode;
@@ -744,5 +745,11 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 				}
 			}
 		}
+	}
+
+	@Override
+	public boolean pushRequest( final IAEItemStack item, final Actionable mode )
+	{
+		return false;
 	}
 }
