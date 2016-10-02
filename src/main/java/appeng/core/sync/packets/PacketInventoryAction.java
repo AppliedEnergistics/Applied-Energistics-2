@@ -26,6 +26,7 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.storage.data.IAEItemStack;
@@ -140,7 +141,11 @@ public class PacketInventoryAction extends AppEngPacket
 
 						if( baseContainer.getTargetStack() != null )
 						{
-							cca.getCraftingItem().putStack( baseContainer.getTargetStack().getItemStack() );
+							// Force to stack size 1 to fix a client-side display problem...
+							ItemStack displayIs = baseContainer.getTargetStack().getItemStack().copy();
+							displayIs.stackSize = 1;
+							cca.getCraftingItem().putStack( displayIs );
+							// This is the *actual* item that matters, not the display item above
 							cca.setItemToCraft( baseContainer.getTargetStack() );
 						}
 

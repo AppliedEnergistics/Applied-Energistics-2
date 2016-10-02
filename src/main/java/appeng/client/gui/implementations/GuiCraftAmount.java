@@ -154,7 +154,7 @@ public class GuiCraftAmount extends AEBaseGui
 		try
 		{
 			Long.parseLong( this.amountToCraft.getText() );
-			this.next.enabled = this.amountToCraft.getText().length() > 0;
+			this.next.enabled = !this.amountToCraft.getText().isEmpty();
 		}
 		catch( final NumberFormatException e )
 		{
