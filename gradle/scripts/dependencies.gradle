@@ -1,4 +1,3 @@
-
 /*
  * This file is part of Applied Energistics 2.
  * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
@@ -17,14 +16,8 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-
-
 repositories {
     mavenLocal()
-    maven {
-        name "ChickenBones"
-        url "http://chickenbones.net/maven/"
-    }
 
     maven {
         name "Mobius"
@@ -32,65 +25,9 @@ repositories {
     }
 
     maven {
-        name "FireBall API Depot"
-        url "http://dl.tsr.me/artifactory/libs-release-local"
-    }
-
-    maven {
-        name = "Player"
-        url = "http://maven.ic2.player.to/"
-    }
-
-    maven {
-        name = "Tterrag"
-        url = "http://maven.tterrag.com/"
-    }
-
-    maven  {
-        name = "RX14 Proxy"
-        url = "http://mvn.rx14.co.uk/repo/"
-    }
-
-    maven {
-        name "OpenComputers Repo"
-        url = "http://maven.cil.li/"
-    }
-
-    maven {
-        name = "MM repo"
-        url = "http://maven.k-4u.nl/"
-    }
-
-    maven {
         name = "JEI repo"
         url "http://dvs1.progwml6.com/files/maven"
     }
-
-    ivy {
-        name "BuildCraft"
-        artifactPattern "http://www.mod-buildcraft.com/releases/BuildCraft/[revision]/[module]-[revision]-[classifier].[ext]"
-    }
-
-//  CurseForge DNS for TE is not available or I am just being unlucky, code part can stay since this is applicable to any other curseforge mod though
-//    ivy {
-//        name = "CoFHLib"
-//        artifactPattern "http://addons.cursecdn.com/files/2212/893/[module]-[revision].[ext]"
-//    }
-//
-//    ivy {
-//        name = "CoFHCore"
-//        artifactPattern "http://addons.cursecdn.com/files/2212/895/[module]-[revision].[ext]"
-//    }
-
-//    ivy {
-//        name = "ThermalExpansion"
-//        artifactPattern "http://addons.curse.cursecdn.com/files/2212/446/[module]-[revision].[ext]"
-//    }
-
-//    ivy {
-//        name = "ThermalFoundation"
-//        artifactPattern "http://addons.curse.cursecdn.com/files/2212/444/[module]-[revision].[ext]"
-//    }
 }
 
 configurations {
@@ -98,55 +35,16 @@ configurations {
 }
 
 dependencies {
-    // installable
-    mods "mcp.mobius.waila:Waila:${waila_version}_1.9.4:dev"
+    // installable runtime dependencies
+    mods "mcp.mobius.waila:Waila:${waila_version}"
 
-//    mods "mcp.mobius.jabba:Jabba:${jabba_version}_${minecraft_version}:dev"
-//    mods "codechicken:EnderStorage:${minecraft_version}-${enderstorage_version}:dev"
-//    mods "codechicken:Translocator:${minecraft_version}-${translocator_version}:dev"
-//    mods "net.industrial-craft:industrialcraft-2:${ic2_version}-experimental:dev"
-//    mods "com.enderio:EnderIO:${minecraft_version}-${enderio_version}:dev"
-//    mods "net.mcft.copy.betterstorage:BetterStorage:${minecraft_version}-${betterstorage_version}:deobf"
-//    mods "inventorytweaks:InventoryTweaks:${invtweaks_version}:deobf"
-//    mods "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:dev"
-
-//    mods name: 'CoFHLib', version: "[${minecraft_version}]${cofhlib_version}-dev", ext: 'jar'
-//    mods name: 'CoFHCore', version: "[${minecraft_version}]${cofhcore_version}-dev", ext: 'jar'
-//    mods name: 'ThermalExpansion', version: "[${minecraft_version}]${texpansion_version}-dev", ext: 'jar'
-//    mods name: 'ThermalFoundation', version: "[${minecraft_version}]${tfoundation_version}-dev", ext: 'jar'
-
-//    compile "codechicken:ForgeMultipart:${minecraft_version}-${fmp_version}:dev"
-//    compile "codechicken:CodeChickenLib:${minecraft_version}-${code_chicken_lib_version}:dev"
-//    compile "codechicken:CodeChickenCore:${minecraft_version}-${code_chicken_core_version}:dev"
-//    compile "codechicken:NotEnoughItems:${minecraft_version}-${nei_version}:dev"
-//    compile "com.mod-buildcraft:buildcraft:${bc_version}:dev"
-//    compile "pneumaticCraft:PneumaticCraft-${minecraft_version}:${pneumaticcraft_version}:api"
-
-    // provided APIs
-//    compile "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:api"
-//    compile "net.industrial-craft:industrialcraft-2:${ic2_version}-experimental:api"
-//    compile "net.mcft.copy.betterstorage:BetterStorage:${minecraft_version}-${betterstorage_version}:api"
-
-    // self compiled APIs
-//    compile "appeng:Waila:${waila_version}_${minecraft_version}:api"
-//    compile "appeng:RotaryCraft:${rotarycraft_version}:api"
-//    compile "appeng:mekanism:${minecraft_version}-${mekansim_version}:api"
-//    compile "appeng:InventoryTweaks:${invtweaks_version}:api"
-
-    // self compiled stubs
-//    compile(group: 'api', name: 'coloredlightscore', version: "${api_coloredlightscore_version}")
-//    compile(group: 'api', name: 'craftguide', version: "${api_craftguide_version}")
-//    compile(group: 'api', name: 'immibis', version: "${api_immibis_version}")
-//    compile(group: 'api', name: 'mfr', version: "${api_mfr_version}")
-//    compile(group: 'api', name: 'railcraft', version: "${api_railcraft_version}")
-//    compile(group: 'api', name: 'rf', version: "${api_rf_version}")
-
-    // compile against various APIs
-    compileOnly "mezz.jei:jei_1.10.2:${jei_version}:api"
-    compileOnly "mcp.mobius.waila:Waila:${waila_version}_1.9.4:dev"
+    // compile against provided APIs
+    compileOnly "mezz.jei:jei_${minecraft_version}:${jei_version}:api"
+    compileOnly "mcp.mobius.waila:Waila:${waila_version}"
 
     // at runtime, use the full JEI jar
-    runtime "mezz.jei:jei_1.10.2:${jei_version}"
+    runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"
 
+    // unit test dependencies
     testCompile "junit:junit:4.12"
 }

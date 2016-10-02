@@ -38,16 +38,10 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    testCompile "junit:junit:4.12"
-}
-
 apply from: 'gradle/scripts/dependencies.gradle'
 apply from: 'gradle/scripts/artifacts.gradle'
-//apply from: 'gradle/scripts/autoinstallruntime.gradle'
 apply from: 'gradle/scripts/integration.gradle'
 apply from: 'gradle/scripts/optional.gradle'
-
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -55,14 +49,6 @@ targetCompatibility = JavaVersion.VERSION_1_8
 version = aeversion + "-" + aechannel + "-" + aebuild
 group = aegroup
 archivesBaseName = aebasename
-
-// If TeamCity is running this build, lets set the version info
-if (hasProperty("teamcity")) {
-    version = teamcity["build.number"]
-
-    // Fix for main branch being built
-    version = version.replaceAll("/", "-")
-}
 
 // Add Coremod Manifest
 jar {
@@ -118,10 +104,20 @@ sourceSets {
     }
 }
 
-processResources {
+processResources
+{
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-        expand 'version': project.version, 'mcversion': minecraft_version
+        expand 'version': project.version, 'mcversion': project.minecraft.version
+    }
+
+    // copy everything else, thats not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
     }
 }

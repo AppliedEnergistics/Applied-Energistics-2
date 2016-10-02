@@ -1,9 +1,26 @@
-if (JavaVersion.current().isJava8Compatible()) {
-    allprojects {
-        tasks.withType(Javadoc) {
-            options.addStringOption('Xdoclint:none', '-quiet')
-        }
-    }
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+ 
+// Suppresses warnings/errors when building javadocs
+allprojects {
+	tasks.withType(Javadoc) {
+		options.addStringOption('Xdoclint:none', '-quiet')
+	}
 }
 
 javadoc {
@@ -11,32 +28,18 @@ javadoc {
     options.charSet = 'UTF-8'
 }
 
-task myJavadocs(type: Javadoc) {
+task javadocs(type: Javadoc) {
     source = sourceSets.api.java
     include "appeng/api/**"
 
-    classpath = configurations.compile
+    // Due to ForgeGradle having to be a special snowflake,
+    // we have to add some custom configurations to the normal compile configuration and hope it does not break.
+    classpath = configurations.compile + configurations.forgeGradleMc + configurations.forgeGradleMcDeps 
 }
 
-task javadocJar(type: Jar, dependsOn: myJavadocs) {
+task javadocJar(type: Jar, dependsOn: javadocs) {
+	from javadoc.destinationDir
     classifier = 'javadoc'
-    from 'build/docs/javadoc/'
-}
-
-task devJar(type: Jar) {
-
-    manifest {
-        attributes 'FMLCorePlugin': 'appeng.transformer.AppEngCore'
-        attributes 'FMLCorePluginContainsFMLMod': 'true'
-    }
-
-    from(sourceSets.main.output) {
-        include "appeng/**"
-        include "assets/**"
-        include 'mcmod.info'
-    }
-
-    classifier = 'dev'
 }
 
 task apiJar(type: Jar) {
@@ -50,7 +53,6 @@ task apiJar(type: Jar) {
 }
 
 artifacts {
-    archives devJar
     archives apiJar
     archives javadocJar
     archives sourceJar

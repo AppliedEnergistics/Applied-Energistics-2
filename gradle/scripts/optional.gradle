@@ -1,116 +1,32 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+ 
 task wrapper(type: Wrapper) {
-    gradleVersion = "2.7"
+    gradleVersion = "2.14"
 }
 
 // WAILA
 task installWaila(type: Copy, dependsOn: "deinstallWaila") {
     from { configurations.mods }
-    include "**/*Waila*dev.jar"
+    include "**/*Waila*.jar"
     into file(minecraft.runDir + "/mods")
 }
 
 task deinstallWaila(type: Delete) {
     delete fileTree(dir: minecraft.runDir + "/mods", include: "*Waila*.jar")
-}
-
-// JABBA
-task installJabba(type: Copy, dependsOn: "deinstallJabba") {
-    from { configurations.mods }
-    include "**/*Jabba*dev.jar"
-    into file(minecraft.runDir + "/mods")
-}
-
-task deinstallJabba(type: Delete) {
-    delete fileTree(dir: minecraft.runDir + "/mods", include: "*Jabba*.jar")
-}
-
-// ENDER STORAGE
-task installEnderStorage(type: Copy, dependsOn: "deinstallEnderStorage") {
-    from { configurations.mods }
-    include "**/*EnderStorage*dev.jar"
-    into file(minecraft.runDir + "/mods")
-}
-
-task deinstallEnderStorage(type: Delete) {
-    delete fileTree(dir: minecraft.runDir + "/mods", include: "*EnderStorage*.jar")
-}
-
-// TRANSLOCATOR
-task installTranslocator(type: Copy, dependsOn: "deinstallTranslocator") {
-    from { configurations.mods }
-    include "**/*Translocator*dev.jar"
-    into file(minecraft.runDir + "/mods")
-}
-
-task deinstallTranslocator(type: Delete) {
-    delete fileTree(dir: minecraft.runDir + "/mods", include: "*Translocator*.jar")
-}
-
-// INDUSTRIALCRAFT
-task installIC2(type: Copy, dependsOn: "deinstallIC2") {
-    from { configurations.mods }
-    include "**/*industrialcraft*dev.jar"
-    into file(minecraft.runDir + "/mods")
-}
-
-task deinstallIC2(type: Delete) {
-    delete fileTree(dir: minecraft.runDir + "/mods", include: "*industrialcraft*.jar")
-}
-
-// ENDER IO
-task installEnderIO(type: Copy, dependsOn: "deinstallEnderIO") {
-    from { configurations.mods }
-    include "**/*EnderIO*dev.jar"
-    into file(minecraft.runDir + "/mods")
-}
-
-task deinstallEnderIO(type: Delete) {
-    delete fileTree(dir: minecraft.runDir + "/mods", include: "*EnderIO*.jar")
-}
-
-// TE
-//task installTE(type: Copy, dependsOn: "deinstallTE") {
-//    from { configurations.mods }
-//    include "**/*CoFHLib*.jar"
-//    include "**/*CoFHCore*.jar"
-//    include "**/*ThermalFoundation*.jar"
-//    include "**/*ThermalExpansion*.jar"
-//
-//    into file(minecraft.runDir + "/mods")
-//}
-//
-//task deinstallTE(type: Delete) {
-//    delete fileTree(dir: minecraft.runDir + "/mods", includes: ["*CoFHLib*.jar", "*CoFHCore*.jar", "*ThermalFoundation*.jar", "*ThermalExpansion*.jar"])
-//}
-
-// INV TWEAKS
-task installInvTweaks(type: Copy, dependsOn: "deinstallInvTweaks") {
-    from { configurations.mods }
-    include "**/*InventoryTweaks*dev*.jar"
-    into file(minecraft.runDir + "/mods")
-}
-
-task deinstallInvTweaks(type: Delete) {
-    delete fileTree(dir: minecraft.runDir + "/mods", include: "*InventoryTweaks*.jar")
-}
-
-// BETTER STORAGE
-task installBetterStorage(type: Copy, dependsOn: "deinstallBetterStorage") {
-    from { configurations.mods }
-    include "**/*BetterStorage*deobf*.jar"
-    into file(minecraft.runDir + "/mods")
-}
-
-task deinstallBetterStorage(type: Delete) {
-    delete fileTree(dir: minecraft.runDir + "/mods", include: "*BetterStorage*.jar")
-}
-
-task installOpenComputers(type: Copy, dependsOn: "deinstallOpenComputers") {
-    from { configurations.mods }
-    include "**/*OpenComputer*dev*.jar"
-    into file(minecraft.runDir + "/mods")
-}
-
-task deinstallOpenComputers(type: Delete) {
-    delete fileTree(dir: minecraft.runDir + "/mods", include: "*OpenComputers*.jar")
 }
