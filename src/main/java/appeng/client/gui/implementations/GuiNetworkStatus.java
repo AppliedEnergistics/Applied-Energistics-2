@@ -23,9 +23,9 @@ import java.io.IOException;
 import java.util.List;
 
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -159,8 +159,8 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 			final IAEItemStack refStack = this.repo.getReferenceItem( z );
 			if( refStack != null )
 			{
-				GL11.glPushMatrix();
-				GL11.glScaled( 0.5, 0.5, 0.5 );
+				GlStateManager.pushMatrix();
+				GlStateManager.scale( 0.5, 0.5, 0.5 );
 
 				String str = Long.toString( refStack.getStackSize() );
 				if( refStack.getStackSize() >= 10000 )
@@ -171,7 +171,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 				final int w = this.fontRendererObj.getStringWidth( str );
 				this.fontRendererObj.drawString( str, (int) ( ( x * sectionLength + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * 18 + yo + 6 ) * 2, 4210752 );
 
-				GL11.glPopMatrix();
+				GlStateManager.popMatrix();
 				final int posX = x * sectionLength + xo + sectionLength - 18;
 				final int posY = y * 18 + yo;
 
@@ -203,9 +203,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 		if( this.tooltip >= 0 && toolTip.length() > 0 )
 		{
-			GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 			this.drawTooltip( toolPosX, toolPosY + 10, toolTip );
-			GL11.glPopAttrib();
 		}
 	}
 
