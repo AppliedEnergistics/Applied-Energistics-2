@@ -32,6 +32,7 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -222,8 +223,8 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 			final IAEItemStack refStack = this.visual.get( z );// repo.getReferenceItem( z );
 			if( refStack != null )
 			{
-				GL11.glPushMatrix();
-				GL11.glScaled( 0.5, 0.5, 0.5 );
+				GlStateManager.pushMatrix();
+				GlStateManager.scale( 0.5, 0.5, 0.5 );
 
 				final IAEItemStack stored = this.storage.findPrecise( refStack );
 				final IAEItemStack activeStack = this.active.findPrecise( refStack );
@@ -301,7 +302,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 					}
 				}
 
-				GL11.glPopMatrix();
+				GlStateManager.popMatrix();
 				final int posX = x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19;
 				final int posY = y * offY + ITEMSTACK_TOP_OFFSET;
 
@@ -334,9 +335,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 		if( this.tooltip >= 0 && !dspToolTip.isEmpty() )
 		{
-			GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 			this.drawTooltip( toolPosX, toolPosY + 10, dspToolTip );
-			GL11.glPopAttrib();
 		}
 	}
 
