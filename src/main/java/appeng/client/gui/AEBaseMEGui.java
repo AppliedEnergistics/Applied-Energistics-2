@@ -132,6 +132,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 				}
 
 				this.drawTooltip( x, y, currentToolTip );
+				return;
 			}
 			else if( stack.stackSize > BigNumber )
 			{
