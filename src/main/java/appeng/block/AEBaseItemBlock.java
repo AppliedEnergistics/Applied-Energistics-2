@@ -189,10 +189,7 @@ public class AEBaseItemBlock extends ItemBlock
 
 				if( ori.canBeRotated() && !this.blockType.hasCustomRotation() )
 				{
-					if( ori.getForward() == null || ori.getUp() == null )
-					{
-						ori.setOrientation( forward, up );
-					}
+					ori.setOrientation( forward, up );
 				}
 
 				if( tile instanceof IGridProxyable )
