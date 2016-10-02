@@ -59,7 +59,10 @@ public class CraftingCubeRendering extends BlockRenderingCustomizer
 		ResourceLocation baseName = new ResourceLocation( AppEng.MOD_ID, registryName );
 
 		// Disable auto-rotation
-		rendering.modelCustomizer( ( loc, model ) -> model );
+		if( type != BlockCraftingUnit.CraftingUnitType.MONITOR )
+		{
+			rendering.modelCustomizer( ( loc, model ) -> model );
+		}
 
 		// This is the standard blockstate model
 		ModelResourceLocation defaultModel = new ModelResourceLocation( baseName, "normal" );

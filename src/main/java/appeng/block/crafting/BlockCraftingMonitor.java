@@ -45,8 +45,6 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 
 	public static final UnlistedProperty<AEColor> COLOR = new UnlistedProperty<>( "color", AEColor.class );
 
-	public static final UnlistedProperty<EnumFacing> FORWARD = new UnlistedProperty<>( "forward", EnumFacing.class );
-
 	public BlockCraftingMonitor()
 	{
 		super( CraftingUnitType.MONITOR );
@@ -59,7 +57,8 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 		return new ExtendedBlockState( this, getAEStates(), new IUnlistedProperty[] {
 				STATE,
 				COLOR,
-				FORWARD
+				FORWARD,
+				UP
 		} );
 	}
 
@@ -68,15 +67,20 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 	{
 		AEColor color = AEColor.TRANSPARENT;
 		EnumFacing forward = EnumFacing.NORTH;
+		EnumFacing up = EnumFacing.UP;
 
 		TileCraftingMonitorTile te = getTileEntity( world, pos );
 		if( te != null )
 		{
 			color = te.getColor();
 			forward = te.getForward();
+			up = te.getUp();
 		}
 
-		return super.getExtendedState( state, world, pos ).withProperty( COLOR, color ).withProperty( FORWARD, forward );
+		return super.getExtendedState( state, world, pos )
+				.withProperty( COLOR, color )
+				.withProperty( FORWARD, forward )
+				.withProperty( UP, up );
 	}
 
 	@Override

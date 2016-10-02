@@ -1,6 +1,7 @@
 {
   "parent": "block/cube",
   "textures": {
+    "particle": "appliedenergistics2:blocks/crafting/monitor",
     "north": "appliedenergistics2:blocks/crafting/monitor",
     "east": "appliedenergistics2:blocks/crafting/unit",
     "west": "appliedenergistics2:blocks/crafting/unit",

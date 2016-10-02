@@ -63,10 +63,9 @@ class MonitorBakedModel extends CraftingCubeBakedModel
 	@Override
 	protected void addInnerCube( EnumFacing side, IBlockState state, CubeBuilder builder, float x1, float y1, float z1, float x2, float y2, float z2 )
 	{
-		EnumFacing forward = getForward( state );
-
 		// For sides other than the front, use the chassis texture
-		if( side != forward )
+		// The actual rotation of the cube is handled by the auto rotation as usual
+		if( side != EnumFacing.NORTH )
 		{
 			builder.setTexture( chassisTexture );
 			builder.addCube( x1, y1, z1, x2, y2, z2 );
@@ -111,18 +110,4 @@ class MonitorBakedModel extends CraftingCubeBakedModel
 		return AEColor.TRANSPARENT;
 	}
 
-	private static EnumFacing getForward( IBlockState state )
-	{
-		if( state instanceof IExtendedBlockState )
-		{
-			IExtendedBlockState extState = (IExtendedBlockState) state;
-			EnumFacing forward = extState.getValue( BlockCraftingMonitor.FORWARD );
-			if( forward != null )
-			{
-				return forward;
-			}
-		}
-
-		return EnumFacing.NORTH;
-	}
 }
