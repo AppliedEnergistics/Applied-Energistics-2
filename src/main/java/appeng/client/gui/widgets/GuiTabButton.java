@@ -20,7 +20,6 @@ package appeng.client.gui.widgets;
 
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -102,11 +101,8 @@ public class GuiTabButton extends GuiButton implements ITooltip
 				this.zLevel = 100.0F;
 				this.itemRenderer.zLevel = 100.0F;
 
-				GL11.glEnable( GL11.GL_LIGHTING );
-				GL11.glEnable( GL12.GL_RESCALE_NORMAL );
 				RenderHelper.enableGUIStandardItemLighting();
 				this.itemRenderer.renderItemAndEffectIntoGUI( this.myItem, offsetX + this.xPosition + 3, this.yPosition + 3 );
-				GL11.glDisable( GL11.GL_LIGHTING );
 
 				this.itemRenderer.zLevel = 0.0F;
 				this.zLevel = 0.0F;
