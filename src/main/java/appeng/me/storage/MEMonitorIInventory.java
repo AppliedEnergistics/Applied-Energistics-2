@@ -157,12 +157,13 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 
 			if( this.isDifferent( newIS, oldIS ) )
 			{
-				final CachedItemStack cis = new CachedItemStack( is.getItemStack() );
+				final CachedItemStack cis = new CachedItemStack( is.getItemStack(), is.getAEItemStack() );
 				this.memory.put( is.getSlot(), cis );
 
 				if( old != null && old.aeStack != null )
 				{
 					old.aeStack.setStackSize( -old.aeStack.getStackSize() );
+					old.aeStack.setCountRequestable( -old.aeStack.getCountRequestable() );
 					changes.add( old.aeStack );
 				}
 
@@ -180,19 +181,27 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 				final int diff = newSize - ( oldIS == null ? 0 : oldIS.stackSize );
 
 				final IAEItemStack stack = ( old == null || old.aeStack == null ? AEApi.instance().storage().createItemStack( newIS ) : old.aeStack.copy() );
+				final IAEItemStack newstack = ( is.getAEItemStack() == null ? AEApi.instance().storage().createItemStack( newIS ) : is.getAEItemStack() );
+
+				final long diffRequestable = ( stack == null && newstack == null ? 0 : newstack.getCountRequestable() - stack.getCountRequestable() );
+				final boolean diffCraftable = ( stack == null && newstack == null ? false : newstack.isCraftable() != stack.isCraftable() );
+
 				if( stack != null )
 				{
 					stack.setStackSize( newSize );
+					stack.setCountRequestable( newstack == null ? stack.getCountRequestable() : newstack.getCountRequestable() );
+					stack.setCraftable( newstack == null ? stack.isCraftable() : newstack.isCraftable() );
 					this.list.add( stack );
 				}
 
-				if( diff != 0 && stack != null )
+				if( stack != null && ( diff != 0 || diffRequestable != 0 || diffCraftable ) )
 				{
-					final CachedItemStack cis = new CachedItemStack( is.getItemStack() );
+					final CachedItemStack cis = new CachedItemStack( is.getItemStack(), is.getAEItemStack() );
 					this.memory.put( is.getSlot(), cis );
 
 					final IAEItemStack a = stack.copy();
 					a.setStackSize( diff );
+					a.setCountRequestable( diffRequestable );
 					changes.add( a );
 					changed = true;
 				}
@@ -340,7 +349,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 		private final ItemStack itemStack;
 		private final IAEItemStack aeStack;
 
-		public CachedItemStack( final ItemStack is )
+		public CachedItemStack( final ItemStack is, final IAEItemStack aeitem )
 		{
 			if( is == null )
 			{
@@ -350,7 +359,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 			else
 			{
 				this.itemStack = is.copy();
-				this.aeStack = AEApi.instance().storage().createItemStack( is );
+				this.aeStack = aeitem == null ? AEApi.instance().storage().createItemStack( is ) : aeitem.copy();
 			}
 		}
 	}

@@ -109,7 +109,7 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	@Override
 	public boolean isMeaningful()
 	{
-		return this.stackSize != 0 || this.countRequestable > 0 || this.isCraftable;
+		return this.stackSize != 0 || this.countRequestable != 0 || this.isCraftable;
 	}
 
 	@Override

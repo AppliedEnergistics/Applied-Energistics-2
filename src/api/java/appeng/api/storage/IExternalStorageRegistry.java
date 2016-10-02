@@ -38,7 +38,6 @@ import appeng.api.networking.security.BaseActionSource;
  */
 public interface IExternalStorageRegistry
 {
-
 	/**
 	 * A registry for StorageBus interactions
 	 *
@@ -55,4 +54,21 @@ public interface IExternalStorageRegistry
 	 * @return the handler for a given tile / forge direction
 	 */
 	IExternalStorageHandler getHandler( TileEntity te, ForgeDirection opposite, StorageChannel channel, BaseActionSource mySrc );
+
+	/**
+	 * A registry for Interface interactions
+	 *
+	 * @param esh storage handler
+	 */
+	void addInterfaceExternalStorage( IExternalStorageHandler esh );
+
+	/**
+	 * @param te       tile entity
+	 * @param opposite direction
+	 * @param channel  channel
+	 * @param mySrc    source
+	 *
+	 * @return the handler for a given tile / forge direction from interface registry
+	 */
+	IExternalStorageHandler getInterfaceHandler( TileEntity te, ForgeDirection opposite, StorageChannel channel, BaseActionSource mySrc );
 }

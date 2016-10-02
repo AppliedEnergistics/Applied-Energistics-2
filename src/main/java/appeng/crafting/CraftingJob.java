@@ -64,6 +64,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 	private CraftingTreeNode tree;
 	private final IAEItemStack output;
 	private boolean simulate = false;
+	private boolean externalRequest = false;
 	private MECraftingInventory availableCheck;
 	private long bytes = 0;
 	private final BaseActionSource actionSrc;
@@ -297,6 +298,17 @@ public class CraftingJob implements Runnable, ICraftingJob
 	public IAEItemStack getOutput()
 	{
 		return this.output;
+	}
+
+	@Override
+	public boolean isExternalRequest()
+	{
+		return this.externalRequest;
+	}
+
+	public void setExternalRequest( final boolean externalRequest )
+	{
+		this.externalRequest = externalRequest;
 	}
 
 	public boolean isDone()

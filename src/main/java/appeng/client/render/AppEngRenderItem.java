@@ -89,7 +89,9 @@ public class AppEngRenderItem extends RenderItem
 				GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 			}
 
-			if( is.stackSize == 0 )
+			final long requestable = this.aeStack != null ? this.aeStack.getCountRequestable() : 0;
+
+			if( is.stackSize == 0 && requestable == 0 )
 			{
 				final String craftLabelText = AEConfig.instance.useTerminalUseLargeFont() ? GuiText.LargeFontCraft.getLocal() : GuiText.SmallFontCraft.getLocal();
 

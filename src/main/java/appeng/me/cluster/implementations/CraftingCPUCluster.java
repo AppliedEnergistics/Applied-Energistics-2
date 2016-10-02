@@ -104,6 +104,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	private IAEItemStack finalOutput;
 	private boolean waiting = false;
 	private IItemList<IAEItemStack> waitingFor = AEApi.instance().storage().createItemList();
+	private IItemList<IAEItemStack> requests = AEApi.instance().storage().createItemList();
 	private long availableStorage = 0;
 	private MachineSource machineSrc = null;
 	private int accelerator = 0;
@@ -535,6 +536,20 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		return true;
 	}
 
+	private boolean canRequest( final IAEItemStack[] condensedInputs )
+	{
+		for( IAEItemStack input : condensedInputs )
+		{
+			final IAEItemStack is = this.requests.findPrecise( (IAEItemStack) input );
+			if( is != null && is.getStackSize() > 0 )
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public void cancel()
 	{
 		if( this.myLastLink != null )
@@ -556,6 +571,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		final ImmutableSet<IAEItemStack> items = ImmutableSet.copyOf( this.waitingFor );
 
 		this.waitingFor.resetStatus();
+		this.requests.resetStatus();
 
 		for( final IAEItemStack is : items )
 		{
@@ -797,6 +813,20 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 						if( is != null )
 						{
 							this.inventory.injectItems( AEItemStack.create( is ), Actionable.MODULATE, this.machineSrc );
+						}
+					}
+				}
+			}
+			else if( this.canRequest( details.getCondensedInputs() ) )
+			{
+				for( final IAEItemStack item : this.requests )
+				{
+					for( final ICraftingMedium m : cc.getRequestMediums( item ) )
+					{
+						if( !m.isBusy() && m.pushRequest( item, Actionable.MODULATE ) )
+						{
+							item.reset();
+							break;
 						}
 					}
 				}
@@ -1060,6 +1090,13 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		this.postCraftingStatusChange( i );
 	}
 
+	public void addRequestable( final IAEItemStack i )
+	{
+		this.requests.add( i );
+		this.waitingFor.add( i );
+		this.postCraftingStatusChange( i );
+	}
+
 	public void addCrafting( final ICraftingPatternDetails details, final long crafts )
 	{
 		TaskProgress i = this.tasks.get( details );
@@ -1140,6 +1177,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		data.setTag( "tasks", list );
 
 		data.setTag( "waitingFor", this.writeList( this.waitingFor ) );
+		data.setTag( "requests", this.writeList( this.requests ) );
 
 		data.setLong( "elapsedTime", this.getElapsedTime() );
 		data.setLong( "startItemCount", this.getStartItemCount() );
@@ -1227,6 +1265,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		{
 			this.postCraftingStatusChange( is.copy() );
 		}
+		this.requests = this.readList( (NBTTagList) data.getTag( "requests" ) );
 
 		this.lastTime = System.nanoTime();
 		this.elapsedTime = data.getLong( "elapsedTime" );

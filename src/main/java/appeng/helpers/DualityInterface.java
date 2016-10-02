@@ -20,11 +20,14 @@ package appeng.helpers;
 
 
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -62,22 +65,28 @@ import appeng.api.networking.events.MENetworkCraftingPatternChange;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPart;
+import appeng.api.storage.IExternalStorageHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.core.settings.TickRates;
+import appeng.integration.modules.LogisticsPipes;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
+import appeng.me.storage.MEInventoryHandler;
 import appeng.me.storage.MEMonitorIInventory;
 import appeng.me.storage.MEMonitorPassThrough;
 import appeng.me.storage.NullInventory;
@@ -97,7 +106,7 @@ import appeng.util.inv.WrapperInvSlot;
 import appeng.util.item.AEItemStack;
 
 
-public class DualityInterface implements IGridTickable, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory, IConfigManagerHost, ICraftingProvider, IUpgradeableHost, IPriorityHost
+public class DualityInterface implements IGridTickable, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory, IConfigManagerHost, ICraftingProvider, IUpgradeableHost, IPriorityHost, IMEMonitorHandlerReceiver
 {
 
 	public static final int NUMBER_OF_STORAGE_SLOTS = 9;
@@ -119,6 +128,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	private final WrapperInvSlot slotInv = new WrapperInvSlot( this.storage );
 	private final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<IAEItemStack>( new NullInventory<IAEItemStack>(), StorageChannel.ITEMS );
 	private final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<IAEFluidStack>( new NullInventory<IAEFluidStack>(), StorageChannel.FLUIDS );
+	private final Map<ForgeDirection, MEMonitorIInventory> monitors = new EnumMap<ForgeDirection, MEMonitorIInventory>( ForgeDirection.class );
+	private final Map<ForgeDirection, MEInventoryHandler> handlers = new EnumMap<ForgeDirection, MEInventoryHandler>( ForgeDirection.class );
+	private final Map<ForgeDirection, Integer> handlerHashes = new EnumMap<ForgeDirection, Integer>( ForgeDirection.class );
 	private final UpgradeInventory upgrades;
 	private boolean hasConfig = false;
 	private int priority;
@@ -126,6 +138,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	private List<ItemStack> waitingToSend = null;
 	private IMEInventory<IAEItemStack> destination;
 	private boolean isWorking = false;
+	private boolean markForReset = false;
+	private boolean cachedHandlers = false;
 
 	public DualityInterface( final AENetworkProxy networkProxy, final IInterfaceHost ih )
 	{
@@ -372,7 +386,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	private boolean hasWorkToDo()
 	{
-		if( this.hasItemsToSend() )
+		if( this.hasItemsToSend() || ( this.monitors != null && !this.monitors.isEmpty() ) )
 		{
 			return true;
 		}
@@ -566,6 +580,20 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	@Override
 	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
 	{
+		if( this.markForReset )
+		{
+			this.markForReset = false;
+			this.resetCache();
+		}
+
+		boolean tickUrgent = false;
+		for( final Entry<ForgeDirection, MEMonitorIInventory> entry : this.monitors.entrySet() )
+		{
+			final MEMonitorIInventory monitor = entry.getValue();
+			final TickRateModulation trm = monitor.onTick();
+			tickUrgent = ( trm == TickRateModulation.URGENT ? true : tickUrgent );
+		}
+
 		if( !this.gridProxy.isActive() )
 		{
 			return TickRateModulation.SLEEP;
@@ -577,7 +605,122 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 
 		final boolean couldDoWork = this.updateStorage();
-		return this.hasWorkToDo() ? ( couldDoWork ? TickRateModulation.URGENT : TickRateModulation.SLOWER ) : TickRateModulation.SLEEP;
+		return this.hasWorkToDo() ? ( ( couldDoWork || tickUrgent ) ? TickRateModulation.URGENT : TickRateModulation.SLOWER ) : TickRateModulation.SLEEP;
+	}
+
+	private void resetCache()
+	{
+		IItemList<IAEItemStack> before = AEApi.instance().storage().createItemList();
+		for( final Entry<ForgeDirection, MEInventoryHandler> entry : this.handlers.entrySet() )
+		{
+			final ForgeDirection side = entry.getKey();
+			final MEInventoryHandler handler = entry.getValue();
+			before = handler.getAvailableItems( before );
+
+			final MEMonitorIInventory monitor = this.monitors.get( side );
+			if( monitor != null )
+			{
+				monitor.onTick();
+			}
+		}
+
+		this.cachedHandlers = false;
+		this.updateInternalHandlers();
+
+		IItemList<IAEItemStack> after = AEApi.instance().storage().createItemList();
+		for( final Map.Entry<ForgeDirection, MEInventoryHandler> entry : this.handlers.entrySet() )
+		{
+			final ForgeDirection side = entry.getKey();
+			final MEInventoryHandler handler = entry.getValue();
+			if( handler != null )
+			{
+				after = handler.getAvailableItems( after );
+			}
+		}
+
+		Platform.postListChanges( before, after, this, this.mySource );
+	}
+
+	private void updateInternalHandlers()
+	{
+		if( this.cachedHandlers )
+		{
+			return;
+		}
+
+		this.cachedHandlers = true;
+
+		final boolean had = this.hasWorkToDo();
+
+		final TileEntity self = this.getHost().getTile();
+
+		for( final ForgeDirection side : this.iHost.getTargets() )
+		{
+			final TileEntity target = self.getWorldObj().getTileEntity( self.xCoord + side.offsetX, self.yCoord + side.offsetY, self.zCoord + side.offsetZ );
+			final int newHandlerHash = Platform.generateTileHash( target );
+
+			final Integer handlerHash = this.handlerHashes.get( side );
+			if( handlerHash != null && handlerHash == newHandlerHash && handlerHash != 0 )
+			{
+				continue; // handler for this side doesn't change
+			}
+
+			this.handlerHashes.put( side, newHandlerHash );
+			this.handlers.remove( side );
+			this.monitors.remove( side );
+
+			if( target != null )
+			{
+				final IExternalStorageHandler esh = AEApi.instance().registries().externalStorage().getInterfaceHandler( target, side.getOpposite(), StorageChannel.ITEMS, this.mySource );
+				if( esh != null )
+				{
+					final IMEInventory<IAEItemStack> inv = esh.getInventory( target, side.getOpposite(), StorageChannel.ITEMS, this.mySource );
+					if( inv != null )
+					{
+						final MEInventoryHandler handler = new MEInventoryHandler( inv, StorageChannel.ITEMS );
+						this.handlers.put( side, handler );
+
+						if( inv instanceof MEMonitorIInventory )
+						{
+							this.monitors.put( side, (MEMonitorIInventory) inv );
+						}
+
+						if( inv instanceof IMEMonitor )
+						{
+							( (IBaseMonitor) inv ).addListener( this, handler );
+						}
+					}
+				}
+			}
+		}
+
+		final boolean now = this.hasWorkToDo();
+		if( had != now )
+		{
+			try
+			{
+				if( now )
+				{
+					this.gridProxy.getTick().alertDevice( this.gridProxy.getNode() );
+				}
+				else
+				{
+					this.gridProxy.getTick().sleepDevice( this.gridProxy.getNode() );
+				}
+			}
+			catch( final GridAccessException e )
+			{
+			}
+		}
+
+		try
+		{
+			// update requestable items
+			this.gridProxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.gridProxy.getNode() ) );
+		}
+		catch( final GridAccessException e )
+		{
+		}
 	}
 
 	private void pushItemsOut( final EnumSet<ForgeDirection> possibleDirections )
@@ -1032,12 +1175,26 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	@Override
 	public void provideCrafting( final ICraftingProviderHelper craftingTracker )
 	{
-		if( this.gridProxy.isActive() && this.craftingList != null )
+		if( this.gridProxy.isActive() )
 		{
-			for( final ICraftingPatternDetails details : this.craftingList )
+			if( this.craftingList != null )
 			{
-				details.setPriority( this.priority );
-				craftingTracker.addCraftingOption( this, details );
+				for( final ICraftingPatternDetails details : this.craftingList )
+				{
+					details.setPriority( this.priority );
+					craftingTracker.addCraftingOption( this, details );
+				}
+			}
+
+			this.updateInternalHandlers();
+			for( final Entry<ForgeDirection, MEMonitorIInventory> entry : this.monitors.entrySet() )
+			{
+				final MEMonitorIInventory monitor = entry.getValue();
+				final IItemList<IAEItemStack> lpitems = monitor.getStorageList();
+				for( final IAEItemStack is : lpitems )
+				{
+					craftingTracker.addRequestOption( this, is );
+				}
 			}
 		}
 	}
@@ -1270,7 +1427,6 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 	}
 
-
 	private class InterfaceInventory extends MEMonitorIInventory
 	{
 
@@ -1301,5 +1457,79 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 			return super.extractItems( request, type, src );
 		}
+	}
+
+	public void onNeighborChanged()
+	{
+		if( this.getHost() == null || this.getHost().getTile() == null || this.getHost().getTile().getWorldObj() == null || this.getHost().getTile().getWorldObj().isRemote )
+		{
+			return;
+		}
+
+		this.markForReset = true;
+
+		// wake up
+		try
+		{
+			this.gridProxy.getTick().alertDevice( this.gridProxy.getNode() );
+		}
+		catch( final GridAccessException e )
+		{
+			return;
+		}
+	}
+
+	public boolean pushRequest( final IAEItemStack item, final Actionable mode )
+	{
+		final TileEntity self = this.iHost.getTileEntity();
+		for( final ForgeDirection side : this.iHost.getTargets() )
+		{
+			final TileEntity target = self.getWorldObj().getTileEntity( self.xCoord + side.offsetX, self.yCoord + side.offsetY, self.zCoord + side.offsetZ );
+			if( target != null )
+			{
+				final List<ItemStack> lpitems = LogisticsPipes.instance.performRequest( target, item.getItemStack(), mode );
+				if( lpitems != null && lpitems.isEmpty() )
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public boolean isValid( final Object verificationToken )
+	{
+		for( final Entry<ForgeDirection, MEInventoryHandler> entry : this.handlers.entrySet() )
+		{
+			final ForgeDirection side = entry.getKey();
+			final MEInventoryHandler handler = entry.getValue();
+			if( handler == verificationToken )
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public void postChange( final IBaseMonitor monitor, final Iterable change, final BaseActionSource actionSource )
+	{
+		// requestable items changed, trigger updates
+		try
+		{
+			this.gridProxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.gridProxy.getNode() ) );
+			this.gridProxy.getStorage().postAlterationOfStoredItems( StorageChannel.ITEMS, change, this.mySource );
+		}
+		catch( final GridAccessException e )
+		{
+		}
+	}
+
+	@Override
+	public void onListUpdate()
+	{
 	}
 }

@@ -27,6 +27,8 @@ public enum IntegrationType
 
 	RC( IntegrationSide.BOTH, "Railcraft", "Railcraft" ),
 
+	LogisticsPipes( IntegrationSide.BOTH, "Logistics Pipes", "LogisticsPipes" ),
+
 	BuildCraftCore( IntegrationSide.BOTH, "BuildCraft Core", "BuildCraft|Core" ),
 
 	BuildCraftTransport( IntegrationSide.BOTH, "BuildCraft Transport", "BuildCraft|Transport" ),

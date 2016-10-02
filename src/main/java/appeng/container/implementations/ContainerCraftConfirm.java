@@ -180,6 +180,10 @@ public class ContainerCraftConfirm extends AEBaseContainer
 		}
 
 		this.setNoCPU( this.cpus.isEmpty() );
+		if( this.result != null && this.result.isExternalRequest() )
+		{
+			this.setNoCPU( false );
+		}
 
 		super.detectAndSendChanges();
 
@@ -350,7 +354,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 			final ICraftingGrid cc = this.getGrid().getCache( ICraftingGrid.class );
 			final ICraftingLink g = cc.submitJob( this.result, null, this.getSelectedCpu() == -1 ? null : this.cpus.get( this.getSelectedCpu() ).getCpu(), true, this.getActionSrc() );
 			this.setAutoStart( false );
-			if( g != null && originalGui != null && this.getOpenContext() != null )
+			if( ( g != null || this.result.isExternalRequest() ) && originalGui != null && this.getOpenContext() != null )
 			{
 				NetworkHandler.instance.sendTo( new PacketSwitchGuis( originalGui ), (EntityPlayerMP) this.getInventoryPlayer().player );
 

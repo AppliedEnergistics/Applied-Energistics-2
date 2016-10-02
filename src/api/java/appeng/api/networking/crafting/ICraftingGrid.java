@@ -96,6 +96,13 @@ public interface ICraftingGrid extends IGridCache
 	boolean canEmitFor( IAEItemStack what );
 
 	/**
+	 * @param what to be requested item
+	 *
+	 * @return true if the item can be requested via an interface with external crafting or storage
+	 */
+	boolean canRequestFor( IAEItemStack what );
+
+	/**
 	 * is this item being crafted?
 	 *
 	 * @param aeStackInSlot item being crafted
