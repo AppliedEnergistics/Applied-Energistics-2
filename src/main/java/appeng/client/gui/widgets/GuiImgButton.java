@@ -23,10 +23,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 
@@ -195,17 +194,17 @@ public class GuiImgButton extends GuiButton implements ITooltip
 				this.width = 8;
 				this.height = 8;
 
-				GL11.glPushMatrix();
-				GL11.glTranslatef( this.xPosition, this.yPosition, 0.0F );
-				GL11.glScalef( 0.5f, 0.5f, 0.5f );
+				GlStateManager.pushMatrix();
+				GlStateManager.translate( this.xPosition, this.yPosition, 0.0F );
+				GlStateManager.scale( 0.5f, 0.5f, 0.5f );
 
 				if( this.enabled )
 				{
-					GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+					GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
 				}
 				else
 				{
-					GL11.glColor4f( 0.5f, 0.5f, 0.5f, 1.0f );
+					GlStateManager.color( 0.5f, 0.5f, 0.5f, 1.0f );
 				}
 
 				par1Minecraft.renderEngine.bindTexture( new ResourceLocation( "appliedenergistics2", "textures/guis/states.png" ) );
@@ -218,17 +217,17 @@ public class GuiImgButton extends GuiButton implements ITooltip
 				this.drawTexturedModalRect( 0, 0, uv_x * 16, uv_y * 16, 16, 16 );
 				this.mouseDragged( par1Minecraft, par2, par3 );
 
-				GL11.glPopMatrix();
+				GlStateManager.popMatrix();
 			}
 			else
 			{
 				if( this.enabled )
 				{
-					GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+					GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
 				}
 				else
 				{
-					GL11.glColor4f( 0.5f, 0.5f, 0.5f, 1.0f );
+					GlStateManager.color( 0.5f, 0.5f, 0.5f, 1.0f );
 				}
 
 				par1Minecraft.renderEngine.bindTexture( new ResourceLocation( "appliedenergistics2", "textures/guis/states.png" ) );
@@ -242,7 +241,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 				this.mouseDragged( par1Minecraft, par2, par3 );
 			}
 		}
-		GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+		GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
 	}
 
 	private int getIconIndex()

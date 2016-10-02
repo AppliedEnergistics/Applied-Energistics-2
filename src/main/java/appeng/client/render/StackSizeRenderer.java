@@ -19,8 +19,6 @@
 package appeng.client.render;
 
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
@@ -61,12 +59,12 @@ public class StackSizeRenderer
 				GlStateManager.disableLighting();
 				GlStateManager.disableDepth();
 				GlStateManager.disableBlend();
-				GL11.glPushMatrix();
-				GL11.glScaled( scaleFactor, scaleFactor, scaleFactor );
+				GlStateManager.pushMatrix();
+				GlStateManager.scale( scaleFactor, scaleFactor, scaleFactor );
 				final int X = (int) ( ( (float) xPos + offset + 16.0f - fontRenderer.getStringWidth( craftLabelText ) * scaleFactor ) * inverseScaleFactor );
 				final int Y = (int) ( ( (float) yPos + offset + 16.0f - 7.0f * scaleFactor ) * inverseScaleFactor );
 				fontRenderer.drawStringWithShadow( craftLabelText, X, Y, 16777215 );
-				GL11.glPopMatrix();
+				GlStateManager.popMatrix();
 				GlStateManager.enableLighting();
 				GlStateManager.enableDepth();
 				GlStateManager.enableBlend();
@@ -80,12 +78,12 @@ public class StackSizeRenderer
 				GlStateManager.disableLighting();
 				GlStateManager.disableDepth();
 				GlStateManager.disableBlend();
-				GL11.glPushMatrix();
-				GL11.glScaled( scaleFactor, scaleFactor, scaleFactor );
+				GlStateManager.pushMatrix();
+				GlStateManager.scale( scaleFactor, scaleFactor, scaleFactor );
 				final int X = (int) ( ( (float) xPos + offset + 16.0f - fontRenderer.getStringWidth( stackSize ) * scaleFactor ) * inverseScaleFactor );
 				final int Y = (int) ( ( (float) yPos + offset + 16.0f - 7.0f * scaleFactor ) * inverseScaleFactor );
 				fontRenderer.drawStringWithShadow( stackSize, X, Y, 16777215 );
-				GL11.glPopMatrix();
+				GlStateManager.popMatrix();
 				GlStateManager.enableLighting();
 				GlStateManager.enableDepth();
 				GlStateManager.enableBlend();

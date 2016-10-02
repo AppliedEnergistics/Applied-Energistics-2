@@ -19,7 +19,7 @@
 package appeng.client.gui.widgets;
 
 
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.GlStateManager;
 
 import appeng.client.gui.AEBaseGui;
 
@@ -40,7 +40,7 @@ public class GuiScrollbar implements IScrollSource
 	public void draw( final AEBaseGui g )
 	{
 		g.bindTexture( "minecraft", "gui/container/creative_inventory/tabs.png" );
-		GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+		GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
 
 		if( this.getRange() == 0 )
 		{

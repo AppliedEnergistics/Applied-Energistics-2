@@ -233,7 +233,7 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		final int ox = this.guiLeft; // (width - xSize) / 2;
 		final int oy = this.guiTop; // (height - ySize) / 2;
-		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+		GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
 
 		if( this.getScrollBar() != null )
 		{
@@ -250,7 +250,7 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		final int ox = this.guiLeft; // (width - xSize) / 2;
 		final int oy = this.guiTop; // (height - ySize) / 2;
-		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+		GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
 		this.drawBG( ox, oy, x, y );
 
 		final List<Slot> slots = this.getInventorySlots();
@@ -267,10 +267,10 @@ public abstract class AEBaseGui extends GuiContainer
 					}
 					else
 					{
-						GL11.glColor4f( 1.0F, 1.0F, 1.0F, 0.4F );
+						GlStateManager.color( 1.0F, 1.0F, 1.0F, 0.4F );
 						GlStateManager.enableBlend();
 						this.drawTexturedModalRect( ox + fs.xDisplayPosition - 1, oy + fs.yDisplayPosition - 1, fs.getSourceX() - 1, fs.getSourceY() - 1, 18, 18 );
-						GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+						GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
 					}
 				}
 			}
@@ -669,7 +669,9 @@ public abstract class AEBaseGui extends GuiContainer
 		this.itemRender.zLevel = 100.0F;
 
 		RenderHelper.enableGUIStandardItemLighting();
+		GlStateManager.enableDepth();
 		this.itemRender.renderItemAndEffectIntoGUI( is, x, y );
+		GlStateManager.disableDepth();
 
 		this.itemRender.zLevel = 0.0F;
 		this.zLevel = 0.0F;
@@ -740,17 +742,16 @@ public abstract class AEBaseGui extends GuiContainer
 					{
 						this.bindTexture( "guis/states.png" );
 
-						GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 						try
 						{
 							final int uv_y = (int) Math.floor( aes.getIcon() / 16 );
 							final int uv_x = aes.getIcon() - uv_y * 16;
 
-							GL11.glEnable( GL11.GL_BLEND );
-							GL11.glDisable( GL11.GL_LIGHTING );
-							GL11.glEnable( GL11.GL_TEXTURE_2D );
-							GL11.glBlendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA );
-							GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+							GlStateManager.enableBlend();
+							GlStateManager.disableLighting();
+							GlStateManager.enableTexture2D();
+							GlStateManager.blendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA );
+							GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
 							final float par1 = aes.xDisplayPosition;
 							final float par2 = aes.yDisplayPosition;
 							final float par3 = uv_x * 16;
@@ -770,11 +771,11 @@ public abstract class AEBaseGui extends GuiContainer
 							vb.pos( par1 + par5, par2 + 0, this.zLevel ).tex( ( par3 + par5 ) * f, ( par4 + 0 ) * f1 ).color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).endVertex();
 							vb.pos( par1 + 0, par2 + 0, this.zLevel ).tex( ( par3 + 0 ) * f, ( par4 + 0 ) * f1 ).color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).endVertex();
 							tessellator.draw();
+
 						}
 						catch( final Exception err )
 						{
 						}
-						GL11.glPopAttrib();
 					}
 				}
 
@@ -802,9 +803,9 @@ public abstract class AEBaseGui extends GuiContainer
 						this.zLevel = 100.0F;
 						this.itemRender.zLevel = 100.0F;
 
-						GL11.glDisable( GL11.GL_LIGHTING );
+						GlStateManager.disableLighting();
 						drawRect( s.xDisplayPosition, s.yDisplayPosition, 16 + s.xDisplayPosition, 16 + s.yDisplayPosition, 0x66ff6666 );
-						GL11.glEnable( GL11.GL_LIGHTING );
+						GlStateManager.enableLighting();
 
 						this.zLevel = 0.0F;
 						this.itemRender.zLevel = 0.0F;

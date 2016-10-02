@@ -19,8 +19,6 @@
 package appeng.entity;
 
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
@@ -74,10 +72,10 @@ public class RenderTinyTNTPrimed extends Render
 			f2 *= f2;
 			f2 *= f2;
 			final float f3 = 1.0F + f2 * 0.3F;
-			GL11.glScalef( f3, f3, f3 );
+			GlStateManager.scale( f3, f3, f3 );
 		}
 
-		GL11.glScalef( 0.5f, 0.5f, 0.5f );
+		GlStateManager.scale( 0.5f, 0.5f, 0.5f );
 		f2 = ( 1.0F - ( tnt.getFuse() - life + 1.0F ) / 100.0F ) * 0.8F;
 		this.bindEntityTexture( tnt );
 		GlStateManager.translate( -0.5F, -0.5F, 0.5F );

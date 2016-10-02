@@ -22,8 +22,6 @@ package appeng.parts.reporting;
 import java.io.IOException;
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.client.renderer.GlStateManager;
@@ -252,7 +250,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		}
 
 		GlStateManager.pushMatrix();
-		GL11.glTranslated( x + 0.5, y + 0.5, z + 0.5 );
+		GlStateManager.translate( x + 0.5, y + 0.5, z + 0.5 );
 
 		EnumFacing facing = this.getSide().getFacing();
 

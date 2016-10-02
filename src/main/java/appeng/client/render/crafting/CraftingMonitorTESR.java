@@ -19,8 +19,6 @@
 package appeng.client.render.crafting;
 
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.EnumFacing;
@@ -53,7 +51,7 @@ public class CraftingMonitorTESR extends TileEntitySpecialRenderer<TileCraftingM
 		if( jobProgress != null )
 		{
 			GlStateManager.pushMatrix();
-			GL11.glTranslated( x + 0.5, y + 0.5, z + 0.5 );
+			GlStateManager.translate( x + 0.5, y + 0.5, z + 0.5 );
 
 			TesrRenderHelper.moveToFace( facing );
 			TesrRenderHelper.rotateToFace( facing, (byte) 0 );

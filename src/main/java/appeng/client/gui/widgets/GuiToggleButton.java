@@ -21,10 +21,9 @@ package appeng.client.gui.widgets;
 
 import java.util.regex.Pattern;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 
@@ -65,7 +64,7 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 		{
 			final int iconIndex = this.getIconIndex();
 
-			GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+			GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
 			par1Minecraft.renderEngine.bindTexture( new ResourceLocation( "appliedenergistics2", "textures/guis/states.png" ) );
 			this.hovered = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
 

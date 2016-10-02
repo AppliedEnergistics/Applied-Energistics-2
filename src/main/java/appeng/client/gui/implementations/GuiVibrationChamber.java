@@ -19,8 +19,7 @@
 package appeng.client.gui.implementations;
 
 
-import org.lwjgl.opengl.GL11;
-
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import appeng.client.gui.AEBaseGui;
@@ -65,7 +64,7 @@ public class GuiVibrationChamber extends AEBaseGui
 		{
 			final int i1 = this.cvc.getCurrentProgress();
 			this.bindTexture( "guis/vibchamber.png" );
-			GL11.glColor3f( 1, 1, 1 );
+			GlStateManager.color( 1, 1, 1 );
 			final int l = -15;
 			final int k = 25;
 			this.drawTexturedModalRect( k + 56, l + 36 + 12 - i1, 176, 12 - i1, 14, i1 + 2 );

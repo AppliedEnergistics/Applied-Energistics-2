@@ -19,8 +19,6 @@
 package appeng.client.gui.widgets;
 
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
@@ -77,7 +75,7 @@ public class GuiTabButton extends GuiButton implements ITooltip
 	{
 		if( this.visible )
 		{
-			GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+			GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
 			minecraft.renderEngine.bindTexture( new ResourceLocation( "appliedenergistics2", "textures/guis/states.png" ) );
 			this.hovered = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width && y < this.yPosition + this.height;
 

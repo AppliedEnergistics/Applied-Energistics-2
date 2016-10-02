@@ -26,6 +26,7 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -60,52 +61,52 @@ public class SpatialSkyRender extends IRenderHandler
 		if( now - this.cycle > 2000 )
 		{
 			this.cycle = now;
-			GL11.glNewList( this.dspList, GL11.GL_COMPILE );
+			GlStateManager.glNewList( this.dspList, GL11.GL_COMPILE );
 			this.renderTwinkles();
-			GL11.glEndList();
+			GlStateManager.glEndList();
 		}
 
 		float fade = now - this.cycle;
 		fade /= 1000;
 		fade = 0.15f * ( 1.0f - Math.abs( ( fade - 1.0f ) * ( fade - 1.0f ) ) );
 
-		GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
+		GlStateManager.pushAttrib();
 
-		GL11.glDisable( GL11.GL_FOG );
-		GL11.glDisable( GL11.GL_ALPHA_TEST );
-		GL11.glDisable( GL11.GL_BLEND );
-		GL11.glDepthMask( false );
-		GL11.glColor4f( 0.0f, 0.0f, 0.0f, 1.0f );
+		GlStateManager.disableFog();
+		GlStateManager.disableAlpha();
+		GlStateManager.disableBlend();
+		GlStateManager.depthMask( false );
+		GlStateManager.color( 0.0f, 0.0f, 0.0f, 1.0f );
 		final Tessellator tessellator = Tessellator.getInstance();
 		final VertexBuffer VertexBuffer = tessellator.getBuffer();
 
 		for( int i = 0; i < 6; ++i )
 		{
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 
 			if( i == 1 )
 			{
-				GL11.glRotatef( 90.0F, 1.0F, 0.0F, 0.0F );
+				GlStateManager.rotate( 90.0F, 1.0F, 0.0F, 0.0F );
 			}
 
 			if( i == 2 )
 			{
-				GL11.glRotatef( -90.0F, 1.0F, 0.0F, 0.0F );
+				GlStateManager.rotate( -90.0F, 1.0F, 0.0F, 0.0F );
 			}
 
 			if( i == 3 )
 			{
-				GL11.glRotatef( 180.0F, 1.0F, 0.0F, 0.0F );
+				GlStateManager.rotate( 180.0F, 1.0F, 0.0F, 0.0F );
 			}
 
 			if( i == 4 )
 			{
-				GL11.glRotatef( 90.0F, 0.0F, 0.0F, 1.0F );
+				GlStateManager.rotate( 90.0F, 0.0F, 0.0F, 1.0F );
 			}
 
 			if( i == 5 )
 			{
-				GL11.glRotatef( -90.0F, 0.0F, 0.0F, 1.0F );
+				GlStateManager.rotate( -90.0F, 0.0F, 0.0F, 1.0F );
 			}
 
 			VertexBuffer.begin( GL11.GL_QUADS, DefaultVertexFormats.ITEM );
@@ -114,32 +115,29 @@ public class SpatialSkyRender extends IRenderHandler
 			VertexBuffer.color( 0f, 0f, 0f, 1f ).pos( 100.0D, -100.0D, 100.0D ).tex( 16.0D, 16.0D ).endVertex();
 			VertexBuffer.color( 0f, 0f, 0f, 1f ).pos( 100.0D, -100.0D, -100.0D ).tex( 16.0D, 0.0D ).endVertex();
 			tessellator.draw();
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 		}
 
-		GL11.glDepthMask( true );
+		GlStateManager.depthMask( true );
 
 		if( fade > 0.0f )
 		{
-			GL11.glDisable( GL11.GL_FOG );
-			GL11.glDisable( GL11.GL_ALPHA_TEST );
-			GL11.glEnable( GL11.GL_BLEND );
-			GL11.glDepthMask( false );
-			GL11.glEnable( GL11.GL_FOG );
-			GL11.glDisable( GL11.GL_FOG );
-			GL11.glDisable( GL11.GL_ALPHA_TEST );
-			GL11.glDisable( GL11.GL_TEXTURE_2D );
+			GlStateManager.disableFog();
+			GlStateManager.disableAlpha();
+			GlStateManager.enableBlend();
+			GlStateManager.disableTexture2D();
+			GlStateManager.depthMask( false );
 			OpenGlHelper.glBlendFunc( 770, 771, 1, 0 );
 			RenderHelper.disableStandardItemLighting();
-			GL11.glDepthMask( false );
+			GlStateManager.depthMask( false );
 
-			GL11.glColor4f( fade, fade, fade, 1.0f );
-			GL11.glCallList( this.dspList );
+			GlStateManager.color( fade, fade, fade, 1.0f );
+			GlStateManager.callList( this.dspList );
 		}
 
-		GL11.glPopAttrib();
+		GlStateManager.popAttrib();
 
-		GL11.glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
+		GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
 	}
 
 	private void renderTwinkles()

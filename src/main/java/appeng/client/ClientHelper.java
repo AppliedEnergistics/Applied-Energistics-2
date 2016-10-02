@@ -24,9 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -252,7 +251,7 @@ public class ClientHelper extends ServerHelper
 			final float r = 0xff & ( col.mediumVariant >> 16 );
 			final float g = 0xff & ( col.mediumVariant >> 8 );
 			final float b = 0xff & ( col.mediumVariant );
-			GL11.glColor3f( r / 255.0f, g / 255.0f, b / 255.0f );
+			GlStateManager.color( r / 255.0f, g / 255.0f, b / 255.0f );
 		}
 	}
 

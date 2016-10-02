@@ -19,8 +19,6 @@
 package appeng.client.render;
 
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -48,7 +46,7 @@ public class TesrRenderHelper
 	 */
 	public static void moveToFace( EnumFacing face )
 	{
-		GL11.glTranslated( face.getFrontOffsetX() * 0.50, face.getFrontOffsetY() * 0.50, face.getFrontOffsetZ() * 0.50 );
+		GlStateManager.translate( face.getFrontOffsetX() * 0.50, face.getFrontOffsetY() * 0.50, face.getFrontOffsetZ() * 0.50 );
 	}
 
 	/**
@@ -61,34 +59,34 @@ public class TesrRenderHelper
 		switch( face )
 		{
 			case UP:
-				GL11.glScalef( 1.0f, -1.0f, 1.0f );
-				GL11.glRotatef( 90.0f, 1.0f, 0.0f, 0.0f );
-				GL11.glRotatef( spin * 90.0F, 0, 0, 1 );
+				GlStateManager.scale( 1.0f, -1.0f, 1.0f );
+				GlStateManager.rotate( 90.0f, 1.0f, 0.0f, 0.0f );
+				GlStateManager.rotate( spin * 90.0F, 0, 0, 1 );
 				break;
 
 			case DOWN:
-				GL11.glScalef( 1.0f, -1.0f, 1.0f );
-				GL11.glRotatef( -90.0f, 1.0f, 0.0f, 0.0f );
-				GL11.glRotatef( spin * -90.0F, 0, 0, 1 );
+				GlStateManager.scale( 1.0f, -1.0f, 1.0f );
+				GlStateManager.rotate( -90.0f, 1.0f, 0.0f, 0.0f );
+				GlStateManager.rotate( spin * -90.0F, 0, 0, 1 );
 				break;
 
 			case EAST:
-				GL11.glScalef( -1.0f, -1.0f, -1.0f );
-				GL11.glRotatef( -90.0f, 0.0f, 1.0f, 0.0f );
+				GlStateManager.scale( -1.0f, -1.0f, -1.0f );
+				GlStateManager.rotate( -90.0f, 0.0f, 1.0f, 0.0f );
 				break;
 
 			case WEST:
-				GL11.glScalef( -1.0f, -1.0f, -1.0f );
-				GL11.glRotatef( 90.0f, 0.0f, 1.0f, 0.0f );
+				GlStateManager.scale( -1.0f, -1.0f, -1.0f );
+				GlStateManager.rotate( 90.0f, 0.0f, 1.0f, 0.0f );
 				break;
 
 			case NORTH:
-				GL11.glScalef( -1.0f, -1.0f, -1.0f );
+				GlStateManager.scale( -1.0f, -1.0f, -1.0f );
 				break;
 
 			case SOUTH:
-				GL11.glScalef( -1.0f, -1.0f, -1.0f );
-				GL11.glRotatef( 180.0f, 0.0f, 1.0f, 0.0f );
+				GlStateManager.scale( -1.0f, -1.0f, -1.0f );
+				GlStateManager.rotate( 180.0f, 0.0f, 1.0f, 0.0f );
 				break;
 
 			default:
@@ -137,9 +135,9 @@ public class TesrRenderHelper
 		// Render the item count
 		final FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
 		final int width = fr.getStringWidth( renderedStackSize );
-		GL11.glTranslatef( 0.0f, spacing, 0 );
-		GL11.glScalef( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );
-		GL11.glTranslatef( -0.5f * width, 0.0f, 0.5f );
+		GlStateManager.translate( 0.0f, spacing, 0 );
+		GlStateManager.scale( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );
+		GlStateManager.translate( -0.5f * width, 0.0f, 0.5f );
 		fr.drawString( renderedStackSize, 0, 0, 0 );
 
 	}

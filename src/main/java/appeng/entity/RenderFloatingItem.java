@@ -19,9 +19,8 @@
 package appeng.entity;
 
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderEntityItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.item.EntityItem;
@@ -48,15 +47,15 @@ public class RenderFloatingItem extends RenderEntityItem
 			final EntityFloatingItem efi = (EntityFloatingItem) entityItem;
 			if( efi.getProgress() > 0.0 )
 			{
-				GL11.glPushMatrix();
+				GlStateManager.pushMatrix();
 
 				if( !( efi.getEntityItem().getItem() instanceof ItemBlock ) )
 				{
-					GL11.glTranslatef( 0, -0.15f, 0 );
+					GlStateManager.translate( 0, -0.15f, 0 );
 				}
 
 				super.doRender( efi, x, y, z, yaw, partialTick );
-				GL11.glPopMatrix();
+				GlStateManager.popMatrix();
 			}
 		}
 	}

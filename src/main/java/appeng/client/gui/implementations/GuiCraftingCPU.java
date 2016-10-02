@@ -29,7 +29,6 @@ import java.util.concurrent.TimeUnit;
 import com.google.common.base.Joiner;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;

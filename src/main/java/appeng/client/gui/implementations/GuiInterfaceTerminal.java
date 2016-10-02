@@ -31,8 +31,7 @@ import java.util.WeakHashMap;
 
 import com.google.common.collect.HashMultimap;
 
-import org.lwjgl.opengl.GL11;
-
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -175,7 +174,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			{
 				final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
 
-				GL11.glColor4f( 1, 1, 1, 1 );
+				GlStateManager.color( 1, 1, 1, 1 );
 				final int width = inv.getInventory().getSizeInventory() * 18;
 				this.drawTexturedModalRect( offsetX + 7, offsetY + offset, 7, 139, width, 18 );
 			}
