@@ -42,6 +42,7 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
@@ -266,12 +267,10 @@ public abstract class AEBaseGui extends GuiContainer
 					}
 					else
 					{
-						GL11.glPushAttrib( GL11.GL_ALL_ATTRIB_BITS );
 						GL11.glColor4f( 1.0F, 1.0F, 1.0F, 0.4F );
-						GL11.glEnable( GL11.GL_BLEND );
+						GlStateManager.enableBlend();
 						this.drawTexturedModalRect( ox + fs.xDisplayPosition - 1, oy + fs.yDisplayPosition - 1, fs.getSourceX() - 1, fs.getSourceY() - 1, 18, 18 );
 						GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
-						GL11.glPopAttrib();
 					}
 				}
 			}
