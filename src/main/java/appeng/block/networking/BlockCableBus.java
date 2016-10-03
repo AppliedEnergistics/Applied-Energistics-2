@@ -22,7 +22,6 @@ package appeng.block.networking;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
@@ -59,7 +58,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
-import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
@@ -260,29 +258,50 @@ public class BlockCableBus extends AEBaseTileBlock
 	@SideOnly( Side.CLIENT )
 	public boolean addHitEffects( final IBlockState state, final World world, final RayTraceResult target, final ParticleManager effectRenderer )
 	{
-		final Object object = this.cb( world, target.getBlockPos() );
-		if( object instanceof IPartHost )
-		{
-			final IPartHost host = (IPartHost) object;
 
-			// TODO HIT EFFECTS
-			/*
-			 * for( AEPartLocation side : AEPartLocation.values() ) { IPart p =
-			 * host.getPart( side ); TextureAtlasSprite ico = this.getIcon( p );
-			 * if( ico == null ) { continue; } byte b0 = (byte) (
-			 * Platform.getRandomInt() % 2 == 0 ? 1 : 0 ); for( int i1 = 0; i1 <
-			 * b0; ++i1 ) { for( int j1 = 0; j1 < b0; ++j1 ) { for( int k1 = 0;
-			 * k1 < b0; ++k1 ) { double d0 = target.blockX + ( i1 + 0.5D ) / b0;
-			 * double d1 = target.blockY + ( j1 + 0.5D ) / b0; double d2 =
-			 * target.blockZ + ( k1 + 0.5D ) / b0; double dd0 =
-			 * target.hitVec.xCoord; double dd1 = target.hitVec.yCoord; double
-			 * dd2 = target.hitVec.zCoord; EntityDiggingFX fx = ( new
-			 * EntityDiggingFX( world, dd0, dd1, dd2, d0 - target.blockX - 0.5D,
-			 * d1 - target.blockY - 0.5D, d2 - target.blockZ - 0.5D, this, 0 )
-			 * ).applyColourMultiplier( target.blockX, target.blockY,
-			 * target.blockZ ); fx.setParticleIcon( ico );
-			 * effectRenderer.addEffect( fx ); } } } }
-			 */
+		ICableBusContainer cb = this.cb( world, target.getBlockPos() );
+
+		// Our built-in model has the actual baked sprites we need
+		IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState( getDefaultState() );
+
+		// We cannot add the effect if we dont have the model
+		if( !( model instanceof CableBusBakedModel ) )
+		{
+			return true;
+		}
+
+		CableBusBakedModel cableBusModel = (CableBusBakedModel) model;
+
+		CableBusRenderState renderState = cb.getRenderState();
+
+		int blockX = target.getBlockPos().getX();
+		int blockY = target.getBlockPos().getY();
+		int blockZ = target.getBlockPos().getZ();
+
+		for( TextureAtlasSprite texture : cableBusModel.getParticleTextures( renderState ) )
+		{
+			byte b0 = (byte) ( Platform.getRandomInt() % 2 == 0 ? 1 : 0 );
+			for( int i1 = 0; i1 < b0; ++i1 )
+			{
+				for( int j1 = 0; j1 < b0; ++j1 )
+				{
+					for( int k1 = 0; k1 < b0; ++k1 )
+					{
+						double d0 = blockX + ( i1 + 0.5D ) / b0;
+						double d1 = blockY + ( j1 + 0.5D ) / b0;
+						double d2 = blockZ + ( k1 + 0.5D ) / b0;
+						double dd0 = target.hitVec.xCoord;
+						double dd1 = target.hitVec.yCoord;
+						double dd2 = target.hitVec.zCoord;
+						ParticleDigging fx = new DestroyFX( world, dd0, dd1, dd2, d0 - blockX - 0.5D,
+								d1 - blockY - 0.5D, d2 - blockZ - 0.5D, state );
+						fx.setBlockPos( target.getBlockPos() );
+						fx.multipleParticleScaleBy(0.8F);
+						fx.setParticleTexture( texture );
+						effectRenderer.addEffect( fx );
+					}
+				}
+			}
 		}
 
 		return true;
