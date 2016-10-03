@@ -29,6 +29,7 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleDigging;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -259,6 +260,13 @@ public class BlockCableBus extends AEBaseTileBlock
 	public boolean addHitEffects( final IBlockState state, final World world, final RayTraceResult target, final ParticleManager effectRenderer )
 	{
 
+		// Half the particle rate. Since we're spawning concentrated on a specific spot,
+		// our particle effect otherwise looks too strong
+		if( Platform.getRandom().nextBoolean() )
+		{
+			return true;
+		}
+
 		ICableBusContainer cb = this.cb( world, target.getBlockPos() );
 
 		// Our built-in model has the actual baked sprites we need
@@ -274,34 +282,19 @@ public class BlockCableBus extends AEBaseTileBlock
 
 		CableBusRenderState renderState = cb.getRenderState();
 
-		int blockX = target.getBlockPos().getX();
-		int blockY = target.getBlockPos().getY();
-		int blockZ = target.getBlockPos().getZ();
-
-		for( TextureAtlasSprite texture : cableBusModel.getParticleTextures( renderState ) )
+		// Spawn a particle for one of the particle textures
+		TextureAtlasSprite texture = Platform.pickRandom( cableBusModel.getParticleTextures( renderState ) );
+		if( texture != null )
 		{
-			byte b0 = (byte) ( Platform.getRandomInt() % 2 == 0 ? 1 : 0 );
-			for( int i1 = 0; i1 < b0; ++i1 )
-			{
-				for( int j1 = 0; j1 < b0; ++j1 )
-				{
-					for( int k1 = 0; k1 < b0; ++k1 )
-					{
-						double d0 = blockX + ( i1 + 0.5D ) / b0;
-						double d1 = blockY + ( j1 + 0.5D ) / b0;
-						double d2 = blockZ + ( k1 + 0.5D ) / b0;
-						double dd0 = target.hitVec.xCoord;
-						double dd1 = target.hitVec.yCoord;
-						double dd2 = target.hitVec.zCoord;
-						ParticleDigging fx = new DestroyFX( world, dd0, dd1, dd2, d0 - blockX - 0.5D,
-								d1 - blockY - 0.5D, d2 - blockZ - 0.5D, state );
-						fx.setBlockPos( target.getBlockPos() );
-						fx.multipleParticleScaleBy(0.8F);
-						fx.setParticleTexture( texture );
-						effectRenderer.addEffect( fx );
-					}
-				}
-			}
+			double x = target.hitVec.xCoord;
+			double y = target.hitVec.yCoord;
+			double z = target.hitVec.zCoord;
+
+			Particle fx = new DestroyFX( world, x, y, z, 0.0D, 0.0D, 0.0D, state )
+					.setBlockPos( target.getBlockPos() )
+					.multipleParticleScaleBy( 0.8F );
+			fx.setParticleTexture( texture );
+			effectRenderer.addEffect( fx );
 		}
 
 		return true;
