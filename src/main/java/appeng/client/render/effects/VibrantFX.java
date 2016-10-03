@@ -51,7 +51,8 @@ public class VibrantFX extends Particle
 	@Override
 	public int getBrightnessForRender( final float par1 )
 	{
-		return 1;
+		// This just means full brightness
+		return 15 << 20 | 15 << 4;
 	}
 
 	/**
