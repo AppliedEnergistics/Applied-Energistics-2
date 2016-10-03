@@ -51,10 +51,14 @@ public class RenderFloatingItem extends RenderEntityItem
 
 				if( !( efi.getEntityItem().getItem() instanceof ItemBlock ) )
 				{
-					GlStateManager.translate( 0, -0.15f, 0 );
+					GlStateManager.translate( 0, -0.3f, 0 );
+				}
+				else
+				{
+					GlStateManager.translate( 0, -0.2f, 0 );
 				}
 
-				super.doRender( efi, x, y, z, yaw, partialTick );
+				super.doRender( efi, x, y, z, yaw, 0 );
 				GlStateManager.popMatrix();
 			}
 		}
