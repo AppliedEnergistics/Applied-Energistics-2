@@ -45,7 +45,6 @@ public class BlockSkyStone extends AEBaseBlock
 	{
 		super( Material.ROCK );
 		this.setHardness( 50 );
-		this.setHasSubtypes( true );
 		this.blockResistance = BLOCK_RESISTANCE;
 		if( type == SkystoneType.STONE )
 		{
