@@ -283,7 +283,7 @@ public final class ApiBlocks implements IBlocks
 				.useCustomItemModel()
 				.rendering( new SpatialPylonRendering() )
 				.build();
-		this.spatialIOPort = registry.block( "spatial_ioport", BlockSpatialIOPort::new ).features( AEFeature.SpatialIO ).build();
+		this.spatialIOPort = registry.block( "spatial_io_port", BlockSpatialIOPort::new ).features( AEFeature.SpatialIO ).build();
 		this.controller = registry.block( "controller", BlockController::new )
 				.features( AEFeature.Channels )
 				.useCustomItemModel()
@@ -301,7 +301,7 @@ public final class ApiBlocks implements IBlocks
 				.build();
 		this.iface = registry.block( "interface", BlockInterface::new ).build();
 		this.cellWorkbench = registry.block( "cell_workbench", BlockCellWorkbench::new ).features( AEFeature.StorageCells ).build();
-		this.iOPort = registry.block( "ioport", BlockIOPort::new ).features( AEFeature.StorageCells, AEFeature.IOPort ).build();
+		this.iOPort = registry.block( "io_port", BlockIOPort::new ).features( AEFeature.StorageCells, AEFeature.IOPort ).build();
 		this.condenser = registry.block( "condenser", BlockCondenser::new ).build();
 		this.energyAcceptor = registry.block( "energy_acceptor", BlockEnergyAcceptor::new ).build();
 		this.vibrationChamber = registry.block( "vibration_chamber", BlockVibrationChamber::new ).features( AEFeature.PowerGen ).build();

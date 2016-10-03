@@ -31,7 +31,7 @@ import appeng.bootstrap.FeatureFactory;
 import appeng.bootstrap.IItemRendering;
 import appeng.bootstrap.ItemRenderingCustomizer;
 import appeng.core.features.DamagedItemDefinition;
-import appeng.items.materials.ItemMultiItem;
+import appeng.items.materials.ItemMaterial;
 import appeng.items.materials.MaterialType;
 
 
@@ -114,8 +114,8 @@ public final class ApiMaterials implements IMaterials
 
 	public ApiMaterials( FeatureFactory registry )
 	{
-		final ItemMultiItem materials = new ItemMultiItem();
-		registry.item( "multi_material", () -> materials )
+		final ItemMaterial materials = new ItemMaterial();
+		registry.item( "material", () -> materials )
 				.rendering( new ItemRenderingCustomizer()
 				{
 					@Override

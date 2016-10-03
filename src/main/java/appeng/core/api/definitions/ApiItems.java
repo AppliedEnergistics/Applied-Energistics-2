@@ -49,7 +49,7 @@ import appeng.items.tools.ToolNetworkTool;
 import appeng.items.tools.powered.ToolChargedStaff;
 import appeng.items.tools.powered.ToolColorApplicator;
 import appeng.items.tools.powered.ToolEntropyManipulator;
-import appeng.items.tools.powered.ToolMassCannon;
+import appeng.items.tools.powered.ToolMatterCannon;
 import appeng.items.tools.powered.ToolPortableCell;
 import appeng.items.tools.powered.ToolWirelessTerminal;
 import appeng.items.tools.quartz.ToolQuartzAxe;
@@ -147,7 +147,7 @@ public final class ApiItems implements IItems
 				.build();
 		this.wirelessTerminal = powerTools.item( "wireless_terminal", ToolWirelessTerminal::new ).addFeatures( AEFeature.WirelessAccessTerminal ).build();
 		this.chargedStaff = powerTools.item( "charged_staff", ToolChargedStaff::new ).addFeatures( AEFeature.ChargedStaff ).build();
-		this.massCannon = powerTools.item( "mass_cannon", ToolMassCannon::new )
+		this.massCannon = powerTools.item( "matter_cannon", ToolMatterCannon::new )
 				.addFeatures( AEFeature.MatterCannon )
 				.dispenserBehavior( DispenserMatterCannon::new )
 				.build();
@@ -165,10 +165,10 @@ public final class ApiItems implements IItems
 		this.viewCell = registry.item( "view_cell", ItemViewCell::new ).build();
 
 		FeatureFactory storageCells = registry.features( AEFeature.StorageCells );
-		this.cell1k = storageCells.item( "basic_storage_cell_1k", () -> new ItemBasicStorageCell( MaterialType.Cell1kPart, 1 ) ).build();
-		this.cell4k = storageCells.item( "basic_storage_cell_4k", () -> new ItemBasicStorageCell( MaterialType.Cell4kPart, 4 ) ).build();
-		this.cell16k = storageCells.item( "basic_storage_cell_16k", () -> new ItemBasicStorageCell( MaterialType.Cell16kPart, 16 ) ).build();
-		this.cell64k = storageCells.item( "basic_storage_cell_64k", () -> new ItemBasicStorageCell( MaterialType.Cell64kPart, 64 ) ).build();
+		this.cell1k = storageCells.item( "storage_cell_1k", () -> new ItemBasicStorageCell( MaterialType.Cell1kPart, 1 ) ).build();
+		this.cell4k = storageCells.item( "storage_cell_4k", () -> new ItemBasicStorageCell( MaterialType.Cell4kPart, 4 ) ).build();
+		this.cell16k = storageCells.item( "storage_cell_16k", () -> new ItemBasicStorageCell( MaterialType.Cell16kPart, 16 ) ).build();
+		this.cell64k = storageCells.item( "storage_cell_64k", () -> new ItemBasicStorageCell( MaterialType.Cell64kPart, 64 ) ).build();
 
 		FeatureFactory spatialCells = registry.features( AEFeature.SpatialIO );
 		this.spatialCell2 = spatialCells.item( "spatial_storage_cell_2_cubed", () -> new ItemSpatialStorageCell( 2 ) ).build();

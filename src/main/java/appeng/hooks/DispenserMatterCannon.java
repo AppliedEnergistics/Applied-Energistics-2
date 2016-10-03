@@ -30,7 +30,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
 import appeng.api.util.AEPartLocation;
-import appeng.items.tools.powered.ToolMassCannon;
+import appeng.items.tools.powered.ToolMatterCannon;
 import appeng.util.Platform;
 
 
@@ -41,7 +41,7 @@ public final class DispenserMatterCannon extends BehaviorDefaultDispenseItem
 	protected ItemStack dispenseStack( final IBlockSource dispenser, ItemStack dispensedItem )
 	{
 		final Item i = dispensedItem.getItem();
-		if( i instanceof ToolMassCannon )
+		if( i instanceof ToolMatterCannon )
 		{
 			final EnumFacing enumfacing = dispenser.getBlockState().getValue( BlockDispenser.FACING );
 			AEPartLocation dir = AEPartLocation.INTERNAL;
@@ -53,7 +53,7 @@ public final class DispenserMatterCannon extends BehaviorDefaultDispenseItem
 				}
 			}
 
-			final ToolMassCannon tm = (ToolMassCannon) i;
+			final ToolMatterCannon tm = (ToolMatterCannon) i;
 
 			final World w = dispenser.getWorld();
 			if( w instanceof WorldServer )

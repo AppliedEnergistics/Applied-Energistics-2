@@ -1,7 +1,7 @@
 {
     "variants": {
         "normal": {
-            "model": "appliedenergistics2:spatial_ioport"
+            "model": "appliedenergistics2:io_port"
         }
     }
 }

@@ -59,15 +59,15 @@ import appeng.integration.IntegrationType;
 import appeng.items.AEBaseItem;
 
 
-public final class ItemMultiPart extends AEBaseItem implements IPartItem, IItemGroup
+public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 {
 	private static final int INITIAL_REGISTERED_CAPACITY = PartType.values().length;
 	private static final Comparator<Entry<Integer, PartTypeWithVariant>> REGISTERED_COMPARATOR = new RegisteredComparator();
 
-	public static ItemMultiPart instance;
+	public static ItemPart instance;
 	private final Map<Integer, PartTypeWithVariant> registered;
 
-	public ItemMultiPart()
+	public ItemPart()
 	{
 		this.registered = new HashMap<>( INITIAL_REGISTERED_CAPACITY );
 

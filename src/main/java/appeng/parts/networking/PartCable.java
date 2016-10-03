@@ -47,7 +47,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IReadOnlyCollection;
-import appeng.items.parts.ItemMultiPart;
+import appeng.items.parts.ItemPart;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
 import appeng.util.Platform;
@@ -68,7 +68,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		super( is );
 		this.getProxy().setFlags( GridFlags.PREFERRED );
 		this.getProxy().setIdlePowerUsage( 0.0 );
-		this.getProxy().setColor( AEColor.values()[( (ItemMultiPart) is.getItem() ).variantOf( is.getItemDamage() )] );
+		this.getProxy().setColor( AEColor.values()[( (ItemPart) is.getItem() ).variantOf( is.getItemDamage() )] );
 	}
 
 	@Override

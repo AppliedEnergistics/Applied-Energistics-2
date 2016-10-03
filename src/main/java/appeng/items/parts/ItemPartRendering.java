@@ -40,14 +40,14 @@ import appeng.parts.automation.PlaneConnections;
 import appeng.parts.automation.PlaneModel;
 
 
-public class ItemMultipartRendering extends ItemRenderingCustomizer
+public class ItemPartRendering extends ItemRenderingCustomizer
 {
 
 	private final PartModels partModels;
 
-	private final ItemMultiPart item;
+	private final ItemPart item;
 
-	public ItemMultipartRendering( PartModels partModels, ItemMultiPart item )
+	public ItemPartRendering( PartModels partModels, ItemPart item )
 	{
 		this.partModels = partModels;
 		this.item = item;

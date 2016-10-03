@@ -67,7 +67,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
-import appeng.items.parts.ItemMultiPart;
+import appeng.items.parts.ItemPart;
 import appeng.items.parts.PartType;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
@@ -102,7 +102,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 	public PartType getType()
 	{
-		return ItemMultiPart.instance.getTypeByStack( is );
+		return ItemPart.instance.getTypeByStack( is );
 	}
 
 	@Override

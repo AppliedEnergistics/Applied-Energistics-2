@@ -67,15 +67,15 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
 
-public final class ItemMultiItem extends AEBaseItem implements IStorageComponent, IUpgradeModule
+public final class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule
 {
-	public static ItemMultiItem instance;
+	public static ItemMaterial instance;
 
 	private static final int KILO_SCALAR = 1024;
 
 	private final Map<Integer, MaterialType> dmgToMaterial = new HashMap<>();
 
-	public ItemMultiItem()
+	public ItemMaterial()
 	{
 		this.setHasSubtypes( true );
 		instance = this;
@@ -253,7 +253,7 @@ public final class ItemMultiItem extends AEBaseItem implements IStorageComponent
 	@Override
 	public String getUnlocalizedName( final ItemStack is )
 	{
-		return "item.appliedenergistics2.multi_material." + this.nameOf( is );
+		return "item.appliedenergistics2.material." + this.nameOf( is );
 	}
 
 	@Override

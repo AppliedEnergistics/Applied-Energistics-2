@@ -31,10 +31,10 @@ import appeng.api.recipes.ResolverResultSet;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.core.AppEng;
-import appeng.items.materials.ItemMultiItem;
+import appeng.items.materials.ItemMaterial;
 import appeng.items.materials.MaterialType;
 import appeng.items.misc.ItemCrystalSeed;
-import appeng.items.parts.ItemMultiPart;
+import appeng.items.parts.ItemPart;
 import appeng.items.parts.PartType;
 
 
@@ -124,7 +124,7 @@ public class AEItemResolver implements ISubItemResolver
 				final String materialName = itemName.substring( itemName.indexOf( '.' ) + 1 );
 				final MaterialType mt = MaterialType.valueOf( materialName );
 				// itemName = itemName.substring( 0, itemName.indexOf( "." ) );
-				if( mt.getItemInstance() == ItemMultiItem.instance && mt.getDamageValue() >= 0 && mt.isRegistered() )
+				if( mt.getItemInstance() == ItemMaterial.instance && mt.getDamageValue() >= 0 && mt.isRegistered() )
 				{
 					return new ResolverResult( "ItemMultiMaterial", mt.getDamageValue() );
 				}
@@ -135,10 +135,10 @@ public class AEItemResolver implements ISubItemResolver
 				final String partName = itemName.substring( itemName.indexOf( '.' ) + 1 );
 				final PartType pt = PartType.valueOf( partName );
 				// itemName = itemName.substring( 0, itemName.indexOf( "." ) );
-				final int dVal = ItemMultiPart.instance.getDamageByType( pt );
+				final int dVal = ItemPart.instance.getDamageByType( pt );
 				if( dVal >= 0 )
 				{
-					return new ResolverResult( "ItemMultiPart", dVal );
+					return new ResolverResult( "ItemPart", dVal );
 				}
 			}
 		}
@@ -182,6 +182,6 @@ public class AEItemResolver implements ISubItemResolver
 		}
 
 		final ItemStack is = partType.stack( col, 1 );
-		return new ResolverResult( "ItemMultiPart", is.getItemDamage() );
+		return new ResolverResult( "ItemPart", is.getItemDamage() );
 	}
 }

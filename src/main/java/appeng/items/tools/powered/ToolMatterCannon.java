@@ -79,10 +79,10 @@ import appeng.util.LookDirection;
 import appeng.util.Platform;
 
 
-public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
+public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 {
 
-	public ToolMassCannon()
+	public ToolMatterCannon()
 	{
 		super( AEConfig.instance.matterCannonBattery );
 	}
@@ -371,7 +371,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 			if( pos != null )
 			{
 				final DamageSource dmgSrc = DamageSource.causePlayerDamage( p );
-				dmgSrc.damageType = "masscannon";
+				dmgSrc.damageType = "matter_cannon";
 
 				if( pos.typeOfHit == RayTraceResult.Type.ENTITY )
 				{

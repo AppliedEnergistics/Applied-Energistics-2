@@ -101,7 +101,7 @@ public class GuiIOPort extends GuiUpgradeable
 	@Override
 	protected String getBackground()
 	{
-		return "guis/ioport.png";
+		return "guis/io_port.png";
 	}
 
 	@Override
