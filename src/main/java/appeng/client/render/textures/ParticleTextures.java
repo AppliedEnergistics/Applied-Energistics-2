@@ -31,7 +31,7 @@ public class ParticleTextures
 
 	public static void registerSprite( TextureStitchEvent.Pre event )
 	{
-		BlockEnergyParticle = event.getMap().registerSprite( new ResourceLocation( "appliedenergistics2:blocks/BlockEnergyParticle" ) );
-		BlockMatterCannonParticle = event.getMap().registerSprite( new ResourceLocation( "appliedenergistics2:blocks/BlockMatterCannonParticle" ) );
+		BlockEnergyParticle = event.getMap().registerSprite( new ResourceLocation( "appliedenergistics2:particles/energy" ) );
+		BlockMatterCannonParticle = event.getMap().registerSprite( new ResourceLocation( "appliedenergistics2:particles/matter_cannon" ) );
 	}
 }
