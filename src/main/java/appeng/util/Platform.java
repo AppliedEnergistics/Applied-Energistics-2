@@ -25,6 +25,7 @@ import java.security.InvalidParameterException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -32,9 +33,10 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.WeakHashMap;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -356,12 +358,12 @@ public class Platform
 			return true;
 		}
 
-		if( e == SearchBoxMode.NEI_AUTOSEARCH && !IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.NEI ) )
+		if( e == SearchBoxMode.JEI_AUTOSEARCH && !IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.JEI ) )
 		{
 			return true;
 		}
 
-		if( e == SearchBoxMode.NEI_MANUAL_SEARCH && !IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.NEI ) )
+		if( e == SearchBoxMode.JEI_MANUAL_SEARCH && !IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.JEI ) )
 		{
 			return true;
 		}
@@ -2098,7 +2100,7 @@ public class Platform
 		return false;
 	}
 
-	public static Object findPreferred( final ItemStack[] is )
+	public static List<ItemStack> findPreferred( final ItemStack[] is )
 	{
 		final IParts parts = AEApi.instance().definitions().parts();
 
@@ -2106,26 +2108,26 @@ public class Platform
 		{
 			if( parts.cableGlass().sameAs( AEColor.TRANSPARENT, stack ) )
 			{
-				return stack;
+				return Collections.singletonList(stack);
 			}
 
 			if( parts.cableCovered().sameAs( AEColor.TRANSPARENT, stack ) )
 			{
-				return stack;
+				return Collections.singletonList(stack);
 			}
 
 			if( parts.cableSmart().sameAs( AEColor.TRANSPARENT, stack ) )
 			{
-				return stack;
+				return Collections.singletonList(stack);
 			}
 
 			if( parts.cableDense().sameAs( AEColor.TRANSPARENT, stack ) )
 			{
-				return stack;
+				return Collections.singletonList(stack);
 			}
 		}
 
-		return is;
+		return Lists.newArrayList( is );
 	}
 
 	public static void sendChunk( final Chunk c, final int verticalBits )

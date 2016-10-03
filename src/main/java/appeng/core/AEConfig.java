@@ -94,7 +94,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	public int portableCellBattery = 20000;
 	public int colorApplicatorBattery = 20000;
 	public int chargedStaffBattery = 8000;
-	public boolean disableColoredCableRecipesInNEI = true;
+	public boolean disableColoredCableRecipesInJEI = true;
 	public boolean updatable = false;
 	public double meteoriteClusterChance = 0.1;
 	public double meteoriteSpawnChance = 0.3;
@@ -226,7 +226,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 
 	private void clientSync()
 	{
-		this.disableColoredCableRecipesInNEI = this.get( "Client", "disableColoredCableRecipesInNEI", true ).getBoolean( true );
+		this.disableColoredCableRecipesInJEI = this.get( "Client", "disableColoredCableRecipesInJEI", true ).getBoolean( true );
 		this.enableEffects = this.get( "Client", "enableEffects", true ).getBoolean( true );
 		this.useLargeFonts = this.get( "Client", "useTerminalUseLargeFont", false ).getBoolean( false );
 		this.useColoredCraftingStatus = this.get( "Client", "useColoredCraftingStatus", true ).getBoolean( true );
@@ -365,9 +365,9 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		}
 	}
 
-	public boolean disableColoredCableRecipesInNEI()
+	public boolean disableColoredCableRecipesInJEI()
 	{
-		return this.disableColoredCableRecipesInNEI;
+		return this.disableColoredCableRecipesInJEI;
 	}
 
 	public String getFilePath()

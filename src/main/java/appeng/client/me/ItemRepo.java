@@ -19,16 +19,12 @@
 package appeng.client.me;
 
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.regex.Pattern;
-
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import appeng.api.AEApi;
 import appeng.api.config.SearchBoxMode;
@@ -41,6 +37,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.core.AEConfig;
+import appeng.integration.modules.JEI;
 import appeng.items.storage.ItemViewCell;
 import appeng.util.ItemSorters;
 import appeng.util.Platform;
@@ -61,7 +58,7 @@ public class ItemRepo
 	private String searchString = "";
 	private IPartitionList<IAEItemStack> myPartitionList;
 	private String innerSearch = "";
-	private String NEIWord = null;
+	private String jeiSearch = null;
 	private boolean hasPower;
 
 	public ItemRepo( final IScrollSource src, final ISortSource sortSrc )
@@ -128,9 +125,9 @@ public class ItemRepo
 
 		final Enum viewMode = this.sortSrc.getSortDisplay();
 		final Enum searchMode = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
-		if( searchMode == SearchBoxMode.NEI_AUTOSEARCH || searchMode == SearchBoxMode.NEI_MANUAL_SEARCH )
+		if( searchMode == SearchBoxMode.JEI_AUTOSEARCH || searchMode == SearchBoxMode.JEI_MANUAL_SEARCH )
 		{
-			this.updateNEI( this.searchString );
+			this.updateJEI( this.searchString );
 		}
 
 		this.innerSearch = this.searchString;
@@ -245,28 +242,9 @@ public class ItemRepo
 		}
 	}
 
-	private void updateNEI( final String filter )
+	private void updateJEI( String filter )
 	{
-		try
-		{
-			if( this.NEIWord == null || !this.NEIWord.equals( filter ) )
-			{
-				final Class c = ReflectionHelper.getClass( this.getClass().getClassLoader(), "codechicken.nei.LayoutManager" );
-				final Field fldSearchField = c.getField( "searchField" );
-				final Object searchField = fldSearchField.get( c );
-
-				final Method a = searchField.getClass().getMethod( "setText", String.class );
-				final Method b = searchField.getClass().getMethod( "onTextChange", String.class );
-
-				this.NEIWord = filter;
-				a.invoke( searchField, filter );
-				b.invoke( searchField, "" );
-			}
-		}
-		catch( final Throwable ignore )
-		{
-
-		}
+		JEI.instance.getJei().setSearchText( filter );
 	}
 
 	public int size()

@@ -60,8 +60,6 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.helpers.WirelessTerminalGuiObject;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
 import appeng.parts.reporting.AbstractPartTerminal;
 import appeng.tile.misc.TileSecurityStation;
 import appeng.util.IConfigManagerHost;
@@ -227,24 +225,13 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		this.maxRows = this.getMaxRows();
 		this.perRow = AEConfig.instance.getConfigManager().getSetting( Settings.TERMINAL_STYLE ) != TerminalStyle.FULL ? 9 : 9 + ( ( this.width - this.standardSize ) / 18 );
 
-		final boolean hasNEI = IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.NEI );
-
-		final int NEI = hasNEI ? 0 : 0;
-		int top = hasNEI ? 22 : 0;
-
 		final int magicNumber = 114 + 1;
-		final int extraSpace = this.height - magicNumber - NEI - top - this.reservedSpace;
+		final int extraSpace = this.height - magicNumber - this.reservedSpace;
 
 		this.rows = (int) Math.floor( extraSpace / 18 );
 		if( this.rows > this.maxRows )
 		{
-			top += ( this.rows - this.maxRows ) * 18 / 2;
 			this.rows = this.maxRows;
-		}
-
-		if( hasNEI )
-		{
-			this.rows--;
 		}
 
 		if( this.rows < 3 )
@@ -319,7 +306,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		// Enum setting = AEConfig.INSTANCE.getSetting( "Terminal", SearchBoxMode.class, SearchBoxMode.AUTOSEARCH );
 		final Enum setting = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
-		this.searchField.setFocused( SearchBoxMode.AUTOSEARCH == setting || SearchBoxMode.NEI_AUTOSEARCH == setting );
+		this.searchField.setFocused( SearchBoxMode.AUTOSEARCH == setting || SearchBoxMode.JEI_AUTOSEARCH == setting );
 
 		if( this.isSubGui() )
 		{
@@ -369,7 +356,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	{
 		final Enum searchMode = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
 
-		if( searchMode != SearchBoxMode.AUTOSEARCH && searchMode != SearchBoxMode.NEI_AUTOSEARCH )
+		if( searchMode != SearchBoxMode.AUTOSEARCH && searchMode != SearchBoxMode.JEI_AUTOSEARCH )
 		{
 			this.searchField.mouseClicked( xCoord, yCoord, btn );
 		}

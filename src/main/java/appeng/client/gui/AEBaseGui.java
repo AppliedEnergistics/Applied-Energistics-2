@@ -44,7 +44,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -82,9 +81,6 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.sync.packets.PacketSwapSlots;
 import appeng.helpers.InventoryAction;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
-import appeng.integration.abstraction.INEI;
 
 
 public abstract class AEBaseGui extends GuiContainer
@@ -829,20 +825,6 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 		// do the usual for non-ME Slots.
 		this.safeDrawSlot( s );
-	}
-
-	private RenderItem setItemRender( final RenderItem item )
-	{
-		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.NEI ) )
-		{
-			return ( (INEI) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.NEI ) ).setItemRender( item );
-		}
-		else
-		{
-			final RenderItem ri = this.itemRender;
-			this.itemRender = item;
-			return ri;
-		}
 	}
 
 	protected boolean isPowered()

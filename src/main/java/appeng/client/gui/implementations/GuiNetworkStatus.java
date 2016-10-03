@@ -234,37 +234,6 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 		this.getScrollBar().setRange( 0, ( size + 4 ) / 5 - this.rows, 1 );
 	}
 
-	// @Override - NEI
-	public List<String> handleItemTooltip( final ItemStack stack, final int mouseX, final int mouseY, final List<String> currentToolTip )
-	{
-		if( stack != null )
-		{
-			final Slot s = this.getSlot( mouseX, mouseY );
-			if( s instanceof SlotME )
-			{
-				IAEItemStack myStack = null;
-
-				try
-				{
-					final SlotME theSlotField = (SlotME) s;
-					myStack = theSlotField.getAEStack();
-				}
-				catch( final Throwable ignore )
-				{
-				}
-
-				if( myStack != null )
-				{
-					while( currentToolTip.size() > 1 )
-					{
-						currentToolTip.remove( 1 );
-					}
-				}
-			}
-		}
-		return currentToolTip;
-	}
-
 	// Vanilla version...
 	protected void drawItemStackTooltip( final ItemStack stack, final int x, final int y )
 	{

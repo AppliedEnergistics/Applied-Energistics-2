@@ -48,6 +48,8 @@ import appeng.util.Platform;
 public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConfigManagerHost, IConfigurableObject
 {
 
+	public static final int BYTE_MULTIPLIER = 8;
+
 	private static final FluidTankInfo[] EMPTY = { new FluidTankInfo( null, 10 ) };
 	private final int[] sides = { 0, 1 };
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 3 );
@@ -84,7 +86,7 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 				final IStorageComponent sc = (IStorageComponent) is.getItem();
 				if( sc.isStorageComponent( is ) )
 				{
-					return sc.getBytes( is ) * 8;
+					return sc.getBytes( is ) * BYTE_MULTIPLIER;
 				}
 			}
 		}

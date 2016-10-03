@@ -62,13 +62,13 @@ import appeng.util.item.AEItemStack;
 import appeng.util.prioitylist.IPartitionList;
 
 
-public class PacketNEIRecipe extends AppEngPacket
+public class PacketJEIRecipe extends AppEngPacket
 {
 
 	private ItemStack[][] recipe;
 
 	// automatic.
-	public PacketNEIRecipe( final ByteBuf stream ) throws IOException
+	public PacketJEIRecipe( final ByteBuf stream ) throws IOException
 	{
 		final ByteArrayInputStream bytes = new ByteArrayInputStream( stream.array() );
 		bytes.skip( stream.readerIndex() );
@@ -92,7 +92,7 @@ public class PacketNEIRecipe extends AppEngPacket
 	}
 
 	// api
-	public PacketNEIRecipe( final NBTTagCompound recipe ) throws IOException
+	public PacketJEIRecipe( final NBTTagCompound recipe ) throws IOException
 	{
 		final ByteBuf data = Unpooled.buffer();
 

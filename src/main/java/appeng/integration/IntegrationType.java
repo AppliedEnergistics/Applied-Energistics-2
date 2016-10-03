@@ -53,7 +53,7 @@ public enum IntegrationType
 
 	InvTweaks( IntegrationSide.CLIENT, "Inventory Tweaks", "inventorytweaks" ),
 
-	NEI( IntegrationSide.CLIENT, "Not Enough Items", "NotEnoughItems" ),
+	JEI( IntegrationSide.CLIENT, "Just Enough Items", "JEI" ),
 
 	CraftGuide( IntegrationSide.CLIENT, "Craft Guide", "craftguide" ),
 

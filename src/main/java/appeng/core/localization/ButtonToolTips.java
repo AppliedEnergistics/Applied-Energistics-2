@@ -65,8 +65,8 @@ public enum ButtonToolTips
 	SearchMode_Auto,
 
 	SearchMode_Standard,
-	SearchMode_NEIAuto,
-	SearchMode_NEIStandard,
+	SearchMode_JEIAuto,
+	SearchMode_JEIStandard,
 
 	SearchMode,
 	ItemName,

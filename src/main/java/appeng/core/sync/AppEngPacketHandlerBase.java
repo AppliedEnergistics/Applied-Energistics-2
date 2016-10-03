@@ -39,7 +39,7 @@ import appeng.core.sync.packets.PacketMEInventoryUpdate;
 import appeng.core.sync.packets.PacketMatterCannon;
 import appeng.core.sync.packets.PacketMockExplosion;
 import appeng.core.sync.packets.PacketMultiPart;
-import appeng.core.sync.packets.PacketNEIRecipe;
+import appeng.core.sync.packets.PacketJEIRecipe;
 import appeng.core.sync.packets.PacketNewStorageDimension;
 import appeng.core.sync.packets.PacketPaintedEntity;
 import appeng.core.sync.packets.PacketPartPlacement;
@@ -94,7 +94,7 @@ public class AppEngPacketHandlerBase
 
 		PACKET_PATTERN_SLOT( PacketPatternSlot.class ),
 
-		PACKET_RECIPE_NEI( PacketNEIRecipe.class ),
+		PACKET_RECIPE_JEI( PacketJEIRecipe.class ),
 
 		PACKET_PARTIAL_ITEM( PacketPartialItem.class ),
 

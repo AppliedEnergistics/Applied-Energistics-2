@@ -2,8 +2,8 @@
 gui.appliedenergistics2.inWorldCraftingPresses=Crafting Presses are found in the centre of meteorites which can be found in around the world, they can be located by using a meteorite compass.
 
 // GUI Tooltips
-gui.tooltips.appliedenergistics2.SearchMode_NEIAuto=NEI Synchronised Auto
-gui.tooltips.appliedenergistics2.SearchMode_NEIStandard=NEI Synchronised Standard
+gui.tooltips.appliedenergistics2.SearchMode_JEIAuto=JEI Synchronised Auto
+gui.tooltips.appliedenergistics2.SearchMode_JEIStandard=JEI Synchronised Standard
 gui.tooltips.appliedenergistics2.TerminalStyle_Tall=Tall Centered Terminal
 gui.tooltips.appliedenergistics2.TerminalStyle_Small=Small Centered Terminal
 
