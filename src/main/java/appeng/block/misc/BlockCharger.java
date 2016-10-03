@@ -22,16 +22,16 @@ package appeng.block.misc;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -192,6 +192,15 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 	@SideOnly( Side.CLIENT )
 	public static TileEntitySpecialRenderer<TileCharger> createTesr()
 	{
-		return new ModularTESR<>( new ItemRenderable<TileCharger>( tile -> new ImmutablePair<>( tile.getStackInSlot( 0 ), new Matrix4f().translate( new Vector3f( 0.5f, 0.4f, 0.5f ) ) ) ) );
+		return new ModularTESR<>( new ItemRenderable<>( BlockCharger::getRenderedItem ) );
 	}
+
+	@SideOnly( Side.CLIENT )
+	private static Pair<ItemStack, Matrix4f> getRenderedItem( TileCharger tile )
+	{
+		Matrix4f transform = new Matrix4f();
+		transform.translate( new Vector3f( 0.5f, 0.4f, 0.5f ) );
+		return new ImmutablePair<>( tile.getStackInSlot( 0 ), transform );
+	}
+
 }
