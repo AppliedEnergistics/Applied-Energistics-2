@@ -1,6 +1,7 @@
 {
     "parent": "block/block",
     "textures": {
+        "particle": "appliedenergistics2:blocks/drive_side",
         "side": "appliedenergistics2:blocks/drive_side",
         "bottom": "appliedenergistics2:blocks/drive_bottom",
         "top": "appliedenergistics2:blocks/drive_top",
