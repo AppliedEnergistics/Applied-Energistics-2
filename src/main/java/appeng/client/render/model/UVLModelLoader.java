@@ -361,6 +361,7 @@ public enum UVLModelLoader implements ICustomModelLoader
 					quad.pipe( trans );
 					builder.setQuadTint( quad.getTintIndex() );
 					builder.setQuadOrientation( quad.getFace() );
+					builder.setTexture( quad.getSprite() );
 					return builder.build();
 				}
 				else

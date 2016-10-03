@@ -52,11 +52,14 @@ public class CableBusBakedModel implements IBakedModel
 
 	private final Map<ResourceLocation, IBakedModel> partModels;
 
-	CableBusBakedModel( CableBuilder cableBuilder, FacadeBuilder facadeBuilder, Map<ResourceLocation, IBakedModel> partModels )
+	private final TextureAtlasSprite particleTexture;
+
+	CableBusBakedModel( CableBuilder cableBuilder, FacadeBuilder facadeBuilder, Map<ResourceLocation, IBakedModel> partModels, TextureAtlasSprite particleTexture )
 	{
 		this.cableBuilder = cableBuilder;
 		this.facadeBuilder = facadeBuilder;
 		this.partModels = partModels;
+		this.particleTexture = particleTexture;
 	}
 
 	@Override
@@ -272,7 +275,7 @@ public class CableBusBakedModel implements IBakedModel
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		return null;
+		return particleTexture;
 	}
 
 	@Override

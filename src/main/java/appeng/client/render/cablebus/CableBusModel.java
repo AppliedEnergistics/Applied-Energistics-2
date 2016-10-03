@@ -35,6 +35,7 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 
+import appeng.api.util.AEColor;
 import appeng.core.AELog;
 import appeng.core.features.registries.PartModels;
 
@@ -71,13 +72,15 @@ public class CableBusModel implements IModel
 	@Override
 	public IBakedModel bake( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
 	{
-
 		Map<ResourceLocation, IBakedModel> partModels = loadPartModels( state, format, bakedTextureGetter );
 
 		CableBuilder cableBuilder = new CableBuilder( format, bakedTextureGetter );
 		FacadeBuilder facadeBuilder = new FacadeBuilder( format, bakedTextureGetter );
 
-		return new CableBusBakedModel( cableBuilder, facadeBuilder, partModels );
+		// This should normally not be used, but we *have* to provide a particle texture or otherwise damage models will crash
+		TextureAtlasSprite particleTexture = cableBuilder.getCoreTexture( CableCoreType.GLASS, AEColor.TRANSPARENT );
+
+		return new CableBusBakedModel( cableBuilder, facadeBuilder, partModels, particleTexture );
 	}
 
 	private Map<ResourceLocation, IBakedModel> loadPartModels( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
