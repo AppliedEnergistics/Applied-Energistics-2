@@ -22,6 +22,7 @@ package appeng.client.render.tesr;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -69,7 +70,6 @@ public class SkyChestTESR extends TileEntitySpecialRenderer<TileSkyChest>
 		}
 		else
 		{
-			// TODO 1.10.2-R - So this is weirdly half working. Either fix it or deal with it.
 			if( te != null )
 			{
 				this.bindTexture( ( (BlockSkyChest) te.getBlockType() ).type == SkyChestType.STONE ? TEXTURE_STONE : TEXTURE_BLOCK );
@@ -82,21 +82,34 @@ public class SkyChestTESR extends TileEntitySpecialRenderer<TileSkyChest>
 
 		GlStateManager.pushMatrix();
 		GlStateManager.enableRescaleNormal();
-
-		if( destroyStage < 0 )
-		{
-			GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
-		}
-
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		GlStateManager.translate( (float) x, (float) y + 1.0F, (float) z + 1.0F );
 		GlStateManager.scale( 1.0F, -1.0F, -1.0F );
-		GlStateManager.translate( 0.5F, 0.5F, 0.5F );
-
 		if( te != null )
 		{
-			FacingToRotation.get( te.getForward(), te.getUp() ).glRotateCurrentMat();
+			GlStateManager.translate( 0.5F, 0.5F, 0.5F );
+			// In the vanilla chest model, north and south are flipped
+			EnumFacing forward = te.getForward();
+			EnumFacing up = te.getUp();
+			if( forward == EnumFacing.SOUTH )
+			{
+				forward = EnumFacing.NORTH;
+			}
+			else if( forward == EnumFacing.NORTH )
+			{
+				forward = EnumFacing.SOUTH;
+			}
+			if( up == EnumFacing.SOUTH )
+			{
+				up = EnumFacing.NORTH;
+			}
+			else if( up == EnumFacing.NORTH )
+			{
+				up = EnumFacing.SOUTH;
+			}
+			FacingToRotation.get( forward, up ).glRotateCurrentMat();
+			GlStateManager.translate( -0.5F, -0.5F, -0.5F );
 		}
-		GlStateManager.translate( -0.5F, -0.5F, -0.5F );
 		float f = te != null ? te.getPrevLidAngle() + ( te.getLidAngle() - te.getPrevLidAngle() ) * partialTicks : 0;
 
 		f = 1.0F - f;
