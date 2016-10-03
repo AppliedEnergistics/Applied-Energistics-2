@@ -22,6 +22,8 @@ package appeng.block.crafting;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -29,7 +31,10 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
@@ -39,6 +44,8 @@ import appeng.util.Platform;
 
 public class BlockMolecularAssembler extends AEBaseTileBlock
 {
+
+	public static final PropertyBool POWERED = PropertyBool.create( "powered" );
 
 	public BlockMolecularAssembler()
 	{
@@ -50,9 +57,33 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean canRenderInLayer( final IBlockState state, final BlockRenderLayer layer )
+	protected IProperty[] getAEStates()
 	{
-		return layer == BlockRenderLayer.CUTOUT_MIPPED;
+		return new IProperty[] { POWERED };
+	}
+
+	@Override
+	public IBlockState getActualState( IBlockState state, IBlockAccess worldIn, BlockPos pos )
+	{
+		boolean powered = false;
+		TileMolecularAssembler te = getTileEntity( worldIn, pos );
+		if( te != null )
+		{
+			powered = te.isPowered();
+		}
+
+		return super.getActualState( state, worldIn, pos ).withProperty( POWERED, powered );
+	}
+
+	@SideOnly( Side.CLIENT)
+	public BlockRenderLayer getBlockLayer()
+	{
+		return BlockRenderLayer.TRANSLUCENT;
+	}
+
+	public boolean isFullCube(IBlockState state)
+	{
+		return false;
 	}
 
 	@Override
