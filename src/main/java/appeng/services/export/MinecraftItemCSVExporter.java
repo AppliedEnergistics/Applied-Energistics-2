@@ -60,7 +60,7 @@ final class MinecraftItemCSVExporter implements Exporter
 {
 	private static final String ITEM_CSV_FILE_NAME = "items.csv";
 	private static final String MINIMAL_HEADER = "Mod:Item:MetaData, Localized Name";
-	private static final String VERBOSE_HEADER = MINIMAL_HEADER + ", Unlocalized Name, Is Air?, Class Name";
+	private static final String VERBOSE_HEADER = MINIMAL_HEADER + ", Unlocalized Name, Is Block?, Class Name";
 	private static final String EXPORT_SUCCESSFUL_MESSAGE = "Exported successfully %d items into %s";
 	private static final String EXPORT_UNSUCCESSFUL_MESSAGE = "Exporting was unsuccessful.";
 
@@ -171,7 +171,7 @@ final class MinecraftItemCSVExporter implements Exporter
 				final Item item = input.getItem();
 				final String unlocalizedItem = input.getUnlocalizedName();
 				final Block block = Block.getBlockFromItem( item );
-				final boolean isBlock = !block.equals( Blocks.AIR );
+				final boolean isBlock = block != null && !block.equals( Blocks.AIR );
 				final Class<? extends ItemStack> stackClass = input.getClass();
 				final String stackClassName = stackClass.getName();
 
@@ -274,7 +274,7 @@ final class MinecraftItemCSVExporter implements Exporter
 			if( this.mode == ExportMode.VERBOSE )
 			{
 				final Block block = Block.getBlockFromItem( input );
-				final boolean isBlock = !block.equals( Blocks.AIR );
+				final boolean isBlock = block != null && !block.equals( Blocks.AIR );
 				final Class<? extends Item> itemClass = input.getClass();
 				final String itemClassName = itemClass.getName();
 
