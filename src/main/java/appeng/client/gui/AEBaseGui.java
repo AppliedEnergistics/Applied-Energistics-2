@@ -323,7 +323,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 	//TODO 1.9.4 aftermath - Whole ClickType thing, to be checked.
 	@Override
-	protected void handleMouseClick( final Slot slot, final int slotIdx, final int key, final ClickType clickType )
+	protected void handleMouseClick( final Slot slot, final int slotIdx, final int mouseButton, final ClickType clickType )
 	{
 		final EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
@@ -344,14 +344,14 @@ public abstract class AEBaseGui extends GuiContainer
 
 		if( slot instanceof SlotPatternTerm )
 		{
-			if( key == 6 )
+			if( mouseButton == 6 )
 			{
 				return; // prevent weird double clicks..
 			}
 
 			try
 			{
-				NetworkHandler.instance.sendToServer( ( (SlotPatternTerm) slot ).getRequest( key == 1 ) );
+				NetworkHandler.instance.sendToServer( ( (SlotPatternTerm) slot ).getRequest( isShiftKeyDown() ) );
 			}
 			catch( final IOException e )
 			{
@@ -360,19 +360,20 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 		else if( slot instanceof SlotCraftingTerm )
 		{
-			if( key == 6 )
+			if( mouseButton == 6 )
 			{
 				return; // prevent weird double clicks..
 			}
 
 			InventoryAction action = null;
-			if( key == 1 )
+			if( isShiftKeyDown() )
 			{
 				action = InventoryAction.CRAFT_SHIFT;
 			}
 			else
 			{
-				action = isCtrlKeyDown() ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
+				// Craft stack on right-click, craft single on left-click
+				action = (mouseButton == 1) ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
 			}
 
 			final PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
@@ -409,16 +410,16 @@ public abstract class AEBaseGui extends GuiContainer
 		{
 			InventoryAction action = null;
 
-			switch( key )
+			switch( clickType )
 			{
-				case 0: // pickup / set-down.
-					action = isCtrlKeyDown() ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
+				case PICKUP: // pickup / set-down.
+					action = (mouseButton == 1) ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
 					break;
-				case 1:
+				case QUICK_MOVE:
 					action = isCtrlKeyDown() ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
 					break;
 
-				case 3: // creative dupe:
+				case CLONE: // creative dupe:
 
 					if( player.capabilities.isCreativeMode )
 					{
@@ -428,8 +429,7 @@ public abstract class AEBaseGui extends GuiContainer
 					break;
 
 				default:
-				case 4: // drop item:
-				case 6:
+				case THROW: // drop item:
 			}
 
 			if( action != null )
@@ -446,10 +446,10 @@ public abstract class AEBaseGui extends GuiContainer
 			InventoryAction action = null;
 			IAEItemStack stack = null;
 
-			switch( key )
+			switch( clickType )
 			{
-				case 0: // pickup / set-down.
-					action = isCtrlKeyDown() ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
+				case PICKUP: // pickup / set-down.
+					action = (mouseButton == 1) ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
 					stack = ( (SlotME) slot ).getAEStack();
 
 					if( stack != null && action == InventoryAction.PICKUP_OR_SET_DOWN && stack.getStackSize() == 0 && player.inventory.getItemStack() == null )
@@ -458,12 +458,12 @@ public abstract class AEBaseGui extends GuiContainer
 					}
 
 					break;
-				case 1:
+				case QUICK_MOVE:
 					action = isCtrlKeyDown() ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
 					stack = ( (SlotME) slot ).getAEStack();
 					break;
 
-				case 3: // creative dupe:
+				case CLONE: // creative dupe:
 
 					stack = ( (SlotME) slot ).getAEStack();
 					if( stack != null && stack.isCraftable() )
@@ -481,8 +481,7 @@ public abstract class AEBaseGui extends GuiContainer
 					break;
 
 				default:
-				case 4: // drop item:
-				case 6:
+				case THROW: // drop item:
 			}
 
 			if( action != null )
@@ -530,7 +529,7 @@ public abstract class AEBaseGui extends GuiContainer
 			this.disableShiftClick = false;
 		}
 
-		super.handleMouseClick( slot, slotIdx, key, clickType );
+		super.handleMouseClick( slot, slotIdx, mouseButton, clickType );
 	}
 
 	@Override
