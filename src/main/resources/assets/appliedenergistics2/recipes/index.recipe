@@ -7,10 +7,6 @@ exceptions=false
 # Error on Missing Items ( default is no because AE2 allows you to enable/disable items without modifying recipes. )
 erroronmissing=true
 
-ore= ae2:ItemPart.SemiDarkMonitor -> itemIlluminatedPanel
-ore= ae2:ItemPart.Monitor -> itemIlluminatedPanel
-ore= ae2:ItemPart.DarkMonitor -> itemIlluminatedPanel
-
 # Important, keep in this order
 import=aliases.recipe
 import=oredict.recipe

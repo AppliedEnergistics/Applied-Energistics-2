@@ -1,0 +1,17 @@
+shaped=
+    oredictionary:dustGlowstone ae2:material.FluixPearl oredictionary:dustGlowstone,
+    ae2:material.FluixPearl ae2:material.EngProcessor ae2:material.FluixPearl,
+    oredictionary:dustGlowstone ae2:material.FluixPearl oredictionary:dustGlowstone
+    -> ae2:material.Cell2SpatialPart
+
+shaped=
+    oredictionary:dustGlowstone ae2:material.Cell2SpatialPart oredictionary:dustGlowstone,
+    ae2:material.Cell2SpatialPart ae2:material.EngProcessor ae2:material.Cell2SpatialPart,
+    oredictionary:dustGlowstone ae2:material.Cell2SpatialPart oredictionary:dustGlowstone
+    -> ae2:material.Cell16SpatialPart
+
+shaped=
+    oredictionary:dustGlowstone ae2:material.Cell16SpatialPart oredictionary:dustGlowstone,
+    ae2:material.Cell16SpatialPart ae2:material.EngProcessor ae2:material.Cell16SpatialPart,
+    oredictionary:dustGlowstone ae2:material.Cell16SpatialPart oredictionary:dustGlowstone
+    -> ae2:material.Cell128SpatialPart

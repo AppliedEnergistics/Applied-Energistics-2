@@ -2,4 +2,4 @@ shaped=
     oredictionary:ingotIron mc:sticky_piston oredictionary:ingotIron,
     fluixCrystal _ oredictionary:ingotIron,
     oredictionary:ingotIron mc:sticky_piston oredictionary:ingotIron
-    -> ae2:BlockInscriber
+    -> ae2:inscriber

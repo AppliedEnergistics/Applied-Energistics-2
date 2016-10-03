@@ -1,8 +1,8 @@
 shaped=
-    ae2:BlockQuartz,
-    ae2:BlockQuartz
-    -> 2 ae2:BlockQuartzPillar
+    ae2:quartz_block,
+    ae2:quartz_block
+    -> 2 ae2:quartz_pillar
 
 shaped=
-    ae2:BlockQuartz ae2:BlockQuartz
-    -> 2 ae2:BlockQuartzChiseled
+    ae2:quartz_block ae2:quartz_block
+    -> 2 ae2:chiseled_quartz_block

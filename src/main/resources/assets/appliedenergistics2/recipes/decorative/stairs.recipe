@@ -1,47 +1,47 @@
 shaped=
-    ae2:BlockQuartzChiseled _ _,
-    ae2:BlockQuartzChiseled ae2:BlockQuartzChiseled _,
-    ae2:BlockQuartzChiseled ae2:BlockQuartzChiseled ae2:BlockQuartzChiseled
-    -> 4 ae2:ChiseledQuartzStairBlock
+    ae2:chiseled_quartz_block _ _,
+    ae2:chiseled_quartz_block ae2:chiseled_quartz_block _,
+    ae2:chiseled_quartz_block ae2:chiseled_quartz_block ae2:chiseled_quartz_block
+    -> 4 ae2:chiseled_quartz_stairs
 
 shaped=
     ae2:fluix _         _,
     ae2:fluix ae2:fluix _,
     ae2:fluix ae2:fluix ae2:fluix
-    -> 4 ae2:FluixStairBlock
+    -> 4 ae2:fluix_stairs
 
 shaped=
-    ae2:BlockQuartzPillar _ _,
-    ae2:BlockQuartzPillar ae2:BlockQuartzPillar _,
-    ae2:BlockQuartzPillar ae2:BlockQuartzPillar ae2:BlockQuartzPillar
-    -> 4 ae2:QuartzPillarStairBlock
+    ae2:quartz_pillar _ _,
+    ae2:quartz_pillar ae2:quartz_pillar _,
+    ae2:quartz_pillar ae2:quartz_pillar ae2:quartz_pillar
+    -> 4 ae2:quartz_pillar_stairs
 
 shaped=
-    ae2:BlockQuartz _ _,
-    ae2:BlockQuartz ae2:BlockQuartz _,
-    ae2:BlockQuartz ae2:BlockQuartz ae2:BlockQuartz
-    -> 4 ae2:QuartzStairBlock
+    ae2:quartz_block _ _,
+    ae2:quartz_block ae2:quartz_block _,
+    ae2:quartz_block ae2:quartz_block ae2:quartz_block
+    -> 4 ae2:quartz_stairs
 
 shaped=
-    ae2:BlockSkyStone _ _,
-    ae2:BlockSkyStone ae2:BlockSkyStone _,
-    ae2:BlockSkyStone ae2:BlockSkyStone ae2:BlockSkyStone
-    -> 4 ae2:SkyStoneStairBlock
+    ae2:sky_stone_block _ _,
+    ae2:sky_stone_block ae2:sky_stone_block _,
+    ae2:sky_stone_block ae2:sky_stone_block ae2:sky_stone_block
+    -> 4 ae2:sky_stone_stairs
 
 shaped=
-    ae2:BlockSkyStone:1 _ _,
-    ae2:BlockSkyStone:1 ae2:BlockSkyStone:1 _,
-    ae2:BlockSkyStone:1 ae2:BlockSkyStone:1 ae2:BlockSkyStone:1
-    -> 4 ae2:SkyStoneBlockStairBlock
+    ae2:smooth_sky_stone_block _ _,
+    ae2:smooth_sky_stone_block ae2:smooth_sky_stone_block _,
+    ae2:smooth_sky_stone_block ae2:smooth_sky_stone_block ae2:smooth_sky_stone_block
+    -> 4 ae2:smooth_sky_stone_stairs
 
 shaped=
-    ae2:BlockSkyStone:2 _ _,
-    ae2:BlockSkyStone:2 ae2:BlockSkyStone:2 _,
-    ae2:BlockSkyStone:2 ae2:BlockSkyStone:2 ae2:BlockSkyStone:2
-    -> 4 ae2:SkyStoneBrickStairBlock
+    ae2:sky_stone_brick _ _,
+    ae2:sky_stone_brick ae2:sky_stone_brick _,
+    ae2:sky_stone_brick ae2:sky_stone_brick ae2:sky_stone_brick
+    -> 4 ae2:sky_stone_brick_stairs
 
 shaped=
-    ae2:BlockSkyStone:3 _ _,
-    ae2:BlockSkyStone:3 ae2:BlockSkyStone:3 _,
-    ae2:BlockSkyStone:3 ae2:BlockSkyStone:3 ae2:BlockSkyStone:3
-    -> 4 ae2:SkyStoneSmallBrickStairBlock
+    ae2:sky_stone_small_brick _ _,
+    ae2:sky_stone_small_brick ae2:sky_stone_small_brick _,
+    ae2:sky_stone_small_brick ae2:sky_stone_small_brick ae2:sky_stone_small_brick
+    -> 4 ae2:sky_stone_small_brick_stairs

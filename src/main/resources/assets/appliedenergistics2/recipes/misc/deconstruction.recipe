@@ -1,15 +1,15 @@
 shapeless=
-    ae2:BlockQuartz
-    -> 4 ae2:ItemMaterial.CertusQuartzCrystal
+    ae2:quartz_block
+    -> 4 ae2:material.CertusQuartzCrystal
 
 shapeless=
-    ae2:BlockQuartzPillar
-    -> 4 ae2:ItemMaterial.CertusQuartzCrystal
+    ae2:quartz_pillar
+    -> 4 ae2:material.CertusQuartzCrystal
 
 shapeless=
-    ae2:BlockQuartzChiseled
-    -> 4 ae2:ItemMaterial.CertusQuartzCrystal
+    ae2:chiseled_quartz_block
+    -> 4 ae2:material.CertusQuartzCrystal
 
 shapeless=
-    ae2:BlockFluix
-    -> 4 ae2:ItemMaterial.FluixCrystal
+    ae2:fluix_block
+    -> 4 ae2:material.FluixCrystal

@@ -2,40 +2,40 @@ shaped=
     oredictionary:crystalNetherQuartz oredictionary:crystalNetherQuartz,
     oredictionary:crystalNetherQuartz oredictionary:stickWood,
     _ oredictionary:stickWood
-    -> ae2:ToolNetherQuartzAxe
+    -> ae2:nether_quartz_axe
 
 shaped=
     oredictionary:crystalNetherQuartz oredictionary:crystalNetherQuartz oredictionary:crystalNetherQuartz,
     _ oredictionary:stickWood _,
     _ oredictionary:stickWood _
-    -> ae2:ToolNetherQuartzPickaxe
+    -> ae2:nether_quartz_pickaxe
 
 shaped=
     oredictionary:crystalNetherQuartz,
     oredictionary:stickWood,
     oredictionary:stickWood
-    -> ae2:ToolNetherQuartzSpade
+    -> ae2:nether_quartz_spade
 
 shaped=
     oredictionary:crystalNetherQuartz,
     oredictionary:crystalNetherQuartz,
     oredictionary:stickWood
-    -> ae2:ToolNetherQuartzSword
+    -> ae2:nether_quartz_sword
 
 shaped=
     oredictionary:crystalNetherQuartz oredictionary:crystalNetherQuartz,
     _ oredictionary:stickWood,
     _ oredictionary:stickWood
-    -> ae2:ToolNetherQuartzHoe
+    -> ae2:nether_quartz_hoe
 
 shaped=
     oredictionary:crystalNetherQuartz _ oredictionary:crystalNetherQuartz,
     _ oredictionary:crystalNetherQuartz _,
     oredictionary:crystalNetherQuartz _ oredictionary:crystalNetherQuartz
-    -> ae2:ToolNetherQuartzWrench
+    -> ae2:nether_quartz_wrench
 
 shaped=
     _ _ oredictionary:stickWood,
     oredictionary:ingotIron oredictionary:stickWood _,
     oredictionary:crystalNetherQuartz oredictionary:crystalNetherQuartz _
-    -> ae2:ToolNetherQuartzCuttingKnife
+    -> ae2:nether_quartz_cutting_knife

@@ -1,11 +1,11 @@
 shaped=
-    ae2:BlockSkyStone ae2:BlockSkyStone ae2:BlockSkyStone,
-    ae2:BlockSkyStone _	ae2:BlockSkyStone,
-    ae2:BlockSkyStone ae2:BlockSkyStone ae2:BlockSkyStone
-    -> ae2:BlockSkyChest
+    ae2:sky_stone_block ae2:sky_stone_block ae2:sky_stone_block,
+    ae2:sky_stone_block _	ae2:sky_stone_block,
+    ae2:sky_stone_block ae2:sky_stone_block ae2:sky_stone_block
+    -> ae2:sky_stone_chest
 
 shaped=
-    ae2:BlockSkyStone:1 ae2:BlockSkyStone:1 ae2:BlockSkyStone:1,
-    ae2:BlockSkyStone:1 _ ae2:BlockSkyStone:1,
-    ae2:BlockSkyStone:1 ae2:BlockSkyStone:1 ae2:BlockSkyStone:1
-    -> ae2:BlockSkyChest:1
+    ae2:smooth_sky_stone_block ae2:smooth_sky_stone_block ae2:smooth_sky_stone_block,
+    ae2:smooth_sky_stone_block _ ae2:smooth_sky_stone_block,
+    ae2:smooth_sky_stone_block ae2:smooth_sky_stone_block ae2:smooth_sky_stone_block
+    -> ae2:smooth_sky_stone_chest

@@ -1,7 +1,7 @@
 shaped=
-    netherCrystal oreDictionary:dustFluix ae2:ItemMaterial.LogicProcessor
-    -> 2 ae2:ItemMaterial.AnnihilationCore
+    netherCrystal oreDictionary:dustFluix ae2:material.LogicProcessor
+    -> 2 ae2:material.AnnihilationCore
 
 shaped=
-    certusCrystal oreDictionary:dustFluix ae2:ItemMaterial.LogicProcessor
-    -> 2 ae2:ItemMaterial.FormationCore
+    certusCrystal oreDictionary:dustFluix ae2:material.LogicProcessor
+    -> 2 ae2:material.FormationCore

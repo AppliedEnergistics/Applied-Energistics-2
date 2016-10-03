@@ -1,11 +1,11 @@
 press=
-    oredictionary:dustRedstone ae2:ItemMaterial.LogicProcessorPrint ae2:ItemMaterial.SiliconPrint
-    -> ae2:ItemMaterial.LogicProcessor
+    oredictionary:dustRedstone ae2:material.LogicProcessorPrint ae2:material.SiliconPrint
+    -> ae2:material.LogicProcessor
 
 press=
-    oredictionary:dustRedstone ae2:ItemMaterial.CalcProcessorPrint ae2:ItemMaterial.SiliconPrint
-    -> ae2:ItemMaterial.CalcProcessor
+    oredictionary:dustRedstone ae2:material.CalcProcessorPrint ae2:material.SiliconPrint
+    -> ae2:material.CalcProcessor
 
 press=
-    oredictionary:dustRedstone ae2:ItemMaterial.EngProcessorPrint ae2:ItemMaterial.SiliconPrint
-    -> ae2:ItemMaterial.EngProcessor
+    oredictionary:dustRedstone ae2:material.EngProcessorPrint ae2:material.SiliconPrint
+    -> ae2:material.EngProcessor

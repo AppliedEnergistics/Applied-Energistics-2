@@ -1,5 +1,5 @@
 shaped=
     _ oredictionary:ingotIron _,
-    oredictionary:ingotIron ae2:ItemMaterial.CertusQuartzCrystalCharged oredictionary:ingotIron,
+    oredictionary:ingotIron ae2:material.CertusQuartzCrystalCharged oredictionary:ingotIron,
     _ oredictionary:ingotIron _
-    -> ae2:BlockSkyCompass
+    -> ae2:sky_compass

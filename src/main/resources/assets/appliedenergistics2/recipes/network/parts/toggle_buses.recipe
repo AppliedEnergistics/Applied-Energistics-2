@@ -1,0 +1,13 @@
+shaped=
+    _ oredictionary:dustRedstone _,
+    cable mc:lever cable,
+    _ oredictionary:dustRedstone _
+    -> ae2:part.ToggleBus
+
+shapeless=
+    ae2:part.ToggleBus
+    -> ae2:part.InvertedToggleBus
+
+shapeless=
+    ae2:part.InvertedToggleBus
+    -> ae2:part.ToggleBus

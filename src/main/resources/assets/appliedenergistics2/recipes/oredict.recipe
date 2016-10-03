@@ -14,18 +14,18 @@ ore=mc:chest -> chestWood
 
 # AE2 Ore Dictionary
 # Materials for processing in other machines
-ore=ae2:ItemMaterial.CertusQuartzCrystal -> crystalCertusQuartz
-ore=ae2:ItemMaterial.FluixCrystal -> crystalFluix
-ore=ae2:ItemMaterial.PurifiedFluixCrystal -> crystalPureFluix
-ore=ae2:ItemMaterial.NetherQuartzDust -> dustNetherQuartz
-ore=ae2:ItemMaterial.CertusQuartzDust -> dustCertusQuartz
-ore=ae2:ItemMaterial.FluixDust -> dustFluix
+ore=ae2:material.CertusQuartzCrystal -> crystalCertusQuartz
+ore=ae2:material.FluixCrystal -> crystalFluix
+ore=ae2:material.PurifiedFluixCrystal -> crystalPureFluix
+ore=ae2:material.NetherQuartzDust -> dustNetherQuartz
+ore=ae2:material.CertusQuartzDust -> dustCertusQuartz
+ore=ae2:material.FluixDust -> dustFluix
 
 # Ores of AE2
-ore=ae2:tile.OreQuartz -> oreCertusQuartz
-ore=ae2:tile.OreQuartzCharged -> oreChargedCertusQuartz
+ore=ae2:quartz_ore -> oreCertusQuartz
+ore=ae2:charged_quartz_ore -> oreChargedCertusQuartz
 
 # Parts to be used
-ore= ae2:ItemPart.SemiDarkMonitor -> itemIlluminatedPanel
-ore= ae2:ItemPart.Monitor -> itemIlluminatedPanel
-ore= ae2:ItemPart.DarkMonitor -> itemIlluminatedPanel
+ore= ae2:part.SemiDarkMonitor -> itemIlluminatedPanel
+ore= ae2:part.Monitor -> itemIlluminatedPanel
+ore= ae2:part.DarkMonitor -> itemIlluminatedPanel

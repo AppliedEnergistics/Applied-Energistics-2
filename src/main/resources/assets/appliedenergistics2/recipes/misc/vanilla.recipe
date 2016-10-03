@@ -11,11 +11,11 @@ shaped=
     -> mc:comparator
     
 shaped=
-    ae2:ItemMaterial.IronNugget ae2:ItemMaterial.IronNugget ae2:ItemMaterial.IronNugget,
-    ae2:ItemMaterial.IronNugget ae2:ItemMaterial.IronNugget ae2:ItemMaterial.IronNugget,
-    ae2:ItemMaterial.IronNugget ae2:ItemMaterial.IronNugget ae2:ItemMaterial.IronNugget
+    ae2:material.IronNugget ae2:material.IronNugget ae2:material.IronNugget,
+    ae2:material.IronNugget ae2:material.IronNugget ae2:material.IronNugget,
+    ae2:material.IronNugget ae2:material.IronNugget ae2:material.IronNugget
     -> mc:iron_ingot
 
 shapeless=
     oredictionary:ingotIron
-    -> 9 ae2:ItemMaterial.IronNugget
+    -> 9 ae2:material.IronNugget

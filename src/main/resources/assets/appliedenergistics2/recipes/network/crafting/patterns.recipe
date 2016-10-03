@@ -1,5 +1,5 @@
 shaped=
-    ae2:BlockQuartzGlass oredictionary:dustGlowstone ae2:BlockQuartzGlass,
+    ae2:quartz_glass oredictionary:dustGlowstone ae2:quartz_glass,
     oredictionary:dustGlowstone certusCrystal oredictionary:dustGlowstone,
     oredictionary:ingotIron oredictionary:ingotIron oredictionary:ingotIron
-    -> ae2:ItemMaterial.BlankPattern
+    -> ae2:material.BlankPattern

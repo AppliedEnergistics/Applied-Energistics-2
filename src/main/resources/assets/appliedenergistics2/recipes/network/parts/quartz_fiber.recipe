@@ -2,4 +2,4 @@ shaped=
     glass glass glass,
     dustQuartz dustQuartz dustQuartz,
     glass glass glass
-    -> 3 ae2:ItemPart.QuartzFiber
+    -> 3 ae2:part.QuartzFiber

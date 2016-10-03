@@ -1,11 +1,11 @@
 shaped=
-    ae2:ItemMaterial.CertusQuartzCrystalCharged _ _,
+    ae2:material.CertusQuartzCrystalCharged _ _,
     _ oredictionary:ingotIron _,
     _ _ oredictionary:ingotIron
-    -> ae2:ToolChargedStaff
+    -> ae2:charged_staff
 
 shaped=
-    fluixCrystal ae2:BlockEnergyCell _,
-    ae2:ItemMaterial.EngProcessor oredictionary:ingotIron _,
+    fluixCrystal ae2:energy_cell _,
+    ae2:material.EngProcessor oredictionary:ingotIron _,
     _ _ oredictionary:ingotIron
-    -> ae2:ToolEntropyManipulator
+    -> ae2:entropy_manipulator

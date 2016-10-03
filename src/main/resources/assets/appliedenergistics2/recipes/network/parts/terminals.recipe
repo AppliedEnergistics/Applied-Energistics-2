@@ -1,15 +1,15 @@
 shapeless=
-    monitor ae2:ItemMaterial.FormationCore ae2:ItemMaterial.AnnihilationCore ae2:ItemMaterial.LogicProcessor
-    -> ae2:ItemPart.Terminal
+    monitor ae2:material.FormationCore ae2:material.AnnihilationCore ae2:material.LogicProcessor
+    -> ae2:part.Terminal
 
 shapeless=
-    ae2:ItemPart.Terminal oredictionary:craftingTableWood ae2:ItemMaterial.CalcProcessor
-    -> ae2:ItemPart.CraftingTerminal
+    ae2:part.Terminal oredictionary:craftingTableWood ae2:material.CalcProcessor
+    -> ae2:part.CraftingTerminal
 
 shapeless=
-    monitor interface ae2:ItemMaterial.EngProcessor
-    -> ae2:ItemPart.InterfaceTerminal
+    monitor interface ae2:material.EngProcessor
+    -> ae2:part.InterfaceTerminal
 
 shapeless=
-    ae2:ItemPart.CraftingTerminal ae2:ItemMaterial.EngProcessor
-    -> ae2:ItemPart.PatternTerminal
+    ae2:part.CraftingTerminal ae2:material.EngProcessor
+    -> ae2:part.PatternTerminal

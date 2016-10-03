@@ -2,4 +2,4 @@ shaped=
     oredictionary:dustFluix fluixCrystal oredictionary:dustFluix,
     fluixCrystal mc:ender_pearl fluixCrystal,
     oredictionary:dustFluix fluixCrystal oredictionary:dustFluix
-    -> ae2:ItemMaterial.FluixPearl
+    -> ae2:material.FluixPearl

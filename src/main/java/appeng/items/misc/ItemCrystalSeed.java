@@ -74,7 +74,8 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 				{
 					crystalSeedStack.setItemDamage( certus2 );
 					crystalSeedStack = newStyle( crystalSeedStack );
-					return new ResolverResult( "ItemCrystalSeed", crystalSeedStack.getItemDamage(), crystalSeedStack.getTagCompound() );
+					String itemName = crystalSeedStack.getItem().getRegistryName().getResourcePath();
+					return new ResolverResult( itemName, crystalSeedStack.getItemDamage(), crystalSeedStack.getTagCompound() );
 				} )
 				.orElse( null );
 

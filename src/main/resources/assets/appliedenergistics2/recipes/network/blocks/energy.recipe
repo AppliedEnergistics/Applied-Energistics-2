@@ -1,23 +1,23 @@
 shaped=
     oredictionary:ingotIron oredictionary:ingotIron oredictionary:ingotIron,
     oredictionary:ingotIron mc:furnace oredictionary:ingotIron,
-    oredictionary:ingotIron ae2:BlockEnergyAcceptor oredictionary:ingotIron
-    -> ae2:BlockVibrationChamber
+    oredictionary:ingotIron ae2:energy_acceptor oredictionary:ingotIron
+    -> ae2:vibration_chamber
 
 shaped=
-    oredictionary:ingotIron ae2:BlockQuartzGlass oredictionary:ingotIron,
-    ae2:BlockQuartzGlass fluixCrystal ae2:BlockQuartzGlass,
-    oredictionary:ingotIron ae2:BlockQuartzGlass oredictionary:ingotIron
-    -> ae2:BlockEnergyAcceptor
+    oredictionary:ingotIron ae2:quartz_glass oredictionary:ingotIron,
+    ae2:quartz_glass fluixCrystal ae2:quartz_glass,
+    oredictionary:ingotIron ae2:quartz_glass oredictionary:ingotIron
+    -> ae2:energy_acceptor
     
 shaped=
     certusCrystal oredictionary:dustFluix certusCrystal,
-    oredictionary:dustFluix ae2:BlockQuartzGlass oredictionary:dustFluix,
+    oredictionary:dustFluix ae2:quartz_glass oredictionary:dustFluix,
     certusCrystal oredictionary:dustFluix certusCrystal
-    -> ae2:BlockEnergyCell
+    -> ae2:energy_cell
 
 shaped=
-    ae2:BlockEnergyCell ae2:BlockEnergyCell ae2:BlockEnergyCell,
-    ae2:BlockEnergyCell ae2:ItemMaterial.CalcProcessor ae2:BlockEnergyCell,
-    ae2:BlockEnergyCell ae2:BlockEnergyCell ae2:BlockEnergyCell
-    -> ae2:BlockDenseEnergyCell
+    ae2:energy_cell ae2:energy_cell ae2:energy_cell,
+    ae2:energy_cell ae2:material.CalcProcessor ae2:energy_cell,
+    ae2:energy_cell ae2:energy_cell ae2:energy_cell
+    -> ae2:dense_energy_cell

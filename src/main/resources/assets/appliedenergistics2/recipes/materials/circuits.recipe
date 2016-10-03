@@ -1,15 +1,15 @@
 inscribe=
-    oredictionary:ingotGold ae2:ItemMaterial.LogicProcessorPress
-    -> ae2:ItemMaterial.LogicProcessorPrint
+    oredictionary:ingotGold ae2:material.LogicProcessorPress
+    -> ae2:material.LogicProcessorPrint
 
 inscribe=
-    ae2:ItemMaterial.PurifiedCertusQuartzCrystal ae2:ItemMaterial.CalcProcessorPress
-    -> ae2:ItemMaterial.CalcProcessorPrint
+    ae2:material.PurifiedCertusQuartzCrystal ae2:material.CalcProcessorPress
+    -> ae2:material.CalcProcessorPrint
 
 inscribe=
-    oredictionary:gemDiamond ae2:ItemMaterial.EngProcessorPress
-    -> ae2:ItemMaterial.EngProcessorPrint
+    oredictionary:gemDiamond ae2:material.EngProcessorPress
+    -> ae2:material.EngProcessorPrint
 
 inscribe=
-    oredictionary:itemSilicon ae2:ItemMaterial.SiliconPress
-    -> ae2:ItemMaterial.SiliconPrint
+    oredictionary:itemSilicon ae2:material.SiliconPress
+    -> ae2:material.SiliconPrint
