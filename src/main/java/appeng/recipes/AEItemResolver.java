@@ -58,7 +58,7 @@ public class AEItemResolver implements ISubItemResolver
 
 			if( itemName.startsWith( "lumen_paint_ball." ) )
 			{
-				return this.paintBall( items.coloredLumenPaintBall(), itemName.substring( itemName.indexOf( '.' ) + 1 ), true );
+				return this.paintBall( items.coloredPaintBall(), itemName.substring( itemName.indexOf( '.' ) + 1 ), true );
 			}
 
 			if( itemName.equals( "cable_glass" ) )

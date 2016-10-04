@@ -5,9 +5,9 @@ shaped=
     -> 4 ae2:chiseled_quartz_stairs
 
 shaped=
-    ae2:fluix _         _,
-    ae2:fluix ae2:fluix _,
-    ae2:fluix ae2:fluix ae2:fluix
+    ae2:fluix_block _ _,
+    ae2:fluix_block ae2:fluix_block _,
+    ae2:fluix_block ae2:fluix_block ae2:fluix_block
     -> 4 ae2:fluix_stairs
 
 shaped=

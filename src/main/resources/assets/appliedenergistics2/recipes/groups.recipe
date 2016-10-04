@@ -1,8 +1,8 @@
 group= oredictionary:itemIlluminatedPanel -> monitor
 group= ae2:interface ae2:part.Interface -> interface
 
-group= ae2:ToolCertusQuartzCuttingKnife:* ae2:ToolNetherQuartzCuttingKnife:* -> knife
-group= ae2:ToolCertusQuartzWrench ae2:ToolNetherQuartzWrench -> wrench
+group= ae2:certus_quartz_cutting_knife:* ae2:nether_quartz_cutting_knife:* -> knife
+group= ae2:certus_quartz_wrench ae2:nether_quartz_wrench -> wrench
 
 group= ae2:cable_glass ae2:cable_covered ae2:cable_smart -> cable
 group= ae2:cable_dense -> densecable
