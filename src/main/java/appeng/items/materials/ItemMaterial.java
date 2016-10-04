@@ -139,7 +139,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	public MaterialType getTypeByStack( final ItemStack is )
 	{
 		MaterialType type = this.dmgToMaterial.get( is.getItemDamage() );
-		return (type != null) ? type : MaterialType.InvalidType;
+		return ( type != null ) ? type : MaterialType.InvalidType;
 	}
 
 	@Override
@@ -260,7 +260,8 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final List<ItemStack> itemStacks )
 	{
 		final List<MaterialType> types = Arrays.asList( MaterialType.values() );
-		Collections.sort( types, new Comparator<MaterialType>(){
+		Collections.sort( types, new Comparator<MaterialType>()
+		{
 
 			@Override
 			public int compare( final MaterialType o1, final MaterialType o2 )
@@ -351,9 +352,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 
 		if( location instanceof EntityItem && eqi instanceof EntityItem )
 		{
-			// TODO: Entity Pick up time?
-			// needs fixing?
-			// ( (EntityItem) eqi ).setPickupDelay( ( (EntityItem) location ).pick;
+			( (EntityItem) eqi ).setDefaultPickupDelay();
 		}
 
 		return eqi;
