@@ -24,6 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldProvider;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeProviderSingle;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkGenerator;
@@ -38,10 +39,13 @@ import appeng.core.AppEng;
 public class StorageWorldProvider extends WorldProvider
 {
 
+	private final Biome biome;
+
 	public StorageWorldProvider()
 	{
 		this.hasNoSky = true;
-		this.biomeProvider = new BiomeProviderSingle( AppEng.instance().getRegistration().getStorageBiome() );
+		biome = AppEng.instance().getRegistration().getStorageBiome();
+		this.biomeProvider = new BiomeProviderSingle( biome );
 	}
 	
 	@Override
@@ -147,4 +151,11 @@ public class StorageWorldProvider extends WorldProvider
 	{
 		return false;
 	}
+
+	@Override
+	public Biome getBiomeForCoords( BlockPos pos )
+	{
+		return biome;
+	}
+
 }

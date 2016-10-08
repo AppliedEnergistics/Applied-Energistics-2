@@ -63,9 +63,20 @@ public class CachedPlane
 	private final LinkedList<WorldCoord> updates = new LinkedList<WorldCoord>();
 	private final IBlockDefinition matrixFrame = AEApi.instance().definitions().blocks().matrixFrame();
 	private int verticalBits;
+	private final IBlockState matrixBlockState;
 
 	public CachedPlane( final World w, final int minX, final int minY, final int minZ, final int maxX, final int maxY, final int maxZ )
 	{
+
+		Block matrixFrameBlock = AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().orElse( null );
+		if( matrixFrameBlock != null )
+		{
+			this.matrixBlockState = matrixFrameBlock.getDefaultState();
+		}
+		else
+		{
+			this.matrixBlockState = null;
+		}
 
 		this.world = w;
 
@@ -403,13 +414,10 @@ public class CachedPlane
 
 		private void setBlockIDWithMetadata( final int y, final Object[] blk )
 		{
-			CachedPlane.this.matrixFrame.maybeBlock().ifPresent( matrixFrameBlock ->
+			if( blk[0] == matrixBlockState )
 			{
-				if( blk[0] == matrixFrameBlock )
-				{
-					blk[0] = Platform.AIR_BLOCK;
-				}
-			} );
+				blk[0] = Platform.AIR_BLOCK.getDefaultState();
+			}
 
 			final ExtendedBlockStorage extendedBlockStorage = this.storage[y >> 4];
 			extendedBlockStorage.set( this.x, y & 15, this.z, (IBlockState) blk[0] );

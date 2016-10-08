@@ -22,33 +22,20 @@ package appeng.spatial;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkProviderOverworld;
 
 import appeng.api.AEApi;
-import appeng.core.AEConfig;
+import appeng.core.AppEng;
 
 
 public class StorageChunkProvider extends ChunkProviderOverworld
 {
-	private static final int SQUARE_CHUNK_SIZE = 256;
-	private static final Block[] BLOCKS;
-
-	static
-	{
-		BLOCKS = new Block[255 * SQUARE_CHUNK_SIZE];
-
-		AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().ifPresent( matrixFrameBlock -> {
-			for( int x = 0; x < BLOCKS.length; x++ )
-			{
-				BLOCKS[x] = matrixFrameBlock;
-			}
-		} );
-	}
 
 	private final World world;
 
@@ -64,12 +51,17 @@ public class StorageChunkProvider extends ChunkProviderOverworld
 		final Chunk chunk = new Chunk( this.world, x, z );
 
 		final byte[] biomes = chunk.getBiomeArray();
-		final AEConfig config = AEConfig.instance;
+		Biome biome = AppEng.instance().getRegistration().getStorageBiome();
+		byte biomeId = (byte) Biome.getIdForBiome(biome);
 
 		for( int k = 0; k < biomes.length; ++k )
 		{
-			biomes[k] = (byte) config.storageBiomeID;
+			biomes[k] = biomeId;
 		}
+
+		AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().ifPresent( block -> fillChunk( chunk, block.getDefaultState() ) );
+
+		chunk.setModified( false );
 
 		if( !chunk.isTerrainPopulated() )
 		{
@@ -78,6 +70,20 @@ public class StorageChunkProvider extends ChunkProviderOverworld
 		}
 
 		return chunk;
+	}
+
+	private void fillChunk( Chunk chunk, IBlockState defaultState )
+	{
+		for( int cx = 0; cx < 16; cx++ )
+		{
+			for( int cz = 0; cz < 16; cz++ )
+			{
+				for( int cy = 0; cy < 256; cy++ )
+				{
+					chunk.setBlockState( new BlockPos( cx, cy, cz ), defaultState );
+				}
+			}
+		}
 	}
 
 	@Override

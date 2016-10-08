@@ -167,13 +167,16 @@ public final class Registration
 				}
 
 				this.storageBiome = new BiomeGenStorage();
+				Biome.registerBiome( config.storageBiomeID, "appliedenergistics2:storage_biome", this.storageBiome );
 				config.save();
 			}
 
 			if( !force && config.storageBiomeID != -1 )
 			{
 				this.storageBiome = new BiomeGenStorage();
+				Biome.registerBiome( config.storageBiomeID, "appliedenergistics2:storage_biome", this.storageBiome );
 			}
+
 		}
 
 		if( config.storageProviderID != -1 )
