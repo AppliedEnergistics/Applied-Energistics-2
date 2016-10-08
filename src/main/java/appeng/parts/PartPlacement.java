@@ -449,6 +449,12 @@ public class PartPlacement
 	@SubscribeEvent
 	public void playerInteract( final PlayerInteractEvent event )
 	{
+		// Only handle the main hand event
+		if( event.getHand() != EnumHand.MAIN_HAND )
+		{
+			return;
+		}
+
 		if( event instanceof PlayerInteractEvent.RightClickEmpty && event.getEntityPlayer().worldObj.isRemote )
 		{
 			// re-check to see if this event was already channeled, cause these two events are really stupid...
@@ -482,7 +488,7 @@ public class PartPlacement
 				}
 			}
 		}
-		else if( event instanceof PlayerInteractEvent.RightClickBlock && event.getEntityPlayer().worldObj.isRemote )
+		else if( event instanceof PlayerInteractEvent.RightClickBlock && !event.getEntityPlayer().worldObj.isRemote )
 		{
 			if( this.placing.get() != null )
 			{
