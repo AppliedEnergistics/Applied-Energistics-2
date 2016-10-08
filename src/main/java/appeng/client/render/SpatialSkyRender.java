@@ -80,6 +80,8 @@ public class SpatialSkyRender extends IRenderHandler
 		final Tessellator tessellator = Tessellator.getInstance();
 		final VertexBuffer VertexBuffer = tessellator.getBuffer();
 
+		// This renders a skybox around the player at a far, fixed distance from them.
+		// The skybox is pitch black and untextured
 		for( int i = 0; i < 6; ++i )
 		{
 			GlStateManager.pushMatrix();
@@ -109,12 +111,14 @@ public class SpatialSkyRender extends IRenderHandler
 				GlStateManager.rotate( -90.0F, 0.0F, 0.0F, 1.0F );
 			}
 
-			VertexBuffer.begin( GL11.GL_QUADS, DefaultVertexFormats.ITEM );
-			VertexBuffer.color( 0f, 0f, 0f, 1f ).pos( -100.0D, -100.0D, -100.0D ).tex( 0.0D, 0.0D ).endVertex();
-			VertexBuffer.color( 0f, 0f, 0f, 1f ).pos( -100.0D, -100.0D, 100.0D ).tex( 0.0D, 16.0D ).endVertex();
-			VertexBuffer.color( 0f, 0f, 0f, 1f ).pos( 100.0D, -100.0D, 100.0D ).tex( 16.0D, 16.0D ).endVertex();
-			VertexBuffer.color( 0f, 0f, 0f, 1f ).pos( 100.0D, -100.0D, -100.0D ).tex( 16.0D, 0.0D ).endVertex();
+			GlStateManager.disableTexture2D();
+			VertexBuffer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION );
+			VertexBuffer.pos( -100.0D, -100.0D, -100.0D ).endVertex();
+			VertexBuffer.pos( -100.0D, -100.0D, 100.0D ).endVertex();
+			VertexBuffer.pos( 100.0D, -100.0D, 100.0D ).endVertex();
+			VertexBuffer.pos( 100.0D, -100.0D, -100.0D ).endVertex();
 			tessellator.draw();
+			GlStateManager.enableTexture2D();
 			GlStateManager.popMatrix();
 		}
 
@@ -129,11 +133,13 @@ public class SpatialSkyRender extends IRenderHandler
 			GlStateManager.depthMask( false );
 			OpenGlHelper.glBlendFunc( 770, 771, 1, 0 );
 			RenderHelper.disableStandardItemLighting();
-			GlStateManager.depthMask( false );
 
 			GlStateManager.color( fade, fade, fade, 1.0f );
 			GlStateManager.callList( this.dspList );
+			renderTwinkles();
 		}
+
+		GlStateManager.depthMask( true );
 
 		GlStateManager.popAttrib();
 
@@ -144,7 +150,7 @@ public class SpatialSkyRender extends IRenderHandler
 	{
 		final Tessellator tessellator = Tessellator.getInstance();
 		final VertexBuffer VertexBuffer = tessellator.getBuffer();
-		VertexBuffer.begin( GL11.GL_QUADS, DefaultVertexFormats.ITEM );
+		VertexBuffer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION );
 
 		for( int i = 0; i < 50; ++i )
 		{
