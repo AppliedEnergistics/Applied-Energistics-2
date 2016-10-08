@@ -52,6 +52,7 @@ import appeng.client.render.effects.LightningArcFX;
 import appeng.client.render.effects.LightningFX;
 import appeng.client.render.effects.VibrantFX;
 import appeng.client.render.model.UVLModelLoader;
+import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.textures.ParticleTextures;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -361,5 +362,6 @@ public class ClientHelper extends ServerHelper
 	public void onTextureStitch( final TextureStitchEvent.Pre event )
 	{
 		ParticleTextures.registerSprite( event );
+		InscriberTESR.registerTexture( event );
 	}
 }

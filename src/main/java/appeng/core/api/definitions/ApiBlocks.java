@@ -53,6 +53,7 @@ import appeng.block.misc.BlockSecurityStation;
 import appeng.block.misc.BlockSkyCompass;
 import appeng.block.misc.BlockTinyTNT;
 import appeng.block.misc.BlockVibrationChamber;
+import appeng.block.misc.InscriberRendering;
 import appeng.block.misc.SecurityStationRendering;
 import appeng.block.misc.SkyCompassRendering;
 import appeng.block.networking.BlockCableBus;
@@ -253,7 +254,10 @@ public final class ApiBlocks implements IBlocks
 				.features( AEFeature.GrindStone )
 				.rendering( new CrankRendering() )
 				.build();
-		this.inscriber = registry.block( "inscriber", BlockInscriber::new ).features( AEFeature.Inscriber ).build();
+		this.inscriber = registry.block( "inscriber", BlockInscriber::new )
+				.features( AEFeature.Inscriber )
+				.rendering( new InscriberRendering() )
+				.build();
 		this.wirelessAccessPoint = registry.block( "wireless_access_point", BlockWireless::new ).features( AEFeature.WirelessAccessTerminal ).build();
 		this.charger = registry.block( "charger", BlockCharger::new )
 				.rendering( new BlockRenderingCustomizer()
