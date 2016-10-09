@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -36,6 +35,7 @@ import java.util.WeakHashMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
@@ -1150,21 +1150,20 @@ public class Platform
 		return -1;
 	}
 
+	/**
+	 * Returns a random element from the given collection.
+	 * @return null if the collection is empty
+	 */
+	@Nullable
 	public static <T> T pickRandom( final Collection<T> outs )
 	{
+		if( outs.isEmpty() )
+		{
+			return null;
+		}
+
 		int index = RANDOM_GENERATOR.nextInt( outs.size() );
-		final Iterator<T> i = outs.iterator();
-		while( i.hasNext() && index > 0 )
-		{
-			index--;
-			i.next();
-		}
-		index--;
-		if( i.hasNext() )
-		{
-			return i.next();
-		}
-		return null; // wtf?
+		return Iterables.get( outs, index, null );
 	}
 
 	public static AEPartLocation rotateAround( final AEPartLocation forward, final AEPartLocation axis )
