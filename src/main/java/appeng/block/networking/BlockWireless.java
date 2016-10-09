@@ -21,9 +21,10 @@ package appeng.block.networking;
 
 import java.util.Collections;
 import java.util.List;
-
 import javax.annotation.Nullable;
 
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,8 +32,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
@@ -46,6 +49,22 @@ import appeng.util.Platform;
 public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 {
 
+	enum State implements IStringSerializable
+	{
+		OFF,
+		ON,
+		HAS_CHANNEL;
+
+		@Override
+		public String getName()
+		{
+			return name().toLowerCase();
+		}
+	}
+
+
+	public static final PropertyEnum<State> STATE = PropertyEnum.create( "state", State.class );
+
 	public BlockWireless()
 	{
 		super( AEGlassMaterial.INSTANCE );
@@ -53,12 +72,41 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 		this.setLightOpacity( 0 );
 		this.setFullSize( false );
 		this.setOpaque( false );
+		this.setDefaultState( getDefaultState().withProperty( STATE, State.OFF ) );
 	}
 
 	@Override
 	public BlockRenderLayer getBlockLayer()
 	{
 		return BlockRenderLayer.CUTOUT;
+	}
+
+	@Override
+	public IBlockState getActualState( IBlockState state, IBlockAccess worldIn, BlockPos pos )
+	{
+		State teState = State.OFF;
+
+		TileWireless te = getTileEntity( worldIn, pos );
+		if( te != null )
+		{
+			if( te.isActive() )
+			{
+				teState = State.HAS_CHANNEL;
+			}
+			else if( te.isPowered() )
+			{
+				teState = State.ON;
+			}
+		}
+
+		return super.getActualState( state, worldIn, pos )
+				.withProperty( STATE, teState );
+	}
+
+	@Override
+	protected IProperty[] getAEStates()
+	{
+		return new IProperty[] { STATE };
 	}
 
 	@Override
@@ -207,4 +255,11 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 			out.add( new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
 		}
 	}
+
+	@Override
+	public boolean isFullCube( IBlockState state )
+	{
+		return false;
+	}
+
 }

@@ -66,6 +66,7 @@ import appeng.block.networking.BlockEnergyCellRendering;
 import appeng.block.networking.BlockWireless;
 import appeng.block.networking.CableBusRendering;
 import appeng.block.networking.ControllerRendering;
+import appeng.block.networking.WirelessRendering;
 import appeng.block.qnb.BlockQuantumLinkChamber;
 import appeng.block.qnb.BlockQuantumRing;
 import appeng.block.spatial.BlockMatrixFrame;
@@ -258,7 +259,10 @@ public final class ApiBlocks implements IBlocks
 				.features( AEFeature.Inscriber )
 				.rendering( new InscriberRendering() )
 				.build();
-		this.wirelessAccessPoint = registry.block( "wireless_access_point", BlockWireless::new ).features( AEFeature.WirelessAccessTerminal ).build();
+		this.wirelessAccessPoint = registry.block( "wireless_access_point", BlockWireless::new )
+				.features( AEFeature.WirelessAccessTerminal )
+				.rendering( new WirelessRendering() )
+				.build();
 		this.charger = registry.block( "charger", BlockCharger::new )
 				.rendering( new BlockRenderingCustomizer()
 				{
