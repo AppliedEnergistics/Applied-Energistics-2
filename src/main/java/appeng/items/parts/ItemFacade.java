@@ -26,9 +26,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockGlass;
 import net.minecraft.block.BlockStainedGlass;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -136,33 +133,14 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		}
 	}
 
-	private static boolean hasSimpleModel( Block b, IBlockState blockState )
+	private static boolean hasSimpleModel( IBlockState blockState )
 	{
-		if( b.getRenderType( blockState ) != EnumBlockRenderType.MODEL )
+		if( blockState.getRenderType() != EnumBlockRenderType.MODEL )
 		{
 			return false;
 		}
 
-		IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelForState( blockState );
-
-		for( EnumFacing facing : EnumFacing.values() )
-		{
-			List<BakedQuad> quads = model.getQuads( blockState, facing, 0 );
-			if( quads.size() != 1 )
-			{
-				return false;
-			}
-
-			BakedQuad q = quads.get( 0 );
-			if( q.getFace() != facing )
-			{
-				return false;
-			}
-
-			// TODO We could also check that the quad is fully encompassing the side
-		}
-
-		return true;
+		return blockState.isFullCube();
 	}
 
 	public ItemStack createFacadeForItem( final ItemStack l, final boolean returnItem )
@@ -197,7 +175,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			return null;
 		}
 
-		final boolean defaultValue = ( b.isFullyOpaque( blockState ) && hasSimpleModel( b, blockState ) && !b.getTickRandomly() && !hasTile && !disableOre ) || enableGlass;
+		final boolean defaultValue = ( b.isFullyOpaque( blockState ) && hasSimpleModel( blockState ) && !b.getTickRandomly() && !hasTile && !disableOre ) || enableGlass;
 		if( FacadeConfig.instance.checkEnabled( b, metadata, defaultValue ) )
 		{
 			if( returnItem )

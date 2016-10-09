@@ -21,7 +21,6 @@ package appeng.client.render;
 
 import java.util.Collections;
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
@@ -31,6 +30,7 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -49,9 +49,12 @@ public class FacadeDispatcherBakedModel implements IBakedModel
 
 	private final IBakedModel baseModel;
 
-	public FacadeDispatcherBakedModel( IBakedModel baseModel )
+	private final VertexFormat format;
+
+	public FacadeDispatcherBakedModel( IBakedModel baseModel, VertexFormat format )
 	{
 		this.baseModel = baseModel;
+		this.format = format;
 	}
 
 	// This is never used. See the item override list below.
@@ -111,7 +114,7 @@ public class FacadeDispatcherBakedModel implements IBakedModel
 				// This is kinda fascinating, how do we get the meta from the itemblock
 				IBlockState state = block.getStateFromMeta( meta );
 
-				return new FacadeWithBlockBakedModel( baseModel, state );
+				return new FacadeWithBlockBakedModel( baseModel, state, format );
 			}
 		};
 	}

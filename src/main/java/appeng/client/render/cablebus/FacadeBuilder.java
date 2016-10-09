@@ -51,7 +51,7 @@ import appeng.core.AppEng;
 /**
  * Handles creating the quads for facades attached to cable busses.
  */
-class FacadeBuilder
+public class FacadeBuilder
 {
 
 	static final ResourceLocation TEXTURE_FACADE = new ResourceLocation( AppEng.MOD_ID, "parts/cable_anchor" );
@@ -95,6 +95,28 @@ class FacadeBuilder
 				AELog.debug( t );
 			}
 		} );
+	}
+
+	public static TextureAtlasSprite getSprite( IBakedModel blockModel, IBlockState state, EnumFacing facing, long rand)
+	{
+		for( BakedQuad bakedQuad : blockModel.getQuads( state, facing, rand ) )
+		{
+			return bakedQuad.getSprite();
+		}
+
+		TextureAtlasSprite firstFound = null;
+		for( BakedQuad bakedQuad : blockModel.getQuads( state, null, rand ) )
+		{
+			if( firstFound == null )
+			{
+				firstFound = bakedQuad.getSprite();
+			}
+			if( bakedQuad.getFace() == facing )
+			{
+				return bakedQuad.getSprite();
+			}
+		}
+		return firstFound;
 	}
 
 	private void addFacade( Map<EnumFacing, FacadeRenderState> facades, EnumFacing side, AEAxisAlignedBB busBounds, boolean thinFacades, boolean renderStilt, long rand, CubeBuilder builder )
@@ -155,10 +177,14 @@ class FacadeBuilder
 		// TODO: Cache this
 		for( EnumFacing facing : facadeState.getOpenFaces() )
 		{
-			List<BakedQuad> quads = blockModel.getQuads( blockState, facing, rand );
-			for( BakedQuad quad : quads )
+			TextureAtlasSprite sprite = getSprite( blockModel, blockState, facing, rand );
+			if( sprite != null )
 			{
-				builder.setTexture( quad.getSprite() );
+				builder.setTexture( facing, sprite );
+			}
+			else
+			{
+				builder.setTexture( facing, facadeTexture );
 			}
 		}
 

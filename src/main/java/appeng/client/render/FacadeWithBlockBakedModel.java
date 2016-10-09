@@ -19,8 +19,9 @@
 package appeng.client.render;
 
 
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.state.IBlockState;
@@ -30,7 +31,11 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.EnumFacing;
+
+import appeng.client.render.cablebus.CubeBuilder;
+import appeng.client.render.cablebus.FacadeBuilder;
 
 
 /**
@@ -46,11 +51,14 @@ public class FacadeWithBlockBakedModel implements IBakedModel
 
 	private final IBakedModel textureModel;
 
-	public FacadeWithBlockBakedModel( IBakedModel baseModel, IBlockState blockState )
+	private final VertexFormat format;
+
+	public FacadeWithBlockBakedModel( IBakedModel baseModel, IBlockState blockState, VertexFormat format )
 	{
 		this.baseModel = baseModel;
 		this.blockState = blockState;
 		this.textureModel = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState( blockState );
+		this.format = format;
 	}
 
 	@Override
@@ -59,12 +67,19 @@ public class FacadeWithBlockBakedModel implements IBakedModel
 		// Only the north side is actually read from the base model for item models
 		if( side == EnumFacing.NORTH )
 		{
-			return textureModel.getQuads( blockState, side, rand );
+			List<BakedQuad> quads = new ArrayList<>( 1 );
+			CubeBuilder builder = new CubeBuilder( format, quads );
+			TextureAtlasSprite sprite = FacadeBuilder.getSprite( textureModel, blockState, side, rand );
+			if ( sprite != null )
+			{
+				builder.setTexture( sprite );
+				builder.setDrawFaces( EnumSet.of( EnumFacing.NORTH ) );
+				builder.addCube( 0, 0, 0, 16, 16, 16 );
+				return quads;
+			}
 		}
-		else
-		{
-			return baseModel.getQuads( state, side, rand );
-		}
+
+		return baseModel.getQuads( state, side, rand );
 	}
 
 	@Override

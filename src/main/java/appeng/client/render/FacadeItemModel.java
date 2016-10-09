@@ -73,7 +73,7 @@ public class FacadeItemModel implements IModel
 
 		IBakedModel bakedBaseModel = baseModel.bake( state, format, bakedTextureGetter );
 
-		return new FacadeDispatcherBakedModel( bakedBaseModel );
+		return new FacadeDispatcherBakedModel( bakedBaseModel, format );
 	}
 
 	@Override
