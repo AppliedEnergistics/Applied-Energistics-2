@@ -1,6 +1,7 @@
 {
   "textures": {
-    "emitter": "appliedenergistics2:parts/level_emitter_off"
+    "emitter": "appliedenergistics2:parts/level_emitter_off",
+    "sides": "appliedenergistics2:parts/monitor_sides"
   },
   "elements": [
     {
@@ -12,6 +13,13 @@
         "east": { "texture": "#emitter", "uv": [6, 7, 10, 9], "rotation": 180 },
         "north": { "texture": "#emitter", "uv": [6, 7, 8, 9] },
         "west": { "texture": "#emitter", "uv": [6, 7, 10, 9] }
+      }
+    },
+    {
+      "from": [7, 7, 4],
+      "to": [9, 9, 5],
+      "faces": {
+        "south": { "texture": "#sides" }
       }
     }
   ]
