@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
-
 import javax.vecmath.Vector4f;
 
 import com.google.common.base.Preconditions;
@@ -432,6 +431,11 @@ public class CubeBuilder
 	public void setColorRGB( int color )
 	{
 		setColor( color | 0xFF000000 );
+	}
+
+	public void setColorRGB( float r, float g, float b )
+	{
+		setColorRGB( (int) ( r * 255 ) << 16 | (int) ( g * 255 ) << 8 | (int) ( b * 255 ) );
 	}
 
 	public void setRenderFullBright( boolean renderFullBright )

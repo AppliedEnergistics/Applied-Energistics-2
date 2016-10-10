@@ -44,6 +44,7 @@ import appeng.items.storage.ItemCreativeStorageCell;
 import appeng.items.storage.ItemSpatialStorageCell;
 import appeng.items.storage.ItemViewCell;
 import appeng.items.tools.ToolBiometricCard;
+import appeng.items.tools.ToolBiometricCardRendering;
 import appeng.items.tools.ToolMemoryCard;
 import appeng.items.tools.ToolNetworkTool;
 import appeng.items.tools.powered.ToolChargedStaff;
@@ -157,7 +158,9 @@ public final class ApiItems implements IItems
 				.dispenserBehavior( DispenserBlockTool::new )
 				.build();
 
-		this.biometricCard = registry.item( "biometric_card", ToolBiometricCard::new ).features( AEFeature.Security ).build();
+		this.biometricCard = registry.item( "biometric_card", ToolBiometricCard::new )
+				.rendering( new ToolBiometricCardRendering() )
+				.features( AEFeature.Security ).build();
 		this.memoryCard = registry.item( "memory_card", ToolMemoryCard::new ).build();
 		this.networkTool = registry.item( "network_tool", ToolNetworkTool::new ).features( AEFeature.NetworkTool ).build();
 
