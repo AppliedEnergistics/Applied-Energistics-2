@@ -57,6 +57,7 @@ public class SpatialSkyRender extends IRenderHandler
 	@Override
 	public void render( final float partialTicks, final WorldClient world, final Minecraft mc )
 	{
+
 		final long now = System.currentTimeMillis();
 		if( now - this.cycle > 2000 )
 		{
@@ -69,8 +70,6 @@ public class SpatialSkyRender extends IRenderHandler
 		float fade = now - this.cycle;
 		fade /= 1000;
 		fade = 0.15f * ( 1.0f - Math.abs( ( fade - 1.0f ) * ( fade - 1.0f ) ) );
-
-		GlStateManager.pushAttrib();
 
 		GlStateManager.disableFog();
 		GlStateManager.disableAlpha();
@@ -131,17 +130,19 @@ public class SpatialSkyRender extends IRenderHandler
 			GlStateManager.enableBlend();
 			GlStateManager.disableTexture2D();
 			GlStateManager.depthMask( false );
-			OpenGlHelper.glBlendFunc( 770, 771, 1, 0 );
+			OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+
 			RenderHelper.disableStandardItemLighting();
 
 			GlStateManager.color( fade, fade, fade, 1.0f );
 			GlStateManager.callList( this.dspList );
-			renderTwinkles();
 		}
 
 		GlStateManager.depthMask( true );
-
-		GlStateManager.popAttrib();
+		GlStateManager.enableBlend();
+		GlStateManager.enableAlpha();
+		GlStateManager.enableTexture2D();
+		GlStateManager.enableFog();
 
 		GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
 	}
