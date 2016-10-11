@@ -77,14 +77,14 @@ class SpatialPylonBakedModel implements IBakedModel
 					builder.setUvRotation( EnumFacing.SOUTH, 1 );
 					builder.setUvRotation( EnumFacing.NORTH, 1 );
 					builder.setUvRotation( EnumFacing.UP, 2 );
-					builder.setUvRotation( EnumFacing.DOWN, 1 );
+					builder.setUvRotation( EnumFacing.DOWN, 2 );
 				}
 				else if( ( flags & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MIN )
 				{
 					builder.setUvRotation( EnumFacing.SOUTH, 2 );
 					builder.setUvRotation( EnumFacing.NORTH, 2 );
 					builder.setUvRotation( EnumFacing.UP, 1 );
-					builder.setUvRotation( EnumFacing.DOWN, 2 );
+					builder.setUvRotation( EnumFacing.DOWN, 1 );
 				}
 				else
 				{
