@@ -36,12 +36,7 @@ import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AELog;
 
 
-/**
- * @author Sebastian
- * @version rv3 - 10.10.2016
- * @since rv3 10.10.2016
- */
-public class BiometricCardBakedModel implements IPerspectiveAwareModel
+class BiometricCardBakedModel implements IPerspectiveAwareModel
 {
 
 	private final VertexFormat format;
@@ -58,12 +53,12 @@ public class BiometricCardBakedModel implements IPerspectiveAwareModel
 
 	private final ImmutableList<BakedQuad> generalQuads;
 
-	public BiometricCardBakedModel( VertexFormat format, IBakedModel baseModel, TextureAtlasSprite texture, ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms )
+	BiometricCardBakedModel( VertexFormat format, IBakedModel baseModel, TextureAtlasSprite texture, ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms )
 	{
 		this( format, baseModel, texture, 0, transforms );
 	}
 
-	public BiometricCardBakedModel( VertexFormat format, IBakedModel baseModel, TextureAtlasSprite texture, int hash, ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms )
+	BiometricCardBakedModel( VertexFormat format, IBakedModel baseModel, TextureAtlasSprite texture, int hash, ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms )
 	{
 		this.format = format;
 		this.baseModel = baseModel;

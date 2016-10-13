@@ -101,11 +101,6 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	public ToolColorApplicator()
 	{
 		super( AEConfig.instance.colorApplicatorBattery );
-		if( Platform.isClient() )
-		{
-			// TODO - color applicator
-			// MinecraftForgeClient.registerItemRenderer( this, new ToolColorApplicatorRender() );
-		}
 	}
 
 	@Override

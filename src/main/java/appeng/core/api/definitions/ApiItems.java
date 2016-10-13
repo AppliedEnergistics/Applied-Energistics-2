@@ -49,6 +49,7 @@ import appeng.items.tools.ToolMemoryCard;
 import appeng.items.tools.ToolNetworkTool;
 import appeng.items.tools.powered.ToolChargedStaff;
 import appeng.items.tools.powered.ToolColorApplicator;
+import appeng.items.tools.powered.ToolColorApplicatorRendering;
 import appeng.items.tools.powered.ToolEntropyManipulator;
 import appeng.items.tools.powered.ToolMatterCannon;
 import appeng.items.tools.powered.ToolPortableCell;
@@ -156,6 +157,7 @@ public final class ApiItems implements IItems
 		this.colorApplicator = powerTools.item( "color_applicator", ToolColorApplicator::new )
 				.addFeatures( AEFeature.ColorApplicator )
 				.dispenserBehavior( DispenserBlockTool::new )
+				.rendering( new ToolColorApplicatorRendering() )
 				.build();
 
 		this.biometricCard = registry.item( "biometric_card", ToolBiometricCard::new )
