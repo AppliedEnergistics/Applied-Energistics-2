@@ -172,35 +172,37 @@ public class StorageHelper
 		}
 	}
 
-	public void swapRegions( final World src /** over world **/
-	, final World dst /** storage cell **/
-	, final int x, final int y, final int z, final int i, final int j, final int k, final int scaleX, final int scaleY, final int scaleZ )
+	public void swapRegions( final World srcWorld,
+			final int srcX, final int srcY, final int srcZ,
+			final World dstWorld,
+			final int dstX, final int dstY, final int dstZ,
+			final int scaleX, final int scaleY, final int scaleZ )
 	{
 		AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().ifPresent( matrixFrameBlock ->
-				this.transverseEdges( i - 1, j - 1, k - 1, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1, new WrapInMatrixFrame( matrixFrameBlock.getDefaultState(), dst ) )
+				this.transverseEdges( dstX - 1, dstY - 1, dstZ - 1, dstX + scaleX + 1, dstY + scaleY + 1, dstZ + scaleZ + 1, new WrapInMatrixFrame( matrixFrameBlock.getDefaultState(), dstWorld ) )
 		);
 
-		final AxisAlignedBB srcBox = new AxisAlignedBB( x, y, z, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1 );
+		final AxisAlignedBB srcBox = new AxisAlignedBB( srcX, srcY, srcZ, srcX + scaleX + 1, srcY + scaleY + 1, srcZ + scaleZ + 1 );
 
-		final AxisAlignedBB dstBox = new AxisAlignedBB( i, j, k, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1 );
+		final AxisAlignedBB dstBox = new AxisAlignedBB( dstX, dstY, dstZ, dstX + scaleX + 1, dstY + scaleY + 1, dstZ + scaleZ + 1 );
 
-		final CachedPlane cDst = new CachedPlane( dst, i, j, k, i + scaleX, j + scaleY, k + scaleZ );
-		final CachedPlane cSrc = new CachedPlane( src, x, y, z, x + scaleX, y + scaleY, z + scaleZ );
+		final CachedPlane cDst = new CachedPlane( dstWorld, dstX, dstY, dstZ, dstX + scaleX, dstY + scaleY, dstZ + scaleZ );
+		final CachedPlane cSrc = new CachedPlane( srcWorld, srcX, srcY, srcZ, srcX + scaleX, srcY + scaleY, srcZ + scaleZ );
 
 		// do nearly all the work... swaps blocks, tiles, and block ticks
 		cSrc.swap( cDst );
 
-		final List<Entity> srcE = src.getEntitiesWithinAABB( Entity.class, srcBox );
-		final List<Entity> dstE = dst.getEntitiesWithinAABB( Entity.class, dstBox );
+		final List<Entity> srcE = srcWorld.getEntitiesWithinAABB( Entity.class, srcBox );
+		final List<Entity> dstE = dstWorld.getEntitiesWithinAABB( Entity.class, dstBox );
 
 		for( final Entity e : dstE )
 		{
-			this.teleportEntity( e, new TelDestination( src, srcBox, e.posX, e.posY, e.posZ, -i + x, -j + y, -k + z ) );
+			this.teleportEntity( e, new TelDestination( srcWorld, srcBox, e.posX, e.posY, e.posZ, -dstX + srcX, -dstY + srcY, -dstZ + srcZ ) );
 		}
 
 		for( final Entity e : srcE )
 		{
-			this.teleportEntity( e, new TelDestination( dst, dstBox, e.posX, e.posY, e.posZ, -x + i, -y + j, -z + k ) );
+			this.teleportEntity( e, new TelDestination( dstWorld, dstBox, e.posX, e.posY, e.posZ, -srcX + dstX, -srcY + dstY, -srcZ + dstZ ) );
 		}
 
 		for( final WorldCoord wc : cDst.getUpdates() )
@@ -213,11 +215,11 @@ public class StorageHelper
 			cSrc.getWorld().notifyBlockOfStateChange( wc.getPos(), Platform.AIR_BLOCK );
 		}
 
-		this.transverseEdges( x - 1, y - 1, z - 1, x + scaleX + 1, y + scaleY + 1, z + scaleZ + 1, new TriggerUpdates( src ) );
-		this.transverseEdges( i - 1, j - 1, k - 1, i + scaleX + 1, j + scaleY + 1, k + scaleZ + 1, new TriggerUpdates( dst ) );
+		this.transverseEdges( srcX - 1, srcY - 1, srcZ - 1, srcX + scaleX + 1, srcY + scaleY + 1, srcZ + scaleZ + 1, new TriggerUpdates( srcWorld ) );
+		this.transverseEdges( dstX - 1, dstY - 1, dstZ - 1, dstX + scaleX + 1, dstY + scaleY + 1, dstZ + scaleZ + 1, new TriggerUpdates( dstWorld ) );
 
-		this.transverseEdges( x, y, z, x + scaleX, y + scaleY, z + scaleZ, new TriggerUpdates( src ) );
-		this.transverseEdges( i, j, k, i + scaleX, j + scaleY, k + scaleZ, new TriggerUpdates( dst ) );
+		this.transverseEdges( srcX, srcY, srcZ, srcX + scaleX, srcY + scaleY, srcZ + scaleZ, new TriggerUpdates( srcWorld ) );
+		this.transverseEdges( dstX, dstY, dstZ, dstX + scaleX, dstY + scaleY, dstZ + scaleZ, new TriggerUpdates( dstWorld ) );
 
 		/*
 		 * IChunkProvider cp = destination.getChunkProvider(); if ( cp instanceof ChunkProviderServer ) {
