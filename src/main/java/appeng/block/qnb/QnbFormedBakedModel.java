@@ -92,7 +92,7 @@ class QnbFormedBakedModel implements IBakedModel
 
 		if( state.getBlock() == linkBlock )
 		{
-			Set<EnumFacing> sides = formedState.getConnections();
+			Set<EnumFacing> sides = formedState.getAdjacentQuantumBridges();
 
 			this.renderCableAt( builder, 0.11f * 16, glassCableTexture, 0.141f * 16, sides );
 
@@ -105,7 +105,7 @@ class QnbFormedBakedModel implements IBakedModel
 		{
 			if( formedState.isCorner() )
 			{
-				this.renderCableAt( builder, 0.188f * 16, coveredCableTexture, 0.05f * 16, formedState.getConnections() );
+				this.renderCableAt( builder, 0.188f * 16, coveredCableTexture, 0.05f * 16, formedState.getAdjacentQuantumBridges() );
 
 				builder.setTexture( ringTexture );
 				builder.addCube( DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX );

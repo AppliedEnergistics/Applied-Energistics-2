@@ -76,7 +76,7 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 		TileQuantumBridge bridge = getTileEntity( world, pos );
 		if( bridge != null )
 		{
-			QnbFormedState formedState = new QnbFormedState( bridge.getConnections(), bridge.isCorner(), bridge.isPowered() );
+			QnbFormedState formedState = new QnbFormedState( bridge.getAdjacentQuantumBridges(), bridge.isCorner(), bridge.isPowered() );
 			extState = extState.withProperty( FORMED_STATE, formedState );
 		}
 
