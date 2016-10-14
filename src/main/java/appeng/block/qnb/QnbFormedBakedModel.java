@@ -116,6 +116,7 @@ class QnbFormedBakedModel implements IBakedModel
 					builder.setRenderFullBright( true );
 					for( EnumFacing facing : EnumFacing.values() )
 					{
+						// Offset the face by a slight amount so that it is drawn over the already drawn ring texture (avoids z-fighting)
 						float xOffset = Math.abs( facing.getFrontOffsetX() * 0.01f );
 						float yOffset = Math.abs( facing.getFrontOffsetY() * 0.01f );
 						float zOffset = Math.abs( facing.getFrontOffsetZ() * 0.01f );
@@ -144,6 +145,7 @@ class QnbFormedBakedModel implements IBakedModel
 					builder.setRenderFullBright( true );
 					for( EnumFacing facing : EnumFacing.values() )
 					{
+						// Offset the face by a slight amount so that it is drawn over the already drawn ring texture (avoids z-fighting)
 						float xOffset = Math.abs( facing.getFrontOffsetX() * 0.01f );
 						float yOffset = Math.abs( facing.getFrontOffsetY() * 0.01f );
 						float zOffset = Math.abs( facing.getFrontOffsetZ() * 0.01f );
