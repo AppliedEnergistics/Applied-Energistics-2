@@ -21,11 +21,18 @@ package appeng.block.qnb;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.ICustomCollision;
@@ -33,6 +40,10 @@ import appeng.tile.qnb.TileQuantumBridge;
 
 public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICustomCollision
 {
+
+	public static final PropertyBool FORMED = PropertyBool.create( "formed" );
+
+	public static final QnbFormedStateProperty FORMED_STATE = new QnbFormedStateProperty();
 
 	public BlockQuantumBase( final Material mat )
 	{
@@ -42,6 +53,45 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 		this.boundingBox = new AxisAlignedBB( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );
 		this.setLightOpacity( 0 );
 		this.setFullSize( this.setOpaque( false ) );
+		this.setDefaultState( getDefaultState().withProperty( FORMED, false ) );
+	}
+
+	@Override
+	protected IProperty[] getAEStates()
+	{
+		return new IProperty[] { FORMED };
+	}
+
+	@Override
+	protected BlockStateContainer createBlockState()
+	{
+		return new ExtendedBlockState( this, getAEStates(), new IUnlistedProperty[] { FORMED_STATE } );
+	}
+
+	@Override
+	public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
+	{
+		IExtendedBlockState extState = (IExtendedBlockState) state;
+
+		TileQuantumBridge bridge = getTileEntity( world, pos );
+		if( bridge != null )
+		{
+			QnbFormedState formedState = new QnbFormedState( bridge.getConnections(), bridge.isCorner(), bridge.isPowered() );
+			extState = extState.withProperty( FORMED_STATE, formedState );
+		}
+
+		return extState;
+	}
+
+	@Override
+	public IBlockState getActualState( IBlockState state, IBlockAccess worldIn, BlockPos pos )
+	{
+		TileQuantumBridge bridge = getTileEntity( worldIn, pos );
+		if( bridge != null )
+		{
+			state = state.withProperty( FORMED, bridge.isFormed() );
+		}
+		return state;
 	}
 
 	@Override
@@ -72,4 +122,9 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 		super.breakBlock( w, pos, state );
 	}
 
+	@Override
+	public boolean isFullCube( IBlockState state )
+	{
+		return false;
+	}
 }

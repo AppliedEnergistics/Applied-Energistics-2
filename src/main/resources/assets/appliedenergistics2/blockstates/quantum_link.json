@@ -1,5 +1,6 @@
 {
   "variants": {
-    "normal": { "model": "appliedenergistics2:qnb/link" }
+    "formed=false": { "model": "appliedenergistics2:qnb/link" },
+    "formed=true": { "model": "appliedenergistics2:qnb/qnb_formed" }
   }
 }

@@ -39,9 +39,9 @@ public class MatterCannonFX extends ParticleBreaking
 	{
 		super( par1World, par2, par4, par6, par8Item );
 		this.particleGravity = 0;
-		this.particleBlue = 255;
-		this.particleGreen = 255;
-		this.particleRed = 255;
+		this.particleBlue = 1;
+		this.particleGreen = 1;
+		this.particleRed = 1;
 		this.particleAlpha = 1.4f;
 		this.particleScale = 1.1f;
 		this.motionX = 0.0f;

@@ -47,9 +47,9 @@ public class EnergyFx extends ParticleBreaking
 	{
 		super( par1World, par2, par4, par6, par8Item );
 		this.particleGravity = 0;
-		this.particleBlue = 255;
-		this.particleGreen = 255;
-		this.particleRed = 255;
+		this.particleBlue = 1;
+		this.particleGreen = 1;
+		this.particleRed = 1;
 		this.particleAlpha = 1.4f;
 		this.particleScale = 3.5f;
 		this.particleTextureIndex = ParticleTextures.BlockEnergyParticle;
@@ -66,7 +66,7 @@ public class EnergyFx extends ParticleBreaking
 	}
 
 	@Override
-	public void renderParticle( final VertexBuffer par1Tessellator, final Entity p_180434_2_, final float par2, final float par3, final float par4, final float par5, final float par6, final float par7 )
+	public void renderParticle( final VertexBuffer par1Tessellator, final Entity p_180434_2_, final float partialTicks, final float par3, final float par4, final float par5, final float par6, final float par7 )
 	{
 		final float f6 = this.particleTextureIndex.getMinU();
 		final float f7 = this.particleTextureIndex.getMaxU();
@@ -74,9 +74,9 @@ public class EnergyFx extends ParticleBreaking
 		final float f9 = this.particleTextureIndex.getMaxV();
 		final float f10 = 0.1F * this.particleScale;
 
-		final float f11 = (float) ( this.prevPosX + ( this.posX - this.prevPosX ) * par2 - interpPosX );
-		final float f12 = (float) ( this.prevPosY + ( this.posY - this.prevPosY ) * par2 - interpPosY );
-		final float f13 = (float) ( this.prevPosZ + ( this.posZ - this.prevPosZ ) * par2 - interpPosZ );
+		final float f11 = (float) ( this.prevPosX + ( this.posX - this.prevPosX ) * partialTicks - interpPosX );
+		final float f12 = (float) ( this.prevPosY + ( this.posY - this.prevPosY ) * partialTicks - interpPosY );
+		final float f13 = (float) ( this.prevPosZ + ( this.posZ - this.prevPosZ ) * partialTicks - interpPosZ );
 
 		final int blkX = MathHelper.floor_double( this.posX );
 		final int blkY = MathHelper.floor_double( this.posY );
@@ -84,7 +84,7 @@ public class EnergyFx extends ParticleBreaking
 
 		if( blkX == this.startBlkX && blkY == this.startBlkY && blkZ == this.startBlkZ )
 		{
-			int i = this.getBrightnessForRender(par2);
+			int i = this.getBrightnessForRender(partialTicks);
 			int j = i >> 16 & 65535;
 			int k = i & 65535;
 

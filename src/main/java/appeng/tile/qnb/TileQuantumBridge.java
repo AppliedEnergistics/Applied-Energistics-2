@@ -234,12 +234,9 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 			if( this.isCorner() || this.isCenter() )
 			{
 				final EnumSet<EnumFacing> sides = EnumSet.noneOf( EnumFacing.class );
-				for( final AEPartLocation dir : this.getConnections() )
+				for( final EnumFacing dir : this.getConnections() )
 				{
-					if( dir != AEPartLocation.INTERNAL )
-					{
-						sides.add( dir.getFacing() );
-					}
+					sides.add( dir );
 				}
 
 				this.getProxy().setValidSides( sides );
@@ -256,13 +253,13 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		return ( this.constructed & this.getCorner() ) == this.getCorner() && this.constructed != -1;
 	}
 
-	public EnumSet<AEPartLocation> getConnections()
+	public EnumSet<EnumFacing> getConnections()
 	{
-		final EnumSet<AEPartLocation> set = EnumSet.noneOf( AEPartLocation.class );
+		final EnumSet<EnumFacing> set = EnumSet.noneOf( EnumFacing.class );
 
-		for( final AEPartLocation d : AEPartLocation.values() )
+		for( final EnumFacing d : EnumFacing.values() )
 		{
-			final TileEntity te = this.worldObj.getTileEntity( d == AEPartLocation.INTERNAL ? this.pos : this.pos.offset( d.getFacing() ) );
+			final TileEntity te = this.worldObj.getTileEntity( this.pos.offset( d ) );
 			if( te instanceof TileQuantumBridge )
 			{
 				set.add( d );

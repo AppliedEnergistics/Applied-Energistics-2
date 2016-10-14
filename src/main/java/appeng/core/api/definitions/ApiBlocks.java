@@ -69,6 +69,7 @@ import appeng.block.networking.ControllerRendering;
 import appeng.block.networking.WirelessRendering;
 import appeng.block.qnb.BlockQuantumLinkChamber;
 import appeng.block.qnb.BlockQuantumRing;
+import appeng.block.qnb.QuantumBridgeRendering;
 import appeng.block.spatial.BlockMatrixFrame;
 import appeng.block.spatial.BlockSpatialIOPort;
 import appeng.block.spatial.BlockSpatialPylon;
@@ -284,8 +285,14 @@ public final class ApiBlocks implements IBlocks
 				.features( AEFeature.Security )
 				.rendering( new SecurityStationRendering() )
 				.build();
-		this.quantumRing = registry.block( "quantum_ring", BlockQuantumRing::new ).features( AEFeature.QuantumNetworkBridge ).build();
-		this.quantumLink = registry.block( "quantum_link", BlockQuantumLinkChamber::new ).features( AEFeature.QuantumNetworkBridge ).build();
+		this.quantumRing = registry.block( "quantum_ring", BlockQuantumRing::new )
+				.features( AEFeature.QuantumNetworkBridge )
+				.rendering( new QuantumBridgeRendering() )
+				.build();
+		this.quantumLink = registry.block( "quantum_link", BlockQuantumLinkChamber::new )
+				.features( AEFeature.QuantumNetworkBridge )
+				.rendering( new QuantumBridgeRendering() )
+				.build();
 		this.spatialPylon = registry.block( "spatial_pylon", BlockSpatialPylon::new )
 				.features( AEFeature.SpatialIO )
 				.useCustomItemModel()
