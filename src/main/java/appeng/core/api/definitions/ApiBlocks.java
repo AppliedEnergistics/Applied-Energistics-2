@@ -46,7 +46,6 @@ import appeng.block.misc.BlockCondenser;
 import appeng.block.misc.BlockInscriber;
 import appeng.block.misc.BlockInterface;
 import appeng.block.misc.BlockLightDetector;
-import appeng.block.misc.BlockPaint;
 import appeng.block.misc.BlockQuartzFixture;
 import appeng.block.misc.BlockQuartzGrowthAccelerator;
 import appeng.block.misc.BlockSecurityStation;
@@ -67,6 +66,8 @@ import appeng.block.networking.BlockWireless;
 import appeng.block.networking.CableBusRendering;
 import appeng.block.networking.ControllerRendering;
 import appeng.block.networking.WirelessRendering;
+import appeng.block.paint.BlockPaint;
+import appeng.block.paint.PaintRendering;
 import appeng.block.qnb.BlockQuantumLinkChamber;
 import appeng.block.qnb.BlockQuantumRing;
 import appeng.block.qnb.QuantumBridgeRendering;
@@ -373,7 +374,10 @@ public final class ApiBlocks implements IBlocks
 		this.lightDetector = registry.block( "light_detector", BlockLightDetector::new ).features( AEFeature.LightDetector )
 				.useCustomItemModel()
 				.build();
-		this.paint = registry.block( "paint", BlockPaint::new ).features( AEFeature.PaintBalls ).build();
+		this.paint = registry.block( "paint", BlockPaint::new )
+				.features( AEFeature.PaintBalls )
+				.rendering( new PaintRendering() )
+				.build();
 
 		this.skyStoneStairs = makeStairs( "sky_stone_stairs", registry, this.skyStoneBlock() );
 		this.smoothSkyStoneStairs = makeStairs( "smooth_sky_stone_stairs", registry, this.smoothSkyStoneBlock() );

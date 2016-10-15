@@ -103,6 +103,30 @@ public class CubeBuilder
 		}
 	}
 
+	public void addQuad( EnumFacing face, float x1, float y1, float z1, float x2, float y2, float z2 )
+	{
+		// If brightness is forced to specific values, extend the vertex format to contain the multi-texturing lightmap
+		// offset
+		VertexFormat savedFormat = null;
+		if( renderFullBright )
+		{
+			savedFormat = format;
+			format = new VertexFormat( savedFormat );
+			if( !format.getElements().contains( DefaultVertexFormats.TEX_2S ) )
+			{
+				format.addElement( DefaultVertexFormats.TEX_2S );
+			}
+		}
+
+		putFace( face, x1, y1, z1, x2, y2, z2 );
+
+		// Restore old format
+		if( savedFormat != null )
+		{
+			format = savedFormat;
+		}
+	}
+
 	private static final class UvVector
 	{
 		float u1;

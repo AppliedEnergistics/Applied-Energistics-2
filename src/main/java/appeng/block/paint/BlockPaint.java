@@ -16,15 +16,19 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.block.misc;
+package appeng.block.paint;
 
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.MaterialLiquid;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -34,15 +38,21 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.block.AEBaseTileBlock;
+import appeng.helpers.Splotch;
 import appeng.tile.misc.TilePaint;
 import appeng.util.Platform;
 
 public class BlockPaint extends AEBaseTileBlock
 {
+
+	static final PaintSplotchesProperty SPLOTCHES = new PaintSplotchesProperty();
 
 	public BlockPaint()
 	{
@@ -52,6 +62,28 @@ public class BlockPaint extends AEBaseTileBlock
 		this.setLightOpacity( 0 );
 		this.setFullSize( false );
 		this.setOpaque( false );
+	}
+
+	@Override
+	protected BlockStateContainer createBlockState()
+	{
+		return new ExtendedBlockState( this, new IProperty[0], new IUnlistedProperty[] { SPLOTCHES } );
+	}
+
+	@Override
+	public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
+	{
+		IExtendedBlockState extState = (IExtendedBlockState) state;
+
+		TilePaint te = getTileEntity( world, pos );
+
+		Collection<Splotch> splotches = Collections.emptyList();
+		if( te != null )
+		{
+			splotches = te.getDots();
+		}
+
+		return extState.withProperty( SPLOTCHES, new PaintSplotches( splotches ) );
 	}
 
 	@Override

@@ -62,7 +62,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
-import appeng.block.misc.BlockPaint;
+import appeng.block.paint.BlockPaint;
 import appeng.block.networking.BlockCableBus;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;

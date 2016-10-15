@@ -21,10 +21,9 @@ package appeng.tile.misc;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
-import com.google.common.collect.ImmutableList;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -270,7 +269,7 @@ public class TilePaint extends AEBaseTile
 	{
 		if( this.dots == null )
 		{
-			return ImmutableList.of();
+			return Collections.emptyList();
 		}
 
 		return this.dots;
