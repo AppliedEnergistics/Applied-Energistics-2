@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import mezz.jei.api.BlankModPlugin;
 import mezz.jei.api.IJeiRuntime;
 import mezz.jei.api.IModRegistry;
+import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 
 import appeng.api.AEApi;
 import appeng.api.config.CondenserOutput;
@@ -53,8 +54,8 @@ public class JEIPlugin extends BlankModPlugin
 		registerDescriptions( definitions, registry );
 
 		// Allow recipe transfer from JEI to crafting and pattern terminal
-		registry.getRecipeTransferRegistry().addRecipeTransferHandler( new RecipeTransferHandler<>( ContainerCraftingTerm.class ) );
-		registry.getRecipeTransferRegistry().addRecipeTransferHandler( new RecipeTransferHandler<>( ContainerPatternTerm.class ) );
+		registry.getRecipeTransferRegistry().addRecipeTransferHandler( new RecipeTransferHandler<>( ContainerCraftingTerm.class ), VanillaRecipeCategoryUid.CRAFTING );
+		registry.getRecipeTransferRegistry().addRecipeTransferHandler( new RecipeTransferHandler<>( ContainerPatternTerm.class ), VanillaRecipeCategoryUid.CRAFTING );
 	}
 
 	private void registerDescriptions( IDefinitions definitions, IModRegistry registry )
