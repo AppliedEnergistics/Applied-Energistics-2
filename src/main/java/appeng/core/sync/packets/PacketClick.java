@@ -57,7 +57,15 @@ public class PacketClick extends AppEngPacket
 		this.x = stream.readInt();
 		this.y = stream.readInt();
 		this.z = stream.readInt();
-		this.side = EnumFacing.values()[ stream.readByte() ];
+		byte side = stream.readByte();
+		if( side != -1 )
+		{
+			this.side = EnumFacing.values()[stream.readByte()];
+		}
+		else
+		{
+			this.side = null;
+		}
 		this.hitX = stream.readFloat();
 		this.hitY = stream.readFloat();
 		this.hitZ = stream.readFloat();
@@ -74,7 +82,14 @@ public class PacketClick extends AppEngPacket
 		data.writeInt( this.x = pos.getX() );
 		data.writeInt( this.y = pos.getY() );
 		data.writeInt( this.z = pos.getZ() );
-		data.writeByte( side.ordinal() );
+		if( side == null )
+		{
+			data.writeByte( -1 );
+		}
+		else
+		{
+			data.writeByte( side.ordinal() );
+		}
 		data.writeFloat( this.hitX = hitX );
 		data.writeFloat( this.hitY = hitY );
 		data.writeFloat( this.hitZ = hitZ );
