@@ -390,12 +390,6 @@ class CableBuilder
 		cubeBuilder.setTexture( evenChannel );
 		cubeBuilder.setColorRGB( cableColor.whiteVariant );
 		addCoveredCableSizedCube( facing, cubeBuilder );
-
-		/*
-		 * TODO: this.setSmartConnectionRotations( of, renderer );
-		 * renderer.uvRotateBottom = renderer.uvRotateEast = renderer.uvRotateNorth = renderer.uvRotateSouth =
-		 * renderer.uvRotateTop = renderer.uvRotateWest = 0;
-		 */
 	}
 
 	public void addStraightSmartConnection( EnumFacing facing, AEColor cableColor, int channels, List<BakedQuad> quadsOut )
@@ -564,22 +558,28 @@ class CableBuilder
 		{
 			case DOWN:
 			case UP:
+				cubeBuilder.setUvRotation( EnumFacing.EAST, 3 );
 				cubeBuilder.addCube( 3, 0, 3, 13, 16, 13 );
+				cubeBuilder.setUvRotation( EnumFacing.EAST, 0 );
 				break;
 			case EAST:
 			case WEST:
-				/*
-				 * renderer.uvRotateEast = renderer.uvRotateWest = 1;
-				 * renderer.uvRotateBottom = renderer.uvRotateTop = 1;
-				 */
+				cubeBuilder.setUvRotation( EnumFacing.SOUTH, 3 );
+				cubeBuilder.setUvRotation( EnumFacing.NORTH, 3 );
 				cubeBuilder.addCube( 0, 3, 3, 16, 13, 13 );
+				cubeBuilder.setUvRotation( EnumFacing.SOUTH, 0 );
+				cubeBuilder.setUvRotation( EnumFacing.NORTH, 0 );
 				break;
 			case NORTH:
 			case SOUTH:
-				// TODO renderer.uvRotateNorth = renderer.uvRotateSouth = 1;
+				cubeBuilder.setUvRotation( EnumFacing.EAST, 3 );
+				cubeBuilder.setUvRotation( EnumFacing.WEST, 3 );
 				cubeBuilder.addCube( 3, 3, 0, 13, 13, 16 );
+				cubeBuilder.setUvRotation( EnumFacing.EAST, 0 );
+				cubeBuilder.setUvRotation( EnumFacing.WEST, 0 );
 				break;
 		}
+
 	}
 
 	// Adds a cube to the given cube builder that has the size of a covered cable connection from the core of the cable
@@ -617,20 +617,25 @@ class CableBuilder
 		{
 			case DOWN:
 			case UP:
+				cubeBuilder.setUvRotation( EnumFacing.EAST, 3 );
 				cubeBuilder.addCube( 5, 0, 5, 11, 16, 11 );
+				cubeBuilder.setUvRotation( EnumFacing.EAST, 0 );
 				break;
 			case EAST:
 			case WEST:
-				/*
-				 * renderer.uvRotateEast = renderer.uvRotateWest = 1;
-				 * renderer.uvRotateBottom = renderer.uvRotateTop = 1;
-				 */
+				cubeBuilder.setUvRotation( EnumFacing.SOUTH, 3 );
+				cubeBuilder.setUvRotation( EnumFacing.NORTH, 3 );
 				cubeBuilder.addCube( 0, 5, 5, 16, 11, 11 );
+				cubeBuilder.setUvRotation( EnumFacing.SOUTH, 0 );
+				cubeBuilder.setUvRotation( EnumFacing.NORTH, 0 );
 				break;
 			case NORTH:
 			case SOUTH:
-				// TODO renderer.uvRotateNorth = renderer.uvRotateSouth = 1;
+				cubeBuilder.setUvRotation( EnumFacing.EAST, 3 );
+				cubeBuilder.setUvRotation( EnumFacing.WEST, 3 );
 				cubeBuilder.addCube( 5, 5, 0, 11, 11, 16 );
+				cubeBuilder.setUvRotation( EnumFacing.EAST, 0 );
+				cubeBuilder.setUvRotation( EnumFacing.WEST, 0 );
 				break;
 		}
 	}
