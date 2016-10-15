@@ -34,6 +34,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
@@ -42,7 +43,7 @@ import appeng.tile.misc.TileQuartzGrowthAccelerator;
 import appeng.util.Platform;
 
 
-public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock
+public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOrientableBlock
 {
 
 	private static final PropertyBool POWERED = PropertyBool.create( "powered" );
@@ -152,4 +153,11 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock
 			Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 		}
 	}
+
+	@Override
+	public boolean usesMetadata()
+	{
+		return false;
+	}
+
 }
