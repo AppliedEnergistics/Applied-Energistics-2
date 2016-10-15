@@ -34,6 +34,7 @@ import net.minecraftforge.common.property.Properties;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import appeng.block.AEBaseTileBlock;
 import appeng.block.misc.BlockSkyCompass;
 import appeng.client.render.model.SkyCompassBakedModel;
 import appeng.tile.misc.TileSkyCompass;
@@ -69,10 +70,20 @@ public class SkyCompassTESR extends FastTESR<TileSkyCompass>
 
 		if( state instanceof IExtendedBlockState )
 		{
-			IExtendedBlockState exState = (IExtendedBlockState) state;
+			IExtendedBlockState exState = (IExtendedBlockState) state.getBlock().getExtendedState( state, world, pos );
 
 			IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState( exState.getClean() );
 			exState = exState.withProperty( BlockSkyCompass.ROTATION, getRotation( te ) );
+
+			// Flip forward/up for rendering, the base model is facing up without any rotation
+			EnumFacing forward = exState.getValue( AEBaseTileBlock.FORWARD );
+			EnumFacing up = exState.getValue( AEBaseTileBlock.UP );
+			// This ensures the needle isn't flipped by the model rotator. Since the model is symmetrical, this should not affect the appearance
+			if ( forward == EnumFacing.UP || forward == EnumFacing.DOWN ) {
+				up = EnumFacing.NORTH;
+			}
+			exState = exState.withProperty( AEBaseTileBlock.FORWARD, up )
+					.withProperty( AEBaseTileBlock.UP, forward );
 
 			buffer.setTranslation( x - pos.getX(), y - pos.getY(), z - pos.getZ() );
 
@@ -84,7 +95,7 @@ public class SkyCompassTESR extends FastTESR<TileSkyCompass>
 	{
 		float rotation;
 
-		if( skyCompass.getUp() == EnumFacing.UP || skyCompass.getUp() == EnumFacing.DOWN )
+		if( skyCompass.getForward() == EnumFacing.UP || skyCompass.getForward() == EnumFacing.DOWN )
 		{
 			rotation = SkyCompassBakedModel.getAnimatedRotation( skyCompass.getPos(), false );
 		}
@@ -93,7 +104,7 @@ public class SkyCompassTESR extends FastTESR<TileSkyCompass>
 			rotation = SkyCompassBakedModel.getAnimatedRotation( null, false );
 		}
 
-		if( skyCompass.getUp() == EnumFacing.DOWN )
+		if( skyCompass.getForward() == EnumFacing.DOWN )
 		{
 			rotation = flipidiy( rotation );
 		}

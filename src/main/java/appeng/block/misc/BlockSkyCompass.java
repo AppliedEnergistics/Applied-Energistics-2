@@ -58,7 +58,7 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
-		return new ExtendedBlockState( this, getAEStates(), new IUnlistedProperty[] { ROTATION } );
+		return new ExtendedBlockState( this, getAEStates(), new IUnlistedProperty[] { FORWARD, UP, ROTATION } );
 	}
 
 	@Override

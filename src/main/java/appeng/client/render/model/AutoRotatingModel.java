@@ -21,7 +21,6 @@ package appeng.client.render.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
@@ -80,7 +79,15 @@ public class AutoRotatingModel implements IBakedModel
 			VertexRotator rot = new VertexRotator( f2r, quad.getFace() );
 			rot.setParent( builder );
 			quad.pipe( rot );
-			builder.setQuadOrientation( f2r.rotate( quad.getFace() ) );
+			if( quad.getFace() != null )
+			{
+				builder.setQuadOrientation( f2r.rotate( quad.getFace() ) );
+			}
+			else
+			{
+				builder.setQuadOrientation( null );
+
+			}
 			BakedQuad q = builder.build();
 			rotated.add( q );
 		}
@@ -238,20 +245,56 @@ public class AutoRotatingModel implements IBakedModel
 
 		private float[] transformNormal( float[] fs )
 		{
-			switch( fs.length )
+			if( face == null )
 			{
-				case 3:
-					Vec3i vec = f2r.rotate( face ).getDirectionVec();
-					return new float[] { vec.getX(), vec.getY(), vec.getZ()
-					};
-				case 4:
-					Vector4f veccc = new Vector4f( fs[0], fs[1], fs[2], fs[3] );
-					Vec3i vecc = f2r.rotate( face ).getDirectionVec();
-					return new float[] { vecc.getX(), vecc.getY(), vecc.getZ(), veccc.w
-					};
+				switch( fs.length )
+				{
+					case 3:
+						Vector3f vec = new Vector3f( fs );
+						f2r.getMat().transform( vec );
+						return new float[] {
+								vec.getX(),
+								vec.getY(),
+								vec.getZ()
+						};
+					case 4:
+						Vector4f vec4 = new Vector4f( fs );
+						f2r.getMat().transform( vec4 );
+						return new float[] {
+								vec4.getX(),
+								vec4.getY(),
+								vec4.getZ(),
+								0
+						};
 
-				default:
-					return fs;
+					default:
+						return fs;
+				}
+			}
+			else
+			{
+				switch( fs.length )
+				{
+					case 3:
+						Vec3i vec = f2r.rotate( face ).getDirectionVec();
+						return new float[] {
+								vec.getX(),
+								vec.getY(),
+								vec.getZ()
+						};
+					case 4:
+						Vector4f veccc = new Vector4f( fs[0], fs[1], fs[2], fs[3] );
+						Vec3i vecc = f2r.rotate( face ).getDirectionVec();
+						return new float[] {
+								vecc.getX(),
+								vecc.getY(),
+								vecc.getZ(),
+								veccc.w
+						};
+
+					default:
+						return fs;
+				}
 			}
 		}
 

@@ -40,8 +40,6 @@ public class SkyCompassRendering extends BlockRenderingCustomizer
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{
 		rendering.tesr( new SkyCompassTESR() );
-		// This disables the default smart-rotating model
-		rendering.modelCustomizer( ( loc, model ) -> model );
 		itemRendering.model( ITEM_MODEL );
 		itemRendering.builtInModel( "models/block/builtin/sky_compass", new SkyCompassModel() );
 	}
