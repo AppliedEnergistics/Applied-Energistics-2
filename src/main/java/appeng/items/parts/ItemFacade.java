@@ -41,6 +41,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import appeng.api.AEApi;
@@ -135,7 +136,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 	private static boolean hasSimpleModel( IBlockState blockState )
 	{
-		if( blockState.getRenderType() != EnumBlockRenderType.MODEL )
+		if( blockState.getRenderType() != EnumBlockRenderType.MODEL || blockState instanceof IExtendedBlockState )
 		{
 			return false;
 		}
