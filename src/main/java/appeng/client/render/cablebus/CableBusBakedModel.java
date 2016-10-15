@@ -34,8 +34,10 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 import appeng.api.util.AECableType;
@@ -72,38 +74,47 @@ public class CableBusBakedModel implements IBakedModel
 			return Collections.emptyList();
 		}
 
-		// First, handle the cable at the center of the cable bus
+		BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
+
 		List<BakedQuad> quads = new ArrayList<>();
-		addCableQuads( renderState, quads );
 
-		for( EnumFacing facing : EnumFacing.values() )
+		// The core parts of the cable will only be rendered in the CUTOUT layer. TRANSLUCENT is used only for translucent facades further down below.
+		if ( layer == BlockRenderLayer.CUTOUT )
 		{
-			List<ResourceLocation> models = renderState.getAttachments().get( facing );
-			if( models == null )
-			{
-				continue;
-			}
+			// First, handle the cable at the center of the cable bus
+			addCableQuads( renderState, quads );
 
-			for( ResourceLocation model : models )
+			// Then handle attachments
+			for( EnumFacing facing : EnumFacing.values() )
 			{
-				IBakedModel bakedModel = partModels.get( model );
-
-				if( bakedModel == null )
+				List<ResourceLocation> models = renderState.getAttachments().get( facing );
+				if( models == null )
 				{
-					throw new IllegalStateException( "Trying to use an unregistered part model: " + model );
+					continue;
 				}
 
-				List<BakedQuad> partQuads = bakedModel.getQuads( state, null, rand );
+				for( ResourceLocation model : models )
+				{
+					IBakedModel bakedModel = partModels.get( model );
 
-				// Rotate quads accordingly
-				QuadRotator rotator = new QuadRotator();
-				partQuads = rotator.rotateQuads( partQuads, facing, EnumFacing.UP );
+					if( bakedModel == null )
+					{
+						throw new IllegalStateException( "Trying to use an unregistered part model: " + model );
+					}
 
-				quads.addAll( partQuads );
+					List<BakedQuad> partQuads = bakedModel.getQuads( state, null, rand );
+
+					// Rotate quads accordingly
+					QuadRotator rotator = new QuadRotator();
+					partQuads = rotator.rotateQuads( partQuads, facing, EnumFacing.UP );
+
+					quads.addAll( partQuads );
+				}
 			}
 		}
 
 		facadeBuilder.addFacades(
+				layer,
 				renderState.getFacades(),
 				renderState.getBoundingBoxes(),
 				renderState.getAttachments().keySet(),

@@ -66,9 +66,7 @@ import appeng.block.AEBaseTileBlock;
 import appeng.client.UnlistedProperty;
 import appeng.client.render.cablebus.CableBusBakedModel;
 import appeng.client.render.cablebus.CableBusRenderState;
-import appeng.core.AEConfig;
 import appeng.core.Api;
-import appeng.core.features.AEFeature;
 import appeng.helpers.AEGlassMaterial;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
@@ -224,17 +222,6 @@ public class BlockCableBus extends AEBaseTileBlock
 		}
 
 		return this.cb( w, pos ).canConnectRedstone( EnumSet.of( side ) );
-	}
-
-	@Override
-	public boolean canRenderInLayer( final BlockRenderLayer layer )
-	{
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.AlphaPass ) )
-		{
-			return layer == BlockRenderLayer.CUTOUT || layer == BlockRenderLayer.TRANSLUCENT;
-		}
-
-		return layer == BlockRenderLayer.CUTOUT;
 	}
 
 	@Override
@@ -423,7 +410,7 @@ public class BlockCableBus extends AEBaseTileBlock
 	{
 		if( AEApi.instance().partHelper().getCableRenderMode().transparentFacades )
 		{
-			return layer == BlockRenderLayer.TRANSLUCENT;
+			return layer == BlockRenderLayer.CUTOUT || layer == BlockRenderLayer.TRANSLUCENT;
 		}
 		else
 		{

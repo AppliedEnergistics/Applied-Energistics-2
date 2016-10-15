@@ -38,6 +38,7 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -54,7 +55,7 @@ import appeng.core.AppEng;
 public class FacadeBuilder
 {
 
-	static final ResourceLocation TEXTURE_FACADE = new ResourceLocation( AppEng.MOD_ID, "parts/cable_anchor" );
+	private static final ResourceLocation TEXTURE_FACADE = new ResourceLocation( AppEng.MOD_ID, "parts/cable_anchor" );
 
 	private final BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
 
@@ -74,7 +75,7 @@ public class FacadeBuilder
 		return Collections.singletonList( TEXTURE_FACADE );
 	}
 
-	void addFacades( Map<EnumFacing, FacadeRenderState> facadesState, List<AxisAlignedBB> partBoxes, Set<EnumFacing> sidesWithParts, long rand, List<BakedQuad> quads )
+	void addFacades( BlockRenderLayer layer, Map<EnumFacing, FacadeRenderState> facadesState, List<AxisAlignedBB> partBoxes, Set<EnumFacing> sidesWithParts, long rand, List<BakedQuad> quads )
 	{
 		boolean thinFacades = isUseThinFacades( partBoxes );
 
@@ -88,7 +89,7 @@ public class FacadeBuilder
 
 			try
 			{
-				addFacade( facadesState, side, cutOutBox, thinFacades, renderStilt, rand, builder );
+				addFacade( layer, facadesState, side, cutOutBox, thinFacades, renderStilt, rand, builder );
 			}
 			catch( Throwable t )
 			{
@@ -119,7 +120,7 @@ public class FacadeBuilder
 		return firstFound;
 	}
 
-	private void addFacade( Map<EnumFacing, FacadeRenderState> facades, EnumFacing side, AEAxisAlignedBB busBounds, boolean thinFacades, boolean renderStilt, long rand, CubeBuilder builder )
+	private void addFacade( BlockRenderLayer layer, Map<EnumFacing, FacadeRenderState> facades, EnumFacing side, AEAxisAlignedBB busBounds, boolean thinFacades, boolean renderStilt, long rand, CubeBuilder builder )
 	{
 
 		FacadeRenderState facadeState = facades.get( side );
@@ -128,7 +129,7 @@ public class FacadeBuilder
 		builder.setDrawFaces( EnumSet.allOf( EnumFacing.class ) );
 
 		// We only render the stilt if we don't intersect with any part directly, and if there's no part on our side
-		if( renderStilt && busBounds == null )
+		if( renderStilt && busBounds == null && layer == BlockRenderLayer.CUTOUT )
 		{
 			builder.setTexture( facadeTexture );
 			switch( side )
@@ -154,14 +155,16 @@ public class FacadeBuilder
 			}
 		}
 
+		// Do not add the translucent facade in any other layer than translucent
+		boolean translucent = AEApi.instance().partHelper().getCableRenderMode().transparentFacades;
+		if( translucent && layer != BlockRenderLayer.TRANSLUCENT )
+		{
+			return;
+		}
+
 		final float thickness = thinFacades ? 1 : 2;
 
 		IBakedModel blockModel = blockRendererDispatcher.getModelForState( blockState );
-
-		if( AEApi.instance().partHelper().getCableRenderMode().transparentFacades )
-		{
-			// TODO rbw.setOpacity( 0.3f );
-		}
 
 		int color = 0xffffff;
 		try
@@ -172,7 +175,16 @@ public class FacadeBuilder
 		{
 		}
 
-		builder.setColorRGB( color );
+		if( translucent )
+		{
+			color &= 0xFFFFFF;
+			color |= 0x4C000000;
+			builder.setColor( color );
+		}
+		else
+		{
+			builder.setColorRGB( color );
+		}
 
 		// TODO: Cache this
 		for( EnumFacing facing : facadeState.getOpenFaces() )
