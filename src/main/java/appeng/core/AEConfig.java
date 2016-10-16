@@ -392,15 +392,13 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	@Override
 	public void updateSetting( final IConfigManager manager, final Enum setting, final Enum newValue )
 	{
-		for( final Settings e : this.settings.getSettings() )
-		{
-			if( e == setting )
-			{
-				final String Category = "Client";
-				final Property p = this.get( Category, e.name(), this.settings.getSetting( e ).name(), this.getListComment( newValue ) );
-				p.set( newValue.name() );
-			}
-		}
+		this.settings.getSettings().stream().filter( e -> e == setting ).forEach( e -> {
+			final String Category = "Client";
+			this.setCategoryComment( "Client", "Configure AE2's basic settings such as the power unit, the search mode" +
+                    "and other settings." );
+			final Property p = this.get( Category, e.name(), this.settings.getSetting( e ).name(), this.getListComment( newValue ) );
+			p.set( newValue.name() );
+		});
 
 		if( this.updatable )
 		{
