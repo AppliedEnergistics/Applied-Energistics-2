@@ -75,9 +75,9 @@ public class SmartCableTextures
 		{
 			return textures[5];
 		}
-		else if( channels <= 9 )
+		else if( channels <= 8 )
 		{
-			return textures[channels];
+			return textures[1 + channels];
 		}
 		else
 		{
