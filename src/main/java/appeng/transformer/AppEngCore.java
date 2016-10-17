@@ -18,11 +18,6 @@
 
 package appeng.transformer;
 
-
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
 import com.google.common.eventbus.EventBus;
 
 import net.minecraftforge.fml.common.DummyModContainer;
@@ -31,14 +26,11 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
-import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
-import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.MCVersion;
 
 import appeng.core.AEConfig;
 
 
-@MCVersion( "1.10.2" )
-public final class AppEngCore extends DummyModContainer implements IFMLLoadingPlugin
+public final class AppEngCore extends DummyModContainer
 {
 	private final ModMetadata metadata = new ModMetadata();
 
@@ -61,36 +53,6 @@ public final class AppEngCore extends DummyModContainer implements IFMLLoadingPl
 	{
 	}
 
-	@Override
-	public String[] getASMTransformerClass()
-	{
-		return new String[] { "appeng.transformer.asm.ASMIntegration" };
-	}
-
-	@Override
-	public String getModContainerClass()
-	{
-		return "appeng.transformer.AppEngCore";
-	}
-
-	@Nullable
-	@Override
-	public String getSetupClass()
-	{
-		return null;
-	}
-
-	@Override
-	public void injectData( final Map<String, Object> data )
-	{
-
-	}
-
-	@Override
-	public String getAccessTransformerClass()
-	{
-		return "appeng.transformer.asm.ASMTweaker";
-	}
 
 	@Override
 	public ModMetadata getMetadata()
