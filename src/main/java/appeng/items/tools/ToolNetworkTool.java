@@ -137,7 +137,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 			}
 
 			final Block b = w.getBlockState( pos ).getBlock();
-			if( b != null && !p.isSneaking() )
+			if( !p.isSneaking() )
 			{
 				final TileEntity te = w.getTileEntity( pos );
 				if( !( te instanceof IGridHost ) )

@@ -60,7 +60,7 @@ public class PacketClick extends AppEngPacket
 		byte side = stream.readByte();
 		if( side != -1 )
 		{
-			this.side = EnumFacing.values()[stream.readByte()];
+			this.side = EnumFacing.values()[side];
 		}
 		else
 		{
