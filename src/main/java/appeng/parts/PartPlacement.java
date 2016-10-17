@@ -379,9 +379,9 @@ public class PartPlacement
 			if( mySide != null )
 			{
 				multiPart.maybeBlock().ifPresent( multiPartBlock -> {
-					final SoundType ss = multiPartBlock.getSoundType();
+					final SoundType ss = multiPartBlock.getSoundType(state, world, pos, player);
 
-					world.playSound( player, 0.5 + pos.getX(), 0.5 + pos.getY(), 0.5 + pos.getZ(), ss.getPlaceSound(), SoundCategory.BLOCKS, ( ss.getVolume() + 1.0F ) / 2.0F, ss.getPitch() * 0.8F );
+					world.playSound( null, pos, ss.getPlaceSound(), SoundCategory.BLOCKS, ( ss.getVolume() + 1.0F ) / 2.0F, ss.getPitch() * 0.8F );
 				});
 
 				if( !player.capabilities.isCreativeMode )
