@@ -85,8 +85,10 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	@Override
 	public ItemStack getContainerItem( final ItemStack itemStack )
 	{
-		itemStack.setItemDamage( itemStack.getItemDamage() + 1 );
-		return itemStack;
+		ItemStack copy = itemStack.copy();
+		copy.setItemDamage( itemStack.getItemDamage() + 1 );
+
+		return copy;
 	}
 
 	@Override
