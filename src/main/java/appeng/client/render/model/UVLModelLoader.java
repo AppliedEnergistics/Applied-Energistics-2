@@ -32,7 +32,6 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.annotation.Nullable;
 
 import com.google.common.base.Charsets;
@@ -336,12 +335,7 @@ public enum UVLModelLoader implements ICustomModelLoader
 				Pair<Float, Float> brightness = uvlightmap.get( face );
 				if( brightness != null )
 				{
-					VertexFormat format = new VertexFormat( quad.getFormat() );
-					if( !format.getElements().contains( DefaultVertexFormats.TEX_2S ) )
-					{
-						format.addElement( DefaultVertexFormats.TEX_2S );
-					}
-					UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder( format );
+					UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder( DefaultVertexFormats.BLOCK );
 					VertexLighterFlat trans = new VertexLighterFlat( Minecraft.getMinecraft().getBlockColors() ){
 
 						@Override
@@ -362,6 +356,7 @@ public enum UVLModelLoader implements ICustomModelLoader
 					builder.setQuadTint( quad.getTintIndex() );
 					builder.setQuadOrientation( quad.getFace() );
 					builder.setTexture( quad.getSprite() );
+					builder.setApplyDiffuseLighting( false );
 					return builder.build();
 				}
 				else
