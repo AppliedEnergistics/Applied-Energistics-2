@@ -25,7 +25,6 @@ import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.state.IBlockState;
@@ -126,14 +125,15 @@ public class CableBusBakedModel implements IBakedModel
 	}
 
 	// Determines whether a cable is connected to exactly two sides that are opposite each other
-	private static boolean isStraightLine( Set<EnumFacing> sides )
+	private static boolean isStraightLine( AECableType cableType, EnumMap<EnumFacing, AECableType> sides )
 	{
-		Iterator<EnumFacing> it = sides.iterator();
+		Iterator<EnumFacing> it = sides.keySet().iterator();
 		if( !it.hasNext() )
 		{
 			return false; // No connections
 		}
 		EnumFacing firstSide = it.next();
+		AECableType firstType = sides.get( firstSide );
 		if( !it.hasNext() )
 		{
 			return false; // Only a single connection
@@ -142,7 +142,21 @@ public class CableBusBakedModel implements IBakedModel
 		{
 			return false; // Connected to two sides that are not opposite each other
 		}
-		return !it.hasNext(); // Must not have any other connection points
+		if (it.hasNext()) {
+			return false; // Must not have any other connection points
+		}
+		AECableType secondType = sides.get( firstSide.getOpposite() );
+
+		// Certain cable types have restrictions on when they're rendered as a straight connection
+		switch( cableType )
+		{
+			case GLASS:
+				return firstType == AECableType.GLASS && secondType == AECableType.GLASS;
+			case DENSE:
+				return firstType == AECableType.DENSE && secondType == AECableType.DENSE;
+		}
+
+		return true;
 	}
 
 	private void addCableQuads( CableBusRenderState renderState, List<BakedQuad> quadsOut )
@@ -156,10 +170,10 @@ public class CableBusBakedModel implements IBakedModel
 		AEColor cableColor = renderState.getCableColor();
 		EnumMap<EnumFacing, AECableType> connectionTypes = renderState.getConnectionTypes();
 
-		// If the connection is straight, no busses are attached, and no overed core has been forced (in case of glass
+		// If the connection is straight, no busses are attached, and no covered core has been forced (in case of glass
 		// cables), then render the cable as a simplified straight line.
 		boolean noAttachments = renderState.getAttachments().isEmpty();
-		if( isStraightLine( connectionTypes.keySet() ) && noAttachments )
+		if( isStraightLine( cableType, connectionTypes ) && noAttachments )
 		{
 			EnumFacing facing = connectionTypes.keySet().iterator().next();
 
