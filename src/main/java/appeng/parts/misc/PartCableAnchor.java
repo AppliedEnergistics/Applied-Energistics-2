@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
+import com.google.common.collect.ImmutableList;
+
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.Entity;
@@ -32,6 +34,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -44,10 +47,15 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
+import appeng.core.AppEng;
+import appeng.items.parts.PartModels;
 
 
 public class PartCableAnchor implements IPart
 {
+
+	@PartModels
+	public static final List<ResourceLocation> MODELS = ImmutableList.of( new ResourceLocation( AppEng.MOD_ID, "part/cable_anchor" ) );
 
 	private ItemStack is = null;
 	private IPartHost host = null;
@@ -226,6 +234,12 @@ public class PartCableAnchor implements IPart
 	public boolean canBePlacedOn( final BusSupport what )
 	{
 		return what == BusSupport.CABLE || what == BusSupport.DENSE_CABLE;
+	}
+
+	@Override
+	public List<ResourceLocation> getStaticModels()
+	{
+		return MODELS;
 	}
 
 }
