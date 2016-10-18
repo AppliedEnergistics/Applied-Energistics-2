@@ -32,6 +32,8 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
@@ -69,6 +71,7 @@ import appeng.parts.reporting.PartPatternTerminal;
 import appeng.parts.reporting.PartSemiDarkPanel;
 import appeng.parts.reporting.PartStorageMonitor;
 import appeng.parts.reporting.PartTerminal;
+import appeng.util.Platform;
 
 
 public enum PartType
@@ -84,6 +87,7 @@ public enum PartType
 		}
 
 		@Override
+		@SideOnly( Side.CLIENT )
 		protected List<ModelResourceLocation> createItemModels( String baseName )
 		{
 			return Arrays.stream( AEColor.values() )
@@ -101,6 +105,7 @@ public enum PartType
 		}
 
 		@Override
+		@SideOnly( Side.CLIENT )
 		protected List<ModelResourceLocation> createItemModels( String baseName )
 		{
 			return Arrays.stream( AEColor.values() )
@@ -118,6 +123,7 @@ public enum PartType
 		}
 
 		@Override
+		@SideOnly( Side.CLIENT )
 		protected List<ModelResourceLocation> createItemModels( String baseName )
 		{
 			return Arrays.stream( AEColor.values() )
@@ -135,6 +141,7 @@ public enum PartType
 		}
 
 		@Override
+		@SideOnly( Side.CLIENT )
 		protected List<ModelResourceLocation> createItemModels( String baseName )
 		{
 			return Arrays.stream( AEColor.values() )
@@ -242,7 +249,8 @@ public enum PartType
 	private final Set<IntegrationType> integrations;
 	private final Class<? extends IPart> myPart;
 	private final GuiText extraName;
-	private final List<ModelResourceLocation> itemModels;
+	@SideOnly( Side.CLIENT )
+	private List<ModelResourceLocation> itemModels;
 	private final Set<ResourceLocation> models;
 	private Constructor<? extends IPart> constructor;
 
@@ -258,7 +266,10 @@ public enum PartType
 		this.integrations = Collections.unmodifiableSet( integrations );
 		this.myPart = c;
 		this.extraName = en;
-		this.itemModels = createItemModels( itemModel );
+		if ( Platform.isClient() )
+		{
+			this.itemModels = createItemModels( itemModel );
+		}
 		if( c != null )
 		{
 			this.models = new HashSet<>( PartModelsHelper.createModels( c ) );
@@ -269,11 +280,13 @@ public enum PartType
 		}
 	}
 
+	@SideOnly( Side.CLIENT )
 	protected List<ModelResourceLocation> createItemModels( String baseName )
 	{
 		return ImmutableList.of( modelFromBaseName( baseName ) );
 	}
 
+	@SideOnly( Side.CLIENT )
 	private static ModelResourceLocation modelFromBaseName( String baseName )
 	{
 		return new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, "part/" + baseName ), "inventory" );
@@ -323,6 +336,7 @@ public enum PartType
 		this.constructor = constructor;
 	}
 
+	@SideOnly( Side.CLIENT )
 	public List<ModelResourceLocation> getItemModels()
 	{
 		return itemModels;
