@@ -122,9 +122,4 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 		return this.sides;
 	}
 
-	@Override
-	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
-	{
-		return super.getCapability( capability, facing );
-	}
 }
