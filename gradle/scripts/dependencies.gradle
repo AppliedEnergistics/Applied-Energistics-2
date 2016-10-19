@@ -28,6 +28,11 @@ repositories {
         name = "JEI repo"
         url "http://dvs1.progwml6.com/files/maven"
     }
+
+    maven {
+        name = "Tesla repo"
+        url "http://maven.epoxide.xyz"
+    }
 }
 
 configurations {
@@ -41,6 +46,7 @@ dependencies {
     // compile against provided APIs
     compileOnly "mezz.jei:jei_${minecraft_version}:${jei_version}:api"
     compileOnly "mcp.mobius.waila:Waila:${waila_version}"
+    compileOnly "net.darkhax.tesla:Tesla:${tesla_version}"
 
     // at runtime, use the full JEI jar
     runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"

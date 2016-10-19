@@ -22,9 +22,11 @@ package appeng.tile.powersink;
 import java.util.EnumSet;
 import javax.annotation.Nullable;
 
+import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -41,6 +43,9 @@ import appeng.tile.events.TileEventType;
 
 public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowerStorage, IExternalPowerSink
 {
+	@CapabilityInject(ITeslaConsumer.class)
+	private static Capability<ITeslaConsumer> teslaConsumerCapability;
+
 	// values that determine general function, are set by inheriting classes if
 	// needed. These should generally remain static.
 	private double internalMaxPower = 10000;
@@ -50,10 +55,14 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	private double internalCurrentPower = 0;
 	private EnumSet<EnumFacing> internalPowerSides = EnumSet.allOf( EnumFacing.class );
 	private final IEnergyStorage forgeEnergyAdapter;
+	private Object teslaEnergyAdapter;
 
 	public AERootPoweredTile()
 	{
 		forgeEnergyAdapter = new ForgeEnergyAdapter( this );
+		if ( teslaConsumerCapability != null ) {
+			teslaEnergyAdapter = new TeslaEnergyAdapter( this );
+		}
 	}
 
 	protected EnumSet<EnumFacing> getPowerSides()
@@ -252,6 +261,13 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 				return true;
 			}
 		}
+		else if( capability == teslaConsumerCapability )
+		{
+			if( this.getPowerSides().contains( facing ) )
+			{
+				return true;
+			}
+		}
 
 		return super.hasCapability( capability, facing );
 	}
@@ -265,6 +281,13 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 			if( this.getPowerSides().contains( facing ) )
 			{
 				return (T) forgeEnergyAdapter;
+			}
+		}
+		else if( capability == teslaConsumerCapability )
+		{
+			if( this.getPowerSides().contains( facing ) )
+			{
+				return (T) teslaEnergyAdapter;
 			}
 		}
 
