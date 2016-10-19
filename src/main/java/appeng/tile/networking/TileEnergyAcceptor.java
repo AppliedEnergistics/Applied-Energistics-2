@@ -19,13 +19,10 @@
 package appeng.tile.networking;
 
 
-import javax.annotation.Nullable;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.capabilities.Capability;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.energy.IEnergyGrid;
