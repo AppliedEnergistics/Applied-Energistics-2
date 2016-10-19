@@ -264,9 +264,7 @@ gui.tooltips.appliedenergistics2.TerminalStyle_Small=Terminal Centrada Pequeña
 
 gui.appliedenergistics2.units.appliedenergstics=AE
 gui.appliedenergistics2.units.ic2=Energy Units
-gui.appliedenergistics2.units.mekanism=Joules
-gui.appliedenergistics2.units.rotarycraft=Watts
-gui.appliedenergistics2.units.thermalexpansion=Redstone Flux
+gui.appliedenergistics2.units.rf=Redstone Flux
 
 gui.appliedenergistics2.White=Blanco
 gui.appliedenergistics2.Orange=Naranja

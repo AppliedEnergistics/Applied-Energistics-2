@@ -115,15 +115,10 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 
 		FMLCommonHandler.instance().bus().register( this );
 
-		final double DEFAULT_MEKANISM_EXCHANGE = 0.2;
-
-		PowerUnits.MK.conversionRatio = this.get( "PowerRatios", "Mekanism", DEFAULT_MEKANISM_EXCHANGE ).getDouble( DEFAULT_MEKANISM_EXCHANGE );
 		final double DEFAULT_IC2_EXCHANGE = 2.0;
 		PowerUnits.EU.conversionRatio = this.get( "PowerRatios", "IC2", DEFAULT_IC2_EXCHANGE ).getDouble( DEFAULT_IC2_EXCHANGE );
-		final double DEFAULT_RTC_EXCHANGE = 1.0 / 11256.0;
-		PowerUnits.WA.conversionRatio = this.get( "PowerRatios", "RotaryCraft", DEFAULT_RTC_EXCHANGE ).getDouble( DEFAULT_RTC_EXCHANGE );
 		final double DEFAULT_RF_EXCHANGE = 0.5;
-		PowerUnits.RF.conversionRatio = this.get( "PowerRatios", "ThermalExpansion", DEFAULT_RF_EXCHANGE ).getDouble( DEFAULT_RF_EXCHANGE );
+		PowerUnits.RF.conversionRatio = this.get( "PowerRatios", "Forge Energy", DEFAULT_RF_EXCHANGE ).getDouble( DEFAULT_RF_EXCHANGE );
 
 		final double usageEffective = this.get( "PowerRatios", "UsageMultiplier", 1.0 ).getDouble( 1.0 );
 		PowerMultiplier.CONFIG.multiplier = Math.max( 0.01, usageEffective );

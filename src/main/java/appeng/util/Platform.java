@@ -193,16 +193,6 @@ public class Platform
 		final String[] preFixes = { "k", "M", "G", "T", "P", "T", "P", "E", "Z", "Y" };
 		String unitName = displayUnits.name();
 
-		if( displayUnits == PowerUnits.WA )
-		{
-			unitName = "J";
-		}
-
-		if( displayUnits == PowerUnits.MK )
-		{
-			unitName = "J";
-		}
-
 		String level = "";
 		int offset = 0;
 		while( p > 1000 && offset < preFixes.length )

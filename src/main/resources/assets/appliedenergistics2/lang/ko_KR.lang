@@ -290,9 +290,7 @@ gui.tooltips.appliedenergistics2.ReportInaccessibleItemsNo=No: Only extractable 
 
 gui.appliedenergistics2.units.appliedenergstics=AE
 gui.appliedenergistics2.units.ic2=에너지 단위(EU)
-gui.appliedenergistics2.units.mekanism=줄(J)
-gui.appliedenergistics2.units.rotarycraft=와트(W)
-gui.appliedenergistics2.units.thermalexpansion=레드스톤 유율(RF)
+gui.appliedenergistics2.units.rf=레드스톤 유율(RF)
 
 gui.appliedenergistics2.White=하양
 gui.appliedenergistics2.Orange=주황

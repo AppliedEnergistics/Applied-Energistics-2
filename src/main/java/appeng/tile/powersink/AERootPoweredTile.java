@@ -20,9 +20,13 @@ package appeng.tile.powersink;
 
 
 import java.util.EnumSet;
+import javax.annotation.Nullable;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -35,9 +39,8 @@ import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 
 
-public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowerStorage
+public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowerStorage, IExternalPowerSink
 {
-
 	// values that determine general function, are set by inheriting classes if
 	// needed. These should generally remain static.
 	private double internalMaxPower = 10000;
@@ -46,6 +49,12 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	// the current power buffer.
 	private double internalCurrentPower = 0;
 	private EnumSet<EnumFacing> internalPowerSides = EnumSet.allOf( EnumFacing.class );
+	private final IEnergyStorage forgeEnergyAdapter;
+
+	public AERootPoweredTile()
+	{
+		forgeEnergyAdapter = new ForgeEnergyAdapter( this );
+	}
 
 	protected EnumSet<EnumFacing> getPowerSides()
 	{
@@ -70,7 +79,8 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 		this.setInternalCurrentPower( data.getDouble( "internalCurrentPower" ) );
 	}
 
-	protected final double getExternalPowerDemand( final PowerUnits externalUnit, final double maxPowerRequired )
+	@Override
+	public final double getExternalPowerDemand( final PowerUnits externalUnit, final double maxPowerRequired )
 	{
 		return PowerUnits.AE.convertTo( externalUnit, Math.max( 0.0, this.getFunnelPowerDemand( externalUnit.convertTo( PowerUnits.AE, maxPowerRequired ) ) ) );
 	}
@@ -80,6 +90,7 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 		return this.getInternalMaxPower() - this.getInternalCurrentPower();
 	}
 
+	@Override
 	public final double injectExternalPower( final PowerUnits input, final double amt )
 	{
 		return PowerUnits.AE.convertTo( input, this.funnelPowerIntoStorage( input.convertTo( PowerUnits.AE, amt ), Actionable.MODULATE ) );
@@ -230,4 +241,34 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	{
 		this.internalPowerFlow = internalPowerFlow;
 	}
+
+	@Override
+	public boolean hasCapability( Capability<?> capability, EnumFacing facing )
+	{
+		if( capability == CapabilityEnergy.ENERGY )
+		{
+			if( this.getPowerSides().contains( facing ) )
+			{
+				return true;
+			}
+		}
+
+		return super.hasCapability( capability, facing );
+	}
+
+	@SuppressWarnings( "unchecked" )
+	@Override
+	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
+	{
+		if( capability == CapabilityEnergy.ENERGY )
+		{
+			if( this.getPowerSides().contains( facing ) )
+			{
+				return (T) forgeEnergyAdapter;
+			}
+		}
+
+		return super.getCapability( capability, facing );
+	}
+
 }

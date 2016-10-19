@@ -192,9 +192,7 @@ gui.tooltips.appliedenergistics2.TerminalStyle=Stil de Terminalgui.tooltips.appl
 
 gui.appliedenergistics2.units.appliedenergstics=AE
 gui.appliedenergistics2.units.ic2=Unități de Energie
-gui.appliedenergistics2.units.universalelectricity=Kilo Jouli
-gui.appliedenergistics2.units.rotarycraft=Wați
-gui.appliedenergistics2.units.thermalexpansion=Flux de Piatră-Roşie
+gui.appliedenergistics2.units.rf=Flux de Piatră-Roşie
 
 gui.appliedenergistics2.White=Alb
 gui.appliedenergistics2.Orange=Portocaliu

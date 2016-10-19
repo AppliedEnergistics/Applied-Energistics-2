@@ -280,9 +280,7 @@ gui.tooltips.appliedenergistics2.ReportInaccessibleItemsNo=Ne: Vidět budou pouz
 
 gui.appliedenergistics2.units.appliedenergstics=AE
 gui.appliedenergistics2.units.ic2=Jednotky energie
-gui.appliedenergistics2.units.mekanism=Jouly
-gui.appliedenergistics2.units.rotarycraft=Watty
-gui.appliedenergistics2.units.thermalexpansion=Ruditový Flux
+gui.appliedenergistics2.units.rf=Ruditový Flux
 
 gui.appliedenergistics2.White=Bílá
 gui.appliedenergistics2.Orange=Oranžová

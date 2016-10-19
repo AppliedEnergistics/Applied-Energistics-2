@@ -19,10 +19,13 @@
 package appeng.tile.networking;
 
 
+import javax.annotation.Nullable;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -117,5 +120,11 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 	public int[] getAccessibleSlotsBySide( final EnumFacing side )
 	{
 		return this.sides;
+	}
+
+	@Override
+	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
+	{
+		return super.getCapability( capability, facing );
 	}
 }
