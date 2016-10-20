@@ -51,7 +51,7 @@ Downloads can be found on [CurseForge](http://www.curse.com/mc-mods/minecraft/22
 
 [![Build status](https://ci.appveyor.com/api/projects/status/w0sg7upakn0vj5gc?svg=true)](https://ci.appveyor.com/project/shartte/applied-energistics-2/history)
 
-[Download Latest Nightly Build](https://ci.appveyor.com/api/projects/shartte/applied-energistics-2/artifacts/ae2-rv4-nightly.zip?branch=1.10)
+[Download Latest Nightly Build](https://ci.appveyor.com/api/projects/shartte/applied-energistics-2/artifacts/ae2-rv4-nightly.zip?branch=master)
 
 Nightly builds for the Minecraft 1.10.2 branch of AE2 (rv4-alpha) are available from [AppVeyor](https://ci.appveyor.com/api/projects/shartte/applied-energistics-2/history). These builds are only for testing purposes and might lead to loss of data, and will contain significant bugs. Please see below on how you can report bugs you find during testing.
 
