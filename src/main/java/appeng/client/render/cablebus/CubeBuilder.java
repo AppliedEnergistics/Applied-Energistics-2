@@ -84,11 +84,7 @@ public class CubeBuilder
 		if( renderFullBright )
 		{
 			savedFormat = format;
-			format = new VertexFormat( savedFormat );
-			if( !format.getElements().contains( DefaultVertexFormats.TEX_2S ) )
-			{
-				format.addElement( DefaultVertexFormats.TEX_2S );
-			}
+			format = DefaultVertexFormats.BLOCK;
 		}
 
 		for( EnumFacing face : drawFaces )
