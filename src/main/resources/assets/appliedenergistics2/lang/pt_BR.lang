@@ -62,14 +62,14 @@ tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=Escadas de Tijolos Pe
 tile.appliedenergistics2.SkyStoneStairBlock.name=Escadas de Pedra do Céu 
 
 // Slabs
-tile.appliedenergistics2.ChiseledQuartzSlabBlock.name=Laje de Quartzo Certus Talhadas
-tile.appliedenergistics2.FluixSlabBlock.name=Laje de Fluix 
-tile.appliedenergistics2.QuartzPillarSlabBlock.name=Laje de Pilar de Quartzo Certus 
-tile.appliedenergistics2.QuartzSlabBlock.name=Laje de Quartzo Certus 
-tile.appliedenergistics2.SkyStoneBlockSlabBlock.name=Laje de Bloco de Pedra do Céu 
-tile.appliedenergistics2.SkyStoneBrickSlabBlock.name=Laje de Tijolos de Pedra do Céu 
-tile.appliedenergistics2.SkyStoneSmallBrickSlabBlock.name=Laje de Tijolos Pequenos de Pedra do Céu 
-tile.appliedenergistics2.SkyStoneSlabBlock.name=Laje de Pedra do Céu 
+tile.appliedenergistics2.chiseled_quartz_slab.name=Laje de Quartzo Certus Talhadas
+tile.appliedenergistics2.fluix_slab.name=Laje de Fluix
+tile.appliedenergistics2.quartz_pillar_slab.name=Laje de Pilar de Quartzo Certus
+tile.appliedenergistics2.quartz_slab.name=Laje de Quartzo Certus
+tile.appliedenergistics2.smooth_sky_stone_slab.name=Laje de Bloco de Pedra do Céu
+tile.appliedenergistics2.sky_stone_brick_slab.name=Laje de Tijolos de Pedra do Céu
+tile.appliedenergistics2.sky_stone_small_brick_slab.name=Laje de Tijolos Pequenos de Pedra do Céu
+tile.appliedenergistics2.sky_stone_slab.name=Laje de Pedra do Céu
 
 // Chat Messages
 chat.appliedenergistics2.ChestCannotReadStorageCell=Baú ME não consegue ler a célula de armazenamento.

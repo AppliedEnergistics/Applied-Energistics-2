@@ -85,16 +85,21 @@ public interface IBlocks
 
 	IBlockDefinition quartzPillarStairs();
 
-	/*
-	 * IBlockDefinition skyStoneSlab();
-	 * IBlockDefinition skyStoneBlockSlab();
-	 * IBlockDefinition skyStoneBrickSlab();
-	 * IBlockDefinition skyStoneSmallBrickSlab();
-	 * IBlockDefinition fluixSlab();
-	 * IBlockDefinition quartzSlab();
-	 * IBlockDefinition chiseledQuartzSlab();
-	 * IBlockDefinition quartzPillarSlab();
-	 */
+	IBlockDefinition skyStoneSlab();
+
+	IBlockDefinition smoothSkyStoneSlab();
+
+	IBlockDefinition skyStoneBrickSlab();
+
+	IBlockDefinition skyStoneSmallBrickSlab();
+
+	IBlockDefinition fluixSlab();
+
+	IBlockDefinition quartzSlab();
+
+	IBlockDefinition chiseledQuartzSlab();
+
+	IBlockDefinition quartzPillarSlab();
 
 	/*
 	 * misc

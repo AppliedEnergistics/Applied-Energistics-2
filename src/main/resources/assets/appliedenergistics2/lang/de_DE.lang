@@ -62,14 +62,14 @@ tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=Himmelssteinkleinzieg
 tile.appliedenergistics2.SkyStoneStairBlock.name=Himmelssteintreppe
 
 // Slabs
-tile.appliedenergistics2.ChiseledQuartzSlabBlock.name=Gemeißelte Certusquartzstufe
-tile.appliedenergistics2.FluixSlabBlock.name=Fluixstufe
-tile.appliedenergistics2.QuartzPillarSlabBlock.name=Certusquartzsäulenstufe
-tile.appliedenergistics2.QuartzSlabBlock.name=Certusquartzstufe
-tile.appliedenergistics2.SkyStoneBlockSlabBlock.name=Himmelssteinblockstufe
-tile.appliedenergistics2.SkyStoneBrickSlabBlock.name=Himmelssteinziegelstufe
-tile.appliedenergistics2.SkyStoneSmallBrickSlabBlock.name=Himmelssteinkleinziegelstufe
-tile.appliedenergistics2.SkyStoneSlabBlock.name=Himmelssteinstufe
+tile.appliedenergistics2.chiseled_quartz_slab.name=Gemeißelte Certusquartzstufe
+tile.appliedenergistics2.fluix_slab.name=Fluixstufe
+tile.appliedenergistics2.quartz_pillar_slab.name=Certusquartzsäulenstufe
+tile.appliedenergistics2.quartz_slab.name=Certusquartzstufe
+tile.appliedenergistics2.smooth_sky_stone_slab.name=Himmelssteinblockstufe
+tile.appliedenergistics2.sky_stone_brick_slab.name=Himmelssteinziegelstufe
+tile.appliedenergistics2.sky_stone_small_brick_slab.name=Himmelssteinkleinziegelstufe
+tile.appliedenergistics2.sky_stone_slab.name=Himmelssteinstufe
 
 // Chat Messages
 chat.appliedenergistics2.ChestCannotReadStorageCell=ME-Truhe kann die Speicherzelle nicht einlesen.

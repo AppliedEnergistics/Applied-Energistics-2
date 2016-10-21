@@ -1,0 +1,6 @@
+{
+    "variants": {
+        "half=bottom,variant=default": { "model": "appliedenergistics2:slabs/fluix_half" },
+        "half=top,variant=default": { "model": "appliedenergistics2:slabs/fluix_upper" }
+    }
+}

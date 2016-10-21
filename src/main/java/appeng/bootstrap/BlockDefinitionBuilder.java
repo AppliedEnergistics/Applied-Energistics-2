@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -71,6 +72,8 @@ class BlockDefinitionBuilder implements IBlockBuilder
 	private final EnumSet<AEFeature> features = EnumSet.noneOf( AEFeature.class );
 
 	private CreativeTabs creativeTab = CreativeTab.instance;
+
+	private boolean disableItem = false;
 
 	private Function<Block, ItemBlock> itemFactory;
 
@@ -163,6 +166,13 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		return this;
 	}
 
+	@Override
+	public IBlockBuilder disableItem()
+	{
+		this.disableItem = true;
+		return this;
+	}
+
 	@SideOnly( Side.CLIENT )
 	private void customizeForClient( BlockRenderingCustomizer callback )
 	{
@@ -183,12 +193,17 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		block.setRegistryName( AppEng.MOD_ID, registryName );
 
 		ItemBlock item = constructItemFromBlock( block );
-		item.setRegistryName( AppEng.MOD_ID, registryName );
+		if ( item != null ) {
+			item.setRegistryName( AppEng.MOD_ID, registryName );
+		}
 
 		// Register the item and block with the game
 		factory.addPreInit( side -> {
 			GameRegistry.register( block );
-			GameRegistry.register( item );
+			if ( item != null )
+			{
+				GameRegistry.register( item );
+			}
 		} );
 
 		block.setCreativeTab( creativeTab );
@@ -211,7 +226,10 @@ class BlockDefinitionBuilder implements IBlockBuilder
 				blockRendering.apply( factory, block, null );
 			}
 
-			itemRendering.apply( factory, item );
+			if( item != null )
+			{
+				itemRendering.apply( factory, item );
+			}
 		}
 
 		if( block instanceof AEBaseTileBlock )
@@ -233,8 +251,14 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		}
 	}
 
+	@Nullable
 	private ItemBlock constructItemFromBlock( Block block )
 	{
+		if( disableItem )
+		{
+			return null;
+		}
+
 		if( itemFactory != null )
 		{
 			return itemFactory.apply( block );

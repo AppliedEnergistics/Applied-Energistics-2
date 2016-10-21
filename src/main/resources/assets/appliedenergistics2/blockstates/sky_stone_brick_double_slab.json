@@ -1,0 +1,5 @@
+{
+    "variants": {
+        "variant=default": { "model": "appliedenergistics2:sky_stone_brick" }
+    }
+}

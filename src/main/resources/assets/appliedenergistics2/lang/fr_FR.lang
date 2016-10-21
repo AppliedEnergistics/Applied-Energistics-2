@@ -62,14 +62,14 @@ tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=Escaliers de petites 
 tile.appliedenergistics2.SkyStoneStairBlock.name=Escaliers de pierre de ciel
 
 // Slabs
-tile.appliedenergistics2.ChiseledQuartzSlabBlock.name=Dalle de Quartz Certus ciselé
-tile.appliedenergistics2.FluixSlabBlock.name=Dalle de Fluix
-tile.appliedenergistics2.QuartzPillarSlabBlock.name=Dalle de pilier de Quartz Certus
-tile.appliedenergistics2.QuartzSlabBlock.name=Dalle de Quartz Certus
-tile.appliedenergistics2.SkyStoneBlockSlabBlock.name=Dalle de bloc de pierre de ciel
-tile.appliedenergistics2.SkyStoneBrickSlabBlock.name=Dalle de briques de pierre de ciel
-tile.appliedenergistics2.SkyStoneSmallBrickSlabBlock.name=Dalle de petites briques de pierre de ciel
-tile.appliedenergistics2.SkyStoneSlabBlock.name=Dalle de pierre de ciel
+tile.appliedenergistics2.chiseled_quartz_slab.name=Dalle de Quartz Certus ciselé
+tile.appliedenergistics2.fluix_slab.name=Dalle de Fluix
+tile.appliedenergistics2.quartz_pillar_slab.name=Dalle de pilier de Quartz Certus
+tile.appliedenergistics2.quartz_slab.name=Dalle de Quartz Certus
+tile.appliedenergistics2.smooth_sky_stone_slab.name=Dalle de bloc de pierre de ciel
+tile.appliedenergistics2.sky_stone_brick_slab.name=Dalle de briques de pierre de ciel
+tile.appliedenergistics2.sky_stone_small_brick_slab.name=Dalle de petites briques de pierre de ciel
+tile.appliedenergistics2.sky_stone_slab.name=Dalle de pierre de ciel
 
 // Chat Messages
 chat.appliedenergistics2.ChestCannotReadStorageCell=Le coffre ME Chest ne peut pas lire la cellule de stockage.

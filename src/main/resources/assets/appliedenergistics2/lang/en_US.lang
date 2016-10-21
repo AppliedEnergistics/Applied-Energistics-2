@@ -62,14 +62,14 @@ tile.appliedenergistics2.sky_stone_small_brick_stairs.name=Sky Stone Small Brick
 tile.appliedenergistics2.sky_stone_stairs.name=Sky Stone Stairs
 
 // Slabs
-tile.appliedenergistics2.ChiseledQuartzSlabBlock.name=Chiseled Certus Quartz Slabs
-tile.appliedenergistics2.FluixSlabBlock.name=Fluix Slabs
-tile.appliedenergistics2.QuartzPillarSlabBlock.name=Certus Quartz Pillar Slabs
-tile.appliedenergistics2.QuartzSlabBlock.name=Certus Quartz Slabs
-tile.appliedenergistics2.SkyStoneBlockSlabBlock.name=Sky Stone Block Slabs
-tile.appliedenergistics2.SkyStoneBrickSlabBlock.name=Sky Stone Brick Slabs
-tile.appliedenergistics2.SkyStoneSmallBrickSlabBlock.name=Sky Stone Small Brick Slabs
-tile.appliedenergistics2.SkyStoneSlabBlock.name=Sky Stone Slabs
+tile.appliedenergistics2.chiseled_quartz_slab.name=Chiseled Certus Quartz Slabs
+tile.appliedenergistics2.fluix_slab.name=Fluix Slabs
+tile.appliedenergistics2.quartz_pillar_slab.name=Certus Quartz Pillar Slabs
+tile.appliedenergistics2.quartz_slab.name=Certus Quartz Slabs
+tile.appliedenergistics2.smooth_sky_stone_slab.name=Sky Stone Block Slabs
+tile.appliedenergistics2.sky_stone_brick_slab.name=Sky Stone Brick Slabs
+tile.appliedenergistics2.sky_stone_small_brick_slab.name=Sky Stone Small Brick Slabs
+tile.appliedenergistics2.sky_stone_slab.name=Sky Stone Slabs
 
 // Chat Messages
 chat.appliedenergistics2.ChestCannotReadStorageCell=ME Chest cannot read storage cell.

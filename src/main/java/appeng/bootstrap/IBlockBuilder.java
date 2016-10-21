@@ -46,6 +46,11 @@ public interface IBlockBuilder
 	IBlockBuilder rendering( BlockRenderingCustomizer callback );
 
 	/**
+	 * Don't register an item for this block.
+	 */
+	IBlockBuilder disableItem();
+
+	/**
 	 * Forces this block's item to uses a custom model, instead of using the default block state as the item model.
 	 * The model has the same name as the registry name.
 	 */

@@ -1,0 +1,8 @@
+{
+    "parent": "block/half_slab",
+    "textures": {
+        "bottom": "appliedenergistics2:blocks/fluix_block",
+        "side": "appliedenergistics2:blocks/fluix_block",
+        "top": "appliedenergistics2:blocks/fluix_block"
+    }
+}
