@@ -547,14 +547,14 @@ public abstract class AEBaseContainer extends Container
 						{
 							if( Platform.isSameItemPrecise( destination, tis ) )
 							{
-								return null;
+								break;
 							}
 							else if( destination == null )
 							{
 								cs.putStack( tis.copy() );
 								cs.onSlotChanged();
 								this.updateSlot( cs );
-								return null;
+								break;
 							}
 						}
 					}
