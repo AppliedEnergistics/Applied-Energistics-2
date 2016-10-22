@@ -156,14 +156,7 @@ public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>
 
 				if( Platform.isSameItem( sub, Req ) )
 				{
-					int reqNum = Req.stackSize;
-
-					if( reqNum > sub.stackSize )
-					{
-						reqNum = Req.stackSize;
-					}
-
-					ItemStack retrieved = null;
+					ItemStack retrieved;
 
 					if( sub.stackSize < Req.stackSize )
 					{

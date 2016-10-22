@@ -44,7 +44,7 @@ import appeng.util.Platform;
 import appeng.util.inv.ItemSlot;
 
 
-public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
+public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMonitor
 {
 
 	private final InventoryAdaptor adaptor;
