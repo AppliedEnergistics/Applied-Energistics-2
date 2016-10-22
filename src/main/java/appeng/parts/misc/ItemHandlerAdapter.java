@@ -31,7 +31,7 @@ import appeng.util.item.AEItemStack;
 class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAEItemStack>, ITickingMonitor
 {
 
-	private final Map<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object>();
+	private final Map<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
 
 	private BaseActionSource mySource;
 
@@ -120,6 +120,11 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			return iox;
 		}
 
+		if( type == Actionable.MODULATE )
+		{
+			this.onTick();
+		}
+
 		return AEItemStack.create( remaining );
 
 	}
@@ -185,6 +190,11 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
 		if( gathered != null )
 		{
+			if( mode == Actionable.MODULATE )
+			{
+				this.onTick();
+			}
+
 			return AEItemStack.create( gathered );
 		}
 
