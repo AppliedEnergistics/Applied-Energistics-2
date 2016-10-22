@@ -25,6 +25,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 
+/**
+ * TODO: Test if copy was actually necessary.
+ */
 public class NetworkList implements Collection<Grid>
 {
 
@@ -69,14 +72,12 @@ public class NetworkList implements Collection<Grid>
 	@Override
 	public boolean add( final Grid e )
 	{
-		this.copy();
 		return this.networks.add( e );
 	}
 
 	@Override
 	public boolean remove( final Object o )
 	{
-		this.copy();
 		return this.networks.remove( o );
 	}
 
@@ -89,21 +90,18 @@ public class NetworkList implements Collection<Grid>
 	@Override
 	public boolean addAll( final Collection<? extends Grid> c )
 	{
-		this.copy();
 		return this.networks.addAll( c );
 	}
 
 	@Override
 	public boolean removeAll( final Collection<?> c )
 	{
-		this.copy();
 		return this.networks.removeAll( c );
 	}
 
 	@Override
 	public boolean retainAll( final Collection<?> c )
 	{
-		this.copy();
 		return this.networks.retainAll( c );
 	}
 
@@ -111,12 +109,5 @@ public class NetworkList implements Collection<Grid>
 	public void clear()
 	{
 		this.networks = new LinkedList<Grid>();
-	}
-
-	private void copy()
-	{
-		final List<Grid> old = this.networks;
-		this.networks = new LinkedList<Grid>();
-		this.networks.addAll( old );
 	}
 }
