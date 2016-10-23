@@ -59,10 +59,11 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.storage.ICellContainer;
-import appeng.api.storage.IExternalStorageHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -70,6 +71,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
+import appeng.capabilities.Capabilities;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.core.stats.Achievements;
@@ -370,19 +372,31 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	private IMEInventory<? extends IAEItemStack> getInventoryWrapper( TileEntity target )
 	{
 
-		// Check via cap for IItemHandler
 		EnumFacing targetSide = this.getSide().getFacing().getOpposite();
 
+		// Prioritize a handler to directly link to another ME network
+		IStorageMonitorableAccessor accessor = target.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide );
+
+		if( accessor != null )
+		{
+			IStorageMonitorable inventory = accessor.getInventory( mySrc );
+			if( inventory != null )
+			{
+				return inventory.getItemInventory();
+			}
+
+			// So this could / can be a design decision. If the tile does support our custom capability,
+			// but it does not return an inventory for the action source, we do NOT fall back to using
+			// IItemHandler's, as that might circumvent the security setings, and might also cause
+			// performance issues.
+			return null;
+		}
+
+		// Check via cap for IItemHandler
 		IItemHandler handlerExt = target.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide );
 		if( handlerExt != null )
 		{
 			return new ItemHandlerAdapter( handlerExt );
-		}
-
-		final IExternalStorageHandler esh = AEApi.instance().registries().externalStorage().getHandler( target, targetSide, StorageChannel.ITEMS, this.mySrc );
-		if( esh != null )
-		{
-			return esh.getInventory( target, targetSide, StorageChannel.ITEMS, this.mySrc );
 		}
 
 		return null;

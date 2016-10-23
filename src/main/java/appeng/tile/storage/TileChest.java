@@ -22,6 +22,7 @@ package appeng.tile.storage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
 
@@ -32,6 +33,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -71,6 +73,7 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.MEMonitorHandler;
 import appeng.api.storage.StorageChannel;
@@ -79,6 +82,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
+import appeng.capabilities.Capabilities;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
@@ -113,6 +117,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	private ICellHandler cellHandler;
 	private MEMonitorHandler itemCell;
 	private MEMonitorHandler fluidCell;
+	private final Accessor accessor = new Accessor();
 
 	public TileChest()
 	{
@@ -771,16 +776,6 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		return null;
 	}
 
-	@Override
-	public IStorageMonitorable getMonitorable( final EnumFacing side, final BaseActionSource src )
-	{
-		if( Platform.canAccess( this.getProxy(), src ) && side != this.getForward() )
-		{
-			return this;
-		}
-		return null;
-	}
-
 	public ItemStack getStorageType()
 	{
 		if( this.isPowered() )
@@ -988,6 +983,41 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 				return null;
 			}
 			return super.extractItems( request, mode, src );
+		}
+	}
+
+	@Override
+	public boolean hasCapability( Capability<?> capability, EnumFacing facing )
+	{
+		if( capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR && facing != getForward() )
+		{
+			return true;
+		}
+		return super.hasCapability( capability, facing );
+	}
+
+	@SuppressWarnings( "unchecked" )
+	@Override
+	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
+	{
+		if( capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR && facing != getForward() )
+		{
+			return (T) accessor;
+		}
+		return super.getCapability( capability, facing );
+	}
+
+	private class Accessor implements IStorageMonitorableAccessor
+	{
+		@Nullable
+		@Override
+		public IStorageMonitorable getInventory( BaseActionSource src )
+		{
+			if( Platform.canAccess( getProxy(), src ) )
+			{
+				return TileChest.this;
+			}
+			return null;
 		}
 	}
 

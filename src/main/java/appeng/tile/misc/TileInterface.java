@@ -40,7 +40,6 @@ import net.minecraftforge.common.capabilities.Capability;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -71,7 +70,7 @@ import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
 
 
-public class TileInterface extends AENetworkInvTile implements IGridTickable, ITileStorageMonitorable, IStorageMonitorable, IInventoryDestination, IInterfaceHost, IPriorityHost
+public class TileInterface extends AENetworkInvTile implements IGridTickable, IInventoryDestination, IInterfaceHost, IPriorityHost
 {
 
 	private final DualityInterface duality = new DualityInterface( this.getProxy(), this );
@@ -224,18 +223,6 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	}
 
 	@Override
-	public IMEMonitor<IAEItemStack> getItemInventory()
-	{
-		return this.duality.getItemInventory();
-	}
-
-	@Override
-	public IMEMonitor<IAEFluidStack> getFluidInventory()
-	{
-		return this.duality.getFluidInventory();
-	}
-
-	@Override
 	public IInventory getInventoryByName( final String name )
 	{
 		return this.duality.getInventoryByName( name );
@@ -291,12 +278,6 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, IT
 	public TileEntity getTileEntity()
 	{
 		return this;
-	}
-
-	@Override
-	public IStorageMonitorable getMonitorable( final EnumFacing side, final BaseActionSource src )
-	{
-		return this.duality.getMonitorable( side, src, this );
 	}
 
 	@Override

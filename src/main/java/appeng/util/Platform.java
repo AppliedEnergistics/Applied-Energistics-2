@@ -101,7 +101,6 @@ import appeng.api.definitions.IMaterials;
 import appeng.api.definitions.IParts;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.items.IAEWrench;
-import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -124,6 +123,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
+import appeng.capabilities.Capabilities;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -1753,7 +1753,7 @@ public class Platform
 
 		int hash = target.hashCode();
 
-		if( target instanceof ITileStorageMonitorable )
+		if( target.hasCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, null ) )
 		{
 			return 0;
 		}

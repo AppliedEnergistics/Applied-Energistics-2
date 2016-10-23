@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -75,6 +76,7 @@ import appeng.api.parts.IPart;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
@@ -82,6 +84,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
+import appeng.capabilities.Capabilities;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
@@ -134,6 +137,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	private IMEInventory<IAEItemStack> destination;
 	private boolean isWorking = false;
 	private IItemHandler itemHandler = null;
+	private final Accessor accessor = new Accessor();
 
 	public DualityInterface( final AENetworkProxy networkProxy, final IInterfaceHost ih )
 	{
@@ -869,7 +873,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		this.craftingTracker.cancel();
 	}
 
-	public IStorageMonitorable getMonitorable( final EnumFacing side, final BaseActionSource src, final IStorageMonitorable myInterface )
+	public IStorageMonitorable getMonitorable( final BaseActionSource src, final IStorageMonitorable myInterface )
 	{
 		if( Platform.canAccess( this.gridProxy, src ) )
 		{
@@ -1269,7 +1273,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	public boolean hasCapability( Capability<?> capabilityClass, EnumFacing facing )
 	{
-		return capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+		return capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+				|| capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR;
 	}
 
 	@SuppressWarnings( "unchecked" )
@@ -1282,6 +1287,10 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				itemHandler = new InvWrapper( storage );
 			}
 			return (T) itemHandler;
+		}
+		else if( capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR )
+		{
+			return (T) accessor;
 		}
 		return null;
 	}
@@ -1325,6 +1334,18 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 			return super.extractItems( request, type, src );
 		}
+	}
+
+	private class Accessor implements IStorageMonitorableAccessor
+	{
+
+		@Nullable
+		@Override
+		public IStorageMonitorable getInventory( BaseActionSource src )
+		{
+			return getMonitorable( src, DualityInterface.this );
+		}
+
 	}
 
 }

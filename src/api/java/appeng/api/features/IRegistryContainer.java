@@ -24,14 +24,11 @@
 package appeng.api.features;
 
 
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.api.AEInjectable;
 import appeng.api.movable.IMovableRegistry;
 import appeng.api.networking.IGridCacheRegistry;
 import appeng.api.parts.IPartModels;
 import appeng.api.storage.ICellRegistry;
-import appeng.api.storage.IExternalStorageRegistry;
 
 
 /**
@@ -53,15 +50,6 @@ public interface IRegistryContainer
 	 * Add new Grid Caches for use during run time, only use during loading phase.
 	 */
 	IGridCacheRegistry gridCache();
-
-	/**
-	 * Add additional storage bus handlers to improve interplay with mod blocks that contains special inventories that
-	 * function unlike vanilla chests. AE uses this internally for barrels, DSU's, quantum chests, AE Networks and more.
-	 * 
-	 * @deprecated in favour of {@link IItemHandler}
-	 */
-	@Deprecated
-	IExternalStorageRegistry externalStorage();
 
 	/**
 	 * Add additional special comparison functionality, AE Uses this internally for Bees.
