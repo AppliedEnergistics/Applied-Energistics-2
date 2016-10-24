@@ -33,7 +33,7 @@
         }
     ],
     "textures": {
-		"particle": "blocks/tnt_side",
+        "particle": "blocks/tnt_side",
         "side": "blocks/tnt_side",
         "top": "blocks/tnt_top",
         "bottom": "blocks/tnt_bottom"

@@ -201,7 +201,7 @@
         }
     ],
     "textures": {
-		"particle": "appliedenergistics2:blocks/quartz_fixture",
+        "particle": "appliedenergistics2:blocks/quartz_fixture",
         "metal": "appliedenergistics2:blocks/quartz_fixture_metal",
         "quartz": "appliedenergistics2:blocks/quartz_fixture"
     }

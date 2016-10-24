@@ -1,6 +1,6 @@
 shaped=
     ae2:sky_stone_block ae2:sky_stone_block ae2:sky_stone_block,
-    ae2:sky_stone_block _	ae2:sky_stone_block,
+    ae2:sky_stone_block _ ae2:sky_stone_block,
     ae2:sky_stone_block ae2:sky_stone_block ae2:sky_stone_block
     -> ae2:sky_stone_chest
 
