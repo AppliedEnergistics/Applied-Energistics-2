@@ -49,18 +49,11 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 
 	private static final ThreadLocal<LinkedList> DEPTH_MOD = new ThreadLocal<LinkedList>();
 	private static final ThreadLocal<LinkedList> DEPTH_SIM = new ThreadLocal<LinkedList>();
-	private static final Comparator<Integer> PRIORITY_SORTER = new Comparator<Integer>(){
+	private static final Comparator<Integer> PRIORITY_SORTER = ( o1, o2 ) -> ItemSorters.compareInt( o2, o1 );
 
-		@Override
-		public int compare( final Integer o1, final Integer o2 )
-		{
-			return ItemSorters.compareInt( o2, o1 );
-		}
-	};
 	private static int currentPass = 0;
 	private final StorageChannel myChannel;
 	private final SecurityCache security;
-	// final TreeMultimap<Integer, IMEInventoryHandler<T>> priorityInventory;
 	private final NavigableMap<Integer, List<IMEInventoryHandler<T>>> priorityInventory;
 	private int myPass = 0;
 
@@ -68,9 +61,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	{
 		this.myChannel = chan;
 		this.security = security;
-		this.priorityInventory = new TreeMap<Integer, List<IMEInventoryHandler<T>>>( PRIORITY_SORTER ); // TreeMultimap.create(
-																										// prioritySorter,
-																										// hashSorter );
+		this.priorityInventory = new TreeMap<>( PRIORITY_SORTER );
 	}
 
 	public void addNewStorage( final IMEInventoryHandler<T> h )
@@ -79,7 +70,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 		List<IMEInventoryHandler<T>> list = this.priorityInventory.get( priority );
 		if( list == null )
 		{
-			this.priorityInventory.put( priority, list = new ArrayList<IMEInventoryHandler<T>>() );
+			this.priorityInventory.put( priority, list = new ArrayList<>() );
 		}
 
 		list.add( h );

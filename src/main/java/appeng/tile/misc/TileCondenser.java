@@ -39,8 +39,15 @@ import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
 import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IStorageComponent;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.IStorageMonitorableAccessor;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.capabilities.Capabilities;
 import appeng.tile.AEBaseInvTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
@@ -56,11 +63,15 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 
 	public static final int BYTE_MULTIPLIER = 8;
 
-	private final int[] sides = { 0, 1 };
+	private final int[] sides = {
+			0,
+			1
+	};
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 3 );
 	private final ConfigManager cm = new ConfigManager( this );
 	private final IItemHandler itemHandler = new ItemHandler();
 	private final IFluidHandler fluidHandler = new FluidHandler();
+	private final MeHandler meHandler = new MeHandler();
 
 	private double storedPower = 0;
 
@@ -262,6 +273,10 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		{
 			return true;
 		}
+		else if( capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR )
+		{
+			return true;
+		}
 		return super.hasCapability( capability, facing );
 	}
 
@@ -277,10 +292,15 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		{
 			return (T) fluidHandler;
 		}
+		else if( capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR )
+		{
+			return (T) meHandler;
+		}
 		return super.getCapability( capability, facing );
 	}
 
-	private class ItemHandler implements IItemHandler {
+	private class ItemHandler implements IItemHandler
+	{
 
 		@Override
 		public int getSlots()
@@ -315,10 +335,11 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		{
 			return null;
 		}
-
 	}
 
+
 	private static final IFluidTankProperties[] EMPTY = { new FluidTankProperties( null, 10, true, false ) };
+
 
 	/**
 	 * A fluid handler that exposes a 10 bucket tank that can only be filled, and - when filled - will add power
@@ -359,4 +380,35 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		}
 	}
 
+
+	/**
+	 * This is used to expose a fake ME subnetwork that is only composed of this condenser tile. The purpose of this is to enable the condenser to
+	 * override the {@link appeng.api.storage.IMEInventoryHandler#validForPass(int)} method to make sure a condenser is only ever used if an item
+	 * can't go anywhere else.
+	 */
+	private class MeHandler implements IStorageMonitorableAccessor, IStorageMonitorable
+	{
+		private final CondenserFluidInventory fluidInventory = new CondenserFluidInventory( TileCondenser.this );
+
+		private final CondenserItemInventory itemInventory = new CondenserItemInventory( TileCondenser.this );
+
+		@Nullable
+		@Override
+		public IStorageMonitorable getInventory( BaseActionSource src )
+		{
+			return this;
+		}
+
+		@Override
+		public IMEMonitor<IAEItemStack> getItemInventory()
+		{
+			return itemInventory;
+		}
+
+		@Override
+		public IMEMonitor<IAEFluidStack> getFluidInventory()
+		{
+			return fluidInventory;
+		}
+	}
 }
