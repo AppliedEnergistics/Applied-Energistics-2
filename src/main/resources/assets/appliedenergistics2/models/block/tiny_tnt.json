@@ -1,81 +1,41 @@
 {
-    "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
+    "parent": "block/block",
     "elements": [
         {
+            "from": [ 4, 0, 4 ],
+            "to": [ 12, 8, 12 ],
             "faces": {
                 "down": {
-                    "texture": "#2",
-                    "uv": [
-                        0.0,
-                        0.0,
-                        16.0,
-                        16.0
-                    ]
+                    "texture": "#bottom",
+                    "uv": [ 0, 0, 16, 16 ]
                 },
                 "east": {
-                    "texture": "#0",
-                    "uv": [
-                        0.0,
-                        0.0,
-                        16.0,
-                        16.0
-                    ]
+                    "texture": "#side",
+                    "uv": [ 0, 0, 16, 16 ]
                 },
                 "north": {
-                    "texture": "#0",
-                    "uv": [
-                        0.0,
-                        0.0,
-                        16.0,
-                        16.0
-                    ]
+                    "texture": "#side",
+                    "uv": [ 0, 0, 16, 16 ]
                 },
                 "south": {
-                    "texture": "#0",
-                    "uv": [
-                        0.0,
-                        0.0,
-                        16.0,
-                        16.0
-                    ]
+                    "texture": "#side",
+                    "uv": [ 0, 0, 16, 16 ]
                 },
                 "up": {
-                    "texture": "#1",
-                    "uv": [
-                        0.0,
-                        0.0,
-                        16.0,
-                        16.0
-                    ]
+                    "texture": "#top",
+                    "uv": [ 0, 0, 16, 16 ]
                 },
                 "west": {
-                    "texture": "#0",
-                    "uv": [
-                        0.0,
-                        0.0,
-                        16.0,
-                        16.0
-                    ]
+                    "texture": "#side",
+                    "uv": [ 0, 0, 16, 16 ]
                 }
-            },
-            "from": [
-                4.0,
-                0.0,
-                4.0
-            ],
-            "name": "Cube",
-            "to": [
-                12.0,
-                8.0,
-                12.0
-            ]
+            }
         }
     ],
-    "parent": "block/block",
     "textures": {
-		"particle": "blocks/tnt_bottom",
-        "0": "blocks/tnt_side",
-        "1": "blocks/tnt_top",
-        "2": "blocks/tnt_bottom"
+		"particle": "blocks/tnt_side",
+        "side": "blocks/tnt_side",
+        "top": "blocks/tnt_top",
+        "bottom": "blocks/tnt_bottom"
     }
 }

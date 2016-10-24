@@ -52,7 +52,7 @@ public class RenderTinyTNTPrimed extends Render
 	{
 		final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
 		GlStateManager.pushMatrix();
-		GlStateManager.translate( (float) x, (float) y + 0.5F, (float) z );
+		GlStateManager.translate( (float) x, (float) y + 0.25F, (float) z );
 		float f2;
 
 		if( tnt.getFuse() - life + 1.0F < 10.0F )
