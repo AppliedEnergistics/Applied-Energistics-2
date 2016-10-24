@@ -13,7 +13,6 @@
 # include markdowns
 !README.md
 !LICENSE
-!CONTRIBUTING.md
 
 # include sourcecode
 !src/
@@ -24,3 +23,6 @@
 
 # code format to reduce noise in git commits
 !codeformat/
+
+# Github specific files and directories
+!.github/
