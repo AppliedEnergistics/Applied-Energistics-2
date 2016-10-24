@@ -5,15 +5,12 @@ import java.util.Collection;
 import java.util.Collections;
 
 import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
@@ -49,9 +46,7 @@ public class BiometricCardModel implements IModel
 
 		IBakedModel baseModel = getBaseModel( state, format, bakedTextureGetter );
 
-		ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> map = IPerspectiveAwareModel.MapWrapper.getTransforms(state);
-
-		return new BiometricCardBakedModel( format, baseModel, texture, map );
+		return new BiometricCardBakedModel( format, baseModel, texture );
 	}
 
 	private IBakedModel getBaseModel( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )

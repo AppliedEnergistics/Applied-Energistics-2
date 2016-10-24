@@ -11,7 +11,6 @@ import javax.vecmath.Matrix4f;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.mojang.authlib.GameProfile;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -47,26 +46,27 @@ class BiometricCardBakedModel implements IPerspectiveAwareModel
 
 	private final int hash;
 
-	private final ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms;
-
 	private final Cache<Integer, BiometricCardBakedModel> modelCache;
 
 	private final ImmutableList<BakedQuad> generalQuads;
 
-	BiometricCardBakedModel( VertexFormat format, IBakedModel baseModel, TextureAtlasSprite texture, ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms )
+	BiometricCardBakedModel( VertexFormat format, IBakedModel baseModel, TextureAtlasSprite texture )
 	{
-		this( format, baseModel, texture, 0, transforms );
+		this( format, baseModel, texture, 0, createCache() );
 	}
 
-	BiometricCardBakedModel( VertexFormat format, IBakedModel baseModel, TextureAtlasSprite texture, int hash, ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms )
+	private BiometricCardBakedModel( VertexFormat format, IBakedModel baseModel, TextureAtlasSprite texture, int hash, Cache<Integer, BiometricCardBakedModel> modelCache )
 	{
 		this.format = format;
 		this.baseModel = baseModel;
 		this.texture = texture;
 		this.hash = hash;
-		this.transforms = transforms;
 		this.generalQuads = ImmutableList.copyOf( buildGeneralQuads() );
-		modelCache = CacheBuilder.newBuilder()
+		this.modelCache = modelCache;
+	}
+
+	private static Cache<Integer, BiometricCardBakedModel> createCache() {
+		return CacheBuilder.newBuilder()
 				.maximumSize( 100 )
 				.build();
 	}
@@ -97,7 +97,7 @@ class BiometricCardBakedModel implements IPerspectiveAwareModel
 		AEColor col = AEColor.values()[Math.abs( 3 + hash ) % AEColor.values().length];
 		if( hash == 0 )
 		{
-			col = AEColor.RED;
+			col = AEColor.BLACK;
 		}
 
 		for( int x = 0; x < 8; x++ )
@@ -196,7 +196,7 @@ class BiometricCardBakedModel implements IPerspectiveAwareModel
 
 				try
 				{
-					return modelCache.get( hash, () -> new BiometricCardBakedModel( format, baseModel, texture, hash, transforms ) );
+					return modelCache.get( hash, () -> new BiometricCardBakedModel( format, baseModel, texture, hash, modelCache ) );
 				}
 				catch( ExecutionException e )
 				{
@@ -210,6 +210,13 @@ class BiometricCardBakedModel implements IPerspectiveAwareModel
 	@Override
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective( ItemCameraTransforms.TransformType type )
 	{
-		return IPerspectiveAwareModel.MapWrapper.handlePerspective( this, transforms, type );
+		// Delegate to the base model if possible
+		if( baseModel instanceof IPerspectiveAwareModel )
+		{
+			IPerspectiveAwareModel pam = (IPerspectiveAwareModel) baseModel;
+			Pair<? extends IBakedModel, Matrix4f> pair = pam.handlePerspective( type );
+			return Pair.of( this, pair.getValue() );
+		}
+		return Pair.of( this, TRSRTransformation.identity().getMatrix() );
 	}
 }
