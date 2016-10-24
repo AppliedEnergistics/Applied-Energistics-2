@@ -76,7 +76,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		final NBTTagList outTag = encodedValue.getTagList( "out", 10 );
 		this.isCrafting = encodedValue.getBoolean( "crafting" );
 
-		this.canSubstitute = encodedValue.getBoolean( "substitute" );
+		this.canSubstitute = this.isCrafting && encodedValue.getBoolean( "substitute" );
 		this.patternItem = is;
 		this.pattern = AEItemStack.create( is );
 

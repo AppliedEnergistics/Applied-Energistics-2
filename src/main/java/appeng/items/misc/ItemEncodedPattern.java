@@ -142,10 +142,13 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 			first = false;
 		}
 
-		final String substitutionLabel = GuiText.Substitute.getLocal() + " ";
-		final String canSubstitute = substitute ? GuiText.Yes.getLocal() : GuiText.No.getLocal();
+		if( isCrafting )
+		{
+			final String substitutionLabel = GuiText.Substitute.getLocal() + " ";
+			final String canSubstitute = substitute ? GuiText.Yes.getLocal() : GuiText.No.getLocal();
 
-		lines.add( substitutionLabel + canSubstitute );
+			lines.add( substitutionLabel + canSubstitute );
+		}
 	}
 
 	@Override

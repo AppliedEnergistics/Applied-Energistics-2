@@ -34,6 +34,7 @@ import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerPatternTerm;
 import appeng.container.slot.AppEngSlot;
+import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
@@ -41,6 +42,9 @@ import appeng.core.sync.packets.PacketValueConfig;
 
 public class GuiPatternTerm extends GuiMEMonitorable
 {
+
+	private static final String BACKGROUND_CRAFTING_MODE = "guis/pattern.png";
+	private static final String BACKGROUND_PROCESSING_MODE = "guis/pattern2.png";
 
 	private static final String SUBSITUTION_DISABLE = "0";
 	private static final String SUBSITUTION_ENABLE = "1";
@@ -94,8 +98,7 @@ public class GuiPatternTerm extends GuiMEMonitorable
 		}
 		catch( final IOException e )
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			AELog.error( e );
 		}
 	}
 
@@ -129,26 +132,28 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		if( !this.container.isCraftingMode() )
-		{
-			this.tabCraftButton.visible = false;
-			this.tabProcessButton.visible = true;
-		}
-		else
+		if( this.container.isCraftingMode() )
 		{
 			this.tabCraftButton.visible = true;
 			this.tabProcessButton.visible = false;
-		}
 
-		if( this.container.substitute )
-		{
-			this.substitutionsEnabledBtn.visible = true;
-			this.substitutionsDisabledBtn.visible = false;
+			if( this.container.substitute )
+			{
+				this.substitutionsEnabledBtn.visible = true;
+				this.substitutionsDisabledBtn.visible = false;
+			}
+			else
+			{
+				this.substitutionsEnabledBtn.visible = false;
+				this.substitutionsDisabledBtn.visible = true;
+			}
 		}
 		else
 		{
+			this.tabCraftButton.visible = false;
+			this.tabProcessButton.visible = true;
 			this.substitutionsEnabledBtn.visible = false;
-			this.substitutionsDisabledBtn.visible = true;
+			this.substitutionsDisabledBtn.visible = false;
 		}
 
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
@@ -160,21 +165,17 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	{
 		if( this.container.isCraftingMode() )
 		{
-			return "guis/pattern.png";
+			return BACKGROUND_CRAFTING_MODE;
 		}
-		return "guis/pattern2.png";
+
+		return BACKGROUND_PROCESSING_MODE;
 	}
 
 	@Override
 	protected void repositionSlot( final AppEngSlot s )
 	{
-		if( s.isPlayerSide() )
-		{
-			s.yDisplayPosition = s.getY() + this.ySize - 78 - 5;
-		}
-		else
-		{
-			s.yDisplayPosition = s.getY() + this.ySize - 78 - 3;
-		}
+		final int offsetPlayerSide = s.isPlayerSide() ? 5 : 3;
+
+		s.yDisplayPosition = s.getY() + this.ySize - 78 - offsetPlayerSide;
 	}
 }
