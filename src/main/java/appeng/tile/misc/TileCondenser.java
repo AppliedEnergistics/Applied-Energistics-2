@@ -71,7 +71,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	private final ConfigManager cm = new ConfigManager( this );
 	private final IItemHandler itemHandler = new ItemHandler();
 	private final IFluidHandler fluidHandler = new FluidHandler();
-	private final MeHandler meHandler = new MeHandler();
+	private final MEHandler meHandler = new MEHandler();
 
 	private double storedPower = 0;
 
@@ -386,7 +386,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	 * override the {@link appeng.api.storage.IMEInventoryHandler#validForPass(int)} method to make sure a condenser is only ever used if an item
 	 * can't go anywhere else.
 	 */
-	private class MeHandler implements IStorageMonitorableAccessor, IStorageMonitorable
+	private class MEHandler implements IStorageMonitorableAccessor, IStorageMonitorable
 	{
 		private final CondenserFluidInventory fluidInventory = new CondenserFluidInventory( TileCondenser.this );
 
