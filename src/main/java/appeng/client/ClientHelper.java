@@ -39,7 +39,9 @@ import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import appeng.api.parts.CableRenderMode;
@@ -79,7 +81,11 @@ public class ClientHelper extends ServerHelper
 	public void preinit()
 	{
 		MinecraftForge.EVENT_BUS.register( this );
-		ModelLoaderRegistry.registerLoader( UVLModelLoader.INSTANCE );
+		// Do not register the Fullbright hacks if Optifine is present or if the Forge lighting is disabled
+		if( !FMLClientHandler.instance().hasOptifine() && ForgeModContainer.forgeLightPipelineEnabled )
+		{
+			ModelLoaderRegistry.registerLoader( UVLModelLoader.INSTANCE );
+		}
 	}
 
 	@Override
