@@ -115,7 +115,8 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		}
 
 		// At this point, we still have some items left...
-		if ( remaining == orgInput ) {
+		if( remaining == orgInput )
+		{
 			// The stack remained unmodified, target inventory is full
 			return iox;
 		}
@@ -126,7 +127,6 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		}
 
 		return AEItemStack.create( remaining );
-
 	}
 
 	@Override
@@ -199,9 +199,9 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		}
 
 		return null;
-
 	}
 
+	@Override
 	public TickRateModulation onTick()
 	{
 		LinkedList<IAEItemStack> changes = new LinkedList<IAEItemStack>();
@@ -209,7 +209,8 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		int slots = itemHandler.getSlots();
 
 		// Make room for new slots
-		if ( slots > cachedStacks.length ) {
+		if( slots > cachedStacks.length )
+		{
 			cachedStacks = Arrays.copyOf( cachedStacks, slots );
 			cachedAeStacks = Arrays.copyOf( cachedAeStacks, slots );
 		}
@@ -268,10 +269,11 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		// Handle cases where the number of slots actually is lower now than before
 		if( slots < cachedStacks.length )
 		{
-			for (int slot = slots; slot < cachedStacks.length; slot++ )
+			for( int slot = slots; slot < cachedStacks.length; slot++ )
 			{
 				IAEItemStack aeStack = cachedAeStacks[slot];
-				if ( aeStack != null ) {
+				if( aeStack != null )
+				{
 					IAEItemStack a = aeStack.copy();
 					a.setStackSize( -a.getStackSize() );
 					changes.add( a );
@@ -301,12 +303,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			return false;
 		}
 
-		if( ( a == null && b != null ) || ( a != null && b == null ) )
-		{
-			return true;
-		}
-
-		return !Platform.isSameItemPrecise( a, b );
+		return a == null || b == null || !Platform.isSameItemPrecise( a, b );
 	}
 
 	private void postDifference( Iterable<IAEItemStack> a )
@@ -327,11 +324,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		}
 	}
 
-	private BaseActionSource getActionSource()
-	{
-		return this.mySource;
-	}
-
+	@Override
 	public void setActionSource( final BaseActionSource mySource )
 	{
 		this.mySource = mySource;
@@ -366,5 +359,4 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	{
 		this.listeners.remove( l );
 	}
-
 }

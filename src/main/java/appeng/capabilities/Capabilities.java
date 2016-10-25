@@ -13,8 +13,11 @@ import appeng.api.storage.IStorageMonitorableAccessor;
 /**
  * Utility class that holds various capabilities, both by AE2 and other Mods.
  */
-public class Capabilities
+public final class Capabilities
 {
+
+	private Capabilities() {
+	}
 
 	@CapabilityInject( IStorageMonitorableAccessor.class )
 	public static Capability<IStorageMonitorableAccessor> STORAGE_MONITORABLE_ACCESSOR;

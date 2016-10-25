@@ -118,10 +118,12 @@ class CondenserFluidInventory implements IMEMonitor<IAEFluidStack>
 	@Override
 	public void addListener( IMEMonitorHandlerReceiver<IAEFluidStack> l, Object verificationToken )
 	{
+		// Not implemented since the Condenser automatically voids everything, and there are no updates
 	}
 
 	@Override
 	public void removeListener( IMEMonitorHandlerReceiver<IAEFluidStack> l )
 	{
+		// Not implemented since we don't remember registered listeners anyway
 	}
 }

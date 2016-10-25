@@ -114,10 +114,12 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>
 	@Override
 	public void addListener( IMEMonitorHandlerReceiver<IAEItemStack> l, Object verificationToken )
 	{
+		// Not implemented since the Condenser automatically voids everything, and there are no updates
 	}
 
 	@Override
 	public void removeListener( IMEMonitorHandlerReceiver<IAEItemStack> l )
 	{
+		// Not implemented since we don't remember registered listeners anyway
 	}
 }

@@ -139,6 +139,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 		return StorageChannel.ITEMS;
 	}
 
+	@Override
 	public TickRateModulation onTick()
 	{
 
@@ -329,6 +330,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 		return this.mySource;
 	}
 
+	@Override
 	public void setActionSource( final BaseActionSource mySource )
 	{
 		this.mySource = mySource;
