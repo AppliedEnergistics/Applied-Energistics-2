@@ -35,6 +35,8 @@ import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 
+import appeng.client.render.VertexFormats;
+
 
 /**
  * Builds the quads for a cube.
@@ -84,7 +86,7 @@ public class CubeBuilder
 		if( renderFullBright )
 		{
 			savedFormat = format;
-			format = DefaultVertexFormats.BLOCK;
+			format = VertexFormats.getFormatWithLightMap( format );
 		}
 
 		for( EnumFacing face : drawFaces )
