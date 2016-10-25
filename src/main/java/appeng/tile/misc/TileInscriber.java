@@ -22,7 +22,6 @@ package appeng.tile.misc;
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
@@ -35,6 +34,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -69,6 +71,7 @@ import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+import appeng.util.inv.AdaptorIInventory;
 import appeng.util.inv.WrapperInventoryRange;
 import appeng.util.item.AEItemStack;
 
@@ -82,10 +85,15 @@ import appeng.util.item.AEItemStack;
 public class TileInscriber extends AENetworkPowerTile implements IGridTickable, IUpgradeableHost, IConfigManagerHost
 {
 
+	private static final int SLOT_TOP = 0;
+	private static final int SLOT_BOTTOM = 1;
+	private static final int SLOT_MIDDLE = 2;
+	private static final int SLOT_OUT = 3;
+
 	private final int maxProcessingTime = 100;
-	private final int[] top = { 0 };
-	private final int[] bottom = { 1 };
-	private final int[] sides = { 2, 3 };
+	private final int[] top = { SLOT_TOP };
+	private final int[] bottom = { SLOT_BOTTOM };
+	private final int[] sides = { SLOT_MIDDLE, SLOT_OUT };
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 4 );
 	private final IConfigManager settings;
 	private final UpgradeInventory upgrades;
@@ -94,6 +102,9 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	private boolean smash;
 	private int finalStep;
 	private long clientStart;
+	private final IItemHandler topItemHandler = new ItemHandler( 0, 0 );
+	private final IItemHandler bottomItemHandler = new ItemHandler( 1, 0 );
+	private final IItemHandler sideItemHandler = new ItemHandler( 2, 3 );
 
 	@Reflected
 	public TileInscriber()
@@ -236,7 +247,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			return false;
 		}
 
-		if( i == 0 || i == 1 )
+		if( i == SLOT_TOP || i == SLOT_BOTTOM )
 		{
 			if( AEApi.instance().definitions().materials().namePress().isSameAs( itemstack ) )
 			{
@@ -252,7 +263,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			}
 		}
 
-		return i == 2;
+		return i == SLOT_MIDDLE;
 	}
 
 	@Override
@@ -262,7 +273,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		{
 			if( mc != InvOperation.markDirty )
 			{
-				if( slot != 3 )
+				if( slot != SLOT_OUT )
 				{
 					this.setProcessingTime( 0 );
 				}
@@ -289,7 +300,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			return false;
 		}
 
-		return slotIndex == 0 || slotIndex == 1 || slotIndex == 3;
+		return slotIndex == SLOT_TOP || slotIndex == SLOT_BOTTOM || slotIndex == SLOT_OUT;
 	}
 
 	@Override
@@ -431,17 +442,17 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				if( out != null )
 				{
 					final ItemStack outputCopy = out.getOutput().copy();
-					final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this.inv, 3, 1, true ), EnumFacing.UP );
+					final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this.inv, SLOT_OUT, 1, true ), EnumFacing.UP );
 
 					if( ad.addItems( outputCopy ) == null )
 					{
 						this.setProcessingTime( 0 );
 						if( out.getProcessType() == InscriberProcessType.PRESS )
 						{
-							this.setInventorySlotContents( 0, null );
-							this.setInventorySlotContents( 1, null );
+							this.setInventorySlotContents( SLOT_TOP, null );
+							this.setInventorySlotContents( SLOT_BOTTOM, null );
 						}
-						this.setInventorySlotContents( 2, null );
+						this.setInventorySlotContents( SLOT_MIDDLE, null );
 					}
 				}
 
@@ -499,7 +510,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				if( out != null )
 				{
 					final ItemStack outputCopy = out.getOutput().copy();
-					final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this.inv, 3, 1, true ), EnumFacing.UP );
+					final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this.inv, SLOT_OUT, 1, true ), EnumFacing.UP );
 					if( ad.simulateAdd( outputCopy ) == null )
 					{
 						this.setSmash( true );
@@ -533,6 +544,40 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		}
 
 		return null;
+	}
+
+	@Override
+	public boolean hasCapability( Capability<?> capability, EnumFacing facing )
+	{
+		if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
+		{
+			return true;
+		}
+
+		return super.hasCapability( capability, facing );
+	}
+
+	@SuppressWarnings( "unchecked" )
+	@Override
+	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
+	{
+		if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
+		{
+			if( facing == EnumFacing.UP )
+			{
+				return (T) topItemHandler;
+			}
+			else if( facing == EnumFacing.DOWN )
+			{
+				return (T) bottomItemHandler;
+			}
+			else
+			{
+				return (T) sideItemHandler;
+			}
+		}
+
+		return super.getCapability( capability, facing );
 	}
 
 	@Override
@@ -580,4 +625,93 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	{
 		this.processingTime = processingTime;
 	}
+
+	/**
+	 * This is an item handler that exposes the inscribers inventory while providing simulation capabilities that do not
+	 * reset the progress if there's already an item in a slot. Previously, the progress of the inscriber was reset when
+	 * another mod attempetd insertion of items when there were already items in the slot.
+	 */
+	private class ItemHandler implements IItemHandler
+	{
+
+		private final int insertSlot;
+
+		private final int extractSlot;
+
+		private ItemHandler( int insertSlot, int extractSlot )
+		{
+			this.insertSlot = insertSlot;
+			this.extractSlot = extractSlot;
+		}
+
+		@Override
+		public int getSlots()
+		{
+			return insertSlot != extractSlot ? 2 : 1;
+		}
+
+		@Override
+		public ItemStack getStackInSlot( int slot )
+		{
+			if( slot == 0 )
+			{
+				return inv.getStackInSlot( insertSlot );
+			}
+			else if( insertSlot != extractSlot && slot == 1 )
+			{
+				return inv.getStackInSlot( extractSlot );
+			}
+			return null;
+		}
+
+		@Override
+		public ItemStack insertItem( int slot, ItemStack stack, boolean simulate )
+		{
+			if( slot != 0 || stack == null )
+			{
+				return stack;
+			}
+
+			// If there's already an item stack in the slot, we don't allow insertion and don't do any other checks
+			if( inv.getStackInSlot( insertSlot ) != null )
+			{
+				return stack;
+			}
+
+			AdaptorIInventory adapter = new AdaptorIInventory( new WrapperInventoryRange( TileInscriber.this, insertSlot, 1, true ) );
+
+			if( simulate )
+			{
+				return adapter.simulateAdd( stack );
+			}
+			else
+			{
+				return adapter.addItems( stack );
+			}
+		}
+
+		@Override
+		public ItemStack extractItem( int slot, int amount, boolean simulate )
+		{
+			final int validExtractSlot = ( insertSlot == extractSlot ) ? 0 : 1;
+
+			if( slot != validExtractSlot || amount == 0 )
+			{
+				return null;
+			}
+
+			AdaptorIInventory adapter = new AdaptorIInventory( new WrapperInventoryRange( TileInscriber.this, extractSlot, 1, true ) );
+
+			if( simulate )
+			{
+				return adapter.simulateRemove( amount, null, null );
+			}
+			else
+			{
+				return adapter.removeItems( amount, null, null );
+			}
+		}
+
+	}
+
 }
