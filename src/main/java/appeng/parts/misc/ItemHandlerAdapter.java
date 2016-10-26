@@ -68,20 +68,16 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	@Override
 	public IAEItemStack injectItems( IAEItemStack iox, Actionable type, BaseActionSource src )
 	{
-
 		ItemStack orgInput = iox.getItemStack();
 		ItemStack remaining = orgInput;
 
-		// In simulation mode, we don't need to do 2 passes, since if we find an empty slot, we would
-		// eventually insert into it in the second phase. So for the sake of a simulation, we can consider it
-		// immediately.
-		if( type == Actionable.SIMULATE )
+		int slotCount = itemHandler.getSlots();
+		boolean simulate = ( type == Actionable.SIMULATE );
+
+		// This uses a brute force approach and tries to jam it in every slot the inventory exposes.
+		for( int i = 0; i < slotCount && remaining != null; i++ )
 		{
-			remaining = simulateInject( remaining );
-		}
-		else
-		{
-			remaining = performInject( remaining );
+			remaining = itemHandler.insertItem( i, remaining, simulate );
 		}
 
 		// At this point, we still have some items left...
@@ -97,67 +93,6 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		}
 
 		return AEItemStack.create( remaining );
-	}
-
-	private ItemStack performInject( ItemStack remaining )
-	{
-		// For actually inserting the stack, we try to fill up existing stacks in the inventory, and then move onto free slots
-		// Think about this: In a storage drawer or barrel setup, we'd want to attempt to fill up containers that already have the
-		// item we're trying to insert first. The second phase should not cost a considerable amount of time, since it will just search
-		// for empty slots.
-		int slotCount = itemHandler.getSlots();
-
-		// This array is used to remember which slots were viable but skipped in the first phase
-		// This avoids calling getStackInSlot for each slot a second time. Hopefully the JVM will decide
-		// to allocate this array on the stack
-		boolean[] retry = new boolean[slotCount];
-
-		for( int i = 0; i < slotCount; i++ )
-		{
-			ItemStack stackInSlot = itemHandler.getStackInSlot( i );
-
-			if( stackInSlot == null )
-			{
-				retry[i] = true;
-				continue; // In the first phase, we try to top up existing item stacks
-			}
-
-			remaining = itemHandler.insertItem( i, remaining, false );
-			if( remaining == null )
-			{
-				return null; // Awesome, full stack consumed
-			}
-		}
-
-		// If we reached this point, we still have items to insert, our first pass failed to insert
-		// all items. Now we try to insert into empty slots.
-		for( int i = 0; i < slotCount; i++ )
-		{
-			if( retry[i] )
-			{
-				remaining = itemHandler.insertItem( i, remaining, false );
-				if( remaining == null )
-				{
-					break; // Awesome, full stack consumed
-				}
-			}
-		}
-
-		return remaining;
-	}
-
-	private ItemStack simulateInject( ItemStack remaining )
-	{
-		for( int i = 0; i < itemHandler.getSlots(); i++ )
-		{
-			// We have a chance to use this slot for injection
-			remaining = itemHandler.insertItem( i, remaining, true );
-			if( remaining == null )
-			{
-				break; // Awesome, full stack consumed
-			}
-		}
-		return remaining;
 	}
 
 	@Override
