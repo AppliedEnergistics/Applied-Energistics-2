@@ -16,29 +16,18 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.parts.layers;
+package appeng.me.storage;
 
 
-import net.minecraft.util.EnumFacing;
-
-import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.security.BaseActionSource;
-import appeng.api.parts.IPart;
-import appeng.api.parts.LayerBase;
-import appeng.api.storage.IStorageMonitorable;
+import appeng.api.networking.ticking.TickRateModulation;
 
 
-public class LayerITileStorageMonitorable extends LayerBase implements ITileStorageMonitorable
+public interface ITickingMonitor
 {
 
-	@Override
-	public IStorageMonitorable getMonitorable( final EnumFacing side, final BaseActionSource src )
-	{
-		final IPart part = this.getPart( side );
-		if( part instanceof ITileStorageMonitorable )
-		{
-			return ( (ITileStorageMonitorable) part ).getMonitorable( side, src );
-		}
-		return null;
-	}
+	TickRateModulation onTick();
+
+	void setActionSource( BaseActionSource actionSource );
+
 }

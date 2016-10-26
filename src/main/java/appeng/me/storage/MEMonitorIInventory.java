@@ -44,7 +44,7 @@ import appeng.util.Platform;
 import appeng.util.inv.ItemSlot;
 
 
-public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
+public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMonitor
 {
 
 	private final InventoryAdaptor adaptor;
@@ -139,6 +139,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 		return StorageChannel.ITEMS;
 	}
 
+	@Override
 	public TickRateModulation onTick()
 	{
 
@@ -329,6 +330,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>
 		return this.mySource;
 	}
 
+	@Override
 	public void setActionSource( final BaseActionSource mySource )
 	{
 		this.mySource = mySource;

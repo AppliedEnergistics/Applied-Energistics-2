@@ -34,7 +34,6 @@ import appeng.api.movable.IMovableRegistry;
 import appeng.api.networking.IGridCacheRegistry;
 import appeng.api.parts.IPartModels;
 import appeng.api.storage.ICellRegistry;
-import appeng.api.storage.IExternalStorageRegistry;
 
 
 /**
@@ -49,7 +48,6 @@ public class RegistryContainer implements IRegistryContainer
 {
 	private final IGrinderRegistry grinder = new GrinderRecipeManager();
 	private final IInscriberRegistry inscriber = new InscriberRegistry();
-	private final IExternalStorageRegistry storage = new ExternalStorageRegistry();
 	private final ICellRegistry cell = new CellRegistry();
 	private final ILocatableRegistry locatable = new LocatableRegistry();
 	private final ISpecialComparisonRegistry comparison = new SpecialComparisonRegistry();
@@ -72,12 +70,6 @@ public class RegistryContainer implements IRegistryContainer
 	public IGridCacheRegistry gridCache()
 	{
 		return this.gridCache;
-	}
-
-	@Override
-	public IExternalStorageRegistry externalStorage()
-	{
-		return this.storage;
 	}
 
 	@Override

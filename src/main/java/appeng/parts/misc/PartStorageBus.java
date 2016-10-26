@@ -30,9 +30,12 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -56,17 +59,19 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.storage.ICellContainer;
-import appeng.api.storage.IExternalStorageHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
+import appeng.capabilities.Capabilities;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.core.stats.Achievements;
@@ -76,6 +81,7 @@ import appeng.helpers.IPriorityHost;
 import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
+import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.me.storage.MEMonitorIInventory;
 import appeng.parts.automation.PartUpgradeable;
@@ -86,12 +92,7 @@ import appeng.util.prioitylist.FuzzyPriorityList;
 import appeng.util.prioitylist.PrecisePriorityList;
 
 
-// TODO: BC Integration
-//@Interface( iname = IntegrationType.BuildCraftTransport, iface = "buildcraft.api.transport.IPipeConnection" )
-public class PartStorageBus extends PartUpgradeable implements IGridTickable, ICellContainer, IMEMonitorHandlerReceiver<IAEItemStack> /*
-																																	 * ,
-																																	 * IPipeConnection
-																																	 */, IPriorityHost
+public class PartStorageBus extends PartUpgradeable implements IGridTickable, ICellContainer, IMEMonitorHandlerReceiver<IAEItemStack>, IPriorityHost
 {
 
 	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_base" );
@@ -115,8 +116,8 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	private final AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
 	private int priority = 0;
 	private boolean cached = false;
-	private MEMonitorIInventory monitor = null;
-	private MEInventoryHandler handler = null;
+	private ITickingMonitor monitor = null;
+	private MEInventoryHandler<? extends IAEStack> handler = null;
 	private int handlerHash = 0;
 	private boolean wasActive = false;
 	private byte resetCacheLogic = 0;
@@ -367,6 +368,41 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		Platform.postListChanges( before, after, this, this.mySrc );
 	}
 
+	@SuppressWarnings( "unchecked" )
+	private IMEInventory<? extends IAEItemStack> getInventoryWrapper( TileEntity target )
+	{
+
+		EnumFacing targetSide = this.getSide().getFacing().getOpposite();
+
+		// Prioritize a handler to directly link to another ME network
+		IStorageMonitorableAccessor accessor = target.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide );
+
+		if( accessor != null )
+		{
+			IStorageMonitorable inventory = accessor.getInventory( mySrc );
+			if( inventory != null )
+			{
+				return inventory.getItemInventory();
+			}
+
+			// So this could / can be a design decision. If the tile does support our custom capability,
+			// but it does not return an inventory for the action source, we do NOT fall back to using
+			// IItemHandler's, as that might circumvent the security setings, and might also cause
+			// performance issues.
+			return null;
+		}
+
+		// Check via cap for IItemHandler
+		IItemHandler handlerExt = target.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide );
+		if( handlerExt != null )
+		{
+			return new ItemHandlerAdapter( handlerExt );
+		}
+
+		return null;
+
+	}
+
 	public MEInventoryHandler getInternalHandler()
 	{
 		if( this.cached )
@@ -391,58 +427,54 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		this.monitor = null;
 		if( target != null )
 		{
-			final IExternalStorageHandler esh = AEApi.instance().registries().externalStorage().getHandler( target, this.getSide().getFacing().getOpposite(), StorageChannel.ITEMS, this.mySrc );
-			if( esh != null )
+			IMEInventory<? extends IAEStack> inv = getInventoryWrapper( target );
+
+			if( inv instanceof MEMonitorIInventory )
 			{
-				final IMEInventory inv = esh.getInventory( target, this.getSide().getFacing().getOpposite(), StorageChannel.ITEMS, this.mySrc );
+				final MEMonitorIInventory h = (MEMonitorIInventory) inv;
+				h.setMode( (StorageFilter) this.getConfigManager().getSetting( Settings.STORAGE_FILTER ) );
+			}
 
-				if( inv instanceof MEMonitorIInventory )
+			if( inv instanceof ITickingMonitor )
+			{
+				this.monitor = (ITickingMonitor) inv;
+				this.monitor.setActionSource( new MachineSource( this ) );
+			}
+
+			if( inv != null )
+			{
+				this.checkInterfaceVsStorageBus( target, this.getSide().getOpposite() );
+
+				this.handler = new MEInventoryHandler<>( inv, StorageChannel.ITEMS );
+
+				this.handler.setBaseAccess( (AccessRestriction) this.getConfigManager().getSetting( Settings.ACCESS ) );
+				this.handler.setWhitelist( this.getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );
+				this.handler.setPriority( this.priority );
+
+				final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
+
+				final int slotsToUse = 18 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 9;
+				for( int x = 0; x < this.Config.getSizeInventory() && x < slotsToUse; x++ )
 				{
-					final MEMonitorIInventory h = (MEMonitorIInventory) inv;
-					h.setMode( (StorageFilter) this.getConfigManager().getSetting( Settings.STORAGE_FILTER ) );
-					h.setActionSource( new MachineSource( this ) );
+					final IAEItemStack is = this.Config.getAEStackInSlot( x );
+					if( is != null )
+					{
+						priorityList.add( is );
+					}
 				}
 
-				if( inv instanceof MEMonitorIInventory )
+				if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 				{
-					this.monitor = (MEMonitorIInventory) inv;
+					this.handler.setPartitionList( new FuzzyPriorityList( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
+				}
+				else
+				{
+					this.handler.setPartitionList( new PrecisePriorityList( priorityList ) );
 				}
 
-				if( inv != null )
+				if( inv instanceof IBaseMonitor )
 				{
-					this.checkInterfaceVsStorageBus( target, this.getSide().getOpposite() );
-
-					this.handler = new MEInventoryHandler( inv, StorageChannel.ITEMS );
-
-					this.handler.setBaseAccess( (AccessRestriction) this.getConfigManager().getSetting( Settings.ACCESS ) );
-					this.handler.setWhitelist( this.getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );
-					this.handler.setPriority( this.priority );
-
-					final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
-
-					final int slotsToUse = 18 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 9;
-					for( int x = 0; x < this.Config.getSizeInventory() && x < slotsToUse; x++ )
-					{
-						final IAEItemStack is = this.Config.getAEStackInSlot( x );
-						if( is != null )
-						{
-							priorityList.add( is );
-						}
-					}
-
-					if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
-					{
-						this.handler.setPartitionList( new FuzzyPriorityList( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
-					}
-					else
-					{
-						this.handler.setPartitionList( new PrecisePriorityList( priorityList ) );
-					}
-
-					if( inv instanceof IMEMonitor )
-					{
-						( (IBaseMonitor) inv ).addListener( this, this.handler );
-					}
+					( (IBaseMonitor) inv ).addListener( this, this.handler );
 				}
 			}
 		}

@@ -27,9 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.ITextComponent;
 
-import appeng.api.storage.IMEInventory;
 import appeng.core.AELog;
-import appeng.me.storage.MEIInventoryWrapper;
 import appeng.util.Platform;
 import appeng.util.iterators.InvIterator;
 
@@ -48,11 +46,6 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 		this.size = size;
 		this.maxStack = 64;
 		this.inv = new ItemStack[size];
-	}
-
-	public IMEInventory getMEInventory()
-	{
-		return new MEIInventoryWrapper( this, null );
 	}
 
 	public boolean isEmpty()

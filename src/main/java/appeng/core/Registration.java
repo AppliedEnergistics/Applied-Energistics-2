@@ -56,6 +56,7 @@ import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPartHelper;
+import appeng.capabilities.Capabilities;
 import appeng.core.features.AEFeature;
 import appeng.core.features.registries.P2PTunnelRegistry;
 import appeng.core.features.registries.entries.BasicCellHandler;
@@ -75,7 +76,6 @@ import appeng.me.cache.PathGridCache;
 import appeng.me.cache.SecurityCache;
 import appeng.me.cache.SpatialPylonCache;
 import appeng.me.cache.TickManagerCache;
-import appeng.me.storage.AEExternalHandler;
 import appeng.parts.PartPlacement;
 import appeng.recipes.AEItemResolver;
 import appeng.recipes.CustomRecipeConfig;
@@ -130,6 +130,8 @@ public final class Registration
 	void preInitialize( final FMLPreInitializationEvent event )
 	{
 		this.registerSpatial( false );
+
+		Capabilities.register();
 
 		final Api api = Api.INSTANCE;
 		final IRecipeHandlerRegistry recipeRegistry = api.registries().recipes();
@@ -247,12 +249,6 @@ public final class Registration
 		recipeLoader.run();
 
 		// TODO readd layers
-		// partHelper.registerNewLayer( "appeng.parts.layers.LayerISidedInventory",
-		// "net.minecraft.inventory.ISidedInventory" );
-		// partHelper.registerNewLayer( "appeng.parts.layers.LayerIFluidHandler",
-		// "net.minecraftforge.fluids.IFluidHandler" );
-		// partHelper.registerNewLayer( "appeng.parts.layers.LayerITileStorageMonitorable",
-		// "appeng.api.implementations.tiles.ITileStorageMonitorable" );
 
 		// if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.IC2 ) )
 		// {
@@ -291,8 +287,6 @@ public final class Registration
 		gcr.registerGridCache( ISpatialCache.class, SpatialPylonCache.class );
 		gcr.registerGridCache( ISecurityGrid.class, SecurityCache.class );
 		gcr.registerGridCache( ICraftingGrid.class, CraftingGridCache.class );
-
-		registries.externalStorage().addExternalStorageInterface( new AEExternalHandler() );
 
 		registries.cell().addCellHandler( new BasicCellHandler() );
 		registries.cell().addCellHandler( new CreativeCellHandler() );

@@ -16,60 +16,63 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.me.storage;
+package appeng.tile.misc;
 
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
-import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.StorageChannel;
-import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.tile.misc.TileCondenser;
+import appeng.util.item.ItemList;
 
 
-public class VoidFluidInventory implements IMEInventoryHandler<IAEFluidStack>
+class CondenserItemInventory implements IMEMonitor<IAEItemStack>
 {
 
 	private final TileCondenser target;
 
-	public VoidFluidInventory( final TileCondenser te )
+	CondenserItemInventory( final TileCondenser te )
 	{
 		this.target = te;
 	}
 
 	@Override
-	public IAEFluidStack injectItems( final IAEFluidStack input, final Actionable mode, final BaseActionSource src )
+	public IAEItemStack injectItems( final IAEItemStack input, final Actionable mode, final BaseActionSource src )
 	{
-		if( mode == Actionable.SIMULATE )
+		if( mode == Actionable.MODULATE && input != null )
 		{
-			return null;
+			this.target.addPower( input.getStackSize() );
 		}
 
-		if( input != null )
-		{
-			this.target.addPower( input.getStackSize() / 1000.0 );
-		}
 		return null;
 	}
 
 	@Override
-	public IAEFluidStack extractItems( final IAEFluidStack request, final Actionable mode, final BaseActionSource src )
+	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final BaseActionSource src )
 	{
 		return null;
 	}
 
 	@Override
-	public IItemList<IAEFluidStack> getAvailableItems( final IItemList out )
+	public IItemList<IAEItemStack> getAvailableItems( final IItemList out )
 	{
 		return out;
 	}
 
 	@Override
+	public IItemList<IAEItemStack> getStorageList()
+	{
+		return new ItemList();
+	}
+
+	@Override
 	public StorageChannel getChannel()
 	{
-		return StorageChannel.FLUIDS;
+		return StorageChannel.ITEMS;
 	}
 
 	@Override
@@ -79,13 +82,13 @@ public class VoidFluidInventory implements IMEInventoryHandler<IAEFluidStack>
 	}
 
 	@Override
-	public boolean isPrioritized( final IAEFluidStack input )
+	public boolean isPrioritized( final IAEItemStack input )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canAccept( final IAEFluidStack input )
+	public boolean canAccept( final IAEItemStack input )
 	{
 		return true;
 	}
@@ -106,5 +109,17 @@ public class VoidFluidInventory implements IMEInventoryHandler<IAEFluidStack>
 	public boolean validForPass( final int i )
 	{
 		return i == 2;
+	}
+
+	@Override
+	public void addListener( IMEMonitorHandlerReceiver<IAEItemStack> l, Object verificationToken )
+	{
+		// Not implemented since the Condenser automatically voids everything, and there are no updates
+	}
+
+	@Override
+	public void removeListener( IMEMonitorHandlerReceiver<IAEItemStack> l )
+	{
+		// Not implemented since we don't remember registered listeners anyway
 	}
 }

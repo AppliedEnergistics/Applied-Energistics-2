@@ -27,12 +27,16 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBetterStorage;
 import appeng.util.inv.AdaptorIInventory;
+import appeng.util.inv.AdaptorItemHandler;
 import appeng.util.inv.AdaptorList;
 import appeng.util.inv.AdaptorPlayerInventory;
 import appeng.util.inv.IInventoryDestination;
@@ -40,6 +44,10 @@ import appeng.util.inv.ItemSlot;
 import appeng.util.inv.WrapperMCISidedInventory;
 
 
+/**
+ * Universal Facade for other inventories. Used to conveniently interact with various types of inventories. This is not used for
+ * actually monitoring an inventory. It is just for insertion and extraction, and is primarily used by import/export buses.
+ */
 public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 {
 
@@ -49,6 +57,18 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 		if( te == null )
 		{
 			return null;
+		}
+
+		if ( te instanceof ICapabilityProvider )
+		{
+			ICapabilityProvider capProvider = (ICapabilityProvider) te;
+
+			// Attempt getting an IItemHandler for the given side via caps
+			IItemHandler itemHandler = capProvider.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d );
+			if( itemHandler != null && itemHandler.getSlots() > 0 )
+			{
+				return new AdaptorItemHandler( itemHandler );
+			}
 		}
 
 		final IBetterStorage bs = (IBetterStorage) ( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BetterStorage ) ? IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BetterStorage ) : null );

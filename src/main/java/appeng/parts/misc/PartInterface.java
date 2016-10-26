@@ -38,11 +38,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
-import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -50,7 +48,6 @@ import appeng.api.networking.crafting.ICraftingProviderHelper;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
@@ -75,7 +72,7 @@ import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
 
 
-public class PartInterface extends PartBasicState implements IGridTickable, IStorageMonitorable, IInventoryDestination, IInterfaceHost, ISidedInventory, IAEAppEngInventory, ITileStorageMonitorable, IPriorityHost
+public class PartInterface extends PartBasicState implements IGridTickable, IStorageMonitorable, IInventoryDestination, IInterfaceHost, ISidedInventory, IAEAppEngInventory, IPriorityHost
 {
 
 	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/interface_base" );
@@ -343,12 +340,6 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	public TileEntity getTileEntity()
 	{
 		return super.getHost().getTile();
-	}
-
-	@Override
-	public IStorageMonitorable getMonitorable( final EnumFacing side, final BaseActionSource src )
-	{
-		return this.duality.getMonitorable( side, src, this );
 	}
 
 	@Override

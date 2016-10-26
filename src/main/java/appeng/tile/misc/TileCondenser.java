@@ -19,22 +19,35 @@
 package appeng.tile.misc;
 
 
+import javax.annotation.Nullable;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.FluidTankProperties;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
 import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IStorageComponent;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.IStorageMonitorableAccessor;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.capabilities.Capabilities;
 import appeng.tile.AEBaseInvTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
@@ -45,15 +58,20 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
 
-public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConfigManagerHost, IConfigurableObject
+public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, IConfigurableObject
 {
 
 	public static final int BYTE_MULTIPLIER = 8;
 
-	private static final FluidTankInfo[] EMPTY = { new FluidTankInfo( null, 10 ) };
-	private final int[] sides = { 0, 1 };
+	private final int[] sides = {
+			0,
+			1
+	};
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 3 );
 	private final ConfigManager cm = new ConfigManager( this );
+	private final IItemHandler itemHandler = new ItemHandler();
+	private final IFluidHandler fluidHandler = new FluidHandler();
+	private final MEHandler meHandler = new MEHandler();
 
 	private double storedPower = 0;
 
@@ -223,47 +241,6 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	}
 
 	@Override
-	public int fill( final EnumFacing from, final FluidStack resource, final boolean doFill )
-	{
-		if( doFill )
-		{
-			this.addPower( ( resource == null ? 0.0 : (double) resource.amount ) / 500.0 );
-		}
-
-		return resource == null ? 0 : resource.amount;
-	}
-
-	@Override
-	public FluidStack drain( final EnumFacing from, final FluidStack resource, final boolean doDrain )
-	{
-		return null;
-	}
-
-	@Override
-	public FluidStack drain( final EnumFacing from, final int maxDrain, final boolean doDrain )
-	{
-		return null;
-	}
-
-	@Override
-	public boolean canFill( final EnumFacing from, final Fluid fluid )
-	{
-		return true;
-	}
-
-	@Override
-	public boolean canDrain( final EnumFacing from, final Fluid fluid )
-	{
-		return false;
-	}
-
-	@Override
-	public FluidTankInfo[] getTankInfo( final EnumFacing from )
-	{
-		return EMPTY;
-	}
-
-	@Override
 	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
 	{
 		this.addPower( 0 );
@@ -283,5 +260,155 @@ public class TileCondenser extends AEBaseInvTile implements IFluidHandler, IConf
 	private void setStoredPower( final double storedPower )
 	{
 		this.storedPower = storedPower;
+	}
+
+	@Override
+	public boolean hasCapability( Capability<?> capability, EnumFacing facing )
+	{
+		if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
+		{
+			return true;
+		}
+		else if( capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY )
+		{
+			return true;
+		}
+		else if( capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR )
+		{
+			return true;
+		}
+		return super.hasCapability( capability, facing );
+	}
+
+	@SuppressWarnings( "unchecked" )
+	@Override
+	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
+	{
+		if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
+		{
+			return (T) itemHandler;
+		}
+		else if( capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY )
+		{
+			return (T) fluidHandler;
+		}
+		else if( capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR )
+		{
+			return (T) meHandler;
+		}
+		return super.getCapability( capability, facing );
+	}
+
+	private class ItemHandler implements IItemHandler
+	{
+
+		@Override
+		public int getSlots()
+		{
+			// We only expose the void slot
+			return 1;
+		}
+
+		@Override
+		public ItemStack getStackInSlot( int slot )
+		{
+			// The void slot never has any content
+			return null;
+		}
+
+		@Override
+		public ItemStack insertItem( int slot, ItemStack stack, boolean simulate )
+		{
+			if( slot != 0 )
+			{
+				return stack;
+			}
+			if( !simulate && stack != null )
+			{
+				addPower( stack.stackSize );
+			}
+			return null;
+		}
+
+		@Override
+		public ItemStack extractItem( int slot, int amount, boolean simulate )
+		{
+			return null;
+		}
+	}
+
+
+	private static final IFluidTankProperties[] EMPTY = { new FluidTankProperties( null, 10, true, false ) };
+
+
+	/**
+	 * A fluid handler that exposes a 10 bucket tank that can only be filled, and - when filled - will add power
+	 * to this condenser.
+	 */
+	private class FluidHandler implements IFluidHandler
+	{
+
+		@Override
+		public IFluidTankProperties[] getTankProperties()
+		{
+			return EMPTY;
+		}
+
+		@Override
+		public int fill( FluidStack resource, boolean doFill )
+		{
+			if( doFill )
+			{
+				addPower( ( resource == null ? 0.0 : (double) resource.amount ) / 500.0 );
+			}
+
+			return resource == null ? 0 : resource.amount;
+		}
+
+		@Nullable
+		@Override
+		public FluidStack drain( FluidStack resource, boolean doDrain )
+		{
+			return null;
+		}
+
+		@Nullable
+		@Override
+		public FluidStack drain( int maxDrain, boolean doDrain )
+		{
+			return null;
+		}
+	}
+
+
+	/**
+	 * This is used to expose a fake ME subnetwork that is only composed of this condenser tile. The purpose of this is to enable the condenser to
+	 * override the {@link appeng.api.storage.IMEInventoryHandler#validForPass(int)} method to make sure a condenser is only ever used if an item
+	 * can't go anywhere else.
+	 */
+	private class MEHandler implements IStorageMonitorableAccessor, IStorageMonitorable
+	{
+		private final CondenserFluidInventory fluidInventory = new CondenserFluidInventory( TileCondenser.this );
+
+		private final CondenserItemInventory itemInventory = new CondenserItemInventory( TileCondenser.this );
+
+		@Nullable
+		@Override
+		public IStorageMonitorable getInventory( BaseActionSource src )
+		{
+			return this;
+		}
+
+		@Override
+		public IMEMonitor<IAEItemStack> getItemInventory()
+		{
+			return itemInventory;
+		}
+
+		@Override
+		public IMEMonitor<IAEFluidStack> getFluidInventory()
+		{
+			return fluidInventory;
+		}
 	}
 }
