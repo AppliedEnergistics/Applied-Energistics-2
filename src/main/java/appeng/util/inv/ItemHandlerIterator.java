@@ -2,6 +2,7 @@ package appeng.util.inv;
 
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import net.minecraftforge.items.IItemHandler;
 
@@ -15,7 +16,7 @@ class ItemHandlerIterator implements Iterator<ItemSlot>
 
 	private int slot = 0;
 
-	public ItemHandlerIterator( IItemHandler itemHandler )
+	ItemHandlerIterator( IItemHandler itemHandler )
 	{
 		this.itemHandler = itemHandler;
 	}
@@ -29,6 +30,10 @@ class ItemHandlerIterator implements Iterator<ItemSlot>
 	@Override
 	public ItemSlot next()
 	{
+		if( slot >= itemHandler.getSlots() )
+		{
+			throw new NoSuchElementException();
+		}
 		itemSlot.setExtractable( itemHandler.extractItem( slot, 1, true ) != null );
 		itemSlot.setItemStack( itemHandler.getStackInSlot( slot ) );
 		itemSlot.setSlot( slot );

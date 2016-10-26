@@ -16,7 +16,8 @@ import appeng.api.storage.IStorageMonitorableAccessor;
 public final class Capabilities
 {
 
-	private Capabilities() {
+	private Capabilities()
+	{
 	}
 
 	@CapabilityInject( IStorageMonitorableAccessor.class )
