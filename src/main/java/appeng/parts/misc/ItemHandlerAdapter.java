@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import net.minecraft.item.ItemStack;
@@ -76,60 +77,11 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		// immediately.
 		if( type == Actionable.SIMULATE )
 		{
-			for( int i = 0; i < itemHandler.getSlots(); i++ )
-			{
-				// We have a chance to use this slot for injection
-				remaining = itemHandler.insertItem( i, remaining, true );
-				if( remaining == null )
-				{
-					break; // Awesome, full stack consumed
-				}
-			}
+			remaining = simulateInject( remaining );
 		}
 		else
 		{
-
-			// For actually inserting the stack, we try to fill up existing stacks in the inventory, and then move onto free slots
-			// Think about this: In a storage drawer or barrel setup, we'd want to attempt to fill up containers that already have the
-			// item we're trying to insert first. The second phase should not cost a considerable amount of time, since it will just search
-			// for empty slots.
-			int slotCount = itemHandler.getSlots();
-
-			// This array is used to remember which slots were viable but skipped in the first phase
-			// This avoids calling getStackInSlot for each slot a second time. Hopefully the JVM will decide
-			// to allocate this array on the stack
-			boolean[] retry = new boolean[slotCount];
-
-			for( int i = 0; i < slotCount; i++ )
-			{
-				ItemStack stackInSlot = itemHandler.getStackInSlot( i );
-
-				if( stackInSlot == null )
-				{
-					retry[i] = true;
-					continue; // In the first phase, we try to top up existing item stacks
-				}
-
-				remaining = itemHandler.insertItem( i, remaining, false );
-				if( remaining == null )
-				{
-					break; // Awesome, full stack consumed
-				}
-			}
-
-			// If we reached this point, we still have items to insert, our first pass failed.
-			// Now we try to insert into empty slots
-			for( int i = 0; i < slotCount; i++ )
-			{
-				if( retry[i] )
-				{
-					remaining = itemHandler.insertItem( i, remaining, false );
-					if( remaining == null )
-					{
-						break; // Awesome, full stack consumed
-					}
-				}
-			}
+			remaining = performInject( remaining );
 		}
 
 		// At this point, we still have some items left...
@@ -145,6 +97,67 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		}
 
 		return AEItemStack.create( remaining );
+	}
+
+	private ItemStack performInject( ItemStack remaining )
+	{
+		// For actually inserting the stack, we try to fill up existing stacks in the inventory, and then move onto free slots
+		// Think about this: In a storage drawer or barrel setup, we'd want to attempt to fill up containers that already have the
+		// item we're trying to insert first. The second phase should not cost a considerable amount of time, since it will just search
+		// for empty slots.
+		int slotCount = itemHandler.getSlots();
+
+		// This array is used to remember which slots were viable but skipped in the first phase
+		// This avoids calling getStackInSlot for each slot a second time. Hopefully the JVM will decide
+		// to allocate this array on the stack
+		boolean[] retry = new boolean[slotCount];
+
+		for( int i = 0; i < slotCount; i++ )
+		{
+			ItemStack stackInSlot = itemHandler.getStackInSlot( i );
+
+			if( stackInSlot == null )
+			{
+				retry[i] = true;
+				continue; // In the first phase, we try to top up existing item stacks
+			}
+
+			remaining = itemHandler.insertItem( i, remaining, false );
+			if( remaining == null )
+			{
+				return null; // Awesome, full stack consumed
+			}
+		}
+
+		// If we reached this point, we still have items to insert, our first pass failed to insert
+		// all items. Now we try to insert into empty slots.
+		for( int i = 0; i < slotCount; i++ )
+		{
+			if( retry[i] )
+			{
+				remaining = itemHandler.insertItem( i, remaining, false );
+				if( remaining == null )
+				{
+					break; // Awesome, full stack consumed
+				}
+			}
+		}
+
+		return remaining;
+	}
+
+	private ItemStack simulateInject( ItemStack remaining )
+	{
+		for( int i = 0; i < itemHandler.getSlots(); i++ )
+		{
+			// We have a chance to use this slot for injection
+			remaining = itemHandler.insertItem( i, remaining, true );
+			if( remaining == null )
+			{
+				break; // Awesome, full stack consumed
+			}
+		}
+		return remaining;
 	}
 
 	@Override
@@ -222,7 +235,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	@Override
 	public TickRateModulation onTick()
 	{
-		LinkedList<IAEItemStack> changes = new LinkedList<IAEItemStack>();
+		LinkedList<IAEItemStack> changes = new LinkedList<>();
 
 		int slots = itemHandler.getSlots();
 
@@ -243,44 +256,11 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
 			if( this.isDifferent( newIS, oldIS ) )
 			{
-				// Completely different item
-				cachedStacks[slot] = newIS;
-				cachedAeStacks[slot] = AEItemStack.create( newIS );
-
-				// If we had a stack previously in this slot, notify the newtork about its disappearance
-				if( oldAeIS != null )
-				{
-					oldAeIS.setStackSize( -oldAeIS.getStackSize() );
-					changes.add( oldAeIS );
-				}
-
-				// Notify the network about the new stack. Note that this is null if newIS was null
-				if( cachedAeStacks[slot] != null )
-				{
-					changes.add( cachedAeStacks[slot] );
-				}
+				addItemChange( slot, oldAeIS, newIS, changes );
 			}
-			else
+			else if( newIS != null && oldIS != null )
 			{
-				// Still the same item, but amount might have changed
-				int newSize = ( newIS == null ? 0 : newIS.stackSize );
-				int diff = newSize - ( oldIS == null ? 0 : oldIS.stackSize );
-
-				IAEItemStack stack = ( oldAeIS == null ? AEItemStack.create( newIS ) : oldAeIS.copy() );
-				if( stack != null )
-				{
-					stack.setStackSize( newSize );
-				}
-
-				if( diff != 0 && stack != null )
-				{
-					cachedStacks[slot] = newIS;
-					cachedAeStacks[slot] = stack;
-
-					final IAEItemStack a = stack.copy();
-					a.setStackSize( diff );
-					changes.add( a );
-				}
+				addPossibleStackSizeChange( slot, oldAeIS, newIS, changes );
 			}
 		}
 
@@ -311,6 +291,45 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		else
 		{
 			return TickRateModulation.SLOWER;
+		}
+	}
+
+	private void addItemChange( int slot, IAEItemStack oldAeIS, ItemStack newIS, List<IAEItemStack> changes )
+	{
+		// Completely different item
+		cachedStacks[slot] = newIS;
+		cachedAeStacks[slot] = AEItemStack.create( newIS );
+
+		// If we had a stack previously in this slot, notify the newtork about its disappearance
+		if( oldAeIS != null )
+		{
+			oldAeIS.setStackSize( -oldAeIS.getStackSize() );
+			changes.add( oldAeIS );
+		}
+
+		// Notify the network about the new stack. Note that this is null if newIS was null
+		if( cachedAeStacks[slot] != null )
+		{
+			changes.add( cachedAeStacks[slot] );
+		}
+	}
+
+	private void addPossibleStackSizeChange( int slot, IAEItemStack oldAeIS, ItemStack newIS, List<IAEItemStack> changes )
+	{
+		// Still the same item, but amount might have changed
+		long diff = newIS.stackSize - oldAeIS.getStackSize();
+
+		if( diff != 0 )
+		{
+			IAEItemStack stack = oldAeIS.copy();
+			stack.setStackSize( newIS.stackSize );
+
+			cachedStacks[slot] = newIS;
+			cachedAeStacks[slot] = stack;
+
+			final IAEItemStack a = stack.copy();
+			a.setStackSize( diff );
+			changes.add( a );
 		}
 	}
 
