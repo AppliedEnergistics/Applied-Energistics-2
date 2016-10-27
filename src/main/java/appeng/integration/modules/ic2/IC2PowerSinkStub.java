@@ -15,18 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
-package appeng.tile.powersink;
+
+package appeng.integration.modules.ic2;
 
 
-import appeng.api.config.PowerUnits;
-import appeng.api.networking.energy.IAEPowerStorage;
-
-
-public interface IExternalPowerSink extends IAEPowerStorage
+/**
+ * Implementation of IC2PowerSink that just stubs out all methods and does nothing.
+ */
+public enum IC2PowerSinkStub implements IC2PowerSink
 {
-
-	double injectExternalPower( PowerUnits input, double amt );
-
-	double getExternalPowerDemand( PowerUnits externalUnit, double maxPowerRequired );
-
+	INSTANCE
 }
