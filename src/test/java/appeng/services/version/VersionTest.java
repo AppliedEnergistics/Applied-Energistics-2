@@ -36,6 +36,7 @@ public final class VersionTest
 	private static final Version DEFAULT_VERSION_RV2_BETA_9 = new DefaultVersion( 2, Channel.Beta, 9 );
 	private static final Version DEFAULT_VERSION_RV3_BETA_8 = new DefaultVersion( 3, Channel.Beta, 8 );
 	private static final Version DEFAULT_VERSION_RV2_ALPHA_8 = new DefaultVersion( 2, Channel.Alpha, 8 );
+	private static final Version DEFAULT_VERSION_RV4_ALPHA_1 = new DefaultVersion( 4, Channel.Alpha, 1 );
 	private static final Version DO_NOT_CHECK_VERSION = new DoNotCheckVersion();
 	private static final Version MISSING_VERSION = new MissingVersion();
 
@@ -69,6 +70,8 @@ public final class VersionTest
 	public void compareTwoDefaultVersions()
 	{
 		Assert.assertTrue( DEFAULT_VERSION_RV2_BETA_8.isNewerAs( DEFAULT_VERSION_RV2_ALPHA_8 ) );
+		Assert.assertTrue( DEFAULT_VERSION_RV4_ALPHA_1.isNewerAs( DEFAULT_VERSION_RV3_BETA_8 ) );
+		Assert.assertTrue( DEFAULT_VERSION_RV2_BETA_9.isNewerAs( DEFAULT_VERSION_RV2_BETA_8 ) );
 	}
 
 	@Test
