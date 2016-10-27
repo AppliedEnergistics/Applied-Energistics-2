@@ -36,6 +36,8 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
+import appeng.integration.modules.IC2;
+import appeng.integration.modules.ic2.IC2PowerSink;
 import appeng.tile.AEBaseInvTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
@@ -57,12 +59,16 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	private final IEnergyStorage forgeEnergyAdapter;
 	private Object teslaEnergyAdapter;
 
+	private IC2PowerSink ic2Sink;
+
 	public AERootPoweredTile()
 	{
 		forgeEnergyAdapter = new ForgeEnergyAdapter( this );
 		if ( teslaConsumerCapability != null ) {
 			teslaEnergyAdapter = new TeslaEnergyAdapter( this );
 		}
+		ic2Sink = IC2.createPowerSink(this);
+		ic2Sink.setValidFaces( internalPowerSides );
 	}
 
 	protected EnumSet<EnumFacing> getPowerSides()
@@ -73,6 +79,7 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	protected void setPowerSides( final EnumSet<EnumFacing> sides )
 	{
 		this.internalPowerSides = sides;
+		ic2Sink.setValidFaces( sides );
 		// trigger re-calc!
 	}
 
@@ -249,6 +256,30 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	public void setInternalPowerFlow( final AccessRestriction internalPowerFlow )
 	{
 		this.internalPowerFlow = internalPowerFlow;
+	}
+
+	@Override
+	public void onReady()
+	{
+		super.onReady();
+
+		ic2Sink.onLoad();
+	}
+
+	@Override
+	public void onChunkUnload()
+	{
+		super.onChunkUnload();
+
+		ic2Sink.onChunkUnload();
+	}
+
+	@Override
+	public void invalidate()
+	{
+		super.invalidate();
+
+		ic2Sink.invalidate();
 	}
 
 	@Override

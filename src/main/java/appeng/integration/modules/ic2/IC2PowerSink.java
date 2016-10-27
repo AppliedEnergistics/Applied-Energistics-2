@@ -15,18 +15,35 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
-package appeng.tile.powersink;
+
+package appeng.integration.modules.ic2;
 
 
-import appeng.api.config.PowerUnits;
-import appeng.api.networking.energy.IAEPowerStorage;
+import java.util.Set;
+
+import net.minecraft.util.EnumFacing;
 
 
-public interface IExternalPowerSink extends IAEPowerStorage
+/**
+ * Provides an abstraction for the IC2 Basic Sink so it can be stubbed out easily when the integration is disabled, or
+ * if the IC2 API is not available.
+ */
+public interface IC2PowerSink
 {
 
-	double injectExternalPower( PowerUnits input, double amt );
+	default void invalidate()
+	{
+	}
 
-	double getExternalPowerDemand( PowerUnits externalUnit, double maxPowerRequired );
+	default void onChunkUnload()
+	{
+	}
 
+	default void onLoad()
+	{
+	}
+
+	default void setValidFaces( Set<EnumFacing> faces )
+	{
+	}
 }
