@@ -30,3 +30,14 @@ task installWaila(type: Copy, dependsOn: "deinstallWaila") {
 task deinstallWaila(type: Delete) {
     delete fileTree(dir: minecraft.runDir + "/mods", include: "*Waila*.jar")
 }
+
+// IC²
+task installIC2(type: Copy, dependsOn: "deinstallIC2") {
+    from { configurations.mods }
+    include "**/*industrialcraft-2*.jar"
+    into file(minecraft.runDir + "/mods")
+}
+
+task deinstallIC2(type: Delete) {
+    delete fileTree(dir: minecraft.runDir + "/mods", include: "*industrialcraft-2*.jar")
+}
