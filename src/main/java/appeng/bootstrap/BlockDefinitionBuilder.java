@@ -146,7 +146,8 @@ class BlockDefinitionBuilder implements IBlockBuilder
 	@Override
 	public IBlockBuilder useCustomItemModel()
 	{
-		rendering( new BlockRenderingCustomizer(){
+		rendering( new BlockRenderingCustomizer()
+		{
 			@Override
 			@SideOnly( Side.CLIENT )
 			public void customize( IBlockRendering rendering, IItemRendering itemRendering )
@@ -193,14 +194,15 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		block.setRegistryName( AppEng.MOD_ID, registryName );
 
 		ItemBlock item = constructItemFromBlock( block );
-		if ( item != null ) {
+		if( item != null )
+		{
 			item.setRegistryName( AppEng.MOD_ID, registryName );
 		}
 
 		// Register the item and block with the game
 		factory.addPreInit( side -> {
 			GameRegistry.register( block );
-			if ( item != null )
+			if( item != null )
 			{
 				GameRegistry.register( item );
 			}
@@ -240,7 +242,8 @@ class BlockDefinitionBuilder implements IBlockBuilder
 				Class<? extends AEBaseTile> tileEntityClass = tileBlock.getTileEntityClass();
 				AEBaseTile.registerTileItem( tileEntityClass, new BlockStackSrc( block, 0, ActivityState.Enabled ) );
 
-				GameRegistry.registerTileEntity( tileEntityClass, registryName );
+				// TODO: Change after transition phase
+				GameRegistry.registerTileEntityWithAlternatives( tileEntityClass, AppEng.MOD_ID.toLowerCase() + ":" + registryName, registryName );
 			} );
 
 			return (T) new TileDefinition( registryName, (AEBaseTileBlock) block, item );

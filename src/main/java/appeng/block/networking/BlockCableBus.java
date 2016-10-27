@@ -67,6 +67,7 @@ import appeng.client.UnlistedProperty;
 import appeng.client.render.cablebus.CableBusBakedModel;
 import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.core.Api;
+import appeng.core.AppEng;
 import appeng.helpers.AEGlassMaterial;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
@@ -83,8 +84,7 @@ import appeng.util.Platform;
 public class BlockCableBus extends AEBaseTileBlock
 {
 
-	public static final UnlistedProperty<CableBusRenderState> RENDER_STATE_PROPERTY =
-			new UnlistedProperty<>( "cable_bus_render_state", CableBusRenderState.class );
+	public static final UnlistedProperty<CableBusRenderState> RENDER_STATE_PROPERTY = new UnlistedProperty<>( "cable_bus_render_state", CableBusRenderState.class );
 
 	private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 
@@ -120,8 +120,7 @@ public class BlockCableBus extends AEBaseTileBlock
 	public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
 	{
 		CableBusRenderState renderState = cb( world, pos ).getRenderState();
-		return ( (IExtendedBlockState) state )
-				.withProperty( RENDER_STATE_PROPERTY, renderState );
+		return ( (IExtendedBlockState) state ).withProperty( RENDER_STATE_PROPERTY, renderState );
 	}
 
 	@Override
@@ -277,9 +276,7 @@ public class BlockCableBus extends AEBaseTileBlock
 			double y = target.hitVec.yCoord;
 			double z = target.hitVec.zCoord;
 
-			Particle fx = new DestroyFX( world, x, y, z, 0.0D, 0.0D, 0.0D, state )
-					.setBlockPos( target.getBlockPos() )
-					.multipleParticleScaleBy( 0.8F );
+			Particle fx = new DestroyFX( world, x, y, z, 0.0D, 0.0D, 0.0D, state ).setBlockPos( target.getBlockPos() ).multipleParticleScaleBy( 0.8F );
 			fx.setParticleTexture( texture );
 			effectRenderer.addEffect( fx );
 		}
@@ -318,8 +315,7 @@ public class BlockCableBus extends AEBaseTileBlock
 						double d0 = (double) pos.getX() + ( (double) j + 0.5D ) / 4.0D;
 						double d1 = (double) pos.getY() + ( (double) k + 0.5D ) / 4.0D;
 						double d2 = (double) pos.getZ() + ( (double) l + 0.5D ) / 4.0D;
-						ParticleDigging particle = new DestroyFX( world, d0, d1, d2, d0 - (double) pos.getX() - 0.5D, d1 - (double) pos.getY() - 0.5D, d2 - (double) pos.getZ() - 0.5D, getDefaultState() )
-								.setBlockPos( pos );
+						ParticleDigging particle = new DestroyFX( world, d0, d1, d2, d0 - (double) pos.getX() - 0.5D, d1 - (double) pos.getY() - 0.5D, d2 - (double) pos.getZ() - 0.5D, getDefaultState() ).setBlockPos( pos );
 						particle.setParticleTexture( texture );
 						effectRenderer.addEffect( particle );
 					}
@@ -391,7 +387,8 @@ public class BlockCableBus extends AEBaseTileBlock
 	{
 		noTesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBus.class );
 		this.setTileEntity( noTesrTile );
-		GameRegistry.registerTileEntity( noTesrTile, "BlockCableBus" );
+		// TODO: Change after transition phase
+		GameRegistry.registerTileEntityWithAlternatives( noTesrTile, AppEng.MOD_ID.toLowerCase() + ":" + "BlockCableBus", "BlockCableBus" );
 		if( Platform.isClient() )
 		{
 			setupTesr();
@@ -399,9 +396,11 @@ public class BlockCableBus extends AEBaseTileBlock
 	}
 
 	@SideOnly( Side.CLIENT )
-	private static void setupTesr() {
+	private static void setupTesr()
+	{
 		tesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBusTESR.class );
-		GameRegistry.registerTileEntity( tesrTile, "ClientOnly_TESR_CableBus" );
+		// TODO: Change after transition phase
+		GameRegistry.registerTileEntityWithAlternatives( tesrTile, AppEng.MOD_ID.toLowerCase() + ":" + "ClientOnly_TESR_CableBus", "ClientOnly_TESR_CableBus" );
 		ClientRegistry.bindTileEntitySpecialRenderer( BlockCableBus.getTesrTile(), new CableBusTESR() );
 	}
 
