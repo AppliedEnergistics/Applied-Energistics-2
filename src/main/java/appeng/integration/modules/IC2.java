@@ -37,7 +37,7 @@ public class IC2 implements IIntegrationModule
 	@Reflected
 	public static IC2 instance;
 
-	private BiFunction<TileEntity, IExternalPowerSink, IC2PowerSink> powerSinkFactory = ( ( te, sink ) -> IC2PowerSinkStub.INSTANCE );
+	private static BiFunction<TileEntity, IExternalPowerSink, IC2PowerSink> powerSinkFactory = ( ( te, sink ) -> IC2PowerSinkStub.INSTANCE );
 
 	@Override
 	public void init() throws Throwable
@@ -55,6 +55,6 @@ public class IC2 implements IIntegrationModule
 	 */
 	public static IC2PowerSink createPowerSink( TileEntity tileEntity, IExternalPowerSink externalSink )
 	{
-		return instance.powerSinkFactory.apply( tileEntity, externalSink );
+		return powerSinkFactory.apply( tileEntity, externalSink );
 	}
 }
