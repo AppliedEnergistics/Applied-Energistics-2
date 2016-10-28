@@ -64,10 +64,11 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	public AERootPoweredTile()
 	{
 		forgeEnergyAdapter = new ForgeEnergyAdapter( this );
-		if ( teslaConsumerCapability != null ) {
+		if( teslaConsumerCapability != null )
+		{
 			teslaEnergyAdapter = new TeslaEnergyAdapter( this );
 		}
-		ic2Sink = IC2.createPowerSink(this);
+		ic2Sink = IC2.createPowerSink( this, this );
 		ic2Sink.setValidFaces( internalPowerSides );
 	}
 
