@@ -42,9 +42,9 @@ public class IC2PowerSinkAdapter extends BasicSink implements IC2PowerSink
 
 	private final Set<EnumFacing> validFaces = EnumSet.allOf( EnumFacing.class );
 
-	public IC2PowerSinkAdapter( IExternalPowerSink powerSink )
+	public IC2PowerSinkAdapter( TileEntity tileEntity, IExternalPowerSink powerSink )
 	{
-		super( (TileEntity) powerSink, 0, Integer.MAX_VALUE );
+		super( tileEntity, 0, Integer.MAX_VALUE );
 		this.powerSink = powerSink;
 	}
 

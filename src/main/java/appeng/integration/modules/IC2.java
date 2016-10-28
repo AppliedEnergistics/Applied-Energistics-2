@@ -19,7 +19,9 @@
 package appeng.integration.modules;
 
 
-import java.util.function.Function;
+import java.util.function.BiFunction;
+
+import net.minecraft.tileentity.TileEntity;
 
 import appeng.helpers.Reflected;
 import appeng.integration.IIntegrationModule;
@@ -35,7 +37,7 @@ public class IC2 implements IIntegrationModule
 	@Reflected
 	public static IC2 instance;
 
-	private Function<IExternalPowerSink, IC2PowerSink> powerSinkFactory = ( sink -> IC2PowerSinkStub.INSTANCE );
+	private BiFunction<TileEntity, IExternalPowerSink, IC2PowerSink> powerSinkFactory = ( ( te, sink ) -> IC2PowerSinkStub.INSTANCE );
 
 	@Override
 	public void init() throws Throwable
@@ -51,8 +53,8 @@ public class IC2 implements IIntegrationModule
 	/**
 	 * Create an IC2 power sink for the given external sink.
 	 */
-	public static IC2PowerSink createPowerSink( IExternalPowerSink externalSink )
+	public static IC2PowerSink createPowerSink( TileEntity tileEntity, IExternalPowerSink externalSink )
 	{
-		return instance.powerSinkFactory.apply( externalSink );
+		return instance.powerSinkFactory.apply( tileEntity, externalSink );
 	}
 }
