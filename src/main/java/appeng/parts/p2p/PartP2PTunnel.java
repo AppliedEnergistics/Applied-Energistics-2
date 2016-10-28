@@ -263,12 +263,6 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 				 * newType = stack;
 				 * }
 				 * break;
-				 * case PRESSURE:
-				 * for( ItemStack stack : parts.p2PTunnelPneumaticCraft().maybeStack( 1 ).asSet() )
-				 * {
-				 * newType = stack;
-				 * }
-				 * break;
 				 */
 
 				default:

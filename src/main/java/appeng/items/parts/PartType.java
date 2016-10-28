@@ -239,9 +239,6 @@ public enum PartType
 	// P2PTunnelOpenComputers( 468, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelOpenComputers ), EnumSet.of(
 	// IntegrationType.OpenComputers ), PartP2POpenComputers.class, GuiText.OCTunnel ),
 
-	// P2PTunnelPressure( 469, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelPressure ), EnumSet.of(
-	// IntegrationType.PneumaticCraft ), PartP2PPressure.class, GuiText.PressureTunnel ),
-
 	InterfaceTerminal( 480, "interface_terminal" , EnumSet.of( AEFeature.InterfaceTerminal ), EnumSet.noneOf( IntegrationType.class ), PartInterfaceTerminal.class );
 
 	private final int baseDamage;
