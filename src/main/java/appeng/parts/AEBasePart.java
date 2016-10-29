@@ -27,7 +27,6 @@ import java.util.Optional;
 import java.util.Random;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 
 import io.netty.buffer.ByteBuf;
 
@@ -522,11 +521,6 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	public boolean requireDynamicRender()
 	{
 		return false;
-	}
-
-	protected ImmutableMap.Builder<String, String> propertiesForModel( EnumFacing facing )
-	{
-		return ImmutableMap.<String, String>builder().put( "color", getColor().name() );
 	}
 
 	public AEPartLocation getSide()
