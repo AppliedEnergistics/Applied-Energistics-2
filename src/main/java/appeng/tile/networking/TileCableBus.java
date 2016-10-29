@@ -187,7 +187,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		if( newLV != this.oldLV )
 		{
 			this.oldLV = newLV;
-			this.worldObj.getLight( this.pos );
+			this.worldObj.checkLight( this.pos );
 			// worldObj.updateAllLightTypes( xCoord, yCoord, zCoord );
 		}
 
