@@ -2,7 +2,8 @@
   "uvlMarker": true,
   "ambientocclusion": false,
   "textures": {
-    "emitter": "appliedenergistics2:parts/level_emitter_on"
+    "emitter": "appliedenergistics2:parts/level_emitter_on",
+    "particle": "appliedenergistics2:parts/level_emitter_on"
   },
   "elements": [
     {

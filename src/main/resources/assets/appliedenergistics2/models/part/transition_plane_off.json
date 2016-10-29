@@ -2,7 +2,8 @@
   "textures": {
     "sides": "appliedenergistics2:parts/monitor_sides_status",
     "back": "appliedenergistics2:parts/transition_plane_back",
-    "indicator": "appliedenergistics2:parts/monitor_sides_status_off"
+    "indicator": "appliedenergistics2:parts/monitor_sides_status_off",
+    "particle": "appliedenergistics2:parts/transition_plane_back"
   },
   "elements": [
     {

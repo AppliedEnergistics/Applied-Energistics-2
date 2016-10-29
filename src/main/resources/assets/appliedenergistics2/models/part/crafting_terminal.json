@@ -7,7 +7,8 @@
         "l1": "appliedenergistics2:parts/crafting_terminal/l1",
         "l2": "appliedenergistics2:parts/crafting_terminal/l2",
         "SidesStatus": "appliedenergistics2:parts/crafting_terminal/sidesstatus",
-        "Backlights": "appliedenergistics2:parts/crafting_terminal/backlights"
+        "Backlights": "appliedenergistics2:parts/crafting_terminal/backlights",
+        "particle": "appliedenergistics2:parts/crafting_terminal/back"
     },
     "elements": [
         {

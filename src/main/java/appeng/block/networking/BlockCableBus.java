@@ -303,7 +303,9 @@ public class BlockCableBus extends AEBaseTileBlock
 
 		CableBusRenderState renderState = cb.getRenderState();
 
-		for( TextureAtlasSprite texture : cableBusModel.getParticleTextures( renderState ) )
+		List<TextureAtlasSprite> textures = cableBusModel.getParticleTextures( renderState );
+
+		if( !textures.isEmpty() )
 		{
 			// Shamelessly inspired by ParticleManager.addBlockDestroyEffects
 			for( int j = 0; j < 4; ++j )
@@ -312,6 +314,9 @@ public class BlockCableBus extends AEBaseTileBlock
 				{
 					for( int l = 0; l < 4; ++l )
 					{
+						// Randomly select one of the textures if the cable bus has more than just one possibility here
+						TextureAtlasSprite texture = Platform.pickRandom( textures );
+
 						double d0 = (double) pos.getX() + ( (double) j + 0.5D ) / 4.0D;
 						double d1 = (double) pos.getY() + ( (double) k + 0.5D ) / 4.0D;
 						double d2 = (double) pos.getZ() + ( (double) l + 0.5D ) / 4.0D;

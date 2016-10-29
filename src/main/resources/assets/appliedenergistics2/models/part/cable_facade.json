@@ -1,6 +1,7 @@
 {
     "textures": {
-        "0": "appliedenergistics2:parts/cable_anchor"
+        "0": "appliedenergistics2:parts/cable_anchor",
+        "particle": "appliedenergistics2:parts/cable_anchor"
     },
     "elements": [
         {

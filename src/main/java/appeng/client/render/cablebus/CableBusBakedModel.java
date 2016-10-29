@@ -28,11 +28,13 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -54,6 +56,8 @@ public class CableBusBakedModel implements IBakedModel
 	private final Map<ResourceLocation, IBakedModel> partModels;
 
 	private final TextureAtlasSprite particleTexture;
+
+	private final TextureMap textureMap = Minecraft.getMinecraft().getTextureMapBlocks();
 
 	CableBusBakedModel( CableBuilder cableBuilder, FacadeBuilder facadeBuilder, Map<ResourceLocation, IBakedModel> partModels, TextureAtlasSprite particleTexture )
 	{
@@ -255,17 +259,39 @@ public class CableBusBakedModel implements IBakedModel
 		CableCoreType coreType = CableCoreType.fromCableType( renderState.getCableType() );
 		AEColor cableColor = renderState.getCableColor();
 
+		List<TextureAtlasSprite> result = new ArrayList<>();
+
 		if( coreType != null )
 		{
-			return Collections.singletonList( cableBuilder.getCoreTexture( coreType, cableColor ) );
+			result.add( cableBuilder.getCoreTexture( coreType, cableColor ) );
 		}
-		else
+
+		// If no core is present, just use the first part that comes into play
+		for( EnumFacing side : renderState.getAttachments().keySet() )
 		{
-			return Collections.emptyList();
+			List<ResourceLocation> models = renderState.getAttachments().get( side );
+
+			for( ResourceLocation model : models )
+			{
+				IBakedModel bakedModel = partModels.get( model );
+
+				if( bakedModel == null )
+				{
+					throw new IllegalStateException( "Trying to use an unregistered part model: " + model );
+				}
+
+				TextureAtlasSprite particleTexture = bakedModel.getParticleTexture();
+
+				// If a part sub-model has no particle texture (indicated by it being the missing texture), don't add it,
+				// so we don't get ugly missing texture break particles.
+				if ( textureMap.getMissingSprite() != particleTexture )
+				{
+					result.add( particleTexture );
+				}
+			}
 		}
 
-		// TODO: Add break particles even for the attachments, not just the cable
-
+		return result;
 	}
 
 	private static CableBusRenderState getRenderingState( IBlockState state )

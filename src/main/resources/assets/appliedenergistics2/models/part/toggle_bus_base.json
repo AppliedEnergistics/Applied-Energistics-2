@@ -1,7 +1,8 @@
 {
   "textures": {
     "bus": "appliedenergistics2:items/part/toggle_bus",
-    "sides": "appliedenergistics2:parts/monitor_sides_status"
+    "sides": "appliedenergistics2:parts/monitor_sides_status",
+    "particle": "appliedenergistics2:items/part/toggle_bus"
   },
   "elements": [
     {

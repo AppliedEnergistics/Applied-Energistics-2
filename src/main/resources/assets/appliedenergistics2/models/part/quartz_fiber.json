@@ -1,6 +1,7 @@
 {
   "textures": {
-    "fiber": "appliedenergistics2:items/part/quartz_fiber"
+    "fiber": "appliedenergistics2:items/part/quartz_fiber",
+    "particle": "appliedenergistics2:items/part/quartz_fiber"
   },
   "elements": [
     {
