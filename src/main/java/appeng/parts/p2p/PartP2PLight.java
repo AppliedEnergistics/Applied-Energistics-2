@@ -100,7 +100,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 		final TileEntity te = this.getTile();
 		final World w = te.getWorld();
 
-		final int newLevel = w.getLight( te.getPos().offset( this.getSide().getFacing() ) );
+		final int newLevel = w.getLightFromNeighbors( te.getPos().offset( this.getSide().getFacing() ) );
 
 		if( this.lastValue != newLevel && this.getProxy().isActive() )
 		{
