@@ -286,23 +286,26 @@ public class PartCable extends AEBasePart implements IPartCable
 	@Override
 	public void writeToStream( final ByteBuf data ) throws IOException
 	{
-		int cs = 0;
-		int sideOut = 0;
+		int flags = 0;
+		boolean[] writeSide = new boolean[EnumFacing.values().length];
+		int[] channelsPerSide = new int[EnumFacing.values().length];
 
-		final IGridNode n = this.getGridNode();
+		IGridNode n = this.getGridNode();
 		if( n != null )
 		{
-			for( final AEPartLocation thisSide : AEPartLocation.SIDE_LOCATIONS )
+			for( EnumFacing thisSide : EnumFacing.values() )
 			{
 				final IPart part = this.getHost().getPart( thisSide );
 				if( part != null )
 				{
 					if( part.getGridNode() != null )
 					{
+						writeSide[thisSide.ordinal()] = true;
+
 						final IReadOnlyCollection<IGridConnection> set = part.getGridNode().getConnections();
 						for( final IGridConnection gc : set )
 						{
-							sideOut |= ( gc.getUsedChannels() ) << ( 5 * thisSide.ordinal() );
+							channelsPerSide[thisSide.ordinal()] = gc.getUsedChannels();
 						}
 					}
 				}
@@ -313,8 +316,9 @@ public class PartCable extends AEBasePart implements IPartCable
 				final AEPartLocation side = gc.getDirection( n );
 				if( side != AEPartLocation.INTERNAL )
 				{
-					sideOut |= gc.getUsedChannels() << ( 5 * side.ordinal() );
-					cs |= ( 1 << side.ordinal() );
+					writeSide[side.ordinal()] = true;
+					channelsPerSide[side.ordinal()] = gc.getUsedChannels();
+					flags |= ( 1 << side.ordinal() );
 				}
 			}
 		}
@@ -323,7 +327,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		{
 			if( this.getProxy().getEnergy().isNetworkPowered() )
 			{
-				cs |= ( 1 << AEPartLocation.INTERNAL.ordinal() );
+				flags |= ( 1 << AEPartLocation.INTERNAL.ordinal() );
 			}
 		}
 		catch( final GridAccessException e )
@@ -331,16 +335,21 @@ public class PartCable extends AEBasePart implements IPartCable
 			// aww...
 		}
 
-		data.writeByte( (byte) cs );
-		data.writeInt( sideOut );
+		data.writeByte( (byte) flags );
+		// Only write the used channels for sides where we have a part or another cable
+		for( int i = 0; i < writeSide.length; i++ )
+		{
+			if( writeSide[i] )
+			{
+				data.writeByte( channelsPerSide[i] );
+			}
+		}
 	}
 
 	@Override
 	public boolean readFromStream( final ByteBuf data ) throws IOException
 	{
-		final int cs = data.readByte();
-		final int sideOut = data.readInt();
-
+		int cs = data.readByte();
 		final EnumSet<AEPartLocation> myC = this.getConnections().clone();
 		final boolean wasPowered = this.powered;
 		this.powered = false;
@@ -348,16 +357,6 @@ public class PartCable extends AEBasePart implements IPartCable
 
 		for( final AEPartLocation d : AEPartLocation.values() )
 		{
-			if( d != AEPartLocation.INTERNAL )
-			{
-				final int ch = ( sideOut >> ( d.ordinal() * 5 ) ) & 0x1F;
-				if( ch != this.getChannelsOnSide( d.ordinal() ) )
-				{
-					channelsChanged = true;
-					this.setChannelsOnSide( d.ordinal(), ch );
-				}
-			}
-
 			if( d == AEPartLocation.INTERNAL )
 			{
 				final int id = 1 << d.ordinal();
@@ -368,14 +367,30 @@ public class PartCable extends AEBasePart implements IPartCable
 			}
 			else
 			{
-				final int id = 1 << d.ordinal();
-				if( id == ( cs & id ) )
+				boolean conOnSide = ( cs & ( 1 << d.ordinal() ) ) != 0;
+				if( conOnSide )
 				{
 					this.getConnections().add( d );
 				}
 				else
 				{
 					this.getConnections().remove( d );
+				}
+
+				int ch = 0;
+
+				// Only read channels if there's a part on this side or a cable connection
+				// This works only because cables are always read *last* from the packet update for
+				// a cable bus
+				if( conOnSide || getHost().getPart( d ) != null )
+				{
+					ch = ( (int) data.readByte() ) & 0xFF;
+				}
+
+				if( ch != this.getChannelsOnSide(d.ordinal()) )
+				{
+					channelsChanged = true;
+					this.setChannelsOnSide(d.ordinal(), ch);
 				}
 			}
 		}
