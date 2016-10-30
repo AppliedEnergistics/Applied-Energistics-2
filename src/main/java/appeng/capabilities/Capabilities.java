@@ -19,6 +19,8 @@
 package appeng.capabilities;
 
 
+import net.darkhax.tesla.api.ITeslaConsumer;
+import net.darkhax.tesla.api.ITeslaHolder;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
@@ -40,6 +42,12 @@ public final class Capabilities
 
 	@CapabilityInject( IStorageMonitorableAccessor.class )
 	public static Capability<IStorageMonitorableAccessor> STORAGE_MONITORABLE_ACCESSOR;
+
+	@CapabilityInject(ITeslaConsumer.class)
+	public static Capability<ITeslaConsumer> TESLA_CONSUMER;
+
+	@CapabilityInject(ITeslaHolder.class)
+	public static Capability<ITeslaHolder> TESLA_HOLDER;
 
 	/**
 	 * Register AE2 provided capabilities.

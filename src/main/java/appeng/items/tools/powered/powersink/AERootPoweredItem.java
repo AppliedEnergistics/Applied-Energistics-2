@@ -27,6 +27,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.PowerUnits;
@@ -145,27 +146,6 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 		return currentStorage;
 	}
 
-	/**
-	 * inject external
-	 */
-	double injectExternalPower( final PowerUnits input, final ItemStack is, final double amount, final boolean simulate )
-	{
-		if( simulate )
-		{
-			final int requiredEU = (int) PowerUnits.AE.convertTo( PowerUnits.EU, this.getAEMaxPower( is ) - this.getAECurrentPower( is ) );
-			if( amount < requiredEU )
-			{
-				return 0;
-			}
-			return amount - requiredEU;
-		}
-		else
-		{
-			final double powerRemainder = this.injectAEPower( is, PowerUnits.EU.convertTo( PowerUnits.AE, amount ) );
-			return PowerUnits.AE.convertTo( PowerUnits.EU, powerRemainder );
-		}
-	}
-
 	@Override
 	public double injectAEPower( final ItemStack is, final double amt )
 	{
@@ -194,6 +174,12 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 	public AccessRestriction getPowerFlow( final ItemStack is )
 	{
 		return AccessRestriction.WRITE;
+	}
+
+	@Override
+	public ICapabilityProvider initCapabilities( ItemStack stack, NBTTagCompound nbt )
+	{
+		return new PoweredItemCapabilities( stack, this );
 	}
 
 	private enum batteryOperation
