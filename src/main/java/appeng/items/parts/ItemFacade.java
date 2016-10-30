@@ -253,7 +253,15 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			return Blocks.GLASS.getDefaultState();
 		}
 
-		return block.getStateFromMeta( baseItemStack.getItemDamage() );
+		try
+		{
+			return block.getStateFromMeta( baseItemStack.getItemDamage() );
+		}
+		catch( Exception e )
+		{
+			AELog.warn( "Block {} has broken getStateFromMeta method for meta {}", block.getRegistryName(), baseItemStack.getItemDamage() );
+			return Blocks.GLASS.getDefaultState();
+		}
 
 	}
 
