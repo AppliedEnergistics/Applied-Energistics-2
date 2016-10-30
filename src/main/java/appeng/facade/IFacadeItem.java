@@ -19,7 +19,7 @@
 package appeng.facade;
 
 
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.util.AEPartLocation;
@@ -32,7 +32,6 @@ public interface IFacadeItem
 
 	ItemStack getTextureItem( ItemStack is );
 
-	int getMeta( ItemStack is );
+	IBlockState getTextureBlockState( ItemStack is );
 
-	Block getBlock( ItemStack is );
 }

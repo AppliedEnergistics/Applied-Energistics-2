@@ -38,11 +38,9 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinition;
@@ -190,9 +188,6 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			ds[0] = Item.getIdFromItem( l.getItem() );
 			ds[1] = metadata;
 			data.setIntArray( "x", ds );
-			final ResourceLocation ui = Item.REGISTRY.getNameForObject( l.getItem() );
-			data.setString( "modid", ui.getResourceDomain() );
-			data.setString( "itemname", ui.getResourcePath() );
 			is.setTagCompound( data );
 			return is;
 		}
@@ -211,56 +206,55 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	public ItemStack getTextureItem( final ItemStack is )
+	public ItemStack getTextureItem( ItemStack is )
 	{
-		final Block blk = this.getBlock( is );
-		if( blk != null )
+
+		NBTTagCompound nbt = is.getTagCompound();
+
+		if( nbt == null )
 		{
-			return new ItemStack( blk, 1, this.getMeta( is ) );
+			return null;
 		}
-		return null;
+
+		// First item is numeric item id, second is damage
+		int[] ids = nbt.getIntArray( "x" );
+
+		if( ids.length != 2 )
+		{
+			return null;
+		}
+
+		Item baseItem = Item.REGISTRY.getObjectById( ids[0] );
+
+		if( baseItem == null )
+		{
+			return null;
+		}
+
+		return new ItemStack( baseItem, 1, ids[1] );
+
 	}
 
 	@Override
-	public int getMeta( final ItemStack is )
+	public IBlockState getTextureBlockState( ItemStack is )
 	{
-		final NBTTagCompound data = is.getTagCompound();
-		if( data != null )
-		{
-			final int[] blk = data.getIntArray( "x" );
-			if( blk != null && blk.length == 2 )
-			{
-				return blk[1];
-			}
-		}
-		return 0;
-	}
 
-	@Override
-	public Block getBlock( final ItemStack is )
-	{
-		final NBTTagCompound data = is.getTagCompound();
-		if( data != null )
-		{
-			if( data.hasKey( "modid" ) && data.hasKey( "itemname" ) )
-			{
-				if( data.getString( "modid" ).equals( "minecraft" ) )
-				{
-					return Block.getBlockFromName( data.getString( "itemname" ) );
-				}
+		ItemStack baseItemStack = getTextureItem( is );
 
-				return GameRegistry.findBlock( data.getString( "modid" ), data.getString( "itemname" ) );
-			}
-			else
-			{
-				final int[] blk = data.getIntArray( "x" );
-				if( blk != null && blk.length == 2 )
-				{
-					return Block.getBlockById( blk[0] );
-				}
-			}
+		if( baseItemStack == null )
+		{
+			return Blocks.GLASS.getDefaultState();
 		}
-		return Blocks.GLASS;
+
+		Block block = Block.getBlockFromItem( baseItemStack.getItem() );
+
+		if( block == null )
+		{
+			return Blocks.GLASS.getDefaultState();
+		}
+
+		return block.getStateFromMeta( baseItemStack.getItemDamage() );
+
 	}
 
 	public List<ItemStack> getFacades()
@@ -294,19 +288,14 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	@Override
 	public boolean useAlphaPass( final ItemStack is )
 	{
-		final ItemStack out = this.getTextureItem( is );
+		IBlockState blockState = this.getTextureBlockState( is );
 
-		if( out == null || out.getItem() == null )
+		if( blockState == null )
 		{
 			return false;
 		}
 
-		final Block blk = Block.getBlockFromItem( out.getItem() );
-		if( blk != null && blk.canRenderInLayer( BlockRenderLayer.TRANSLUCENT ) )
-		{
-			return true;
-		}
-
-		return false;
+		Block blk = blockState.getBlock();
+		return blk.canRenderInLayer( BlockRenderLayer.TRANSLUCENT );
 	}
 }

@@ -21,12 +21,11 @@ package appeng.facade;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
@@ -121,10 +120,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 			return true;
 		}
 
-		final ItemStack is = this.getTextureItem();
-		final Block blk = Block.getBlockFromItem( is.getItem() );
-
-		return !blk.isOpaqueCube( blk.getDefaultState() );
+		return this.getBlockState().isOpaqueCube();
 	}
 
 	@Nullable
@@ -147,25 +143,17 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	@Override
 	public IBlockState getBlockState()
 	{
-		ItemStack itemStack = getTextureItem();
+		final Item maybeFacade = this.facade.getItem();
 
-		if( !(itemStack.getItem() instanceof ItemBlock ) )
+		// AE Facade
+		if( maybeFacade instanceof IFacadeItem )
 		{
-			return null;
+			final IFacadeItem facade = (IFacadeItem) maybeFacade;
+
+			return facade.getTextureBlockState( this.facade );
 		}
 
-		ItemBlock itemBlock = (ItemBlock) itemStack.getItem();
-
-		// Try to get the block state based on the item stack's meta. If this fails, don't consider it for a facade
-		// This for example fails for Pistons because they hardcoded an invalid meta value in vanilla
-		try
-		{
-			return itemBlock.getBlock().getStateFromMeta( itemStack.getItemDamage() );
-		}
-		catch( Exception e )
-		{
-			return null;
-		}
+		return Blocks.GLASS.getDefaultState();
 	}
 
 	@Override

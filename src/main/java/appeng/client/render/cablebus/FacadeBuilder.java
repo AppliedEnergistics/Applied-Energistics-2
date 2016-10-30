@@ -42,6 +42,8 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.MinecraftForgeClient;
 
 import appeng.api.AEApi;
 import appeng.api.util.AEAxisAlignedBB;
@@ -100,23 +102,41 @@ public class FacadeBuilder
 
 	public static TextureAtlasSprite getSprite( IBakedModel blockModel, IBlockState state, EnumFacing facing, long rand)
 	{
-		for( BakedQuad bakedQuad : blockModel.getQuads( state, facing, rand ) )
-		{
-			return bakedQuad.getSprite();
-		}
 
 		TextureAtlasSprite firstFound = null;
-		for( BakedQuad bakedQuad : blockModel.getQuads( state, null, rand ) )
+		BlockRenderLayer orgLayer = MinecraftForgeClient.getRenderLayer();
+
+		try
 		{
-			if( firstFound == null )
+			// Some other mods also distinguish between layers, so we're doing this in a loop from most likely to least likely
+			for( BlockRenderLayer layer : BlockRenderLayer.values() )
 			{
-				firstFound = bakedQuad.getSprite();
-			}
-			if( bakedQuad.getFace() == facing )
-			{
-				return bakedQuad.getSprite();
+
+				ForgeHooksClient.setRenderLayer( layer );
+
+				for( BakedQuad bakedQuad : blockModel.getQuads( state, facing, rand ) )
+				{
+					return bakedQuad.getSprite();
+				}
+
+				for( BakedQuad bakedQuad : blockModel.getQuads( state, null, rand ) )
+				{
+					if( firstFound == null )
+					{
+						firstFound = bakedQuad.getSprite();
+					}
+					if( bakedQuad.getFace() == facing )
+					{
+						return bakedQuad.getSprite();
+					}
+				}
 			}
 		}
+		finally
+		{
+			ForgeHooksClient.setRenderLayer( orgLayer );
+		}
+
 		return firstFound;
 	}
 

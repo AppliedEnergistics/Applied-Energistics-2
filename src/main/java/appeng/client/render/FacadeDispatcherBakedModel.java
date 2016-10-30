@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -108,11 +107,7 @@ public class FacadeDispatcherBakedModel implements IBakedModel
 
 				ItemFacade itemFacade = (ItemFacade) stack.getItem();
 
-				Block block = itemFacade.getBlock( stack );
-				int meta = itemFacade.getMeta( stack );
-
-				// This is kinda fascinating, how do we get the meta from the itemblock
-				IBlockState state = block.getStateFromMeta( meta );
+				IBlockState state = itemFacade.getTextureBlockState( stack );
 
 				return new FacadeWithBlockBakedModel( baseModel, state, format );
 			}
