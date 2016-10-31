@@ -240,92 +240,92 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	{
 		if( player != null )
 		{
-			final ItemStack is = player.inventory.getCurrentItem();
-			if( is != null )
+		    final ItemStack heldItem = player.inventory.getCurrentItem();
+			if( Platform.isWrench( player, heldItem, x, y, z ) && player.isSneaking() )
 			{
-				if( Platform.isWrench( player, is, x, y, z ) && player.isSneaking() )
+				final Block block = w.getBlock( x, y, z );
+
+				if( block == null )
 				{
-					final Block id = w.getBlock( x, y, z );
-					if( id != null )
-					{
-						final AEBaseTile tile = this.getTileEntity( w, x, y, z );
-						final ItemStack[] drops = Platform.getBlockDrops( w, x, y, z );
-
-						if( tile == null )
-						{
-							return false;
-						}
-
-						if( tile instanceof TileCableBus || tile instanceof TileSkyChest )
-						{
-							return false;
-						}
-
-						BlockEvent.BreakEvent event = new BlockEvent.BreakEvent( x, y, z, w, this, 0, player );
-						MinecraftForge.EVENT_BUS.post( event );
-						if( event.isCanceled() )
-						{
-							return false;
-						}
-
-						final ItemStack op = new ItemStack( this );
-						for( final ItemStack ol : drops )
-						{
-							if( Platform.isSameItemType( ol, op ) )
-							{
-								final NBTTagCompound tag = tile.downloadSettings( SettingsFrom.DISMANTLE_ITEM );
-								if( tag != null )
-								{
-									ol.setTagCompound( tag );
-								}
-							}
-						}
-
-						if( id.removedByPlayer( w, player, x, y, z, false ) )
-						{
-							final List<ItemStack> l = Lists.newArrayList( drops );
-							Platform.spawnDrops( w, x, y, z, l );
-							w.setBlockToAir( x, y, z );
-						}
-					}
 					return false;
 				}
 
-				if( is.getItem() instanceof IMemoryCard && !( this instanceof BlockCableBus ) )
+				final AEBaseTile tile = this.getTileEntity( w, x, y, z );
+
+				if( tile == null )
 				{
-					final IMemoryCard memoryCard = (IMemoryCard) is.getItem();
-					if( player.isSneaking() )
+					return false;
+				}
+
+				if( tile instanceof TileCableBus || tile instanceof TileSkyChest )
+				{
+					return false;
+				}
+
+				final ItemStack[] itemDropCandidates = Platform.getBlockDrops( w, x, y, z );
+				final ItemStack op = new ItemStack( this );
+
+				for( final ItemStack ol : itemDropCandidates )
+				{
+					if( Platform.isSameItemType( ol, op ) )
 					{
-						final AEBaseTile t = this.getTileEntity( w, x, y, z );
-						if( t != null )
+						final NBTTagCompound tag = tile.downloadSettings( SettingsFrom.DISMANTLE_ITEM );
+						if( tag != null )
 						{
-							final String name = this.getUnlocalizedName();
-							final NBTTagCompound data = t.downloadSettings( SettingsFrom.MEMORY_CARD );
-							if( data != null )
-							{
-								memoryCard.setMemoryCardContents( is, name, data );
-								memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );
-								return true;
-							}
+							ol.setTagCompound( tag );
 						}
+					}
+				}
+
+				if( block.removedByPlayer( w, player, x, y, z, false) )
+				{
+					final List<ItemStack> itemsToDrop = Lists.newArrayList( itemDropCandidates );
+					Platform.spawnDrops( w, x, y, z, itemsToDrop );
+					w.setBlockToAir( x, y, z );
+				}
+
+				return false;
+
+			}
+
+			if( heldItem.getItem() instanceof IMemoryCard && !( this instanceof BlockCableBus ) )
+			{
+				final IMemoryCard memoryCard = (IMemoryCard) heldItem.getItem();
+				final AEBaseTile tileEntity = this.getTileEntity( w, x, y, z );
+
+				if( tileEntity == null )
+				{
+					return false;
+				}
+
+				final String name = this.getUnlocalizedName();
+
+				if( player.isSneaking() )
+				{
+					final NBTTagCompound data = tileEntity.downloadSettings( SettingsFrom.MEMORY_CARD );
+					if( data != null )
+					{
+						memoryCard.setMemoryCardContents( heldItem, name, data );
+						memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );
+					}
+				}
+				else
+				{
+					final String savedName = memoryCard.getSettingsName( heldItem );
+					final NBTTagCompound data = memoryCard.getData( heldItem );
+
+					if( this.getUnlocalizedName().equals( savedName ) )
+					{
+						tileEntity.uploadSettings( SettingsFrom.MEMORY_CARD, data );
+						memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
 					}
 					else
 					{
-						final String name = memoryCard.getSettingsName( is );
-						final NBTTagCompound data = memoryCard.getData( is );
-						if( this.getUnlocalizedName().equals( name ) )
-						{
-							final AEBaseTile t = this.getTileEntity( w, x, y, z );
-							t.uploadSettings( SettingsFrom.MEMORY_CARD, data );
-							memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
-						}
-						else
-						{
-							memoryCard.notifyUser( player, MemoryCardMessages.INVALID_MACHINE );
-						}
-						return false;
+						memoryCard.notifyUser( player, MemoryCardMessages.INVALID_MACHINE );
 					}
 				}
+
+				return true;
 			}
 		}
 
