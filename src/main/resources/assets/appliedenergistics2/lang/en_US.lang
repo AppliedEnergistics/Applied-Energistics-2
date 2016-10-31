@@ -325,6 +325,7 @@ gui.tooltips.appliedenergistics2.SchedulingModeRoundRobin=Export using round rob
 gui.tooltips.appliedenergistics2.SchedulingModeRandom=Export items in random mode.
 gui.tooltips.appliedenergistics2.ItemsStored=Items Stored: %s
 gui.tooltips.appliedenergistics2.ItemsRequestable=Items Requestable: %s
+gui.tooltips.appliedenergistics2.P2PFrequency=Frequency: %s
 
 # Units
 gui.appliedenergistics2.units.appliedenergstics=AE
@@ -362,6 +363,10 @@ waila.appliedenergistics2.Unlocked=Unlocked
 waila.appliedenergistics2.Showing=Showing
 waila.appliedenergistics2.Contains=Contains
 waila.appliedenergistics2.Channels=%1$d of %2$d Channels
+waila.appliedenergistics2.P2PUnlinked=Unlinked
+waila.appliedenergistics2.P2PInputOneOutput=Linked (Input Side)
+waila.appliedenergistics2.P2PInputManyOutputs=Linked (Input Side) - %d Outputs
+waila.appliedenergistics2.P2POutput=Linked (Output Side)
 
 # Items
 item.appliedenergistics2.ItemBasicStorageCell.1k.name=1k ME Storage Cell

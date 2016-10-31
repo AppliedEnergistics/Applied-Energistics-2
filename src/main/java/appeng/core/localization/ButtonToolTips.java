@@ -19,6 +19,7 @@
 package appeng.core.localization;
 
 
+import appeng.api.config.SchedulingMode;
 import net.minecraft.util.StatCollector;
 
 
@@ -61,7 +62,7 @@ public enum ButtonToolTips
 	BlockPlacement, BlockPlacementYes, BlockPlacementNo,
 
 	// Used in the tooltips of the items in the terminal, when moused over
-	ItemsStored, ItemsRequestable,
+	ItemsStored, ItemsRequestable, P2PFrequency,
 
 	SchedulingMode, SchedulingModeDefault, SchedulingModeRoundRobin, SchedulingModeRandom;
 

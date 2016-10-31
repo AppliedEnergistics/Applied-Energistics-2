@@ -19,13 +19,11 @@
 package appeng.integration.modules.waila;
 
 
-import appeng.api.parts.IPart;
-import appeng.integration.modules.waila.part.*;
+import java.util.List;
+
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
-import mcp.mobius.waila.api.IWailaDataProvider;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -33,11 +31,23 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import java.util.List;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
+import mcp.mobius.waila.api.IWailaDataProvider;
+
+import appeng.api.parts.IPart;
+import appeng.integration.modules.waila.part.ChannelWailaDataProvider;
+import appeng.integration.modules.waila.part.IPartWailaDataProvider;
+import appeng.integration.modules.waila.part.P2PStateWailaDataProvider;
+import appeng.integration.modules.waila.part.PartAccessor;
+import appeng.integration.modules.waila.part.PartStackWailaDataProvider;
+import appeng.integration.modules.waila.part.PowerStateWailaDataProvider;
+import appeng.integration.modules.waila.part.StorageMonitorWailaDataProvider;
+import appeng.integration.modules.waila.part.Tracer;
 
 
 /**
- * Delegation provider for parts through {@link appeng.integration.modules.waila.part.IPartWailaDataProvider}
+ * Delegation provider for parts through {@link IPartWailaDataProvider}
  *
  * @author thatsIch
  * @version rv2
@@ -68,9 +78,10 @@ public final class PartWailaDataProvider implements IWailaDataProvider
 		final IPartWailaDataProvider channel = new ChannelWailaDataProvider();
 		final IPartWailaDataProvider storageMonitor = new StorageMonitorWailaDataProvider();
 		final IPartWailaDataProvider powerState = new PowerStateWailaDataProvider();
+		final IPartWailaDataProvider p2pState = new P2PStateWailaDataProvider();
 		final IPartWailaDataProvider partStack = new PartStackWailaDataProvider();
 
-		this.providers = Lists.newArrayList( channel, storageMonitor, powerState, partStack );
+		this.providers = Lists.newArrayList( channel, storageMonitor, powerState, partStack, p2pState );
 	}
 
 	@Override

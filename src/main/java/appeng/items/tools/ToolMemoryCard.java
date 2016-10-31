@@ -21,11 +21,14 @@ package appeng.items.tools;
 
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
+import appeng.api.util.AEColor;
 import appeng.core.features.AEFeature;
+import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -33,12 +36,15 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 
+import java.text.NumberFormat;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
 
 
 public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 {
+
 	public ToolMemoryCard()
 	{
 		this.setFeature( EnumSet.of( AEFeature.Core ) );
@@ -54,6 +60,16 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 		if( data.hasKey( "tooltip" ) )
 		{
 			lines.add( StatCollector.translateToLocal( this.getLocalizedName( data.getString( "tooltip" ) + ".name", data.getString( "tooltip" ) ) ) );
+		}
+
+		if( data.hasKey( "freq" ) )
+		{
+			final long freq = data.getLong( "freq" );
+			final String freqTooltip = String.format("%X", freq ).replaceAll("(.{4})", "$0 ").trim();
+
+			final String local = ButtonToolTips.P2PFrequency.getLocal();
+
+			lines.add( String.format( local, freqTooltip ) );
 		}
 	}
 
