@@ -82,14 +82,7 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider
 							currentToolTip.add( WailaText.P2POutput.getLocal() );
 							break;
 						case STATE_INPUT:
-							if( outputs <= 1 )
-							{
-								currentToolTip.add( WailaText.P2PInputOneOutput.getLocal() );
-							}
-							else
-							{
-								currentToolTip.add( String.format( WailaText.P2PInputManyOutputs.getLocal(), outputs ) );
-							}
+							currentToolTip.add( getOutputText( outputs ) );
 							break;
 					}
 				}
@@ -112,17 +105,11 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider
 
 			if( !tunnel.isOutput() )
 			{
-				try
+				outputCount = getOutputCount( tunnel );
+				if( outputCount > 0 )
 				{
-					outputCount = Iterators.size( tunnel.getOutputs().iterator() );
-					if( outputCount > 0 )
-					{
-						state = STATE_INPUT;
-					}
-				}
-				catch( GridAccessException e )
-				{
-					// Well... unknown size it is!
+					// Only set it to INPUT if we know there are any outputs
+					state = STATE_INPUT;
 				}
 			}
 			else
@@ -142,4 +129,30 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider
 
 		return tag;
 	}
+
+	private static int getOutputCount( PartP2PTunnel tunnel )
+	{
+		try
+		{
+			return Iterators.size( tunnel.getOutputs().iterator() );
+		}
+		catch( GridAccessException e )
+		{
+			// Well... unknown size it is!
+			return 0;
+		}
+	}
+
+	private static String getOutputText( int outputs )
+	{
+		if( outputs <= 1 )
+		{
+			return WailaText.P2PInputOneOutput.getLocal();
+		}
+		else
+		{
+			return String.format( WailaText.P2PInputManyOutputs.getLocal(), outputs );
+		}
+	}
+
 }
