@@ -78,7 +78,7 @@ public interface IParts
 
 	IItemDefinition p2PTunnelLiquids();
 
-	// IItemDefinition p2PTunnelEU();
+	IItemDefinition p2PTunnelEU();
 
 	// IItemDefinition p2PTunnelRF();
 
