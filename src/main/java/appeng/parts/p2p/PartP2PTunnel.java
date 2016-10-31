@@ -73,7 +73,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		return null;
 	}
 
-	T getInput()
+	public T getInput()
 	{
 		if( this.getFrequency() == 0 )
 		{
@@ -95,7 +95,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		return null;
 	}
 
-	TunnelCollection<T> getOutputs() throws GridAccessException
+	public TunnelCollection<T> getOutputs() throws GridAccessException
 	{
 		if( this.getProxy().isActive() )
 		{

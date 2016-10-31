@@ -26,6 +26,8 @@ public enum WailaText
 
 	DeviceOnline, DeviceOffline, DeviceMissingChannel,
 
+	P2PUnlinked, P2PInputOneOutput, P2PInputManyOutputs, P2POutput,
+
 	Locked, Unlocked, Showing,
 
 	Contains, Channels;
