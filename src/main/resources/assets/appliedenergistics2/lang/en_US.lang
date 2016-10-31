@@ -360,6 +360,10 @@ waila.appliedenergistics2.Unlocked=Unlocked
 waila.appliedenergistics2.Showing=Showing
 waila.appliedenergistics2.Contains=Contains
 waila.appliedenergistics2.Channels=%1$d of %2$d Channels
+waila.appliedenergistics2.P2PUnlinked=Unlinked
+waila.appliedenergistics2.P2PInputOneOutput=Linked (Input Side)
+waila.appliedenergistics2.P2PInputManyOutputs=Linked (Input Side) - %d Outputs
+waila.appliedenergistics2.P2POutput=Linked (Output Side)
 
 // Items
 item.appliedenergistics2.storage_cell_1k.name=1k ME Storage Cell
