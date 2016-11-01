@@ -146,7 +146,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 					return this.tunnels.get( is );
 				}
 
-				if( Platform.isSameItem( is, trigger ) )
+				if( Platform.itemComparisons().isEqualItem( is, trigger ) )
 				{
 					return this.tunnels.get( is );
 				}

@@ -54,7 +54,7 @@ public class AchievementCraftingHandler
 			switch( achievement.getType() )
 			{
 				case Craft:
-					if( Platform.isSameItemPrecise( achievement.getStack(), event.crafting ) )
+					if( Platform.itemComparisons().isSameItem( achievement.getStack(), event.crafting ) )
 					{
 						achievement.addToPlayer( event.player );
 						return;

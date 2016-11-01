@@ -119,12 +119,12 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 					final ItemStack other = ( (EntityItem) e ).getEntityItem();
 					if( other != null && other.stackSize > 0 )
 					{
-						if( Platform.isSameItem( other, new ItemStack( Items.REDSTONE ) ) )
+						if( Platform.itemComparisons().isEqualItem( other, new ItemStack( Items.REDSTONE ) ) )
 						{
 							redstone = (EntityItem) e;
 						}
 
-						if( Platform.isSameItem( other, new ItemStack( Items.QUARTZ ) ) )
+						if( Platform.itemComparisons().isEqualItem( other, new ItemStack( Items.QUARTZ ) ) )
 						{
 							netherQuartz = (EntityItem) e;
 						}

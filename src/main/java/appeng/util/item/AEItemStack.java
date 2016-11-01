@@ -522,7 +522,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 					return ta == tb;
 				}
 
-				return Platform.NBTEqualityTest( ta, tb );
+				return Platform.itemComparisons().isNbtTagEqual( ta, tb );
 			}
 		}
 		return false;

@@ -100,7 +100,7 @@ public class AEItemDef
 
 			if( this.getTagCompound() != null && otherStack.hasTagCompound() )
 			{
-				return Platform.NBTEqualityTest( this.getTagCompound(), otherStack.getTagCompound() );
+				return Platform.itemComparisons().isNbtTagEqual( this.getTagCompound(), otherStack.getTagCompound() );
 			}
 
 			return true;

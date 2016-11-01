@@ -135,7 +135,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	private boolean canAddOutput( final ItemStack output )
 	{
 		final ItemStack outputStack = this.getStackInSlot( 1 );
-		return outputStack == null || ( Platform.isSameItem( outputStack, output ) && outputStack.stackSize < outputStack.getMaxStackSize() );
+		return outputStack == null || ( Platform.itemComparisons().isEqualItem( outputStack, output ) && outputStack.stackSize < outputStack.getMaxStackSize() );
 	}
 
 	/**

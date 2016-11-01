@@ -124,7 +124,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 			ItemStack removed = oldStack;
 			ItemStack added = newItemStack;
 
-			if( oldStack != null && newItemStack != null && Platform.isSameItem( oldStack, newItemStack ) )
+			if( oldStack != null && newItemStack != null && Platform.itemComparisons().isEqualItem( oldStack, newItemStack ) )
 			{
 				if( oldStack.stackSize > newItemStack.stackSize )
 				{

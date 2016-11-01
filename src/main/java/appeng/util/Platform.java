@@ -137,6 +137,7 @@ import appeng.integration.IntegrationType;
 import appeng.me.GridAccessException;
 import appeng.me.GridNode;
 import appeng.me.helpers.AENetworkProxy;
+import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.AESharedNBT;
 import appeng.util.item.OreHelper;
@@ -162,8 +163,14 @@ public class Platform
 	 */
 	private static final Random RANDOM_GENERATOR = new Random();
 	private static final WeakHashMap<World, EntityPlayer> FAKE_PLAYERS = new WeakHashMap<World, EntityPlayer>();
-	private static Field tagList;
 	private static Method getEntry;
+
+	private static final ItemComparisonHelper ITEM_COMPARISON_HELPER = new ItemComparisonHelper();
+
+	public static ItemComparisonHelper itemComparisons()
+	{
+		return ITEM_COMPARISON_HELPER;
+	}
 
 	public static Random getRandom()
 	{
@@ -420,251 +427,6 @@ public class Platform
 		catch( final Throwable e )
 		{
 			return false;
-		}
-	}
-
-	/*
-	 * Lots of silliness to try and account for weird tag related junk, basically requires that two tags have at least
-	 * something in their tags before it wasts its time comparing them.
-	 */
-	private static boolean sameStackStags( final ItemStack a, final ItemStack b )
-	{
-		if( a == null && b == null )
-		{
-			return true;
-		}
-		if( a == null || b == null )
-		{
-			return false;
-		}
-		if( a == b )
-		{
-			return true;
-		}
-
-		final NBTTagCompound ta = a.getTagCompound();
-		final NBTTagCompound tb = b.getTagCompound();
-		if( ta == tb )
-		{
-			return true;
-		}
-
-		if( ( ta == null && tb == null ) || ( ta != null && ta.hasNoTags() && tb == null ) || ( tb != null && tb.hasNoTags() && ta == null ) || ( ta != null && ta.hasNoTags() && tb != null && tb.hasNoTags() ) )
-		{
-			return true;
-		}
-
-		if( ( ta == null && tb != null ) || ( ta != null && tb == null ) )
-		{
-			return false;
-		}
-
-		// if both tags are shared this is easy...
-		if( AESharedNBT.isShared( ta ) && AESharedNBT.isShared( tb ) )
-		{
-			return ta == tb;
-		}
-
-		return NBTEqualityTest( ta, tb );
-	}
-
-	/*
-	 * recursive test for NBT Equality, this was faster then trying to compare / generate hashes, its also more reliable
-	 * then the vanilla version which likes to fail when NBT Compound data changes order, it is pretty expensive
-	 * performance wise, so try an use shared tag compounds as long as the system remains in AE.
-	 */
-	public static boolean NBTEqualityTest( final NBTBase left, final NBTBase right )
-	{
-		// same type?
-		final byte id = left.getId();
-		if( id == right.getId() )
-		{
-			switch( id )
-			{
-				case 10:
-				{
-					final NBTTagCompound ctA = (NBTTagCompound) left;
-					final NBTTagCompound ctB = (NBTTagCompound) right;
-
-					final Set<String> cA = ctA.getKeySet();
-					final Set<String> cB = ctB.getKeySet();
-
-					if( cA.size() != cB.size() )
-					{
-						return false;
-					}
-
-					for( final String name : cA )
-					{
-						final NBTBase tag = ctA.getTag( name );
-						final NBTBase aTag = ctB.getTag( name );
-						if( aTag == null )
-						{
-							return false;
-						}
-
-						if( !NBTEqualityTest( tag, aTag ) )
-						{
-							return false;
-						}
-					}
-
-					return true;
-				}
-
-				case 9: // ) // A instanceof NBTTagList )
-				{
-					final NBTTagList lA = (NBTTagList) left;
-					final NBTTagList lB = (NBTTagList) right;
-					if( lA.tagCount() != lB.tagCount() )
-					{
-						return false;
-					}
-
-					final List<NBTBase> tag = tagList( lA );
-					final List<NBTBase> aTag = tagList( lB );
-					if( tag.size() != aTag.size() )
-					{
-						return false;
-					}
-
-					for( int x = 0; x < tag.size(); x++ )
-					{
-						if( aTag.get( x ) == null )
-						{
-							return false;
-						}
-
-						if( !NBTEqualityTest( tag.get( x ), aTag.get( x ) ) )
-						{
-							return false;
-						}
-					}
-
-					return true;
-				}
-
-				case 1: // ( A instanceof NBTTagByte )
-					return ( (NBTPrimitive) left ).getByte() == ( (NBTPrimitive) right ).getByte();
-
-				case 4: // else if ( A instanceof NBTTagLong )
-					return ( (NBTPrimitive) left ).getLong() == ( (NBTPrimitive) right ).getLong();
-
-				case 8: // else if ( A instanceof NBTTagString )
-					return ( (NBTTagString) left ).getString().equals( ( (NBTTagString) right ).getString() ) || ( (NBTTagString) left ).getString().equals( ( (NBTTagString) right ).getString() );
-
-				case 6: // else if ( A instanceof NBTTagDouble )
-					return ( (NBTPrimitive) left ).getDouble() == ( (NBTPrimitive) right ).getDouble();
-
-				case 5: // else if ( A instanceof NBTTagFloat )
-					return ( (NBTPrimitive) left ).getFloat() == ( (NBTPrimitive) right ).getFloat();
-
-				case 3: // else if ( A instanceof NBTTagInt )
-					return ( (NBTPrimitive) left ).getInt() == ( (NBTPrimitive) right ).getInt();
-
-				default:
-					return left.equals( right );
-			}
-		}
-
-		return false;
-	}
-
-	private static List<NBTBase> tagList( final NBTTagList lB )
-	{
-		if( tagList == null )
-		{
-			try
-			{
-				tagList = lB.getClass().getDeclaredField( "tagList" );
-			}
-			catch( final Throwable t )
-			{
-				try
-				{
-					tagList = lB.getClass().getDeclaredField( "field_74747_a" );
-				}
-				catch( final Throwable z )
-				{
-					AELog.debug( t );
-					AELog.debug( z );
-				}
-			}
-		}
-
-		try
-		{
-			tagList.setAccessible( true );
-			return (List<NBTBase>) tagList.get( lB );
-		}
-		catch( final Throwable t )
-		{
-			AELog.debug( t );
-		}
-
-		return new ArrayList<NBTBase>();
-	}
-
-	/*
-	 * Orderless hash on NBT Data, used to work thought huge piles fast, but ignores the order just in case MC decided
-	 * to change it... WHICH IS BAD...
-	 */
-	public static int NBTOrderlessHash( final NBTBase nbt )
-	{
-		// same type?
-		int hash = 0;
-		final byte id = nbt.getId();
-		hash += id;
-		switch( id )
-		{
-			case 10:
-			{
-				final NBTTagCompound ctA = (NBTTagCompound) nbt;
-
-				final Set<String> cA = ctA.getKeySet();
-
-				for( final String name : cA )
-				{
-					hash += name.hashCode() ^ NBTOrderlessHash( ctA.getTag( name ) );
-				}
-
-				return hash;
-			}
-
-			case 9: // ) // A instanceof NBTTagList )
-			{
-				final NBTTagList lA = (NBTTagList) nbt;
-				hash += 9 * lA.tagCount();
-
-				final List<NBTBase> l = tagList( lA );
-				for( int x = 0; x < l.size(); x++ )
-				{
-					hash += ( (Integer) x ).hashCode() ^ NBTOrderlessHash( l.get( x ) );
-				}
-
-				return hash;
-			}
-
-			case 1: // ( A instanceof NBTTagByte )
-				return hash + ( (NBTPrimitive) nbt ).getByte();
-
-			case 4: // else if ( A instanceof NBTTagLong )
-				return hash + (int) ( (NBTPrimitive) nbt ).getLong();
-
-			case 8: // else if ( A instanceof NBTTagString )
-				return hash + ( (NBTTagString) nbt ).getString().hashCode();
-
-			case 6: // else if ( A instanceof NBTTagDouble )
-				return hash + (int) ( (NBTPrimitive) nbt ).getDouble();
-
-			case 5: // else if ( A instanceof NBTTagFloat )
-				return hash + (int) ( (NBTPrimitive) nbt ).getFloat();
-
-			case 3: // else if ( A instanceof NBTTagInt )
-				return hash + ( (NBTPrimitive) nbt ).getInt();
-
-			default:
-				return hash;
 		}
 	}
 
@@ -1127,7 +889,7 @@ public class Platform
 		}
 		return -1;
 	}
-	
+
 	public static int findEmpty( final Object[] l )
 	{
 		for( int x = 0; x < l.length; x++ )
@@ -1142,6 +904,7 @@ public class Platform
 
 	/**
 	 * Returns a random element from the given collection.
+	 * 
 	 * @return null if the collection is empty
 	 */
 	@Nullable
@@ -1369,102 +1132,6 @@ public class Platform
 	public static String gui_localize( final String string )
 	{
 		return I18n.translateToLocal( string );
-	}
-
-	public static boolean isSameItemPrecise( @Nullable final ItemStack is, @Nullable final ItemStack filter )
-	{
-		return isSameItem( is, filter ) && sameStackStags( is, filter );
-	}
-
-	public static boolean isSameItemFuzzy( final ItemStack a, final ItemStack b, final FuzzyMode mode )
-	{
-		if( a == null && b == null )
-		{
-			return true;
-		}
-
-		if( a == null )
-		{
-			return false;
-		}
-
-		if( b == null )
-		{
-			return false;
-		}
-
-		/*
-		 * if ( a.itemID != 0 && b.itemID != 0 && a.isItemStackDamageable() && ! a.getHasSubtypes() && a.itemID ==
-		 * b.itemID ) { return (a.getItemDamage() > 0) == (b.getItemDamage() > 0); }
-		 */
-
-		// test damageable items..
-		if( a.getItem() != null && b.getItem() != null && a.getItem().isDamageable() && a.getItem() == b.getItem() )
-		{
-			try
-			{
-				if( mode == FuzzyMode.IGNORE_ALL )
-				{
-					return true;
-				}
-				else if( mode == FuzzyMode.PERCENT_99 )
-				{
-					final Item ai = a.getItem();
-					final Item bi = b.getItem();
-
-					return ( ai.getDurabilityForDisplay( a ) > 1 ) == ( bi.getDurabilityForDisplay( b ) > 1 );
-				}
-				else
-				{
-					final Item ai = a.getItem();
-					final Item bi = b.getItem();
-
-					final float percentDamagedOfA = 1.0f - (float) ai.getDurabilityForDisplay( a );
-					final float percentDamagedOfB = 1.0f - (float) bi.getDurabilityForDisplay( b );
-
-					return ( percentDamagedOfA > mode.breakPoint ) == ( percentDamagedOfB > mode.breakPoint );
-				}
-			}
-			catch( final Throwable e )
-			{
-				if( mode == FuzzyMode.IGNORE_ALL )
-				{
-					return true;
-				}
-				else if( mode == FuzzyMode.PERCENT_99 )
-				{
-					return ( a.getItemDamage() > 1 ) == ( b.getItemDamage() > 1 );
-				}
-				else
-				{
-					final float percentDamagedOfA = (float) a.getItemDamage() / (float) a.getMaxDamage();
-					final float percentDamagedOfB = (float) b.getItemDamage() / (float) b.getMaxDamage();
-
-					return ( percentDamagedOfA > mode.breakPoint ) == ( percentDamagedOfB > mode.breakPoint );
-				}
-			}
-		}
-
-		final OreReference aOR = OreHelper.INSTANCE.isOre( a );
-		final OreReference bOR = OreHelper.INSTANCE.isOre( b );
-
-		if( OreHelper.INSTANCE.sameOre( aOR, bOR ) )
-		{
-			return true;
-		}
-
-		/*
-		 * // test ore dictionary.. int OreID = getOreID( a ); if ( OreID != -1 ) return OreID == getOreID( b );
-		 * if ( Mode != FuzzyMode.IGNORE_ALL ) { if ( a.hasTagCompound() && !isShared( a.getTagCompound() ) ) { a =
-		 * Platform.getSharedItemStack( AEItemStack.create( a ) ); }
-		 * if ( b.hasTagCompound() && !isShared( b.getTagCompound() ) ) { b = Platform.getSharedItemStack(
-		 * AEItemStack.create( b ) ); }
-		 * // test regular items with damage values and what not... if ( isShared( a.getTagCompound() ) && isShared(
-		 * b.getTagCompound() ) && a.itemID == b.itemID ) { return ((AppEngSharedNBTTagCompound)
-		 * a.getTagCompound()).compareFuzzyWithRegistry( (AppEngSharedNBTTagCompound) b.getTagCompound() ); } }
-		 */
-
-		return a.isItemEqual( b );
 	}
 
 	public static LookDirection getPlayerRay( final EntityPlayer playerIn, final float eyeOffset )
@@ -1982,12 +1649,12 @@ public class Platform
 				for( final IAEItemStack x : items )
 				{
 					final ItemStack sh = x.getItemStack();
-					if( ( Platform.isSameItemType( providedTemplate, sh ) || ae_req.sameOre( x ) ) && !Platform.isSameItem( sh, output ) )
+					if( ( Platform.itemComparisons().isEqualItemType( providedTemplate, sh ) || ae_req.sameOre( x ) ) && !Platform.itemComparisons().isEqualItem( sh, output ) )
 					{ // Platform.isSameItemType( sh, providedTemplate )
 						final ItemStack cp = Platform.cloneItemStack( sh );
 						cp.stackSize = 1;
 						ci.setInventorySlotContents( slot, cp );
-						if( r.matches( ci, w ) && Platform.isSameItem( r.getCraftingResult( ci ), output ) )
+						if( r.matches( ci, w ) && Platform.itemComparisons().isEqualItem( r.getCraftingResult( ci ), output ) )
 						{
 							final IAEItemStack ax = x.copy();
 							ax.setStackSize( 1 );
@@ -2007,24 +1674,6 @@ public class Platform
 			}
 		}
 		return null;
-	}
-
-	public static boolean isSameItemType( final ItemStack that, final ItemStack other )
-	{
-		if( that != null && other != null && that.getItem() == other.getItem() )
-		{
-			if( that.isItemStackDamageable() )
-			{
-				return true;
-			}
-			return that.getItemDamage() == other.getItemDamage();
-		}
-		return false;
-	}
-
-	public static boolean isSameItem( @Nullable final ItemStack left, @Nullable final ItemStack right )
-	{
-		return left != null && right != null && left.isItemEqual( right );
 	}
 
 	public static ItemStack cloneItemStack( final ItemStack a )
@@ -2097,22 +1746,22 @@ public class Platform
 		{
 			if( parts.cableGlass().sameAs( AEColor.TRANSPARENT, stack ) )
 			{
-				return Collections.singletonList(stack);
+				return Collections.singletonList( stack );
 			}
 
 			if( parts.cableCovered().sameAs( AEColor.TRANSPARENT, stack ) )
 			{
-				return Collections.singletonList(stack);
+				return Collections.singletonList( stack );
 			}
 
 			if( parts.cableSmart().sameAs( AEColor.TRANSPARENT, stack ) )
 			{
-				return Collections.singletonList(stack);
+				return Collections.singletonList( stack );
 			}
 
 			if( parts.cableDense().sameAs( AEColor.TRANSPARENT, stack ) )
 			{
-				return Collections.singletonList(stack);
+				return Collections.singletonList( stack );
 			}
 		}
 

@@ -300,7 +300,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 
 				for( final ItemStack ol : itemDropCandidates )
 				{
-					if( Platform.isSameItemType( ol, op ) )
+					if( Platform.itemComparisons().isEqualItemType( ol, op ) )
 					{
 						final NBTTagCompound tag = tile.downloadSettings( SettingsFrom.DISMANTLE_ITEM );
 						if( tag != null )

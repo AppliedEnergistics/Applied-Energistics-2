@@ -158,7 +158,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 		// update crafting matrix...
 		ItemStack is = this.getStack();
 
-		if( is != null && Platform.isSameItem( request, is ) )
+		if( is != null && Platform.itemComparisons().isEqualItem( request, is ) )
 		{
 			final ItemStack[] set = new ItemStack[this.getPattern().getSizeInventory()];
 

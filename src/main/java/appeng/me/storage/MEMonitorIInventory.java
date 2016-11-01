@@ -237,7 +237,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 			return true;
 		}
 
-		return !Platform.isSameItemPrecise( a, b );
+		return !Platform.itemComparisons().isSameItem( a, b );
 	}
 
 	private void postDifference( final Iterable<IAEItemStack> a )

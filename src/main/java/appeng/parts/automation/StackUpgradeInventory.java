@@ -43,7 +43,7 @@ public class StackUpgradeInventory extends UpgradeInventory
 
 		for( final ItemStack is : upgrades.getSupported().keySet() )
 		{
-			if( Platform.isSameItem( this.stack, is ) )
+			if( Platform.itemComparisons().isEqualItem( this.stack, is ) )
 			{
 				max = upgrades.getSupported().get( is );
 				break;

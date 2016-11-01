@@ -67,7 +67,7 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 			{
 				if( currentItem != null )
 				{
-					if( Platform.isSameItem( this.civ.getItemStack(), currentItem ) )
+					if( Platform.itemComparisons().isEqualItem( this.civ.getItemStack(), currentItem ) )
 					{
 						this.getPlayerInv().setInventorySlotContents( this.getPlayerInv().currentItem, this.civ.getItemStack() );
 					}

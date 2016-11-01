@@ -50,7 +50,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 		for( int x = 0; x < s && amount > 0; x++ )
 		{
 			final ItemStack is = this.i.getStackInSlot( x );
-			if( is != null && this.canRemoveStackFromSlot( x, is ) && ( filter == null || Platform.isSameItemPrecise( is, filter ) ) )
+			if( is != null && this.canRemoveStackFromSlot( x, is ) && ( filter == null || Platform.itemComparisons().isSameItem( is, filter ) ) )
 			{
 				int boundAmounts = amount;
 				if( boundAmounts > is.stackSize )
@@ -108,7 +108,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 		for( int x = 0; x < s && amount > 0; x++ )
 		{
 			final ItemStack is = this.i.getStackInSlot( x );
-			if( is != null && this.canRemoveStackFromSlot( x, is ) && ( filter == null || Platform.isSameItemPrecise( is, filter ) ) )
+			if( is != null && this.canRemoveStackFromSlot( x, is ) && ( filter == null || Platform.itemComparisons().isSameItem( is, filter ) ) )
 			{
 				int boundAmount = amount;
 				if( boundAmount > is.stackSize )
@@ -147,7 +147,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 		for( int x = 0; x < s; x++ )
 		{
 			final ItemStack is = this.i.getStackInSlot( x );
-			if( is != null && this.canRemoveStackFromSlot( x, is ) && ( filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode ) ) )
+			if( is != null && this.canRemoveStackFromSlot( x, is ) && ( filter == null || Platform.itemComparisons().isFuzzyEqualItem( is, filter, fuzzyMode ) ) )
 			{
 				int newAmount = amount;
 				if( newAmount > is.stackSize )
@@ -197,7 +197,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 		{
 			final ItemStack is = this.i.getStackInSlot( x );
 
-			if( is != null && this.canRemoveStackFromSlot( x, is ) && ( filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode ) ) )
+			if( is != null && this.canRemoveStackFromSlot( x, is ) && ( filter == null || Platform.itemComparisons().isFuzzyEqualItem( is, filter, fuzzyMode ) ) )
 			{
 				int boundAmount = amount;
 				if( boundAmount > is.stackSize )
@@ -293,7 +293,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 						return null;
 					}
 				}
-				else if( Platform.isSameItemPrecise( is, left ) && is.stackSize < perOperationLimit )
+				else if( Platform.itemComparisons().isSameItem( is, left ) && is.stackSize < perOperationLimit )
 				{
 					final int room = perOperationLimit - is.stackSize;
 					final int used = Math.min( left.stackSize, room );

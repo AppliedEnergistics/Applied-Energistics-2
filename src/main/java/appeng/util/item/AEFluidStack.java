@@ -327,7 +327,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 					return ta == tb;
 				}
 
-				return Platform.NBTEqualityTest( ta, tb );
+				return Platform.itemComparisons().isNbtTagEqual( ta, tb );
 			}
 		}
 		return false;

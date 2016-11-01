@@ -88,7 +88,7 @@ public abstract class InscriberProcess implements ICraftHandler, IWebsiteSeriali
 	@Override
 	public boolean canCraft( final ItemStack reqOutput ) throws RegistrationError, MissingIngredientError
 	{
-		return this.output != null && Platform.isSameItemPrecise( this.output.getItemStack(), reqOutput );
+		return this.output != null && Platform.itemComparisons().isSameItem( this.output.getItemStack(), reqOutput );
 	}
 
 	@Override
