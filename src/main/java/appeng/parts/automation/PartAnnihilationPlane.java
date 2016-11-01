@@ -135,6 +135,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		}
 
 		bch.addBox( 5, 5, 14, 11, 11, 15 );
+		// The smaller collision hitbox here is needed to allow for the entity collision event
 		bch.addBox( minX, minY, 15, maxX, maxY, bch.isBBCollision() ? 15 : 16 );
 	}
 
@@ -232,6 +233,9 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 			boolean capture = false;
 			final BlockPos pos = this.getTile().getPos();
 
+			// This is the middle point of the entities BB, which is better suited for comparisons that don't rely on it "touching" the plane
+			double posYMiddle = (entity.getEntityBoundingBox().minY + entity.getEntityBoundingBox().maxY) / 2.0D;
+
 			switch( this.getSide() )
 			{
 				case DOWN:
@@ -251,7 +255,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 				case NORTH:
 					if( entity.posX > pos.getX() && entity.posX < pos.getX() + 1 )
 					{
-						if( entity.posY > pos.getY() && entity.posY < pos.getY() + 1 )
+						if( posYMiddle > pos.getY() && posYMiddle < pos.getY() + 1 )
 						{
 							if( ( entity.posZ > pos.getZ() + 0.9 && this.getSide() == AEPartLocation.SOUTH ) || ( entity.posZ < pos.getZ() + 0.1 && this.getSide() == AEPartLocation.NORTH ) )
 							{
@@ -264,7 +268,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 				case WEST:
 					if( entity.posZ > pos.getZ() && entity.posZ < pos.getZ() + 1 )
 					{
-						if( entity.posY > pos.getY() && entity.posY < pos.getY() + 1 )
+						if( posYMiddle > pos.getY() && posYMiddle < pos.getY() + 1 )
 						{
 							if( ( entity.posX > pos.getX() + 0.9 && this.getSide() == AEPartLocation.EAST ) || ( entity.posX < pos.getX() + 0.1 && this.getSide() == AEPartLocation.WEST ) )
 							{
