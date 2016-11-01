@@ -284,8 +284,8 @@ gui.tooltips.appliedenergistics2.EmitLevelsBelow=Излучать, когда у
 gui.tooltips.appliedenergistics2.EmitLevelAbove=Излучать, когда уровни выше или равны пределу.
 gui.tooltips.appliedenergistics2.SearchMode_Auto=Автоматический поиск
 gui.tooltips.appliedenergistics2.SearchMode_Standard=Обычный поиск
-gui.tooltips.appliedenergistics2.SearchMode_NEIAuto=Автоматический NEI-синхронизированный поиск
-gui.tooltips.appliedenergistics2.SearchMode_NEIStandard=Стандартный NEI-синхронизированный поиск
+gui.tooltips.appliedenergistics2.SearchMode_JEIAuto=Автоматический JEI-синхронизированный поиск
+gui.tooltips.appliedenergistics2.SearchMode_JEIStandard=Стандартный JEI-синхронизированный поиск
 gui.tooltips.appliedenergistics2.SearchMode=Режим поля поиска
 gui.tooltips.appliedenergistics2.PartitionStorageHint=Настраивает раздел на основе текущих хранящихся предметах.
 gui.tooltips.appliedenergistics2.ClearSettings=Очистить настройки
@@ -360,6 +360,10 @@ waila.appliedenergistics2.Unlocked=Разблокировано
 waila.appliedenergistics2.Showing=Показывает
 waila.appliedenergistics2.Contains=Содержит
 waila.appliedenergistics2.Channels=Каналы: %1$d из %2$d
+waila.appliedenergistics2.P2PUnlinked=Не связанный
+waila.appliedenergistics2.P2PInputOneOutput=Связанный (Сторона ввода)
+waila.appliedenergistics2.P2PInputManyOutputs=Связанный (Сторона вывода) - %d выводов
+waila.appliedenergistics2.P2POutput=Связанный (Сторона вывода)
 
 // Items
 item.appliedenergistics2.storage_cell_1k.name=1К МЭ ячейка хранения
