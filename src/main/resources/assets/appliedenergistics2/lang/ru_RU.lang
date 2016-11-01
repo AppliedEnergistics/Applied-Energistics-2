@@ -362,7 +362,7 @@ waila.appliedenergistics2.Contains=Содержит
 waila.appliedenergistics2.Channels=Каналы: %1$d из %2$d
 waila.appliedenergistics2.P2PUnlinked=Не связанный
 waila.appliedenergistics2.P2PInputOneOutput=Связанный (Сторона ввода)
-waila.appliedenergistics2.P2PInputManyOutputs=Связанный (Сторона вывода) - %d выводов
+waila.appliedenergistics2.P2PInputManyOutputs=Связанный (Сторона ввода) - %d выводов
 waila.appliedenergistics2.P2POutput=Связанный (Сторона вывода)
 
 // Items
