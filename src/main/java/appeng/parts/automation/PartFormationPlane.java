@@ -80,8 +80,8 @@ import appeng.me.storage.MEInventoryHandler;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
-import appeng.util.prioitylist.FuzzyPriorityList;
-import appeng.util.prioitylist.PrecisePriorityList;
+import appeng.util.prioritylist.FuzzyPriorityList;
+import appeng.util.prioritylist.PrecisePriorityList;
 
 
 public class PartFormationPlane extends PartUpgradeable implements ICellContainer, IPriorityHost, IMEInventory<IAEItemStack>

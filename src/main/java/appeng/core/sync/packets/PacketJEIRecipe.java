@@ -59,7 +59,7 @@ import appeng.items.storage.ItemViewCell;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
-import appeng.util.prioitylist.IPartitionList;
+import appeng.util.prioritylist.IPartitionList;
 
 
 public class PacketJEIRecipe extends AppEngPacket

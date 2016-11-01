@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.util.prioitylist;
+package appeng.util.prioritylist;
 
 
 import java.util.ArrayList;

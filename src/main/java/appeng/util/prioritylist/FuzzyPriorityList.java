@@ -16,27 +16,33 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.util.prioitylist;
+package appeng.util.prioritylist;
 
 
+import java.util.Collection;
+
+import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
 
-public class PrecisePriorityList<T extends IAEStack<T>> implements IPartitionList<T>
+public class FuzzyPriorityList<T extends IAEStack<T>> implements IPartitionList<T>
 {
 
 	private final IItemList<T> list;
+	private final FuzzyMode mode;
 
-	public PrecisePriorityList( final IItemList<T> in )
+	public FuzzyPriorityList( final IItemList<T> in, final FuzzyMode mode )
 	{
 		this.list = in;
+		this.mode = mode;
 	}
 
 	@Override
 	public boolean isListed( final T input )
 	{
-		return this.list.findPrecise( input ) != null;
+		final Collection<T> out = this.list.findFuzzy( input, this.mode );
+		return out != null && !out.isEmpty();
 	}
 
 	@Override

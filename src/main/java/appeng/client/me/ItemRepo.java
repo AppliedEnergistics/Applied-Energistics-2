@@ -41,7 +41,7 @@ import appeng.integration.modules.JEI;
 import appeng.items.storage.ItemViewCell;
 import appeng.util.ItemSorters;
 import appeng.util.Platform;
-import appeng.util.prioitylist.IPartitionList;
+import appeng.util.prioritylist.IPartitionList;
 
 
 public class ItemRepo

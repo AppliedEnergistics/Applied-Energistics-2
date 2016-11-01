@@ -28,8 +28,8 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.util.prioitylist.DefaultPriorityList;
-import appeng.util.prioitylist.IPartitionList;
+import appeng.util.prioritylist.DefaultPriorityList;
+import appeng.util.prioritylist.IPartitionList;
 
 
 public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T>

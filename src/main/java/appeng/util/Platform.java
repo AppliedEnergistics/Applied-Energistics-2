@@ -141,7 +141,7 @@ import appeng.util.item.AEItemStack;
 import appeng.util.item.AESharedNBT;
 import appeng.util.item.OreHelper;
 import appeng.util.item.OreReference;
-import appeng.util.prioitylist.IPartitionList;
+import appeng.util.prioritylist.IPartitionList;
 
 
 /**

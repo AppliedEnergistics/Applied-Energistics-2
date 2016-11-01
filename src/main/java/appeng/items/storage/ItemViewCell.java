@@ -34,10 +34,10 @@ import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
-import appeng.util.prioitylist.FuzzyPriorityList;
-import appeng.util.prioitylist.IPartitionList;
-import appeng.util.prioitylist.MergedPriorityList;
-import appeng.util.prioitylist.PrecisePriorityList;
+import appeng.util.prioritylist.FuzzyPriorityList;
+import appeng.util.prioritylist.IPartitionList;
+import appeng.util.prioritylist.MergedPriorityList;
+import appeng.util.prioritylist.PrecisePriorityList;
 
 
 public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem

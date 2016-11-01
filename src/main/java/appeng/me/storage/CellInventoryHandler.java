@@ -36,8 +36,8 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
-import appeng.util.prioitylist.FuzzyPriorityList;
-import appeng.util.prioitylist.PrecisePriorityList;
+import appeng.util.prioritylist.FuzzyPriorityList;
+import appeng.util.prioritylist.PrecisePriorityList;
 
 
 public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> implements ICellInventoryHandler
