@@ -111,7 +111,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		{
 			ItemStack sub = itemHandler.getStackInSlot( i );
 
-			if( !Platform.isSameItem( sub, req ) )
+			if( !Platform.isSameItemPrecise( sub, req ) )
 			{
 				continue;
 			}
