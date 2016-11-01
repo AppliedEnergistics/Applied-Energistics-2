@@ -244,16 +244,10 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements I
 	@Override
 	public int getSourceTier()
 	{
-		if( this.isOutput() )
-		{
-			return this.calculateTierFromVoltage( this.OutputVoltageA );
-		}
+		// Sadly IC2 doesn't support changing the tier once we're registered, so we
+		// go with the highest here... At this point it's somewhat unclear as to what effect
+		// this realistically has.
 		return 4;
-	}
-
-	private int calculateTierFromVoltage( double voltage )
-	{
-		return ic2.api.energy.EnergyNet.instance.getTierFromPower( voltage );
 	}
 
 	@Override
