@@ -19,6 +19,7 @@
 package appeng.client.render.tesr;
 
 
+import net.minecraft.block.Block;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -70,14 +71,8 @@ public class SkyChestTESR extends TileEntitySpecialRenderer<TileSkyChest>
 		}
 		else
 		{
-			if( te != null )
-			{
-				this.bindTexture( ( (BlockSkyChest) te.getBlockType() ).type == SkyChestType.STONE ? TEXTURE_STONE : TEXTURE_BLOCK );
-			}
-			else
-			{
-				this.bindTexture( TEXTURE_BLOCK );
-			}
+			SkyChestType chestType = getChestType( te );
+			this.bindTexture( chestType == SkyChestType.STONE ? TEXTURE_STONE : TEXTURE_BLOCK );
 		}
 
 		GlStateManager.pushMatrix();
@@ -126,6 +121,22 @@ public class SkyChestTESR extends TileEntitySpecialRenderer<TileSkyChest>
 			GlStateManager.popMatrix();
 			GlStateManager.matrixMode( 5888 );
 		}
+	}
+
+	// Defensively determine the sky chest type
+	private static SkyChestType getChestType( TileSkyChest te )
+	{
+		if( te == null )
+		{
+			return SkyChestType.BLOCK;
+		}
+
+		Block blockType = te.getBlockType();
+		if( blockType instanceof BlockSkyChest )
+		{
+			return ( (BlockSkyChest) blockType ).type;
+		}
+		return SkyChestType.BLOCK;
 	}
 
 }
