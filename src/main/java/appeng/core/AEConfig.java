@@ -25,10 +25,10 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -113,7 +113,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		super( configFile );
 		this.configFile = configFile;
 
-		FMLCommonHandler.instance().bus().register( this );
+		MinecraftForge.EVENT_BUS.register( this );
 
 		final double DEFAULT_IC2_EXCHANGE = 2.0;
 		PowerUnits.EU.conversionRatio = this.get( "PowerRatios", "IC2", DEFAULT_IC2_EXCHANGE ).getDouble( DEFAULT_IC2_EXCHANGE );

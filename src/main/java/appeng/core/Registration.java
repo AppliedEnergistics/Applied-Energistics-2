@@ -22,7 +22,6 @@ package appeng.core;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
@@ -30,7 +29,6 @@ import com.google.common.base.Preconditions;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -299,7 +297,7 @@ public final class Registration
 
 		this.recipeHandler.injectRecipes();
 
-		final PlayerStatsRegistration registration = new PlayerStatsRegistration( FMLCommonHandler.instance().bus(), AEConfig.instance );
+		final PlayerStatsRegistration registration = new PlayerStatsRegistration( MinecraftForge.EVENT_BUS, AEConfig.instance );
 		registration.registerAchievementHandlers();
 		registration.registerAchievements();
 
