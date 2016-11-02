@@ -267,7 +267,6 @@ public final class Registration
 		// "li.cil.oc.api.network.SidedEnvironment" );
 		// }
 
-		FMLCommonHandler.instance().bus().register( TickHandler.INSTANCE );
 		MinecraftForge.EVENT_BUS.register( TickHandler.INSTANCE );
 
 
