@@ -32,7 +32,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
@@ -371,65 +370,52 @@ public class RecipeHandler implements IRecipeHandler
 		}
 
 		final Map<Class, Integer> processed = new HashMap<Class, Integer>();
-		try
+		for( final ICraftHandler ch : this.data.handlers )
 		{
-			for( final ICraftHandler ch : this.data.handlers )
+			try
 			{
-				try
-				{
-					ch.register();
+				ch.register();
 
-					final Class clz = ch.getClass();
-					final Integer i = processed.get( clz );
-					if( i == null )
-					{
-						processed.put( clz, 1 );
-					}
-					else
-					{
-						processed.put( clz, i + 1 );
-					}
-				}
-				catch( final RegistrationError e )
+				final Class clz = ch.getClass();
+				final Integer i = processed.get( clz );
+				if( i == null )
 				{
-					AELog.warn( "Unable to register a recipe: " + e.getMessage() );
+					processed.put( clz, 1 );
+				}
+				else
+				{
+					processed.put( clz, i + 1 );
+				}
+			}
+			catch( final MissingIngredientError e )
+			{
+				if( this.data.errorOnMissing )
+				{
+					AELog.warn( "Unable to register a recipe:" + e.getMessage() );
 					if( this.data.exceptions )
 					{
 						AELog.debug( e );
 					}
 					if( this.data.crash )
 					{
-						throw e;
+						throw new IllegalStateException( e );
 					}
 				}
-				catch( final MissingIngredientError e )
+			}
+			catch( final Throwable e )
+			{
+				AELog.warn( "Unable to register a recipe: " + e.getMessage() );
+				if( this.data.exceptions )
 				{
-					if( this.data.errorOnMissing )
-					{
-						AELog.warn( "Unable to register a recipe:" + e.getMessage() );
-						if( this.data.exceptions )
-						{
-							AELog.debug( e );
-						}
-						if( this.data.crash )
-						{
-							throw e;
-						}
-					}
+					AELog.debug( e );
+				}
+				if( this.data.crash )
+				{
+					throw new IllegalStateException( e );
 				}
 			}
 		}
-		catch( final Throwable e )
-		{
-			if( this.data.exceptions )
-			{
-				AELog.debug( e );
-			}
-			if( this.data.crash )
-			{
-				throw new IllegalStateException( e );
-			}
-		}
+
 
 		for( final Entry<Class, Integer> e : processed.entrySet() )
 		{
