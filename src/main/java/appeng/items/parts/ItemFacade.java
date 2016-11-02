@@ -38,6 +38,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -56,6 +57,9 @@ import appeng.items.AEBaseItem;
 
 public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassItem
 {
+
+	private static final String TAG_ITEM_ID = "item";
+	private static final String TAG_DAMAGE = "damage";
 
 	private List<ItemStack> subTypes = null;
 
@@ -107,6 +111,10 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 				try
 				{
 					final Item item = Item.getItemFromBlock( b );
+					if( item == null )
+					{
+						continue;
+					}
 
 					final List<ItemStack> tmpList = new ArrayList<ItemStack>( 100 );
 					b.getSubBlocks( item, b.getCreativeTabToDisplayOn(), tmpList );
@@ -184,10 +192,8 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 			final ItemStack is = new ItemStack( this );
 			final NBTTagCompound data = new NBTTagCompound();
-			final int[] ds = new int[2];
-			ds[0] = Item.getIdFromItem( l.getItem() );
-			ds[1] = metadata;
-			data.setIntArray( "x", ds );
+			data.setString( TAG_ITEM_ID, l.getItem().getRegistryName().toString() );
+			data.setInteger( TAG_DAMAGE, l.getItemDamage() );
 			is.setTagCompound( data );
 			return is;
 		}
@@ -216,22 +222,39 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			return null;
 		}
 
-		// First item is numeric item id, second is damage
-		int[] ids = nbt.getIntArray( "x" );
+		ResourceLocation itemId;
+		int itemDamage;
 
-		if( ids.length != 2 )
+		// Handle legacy facades
+		if( nbt.hasKey( "x" ) )
 		{
-			return null;
+			int[] data = nbt.getIntArray( "x" );
+			if( data.length != 2 )
+			{
+				return null;
+			}
+
+			Item item = Item.REGISTRY.getObjectById( data[0] );
+			if ( item == null ) {
+				return null;
+			}
+
+			itemId = item.getRegistryName();
+			itemDamage = data[1];
+		} else {
+			// First item is numeric item id, second is damage
+			itemId = new ResourceLocation( nbt.getString( TAG_ITEM_ID ) );
+			itemDamage = nbt.getInteger( TAG_DAMAGE );
 		}
 
-		Item baseItem = Item.REGISTRY.getObjectById( ids[0] );
+		Item baseItem = Item.REGISTRY.getObject( itemId );
 
 		if( baseItem == null )
 		{
 			return null;
 		}
 
-		return new ItemStack( baseItem, 1, ids[1] );
+		return new ItemStack( baseItem, 1, itemDamage );
 
 	}
 
@@ -253,13 +276,15 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			return Blocks.GLASS.getDefaultState();
 		}
 
+		int metadata = baseItemStack.getItem().getMetadata( baseItemStack );
+
 		try
 		{
-			return block.getStateFromMeta( baseItemStack.getItemDamage() );
+			return block.getStateFromMeta( metadata );
 		}
 		catch( Exception e )
 		{
-			AELog.warn( "Block {} has broken getStateFromMeta method for meta {}", block.getRegistryName(), baseItemStack.getItemDamage() );
+			AELog.warn( "Block %s has broken getStateFromMeta method for meta %d", block.getRegistryName().toString(), baseItemStack.getItemDamage() );
 			return Blocks.GLASS.getDefaultState();
 		}
 
@@ -286,8 +311,15 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		ItemStack facadeStack = AEApi.instance().definitions().items().facade().maybeStack( 1 )
 				.orElseThrow( () -> new MissingDefinition( "Tried to create a facade, while facades are being deactivated." ) );
 
+		// Convert back to a registry name...
+		Item item = Item.REGISTRY.getObjectById( ids[0] );
+		if ( item == null ) {
+			return null;
+		}
+
 		final NBTTagCompound facadeTag = new NBTTagCompound();
-		facadeTag.setIntArray( "x", ids.clone() );
+		facadeTag.setString( TAG_ITEM_ID, item.getRegistryName().toString() );
+		facadeTag.setInteger( TAG_DAMAGE, ids[1] );
 		facadeStack.setTagCompound( facadeTag );
 
 		return facadeStack;

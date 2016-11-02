@@ -22,6 +22,7 @@ package appeng.client.render.cablebus;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -64,7 +65,10 @@ public class FacadeBuilder
 	private final VertexFormat format;
 
 	private final TextureAtlasSprite facadeTexture;
+
 	private final BlockRendererDispatcher blockRendererDispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+
+	private static final Set<ResourceLocation> warnedFor = new HashSet<>();
 
 	FacadeBuilder( VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
 	{
@@ -132,9 +136,34 @@ public class FacadeBuilder
 				}
 			}
 		}
+		catch( Exception e )
+		{
+			if( warnedFor.add( state.getBlock().getRegistryName() ) )
+			{
+				AELog.warn( "Unable to get facade sprite for blockstate %s. Supressing further warnings for this block.", state );
+				AELog.debug( e );
+			}
+		}
 		finally
 		{
 			ForgeHooksClient.setRenderLayer( orgLayer );
+		}
+
+		// Fall back to the particle texture, if we havent found anything else so far.
+		if( firstFound == null )
+		{
+			try
+			{
+				return blockModel.getParticleTexture();
+			}
+			catch( Exception e )
+			{
+				if( warnedFor.add( state.getBlock().getRegistryName() ) )
+				{
+					AELog.warn( "Unable to get facade sprite particle texture fallback for blockstate %s. Supressing further warnings for this block.", state );
+					AELog.debug( e );
+				}
+			}
 		}
 
 		return firstFound;
