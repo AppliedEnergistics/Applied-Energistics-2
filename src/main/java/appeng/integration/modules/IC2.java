@@ -21,21 +21,35 @@ package appeng.integration.modules;
 
 import java.util.function.BiFunction;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
+import ic2.api.recipe.RecipeInputItemStack;
+
+import appeng.api.AEApi;
+import appeng.api.config.TunnelType;
+import appeng.api.features.IP2PTunnelRegistry;
 import appeng.helpers.Reflected;
 import appeng.integration.IIntegrationModule;
+import appeng.integration.IntegrationHelper;
+import appeng.integration.abstraction.IIC2;
 import appeng.integration.modules.ic2.IC2PowerSink;
 import appeng.integration.modules.ic2.IC2PowerSinkAdapter;
 import appeng.integration.modules.ic2.IC2PowerSinkStub;
 import appeng.tile.powersink.IExternalPowerSink;
 
 
-public class IC2 implements IIntegrationModule
+public class IC2 implements IIntegrationModule, IIC2
 {
 
 	@Reflected
 	public static IC2 instance;
+
+	public IC2()
+	{
+		IntegrationHelper.testClassExistence( this, ic2.api.energy.tile.IEnergyTile.class );
+		IntegrationHelper.testClassExistence( this, ic2.api.recipe.RecipeInputItemStack.class );
+	}
 
 	private static BiFunction<TileEntity, IExternalPowerSink, IC2PowerSink> powerSinkFactory = ( ( te, sink ) -> IC2PowerSinkStub.INSTANCE );
 
@@ -48,6 +62,23 @@ public class IC2 implements IIntegrationModule
 	@Override
 	public void postInit()
 	{
+		final IP2PTunnelRegistry reg = AEApi.instance().registries().p2pTunnel();
+		reg.addNewAttunement( this.getItem( "copperCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( this.getItem( "insulatedCopperCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( this.getItem( "goldCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( this.getItem( "insulatedGoldCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( this.getItem( "ironCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( this.getItem( "insulatedIronCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( this.getItem( "insulatedTinCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( this.getItem( "glassFiberCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( this.getItem( "tinCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( this.getItem( "detectorCableItem" ), TunnelType.IC2_POWER );
+		reg.addNewAttunement( this.getItem( "splitterCableItem" ), TunnelType.IC2_POWER );
+	}
+
+	public ItemStack getItem( final String name )
+	{
+		return ic2.api.item.IC2Items.getItem( name );
 	}
 
 	/**
@@ -57,4 +88,11 @@ public class IC2 implements IIntegrationModule
 	{
 		return powerSinkFactory.apply( tileEntity, externalSink );
 	}
+
+	@Override
+	public void maceratorRecipe( ItemStack in, ItemStack out )
+	{
+		ic2.api.recipe.Recipes.macerator.addRecipe( new RecipeInputItemStack( in, in.stackSize ), null, false, out );
+	}
+
 }
