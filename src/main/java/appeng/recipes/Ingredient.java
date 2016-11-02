@@ -79,7 +79,7 @@ public class Ingredient implements IIngredient
 			{
 				int sel = 0;
 
-				if( this.nameSpace.equals( "oreDictionary" ) )
+				if( this.nameSpace.equalsIgnoreCase( "oreDictionary" ) )
 				{
 					if( parts.length == 3 )
 					{
