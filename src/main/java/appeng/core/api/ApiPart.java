@@ -28,7 +28,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.base.Joiner;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.collect.ImmutableList;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -64,9 +67,16 @@ import appeng.tile.networking.TileCableBus;
 public class ApiPart implements IPartHelper
 {
 
-	private final Map<String, Class<? extends AEBaseTile>> tileImplementations = new HashMap<>();
-	private final Map<Class<?>, String> interfaces2Layer = new HashMap<Class<?>, String>();
-	private final Map<String, Class> roots = new HashMap<String, Class>();
+	private final LoadingCache<CacheKey, Class<? extends AEBaseTile>> cache = CacheBuilder.newBuilder().build( new CacheLoader<CacheKey, Class<? extends AEBaseTile>>()
+	{
+		@Override
+		public Class<? extends AEBaseTile> load( CacheKey key ) throws Exception
+		{
+			return generateCombinedClass( key );
+		}
+	} );
+
+	private final Map<Class<?>, String> interfaces2Layer = new HashMap<>();
 	private final List<String> desc = new LinkedList<String>();
 
 	public void initFMPSupport()
@@ -80,64 +90,79 @@ public class ApiPart implements IPartHelper
 		}
 	}
 
+	/**
+	 * Conceptually this method will build a new class hierarchy that is rooted at the given base class, and includes a chain of all registered layers.
+	 * <p/>
+	 * To accomplish this, it takes the first registered layer, replaces it's inheritance from LayerBase with an inheritance from the given baseClass,
+	 * and uses the resulting class as the parent class for the next registered layer, for which it repeats this process. This process is then repeated
+	 * until a class hierarchy of all layers is formed. While janking out the inheritance from LayerBase, it'll make also sure that calls to that
+	 * classes method will instead be forwarded to the superclass that was inserted as part of the described process.
+	 * <p/>
+	 * Example: If layers A and B are registered, and TileCableBus is passed in as the baseClass, a synthetic class A_B_TileCableBus should be returned,
+	 * which has A_B_TileCableBus -extends-> B_TileCableBus -extends-> TileCableBus as it's class hierarchy, where A_B_TileCableBus has been generated
+	 * from A, and B_TileCableBus has been generated from B.
+	 */
 	public Class<? extends AEBaseTile> getCombinedInstance( final Class<? extends AEBaseTile> baseClass )
 	{
-		String base = baseClass.getName();
-
 		if( this.desc.isEmpty() )
 		{
+			// No layers registered...
 			return baseClass;
 		}
 
-		final String description = base + ':' + Joiner.on( ";" ).skipNulls().join( this.desc.iterator() );
-
-		if( this.tileImplementations.get( description ) != null )
-		{
-			return this.tileImplementations.get( description );
-		}
-
-		String f = base;// TileCableBus.class.getName();
-		String Addendum = baseClass.getSimpleName();
-		Class<? extends AEBaseTile> myClass = baseClass;
-
-		String path = f;
-
-		for( final String name : this.desc )
-		{
-			try
-			{
-				final String newPath = path + ';' + name;
-				myClass = this.getClassByDesc( baseClass.getSimpleName(), newPath, f, this.interfaces2Layer.get( Class.forName( name ) ) );
-				path = newPath;
-			}
-			catch( final Throwable t )
-			{
-				AELog.warn( "Error loading " + name );
-				AELog.debug( t );
-			}
-			f = myClass.getName();
-		}
-
-		this.tileImplementations.put( description, myClass );
-
-		return myClass;
+		return cache.getUnchecked( new CacheKey( baseClass, this.desc ) );
 	}
 
-	private Class getClassByDesc( final String addendum, final String fullPath, final String root, final String next )
+	private Class<? extends AEBaseTile> generateCombinedClass( CacheKey cacheKey )
 	{
-		if( this.roots.get( fullPath ) != null )
+		final Class<? extends AEBaseTile> parentClass;
+
+		// Get the list of interfaces that still need to be implemented beyond the current one
+		List<String> remainingInterfaces = cacheKey.getInterfaces().subList( 1, cacheKey.getInterfaces().size() );
+
+		// We are not at the root of the class hierarchy yet
+		if( !remainingInterfaces.isEmpty() )
 		{
-			return this.roots.get( fullPath );
+			CacheKey parentKey = new CacheKey( cacheKey.getBaseClass(), remainingInterfaces );
+			parentClass = cache.getUnchecked( parentKey );
+		}
+		else
+		{
+			parentClass = cacheKey.getBaseClass();
 		}
 
+		// Which interface should be implemented in this layer?
+		String interfaceName = cacheKey.getInterfaces().get( 0 );
+
+		try
+		{
+			// This is the particular interface that this layer was registered for. Loading the class may fail if i.e. an API is broken or not present
+			// and in this case, the layer will be skipped!
+			Class<?> interfaceClass = Class.forName( interfaceName );
+			String layerImpl = this.interfaces2Layer.get( interfaceClass );
+
+			return this.getClassByDesc( parentClass, layerImpl );
+		}
+		catch( final Throwable t )
+		{
+			AELog.warn( "Error loading " + interfaceName );
+			AELog.debug( t );
+			return parentClass;
+		}
+
+	}
+
+	@SuppressWarnings( "unchecked" )
+	private Class<? extends AEBaseTile> getClassByDesc( Class<? extends AEBaseTile> baseClass, final String next )
+	{
 		final ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
 		final ClassNode n = this.getReader( next );
 		final String originalName = n.name;
 
 		try
 		{
-			n.name = n.name + '_' + addendum;
-			n.superName = Class.forName( root ).getName().replace( ".", "/" );
+			n.name = n.name + '_' + baseClass.getSimpleName();
+			n.superName = baseClass.getName().replace( '.', '/' );
 		}
 		catch( final Throwable t )
 		{
@@ -167,14 +192,13 @@ public class ApiPart implements IPartHelper
 		try
 		{
 			final Object fish = clazz.newInstance();
-			final Class rootC = Class.forName( root );
 
 			boolean hasError = false;
 
-			if( !rootC.isInstance( fish ) )
+			if( !baseClass.isInstance( fish ) )
 			{
 				hasError = true;
-				AELog.error( "Error, Expected layer to implement " + root + " did not." );
+				AELog.error( "Error, Expected layer to implement " + baseClass + " did not." );
 			}
 
 			if( fish instanceof LayerBase )
@@ -183,19 +207,16 @@ public class ApiPart implements IPartHelper
 				AELog.error( "Error, Expected layer to NOT implement LayerBase but it DID." );
 			}
 
-			if( !fullPath.contains( ".fmp." ) )
+			if( !( fish instanceof TileCableBus ) )
 			{
-				if( !( fish instanceof TileCableBus ) )
-				{
-					hasError = true;
-					AELog.error( "Error, Expected layer to implement TileCableBus did not." );
-				}
+				hasError = true;
+				AELog.error( "Error, Expected layer to implement TileCableBus did not." );
+			}
 
-				if( !( fish instanceof TileEntity ) )
-				{
-					hasError = true;
-					AELog.error( "Error, Expected layer to implement TileEntity did not." );
-				}
+			if( !( fish instanceof TileEntity ) )
+			{
+				hasError = true;
+				AELog.error( "Error, Expected layer to implement TileEntity did not." );
 			}
 
 			if( !hasError )
@@ -209,7 +230,6 @@ public class ApiPart implements IPartHelper
 			AELog.debug( t );
 		}
 
-		this.roots.put( fullPath, clazz );
 		return clazz;
 	}
 
@@ -260,10 +280,19 @@ public class ApiPart implements IPartHelper
 			defineClassMethod.setAccessible( true );
 			try
 			{
-				final Object[] argsA = { name, name, b };
+				final Object[] argsA = {
+						name,
+						name,
+						b
+				};
 				b = (byte[]) runTransformersMethod.invoke( loader, argsA );
 
-				final Object[] args = { name, b, 0, b.length };
+				final Object[] args = {
+						name,
+						b,
+						0,
+						b.length
+				};
 				clazz = (Class) defineClassMethod.invoke( loader, args );
 			}
 			finally
@@ -319,7 +348,7 @@ public class ApiPart implements IPartHelper
 	private static class DefaultPackageClassNameRemapper extends Remapper
 	{
 
-		private final HashMap<String, String> inputOutput = new HashMap<String, String>();
+		private final HashMap<String, String> inputOutput = new HashMap<>();
 
 		@Override
 		public String map( final String typeName )
@@ -330,6 +359,55 @@ public class ApiPart implements IPartHelper
 				return typeName;
 			}
 			return o;
+		}
+	}
+
+
+	private static class CacheKey
+	{
+		private final Class<? extends AEBaseTile> baseClass;
+
+		private final List<String> interfaces;
+
+		private CacheKey( Class<? extends AEBaseTile> baseClass, List<String> interfaces )
+		{
+			this.baseClass = baseClass;
+			this.interfaces = ImmutableList.copyOf( interfaces );
+		}
+
+		private Class<? extends AEBaseTile> getBaseClass()
+		{
+			return baseClass;
+		}
+
+		private List<String> getInterfaces()
+		{
+			return interfaces;
+		}
+
+		@Override
+		public boolean equals( Object o )
+		{
+			if( this == o )
+			{
+				return true;
+			}
+			if( o == null || getClass() != o.getClass() )
+			{
+				return false;
+			}
+
+			CacheKey cacheKey = (CacheKey) o;
+
+			return baseClass.equals( cacheKey.baseClass ) && interfaces.equals( cacheKey.interfaces );
+		}
+
+		@Override
+		public int hashCode()
+		{
+			int result = baseClass.hashCode();
+			result = 31 * result + interfaces.hashCode();
+			return result;
 		}
 	}
 }

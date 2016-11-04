@@ -37,9 +37,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
+import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
+import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.parts.automation.PartAnnihilationPlane;
 import appeng.parts.automation.PartExportBus;
@@ -57,6 +59,7 @@ import appeng.parts.networking.PartCableGlass;
 import appeng.parts.networking.PartCableSmart;
 import appeng.parts.networking.PartDenseCable;
 import appeng.parts.networking.PartQuartzFiber;
+import appeng.parts.p2p.PartP2PIC2Power;
 import appeng.parts.p2p.PartP2PItems;
 import appeng.parts.p2p.PartP2PLight;
 import appeng.parts.p2p.PartP2PLiquids;
@@ -222,8 +225,15 @@ public enum PartType
 		}
 	},
 
-	// P2PTunnelEU( 465, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelEU ), EnumSet.of( IntegrationType.IC2 ),
-	// PartP2PIC2Power.class, GuiText.EUTunnel ),
+	P2PTunnelEU( 465, "p2p_tunnel_ic2", EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelEU ), EnumSet.of( IntegrationType.IC2 ),
+			PartP2PIC2Power.class, GuiText.EUTunnel )
+			{
+				@Override
+				String getUnlocalizedName()
+				{
+					return "P2PTunnel";
+				}
+			},
 
 	// P2PTunnelRF( 466, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelRF ), EnumSet.of( IntegrationType.RF ),
 	// PartP2PRFPower.class, GuiText.RFTunnel ),
@@ -249,6 +259,7 @@ public enum PartType
 	@SideOnly( Side.CLIENT )
 	private List<ModelResourceLocation> itemModels;
 	private final Set<ResourceLocation> models;
+	private final boolean enabled;
 	private Constructor<? extends IPart> constructor;
 
 	PartType( final int baseMetaValue, final String itemModel, final Set<AEFeature> features, final Set<IntegrationType> integrations, final Class<? extends IPart> c )
@@ -263,16 +274,31 @@ public enum PartType
 		this.integrations = Collections.unmodifiableSet( integrations );
 		this.myPart = c;
 		this.extraName = en;
-		if ( Platform.isClient() )
+
+		// The part is enabled if all features + integrations it needs are enabled
+		this.enabled = features.stream().allMatch( AEConfig.instance::isFeatureEnabled )
+				&& integrations.stream().allMatch( IntegrationRegistry.INSTANCE::isEnabled );
+
+		if( enabled )
 		{
-			this.itemModels = createItemModels( itemModel );
-		}
-		if( c != null )
-		{
-			this.models = new HashSet<>( PartModelsHelper.createModels( c ) );
+			// Only load models if the part is enabled, otherwise we also run into class-loading issues while
+			// scanning for annotations
+			if( Platform.isClient() )
+			{
+				this.itemModels = createItemModels( itemModel );
+			}
+			if( c != null )
+			{
+				this.models = new HashSet<>( PartModelsHelper.createModels( c ) );
+			}
+			else
+			{
+				this.models = Collections.emptySet();
+			}
 		}
 		else
 		{
+			this.itemModels = Collections.emptyList();
 			this.models = Collections.emptySet();
 		}
 	}
@@ -287,6 +313,11 @@ public enum PartType
 	private static ModelResourceLocation modelFromBaseName( String baseName )
 	{
 		return new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, "part/" + baseName ), "inventory" );
+	}
+
+	public boolean isEnabled()
+	{
+		return enabled;
 	}
 
 	int getBaseDamage()

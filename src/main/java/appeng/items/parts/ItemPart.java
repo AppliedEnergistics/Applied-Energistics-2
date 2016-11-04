@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -49,13 +48,9 @@ import appeng.api.implementations.items.IItemGroup;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.api.util.AEColor;
-import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
 import appeng.core.features.ActivityState;
 import appeng.core.features.ItemStackSrc;
 import appeng.core.localization.GuiText;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
 import appeng.items.AEBaseItem;
 
 
@@ -110,16 +105,7 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 			}
 		}
 
-		boolean enabled = true;
-		for( final AEFeature f : mat.getFeature() )
-		{
-			enabled = enabled && AEConfig.instance.isFeatureEnabled( f );
-		}
-
-		for( final IntegrationType integrationType : mat.getIntegrations() )
-		{
-			enabled &= IntegrationRegistry.INSTANCE.isEnabled( integrationType );
-		}
+		boolean enabled = mat.isEnabled();
 
 		final int partDamage = mat.getBaseDamage() + varID;
 		final ActivityState state = ActivityState.from( enabled );
