@@ -75,10 +75,22 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 		return super.getActualState( state, worldIn, pos ).withProperty( POWERED, powered );
 	}
 
-	@SideOnly( Side.CLIENT)
+	/**
+	 * NOTE: This is only used to determine how to render an item being held in hand.
+	 * For determining block rendering, the method below is used (canRenderInLayer).
+	 */
+	@SideOnly( Side.CLIENT )
+	@Override
 	public BlockRenderLayer getBlockLayer()
 	{
-		return BlockRenderLayer.TRANSLUCENT;
+		return BlockRenderLayer.CUTOUT;
+	}
+
+	@SideOnly( Side.CLIENT )
+	@Override
+	public boolean canRenderInLayer( BlockRenderLayer layer )
+	{
+		return layer == BlockRenderLayer.TRANSLUCENT;
 	}
 
 	public boolean isFullCube(IBlockState state)
