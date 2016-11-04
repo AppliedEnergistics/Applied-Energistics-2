@@ -271,22 +271,22 @@ public class ItemComparisonHelper
 					return true;
 				}
 
-				case 1: // ( A instanceof NBTTagByte )
+				case 1: // NBTTagByte
 					return ( (NBTPrimitive) left ).getByte() == ( (NBTPrimitive) right ).getByte();
 
-				case 4: // else if ( A instanceof NBTTagLong )
+				case 4: // NBTTagLong
 					return ( (NBTPrimitive) left ).getLong() == ( (NBTPrimitive) right ).getLong();
 
-				case 8: // else if ( A instanceof NBTTagString )
-					return ( (NBTTagString) left ).getString().equals( ( (NBTTagString) right ).getString() ) || ( (NBTTagString) left ).getString().equals( ( (NBTTagString) right ).getString() );
+				case 8: // NBTTagString
+					return ( (NBTTagString) left ).getString().equals( ( (NBTTagString) right ).getString() );
 
-				case 6: // else if ( A instanceof NBTTagDouble )
+				case 6: // NBTTagDouble
 					return ( (NBTPrimitive) left ).getDouble() == ( (NBTPrimitive) right ).getDouble();
 
-				case 5: // else if ( A instanceof NBTTagFloat )
+				case 5: // NBTTagFloat
 					return ( (NBTPrimitive) left ).getFloat() == ( (NBTPrimitive) right ).getFloat();
 
-				case 3: // else if ( A instanceof NBTTagInt )
+				case 3: // NBTTagInt
 					return ( (NBTPrimitive) left ).getInt() == ( (NBTPrimitive) right ).getInt();
 
 				default:
@@ -337,22 +337,22 @@ public class ItemComparisonHelper
 				return hash;
 			}
 
-			case 1: // ( A instanceof NBTTagByte )
+			case 1: // NBTTagByte
 				return hash + ( (NBTPrimitive) nbt ).getByte();
 
-			case 4: // else if ( A instanceof NBTTagLong )
+			case 4: // NBTTagLong
 				return hash + (int) ( (NBTPrimitive) nbt ).getLong();
 
-			case 8: // else if ( A instanceof NBTTagString )
+			case 8: // NBTTagString
 				return hash + ( (NBTTagString) nbt ).getString().hashCode();
 
-			case 6: // else if ( A instanceof NBTTagDouble )
+			case 6: // NBTTagDouble
 				return hash + (int) ( (NBTPrimitive) nbt ).getDouble();
 
-			case 5: // else if ( A instanceof NBTTagFloat )
+			case 5: // NBTTagFloat
 				return hash + (int) ( (NBTPrimitive) nbt ).getFloat();
 
-			case 3: // else if ( A instanceof NBTTagInt )
+			case 3: // NBTTagInt
 				return hash + ( (NBTPrimitive) nbt ).getInt();
 
 			default:
