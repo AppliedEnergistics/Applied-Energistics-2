@@ -32,7 +32,7 @@ import appeng.api.storage.data.IAEStack;
 public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 {
 
-	private final int oldStatus = 0;
+	private int oldStatus = 0;
 	private final ItemStack is;
 	private final ICellHandler handler;
 	private final IChestOrDrive cord;
@@ -59,6 +59,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 			if( newStatus != this.oldStatus )
 			{
 				this.cord.blinkCell( this.getSlot() );
+				this.oldStatus = newStatus;
 			}
 		}
 
@@ -77,6 +78,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 			if( newStatus != this.oldStatus )
 			{
 				this.cord.blinkCell( this.getSlot() );
+				this.oldStatus = newStatus;
 			}
 		}
 
