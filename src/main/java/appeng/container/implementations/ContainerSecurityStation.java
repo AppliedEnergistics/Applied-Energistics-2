@@ -168,11 +168,10 @@ public class ContainerSecurityStation extends ContainerMEMonitorable implements 
 					this.wirelessOut.putStack( term );
 
 					// update the two slots in question...
-					for( final Object crafter : this.listeners )
+					for( final IContainerListener listener : this.listeners )
 					{
-						final IContainerListener IContainerListener = (IContainerListener) crafter;
-						IContainerListener.sendSlotContents( this, this.wirelessIn.slotNumber, this.wirelessIn.getStack() );
-						IContainerListener.sendSlotContents( this, this.wirelessOut.slotNumber, this.wirelessOut.getStack() );
+						listener.sendSlotContents( this, this.wirelessIn.slotNumber, this.wirelessIn.getStack() );
+						listener.sendSlotContents( this, this.wirelessOut.slotNumber, this.wirelessOut.getStack() );
 					}
 				}
 			}

@@ -26,6 +26,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
@@ -151,22 +152,24 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 				this.setValidContainer( false );
 			}
 
-			for( final Object crafter : this.listeners )
+			for( final IContainerListener listener : this.listeners )
 			{
-				final IContainerListener IContainerListener = (IContainerListener) crafter;
-
 				if( this.prevStack != is )
 				{
 					// if the bars changed an item was probably made, so just send shit!
-					for( final Object s : this.inventorySlots )
+					for( final Slot s : this.inventorySlots )
 					{
 						if( s instanceof OptionalSlotRestrictedInput )
 						{
 							final OptionalSlotRestrictedInput sri = (OptionalSlotRestrictedInput) s;
-							IContainerListener.sendSlotContents( this, sri.slotNumber, sri.getStack() );
+							listener.sendSlotContents( this, sri.slotNumber, sri.getStack() );
 						}
 					}
-					( (EntityPlayerMP) IContainerListener ).isChangingQuantityOnly = false;
+
+					if( listener instanceof EntityPlayerMP )
+					{
+						( (EntityPlayerMP) listener ).isChangingQuantityOnly = false;
+					}
 				}
 			}
 

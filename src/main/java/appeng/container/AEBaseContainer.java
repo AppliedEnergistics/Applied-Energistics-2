@@ -438,13 +438,11 @@ public abstract class AEBaseContainer extends Container
 
 		if( Platform.isServer() )
 		{
-			for( final Object crafter : this.listeners )
+			for( final IContainerListener listener : this.listeners )
 			{
-				final IContainerListener IContainerListener = (IContainerListener) crafter;
-
 				for( final SyncData sd : this.syncData.values() )
 				{
-					sd.tick( IContainerListener );
+					sd.tick( listener );
 				}
 			}
 		}

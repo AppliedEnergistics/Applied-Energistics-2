@@ -200,7 +200,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		if( output != null && !this.isPattern( output ) )
 		{
 			return;
-		}// if nothing is there we should snag a new pattern.
+		} // if nothing is there we should snag a new pattern.
 		else if( output == null )
 		{
 			output = this.patternSlotIN.getStack();
@@ -483,19 +483,19 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	{
 		if( s == this.patternSlotOUT && Platform.isServer() )
 		{
-			for( final Object crafter : this.listeners )
+			for( final IContainerListener listener : this.listeners )
 			{
-				final IContainerListener IContainerListener = (IContainerListener) crafter;
-
-				for( final Object g : this.inventorySlots )
+				for( final Slot slot : this.inventorySlots )
 				{
-					if( g instanceof OptionalSlotFake || g instanceof SlotFakeCraftingMatrix )
+					if( slot instanceof OptionalSlotFake || slot instanceof SlotFakeCraftingMatrix )
 					{
-						final Slot sri = (Slot) g;
-						IContainerListener.sendSlotContents( this, sri.slotNumber, sri.getStack() );
+						listener.sendSlotContents( this, slot.slotNumber, slot.getStack() );
 					}
 				}
-				( (EntityPlayerMP) IContainerListener ).isChangingQuantityOnly = false;
+				if( listener instanceof EntityPlayerMP )
+				{
+					( (EntityPlayerMP) listener ).isChangingQuantityOnly = false;
+				}
 			}
 			this.detectAndSendChanges();
 		}
