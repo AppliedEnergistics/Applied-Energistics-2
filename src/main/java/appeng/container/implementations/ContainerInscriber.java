@@ -115,7 +115,7 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 		{
 			for( final ItemStack optional : AEApi.instance().registries().inscriber().getOptionals() )
 			{
-				if( Platform.isSameItemPrecise( optional, is ) )
+				if( Platform.itemComparisons().isSameItem( optional, is ) )
 				{
 					return false;
 				}
@@ -126,18 +126,18 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 
 			for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 			{
-				final boolean matchA = ( top == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( top, recipe.getTopOptional().orElse( null ) ) ) && // and...
-				( bot == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( bot, recipe.getBottomOptional().orElse( null ) ) );
+				final boolean matchA = ( top == null && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( top, recipe.getTopOptional().orElse( null ) ) ) && // and...
+				( bot == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.itemComparisons().isSameItem( bot, recipe.getBottomOptional().orElse( null ) ) );
 
-				final boolean matchB = ( bot == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( bot, recipe.getTopOptional().orElse( null ) ) ) && // and...
-				( top == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( top, recipe.getBottomOptional().orElse( null ) ) );
+				final boolean matchB = ( bot == null && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( bot, recipe.getTopOptional().orElse( null ) ) ) && // and...
+				( top == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.itemComparisons().isSameItem( top, recipe.getBottomOptional().orElse( null ) ) );
 
 				if( matchA || matchB )
 				{
 					matches = true;
 					for( final ItemStack option : recipe.getInputs() )
 					{
-						if( Platform.isSameItemPrecise( is, option ) )
+						if( Platform.itemComparisons().isSameItem( is, option ) )
 						{
 							found = true;
 						}
@@ -174,13 +174,13 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 			boolean isValid = false;
 			for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 			{
-				if( Platform.isSameItemPrecise( recipe.getTopOptional().orElse( null ), otherSlot ) )
+				if( Platform.itemComparisons().isSameItem( recipe.getTopOptional().orElse( null ), otherSlot ) )
 				{
-					isValid = Platform.isSameItemPrecise( is, recipe.getBottomOptional().orElse( null ) );
+					isValid = Platform.itemComparisons().isSameItem( is, recipe.getBottomOptional().orElse( null ) );
 				}
-				else if( Platform.isSameItemPrecise( recipe.getBottomOptional().orElse( null ), otherSlot ) )
+				else if( Platform.itemComparisons().isSameItem( recipe.getBottomOptional().orElse( null ), otherSlot ) )
 				{
-					isValid = Platform.isSameItemPrecise( is, recipe.getTopOptional().orElse( null ) );
+					isValid = Platform.itemComparisons().isSameItem( is, recipe.getTopOptional().orElse( null ) );
 				}
 
 				if( isValid )

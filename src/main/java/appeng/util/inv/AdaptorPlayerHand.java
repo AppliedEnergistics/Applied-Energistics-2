@@ -52,7 +52,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 			return null;
 		}
 
-		if( filter == null || Platform.isSameItemPrecise( filter, hand ) )
+		if( filter == null || Platform.itemComparisons().isSameItem( filter, hand ) )
 		{
 			final ItemStack result = hand.copy();
 			result.stackSize = hand.stackSize > amount ? amount : hand.stackSize;
@@ -77,7 +77,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 			return null;
 		}
 
-		if( filter == null || Platform.isSameItemPrecise( filter, hand ) )
+		if( filter == null || Platform.itemComparisons().isSameItem( filter, hand ) )
 		{
 			final ItemStack result = hand.copy();
 			result.stackSize = hand.stackSize > amount ? amount : hand.stackSize;
@@ -96,7 +96,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 			return null;
 		}
 
-		if( filter == null || Platform.isSameItemFuzzy( filter, hand, fuzzyMode ) )
+		if( filter == null || Platform.itemComparisons().isFuzzyEqualItem( filter, hand, fuzzyMode ) )
 		{
 			final ItemStack result = hand.copy();
 			result.stackSize = hand.stackSize > amount ? amount : hand.stackSize;
@@ -121,7 +121,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 			return null;
 		}
 
-		if( filter == null || Platform.isSameItemFuzzy( filter, hand, fuzzyMode ) )
+		if( filter == null || Platform.itemComparisons().isFuzzyEqualItem( filter, hand, fuzzyMode ) )
 		{
 			final ItemStack result = hand.copy();
 			result.stackSize = hand.stackSize > amount ? amount : hand.stackSize;
@@ -154,7 +154,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 
 		final ItemStack hand = this.player.inventory.getItemStack();
 
-		if( hand != null && !Platform.isSameItemPrecise( toBeAdded, hand ) )
+		if( hand != null && !Platform.itemComparisons().isSameItem( toBeAdded, hand ) )
 		{
 			return toBeAdded;
 		}
@@ -194,7 +194,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 			return null;
 		}
 
-		if( hand != null && !Platform.isSameItem( toBeSimulated, hand ) )
+		if( hand != null && !Platform.itemComparisons().isEqualItem( toBeSimulated, hand ) )
 		{
 			return toBeSimulated;
 		}

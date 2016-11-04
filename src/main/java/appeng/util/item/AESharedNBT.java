@@ -136,7 +136,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 			x.setTag( name, c.getTag( name ).copy() );
 		}
 
-		x.hash = Platform.NBTOrderlessHash( c );
+		x.hash = Platform.itemComparisons().createUnorderedNbtHash( c );
 
 		final ItemStack isc = new ItemStack( itemID, 1, damageValue );
 		isc.setTagCompound( c );

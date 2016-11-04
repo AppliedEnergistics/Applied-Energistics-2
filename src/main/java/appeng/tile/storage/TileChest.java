@@ -467,7 +467,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 		this.lastStateChange = this.worldObj.getTotalWorldTime();
 
-		return oldPaintedColor != this.paintedColor || ( this.state & 0xDB6DB6DB ) != ( oldState & 0xDB6DB6DB ) || !Platform.isSameItemPrecise( oldType, this.storageType );
+		return oldPaintedColor != this.paintedColor || ( this.state & 0xDB6DB6DB ) != ( oldState & 0xDB6DB6DB ) || !Platform.itemComparisons().isSameItem( oldType, this.storageType );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )

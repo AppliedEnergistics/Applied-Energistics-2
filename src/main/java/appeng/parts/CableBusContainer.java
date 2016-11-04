@@ -1066,7 +1066,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 				final ItemStack current = p == null ? null : p.getItemStack( PartItemStack.WORLD );
 
-				if( Platform.isSameItemType( iss, current ) )
+				if( Platform.itemComparisons().isEqualItemType( iss, current ) )
 				{
 					p.readFromNBT( extra );
 				}

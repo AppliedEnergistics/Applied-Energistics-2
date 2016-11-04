@@ -125,7 +125,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 	{
 		for( final IGrinderEntry gr : this.recipes )
 		{
-			if( Platform.isSameItemPrecise( gr.getInput(), appEngGrinderRecipe.getInput() ) )
+			if( Platform.itemComparisons().isSameItem( gr.getInput(), appEngGrinderRecipe.getInput() ) )
 			{
 				return;
 			}
@@ -151,7 +151,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		{
 			for( final IGrinderEntry r : this.recipes )
 			{
-				if( Platform.isSameItem( input, r.getInput() ) )
+				if( Platform.itemComparisons().isEqualItem( input, r.getInput() ) )
 				{
 					this.log( "Recipe for " + input.getUnlocalizedName() + " found " + Platform.getItemDisplayName( r.getOutput() ) );
 					return r;

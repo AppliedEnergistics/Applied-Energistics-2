@@ -87,6 +87,6 @@ public class Crusher implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public boolean canCraft( final ItemStack output ) throws RegistrationError, MissingIngredientError
 	{
-		return Platform.isSameItemPrecise( this.pro_output[0].getItemStack(), output );
+		return Platform.itemComparisons().isSameItem( this.pro_output[0].getItemStack(), output );
 	}
 }

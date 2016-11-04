@@ -47,7 +47,7 @@ public class AdaptorItemHandler extends InventoryAdaptor
 		for( int slot = 0; slot < slots && amount > 0; slot++ )
 		{
 			final ItemStack is = itemHandler.getStackInSlot( slot );
-			if( is == null || ( filter != null && !Platform.isSameItemPrecise( is, filter ) ) )
+			if( is == null || ( filter != null && !Platform.itemComparisons().isSameItem( is, filter ) ) )
 			{
 				continue;
 			}
@@ -101,7 +101,7 @@ public class AdaptorItemHandler extends InventoryAdaptor
 		for( int slot = 0; slot < slots && amount > 0; slot++ )
 		{
 			final ItemStack is = itemHandler.getStackInSlot( slot );
-			if( is != null && ( filter == null || Platform.isSameItemPrecise( is, filter ) ) )
+			if( is != null && ( filter == null || Platform.itemComparisons().isSameItem( is, filter ) ) )
 			{
 				ItemStack extracted = itemHandler.extractItem( slot, amount, true );
 
@@ -149,7 +149,7 @@ public class AdaptorItemHandler extends InventoryAdaptor
 		for( int slot = 0; slot < slots && extracted == null; slot++ )
 		{
 			final ItemStack is = itemHandler.getStackInSlot( slot );
-			if( is == null || ( filter != null && !Platform.isSameItemFuzzy( is, filter, fuzzyMode ) ) )
+			if( is == null || ( filter != null && !Platform.itemComparisons().isFuzzyEqualItem( is, filter, fuzzyMode ) ) )
 			{
 				continue;
 			}
@@ -184,7 +184,7 @@ public class AdaptorItemHandler extends InventoryAdaptor
 		for( int slot = 0; slot < slots && extracted == null; slot++ )
 		{
 			final ItemStack is = itemHandler.getStackInSlot( slot );
-			if( is == null || ( filter != null && !Platform.isSameItemFuzzy( is, filter, fuzzyMode ) ) )
+			if( is == null || ( filter != null && !Platform.itemComparisons().isFuzzyEqualItem( is, filter, fuzzyMode ) ) )
 			{
 				continue;
 			}
@@ -229,7 +229,7 @@ public class AdaptorItemHandler extends InventoryAdaptor
 		{
 			ItemStack is = itemHandler.getStackInSlot( slot );
 
-			if( is == null || Platform.isSameItemPrecise( is, left ) )
+			if( is == null || Platform.itemComparisons().isSameItem( is, left ) )
 			{
 				left = itemHandler.insertItem( slot, left, simulate );
 

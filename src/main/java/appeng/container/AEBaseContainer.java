@@ -227,7 +227,7 @@ public abstract class AEBaseContainer extends Container
 			final ItemStack a = stack == null ? null : stack.getItemStack();
 			final ItemStack b = this.clientRequestedTargetItem == null ? null : this.clientRequestedTargetItem.getItemStack();
 
-			if( Platform.isSameItemPrecise( a, b ) )
+			if( Platform.itemComparisons().isSameItem( a, b ) )
 			{
 				return;
 			}
@@ -545,7 +545,7 @@ public abstract class AEBaseContainer extends Container
 
 						if( !( cs.isPlayerSide() ) && cs instanceof SlotFake )
 						{
-							if( Platform.isSameItemPrecise( destination, tis ) )
+							if( Platform.itemComparisons().isSameItem( destination, tis ) )
 							{
 								break;
 							}
@@ -577,7 +577,7 @@ public abstract class AEBaseContainer extends Container
 						{
 							final ItemStack t = d.getStack();
 
-							if( Platform.isSameItemPrecise( tis, t ) ) // t.isItemEqual(tis))
+							if( Platform.itemComparisons().isSameItem( tis, t ) ) // t.isItemEqual(tis))
 							{
 								int maxSize = t.getMaxStackSize();
 								if( maxSize > d.getSlotStackLimit() )
@@ -629,7 +629,7 @@ public abstract class AEBaseContainer extends Container
 						{
 							final ItemStack t = d.getStack();
 
-							if( Platform.isSameItemPrecise( t, tis ) )
+							if( Platform.itemComparisons().isSameItem( t, tis ) )
 							{
 								int maxSize = t.getMaxStackSize();
 								if( d.getSlotStackLimit() < maxSize )
@@ -929,7 +929,7 @@ public abstract class AEBaseContainer extends Container
 						{
 							liftQty = 0;
 						}
-						if( !Platform.isSameItemPrecise( slotItem.getItemStack(), item ) )
+						if( !Platform.itemComparisons().isSameItem( slotItem.getItemStack(), item ) )
 						{
 							liftQty = 0;
 						}

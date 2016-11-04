@@ -235,7 +235,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 			{
 				if( currentItem != null )
 				{
-					if( Platform.isSameItem( this.tbInventory.getItemStack(), currentItem ) )
+					if( Platform.itemComparisons().isEqualItem( this.tbInventory.getItemStack(), currentItem ) )
 					{
 						this.getPlayerInv().setInventorySlotContents( this.tbSlot, this.tbInventory.getItemStack() );
 					}

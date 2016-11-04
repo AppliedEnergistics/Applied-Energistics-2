@@ -79,7 +79,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 		{
 			if( currentItem != null )
 			{
-				if( Platform.isSameItem( this.toolInv.getItemStack(), currentItem ) )
+				if( Platform.itemComparisons().isEqualItem( this.toolInv.getItemStack(), currentItem ) )
 				{
 					this.getPlayerInv().setInventorySlotContents( this.getPlayerInv().currentItem, this.toolInv.getItemStack() );
 				}

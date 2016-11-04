@@ -36,7 +36,7 @@ public class SharedSearchObject
 	public SharedSearchObject( final Item itemID, final int damageValue, final NBTTagCompound tagCompound )
 	{
 		this.def = ( damageValue << Platform.DEF_OFFSET ) | Item.REGISTRY.getIDForObject( itemID );
-		this.hash = Platform.NBTOrderlessHash( tagCompound );
+		this.hash = Platform.itemComparisons().createUnorderedNbtHash( tagCompound );
 		this.setCompound( tagCompound );
 	}
 
@@ -60,7 +60,7 @@ public class SharedSearchObject
 		final SharedSearchObject other = (SharedSearchObject) obj;
 		if( this.def == other.def && this.hash == other.hash )
 		{
-			return Platform.NBTEqualityTest( this.getCompound(), other.getCompound() );
+			return Platform.itemComparisons().isNbtTagEqual( this.getCompound(), other.getCompound() );
 		}
 		return false;
 	}

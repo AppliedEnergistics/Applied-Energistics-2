@@ -167,7 +167,7 @@ public class PacketJEIRecipe extends AppEngPacket
 									final ItemStack newItemStack = r.matches( testInv, pmp.worldObj ) ? r.getCraftingResult( testInv ) : null;
 									testInv.setInventorySlotContents( x, patternItem );
 
-									if( newItemStack == null || !Platform.isSameItemPrecise( newItemStack, is ) )
+									if( newItemStack == null || !Platform.itemComparisons().isSameItem( newItemStack, is ) )
 									{
 										final IAEItemStack in = AEItemStack.create( currentItem );
 										if( in != null )

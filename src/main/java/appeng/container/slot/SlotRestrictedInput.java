@@ -170,7 +170,7 @@ public class SlotRestrictedInput extends AppEngSlot
 
 				for( final ItemStack optional : AEApi.instance().registries().inscriber().getOptionals() )
 				{
-					if( Platform.isSameItemPrecise( optional, i ) )
+					if( Platform.itemComparisons().isSameItem( optional, i ) )
 					{
 						return true;
 					}
@@ -258,7 +258,7 @@ public class SlotRestrictedInput extends AppEngSlot
 
 	public static boolean isMetalIngot( final ItemStack i )
 	{
-		if( Platform.isSameItemPrecise( i, new ItemStack( Items.IRON_INGOT ) ) )
+		if( Platform.itemComparisons().isSameItem( i, new ItemStack( Items.IRON_INGOT ) ) )
 		{
 			return true;
 		}
@@ -267,7 +267,7 @@ public class SlotRestrictedInput extends AppEngSlot
 		{
 			for( final ItemStack ingot : OreDictionary.getOres( "ingot" + name ) )
 			{
-				if( Platform.isSameItemPrecise( i, ingot ) )
+				if( Platform.itemComparisons().isSameItem( i, ingot ) )
 				{
 					return true;
 				}

@@ -52,7 +52,7 @@ public class MatterCannonAmmoRegistry implements IOreListener, IMatterCannonAmmo
 	{
 		for( final ItemStack o : this.DamageModifiers.keySet() )
 		{
-			if( Platform.isSameItem( o, is ) )
+			if( Platform.itemComparisons().isEqualItem( o, is ) )
 			{
 				return this.DamageModifiers.get( o ).floatValue();
 			}

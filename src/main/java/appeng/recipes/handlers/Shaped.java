@@ -162,7 +162,7 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 				{
 					for( final ItemStack r : i.getItemStackSet() )
 					{
-						if( Platform.isSameItemPrecise( r, reqOutput ) )
+						if( Platform.itemComparisons().isSameItem( r, reqOutput ) )
 						{
 							return false;
 						}
@@ -171,6 +171,6 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 			}
 		}
 
-		return Platform.isSameItemPrecise( this.output.getItemStack(), reqOutput );
+		return Platform.itemComparisons().isSameItem( this.output.getItemStack(), reqOutput );
 	}
 }

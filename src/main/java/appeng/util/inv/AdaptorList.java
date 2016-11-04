@@ -47,7 +47,7 @@ public class AdaptorList extends InventoryAdaptor
 		for( int x = 0; x < s; x++ )
 		{
 			final ItemStack is = this.i.get( x );
-			if( is != null && ( filter == null || Platform.isSameItemPrecise( is, filter ) ) )
+			if( is != null && ( filter == null || Platform.itemComparisons().isSameItem( is, filter ) ) )
 			{
 				if( amount > is.stackSize )
 				{
@@ -82,7 +82,7 @@ public class AdaptorList extends InventoryAdaptor
 	{
 		for( final ItemStack is : this.i )
 		{
-			if( is != null && ( filter == null || Platform.isSameItemPrecise( is, filter ) ) )
+			if( is != null && ( filter == null || Platform.itemComparisons().isSameItem( is, filter ) ) )
 			{
 				if( amount > is.stackSize )
 				{
@@ -111,7 +111,7 @@ public class AdaptorList extends InventoryAdaptor
 		for( int x = 0; x < s; x++ )
 		{
 			final ItemStack is = this.i.get( x );
-			if( is != null && ( filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode ) ) )
+			if( is != null && ( filter == null || Platform.itemComparisons().isFuzzyEqualItem( is, filter, fuzzyMode ) ) )
 			{
 				if( amount > is.stackSize )
 				{
@@ -146,7 +146,7 @@ public class AdaptorList extends InventoryAdaptor
 	{
 		for( final ItemStack is : this.i )
 		{
-			if( is != null && ( filter == null || Platform.isSameItemFuzzy( is, filter, fuzzyMode ) ) )
+			if( is != null && ( filter == null || Platform.itemComparisons().isFuzzyEqualItem( is, filter, fuzzyMode ) ) )
 			{
 				if( amount > is.stackSize )
 				{
@@ -184,7 +184,7 @@ public class AdaptorList extends InventoryAdaptor
 
 		for( final ItemStack is : this.i )
 		{
-			if( Platform.isSameItem( is, left ) )
+			if( Platform.itemComparisons().isEqualItem( is, left ) )
 			{
 				is.stackSize += left.stackSize;
 				return null;

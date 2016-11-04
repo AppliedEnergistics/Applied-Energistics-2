@@ -81,6 +81,6 @@ public class Smelt implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public boolean canCraft( final ItemStack reqOutput ) throws RegistrationError, MissingIngredientError
 	{
-		return Platform.isSameItemPrecise( this.out.getItemStack(), reqOutput );
+		return Platform.itemComparisons().isSameItem( this.out.getItemStack(), reqOutput );
 	}
 }

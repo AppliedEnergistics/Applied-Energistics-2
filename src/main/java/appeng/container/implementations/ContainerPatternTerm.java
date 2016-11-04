@@ -414,7 +414,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 			final IRecipe rr = Platform.findMatchingRecipe( real, p.worldObj );
 
-			if( rr == r && Platform.isSameItemPrecise( rr.getCraftingResult( real ), is ) )
+			if( rr == r && Platform.itemComparisons().isSameItem( rr.getCraftingResult( real ), is ) )
 			{
 				final SlotCrafting sc = new SlotCrafting( p, real, this.cOut, 0, 0, 0 );
 				sc.onPickupFromSlot( p, is );

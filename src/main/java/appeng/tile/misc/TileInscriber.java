@@ -256,7 +256,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 			for( final ItemStack optionals : AEApi.instance().registries().inscriber().getOptionals() )
 			{
-				if( Platform.isSameItemPrecise( optionals, itemstack ) )
+				if( Platform.itemComparisons().isSameItem( optionals, itemstack ) )
 				{
 					return true;
 				}
@@ -410,17 +410,17 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 		{
 
-			final boolean matchA = ( plateA == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( plateA, recipe.getTopOptional().orElse( null ) ) ) && // and...
-			( plateB == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( plateB, recipe.getBottomOptional().orElse( null ) ) );
+			final boolean matchA = ( plateA == null && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateA, recipe.getTopOptional().orElse( null ) ) ) && // and...
+			( plateB == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.itemComparisons().isSameItem( plateB, recipe.getBottomOptional().orElse( null ) ) );
 
-			final boolean matchB = ( plateB == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( plateB, recipe.getTopOptional().orElse( null ) ) ) && // and...
-			( plateA == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( plateA, recipe.getBottomOptional().orElse( null ) ) );
+			final boolean matchB = ( plateB == null && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateB, recipe.getTopOptional().orElse( null ) ) ) && // and...
+			( plateA == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.itemComparisons().isSameItem( plateA, recipe.getBottomOptional().orElse( null ) ) );
 
 			if( matchA || matchB )
 			{
 				for( final ItemStack option : recipe.getInputs() )
 				{
-					if( Platform.isSameItemPrecise( option, this.getStackInSlot( 2 ) ) )
+					if( Platform.itemComparisons().isSameItem( option, this.getStackInSlot( 2 ) ) )
 					{
 						return recipe;
 					}
