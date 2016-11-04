@@ -73,17 +73,17 @@ tile.appliedenergistics2.sky_stone_slab.name=Himmelssteinstufe
 
 // Chat Messages
 chat.appliedenergistics2.ChestCannotReadStorageCell=ME-Truhe kann die Speicherzelle nicht einlesen.
-chat.appliedenergistics2.SettingCleared=Einstellung gelöscht.
+chat.appliedenergistics2.SettingCleared=Speicherkarte geleert.
 chat.appliedenergistics2.OutOfRange=Drahtloser Zugangspunkt außer Reichweite.
 chat.appliedenergistics2.InvalidMachine=Ungültige Maschine.
-chat.appliedenergistics2.LoadedSettings=Einstellungen erfolgreich geladen.
+chat.appliedenergistics2.LoadedSettings=Geräteeinstellungen von Speicherkarte geladen.
 chat.appliedenergistics2.DeviceNotPowered=Gerät hat zu wenig Energie
 chat.appliedenergistics2.DeviceNotWirelessTerminal=Gerät ist keine Drahtloskonsole.
 chat.appliedenergistics2.DeviceNotLinked=Gerät ist nicht verbunden.
 chat.appliedenergistics2.StationCanNotBeLocated=Station kann nicht lokalisiert werden.
 chat.appliedenergistics2.MachineNotPowered=Maschine bekommt keine Energie.
 chat.appliedenergistics2.CommunicationError=Fehler beim Kommunizieren mit dem Netzwerk.
-chat.appliedenergistics2.SavedSettings=Einstellungen erfolgreich gespeichert.
+chat.appliedenergistics2.SavedSettings=Geräteeinstellungen auf Speicherkarte kopiert.
 chat.appliedenergistics2.AmmoDepleted=Munition verbraucht.
 chat.appliedenergistics2.isNowLocked=Monitor ist nun gesperrt.
 chat.appliedenergistics2.isNowUnlocked=Monitor ist nun entsperrt.
