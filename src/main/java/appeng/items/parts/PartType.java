@@ -275,18 +275,9 @@ public enum PartType
 		this.myPart = c;
 		this.extraName = en;
 
-		boolean enabled = true;
-		for( AEFeature f : features )
-		{
-			enabled = enabled && AEConfig.instance.isFeatureEnabled( f );
-		}
-
-		for( IntegrationType integrationType : integrations )
-		{
-			enabled &= IntegrationRegistry.INSTANCE.isEnabled( integrationType );
-		}
-
-		this.enabled = enabled;
+		// The part is enabled if all features + integrations it needs are enabled
+		this.enabled = features.stream().allMatch( AEConfig.instance::isFeatureEnabled )
+				&& integrations.stream().allMatch( IntegrationRegistry.INSTANCE::isEnabled );
 
 		if( enabled )
 		{

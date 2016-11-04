@@ -49,6 +49,11 @@ import appeng.util.Platform;
 public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements IEnergySink, IEnergySource
 {
 
+	private static final String TAG_BUFFERED_ENERGY_1 = "bufferedEnergy1";
+	private static final String TAG_BUFFERED_ENERGY_2 = "bufferedEnergy2";
+	private static final String TAG_BUFFERED_VOLTAGE_1 = "outputPacket1";
+	private static final String TAG_BUFFERED_VOLTAGE_2 = "outputPacket2";
+
 	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_ic2" );
 
 	@PartModels
@@ -57,12 +62,11 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements I
 		return MODELS.getModels();
 	}
 
-	// two packet buffering...
-	private double OutputEnergyA;
-	private double OutputEnergyB;
-	// two packet buffering...
-	private double OutputVoltageA;
-	private double OutputVoltageB;
+	// Buffer the energy + voltage for two IC2 ENET packets
+	private double bufferedEnergy1;
+	private double bufferedVoltage1;
+	private double bufferedEnergy2;
+	private double bufferedVoltage2;
 
 	public PartP2PIC2Power( ItemStack is )
 	{
@@ -73,20 +77,20 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements I
 	public void readFromNBT( NBTTagCompound tag )
 	{
 		super.readFromNBT( tag );
-		this.OutputEnergyA = tag.getDouble( "OutputPacket" );
-		this.OutputEnergyB = tag.getDouble( "OutputPacket2" );
-		this.OutputVoltageA = tag.getDouble( "OutputVoltageA" );
-		this.OutputVoltageB = tag.getDouble( "OutputVoltageB" );
+		this.bufferedEnergy1 = tag.getDouble( TAG_BUFFERED_ENERGY_1 );
+		this.bufferedEnergy2 = tag.getDouble( TAG_BUFFERED_ENERGY_2 );
+		this.bufferedVoltage1 = tag.getDouble( TAG_BUFFERED_VOLTAGE_1 );
+		this.bufferedVoltage2 = tag.getDouble( TAG_BUFFERED_VOLTAGE_2 );
 	}
 
 	@Override
 	public void writeToNBT( NBTTagCompound tag )
 	{
 		super.writeToNBT( tag );
-		tag.setDouble( "OutputPacket", this.OutputEnergyA );
-		tag.setDouble( "OutputPacket2", this.OutputEnergyB );
-		tag.setDouble( "OutputVoltageA", this.OutputVoltageA );
-		tag.setDouble( "OutputVoltageB", this.OutputVoltageB );
+		tag.setDouble( TAG_BUFFERED_ENERGY_1, this.bufferedEnergy1 );
+		tag.setDouble( TAG_BUFFERED_ENERGY_2, this.bufferedEnergy2 );
+		tag.setDouble( TAG_BUFFERED_VOLTAGE_1, this.bufferedVoltage1 );
+		tag.setDouble( TAG_BUFFERED_VOLTAGE_2, this.bufferedVoltage2 );
 	}
 
 	@Override
@@ -125,7 +129,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements I
 		{
 			for( PartP2PIC2Power t : this.getOutputs() )
 			{
-				if( t.OutputEnergyA <= 0.0001 || t.OutputEnergyB <= 0.0001 )
+				if( t.bufferedEnergy1 <= 0.0001 || t.bufferedEnergy2 <= 0.0001 )
 				{
 					return 2048;
 				}
@@ -166,7 +170,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements I
 		LinkedList<PartP2PIC2Power> options = new LinkedList<>();
 		for( PartP2PIC2Power o : outs )
 		{
-			if( o.OutputEnergyA <= 0.01 )
+			if( o.bufferedEnergy1 <= 0.01 )
 			{
 				options.add( o );
 			}
@@ -176,7 +180,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements I
 		{
 			for( PartP2PIC2Power o : outs )
 			{
-				if( o.OutputEnergyB <= 0.01 )
+				if( o.bufferedEnergy2 <= 0.01 )
 				{
 					options.add( o );
 				}
@@ -198,19 +202,19 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements I
 
 		PartP2PIC2Power x = Platform.pickRandom( options );
 
-		if( x != null && x.OutputEnergyA <= 0.001 )
+		if( x != null && x.bufferedEnergy1 <= 0.001 )
 		{
 			this.queueTunnelDrain( PowerUnits.EU, amount );
-			x.OutputEnergyA = amount;
-			x.OutputVoltageA = voltage;
+			x.bufferedEnergy1 = amount;
+			x.bufferedVoltage1 = voltage;
 			return 0;
 		}
 
-		if( x != null && x.OutputEnergyB <= 0.001 )
+		if( x != null && x.bufferedEnergy2 <= 0.001 )
 		{
 			this.queueTunnelDrain( PowerUnits.EU, amount );
-			x.OutputEnergyB = amount;
-			x.OutputVoltageB = voltage;
+			x.bufferedEnergy2 = amount;
+			x.bufferedVoltage2 = voltage;
 			return 0;
 		}
 
@@ -222,7 +226,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements I
 	{
 		if( this.isOutput() )
 		{
-			return this.OutputEnergyA;
+			return this.bufferedEnergy1;
 		}
 		return 0;
 	}
@@ -230,14 +234,14 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements I
 	@Override
 	public void drawEnergy( double amount )
 	{
-		this.OutputEnergyA -= amount;
-		if( this.OutputEnergyA < 0.001 )
+		this.bufferedEnergy1 -= amount;
+		if( this.bufferedEnergy1 < 0.001 )
 		{
-			this.OutputEnergyA = this.OutputEnergyB;
-			this.OutputEnergyB = 0;
+			this.bufferedEnergy1 = this.bufferedEnergy2;
+			this.bufferedEnergy2 = 0;
 
-			this.OutputVoltageA = this.OutputVoltageB;
-			this.OutputVoltageB = 0;
+			this.bufferedVoltage1 = this.bufferedVoltage2;
+			this.bufferedVoltage2 = 0;
 		}
 	}
 

@@ -162,7 +162,7 @@ public class ApiPart implements IPartHelper
 		try
 		{
 			n.name = n.name + '_' + baseClass.getSimpleName();
-			n.superName = baseClass.getName().replace( ".", "/" );
+			n.superName = baseClass.getName().replace( '.', '/' );
 		}
 		catch( final Throwable t )
 		{
@@ -348,7 +348,7 @@ public class ApiPart implements IPartHelper
 	private static class DefaultPackageClassNameRemapper extends Remapper
 	{
 
-		private final HashMap<String, String> inputOutput = new HashMap<String, String>();
+		private final HashMap<String, String> inputOutput = new HashMap<>();
 
 		@Override
 		public String map( final String typeName )
@@ -363,24 +363,24 @@ public class ApiPart implements IPartHelper
 	}
 
 
-	private class CacheKey
+	private static class CacheKey
 	{
 		private final Class<? extends AEBaseTile> baseClass;
 
 		private final List<String> interfaces;
 
-		public CacheKey( Class<? extends AEBaseTile> baseClass, List<String> interfaces )
+		private CacheKey( Class<? extends AEBaseTile> baseClass, List<String> interfaces )
 		{
 			this.baseClass = baseClass;
 			this.interfaces = ImmutableList.copyOf( interfaces );
 		}
 
-		public Class<? extends AEBaseTile> getBaseClass()
+		private Class<? extends AEBaseTile> getBaseClass()
 		{
 			return baseClass;
 		}
 
-		public List<String> getInterfaces()
+		private List<String> getInterfaces()
 		{
 			return interfaces;
 		}
