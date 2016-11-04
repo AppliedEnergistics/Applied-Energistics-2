@@ -283,7 +283,7 @@ public enum PartType
 		{
 			// Only load models if the part is enabled, otherwise we also run into class-loading issues while
 			// scanning for annotations
-			if( Platform.isClient() )
+			if( Platform.isClientInstall() )
 			{
 				this.itemModels = createItemModels( itemModel );
 			}
@@ -298,7 +298,10 @@ public enum PartType
 		}
 		else
 		{
-			this.itemModels = Collections.emptyList();
+			if( Platform.isClientInstall() )
+			{
+				this.itemModels = Collections.emptyList();
+			}
 			this.models = Collections.emptySet();
 		}
 	}
