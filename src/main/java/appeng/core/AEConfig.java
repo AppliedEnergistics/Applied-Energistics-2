@@ -88,6 +88,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	public boolean enableEffects = true;
 	public boolean useLargeFonts = false;
 	public boolean useColoredCraftingStatus;
+	public boolean removeCrashingItemsOnLoad = false;
 	public int wirelessTerminalBattery = 1600000;
 	public int entropyManipulatorBattery = 200000;
 	public int matterCannonBattery = 200000;
@@ -125,6 +126,8 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 
 		CondenserOutput.MATTER_BALLS.requiredPower = this.get( "Condenser", "MatterBalls", 256 ).getInt( 256 );
 		CondenserOutput.SINGULARITY.requiredPower = this.get( "Condenser", "Singularity", 256000 ).getInt( 256000 );
+
+		this.removeCrashingItemsOnLoad = this.get( "general", "removeCrashingItemsOnLoad", false, "Will auto-remove items that crash when being loaded from storage. This will destroy those items instead of crashing the game!" ).getBoolean();
 
 		this.grinderOres = this.get( "GrindStone", "grinderOres", this.grinderOres ).getStringList();
 		this.oreDoublePercentage = this.get( "GrindStone", "oreDoublePercentage", this.oreDoublePercentage ).getDouble( this.oreDoublePercentage );
