@@ -26,7 +26,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
@@ -92,7 +91,14 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		 * Kinda hackery
 		 */
 		this.getDefinition().setDamageValue( this.def.getDamageValueHack( is ) );
-		this.getDefinition().setDisplayDamage( (int) ( is.getItem().getDurabilityForDisplay( is ) * Integer.MAX_VALUE ) );
+		if( !is.getItem().isDamageable() )
+		{
+			this.getDefinition().setDisplayDamage( Integer.MAX_VALUE );
+		}
+		else
+		{
+			this.getDefinition().setDisplayDamage( (int) ( is.getItem().getDurabilityForDisplay( is ) * Integer.MAX_VALUE ) );
+		}
 		this.getDefinition().setMaxDamage( is.getMaxDamage() );
 
 		final NBTTagCompound tagCompound = is.getTagCompound();
