@@ -30,8 +30,6 @@ import net.minecraft.util.text.TextComponentString;
 
 import appeng.core.CommonHelper;
 import appeng.tile.AEBaseTile;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
 
 
@@ -43,8 +41,8 @@ public class TileCubeGenerator extends AEBaseTile implements ITickable
 	private int countdown = 20 * 10;
 	private EntityPlayer who = null;
 
-	@TileEvent( TileEventType.TICK )
-	public void onTickEvent()
+	@Override
+	public void update()
 	{
 		if( this.is != null && Platform.isServer() )
 		{

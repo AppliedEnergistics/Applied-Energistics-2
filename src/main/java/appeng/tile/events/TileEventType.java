@@ -21,11 +21,6 @@ package appeng.tile.events;
 
 public enum TileEventType
 {
-	/**
-	 * Requires ITickable, this makes the tile entity tick in 1.8
-	 */
-	TICK,
-
 	WORLD_NBT_READ, WORLD_NBT_WRITE,
 
 	/**

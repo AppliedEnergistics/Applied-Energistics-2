@@ -75,8 +75,8 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		this.internalInventory.setMaxStackSize( 1 );
 	}
 
-	@TileEvent( TileEventType.TICK )
-	public void onTickEvent()
+	@Override
+	public void update()
 	{
 		if( this.updateStatus )
 		{

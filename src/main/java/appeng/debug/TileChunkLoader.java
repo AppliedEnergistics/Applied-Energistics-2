@@ -34,8 +34,6 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.tile.AEBaseTile;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
 
 
@@ -45,8 +43,8 @@ public class TileChunkLoader extends AEBaseTile implements ITickable
 	private boolean requestTicket = true;
 	private Ticket ct = null;
 
-	@TileEvent( TileEventType.TICK )
-	public void onTickEvent()
+	@Override
+	public void update()
 	{
 		if( this.requestTicket )
 		{
