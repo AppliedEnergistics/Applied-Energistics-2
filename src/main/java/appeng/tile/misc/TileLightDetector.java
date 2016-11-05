@@ -22,8 +22,6 @@ package appeng.tile.misc;
 import net.minecraft.util.ITickable;
 
 import appeng.tile.AEBaseTile;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
 
 
@@ -38,8 +36,8 @@ public class TileLightDetector extends AEBaseTile implements ITickable
 		return this.lastLight > 0;
 	}
 
-	@TileEvent( TileEventType.TICK )
-	public void Tick_TileLightDetector()
+	@Override
+	public void update()
 	{
 		this.lastCheck++;
 		if( this.lastCheck > 30 )

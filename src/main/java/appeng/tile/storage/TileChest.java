@@ -367,8 +367,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		return super.extractAEPower( amt - stash, mode ) + stash;
 	}
 
-	@TileEvent( TileEventType.TICK )
-	public void Tick_TileChest()
+	@Override
+	public void update()
 	{
 		if( this.worldObj.isRemote )
 		{

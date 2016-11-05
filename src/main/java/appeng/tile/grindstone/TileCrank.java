@@ -53,8 +53,8 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 	private int hits = 0;
 	private int rotation = 0;
 
-	@TileEvent( TileEventType.TICK )
-	public void Tick_TileCrank()
+	@Override
+	public void update()
 	{
 		if( this.rotation > 0 )
 		{

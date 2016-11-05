@@ -43,7 +43,6 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -63,7 +62,7 @@ import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 
-public class AEBaseTile extends TileEntity implements ITickable, IOrientable, ICommonTile, ICustomNameObject
+public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, ICustomNameObject
 {
 
 	private static final ThreadLocal<WeakReference<AEBaseTile>> DROP_NO_ITEMS = new ThreadLocal<WeakReference<AEBaseTile>>();
@@ -117,14 +116,15 @@ public class AEBaseTile extends TileEntity implements ITickable, IOrientable, IC
 	}
 
 	@Nonnull
-	public IBlockState getBlockState(){
+	public IBlockState getBlockState()
+	{
 		if( state == null )
 		{
 			state = worldObj.getBlockState( getPos() );
 		}
 		return state;
 	}
-	
+
 	/**
 	 * for dormant chunk cache.
 	 */
@@ -195,15 +195,6 @@ public class AEBaseTile extends TileEntity implements ITickable, IOrientable, IC
 	}
 
 	@Override
-	public final void update()
-	{
-		for( final AETileEventHandler h : this.getHandlerListFor( TileEventType.TICK ) )
-		{
-			h.tick( this );
-		}
-	}
-	
-	@Override
 	public SPacketUpdateTileEntity getUpdatePacket()
 	{
 		return new SPacketUpdateTileEntity( this.pos, 64, getUpdateTag() );
@@ -271,7 +262,8 @@ public class AEBaseTile extends TileEntity implements ITickable, IOrientable, IC
 	{
 		final NBTTagCompound data = writeUpdateData();
 
-		if (data == null) {
+		if( data == null )
+		{
 			return new NBTTagCompound();
 		}
 

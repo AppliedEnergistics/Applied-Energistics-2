@@ -30,7 +30,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -40,10 +39,15 @@ import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.tiles.ICrankable;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
+import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
@@ -54,7 +58,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 
-public class TileCharger extends AENetworkPowerTile implements ICrankable, ITickable
+public class TileCharger extends AENetworkPowerTile implements ICrankable, IGridTickable
 {
 
 	private final int[] sides = { 0 };
@@ -104,75 +108,6 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, ITick
 		}
 	}
 
-	@TileEvent( TileEventType.TICK )
-	public void Tick_TileCharger()
-	{
-		if( this.lastUpdate > 60 && this.requiresUpdate )
-		{
-			this.requiresUpdate = false;
-			this.markForUpdate();
-			this.lastUpdate = 0;
-		}
-		this.lastUpdate++;
-
-		this.tickTickTimer++;
-		if( this.tickTickTimer < 20 )
-		{
-			return;
-		}
-		this.tickTickTimer = 0;
-
-		final ItemStack myItem = this.getStackInSlot( 0 );
-
-		// charge from the network!
-		if( this.getInternalCurrentPower() < 1499 )
-		{
-			try
-			{
-				this.injectExternalPower( PowerUnits.AE, this.getProxy().getEnergy().extractAEPower( Math.min( 150.0, 1500.0 - this.getInternalCurrentPower() ), Actionable.MODULATE, PowerMultiplier.ONE ) );
-				this.tickTickTimer = 20; // keep ticking...
-			}
-			catch( final GridAccessException e )
-			{
-				// continue!
-			}
-		}
-
-		if( myItem == null )
-		{
-			return;
-		}
-
-		final IMaterials materials = AEApi.instance().definitions().materials();
-
-		if( this.getInternalCurrentPower() > 149 && Platform.isChargeable( myItem ) )
-		{
-			final IAEItemPowerStorage ps = (IAEItemPowerStorage) myItem.getItem();
-			if( ps.getAEMaxPower( myItem ) > ps.getAECurrentPower( myItem ) )
-			{
-				final double oldPower = this.getInternalCurrentPower();
-
-				final double adjustment = ps.injectAEPower( myItem, this.extractAEPower( 150.0, Actionable.MODULATE, PowerMultiplier.CONFIG ) );
-				this.setInternalCurrentPower( this.getInternalCurrentPower() + adjustment );
-				if( oldPower > this.getInternalCurrentPower() )
-				{
-					this.requiresUpdate = true;
-				}
-				this.tickTickTimer = 20; // keep ticking...
-			}
-		}
-		else if( this.getInternalCurrentPower() > 1499 && materials.certusQuartzCrystal().isSameAs( myItem ) )
-		{
-			if( Platform.getRandomFloat() > 0.8f ) // simulate wait
-			{
-				this.extractAEPower( this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG );// 1500
-
-				materials.certusQuartzCrystalCharged().maybeStack( myItem.stackSize ).ifPresent( charged ->
-						this.setInventorySlotContents( 0, charged ) );
-			}
-		}
-	}
-
 	@Override
 	public void setOrientation( final EnumFacing inForward, final EnumFacing inUp )
 	{
@@ -207,8 +142,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, ITick
 			{
 				this.extractAEPower( this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG );// 1500
 
-				materials.certusQuartzCrystalCharged().maybeStack( myItem.stackSize ).ifPresent( charged ->
-						this.setInventorySlotContents( 0, charged ) );
+				materials.certusQuartzCrystalCharged().maybeStack( myItem.stackSize ).ifPresent( charged -> this.setInventorySlotContents( 0, charged ) );
 			}
 		}
 	}
@@ -242,6 +176,15 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, ITick
 	@Override
 	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
+		try
+		{
+			this.getProxy().getTick().wakeDevice( this.getProxy().getNode() );
+		}
+		catch( final GridAccessException e )
+		{
+			// :P
+		}
+
 		this.markForUpdate();
 	}
 
@@ -291,5 +234,72 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, ITick
 			this.setInventorySlotContents( 0, null );
 			Platform.spawnDrops( this.worldObj, this.pos.offset( this.getForward() ), drops );
 		}
+	}
+
+	@Override
+	public TickingRequest getTickingRequest( IGridNode node )
+	{
+		return new TickingRequest( TickRates.Charger.getMin(), TickRates.Charger.getMin(), false, true );
+	}
+
+	@Override
+	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
+	{
+		return doWork() ? TickRateModulation.FASTER : TickRateModulation.SLEEP;
+	}
+
+	private boolean doWork()
+	{
+		final ItemStack myItem = this.getStackInSlot( 0 );
+
+		// charge from the network!
+		if( this.getInternalCurrentPower() < 1499 )
+		{
+			try
+			{
+				this.injectExternalPower( PowerUnits.AE, this.getProxy().getEnergy().extractAEPower( Math.min( 500.0, 1500.0 - this.getInternalCurrentPower() ), Actionable.MODULATE, PowerMultiplier.ONE ) );
+			}
+			catch( final GridAccessException e )
+			{
+				// continue!
+			}
+
+			return true;
+		}
+
+		if( myItem == null )
+		{
+			return false;
+		}
+
+		final IMaterials materials = AEApi.instance().definitions().materials();
+
+		if( this.getInternalCurrentPower() > 149 && Platform.isChargeable( myItem ) )
+		{
+			final IAEItemPowerStorage ps = (IAEItemPowerStorage) myItem.getItem();
+			if( ps.getAEMaxPower( myItem ) > ps.getAECurrentPower( myItem ) )
+			{
+				final double oldPower = this.getInternalCurrentPower();
+
+				final double adjustment = ps.injectAEPower( myItem, this.extractAEPower( 150.0, Actionable.MODULATE, PowerMultiplier.CONFIG ) );
+				this.setInternalCurrentPower( this.getInternalCurrentPower() + adjustment );
+
+				if( oldPower > this.getInternalCurrentPower() )
+				{
+					this.markForUpdate();
+				}
+			}
+		}
+		else if( this.getInternalCurrentPower() > 1499 && materials.certusQuartzCrystal().isSameAs( myItem ) )
+		{
+			if( Platform.getRandomFloat() > 0.8f ) // simulate wait
+			{
+				this.extractAEPower( this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG );// 1500
+
+				materials.certusQuartzCrystalCharged().maybeStack( myItem.stackSize ).ifPresent( charged -> this.setInventorySlotContents( 0, charged ) );
+			}
+		}
+
+		return true;
 	}
 }

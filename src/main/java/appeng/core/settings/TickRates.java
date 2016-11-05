@@ -37,6 +37,8 @@ public enum TickRates
 
 	Inscriber( 1, 1 ),
 
+	Charger( 10, 120 ),
+
 	IOPort( 1, 5 ),
 
 	VibrationChamber( 10, 40 ),
