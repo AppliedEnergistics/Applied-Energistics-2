@@ -63,6 +63,10 @@ import appeng.util.Platform;
 public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPriorityHost
 {
 
+	private static final int BIT_POWER_MASK = 0x80000000;
+	private static final int BIT_BLINK_MASK = 0x24924924;
+	private static final int BIT_STATE_MASK = 0xDB6DB6DB;
+
 	private final int[] sides = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 10 );
 	private final ICellHandler[] handlersBySlot = new ICellHandler[10];
@@ -71,10 +75,23 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	private boolean isCached = false;
 	private List<MEInventoryHandler> items = new LinkedList<MEInventoryHandler>();
 	private List<MEInventoryHandler> fluids = new LinkedList<MEInventoryHandler>();
-	private long lastStateChange = 0;
-	private int state = 0;
 	private int priority = 0;
 	private boolean wasActive = false;
+
+	/**
+	 * The state of all cells inside a drive as bitset, using the following format.
+	 *
+	 * Bit 31: power state. 0 = off, 1 = on.
+	 * Bit 30: undefined
+	 * Bit 29-0: 3 bits as state of each cell with the cell in slot 0 located in the 3 least significant bits.
+	 *
+	 * Cell states:
+	 * Bit 2: blink. 0 = off, 1 = on.
+	 * Bit 1-0: cell status
+	 *
+	 *
+	 */
+	private int state = 0;
 
 	public TileDrive()
 	{
@@ -85,30 +102,19 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	@TileEvent( TileEventType.NETWORK_WRITE )
 	public void writeToStream_TileDrive( final ByteBuf data )
 	{
-		if( this.worldObj.getTotalWorldTime() - this.lastStateChange > 8 )
-		{
-			this.state = 0;
-		}
-		else
-		{
-			this.state &= 0x24924924; // just keep the blinks...
-		}
+		int newState = 0;
 
 		if( this.getProxy().isActive() )
 		{
-			this.state |= 0x80000000;
-		}
-		else
-		{
-			this.state &= ~0x80000000;
+			newState |= BIT_POWER_MASK;
 		}
 
 		for( int x = 0; x < this.getCellCount(); x++ )
 		{
-			this.state |= ( this.getCellStatus( x ) << ( 3 * x ) );
+			newState |= ( this.getCellStatus( x ) << ( 3 * x ) );
 		}
 
-		data.writeInt( this.state );
+		data.writeInt( newState );
 	}
 
 	@Override
@@ -158,7 +164,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	{
 		if( Platform.isClient() )
 		{
-			return ( this.state & 0x80000000 ) == 0x80000000;
+			return ( this.state & BIT_POWER_MASK ) == BIT_POWER_MASK;
 		}
 
 		return this.getProxy().isActive();
@@ -167,12 +173,6 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	@Override
 	public boolean isCellBlinking( final int slot )
 	{
-		final long now = this.worldObj.getTotalWorldTime();
-		if( now - this.lastStateChange > 8 )
-		{
-			return false;
-		}
-
 		return ( ( this.state >> ( slot * 3 + 2 ) ) & 0x01 ) == 0x01;
 	}
 
@@ -181,8 +181,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	{
 		final int oldState = this.state;
 		this.state = data.readInt();
-		this.lastStateChange = this.worldObj.getTotalWorldTime();
-		return ( this.state & 0xDB6DB6DB ) != ( oldState & 0xDB6DB6DB );
+		return ( this.state & BIT_STATE_MASK ) != ( oldState & BIT_STATE_MASK );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
@@ -207,15 +206,11 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	private void recalculateDisplay()
 	{
 		final boolean currentActive = this.getProxy().isActive();
-		int newState = this.state;
+		int newState = 0;
 
 		if( currentActive )
 		{
-			newState |= 0x80000000;
-		}
-		else
-		{
-			newState &= ~0x80000000;
+			newState |= BIT_POWER_MASK;
 		}
 
 		if( this.wasActive != currentActive )
@@ -404,13 +399,6 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	@Override
 	public void blinkCell( final int slot )
 	{
-		final long now = this.worldObj.getTotalWorldTime();
-		if( now - this.lastStateChange > 8 )
-		{
-			this.state = 0;
-		}
-		this.lastStateChange = now;
-
 		this.state |= 1 << ( slot * 3 + 2 );
 
 		this.recalculateDisplay();
