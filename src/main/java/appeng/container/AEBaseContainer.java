@@ -793,7 +793,7 @@ public abstract class AEBaseContainer extends Container
 						{
 							if( hand == null )
 							{
-								is.stackSize--;
+								is.stackSize = Math.max( 1, is.stackSize - 1 );
 							}
 							else if( hand.isItemEqual( is ) )
 							{
