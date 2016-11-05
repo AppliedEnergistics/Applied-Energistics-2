@@ -52,7 +52,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 
 		final T a = super.injectItems( input, type, src );
 
-		if( a == null || a.getStackSize() != size )
+		if( type == Actionable.MODULATE && ( a == null || a.getStackSize() != size ) )
 		{
 			final int newStatus = this.handler.getStatusForCell( this.is, this.getInternal() );
 
@@ -71,7 +71,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 	{
 		final T a = super.extractItems( request, type, src );
 
-		if( a != null )
+		if( type == Actionable.MODULATE && a != null )
 		{
 			final int newStatus = this.handler.getStatusForCell( this.is, this.getInternal() );
 
