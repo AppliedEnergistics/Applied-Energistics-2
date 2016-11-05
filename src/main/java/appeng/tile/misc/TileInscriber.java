@@ -56,6 +56,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
+import appeng.client.render.FacingToRotation;
 import appeng.core.features.registries.entries.InscriberRecipe;
 import appeng.core.settings.TickRates;
 import appeng.helpers.Reflected;
@@ -563,11 +564,14 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	{
 		if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
 		{
-			if( facing == EnumFacing.UP )
+			final FacingToRotation rot = FacingToRotation.get( getForward(), getUp() );
+			EnumFacing effectiveUp = rot.rotate( EnumFacing.UP );
+
+			if( facing == effectiveUp )
 			{
 				return (T) topItemHandler;
 			}
-			else if( facing == EnumFacing.DOWN )
+			else if( facing == effectiveUp.getOpposite() )
 			{
 				return (T) bottomItemHandler;
 			}
