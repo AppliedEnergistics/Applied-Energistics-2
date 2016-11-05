@@ -444,67 +444,58 @@ public class CellInventory implements ICellInventory
 
 		final int types = (int) this.getStoredItemTypes();
 
-		for( int x = 0; x < types; x++ )
+		for( int slot = 0; slot < types; slot++ )
 		{
-			// Get the item NBT, which can crash if someone daft stored something other than a compound NBT with the same key in our cell
-			final NBTTagCompound compoundTag;
-			try
-			{
-				compoundTag = this.tagCompound.getCompoundTag( itemSlots[x] );
-			}
-			catch( Throwable ex )
-			{
-				if( AEConfig.instance.removeCrashingItemsOnLoad )
-				{
-					AELog.warn( ex, "Removing item from storage cell slot " + itemSlots[x] + " because it's NBT could not be loaded." );
-					continue;
-				}
-				throw ex;
-			}
-
-			// Now load the item stack
-			final ItemStack t;
-			try
-			{
-				t = ItemStack.loadItemStackFromNBT( compoundTag );
-				if( t == null )
-				{
-					AELog.warn( "Removing item " + compoundTag + " from storage cell because the associated item type couldn't be found." );
-					continue;
-				}
-			}
-			catch( Throwable ex )
-			{
-				if( AEConfig.instance.removeCrashingItemsOnLoad )
-				{
-					AELog.warn( ex, "Removing item " + compoundTag + " from storage cell because loading the ItemStack crashed." );
-					continue;
-				}
-				throw ex;
-			}
-
-			t.stackSize = this.tagCompound.getInteger( itemSlotCount[x] );
-
-			if( t.stackSize > 0 )
-			{
-				try
-				{
-					this.cellItems.add( AEItemStack.create( t ) );
-				}
-				catch( Throwable ex )
-				{
-					if( AEConfig.instance.removeCrashingItemsOnLoad )
-					{
-						AELog.warn( ex, "Removing item " + t + " from storage cell because processing the loaded item crashed." );
-						continue;
-					}
-					throw ex;
-				}
-			}
-
+			NBTTagCompound compoundTag = this.tagCompound.getCompoundTag( itemSlots[slot] );
+			int stackSize = this.tagCompound.getInteger( itemSlotCount[slot] );
+			loadCellItem( compoundTag, stackSize );
 		}
 
 		// cellItems.clean();
+	}
+
+	private void loadCellItem( NBTTagCompound compoundTag, int stackSize )
+	{
+
+		// Now load the item stack
+		final ItemStack t;
+		try
+		{
+			t = ItemStack.loadItemStackFromNBT( compoundTag );
+			if( t == null )
+			{
+				AELog.warn( "Removing item " + compoundTag + " from storage cell because the associated item type couldn't be found." );
+				return;
+			}
+		}
+		catch( Throwable ex )
+		{
+			if( AEConfig.instance.removeCrashingItemsOnLoad )
+			{
+				AELog.warn( ex, "Removing item " + compoundTag + " from storage cell because loading the ItemStack crashed." );
+				return;
+			}
+			throw ex;
+		}
+
+		t.stackSize = stackSize;
+
+		if( t.stackSize > 0 )
+		{
+			try
+			{
+				this.cellItems.add( AEItemStack.create( t ) );
+			}
+			catch( Throwable ex )
+			{
+				if( AEConfig.instance.removeCrashingItemsOnLoad )
+				{
+					AELog.warn( ex, "Removing item " + t + " from storage cell because processing the loaded item crashed." );
+					return;
+				}
+				throw ex;
+			}
+		}
 	}
 
 	@Override
