@@ -217,7 +217,7 @@ public abstract class AEBaseGui extends GuiContainer
 		// All lines after the first are colored gray
 		for( int i = 1; i < lines.size(); i++ )
 		{
-			lines.set(i, TextFormatting.GRAY + lines.get(i));
+			lines.set( i, TextFormatting.GRAY + lines.get( i ) );
 		}
 
 		this.drawHoveringText( lines, x, y, fontRendererObj );
@@ -317,7 +317,7 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 	}
 
-	//TODO 1.9.4 aftermath - Whole ClickType thing, to be checked.
+	// TODO 1.9.4 aftermath - Whole ClickType thing, to be checked.
 	@Override
 	protected void handleMouseClick( final Slot slot, final int slotIdx, final int mouseButton, final ClickType clickType )
 	{
@@ -325,7 +325,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 		if( slot instanceof SlotFake )
 		{
-			final InventoryAction action = isCtrlKeyDown() ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
+			final InventoryAction action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
 
 			if( this.drag_click.size() > 1 )
 			{
@@ -369,7 +369,7 @@ public abstract class AEBaseGui extends GuiContainer
 			else
 			{
 				// Craft stack on right-click, craft single on left-click
-				action = (mouseButton == 1) ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
+				action = ( mouseButton == 1 ) ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
 			}
 
 			final PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
@@ -409,10 +409,10 @@ public abstract class AEBaseGui extends GuiContainer
 			switch( clickType )
 			{
 				case PICKUP: // pickup / set-down.
-					action = (mouseButton == 1) ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
+					action = ( mouseButton == 1 ) ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
 					break;
 				case QUICK_MOVE:
-					action = isCtrlKeyDown() ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
+					action = ( mouseButton == 1 ) ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
 					break;
 
 				case CLONE: // creative dupe:
@@ -445,7 +445,7 @@ public abstract class AEBaseGui extends GuiContainer
 			switch( clickType )
 			{
 				case PICKUP: // pickup / set-down.
-					action = (mouseButton == 1) ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
+					action = ( mouseButton == 1 ) ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
 					stack = ( (SlotME) slot ).getAEStack();
 
 					if( stack != null && action == InventoryAction.PICKUP_OR_SET_DOWN && stack.getStackSize() == 0 && player.inventory.getItemStack() == null )
@@ -455,7 +455,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 					break;
 				case QUICK_MOVE:
-					action = isCtrlKeyDown() ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
+					action = ( mouseButton == 1 ) ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
 					stack = ( (SlotME) slot ).getAEStack();
 					break;
 
@@ -848,6 +848,7 @@ public abstract class AEBaseGui extends GuiContainer
 		final ResourceLocation loc = new ResourceLocation( AppEng.MOD_ID, "textures/" + file );
 		this.mc.getTextureManager().bindTexture( loc );
 	}
+
 	protected GuiScrollbar getScrollBar()
 	{
 		return this.myScrollBar;
