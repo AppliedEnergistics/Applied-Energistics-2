@@ -19,7 +19,7 @@
 package appeng.tile.powersink;
 
 
-public abstract class AEBasePoweredTile extends AERootPoweredTile // extends MekJoules
+public abstract class AEBasePoweredTile extends RedstoneFlux
 {
 
 }
