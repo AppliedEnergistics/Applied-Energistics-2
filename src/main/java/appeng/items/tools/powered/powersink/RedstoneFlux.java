@@ -29,7 +29,7 @@ import appeng.transformer.annotations.Integration.Interface;
 
 
 @Interface( iface = "cofh.api.energy.IEnergyContainerItem", iname = IntegrationType.RFItem )
-public abstract class RedstoneFlux extends AERootPoweredItem implements IEnergyContainerItem
+public abstract class RedstoneFlux extends IC2 implements IEnergyContainerItem
 {
 	public RedstoneFlux( final double powerCapacity )
 	{
