@@ -19,42 +19,38 @@
 package appeng.integration;
 
 
-import java.lang.reflect.Field;
-
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModAPIManager;
 
 import appeng.api.exceptions.ModNotInstalled;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.integration.modules.ic2.IC2Module;
+import appeng.integration.modules.jei.JEIModule;
+import appeng.integration.modules.waila.WailaModule;
 
 
-public final class IntegrationNode
+final class IntegrationNode
 {
 
 	private final String displayName;
 	private final String modID;
-	private final IntegrationType shortName;
+	private final IntegrationType type;
 	private IntegrationStage state = IntegrationStage.PRE_INIT;
-	private IntegrationStage failedStage = IntegrationStage.PRE_INIT;
 	private Throwable exception = null;
-	private String name = null;
-	private Class<?> classValue = null;
-	private Object instance;
 	private IIntegrationModule mod = null;
 
-	public IntegrationNode( final String displayName, final String modID, final IntegrationType shortName, final String name )
+	IntegrationNode( final String displayName, final String modID, final IntegrationType type )
 	{
 		this.displayName = displayName;
-		this.shortName = shortName;
+		this.type = type;
 		this.modID = modID;
-		this.name = name;
 	}
 
 	@Override
 	public String toString()
 	{
-		return this.getShortName().name() + ':' + this.getState().name();
+		return this.getType().name() + ':' + this.getState().name();
 	}
 
 	boolean isActive()
@@ -98,10 +94,17 @@ public final class IntegrationNode
 
 						if( enabled )
 						{
-							this.classValue = this.getClass().getClassLoader().loadClass( this.name );
-							this.mod = (IIntegrationModule) this.classValue.getConstructor().newInstance();
-							final Field f = this.classValue.getField( "instance" );
-							f.set( this.classValue, this.setInstance( this.mod ) );
+							switch (type) {
+								case IC2:
+									this.mod = Integrations.ic2 = new IC2Module();
+									break;
+								case JEI:
+									this.mod = Integrations.jei = new JEIModule();
+									break;
+								case Waila:
+									this.mod = new WailaModule();
+									break;
+							}
 						}
 						else
 						{
@@ -128,7 +131,6 @@ public final class IntegrationNode
 			}
 			catch( final Throwable t )
 			{
-				this.failedStage = stage;
 				this.exception = t;
 				this.setState( IntegrationStage.FAILED );
 			}
@@ -151,20 +153,9 @@ public final class IntegrationNode
 		}
 	}
 
-	Object getInstance()
+	IntegrationType getType()
 	{
-		return this.instance;
-	}
-
-	private Object setInstance( final Object instance )
-	{
-		this.instance = instance;
-		return instance;
-	}
-
-	IntegrationType getShortName()
-	{
-		return this.shortName;
+		return this.type;
 	}
 
 	IntegrationStage getState()

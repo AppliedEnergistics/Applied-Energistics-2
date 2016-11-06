@@ -22,8 +22,6 @@ package appeng.integration;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import javax.annotation.Nonnull;
-
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -31,8 +29,6 @@ import net.minecraftforge.fml.relauncher.Side;
 public enum IntegrationRegistry
 {
 	INSTANCE;
-
-	private static final String PACKAGE_PREFIX = "appeng.integration.modules.";
 
 	private final Collection<IntegrationNode> modules = new LinkedList<IntegrationNode>();
 
@@ -48,7 +44,7 @@ public enum IntegrationRegistry
 			return;
 		}
 
-		this.modules.add( new IntegrationNode( type.dspName, type.modID, type, PACKAGE_PREFIX + type.name() ) );
+		this.modules.add( new IntegrationNode( type.dspName, type.modID, type ) );
 	}
 
 	public void init()
@@ -83,7 +79,7 @@ public enum IntegrationRegistry
 				builder.append( ", " );
 			}
 
-			final String integrationState = node.getShortName() + ":" + ( node.getState() == IntegrationStage.FAILED ? "OFF" : "ON" );
+			final String integrationState = node.getType() + ":" + ( node.getState() == IntegrationStage.FAILED ? "OFF" : "ON" );
 			builder.append( integrationState );
 		}
 
@@ -94,26 +90,12 @@ public enum IntegrationRegistry
 	{
 		for( final IntegrationNode node : this.modules )
 		{
-			if( node.getShortName() == name )
+			if( node.getType() == name )
 			{
 				return node.isActive();
 			}
 		}
 		return false;
-	}
-
-	@Nonnull
-	public Object getInstance( final IntegrationType name )
-	{
-		for( final IntegrationNode node : this.modules )
-		{
-			if( node.getShortName() == name && node.isActive() )
-			{
-				return node.getInstance();
-			}
-		}
-
-		throw new IllegalStateException( "integration with " + name.name() + " is disabled." );
 	}
 
 }

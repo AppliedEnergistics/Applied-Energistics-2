@@ -29,6 +29,7 @@ import ic2.api.energy.prefab.BasicSink;
 import ic2.api.energy.tile.IEnergyEmitter;
 
 import appeng.api.config.PowerUnits;
+import appeng.integration.abstraction.IC2PowerSink;
 import appeng.tile.powersink.IExternalPowerSink;
 
 

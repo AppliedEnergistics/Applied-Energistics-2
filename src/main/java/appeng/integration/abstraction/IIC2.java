@@ -20,11 +20,29 @@ package appeng.integration.abstraction;
 
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+
+import appeng.integration.IIntegrationModule;
+import appeng.integration.modules.ic2.IC2PowerSinkStub;
+import appeng.tile.powersink.IExternalPowerSink;
 
 
-public interface IIC2
+public interface IIC2 extends IIntegrationModule
 {
 
-	void maceratorRecipe( ItemStack in, ItemStack out );
+	default void maceratorRecipe( ItemStack in, ItemStack out )
+	{
+	}
 
+	/**
+	 * Create an IC2 power sink for the given external sink.
+	 */
+	default IC2PowerSink createPowerSink( TileEntity tileEntity, IExternalPowerSink externalSink ) {
+		return IC2PowerSinkStub.INSTANCE;
+	}
+
+	class Stub extends IIntegrationModule.Stub implements IIC2
+	{
+
+	}
 }

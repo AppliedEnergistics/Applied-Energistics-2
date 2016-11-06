@@ -29,8 +29,7 @@ import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
 import appeng.core.AELog;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
+import appeng.integration.Integrations;
 import appeng.integration.abstraction.IMekanism;
 import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
@@ -62,19 +61,16 @@ public class MekCrusher implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.Mekanism ) )
+		IMekanism mekanism = Integrations.mekanism();
+		for( final ItemStack is : this.pro_input.getItemStackSet() )
 		{
-			final IMekanism rc = (IMekanism) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.Mekanism );
-			for( final ItemStack is : this.pro_input.getItemStackSet() )
+			try
 			{
-				try
-				{
-					rc.addCrusherRecipe( is, this.pro_output[0].getItemStack() );
-				}
-				catch( final java.lang.RuntimeException err )
-				{
-					AELog.info( "Mekanism not happy - " + err.getMessage() );
-				}
+				mekanism.addCrusherRecipe( is, this.pro_output[0].getItemStack() );
+			}
+			catch( final java.lang.RuntimeException err )
+			{
+				AELog.info( "Mekanism not happy - " + err.getMessage() );
 			}
 		}
 	}

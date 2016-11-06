@@ -56,9 +56,6 @@ import appeng.api.parts.IPartHelper;
 import appeng.api.parts.LayerBase;
 import appeng.core.AELog;
 import appeng.core.CommonHelper;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
-import appeng.integration.abstraction.IFMP;
 import appeng.parts.PartPlacement;
 import appeng.tile.AEBaseTile;
 import appeng.tile.networking.TileCableBus;
@@ -78,17 +75,6 @@ public class ApiPart implements IPartHelper
 
 	private final Map<Class<?>, String> interfaces2Layer = new HashMap<>();
 	private final List<String> desc = new LinkedList<String>();
-
-	public void initFMPSupport()
-	{
-		for( final Class layerInterface : this.interfaces2Layer.keySet() )
-		{
-			if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.FMP ) )
-			{
-				( (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP ) ).registerPassThrough( layerInterface );
-			}
-		}
-	}
 
 	/**
 	 * Conceptually this method will build a new class hierarchy that is rooted at the given base class, and includes a chain of all registered layers.

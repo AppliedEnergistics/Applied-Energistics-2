@@ -19,22 +19,31 @@
 package appeng.integration.abstraction;
 
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import java.util.Set;
 
-import appeng.api.parts.IPartHost;
-import appeng.parts.CableBusContainer;
+import net.minecraft.util.EnumFacing;
 
 
-public interface IFMP
+/**
+ * Provides an abstraction for the IC2 Basic Sink so it can be stubbed out easily when the integration is disabled, or
+ * if the IC2 API is not available.
+ */
+public interface IC2PowerSink
 {
 
-	IPartHost getOrCreateHost( TileEntity tile );
+	default void invalidate()
+	{
+	}
 
-	CableBusContainer getCableContainer( TileEntity te );
+	default void onChunkUnload()
+	{
+	}
 
-	void registerPassThrough( Class<?> layerInterface );
+	default void onLoad()
+	{
+	}
 
-	Event newFMPPacketEvent( EntityPlayerMP sender );
+	default void setValidFaces( Set<EnumFacing> faces )
+	{
+	}
 }

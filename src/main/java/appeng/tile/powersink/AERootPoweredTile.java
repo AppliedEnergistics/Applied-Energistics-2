@@ -35,8 +35,8 @@ import appeng.api.config.PowerUnits;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
 import appeng.capabilities.Capabilities;
-import appeng.integration.modules.IC2;
-import appeng.integration.modules.ic2.IC2PowerSink;
+import appeng.integration.Integrations;
+import appeng.integration.abstraction.IC2PowerSink;
 import appeng.tile.AEBaseInvTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
@@ -65,7 +65,7 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 		{
 			teslaEnergyAdapter = new TeslaEnergyAdapter( this );
 		}
-		ic2Sink = IC2.createPowerSink( this, this );
+		ic2Sink = Integrations.ic2().createPowerSink( this, this );
 		ic2Sink.setValidFaces( internalPowerSides );
 	}
 

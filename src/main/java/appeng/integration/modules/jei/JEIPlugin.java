@@ -26,9 +26,7 @@ import appeng.container.implementations.ContainerPatternTerm;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
-import appeng.integration.modules.JEI;
+import appeng.integration.Integrations;
 import appeng.items.parts.ItemFacade;
 
 
@@ -180,7 +178,7 @@ public class JEIPlugin extends BlankModPlugin
 	@Override
 	public void onRuntimeAvailable( IJeiRuntime jeiRuntime )
 	{
-		JEI jeiModule = (JEI) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.JEI );
+		JEIModule jeiModule = (JEIModule) Integrations.jei();
 		jeiModule.setJei( new JeiRuntimeAdapter( jeiRuntime ) );
 	}
 }

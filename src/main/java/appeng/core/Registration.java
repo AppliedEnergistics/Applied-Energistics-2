@@ -63,8 +63,7 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.stats.PlayerStatsRegistration;
 import appeng.hooks.TickHandler;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
+import appeng.integration.Integrations;
 import appeng.items.materials.ItemMaterial;
 import appeng.items.parts.ItemFacade;
 import appeng.loot.ChestLoot;
@@ -86,7 +85,6 @@ import appeng.recipes.game.ShapedRecipe;
 import appeng.recipes.game.ShapelessRecipe;
 import appeng.recipes.handlers.Crusher;
 import appeng.recipes.handlers.Grind;
-import appeng.recipes.handlers.GrindFZ;
 import appeng.recipes.handlers.HCCrusher;
 import appeng.recipes.handlers.Inscribe;
 import appeng.recipes.handlers.Macerator;
@@ -216,7 +214,6 @@ public final class Registration
 		registry.addNewCraftHandler( "mekechamber", MekEnrichment.class );
 		registry.addNewCraftHandler( "grind", Grind.class );
 		registry.addNewCraftHandler( "crusher", Crusher.class );
-		registry.addNewCraftHandler( "grindfz", GrindFZ.class );
 		registry.addNewCraftHandler( "pulverizer", Pulverizer.class );
 		registry.addNewCraftHandler( "macerator", Macerator.class );
 
@@ -248,7 +245,7 @@ public final class Registration
 		final Runnable recipeLoader = new RecipeLoader( recipeDirectory, customRecipeConfig, this.recipeHandler );
 		recipeLoader.run();
 
-		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.IC2 ) )
+		if( Integrations.ic2().isEnabled() )
 		{
 			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergySink", "ic2.api.energy.tile.IEnergySink" );
 			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergySource", "ic2.api.energy.tile.IEnergySource" );
@@ -333,8 +330,6 @@ public final class Registration
 		// add to localization..
 		PlayerMessages.values();
 		GuiText.values();
-
-		Api.INSTANCE.partHelper().initFMPSupport();
 
 		definitions.getRegistry().getBootstrapComponents().forEach( b -> b.postInitialize( event.getSide() ) );
 

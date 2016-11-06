@@ -51,9 +51,6 @@ import appeng.block.networking.BlockCableBus;
 import appeng.helpers.AEMultiTile;
 import appeng.helpers.ICustomCollision;
 import appeng.hooks.TickHandler;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
-import appeng.integration.abstraction.IImmibisMicroblocks;
 import appeng.parts.CableBusContainer;
 import appeng.tile.AEBaseTile;
 import appeng.tile.TileEvent;
@@ -341,15 +338,6 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	@Override
 	public void cleanup()
 	{
-		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.ImmibisMicroblocks ) )
-		{
-			final IImmibisMicroblocks imb = (IImmibisMicroblocks) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.ImmibisMicroblocks );
-			if( imb != null && imb.leaveParts( this ) )
-			{
-				return;
-			}
-		}
-
 		this.getWorld().setBlockToAir( this.pos );
 	}
 

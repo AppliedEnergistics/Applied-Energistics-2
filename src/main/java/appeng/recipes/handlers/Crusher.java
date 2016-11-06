@@ -29,8 +29,7 @@ import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
 import appeng.core.AELog;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
+import appeng.integration.Integrations;
 import appeng.integration.abstraction.IRC;
 import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
@@ -61,19 +60,16 @@ public class Crusher implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.RC ) )
+		final IRC rc = Integrations.rc();
+		for( final ItemStack is : this.pro_input.getItemStackSet() )
 		{
-			final IRC rc = (IRC) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.RC );
-			for( final ItemStack is : this.pro_input.getItemStackSet() )
+			try
 			{
-				try
-				{
-					rc.rockCrusher( is, this.pro_output[0].getItemStack() );
-				}
-				catch( final java.lang.RuntimeException err )
-				{
-					AELog.info( "RC not happy - " + err.getMessage() );
-				}
+				rc.rockCrusher( is, this.pro_output[0].getItemStack() );
+			}
+			catch( final java.lang.RuntimeException err )
+			{
+				AELog.info( "RC not happy - " + err.getMessage() );
 			}
 		}
 	}

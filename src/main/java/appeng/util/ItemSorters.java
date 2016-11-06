@@ -23,8 +23,7 @@ import java.util.Comparator;
 
 import appeng.api.config.SortDir;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
+import appeng.integration.Integrations;
 import appeng.integration.abstraction.IInvTweaks;
 import appeng.util.item.AEItemStack;
 
@@ -111,9 +110,9 @@ public class ItemSorters
 			return;
 		}
 
-		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.InvTweaks ) )
+		if( Integrations.invTweaks().isEnabled() )
 		{
-			api = (IInvTweaks) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.InvTweaks );
+			api = Integrations.invTweaks();
 		}
 		else
 		{
