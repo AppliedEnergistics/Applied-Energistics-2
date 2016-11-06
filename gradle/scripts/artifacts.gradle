@@ -46,7 +46,7 @@ task apiJar(type: Jar) {
     from sourceSets.api.java
     include "appeng/api/**"
 
-    from sourceSets.main.output
+    from sourceSets.api.output
     include "appeng/api/**"
 
     classifier = 'api'
