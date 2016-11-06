@@ -80,10 +80,14 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 			final NBTTagCompound tag = accessor.getNBTData();
 
 			final byte usedChannels = this.getUsedChannels( part, tag, this.cache );
-			final byte maxChannels = (byte) ( ( part instanceof PartDenseCable ) ? 32 : 8 );
 
-			final String formattedToolTip = String.format( WailaText.Channels.getLocal(), usedChannels, maxChannels );
-			currentToolTip.add( formattedToolTip );
+			if( usedChannels >= 0 )
+			{
+				final byte maxChannels = (byte) ( ( part instanceof PartDenseCable ) ? 32 : 8 );
+
+				final String formattedToolTip = String.format( WailaText.Channels.getLocal(), usedChannels, maxChannels );
+				currentToolTip.add( formattedToolTip );
+			}
 		}
 
 		return currentToolTip;
@@ -116,7 +120,7 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 		}
 		else
 		{
-			usedChannels = 0;
+			usedChannels = -1;
 		}
 
 		return usedChannels;
