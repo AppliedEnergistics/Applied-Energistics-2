@@ -108,8 +108,9 @@ public class FacadeDispatcherBakedModel implements IBakedModel
 				ItemFacade itemFacade = (ItemFacade) stack.getItem();
 
 				IBlockState state = itemFacade.getTextureBlockState( stack );
+				ItemStack textureItem = itemFacade.getTextureItem( stack );
 
-				return new FacadeWithBlockBakedModel( baseModel, state, format );
+				return new FacadeWithBlockBakedModel( baseModel, state, textureItem, format );
 			}
 		};
 	}

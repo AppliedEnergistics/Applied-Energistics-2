@@ -4,6 +4,8 @@ package appeng.client.render.cablebus;
 import java.util.EnumSet;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 
 
@@ -19,10 +21,14 @@ public class FacadeRenderState
 	// Which faces of the cube should be rendered for this particular facade
 	private final EnumSet<EnumFacing> openFaces;
 
-	public FacadeRenderState( IBlockState sourceBlock, EnumSet<EnumFacing> openFaces )
+	// For resolving the tint indices of a facade
+	private final ItemStack textureItem;
+
+	public FacadeRenderState( IBlockState sourceBlock, EnumSet<EnumFacing> openFaces, ItemStack textureItem )
 	{
 		this.sourceBlock = sourceBlock;
 		this.openFaces = openFaces;
+		this.textureItem = textureItem;
 	}
 
 	public IBlockState getSourceBlock()
@@ -33,6 +39,11 @@ public class FacadeRenderState
 	public EnumSet<EnumFacing> getOpenFaces()
 	{
 		return openFaces;
+	}
+
+	public int resolveTintColor( int tintIndex )
+	{
+		return Minecraft.getMinecraft().getItemColors().getColorFromItemstack( textureItem, tintIndex );
 	}
 
 }

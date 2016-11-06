@@ -32,6 +32,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 
 import appeng.client.render.cablebus.CubeBuilder;
@@ -53,10 +54,13 @@ public class FacadeWithBlockBakedModel implements IBakedModel
 
 	private final VertexFormat format;
 
-	public FacadeWithBlockBakedModel( IBakedModel baseModel, IBlockState blockState, VertexFormat format )
+	private final ItemStack textureItem;
+
+	public FacadeWithBlockBakedModel( IBakedModel baseModel, IBlockState blockState, ItemStack textureItem, VertexFormat format )
 	{
 		this.baseModel = baseModel;
 		this.blockState = blockState;
+		this.textureItem = textureItem;
 		this.textureModel = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState( blockState );
 		this.format = format;
 	}
@@ -69,10 +73,14 @@ public class FacadeWithBlockBakedModel implements IBakedModel
 		{
 			List<BakedQuad> quads = new ArrayList<>( 1 );
 			CubeBuilder builder = new CubeBuilder( format, quads );
-			TextureAtlasSprite sprite = FacadeBuilder.getSprite( textureModel, blockState, side, rand );
-			if ( sprite != null )
+			FacadeBuilder.TextureAtlasAndTint sprite = FacadeBuilder.getSprite( textureModel, blockState, side, rand );
+			if ( sprite != null && sprite.getSprite() != null )
 			{
-				builder.setTexture( sprite );
+				if( sprite.getTint() != -1 )
+				{
+					builder.setColor( Minecraft.getMinecraft().getItemColors().getColorFromItemstack( textureItem, sprite.getTint() ) );
+				}
+				builder.setTexture( sprite.getSprite() );
 				builder.setDrawFaces( EnumSet.of( EnumFacing.NORTH ) );
 				builder.addCube( 0, 0, 0, 16, 16, 16 );
 				return quads;

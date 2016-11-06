@@ -36,7 +36,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.BlockRenderLayer;
@@ -59,8 +58,6 @@ public class FacadeBuilder
 {
 
 	private static final ResourceLocation TEXTURE_FACADE = new ResourceLocation( AppEng.MOD_ID, "parts/cable_anchor" );
-
-	private final BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
 
 	private final VertexFormat format;
 
@@ -87,7 +84,7 @@ public class FacadeBuilder
 
 		CubeBuilder builder = new CubeBuilder( format, quads );
 
-		facadesState.forEach( ( side, textureItem ) ->
+		facadesState.forEach( ( side, state ) ->
 		{
 			AxisAlignedBB facadeBox = getFacadeBox( side, thinFacades );
 			AEAxisAlignedBB cutOutBox = getCutOutBox( facadeBox, partBoxes );
@@ -104,10 +101,10 @@ public class FacadeBuilder
 		} );
 	}
 
-	public static TextureAtlasSprite getSprite( IBakedModel blockModel, IBlockState state, EnumFacing facing, long rand)
+	public static TextureAtlasAndTint getSprite( IBakedModel blockModel, IBlockState state, EnumFacing facing, long rand)
 	{
 
-		TextureAtlasSprite firstFound = null;
+		TextureAtlasAndTint firstFound = null;
 		BlockRenderLayer orgLayer = MinecraftForgeClient.getRenderLayer();
 
 		try
@@ -120,18 +117,18 @@ public class FacadeBuilder
 
 				for( BakedQuad bakedQuad : blockModel.getQuads( state, facing, rand ) )
 				{
-					return bakedQuad.getSprite();
+					return new TextureAtlasAndTint( bakedQuad );
 				}
 
 				for( BakedQuad bakedQuad : blockModel.getQuads( state, null, rand ) )
 				{
 					if( firstFound == null )
 					{
-						firstFound = bakedQuad.getSprite();
+						firstFound = new TextureAtlasAndTint( bakedQuad );
 					}
 					if( bakedQuad.getFace() == facing )
 					{
-						return bakedQuad.getSprite();
+						return new TextureAtlasAndTint( bakedQuad );
 					}
 				}
 			}
@@ -154,7 +151,7 @@ public class FacadeBuilder
 		{
 			try
 			{
-				return blockModel.getParticleTexture();
+				return new TextureAtlasAndTint( blockModel.getParticleTexture(), -1 );
 			}
 			catch( Exception e )
 			{
@@ -215,36 +212,42 @@ public class FacadeBuilder
 
 		IBakedModel blockModel = blockRendererDispatcher.getModelForState( blockState );
 
-		int color = 0xffffff;
-		try
-		{
-			blockColors.getColor( blockState );
-		}
-		catch( final Throwable ignored )
-		{
-		}
-
+		final int color;
 		if( translucent )
 		{
-			color &= 0xFFFFFF;
-			color |= 0x4C000000;
-			builder.setColor( color );
+			color = 0x4CFFFFFF;
 		}
 		else
 		{
-			builder.setColorRGB( color );
+			color = 0xFFFFFFFF;
 		}
 
 		// TODO: Cache this
 		for( EnumFacing facing : facadeState.getOpenFaces() )
 		{
-			TextureAtlasSprite sprite = getSprite( blockModel, blockState, facing, rand );
-			if( sprite != null )
+			TextureAtlasAndTint spriteAndTint = getSprite( blockModel, blockState, facing, rand );
+			if( spriteAndTint != null && spriteAndTint.sprite != null )
 			{
-				builder.setTexture( facing, sprite );
+				// Use the tint color from the item stack here, which is based upon the assumption that the
+				// model used for the block will use the same meaning for tint indices as the item model does
+				if( spriteAndTint.tint != -1 )
+				{
+					int tintColor = facadeState.resolveTintColor( spriteAndTint.tint );
+
+					// Still apply the transparency color
+					tintColor &= 0xFFFFFF;
+					tintColor |= color & 0xFF000000;
+					builder.setColor( tintColor );
+				}
+				else
+				{
+					builder.setColor( color );
+				}
+				builder.setTexture( facing, spriteAndTint.sprite );
 			}
 			else
 			{
+				builder.setColor( color );
 				builder.setTexture( facing, facadeTexture );
 			}
 		}
@@ -460,4 +463,34 @@ public class FacadeBuilder
 				throw new IllegalArgumentException( "Unsupported face: " + side );
 		}
 	}
+
+	public static class TextureAtlasAndTint
+	{
+		private final TextureAtlasSprite sprite;
+		private final int tint;
+
+		private TextureAtlasAndTint( BakedQuad quad )
+		{
+			this.sprite = quad.getSprite();
+			this.tint = quad.getTintIndex();
+		}
+
+		private TextureAtlasAndTint( TextureAtlasSprite sprite, int tint )
+		{
+			this.sprite = sprite;
+			this.tint = tint;
+		}
+
+		public TextureAtlasSprite getSprite()
+		{
+			return sprite;
+		}
+
+		public int getTint()
+		{
+			return tint;
+		}
+
+	}
+
 }
