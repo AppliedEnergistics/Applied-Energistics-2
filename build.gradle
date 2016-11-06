@@ -87,7 +87,7 @@ sourceSets {
 
     api
 
-    apis
+    thirdparty
 
     main
 
