@@ -297,11 +297,8 @@ public class PartPlacement
 				te_pos = pos.offset( side );
 
 				final Block blkID = world.getBlockState( te_pos ).getBlock();
-				tile = world.getTileEntity( te_pos );
 
-				if( ( blkID == null || blkID.isReplaceable( world, te_pos ) || host != null ) ) // /&& side !=
-				// AEPartLocation.INTERNAL
-				// )
+				if( blkID == null || blkID.isReplaceable( world, te_pos ) || host != null )
 				{
 					return place( held, te_pos, side.getOpposite(), player, hand, world, pass == PlaceType.INTERACT_FIRST_PASS ? PlaceType.INTERACT_SECOND_PASS : PlaceType.PLACE_ITEM, depth + 1 );
 				}

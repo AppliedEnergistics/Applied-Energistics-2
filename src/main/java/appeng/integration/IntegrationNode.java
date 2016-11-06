@@ -94,12 +94,13 @@ final class IntegrationNode
 
 						if( enabled )
 						{
-							switch (type) {
+							switch( type )
+							{
 								case IC2:
-									this.mod = Integrations.ic2 = new IC2Module();
+									this.mod = Integrations.setIc2( new IC2Module() );
 									break;
 								case JEI:
-									this.mod = Integrations.jei = new JEIModule();
+									this.mod = Integrations.setJei( new JEIModule() );
 									break;
 								case Waila:
 									this.mod = new WailaModule();
