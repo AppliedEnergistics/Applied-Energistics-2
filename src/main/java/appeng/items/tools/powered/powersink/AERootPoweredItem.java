@@ -146,6 +146,27 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 		return currentStorage;
 	}
 
+	/**
+	 * Inject power into this item using an external unit.
+	 */
+	double injectExternalPower( PowerUnits inputUnit, final ItemStack is, final double amount, final boolean simulate )
+	{
+		if( simulate )
+		{
+			final int requiredExt = (int) PowerUnits.AE.convertTo( inputUnit, this.getAEMaxPower( is ) - this.getAECurrentPower( is ) );
+			if( amount < requiredExt )
+			{
+				return 0;
+			}
+			return amount - requiredExt;
+		}
+		else
+		{
+			final double powerRemainder = this.injectAEPower( is, inputUnit.convertTo( PowerUnits.AE, amount ) );
+			return PowerUnits.AE.convertTo( inputUnit, powerRemainder );
+		}
+	}
+
 	@Override
 	public double injectAEPower( final ItemStack is, final double amt )
 	{

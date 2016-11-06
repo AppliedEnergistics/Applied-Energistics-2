@@ -19,7 +19,7 @@
 package appeng.items.tools.powered.powersink;
 
 
-public abstract class AEBasePoweredItem extends AERootPoweredItem
+public abstract class AEBasePoweredItem extends RedstoneFlux
 {
 	public AEBasePoweredItem( final double powerCapacity )
 	{
