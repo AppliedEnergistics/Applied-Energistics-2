@@ -283,7 +283,7 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 	@Override
 	public EnumActionResult onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
-		return this.disassembleDrive( stack, world, player ) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
+		return this.disassembleDrive( stack, world, player ) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
 	}
 
 	@Override
