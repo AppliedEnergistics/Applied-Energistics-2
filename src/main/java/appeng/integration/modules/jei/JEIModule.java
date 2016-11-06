@@ -34,7 +34,7 @@ public class JEIModule implements IJEI
 	@Override
 	public boolean isEnabled()
 	{
-		return false;
+		return jei.isEnabled();
 	}
 
 }
