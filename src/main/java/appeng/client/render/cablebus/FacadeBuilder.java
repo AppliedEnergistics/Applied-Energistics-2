@@ -174,6 +174,9 @@ public class FacadeBuilder
 
 		builder.setDrawFaces( EnumSet.allOf( EnumFacing.class ) );
 
+		// Reset to no color multiplicator
+		builder.setColorRGB( 0xFFFFFF );
+
 		// We only render the stilt if we don't intersect with any part directly, and if there's no part on our side
 		if( renderStilt && busBounds == null && layer == BlockRenderLayer.CUTOUT )
 		{
