@@ -55,6 +55,9 @@ jar {
         attributes 'FMLCorePluginContainsFMLMod': 'true'
     }
 
+    from sourceSets.api.output
+    dependsOn apiClasses
+
     // specify which files are really included, can control which APIs should be in
     include "appeng/**"
     include "assets/**"
@@ -81,26 +84,13 @@ minecraft {
 }
 
 sourceSets {
-    main {
-        java {
-            srcDirs += 'src/api/java'
-            srcDirs += 'src/main/java/'
-        }
 
-        resources {
-            srcDir "src/main/resources/"
-            include "assets/appliedenergistics2/recipes/**/*.recipe",
-                    "assets/appliedenergistics2/recipes/README.html",
-                    "assets/appliedenergistics2/lang/*.lang",
-                    "assets/appliedenergistics2/blockstates/**/*.json",
-                    "assets/appliedenergistics2/models/**/*.json",
-                    "assets/appliedenergistics2/textures/**/*.png",
-                    "assets/appliedenergistics2/textures/**/*.mcmeta",
-                    "assets/appliedenergistics2/meta/*",
-                    "mcmod.info",
-                    "pack.mcmeta"
-        }
-    }
+    api
+
+    thirdparty
+
+    main
+
 }
 
 processResources
