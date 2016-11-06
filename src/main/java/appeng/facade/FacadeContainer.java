@@ -24,8 +24,6 @@ import java.util.Optional;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,9 +33,6 @@ import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
-import appeng.integration.abstraction.IBuildCraftTransport;
 import appeng.items.parts.ItemFacade;
 import appeng.parts.CableBusStorage;
 
@@ -136,29 +131,16 @@ public class FacadeContainer implements IFacadeContainer
 			{
 				ids[0] = out.readInt();
 				ids[1] = out.readInt();
-				final boolean isBC = ids[0] < 0;
 				ids[0] = Math.abs( ids[0] );
 
-				if( isBC && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
-				{
-					final IBuildCraftTransport bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
-					final IBlockState state = Block.getStateById( ids[0] );
-					final IFacadePart created = bc.createFacadePart( state, side );
-					changed = changed || this.storage.getFacade( x ) == null;
-
-					this.storage.setFacade( x, created );
-				}
-				else if( !isBC )
-				{
-					Optional<Item> maybeFacadeItem = AEApi.instance().definitions().items().facade().maybeItem();
-					if (maybeFacadeItem.isPresent()) {
-						final ItemFacade ifa = (ItemFacade) maybeFacadeItem.get();
-						final ItemStack facade = ifa.createFromIDs( ids );
-						if( facade != null )
-						{
-							changed = changed || this.storage.getFacade( x ) == null;
-							this.storage.setFacade( x, ifa.createPartFromItemStack( facade, side ) );
-						}
+				Optional<Item> maybeFacadeItem = AEApi.instance().definitions().items().facade().maybeItem();
+				if (maybeFacadeItem.isPresent()) {
+					final ItemFacade ifa = (ItemFacade) maybeFacadeItem.get();
+					final ItemStack facade = ifa.createFromIDs( ids );
+					if( facade != null )
+					{
+						changed = changed || this.storage.getFacade( x ) == null;
+						this.storage.setFacade( x, ifa.createPartFromItemStack( facade, side ) );
 					}
 				}
 			}
@@ -189,17 +171,6 @@ public class FacadeContainer implements IFacadeContainer
 					if( i instanceof IFacadeItem )
 					{
 						this.storage.setFacade( x, ( (IFacadeItem) i ).createPartFromItemStack( is, AEPartLocation.fromOrdinal( x ) ) );
-					}
-					else
-					{
-						if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
-						{
-							final IBuildCraftTransport bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
-							if( bc.isFacade( is ) )
-							{
-								this.storage.setFacade( x, bc.createFacadePart( is, AEPartLocation.fromOrdinal( x ) ) );
-							}
-						}
 					}
 				}
 			}

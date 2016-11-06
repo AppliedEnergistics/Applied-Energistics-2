@@ -60,10 +60,6 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketClick;
 import appeng.core.sync.packets.PacketPartPlacement;
 import appeng.facade.IFacadeItem;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
-import appeng.integration.abstraction.IBuildCraftTransport;
-import appeng.integration.abstraction.IFMP;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
 
@@ -198,22 +194,6 @@ public class PartPlacement
 			}
 		}
 
-		// TODO: IFMP INTEGRATION
-		// TODO IIMMIBISMICROBLOCKS INTEGRATION
-
-		/*
-		 * if( host == null && tile != null && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.FMP ) )
-		 * {
-		 * host = ( (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP ) ).getOrCreateHost( tile );
-		 * }
-		 * if( host == null && tile != null && IntegrationRegistry.INSTANCE.isEnabled(
-		 * IntegrationType.ImmibisMicroblocks ) )
-		 * {
-		 * host = ( (IImmibisMicroblocks) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.ImmibisMicroblocks )
-		 * ).getOrCreateHost( player, face, tile );
-		 * }
-		 */
-
 		// if ( held == null )
 		{
 			final Block block = world.getBlockState( pos ).getBlock();
@@ -271,23 +251,6 @@ public class PartPlacement
 				host = (IPartHost) tile;
 			}
 
-			// TODO: IFMP INTEGRATION
-			// TODO IIMMIBISMICROBLOCKS INTEGRATION
-
-			/*
-			 * if( host == null && tile != null && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.FMP ) )
-			 * {
-			 * host = ( (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP ) ).getOrCreateHost( tile
-			 * );
-			 * }
-			 * if( host == null && tile != null && IntegrationRegistry.INSTANCE.isEnabled(
-			 * IntegrationType.ImmibisMicroblocks ) )
-			 * {
-			 * host = ( (IImmibisMicroblocks) IntegrationRegistry.INSTANCE.getInstance(
-			 * IntegrationType.ImmibisMicroblocks ) ).getOrCreateHost( player, side, tile );
-			 * }
-			 */
-
 			final Optional<ItemStack> maybeMultiPartStack = multiPart.maybeStack( 1 );
 			final Optional<Block> maybeMultiPartBlock = multiPart.maybeBlock();
 			final Optional<ItemBlock> maybeMultiPartItemBlock = multiPart.maybeItemBlock();
@@ -334,16 +297,8 @@ public class PartPlacement
 				te_pos = pos.offset( side );
 
 				final Block blkID = world.getBlockState( te_pos ).getBlock();
-				tile = world.getTileEntity( te_pos );
 
-				if( tile != null && IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.FMP ) )
-				{
-					host = ( (IFMP) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.FMP ) ).getOrCreateHost( tile );
-				}
-
-				if( ( blkID == null || blkID.isReplaceable( world, te_pos ) || host != null ) ) // /&& side !=
-				// AEPartLocation.INTERNAL
-				// )
+				if( blkID == null || blkID.isReplaceable( world, te_pos ) || host != null )
 				{
 					return place( held, te_pos, side.getOpposite(), player, hand, world, pass == PlaceType.INTERACT_FIRST_PASS ? PlaceType.INTERACT_SECOND_PASS : PlaceType.PLACE_ITEM, depth + 1 );
 				}
@@ -427,15 +382,6 @@ public class PartPlacement
 		if( held.getItem() instanceof IFacadeItem )
 		{
 			return ( (IFacadeItem) held.getItem() ).createPartFromItemStack( held, side );
-		}
-
-		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.BuildCraftTransport ) )
-		{
-			final IBuildCraftTransport bc = (IBuildCraftTransport) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.BuildCraftTransport );
-			if( bc.isFacade( held ) )
-			{
-				return bc.createFacadePart( held, side );
-			}
 		}
 
 		return null;

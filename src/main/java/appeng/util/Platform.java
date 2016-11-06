@@ -30,7 +30,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.WeakHashMap;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -126,8 +125,7 @@ import appeng.core.stats.Stats;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.GuiHostType;
 import appeng.hooks.TickHandler;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
+import appeng.integration.Integrations;
 import appeng.me.GridAccessException;
 import appeng.me.GridNode;
 import appeng.me.helpers.AENetworkProxy;
@@ -344,17 +342,17 @@ public class Platform
 
 	private static boolean isNotValidSetting( final Enum e )
 	{
-		if( e == SortOrder.INVTWEAKS && !IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.InvTweaks ) )
+		if( e == SortOrder.INVTWEAKS && !Integrations.invTweaks().isEnabled() )
 		{
 			return true;
 		}
 
-		if( e == SearchBoxMode.JEI_AUTOSEARCH && !IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.JEI ) )
+		if( e == SearchBoxMode.JEI_AUTOSEARCH && !Integrations.jei().isEnabled() )
 		{
 			return true;
 		}
 
-		if( e == SearchBoxMode.JEI_MANUAL_SEARCH && !IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.JEI ) )
+		if( e == SearchBoxMode.JEI_MANUAL_SEARCH && !Integrations.jei().isEnabled() )
 		{
 			return true;
 		}

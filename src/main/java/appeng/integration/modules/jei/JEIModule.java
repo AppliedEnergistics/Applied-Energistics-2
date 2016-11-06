@@ -16,25 +16,43 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.abstraction;
+package appeng.integration.modules.jei;
 
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.common.eventhandler.Event;
-
-import appeng.api.parts.IPartHost;
-import appeng.parts.CableBusContainer;
+import appeng.integration.abstraction.IJEI;
 
 
-public interface IFMP
+public class JEIModule implements IJEI
 {
 
-	IPartHost getOrCreateHost( TileEntity tile );
+	private IJEI jei = new IJEI.Stub();
 
-	CableBusContainer getCableContainer( TileEntity te );
+	public void setJei( IJEI jei )
+	{
+		this.jei = jei;
+	}
 
-	void registerPassThrough( Class<?> layerInterface );
+	public IJEI getJei()
+	{
+		return jei;
+	}
 
-	Event newFMPPacketEvent( EntityPlayerMP sender );
+	@Override
+	public String getSearchText()
+	{
+		return jei.getSearchText();
+	}
+
+	@Override
+	public void setSearchText( String searchText )
+	{
+		jei.setSearchText( searchText );
+	}
+
+	@Override
+	public boolean isEnabled()
+	{
+		return jei.isEnabled();
+	}
+
 }

@@ -37,7 +37,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.core.AEConfig;
-import appeng.integration.modules.JEI;
+import appeng.integration.Integrations;
 import appeng.items.storage.ItemViewCell;
 import appeng.util.ItemSorters;
 import appeng.util.Platform;
@@ -58,7 +58,6 @@ public class ItemRepo
 	private String searchString = "";
 	private IPartitionList<IAEItemStack> myPartitionList;
 	private String innerSearch = "";
-	private String jeiSearch = null;
 	private boolean hasPower;
 
 	public ItemRepo( final IScrollSource src, final ISortSource sortSrc )
@@ -244,7 +243,7 @@ public class ItemRepo
 
 	private void updateJEI( String filter )
 	{
-		JEI.instance.getJei().setSearchText( filter );
+		Integrations.jei().setSearchText( filter );
 	}
 
 	public int size()

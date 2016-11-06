@@ -21,7 +21,26 @@ package appeng.integration;
 
 public interface IIntegrationModule
 {
-	void init() throws Throwable;
 
-	void postInit();
+	default boolean isEnabled()
+	{
+		return true;
+	}
+
+	default void init() throws Throwable
+	{
+	}
+
+	default void postInit()
+	{
+	}
+
+	class Stub implements IIntegrationModule
+	{
+		@Override
+		public boolean isEnabled()
+		{
+			return false;
+		}
+	}
 }

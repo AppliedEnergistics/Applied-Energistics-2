@@ -19,7 +19,7 @@
 package appeng.integration;
 
 
-public enum IntegrationStage
+enum IntegrationStage
 {
 
 	PRE_INIT, INIT, POST_INIT,

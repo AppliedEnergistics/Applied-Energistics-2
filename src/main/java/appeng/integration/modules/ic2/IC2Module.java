@@ -16,10 +16,8 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules;
+package appeng.integration.modules.ic2;
 
-
-import java.util.function.BiFunction;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -29,34 +27,19 @@ import ic2.api.recipe.RecipeInputItemStack;
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.api.features.IP2PTunnelRegistry;
-import appeng.helpers.Reflected;
-import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
+import appeng.integration.abstraction.IC2PowerSink;
 import appeng.integration.abstraction.IIC2;
-import appeng.integration.modules.ic2.IC2PowerSink;
-import appeng.integration.modules.ic2.IC2PowerSinkAdapter;
-import appeng.integration.modules.ic2.IC2PowerSinkStub;
 import appeng.tile.powersink.IExternalPowerSink;
 
 
-public class IC2 implements IIntegrationModule, IIC2
+public class IC2Module implements IIC2
 {
 
-	@Reflected
-	public static IC2 instance;
-
-	public IC2()
+	public IC2Module()
 	{
 		IntegrationHelper.testClassExistence( this, ic2.api.energy.tile.IEnergyTile.class );
 		IntegrationHelper.testClassExistence( this, ic2.api.recipe.RecipeInputItemStack.class );
-	}
-
-	private static BiFunction<TileEntity, IExternalPowerSink, IC2PowerSink> powerSinkFactory = ( ( te, sink ) -> IC2PowerSinkStub.INSTANCE );
-
-	@Override
-	public void init() throws Throwable
-	{
-		powerSinkFactory = IC2PowerSinkAdapter::new;
 	}
 
 	@Override
@@ -76,7 +59,7 @@ public class IC2 implements IIntegrationModule, IIC2
 		reg.addNewAttunement( this.getItem( "splitterCableItem" ), TunnelType.IC2_POWER );
 	}
 
-	public ItemStack getItem( final String name )
+	private ItemStack getItem( final String name )
 	{
 		return ic2.api.item.IC2Items.getItem( name );
 	}
@@ -84,9 +67,10 @@ public class IC2 implements IIntegrationModule, IIC2
 	/**
 	 * Create an IC2 power sink for the given external sink.
 	 */
-	public static IC2PowerSink createPowerSink( TileEntity tileEntity, IExternalPowerSink externalSink )
+	@Override
+	public IC2PowerSink createPowerSink( TileEntity tileEntity, IExternalPowerSink externalSink )
 	{
-		return powerSinkFactory.apply( tileEntity, externalSink );
+		return new IC2PowerSinkAdapter( tileEntity, externalSink );
 	}
 
 	@Override
@@ -94,5 +78,4 @@ public class IC2 implements IIntegrationModule, IIC2
 	{
 		ic2.api.recipe.Recipes.macerator.addRecipe( new RecipeInputItemStack( in, in.stackSize ), null, false, out );
 	}
-
 }

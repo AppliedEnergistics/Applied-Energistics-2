@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules;
+package appeng.integration.modules.waila;
 
 
 import net.minecraftforge.fml.common.event.FMLInterModComms;
@@ -24,21 +24,15 @@ import net.minecraftforge.fml.common.event.FMLInterModComms;
 import mcp.mobius.waila.api.IWailaDataProvider;
 import mcp.mobius.waila.api.IWailaRegistrar;
 
-import appeng.helpers.Reflected;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
-import appeng.integration.modules.waila.PartWailaDataProvider;
-import appeng.integration.modules.waila.TileWailaDataProvider;
 import appeng.tile.AEBaseTile;
 
 
-public class Waila implements IIntegrationModule
+public class WailaModule implements IIntegrationModule
 {
-	@Reflected
-	public static Waila instance;
 
-	@Reflected
-	public Waila()
+	public WailaModule()
 	{
 		IntegrationHelper.testClassExistence( this, mcp.mobius.waila.api.IWailaDataProvider.class );
 		IntegrationHelper.testClassExistence( this, mcp.mobius.waila.api.IWailaRegistrar.class );
@@ -67,8 +61,4 @@ public class Waila implements IIntegrationModule
 		FMLInterModComms.sendMessage( "Waila", "register", this.getClass().getName() + ".register" );
 	}
 
-	@Override
-	public void postInit()
-	{
-	}
 }

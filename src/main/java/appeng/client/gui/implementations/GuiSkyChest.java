@@ -24,8 +24,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import appeng.client.gui.AEBaseGui;
 import appeng.container.implementations.ContainerSkyChest;
 import appeng.core.localization.GuiText;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
+import appeng.integration.Integrations;
 import appeng.tile.storage.TileSkyChest;
 
 
@@ -55,6 +54,6 @@ public class GuiSkyChest extends AEBaseGui
 	@Override
 	protected boolean enableSpaceClicking()
 	{
-		return !IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.InvTweaks );
+		return !Integrations.invTweaks().isEnabled();
 	}
 }

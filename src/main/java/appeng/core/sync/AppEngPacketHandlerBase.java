@@ -38,7 +38,6 @@ import appeng.core.sync.packets.PacketLightning;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
 import appeng.core.sync.packets.PacketMatterCannon;
 import appeng.core.sync.packets.PacketMockExplosion;
-import appeng.core.sync.packets.PacketMultiPart;
 import appeng.core.sync.packets.PacketJEIRecipe;
 import appeng.core.sync.packets.PacketNewStorageDimension;
 import appeng.core.sync.packets.PacketPaintedEntity;
@@ -67,8 +66,6 @@ public class AppEngPacketHandlerBase
 		PACKET_ME_INVENTORY_UPDATE( PacketMEInventoryUpdate.class ),
 
 		PACKET_CONFIG_BUTTON( PacketConfigButton.class ),
-
-		PACKET_MULTIPART( PacketMultiPart.class ),
 
 		PACKET_PART_PLACEMENT( PacketPartPlacement.class ),
 

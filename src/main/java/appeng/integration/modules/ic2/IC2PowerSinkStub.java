@@ -19,6 +19,9 @@
 package appeng.integration.modules.ic2;
 
 
+import appeng.integration.abstraction.IC2PowerSink;
+
+
 /**
  * Implementation of IC2PowerSink that just stubs out all methods and does nothing.
  */

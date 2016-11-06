@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.integration.modules.jei;
 
 
@@ -26,9 +44,7 @@ import appeng.container.implementations.ContainerPatternTerm;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
-import appeng.integration.modules.JEI;
+import appeng.integration.Integrations;
 import appeng.items.parts.ItemFacade;
 
 
@@ -180,7 +196,7 @@ public class JEIPlugin extends BlankModPlugin
 	@Override
 	public void onRuntimeAvailable( IJeiRuntime jeiRuntime )
 	{
-		JEI jeiModule = (JEI) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.JEI );
+		JEIModule jeiModule = (JEIModule) Integrations.jei();
 		jeiModule.setJei( new JeiRuntimeAdapter( jeiRuntime ) );
 	}
 }

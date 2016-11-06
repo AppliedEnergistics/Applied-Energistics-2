@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules.ic2;
+package appeng.integration.abstraction;
 
 
 import java.util.Set;
