@@ -92,12 +92,16 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 				final NBTTagCompound tag = accessor.getNBTData();
 
 				final long internalCurrentPower = this.getInternalCurrentPower( tag, te );
-				final long internalMaxPower = (long) ( 100 * maxPower );
 
-				final String formatCurrentPower = Platform.formatPowerLong( internalCurrentPower, false );
-				final String formatMaxPower = Platform.formatPowerLong( internalMaxPower, false );
+				if( internalCurrentPower >= 0 )
+				{
+					final long internalMaxPower = (long) ( 100 * maxPower );
 
-				currentToolTip.add( WailaText.Contains.getLocal() + ": " + formatCurrentPower + " / " + formatMaxPower );
+					final String formatCurrentPower = Platform.formatPowerLong( internalCurrentPower, false );
+					final String formatMaxPower = Platform.formatPowerLong( internalMaxPower, false );
+
+					currentToolTip.add( WailaText.Contains.getLocal() + ": " + formatCurrentPower + " / " + formatMaxPower );
+				}
 			}
 		}
 
@@ -162,7 +166,7 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 		}
 		else
 		{
-			internalCurrentPower = 0;
+			internalCurrentPower = -1;
 		}
 
 		return internalCurrentPower;
