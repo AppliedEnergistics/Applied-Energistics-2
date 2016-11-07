@@ -99,8 +99,8 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
 	{
 
-		ItemStack req = request.getItemStack();
-		int remainingSize = req.stackSize;
+		ItemStack requestedItemStack = request.getItemStack();
+		int remainingSize = requestedItemStack.stackSize;
 
 		// Use this to gather the requested items
 		ItemStack gathered = null;
@@ -109,17 +109,17 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
 		for( int i = 0; i < itemHandler.getSlots(); i++ )
 		{
-			ItemStack sub = itemHandler.getStackInSlot( i );
+			ItemStack stackInInventorySlot = itemHandler.getStackInSlot( i );
 
-			if( !Platform.itemComparisons().isSameItem( sub, req ) )
+			if( !Platform.itemComparisons().isSameItem( stackInInventorySlot, requestedItemStack ) )
 			{
 				continue;
 			}
 
 			ItemStack extracted;
 
-			// We have to loop here because according to the docs, the handler shouldn't return a stack with size > maxSize, even if we
-			// request more. So even if it returns a valid stack, it might have more stuff.
+			// We have to loop here because according to the docs, the handler shouldn't return a stack with size >
+			// maxSize, even if we request more. So even if it returns a valid stack, it might have more stuff.
 			do
 			{
 				extracted = itemHandler.extractItem( i, remainingSize, simulate );
@@ -127,8 +127,9 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 				{
 					if( extracted.stackSize > remainingSize )
 					{
-						// Something broke. It should never return more than we requested... We're going to silently eat the remainder
-						AELog.warn( "Mod that provided item handler {} is broken. Returned {} items, even though we requested {}.",
+						// Something broke. It should never return more than we requested...
+						// We're going to silently eat the remainder
+						AELog.warn( "Mod that provided item handler %1 is broken. Returned %2 items, even though we requested %3.",
 								itemHandler.getClass().getSimpleName(), extracted.stackSize, remainingSize );
 						extracted.stackSize = remainingSize;
 					}
@@ -142,7 +143,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 					{
 						gathered.stackSize += extracted.stackSize;
 					}
-					remainingSize -= gathered.stackSize;
+					remainingSize -= extracted.stackSize;
 				}
 			}
 			while( extracted != null && remainingSize > 0 );
