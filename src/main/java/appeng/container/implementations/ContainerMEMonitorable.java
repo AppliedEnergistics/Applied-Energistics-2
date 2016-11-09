@@ -186,15 +186,18 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 				if( sideLocal != sideRemote )
 				{
 					this.clientCM.putSetting( set, sideLocal );
-					for( final Object crafter : this.listeners )
+					for( final IContainerListener crafter : this.listeners )
 					{
-						try
+						if( crafter instanceof EntityPlayerMP )
 						{
-							NetworkHandler.instance.sendTo( new PacketValueConfig( set.name(), sideLocal.name() ), (EntityPlayerMP) crafter );
-						}
-						catch( final IOException e )
-						{
-							AELog.debug( e );
+							try
+							{
+								NetworkHandler.instance.sendTo( new PacketValueConfig( set.name(), sideLocal.name() ), (EntityPlayerMP) crafter );
+							}
+							catch( final IOException e )
+							{
+								AELog.debug( e );
+							}
 						}
 					}
 				}
@@ -258,6 +261,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 
 			super.detectAndSendChanges();
 		}
+
 	}
 
 	protected void updatePowerStatus()
@@ -340,7 +344,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 			}
 		}
 	}
-	
+
 	@Override
 	public void removeListener( final IContainerListener c )
 	{

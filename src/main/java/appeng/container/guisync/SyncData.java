@@ -97,7 +97,10 @@ public class SyncData
 		}
 		else if( val instanceof Long || val.getClass() == long.class )
 		{
-			NetworkHandler.instance.sendTo( new PacketProgressBar( this.channel, (Long) val ), (EntityPlayerMP) o );
+			if( o instanceof EntityPlayerMP )
+			{
+				NetworkHandler.instance.sendTo( new PacketProgressBar( this.channel, (Long) val ), (EntityPlayerMP) o );
+			}
 		}
 		else if( val instanceof Boolean || val.getClass() == boolean.class )
 		{
