@@ -161,12 +161,6 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		super.drawScreen( mouseX, mouseY, btn );
 
-		final boolean hasClicked = Mouse.isButtonDown( 0 );
-		if( hasClicked && this.getScrollBar() != null )
-		{
-			this.getScrollBar().click( this, mouseX - this.guiLeft, mouseY - this.guiTop );
-		}
-
 		for( final Object c : this.buttonList )
 		{
 			if( c instanceof ITooltip )
@@ -258,13 +252,15 @@ public abstract class AEBaseGui extends GuiContainer
 				{
 					if( fs.isEnabled() )
 					{
-						this.drawTexturedModalRect( ox + fs.xDisplayPosition - 1, oy + fs.yDisplayPosition - 1, fs.getSourceX() - 1, fs.getSourceY() - 1, 18, 18 );
+						this.drawTexturedModalRect( ox + fs.xDisplayPosition - 1, oy + fs.yDisplayPosition - 1, fs.getSourceX() - 1, fs.getSourceY() - 1, 18,
+								18 );
 					}
 					else
 					{
 						GlStateManager.color( 1.0F, 1.0F, 1.0F, 0.4F );
 						GlStateManager.enableBlend();
-						this.drawTexturedModalRect( ox + fs.xDisplayPosition - 1, oy + fs.yDisplayPosition - 1, fs.getSourceX() - 1, fs.getSourceY() - 1, 18, 18 );
+						this.drawTexturedModalRect( ox + fs.xDisplayPosition - 1, oy + fs.yDisplayPosition - 1, fs.getSourceX() - 1, fs.getSourceY() - 1, 18,
+								18 );
 						GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
 					}
 				}
@@ -290,6 +286,11 @@ public abstract class AEBaseGui extends GuiContainer
 			}
 		}
 
+		if( this.getScrollBar() != null )
+		{
+			this.getScrollBar().click( this, xCoord - this.guiLeft, yCoord - this.guiTop );
+		}
+
 		super.mouseClicked( xCoord, yCoord, btn );
 	}
 
@@ -298,6 +299,11 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		final Slot slot = this.getSlot( x, y );
 		final ItemStack itemstack = this.mc.thePlayer.inventory.getItemStack();
+
+		if( this.getScrollBar() != null )
+		{
+			this.getScrollBar().click( this, x - this.guiLeft, y - this.guiTop );
+		}
 
 		if( slot instanceof SlotFake && itemstack != null )
 		{
@@ -515,7 +521,9 @@ public abstract class AEBaseGui extends GuiContainer
 				final List<Slot> slots = this.getInventorySlots();
 				for( final Slot inventorySlot : slots )
 				{
-					if( inventorySlot != null && inventorySlot.canTakeStack( this.mc.thePlayer ) && inventorySlot.getHasStack() && inventorySlot.inventory == slot.inventory && Container.canAddItemToSlot( inventorySlot, this.dbl_whichItem, true ) )
+					if( inventorySlot != null && inventorySlot.canTakeStack(
+							this.mc.thePlayer ) && inventorySlot.getHasStack() && inventorySlot.inventory == slot.inventory && Container.canAddItemToSlot(
+									inventorySlot, this.dbl_whichItem, true ) )
 					{
 						this.handleMouseClick( inventorySlot, inventorySlot.slotNumber, 1, clickType );
 					}
@@ -759,11 +767,15 @@ public abstract class AEBaseGui extends GuiContainer
 							final float f1 = 0.00390625F;
 							final float f = 0.00390625F;
 							final float par6 = 16;
-							vb.pos( par1 + 0, par2 + par6, this.zLevel ).tex( ( par3 + 0 ) * f, ( par4 + par6 ) * f1 ).color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).endVertex();
+							vb.pos( par1 + 0, par2 + par6, this.zLevel ).tex( ( par3 + 0 ) * f, ( par4 + par6 ) * f1 ).color( 1.0f, 1.0f, 1.0f,
+									aes.getOpacityOfIcon() ).endVertex();
 							final float par5 = 16;
-							vb.pos( par1 + par5, par2 + par6, this.zLevel ).tex( ( par3 + par5 ) * f, ( par4 + par6 ) * f1 ).color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).endVertex();
-							vb.pos( par1 + par5, par2 + 0, this.zLevel ).tex( ( par3 + par5 ) * f, ( par4 + 0 ) * f1 ).color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).endVertex();
-							vb.pos( par1 + 0, par2 + 0, this.zLevel ).tex( ( par3 + 0 ) * f, ( par4 + 0 ) * f1 ).color( 1.0f, 1.0f, 1.0f, aes.getOpacityOfIcon() ).endVertex();
+							vb.pos( par1 + par5, par2 + par6, this.zLevel ).tex( ( par3 + par5 ) * f, ( par4 + par6 ) * f1 ).color( 1.0f, 1.0f, 1.0f,
+									aes.getOpacityOfIcon() ).endVertex();
+							vb.pos( par1 + par5, par2 + 0, this.zLevel ).tex( ( par3 + par5 ) * f, ( par4 + 0 ) * f1 ).color( 1.0f, 1.0f, 1.0f,
+									aes.getOpacityOfIcon() ).endVertex();
+							vb.pos( par1 + 0, par2 + 0, this.zLevel ).tex( ( par3 + 0 ) * f, ( par4 + 0 ) * f1 ).color( 1.0f, 1.0f, 1.0f,
+									aes.getOpacityOfIcon() ).endVertex();
 							tessellator.draw();
 
 						}
@@ -777,7 +789,8 @@ public abstract class AEBaseGui extends GuiContainer
 				{
 					if( ( (AppEngSlot) s ).getIsValid() == hasCalculatedValidness.NotAvailable )
 					{
-						boolean isValid = s.isItemValid( is ) || s instanceof SlotOutput || s instanceof AppEngCraftingSlot || s instanceof SlotDisabled || s instanceof SlotInaccessible || s instanceof SlotFake || s instanceof SlotRestrictedInput || s instanceof SlotDisconnected;
+						boolean isValid = s.isItemValid(
+								is ) || s instanceof SlotOutput || s instanceof AppEngCraftingSlot || s instanceof SlotDisabled || s instanceof SlotInaccessible || s instanceof SlotFake || s instanceof SlotRestrictedInput || s instanceof SlotDisconnected;
 						if( isValid && s instanceof SlotRestrictedInput )
 						{
 							try
