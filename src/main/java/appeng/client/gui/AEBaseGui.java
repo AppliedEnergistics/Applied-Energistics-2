@@ -30,6 +30,7 @@ import appeng.container.AEBaseContainer;
 import appeng.container.slot.*;
 import appeng.container.slot.AppEngSlot.hasCalculatedValidness;
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.sync.packets.PacketSwapSlots;
@@ -140,12 +141,6 @@ public abstract class AEBaseGui extends GuiContainer
 	public void drawScreen( final int mouseX, final int mouseY, final float btn )
 	{
 		super.drawScreen( mouseX, mouseY, btn );
-
-		final boolean hasClicked = Mouse.isButtonDown( 0 );
-		if( hasClicked && this.scrollBar != null )
-		{
-			this.scrollBar.click( this, mouseX - this.guiLeft, mouseY - this.guiTop );
-		}
 
 		for( final Object c : this.buttonList )
 		{
@@ -270,9 +265,9 @@ public abstract class AEBaseGui extends GuiContainer
 		final int oy = this.guiTop; // (height - ySize) / 2;
 		GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
-		if( this.scrollBar != null )
+		if( this.getScrollBar() != null )
 		{
-			this.scrollBar.draw( this );
+			this.getScrollBar().draw( this );
 		}
 
 		this.drawFG( ox, oy, x, y );
@@ -298,7 +293,8 @@ public abstract class AEBaseGui extends GuiContainer
 				{
 					if( fs.isEnabled() )
 					{
-						this.drawTexturedModalRect( ox + fs.xDisplayPosition - 1, oy + fs.yDisplayPosition - 1, fs.getSourceX() - 1, fs.getSourceY() - 1, 18, 18 );
+						this.drawTexturedModalRect( ox + fs.xDisplayPosition - 1, oy + fs.yDisplayPosition - 1, fs.getSourceX() - 1, fs.getSourceY() - 1, 18,
+								18 );
 					}
 					else
 					{
@@ -332,6 +328,11 @@ public abstract class AEBaseGui extends GuiContainer
 			}
 		}
 
+		if( this.getScrollBar() != null )
+		{
+			this.getScrollBar().click( this, xCoord - this.guiLeft, yCoord - this.guiTop );
+		}
+
 		super.mouseClicked( xCoord, yCoord, btn );
 	}
 
@@ -340,6 +341,11 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		final Slot slot = this.getSlot( x, y );
 		final ItemStack itemstack = this.mc.thePlayer.inventory.getItemStack();
+
+		if( this.getScrollBar() != null )
+		{
+			this.getScrollBar().click( this, x - this.guiLeft, y - this.guiTop );
+		}
 
 		if( slot instanceof SlotFake && itemstack != null )
 		{
@@ -360,13 +366,13 @@ public abstract class AEBaseGui extends GuiContainer
 	}
 
 	@Override
-	protected void handleMouseClick( final Slot slot, final int slotIdx, final int ctrlDown, final int key )
+	protected void handleMouseClick( final Slot slot, final int slotIdx, final int ctrlDown, final int mouseButton )
 	{
 		final EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
 		if( slot instanceof SlotFake )
 		{
-			final InventoryAction action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
+			final InventoryAction action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
 
 			if( this.drag_click.size() > 1 )
 			{
@@ -381,14 +387,14 @@ public abstract class AEBaseGui extends GuiContainer
 
 		if( slot instanceof SlotPatternTerm )
 		{
-			if( key == 6 )
+			if( mouseButton == 6 )
 			{
 				return; // prevent weird double clicks..
 			}
 
 			try
 			{
-				NetworkHandler.instance.sendToServer( ( (SlotPatternTerm) slot ).getRequest( key == 1 ) );
+				NetworkHandler.instance.sendToServer( ( (SlotPatternTerm) slot ).getRequest( isShiftKeyDown() ) );
 			}
 			catch( final IOException e )
 			{
@@ -397,19 +403,20 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 		else if( slot instanceof SlotCraftingTerm )
 		{
-			if( key == 6 )
+			if( mouseButton == 6 )
 			{
 				return; // prevent weird double clicks..
 			}
 
 			InventoryAction action = null;
-			if( key == 1 )
+			if( isShiftKeyDown() )
 			{
 				action = InventoryAction.CRAFT_SHIFT;
 			}
 			else
 			{
-				action = ctrlDown == 1 ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
+				// Craft stack on right-click, craft single on left-click
+				action = ( mouseButton == 1 ) ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
 			}
 
 			final PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
@@ -446,7 +453,7 @@ public abstract class AEBaseGui extends GuiContainer
 		{
 			InventoryAction action = null;
 
-			switch( key )
+			switch( mouseButton )
 			{
 				case 0: // pickup / set-down.
 					action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
@@ -483,7 +490,7 @@ public abstract class AEBaseGui extends GuiContainer
 			InventoryAction action = null;
 			IAEItemStack stack = null;
 
-			switch( key )
+			switch( mouseButton )
 			{
 				case 0: // pickup / set-down.
 					action = ctrlDown == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
@@ -557,7 +564,9 @@ public abstract class AEBaseGui extends GuiContainer
 				final List<Slot> slots = this.getInventorySlots();
 				for( final Slot inventorySlot : slots )
 				{
-					if( inventorySlot != null && inventorySlot.canTakeStack( this.mc.thePlayer ) && inventorySlot.getHasStack() && inventorySlot.inventory == slot.inventory && Container.func_94527_a( inventorySlot, this.dbl_whichItem, true ) )
+					if( inventorySlot != null && inventorySlot.canTakeStack(
+							this.mc.thePlayer ) && inventorySlot.getHasStack() && inventorySlot.inventory == slot.inventory && Container.func_94527_a(
+							inventorySlot, this.dbl_whichItem, true ) )
 					{
 						this.handleMouseClick( inventorySlot, inventorySlot.slotNumber, ctrlDown, 1 );
 					}
@@ -567,7 +576,7 @@ public abstract class AEBaseGui extends GuiContainer
 			this.disableShiftClick = false;
 		}
 
-		super.handleMouseClick( slot, slotIdx, ctrlDown, key );
+		super.handleMouseClick( slot, slotIdx, ctrlDown, mouseButton );
 	}
 
 	@Override
@@ -661,9 +670,9 @@ public abstract class AEBaseGui extends GuiContainer
 			final int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
 			this.mouseWheelEvent( x, y, i / Math.abs( i ) );
 		}
-		else if( i != 0 && this.scrollBar != null )
+		else if( i != 0 && this.getScrollBar() != null )
 		{
-			this.scrollBar.wheel( i );
+			this.getScrollBar().wheel( i );
 		}
 	}
 
@@ -807,6 +816,7 @@ public abstract class AEBaseGui extends GuiContainer
 							tessellator.addVertexWithUV( par1 + 0, par2 + 0, this.zLevel, ( par3 + 0 ) * f, ( par4 + 0 ) * f1 );
 							tessellator.setColorRGBA_F( 1.0f, 1.0f, 1.0f, 1.0f );
 							tessellator.draw();
+
 						}
 						catch( final Exception err )
 						{
@@ -819,7 +829,8 @@ public abstract class AEBaseGui extends GuiContainer
 				{
 					if( ( (AppEngSlot) s ).getIsValid() == hasCalculatedValidness.NotAvailable )
 					{
-						boolean isValid = s.isItemValid( is ) || s instanceof SlotOutput || s instanceof AppEngCraftingSlot || s instanceof SlotDisabled || s instanceof SlotInaccessible || s instanceof SlotFake || s instanceof SlotRestrictedInput || s instanceof SlotDisconnected;
+						boolean isValid = s.isItemValid(
+								is ) || s instanceof SlotOutput || s instanceof AppEngCraftingSlot || s instanceof SlotDisabled || s instanceof SlotInaccessible || s instanceof SlotFake || s instanceof SlotRestrictedInput || s instanceof SlotDisconnected;
 						if( isValid && s instanceof SlotRestrictedInput )
 						{
 							try
@@ -901,7 +912,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 	public void bindTexture( final String file )
 	{
-		final ResourceLocation loc = new ResourceLocation( "appliedenergistics2", "textures/" + file );
+		final ResourceLocation loc = new ResourceLocation( AppEng.MOD_ID, "textures/" + file );
 		this.mc.getTextureManager().bindTexture( loc );
 	}
 
