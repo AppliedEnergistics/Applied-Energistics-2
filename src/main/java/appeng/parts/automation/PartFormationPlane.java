@@ -447,7 +447,8 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 		if( w.getBlockState( tePos ).getBlock().isReplaceable( w, tePos ) )
 		{
-			if( placeBlock == YesNo.YES && ( i instanceof ItemBlock || i instanceof IPlantable || i instanceof ItemSkull || i instanceof ItemFirework || i instanceof IPartItem || i == Item.getItemFromBlock( Blocks.REEDS ) ) )
+			if( placeBlock == YesNo.YES && ( i instanceof ItemBlock || i instanceof IPlantable || i instanceof ItemSkull || i instanceof ItemFirework || i instanceof IPartItem || i == Item.getItemFromBlock(
+					Blocks.REEDS ) ) )
 			{
 				final EntityPlayer player = Platform.getPlayer( (WorldServer) w );
 				Platform.configurePlayer( player, side, this.getTile() );
@@ -479,17 +480,20 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 						if( side.xOffset == 0 && side.zOffset == 0 )
 						{
-							Worked = i.onItemUse( is, player, w, tePos.offset( side.getFacing() ), null, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
+							Worked = i.onItemUse( is, player, w, tePos.offset( side.getFacing() ), null, side.getFacing().getOpposite(), side.xOffset,
+									side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
 						}
 
 						if( !Worked && side.xOffset == 0 && side.zOffset == 0 )
 						{
-							Worked = i.onItemUse( is, player, w, tePos.offset( side.getFacing().getOpposite() ), null, side.getFacing(), side.xOffset, side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
+							Worked = i.onItemUse( is, player, w, tePos.offset( side.getFacing().getOpposite() ), null, side.getFacing(), side.xOffset,
+									side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
 						}
 
 						if( !Worked && side.yOffset == 0 )
 						{
-							Worked = i.onItemUse( is, player, w, tePos.offset( EnumFacing.DOWN ), null, EnumFacing.UP, side.xOffset, side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
+							Worked = i.onItemUse( is, player, w, tePos.offset( EnumFacing.DOWN ), null, EnumFacing.UP, side.xOffset, side.yOffset,
+									side.zOffset ) == EnumActionResult.SUCCESS;
 						}
 
 						if( !Worked )
@@ -529,13 +533,12 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 				{
 					if( type == Actionable.MODULATE )
 					{
-
 						is.stackSize = (int) maxStorage;
-						final EntityItem ei = new EntityItem( w, // w
-						( ( side.xOffset != 0 ? 0.0 : 0.7 ) * ( Platform.getRandomFloat() - 0.5f ) ) + 0.5 + side.xOffset * -0.3 + tePos.getX(), // spawn
-						( ( side.yOffset != 0 ? 0.0 : 0.7 ) * ( Platform.getRandomFloat() - 0.5f ) ) + 0.5 + side.yOffset * -0.3 + tePos.getY(), // spawn
-						( ( side.zOffset != 0 ? 0.0 : 0.7 ) * ( Platform.getRandomFloat() - 0.5f ) ) + 0.5 + side.zOffset * -0.3 + tePos.getZ(), // spawn
-						is.copy() );
+						final double x = ( side.xOffset != 0 ? 0 : .7 * ( Platform.getRandomFloat() - .5 ) ) + side.xOffset + .5 + te.getPos().getX();
+						final double y = ( side.yOffset != 0 ? 0 : .7 * ( Platform.getRandomFloat() - .5 ) ) + side.yOffset + .5 + te.getPos().getY();
+						final double z = ( side.zOffset != 0 ? 0 : .7 * ( Platform.getRandomFloat() - .5 ) ) + side.zOffset + .5 + te.getPos().getZ();
+
+						final EntityItem ei = new EntityItem( w, x, y, z, is.copy() );
 
 						Entity result = ei;
 
