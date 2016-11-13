@@ -26,3 +26,6 @@
 
 # Github specific files and directories
 !.github/
+
+# Explicit ignores
+Thumbs.db
