@@ -117,21 +117,22 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			}
 
 			ItemStack extracted;
+			int remainingCurrentSlot = Math.min( remainingSize, stackInInventorySlot.stackSize );
 
 			// We have to loop here because according to the docs, the handler shouldn't return a stack with size >
 			// maxSize, even if we request more. So even if it returns a valid stack, it might have more stuff.
 			do
 			{
-				extracted = itemHandler.extractItem( i, remainingSize, simulate );
+				extracted = itemHandler.extractItem( i, remainingCurrentSlot, simulate );
 				if( extracted != null )
 				{
-					if( extracted.stackSize > remainingSize )
+					if( extracted.stackSize > remainingCurrentSlot )
 					{
 						// Something broke. It should never return more than we requested...
 						// We're going to silently eat the remainder
 						AELog.warn( "Mod that provided item handler %1 is broken. Returned %2 items, even though we requested %3.",
-								itemHandler.getClass().getSimpleName(), extracted.stackSize, remainingSize );
-						extracted.stackSize = remainingSize;
+								itemHandler.getClass().getSimpleName(), extracted.stackSize, remainingCurrentSlot );
+						extracted.stackSize = remainingCurrentSlot;
 					}
 
 					// We're just gonna use the first stack we get our hands on as the template for the rest
@@ -143,10 +144,12 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 					{
 						gathered.stackSize += extracted.stackSize;
 					}
-					remainingSize -= extracted.stackSize;
+					remainingCurrentSlot -= extracted.stackSize;
 				}
 			}
-			while( extracted != null && remainingSize > 0 );
+			while( extracted != null && remainingCurrentSlot > 0 );
+
+			remainingSize -= remainingCurrentSlot;
 
 			// Done?
 			if( remainingSize <= 0 )
