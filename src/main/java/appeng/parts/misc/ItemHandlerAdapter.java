@@ -149,7 +149,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			}
 			while( extracted != null && remainingCurrentSlot > 0 );
 
-			remainingSize -= remainingCurrentSlot;
+			remainingSize -= stackInInventorySlot.stackSize - remainingCurrentSlot;
 
 			// Done?
 			if( remainingSize <= 0 )
