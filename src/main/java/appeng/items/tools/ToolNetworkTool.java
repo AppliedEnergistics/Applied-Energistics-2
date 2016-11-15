@@ -119,7 +119,8 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 		if( te instanceof IPartHost )
 		{
 			final SelectedPart part = ( (IPartHost) te ).selectPart( mop.hitVec );
-			if( part.part != null )
+
+			if( part.part != null || part.facade != null )
 			{
 				if( part.part instanceof INetworkToolAgent && !( (INetworkToolAgent) part.part ).showNetworkInfo( mop ) )
 				{
