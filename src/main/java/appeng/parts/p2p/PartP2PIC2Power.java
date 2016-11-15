@@ -33,12 +33,12 @@ import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 
 import appeng.api.config.PowerUnits;
+import appeng.coremod.annotations.Integration.Interface;
+import appeng.coremod.annotations.Integration.InterfaceList;
 import appeng.integration.IntegrationType;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
-import appeng.transformer.annotations.Integration.Interface;
-import appeng.transformer.annotations.Integration.InterfaceList;
 import appeng.util.Platform;
 
 

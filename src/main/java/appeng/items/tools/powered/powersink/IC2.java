@@ -26,10 +26,10 @@ import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 
 import appeng.api.config.PowerUnits;
+import appeng.coremod.annotations.Integration.Interface;
+import appeng.coremod.annotations.Integration.InterfaceList;
+import appeng.coremod.annotations.Integration.Method;
 import appeng.integration.IntegrationType;
-import appeng.transformer.annotations.Integration.Interface;
-import appeng.transformer.annotations.Integration.InterfaceList;
-import appeng.transformer.annotations.Integration.Method;
 
 
 @InterfaceList( value = {

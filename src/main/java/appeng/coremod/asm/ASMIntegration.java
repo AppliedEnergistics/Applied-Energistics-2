@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.transformer.asm;
+package appeng.coremod.asm;
 
 
 import java.util.Iterator;
@@ -34,10 +34,10 @@ import org.objectweb.asm.tree.MethodNode;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
 
+import appeng.coremod.annotations.Integration;
 import appeng.helpers.Reflected;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
-import appeng.transformer.annotations.Integration;
 
 
 @Reflected
@@ -71,7 +71,7 @@ public final class ASMIntegration implements IClassTransformer
 	@Override
 	public byte[] transform( final String name, final String transformedName, final byte[] basicClass )
 	{
-		if( basicClass == null || transformedName.startsWith( "appeng.transformer" ) )
+		if( basicClass == null || transformedName.startsWith( "appeng.coremod" ) )
 		{
 			return basicClass;
 		}

@@ -44,8 +44,8 @@ package appeng.parts.p2p;
 //import appeng.api.networking.events.MENetworkPowerStatusChange;
 //import appeng.integration.IntegrationRegistry;
 //import appeng.integration.IntegrationType;
-//import appeng.transformer.annotations.Integration.Interface;
-//import appeng.transformer.annotations.Integration.InterfaceList;
+//import appeng.coremod.annotations.Integration.Interface;
+//import appeng.coremod.annotations.Integration.InterfaceList;
 //
 //
 //@InterfaceList( value = { @Interface( iface = "li.cil.oc.api.network.Environment", iname = IntegrationType.OpenComputers ), @Interface( iface = "li.cil.oc.api.network.SidedEnvironment", iname = IntegrationType.OpenComputers ) } )

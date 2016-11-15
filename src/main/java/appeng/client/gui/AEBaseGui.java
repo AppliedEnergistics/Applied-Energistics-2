@@ -539,16 +539,7 @@ public abstract class AEBaseGui extends GuiContainer
 	@Override
 	protected boolean checkHotbarKeys( final int keyCode )
 	{
-		final Slot theSlot;
-
-		try
-		{
-			theSlot = ObfuscationReflectionHelper.getPrivateValue( GuiContainer.class, this, "theSlot", "field_147006_u", "f" );
-		}
-		catch( final Throwable t )
-		{
-			return false;
-		}
+		final Slot theSlot = this.getSlotUnderMouse();
 
 		if( this.mc.thePlayer.inventory.getItemStack() == null && theSlot != null )
 		{
@@ -701,7 +692,8 @@ public abstract class AEBaseGui extends GuiContainer
 	/**
 	 * This overrides the base-class method through some access transformer hackery...
 	 */
-	public void drawSlot( final Slot s )
+	@Override
+	public void drawSlot( Slot s )
 	{
 		if( s instanceof SlotME )
 		{
@@ -720,7 +712,7 @@ public abstract class AEBaseGui extends GuiContainer
 				this.itemRender.zLevel = 0.0F;
 
 				// Annoying but easier than trying to splice into render item
-				this.safeDrawSlot( new Size1Slot( s ) );
+				super.drawSlot( new Size1Slot( s ) );
 
 				stackSizeRenderer.renderStackSize( fontRendererObj, ( (SlotME) s ).getAEStack(), s.getStack(), s.xDisplayPosition, s.yDisplayPosition );
 
@@ -822,11 +814,11 @@ public abstract class AEBaseGui extends GuiContainer
 				if( s instanceof AppEngSlot )
 				{
 					( (AppEngSlot) s ).setDisplay( true );
-					this.safeDrawSlot( s );
+					super.drawSlot( s );
 				}
 				else
 				{
-					this.safeDrawSlot( s );
+					super.drawSlot( s );
 				}
 
 				return;
@@ -837,23 +829,12 @@ public abstract class AEBaseGui extends GuiContainer
 			}
 		}
 		// do the usual for non-ME Slots.
-		this.safeDrawSlot( s );
+		super.drawSlot( s );
 	}
 
 	protected boolean isPowered()
 	{
 		return true;
-	}
-
-	private void safeDrawSlot( final Slot s )
-	{
-		try
-		{
-			GuiContainer.class.getDeclaredMethod( "func_146977_a_original", Slot.class ).invoke( this, s );
-		}
-		catch( final Exception err )
-		{
-		}
 	}
 
 	public void bindTexture( final String file )

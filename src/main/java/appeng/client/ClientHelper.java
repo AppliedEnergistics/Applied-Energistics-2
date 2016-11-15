@@ -62,6 +62,7 @@ import appeng.core.CommonHelper;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketAssemblerAnimation;
 import appeng.core.sync.packets.PacketValueConfig;
+import appeng.coremod.MissingCoreMod;
 import appeng.entity.EntityFloatingItem;
 import appeng.entity.EntityTinyTNTPrimed;
 import appeng.entity.RenderFloatingItem;
@@ -70,7 +71,6 @@ import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.TickHandler;
 import appeng.hooks.TickHandler.PlayerColor;
 import appeng.server.ServerHelper;
-import appeng.transformer.MissingCoreMod;
 import appeng.util.Platform;
 
 
