@@ -759,7 +759,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		this.storageBiomeID = id;
 	}
 
-	void setStorageProviderID(int id)
+	void setStorageProviderID( int id )
 	{
 		this.storageProviderID = id;
 	}

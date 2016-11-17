@@ -175,7 +175,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 			enabled = enabled && AEConfig.instance().isFeatureEnabled( f );
 		}
 
-		mat.setStackSrc( new MaterialStackSrc( mat ) );
+		mat.setStackSrc( new MaterialStackSrc( mat, enabled ) );
 
 		if( enabled )
 		{
@@ -260,8 +260,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final List<ItemStack> itemStacks )
 	{
 		final List<MaterialType> types = Arrays.asList( MaterialType.values() );
-		Collections.sort( types, new Comparator<MaterialType>()
-		{
+		Collections.sort( types, new Comparator<MaterialType>(){
 
 			@Override
 			public int compare( final MaterialType o1, final MaterialType o2 )
@@ -339,7 +338,8 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 
 		try
 		{
-			eqi = droppedEntity.getConstructor( World.class, double.class, double.class, double.class, ItemStack.class ).newInstance( w, location.posX, location.posY, location.posZ, itemstack );
+			eqi = droppedEntity.getConstructor( World.class, double.class, double.class, double.class, ItemStack.class ).newInstance( w, location.posX,
+					location.posY, location.posZ, itemstack );
 		}
 		catch( final Throwable t )
 		{

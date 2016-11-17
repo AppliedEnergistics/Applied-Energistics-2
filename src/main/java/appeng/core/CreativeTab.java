@@ -62,7 +62,7 @@ public final class CreativeTab extends CreativeTabs
 		final IItems items = definitions.items();
 		final IMaterials materials = definitions.materials();
 
-		return this.findFirst( blocks.controller(), blocks.chest(), blocks.cellWorkbench(), blocks.fluixBlock(), items.cell1k(), items.networkTool(), materials.fluixCrystal(), materials.certusQuartzCrystal() );
+		return this.findFirst( blocks.controller(), blocks.chest(), blocks.cellWorkbench(), blocks.fluixBlock(), items.cell1k(), items.networkTool(), materials.fluixCrystal(), materials.certusQuartzCrystal(), materials.skyDust() );
 	}
 
 	private ItemStack findFirst( final IItemDefinition... choices )

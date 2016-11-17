@@ -42,9 +42,13 @@ public enum AEFeature
 	GrindStone( Constants.CATEGORY_WORLD ),
 	Flour( Constants.CATEGORY_WORLD ),
 	Inscriber( Constants.CATEGORY_WORLD ),
+	Charger( Constants.CATEGORY_WORLD ),
+	CrystalGrowthAccelerator( Constants.CATEGORY_WORLD ),
 	ChestLoot( Constants.CATEGORY_WORLD ),
 	VillagerTrading( Constants.CATEGORY_WORLD ),
 	TinyTNT( Constants.CATEGORY_WORLD ),
+	CertusOre( Constants.CATEGORY_WORLD ),
+	ChargedCertusOre( Constants.CATEGORY_WORLD ),
 
 	PoweredTools( Constants.CATEGORY_TOOLS_CLASSIFICATIONS ),
 	CertusQuartzTools( Constants.CATEGORY_TOOLS_CLASSIFICATIONS ),
@@ -70,8 +74,10 @@ public enum AEFeature
 	QuantumNetworkBridge( Constants.CATEGORY_NETWORK_FEATURES ),
 	Channels( Constants.CATEGORY_NETWORK_FEATURES ),
 
+	Interface( Constants.CATEGORY_NETWORK_BUSES ),
 	LevelEmitter( Constants.CATEGORY_NETWORK_BUSES ),
 	CraftingTerminal( Constants.CATEGORY_NETWORK_BUSES ),
+	Terminal( Constants.CATEGORY_NETWORK_BUSES ),
 	StorageMonitor( Constants.CATEGORY_NETWORK_BUSES ),
 	P2PTunnel( Constants.CATEGORY_NETWORK_BUSES ),
 	FormationPlane( Constants.CATEGORY_NETWORK_BUSES ),
@@ -81,6 +87,10 @@ public enum AEFeature
 	ExportBus( Constants.CATEGORY_NETWORK_BUSES ),
 	StorageBus( Constants.CATEGORY_NETWORK_BUSES ),
 	PartConversionMonitor( Constants.CATEGORY_NETWORK_BUSES ),
+	ToggleBus( Constants.CATEGORY_NETWORK_BUSES ),
+	Panels( Constants.CATEGORY_NETWORK_BUSES ),
+	QuartzFiber( Constants.CATEGORY_NETWORK_BUSES ),
+	CableAnchor( Constants.CATEGORY_NETWORK_BUSES ),
 
 	PortableCell( Constants.CATEGORY_PORTABLE_CELL ),
 
@@ -88,8 +98,17 @@ public enum AEFeature
 	MEChest( Constants.CATEGORY_STORAGE ),
 	MEDrive( Constants.CATEGORY_STORAGE ),
 	IOPort( Constants.CATEGORY_STORAGE ),
+	Condenser( Constants.CATEGORY_STORAGE ),
 
 	NetworkTool( Constants.CATEGORY_NETWORK_TOOL ),
+	MemoryCard( Constants.CATEGORY_NETWORK_TOOL ),
+
+	GlassCables( Constants.CATEGORY_CABLES ),
+	CoveredCables( Constants.CATEGORY_CABLES ),
+	SmartCables( Constants.CATEGORY_CABLES ),
+
+	EnergyCells( Constants.CATEGORY_ENERGY ),
+	EnergyAcceptor( Constants.CATEGORY_ENERGY ),
 
 	DenseEnergyCells( Constants.CATEGORY_HIGHER_CAPACITY ),
 	DenseCables( Constants.CATEGORY_HIGHER_CAPACITY ),
@@ -137,6 +156,23 @@ public enum AEFeature
 	Patterns( Constants.CATEGORY_CRAFTING_FEATURES ),
 	CraftingCPU( Constants.CATEGORY_CRAFTING_FEATURES ),
 
+	BasicCards( Constants.CATEGORY_UPGRADES ),
+	AdvancedCards( Constants.CATEGORY_UPGRADES ),
+	ViewCell( Constants.CATEGORY_UPGRADES ),
+
+	Processors( Constants.CATEGORY_MATERIALS ),
+	PrintedCircuits( Constants.CATEGORY_MATERIALS ),
+	Presses( Constants.CATEGORY_MATERIALS ),
+	CrystalSeeds( Constants.CATEGORY_MATERIALS ),
+	PureCrystals( Constants.CATEGORY_MATERIALS ),
+	Certus( Constants.CATEGORY_MATERIALS ),
+	Fluix( Constants.CATEGORY_MATERIALS ),
+	Silicon( Constants.CATEGORY_MATERIALS ),
+	Dusts( Constants.CATEGORY_MATERIALS ),
+	Nuggets( Constants.CATEGORY_MATERIALS ),
+	MatterBall( Constants.CATEGORY_MATERIALS ),
+	Cores( Constants.CATEGORY_MATERIALS ),
+
 	ChunkLoggerTrace( Constants.CATEGORY_COMMANDS, false );
 
 	public final String category;
@@ -177,6 +213,7 @@ public enum AEFeature
 		private static final String CATEGORY_BLOCK_FEATURES = "BlockFeatures";
 		private static final String CATEGORY_CRAFTING_FEATURES = "CraftingFeatures";
 		private static final String CATEGORY_STORAGE = "Storage";
+		private static final String CATEGORY_CABLES = "Cables";
 		private static final String CATEGORY_HIGHER_CAPACITY = "HigherCapacity";
 		private static final String CATEGORY_NETWORK_FEATURES = "NetworkFeatures";
 		private static final String CATEGORY_COMMANDS = "Commands";
@@ -184,5 +221,8 @@ public enum AEFeature
 		private static final String CATEGORY_FACADES = "Facades";
 		private static final String CATEGORY_NETWORK_TOOL = "NetworkTool";
 		private static final String CATEGORY_PORTABLE_CELL = "PortableCell";
+		private static final String CATEGORY_ENERGY = "Energy";
+		private static final String CATEGORY_UPGRADES = "Upgrades";
+		private static final String CATEGORY_MATERIALS = "Materials";
 	}
 }

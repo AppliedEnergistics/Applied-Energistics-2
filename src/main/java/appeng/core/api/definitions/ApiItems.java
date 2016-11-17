@@ -126,22 +126,46 @@ public final class ApiItems implements IItems
 	public ApiItems( FeatureFactory registry )
 	{
 		FeatureFactory certusTools = registry.features( AEFeature.CertusQuartzTools );
-		this.certusQuartzAxe = certusTools.item( "certus_quartz_axe", () -> new ToolQuartzAxe( AEFeature.CertusQuartzTools ) ).addFeatures( AEFeature.QuartzAxe ).build();
-		this.certusQuartzHoe = certusTools.item( "certus_quartz_hoe", () -> new ToolQuartzHoe( AEFeature.CertusQuartzTools ) ).addFeatures( AEFeature.QuartzHoe ).build();
-		this.certusQuartzShovel = certusTools.item( "certus_quartz_spade", () -> new ToolQuartzSpade( AEFeature.CertusQuartzTools ) ).addFeatures( AEFeature.QuartzSpade ).build();
-		this.certusQuartzPick = certusTools.item( "certus_quartz_pickaxe", () -> new ToolQuartzPickaxe( AEFeature.CertusQuartzTools ) ).addFeatures( AEFeature.QuartzPickaxe ).build();
-		this.certusQuartzSword = certusTools.item( "certus_quartz_sword", () -> new ToolQuartzSword( AEFeature.CertusQuartzTools ) ).addFeatures( AEFeature.QuartzSword ).build();
+		this.certusQuartzAxe = certusTools.item( "certus_quartz_axe", () -> new ToolQuartzAxe( AEFeature.CertusQuartzTools ) )
+				.addFeatures( AEFeature.QuartzAxe )
+				.build();
+		this.certusQuartzHoe = certusTools.item( "certus_quartz_hoe", () -> new ToolQuartzHoe( AEFeature.CertusQuartzTools ) )
+				.addFeatures( AEFeature.QuartzHoe )
+				.build();
+		this.certusQuartzShovel = certusTools.item( "certus_quartz_spade", () -> new ToolQuartzSpade( AEFeature.CertusQuartzTools ) )
+				.addFeatures( AEFeature.QuartzSpade )
+				.build();
+		this.certusQuartzPick = certusTools.item( "certus_quartz_pickaxe", () -> new ToolQuartzPickaxe( AEFeature.CertusQuartzTools ) )
+				.addFeatures( AEFeature.QuartzPickaxe )
+				.build();
+		this.certusQuartzSword = certusTools.item( "certus_quartz_sword", () -> new ToolQuartzSword( AEFeature.CertusQuartzTools ) )
+				.addFeatures( AEFeature.QuartzSword )
+				.build();
 		this.certusQuartzWrench = certusTools.item( "certus_quartz_wrench", ToolQuartzWrench::new ).addFeatures( AEFeature.QuartzWrench ).build();
-		this.certusQuartzKnife = certusTools.item( "certus_quartz_cutting_knife", () -> new ToolQuartzCuttingKnife( AEFeature.CertusQuartzTools ) ).addFeatures( AEFeature.QuartzKnife ).build();
+		this.certusQuartzKnife = certusTools.item( "certus_quartz_cutting_knife", () -> new ToolQuartzCuttingKnife( AEFeature.CertusQuartzTools ) )
+				.addFeatures( AEFeature.QuartzKnife )
+				.build();
 
 		FeatureFactory netherTools = registry.features( AEFeature.NetherQuartzTools );
-		this.netherQuartzAxe = netherTools.item( "nether_quartz_axe", () -> new ToolQuartzAxe( AEFeature.NetherQuartzTools ) ).addFeatures( AEFeature.QuartzAxe ).build();
-		this.netherQuartzHoe = netherTools.item( "nether_quartz_hoe", () -> new ToolQuartzHoe( AEFeature.NetherQuartzTools ) ).addFeatures( AEFeature.QuartzHoe ).build();
-		this.netherQuartzShovel = netherTools.item( "nether_quartz_spade", () -> new ToolQuartzSpade( AEFeature.NetherQuartzTools ) ).addFeatures( AEFeature.QuartzSpade ).build();
-		this.netherQuartzPick = netherTools.item( "nether_quartz_pickaxe", () -> new ToolQuartzPickaxe( AEFeature.NetherQuartzTools ) ).addFeatures( AEFeature.QuartzPickaxe ).build();
-		this.netherQuartzSword = netherTools.item( "nether_quartz_sword", () -> new ToolQuartzSword( AEFeature.NetherQuartzTools ) ).addFeatures( AEFeature.QuartzSword ).build();
+		this.netherQuartzAxe = netherTools.item( "nether_quartz_axe", () -> new ToolQuartzAxe( AEFeature.NetherQuartzTools ) )
+				.addFeatures( AEFeature.QuartzAxe )
+				.build();
+		this.netherQuartzHoe = netherTools.item( "nether_quartz_hoe", () -> new ToolQuartzHoe( AEFeature.NetherQuartzTools ) )
+				.addFeatures( AEFeature.QuartzHoe )
+				.build();
+		this.netherQuartzShovel = netherTools.item( "nether_quartz_spade", () -> new ToolQuartzSpade( AEFeature.NetherQuartzTools ) )
+				.addFeatures( AEFeature.QuartzSpade )
+				.build();
+		this.netherQuartzPick = netherTools.item( "nether_quartz_pickaxe", () -> new ToolQuartzPickaxe( AEFeature.NetherQuartzTools ) )
+				.addFeatures( AEFeature.QuartzPickaxe )
+				.build();
+		this.netherQuartzSword = netherTools.item( "nether_quartz_sword", () -> new ToolQuartzSword( AEFeature.NetherQuartzTools ) )
+				.addFeatures( AEFeature.QuartzSword )
+				.build();
 		this.netherQuartzWrench = netherTools.item( "nether_quartz_wrench", ToolQuartzWrench::new ).addFeatures( AEFeature.QuartzWrench ).build();
-		this.netherQuartzKnife = netherTools.item( "nether_quartz_cutting_knife", () -> new ToolQuartzCuttingKnife( AEFeature.NetherQuartzTools ) ).addFeatures( AEFeature.QuartzKnife ).build();
+		this.netherQuartzKnife = netherTools.item( "nether_quartz_cutting_knife", () -> new ToolQuartzCuttingKnife( AEFeature.NetherQuartzTools ) )
+				.addFeatures( AEFeature.QuartzKnife )
+				.build();
 
 		FeatureFactory powerTools = registry.features( AEFeature.PoweredTools );
 		this.entropyManipulator = powerTools.item( "entropy_manipulator", ToolEntropyManipulator::new )
@@ -163,12 +187,15 @@ public final class ApiItems implements IItems
 
 		this.biometricCard = registry.item( "biometric_card", ToolBiometricCard::new )
 				.rendering( new ToolBiometricCardRendering() )
-				.features( AEFeature.Security ).build();
-		this.memoryCard = registry.item( "memory_card", ToolMemoryCard::new ).build();
+				.features( AEFeature.Security )
+				.build();
+		this.memoryCard = registry.item( "memory_card", ToolMemoryCard::new ).features( AEFeature.MemoryCard ).build();
 		this.networkTool = registry.item( "network_tool", ToolNetworkTool::new ).features( AEFeature.NetworkTool ).build();
 
-		this.cellCreative = registry.item( "creative_storage_cell", ItemCreativeStorageCell::new ).features( AEFeature.StorageCells, AEFeature.Creative ).build();
-		this.viewCell = registry.item( "view_cell", ItemViewCell::new ).build();
+		this.cellCreative = registry.item( "creative_storage_cell", ItemCreativeStorageCell::new )
+				.features( AEFeature.StorageCells, AEFeature.Creative )
+				.build();
+		this.viewCell = registry.item( "view_cell", ItemViewCell::new ).features( AEFeature.ViewCell ).build();
 
 		FeatureFactory storageCells = registry.features( AEFeature.StorageCells );
 		this.cell1k = storageCells.item( "storage_cell_1k", () -> new ItemBasicStorageCell( MaterialType.Cell1kPart, 1 ) ).build();
@@ -187,6 +214,7 @@ public final class ApiItems implements IItems
 				.rendering( new FacadeRendering() )
 				.build();
 		this.crystalSeed = registry.item( "crystal_seed", ItemCrystalSeed::new )
+				.features( AEFeature.CrystalSeeds )
 				.rendering( new ItemCrystalSeedRendering() )
 				.build();
 

@@ -30,12 +30,14 @@ import appeng.items.materials.MaterialType;
 public class MaterialStackSrc implements IStackSrc
 {
 	private final MaterialType src;
+	private final boolean enabled;
 
-	public MaterialStackSrc( final MaterialType src )
+	public MaterialStackSrc( final MaterialType src, boolean enabled )
 	{
 		Preconditions.checkNotNull( src );
 
 		this.src = src;
+		this.enabled = enabled;
 	}
 
 	@Override
@@ -59,6 +61,6 @@ public class MaterialStackSrc implements IStackSrc
 	@Override
 	public boolean isEnabled()
 	{
-		return true;
+		return this.enabled;
 	}
 }
