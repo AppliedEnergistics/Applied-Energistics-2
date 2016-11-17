@@ -22,6 +22,7 @@ package appeng.hooks;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import appeng.core.AEConfig;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketCompassRequest;
 
@@ -76,7 +77,7 @@ public class CompassManager
 
 	private void requestUpdate( final CompassRequest r )
 	{
-		NetworkHandler.instance.sendToServer( new PacketCompassRequest( r.attunement, r.cx, r.cz, r.cdy ) );
+		NetworkHandler.instance().sendToServer( new PacketCompassRequest( r.attunement, r.cx, r.cz, r.cdy ) );
 	}
 
 	private static class CompassRequest

@@ -192,7 +192,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 						{
 							try
 							{
-								NetworkHandler.instance.sendTo( new PacketValueConfig( set.name(), sideLocal.name() ), (EntityPlayerMP) crafter );
+								NetworkHandler.instance().sendTo( new PacketValueConfig( set.name(), sideLocal.name() ), (EntityPlayerMP) crafter );
 							}
 							catch( final IOException e )
 							{
@@ -233,7 +233,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 						{
 							if( c instanceof EntityPlayer )
 							{
-								NetworkHandler.instance.sendTo( piu, (EntityPlayerMP) c );
+								NetworkHandler.instance().sendTo( piu, (EntityPlayerMP) c );
 							}
 						}
 					}
@@ -329,14 +329,14 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 					}
 					catch( final BufferOverflowException boe )
 					{
-						NetworkHandler.instance.sendTo( piu, (EntityPlayerMP) c );
+						NetworkHandler.instance().sendTo( piu, (EntityPlayerMP) c );
 
 						piu = new PacketMEInventoryUpdate();
 						piu.appendItem( send );
 					}
 				}
 
-				NetworkHandler.instance.sendTo( piu, (EntityPlayerMP) c );
+				NetworkHandler.instance().sendTo( piu, (EntityPlayerMP) c );
 			}
 			catch( final IOException e )
 			{

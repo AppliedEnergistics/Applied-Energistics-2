@@ -354,7 +354,7 @@ public class ClientHelper extends ServerHelper
 			final ItemStack is = player.getHeldItem( hand );
 			try
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "Item", me.getDwheel() > 0 ? "WheelUp" : "WheelDown" ) );
+				NetworkHandler.instance().sendToServer( new PacketValueConfig( "Item", me.getDwheel() > 0 ? "WheelUp" : "WheelDown" ) );
 				me.setCanceled( true );
 			}
 			catch( final IOException e )

@@ -182,22 +182,22 @@ public class GuiUpgradeable extends AEBaseGui
 
 		if( btn == this.redstoneMode )
 		{
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.redstoneMode.getSetting(), backwards ) );
+			NetworkHandler.instance().sendToServer( new PacketConfigButton( this.redstoneMode.getSetting(), backwards ) );
 		}
 
 		if( btn == this.craftMode )
 		{
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.craftMode.getSetting(), backwards ) );
+			NetworkHandler.instance().sendToServer( new PacketConfigButton( this.craftMode.getSetting(), backwards ) );
 		}
 
 		if( btn == this.fuzzyMode )
 		{
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.fuzzyMode.getSetting(), backwards ) );
+			NetworkHandler.instance().sendToServer( new PacketConfigButton( this.fuzzyMode.getSetting(), backwards ) );
 		}
 
 		if( btn == this.schedulingMode )
 		{
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.schedulingMode.getSetting(), backwards ) );
+			NetworkHandler.instance().sendToServer( new PacketConfigButton( this.schedulingMode.getSetting(), backwards ) );
 		}
 	}
 }

@@ -271,7 +271,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 				}
 
 				pos.entityHit.attackEntityFrom( DamageSource.causePlayerDamage( p ), 0 );
-				NetworkHandler.instance.sendToAll( marker.getPacket() );
+				NetworkHandler.instance().sendToAll( marker.getPacket() );
 			}
 			else if( pos.typeOfHit == RayTraceResult.Type.BLOCK )
 			{

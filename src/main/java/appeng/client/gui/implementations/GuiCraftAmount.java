@@ -224,12 +224,12 @@ public class GuiCraftAmount extends AEBaseGui
 
 			if( btn == this.originalGuiBtn )
 			{
-				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( this.originalGui ) );
+				NetworkHandler.instance().sendToServer( new PacketSwitchGuis( this.originalGui ) );
 			}
 
 			if( btn == this.next )
 			{
-				NetworkHandler.instance.sendToServer( new PacketCraftRequest( Integer.parseInt( this.amountToCraft.getText() ), isShiftKeyDown() ) );
+				NetworkHandler.instance().sendToServer( new PacketCraftRequest( Integer.parseInt( this.amountToCraft.getText() ), isShiftKeyDown() ) );
 			}
 		}
 		catch( final NumberFormatException e )

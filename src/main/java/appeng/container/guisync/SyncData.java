@@ -88,7 +88,7 @@ public class SyncData
 		{
 			if( o instanceof EntityPlayerMP )
 			{
-				NetworkHandler.instance.sendTo( new PacketValueConfig( "SyncDat." + this.channel, (String) val ), (EntityPlayerMP) o );
+				NetworkHandler.instance().sendTo( new PacketValueConfig( "SyncDat." + this.channel, (String) val ), (EntityPlayerMP) o );
 			}
 		}
 		else if( this.field.getType().isEnum() )
@@ -99,7 +99,7 @@ public class SyncData
 		{
 			if( o instanceof EntityPlayerMP )
 			{
-				NetworkHandler.instance.sendTo( new PacketProgressBar( this.channel, (Long) val ), (EntityPlayerMP) o );
+				NetworkHandler.instance().sendTo( new PacketProgressBar( this.channel, (Long) val ), (EntityPlayerMP) o );
 			}
 		}
 		else if( val instanceof Boolean || val.getClass() == boolean.class )

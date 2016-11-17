@@ -131,7 +131,7 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
 
 		try
 		{
-			NetworkHandler.instance.sendToServer( new PacketJEIRecipe( recipe ) );
+			NetworkHandler.instance().sendToServer( new PacketJEIRecipe( recipe ) );
 		}
 		catch( IOException e )
 		{

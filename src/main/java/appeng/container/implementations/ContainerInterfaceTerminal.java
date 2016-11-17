@@ -186,7 +186,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 		{
 			try
 			{
-				NetworkHandler.instance.sendTo( new PacketCompressedNBT( this.data ), (EntityPlayerMP) this.getPlayerInv().player );
+				NetworkHandler.instance().sendTo( new PacketCompressedNBT( this.data ), (EntityPlayerMP) this.getPlayerInv().player );
 			}
 			catch( final IOException e )
 			{

@@ -122,7 +122,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 
 		if( Platform.isClient() )
 		{
-			NetworkHandler.instance.sendToServer( new PacketClick( pos, side, hitX, hitY, hitZ, hand ) );
+			NetworkHandler.instance().sendToServer( new PacketClick( pos, side, hitX, hitY, hitZ, hand ) );
 		}
 
 		return EnumActionResult.SUCCESS;

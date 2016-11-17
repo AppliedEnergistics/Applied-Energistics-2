@@ -37,7 +37,7 @@ import appeng.core.worlddata.WorldData;
 
 public class NetworkHandler
 {
-	public static NetworkHandler instance;
+	private static NetworkHandler instance;
 
 	private final FMLEventChannel ec;
 	private final String myChannelName;
@@ -53,6 +53,16 @@ public class NetworkHandler
 
 		this.clientHandler = this.createClientSide();
 		this.serveHandler = this.createServerSide();
+	}
+
+	public static void init( final String channelName )
+	{
+		instance = new NetworkHandler( channelName );
+	}
+
+	public static NetworkHandler instance()
+	{
+		return instance;
 	}
 
 	private IPacketHandler createClientSide()

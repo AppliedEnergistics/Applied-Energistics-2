@@ -113,7 +113,7 @@ final class DimensionData implements IWorldDimensionData, IOnWorldStartable, IOn
 		this.storageCellDimensionIDs.add( newStorageCellID );
 		DimensionManager.registerDimension( newStorageCellID, AppEng.instance().getRegistration().getStorageDimensionType() );
 
-		NetworkHandler.instance.sendToAll( new PacketNewStorageDimension( newStorageCellID ) );
+		NetworkHandler.instance().sendToAll( new PacketNewStorageDimension( newStorageCellID ) );
 
 		final String[] values = new String[this.storageCellDimensionIDs.size()];
 
@@ -164,7 +164,7 @@ final class DimensionData implements IWorldDimensionData, IOnWorldStartable, IOn
 		{
 			for( final TickHandler.PlayerColor pc : TickHandler.INSTANCE.getPlayerColors().values() )
 			{
-				NetworkHandler.instance.sendToAll( pc.getPacket() );
+				NetworkHandler.instance().sendToAll( pc.getPacket() );
 			}
 		}
 	}

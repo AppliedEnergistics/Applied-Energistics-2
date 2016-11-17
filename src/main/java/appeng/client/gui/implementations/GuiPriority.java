@@ -170,7 +170,7 @@ public class GuiPriority extends AEBaseGui
 
 		if( btn == this.originalGuiBtn )
 		{
-			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( this.OriginalGui ) );
+			NetworkHandler.instance().sendToServer( new PacketSwitchGuis( this.OriginalGui ) );
 		}
 
 		final boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
@@ -210,7 +210,7 @@ public class GuiPriority extends AEBaseGui
 
 			this.priority.setText( out = Long.toString( result ) );
 
-			NetworkHandler.instance.sendToServer( new PacketValueConfig( "PriorityHost.Priority", out ) );
+			NetworkHandler.instance().sendToServer( new PacketValueConfig( "PriorityHost.Priority", out ) );
 		}
 		catch( final NumberFormatException e )
 		{
@@ -251,7 +251,7 @@ public class GuiPriority extends AEBaseGui
 						out = "0";
 					}
 
-					NetworkHandler.instance.sendToServer( new PacketValueConfig( "PriorityHost.Priority", out ) );
+					NetworkHandler.instance().sendToServer( new PacketValueConfig( "PriorityHost.Priority", out ) );
 				}
 				catch( final IOException e )
 				{

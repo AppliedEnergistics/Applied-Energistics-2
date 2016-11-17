@@ -117,7 +117,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 			{
 				try
 				{
-					NetworkHandler.instance.sendTo( new PacketValueConfig( "CraftingStatus", "Clear" ), (EntityPlayerMP) g );
+					NetworkHandler.instance().sendTo( new PacketValueConfig( "CraftingStatus", "Clear" ), (EntityPlayerMP) g );
 				}
 				catch( final IOException e )
 				{
@@ -208,17 +208,17 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 					{
 						if( !a.isEmpty() )
 						{
-							NetworkHandler.instance.sendTo( a, (EntityPlayerMP) g );
+							NetworkHandler.instance().sendTo( a, (EntityPlayerMP) g );
 						}
 
 						if( !b.isEmpty() )
 						{
-							NetworkHandler.instance.sendTo( b, (EntityPlayerMP) g );
+							NetworkHandler.instance().sendTo( b, (EntityPlayerMP) g );
 						}
 
 						if( !c.isEmpty() )
 						{
-							NetworkHandler.instance.sendTo( c, (EntityPlayerMP) g );
+							NetworkHandler.instance().sendTo( c, (EntityPlayerMP) g );
 						}
 					}
 				}

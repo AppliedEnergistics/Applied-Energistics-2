@@ -125,7 +125,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		{
 			try
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "TileCrafting.Cancel", "Cancel" ) );
+				NetworkHandler.instance().sendToServer( new PacketValueConfig( "TileCrafting.Cancel", "Cancel" ) );
 			}
 			catch( final IOException e )
 			{

@@ -70,7 +70,7 @@ public class PacketCompassRequest extends AppEngPacket implements ICompassCallba
 	@Override
 	public void calculatedDirection( final boolean hasResult, final boolean spin, final double radians, final double dist )
 	{
-		NetworkHandler.instance.sendTo( new PacketCompassResponse( this, hasResult, spin, radians ), (EntityPlayerMP) this.talkBackTo );
+		NetworkHandler.instance().sendTo( new PacketCompassResponse( this, hasResult, spin, radians ), (EntityPlayerMP) this.talkBackTo );
 	}
 
 	@Override
