@@ -150,7 +150,7 @@ public final class AppEng
 		AELog.info( "Pre Initialization ( started )" );
 
 		CreativeTab.init();
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.Facades ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.FACADES ) )
 		{
 			CreativeTabFacade.init();
 		}

@@ -218,7 +218,7 @@ public final class MeteoritePlacer
 		// spawn meteor
 		this.skyStoneDefinition.maybeBlock().ifPresent( block -> placeMeteoriteSkyStone( w, x, y, z, block ) );
 
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.SpawnPressesInMeteorites ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.SPAWN_PRESSES_IN_METEORITES ) )
 		{
 			this.skyChestDefinition.maybeBlock().ifPresent( block -> this.putter.put( w, x, y, z, block ) );
 

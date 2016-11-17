@@ -59,7 +59,7 @@ public class FeatureFactory
 
 	public FeatureFactory()
 	{
-		this.defaultFeatures = new AEFeature[] { AEFeature.Core };
+		this.defaultFeatures = new AEFeature[] { AEFeature.CORE };
 		this.bootstrapComponents = new ArrayList<>();
 
 		if( Platform.isClient() )

@@ -149,7 +149,7 @@ public final class Registration
 
 	private void registerSpatial( final boolean force )
 	{
-		if( !AEConfig.instance().isFeatureEnabled( AEFeature.SpatialIO ) )
+		if( !AEConfig.instance().isFeatureEnabled( AEFeature.SPATIAL_IO ) )
 		{
 			return;
 		}
@@ -266,7 +266,7 @@ public final class Registration
 
 		MinecraftForge.EVENT_BUS.register( new PartPlacement() );
 
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.ChestLoot ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.CHEST_LOOT ) )
 		{
 			MinecraftForge.EVENT_BUS.register( new ChestLoot() );
 		}
@@ -296,13 +296,13 @@ public final class Registration
 		registration.registerAchievementHandlers();
 		registration.registerAchievements();
 
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.EnableDisassemblyCrafting ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_DISASSEMBLY_CRAFTING ) )
 		{
 			GameRegistry.addRecipe( new DisassembleRecipe() );
 			RecipeSorter.register( "appliedenergistics2:disassemble", DisassembleRecipe.class, Category.SHAPELESS, "after:minecraft:shapeless" );
 		}
 
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.EnableFacadeCrafting ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_FACADE_CRAFTING ) )
 		{
 			definitions.items().facade().maybeItem().ifPresent( facadeItem -> {
 				GameRegistry.addRecipe( new FacadeRecipe( (ItemFacade) facadeItem ) );
@@ -401,18 +401,18 @@ public final class Registration
 		} );
 
 		// add villager trading to black smiths for a few basic materials
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.VillagerTrading ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.VILLAGER_TRADING ) )
 		{
 			// TODO: VILLAGER TRADING
 			// VillagerRegistry.instance().getRegisteredVillagers()..registerVillageTradeHandler( 3, new AETrading() );
 		}
 
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.CertusQuartzWorldGen ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.CERTUS_QUARTZ_WORLD_GEN ) )
 		{
 			GameRegistry.registerWorldGenerator( new QuartzWorldGen(), 0 );
 		}
 
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.MeteoriteWorldGen ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.METEORITE_WORLD_GEN ) )
 		{
 			GameRegistry.registerWorldGenerator( new MeteoriteWorldGen(), 0 );
 		}

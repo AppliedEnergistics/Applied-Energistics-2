@@ -24,7 +24,7 @@ public enum AEFeature
 	// stuff that has no reason for ever being turned off, or that
 	// is just flat out required by tons of
 	// important stuff.
-	Core( null )
+	CORE( "Core", null )
 	{
 		@Override
 		public boolean isVisible()
@@ -33,160 +33,162 @@ public enum AEFeature
 		}
 	},
 
-	CertusQuartzWorldGen( Constants.CATEGORY_WORLD ),
-	MeteoriteWorldGen( Constants.CATEGORY_WORLD ),
-	DecorativeLights( Constants.CATEGORY_WORLD ),
-	DecorativeQuartzBlocks( Constants.CATEGORY_WORLD ),
-	SkyStoneChests( Constants.CATEGORY_WORLD ),
-	SpawnPressesInMeteorites( Constants.CATEGORY_WORLD ),
-	GrindStone( Constants.CATEGORY_WORLD ),
-	Flour( Constants.CATEGORY_WORLD ),
-	Inscriber( Constants.CATEGORY_WORLD ),
-	Charger( Constants.CATEGORY_WORLD ),
-	CrystalGrowthAccelerator( Constants.CATEGORY_WORLD ),
-	ChestLoot( Constants.CATEGORY_WORLD ),
-	VillagerTrading( Constants.CATEGORY_WORLD ),
-	TinyTNT( Constants.CATEGORY_WORLD ),
-	CertusOre( Constants.CATEGORY_WORLD ),
-	ChargedCertusOre( Constants.CATEGORY_WORLD ),
+	CERTUS_QUARTZ_WORLD_GEN( "CertusQuartzWorldGen", Constants.CATEGORY_WORLD ),
+	METEORITE_WORLD_GEN( "MeteoriteWorldGen", Constants.CATEGORY_WORLD ),
+	DECORATIVE_LIGHTS( "DecorativeLights", Constants.CATEGORY_WORLD ),
+	DECORATIVE_QUARTZ_BLOCKS( "DecorativeQuartzBlocks", Constants.CATEGORY_WORLD ),
+	SKY_STONE_CHESTS( "SkyStoneChests", Constants.CATEGORY_WORLD ),
+	SPAWN_PRESSES_IN_METEORITES( "SpawnPressesInMeteorites", Constants.CATEGORY_WORLD ),
+	GRIND_STONE( "GrindStone", Constants.CATEGORY_WORLD ),
+	FLOUR( "Flour", Constants.CATEGORY_WORLD ),
+	INSCRIBER( "Inscriber", Constants.CATEGORY_WORLD ),
+	CHARGER( "Charger", Constants.CATEGORY_WORLD ),
+	CRYSTAL_GROWTH_ACCELERATOR( "CrystalGrowthAccelerator", Constants.CATEGORY_WORLD ),
+	CHEST_LOOT( "ChestLoot", Constants.CATEGORY_WORLD ),
+	VILLAGER_TRADING( "VillagerTrading", Constants.CATEGORY_WORLD ),
+	TINY_TNT( "TinyTNT", Constants.CATEGORY_WORLD ),
+	CERTUS_ORE( "CertusOre", Constants.CATEGORY_WORLD ),
+	CHARGED_CERTUS_ORE( "ChargedCertusOre", Constants.CATEGORY_WORLD ),
 
-	PoweredTools( Constants.CATEGORY_TOOLS_CLASSIFICATIONS ),
-	CertusQuartzTools( Constants.CATEGORY_TOOLS_CLASSIFICATIONS ),
-	NetherQuartzTools( Constants.CATEGORY_TOOLS_CLASSIFICATIONS ),
+	POWERED_TOOLS( "PoweredTools", Constants.CATEGORY_TOOLS_CLASSIFICATIONS ),
+	CERTUS_QUARTZ_TOOLS( "CertusQuartzTools", Constants.CATEGORY_TOOLS_CLASSIFICATIONS ),
+	NETHER_QUARTZ_TOOLS( "NetherQuartzTools", Constants.CATEGORY_TOOLS_CLASSIFICATIONS ),
 
-	QuartzHoe( Constants.CATEGORY_TOOLS ),
-	QuartzSpade( Constants.CATEGORY_TOOLS ),
-	QuartzSword( Constants.CATEGORY_TOOLS ),
-	QuartzPickaxe( Constants.CATEGORY_TOOLS ),
-	QuartzAxe( Constants.CATEGORY_TOOLS ),
-	QuartzKnife( Constants.CATEGORY_TOOLS ),
-	QuartzWrench( Constants.CATEGORY_TOOLS ),
-	ChargedStaff( Constants.CATEGORY_TOOLS ),
-	EntropyManipulator( Constants.CATEGORY_TOOLS ),
-	MatterCannon( Constants.CATEGORY_TOOLS ),
-	WirelessAccessTerminal( Constants.CATEGORY_TOOLS ),
-	ColorApplicator( Constants.CATEGORY_TOOLS ),
-	MeteoriteCompass( Constants.CATEGORY_TOOLS ),
+	QUARTZ_HOE( "QuartzHoe", Constants.CATEGORY_TOOLS ),
+	QUARTZ_SPADE( "QuartzSpade", Constants.CATEGORY_TOOLS ),
+	QUARTZ_SWORD( "QuartzSword", Constants.CATEGORY_TOOLS ),
+	QUARTZ_PICKAXE( "QuartzPickaxe", Constants.CATEGORY_TOOLS ),
+	QUARTZ_AXE( "QuartzAxe", Constants.CATEGORY_TOOLS ),
+	QUARTZ_KNIFE( "QuartzKnife", Constants.CATEGORY_TOOLS ),
+	QUARTZ_WRENCH( "QuartzWrench", Constants.CATEGORY_TOOLS ),
+	CHARGED_STAFF( "ChargedStaff", Constants.CATEGORY_TOOLS ),
+	ENTROPY_MANIPULATOR( "EntropyManipulator", Constants.CATEGORY_TOOLS ),
+	MATTER_CANNON( "MatterCannon", Constants.CATEGORY_TOOLS ),
+	WIRELESS_ACCESS_TERMINAL( "WirelessAccessTerminal", Constants.CATEGORY_TOOLS ),
+	COLOR_APPLICATOR( "ColorApplicator", Constants.CATEGORY_TOOLS ),
+	METEORITE_COMPASS( "MeteoriteCompass", Constants.CATEGORY_TOOLS ),
 
-	PowerGen( Constants.CATEGORY_NETWORK_FEATURES ),
-	Security( Constants.CATEGORY_NETWORK_FEATURES ),
-	SpatialIO( Constants.CATEGORY_NETWORK_FEATURES ),
-	QuantumNetworkBridge( Constants.CATEGORY_NETWORK_FEATURES ),
-	Channels( Constants.CATEGORY_NETWORK_FEATURES ),
+	POWER_GEN( "PowerGen", Constants.CATEGORY_NETWORK_FEATURES ),
+	SECURITY( "Security", Constants.CATEGORY_NETWORK_FEATURES ),
+	SPATIAL_IO( "SpatialIO", Constants.CATEGORY_NETWORK_FEATURES ),
+	QUANTUM_NETWORK_BRIDGE( "QuantumNetworkBridge", Constants.CATEGORY_NETWORK_FEATURES ),
+	CHANNELS( "Channels", Constants.CATEGORY_NETWORK_FEATURES ),
 
-	Interface( Constants.CATEGORY_NETWORK_BUSES ),
-	LevelEmitter( Constants.CATEGORY_NETWORK_BUSES ),
-	CraftingTerminal( Constants.CATEGORY_NETWORK_BUSES ),
-	Terminal( Constants.CATEGORY_NETWORK_BUSES ),
-	StorageMonitor( Constants.CATEGORY_NETWORK_BUSES ),
-	P2PTunnel( Constants.CATEGORY_NETWORK_BUSES ),
-	FormationPlane( Constants.CATEGORY_NETWORK_BUSES ),
-	AnnihilationPlane( Constants.CATEGORY_NETWORK_BUSES ),
-	IdentityAnnihilationPlane( Constants.CATEGORY_NETWORK_BUSES ),
-	ImportBus( Constants.CATEGORY_NETWORK_BUSES ),
-	ExportBus( Constants.CATEGORY_NETWORK_BUSES ),
-	StorageBus( Constants.CATEGORY_NETWORK_BUSES ),
-	PartConversionMonitor( Constants.CATEGORY_NETWORK_BUSES ),
-	ToggleBus( Constants.CATEGORY_NETWORK_BUSES ),
-	Panels( Constants.CATEGORY_NETWORK_BUSES ),
-	QuartzFiber( Constants.CATEGORY_NETWORK_BUSES ),
-	CableAnchor( Constants.CATEGORY_NETWORK_BUSES ),
+	INTERFACE( "Interface", Constants.CATEGORY_NETWORK_BUSES ),
+	LEVEL_EMITTER( "LevelEmitter", Constants.CATEGORY_NETWORK_BUSES ),
+	CRAFTING_TERMINAL( "CraftingTerminal", Constants.CATEGORY_NETWORK_BUSES ),
+	TERMINAL( "Terminal", Constants.CATEGORY_NETWORK_BUSES ),
+	STORAGE_MONITOR( "StorageMonitor", Constants.CATEGORY_NETWORK_BUSES ),
+	P2P_TUNNEL( "P2PTunnel", Constants.CATEGORY_NETWORK_BUSES ),
+	FORMATION_PLANE( "FormationPlane", Constants.CATEGORY_NETWORK_BUSES ),
+	ANNIHILATION_PLANE( "AnnihilationPlane", Constants.CATEGORY_NETWORK_BUSES ),
+	IDENTITY_ANNIHILATION_PLANE( "IdentityAnnihilationPlane", Constants.CATEGORY_NETWORK_BUSES ),
+	IMPORT_BUS( "ImportBus", Constants.CATEGORY_NETWORK_BUSES ),
+	EXPORT_BUS( "ExportBus", Constants.CATEGORY_NETWORK_BUSES ),
+	STORAGE_BUS( "StorageBus", Constants.CATEGORY_NETWORK_BUSES ),
+	PART_CONVERSION_MONITOR( "PartConversionMonitor", Constants.CATEGORY_NETWORK_BUSES ),
+	TOGGLE_BUS( "ToggleBus", Constants.CATEGORY_NETWORK_BUSES ),
+	PANELS( "Panels", Constants.CATEGORY_NETWORK_BUSES ),
+	QUARTZ_FIBER( "QuartzFiber", Constants.CATEGORY_NETWORK_BUSES ),
+	CABLE_ANCHOR( "CableAnchor", Constants.CATEGORY_NETWORK_BUSES ),
 
-	PortableCell( Constants.CATEGORY_PORTABLE_CELL ),
+	PORTABLE_CELL( "PortableCell", Constants.CATEGORY_PORTABLE_CELL ),
 
-	StorageCells( Constants.CATEGORY_STORAGE ),
-	MEChest( Constants.CATEGORY_STORAGE ),
-	MEDrive( Constants.CATEGORY_STORAGE ),
-	IOPort( Constants.CATEGORY_STORAGE ),
-	Condenser( Constants.CATEGORY_STORAGE ),
+	STORAGE_CELLS( "StorageCells", Constants.CATEGORY_STORAGE ),
+	ME_CHEST( "MEChest", Constants.CATEGORY_STORAGE ),
+	ME_DRIVE( "MEDrive", Constants.CATEGORY_STORAGE ),
+	IO_PORT( "IOPort", Constants.CATEGORY_STORAGE ),
+	CONDENSER( "Condenser", Constants.CATEGORY_STORAGE ),
 
-	NetworkTool( Constants.CATEGORY_NETWORK_TOOL ),
-	MemoryCard( Constants.CATEGORY_NETWORK_TOOL ),
+	NETWORK_TOOL( "NetworkTool", Constants.CATEGORY_NETWORK_TOOL ),
+	MEMORY_CARD( "MemoryCard", Constants.CATEGORY_NETWORK_TOOL ),
 
-	GlassCables( Constants.CATEGORY_CABLES ),
-	CoveredCables( Constants.CATEGORY_CABLES ),
-	SmartCables( Constants.CATEGORY_CABLES ),
+	GLASS_CABLES( "GlassCables", Constants.CATEGORY_CABLES ),
+	COVERED_CABLES( "CoveredCables", Constants.CATEGORY_CABLES ),
+	SMART_CABLES( "SmartCables", Constants.CATEGORY_CABLES ),
 
-	EnergyCells( Constants.CATEGORY_ENERGY ),
-	EnergyAcceptor( Constants.CATEGORY_ENERGY ),
+	ENERGY_CELLS( "EnergyCells", Constants.CATEGORY_ENERGY ),
+	ENERGY_ACCEPTOR( "EnergyAcceptor", Constants.CATEGORY_ENERGY ),
 
-	DenseEnergyCells( Constants.CATEGORY_HIGHER_CAPACITY ),
-	DenseCables( Constants.CATEGORY_HIGHER_CAPACITY ),
+	DENSE_ENERGY_CELLS( "DenseEnergyCells", Constants.CATEGORY_HIGHER_CAPACITY ),
+	DENSE_CABLES( "DenseCables", Constants.CATEGORY_HIGHER_CAPACITY ),
 
-	P2PTunnelRF( Constants.CATEGORY_P2P_TUNNELS ),
-	P2PTunnelME( Constants.CATEGORY_P2P_TUNNELS ),
-	P2PTunnelItems( Constants.CATEGORY_P2P_TUNNELS ),
-	P2PTunnelRedstone( Constants.CATEGORY_P2P_TUNNELS ),
-	P2PTunnelEU( Constants.CATEGORY_P2P_TUNNELS ),
-	P2PTunnelLiquids( Constants.CATEGORY_P2P_TUNNELS ),
-	P2PTunnelLight( Constants.CATEGORY_P2P_TUNNELS ),
-	P2PTunnelOpenComputers( Constants.CATEGORY_P2P_TUNNELS ),
-	P2PTunnelPressure( Constants.CATEGORY_P2P_TUNNELS ),
+	P2P_TUNNEL_RF( "P2PTunnelRF", Constants.CATEGORY_P2P_TUNNELS ),
+	P2P_TUNNEL_ME( "P2PTunnelME", Constants.CATEGORY_P2P_TUNNELS ),
+	P2P_TUNNEL_ITEMS( "P2PTunnelItems", Constants.CATEGORY_P2P_TUNNELS ),
+	P2P_TUNNEL_REDSTONE( "P2PTunnelRedstone", Constants.CATEGORY_P2P_TUNNELS ),
+	P2P_TUNNEL_EU( "P2PTunnelEU", Constants.CATEGORY_P2P_TUNNELS ),
+	P2P_TUNNEL_LIQUIDS( "P2PTunnelLiquids", Constants.CATEGORY_P2P_TUNNELS ),
+	P2P_TUNNEL_LIGHT( "P2PTunnelLight", Constants.CATEGORY_P2P_TUNNELS ),
+	P2P_TUNNEL_OPEN_COMPUTERS( "P2PTunnelOpenComputers", Constants.CATEGORY_P2P_TUNNELS ),
+	P2P_TUNNEL_PRESSURE( "P2PTunnelPressure", Constants.CATEGORY_P2P_TUNNELS ),
 
-	MassCannonBlockDamage( Constants.CATEGORY_BLOCK_FEATURES ),
-	TinyTNTBlockDamage( Constants.CATEGORY_BLOCK_FEATURES ),
+	MASS_CANNON_BLOCK_DAMAGE( "MassCannonBlockDamage", Constants.CATEGORY_BLOCK_FEATURES ),
+	TINY_TNT_BLOCK_DAMAGE( "TinyTNTBlockDamage", Constants.CATEGORY_BLOCK_FEATURES ),
 
-	Facades( Constants.CATEGORY_FACADES ),
+	FACADES( "Facades", Constants.CATEGORY_FACADES ),
 
-	UnsupportedDeveloperTools( Constants.CATEGORY_MISC, false ),
-	Creative( Constants.CATEGORY_MISC ),
-	GrinderLogging( Constants.CATEGORY_MISC, false ),
-	Logging( Constants.CATEGORY_MISC ),
-	IntegrationLogging( Constants.CATEGORY_MISC, false ),
-	WebsiteRecipes( Constants.CATEGORY_MISC, false ),
-	LogSecurityAudits( Constants.CATEGORY_MISC, false ),
-	Achievements( Constants.CATEGORY_MISC ),
-	UpdateLogging( Constants.CATEGORY_MISC, false ),
-	PacketLogging( Constants.CATEGORY_MISC, false ),
-	CraftingLog( Constants.CATEGORY_MISC, false ),
-	LightDetector( Constants.CATEGORY_MISC ),
-	DebugLogging( Constants.CATEGORY_MISC, false ),
+	UNSUPPORTED_DEVELOPER_TOOLS( "UnsupportedDeveloperTools", Constants.CATEGORY_MISC, false ),
+	CREATIVE( "Creative", Constants.CATEGORY_MISC ),
+	GRINDER_LOGGING( "GrinderLogging", Constants.CATEGORY_MISC, false ),
+	LOGGING( "Logging", Constants.CATEGORY_MISC ),
+	INTEGRATION_LOGGING( "IntegrationLogging", Constants.CATEGORY_MISC, false ),
+	WEBSITE_RECIPES( "WebsiteRecipes", Constants.CATEGORY_MISC, false ),
+	LOG_SECURITY_AUDITS( "LogSecurityAudits", Constants.CATEGORY_MISC, false ),
+	ACHIEVEMENTS( "Achievements", Constants.CATEGORY_MISC ),
+	UPDATE_LOGGING( "UpdateLogging", Constants.CATEGORY_MISC, false ),
+	PACKET_LOGGING( "PacketLogging", Constants.CATEGORY_MISC, false ),
+	CRAFTING_LOG( "CraftingLog", Constants.CATEGORY_MISC, false ),
+	LIGHT_DETECTOR( "LightDetector", Constants.CATEGORY_MISC ),
+	DEBUG_LOGGING( "DebugLogging", Constants.CATEGORY_MISC, false ),
 
-	EnableFacadeCrafting( Constants.CATEGORY_CRAFTING ),
-	InWorldSingularity( Constants.CATEGORY_CRAFTING ),
-	InWorldFluix( Constants.CATEGORY_CRAFTING ),
-	InWorldPurification( Constants.CATEGORY_CRAFTING ),
-	InterfaceTerminal( Constants.CATEGORY_CRAFTING ),
-	EnableDisassemblyCrafting( Constants.CATEGORY_CRAFTING ),
+	ENABLE_FACADE_CRAFTING( "EnableFacadeCrafting", Constants.CATEGORY_CRAFTING ),
+	IN_WORLD_SINGULARITY( "InWorldSingularity", Constants.CATEGORY_CRAFTING ),
+	IN_WORLD_FLUIX( "InWorldFluix", Constants.CATEGORY_CRAFTING ),
+	IN_WORLD_PURIFICATION( "InWorldPurification", Constants.CATEGORY_CRAFTING ),
+	INTERFACE_TERMINAL( "InterfaceTerminal", Constants.CATEGORY_CRAFTING ),
+	ENABLE_DISASSEMBLY_CRAFTING( "EnableDisassemblyCrafting", Constants.CATEGORY_CRAFTING ),
 
-	AlphaPass( Constants.CATEGORY_RENDERING ),
-	PaintBalls( Constants.CATEGORY_TOOLS ),
+	ALPHA_PASS( "AlphaPass", Constants.CATEGORY_RENDERING ),
+	PAINT_BALLS( "PaintBalls", Constants.CATEGORY_TOOLS ),
 
-	MolecularAssembler( Constants.CATEGORY_CRAFTING_FEATURES ),
-	Patterns( Constants.CATEGORY_CRAFTING_FEATURES ),
-	CraftingCPU( Constants.CATEGORY_CRAFTING_FEATURES ),
+	MOLECULAR_ASSEMBLER( "MolecularAssembler", Constants.CATEGORY_CRAFTING_FEATURES ),
+	PATTERNS( "Patterns", Constants.CATEGORY_CRAFTING_FEATURES ),
+	CRAFTING_CPU( "CraftingCPU", Constants.CATEGORY_CRAFTING_FEATURES ),
 
-	BasicCards( Constants.CATEGORY_UPGRADES ),
-	AdvancedCards( Constants.CATEGORY_UPGRADES ),
-	ViewCell( Constants.CATEGORY_UPGRADES ),
+	BASIC_CARDS( "BasicCards", Constants.CATEGORY_UPGRADES ),
+	ADVANCED_CARDS( "AdvancedCards", Constants.CATEGORY_UPGRADES ),
+	VIEW_CELL( "ViewCell", Constants.CATEGORY_UPGRADES ),
 
-	Processors( Constants.CATEGORY_MATERIALS ),
-	PrintedCircuits( Constants.CATEGORY_MATERIALS ),
-	Presses( Constants.CATEGORY_MATERIALS ),
-	CrystalSeeds( Constants.CATEGORY_MATERIALS ),
-	PureCrystals( Constants.CATEGORY_MATERIALS ),
-	Certus( Constants.CATEGORY_MATERIALS ),
-	Fluix( Constants.CATEGORY_MATERIALS ),
-	Silicon( Constants.CATEGORY_MATERIALS ),
-	Dusts( Constants.CATEGORY_MATERIALS ),
-	Nuggets( Constants.CATEGORY_MATERIALS ),
-	MatterBall( Constants.CATEGORY_MATERIALS ),
-	Cores( Constants.CATEGORY_MATERIALS ),
+	PROCESSORS( "Processors", Constants.CATEGORY_MATERIALS ),
+	PRINTED_CIRCUITS( "PrintedCircuits", Constants.CATEGORY_MATERIALS ),
+	PRESSES( "Presses", Constants.CATEGORY_MATERIALS ),
+	CRYSTAL_SEEDS( "CrystalSeeds", Constants.CATEGORY_MATERIALS ),
+	PURE_CRYSTALS( "PureCrystals", Constants.CATEGORY_MATERIALS ),
+	CERTUS( "Certus", Constants.CATEGORY_MATERIALS ),
+	FLUIX( "Fluix", Constants.CATEGORY_MATERIALS ),
+	SILICON( "Silicon", Constants.CATEGORY_MATERIALS ),
+	DUSTS( "Dusts", Constants.CATEGORY_MATERIALS ),
+	NUGGETS( "Nuggets", Constants.CATEGORY_MATERIALS ),
+	MATTER_BALL( "MatterBall", Constants.CATEGORY_MATERIALS ),
+	CORES( "Cores", Constants.CATEGORY_MATERIALS ),
 
-	ChunkLoggerTrace( Constants.CATEGORY_COMMANDS, false );
+	CHUNK_LOGGER_TRACE( "ChunkLoggerTrace", Constants.CATEGORY_COMMANDS, false );
 
-	public final String category;
-	public final boolean defaultValue;
+	private final String key;
+	private final String category;
+	private final boolean enabled;
 
-	AEFeature( final String cat )
+	AEFeature( final String key, final String cat )
 	{
-		this( cat, true );
+		this( key, cat, true );
 	}
 
-	AEFeature( final String cat, final boolean defaultValue )
+	AEFeature( final String key, final String cat, final boolean enabled )
 	{
+		this.key = key;
 		this.category = cat;
-		this.defaultValue = defaultValue;
+		this.enabled = enabled;
 	}
 
 	/**
@@ -197,6 +199,21 @@ public enum AEFeature
 	public boolean isVisible()
 	{
 		return true;
+	}
+
+	public String key()
+	{
+		return key;
+	}
+
+	public String category()
+	{
+		return category;
+	}
+
+	public boolean isEnabled()
+	{
+		return enabled;
 	}
 
 	private enum Constants

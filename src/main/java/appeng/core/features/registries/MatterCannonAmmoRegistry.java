@@ -87,7 +87,7 @@ public class MatterCannonAmmoRegistry implements IOreListener, IMatterCannonAmmo
 		this.considerItem( name, item, "Sodium", 22.9897 );
 		this.considerItem( name, item, "Magnesium", 24.305 );
 		this.considerItem( name, item, "Aluminum", 26.9815 );
-		this.considerItem( name, item, "Silicon", 28.0855 );
+		this.considerItem( name, item, "SILICON", 28.0855 );
 		this.considerItem( name, item, "Phosphorus", 30.9738 );
 		this.considerItem( name, item, "Sulfur", 32.065 );
 		this.considerItem( name, item, "Potassium", 39.0983 );

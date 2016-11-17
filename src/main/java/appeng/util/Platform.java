@@ -1489,7 +1489,7 @@ public class Platform
 		final boolean a_isSecure = isPowered( a.getGrid() ) && a.getLastSecurityKey() != -1;
 		final boolean b_isSecure = isPowered( b.getGrid() ) && b.getLastSecurityKey() != -1;
 
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.LogSecurityAudits ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.LOG_SECURITY_AUDITS ) )
 		{
 			AELog.info( "Audit: " + a_isSecure + " : " + b_isSecure + " @ " + a.getLastSecurityKey() + " vs " + b.getLastSecurityKey() + " & " + a.getPlayerID() + " vs " + b.getPlayerID() );
 		}
@@ -1723,14 +1723,14 @@ public class Platform
 			return false;
 		}
 
-		if( type == AEFeature.CertusQuartzTools )
+		if( type == AEFeature.CERTUS_QUARTZ_TOOLS )
 		{
 			final IItemDefinition certusQuartzCrystal = AEApi.instance().definitions().materials().certusQuartzCrystal();
 
 			return certusQuartzCrystal.isSameAs( b );
 		}
 
-		if( type == AEFeature.NetherQuartzTools )
+		if( type == AEFeature.NETHER_QUARTZ_TOOLS )
 		{
 			return Items.QUARTZ == b.getItem();
 		}

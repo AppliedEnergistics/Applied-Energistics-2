@@ -45,6 +45,6 @@ public class ItemCraftingStorage extends AEBaseItemBlock
 	@Override
 	public boolean hasContainerItem( final ItemStack stack )
 	{
-		return AEConfig.instance().isFeatureEnabled( AEFeature.EnableDisassemblyCrafting );
+		return AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_DISASSEMBLY_CRAFTING );
 	}
 }

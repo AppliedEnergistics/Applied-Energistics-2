@@ -201,7 +201,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		{
 			if( feature.isVisible() )
 			{
-				if( this.get( "Features." + feature.category, feature.name(), feature.defaultValue ).getBoolean( feature.defaultValue ) )
+				if( this.get( "Features." + feature.category(), feature.key(), feature.isEnabled() ).getBoolean( feature.isEnabled() ) )
 				{
 					this.featureFlags.add( feature );
 				}
@@ -218,7 +218,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 			final List<String> version = Arrays.asList( "59.0.0", "59.0.1", "59.0.2" );
 			if( version.contains( imb.getVersion() ) )
 			{
-				this.featureFlags.remove( AEFeature.AlphaPass );
+				this.featureFlags.remove( AEFeature.ALPHA_PASS );
 			}
 		}
 
@@ -237,7 +237,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 			tr.Load( this );
 		}
 
-		if( this.isFeatureEnabled( AEFeature.SpatialIO ) )
+		if( this.isFeatureEnabled( AEFeature.SPATIAL_IO ) )
 		{
 			this.storageBiomeID = this.get( "spatialio", "storageBiomeID", this.storageBiomeID ).getInt( this.storageBiomeID );
 			this.storageProviderID = this.get( "spatialio", "storageProviderID", this.storageProviderID ).getInt( this.storageProviderID );
@@ -246,7 +246,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 			this.spatialPowerExponent = this.get( "spatialio", "spatialPowerExponent", this.spatialPowerExponent ).getDouble( this.spatialPowerExponent );
 		}
 
-		if( this.isFeatureEnabled( AEFeature.CraftingCPU ) )
+		if( this.isFeatureEnabled( AEFeature.CRAFTING_CPU ) )
 		{
 			this.craftingCalculationTimePerTick = this.get( "craftingCPU", "craftingCalculationTimePerTick", this.craftingCalculationTimePerTick ).getInt(
 					this.craftingCalculationTimePerTick );
@@ -383,7 +383,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	@Override
 	public void save()
 	{
-		if( this.isFeatureEnabled( AEFeature.SpatialIO ) )
+		if( this.isFeatureEnabled( AEFeature.SPATIAL_IO ) )
 		{
 			this.get( "spatialio", "storageBiomeID", this.storageBiomeID ).set( this.storageBiomeID );
 			this.get( "spatialio", "storageProviderID", this.storageProviderID ).set( this.storageProviderID );
@@ -418,7 +418,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 
 	public boolean useAEVersion( final MaterialType mt )
 	{
-		if( this.isFeatureEnabled( AEFeature.WebsiteRecipes ) )
+		if( this.isFeatureEnabled( AEFeature.WEBSITE_RECIPES ) )
 		{
 			return true;
 		}

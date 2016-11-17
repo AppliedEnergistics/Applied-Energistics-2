@@ -79,7 +79,7 @@ public class ChestLoot
 								new LootCondition[0],
 								new RandomValueRange( 1, 4 ),
 								new RandomValueRange( 0, 2 ),
-								"AE2 Dusts"
+								"AE2 DUSTS"
 						)
 				);
 			} );

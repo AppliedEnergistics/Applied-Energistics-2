@@ -125,113 +125,113 @@ public final class ApiItems implements IItems
 
 	public ApiItems( FeatureFactory registry )
 	{
-		FeatureFactory certusTools = registry.features( AEFeature.CertusQuartzTools );
-		this.certusQuartzAxe = certusTools.item( "certus_quartz_axe", () -> new ToolQuartzAxe( AEFeature.CertusQuartzTools ) )
-				.addFeatures( AEFeature.QuartzAxe )
+		FeatureFactory certusTools = registry.features( AEFeature.CERTUS_QUARTZ_TOOLS );
+		this.certusQuartzAxe = certusTools.item( "certus_quartz_axe", () -> new ToolQuartzAxe( AEFeature.CERTUS_QUARTZ_TOOLS ) )
+				.addFeatures( AEFeature.QUARTZ_AXE )
 				.build();
-		this.certusQuartzHoe = certusTools.item( "certus_quartz_hoe", () -> new ToolQuartzHoe( AEFeature.CertusQuartzTools ) )
-				.addFeatures( AEFeature.QuartzHoe )
+		this.certusQuartzHoe = certusTools.item( "certus_quartz_hoe", () -> new ToolQuartzHoe( AEFeature.CERTUS_QUARTZ_TOOLS ) )
+				.addFeatures( AEFeature.QUARTZ_HOE )
 				.build();
-		this.certusQuartzShovel = certusTools.item( "certus_quartz_spade", () -> new ToolQuartzSpade( AEFeature.CertusQuartzTools ) )
-				.addFeatures( AEFeature.QuartzSpade )
+		this.certusQuartzShovel = certusTools.item( "certus_quartz_spade", () -> new ToolQuartzSpade( AEFeature.CERTUS_QUARTZ_TOOLS ) )
+				.addFeatures( AEFeature.QUARTZ_SPADE )
 				.build();
-		this.certusQuartzPick = certusTools.item( "certus_quartz_pickaxe", () -> new ToolQuartzPickaxe( AEFeature.CertusQuartzTools ) )
-				.addFeatures( AEFeature.QuartzPickaxe )
+		this.certusQuartzPick = certusTools.item( "certus_quartz_pickaxe", () -> new ToolQuartzPickaxe( AEFeature.CERTUS_QUARTZ_TOOLS ) )
+				.addFeatures( AEFeature.QUARTZ_PICKAXE )
 				.build();
-		this.certusQuartzSword = certusTools.item( "certus_quartz_sword", () -> new ToolQuartzSword( AEFeature.CertusQuartzTools ) )
-				.addFeatures( AEFeature.QuartzSword )
+		this.certusQuartzSword = certusTools.item( "certus_quartz_sword", () -> new ToolQuartzSword( AEFeature.CERTUS_QUARTZ_TOOLS ) )
+				.addFeatures( AEFeature.QUARTZ_SWORD )
 				.build();
-		this.certusQuartzWrench = certusTools.item( "certus_quartz_wrench", ToolQuartzWrench::new ).addFeatures( AEFeature.QuartzWrench ).build();
-		this.certusQuartzKnife = certusTools.item( "certus_quartz_cutting_knife", () -> new ToolQuartzCuttingKnife( AEFeature.CertusQuartzTools ) )
-				.addFeatures( AEFeature.QuartzKnife )
-				.build();
-
-		FeatureFactory netherTools = registry.features( AEFeature.NetherQuartzTools );
-		this.netherQuartzAxe = netherTools.item( "nether_quartz_axe", () -> new ToolQuartzAxe( AEFeature.NetherQuartzTools ) )
-				.addFeatures( AEFeature.QuartzAxe )
-				.build();
-		this.netherQuartzHoe = netherTools.item( "nether_quartz_hoe", () -> new ToolQuartzHoe( AEFeature.NetherQuartzTools ) )
-				.addFeatures( AEFeature.QuartzHoe )
-				.build();
-		this.netherQuartzShovel = netherTools.item( "nether_quartz_spade", () -> new ToolQuartzSpade( AEFeature.NetherQuartzTools ) )
-				.addFeatures( AEFeature.QuartzSpade )
-				.build();
-		this.netherQuartzPick = netherTools.item( "nether_quartz_pickaxe", () -> new ToolQuartzPickaxe( AEFeature.NetherQuartzTools ) )
-				.addFeatures( AEFeature.QuartzPickaxe )
-				.build();
-		this.netherQuartzSword = netherTools.item( "nether_quartz_sword", () -> new ToolQuartzSword( AEFeature.NetherQuartzTools ) )
-				.addFeatures( AEFeature.QuartzSword )
-				.build();
-		this.netherQuartzWrench = netherTools.item( "nether_quartz_wrench", ToolQuartzWrench::new ).addFeatures( AEFeature.QuartzWrench ).build();
-		this.netherQuartzKnife = netherTools.item( "nether_quartz_cutting_knife", () -> new ToolQuartzCuttingKnife( AEFeature.NetherQuartzTools ) )
-				.addFeatures( AEFeature.QuartzKnife )
+		this.certusQuartzWrench = certusTools.item( "certus_quartz_wrench", ToolQuartzWrench::new ).addFeatures( AEFeature.QUARTZ_WRENCH ).build();
+		this.certusQuartzKnife = certusTools.item( "certus_quartz_cutting_knife", () -> new ToolQuartzCuttingKnife( AEFeature.CERTUS_QUARTZ_TOOLS ) )
+				.addFeatures( AEFeature.QUARTZ_KNIFE )
 				.build();
 
-		FeatureFactory powerTools = registry.features( AEFeature.PoweredTools );
+		FeatureFactory netherTools = registry.features( AEFeature.NETHER_QUARTZ_TOOLS );
+		this.netherQuartzAxe = netherTools.item( "nether_quartz_axe", () -> new ToolQuartzAxe( AEFeature.NETHER_QUARTZ_TOOLS ) )
+				.addFeatures( AEFeature.QUARTZ_AXE )
+				.build();
+		this.netherQuartzHoe = netherTools.item( "nether_quartz_hoe", () -> new ToolQuartzHoe( AEFeature.NETHER_QUARTZ_TOOLS ) )
+				.addFeatures( AEFeature.QUARTZ_HOE )
+				.build();
+		this.netherQuartzShovel = netherTools.item( "nether_quartz_spade", () -> new ToolQuartzSpade( AEFeature.NETHER_QUARTZ_TOOLS ) )
+				.addFeatures( AEFeature.QUARTZ_SPADE )
+				.build();
+		this.netherQuartzPick = netherTools.item( "nether_quartz_pickaxe", () -> new ToolQuartzPickaxe( AEFeature.NETHER_QUARTZ_TOOLS ) )
+				.addFeatures( AEFeature.QUARTZ_PICKAXE )
+				.build();
+		this.netherQuartzSword = netherTools.item( "nether_quartz_sword", () -> new ToolQuartzSword( AEFeature.NETHER_QUARTZ_TOOLS ) )
+				.addFeatures( AEFeature.QUARTZ_SWORD )
+				.build();
+		this.netherQuartzWrench = netherTools.item( "nether_quartz_wrench", ToolQuartzWrench::new ).addFeatures( AEFeature.QUARTZ_WRENCH ).build();
+		this.netherQuartzKnife = netherTools.item( "nether_quartz_cutting_knife", () -> new ToolQuartzCuttingKnife( AEFeature.NETHER_QUARTZ_TOOLS ) )
+				.addFeatures( AEFeature.QUARTZ_KNIFE )
+				.build();
+
+		FeatureFactory powerTools = registry.features( AEFeature.POWERED_TOOLS );
 		this.entropyManipulator = powerTools.item( "entropy_manipulator", ToolEntropyManipulator::new )
-				.addFeatures( AEFeature.EntropyManipulator )
+				.addFeatures( AEFeature.ENTROPY_MANIPULATOR )
 				.dispenserBehavior( DispenserBlockTool::new )
 				.build();
-		this.wirelessTerminal = powerTools.item( "wireless_terminal", ToolWirelessTerminal::new ).addFeatures( AEFeature.WirelessAccessTerminal ).build();
-		this.chargedStaff = powerTools.item( "charged_staff", ToolChargedStaff::new ).addFeatures( AEFeature.ChargedStaff ).build();
+		this.wirelessTerminal = powerTools.item( "wireless_terminal", ToolWirelessTerminal::new ).addFeatures( AEFeature.WIRELESS_ACCESS_TERMINAL ).build();
+		this.chargedStaff = powerTools.item( "charged_staff", ToolChargedStaff::new ).addFeatures( AEFeature.CHARGED_STAFF ).build();
 		this.massCannon = powerTools.item( "matter_cannon", ToolMatterCannon::new )
-				.addFeatures( AEFeature.MatterCannon )
+				.addFeatures( AEFeature.MATTER_CANNON )
 				.dispenserBehavior( DispenserMatterCannon::new )
 				.build();
-		this.portableCell = powerTools.item( "portable_cell", ToolPortableCell::new ).addFeatures( AEFeature.PortableCell, AEFeature.StorageCells ).build();
+		this.portableCell = powerTools.item( "portable_cell", ToolPortableCell::new ).addFeatures( AEFeature.PORTABLE_CELL, AEFeature.STORAGE_CELLS ).build();
 		this.colorApplicator = powerTools.item( "color_applicator", ToolColorApplicator::new )
-				.addFeatures( AEFeature.ColorApplicator )
+				.addFeatures( AEFeature.COLOR_APPLICATOR )
 				.dispenserBehavior( DispenserBlockTool::new )
 				.rendering( new ToolColorApplicatorRendering() )
 				.build();
 
 		this.biometricCard = registry.item( "biometric_card", ToolBiometricCard::new )
 				.rendering( new ToolBiometricCardRendering() )
-				.features( AEFeature.Security )
+				.features( AEFeature.SECURITY )
 				.build();
-		this.memoryCard = registry.item( "memory_card", ToolMemoryCard::new ).features( AEFeature.MemoryCard ).build();
-		this.networkTool = registry.item( "network_tool", ToolNetworkTool::new ).features( AEFeature.NetworkTool ).build();
+		this.memoryCard = registry.item( "memory_card", ToolMemoryCard::new ).features( AEFeature.MEMORY_CARD ).build();
+		this.networkTool = registry.item( "network_tool", ToolNetworkTool::new ).features( AEFeature.NETWORK_TOOL ).build();
 
 		this.cellCreative = registry.item( "creative_storage_cell", ItemCreativeStorageCell::new )
-				.features( AEFeature.StorageCells, AEFeature.Creative )
+				.features( AEFeature.STORAGE_CELLS, AEFeature.CREATIVE )
 				.build();
-		this.viewCell = registry.item( "view_cell", ItemViewCell::new ).features( AEFeature.ViewCell ).build();
+		this.viewCell = registry.item( "view_cell", ItemViewCell::new ).features( AEFeature.VIEW_CELL ).build();
 
-		FeatureFactory storageCells = registry.features( AEFeature.StorageCells );
+		FeatureFactory storageCells = registry.features( AEFeature.STORAGE_CELLS );
 		this.cell1k = storageCells.item( "storage_cell_1k", () -> new ItemBasicStorageCell( MaterialType.Cell1kPart, 1 ) ).build();
 		this.cell4k = storageCells.item( "storage_cell_4k", () -> new ItemBasicStorageCell( MaterialType.Cell4kPart, 4 ) ).build();
 		this.cell16k = storageCells.item( "storage_cell_16k", () -> new ItemBasicStorageCell( MaterialType.Cell16kPart, 16 ) ).build();
 		this.cell64k = storageCells.item( "storage_cell_64k", () -> new ItemBasicStorageCell( MaterialType.Cell64kPart, 64 ) ).build();
 
-		FeatureFactory spatialCells = registry.features( AEFeature.SpatialIO );
+		FeatureFactory spatialCells = registry.features( AEFeature.SPATIAL_IO );
 		this.spatialCell2 = spatialCells.item( "spatial_storage_cell_2_cubed", () -> new ItemSpatialStorageCell( 2 ) ).build();
 		this.spatialCell16 = spatialCells.item( "spatial_storage_cell_16_cubed", () -> new ItemSpatialStorageCell( 16 ) ).build();
 		this.spatialCell128 = spatialCells.item( "spatial_storage_cell_128_cubed", () -> new ItemSpatialStorageCell( 128 ) ).build();
 
 		this.facade = registry.item( "facade", ItemFacade::new )
-				.features( AEFeature.Facades )
+				.features( AEFeature.FACADES )
 				.creativeTab( CreativeTabFacade.instance )
 				.rendering( new FacadeRendering() )
 				.build();
 		this.crystalSeed = registry.item( "crystal_seed", ItemCrystalSeed::new )
-				.features( AEFeature.CrystalSeeds )
+				.features( AEFeature.CRYSTAL_SEEDS )
 				.rendering( new ItemCrystalSeedRendering() )
 				.build();
 
 		// rv1
 		this.encodedPattern = registry.item( "encoded_pattern", ItemEncodedPattern::new )
-				.features( AEFeature.Patterns )
+				.features( AEFeature.PATTERNS )
 				.rendering( new ItemEncodedPatternRendering() )
 				.build();
 
 		this.paintBall = registry.item( "paint_ball", ItemPaintBall::new )
-				.features( AEFeature.PaintBalls )
+				.features( AEFeature.PAINT_BALLS )
 				.rendering( new ItemPaintBallRendering() )
 				.build();
 		this.coloredPaintBall = registry.colored( this.paintBall, 0 );
 		this.coloredLumenPaintBall = registry.colored( this.paintBall, 20 );
 
-		FeatureFactory debugTools = registry.features( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative );
+		FeatureFactory debugTools = registry.features( AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE );
 		this.toolEraser = debugTools.item( "debug_eraser", ToolEraser::new ).build();
 		this.toolMeteoritePlacer = debugTools.item( "debug_meteorite_placer", ToolMeteoritePlacer::new ).build();
 		this.toolDebugCard = debugTools.item( "debug_card", ToolDebugCard::new ).build();
