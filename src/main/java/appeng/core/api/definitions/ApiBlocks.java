@@ -204,13 +204,15 @@ public final class ApiBlocks implements IBlocks
 		// this.quartzOre = new BlockDefinition( "ore.quartz", new OreQuartz() );
 		this.quartzOre = registry.block( "quartz_ore", BlockQuartzOre::new )
 				.features( AEFeature.CertusOre )
-				.postInit( ( block, item ) -> {
+				.postInit( ( block, item ) ->
+				{
 					OreDictionary.registerOre( "oreCertusQuartz", new ItemStack( block ) );
 				} )
 				.build();
 		this.quartzOreCharged = registry.block( "charged_quartz_ore", BlockChargedQuartzOre::new )
 				.features( AEFeature.CertusOre, AEFeature.ChargedCertusOre )
-				.postInit( ( block, item ) -> {
+				.postInit( ( block, item ) ->
+				{
 					OreDictionary.registerOre( "oreCertusQuartz", new ItemStack( block ) );
 				} )
 				.build();
@@ -222,7 +224,8 @@ public final class ApiBlocks implements IBlocks
 		this.chiseledQuartzBlock = deco.block( "chiseled_quartz_block", BlockChiseledQuartz::new ).build();
 		this.quartzGlass = deco.block( "quartz_glass", BlockQuartzGlass::new )
 				.useCustomItemModel()
-				.rendering( new BlockRenderingCustomizer(){
+				.rendering( new BlockRenderingCustomizer()
+				{
 					@Override
 					@SideOnly( Side.CLIENT )
 					public void customize( IBlockRendering rendering, IItemRendering itemRendering )
@@ -274,7 +277,8 @@ public final class ApiBlocks implements IBlocks
 				.build();
 		this.charger = registry.block( "charger", BlockCharger::new )
 				.features( AEFeature.Charger )
-				.rendering( new BlockRenderingCustomizer(){
+				.rendering( new BlockRenderingCustomizer()
+				{
 					@Override
 					@SideOnly( Side.CLIENT )
 					public void customize( IBlockRendering rendering, IItemRendering itemRendering )
@@ -285,7 +289,8 @@ public final class ApiBlocks implements IBlocks
 				.build();
 		this.tinyTNT = registry.block( "tiny_tnt", BlockTinyTNT::new )
 				.features( AEFeature.TinyTNT )
-				.postInit( ( block, item ) -> {
+				.postInit( ( block, item ) ->
+				{
 					BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( item, new DispenserBehaviorTinyTNT() );
 				} )
 				.build();
@@ -401,7 +406,8 @@ public final class ApiBlocks implements IBlocks
 
 		this.multiPart = registry.block( "cable_bus", BlockCableBus::new )
 				.rendering( new CableBusRendering( partModels ) )
-				.postInit( ( block, item ) -> {
+				.postInit( ( block, item ) ->
+				{
 					( (BlockCableBus) block ).setupTile();
 				} )
 				.build();
@@ -479,7 +485,8 @@ public final class ApiBlocks implements IBlocks
 	{
 		return registry.block( registryName, () -> new BlockStairCommon( block.maybeBlock().get(), block.identifier() ) )
 				.features( AEFeature.DecorativeQuartzBlocks )
-				.rendering( new BlockRenderingCustomizer(){
+				.rendering( new BlockRenderingCustomizer()
+				{
 					@Override
 					@SideOnly( Side.CLIENT )
 					public void customize( IBlockRendering rendering, IItemRendering itemRendering )
