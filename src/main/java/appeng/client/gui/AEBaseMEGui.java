@@ -49,7 +49,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 			final Slot s = this.getSlot( mouseX, mouseY );
 			if( s instanceof SlotME )
 			{
-				final int BigNumber = AEConfig.instance.useTerminalUseLargeFont() ? 999 : 9999;
+				final int BigNumber = AEConfig.instance().useTerminalUseLargeFont() ? 999 : 9999;
 
 				IAEItemStack myStack = null;
 
@@ -103,7 +103,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 		final Slot s = this.getSlot( x, y );
 		if( s instanceof SlotME && stack != null )
 		{
-			final int BigNumber = AEConfig.instance.useTerminalUseLargeFont() ? 999 : 9999;
+			final int BigNumber = AEConfig.instance().useTerminalUseLargeFont() ? 999 : 9999;
 
 			IAEItemStack myStack = null;
 

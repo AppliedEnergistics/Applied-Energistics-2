@@ -149,42 +149,42 @@ public final class Registration
 
 	private void registerSpatial( final boolean force )
 	{
-		if( !AEConfig.instance.isFeatureEnabled( AEFeature.SpatialIO ) )
+		if( !AEConfig.instance().isFeatureEnabled( AEFeature.SpatialIO ) )
 		{
 			return;
 		}
 
-		final AEConfig config = AEConfig.instance;
+		final AEConfig config = AEConfig.instance();
 
 		if( this.storageBiome == null )
 		{
-			if( force && config.storageBiomeID == -1 )
+			if( force && config.getStorageBiomeID() == -1 )
 			{
-				config.storageBiomeID = Platform.findEmpty( Biome.REGISTRY, 0, 256 );
-				if( config.storageBiomeID == -1 )
+				config.setStorageBiomeID( Platform.findEmpty( Biome.REGISTRY, 0, 256 ) );
+				if( config.getStorageBiomeID() == -1 )
 				{
 					throw new IllegalStateException( "Biome Array is full, please free up some Biome ID's or disable spatial." );
 				}
 
 				this.storageBiome = new BiomeGenStorage();
-				Biome.registerBiome( config.storageBiomeID, "appliedenergistics2:storage_biome", this.storageBiome );
+				Biome.registerBiome( config.getStorageBiomeID(), "appliedenergistics2:storage_biome", this.storageBiome );
 				config.save();
 			}
 
-			if( !force && config.storageBiomeID != -1 )
+			if( !force && config.getStorageBiomeID() != -1 )
 			{
 				this.storageBiome = new BiomeGenStorage();
-				Biome.registerBiome( config.storageBiomeID, "appliedenergistics2:storage_biome", this.storageBiome );
+				Biome.registerBiome( config.getStorageBiomeID(), "appliedenergistics2:storage_biome", this.storageBiome );
 			}
 
 		}
 
-		if( config.storageProviderID != -1 )
+		if( config.getStorageProviderID() != -1 )
 		{
-			storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.storageProviderID, StorageWorldProvider.class, false );
+			storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.getStorageProviderID(), StorageWorldProvider.class, false );
 		}
 
-		if( config.storageProviderID == -1 && force )
+		if( config.getStorageProviderID() == -1 && force )
 		{
 			final Set<Integer> ids = new HashSet<>();
 			for( DimensionType type : DimensionType.values() )
@@ -192,14 +192,14 @@ public final class Registration
 				ids.add( type.getId() );
 			}
 
-			config.storageProviderID = -11;
+			config.setStorageProviderID( -11 );
 
-			while( ids.contains( config.storageProviderID ) )
+			while( ids.contains( config.getStorageProviderID() ) )
 			{
-				config.storageProviderID--;
+				config.setStorageProviderID( config.getStorageProviderID() - 1 );
 			}
 
-			storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.storageProviderID, StorageWorldProvider.class, false );
+			storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.getStorageProviderID(), StorageWorldProvider.class, false );
 
 			config.save();
 		}
@@ -264,10 +264,9 @@ public final class Registration
 
 		MinecraftForge.EVENT_BUS.register( TickHandler.INSTANCE );
 
-
 		MinecraftForge.EVENT_BUS.register( new PartPlacement() );
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.ChestLoot ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.ChestLoot ) )
 		{
 			MinecraftForge.EVENT_BUS.register( new ChestLoot() );
 		}
@@ -285,8 +284,7 @@ public final class Registration
 		registries.cell().addCellHandler( new BasicCellHandler() );
 		registries.cell().addCellHandler( new CreativeCellHandler() );
 
-		api.definitions().materials().matterBall().maybeStack( 1 ).ifPresent( ammoStack ->
-		{
+		api.definitions().materials().matterBall().maybeStack( 1 ).ifPresent( ammoStack -> {
 			final double weight = 32;
 
 			registries.matterCannon().registerAmmo( ammoStack, weight );
@@ -294,17 +292,17 @@ public final class Registration
 
 		this.recipeHandler.injectRecipes();
 
-		final PlayerStatsRegistration registration = new PlayerStatsRegistration( MinecraftForge.EVENT_BUS, AEConfig.instance );
+		final PlayerStatsRegistration registration = new PlayerStatsRegistration( MinecraftForge.EVENT_BUS, AEConfig.instance() );
 		registration.registerAchievementHandlers();
 		registration.registerAchievements();
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.EnableDisassemblyCrafting ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.EnableDisassemblyCrafting ) )
 		{
 			GameRegistry.addRecipe( new DisassembleRecipe() );
 			RecipeSorter.register( "appliedenergistics2:disassemble", DisassembleRecipe.class, Category.SHAPELESS, "after:minecraft:shapeless" );
 		}
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.EnableFacadeCrafting ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.EnableFacadeCrafting ) )
 		{
 			definitions.items().facade().maybeItem().ifPresent( facadeItem -> {
 				GameRegistry.addRecipe( new FacadeRecipe( (ItemFacade) facadeItem ) );
@@ -398,24 +396,23 @@ public final class Registration
 		// Inscriber
 		Upgrades.SPEED.registerItem( blocks.inscriber(), 3 );
 
-		items.wirelessTerminal().maybeItem().ifPresent( terminal ->
-		{
+		items.wirelessTerminal().maybeItem().ifPresent( terminal -> {
 			registries.wireless().registerWirelessHandler( (IWirelessTermHandler) terminal );
 		} );
 
 		// add villager trading to black smiths for a few basic materials
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.VillagerTrading ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.VillagerTrading ) )
 		{
 			// TODO: VILLAGER TRADING
 			// VillagerRegistry.instance().getRegisteredVillagers()..registerVillageTradeHandler( 3, new AETrading() );
 		}
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.CertusQuartzWorldGen ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.CertusQuartzWorldGen ) )
 		{
 			GameRegistry.registerWorldGenerator( new QuartzWorldGen(), 0 );
 		}
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.MeteoriteWorldGen ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.MeteoriteWorldGen ) )
 		{
 			GameRegistry.registerWorldGenerator( new MeteoriteWorldGen(), 0 );
 		}
@@ -470,7 +467,7 @@ public final class Registration
 		}
 
 		// whitelist from config
-		for( final int dimension : AEConfig.instance.meteoriteDimensionWhitelist )
+		for( final int dimension : AEConfig.instance().getMeteoriteDimensionWhitelist() )
 		{
 			registries.worldgen().enableWorldGenForDimension( WorldGenType.METEORITES, dimension );
 		}

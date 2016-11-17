@@ -77,10 +77,10 @@ public class GuiPriority extends AEBaseGui
 	{
 		super.initGui();
 
-		final int a = AEConfig.instance.priorityByStacksAmounts( 0 );
-		final int b = AEConfig.instance.priorityByStacksAmounts( 1 );
-		final int c = AEConfig.instance.priorityByStacksAmounts( 2 );
-		final int d = AEConfig.instance.priorityByStacksAmounts( 3 );
+		final int a = AEConfig.instance().priorityByStacksAmounts( 0 );
+		final int b = AEConfig.instance().priorityByStacksAmounts( 1 );
+		final int c = AEConfig.instance().priorityByStacksAmounts( 2 );
+		final int d = AEConfig.instance().priorityByStacksAmounts( 3 );
 
 		this.buttonList.add( this.plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 32, 22, 20, "+" + a ) );
 		this.buttonList.add( this.plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 32, 28, 20, "+" + b ) );

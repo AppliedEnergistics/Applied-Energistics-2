@@ -79,7 +79,7 @@ public class JEIPlugin extends BlankModPlugin
 		IMaterials materials = definitions.materials();
 
 		final String message;
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.CertusQuartzWorldGen ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.CertusQuartzWorldGen ) )
 		{
 			message = GuiText.ChargedQuartz.getLocal() + "\n\n" + GuiText.ChargedQuartzFind.getLocal();
 		}
@@ -89,24 +89,24 @@ public class JEIPlugin extends BlankModPlugin
 		}
 		addDescription( registry, materials.certusQuartzCrystalCharged(), message );
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.MeteoriteWorldGen ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.MeteoriteWorldGen ) )
 		{
 			addDescription( registry, materials.logicProcessorPress(), GuiText.inWorldCraftingPresses.getLocal() );
 			addDescription( registry, materials.calcProcessorPress(), GuiText.inWorldCraftingPresses.getLocal() );
 			addDescription( registry, materials.engProcessorPress(), GuiText.inWorldCraftingPresses.getLocal() );
 		}
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.InWorldFluix ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.InWorldFluix ) )
 		{
 			addDescription( registry, materials.fluixCrystal(), GuiText.inWorldFluix.getLocal() );
 		}
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.InWorldSingularity ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.InWorldSingularity ) )
 		{
 			addDescription( registry, materials.qESingularity(), GuiText.inWorldSingularity.getLocal() );
 		}
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.InWorldPurification ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.InWorldPurification ) )
 		{
 			addDescription( registry, materials.purifiedCertusQuartzCrystal(), GuiText.inWorldPurificationCertus.getLocal() );
 			addDescription( registry, materials.purifiedNetherQuartzCrystal(), GuiText.inWorldPurificationNether.getLocal() );

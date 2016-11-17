@@ -76,10 +76,10 @@ public class GuiCraftAmount extends AEBaseGui
 	{
 		super.initGui();
 
-		final int a = AEConfig.instance.craftItemsByStackAmounts( 0 );
-		final int b = AEConfig.instance.craftItemsByStackAmounts( 1 );
-		final int c = AEConfig.instance.craftItemsByStackAmounts( 2 );
-		final int d = AEConfig.instance.craftItemsByStackAmounts( 3 );
+		final int a = AEConfig.instance().craftItemsByStackAmounts( 0 );
+		final int b = AEConfig.instance().craftItemsByStackAmounts( 1 );
+		final int c = AEConfig.instance().craftItemsByStackAmounts( 2 );
+		final int d = AEConfig.instance().craftItemsByStackAmounts( 3 );
 
 		this.buttonList.add( this.plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 26, 22, 20, "+" + a ) );
 		this.buttonList.add( this.plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 26, 28, 20, "+" + b ) );

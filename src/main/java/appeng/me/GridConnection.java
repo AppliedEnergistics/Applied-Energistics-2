@@ -62,7 +62,7 @@ public class GridConnection implements IGridConnection, IPathItem
 
 		if( Platform.securityCheck( a, b ) )
 		{
-			if( AEConfig.instance.isFeatureEnabled( AEFeature.LogSecurityAudits ) )
+			if( AEConfig.instance().isFeatureEnabled( AEFeature.LogSecurityAudits ) )
 			{
 				final DimensionalCoord aCoordinates = a.getGridBlock().getLocation();
 				final DimensionalCoord bCoordinates = b.getGridBlock().getLocation();

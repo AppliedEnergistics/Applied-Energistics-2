@@ -52,7 +52,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 
 	public ToolWirelessTerminal()
 	{
-		super( AEConfig.instance.wirelessTerminalBattery );
+		super( AEConfig.instance().getWirelessTerminalBattery() );
 	}
 
 	@Override

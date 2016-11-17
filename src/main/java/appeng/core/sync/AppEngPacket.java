@@ -73,7 +73,7 @@ public abstract class AppEngPacket implements Packet
 
 		final FMLProxyPacket pp = new FMLProxyPacket( this.p, NetworkHandler.instance.getChannel() );
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.PacketLogging ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.PacketLogging ) )
 		{
 			AELog.info( this.getClass().getName() + " : " + pp.payload().readableBytes() );
 		}

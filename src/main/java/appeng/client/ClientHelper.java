@@ -149,7 +149,7 @@ public class ClientHelper extends ServerHelper
 	@Override
 	public void spawnEffect( final EffectType effect, final World worldObj, final double posX, final double posY, final double posZ, final Object o )
 	{
-		if( AEConfig.instance.enableEffects )
+		if( AEConfig.instance().isEnableEffects() )
 		{
 			switch( effect )
 			{

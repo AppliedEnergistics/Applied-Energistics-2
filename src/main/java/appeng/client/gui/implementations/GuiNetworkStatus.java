@@ -77,8 +77,8 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 		if( btn == this.units )
 		{
-			AEConfig.instance.nextPowerUnit( backwards );
-			this.units.set( AEConfig.instance.selectedPowerUnit() );
+			AEConfig.instance().nextPowerUnit( backwards );
+			this.units.set( AEConfig.instance().selectedPowerUnit() );
 		}
 	}
 
@@ -87,7 +87,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	{
 		super.initGui();
 
-		this.units = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.POWER_UNITS, AEConfig.instance.selectedPowerUnit() );
+		this.units = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.POWER_UNITS, AEConfig.instance().selectedPowerUnit() );
 		this.buttonList.add( this.units );
 	}
 

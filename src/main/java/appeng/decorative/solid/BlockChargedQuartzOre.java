@@ -64,7 +64,7 @@ public final class BlockChargedQuartzOre extends BlockQuartzOre
 	@SideOnly( Side.CLIENT )
 	public void randomDisplayTick( final IBlockState state, final World w, final BlockPos pos, final Random r )
 	{
-		if( !AEConfig.instance.enableEffects )
+		if( !AEConfig.instance().isEnableEffects() )
 		{
 			return;
 		}

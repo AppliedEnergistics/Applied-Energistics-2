@@ -248,7 +248,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 					scheduled = true;
 				}
 
-				if( AEConfig.instance.useColoredCraftingStatus && ( active || scheduled ) )
+				if( AEConfig.instance().isUseColoredCraftingStatus() && ( active || scheduled ) )
 				{
 					final int bgColor = ( active ? AEColor.GREEN.blackVariant : AEColor.YELLOW.blackVariant ) | BACKGROUND_ALPHA;
 					final int startX = ( x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET ) * 2;

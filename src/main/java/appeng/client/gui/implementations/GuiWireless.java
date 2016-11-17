@@ -56,8 +56,8 @@ public class GuiWireless extends AEBaseGui
 
 		if( btn == this.units )
 		{
-			AEConfig.instance.nextPowerUnit( backwards );
-			this.units.set( AEConfig.instance.selectedPowerUnit() );
+			AEConfig.instance().nextPowerUnit( backwards );
+			this.units.set( AEConfig.instance().selectedPowerUnit() );
 		}
 	}
 
@@ -66,7 +66,7 @@ public class GuiWireless extends AEBaseGui
 	{
 		super.initGui();
 
-		this.units = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.POWER_UNITS, AEConfig.instance.selectedPowerUnit() );
+		this.units = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.POWER_UNITS, AEConfig.instance().selectedPowerUnit() );
 		this.buttonList.add( this.units );
 	}
 

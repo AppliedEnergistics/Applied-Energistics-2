@@ -84,7 +84,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 
 	public ToolMatterCannon()
 	{
-		super( AEConfig.instance.matterCannonBattery );
+		super( AEConfig.instance().getMatterCannonBattery() );
 	}
 
 	@Override
@@ -401,7 +401,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 				}
 				else if( pos.typeOfHit == RayTraceResult.Type.BLOCK )
 				{
-					if( !AEConfig.instance.isFeatureEnabled( AEFeature.MassCannonBlockDamage ) )
+					if( !AEConfig.instance().isFeatureEnabled( AEFeature.MassCannonBlockDamage ) )
 					{
 						penetration = 0;
 					}

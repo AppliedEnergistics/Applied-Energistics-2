@@ -54,7 +54,7 @@ public class ContainerWirelessTerm extends ContainerMEPortableCell
 		}
 		else
 		{
-			this.setPowerMultiplier( AEConfig.instance.wireless_getDrainRate( this.wirelessTerminalGUIObject.getRange() ) );
+			this.setPowerMultiplier( AEConfig.instance().wireless_getDrainRate( this.wirelessTerminalGUIObject.getRange() ) );
 		}
 	}
 }

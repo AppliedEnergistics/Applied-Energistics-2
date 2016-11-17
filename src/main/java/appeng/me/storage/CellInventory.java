@@ -470,7 +470,7 @@ public class CellInventory implements ICellInventory
 		}
 		catch( Throwable ex )
 		{
-			if( AEConfig.instance.removeCrashingItemsOnLoad )
+			if( AEConfig.instance().isRemoveCrashingItemsOnLoad() )
 			{
 				AELog.warn( ex, "Removing item " + compoundTag + " from storage cell because loading the ItemStack crashed." );
 				return;
@@ -488,7 +488,7 @@ public class CellInventory implements ICellInventory
 			}
 			catch( Throwable ex )
 			{
-				if( AEConfig.instance.removeCrashingItemsOnLoad )
+				if( AEConfig.instance().isRemoveCrashingItemsOnLoad() )
 				{
 					AELog.warn( ex, "Removing item " + t + " from storage cell because processing the loaded item crashed." );
 					return;

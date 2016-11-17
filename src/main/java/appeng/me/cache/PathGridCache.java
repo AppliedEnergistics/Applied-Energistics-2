@@ -99,7 +99,7 @@ public class PathGridCache implements IPathingGrid
 			this.updateNetwork = false;
 			this.setChannelsInUse( 0 );
 
-			if( !AEConfig.instance.isFeatureEnabled( AEFeature.Channels ) )
+			if( !AEConfig.instance().isFeatureEnabled( AEFeature.Channels ) )
 			{
 				final int used = this.calculateRequiredChannels();
 
@@ -339,7 +339,7 @@ public class PathGridCache implements IPathingGrid
 
 	private void achievementPost()
 	{
-		if( this.lastChannels != this.getChannelsInUse() && AEConfig.instance.isFeatureEnabled( AEFeature.Channels ) )
+		if( this.lastChannels != this.getChannelsInUse() && AEConfig.instance().isFeatureEnabled( AEFeature.Channels ) )
 		{
 			final Achievements currentBracket = this.getAchievementBracket( this.getChannelsInUse() );
 			final Achievements lastBracket = this.getAchievementBracket( this.lastChannels );

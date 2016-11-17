@@ -51,8 +51,8 @@ public final class QuartzWorldGen implements IWorldGenerator
 		final Block ore = oreDefinition.maybeBlock().orElse( null );
 		final Block charged = chargedDefinition.maybeBlock().orElse( null );
 
-		this.oreNormal = new WorldGenMinable( ore.getDefaultState(), AEConfig.instance.quartzOresPerCluster );
-		this.oreCharged = new WorldGenMinable( charged.getDefaultState(), AEConfig.instance.quartzOresPerCluster );
+		this.oreNormal = new WorldGenMinable( ore.getDefaultState(), AEConfig.instance().getQuartzOresPerCluster() );
+		this.oreCharged = new WorldGenMinable( charged.getDefaultState(), AEConfig.instance().getQuartzOresPerCluster() );
 	}
 
 	@Override
@@ -72,12 +72,12 @@ public final class QuartzWorldGen implements IWorldGenerator
 			return;
 		}
 
-		final double oreDepthMultiplier = AEConfig.instance.quartzOresClusterAmount * seaLevel / 64;
+		final double oreDepthMultiplier = AEConfig.instance().getQuartzOresClusterAmount() * seaLevel / 64;
 		final int scale = (int) Math.round( r.nextGaussian() * Math.sqrt( oreDepthMultiplier ) + oreDepthMultiplier );
 
 		for( int x = 0; x < ( r.nextBoolean() ? scale * 2 : scale ) / 2; ++x )
 		{
-			final boolean isCharged = r.nextFloat() > AEConfig.instance.spawnChargedChance;
+			final boolean isCharged = r.nextFloat() > AEConfig.instance().getSpawnChargedChance();
 			final WorldGenMinable whichOre = isCharged ? this.oreCharged : this.oreNormal;
 
 			if( WorldGenRegistry.INSTANCE.isWorldGenEnabled( isCharged ? WorldGenType.CHARGED_CERTUS_QUARTZ : WorldGenType.CERTUS_QUARTZ, w ) )

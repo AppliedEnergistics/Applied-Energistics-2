@@ -141,7 +141,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 			}
 		}
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.TinyTNTBlockDamage ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.TinyTNTBlockDamage ) )
 		{
 			this.posY -= 0.25;
 			final Explosion ex = new Explosion( this.worldObj, this, this.posX, this.posY, this.posZ, 0.2f, false, false );

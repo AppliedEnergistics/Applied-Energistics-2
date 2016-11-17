@@ -36,7 +36,7 @@ public class ToolChargedStaff extends AEBasePoweredItem
 
 	public ToolChargedStaff()
 	{
-		super( AEConfig.instance.chargedStaffBattery );
+		super( AEConfig.instance().getChargedStaffBattery() );
 	}
 
 	@Override

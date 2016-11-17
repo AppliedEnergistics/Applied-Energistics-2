@@ -186,7 +186,7 @@ public class Platform
 	{
 		double p = ( (double) n ) / 100;
 
-		final PowerUnits displayUnits = AEConfig.instance.selectedPowerUnit();
+		final PowerUnits displayUnits = AEConfig.instance().selectedPowerUnit();
 		p = PowerUnits.AE.convertTo( displayUnits, p );
 
 		final String[] preFixes = { "k", "M", "G", "T", "P", "T", "P", "E", "Z", "Y" };
@@ -1489,7 +1489,7 @@ public class Platform
 		final boolean a_isSecure = isPowered( a.getGrid() ) && a.getLastSecurityKey() != -1;
 		final boolean b_isSecure = isPowered( b.getGrid() ) && b.getLastSecurityKey() != -1;
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.LogSecurityAudits ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.LogSecurityAudits ) )
 		{
 			AELog.info( "Audit: " + a_isSecure + " : " + b_isSecure + " @ " + a.getLastSecurityKey() + " vs " + b.getLastSecurityKey() + " & " + a.getPlayerID() + " vs " + b.getPlayerID() );
 		}

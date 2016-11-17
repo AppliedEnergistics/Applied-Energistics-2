@@ -276,7 +276,7 @@ public enum PartType
 		this.extraName = en;
 
 		// The part is enabled if all features + integrations it needs are enabled
-		this.enabled = features.stream().allMatch( AEConfig.instance::isFeatureEnabled )
+		this.enabled = features.stream().allMatch( AEConfig.instance()::isFeatureEnabled )
 				&& integrations.stream().allMatch( IntegrationRegistry.INSTANCE::isEnabled );
 
 		if( enabled )

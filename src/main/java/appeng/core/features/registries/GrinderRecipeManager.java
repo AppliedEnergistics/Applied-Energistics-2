@@ -204,7 +204,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 			{
 				final ItemStack extra = is.copy();
 				extra.stackSize = ratio - 1;
-				this.addRecipe( item, is, extra, (float) ( AEConfig.instance.oreDoublePercentage / 100.0 ), 8 );
+				this.addRecipe( item, is, extra, (float) ( AEConfig.instance().getOreDoublePercentage() / 100.0 ), 8 );
 			}
 			else
 			{
@@ -256,7 +256,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 				{
 					final ItemStack extra = is.copy();
 					extra.stackSize = ratio - 1;
-					this.addRecipe( d.getKey(), is, extra, (float) ( AEConfig.instance.oreDoublePercentage / 100.0 ), 8 );
+					this.addRecipe( d.getKey(), is, extra, (float) ( AEConfig.instance().getOreDoublePercentage() / 100.0 ), 8 );
 				}
 				else
 				{
@@ -279,7 +279,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 	{
 		if( name.startsWith( "ore" ) || name.startsWith( "crystal" ) || name.startsWith( "gem" ) || name.startsWith( "ingot" ) || name.startsWith( "dust" ) )
 		{
-			for( final String ore : AEConfig.instance.grinderOres )
+			for( final String ore : AEConfig.instance().getGrinderOres() )
 			{
 				if( name.equals( "ore" + ore ) )
 				{

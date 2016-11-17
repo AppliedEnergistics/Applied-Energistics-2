@@ -141,7 +141,7 @@ public final class AppEng
 		final File recipeFile = new File( this.configDirectory, "CustomRecipes.cfg" );
 		final Configuration recipeConfiguration = new Configuration( recipeFile );
 
-		AEConfig.instance = new AEConfig( configFile );
+		AEConfig.init( configFile );
 		FacadeConfig.instance = new FacadeConfig( facadeFile );
 		final VersionCheckerConfig versionCheckerConfig = new VersionCheckerConfig( versionFile );
 		this.customRecipeConfig = new CustomRecipeForgeConfiguration( recipeConfiguration );
@@ -150,7 +150,7 @@ public final class AppEng
 		AELog.info( "Pre Initialization ( started )" );
 
 		CreativeTab.init();
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.Facades ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.Facades ) )
 		{
 			CreativeTabFacade.init();
 		}
@@ -226,7 +226,7 @@ public final class AppEng
 		FMLCommonHandler.instance().registerCrashCallable( new IntegrationCrashEnhancement() );
 
 		CommonHelper.proxy.postInit();
-		AEConfig.instance.save();
+		AEConfig.instance().save();
 
 		NetworkRegistry.INSTANCE.registerGuiHandler( this, GuiBridge.GUI_Handler );
 		NetworkHandler.instance = new NetworkHandler( "AE2" );
