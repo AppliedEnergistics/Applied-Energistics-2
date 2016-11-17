@@ -22,7 +22,6 @@ package appeng.hooks;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import appeng.core.AEConfig;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketCompassRequest;
 
