@@ -552,11 +552,6 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	}
 
 	// Getters
-	public IConfigManager settings()
-	{
-		return settings;
-	}
-
 	public boolean isRemoveCrashingItemsOnLoad()
 	{
 		return removeCrashingItemsOnLoad;

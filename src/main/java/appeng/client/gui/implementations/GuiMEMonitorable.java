@@ -183,11 +183,11 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 				if( btn == this.terminalStyleBox )
 				{
-					AEConfig.instance().settings().putSetting( iBtn.getSetting(), next );
+					AEConfig.instance().getConfigManager().putSetting( iBtn.getSetting(), next );
 				}
 				else if( btn == this.searchBoxSettings )
 				{
-					AEConfig.instance().settings().putSetting( iBtn.getSetting(), next );
+					AEConfig.instance().getConfigManager().putSetting( iBtn.getSetting(), next );
 				}
 				else
 				{
@@ -284,12 +284,12 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		this.buttonList.add( this.SortDirBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, this.configSrc.getSetting( Settings.SORT_DIRECTION ) ) );
 		offset += 20;
 
-		this.buttonList.add( this.searchBoxSettings = new GuiImgButton( this.guiLeft - 18, offset, Settings.SEARCH_MODE, AEConfig.instance().settings().getSetting( Settings.SEARCH_MODE ) ) );
+		this.buttonList.add( this.searchBoxSettings = new GuiImgButton( this.guiLeft - 18, offset, Settings.SEARCH_MODE, AEConfig.instance().getConfigManager().getSetting( Settings.SEARCH_MODE ) ) );
 		offset += 20;
 
 		if( !( this instanceof GuiMEPortableCell ) || this instanceof GuiWirelessTerm )
 		{
-			this.buttonList.add( this.terminalStyleBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, AEConfig.instance().settings().getSetting( Settings.TERMINAL_STYLE ) ) );
+			this.buttonList.add( this.terminalStyleBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, AEConfig.instance().getConfigManager().getSetting( Settings.TERMINAL_STYLE ) ) );
 		}
 
 		this.searchField = new MEGuiTextField( this.fontRendererObj, this.guiLeft + Math.max( 80, this.offsetX ), this.guiTop + 4, 90, 12 );
@@ -305,7 +305,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		}
 
 		// Enum setting = AEConfig.instance().getSetting( "Terminal", SearchBoxMode.class, SearchBoxMode.AUTOSEARCH );
-		final Enum setting = AEConfig.instance().settings().getSetting( Settings.SEARCH_MODE );
+		final Enum setting = AEConfig.instance().getConfigManager().getSetting( Settings.SEARCH_MODE );
 		this.searchField.setFocused( SearchBoxMode.AUTOSEARCH == setting || SearchBoxMode.JEI_AUTOSEARCH == setting );
 
 		if( this.isSubGui() )
@@ -354,7 +354,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	@Override
 	protected void mouseClicked( final int xCoord, final int yCoord, final int btn ) throws IOException
 	{
-		final Enum searchMode = AEConfig.instance().settings().getSetting( Settings.SEARCH_MODE );
+		final Enum searchMode = AEConfig.instance().getConfigManager().getSetting( Settings.SEARCH_MODE );
 
 		if( searchMode != SearchBoxMode.AUTOSEARCH && searchMode != SearchBoxMode.JEI_AUTOSEARCH )
 		{
