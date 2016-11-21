@@ -28,7 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 
 import appeng.api.AEApi;
-import appeng.api.features.IGrinderEntry;
+import appeng.api.features.IGrinderRecipe;
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.tile.AEBaseInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -108,7 +108,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 					continue;
 				}
 
-				final IGrinderEntry r = AEApi.instance().registries().grinder().getRecipeForInput( item );
+				final IGrinderRecipe r = AEApi.instance().registries().grinder().getRecipeForInput( item );
 				if( r != null )
 				{
 					if( item.stackSize >= r.getInput().stackSize )
@@ -144,10 +144,10 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 		this.points++;
 
 		final ItemStack processing = this.getStackInSlot( 6 );
-		final IGrinderEntry r = AEApi.instance().registries().grinder().getRecipeForInput( processing );
+		final IGrinderRecipe r = AEApi.instance().registries().grinder().getRecipeForInput( processing );
 		if( r != null )
 		{
-			if( r.getEnergyCost() > this.points )
+			if( r.getRequiredTurns() > this.points )
 			{
 				return;
 			}
@@ -157,17 +157,25 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 
 			this.addItem( sia, r.getOutput() );
 
-			float chance = ( Platform.getRandomInt() % 2000 ) / 2000.0f;
-			if( chance <= r.getOptionalChance() )
+			r.getOptionalOutput().ifPresent( itemStack ->
 			{
-				this.addItem( sia, r.getOptionalOutput() );
-			}
+				final float chance = ( Platform.getRandomInt() % 2000 ) / 2000.0f;
 
-			chance = ( Platform.getRandomInt() % 2000 ) / 2000.0f;
-			if( chance <= r.getSecondOptionalChance() )
+				if( chance <= r.getOptionalChance() )
+				{
+					this.addItem( sia, itemStack );
+				}
+			} );
+
+			r.getSecondOptionalOutput().ifPresent( itemStack ->
 			{
-				this.addItem( sia, r.getSecondOptionalOutput() );
-			}
+				final float chance = ( Platform.getRandomInt() % 2000 ) / 2000.0f;
+
+				if( chance <= r.getSecondOptionalChance() )
+				{
+					this.addItem( sia, itemStack );
+				}
+			} );
 
 			this.setInventorySlotContents( 6, null );
 		}

@@ -31,15 +31,15 @@ import net.minecraft.item.ItemStack;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.BlankRecipeWrapper;
 
-import appeng.api.features.IGrinderEntry;
+import appeng.api.features.IGrinderRecipe;
 
 
 class GrinderRecipeWrapper extends BlankRecipeWrapper
 {
 
-	private final IGrinderEntry recipe;
+	private final IGrinderRecipe recipe;
 
-	GrinderRecipeWrapper( IGrinderEntry recipe )
+	GrinderRecipeWrapper( IGrinderRecipe recipe )
 	{
 		this.recipe = recipe;
 	}
@@ -50,14 +50,8 @@ class GrinderRecipeWrapper extends BlankRecipeWrapper
 		ingredients.setInput( ItemStack.class, recipe.getInput() );
 		List<ItemStack> outputs = new ArrayList<>( 3 );
 		outputs.add( recipe.getOutput() );
-		if( recipe.getOptionalOutput() != null )
-		{
-			outputs.add( recipe.getOptionalOutput() );
-		}
-		if( recipe.getSecondOptionalOutput() != null )
-		{
-			outputs.add( recipe.getSecondOptionalOutput() );
-		}
+		recipe.getOptionalOutput().ifPresent( itemStack -> outputs.add( itemStack ) );
+		recipe.getSecondOptionalOutput().ifPresent( itemStack -> outputs.add( itemStack ) );
 		ingredients.setOutputs( ItemStack.class, outputs );
 	}
 

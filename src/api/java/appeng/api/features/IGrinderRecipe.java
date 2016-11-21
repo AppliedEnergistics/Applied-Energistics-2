@@ -24,13 +24,17 @@
 package appeng.api.features;
 
 
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+
 import net.minecraft.item.ItemStack;
 
 
 /**
  * Registration Records for {@link IGrinderRegistry}
  */
-public interface IGrinderEntry
+public interface IGrinderRecipe
 {
 
 	/**
@@ -38,65 +42,39 @@ public interface IGrinderEntry
 	 *
 	 * @return input that the grinder will accept.
 	 */
+	@Nonnull
 	ItemStack getInput();
 
 	/**
-	 * lets you change the grinder recipe by changing its input.
-	 *
-	 * @param input input item
-	 */
-	void setInput( ItemStack input );
-
-	/**
 	 * gets the current output
 	 *
 	 * @return output that the grinder will produce
 	 */
+	@Nonnull
 	ItemStack getOutput();
 
 	/**
-	 * allows you to change the output.
+	 * gets the current output
 	 *
-	 * @param output output item
+	 * @return output that the grinder will produce
 	 */
-	void setOutput( ItemStack output );
+	@Nonnull
+	Optional<ItemStack> getOptionalOutput();
 
 	/**
 	 * gets the current output
 	 *
 	 * @return output that the grinder will produce
 	 */
-	ItemStack getOptionalOutput();
-
-	/**
-	 * gets the current output
-	 *
-	 * @return output that the grinder will produce
-	 */
-	ItemStack getSecondOptionalOutput();
-
-	/**
-	 * stack, and 0.0-1.0 chance that it will be generated.
-	 *
-	 * @param output output item
-	 * @param chance generation chance
-	 */
-	void setOptionalOutput( ItemStack output, float chance );
+	Optional<ItemStack> getSecondOptionalOutput();
 
 	/**
 	 * 0.0 - 1.0 the chance that the optional output will be generated.
 	 *
 	 * @return chance of optional output
 	 */
+	@Nonnull
 	float getOptionalChance();
-
-	/**
-	 * stack, and 0.0-1.0 chance that it will be generated.
-	 *
-	 * @param output second optional output item
-	 * @param chance second optional output chance
-	 */
-	void setSecondOptionalOutput( ItemStack output, float chance );
 
 	/**
 	 * 0.0 - 1.0 the chance that the optional output will be generated.
@@ -106,16 +84,10 @@ public interface IGrinderEntry
 	float getSecondOptionalChance();
 
 	/**
-	 * Energy cost, in turns.
+	 * Amount of turns required to process the item.
 	 *
 	 * @return number of turns it takes to produce the output from the input.
 	 */
-	int getEnergyCost();
+	int getRequiredTurns();
 
-	/**
-	 * Allows you to adjust the number of turns
-	 *
-	 * @param c number of turns to produce output.
-	 */
-	void setEnergyCost( int c );
 }

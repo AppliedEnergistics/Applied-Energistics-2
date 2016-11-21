@@ -19,17 +19,20 @@
 package appeng.core.features.registries;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.features.IGrinderEntry;
+import appeng.api.features.IGrinderRecipe;
 import appeng.api.features.IGrinderRegistry;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -41,17 +44,23 @@ import appeng.util.Platform;
 
 public final class GrinderRecipeManager implements IGrinderRegistry, IOreListener
 {
-	private final List<IGrinderEntry> recipes;
+	private final Map<CacheKey, IGrinderRecipe> recipes;
 	private final Map<ItemStack, String> ores;
 	private final Map<ItemStack, String> ingots;
 	private final Map<String, ItemStack> dusts;
+	private final Map<String, Integer> dustToOreRatio;
 
 	public GrinderRecipeManager()
 	{
-		this.recipes = new ArrayList<IGrinderEntry>();
-		this.ores = new HashMap<ItemStack, String>();
-		this.ingots = new HashMap<ItemStack, String>();
-		this.dusts = new HashMap<String, ItemStack>();
+		this.recipes = Maps.newHashMap();
+		this.ores = Maps.newHashMap();
+		this.ingots = Maps.newHashMap();
+		this.dusts = Maps.newHashMap();
+		this.dustToOreRatio = Maps.newHashMap();
+
+		this.addDustRatio( "Obsidian", 1 );
+		this.addDustRatio( "Charcoal", 1 );
+		this.addDustRatio( "Coal", 1 );
 
 		this.addOre( "Coal", new ItemStack( Items.COAL ) );
 		this.addOre( "Charcoal", new ItemStack( Items.COAL, 1, 1 ) );
@@ -76,62 +85,142 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 	}
 
 	@Override
-	public List<IGrinderEntry> getRecipes()
+	public Collection<IGrinderRecipe> getRecipes()
 	{
-		this.log( "API - getRecipes" );
-		return this.recipes;
+		return Collections.unmodifiableCollection( this.recipes.values() );
 	}
 
 	@Override
 	public void addRecipe( final ItemStack in, final ItemStack out, final int cost )
 	{
-		if( in == null || out == null )
-		{
-			this.log( "Invalid Grinder Recipe Specified." );
-			return;
-		}
+		Preconditions.checkNotNull( in, "Null is not accepted as input itemstack." );
+		Preconditions.checkNotNull( out, "Null is not accepted as output itemstack." );
+		Preconditions.checkArgument( cost > 0, "Turns must be > 0" );
 
-		this.log( "Allow Grinding of " + Platform.getItemDisplayName( in ) + " to " + Platform.getItemDisplayName( out ) + " for " + cost );
+		this.log( "Allow Grinding of '%1$s' to '%2$s' for %3$d turn", Platform.getItemDisplayName( in ), Platform.getItemDisplayName( out ), cost );
+
 		this.injectRecipe( new AppEngGrinderRecipe( this.copy( in ), this.copy( out ), cost ) );
 	}
 
 	@Override
 	public void addRecipe( final ItemStack in, final ItemStack out, final ItemStack optional, final float chance, final int cost )
 	{
-		if( in == null || ( optional == null && out == null ) )
-		{
-			this.log( "Invalid Grinder Recipe Specified." );
-			return;
-		}
+		Preconditions.checkNotNull( in, "Null is not accepted as input itemstack." );
+		Preconditions.checkNotNull( out, "Null is not accepted as output itemstack." );
+		Preconditions.checkNotNull( optional, "Null is not accepted as optional itemstack." );
+		Preconditions.checkArgument( chance >= 0.0 && chance <= 1.0, "chance must be within 0.0 - 1.0." );
+		Preconditions.checkArgument( cost > 0, "Turns must be > 0" );
 
-		this.log( "Allow Grinding of " + Platform.getItemDisplayName( in ) + " to " + Platform.getItemDisplayName( out ) + " with optional " + Platform.getItemDisplayName( optional ) + " for " + cost );
+		this.log( "Allow Grinding of '%1$s' to '%2$s' with optional '%3$s' @ %4$.2f for %5$d", Platform.getItemDisplayName( in ),
+				Platform.getItemDisplayName( out ), Platform.getItemDisplayName( optional ), chance, cost );
+
 		this.injectRecipe( new AppEngGrinderRecipe( this.copy( in ), this.copy( out ), this.copy( optional ), chance, cost ) );
 	}
 
 	@Override
-	public void addRecipe( final ItemStack in, final ItemStack out, final ItemStack optional, final float chance, final ItemStack optional2, final float chance2, final int cost )
+	public void addRecipe( final ItemStack in, final ItemStack out, final ItemStack optional1, final float chance1, final ItemStack optional2, final float chance2, final int cost )
 	{
-		if( in == null || ( optional == null && out == null && optional2 == null ) )
+		Preconditions.checkNotNull( in, "Null is not accepted as input itemstack." );
+		Preconditions.checkNotNull( out, "Null is not accepted as output itemstack." );
+		Preconditions.checkNotNull( optional1, "Null is not accepted as optional itemstack." );
+		Preconditions.checkArgument( chance1 >= 0.0 && chance1 <= 1.0, "chance must be within 0.0 - 1.0." );
+		Preconditions.checkNotNull( optional2, "Null is not accepted as optional2 itemstack." );
+		Preconditions.checkArgument( chance2 >= 0.0 && chance2 <= 1.0, "chance2 must be within 0.0 - 1.0." );
+		Preconditions.checkArgument( cost > 0, "Turns must be > 0" );
+
+		this.log( "Allow Grinding of '%1$s' to '%2$s' with optional '%3$s' @ %4$.2f and optional2 '%5$s' @ %6$.2f for %7$d", Platform.getItemDisplayName( in ),
+				Platform.getItemDisplayName( out ), Platform.getItemDisplayName( optional1 ), chance1, Platform.getItemDisplayName( optional2 ), chance2,
+				cost );
+
+		this.injectRecipe(
+				new AppEngGrinderRecipe( this.copy( in ), this.copy( out ), this.copy( optional1 ), this.copy( optional2 ), chance1, chance2, cost ) );
+	}
+
+	@Override
+	public boolean removeRecipe( IGrinderRecipe recipe )
+	{
+		Preconditions.checkNotNull( recipe, "Cannot remove null as recipe." );
+
+		final CacheKey key = new CacheKey( recipe.getInput() );
+		final IGrinderRecipe removedRecipe = this.recipes.remove( key );
+
+		this.log( "Removed Grinding of '%1%s'", Platform.getItemDisplayName( recipe.getInput() ) );
+
+		return removedRecipe != null;
+	}
+
+	@Override
+	public IGrinderRecipe getRecipeForInput( final ItemStack input )
+	{
+		this.log( "Looking up recipe for '%1$s'", Platform.getItemDisplayName( input ) );
+
+		if( input == null )
 		{
-			this.log( "Invalid Grinder Recipe Specified." );
-			return;
+			return null;
 		}
 
-		this.log( "Allow Grinding of " + Platform.getItemDisplayName( in ) + " to " + Platform.getItemDisplayName( out ) + " with optional " + Platform.getItemDisplayName( optional ) + " for " + cost );
-		this.injectRecipe( new AppEngGrinderRecipe( this.copy( in ), this.copy( out ), this.copy( optional ), this.copy( optional2 ), chance, chance2, cost ) );
+		final IGrinderRecipe recipe = this.recipes.get( new CacheKey( input ) );
+
+		this.log( "Recipe for '%1$s' found '%2$s'", input.getUnlocalizedName(), Platform.getItemDisplayName( recipe.getOutput() ) );
+
+		return recipe;
+	}
+
+	@Override
+	public void addDustRatio( String oredictName, int ratio )
+	{
+		Preconditions.checkNotNull( oredictName );
+		Preconditions.checkArgument( ratio > 0 );
+
+		this.log( "Added ratio for '%1$s' of %2$d", oredictName, ratio );
+
+		this.dustToOreRatio.put( oredictName, ratio );
+	}
+
+	@Override
+	public boolean removeDustRatio( String oredictName )
+	{
+		Preconditions.checkNotNull( oredictName );
+
+		this.log( "Removed ratio for '%1$s'", oredictName );
+
+		return this.dustToOreRatio.remove( oredictName ) != null;
+	}
+
+	@Override
+	public void oreRegistered( final String name, final ItemStack item )
+	{
+		if( name.startsWith( "ore" ) || name.startsWith( "crystal" ) || name.startsWith( "gem" ) || name.startsWith( "ingot" ) || name.startsWith( "dust" ) )
+		{
+			for( final String ore : AEConfig.instance().getGrinderOres() )
+			{
+				if( name.equals( "ore" + ore ) )
+				{
+					this.addOre( ore, item );
+				}
+				else if( name.equals( "crystal" + ore ) || name.equals( "ingot" + ore ) || name.equals( "gem" + ore ) )
+				{
+					this.addIngot( ore, item );
+				}
+				else if( name.equals( "dust" + ore ) )
+				{
+					this.addDust( ore, item );
+				}
+			}
+		}
 	}
 
 	private void injectRecipe( final AppEngGrinderRecipe appEngGrinderRecipe )
 	{
-		for( final IGrinderEntry gr : this.recipes )
+		final CacheKey cacheKey = new CacheKey( appEngGrinderRecipe.getInput() );
+
+		if( this.recipes.containsKey( cacheKey ) )
 		{
-			if( Platform.itemComparisons().isSameItem( gr.getInput(), appEngGrinderRecipe.getInput() ) )
-			{
-				return;
-			}
+			this.log( "Tried to add duplicate recipe for '%1$s'", Platform.getItemDisplayName( appEngGrinderRecipe.getInput() ) );
+			return;
 		}
 
-		this.recipes.add( appEngGrinderRecipe );
+		this.recipes.put( cacheKey, appEngGrinderRecipe );
 	}
 
 	private ItemStack copy( final ItemStack is )
@@ -143,47 +232,9 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		return null;
 	}
 
-	@Override
-	public IGrinderEntry getRecipeForInput( final ItemStack input )
-	{
-		this.log( "Looking up recipe for " + Platform.getItemDisplayName( input ) );
-		if( input != null )
-		{
-			for( final IGrinderEntry r : this.recipes )
-			{
-				if( Platform.itemComparisons().isEqualItem( input, r.getInput() ) )
-				{
-					this.log( "Recipe for " + input.getUnlocalizedName() + " found " + Platform.getItemDisplayName( r.getOutput() ) );
-					return r;
-				}
-			}
-
-			this.log( "Could not find recipe for " + Platform.getItemDisplayName( input ) );
-		}
-
-		return null;
-	}
-
-	private void log( final String o )
-	{
-		AELog.grinder( o );
-	}
-
 	private int getDustToOreRatio( final String name )
 	{
-		if( name.equals( "Obsidian" ) )
-		{
-			return 1;
-		}
-		if( name.equals( "Charcoal" ) )
-		{
-			return 1;
-		}
-		if( name.equals( "Coal" ) )
-		{
-			return 1;
-		}
-		return 2;
+		return this.dustToOreRatio.getOrDefault( name, 2 );
 	}
 
 	private void addOre( final String name, final ItemStack item )
@@ -192,7 +243,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		{
 			return;
 		}
-		this.log( "Adding Ore - " + name + " : " + Platform.getItemDisplayName( item ) );
+		this.log( "Adding Ore: '%1$s'", Platform.getItemDisplayName( item ) );
 
 		this.ores.put( item, name );
 
@@ -219,7 +270,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		{
 			return;
 		}
-		this.log( "Adding Ingot - " + name + " : " + Platform.getItemDisplayName( item ) );
+		this.log( "Adding Ingot: '%1$s'", Platform.getItemDisplayName( item ) );
 
 		this.ingots.put( item, name );
 
@@ -237,11 +288,11 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		}
 		if( this.dusts.containsKey( name ) )
 		{
-			this.log( "Rejecting Dust - " + name + " : " + Platform.getItemDisplayName( item ) );
+			this.log( "Rejecting Dust: '%1$s'", Platform.getItemDisplayName( item ) );
 			return;
 		}
 
-		this.log( "Adding Dust - " + name + " : " + Platform.getItemDisplayName( item ) );
+		this.log( "Adding Dust: '%1$s'", Platform.getItemDisplayName( item ) );
 
 		this.dusts.put( name, item );
 
@@ -274,26 +325,66 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		}
 	}
 
-	@Override
-	public void oreRegistered( final String name, final ItemStack item )
+	private void log( final String o, Object... params )
 	{
-		if( name.startsWith( "ore" ) || name.startsWith( "crystal" ) || name.startsWith( "gem" ) || name.startsWith( "ingot" ) || name.startsWith( "dust" ) )
+		AELog.grinder( o, params );
+	}
+
+	private static class CacheKey
+	{
+		private final Item item;
+		private final int damage;
+
+		public CacheKey( ItemStack input )
 		{
-			for( final String ore : AEConfig.instance().getGrinderOres() )
-			{
-				if( name.equals( "ore" + ore ) )
-				{
-					this.addOre( ore, item );
-				}
-				else if( name.equals( "crystal" + ore ) || name.equals( "ingot" + ore ) || name.equals( "gem" + ore ) )
-				{
-					this.addIngot( ore, item );
-				}
-				else if( name.equals( "dust" + ore ) )
-				{
-					this.addDust( ore, item );
-				}
-			}
+			Preconditions.checkNotNull( input );
+			Preconditions.checkNotNull( input.getItem() );
+
+			this.item = input.getItem();
+			this.damage = input.getItemDamage();
 		}
+
+		@Override
+		public int hashCode()
+		{
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + damage;
+			result = prime * result + ( ( item == null ) ? 0 : item.hashCode() );
+			return result;
+		}
+
+		@Override
+		public boolean equals( Object obj )
+		{
+			if( this == obj )
+			{
+				return true;
+			}
+			if( obj == null || getClass() != obj.getClass() )
+			{
+				return false;
+			}
+
+			CacheKey other = (CacheKey) obj;
+
+			if( damage != other.damage )
+			{
+				return false;
+			}
+
+			if( item == null )
+			{
+				if( other.item != null )
+					return false;
+			}
+			else if( item != other.item )
+			{
+				return false;
+			}
+
+			return true;
+		}
+
 	}
 }

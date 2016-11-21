@@ -290,11 +290,11 @@ public final class AELog
 	 *
 	 * @param message String to be logged
 	 */
-	public static void grinder( @Nonnull final String message )
+	public static void grinder( @Nonnull final String message, final Object... params )
 	{
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.GRINDER_LOGGING ) )
 		{
-			log( Level.DEBUG, "grinder: " + message );
+			log( Level.DEBUG, "grinder: " + message, params );
 		}
 	}
 
