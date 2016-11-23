@@ -88,9 +88,9 @@ public class GridStorageCache implements IStorageGrid
 		{
 			final ICellContainer cc = (ICellContainer) machine;
 
+			this.inactiveCellProviders.remove( cc );
 			this.getGrid().postEvent( new MENetworkCellArrayUpdate() );
 			this.removeCellProvider( cc, new CellChangeTracker() ).applyChanges();
-			this.inactiveCellProviders.remove( cc );
 		}
 
 		if( machine instanceof IStackWatcherHost )
