@@ -87,15 +87,18 @@ public class GridStorageCache implements IStorageGrid
 		if( machine instanceof ICellContainer )
 		{
 			final ICellContainer cc = (ICellContainer) machine;
+			final CellChangeTracker tracker = new CellChangeTracker();
 
-			this.inactiveCellProviders.remove( cc );
+			this.removeCellProvider( cc, tracker );
 			this.getGrid().postEvent( new MENetworkCellArrayUpdate() );
-			this.removeCellProvider( cc, new CellChangeTracker() ).applyChanges();
+
+			tracker.applyChanges();
 		}
 
 		if( machine instanceof IStackWatcherHost )
 		{
 			final IStackWatcher myWatcher = this.watchers.get( machine );
+
 			if( myWatcher != null )
 			{
 				myWatcher.clear();
@@ -112,11 +115,16 @@ public class GridStorageCache implements IStorageGrid
 			final ICellContainer cc = (ICellContainer) machine;
 			this.inactiveCellProviders.add( cc );
 
-			this.getGrid().postEvent( new MENetworkCellArrayUpdate() );
+			final CellChangeTracker tracker = new CellChangeTracker();
+
 			if( node.isActive() )
 			{
-				this.addCellProvider( cc, new CellChangeTracker() ).applyChanges();
+				this.addCellProvider( cc, tracker );
 			}
+
+			this.getGrid().postEvent( new MENetworkCellArrayUpdate() );
+
+			tracker.applyChanges();
 		}
 
 		if( machine instanceof IStackWatcherHost )
@@ -177,10 +185,10 @@ public class GridStorageCache implements IStorageGrid
 	{
 		if( this.activeCellProviders.contains( cc ) )
 		{
-			this.inactiveCellProviders.add( cc );
 			this.activeCellProviders.remove( cc );
 
 			BaseActionSource actionSrc = new BaseActionSource();
+
 			if( cc instanceof IActionHost )
 			{
 				actionSrc = new MachineSource( (IActionHost) cc );
