@@ -115,16 +115,15 @@ public class GridStorageCache implements IStorageGrid
 			final ICellContainer cc = (ICellContainer) machine;
 			this.inactiveCellProviders.add( cc );
 
-			final CellChangeTracker tracker = new CellChangeTracker();
+			this.getGrid().postEvent( new MENetworkCellArrayUpdate() );
 
 			if( node.isActive() )
 			{
+				final CellChangeTracker tracker = new CellChangeTracker();
+
 				this.addCellProvider( cc, tracker );
+				tracker.applyChanges();
 			}
-
-			this.getGrid().postEvent( new MENetworkCellArrayUpdate() );
-
-			tracker.applyChanges();
 		}
 
 		if( machine instanceof IStackWatcherHost )
