@@ -33,13 +33,24 @@ import net.minecraftforge.common.config.Configuration;
 public class FacadeConfig extends Configuration
 {
 
-	public static FacadeConfig instance;
+	private static FacadeConfig instance;
+
 	private final Pattern replacementPattern;
 
 	public FacadeConfig( final File facadeFile )
 	{
 		super( facadeFile );
 		this.replacementPattern = Pattern.compile( "[^a-zA-Z0-9]" );
+	}
+
+	public static void init( final File configFile )
+	{
+		instance = new FacadeConfig( configFile );
+	}
+
+	public static FacadeConfig instance()
+	{
+		return instance;
 	}
 
 	public boolean checkEnabled( final Block id, final int metadata, final boolean automatic )

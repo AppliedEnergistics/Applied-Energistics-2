@@ -49,7 +49,7 @@ public class ChunkLogger implements ISubCommand
 
 	private void displayStack()
 	{
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.ChunkLoggerTrace ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.CHUNK_LOGGER_TRACE ) )
 		{
 			boolean output = false;
 			for( final StackTraceElement e : Thread.currentThread().getStackTrace() )

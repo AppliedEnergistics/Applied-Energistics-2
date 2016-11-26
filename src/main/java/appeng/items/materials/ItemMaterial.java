@@ -172,10 +172,10 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 
 		for( final AEFeature f : mat.getFeature() )
 		{
-			enabled = enabled && AEConfig.instance.isFeatureEnabled( f );
+			enabled = enabled && AEConfig.instance().isFeatureEnabled( f );
 		}
 
-		mat.setStackSrc( new MaterialStackSrc( mat ) );
+		mat.setStackSrc( new MaterialStackSrc( mat, enabled ) );
 
 		if( enabled )
 		{
@@ -228,7 +228,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 					}
 				}
 
-				if( replacement == null || AEConfig.instance.useAEVersion( mt ) )
+				if( replacement == null || AEConfig.instance().useAEVersion( mt ) )
 				{
 					// continue using the AE2 item.
 					for( final String name : names )
@@ -339,7 +339,8 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 
 		try
 		{
-			eqi = droppedEntity.getConstructor( World.class, double.class, double.class, double.class, ItemStack.class ).newInstance( w, location.posX, location.posY, location.posZ, itemstack );
+			eqi = droppedEntity.getConstructor( World.class, double.class, double.class, double.class, ItemStack.class ).newInstance( w, location.posX,
+					location.posY, location.posZ, itemstack );
 		}
 		catch( final Throwable t )
 		{

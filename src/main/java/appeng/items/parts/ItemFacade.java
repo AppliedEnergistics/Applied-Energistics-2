@@ -133,9 +133,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 				}
 			}
 
-			if( FacadeConfig.instance.hasChanged() )
+			if( FacadeConfig.instance().hasChanged() )
 			{
-				FacadeConfig.instance.save();
+				FacadeConfig.instance().save();
 			}
 		}
 	}
@@ -183,7 +183,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		}
 
 		final boolean defaultValue = ( b.isFullyOpaque( blockState ) && hasSimpleModel( blockState ) && !b.getTickRandomly() && !hasTile && !disableOre ) || enableGlass;
-		if( FacadeConfig.instance.checkEnabled( b, metadata, defaultValue ) )
+		if( FacadeConfig.instance().checkEnabled( b, metadata, defaultValue ) )
 		{
 			if( returnItem )
 			{

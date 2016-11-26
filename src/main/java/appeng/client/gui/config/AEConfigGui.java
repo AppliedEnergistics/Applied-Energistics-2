@@ -37,14 +37,14 @@ public class AEConfigGui extends GuiConfig
 
 	public AEConfigGui( final GuiScreen parent )
 	{
-		super( parent, getConfigElements(), AppEng.MOD_ID, false, false, GuiConfig.getAbridgedConfigPath( AEConfig.instance.getFilePath() ) );
+		super( parent, getConfigElements(), AppEng.MOD_ID, false, false, GuiConfig.getAbridgedConfigPath( AEConfig.instance().getFilePath() ) );
 	}
 
 	private static List<IConfigElement> getConfigElements()
 	{
 		final List<IConfigElement> list = new ArrayList<IConfigElement>();
 
-		for( final String cat : AEConfig.instance.getCategoryNames() )
+		for( final String cat : AEConfig.instance().getCategoryNames() )
 		{
 			if( cat.equals( "versionchecker" ) )
 			{
@@ -56,7 +56,7 @@ public class AEConfigGui extends GuiConfig
 				continue;
 			}
 
-			final ConfigCategory cc = AEConfig.instance.getCategory( cat );
+			final ConfigCategory cc = AEConfig.instance().getCategory( cat );
 
 			if( cc.isChild() )
 			{

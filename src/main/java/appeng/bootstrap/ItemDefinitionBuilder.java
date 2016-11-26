@@ -147,7 +147,7 @@ class ItemDefinitionBuilder implements IItemBuilder
 	@Override
 	public ItemDefinition build()
 	{
-		if( !AEConfig.instance.areFeaturesEnabled( features ) )
+		if( !AEConfig.instance().areFeaturesEnabled( features ) )
 		{
 			return new ItemDefinition( registryName, null );
 		}

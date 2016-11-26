@@ -53,8 +53,8 @@ public class ContainerWireless extends AEBaseContainer
 	{
 		final int boosters = this.boosterSlot.getStack() == null ? 0 : this.boosterSlot.getStack().stackSize;
 
-		this.setRange( (long) ( 10 * AEConfig.instance.wireless_getMaxRange( boosters ) ) );
-		this.setDrain( (long) ( 100 * AEConfig.instance.wireless_getPowerDrain( boosters ) ) );
+		this.setRange( (long) ( 10 * AEConfig.instance().wireless_getMaxRange( boosters ) ) );
+		this.setDrain( (long) ( 100 * AEConfig.instance().wireless_getPowerDrain( boosters ) ) );
 
 		super.detectAndSendChanges();
 	}

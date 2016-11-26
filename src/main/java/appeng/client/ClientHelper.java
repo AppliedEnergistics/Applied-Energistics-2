@@ -149,7 +149,7 @@ public class ClientHelper extends ServerHelper
 	@Override
 	public void spawnEffect( final EffectType effect, final World worldObj, final double posX, final double posY, final double posZ, final Object o )
 	{
-		if( AEConfig.instance.enableEffects )
+		if( AEConfig.instance().isEnableEffects() )
 		{
 			switch( effect )
 			{
@@ -354,7 +354,7 @@ public class ClientHelper extends ServerHelper
 			final ItemStack is = player.getHeldItem( hand );
 			try
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "Item", me.getDwheel() > 0 ? "WheelUp" : "WheelDown" ) );
+				NetworkHandler.instance().sendToServer( new PacketValueConfig( "Item", me.getDwheel() > 0 ? "WheelUp" : "WheelDown" ) );
 				me.setCanceled( true );
 			}
 			catch( final IOException e )

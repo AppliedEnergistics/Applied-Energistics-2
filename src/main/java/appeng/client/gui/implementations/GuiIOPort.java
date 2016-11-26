@@ -113,12 +113,12 @@ public class GuiIOPort extends GuiUpgradeable
 
 		if( btn == this.fullMode )
 		{
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.fullMode.getSetting(), backwards ) );
+			NetworkHandler.instance().sendToServer( new PacketConfigButton( this.fullMode.getSetting(), backwards ) );
 		}
 
 		if( btn == this.operationMode )
 		{
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.operationMode.getSetting(), backwards ) );
+			NetworkHandler.instance().sendToServer( new PacketConfigButton( this.operationMode.getSetting(), backwards ) );
 		}
 	}
 }

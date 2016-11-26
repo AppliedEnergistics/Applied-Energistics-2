@@ -52,7 +52,7 @@ public class GuiChest extends AEBaseGui
 
 		if( par1GuiButton == this.priority )
 		{
-			NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
+			NetworkHandler.instance().sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
 		}
 	}
 

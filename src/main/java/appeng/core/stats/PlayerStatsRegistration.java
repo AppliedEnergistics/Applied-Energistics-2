@@ -32,7 +32,7 @@ import appeng.core.features.AEFeature;
 /**
  * Registers any items a player is picking up or is crafting.
  * Registered items are added to the player stats.
- * This will only happen if the {@link AEFeature#Achievements} feature is enabled.
+ * This will only happen if the {@link AEFeature#ACHIEVEMENTS} feature is enabled.
  */
 public class PlayerStatsRegistration
 {
@@ -43,7 +43,7 @@ public class PlayerStatsRegistration
 	private final EventBus bus;
 
 	/**
-	 * is true if the {@link appeng.core.features.AEFeature#Achievements} is enabled in the
+	 * is true if the {@link appeng.core.features.AEFeature#ACHIEVEMENTS} is enabled in the
 	 * 
 	 * @param config
 	 */
@@ -55,12 +55,12 @@ public class PlayerStatsRegistration
 	 *
 	 * @param bus {@see #bus}
 	 * @param config {@link appeng.core.AEConfig} which is used to determine if the
-	 * {@link appeng.core.features.AEFeature#Achievements} is enabled
+	 * {@link appeng.core.features.AEFeature#ACHIEVEMENTS} is enabled
 	 */
 	public PlayerStatsRegistration( final EventBus bus, final AEConfig config )
 	{
 		this.bus = bus;
-		this.isAchievementFeatureEnabled = config.isFeatureEnabled( AEFeature.Achievements );
+		this.isAchievementFeatureEnabled = config.isFeatureEnabled( AEFeature.ACHIEVEMENTS );
 	}
 
 	/**

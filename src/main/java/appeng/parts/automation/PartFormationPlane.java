@@ -529,7 +529,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 				 * }
 				 */
 
-				if( sum < AEConfig.instance.formationPlaneEntityLimit )
+				if( sum < AEConfig.instance().getFormationPlaneEntityLimit() )
 				{
 					if( type == Actionable.MODULATE )
 					{

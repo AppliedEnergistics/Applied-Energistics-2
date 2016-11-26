@@ -263,11 +263,11 @@ public class ContainerCraftConfirm extends AEBaseContainer
 					{
 						if( g instanceof EntityPlayer )
 						{
-							NetworkHandler.instance.sendTo( a, (EntityPlayerMP) g );
-							NetworkHandler.instance.sendTo( b, (EntityPlayerMP) g );
+							NetworkHandler.instance().sendTo( a, (EntityPlayerMP) g );
+							NetworkHandler.instance().sendTo( b, (EntityPlayerMP) g );
 							if( c != null )
 							{
-								NetworkHandler.instance.sendTo( c, (EntityPlayerMP) g );
+								NetworkHandler.instance().sendTo( c, (EntityPlayerMP) g );
 							}
 						}
 					}
@@ -352,7 +352,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 			this.setAutoStart( false );
 			if( g != null && originalGui != null && this.getOpenContext() != null )
 			{
-				NetworkHandler.instance.sendTo( new PacketSwitchGuis( originalGui ), (EntityPlayerMP) this.getInventoryPlayer().player );
+				NetworkHandler.instance().sendTo( new PacketSwitchGuis( originalGui ), (EntityPlayerMP) this.getInventoryPlayer().player );
 
 				final TileEntity te = this.getOpenContext().getTile();
 				Platform.openGUI( this.getInventoryPlayer().player, te, this.getOpenContext().getSide(), originalGui );

@@ -60,7 +60,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 {
 	public ToolPortableCell()
 	{
-		super( AEConfig.instance.portableCellBattery );
+		super( AEConfig.instance().getPortableCellBattery() );
 	}
 
 	@Override

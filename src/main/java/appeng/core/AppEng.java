@@ -78,10 +78,10 @@ public final class AppEng
 
 			// depend on version of forge used for build.
 			"after:appliedenergistics2-core;" + "required-after:Forge@[" // require forge.
-			+ net.minecraftforge.common.ForgeVersion.majorVersion + '.' // majorVersion
-			+ net.minecraftforge.common.ForgeVersion.minorVersion + '.' // minorVersion
-			+ net.minecraftforge.common.ForgeVersion.revisionVersion + '.' // revisionVersion
-			+ net.minecraftforge.common.ForgeVersion.buildVersion + ",)"; // buildVersion
+					+ net.minecraftforge.common.ForgeVersion.majorVersion + '.' // majorVersion
+					+ net.minecraftforge.common.ForgeVersion.minorVersion + '.' // minorVersion
+					+ net.minecraftforge.common.ForgeVersion.revisionVersion + '.' // revisionVersion
+					+ net.minecraftforge.common.ForgeVersion.buildVersion + ",)"; // buildVersion
 
 	@Nonnull
 	private static final AppEng INSTANCE = new AppEng();
@@ -141,8 +141,9 @@ public final class AppEng
 		final File recipeFile = new File( this.configDirectory, "CustomRecipes.cfg" );
 		final Configuration recipeConfiguration = new Configuration( recipeFile );
 
-		AEConfig.instance = new AEConfig( configFile );
-		FacadeConfig.instance = new FacadeConfig( facadeFile );
+		AEConfig.init( configFile );
+		FacadeConfig.init( facadeFile );
+
 		final VersionCheckerConfig versionCheckerConfig = new VersionCheckerConfig( versionFile );
 		this.customRecipeConfig = new CustomRecipeForgeConfiguration( recipeConfiguration );
 		this.exportConfig = new ForgeExportConfig( recipeConfiguration );
@@ -150,7 +151,7 @@ public final class AppEng
 		AELog.info( "Pre Initialization ( started )" );
 
 		CreativeTab.init();
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.Facades ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.FACADES ) )
 		{
 			CreativeTabFacade.init();
 		}
@@ -174,8 +175,7 @@ public final class AppEng
 
 		// Instantiate all Plugins
 		List<Object> injectables = Lists.newArrayList(
-				AEApi.instance()
-		);
+				AEApi.instance() );
 		new PluginLoader().loadPlugins( injectables, event.getAsmData() );
 	}
 
@@ -226,10 +226,10 @@ public final class AppEng
 		FMLCommonHandler.instance().registerCrashCallable( new IntegrationCrashEnhancement() );
 
 		CommonHelper.proxy.postInit();
-		AEConfig.instance.save();
+		AEConfig.instance().save();
 
 		NetworkRegistry.INSTANCE.registerGuiHandler( this, GuiBridge.GUI_Handler );
-		NetworkHandler.instance = new NetworkHandler( "AE2" );
+		NetworkHandler.init( "AE2" );
 
 		AELog.info( "Post Initialization ( ended after " + start.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );
 	}

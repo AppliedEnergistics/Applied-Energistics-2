@@ -46,16 +46,16 @@ public class StackSizeRenderer
 	{
 		if( is != null )
 		{
-			final float scaleFactor = AEConfig.instance.useTerminalUseLargeFont() ? 0.85f : 0.5f;
+			final float scaleFactor = AEConfig.instance().useTerminalUseLargeFont() ? 0.85f : 0.5f;
 			final float inverseScaleFactor = 1.0f / scaleFactor;
-			final int offset = AEConfig.instance.useTerminalUseLargeFont() ? 0 : -1;
+			final int offset = AEConfig.instance().useTerminalUseLargeFont() ? 0 : -1;
 
 			final boolean unicodeFlag = fontRenderer.getUnicodeFlag();
 			fontRenderer.setUnicodeFlag( false );
 
 			if( is.stackSize == 0 )
 			{
-				final String craftLabelText = AEConfig.instance.useTerminalUseLargeFont() ? GuiText.LargeFontCraft.getLocal() : GuiText.SmallFontCraft.getLocal();
+				final String craftLabelText = AEConfig.instance().useTerminalUseLargeFont() ? GuiText.LargeFontCraft.getLocal() : GuiText.SmallFontCraft.getLocal();
 				GlStateManager.disableLighting();
 				GlStateManager.disableDepth();
 				GlStateManager.disableBlend();
@@ -95,7 +95,7 @@ public class StackSizeRenderer
 
 	private String getToBeRenderedStackSize( final long originalSize )
 	{
-		if( AEConfig.instance.useTerminalUseLargeFont() )
+		if( AEConfig.instance().useTerminalUseLargeFont() )
 		{
 			return SLIM_CONVERTER.toSlimReadableForm( originalSize );
 		}

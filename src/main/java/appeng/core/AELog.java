@@ -69,7 +69,7 @@ public final class AELog
 	 */
 	public static boolean isLogEnabled()
 	{
-		return AEConfig.instance == null || AEConfig.instance.isFeatureEnabled( AEFeature.Logging );
+		return AEConfig.instance() == null || AEConfig.instance().isFeatureEnabled( AEFeature.LOGGING );
 	}
 
 	/**
@@ -278,7 +278,7 @@ public final class AELog
 	 */
 	public static boolean isDebugLogEnabled()
 	{
-		return AEConfig.instance.isFeatureEnabled( AEFeature.DebugLogging );
+		return AEConfig.instance().isFeatureEnabled( AEFeature.DEBUG_LOGGING );
 	}
 
 	//
@@ -292,7 +292,7 @@ public final class AELog
 	 */
 	public static void grinder( @Nonnull final String message )
 	{
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.GrinderLogging ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.GRINDER_LOGGING ) )
 		{
 			log( Level.DEBUG, "grinder: " + message );
 		}
@@ -305,7 +305,7 @@ public final class AELog
 	 */
 	public static void integration( @Nonnull final Throwable exception )
 	{
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.IntegrationLogging ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.INTEGRATION_LOGGING ) )
 		{
 			debug( exception );
 		}
@@ -322,7 +322,7 @@ public final class AELog
 	 */
 	public static void blockUpdate( @Nonnull final BlockPos pos, @Nonnull final AEBaseTile aeBaseTile )
 	{
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.UpdateLogging ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.UPDATE_LOGGING ) )
 		{
 			info( BLOCK_UPDATE, aeBaseTile.getClass().getName(), pos );
 		}
@@ -337,7 +337,7 @@ public final class AELog
 	 */
 	public static boolean isCraftingLogEnabled()
 	{
-		return AEConfig.instance.isFeatureEnabled( AEFeature.CraftingLog );
+		return AEConfig.instance().isFeatureEnabled( AEFeature.CRAFTING_LOG );
 	}
 
 	/**
@@ -366,7 +366,7 @@ public final class AELog
 	 */
 	public static boolean isCraftingDebugLogEnabled()
 	{
-		return AEConfig.instance.isFeatureEnabled( AEFeature.CraftingLog ) && AEConfig.instance.isFeatureEnabled( AEFeature.DebugLogging );
+		return AEConfig.instance().isFeatureEnabled( AEFeature.CRAFTING_LOG ) && AEConfig.instance().isFeatureEnabled( AEFeature.DEBUG_LOGGING );
 	}
 
 	/**

@@ -88,10 +88,10 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 		this.craftingMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.CRAFT_VIA_REDSTONE, YesNo.NO );
 
-		final int a = AEConfig.instance.levelByStackAmounts( 0 );
-		final int b = AEConfig.instance.levelByStackAmounts( 1 );
-		final int c = AEConfig.instance.levelByStackAmounts( 2 );
-		final int d = AEConfig.instance.levelByStackAmounts( 3 );
+		final int a = AEConfig.instance().levelByStackAmounts( 0 );
+		final int b = AEConfig.instance().levelByStackAmounts( 1 );
+		final int c = AEConfig.instance().levelByStackAmounts( 2 );
+		final int d = AEConfig.instance().levelByStackAmounts( 3 );
 
 		this.buttonList.add( this.plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 17, 22, 20, "+" + a ) );
 		this.buttonList.add( this.plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 17, 28, 20, "+" + b ) );
@@ -175,12 +175,12 @@ public class GuiLevelEmitter extends GuiUpgradeable
 
 		if( btn == this.craftingMode )
 		{
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.craftingMode.getSetting(), backwards ) );
+			NetworkHandler.instance().sendToServer( new PacketConfigButton( this.craftingMode.getSetting(), backwards ) );
 		}
 
 		if( btn == this.levelMode )
 		{
-			NetworkHandler.instance.sendToServer( new PacketConfigButton( this.levelMode.getSetting(), backwards ) );
+			NetworkHandler.instance().sendToServer( new PacketConfigButton( this.levelMode.getSetting(), backwards ) );
 		}
 
 		final boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
@@ -224,7 +224,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 
 			this.level.setText( Out = Long.toString( result ) );
 
-			NetworkHandler.instance.sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
+			NetworkHandler.instance().sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
 		}
 		catch( final NumberFormatException e )
 		{
@@ -265,7 +265,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 						Out = "0";
 					}
 
-					NetworkHandler.instance.sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
+					NetworkHandler.instance().sendToServer( new PacketValueConfig( "LevelEmitter.Value", Out ) );
 				}
 				catch( final IOException e )
 				{

@@ -137,7 +137,7 @@ public class ContainerNetworkStatus extends AEBaseContainer
 				{
 					if( c instanceof EntityPlayer )
 					{
-						NetworkHandler.instance.sendTo( piu, (EntityPlayerMP) c );
+						NetworkHandler.instance().sendTo( piu, (EntityPlayerMP) c );
 					}
 				}
 			}

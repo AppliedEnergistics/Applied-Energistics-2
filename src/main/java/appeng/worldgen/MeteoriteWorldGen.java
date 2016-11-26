@@ -44,19 +44,11 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 	{
 		if( WorldGenRegistry.INSTANCE.isWorldGenEnabled( WorldGenType.METEORITES, w ) )
 		{
-			// add new meteorites?
-			if( r.nextFloat() < AEConfig.instance.meteoriteSpawnChance )
-			{
-				final int x = r.nextInt( 16 ) + ( chunkX << 4 );
-				final int z = r.nextInt( 16 ) + ( chunkZ << 4 );
+			final int x = r.nextInt( 16 ) + ( chunkX << 4 );
+			final int z = r.nextInt( 16 ) + ( chunkZ << 4 );
+			final int depth = AEConfig.instance().getMeteoriteMaximumSpawnHeight() + r.nextInt( 20 );
 
-				final int depth = 180 + r.nextInt( 20 );
-				TickHandler.INSTANCE.addCallable( w, new MeteoriteSpawn( x, depth, z ) );
-			}
-			else
-			{
-				TickHandler.INSTANCE.addCallable( w, new MeteoriteSpawn( chunkX << 4, 128, chunkZ << 4 ) );
-			}
+			TickHandler.INSTANCE.addCallable( w, new MeteoriteSpawn( x, depth, z ) );
 		}
 		else
 		{
@@ -79,7 +71,7 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 				{
 					for( int cz = pz - 6; cz < pz + 6; cz++ )
 					{
-						if( w.getChunkProvider().getLoadedChunk( cx, cz ) != null)
+						if( w.getChunkProvider().getLoadedChunk( cx, cz ) != null )
 						{
 							if( px == cx && pz == cz )
 							{
@@ -144,9 +136,9 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 				minSqDist = Math.min( minSqDist, mp.getSqDistance( this.x, this.z ) );
 			}
 
-			final boolean isCluster = ( minSqDist < 30 * 30 ) && Platform.getRandomFloat() < AEConfig.instance.meteoriteClusterChance;
+			final boolean isCluster = ( minSqDist < 30 * 30 ) && Platform.getRandomFloat() < AEConfig.instance().getMeteoriteClusterChance();
 
-			if( minSqDist > AEConfig.instance.minMeteoriteDistanceSq || isCluster )
+			if( minSqDist > AEConfig.instance().getMinMeteoriteDistanceSq() || isCluster )
 			{
 				MeteoriteWorldGen.this.tryMeteorite( world, this.depth, this.x, this.z );
 			}

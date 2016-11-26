@@ -61,7 +61,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 	public ToolEntropyManipulator()
 	{
-		super( AEConfig.instance.entropyManipulatorBattery );
+		super( AEConfig.instance().getEntropyManipulatorBattery() );
 
 		this.heatUp = new HashMap<InWorldToolOperationIngredient, InWorldToolOperationResult>();
 		this.coolDown = new HashMap<InWorldToolOperationIngredient, InWorldToolOperationResult>();

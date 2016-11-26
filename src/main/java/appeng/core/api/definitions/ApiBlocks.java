@@ -203,20 +203,22 @@ public final class ApiBlocks implements IBlocks
 	{
 		// this.quartzOre = new BlockDefinition( "ore.quartz", new OreQuartz() );
 		this.quartzOre = registry.block( "quartz_ore", BlockQuartzOre::new )
+				.features( AEFeature.CERTUS_ORE )
 				.postInit( ( block, item ) ->
 				{
 					OreDictionary.registerOre( "oreCertusQuartz", new ItemStack( block ) );
 				} )
 				.build();
 		this.quartzOreCharged = registry.block( "charged_quartz_ore", BlockChargedQuartzOre::new )
+				.features( AEFeature.CERTUS_ORE, AEFeature.CHARGED_CERTUS_ORE )
 				.postInit( ( block, item ) ->
 				{
 					OreDictionary.registerOre( "oreCertusQuartz", new ItemStack( block ) );
 				} )
 				.build();
-		this.matrixFrame = registry.block( "matrix_frame", BlockMatrixFrame::new ).features( AEFeature.SpatialIO ).build();
+		this.matrixFrame = registry.block( "matrix_frame", BlockMatrixFrame::new ).features( AEFeature.SPATIAL_IO ).build();
 
-		FeatureFactory deco = registry.features( AEFeature.DecorativeQuartzBlocks );
+		FeatureFactory deco = registry.features( AEFeature.DECORATIVE_QUARTZ_BLOCKS );
 		this.quartzBlock = deco.block( "quartz_block", BlockQuartz::new ).build();
 		this.quartzPillar = deco.block( "quartz_pillar", BlockQuartzPillar::new ).build();
 		this.chiseledQuartzBlock = deco.block( "chiseled_quartz_block", BlockChiseledQuartz::new ).build();
@@ -233,11 +235,11 @@ public final class ApiBlocks implements IBlocks
 				} )
 				.build();
 		this.quartzVibrantGlass = deco.block( "quartz_vibrant_glass", BlockQuartzLamp::new )
-				.addFeatures( AEFeature.DecorativeLights )
+				.addFeatures( AEFeature.DECORATIVE_LIGHTS )
 				.useCustomItemModel()
 				.build();
 		this.quartzFixture = registry.block( "quartz_fixture", BlockQuartzFixture::new )
-				.features( AEFeature.DecorativeLights )
+				.features( AEFeature.DECORATIVE_LIGHTS )
 				.useCustomItemModel()
 				.build();
 
@@ -248,32 +250,33 @@ public final class ApiBlocks implements IBlocks
 		this.skyStoneSmallBrick = deco.block( "sky_stone_small_brick", () -> new BlockSkyStone( SkystoneType.SMALL_BRICK ) ).build();
 
 		this.skyStoneChest = registry.block( "sky_stone_chest", () -> new BlockSkyChest( SkyChestType.STONE ) )
-				.features( AEFeature.SkyStoneChests )
+				.features( AEFeature.SKY_STONE_CHESTS )
 				.rendering( new SkyChestRenderingCustomizer( SkyChestType.STONE ) )
 				.build();
 		this.smoothSkyStoneChest = registry.block( "smooth_sky_stone_chest", () -> new BlockSkyChest( SkyChestType.BLOCK ) )
-				.features( AEFeature.SkyStoneChests )
+				.features( AEFeature.SKY_STONE_CHESTS )
 				.rendering( new SkyChestRenderingCustomizer( SkyChestType.BLOCK ) )
 				.build();
 
 		this.skyCompass = registry.block( "sky_compass", BlockSkyCompass::new )
-				.features( AEFeature.MeteoriteCompass )
+				.features( AEFeature.METEORITE_COMPASS )
 				.rendering( new SkyCompassRendering() )
 				.build();
-		this.grindstone = registry.block( "grindstone", BlockGrinder::new ).features( AEFeature.GrindStone ).build();
+		this.grindstone = registry.block( "grindstone", BlockGrinder::new ).features( AEFeature.GRIND_STONE ).build();
 		this.crank = registry.block( "crank", BlockCrank::new )
-				.features( AEFeature.GrindStone )
+				.features( AEFeature.GRIND_STONE )
 				.rendering( new CrankRendering() )
 				.build();
 		this.inscriber = registry.block( "inscriber", BlockInscriber::new )
-				.features( AEFeature.Inscriber )
+				.features( AEFeature.INSCRIBER )
 				.rendering( new InscriberRendering() )
 				.build();
 		this.wirelessAccessPoint = registry.block( "wireless_access_point", BlockWireless::new )
-				.features( AEFeature.WirelessAccessTerminal )
+				.features( AEFeature.WIRELESS_ACCESS_TERMINAL )
 				.rendering( new WirelessRendering() )
 				.build();
 		this.charger = registry.block( "charger", BlockCharger::new )
+				.features( AEFeature.CHARGER )
 				.rendering( new BlockRenderingCustomizer()
 				{
 					@Override
@@ -284,67 +287,71 @@ public final class ApiBlocks implements IBlocks
 					}
 				} )
 				.build();
-		this.tinyTNT = registry.block( "tiny_tnt", BlockTinyTNT::new ).features( AEFeature.TinyTNT )
+		this.tinyTNT = registry.block( "tiny_tnt", BlockTinyTNT::new )
+				.features( AEFeature.TINY_TNT )
 				.postInit( ( block, item ) ->
 				{
 					BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( item, new DispenserBehaviorTinyTNT() );
 				} )
 				.build();
 		this.securityStation = registry.block( "security_station", BlockSecurityStation::new )
-				.features( AEFeature.Security )
+				.features( AEFeature.SECURITY )
 				.rendering( new SecurityStationRendering() )
 				.build();
 		this.quantumRing = registry.block( "quantum_ring", BlockQuantumRing::new )
-				.features( AEFeature.QuantumNetworkBridge )
+				.features( AEFeature.QUANTUM_NETWORK_BRIDGE )
 				.rendering( new QuantumBridgeRendering() )
 				.build();
 		this.quantumLink = registry.block( "quantum_link", BlockQuantumLinkChamber::new )
-				.features( AEFeature.QuantumNetworkBridge )
+				.features( AEFeature.QUANTUM_NETWORK_BRIDGE )
 				.rendering( new QuantumBridgeRendering() )
 				.build();
 		this.spatialPylon = registry.block( "spatial_pylon", BlockSpatialPylon::new )
-				.features( AEFeature.SpatialIO )
+				.features( AEFeature.SPATIAL_IO )
 				.useCustomItemModel()
 				.rendering( new SpatialPylonRendering() )
 				.build();
-		this.spatialIOPort = registry.block( "spatial_io_port", BlockSpatialIOPort::new ).features( AEFeature.SpatialIO ).build();
+		this.spatialIOPort = registry.block( "spatial_io_port", BlockSpatialIOPort::new ).features( AEFeature.SPATIAL_IO ).build();
 		this.controller = registry.block( "controller", BlockController::new )
-				.features( AEFeature.Channels )
+				.features( AEFeature.CHANNELS )
 				.useCustomItemModel()
 				.rendering( new ControllerRendering() )
 				.build();
 		this.drive = registry.block( "drive", BlockDrive::new )
-				.features( AEFeature.StorageCells, AEFeature.MEDrive )
+				.features( AEFeature.STORAGE_CELLS, AEFeature.ME_DRIVE )
 				.useCustomItemModel()
 				.rendering( new DriveRendering() )
 				.build();
 		this.chest = registry.block( "chest", BlockChest::new )
-				.features( AEFeature.StorageCells, AEFeature.MEChest )
+				.features( AEFeature.STORAGE_CELLS, AEFeature.ME_CHEST )
 				.useCustomItemModel()
 				.rendering( new ChestRendering() )
 				.build();
-		this.iface = registry.block( "interface", BlockInterface::new ).build();
-		this.cellWorkbench = registry.block( "cell_workbench", BlockCellWorkbench::new ).features( AEFeature.StorageCells ).build();
-		this.iOPort = registry.block( "io_port", BlockIOPort::new ).features( AEFeature.StorageCells, AEFeature.IOPort ).build();
-		this.condenser = registry.block( "condenser", BlockCondenser::new ).build();
-		this.energyAcceptor = registry.block( "energy_acceptor", BlockEnergyAcceptor::new ).build();
-		this.vibrationChamber = registry.block( "vibration_chamber", BlockVibrationChamber::new ).features( AEFeature.PowerGen ).build();
-		this.quartzGrowthAccelerator = registry.block( "quartz_growth_accelerator", BlockQuartzGrowthAccelerator::new ).build();
+		this.iface = registry.block( "interface", BlockInterface::new ).features( AEFeature.INTERFACE ).build();
+		this.cellWorkbench = registry.block( "cell_workbench", BlockCellWorkbench::new ).features( AEFeature.STORAGE_CELLS ).build();
+		this.iOPort = registry.block( "io_port", BlockIOPort::new ).features( AEFeature.STORAGE_CELLS, AEFeature.IO_PORT ).build();
+		this.condenser = registry.block( "condenser", BlockCondenser::new ).features( AEFeature.CONDENSER ).build();
+		this.energyAcceptor = registry.block( "energy_acceptor", BlockEnergyAcceptor::new ).features( AEFeature.ENERGY_ACCEPTOR ).build();
+		this.vibrationChamber = registry.block( "vibration_chamber", BlockVibrationChamber::new ).features( AEFeature.POWER_GEN ).build();
+		this.quartzGrowthAccelerator = registry.block( "quartz_growth_accelerator", BlockQuartzGrowthAccelerator::new )
+				.features( AEFeature.CRYSTAL_GROWTH_ACCELERATOR )
+				.build();
 		this.energyCell = registry.block( "energy_cell", BlockEnergyCell::new )
+				.features( AEFeature.ENERGY_CELLS )
 				.item( AEBaseItemBlockChargeable::new )
 				.rendering( new BlockEnergyCellRendering( new ResourceLocation( AppEng.MOD_ID, "energy_cell" ) ) )
 				.build();
 		this.energyCellDense = registry.block( "dense_energy_cell", BlockDenseEnergyCell::new )
-				.features( AEFeature.DenseEnergyCells )
+				.features( AEFeature.ENERGY_CELLS, AEFeature.DENSE_ENERGY_CELLS )
 				.item( AEBaseItemBlockChargeable::new )
 				.rendering( new BlockEnergyCellRendering( new ResourceLocation( AppEng.MOD_ID, "dense_energy_cell" ) ) )
 				.build();
 		this.energyCellCreative = registry.block( "creative_energy_cell", BlockCreativeEnergyCell::new )
-				.features( AEFeature.Creative )
+				.features( AEFeature.CREATIVE )
 				.item( AEBaseItemBlockChargeable::new )
 				.build();
 
-		FeatureFactory crafting = registry.features( AEFeature.CraftingCPU );
+		FeatureFactory crafting = registry.features( AEFeature.CRAFTING_CPU );
 		this.craftingUnit = crafting.block( "crafting_unit", () -> new BlockCraftingUnit( CraftingUnitType.UNIT ) )
 				.rendering( new CraftingCubeRendering( "crafting_unit", CraftingUnitType.UNIT ) )
 				.useCustomItemModel()
@@ -378,12 +385,13 @@ public final class ApiBlocks implements IBlocks
 				.useCustomItemModel()
 				.build();
 
-		this.molecularAssembler = registry.block( "molecular_assembler", BlockMolecularAssembler::new ).features( AEFeature.MolecularAssembler ).build();
-		this.lightDetector = registry.block( "light_detector", BlockLightDetector::new ).features( AEFeature.LightDetector )
+		this.molecularAssembler = registry.block( "molecular_assembler", BlockMolecularAssembler::new ).features( AEFeature.MOLECULAR_ASSEMBLER ).build();
+		this.lightDetector = registry.block( "light_detector", BlockLightDetector::new )
+				.features( AEFeature.LIGHT_DETECTOR )
 				.useCustomItemModel()
 				.build();
 		this.paint = registry.block( "paint", BlockPaint::new )
-				.features( AEFeature.PaintBalls )
+				.features( AEFeature.PAINT_BALLS )
 				.rendering( new PaintRendering() )
 				.build();
 
@@ -398,7 +406,8 @@ public final class ApiBlocks implements IBlocks
 
 		this.multiPart = registry.block( "cable_bus", BlockCableBus::new )
 				.rendering( new CableBusRendering( partModels ) )
-				.postInit( (block, item) -> {
+				.postInit( ( block, item ) ->
+				{
 					( (BlockCableBus) block ).setupTile();
 				} )
 				.build();
@@ -413,19 +422,19 @@ public final class ApiBlocks implements IBlocks
 		this.quartzPillarSlab = makeSlab( "quartz_pillar_slab", "quartz_pillar_double_slab", registry, this.quartzPillar() );
 
 		this.itemGen = registry.block( "debug_item_gen", BlockItemGen::new )
-				.features( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative )
+				.features( AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE )
 				.useCustomItemModel()
 				.build();
 		this.chunkLoader = registry.block( "debug_chunk_loader", BlockChunkloader::new )
-				.features( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative )
+				.features( AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE )
 				.useCustomItemModel()
 				.build();
 		this.phantomNode = registry.block( "debug_phantom_node", BlockPhantomNode::new )
-				.features( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative )
+				.features( AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE )
 				.useCustomItemModel()
 				.build();
 		this.cubeGenerator = registry.block( "debug_cube_gen", BlockCubeGenerator::new )
-				.features( AEFeature.UnsupportedDeveloperTools, AEFeature.Creative )
+				.features( AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE )
 				.useCustomItemModel()
 				.build();
 	}
@@ -440,7 +449,7 @@ public final class ApiBlocks implements IBlocks
 		Block block = blockDef.maybeBlock().get();
 
 		IBlockDefinition slabDef = registry.block( slabId, () -> new BlockSlabCommon.Half( block ) )
-				.features( AEFeature.DecorativeQuartzBlocks )
+				.features( AEFeature.DECORATIVE_QUARTZ_BLOCKS )
 				.disableItem()
 				.build();
 
@@ -453,7 +462,7 @@ public final class ApiBlocks implements IBlocks
 
 		// Reigster the double slab variant as well
 		IBlockDefinition doubleSlabDef = registry.block( doubleSlabId, () -> new BlockSlabCommon.Double( slabBlock, block ) )
-				.features( AEFeature.DecorativeQuartzBlocks )
+				.features( AEFeature.DECORATIVE_QUARTZ_BLOCKS )
 				.disableItem()
 				.build();
 
@@ -463,7 +472,7 @@ public final class ApiBlocks implements IBlocks
 
 		// Make the slab item
 		IItemDefinition itemDef = registry.item( slabId, () -> new ItemSlab( slabBlock, slabBlock, doubleSlabBlock ) )
-				.features( AEFeature.DecorativeQuartzBlocks )
+				.features( AEFeature.DECORATIVE_QUARTZ_BLOCKS )
 				.build();
 
 		Verify.verify( itemDef.maybeItem().isPresent() );
@@ -475,7 +484,7 @@ public final class ApiBlocks implements IBlocks
 	private static IBlockDefinition makeStairs( String registryName, FeatureFactory registry, IBlockDefinition block )
 	{
 		return registry.block( registryName, () -> new BlockStairCommon( block.maybeBlock().get(), block.identifier() ) )
-				.features( AEFeature.DecorativeQuartzBlocks )
+				.features( AEFeature.DECORATIVE_QUARTZ_BLOCKS )
 				.rendering( new BlockRenderingCustomizer()
 				{
 					@Override

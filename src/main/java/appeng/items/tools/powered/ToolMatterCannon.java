@@ -84,7 +84,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 
 	public ToolMatterCannon()
 	{
-		super( AEConfig.instance.matterCannonBattery );
+		super( AEConfig.instance().getMatterCannonBattery() );
 	}
 
 	@Override
@@ -271,7 +271,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 				}
 
 				pos.entityHit.attackEntityFrom( DamageSource.causePlayerDamage( p ), 0 );
-				NetworkHandler.instance.sendToAll( marker.getPacket() );
+				NetworkHandler.instance().sendToAll( marker.getPacket() );
 			}
 			else if( pos.typeOfHit == RayTraceResult.Type.BLOCK )
 			{
@@ -401,7 +401,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 				}
 				else if( pos.typeOfHit == RayTraceResult.Type.BLOCK )
 				{
-					if( !AEConfig.instance.isFeatureEnabled( AEFeature.MassCannonBlockDamage ) )
+					if( !AEConfig.instance().isFeatureEnabled( AEFeature.MASS_CANNON_BLOCK_DAMAGE ) )
 					{
 						penetration = 0;
 					}

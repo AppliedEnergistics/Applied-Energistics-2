@@ -123,14 +123,14 @@ public class ItemRepo
 		this.dsp.ensureCapacity( this.list.size() );
 
 		final Enum viewMode = this.sortSrc.getSortDisplay();
-		final Enum searchMode = AEConfig.instance.settings.getSetting( Settings.SEARCH_MODE );
+		final Enum searchMode = AEConfig.instance().getConfigManager().getSetting( Settings.SEARCH_MODE );
 		if( searchMode == SearchBoxMode.JEI_AUTOSEARCH || searchMode == SearchBoxMode.JEI_MANUAL_SEARCH )
 		{
 			this.updateJEI( this.searchString );
 		}
 
 		this.innerSearch = this.searchString;
-		final boolean terminalSearchToolTips = AEConfig.instance.settings.getSetting( Settings.SEARCH_TOOLTIPS ) != YesNo.NO;
+		final boolean terminalSearchToolTips = AEConfig.instance().getConfigManager().getSetting( Settings.SEARCH_TOOLTIPS ) != YesNo.NO;
 		// boolean terminalSearchMods = Configuration.INSTANCE.settings.getSetting( Settings.SEARCH_MODS ) != YesNo.NO;
 
 		boolean searchMod = false;

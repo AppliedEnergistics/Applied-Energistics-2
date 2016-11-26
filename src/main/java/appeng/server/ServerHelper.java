@@ -109,7 +109,7 @@ public class ServerHelper extends CommonHelper
 
 				if( dX * dX + dY * dY + dZ * dZ < dist * dist )
 				{
-					NetworkHandler.instance.sendTo( packet, entityplayermp );
+					NetworkHandler.instance().sendTo( packet, entityplayermp );
 				}
 			}
 		}

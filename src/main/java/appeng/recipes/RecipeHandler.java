@@ -422,7 +422,7 @@ public class RecipeHandler implements IRecipeHandler
 			AELog.info( "Recipes Loading: " + e.getKey().getSimpleName() + ": " + e.getValue() + " loaded." );
 		}
 
-		if( AEConfig.instance.isFeatureEnabled( AEFeature.WebsiteRecipes ) )
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.WEBSITE_RECIPES ) )
 		{
 			try
 			{

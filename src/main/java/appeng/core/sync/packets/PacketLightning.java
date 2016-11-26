@@ -73,7 +73,7 @@ public class PacketLightning extends AppEngPacket
 	{
 		try
 		{
-			if( Platform.isClient() && AEConfig.instance.enableEffects )
+			if( Platform.isClient() && AEConfig.instance().isEnableEffects() )
 			{
 				final LightningFX fx = new LightningFX( ClientHelper.proxy.getWorld(), this.x, this.y, this.z, 0.0f, 0.0f, 0.0f );
 				Minecraft.getMinecraft().effectRenderer.addEffect( fx );

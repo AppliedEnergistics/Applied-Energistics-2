@@ -159,8 +159,8 @@ public class SpatialPylonCache implements ISpatialCache
 				this.efficiency = 0.0;
 			}
 
-			minPower = (double) reqX * (double) reqY * reqZ * AEConfig.instance.spatialPowerMultiplier;
-			maxPower = Math.pow( minPower, AEConfig.instance.spatialPowerExponent );
+			minPower = (double) reqX * (double) reqY * reqZ * AEConfig.instance().getSpatialPowerMultiplier();
+			maxPower = Math.pow( minPower, AEConfig.instance().getSpatialPowerExponent() );
 		}
 
 		final double affective_efficiency = Math.pow( this.efficiency, 0.25 );

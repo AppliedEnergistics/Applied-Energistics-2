@@ -116,23 +116,23 @@ public class GuiStorageBus extends GuiUpgradeable
 		{
 			if( btn == this.partition )
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "StorageBus.Action", "Partition" ) );
+				NetworkHandler.instance().sendToServer( new PacketValueConfig( "StorageBus.Action", "Partition" ) );
 			}
 			else if( btn == this.clear )
 			{
-				NetworkHandler.instance.sendToServer( new PacketValueConfig( "StorageBus.Action", "Clear" ) );
+				NetworkHandler.instance().sendToServer( new PacketValueConfig( "StorageBus.Action", "Clear" ) );
 			}
 			else if( btn == this.priority )
 			{
-				NetworkHandler.instance.sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
+				NetworkHandler.instance().sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
 			}
 			else if( btn == this.rwMode )
 			{
-				NetworkHandler.instance.sendToServer( new PacketConfigButton( this.rwMode.getSetting(), backwards ) );
+				NetworkHandler.instance().sendToServer( new PacketConfigButton( this.rwMode.getSetting(), backwards ) );
 			}
 			else if( btn == this.storageFilter )
 			{
-				NetworkHandler.instance.sendToServer( new PacketConfigButton( this.storageFilter.getSetting(), backwards ) );
+				NetworkHandler.instance().sendToServer( new PacketConfigButton( this.storageFilter.getSetting(), backwards ) );
 			}
 		}
 		catch( final IOException e )

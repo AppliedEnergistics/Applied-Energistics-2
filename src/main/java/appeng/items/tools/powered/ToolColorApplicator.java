@@ -100,7 +100,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 	public ToolColorApplicator()
 	{
-		super( AEConfig.instance.colorApplicatorBattery );
+		super( AEConfig.instance().getColorApplicatorBattery() );
 	}
 
 	@Override

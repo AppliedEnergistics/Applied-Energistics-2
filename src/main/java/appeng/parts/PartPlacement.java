@@ -134,7 +134,7 @@ public class PartPlacement
 				else
 				{
 					player.swingArm( hand );
-					NetworkHandler.instance.sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ), hand ) );
+					NetworkHandler.instance().sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ), hand ) );
 				}
 				return EnumActionResult.SUCCESS;
 			}
@@ -186,7 +186,7 @@ public class PartPlacement
 					else
 					{
 						player.swingArm( hand );
-						NetworkHandler.instance.sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ), hand ) );
+						NetworkHandler.instance().sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ), hand ) );
 						return EnumActionResult.SUCCESS;
 					}
 				}
@@ -212,7 +212,7 @@ public class PartPlacement
 						{
 							if( world.isRemote )
 							{
-								NetworkHandler.instance.sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ), hand ) );
+								NetworkHandler.instance().sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ), hand ) );
 							}
 							return EnumActionResult.SUCCESS;
 						}
@@ -275,7 +275,7 @@ public class PartPlacement
 				else
 				{
 					player.swingArm( hand );
-					NetworkHandler.instance.sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ), hand ) );
+					NetworkHandler.instance().sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ), hand ) );
 					return EnumActionResult.SUCCESS;
 				}
 			}
@@ -431,7 +431,7 @@ public class PartPlacement
 
 				if( event.getEntityPlayer().isSneaking() && held != null && supportedItem )
 				{
-					NetworkHandler.instance.sendToServer( new PacketClick( event.getPos(), event.getFace(), 0, 0, 0, event.getHand() ) );
+					NetworkHandler.instance().sendToServer( new PacketClick( event.getPos(), event.getFace(), 0, 0, 0, event.getHand() ) );
 				}
 			}
 		}

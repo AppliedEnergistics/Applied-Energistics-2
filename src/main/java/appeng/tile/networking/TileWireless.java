@@ -163,7 +163,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 
 	private void updatePower()
 	{
-		this.getProxy().setIdlePowerUsage( AEConfig.instance.wireless_getPowerDrain( this.getBoosters() ) );
+		this.getProxy().setIdlePowerUsage( AEConfig.instance().wireless_getPowerDrain( this.getBoosters() ) );
 	}
 
 	private int getBoosters()
@@ -181,7 +181,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	@Override
 	public double getRange()
 	{
-		return AEConfig.instance.wireless_getMaxRange( this.getBoosters() );
+		return AEConfig.instance().wireless_getMaxRange( this.getBoosters() );
 	}
 
 	@Override
