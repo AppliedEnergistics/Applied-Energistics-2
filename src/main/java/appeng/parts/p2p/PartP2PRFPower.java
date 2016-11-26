@@ -36,8 +36,8 @@ package appeng.parts.p2p;
 //import appeng.integration.IntegrationType;
 //import appeng.integration.modules.helpers.NullRFHandler;
 //import appeng.me.GridAccessException;
-//import appeng.transformer.annotations.Integration.Interface;
-//import appeng.transformer.annotations.Integration.InterfaceList;
+//import appeng.coremod.annotations.Integration.Interface;
+//import appeng.coremod.annotations.Integration.InterfaceList;
 //import appeng.util.Platform;
 //
 //

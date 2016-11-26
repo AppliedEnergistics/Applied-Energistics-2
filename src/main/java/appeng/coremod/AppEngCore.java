@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.transformer;
+package appeng.coremod;
 
 
 import java.util.Map;
@@ -64,13 +64,13 @@ public final class AppEngCore extends DummyModContainer implements IFMLLoadingPl
 	@Override
 	public String[] getASMTransformerClass()
 	{
-		return new String[] { "appeng.transformer.asm.ASMIntegration" };
+		return new String[] { "appeng.coremod.asm.ASMIntegration" };
 	}
 
 	@Override
 	public String getModContainerClass()
 	{
-		return "appeng.transformer.AppEngCore";
+		return "appeng.coremod.AppEngCore";
 	}
 
 	@Nullable
@@ -89,7 +89,7 @@ public final class AppEngCore extends DummyModContainer implements IFMLLoadingPl
 	@Override
 	public String getAccessTransformerClass()
 	{
-		return "appeng.transformer.asm.ASMTweaker";
+		return null;
 	}
 
 	@Override

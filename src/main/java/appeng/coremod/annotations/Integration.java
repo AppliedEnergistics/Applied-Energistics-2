@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.transformer.annotations;
+package appeng.coremod.annotations;
 
 
 import java.lang.annotation.ElementType;

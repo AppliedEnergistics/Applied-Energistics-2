@@ -53,6 +53,7 @@ archivesBaseName = aebasename
 jar {
     manifest {
         attributes 'FMLCorePluginContainsFMLMod': 'true'
+        attributes 'FMLAT': 'appeng_at.cfg'
     }
 
     from sourceSets.api.output
@@ -63,10 +64,11 @@ jar {
     include "assets/**"
     include "mcmod.info"
     include "pack.mcmeta"
+    include "META-INF/appeng_at.cfg"
 }
 
 minecraft {
-    coreMod = "appeng.transformer.AppEngCore"
+    coreMod = "appeng.coremod.AppEngCore"
 
     version = minecraft_version + "-" + forge_version
 
@@ -117,4 +119,7 @@ processResources
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+
+    // move access transformer to META-INF
+    rename '(.+_at.cfg)', 'META-INF/$1'
 }

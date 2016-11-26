@@ -155,7 +155,7 @@ public class Platform
 	 */
 	private static final Random RANDOM_GENERATOR = new Random();
 	private static final WeakHashMap<World, EntityPlayer> FAKE_PLAYERS = new WeakHashMap<World, EntityPlayer>();
-	private static Method getEntry;
+	// private static Method getEntry;
 
 	private static final ItemComparisonHelper ITEM_COMPARISON_HELPER = new ItemComparisonHelper();
 
@@ -1185,7 +1185,9 @@ public class Platform
 
 		final Vec3d vec31 = vec3.addVector( f7 * d3, f6 * d3, f8 * d3 );
 
-		final AxisAlignedBB bb = new AxisAlignedBB( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord, vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) ).expand( 16, 16, 16 );
+		final AxisAlignedBB bb = new AxisAlignedBB( Math.min( vec3.xCoord, vec31.xCoord ), Math.min( vec3.yCoord, vec31.yCoord ), Math.min( vec3.zCoord,
+				vec31.zCoord ), Math.max( vec3.xCoord, vec31.xCoord ), Math.max( vec3.yCoord, vec31.yCoord ), Math.max( vec3.zCoord, vec31.zCoord ) ).expand(
+						16, 16, 16 );
 
 		Entity entity = null;
 		double closest = 9999999.0D;
@@ -1491,7 +1493,8 @@ public class Platform
 
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.LOG_SECURITY_AUDITS ) )
 		{
-			AELog.info( "Audit: " + a_isSecure + " : " + b_isSecure + " @ " + a.getLastSecurityKey() + " vs " + b.getLastSecurityKey() + " & " + a.getPlayerID() + " vs " + b.getPlayerID() );
+			AELog.info(
+					"Audit: " + a_isSecure + " : " + b_isSecure + " @ " + a.getLastSecurityKey() + " vs " + b.getLastSecurityKey() + " & " + a.getPlayerID() + " vs " + b.getPlayerID() );
 		}
 
 		// can't do that son...
@@ -1649,7 +1652,8 @@ public class Platform
 				for( final IAEItemStack x : items )
 				{
 					final ItemStack sh = x.getItemStack();
-					if( ( Platform.itemComparisons().isEqualItemType( providedTemplate, sh ) || ae_req.sameOre( x ) ) && !Platform.itemComparisons().isEqualItem( sh, output ) )
+					if( ( Platform.itemComparisons().isEqualItemType( providedTemplate,
+							sh ) || ae_req.sameOre( x ) ) && !Platform.itemComparisons().isEqualItem( sh, output ) )
 					{ // Platform.isSameItemType( sh, providedTemplate )
 						final ItemStack cp = Platform.cloneItemStack( sh );
 						cp.stackSize = 1;
@@ -1774,19 +1778,11 @@ public class Platform
 		{
 			final WorldServer ws = (WorldServer) c.getWorld();
 			final PlayerChunkMap pm = ws.getPlayerChunkMap();
+			final PlayerChunkMapEntry playerInstance = pm.getEntry( c.xPosition, c.zPosition );
 
-			if( getEntry == null )
+			if( playerInstance != null )
 			{
-				getEntry = ReflectionHelper.findMethod( PlayerChunkMap.class, pm, new String[] { "getEntry", "func_187301_b" }, int.class, int.class );
-			}
-
-			if( getEntry != null )
-			{
-				final PlayerChunkMapEntry playerInstance = (PlayerChunkMapEntry) getEntry.invoke( pm, c.xPosition, c.zPosition );
-				if( playerInstance != null )
-				{
-					playerInstance.sendPacket( new SPacketChunkData( c, verticalBits ) );
-				}
+				playerInstance.sendPacket( new SPacketChunkData( c, verticalBits ) );
 			}
 		}
 		catch( final Throwable t )
