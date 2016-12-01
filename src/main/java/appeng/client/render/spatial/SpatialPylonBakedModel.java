@@ -233,7 +233,7 @@ class SpatialPylonBakedModel implements IBakedModel
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		return null;
+		return this.textures.get( SpatialPylonTextureType.DIM );
 	}
 
 	@Override
