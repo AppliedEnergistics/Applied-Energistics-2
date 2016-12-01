@@ -26,6 +26,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.InterfaceList;
 
 import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyEmitter;
@@ -33,9 +35,6 @@ import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 
 import appeng.api.config.PowerUnits;
-import appeng.coremod.annotations.Integration.Interface;
-import appeng.coremod.annotations.Integration.InterfaceList;
-import appeng.integration.IntegrationType;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.TunnelCollection;
@@ -43,8 +42,8 @@ import appeng.util.Platform;
 
 
 @InterfaceList( value = {
-		@Interface( iface = "ic2.api.energy.tile.IEnergySink", iname = IntegrationType.IC2 ),
-		@Interface( iface = "ic2.api.energy.tile.IEnergySource", iname = IntegrationType.IC2 )
+		@Interface( iface = "ic2.api.energy.tile.IEnergySink", modid = "IC2", striprefs = true ),
+		@Interface( iface = "ic2.api.energy.tile.IEnergySource", modid = "IC2", striprefs = true )
 } )
 public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements IEnergySink, IEnergySource
 {
