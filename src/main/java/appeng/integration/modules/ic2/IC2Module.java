@@ -36,9 +36,13 @@ import appeng.tile.powersink.IExternalPowerSink;
 public class IC2Module implements IIC2
 {
 
+	private static final String[] IC2_CABLE_TYPES = { "copper", "glass", "gold", "iron", "tin", "detector", "splitter" };
+
 	public IC2Module()
 	{
 		IntegrationHelper.testClassExistence( this, ic2.api.energy.tile.IEnergyTile.class );
+		IntegrationHelper.testClassExistence( this, ic2.api.item.IC2Items.class );
+		IntegrationHelper.testClassExistence( this, ic2.api.recipe.Recipes.class );
 		IntegrationHelper.testClassExistence( this, ic2.api.recipe.RecipeInputItemStack.class );
 	}
 
@@ -46,22 +50,21 @@ public class IC2Module implements IIC2
 	public void postInit()
 	{
 		final IP2PTunnelRegistry reg = AEApi.instance().registries().p2pTunnel();
-		reg.addNewAttunement( this.getItem( "copperCableItem" ), TunnelType.IC2_POWER );
-		reg.addNewAttunement( this.getItem( "insulatedCopperCableItem" ), TunnelType.IC2_POWER );
-		reg.addNewAttunement( this.getItem( "goldCableItem" ), TunnelType.IC2_POWER );
-		reg.addNewAttunement( this.getItem( "insulatedGoldCableItem" ), TunnelType.IC2_POWER );
-		reg.addNewAttunement( this.getItem( "ironCableItem" ), TunnelType.IC2_POWER );
-		reg.addNewAttunement( this.getItem( "insulatedIronCableItem" ), TunnelType.IC2_POWER );
-		reg.addNewAttunement( this.getItem( "insulatedTinCableItem" ), TunnelType.IC2_POWER );
-		reg.addNewAttunement( this.getItem( "glassFiberCableItem" ), TunnelType.IC2_POWER );
-		reg.addNewAttunement( this.getItem( "tinCableItem" ), TunnelType.IC2_POWER );
-		reg.addNewAttunement( this.getItem( "detectorCableItem" ), TunnelType.IC2_POWER );
-		reg.addNewAttunement( this.getItem( "splitterCableItem" ), TunnelType.IC2_POWER );
+
+		for( String string : IC2_CABLE_TYPES )
+		{
+			reg.addNewAttunement( this.getCable( string ), TunnelType.IC2_POWER );
+		}
 	}
 
-	private ItemStack getItem( final String name )
+	private ItemStack getItem( final String name, String variant )
 	{
-		return ic2.api.item.IC2Items.getItem( name );
+		return ic2.api.item.IC2Items.getItem( name, variant );
+	}
+
+	private ItemStack getCable( final String type )
+	{
+		return this.getItem( "cable", "type:" + type );
 	}
 
 	/**
