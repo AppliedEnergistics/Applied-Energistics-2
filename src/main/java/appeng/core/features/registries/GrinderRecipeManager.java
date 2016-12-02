@@ -194,7 +194,8 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 	@Override
 	public void oreRegistered( final String name, final ItemStack item )
 	{
-		if( !AEConfig.instance().getGrinderBlackList().contains( name ) && ( name.startsWith( "ore" ) || name.startsWith( "crystal" ) || name.startsWith( "gem" ) || name.startsWith( "ingot" ) || name.startsWith( "dust" ) ) )
+		if( !AEConfig.instance().getGrinderBlackList().contains( name ) && ( name.startsWith( "ore" ) || name.startsWith( "crystal" ) || name
+				.startsWith( "gem" ) || name.startsWith( "ingot" ) || name.startsWith( "dust" ) ) )
 		{
 			for( final String ore : AEConfig.instance().getGrinderOres() )
 			{
@@ -339,7 +340,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		private final Item item;
 		private final int damage;
 
-		public CacheKey( ItemStack input )
+		CacheKey( ItemStack input )
 		{
 			Preconditions.checkNotNull( input );
 			Preconditions.checkNotNull( input.getItem() );
@@ -380,7 +381,9 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 			if( item == null )
 			{
 				if( other.item != null )
+				{
 					return false;
+				}
 			}
 			else if( item != other.item )
 			{

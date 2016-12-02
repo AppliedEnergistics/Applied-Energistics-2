@@ -50,8 +50,8 @@ class GrinderRecipeWrapper extends BlankRecipeWrapper
 		ingredients.setInput( ItemStack.class, recipe.getInput() );
 		List<ItemStack> outputs = new ArrayList<>( 3 );
 		outputs.add( recipe.getOutput() );
-		recipe.getOptionalOutput().ifPresent( itemStack -> outputs.add( itemStack ) );
-		recipe.getSecondOptionalOutput().ifPresent( itemStack -> outputs.add( itemStack ) );
+		recipe.getOptionalOutput().ifPresent( outputs::add );
+		recipe.getSecondOptionalOutput().ifPresent( outputs::add );
 		ingredients.setOutputs( ItemStack.class, outputs );
 	}
 
