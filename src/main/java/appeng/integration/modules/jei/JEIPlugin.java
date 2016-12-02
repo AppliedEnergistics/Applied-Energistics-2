@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -70,8 +71,10 @@ public class JEIPlugin extends BlankModPlugin
 		registerDescriptions( definitions, registry );
 
 		// Allow recipe transfer from JEI to crafting and pattern terminal
-		registry.getRecipeTransferRegistry().addRecipeTransferHandler( new RecipeTransferHandler<>( ContainerCraftingTerm.class ), VanillaRecipeCategoryUid.CRAFTING );
-		registry.getRecipeTransferRegistry().addRecipeTransferHandler( new RecipeTransferHandler<>( ContainerPatternTerm.class ), VanillaRecipeCategoryUid.CRAFTING );
+		registry.getRecipeTransferRegistry().addRecipeTransferHandler( new RecipeTransferHandler<>( ContainerCraftingTerm.class ),
+				VanillaRecipeCategoryUid.CRAFTING );
+		registry.getRecipeTransferRegistry().addRecipeTransferHandler( new RecipeTransferHandler<>( ContainerPatternTerm.class ),
+				VanillaRecipeCategoryUid.CRAFTING );
 	}
 
 	private void registerDescriptions( IDefinitions definitions, IModRegistry registry )
@@ -130,7 +133,7 @@ public class JEIPlugin extends BlankModPlugin
 			return;
 		}
 
-		registry.addRecipes( AEApi.instance().registries().grinder().getRecipes() );
+		registry.addRecipes( Lists.newArrayList( AEApi.instance().registries().grinder().getRecipes() ) );
 		registry.addRecipeHandlers( new GrinderRecipeHandler() );
 		registry.addRecipeCategories( new GrinderRecipeCategory( registry.getJeiHelpers().getGuiHelper() ) );
 		registry.addRecipeCategoryCraftingItem( grindstone, GrinderRecipeCategory.UID );

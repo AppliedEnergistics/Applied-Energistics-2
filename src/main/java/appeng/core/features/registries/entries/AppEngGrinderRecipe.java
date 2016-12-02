@@ -19,55 +19,49 @@
 package appeng.core.features.registries.entries;
 
 
+import java.util.Optional;
+
 import net.minecraft.item.ItemStack;
 
-import appeng.api.features.IGrinderEntry;
+import appeng.api.features.IGrinderRecipe;
 
 
-public class AppEngGrinderRecipe implements IGrinderEntry
+public class AppEngGrinderRecipe implements IGrinderRecipe
 {
 
-	private ItemStack in;
-	private ItemStack out;
+	private final ItemStack in;
+	private final ItemStack out;
 
-	private float optionalChance;
-	private ItemStack optionalOutput;
+	private final float optionalChance;
+	private final Optional<ItemStack> optionalOutput;
 
-	private float optionalChance2;
-	private ItemStack optionalOutput2;
+	private final float optionalChance2;
+	private final Optional<ItemStack> optionalOutput2;
 
-	private int energy;
+	private final int turns;
 
-	public AppEngGrinderRecipe( final ItemStack a, final ItemStack b, final int cost )
+	public AppEngGrinderRecipe( final ItemStack input, final ItemStack output, final int cost )
 	{
-		this.in = a;
-		this.out = b;
-		this.energy = cost;
+		this( input, output, null, null, 0, 0, cost );
 	}
 
-	public AppEngGrinderRecipe( final ItemStack a, final ItemStack b, final ItemStack c, final float chance, final int cost )
+	public AppEngGrinderRecipe( final ItemStack input, final ItemStack output, final ItemStack optional, final float chance, final int cost )
 	{
-		this.in = a;
-		this.out = b;
-
-		this.optionalOutput = c;
-		this.optionalChance = chance;
-
-		this.energy = cost;
+		this( input, output, optional, null, chance, 0, cost );
 	}
 
-	public AppEngGrinderRecipe( final ItemStack a, final ItemStack b, final ItemStack c, final ItemStack d, final float chance, final float chance2, final int cost )
+	public AppEngGrinderRecipe( final ItemStack input, final ItemStack output, final ItemStack optional1, final ItemStack optional2, final float chance1, final float chance2, final int cost )
 	{
-		this.in = a;
-		this.out = b;
+		this.in = input;
+		this.out = output;
 
-		this.optionalOutput = c;
-		this.optionalChance = chance;
+		this.optionalOutput = Optional.ofNullable( optional1 );
+		this.optionalChance = chance1;
 
-		this.optionalOutput2 = d;
+		this.optionalOutput2 = Optional.ofNullable( optional2 );
 		this.optionalChance2 = chance2;
 
-		this.energy = cost;
+		this.turns = cost;
 	}
 
 	@Override
@@ -77,40 +71,21 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 	}
 
 	@Override
-	public void setInput( final ItemStack i )
-	{
-		this.in = i.copy();
-	}
-
-	@Override
 	public ItemStack getOutput()
 	{
 		return this.out;
 	}
 
 	@Override
-	public void setOutput( final ItemStack o )
-	{
-		this.out = o.copy();
-	}
-
-	@Override
-	public ItemStack getOptionalOutput()
+	public Optional<ItemStack> getOptionalOutput()
 	{
 		return this.optionalOutput;
 	}
 
 	@Override
-	public ItemStack getSecondOptionalOutput()
+	public Optional<ItemStack> getSecondOptionalOutput()
 	{
 		return this.optionalOutput2;
-	}
-
-	@Override
-	public void setOptionalOutput( final ItemStack output, final float chance )
-	{
-		this.optionalOutput = output.copy();
-		this.optionalChance = chance;
 	}
 
 	@Override
@@ -120,27 +95,14 @@ public class AppEngGrinderRecipe implements IGrinderEntry
 	}
 
 	@Override
-	public void setSecondOptionalOutput( final ItemStack output, final float chance )
-	{
-		this.optionalChance2 = chance;
-		this.optionalOutput2 = output.copy();
-	}
-
-	@Override
 	public float getSecondOptionalChance()
 	{
 		return this.optionalChance2;
 	}
 
 	@Override
-	public int getEnergyCost()
+	public int getRequiredTurns()
 	{
-		return this.energy;
-	}
-
-	@Override
-	public void setEnergyCost( final int c )
-	{
-		this.energy = c;
+		return this.turns;
 	}
 }

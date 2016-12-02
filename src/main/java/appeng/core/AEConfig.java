@@ -24,7 +24,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
+
+import com.google.common.collect.Sets;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -99,6 +102,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 
 	// Grindstone
 	private String[] grinderOres = Stream.of( ORES_VANILLA, ORES_AE, ORES_COMMON, ORES_MISC ).flatMap( Stream::of ).toArray( String[]::new );
+	private Set<String> grinderBlackList;
 	private double oreDoublePercentage = 90.0;
 
 	// Batteries
@@ -153,8 +157,16 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		this.removeCrashingItemsOnLoad = this.get( "general", "removeCrashingItemsOnLoad", false,
 				"Will auto-remove items that crash when being loaded from storage. This will destroy those items instead of crashing the game!" ).getBoolean();
 
-		this.grinderOres = this.get( "GrindStone", "grinderOres", this.grinderOres ).getStringList();
-		this.oreDoublePercentage = this.get( "GrindStone", "oreDoublePercentage", this.oreDoublePercentage ).getDouble( this.oreDoublePercentage );
+		this.setCategoryComment( "GrindStone",
+				"Creates recipe of the following pattern automatically: '1 oreTYPE => 2 dustTYPE' and '(1 ingotTYPE or 1 crystalTYPE or 1 gemTYPE) => 1 dustTYPE'" );
+		this.grinderOres = this.get( "GrindStone", "grinderOres", this.grinderOres, "The list of types to handle. Specify without a prefix like ore or dust." )
+				.getStringList();
+		this.grinderBlackList = Sets.newHashSet(
+				this.get( "GrindStone", "blacklist", new String[] {}, "Blacklists the exact oredict name from being handled by any recipe." )
+						.getStringList() );
+		this.oreDoublePercentage = this
+				.get( "GrindStone", "oreDoublePercentage", this.oreDoublePercentage, "Chance to actually get an output with stacksize > 1." )
+				.getDouble( this.oreDoublePercentage );
 
 		this.settings.registerSetting( Settings.SEARCH_TOOLTIPS, YesNo.YES );
 		this.settings.registerSetting( Settings.TERMINAL_STYLE, TerminalStyle.TALL );
@@ -630,6 +642,11 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	public String[] getGrinderOres()
 	{
 		return grinderOres;
+	}
+
+	public Set<String> getGrinderBlackList()
+	{
+		return this.grinderBlackList;
 	}
 
 	public double getOreDoublePercentage()
