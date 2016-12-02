@@ -65,12 +65,6 @@ public abstract class AEBaseBlock extends Block
 
 	protected AxisAlignedBB boundingBox = FULL_BLOCK_AABB;
 
-	@Override
-	public boolean isVisuallyOpaque()
-	{
-		return this.isOpaque() && this.isFullSize();
-	}
-
 	protected AEBaseBlock( final Material mat )
 	{
 		super( mat );
@@ -96,13 +90,15 @@ public abstract class AEBaseBlock extends Block
 		this.setLightLevel( 0 );
 		this.setHardness( 2.2F );
 		this.setHarvestLevel( "pickaxe", 0 );
+
+		// Workaround as vanilla sets it way too early.
+		this.fullBlock = this.isFullSize();
 	}
 
 	@Override
-	public String toString()
+	public final boolean isVisuallyOpaque()
 	{
-		String regName = getRegistryName() != null ? getRegistryName().getResourcePath() : "unregistered";
-		return getClass().getSimpleName() + "[" + regName + "]";
+		return this.isOpaque() && this.isFullSize();
 	}
 
 	@Override
@@ -111,29 +107,10 @@ public abstract class AEBaseBlock extends Block
 		return new BlockStateContainer( this, this.getAEStates() );
 	}
 
-	protected IProperty[] getAEStates()
-	{
-		return new IProperty[0];
-	}
-
-	public boolean isOpaque()
-	{
-		return this.isOpaque;
-	}
-
 	@Override
-	public boolean isNormalCube( IBlockState state )
+	public final boolean isNormalCube( IBlockState state )
 	{
 		return this.isFullSize() && this.isOpaque();
-	}
-
-	protected ICustomCollision getCustomCollision( final World w, final BlockPos pos )
-	{
-		if( this instanceof ICustomCollision )
-		{
-			return (ICustomCollision) this;
-		}
-		return null;
 	}
 
 	@Override
@@ -210,7 +187,8 @@ public abstract class AEBaseBlock extends Block
 
 				if( br != null )
 				{
-					br = new AxisAlignedBB( br.minX + pos.getX(), br.minY + pos.getY(), br.minZ + pos.getZ(), br.maxX + pos.getX(), br.maxY + pos.getY(), br.maxZ + pos.getZ() );
+					br = new AxisAlignedBB( br.minX + pos.getX(), br.minY + pos.getY(), br.minZ + pos.getZ(), br.maxX + pos.getX(), br.maxY + pos
+							.getY(), br.maxZ + pos.getZ() );
 					return br;
 				}
 			}
@@ -241,7 +219,8 @@ public abstract class AEBaseBlock extends Block
 			}
 			else
 			{
-				b = new AxisAlignedBB( b.minX + pos.getX(), b.minY + pos.getY(), b.minZ + pos.getZ(), b.maxX + pos.getX(), b.maxY + pos.getY(), b.maxZ + pos.getZ() );
+				b = new AxisAlignedBB( b.minX + pos.getX(), b.minY + pos.getY(), b.minZ + pos.getZ(), b.maxX + pos.getX(), b.maxY + pos.getY(), b.maxZ + pos
+						.getZ() );
 			}
 
 			return b;
@@ -303,19 +282,6 @@ public abstract class AEBaseBlock extends Block
 		return super.collisionRayTrace( state, w, pos, a, b );
 	}
 
-	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
-	{
-		return false;
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	@SuppressWarnings( "unchecked" )
-	public final void getSubBlocks( final Item item, final CreativeTabs tabs, final List itemStacks )
-	{
-		this.getCheckedSubBlocks( item, tabs, itemStacks );
-	}
-
 	@Override
 	public boolean hasComparatorInputOverride( IBlockState state )
 	{
@@ -329,19 +295,9 @@ public abstract class AEBaseBlock extends Block
 	}
 
 	@Override
-	public boolean isNormalCube( IBlockState state, final IBlockAccess world, final BlockPos pos )
+	public final boolean isNormalCube( IBlockState state, final IBlockAccess world, final BlockPos pos )
 	{
 		return this.isFullSize();
-	}
-
-	public IOrientable getOrientable( final IBlockAccess w, final BlockPos pos )
-	{
-		if( this instanceof IOrientableBlock )
-		{
-			IOrientableBlock orientable = (IOrientableBlock) this;
-			return orientable.getOrientable( w, pos );
-		}
-		return null;
 	}
 
 	@Override
@@ -378,36 +334,10 @@ public abstract class AEBaseBlock extends Block
 		return super.rotateBlock( w, pos, axis );
 	}
 
-	protected boolean hasCustomRotation()
-	{
-		return false;
-	}
-
-	protected void customRotateBlock( final IOrientable rotatable, final EnumFacing axis )
-	{
-
-	}
-
-	public boolean isValidOrientation( final World w, final BlockPos pos, final EnumFacing forward, final EnumFacing up )
-	{
-		return true;
-	}
-
 	@Override
 	public EnumFacing[] getValidRotations( final World w, final BlockPos pos )
 	{
 		return new EnumFacing[0];
-	}
-
-	@SideOnly( Side.CLIENT )
-	public void getCheckedSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
-	{
-		super.getSubBlocks( item, tabs, itemStacks );
-	}
-
-	public String getUnlocalizedName( final ItemStack is )
-	{
-		return this.getUnlocalizedName();
 	}
 
 	@Override
@@ -416,12 +346,12 @@ public abstract class AEBaseBlock extends Block
 
 	}
 
-	public boolean hasSubtypes()
+	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
-		return this.hasSubtypes;
+		return false;
 	}
 
-	public EnumFacing mapRotation( final IOrientable ori, final EnumFacing dir )
+	public final EnumFacing mapRotation( final IOrientable ori, final EnumFacing dir )
 	{
 		// case DOWN: return bottomIcon;
 		// case UP: return blockIcon;
@@ -486,36 +416,97 @@ public abstract class AEBaseBlock extends Block
 		return null;
 	}
 
-	public boolean isFullSize()
+	@Override
+	public String toString()
 	{
-		return this.isFullSize;
+		String regName = getRegistryName() != null ? getRegistryName().getResourcePath() : "unregistered";
+		return getClass().getSimpleName() + "[" + regName + "]";
 	}
 
-	public boolean setFullSize( final boolean isFullSize )
+	protected String getUnlocalizedName( final ItemStack is )
 	{
-		this.isFullSize = isFullSize;
-		return isFullSize;
+		return this.getUnlocalizedName();
 	}
 
-	public boolean setOpaque( final boolean isOpaque )
+	protected boolean hasCustomRotation()
+	{
+		return false;
+	}
+
+	protected void customRotateBlock( final IOrientable rotatable, final EnumFacing axis )
+	{
+
+	}
+
+	protected IOrientable getOrientable( final IBlockAccess w, final BlockPos pos )
+	{
+		if( this instanceof IOrientableBlock )
+		{
+			IOrientableBlock orientable = (IOrientableBlock) this;
+			return orientable.getOrientable( w, pos );
+		}
+		return null;
+	}
+
+	protected boolean isValidOrientation( final World w, final BlockPos pos, final EnumFacing forward, final EnumFacing up )
+	{
+		return true;
+	}
+
+	protected ICustomCollision getCustomCollision( final World w, final BlockPos pos )
+	{
+		if( this instanceof ICustomCollision )
+		{
+			return (ICustomCollision) this;
+		}
+		return null;
+	}
+
+	protected IProperty[] getAEStates()
+	{
+		return new IProperty[0];
+	}
+
+	protected boolean isOpaque()
+	{
+		return this.isOpaque;
+	}
+
+	protected boolean setOpaque( final boolean isOpaque )
 	{
 		this.isOpaque = isOpaque;
 		return isOpaque;
 	}
 
-	public boolean isInventory()
+	protected boolean hasSubtypes()
+	{
+		return this.hasSubtypes;
+	}
+
+	protected void setHasSubtypes( final boolean hasSubtypes )
+	{
+		this.hasSubtypes = hasSubtypes;
+	}
+
+	protected boolean isFullSize()
+	{
+		return this.isFullSize;
+	}
+
+	protected boolean setFullSize( final boolean isFullSize )
+	{
+		this.isFullSize = isFullSize;
+		return isFullSize;
+	}
+
+	protected boolean isInventory()
 	{
 		return this.isInventory;
 	}
 
-	public void setInventory( final boolean isInventory )
+	protected void setInventory( final boolean isInventory )
 	{
 		this.isInventory = isInventory;
-	}
-
-	public void setHasSubtypes( final boolean hasSubtypes )
-	{
-		this.hasSubtypes = hasSubtypes;
 	}
 
 }
