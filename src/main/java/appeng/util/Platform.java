@@ -131,6 +131,7 @@ import appeng.me.GridAccessException;
 import appeng.me.GridNode;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.util.helpers.ItemComparisonHelper;
+import appeng.util.helpers.P2PHelper;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.AESharedNBT;
 import appeng.util.prioritylist.IPartitionList;
@@ -159,10 +160,16 @@ public class Platform
 	// private static Method getEntry;
 
 	private static final ItemComparisonHelper ITEM_COMPARISON_HELPER = new ItemComparisonHelper();
+	private static final P2PHelper P2P_HELPER = new P2PHelper();
 
 	public static ItemComparisonHelper itemComparisons()
 	{
 		return ITEM_COMPARISON_HELPER;
+	}
+
+	public static P2PHelper p2p()
+	{
+		return P2P_HELPER;
 	}
 
 	public static Random getRandom()
