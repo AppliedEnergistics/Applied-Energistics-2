@@ -152,7 +152,8 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	}
 
         @Override
-        public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        public boolean shouldCauseReequipAnimation( ItemStack oldStack, ItemStack newStack, boolean slotChanged ) 
+	{
 	        return slotChanged;
         }
 }

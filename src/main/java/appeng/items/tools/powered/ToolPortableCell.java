@@ -188,7 +188,8 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	}
 
 	@Override
-	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+	public boolean shouldCauseReequipAnimation( ItemStack oldStack, ItemStack newStack, boolean slotChanged ) 
+	{
 	        return slotChanged;
 	}
 }
