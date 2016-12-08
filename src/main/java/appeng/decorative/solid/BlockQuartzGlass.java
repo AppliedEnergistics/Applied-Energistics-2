@@ -95,15 +95,17 @@ public class BlockQuartzGlass extends AEBaseBlock
 	{
 		BlockPos adjacentPos = pos.offset( side );
 
-		final Material mat = w.getBlockState( adjacentPos ).getBlock().getMaterial( state );
+		final Material mat = w.getBlockState( adjacentPos ).getMaterial();
+
 		if( mat == Material.GLASS || mat == AEGlassMaterial.INSTANCE )
 		{
-			if( w.getBlockState( adjacentPos ).getBlock().getRenderType( state ) == this.getRenderType( state ) )
+			if( w.getBlockState( adjacentPos ).getRenderType() == this.getRenderType( state ) )
 			{
 				return false;
 			}
 		}
-		return super.shouldSideBeRendered( state, w, pos, side );
+
+		return w.getBlockState( pos ).shouldSideBeRendered( w, adjacentPos, side );
 	}
 
 	@Override
