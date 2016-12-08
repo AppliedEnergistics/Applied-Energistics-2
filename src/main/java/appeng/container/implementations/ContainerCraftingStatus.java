@@ -31,6 +31,7 @@ import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.storage.ITerminalHost;
 import appeng.container.guisync.GuiSync;
+import appeng.util.Platform;
 
 
 public class ContainerCraftingStatus extends ContainerCraftingCPU
@@ -52,50 +53,53 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 	@Override
 	public void detectAndSendChanges()
 	{
-		final ICraftingGrid cc = this.getNetwork().getCache( ICraftingGrid.class );
-		final ImmutableSet<ICraftingCPU> cpuSet = cc.getCpus();
-
-		int matches = 0;
-		boolean changed = false;
-		for( final ICraftingCPU c : cpuSet )
+		if( Platform.isServer() && this.getNetwork() != null )
 		{
-			boolean found = false;
-			for( final CraftingCPURecord ccr : this.cpus )
-			{
-				if( ccr.getCpu() == c )
-				{
-					found = true;
-				}
-			}
+			final ICraftingGrid cc = this.getNetwork().getCache( ICraftingGrid.class );
+			final ImmutableSet<ICraftingCPU> cpuSet = cc.getCpus();
 
-			final boolean matched = this.cpuMatches( c );
-
-			if( matched )
-			{
-				matches++;
-			}
-
-			if( found == !matched )
-			{
-				changed = true;
-			}
-		}
-
-		if( changed || this.cpus.size() != matches )
-		{
-			this.cpus.clear();
+			int matches = 0;
+			boolean changed = false;
 			for( final ICraftingCPU c : cpuSet )
 			{
-				if( this.cpuMatches( c ) )
+				boolean found = false;
+				for( final CraftingCPURecord ccr : this.cpus )
 				{
-					this.cpus.add( new CraftingCPURecord( c.getAvailableStorage(), c.getCoProcessors(), c ) );
+					if( ccr.getCpu() == c )
+					{
+						found = true;
+					}
+				}
+
+				final boolean matched = this.cpuMatches( c );
+
+				if( matched )
+				{
+					matches++;
+				}
+
+				if( found == !matched )
+				{
+					changed = true;
 				}
 			}
 
-			this.sendCPUs();
-		}
+			if( changed || this.cpus.size() != matches )
+			{
+				this.cpus.clear();
+				for( final ICraftingCPU c : cpuSet )
+				{
+					if( this.cpuMatches( c ) )
+					{
+						this.cpus.add( new CraftingCPURecord( c.getAvailableStorage(), c.getCoProcessors(), c ) );
+					}
+				}
 
-		this.noCPU = this.cpus.isEmpty();
+				this.sendCPUs();
+			}
+
+			this.noCPU = this.cpus.isEmpty();
+		}
 
 		super.detectAndSendChanges();
 	}
