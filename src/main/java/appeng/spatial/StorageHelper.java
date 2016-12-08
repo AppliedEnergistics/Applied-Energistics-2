@@ -138,6 +138,8 @@ public class StorageHelper
 				passanger.startRiding( entity, true );
 			}
 		}
+		
+		entity.worldObj.updateEntity( entity );
 
 		return entity;
 	}
