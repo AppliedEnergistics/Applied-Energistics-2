@@ -190,7 +190,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	{
 		if( this.myWatcher != null )
 		{
-			this.myWatcher.clear();
+			this.myWatcher.reset();
 		}
 
 		try

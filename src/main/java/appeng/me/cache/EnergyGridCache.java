@@ -23,11 +23,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.NavigableSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
+import com.google.common.collect.Sets;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -58,8 +59,8 @@ import appeng.me.energy.EnergyWatcher;
 public class EnergyGridCache implements IEnergyGrid
 {
 
-	private final TreeSet<EnergyThreshold> interests = new TreeSet<EnergyThreshold>();
-	private final double AvgLength = 40.0;
+	private final NavigableSet<EnergyThreshold> interests = Sets.newTreeSet();
+	private final double averageLength = 40.0;
 	private final Set<IAEPowerStorage> providers = new LinkedHashSet<IAEPowerStorage>();
 	private final Set<IAEPowerStorage> requesters = new LinkedHashSet<IAEPowerStorage>();
 	private final Multiset<IEnergyGridProvider> energyGridProviders = HashMultiset.create();
@@ -150,24 +151,25 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public void onUpdateTick()
 	{
-		if( !this.getInterests().isEmpty() )
+		if( !this.interests.isEmpty() )
 		{
 			final double oldPower = this.lastStoredPower;
 			this.lastStoredPower = this.getStoredPower();
 
-			final EnergyThreshold low = new EnergyThreshold( Math.min( oldPower, this.lastStoredPower ), null );
-			final EnergyThreshold high = new EnergyThreshold( Math.max( oldPower, this.lastStoredPower ), null );
-			for( final EnergyThreshold th : this.getInterests().subSet( low, true, high, true ) )
+			final EnergyThreshold low = new EnergyThreshold( Math.min( oldPower, this.lastStoredPower ), Integer.MIN_VALUE );
+			final EnergyThreshold high = new EnergyThreshold( Math.max( oldPower, this.lastStoredPower ), Integer.MAX_VALUE );
+
+			for( final EnergyThreshold th : this.interests.subSet( low, true, high, true ) )
 			{
-				( (EnergyWatcher) th.getWatcher() ).post( this );
+				( (EnergyWatcher) th.getEnergyWatcher() ).post( this );
 			}
 		}
 
-		this.avgDrainPerTick *= ( this.AvgLength - 1 ) / this.AvgLength;
-		this.avgInjectionPerTick *= ( this.AvgLength - 1 ) / this.AvgLength;
+		this.avgDrainPerTick *= ( this.averageLength - 1 ) / this.averageLength;
+		this.avgInjectionPerTick *= ( this.averageLength - 1 ) / this.averageLength;
 
-		this.avgDrainPerTick += this.tickDrainPerTick / this.AvgLength;
-		this.avgInjectionPerTick += this.tickInjectionPerTick / this.AvgLength;
+		this.avgDrainPerTick += this.tickDrainPerTick / this.averageLength;
+		this.avgInjectionPerTick += this.tickInjectionPerTick / this.averageLength;
 
 		this.tickDrainPerTick = 0;
 		this.tickInjectionPerTick = 0;
@@ -554,7 +556,7 @@ public class EnergyGridCache implements IEnergyGrid
 			final IEnergyWatcher myWatcher = this.watchers.get( machine );
 			if( myWatcher != null )
 			{
-				myWatcher.clear();
+				myWatcher.reset();
 				this.watchers.remove( machine );
 			}
 		}
@@ -631,8 +633,14 @@ public class EnergyGridCache implements IEnergyGrid
 		storage.dataObject().setDouble( "extraEnergy", this.extra );
 	}
 
-	public TreeSet<EnergyThreshold> getInterests()
+	public boolean registerEnergyInterest( final EnergyThreshold threshold )
 	{
-		return this.interests;
+		return this.interests.add( threshold );
 	}
+
+	public boolean unregisterEnergyInterest( final EnergyThreshold threshold )
+	{
+		return this.interests.remove( threshold );
+	}
+
 }

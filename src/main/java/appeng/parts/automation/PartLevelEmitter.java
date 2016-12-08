@@ -229,17 +229,17 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 
 		if( this.myWatcher != null )
 		{
-			this.myWatcher.clear();
+			this.myWatcher.reset();
 		}
 
 		if( this.myEnergyWatcher != null )
 		{
-			this.myEnergyWatcher.clear();
+			this.myEnergyWatcher.reset();
 		}
 
 		if( this.myCraftingWatcher != null )
 		{
-			this.myCraftingWatcher.clear();
+			this.myCraftingWatcher.reset();
 		}
 
 		try

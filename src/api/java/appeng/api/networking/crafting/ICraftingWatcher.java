@@ -24,12 +24,38 @@
 package appeng.api.networking.crafting;
 
 
-import java.util.Collection;
-
 import appeng.api.storage.data.IAEStack;
 
 
-public interface ICraftingWatcher extends Collection<IAEStack>
+/**
+ * DO NOT IMPLEMENT.
+ * 
+ * Will be injected when adding an {@link ICraftingWatcherHost} to a grid.
+ */
+public interface ICraftingWatcher
 {
+	/**
+	 * Add a specific {@link IAEStack} to watch.
+	 * 
+	 * Supports multiple values, duplicate ones will not be added.
+	 * 
+	 * @param stack
+	 * @return
+	 */
+	boolean add( IAEStack<?> stack );
 
+	/**
+	 * Remove a specific {@link IAEStack} from the watcher.
+	 * 
+	 * @param stack
+	 * @return
+	 */
+	boolean remove( IAEStack<?> stack );
+
+	/**
+	 * Removes all watched stacks and resets the watcher to a clean state.
+	 * 
+	 * @return
+	 */
+	void reset();
 }
