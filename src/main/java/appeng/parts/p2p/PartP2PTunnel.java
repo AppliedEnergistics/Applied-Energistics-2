@@ -55,7 +55,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 {
 	private final TunnelCollection type = new TunnelCollection<T>( null, this.getClass() );
 	private boolean output;
-	private long freq;
+	private short freq;
 
 	public PartP2PTunnel( final ItemStack is )
 	{
@@ -134,7 +134,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	{
 		super.readFromNBT( data );
 		this.setOutput( data.getBoolean( "output" ) );
-		this.setFrequency( data.getLong( "freq" ) );
+		this.setFrequency( data.getShort( "freq" ) );
 	}
 
 	@Override
@@ -142,7 +142,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	{
 		super.writeToNBT( data );
 		data.setBoolean( "output", this.isOutput() );
-		data.setLong( "freq", this.getFrequency() );
+		data.setShort( "freq", this.getFrequency() );
 	}
 
 	@Override
@@ -172,7 +172,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			final NBTTagCompound data = mc.getData( is );
 
 			final ItemStack newType = new ItemStack( data );
-			final long freq = data.getLong( "freq" );
+			final short freq = data.getShort( "freq" );
 
 			if( !newType.isEmpty() )
 			{
@@ -267,7 +267,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			if( !newType.isEmpty() && !Platform.itemComparisons().isEqualItem( newType, this.getItemStack() ) )
 			{
 				final boolean oldOutput = this.isOutput();
-				final long myFreq = this.getFrequency();
+				final short myFreq = this.getFrequency();
 
 				this.getHost().removePart( this.getSide(), false );
 				final AEPartLocation dir = this.getHost().addPart( newType, this.getSide(), player, hand );
@@ -307,17 +307,17 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			final IMemoryCard mc = (IMemoryCard) is.getItem();
 			final NBTTagCompound data = new NBTTagCompound();
 
-			long newFreq = this.getFrequency();
+			short newFreq = this.getFrequency();
 			final boolean wasOutput = this.isOutput();
 			this.setOutput( false );
 
-			if( wasOutput || this.getFrequency() == 0 )
-			{
-				newFreq = System.currentTimeMillis();
-			}
-
 			try
 			{
+				if( wasOutput || this.getFrequency() == 0 )
+				{
+					newFreq = this.getProxy().getP2P().newFrequency();
+				}
+				
 				this.getProxy().getP2P().updateFreq( this, newFreq );
 			}
 			catch( final GridAccessException e )
@@ -331,7 +331,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			final String type = p2pItem.getUnlocalizedName();
 
 			p2pItem.writeToNBT( data );
-			data.setLong( "freq", this.getFrequency() );
+			data.setShort( "freq", this.getFrequency() );
 
 			mc.setMemoryCardContents( is, type + ".name", data );
 			mc.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );
@@ -363,12 +363,12 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		}
 	}
 
-	public long getFrequency()
+	public short getFrequency()
 	{
 		return this.freq;
 	}
 
-	public void setFrequency( final long freq )
+	public void setFrequency( final short freq )
 	{
 		this.freq = freq;
 	}
