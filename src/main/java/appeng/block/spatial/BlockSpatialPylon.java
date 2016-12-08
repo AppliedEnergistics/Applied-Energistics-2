@@ -62,9 +62,9 @@ public class BlockSpatialPylon extends AEBaseTileBlock
 	}
 
 	@Override
-	public void neighborChanged( final IBlockState state, final World w, final BlockPos pos, final Block neighborBlock )
+	public void neighborChanged( IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
 	{
-		final TileSpatialPylon tsp = this.getTileEntity( w, pos );
+		final TileSpatialPylon tsp = this.getTileEntity( world, pos );
 		if( tsp != null )
 		{
 			tsp.neighborChanged();

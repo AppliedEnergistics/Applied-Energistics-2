@@ -66,7 +66,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 		for( int x = 0; x < inv.getSizeInventory(); x++ )
 		{
 			final NBTTagCompound item = opt.getCompoundTag( "item" + x );
-			inv.setInventorySlotContents( x, ItemStack.loadItemStackFromNBT( item ) );
+			inv.setInventorySlotContents( x, new ItemStack( item ) );
 		}
 	}
 
@@ -136,11 +136,11 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	}
 
 	@Override
-	public boolean isUseableByPlayer( final EntityPlayer p )
+	public boolean isUsableByPlayer( final EntityPlayer p )
 	{
 		final double squaredMCReach = 64.0D;
 
-		return this.worldObj.getTileEntity( this.pos ) == this && p.getDistanceSq( this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D ) <= squaredMCReach;
+		return this.world.getTileEntity( this.pos ) == this && p.getDistanceSq( this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D ) <= squaredMCReach;
 	}
 
 	@Override
@@ -169,7 +169,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	@Override
 	public int[] getSlotsForFace( final EnumFacing side )
 	{
-		final Block blk = this.worldObj.getBlockState( this.pos ).getBlock();
+		final Block blk = this.world.getBlockState( this.pos ).getBlock();
 		if( blk instanceof AEBaseBlock )
 		{
 			return this.getAccessibleSlotsBySide( ( (AEBaseBlock) blk ).mapRotation( this, side ) );

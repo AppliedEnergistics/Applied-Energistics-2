@@ -144,7 +144,8 @@ public enum MaterialType
 		this( metaValue, modelName, features );
 		this.droppedEntity = c;
 
-		EntityRegistry.registerModEntity( this.droppedEntity, this.droppedEntity.getSimpleName(), EntityIds.get( this.droppedEntity ), AppEng.instance(), 16, 4,
+		EntityRegistry.registerModEntity( new ResourceLocation( this.droppedEntity.getName() ), this.droppedEntity, this.droppedEntity.getSimpleName(),
+				EntityIds.get( this.droppedEntity ), AppEng.instance(), 16, 4,
 				true );
 	}
 
@@ -153,7 +154,8 @@ public enum MaterialType
 		this( metaValue, modelName, features );
 		this.oreName = oreDictionary;
 		this.droppedEntity = c;
-		EntityRegistry.registerModEntity( this.droppedEntity, this.droppedEntity.getSimpleName(), EntityIds.get( this.droppedEntity ), AppEng.instance(), 16, 4,
+		EntityRegistry.registerModEntity( new ResourceLocation( this.droppedEntity.getName() ), this.droppedEntity, this.droppedEntity.getSimpleName(),
+				EntityIds.get( this.droppedEntity ), AppEng.instance(), 16, 4,
 				true );
 	}
 

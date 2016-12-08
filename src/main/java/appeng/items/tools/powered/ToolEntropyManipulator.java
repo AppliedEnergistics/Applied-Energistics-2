@@ -209,13 +209,13 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick( final ItemStack item, final World w, final EntityPlayer p, final EnumHand hand )
+	public ActionResult<ItemStack> onItemRightClick( final World w, final EntityPlayer p, final EnumHand hand )
 	{
 		final RayTraceResult target = this.rayTrace( w, p, true );
 
 		if( target == null )
 		{
-			return new ActionResult<ItemStack>( EnumActionResult.FAIL, item );
+			return new ActionResult<ItemStack>( EnumActionResult.FAIL, p.getHeldItemMainhand() );
 		}
 		else
 		{
@@ -226,13 +226,13 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 				{
 					if( Platform.hasPermissions( new DimensionalCoord( w, target.getBlockPos() ), p ) )
 					{
-						this.onItemUse( item, p, w, target.getBlockPos(), hand, EnumFacing.UP, 0.0F, 0.0F, 0.0F );
+						this.onItemUse( p, w, target.getBlockPos(), hand, EnumFacing.UP, 0.0F, 0.0F, 0.0F );
 					}
 				}
 			}
 		}
 
-		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, item );
+		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItemMainhand() );
 	}
 
 	@Override

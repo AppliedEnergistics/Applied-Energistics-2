@@ -22,14 +22,11 @@ package appeng.block.networking;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -47,6 +44,7 @@ import appeng.helpers.ICustomCollision;
 import appeng.tile.networking.TileWireless;
 import appeng.util.Platform;
 
+
 public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 {
 
@@ -62,7 +60,6 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 			return name().toLowerCase();
 		}
 	}
-
 
 	public static final PropertyEnum<State> STATE = PropertyEnum.create( "state", State.class );
 
@@ -111,7 +108,7 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean onBlockActivated( final World w, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onBlockActivated( final World w, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( player.isSneaking() )
 		{

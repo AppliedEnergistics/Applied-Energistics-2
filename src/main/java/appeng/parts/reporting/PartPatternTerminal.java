@@ -165,7 +165,7 @@ public class PartPatternTerminal extends AbstractPartTerminal
 				final ItemStack is = this.crafting.getStackInSlot( x );
 				if( is != null )
 				{
-					is.stackSize = 1;
+					is.setCount( 1 );
 				}
 			}
 		}

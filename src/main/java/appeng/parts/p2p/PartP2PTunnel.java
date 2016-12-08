@@ -171,7 +171,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			final IMemoryCard mc = (IMemoryCard) is.getItem();
 			final NBTTagCompound data = mc.getData( is );
 
-			final ItemStack newType = ItemStack.loadItemStackFromNBT( data );
+			final ItemStack newType = new ItemStack( data );
 			final long freq = data.getLong( "freq" );
 
 			if( newType != null )
@@ -231,13 +231,13 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 				 * break;
 				 */
 
-				case FLUID:
-					newType = parts.p2PTunnelLiquids().maybeStack( 1 ).orElse( null );
-					break;
+				//case FLUID:
+				//	newType = parts.p2PTunnelLiquids().maybeStack( 1 ).orElse( null );
+				//	break;
 
-				case IC2_POWER:
-					newType = parts.p2PTunnelEU().maybeStack( 1 ).orElse( null );
-					break;
+				//case IC2_POWER:
+				//	newType = parts.p2PTunnelEU().maybeStack( 1 ).orElse( null );
+				//	break;
 
 				case ITEM:
 					newType = parts.p2PTunnelItems().maybeStack( 1 ).orElse( null );

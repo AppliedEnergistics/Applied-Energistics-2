@@ -260,7 +260,7 @@ public enum GuiBridge implements IGuiHandler
 			{
 				it = player.inventory.getCurrentItem();
 			}
-			else if( x >= 0 && x < player.inventory.mainInventory.length )
+			else if( x >= 0 && x < player.inventory.mainInventory.size() )
 			{
 				it = player.inventory.getStackInSlot( x );
 			}
@@ -442,7 +442,7 @@ public enum GuiBridge implements IGuiHandler
 			{
 				it = player.inventory.getCurrentItem();
 			}
-			else if( x >= 0 && x < player.inventory.mainInventory.length )
+			else if( x >= 0 && x < player.inventory.mainInventory.size() )
 			{
 				it = player.inventory.getStackInSlot( x );
 			}
@@ -505,7 +505,7 @@ public enum GuiBridge implements IGuiHandler
 		final World w = player.getEntityWorld();
 		final BlockPos pos = new BlockPos( x, y, z );
 
-		if( Platform.hasPermissions( te != null ? new DimensionalCoord( te ) : new DimensionalCoord( player.worldObj, pos ), player ) )
+		if( Platform.hasPermissions( te != null ? new DimensionalCoord( te ) : new DimensionalCoord( player.world, pos ), player ) )
 		{
 			if( this.type.isItem() )
 			{

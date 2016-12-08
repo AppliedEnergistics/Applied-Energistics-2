@@ -407,6 +407,13 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	@Override
 	public void saveChanges( final IMEInventory cellInventory )
 	{
-		this.worldObj.markChunkDirty( this.pos, this );
+		this.world.markChunkDirty( this.pos, this );
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

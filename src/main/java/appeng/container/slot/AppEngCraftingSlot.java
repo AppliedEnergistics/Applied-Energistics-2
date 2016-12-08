@@ -32,6 +32,7 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.stats.AchievementList;
+import net.minecraft.util.NonNullList;
 
 
 public class AppEngCraftingSlot extends AppEngSlot
@@ -85,7 +86,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	@Override
 	protected void onCrafting( final ItemStack par1ItemStack )
 	{
-		par1ItemStack.onCrafting( this.thePlayer.worldObj, this.thePlayer, this.amountCrafted );
+		par1ItemStack.onCrafting( this.thePlayer.world, this.thePlayer, this.amountCrafted );
 		this.amountCrafted = 0;
 
 		if( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.CRAFTING_TABLE ) )
@@ -140,7 +141,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	}
 
 	@Override
-	public void onPickupFromSlot( final EntityPlayer playerIn, final ItemStack stack )
+	public ItemStack onTake( final EntityPlayer playerIn, final ItemStack stack )
 	{
 		net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerCraftingEvent( playerIn, stack, this.craftMatrix );
 		this.onCrafting( stack );
@@ -152,7 +153,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 			ic.setInventorySlotContents( x, this.craftMatrix.getStackInSlot( x ) );
 		}
 
-		final ItemStack[] aitemstack = CraftingManager.getInstance().getRemainingItems( ic, playerIn.worldObj );
+		final NonNullList<ItemStack> aitemstack = CraftingManager.getInstance().getRemainingItems( ic, playerIn.world );
 
 		for( int x = 0; x < this.craftMatrix.getSizeInventory(); x++ )
 		{
@@ -161,10 +162,10 @@ public class AppEngCraftingSlot extends AppEngSlot
 
 		net.minecraftforge.common.ForgeHooks.setCraftingPlayer( null );
 
-		for( int i = 0; i < aitemstack.length; ++i )
+		for( int i = 0; i < aitemstack.size(); ++i )
 		{
 			final ItemStack itemstack1 = this.craftMatrix.getStackInSlot( i );
-			final ItemStack itemstack2 = aitemstack[i];
+			final ItemStack itemstack2 = aitemstack.get( i );
 
 			if( itemstack1 != null )
 			{
@@ -183,6 +184,8 @@ public class AppEngCraftingSlot extends AppEngSlot
 				}
 			}
 		}
+		
+		return stack;
 	}
 
 	/**
@@ -194,7 +197,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 	{
 		if( this.getHasStack() )
 		{
-			this.amountCrafted += Math.min( par1, this.getStack().stackSize );
+			this.amountCrafted += Math.min( par1, this.getStack().getCount() );
 		}
 
 		return super.decrStackSize( par1 );

@@ -313,7 +313,7 @@ public final class MeteoritePlacer
 							if( nugget != null )
 							{
 								nugget = nugget.copy();
-								nugget.stackSize = (int) ( Math.random() * 12 ) + 1;
+								nugget.setCount( (int) ( Math.random() * 12 ) + 1 );
 								ap.addItems( nugget );
 							}
 							break;

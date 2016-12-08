@@ -55,9 +55,9 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 		if( filter == null || Platform.itemComparisons().isSameItem( filter, hand ) )
 		{
 			final ItemStack result = hand.copy();
-			result.stackSize = hand.stackSize > amount ? amount : hand.stackSize;
-			hand.stackSize -= amount;
-			if( hand.stackSize <= 0 )
+			result.setCount( hand.getCount() > amount ? amount : hand.getCount() );
+			hand.grow( -amount );
+			if( hand.getCount() <= 0 )
 			{
 				this.player.inventory.setItemStack( null );
 			}
@@ -80,7 +80,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 		if( filter == null || Platform.itemComparisons().isSameItem( filter, hand ) )
 		{
 			final ItemStack result = hand.copy();
-			result.stackSize = hand.stackSize > amount ? amount : hand.stackSize;
+			result.setCount( hand.getCount() > amount ? amount : hand.getCount() );
 			return result;
 		}
 
@@ -99,9 +99,9 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 		if( filter == null || Platform.itemComparisons().isFuzzyEqualItem( filter, hand, fuzzyMode ) )
 		{
 			final ItemStack result = hand.copy();
-			result.stackSize = hand.stackSize > amount ? amount : hand.stackSize;
-			hand.stackSize -= amount;
-			if( hand.stackSize <= 0 )
+			result.setCount( hand.getCount() > amount ? amount : hand.getCount() );
+			hand.grow( -amount );
+			if( hand.getCount() <= 0 )
 			{
 				this.player.inventory.setItemStack( null );
 			}
@@ -124,7 +124,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 		if( filter == null || Platform.itemComparisons().isFuzzyEqualItem( filter, hand, fuzzyMode ) )
 		{
 			final ItemStack result = hand.copy();
-			result.stackSize = hand.stackSize > amount ? amount : hand.stackSize;
+			result.setCount( hand.getCount() > amount ? amount : hand.getCount() );
 			return result;
 		}
 
@@ -139,7 +139,7 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 		{
 			return null;
 		}
-		if( toBeAdded.stackSize == 0 )
+		if( toBeAdded.getCount() == 0 )
 		{
 			return null;
 		}
@@ -168,15 +168,15 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 		else
 		{
 			newHand = hand;
-			original = hand.stackSize;
-			newHand.stackSize += toBeAdded.stackSize;
+			original = hand.getCount();
+			newHand.grow( toBeAdded.getCount() );
 		}
 
-		if( newHand.stackSize > newHand.getMaxStackSize() )
+		if( newHand.getCount() > newHand.getMaxStackSize() )
 		{
-			newHand.stackSize = newHand.getMaxStackSize();
+			newHand.setCount( newHand.getMaxStackSize() );
 			final ItemStack B = toBeAdded.copy();
-			B.stackSize -= newHand.stackSize - original;
+			B.grow( -( newHand.getCount() - original ) );
 			this.player.inventory.setItemStack( newHand );
 			return B;
 		}
@@ -208,15 +208,15 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 		else
 		{
 			newHand = hand.copy();
-			original = hand.stackSize;
-			newHand.stackSize += toBeSimulated.stackSize;
+			original = hand.getCount();
+			newHand.grow( toBeSimulated.getCount() );
 		}
 
-		if( newHand.stackSize > newHand.getMaxStackSize() )
+		if( newHand.getCount() > newHand.getMaxStackSize() )
 		{
-			newHand.stackSize = newHand.getMaxStackSize();
+			newHand.setCount( newHand.getMaxStackSize() );
 			final ItemStack B = toBeSimulated.copy();
-			B.stackSize -= newHand.stackSize - original;
+			B.grow( -( newHand.getCount() - original ) );
 			return B;
 		}
 

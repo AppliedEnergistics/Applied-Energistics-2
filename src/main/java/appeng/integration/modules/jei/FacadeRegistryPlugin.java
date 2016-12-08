@@ -110,4 +110,10 @@ class FacadeRegistryPlugin implements IRecipeRegistryPlugin
 
 		return Collections.emptyList();
 	}
+
+	@Override
+	public <T extends IRecipeWrapper> List<T> getRecipeWrappers( IRecipeCategory<T> recipeCategory )
+	{
+		return Collections.emptyList();
+	}
 }

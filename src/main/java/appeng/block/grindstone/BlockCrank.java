@@ -135,7 +135,7 @@ public class BlockCrank extends AEBaseTileBlock
 	}
 
 	@Override
-	public void neighborChanged( final IBlockState state, final World world, final BlockPos pos, final Block neighborBlock )
+	public void neighborChanged( IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
 	{
 
 		final AEBaseTile tile = this.getTileEntity( world, pos );

@@ -51,16 +51,16 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick( final ItemStack is, final World w, final EntityPlayer p, final EnumHand hand )
+	public ActionResult<ItemStack> onItemRightClick( final World w, final EntityPlayer p, final EnumHand hand )
 	{
 		if( p.isSneaking() )
 		{
-			this.encode( is, p );
+			this.encode( p.getHeldItemMainhand(), p );
 			p.swingArm( hand );
-			return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, is );
+			return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItemMainhand() );
 		}
 
-		return new ActionResult<ItemStack>( EnumActionResult.PASS, is );
+		return new ActionResult<ItemStack>( EnumActionResult.PASS, p.getHeldItemMainhand() );
 	}
 	
 	@Override

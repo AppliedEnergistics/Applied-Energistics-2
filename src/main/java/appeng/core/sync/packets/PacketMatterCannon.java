@@ -93,7 +93,7 @@ public class PacketMatterCannon extends AppEngPacket
 		try
 		{
 
-			final World world = FMLClientHandler.instance().getClient().theWorld;
+			final World world = FMLClientHandler.instance().getClient().world;
 			for( int a = 1; a < this.len; a++ )
 			{
 				final MatterCannonFX fx = new MatterCannonFX( world, this.x + this.dx * a, this.y + this.dy * a, this.z + this.dz * a, Items.DIAMOND );

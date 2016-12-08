@@ -82,7 +82,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 
 	public static IAEFluidStack loadFluidStackFromNBT( final NBTTagCompound i )
 	{
-		final ItemStack itemstack = ItemStack.loadItemStackFromNBT( i );
+		final ItemStack itemstack = new ItemStack( i );
 		if( itemstack == null )
 		{
 			return null;

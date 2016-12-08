@@ -27,9 +27,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.client.ClientHelper;
 import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
+import appeng.core.AppEng;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
@@ -75,7 +75,7 @@ public class PacketLightning extends AppEngPacket
 		{
 			if( Platform.isClient() && AEConfig.instance().isEnableEffects() )
 			{
-				final LightningFX fx = new LightningFX( ClientHelper.proxy.getWorld(), this.x, this.y, this.z, 0.0f, 0.0f, 0.0f );
+				final LightningFX fx = new LightningFX( AppEng.proxy.getWorld(), this.x, this.y, this.z, 0.0f, 0.0f, 0.0f );
 				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 			}
 		}

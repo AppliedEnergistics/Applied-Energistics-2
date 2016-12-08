@@ -104,9 +104,9 @@ public class NetworkToolViewer implements INetworkTool
 	}
 
 	@Override
-	public boolean isUseableByPlayer( final EntityPlayer entityplayer )
+	public boolean isUsableByPlayer( final EntityPlayer entityplayer )
 	{
-		return this.inv.isUseableByPlayer( entityplayer );
+		return this.inv.isUsableByPlayer( entityplayer );
 	}
 
 	@Override
@@ -167,5 +167,11 @@ public class NetworkToolViewer implements INetworkTool
 	public ITextComponent getDisplayName()
 	{
 		return this.inv.getDisplayName();
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		return false;
 	}
 }

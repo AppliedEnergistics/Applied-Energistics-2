@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.OreDictionary;
@@ -182,7 +183,7 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 	}
 
 	@Override
-	public ItemStack[] getRemainingItems( final InventoryCrafting inv )
+	public NonNullList<ItemStack> getRemainingItems( final InventoryCrafting inv )
 	{
 		return ForgeHooks.defaultRecipeGetRemainingItems( inv );
 	}

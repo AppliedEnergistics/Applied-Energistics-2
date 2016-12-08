@@ -93,14 +93,9 @@ class CondenserCategory extends BlankRecipeCategory<CondenserOutputWrapper>
 	}
 
 	@Override
-	public void drawAnimations( Minecraft minecraft )
-	{
-		progress.draw( minecraft );
-	}
-
-	@Override
 	public void drawExtras( Minecraft minecraft )
 	{
+		progress.draw( minecraft );
 		iconTrash.draw( minecraft );
 		iconButton.draw( minecraft );
 	}

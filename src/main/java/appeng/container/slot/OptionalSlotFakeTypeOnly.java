@@ -37,13 +37,13 @@ public class OptionalSlotFakeTypeOnly extends OptionalSlotFake
 		if( is != null )
 		{
 			is = is.copy();
-			if( is.stackSize > 1 )
+			if( is.getCount() > 1 )
 			{
-				is.stackSize = 1;
+				is.setCount( 1 );
 			}
-			else if( is.stackSize < -1 )
+			else if( is.getCount() < -1 )
 			{
-				is.stackSize = -1;
+				is.setCount( -1 );
 			}
 		}
 

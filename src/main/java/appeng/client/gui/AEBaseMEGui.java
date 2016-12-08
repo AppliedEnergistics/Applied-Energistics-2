@@ -82,10 +82,10 @@ public abstract class AEBaseMEGui extends AEBaseGui
 						currentToolTip.add( TextFormatting.GRAY + format );
 					}
 				}
-				else if( stack.stackSize > BigNumber || ( stack.stackSize > 1 && stack.isItemDamaged() ) )
+				else if( stack.getCount() > BigNumber || ( stack.getCount() > 1 && stack.isItemDamaged() ) )
 				{
 					final String local = ButtonToolTips.ItemsStored.getLocal();
-					final String formattedAmount = NumberFormat.getNumberInstance( Locale.US ).format( stack.stackSize );
+					final String formattedAmount = NumberFormat.getNumberInstance( Locale.US ).format( stack.getCount() );
 					final String format = String.format( local, formattedAmount );
 
 					currentToolTip.add( TextFormatting.GRAY + format );
@@ -119,7 +119,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 			if( myStack != null )
 			{
 				@SuppressWarnings( "unchecked" )
-				final List<String> currentToolTip = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
+				final List<String> currentToolTip = stack.getTooltip( this.mc.player, this.mc.gameSettings.advancedItemTooltips );
 
 				if( myStack.getStackSize() > BigNumber || ( myStack.getStackSize() > 1 && stack.isItemDamaged() ) )
 				{
@@ -134,10 +134,10 @@ public abstract class AEBaseMEGui extends AEBaseGui
 				this.drawTooltip( x, y, currentToolTip );
 				return;
 			}
-			else if( stack.stackSize > BigNumber )
+			else if( stack.getCount() > BigNumber )
 			{
-				List<String> var4 = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
-				var4.add( "Items Stored: " + NumberFormat.getNumberInstance( Locale.US ).format( stack.stackSize ) );
+				List<String> var4 = stack.getTooltip( this.mc.player, this.mc.gameSettings.advancedItemTooltips );
+				var4.add( "Items Stored: " + NumberFormat.getNumberInstance( Locale.US ).format( stack.getCount() ) );
 				this.drawTooltip( x, y, var4 );
 				return;
 			}

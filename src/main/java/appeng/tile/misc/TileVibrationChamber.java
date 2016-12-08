@@ -160,7 +160,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		if( is != null )
 		{
 			final int newBurnTime = TileEntityFurnace.getItemBurnTime( is );
-			if( newBurnTime > 0 && is.stackSize > 0 )
+			if( newBurnTime > 0 && is.getCount() > 0 )
 			{
 				return true;
 			}
@@ -247,12 +247,12 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		if( is != null )
 		{
 			final int newBurnTime = TileEntityFurnace.getItemBurnTime( is );
-			if( newBurnTime > 0 && is.stackSize > 0 )
+			if( newBurnTime > 0 && is.getCount() > 0 )
 			{
 				this.setBurnTime( this.getBurnTime() + newBurnTime );
 				this.setMaxBurnTime( this.getBurnTime() );
-				is.stackSize--;
-				if( is.stackSize <= 0 )
+				is.grow( -1 );
+				if( is.getCount() <= 0 )
 				{
 					ItemStack container = null;
 
@@ -290,9 +290,9 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 			this.isOn = this.getBurnTime() > 0;
 			this.markForUpdate();
 
-			if( this.hasWorldObj() )
+			if( this.hasWorld() )
 			{
-				Platform.notifyBlocksOfNeighbors( this.worldObj, this.pos );
+				Platform.notifyBlocksOfNeighbors( this.world, this.pos );
 			}
 		}
 	}
@@ -325,5 +325,12 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	private void setBurnTime( final double burnTime )
 	{
 		this.burnTime = burnTime;
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

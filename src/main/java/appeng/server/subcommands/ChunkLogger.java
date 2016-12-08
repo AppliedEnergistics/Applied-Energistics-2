@@ -90,12 +90,12 @@ public class ChunkLogger implements ISubCommand
 		if( this.enabled )
 		{
 			MinecraftForge.EVENT_BUS.register( this );
-			sender.addChatMessage( new TextComponentTranslation( "commands.ae2.ChunkLoggerOn" ) );
+			sender.sendMessage( new TextComponentTranslation( "commands.ae2.ChunkLoggerOn" ) );
 		}
 		else
 		{
 			MinecraftForge.EVENT_BUS.unregister( this );
-			sender.addChatMessage( new TextComponentTranslation( "commands.ae2.ChunkLoggerOff" ) );
+			sender.sendMessage( new TextComponentTranslation( "commands.ae2.ChunkLoggerOff" ) );
 		}
 	}
 }

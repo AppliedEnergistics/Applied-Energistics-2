@@ -92,7 +92,7 @@ public class AppEngNullInventory implements IInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer( final EntityPlayer var1 )
+	public boolean isUsableByPlayer( final EntityPlayer var1 )
 	{
 		return false;
 	}
@@ -143,5 +143,11 @@ public class AppEngNullInventory implements IInventory
 	public void clear()
 	{
 
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		return true;
 	}
 }

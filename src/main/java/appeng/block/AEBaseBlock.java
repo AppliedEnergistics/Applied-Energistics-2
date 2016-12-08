@@ -94,12 +94,6 @@ public abstract class AEBaseBlock extends Block
 	}
 
 	@Override
-	public final boolean isVisuallyOpaque()
-	{
-		return this.isOpaque() && this.isFullSize();
-	}
-
-	@Override
 	protected BlockStateContainer createBlockState()
 	{
 		return new BlockStateContainer( this, this.getAEStates() );
@@ -151,10 +145,10 @@ public abstract class AEBaseBlock extends Block
 		{
 			if( Platform.isClient() )
 			{
-				final EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+				final EntityPlayer player = Minecraft.getMinecraft().player;
 				final LookDirection ld = Platform.getPlayerRay( player, Platform.getEyeOffset( player ) );
 
-				final Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxesFromPool( w, pos, Minecraft.getMinecraft().thePlayer, true );
+				final Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxesFromPool( w, pos, Minecraft.getMinecraft().player, true );
 				AxisAlignedBB br = null;
 
 				double lastDist = 0;

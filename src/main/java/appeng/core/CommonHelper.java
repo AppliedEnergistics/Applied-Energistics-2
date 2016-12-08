@@ -26,7 +26,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.SidedProxy;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.block.AEBaseBlock;
@@ -37,8 +36,6 @@ import appeng.core.sync.AppEngPacket;
 public abstract class CommonHelper
 {
 
-	@SidedProxy( clientSide = "appeng.client.ClientHelper", serverSide = "appeng.server.ServerHelper" )
-	public static CommonHelper proxy;
 
 	public abstract void preinit();
 
@@ -52,7 +49,7 @@ public abstract class CommonHelper
 
 	public abstract void sendToAllNearExcept( EntityPlayer p, double x, double y, double z, double dist, World w, AppEngPacket packet );
 
-	public abstract void spawnEffect( EffectType effect, World worldObj, double posX, double posY, double posZ, Object extra );
+	public abstract void spawnEffect( EffectType effect, World world, double posX, double posY, double posZ, Object extra );
 
 	public abstract boolean shouldAddParticles( Random r );
 

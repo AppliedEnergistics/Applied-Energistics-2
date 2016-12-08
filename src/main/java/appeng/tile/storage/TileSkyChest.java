@@ -128,9 +128,9 @@ public class TileSkyChest extends AEBaseInvTile implements ITickable
 		if( !player.isSpectator() )
 		{
 			this.setPlayerOpen( this.getPlayerOpen() + 1 );
-			this.worldObj.addBlockEvent( this.pos, this.getBlockType(), 1, this.numPlayersUsing );
-			this.worldObj.notifyNeighborsOfStateChange( this.pos, this.getBlockType() );
-			this.worldObj.notifyNeighborsOfStateChange( this.pos.down(), this.getBlockType() );
+			this.world.addBlockEvent( this.pos, this.getBlockType(), 1, this.numPlayersUsing );
+			this.world.notifyNeighborsOfStateChange( this.pos, this.getBlockType(), true );
+			this.world.notifyNeighborsOfStateChange( this.pos.down(), this.getBlockType(), true );
 
 			if( this.getPlayerOpen() == 1 )
 			{
@@ -146,9 +146,9 @@ public class TileSkyChest extends AEBaseInvTile implements ITickable
 		if( !player.isSpectator() )
 		{
 			this.setPlayerOpen( this.getPlayerOpen() - 1 );
-			this.worldObj.addBlockEvent( this.pos, this.getBlockType(), 1, this.numPlayersUsing );
-			this.worldObj.notifyNeighborsOfStateChange( this.pos, this.getBlockType() );
-			this.worldObj.notifyNeighborsOfStateChange( this.pos.down(), this.getBlockType() );
+			this.world.addBlockEvent( this.pos, this.getBlockType(), 1, this.numPlayersUsing );
+			this.world.notifyNeighborsOfStateChange( this.pos, this.getBlockType(), true );
+			this.world.notifyNeighborsOfStateChange( this.pos.down(), this.getBlockType(), true );
 
 			if( this.getPlayerOpen() < 0 )
 			{
@@ -251,5 +251,12 @@ public class TileSkyChest extends AEBaseInvTile implements ITickable
 	private void setLastEvent( final long lastEvent )
 	{
 		this.lastEvent = lastEvent;
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

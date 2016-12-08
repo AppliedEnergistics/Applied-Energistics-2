@@ -85,7 +85,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 		for( int x = 0; x < inTag.tagCount(); x++ )
 		{
-			final ItemStack gs = ItemStack.loadItemStackFromNBT( inTag.getCompoundTagAt( x ) );
+			final ItemStack gs = new ItemStack( inTag.getCompoundTagAt( x ) );
 
 			this.crafting.setInventorySlotContents( x, gs );
 
@@ -119,7 +119,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 			for( int x = 0; x < outTag.tagCount(); x++ )
 			{
-				final ItemStack gs = ItemStack.loadItemStackFromNBT( outTag.getCompoundTagAt( x ) );
+				final ItemStack gs = new ItemStack( outTag.getCompoundTagAt( x ) );
 
 				if( gs != null )
 				{

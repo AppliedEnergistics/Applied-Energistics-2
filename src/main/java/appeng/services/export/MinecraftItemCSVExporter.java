@@ -43,6 +43,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.common.registry.FMLControlledNamespacedRegistry;
 
@@ -235,7 +236,7 @@ final class MinecraftItemCSVExporter implements Exporter
 			if( hasSubtypes )
 			{
 				final CreativeTabs creativeTab = input.getCreativeTab();
-				final List<ItemStack> stacks = Lists.newArrayList();
+				final NonNullList<ItemStack> stacks = NonNullList.create();
 
 				// modifies the stacks list and adds the different sub types to it
 				try

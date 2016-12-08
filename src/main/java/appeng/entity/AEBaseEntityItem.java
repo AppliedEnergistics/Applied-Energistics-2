@@ -43,6 +43,6 @@ public abstract class AEBaseEntityItem extends EntityItem
 	@SuppressWarnings( "unchecked" )
 	protected List<Entity> getCheckedEntitiesWithinAABBExcludingEntity( final AxisAlignedBB region )
 	{
-		return this.worldObj.getEntitiesWithinAABBExcludingEntity( this, region );
+		return this.world.getEntitiesWithinAABBExcludingEntity( this, region );
 	}
 }

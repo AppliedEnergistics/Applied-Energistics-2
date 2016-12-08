@@ -72,7 +72,7 @@ public final class Tracer
 		double y = player.posY;
 		double z = player.posZ;
 
-		if( player.worldObj.isRemote )
+		if( player.world.isRemote )
 		{
 			// compatibility with eye height changing mods
 			y += player.getEyeHeight() - player.getDefaultEyeHeight();

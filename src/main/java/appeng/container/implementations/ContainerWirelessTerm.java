@@ -47,7 +47,7 @@ public class ContainerWirelessTerm extends ContainerMEPortableCell
 		{
 			if( Platform.isServer() && this.isValidContainer() )
 			{
-				this.getPlayerInv().player.addChatMessage( PlayerMessages.OutOfRange.get() );
+				this.getPlayerInv().player.sendMessage( PlayerMessages.OutOfRange.get() );
 			}
 
 			this.setValidContainer( false );

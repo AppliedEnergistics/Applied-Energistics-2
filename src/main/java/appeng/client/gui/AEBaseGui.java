@@ -251,14 +251,14 @@ public abstract class AEBaseGui extends GuiContainer
 				{
 					if( fs.isEnabled() )
 					{
-						this.drawTexturedModalRect( ox + fs.xDisplayPosition - 1, oy + fs.yDisplayPosition - 1, fs.getSourceX() - 1, fs.getSourceY() - 1, 18,
+						this.drawTexturedModalRect( ox + fs.xPos - 1, oy + fs.yPos - 1, fs.getSourceX() - 1, fs.getSourceY() - 1, 18,
 								18 );
 					}
 					else
 					{
 						GlStateManager.color( 1.0F, 1.0F, 1.0F, 0.4F );
 						GlStateManager.enableBlend();
-						this.drawTexturedModalRect( ox + fs.xDisplayPosition - 1, oy + fs.yDisplayPosition - 1, fs.getSourceX() - 1, fs.getSourceY() - 1, 18,
+						this.drawTexturedModalRect( ox + fs.xPos - 1, oy + fs.yPos - 1, fs.getSourceX() - 1, fs.getSourceY() - 1, 18,
 								18 );
 						GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
 					}
@@ -297,7 +297,7 @@ public abstract class AEBaseGui extends GuiContainer
 	protected void mouseClickMove( final int x, final int y, final int c, final long d )
 	{
 		final Slot slot = this.getSlot( x, y );
-		final ItemStack itemstack = this.mc.thePlayer.inventory.getItemStack();
+		final ItemStack itemstack = this.mc.player.inventory.getItemStack();
 
 		if( this.getScrollBar() != null )
 		{
@@ -326,7 +326,7 @@ public abstract class AEBaseGui extends GuiContainer
 	@Override
 	protected void handleMouseClick( final Slot slot, final int slotIdx, final int mouseButton, final ClickType clickType )
 	{
-		final EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+		final EntityPlayer player = Minecraft.getMinecraft().player;
 
 		if( slot instanceof SlotFake )
 		{
@@ -521,7 +521,7 @@ public abstract class AEBaseGui extends GuiContainer
 				for( final Slot inventorySlot : slots )
 				{
 					if( inventorySlot != null && inventorySlot.canTakeStack(
-							this.mc.thePlayer ) && inventorySlot.getHasStack() && inventorySlot.inventory == slot.inventory && Container.canAddItemToSlot(
+							this.mc.player ) && inventorySlot.getHasStack() && inventorySlot.inventory == slot.inventory && Container.canAddItemToSlot(
 									inventorySlot, this.dbl_whichItem, true ) )
 					{
 						this.handleMouseClick( inventorySlot, inventorySlot.slotNumber, 1, clickType );
@@ -540,7 +540,7 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		final Slot theSlot = this.getSlotUnderMouse();
 
-		if( this.mc.thePlayer.inventory.getItemStack() == null && theSlot != null )
+		if( this.mc.player.inventory.getItemStack() == null && theSlot != null )
 		{
 			for( int j = 0; j < 9; ++j )
 			{
@@ -594,7 +594,7 @@ public abstract class AEBaseGui extends GuiContainer
 		for( final Slot slot : slots )
 		{
 			// isPointInRegion
-			if( this.isPointInRegion( slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, mouseX, mouseY ) )
+			if( this.isPointInRegion( slot.xPos, slot.yPos, 16, 16, mouseX, mouseY ) )
 			{
 				return slot;
 			}
@@ -704,7 +704,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 				if( !this.isPowered() )
 				{
-					drawRect( s.xDisplayPosition, s.yDisplayPosition, 16 + s.xDisplayPosition, 16 + s.yDisplayPosition, 0x66111111 );
+					drawRect( s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111 );
 				}
 
 				this.zLevel = 0.0F;
@@ -713,7 +713,7 @@ public abstract class AEBaseGui extends GuiContainer
 				// Annoying but easier than trying to splice into render item
 				super.drawSlot( new Size1Slot( s ) );
 
-				stackSizeRenderer.renderStackSize( fontRendererObj, ( (SlotME) s ).getAEStack(), s.getStack(), s.xDisplayPosition, s.yDisplayPosition );
+				stackSizeRenderer.renderStackSize( fontRendererObj, ( (SlotME) s ).getAEStack(), s.getStack(), s.xPos, s.yPos );
 
 			}
 			catch( final Exception err )
@@ -745,8 +745,8 @@ public abstract class AEBaseGui extends GuiContainer
 							GlStateManager.enableTexture2D();
 							GlStateManager.blendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA );
 							GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
-							final float par1 = aes.xDisplayPosition;
-							final float par2 = aes.yDisplayPosition;
+							final float par1 = aes.xPos;
+							final float par2 = aes.yPos;
 							final float par3 = uv_x * 16;
 							final float par4 = uv_y * 16;
 
@@ -786,7 +786,7 @@ public abstract class AEBaseGui extends GuiContainer
 						{
 							try
 							{
-								isValid = ( (SlotRestrictedInput) s ).isValid( is, this.mc.theWorld );
+								isValid = ( (SlotRestrictedInput) s ).isValid( is, this.mc.world );
 							}
 							catch( final Exception err )
 							{
@@ -802,7 +802,7 @@ public abstract class AEBaseGui extends GuiContainer
 						this.itemRender.zLevel = 100.0F;
 
 						GlStateManager.disableLighting();
-						drawRect( s.xDisplayPosition, s.yDisplayPosition, 16 + s.xDisplayPosition, 16 + s.yDisplayPosition, 0x66ff6666 );
+						drawRect( s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66ff6666 );
 						GlStateManager.enableLighting();
 
 						this.zLevel = 0.0F;

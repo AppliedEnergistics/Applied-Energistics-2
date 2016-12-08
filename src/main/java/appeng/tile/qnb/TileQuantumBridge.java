@@ -259,7 +259,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 		for( final EnumFacing d : EnumFacing.values() )
 		{
-			final TileEntity te = this.worldObj.getTileEntity( this.pos.offset( d ) );
+			final TileEntity te = this.world.getTileEntity( this.pos.offset( d ) );
 			if( te instanceof TileQuantumBridge )
 			{
 				set.add( d );
@@ -315,7 +315,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	public void neighborUpdate()
 	{
-		this.calc.calculateMultiblock( this.worldObj, this.getLocation() );
+		this.calc.calculateMultiblock( this.world, this.getLocation() );
 	}
 
 	@Override
@@ -344,5 +344,12 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	public byte getCorner()
 	{
 		return this.corner;
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

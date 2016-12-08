@@ -48,11 +48,6 @@ public class SlotME extends Slot
 	}
 
 	@Override
-	public void onPickupFromSlot( final EntityPlayer par1EntityPlayer, final ItemStack par2ItemStack )
-	{
-	}
-
-	@Override
 	public boolean isItemValid( final ItemStack par1ItemStack )
 	{
 		return false;

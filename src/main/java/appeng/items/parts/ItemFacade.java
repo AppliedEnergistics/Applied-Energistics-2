@@ -38,6 +38,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -69,9 +70,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst( final ItemStack is, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
+	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
-		return AEApi.instance().partHelper().placeBus( is, pos, side, player, hand, world );
+		return AEApi.instance().partHelper().placeBus( player.getHeldItemMainhand(), pos, side, player, hand, world );
 	}
 
 	@Override
@@ -94,7 +95,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final List<ItemStack> itemStacks )
+	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
 	{
 		this.calculateSubTypes();
 		itemStacks.addAll( this.subTypes );
@@ -116,7 +117,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 						continue;
 					}
 
-					final List<ItemStack> tmpList = new ArrayList<ItemStack>( 100 );
+					final NonNullList<ItemStack> tmpList = NonNullList.create();
 					b.getSubBlocks( item, b.getCreativeTabToDisplayOn(), tmpList );
 					for( final ItemStack l : tmpList )
 					{
@@ -336,6 +337,6 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		}
 
 		Block blk = blockState.getBlock();
-		return blk.canRenderInLayer( BlockRenderLayer.TRANSLUCENT );
+		return blk.canRenderInLayer( blockState, BlockRenderLayer.TRANSLUCENT );
 	}
 }

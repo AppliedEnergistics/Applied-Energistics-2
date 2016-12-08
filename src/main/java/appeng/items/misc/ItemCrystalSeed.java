@@ -32,6 +32,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
@@ -62,7 +64,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	{
 		this.setHasSubtypes( true );
 
-		EntityRegistry.registerModEntity( EntityGrowingCrystal.class, EntityGrowingCrystal.class.getSimpleName(), EntityIds.get( EntityGrowingCrystal.class ), AppEng.instance(), 16, 4, true );
+		EntityRegistry.registerModEntity( new ResourceLocation( EntityGrowingCrystal.class.getName() ), EntityGrowingCrystal.class, EntityGrowingCrystal.class.getSimpleName(), EntityIds.get( EntityGrowingCrystal.class ), AppEng.instance(), 16, 4, true );
 	}
 
 	@Nullable
@@ -109,7 +111,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	{
 		final int newDamage = getProgress( is ) + 1;
 		final IMaterials materials = AEApi.instance().definitions().materials();
-		final int size = is.stackSize;
+		final int size = is.getCount();
 
 		if( newDamage == CERTUS + SINGLE_OFFSET )
 		{
@@ -237,7 +239,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	@Override
-	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final List<ItemStack> itemStacks )
+	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
 	{
 		// lvl 0
 		itemStacks.add( newStyle( new ItemStack( this, 1, CERTUS ) ) );

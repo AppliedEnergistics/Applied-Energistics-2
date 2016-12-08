@@ -41,6 +41,6 @@ public class Supporters implements ISubCommand
 	public void call( final MinecraftServer srv, final String[] data, final ICommandSender sender )
 	{
 		final String[] who = { "Stig Halvorsen", "Josh Ricker", "Jenny \"Othlon\" Sutherland", "Hristo Bogdanov", "BevoLJ" };
-		sender.addChatMessage( new TextComponentString( "Special thanks to " + Joiner.on( ", " ).join( who ) ) );
+		sender.sendMessage( new TextComponentString( "Special thanks to " + Joiner.on( ", " ).join( who ) ) );
 	}
 }

@@ -35,10 +35,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -95,10 +91,9 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
-import appeng.util.item.AEFluidStack;
 
 
-public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHandler, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, ITickable
+public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, ITickable
 {
 
 	private static final ChestNoHandler NO_HANDLER = new ChestNoHandler();
@@ -336,7 +331,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	@Override
 	public boolean isCellBlinking( final int slot )
 	{
-		final long now = this.worldObj.getTotalWorldTime();
+		final long now = this.world.getTotalWorldTime();
 		if( now - this.lastStateChange > 8 )
 		{
 			return false;
@@ -371,7 +366,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	@Override
 	public void update()
 	{
-		if( this.worldObj.isRemote )
+		if( this.world.isRemote )
 		{
 			return;
 		}
@@ -407,7 +402,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	@TileEvent( TileEventType.NETWORK_WRITE )
 	public void writeToStream_TileChest( final ByteBuf data )
 	{
-		if( this.worldObj.getTotalWorldTime() - this.lastStateChange > 8 )
+		if( this.world.getTotalWorldTime() - this.lastStateChange > 8 )
 		{
 			this.state = 0;
 		}
@@ -466,7 +461,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			this.storageType = new ItemStack( Item.getItemById( item & 0xffff ), 1, item >> Platform.DEF_OFFSET );
 		}
 
-		this.lastStateChange = this.worldObj.getTotalWorldTime();
+		this.lastStateChange = this.world.getTotalWorldTime();
 
 		return oldPaintedColor != this.paintedColor || ( this.state & 0xDB6DB6DB ) != ( oldState & 0xDB6DB6DB ) || !Platform.itemComparisons().isSameItem( oldType, this.storageType );
 	}
@@ -549,9 +544,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			}
 
 			// update the neighbors
-			if( this.worldObj != null )
+			if( this.world != null )
 			{
-				Platform.notifyBlocksOfNeighbors( this.worldObj, this.pos );
+				Platform.notifyBlocksOfNeighbors( this.world, this.pos );
 				this.markForUpdate();
 			}
 		}
@@ -577,7 +572,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			{
 				final IMEInventory<IAEItemStack> cell = this.getHandler( StorageChannel.ITEMS );
 				final IAEItemStack returns = cell.injectItems( AEApi.instance().storage().createItemStack( this.inv.getStackInSlot( 0 ) ), Actionable.SIMULATE, this.mySrc );
-				return returns == null || returns.getStackSize() != insertingItem.stackSize;
+				return returns == null || returns.getStackSize() != insertingItem.getCount();
 			}
 			catch( final ChestNoHandler ignored )
 			{
@@ -687,7 +682,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	@Override
 	public void blinkCell( final int slot )
 	{
-		final long now = this.worldObj.getTotalWorldTime();
+		final long now = this.world.getTotalWorldTime();
 		if( now - this.lastStateChange > 8 )
 		{
 			this.state = 0;
@@ -697,84 +692,6 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		this.state |= 1 << ( slot * 3 + 2 );
 
 		this.recalculateDisplay();
-	}
-
-	@Override
-	public int fill( final EnumFacing from, final FluidStack resource, final boolean doFill )
-	{
-		final double req = resource.amount / 500.0;
-		final double available = this.extractAEPower( req, Actionable.SIMULATE, PowerMultiplier.CONFIG );
-		if( available >= req - 0.01 )
-		{
-			try
-			{
-				final IMEInventoryHandler h = this.getHandler( StorageChannel.FLUIDS );
-
-				this.extractAEPower( req, Actionable.MODULATE, PowerMultiplier.CONFIG );
-				final IAEStack results = h.injectItems( AEFluidStack.create( resource ), doFill ? Actionable.MODULATE : Actionable.SIMULATE, this.mySrc );
-
-				if( results == null )
-				{
-					return resource.amount;
-				}
-
-				return resource.amount - (int) results.getStackSize();
-			}
-			catch( final ChestNoHandler ignored )
-			{
-			}
-		}
-		return 0;
-	}
-
-	@Override
-	public FluidStack drain( final EnumFacing from, final FluidStack resource, final boolean doDrain )
-	{
-		return null;
-	}
-
-	@Override
-	public FluidStack drain( final EnumFacing from, final int maxDrain, final boolean doDrain )
-	{
-		return null;
-	}
-
-	@Override
-	public boolean canFill( final EnumFacing from, final Fluid fluid )
-	{
-		try
-		{
-			final IMEInventoryHandler h = this.getHandler( StorageChannel.FLUIDS );
-			return h.canAccept( AEFluidStack.create( new FluidStack( fluid, 1 ) ) );
-		}
-		catch( final ChestNoHandler ignored )
-		{
-		}
-		return false;
-	}
-
-	@Override
-	public boolean canDrain( final EnumFacing from, final Fluid fluid )
-	{
-		return false;
-	}
-
-	@Override
-	public FluidTankInfo[] getTankInfo( final EnumFacing from )
-	{
-		try
-		{
-			final IMEInventoryHandler h = this.getHandler( StorageChannel.FLUIDS );
-			if( h.getChannel() == StorageChannel.FLUIDS )
-			{
-				return new FluidTankInfo[] { new FluidTankInfo( null, 1 ) }; // eh?
-			}
-		}
-		catch( final ChestNoHandler ignored )
-		{
-		}
-
-		return null;
 	}
 
 	public ItemStack getStorageType()
@@ -854,7 +771,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	@Override
 	public void saveChanges( final IMEInventory cellInventory )
 	{
-		this.worldObj.markChunkDirty( this.pos, this );
+		this.world.markChunkDirty( this.pos, this );
 	}
 
 	private static class ChestNoHandler extends Exception
@@ -1020,6 +937,13 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			}
 			return null;
 		}
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

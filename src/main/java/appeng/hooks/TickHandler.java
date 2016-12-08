@@ -46,7 +46,7 @@ import appeng.api.parts.CableRenderMode;
 import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.CommonHelper;
+import appeng.core.AppEng;
 import appeng.core.sync.packets.PacketPaintedEntity;
 import appeng.crafting.CraftingJob;
 import appeng.me.Grid;
@@ -189,7 +189,7 @@ public class TickHandler
 			if( currentMode != this.crm )
 			{
 				this.crm = currentMode;
-				CommonHelper.proxy.triggerUpdates();
+				AppEng.proxy.triggerUpdates();
 			}
 		}
 

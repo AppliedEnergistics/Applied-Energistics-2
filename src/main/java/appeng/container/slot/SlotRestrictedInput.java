@@ -130,7 +130,7 @@ public class SlotRestrictedInput extends AppEngSlot
 				if( i.getItem() instanceof ICraftingPatternItem )
 				{
 					final ICraftingPatternItem b = (ICraftingPatternItem) i.getItem();
-					final ICraftingPatternDetails de = b.getPatternForItem( i, this.p.player.worldObj );
+					final ICraftingPatternDetails de = b.getPatternForItem( i, this.p.player.world );
 					if( de != null )
 					{
 						return de.isCraftable();

@@ -174,10 +174,10 @@ public class CubeBuilder
 				putVertexTR( builder, face, x2, y2, z1, uv );
 				break;
 			case NORTH:
-				putVertexBR( builder, face, x2, y2, z1, uv );
-				putVertexTR( builder, face, x2, y1, z1, uv );
+				putVertexTL( builder, face, x2, y2, z1, uv );
+				putVertexTL( builder, face, x2, y1, z1, uv );
 				putVertexTL( builder, face, x1, y1, z1, uv );
-				putVertexBL( builder, face, x1, y2, z1, uv );
+				putVertexTL( builder, face, x1, y2, z1, uv );
 				break;
 			case SOUTH:
 				putVertexBL( builder, face, x1, y2, z2, uv );

@@ -66,4 +66,10 @@ class InscriberRegistryPlugin implements IRecipeRegistryPlugin
 	{
 		return null;
 	}
+
+	@Override
+	public <T extends IRecipeWrapper> List<T> getRecipeWrappers( IRecipeCategory<T> recipeCategory )
+	{
+		return null;
+	}
 }

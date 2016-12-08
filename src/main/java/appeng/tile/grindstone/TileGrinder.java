@@ -50,8 +50,8 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	public void setOrientation( final EnumFacing inForward, final EnumFacing inUp )
 	{
 		super.setOrientation( inForward, inUp );
-		final IBlockState state = this.worldObj.getBlockState( this.pos );
-		this.getBlockType().neighborChanged( state, this.worldObj, this.pos, state.getBlock() );
+		final IBlockState state = this.world.getBlockState( this.pos );
+		this.getBlockType().neighborChanged( state, this.world, this.pos, state.getBlock(), this.pos );
 	}
 
 	@Override
@@ -111,13 +111,13 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 				final IGrinderRecipe r = AEApi.instance().registries().grinder().getRecipeForInput( item );
 				if( r != null )
 				{
-					if( item.stackSize >= r.getInput().stackSize )
+					if( item.getCount() >= r.getInput().getCount() )
 					{
-						item.stackSize -= r.getInput().stackSize;
+						item.grow( -r.getInput().getCount() );
 						final ItemStack ais = item.copy();
-						ais.stackSize = r.getInput().stackSize;
+						ais.setCount( r.getInput().getCount() );
 
-						if( item.stackSize <= 0 )
+						if( item.getCount() <= 0 )
 						{
 							item = null;
 						}
@@ -194,7 +194,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 			final List<ItemStack> out = new ArrayList<ItemStack>();
 			out.add( notAdded );
 
-			Platform.spawnDrops( this.worldObj, this.pos.offset( this.getForward() ), out );
+			Platform.spawnDrops( this.world, this.pos.offset( this.getForward() ), out );
 		}
 	}
 
@@ -202,5 +202,12 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	public boolean canCrankAttach( final EnumFacing directionToCrank )
 	{
 		return this.getUp() == directionToCrank;
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

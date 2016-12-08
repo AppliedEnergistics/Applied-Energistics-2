@@ -52,6 +52,6 @@ public class IMEInventoryDestination implements IInventoryDestination
 		{
 			return true;
 		}
-		return failed.getStackSize() != stack.stackSize;
+		return failed.getStackSize() != stack.getCount();
 	}
 }

@@ -56,13 +56,13 @@ import appeng.api.parts.IPartModel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
+import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.core.sync.packets.PacketTransitionEffect;
 import appeng.hooks.TickHandler;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.parts.PartBasicState;
-import appeng.server.ServerHelper;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
@@ -292,8 +292,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 				if( changed )
 				{
-					ServerHelper.proxy.sendToAllNearExcept( null, pos.getX(), pos.getY(), pos.getZ(), 64, this.getTile().getWorld(),
-							new PacketTransitionEffect( entity.posX, entity.posY, entity.posZ, this.getSide(), false ) );
+					AppEng.proxy.sendToAllNearExcept( null, pos.getX(), pos.getY(), pos.getZ(), 64, this.getTile().getWorld(), new PacketTransitionEffect( entity.posX, entity.posY, entity.posZ, this.getSide(), false ) );
 				}
 			}
 		}
@@ -368,11 +367,11 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 			return true;
 		}
 
-		final int oldStackSize = entityItem.getEntityItem().stackSize;
+		final int oldStackSize = entityItem.getEntityItem().getCount();
 		final int newStackSize = (int) overflow.getStackSize();
 		final boolean changed = oldStackSize != newStackSize;
 
-		entityItem.getEntityItem().stackSize = newStackSize;
+		entityItem.getEntityItem().setCount( newStackSize );
 
 		return changed;
 	}
@@ -402,7 +401,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		overflowEntity.motionY = 0;
 		overflowEntity.motionZ = 0;
 
-		w.spawnEntityInWorld( overflowEntity );
+		w.spawnEntity( overflowEntity );
 	}
 
 	protected boolean isAnnihilationPlane( final TileEntity blockTileEntity, final AEPartLocation side )
@@ -457,8 +456,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 						{
 							energy.extractAEPower( requiredPower, Actionable.MODULATE, PowerMultiplier.CONFIG );
 							this.breakBlockAndStoreItems( w, pos, items );
-							ServerHelper.proxy.sendToAllNearExcept( null, pos.getX(), pos.getY(), pos.getZ(), 64, w,
-									new PacketTransitionEffect( pos.getX(), pos.getY(), pos.getZ(), this.getSide(), true ) );
+							AppEng.proxy.sendToAllNearExcept( null, pos.getX(), pos.getY(), pos.getZ(), 64, w, new PacketTransitionEffect( pos.getX(), pos.getY(), pos.getZ(), this.getSide(), true ) );
 						}
 						else
 						{
@@ -531,7 +529,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		float requiredEnergy = 1 + hardness;
 		for( final ItemStack is : items )
 		{
-			requiredEnergy += is.stackSize;
+			requiredEnergy += is.getCount();
 		}
 
 		return requiredEnergy;

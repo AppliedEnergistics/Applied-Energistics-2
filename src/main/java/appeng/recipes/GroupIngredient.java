@@ -117,7 +117,7 @@ public class GroupIngredient implements IIngredient
 
 		for( final ItemStack is : out )
 		{
-			is.stackSize = this.qty;
+			is.setCount( this.qty );
 		}
 
 		return out.toArray( new ItemStack[out.size()] );

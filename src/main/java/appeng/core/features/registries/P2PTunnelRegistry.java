@@ -28,8 +28,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.AEApi;
@@ -134,10 +132,10 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 	{
 		if( trigger != null )
 		{
-			if( FluidContainerRegistry.isContainer( trigger ) )
-			{
-				return TunnelType.FLUID;
-			}
+			// if( FluidRegistry.isContainer( trigger ) )
+			// {
+			// return TunnelType.FLUID;
+			// }
 
 			for( final ItemStack is : this.tunnels.keySet() )
 			{
@@ -159,7 +157,8 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 	@Nullable
 	private ItemStack getModItem( final String modID, final String name, final int meta )
 	{
-		final Item item = GameRegistry.findItem( modID, name );
+
+		final Item item = Item.getByNameOrId( modID + ":" + name );
 
 		if( item == null )
 		{

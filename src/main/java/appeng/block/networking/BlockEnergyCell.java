@@ -19,8 +19,6 @@
 package appeng.block.networking;
 
 
-import java.util.List;
-
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
@@ -28,6 +26,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -63,7 +62,7 @@ public class BlockEnergyCell extends AEBaseTileBlock
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
+	public void getSubBlocks( final Item item, final CreativeTabs tabs, final NonNullList<ItemStack> itemStacks )
 	{
 		super.getSubBlocks( item, tabs, itemStacks );
 

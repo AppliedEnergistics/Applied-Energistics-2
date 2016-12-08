@@ -59,10 +59,8 @@ import appeng.parts.networking.PartCableGlass;
 import appeng.parts.networking.PartCableSmart;
 import appeng.parts.networking.PartDenseCable;
 import appeng.parts.networking.PartQuartzFiber;
-import appeng.parts.p2p.PartP2PIC2Power;
 import appeng.parts.p2p.PartP2PItems;
 import appeng.parts.p2p.PartP2PLight;
-import appeng.parts.p2p.PartP2PLiquids;
 import appeng.parts.p2p.PartP2PRedstone;
 import appeng.parts.p2p.PartP2PTunnelME;
 import appeng.parts.reporting.PartConversionMonitor;
@@ -226,25 +224,25 @@ public enum PartType
 		}
 	},
 
-	P2PTunnelLiquids( 463, "p2p_tunnel_liquids", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_LIQUIDS ), EnumSet
-			.noneOf( IntegrationType.class ), PartP2PLiquids.class, GuiText.FluidTunnel )
-	{
-		@Override
-		String getUnlocalizedName()
-		{
-			return "P2PTunnel";
-		}
-	},
-
-	P2PTunnelEU( 465, "p2p_tunnel_ic2", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_EU ), EnumSet
-			.of( IntegrationType.IC2 ), PartP2PIC2Power.class, GuiText.EUTunnel )
-	{
-		@Override
-		String getUnlocalizedName()
-		{
-			return "P2PTunnel";
-		}
-	},
+//	P2PTunnelLiquids( 463, "p2p_tunnel_liquids", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_LIQUIDS ), EnumSet
+//			.noneOf( IntegrationType.class ), PartP2PLiquids.class, GuiText.FluidTunnel )
+//	{
+//		@Override
+//		String getUnlocalizedName()
+//		{
+//			return "P2PTunnel";
+//		}
+//	},
+//
+//	P2PTunnelEU( 465, "p2p_tunnel_ic2", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_EU ), EnumSet
+//			.of( IntegrationType.IC2 ), PartP2PIC2Power.class, GuiText.EUTunnel )
+//	{
+//		@Override
+//		String getUnlocalizedName()
+//		{
+//			return "P2PTunnel";
+//		}
+//	},
 
 	// P2PTunnelRF( 466, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelRF ), EnumSet.of( IntegrationType.RF ),
 	// PartP2PRFPower.class, GuiText.RFTunnel ),

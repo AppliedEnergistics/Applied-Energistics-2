@@ -50,7 +50,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	}
 
 	@Override
-	public EnumActionResult onItemUse( final ItemStack stack, final EntityPlayer p, final World worldIn, final BlockPos pos, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public EnumActionResult onItemUse( final EntityPlayer p, final World worldIn, final BlockPos pos, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( Platform.isServer() )
 		{
@@ -60,14 +60,14 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick( final ItemStack it, final World w, final EntityPlayer p, final EnumHand hand )
+	public ActionResult<ItemStack> onItemRightClick( final World w, final EntityPlayer p, final EnumHand hand )
 	{
 		if( Platform.isServer() )
 		{
 			Platform.openGUI( p, null, AEPartLocation.INTERNAL, GuiBridge.GUI_QUARTZ_KNIFE );
 		}
 		p.swingArm( hand );
-		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, it );
+		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItemMainhand() );
 	}
 
 	@Override

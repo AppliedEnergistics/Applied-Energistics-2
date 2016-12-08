@@ -242,9 +242,6 @@ class BlockDefinitionBuilder implements IBlockBuilder
 			factory.addPreInit( side -> {
 				Class<? extends AEBaseTile> tileEntityClass = tileBlock.getTileEntityClass();
 				AEBaseTile.registerTileItem( tileEntityClass, new BlockStackSrc( block, 0, ActivityState.Enabled ) );
-
-				// TODO: Change after transition phase
-				GameRegistry.registerTileEntityWithAlternatives( tileEntityClass, AppEng.MOD_ID.toLowerCase() + ":" + registryName, registryName );
 			} );
 
 			return (T) new TileDefinition( registryName, (AEBaseTileBlock) block, item );

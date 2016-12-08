@@ -38,7 +38,7 @@ import appeng.api.AEApi;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.core.CommonHelper;
+import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.helpers.PatternHelper;
 import appeng.items.AEBaseItem;
@@ -56,17 +56,17 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick( final ItemStack stack, final World w, final EntityPlayer player, final EnumHand hand )
+	public ActionResult<ItemStack> onItemRightClick( final World w, final EntityPlayer player, final EnumHand hand )
 	{
-		this.clearPattern( stack, player );
+		this.clearPattern( player.getHeldItemMainhand(), player );
 
-		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, stack );
+		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, player.getHeldItemMainhand() );
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
+	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
-		return this.clearPattern( stack, player ) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
+		return this.clearPattern( player.getHeldItemMainhand(), player ) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
 	}
 
 	private boolean clearPattern( final ItemStack stack, final EntityPlayer player )
@@ -80,7 +80,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 
 			final InventoryPlayer inv = player.inventory;
 
-			ItemStack is = AEApi.instance().definitions().materials().blankPattern().maybeStack( stack.stackSize ).orElse( null );
+			ItemStack is = AEApi.instance().definitions().materials().blankPattern().maybeStack( stack.getCount() ).orElse( null );
 			if( is != null )
 			{
 				for( int s = 0; s < player.inventory.getSizeInventory(); s++ )
@@ -100,7 +100,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	@Override
 	public void addCheckedInformation( final ItemStack stack, final EntityPlayer player, final List<String> lines, final boolean displayMoreInfo )
 	{
-		final ICraftingPatternDetails details = this.getPatternForItem( stack, player.worldObj );
+		final ICraftingPatternDetails details = this.getPatternForItem( stack, player.world );
 
 		if( details == null )
 		{
@@ -172,7 +172,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 			return out;
 		}
 
-		final World w = CommonHelper.proxy.getWorld();
+		final World w = AppEng.proxy.getWorld();
 		if( w == null )
 		{
 			return null;

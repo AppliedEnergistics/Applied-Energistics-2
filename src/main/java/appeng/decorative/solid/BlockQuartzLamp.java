@@ -30,7 +30,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.client.render.effects.VibrantFX;
 import appeng.core.AEConfig;
-import appeng.core.CommonHelper;
+import appeng.core.AppEng;
 
 
 public class BlockQuartzLamp extends BlockQuartzGlass
@@ -50,7 +50,7 @@ public class BlockQuartzLamp extends BlockQuartzGlass
 			return;
 		}
 
-		if( CommonHelper.proxy.shouldAddParticles( r ) )
+		if( AppEng.proxy.shouldAddParticles( r ) )
 		{
 			final double d0 = ( r.nextFloat() - 0.5F ) * 0.96D;
 			final double d1 = ( r.nextFloat() - 0.5F ) * 0.96D;

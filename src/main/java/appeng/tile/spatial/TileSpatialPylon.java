@@ -96,7 +96,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 
 	public void neighborChanged()
 	{
-		this.calc.calculateMultiblock( this.worldObj, this.getLocation() );
+		this.calc.calculateMultiblock( this.world, this.getLocation() );
 	}
 
 	@Override
@@ -197,8 +197,8 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 		if( hasLight != this.didHaveLight )
 		{
 			this.didHaveLight = hasLight;
-			this.worldObj.checkLight( this.pos );
-			// worldObj.updateAllLightTypes( xCoord, yCoord, zCoord );
+			this.world.checkLight( this.pos );
+			// world.updateAllLightTypes( xCoord, yCoord, zCoord );
 		}
 	}
 

@@ -64,10 +64,10 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick( final ItemStack item, final World w, final EntityPlayer player, final EnumHand hand )
+	public ActionResult<ItemStack> onItemRightClick( final World w, final EntityPlayer player, final EnumHand hand )
 	{
 		Platform.openGUI( player, null, AEPartLocation.INTERNAL, GuiBridge.GUI_PORTABLE_CELL );
-		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, item );
+		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, player.getHeldItemMainhand() );
 	}
 
 	@SideOnly( Side.CLIENT )

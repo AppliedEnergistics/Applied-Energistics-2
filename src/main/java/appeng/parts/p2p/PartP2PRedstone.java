@@ -99,14 +99,14 @@ public class PartP2PRedstone extends PartP2PTunnel<PartP2PRedstone>
 
 	private void notifyNeighbors()
 	{
-		final World worldObj = this.getTile().getWorld();
+		final World world = this.getTile().getWorld();
 
-		Platform.notifyBlocksOfNeighbors( worldObj, this.getTile().getPos() );
+		Platform.notifyBlocksOfNeighbors( world, this.getTile().getPos() );
 
 		// and this cause sometimes it can go thought walls.
 		for( final EnumFacing face : EnumFacing.VALUES )
 		{
-			Platform.notifyBlocksOfNeighbors( worldObj, this.getTile().getPos().offset( face ) );
+			Platform.notifyBlocksOfNeighbors( world, this.getTile().getPos().offset( face ) );
 		}
 	}
 

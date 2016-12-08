@@ -471,7 +471,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 				 * }
 				 */
 
-				maxStorage = is.stackSize;
+				maxStorage = is.getCount();
 				worked = true;
 				if( type == Actionable.MODULATE )
 				{
@@ -481,33 +481,33 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 						if( side.xOffset == 0 && side.zOffset == 0 )
 						{
-							Worked = i.onItemUse( is, player, w, tePos.offset( side.getFacing() ), null, side.getFacing().getOpposite(), side.xOffset,
+							Worked = i.onItemUse( player, w, tePos.offset( side.getFacing() ), null, side.getFacing().getOpposite(), side.xOffset,
 									side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
 						}
 
 						if( !Worked && side.xOffset == 0 && side.zOffset == 0 )
 						{
-							Worked = i.onItemUse( is, player, w, tePos.offset( side.getFacing().getOpposite() ), null, side.getFacing(), side.xOffset,
+							Worked = i.onItemUse( player, w, tePos.offset( side.getFacing().getOpposite() ), null, side.getFacing(), side.xOffset,
 									side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
 						}
 
 						if( !Worked && side.yOffset == 0 )
 						{
-							Worked = i.onItemUse( is, player, w, tePos.offset( EnumFacing.DOWN ), null, EnumFacing.UP, side.xOffset, side.yOffset,
+							Worked = i.onItemUse( player, w, tePos.offset( EnumFacing.DOWN ), null, EnumFacing.UP, side.xOffset, side.yOffset,
 									side.zOffset ) == EnumActionResult.SUCCESS;
 						}
 
 						if( !Worked )
 						{
-							i.onItemUse( is, player, w, tePos, null, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset );
+							i.onItemUse( player, w, tePos, null, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset );
 						}
 
-						maxStorage -= is.stackSize;
+						maxStorage -= is.getCount();
 					}
 					else
 					{
-						i.onItemUse( is, player, w, tePos, null, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset );
-						maxStorage -= is.stackSize;
+						i.onItemUse( player, w, tePos, null, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset );
+						maxStorage -= is.getCount();
 					}
 				}
 				else
@@ -534,7 +534,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 				{
 					if( type == Actionable.MODULATE )
 					{
-						is.stackSize = (int) maxStorage;
+						is.setCount( (int) maxStorage );
 						final double x = ( side.xOffset != 0 ? 0 : .7 * ( Platform.getRandomFloat() - .5 ) ) + side.xOffset + .5 + te.getPos().getX();
 						final double y = ( side.yOffset != 0 ? 0 : .7 * ( Platform.getRandomFloat() - .5 ) ) + side.yOffset + .5 + te.getPos().getY();
 						final double z = ( side.zOffset != 0 ? 0 : .7 * ( Platform.getRandomFloat() - .5 ) ) + side.zOffset + .5 + te.getPos().getZ();
@@ -560,7 +560,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 							}
 						}
 
-						if( !w.spawnEntityInWorld( result ) )
+						if( !w.spawnEntity( result ) )
 						{
 							result.setDead();
 							worked = false;

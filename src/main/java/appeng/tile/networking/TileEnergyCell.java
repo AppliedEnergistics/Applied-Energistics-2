@@ -60,7 +60,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	public void onReady()
 	{
 		super.onReady();
-		final int value = this.worldObj.getBlockState( this.pos ).getValue( BlockEnergyCell.ENERGY_STORAGE );
+		final int value = this.world.getBlockState( this.pos ).getValue( BlockEnergyCell.ENERGY_STORAGE );
 		this.currentMeta = (byte) value;
 		this.changePowerLevel();
 	}
@@ -95,14 +95,14 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 		if( this.currentMeta != storageLevel )
 		{
 			this.currentMeta = (byte) storageLevel;
-			this.worldObj.setBlockState( this.pos, this.worldObj.getBlockState( this.pos ).withProperty( BlockEnergyCell.ENERGY_STORAGE, storageLevel ) );
+			this.world.setBlockState( this.pos, this.world.getBlockState( this.pos ).withProperty( BlockEnergyCell.ENERGY_STORAGE, storageLevel ) );
 		}
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
 	public void writeToNBT_TileEnergyCell( final NBTTagCompound data )
 	{
-		if( !this.worldObj.isRemote )
+		if( !this.world.isRemote )
 		{
 			data.setDouble( "internalCurrentPower", this.internalCurrentPower );
 		}

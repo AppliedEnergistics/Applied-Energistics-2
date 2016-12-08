@@ -50,7 +50,7 @@ public class SkyCompassTESR extends FastTESR<TileSkyCompass>
 	public void renderTileEntityFast( TileSkyCompass te, double x, double y, double z, float partialTicks, int destroyStage, VertexBuffer buffer )
 	{
 
-		if( !te.hasWorldObj() )
+		if( !te.hasWorld() )
 		{
 			return;
 		}
@@ -63,7 +63,7 @@ public class SkyCompassTESR extends FastTESR<TileSkyCompass>
 		BlockPos pos = te.getPos();
 		IBlockAccess world = MinecraftForgeClient.getRegionRenderCache( te.getWorld(), pos );
 		IBlockState state = world.getBlockState( pos );
-		if( state.getPropertyNames().contains( Properties.StaticProperty ) )
+		if( state.getPropertyKeys().contains( Properties.StaticProperty ) )
 		{
 			state = state.withProperty( Properties.StaticProperty, false );
 		}

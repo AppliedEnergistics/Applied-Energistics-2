@@ -89,7 +89,7 @@ public class LightningFX extends Particle
         }
 
         this.motionY -= 0.04D * (double)this.particleGravity;
-        this.moveEntity(this.motionX, this.motionY, this.motionZ);
+        this.move(this.motionX, this.motionY, this.motionZ);
         this.motionX *= 0.9800000190734863D;
         this.motionY *= 0.9800000190734863D;
         this.motionZ *= 0.9800000190734863D;
@@ -125,7 +125,7 @@ public class LightningFX extends Particle
 		double oy = 0;
 		double oz = 0;
 
-		final EntityPlayer p = Minecraft.getMinecraft().thePlayer;
+		final EntityPlayer p = Minecraft.getMinecraft().player;
 		double offX = -rZ;
 		double offY = MathHelper.cos( (float) ( Math.PI / 2.0f + p.rotationPitch * 0.017453292F ) );
 		double offZ = rX;

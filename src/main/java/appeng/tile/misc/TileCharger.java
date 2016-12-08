@@ -142,7 +142,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 			{
 				this.extractAEPower( this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG );// 1500
 
-				materials.certusQuartzCrystalCharged().maybeStack( myItem.stackSize ).ifPresent( charged -> this.setInventorySlotContents( 0, charged ) );
+				materials.certusQuartzCrystalCharged().maybeStack( myItem.getCount() ).ifPresent( charged -> this.setInventorySlotContents( 0, charged ) );
 			}
 		}
 	}
@@ -232,7 +232,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 			final List<ItemStack> drops = new ArrayList<ItemStack>();
 			drops.add( myItem );
 			this.setInventorySlotContents( 0, null );
-			Platform.spawnDrops( this.worldObj, this.pos.offset( this.getForward() ), drops );
+			Platform.spawnDrops( this.world, this.pos.offset( this.getForward() ), drops );
 		}
 	}
 
@@ -296,10 +296,17 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 			{
 				this.extractAEPower( this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG );// 1500
 
-				materials.certusQuartzCrystalCharged().maybeStack( myItem.stackSize ).ifPresent( charged -> this.setInventorySlotContents( 0, charged ) );
+				materials.certusQuartzCrystalCharged().maybeStack( myItem.getCount() ).ifPresent( charged -> this.setInventorySlotContents( 0, charged ) );
 			}
 		}
 
 		return true;
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

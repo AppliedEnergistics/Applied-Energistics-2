@@ -55,7 +55,7 @@ import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
-import appeng.core.CommonHelper;
+import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketClick;
 import appeng.core.sync.packets.PacketPartPlacement;
@@ -104,7 +104,8 @@ public class PartPlacement
 					if( mop != null )
 					{
 						final List<ItemStack> is = new LinkedList<ItemStack>();
-						final SelectedPart sp = selectPart( player, host, mop.hitVec.addVector( -mop.getBlockPos().getX(), -mop.getBlockPos().getY(), -mop.getBlockPos().getZ() ) );
+						final SelectedPart sp = selectPart( player, host,
+								mop.hitVec.addVector( -mop.getBlockPos().getX(), -mop.getBlockPos().getY(), -mop.getBlockPos().getZ() ) );
 
 						if( sp.part != null )
 						{
@@ -172,10 +173,11 @@ public class PartPlacement
 								host.markForUpdate();
 								if( !player.capabilities.isCreativeMode )
 								{
-									held.stackSize--;
-									if( held.stackSize == 0 )
+									held.grow( -1 );
+									;
+									if( held.getCount() == 0 )
 									{
-										player.inventory.mainInventory[player.inventory.currentItem] = null;
+										player.inventory.mainInventory.add( player.inventory.currentItem, null );
 										MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( player, held, hand ) );
 									}
 								}
@@ -259,7 +261,8 @@ public class PartPlacement
 			final boolean multiPartPresent = maybeMultiPartBlock.isPresent() && maybeMultiPartStack.isPresent() && maybeMultiPartItemBlock.isPresent();
 			final boolean canMultiPartBePlaced = maybeMultiPartBlock.get().canPlaceBlockAt( world, te_pos );
 
-			if( hostIsNotPresent && multiPartPresent && canMultiPartBePlaced && maybeMultiPartItemBlock.get().placeBlockAt( maybeMultiPartStack.get(), player, world, te_pos, side, 0.5f, 0.5f, 0.5f, maybeMultiPartBlock.get().getDefaultState() ) )
+			if( hostIsNotPresent && multiPartPresent && canMultiPartBePlaced && maybeMultiPartItemBlock.get().placeBlockAt( maybeMultiPartStack.get(), player,
+					world, te_pos, side, 0.5f, 0.5f, 0.5f, maybeMultiPartBlock.get().getDefaultState() ) )
 			{
 				if( !world.isRemote )
 				{
@@ -300,7 +303,8 @@ public class PartPlacement
 
 				if( blkID == null || blkID.isReplaceable( world, te_pos ) || host != null )
 				{
-					return place( held, te_pos, side.getOpposite(), player, hand, world, pass == PlaceType.INTERACT_FIRST_PASS ? PlaceType.INTERACT_SECOND_PASS : PlaceType.PLACE_ITEM, depth + 1 );
+					return place( held, te_pos, side.getOpposite(), player, hand, world,
+							pass == PlaceType.INTERACT_FIRST_PASS ? PlaceType.INTERACT_SECOND_PASS : PlaceType.PLACE_ITEM, depth + 1 );
 				}
 			}
 			return EnumActionResult.PASS;
@@ -314,7 +318,8 @@ public class PartPlacement
 
 			if( mop != null )
 			{
-				final SelectedPart sp = selectPart( player, host, mop.hitVec.addVector( -mop.getBlockPos().getX(), -mop.getBlockPos().getY(), -mop.getBlockPos().getZ() ) );
+				final SelectedPart sp = selectPart( player, host,
+						mop.hitVec.addVector( -mop.getBlockPos().getX(), -mop.getBlockPos().getY(), -mop.getBlockPos().getZ() ) );
 
 				if( sp.part != null )
 				{
@@ -334,18 +339,20 @@ public class PartPlacement
 			final AEPartLocation mySide = host.addPart( held, AEPartLocation.fromFacing( side ), player, hand );
 			if( mySide != null )
 			{
-				multiPart.maybeBlock().ifPresent( multiPartBlock -> {
-					final SoundType ss = multiPartBlock.getSoundType(state, world, pos, player);
+				multiPart.maybeBlock().ifPresent( multiPartBlock ->
+				{
+					final SoundType ss = multiPartBlock.getSoundType( state, world, pos, player );
 
 					world.playSound( null, pos, ss.getPlaceSound(), SoundCategory.BLOCKS, ( ss.getVolume() + 1.0F ) / 2.0F, ss.getPitch() * 0.8F );
-				});
+				} );
 
 				if( !player.capabilities.isCreativeMode )
 				{
-					held.stackSize--;
-					if( held.stackSize == 0 )
+					held.grow( -1 );
+					;
+					if( held.getCount() == 0 )
 					{
-						player.inventory.mainInventory[player.inventory.currentItem] = null;
+						player.inventory.mainInventory.add( player.inventory.currentItem, null );
 						MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( player, held, hand ) );
 					}
 				}
@@ -360,7 +367,7 @@ public class PartPlacement
 
 	private static float getEyeOffset( final EntityPlayer p )
 	{
-		if( p.worldObj.isRemote )
+		if( p.world.isRemote )
 		{
 			return Platform.getEyeOffset( p );
 		}
@@ -370,9 +377,9 @@ public class PartPlacement
 
 	private static SelectedPart selectPart( final EntityPlayer player, final IPartHost host, final Vec3d pos )
 	{
-		CommonHelper.proxy.updateRenderMode( player );
+		AppEng.proxy.updateRenderMode( player );
 		final SelectedPart sp = host.selectPart( pos );
-		CommonHelper.proxy.updateRenderMode( null );
+		AppEng.proxy.updateRenderMode( null );
 
 		return sp;
 	}
@@ -402,7 +409,7 @@ public class PartPlacement
 			return;
 		}
 
-		if( event instanceof PlayerInteractEvent.RightClickEmpty && event.getEntityPlayer().worldObj.isRemote )
+		if( event instanceof PlayerInteractEvent.RightClickEmpty && event.getEntityPlayer().world.isRemote )
 		{
 			// re-check to see if this event was already channeled, cause these two events are really stupid...
 			final RayTraceResult mop = Platform.rayTrace( event.getEntityPlayer(), true, false );
@@ -414,7 +421,7 @@ public class PartPlacement
 
 			if( mop != null && mop.hitVec.distanceTo( vec3 ) < d0 )
 			{
-				final World w = event.getEntity().worldObj;
+				final World w = event.getEntity().world;
 				final TileEntity te = w.getTileEntity( mop.getBlockPos() );
 				if( te instanceof IPartHost && this.wasCanceled )
 				{
@@ -435,7 +442,7 @@ public class PartPlacement
 				}
 			}
 		}
-		else if( event instanceof PlayerInteractEvent.RightClickBlock && !event.getEntityPlayer().worldObj.isRemote )
+		else if( event instanceof PlayerInteractEvent.RightClickBlock && !event.getEntityPlayer().world.isRemote )
 		{
 			if( this.placing.get() != null )
 			{
@@ -445,7 +452,8 @@ public class PartPlacement
 			this.placing.set( event );
 
 			final ItemStack held = event.getEntityPlayer().getHeldItem( event.getHand() );
-			if( place( held, event.getPos(), event.getFace(), event.getEntityPlayer(), event.getHand(), event.getEntityPlayer().worldObj, PlaceType.INTERACT_FIRST_PASS, 0 ) == EnumActionResult.SUCCESS )
+			if( place( held, event.getPos(), event.getFace(), event.getEntityPlayer(), event.getHand(), event.getEntityPlayer().world,
+					PlaceType.INTERACT_FIRST_PASS, 0 ) == EnumActionResult.SUCCESS )
 			{
 				event.setCanceled( true );
 				this.wasCanceled = true;

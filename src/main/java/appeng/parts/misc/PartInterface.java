@@ -272,9 +272,9 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public boolean isUseableByPlayer( final EntityPlayer entityplayer )
+	public boolean isUsableByPlayer( final EntityPlayer entityplayer )
 	{
-		return this.duality.getStorage().isUseableByPlayer( entityplayer );
+		return this.duality.getStorage().isUsableByPlayer( entityplayer );
 	}
 
 	@Override
@@ -442,6 +442,13 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	public <T> T getCapability( Capability<T> capabilityClass )
 	{
 		return this.duality.getCapability( capabilityClass, getSide().getFacing() );
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

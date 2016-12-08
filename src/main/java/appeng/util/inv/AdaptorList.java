@@ -49,9 +49,9 @@ public class AdaptorList extends InventoryAdaptor
 			final ItemStack is = this.i.get( x );
 			if( is != null && ( filter == null || Platform.itemComparisons().isSameItem( is, filter ) ) )
 			{
-				if( amount > is.stackSize )
+				if( amount > is.getCount() )
 				{
-					amount = is.stackSize;
+					amount = is.getCount();
 				}
 				if( destination != null && !destination.canInsert( is ) )
 				{
@@ -61,11 +61,11 @@ public class AdaptorList extends InventoryAdaptor
 				if( amount > 0 )
 				{
 					final ItemStack rv = is.copy();
-					rv.stackSize = amount;
-					is.stackSize -= amount;
+					rv.setCount( amount );
+					is.grow( -amount );
 
 					// remove it..
-					if( is.stackSize <= 0 )
+					if( is.getCount() <= 0 )
 					{
 						this.i.remove( x );
 					}
@@ -84,9 +84,9 @@ public class AdaptorList extends InventoryAdaptor
 		{
 			if( is != null && ( filter == null || Platform.itemComparisons().isSameItem( is, filter ) ) )
 			{
-				if( amount > is.stackSize )
+				if( amount > is.getCount() )
 				{
-					amount = is.stackSize;
+					amount = is.getCount();
 				}
 				if( destination != null && !destination.canInsert( is ) )
 				{
@@ -96,7 +96,7 @@ public class AdaptorList extends InventoryAdaptor
 				if( amount > 0 )
 				{
 					final ItemStack rv = is.copy();
-					rv.stackSize = amount;
+					rv.setCount( amount );
 					return rv;
 				}
 			}
@@ -113,9 +113,9 @@ public class AdaptorList extends InventoryAdaptor
 			final ItemStack is = this.i.get( x );
 			if( is != null && ( filter == null || Platform.itemComparisons().isFuzzyEqualItem( is, filter, fuzzyMode ) ) )
 			{
-				if( amount > is.stackSize )
+				if( amount > is.getCount() )
 				{
-					amount = is.stackSize;
+					amount = is.getCount();
 				}
 				if( destination != null && !destination.canInsert( is ) )
 				{
@@ -125,11 +125,11 @@ public class AdaptorList extends InventoryAdaptor
 				if( amount > 0 )
 				{
 					final ItemStack rv = is.copy();
-					rv.stackSize = amount;
-					is.stackSize -= amount;
+					rv.setCount( amount );
+					is.grow( -amount );
 
 					// remove it..
-					if( is.stackSize <= 0 )
+					if( is.getCount() <= 0 )
 					{
 						this.i.remove( x );
 					}
@@ -148,9 +148,9 @@ public class AdaptorList extends InventoryAdaptor
 		{
 			if( is != null && ( filter == null || Platform.itemComparisons().isFuzzyEqualItem( is, filter, fuzzyMode ) ) )
 			{
-				if( amount > is.stackSize )
+				if( amount > is.getCount() )
 				{
-					amount = is.stackSize;
+					amount = is.getCount();
 				}
 				if( destination != null && !destination.canInsert( is ) )
 				{
@@ -160,7 +160,7 @@ public class AdaptorList extends InventoryAdaptor
 				if( amount > 0 )
 				{
 					final ItemStack rv = is.copy();
-					rv.stackSize = amount;
+					rv.setCount( amount );
 					return rv;
 				}
 			}
@@ -175,7 +175,7 @@ public class AdaptorList extends InventoryAdaptor
 		{
 			return null;
 		}
-		if( toBeAdded.stackSize == 0 )
+		if( toBeAdded.getCount() == 0 )
 		{
 			return null;
 		}
@@ -186,7 +186,7 @@ public class AdaptorList extends InventoryAdaptor
 		{
 			if( Platform.itemComparisons().isEqualItem( is, left ) )
 			{
-				is.stackSize += left.stackSize;
+				is.grow( left.getCount() );
 				return null;
 			}
 		}

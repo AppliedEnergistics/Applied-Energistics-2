@@ -119,4 +119,11 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 		return this.sides;
 	}
 
+	@Override
+	public boolean isEmpty()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

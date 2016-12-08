@@ -34,13 +34,6 @@ class GrinderRecipeHandler implements IRecipeHandler<IGrinderRecipe>
 		return IGrinderRecipe.class;
 	}
 
-	@Override
-	public String getRecipeCategoryUid()
-	{
-		return GrinderRecipeCategory.UID;
-	}
-
-	@Override
 	public String getRecipeCategoryUid( IGrinderRecipe recipe )
 	{
 		return GrinderRecipeCategory.UID;

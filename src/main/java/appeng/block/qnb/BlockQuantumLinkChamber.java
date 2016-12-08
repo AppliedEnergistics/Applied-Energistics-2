@@ -37,7 +37,7 @@ import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
 import appeng.client.EffectType;
-import appeng.core.CommonHelper;
+import appeng.core.AppEng;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.AEGlassMaterial;
 import appeng.tile.qnb.TileQuantumBridge;
@@ -60,9 +60,9 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 		{
 			if( bridge.hasQES() )
 			{
-				if( CommonHelper.proxy.shouldAddParticles( rand ) )
+				if( AppEng.proxy.shouldAddParticles( rand ) )
 				{
-					CommonHelper.proxy.spawnEffect( EffectType.Energy, w, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, null );
+					AppEng.proxy.spawnEffect( EffectType.Energy, w, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, null );
 				}
 			}
 		}

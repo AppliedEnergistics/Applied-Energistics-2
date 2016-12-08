@@ -537,13 +537,14 @@ public class Platform
 			{
 				if( i != null )
 				{
-					if( i.stackSize > 0 )
+					if( i.getCount() > 0 )
 					{
 						final double offset_x = ( getRandomInt() % 32 - 16 ) / 82;
 						final double offset_y = ( getRandomInt() % 32 - 16 ) / 82;
 						final double offset_z = ( getRandomInt() % 32 - 16 ) / 82;
-						final EntityItem ei = new EntityItem( w, 0.5 + offset_x + pos.getX(), 0.5 + offset_y + pos.getY(), 0.2 + offset_z + pos.getZ(), i.copy() );
-						w.spawnEntityInWorld( ei );
+						final EntityItem ei = new EntityItem( w, 0.5 + offset_x + pos.getX(), 0.5 + offset_y + pos.getY(), 0.2 + offset_z + pos.getZ(), i
+								.copy() );
+						w.spawnEntity( ei );
 					}
 				}
 			}
@@ -664,9 +665,9 @@ public class Platform
 		return false;
 	}
 
-	public static ItemStack findMatchingRecipeOutput( final InventoryCrafting ic, final World worldObj )
+	public static ItemStack findMatchingRecipeOutput( final InventoryCrafting ic, final World world )
 	{
-		return CraftingManager.getInstance().findMatchingRecipe( ic, worldObj );
+		return CraftingManager.getInstance().findMatchingRecipe( ic, world );
 	}
 
 	@SideOnly( Side.CLIENT )
@@ -694,7 +695,7 @@ public class Platform
 
 		try
 		{
-			return itemStack.getTooltip( Minecraft.getMinecraft().thePlayer, false );
+			return itemStack.getTooltip( Minecraft.getMinecraft().player, false );
 		}
 		catch( final Exception errB )
 		{
@@ -1493,7 +1494,8 @@ public class Platform
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.LOG_SECURITY_AUDITS ) )
 		{
 			AELog.info(
-					"Audit: " + a_isSecure + " : " + b_isSecure + " @ " + a.getLastSecurityKey() + " vs " + b.getLastSecurityKey() + " & " + a.getPlayerID() + " vs " + b.getPlayerID() );
+					"Audit: " + a_isSecure + " : " + b_isSecure + " @ " + a.getLastSecurityKey() + " vs " + b.getLastSecurityKey() + " & " + a
+							.getPlayerID() + " vs " + b.getPlayerID() );
 		}
 
 		// can't do that son...
@@ -1644,7 +1646,8 @@ public class Platform
 				}
 			}
 
-			final boolean checkFuzzy = ae_req.isOre() || providedTemplate.getItemDamage() == OreDictionary.WILDCARD_VALUE || providedTemplate.hasTagCompound() || providedTemplate.isItemStackDamageable();
+			final boolean checkFuzzy = ae_req.isOre() || providedTemplate.getItemDamage() == OreDictionary.WILDCARD_VALUE || providedTemplate
+					.hasTagCompound() || providedTemplate.isItemStackDamageable();
 
 			if( items != null && checkFuzzy )
 			{
@@ -1655,7 +1658,7 @@ public class Platform
 							sh ) || ae_req.sameOre( x ) ) && !Platform.itemComparisons().isEqualItem( sh, output ) )
 					{ // Platform.isSameItemType( sh, providedTemplate )
 						final ItemStack cp = Platform.cloneItemStack( sh );
-						cp.stackSize = 1;
+						cp.setCount( 1 );
 						ci.setInventorySlotContents( slot, cp );
 						if( r.matches( ci, w ) && Platform.itemComparisons().isEqualItem( r.getCraftingResult( ci ), output ) )
 						{
@@ -1694,9 +1697,9 @@ public class Platform
 		final Item i = stackInSlot.getItem();
 		if( i == null || !i.hasContainerItem( stackInSlot ) )
 		{
-			if( stackInSlot.stackSize > 1 )
+			if( stackInSlot.getCount() > 1 )
 			{
-				stackInSlot.stackSize--;
+				stackInSlot.setCount( stackInSlot.getCount() - 1 );
 				return stackInSlot;
 			}
 			return null;
@@ -1711,11 +1714,11 @@ public class Platform
 		return ci;
 	}
 
-	public static void notifyBlocksOfNeighbors( final World worldObj, final BlockPos pos )
+	public static void notifyBlocksOfNeighbors( final World world, final BlockPos pos )
 	{
-		if( !worldObj.isRemote )
+		if( !world.isRemote )
 		{
-			TickHandler.INSTANCE.addCallable( worldObj, new BlockUpdate( pos ) );
+			TickHandler.INSTANCE.addCallable( world, new BlockUpdate( pos ) );
 		}
 	}
 
@@ -1792,7 +1795,7 @@ public class Platform
 
 	public static float getEyeOffset( final EntityPlayer player )
 	{
-		assert player.worldObj.isRemote : "Valid only on client";
+		assert player.world.isRemote : "Valid only on client";
 		return (float) ( player.posY + player.getEyeHeight() - player.getDefaultEyeHeight() );
 	}
 

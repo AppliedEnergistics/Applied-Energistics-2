@@ -25,6 +25,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 
 public abstract class AEBaseItem extends Item
@@ -51,7 +52,7 @@ public abstract class AEBaseItem extends Item
 
 	@Override
 	@SuppressWarnings( "unchecked" )
-	public final void getSubItems( final Item sameItem, final CreativeTabs creativeTab, final List itemStacks )
+	public final void getSubItems( final Item sameItem, final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
 	{
 		this.getCheckedSubItems( sameItem, creativeTab, itemStacks );
 	}
@@ -67,7 +68,7 @@ public abstract class AEBaseItem extends Item
 		super.addInformation( stack, player, lines, displayMoreInfo );
 	}
 
-	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final List<ItemStack> itemStacks )
+	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
 	{
 		super.getSubItems( sameItem, creativeTab, itemStacks );
 	}

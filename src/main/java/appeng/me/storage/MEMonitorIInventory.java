@@ -98,7 +98,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 
 		// better then doing construction from scratch :3
 		final IAEItemStack o = input.copy();
-		o.setStackSize( out.stackSize );
+		o.setStackSize( out.getCount() );
 		return o;
 	}
 
@@ -123,7 +123,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 
 		// better then doing construction from scratch :3
 		final IAEItemStack o = request.copy();
-		o.setStackSize( out.stackSize );
+		o.setStackSize( out.getCount() );
 
 		if( type == Actionable.MODULATE )
 		{
@@ -177,8 +177,8 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 			}
 			else
 			{
-				final int newSize = ( newIS == null ? 0 : newIS.stackSize );
-				final int diff = newSize - ( oldIS == null ? 0 : oldIS.stackSize );
+				final int newSize = ( newIS == null ? 0 : newIS.getCount() );
+				final int diff = newSize - ( oldIS == null ? 0 : oldIS.getCount() );
 
 				final IAEItemStack stack = ( old == null || old.aeStack == null ? AEApi.instance().storage().createItemStack( newIS ) : old.aeStack.copy() );
 				if( stack != null )

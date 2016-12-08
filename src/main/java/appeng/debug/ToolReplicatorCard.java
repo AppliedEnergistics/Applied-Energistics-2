@@ -23,7 +23,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
@@ -47,7 +46,7 @@ import appeng.util.Platform;
 public class ToolReplicatorCard extends AEBaseItem
 {
 	@Override
-	public EnumActionResult onItemUseFirst( final ItemStack heldItem, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
+	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
 		if( Platform.isClient() )
 		{
@@ -68,7 +67,7 @@ public class ToolReplicatorCard extends AEBaseItem
 				tag.setInteger( "z", z );
 				tag.setInteger( "side", side.ordinal() );
 				tag.setInteger( "dimid", world.provider.getDimension() );
-				heldItem.setTagCompound( tag );
+				player.getHeldItemMainhand().setTagCompound( tag );
 			}
 			else
 			{
@@ -77,7 +76,7 @@ public class ToolReplicatorCard extends AEBaseItem
 		}
 		else
 		{
-			final NBTTagCompound ish = heldItem.getTagCompound();
+			final NBTTagCompound ish = player.getHeldItemMainhand().getTagCompound();
 			if( ish != null )
 			{
 				final int src_x = ish.getInteger( "x" );
@@ -178,6 +177,6 @@ public class ToolReplicatorCard extends AEBaseItem
 
 	private void outputMsg( final ICommandSender player, final String string )
 	{
-		player.addChatMessage( new TextComponentString( string ) );
+		player.sendMessage( new TextComponentString( string ) );
 	}
 }

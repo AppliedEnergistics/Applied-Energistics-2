@@ -48,9 +48,9 @@ public class BlockIOPort extends AEBaseTileBlock
 	}
 
 	@Override
-	public void neighborChanged( final IBlockState state, final World w, final BlockPos pos, final Block neighborBlock )
+	public void neighborChanged( IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
 	{
-		final TileIOPort te = this.getTileEntity( w, pos );
+		final TileIOPort te = this.getTileEntity( world, pos );
 		if( te != null )
 		{
 			te.updateRedstoneState();

@@ -77,11 +77,6 @@ public class SlotDisconnected extends AppEngSlot
 	}
 
 	@Override
-	public void onPickupFromSlot( final EntityPlayer par1EntityPlayer, final ItemStack par2ItemStack )
-	{
-	}
-
-	@Override
 	public boolean getHasStack()
 	{
 		return this.getStack() != null;

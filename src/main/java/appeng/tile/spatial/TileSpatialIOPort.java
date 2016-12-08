@@ -89,7 +89,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 
 	public void updateRedstoneState()
 	{
-		final YesNo currentState = this.worldObj.isBlockIndirectlyGettingPowered( this.pos ) != 0 ? YesNo.YES : YesNo.NO;
+		final YesNo currentState = this.world.isBlockIndirectlyGettingPowered( this.pos ) != 0 ? YesNo.YES : YesNo.NO;
 		if( this.lastRedstoneState != currentState )
 		{
 			this.lastRedstoneState = currentState;
@@ -143,7 +143,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 					final MENetworkEvent res = gi.postEvent( new MENetworkSpatialEvent( this, req ) );
 					if( !res.isCanceled() )
 					{
-						final TransitionResult tr = sc.doSpatialTransition( cell, this.worldObj, spc.getMin(), spc.getMax(), true );
+						final TransitionResult tr = sc.doSpatialTransition( cell, this.world, spc.getMin(), spc.getMax(), true );
 						if( tr.success )
 						{
 							energy.extractAEPower( req, Actionable.MODULATE, PowerMultiplier.CONFIG );
@@ -204,5 +204,12 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 	public int[] getAccessibleSlotsBySide( final EnumFacing side )
 	{
 		return this.sides;
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

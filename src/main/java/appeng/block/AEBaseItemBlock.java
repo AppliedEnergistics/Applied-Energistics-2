@@ -126,7 +126,7 @@ public class AEBaseItemBlock extends ItemBlock
 			{
 				up = EnumFacing.UP;
 
-				final byte rotation = (byte) ( MathHelper.floor_double( ( player.rotationYaw * 4F ) / 360F + 2.5D ) & 3 );
+				final byte rotation = (byte) ( MathHelper.floor( ( player.rotationYaw * 4F ) / 360F + 2.5D ) & 3 );
 
 				switch( rotation )
 				{

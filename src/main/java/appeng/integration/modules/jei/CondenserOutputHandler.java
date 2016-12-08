@@ -56,12 +56,6 @@ class CondenserOutputHandler implements IRecipeHandler<CondenserOutput>
 	}
 
 	@Override
-	public String getRecipeCategoryUid()
-	{
-		return CondenserCategory.UID;
-	}
-
-	@Override
 	public String getRecipeCategoryUid( CondenserOutput recipe )
 	{
 		return CondenserCategory.UID;

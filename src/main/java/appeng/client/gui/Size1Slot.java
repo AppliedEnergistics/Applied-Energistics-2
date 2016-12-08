@@ -24,7 +24,7 @@ class Size1Slot extends Slot
 
 	public Size1Slot( Slot delegate )
 	{
-		super( delegate.inventory, delegate.getSlotIndex(), delegate.xDisplayPosition, delegate.yDisplayPosition );
+		super( delegate.inventory, delegate.getSlotIndex(), delegate.xPos, delegate.yPos );
 		this.delegate = delegate;
 	}
 
@@ -36,7 +36,7 @@ class Size1Slot extends Slot
 		if( orgStack != null )
 		{
 			ItemStack modifiedStack = orgStack.copy();
-			modifiedStack.stackSize = 1;
+			modifiedStack.setCount( 1 );
 			return modifiedStack;
 		}
 

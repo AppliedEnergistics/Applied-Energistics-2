@@ -55,7 +55,7 @@ import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.IPartHelper;
 import appeng.api.parts.LayerBase;
 import appeng.core.AELog;
-import appeng.core.CommonHelper;
+import appeng.core.AppEng;
 import appeng.parts.PartPlacement;
 import appeng.tile.AEBaseTile;
 import appeng.tile.networking.TileCableBus;
@@ -328,7 +328,7 @@ public class ApiPart implements IPartHelper
 	@Override
 	public CableRenderMode getCableRenderMode()
 	{
-		return CommonHelper.proxy.getRenderMode();
+		return AppEng.proxy.getRenderMode();
 	}
 
 	private static class DefaultPackageClassNameRemapper extends Remapper

@@ -45,7 +45,7 @@ import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
-import appeng.core.CommonHelper;
+import appeng.core.AppEng;
 import appeng.helpers.ICustomCollision;
 import appeng.helpers.MetaRotation;
 
@@ -151,7 +151,7 @@ public class BlockQuartzFixture extends AEBaseBlock implements IOrientableBlock,
 		final double zOff = -0.3 * up.getFrontOffsetZ();
 		for( int bolts = 0; bolts < 3; bolts++ )
 		{
-			if( CommonHelper.proxy.shouldAddParticles( r ) )
+			if( AppEng.proxy.shouldAddParticles( r ) )
 			{
 				final LightningFX fx = new LightningFX( w, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(), zOff + 0.5 + pos.getZ(), 0.0D, 0.0D, 0.0D );
 
@@ -161,12 +161,12 @@ public class BlockQuartzFixture extends AEBaseBlock implements IOrientableBlock,
 	}
 
 	@Override
-	public void neighborChanged( final IBlockState state, final World w, final BlockPos pos,final Block neighborBlock )
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos)
 	{
-		final EnumFacing up = this.getOrientable( w, pos ).getUp();
-		if( !this.canPlaceAt( w, pos, up.getOpposite() ) )
+		final EnumFacing up = this.getOrientable( world, pos ).getUp();
+		if( !this.canPlaceAt( world, pos, up.getOpposite() ) )
 		{
-			this.dropTorch( w, pos );
+			this.dropTorch( world, pos );
 		}
 	}
 

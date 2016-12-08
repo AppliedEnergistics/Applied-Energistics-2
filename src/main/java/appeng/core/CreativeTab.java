@@ -23,7 +23,6 @@ import java.util.Optional;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
@@ -49,9 +48,9 @@ public final class CreativeTab extends CreativeTabs
 	}
 
 	@Override
-	public Item getTabIconItem()
+	public ItemStack getTabIconItem()
 	{
-		return this.getIconItemStack().getItem();
+		return this.getIconItemStack();
 	}
 
 	@Override

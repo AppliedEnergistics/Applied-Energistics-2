@@ -100,7 +100,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	{
 
 		ItemStack requestedItemStack = request.getItemStack();
-		int remainingSize = requestedItemStack.stackSize;
+		int remainingSize = requestedItemStack.getCount();
 
 		// Use this to gather the requested items
 		ItemStack gathered = null;
@@ -117,7 +117,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			}
 
 			ItemStack extracted;
-			int stackSizeCurrentSlot = stackInInventorySlot.stackSize;
+			int stackSizeCurrentSlot = stackInInventorySlot.getCount();
 			int remainingCurrentSlot = Math.min( remainingSize, stackSizeCurrentSlot );
 
 			// We have to loop here because according to the docs, the handler shouldn't return a stack with size >
@@ -127,13 +127,13 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 				extracted = itemHandler.extractItem( i, remainingCurrentSlot, simulate );
 				if( extracted != null )
 				{
-					if( extracted.stackSize > remainingCurrentSlot )
+					if( extracted.getCount() > remainingCurrentSlot )
 					{
 						// Something broke. It should never return more than we requested...
 						// We're going to silently eat the remainder
 						AELog.warn( "Mod that provided item handler %1 is broken. Returned %2 items, even though we requested %3.",
-								itemHandler.getClass().getSimpleName(), extracted.stackSize, remainingCurrentSlot );
-						extracted.stackSize = remainingCurrentSlot;
+								itemHandler.getClass().getSimpleName(), extracted.getCount(), remainingCurrentSlot );
+						extracted.setCount( remainingCurrentSlot );
 					}
 
 					// We're just gonna use the first stack we get our hands on as the template for the rest
@@ -143,9 +143,9 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 					}
 					else
 					{
-						gathered.stackSize += extracted.stackSize;
+						gathered.grow( extracted.getCount() );
 					}
-					remainingCurrentSlot -= extracted.stackSize;
+					remainingCurrentSlot -= extracted.getCount();
 				}
 			}
 			while( extracted != null && remainingCurrentSlot > 0 );
@@ -257,12 +257,12 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	private void addPossibleStackSizeChange( int slot, IAEItemStack oldAeIS, ItemStack newIS, List<IAEItemStack> changes )
 	{
 		// Still the same item, but amount might have changed
-		long diff = newIS.stackSize - oldAeIS.getStackSize();
+		long diff = newIS.getCount() - oldAeIS.getStackSize();
 
 		if( diff != 0 )
 		{
 			IAEItemStack stack = oldAeIS.copy();
-			stack.setStackSize( newIS.stackSize );
+			stack.setStackSize( newIS.getCount() );
 
 			cachedStacks[slot] = newIS;
 			cachedAeStacks[slot] = stack;

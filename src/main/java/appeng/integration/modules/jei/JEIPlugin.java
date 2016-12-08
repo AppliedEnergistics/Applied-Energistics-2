@@ -199,7 +199,7 @@ public class JEIPlugin extends BlankModPlugin
 	@Override
 	public void onRuntimeAvailable( IJeiRuntime jeiRuntime )
 	{
-		JEIModule jeiModule = (JEIModule) Integrations.jei();
-		jeiModule.setJei( new JeiRuntimeAdapter( jeiRuntime ) );
+		//JEIModule jeiModule = (JEIModule) Integrations.jei();
+		//jeiModule.setJei( new JeiRuntimeAdapter( jeiRuntime ) );
 	}
 }

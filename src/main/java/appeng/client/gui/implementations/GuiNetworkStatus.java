@@ -253,7 +253,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 			if( myStack != null )
 			{
-				List<String> currentToolTip = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
+				List<String> currentToolTip = stack.getTooltip( this.mc.player, this.mc.gameSettings.advancedItemTooltips );
 
 				while( currentToolTip.size() > 1 )
 				{

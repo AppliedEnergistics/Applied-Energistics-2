@@ -160,7 +160,7 @@ public class ContainerStorageBus extends ContainerUpgradeable
 			if( i.hasNext() && this.isSlotEnabled( ( x / 9 ) - 2 ) )
 			{
 				final ItemStack g = i.next().getItemStack();
-				g.stackSize = 1;
+				g.setCount( 1 );
 				inv.setInventorySlotContents( x, g );
 			}
 			else

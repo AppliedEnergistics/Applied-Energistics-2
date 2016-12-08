@@ -100,9 +100,9 @@ public class AdaptorPlayerInventory implements IInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer( final EntityPlayer var1 )
+	public boolean isUsableByPlayer( final EntityPlayer var1 )
 	{
-		return this.src.isUseableByPlayer( var1 );
+		return this.src.isUsableByPlayer( var1 );
 	}
 
 	@Override
@@ -152,5 +152,11 @@ public class AdaptorPlayerInventory implements IInventory
 	public void clear()
 	{
 		this.src.clear();
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		return this.src.isEmpty();
 	}
 }

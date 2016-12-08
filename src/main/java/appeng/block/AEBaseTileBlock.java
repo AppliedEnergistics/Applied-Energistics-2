@@ -269,13 +269,16 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	}
 
 	@Override
-	public boolean onBlockActivated( final World w, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onBlockActivated( World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ )
 	{
-		if( player != null && heldItem != null )
+		ItemStack heldItem;
+		if( player != null && player.getHeldItemMainhand() != null )
 		{
+			heldItem = player.getHeldItemMainhand();
+			
 			if( Platform.isWrench( player, heldItem, pos ) && player.isSneaking() )
 			{
-				final IBlockState blockState = w.getBlockState( pos );
+				final IBlockState blockState = world.getBlockState( pos );
 				final Block block = blockState.getBlock();
 
 				if( block == null )
@@ -283,7 +286,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 					return false;
 				}
 
-				final AEBaseTile tile = this.getTileEntity( w, pos );
+				final AEBaseTile tile = this.getTileEntity( world, pos );
 
 				if( tile == null )
 				{
@@ -295,7 +298,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 					return false;
 				}
 
-				final ItemStack[] itemDropCandidates = Platform.getBlockDrops( w, pos );
+				final ItemStack[] itemDropCandidates = Platform.getBlockDrops( world, pos );
 				final ItemStack op = new ItemStack( this );
 
 				for( final ItemStack ol : itemDropCandidates )
@@ -310,11 +313,11 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 					}
 				}
 
-				if( block.removedByPlayer( blockState, w, pos, player, false ) )
+				if( block.removedByPlayer( blockState, world, pos, player, false ) )
 				{
 					final List<ItemStack> itemsToDrop = Lists.newArrayList( itemDropCandidates );
-					Platform.spawnDrops( w, pos, itemsToDrop );
-					w.setBlockToAir( pos );
+					Platform.spawnDrops( world, pos, itemsToDrop );
+					world.setBlockToAir( pos );
 				}
 
 				return false;
@@ -323,7 +326,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 			if( heldItem.getItem() instanceof IMemoryCard && !( this instanceof BlockCableBus ) )
 			{
 				final IMemoryCard memoryCard = (IMemoryCard) heldItem.getItem();
-				final AEBaseTile tileEntity = this.getTileEntity( w, pos );
+				final AEBaseTile tileEntity = this.getTileEntity( world, pos );
 
 				if( tileEntity == null )
 				{
@@ -361,7 +364,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 			}
 		}
 
-		return this.onActivated( w, pos, player, hand, heldItem, side, hitX, hitY, hitZ );
+		return this.onActivated( world, pos, player, hand, player.getHeldItemMainhand(), facing, hitX, hitY, hitZ );
 	}
 
 	@Override

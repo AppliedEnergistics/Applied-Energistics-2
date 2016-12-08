@@ -38,7 +38,7 @@ import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
-import appeng.core.CommonHelper;
+import appeng.core.AppEng;
 import appeng.tile.misc.TileQuartzGrowthAccelerator;
 import appeng.util.Platform;
 
@@ -83,7 +83,7 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOr
 
 		final TileQuartzGrowthAccelerator cga = this.getTileEntity( w, pos );
 
-		if( cga != null && cga.isPowered() && CommonHelper.proxy.shouldAddParticles( r ) )
+		if( cga != null && cga.isPowered() && AppEng.proxy.shouldAddParticles( r ) )
 		{
 			final double d0 = r.nextFloat() - 0.5F;
 			final double d1 = r.nextFloat() - 0.5F;

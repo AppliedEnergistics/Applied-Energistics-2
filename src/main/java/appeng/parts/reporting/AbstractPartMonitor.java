@@ -167,7 +167,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		if( Platform.isWrench( player, eq, te.getPos() ) )
 		{
 			this.isLocked = !this.isLocked;
-			player.addChatMessage( ( this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked ).get() );
+			player.sendMessage( ( this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked ).get() );
 			this.getHost().markForUpdate();
 		}
 		else if( !this.isLocked )

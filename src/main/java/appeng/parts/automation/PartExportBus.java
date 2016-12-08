@@ -305,10 +305,10 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	private void pushItemIntoTarget( final InventoryAdaptor d, final IEnergyGrid energy, final IMEInventory<IAEItemStack> inv, IAEItemStack ais )
 	{
 		final ItemStack is = ais.getItemStack();
-		is.stackSize = (int) this.itemToSend;
+		is.setCount( (int) this.itemToSend );
 
 		final ItemStack o = d.simulateAdd( is );
-		final long canFit = o == null ? this.itemToSend : this.itemToSend - o.stackSize;
+		final long canFit = o == null ? this.itemToSend : this.itemToSend - o.getCount();
 
 		if( canFit > 0 )
 		{
@@ -323,7 +323,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 				final ItemStack failed = d.addItems( itemsToAdd.getItemStack() );
 				if( failed != null )
 				{
-					ais.setStackSize( failed.stackSize );
+					ais.setStackSize( failed.getCount() );
 					inv.injectItems( ais, Actionable.MODULATE, this.mySrc );
 				}
 				else

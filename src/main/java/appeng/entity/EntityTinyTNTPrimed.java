@@ -26,6 +26,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.init.SoundEvents;
@@ -40,7 +41,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 import appeng.api.AEApi;
 import appeng.core.AEConfig;
-import appeng.core.CommonHelper;
+import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.packets.PacketMockExplosion;
 import appeng.helpers.Reflected;
@@ -78,7 +79,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
 		this.motionY -= 0.03999999910593033D;
-		this.moveEntity( this.motionX, this.motionY, this.motionZ );
+		this.move( MoverType.SELF, this.motionX, this.motionY, this.motionZ );
 		this.motionX *= 0.9800000190734863D;
 		this.motionY *= 0.9800000190734863D;
 		this.motionZ *= 0.9800000190734863D;
@@ -93,7 +94,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 		if( this.isInWater() && Platform.isServer() ) // put out the fuse.
 		{
 			AEApi.instance().definitions().blocks().tinyTNT().maybeStack( 1 ).ifPresent( tntStack -> {
-				final EntityItem item = new EntityItem( this.worldObj, this.posX, this.posY, this.posZ, tntStack );
+				final EntityItem item = new EntityItem( this.world, this.posX, this.posY, this.posZ, tntStack );
 
 				item.motionX = this.motionX;
 				item.motionY = this.motionY;
@@ -102,7 +103,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 				item.prevPosY = this.prevPosY;
 				item.prevPosZ = this.prevPosZ;
 
-				this.worldObj.spawnEntityInWorld( item );
+				this.world.spawnEntity( item );
 				this.setDead();
 			} );
 		}
@@ -111,14 +112,14 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 		{
 			this.setDead();
 
-			if( !this.worldObj.isRemote )
+			if( !this.world.isRemote )
 			{
 				this.explode();
 			}
 		}
 		else
 		{
-			this.worldObj.spawnParticle( EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D );
+			this.world.spawnParticle( EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D );
 		}
 		this.setFuse( getFuse() - 1 );
 	}
@@ -126,14 +127,14 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 	// override :P
 	void explode()
 	{
-		this.worldObj.playSound( null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, ( 1.0F + ( this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat() ) * 0.2F ) * 32.9F );
+		this.world.playSound( null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, ( 1.0F + ( this.world.rand.nextFloat() - this.world.rand.nextFloat() ) * 0.2F ) * 32.9F );
 
 		if( this.isInWater() )
 		{
 			return;
 		}
 
-		for( final Object e : this.worldObj.getEntitiesWithinAABBExcludingEntity( this, new AxisAlignedBB( this.posX - 1.5, this.posY - 1.5f, this.posZ - 1.5, this.posX + 1.5, this.posY + 1.5, this.posZ + 1.5 ) ) )
+		for( final Object e : this.world.getEntitiesWithinAABBExcludingEntity( this, new AxisAlignedBB( this.posX - 1.5, this.posY - 1.5f, this.posZ - 1.5, this.posX + 1.5, this.posY + 1.5, this.posZ + 1.5 ) ) )
 		{
 			if( e instanceof Entity )
 			{
@@ -144,7 +145,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.TINY_TNT_BLOCK_DAMAGE ) )
 		{
 			this.posY -= 0.25;
-			final Explosion ex = new Explosion( this.worldObj, this, this.posX, this.posY, this.posZ, 0.2f, false, false );
+			final Explosion ex = new Explosion( this.world, this, this.posX, this.posY, this.posZ, 0.2f, false, false );
 
 			for( int x = (int) ( this.posX - 2 ); x <= this.posX + 2; x++ )
 			{
@@ -153,13 +154,13 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 					for( int z = (int) ( this.posZ - 2 ); z <= this.posZ + 2; z++ )
 					{
 						final BlockPos point = new BlockPos( x, y, z );
-						final IBlockState state = this.worldObj.getBlockState( point );
+						final IBlockState state = this.world.getBlockState( point );
 						final Block block = state.getBlock();
-						if( block != null && !block.isAir( state, this.worldObj, point ) )
+						if( block != null && !block.isAir( state, this.world, point ) )
 						{
 							float strength = (float) ( 2.3f - ( ( ( x + 0.5f ) - this.posX ) * ( ( x + 0.5f ) - this.posX ) + ( ( y + 0.5f ) - this.posY ) * ( ( y + 0.5f ) - this.posY ) + ( ( z + 0.5f ) - this.posZ ) * ( ( z + 0.5f ) - this.posZ ) ) );
 
-							final float resistance = block.getExplosionResistance( this.worldObj, point, this, ex );
+							final float resistance = block.getExplosionResistance( this.world, point, this, ex );
 							strength -= ( resistance + 0.3F ) * 0.11f;
 
 							if( strength > 0.01 )
@@ -168,10 +169,10 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 								{
 									if( block.canDropFromExplosion( ex ) )
 									{
-										block.dropBlockAsItemWithChance( this.worldObj, point, state, 1.0F / 1.0f, 0 );
+										block.dropBlockAsItemWithChance( this.world, point, state, 1.0F / 1.0f, 0 );
 									}
 
-									block.onBlockExploded( this.worldObj, point, ex );
+									block.onBlockExploded( this.world, point, ex );
 								}
 							}
 						}
@@ -180,7 +181,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 			}
 		}
 
-		CommonHelper.proxy.sendToAllNearExcept( null, this.posX, this.posY, this.posZ, 64, this.worldObj, new PacketMockExplosion( this.posX, this.posY, this.posZ ) );
+		AppEng.proxy.sendToAllNearExcept( null, this.posX, this.posY, this.posZ, 64, this.world, new PacketMockExplosion( this.posX, this.posY, this.posZ ) );
 	}
 
 	@Override

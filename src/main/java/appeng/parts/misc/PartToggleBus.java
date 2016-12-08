@@ -105,13 +105,13 @@ public class PartToggleBus extends PartBasicState
 	@Override
 	public void securityBreak()
 	{
-		if( this.getItemStack().stackSize > 0 )
+		if( this.getItemStack().getCount() > 0 )
 		{
 			final List<ItemStack> items = new ArrayList<ItemStack>();
 			items.add( this.getItemStack().copy() );
 			this.getHost().removePart( this.getSide(), false );
 			Platform.spawnDrops( this.getTile().getWorld(), this.getTile().getPos(), items );
-			this.getItemStack().stackSize = 0;
+			this.getItemStack().setCount( 0 );
 		}
 	}
 

@@ -43,10 +43,10 @@ public final class Capabilities
 	@CapabilityInject( IStorageMonitorableAccessor.class )
 	public static Capability<IStorageMonitorableAccessor> STORAGE_MONITORABLE_ACCESSOR;
 
-	@CapabilityInject(ITeslaConsumer.class)
+	@CapabilityInject( ITeslaConsumer.class )
 	public static Capability<ITeslaConsumer> TESLA_CONSUMER;
 
-	@CapabilityInject(ITeslaHolder.class)
+	@CapabilityInject( ITeslaHolder.class )
 	public static Capability<ITeslaHolder> TESLA_HOLDER;
 
 	/**

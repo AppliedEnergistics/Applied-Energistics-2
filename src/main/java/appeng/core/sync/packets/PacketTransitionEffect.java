@@ -34,9 +34,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.util.AEPartLocation;
-import appeng.client.ClientHelper;
 import appeng.client.render.effects.EnergyFx;
-import appeng.core.CommonHelper;
+import appeng.core.AppEng;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
@@ -86,11 +85,11 @@ public class PacketTransitionEffect extends AppEngPacket
 	@SideOnly( Side.CLIENT )
 	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
 	{
-		final World world = ClientHelper.proxy.getWorld();
+		final World world = AppEng.proxy.getWorld();
 
 		for( int zz = 0; zz < ( this.mode ? 32 : 8 ); zz++ )
 		{
-			if( CommonHelper.proxy.shouldAddParticles( Platform.getRandom() ) )
+			if( AppEng.proxy.shouldAddParticles( Platform.getRandom() ) )
 			{
 				final EnergyFx fx = new EnergyFx( world, this.x + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), this.y + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), this.z + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), Items.DIAMOND );
 

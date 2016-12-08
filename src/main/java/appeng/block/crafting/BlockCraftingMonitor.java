@@ -19,14 +19,13 @@
 package appeng.block.crafting;
 
 
-import java.util.List;
-
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.property.ExtendedBlockState;
@@ -85,7 +84,7 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
+	public void getSubBlocks( final Item item, final CreativeTabs tabs, final NonNullList<ItemStack> itemStacks )
 	{
 		itemStacks.add( new ItemStack( this, 1, 0 ) );
 	}

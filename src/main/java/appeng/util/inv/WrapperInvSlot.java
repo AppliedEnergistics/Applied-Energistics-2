@@ -100,9 +100,9 @@ public class WrapperInvSlot
 		}
 
 		@Override
-		public boolean isUseableByPlayer( final EntityPlayer entityplayer )
+		public boolean isUsableByPlayer( final EntityPlayer entityplayer )
 		{
-			return this.inv.isUseableByPlayer( entityplayer );
+			return this.inv.isUsableByPlayer( entityplayer );
 		}
 
 		@Override
@@ -163,6 +163,13 @@ public class WrapperInvSlot
 		public void setField( final int id, final int value )
 		{
 			this.inv.setField( id, value );
+		}
+
+		@Override
+		public boolean isEmpty()
+		{
+			// TODO Auto-generated method stub
+			return false;
 		}
 	}
 }

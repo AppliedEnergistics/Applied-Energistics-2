@@ -35,7 +35,6 @@ import net.minecraft.nbt.NBTTagList;
 
 import mezz.jei.api.gui.IGuiIngredient;
 import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 
@@ -61,12 +60,6 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
 	public Class<T> getContainerClass()
 	{
 		return containerClass;
-	}
-
-	@Override
-	public String getRecipeCategoryUid()
-	{
-		return VanillaRecipeCategoryUid.CRAFTING;
 	}
 
 	@Nullable

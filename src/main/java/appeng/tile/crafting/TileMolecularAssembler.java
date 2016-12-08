@@ -236,7 +236,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	{
 		if( data.hasKey( "myPlan" ) )
 		{
-			final ItemStack myPat = ItemStack.loadItemStackFromNBT( data.getCompoundTag( "myPlan" ) );
+			final ItemStack myPat = new ItemStack( data.getCompoundTag( "myPlan" ) );
 
 			if( myPat != null && myPat.getItem() instanceof ItemEncodedPattern )
 			{
@@ -509,7 +509,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 				try
 				{
-					final TargetPoint where = new TargetPoint( this.worldObj.provider.getDimension(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), 32 );
+					final TargetPoint where = new TargetPoint( this.world.provider.getDimension(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), 32 );
 					final IAEItemStack item = AEItemStack.create( output );
 					NetworkHandler.instance().sendToAllAround( new PacketAssemblerAnimation( this.pos, (byte) speed, item ), where );
 				}
@@ -536,7 +536,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 				final ItemStack is = this.inv.getStackInSlot( x );
 				if( is != null )
 				{
-					if( this.myPlan == null || !this.myPlan.isValidItemForSlot( x, is, this.worldObj ) )
+					if( this.myPlan == null || !this.myPlan.isValidItemForSlot( x, is, this.world ) )
 					{
 						this.inv.setInventorySlotContents( 9, is );
 						this.inv.setInventorySlotContents( x, null );
@@ -604,9 +604,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 			return output;
 		}
 
-		final int size = output.stackSize;
+		final int size = output.getCount();
 		output = adaptor.addItems( output );
-		final int newSize = output == null ? 0 : output.stackSize;
+		final int newSize = output == null ? 0 : output.getCount();
 
 		if( size != newSize )
 		{
@@ -652,6 +652,13 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	public boolean isActive()
 	{
 		return this.isPowered;
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

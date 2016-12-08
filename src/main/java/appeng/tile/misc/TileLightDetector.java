@@ -49,12 +49,12 @@ public class TileLightDetector extends AEBaseTile implements ITickable
 
 	public void updateLight()
 	{
-		final int val = this.worldObj.getLight( this.pos );
+		final int val = this.world.getLight( this.pos );
 
 		if( this.lastLight != val )
 		{
 			this.lastLight = val;
-			Platform.notifyBlocksOfNeighbors( this.worldObj, this.pos );
+			Platform.notifyBlocksOfNeighbors( this.world, this.pos );
 		}
 	}
 

@@ -119,13 +119,13 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	@Override
 	public void securityBreak()
 	{
-		if( this.getItemStack().stackSize > 0 )
+		if( this.getItemStack().getCount() > 0 )
 		{
 			final List<ItemStack> items = new ArrayList<ItemStack>();
 			items.add( this.is.copy() );
 			this.host.removePart( this.side, false );
 			Platform.spawnDrops( this.tile.getWorld(), this.tile.getPos(), items );
-			this.is.stackSize = 0;
+			this.is.setCount( 0 );
 		}
 	}
 

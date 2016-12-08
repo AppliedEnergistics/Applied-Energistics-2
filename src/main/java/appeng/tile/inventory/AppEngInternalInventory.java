@@ -80,7 +80,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 			final ItemStack split = this.getStackInSlot( slot );
 			ItemStack ns = null;
 
-			if( qty >= split.stackSize )
+			if( qty >= split.getCount() )
 			{
 				ns = this.inv[slot];
 				this.inv[slot] = null;
@@ -126,16 +126,16 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 
 			if( oldStack != null && newItemStack != null && Platform.itemComparisons().isEqualItem( oldStack, newItemStack ) )
 			{
-				if( oldStack.stackSize > newItemStack.stackSize )
+				if( oldStack.getCount() > newItemStack.getCount() )
 				{
 					removed = removed.copy();
-					removed.stackSize -= newItemStack.stackSize;
+					removed.grow( -newItemStack.getCount() );
 					added = null;
 				}
-				else if( oldStack.stackSize < newItemStack.stackSize )
+				else if( oldStack.getCount() < newItemStack.getCount() )
 				{
 					added = added.copy();
-					added.stackSize -= oldStack.stackSize;
+					added.grow( -oldStack.getCount() );
 					removed = null;
 				}
 				else
@@ -178,7 +178,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	}
 
 	@Override
-	public boolean isUseableByPlayer( final EntityPlayer var1 )
+	public boolean isUsableByPlayer( final EntityPlayer var1 )
 	{
 		return true;
 	}
@@ -250,7 +250,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 
 				if( c != null )
 				{
-					this.inv[x] = ItemStack.loadItemStackFromNBT( c );
+					this.inv[x] = new ItemStack( c );
 				}
 			}
 			catch( final Exception e )

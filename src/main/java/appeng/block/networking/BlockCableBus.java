@@ -46,6 +46,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -330,11 +331,11 @@ public class BlockCableBus extends AEBaseTileBlock
 	}
 
 	@Override
-	public void neighborChanged( final IBlockState state, final World w, final BlockPos pos, final Block neighborBlock )
+	public void neighborChanged( IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
 	{
 		if( Platform.isServer() )
 		{
-			this.cb( w, pos ).onNeighborChanged();
+			this.cb( world, pos ).onNeighborChanged();
 		}
 	}
 
@@ -377,7 +378,7 @@ public class BlockCableBus extends AEBaseTileBlock
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
+	public void getSubBlocks( final Item item, final CreativeTabs tabs, final NonNullList<ItemStack> itemStacks )
 	{
 		// do nothing
 	}

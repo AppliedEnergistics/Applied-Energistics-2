@@ -344,17 +344,17 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		final ItemStack plateB = this.getStackInSlot( 1 );
 		ItemStack renamedItem = this.getStackInSlot( 2 );
 
-		if( plateA != null && plateA.stackSize > 1 )
+		if( plateA != null && plateA.getCount() > 1 )
 		{
 			return null;
 		}
 
-		if( plateB != null && plateB.stackSize > 1 )
+		if( plateB != null && plateB.getCount() > 1 )
 		{
 			return null;
 		}
 
-		if( renamedItem != null && renamedItem.stackSize > 1 )
+		if( renamedItem != null && renamedItem.getCount() > 1 )
 		{
 			return null;
 		}
@@ -723,6 +723,20 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			}
 		}
 
+		@Override
+		public int getSlotLimit( int slot )
+		{
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

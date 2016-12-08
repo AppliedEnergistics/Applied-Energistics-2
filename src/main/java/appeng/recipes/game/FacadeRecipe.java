@@ -25,6 +25,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
@@ -63,7 +64,7 @@ public final class FacadeRecipe implements IRecipe
 				final ItemStack facades = facade.createFacadeForItem( inv.getStackInSlot( 4 ), !createFacade );
 				if( facades != null && createFacade )
 				{
-					facades.stackSize = 4;
+					facades.setCount( 4 );
 				}
 				return facades;
 			}
@@ -91,7 +92,7 @@ public final class FacadeRecipe implements IRecipe
 	}
 
 	@Override
-	public ItemStack[] getRemainingItems( final InventoryCrafting inv )
+	public NonNullList<ItemStack> getRemainingItems( final InventoryCrafting inv )
 	{
 		return ForgeHooks.defaultRecipeGetRemainingItems( inv );
 	}

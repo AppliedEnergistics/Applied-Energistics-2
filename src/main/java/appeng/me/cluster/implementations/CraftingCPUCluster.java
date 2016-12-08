@@ -506,7 +506,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 					final IAEItemStack ais = this.inventory.extractItems( fuzz, Actionable.SIMULATE, this.machineSrc );
 					final ItemStack is = ais == null ? null : ais.getItemStack();
 
-					if( is != null && is.stackSize == g.getStackSize() )
+					if( is != null && is.getCount() == g.getStackSize() )
 					{
 						found = true;
 						break;
@@ -514,7 +514,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 					else if( is != null )
 					{
 						g = g.copy();
-						g.decStackSize( is.stackSize );
+						g.decStackSize( is.getCount() );
 					}
 				}
 
@@ -528,7 +528,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 				final IAEItemStack ais = this.inventory.extractItems( g.copy(), Actionable.SIMULATE, this.machineSrc );
 				final ItemStack is = ais == null ? null : ais.getItemStack();
 
-				if( is == null || is.stackSize < g.getStackSize() )
+				if( is == null || is.getCount() < g.getStackSize() )
 				{
 					return false;
 				}
@@ -714,7 +714,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 										{
 											this.postChange( input[x], this.machineSrc );
 											ic.setInventorySlotContents( x, is );
-											if( is.stackSize == input[x].getStackSize() )
+											if( is.getCount() == input[x].getStackSize() )
 											{
 												found = true;
 												continue;

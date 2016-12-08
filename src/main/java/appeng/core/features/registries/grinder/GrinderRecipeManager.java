@@ -258,7 +258,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 			if( ratio > 1 )
 			{
 				final ItemStack extra = is.copy();
-				extra.stackSize = ratio - 1;
+				extra.setCount( ratio - 1 );
 				this.addRecipe( item, is, extra, (float) ( AEConfig.instance().getOreDoublePercentage() / 100.0 ), 8 );
 			}
 			else
@@ -305,12 +305,12 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 			if( name.equals( d.getValue() ) )
 			{
 				final ItemStack is = item.copy();
-				is.stackSize = 1;
+				is.setCount( 1 );
 				final int ratio = this.getDustToOreRatio( name );
 				if( ratio > 1 )
 				{
 					final ItemStack extra = is.copy();
-					extra.stackSize = ratio - 1;
+					extra.setCount( ratio - 1 );
 					this.addRecipe( d.getKey(), is, extra, (float) ( AEConfig.instance().getOreDoublePercentage() / 100.0 ), 8 );
 				}
 				else

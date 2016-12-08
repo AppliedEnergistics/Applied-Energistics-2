@@ -24,7 +24,6 @@ import java.util.Set;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -57,7 +56,7 @@ import appeng.util.Platform;
 public class ToolDebugCard extends AEBaseItem
 {
 	@Override
-	public EnumActionResult onItemUseFirst( final ItemStack heldItem, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
+	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
 		if( Platform.isClient() )
 		{
@@ -208,7 +207,7 @@ public class ToolDebugCard extends AEBaseItem
 
 	private void outputMsg( final ICommandSender player, final String string )
 	{
-		player.addChatMessage( new TextComponentString( string ) );
+		player.sendMessage( new TextComponentString( string ) );
 	}
 
 	private String timeMeasurement( final long nanos )

@@ -212,10 +212,10 @@ class GlassBakedModel implements IBakedModel
 
 		// Apply the u,v shift.
 		// This mirrors the logic from OffsetIcon from 1.7
-		float u1 = MathHelper.clamp_float( 0 - uOffset, 0, 16 );
-		float u2 = MathHelper.clamp_float( 16 - uOffset, 0, 16 );
-		float v1 = MathHelper.clamp_float( 0 - vOffset, 0, 16 );
-		float v2 = MathHelper.clamp_float( 16 - vOffset, 0, 16 );
+		float u1 = MathHelper.clamp( 0 - uOffset, 0, 16 );
+		float u2 = MathHelper.clamp( 16 - uOffset, 0, 16 );
+		float v1 = MathHelper.clamp( 0 - vOffset, 0, 16 );
+		float v2 = MathHelper.clamp( 16 - vOffset, 0, 16 );
 
 		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder( vertexFormat );
 		builder.setTexture( sprite );

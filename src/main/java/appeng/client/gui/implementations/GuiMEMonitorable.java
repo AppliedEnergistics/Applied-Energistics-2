@@ -323,7 +323,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		{
 			if( s instanceof AppEngSlot )
 			{
-				if( ( (Slot) s ).xDisplayPosition < 197 )
+				if( ( (Slot) s ).xPos < 197 )
 				{
 					this.repositionSlot( (AppEngSlot) s );
 				}
@@ -332,10 +332,10 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 			if( s instanceof SlotCraftingMatrix || s instanceof SlotFakeCraftingMatrix )
 			{
 				final Slot g = (Slot) s;
-				if( g.xDisplayPosition > 0 && g.yDisplayPosition > 0 )
+				if( g.xPos > 0 && g.yPos > 0 )
 				{
-					craftingGridOffsetX = Math.min( craftingGridOffsetX, g.xDisplayPosition );
-					craftingGridOffsetY = Math.min( craftingGridOffsetY, g.yDisplayPosition );
+					craftingGridOffsetX = Math.min( craftingGridOffsetX, g.xPos );
+					craftingGridOffsetY = Math.min( craftingGridOffsetY, g.yPos );
 				}
 			}
 		}
@@ -443,7 +443,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 	protected void repositionSlot( final AppEngSlot s )
 	{
-		s.yDisplayPosition = s.getY() + this.ySize - 78 - 5;
+		s.yPos = s.getY() + this.ySize - 78 - 5;
 	}
 
 	@Override

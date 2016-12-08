@@ -53,7 +53,7 @@ public class AppEngClientPacketHandler extends AppEngPacketHandlerBase implement
 				@Override
 				public void call( final AppEngPacket appEngPacket )
 				{
-					appEngPacket.clientPacketData( manager, appEngPacket, Minecraft.getMinecraft().thePlayer );
+					appEngPacket.clientPacketData( manager, appEngPacket, Minecraft.getMinecraft().player );
 				}
 			};
 

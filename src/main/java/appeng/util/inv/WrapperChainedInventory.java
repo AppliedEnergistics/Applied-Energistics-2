@@ -202,7 +202,7 @@ public class WrapperChainedInventory implements IInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer( final EntityPlayer var1 )
+	public boolean isUsableByPlayer( final EntityPlayer var1 )
 	{
 		return false;
 	}
@@ -264,5 +264,12 @@ public class WrapperChainedInventory implements IInventory
 	public void clear()
 	{
 
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

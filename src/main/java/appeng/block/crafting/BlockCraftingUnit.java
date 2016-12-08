@@ -21,8 +21,6 @@ package appeng.block.crafting;
 
 import java.util.EnumSet;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -30,7 +28,6 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -118,7 +115,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public void neighborChanged( final IBlockState state, final World worldIn, final BlockPos pos, final Block neighborBlock )
+	public void neighborChanged( final IBlockState state, final World worldIn, final BlockPos pos, final Block blockIn, final BlockPos fromPos )
 	{
 		final TileCraftingTile cp = this.getTileEntity( worldIn, pos );
 		if( cp != null )
@@ -146,7 +143,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onBlockActivated( final World w, final BlockPos pos, final IBlockState state, final EntityPlayer p, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onBlockActivated( final World w, final BlockPos pos, final IBlockState state, final EntityPlayer p, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		final TileCraftingTile tg = this.getTileEntity( w, pos );
 		if( tg != null && !p.isSneaking() && tg.isFormed() && tg.isActive() )

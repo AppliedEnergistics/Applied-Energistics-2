@@ -53,7 +53,7 @@ public class StackSizeRenderer
 			final boolean unicodeFlag = fontRenderer.getUnicodeFlag();
 			fontRenderer.setUnicodeFlag( false );
 
-			if( is.stackSize == 0 )
+			if( is.getCount() == 0 )
 			{
 				final String craftLabelText = AEConfig.instance().useTerminalUseLargeFont() ? GuiText.LargeFontCraft.getLocal() : GuiText.SmallFontCraft.getLocal();
 				GlStateManager.disableLighting();
@@ -70,7 +70,7 @@ public class StackSizeRenderer
 				GlStateManager.enableBlend();
 			}
 
-			final long amount = aeStack != null ? aeStack.getStackSize() : is.stackSize;
+			final long amount = aeStack != null ? aeStack.getStackSize() : is.getCount();
 			if( amount != 0 )
 			{
 				final String stackSize = this.getToBeRenderedStackSize( amount );

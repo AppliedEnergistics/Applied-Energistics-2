@@ -74,12 +74,12 @@ public class TileCraftingStorageTile extends TileCraftingTile
 	@Override
 	public int getStorageBytes()
 	{
-		if( this.worldObj == null || this.notLoaded() )
+		if( this.world == null || this.notLoaded() )
 		{
 			return 0;
 		}
 
-		final BlockCraftingUnit unit = (BlockCraftingUnit) this.worldObj.getBlockState( this.pos ).getBlock();
+		final BlockCraftingUnit unit = (BlockCraftingUnit) this.world.getBlockState( this.pos ).getBlock();
 		switch( unit.type )
 		{
 			default:

@@ -42,11 +42,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 import appeng.block.AEBaseBlock;
-import appeng.core.AppEng;
-import appeng.entity.EntityIds;
 import appeng.entity.EntityTinyTNTPrimed;
 import appeng.helpers.ICustomCollision;
 
@@ -62,7 +59,8 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 		this.setSoundType( SoundType.GROUND );
 		this.setHardness( 0F );
 
-		EntityRegistry.registerModEntity( EntityTinyTNTPrimed.class, "EntityTinyTNTPrimed", EntityIds.get( EntityTinyTNTPrimed.class ), AppEng.instance(), 16, 4, true );
+		// TODO: 1.11
+		//EntityRegistry.registerModEntity( EntityTinyTNTPrimed.class, "EntityTinyTNTPrimed", EntityIds.get( EntityTinyTNTPrimed.class ), AppEng.instance(), 16, 4, true );
 	}
 
 	@Override
@@ -86,18 +84,18 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 		if( !w.isRemote )
 		{
 			final EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, igniter );
-			w.spawnEntityInWorld( primedTinyTNTEntity );
+			w.spawnEntity( primedTinyTNTEntity );
 			w.playSound( null, primedTinyTNTEntity.posX, primedTinyTNTEntity.posY, primedTinyTNTEntity.posZ, SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1, 1 );
 		}
 	}
 
 	@Override
-	public void neighborChanged( final IBlockState state, final World w, final BlockPos pos, final Block neighborBlock )
+	public void neighborChanged( IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
 	{
-		if( w.isBlockIndirectlyGettingPowered( pos ) > 0 )
+		if( world.isBlockIndirectlyGettingPowered( pos ) > 0 )
 		{
-			this.startFuse( w, pos, null );
-			w.setBlockToAir( pos );
+			this.startFuse( world, pos, null );
+			world.setBlockToAir( pos );
 		}
 	}
 
@@ -142,7 +140,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 		{
 			final EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, exp.getExplosivePlacedBy() );
 			primedTinyTNTEntity.setFuse( w.rand.nextInt( primedTinyTNTEntity.getFuse() / 4 ) + primedTinyTNTEntity.getFuse() / 8 );
-			w.spawnEntityInWorld( primedTinyTNTEntity );
+			w.spawnEntity( primedTinyTNTEntity );
 		}
 	}
 

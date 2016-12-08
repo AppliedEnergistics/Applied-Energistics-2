@@ -124,34 +124,34 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 		switch( msg )
 		{
 			case SETTINGS_CLEARED:
-				player.addChatMessage( PlayerMessages.SettingCleared.get() );
+				player.sendMessage( PlayerMessages.SettingCleared.get() );
 				break;
 			case INVALID_MACHINE:
-				player.addChatMessage( PlayerMessages.InvalidMachine.get() );
+				player.sendMessage( PlayerMessages.InvalidMachine.get() );
 				break;
 			case SETTINGS_LOADED:
-				player.addChatMessage( PlayerMessages.LoadedSettings.get() );
+				player.sendMessage( PlayerMessages.LoadedSettings.get() );
 				break;
 			case SETTINGS_SAVED:
-				player.addChatMessage( PlayerMessages.SavedSettings.get() );
+				player.sendMessage( PlayerMessages.SavedSettings.get() );
 				break;
 			default:
 		}
 	}
 
 	@Override
-	public EnumActionResult onItemUse( final ItemStack is, final EntityPlayer player, final World w, final BlockPos pos, final EnumHand hand, final EnumFacing side, final float hx, final float hy, final float hz )
+	public EnumActionResult onItemUse( final EntityPlayer player, final World w, final BlockPos pos, final EnumHand hand, final EnumFacing side, final float hx, final float hy, final float hz )
 	{
 		if( player.isSneaking() && !w.isRemote )
 		{
-			final IMemoryCard mem = (IMemoryCard) is.getItem();
+			final IMemoryCard mem = (IMemoryCard) player.getHeldItemMainhand().getItem();
 			mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
-			is.setTagCompound( null );
+			player.getHeldItemMainhand().setTagCompound( null );
 			return EnumActionResult.SUCCESS;
 		}
 		else
 		{
-			return super.onItemUse( is, player, w, pos, hand, side, hx, hy, hz );
+			return super.onItemUse( player, w, pos, hand, side, hx, hy, hz );
 		}
 	}
 	

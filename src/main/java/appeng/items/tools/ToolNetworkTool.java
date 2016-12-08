@@ -42,8 +42,8 @@ import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.INetworkToolAgent;
-import appeng.client.ClientHelper;
 import appeng.container.AEBaseContainer;
+import appeng.core.AppEng;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketClick;
@@ -71,30 +71,30 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick( final ItemStack it, final World w, final EntityPlayer p, final EnumHand hand )
+	public ActionResult<ItemStack> onItemRightClick( final World w, final EntityPlayer p, final EnumHand hand )
 	{
 		if( Platform.isClient() )
 		{
-			final RayTraceResult mop = ClientHelper.proxy.getRTR();
+			final RayTraceResult mop = AppEng.proxy.getRTR();
 
 			if( mop == null )
 			{
-				this.onItemUseFirst( it, p, w, new BlockPos( 0, 0, 0 ), null, 0, 0, 0, hand ); // eh?
+				this.onItemUseFirst( p, w, new BlockPos( 0, 0, 0 ), null, 0, 0, 0, hand ); // eh?
 			}
 			else
 			{
 				if( w.getBlockState( mop.getBlockPos() ).getBlock().isAir( w.getBlockState( mop.getBlockPos() ), w, mop.getBlockPos() ) )
 				{
-					this.onItemUseFirst( it, p, w, new BlockPos( 0, 0, 0 ), null, 0, 0, 0, hand ); // eh?
+					this.onItemUseFirst( p, w, new BlockPos( 0, 0, 0 ), null, 0, 0, 0, hand ); // eh?
 				}
 			}
 		}
 
-		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, it );
+		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItemMainhand() );
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
+	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
 		final RayTraceResult mop = new RayTraceResult( new Vec3d( hitX, hitY, hitZ ), side, pos );
 		final TileEntity te = world.getTileEntity( pos );
@@ -151,7 +151,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 				{
 					if( b.rotateBlock( w, pos, side ) )
 					{
-						b.neighborChanged( Platform.AIR_BLOCK.getDefaultState(), w, pos, Platform.AIR_BLOCK );
+						b.neighborChanged( Platform.AIR_BLOCK.getDefaultState(), w, pos, Platform.AIR_BLOCK, null );
 						p.swingArm( hand );
 						return !w.isRemote;
 					}
@@ -180,7 +180,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 			}
 			else
 			{
-				b.onBlockActivated( w, pos, w.getBlockState( pos ), p, hand, is, side, hitX, hitY, hitZ );
+				b.onBlockActivated( w, pos, w.getBlockState( pos ), p, hand, side, hitX, hitY, hitZ );
 			}
 		}
 		else

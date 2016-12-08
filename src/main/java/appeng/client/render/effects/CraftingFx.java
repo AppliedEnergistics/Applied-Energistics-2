@@ -55,9 +55,9 @@ public class CraftingFx extends ParticleBreaking
 		this.particleTextureIndex = ParticleTextures.BlockEnergyParticle;
 		this.particleMaxAge /= 1.2;
 
-		this.startBlkX = MathHelper.floor_double( this.posX );
-		this.startBlkY = MathHelper.floor_double( this.posY );
-		this.startBlkZ = MathHelper.floor_double( this.posZ );
+		this.startBlkX = MathHelper.floor( this.posX );
+		this.startBlkY = MathHelper.floor( this.posY );
+		this.startBlkZ = MathHelper.floor( this.posZ );
 	}
 
 	@Override
@@ -84,9 +84,9 @@ public class CraftingFx extends ParticleBreaking
 		float offY = (float) ( this.prevPosY + ( this.posY - this.prevPosY ) * partialTick );
 		float offZ = (float) ( this.prevPosZ + ( this.posZ - this.prevPosZ ) * partialTick );
 
-		final int blkX = MathHelper.floor_double( offX );
-		final int blkY = MathHelper.floor_double( offY );
-		final int blkZ = MathHelper.floor_double( offZ );
+		final int blkX = MathHelper.floor( offX );
+		final int blkY = MathHelper.floor( offY );
+		final int blkZ = MathHelper.floor( offZ );
 		if( blkX == this.startBlkX && blkY == this.startBlkY && blkZ == this.startBlkZ )
 		{
 			offX -= interpPosX;
@@ -127,7 +127,7 @@ public class CraftingFx extends ParticleBreaking
 		}
 
 		this.motionY -= 0.04D * (double) this.particleGravity;
-		this.moveEntity( this.motionX, this.motionY, this.motionZ );
+		this.move( this.motionX, this.motionY, this.motionZ );
 		this.motionX *= 0.9800000190734863D;
 		this.motionY *= 0.9800000190734863D;
 		this.motionZ *= 0.9800000190734863D;

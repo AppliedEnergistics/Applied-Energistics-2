@@ -30,10 +30,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.storage.data.IAEItemStack;
-import appeng.client.ClientHelper;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerOpenContext;
 import appeng.container.implementations.ContainerCraftAmount;
+import appeng.core.AppEng;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.INetworkInfo;
@@ -143,7 +143,7 @@ public class PacketInventoryAction extends AppEngPacket
 						{
 							// Force to stack size 1 to fix a client-side display problem...
 							ItemStack displayIs = baseContainer.getTargetStack().getItemStack().copy();
-							displayIs.stackSize = 1;
+							displayIs.setCount( 1 );
 							cca.getCraftingItem().putStack( displayIs );
 							// This is the *actual* item that matters, not the display item above
 							cca.setItemToCraft( baseContainer.getTargetStack() );
@@ -167,11 +167,11 @@ public class PacketInventoryAction extends AppEngPacket
 		{
 			if( this.slotItem == null )
 			{
-				ClientHelper.proxy.getPlayers().get( 0 ).inventory.setItemStack( null );
+				AppEng.proxy.getPlayers().get( 0 ).inventory.setItemStack( null );
 			}
 			else
 			{
-				ClientHelper.proxy.getPlayers().get( 0 ).inventory.setItemStack( this.slotItem.getItemStack() );
+				AppEng.proxy.getPlayers().get( 0 ).inventory.setItemStack( this.slotItem.getItemStack() );
 			}
 		}
 	}

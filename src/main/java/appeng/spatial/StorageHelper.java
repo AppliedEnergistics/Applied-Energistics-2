@@ -69,7 +69,7 @@ public class StorageHelper
 
 		try
 		{
-			oldWorld = (WorldServer) entity.worldObj;
+			oldWorld = (WorldServer) entity.world;
 			newWorld = (WorldServer) link.dim;
 			player = ( entity instanceof EntityPlayerMP ) ? (EntityPlayerMP) entity : null;
 		}
@@ -86,13 +86,13 @@ public class StorageHelper
 		{
 			return entity;
 		}
-		
+
 		// Are we riding something? Teleport it instead.
 		if( entity.isRiding() )
 		{
 			return this.teleportEntity( entity.getRidingEntity(), link );
 		}
-		
+
 		// Is something riding us? Handle it first.
 		final List<Entity> passangers = entity.getPassengers();
 		final List<Entity> passangersOnOtherSide = new ArrayList<>();
@@ -107,7 +107,7 @@ public class StorageHelper
 		}
 
 		// load the chunk!
-		newWorld.getChunkProvider().provideChunk( MathHelper.floor_double( link.x ) >> 4, MathHelper.floor_double( link.z ) >> 4 );
+		newWorld.getChunkProvider().provideChunk( MathHelper.floor( link.x ) >> 4, MathHelper.floor( link.z ) >> 4 );
 
 		if( newWorld != oldWorld )
 		{
@@ -122,7 +122,8 @@ public class StorageHelper
 			}
 			else
 			{
-				entity.getServer().getPlayerList().transferEntityToWorld( entity, entity.dimension, entity.getServer().worldServerForDimension( entity.dimension ), (WorldServer) link.dim, new METeleporter( newWorld, link ) );
+				entity.getServer().getPlayerList().transferEntityToWorld( entity, entity.dimension,
+						entity.getServer().worldServerForDimension( entity.dimension ), (WorldServer) link.dim, new METeleporter( newWorld, link ) );
 			}
 		}
 
@@ -130,7 +131,7 @@ public class StorageHelper
 		{
 			if( player != null )
 			{
-				entity.worldObj.updateEntityWithOptionalForce( entity, true );
+				entity.world.updateEntityWithOptionalForce( entity, true );
 			}
 
 			for( Entity passanger : passangersOnOtherSide )
@@ -172,15 +173,10 @@ public class StorageHelper
 		}
 	}
 
-	public void swapRegions( final World srcWorld,
-			final int srcX, final int srcY, final int srcZ,
-			final World dstWorld,
-			final int dstX, final int dstY, final int dstZ,
-			final int scaleX, final int scaleY, final int scaleZ )
+	public void swapRegions( final World srcWorld, final int srcX, final int srcY, final int srcZ, final World dstWorld, final int dstX, final int dstY, final int dstZ, final int scaleX, final int scaleY, final int scaleZ )
 	{
-		AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().ifPresent( matrixFrameBlock ->
-				this.transverseEdges( dstX - 1, dstY - 1, dstZ - 1, dstX + scaleX + 1, dstY + scaleY + 1, dstZ + scaleZ + 1, new WrapInMatrixFrame( matrixFrameBlock.getDefaultState(), dstWorld ) )
-		);
+		AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().ifPresent( matrixFrameBlock -> this.transverseEdges( dstX - 1, dstY - 1, dstZ - 1,
+				dstX + scaleX + 1, dstY + scaleY + 1, dstZ + scaleZ + 1, new WrapInMatrixFrame( matrixFrameBlock.getDefaultState(), dstWorld ) ) );
 
 		final AxisAlignedBB srcBox = new AxisAlignedBB( srcX, srcY, srcZ, srcX + scaleX + 1, srcY + scaleY + 1, srcZ + scaleZ + 1 );
 
@@ -207,12 +203,12 @@ public class StorageHelper
 
 		for( final WorldCoord wc : cDst.getUpdates() )
 		{
-			cSrc.getWorld().notifyBlockOfStateChange( wc.getPos(), Platform.AIR_BLOCK );
+			cSrc.getWorld().notifyNeighborsOfStateChange( wc.getPos(), Platform.AIR_BLOCK, true );
 		}
 
 		for( final WorldCoord wc : cSrc.getUpdates() )
 		{
-			cSrc.getWorld().notifyBlockOfStateChange( wc.getPos(), Platform.AIR_BLOCK );
+			cSrc.getWorld().notifyNeighborsOfStateChange( wc.getPos(), Platform.AIR_BLOCK, true );
 		}
 
 		this.transverseEdges( srcX - 1, srcY - 1, srcZ - 1, srcX + scaleX + 1, srcY + scaleY + 1, srcZ + scaleZ + 1, new TriggerUpdates( srcWorld ) );
@@ -244,7 +240,7 @@ public class StorageHelper
 		public void visit( final BlockPos pos )
 		{
 			final Block blk = this.dst.getBlockState( pos ).getBlock();
-			blk.neighborChanged( Platform.AIR_BLOCK.getDefaultState(), this.dst, pos, Platform.AIR_BLOCK );
+			blk.neighborChanged( Platform.AIR_BLOCK.getDefaultState(), this.dst, pos, Platform.AIR_BLOCK, pos );
 		}
 	}
 

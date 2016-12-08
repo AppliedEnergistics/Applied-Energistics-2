@@ -68,7 +68,7 @@ public class MatterCannonFX extends ParticleBreaking
 		}
 
 		this.motionY -= 0.04D * (double) this.particleGravity;
-		this.moveEntity( this.motionX, this.motionY, this.motionZ );
+		this.move( this.motionX, this.motionY, this.motionZ );
 		this.motionX *= 0.9800000190734863D;
 		this.motionY *= 0.9800000190734863D;
 		this.motionZ *= 0.9800000190734863D;

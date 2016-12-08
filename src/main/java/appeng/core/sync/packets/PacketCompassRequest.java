@@ -78,7 +78,7 @@ public class PacketCompassRequest extends AppEngPacket implements ICompassCallba
 	{
 		this.talkBackTo = player;
 
-		final DimensionalCoord loc = new DimensionalCoord( player.worldObj, this.cx << 4, this.cdy << 5, this.cz << 4 );
+		final DimensionalCoord loc = new DimensionalCoord( player.world, this.cx << 4, this.cdy << 5, this.cz << 4 );
 		WorldData.instance().compassData().service().getCompassDirection( loc, 174, this );
 	}
 }

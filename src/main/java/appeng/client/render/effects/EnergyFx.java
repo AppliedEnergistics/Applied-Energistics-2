@@ -54,9 +54,9 @@ public class EnergyFx extends ParticleBreaking
 		this.particleScale = 3.5f;
 		this.particleTextureIndex = ParticleTextures.BlockEnergyParticle;
 
-		this.startBlkX = MathHelper.floor_double( this.posX );
-		this.startBlkY = MathHelper.floor_double( this.posY );
-		this.startBlkZ = MathHelper.floor_double( this.posZ );
+		this.startBlkX = MathHelper.floor( this.posX );
+		this.startBlkY = MathHelper.floor( this.posY );
+		this.startBlkZ = MathHelper.floor( this.posZ );
 	}
 
 	@Override
@@ -78,9 +78,9 @@ public class EnergyFx extends ParticleBreaking
 		final float f12 = (float) ( this.prevPosY + ( this.posY - this.prevPosY ) * partialTicks - interpPosY );
 		final float f13 = (float) ( this.prevPosZ + ( this.posZ - this.prevPosZ ) * partialTicks - interpPosZ );
 
-		final int blkX = MathHelper.floor_double( this.posX );
-		final int blkY = MathHelper.floor_double( this.posY );
-		final int blkZ = MathHelper.floor_double( this.posZ );
+		final int blkX = MathHelper.floor( this.posX );
+		final int blkY = MathHelper.floor( this.posY );
+		final int blkZ = MathHelper.floor( this.posZ );
 
 		if( blkX == this.startBlkX && blkY == this.startBlkY && blkZ == this.startBlkZ )
 		{
@@ -117,7 +117,7 @@ public class EnergyFx extends ParticleBreaking
 		}
 
 		this.motionY -= 0.04D * (double) this.particleGravity;
-		this.moveEntity( this.motionX, this.motionY, this.motionZ );
+		this.move( this.motionX, this.motionY, this.motionZ );
 		this.motionX *= 0.9800000190734863D;
 		this.motionY *= 0.9800000190734863D;
 		this.motionZ *= 0.9800000190734863D;

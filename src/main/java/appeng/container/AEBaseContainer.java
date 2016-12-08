@@ -203,7 +203,7 @@ public abstract class AEBaseContainer extends Container
 			final NBTTagCompound data = CompressedStreamTools.readCompressed( new ByteArrayInputStream( buffer ) );
 			if( data != null )
 			{
-				this.setTargetStack( AEApi.instance().storage().createItemStack( ItemStack.loadItemStackFromNBT( data ) ) );
+				this.setTargetStack( AEApi.instance().storage().createItemStack( new ItemStack( data ) ) );
 			}
 		}
 		catch( final IOException e )
@@ -583,17 +583,17 @@ public abstract class AEBaseContainer extends Container
 									maxSize = d.getSlotStackLimit();
 								}
 
-								int placeAble = maxSize - t.stackSize;
+								int placeAble = maxSize - t.getCount();
 
-								if( tis.stackSize < placeAble )
+								if( tis.getCount() < placeAble )
 								{
-									placeAble = tis.stackSize;
+									placeAble = tis.getCount();
 								}
 
-								t.stackSize += placeAble;
-								tis.stackSize -= placeAble;
+								t.setCount( t.getCount() + placeAble );
+								tis.setCount( tis.getCount() - placeAble );
 
-								if( tis.stackSize <= 0 )
+								if( tis.getCount() <= 0 )
 								{
 									clickSlot.putStack( null );
 									d.onSlotChanged();
@@ -635,17 +635,17 @@ public abstract class AEBaseContainer extends Container
 									maxSize = d.getSlotStackLimit();
 								}
 
-								int placeAble = maxSize - t.stackSize;
+								int placeAble = maxSize - t.getCount();
 
-								if( tis.stackSize < placeAble )
+								if( tis.getCount() < placeAble )
 								{
-									placeAble = tis.stackSize;
+									placeAble = tis.getCount();
 								}
 
-								t.stackSize += placeAble;
-								tis.stackSize -= placeAble;
+								t.setCount( t.getCount() + placeAble );
+								tis.setCount( tis.getCount() - placeAble );
 
-								if( tis.stackSize <= 0 )
+								if( tis.getCount() <= 0 )
 								{
 									clickSlot.putStack( null );
 									d.onSlotChanged();
@@ -673,15 +673,15 @@ public abstract class AEBaseContainer extends Container
 							}
 
 							final ItemStack tmp = tis.copy();
-							if( tmp.stackSize > maxSize )
+							if( tmp.getCount() > maxSize )
 							{
-								tmp.stackSize = maxSize;
+								tmp.setCount( maxSize );
 							}
 
-							tis.stackSize -= tmp.stackSize;
+							tis.setCount( tis.getCount() - tmp.getCount() );
 							d.putStack( tmp );
 
-							if( tis.stackSize <= 0 )
+							if( tis.getCount() <= 0 )
 							{
 								clickSlot.putStack( null );
 								d.onSlotChanged();
@@ -726,7 +726,7 @@ public abstract class AEBaseContainer extends Container
 		{
 			if( this.tileEntity instanceof IInventory )
 			{
-				return ( (IInventory) this.tileEntity ).isUseableByPlayer( entityplayer );
+				return ( (IInventory) this.tileEntity ).isUsableByPlayer( entityplayer );
 			}
 			return true;
 		}
@@ -781,7 +781,7 @@ public abstract class AEBaseContainer extends Container
 						if( hand != null )
 						{
 							final ItemStack is = hand.copy();
-							is.stackSize = 1;
+							is.setCount( 1 );
 							s.putStack( is );
 						}
 
@@ -793,16 +793,16 @@ public abstract class AEBaseContainer extends Container
 						{
 							if( hand == null )
 							{
-								is.stackSize = Math.max( 1, is.stackSize - 1 );
+								is.setCount( Math.max( 1, is.getCount() - 1 ) );
 							}
 							else if( hand.isItemEqual( is ) )
 							{
-								is.stackSize = Math.min( is.getMaxStackSize(), is.stackSize + 1 );
+								is.setCount(Math.min( is.getMaxStackSize(), is.getCount() + 1 ));
 							}
 							else
 							{
 								is = hand.copy();
-								is.stackSize = 1;
+								is.setCount( 1 );
 							}
 
 							s.putStack( is );
@@ -810,7 +810,7 @@ public abstract class AEBaseContainer extends Container
 						else if( hand != null )
 						{
 							is = hand.copy();
-							is.stackSize = 1;
+							is.setCount( 1 );
 							s.putStack( is );
 						}
 
@@ -863,12 +863,12 @@ public abstract class AEBaseContainer extends Container
 					ais.setStackSize( myItem.getMaxStackSize() );
 
 					final InventoryAdaptor adp = InventoryAdaptor.getAdaptor( player, EnumFacing.UP );
-					myItem.stackSize = (int) ais.getStackSize();
+					myItem.setCount( (int) ais.getStackSize() );
 					myItem = adp.simulateAdd( myItem );
 
 					if( myItem != null )
 					{
-						ais.setStackSize( ais.getStackSize() - myItem.stackSize );
+						ais.setStackSize( ais.getStackSize() - myItem.getCount() );
 					}
 
 					ais = Platform.poweredExtraction( this.getPowerSource(), this.getCellInventory(), ais, this.getActionSource() );
@@ -923,7 +923,7 @@ public abstract class AEBaseContainer extends Container
 
 					if( item != null )
 					{
-						if( item.stackSize >= item.getMaxStackSize() )
+						if( item.getCount() >= item.getMaxStackSize() )
 						{
 							liftQty = 0;
 						}
@@ -1034,8 +1034,8 @@ public abstract class AEBaseContainer extends Container
 					if( ais == null )
 					{
 						final ItemStack is = player.inventory.getItemStack();
-						is.stackSize--;
-						if( is.stackSize <= 0 )
+						is.setCount( is.getCount() - 1 );
+						if( is.getCount() <= 0 )
 						{
 							player.inventory.setItemStack( null );
 						}
@@ -1048,7 +1048,7 @@ public abstract class AEBaseContainer extends Container
 				if( player.capabilities.isCreativeMode && slotItem != null )
 				{
 					final ItemStack is = slotItem.getItemStack();
-					is.stackSize = is.getMaxStackSize();
+					is.setCount( is.getMaxStackSize() );
 					player.inventory.setItemStack( is );
 					this.updateHeld( player );
 				}
@@ -1071,12 +1071,12 @@ public abstract class AEBaseContainer extends Container
 						ais.setStackSize( myItem.getMaxStackSize() );
 
 						final InventoryAdaptor adp = InventoryAdaptor.getAdaptor( player, EnumFacing.UP );
-						myItem.stackSize = (int) ais.getStackSize();
+						myItem.setCount( (int) ais.getStackSize() );
 						myItem = adp.simulateAdd( myItem );
 
 						if( myItem != null )
 						{
-							ais.setStackSize( ais.getStackSize() - myItem.stackSize );
+							ais.setStackSize( ais.getStackSize() - myItem.getCount() );
 						}
 
 						ais = Platform.poweredExtraction( this.getPowerSource(), this.getCellInventory(), ais, this.getActionSource() );
@@ -1103,7 +1103,8 @@ public abstract class AEBaseContainer extends Container
 		{
 			try
 			{
-				NetworkHandler.instance().sendTo( new PacketInventoryAction( InventoryAction.UPDATE_HAND, 0, AEItemStack.create( p.inventory.getItemStack() ) ), p );
+				NetworkHandler.instance().sendTo( new PacketInventoryAction( InventoryAction.UPDATE_HAND, 0, AEItemStack.create( p.inventory.getItemStack() ) ),
+						p );
 			}
 			catch( final IOException e )
 			{
@@ -1118,7 +1119,8 @@ public abstract class AEBaseContainer extends Container
 		{
 			return input;
 		}
-		final IAEItemStack ais = Platform.poweredInsert( this.getPowerSource(), this.getCellInventory(), AEApi.instance().storage().createItemStack( input ), this.getActionSource() );
+		final IAEItemStack ais = Platform.poweredInsert( this.getPowerSource(), this.getCellInventory(), AEApi.instance().storage().createItemStack( input ),
+				this.getActionSource() );
 		if( ais == null )
 		{
 			return null;
@@ -1172,7 +1174,8 @@ public abstract class AEBaseContainer extends Container
 					{
 						try
 						{
-							NetworkHandler.instance().sendTo( new PacketValueConfig( "CustomName", this.getCustomName() ), (EntityPlayerMP) this.getInventoryPlayer().player );
+							NetworkHandler.instance().sendTo( new PacketValueConfig( "CustomName", this.getCustomName() ),
+									(EntityPlayerMP) this.getInventoryPlayer().player );
 						}
 						catch( final IOException e )
 						{
@@ -1232,32 +1235,32 @@ public abstract class AEBaseContainer extends Container
 		ItemStack testB = isA == null ? null : isA.copy();
 
 		// can put some back?
-		if( testA != null && testA.stackSize > a.getSlotStackLimit() )
+		if( testA != null && testA.getCount() > a.getSlotStackLimit() )
 		{
 			if( testB != null )
 			{
 				return;
 			}
 
-			final int totalA = testA.stackSize;
-			testA.stackSize = a.getSlotStackLimit();
+			final int totalA = testA.getCount();
+			testA.setCount( a.getSlotStackLimit() );
 			testB = testA.copy();
 
-			testB.stackSize = totalA - testA.stackSize;
+			testB.setCount( totalA - testA.getCount() );
 		}
 
-		if( testB != null && testB.stackSize > b.getSlotStackLimit() )
+		if( testB != null && testB.getCount() > b.getSlotStackLimit() )
 		{
 			if( testA != null )
 			{
 				return;
 			}
 
-			final int totalB = testB.stackSize;
-			testB.stackSize = b.getSlotStackLimit();
+			final int totalB = testB.getCount();
+			testB.setCount( b.getSlotStackLimit() );
 			testA = testB.copy();
 
-			testA.stackSize = totalB - testA.stackSize;
+			testA.setCount(  totalB - testA.getCount() );
 		}
 
 		a.putStack( testA );

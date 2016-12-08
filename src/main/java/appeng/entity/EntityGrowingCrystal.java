@@ -33,7 +33,7 @@ import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
-import appeng.core.CommonHelper;
+import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.util.Platform;
 
@@ -69,11 +69,11 @@ public final class EntityGrowingCrystal extends EntityItem
 
 		if( gc instanceof IGrowableCrystal ) // if it changes this just stops being an issue...
 		{
-			final int j = MathHelper.floor_double( this.posX );
-			final int i = MathHelper.floor_double( (this.getEntityBoundingBox().minY + this.getEntityBoundingBox().maxY) / 2.0D );
-			final int k = MathHelper.floor_double( this.posZ );
+			final int j = MathHelper.floor( this.posX );
+			final int i = MathHelper.floor( (this.getEntityBoundingBox().minY + this.getEntityBoundingBox().maxY) / 2.0D );
+			final int k = MathHelper.floor( this.posZ );
 
-			final IBlockState state = this.worldObj.getBlockState( new BlockPos( j, i, k ) );
+			final IBlockState state = this.world.getBlockState( new BlockPos( j, i, k ) );
 			final Material mat = state.getMaterial();
 			final IGrowableCrystal cry = (IGrowableCrystal) is.getItem();
 
@@ -135,7 +135,7 @@ public final class EntityGrowingCrystal extends EntityItem
 				if( this.progress_1000 >= len )
 				{
 					this.progress_1000 = 0;
-					CommonHelper.proxy.spawnEffect( EffectType.Vibrant, this.worldObj, this.posX, this.posY + 0.2, this.posZ, null );
+					AppEng.proxy.spawnEffect( EffectType.Vibrant, this.world, this.posX, this.posY + 0.2, this.posZ, null );
 				}
 			}
 			else
@@ -191,7 +191,7 @@ public final class EntityGrowingCrystal extends EntityItem
 
 	private boolean isAccelerated( final int x, final int y, final int z )
 	{
-		final TileEntity te = this.worldObj.getTileEntity( new BlockPos( x, y, z ) );
+		final TileEntity te = this.world.getTileEntity( new BlockPos( x, y, z ) );
 
 		return te instanceof ICrystalGrowthAccelerator && ( (ICrystalGrowthAccelerator) te ).isPowered();
 	}

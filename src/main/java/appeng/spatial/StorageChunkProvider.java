@@ -52,7 +52,7 @@ public class StorageChunkProvider extends ChunkProviderOverworld
 
 		final byte[] biomes = chunk.getBiomeArray();
 		Biome biome = AppEng.instance().getRegistration().getStorageBiome();
-		byte biomeId = (byte) Biome.getIdForBiome(biome);
+		byte biomeId = (byte) Biome.getIdForBiome( biome );
 
 		for( int k = 0; k < biomes.length; ++k )
 		{
@@ -105,7 +105,7 @@ public class StorageChunkProvider extends ChunkProviderOverworld
 	}
 
 	@Override
-	public BlockPos getStrongholdGen( World worldIn, String structureName, BlockPos position )
+	public BlockPos getStrongholdGen( World worldIn, String structureName, BlockPos position, boolean p_180513_4_ )
 	{
 		return null;
 	}
@@ -113,6 +113,6 @@ public class StorageChunkProvider extends ChunkProviderOverworld
 	@Override
 	public void recreateStructures( Chunk chunkIn, int x, int z )
 	{
-		
+
 	}
 }

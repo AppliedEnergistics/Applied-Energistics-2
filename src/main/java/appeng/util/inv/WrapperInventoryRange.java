@@ -117,9 +117,9 @@ public class WrapperInventoryRange implements IInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer( final EntityPlayer var1 )
+	public boolean isUsableByPlayer( final EntityPlayer var1 )
 	{
-		return this.src.isUseableByPlayer( var1 );
+		return this.src.isUsableByPlayer( var1 );
 	}
 
 	@Override
@@ -205,5 +205,12 @@ public class WrapperInventoryRange implements IInventory
 	private void setSlots( final int[] slots )
 	{
 		this.slots = slots;
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

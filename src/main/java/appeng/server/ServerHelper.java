@@ -82,7 +82,7 @@ public class ServerHelper extends CommonHelper
 
 			if( server != null )
 			{
-				return (List) server.getPlayerList().getPlayerList();
+				return (List) server.getPlayerList().getPlayers();
 			}
 		}
 
@@ -101,7 +101,7 @@ public class ServerHelper extends CommonHelper
 		{
 			final EntityPlayerMP entityplayermp = (EntityPlayerMP) o;
 
-			if( entityplayermp != p && entityplayermp.worldObj == w )
+			if( entityplayermp != p && entityplayermp.world == w )
 			{
 				final double dX = x - entityplayermp.posX;
 				final double dY = y - entityplayermp.posY;
@@ -116,7 +116,7 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public void spawnEffect( final EffectType type, final World worldObj, final double posX, final double posY, final double posZ, final Object o )
+	public void spawnEffect( final EffectType type, final World world, final double posX, final double posY, final double posZ, final Object o )
 	{
 		// :P
 	}

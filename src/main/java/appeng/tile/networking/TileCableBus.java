@@ -87,7 +87,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		if( newLV != this.oldLV )
 		{
 			this.oldLV = newLV;
-			this.worldObj.checkLight( this.pos );
+			this.world.checkLight( this.pos );
 		}
 
 		this.updateTileSetting();
@@ -176,7 +176,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	@Override
 	public void markForUpdate()
 	{
-		if( this.worldObj == null )
+		if( this.world == null )
 		{
 			return;
 		}
@@ -185,8 +185,8 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		if( newLV != this.oldLV )
 		{
 			this.oldLV = newLV;
-			this.worldObj.checkLight( this.pos );
-			// worldObj.updateAllLightTypes( xCoord, yCoord, zCoord );
+			this.world.checkLight( this.pos );
+			// world.updateAllLightTypes( xCoord, yCoord, zCoord );
 		}
 
 		super.markForUpdate();
@@ -216,9 +216,9 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		super.onReady();
 		if( this.getCableBus().isEmpty() )
 		{
-			if( this.worldObj.getTileEntity( this.pos ) == this )
+			if( this.world.getTileEntity( this.pos ) == this )
 			{
-				this.worldObj.destroyBlock( this.pos, true );
+				this.world.destroyBlock( this.pos, true );
 			}
 		}
 		else
@@ -354,9 +354,9 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	@Override
 	public void notifyNeighbors()
 	{
-		if( this.worldObj != null && this.worldObj.isBlockLoaded( this.pos ) && !CableBusContainer.isLoading() )
+		if( this.world != null && this.world.isBlockLoaded( this.pos ) && !CableBusContainer.isLoading() )
 		{
-			Platform.notifyBlocksOfNeighbors( this.worldObj, this.pos );
+			Platform.notifyBlocksOfNeighbors( this.world, this.pos );
 		}
 	}
 

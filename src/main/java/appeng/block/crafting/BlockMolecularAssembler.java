@@ -19,14 +19,11 @@
 package appeng.block.crafting;
 
 
-import javax.annotation.Nullable;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -41,6 +38,7 @@ import appeng.block.AEBaseTileBlock;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.util.Platform;
+
 
 public class BlockMolecularAssembler extends AEBaseTileBlock
 {
@@ -88,18 +86,18 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 
 	@SideOnly( Side.CLIENT )
 	@Override
-	public boolean canRenderInLayer( BlockRenderLayer layer )
+	public boolean canRenderInLayer( IBlockState state, BlockRenderLayer layer )
 	{
 		return layer == BlockRenderLayer.TRANSLUCENT;
 	}
 
-	public boolean isFullCube(IBlockState state)
+	public boolean isFullCube( IBlockState state )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean onBlockActivated( final World w, final BlockPos pos, final IBlockState state, final EntityPlayer p, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onBlockActivated( final World w, final BlockPos pos, final IBlockState state, final EntityPlayer p, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		final TileMolecularAssembler tg = this.getTileEntity( w, pos );
 		if( tg != null && !p.isSneaking() )

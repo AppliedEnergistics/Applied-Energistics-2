@@ -52,7 +52,7 @@ import appeng.client.render.effects.LightningFX;
 import appeng.client.render.renderable.ItemRenderable;
 import appeng.client.render.tesr.ModularTESR;
 import appeng.core.AEConfig;
-import appeng.core.CommonHelper;
+import appeng.core.AppEng;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.AEBaseTile;
 import appeng.tile.misc.TileCharger;
@@ -118,7 +118,7 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 
 				for( int bolts = 0; bolts < 3; bolts++ )
 				{
-					if( CommonHelper.proxy.shouldAddParticles( r ) )
+					if( AppEng.proxy.shouldAddParticles( r ) )
 					{
 						final LightningFX fx = new LightningFX( w, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(), zOff + 0.5 + pos.getZ(), 0.0D, 0.0D, 0.0D );
 						Minecraft.getMinecraft().effectRenderer.addEffect( fx );

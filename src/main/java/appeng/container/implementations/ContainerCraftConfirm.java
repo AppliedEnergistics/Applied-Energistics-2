@@ -279,7 +279,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 			}
 			catch( final Throwable e )
 			{
-				this.getPlayerInv().player.addChatMessage( new TextComponentString( "Error: " + e.toString() ) );
+				this.getPlayerInv().player.sendMessage( new TextComponentString( "Error: " + e.toString() ) );
 				AELog.debug( e );
 				this.setValidContainer( false );
 				this.result = null;
@@ -389,7 +389,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 
 	public World getWorld()
 	{
-		return this.getPlayerInv().player.worldObj;
+		return this.getPlayerInv().player.world;
 	}
 
 	public boolean isAutoStart()

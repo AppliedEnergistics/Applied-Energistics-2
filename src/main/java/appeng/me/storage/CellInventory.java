@@ -270,14 +270,14 @@ public class CellInventory implements ICellInventory
 				if( input.getStackSize() > remainingItemCount )
 				{
 					final ItemStack toReturn = Platform.cloneItemStack( sharedItemStack );
-					toReturn.stackSize = sharedItemStack.stackSize - remainingItemCount;
+					toReturn.setCount( sharedItemStack.getCount() - remainingItemCount );
 					if( mode == Actionable.MODULATE )
 					{
 						final ItemStack toWrite = Platform.cloneItemStack( sharedItemStack );
-						toWrite.stackSize = remainingItemCount;
+						toWrite.setCount( remainingItemCount );
 
 						this.cellItems.add( AEItemStack.create( toWrite ) );
-						this.updateItemCount( toWrite.stackSize );
+						this.updateItemCount( toWrite.getCount() );
 
 						this.saveChanges();
 					}
@@ -461,7 +461,7 @@ public class CellInventory implements ICellInventory
 		final ItemStack t;
 		try
 		{
-			t = ItemStack.loadItemStackFromNBT( compoundTag );
+			t = new ItemStack( compoundTag );
 			if( t == null )
 			{
 				AELog.warn( "Removing item " + compoundTag + " from storage cell because the associated item type couldn't be found." );
@@ -478,9 +478,9 @@ public class CellInventory implements ICellInventory
 			throw ex;
 		}
 
-		t.stackSize = stackSize;
+		t.setCount( stackSize );
 
-		if( t.stackSize > 0 )
+		if( t.getCount() > 0 )
 		{
 			try
 			{
@@ -555,7 +555,8 @@ public class CellInventory implements ICellInventory
 	public boolean canHoldNewItem()
 	{
 		final long bytesFree = this.getFreeBytes();
-		return ( bytesFree > this.getBytesPerType() || ( bytesFree == this.getBytesPerType() && this.getUnusedItemCount() > 0 ) ) && this.getRemainingItemTypes() > 0;
+		return ( bytesFree > this.getBytesPerType() || ( bytesFree == this.getBytesPerType() && this.getUnusedItemCount() > 0 ) ) && this
+				.getRemainingItemTypes() > 0;
 	}
 
 	@Override

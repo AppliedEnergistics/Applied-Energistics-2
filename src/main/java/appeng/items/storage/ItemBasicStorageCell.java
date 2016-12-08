@@ -214,10 +214,10 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick( final ItemStack stack, final World world, final EntityPlayer player, final EnumHand hand )
+	public ActionResult<ItemStack> onItemRightClick( final World world, final EntityPlayer player, final EnumHand hand )
 	{
-		this.disassembleDrive( stack, world, player );
-		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, stack );
+		this.disassembleDrive( player.getHeldItemMainhand(), world, player );
+		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, player.getHeldItemMainhand() );
 	}
 
 	private boolean disassembleDrive( final ItemStack stack, final World world, final EntityPlayer player )
@@ -281,9 +281,9 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
+	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
-		return this.disassembleDrive( stack, world, player ) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
+		return this.disassembleDrive( player.getHeldItemMainhand(), world, player ) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
 	}
 
 	@Override

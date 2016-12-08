@@ -44,13 +44,13 @@ public final class AECommand extends CommandBase
 	}
 
 	@Override
-	public String getCommandName()
+	public String getName()
 	{
 		return "ae2";
 	}
 
 	@Override
-	public String getCommandUsage( final ICommandSender icommandsender )
+	public String getUsage( final ICommandSender icommandsender )
 	{
 		return "commands.ae2.usage";
 	}
@@ -90,7 +90,7 @@ public final class AECommand extends CommandBase
 			try
 			{
 				final Commands c = Commands.valueOf( args[0] );
-				if( sender.canCommandSenderUseCommand( c.level, this.getCommandName() ) )
+				if( sender.canUseCommand( c.level, this.getName() ) )
 				{
 					c.command.call( this.srv, args, sender );
 				}

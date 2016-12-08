@@ -128,9 +128,9 @@ public class TileController extends AENetworkPowerTile
 			metaState = ControllerBlockState.offline;
 		}
 
-		if( this.checkController( this.pos ) && this.worldObj.getBlockState( this.pos ).getValue( BlockController.CONTROLLER_STATE ) != metaState )
+		if( this.checkController( this.pos ) && this.world.getBlockState( this.pos ).getValue( BlockController.CONTROLLER_STATE ) != metaState )
 		{
-			this.worldObj.setBlockState( this.pos, this.worldObj.getBlockState( this.pos ).withProperty( BlockController.CONTROLLER_STATE, metaState ) );
+			this.world.setBlockState( this.pos, this.world.getBlockState( this.pos ).withProperty( BlockController.CONTROLLER_STATE, metaState ) );
 		}
 
 	}
@@ -219,11 +219,18 @@ public class TileController extends AENetworkPowerTile
 	private boolean checkController( final BlockPos pos )
 	{
 		final BlockPos ownPos = this.getPos();
-		if( this.worldObj.getChunkProvider().getLoadedChunk( ownPos.getX() >> 4, ownPos.getZ() >> 4 ) != null )
+		if( this.world.getChunkProvider().getLoadedChunk( ownPos.getX() >> 4, ownPos.getZ() >> 4 ) != null )
 		{
-			return this.worldObj.getTileEntity( pos ) instanceof TileController;
+			return this.world.getTileEntity( pos ) instanceof TileController;
 		}
 
+		return false;
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		// TODO Auto-generated method stub
 		return false;
 	}
 }

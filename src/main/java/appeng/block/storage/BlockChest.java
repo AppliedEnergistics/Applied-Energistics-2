@@ -118,7 +118,7 @@ public class BlockChest extends AEBaseTileBlock
 				}
 				else
 				{
-					p.addChatMessage( PlayerMessages.ChestCannotReadStorageCell.get() );
+					p.sendMessage( PlayerMessages.ChestCannotReadStorageCell.get() );
 				}
 			}
 

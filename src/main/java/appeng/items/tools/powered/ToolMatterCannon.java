@@ -61,7 +61,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.CommonHelper;
+import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
@@ -106,19 +106,19 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick( final ItemStack item, final World w, final EntityPlayer p, final @Nullable EnumHand hand )
+	public ActionResult<ItemStack> onItemRightClick( final World w, final EntityPlayer p, final @Nullable EnumHand hand )
 	{
-		if( this.getAECurrentPower( item ) > 1600 )
+		if( this.getAECurrentPower( p.getHeldItemMainhand() ) > 1600 )
 		{
 			int shots = 1;
 
-			final CellUpgrades cu = (CellUpgrades) this.getUpgradesInventory( item );
+			final CellUpgrades cu = (CellUpgrades) this.getUpgradesInventory( p.getHeldItemMainhand() );
 			if( cu != null )
 			{
 				shots += cu.getInstalledUpgrades( Upgrades.SPEED );
 			}
 
-			final IMEInventory inv = AEApi.instance().registries().cell().getCellInventory( item, null, StorageChannel.ITEMS );
+			final IMEInventory inv = AEApi.instance().registries().cell().getCellInventory( p.getHeldItemMainhand(), null, StorageChannel.ITEMS );
 			if( inv != null )
 			{
 				final IItemList itemList = inv.getAvailableItems( AEApi.instance().storage().createItemList() );
@@ -128,25 +128,25 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 					shots = Math.min( shots, (int) aeAmmo.getStackSize() );
 					for( int sh = 0; sh < shots; sh++ )
 					{
-						this.extractAEPower( item, 1600 );
+						this.extractAEPower( p.getHeldItemMainhand(), 1600 );
 
 						if( Platform.isClient() )
 						{
-							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, item );
+							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItemMainhand() );
 						}
 
 						aeAmmo.setStackSize( 1 );
 						final ItemStack ammo = ( (IAEItemStack) aeAmmo ).getItemStack();
 						if( ammo == null )
 						{
-							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, item );
+							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItemMainhand() );
 						}
 
-						ammo.stackSize = 1;
+						ammo.setCount( 1 );
 						aeAmmo = inv.extractItems( aeAmmo, Actionable.MODULATE, new PlayerSource( p, null ) );
 						if( aeAmmo == null )
 						{
-							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, item );
+							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItemMainhand() );
 						}
 
 						final LookDirection dir = Platform.getPlayerRay( p, p.getEyeHeight() );
@@ -168,7 +168,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 							{
 								this.shootPaintBalls( type, w, p, Vec3d, Vec3d1, direction, d0, d1, d2 );
 							}
-							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, item );
+							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItemMainhand() );
 						}
 						else
 						{
@@ -180,13 +180,13 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 				{
 					if( Platform.isServer() )
 					{
-						p.addChatMessage( PlayerMessages.AmmoDepleted.get() );
+						p.sendMessage( PlayerMessages.AmmoDepleted.get() );
 					}
-					return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, item );
+					return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItemMainhand() );
 				}
 			}
 		}
-		return new ActionResult<ItemStack>( EnumActionResult.FAIL, item );
+		return new ActionResult<ItemStack>( EnumActionResult.FAIL, p.getHeldItemMainhand() );
 	}
 
 	private void shootPaintBalls( final ItemStack type, final World w, final EntityPlayer p, final Vec3d Vec3d, final Vec3d Vec3d1, final Vec3d direction, final double d0, final double d1, final double d2 )
@@ -244,7 +244,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 
 		try
 		{
-			CommonHelper.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, (float) direction.xCoord, (float) direction.yCoord, (float) direction.zCoord, (byte) ( pos == null ? 32 : pos.hitVec.squareDistanceTo( vec ) + 1 ) ) );
+			AppEng.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, (float) direction.xCoord, (float) direction.yCoord, (float) direction.zCoord, (byte) ( pos == null ? 32 : pos.hitVec.squareDistanceTo( vec ) + 1 ) ) );
 		}
 		catch( final Exception err )
 		{
@@ -361,7 +361,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 
 			try
 			{
-				CommonHelper.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, (float) direction.xCoord, (float) direction.yCoord, (float) direction.zCoord, (byte) ( pos == null ? 32 : pos.hitVec.squareDistanceTo( vec ) + 1 ) ) );
+				AppEng.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, (float) direction.xCoord, (float) direction.yCoord, (float) direction.zCoord, (byte) ( pos == null ? 32 : pos.hitVec.squareDistanceTo( vec ) + 1 ) ) );
 			}
 			catch( final Exception err )
 			{

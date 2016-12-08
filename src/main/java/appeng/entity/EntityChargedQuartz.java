@@ -36,7 +36,7 @@ import appeng.api.AEApi;
 import appeng.api.definitions.IMaterials;
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
-import appeng.core.CommonHelper;
+import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.helpers.Reflected;
 import appeng.util.Platform;
@@ -71,17 +71,17 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 
 		if( Platform.isClient() && this.delay > 30 && AEConfig.instance().isEnableEffects() )
 		{
-			CommonHelper.proxy.spawnEffect( EffectType.Lightning, this.worldObj, this.posX, this.posY, this.posZ, null );
+			AppEng.proxy.spawnEffect( EffectType.Lightning, this.world, this.posX, this.posY, this.posZ, null );
 			this.delay = 0;
 		}
 
 		this.delay++;
 
-		final int j = MathHelper.floor_double( this.posX );
-		final int i = MathHelper.floor_double( ( this.getEntityBoundingBox().minY + this.getEntityBoundingBox().maxY ) / 2.0D );
-		final int k = MathHelper.floor_double( this.posZ );
+		final int j = MathHelper.floor( this.posX );
+		final int i = MathHelper.floor( (this.getEntityBoundingBox().minY + this.getEntityBoundingBox().maxY) / 2.0D );
+		final int k = MathHelper.floor( this.posZ );
 
-		IBlockState state = this.worldObj.getBlockState( new BlockPos( j, i, k ) );
+		IBlockState state = this.world.getBlockState( new BlockPos( j, i, k ) );
 		final Material mat = state.getBlock().getMaterial( state );
 
 		if( Platform.isServer() && mat.isLiquid() )
@@ -119,7 +119,7 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 				if( e instanceof EntityItem && !e.isDead )
 				{
 					final ItemStack other = ( (EntityItem) e ).getEntityItem();
-					if( other != null && other.stackSize > 0 )
+					if( other != null && other.getCount() > 0 )
 					{
 						if( Platform.itemComparisons().isEqualItem( other, new ItemStack( Items.REDSTONE ) ) )
 						{
@@ -136,30 +136,30 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 
 			if( redstone != null && netherQuartz != null )
 			{
-				this.getEntityItem().stackSize--;
-				redstone.getEntityItem().stackSize--;
-				netherQuartz.getEntityItem().stackSize--;
+				this.getEntityItem().grow( -1 );
+				redstone.getEntityItem().grow( -1 );
+				netherQuartz.getEntityItem().grow( -1 );
 
-				if( this.getEntityItem().stackSize <= 0 )
+				if( this.getEntityItem().getCount() <= 0 )
 				{
 					this.setDead();
 				}
 
-				if( redstone.getEntityItem().stackSize <= 0 )
+				if( redstone.getEntityItem().getCount() <= 0 )
 				{
 					redstone.setDead();
 				}
 
-				if( netherQuartz.getEntityItem().stackSize <= 0 )
+				if( netherQuartz.getEntityItem().getCount() <= 0 )
 				{
 					netherQuartz.setDead();
 				}
 
 				materials.fluixCrystal().maybeStack( 2 ).ifPresent( is ->
 				{
-					final EntityItem entity = new EntityItem( this.worldObj, this.posX, this.posY, this.posZ, is );
+					final EntityItem entity = new EntityItem( this.world, this.posX, this.posY, this.posZ, is );
 
-					this.worldObj.spawnEntityInWorld( entity );
+					this.world.spawnEntity( entity );
 				} );
 
 				return true;

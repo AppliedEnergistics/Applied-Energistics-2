@@ -27,7 +27,6 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.AEApi;
@@ -159,10 +158,10 @@ public class Ingredient implements IIngredient
 			throw new RegistrationError( "Recipe format expected a single item, but got a set of items." );
 		}
 
-		Block blk = GameRegistry.findBlock( this.nameSpace, this.itemName );
+		Block blk = Block.getBlockFromName( this.nameSpace + ":" + this.itemName );
 		if( blk == null )
 		{
-			blk = GameRegistry.findBlock( this.nameSpace, "tile." + this.itemName );
+			blk = Block.getBlockFromName( this.nameSpace + ":" + "tile." + this.itemName );
 		}
 
 		if( blk != null )
@@ -174,10 +173,10 @@ public class Ingredient implements IIngredient
 			}
 		}
 
-		Item it = GameRegistry.findItem( this.nameSpace, this.itemName );
+		Item it = Item.getByNameOrId( this.nameSpace + ":" + this.itemName );
 		if( it == null )
 		{
-			it = GameRegistry.findItem( this.nameSpace, "item." + this.itemName );
+			it = Item.getByNameOrId( this.nameSpace + ":" + "item." + this.itemName );
 		}
 
 		if( it != null )
@@ -222,7 +221,7 @@ public class Ingredient implements IIngredient
 			for( int x = 0; x < set.length; x++ )
 			{
 				final ItemStack is = set[x].copy();
-				is.stackSize = this.qty;
+				is.setCount( this.qty );
 				set[x] = is;
 			}
 

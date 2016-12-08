@@ -243,7 +243,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 			if( i.hasNext() )
 			{
 				final ItemStack g = i.next().getItemStack();
-				g.stackSize = 1;
+				g.setCount( 1 );
 				inv.setInventorySlotContents( x, g );
 			}
 			else
@@ -331,7 +331,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		}
 
 		@Override
-		public boolean isUseableByPlayer( final EntityPlayer entityplayer )
+		public boolean isUsableByPlayer( EntityPlayer player )
 		{
 			return false;
 		}
@@ -382,6 +382,13 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		public void clear()
 		{
 			ContainerCellWorkbench.this.getCellUpgradeInventory().clear();
+		}
+
+		@Override
+		public boolean isEmpty()
+		{
+			// TODO Auto-generated method stub
+			return false;
 		}
 	}
 }

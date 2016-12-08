@@ -79,13 +79,13 @@ public class AdaptorItemHandler extends InventoryAdaptor
 				// Use the first stack as a template for the result
 				rv = extracted;
 				filter = extracted;
-				amount -= extracted.stackSize;
+				amount -= extracted.getCount();
 			}
 			else
 			{
 				// Subsequent stacks will just increase the extracted size
-				rv.stackSize += extracted.stackSize;
-				amount -= extracted.stackSize;
+				rv.grow( extracted.getCount() );
+				amount -= extracted.getCount();
 			}
 		}
 
@@ -123,13 +123,13 @@ public class AdaptorItemHandler extends InventoryAdaptor
 					// Use the first stack as a template for the result
 					rv = extracted.copy();
 					filter = extracted;
-					amount -= extracted.stackSize;
+					amount -= extracted.getCount();
 				}
 				else
 				{
 					// Subsequent stacks will just increase the extracted size
-					rv.stackSize += extracted.stackSize;
-					amount -= extracted.stackSize;
+					rv.grow( extracted.getCount() );
+					amount -= extracted.getCount();
 				}
 			}
 		}
@@ -138,7 +138,8 @@ public class AdaptorItemHandler extends InventoryAdaptor
 	}
 
 	/**
-	 * For fuzzy extract, we will only ever extract one slot, since we're afraid of merging two item stacks with different damage values.
+	 * For fuzzy extract, we will only ever extract one slot, since we're afraid of merging two item stacks with
+	 * different damage values.
 	 */
 	@Override
 	public ItemStack removeSimilarItems( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
@@ -218,7 +219,7 @@ public class AdaptorItemHandler extends InventoryAdaptor
 
 	private ItemStack addItems( final ItemStack itemsToAdd, final boolean simulate )
 	{
-		if( itemsToAdd == null || itemsToAdd.stackSize == 0 )
+		if( itemsToAdd == null || itemsToAdd.getCount() == 0 )
 		{
 			return null;
 		}
@@ -233,7 +234,7 @@ public class AdaptorItemHandler extends InventoryAdaptor
 			{
 				left = itemHandler.insertItem( slot, left, simulate );
 
-				if( left == null || left.stackSize <= 0 )
+				if( left == null || left.getCount() <= 0 )
 				{
 					return null;
 				}

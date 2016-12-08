@@ -135,7 +135,8 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	private boolean canAddOutput( final ItemStack output )
 	{
 		final ItemStack outputStack = this.getStackInSlot( 1 );
-		return outputStack == null || ( Platform.itemComparisons().isEqualItem( outputStack, output ) && outputStack.stackSize < outputStack.getMaxStackSize() );
+		return outputStack == null || ( Platform.itemComparisons().isEqualItem( outputStack,
+				output ) && outputStack.getCount() < outputStack.getMaxStackSize() );
 	}
 
 	/**
@@ -152,7 +153,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		}
 		else
 		{
-			outputStack.stackSize++;
+			outputStack.grow( 1 );
 			this.setInventorySlotContents( 1, outputStack );
 		}
 	}
@@ -193,7 +194,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		{
 			if( itemstack != null )
 			{
-				this.addPower( itemstack.stackSize );
+				this.addPower( itemstack.getCount() );
 			}
 		}
 		else
@@ -216,7 +217,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 			final ItemStack is = inv.getStackInSlot( 0 );
 			if( is != null )
 			{
-				this.addPower( is.stackSize );
+				this.addPower( is.getCount() );
 				inv.setInventorySlotContents( 0, null );
 			}
 		}
@@ -325,7 +326,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 			}
 			if( !simulate && stack != null )
 			{
-				addPower( stack.stackSize );
+				addPower( stack.getCount() );
 			}
 			return null;
 		}
@@ -335,11 +336,15 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		{
 			return null;
 		}
+
+		@Override
+		public int getSlotLimit( int slot )
+		{
+			return 0;
+		}
 	}
 
-
 	private static final IFluidTankProperties[] EMPTY = { new FluidTankProperties( null, 10, true, false ) };
-
 
 	/**
 	 * A fluid handler that exposes a 10 bucket tank that can only be filled, and - when filled - will add power
@@ -380,10 +385,11 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		}
 	}
 
-
 	/**
-	 * This is used to expose a fake ME subnetwork that is only composed of this condenser tile. The purpose of this is to enable the condenser to
-	 * override the {@link appeng.api.storage.IMEInventoryHandler#validForPass(int)} method to make sure a condenser is only ever used if an item
+	 * This is used to expose a fake ME subnetwork that is only composed of this condenser tile. The purpose of this is
+	 * to enable the condenser to
+	 * override the {@link appeng.api.storage.IMEInventoryHandler#validForPass(int)} method to make sure a condenser is
+	 * only ever used if an item
 	 * can't go anywhere else.
 	 */
 	private class MEHandler implements IStorageMonitorableAccessor, IStorageMonitorable
@@ -410,5 +416,12 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		{
 			return fluidInventory;
 		}
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

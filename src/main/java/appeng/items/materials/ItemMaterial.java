@@ -45,6 +45,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -257,7 +258,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	}
 
 	@Override
-	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final List<ItemStack> itemStacks )
+	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
 	{
 		final List<MaterialType> types = Arrays.asList( MaterialType.values() );
 		Collections.sort( types, new Comparator<MaterialType>()
@@ -280,7 +281,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst( final ItemStack is, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
+	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
 		if( player.isSneaking() )
 		{
@@ -300,29 +301,29 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 				upgrades = ( (ISegmentedInventory) te ).getInventoryByName( "upgrades" );
 			}
 
-			if( upgrades != null && is != null && is.getItem() instanceof IUpgradeModule )
+			if( upgrades != null && player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof IUpgradeModule )
 			{
-				final IUpgradeModule um = (IUpgradeModule) is.getItem();
-				final Upgrades u = um.getType( is );
+				final IUpgradeModule um = (IUpgradeModule) player.getHeldItemMainhand().getItem();
+				final Upgrades u = um.getType( player.getHeldItemMainhand() );
 
 				if( u != null )
 				{
 					final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( upgrades, EnumFacing.UP );
 					if( ad != null )
 					{
-						if( player.worldObj.isRemote )
+						if( player.world.isRemote )
 						{
 							return EnumActionResult.PASS;
 						}
 
-						player.inventory.setInventorySlotContents( player.inventory.currentItem, ad.addItems( is ) );
+						player.inventory.setInventorySlotContents( player.inventory.currentItem, ad.addItems( player.getHeldItemMainhand() ) );
 						return EnumActionResult.SUCCESS;
 					}
 				}
 			}
 		}
 
-		return super.onItemUseFirst( is, player, world, pos, side, hitX, hitY, hitZ, hand );
+		return super.onItemUseFirst( player, world, pos, side, hitX, hitY, hitZ, hand );
 	}
 
 	@Override

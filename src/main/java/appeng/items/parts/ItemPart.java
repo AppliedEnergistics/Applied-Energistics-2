@@ -41,6 +41,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -152,14 +153,14 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 	}
 
 	@Override
-	public EnumActionResult onItemUse( final ItemStack is, final EntityPlayer player, final World w, final BlockPos pos, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public EnumActionResult onItemUse( final EntityPlayer player, final World w, final BlockPos pos, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
-		if( this.getTypeByStack( is ) == PartType.InvalidType )
+		if( this.getTypeByStack( player.getHeldItemMainhand() ) == PartType.InvalidType )
 		{
 			return EnumActionResult.FAIL;
 		}
 
-		return AEApi.instance().partHelper().placeBus( is, pos, side, player, hand, w );
+		return AEApi.instance().partHelper().placeBus( player.getHeldItemMainhand(), pos, side, player, hand, w );
 	}
 
 	@Override
@@ -195,7 +196,7 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 	}
 
 	@Override
-	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final List<ItemStack> itemStacks )
+	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
 	{
 		final List<Entry<Integer, PartTypeWithVariant>> types = new ArrayList<Entry<Integer, PartTypeWithVariant>>( this.registered.entrySet() );
 		Collections.sort( types, REGISTERED_COMPARATOR );

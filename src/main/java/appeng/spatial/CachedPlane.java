@@ -315,7 +315,7 @@ public class CachedPlane
 					final BlockPos pos = new BlockPos( x, y, z );
 
 					// attempt recovery...
-					te.setWorldObj( this.world );
+					te.setWorld( this.world );
 					te.setPos( pos );
 					c.c.addTileEntity( new BlockPos( c.x, y + y, c.z ), te );
 					// c.c.setChunkTileEntity( c.x, y + y, c.z, te );
@@ -407,7 +407,7 @@ public class CachedPlane
 				ExtendedBlockStorage extendedblockstorage = this.storage[by];
 				if( extendedblockstorage == null )
 				{
-					extendedblockstorage = this.storage[by] = new ExtendedBlockStorage( by << 4, !this.c.getWorld().provider.getHasNoSky() );
+					extendedblockstorage = this.storage[by] = new ExtendedBlockStorage( by << 4, !this.c.getWorld().provider.hasNoSky() );
 				}
 			}
 		}

@@ -47,7 +47,7 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench /* , ITool
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
+	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
 		final Block b = world.getBlockState( pos ).getBlock();
 		if( b != null && !player.isSneaking() && Platform.hasPermissions( new DimensionalCoord( world, pos ), player ) )
@@ -60,7 +60,7 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench /* , ITool
 
 			if( b.rotateBlock( world, pos, side ) )
 			{
-				b.neighborChanged( Platform.AIR_BLOCK.getDefaultState(), world, pos, Platform.AIR_BLOCK );
+				b.neighborChanged( Platform.AIR_BLOCK.getDefaultState(), world, pos, Platform.AIR_BLOCK, pos );
 				player.swingArm( hand );
 				return !world.isRemote ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
 			}

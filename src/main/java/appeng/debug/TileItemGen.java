@@ -19,15 +19,14 @@
 package appeng.debug;
 
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.tile.AEBaseTile;
@@ -56,7 +55,7 @@ public class TileItemGen extends AEBaseTile implements IInventory
 					}
 					else
 					{
-						final List<ItemStack> list = new ArrayList<ItemStack>();
+						final NonNullList<ItemStack> list = NonNullList.create();
 						mi.getSubItems( mi, mi.getCreativeTab(), list );
 						POSSIBLE_ITEMS.addAll( list );
 					}
@@ -123,7 +122,7 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer( final EntityPlayer entityplayer )
+	public boolean isUsableByPlayer( final EntityPlayer entityplayer )
 	{
 		return false;
 	}
@@ -174,5 +173,12 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	public void clear()
 	{
 
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

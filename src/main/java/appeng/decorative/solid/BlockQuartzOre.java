@@ -104,7 +104,7 @@ public class BlockQuartzOre extends AEBaseBlock
 
 		if( this.getItemDropped( state, w.rand, fortune ) != Item.getItemFromBlock( this ) )
 		{
-			final int xp = MathHelper.getRandomIntegerInRange( w.rand, 2, 5 );
+			final int xp = MathHelper.getInt( w.rand, 2, 5 );
 
 			this.dropXpOnBlockBreak( w, pos, xp );
 		}

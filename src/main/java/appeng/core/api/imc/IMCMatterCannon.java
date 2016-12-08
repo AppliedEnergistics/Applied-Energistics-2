@@ -49,7 +49,7 @@ public class IMCMatterCannon implements IIMCProcessor
 		final NBTTagCompound msg = m.getNBTValue();
 		final NBTTagCompound item = (NBTTagCompound) msg.getTag( "item" );
 
-		final ItemStack ammo = ItemStack.loadItemStackFromNBT( item );
+		final ItemStack ammo = new ItemStack( item );
 		final double weight = msg.getDouble( "weight" );
 
 		if( ammo == null )

@@ -268,7 +268,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 					}
 					else if( is != null )
 					{
-						ItemStack extra = interfaceSlot.removeItems( ( is.stackSize + 1 ) / 2, null, null );
+						ItemStack extra = interfaceSlot.removeItems( ( is.getCount() + 1 ) / 2, null, null );
 						if( extra != null )
 						{
 							extra = playerHand.addItems( extra );

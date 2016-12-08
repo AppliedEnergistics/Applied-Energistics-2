@@ -35,12 +35,6 @@ class InscriberRecipeHandler implements IRecipeHandler<IInscriberRecipe>
 	}
 
 	@Override
-	public String getRecipeCategoryUid()
-	{
-		return InscriberRecipeCategory.UID;
-	}
-
-	@Override
 	public String getRecipeCategoryUid( IInscriberRecipe recipe )
 	{
 		return InscriberRecipeCategory.UID;

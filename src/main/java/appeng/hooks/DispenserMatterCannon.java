@@ -65,7 +65,7 @@ public final class DispenserMatterCannon extends BehaviorDefaultDispenseItem
 				p.posY += dir.yOffset;
 				p.posZ += dir.zOffset;
 
-				dispensedItem = tm.onItemRightClick( dispensedItem, w, p, null ).getResult();
+				dispensedItem = tm.onItemRightClick( w, p, null ).getResult();
 			}
 		}
 		return dispensedItem;

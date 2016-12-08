@@ -28,7 +28,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 
-import appeng.core.CommonHelper;
+import appeng.core.AppEng;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.parts.PartPlacement;
@@ -75,9 +75,9 @@ public class PacketPartPlacement extends AppEngPacket
 	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
 	{
 		final EntityPlayerMP sender = (EntityPlayerMP) player;
-		CommonHelper.proxy.updateRenderMode( sender );
+		AppEng.proxy.updateRenderMode( sender );
 		PartPlacement.setEyeHeight( this.eyeHeight );
-		PartPlacement.place( sender.getHeldItem( hand ), new BlockPos( this.x, this.y, this.z ), EnumFacing.VALUES[this.face], sender, hand, sender.worldObj, PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
-		CommonHelper.proxy.updateRenderMode( null );
+		PartPlacement.place( sender.getHeldItem( hand ), new BlockPos( this.x, this.y, this.z ), EnumFacing.VALUES[this.face], sender, hand, sender.world, PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
+		AppEng.proxy.updateRenderMode( null );
 	}
 }

@@ -80,7 +80,7 @@ class InscriberRecipeCategory extends BlankRecipeCategory<InscriberRecipeWrapper
 	}
 
 	@Override
-	public void drawAnimations( Minecraft minecraft )
+	public void drawExtras( Minecraft minecraft )
 	{
 		this.progress.draw( minecraft );
 	}

@@ -33,7 +33,7 @@ import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinition;
 import appeng.client.render.effects.ChargedOreFX;
 import appeng.core.AEConfig;
-import appeng.core.CommonHelper;
+import appeng.core.AppEng;
 
 
 public final class BlockChargedQuartzOre extends BlockQuartzOre
@@ -98,7 +98,7 @@ public final class BlockChargedQuartzOre extends BlockQuartzOre
 				break;
 		}
 
-		if( CommonHelper.proxy.shouldAddParticles( r ) )
+		if( AppEng.proxy.shouldAddParticles( r ) )
 		{
 			final ChargedOreFX fx = new ChargedOreFX( w, pos.getX() + xOff, pos.getY() + yOff, pos.getZ() + zOff, 0.0f, 0.0f, 0.0f );
 			Minecraft.getMinecraft().effectRenderer.addEffect( fx );

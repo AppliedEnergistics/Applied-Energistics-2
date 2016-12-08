@@ -84,7 +84,7 @@ public class PacketJEIRecipe extends AppEngPacket
 					this.recipe[x] = new ItemStack[list.tagCount()];
 					for( int y = 0; y < list.tagCount(); y++ )
 					{
-						this.recipe[x][y] = ItemStack.loadItemStackFromNBT( list.getCompoundTagAt( y ) );
+						this.recipe[x][y] = new ItemStack( list.getCompoundTagAt( y ) );
 					}
 				}
 			}
@@ -144,7 +144,7 @@ public class PacketJEIRecipe extends AppEngPacket
 						}
 					}
 
-					final IRecipe r = Platform.findMatchingRecipe( testInv, pmp.worldObj );
+					final IRecipe r = Platform.findMatchingRecipe( testInv, pmp.world );
 
 					if( r != null && security.hasPermission( player, SecurityPermissions.EXTRACT ) )
 					{
@@ -164,7 +164,7 @@ public class PacketJEIRecipe extends AppEngPacket
 								if( currentItem != null )
 								{
 									testInv.setInventorySlotContents( x, currentItem );
-									final ItemStack newItemStack = r.matches( testInv, pmp.worldObj ) ? r.getCraftingResult( testInv ) : null;
+									final ItemStack newItemStack = r.matches( testInv, pmp.world ) ? r.getCraftingResult( testInv ) : null;
 									testInv.setInventorySlotContents( x, patternItem );
 
 									if( newItemStack == null || !Platform.itemComparisons().isSameItem( newItemStack, is ) )
@@ -191,7 +191,7 @@ public class PacketJEIRecipe extends AppEngPacket
 								if( patternItem != null && currentItem == null )
 								{
 									// Grab from network by recipe
-									ItemStack whichItem = Platform.extractItemsByRecipe( energy, cct.getActionSource(), storage, player.worldObj, r, is, testInv, patternItem, x, all, realForFake, filter );
+									ItemStack whichItem = Platform.extractItemsByRecipe( energy, cct.getActionSource(), storage, player.world, r, is, testInv, patternItem, x, all, realForFake, filter );
 
 									// If that doesn't get it, grab exact items from network (?)
 									// TODO see if this code is necessary

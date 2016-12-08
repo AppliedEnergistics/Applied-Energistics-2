@@ -89,7 +89,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 
 		if( !this.isWirelessTerminal( item ) )
 		{
-			player.addChatMessage( PlayerMessages.DeviceNotWirelessTerminal.get() );
+			player.sendMessage( PlayerMessages.DeviceNotWirelessTerminal.get() );
 			return;
 		}
 
@@ -97,7 +97,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 		final String unparsedKey = handler.getEncryptionKey( item );
 		if( unparsedKey.isEmpty() )
 		{
-			player.addChatMessage( PlayerMessages.DeviceNotLinked.get() );
+			player.sendMessage( PlayerMessages.DeviceNotLinked.get() );
 			return;
 		}
 
@@ -105,7 +105,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 		final ILocatable securityStation = AEApi.instance().registries().locatable().getLocatableBy( parsedKey );
 		if( securityStation == null )
 		{
-			player.addChatMessage( PlayerMessages.StationCanNotBeLocated.get() );
+			player.sendMessage( PlayerMessages.StationCanNotBeLocated.get() );
 			return;
 		}
 
@@ -115,7 +115,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 		}
 		else
 		{
-			player.addChatMessage( PlayerMessages.DeviceNotPowered.get() );
+			player.sendMessage( PlayerMessages.DeviceNotPowered.get() );
 		}
 	}
 }

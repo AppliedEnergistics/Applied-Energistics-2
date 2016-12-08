@@ -176,6 +176,6 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	{
 		final int offsetPlayerSide = s.isPlayerSide() ? 5 : 3;
 
-		s.yDisplayPosition = s.getY() + this.ySize - 78 - offsetPlayerSide;
+		s.yPos = s.getY() + this.ySize - 78 - offsetPlayerSide;
 	}
 }

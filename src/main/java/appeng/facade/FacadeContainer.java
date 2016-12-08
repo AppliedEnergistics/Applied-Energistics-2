@@ -164,7 +164,7 @@ public class FacadeContainer implements IFacadeContainer
 			final NBTTagCompound t = c.getCompoundTag( "facade:" + x );
 			if( t != null )
 			{
-				final ItemStack is = ItemStack.loadItemStackFromNBT( t );
+				final ItemStack is = new ItemStack( t );
 				if( is != null )
 				{
 					final Item i = is.getItem();

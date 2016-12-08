@@ -82,7 +82,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 		}
 
 		final EnumFacing grinder = this.getUp().getOpposite();
-		final TileEntity te = this.worldObj.getTileEntity( this.pos.offset( grinder ) );
+		final TileEntity te = this.world.getTileEntity( this.pos.offset( grinder ) );
 		if( te instanceof ICrankable )
 		{
 			return (ICrankable) te;
@@ -107,8 +107,8 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 	public void setOrientation( final EnumFacing inForward, final EnumFacing inUp )
 	{
 		super.setOrientation( inForward, inUp );
-		final IBlockState state = this.worldObj.getBlockState( this.pos );
-		this.getBlockType().neighborChanged( state, this.worldObj, this.pos, state.getBlock() );
+		final IBlockState state = this.world.getBlockState( this.pos );
+		this.getBlockType().neighborChanged( state, this.world, this.pos, state.getBlock(), this.pos );
 	}
 
 	@Override
@@ -144,7 +144,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 					this.hits++;
 					if( this.hits > 10 )
 					{
-						this.worldObj.destroyBlock( this.pos, false );
+						this.world.destroyBlock( this.pos, false );
 					}
 				}
 			}

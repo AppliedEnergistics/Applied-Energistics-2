@@ -28,6 +28,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
@@ -53,7 +54,7 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getSubBlocks( final Item item, final CreativeTabs tabs, final List<ItemStack> itemStacks )
+	public void getSubBlocks( final Item item, final CreativeTabs tabs, final NonNullList<ItemStack> itemStacks )
 	{
 		// do nothing
 	}

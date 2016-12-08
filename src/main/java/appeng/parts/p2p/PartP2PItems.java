@@ -315,7 +315,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPip
 	}
 
 	@Override
-	public boolean isUseableByPlayer( final EntityPlayer entityplayer )
+	public boolean isUsableByPlayer( final EntityPlayer entityplayer )
 	{
 		return false;
 	}
@@ -394,6 +394,13 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPip
 	public IPartModel getStaticModels()
 	{
 		return MODELS.getModel( isPowered(), isActive() );
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

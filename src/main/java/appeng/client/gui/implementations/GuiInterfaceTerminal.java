@@ -232,7 +232,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 						final String which = Integer.toString( x );
 						if( invData.hasKey( which ) )
 						{
-							current.getInventory().setInventorySlotContents( x, ItemStack.loadItemStackFromNBT( invData.getCompoundTag( which ) ) );
+							current.getInventory().setInventorySlotContents( x, new ItemStack( invData.getCompoundTag( which ) ) );
 						}
 					}
 				}
@@ -344,7 +344,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		for( int i = 0; i < outTag.tagCount(); i++ )
 		{
 
-			final ItemStack parsedItemStack = ItemStack.loadItemStackFromNBT( outTag.getCompoundTagAt( i ) );
+			final ItemStack parsedItemStack = new ItemStack( outTag.getCompoundTagAt( i ) );
 			if( parsedItemStack != null )
 			{
 				final String displayName = Platform.getItemDisplayName( AEApi.instance().storage().createItemStack( parsedItemStack ) ).toLowerCase();

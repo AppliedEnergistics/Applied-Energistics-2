@@ -66,7 +66,7 @@ public class ContainerCraftAmount extends AEBaseContainer
 
 	public World getWorld()
 	{
-		return this.getPlayerInv().player.worldObj;
+		return this.getPlayerInv().player.world;
 	}
 
 	public BaseActionSource getActionSrc()

@@ -235,7 +235,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	{
 		super.onPlacement( player, hand, held, side );
 
-		final byte rotation = (byte) ( MathHelper.floor_double( ( player.rotationYaw * 4F ) / 360F + 2.5D ) & 3 );
+		final byte rotation = (byte) ( MathHelper.floor( ( player.rotationYaw * 4F ) / 360F + 2.5D ) & 3 );
 		if( side == AEPartLocation.UP )
 		{
 			this.spin = rotation;

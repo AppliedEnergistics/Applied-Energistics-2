@@ -169,7 +169,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	private int getBoosters()
 	{
 		final ItemStack boosters = this.inv.getStackInSlot( 0 );
-		return boosters == null ? 0 : boosters.stackSize;
+		return boosters == null ? 0 : boosters.getCount();
 	}
 
 	@Override
@@ -222,5 +222,12 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	private void setClientFlags( final int clientFlags )
 	{
 		this.clientFlags = clientFlags;
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

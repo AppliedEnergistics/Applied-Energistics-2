@@ -25,9 +25,8 @@ import net.minecraftforge.fml.common.ModAPIManager;
 import appeng.api.exceptions.ModNotInstalled;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.integration.modules.ic2.IC2Module;
+//import appeng.integration.modules.ic2.IC2Module;
 import appeng.integration.modules.jei.JEIModule;
-import appeng.integration.modules.waila.WailaModule;
 
 
 final class IntegrationNode

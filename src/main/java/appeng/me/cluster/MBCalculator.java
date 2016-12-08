@@ -162,7 +162,7 @@ public abstract class MBCalculator
 	 */
 	public abstract IAECluster createCluster( World w, WorldCoord min, WorldCoord max );
 
-	public abstract boolean verifyInternalStructure( World worldObj, WorldCoord min, WorldCoord max );
+	public abstract boolean verifyInternalStructure( World world, WorldCoord min, WorldCoord max );
 
 	/**
 	 * disassembles the multi-block.

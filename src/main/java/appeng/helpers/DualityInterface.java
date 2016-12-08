@@ -245,7 +245,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				final NBTTagCompound c = waitingList.getCompoundTagAt( x );
 				if( c != null )
 				{
-					final ItemStack is = ItemStack.loadItemStackFromNBT( c );
+					final ItemStack is = new ItemStack( c );
 					this.addToSendList( is );
 				}
 			}
@@ -429,10 +429,10 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			}
 			else if( req.isSameType( Stored ) ) // same type ( qty different? )!
 			{
-				if( req.getStackSize() != Stored.stackSize )
+				if( req.getStackSize() != Stored.getCount() )
 				{
 					this.requireWork[slot] = req.copy();
-					this.requireWork[slot].setStackSize( req.getStackSize() - Stored.stackSize );
+					this.requireWork[slot].setStackSize( req.getStackSize() - Stored.getCount() );
 					return;
 				}
 			}
@@ -509,7 +509,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		{
 			return true;
 		}
-		return out.getStackSize() != stack.stackSize;
+		return out.getStackSize() != stack.getCount();
 		// ItemStack after = adaptor.simulateAdd( stack );
 		// if ( after == null )
 		// return true;
@@ -619,15 +619,15 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
 				if( ad != null )
 				{
-					final ItemStack Result = ad.addItems( whatToSend );
+					final ItemStack result = ad.addItems( whatToSend );
 
-					if( Result == null )
+					if( result == null )
 					{
 						whatToSend = null;
 					}
 					else
 					{
-						whatToSend.stackSize -= whatToSend.stackSize - Result.stackSize;
+						whatToSend.setCount( whatToSend.getCount() - (whatToSend.getCount() - result.getCount()) );
 					}
 
 					if( whatToSend == null )
@@ -712,7 +712,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 				// make sure strange things didn't happen...
 				final ItemStack canExtract = adaptor.simulateRemove( (int) diff, toStore.getItemStack(), null );
-				if( canExtract == null || canExtract.stackSize != diff )
+				if( canExtract == null || canExtract.getCount() != diff )
 				{
 					changed = true;
 					throw new GridAccessException();
@@ -734,7 +734,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					{
 						throw new IllegalStateException( "bad attempt at managing inventory. ( removeItems )" );
 					}
-					else if( removed.stackSize != diff )
+					else if( removed.getCount() != diff )
 					{
 						throw new IllegalStateException( "bad attempt at managing inventory. ( removeItems )" );
 					}
@@ -767,7 +767,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		{
 			if( this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0 && itemStack != null )
 			{
-				return this.craftingTracker.handleCrafting( x, itemStack.getStackSize(), itemStack, d, this.iHost.getTileEntity().getWorld(), this.gridProxy.getGrid(), this.gridProxy.getCrafting(), this.mySource );
+				return this.craftingTracker.handleCrafting( x, itemStack.getStackSize(), itemStack, d, this.iHost.getTileEntity().getWorld(),
+						this.gridProxy.getGrid(), this.gridProxy.getCrafting(), this.mySource );
 			}
 		}
 		catch( final GridAccessException e )
@@ -883,7 +884,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 		final DualityInterface di = this;
 
-		return new IStorageMonitorable(){
+		return new IStorageMonitorable()
+		{
 
 			@Override
 			public IMEMonitor<IAEItemStack> getItemInventory()
@@ -1274,8 +1276,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	public boolean hasCapability( Capability<?> capabilityClass, EnumFacing facing )
 	{
-		return capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
-				|| capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR;
+		return capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR;
 	}
 
 	@SuppressWarnings( "unchecked" )

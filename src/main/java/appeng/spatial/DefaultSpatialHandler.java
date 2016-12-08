@@ -46,7 +46,7 @@ public class DefaultSpatialHandler implements IMovableHandler
 	@Override
 	public void moveTile( final TileEntity te, final World w, final BlockPos newPosition )
 	{
-		te.setWorldObj( w );
+		te.setWorld( w );
 		te.setPos( newPosition );
 
 		final Chunk c = w.getChunkFromBlockCoords( newPosition );

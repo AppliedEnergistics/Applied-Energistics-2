@@ -28,7 +28,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.core.CommonHelper;
+import appeng.core.AppEng;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 
@@ -69,7 +69,7 @@ public class PacketMockExplosion extends AppEngPacket
 	@SideOnly( Side.CLIENT )
 	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
 	{
-		final World world = CommonHelper.proxy.getWorld();
+		final World world = AppEng.proxy.getWorld();
 		world.spawnParticle( EnumParticleTypes.EXPLOSION_LARGE, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D, new int[0] );
 	}
 }

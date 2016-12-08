@@ -33,7 +33,7 @@ import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
-import appeng.core.CommonHelper;
+import appeng.core.AppEng;
 
 
 /**
@@ -75,7 +75,7 @@ final class PlayerData implements IWorldPlayerData, IOnWorldStartable, IOnWorldS
 		if( maybe.isPresent() )
 		{
 			final UUID uuid = maybe.get();
-			for( final EntityPlayer player : CommonHelper.proxy.getPlayers() )
+			for( final EntityPlayer player : AppEng.proxy.getPlayers() )
 			{
 				if( player.getUniqueID().equals( uuid ) )
 				{
