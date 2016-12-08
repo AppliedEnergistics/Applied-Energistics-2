@@ -186,4 +186,10 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	{
 		return new PortableCellViewer( is, pos.getX() );
 	}
+
+	@Override
+	public boolean shouldCauseReequipAnimation( ItemStack oldStack, ItemStack newStack, boolean slotChanged ) 
+	{
+	        return slotChanged;
+	}
 }

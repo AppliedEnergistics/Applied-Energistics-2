@@ -150,4 +150,10 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 		tag.setString( "encryptionKey", encKey );
 		tag.setString( "name", name );
 	}
+
+        @Override
+        public boolean shouldCauseReequipAnimation( ItemStack oldStack, ItemStack newStack, boolean slotChanged ) 
+	{
+	        return slotChanged;
+        }
 }
