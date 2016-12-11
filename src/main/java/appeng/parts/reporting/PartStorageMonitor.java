@@ -19,16 +19,14 @@
 package appeng.parts.reporting;
 
 
-import java.util.List;
-
-import com.google.common.collect.ImmutableList;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
 import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
+import appeng.parts.PartModel;
 
 
 /**
@@ -49,13 +47,13 @@ public class PartStorageMonitor extends AbstractPartMonitor
 	@PartModels
 	public static final ResourceLocation MODEL_LOCKED_ON = new ResourceLocation( AppEng.MOD_ID, "part/storage_monitor_locked_on" );
 
-	public static final List<ResourceLocation> MODELS_OFF = ImmutableList.of( MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF );
-	public static final List<ResourceLocation> MODELS_ON = ImmutableList.of( MODEL_BASE, MODEL_ON, MODEL_STATUS_ON );
-	public static final List<ResourceLocation> MODELS_HAS_CHANNEL = ImmutableList.of( MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL );
+	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF );
+	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, MODEL_ON, MODEL_STATUS_ON );
+	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL );
 
-	public static final List<ResourceLocation> MODELS_LOCKED_OFF = ImmutableList.of( MODEL_BASE, MODEL_LOCKED_OFF, MODEL_STATUS_OFF );
-	public static final List<ResourceLocation> MODELS_LOCKED_ON = ImmutableList.of( MODEL_BASE, MODEL_LOCKED_ON, MODEL_STATUS_ON );
-	public static final List<ResourceLocation> MODELS_LOCKED_HAS_CHANNEL = ImmutableList.of( MODEL_BASE, MODEL_LOCKED_ON, MODEL_STATUS_HAS_CHANNEL );
+	public static final IPartModel MODELS_LOCKED_OFF = new PartModel( MODEL_BASE, MODEL_LOCKED_OFF, MODEL_STATUS_OFF );
+	public static final IPartModel MODELS_LOCKED_ON = new PartModel( MODEL_BASE, MODEL_LOCKED_ON, MODEL_STATUS_ON );
+	public static final IPartModel MODELS_LOCKED_HAS_CHANNEL = new PartModel( MODEL_BASE, MODEL_LOCKED_ON, MODEL_STATUS_HAS_CHANNEL );
 
 	@Reflected
 	public PartStorageMonitor( final ItemStack is )
@@ -64,7 +62,7 @@ public class PartStorageMonitor extends AbstractPartMonitor
 	}
 
 	@Override
-	public List<ResourceLocation> getStaticModels()
+	public IPartModel getStaticModels()
 	{
 		return selectModel( MODELS_OFF, MODELS_ON, MODELS_HAS_CHANNEL,
 				MODELS_LOCKED_OFF, MODELS_LOCKED_ON, MODELS_LOCKED_HAS_CHANNEL );

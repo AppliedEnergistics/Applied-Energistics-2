@@ -23,8 +23,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -58,6 +56,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
+import appeng.api.parts.IPartModel;
 import appeng.api.storage.ICellContainer;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
@@ -84,6 +83,7 @@ import appeng.me.GridAccessException;
 import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.me.storage.MEMonitorIInventory;
+import appeng.parts.PartModel;
 import appeng.parts.automation.PartUpgradeable;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.InvOperation;
@@ -96,22 +96,16 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 {
 
 	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_base" );
+
 	@PartModels
-	public static final List<ResourceLocation> MODELS_OFF = ImmutableList.of(
-			MODEL_BASE,
-			new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_off" )
-	);
+	public static final IPartModel MODELS_OFF =  new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_off" ) ) ;
+
 	@PartModels
-	public static final List<ResourceLocation> MODELS_ON = ImmutableList.of(
-			MODEL_BASE,
-			new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_on" )
-	);
+	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_on" ) ) ;
+
 	@PartModels
-	public static final List<ResourceLocation> MODELS_HAS_CHANNEL = ImmutableList.of(
-			MODEL_BASE,
-			new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_has_channel" )
-	);
-	
+	public static final IPartModel MODELS_HAS_CHANNEL =new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_has_channel"  ) );
+
 	private final BaseActionSource mySrc;
 	private final AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
 	private int priority = 0;
@@ -223,7 +217,9 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 	private void resetCache( final boolean fullReset )
 	{
-		if( this.getHost() == null || this.getHost().getTile() == null || this.getHost().getTile().getWorld() == null || this.getHost().getTile().getWorld().isRemote )
+		if( this.getHost() == null || this.getHost().getTile() == null || this.getHost().getTile().getWorld() == null || this.getHost()
+				.getTile()
+				.getWorld().isRemote )
 		{
 			return;
 		}
@@ -465,7 +461,8 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 				if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 				{
-					this.handler.setPartitionList( new FuzzyPriorityList( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
+					this.handler
+							.setPartitionList( new FuzzyPriorityList( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
 				}
 				else
 				{
@@ -587,7 +584,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public List<ResourceLocation> getStaticModels()
+	public IPartModel getStaticModels()
 	{
 		if( isActive() && isPowered() )
 		{
@@ -602,5 +599,5 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 			return MODELS_OFF;
 		}
 	}
-	
+
 }

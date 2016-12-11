@@ -4,6 +4,7 @@ package appeng.block.paint;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 import com.google.common.base.Function;

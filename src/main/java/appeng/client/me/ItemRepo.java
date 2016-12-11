@@ -22,6 +22,7 @@ package appeng.client.me;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.regex.Pattern;
+
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;

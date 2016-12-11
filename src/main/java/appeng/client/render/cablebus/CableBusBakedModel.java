@@ -25,6 +25,7 @@ import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.block.state.IBlockState;
@@ -41,6 +42,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
+import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.block.networking.BlockCableBus;
@@ -81,8 +83,9 @@ public class CableBusBakedModel implements IBakedModel
 
 		List<BakedQuad> quads = new ArrayList<>();
 
-		// The core parts of the cable will only be rendered in the CUTOUT layer. TRANSLUCENT is used only for translucent facades further down below.
-		if ( layer == BlockRenderLayer.CUTOUT )
+		// The core parts of the cable will only be rendered in the CUTOUT layer. TRANSLUCENT is used only for
+		// translucent facades further down below.
+		if( layer == BlockRenderLayer.CUTOUT )
 		{
 			// First, handle the cable at the center of the cable bus
 			addCableQuads( renderState, quads );
@@ -90,13 +93,13 @@ public class CableBusBakedModel implements IBakedModel
 			// Then handle attachments
 			for( EnumFacing facing : EnumFacing.values() )
 			{
-				List<ResourceLocation> models = renderState.getAttachments().get( facing );
-				if( models == null )
+				final IPartModel partModel = renderState.getAttachments().get( facing );
+				if( partModel == null )
 				{
 					continue;
 				}
 
-				for( ResourceLocation model : models )
+				for( ResourceLocation model : partModel.getModels() )
 				{
 					IBakedModel bakedModel = partModels.get( model );
 
@@ -122,8 +125,7 @@ public class CableBusBakedModel implements IBakedModel
 				renderState.getBoundingBoxes(),
 				renderState.getAttachments().keySet(),
 				rand,
-				quads
-		);
+				quads );
 
 		return quads;
 	}
@@ -146,7 +148,8 @@ public class CableBusBakedModel implements IBakedModel
 		{
 			return false; // Connected to two sides that are not opposite each other
 		}
-		if (it.hasNext()) {
+		if( it.hasNext() )
+		{
 			return false; // Must not have any other connection points
 		}
 		AECableType secondType = sides.get( firstSide.getOpposite() );
@@ -176,7 +179,7 @@ public class CableBusBakedModel implements IBakedModel
 
 		// If the connection is straight, no busses are attached, and no covered core has been forced (in case of glass
 		// cables), then render the cable as a simplified straight line.
-		boolean noAttachments = renderState.getAttachments().isEmpty();
+		boolean noAttachments = !renderState.getAttachments().entrySet().stream().filter( p -> p.getValue().isSolid() ).findAny().isPresent();
 		if( isStraightLine( cableType, connectionTypes ) && noAttachments )
 		{
 			EnumFacing facing = connectionTypes.keySet().iterator().next();
@@ -269,9 +272,9 @@ public class CableBusBakedModel implements IBakedModel
 		// If no core is present, just use the first part that comes into play
 		for( EnumFacing side : renderState.getAttachments().keySet() )
 		{
-			List<ResourceLocation> models = renderState.getAttachments().get( side );
+			IPartModel partModel = renderState.getAttachments().get( side );
 
-			for( ResourceLocation model : models )
+			for( ResourceLocation model : partModel.getModels() )
 			{
 				IBakedModel bakedModel = partModels.get( model );
 
@@ -282,9 +285,11 @@ public class CableBusBakedModel implements IBakedModel
 
 				TextureAtlasSprite particleTexture = bakedModel.getParticleTexture();
 
-				// If a part sub-model has no particle texture (indicated by it being the missing texture), don't add it,
+				// If a part sub-model has no particle texture (indicated by it being the missing texture), don't
+				// add
+				// it,
 				// so we don't get ugly missing texture break particles.
-				if ( textureMap.getMissingSprite() != particleTexture )
+				if( textureMap.getMissingSprite() != particleTexture )
 				{
 					result.add( particleTexture );
 				}

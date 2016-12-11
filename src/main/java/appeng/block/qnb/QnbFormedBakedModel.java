@@ -4,6 +4,7 @@ package appeng.block.qnb;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.annotation.Nullable;
 
 import com.google.common.base.Function;

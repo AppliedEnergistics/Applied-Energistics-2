@@ -20,10 +20,7 @@ package appeng.parts.automation;
 
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Random;
-
-import com.google.common.collect.ImmutableList;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -62,6 +59,7 @@ import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherHost;
 import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.StorageChannel;
@@ -76,6 +74,7 @@ import appeng.core.sync.GuiBridge;
 import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
+import appeng.parts.PartModel;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
@@ -95,12 +94,12 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	@PartModels
 	public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation( AppEng.MOD_ID, "part/level_emitter_status_has_channel" );
 
-	public static final List<ResourceLocation> MODEL_OFF_OFF = ImmutableList.of( MODEL_BASE_OFF, MODEL_STATUS_OFF );
-	public static final List<ResourceLocation> MODEL_OFF_ON = ImmutableList.of( MODEL_BASE_OFF, MODEL_STATUS_ON );
-	public static final List<ResourceLocation> MODEL_OFF_HAS_CHANNEL = ImmutableList.of( MODEL_BASE_OFF, MODEL_STATUS_HAS_CHANNEL );
-	public static final List<ResourceLocation> MODEL_ON_OFF = ImmutableList.of( MODEL_BASE_ON, MODEL_STATUS_OFF );
-	public static final List<ResourceLocation> MODEL_ON_ON = ImmutableList.of( MODEL_BASE_ON, MODEL_STATUS_ON );
-	public static final List<ResourceLocation> MODEL_ON_HAS_CHANNEL = ImmutableList.of( MODEL_BASE_ON, MODEL_STATUS_HAS_CHANNEL );
+	public static final PartModel MODEL_OFF_OFF = new PartModel( MODEL_BASE_OFF, MODEL_STATUS_OFF );
+	public static final PartModel MODEL_OFF_ON = new PartModel( MODEL_BASE_OFF, MODEL_STATUS_ON );
+	public static final PartModel MODEL_OFF_HAS_CHANNEL = new PartModel( MODEL_BASE_OFF, MODEL_STATUS_HAS_CHANNEL );
+	public static final PartModel MODEL_ON_OFF = new PartModel( MODEL_BASE_ON, MODEL_STATUS_OFF );
+	public static final PartModel MODEL_ON_ON = new PartModel( MODEL_BASE_ON, MODEL_STATUS_ON );
+	public static final PartModel MODEL_ON_HAS_CHANNEL = new PartModel( MODEL_BASE_ON, MODEL_STATUS_HAS_CHANNEL );
 
 	private static final int FLAG_ON = 4;
 
@@ -445,7 +444,8 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 			final double d1 = d.yOffset * 0.45F + ( r.nextFloat() - 0.5F ) * 0.2D;
 			final double d2 = d.zOffset * 0.45F + ( r.nextFloat() - 0.5F ) * 0.2D;
 
-			world.spawnParticle( EnumParticleTypes.REDSTONE, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1, 0.5 + pos.getZ() + d2, 0.0D, 0.0D, 0.0D, new int[0] );
+			world.spawnParticle( EnumParticleTypes.REDSTONE, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1, 0.5 + pos.getZ() + d2, 0.0D, 0.0D, 0.0D,
+					new int[0] );
 		}
 	}
 
@@ -561,7 +561,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public List<ResourceLocation> getStaticModels()
+	public IPartModel getStaticModels()
 	{
 		if( isActive() && isPowered() )
 		{

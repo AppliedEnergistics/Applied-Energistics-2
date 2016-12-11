@@ -19,10 +19,6 @@
 package appeng.parts.automation;
 
 
-import java.util.List;
-
-import com.google.common.collect.ImmutableList;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
@@ -44,6 +40,7 @@ import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
@@ -54,6 +51,7 @@ import appeng.core.sync.GuiBridge;
 import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
+import appeng.parts.PartModel;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
@@ -65,21 +63,12 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/import_bus_base" );
 	@PartModels
-	public static final List<ResourceLocation> MODELS_OFF = ImmutableList.of(
-			MODEL_BASE,
-			new ResourceLocation( AppEng.MOD_ID, "part/import_bus_off" )
-	);
+	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/import_bus_off" ) );
 	@PartModels
-	public static final List<ResourceLocation> MODELS_ON = ImmutableList.of(
-			MODEL_BASE,
-			new ResourceLocation( AppEng.MOD_ID, "part/import_bus_on" )
-	);
+	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/import_bus_on" ) );
 	@PartModels
-	public static final List<ResourceLocation> MODELS_HAS_CHANNEL = ImmutableList.of(
-			MODEL_BASE,
-			new ResourceLocation( AppEng.MOD_ID, "part/import_bus_has_channel" )
-	);
-	
+	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/import_bus_has_channel" ) );
+
 	private final BaseActionSource source;
 	private IMEInventory<IAEItemStack> destination = null;
 	private IAEItemStack lastItemChecked = null;
@@ -104,7 +93,8 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 			return false;
 		}
 
-		final IAEItemStack out = this.destination.injectItems( this.lastItemChecked = AEApi.instance().storage().createItemStack( stack ), Actionable.SIMULATE, this.source );
+		final IAEItemStack out = this.destination.injectItems( this.lastItemChecked = AEApi.instance().storage().createItemStack( stack ), Actionable.SIMULATE,
+				this.source );
 		if( out == null )
 		{
 			return true;
@@ -173,7 +163,8 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 			try
 			{
 				this.itemToSend = this.calculateItemsToSend();
-				this.itemToSend = Math.min( this.itemToSend, (int) ( 0.01 + this.getProxy().getEnergy().extractAEPower( this.itemToSend, Actionable.SIMULATE, PowerMultiplier.CONFIG ) ) );
+				this.itemToSend = Math.min( this.itemToSend,
+						(int) ( 0.01 + this.getProxy().getEnergy().extractAEPower( this.itemToSend, Actionable.SIMULATE, PowerMultiplier.CONFIG ) ) );
 
 				final IMEMonitor<IAEItemStack> inv = this.getProxy().getStorage().getItemInventory();
 				final IEnergyGrid energy = this.getProxy().getEnergy();
@@ -235,7 +226,8 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 		if( newItems != null )
 		{
-			newItems.stackSize = (int) ( Math.min( newItems.stackSize, energy.extractAEPower( newItems.stackSize, Actionable.SIMULATE, PowerMultiplier.CONFIG ) ) + 0.01 );
+			newItems.stackSize = (int) ( Math.min( newItems.stackSize,
+					energy.extractAEPower( newItems.stackSize, Actionable.SIMULATE, PowerMultiplier.CONFIG ) ) + 0.01 );
 			this.itemToSend -= newItems.stackSize;
 
 			if( this.lastItemChecked == null || !this.lastItemChecked.isSameType( newItems ) )
@@ -321,7 +313,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	}
 
 	@Override
-	public List<ResourceLocation> getStaticModels()
+	public IPartModel getStaticModels()
 	{
 		if( isActive() && isPowered() )
 		{

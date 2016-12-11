@@ -37,7 +37,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -62,6 +61,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
+import appeng.api.parts.IPartModel;
 import appeng.api.storage.ICellContainer;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
@@ -90,7 +90,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	private static final PlaneModels MODELS = new PlaneModels( "part/formation_plane_", "part/formation_plane_on_" );
 
 	@PartModels
-	public static List<ResourceLocation> getModels()
+	public static List<IPartModel> getModels()
 	{
 		return MODELS.getModels();
 	}
@@ -447,8 +447,9 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 		if( w.getBlockState( tePos ).getBlock().isReplaceable( w, tePos ) )
 		{
-			if( placeBlock == YesNo.YES && ( i instanceof ItemBlock || i instanceof IPlantable || i instanceof ItemSkull || i instanceof ItemFirework || i instanceof IPartItem || i == Item.getItemFromBlock(
-					Blocks.REEDS ) ) )
+			if( placeBlock == YesNo.YES && ( i instanceof ItemBlock || i instanceof IPlantable || i instanceof ItemSkull || i instanceof ItemFirework || i instanceof IPartItem || i == Item
+					.getItemFromBlock(
+							Blocks.REEDS ) ) )
 			{
 				final EntityPlayer player = Platform.getPlayer( (WorldServer) w );
 				Platform.configurePlayer( player, side, this.getTile() );
@@ -614,7 +615,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	public List<ResourceLocation> getStaticModels()
+	public IPartModel getStaticModels()
 	{
 		return MODELS.getModel( getConnections(), isPowered(), isActive() );
 	}

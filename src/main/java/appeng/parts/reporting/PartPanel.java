@@ -19,16 +19,14 @@
 package appeng.parts.reporting;
 
 
-import java.util.List;
-
-import com.google.common.collect.ImmutableList;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
+import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
 import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
+import appeng.parts.PartModel;
 
 
 public class PartPanel extends AbstractPartPanel
@@ -39,8 +37,8 @@ public class PartPanel extends AbstractPartPanel
 	@PartModels
 	public static final ResourceLocation MODEL_ON = new ResourceLocation( AppEng.MOD_ID, "part/monitor_bright_on" );
 
-	public static final List<ResourceLocation> MODELS_OFF = ImmutableList.of( MODEL_BASE, MODEL_OFF );
-	public static final List<ResourceLocation> MODELS_ON = ImmutableList.of( MODEL_BASE, MODEL_ON );
+	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, MODEL_OFF );
+	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, MODEL_ON );
 
 	@Reflected
 	public PartPanel( final ItemStack is )
@@ -55,7 +53,7 @@ public class PartPanel extends AbstractPartPanel
 	}
 
 	@Override
-	public List<ResourceLocation> getStaticModels()
+	public IPartModel getStaticModels()
 	{
 		return isPowered() ? MODELS_ON : MODELS_OFF;
 	}

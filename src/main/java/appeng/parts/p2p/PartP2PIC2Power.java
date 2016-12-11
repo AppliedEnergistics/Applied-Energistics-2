@@ -25,7 +25,6 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 
 import ic2.api.energy.tile.IEnergyAcceptor;
 import ic2.api.energy.tile.IEnergyEmitter;
@@ -33,6 +32,7 @@ import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 
 import appeng.api.config.PowerUnits;
+import appeng.api.parts.IPartModel;
 import appeng.coremod.annotations.Integration.Interface;
 import appeng.coremod.annotations.Integration.InterfaceList;
 import appeng.integration.IntegrationType;
@@ -57,7 +57,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements I
 	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_ic2" );
 
 	@PartModels
-	public static List<ResourceLocation> getModels()
+	public static List<IPartModel> getModels()
 	{
 		return MODELS.getModels();
 	}
@@ -255,7 +255,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements I
 	}
 
 	@Override
-	public List<ResourceLocation> getStaticModels()
+	public IPartModel getStaticModels()
 	{
 		return MODELS.getModel( isPowered(), isActive() );
 	}

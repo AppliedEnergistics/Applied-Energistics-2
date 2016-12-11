@@ -22,6 +22,7 @@ package appeng.block.misc;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;

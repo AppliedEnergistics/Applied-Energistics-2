@@ -19,8 +19,6 @@
 package appeng.parts.automation;
 
 
-import java.util.List;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -49,6 +47,7 @@ import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
@@ -61,6 +60,7 @@ import appeng.helpers.MultiCraftingTracker;
 import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
+import appeng.parts.PartModel;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
@@ -70,22 +70,16 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 {
 
 	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/export_bus_base" );
+
 	@PartModels
-	public static final List<ResourceLocation> MODELS_OFF = ImmutableList.of(
-			MODEL_BASE,
-			new ResourceLocation( AppEng.MOD_ID, "part/export_bus_off" )
-	);
+	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/export_bus_off" ) );
+
 	@PartModels
-	public static final List<ResourceLocation> MODELS_ON = ImmutableList.of(
-			MODEL_BASE,
-			new ResourceLocation( AppEng.MOD_ID, "part/export_bus_on" )
-	);
+	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/export_bus_on" ) );
+
 	@PartModels
-	public static final List<ResourceLocation> MODELS_HAS_CHANNEL = ImmutableList.of(
-			MODEL_BASE,
-			new ResourceLocation( AppEng.MOD_ID, "part/export_bus_has_channel" )
-	);
-	
+	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/export_bus_has_channel" ) );
+
 	private final MultiCraftingTracker craftingTracker = new MultiCraftingTracker( this, 9 );
 	private final BaseActionSource mySrc;
 	private long itemToSend = 1;
@@ -154,7 +148,8 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 					{
 						if( this.isCraftingEnabled() )
 						{
-							this.didSomething = this.craftingTracker.handleCrafting( slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(), this.getProxy().getGrid(), cg, this.mySrc ) || this.didSomething;
+							this.didSomething = this.craftingTracker.handleCrafting( slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(),
+									this.getProxy().getGrid(), cg, this.mySrc ) || this.didSomething;
 						}
 						continue;
 					}
@@ -179,7 +174,8 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 					if( this.itemToSend == before && this.isCraftingEnabled() )
 					{
-						this.didSomething = this.craftingTracker.handleCrafting( slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(), this.getProxy().getGrid(), cg, this.mySrc ) || this.didSomething;
+						this.didSomething = this.craftingTracker.handleCrafting( slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(),
+								this.getProxy().getGrid(), cg, this.mySrc ) || this.didSomething;
 					}
 				}
 
@@ -362,7 +358,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public List<ResourceLocation> getStaticModels()
+	public IPartModel getStaticModels()
 	{
 		if( isActive() && isPowered() )
 		{

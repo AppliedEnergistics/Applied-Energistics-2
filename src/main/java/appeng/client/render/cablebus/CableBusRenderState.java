@@ -25,9 +25,9 @@ import java.util.EnumSet;
 import java.util.List;
 
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 
+import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 
@@ -60,7 +60,7 @@ public class CableBusRenderState
 	// connections contains a corresponding entry.
 	private EnumMap<EnumFacing, Integer> channelsOnSide = new EnumMap<>( EnumFacing.class );
 
-	private EnumMap<EnumFacing, List<ResourceLocation>> attachments = new EnumMap<>( EnumFacing.class );
+	private EnumMap<EnumFacing, IPartModel> attachments = new EnumMap<>( EnumFacing.class );
 
 	// For each attachment, this contains the distance from the edge until which a cable connection should be drawn
 	private EnumMap<EnumFacing, Integer> attachmentConnections = new EnumMap<>( EnumFacing.class );
@@ -68,7 +68,8 @@ public class CableBusRenderState
 	// Contains the facade to use for each side that has a facade attached
 	private EnumMap<EnumFacing, FacadeRenderState> facades = new EnumMap<>( EnumFacing.class );
 
-	// Contains the bounding boxes of all parts on the cable bus to allow facades to cut out holes for the parts. This list is only populated if there are
+	// Contains the bounding boxes of all parts on the cable bus to allow facades to cut out holes for the parts. This
+	// list is only populated if there are
 	// facades on this cable bus
 	private List<AxisAlignedBB> boundingBoxes = new ArrayList<>();
 
@@ -132,7 +133,7 @@ public class CableBusRenderState
 		this.cableBusAdjacent = cableBusAdjacent;
 	}
 
-	public EnumMap<EnumFacing, List<ResourceLocation>> getAttachments()
+	public EnumMap<EnumFacing, IPartModel> getAttachments()
 	{
 		return attachments;
 	}

@@ -20,7 +20,6 @@ package appeng.parts.reporting;
 
 
 import java.io.IOException;
-import java.util.List;
 
 import io.netty.buffer.ByteBuf;
 
@@ -31,7 +30,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
@@ -41,6 +39,7 @@ import appeng.api.implementations.parts.IPartStorageMonitor;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherHost;
+import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -146,7 +145,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 
 	@Override
 	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
-	{		
+	{
 		if( Platform.isClient() )
 		{
 			return true;
@@ -318,8 +317,8 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		return false;
 	}
 
-	protected List<ResourceLocation> selectModel(List<ResourceLocation> off, List<ResourceLocation> on, List<ResourceLocation> hasChannel,
-			List<ResourceLocation> lockedOff, List<ResourceLocation> lockedOn, List<ResourceLocation> lockedHasChannel) {
+	protected IPartModel selectModel( IPartModel off, IPartModel on, IPartModel hasChannel, IPartModel lockedOff, IPartModel lockedOn, IPartModel lockedHasChannel )
+	{
 		if( isActive() )
 		{
 			if( isLocked() )
