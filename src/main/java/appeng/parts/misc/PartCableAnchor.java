@@ -55,7 +55,10 @@ public class PartCableAnchor implements IPart
 {
 
 	@PartModels
-	public static final List<ResourceLocation> MODELS = ImmutableList.of( new ResourceLocation( AppEng.MOD_ID, "part/cable_anchor" ) );
+	public static final List<ResourceLocation> DEFAULT_MODELS = ImmutableList.of( new ResourceLocation( AppEng.MOD_ID, "part/cable_anchor" ) );
+
+	@PartModels
+	public static final List<ResourceLocation> FACADE_MODELS = ImmutableList.of( new ResourceLocation( AppEng.MOD_ID, "part/cable_anchor_short" ) );
 
 	private ItemStack is = null;
 	private IPartHost host = null;
@@ -239,7 +242,14 @@ public class PartCableAnchor implements IPart
 	@Override
 	public List<ResourceLocation> getStaticModels()
 	{
-		return MODELS;
+		if( this.host != null && this.host.getFacadeContainer().getFacade( this.mySide ) != null )
+		{
+			return FACADE_MODELS;
+		}
+		else
+		{
+			return DEFAULT_MODELS;
+		}
 	}
 
 }
