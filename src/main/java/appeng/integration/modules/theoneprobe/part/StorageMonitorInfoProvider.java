@@ -59,7 +59,7 @@ public class StorageMonitorInfoProvider implements IPartProbInfoProvider
 				probeInfo.text( TheOneProbeText.SHOWING.getLocal() + ": " + ais.getFluid().getLocalizedName( ais.getFluidStack() ) );
 			}
 
-			probeInfo.text( ( isLocked ) ? TheOneProbeText.LOCKED.getLocal() : TheOneProbeText.UNLOCKED.getLocal() );
+			probeInfo.text( isLocked ? TheOneProbeText.LOCKED.getLocal() : TheOneProbeText.UNLOCKED.getLocal() );
 		}
 	}
 

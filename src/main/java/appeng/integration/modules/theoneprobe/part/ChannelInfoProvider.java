@@ -42,11 +42,19 @@ public class ChannelInfoProvider implements IPartProbInfoProvider
 	{
 		if( part instanceof PartDenseCable || part instanceof PartCableSmart )
 		{
-			final NBTTagCompound tmp = new NBTTagCompound();
-			part.writeToNBT( tmp );
-
-			final int usedChannels = tmp.getByte( "usedChannels" );
+			final int usedChannels;
 			final int maxChannels = ( part instanceof PartDenseCable ) ? 32 : 8;
+
+			if( part.getGridNode().isActive() )
+			{
+				final NBTTagCompound tmp = new NBTTagCompound();
+				part.writeToNBT( tmp );
+				usedChannels = tmp.getByte( "usedChannels" );
+			}
+			else
+			{
+				usedChannels = 0;
+			}
 
 			final String formattedChannelString = String.format( TheOneProbeText.CHANNELS.getLocal(), usedChannels, maxChannels );
 

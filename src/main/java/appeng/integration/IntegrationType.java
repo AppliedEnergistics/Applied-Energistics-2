@@ -68,7 +68,8 @@ public enum IntegrationType
 
 	OpenComputers( IntegrationSide.BOTH, "OpenComputers", "OpenComputers" ),
 
-	THE_ONE_PROBE( IntegrationSide.BOTH, "TheOneProbe", "theoneprobe" ) {
+	THE_ONE_PROBE( IntegrationSide.BOTH, "TheOneProbe", "theoneprobe" )
+	{
 		@Override
 		public IIntegrationModule createInstance()
 		{
@@ -90,6 +91,6 @@ public enum IntegrationType
 	public IIntegrationModule createInstance()
 	{
 		throw new UnsupportedOperationException();
-	};
+	}
 
 }

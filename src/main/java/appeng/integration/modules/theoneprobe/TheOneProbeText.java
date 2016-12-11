@@ -53,11 +53,6 @@ public enum TheOneProbeText
 		this.root = "theoneprobe.appliedenergistics2";
 	}
 
-	TheOneProbeText( final String r )
-	{
-		this.root = r;
-	}
-
 	public String getLocal()
 	{
 		return I18n.translateToLocal( this.getUnlocalized() );
