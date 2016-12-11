@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,35 +16,20 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration;
+package appeng.integration.modules.theoneprobe.tile;
 
 
-public interface IIntegrationModule
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+
+import mcjty.theoneprobe.api.IProbeHitData;
+import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.theoneprobe.api.ProbeMode;
+
+
+public interface ITileProbInfoProvider
 {
-
-	default boolean isEnabled()
-	{
-		return true;
-	}
-
-	default void preInit() throws Throwable
-	{
-	}
-
-	default void init() throws Throwable
-	{
-	}
-
-	default void postInit()
-	{
-	}
-
-	class Stub implements IIntegrationModule
-	{
-		@Override
-		public boolean isEnabled()
-		{
-			return false;
-		}
-	}
+	void addProbeInfo( TileEntity tile, ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data );
 }
