@@ -49,10 +49,11 @@ public class ChargerInfoProvider implements ITileProbInfoProvider
 			if( chargingItem != null )
 			{
 				final String currentInventory = chargingItem.getDisplayName();
+				final IProbeInfo centerAlignedHorizontalLayout = probeInfo
+						.horizontal( probeInfo.defaultLayoutStyle().alignment( ElementAlignment.ALIGN_CENTER ) );
 
-				final IProbeInfo t = probeInfo.horizontal( probeInfo.defaultLayoutStyle().alignment( ElementAlignment.ALIGN_CENTER ) );
-				t.item( chargingItem );
-				t.text( currentInventory );
+				centerAlignedHorizontalLayout.item( chargingItem );
+				centerAlignedHorizontalLayout.text( currentInventory );
 			}
 		}
 	}

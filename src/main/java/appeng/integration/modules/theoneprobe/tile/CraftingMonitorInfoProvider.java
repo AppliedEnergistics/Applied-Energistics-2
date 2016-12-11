@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import mcjty.theoneprobe.api.ElementAlignment;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
@@ -51,8 +52,11 @@ public class CraftingMonitorInfoProvider implements ITileProbInfoProvider
 				final String itemName = itemStack.getDisplayName();
 				final String formattedCrafting = String.format( TheOneProbeText.CRAFTING.getLocal(), itemName );
 
-				probeInfo.item( itemStack );
-				probeInfo.text( formattedCrafting );
+				final IProbeInfo centerAlignedHorizontalLayout = probeInfo
+						.horizontal( probeInfo.defaultLayoutStyle().alignment( ElementAlignment.ALIGN_CENTER ) );
+
+				centerAlignedHorizontalLayout.item( itemStack );
+				centerAlignedHorizontalLayout.text( formattedCrafting );
 			}
 		}
 	}
