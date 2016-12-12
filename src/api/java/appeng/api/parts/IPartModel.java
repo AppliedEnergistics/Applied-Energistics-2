@@ -31,8 +31,6 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.util.ResourceLocation;
 
-import appeng.parts.PartModel;
-
 
 /**
  * A container to store a collection of {@link ResourceLocation} as models for a part as well as marking the part as
@@ -43,7 +41,7 @@ public interface IPartModel
 {
 
 	/**
-	 * A solid {@link PartModel} indicates that the rendering should create an intersection when attached to cable.
+	 * A solid {@link IPartModel} indicates that the rendering should create an intersection when attached to cable.
 	 * 
 	 * This should be true for pretty much all parts.
 	 * 
