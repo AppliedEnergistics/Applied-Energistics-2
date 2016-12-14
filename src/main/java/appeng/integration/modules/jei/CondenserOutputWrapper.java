@@ -21,6 +21,7 @@ package appeng.integration.modules.jei;
 
 import java.util.Collections;
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 import com.google.common.base.Splitter;

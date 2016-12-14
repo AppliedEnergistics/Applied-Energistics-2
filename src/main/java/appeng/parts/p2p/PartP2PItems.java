@@ -29,7 +29,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 import appeng.api.networking.IGridNode;
@@ -40,6 +39,7 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.parts.IPartModel;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
@@ -58,7 +58,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPip
 	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_items" );
 
 	@PartModels
-	public static List<ResourceLocation> getModels()
+	public static List<IPartModel> getModels()
 	{
 		return MODELS.getModels();
 	}
@@ -390,16 +390,8 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPip
 		return null;
 	}
 
-	// TODO: BC Integration
-	// @Override
-	// @Method( iname = "BuildCraftTransport" )
-	// public ConnectOverride overridePipeConnection( PipeType type, ForgeDirection with )
-	// {
-	// return this.side == with && type == PipeType.ITEM ? ConnectOverride.CONNECT : ConnectOverride.DEFAULT;
-	// }
-
 	@Override
-	public List<ResourceLocation> getStaticModels()
+	public IPartModel getStaticModels()
 	{
 		return MODELS.getModel( isPowered(), isActive() );
 	}

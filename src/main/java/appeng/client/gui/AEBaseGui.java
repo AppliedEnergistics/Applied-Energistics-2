@@ -54,7 +54,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.widgets.GuiScrollbar;

@@ -22,7 +22,6 @@ package appeng.parts.misc;
 import java.util.EnumSet;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -52,6 +51,7 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.data.IAEFluidStack;
@@ -66,6 +66,7 @@ import appeng.helpers.IPriorityHost;
 import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartBasicState;
+import appeng.parts.PartModel;
 import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
@@ -76,21 +77,15 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 {
 
 	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/interface_base" );
+
 	@PartModels
-	public static final List<ResourceLocation> MODELS_OFF = ImmutableList.of(
-			MODEL_BASE,
-			new ResourceLocation( AppEng.MOD_ID, "part/interface_off" )
-	);
+	public static final PartModel MODELS_OFF = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/interface_off" ) );
+
 	@PartModels
-	public static final List<ResourceLocation> MODELS_ON = ImmutableList.of(
-			MODEL_BASE,
-			new ResourceLocation( AppEng.MOD_ID, "part/interface_on" )
-	);
+	public static final PartModel MODELS_ON = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/interface_on" ) );
+
 	@PartModels
-	public static final List<ResourceLocation> MODELS_HAS_CHANNEL = ImmutableList.of(
-			MODEL_BASE,
-			new ResourceLocation( AppEng.MOD_ID, "part/interface_has_channel" )
-	);
+	public static final PartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/interface_has_channel" ) );
 
 	private final DualityInterface duality = new DualityInterface( this.getProxy(), this );
 
@@ -421,7 +416,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public List<ResourceLocation> getStaticModels()
+	public IPartModel getStaticModels()
 	{
 		if( isActive() && isPowered() )
 		{

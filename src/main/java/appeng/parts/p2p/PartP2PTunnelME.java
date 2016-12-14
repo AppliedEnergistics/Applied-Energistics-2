@@ -29,7 +29,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 
 import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnection;
@@ -39,6 +38,7 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartHost;
+import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
@@ -57,7 +57,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_me" );
 
 	@PartModels
-	public static List<ResourceLocation> getModels()
+	public static List<IPartModel> getModels()
 	{
 		return MODELS.getModels();
 	}
@@ -239,14 +239,17 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 				{
 					try
 					{
-						connections.getConnections().put( me.getGridNode(), new TunnelConnection( me, AEApi.instance().createGridConnection( this.outerProxy.getNode(), me.outerProxy.getNode() ) ) );
+						connections.getConnections().put( me.getGridNode(),
+								new TunnelConnection( me, AEApi.instance().createGridConnection( this.outerProxy.getNode(), me.outerProxy.getNode() ) ) );
 					}
 					catch( final FailedConnection e )
 					{
 						final TileEntity start = this.getTile();
 						final TileEntity end = me.getTile();
 
-						AELog.warn( "Failed to establish a ME P2P Tunnel between the tunnels at [x=%d, y=%d, z=%d] and [x=%d, y=%d, z=%d]", start.getPos().getX(), start.getPos().getY(), start.getPos().getZ(), end.getPos().getX(), end.getPos().getY(), end.getPos().getZ() );
+						AELog.warn( "Failed to establish a ME P2P Tunnel between the tunnels at [x=%d, y=%d, z=%d] and [x=%d, y=%d, z=%d]",
+								start.getPos().getX(), start.getPos().getY(), start.getPos().getZ(), end.getPos().getX(), end.getPos().getY(),
+								end.getPos().getZ() );
 						// :(
 					}
 				}
@@ -259,7 +262,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	}
 
 	@Override
-	public List<ResourceLocation> getStaticModels()
+	public IPartModel getStaticModels()
 	{
 		return MODELS.getModel( isPowered(), isActive() );
 	}

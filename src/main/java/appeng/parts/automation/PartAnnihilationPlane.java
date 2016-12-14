@@ -31,7 +31,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -53,6 +52,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
+import appeng.api.parts.IPartModel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
@@ -74,7 +74,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	private static final PlaneModels MODELS = new PlaneModels( "part/annihilation_plane_", "part/annihilation_plane_on_" );
 
 	@PartModels
-	public static List<ResourceLocation> getModels()
+	public static List<IPartModel> getModels()
 	{
 		return MODELS.getModels();
 	}
@@ -233,8 +233,9 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 			boolean capture = false;
 			final BlockPos pos = this.getTile().getPos();
 
-			// This is the middle point of the entities BB, which is better suited for comparisons that don't rely on it "touching" the plane
-			double posYMiddle = (entity.getEntityBoundingBox().minY + entity.getEntityBoundingBox().maxY) / 2.0D;
+			// This is the middle point of the entities BB, which is better suited for comparisons that don't rely on it
+			// "touching" the plane
+			double posYMiddle = ( entity.getEntityBoundingBox().minY + entity.getEntityBoundingBox().maxY ) / 2.0D;
 
 			switch( this.getSide() )
 			{
@@ -244,7 +245,8 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 					{
 						if( entity.posZ > pos.getZ() && entity.posZ < pos.getZ() + 1 )
 						{
-							if( ( entity.posY > pos.getY() + 0.9 && this.getSide() == AEPartLocation.UP ) || ( entity.posY < pos.getY() + 0.1 && this.getSide() == AEPartLocation.DOWN ) )
+							if( ( entity.posY > pos.getY() + 0.9 && this.getSide() == AEPartLocation.UP ) || ( entity.posY < pos.getY() + 0.1 && this
+									.getSide() == AEPartLocation.DOWN ) )
 							{
 								capture = true;
 							}
@@ -257,7 +259,8 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 					{
 						if( posYMiddle > pos.getY() && posYMiddle < pos.getY() + 1 )
 						{
-							if( ( entity.posZ > pos.getZ() + 0.9 && this.getSide() == AEPartLocation.SOUTH ) || ( entity.posZ < pos.getZ() + 0.1 && this.getSide() == AEPartLocation.NORTH ) )
+							if( ( entity.posZ > pos.getZ() + 0.9 && this.getSide() == AEPartLocation.SOUTH ) || ( entity.posZ < pos.getZ() + 0.1 && this
+									.getSide() == AEPartLocation.NORTH ) )
 							{
 								capture = true;
 							}
@@ -270,7 +273,8 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 					{
 						if( posYMiddle > pos.getY() && posYMiddle < pos.getY() + 1 )
 						{
-							if( ( entity.posX > pos.getX() + 0.9 && this.getSide() == AEPartLocation.EAST ) || ( entity.posX < pos.getX() + 0.1 && this.getSide() == AEPartLocation.WEST ) )
+							if( ( entity.posX > pos.getX() + 0.9 && this.getSide() == AEPartLocation.EAST ) || ( entity.posX < pos.getX() + 0.1 && this
+									.getSide() == AEPartLocation.WEST ) )
 							{
 								capture = true;
 							}
@@ -288,7 +292,8 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 				if( changed )
 				{
-					ServerHelper.proxy.sendToAllNearExcept( null, pos.getX(), pos.getY(), pos.getZ(), 64, this.getTile().getWorld(), new PacketTransitionEffect( entity.posX, entity.posY, entity.posZ, this.getSide(), false ) );
+					ServerHelper.proxy.sendToAllNearExcept( null, pos.getX(), pos.getY(), pos.getZ(), 64, this.getTile().getWorld(),
+							new PacketTransitionEffect( entity.posX, entity.posY, entity.posZ, this.getSide(), false ) );
 				}
 			}
 		}
@@ -452,7 +457,8 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 						{
 							energy.extractAEPower( requiredPower, Actionable.MODULATE, PowerMultiplier.CONFIG );
 							this.breakBlockAndStoreItems( w, pos, items );
-							ServerHelper.proxy.sendToAllNearExcept( null, pos.getX(), pos.getY(), pos.getZ(), 64, w, new PacketTransitionEffect( pos.getX(), pos.getY(), pos.getZ(), this.getSide(), true ) );
+							ServerHelper.proxy.sendToAllNearExcept( null, pos.getX(), pos.getY(), pos.getZ(), 64, w,
+									new PacketTransitionEffect( pos.getX(), pos.getY(), pos.getZ(), this.getSide(), true ) );
 						}
 						else
 						{
@@ -500,9 +506,12 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		final Material material = state.getMaterial();
 		final float hardness = state.getBlockHardness( w, pos );
 		final boolean ignoreMaterials = material == Material.AIR || material == Material.LAVA || material == Material.WATER || material.isLiquid();
-		final boolean ignoreBlocks = state.getBlock() == Blocks.BEDROCK || state.getBlock() == Blocks.END_PORTAL || state.getBlock() == Blocks.END_PORTAL_FRAME || state.getBlock() == Blocks.COMMAND_BLOCK;
+		final boolean ignoreBlocks = state.getBlock() == Blocks.BEDROCK || state.getBlock() == Blocks.END_PORTAL || state
+				.getBlock() == Blocks.END_PORTAL_FRAME || state.getBlock() == Blocks.COMMAND_BLOCK;
 
-		return !ignoreMaterials && !ignoreBlocks && !w.isAirBlock( pos ) && w.isBlockLoaded( pos ) && w.canMineBlockBody( Platform.getPlayer( w ), pos ) && hardness >= 0f;
+		return !ignoreMaterials && !ignoreBlocks && hardness >= 0f && !w.isAirBlock( pos ) && w.isBlockLoaded( pos ) && w.canMineBlockBody(
+				Platform.getPlayer( w ),
+				pos );
 	}
 
 	protected List<ItemStack> obtainBlockDrops( final WorldServer w, final BlockPos pos )
@@ -568,7 +577,8 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	{
 		w.setBlockToAir( pos );
 
-		final AxisAlignedBB box = new AxisAlignedBB( pos.getX() - 0.2, pos.getY() - 0.2, pos.getZ() - 0.2, pos.getX() + 1.2, pos.getY() + 1.2, pos.getZ() + 1.2 );
+		final AxisAlignedBB box = new AxisAlignedBB( pos.getX() - 0.2, pos.getY() - 0.2, pos.getZ() - 0.2, pos.getX() + 1.2, pos.getY() + 1.2, pos
+				.getZ() + 1.2 );
 		for( final Object ei : w.getEntitiesWithinAABB( EntityItem.class, box ) )
 		{
 			if( ei instanceof EntityItem )
@@ -586,7 +596,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	}
 
 	@Override
-	public List<ResourceLocation> getStaticModels()
+	public IPartModel getStaticModels()
 	{
 		return MODELS.getModel( getConnections(), isPowered(), isActive() );
 	}

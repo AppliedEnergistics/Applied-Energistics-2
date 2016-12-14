@@ -1,3 +1,4 @@
+
 package appeng.items.parts;
 
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 import net.minecraft.util.ResourceLocation;
 
+import appeng.api.parts.IPartModel;
 import appeng.core.AELog;
 
 
@@ -22,7 +24,7 @@ class PartModelsHelper
 
 	static List<ResourceLocation> createModels( Class<?> clazz )
 	{
-		List<ResourceLocation> locations = new ArrayList<>(  );
+		List<ResourceLocation> locations = new ArrayList<>();
 
 		// Check all static fields for used models
 		Field[] fields = clazz.getDeclaredFields();
@@ -32,7 +34,6 @@ class PartModelsHelper
 			{
 				continue;
 			}
-
 
 			if( !Modifier.isStatic( field.getModifiers() ) )
 			{
@@ -80,8 +81,8 @@ class PartModelsHelper
 			Class<?> returnType = method.getReturnType();
 			if( !ResourceLocation.class.isAssignableFrom( returnType ) && !Collection.class.isAssignableFrom( returnType ) )
 			{
-				AELog.error( "The @PartModels annotation can only be used on static methods that return a ResourceLocation or Collection of "
-						+ "ResourceLocations. Was seen on: " + method );
+				AELog.error(
+						"The @PartModels annotation can only be used on static methods that return a ResourceLocation or Collection of " + "ResourceLocations. Was seen on: " + method );
 				continue;
 			}
 
@@ -119,18 +120,23 @@ class PartModelsHelper
 		{
 			locations.add( (ResourceLocation) value );
 		}
+		else if( value instanceof IPartModel )
+		{
+			locations.addAll( ( (IPartModel) value ).getModels() );
+		}
 		else if( value instanceof Collection )
 		{
-			// Check that each object is a ResourceLocation
+			// Check that each object is an IPartModel
 			Collection values = (Collection) value;
 			for( Object candidate : values )
 			{
-				if ( !( candidate instanceof ResourceLocation )) {
+				if( !( candidate instanceof IPartModel ) )
+				{
 					AELog.error( "List of locations obtained from {} contains a non resource location: {}", source, candidate );
 					continue;
 				}
 
-				locations.add( (ResourceLocation) candidate );
+				locations.addAll( ( (IPartModel) candidate ).getModels() );
 			}
 		}
 	}

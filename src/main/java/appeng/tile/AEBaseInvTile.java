@@ -20,6 +20,7 @@ package appeng.tile;
 
 
 import java.util.EnumMap;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;

@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -38,6 +36,7 @@ import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
+import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AppEng;
@@ -45,6 +44,7 @@ import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.parts.PartBasicState;
+import appeng.parts.PartModel;
 import appeng.util.Platform;
 
 
@@ -60,9 +60,9 @@ public class PartToggleBus extends PartBasicState
 	@PartModels
 	public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation( AppEng.MOD_ID, "part/toggle_bus_status_has_channel" );
 
-	public static final List<ResourceLocation> MODELS_OFF = ImmutableList.of(MODEL_BASE, MODEL_STATUS_OFF);
-	public static final List<ResourceLocation> MODELS_ON = ImmutableList.of(MODEL_BASE, MODEL_STATUS_ON);
-	public static final List<ResourceLocation> MODELS_HAS_CHANNEL = ImmutableList.of(MODEL_BASE, MODEL_STATUS_HAS_CHANNEL);
+	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, MODEL_STATUS_OFF );
+	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, MODEL_STATUS_ON );
+	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, MODEL_STATUS_HAS_CHANNEL );
 
 	private static final int REDSTONE_FLAG = 4;
 	private final AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", null, true );
@@ -86,8 +86,9 @@ public class PartToggleBus extends PartBasicState
 		return cf | ( this.getIntention() ? REDSTONE_FLAG : 0 );
 	}
 
-	public boolean hasRedstoneFlag() {
-		return (getClientFlags() & REDSTONE_FLAG) == REDSTONE_FLAG;
+	public boolean hasRedstoneFlag()
+	{
+		return ( getClientFlags() & REDSTONE_FLAG ) == REDSTONE_FLAG;
 	}
 
 	protected boolean getIntention()
@@ -222,7 +223,7 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public List<ResourceLocation> getStaticModels()
+	public IPartModel getStaticModels()
 	{
 		if( hasRedstoneFlag() && isActive() && isPowered() )
 		{

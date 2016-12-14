@@ -19,7 +19,6 @@
 package appeng.util;
 
 
-import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -30,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.WeakHashMap;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -76,7 +76,6 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;

@@ -43,6 +43,7 @@ import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
+import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
@@ -56,7 +57,8 @@ import appeng.util.Platform;
 public class PartCable extends AEBasePart implements IPartCable
 {
 
-	private static final ImmutableSet<AEPartLocation> STRAIGHT_PART_LOCATIONS = ImmutableSet.of( AEPartLocation.DOWN, AEPartLocation.NORTH, AEPartLocation.EAST );
+	private static final ImmutableSet<AEPartLocation> STRAIGHT_PART_LOCATIONS = ImmutableSet.of( AEPartLocation.DOWN, AEPartLocation.NORTH,
+			AEPartLocation.EAST );
 
 	private final int[] channelsOnSide = { 0, 0, 0, 0, 0, 0 };
 
@@ -388,10 +390,10 @@ public class PartCable extends AEBasePart implements IPartCable
 					ch = ( (int) data.readByte() ) & 0xFF;
 				}
 
-				if( ch != this.getChannelsOnSide(d.ordinal()) )
+				if( ch != this.getChannelsOnSide( d.ordinal() ) )
 				{
 					channelsChanged = true;
-					this.setChannelsOnSide(d.ordinal(), ch);
+					this.setChannelsOnSide( d.ordinal(), ch );
 				}
 			}
 		}
@@ -427,4 +429,5 @@ public class PartCable extends AEBasePart implements IPartCable
 	{
 		this.connections = connections;
 	}
+
 }

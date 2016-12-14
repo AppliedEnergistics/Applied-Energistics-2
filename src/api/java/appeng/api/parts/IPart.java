@@ -25,9 +25,10 @@ package appeng.api.parts;
 
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+
+import javax.annotation.Nonnull;
 
 import io.netty.buffer.ByteBuf;
 
@@ -39,7 +40,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -71,7 +71,8 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 	ItemStack getItemStack( PartItemStack type );
 
 	/**
-	 * Render dynamic portions of this part, as part of the cable bus TESR. This part has to return true for {@link #requireDynamicRender()} in order for
+	 * Render dynamic portions of this part, as part of the cable bus TESR. This part has to return true for
+	 * {@link #requireDynamicRender()} in order for
 	 * this method to be called.
 	 */
 	@SideOnly( Side.CLIENT )
@@ -267,8 +268,10 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 	boolean canBePlacedOn( BusSupport what );
 
 	/**
-	 * This method is used when a chunk is rebuilt to determine how this part should be rendered. The returned models should represent the
-	 * part oriented north. They will be automatically rotated to match the part's actual orientation. Tint indices 1-4 can be used in the
+	 * This method is used when a chunk is rebuilt to determine how this part should be rendered. The returned models
+	 * should represent the
+	 * part oriented north. They will be automatically rotated to match the part's actual orientation. Tint indices 1-4
+	 * can be used in the
 	 * models to access the parts color.
 	 *
 	 * <dl>
@@ -279,18 +282,23 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 	 * <dt>Tint Index 3</dt>
 	 * <dd>The {@link AEColor#whiteVariant bright variant color} of the cable that this part is attached to.</dd>
 	 * <dt>Tint Index 4</dt>
-	 * <dd>A color variant that is between the cable's {@link AEColor#mediumVariant color} and its {@link AEColor#whiteVariant bright variant}.</dd>
+	 * <dd>A color variant that is between the cable's {@link AEColor#mediumVariant color} and its
+	 * {@link AEColor#whiteVariant bright variant}.</dd>
 	 * </dl>
 	 *
 	 * <b>Important:</b> All models must have been registered via the {@link IPartModels} API before use.
 	 */
-	default List<ResourceLocation> getStaticModels()
+	@Nonnull
+	default IPartModel getStaticModels()
 	{
-		return Collections.emptyList();
+		return new IPartModel()
+		{
+		};
 	}
 
 	/**
-	 * Implement this method if your part exposes capabilitys. Any requests for capabilities on the cable bus will be forwarded to parts on the appropriate
+	 * Implement this method if your part exposes capabilitys. Any requests for capabilities on the cable bus will be
+	 * forwarded to parts on the appropriate
 	 * side.
 	 *
 	 * @see TileEntity#hasCapability(Capability, EnumFacing)
@@ -303,7 +311,8 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 	}
 
 	/**
-	 * Implement this method if your part exposes capabilitys. Any requests for capabilities on the cable bus will be forwarded to parts on the appropriate
+	 * Implement this method if your part exposes capabilitys. Any requests for capabilities on the cable bus will be
+	 * forwarded to parts on the appropriate
 	 * side.
 	 *
 	 * @see TileEntity#getCapability(Capability, EnumFacing)

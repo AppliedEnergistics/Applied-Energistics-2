@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
+
 import javax.vecmath.Vector4f;
 
 import com.google.common.base.Preconditions;

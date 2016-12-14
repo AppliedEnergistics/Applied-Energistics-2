@@ -20,6 +20,7 @@ package appeng.tile.powersink;
 
 
 import java.util.EnumSet;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.nbt.NBTTagCompound;
