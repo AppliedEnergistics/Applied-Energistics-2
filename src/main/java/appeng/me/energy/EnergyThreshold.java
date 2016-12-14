@@ -83,21 +83,35 @@ public class EnergyThreshold implements Comparable<EnergyThreshold>
 	public boolean equals( Object obj )
 	{
 		if( this == obj )
+		{
 			return true;
+		}
 		if( obj == null )
+		{
 			return false;
+		}
 		if( getClass() != obj.getClass() )
+		{
 			return false;
+		}
+
 		EnergyThreshold other = (EnergyThreshold) obj;
 		if( Double.doubleToLongBits( threshold ) != Double.doubleToLongBits( other.threshold ) )
+		{
 			return false;
+		}
+
 		if( watcher == null )
 		{
 			if( other.watcher != null )
+			{
 				return false;
+			}
 		}
 		else if( !watcher.equals( other.watcher ) )
+		{
 			return false;
+		}
 		return true;
 	}
 }

@@ -40,7 +40,7 @@ public interface ICraftingWatcher
 	 * Supports multiple values, duplicate ones will not be added.
 	 * 
 	 * @param stack
-	 * @return
+	 * @return true, if successfully added.
 	 */
 	boolean add( IAEStack<?> stack );
 
@@ -48,14 +48,12 @@ public interface ICraftingWatcher
 	 * Remove a specific {@link IAEStack} from the watcher.
 	 * 
 	 * @param stack
-	 * @return
+	 * @return true, if successfully removed.
 	 */
 	boolean remove( IAEStack<?> stack );
 
 	/**
 	 * Removes all watched stacks and resets the watcher to a clean state.
-	 * 
-	 * @return
 	 */
 	void reset();
 }

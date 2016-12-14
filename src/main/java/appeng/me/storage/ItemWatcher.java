@@ -71,6 +71,7 @@ public class ItemWatcher implements IStackWatcher
 	public void reset()
 	{
 		final Iterator<IAEStack> i = this.myInterests.iterator();
+
 		while( i.hasNext() )
 		{
 			this.gsc.getInterestManager().remove( i.next(), this );

@@ -37,7 +37,7 @@ public interface IEnergyWatcher
 	 * Supports multiple values, duplicate ones will not be added.
 	 * 
 	 * @param amount
-	 * @return
+	 * @return true, if successfully added.
 	 */
 	boolean add( double amount );
 
@@ -45,14 +45,12 @@ public interface IEnergyWatcher
 	 * Remove a specific threshold from the watcher.
 	 * 
 	 * @param amount
-	 * @return
+	 * @return true, if successfully removed.
 	 */
 	boolean remove( double amount );
 
 	/**
 	 * Removes all thresholds and resets the watcher to a clean state.
-	 * 
-	 * @return
 	 */
 	void reset();
 
