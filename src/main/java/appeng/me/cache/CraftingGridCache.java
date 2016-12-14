@@ -172,7 +172,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			final ICraftingWatcher craftingWatcher = this.craftingWatchers.get( machine );
 			if( craftingWatcher != null )
 			{
-				craftingWatcher.clear();
+				craftingWatcher.reset();
 				this.craftingWatchers.remove( machine );
 			}
 		}

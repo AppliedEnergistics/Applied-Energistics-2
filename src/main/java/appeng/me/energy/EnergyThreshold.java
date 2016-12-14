@@ -20,50 +20,98 @@ package appeng.me.energy;
 
 
 import appeng.api.networking.energy.IEnergyWatcher;
-import appeng.util.ItemSorters;
 
 
 public class EnergyThreshold implements Comparable<EnergyThreshold>
 {
 
-	private final double Limit;
+	private final double threshold;
 	private final IEnergyWatcher watcher;
-	private final int hash;
+	private final int watcherHash;
 
-	public EnergyThreshold( final double lim, final IEnergyWatcher wat )
+	public EnergyThreshold( final double lim, final IEnergyWatcher watcher )
 	{
-		this.Limit = lim;
-		this.watcher = wat;
+		this.threshold = lim;
+		this.watcher = watcher;
+		this.watcherHash = watcher.hashCode();
+	}
 
-		if( this.getWatcher() != null )
+	/**
+	 * Special constructor to allow querying a for a subset of thresholds.
+	 * 
+	 * @param lim
+	 * @param bound
+	 */
+	public EnergyThreshold( final double lim, final int bound )
+	{
+		this.threshold = lim;
+		this.watcher = null;
+		this.watcherHash = bound;
+	}
+
+	public IEnergyWatcher getEnergyWatcher()
+	{
+		return watcher;
+	}
+
+	@Override
+	public int compareTo( EnergyThreshold o )
+	{
+		int a = Double.compare( this.threshold, o.threshold );
+
+		if( a == 0 )
 		{
-			this.hash = this.getWatcher().hashCode() ^ ( (Double) lim ).hashCode();
+			return Integer.compare( this.watcherHash, o.watcherHash );
 		}
-		else
-		{
-			this.hash = ( (Double) lim ).hashCode();
-		}
+
+		return a;
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return this.hash;
+		final int prime = 31;
+		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits( threshold );
+		result = prime * result + (int) ( temp ^ ( temp >>> 32 ) );
+		result = prime * result + ( ( watcher == null ) ? 0 : watcher.hashCode() );
+		return result;
 	}
 
 	@Override
-	public int compareTo( final EnergyThreshold o )
+	public boolean equals( Object obj )
 	{
-		return ItemSorters.compareDouble( this.getLimit(), o.getLimit() );
-	}
+		if( this == obj )
+		{
+			return true;
+		}
+		if( obj == null )
+		{
+			return false;
+		}
+		if( getClass() != obj.getClass() )
+		{
+			return false;
+		}
 
-	double getLimit()
-	{
-		return this.Limit;
-	}
+		EnergyThreshold other = (EnergyThreshold) obj;
+		if( Double.doubleToLongBits( threshold ) != Double.doubleToLongBits( other.threshold ) )
+		{
+			return false;
+		}
 
-	public IEnergyWatcher getWatcher()
-	{
-		return this.watcher;
+		if( watcher == null )
+		{
+			if( other.watcher != null )
+			{
+				return false;
+			}
+		}
+		else if( !watcher.equals( other.watcher ) )
+		{
+			return false;
+		}
+		return true;
 	}
 }

@@ -102,7 +102,7 @@ public class GridStorageCache implements IStorageGrid
 
 			if( myWatcher != null )
 			{
-				myWatcher.clear();
+				myWatcher.reset();
 				this.watchers.remove( machine );
 			}
 		}

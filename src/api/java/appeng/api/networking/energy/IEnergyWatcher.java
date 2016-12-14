@@ -24,10 +24,34 @@
 package appeng.api.networking.energy;
 
 
-import java.util.Collection;
-
-
-public interface IEnergyWatcher extends Collection<Double>
+/**
+ * DO NOT IMPLEMENT.
+ * 
+ * Will be injected when adding an {@link IEnergyWatcherHost} to a grid.
+ */
+public interface IEnergyWatcher
 {
+	/**
+	 * Add a specific threshold to watch.
+	 * 
+	 * Supports multiple values, duplicate ones will not be added.
+	 * 
+	 * @param amount
+	 * @return true, if successfully added.
+	 */
+	boolean add( double amount );
+
+	/**
+	 * Remove a specific threshold from the watcher.
+	 * 
+	 * @param amount
+	 * @return true, if successfully removed.
+	 */
+	boolean remove( double amount );
+
+	/**
+	 * Removes all thresholds and resets the watcher to a clean state.
+	 */
+	void reset();
 
 }
