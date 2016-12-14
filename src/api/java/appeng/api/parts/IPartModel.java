@@ -33,21 +33,20 @@ import net.minecraft.util.ResourceLocation;
 
 
 /**
- * A container to store a collection of {@link ResourceLocation} as models for a part as well as marking the part as
- * solid or not.
- *
+ * A container to store a collection of {@link ResourceLocation} as models for a part as well as other properties.
  */
 public interface IPartModel
 {
 
 	/**
-	 * A solid {@link IPartModel} indicates that the rendering should create an intersection when attached to cable.
+	 * A solid {@link IPartModel} indicates that the rendering requires a cable connection, which will also result in
+	 * creating an intersection for the cable.
 	 * 
 	 * This should be true for pretty much all parts.
 	 * 
 	 * @return true for a solid part.
 	 */
-	default boolean isSolid()
+	default boolean requireCableConnection()
 	{
 		return true;
 	}

@@ -179,7 +179,7 @@ public class CableBusBakedModel implements IBakedModel
 
 		// If the connection is straight, no busses are attached, and no covered core has been forced (in case of glass
 		// cables), then render the cable as a simplified straight line.
-		boolean noAttachments = !renderState.getAttachments().entrySet().stream().filter( p -> p.getValue().isSolid() ).findAny().isPresent();
+		boolean noAttachments = !renderState.getAttachments().entrySet().stream().filter( p -> p.getValue().requireCableConnection() ).findAny().isPresent();
 		if( isStraightLine( cableType, connectionTypes ) && noAttachments )
 		{
 			EnumFacing facing = connectionTypes.keySet().iterator().next();

@@ -66,7 +66,7 @@ public class PartModel implements IPartModel
 	}
 
 	@Override
-	public boolean isSolid()
+	public boolean requireCableConnection()
 	{
 		return this.isSolid;
 	}
