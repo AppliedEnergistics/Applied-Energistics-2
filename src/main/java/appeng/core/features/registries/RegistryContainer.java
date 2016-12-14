@@ -34,6 +34,9 @@ import appeng.api.movable.IMovableRegistry;
 import appeng.api.networking.IGridCacheRegistry;
 import appeng.api.parts.IPartModels;
 import appeng.api.storage.ICellRegistry;
+import appeng.core.features.registries.cell.CellRegistry;
+import appeng.core.features.registries.grinder.GrinderRecipeManager;
+import appeng.core.features.registries.inscriber.InscriberRegistry;
 
 
 /**

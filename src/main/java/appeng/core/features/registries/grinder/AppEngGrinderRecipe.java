@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.features.registries.entries;
+package appeng.core.features.registries.grinder;
 
 
 import java.util.Optional;
@@ -40,17 +40,17 @@ public class AppEngGrinderRecipe implements IGrinderRecipe
 
 	private final int turns;
 
-	public AppEngGrinderRecipe( final ItemStack input, final ItemStack output, final int cost )
+	AppEngGrinderRecipe( final ItemStack input, final ItemStack output, final int cost )
 	{
 		this( input, output, null, null, 0, 0, cost );
 	}
 
-	public AppEngGrinderRecipe( final ItemStack input, final ItemStack output, final ItemStack optional, final float chance, final int cost )
+	AppEngGrinderRecipe( final ItemStack input, final ItemStack output, final ItemStack optional, final float chance, final int cost )
 	{
 		this( input, output, optional, null, chance, 0, cost );
 	}
 
-	public AppEngGrinderRecipe( final ItemStack input, final ItemStack output, final ItemStack optional1, final ItemStack optional2, final float chance1, final float chance2, final int cost )
+	AppEngGrinderRecipe( final ItemStack input, final ItemStack output, final ItemStack optional1, final ItemStack optional2, final float chance1, final float chance2, final int cost )
 	{
 		this.in = input;
 		this.out = output;

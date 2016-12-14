@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.features.registries.entries;
+package appeng.core.features.registries.inscriber;
 
 
 import java.util.Collection;
@@ -38,7 +38,7 @@ import appeng.api.features.InscriberProcessType;
  */
 public class InscriberInscribeRecipe extends InscriberRecipe
 {
-	public InscriberInscribeRecipe( @Nonnull final Collection<ItemStack> inputs, @Nonnull final ItemStack output, @Nullable final ItemStack top, @Nullable final ItemStack bot )
+	InscriberInscribeRecipe( @Nonnull final Collection<ItemStack> inputs, @Nonnull final ItemStack output, @Nullable final ItemStack top, @Nullable final ItemStack bot )
 	{
 		super( inputs, output, top, bot, InscriberProcessType.INSCRIBE );
 	}
