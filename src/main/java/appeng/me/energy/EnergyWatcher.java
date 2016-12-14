@@ -57,12 +57,13 @@ public class EnergyWatcher implements IEnergyWatcher
 	@Override
 	public boolean add( final double amount )
 	{
-		if( this.myInterests.contains( amount ) )
+		if( this.myInterests.contains( Double.valueOf( amount ) ) )
 		{
 			return false;
 		}
 
 		final EnergyThreshold eh = new EnergyThreshold( amount, this );
+
 		return this.gsc.registerEnergyInterest( eh ) && this.myInterests.add( eh );
 	}
 
@@ -70,6 +71,7 @@ public class EnergyWatcher implements IEnergyWatcher
 	public boolean remove( final double amount )
 	{
 		final EnergyThreshold eh = new EnergyThreshold( amount, this );
+
 		return this.myInterests.remove( eh ) && this.gsc.unregisterEnergyInterest( eh );
 	}
 
