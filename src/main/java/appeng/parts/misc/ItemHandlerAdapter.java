@@ -117,7 +117,8 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			}
 
 			ItemStack extracted;
-			int remainingCurrentSlot = Math.min( remainingSize, stackInInventorySlot.stackSize );
+			int stackSizeCurrentSlot = stackInInventorySlot.stackSize;
+			int remainingCurrentSlot = Math.min( remainingSize, stackSizeCurrentSlot );
 
 			// We have to loop here because according to the docs, the handler shouldn't return a stack with size >
 			// maxSize, even if we request more. So even if it returns a valid stack, it might have more stuff.
@@ -149,7 +150,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			}
 			while( extracted != null && remainingCurrentSlot > 0 );
 
-			remainingSize -= stackInInventorySlot.stackSize - remainingCurrentSlot;
+			remainingSize -= stackSizeCurrentSlot - remainingCurrentSlot;
 
 			// Done?
 			if( remainingSize <= 0 )
