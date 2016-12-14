@@ -29,8 +29,8 @@ import appeng.api.AEApi;
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RegistrationError;
 import appeng.api.features.IInscriberRecipe;
+import appeng.api.features.IInscriberRecipeBuilder;
 import appeng.api.features.InscriberProcessType;
-import appeng.core.features.registries.entries.InscriberRecipe;
 
 
 /**
@@ -55,6 +55,7 @@ public final class Inscribe extends InscriberProcess
 			return;
 		}
 
+		final IInscriberRecipeBuilder builder = AEApi.instance().registries().inscriber().builder();
 		final ItemStack[] realInput = this.getImprintable().getItemStackSet();
 		final List<ItemStack> inputs = new ArrayList<ItemStack>( realInput.length );
 		Collections.addAll( inputs, realInput );
@@ -63,7 +64,12 @@ public final class Inscribe extends InscriberProcess
 		final ItemStack output = this.getOutput().getItemStack();
 		final InscriberProcessType type = InscriberProcessType.INSCRIBE;
 
-		final IInscriberRecipe recipe = new InscriberRecipe( inputs, output, top, bot, type );
+		final IInscriberRecipe recipe = builder.withInputs( inputs )
+				.withOutput( output )
+				.withTopOptional( top )
+				.withBottomOptional( bot )
+				.withProcessType( type )
+				.build();
 
 		AEApi.instance().registries().inscriber().addRecipe( recipe );
 	}

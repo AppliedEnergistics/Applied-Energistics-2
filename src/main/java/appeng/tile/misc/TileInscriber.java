@@ -22,6 +22,7 @@ package appeng.tile.misc;
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
@@ -45,6 +46,7 @@ import appeng.api.config.Upgrades;
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.ITileDefinition;
 import appeng.api.features.IInscriberRecipe;
+import appeng.api.features.IInscriberRecipeBuilder;
 import appeng.api.features.InscriberProcessType;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.IGridNode;
@@ -56,7 +58,6 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
-import appeng.core.features.registries.entries.InscriberRecipe;
 import appeng.core.settings.TickRates;
 import appeng.helpers.Reflected;
 import appeng.me.GridAccessException;
@@ -403,18 +404,28 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				final List<ItemStack> inputs = Lists.newArrayList( startingItem );
 				final InscriberProcessType type = InscriberProcessType.INSCRIBE;
 
-				return new InscriberRecipe( inputs, renamedItem, plateA, plateB, type );
+				final IInscriberRecipeBuilder builder = AEApi.instance().registries().inscriber().builder();
+				return builder.withInputs( inputs )
+						.withOutput( renamedItem )
+						.withTopOptional( plateA )
+						.withBottomOptional( plateB )
+						.withProcessType( type )
+						.build();
 			}
 		}
 
 		for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 		{
 
-			final boolean matchA = ( plateA == null && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateA, recipe.getTopOptional().orElse( null ) ) ) && // and...
-			( plateB == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.itemComparisons().isSameItem( plateB, recipe.getBottomOptional().orElse( null ) ) );
+			final boolean matchA = ( plateA == null && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateA,
+					recipe.getTopOptional().orElse( null ) ) ) && // and...
+					( plateB == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.itemComparisons().isSameItem( plateB,
+							recipe.getBottomOptional().orElse( null ) ) );
 
-			final boolean matchB = ( plateB == null && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateB, recipe.getTopOptional().orElse( null ) ) ) && // and...
-			( plateA == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.itemComparisons().isSameItem( plateA, recipe.getBottomOptional().orElse( null ) ) );
+			final boolean matchB = ( plateB == null && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateB,
+					recipe.getTopOptional().orElse( null ) ) ) && // and...
+					( plateA == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.itemComparisons().isSameItem( plateA,
+							recipe.getBottomOptional().orElse( null ) ) );
 
 			if( matchA || matchB )
 			{

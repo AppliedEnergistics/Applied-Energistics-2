@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.features.registries.entries;
+package appeng.core.features.registries.cell;
 
 
 import net.minecraft.entity.player.EntityPlayer;

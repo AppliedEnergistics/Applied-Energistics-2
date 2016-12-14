@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.features.registries;
+package appeng.core.features.registries.inscriber;
 
 
 import java.util.ArrayList;
@@ -35,7 +35,6 @@ import appeng.api.features.IInscriberRecipe;
 import appeng.api.features.IInscriberRecipeBuilder;
 import appeng.api.features.IInscriberRegistry;
 import appeng.api.features.InscriberProcessType;
-import appeng.core.features.registries.entries.InscriberRecipe;
 
 
 /**

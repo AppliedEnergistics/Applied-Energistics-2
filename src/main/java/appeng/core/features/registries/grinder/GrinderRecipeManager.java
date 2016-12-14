@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.features.registries;
+package appeng.core.features.registries.grinder;
 
 
 import java.util.Collection;
@@ -36,7 +36,6 @@ import appeng.api.features.IGrinderRecipe;
 import appeng.api.features.IGrinderRegistry;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.features.registries.entries.AppEngGrinderRecipe;
 import appeng.recipes.ores.IOreListener;
 import appeng.recipes.ores.OreDictionaryHandler;
 import appeng.util.Platform;
