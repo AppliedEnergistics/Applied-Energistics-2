@@ -94,24 +94,14 @@ final class IntegrationNode
 
 						if( enabled )
 						{
-							switch( type )
-							{
-								case IC2:
-									this.mod = Integrations.setIc2( new IC2Module() );
-									break;
-								case JEI:
-									this.mod = Integrations.setJei( new JEIModule() );
-									break;
-								case Waila:
-									this.mod = new WailaModule();
-									break;
-							}
+							this.mod = type.createInstance();
 						}
 						else
 						{
 							throw new ModNotInstalled( this.modID );
 						}
 
+						this.mod.preInit();
 						this.setState( IntegrationStage.INIT );
 
 						break;

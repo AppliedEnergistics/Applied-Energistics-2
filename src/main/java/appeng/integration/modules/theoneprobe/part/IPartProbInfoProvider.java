@@ -16,35 +16,30 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration;
+package appeng.integration.modules.theoneprobe.part;
 
 
-public interface IIntegrationModule
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
+
+import mcjty.theoneprobe.api.IProbeHitData;
+import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.theoneprobe.api.IProbeInfoProvider;
+import mcjty.theoneprobe.api.ProbeMode;
+
+import appeng.api.parts.IPart;
+
+
+/**
+ * Similar to {@link IProbeInfoProvider}, but already providing the {@link IPart} being looked at.
+ *
+ */
+public interface IPartProbInfoProvider
 {
 
-	default boolean isEnabled()
-	{
-		return true;
-	}
-
-	default void preInit() throws Throwable
-	{
-	}
-
-	default void init() throws Throwable
-	{
-	}
-
-	default void postInit()
-	{
-	}
-
-	class Stub implements IIntegrationModule
-	{
-		@Override
-		public boolean isEnabled()
-		{
-			return false;
-		}
-	}
+	/**
+	 * @see IProbeInfoProvider#addProbeInfo(ProbeMode, IProbeInfo, EntityPlayer, World, IBlockState, IProbeHitData)
+	 */
+	void addProbeInfo( IPart part, ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data );
 }

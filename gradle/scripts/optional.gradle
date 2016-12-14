@@ -31,7 +31,7 @@ task deinstallWaila(type: Delete) {
     delete fileTree(dir: minecraft.runDir + "/mods", include: "*Waila*.jar")
 }
 
-// IC²
+// IC2
 task installIC2(type: Copy, dependsOn: "deinstallIC2") {
     from { configurations.mods }
     include "**/*industrialcraft-2*.jar"
@@ -41,3 +41,15 @@ task installIC2(type: Copy, dependsOn: "deinstallIC2") {
 task deinstallIC2(type: Delete) {
     delete fileTree(dir: minecraft.runDir + "/mods", include: "*industrialcraft-2*.jar")
 }
+
+// TOP
+task installTop(type: Copy, dependsOn: "deinstallTop") {
+    from { configurations.mods }
+    include "**/*TheOneProbe*.jar"
+    into file(minecraft.runDir + "/mods")
+}
+
+task deinstallTop(type: Delete) {
+    delete fileTree(dir: minecraft.runDir + "/mods", include: "*TheOneProbe*.jar")
+}
+

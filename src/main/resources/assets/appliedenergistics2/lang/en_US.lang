@@ -365,6 +365,22 @@ waila.appliedenergistics2.P2PInputOneOutput=Linked (Input Side)
 waila.appliedenergistics2.P2PInputManyOutputs=Linked (Input Side) - %d Outputs
 waila.appliedenergistics2.P2POutput=Linked (Output Side)
 
+// TheOneProbe
+theoneprobe.appliedenergistics2.crafting=Crafting: %1$s
+theoneprobe.appliedenergistics2.device_online=Device Online
+theoneprobe.appliedenergistics2.device_offline=Device Offline
+theoneprobe.appliedenergistics2.device_missing_channel=Device Missing Channel
+theoneprobe.appliedenergistics2.locked=Locked
+theoneprobe.appliedenergistics2.unlocked=Unlocked
+theoneprobe.appliedenergistics2.showing=Showing
+theoneprobe.appliedenergistics2.contains=Contains
+theoneprobe.appliedenergistics2.channels=%1$d of %2$d Channels
+theoneprobe.appliedenergistics2.p2p_unlinked=Unlinked
+theoneprobe.appliedenergistics2.p2p_input_one_output=Linked (Input Side)
+theoneprobe.appliedenergistics2.p2p_input_many_outputs=Linked (Input Side) - %d Outputs
+theoneprobe.appliedenergistics2.p2p_output=Linked (Output Side)
+theoneprobe.appliedenergistics2.stored_energy=%1$d / %2$d
+
 // Items
 item.appliedenergistics2.storage_cell_1k.name=1k ME Storage Cell
 item.appliedenergistics2.storage_cell_4k.name=4k ME Storage Cell

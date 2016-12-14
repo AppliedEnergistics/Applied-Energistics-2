@@ -16,35 +16,51 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration;
+package appeng.integration.modules.theoneprobe;
 
 
-public interface IIntegrationModule
+import java.util.Locale;
+
+import net.minecraft.util.text.translation.I18n;
+
+
+public enum TheOneProbeText
 {
+	CRAFTING,
 
-	default boolean isEnabled()
+	DEVICE_ONLINE,
+	DEVICE_OFFLINE,
+	DEVICE_MISSING_CHANNEL,
+
+	P2P_UNLINKED,
+	P2P_INPUT_ONE_OUTPUT,
+	P2P_INPUT_MANY_OUTPUTS,
+	P2P_OUTPUT,
+
+	LOCKED,
+	UNLOCKED,
+	SHOWING,
+
+	CONTAINS,
+	CHANNELS,
+
+	STORED_ENERGY;
+
+	private final String root;
+
+	TheOneProbeText()
 	{
-		return true;
+		this.root = "theoneprobe.appliedenergistics2";
 	}
 
-	default void preInit() throws Throwable
+	public String getLocal()
 	{
+		return I18n.translateToLocal( this.getUnlocalized() );
 	}
 
-	default void init() throws Throwable
+	public String getUnlocalized()
 	{
+		return this.root + '.' + this.name().toLowerCase( Locale.ENGLISH );
 	}
 
-	default void postInit()
-	{
-	}
-
-	class Stub implements IIntegrationModule
-	{
-		@Override
-		public boolean isEnabled()
-		{
-			return false;
-		}
-	}
 }

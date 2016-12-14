@@ -38,6 +38,11 @@ repositories {
         name = "IC2 repo"
         url = "http://maven.ic2.player.to"
     }
+
+    maven { // TheOneProbe
+        name 'tterrag maven'
+        url "http://maven.tterrag.com/"
+    }
 }
 
 configurations {
@@ -48,12 +53,14 @@ dependencies {
     // installable runtime dependencies
     mods "mcp.mobius.waila:Waila:${waila_version}"
     mods "net.industrial-craft:industrialcraft-2:${ic2_version}:dev"
+    mods "mcjty.theoneprobe:TheOneProbe:${top_version}"
 
     // compile against provided APIs
     compileOnly "mezz.jei:jei_${minecraft_version}:${jei_version}:api"
     compileOnly "mcp.mobius.waila:Waila:${waila_version}"
     compileOnly "net.darkhax.tesla:Tesla:${tesla_version}"
     compileOnly "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
+    compileOnly "mcjty.theoneprobe:TheOneProbe:${top_version}:api"
 
     // at runtime, use the full JEI jar
     runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"

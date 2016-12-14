@@ -19,9 +19,22 @@
 package appeng.integration;
 
 
+import appeng.integration.modules.ic2.IC2Module;
+import appeng.integration.modules.jei.JEIModule;
+import appeng.integration.modules.theoneprobe.TheOneProbeModule;
+import appeng.integration.modules.waila.WailaModule;
+
+
 public enum IntegrationType
 {
-	IC2( IntegrationSide.BOTH, "Industrial Craft 2", "IC2" ),
+	IC2( IntegrationSide.BOTH, "Industrial Craft 2", "IC2" )
+	{
+		@Override
+		public IIntegrationModule createInstance()
+		{
+			return Integrations.setIc2( new IC2Module() );
+		}
+	},
 
 	RC( IntegrationSide.BOTH, "Railcraft", "Railcraft" ),
 
@@ -31,15 +44,38 @@ public enum IntegrationType
 
 	MFR( IntegrationSide.BOTH, "Mine Factory Reloaded", "MineFactoryReloaded" ),
 
-	Waila( IntegrationSide.BOTH, "Waila", "Waila" ),
+	Waila( IntegrationSide.BOTH, "Waila", "Waila" )
+	{
+		@Override
+		public IIntegrationModule createInstance()
+		{
+			return new WailaModule();
+		}
+	},
 
 	InvTweaks( IntegrationSide.CLIENT, "Inventory Tweaks", "inventorytweaks" ),
 
-	JEI( IntegrationSide.CLIENT, "Just Enough Items", "JEI" ),
+	JEI( IntegrationSide.CLIENT, "Just Enough Items", "JEI" )
+	{
+		@Override
+		public IIntegrationModule createInstance()
+		{
+			return Integrations.setJei( new JEIModule() );
+		}
+	},
 
 	Mekanism( IntegrationSide.BOTH, "Mekanism", "Mekanism" ),
 
-	OpenComputers( IntegrationSide.BOTH, "OpenComputers", "OpenComputers" );
+	OpenComputers( IntegrationSide.BOTH, "OpenComputers", "OpenComputers" ),
+
+	THE_ONE_PROBE( IntegrationSide.BOTH, "TheOneProbe", "theoneprobe" )
+	{
+		@Override
+		public IIntegrationModule createInstance()
+		{
+			return new TheOneProbeModule();
+		}
+	};
 
 	public final IntegrationSide side;
 	public final String dspName;
@@ -50,6 +86,11 @@ public enum IntegrationType
 		this.side = side;
 		this.dspName = name;
 		this.modID = modid;
+	}
+
+	public IIntegrationModule createInstance()
+	{
+		throw new UnsupportedOperationException();
 	}
 
 }
