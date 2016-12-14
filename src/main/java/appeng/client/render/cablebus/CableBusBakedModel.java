@@ -25,6 +25,7 @@ import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 
@@ -133,18 +134,21 @@ public class CableBusBakedModel implements IBakedModel
 	// Determines whether a cable is connected to exactly two sides that are opposite each other
 	private static boolean isStraightLine( AECableType cableType, EnumMap<EnumFacing, AECableType> sides )
 	{
-		Iterator<EnumFacing> it = sides.keySet().iterator();
+		final Iterator<Entry<EnumFacing, AECableType>> it = sides.entrySet().iterator();
 		if( !it.hasNext() )
 		{
 			return false; // No connections
 		}
-		EnumFacing firstSide = it.next();
-		AECableType firstType = sides.get( firstSide );
+
+		final Entry<EnumFacing, AECableType> nextConnection = it.next();
+		final EnumFacing firstSide = nextConnection.getKey();
+		final AECableType firstType = nextConnection.getValue();
+
 		if( !it.hasNext() )
 		{
 			return false; // Only a single connection
 		}
-		if( firstSide.getOpposite() != it.next() )
+		if( firstSide.getOpposite() != it.next().getKey() )
 		{
 			return false; // Connected to two sides that are not opposite each other
 		}
@@ -152,7 +156,8 @@ public class CableBusBakedModel implements IBakedModel
 		{
 			return false; // Must not have any other connection points
 		}
-		AECableType secondType = sides.get( firstSide.getOpposite() );
+
+		final AECableType secondType = sides.get( firstSide.getOpposite() );
 
 		// Certain cable types have restrictions on when they're rendered as a straight connection
 		switch( cableType )
@@ -179,8 +184,8 @@ public class CableBusBakedModel implements IBakedModel
 
 		// If the connection is straight, no busses are attached, and no covered core has been forced (in case of glass
 		// cables), then render the cable as a simplified straight line.
-		boolean noAttachments = !renderState.getAttachments().entrySet().stream().filter( p -> p.getValue().requireCableConnection() ).findAny().isPresent();
-		if( isStraightLine( cableType, connectionTypes ) && noAttachments )
+		boolean noAttachments = !renderState.getAttachments().values().stream().anyMatch( IPartModel::requireCableConnection );
+		if( noAttachments && isStraightLine( cableType, connectionTypes ) )
 		{
 			EnumFacing facing = connectionTypes.keySet().iterator().next();
 
@@ -230,11 +235,12 @@ public class CableBusBakedModel implements IBakedModel
 		}
 
 		// Render all outgoing connections using the appropriate type
-		for( EnumFacing facing : connectionTypes.keySet() )
+		for( final Entry<EnumFacing, AECableType> connection : connectionTypes.entrySet() )
 		{
-			AECableType connectionType = connectionTypes.get( facing );
-			boolean cableBusAdjacent = renderState.getCableBusAdjacent().contains( facing );
-			int channels = renderState.getChannelsOnSide().get( facing );
+			final EnumFacing facing = connection.getKey();
+			final AECableType connectionType = connection.getValue();
+			final boolean cableBusAdjacent = renderState.getCableBusAdjacent().contains( facing );
+			final int channels = renderState.getChannelsOnSide().get( facing );
 
 			switch( cableType )
 			{

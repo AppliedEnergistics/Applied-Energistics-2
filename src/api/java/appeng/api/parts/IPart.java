@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nonnull;
+
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.Entity;
@@ -286,6 +288,7 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 	 *
 	 * <b>Important:</b> All models must have been registered via the {@link IPartModels} API before use.
 	 */
+	@Nonnull
 	default IPartModel getStaticModels()
 	{
 		return new IPartModel()

@@ -509,8 +509,9 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		final boolean ignoreBlocks = state.getBlock() == Blocks.BEDROCK || state.getBlock() == Blocks.END_PORTAL || state
 				.getBlock() == Blocks.END_PORTAL_FRAME || state.getBlock() == Blocks.COMMAND_BLOCK;
 
-		return !ignoreMaterials && !ignoreBlocks && !w.isAirBlock( pos ) && w.isBlockLoaded( pos ) && w.canMineBlockBody( Platform.getPlayer( w ),
-				pos ) && hardness >= 0f;
+		return !ignoreMaterials && !ignoreBlocks && hardness >= 0f && !w.isAirBlock( pos ) && w.isBlockLoaded( pos ) && w.canMineBlockBody(
+				Platform.getPlayer( w ),
+				pos );
 	}
 
 	protected List<ItemStack> obtainBlockDrops( final WorldServer w, final BlockPos pos )

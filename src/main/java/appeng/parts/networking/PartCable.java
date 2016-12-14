@@ -430,10 +430,4 @@ public class PartCable extends AEBasePart implements IPartCable
 		this.connections = connections;
 	}
 
-	@Override
-	public IPartModel getStaticModels()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
