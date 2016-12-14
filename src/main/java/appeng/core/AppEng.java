@@ -29,7 +29,6 @@ import com.google.common.collect.Lists;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -52,6 +51,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.integration.IntegrationRegistry;
+import appeng.integration.IntegrationType;
 import appeng.recipes.CustomRecipeConfig;
 import appeng.recipes.CustomRecipeForgeConfiguration;
 import appeng.server.AECommand;
@@ -126,12 +126,13 @@ public final class AppEng
 	@EventHandler
 	private void preInit( final FMLPreInitializationEvent event )
 	{
-		if( !Loader.isModLoaded( "appliedenergistics2-core" ) )
+		final Stopwatch watch = Stopwatch.createStarted();
+
+		for( final IntegrationType type : IntegrationType.values() )
 		{
-			CommonHelper.proxy.missingCoreMod();
+			IntegrationRegistry.INSTANCE.add( type );
 		}
 
-		final Stopwatch watch = Stopwatch.createStarted();
 		this.configDirectory = new File( event.getModConfigurationDirectory().getPath(), "AppliedEnergistics2" );
 		this.recipeDirectory = new File( this.configDirectory, "recipes" );
 

@@ -101,9 +101,6 @@ Providing as many details as possible does help us to find and resolve the issue
 4. For core developer: Setup IDE
   - IntelliJ: Import into IDE, execute `gradlew genIntellijRuns` and change RunConfiguration to `*_main` as quickfix for [ForgeGradle](https://github.com/MinecraftForge/ForgeGradle/issues/357)
   - Eclipse: execute `gradlew eclipse`
-5. For add-on developer: Core-Mod Detection
-  - In order to have FML detect AE from your dev environment, add the following VM Option to your run profile
-  - `-Dfml.coreMods.load=appeng.coremod.AppEngCore`
 
 ## Contribution
 

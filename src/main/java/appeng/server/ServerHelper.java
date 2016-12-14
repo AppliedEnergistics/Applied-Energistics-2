@@ -162,12 +162,6 @@ public class ServerHelper extends CommonHelper
 		this.renderModeBased = player;
 	}
 
-	@Override
-	public void missingCoreMod()
-	{
-		throw new IllegalStateException( "Unable to Load Core Mod, please verify that AE2 is properly install in the mods folder, with a .jar extension." );
-	}
-
 	protected CableRenderMode renderModeForPlayer( final EntityPlayer player )
 	{
 		if( player != null )
