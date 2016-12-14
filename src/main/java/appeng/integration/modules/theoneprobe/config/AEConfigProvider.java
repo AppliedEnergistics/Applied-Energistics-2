@@ -38,6 +38,7 @@ public class AEConfigProvider implements IProbeConfigProvider
 	@Override
 	public void getProbeConfig( IProbeConfig config, EntityPlayer player, World world, Entity entity, IProbeHitEntityData data )
 	{
+		// Still no AE entities.
 	}
 
 	@Override

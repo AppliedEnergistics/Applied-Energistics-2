@@ -25,13 +25,21 @@ import net.minecraft.world.World;
 
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.theoneprobe.api.IProbeInfoProvider;
 import mcjty.theoneprobe.api.ProbeMode;
 
 import appeng.api.parts.IPart;
 
 
+/**
+ * Similar to {@link IProbeInfoProvider}, but already providing the {@link IPart} being looked at.
+ *
+ */
 public interface IPartProbInfoProvider
 {
 
+	/**
+	 * @see IProbeInfoProvider#addProbeInfo(ProbeMode, IProbeInfo, EntityPlayer, World, IBlockState, IProbeHitData)
+	 */
 	void addProbeInfo( IPart part, ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data );
 }

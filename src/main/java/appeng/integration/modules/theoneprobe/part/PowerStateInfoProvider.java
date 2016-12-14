@@ -41,8 +41,9 @@ public class PowerStateInfoProvider implements IPartProbInfoProvider
 		if( part instanceof IPowerChannelState )
 		{
 			final IPowerChannelState state = (IPowerChannelState) part;
+			final String tooltip = this.getToolTip( state.isActive(), state.isPowered() );
 
-			probeInfo.text( this.getToolTip( state.isActive(), state.isPowered() ) );
+			probeInfo.text( tooltip );
 		}
 
 	}

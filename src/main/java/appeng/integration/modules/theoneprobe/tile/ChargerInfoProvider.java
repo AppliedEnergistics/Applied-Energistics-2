@@ -23,7 +23,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 import mcjty.theoneprobe.api.ElementAlignment;
@@ -31,6 +30,7 @@ import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.ProbeMode;
 
+import appeng.tile.AEBaseTile;
 import appeng.tile.misc.TileCharger;
 
 
@@ -38,7 +38,7 @@ public class ChargerInfoProvider implements ITileProbInfoProvider
 {
 
 	@Override
-	public void addProbeInfo( TileEntity tile, ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data )
+	public void addProbeInfo( AEBaseTile tile, ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data )
 	{
 		if( tile instanceof TileCharger )
 		{
