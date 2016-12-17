@@ -47,6 +47,10 @@ import appeng.util.Platform;
 public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 {
 
+	private static final double AABB_OFFSET_BOTTOM = .0625d;
+	private static final double AABB_OFFSET_SIDES = 0;
+	private static final double AABB_OFFSET_TOP = .125d;
+
 	public enum SkyChestType
 	{
 		STONE, BLOCK
@@ -71,7 +75,6 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 
-
 	@Override
 	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
@@ -86,6 +89,21 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final BlockPos pos, final Entity thePlayer, final boolean b )
 	{
+		final AxisAlignedBB aabb = computeAABB( w, pos );
+
+		return Collections.singletonList( aabb );
+	}
+
+	@Override
+	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
+	{
+		final AxisAlignedBB aabb = computeAABB( w, pos );
+
+		out.add( aabb );
+	}
+
+	private AxisAlignedBB computeAABB( final World w, final BlockPos pos )
+	{
 		final TileSkyChest sk = this.getTileEntity( w, pos );
 		EnumFacing o = EnumFacing.UP;
 
@@ -94,17 +112,19 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 			o = sk.getUp();
 		}
 
-		final double offsetX = o.getFrontOffsetX() == 0 ? 0.06 : 0.0;
-		final double offsetY = o.getFrontOffsetY() == 0 ? 0.06 : 0.0;
-		final double offsetZ = o.getFrontOffsetZ() == 0 ? 0.06 : 0.0;
+		final double offsetX = o.getFrontOffsetX() == 0 ? AABB_OFFSET_BOTTOM : AABB_OFFSET_SIDES;
+		final double offsetY = o.getFrontOffsetY() == 0 ? AABB_OFFSET_BOTTOM : AABB_OFFSET_SIDES;
+		final double offsetZ = o.getFrontOffsetZ() == 0 ? AABB_OFFSET_BOTTOM : AABB_OFFSET_SIDES;
 
-		final double sc = 0.06;
-		return Collections.singletonList( new AxisAlignedBB( Math.max( 0.0, offsetX - o.getFrontOffsetX() * sc ), Math.max( 0.0, offsetY - o.getFrontOffsetY() * sc ), Math.max( 0.0, offsetZ - o.getFrontOffsetZ() * sc ), Math.min( 1.0, ( 1.0 - offsetX ) - o.getFrontOffsetX() * sc ), Math.min( 1.0, ( 1.0 - offsetY ) - o.getFrontOffsetY() * sc ), Math.min( 1.0, ( 1.0 - offsetZ ) - o.getFrontOffsetZ() * sc ) ) );
-	}
+		// x/z needs to be multiplied by -1, thus we simply add not substract.
+		final double minX = Math.max( 0.0, offsetX + o.getFrontOffsetX() * AABB_OFFSET_TOP );
+		final double minY = Math.max( 0.0, offsetY - o.getFrontOffsetY() * AABB_OFFSET_TOP );
+		final double minZ = Math.max( 0.0, offsetZ + o.getFrontOffsetZ() * AABB_OFFSET_TOP );
 
-	@Override
-	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
-	{
-		out.add( new AxisAlignedBB( 0.05, 0.05, 0.05, 0.95, 0.95, 0.95 ) );
+		final double maxX = Math.min( 1.0, ( 1.0 - offsetX ) + o.getFrontOffsetX() * AABB_OFFSET_TOP );
+		final double maxY = Math.min( 1.0, ( 1.0 - offsetY ) - o.getFrontOffsetY() * AABB_OFFSET_TOP );
+		final double maxZ = Math.min( 1.0, ( 1.0 - offsetZ ) + o.getFrontOffsetZ() * AABB_OFFSET_TOP );
+
+		return new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ );
 	}
 }
