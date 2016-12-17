@@ -22,7 +22,6 @@ package appeng.block.storage;
 import appeng.api.AEApi;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.blocks.RenderBlockSkyChest;
-import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.storage.TileSkyChest;
@@ -45,23 +44,34 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 
 
 public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 {
 
-	public BlockSkyChest()
+	private static final double AABB_OFFSET_BOTTOM = .0625d;
+	private static final double AABB_OFFSET_SIDES = 0;
+	private static final double AABB_OFFSET_TOP = .125d;
+
+
+	public enum SkyChestType
+	{
+		STONE, BLOCK
+	}
+
+
+	public final SkyChestType type;
+
+	public BlockSkyChest( final SkyChestType type )
 	{
 		super( Material.rock );
 		this.setTileEntity( TileSkyChest.class );
 		this.isOpaque = this.isFullSize = false;
 		this.lightOpacity = 0;
-		this.hasSubtypes = true;
 		this.setHardness( 50 );
 		this.blockResistance = 150.0f;
-		this.setFeature( EnumSet.of( AEFeature.Core, AEFeature.SkyStoneChests ) );
+		this.type = type;
 	}
 
 	@Override
@@ -69,6 +79,7 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 	{
 		return metadata;
 	}
+
 
 	@Override
 	public ItemStack getPickBlock( final MovingObjectPosition target, final World world, final int x, final int y, final int z, final EntityPlayer player )
@@ -133,29 +144,39 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 
 		return this.getUnlocalizedName();
 	}
-
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final int x, final int y, final int z, final Entity e, final boolean isVisual )
+	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final int x, final int y, final int z, final Entity thePlayer, final boolean isVisual )
 	{
-		final TileSkyChest sk = this.getTileEntity( w, x, y, z );
-		ForgeDirection o = ForgeDirection.UNKNOWN;
-
-		if( sk != null )
-		{
-			o = sk.getUp();
-		}
-
-		final double offsetX = o.offsetX == 0 ? 0.06 : 0.0;
-		final double offsetY = o.offsetY == 0 ? 0.06 : 0.0;
-		final double offsetZ = o.offsetZ == 0 ? 0.06 : 0.0;
-
-		final double sc = 0.06;
-		return Collections.singletonList( AxisAlignedBB.getBoundingBox( Math.max( 0.0, offsetX - o.offsetX * sc ), Math.max( 0.0, offsetY - o.offsetY * sc ), Math.max( 0.0, offsetZ - o.offsetZ * sc ), Math.min( 1.0, ( 1.0 - offsetX ) - o.offsetX * sc ), Math.min( 1.0, ( 1.0 - offsetY ) - o.offsetY * sc ), Math.min( 1.0, ( 1.0 - offsetZ ) - o.offsetZ * sc ) ) );
+		return Collections.singletonList( computeAABB( w, x, y, z ) );
 	}
 
 	@Override
 	public void addCollidingBlockToList( final World w, final int x, final int y, final int z, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
 	{
-		out.add( AxisAlignedBB.getBoundingBox( 0.05, 0.05, 0.05, 0.95, 0.95, 0.95 ) );
+		out.add( computeAABB( w, x, y, z ) );
+	}
+
+	private AxisAlignedBB computeAABB( final World w, final int x, final int y, final int z )
+	{
+		final TileSkyChest sk = this.getTileEntity( w, x, y, z );
+		ForgeDirection o = ForgeDirection.UP;
+
+		if( sk != null )
+			o = sk.getUp();
+
+		final double offsetX = o.offsetX == 0 ? AABB_OFFSET_BOTTOM : AABB_OFFSET_SIDES;
+		final double offsetY = o.offsetY == 0 ? AABB_OFFSET_BOTTOM : AABB_OFFSET_SIDES;
+		final double offsetZ = o.offsetZ == 0 ? AABB_OFFSET_BOTTOM : AABB_OFFSET_SIDES;
+
+		// x/z needs to be multiplied by -1, thus we simply add not substract.
+		final double minX = Math.max( 0.0, offsetX + o.offsetX * AABB_OFFSET_TOP );
+		final double minY = Math.max( 0.0, offsetY - o.offsetY * AABB_OFFSET_TOP );
+		final double minZ = Math.max( 0.0, offsetZ + o.offsetZ * AABB_OFFSET_TOP );
+
+		final double maxX = Math.min( 1.0, ( 1.0 - offsetX ) + o.offsetX * AABB_OFFSET_TOP );
+		final double maxY = Math.min( 1.0, ( 1.0 - offsetY ) - o.offsetY * AABB_OFFSET_TOP );
+		final double maxZ = Math.min( 1.0, ( 1.0 - offsetZ ) + o.offsetZ * AABB_OFFSET_TOP );
+
+		return AxisAlignedBB.getBoundingBox( minX, minY, minZ, maxX, maxY, maxZ );
 	}
 }
