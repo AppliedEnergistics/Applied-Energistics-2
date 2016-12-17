@@ -64,7 +64,7 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 	{
 		super.onUpdate();
 
-		if( !AEConfig.instance().isFeatureEnabled( AEFeature.IN_WORLD_FLUIX ) )
+		if( this.isDead || !AEConfig.instance().isFeatureEnabled( AEFeature.IN_WORLD_FLUIX ) )
 		{
 			return;
 		}
@@ -74,14 +74,16 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 			CommonHelper.proxy.spawnEffect( EffectType.Lightning, this.worldObj, this.posX, this.posY, this.posZ, null );
 			this.delay = 0;
 		}
+
 		this.delay++;
 
 		final int j = MathHelper.floor_double( this.posX );
-		final int i = MathHelper.floor_double( (this.getEntityBoundingBox().minY + this.getEntityBoundingBox().maxY) / 2.0D );
+		final int i = MathHelper.floor_double( ( this.getEntityBoundingBox().minY + this.getEntityBoundingBox().maxY ) / 2.0D );
 		final int k = MathHelper.floor_double( this.posZ );
 
 		IBlockState state = this.worldObj.getBlockState( new BlockPos( j, i, k ) );
 		final Material mat = state.getBlock().getMaterial( state );
+
 		if( Platform.isServer() && mat.isLiquid() )
 		{
 			this.transformTime++;
