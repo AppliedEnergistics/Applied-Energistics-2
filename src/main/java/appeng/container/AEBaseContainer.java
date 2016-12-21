@@ -455,7 +455,7 @@ public abstract class AEBaseContainer extends Container
 	{
 		if( Platform.isClient() )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		boolean hasMETiles = false;
@@ -470,14 +470,14 @@ public abstract class AEBaseContainer extends Container
 
 		if( hasMETiles && Platform.isClient() )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		final AppEngSlot clickSlot = (AppEngSlot) this.inventorySlots.get( idx ); // require AE SLots!
 
 		if( clickSlot instanceof SlotDisabled || clickSlot instanceof SlotInaccessible )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		if( clickSlot != null && clickSlot.getHasStack() )
 		{
@@ -485,7 +485,7 @@ public abstract class AEBaseContainer extends Container
 
 			if( tis == null )
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
 			final List<Slot> selectedSlots = new ArrayList<Slot>();
@@ -602,7 +602,7 @@ public abstract class AEBaseContainer extends Container
 
 									this.updateSlot( clickSlot );
 									this.updateSlot( d );
-									return null;
+									return ItemStack.EMPTY;
 								}
 								else
 								{
@@ -656,7 +656,7 @@ public abstract class AEBaseContainer extends Container
 
 									this.updateSlot( clickSlot );
 									this.updateSlot( d );
-									return null;
+									return ItemStack.EMPTY;
 								}
 								else
 								{
@@ -692,7 +692,7 @@ public abstract class AEBaseContainer extends Container
 
 								this.updateSlot( clickSlot );
 								this.updateSlot( d );
-								return null;
+								return ItemStack.EMPTY;
 							}
 							else
 							{
@@ -707,7 +707,7 @@ public abstract class AEBaseContainer extends Container
 		}
 
 		this.updateSlot( clickSlot );
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

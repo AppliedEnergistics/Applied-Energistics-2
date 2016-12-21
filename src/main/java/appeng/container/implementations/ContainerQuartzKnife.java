@@ -128,9 +128,9 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	public ItemStack getStackInSlot( final int var1 )
 	{
 		final ItemStack input = this.inSlot.getStackInSlot( 0 );
-		if( input == null )
+		if( input == ItemStack.EMPTY )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		if( SlotRestrictedInput.isMetalIngot( input ) )
@@ -147,7 +147,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 			}
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -161,7 +161,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 				return is;
 			}
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	private boolean makePlate()
@@ -185,7 +185,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	@Override
 	public ItemStack removeStackFromSlot( final int var1 )
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

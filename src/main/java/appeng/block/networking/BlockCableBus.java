@@ -237,7 +237,7 @@ public class BlockCableBus extends AEBaseTileBlock
 			return sp.facade.getItemStack();
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

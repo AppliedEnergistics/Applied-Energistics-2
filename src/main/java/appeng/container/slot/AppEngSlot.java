@@ -85,12 +85,12 @@ public class AppEngSlot extends Slot
 	{
 		if( !this.isEnabled() )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		if( this.inventory.getSizeInventory() <= this.getSlotIndex() )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		if( this.isDisplay() )

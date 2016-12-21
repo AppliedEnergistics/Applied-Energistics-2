@@ -162,7 +162,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 
 		if( item == null )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		final ItemStack myItemStack = new ItemStack( item, 1, meta );

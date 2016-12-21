@@ -40,7 +40,7 @@ class Size1Slot extends Slot
 			return modifiedStack;
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

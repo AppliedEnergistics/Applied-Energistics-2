@@ -155,13 +155,13 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	{
 		if( l == null )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		final Block b = Block.getBlockFromItem( l.getItem() );
 		if( b == null || l.hasTagCompound() )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		final int metadata = l.getItem().getMetadata( l.getItemDamage() );
@@ -180,7 +180,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		catch( Exception e )
 		{
 			AELog.debug( e, "Cannot create a facade for " + b.getRegistryName() );
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		final boolean defaultValue = ( b.isFullyOpaque( blockState ) && hasSimpleModel( blockState ) && !b.getTickRandomly() && !hasTile && !disableOre ) || enableGlass;
@@ -198,7 +198,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			is.setTagCompound( data );
 			return is;
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -220,7 +220,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 		if( nbt == null )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		ResourceLocation itemId;
@@ -232,12 +232,12 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			int[] data = nbt.getIntArray( "x" );
 			if( data.length != 2 )
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
 			Item item = Item.REGISTRY.getObjectById( data[0] );
 			if ( item == null ) {
-				return null;
+				return ItemStack.EMPTY;
 			}
 
 			itemId = item.getRegistryName();
@@ -252,7 +252,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 		if( baseItem == null )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		return new ItemStack( baseItem, 1, itemDamage );
@@ -315,7 +315,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		// Convert back to a registry name...
 		Item item = Item.REGISTRY.getObjectById( ids[0] );
 		if ( item == null ) {
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		final NBTTagCompound facadeTag = new NBTTagCompound();

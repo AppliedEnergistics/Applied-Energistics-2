@@ -233,7 +233,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		{
 			return is.copy();
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	private int getDustToOreRatio( final String name )

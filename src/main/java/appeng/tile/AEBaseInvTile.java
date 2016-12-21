@@ -111,7 +111,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	@Override
 	public ItemStack removeStackFromSlot( final int i )
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

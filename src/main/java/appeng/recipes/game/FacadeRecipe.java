@@ -88,7 +88,7 @@ public final class FacadeRecipe implements IRecipe
 	@Override
 	public ItemStack getRecipeOutput() // no default output..
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

@@ -64,7 +64,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	{
 		this.setHasSubtypes( true );
 
-		EntityRegistry.registerModEntity( new ResourceLocation( EntityGrowingCrystal.class.getName() ), EntityGrowingCrystal.class, EntityGrowingCrystal.class.getSimpleName(), EntityIds.get( EntityGrowingCrystal.class ), AppEng.instance(), 16, 4, true );
+		EntityRegistry.registerModEntity( new ResourceLocation( EntityGrowingCrystal.class.getName() ), EntityGrowingCrystal.class, "appliedenergistics2:" + EntityGrowingCrystal.class.getSimpleName(), EntityIds.get( EntityGrowingCrystal.class ), AppEng.instance(), 16, 4, true );
 	}
 
 	@Nullable
@@ -139,7 +139,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		}
 		if( newDamage > FINAL_STAGE )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		this.setProgress( is, newDamage );

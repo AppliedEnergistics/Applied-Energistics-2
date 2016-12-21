@@ -264,7 +264,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 	{
 		if( itemsToAdd == null || itemsToAdd.getCount() == 0 )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		final ItemStack left = itemsToAdd.copy();
@@ -292,7 +292,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 
 					if( left.getCount() <= 0 )
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 				else if( Platform.itemComparisons().isSameItem( is, left ) && is.getCount() < perOperationLimit )
@@ -310,7 +310,7 @@ public class AdaptorIInventory extends InventoryAdaptor
 					left.grow( -used );
 					if( left.getCount() <= 0 )
 					{
-						return null;
+						return ItemStack.EMPTY;
 					}
 				}
 			}

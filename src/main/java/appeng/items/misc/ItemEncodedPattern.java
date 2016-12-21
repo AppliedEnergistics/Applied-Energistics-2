@@ -175,14 +175,14 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		final World w = AppEng.proxy.getWorld();
 		if( w == null )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		final ICraftingPatternDetails details = this.getPatternForItem( item, w );
 
 		if( details == null )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		SIMPLE_CACHE.put( item, out = details.getCondensedOutputs()[0].getItemStack() );

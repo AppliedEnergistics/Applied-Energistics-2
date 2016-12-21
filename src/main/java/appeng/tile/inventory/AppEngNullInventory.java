@@ -46,19 +46,19 @@ public class AppEngNullInventory implements IInventory
 	@Override
 	public ItemStack getStackInSlot( final int var1 )
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public ItemStack decrStackSize( final int slot, final int qty )
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public ItemStack removeStackFromSlot( final int var1 )
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

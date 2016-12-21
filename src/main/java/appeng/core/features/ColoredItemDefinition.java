@@ -70,7 +70,7 @@ public final class ColoredItemDefinition implements AEColoredItemDefinition
 
 		if( is == null )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		return is.stack( stackSize );

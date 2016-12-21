@@ -672,7 +672,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			{
 				return inv.getStackInSlot( extractSlot );
 			}
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		@Override
@@ -708,7 +708,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 			if( slot != validExtractSlot || amount == 0 )
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
 			AdaptorIInventory adapter = new AdaptorIInventory( new WrapperInventoryRange( TileInscriber.this, extractSlot, 1, true ) );

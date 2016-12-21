@@ -200,7 +200,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 							return request;
 						}
 					}
-					return null;
+					return ItemStack.EMPTY;
 				}
 
 				is = r.getCraftingResult( ic );
@@ -231,7 +231,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 			return is;
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	private boolean preCraft( final EntityPlayer p, final IMEMonitor<IAEItemStack> inv, final ItemStack[] set, final ItemStack result )

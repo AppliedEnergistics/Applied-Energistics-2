@@ -54,7 +54,7 @@ public class NullSlot extends Slot
 	@Override
 	public ItemStack getStack()
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class NullSlot extends Slot
 	@Override
 	public ItemStack decrStackSize( final int par1 )
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

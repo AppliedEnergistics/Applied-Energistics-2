@@ -172,7 +172,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 
 			case TRASH:
 			default:
-				return null;
+				return ItemStack.EMPTY;
 		}
 	}
 
@@ -314,7 +314,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		public ItemStack getStackInSlot( int slot )
 		{
 			// The void slot never has any content
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		@Override
@@ -328,13 +328,13 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 			{
 				addPower( stack.getCount() );
 			}
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		@Override
 		public ItemStack extractItem( int slot, int amount, boolean simulate )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		@Override

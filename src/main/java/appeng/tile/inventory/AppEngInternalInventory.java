@@ -99,7 +99,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 			return ns;
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	protected boolean eventsEnabled()
@@ -110,7 +110,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	@Override
 	public ItemStack removeStackFromSlot( final int var1 )
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

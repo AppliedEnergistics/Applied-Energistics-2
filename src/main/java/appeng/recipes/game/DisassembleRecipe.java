@@ -171,7 +171,7 @@ public final class DisassembleRecipe implements IRecipe
 	@Override
 	public ItemStack getRecipeOutput() // no default output..
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

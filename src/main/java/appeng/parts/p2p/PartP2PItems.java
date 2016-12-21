@@ -281,7 +281,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPip
 	@Override
 	public ItemStack removeStackFromSlot( final int i )
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

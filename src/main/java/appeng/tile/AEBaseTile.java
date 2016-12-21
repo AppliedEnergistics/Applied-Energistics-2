@@ -110,7 +110,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		final IStackSrc src = ITEM_STACKS.get( obj.getClass() );
 		if( src == null )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		return src.stack( 1 );
 	}

@@ -91,7 +91,7 @@ public class SlotDisconnected extends AppEngSlot
 	@Override
 	public ItemStack decrStackSize( final int par1 )
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

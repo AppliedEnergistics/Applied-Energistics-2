@@ -174,13 +174,13 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 			return ns;
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public ItemStack removeStackFromSlot( final int var1 )
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

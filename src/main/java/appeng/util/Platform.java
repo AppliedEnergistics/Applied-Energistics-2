@@ -1626,7 +1626,7 @@ public class Platform
 		{
 			if( providedTemplate == null )
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 
 			final AEItemStack ae_req = AEItemStack.create( providedTemplate );
@@ -1679,7 +1679,7 @@ public class Platform
 				}
 			}
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	public static ItemStack cloneItemStack( final ItemStack a )
@@ -1691,7 +1691,7 @@ public class Platform
 	{
 		if( stackInSlot == null )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		final Item i = stackInSlot.getItem();
@@ -1702,13 +1702,13 @@ public class Platform
 				stackInSlot.setCount( stackInSlot.getCount() - 1 );
 				return stackInSlot;
 			}
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		ItemStack ci = i.getContainerItem( stackInSlot.copy() );
 		if( ci != null && ci.isItemStackDamageable() && ci.getItemDamage() == ci.getMaxDamage() )
 		{
-			ci = null;
+			ci = ItemStack.EMPTY;
 		}
 
 		return ci;

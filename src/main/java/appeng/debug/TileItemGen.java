@@ -93,7 +93,7 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	@Override
 	public ItemStack removeStackFromSlot( final int i )
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

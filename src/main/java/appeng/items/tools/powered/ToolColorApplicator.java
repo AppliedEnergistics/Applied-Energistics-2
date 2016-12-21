@@ -288,7 +288,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 				if( list.size() <= 0 )
 				{
-					return null;
+					return ItemStack.EMPTY;
 				}
 
 				IAEItemStack where = list.getFirst();

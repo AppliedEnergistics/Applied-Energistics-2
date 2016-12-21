@@ -316,7 +316,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		{
 			if( !this.isValidItemForSlot( x, craftingInv.getStackInSlot( x ), w ) )
 			{
-				return null;
+				return ItemStack.EMPTY;
 			}
 		}
 
@@ -325,7 +325,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			return this.outputs[0].getItemStack();
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	private TestStatus getStatus( final int slotIndex, final ItemStack i )
