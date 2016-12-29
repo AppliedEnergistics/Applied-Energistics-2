@@ -21,8 +21,8 @@ package appeng.me;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 /**
@@ -31,7 +31,7 @@ import java.util.List;
 public class NetworkList implements Collection<Grid>
 {
 
-	private List<Grid> networks = new LinkedList<Grid>();
+	private List<Grid> networks = new CopyOnWriteArrayList<>();
 
 	@Override
 	public int size()
@@ -108,6 +108,6 @@ public class NetworkList implements Collection<Grid>
 	@Override
 	public void clear()
 	{
-		this.networks = new LinkedList<Grid>();
+		this.networks.clear();
 	}
 }
