@@ -21,14 +21,17 @@ package appeng.me;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
+/**
+ * TODO: Test if copy was actually necessary.
+ */
 public class NetworkList implements Collection<Grid>
 {
 
-	private List<Grid> networks = new LinkedList<Grid>();
+	private List<Grid> networks = new CopyOnWriteArrayList<Grid>();
 
 	@Override
 	public int size()
@@ -69,14 +72,12 @@ public class NetworkList implements Collection<Grid>
 	@Override
 	public boolean add( final Grid e )
 	{
-		this.copy();
 		return this.networks.add( e );
 	}
 
 	@Override
 	public boolean remove( final Object o )
 	{
-		this.copy();
 		return this.networks.remove( o );
 	}
 
@@ -89,34 +90,24 @@ public class NetworkList implements Collection<Grid>
 	@Override
 	public boolean addAll( final Collection<? extends Grid> c )
 	{
-		this.copy();
 		return this.networks.addAll( c );
 	}
 
 	@Override
 	public boolean removeAll( final Collection<?> c )
 	{
-		this.copy();
 		return this.networks.removeAll( c );
 	}
 
 	@Override
 	public boolean retainAll( final Collection<?> c )
 	{
-		this.copy();
 		return this.networks.retainAll( c );
 	}
 
 	@Override
 	public void clear()
 	{
-		this.networks = new LinkedList<Grid>();
-	}
-
-	private void copy()
-	{
-		final List<Grid> old = this.networks;
-		this.networks = new LinkedList<Grid>();
-		this.networks.addAll( old );
+		this.networks.clear();
 	}
 }
