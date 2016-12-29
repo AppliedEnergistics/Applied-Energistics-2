@@ -69,6 +69,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.*;
 
+import org.apache.commons.lang3.text.WordUtils;
 
 public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCell, IItemGroup, IBlockTool, IMouseWheelItem
 {
@@ -78,14 +79,13 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	static
 	{
 
-		for( final AEColor col : AEColor.values() )
+		for( final AEColor color : AEColor.values() )
 		{
-			if( col == AEColor.Transparent )
-			{
-				continue;
-			}
+			final String dyeName = color.dye.getUnlocalizedName();
+			final String oreDictName = "dye" + WordUtils.capitalize( dyeName );
+			final int oreDictId = OreDictionary.getOreID( oreDictName );
 
-			ORE_TO_COLOR.put( OreDictionary.getOreID( "dye" + col.name() ), col );
+			ORE_TO_COLOR.put( oreDictId, color );
 		}
 	}
 
