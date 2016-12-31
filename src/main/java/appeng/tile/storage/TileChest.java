@@ -35,10 +35,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.FluidTankProperties;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -98,7 +99,7 @@ import appeng.util.Platform;
 import appeng.util.item.AEFluidStack;
 
 
-public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHandler, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, ITickable
+public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, ITickable
 {
 
 	private static final ChestNoHandler NO_HANDLER = new ChestNoHandler();
@@ -118,7 +119,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	private ICellHandler cellHandler;
 	private MEMonitorHandler itemCell;
 	private MEMonitorHandler fluidCell;
-	private final Accessor accessor = new Accessor();
+	private Accessor accessor;
+	private IFluidHandler fluidHandler;
 
 	public TileChest()
 	{
@@ -203,6 +205,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			this.itemCell = null;
 			this.fluidCell = null;
 
+			this.accessor = null;
+			this.fluidHandler = null;
+
 			final ItemStack is = this.inv.getStackInSlot( 1 );
 			if( is != null )
 			{
@@ -228,6 +233,17 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 					this.itemCell = this.wrap( itemCell );
 					this.fluidCell = this.wrap( fluidCell );
+
+					if( this.itemCell != null )
+					{
+
+					}
+					this.accessor = new Accessor();
+
+					if( this.fluidCell != null )
+					{
+						this.fluidHandler = new FluidHandler();
+					}
 				}
 			}
 		}
@@ -468,7 +484,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 
 		this.lastStateChange = this.worldObj.getTotalWorldTime();
 
-		return oldPaintedColor != this.paintedColor || ( this.state & 0xDB6DB6DB ) != ( oldState & 0xDB6DB6DB ) || !Platform.itemComparisons().isSameItem( oldType, this.storageType );
+		return oldPaintedColor != this.paintedColor || ( this.state & 0xDB6DB6DB ) != ( oldState & 0xDB6DB6DB ) || !Platform.itemComparisons()
+				.isSameItem( oldType, this.storageType );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
@@ -576,7 +593,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			try
 			{
 				final IMEInventory<IAEItemStack> cell = this.getHandler( StorageChannel.ITEMS );
-				final IAEItemStack returns = cell.injectItems( AEApi.instance().storage().createItemStack( this.inv.getStackInSlot( 0 ) ), Actionable.SIMULATE, this.mySrc );
+				final IAEItemStack returns = cell.injectItems( AEApi.instance().storage().createItemStack( this.inv.getStackInSlot( 0 ) ), Actionable.SIMULATE,
+						this.mySrc );
 				return returns == null || returns.getStackSize() != insertingItem.stackSize;
 			}
 			catch( final ChestNoHandler ignored )
@@ -625,7 +643,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			{
 				final IMEInventory<IAEItemStack> cell = this.getHandler( StorageChannel.ITEMS );
 
-				final IAEItemStack returns = Platform.poweredInsert( this, cell, AEApi.instance().storage().createItemStack( this.inv.getStackInSlot( 0 ) ), this.mySrc );
+				final IAEItemStack returns = Platform.poweredInsert( this, cell, AEApi.instance().storage().createItemStack( this.inv.getStackInSlot( 0 ) ),
+						this.mySrc );
 
 				if( returns == null )
 				{
@@ -697,84 +716,6 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		this.state |= 1 << ( slot * 3 + 2 );
 
 		this.recalculateDisplay();
-	}
-
-	@Override
-	public int fill( final EnumFacing from, final FluidStack resource, final boolean doFill )
-	{
-		final double req = resource.amount / 500.0;
-		final double available = this.extractAEPower( req, Actionable.SIMULATE, PowerMultiplier.CONFIG );
-		if( available >= req - 0.01 )
-		{
-			try
-			{
-				final IMEInventoryHandler h = this.getHandler( StorageChannel.FLUIDS );
-
-				this.extractAEPower( req, Actionable.MODULATE, PowerMultiplier.CONFIG );
-				final IAEStack results = h.injectItems( AEFluidStack.create( resource ), doFill ? Actionable.MODULATE : Actionable.SIMULATE, this.mySrc );
-
-				if( results == null )
-				{
-					return resource.amount;
-				}
-
-				return resource.amount - (int) results.getStackSize();
-			}
-			catch( final ChestNoHandler ignored )
-			{
-			}
-		}
-		return 0;
-	}
-
-	@Override
-	public FluidStack drain( final EnumFacing from, final FluidStack resource, final boolean doDrain )
-	{
-		return null;
-	}
-
-	@Override
-	public FluidStack drain( final EnumFacing from, final int maxDrain, final boolean doDrain )
-	{
-		return null;
-	}
-
-	@Override
-	public boolean canFill( final EnumFacing from, final Fluid fluid )
-	{
-		try
-		{
-			final IMEInventoryHandler h = this.getHandler( StorageChannel.FLUIDS );
-			return h.canAccept( AEFluidStack.create( new FluidStack( fluid, 1 ) ) );
-		}
-		catch( final ChestNoHandler ignored )
-		{
-		}
-		return false;
-	}
-
-	@Override
-	public boolean canDrain( final EnumFacing from, final Fluid fluid )
-	{
-		return false;
-	}
-
-	@Override
-	public FluidTankInfo[] getTankInfo( final EnumFacing from )
-	{
-		try
-		{
-			final IMEInventoryHandler h = this.getHandler( StorageChannel.FLUIDS );
-			if( h.getChannel() == StorageChannel.FLUIDS )
-			{
-				return new FluidTankInfo[] { new FluidTankInfo( null, 1 ) }; // eh?
-			}
-		}
-		catch( final ChestNoHandler ignored )
-		{
-		}
-
-		return null;
 	}
 
 	public ItemStack getStorageType()
@@ -990,7 +931,11 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	@Override
 	public boolean hasCapability( Capability<?> capability, EnumFacing facing )
 	{
-		if( capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR && facing != getForward() )
+		if( capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && this.fluidHandler != null && facing != getForward() )
+		{
+			return true;
+		}
+		if( capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR && this.accessor != null && facing != getForward() )
 		{
 			return true;
 		}
@@ -1001,7 +946,11 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 	@Override
 	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
 	{
-		if( capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR && facing != getForward() )
+		if( capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && this.fluidHandler != null && facing != getForward() )
+		{
+			return (T) this.fluidHandler;
+		}
+		if( capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR && this.accessor != null && facing != getForward() )
 		{
 			return (T) accessor;
 		}
@@ -1018,6 +967,71 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			{
 				return TileChest.this;
 			}
+			return null;
+		}
+	}
+
+	private class FluidHandler implements IFluidHandler
+	{
+
+		@Override
+		public int fill( final FluidStack resource, final boolean doFill )
+		{
+			final double req = resource.amount / 500.0;
+			final double available = TileChest.this.extractAEPower( req, Actionable.SIMULATE, PowerMultiplier.CONFIG );
+			if( available >= req - 0.01 )
+			{
+				try
+				{
+					final IMEInventoryHandler h = TileChest.this.getHandler( StorageChannel.FLUIDS );
+
+					TileChest.this.extractAEPower( req, Actionable.MODULATE, PowerMultiplier.CONFIG );
+
+					final IAEStack results = h.injectItems( AEFluidStack.create( resource ), doFill ? Actionable.MODULATE : Actionable.SIMULATE,
+							TileChest.this.mySrc );
+
+					if( results == null )
+					{
+						return resource.amount;
+					}
+
+					return resource.amount - (int) results.getStackSize();
+				}
+				catch( final ChestNoHandler ignored )
+				{
+				}
+			}
+			return 0;
+		}
+
+		@Override
+		public FluidStack drain( final FluidStack resource, final boolean doDrain )
+		{
+			return null;
+		}
+
+		@Override
+		public FluidStack drain( final int maxDrain, final boolean doDrain )
+		{
+			return null;
+		}
+
+		@Override
+		public IFluidTankProperties[] getTankProperties()
+		{
+			try
+			{
+				final IMEInventoryHandler h = TileChest.this.getHandler( StorageChannel.FLUIDS );
+
+				if( h.getChannel() == StorageChannel.FLUIDS )
+				{
+					return new IFluidTankProperties[] { new FluidTankProperties( null, 1 ) }; // eh?
+				}
+			}
+			catch( final ChestNoHandler ignored )
+			{
+			}
+
 			return null;
 		}
 	}
