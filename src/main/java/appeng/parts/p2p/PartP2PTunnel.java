@@ -232,7 +232,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 				 */
 
 				case FLUID:
-					newType = parts.p2PTunnelLiquids().maybeStack( 1 ).orElse( null );
+					newType = parts.p2PTunnelFluids().maybeStack( 1 ).orElse( null );
 					break;
 
 				case IC2_POWER:

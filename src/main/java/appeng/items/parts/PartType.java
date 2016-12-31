@@ -226,7 +226,7 @@ public enum PartType
 		}
 	},
 
-	P2PTunnelLiquids( 463, "p2p_tunnel_liquids", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_LIQUIDS ), EnumSet
+	P2PTunnelFluids( 463, "p2p_tunnel_fluids", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_FLUIDS ), EnumSet
 			.noneOf( IntegrationType.class ), PartP2PFluids.class, GuiText.FluidTunnel )
 	{
 		@Override

@@ -42,7 +42,7 @@ import appeng.me.GridAccessException;
 public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFluidHandler
 {
 
-	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_liquids" );
+	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_fluids" );
 
 	private static final ThreadLocal<Stack<PartP2PFluids>> DEPTH = new ThreadLocal<Stack<PartP2PFluids>>();
 	private static final FluidTankProperties[] ACTIVE_TANK = { new FluidTankProperties( null, 10000, true, false ) };
