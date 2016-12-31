@@ -19,10 +19,10 @@
 package appeng.parts.p2p;
 
 
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -44,7 +44,7 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 
 	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_fluids" );
 
-	private static final ThreadLocal<Stack<PartP2PFluids>> DEPTH = new ThreadLocal<Stack<PartP2PFluids>>();
+	private static final ThreadLocal<Deque<PartP2PFluids>> DEPTH = new ThreadLocal<>();
 	private static final FluidTankProperties[] ACTIVE_TANK = { new FluidTankProperties( null, 10000, true, false ) };
 	private static final FluidTankProperties[] INACTIVE_TANK = { new FluidTankProperties( null, 0, false, false ) };
 
@@ -134,7 +134,7 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 	@Override
 	public int fill( FluidStack resource, boolean doFill )
 	{
-		final Stack<PartP2PFluids> stack = this.getDepth();
+		final Deque<PartP2PFluids> stack = this.getDepth();
 
 		for( final PartP2PFluids t : stack )
 		{
@@ -244,13 +244,13 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 		return null;
 	}
 
-	private Stack<PartP2PFluids> getDepth()
+	private Deque<PartP2PFluids> getDepth()
 	{
-		Stack<PartP2PFluids> s = DEPTH.get();
+		Deque<PartP2PFluids> s = DEPTH.get();
 
 		if( s == null )
 		{
-			DEPTH.set( s = new Stack<PartP2PFluids>() );
+			DEPTH.set( s = new LinkedList<>() );
 		}
 
 		return s;
@@ -258,7 +258,7 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 
 	private List<PartP2PFluids> getOutputs( final Fluid input )
 	{
-		final List<PartP2PFluids> outs = new LinkedList<PartP2PFluids>();
+		final List<PartP2PFluids> outs = new LinkedList<>();
 
 		try
 		{
@@ -296,7 +296,7 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 
 		if( te != null && te.hasCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing().getOpposite() ) )
 		{
-			return this.cachedTank = (IFluidHandler) te.getCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
+			return this.cachedTank = te.getCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
 					this.getSide().getFacing().getOpposite() );
 		}
 
