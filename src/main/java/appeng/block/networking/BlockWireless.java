@@ -110,13 +110,9 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 	@Override
 	public boolean onBlockActivated( final World w, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
-		if( player.isSneaking() )
-		{
-			return false;
-		}
-
 		final TileWireless tg = this.getTileEntity( w, pos );
-		if( tg != null )
+
+		if( tg != null && !player.isSneaking() )
 		{
 			if( Platform.isServer() )
 			{
@@ -124,7 +120,8 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 			}
 			return true;
 		}
-		return false;
+
+		return super.onBlockActivated( w, pos, state, player, hand, heldItem, side, hitX, hitY, hitZ );
 	}
 
 	@Override
