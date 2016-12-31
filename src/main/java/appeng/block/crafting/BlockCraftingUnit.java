@@ -149,6 +149,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	public boolean onBlockActivated( final World w, final BlockPos pos, final IBlockState state, final EntityPlayer p, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
 		final TileCraftingTile tg = this.getTileEntity( w, pos );
+
 		if( tg != null && !p.isSneaking() && tg.isFormed() && tg.isActive() )
 		{
 			if( Platform.isClient() )
@@ -160,7 +161,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 			return true;
 		}
 
-		return false;
+		return super.onBlockActivated( w, pos, state, p, hand, heldItem, side, hitX, hitY, hitZ );
 	}
 
 	public enum CraftingUnitType
