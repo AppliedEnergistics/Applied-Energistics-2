@@ -59,10 +59,10 @@ import appeng.parts.networking.PartCableGlass;
 import appeng.parts.networking.PartCableSmart;
 import appeng.parts.networking.PartDenseCable;
 import appeng.parts.networking.PartQuartzFiber;
+import appeng.parts.p2p.PartP2PFluids;
 import appeng.parts.p2p.PartP2PIC2Power;
 import appeng.parts.p2p.PartP2PItems;
 import appeng.parts.p2p.PartP2PLight;
-import appeng.parts.p2p.PartP2PLiquids;
 import appeng.parts.p2p.PartP2PRedstone;
 import appeng.parts.p2p.PartP2PTunnelME;
 import appeng.parts.reporting.PartConversionMonitor;
@@ -226,8 +226,8 @@ public enum PartType
 		}
 	},
 
-	P2PTunnelLiquids( 463, "p2p_tunnel_liquids", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_LIQUIDS ), EnumSet
-			.noneOf( IntegrationType.class ), PartP2PLiquids.class, GuiText.FluidTunnel )
+	P2PTunnelFluids( 463, "p2p_tunnel_fluids", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_FLUIDS ), EnumSet
+			.noneOf( IntegrationType.class ), PartP2PFluids.class, GuiText.FluidTunnel )
 	{
 		@Override
 		String getUnlocalizedName()

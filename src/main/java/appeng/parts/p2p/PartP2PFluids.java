@@ -19,44 +19,47 @@
 package appeng.parts.p2p;
 
 
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.FluidTankProperties;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 
 
-public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFluidHandler
+public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFluidHandler
 {
 
-	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_liquids" );
+	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_fluids" );
+
+	private static final ThreadLocal<Deque<PartP2PFluids>> DEPTH = new ThreadLocal<>();
+	private static final FluidTankProperties[] ACTIVE_TANK = { new FluidTankProperties( null, 10000, true, false ) };
+	private static final FluidTankProperties[] INACTIVE_TANK = { new FluidTankProperties( null, 0, false, false ) };
+
+	private IFluidHandler cachedTank;
+	private int tmpUsed;
+
+	public PartP2PFluids( final ItemStack is )
+	{
+		super( is );
+	}
 
 	@PartModels
 	public static List<IPartModel> getModels()
 	{
 		return MODELS.getModels();
-	}
-
-	private static final ThreadLocal<Stack<PartP2PLiquids>> DEPTH = new ThreadLocal<Stack<PartP2PLiquids>>();
-	private static final FluidTankInfo[] ACTIVE_TANK = { new FluidTankInfo( null, 10000 ) };
-	private static final FluidTankInfo[] INACTIVE_TANK = { new FluidTankInfo( null, 0 ) };
-	private IFluidHandler cachedTank;
-	private int tmpUsed;
-
-	public PartP2PLiquids( final ItemStack is )
-	{
-		super( is );
 	}
 
 	public float getPowerDrainPerTick()
@@ -74,9 +77,10 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	public void onNeighborChanged()
 	{
 		this.cachedTank = null;
+
 		if( this.isOutput() )
 		{
-			final PartP2PLiquids in = this.getInput();
+			final PartP2PFluids in = this.getInput();
 			if( in != null )
 			{
 				in.onTunnelNetworkChange();
@@ -85,11 +89,54 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 	}
 
 	@Override
-	public int fill( final EnumFacing from, final FluidStack resource, final boolean doFill )
+	public boolean hasCapability( Capability<?> capabilityClass )
 	{
-		final Stack<PartP2PLiquids> stack = this.getDepth();
+		if( capabilityClass == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY )
+		{
+			return true;
+		}
 
-		for( final PartP2PLiquids t : stack )
+		return super.hasCapability( capabilityClass );
+	}
+
+	@Override
+	public <T> T getCapability( Capability<T> capabilityClass )
+	{
+		if( capabilityClass == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY )
+		{
+			return (T) this;
+		}
+
+		return super.getCapability( capabilityClass );
+	}
+
+	@Override
+	public IPartModel getStaticModels()
+	{
+		return MODELS.getModel( isPowered(), isActive() );
+	}
+
+	@Override
+	public IFluidTankProperties[] getTankProperties()
+	{
+		if( !this.isOutput() )
+		{
+			final PartP2PFluids tun = this.getInput();
+			if( tun != null )
+			{
+				return ACTIVE_TANK;
+			}
+		}
+
+		return INACTIVE_TANK;
+	}
+
+	@Override
+	public int fill( FluidStack resource, boolean doFill )
+	{
+		final Deque<PartP2PFluids> stack = this.getDepth();
+
+		for( final PartP2PFluids t : stack )
 		{
 			if( t == this )
 			{
@@ -99,17 +146,18 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 
 		stack.push( this );
 
-		final List<PartP2PLiquids> list = this.getOutputs( resource.getFluid() );
+		final List<PartP2PFluids> list = this.getOutputs( resource.getFluid() );
 		int requestTotal = 0;
 
-		Iterator<PartP2PLiquids> i = list.iterator();
+		Iterator<PartP2PFluids> i = list.iterator();
+
 		while( i.hasNext() )
 		{
-			final PartP2PLiquids l = i.next();
+			final PartP2PFluids l = i.next();
 			final IFluidHandler tank = l.getTarget();
 			if( tank != null )
 			{
-				l.tmpUsed = tank.fill( l.getSide().getFacing().getOpposite(), resource.copy(), false );
+				l.tmpUsed = tank.fill( resource.copy(), false );
 			}
 			else
 			{
@@ -150,9 +198,10 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 
 		i = list.iterator();
 		int used = 0;
+
 		while( i.hasNext() )
 		{
-			final PartP2PLiquids l = i.next();
+			final PartP2PFluids l = i.next();
 
 			final FluidStack insert = resource.copy();
 			insert.amount = (int) Math.ceil( insert.amount * ( (double) l.tmpUsed / (double) requestTotal ) );
@@ -164,7 +213,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 			final IFluidHandler tank = l.getTarget();
 			if( tank != null )
 			{
-				l.tmpUsed = tank.fill( l.getSide().getFacing().getOpposite(), insert.copy(), true );
+				l.tmpUsed = tank.fill( insert.copy(), true );
 			}
 			else
 			{
@@ -183,33 +232,43 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		return used;
 	}
 
-	private Stack<PartP2PLiquids> getDepth()
+	@Override
+	public FluidStack drain( FluidStack resource, boolean doDrain )
 	{
-		Stack<PartP2PLiquids> s = DEPTH.get();
+		return null;
+	}
+
+	@Override
+	public FluidStack drain( int maxDrain, boolean doDrain )
+	{
+		return null;
+	}
+
+	private Deque<PartP2PFluids> getDepth()
+	{
+		Deque<PartP2PFluids> s = DEPTH.get();
 
 		if( s == null )
 		{
-			DEPTH.set( s = new Stack<PartP2PLiquids>() );
+			DEPTH.set( s = new LinkedList<>() );
 		}
 
 		return s;
 	}
 
-	private List<PartP2PLiquids> getOutputs( final Fluid input )
+	private List<PartP2PFluids> getOutputs( final Fluid input )
 	{
-		final List<PartP2PLiquids> outs = new LinkedList<PartP2PLiquids>();
+		final List<PartP2PFluids> outs = new LinkedList<>();
 
 		try
 		{
-			for( final PartP2PLiquids l : this.getOutputs() )
+			for( final PartP2PFluids l : this.getOutputs() )
 			{
 				final IFluidHandler handler = l.getTarget();
+
 				if( handler != null )
 				{
-					if( handler.canFill( l.getSide().getFacing().getOpposite(), input ) )
-					{
-						outs.add( l );
-					}
+					outs.add( l );
 				}
 			}
 		}
@@ -234,79 +293,14 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 		}
 
 		final TileEntity te = this.getTile().getWorld().getTileEntity( this.getTile().getPos().offset( this.getSide().getFacing() ) );
-		if( te instanceof IFluidHandler )
+
+		if( te != null && te.hasCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing().getOpposite() ) )
 		{
-			return this.cachedTank = (IFluidHandler) te;
+			return this.cachedTank = te.getCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
+					this.getSide().getFacing().getOpposite() );
 		}
 
 		return null;
-	}
-
-	@Override
-	public FluidStack drain( final EnumFacing from, final FluidStack resource, final boolean doDrain )
-	{
-		return null;
-	}
-
-	@Override
-	public FluidStack drain( final EnumFacing from, final int maxDrain, final boolean doDrain )
-	{
-		return null;
-	}
-
-	@Override
-	public boolean canFill( final EnumFacing from, final Fluid fluid )
-	{
-		return !this.isOutput() && from == this.getSide().getFacing() && !this.getOutputs( fluid ).isEmpty();
-	}
-
-	@Override
-	public boolean canDrain( final EnumFacing from, final Fluid fluid )
-	{
-		return false;
-	}
-
-	@Override
-	public FluidTankInfo[] getTankInfo( final EnumFacing from )
-	{
-		if( from == this.getSide().getFacing() )
-		{
-			return this.getTank();
-		}
-		return new FluidTankInfo[0];
-	}
-
-	private FluidTankInfo[] getTank()
-	{
-		if( this.isOutput() )
-		{
-			final PartP2PLiquids tun = this.getInput();
-			if( tun != null )
-			{
-				return ACTIVE_TANK;
-			}
-		}
-		else
-		{
-			try
-			{
-				if( !this.getOutputs().isEmpty() )
-				{
-					return ACTIVE_TANK;
-				}
-			}
-			catch( final GridAccessException e )
-			{
-				// :(
-			}
-		}
-		return INACTIVE_TANK;
-	}
-
-	@Override
-	public IPartModel getStaticModels()
-	{
-		return MODELS.getModel( isPowered(), isActive() );
 	}
 
 }
