@@ -66,6 +66,13 @@ repositories {
         artifactPattern "http://www.mod-buildcraft.com/releases/BuildCraft/[revision]/[module]-[revision]-[classifier].[ext]"
     }
 
+    ivy {
+        url "https://ci.rs485.network/job/LogisticsPipes-0.9-mc17-bc7"
+        layout "pattern", {
+            artifact "[revision]/artifact/build/libs/[artifact]-0.9.3.[revision](-[classifier]).[ext]"
+        }
+    }
+
 //  CurseForge DNS for TE is not available or I am just being unlucky, code part can stay since this is applicable to any other curseforge mod though
 //    ivy {
 //        name = "CoFHLib"
@@ -103,6 +110,7 @@ dependencies {
     mods "net.mcft.copy.betterstorage:BetterStorage:${minecraft_version}-${betterstorage_version}:deobf"
     mods "inventorytweaks:InventoryTweaks:${invtweaks_version}:deobf"
     mods "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:dev"
+    compile "logisticspipes:logisticspipes:${logisticspipes_build}:dev"
 
 //    mods name: 'CoFHLib', version: "[${minecraft_version}]${cofhlib_version}-dev", ext: 'jar'
 //    mods name: 'CoFHCore', version: "[${minecraft_version}]${cofhcore_version}-dev", ext: 'jar'
