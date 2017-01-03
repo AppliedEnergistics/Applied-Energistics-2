@@ -62,11 +62,11 @@ public class LPPipeInventory implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack injectItems( final IAEItemStack input, final Actionable type, final BaseActionSource src )
+	public IAEItemStack injectItems( IAEItemStack input, Actionable type, BaseActionSource src )
 	{
 		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.LogisticsPipes ) )
 		{
-			final ILogisticsPipes registry = (ILogisticsPipes) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.LogisticsPipes );
+			ILogisticsPipes registry = (ILogisticsPipes) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.LogisticsPipes );
 
 			if( type == Actionable.SIMULATE )
 			{
@@ -87,17 +87,17 @@ public class LPPipeInventory implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack extractItems( final IAEItemStack request, final Actionable type, final BaseActionSource src )
+	public IAEItemStack extractItems( IAEItemStack request, Actionable type, BaseActionSource src )
 	{
 		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.LogisticsPipes ) )
 		{
-			final ILPPipe pipe = ( (ILPPipeTile) this.te ).getLPPipe();
+			ILPPipe pipe = ( (ILPPipeTile) this.te ).getLPPipe();
 			if( pipe instanceof IRequestAPI )
 			{
-				final IRequestAPI requestAPI = (IRequestAPI) pipe;
+				IRequestAPI requestAPI = (IRequestAPI) pipe;
 				if( type == Actionable.SIMULATE )
 				{
-					final IRequestAPI.SimulationResult simulation = requestAPI.simulateRequest( request.getItemStack() );
+					IRequestAPI.SimulationResult simulation = requestAPI.simulateRequest( request.getItemStack() );
 					if( simulation.used.size() == 0 )
 					{
 						return null;
@@ -106,7 +106,7 @@ public class LPPipeInventory implements IMEInventory<IAEItemStack>
 					return AEItemStack.create( simulation.used.get( 0 ) );
 				}
 
-				final List<ItemStack> returned = requestAPI.performRequest( request.getItemStack() );
+				List<ItemStack> returned = requestAPI.performRequest( request.getItemStack() );
 				if( returned.size() == 0 )
 				{
 					return null;
@@ -119,12 +119,12 @@ public class LPPipeInventory implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems( final IItemList<IAEItemStack> out )
+	public IItemList<IAEItemStack> getAvailableItems( IItemList<IAEItemStack> out )
 	{
-		final ILPPipe pipe = ( (ILPPipeTile) this.te ).getLPPipe();
+		ILPPipe pipe = ( (ILPPipeTile) this.te ).getLPPipe();
 		if( pipe instanceof IRequestAPI )
 		{
-			final List<ItemStack> provided = this.getLPItems( pipe );
+			List<ItemStack> provided = this.getLPItems( pipe );
 			for( ItemStack is : provided )
 			{
 				out.add( AEItemStack.create( is ) );
@@ -142,7 +142,7 @@ public class LPPipeInventory implements IMEInventory<IAEItemStack>
 	 */
 	public List<ItemStack> getLPItems( ILPPipe pipe )
 	{
-		final CoreRoutedPipe coreRoutedPipeCast = (CoreRoutedPipe) pipe;
+		CoreRoutedPipe coreRoutedPipeCast = (CoreRoutedPipe) pipe;
 
 		if( coreRoutedPipeCast.stillNeedReplace() )
 		{
@@ -151,7 +151,7 @@ public class LPPipeInventory implements IMEInventory<IAEItemStack>
 		else
 		{
 			List<ExitRoute> exitRoutes = coreRoutedPipeCast.getRouter().getIRoutersByCost();
-			final ArrayList<ExitRoute> exitRoutesProcessed = new ArrayList<ExitRoute>();
+			ArrayList<ExitRoute> exitRoutesProcessed = new ArrayList<ExitRoute>();
 			for( ExitRoute exitRoute : exitRoutes )
 			{
 				if( !isExitToAE( exitRoute ) )

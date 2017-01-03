@@ -25,7 +25,11 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.StorageChannel;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
-import appeng.integration.abstraction.ILogisticsPipes;
+import appeng.me.storage.MEMonitorIInventory;
+import appeng.util.inv.IMEAdaptor;
+
+import logisticspipes.api.ILPPipeTile;
+import logisticspipes.pipes.basic.CoreUnroutedPipe;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -38,9 +42,8 @@ public class LPPipeHandler implements IExternalStorageHandler
 	{
 		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.LogisticsPipes ) )
 		{
-			final ILogisticsPipes lp = (ILogisticsPipes) IntegrationRegistry.INSTANCE.getInstance( IntegrationType.LogisticsPipes );
-
-			return channel == StorageChannel.ITEMS && lp.isPipe( te, d );
+			return channel == StorageChannel.ITEMS && te instanceof ILPPipeTile &&
+					( (CoreUnroutedPipe) ( (ILPPipeTile) te ).getLPPipe() ).canPipeConnect( te, d );
 		}
 		return false;
 	}
@@ -50,7 +53,7 @@ public class LPPipeHandler implements IExternalStorageHandler
 	{
 		if( channel == StorageChannel.ITEMS )
 		{
-			return new LPPipeInventory( te, d );
+			return new MEMonitorIInventory( new IMEAdaptor( new LPPipeInventory( te, d ), src ) );
 		}
 		return null;
 	}

@@ -37,14 +37,6 @@ import javax.annotation.Nullable;
 public interface ILogisticsPipes
 {
 	/**
-	 * @param te  the to be checked {@link TileEntity}
-	 * @param dir direction of the {@link TileEntity}
-	 * @return {@code true} if {@code te} is a logistics pipe, but not plugged
-	 * @throws NullPointerException if {@code dir} is {@code null}
-	 */
-	boolean isPipe( @Nullable TileEntity te, @Nonnull ForgeDirection dir );
-
-	/**
 	 * checks weather if the {@code te} is injectable and simulates to inject the item
 	 *
 	 * @param te  instanceof ILPPipe

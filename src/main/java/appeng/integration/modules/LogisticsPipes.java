@@ -28,9 +28,6 @@ import appeng.integration.modules.LPHelpers.LPPipeHandler;
 
 import buildcraft.api.transport.IInjectable;
 
-import logisticspipes.api.ILPPipeTile;
-import logisticspipes.pipes.basic.CoreUnroutedPipe;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -71,12 +68,6 @@ public class LogisticsPipes implements ILogisticsPipes, IIntegrationModule
 	public void postInit()
 	{
 		AEApi.instance().registries().externalStorage().addExternalStorageInterface( new LPPipeHandler() );
-	}
-
-	@Override
-	public boolean isPipe( final TileEntity te, @Nonnull final ForgeDirection direction )
-	{
-		return te instanceof ILPPipeTile && ( (CoreUnroutedPipe) ( (ILPPipeTile) te ).getLPPipe() ).canPipeConnect( te, direction );
 	}
 
 	@Override
