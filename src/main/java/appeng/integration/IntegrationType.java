@@ -33,6 +33,8 @@ public enum IntegrationType
 
 	BuildCraftBuilder( IntegrationSide.BOTH, "BuildCraft Builders", "BuildCraft|Builders" ),
 
+	LogisticsPipes( IntegrationSide.BOTH, "Logistics Pipes", "LogisticsPipes" ),
+
 	RF( IntegrationSide.BOTH, "RedstoneFlux Power - Tiles", "CoFHAPI" ),
 
 	RFItem( IntegrationSide.BOTH, "RedstoneFlux Power - Items", "CoFHAPI" ),
