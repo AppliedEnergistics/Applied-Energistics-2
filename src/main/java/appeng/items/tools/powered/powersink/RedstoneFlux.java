@@ -39,7 +39,10 @@ public abstract class RedstoneFlux extends IC2 implements IEnergyContainerItem
 	@Override
 	public int receiveEnergy( final ItemStack is, final int maxReceive, final boolean simulate )
 	{
-		return maxReceive - (int) this.injectExternalPower( PowerUnits.RF, is, maxReceive, simulate );
+		if (getEnergyStored(is) < getMaxEnergyStored(is)) {
+			return maxReceive - (int) this.injectExternalPower( PowerUnits.RF, is, maxReceive, simulate );
+		}
+		return 0;
 	}
 
 	@Override
