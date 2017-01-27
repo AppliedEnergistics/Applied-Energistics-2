@@ -22,11 +22,11 @@ package appeng.integration;
 public class MissingIntegrationModuleException extends RuntimeException
 {
 
+	private static final long serialVersionUID = 1927357647297008228L;
+
 	public MissingIntegrationModuleException( String name )
 	{
 		super( "Missing integration module for type '" + name + "'." );
 	}
-
-	private static final long serialVersionUID = 1927357647297008228L;
 
 }
