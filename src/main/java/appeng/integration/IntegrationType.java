@@ -98,9 +98,7 @@ public enum IntegrationType
 
 	public IIntegrationModule createInstance()
 	{
-		return new IIntegrationModule()
-		{
-		};
+		throw new UnsupportedOperationException( "Missing integration module for type '" + this.name() + "'." );
 	}
 
 }
