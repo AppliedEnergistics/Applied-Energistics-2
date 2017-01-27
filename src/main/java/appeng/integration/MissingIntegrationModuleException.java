@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,34 +19,14 @@
 package appeng.integration;
 
 
-import static org.junit.Assert.assertNotNull;
-
-import org.junit.Test;
-
-
-public class IntegrationTypeTest
+public class MissingIntegrationModuleException extends RuntimeException
 {
 
-	@Test
-	public void testCreateInstanceWithoutExceptions()
+	public MissingIntegrationModuleException( String name )
 	{
-		for( IntegrationType type : IntegrationType.values() )
-		{
-			try
-			{
-				assertNotNull( type.createInstance() );
-			}
-			// We actually only care about this specific type not being thrown.
-			catch( MissingIntegrationModuleException e )
-			{
-				throw e;
-			}
-			// Throw everything else away as these might be caused due to missing dependencies during testing.
-			catch( Throwable e )
-			{
-				// ignore
-			}
-		}
+		super( "Missing integration module for type '" + name + "'." );
 	}
+
+	private static final long serialVersionUID = 1927357647297008228L;
 
 }
