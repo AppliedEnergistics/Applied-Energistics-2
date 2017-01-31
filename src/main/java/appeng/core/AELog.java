@@ -307,7 +307,7 @@ public final class AELog
 	{
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.INTEGRATION_LOGGING ) )
 		{
-			debug( exception );
+			error( exception );
 		}
 	}
 

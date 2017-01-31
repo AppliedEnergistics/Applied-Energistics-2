@@ -21,6 +21,8 @@ package appeng.integration;
 
 import appeng.integration.modules.ic2.IC2Module;
 import appeng.integration.modules.jei.JEIModule;
+import appeng.integration.modules.rf.RFItemModule;
+import appeng.integration.modules.rf.RFTileModule;
 import appeng.integration.modules.theoneprobe.TheOneProbeModule;
 import appeng.integration.modules.waila.WailaModule;
 
@@ -36,13 +38,25 @@ public enum IntegrationType
 		}
 	},
 
-	RC( IntegrationSide.BOTH, "Railcraft", "Railcraft" ),
+	RF( IntegrationSide.BOTH, "RedstoneFlux Power - Tiles", "CoFHAPI" )
+	{
 
-	RF( IntegrationSide.BOTH, "RedstoneFlux Power - Tiles", "CoFHAPI" ),
+		@Override
+		public IIntegrationModule createInstance()
+		{
+			return new RFTileModule();
+		}
+	},
 
-	RFItem( IntegrationSide.BOTH, "RedstoneFlux Power - Items", "CoFHAPI" ),
+	RFItem( IntegrationSide.BOTH, "RedstoneFlux Power - Items", "CoFHAPI" )
+	{
 
-	MFR( IntegrationSide.BOTH, "Mine Factory Reloaded", "MineFactoryReloaded" ),
+		@Override
+		public IIntegrationModule createInstance()
+		{
+			return new RFItemModule();
+		}
+	},
 
 	Waila( IntegrationSide.BOTH, "Waila", "Waila" )
 	{
@@ -53,8 +67,6 @@ public enum IntegrationType
 		}
 	},
 
-	InvTweaks( IntegrationSide.CLIENT, "Inventory Tweaks", "inventorytweaks" ),
-
 	JEI( IntegrationSide.CLIENT, "Just Enough Items", "JEI" )
 	{
 		@Override
@@ -63,10 +75,6 @@ public enum IntegrationType
 			return Integrations.setJei( new JEIModule() );
 		}
 	},
-
-	Mekanism( IntegrationSide.BOTH, "Mekanism", "Mekanism" ),
-
-	OpenComputers( IntegrationSide.BOTH, "OpenComputers", "OpenComputers" ),
 
 	THE_ONE_PROBE( IntegrationSide.BOTH, "TheOneProbe", "theoneprobe" )
 	{
@@ -90,7 +98,7 @@ public enum IntegrationType
 
 	public IIntegrationModule createInstance()
 	{
-		throw new UnsupportedOperationException();
+		throw new MissingIntegrationModuleException( this.name() );
 	}
 
 }
