@@ -64,9 +64,7 @@ class PoweredItemCapabilities implements ICapabilityProvider, IEnergyStorage
 	@Override
 	public boolean hasCapability( Capability<?> capability, @Nullable EnumFacing facing )
 	{
-		return capability == CapabilityEnergy.ENERGY
-				|| capability == Capabilities.TESLA_CONSUMER
-				|| capability == Capabilities.TESLA_HOLDER;
+		return capability == CapabilityEnergy.ENERGY || capability == Capabilities.TESLA_CONSUMER || capability == Capabilities.TESLA_HOLDER;
 	}
 
 	@SuppressWarnings( "unchecked" )
@@ -87,10 +85,10 @@ class PoweredItemCapabilities implements ICapabilityProvider, IEnergyStorage
 	@Override
 	public int receiveEnergy( int maxReceive, boolean simulate )
 	{
-
 		if( simulate )
 		{
 			final int required = (int) PowerUnits.AE.convertTo( PowerUnits.RF, item.getAEMaxPower( is ) - item.getAECurrentPower( is ) );
+
 			if( maxReceive < required )
 			{
 				return 0;
@@ -100,7 +98,7 @@ class PoweredItemCapabilities implements ICapabilityProvider, IEnergyStorage
 		else
 		{
 			final double powerRemainder = item.injectAEPower( is, PowerUnits.RF.convertTo( PowerUnits.AE, maxReceive ) );
-			return (int) PowerUnits.AE.convertTo( PowerUnits.RF, powerRemainder );
+			return maxReceive - (int) PowerUnits.AE.convertTo( PowerUnits.RF, powerRemainder );
 		}
 	}
 
