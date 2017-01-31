@@ -24,6 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridVisitor;
+import appeng.core.AEConfig;
 import appeng.tile.networking.TileController;
 
 
@@ -66,7 +67,9 @@ public class ControllerValidator implements IGridVisitor
 			this.minZ = Math.min( pos.getZ(), this.minZ );
 			this.maxZ = Math.max( pos.getZ(), this.maxZ );
 
-			if( this.maxX - this.minX < 7 && this.maxY - this.minY < 7 && this.maxZ - this.minZ < 7 )
+			if( this.maxX - this.minX < AEConfig.instance().getControllerMaxX()
+					&& this.maxY - this.minY < AEConfig.instance().getControllerMaxY()
+					&& this.maxZ - this.minZ < AEConfig.instance().getControllerMaxZ() )
 			{
 				this.setFound( this.getFound() + 1 );
 				return true;

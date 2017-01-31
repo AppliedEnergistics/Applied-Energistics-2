@@ -88,6 +88,9 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	private boolean disableColoredCableRecipesInJEI = true;
 	private int craftingCalculationTimePerTick = 5;
 	private PowerUnits selectedPowerUnit = PowerUnits.AE;
+	private int controllerMaxX = 7;
+	private int controllerMaxY = 7;
+	private int controllerMaxZ = 7;
 
 	// GUI Buttons
 	private final int[] craftByStacks = { 1, 10, 100, 1000 };
@@ -206,6 +209,10 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		this.portableCellBattery = this.get( "battery", "portableCell", this.portableCellBattery ).getInt( this.portableCellBattery );
 		this.colorApplicatorBattery = this.get( "battery", "colorApplicator", this.colorApplicatorBattery ).getInt( this.colorApplicatorBattery );
 		this.matterCannonBattery = this.get( "battery", "matterCannon", this.matterCannonBattery ).getInt( this.matterCannonBattery );
+
+		this.controllerMaxX = this.get( "controller", "maxX", this.controllerMaxX ).getInt( this.controllerMaxX );
+		this.controllerMaxY = this.get( "controller", "maxY", this.controllerMaxY ).getInt( this.controllerMaxY );
+		this.controllerMaxZ = this.get( "controller", "maxZ", this.controllerMaxZ ).getInt( this.controllerMaxZ );
 
 		this.clientSync();
 
@@ -762,6 +769,21 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	public double getWirelessHighWirelessCount()
 	{
 		return wirelessHighWirelessCount;
+	}
+
+	public int getControllerMaxX()
+	{
+		return controllerMaxX;
+	}
+
+	public int getControllerMaxY()
+	{
+		return controllerMaxY;
+	}
+
+	public int getControllerMaxZ()
+	{
+		return controllerMaxZ;
 	}
 
 	// Setters keep visibility as low as possible.
