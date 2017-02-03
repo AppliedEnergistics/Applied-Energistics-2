@@ -20,7 +20,7 @@
 
 ## About
 
-A Mod about Matter, Energy and using them to conquer the world..
+A Mod about Matter, Energy and using them to conquer the world.
 
 ## Contacts
 
@@ -46,6 +46,8 @@ A Mod about Matter, Energy and using them to conquer the world..
 
 Downloads can be found on [CurseForge](http://www.curse.com/mc-mods/minecraft/223794-applied-energistics-2) or on the [official website](http://ae-mod.info/Downloads/).
 
+Applied Energistics 2 requires Minecraft Forge. Download it at the [Forge website] (http://files.minecraftforge.net).
+
 ## Nightly Builds
 
 [![Build status](https://ci.appveyor.com/api/projects/status/w0sg7upakn0vj5gc?svg=true)](https://ci.appveyor.com/project/shartte/applied-energistics-2/history)
@@ -56,11 +58,11 @@ Nightly builds for the Minecraft 1.10.2 branch of AE2 (rv4-alpha) are available 
 
 ## Installation
 
-You install this mod by putting it into the `minecraft/mods/` folder. It has no additional hard dependencies.
+You install this mod by putting the `.jar` file into the `minecraft/mods/` folder. It has no additional hard dependencies.
 
 ## Issues
 
-Applied Energistics 2 crashing, have a suggestion, found a bug?  Create an issue now!
+Applied Energistics 2 crashing, have a suggestion, or found a bug?  Create an issue now!
 
 1. Make sure your issue has not already been answered or fixed and you are using the latest version. Also think about whether your issue is a valid one before submitting it.
 2. Go to [the issues page](https://github.com/AppliedEnergistics/Applied-Energistics-2/issues) and click [new issue](https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/new)
@@ -136,7 +138,7 @@ Getting Started
 8. Wait for review
 9. Squash commits for cleaner history
 
-If you are only doing single file pull requests, GitHub supports using a quick way without the need of cloning your fork. Also read up about [synching](https://help.github.com/articles/syncing-a-fork) if you plan to contribute on regular basis.
+If you are only doing single file pull requests, GitHub supports using a quick way without the need of cloning your fork. Also read up about [syncing](https://help.github.com/articles/syncing-a-fork) if you plan on contributing on a regular basis.
 
 ## Applied Energistics 2 API
 
@@ -176,13 +178,13 @@ To update an translation edit the corresponding file and improve/correct the exi
 
 To create a new translation, copy the contents of `en_US.lang`, create a new file with appropriate filename, and translate it to your language.
 
-Please keep in mind that we use [String format](https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html) to pass additional data to the text for displaying.
+Please keep in mind that we use the [String format](https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html) to pass additional data to the text for displaying.
 Therefore you should preserve parts like `%s` or `%1$d%%`, which allows us to replace them with the correct values while you still have the option to change their order for match the rules of grammar.
 This might not be possible for some languages. Should this be the case, please contact us.
 
 ### Final Note
 
-If you have have issues localizing something feel free to contact us on IRC, at #AppliedEnergistics on Esper.net
+If you have have issues localizing something feel free to contact us on IRC, at the #AppliedEnergistics channel on Esper.net.
 
 Thanks to everyone helping out to improve localization of AE2.
 
@@ -191,6 +193,6 @@ Thanks to everyone helping out to improve localization of AE2.
 Thanks to
  
 * Notch et al for Minecraft
-* Lex et al for MinecraftForge
-* AlgorithmX2 for AppliedEnergistics2
-* all [contributors](https://github.com/AppliedEnergistics/Applied-Energistics-2/graphs/contributors)
+* Lex et al for Minecraft Forge
+* AlgorithmX2 for Applied Energistics 2
+* All the [contributors](https://github.com/AppliedEnergistics/Applied-Energistics-2/graphs/contributors) who help make this mod possible.
