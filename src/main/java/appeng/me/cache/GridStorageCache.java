@@ -87,15 +87,19 @@ public class GridStorageCache implements IStorageGrid
 		if( machine instanceof ICellContainer )
 		{
 			final ICellContainer cc = (ICellContainer) machine;
+			final CellChangeTracker tracker = new CellChangeTracker();
 
-			this.getGrid().postEvent( new MENetworkCellArrayUpdate() );
-			this.removeCellProvider( cc, new CellChangeTracker() ).applyChanges();
 			this.inactiveCellProviders.remove( cc );
+			this.removeCellProvider( cc, tracker );
+			this.getGrid().postEvent( new MENetworkCellArrayUpdate() );
+
+			tracker.applyChanges();
 		}
 
 		if( machine instanceof IStackWatcherHost )
 		{
 			final IStackWatcher myWatcher = this.watchers.get( machine );
+
 			if( myWatcher != null )
 			{
 				myWatcher.clear();
@@ -113,9 +117,13 @@ public class GridStorageCache implements IStorageGrid
 			this.inactiveCellProviders.add( cc );
 
 			this.getGrid().postEvent( new MENetworkCellArrayUpdate() );
+
 			if( node.isActive() )
 			{
-				this.addCellProvider( cc, new CellChangeTracker() ).applyChanges();
+				final CellChangeTracker tracker = new CellChangeTracker();
+
+				this.addCellProvider( cc, tracker );
+				tracker.applyChanges();
 			}
 		}
 
@@ -177,10 +185,10 @@ public class GridStorageCache implements IStorageGrid
 	{
 		if( this.activeCellProviders.contains( cc ) )
 		{
-			this.inactiveCellProviders.add( cc );
 			this.activeCellProviders.remove( cc );
 
 			BaseActionSource actionSrc = new BaseActionSource();
+
 			if( cc instanceof IActionHost )
 			{
 				actionSrc = new MachineSource( (IActionHost) cc );
@@ -214,22 +222,22 @@ public class GridStorageCache implements IStorageGrid
 
 		for( final ICellProvider cc : ll )
 		{
-			boolean Active = true;
+			boolean active = true;
 
 			if( cc instanceof IActionHost )
 			{
 				final IGridNode node = ( (IActionHost) cc ).getActionableNode();
 				if( node != null && node.isActive() )
 				{
-					Active = true;
+					active = true;
 				}
 				else
 				{
-					Active = false;
+					active = false;
 				}
 			}
 
-			if( Active )
+			if( active )
 			{
 				this.addCellProvider( cc, tracker );
 			}
