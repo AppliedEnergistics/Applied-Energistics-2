@@ -362,6 +362,7 @@ item.appliedenergistics2.storage_cell_4k.name=Disque de stockage 4k
 item.appliedenergistics2.storage_cell_16k.name=Disque de stockage 16k
 item.appliedenergistics2.storage_cell_64k.name=Disque de stockage 64k
 item.appliedenergistics2.creative_storage_cell.name=Disque de stockage créative
+item.appliedenergistics2.storage_cell_read_only.name=Disque de stockage lecture seulement
 item.appliedenergistics2.encoded_pattern.name=Modèle encodé
 item.appliedenergistics2.view_cell.name=Cellule de visualisation
 item.appliedenergistics2.facade.name=Façade de câble

@@ -367,6 +367,7 @@ item.appliedenergistics2.storage_cell_4k.name=4k-ME存储元件
 item.appliedenergistics2.storage_cell_16k.name=16k-ME存储元件
 item.appliedenergistics2.storage_cell_64k.name=64k-ME存储元件
 item.appliedenergistics2.creative_storage_cell.name=创造型ME存储元件
+item.appliedenergistics2.storage_cell_read_only.name=只读ME存储元件
 item.appliedenergistics2.encoded_pattern.name=编码样板
 item.appliedenergistics2.view_cell.name=显示元件
 item.appliedenergistics2.facade.name=线缆伪装板

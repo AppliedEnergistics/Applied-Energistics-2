@@ -225,6 +225,7 @@ item.appliedenergistics2.storage_cell_4k.name=Celulă de Stocare ME 4k
 item.appliedenergistics2.storage_cell_16k.name=Celulă de Stocare ME 16k
 item.appliedenergistics2.storage_cell_64k.name=Celulă de Stocare ME 64k
 item.appliedenergistics2.creative_storage_cell.name=Celulă de Stocare ME Infinită
+item.appliedenergistics2.storage_cell_read_only.name=Celulă de Stocare ME Numai citire
 item.appliedenergistics2.encoded_pattern.name=Model Codat
 item.appliedenergistics2.view_cell.name=Vizionează Celulă
 item.appliedenergistics2.facade.name=Faţadă de Cablu

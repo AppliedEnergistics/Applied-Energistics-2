@@ -371,6 +371,7 @@ item.appliedenergistics2.storage_cell_4k.name=4К МЭ ячейка хранен
 item.appliedenergistics2.storage_cell_16k.name=16К МЭ ячейка хранения
 item.appliedenergistics2.storage_cell_64k.name=64К МЭ ячейка хранения
 item.appliedenergistics2.creative_storage_cell.name=Творческая МЭ ячейка хранения
+item.appliedenergistics2.storage_cell_read_only.name=Только для чтения МЭ ячейки памяти
 item.appliedenergistics2.encoded_pattern.name=Кодированный шаблон
 item.appliedenergistics2.view_cell.name=Ячейка представления
 item.appliedenergistics2.facade.name=Кабельный фасад

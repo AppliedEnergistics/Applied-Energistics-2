@@ -294,6 +294,7 @@ item.appliedenergistics2.ItemBasicStorageCell.4k.name=4k-ME存儲元件
 item.appliedenergistics2.ItemBasicStorageCell.16k.name=16k-ME存儲元件
 item.appliedenergistics2.ItemBasicStorageCell.64k.name=64k-ME存儲元件
 item.appliedenergistics2.ItemCreativeStorageCell.name=創造型ME存儲元件
+item.appliedenergistics2.storage_cell_read_only.name=只讀ME存儲元件
 item.appliedenergistics2.ItemEncodedPattern.name=已編碼樣板
 item.appliedenergistics2.ItemViewCell.name=顯示元件
 item.appliedenergistics2.ItemFacade.name=線纜偽裝板

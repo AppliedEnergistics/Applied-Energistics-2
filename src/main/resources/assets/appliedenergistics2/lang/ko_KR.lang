@@ -324,6 +324,7 @@ item.appliedenergistics2.storage_cell_4k.name=4k ME 저장용 셀
 item.appliedenergistics2.storage_cell_16k.name=16k ME 저장용 셀
 item.appliedenergistics2.storage_cell_64k.name=64k ME 저장용 셀
 item.appliedenergistics2.creative_storage_cell.name=크리에이티브 ME 저장용 셀
+item.appliedenergistics2.storage_cell_read_only.name=읽기 전용 ME 저장용 셀
 item.appliedenergistics2.encoded_pattern.name=쓰여진 패턴
 item.appliedenergistics2.view_cell.name=View Cell
 item.appliedenergistics2.facade.name=케이블 덮개

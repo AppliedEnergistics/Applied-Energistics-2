@@ -345,6 +345,7 @@ item.appliedenergistics2.storage_cell_4k.name=Cella di immagazzinaggio da 4k ME
 item.appliedenergistics2.storage_cell_16k.name=Cella di immagazzinaggio da 16k ME
 item.appliedenergistics2.storage_cell_64k.name=Cella di immagazzinaggio da 64k ME
 item.appliedenergistics2.creative_storage_cell.name=Cella di immagazzinaggio ME creativa
+item.appliedenergistics2.storage_cell_read_only.name=Cella di immagazzinaggio ME Sola lettura
 item.appliedenergistics2.encoded_pattern.name=Modello Codificato
 item.appliedenergistics2.view_cell.name=Cella olografica
 item.appliedenergistics2.facade.name=Facciata per cavo

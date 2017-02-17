@@ -80,6 +80,8 @@ public interface IItems
 
 	IItemDefinition viewCell();
 
+	IItemDefinition cellReadOnly();
+
 	IItemDefinition cell1k();
 
 	IItemDefinition cell4k();

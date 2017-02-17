@@ -387,6 +387,7 @@ item.appliedenergistics2.storage_cell_4k.name=4k ME Storage Cell
 item.appliedenergistics2.storage_cell_16k.name=16k ME Storage Cell
 item.appliedenergistics2.storage_cell_64k.name=64k ME Storage Cell
 item.appliedenergistics2.creative_storage_cell.name=Creative ME Storage Cell
+item.appliedenergistics2.storage_cell_read_only.name=Read Only ME Storage Cell
 item.appliedenergistics2.encoded_pattern.name=Encoded Pattern
 item.appliedenergistics2.view_cell.name=View Cell
 item.appliedenergistics2.facade.name=Cable Facade

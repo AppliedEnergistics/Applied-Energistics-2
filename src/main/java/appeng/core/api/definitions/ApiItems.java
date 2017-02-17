@@ -42,6 +42,7 @@ import appeng.items.parts.FacadeRendering;
 import appeng.items.parts.ItemFacade;
 import appeng.items.storage.ItemBasicStorageCell;
 import appeng.items.storage.ItemCreativeStorageCell;
+import appeng.items.storage.ItemReadOnlyStorageCell;
 import appeng.items.storage.ItemSpatialStorageCell;
 import appeng.items.storage.ItemViewCell;
 import appeng.items.tools.ToolBiometricCard;
@@ -96,6 +97,7 @@ public final class ApiItems implements IItems
 
 	private final IItemDefinition cellCreative;
 	private final IItemDefinition viewCell;
+	private final IItemDefinition cellReadOnly;
 
 	private final IItemDefinition cell1k;
 	private final IItemDefinition cell4k;
@@ -196,6 +198,9 @@ public final class ApiItems implements IItems
 				.features( AEFeature.STORAGE_CELLS, AEFeature.CREATIVE )
 				.build();
 		this.viewCell = registry.item( "view_cell", ItemViewCell::new ).features( AEFeature.VIEW_CELL ).build();
+		this.cellReadOnly = registry.item( "storage_cell_read_only", ItemReadOnlyStorageCell::new )
+				.features( AEFeature.STORAGE_CELLS, AEFeature.CREATIVE )
+				.build();
 
 		FeatureFactory storageCells = registry.features( AEFeature.STORAGE_CELLS );
 		this.cell1k = storageCells.item( "storage_cell_1k", () -> new ItemBasicStorageCell( MaterialType.Cell1kPart, 1 ) ).build();
@@ -380,6 +385,12 @@ public final class ApiItems implements IItems
 	public IItemDefinition viewCell()
 	{
 		return this.viewCell;
+	}
+
+	@Override
+	public IItemDefinition cellReadOnly()
+	{
+		return this.cellReadOnly;
 	}
 
 	@Override
