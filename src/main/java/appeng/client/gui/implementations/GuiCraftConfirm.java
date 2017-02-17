@@ -36,12 +36,16 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
+import appeng.api.config.Settings;
+import appeng.api.config.TerminalStyle;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.client.gui.AEBaseGui;
+import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.container.implementations.ContainerCraftConfirm;
+import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
@@ -60,7 +64,19 @@ public class GuiCraftConfirm extends AEBaseGui
 
 	private final ContainerCraftConfirm ccc;
 
-	private final int rows = 5;
+	private int rows = 5;
+	private GuiImgButton terminalStyleBox;
+
+	private static final int GUI_HEIGHT = 206;
+	private static final int GUI_WIDTH = 238;
+
+	private static final int SECTION_LENGTH = 67;
+	private static final int SECTION_HEIGHT = 23;
+
+	private static final int CPU_TOP_OFFSET = 68;
+
+	private static final int ITEMSTACK_LEFT_OFFSET = 9;
+	private static final int ITEMSTACK_TOP_OFFSET = 22;
 
 	private final IItemList<IAEItemStack> storage = AEApi.instance().storage().createItemList();
 	private final IItemList<IAEItemStack> pending = AEApi.instance().storage().createItemList();
@@ -77,8 +93,8 @@ public class GuiCraftConfirm extends AEBaseGui
 	public GuiCraftConfirm( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
 		super( new ContainerCraftConfirm( inventoryPlayer, te ) );
-		this.xSize = 238;
-		this.ySize = 206;
+		this.xSize = GUI_WIDTH;
+		this.ySize = GUI_HEIGHT;
 
 		final GuiScrollbar scrollbar = new GuiScrollbar();
 		this.setScrollBar( scrollbar );
@@ -111,16 +127,32 @@ public class GuiCraftConfirm extends AEBaseGui
 		return ( (ContainerCraftConfirm) this.inventorySlots ).isAutoStart();
 	}
 
+	private void reinitalize()
+	{
+		this.buttonList.clear();
+		this.initGui();
+	}
+
 	@Override
 	public void initGui()
 	{
+		final int staticSpace = ITEMSTACK_TOP_OFFSET + CPU_TOP_OFFSET;
+
+		calculateRows( staticSpace );
+
 		super.initGui();
+
+		this.ySize = staticSpace + this.rows * SECTION_HEIGHT;
+		final int unusedSpace = this.height - this.ySize;
+		this.guiTop = (int) Math.floor( unusedSpace / ( unusedSpace < 0 ? 3.8f : 2.0f ) );
+		int offset = this.guiTop + 8;
+		this.setScrollBar();
 
 		this.start = new GuiButton( 0, this.guiLeft + 162, this.guiTop + this.ySize - 25, 50, 20, GuiText.Start.getLocal() );
 		this.start.enabled = false;
 		this.buttonList.add( this.start );
 
-		this.selectCPU = new GuiButton( 0, this.guiLeft + ( 219 - 180 ) / 2, this.guiTop + this.ySize - 68, 180, 20, GuiText.CraftingCPU.getLocal() + ": " + GuiText.Automatic );
+		this.selectCPU = new GuiButton( 0, this.guiLeft + ( 219 - 180 ) / 2, this.guiTop + this.ySize - CPU_TOP_OFFSET, 180, 20, GuiText.CraftingCPU.getLocal() + ": " + GuiText.Automatic );
 		this.selectCPU.enabled = false;
 		this.buttonList.add( this.selectCPU );
 
@@ -130,7 +162,28 @@ public class GuiCraftConfirm extends AEBaseGui
 		}
 
 		this.buttonList.add( this.cancel );
+
+		this.terminalStyleBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, AEConfig.instance().getConfigManager().getSetting( Settings.TERMINAL_STYLE ) );
+		this.buttonList.add( this.terminalStyleBox );
 	}
+
+	private void calculateRows( final int height )
+	{
+		final int maxRows = AEConfig.instance().getConfigManager().getSetting( Settings.TERMINAL_STYLE ) == TerminalStyle.SMALL ? 5 : Integer.MAX_VALUE;
+
+		final double extraSpace = (double) this.height - height;
+
+		this.rows = (int) Math.floor( extraSpace / SECTION_HEIGHT );
+		if( this.rows > maxRows )
+		{
+			this.rows = maxRows;
+		}
+
+		if( this.rows < 5 )
+		{
+			this.rows = 5;
+		}
+ 	}
 
 	@Override
 	public void drawScreen( final int mouseX, final int mouseY, final float btn )
@@ -145,7 +198,7 @@ public class GuiCraftConfirm extends AEBaseGui
 
 		this.tooltip = -1;
 
-		final int offY = 23;
+		final int offY = SECTION_HEIGHT;
 		int y = 0;
 		int x = 0;
 		for( int z = 0; z <= 4 * 5; z++ )
@@ -223,14 +276,10 @@ public class GuiCraftConfirm extends AEBaseGui
 		}
 
 		final int offset = ( 219 - this.fontRendererObj.getStringWidth( dsp ) ) / 2;
-		this.fontRendererObj.drawString( dsp, offset, 165, 4210752 );
-
-		final int sectionLength = 67;
+		this.fontRendererObj.drawString( dsp, offset, this.ySize + 27 - CPU_TOP_OFFSET, 4210752 );
 
 		int x = 0;
 		int y = 0;
-		final int xo = 9;
-		final int yo = 22;
 		final int viewStart = this.getScrollBar().getCurrentScroll() * 3;
 		final int viewEnd = viewStart + 3 * this.rows;
 
@@ -239,7 +288,7 @@ public class GuiCraftConfirm extends AEBaseGui
 		int toolPosX = 0;
 		int toolPosY = 0;
 
-		final int offY = 23;
+		final int offY = SECTION_HEIGHT;
 
 		for( int z = viewStart; z < Math.min( viewEnd, this.visual.size() ); z++ )
 		{
@@ -285,7 +334,7 @@ public class GuiCraftConfirm extends AEBaseGui
 
 					str = GuiText.FromStorage.getLocal() + ": " + str;
 					final int w = 4 + this.fontRendererObj.getStringWidth( str );
-					this.fontRendererObj.drawString( str, (int) ( ( x * ( 1 + sectionLength ) + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
+					this.fontRendererObj.drawString( str, (int) ( ( x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - ( w * 0.5 ) ) * 2 ), ( y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY ) * 2, 4210752 );
 
 					if( this.tooltip == z - viewStart )
 					{
@@ -310,7 +359,7 @@ public class GuiCraftConfirm extends AEBaseGui
 
 					str = GuiText.Missing.getLocal() + ": " + str;
 					final int w = 4 + this.fontRendererObj.getStringWidth( str );
-					this.fontRendererObj.drawString( str, (int) ( ( x * ( 1 + sectionLength ) + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
+					this.fontRendererObj.drawString( str, (int) ( ( x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - ( w * 0.5 ) ) * 2 ), ( y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY ) * 2, 4210752 );
 
 					if( this.tooltip == z - viewStart )
 					{
@@ -335,7 +384,7 @@ public class GuiCraftConfirm extends AEBaseGui
 
 					str = GuiText.ToCraft.getLocal() + ": " + str;
 					final int w = 4 + this.fontRendererObj.getStringWidth( str );
-					this.fontRendererObj.drawString( str, (int) ( ( x * ( 1 + sectionLength ) + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
+					this.fontRendererObj.drawString( str, (int) ( ( x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - ( w * 0.5 ) ) * 2 ), ( y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY ) * 2, 4210752 );
 
 					if( this.tooltip == z - viewStart )
 					{
@@ -344,8 +393,8 @@ public class GuiCraftConfirm extends AEBaseGui
 				}
 
 				GlStateManager.popMatrix();
-				final int posX = x * ( 1 + sectionLength ) + xo + sectionLength - 19;
-				final int posY = y * offY + yo;
+				final int posX = x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19;
+				final int posY = y * offY + ITEMSTACK_TOP_OFFSET;
 
 				final ItemStack is = refStack.copy().getItemStack();
 
@@ -358,17 +407,17 @@ public class GuiCraftConfirm extends AEBaseGui
 						dspToolTip = dspToolTip + '\n' + Joiner.on( "\n" ).join( lineList );
 					}
 
-					toolPosX = x * ( 1 + sectionLength ) + xo + sectionLength - 8;
-					toolPosY = y * offY + yo;
+					toolPosX = x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 8;
+					toolPosY = y * offY + ITEMSTACK_TOP_OFFSET;
 				}
 
 				this.drawItem( posX, posY, is );
 
 				if( red )
 				{
-					final int startX = x * ( 1 + sectionLength ) + xo;
+					final int startX = x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET;
 					final int startY = posY - 4;
-					drawRect( startX, startY, startX + sectionLength, startY + offY, 0x1AFF0000 );
+					drawRect( startX, startY, startX + SECTION_LENGTH, startY + offY, 0x1AFF0000 );
 				}
 
 				x++;
@@ -390,17 +439,24 @@ public class GuiCraftConfirm extends AEBaseGui
 	@Override
 	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		this.setScrollBar();
 		this.bindTexture( "guis/craftingreport.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		final int x_width = 238;
+		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, x_width, 19 );
+
+		for( int x = 0; x < this.rows; x++ )
+		{
+			this.drawTexturedModalRect( offsetX, offsetY + 19 + x * SECTION_HEIGHT, 0, 19, x_width, SECTION_HEIGHT );
+		}
+
+		this.drawTexturedModalRect( offsetX, offsetY + 19 + this.rows * SECTION_HEIGHT - 1, 0, 133, x_width, 72 );
 	}
 
 	private void setScrollBar()
 	{
 		final int size = this.visual.size();
 
-		this.getScrollBar().setTop( 19 ).setLeft( 218 ).setHeight( 114 );
-		this.getScrollBar().setRange( 0, ( size + 2 ) / 3 - this.rows, 1 );
+		this.getScrollBar().setTop( 19 ).setLeft( 218 ).setHeight( this.rows * SECTION_HEIGHT - 2 );
+		this.getScrollBar().setRange( 0, ( size + 2 ) / 3 - this.rows, Math.max( 1, this.rows / 6 ) );
 	}
 
 	public void postUpdate( final List<IAEItemStack> list, final byte ref )
@@ -574,6 +630,39 @@ public class GuiCraftConfirm extends AEBaseGui
 			catch( final Throwable e )
 			{
 				AELog.debug( e );
+			}
+		}
+
+		if( btn instanceof GuiImgButton )
+		{
+			final GuiImgButton iBtn = (GuiImgButton) btn;
+			if( iBtn.getSetting() != Settings.ACTIONS )
+			{
+				final Enum cv = iBtn.getCurrentValue();
+				final Enum next = Platform.rotateEnum( cv, backwards, iBtn.getSetting().getPossibleValues() );
+
+				if( btn == this.terminalStyleBox )
+				{
+					AEConfig.instance().getConfigManager().putSetting( iBtn.getSetting(), next );
+				}
+				else
+				{
+					try
+					{
+						NetworkHandler.instance().sendToServer( new PacketValueConfig( iBtn.getSetting().name(), next.name() ) );
+					}
+					catch( final IOException e )
+					{
+						AELog.debug( e );
+					}
+				}
+
+				iBtn.set( next );
+
+				if( next.getClass() == TerminalStyle.class )
+				{
+					this.reinitalize();
+				}
 			}
 		}
 	}

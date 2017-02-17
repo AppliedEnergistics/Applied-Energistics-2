@@ -30,19 +30,24 @@ import com.google.common.base.Joiner;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
+import org.lwjgl.input.Mouse;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
+import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
+import appeng.api.config.TerminalStyle;
 import appeng.api.config.ViewItems;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseGui;
+import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.container.implementations.ContainerCraftingCPU;
@@ -60,16 +65,14 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	private static final int GUI_HEIGHT = 184;
 	private static final int GUI_WIDTH = 238;
 
-	private static final int DISPLAYED_ROWS = 6;
-
 	private static final int TEXT_COLOR = 0x404040;
 	private static final int BACKGROUND_ALPHA = 0x5A000000;
 
 	private static final int SECTION_LENGTH = 67;
+	private static final int SECTION_HEIGHT = 23;
 
 	private static final int SCROLLBAR_TOP = 19;
 	private static final int SCROLLBAR_LEFT = 218;
-	private static final int SCROLLBAR_HEIGHT = 137;
 
 	private static final int CANCEL_LEFT_OFFSET = 163;
 	private static final int CANCEL_TOP_OFFSET = 25;
@@ -91,6 +94,8 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	private List<IAEItemStack> visual = new ArrayList<IAEItemStack>();
 	private GuiButton cancel;
 	private int tooltip = -1;
+	private int rows = 6;
+	private GuiImgButton terminalStyleBox;
 
 	public GuiCraftingCPU( final InventoryPlayer inventoryPlayer, final Object te )
 	{
@@ -132,23 +137,94 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 				AELog.debug( e );
 			}
 		}
+
+		if( btn instanceof GuiImgButton )
+		{
+			final boolean backwards = Mouse.isButtonDown( 1 );
+
+			final GuiImgButton iBtn = (GuiImgButton) btn;
+			if( iBtn.getSetting() != Settings.ACTIONS )
+			{
+				final Enum cv = iBtn.getCurrentValue();
+				final Enum next = Platform.rotateEnum( cv, backwards, iBtn.getSetting().getPossibleValues() );
+
+				if( btn == this.terminalStyleBox )
+				{
+					AEConfig.instance().getConfigManager().putSetting( iBtn.getSetting(), next );
+				}
+				else
+				{
+					try
+					{
+						NetworkHandler.instance().sendToServer( new PacketValueConfig( iBtn.getSetting().name(), next.name() ) );
+					}
+					catch( final IOException e )
+					{
+						AELog.debug( e );
+					}
+				}
+
+				iBtn.set( next );
+
+				if( next.getClass() == TerminalStyle.class )
+				{
+					this.reinitalize();
+				}
+			}
+		}
+	}
+
+	private void reinitalize()
+	{
+		this.buttonList.clear();
+		this.initGui();
 	}
 
 	@Override
 	public void initGui()
 	{
+		final int staticSpace = ITEMSTACK_TOP_OFFSET + CANCEL_TOP_OFFSET - 1;
+
+		calculateRows( staticSpace );
+
 		super.initGui();
+
+		this.ySize = staticSpace + this.rows * SECTION_HEIGHT;
+		final int unusedSpace = this.height - this.ySize;
+		this.guiTop = (int) Math.floor( unusedSpace / ( unusedSpace < 0 ? 3.8f : 2.0f ) );
+		int offset = this.guiTop + 8;
 		this.setScrollBar();
+
 		this.cancel = new GuiButton( 0, this.guiLeft + CANCEL_LEFT_OFFSET, this.guiTop + this.ySize - CANCEL_TOP_OFFSET, CANCEL_WIDTH, CANCEL_HEIGHT, GuiText.Cancel.getLocal() );
+		this.terminalStyleBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, AEConfig.instance().getConfigManager().getSetting( Settings.TERMINAL_STYLE ) );
 		this.buttonList.add( this.cancel );
+		this.buttonList.add( this.terminalStyleBox );
 	}
+
+	private void calculateRows( final int height )
+	{
+		final int maxRows = AEConfig.instance().getConfigManager().getSetting( Settings.TERMINAL_STYLE ) == TerminalStyle.SMALL ? 6 : Integer.MAX_VALUE;
+
+		final double extraSpace = (double) this.height - height;
+
+		this.rows = (int) Math.floor( extraSpace / SECTION_HEIGHT );
+		if( this.rows > maxRows )
+		{
+			this.rows = maxRows;
+		}
+
+		if( this.rows < 6 )
+		{
+			this.rows = 6;
+		}
+ 	}
 
 	private void setScrollBar()
 	{
 		final int size = this.visual.size();
 
-		this.getScrollBar().setTop( SCROLLBAR_TOP ).setLeft( SCROLLBAR_LEFT ).setHeight( SCROLLBAR_HEIGHT );
-		this.getScrollBar().setRange( 0, ( size + 2 ) / 3 - DISPLAYED_ROWS, 1 );
+		this.getScrollBar().setTop( SCROLLBAR_TOP ).setLeft( SCROLLBAR_LEFT ).setHeight( this.rows * SECTION_HEIGHT - 2 );
+		this.getScrollBar().setRange( 0, ( size + 2 ) / 3 - this.rows, Math.max( 1, this.rows / 6 ) );
 	}
 
 	@Override
@@ -161,7 +237,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 		this.tooltip = -1;
 
-		final int offY = 23;
+		final int offY = SECTION_HEIGHT;
 		int y = 0;
 		int x = 0;
 		for( int z = 0; z <= 4 * 5; z++ )
@@ -207,14 +283,14 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		int x = 0;
 		int y = 0;
 		final int viewStart = this.getScrollBar().getCurrentScroll() * 3;
-		final int viewEnd = viewStart + 3 * 6;
+		final int viewEnd = viewStart + 3 * this.rows;
 
 		String dspToolTip = "";
 		final List<String> lineList = new LinkedList<String>();
 		int toolPosX = 0;
 		int toolPosY = 0;
 
-		final int offY = 23;
+		final int offY = SECTION_HEIGHT;
 
 		final ReadableNumberConverter converter = ReadableNumberConverter.INSTANCE;
 		for( int z = viewStart; z < Math.min( viewEnd, this.visual.size() ); z++ )
@@ -342,7 +418,15 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/craftingcpu.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		final int x_width = 238;
+		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, x_width, 19 );
+
+		for( int x = 0; x < this.rows; x++ )
+		{
+			this.drawTexturedModalRect( offsetX, offsetY + 19 + x * SECTION_HEIGHT, 0, 19, x_width, SECTION_HEIGHT );
+		}
+
+		this.drawTexturedModalRect( offsetX, offsetY + 19 + this.rows * SECTION_HEIGHT - 1, 0, 156, x_width, 27 );
 	}
 
 	public void postUpdate( final List<IAEItemStack> list, final byte ref )
