@@ -215,6 +215,10 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	{
 		this.buttonList.clear();
 		this.initGui();
+		
+		this.repo.setSearchString( "" );
+		this.repo.updateView();
+		this.setScrollBar();
 	}
 
 	@Override
