@@ -24,3 +24,6 @@
 
 # code format to reduce noise in git commits
 !codeformat/
+
+# exclude vim files
+*.swp
