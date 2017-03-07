@@ -109,10 +109,12 @@ dependencies {
 //    mods name: 'ThermalExpansion', version: "[${minecraft_version}]${texpansion_version}-dev", ext: 'jar'
 //    mods name: 'ThermalFoundation', version: "[${minecraft_version}]${tfoundation_version}-dev", ext: 'jar'
 
-    compile "codechicken:ForgeMultipart:${minecraft_version}-${fmp_version}:dev"
-    compile "codechicken:CodeChickenLib:${minecraft_version}-${code_chicken_lib_version}:dev"
-    compile "codechicken:CodeChickenCore:${minecraft_version}-${code_chicken_core_version}:dev"
-    compile "codechicken:NotEnoughItems:${minecraft_version}-${nei_version}:dev"
+    // I will not run minecraft with those mods. I don't know why......
+    compileOnly "codechicken:ForgeMultipart:${minecraft_version}-${fmp_version}:dev"
+    compileOnly "codechicken:CodeChickenLib:${minecraft_version}-${code_chicken_lib_version}:dev"
+    compileOnly "codechicken:CodeChickenCore:${minecraft_version}-${code_chicken_core_version}:dev"
+    compileOnly "codechicken:NotEnoughItems:${minecraft_version}-${nei_version}:dev"
+
     compile "com.mod-buildcraft:buildcraft:${bc_version}:dev"
     compile "pneumaticCraft:PneumaticCraft-${minecraft_version}:${pneumaticcraft_version}:api"
 
