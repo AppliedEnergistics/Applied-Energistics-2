@@ -19,12 +19,8 @@
 package appeng.transformer;
 
 
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
+import appeng.core.AEConfig;
 import com.google.common.eventbus.EventBus;
-
 import cpw.mods.fml.common.DummyModContainer;
 import cpw.mods.fml.common.LoadController;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -34,7 +30,8 @@ import cpw.mods.fml.relauncher.FMLRelaunchLog;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
 
-import appeng.core.AEConfig;
+import javax.annotation.Nullable;
+import java.util.Map;
 
 
 @MCVersion( "1.7.10" )
@@ -64,7 +61,7 @@ public final class AppEngCore extends DummyModContainer implements IFMLLoadingPl
 	@Override
 	public String[] getASMTransformerClass()
 	{
-		return new String[] { "appeng.transformer.asm.ASMIntegration", "appeng.transformer.asm.ASMApiFixer" };
+		return new String[] { "appeng.transformer.asm.ASMIntegration", "appeng.transformer.asm.ApiRepairer" };
 	}
 
 	@Override
