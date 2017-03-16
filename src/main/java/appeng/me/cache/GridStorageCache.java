@@ -19,14 +19,6 @@
 package appeng.me.cache;
 
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.SetMultimap;
-
 import appeng.api.AEApi;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
@@ -41,11 +33,7 @@ import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherHost;
 import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.storage.ICellContainer;
-import appeng.api.storage.ICellProvider;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.*;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -53,6 +41,13 @@ import appeng.api.storage.data.IItemList;
 import appeng.me.helpers.GenericInterestManager;
 import appeng.me.storage.ItemWatcher;
 import appeng.me.storage.NetworkInventoryHandler;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.SetMultimap;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class GridStorageCache implements IStorageGrid
@@ -89,8 +84,8 @@ public class GridStorageCache implements IStorageGrid
 			final ICellContainer cc = (ICellContainer) machine;
 			final CellChangeTracker tracker = new CellChangeTracker();
 
-			this.inactiveCellProviders.remove( cc );
 			this.removeCellProvider( cc, tracker );
+			this.inactiveCellProviders.remove( cc );
 			this.getGrid().postEvent( new MENetworkCellArrayUpdate() );
 
 			tracker.applyChanges();
@@ -186,6 +181,7 @@ public class GridStorageCache implements IStorageGrid
 		if( this.activeCellProviders.contains( cc ) )
 		{
 			this.activeCellProviders.remove( cc );
+			this.inactiveCellProviders.add( cc );
 
 			BaseActionSource actionSrc = new BaseActionSource();
 
