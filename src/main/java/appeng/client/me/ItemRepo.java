@@ -60,6 +60,7 @@ public class ItemRepo
 	private IPartitionList<IAEItemStack> myPartitionList;
 	private String innerSearch = "";
 	private boolean hasPower;
+	private String lastJEIFilter = "";
 
 	public ItemRepo( final IScrollSource src, final ISortSource sortSrc )
 	{
@@ -244,7 +245,11 @@ public class ItemRepo
 
 	private void updateJEI( String filter )
 	{
-		Integrations.jei().setSearchText( filter );
+		if( !filter.equals( lastJEIFilter ) )
+		{
+			lastJEIFilter = filter;
+			Integrations.jei().setSearchText( filter );
+		}
 	}
 
 	public int size()
