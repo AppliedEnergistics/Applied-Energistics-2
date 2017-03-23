@@ -24,15 +24,14 @@
 package appeng.api.parts;
 
 
-import java.util.EnumSet;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.EnumSet;
 
 
 public interface IPartRenderHelper
@@ -185,6 +184,7 @@ public interface IPartRenderHelper
 	 * @param z        z pos of part
 	 * @param renderer renderer of part
 	 */
+	@SideOnly( Side.CLIENT )
 	void renderBlockCurrentBounds( int x, int y, int z, RenderBlocks renderer );
 
 	/**
