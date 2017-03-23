@@ -22,6 +22,7 @@ package appeng.transformer.asm;
 import appeng.helpers.Reflected;
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraft.launchwrapper.LaunchClassLoader;
 import org.apache.logging.log4j.Level;
 
 import java.net.URL;
@@ -37,8 +38,11 @@ import java.net.URLConnection;
 public class ApiRepairer implements IClassTransformer
 {
 
+	private LaunchClassLoader launchClassLoader;
+
 	public ApiRepairer()
 	{
+		launchClassLoader = (LaunchClassLoader) this.getClass().getClassLoader();
 		FMLRelaunchLog.log( "AE2-ApiRepairer", Level.INFO, "AE2 ApiFixer Installed" );
 	}
 
@@ -59,11 +63,13 @@ public class ApiRepairer implements IClassTransformer
 					FMLRelaunchLog.log( "AE2-ApiRepairer", Level.ERROR, "Failed to fix api class [%s] because the new class couldn't be read", transformedName );
 					return basicClass;
 				}
-				else
+				for( IClassTransformer ct : launchClassLoader.getTransformers() )
 				{
-					FMLRelaunchLog.log( "AE2-ApiRepairer", Level.INFO, "Successfully fix api class [%s]", transformedName );
-					return bytes;
+					if( ct == this )
+						continue;
+					bytes = ct.transform( name, transformedName, bytes );
 				}
+				return bytes;
 			}
 			catch( Exception e )
 			{
