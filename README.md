@@ -1,5 +1,5 @@
 [![Travis](https://img.shields.io/travis/AppliedEnergistics/Applied-Energistics-2.svg?maxAge=2592000&style=flat-square)](https://travis-ci.org/AppliedEnergistics/Applied-Energistics-2)
-[![Latest Release](https://img.shields.io/github/release/AppliedEnergistics/Applied-Energistics-2.svg?label=Latest Release&style=flat-square)](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases)
+[![Latest Release](https://img.shields.io/github/release/AppliedEnergistics/Applied-Energistics-2.svg?label=Latest%20Release&style=flat-square)](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases)
 
 # Applied Energistics 2
 
