@@ -19,27 +19,25 @@
 package appeng.parts.automation;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartHost;
+import appeng.api.parts.IPartRenderHelper;
+import appeng.client.texture.CableBusTextures;
+import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartHost;
-import appeng.api.parts.IPartRenderHelper;
-import appeng.client.texture.CableBusTextures;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
@@ -82,7 +80,7 @@ public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 	@Override
 	protected List<ItemStack> obtainBlockDrops( final WorldServer w, final int x, final int y, final int z )
 	{
-		final FakePlayer fakePlayer = FakePlayerFactory.getMinecraft( w );
+		final EntityPlayer fakePlayer = Platform.getPlayer( w );
 		final Block block = w.getBlock( x, y, z );
 		final int blockMeta = w.getBlockMetadata( x, y, z );
 

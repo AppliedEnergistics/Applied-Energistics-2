@@ -19,23 +19,53 @@
 package appeng.util;
 
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.security.InvalidParameterException;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.WeakHashMap;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import appeng.api.AEApi;
+import appeng.api.config.*;
+import appeng.api.definitions.IItemDefinition;
+import appeng.api.definitions.IMaterials;
+import appeng.api.definitions.IParts;
+import appeng.api.implementations.items.IAEItemPowerStorage;
+import appeng.api.implementations.items.IAEWrench;
+import appeng.api.implementations.tiles.ITileStorageMonitorable;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergySource;
+import appeng.api.networking.security.*;
+import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.storage.IMEInventory;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.StorageChannel;
+import appeng.api.storage.data.*;
+import appeng.api.util.AEColor;
+import appeng.api.util.DimensionalCoord;
+import appeng.core.AEConfig;
+import appeng.core.AELog;
+import appeng.core.AppEng;
+import appeng.core.features.AEFeature;
+import appeng.core.stats.Stats;
+import appeng.core.sync.GuiBridge;
+import appeng.core.sync.GuiHostType;
+import appeng.hooks.TickHandler;
+import appeng.integration.IntegrationRegistry;
+import appeng.integration.IntegrationType;
+import appeng.me.GridAccessException;
+import appeng.me.GridNode;
+import appeng.me.helpers.AENetworkProxy;
+import appeng.util.item.AEItemStack;
+import appeng.util.item.AESharedNBT;
+import appeng.util.item.OreHelper;
+import appeng.util.item.OreReference;
+import appeng.util.prioitylist.IPartitionList;
+import buildcraft.api.tools.IToolWrench;
+import com.mojang.authlib.GameProfile;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.relauncher.ReflectionHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -62,11 +92,7 @@ import net.minecraft.server.management.PlayerManager;
 import net.minecraft.stats.Achievement;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
@@ -74,69 +100,13 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.relauncher.ReflectionHelper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import buildcraft.api.tools.IToolWrench;
-
-import appeng.api.AEApi;
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.Actionable;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.PowerUnits;
-import appeng.api.config.SearchBoxMode;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.config.SortOrder;
-import appeng.api.definitions.IItemDefinition;
-import appeng.api.definitions.IMaterials;
-import appeng.api.definitions.IParts;
-import appeng.api.implementations.items.IAEItemPowerStorage;
-import appeng.api.implementations.items.IAEWrench;
-import appeng.api.implementations.tiles.ITileStorageMonitorable;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.energy.IEnergySource;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.IActionHost;
-import appeng.api.networking.security.ISecurityGrid;
-import appeng.api.networking.security.MachineSource;
-import appeng.api.networking.security.PlayerSource;
-import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.StorageChannel;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAETagCompound;
-import appeng.api.storage.data.IItemList;
-import appeng.api.util.AEColor;
-import appeng.api.util.DimensionalCoord;
-import appeng.core.AEConfig;
-import appeng.core.AELog;
-import appeng.core.AppEng;
-import appeng.core.features.AEFeature;
-import appeng.core.stats.Stats;
-import appeng.core.sync.GuiBridge;
-import appeng.core.sync.GuiHostType;
-import appeng.hooks.TickHandler;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
-import appeng.me.GridAccessException;
-import appeng.me.GridNode;
-import appeng.me.helpers.AENetworkProxy;
-import appeng.util.item.AEItemStack;
-import appeng.util.item.AESharedNBT;
-import appeng.util.item.OreHelper;
-import appeng.util.item.OreReference;
-import appeng.util.prioitylist.IPartitionList;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.security.InvalidParameterException;
+import java.text.DecimalFormat;
+import java.util.*;
 
 
 /**
@@ -161,6 +131,7 @@ public class Platform
 	private static Class playerInstance;
 	private static Method getOrCreateChunkWatcher;
 	private static Method sendToAllPlayersWatchingChunk;
+	private static GameProfile fakeProfile = new GameProfile( UUID.fromString( "839eb18c-50bc-400c-8291-9383f09763e7" ), "[AE2Player]" );
 
 	public static Random getRandom()
 	{
@@ -175,9 +146,8 @@ public class Platform
 	/**
 	 * This displays the value for encoded longs ( double *100 )
 	 *
-	 * @param n to be formatted long value
+	 * @param n      to be formatted long value
 	 * @param isRate if true it adds a /t to the formatted string
-	 *
 	 * @return formatted long value
 	 */
 	public static String formatPowerLong( final long n, final boolean isRate )
@@ -1060,7 +1030,7 @@ public class Platform
 			return wrp;
 		}
 
-		final EntityPlayer p = FakePlayerFactory.getMinecraft( w );
+		final EntityPlayer p = FakePlayerFactory.get( w, fakeProfile );
 		FAKE_PLAYERS.put( w, p );
 		return p;
 	}

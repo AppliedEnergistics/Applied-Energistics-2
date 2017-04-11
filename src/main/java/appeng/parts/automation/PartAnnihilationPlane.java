@@ -19,27 +19,6 @@
 package appeng.parts.automation;
 
 
-import java.util.List;
-
-import com.google.common.collect.Lists;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGridNode;
@@ -68,6 +47,26 @@ import appeng.server.ServerHelper;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import com.google.common.collect.Lists;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.event.world.BlockEvent;
+
+import java.util.List;
 
 
 public class PartAnnihilationPlane extends PartBasicState implements IGridTickable, IWorldCallable<TickRateModulation>
@@ -341,7 +340,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	 * amount.
 	 *
 	 * @param entityItem the entity to update or destroy
-	 * @param overflow the leftover {@link IAEItemStack}
+	 * @param overflow   the leftover {@link IAEItemStack}
 	 * @return true, if the entity was changed otherwise false.
 	 */
 	private boolean handleOverflow( final EntityItem entityItem, final IAEItemStack overflow )
@@ -491,8 +490,11 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		final float hardness = block.getBlockHardness( w, x, y, z );
 		final boolean ignoreMaterials = material == Material.air || material == Material.lava || material == Material.water || material.isLiquid();
 		final boolean ignoreBlocks = block == Blocks.bedrock || block == Blocks.end_portal || block == Blocks.end_portal_frame || block == Blocks.command_block;
+		BlockEvent.BreakEvent event = new BlockEvent.BreakEvent( x, y, z, w, block, w.getBlockMetadata( x, y, z ), Platform.getPlayer( w ) );
+		MinecraftForge.EVENT_BUS.post( event );
+		final boolean havePermission = !event.isCanceled();
 
-		return !ignoreMaterials && !ignoreBlocks && !w.isAirBlock( x, y, z ) && w.blockExists( x, y, z ) && w.canMineBlock( Platform.getPlayer( w ), x, y, z ) && hardness >= 0f;
+		return havePermission && !ignoreMaterials && !ignoreBlocks && !w.isAirBlock( x, y, z ) && w.blockExists( x, y, z ) && w.canMineBlock( Platform.getPlayer( w ), x, y, z ) && hardness >= 0f;
 	}
 
 	protected List<ItemStack> obtainBlockDrops( final WorldServer w, final int x, final int y, final int z )
@@ -520,11 +522,10 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 	/**
 	 * Checks if the network can store the possible drops.
-	 *
+	 * <p>
 	 * It also sets isAccepting to false, if the item can not be stored.
 	 *
 	 * @param itemStacks an array of {@link ItemStack} to test
-	 *
 	 * @return true, if the network can store at least a single item of all drops or no drops are reported
 	 */
 	private boolean canStoreItemStacks( final List<ItemStack> itemStacks )
