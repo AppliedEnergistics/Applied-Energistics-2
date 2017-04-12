@@ -19,23 +19,21 @@
 package appeng.parts.reporting;
 
 
+import appeng.api.parts.IPartRenderHelper;
+import appeng.api.util.AEColor;
+import appeng.client.texture.CableBusTextures;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.api.parts.IPartRenderHelper;
-import appeng.api.util.AEColor;
-import appeng.client.texture.CableBusTextures;
-
 
 /**
  * A very simple part for emitting light.
- *
+ * <p>
  * Opposed to the other subclass of {@link AbstractPartReporting}, it will only use the bright front texture.
  *
  * @author AlgorithmX2

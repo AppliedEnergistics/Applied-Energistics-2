@@ -19,16 +19,10 @@
 package appeng.util.item;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
+import appeng.api.storage.data.IAEItemStack;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.storage.data.IAEItemStack;
+import java.util.*;
 
 
 public class OreReference

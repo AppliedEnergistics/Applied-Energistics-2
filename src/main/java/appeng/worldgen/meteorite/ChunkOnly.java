@@ -1,12 +1,10 @@
-
 package appeng.worldgen.meteorite;
 
 
+import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-
-import appeng.util.Platform;
 
 
 public class ChunkOnly extends StandardWorld

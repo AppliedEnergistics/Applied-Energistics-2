@@ -19,10 +19,10 @@
 package appeng.services.version.github;
 
 
-import javax.annotation.Nonnull;
-
 import appeng.services.version.MissingVersion;
 import appeng.services.version.Version;
+
+import javax.annotation.Nonnull;
 
 
 /**

@@ -19,13 +19,12 @@
 package appeng.me.cache.helpers;
 
 
-import java.util.HashMap;
-
-import net.minecraft.world.World;
-
 import appeng.api.networking.IGridNode;
 import appeng.parts.p2p.PartP2PTunnelME;
 import appeng.util.IWorldCallable;
+import net.minecraft.world.World;
+
+import java.util.HashMap;
 
 
 public class Connections implements IWorldCallable<Void>

@@ -19,16 +19,14 @@
 package appeng.fmp;
 
 
-import javax.annotation.Nullable;
-
-import net.minecraft.block.Block;
-
-import codechicken.multipart.TMultiPart;
-
 import appeng.block.AEBaseBlock;
 import appeng.block.misc.BlockQuartzTorch;
 import appeng.block.networking.BlockCableBus;
 import appeng.core.Api;
+import codechicken.multipart.TMultiPart;
+import net.minecraft.block.Block;
+
+import javax.annotation.Nullable;
 
 
 public enum PartRegistry

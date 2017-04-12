@@ -19,11 +19,6 @@
 package appeng.me;
 
 
-import java.util.Arrays;
-import java.util.EnumSet;
-
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.exceptions.ExistingConnectionException;
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.exceptions.NullNodeConnectionException;
@@ -41,6 +36,10 @@ import appeng.core.features.AEFeature;
 import appeng.me.pathfinding.IPathItem;
 import appeng.util.Platform;
 import appeng.util.ReadOnlyCollection;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Arrays;
+import java.util.EnumSet;
 
 
 public class GridConnection implements IGridConnection, IPathItem

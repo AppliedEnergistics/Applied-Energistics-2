@@ -23,14 +23,6 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-
-import org.lwjgl.input.Mouse;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IParts;
@@ -47,6 +39,12 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.parts.reporting.PartTerminal;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
+import org.lwjgl.input.Mouse;
+
+import java.io.IOException;
 
 
 public class GuiCraftingStatus extends GuiCraftingCPU

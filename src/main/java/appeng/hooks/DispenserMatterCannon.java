@@ -19,6 +19,8 @@
 package appeng.hooks;
 
 
+import appeng.items.tools.powered.ToolMassCannon;
+import appeng.util.Platform;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
@@ -29,9 +31,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import appeng.items.tools.powered.ToolMassCannon;
-import appeng.util.Platform;
 
 
 public final class DispenserMatterCannon extends BehaviorDefaultDispenseItem

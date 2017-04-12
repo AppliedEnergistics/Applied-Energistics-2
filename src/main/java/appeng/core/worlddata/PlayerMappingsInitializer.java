@@ -19,15 +19,14 @@
 package appeng.core.worlddata;
 
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
+import appeng.core.AELog;
+import appeng.util.UUIDMatcher;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Property;
 
-import appeng.core.AELog;
-import appeng.util.UUIDMatcher;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 
 /**
@@ -49,7 +48,7 @@ class PlayerMappingsInitializer
 	 * where the UUIDs were introduced.
 	 *
 	 * @param playerList the category for the player list, generally extracted using the "players" tag
-	 * @param log the logger used to warn the server or user of faulty entries
+	 * @param log        the logger used to warn the server or user of faulty entries
 	 */
 	PlayerMappingsInitializer( final ConfigCategory playerList )
 	{

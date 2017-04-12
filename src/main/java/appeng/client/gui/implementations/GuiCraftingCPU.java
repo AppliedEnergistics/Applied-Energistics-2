@@ -19,22 +19,6 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import com.google.common.base.Joiner;
-
-import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.AEApi;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -53,6 +37,19 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.util.Platform;
 import appeng.util.ReadableNumberConverter;
+import com.google.common.base.Joiner;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
+import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.lwjgl.opengl.GL11;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 public class GuiCraftingCPU extends AEBaseGui implements ISortSource

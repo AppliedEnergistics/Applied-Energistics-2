@@ -1,4 +1,3 @@
-
 package appeng.util;
 
 
@@ -55,8 +54,7 @@ public enum ReadableNumberConverter implements ISlimReadableNumberConverter, IWi
 	 * restricts a string representation of a number to a specific width
 	 *
 	 * @param number to be formatted number
-	 * @param width width limitation of the resulting number
-	 *
+	 * @param width  width limitation of the resulting number
 	 * @return formatted number restricted by the width limitation
 	 */
 	private String toReadableFormRestrictedByWidth( final long number, final int width )

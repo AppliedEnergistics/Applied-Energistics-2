@@ -19,13 +19,12 @@
 package appeng.parts;
 
 
-import javax.annotation.Nullable;
-
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.implementations.parts.IPartCable;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import javax.annotation.Nullable;
 
 
 /**

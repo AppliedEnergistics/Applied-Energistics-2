@@ -19,9 +19,9 @@
 package appeng.debug;
 
 
-import java.util.EnumSet;
-import java.util.List;
-
+import appeng.block.AEBaseTileBlock;
+import appeng.core.AppEng;
+import appeng.core.features.AEFeature;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.world.World;
@@ -29,9 +29,8 @@ import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.core.AppEng;
-import appeng.core.features.AEFeature;
+import java.util.EnumSet;
+import java.util.List;
 
 
 public class BlockChunkloader extends AEBaseTileBlock implements LoadingCallback

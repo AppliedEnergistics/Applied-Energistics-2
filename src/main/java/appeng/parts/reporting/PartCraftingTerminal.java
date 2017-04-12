@@ -19,17 +19,16 @@
 package appeng.parts.reporting;
 
 
-import java.util.List;
-
+import appeng.client.texture.CableBusTextures;
+import appeng.core.sync.GuiBridge;
+import appeng.helpers.Reflected;
+import appeng.tile.inventory.AppEngInternalInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import appeng.client.texture.CableBusTextures;
-import appeng.core.sync.GuiBridge;
-import appeng.helpers.Reflected;
-import appeng.tile.inventory.AppEngInternalInventory;
+import java.util.List;
 
 
 public class PartCraftingTerminal extends AbstractPartTerminal

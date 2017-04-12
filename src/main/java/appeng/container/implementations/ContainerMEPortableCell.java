@@ -19,14 +19,13 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.container.interfaces.IInventorySlotAware;
 import appeng.util.Platform;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
 
 
 public class ContainerMEPortableCell extends ContainerMEMonitorable

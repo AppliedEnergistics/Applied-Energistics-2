@@ -19,17 +19,6 @@
 package appeng.crafting;
 
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingGrid;
@@ -40,6 +29,15 @@ import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerNull;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.util.Platform;
+import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 
 public class CraftingTreeProcess

@@ -19,15 +19,14 @@
 package appeng.util.inv;
 
 
-import java.util.Iterator;
-import java.util.List;
-
-import net.minecraft.item.ItemStack;
-
 import appeng.api.config.FuzzyMode;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.iterators.StackToSlotIterator;
+import net.minecraft.item.ItemStack;
+
+import java.util.Iterator;
+import java.util.List;
 
 
 public class AdaptorList extends InventoryAdaptor

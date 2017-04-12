@@ -19,11 +19,18 @@
 package appeng.items.misc;
 
 
-import java.util.EnumSet;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
+import appeng.api.AEApi;
+import appeng.api.definitions.IMaterials;
+import appeng.api.implementations.items.IGrowableCrystal;
+import appeng.api.recipes.ResolverResult;
+import appeng.core.AppEng;
+import appeng.core.features.AEFeature;
+import appeng.core.localization.ButtonToolTips;
+import appeng.entity.EntityGrowingCrystal;
+import appeng.entity.EntityIds;
+import appeng.items.AEBaseItem;
+import appeng.util.Platform;
+import cpw.mods.fml.common.registry.EntityRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -38,19 +45,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-import cpw.mods.fml.common.registry.EntityRegistry;
-
-import appeng.api.AEApi;
-import appeng.api.definitions.IMaterials;
-import appeng.api.implementations.items.IGrowableCrystal;
-import appeng.api.recipes.ResolverResult;
-import appeng.core.AppEng;
-import appeng.core.features.AEFeature;
-import appeng.core.localization.ButtonToolTips;
-import appeng.entity.EntityGrowingCrystal;
-import appeng.entity.EntityIds;
-import appeng.items.AEBaseItem;
-import appeng.util.Platform;
+import javax.annotation.Nullable;
+import java.util.EnumSet;
+import java.util.List;
 
 
 public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal

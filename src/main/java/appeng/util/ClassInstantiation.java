@@ -19,12 +19,11 @@
 package appeng.util;
 
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
+import appeng.core.AELog;
 import com.google.common.base.Optional;
 
-import appeng.core.AELog;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 
 public class ClassInstantiation<T>
@@ -40,8 +39,7 @@ public class ClassInstantiation<T>
 
 	public Optional<T> get()
 	{
-		@SuppressWarnings( "unchecked" )
-		final Constructor<T>[] constructors = (Constructor<T>[]) this.template.getConstructors();
+		@SuppressWarnings( "unchecked" )        final Constructor<T>[] constructors = (Constructor<T>[]) this.template.getConstructors();
 
 		for( final Constructor<T> constructor : constructors )
 		{

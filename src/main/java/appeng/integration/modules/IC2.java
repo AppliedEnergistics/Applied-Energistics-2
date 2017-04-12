@@ -19,13 +19,6 @@
 package appeng.integration.modules;
 
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.MinecraftForge;
-
-import ic2.api.energy.tile.IEnergyTile;
-import ic2.api.recipe.RecipeInputItemStack;
-
 import appeng.api.AEApi;
 import appeng.api.IAppEngApi;
 import appeng.api.config.TunnelType;
@@ -37,6 +30,11 @@ import appeng.integration.IntegrationHelper;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IIC2;
+import ic2.api.energy.tile.IEnergyTile;
+import ic2.api.recipe.RecipeInputItemStack;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.MinecraftForge;
 
 
 public class IC2 implements IIC2, IIntegrationModule

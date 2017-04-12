@@ -19,19 +19,16 @@
 package appeng.parts.layers;
 
 
-import javax.annotation.Nullable;
-
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-
-import li.cil.oc.api.network.Node;
-import li.cil.oc.api.network.SidedEnvironment;
-
 import appeng.api.parts.IPart;
 import appeng.api.parts.LayerBase;
 import appeng.core.Registration;
 import appeng.helpers.Reflected;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import li.cil.oc.api.network.Node;
+import li.cil.oc.api.network.SidedEnvironment;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import javax.annotation.Nullable;
 
 
 /**

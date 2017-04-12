@@ -24,18 +24,17 @@
 package appeng.api.util;
 
 
-import javax.annotation.Nullable;
-
+import appeng.api.definitions.IBlockDefinition;
+import appeng.api.definitions.IComparableDefinition;
+import appeng.api.definitions.IItemDefinition;
+import appeng.api.definitions.ITileDefinition;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 
-import appeng.api.definitions.IBlockDefinition;
-import appeng.api.definitions.IComparableDefinition;
-import appeng.api.definitions.IItemDefinition;
-import appeng.api.definitions.ITileDefinition;
+import javax.annotation.Nullable;
 
 
 /**
@@ -48,7 +47,6 @@ public interface AEItemDefinition
 {
 	/**
 	 * @return the {@link Block} Implementation if applicable
-	 *
 	 * @deprecated use {@link IBlockDefinition#maybeBlock()}
 	 */
 	@Deprecated
@@ -57,7 +55,6 @@ public interface AEItemDefinition
 
 	/**
 	 * @return the {@link Item} Implementation if applicable
-	 *
 	 * @deprecated use {@link IItemDefinition#maybeItem()}
 	 */
 	@Deprecated
@@ -66,7 +63,6 @@ public interface AEItemDefinition
 
 	/**
 	 * @return the {@link TileEntity} Class if applicable.
-	 *
 	 * @deprecated use {@link ITileDefinition#maybeEntity()}
 	 */
 	@Deprecated
@@ -75,7 +71,6 @@ public interface AEItemDefinition
 
 	/**
 	 * @return an {@link ItemStack} with specified quantity of this item.
-	 *
 	 * @deprecated use {@link IItemDefinition#maybeStack(int)}
 	 */
 	@Deprecated
@@ -86,9 +81,7 @@ public interface AEItemDefinition
 	 * Compare {@link ItemStack} with this
 	 *
 	 * @param comparableItem compared item
-	 *
 	 * @return true if the item stack is a matching item.
-	 *
 	 * @deprecated use {@link IComparableDefinition#isSameAs(ItemStack)}
 	 */
 	@Deprecated
@@ -101,9 +94,7 @@ public interface AEItemDefinition
 	 * @param x     x pos of block
 	 * @param y     y pos of block
 	 * @param z     z pos of block
-	 *
 	 * @return if the block is placed in the world at the specific location.
-	 *
 	 * @deprecated use {@link IComparableDefinition#isSameAs(IBlockAccess, int, int, int)} }
 	 */
 	@Deprecated

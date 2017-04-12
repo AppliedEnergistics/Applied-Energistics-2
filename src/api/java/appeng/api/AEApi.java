@@ -24,14 +24,14 @@
 package appeng.api;
 
 
-import java.lang.reflect.Field;
-
 import appeng.api.exceptions.CoreInaccessibleException;
+
+import java.lang.reflect.Field;
 
 
 /**
  * Entry point for api.
- *
+ * <p>
  * Available IMCs:
  */
 public enum AEApi

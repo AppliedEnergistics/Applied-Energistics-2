@@ -19,14 +19,13 @@
 package appeng.core.stats;
 
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.stats.Achievement;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.stats.Achievement;
 
 
 public enum Achievements

@@ -19,11 +19,11 @@
 package appeng.me.cache.helpers;
 
 
-import java.util.Collection;
-import java.util.Iterator;
-
 import appeng.parts.p2p.PartP2PTunnel;
 import appeng.util.iterators.NullIterator;
+
+import java.util.Collection;
+import java.util.Iterator;
 
 
 public class TunnelCollection<T extends PartP2PTunnel> implements Iterable<T>

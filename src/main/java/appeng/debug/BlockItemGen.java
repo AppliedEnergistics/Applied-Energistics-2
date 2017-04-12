@@ -19,13 +19,12 @@
 package appeng.debug;
 
 
-import java.util.EnumSet;
-
+import appeng.block.AEBaseTileBlock;
+import appeng.core.features.AEFeature;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.core.features.AEFeature;
+import java.util.EnumSet;
 
 
 public class BlockItemGen extends AEBaseTileBlock

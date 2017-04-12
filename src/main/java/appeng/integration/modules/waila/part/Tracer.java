@@ -40,12 +40,11 @@ public final class Tracer
 	 * Trace view of players to blocks.
 	 * Ignore all which are out of reach.
 	 *
-	 * @param world word of block
+	 * @param world  word of block
 	 * @param player player viewing block
-	 * @param x x pos of block
-	 * @param y y pos of block
-	 * @param z z pos of block
-	 *
+	 * @param x      x pos of block
+	 * @param y      y pos of block
+	 * @param z      z pos of block
 	 * @return trace movement. Can be null
 	 */
 	public MovingObjectPosition retraceBlock( final World world, final EntityPlayerMP player, final int x, final int y, final int z )
@@ -64,7 +63,6 @@ public final class Tracer
 	 * Gets the view point of a player
 	 *
 	 * @param player player with head
-	 *
 	 * @return view point of player
 	 */
 	private Vec3 getCorrectedHeadVec( final EntityPlayer player )
@@ -88,7 +86,6 @@ public final class Tracer
 
 	/**
 	 * @param player multi-player player
-	 *
 	 * @return block reach distance of player
 	 */
 	private double getBlockReachDistance_server( final EntityPlayerMP player )

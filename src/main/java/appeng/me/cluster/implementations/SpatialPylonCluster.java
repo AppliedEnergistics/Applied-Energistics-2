@@ -19,14 +19,14 @@
 package appeng.me.cluster.implementations;
 
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import appeng.api.networking.IGridHost;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.cluster.IAECluster;
 import appeng.tile.spatial.TileSpatialPylon;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class SpatialPylonCluster implements IAECluster

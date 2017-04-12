@@ -19,11 +19,10 @@
 package appeng.core.worlddata;
 
 
-import java.util.UUID;
+import com.google.common.base.Optional;
 
 import javax.annotation.Nonnull;
-
-import com.google.common.base.Optional;
+import java.util.UUID;
 
 
 /**
@@ -39,7 +38,6 @@ public interface IWorldPlayerMapping
 	 * Should not happen though.
 	 *
 	 * @param id ID of the to be searched player
-	 *
 	 * @return maybe the UUID of the searched player
 	 */
 	@Nonnull
@@ -48,7 +46,7 @@ public interface IWorldPlayerMapping
 	/**
 	 * Put in new players when they join the server
 	 *
-	 * @param id id of new player
+	 * @param id   id of new player
 	 * @param uuid UUID of new player
 	 */
 	void put( int id, @Nonnull UUID uuid );

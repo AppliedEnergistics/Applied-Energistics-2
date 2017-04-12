@@ -19,20 +19,19 @@
 package appeng.client.render;
 
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
 import appeng.parts.BusCollisionHelper;
 import appeng.parts.CableBusContainer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 
 public class CableRenderHelper

@@ -19,14 +19,13 @@
 package appeng.core.features.registries;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.item.ItemStack;
-
 import appeng.api.features.IItemComparison;
 import appeng.api.features.IItemComparisonProvider;
 import appeng.api.features.ISpecialComparisonRegistry;
+import net.minecraft.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SpecialComparisonRegistry implements ISpecialComparisonRegistry

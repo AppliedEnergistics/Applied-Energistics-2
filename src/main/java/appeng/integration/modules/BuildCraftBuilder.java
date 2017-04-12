@@ -19,17 +19,6 @@
 package appeng.integration.modules;
 
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import com.google.common.base.Optional;
-
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
-
-import buildcraft.api.blueprints.BuilderAPI;
-import buildcraft.api.blueprints.ISchematicRegistry;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
@@ -42,6 +31,14 @@ import appeng.integration.IntegrationHelper;
 import appeng.integration.modules.BCHelpers.AECableSchematicTile;
 import appeng.integration.modules.BCHelpers.AEGenericSchematicTile;
 import appeng.integration.modules.BCHelpers.AERotatableBlockSchematic;
+import buildcraft.api.blueprints.BuilderAPI;
+import buildcraft.api.blueprints.ISchematicRegistry;
+import com.google.common.base.Optional;
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 
 /**

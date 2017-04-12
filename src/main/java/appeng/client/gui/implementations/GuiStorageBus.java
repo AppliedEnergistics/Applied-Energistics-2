@@ -19,18 +19,7 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-
-import org.lwjgl.input.Mouse;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
-
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.ActionItems;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.Settings;
-import appeng.api.config.StorageFilter;
+import appeng.api.config.*;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerStorageBus;
@@ -42,6 +31,11 @@ import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.parts.misc.PartStorageBus;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.InventoryPlayer;
+import org.lwjgl.input.Mouse;
+
+import java.io.IOException;
 
 
 public class GuiStorageBus extends GuiUpgradeable

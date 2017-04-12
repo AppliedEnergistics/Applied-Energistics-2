@@ -19,20 +19,19 @@
 package appeng.client.render.blocks;
 
 
-import java.util.Random;
-
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
 import appeng.block.solids.BlockQuartzGlass;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.client.texture.OffsetIcon;
 import appeng.tile.AEBaseTile;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.IItemRenderer.ItemRenderType;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Random;
 
 
 public class RenderQuartzGlass extends BaseBlockRender<BlockQuartzGlass, AEBaseTile>

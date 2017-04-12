@@ -19,17 +19,6 @@
 package appeng.block;
 
 
-import java.text.MessageFormat;
-import java.util.List;
-
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.PowerUnits;
 import appeng.api.definitions.IBlockDefinition;
@@ -37,6 +26,15 @@ import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.core.Api;
 import appeng.core.localization.GuiText;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+
+import java.text.MessageFormat;
+import java.util.List;
 
 
 public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEItemPowerStorage

@@ -19,17 +19,15 @@
 package appeng.recipes.ores;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
+import appeng.core.AELog;
+import appeng.recipes.game.IRecipeBakeable;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.oredict.OreDictionary;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-
-import appeng.core.AELog;
-import appeng.recipes.game.IRecipeBakeable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class OreDictionaryHandler
@@ -67,7 +65,6 @@ public class OreDictionaryHandler
 	 * Just limit what items are sent to the final listeners, I got sick of strange items showing up...
 	 *
 	 * @param name name about cared item
-	 *
 	 * @return true if it should care
 	 */
 	private boolean shouldCare( final String name )

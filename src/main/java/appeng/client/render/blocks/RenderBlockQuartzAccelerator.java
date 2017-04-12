@@ -19,15 +19,14 @@
 package appeng.client.render.blocks;
 
 
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
-
 import appeng.block.misc.BlockQuartzGrowthAccelerator;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.misc.TileQuartzGrowthAccelerator;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 
 
 public class RenderBlockQuartzAccelerator extends BaseBlockRender<BlockQuartzGrowthAccelerator, TileQuartzGrowthAccelerator>

@@ -19,12 +19,6 @@
 package appeng.tile.networking;
 
 
-import java.util.EnumSet;
-
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkControllerChange;
@@ -38,6 +32,11 @@ import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkPowerTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.EnumSet;
 
 
 public class TileController extends AENetworkPowerTile

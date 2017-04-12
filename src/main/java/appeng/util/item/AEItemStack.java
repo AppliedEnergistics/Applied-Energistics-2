@@ -19,33 +19,25 @@
 package appeng.util.item;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.security.InvalidParameterException;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
-import io.netty.buffer.ByteBuf;
-
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
-
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAETagCompound;
 import appeng.util.Platform;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
+
+import javax.annotation.Nullable;
+import java.io.*;
+import java.security.InvalidParameterException;
+import java.util.List;
 
 
 public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemStack, Comparable<AEItemStack>
@@ -478,7 +470,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		if( ia instanceof AEItemStack )
 		{
 			return ( (AEItemStack) ia ).getDefinition().equals( this.getDefinition() );// && def.tagCompound ==
-																						// ((AEItemStack)
+			// ((AEItemStack)
 			// ia).def.tagCompound;
 		}
 		else if( ia instanceof ItemStack )

@@ -19,8 +19,6 @@
 package appeng.me.storage;
 
 
-import net.minecraft.item.ItemStack;
-
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -31,6 +29,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.items.contents.CellConfig;
 import appeng.util.item.AEItemStack;
+import net.minecraft.item.ItemStack;
 
 
 public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>

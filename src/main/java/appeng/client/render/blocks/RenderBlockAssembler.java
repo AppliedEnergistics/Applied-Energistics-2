@@ -19,17 +19,6 @@
 package appeng.client.render.blocks;
 
 
-import java.util.EnumSet;
-
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.networking.IGridHost;
 import appeng.api.parts.IBoxProvider;
 import appeng.api.parts.IPart;
@@ -45,6 +34,16 @@ import appeng.client.texture.TaughtIcon;
 import appeng.parts.networking.PartCable;
 import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.util.Platform;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.IItemRenderer.ItemRenderType;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.EnumSet;
 
 
 public class RenderBlockAssembler extends BaseBlockRender<BlockMolecularAssembler, TileMolecularAssembler> implements IBoxProvider

@@ -19,6 +19,13 @@
 package appeng.entity;
 
 
+import appeng.api.implementations.items.IGrowableCrystal;
+import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
+import appeng.client.EffectType;
+import appeng.core.AEConfig;
+import appeng.core.CommonHelper;
+import appeng.core.features.AEFeature;
+import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.EntityItem;
@@ -27,14 +34,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-
-import appeng.api.implementations.items.IGrowableCrystal;
-import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
-import appeng.client.EffectType;
-import appeng.core.AEConfig;
-import appeng.core.CommonHelper;
-import appeng.core.features.AEFeature;
-import appeng.util.Platform;
 
 
 public final class EntityGrowingCrystal extends EntityItem

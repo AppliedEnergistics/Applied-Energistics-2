@@ -19,13 +19,11 @@
 package appeng.tile.powersink;
 
 
-import net.minecraftforge.common.util.ForgeDirection;
-
-import mekanism.api.energy.IStrictEnergyAcceptor;
-
 import appeng.api.config.PowerUnits;
 import appeng.integration.IntegrationType;
 import appeng.transformer.annotations.Integration.Interface;
+import mekanism.api.energy.IStrictEnergyAcceptor;
+import net.minecraftforge.common.util.ForgeDirection;
 
 
 @Interface( iname = IntegrationType.Mekanism, iface = "mekanism.api.energy.IStrictEnergyAcceptor" )

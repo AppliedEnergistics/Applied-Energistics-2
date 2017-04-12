@@ -19,10 +19,9 @@
 package appeng.parts.reporting;
 
 
-import net.minecraft.item.ItemStack;
-
 import appeng.client.texture.CableBusTextures;
 import appeng.helpers.Reflected;
+import net.minecraft.item.ItemStack;
 
 
 /**

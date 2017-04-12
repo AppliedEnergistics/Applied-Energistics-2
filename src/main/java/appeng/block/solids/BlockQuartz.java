@@ -19,12 +19,11 @@
 package appeng.block.solids;
 
 
-import java.util.EnumSet;
-
-import net.minecraft.block.material.Material;
-
 import appeng.block.AEDecorativeBlock;
 import appeng.core.features.AEFeature;
+import net.minecraft.block.material.Material;
+
+import java.util.EnumSet;
 
 
 public class BlockQuartz extends AEDecorativeBlock

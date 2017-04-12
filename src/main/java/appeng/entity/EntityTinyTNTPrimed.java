@@ -19,8 +19,15 @@
 package appeng.entity;
 
 
+import appeng.api.AEApi;
+import appeng.core.AEConfig;
+import appeng.core.CommonHelper;
+import appeng.core.features.AEFeature;
+import appeng.core.sync.packets.PacketMockExplosion;
+import appeng.helpers.Reflected;
+import appeng.util.Platform;
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import io.netty.buffer.ByteBuf;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -32,16 +39,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
-
-import appeng.api.AEApi;
-import appeng.core.AEConfig;
-import appeng.core.CommonHelper;
-import appeng.core.features.AEFeature;
-import appeng.core.sync.packets.PacketMockExplosion;
-import appeng.helpers.Reflected;
-import appeng.util.Platform;
 
 
 public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntityAdditionalSpawnData

@@ -19,20 +19,17 @@
 package appeng.core.features;
 
 
-import java.util.EnumSet;
-
-import com.google.common.base.Optional;
-
-import net.minecraft.tileentity.TileEntity;
-
-import cpw.mods.fml.common.registry.GameRegistry;
-
 import appeng.api.definitions.ITileDefinition;
 import appeng.block.AEBaseTileBlock;
 import appeng.block.networking.BlockCableBus;
 import appeng.core.CommonHelper;
 import appeng.core.CreativeTab;
 import appeng.util.Platform;
+import com.google.common.base.Optional;
+import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.tileentity.TileEntity;
+
+import java.util.EnumSet;
 
 
 public final class AECableBusFeatureHandler implements IFeatureHandler

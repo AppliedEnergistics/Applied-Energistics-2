@@ -19,19 +19,8 @@
 package appeng.container.implementations;
 
 
-import java.util.Iterator;
-
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.AEApi;
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.config.Settings;
-import appeng.api.config.StorageFilter;
-import appeng.api.config.Upgrades;
+import appeng.api.config.*;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
@@ -42,6 +31,11 @@ import appeng.container.slot.SlotRestrictedInput;
 import appeng.parts.misc.PartStorageBus;
 import appeng.util.Platform;
 import appeng.util.iterators.NullIterator;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+
+import java.util.Iterator;
 
 
 public class ContainerStorageBus extends ContainerUpgradeable

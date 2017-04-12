@@ -19,16 +19,14 @@
 package appeng.core.features;
 
 
+import appeng.api.definitions.IItemDefinition;
+import appeng.util.Platform;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
-
-import appeng.api.definitions.IItemDefinition;
-import appeng.util.Platform;
 
 
 public class ItemDefinition implements IItemDefinition

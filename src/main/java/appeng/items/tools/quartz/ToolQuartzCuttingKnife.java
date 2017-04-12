@@ -19,15 +19,6 @@
 package appeng.items.tools.quartz;
 
 
-import java.util.EnumSet;
-
-import com.google.common.base.Optional;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.core.features.AEFeature;
@@ -35,6 +26,13 @@ import appeng.core.sync.GuiBridge;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.QuartzKnifeObj;
 import appeng.util.Platform;
+import com.google.common.base.Optional;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.EnumSet;
 
 
 public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem

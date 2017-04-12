@@ -19,18 +19,17 @@
 package appeng.container.guisync;
 
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.EnumSet;
-
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.ICrafting;
-
 import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketProgressBar;
 import appeng.core.sync.packets.PacketValueConfig;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.ICrafting;
+
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.EnumSet;
 
 
 public class SyncData

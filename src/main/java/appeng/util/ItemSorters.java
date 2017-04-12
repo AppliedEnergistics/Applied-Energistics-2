@@ -19,14 +19,14 @@
 package appeng.util;
 
 
-import java.util.Comparator;
-
 import appeng.api.config.SortDir;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IInvTweaks;
 import appeng.util.item.AEItemStack;
+
+import java.util.Comparator;
 
 
 public class ItemSorters

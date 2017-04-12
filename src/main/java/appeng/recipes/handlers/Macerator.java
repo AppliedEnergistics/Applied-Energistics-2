@@ -19,10 +19,6 @@
 package appeng.recipes.handlers;
 
 
-import java.util.List;
-
-import net.minecraft.item.ItemStack;
-
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RecipeError;
 import appeng.api.exceptions.RegistrationError;
@@ -34,6 +30,9 @@ import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IIC2;
 import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
+import net.minecraft.item.ItemStack;
+
+import java.util.List;
 
 
 public class Macerator implements ICraftHandler, IWebsiteSerializer

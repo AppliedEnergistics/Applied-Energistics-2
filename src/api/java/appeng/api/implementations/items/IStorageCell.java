@@ -24,20 +24,19 @@
 package appeng.api.implementations.items;
 
 
-import net.minecraft.item.ItemStack;
-
 import appeng.api.storage.ICellWorkbenchItem;
 import appeng.api.storage.data.IAEItemStack;
+import net.minecraft.item.ItemStack;
 
 
 /**
  * Any item which implements this can be treated as an IMEInventory via
  * Util.getCell / Util.isCell It automatically handles the internals and NBT
  * data, which is both nice, and bad for you!
- *
+ * <p>
  * Good cause it means you don't have to do anything, bad because you have
  * little to no control over it.
- *
+ * <p>
  * The standard AE implementation only provides 1-63 Types
  */
 public interface IStorageCell extends ICellWorkbenchItem
@@ -48,7 +47,6 @@ public interface IStorageCell extends ICellWorkbenchItem
 	 * The limit is ({@link Integer#MAX_VALUE} + 1) / 8.
 	 *
 	 * @param cellItem item
-	 *
 	 * @return number of bytes
 	 */
 	int getBytes( ItemStack cellItem );
@@ -57,9 +55,7 @@ public interface IStorageCell extends ICellWorkbenchItem
 	 * Determines the number of bytes used for any type included on the cell.
 	 *
 	 * @param cellItem item
-	 *
 	 * @return number of bytes
-	 *
 	 * @deprecated use {@link IStorageCell#getBytesPerType(ItemStack)}
 	 */
 	@Deprecated
@@ -69,7 +65,6 @@ public interface IStorageCell extends ICellWorkbenchItem
 	 * Determines the number of bytes used for any type included on the cell.
 	 *
 	 * @param cellItem item
-	 *
 	 * @return number of bytes
 	 */
 	int getBytesPerType( ItemStack cellItem );
@@ -79,7 +74,6 @@ public interface IStorageCell extends ICellWorkbenchItem
 	 * the item.
 	 *
 	 * @param cellItem item
-	 *
 	 * @return number of types
 	 */
 	int getTotalTypes( ItemStack cellItem );
@@ -91,7 +85,6 @@ public interface IStorageCell extends ICellWorkbenchItem
 	 *
 	 * @param cellItem          item
 	 * @param requestedAddition requested addition
-	 *
 	 * @return true to preventAdditionOfItem
 	 */
 	boolean isBlackListed( ItemStack cellItem, IAEItemStack requestedAddition );
@@ -112,7 +105,6 @@ public interface IStorageCell extends ICellWorkbenchItem
 	 * cell.
 	 *
 	 * @param i item
-	 *
 	 * @return if the ItemStack should behavior as a storage cell.
 	 */
 	boolean isStorageCell( ItemStack i );

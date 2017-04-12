@@ -19,14 +19,6 @@
 package appeng.worldgen;
 
 
-import java.util.Random;
-
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunkProvider;
-
-import cpw.mods.fml.common.IWorldGenerator;
-
 import appeng.api.features.IWorldGen.WorldGenType;
 import appeng.core.AEConfig;
 import appeng.core.features.registries.WorldGenRegistry;
@@ -35,6 +27,12 @@ import appeng.hooks.TickHandler;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
 import appeng.worldgen.meteorite.ChunkOnly;
+import cpw.mods.fml.common.IWorldGenerator;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.IChunkProvider;
+
+import java.util.Random;
 
 
 public final class MeteoriteWorldGen implements IWorldGenerator

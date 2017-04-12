@@ -19,25 +19,6 @@
 package appeng.me.cluster.implementations;
 
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -46,14 +27,7 @@ import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.crafting.CraftingItemList;
-import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.api.networking.crafting.ICraftingGrid;
-import appeng.api.networking.crafting.ICraftingJob;
-import appeng.api.networking.crafting.ICraftingLink;
-import appeng.api.networking.crafting.ICraftingMedium;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.networking.crafting.ICraftingRequester;
+import appeng.api.networking.crafting.*;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkCraftingCpuChange;
 import appeng.api.networking.security.BaseActionSource;
@@ -67,17 +41,25 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.WorldCoord;
 import appeng.container.ContainerNull;
 import appeng.core.AELog;
-import appeng.crafting.CraftBranchFailure;
-import appeng.crafting.CraftingJob;
-import appeng.crafting.CraftingLink;
-import appeng.crafting.CraftingWatcher;
-import appeng.crafting.MECraftingInventory;
+import appeng.crafting.*;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cluster.IAECluster;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import cpw.mods.fml.common.FMLCommonHandler;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 
 public final class CraftingCPUCluster implements IAECluster, ICraftingCPU

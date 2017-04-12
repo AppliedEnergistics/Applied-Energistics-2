@@ -19,11 +19,26 @@
 package appeng.parts;
 
 
-import java.util.LinkedList;
-import java.util.List;
-
+import appeng.api.AEApi;
+import appeng.api.definitions.IBlockDefinition;
+import appeng.api.definitions.IItems;
+import appeng.api.parts.*;
+import appeng.api.util.DimensionalCoord;
+import appeng.core.CommonHelper;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketClick;
+import appeng.core.sync.packets.PacketPartPlacement;
+import appeng.facade.IFacadeItem;
+import appeng.integration.IntegrationRegistry;
+import appeng.integration.IntegrationType;
+import appeng.integration.abstraction.IBuildCraftTransport;
+import appeng.integration.abstraction.IFMP;
+import appeng.integration.abstraction.IImmibisMicroblocks;
+import appeng.util.LookDirection;
+import appeng.util.Platform;
 import com.google.common.base.Optional;
-
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.block.Block;
 import net.minecraft.block.Block.SoundType;
 import net.minecraft.client.Minecraft;
@@ -40,30 +55,8 @@ import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-
-import appeng.api.AEApi;
-import appeng.api.definitions.IBlockDefinition;
-import appeng.api.definitions.IItems;
-import appeng.api.parts.IFacadePart;
-import appeng.api.parts.IPartHost;
-import appeng.api.parts.IPartItem;
-import appeng.api.parts.PartItemStack;
-import appeng.api.parts.SelectedPart;
-import appeng.api.util.DimensionalCoord;
-import appeng.core.CommonHelper;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketClick;
-import appeng.core.sync.packets.PacketPartPlacement;
-import appeng.facade.IFacadeItem;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
-import appeng.integration.abstraction.IBuildCraftTransport;
-import appeng.integration.abstraction.IFMP;
-import appeng.integration.abstraction.IImmibisMicroblocks;
-import appeng.util.LookDirection;
-import appeng.util.Platform;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class PartPlacement

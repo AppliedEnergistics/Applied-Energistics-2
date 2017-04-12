@@ -19,11 +19,10 @@
 package appeng.core.worlddata;
 
 
-import javax.annotation.Nullable;
-
 import com.mojang.authlib.GameProfile;
-
 import net.minecraft.entity.player.EntityPlayer;
+
+import javax.annotation.Nullable;
 
 
 /**

@@ -19,14 +19,6 @@
 package appeng.container.implementations;
 
 
-import java.io.IOException;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.networking.IGrid;
@@ -42,6 +34,13 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.io.IOException;
 
 
 public class ContainerNetworkStatus extends AEBaseContainer

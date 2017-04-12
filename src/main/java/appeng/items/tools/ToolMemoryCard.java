@@ -19,15 +19,6 @@
 package appeng.items.tools;
 
 
-import java.util.EnumSet;
-import java.util.List;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
-
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.core.features.AEFeature;
@@ -35,6 +26,14 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
+
+import java.util.EnumSet;
+import java.util.List;
 
 
 public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
@@ -61,7 +60,6 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	 * Find the localized string...
 	 *
 	 * @param name possible names for the localized string
-	 *
 	 * @return localized name
 	 */
 	private String getLocalizedName( final String... name )

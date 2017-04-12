@@ -19,11 +19,25 @@
 package appeng.parts.p2p;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-
+import appeng.api.AEApi;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.config.PowerUnits;
+import appeng.api.config.TunnelType;
+import appeng.api.definitions.IParts;
+import appeng.api.implementations.items.IMemoryCard;
+import appeng.api.implementations.items.MemoryCardMessages;
+import appeng.api.parts.*;
+import appeng.client.texture.CableBusTextures;
+import appeng.core.AEConfig;
+import appeng.me.GridAccessException;
+import appeng.me.cache.P2PCache;
+import appeng.me.cache.helpers.TunnelCollection;
+import appeng.parts.PartBasicState;
+import appeng.util.Platform;
 import com.google.common.base.Optional;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,29 +48,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.api.AEApi;
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.PowerUnits;
-import appeng.api.config.TunnelType;
-import appeng.api.definitions.IParts;
-import appeng.api.implementations.items.IMemoryCard;
-import appeng.api.implementations.items.MemoryCardMessages;
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartRenderHelper;
-import appeng.api.parts.PartItemStack;
-import appeng.client.texture.CableBusTextures;
-import appeng.core.AEConfig;
-import appeng.me.GridAccessException;
-import appeng.me.cache.P2PCache;
-import appeng.me.cache.helpers.TunnelCollection;
-import appeng.parts.PartBasicState;
-import appeng.util.Platform;
+import java.util.ArrayList;
+import java.util.Collection;
 
 
 public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicState

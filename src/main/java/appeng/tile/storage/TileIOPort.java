@@ -19,23 +19,8 @@
 package appeng.tile.storage;
 
 
-import java.util.List;
-
-import net.minecraft.block.Block;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
-import appeng.api.config.Actionable;
-import appeng.api.config.FullnessMode;
-import appeng.api.config.OperationMode;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
-import appeng.api.config.YesNo;
+import appeng.api.config.*;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
@@ -70,6 +55,14 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.WrapperInventoryRange;
+import net.minecraft.block.Block;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.List;
 
 
 public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IConfigManagerHost, IGridTickable
@@ -555,10 +548,10 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	/**
 	 * Adds the items in the upgrade slots to the drop list.
 	 *
-	 * @param w world
-	 * @param x x pos of tile entity
-	 * @param y y pos of tile entity
-	 * @param z z pos of tile entity
+	 * @param w     world
+	 * @param x     x pos of tile entity
+	 * @param y     y pos of tile entity
+	 * @param z     z pos of tile entity
 	 * @param drops drops of tile entity
 	 */
 	@Override

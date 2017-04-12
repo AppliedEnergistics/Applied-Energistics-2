@@ -19,11 +19,16 @@
 package appeng.client.render.blocks;
 
 
-import java.util.EnumSet;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
+import appeng.api.features.IInscriberRecipe;
+import appeng.api.util.IOrientable;
+import appeng.block.AEBaseBlock;
+import appeng.block.misc.BlockInscriber;
+import appeng.client.render.BaseBlockRender;
+import appeng.client.texture.ExtraBlockTextures;
+import appeng.core.AELog;
+import appeng.tile.AEBaseTile;
+import appeng.tile.misc.TileInscriber;
+import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -35,17 +40,10 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
-import appeng.api.features.IInscriberRecipe;
-import appeng.api.util.IOrientable;
-import appeng.block.AEBaseBlock;
-import appeng.block.misc.BlockInscriber;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.texture.ExtraBlockTextures;
-import appeng.core.AELog;
-import appeng.tile.AEBaseTile;
-import appeng.tile.misc.TileInscriber;
-import appeng.util.Platform;
+import java.util.EnumSet;
 
 
 /**

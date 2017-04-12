@@ -19,11 +19,11 @@
 package appeng.util.prioitylist;
 
 
-import java.util.Collection;
-
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+
+import java.util.Collection;
 
 
 public class FuzzyPriorityList<T extends IAEStack<T>> implements IPartitionList<T>

@@ -19,16 +19,15 @@
 package appeng.crafting;
 
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-
-import javax.annotation.Nonnull;
-
 import appeng.api.networking.crafting.ICraftingWatcher;
 import appeng.api.networking.crafting.ICraftingWatcherHost;
 import appeng.api.storage.data.IAEStack;
 import appeng.me.cache.CraftingGridCache;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 
 
 /**

@@ -19,19 +19,6 @@
 package appeng.integration.modules.NEIHelpers;
 
 
-import java.util.LinkedList;
-import java.util.List;
-
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-
-import codechicken.nei.PositionedStack;
-import codechicken.nei.api.IOverlayHandler;
-import codechicken.nei.recipe.IRecipeHandler;
-
 import appeng.client.gui.implementations.GuiCraftingTerm;
 import appeng.client.gui.implementations.GuiPatternTerm;
 import appeng.container.slot.SlotCraftingMatrix;
@@ -39,6 +26,17 @@ import appeng.container.slot.SlotFakeCraftingMatrix;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketNEIRecipe;
 import appeng.util.Platform;
+import codechicken.nei.PositionedStack;
+import codechicken.nei.api.IOverlayHandler;
+import codechicken.nei.recipe.IRecipeHandler;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class NEICraftingHandler implements IOverlayHandler

@@ -19,16 +19,6 @@
 package appeng.core.features.registries;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.features.IGrinderEntry;
 import appeng.api.features.IGrinderRegistry;
 import appeng.core.AEConfig;
@@ -37,6 +27,15 @@ import appeng.core.features.registries.entries.AppEngGrinderRecipe;
 import appeng.recipes.ores.IOreListener;
 import appeng.recipes.ores.OreDictionaryHandler;
 import appeng.util.Platform;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 
 public final class GrinderRecipeManager implements IGrinderRegistry, IOreListener

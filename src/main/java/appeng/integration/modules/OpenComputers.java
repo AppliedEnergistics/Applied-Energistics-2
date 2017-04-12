@@ -19,8 +19,6 @@
 package appeng.integration.modules;
 
 
-import li.cil.oc.api.Items;
-
 import appeng.api.AEApi;
 import appeng.api.IAppEngApi;
 import appeng.api.config.TunnelType;
@@ -31,7 +29,7 @@ import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
-
+import li.cil.oc.api.Items;
 
 
 public class OpenComputers implements IIntegrationModule

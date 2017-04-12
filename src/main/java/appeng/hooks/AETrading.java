@@ -19,21 +19,18 @@
 package appeng.hooks;
 
 
-import java.util.Random;
-
+import appeng.api.AEApi;
+import appeng.api.definitions.IItemDefinition;
+import appeng.api.definitions.IMaterials;
 import com.google.common.base.Optional;
-
+import cpw.mods.fml.common.registry.VillagerRegistry.IVillageTradeHandler;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 
-import cpw.mods.fml.common.registry.VillagerRegistry.IVillageTradeHandler;
-
-import appeng.api.AEApi;
-import appeng.api.definitions.IItemDefinition;
-import appeng.api.definitions.IMaterials;
+import java.util.Random;
 
 
 public class AETrading implements IVillageTradeHandler

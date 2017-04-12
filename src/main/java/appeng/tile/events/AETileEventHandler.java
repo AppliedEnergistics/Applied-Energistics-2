@@ -19,17 +19,14 @@
 package appeng.tile.events;
 
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import io.netty.buffer.ByteBuf;
-
-import net.minecraft.nbt.NBTTagCompound;
-
+import appeng.tile.AEBaseTile;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.nbt.NBTTagCompound;
 
-import appeng.tile.AEBaseTile;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 
 public final class AETileEventHandler
@@ -132,7 +129,6 @@ public final class AETileEventHandler
 	 * returning true from this method, will update the block's render
 	 *
 	 * @param data data of stream
-	 *
 	 * @return true of method could be invoked
 	 */
 	@SideOnly( Side.CLIENT )

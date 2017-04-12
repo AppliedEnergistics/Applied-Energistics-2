@@ -19,10 +19,10 @@
 package appeng.core.worlddata;
 
 
+import appeng.me.GridStorage;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import appeng.me.GridStorage;
 
 
 /**

@@ -1,10 +1,8 @@
-
 package appeng.worldgen.meteorite;
 
 
-import net.minecraft.init.Blocks;
-
 import appeng.api.definitions.IBlockDefinition;
+import net.minecraft.init.Blocks;
 
 
 public class FalloutSnow extends FalloutCopy

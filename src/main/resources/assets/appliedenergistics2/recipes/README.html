@@ -29,7 +29,7 @@
             font-size: 13px;
             white-space: pre-wrap;
             padding: 1px 5px;
-            font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,sans-serif;
+            font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, sans-serif;
             background-color: #eee;
             margin: 0;
             border: 0;
@@ -154,19 +154,24 @@
             recipes if desired. This page will direct you on how to get started. The entry file for the recipe system is <code>index.recipe</code>.</p>
 
         <h2 id="auto-generation">Auto-Generation</h2>
-        <p>AE2 will generate 2 folders in your AE2 configuration folder <code>config/AppliedEneristics2/</code>. One is <code>generated-recipes/</code> and the other is <code>user-recipes/</code>. Recipes will be automatically exported from AE2 into <code>generated-recipes/</code> on every start-up containing always the latest valid recipes. </p>
+        <p>AE2 will generate 2 folders in your AE2 configuration folder <code>config/AppliedEneristics2/</code>. One is <code>generated-recipes/</code> and the
+            other is <code>user-recipes/</code>. Recipes will be automatically exported from AE2 into <code>generated-recipes/</code> on every start-up
+            containing always the latest valid recipes. </p>
         <blockquote>
             You require file system permissions to generate the folders. Recipes will be loaded directly from AE2 if user has no permissions.
         </blockquote>
 
 
         <h2 id="recipe-modification">Recipe Modification</h2>
-        <p>You can modify the recipes by copying over the recipes from <code>generated-recipes/</code> into <code>user-recipes/</code>. You do <b>not</b> need to copy over all files, but the ones you will be changing. AE2 will prefer loading a user recipe if one would replace a generated recipe.</p>
+        <p>You can modify the recipes by copying over the recipes from <code>generated-recipes/</code> into <code>user-recipes/</code>. You do <b>not</b> need
+            to copy over all files, but the ones you will be changing. AE2 will prefer loading a user recipe if one would replace a generated recipe.</p>
         <p>That way changed recipes by us are not overwriting your modified files.</p>
 
         <h3 id="item-references">Item References</h3>
-        <p>In Minecraft each item is referenced by a namespace and a name, for example all of minecrafts items use the namespace <code>minecraft</code>. A glass block would be <code>minecraft:glass</code>.</p>
-        <p>The recipe system also exposes access to the oredictionary via a namespace, so you can use <code>oredictionary:glass</code> to use any type of glass.</p>
+        <p>In Minecraft each item is referenced by a namespace and a name, for example all of minecrafts items use the namespace <code>minecraft</code>. A glass
+            block would be <code>minecraft:glass</code>.</p>
+        <p>The recipe system also exposes access to the oredictionary via a namespace, so you can use <code>oredictionary:glass</code> to use any type of glass.
+        </p>
 
         <h3 id="recipe-types">Recipe Types</h3>
         <p>Different recipe types are there to interface with specific machines or mods. Use a <code>,</code> to add a new row to the recipe.</p>
@@ -179,7 +184,7 @@
             <li>outputs a single item as output, optionally with quantity</li>
             <li>Example: <code>Log -> Planks</code> recipe</li>
             <li>
-                AE2: <br />
+                AE2: <br/>
                 <code>shapeless = minecraft:log -> 4 minecraft:planks</code>
             </li>
         </ul>
@@ -208,7 +213,7 @@
             <li>takes 1 item as output, optionally with quantity</li>
             <li>Example: <code>Log -> Charcoal</code> recipe</li>
             <li>
-                AE2: <br />
+                AE2: <br/>
                 <code>smelt = minecraft:log -> minecraft:coal:1</code>
             </li>
         </ul>
@@ -220,7 +225,7 @@
             <li>takes 1 item as output, optionally with quantity</li>
             <li>Example: <code>Gravel -> Flint</code> recipe</li>
             <li>
-                AE2: <br />
+                AE2: <br/>
                 <code>grind = minecraft:gravel -> minecraft:flint</code>
             </li>
         </ul>
@@ -253,7 +258,7 @@
             <li>takes 1 item as output, optionally with quantity</li>
             <li>center item is consumed</li>
             <li>
-                Example: duplicate logic processor plate <br />
+                Example: duplicate logic processor plate <br/>
                 <code>Iron Block + Logic Processor Plate -> Logic Processor Plate</code>
             </li>
             <li>
@@ -272,7 +277,7 @@
             <li>takes 1 item as output, optionally with quantity</li>
             <li>all items are consumed</li>
             <li>
-                Example: create logic processor <br />
+                Example: create logic processor <br/>
                 <code>Redstone + logic processor print + silicon print -> logic processor</code>
             </li>
             <li>
@@ -292,7 +297,7 @@
         <ul>
             <li>creates a shorthand for a longer value</li>
             <li>
-                AE2: alias <code>appliedenergistics2</code> to <code>ae2</code><br />
+                AE2: alias <code>appliedenergistics2</code> to <code>ae2</code><br/>
                 <code>alias = ae2 -> appliedenergistics2</code>
             </li>
             <li><code>appliedenergistics2:ItemMaterial.LogicProcessorPrint</code> could be aliased to <code>ae2:ItemMaterial.LogicProcessorPrint</code></li>
@@ -302,7 +307,7 @@
         <ul>
             <li>lets you add items into an ore dictionary value.</li>
             <li>
-                AE2: add minecraft wool to OreDictionary as <code>blockWool</code><br />
+                AE2: add minecraft wool to OreDictionary as <code>blockWool</code><br/>
                 <code>ore = minecraft:wool:* -> blockWool</code>
             </li>
             <li>oredictioned items can be accessed as <code>oredictionary:blockWool</code> for example</li>
@@ -312,15 +317,15 @@
         <ul>
             <li>lets you create a item group for 1 or more inputs</li>
             <li>
-                Example: define a common group for both different AE2 interfaces<br />
+                Example: define a common group for both different AE2 interfaces<br/>
                 <code>Block Interface + Part Interface = Interface</code>
             </li>
             <li>
-                AE2: <br />
+                AE2: <br/>
                 <code>group = ae2:BlockInterface ae2:ItemPart.Interface -> interface</code>
             </li>
             <li>
-                This also enables shortening annoying names for example<br />
+                This also enables shortening annoying names for example<br/>
                 <code>group = ae2:ToolNetherQuartzWrench -> wrench</code>
             </li>
         </ul>
@@ -330,17 +335,17 @@
             <li>lets you load an additional recipe file</li>
             <li>this works with subdirectories, but the path needs to be always a relative path to the root recipe directory</li>
             <li>
-                AE2: import all recipes for stairs<br />
+                AE2: import all recipes for stairs<br/>
                 <code>import = stairs.recipe</code>
             </li>
             <li>Any knowledge through <code>alias, ore, group</code> are carried over to the imported file</li>
         </ul>
 
-            <!--<pre>-->
-<!--Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.-->
-            <!--</pre>-->
+        <!--<pre>-->
+        <!--Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.-->
+        <!--</pre>-->
         <!--<blockquote>-->
-            <!--A readme (or read me) fdsile contains information about other files in a directory or archive and is very commonly distributed with computer software.-->
+        <!--A readme (or read me) fdsile contains information about other files in a directory or archive and is very commonly distributed with computer software.-->
         <!--</blockquote>-->
     </div>
 </div>

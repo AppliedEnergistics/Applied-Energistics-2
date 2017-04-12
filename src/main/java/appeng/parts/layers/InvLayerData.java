@@ -19,11 +19,11 @@
 package appeng.parts.layers;
 
 
-import java.util.List;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+
+import java.util.List;
 
 
 public class InvLayerData
@@ -58,7 +58,6 @@ public class InvLayerData
 	 * check if a slot index is valid, prevent crashes from bad code :)
 	 *
 	 * @param slot slot index
-	 *
 	 * @return true, if the slot exists.
 	 */
 	private boolean isSlotValid( final int slot )

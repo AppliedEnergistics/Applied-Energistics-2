@@ -19,23 +19,8 @@
 package appeng.me.helpers;
 
 
-import java.util.Collections;
-import java.util.EnumSet;
-
-import com.mojang.authlib.GameProfile;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
-import appeng.api.networking.GridFlags;
-import appeng.api.networking.GridNotification;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridBlock;
-import appeng.api.networking.IGridHost;
-import appeng.api.networking.IGridNode;
+import appeng.api.networking.*;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkPowerIdleChange;
@@ -53,6 +38,14 @@ import appeng.me.cache.P2PCache;
 import appeng.parts.networking.PartCable;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
+import com.mojang.authlib.GameProfile;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Collections;
+import java.util.EnumSet;
 
 
 public class AENetworkProxy implements IGridBlock
@@ -192,7 +185,6 @@ public class AENetworkProxy implements IGridBlock
 	 * short cut!
 	 *
 	 * @return grid of node
-	 *
 	 * @throws GridAccessException of node or grid is null
 	 */
 	public IGrid getGrid() throws GridAccessException

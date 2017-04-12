@@ -19,12 +19,11 @@
 package appeng.services.export;
 
 
-import javax.annotation.Nonnull;
-
 import com.google.common.base.Preconditions;
-
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+
+import javax.annotation.Nonnull;
 
 
 /**

@@ -30,16 +30,14 @@
 package appeng.core.api.imc;
 
 
-import java.util.Arrays;
-import java.util.Locale;
-
-import net.minecraft.item.ItemStack;
-
-import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
-
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.core.api.IIMCProcessor;
+import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
+import net.minecraft.item.ItemStack;
+
+import java.util.Arrays;
+import java.util.Locale;
 
 
 public class IMCP2PAttunement implements IIMCProcessor

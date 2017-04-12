@@ -1,11 +1,9 @@
-
 package appeng.worldgen.meteorite;
 
 
-import net.minecraft.block.Block;
-
 import appeng.api.definitions.IBlockDefinition;
 import appeng.util.Platform;
+import net.minecraft.block.Block;
 
 
 public class FalloutCopy extends Fallout

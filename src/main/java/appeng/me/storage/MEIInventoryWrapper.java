@@ -19,9 +19,6 @@
 package appeng.me.storage;
 
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventory;
@@ -31,6 +28,8 @@ import appeng.api.storage.data.IItemList;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 
 
 public class MEIInventoryWrapper implements IMEInventory<IAEItemStack>

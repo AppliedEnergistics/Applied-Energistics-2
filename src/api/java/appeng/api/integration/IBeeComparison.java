@@ -27,10 +27,10 @@ package appeng.api.integration;
 /**
  * An interface to get access to the individual settings for AE's Internal Bee
  * Comparison handler.
- *
+ * <p>
  * Assessable via: ( IBeeComparison )
  * IAEItemStack.getTagCompound().getSpecialComparison()
- *
+ * <p>
  * If you don't have the forestry API, just delete this file when using the API.
  */
 public interface IBeeComparison

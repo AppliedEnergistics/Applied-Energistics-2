@@ -19,11 +19,10 @@
 package appeng.client.render;
 
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.Set;
-
+import appeng.api.parts.ISimplifiedBundle;
+import appeng.core.AELog;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
@@ -31,11 +30,10 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.api.parts.ISimplifiedBundle;
-import appeng.core.AELog;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.Set;
 
 
 @SideOnly( Side.CLIENT )

@@ -19,18 +19,6 @@
 package appeng.block.misc;
 
 
-import java.util.EnumSet;
-import java.util.Random;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.blocks.RenderBlockQuartzAccelerator;
@@ -40,6 +28,16 @@ import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
 import appeng.tile.misc.TileQuartzGrowthAccelerator;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.EnumSet;
+import java.util.Random;
 
 
 public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOrientableBlock

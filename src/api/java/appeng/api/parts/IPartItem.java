@@ -24,20 +24,20 @@
 package appeng.api.parts;
 
 
-import javax.annotation.Nullable;
-
 import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nullable;
 
 //@formatter:off
 
 
 /**
  * This is a pretty basic requirement, once you implement the interface, and createPartFromItemStack
- *
+ * <p>
  * you must register your bus with the Bus renderer, using AEApi.INSTANCE().partHelper().setItemBusRenderer( this );
- *
+ * <p>
  * then simply add these two methods, which tell MC to use the Block Textures, and call AE's Bus Placement Code.
- *
+ * <p>
  * <pre>
  * <code>
  * {@literal @}Override
@@ -62,7 +62,6 @@ public interface IPartItem
 	 * create a new part INSTANCE, from the item stack.
 	 *
 	 * @param is item
-	 *
 	 * @return part from item
 	 */
 	@Nullable

@@ -19,17 +19,15 @@
 package appeng.integration.modules.waila.tile;
 
 
-import java.util.List;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
-
 import appeng.api.implementations.IPowerChannelState;
 import appeng.core.localization.WailaText;
 import appeng.integration.modules.waila.BaseWailaDataProvider;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+
+import java.util.List;
 
 
 /**
@@ -44,11 +42,10 @@ public final class PowerStateWailaDataProvider extends BaseWailaDataProvider
 	/**
 	 * Adds state to the tooltip
 	 *
-	 * @param itemStack stack of power state
+	 * @param itemStack      stack of power state
 	 * @param currentToolTip to be added to tooltip
-	 * @param accessor wrapper for various information
-	 * @param config config settings
-	 *
+	 * @param accessor       wrapper for various information
+	 * @param config         config settings
 	 * @return modified tooltip
 	 */
 	@Override

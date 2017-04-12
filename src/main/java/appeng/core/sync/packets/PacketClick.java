@@ -19,12 +19,6 @@
 package appeng.core.sync.packets;
 
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.IItems;
@@ -34,6 +28,10 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.items.tools.ToolNetworkTool;
 import appeng.items.tools.powered.ToolColorApplicator;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 
 
 public class PacketClick extends AppEngPacket

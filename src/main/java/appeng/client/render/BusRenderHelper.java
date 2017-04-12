@@ -19,22 +19,6 @@
 package appeng.client.render;
 
 
-import java.util.EnumSet;
-
-import javax.annotation.Nullable;
-
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinition;
 import appeng.api.parts.IBoxProvider;
@@ -46,6 +30,18 @@ import appeng.block.networking.BlockCableBus;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.tile.AEBaseTile;
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import javax.annotation.Nullable;
+import java.util.EnumSet;
 
 
 @SideOnly( Side.CLIENT )
@@ -232,6 +228,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 		}
 	}
 
+
 	private static final class BaseBlockTransformFunction implements Function<Block, AEBaseBlock>
 	{
 		@Nullable
@@ -240,7 +237,7 @@ public final class BusRenderHelper implements IPartRenderHelper
 		{
 			if( input instanceof AEBaseBlock )
 			{
-				return( (AEBaseBlock) input );
+				return ( (AEBaseBlock) input );
 			}
 
 			return null;

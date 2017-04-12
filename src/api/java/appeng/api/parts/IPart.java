@@ -24,12 +24,10 @@
 package appeng.api.parts;
 
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Random;
-
+import appeng.api.networking.IGridNode;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
-
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -42,10 +40,9 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.api.networking.IGridNode;
+import java.io.IOException;
+import java.util.List;
+import java.util.Random;
 
 
 public interface IPart extends IBoxProvider
@@ -54,20 +51,19 @@ public interface IPart extends IBoxProvider
 	/**
 	 * get an ItemStack that represents the bus, should contain the settings for whatever, can also be used in
 	 * conjunction with removePart to take a part off and drop it or something.
-	 *
+	 * <p>
 	 * This is used to drop the bus, and to save the bus, when saving the bus, wrenched is false, and writeToNBT will be
 	 * called to save important details about the part, if the part is wrenched include in your NBT Data any settings
 	 * you might want to keep around, you can restore those settings when constructing your part.
 	 *
 	 * @param type , what kind of ItemStack to return?
-	 *
 	 * @return item of part
 	 */
 	ItemStack getItemStack( PartItemStack type );
 
 	/**
 	 * render item form for inventory, or entity.
-	 *
+	 * <p>
 	 * GL Available
 	 *
 	 * @param rh       helper
@@ -78,7 +74,7 @@ public interface IPart extends IBoxProvider
 
 	/**
 	 * render world renderer ( preferred )
-	 *
+	 * <p>
 	 * GL is NOT Available
 	 *
 	 * @param x        x coord
@@ -92,7 +88,7 @@ public interface IPart extends IBoxProvider
 
 	/**
 	 * render TESR.
-	 *
+	 * <p>
 	 * GL Available
 	 *
 	 * @param x        x coord
@@ -152,7 +148,6 @@ public interface IPart extends IBoxProvider
 	 * does this part act like a ladder?
 	 *
 	 * @param entity climbing entity
-	 *
 	 * @return true if entity can climb
 	 */
 	boolean isLadder( EntityLivingBase entity );
@@ -176,7 +171,6 @@ public interface IPart extends IBoxProvider
 	 * write data to bus packet.
 	 *
 	 * @param data to be written data
-	 *
 	 * @throws IOException
 	 */
 	void writeToStream( ByteBuf data ) throws IOException;
@@ -185,9 +179,7 @@ public interface IPart extends IBoxProvider
 	 * read data from bus packet.
 	 *
 	 * @param data to be read data
-	 *
 	 * @return true will re-draw the part.
-	 *
 	 * @throws IOException
 	 */
 	boolean readFromStream( ByteBuf data ) throws IOException;
@@ -195,7 +187,7 @@ public interface IPart extends IBoxProvider
 	/**
 	 * get the Grid Node for the Bus, be sure your IGridBlock is NOT isWorldAccessible, if it is your going to cause
 	 * crashes.
-	 *
+	 * <p>
 	 * or null if you don't have a grid node.
 	 *
 	 * @return grid node
@@ -240,7 +232,6 @@ public interface IPart extends IBoxProvider
 	 *
 	 * @param player right clicking player
 	 * @param pos    position of block
-	 *
 	 * @return if your activate method performed something.
 	 */
 	boolean onActivate( EntityPlayer player, Vec3 pos );
@@ -250,7 +241,6 @@ public interface IPart extends IBoxProvider
 	 *
 	 * @param player shift right clicking player
 	 * @param pos    position of block
-	 *
 	 * @return if your activate method performed something, you should use false unless you really need it.
 	 */
 	boolean onShiftActivate( EntityPlayer player, Vec3 pos );
@@ -293,7 +283,6 @@ public interface IPart extends IBoxProvider
 	 * Used to determine which parts can be placed on what cables.
 	 *
 	 * @param what placed part
-	 *
 	 * @return true if the part can be placed on this support.
 	 */
 	boolean canBePlacedOn( BusSupport what );

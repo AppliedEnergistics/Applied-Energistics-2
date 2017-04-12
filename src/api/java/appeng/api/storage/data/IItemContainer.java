@@ -24,16 +24,16 @@
 package appeng.api.storage.data;
 
 
-import java.util.Collection;
-
 import appeng.api.config.FuzzyMode;
+
+import java.util.Collection;
 
 
 /**
  * Represents a list of items in AE.
- *
+ * <p>
  * Don't Implement.
- *
+ * <p>
  * Construct with Util.createItemList()
  */
 public interface IItemContainer<StackType extends IAEStack>
@@ -48,7 +48,6 @@ public interface IItemContainer<StackType extends IAEStack>
 
 	/**
 	 * @param i compared item
-	 *
 	 * @return a stack equivalent to the stack passed in, but with the correct stack size information, or null if its
 	 * not present
 	 */
@@ -56,7 +55,6 @@ public interface IItemContainer<StackType extends IAEStack>
 
 	/**
 	 * @param input compared item
-	 *
 	 * @return a list of relevant fuzzy matched stacks
 	 */
 	Collection<StackType> findFuzzy( StackType input, FuzzyMode fuzzy );

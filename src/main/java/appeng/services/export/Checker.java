@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 
 /**
  * Checks against a specific type with its own check type for clear outcome.
- *
+ * <p>
  * The constructor will generally have a value which the checker will check against
  *
  * @author thatsIch
@@ -35,9 +35,7 @@ interface Checker<T>
 {
 	/**
 	 * @param checkedAgainst the object it is checked against
-	 *
 	 * @return non null being either equal or unequal
-	 *
 	 * @since rv3 - 01.09.2015
 	 */
 	@Nonnull

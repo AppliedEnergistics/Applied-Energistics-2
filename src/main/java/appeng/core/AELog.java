@@ -19,16 +19,15 @@
 package appeng.core;
 
 
-import javax.annotation.Nonnull;
-
+import appeng.core.features.AEFeature;
+import appeng.tile.AEBaseTile;
+import appeng.util.Platform;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 
-import appeng.core.features.AEFeature;
-import appeng.tile.AEBaseTile;
-import appeng.util.Platform;
+import javax.annotation.Nonnull;
 
 
 /**
@@ -64,7 +63,7 @@ public final class AELog
 
 	/**
 	 * Indicates of the global log is enabled or disabled.
-	 *
+	 * <p>
 	 * By default it is enabled.
 	 *
 	 * @return true when the log is enabled.
@@ -76,15 +75,15 @@ public final class AELog
 
 	/**
 	 * Logs a formatted message with a specific log level.
-	 *
+	 * <p>
 	 * This uses {@link String#format(String, Object...)} as opposed to the {@link ParameterizedMessage} to allow a more
 	 * flexible formatting.
-	 *
+	 * <p>
 	 * The output can be globally disabled via the configuration file.
 	 *
-	 * @param level the intended level.
+	 * @param level   the intended level.
 	 * @param message the message to be formatted.
-	 * @param params the parameters used for {@link String#format(String, Object...)}.
+	 * @param params  the parameters used for {@link String#format(String, Object...)}.
 	 */
 	public static void log( @Nonnull final Level level, @Nonnull final String message, final Object... params )
 	{
@@ -99,15 +98,14 @@ public final class AELog
 
 	/**
 	 * Log an exception with a custom message formated via {@link String#format(String, Object...)}
-	 *
+	 * <p>
 	 * Similar to {@link AELog#log(Level, String, Object...)}.
 	 *
-	 * @see AELog#log(Level, String, Object...)
-	 *
-	 * @param level the intended level.
+	 * @param level     the intended level.
 	 * @param exception
-	 * @param message the message to be formatted.
-	 * @param params the parameters used for {@link String#format(String, Object...)}.
+	 * @param message   the message to be formatted.
+	 * @param params    the parameters used for {@link String#format(String, Object...)}.
+	 * @see AELog#log(Level, String, Object...)
 	 */
 	public static void log( @Nonnull final Level level, @Nonnull final Throwable exception, @Nonnull String message, final Object... params )
 	{
@@ -121,9 +119,9 @@ public final class AELog
 	}
 
 	/**
-	 * @see AELog#log(Level, String, Object...)
 	 * @param format
 	 * @param params
+	 * @see AELog#log(Level, String, Object...)
 	 */
 	public static void info( @Nonnull final String format, final Object... params )
 	{
@@ -133,9 +131,8 @@ public final class AELog
 	/**
 	 * Log exception as {@link Level#INFO}
 	 *
-	 * @see AELog#log(Level, Throwable, String, Object...)
-	 *
 	 * @param exception
+	 * @see AELog#log(Level, Throwable, String, Object...)
 	 */
 	public static void info( @Nonnull final Throwable exception )
 	{
@@ -145,10 +142,9 @@ public final class AELog
 	/**
 	 * Log exception as {@link Level#INFO}
 	 *
-	 * @see AELog#log(Level, Throwable, String, Object...)
-	 *
 	 * @param exception
 	 * @param message
+	 * @see AELog#log(Level, Throwable, String, Object...)
 	 */
 	public static void info( @Nonnull final Throwable exception, @Nonnull final String message )
 	{
@@ -156,9 +152,9 @@ public final class AELog
 	}
 
 	/**
-	 * @see AELog#log(Level, String, Object...)
 	 * @param format
 	 * @param params
+	 * @see AELog#log(Level, String, Object...)
 	 */
 	public static void warn( @Nonnull final String format, final Object... params )
 	{
@@ -168,9 +164,8 @@ public final class AELog
 	/**
 	 * Log exception as {@link Level#WARN}
 	 *
-	 * @see AELog#log(Level, Throwable, String, Object...)
-	 *
 	 * @param exception
+	 * @see AELog#log(Level, Throwable, String, Object...)
 	 */
 	public static void warn( @Nonnull final Throwable exception )
 	{
@@ -180,10 +175,9 @@ public final class AELog
 	/**
 	 * Log exception as {@link Level#WARN}
 	 *
-	 * @see AELog#log(Level, Throwable, String, Object...)
-	 *
 	 * @param exception
 	 * @param message
+	 * @see AELog#log(Level, Throwable, String, Object...)
 	 */
 	public static void warn( @Nonnull final Throwable exception, @Nonnull final String message )
 	{
@@ -191,9 +185,9 @@ public final class AELog
 	}
 
 	/**
-	 * @see AELog#log(Level, String, Object...)
 	 * @param format
 	 * @param params
+	 * @see AELog#log(Level, String, Object...)
 	 */
 	public static void error( @Nonnull final String format, final Object... params )
 	{
@@ -203,9 +197,8 @@ public final class AELog
 	/**
 	 * Log exception as {@link Level#ERROR}
 	 *
-	 * @see AELog#log(Level, Throwable, String, Object...)
-	 *
 	 * @param exception
+	 * @see AELog#log(Level, Throwable, String, Object...)
 	 */
 	public static void error( @Nonnull final Throwable exception )
 	{
@@ -215,10 +208,9 @@ public final class AELog
 	/**
 	 * Log exception as {@link Level#ERROR}
 	 *
-	 * @see AELog#log(Level, Throwable, String, Object...)
-	 *
 	 * @param exception
 	 * @param message
+	 * @see AELog#log(Level, Throwable, String, Object...)
 	 */
 	public static void error( @Nonnull final Throwable exception, @Nonnull final String message )
 	{
@@ -228,9 +220,9 @@ public final class AELog
 	/**
 	 * Log message as {@link Level#DEBUG}
 	 *
-	 * @see AELog#log(Level, String, Object...)
 	 * @param format
 	 * @param data
+	 * @see AELog#log(Level, String, Object...)
 	 */
 	public static void debug( @Nonnull final String format, final Object... data )
 	{
@@ -243,9 +235,8 @@ public final class AELog
 	/**
 	 * Log exception as {@link Level#DEBUG}
 	 *
-	 * @see AELog#log(Level, Throwable, String, Object...)
-	 *
 	 * @param exception
+	 * @see AELog#log(Level, Throwable, String, Object...)
 	 */
 	public static void debug( @Nonnull final Throwable exception )
 	{
@@ -258,10 +249,9 @@ public final class AELog
 	/**
 	 * Log exception as {@link Level#DEBUG}
 	 *
-	 * @see AELog#log(Level, Throwable, String, Object...)
-	 *
 	 * @param exception
 	 * @param message
+	 * @see AELog#log(Level, Throwable, String, Object...)
 	 */
 	public static void debug( @Nonnull final Throwable exception, @Nonnull final String message )
 	{
@@ -273,7 +263,7 @@ public final class AELog
 
 	/**
 	 * Use to check for an enabled debug log.
-	 *
+	 * <p>
 	 * Can be used to prevent the execution of debug logic.
 	 *
 	 * @return true when the debug log is enabled.
@@ -315,14 +305,14 @@ public final class AELog
 
 	/**
 	 * Logging of block updates.
-	 *
+	 * <p>
 	 * Off by default, can be enabled inside the configuration file.
 	 *
-	 * @see AELog#log(Level, String, Object...)
 	 * @param xCoord
 	 * @param yCoord
 	 * @param zCoord
 	 * @param aeBaseTile
+	 * @see AELog#log(Level, String, Object...)
 	 */
 	public static void blockUpdate( final int xCoord, final int yCoord, final int zCoord, @Nonnull final AEBaseTile aeBaseTile )
 	{
@@ -334,7 +324,7 @@ public final class AELog
 
 	/**
 	 * Use to check for an enabled crafting log.
-	 *
+	 * <p>
 	 * Can be used to prevent the execution of unneeded logic.
 	 *
 	 * @return true when the crafting log is enabled.
@@ -346,12 +336,12 @@ public final class AELog
 
 	/**
 	 * Logging for autocrafting.
-	 *
+	 * <p>
 	 * Off by default, can be enabled inside the configuration file.
 	 *
-	 * @see AELog#log(Level, String, Object...)
 	 * @param message
 	 * @param params
+	 * @see AELog#log(Level, String, Object...)
 	 */
 	public static void crafting( @Nonnull final String message, final Object... params )
 	{
@@ -363,7 +353,7 @@ public final class AELog
 
 	/**
 	 * Use to check for an enabled crafting debug log.
-	 *
+	 * <p>
 	 * Can be used to prevent the execution of unneeded logic.
 	 *
 	 * @return true when the crafting debug log is enabled.
@@ -375,12 +365,12 @@ public final class AELog
 
 	/**
 	 * Debug logging for autocrafting.
-	 *
+	 * <p>
 	 * Off by default, can be enabled inside the configuration file.
 	 *
-	 * @see AELog#log(Level, String, Object...)
 	 * @param message
 	 * @param params
+	 * @see AELog#log(Level, String, Object...)
 	 */
 	public static void craftingDebug( @Nonnull final String message, final Object... params )
 	{

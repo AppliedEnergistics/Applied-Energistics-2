@@ -32,11 +32,11 @@ import appeng.api.storage.data.IItemList;
 
 /**
  * AE's Equivalent to IInventory, used to reading contents, and manipulating contents of ME Inventories.
- *
+ * <p>
  * Implementations should COMPLETELY ignore stack size limits from an external view point, Meaning that you can inject
  * Integer.MAX_VALUE items and it should work as defined, or be able to extract Integer.MAX_VALUE and have it work as
  * defined, Translations to MC's max stack size are external to the AE API.
- *
+ * <p>
  * If you want to request a stack of an item, you should should determine that prior to requesting the stack from the
  * inventory.
  */
@@ -49,7 +49,6 @@ public interface IMEInventory<StackType extends IAEStack>
 	 * @param input item to add.
 	 * @param type  action type
 	 * @param src   action source
-	 *
 	 * @return returns the number of items not added.
 	 */
 	StackType injectItems( StackType input, Actionable type, BaseActionSource src );
@@ -59,7 +58,6 @@ public interface IMEInventory<StackType extends IAEStack>
 	 *
 	 * @param request item to request ( with stack size. )
 	 * @param mode    simulate, or perform action?
-	 *
 	 * @return returns the number of items extracted, null
 	 */
 	StackType extractItems( StackType request, Actionable mode, BaseActionSource src );
@@ -68,7 +66,6 @@ public interface IMEInventory<StackType extends IAEStack>
 	 * request a full report of all available items, storage.
 	 *
 	 * @param out the IItemList the results will be written too
-	 *
 	 * @return returns same list that was passed in, is passed out
 	 */
 	IItemList<StackType> getAvailableItems( IItemList<StackType> out );

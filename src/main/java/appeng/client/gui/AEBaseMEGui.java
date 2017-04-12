@@ -19,18 +19,17 @@
 package appeng.client.gui;
 
 
-import java.text.NumberFormat;
-import java.util.List;
-import java.util.Locale;
-
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.me.SlotME;
 import appeng.core.AEConfig;
 import appeng.core.localization.ButtonToolTips;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+
+import java.text.NumberFormat;
+import java.util.List;
+import java.util.Locale;
 
 
 public abstract class AEBaseMEGui extends AEBaseGui
@@ -117,8 +116,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 
 			if( myStack != null )
 			{
-				@SuppressWarnings( "unchecked" )
-				final List<String> currentToolTip = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
+				@SuppressWarnings( "unchecked" )                final List<String> currentToolTip = stack.getTooltip( this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips );
 
 				if( myStack.getStackSize() > BigNumber || ( myStack.getStackSize() > 1 && stack.isItemDamaged() ) )
 				{

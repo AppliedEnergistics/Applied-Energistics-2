@@ -19,8 +19,10 @@
 package appeng.tile;
 
 
-import javax.annotation.Nullable;
-
+import appeng.block.AEBaseBlock;
+import appeng.tile.events.TileEventType;
+import appeng.tile.inventory.IAEAppEngInventory;
+import appeng.tile.inventory.InvOperation;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -29,10 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.block.AEBaseBlock;
-import appeng.tile.events.TileEventType;
-import appeng.tile.inventory.IAEAppEngInventory;
-import appeng.tile.inventory.InvOperation;
+import javax.annotation.Nullable;
 
 
 public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventory, IAEAppEngInventory

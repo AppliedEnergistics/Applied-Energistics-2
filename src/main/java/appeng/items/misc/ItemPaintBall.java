@@ -19,20 +19,19 @@
 package appeng.items.misc;
 
 
-import java.util.EnumSet;
-import java.util.List;
-
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.MinecraftForgeClient;
-
 import appeng.api.util.AEColor;
 import appeng.client.render.items.PaintBallRender;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.MinecraftForgeClient;
+
+import java.util.EnumSet;
+import java.util.List;
 
 
 public class ItemPaintBall extends AEBaseItem

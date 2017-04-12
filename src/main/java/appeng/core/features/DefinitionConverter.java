@@ -1,20 +1,18 @@
-
 package appeng.core.features;
 
-
-import javax.annotation.Nullable;
-
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockAccess;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.ITileDefinition;
 import appeng.api.util.AEItemDefinition;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
+
+import javax.annotation.Nullable;
 
 
 /**
@@ -93,6 +91,7 @@ public final class DefinitionConverter
 		}
 	}
 
+
 	private static class AEItem extends AEComparable
 	{
 		private final IItemDefinition definition;
@@ -119,6 +118,7 @@ public final class DefinitionConverter
 		}
 	}
 
+
 	private static class AEBlock extends AEItem
 	{
 		private final IBlockDefinition definition;
@@ -143,6 +143,7 @@ public final class DefinitionConverter
 			return this.definition.isSameAs( world, x, y, z );
 		}
 	}
+
 
 	private static class AETile extends AEBlock
 	{

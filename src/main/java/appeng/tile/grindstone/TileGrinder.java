@@ -19,13 +19,6 @@
 package appeng.tile.grindstone;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
 import appeng.api.features.IGrinderEntry;
 import appeng.api.implementations.tiles.ICrankable;
@@ -36,6 +29,12 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.WrapperInventoryRange;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class TileGrinder extends AEBaseInvTile implements ICrankable

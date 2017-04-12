@@ -19,9 +19,9 @@
 package appeng.core.worlddata;
 
 
-import javax.annotation.Nonnull;
-
 import com.google.common.base.Preconditions;
+
+import javax.annotation.Nonnull;
 
 
 /**
@@ -65,12 +65,10 @@ public class MeteorDataNameEncoder
 
 	/**
 	 * @param dimension ID of the processed dimension. Can be any integer
-	 * @param chunkX X coordinate of the chunk. Can be any integer
-	 * @param chunkZ Z coordinate of the chunk. Can be any integer
-	 *
+	 * @param chunkX    X coordinate of the chunk. Can be any integer
+	 * @param chunkZ    Z coordinate of the chunk. Can be any integer
 	 * @return encoded file name suggestion in form of <tt>dim_x_y.dat</tt> where <tt>x</tt> and <tt>y</tt> will be
 	 * shifted to stay conform with the vanilla chunk system
-	 *
 	 * @since rv3 05.06.2015
 	 */
 	public String encode( final int dimension, final int chunkX, final int chunkZ )

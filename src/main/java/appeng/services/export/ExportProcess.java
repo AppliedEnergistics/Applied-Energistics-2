@@ -19,27 +19,24 @@
 package appeng.services.export;
 
 
-import java.io.File;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import javax.annotation.Nonnull;
-
+import appeng.core.AELog;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
-
-import net.minecraft.item.Item;
-
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.registry.FMLControlledNamespacedRegistry;
 import cpw.mods.fml.common.registry.GameData;
+import net.minecraft.item.Item;
 
-import appeng.core.AELog;
+import javax.annotation.Nonnull;
+import java.io.File;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 /**
  * Main entry point for exporting the CSV file
- *
+ * <p>
  * makes everything threadable
  *
  * @author thatsIch
@@ -65,7 +62,7 @@ public class ExportProcess implements Runnable
 
 	/**
 	 * @param exportDirectory directory where the final CSV file will be exported to
-	 * @param config configuration to manipulate the export process
+	 * @param config          configuration to manipulate the export process
 	 */
 	public ExportProcess( @Nonnull final File exportDirectory, @Nonnull final ExportConfig config )
 	{

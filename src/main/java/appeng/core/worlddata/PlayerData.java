@@ -19,21 +19,18 @@
 package appeng.core.worlddata;
 
 
-import java.util.UUID;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import appeng.core.CommonHelper;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
-import appeng.core.CommonHelper;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.UUID;
 
 
 /**

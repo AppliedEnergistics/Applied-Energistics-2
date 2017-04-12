@@ -19,22 +19,20 @@
 package appeng.integration.modules.waila.part;
 
 
-import java.util.List;
-
+import appeng.api.parts.IPart;
+import appeng.core.localization.WailaText;
+import appeng.parts.networking.PartCableSmart;
+import appeng.parts.networking.PartDenseCable;
+import gnu.trove.map.TObjectByteMap;
+import gnu.trove.map.hash.TObjectByteHashMap;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import gnu.trove.map.TObjectByteMap;
-import gnu.trove.map.hash.TObjectByteHashMap;
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
-
-import appeng.api.parts.IPart;
-import appeng.core.localization.WailaText;
-import appeng.parts.networking.PartCableSmart;
-import appeng.parts.networking.PartDenseCable;
+import java.util.List;
 
 
 /**
@@ -64,11 +62,10 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	/**
 	 * Adds the used and max channel to the tool tip
 	 *
-	 * @param part being looked at part
+	 * @param part           being looked at part
 	 * @param currentToolTip current tool tip
-	 * @param accessor wrapper for various world information
-	 * @param config config to react to various settings
-	 *
+	 * @param accessor       wrapper for various world information
+	 * @param config         config to react to various settings
 	 * @return modified tool tip
 	 */
 	@Override
@@ -94,10 +91,9 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	 * If the client received information of the channels on the server, they are used, else if the cache contains a
 	 * previous stored value, this will be used. Default value is 0.
 	 *
-	 * @param part part to be looked at
-	 * @param tag tag maybe containing the channel information
+	 * @param part  part to be looked at
+	 * @param tag   tag maybe containing the channel information
 	 * @param cache cache with previous knowledge
-	 *
 	 * @return used channels on the cable
 	 */
 	private byte getUsedChannels( final IPart part, final NBTTagCompound tag, final TObjectByteMap<IPart> cache )
@@ -128,14 +124,13 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	 * key.
 	 *
 	 * @param player player looking at the part
-	 * @param part part being looked at
-	 * @param te host of the part
-	 * @param tag transferred tag which is send to the client
-	 * @param world world of the part
-	 * @param x x pos of the part
-	 * @param y y pos of the part
-	 * @param z z pos of the part
-	 *
+	 * @param part   part being looked at
+	 * @param te     host of the part
+	 * @param tag    transferred tag which is send to the client
+	 * @param world  world of the part
+	 * @param x      x pos of the part
+	 * @param y      y pos of the part
+	 * @param z      z pos of the part
 	 * @return tag send to the client
 	 */
 	@Override

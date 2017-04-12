@@ -19,12 +19,11 @@
 package appeng.client.gui.widgets;
 
 
+import appeng.container.interfaces.IProgressProvider;
+import appeng.core.localization.GuiText;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
-
-import appeng.container.interfaces.IProgressProvider;
-import appeng.core.localization.GuiText;
 
 
 public class GuiProgressBar extends GuiButton implements ITooltip

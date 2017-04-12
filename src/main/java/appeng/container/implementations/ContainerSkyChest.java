@@ -19,14 +19,12 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-
-import invtweaks.api.container.ChestContainer;
-
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotNormal;
 import appeng.tile.storage.TileSkyChest;
+import invtweaks.api.container.ChestContainer;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 
 
 @ChestContainer

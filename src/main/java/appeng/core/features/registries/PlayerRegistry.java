@@ -19,14 +19,12 @@
 package appeng.core.features.registries;
 
 
-import javax.annotation.Nullable;
-
-import com.mojang.authlib.GameProfile;
-
-import net.minecraft.entity.player.EntityPlayer;
-
 import appeng.api.features.IPlayerRegistry;
 import appeng.core.worlddata.WorldData;
+import com.mojang.authlib.GameProfile;
+import net.minecraft.entity.player.EntityPlayer;
+
+import javax.annotation.Nullable;
 
 
 public class PlayerRegistry implements IPlayerRegistry

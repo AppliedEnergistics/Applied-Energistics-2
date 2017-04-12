@@ -19,10 +19,6 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-
-import net.minecraft.entity.player.InventoryPlayer;
-
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
 import appeng.api.storage.ITerminalHost;
@@ -32,6 +28,9 @@ import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
+import net.minecraft.entity.player.InventoryPlayer;
+
+import java.io.IOException;
 
 
 public class GuiSecurity extends GuiMEMonitorable

@@ -19,11 +19,6 @@
 package appeng.core.api.definitions;
 
 
-import java.util.EnumSet;
-import java.util.Set;
-
-import com.google.common.collect.ImmutableSet;
-
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.ITileDefinition;
@@ -35,48 +30,15 @@ import appeng.block.crafting.BlockCraftingUnit;
 import appeng.block.crafting.BlockMolecularAssembler;
 import appeng.block.grindstone.BlockCrank;
 import appeng.block.grindstone.BlockGrinder;
-import appeng.block.misc.BlockCellWorkbench;
-import appeng.block.misc.BlockCharger;
-import appeng.block.misc.BlockCondenser;
-import appeng.block.misc.BlockInscriber;
-import appeng.block.misc.BlockInterface;
-import appeng.block.misc.BlockLightDetector;
-import appeng.block.misc.BlockPaint;
-import appeng.block.misc.BlockQuartzGrowthAccelerator;
-import appeng.block.misc.BlockQuartzTorch;
-import appeng.block.misc.BlockSecurity;
-import appeng.block.misc.BlockSkyCompass;
-import appeng.block.misc.BlockTinyTNT;
-import appeng.block.misc.BlockVibrationChamber;
-import appeng.block.networking.BlockCableBus;
-import appeng.block.networking.BlockController;
-import appeng.block.networking.BlockCreativeEnergyCell;
-import appeng.block.networking.BlockDenseEnergyCell;
-import appeng.block.networking.BlockEnergyAcceptor;
-import appeng.block.networking.BlockEnergyCell;
-import appeng.block.networking.BlockWireless;
+import appeng.block.misc.*;
+import appeng.block.networking.*;
 import appeng.block.qnb.BlockQuantumLinkChamber;
 import appeng.block.qnb.BlockQuantumRing;
-import appeng.block.solids.BlockFluix;
-import appeng.block.solids.BlockQuartz;
-import appeng.block.solids.BlockQuartzChiseled;
-import appeng.block.solids.BlockQuartzGlass;
-import appeng.block.solids.BlockQuartzLamp;
-import appeng.block.solids.BlockQuartzPillar;
-import appeng.block.solids.BlockSkyStone;
-import appeng.block.solids.OreQuartz;
-import appeng.block.solids.OreQuartzCharged;
+import appeng.block.solids.*;
 import appeng.block.spatial.BlockMatrixFrame;
 import appeng.block.spatial.BlockSpatialIOPort;
 import appeng.block.spatial.BlockSpatialPylon;
-import appeng.block.stair.ChiseledQuartzStairBlock;
-import appeng.block.stair.FluixStairBlock;
-import appeng.block.stair.QuartzPillarStairBlock;
-import appeng.block.stair.QuartzStairBlock;
-import appeng.block.stair.SkyStoneBlockStairBlock;
-import appeng.block.stair.SkyStoneBrickStairBlock;
-import appeng.block.stair.SkyStoneSmallBrickStairBlock;
-import appeng.block.stair.SkyStoneStairBlock;
+import appeng.block.stair.*;
 import appeng.block.storage.BlockChest;
 import appeng.block.storage.BlockDrive;
 import appeng.block.storage.BlockIOPort;
@@ -87,6 +49,10 @@ import appeng.debug.BlockChunkloader;
 import appeng.debug.BlockCubeGenerator;
 import appeng.debug.BlockItemGen;
 import appeng.debug.BlockPhantomNode;
+import com.google.common.collect.ImmutableSet;
+
+import java.util.EnumSet;
+import java.util.Set;
 
 
 /**

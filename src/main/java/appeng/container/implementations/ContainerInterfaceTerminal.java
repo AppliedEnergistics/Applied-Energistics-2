@@ -19,18 +19,6 @@
 package appeng.container.implementations;
 
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.networking.IGrid;
@@ -52,6 +40,17 @@ import appeng.util.Platform;
 import appeng.util.inv.AdaptorIInventory;
 import appeng.util.inv.AdaptorPlayerHand;
 import appeng.util.inv.WrapperInvSlot;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 
 public final class ContainerInterfaceTerminal extends AEBaseContainer
@@ -418,6 +417,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 			this.sortBy = dual.getSortValue();
 		}
 	}
+
 
 	private static class PatternInvSlot extends WrapperInvSlot
 	{

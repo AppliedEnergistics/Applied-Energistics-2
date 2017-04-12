@@ -19,24 +19,6 @@
 package appeng.integration.modules;
 
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.common.event.FMLInterModComms;
-
-import buildcraft.api.facades.IFacadeItem;
-import buildcraft.api.transport.IInjectable;
-import buildcraft.api.transport.IPipeTile;
-import buildcraft.transport.ItemFacade;
-import buildcraft.transport.PipeIconProvider;
-
 import appeng.api.AEApi;
 import appeng.api.IAppEngApi;
 import appeng.api.config.TunnelType;
@@ -50,6 +32,21 @@ import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.IBuildCraftTransport;
 import appeng.integration.modules.BCHelpers.BCPipeHandler;
+import buildcraft.api.facades.IFacadeItem;
+import buildcraft.api.transport.IInjectable;
+import buildcraft.api.transport.IPipeTile;
+import buildcraft.transport.ItemFacade;
+import buildcraft.transport.PipeIconProvider;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 
 /**

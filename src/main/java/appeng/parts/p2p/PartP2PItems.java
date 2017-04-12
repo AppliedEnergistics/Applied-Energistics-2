@@ -19,25 +19,6 @@
 package appeng.parts.p2p;
 
 
-import java.util.LinkedList;
-import java.util.List;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import buildcraft.api.transport.IPipeConnection;
-import buildcraft.api.transport.IPipeTile.PipeType;
-
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkBootingStatusChange;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -59,6 +40,22 @@ import appeng.util.Platform;
 import appeng.util.inv.WrapperBCPipe;
 import appeng.util.inv.WrapperChainedInventory;
 import appeng.util.inv.WrapperMCISidedInventory;
+import buildcraft.api.transport.IPipeConnection;
+import buildcraft.api.transport.IPipeTile.PipeType;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.LinkedList;
+import java.util.List;
 
 
 @Interface( iface = "buildcraft.api.transport.IPipeConnection", iname = IntegrationType.BuildCraftTransport )

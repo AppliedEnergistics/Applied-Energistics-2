@@ -19,15 +19,13 @@
 package appeng.client.gui.widgets;
 
 
-import java.util.regex.Pattern;
-
-import org.lwjgl.opengl.GL11;
-
+import appeng.client.texture.ExtraBlockTextures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.StatCollector;
+import org.lwjgl.opengl.GL11;
 
-import appeng.client.texture.ExtraBlockTextures;
+import java.util.regex.Pattern;
 
 
 public class GuiToggleButton extends GuiButton implements ITooltip

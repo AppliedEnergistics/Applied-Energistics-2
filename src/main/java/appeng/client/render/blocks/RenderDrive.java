@@ -19,8 +19,11 @@
 package appeng.client.render.blocks;
 
 
-import java.util.EnumSet;
-
+import appeng.block.storage.BlockDrive;
+import appeng.client.render.BaseBlockRender;
+import appeng.client.texture.ExtraBlockTextures;
+import appeng.tile.storage.TileDrive;
+import appeng.util.Platform;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
@@ -29,11 +32,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.block.storage.BlockDrive;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.texture.ExtraBlockTextures;
-import appeng.tile.storage.TileDrive;
-import appeng.util.Platform;
+import java.util.EnumSet;
 
 
 public class RenderDrive extends BaseBlockRender<BlockDrive, TileDrive>

@@ -19,10 +19,10 @@
 package appeng.util.iterators;
 
 
-import java.util.Iterator;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+
+import java.util.Iterator;
 
 
 public final class InvIterator implements Iterator<ItemStack>

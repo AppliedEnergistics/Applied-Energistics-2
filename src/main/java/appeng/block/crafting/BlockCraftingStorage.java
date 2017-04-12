@@ -19,18 +19,16 @@
 package appeng.block.crafting;
 
 
-import java.util.List;
-
+import appeng.client.texture.ExtraBlockTextures;
+import appeng.tile.crafting.TileCraftingStorageTile;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.client.texture.ExtraBlockTextures;
-import appeng.tile.crafting.TileCraftingStorageTile;
+import java.util.List;
 
 
 public class BlockCraftingStorage extends BlockCraftingUnit

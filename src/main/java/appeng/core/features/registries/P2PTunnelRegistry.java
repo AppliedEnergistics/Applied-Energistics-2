@@ -19,19 +19,6 @@
 package appeng.core.features.registries;
 
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.oredict.OreDictionary;
-
-import cpw.mods.fml.common.registry.GameRegistry;
-
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.api.definitions.IBlocks;
@@ -41,6 +28,16 @@ import appeng.api.definitions.IParts;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.util.AEColor;
 import appeng.util.Platform;
+import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.oredict.OreDictionary;
+
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public final class P2PTunnelRegistry implements IP2PTunnelRegistry

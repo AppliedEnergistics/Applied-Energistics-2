@@ -19,11 +19,6 @@
 package appeng.parts.automation;
 
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.ticking.IGridTickable;
@@ -32,6 +27,10 @@ import appeng.me.GridAccessException;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 
 public abstract class PartSharedItemBus extends PartUpgradeable implements IGridTickable
@@ -135,7 +134,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 
 	/**
 	 * Checks if the bus can actually do something.
-	 *
+	 * <p>
 	 * Currently this tests if the chunk for the target is actually loaded.
 	 *
 	 * @return true, if the the bus should do its work.

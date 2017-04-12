@@ -24,11 +24,11 @@
 package appeng.api.features;
 
 
-import javax.annotation.Nullable;
-
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IRecipeHandler;
 import appeng.api.recipes.ISubItemResolver;
+
+import javax.annotation.Nullable;
 
 
 /**
@@ -42,17 +42,17 @@ public interface IRecipeHandlerRegistry
 
 	/**
 	 * Add a new Recipe Handler to the parser.
-	 *
+	 * <p>
 	 * MUST BE CALLED IN PRE-INIT
 	 *
-	 * @param name name of crafthandler
+	 * @param name    name of crafthandler
 	 * @param handler class of crafthandler
 	 */
 	void addNewCraftHandler( String name, Class<? extends ICraftHandler> handler );
 
 	/**
 	 * Add a new resolver to the parser.
-	 *
+	 * <p>
 	 * MUST BE CALLED IN PRE-INIT
 	 *
 	 * @param sir sub item resolver
@@ -61,7 +61,6 @@ public interface IRecipeHandlerRegistry
 
 	/**
 	 * @param name name of crafting handler
-	 *
 	 * @return A recipe handler by name, returns null on failure.
 	 */
 	@Nullable
@@ -76,8 +75,7 @@ public interface IRecipeHandlerRegistry
 	 * resolve sub items by name.
 	 *
 	 * @param nameSpace namespace of item
-	 * @param itemName full name of item
-	 *
+	 * @param itemName  full name of item
 	 * @return ResolverResult or ResolverResultSet or null if could not resolve
 	 */
 	@Nullable

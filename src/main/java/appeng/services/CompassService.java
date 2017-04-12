@@ -19,31 +19,23 @@
 package appeng.services;
 
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.Nonnull;
-
-import com.google.common.base.Preconditions;
-
-import net.minecraft.block.Block;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.event.world.WorldEvent;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-
 import appeng.api.AEApi;
 import appeng.api.util.DimensionalCoord;
 import appeng.services.compass.CompassReader;
 import appeng.services.compass.ICompassCallback;
 import appeng.util.Platform;
+import com.google.common.base.Preconditions;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.block.Block;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.event.world.WorldEvent;
+
+import javax.annotation.Nonnull;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.*;
 
 
 public final class CompassService
@@ -239,6 +231,7 @@ public final class CompassService
 			}
 		}
 	}
+
 
 	private class CMDirectionRequest implements Runnable
 	{

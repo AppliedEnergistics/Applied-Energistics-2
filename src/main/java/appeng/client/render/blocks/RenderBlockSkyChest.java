@@ -19,9 +19,9 @@
 package appeng.client.render.blocks;
 
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
+import appeng.block.storage.BlockSkyChest;
+import appeng.client.render.BaseBlockRender;
+import appeng.tile.storage.TileSkyChest;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -30,10 +30,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-
-import appeng.block.storage.BlockSkyChest;
-import appeng.client.render.BaseBlockRender;
-import appeng.tile.storage.TileSkyChest;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 
 public class RenderBlockSkyChest extends BaseBlockRender<BlockSkyChest, TileSkyChest>

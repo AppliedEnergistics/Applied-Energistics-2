@@ -19,8 +19,10 @@
 package appeng.spatial;
 
 
-import java.util.List;
-
+import appeng.api.AEApi;
+import appeng.api.util.WorldCoord;
+import appeng.core.stats.Achievements;
+import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityHanging;
@@ -32,10 +34,7 @@ import net.minecraft.world.Teleporter;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
-import appeng.api.AEApi;
-import appeng.api.util.WorldCoord;
-import appeng.core.stats.Achievements;
-import appeng.util.Platform;
+import java.util.List;
 
 
 public class StorageHelper
@@ -56,8 +55,7 @@ public class StorageHelper
 	 * Mostly from dimensional doors.. which mostly got it form X-Comp.
 	 *
 	 * @param entity to be teleported entity
-	 * @param link destination
-	 *
+	 * @param link   destination
 	 * @return teleported entity
 	 */
 	private Entity teleportEntity( Entity entity, final TelDestination link )
@@ -206,8 +204,8 @@ public class StorageHelper
 	}
 
 	public void swapRegions( final World src /** over world **/
-	, final World dst /** storage cell **/
-	, final int x, final int y, final int z, final int i, final int j, final int k, final int scaleX, final int scaleY, final int scaleZ )
+			, final World dst /** storage cell **/
+			, final int x, final int y, final int z, final int i, final int j, final int k, final int scaleX, final int scaleY, final int scaleZ )
 	{
 		for( final Block matrixFrameBlock : AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().asSet() )
 		{
@@ -280,6 +278,7 @@ public class StorageHelper
 		}
 	}
 
+
 	private static class WrapInMatrixFrame implements ISpatialVisitor
 	{
 
@@ -300,6 +299,7 @@ public class StorageHelper
 			this.dst.setBlock( x, y, z, this.blkID, this.Meta, 3 );
 		}
 	}
+
 
 	private static class TelDestination
 	{
@@ -323,6 +323,7 @@ public class StorageHelper
 			this.zOff = tileZ;
 		}
 	}
+
 
 	private static class METeleporter extends Teleporter
 	{

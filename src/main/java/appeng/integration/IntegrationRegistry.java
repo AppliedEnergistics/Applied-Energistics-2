@@ -19,13 +19,12 @@
 package appeng.integration;
 
 
-import java.util.Collection;
-import java.util.LinkedList;
-
-import javax.annotation.Nonnull;
-
 import cpw.mods.fml.relauncher.FMLLaunchHandler;
 import cpw.mods.fml.relauncher.Side;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.LinkedList;
 
 
 public enum IntegrationRegistry

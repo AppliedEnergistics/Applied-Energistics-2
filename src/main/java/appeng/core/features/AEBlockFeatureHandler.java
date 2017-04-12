@@ -19,15 +19,13 @@
 package appeng.core.features;
 
 
-import java.util.EnumSet;
-
-import com.google.common.base.Optional;
-
-import cpw.mods.fml.common.registry.GameRegistry;
-
 import appeng.api.definitions.IBlockDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.core.CreativeTab;
+import com.google.common.base.Optional;
+import cpw.mods.fml.common.registry.GameRegistry;
+
+import java.util.EnumSet;
 
 
 public final class AEBlockFeatureHandler implements IFeatureHandler

@@ -19,12 +19,12 @@
 package appeng.util.inv;
 
 
-import java.util.Collection;
-import java.util.Iterator;
-
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+
+import java.util.Collection;
+import java.util.Iterator;
 
 
 public class ItemListIgnoreCrafting<T extends IAEStack> implements IItemList<T>

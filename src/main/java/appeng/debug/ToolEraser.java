@@ -19,23 +19,22 @@
 package appeng.debug;
 
 
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.LinkedList;
-import java.util.List;
-
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-
 import appeng.api.util.WorldCoord;
 import appeng.client.texture.MissingIcon;
 import appeng.core.AELog;
 import appeng.core.features.AEFeature;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class ToolEraser extends AEBaseItem

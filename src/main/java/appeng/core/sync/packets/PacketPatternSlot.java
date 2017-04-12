@@ -19,21 +19,19 @@
 package appeng.core.sync.packets;
 
 
-import java.io.IOException;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
-
 import appeng.api.AEApi;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.implementations.ContainerPatternTerm;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.item.AEItemStack;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
+
+import java.io.IOException;
 
 
 public class PacketPatternSlot extends AppEngPacket

@@ -19,10 +19,15 @@
 package appeng.server;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
+import appeng.api.parts.CableRenderMode;
+import appeng.block.AEBaseBlock;
+import appeng.client.EffectType;
+import appeng.core.CommonHelper;
+import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.items.tools.ToolNetworkTool;
+import appeng.util.Platform;
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -32,16 +37,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
-import appeng.api.parts.CableRenderMode;
-import appeng.block.AEBaseBlock;
-import appeng.client.EffectType;
-import appeng.core.CommonHelper;
-import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.items.tools.ToolNetworkTool;
-import appeng.util.Platform;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 
 public class ServerHelper extends CommonHelper

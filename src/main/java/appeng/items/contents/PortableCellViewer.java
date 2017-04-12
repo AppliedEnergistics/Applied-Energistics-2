@@ -19,15 +19,7 @@
 package appeng.items.contents;
 
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
+import appeng.api.config.*;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.storage.IMEMonitor;
@@ -40,6 +32,8 @@ import appeng.me.storage.CellInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 
 public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implements IPortableCell, IInventorySlotAware

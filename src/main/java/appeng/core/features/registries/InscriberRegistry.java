@@ -19,23 +19,15 @@
 package appeng.core.features.registries;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
-import net.minecraft.item.ItemStack;
-
 import appeng.api.features.IInscriberRecipe;
 import appeng.api.features.IInscriberRecipeBuilder;
 import appeng.api.features.IInscriberRegistry;
 import appeng.api.features.InscriberProcessType;
 import appeng.core.features.registries.entries.InscriberRecipe;
+import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nonnull;
+import java.util.*;
 
 
 /**

@@ -19,14 +19,14 @@
 package appeng.client.render.effects;
 
 
-import java.util.Random;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 
 public class LightningFX extends EntityFX

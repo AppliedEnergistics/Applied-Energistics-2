@@ -19,60 +19,20 @@
 package appeng.tile.storage;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import io.netty.buffer.ByteBuf;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
-
 import appeng.api.AEApi;
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
+import appeng.api.config.*;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.implementations.tiles.IMEChest;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.events.MENetworkCellArrayUpdate;
-import appeng.api.networking.events.MENetworkChannelsChanged;
-import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.api.networking.events.MENetworkPowerStorage;
+import appeng.api.networking.events.*;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.IActionHost;
-import appeng.api.networking.security.ISecurityGrid;
-import appeng.api.networking.security.MachineSource;
-import appeng.api.networking.security.PlayerSource;
+import appeng.api.networking.security.*;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStorageGrid;
-import appeng.api.storage.ICellHandler;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.IStorageMonitorable;
-import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.MEMonitorHandler;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.*;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -90,6 +50,21 @@ import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 import appeng.util.item.AEFluidStack;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHandler, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile
@@ -865,6 +840,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 		private static final long serialVersionUID = 7995805326136526631L;
 	}
 
+
 	private class ChestNetNotifier<T extends IAEStack<T>> implements IMEMonitorHandlerReceiver<T>
 	{
 
@@ -916,6 +892,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, IFluidHan
 			// not used here
 		}
 	}
+
 
 	private class ChestMonitorHandler<T extends IAEStack> extends MEMonitorHandler<T>
 	{

@@ -31,8 +31,8 @@ public final class DefaultVersion extends BaseVersion
 {
 	/**
 	 * @param revision natural number
-	 * @param channel either alpha, beta or release
-	 * @param build natural number
+	 * @param channel  either alpha, beta or release
+	 * @param build    natural number
 	 */
 	public DefaultVersion( @Nonnegative final int revision, @Nonnull final Channel channel, @Nonnegative final int build )
 	{

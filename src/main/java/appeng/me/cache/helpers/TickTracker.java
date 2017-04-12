@@ -19,16 +19,15 @@
 package appeng.me.cache.helpers;
 
 
-import javax.annotation.Nonnull;
-
-import net.minecraft.crash.CrashReportCategory;
-
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.cache.TickManagerCache;
 import appeng.parts.AEBasePart;
+import net.minecraft.crash.CrashReportCategory;
+
+import javax.annotation.Nonnull;
 
 
 public class TickTracker implements Comparable<TickTracker>
@@ -56,7 +55,7 @@ public class TickTracker implements Comparable<TickTracker>
 
 	public long getAvgNanos()
 	{
-		return( this.LastFiveTicksTime / 5 );
+		return ( this.LastFiveTicksTime / 5 );
 	}
 
 	public void setRate( final int rate )

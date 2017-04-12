@@ -19,15 +19,13 @@
 package appeng.integration.modules;
 
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-
-import cpw.mods.fml.common.event.FMLInterModComms;
-
 import appeng.helpers.Reflected;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.IMekanism;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 
 public final class Mekanism implements IMekanism, IIntegrationModule

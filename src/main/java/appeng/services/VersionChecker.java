@@ -19,48 +19,40 @@
 package appeng.services;
 
 
-import java.util.Date;
-
-import javax.annotation.Nonnull;
-
-import com.google.common.base.Preconditions;
-
-import net.minecraft.nbt.NBTTagCompound;
-
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.event.FMLInterModComms;
-
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
-import appeng.services.version.ModVersionFetcher;
-import appeng.services.version.Version;
-import appeng.services.version.VersionCheckerConfig;
-import appeng.services.version.VersionFetcher;
-import appeng.services.version.VersionParser;
+import appeng.services.version.*;
 import appeng.services.version.github.FormattedRelease;
 import appeng.services.version.github.ReleaseFetcher;
+import com.google.common.base.Preconditions;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import net.minecraft.nbt.NBTTagCompound;
+
+import javax.annotation.Nonnull;
+import java.util.Date;
 
 
 /**
  * Tries to connect to GitHub to retrieve the most current build.
  * After comparison with the local version, several path can be chosen.
- *
+ * <p>
  * If the local version is invalid, somebody might have build that version themselves
  * or it is run in a developer environment, then nothing needs to be done.
- *
+ * <p>
  * If GitHub can not be reached, then either is GitHub down
  * or the connection to GitHub disturbed, then nothing needs to be done,
  * since no comparison can be reached
- *
+ * <p>
  * If the version was just recently checked, then no need to poll again.
  * Nobody wants to bother to update several times a day.
- *
+ * <p>
  * Config enables to fine-tune when a version is considered newer
- *
+ * <p>
  * If the local version is newer or equal to the GitHub version,
  * then no update needs to be posted
- *
+ * <p>
  * Only after all that cases, if the external version is higher than the local,
  * use Version Checker Mod and post several information needed for it to update the mod.
  */
@@ -111,7 +103,7 @@ public final class VersionChecker implements Runnable
 	/**
 	 * checks if enough time since last check has expired
 	 *
-	 * @param nowInMs now in milli seconds
+	 * @param nowInMs           now in milli seconds
 	 * @param lastAfterInterval last version check including the interval defined in the config
 	 */
 	private void processInterval( final long nowInMs, final long lastAfterInterval )
@@ -138,7 +130,7 @@ public final class VersionChecker implements Runnable
 	 * Checks if the retrieved version is newer as the current mod version.
 	 * Will notify player if config is enabled.
 	 *
-	 * @param modVersion version of mod
+	 * @param modVersion    version of mod
 	 * @param githubRelease release retrieved through github
 	 */
 	private void processVersions( @Nonnull final Version modVersion, @Nonnull final FormattedRelease githubRelease )
@@ -173,8 +165,8 @@ public final class VersionChecker implements Runnable
 	 * Checks if the version checker mod is installed and handles it depending on that information
 	 *
 	 * @param modFormatted mod version formatted as rv2-beta-8
-	 * @param ghFormatted retrieved github version formatted as rv2-beta-8
-	 * @param changelog retrieved github changelog
+	 * @param ghFormatted  retrieved github version formatted as rv2-beta-8
+	 * @param changelog    retrieved github changelog
 	 */
 	private void interactWithVersionCheckerMod( @Nonnull final String modFormatted, @Nonnull final String ghFormatted, @Nonnull final String changelog )
 	{

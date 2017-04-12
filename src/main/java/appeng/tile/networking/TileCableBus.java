@@ -19,21 +19,6 @@
 package appeng.tile.networking;
 
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
-
-import io.netty.buffer.ByteBuf;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IPart;
@@ -54,6 +39,19 @@ import appeng.tile.AEBaseTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 
 public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomCollision

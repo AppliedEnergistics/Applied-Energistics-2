@@ -19,9 +19,9 @@
 package appeng.core.features;
 
 
-import java.util.regex.Pattern;
-
 import com.google.common.base.Optional;
+
+import java.util.regex.Pattern;
 
 
 public class FeatureNameExtractor

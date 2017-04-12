@@ -19,19 +19,18 @@
 package appeng.me;
 
 
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridStorage;
+import appeng.core.AELog;
+import appeng.core.worlddata.WorldData;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
-
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
-
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridStorage;
-import appeng.core.AELog;
-import appeng.core.worlddata.WorldData;
 
 
 public class GridStorage implements IGridStorage
@@ -48,7 +47,7 @@ public class GridStorage implements IGridStorage
 	/**
 	 * for use with world settings
 	 *
-	 * @param id ID of grid storage
+	 * @param id  ID of grid storage
 	 * @param gss grid storage search
 	 */
 	public GridStorage( final long id, final GridStorageSearch gss )
@@ -62,8 +61,8 @@ public class GridStorage implements IGridStorage
 	 * for use with world settings
 	 *
 	 * @param input array of bytes string
-	 * @param id ID of grid storage
-	 * @param gss grid storage search
+	 * @param id    ID of grid storage
+	 * @param gss   grid storage search
 	 */
 	public GridStorage( final String input, final long id, final GridStorageSearch gss )
 	{

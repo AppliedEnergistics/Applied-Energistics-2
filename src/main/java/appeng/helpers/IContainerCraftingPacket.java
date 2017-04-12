@@ -19,11 +19,10 @@
 package appeng.helpers;
 
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.BaseActionSource;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 
 
 public interface IContainerCraftingPacket
@@ -36,7 +35,6 @@ public interface IContainerCraftingPacket
 
 	/**
 	 * @param string name of inventory
-	 *
 	 * @return the inventory of the part/tile by name.
 	 */
 	IInventory getInventoryByName( String string );

@@ -19,24 +19,17 @@
 package appeng.core.features.registries.entries;
 
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-
 import appeng.api.implementations.tiles.IChestOrDrive;
-import appeng.api.storage.ICellHandler;
-import appeng.api.storage.ICellInventory;
-import appeng.api.storage.ICellInventoryHandler;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.ISaveProvider;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.*;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.sync.GuiBridge;
 import appeng.me.storage.CellInventory;
 import appeng.me.storage.CellInventoryHandler;
 import appeng.util.Platform;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 
 
 public class BasicCellHandler implements ICellHandler

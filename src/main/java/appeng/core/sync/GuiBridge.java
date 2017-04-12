@@ -19,22 +19,6 @@
 package appeng.core.sync;
 
 
-import java.lang.reflect.Constructor;
-import java.util.List;
-
-import com.google.common.collect.Lists;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.common.network.IGuiHandler;
-import cpw.mods.fml.relauncher.ReflectionHelper;
-
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.definitions.IComparableDefinition;
@@ -58,39 +42,7 @@ import appeng.client.gui.GuiNull;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerNull;
 import appeng.container.ContainerOpenContext;
-import appeng.container.implementations.ContainerCellWorkbench;
-import appeng.container.implementations.ContainerChest;
-import appeng.container.implementations.ContainerCondenser;
-import appeng.container.implementations.ContainerCraftAmount;
-import appeng.container.implementations.ContainerCraftConfirm;
-import appeng.container.implementations.ContainerCraftingCPU;
-import appeng.container.implementations.ContainerCraftingStatus;
-import appeng.container.implementations.ContainerCraftingTerm;
-import appeng.container.implementations.ContainerDrive;
-import appeng.container.implementations.ContainerFormationPlane;
-import appeng.container.implementations.ContainerGrinder;
-import appeng.container.implementations.ContainerIOPort;
-import appeng.container.implementations.ContainerInscriber;
-import appeng.container.implementations.ContainerInterface;
-import appeng.container.implementations.ContainerInterfaceTerminal;
-import appeng.container.implementations.ContainerLevelEmitter;
-import appeng.container.implementations.ContainerMAC;
-import appeng.container.implementations.ContainerMEMonitorable;
-import appeng.container.implementations.ContainerMEPortableCell;
-import appeng.container.implementations.ContainerNetworkStatus;
-import appeng.container.implementations.ContainerNetworkTool;
-import appeng.container.implementations.ContainerPatternTerm;
-import appeng.container.implementations.ContainerPriority;
-import appeng.container.implementations.ContainerQNB;
-import appeng.container.implementations.ContainerQuartzKnife;
-import appeng.container.implementations.ContainerSecurity;
-import appeng.container.implementations.ContainerSkyChest;
-import appeng.container.implementations.ContainerSpatialIOPort;
-import appeng.container.implementations.ContainerStorageBus;
-import appeng.container.implementations.ContainerUpgradeable;
-import appeng.container.implementations.ContainerVibrationChamber;
-import appeng.container.implementations.ContainerWireless;
-import appeng.container.implementations.ContainerWirelessTerm;
+import appeng.container.implementations.*;
 import appeng.core.stats.Achievements;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
@@ -105,11 +57,7 @@ import appeng.parts.reporting.PartPatternTerminal;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.tile.grindstone.TileGrinder;
-import appeng.tile.misc.TileCellWorkbench;
-import appeng.tile.misc.TileCondenser;
-import appeng.tile.misc.TileInscriber;
-import appeng.tile.misc.TileSecurity;
-import appeng.tile.misc.TileVibrationChamber;
+import appeng.tile.misc.*;
 import appeng.tile.networking.TileWireless;
 import appeng.tile.qnb.TileQuantumBridge;
 import appeng.tile.spatial.TileSpatialIOPort;
@@ -118,6 +66,19 @@ import appeng.tile.storage.TileDrive;
 import appeng.tile.storage.TileIOPort;
 import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
+import com.google.common.collect.Lists;
+import cpw.mods.fml.common.network.IGuiHandler;
+import cpw.mods.fml.relauncher.ReflectionHelper;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.lang.reflect.Constructor;
+import java.util.List;
 
 
 public enum GuiBridge implements IGuiHandler

@@ -19,22 +19,6 @@
 package appeng.block.misc;
 
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Random;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseTileBlock;
@@ -43,6 +27,20 @@ import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
 import appeng.helpers.MetaRotation;
 import appeng.tile.misc.TileLightDetector;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Random;
 
 
 public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBlock, ICustomCollision

@@ -24,9 +24,9 @@
 package appeng.api.networking.security;
 
 
-import java.util.EnumSet;
-
 import appeng.api.config.SecurityPermissions;
+
+import java.util.EnumSet;
 
 
 /**

@@ -44,7 +44,6 @@ public interface IGridCacheRegistry
 	 * requests a new INSTANCE of a grid cache for use, used internally
 	 *
 	 * @param grid grid
-	 *
 	 * @return a new HashMap of IGridCaches from the registry, called from IGrid when constructing a new grid.
 	 */
 	HashMap<Class<? extends IGridCache>, IGridCache> createCacheInstance( IGrid grid );

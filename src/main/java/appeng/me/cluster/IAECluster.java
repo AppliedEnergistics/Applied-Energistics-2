@@ -19,9 +19,9 @@
 package appeng.me.cluster;
 
 
-import java.util.Iterator;
-
 import appeng.api.networking.IGridHost;
+
+import java.util.Iterator;
 
 
 public interface IAECluster

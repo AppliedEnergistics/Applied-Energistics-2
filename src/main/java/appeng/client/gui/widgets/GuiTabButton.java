@@ -19,17 +19,15 @@
 package appeng.client.gui.widgets;
 
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
+import appeng.client.texture.ExtraBlockTextures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
-
-import appeng.client.texture.ExtraBlockTextures;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 
 public class GuiTabButton extends GuiButton implements ITooltip
@@ -56,11 +54,11 @@ public class GuiTabButton extends GuiButton implements ITooltip
 	/**
 	 * Using itemstack as an icon
 	 *
-	 * @param x x pos of button
-	 * @param y y pos of button
-	 * @param ico used icon
+	 * @param x       x pos of button
+	 * @param y       y pos of button
+	 * @param ico     used icon
 	 * @param message mouse over message
-	 * @param ir renderer
+	 * @param ir      renderer
 	 */
 	public GuiTabButton( final int x, final int y, final ItemStack ico, final String message, final RenderItem ir )
 	{

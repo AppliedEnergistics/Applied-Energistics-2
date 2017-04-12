@@ -19,24 +19,21 @@
 package appeng.core.worlddata;
 
 
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-
-import net.minecraft.network.NetworkManager;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-
 import appeng.api.util.WorldCoord;
 import appeng.core.AEConfig;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketNewStorageDimension;
 import appeng.hooks.TickHandler;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import net.minecraft.network.NetworkManager;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 
 /**

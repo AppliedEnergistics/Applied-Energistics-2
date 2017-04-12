@@ -19,10 +19,9 @@
 package appeng.integration.abstraction;
 
 
+import appeng.api.storage.IMEInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-
-import appeng.api.storage.IMEInventory;
 
 
 public interface IFZ

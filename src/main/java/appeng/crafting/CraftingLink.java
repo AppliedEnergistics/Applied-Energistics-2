@@ -19,13 +19,12 @@
 package appeng.crafting;
 
 
-import net.minecraft.nbt.NBTTagCompound;
-
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.storage.data.IAEItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 
 public class CraftingLink implements ICraftingLink

@@ -19,15 +19,13 @@
 package appeng.core.worlddata;
 
 
-import java.util.Map;
-import java.util.UUID;
-
-import javax.annotation.Nonnull;
-
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-
 import net.minecraftforge.common.config.ConfigCategory;
+
+import javax.annotation.Nonnull;
+import java.util.Map;
+import java.util.UUID;
 
 
 /**

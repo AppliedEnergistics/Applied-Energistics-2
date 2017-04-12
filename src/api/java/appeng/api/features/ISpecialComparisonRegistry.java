@@ -37,7 +37,6 @@ public interface ISpecialComparisonRegistry
 	 * return TheHandler or null.
 	 *
 	 * @param stack item
-	 *
 	 * @return a handler it found for a specific item
 	 */
 	IItemComparison getSpecialComparison( ItemStack stack );

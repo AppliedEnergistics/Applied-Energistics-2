@@ -19,11 +19,10 @@
 package appeng.recipes;
 
 
-import javax.annotation.Nonnull;
-
 import com.google.common.base.Preconditions;
-
 import net.minecraftforge.common.config.Configuration;
+
+import javax.annotation.Nonnull;
 
 
 /**

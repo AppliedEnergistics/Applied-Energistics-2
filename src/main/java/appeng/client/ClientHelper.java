@@ -19,13 +19,35 @@
 package appeng.client;
 
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import org.lwjgl.opengl.GL11;
-
+import appeng.api.parts.CableRenderMode;
+import appeng.api.util.AEColor;
+import appeng.block.AEBaseBlock;
+import appeng.client.render.BaseBlockRender;
+import appeng.client.render.TESRWrapper;
+import appeng.client.render.WorldRender;
+import appeng.client.render.effects.*;
+import appeng.client.texture.CableBusTextures;
+import appeng.client.texture.ExtraBlockTextures;
+import appeng.client.texture.ExtraItemTextures;
+import appeng.core.AEConfig;
+import appeng.core.AELog;
+import appeng.core.CommonHelper;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketAssemblerAnimation;
+import appeng.core.sync.packets.PacketValueConfig;
+import appeng.entity.EntityFloatingItem;
+import appeng.entity.EntityTinyTNTPrimed;
+import appeng.entity.RenderFloatingItem;
+import appeng.entity.RenderTinyTNTPrimed;
+import appeng.helpers.IMouseWheelItem;
+import appeng.hooks.TickHandler;
+import appeng.hooks.TickHandler.PlayerColor;
+import appeng.server.ServerHelper;
+import appeng.transformer.MissingCoreMod;
+import appeng.util.Platform;
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -47,42 +69,12 @@ import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
+import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-
-import appeng.api.parts.CableRenderMode;
-import appeng.api.util.AEColor;
-import appeng.block.AEBaseBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.TESRWrapper;
-import appeng.client.render.WorldRender;
-import appeng.client.render.effects.AssemblerFX;
-import appeng.client.render.effects.CraftingFx;
-import appeng.client.render.effects.EnergyFx;
-import appeng.client.render.effects.LightningArcFX;
-import appeng.client.render.effects.LightningFX;
-import appeng.client.render.effects.VibrantFX;
-import appeng.client.texture.CableBusTextures;
-import appeng.client.texture.ExtraBlockTextures;
-import appeng.client.texture.ExtraItemTextures;
-import appeng.core.AEConfig;
-import appeng.core.AELog;
-import appeng.core.CommonHelper;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketAssemblerAnimation;
-import appeng.core.sync.packets.PacketValueConfig;
-import appeng.entity.EntityFloatingItem;
-import appeng.entity.EntityTinyTNTPrimed;
-import appeng.entity.RenderFloatingItem;
-import appeng.entity.RenderTinyTNTPrimed;
-import appeng.helpers.IMouseWheelItem;
-import appeng.hooks.TickHandler;
-import appeng.hooks.TickHandler.PlayerColor;
-import appeng.server.ServerHelper;
-import appeng.transformer.MissingCoreMod;
-import appeng.util.Platform;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 
 public class ClientHelper extends ServerHelper

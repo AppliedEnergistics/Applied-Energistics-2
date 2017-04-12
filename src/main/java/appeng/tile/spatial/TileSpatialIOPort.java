@@ -19,12 +19,6 @@
 package appeng.tile.spatial;
 
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.YesNo;
@@ -47,6 +41,11 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 
 public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallable<Void>
@@ -178,7 +177,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 	@Override
 	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
-		return( i == 0 && this.isSpatialCell( itemstack ) );
+		return ( i == 0 && this.isSpatialCell( itemstack ) );
 	}
 
 	@Override

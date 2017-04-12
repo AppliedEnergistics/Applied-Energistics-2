@@ -19,10 +19,10 @@
 package appeng.util.iterators;
 
 
-import java.util.Iterator;
-
 import appeng.api.storage.data.IAEItemStack;
 import appeng.tile.inventory.AppEngInternalAEInventory;
+
+import java.util.Iterator;
 
 
 public final class AEInvIterator implements Iterator<IAEItemStack>

@@ -19,8 +19,14 @@
 package appeng.debug;
 
 
-import java.util.EnumSet;
-
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridHost;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.spatial.ISpatialCache;
+import appeng.api.util.DimensionalCoord;
+import appeng.core.features.AEFeature;
+import appeng.items.AEBaseItem;
+import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,14 +38,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridHost;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.spatial.ISpatialCache;
-import appeng.api.util.DimensionalCoord;
-import appeng.core.features.AEFeature;
-import appeng.items.AEBaseItem;
-import appeng.util.Platform;
+import java.util.EnumSet;
 
 
 public class ToolReplicatorCard extends AEBaseItem

@@ -19,18 +19,17 @@
 package appeng.client.render.blocks;
 
 
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-
 import appeng.block.networking.BlockCableBus;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BusRenderHelper;
 import appeng.client.render.BusRenderer;
 import appeng.tile.AEBaseTile;
 import appeng.tile.networking.TileCableBus;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 
 
 public class RendererCableBus extends BaseBlockRender<BlockCableBus, TileCableBus>

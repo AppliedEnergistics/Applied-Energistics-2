@@ -19,15 +19,15 @@
 package appeng.core.features.registries;
 
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
-
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridCache;
 import appeng.api.networking.IGridCacheRegistry;
 import appeng.core.AELog;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public final class GridCacheRegistry implements IGridCacheRegistry

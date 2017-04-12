@@ -19,15 +19,12 @@
 package appeng.items.tools.powered.powersink;
 
 
-import com.google.common.base.Optional;
-
-import net.minecraft.item.ItemStack;
-
-import cofh.api.energy.IEnergyContainerItem;
-
 import appeng.api.config.PowerUnits;
 import appeng.integration.IntegrationType;
 import appeng.transformer.annotations.Integration.Interface;
+import cofh.api.energy.IEnergyContainerItem;
+import com.google.common.base.Optional;
+import net.minecraft.item.ItemStack;
 
 
 @Interface( iface = "cofh.api.energy.IEnergyContainerItem", iname = IntegrationType.RFItem )

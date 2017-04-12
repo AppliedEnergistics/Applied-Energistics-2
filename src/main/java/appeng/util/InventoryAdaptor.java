@@ -19,8 +19,11 @@
 package appeng.util;
 
 
-import java.util.ArrayList;
-
+import appeng.api.config.FuzzyMode;
+import appeng.integration.IntegrationRegistry;
+import appeng.integration.IntegrationType;
+import appeng.integration.abstraction.IBetterStorage;
+import appeng.util.inv.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -28,16 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.api.config.FuzzyMode;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
-import appeng.integration.abstraction.IBetterStorage;
-import appeng.util.inv.AdaptorIInventory;
-import appeng.util.inv.AdaptorList;
-import appeng.util.inv.AdaptorPlayerInventory;
-import appeng.util.inv.IInventoryDestination;
-import appeng.util.inv.ItemSlot;
-import appeng.util.inv.WrapperMCISidedInventory;
+import java.util.ArrayList;
 
 
 public abstract class InventoryAdaptor implements Iterable<ItemSlot>
@@ -59,8 +53,7 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 		}
 		else if( te instanceof ArrayList )
 		{
-			@SuppressWarnings( "unchecked" )
-			final ArrayList<ItemStack> list = (ArrayList<ItemStack>) te;
+			@SuppressWarnings( "unchecked" )            final ArrayList<ItemStack> list = (ArrayList<ItemStack>) te;
 
 			return new AdaptorList( list );
 		}

@@ -19,22 +19,20 @@
 package appeng.parts.reporting;
 
 
+import appeng.api.parts.IPartRenderHelper;
+import appeng.client.texture.CableBusTextures;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.api.parts.IPartRenderHelper;
-import appeng.client.texture.CableBusTextures;
-
 
 /**
  * A more sophisticated part overlapping all 3 textures.
- *
+ * <p>
  * Subclass this if you need want a new part and need all 3 textures.
  * For more concrete implementations, the direct abstract subclasses might be a better alternative.
  *

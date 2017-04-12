@@ -19,9 +19,9 @@
 package appeng.core.worlddata;
 
 
-import java.util.Collection;
-
 import net.minecraft.nbt.NBTTagCompound;
+
+import java.util.Collection;
 
 
 /**

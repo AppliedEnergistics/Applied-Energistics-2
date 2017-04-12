@@ -19,12 +19,10 @@
 package appeng.integration.modules.BCHelpers;
 
 
-import net.minecraftforge.common.util.ForgeDirection;
-
+import appeng.util.Platform;
 import buildcraft.api.blueprints.IBuilderContext;
 import buildcraft.api.blueprints.SchematicBlock;
-
-import appeng.util.Platform;
+import net.minecraftforge.common.util.ForgeDirection;
 
 
 public class AERotatableBlockSchematic extends SchematicBlock

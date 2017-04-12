@@ -19,12 +19,6 @@
 package appeng.client.gui.implementations;
 
 
-import org.lwjgl.input.Mouse;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.AEApi;
 import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
@@ -37,6 +31,10 @@ import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.tile.storage.TileIOPort;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
+import org.lwjgl.input.Mouse;
 
 
 public class GuiIOPort extends GuiUpgradeable

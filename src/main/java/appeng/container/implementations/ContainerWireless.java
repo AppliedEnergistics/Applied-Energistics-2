@@ -19,13 +19,12 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
-
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.AEConfig;
 import appeng.tile.networking.TileWireless;
+import net.minecraft.entity.player.InventoryPlayer;
 
 
 public class ContainerWireless extends AEBaseContainer

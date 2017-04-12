@@ -19,18 +19,16 @@
 package appeng.integration.modules.waila.part;
 
 
-import java.util.List;
-
+import appeng.api.parts.IPart;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
-
-import appeng.api.parts.IPart;
+import java.util.List;
 
 
 /**

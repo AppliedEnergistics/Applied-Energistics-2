@@ -19,20 +19,18 @@
 package appeng.core;
 
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import javax.annotation.Nonnull;
-
-import com.google.common.base.Preconditions;
-
-import org.apache.commons.io.FileUtils;
-
 import appeng.api.recipes.IRecipeHandler;
 import appeng.recipes.CustomRecipeConfig;
 import appeng.recipes.loader.ConfigLoader;
 import appeng.recipes.loader.JarLoader;
 import appeng.recipes.loader.RecipeResourceCopier;
+import com.google.common.base.Preconditions;
+import org.apache.commons.io.FileUtils;
+
+import javax.annotation.Nonnull;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 
 /**
@@ -57,9 +55,8 @@ public class RecipeLoader implements Runnable
 	private final File recipeDirectory;
 
 	/**
-	 * @param config configuration for the knowledge how to handle the loading process
+	 * @param config  configuration for the knowledge how to handle the loading process
 	 * @param handler handler to load the recipes
-	 *
 	 * @throws NullPointerException if handler is <tt>null</tt>
 	 */
 	public RecipeLoader( @Nonnull final File recipeDirectory, @Nonnull final CustomRecipeConfig config, @Nonnull final IRecipeHandler handler )

@@ -57,12 +57,8 @@ public class GridStorageSearch
 		}
 
 		final GridStorageSearch other = (GridStorageSearch) obj;
-		if( this.id == other.id )
-		{
-			return true;
-		}
+		return this.id == other.id;
 
-		return false;
 	}
 
 	public WeakReference<GridStorage> getGridStorage()

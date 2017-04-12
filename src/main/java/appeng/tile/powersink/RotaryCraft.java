@@ -19,14 +19,8 @@
 package appeng.tile.powersink;
 
 
-import java.util.ArrayList;
-
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import Reika.RotaryCraft.API.Interfaces.Transducerable;
 import Reika.RotaryCraft.API.Power.AdvancedShaftPowerReceiver;
-
 import appeng.api.config.PowerUnits;
 import appeng.integration.IntegrationType;
 import appeng.tile.TileEvent;
@@ -34,6 +28,10 @@ import appeng.tile.events.TileEventType;
 import appeng.transformer.annotations.Integration.Interface;
 import appeng.transformer.annotations.Integration.InterfaceList;
 import appeng.transformer.annotations.Integration.Method;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.ArrayList;
 
 
 @InterfaceList( value = { @Interface( iname = IntegrationType.RotaryCraft, iface = "Reika.RotaryCraft.API.Power.AdvancedShaftPowerReceiver" ), @Interface( iname = IntegrationType.RotaryCraft, iface = "Reika.RotaryCraft.API.Interfaces.Transducerable" ) } )

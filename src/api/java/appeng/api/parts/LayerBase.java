@@ -24,10 +24,10 @@
 package appeng.api.parts;
 
 
-import java.util.Set;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Set;
 
 
 /**
@@ -39,11 +39,10 @@ public abstract class LayerBase extends TileEntity // implements IPartHost
 
 	/**
 	 * Grants access for the layer to the parts of the host.
-	 *
+	 * <p>
 	 * This Method looks silly, that is because its not used at runtime, a real implementation will be used instead.
 	 *
 	 * @param side side of part
-	 *
 	 * @return the part for the requested side.
 	 */
 	public IPart getPart( final ForgeDirection side )

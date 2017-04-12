@@ -19,10 +19,10 @@
 package appeng.util.item;
 
 
+import appeng.api.storage.data.IAEItemStack;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import appeng.api.storage.data.IAEItemStack;
 
 
 public class MeaningfulItemIterator<T extends IAEItemStack> implements Iterator<T>

@@ -39,15 +39,14 @@ public interface IChestOrDrive extends ICellContainer, IGridHost, IOrientable
 
 	/**
 	 * 0 - cell is missing.
-	 *
+	 * <p>
 	 * 1 - green,
-	 *
+	 * <p>
 	 * 2 - orange,
-	 *
+	 * <p>
 	 * 3 - red
 	 *
 	 * @param slot slot index
-	 *
 	 * @return status of the slot, one of the above indices.
 	 */
 	int getCellStatus( int slot );
@@ -59,7 +58,6 @@ public interface IChestOrDrive extends ICellContainer, IGridHost, IOrientable
 
 	/**
 	 * @param slot slot index
-	 *
 	 * @return is the cell currently blinking to show activity.
 	 */
 	boolean isCellBlinking( int slot );

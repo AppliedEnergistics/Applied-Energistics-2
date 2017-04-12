@@ -19,15 +19,15 @@
 package appeng.services.version;
 
 
-import javax.annotation.Nonnull;
-
 import appeng.core.AELog;
 import appeng.services.version.exceptions.VersionCheckerException;
+
+import javax.annotation.Nonnull;
 
 
 /**
  * Wrapper for {@link VersionParser} to check if the check is happening in developer environment or in a pull request.
- *
+ * <p>
  * In that case ignore the check.
  */
 public final class ModVersionFetcher implements VersionFetcher

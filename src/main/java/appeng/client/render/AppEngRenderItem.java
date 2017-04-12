@@ -19,22 +19,20 @@
 package appeng.client.render;
 
 
-import javax.annotation.Nonnull;
-
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.util.ISlimReadableNumberConverter;
 import appeng.util.IWideReadableNumberConverter;
 import appeng.util.ReadableNumberConverter;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.item.ItemStack;
+import org.lwjgl.opengl.GL11;
+
+import javax.annotation.Nonnull;
 
 
 /**

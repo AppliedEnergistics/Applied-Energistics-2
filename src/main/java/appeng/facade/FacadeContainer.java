@@ -19,16 +19,6 @@
 package appeng.facade;
 
 
-import java.io.IOException;
-
-import io.netty.buffer.ByteBuf;
-
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
@@ -38,6 +28,14 @@ import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBuildCraftTransport;
 import appeng.items.parts.ItemFacade;
 import appeng.parts.CableBusStorage;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.io.IOException;
 
 
 public class FacadeContainer implements IFacadeContainer

@@ -19,10 +19,10 @@
 package appeng.container.implementations;
 
 
-import javax.annotation.Nonnull;
-
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.util.ItemSorters;
+
+import javax.annotation.Nonnull;
 
 
 public class CraftingCPURecord implements Comparable<CraftingCPURecord>

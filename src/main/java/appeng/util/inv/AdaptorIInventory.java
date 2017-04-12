@@ -19,14 +19,13 @@
 package appeng.util.inv;
 
 
-import java.util.Iterator;
-
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.config.FuzzyMode;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+
+import java.util.Iterator;
 
 
 public class AdaptorIInventory extends InventoryAdaptor
@@ -248,14 +247,13 @@ public class AdaptorIInventory extends InventoryAdaptor
 
 	/**
 	 * Adds an {@link ItemStack} to the adapted {@link IInventory}.
-	 *
+	 * <p>
 	 * It respects the inventories stack limit, which can result in not all items added and some left ones are returned.
 	 * The ItemStack next is required for inventories, which will fail on isItemValidForSlot() for stacksizes larger
 	 * than the limit.
 	 *
 	 * @param itemsToAdd itemStack to add to the inventory
-	 * @param modulate true to modulate, false for simulate
-	 *
+	 * @param modulate   true to modulate, false for simulate
 	 * @return the left itemstack, which could not be added
 	 */
 	private ItemStack addItems( final ItemStack itemsToAdd, final boolean modulate )

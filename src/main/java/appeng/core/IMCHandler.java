@@ -19,19 +19,14 @@
 package appeng.core;
 
 
+import appeng.api.config.TunnelType;
+import appeng.core.api.IIMCProcessor;
+import appeng.core.api.imc.*;
+import cpw.mods.fml.common.event.FMLInterModComms;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import cpw.mods.fml.common.event.FMLInterModComms;
-
-import appeng.api.config.TunnelType;
-import appeng.core.api.IIMCProcessor;
-import appeng.core.api.imc.IMCBlackListSpatial;
-import appeng.core.api.imc.IMCGrinder;
-import appeng.core.api.imc.IMCMatterCannon;
-import appeng.core.api.imc.IMCP2PAttunement;
-import appeng.core.api.imc.IMCSpatial;
 
 
 /**
@@ -47,7 +42,7 @@ public class IMCHandler
 
 	/**
 	 * Contains the processors,
-	 *
+	 * <p>
 	 * is mutable, but write access only by the constructor
 	 */
 	private final Map<String, IIMCProcessor> processors;

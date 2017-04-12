@@ -24,14 +24,12 @@
 package appeng.api.storage.data;
 
 
-import java.io.IOException;
-
-import io.netty.buffer.ByteBuf;
-
-import net.minecraft.nbt.NBTTagCompound;
-
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.StorageChannel;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.nbt.NBTTagCompound;
+
+import java.io.IOException;
 
 
 public interface IAEStack<StackType extends IAEStack>
@@ -133,15 +131,14 @@ public interface IAEStack<StackType extends IAEStack>
 
 	/**
 	 * Compare stacks using precise logic.
-	 *
+	 * <p>
 	 * a IAEItemStack to another AEItemStack or a ItemStack.
-	 *
+	 * <p>
 	 * or
-	 *
+	 * <p>
 	 * IAEFluidStack, FluidStack
 	 *
 	 * @param obj compared object
-	 *
 	 * @return true if they are the same.
 	 */
 	@Override
@@ -149,12 +146,11 @@ public interface IAEStack<StackType extends IAEStack>
 
 	/**
 	 * compare stacks using fuzzy logic
-	 *
+	 * <p>
 	 * a IAEItemStack to another AEItemStack or a ItemStack.
 	 *
 	 * @param st   stacks
 	 * @param mode used fuzzy mode
-	 *
 	 * @return true if two stacks are equal based on AE Fuzzy Comparison.
 	 */
 	boolean fuzzyComparison( Object st, FuzzyMode mode );
@@ -163,7 +159,6 @@ public interface IAEStack<StackType extends IAEStack>
 	 * Slower for disk saving, but smaller/more efficient for packets.
 	 *
 	 * @param data to be written data
-	 *
 	 * @throws IOException
 	 */
 	void writeToPacket( ByteBuf data ) throws IOException;

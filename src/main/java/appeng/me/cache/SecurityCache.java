@@ -19,16 +19,6 @@
 package appeng.me.cache;
 
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-
-import com.google.common.base.Preconditions;
-import com.mojang.authlib.GameProfile;
-
-import net.minecraft.entity.player.EntityPlayer;
-
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
@@ -40,6 +30,14 @@ import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.ISecurityProvider;
 import appeng.core.worlddata.WorldData;
 import appeng.me.GridNode;
+import com.google.common.base.Preconditions;
+import com.mojang.authlib.GameProfile;
+import net.minecraft.entity.player.EntityPlayer;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class SecurityCache implements ISecurityGrid

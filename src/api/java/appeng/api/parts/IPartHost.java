@@ -24,21 +24,20 @@
 package appeng.api.parts;
 
 
-import java.util.Set;
-
+import appeng.api.util.AEColor;
+import appeng.api.util.DimensionalCoord;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.api.util.AEColor;
-import appeng.api.util.DimensionalCoord;
+import java.util.Set;
 
 
 /**
  * Implemented on AE's TileEntity or AE's FMP Part.
- *
+ * <p>
  * Do Not Implement
  */
 public interface IPartHost
@@ -55,7 +54,6 @@ public interface IPartHost
 	 *
 	 * @param part to be added part
 	 * @param side part placed onto side
-	 *
 	 * @return returns false if the part cannot be added.
 	 */
 	boolean canAddPart( ItemStack part, ForgeDirection side );
@@ -66,7 +64,6 @@ public interface IPartHost
 	 * @param is    new part
 	 * @param side  onto side
 	 * @param owner with owning player
-	 *
 	 * @return null if the item failed to add, the side it was placed on other wise ( may different for cables,
 	 * {@link ForgeDirection}.UNKNOWN )
 	 */
@@ -76,7 +73,6 @@ public interface IPartHost
 	 * Get part by side ( center is {@link ForgeDirection}.UNKNOWN )
 	 *
 	 * @param side side of part
-	 *
 	 * @return the part located on the specified side, or null if there is no part.
 	 */
 	IPart getPart( ForgeDirection side );
@@ -84,7 +80,7 @@ public interface IPartHost
 	/**
 	 * removes the part on the side, this doesn't drop it or anything, if you don't do something with it, its just
 	 * "gone" and its never coming back; think about it.
-	 *
+	 * <p>
 	 * if you want to drop the part you must request it prior to removing it.
 	 *
 	 * @param side           side of part
@@ -129,7 +125,6 @@ public interface IPartHost
 	 * finds the part located at the position ( pos must be relative, not global )
 	 *
 	 * @param pos part position
-	 *
 	 * @return a new SelectedPart, this is never null.
 	 */
 	SelectedPart selectPart( Vec3 pos );
@@ -148,7 +143,6 @@ public interface IPartHost
 	 * get the redstone state of host on this side, this value is cached internally.
 	 *
 	 * @param side side of part
-	 *
 	 * @return true of the part host is receiving redstone from an external source.
 	 */
 	boolean hasRedstone( ForgeDirection side );

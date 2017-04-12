@@ -1,4 +1,4 @@
-//Blocks
+#Blocks
 tile.appliedenergistics2.BlockCableBus.name=AE2-Kabel und/oder Bus
 tile.appliedenergistics2.BlockCellWorkbench.name=Speicherzellenwerkbank
 tile.appliedenergistics2.BlockCharger.name=Ladegerät
@@ -51,7 +51,7 @@ tile.appliedenergistics2.BlockCraftingAccelerator.name=Fertigungs-Prozessoreinhe
 tile.appliedenergistics2.BlockCraftingUnit.name=Fertigungseinheit
 tile.appliedenergistics2.BlockMolecularAssembler.name=Molekularassembler
 
-// Stairs
+# Stairs
 tile.appliedenergistics2.ChiseledQuartzStairBlock.name=Gemeißelte Certusquartztreppe
 tile.appliedenergistics2.FluixStairBlock.name=Fluixtreppe
 tile.appliedenergistics2.QuartzPillarStairBlock.name=Certusquartzsäulentreppe
@@ -61,7 +61,7 @@ tile.appliedenergistics2.SkyStoneBrickStairBlock.name=Himmelssteinziegeltreppe
 tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=Himmelssteinkleinziegeltreppe
 tile.appliedenergistics2.SkyStoneStairBlock.name=Himmelssteintreppe
 
-// Slabs
+# Slabs
 tile.appliedenergistics2.ChiseledQuartzSlabBlock.name=Gemeißelte Certusquartzstufe
 tile.appliedenergistics2.FluixSlabBlock.name=Fluixstufe
 tile.appliedenergistics2.QuartzPillarSlabBlock.name=Certusquartzsäulenstufe
@@ -71,7 +71,7 @@ tile.appliedenergistics2.SkyStoneBrickSlabBlock.name=Himmelssteinziegelstufe
 tile.appliedenergistics2.SkyStoneSmallBrickSlabBlock.name=Himmelssteinkleinziegelstufe
 tile.appliedenergistics2.SkyStoneSlabBlock.name=Himmelssteinstufe
 
-// Chat Messages
+# Chat Messages
 chat.appliedenergistics2.ChestCannotReadStorageCell=ME-Truhe kann die Speicherzelle nicht einlesen.
 chat.appliedenergistics2.SettingCleared=Einstellung gelöscht.
 chat.appliedenergistics2.OutOfRange=Drahtloser Zugangspunkt außer Reichweite.
@@ -88,11 +88,11 @@ chat.appliedenergistics2.AmmoDepleted=Munition verbraucht.
 chat.appliedenergistics2.isNowLocked=Monitor ist nun gesperrt.
 chat.appliedenergistics2.isNowUnlocked=Monitor ist nun entsperrt.
 
-// Creative Tabs
+# Creative Tabs
 itemGroup.appliedenergistics2=Applied Energistics 2
 itemGroup.appliedenergistics2.facades=Applied Energistics 2 - Fassaden
 
-// GUI
+# GUI
 gui.appliedenergistics2.CraftingTerminal=Fertigungskonsole
 gui.appliedenergistics2.METunnel=ME
 gui.appliedenergistics2.ItemTunnel=Item
@@ -231,7 +231,7 @@ gui.appliedenergistics2.SmallFontCraft=Craft
 gui.appliedenergistics2.LargeFontCraft=+
 gui.appliedenergistics2.Nothing=Nichts
 
-// GUI Tooltips
+# GUI Tooltips
 gui.tooltips.appliedenergistics2.Stash=Items lagern
 gui.tooltips.appliedenergistics2.StashDesc=Items aus dem Fertigungsgitter in Netzwerkspeicher zurücksenden.
 gui.tooltips.appliedenergistics2.Substitutions=Ore-Dict-Substitution
@@ -324,14 +324,14 @@ gui.tooltips.appliedenergistics2.SchedulingModeRandom=Exportiere im Zufallsmodus
 gui.tooltips.appliedenergistics2.ItemsStored=Items gespeichert: %s
 gui.tooltips.appliedenergistics2.ItemsRequestable=Anfragbare Items: %s
 
-// Units
+# Units
 gui.appliedenergistics2.units.appliedenergstics=AE
 gui.appliedenergistics2.units.ic2=Energy Units
 gui.appliedenergistics2.units.mekanism=Joules
 gui.appliedenergistics2.units.rotarycraft=Watt
 gui.appliedenergistics2.units.thermalexpansion=Redstone Flux
 
-// Colors
+# Colors
 gui.appliedenergistics2.White=Weiß
 gui.appliedenergistics2.Orange=Orange
 gui.appliedenergistics2.Magenta=Magenta
@@ -350,7 +350,7 @@ gui.appliedenergistics2.Red=Rot
 gui.appliedenergistics2.Black=Schwarz
 gui.appliedenergistics2.Fluix=Fluix
 
-// Waila
+# Waila
 waila.appliedenergistics2.Crafting=Fertigung
 waila.appliedenergistics2.DeviceOnline=Gerät Online
 waila.appliedenergistics2.DeviceOffline=Gerät Offline
@@ -361,7 +361,7 @@ waila.appliedenergistics2.Showing=Zeigt
 waila.appliedenergistics2.Contains=Enthält
 waila.appliedenergistics2.Channels=%1$d von %2$d Kanälen
 
-// Items
+# Items
 item.appliedenergistics2.ItemBasicStorageCell.1k.name=1k-ME-Speicherzelle
 item.appliedenergistics2.ItemBasicStorageCell.4k.name=4k-ME-Speicherzelle
 item.appliedenergistics2.ItemBasicStorageCell.16k.name=16k-ME-Speicherzelle
@@ -494,7 +494,7 @@ item.appliedenergistics2.ToolBiometricCard.name=Biometriekarte
 item.appliedenergistics2.ToolDebugCard.name=Dev.Debug-Karte
 item.appliedenergistics2.ToolReplicatorCard.name=Dev.Replikator-Karte
 
-// Commands
+# Commands
 commands.ae2.usage=Befehle verfügbar in Applied Energistics 2 - Verwende '/ae2 list' für eine Liste und '/ae2 help _____' für Hilfe zu einem Befehl.
 commands.ae2.permissions=Du hast nicht die erforderlichen Berechtigungen, um diesen Befehl auszuführen.
 commands.ae2.ChunkLogger=Schalted das Berichten von Chunk-Loading und Chunk-Unloading im Server-log um. ( OP )
@@ -502,7 +502,7 @@ commands.ae2.ChunkLoggerOn=Chunk Logging ist aktiviert
 commands.ae2.ChunkLoggerOff=Chunk Logging ist deaktiviert
 commands.ae2.Supporters=Zeigt eine Liste aller AE2-Unterstützer
 
-// Achievements
+# Achievements
 achievement.ae2.Compass=Meteoritenjäger
 achievement.ae2.Compass.desc=Fertige einen Meteoritenkompass
 achievement.ae2.Presses=Unbekannte Technologie
@@ -554,7 +554,7 @@ achievement.ae2.StorageBus.desc=Fertige einen Speicherbus
 achievement.ae2.QNB=Quantum Tunneling
 achievement.ae2.QNB.desc=Fertige einen Quantenlink
 
-// Stats
+# Stats
 stat.ae2.ItemsInserted=Items zu ME Speicher hinzugefügt
 stat.ae2.ItemsExtracted=Items aus ME Speicher entfernt
 stat.ae2.TurnedCranks=Runden gekurbelt

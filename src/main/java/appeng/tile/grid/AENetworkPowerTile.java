@@ -19,9 +19,6 @@
 package appeng.tile.grid;
 
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.util.AECableType;
@@ -31,6 +28,8 @@ import appeng.me.helpers.IGridProxyable;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.powersink.AEBasePoweredTile;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
 
 
 public abstract class AENetworkPowerTile extends AEBasePoweredTile implements IActionHost, IGridProxyable

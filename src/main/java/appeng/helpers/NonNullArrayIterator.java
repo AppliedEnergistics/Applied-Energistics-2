@@ -19,9 +19,9 @@
 package appeng.helpers;
 
 
-import java.util.Iterator;
-
 import scala.NotImplementedError;
+
+import java.util.Iterator;
 
 
 public class NonNullArrayIterator<E> implements Iterator<E>

@@ -19,15 +19,13 @@
 package appeng.integration.modules.waila.part;
 
 
-import com.google.common.base.Optional;
-
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
-
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
+import com.google.common.base.Optional;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 
 
 /**
@@ -45,9 +43,8 @@ public final class PartAccessor
 	 * You can derive the looked at {@link appeng.api.parts.IPart} by doing that. If a facade is being looked at, it is
 	 * defined as being absent.
 	 *
-	 * @param te being looked at {@link net.minecraft.tileentity.TileEntity}
+	 * @param te  being looked at {@link net.minecraft.tileentity.TileEntity}
 	 * @param mop type of ray-trace
-	 *
 	 * @return maybe the looked at {@link appeng.api.parts.IPart}
 	 */
 	public Optional<IPart> getMaybePart( final TileEntity te, final MovingObjectPosition mop )

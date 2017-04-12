@@ -19,17 +19,15 @@
 package appeng.block;
 
 
-import java.util.EnumSet;
-
-import com.google.common.base.Optional;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockStairs;
-
 import appeng.core.features.AEFeature;
 import appeng.core.features.IAEFeature;
 import appeng.core.features.IFeatureHandler;
 import appeng.core.features.StairBlockFeatureHandler;
+import com.google.common.base.Optional;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockStairs;
+
+import java.util.EnumSet;
 
 
 public abstract class AEBaseStairBlock extends BlockStairs implements IAEFeature

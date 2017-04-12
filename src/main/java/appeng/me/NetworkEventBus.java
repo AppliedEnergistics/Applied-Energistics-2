@@ -19,19 +19,14 @@
 package appeng.me;
 
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkEvent;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.core.AELog;
+
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.Map.Entry;
 
 
 public class NetworkEventBus
@@ -162,6 +157,7 @@ public class NetworkEventBus
 		private static final long serialVersionUID = -3079021487019171205L;
 	}
 
+
 	private class EventMethod
 	{
 
@@ -197,6 +193,7 @@ public class NetworkEventBus
 			}
 		}
 	}
+
 
 	private class MENetworkEventInfo
 	{

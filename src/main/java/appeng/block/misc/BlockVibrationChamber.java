@@ -19,16 +19,6 @@
 package appeng.block.misc;
 
 
-import java.util.EnumSet;
-import java.util.Random;
-
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.block.AEBaseTileBlock;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.AEConfig;
@@ -37,6 +27,15 @@ import appeng.core.sync.GuiBridge;
 import appeng.tile.AEBaseTile;
 import appeng.tile.misc.TileVibrationChamber;
 import appeng.util.Platform;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.EnumSet;
+import java.util.Random;
 
 
 public final class BlockVibrationChamber extends AEBaseTileBlock

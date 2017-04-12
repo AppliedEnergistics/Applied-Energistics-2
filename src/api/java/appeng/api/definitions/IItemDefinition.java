@@ -25,7 +25,6 @@ package appeng.api.definitions;
 
 
 import com.google.common.base.Optional;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 

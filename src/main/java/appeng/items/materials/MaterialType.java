@@ -19,23 +19,21 @@
 package appeng.items.materials;
 
 
-import java.util.EnumSet;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-
-import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.features.MaterialStackSrc;
 import appeng.entity.EntityChargedQuartz;
 import appeng.entity.EntityIds;
 import appeng.entity.EntitySingularity;
+import cpw.mods.fml.common.registry.EntityRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
+
+import java.util.EnumSet;
 
 
 public enum MaterialType

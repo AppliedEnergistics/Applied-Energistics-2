@@ -19,10 +19,12 @@
 package appeng.block.spatial;
 
 
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.List;
-
+import appeng.block.AEBaseBlock;
+import appeng.client.render.blocks.RenderNull;
+import appeng.core.features.AEFeature;
+import appeng.helpers.ICustomCollision;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -34,13 +36,9 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.block.AEBaseBlock;
-import appeng.client.render.blocks.RenderNull;
-import appeng.core.features.AEFeature;
-import appeng.helpers.ICustomCollision;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.List;
 
 
 public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision

@@ -19,18 +19,16 @@
 package appeng.integration.modules.BCHelpers;
 
 
-import java.util.ArrayList;
-
+import appeng.api.util.ICommonTile;
+import appeng.tile.AEBaseTile;
+import appeng.util.Platform;
+import buildcraft.api.blueprints.IBuilderContext;
+import buildcraft.api.blueprints.SchematicTile;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import buildcraft.api.blueprints.IBuilderContext;
-import buildcraft.api.blueprints.SchematicTile;
-
-import appeng.api.util.ICommonTile;
-import appeng.tile.AEBaseTile;
-import appeng.util.Platform;
+import java.util.ArrayList;
 
 
 public class AEGenericSchematicTile extends SchematicTile

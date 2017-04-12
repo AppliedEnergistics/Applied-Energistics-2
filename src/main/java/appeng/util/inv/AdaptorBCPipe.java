@@ -19,18 +19,17 @@
 package appeng.util.inv;
 
 
-import java.util.Iterator;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.config.FuzzyMode;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBuildCraftTransport;
 import appeng.util.InventoryAdaptor;
 import appeng.util.iterators.NullIterator;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Iterator;
 
 
 public class AdaptorBCPipe extends InventoryAdaptor

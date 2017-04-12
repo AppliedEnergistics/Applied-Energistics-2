@@ -19,19 +19,14 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
-
-import appeng.api.config.FullnessMode;
-import appeng.api.config.OperationMode;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.config.Settings;
+import appeng.api.config.*;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.storage.TileIOPort;
 import appeng.util.Platform;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IInventory;
 
 
 public class ContainerIOPort extends ContainerUpgradeable

@@ -19,19 +19,18 @@
 package appeng.recipes.game;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
+import appeng.api.exceptions.MissingIngredientError;
+import appeng.api.exceptions.RegistrationError;
+import appeng.api.recipes.IIngredient;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
-import appeng.api.exceptions.MissingIngredientError;
-import appeng.api.exceptions.RegistrationError;
-import appeng.api.recipes.IIngredient;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class ShapedRecipe implements IRecipe, IRecipeBakeable
@@ -270,7 +269,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 		{
 			return false;
 		}
-		return( target.getItem() == input.getItem() && ( target.getItemDamage() == OreDictionary.WILDCARD_VALUE || target.getItemDamage() == input.getItemDamage() ) );
+		return ( target.getItem() == input.getItem() && ( target.getItemDamage() == OreDictionary.WILDCARD_VALUE || target.getItemDamage() == input.getItemDamage() ) );
 	}
 
 	public ShapedRecipe setMirrored( final boolean mirror )

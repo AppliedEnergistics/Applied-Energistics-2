@@ -19,16 +19,6 @@
 package appeng.parts.p2p;
 
 
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.GridFlags;
@@ -45,6 +35,15 @@ import appeng.me.GridAccessException;
 import appeng.me.cache.helpers.Connections;
 import appeng.me.cache.helpers.TunnelConnection;
 import appeng.me.helpers.AENetworkProxy;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 
 public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements IGridTickable

@@ -19,13 +19,12 @@
 package appeng.core.features;
 
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Preconditions;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nullable;
 
 
 public class BlockStackSrc implements IStackSrc

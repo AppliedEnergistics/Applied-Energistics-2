@@ -19,10 +19,6 @@
 package appeng.client.render;
 
 
-import java.util.Random;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GLAllocation;
@@ -30,6 +26,9 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraftforge.client.IRenderHandler;
+import org.lwjgl.opengl.GL11;
+
+import java.util.Random;
 
 
 public class SpatialSkyRender extends IRenderHandler

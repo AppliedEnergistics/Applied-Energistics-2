@@ -34,9 +34,7 @@ public interface ILocatableRegistry
 	 * returns the object.
 	 *
 	 * @param serial serial
-	 *
 	 * @return requestedObject, or null
-	 *
 	 * @deprecated use {@link ILocatableRegistry#getLocatableBy(long)}
 	 */
 	@Deprecated
@@ -46,7 +44,6 @@ public interface ILocatableRegistry
 	 * Gets the {@link ILocatable} with the registered serial, if available
 	 *
 	 * @param serial serial
-	 *
 	 * @return requestedObject, or null, if the object does not exist anymore
 	 */
 	ILocatable getLocatableBy( long serial );

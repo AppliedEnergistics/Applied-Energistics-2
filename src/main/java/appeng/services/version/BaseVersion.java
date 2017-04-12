@@ -19,15 +19,15 @@
 package appeng.services.version;
 
 
+import com.google.common.base.Preconditions;
+
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-
-import com.google.common.base.Preconditions;
 
 
 /**
  * Base version of {@link Version}.
- *
+ * <p>
  * Provides a unified way to test for equality and print a formatted string
  */
 public abstract class BaseVersion implements Version
@@ -41,9 +41,8 @@ public abstract class BaseVersion implements Version
 
 	/**
 	 * @param revision revision in natural number
-	 * @param channel channel
-	 * @param build build in natural number
-	 *
+	 * @param channel  channel
+	 * @param build    build in natural number
 	 * @throws AssertionError if assertion are enabled and revision or build are not natural numbers
 	 */
 	public BaseVersion( @Nonnegative final int revision, @Nonnull final Channel channel, @Nonnegative final int build )

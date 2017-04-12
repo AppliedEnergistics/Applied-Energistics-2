@@ -19,17 +19,16 @@
 package appeng.debug;
 
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentText;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.core.CommonHelper;
 import appeng.tile.AEBaseTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
+import net.minecraftforge.common.util.ForgeDirection;
 
 
 public class TileCubeGenerator extends AEBaseTile

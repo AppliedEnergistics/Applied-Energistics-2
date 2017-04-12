@@ -19,13 +19,6 @@
 package appeng.tile.inventory;
 
 
-import java.util.Iterator;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-
 import appeng.api.AEApi;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AELog;
@@ -33,6 +26,12 @@ import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import appeng.util.iterators.AEInvIterator;
 import appeng.util.iterators.InvIterator;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+
+import java.util.Iterator;
 
 
 public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack>

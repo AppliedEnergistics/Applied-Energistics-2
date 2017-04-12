@@ -19,20 +19,7 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-
-import org.lwjgl.input.Mouse;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-
-import appeng.api.config.ActionItems;
-import appeng.api.config.CopyMode;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
+import appeng.api.config.*;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiToggleButton;
@@ -42,6 +29,13 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.tile.misc.TileCellWorkbench;
 import appeng.util.Platform;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import org.lwjgl.input.Mouse;
+
+import java.io.IOException;
 
 
 public class GuiCellWorkbench extends GuiUpgradeable

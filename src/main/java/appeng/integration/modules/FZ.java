@@ -19,13 +19,6 @@
 package appeng.integration.modules;
 
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-
 import appeng.api.AEApi;
 import appeng.api.storage.IMEInventory;
 import appeng.helpers.Reflected;
@@ -34,6 +27,12 @@ import appeng.integration.abstraction.IFZ;
 import appeng.integration.modules.helpers.FactorizationBarrel;
 import appeng.integration.modules.helpers.FactorizationHandler;
 import appeng.util.Platform;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 
 /**

@@ -19,19 +19,6 @@
 package appeng.parts;
 
 
-import java.io.IOException;
-
-import io.netty.buffer.ByteBuf;
-
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -40,6 +27,16 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.parts.IPartRenderHelper;
 import appeng.client.texture.CableBusTextures;
 import appeng.me.GridAccessException;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.io.IOException;
 
 
 public abstract class PartBasicState extends AEBasePart implements IPowerChannelState

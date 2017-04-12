@@ -19,12 +19,6 @@
 package appeng.me.cluster.implementations;
 
 
-import java.util.Iterator;
-
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -34,6 +28,11 @@ import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
 import appeng.tile.crafting.TileCraftingTile;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Iterator;
 
 
 public class CraftingCPUCalculator extends MBCalculator
@@ -60,12 +59,7 @@ public class CraftingCPUCalculator extends MBCalculator
 			return false;
 		}
 
-		if( max.z - min.z > 16 )
-		{
-			return false;
-		}
-
-		return true;
+		return max.z - min.z <= 16;
 	}
 
 	@Override

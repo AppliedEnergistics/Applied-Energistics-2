@@ -19,19 +19,17 @@
 package appeng.block.networking;
 
 
-import java.util.EnumSet;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.world.World;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.blocks.RenderBlockController;
 import appeng.core.features.AEFeature;
 import appeng.tile.networking.TileController;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.world.World;
+
+import java.util.EnumSet;
 
 
 public class BlockController extends AEBaseTileBlock

@@ -19,38 +19,17 @@
 package appeng.client.gui.widgets;
 
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import org.lwjgl.opengl.GL11;
-
+import appeng.api.config.*;
+import appeng.client.texture.ExtraBlockTextures;
+import appeng.core.localization.ButtonToolTips;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.StatCollector;
+import org.lwjgl.opengl.GL11;
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.ActionItems;
-import appeng.api.config.CondenserOutput;
-import appeng.api.config.FullnessMode;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.ItemSubstitution;
-import appeng.api.config.LevelType;
-import appeng.api.config.OperationMode;
-import appeng.api.config.PowerUnits;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.RelativeDirection;
-import appeng.api.config.SchedulingMode;
-import appeng.api.config.SearchBoxMode;
-import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.StorageFilter;
-import appeng.api.config.TerminalStyle;
-import appeng.api.config.ViewItems;
-import appeng.api.config.YesNo;
-import appeng.client.texture.ExtraBlockTextures;
-import appeng.core.localization.ButtonToolTips;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 
 public class GuiImgButton extends GuiButton implements ITooltip
@@ -415,6 +394,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			return other.setting == this.setting && other.value == this.value;
 		}
 	}
+
 
 	private static class ButtonAppearance
 	{

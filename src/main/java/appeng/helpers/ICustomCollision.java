@@ -19,11 +19,11 @@
 package appeng.helpers;
 
 
-import java.util.List;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 
 public interface ICustomCollision

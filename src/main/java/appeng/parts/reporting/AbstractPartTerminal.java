@@ -19,14 +19,6 @@
 package appeng.parts.reporting;
 
 
-import java.util.List;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Vec3;
-
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -45,11 +37,18 @@ import appeng.tile.inventory.InvOperation;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.Vec3;
+
+import java.util.List;
 
 
 /**
  * Anything resembling an network terminal with view cells can reuse this.
- *
+ * <p>
  * Note this applies only to terminals like the ME Terminal. It does not apply for more specialized terminals like the
  * Interface Terminal.
  *

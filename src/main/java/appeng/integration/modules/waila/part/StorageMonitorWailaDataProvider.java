@@ -19,17 +19,16 @@
 package appeng.integration.modules.waila.part;
 
 
-import java.util.List;
-
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
-
 import appeng.api.implementations.parts.IPartStorageMonitor;
 import appeng.api.parts.IPart;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.core.localization.WailaText;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
+
+import java.util.List;
 
 
 /**
@@ -45,11 +44,10 @@ public final class StorageMonitorWailaDataProvider extends BasePartWailaDataProv
 	 * Displays the stack if present and if the monitor is locked.
 	 * Can handle fluids and items.
 	 *
-	 * @param part maybe storage monitor
+	 * @param part           maybe storage monitor
 	 * @param currentToolTip to be written to tooltip
-	 * @param accessor information wrapper
-	 * @param config config option
-	 *
+	 * @param accessor       information wrapper
+	 * @param config         config option
 	 * @return modified tooltip
 	 */
 	@Override

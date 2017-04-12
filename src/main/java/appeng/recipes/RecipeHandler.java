@@ -19,31 +19,6 @@
 package appeng.recipes;
 
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-import javax.annotation.Nonnull;
-
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.HashMultimap;
-
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-
-import cpw.mods.fml.common.LoaderState;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IDefinitions;
@@ -65,6 +40,24 @@ import appeng.items.misc.ItemCrystalSeed;
 import appeng.items.parts.ItemMultiPart;
 import appeng.recipes.handlers.IWebsiteSerializer;
 import appeng.recipes.handlers.OreRegistration;
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.HashMultimap;
+import cpw.mods.fml.common.LoaderState;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nonnull;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 
 /**

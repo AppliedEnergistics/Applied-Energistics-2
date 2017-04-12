@@ -40,7 +40,6 @@ public interface IStorageComponent
 	 * the condenser.
 	 *
 	 * @param is item
-	 *
 	 * @return number of bytes
 	 */
 	int getBytes( ItemStack is );
@@ -49,7 +48,6 @@ public interface IStorageComponent
 	 * Just true or false for the item stack.
 	 *
 	 * @param is item
-	 *
 	 * @return true if item is a storage component
 	 */
 	boolean isStorageComponent( ItemStack is );

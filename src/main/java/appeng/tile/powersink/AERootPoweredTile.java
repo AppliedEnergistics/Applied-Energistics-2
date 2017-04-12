@@ -19,11 +19,6 @@
 package appeng.tile.powersink;
 
 
-import java.util.EnumSet;
-
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -33,6 +28,10 @@ import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
 import appeng.tile.AEBaseInvTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.EnumSet;
 
 
 public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowerStorage

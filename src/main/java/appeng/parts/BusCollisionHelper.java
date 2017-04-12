@@ -19,13 +19,12 @@
 package appeng.parts;
 
 
-import java.util.List;
-
+import appeng.api.parts.IPartCollisionHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.api.parts.IPartCollisionHelper;
+import java.util.List;
 
 
 public class BusCollisionHelper implements IPartCollisionHelper

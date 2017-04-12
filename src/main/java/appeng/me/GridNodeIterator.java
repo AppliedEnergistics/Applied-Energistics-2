@@ -19,16 +19,16 @@
 package appeng.me;
 
 
-import java.util.Iterator;
-import java.util.Map;
-
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+
+import java.util.Iterator;
+import java.util.Map;
 
 
 /**
  * Nested iterator for {@link appeng.me.MachineSet}
- *
+ * <p>
  * Traverses first over the {@link appeng.me.MachineSet} and then over every containing
  * {@link appeng.api.networking.IGridNode}
  */

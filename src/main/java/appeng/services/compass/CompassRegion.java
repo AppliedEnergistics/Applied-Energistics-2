@@ -19,16 +19,14 @@
 package appeng.services.compass;
 
 
+import appeng.core.worlddata.MeteorDataNameEncoder;
+import com.google.common.base.Preconditions;
+
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-
-import javax.annotation.Nonnull;
-
-import com.google.common.base.Preconditions;
-
-import appeng.core.worlddata.MeteorDataNameEncoder;
 
 
 public final class CompassRegion

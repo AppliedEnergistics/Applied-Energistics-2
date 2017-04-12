@@ -19,10 +19,10 @@
 package appeng.core;
 
 
+import appeng.core.features.IAEFeature;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import appeng.core.features.IAEFeature;
 
 
 public final class FeatureRegistry

@@ -19,19 +19,15 @@
 package appeng.core.features.registries;
 
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Locale;
-import java.util.Map;
-import javax.annotation.Nullable;
-
 import appeng.api.features.IRecipeHandlerRegistry;
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IRecipeHandler;
 import appeng.api.recipes.ISubItemResolver;
 import appeng.core.AELog;
 import appeng.recipes.RecipeHandler;
+
+import javax.annotation.Nullable;
+import java.util.*;
 
 
 /**

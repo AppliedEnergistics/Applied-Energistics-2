@@ -19,13 +19,12 @@
 package appeng.block.networking;
 
 
-import java.util.EnumSet;
-
-import net.minecraft.util.IIcon;
-
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.core.features.AEFeature;
 import appeng.tile.networking.TileDenseEnergyCell;
+import net.minecraft.util.IIcon;
+
+import java.util.EnumSet;
 
 
 public class BlockDenseEnergyCell extends BlockEnergyCell

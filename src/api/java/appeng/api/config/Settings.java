@@ -24,8 +24,8 @@
 package appeng.api.config;
 
 
-import java.util.EnumSet;
 import javax.annotation.Nonnull;
+import java.util.EnumSet;
 
 
 public enum Settings

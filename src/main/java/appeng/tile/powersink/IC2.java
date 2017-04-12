@@ -19,19 +19,17 @@
 package appeng.tile.powersink;
 
 
-import java.util.EnumSet;
-
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import ic2.api.energy.tile.IEnergySink;
-
 import appeng.api.config.PowerUnits;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IIC2;
 import appeng.transformer.annotations.Integration.Interface;
 import appeng.util.Platform;
+import ic2.api.energy.tile.IEnergySink;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.EnumSet;
 
 
 @Interface( iname = IntegrationType.IC2, iface = "ic2.api.energy.tile.IEnergySink" )

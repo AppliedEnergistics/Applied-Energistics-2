@@ -19,9 +19,9 @@
 package appeng.client.texture;
 
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.util.IIcon;
+
+import javax.annotation.Nonnull;
 
 
 public class FlippableIcon implements IIcon

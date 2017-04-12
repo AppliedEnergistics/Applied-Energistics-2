@@ -19,18 +19,16 @@
 package appeng.recipes;
 
 
-import java.util.LinkedList;
-import java.util.List;
-
-import com.google.common.base.Preconditions;
-
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
-
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.IIngredient;
 import appeng.api.recipes.ResolverResultSet;
+import com.google.common.base.Preconditions;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class IngredientSet implements IIngredient

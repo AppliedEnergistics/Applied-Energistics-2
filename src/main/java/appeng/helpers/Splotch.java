@@ -19,12 +19,10 @@
 package appeng.helpers;
 
 
+import appeng.api.util.AEColor;
 import io.netty.buffer.ByteBuf;
-
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import appeng.api.util.AEColor;
 
 
 public class Splotch

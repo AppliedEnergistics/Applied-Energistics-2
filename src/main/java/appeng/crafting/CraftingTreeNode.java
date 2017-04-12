@@ -19,15 +19,6 @@
 package appeng.crafting;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-
-import com.google.common.collect.Lists;
-
-import net.minecraft.world.World;
-
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -37,6 +28,13 @@ import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
+import com.google.common.collect.Lists;
+import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class CraftingTreeNode

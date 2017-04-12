@@ -19,20 +19,18 @@
 package appeng.block.spatial;
 
 
-import java.util.EnumSet;
-
-import net.minecraft.block.Block;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.blocks.RenderSpatialPylon;
 import appeng.core.features.AEFeature;
 import appeng.helpers.AEGlassMaterial;
 import appeng.tile.spatial.TileSpatialPylon;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+
+import java.util.EnumSet;
 
 
 public class BlockSpatialPylon extends AEBaseTileBlock

@@ -19,10 +19,13 @@
 package appeng.block.misc;
 
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-
+import appeng.block.AEBaseTileBlock;
+import appeng.client.render.blocks.RenderBlockSkyCompass;
+import appeng.core.features.AEFeature;
+import appeng.helpers.ICustomCollision;
+import appeng.tile.misc.TileSkyCompass;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -33,14 +36,9 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.block.AEBaseTileBlock;
-import appeng.client.render.blocks.RenderBlockSkyCompass;
-import appeng.core.features.AEFeature;
-import appeng.helpers.ICustomCollision;
-import appeng.tile.misc.TileSkyCompass;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
 
 
 public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision

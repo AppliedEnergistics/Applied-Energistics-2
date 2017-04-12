@@ -19,14 +19,13 @@
 package appeng.client.render.blocks;
 
 
+import appeng.block.misc.BlockTinyTNT;
+import appeng.client.render.BaseBlockRender;
+import appeng.tile.AEBaseTile;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-
-import appeng.block.misc.BlockTinyTNT;
-import appeng.client.render.BaseBlockRender;
-import appeng.tile.AEBaseTile;
 
 
 public class RenderTinyTNT extends BaseBlockRender<BlockTinyTNT, AEBaseTile>

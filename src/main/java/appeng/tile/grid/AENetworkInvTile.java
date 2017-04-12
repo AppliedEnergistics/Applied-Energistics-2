@@ -19,9 +19,6 @@
 package appeng.tile.grid;
 
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.me.helpers.AENetworkProxy;
@@ -29,6 +26,8 @@ import appeng.me.helpers.IGridProxyable;
 import appeng.tile.AEBaseInvTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.ForgeDirection;
 
 
 public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionHost, IGridProxyable

@@ -19,15 +19,6 @@
 package appeng.parts.reporting;
 
 
-import java.util.Collections;
-import java.util.List;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.IMEMonitor;
@@ -38,6 +29,14 @@ import appeng.me.GridAccessException;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Vec3;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Collections;
+import java.util.List;
 
 
 public class PartConversionMonitor extends AbstractPartMonitor

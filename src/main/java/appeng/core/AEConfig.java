@@ -19,26 +19,7 @@
 package appeng.core;
 
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.List;
-
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-
-import cpw.mods.fml.client.event.ConfigChangedEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-
-import appeng.api.config.CondenserOutput;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.PowerUnits;
-import appeng.api.config.SearchBoxMode;
-import appeng.api.config.Settings;
-import appeng.api.config.TerminalStyle;
-import appeng.api.config.YesNo;
+import appeng.api.config.*;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.features.AEFeature;
@@ -47,6 +28,17 @@ import appeng.items.materials.MaterialType;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import cpw.mods.fml.client.event.ConfigChangedEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.List;
 
 
 public final class AEConfig extends Configuration implements IConfigurableObject, IConfigManagerHost

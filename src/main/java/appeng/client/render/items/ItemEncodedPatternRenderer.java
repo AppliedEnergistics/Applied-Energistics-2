@@ -19,16 +19,14 @@
 package appeng.client.render.items;
 
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-
+import appeng.items.misc.ItemEncodedPattern;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
-
-import appeng.items.misc.ItemEncodedPattern;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 
 public class ItemEncodedPatternRenderer implements IItemRenderer

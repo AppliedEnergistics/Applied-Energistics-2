@@ -29,9 +29,9 @@ import java.util.Iterator;
 
 /**
  * Represents a list of items in AE.
- *
+ * <p>
  * Don't Implement.
- *
+ * <p>
  * Construct with Util.createItemList()
  */
 public interface IItemList<StackType extends IAEStack> extends IItemContainer<StackType>, Iterable<StackType>

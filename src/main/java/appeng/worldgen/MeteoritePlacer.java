@@ -19,11 +19,16 @@
 package appeng.worldgen;
 
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-
+import appeng.api.AEApi;
+import appeng.api.definitions.IBlockDefinition;
+import appeng.api.definitions.IBlocks;
+import appeng.api.definitions.IMaterials;
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
+import appeng.core.worlddata.WorldData;
+import appeng.util.InventoryAdaptor;
+import appeng.util.Platform;
+import appeng.worldgen.meteorite.*;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -36,21 +41,10 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 
-import appeng.api.AEApi;
-import appeng.api.definitions.IBlockDefinition;
-import appeng.api.definitions.IBlocks;
-import appeng.api.definitions.IMaterials;
-import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
-import appeng.core.worlddata.WorldData;
-import appeng.util.InventoryAdaptor;
-import appeng.util.Platform;
-import appeng.worldgen.meteorite.Fallout;
-import appeng.worldgen.meteorite.FalloutCopy;
-import appeng.worldgen.meteorite.FalloutSand;
-import appeng.worldgen.meteorite.FalloutSnow;
-import appeng.worldgen.meteorite.IMeteoriteWorld;
-import appeng.worldgen.meteorite.MeteoriteBlockPutter;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public final class MeteoritePlacer

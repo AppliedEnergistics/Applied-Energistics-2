@@ -19,10 +19,10 @@
 package appeng.util.prioitylist;
 
 
+import appeng.api.storage.data.IAEStack;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import appeng.api.storage.data.IAEStack;
 
 
 public class DefaultPriorityList<T extends IAEStack<T>> implements IPartitionList<T>

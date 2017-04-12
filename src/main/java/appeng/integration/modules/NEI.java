@@ -19,22 +19,6 @@
 package appeng.integration.modules;
 
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-
-import codechicken.nei.api.IStackPositioner;
-import codechicken.nei.guihook.GuiContainerManager;
-import codechicken.nei.guihook.IContainerTooltipHandler;
-
 import appeng.client.gui.AEBaseMEGui;
 import appeng.client.gui.implementations.GuiCraftingTerm;
 import appeng.client.gui.implementations.GuiPatternTerm;
@@ -44,14 +28,21 @@ import appeng.helpers.Reflected;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.INEI;
-import appeng.integration.modules.NEIHelpers.NEIAEShapedRecipeHandler;
-import appeng.integration.modules.NEIHelpers.NEIAEShapelessRecipeHandler;
-import appeng.integration.modules.NEIHelpers.NEICraftingHandler;
-import appeng.integration.modules.NEIHelpers.NEIFacadeRecipeHandler;
-import appeng.integration.modules.NEIHelpers.NEIGrinderRecipeHandler;
-import appeng.integration.modules.NEIHelpers.NEIInscriberRecipeHandler;
-import appeng.integration.modules.NEIHelpers.NEIWorldCraftingHandler;
-import appeng.integration.modules.NEIHelpers.TerminalCraftingSlotFinder;
+import appeng.integration.modules.NEIHelpers.*;
+import codechicken.nei.api.IStackPositioner;
+import codechicken.nei.guihook.GuiContainerManager;
+import codechicken.nei.guihook.IContainerTooltipHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
 
 
 public class NEI implements INEI, IContainerTooltipHandler, IIntegrationModule

@@ -19,16 +19,14 @@
 package appeng.client.gui.implementations;
 
 
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.entity.player.InventoryPlayer;
-
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiProgressBar;
 import appeng.client.gui.widgets.GuiProgressBar.Direction;
 import appeng.container.implementations.ContainerVibrationChamber;
 import appeng.core.localization.GuiText;
 import appeng.tile.misc.TileVibrationChamber;
+import net.minecraft.entity.player.InventoryPlayer;
+import org.lwjgl.opengl.GL11;
 
 
 public class GuiVibrationChamber extends AEBaseGui

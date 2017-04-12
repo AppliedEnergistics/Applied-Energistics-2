@@ -19,11 +19,10 @@
 package appeng.core.worlddata;
 
 
-import javax.annotation.Nullable;
-
+import appeng.api.util.WorldCoord;
 import net.minecraft.network.NetworkManager;
 
-import appeng.api.util.WorldCoord;
+import javax.annotation.Nullable;
 
 
 /**

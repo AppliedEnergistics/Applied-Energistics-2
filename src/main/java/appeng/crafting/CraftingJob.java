@@ -19,15 +19,6 @@
 package appeng.crafting;
 
 
-import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
-
-import com.google.common.base.Stopwatch;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
-
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
@@ -47,6 +38,13 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AELog;
 import appeng.hooks.TickHandler;
+import com.google.common.base.Stopwatch;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 
 public class CraftingJob implements Runnable, ICraftingJob
@@ -313,7 +311,6 @@ public class CraftingJob implements Runnable, ICraftingJob
 	 * returns true if this needs more simulation.
 	 *
 	 * @param milli milliseconds of simulation
-	 *
 	 * @return true if this needs more simulation
 	 */
 	public boolean simulateFor( final int milli )

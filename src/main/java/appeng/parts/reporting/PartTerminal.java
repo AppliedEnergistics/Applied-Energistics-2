@@ -19,9 +19,8 @@
 package appeng.parts.reporting;
 
 
-import net.minecraft.item.ItemStack;
-
 import appeng.client.texture.CableBusTextures;
+import net.minecraft.item.ItemStack;
 
 
 public class PartTerminal extends AbstractPartTerminal

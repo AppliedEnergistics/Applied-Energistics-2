@@ -19,11 +19,6 @@
 package appeng.parts.automation;
 
 
-import java.util.List;
-
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
 import appeng.api.util.IConfigManager;
@@ -32,6 +27,10 @@ import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+
+import java.util.List;
 
 
 public abstract class PartUpgradeable extends PartBasicState implements IAEAppEngInventory, IConfigManagerHost

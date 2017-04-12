@@ -19,12 +19,10 @@
 package appeng.core.stats;
 
 
-import net.minecraft.item.ItemStack;
-
+import appeng.util.Platform;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
-
-import appeng.util.Platform;
+import net.minecraft.item.ItemStack;
 
 
 /**

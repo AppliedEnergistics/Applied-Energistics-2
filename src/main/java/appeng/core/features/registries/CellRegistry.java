@@ -19,16 +19,11 @@
 package appeng.core.features.registries;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
+import appeng.api.storage.*;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.storage.ICellHandler;
-import appeng.api.storage.ICellRegistry;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.ISaveProvider;
-import appeng.api.storage.StorageChannel;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class CellRegistry implements ICellRegistry

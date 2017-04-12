@@ -19,25 +19,27 @@
 package appeng.client.gui;
 
 
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
+import appeng.api.storage.data.IAEItemStack;
+import appeng.client.gui.widgets.GuiScrollbar;
+import appeng.client.gui.widgets.ITooltip;
+import appeng.client.me.InternalSlotME;
+import appeng.client.me.SlotDisconnected;
+import appeng.client.me.SlotME;
+import appeng.client.render.AppEngRenderItem;
+import appeng.container.AEBaseContainer;
+import appeng.container.slot.*;
+import appeng.container.slot.AppEngSlot.hasCalculatedValidness;
+import appeng.core.AELog;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketInventoryAction;
+import appeng.core.sync.packets.PacketSwapSlots;
+import appeng.helpers.InventoryAction;
+import appeng.integration.IntegrationRegistry;
+import appeng.integration.IntegrationType;
+import appeng.integration.abstraction.INEI;
 import com.google.common.base.Joiner;
 import com.google.common.base.Stopwatch;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -49,36 +51,16 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-
-import appeng.api.storage.data.IAEItemStack;
-import appeng.client.gui.widgets.GuiScrollbar;
-import appeng.client.gui.widgets.ITooltip;
-import appeng.client.me.InternalSlotME;
-import appeng.client.me.SlotDisconnected;
-import appeng.client.me.SlotME;
-import appeng.client.render.AppEngRenderItem;
-import appeng.container.AEBaseContainer;
-import appeng.container.slot.AppEngCraftingSlot;
-import appeng.container.slot.AppEngSlot;
-import appeng.container.slot.AppEngSlot.hasCalculatedValidness;
-import appeng.container.slot.OptionalSlotFake;
-import appeng.container.slot.SlotCraftingTerm;
-import appeng.container.slot.SlotDisabled;
-import appeng.container.slot.SlotFake;
-import appeng.container.slot.SlotInaccessible;
-import appeng.container.slot.SlotOutput;
-import appeng.container.slot.SlotPatternTerm;
-import appeng.container.slot.SlotRestrictedInput;
-import appeng.core.AELog;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketInventoryAction;
-import appeng.core.sync.packets.PacketSwapSlots;
-import appeng.helpers.InventoryAction;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
-import appeng.integration.abstraction.INEI;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 
 public abstract class AEBaseGui extends GuiContainer

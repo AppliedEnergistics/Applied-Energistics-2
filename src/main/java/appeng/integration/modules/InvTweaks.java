@@ -19,16 +19,13 @@
 package appeng.integration.modules;
 
 
-import net.minecraft.item.ItemStack;
-
-import cpw.mods.fml.common.Loader;
-
-import invtweaks.api.InvTweaksAPI;
-
 import appeng.helpers.Reflected;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.IInvTweaks;
+import cpw.mods.fml.common.Loader;
+import invtweaks.api.InvTweaksAPI;
+import net.minecraft.item.ItemStack;
 
 
 public class InvTweaks implements IInvTweaks, IIntegrationModule

@@ -19,11 +19,13 @@
 package appeng.client.render.blocks;
 
 
-import java.util.EnumSet;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
+import appeng.api.util.IOrientable;
+import appeng.block.misc.BlockCharger;
+import appeng.client.render.BaseBlockRender;
+import appeng.client.texture.ExtraBlockTextures;
+import appeng.core.AELog;
+import appeng.tile.misc.TileCharger;
+import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -32,14 +34,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
-import appeng.api.util.IOrientable;
-import appeng.block.misc.BlockCharger;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.texture.ExtraBlockTextures;
-import appeng.core.AELog;
-import appeng.tile.misc.TileCharger;
-import appeng.util.Platform;
+import java.util.EnumSet;
 
 
 public class RenderBlockCharger extends BaseBlockRender<BlockCharger, TileCharger>

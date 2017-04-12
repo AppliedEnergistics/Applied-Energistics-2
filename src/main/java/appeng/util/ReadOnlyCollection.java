@@ -19,10 +19,10 @@
 package appeng.util;
 
 
+import appeng.api.util.IReadOnlyCollection;
+
 import java.util.Collection;
 import java.util.Iterator;
-
-import appeng.api.util.IReadOnlyCollection;
 
 
 public class ReadOnlyCollection<T> implements IReadOnlyCollection<T>

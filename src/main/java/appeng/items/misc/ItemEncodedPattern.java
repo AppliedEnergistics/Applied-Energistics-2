@@ -19,18 +19,6 @@
 package appeng.items.misc;
 
 
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.world.World;
-import net.minecraftforge.client.MinecraftForgeClient;
-
 import appeng.api.AEApi;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -42,6 +30,17 @@ import appeng.core.localization.GuiText;
 import appeng.helpers.PatternHelper;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.World;
+import net.minecraftforge.client.MinecraftForgeClient;
+
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 
 public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternItem

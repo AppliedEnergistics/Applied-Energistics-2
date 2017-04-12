@@ -19,23 +19,22 @@
 package appeng.integration.abstraction;
 
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import appeng.api.parts.IFacadePart;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.api.parts.IFacadePart;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 
 /**
  * Contains facade logic to interchange BC facades with AE facades,
- *
+ * <p>
  * pipe logic to interact between storage buses and pipes
- *
+ * <p>
  * and using pipes for attunements
  * The attunement is currently not public anymore,
  * because it was only used internally
@@ -48,16 +47,14 @@ public interface IBuildCraftTransport
 {
 	/**
 	 * @param is to be checked item
-	 *
 	 * @return {@code true} if the checked item is a {@link buildcraft.api.facades.IFacadeItem}
 	 */
 	boolean isFacade( @Nullable ItemStack is );
 
 	/**
-	 * @param blk block used for the ae facade
+	 * @param blk  block used for the ae facade
 	 * @param meta meta of the block
 	 * @param side side of the ae facade
-	 *
 	 * @return ae facade through bc facade system
 	 */
 	@Nullable
@@ -66,18 +63,14 @@ public interface IBuildCraftTransport
 	/**
 	 * @param held create facade for that item
 	 * @param side on which side should the part be rendered, should rather be not {@code null}
-	 *
 	 * @return new instance using the {@code held} and side as direct argument, no logic in between
-	 *
 	 * @throws IllegalArgumentException if {@code held} is {@code null}
 	 */
 	IFacadePart createFacadePart( @Nonnull ItemStack held, @Nonnull ForgeDirection side );
 
 	/**
 	 * @param facade buildcraft facade
-	 *
 	 * @return item with the block and metadata based on the facade or {@code null} if {@code facade} was not a facade
-	 *
 	 * @throws NullPointerException if {@code facade} is {@code null}
 	 */
 	@Nullable
@@ -90,11 +83,9 @@ public interface IBuildCraftTransport
 	IIcon getCobbleStructurePipeTexture();
 
 	/**
-	 * @param te the to be checked {@link TileEntity}
+	 * @param te  the to be checked {@link TileEntity}
 	 * @param dir direction of the {@link TileEntity}
-	 *
 	 * @return {@code true} if {@code te} is a buildcraft pipe, but not plugged
-	 *
 	 * @throws NullPointerException if {@code dir} is {@code null}
 	 */
 	boolean isPipe( @Nullable TileEntity te, @Nonnull ForgeDirection dir );
@@ -102,10 +93,9 @@ public interface IBuildCraftTransport
 	/**
 	 * checks weather if the {@code te} is injectable and simulates to inject the item
 	 *
-	 * @param te preferred something like a buildcraft injectable, can handle anything, just fails that way
-	 * @param is to be injected item
+	 * @param te  preferred something like a buildcraft injectable, can handle anything, just fails that way
+	 * @param is  to be injected item
 	 * @param dir direction of the pipe
-	 *
 	 * @return {@code true} if items were simulated successfully being added
 	 */
 	boolean canAddItemsToPipe( TileEntity te, ItemStack is, ForgeDirection dir );
@@ -113,10 +103,9 @@ public interface IBuildCraftTransport
 	/**
 	 * checks weather if the {@code te} is injectable, simulates the inject and tries to inject the item
 	 *
-	 * @param te preferred something like a buildcraft injectable, can handle anything, just fails that way
-	 * @param is to be injected item
+	 * @param te  preferred something like a buildcraft injectable, can handle anything, just fails that way
+	 * @param is  to be injected item
 	 * @param dir direction of the pipe
-	 *
 	 * @return {@code true} if items were added to the buildcraft pipe
 	 */
 	boolean addItemsToPipe( @Nullable TileEntity te, @Nullable ItemStack is, @Nonnull ForgeDirection dir );

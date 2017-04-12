@@ -19,17 +19,7 @@
 package appeng.core.features.registries;
 
 
-import appeng.api.features.IGrinderRegistry;
-import appeng.api.features.IInscriberRegistry;
-import appeng.api.features.ILocatableRegistry;
-import appeng.api.features.IMatterCannonAmmoRegistry;
-import appeng.api.features.IP2PTunnelRegistry;
-import appeng.api.features.IPlayerRegistry;
-import appeng.api.features.IRecipeHandlerRegistry;
-import appeng.api.features.IRegistryContainer;
-import appeng.api.features.ISpecialComparisonRegistry;
-import appeng.api.features.IWirelessTermRegistry;
-import appeng.api.features.IWorldGen;
+import appeng.api.features.*;
 import appeng.api.movable.IMovableRegistry;
 import appeng.api.networking.IGridCacheRegistry;
 import appeng.api.storage.ICellRegistry;

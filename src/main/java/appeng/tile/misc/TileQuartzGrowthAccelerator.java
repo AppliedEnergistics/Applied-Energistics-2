@@ -19,12 +19,6 @@
 package appeng.tile.misc;
 
 
-import java.util.EnumSet;
-
-import io.netty.buffer.ByteBuf;
-
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -35,6 +29,10 @@ import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 import appeng.util.Platform;
+import io.netty.buffer.ByteBuf;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.EnumSet;
 
 
 public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPowerChannelState, ICrystalGrowthAccelerator

@@ -19,17 +19,12 @@
 package appeng.integration.modules.NEIHelpers;
 
 
-import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.gui.inventory.GuiCrafting;
-import net.minecraft.inventory.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
-
+import appeng.api.exceptions.MissingIngredientError;
+import appeng.api.exceptions.RegistrationError;
+import appeng.api.recipes.IIngredient;
+import appeng.core.AEConfig;
+import appeng.recipes.game.ShapelessRecipe;
+import appeng.util.Platform;
 import codechicken.nei.NEIClientUtils;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
@@ -39,13 +34,16 @@ import codechicken.nei.api.IRecipeOverlayRenderer;
 import codechicken.nei.api.IStackPositioner;
 import codechicken.nei.recipe.RecipeInfo;
 import codechicken.nei.recipe.TemplateRecipeHandler;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.inventory.GuiCrafting;
+import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 
-import appeng.api.exceptions.MissingIngredientError;
-import appeng.api.exceptions.RegistrationError;
-import appeng.api.recipes.IIngredient;
-import appeng.core.AEConfig;
-import appeng.recipes.game.ShapelessRecipe;
-import appeng.util.Platform;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class NEIAEShapelessRecipeHandler extends TemplateRecipeHandler

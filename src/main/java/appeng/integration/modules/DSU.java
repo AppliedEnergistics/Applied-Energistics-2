@@ -19,10 +19,6 @@
 package appeng.integration.modules;
 
 
-import net.minecraft.tileentity.TileEntity;
-
-import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
-
 import appeng.api.AEApi;
 import appeng.api.storage.IMEInventory;
 import appeng.helpers.Reflected;
@@ -31,6 +27,8 @@ import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.IDSU;
 import appeng.integration.modules.helpers.MFRDSUHandler;
 import appeng.integration.modules.helpers.MinefactoryReloadedDeepStorageUnit;
+import net.minecraft.tileentity.TileEntity;
+import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 
 
 public class DSU implements IDSU, IIntegrationModule

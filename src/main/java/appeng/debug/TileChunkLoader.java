@@ -19,8 +19,13 @@
 package appeng.debug;
 
 
-import java.util.List;
-
+import appeng.core.AELog;
+import appeng.core.AppEng;
+import appeng.tile.AEBaseTile;
+import appeng.tile.TileEvent;
+import appeng.tile.events.TileEventType;
+import appeng.util.Platform;
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
@@ -29,14 +34,7 @@ import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
-import appeng.core.AELog;
-import appeng.core.AppEng;
-import appeng.tile.AEBaseTile;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
-import appeng.util.Platform;
+import java.util.List;
 
 
 public class TileChunkLoader extends AEBaseTile

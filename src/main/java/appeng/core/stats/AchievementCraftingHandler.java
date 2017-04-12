@@ -19,10 +19,9 @@
 package appeng.core.stats;
 
 
+import appeng.util.Platform;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
-
-import appeng.util.Platform;
 
 
 /**

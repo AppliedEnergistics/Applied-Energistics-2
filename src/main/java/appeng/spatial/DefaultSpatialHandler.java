@@ -19,11 +19,10 @@
 package appeng.spatial;
 
 
+import appeng.api.movable.IMovableHandler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-
-import appeng.api.movable.IMovableHandler;
 
 
 public class DefaultSpatialHandler implements IMovableHandler
@@ -33,7 +32,6 @@ public class DefaultSpatialHandler implements IMovableHandler
 	 * never called for the default.
 	 *
 	 * @param tile tile entity
-	 *
 	 * @return true
 	 */
 	@Override

@@ -19,21 +19,19 @@
 package appeng.core.features;
 
 
-import java.lang.reflect.Constructor;
-
+import appeng.api.definitions.IBlockDefinition;
+import appeng.block.AEBaseBlock;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ObjectArrays;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 
-import appeng.api.definitions.IBlockDefinition;
-import appeng.block.AEBaseBlock;
+import java.lang.reflect.Constructor;
 
 
 public class BlockDefinition extends ItemDefinition implements IBlockDefinition
@@ -62,7 +60,6 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	 * Create an {@link ItemBlock} from a {@link Block} to register it later as {@link Item}
 	 *
 	 * @param block source block
-	 *
 	 * @return item from block
 	 */
 	private static Item constructItemFromBlock( final Block block )
@@ -73,12 +70,11 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 
 	/**
 	 * Returns the constructor to use.
-	 *
+	 * <p>
 	 * Either {@link ItemBlock} or in case of an {@link AEBaseBlock} the class returned by
 	 * AEBaseBlock.getItemBlockClass().
 	 *
 	 * @param block the block used to determine the used constructor.
-	 *
 	 * @return a {@link Class} extending ItemBlock
 	 */
 	private static Class<? extends ItemBlock> getItemBlockConstructor( final Block block )
@@ -94,14 +90,13 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 
 	/**
 	 * Actually construct an instance of {@link Item} with the block and earlier determined constructor.
-	 *
+	 * <p>
 	 * Shamelessly stolen from the forge magic.
-	 *
+	 * <p>
 	 * TODO: throw an exception instead of returning null? As this could cause issue later on.
 	 *
-	 * @param block the block to create the {@link ItemBlock} from
+	 * @param block     the block to create the {@link ItemBlock} from
 	 * @param itemclass the class used to construct it.
-	 *
 	 * @return an {@link Item} for the block. Actually always a sub type of {@link ItemBlock}
 	 */
 	private static Item constructItemBlock( final Block block, final Class<? extends ItemBlock> itemclass )
@@ -157,6 +152,7 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 			return new ItemBlock( input );
 		}
 	}
+
 
 	private static class ItemStackTransformer implements Function<Block, ItemStack>
 	{

@@ -19,28 +19,6 @@
 package appeng.integration.modules;
 
 
-import java.util.Collection;
-import java.util.List;
-
-import com.google.common.collect.Lists;
-
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-
-import cpw.mods.fml.common.eventhandler.Event;
-
-import codechicken.lib.vec.BlockCoord;
-import codechicken.microblock.BlockMicroMaterial;
-import codechicken.multipart.MultiPartRegistry;
-import codechicken.multipart.MultiPartRegistry.IPartConverter;
-import codechicken.multipart.MultiPartRegistry.IPartFactory;
-import codechicken.multipart.MultipartGenerator;
-import codechicken.multipart.TMultiPart;
-import codechicken.multipart.TileMultipart;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
@@ -55,6 +33,24 @@ import appeng.integration.IIntegrationModule;
 import appeng.integration.abstraction.IFMP;
 import appeng.integration.modules.helpers.FMPPacketEvent;
 import appeng.parts.CableBusContainer;
+import codechicken.lib.vec.BlockCoord;
+import codechicken.microblock.BlockMicroMaterial;
+import codechicken.multipart.MultiPartRegistry;
+import codechicken.multipart.MultiPartRegistry.IPartConverter;
+import codechicken.multipart.MultiPartRegistry.IPartFactory;
+import codechicken.multipart.MultipartGenerator;
+import codechicken.multipart.TMultiPart;
+import codechicken.multipart.TileMultipart;
+import com.google.common.collect.Lists;
+import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+
+import java.util.Collection;
+import java.util.List;
 
 
 public class FMP implements IIntegrationModule, IPartFactory, IPartConverter, IFMP

@@ -19,45 +19,13 @@
 package appeng.parts;
 
 
-import java.io.IOException;
-import java.util.EnumSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-
-import io.netty.buffer.ByteBuf;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.api.AEApi;
 import appeng.api.config.YesNo;
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.implementations.parts.IPartCable;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
-import appeng.api.parts.IFacadeContainer;
-import appeng.api.parts.IFacadePart;
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartHost;
-import appeng.api.parts.IPartItem;
-import appeng.api.parts.LayerFlags;
-import appeng.api.parts.PartItemStack;
-import appeng.api.parts.SelectedPart;
+import appeng.api.parts.*;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
@@ -70,6 +38,23 @@ import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.ICLApi;
 import appeng.me.GridConnection;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.io.IOException;
+import java.util.*;
 
 
 public class CableBusContainer extends CableBusStorage implements AEMultiTile, ICableBusContainer

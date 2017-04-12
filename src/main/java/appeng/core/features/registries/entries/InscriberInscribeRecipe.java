@@ -1,15 +1,12 @@
-
 package appeng.core.features.registries.entries;
 
 
-import java.util.Collection;
+import appeng.api.features.InscriberProcessType;
+import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import net.minecraft.item.ItemStack;
-
-import appeng.api.features.InscriberProcessType;
+import java.util.Collection;
 
 
 /**

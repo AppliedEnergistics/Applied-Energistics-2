@@ -19,17 +19,6 @@
 package appeng.block.storage;
 
 
-import java.util.EnumSet;
-
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.api.AEApi;
 import appeng.api.storage.ICellHandler;
 import appeng.block.AEBaseTileBlock;
@@ -39,6 +28,15 @@ import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.storage.TileChest;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.EnumSet;
 
 
 public class BlockChest extends AEBaseTileBlock

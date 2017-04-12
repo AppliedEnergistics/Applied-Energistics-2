@@ -19,19 +19,7 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-
-import org.lwjgl.input.Mouse;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
-
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.LevelType;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
-import appeng.api.config.YesNo;
+import appeng.api.config.*;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiNumberBox;
 import appeng.container.implementations.ContainerLevelEmitter;
@@ -42,6 +30,11 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.parts.automation.PartLevelEmitter;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.InventoryPlayer;
+import org.lwjgl.input.Mouse;
+
+import java.io.IOException;
 
 
 public class GuiLevelEmitter extends GuiUpgradeable
@@ -131,7 +124,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 
 		if( this.craftingMode != null )
 		{
-			this.craftingMode.set( ( (ContainerLevelEmitter) this.cvb ).getCraftingMode() );
+			this.craftingMode.set( this.cvb.getCraftingMode() );
 		}
 
 		if( this.levelMode != null )

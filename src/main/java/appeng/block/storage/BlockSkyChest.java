@@ -19,10 +19,16 @@
 package appeng.block.storage;
 
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-
+import appeng.api.AEApi;
+import appeng.block.AEBaseTileBlock;
+import appeng.client.render.blocks.RenderBlockSkyChest;
+import appeng.core.features.AEFeature;
+import appeng.core.sync.GuiBridge;
+import appeng.helpers.ICustomCollision;
+import appeng.tile.storage.TileSkyChest;
+import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -38,17 +44,9 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.api.AEApi;
-import appeng.block.AEBaseTileBlock;
-import appeng.client.render.blocks.RenderBlockSkyChest;
-import appeng.core.features.AEFeature;
-import appeng.core.sync.GuiBridge;
-import appeng.helpers.ICustomCollision;
-import appeng.tile.storage.TileSkyChest;
-import appeng.util.Platform;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
 
 
 public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision

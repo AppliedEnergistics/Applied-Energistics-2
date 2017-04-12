@@ -19,10 +19,9 @@
 package appeng.helpers;
 
 
+import appeng.api.util.IOrientable;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import appeng.api.util.IOrientable;
 
 
 public class LocationRotation implements IOrientable

@@ -1,13 +1,11 @@
-
 package appeng.api.features;
 
 
-import java.util.Collection;
-import java.util.Set;
+import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
-
-import net.minecraft.item.ItemStack;
+import java.util.Collection;
+import java.util.Set;
 
 
 /**
@@ -21,13 +19,12 @@ public interface IInscriberRegistry
 {
 	/**
 	 * An immutable copy of currently registered recipes.
-	 *
+	 * <p>
 	 * Use the provided methods to actually modify the inscriber recipes.
 	 *
+	 * @return currentlyRegisteredRecipes
 	 * @see IInscriberRegistry#addRecipe(IInscriberRecipe)
 	 * @see IInscriberRegistry#removeRecipe(IInscriberRecipe)
-	 *
-	 * @return currentlyRegisteredRecipes
 	 */
 	@Nonnull
 	Collection<IInscriberRecipe> getRecipes();
@@ -61,7 +58,6 @@ public interface IInscriberRegistry
 	 * Added recipes will be automatically added to the optionals and inputs.
 	 *
 	 * @param recipe new recipe
-	 *
 	 * @throws IllegalArgumentException if null is added
 	 */
 	void addRecipe( IInscriberRecipe recipe );

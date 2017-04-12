@@ -19,9 +19,15 @@
 package appeng.block.crafting;
 
 
-import java.util.EnumSet;
-import java.util.List;
-
+import appeng.block.AEBaseTileBlock;
+import appeng.client.render.blocks.RenderBlockCraftingCPU;
+import appeng.client.texture.ExtraBlockTextures;
+import appeng.core.features.AEFeature;
+import appeng.core.sync.GuiBridge;
+import appeng.tile.crafting.TileCraftingTile;
+import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -32,16 +38,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.block.AEBaseTileBlock;
-import appeng.client.render.blocks.RenderBlockCraftingCPU;
-import appeng.client.texture.ExtraBlockTextures;
-import appeng.core.features.AEFeature;
-import appeng.core.sync.GuiBridge;
-import appeng.tile.crafting.TileCraftingTile;
-import appeng.util.Platform;
+import java.util.EnumSet;
+import java.util.List;
 
 
 public class BlockCraftingUnit extends AEBaseTileBlock

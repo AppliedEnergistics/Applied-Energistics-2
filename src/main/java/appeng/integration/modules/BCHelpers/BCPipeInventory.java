@@ -19,9 +19,6 @@
 package appeng.integration.modules.BCHelpers;
 
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventory;
@@ -31,6 +28,8 @@ import appeng.api.storage.data.IItemList;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.integration.abstraction.IBuildCraftTransport;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 
 
 public class BCPipeInventory implements IMEInventory<IAEItemStack>

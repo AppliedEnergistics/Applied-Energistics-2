@@ -19,14 +19,6 @@
 package appeng.integration.modules;
 
 
-import javax.annotation.Nonnull;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-
-import buildcraft.api.tools.IToolWrench;
-
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.api.features.IP2PTunnelRegistry;
@@ -34,6 +26,12 @@ import appeng.helpers.Reflected;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.IBuildCraftCore;
+import buildcraft.api.tools.IToolWrench;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nonnull;
 
 
 @Reflected

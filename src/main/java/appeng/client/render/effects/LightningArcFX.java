@@ -19,9 +19,9 @@
 package appeng.client.render.effects;
 
 
-import java.util.Random;
-
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 
 public class LightningArcFX extends LightningFX

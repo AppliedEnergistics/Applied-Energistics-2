@@ -19,41 +19,10 @@
 package appeng.core;
 
 
-import java.io.File;
-import javax.annotation.Nonnull;
-
-import com.google.common.base.Preconditions;
-
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.WeightedRandomChestContent;
-import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraftforge.common.ChestGenHooks;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.oredict.RecipeSorter;
-import net.minecraftforge.oredict.RecipeSorter.Category;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.VillagerRegistry;
-
 import appeng.api.AEApi;
 import appeng.api.IAppEngApi;
 import appeng.api.config.Upgrades;
-import appeng.api.definitions.Blocks;
-import appeng.api.definitions.IBlocks;
-import appeng.api.definitions.IDefinitions;
-import appeng.api.definitions.IItems;
-import appeng.api.definitions.IMaterials;
-import appeng.api.definitions.IParts;
-import appeng.api.definitions.Items;
-import appeng.api.definitions.Materials;
-import appeng.api.definitions.Parts;
+import appeng.api.definitions.*;
 import appeng.api.features.IRecipeHandlerRegistry;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.features.IWirelessTermHandler;
@@ -82,14 +51,7 @@ import appeng.core.stats.PlayerStatsRegistration;
 import appeng.hooks.AETrading;
 import appeng.hooks.TickHandler;
 import appeng.items.materials.ItemMultiMaterial;
-import appeng.me.cache.CraftingGridCache;
-import appeng.me.cache.EnergyGridCache;
-import appeng.me.cache.GridStorageCache;
-import appeng.me.cache.P2PCache;
-import appeng.me.cache.PathGridCache;
-import appeng.me.cache.SecurityCache;
-import appeng.me.cache.SpatialPylonCache;
-import appeng.me.cache.TickManagerCache;
+import appeng.me.cache.*;
 import appeng.me.storage.AEExternalHandler;
 import appeng.parts.PartPlacement;
 import appeng.recipes.AEItemResolver;
@@ -99,19 +61,7 @@ import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
 import appeng.recipes.game.ShapedRecipe;
 import appeng.recipes.game.ShapelessRecipe;
-import appeng.recipes.handlers.Crusher;
-import appeng.recipes.handlers.Grind;
-import appeng.recipes.handlers.GrindFZ;
-import appeng.recipes.handlers.HCCrusher;
-import appeng.recipes.handlers.Inscribe;
-import appeng.recipes.handlers.Macerator;
-import appeng.recipes.handlers.MekCrusher;
-import appeng.recipes.handlers.MekEnrichment;
-import appeng.recipes.handlers.Press;
-import appeng.recipes.handlers.Pulverizer;
-import appeng.recipes.handlers.Shaped;
-import appeng.recipes.handlers.Shapeless;
-import appeng.recipes.handlers.Smelt;
+import appeng.recipes.handlers.*;
 import appeng.recipes.ores.OreDictionaryHandler;
 import appeng.spatial.BiomeGenStorage;
 import appeng.spatial.StorageWorldProvider;
@@ -119,6 +69,26 @@ import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
 import appeng.worldgen.MeteoriteWorldGen;
 import appeng.worldgen.QuartzWorldGen;
+import com.google.common.base.Preconditions;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.VillagerRegistry;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.WeightedRandomChestContent;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraftforge.common.ChestGenHooks;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.oredict.RecipeSorter;
+import net.minecraftforge.oredict.RecipeSorter.Category;
+
+import javax.annotation.Nonnull;
+import java.io.File;
 
 
 public final class Registration
@@ -251,12 +221,11 @@ public final class Registration
 
 	/**
 	 * Assigns materials from the new API to the old API
-	 *
+	 * <p>
 	 * Uses direct cast, since its only a temporary solution anyways
 	 *
 	 * @param target old API
 	 * @param source new API
-	 *
 	 * @deprecated to be removed when the public definition API is removed
 	 */
 	@Deprecated
@@ -340,7 +309,6 @@ public final class Registration
 	 *
 	 * @param target old API
 	 * @param source new API
-	 *
 	 * @deprecated to be removed when the public definition API is removed
 	 */
 	@Deprecated
@@ -389,7 +357,6 @@ public final class Registration
 	 *
 	 * @param target old API
 	 * @param source new API
-	 *
 	 * @deprecated to be removed when the public definition API is removed
 	 */
 	@Deprecated
@@ -459,7 +426,6 @@ public final class Registration
 	 *
 	 * @param target old API
 	 * @param source new API
-	 *
 	 * @deprecated to be removed when the public definition API is removed
 	 */
 	@Deprecated

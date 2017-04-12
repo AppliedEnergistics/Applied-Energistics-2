@@ -19,24 +19,6 @@
 package appeng.client.gui.implementations;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
-
-import com.google.common.collect.HashMultimap;
-
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-
 import appeng.api.AEApi;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiScrollbar;
@@ -47,6 +29,14 @@ import appeng.container.implementations.ContainerInterfaceTerminal;
 import appeng.core.localization.GuiText;
 import appeng.parts.reporting.PartInterfaceTerminal;
 import appeng.util.Platform;
+import com.google.common.collect.HashMultimap;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import org.lwjgl.opengl.GL11;
+
+import java.util.*;
 
 
 public class GuiInterfaceTerminal extends AEBaseGui
@@ -252,7 +242,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 	/**
 	 * Rebuilds the list of interfaces.
-	 *
+	 * <p>
 	 * Respects a search term if present (ignores case) and adding only matching patterns.
 	 */
 	private void refreshList()
@@ -358,12 +348,11 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 	/**
 	 * Tries to retrieve a cache for a with search term as keyword.
-	 *
+	 * <p>
 	 * If this cache should be empty, it will populate it with an earlier cache if available or at least the cache for
 	 * the empty string.
 	 *
 	 * @param searchTerm the corresponding search
-	 *
 	 * @return a Set matching a superset of the search term
 	 */
 	private Set<Object> getCacheForSearchTerm( final String searchTerm )

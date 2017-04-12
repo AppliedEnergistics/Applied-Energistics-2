@@ -19,18 +19,6 @@
 package appeng.parts.p2p;
 
 
-import java.util.LinkedList;
-
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.api.config.PowerUnits;
 import appeng.integration.IntegrationType;
 import appeng.me.GridAccessException;
@@ -38,6 +26,16 @@ import appeng.me.cache.helpers.TunnelCollection;
 import appeng.transformer.annotations.Integration.Interface;
 import appeng.transformer.annotations.Integration.InterfaceList;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.LinkedList;
 
 
 @InterfaceList( value = { @Interface( iface = "ic2.api.energy.tile.IEnergySink", iname = IntegrationType.IC2 ), @Interface( iface = "ic2.api.energy.tile.IEnergySource", iname = IntegrationType.IC2 ) } )

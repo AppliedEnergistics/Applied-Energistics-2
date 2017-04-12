@@ -19,8 +19,6 @@
 package appeng.core.api.definitions;
 
 
-import net.minecraft.item.Item;
-
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.ITileDefinition;
@@ -28,13 +26,10 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.core.FeatureHandlerRegistry;
 import appeng.core.FeatureRegistry;
-import appeng.core.features.ActivityState;
-import appeng.core.features.ColoredItemDefinition;
-import appeng.core.features.IAEFeature;
-import appeng.core.features.IFeatureHandler;
-import appeng.core.features.ItemStackSrc;
+import appeng.core.features.*;
 import appeng.items.parts.ItemMultiPart;
 import appeng.items.parts.PartType;
+import net.minecraft.item.Item;
 
 
 public class DefinitionConstructor
@@ -54,7 +49,7 @@ public class DefinitionConstructor
 
 		if( definition instanceof ITileDefinition )
 		{
-			return( (ITileDefinition) definition );
+			return ( (ITileDefinition) definition );
 		}
 
 		throw new IllegalStateException( "No tile definition for " + feature );
@@ -66,7 +61,7 @@ public class DefinitionConstructor
 
 		if( definition instanceof IBlockDefinition )
 		{
-			return( (IBlockDefinition) definition );
+			return ( (IBlockDefinition) definition );
 		}
 
 		throw new IllegalStateException( "No block definition for " + feature );

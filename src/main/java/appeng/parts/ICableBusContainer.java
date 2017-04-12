@@ -19,9 +19,10 @@
 package appeng.parts;
 
 
-import java.util.EnumSet;
-import java.util.Random;
-
+import appeng.api.parts.SelectedPart;
+import appeng.api.util.AEColor;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,11 +30,8 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.api.parts.SelectedPart;
-import appeng.api.util.AEColor;
+import java.util.EnumSet;
+import java.util.Random;
 
 
 public interface ICableBusContainer

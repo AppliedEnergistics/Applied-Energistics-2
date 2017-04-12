@@ -19,8 +19,11 @@
 package appeng.integration.modules.BCHelpers;
 
 
-import java.util.Set;
-
+import appeng.api.parts.*;
+import appeng.api.util.AEColor;
+import appeng.api.util.DimensionalCoord;
+import appeng.parts.CableBusContainer;
+import buildcraft.api.blueprints.IBuilderContext;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,16 +31,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import buildcraft.api.blueprints.IBuilderContext;
-
-import appeng.api.parts.IFacadeContainer;
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartHost;
-import appeng.api.parts.LayerFlags;
-import appeng.api.parts.SelectedPart;
-import appeng.api.util.AEColor;
-import appeng.api.util.DimensionalCoord;
-import appeng.parts.CableBusContainer;
+import java.util.Set;
 
 
 public class AECableSchematicTile extends AEGenericSchematicTile implements IPartHost

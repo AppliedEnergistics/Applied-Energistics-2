@@ -19,15 +19,6 @@
 package appeng.container.implementations;
 
 
-import java.util.Iterator;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ICrafting;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.AEApi;
 import appeng.api.config.CopyMode;
 import appeng.api.config.FuzzyMode;
@@ -45,6 +36,14 @@ import appeng.tile.inventory.AppEngNullInventory;
 import appeng.tile.misc.TileCellWorkbench;
 import appeng.util.Platform;
 import appeng.util.iterators.NullIterator;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+
+import java.util.Iterator;
 
 
 public class ContainerCellWorkbench extends ContainerUpgradeable

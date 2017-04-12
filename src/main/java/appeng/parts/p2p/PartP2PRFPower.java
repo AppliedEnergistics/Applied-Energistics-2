@@ -19,19 +19,6 @@
 package appeng.parts.p2p;
 
 
-import java.util.Stack;
-
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import cofh.api.energy.IEnergyReceiver;
-
 import appeng.api.config.PowerUnits;
 import appeng.integration.IntegrationType;
 import appeng.integration.modules.helpers.NullRFHandler;
@@ -39,6 +26,16 @@ import appeng.me.GridAccessException;
 import appeng.transformer.annotations.Integration.Interface;
 import appeng.transformer.annotations.Integration.InterfaceList;
 import appeng.util.Platform;
+import cofh.api.energy.IEnergyReceiver;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Stack;
 
 
 @InterfaceList( value = { @Interface( iface = "cofh.api.energy.IEnergyReceiver", iname = IntegrationType.RF ) } )

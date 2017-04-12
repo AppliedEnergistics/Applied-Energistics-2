@@ -19,12 +19,6 @@
 package appeng.tile.spatial;
 
 
-import java.util.EnumSet;
-
-import io.netty.buffer.ByteBuf;
-
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -38,6 +32,10 @@ import appeng.me.helpers.AENetworkProxyMultiblock;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
+import io.netty.buffer.ByteBuf;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.EnumSet;
 
 
 public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock

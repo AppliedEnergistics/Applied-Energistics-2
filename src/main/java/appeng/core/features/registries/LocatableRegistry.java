@@ -19,18 +19,16 @@
 package appeng.core.features.registries;
 
 
-import java.util.HashMap;
-import java.util.Map;
-
-import net.minecraftforge.common.MinecraftForge;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-
 import appeng.api.events.LocatableEventAnnounce;
 import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
 import appeng.api.features.ILocatable;
 import appeng.api.features.ILocatableRegistry;
 import appeng.util.Platform;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.MinecraftForge;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public final class LocatableRegistry implements ILocatableRegistry

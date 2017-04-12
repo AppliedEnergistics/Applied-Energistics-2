@@ -19,14 +19,16 @@
 package appeng.items.tools.powered;
 
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import appeng.api.util.DimensionalCoord;
+import appeng.block.misc.BlockTinyTNT;
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
+import appeng.hooks.DispenserBlockTool;
+import appeng.hooks.IBlockTool;
+import appeng.items.tools.powered.powersink.AEBasePoweredItem;
+import appeng.util.InWorldToolOperationResult;
+import appeng.util.Platform;
 import com.google.common.base.Optional;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.BlockTNT;
@@ -44,15 +46,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 
-import appeng.api.util.DimensionalCoord;
-import appeng.block.misc.BlockTinyTNT;
-import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
-import appeng.hooks.DispenserBlockTool;
-import appeng.hooks.IBlockTool;
-import appeng.items.tools.powered.powersink.AEBasePoweredItem;
-import appeng.util.InWorldToolOperationResult;
-import appeng.util.Platform;
+import java.util.*;
 
 
 public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockTool

@@ -19,11 +19,10 @@
 package appeng.util.item;
 
 
-import java.io.IOException;
-
+import appeng.api.storage.data.IAEStack;
 import io.netty.buffer.ByteBuf;
 
-import appeng.api.storage.data.IAEStack;
+import java.io.IOException;
 
 
 public abstract class AEStack<StackType extends IAEStack> implements IAEStack<StackType>

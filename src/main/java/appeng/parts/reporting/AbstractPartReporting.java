@@ -19,18 +19,6 @@
 package appeng.parts.reporting;
 
 
-import java.io.IOException;
-
-import io.netty.buffer.ByteBuf;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.parts.IPartMonitor;
 import appeng.api.networking.GridFlags;
@@ -42,14 +30,24 @@ import appeng.client.texture.CableBusTextures;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
 import appeng.util.Platform;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.io.IOException;
 
 
 /**
  * The most basic class for any part reporting information, like terminals or monitors. This can also include basic
  * panels which just provide light.
- *
+ * <p>
  * It deals with the most basic functionalities like network data, grid registration or the rotation of the actual part.
- *
+ * <p>
  * The direct abstract subclasses are usually a better entry point for adding new concrete ones.
  * But this might be an ideal starting point to completely new type, which does not resemble any existing one.
  *
@@ -175,11 +173,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 		final int oldFlags = this.getClientFlags();
 		this.clientFlags = data.readByte();
 		this.spin = (byte) ( this.getClientFlags() & 3 );
-		if( this.getClientFlags() == oldFlags )
-		{
-			return false;
-		}
-		return true;
+		return this.getClientFlags() != oldFlags;
 	}
 
 	@Override
@@ -267,7 +261,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 			}
 			else
 			{
-				return( ( this.getClientFlags() & PartPanel.POWERED_FLAG ) == PartPanel.POWERED_FLAG );
+				return ( ( this.getClientFlags() & PartPanel.POWERED_FLAG ) == PartPanel.POWERED_FLAG );
 			}
 		}
 		catch( final GridAccessException e )
@@ -281,7 +275,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	{
 		if( !this.isLightSource() )
 		{
-			return( ( this.getClientFlags() & ( PartPanel.CHANNEL_FLAG | PartPanel.POWERED_FLAG ) ) == ( PartPanel.CHANNEL_FLAG | PartPanel.POWERED_FLAG ) );
+			return ( ( this.getClientFlags() & ( PartPanel.CHANNEL_FLAG | PartPanel.POWERED_FLAG ) ) == ( PartPanel.CHANNEL_FLAG | PartPanel.POWERED_FLAG ) );
 		}
 		else
 		{
@@ -301,21 +295,21 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 
 	/**
 	 * The texture used for the bright front layer.
-	 *
+	 * <p>
 	 * The final texture can overlap any of the the texture in no particular order.
 	 */
 	public abstract CableBusTextures getFrontBright();
 
 	/**
 	 * The texture used for the colored (medium) front layer.
-	 *
+	 * <p>
 	 * The final texture can overlap any of the the texture in no particular order.
 	 */
 	public abstract CableBusTextures getFrontColored();
 
 	/**
 	 * The texture used for the dark front layer.
-	 *
+	 * <p>
 	 * The final texture can overlap any of the the texture in no particular order.
 	 */
 	public abstract CableBusTextures getFrontDark();

@@ -24,15 +24,15 @@
 package appeng.api.util;
 
 
+import net.minecraft.util.StatCollector;
+
 import java.util.Arrays;
 import java.util.List;
-
-import net.minecraft.util.StatCollector;
 
 
 /**
  * List of all colors supported by AE, their names, and various colors for display.
- *
+ * <p>
  * Should be the same order as Dyes, excluding Transparent.
  */
 public enum AEColor

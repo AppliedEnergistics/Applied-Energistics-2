@@ -19,14 +19,12 @@
 package appeng.parts.layers;
 
 
-import net.minecraftforge.common.util.ForgeDirection;
-
-import buildcraft.api.transport.IPipeConnection;
-import buildcraft.api.transport.IPipeTile.PipeType;
-
 import appeng.api.parts.IPart;
 import appeng.api.parts.LayerBase;
 import appeng.helpers.Reflected;
+import buildcraft.api.transport.IPipeConnection;
+import buildcraft.api.transport.IPipeTile.PipeType;
+import net.minecraftforge.common.util.ForgeDirection;
 
 
 @Reflected

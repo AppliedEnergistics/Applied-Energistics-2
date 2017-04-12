@@ -19,15 +19,14 @@
 package appeng.client.render.blocks;
 
 
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.client.IItemRenderer.ItemRenderType;
-
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.block.networking.BlockEnergyCell;
 import appeng.client.render.BaseBlockRender;
 import appeng.tile.networking.TileEnergyCell;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 
 
 public class RenderBlockEnergyCube extends BaseBlockRender<BlockEnergyCell, TileEnergyCell>

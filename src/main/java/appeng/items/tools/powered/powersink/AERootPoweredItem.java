@@ -19,23 +19,21 @@
 package appeng.items.tools.powered.powersink;
 
 
-import java.text.MessageFormat;
-import java.util.List;
-
-import com.google.common.base.Optional;
-
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.PowerUnits;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
+import com.google.common.base.Optional;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+
+import java.text.MessageFormat;
+import java.util.List;
 
 
 public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage

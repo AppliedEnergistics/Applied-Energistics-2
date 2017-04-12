@@ -19,22 +19,20 @@
 package appeng.worldgen;
 
 
-import java.util.Random;
-
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraft.world.gen.feature.WorldGenMinable;
-
-import cpw.mods.fml.common.IWorldGenerator;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.features.IWorldGen.WorldGenType;
 import appeng.core.AEConfig;
 import appeng.core.features.registries.WorldGenRegistry;
+import cpw.mods.fml.common.IWorldGenerator;
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.gen.feature.WorldGenMinable;
+
+import java.util.Random;
 
 
 public final class QuartzWorldGen implements IWorldGenerator

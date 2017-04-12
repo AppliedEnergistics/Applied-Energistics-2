@@ -19,20 +19,18 @@
 package appeng.parts.layers;
 
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import ic2.api.energy.tile.IEnergyAcceptor;
-import ic2.api.energy.tile.IEnergySink;
-import ic2.api.energy.tile.IEnergyTile;
-
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.LayerBase;
 import appeng.api.parts.LayerFlags;
 import appeng.util.Platform;
+import ic2.api.energy.tile.IEnergyAcceptor;
+import ic2.api.energy.tile.IEnergySink;
+import ic2.api.energy.tile.IEnergyTile;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.ForgeDirection;
 
 
 public class LayerIEnergySink extends LayerBase implements IEnergySink

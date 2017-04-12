@@ -19,13 +19,13 @@
 package appeng.entity;
 
 
-import java.util.List;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 
 public abstract class AEBaseEntityItem extends EntityItem

@@ -223,14 +223,7 @@ public class GridStorageCache implements IStorageGrid
 			if( cc instanceof IActionHost )
 			{
 				final IGridNode node = ( (IActionHost) cc ).getActionableNode();
-				if( node != null && node.isActive() )
-				{
-					active = true;
-				}
-				else
-				{
-					active = false;
-				}
+				active = node != null && node.isActive();
 			}
 
 			if( active )
@@ -393,6 +386,7 @@ public class GridStorageCache implements IStorageGrid
 			GridStorageCache.this.postChangesToNetwork( this.channel, this.up_or_down, this.list, this.src );
 		}
 	}
+
 
 	private class CellChangeTracker
 	{

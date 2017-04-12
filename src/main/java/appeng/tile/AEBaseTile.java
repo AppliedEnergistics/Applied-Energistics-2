@@ -19,32 +19,6 @@
 package appeng.tile;
 
 
-import java.lang.ref.WeakReference;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.util.ICommonTile;
 import appeng.api.util.IConfigManager;
@@ -59,6 +33,24 @@ import appeng.tile.events.TileEventType;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Method;
+import java.util.*;
 
 
 public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, ICustomNameObject
@@ -435,7 +427,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	/**
 	 * depending on the from, different settings will be accepted, don't call this with null
 	 *
-	 * @param from source of settings
+	 * @param from     source of settings
 	 * @param compound compound of source
 	 */
 	public void uploadSettings( final SettingsFrom from, final NBTTagCompound compound )
@@ -474,10 +466,10 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	/**
 	 * returns the contents of the tile entity, into the world, defaults to dropping everything in the inventory.
 	 *
-	 * @param w world
-	 * @param x x pos of tile entity
-	 * @param y y pos of tile entity
-	 * @param z z pos of tile entity
+	 * @param w     world
+	 * @param x     x pos of tile entity
+	 * @param y     y pos of tile entity
+	 * @param z     z pos of tile entity
 	 * @param drops drops of tile entity
 	 */
 	@Override
@@ -512,7 +504,6 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	 * null means nothing to store...
 	 *
 	 * @param from source of settings
-	 *
 	 * @return compound of source
 	 */
 	public NBTTagCompound downloadSettings( final SettingsFrom from )

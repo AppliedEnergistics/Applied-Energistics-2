@@ -24,10 +24,9 @@
 package appeng.api.implementations.tiles;
 
 
+import appeng.api.util.AEColor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import appeng.api.util.AEColor;
 
 
 public interface IColorableTile

@@ -24,9 +24,9 @@
 package appeng.api.features;
 
 
-import java.util.List;
-
 import net.minecraft.item.ItemStack;
+
+import java.util.List;
 
 
 /**
@@ -79,7 +79,6 @@ public interface IGrinderRegistry
 	 * Searches for a recipe for a given input, and returns it.
 	 *
 	 * @param input input
-	 *
 	 * @return identified recipe or null
 	 */
 	IGrinderEntry getRecipeForInput( ItemStack input );

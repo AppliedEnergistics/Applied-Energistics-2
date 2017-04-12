@@ -19,20 +19,19 @@
 package appeng.debug;
 
 
-import java.util.EnumSet;
-
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.world.World;
-
 import appeng.client.texture.MissingIcon;
 import appeng.core.features.AEFeature;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 import appeng.worldgen.MeteoritePlacer;
 import appeng.worldgen.meteorite.StandardWorld;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.world.World;
+
+import java.util.EnumSet;
 
 
 public class ToolMeteoritePlacer extends AEBaseItem

@@ -19,34 +19,23 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.SchedulingMode;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
-import appeng.api.config.YesNo;
+import appeng.api.config.*;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.parts.IPart;
 import appeng.api.util.IConfigManager;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
-import appeng.container.slot.IOptionalSlotHost;
-import appeng.container.slot.OptionalSlotFake;
-import appeng.container.slot.OptionalSlotFakeTypeOnly;
-import appeng.container.slot.SlotFakeTypeOnly;
-import appeng.container.slot.SlotRestrictedInput;
+import appeng.container.slot.*;
 import appeng.items.contents.NetworkToolViewer;
 import appeng.items.tools.ToolNetworkTool;
 import appeng.parts.automation.PartExportBus;
 import appeng.util.Platform;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 
 public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSlotHost
@@ -265,12 +254,8 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		{
 			return true;
 		}
-		if( idx == 2 && upgrades > 1 )
-		{
-			return true;
-		}
+		return idx == 2 && upgrades > 1;
 
-		return false;
 	}
 
 	public FuzzyMode getFuzzyMode()

@@ -19,8 +19,11 @@
 package appeng.client.render.blocks;
 
 
-import java.util.EnumSet;
-
+import appeng.api.util.AEColor;
+import appeng.block.misc.BlockSecurity;
+import appeng.client.render.BaseBlockRender;
+import appeng.client.texture.ExtraBlockTextures;
+import appeng.tile.misc.TileSecurity;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.item.ItemStack;
@@ -29,11 +32,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.api.util.AEColor;
-import appeng.block.misc.BlockSecurity;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.texture.ExtraBlockTextures;
-import appeng.tile.misc.TileSecurity;
+import java.util.EnumSet;
 
 
 public class RendererSecurity extends BaseBlockRender<BlockSecurity, TileSecurity>

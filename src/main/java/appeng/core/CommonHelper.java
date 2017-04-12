@@ -19,20 +19,18 @@
 package appeng.core;
 
 
-import java.util.List;
-import java.util.Random;
-
+import appeng.api.parts.CableRenderMode;
+import appeng.block.AEBaseBlock;
+import appeng.client.EffectType;
+import appeng.core.sync.AppEngPacket;
+import cpw.mods.fml.common.SidedProxy;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
-import cpw.mods.fml.common.SidedProxy;
-
-import appeng.api.parts.CableRenderMode;
-import appeng.block.AEBaseBlock;
-import appeng.client.EffectType;
-import appeng.core.sync.AppEngPacket;
+import java.util.List;
+import java.util.Random;
 
 
 public abstract class CommonHelper

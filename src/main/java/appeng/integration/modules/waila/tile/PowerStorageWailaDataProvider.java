@@ -19,24 +19,22 @@
 package appeng.integration.modules.waila.tile;
 
 
-import java.util.List;
-
+import appeng.api.networking.energy.IAEPowerStorage;
+import appeng.core.localization.WailaText;
+import appeng.integration.modules.waila.BaseWailaDataProvider;
+import appeng.util.Platform;
+import gnu.trove.map.TObjectLongMap;
+import gnu.trove.map.hash.TObjectLongHashMap;
+import mcp.mobius.waila.api.ITaggedList;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import gnu.trove.map.TObjectLongMap;
-import gnu.trove.map.hash.TObjectLongHashMap;
-import mcp.mobius.waila.api.ITaggedList;
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
-
-import appeng.api.networking.energy.IAEPowerStorage;
-import appeng.core.localization.WailaText;
-import appeng.integration.modules.waila.BaseWailaDataProvider;
-import appeng.util.Platform;
+import java.util.List;
 
 
 /**
@@ -67,11 +65,10 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 	 * Adds the current and max power to the tool tip
 	 * Will ignore if the tile has an energy buffer ( &gt; 0 )
 	 *
-	 * @param itemStack stack of power storage
+	 * @param itemStack      stack of power storage
 	 * @param currentToolTip current tool tip
-	 * @param accessor wrapper for various world information
-	 * @param config config to react to various settings
-	 *
+	 * @param accessor       wrapper for various world information
+	 * @param config         config to react to various settings
 	 * @return modified tool tip
 	 */
 	@Override
@@ -110,13 +107,12 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 	 * writes the power information to the {@code #tag} using the {@code #ID_CURRENT_POWER} key.
 	 *
 	 * @param player player looking at the power storage
-	 * @param te power storage
-	 * @param tag transferred tag which is send to the client
-	 * @param world world of the power storage
-	 * @param x x pos of the power storage
-	 * @param y y pos of the power storage
-	 * @param z z pos of the power storage
-	 *
+	 * @param te     power storage
+	 * @param tag    transferred tag which is send to the client
+	 * @param world  world of the power storage
+	 * @param x      x pos of the power storage
+	 * @param y      y pos of the power storage
+	 * @param z      z pos of the power storage
 	 * @return tag send to the client
 	 */
 	@Override
@@ -143,9 +139,8 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 	 * If the client received power information on the server, they are used, else if the cache contains a previous
 	 * stored value, this will be used. Default value is 0.
 	 *
-	 * @param te te to be looked at
+	 * @param te  te to be looked at
 	 * @param tag tag maybe containing the channel information
-	 *
 	 * @return used channels on the cable
 	 */
 	private long getInternalCurrentPower( final NBTTagCompound tag, final TileEntity te )

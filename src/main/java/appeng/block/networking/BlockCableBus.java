@@ -19,35 +19,6 @@
 package appeng.block.networking;
 
 
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Random;
-
-import net.minecraft.block.Block;
-import net.minecraft.client.particle.EffectRenderer;
-import net.minecraft.client.particle.EntityDiggingFX;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import powercrystals.minefactoryreloaded.api.rednet.connectivity.IRedNetConnection;
-import powercrystals.minefactoryreloaded.api.rednet.connectivity.RedNetConnectionType;
-
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartItemStack;
@@ -75,6 +46,32 @@ import appeng.tile.networking.TileCableBusTESR;
 import appeng.transformer.annotations.Integration.Interface;
 import appeng.transformer.annotations.Integration.Method;
 import appeng.util.Platform;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.particle.EntityDiggingFX;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import powercrystals.minefactoryreloaded.api.rednet.connectivity.IRedNetConnection;
+import powercrystals.minefactoryreloaded.api.rednet.connectivity.RedNetConnectionType;
+
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Random;
 
 
 @Interface( iface = "powercrystals.minefactoryreloaded.api.rednet.connectivity.IRedNetConnection", iname = IntegrationType.MFR )
@@ -87,7 +84,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IRedNetConnection
 
 	/**
 	 * Immibis MB Support.
-	 *
+	 * <p>
 	 * It will look for a field named ImmibisMicroblocks_TransformableBlockMarker or
 	 * ImmibisMicroblocks_TransformableTileEntityMarker, modifiers, type, etc can be ignored.
 	 */

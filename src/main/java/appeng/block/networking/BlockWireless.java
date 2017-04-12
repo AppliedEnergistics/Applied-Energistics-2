@@ -19,19 +19,6 @@
 package appeng.block.networking;
 
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.blocks.RenderBlockWireless;
 import appeng.core.features.AEFeature;
@@ -40,6 +27,17 @@ import appeng.helpers.AEGlassMaterial;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.networking.TileWireless;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
 
 
 public class BlockWireless extends AEBaseTileBlock implements ICustomCollision

@@ -19,20 +19,18 @@
 package appeng.block.qnb;
 
 
-import java.util.EnumSet;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.world.World;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.blocks.RenderQNB;
 import appeng.core.features.AEFeature;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.qnb.TileQuantumBridge;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.world.World;
+
+import java.util.EnumSet;
 
 
 public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICustomCollision

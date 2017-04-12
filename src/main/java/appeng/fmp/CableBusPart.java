@@ -19,49 +19,9 @@
 package appeng.fmp;
 
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import codechicken.lib.data.MCDataInput;
-import codechicken.lib.data.MCDataOutput;
-import codechicken.lib.raytracer.IndexedCuboid6;
-import codechicken.lib.vec.Cuboid6;
-import codechicken.lib.vec.Vector3;
-import codechicken.multipart.IMaskedRedstonePart;
-import codechicken.multipart.JCuboidPart;
-import codechicken.multipart.JNormalOcclusion;
-import codechicken.multipart.NormalOcclusionTest;
-import codechicken.multipart.NormallyOccludedPart;
-import codechicken.multipart.TMultiPart;
-import codechicken.multipart.scalatraits.TIInventoryTile;
-
 import appeng.api.implementations.parts.IPartCable;
 import appeng.api.networking.IGridNode;
-import appeng.api.parts.IFacadeContainer;
-import appeng.api.parts.IFacadePart;
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartItem;
-import appeng.api.parts.LayerFlags;
-import appeng.api.parts.PartItemStack;
-import appeng.api.parts.SelectedPart;
+import appeng.api.parts.*;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
@@ -76,11 +36,32 @@ import appeng.parts.CableBusContainer;
 import appeng.parts.PartPlacement;
 import appeng.tile.networking.TileCableBus;
 import appeng.util.Platform;
+import codechicken.lib.data.MCDataInput;
+import codechicken.lib.data.MCDataOutput;
+import codechicken.lib.raytracer.IndexedCuboid6;
+import codechicken.lib.vec.Cuboid6;
+import codechicken.lib.vec.Vector3;
+import codechicken.multipart.*;
+import codechicken.multipart.scalatraits.TIInventoryTile;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.io.IOException;
+import java.util.*;
 
 
 /**
  * Implementing these might help improve visuals for hollow covers
- *
+ * <p>
  * TSlottedPart,ISidedHollowConnect
  */
 public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IMaskedRedstonePart, AEMultiTile
@@ -113,7 +94,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IMask
 
 	/**
 	 * Mask for {@link IMaskedRedstonePart#getConnectionMask(int)}
-	 *
+	 * <p>
 	 * the bits are derived from the rotation, where 4 is the center
 	 */
 	private static final int CONNECTION_MASK = 0x000010;
@@ -452,7 +433,7 @@ public class CableBusPart extends JCuboidPart implements JNormalOcclusion, IMask
 		double r = Math.abs( a - 0.5 );
 		r = Math.max( Math.abs( b - 0.5 ), r );
 		r = Math.max( Math.abs( c - 0.5 ), r );
-		return( 8 * (int) Math.max( Math.abs( d - 0.5 ), r ) );
+		return ( 8 * (int) Math.max( Math.abs( d - 0.5 ), r ) );
 	}
 
 	// @Override

@@ -19,49 +19,20 @@
 package appeng.items.parts;
 
 
-import java.lang.reflect.Constructor;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Set;
-
 import appeng.api.parts.IPart;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.integration.IntegrationType;
-import appeng.parts.automation.PartAnnihilationPlane;
-import appeng.parts.automation.PartExportBus;
-import appeng.parts.automation.PartFormationPlane;
-import appeng.parts.automation.PartIdentityAnnihilationPlane;
-import appeng.parts.automation.PartImportBus;
-import appeng.parts.automation.PartLevelEmitter;
-import appeng.parts.misc.PartCableAnchor;
-import appeng.parts.misc.PartInterface;
-import appeng.parts.misc.PartInvertedToggleBus;
-import appeng.parts.misc.PartStorageBus;
-import appeng.parts.misc.PartToggleBus;
-import appeng.parts.networking.PartCableCovered;
-import appeng.parts.networking.PartCableGlass;
-import appeng.parts.networking.PartCableSmart;
-import appeng.parts.networking.PartDenseCable;
-import appeng.parts.networking.PartQuartzFiber;
-import appeng.parts.p2p.PartP2PIC2Power;
-import appeng.parts.p2p.PartP2PItems;
-import appeng.parts.p2p.PartP2PLight;
-import appeng.parts.p2p.PartP2PLiquids;
-import appeng.parts.p2p.PartP2POpenComputers;
-import appeng.parts.p2p.PartP2PPressure;
-import appeng.parts.p2p.PartP2PRFPower;
-import appeng.parts.p2p.PartP2PRedstone;
-import appeng.parts.p2p.PartP2PTunnelME;
-import appeng.parts.reporting.PartConversionMonitor;
-import appeng.parts.reporting.PartCraftingTerminal;
-import appeng.parts.reporting.PartDarkPanel;
-import appeng.parts.reporting.PartInterfaceTerminal;
-import appeng.parts.reporting.PartPanel;
-import appeng.parts.reporting.PartPatternTerminal;
-import appeng.parts.reporting.PartSemiDarkPanel;
-import appeng.parts.reporting.PartStorageMonitor;
-import appeng.parts.reporting.PartTerminal;
+import appeng.parts.automation.*;
+import appeng.parts.misc.*;
+import appeng.parts.networking.*;
+import appeng.parts.p2p.*;
+import appeng.parts.reporting.*;
+
+import java.lang.reflect.Constructor;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
 
 
 public enum PartType
@@ -69,40 +40,40 @@ public enum PartType
 	InvalidType( -1, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), null ),
 
 	CableGlass( 0, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartCableGlass.class )
-	{
-		@Override
-		public boolean isCable()
-		{
-			return true;
-		}
-	},
+			{
+				@Override
+				public boolean isCable()
+				{
+					return true;
+				}
+			},
 
 	CableCovered( 20, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartCableCovered.class )
-	{
-		@Override
-		public boolean isCable()
-		{
-			return true;
-		}
-	},
+			{
+				@Override
+				public boolean isCable()
+				{
+					return true;
+				}
+			},
 
 	CableSmart( 40, EnumSet.of( AEFeature.Channels ), EnumSet.noneOf( IntegrationType.class ), PartCableSmart.class )
-	{
-		@Override
-		public boolean isCable()
-		{
-			return true;
-		}
-	},
+			{
+				@Override
+				public boolean isCable()
+				{
+					return true;
+				}
+			},
 
 	CableDense( 60, EnumSet.of( AEFeature.Channels ), EnumSet.noneOf( IntegrationType.class ), PartDenseCable.class )
-	{
-		@Override
-		public boolean isCable()
-		{
-			return true;
-		}
-	},
+			{
+				@Override
+				public boolean isCable()
+				{
+					return true;
+				}
+			},
 
 	ToggleBus( 80, EnumSet.of( AEFeature.Core ), EnumSet.noneOf( IntegrationType.class ), PartToggleBus.class ),
 

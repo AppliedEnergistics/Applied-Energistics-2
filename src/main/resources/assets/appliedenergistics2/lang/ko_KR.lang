@@ -50,7 +50,7 @@ tile.appliedenergistics2.BlockCraftingAccelerator.name=조합 공처리 유닛
 tile.appliedenergistics2.BlockCraftingUnit.name=조합 유닛
 tile.appliedenergistics2.BlockMolecularAssembler.name=분자 조합기
 
-// Stairs
+# Stairs
 tile.appliedenergistics2.ChiseledQuartzStairBlock.name=Chiseled Certus Quartz Stairs
 tile.appliedenergistics2.FluixStairBlock.name=Fluix Stairs
 tile.appliedenergistics2.QuartzPillarStairBlock.name=Certus Quartz Pillar Stairs

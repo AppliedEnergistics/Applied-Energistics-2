@@ -19,12 +19,12 @@
 package appeng.block.networking;
 
 
-import java.util.EnumSet;
-
 import appeng.block.AEBaseTileBlock;
 import appeng.core.features.AEFeature;
 import appeng.helpers.AEGlassMaterial;
 import appeng.tile.networking.TileCreativeEnergyCell;
+
+import java.util.EnumSet;
 
 
 public class BlockCreativeEnergyCell extends AEBaseTileBlock

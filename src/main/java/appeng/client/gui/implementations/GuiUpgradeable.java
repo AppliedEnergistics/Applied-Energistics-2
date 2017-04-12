@@ -19,17 +19,7 @@
 package appeng.client.gui.implementations;
 
 
-import org.lwjgl.input.Mouse;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
-
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.SchedulingMode;
-import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
-import appeng.api.config.YesNo;
+import appeng.api.config.*;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiImgButton;
@@ -39,6 +29,9 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.parts.automation.PartExportBus;
 import appeng.parts.automation.PartImportBus;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.InventoryPlayer;
+import org.lwjgl.input.Mouse;
 
 
 public class GuiUpgradeable extends AEBaseGui
@@ -152,7 +145,7 @@ public class GuiUpgradeable extends AEBaseGui
 		}
 		if( this.schedulingMode != null )
 		{
-			this.schedulingMode.setVisibility(this.bc.getInstalledUpgrades( Upgrades.CAPACITY ) > 0 && this.bc instanceof PartExportBus );
+			this.schedulingMode.setVisibility( this.bc.getInstalledUpgrades( Upgrades.CAPACITY ) > 0 && this.bc instanceof PartExportBus );
 		}
 	}
 

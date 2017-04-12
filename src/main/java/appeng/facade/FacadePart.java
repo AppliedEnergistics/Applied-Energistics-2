@@ -19,12 +19,17 @@
 package appeng.facade;
 
 
-import java.util.EnumSet;
-
-import javax.annotation.Nullable;
-
-import org.lwjgl.opengl.GL11;
-
+import appeng.api.AEApi;
+import appeng.api.parts.*;
+import appeng.client.render.BusRenderHelper;
+import appeng.client.render.RenderBlocksWorkaround;
+import appeng.core.AELog;
+import appeng.integration.IntegrationRegistry;
+import appeng.integration.IntegrationType;
+import appeng.integration.abstraction.IBuildCraftTransport;
+import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
@@ -38,25 +43,10 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.util.ForgeDirection;
+import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.api.AEApi;
-import appeng.api.parts.IBoxProvider;
-import appeng.api.parts.IFacadeContainer;
-import appeng.api.parts.IFacadePart;
-import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartHost;
-import appeng.api.parts.IPartRenderHelper;
-import appeng.api.parts.ISimplifiedBundle;
-import appeng.client.render.BusRenderHelper;
-import appeng.client.render.RenderBlocksWorkaround;
-import appeng.core.AELog;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
-import appeng.integration.abstraction.IBuildCraftTransport;
-import appeng.util.Platform;
+import javax.annotation.Nullable;
+import java.util.EnumSet;
 
 
 public class FacadePart implements IFacadePart, IBoxProvider

@@ -21,7 +21,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-@API( apiVersion = "@aeversion@", owner = "appliedenergistics2", provides = "appliedenergistics2|API" ) package appeng.api;
+@API( apiVersion = "@aeversion@", owner = "appliedenergistics2", provides = "appliedenergistics2|API" )
+package appeng.api;
 
 
 import cpw.mods.fml.common.API;

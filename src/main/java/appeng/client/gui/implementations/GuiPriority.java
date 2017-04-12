@@ -19,12 +19,6 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IDefinitions;
@@ -48,6 +42,11 @@ import appeng.parts.misc.PartStorageBus;
 import appeng.tile.misc.TileInterface;
 import appeng.tile.storage.TileChest;
 import appeng.tile.storage.TileDrive;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
+
+import java.io.IOException;
 
 
 public class GuiPriority extends AEBaseGui

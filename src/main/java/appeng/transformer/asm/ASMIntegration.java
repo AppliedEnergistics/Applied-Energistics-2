@@ -19,10 +19,12 @@
 package appeng.transformer.asm;
 
 
-import java.util.Iterator;
-
-import javax.annotation.Nullable;
-
+import appeng.helpers.Reflected;
+import appeng.integration.IntegrationRegistry;
+import appeng.integration.IntegrationType;
+import appeng.transformer.annotations.Integration;
+import cpw.mods.fml.relauncher.FMLRelaunchLog;
+import net.minecraft.launchwrapper.IClassTransformer;
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -31,14 +33,8 @@ import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import net.minecraft.launchwrapper.IClassTransformer;
-
-import cpw.mods.fml.relauncher.FMLRelaunchLog;
-
-import appeng.helpers.Reflected;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
-import appeng.transformer.annotations.Integration;
+import javax.annotation.Nullable;
+import java.util.Iterator;
 
 
 @Reflected

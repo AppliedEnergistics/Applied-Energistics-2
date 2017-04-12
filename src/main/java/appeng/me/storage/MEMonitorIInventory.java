@@ -19,15 +19,6 @@
 package appeng.me.storage;
 
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map.Entry;
-import java.util.NavigableMap;
-import java.util.concurrent.ConcurrentSkipListMap;
-
-import net.minecraft.item.ItemStack;
-
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -42,6 +33,14 @@ import appeng.api.storage.data.IItemList;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.ItemSlot;
+import net.minecraft.item.ItemStack;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map.Entry;
+import java.util.NavigableMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 
 public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>

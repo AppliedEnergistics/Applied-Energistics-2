@@ -26,7 +26,7 @@ package appeng.api.exceptions;
 
 /**
  * Exception due to trying to connect different security realms.
- *
+ * <p>
  * Intended to signal an internal exception and not intended to be thrown by
  * any 3rd party module.
  *

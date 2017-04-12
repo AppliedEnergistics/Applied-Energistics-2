@@ -19,15 +19,14 @@
 package appeng.block.qnb;
 
 
-import java.util.Collections;
-import java.util.List;
-
+import appeng.tile.qnb.TileQuantumBridge;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
-import appeng.tile.qnb.TileQuantumBridge;
+import java.util.Collections;
+import java.util.List;
 
 
 public class BlockQuantumRing extends BlockQuantumBase

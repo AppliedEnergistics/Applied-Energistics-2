@@ -313,12 +313,8 @@ public class Platform
 			return true;
 		}
 
-		if( e == SearchBoxMode.NEI_MANUAL_SEARCH && !IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.NEI ) )
-		{
-			return true;
-		}
+		return e == SearchBoxMode.NEI_MANUAL_SEARCH && !IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.NEI );
 
-		return false;
 	}
 
 	public static void openGUI( @Nonnull final EntityPlayer p, @Nullable final TileEntity tile, @Nullable final ForgeDirection side, @Nonnull final GuiBridge type )
@@ -958,11 +954,7 @@ public class Platform
 			return false;
 		}
 		final IAETagCompound tag = willAdd.getTagCompound();
-		if( tag != null && tag.getSpecialComparison() != null )
-		{
-			return true;
-		}
-		return false;
+		return tag != null && tag.getSpecialComparison() != null;
 	}
 
 	public static boolean hasSpecialComparison( final ItemStack willAdd )

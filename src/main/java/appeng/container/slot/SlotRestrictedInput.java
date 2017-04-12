@@ -19,16 +19,6 @@
 package appeng.container.slot;
 
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItems;
@@ -43,6 +33,15 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.ICellWorkbenchItem;
 import appeng.items.misc.ItemEncodedPattern;
 import appeng.util.Platform;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 
 
 /**

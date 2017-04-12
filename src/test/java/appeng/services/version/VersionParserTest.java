@@ -1,19 +1,10 @@
-
 package appeng.services.version;
 
 
+import appeng.services.version.exceptions.*;
 import org.junit.Test;
 
-import appeng.services.version.exceptions.InvalidBuildException;
-import appeng.services.version.exceptions.InvalidChannelException;
-import appeng.services.version.exceptions.InvalidRevisionException;
-import appeng.services.version.exceptions.InvalidVersionException;
-import appeng.services.version.exceptions.MissingSeparatorException;
-import appeng.services.version.exceptions.VersionCheckerException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 /**

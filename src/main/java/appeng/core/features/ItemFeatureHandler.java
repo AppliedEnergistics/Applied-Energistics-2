@@ -19,18 +19,15 @@
 package appeng.core.features;
 
 
-import java.util.EnumSet;
-
-import com.google.common.base.Optional;
-
-import net.minecraft.item.Item;
-
-import cpw.mods.fml.common.registry.GameRegistry;
-
 import appeng.api.definitions.IItemDefinition;
 import appeng.core.CreativeTab;
 import appeng.core.CreativeTabFacade;
 import appeng.items.parts.ItemFacade;
+import com.google.common.base.Optional;
+import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.item.Item;
+
+import java.util.EnumSet;
 
 
 public final class ItemFeatureHandler implements IFeatureHandler

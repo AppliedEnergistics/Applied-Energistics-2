@@ -19,10 +19,21 @@
 package appeng.items.parts;
 
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
+import appeng.api.AEApi;
+import appeng.api.exceptions.MissingDefinition;
+import appeng.api.parts.IAlphaPassItem;
+import appeng.block.solids.OreQuartz;
+import appeng.client.render.BusRenderer;
+import appeng.core.FacadeConfig;
+import appeng.core.features.AEFeature;
+import appeng.facade.FacadePart;
+import appeng.facade.IFacadeItem;
+import appeng.items.AEBaseItem;
+import appeng.util.Platform;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockGlass;
 import net.minecraft.block.BlockStainedGlass;
@@ -37,22 +48,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.api.AEApi;
-import appeng.api.exceptions.MissingDefinition;
-import appeng.api.parts.IAlphaPassItem;
-import appeng.block.solids.OreQuartz;
-import appeng.client.render.BusRenderer;
-import appeng.core.FacadeConfig;
-import appeng.core.features.AEFeature;
-import appeng.facade.FacadePart;
-import appeng.facade.IFacadeItem;
-import appeng.items.AEBaseItem;
-import appeng.util.Platform;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 
 public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassItem
@@ -287,11 +285,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		}
 
 		final Block blk = Block.getBlockFromItem( out.getItem() );
-		if( blk != null && blk.canRenderInPass( 1 ) )
-		{
-			return true;
-		}
+		return blk != null && blk.canRenderInPass( 1 );
 
-		return false;
 	}
 }

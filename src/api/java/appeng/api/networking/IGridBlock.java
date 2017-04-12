@@ -24,19 +24,18 @@
 package appeng.api.networking;
 
 
-import java.util.EnumSet;
-
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.EnumSet;
 
 
 /**
  * An Implementation is required to create your node for IGridHost
- *
+ * <p>
  * Implement for use with IGridHost
  */
 public interface IGridBlock
@@ -44,7 +43,7 @@ public interface IGridBlock
 
 	/**
 	 * how much power to drain per tick as part of idle network usage.
-	 *
+	 * <p>
 	 * if the value of this changes, you must post a MENetworkPowerIdleChange
 	 *
 	 * @return ae/t to use.

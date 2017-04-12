@@ -24,12 +24,11 @@
 package appeng.api.implementations.items;
 
 
+import appeng.api.implementations.TransitionResult;
+import appeng.api.util.WorldCoord;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-
-import appeng.api.implementations.TransitionResult;
-import appeng.api.util.WorldCoord;
 
 
 /**
@@ -40,21 +39,18 @@ public interface ISpatialStorageCell
 
 	/**
 	 * @param is spatial storage cell
-	 *
 	 * @return true if this item is a spatial storage cell
 	 */
 	boolean isSpatialStorage( ItemStack is );
 
 	/**
 	 * @param is spatial storage cell
-	 *
 	 * @return the maximum size of the spatial storage cell along any given axis
 	 */
 	int getMaxStoredDim( ItemStack is );
 
 	/**
 	 * @param is spatial storage cell
-	 *
 	 * @return the world for this cell
 	 */
 	World getWorld( ItemStack is );
@@ -63,7 +59,6 @@ public interface ISpatialStorageCell
 	 * get the currently stored size.
 	 *
 	 * @param is spatial storage cell
-	 *
 	 * @return size of spatial
 	 */
 	WorldCoord getStoredSize( ItemStack is );
@@ -72,7 +67,6 @@ public interface ISpatialStorageCell
 	 * Minimum coordinates in its world for the storage cell.
 	 *
 	 * @param is spatial storage cell
-	 *
 	 * @return minimum coordinate of dimension
 	 */
 	WorldCoord getMin( ItemStack is );
@@ -81,7 +75,6 @@ public interface ISpatialStorageCell
 	 * Maximum coordinates in its world for the storage cell.
 	 *
 	 * @param is spatial storage cell
-	 *
 	 * @return maximum coordinate of dimension
 	 */
 	WorldCoord getMax( ItemStack is );
@@ -94,7 +87,6 @@ public interface ISpatialStorageCell
 	 * @param min          min coord
 	 * @param max          max coord
 	 * @param doTransition transition
-	 *
 	 * @return result of transition
 	 */
 	TransitionResult doSpatialTransition( ItemStack is, World w, WorldCoord min, WorldCoord max, boolean doTransition );

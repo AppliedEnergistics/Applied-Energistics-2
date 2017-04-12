@@ -37,7 +37,6 @@ public interface IMovableHandler
 	 *
 	 * @param myClass tile entity class
 	 * @param tile    tile entity
-	 *
 	 * @return true if it can handle moving
 	 */
 	boolean canHandle( Class<? extends TileEntity> myClass, TileEntity tile );
@@ -46,9 +45,9 @@ public interface IMovableHandler
 	 * request that the handler move the the tile from its current location to
 	 * the new one. the tile has already been invalidated, and the blocks have
 	 * already been fully moved.
-	 *
+	 * <p>
 	 * Potential Example:
-	 *
+	 * <p>
 	 * <pre>
 	 * {@code
 	 * Chunk c = world.getChunkFromBlockCoords( x, z ); c.setChunkBlockTileEntity( x

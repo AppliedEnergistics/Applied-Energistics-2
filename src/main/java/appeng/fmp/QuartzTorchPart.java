@@ -19,20 +19,18 @@
 package appeng.fmp;
 
 
-import java.util.Random;
-
-import net.minecraft.block.Block;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
+import appeng.api.AEApi;
+import appeng.api.exceptions.MissingDefinition;
 import codechicken.lib.vec.BlockCoord;
 import codechicken.lib.vec.Cuboid6;
 import codechicken.multipart.IRandomDisplayTick;
 import codechicken.multipart.minecraft.McBlockPart;
 import codechicken.multipart.minecraft.McSidedMetaPart;
+import net.minecraft.block.Block;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.api.AEApi;
-import appeng.api.exceptions.MissingDefinition;
+import java.util.Random;
 
 
 public class QuartzTorchPart extends McSidedMetaPart implements IRandomDisplayTick

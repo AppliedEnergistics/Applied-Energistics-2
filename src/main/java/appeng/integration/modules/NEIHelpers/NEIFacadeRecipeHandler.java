@@ -19,15 +19,12 @@
 package appeng.integration.modules.NEIHelpers;
 
 
-import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.gui.inventory.GuiCrafting;
-import net.minecraft.inventory.Container;
-import net.minecraft.item.ItemStack;
-
+import appeng.api.AEApi;
+import appeng.api.definitions.IDefinitions;
+import appeng.api.definitions.IItemDefinition;
+import appeng.core.localization.GuiText;
+import appeng.facade.IFacadeItem;
+import appeng.items.parts.ItemFacade;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.api.DefaultOverlayRenderer;
 import codechicken.nei.api.IOverlayHandler;
@@ -35,13 +32,14 @@ import codechicken.nei.api.IRecipeOverlayRenderer;
 import codechicken.nei.api.IStackPositioner;
 import codechicken.nei.recipe.RecipeInfo;
 import codechicken.nei.recipe.TemplateRecipeHandler;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.inventory.GuiCrafting;
+import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemStack;
 
-import appeng.api.AEApi;
-import appeng.api.definitions.IDefinitions;
-import appeng.api.definitions.IItemDefinition;
-import appeng.core.localization.GuiText;
-import appeng.facade.IFacadeItem;
-import appeng.items.parts.ItemFacade;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class NEIFacadeRecipeHandler extends TemplateRecipeHandler

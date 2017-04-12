@@ -19,15 +19,13 @@
 package appeng.core.stats;
 
 
-import java.util.ArrayList;
-
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
+import cpw.mods.fml.common.eventhandler.EventBus;
 import net.minecraft.stats.Achievement;
 import net.minecraftforge.common.AchievementPage;
 
-import cpw.mods.fml.common.eventhandler.EventBus;
-
-import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
+import java.util.ArrayList;
 
 
 /**
@@ -51,9 +49,9 @@ public class PlayerStatsRegistration
 	/**
 	 * Constructs this with an {@link cpw.mods.fml.common.eventhandler.EventBus} and {@link appeng.core.AEConfig}.
 	 *
-	 * @param bus {@see #bus}
+	 * @param bus    {@see #bus}
 	 * @param config {@link appeng.core.AEConfig} which is used to determine if the
-	 * {@link appeng.core.features.AEFeature#Achievements} is enabled
+	 *               {@link appeng.core.features.AEFeature#Achievements} is enabled
 	 */
 	public PlayerStatsRegistration( final EventBus bus, final AEConfig config )
 	{

@@ -19,9 +19,8 @@
 package appeng.integration.abstraction;
 
 
-import net.minecraft.tileentity.TileEntity;
-
 import appeng.api.storage.IMEInventory;
+import net.minecraft.tileentity.TileEntity;
 
 
 public interface IGT

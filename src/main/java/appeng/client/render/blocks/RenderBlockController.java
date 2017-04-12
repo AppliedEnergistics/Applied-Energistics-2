@@ -19,15 +19,14 @@
 package appeng.client.render.blocks;
 
 
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockAccess;
-
 import appeng.block.networking.BlockController;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.networking.TileController;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
 
 
 public class RenderBlockController extends BaseBlockRender<BlockController, TileController>

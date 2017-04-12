@@ -19,8 +19,9 @@
 package appeng.client.render.blocks;
 
 
-import org.lwjgl.opengl.GL11;
-
+import appeng.block.grindstone.BlockCrank;
+import appeng.client.render.BaseBlockRender;
+import appeng.tile.grindstone.TileCrank;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
@@ -30,10 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import appeng.block.grindstone.BlockCrank;
-import appeng.client.render.BaseBlockRender;
-import appeng.tile.grindstone.TileCrank;
+import org.lwjgl.opengl.GL11;
 
 
 public class RenderBlockCrank extends BaseBlockRender<BlockCrank, TileCrank>

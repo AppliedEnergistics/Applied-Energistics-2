@@ -19,12 +19,11 @@
 package appeng.core.features.registries;
 
 
-import java.util.HashSet;
-
+import appeng.api.features.IWorldGen;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 
-import appeng.api.features.IWorldGen;
+import java.util.HashSet;
 
 
 public final class WorldGenRegistry implements IWorldGen
@@ -104,12 +103,7 @@ public final class WorldGenRegistry implements IWorldGen
 			return false;
 		}
 
-		if( !isGoodDimension && type == WorldGenType.Meteorites )
-		{
-			return false;
-		}
-
-		return true;
+		return !( !isGoodDimension && type == WorldGenType.Meteorites );
 	}
 
 	private static class TypeSet

@@ -19,13 +19,6 @@
 package appeng.me.cache;
 
 
-import java.util.HashMap;
-import java.util.PriorityQueue;
-
-import net.minecraft.crash.CrashReport;
-import net.minecraft.crash.CrashReportCategory;
-import net.minecraft.util.ReportedException;
-
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -35,6 +28,12 @@ import appeng.api.networking.ticking.ITickManager;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.me.cache.helpers.TickTracker;
+import net.minecraft.crash.CrashReport;
+import net.minecraft.crash.CrashReportCategory;
+import net.minecraft.util.ReportedException;
+
+import java.util.HashMap;
+import java.util.PriorityQueue;
 
 
 public class TickManagerCache implements ITickManager

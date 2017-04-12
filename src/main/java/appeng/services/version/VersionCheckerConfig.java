@@ -19,14 +19,12 @@
 package appeng.services.version;
 
 
-import java.io.File;
-import java.util.Date;
+import com.google.common.base.Preconditions;
+import net.minecraftforge.common.config.Configuration;
 
 import javax.annotation.Nonnull;
-
-import com.google.common.base.Preconditions;
-
-import net.minecraftforge.common.config.Configuration;
+import java.io.File;
+import java.util.Date;
 
 
 /**

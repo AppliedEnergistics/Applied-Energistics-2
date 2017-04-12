@@ -19,11 +19,6 @@
 package appeng.client.gui.implementations;
 
 
-import org.lwjgl.input.Mouse;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
-
 import appeng.api.config.Settings;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiImgButton;
@@ -32,6 +27,9 @@ import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.tile.spatial.TileSpatialIOPort;
 import appeng.util.Platform;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.InventoryPlayer;
+import org.lwjgl.input.Mouse;
 
 
 public class GuiSpatialIOPort extends AEBaseGui

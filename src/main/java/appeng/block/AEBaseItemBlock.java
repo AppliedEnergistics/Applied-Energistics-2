@@ -19,20 +19,6 @@
 package appeng.block;
 
 
-import java.util.List;
-
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
-import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.misc.BlockLightDetector;
@@ -42,6 +28,18 @@ import appeng.client.render.ItemRenderer;
 import appeng.me.helpers.IGridProxyable;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
+import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.List;
 
 
 public class AEBaseItemBlock extends ItemBlock
@@ -168,7 +166,7 @@ public class AEBaseItemBlock extends ItemBlock
 		IOrientable ori = null;
 		if( this.blockType instanceof IOrientableBlock )
 		{
-			ori = ( (IOrientableBlock) this.blockType ).getOrientable( w, x, y, z );
+			ori = this.blockType.getOrientable( w, x, y, z );
 			up = ForgeDirection.getOrientation( side );
 			forward = ForgeDirection.SOUTH;
 			if( up.offsetY == 0 )
@@ -197,7 +195,7 @@ public class AEBaseItemBlock extends ItemBlock
 				if( ori.canBeRotated() && !this.blockType.hasCustomRotation() )
 				{
 					if( ori.getForward() == null || ori.getUp() == null || // null
-					tile.getForward() == ForgeDirection.UNKNOWN || ori.getUp() == ForgeDirection.UNKNOWN )
+							tile.getForward() == ForgeDirection.UNKNOWN || ori.getUp() == ForgeDirection.UNKNOWN )
 					{
 						ori.setOrientation( forward, up );
 					}

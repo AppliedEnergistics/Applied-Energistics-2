@@ -19,21 +19,18 @@
 package appeng.core.worlddata;
 
 
-import java.lang.ref.WeakReference;
-import java.util.Map;
-import java.util.WeakHashMap;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.google.common.base.Preconditions;
-
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-
 import appeng.core.AELog;
 import appeng.me.GridStorage;
 import appeng.me.GridStorageSearch;
+import com.google.common.base.Preconditions;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 
 /**
@@ -65,7 +62,6 @@ final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOn
 	 * lazy loading, can load any id, even ones that don't exist anymore.
 	 *
 	 * @param storageID ID of grid storage
-	 *
 	 * @return corresponding grid storage
 	 */
 	@Nullable

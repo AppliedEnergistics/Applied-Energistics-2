@@ -19,19 +19,17 @@
 package appeng.recipes;
 
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
-import com.google.common.base.Preconditions;
-
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
-
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RecipeError;
 import appeng.api.exceptions.RegistrationError;
 import appeng.api.recipes.IIngredient;
+import com.google.common.base.Preconditions;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class GroupIngredient implements IIngredient

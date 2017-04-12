@@ -19,8 +19,12 @@
 package appeng.block.crafting;
 
 
-import java.util.List;
-
+import appeng.api.AEApi;
+import appeng.client.render.blocks.RenderBlockCraftingCPUMonitor;
+import appeng.client.texture.ExtraBlockTextures;
+import appeng.tile.crafting.TileCraftingMonitorTile;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -28,13 +32,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.api.AEApi;
-import appeng.client.render.blocks.RenderBlockCraftingCPUMonitor;
-import appeng.client.texture.ExtraBlockTextures;
-import appeng.tile.crafting.TileCraftingMonitorTile;
+import java.util.List;
 
 
 public class BlockCraftingMonitor extends BlockCraftingUnit

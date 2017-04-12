@@ -19,13 +19,13 @@
 package appeng.me.energy;
 
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-
 import appeng.api.networking.energy.IEnergyWatcher;
 import appeng.api.networking.energy.IEnergyWatcherHost;
 import appeng.me.cache.EnergyGridCache;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 
 
 /**

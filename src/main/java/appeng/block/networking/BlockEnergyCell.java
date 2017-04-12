@@ -19,18 +19,6 @@
 package appeng.block.networking;
 
 
-import java.util.EnumSet;
-import java.util.List;
-
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.block.AEBaseItemBlock;
 import appeng.block.AEBaseItemBlockChargeable;
 import appeng.block.AEBaseTileBlock;
@@ -40,6 +28,16 @@ import appeng.core.features.AEFeature;
 import appeng.helpers.AEGlassMaterial;
 import appeng.tile.networking.TileEnergyCell;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.IIcon;
+
+import java.util.EnumSet;
+import java.util.List;
 
 
 public class BlockEnergyCell extends AEBaseTileBlock

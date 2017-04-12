@@ -19,9 +19,8 @@
 package appeng.spatial;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
+import appeng.api.AEApi;
+import appeng.core.AEConfig;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.world.World;
@@ -29,8 +28,8 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderGenerate;
 
-import appeng.api.AEApi;
-import appeng.core.AEConfig;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class StorageChunkProvider extends ChunkProviderGenerate

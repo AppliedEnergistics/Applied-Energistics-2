@@ -19,12 +19,11 @@
 package appeng.integration.abstraction;
 
 
-import java.util.List;
-
+import appeng.api.storage.IMEInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
-import appeng.api.storage.IMEInventory;
+import java.util.List;
 
 
 public interface ILP

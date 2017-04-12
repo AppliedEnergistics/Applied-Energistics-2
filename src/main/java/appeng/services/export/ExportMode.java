@@ -21,7 +21,7 @@ package appeng.services.export;
 
 /**
  * Defines the different modes which need to be distinguished upon exporting.
- *
+ * <p>
  * using a different mode will result in a different export outcome.
  *
  * @author thatsIch

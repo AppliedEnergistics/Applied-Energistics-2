@@ -19,9 +19,17 @@
 package appeng.me.storage;
 
 
-import java.util.HashSet;
-import java.util.Set;
-
+import appeng.api.AEApi;
+import appeng.api.config.Actionable;
+import appeng.api.config.FuzzyMode;
+import appeng.api.exceptions.AppEngException;
+import appeng.api.implementations.items.IStorageCell;
+import appeng.api.networking.security.BaseActionSource;
+import appeng.api.storage.*;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IItemList;
+import appeng.util.Platform;
+import appeng.util.item.AEItemStack;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,21 +37,8 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
-import appeng.api.AEApi;
-import appeng.api.config.Actionable;
-import appeng.api.config.FuzzyMode;
-import appeng.api.exceptions.AppEngException;
-import appeng.api.implementations.items.IStorageCell;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.storage.ICellInventory;
-import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.ISaveProvider;
-import appeng.api.storage.StorageChannel;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
-import appeng.util.Platform;
-import appeng.util.item.AEItemStack;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class CellInventory implements ICellInventory

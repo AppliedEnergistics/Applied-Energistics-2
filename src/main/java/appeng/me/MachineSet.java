@@ -19,11 +19,11 @@
 package appeng.me;
 
 
-import java.util.HashSet;
-
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IMachineSet;
+
+import java.util.HashSet;
 
 
 public class MachineSet extends HashSet<IGridNode> implements IMachineSet

@@ -19,30 +19,6 @@
 package appeng.items.tools.powered;
 
 
-import java.util.EnumSet;
-import java.util.List;
-
-import com.google.common.base.Optional;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockDispenser;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -76,6 +52,24 @@ import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.storage.CellInventoryHandler;
 import appeng.tile.misc.TilePaint;
 import appeng.util.Platform;
+import com.google.common.base.Optional;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockDispenser;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.*;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.EnumSet;
+import java.util.List;
 
 
 public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
@@ -520,12 +514,7 @@ public class ToolMassCannon extends AEBasePoweredItem implements IStorageCell
 			return false;
 		}
 
-		if( requestedAddition.getItem() instanceof ItemPaintBall )
-		{
-			return false;
-		}
-
-		return true;
+		return !( requestedAddition.getItem() instanceof ItemPaintBall );
 	}
 
 	@Override

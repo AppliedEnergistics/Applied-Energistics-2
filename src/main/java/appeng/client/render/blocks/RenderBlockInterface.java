@@ -19,16 +19,15 @@
 package appeng.client.render.blocks;
 
 
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.block.misc.BlockInterface;
 import appeng.client.render.BaseBlockRender;
 import appeng.client.render.BlockRenderInfo;
 import appeng.client.texture.ExtraBlockTextures;
 import appeng.tile.misc.TileInterface;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.common.util.ForgeDirection;
 
 
 public class RenderBlockInterface extends BaseBlockRender<BlockInterface, TileInterface>

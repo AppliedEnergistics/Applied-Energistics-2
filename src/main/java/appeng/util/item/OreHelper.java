@@ -19,22 +19,15 @@
 package appeng.util.item;
 
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import appeng.api.storage.data.IAEItemStack;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import appeng.api.storage.data.IAEItemStack;
+import java.util.*;
 
 
 public class OreHelper
@@ -60,7 +53,6 @@ public class OreHelper
 	 * Test if the passed {@link ItemStack} is an ore.
 	 *
 	 * @param itemStack the itemstack to test
-	 *
 	 * @return true if an ore entry exists, false otherwise
 	 */
 	public OreReference isOre( final ItemStack itemStack )

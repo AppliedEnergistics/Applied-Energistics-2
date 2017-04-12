@@ -19,14 +19,12 @@
 package appeng.recipes.loader;
 
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
-import javax.annotation.Nonnull;
-
+import appeng.api.recipes.IRecipeLoader;
 import com.google.common.base.Preconditions;
 
-import appeng.api.recipes.IRecipeLoader;
+import javax.annotation.Nonnull;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 
 public class JarLoader implements IRecipeLoader

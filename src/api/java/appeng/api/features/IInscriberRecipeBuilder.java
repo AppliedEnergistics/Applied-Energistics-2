@@ -1,10 +1,10 @@
 package appeng.api.features;
 
 
-import java.util.Collection;
-import javax.annotation.Nonnull;
-
 import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
 
 
 /**
@@ -21,7 +21,6 @@ public interface IInscriberRecipeBuilder
 	 * Needs to be invoked.
 	 *
 	 * @param inputs new inputs for the recipe
-	 *
 	 * @return currently used builder
 	 */
 	@Nonnull
@@ -32,7 +31,6 @@ public interface IInscriberRecipeBuilder
 	 * Needs to be invoked.
 	 *
 	 * @param output new output for the recipe
-	 *
 	 * @return currently used builder
 	 */
 	@Nonnull
@@ -43,7 +41,6 @@ public interface IInscriberRecipeBuilder
 	 * Either this or bot needs to be invoked.
 	 *
 	 * @param topOptional new top for the recipe
-	 *
 	 * @return currently used builder
 	 */
 	@Nonnull
@@ -54,7 +51,6 @@ public interface IInscriberRecipeBuilder
 	 * Either this or top needs to be invoked.
 	 *
 	 * @param bottomOptional new bot for the recipe
-	 *
 	 * @return currently used builder
 	 */
 	@Nonnull
@@ -65,7 +61,6 @@ public interface IInscriberRecipeBuilder
 	 * Needs to be invoked.
 	 *
 	 * @param type new type for the recipe
-	 *
 	 * @return currently used builder
 	 */
 	@Nonnull
@@ -76,7 +71,6 @@ public interface IInscriberRecipeBuilder
 	 * Needs to be invoked to fetch inscriber recipe.
 	 *
 	 * @return legal inscriber recipe
-	 *
 	 * @throws IllegalStateException when input is not defined
 	 * @throws IllegalStateException when input has no size
 	 * @throws IllegalStateException when output is not defined

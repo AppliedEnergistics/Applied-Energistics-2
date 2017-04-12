@@ -19,11 +19,10 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
-
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.qnb.TileQuantumBridge;
+import net.minecraft.entity.player.InventoryPlayer;
 
 
 public class ContainerQNB extends AEBaseContainer

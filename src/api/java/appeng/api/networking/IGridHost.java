@@ -24,11 +24,10 @@
 package appeng.api.networking;
 
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.parts.IPart;
 import appeng.api.util.AECableType;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 
 
 /**
@@ -45,7 +44,6 @@ public interface IGridHost
 	 *
 	 * @param dir feel free to ignore this, most blocks will use the same node
 	 *            for every side.
-	 *
 	 * @return a new IGridNode, create these with
 	 * AEApi.INSTANCE().createGridNode( MyIGridBlock )
 	 */

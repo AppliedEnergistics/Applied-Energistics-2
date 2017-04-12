@@ -19,14 +19,12 @@
 package appeng.services.export;
 
 
-import java.util.List;
-import javax.annotation.Nonnull;
-
 import com.google.common.base.Preconditions;
-
+import cpw.mods.fml.common.ModContainer;
 import org.apache.commons.codec.digest.DigestUtils;
 
-import cpw.mods.fml.common.ModContainer;
+import javax.annotation.Nonnull;
+import java.util.List;
 
 
 /**
@@ -58,7 +56,6 @@ final class ModListChecker implements Checker<List<ModContainer>>
 	 * the csv once again, if no change was detected.
 	 *
 	 * @param modContainers all mods and their versions to check if a difference exists between the current instance and the previous instance
-	 *
 	 * @return CheckType.EQUAL if no change was detected
 	 */
 	@Nonnull

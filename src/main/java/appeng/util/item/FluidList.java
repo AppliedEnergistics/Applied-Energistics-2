@@ -19,15 +19,11 @@
 package appeng.util.item;
 
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
+
+import java.util.*;
 
 
 public final class FluidList implements IItemList<IAEFluidStack>

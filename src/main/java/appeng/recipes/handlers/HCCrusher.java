@@ -19,13 +19,6 @@
 package appeng.recipes.handlers;
 
 
-import java.util.List;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-
-import cpw.mods.fml.common.event.FMLInterModComms;
-
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RecipeError;
 import appeng.api.exceptions.RegistrationError;
@@ -34,6 +27,11 @@ import appeng.api.recipes.IIngredient;
 import appeng.core.AELog;
 import appeng.recipes.RecipeHandler;
 import appeng.util.Platform;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+
+import java.util.List;
 
 
 public class HCCrusher implements ICraftHandler, IWebsiteSerializer

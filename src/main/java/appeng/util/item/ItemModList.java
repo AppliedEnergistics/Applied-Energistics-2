@@ -19,12 +19,12 @@
 package appeng.util.item;
 
 
-import java.util.Collection;
-
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemContainer;
+
+import java.util.Collection;
 
 
 public class ItemModList implements IItemContainer<IAEItemStack>

@@ -19,10 +19,10 @@
 package appeng.me.pathfinding;
 
 
-import java.util.EnumSet;
-
 import appeng.api.networking.GridFlags;
 import appeng.api.util.IReadOnlyCollection;
+
+import java.util.EnumSet;
 
 
 public interface IPathItem

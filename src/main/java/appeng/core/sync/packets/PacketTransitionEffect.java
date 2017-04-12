@@ -19,9 +19,16 @@
 package appeng.core.sync.packets;
 
 
+import appeng.client.ClientHelper;
+import appeng.client.render.effects.EnergyFx;
+import appeng.core.CommonHelper;
+import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.network.INetworkInfo;
+import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -30,16 +37,6 @@ import net.minecraft.init.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.client.ClientHelper;
-import appeng.client.render.effects.EnergyFx;
-import appeng.core.CommonHelper;
-import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
-import appeng.util.Platform;
 
 
 public class PacketTransitionEffect extends AppEngPacket

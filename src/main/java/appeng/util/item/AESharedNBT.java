@@ -19,17 +19,16 @@
 package appeng.util.item;
 
 
-import java.lang.ref.WeakReference;
-import java.util.WeakHashMap;
-
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-
 import appeng.api.AEApi;
 import appeng.api.features.IItemComparison;
 import appeng.api.storage.data.IAETagCompound;
 import appeng.util.Platform;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+
+import java.lang.ref.WeakReference;
+import java.util.WeakHashMap;
 
 
 /*

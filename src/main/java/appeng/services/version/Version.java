@@ -51,7 +51,7 @@ public interface Version
 
 	/**
 	 * Prints the revision, channel and build into a common displayed way
-	 *
+	 * <p>
 	 * rv2-beta-8
 	 *
 	 * @return formatted version

@@ -24,9 +24,9 @@
 package appeng.api.implementations.items;
 
 
-import java.util.Set;
-
 import net.minecraft.item.ItemStack;
+
+import java.util.Set;
 
 
 /**
@@ -39,7 +39,6 @@ public interface IItemGroup
 	 * returning null, is the same as not implementing the interface at all.
 	 *
 	 * @param is item
-	 *
 	 * @return an unlocalized string to use for the items group name.
 	 */
 	String getUnlocalizedGroupName( Set<ItemStack> otherItems, ItemStack is );

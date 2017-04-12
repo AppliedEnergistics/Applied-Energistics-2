@@ -19,34 +19,25 @@
 package appeng.services.export;
 
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.charset.Charset;
-import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import appeng.core.AELog;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-
-import org.apache.commons.io.FileUtils;
-
+import cpw.mods.fml.common.registry.FMLControlledNamespacedRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
+import org.apache.commons.io.FileUtils;
 
-import cpw.mods.fml.common.registry.FMLControlledNamespacedRegistry;
-
-import appeng.core.AELog;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.List;
 
 
 /**
@@ -73,10 +64,10 @@ final class MinecraftItemCSVExporter implements Exporter
 
 	/**
 	 * @param exportDirectory directory of the resulting export file. Non-null required.
-	 * @param itemRegistry the registry with minecraft items. Needs to be populated at that time, thus the exporting can
-	 * only happen in init (pre-init is the
-	 * phase when all items are determined)
-	 * @param mode mode in which the export should be operated. Resulting CSV will change depending on this.
+	 * @param itemRegistry    the registry with minecraft items. Needs to be populated at that time, thus the exporting can
+	 *                        only happen in init (pre-init is the
+	 *                        phase when all items are determined)
+	 * @param mode            mode in which the export should be operated. Resulting CSV will change depending on this.
 	 */
 	MinecraftItemCSVExporter( @Nonnull final File exportDirectory, @Nonnull final FMLControlledNamespacedRegistry<Item> itemRegistry, @Nonnull final ExportMode mode )
 	{
@@ -187,6 +178,7 @@ final class MinecraftItemCSVExporter implements Exporter
 		}
 	}
 
+
 	/**
 	 * transforms an item into a row representation of the CSV file
 	 */
@@ -207,7 +199,7 @@ final class MinecraftItemCSVExporter implements Exporter
 
 		/**
 		 * @param itemRegistry used to retrieve the name of the item
-		 * @param mode extracts more or less information from item depending on mode
+		 * @param mode         extracts more or less information from item depending on mode
 		 */
 		ItemRowExtractFunction( @Nonnull final FMLControlledNamespacedRegistry<Item> itemRegistry, @Nonnull final ExportMode mode )
 		{

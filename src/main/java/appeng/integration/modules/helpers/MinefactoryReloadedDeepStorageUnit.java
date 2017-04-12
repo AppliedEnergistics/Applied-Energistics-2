@@ -19,11 +19,6 @@
 package appeng.integration.modules.helpers;
 
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-
-import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
-
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventory;
@@ -31,6 +26,9 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.item.AEItemStack;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 
 
 public class MinefactoryReloadedDeepStorageUnit implements IMEInventory<IAEItemStack>

@@ -19,9 +19,12 @@
 package appeng.client.render.blocks;
 
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
+import appeng.block.misc.BlockSkyCompass;
+import appeng.client.render.BaseBlockRender;
+import appeng.client.render.model.ModelCompass;
+import appeng.hooks.CompassManager;
+import appeng.hooks.CompassResult;
+import appeng.tile.misc.TileSkyCompass;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
@@ -32,13 +35,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import appeng.block.misc.BlockSkyCompass;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.model.ModelCompass;
-import appeng.hooks.CompassManager;
-import appeng.hooks.CompassResult;
-import appeng.tile.misc.TileSkyCompass;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 
 public class RenderBlockSkyCompass extends BaseBlockRender<BlockSkyCompass, TileSkyCompass>

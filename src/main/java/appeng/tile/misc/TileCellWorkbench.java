@@ -19,13 +19,6 @@
 package appeng.tile.misc;
 
 
-import java.util.List;
-
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
-
 import appeng.api.config.CopyMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
@@ -41,6 +34,12 @@ import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+
+import java.util.List;
 
 
 public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, IAEAppEngInventory, IConfigManagerHost
@@ -96,7 +95,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 
 		if( this.cell.getStackInSlot( 0 ).getItem() instanceof ICellWorkbenchItem )
 		{
-			return( (ICellWorkbenchItem) this.cell.getStackInSlot( 0 ).getItem() );
+			return ( (ICellWorkbenchItem) this.cell.getStackInSlot( 0 ).getItem() );
 		}
 
 		return null;

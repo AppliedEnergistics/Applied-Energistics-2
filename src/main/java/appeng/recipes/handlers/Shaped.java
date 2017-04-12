@@ -19,13 +19,6 @@
 package appeng.recipes.handlers;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.item.ItemStack;
-
-import cpw.mods.fml.common.registry.GameRegistry;
-
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RecipeError;
 import appeng.api.exceptions.RegistrationError;
@@ -35,6 +28,11 @@ import appeng.core.AELog;
 import appeng.recipes.RecipeHandler;
 import appeng.recipes.game.ShapedRecipe;
 import appeng.util.Platform;
+import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Shaped implements ICraftHandler, IWebsiteSerializer

@@ -19,21 +19,15 @@
 package appeng.items;
 
 
-import java.util.EnumSet;
-import java.util.List;
-
+import appeng.core.features.*;
 import com.google.common.base.Optional;
-
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import appeng.core.features.AEFeature;
-import appeng.core.features.FeatureNameExtractor;
-import appeng.core.features.IAEFeature;
-import appeng.core.features.IFeatureHandler;
-import appeng.core.features.ItemFeatureHandler;
+import java.util.EnumSet;
+import java.util.List;
 
 
 public abstract class AEBaseItem extends Item implements IAEFeature

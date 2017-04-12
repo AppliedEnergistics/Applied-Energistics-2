@@ -19,9 +19,6 @@
 package appeng.integration.modules.helpers;
 
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IMEInventory;
@@ -30,6 +27,8 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.integration.abstraction.IFZ;
 import appeng.util.item.AEItemStack;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 
 
 public class FactorizationBarrel implements IMEInventory<IAEItemStack>

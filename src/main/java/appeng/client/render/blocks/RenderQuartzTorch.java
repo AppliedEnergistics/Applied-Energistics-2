@@ -19,8 +19,10 @@
 package appeng.client.render.blocks;
 
 
-import java.util.EnumSet;
-
+import appeng.api.util.IOrientable;
+import appeng.block.AEBaseBlock;
+import appeng.client.render.BaseBlockRender;
+import appeng.tile.AEBaseTile;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.init.Blocks;
@@ -29,11 +31,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.api.util.IOrientable;
-import appeng.api.util.IOrientableBlock;
-import appeng.block.AEBaseBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.tile.AEBaseTile;
+import java.util.EnumSet;
 
 
 public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
@@ -97,7 +95,7 @@ public class RenderQuartzTorch extends BaseBlockRender<AEBaseBlock, AEBaseTile>
 	@Override
 	public boolean renderInWorld( final AEBaseBlock block, final IBlockAccess world, final int x, final int y, final int z, final RenderBlocks renderer )
 	{
-		final IOrientable te = ( (IOrientableBlock) block ).getOrientable( world, x, y, z );
+		final IOrientable te = block.getOrientable( world, x, y, z );
 
 		float xOff = 0.0f;
 		float yOff = 0.0f;

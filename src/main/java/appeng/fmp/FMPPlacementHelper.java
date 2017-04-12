@@ -19,30 +19,23 @@
 package appeng.fmp;
 
 
-import java.util.EnumSet;
-import java.util.Set;
-
+import appeng.api.parts.*;
+import appeng.api.util.AEColor;
+import appeng.api.util.DimensionalCoord;
+import appeng.facade.FacadeContainer;
+import appeng.parts.CableBusStorage;
+import appeng.util.Platform;
+import codechicken.lib.vec.BlockCoord;
+import codechicken.multipart.TMultiPart;
+import codechicken.multipart.TileMultipart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import codechicken.lib.vec.BlockCoord;
-import codechicken.multipart.TMultiPart;
-import codechicken.multipart.TileMultipart;
-
-import appeng.api.parts.IFacadeContainer;
-import appeng.api.parts.IFacadePart;
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartHost;
-import appeng.api.parts.LayerFlags;
-import appeng.api.parts.SelectedPart;
-import appeng.api.util.AEColor;
-import appeng.api.util.DimensionalCoord;
-import appeng.facade.FacadeContainer;
-import appeng.parts.CableBusStorage;
-import appeng.util.Platform;
+import java.util.EnumSet;
+import java.util.Set;
 
 
 public class FMPPlacementHelper implements IPartHost

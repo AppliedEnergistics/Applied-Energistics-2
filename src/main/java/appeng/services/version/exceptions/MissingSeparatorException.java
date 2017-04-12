@@ -21,7 +21,7 @@ package appeng.services.version.exceptions;
 
 /**
  * Indicates a version without a valid separator.
- *
+ * <p>
  * Valid separators are a dash ("-") or dot (".")
  */
 public class MissingSeparatorException extends VersionCheckerException

@@ -19,9 +19,8 @@
 package appeng.integration.modules.helpers;
 
 
-import net.minecraftforge.common.util.ForgeDirection;
-
 import cofh.api.energy.IEnergyReceiver;
+import net.minecraftforge.common.util.ForgeDirection;
 
 
 public class NullRFHandler implements IEnergyReceiver

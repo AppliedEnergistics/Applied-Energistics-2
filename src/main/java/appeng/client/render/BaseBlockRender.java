@@ -19,14 +19,13 @@
 package appeng.client.render;
 
 
-import java.nio.FloatBuffer;
-import java.util.EnumSet;
-
-import javax.annotation.Nullable;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-
+import appeng.api.util.IOrientable;
+import appeng.block.AEBaseBlock;
+import appeng.client.texture.ExtraBlockTextures;
+import appeng.tile.AEBaseTile;
+import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
@@ -41,15 +40,12 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.api.util.IOrientable;
-import appeng.block.AEBaseBlock;
-import appeng.client.texture.ExtraBlockTextures;
-import appeng.tile.AEBaseTile;
-import appeng.util.Platform;
+import javax.annotation.Nullable;
+import java.nio.FloatBuffer;
+import java.util.EnumSet;
 
 
 @SideOnly( Side.CLIENT )

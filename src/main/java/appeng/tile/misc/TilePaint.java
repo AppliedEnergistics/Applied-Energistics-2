@@ -19,16 +19,15 @@
 package appeng.tile.misc;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
+import appeng.api.util.AEColor;
+import appeng.helpers.Splotch;
+import appeng.items.misc.ItemPaintBall;
+import appeng.tile.AEBaseTile;
+import appeng.tile.TileEvent;
+import appeng.tile.events.TileEventType;
 import com.google.common.collect.ImmutableList;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -37,12 +36,10 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.api.util.AEColor;
-import appeng.helpers.Splotch;
-import appeng.items.misc.ItemPaintBall;
-import appeng.tile.AEBaseTile;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class TilePaint extends AEBaseTile

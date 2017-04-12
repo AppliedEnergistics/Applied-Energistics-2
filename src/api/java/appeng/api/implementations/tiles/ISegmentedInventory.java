@@ -35,7 +35,6 @@ public interface ISegmentedInventory
 	 * them a real inventories will result in duplication.
 	 *
 	 * @param name inventory name
-	 *
 	 * @return inventory with inventory name
 	 */
 	IInventory getInventoryByName( String name );

@@ -19,33 +19,6 @@
 package appeng.integration.modules;
 
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
-import com.google.common.base.Optional;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
-
-import cpw.mods.fml.relauncher.ReflectionHelper;
-
-import uristqwerty.CraftGuide.CraftGuideLog;
-import uristqwerty.CraftGuide.DefaultRecipeTemplate;
-import uristqwerty.CraftGuide.RecipeGeneratorImplementation;
-import uristqwerty.CraftGuide.api.ChanceSlot;
-import uristqwerty.CraftGuide.api.CraftGuideAPIObject;
-import uristqwerty.CraftGuide.api.ItemSlot;
-import uristqwerty.CraftGuide.api.RecipeGenerator;
-import uristqwerty.CraftGuide.api.RecipeProvider;
-import uristqwerty.CraftGuide.api.RecipeTemplate;
-import uristqwerty.CraftGuide.api.Slot;
-import uristqwerty.CraftGuide.api.SlotType;
-import uristqwerty.gui_craftguide.texture.DynamicTexture;
-import uristqwerty.gui_craftguide.texture.TextureClip;
-
 import appeng.api.AEApi;
 import appeng.api.IAppEngApi;
 import appeng.api.definitions.IBlocks;
@@ -59,6 +32,21 @@ import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.recipes.game.ShapedRecipe;
 import appeng.recipes.game.ShapelessRecipe;
+import com.google.common.base.Optional;
+import cpw.mods.fml.relauncher.ReflectionHelper;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
+import uristqwerty.CraftGuide.CraftGuideLog;
+import uristqwerty.CraftGuide.DefaultRecipeTemplate;
+import uristqwerty.CraftGuide.RecipeGeneratorImplementation;
+import uristqwerty.CraftGuide.api.*;
+import uristqwerty.gui_craftguide.texture.DynamicTexture;
+import uristqwerty.gui_craftguide.texture.TextureClip;
+
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.List;
 
 
 public final class CraftGuide extends CraftGuideAPIObject implements IIntegrationModule, RecipeProvider

@@ -19,9 +19,6 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -32,6 +29,8 @@ import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.spatial.TileSpatialIOPort;
 import appeng.util.Platform;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraftforge.common.util.ForgeDirection;
 
 
 public class ContainerSpatialIOPort extends AEBaseContainer

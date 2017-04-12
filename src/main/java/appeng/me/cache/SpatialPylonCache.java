@@ -19,10 +19,6 @@
 package appeng.me.cache;
 
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -36,6 +32,10 @@ import appeng.core.AEConfig;
 import appeng.me.cluster.implementations.SpatialPylonCluster;
 import appeng.tile.spatial.TileSpatialIOPort;
 import appeng.tile.spatial.TileSpatialPylon;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class SpatialPylonCache implements ISpatialCache

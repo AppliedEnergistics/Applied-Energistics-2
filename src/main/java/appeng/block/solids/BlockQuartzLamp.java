@@ -19,19 +19,17 @@
 package appeng.block.solids;
 
 
-import java.util.EnumSet;
-import java.util.Random;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.World;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.client.render.effects.VibrantFX;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
 import appeng.core.features.AEFeature;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.World;
+
+import java.util.EnumSet;
+import java.util.Random;
 
 
 public class BlockQuartzLamp extends BlockQuartzGlass

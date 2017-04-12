@@ -1,4 +1,4 @@
-// Blocks
+# Blocks
 tile.appliedenergistics2.BlockCableBus.name=Cavo ME
 tile.appliedenergistics2.BlockCellWorkbench.name=Banco da lavoro per celle
 tile.appliedenergistics2.BlockCharger.name=Caricatore
@@ -51,7 +51,7 @@ tile.appliedenergistics2.BlockCraftingAccelerator.name=Unità co-processore per 
 tile.appliedenergistics2.BlockCraftingUnit.name=Unità di fabbricazione
 tile.appliedenergistics2.BlockMolecularAssembler.name=Assemblatore moleculare
 
-// Stairs
+# Stairs
 tile.appliedenergistics2.ChiseledQuartzStairBlock.name=Scalini di quarzo certus intagliato
 tile.appliedenergistics2.FluixStairBlock.name=Scalini di fluix
 tile.appliedenergistics2.QuartzPillarStairBlock.name=Scalini di pilastro di quarzo certus
@@ -61,7 +61,7 @@ tile.appliedenergistics2.SkyStoneBrickStairBlock.name=Scalini di roccia del ciel
 tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=Scalini di mattoni di roccia del cielo
 tile.appliedenergistics2.SkyStoneStairBlock.name=Scalini di roccia del cielo
 
-// Chat Messages
+# Chat Messages
 chat.appliedenergistics2.ChestCannotReadStorageCell=Baule ME non riesce a leggere cella di immagazzinaggio.
 chat.appliedenergistics2.SettingCleared=Impostazioni cancellate.
 chat.appliedenergistics2.OutOfRange=Wireless fuori portata.
@@ -78,11 +78,11 @@ chat.appliedenergistics2.AmmoDepleted=Arma scarica.
 chat.appliedenergistics2.isNowLocked=Il monitor è ora bloccato.
 chat.appliedenergistics2.isNowUnlocked=Il monitor è ora sbloccato.
 
-// Creative Tabs
+# Creative Tabs
 itemGroup.appliedenergistics2=Applied Energistics 2
 itemGroup.appliedenergistics2.facades=Applied Energistics 2 - Facciate
 
-// GUI
+# GUI
 gui.appliedenergistics2.CraftingTerminal=Terminale con banco da lavoro
 gui.appliedenergistics2.METunnel=ME
 gui.appliedenergistics2.ItemTunnel=Oggetto
@@ -216,7 +216,7 @@ gui.appliedenergistics2.SmallFontCraft=Fabbrica
 gui.appliedenergistics2.LargeFontCraft=+
 gui.appliedenergistics2.Nothing=Niente
 
-// GUI Tooltips
+# GUI Tooltips
 gui.tooltips.appliedenergistics2.Stash=Oggetti immagazinati
 gui.tooltips.appliedenergistics2.StashDesc=Manda gli oggetti sulla griglia di fabbricazione nel deposito del sistema.
 gui.tooltips.appliedenergistics2.Substitutions=Sostituzione Ore-Dict
@@ -304,14 +304,14 @@ gui.tooltips.appliedenergistics2.BlockPlacementNo=I blocchi saranno fatti cadere
 gui.tooltips.appliedenergistics2.ItemsStored=Oggetti contenuti: %s
 gui.tooltips.appliedenergistics2.ItemsRequestable=Oggetti richiedibili: %s
 
-// Units
+# Units
 gui.appliedenergistics2.units.appliedenergstics=AE
 gui.appliedenergistics2.units.ic2=Energy Units
 gui.appliedenergistics2.units.mekanism=Joules
 gui.appliedenergistics2.units.rotarycraft=Watts
 gui.appliedenergistics2.units.thermalexpansion=Redstone Flux
 
-// Colors
+# Colors
 gui.appliedenergistics2.White=Bianco
 gui.appliedenergistics2.Orange=Arancione
 gui.appliedenergistics2.Magenta=Magenta
@@ -330,7 +330,7 @@ gui.appliedenergistics2.Red=Rosso
 gui.appliedenergistics2.Black=Nero
 gui.appliedenergistics2.Fluix=Fluix
 
-// Waila
+# Waila
 waila.appliedenergistics2.Crafting=Fabbricazione
 waila.appliedenergistics2.DeviceOnline=Dispositivo online
 waila.appliedenergistics2.DeviceOffline=Dispositivo offline
@@ -341,7 +341,7 @@ waila.appliedenergistics2.Showing=Mostra
 waila.appliedenergistics2.Contains=Contiene
 waila.appliedenergistics2.Channels=Canali %1$d di %2$d
 
-// Items
+# Items
 item.appliedenergistics2.ItemBasicStorageCell.1k.name=Cella di immagazzinaggio da 1k ME
 item.appliedenergistics2.ItemBasicStorageCell.4k.name=Cella di immagazzinaggio da 4k ME
 item.appliedenergistics2.ItemBasicStorageCell.16k.name=Cella di immagazzinaggio da 16k ME
@@ -472,7 +472,7 @@ item.appliedenergistics2.ToolBiometricCard.name=Scheda biometrica
 item.appliedenergistics2.ToolDebugCard.name=Dev.DebugCard
 item.appliedenergistics2.ToolReplicatorCard.name=Dev.ReplicatorCard
 
-// Commands
+# Commands
 commands.ae2.usage=Comandi forniti da Applied Energistics 2 - usa /ae2 list per una lista, e /ae2 help _____ per aiuto con i comandi.
 commands.ae2.permissions=Non hai il permesso di usare questo comando.
 commands.ae2.ChunkLogger=Altera tra Chunk Loading e Unloading nel server log. ( OP )
@@ -480,7 +480,7 @@ commands.ae2.ChunkLoggerOn=Chunk Logging è ora attivato
 commands.ae2.ChunkLoggerOff=Chunk Logging è ora disattivato
 commands.ae2.Supporters=Mostra una lista dei Sostenitori di AE2
 
-// Achievements
+# Achievements
 achievement.ae2.Compass=Cacciatore di meteoriti
 achievement.ae2.Compass.desc=Fabbrica una Bussola per meteoriti
 achievement.ae2.Presses=Tecnologia sconosciuta
@@ -532,7 +532,7 @@ achievement.ae2.StorageBus.desc=Fabbrica un Bus di immagazzinaggio
 achievement.ae2.QNB=Tunnel quantistico
 achievement.ae2.QNB.desc=Crea un Collegamento quantistico
 
-// Stats
+# Stats
 stat.ae2.ItemsInserted=Oggetti aggiunti al Deposito ME
 stat.ae2.ItemsExtracted=Oggetti estratti dal Deposito ME
 stat.ae2.TurnedCranks=Manovelle girate

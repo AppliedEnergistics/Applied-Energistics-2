@@ -31,7 +31,6 @@ public final class MissingVersion extends BaseVersion
 
 	/**
 	 * @param maybeOlder ignored
-	 *
 	 * @return false
 	 */
 	@Override

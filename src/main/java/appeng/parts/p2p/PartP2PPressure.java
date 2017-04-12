@@ -19,20 +19,6 @@
 package appeng.parts.p2p;
 
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import pneumaticCraft.api.block.BlockSupplier;
-import pneumaticCraft.api.tileentity.AirHandlerSupplier;
-import pneumaticCraft.api.tileentity.IAirHandler;
-import pneumaticCraft.api.tileentity.ISidedPneumaticMachine;
-
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -41,6 +27,18 @@ import appeng.core.settings.TickRates;
 import appeng.integration.IntegrationType;
 import appeng.transformer.annotations.Integration.Interface;
 import appeng.util.Platform;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
+import pneumaticCraft.api.block.BlockSupplier;
+import pneumaticCraft.api.tileentity.AirHandlerSupplier;
+import pneumaticCraft.api.tileentity.IAirHandler;
+import pneumaticCraft.api.tileentity.ISidedPneumaticMachine;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 
 @Interface( iface = "pneumaticCraft.api.tileentity.ISidedPneumaticMachine", iname = IntegrationType.PneumaticCraft )

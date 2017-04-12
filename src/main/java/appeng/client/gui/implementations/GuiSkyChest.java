@@ -19,14 +19,13 @@
 package appeng.client.gui.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
-
 import appeng.client.gui.AEBaseGui;
 import appeng.container.implementations.ContainerSkyChest;
 import appeng.core.localization.GuiText;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.tile.storage.TileSkyChest;
+import net.minecraft.entity.player.InventoryPlayer;
 
 
 public class GuiSkyChest extends AEBaseGui

@@ -19,10 +19,18 @@
 package appeng.block.misc;
 
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-
+import appeng.block.AEBaseBlock;
+import appeng.client.render.blocks.RenderTinyTNT;
+import appeng.client.texture.FullIcon;
+import appeng.core.AppEng;
+import appeng.core.features.AEFeature;
+import appeng.entity.EntityIds;
+import appeng.entity.EntityTinyTNTPrimed;
+import appeng.helpers.ICustomCollision;
+import appeng.hooks.DispenserBehaviorTinyTNT;
+import cpw.mods.fml.common.registry.EntityRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.material.Material;
@@ -39,19 +47,9 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
-import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.block.AEBaseBlock;
-import appeng.client.render.blocks.RenderTinyTNT;
-import appeng.client.texture.FullIcon;
-import appeng.core.AppEng;
-import appeng.core.features.AEFeature;
-import appeng.entity.EntityIds;
-import appeng.entity.EntityTinyTNTPrimed;
-import appeng.helpers.ICustomCollision;
-import appeng.hooks.DispenserBehaviorTinyTNT;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
 
 
 public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision

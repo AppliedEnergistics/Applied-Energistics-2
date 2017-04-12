@@ -19,15 +19,14 @@
 package appeng.util.inv;
 
 
-import java.util.Iterator;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.config.FuzzyMode;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.iterators.NullIterator;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+
+import java.util.Iterator;
 
 
 /*

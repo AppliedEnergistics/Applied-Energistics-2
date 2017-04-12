@@ -19,14 +19,6 @@
 package appeng.me.storage;
 
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.NavigableMap;
-import java.util.TreeMap;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
@@ -42,6 +34,8 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.cache.SecurityCache;
 import appeng.util.ItemSorters;
+
+import java.util.*;
 
 
 public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T>
@@ -70,8 +64,8 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 		this.myChannel = chan;
 		this.security = security;
 		this.priorityInventory = new TreeMap<Integer, List<IMEInventoryHandler<T>>>( PRIORITY_SORTER ); // TreeMultimap.create(
-																										// prioritySorter,
-																										// hashSorter );
+		// prioritySorter,
+		// hashSorter );
 	}
 
 	public void addNewStorage( final IMEInventoryHandler<T> h )

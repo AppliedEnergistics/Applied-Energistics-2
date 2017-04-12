@@ -39,7 +39,6 @@ public interface IAEPowerStorage extends IEnergySource
 	 *
 	 * @param amt  to be injected amount
 	 * @param mode action mode
-	 *
 	 * @return amount of power which was unable to be stored
 	 */
 	double injectAEPower( double amt, Actionable mode );

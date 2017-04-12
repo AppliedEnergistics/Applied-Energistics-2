@@ -401,7 +401,7 @@ commands.ae2.ChunkLoggerOn=チャンクログがオンになりました
 commands.ae2.ChunkLoggerOff=チャンクログがオフになりました
 commands.ae2.Supporters=AE2のサポーター一覧を表示します
 
-// Achievements
+# Achievements
 achievement.ae2.Compass=隕石ハンター
 achievement.ae2.Compass.desc=隕石探知コンパスを作る
 achievement.ae2.Presses=未知のテクノロジー

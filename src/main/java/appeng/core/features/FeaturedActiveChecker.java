@@ -19,9 +19,9 @@
 package appeng.core.features;
 
 
-import java.util.Set;
-
 import appeng.core.AEConfig;
+
+import java.util.Set;
 
 
 public final class FeaturedActiveChecker

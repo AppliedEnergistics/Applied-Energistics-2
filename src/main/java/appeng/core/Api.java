@@ -19,8 +19,6 @@
 package appeng.core;
 
 
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.IAppEngApi;
 import appeng.api.definitions.Blocks;
 import appeng.api.definitions.Items;
@@ -38,6 +36,7 @@ import appeng.core.features.registries.RegistryContainer;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
 import appeng.util.Platform;
+import net.minecraftforge.common.util.ForgeDirection;
 
 
 public final class Api implements IAppEngApi

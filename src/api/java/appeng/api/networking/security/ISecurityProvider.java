@@ -24,10 +24,10 @@
 package appeng.api.networking.security;
 
 
+import appeng.api.config.SecurityPermissions;
+
 import java.util.EnumSet;
 import java.util.HashMap;
-
-import appeng.api.config.SecurityPermissions;
 
 
 /**

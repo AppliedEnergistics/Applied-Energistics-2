@@ -19,18 +19,6 @@
 package appeng.debug;
 
 
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Set;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -50,6 +38,17 @@ import appeng.me.cache.TickManagerCache;
 import appeng.parts.p2p.PartP2PTunnel;
 import appeng.tile.networking.TileController;
 import appeng.util.Platform;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class ToolDebugCard extends AEBaseItem

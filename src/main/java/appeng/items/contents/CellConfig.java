@@ -19,10 +19,9 @@
 package appeng.items.contents;
 
 
-import net.minecraft.item.ItemStack;
-
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
+import net.minecraft.item.ItemStack;
 
 
 public class CellConfig extends AppEngInternalInventory

@@ -19,12 +19,11 @@
 package appeng.client.me;
 
 
+import appeng.api.storage.data.IAEItemStack;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-
-import appeng.api.storage.data.IAEItemStack;
 
 
 public class SlotME extends Slot

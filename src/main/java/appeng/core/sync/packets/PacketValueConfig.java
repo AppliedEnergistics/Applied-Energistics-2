@@ -19,41 +19,25 @@
 package appeng.core.sync.packets;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.implementations.GuiCraftingCPU;
 import appeng.container.AEBaseContainer;
-import appeng.container.implementations.ContainerCellWorkbench;
-import appeng.container.implementations.ContainerCraftConfirm;
-import appeng.container.implementations.ContainerCraftingCPU;
-import appeng.container.implementations.ContainerCraftingStatus;
-import appeng.container.implementations.ContainerLevelEmitter;
-import appeng.container.implementations.ContainerNetworkTool;
-import appeng.container.implementations.ContainerPatternTerm;
-import appeng.container.implementations.ContainerPriority;
-import appeng.container.implementations.ContainerQuartzKnife;
-import appeng.container.implementations.ContainerSecurity;
-import appeng.container.implementations.ContainerStorageBus;
+import appeng.container.implementations.*;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.IMouseWheelItem;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemStack;
+
+import java.io.*;
 
 
 public class PacketValueConfig extends AppEngPacket

@@ -19,42 +19,19 @@
 package appeng.core.sync;
 
 
+import appeng.core.sync.packets.*;
+import io.netty.buffer.ByteBuf;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.netty.buffer.ByteBuf;
-
-import appeng.core.sync.packets.PacketAssemblerAnimation;
-import appeng.core.sync.packets.PacketClick;
-import appeng.core.sync.packets.PacketCompassRequest;
-import appeng.core.sync.packets.PacketCompassResponse;
-import appeng.core.sync.packets.PacketCompressedNBT;
-import appeng.core.sync.packets.PacketConfigButton;
-import appeng.core.sync.packets.PacketCraftRequest;
-import appeng.core.sync.packets.PacketInventoryAction;
-import appeng.core.sync.packets.PacketLightning;
-import appeng.core.sync.packets.PacketMEInventoryUpdate;
-import appeng.core.sync.packets.PacketMatterCannon;
-import appeng.core.sync.packets.PacketMockExplosion;
-import appeng.core.sync.packets.PacketMultiPart;
-import appeng.core.sync.packets.PacketNEIRecipe;
-import appeng.core.sync.packets.PacketNewStorageDimension;
-import appeng.core.sync.packets.PacketPaintedEntity;
-import appeng.core.sync.packets.PacketPartPlacement;
-import appeng.core.sync.packets.PacketPartialItem;
-import appeng.core.sync.packets.PacketPatternSlot;
-import appeng.core.sync.packets.PacketProgressBar;
-import appeng.core.sync.packets.PacketSwapSlots;
-import appeng.core.sync.packets.PacketSwitchGuis;
-import appeng.core.sync.packets.PacketTransitionEffect;
-import appeng.core.sync.packets.PacketValueConfig;
-
 
 public class AppEngPacketHandlerBase
 {
 	private static final Map<Class<? extends AppEngPacket>, PacketTypes> REVERSE_LOOKUP = new HashMap<Class<? extends AppEngPacket>, AppEngPacketHandlerBase.PacketTypes>();
+
 
 	public enum PacketTypes
 	{
@@ -144,7 +121,8 @@ public class AppEngPacketHandlerBase
 			return REVERSE_LOOKUP.get( c );
 		}
 
-		public AppEngPacket parsePacket( final ByteBuf in ) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+		public AppEngPacket parsePacket( final ByteBuf in )
+				throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
 		{
 			return this.packetConstructor.newInstance( in );
 		}

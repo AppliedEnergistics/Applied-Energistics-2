@@ -19,24 +19,8 @@
 package appeng.client.me;
 
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nonnull;
-
-import net.minecraft.item.ItemStack;
-
-import cpw.mods.fml.relauncher.ReflectionHelper;
-
 import appeng.api.AEApi;
-import appeng.api.config.SearchBoxMode;
-import appeng.api.config.Settings;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
-import appeng.api.config.YesNo;
+import appeng.api.config.*;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.client.gui.widgets.IScrollSource;
@@ -46,6 +30,15 @@ import appeng.items.storage.ItemViewCell;
 import appeng.util.ItemSorters;
 import appeng.util.Platform;
 import appeng.util.prioitylist.IPartitionList;
+import cpw.mods.fml.relauncher.ReflectionHelper;
+import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nonnull;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.regex.Pattern;
 
 
 public class ItemRepo

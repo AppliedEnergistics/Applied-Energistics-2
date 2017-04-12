@@ -19,8 +19,6 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
-
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
 import appeng.container.AEBaseContainer;
@@ -30,6 +28,7 @@ import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.misc.TileCondenser;
 import appeng.util.Platform;
+import net.minecraft.entity.player.InventoryPlayer;
 
 
 public class ContainerCondenser extends AEBaseContainer implements IProgressProvider

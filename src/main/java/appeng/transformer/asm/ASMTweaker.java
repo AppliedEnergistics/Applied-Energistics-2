@@ -19,29 +19,19 @@
 package appeng.transformer.asm;
 
 
-import java.util.Iterator;
-
-import javax.annotation.Nullable;
-
+import appeng.helpers.Reflected;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-
+import cpw.mods.fml.relauncher.FMLRelaunchLog;
+import net.minecraft.launchwrapper.IClassTransformer;
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.tree.*;
 
-import net.minecraft.launchwrapper.IClassTransformer;
-
-import cpw.mods.fml.relauncher.FMLRelaunchLog;
-
-import appeng.helpers.Reflected;
+import javax.annotation.Nullable;
+import java.util.Iterator;
 
 
 @Reflected

@@ -19,28 +19,6 @@
 package appeng.hooks;
 
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.WeakHashMap;
-import java.util.concurrent.TimeUnit;
-
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
-
-import net.minecraft.world.World;
-import net.minecraftforge.event.world.ChunkEvent;
-import net.minecraftforge.event.world.WorldEvent;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
-import cpw.mods.fml.common.gameevent.TickEvent.Type;
-import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
-
 import appeng.api.AEApi;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.CableRenderMode;
@@ -56,6 +34,20 @@ import appeng.me.NetworkList;
 import appeng.tile.AEBaseTile;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
+import com.google.common.base.Stopwatch;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
+import cpw.mods.fml.common.gameevent.TickEvent.Type;
+import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
+import net.minecraft.world.World;
+import net.minecraftforge.event.world.ChunkEvent;
+import net.minecraftforge.event.world.WorldEvent;
+
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 
 public class TickHandler
@@ -319,6 +311,7 @@ public class TickHandler
 			this.networks = new NetworkList();
 		}
 	}
+
 
 	public static class PlayerColor
 	{

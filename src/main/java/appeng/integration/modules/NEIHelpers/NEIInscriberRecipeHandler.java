@@ -19,28 +19,25 @@
 package appeng.integration.modules.NEIHelpers;
 
 
-import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.inventory.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-
+import appeng.api.AEApi;
+import appeng.api.features.IInscriberRecipe;
+import appeng.client.gui.implementations.GuiInscriber;
+import appeng.core.localization.GuiText;
 import codechicken.lib.gui.GuiDraw;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.api.IOverlayHandler;
 import codechicken.nei.api.IRecipeOverlayRenderer;
 import codechicken.nei.recipe.TemplateRecipeHandler;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
-import appeng.api.AEApi;
-import appeng.api.features.IInscriberRecipe;
-import appeng.client.gui.implementations.GuiInscriber;
-import appeng.core.localization.GuiText;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**

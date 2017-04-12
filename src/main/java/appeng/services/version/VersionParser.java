@@ -19,19 +19,12 @@
 package appeng.services.version;
 
 
-import java.util.Scanner;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nonnull;
-
+import appeng.services.version.exceptions.*;
 import com.google.common.base.Preconditions;
 
-import appeng.services.version.exceptions.InvalidBuildException;
-import appeng.services.version.exceptions.InvalidChannelException;
-import appeng.services.version.exceptions.InvalidRevisionException;
-import appeng.services.version.exceptions.InvalidVersionException;
-import appeng.services.version.exceptions.MissingSeparatorException;
-import appeng.services.version.exceptions.VersionCheckerException;
+import javax.annotation.Nonnull;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
 
 /**
@@ -50,11 +43,8 @@ public final class VersionParser
 	 * Parses the {@link Version} out of a String
 	 *
 	 * @param raw String in form of rv2-beta-8 or rv2.beta.8
-	 *
 	 * @return {@link Version} encoded in the raw String
-	 *
 	 * @throws VersionCheckerException if parsing the raw string was not successful.
-	 *
 	 */
 	public Version parse( @Nonnull final String raw ) throws VersionCheckerException
 	{
@@ -70,9 +60,7 @@ public final class VersionParser
 	 * Replaces all "." and "-" into "_" to make them uniform
 	 *
 	 * @param raw raw version string containing "." or "-"
-	 *
 	 * @return transformed raw, where "." and "-" are replaced by "_"
-	 *
 	 * @throws MissingSeparatorException if not containing valid separators
 	 */
 	private String transformDelimiter( @Nonnull final String raw ) throws MissingSeparatorException
@@ -94,15 +82,14 @@ public final class VersionParser
 	 * representing revision, channel and build.
 	 *
 	 * @param splitRaw raw version split with length of 3
-	 *
 	 * @return {@link Version} represented by the splitRaw
-	 *
-	 * @throws InvalidVersionException when length not 3
+	 * @throws InvalidVersionException  when length not 3
 	 * @throws InvalidRevisionException {@link VersionParser#parseRevision(String)}
-	 * @throws InvalidChannelException {@link VersionParser#parseChannel(String)}
-	 * @throws InvalidBuildException {@link VersionParser#parseBuild(String)}
+	 * @throws InvalidChannelException  {@link VersionParser#parseChannel(String)}
+	 * @throws InvalidBuildException    {@link VersionParser#parseBuild(String)}
 	 */
-	private Version parseVersion( @Nonnull final String[] splitRaw ) throws InvalidVersionException, InvalidRevisionException, InvalidChannelException, InvalidBuildException
+	private Version parseVersion( @Nonnull final String[] splitRaw )
+			throws InvalidVersionException, InvalidRevisionException, InvalidChannelException, InvalidBuildException
 	{
 		if( splitRaw.length != 3 )
 		{
@@ -124,9 +111,7 @@ public final class VersionParser
 	 * A revision starts with the keyword "rv", followed by a natural number
 	 *
 	 * @param rawRevision String containing the revision number
-	 *
 	 * @return revision number
-	 *
 	 * @throws InvalidRevisionException if not matching "rv" followed by a natural number.
 	 */
 	private int parseRevision( @Nonnull final String rawRevision ) throws InvalidRevisionException
@@ -149,9 +134,7 @@ public final class VersionParser
 	 * A channel is atm either one of {@link Channel#Alpha}, {@link Channel#Beta} or {@link Channel#Stable}
 	 *
 	 * @param rawChannel String containing the channel
-	 *
 	 * @return matching {@link Channel} to the String
-	 *
 	 * @throws InvalidChannelException if not one of {@link Channel} values.
 	 */
 	private Channel parseChannel( @Nonnull final String rawChannel ) throws InvalidChannelException
@@ -176,9 +159,7 @@ public final class VersionParser
 	 * A build is just a natural number
 	 *
 	 * @param rawBuild String containing the build number
-	 *
 	 * @return build number
-	 *
 	 * @throws InvalidBuildException if not a natural number.
 	 */
 	private int parseBuild( @Nonnull final String rawBuild ) throws InvalidBuildException

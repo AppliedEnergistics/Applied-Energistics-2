@@ -19,28 +19,27 @@
 package appeng.parts.layers;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartHost;
+import appeng.api.parts.LayerBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartHost;
-import appeng.api.parts.LayerBase;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
  * Inventory wrapper for parts,
- *
+ * <p>
  * this is considerably more complicated then the other wrappers as it requires creating a "unified inventory".
- *
+ * <p>
  * You must use {@link ISidedInventory} instead of {@link IInventory}.
- *
+ * <p>
  * If your inventory changes in between placement and removal, you must trigger a PartChange on the {@link IPartHost} so
  * it can recalculate the inventory wrapper.
  */

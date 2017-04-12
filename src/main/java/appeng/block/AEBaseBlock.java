@@ -19,12 +19,22 @@
 package appeng.block;
 
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
+import appeng.api.util.IOrientable;
+import appeng.api.util.IOrientableBlock;
+import appeng.client.render.BaseBlockRender;
+import appeng.client.render.BlockRenderInfo;
+import appeng.client.render.WorldRender;
+import appeng.client.texture.FlippableIcon;
+import appeng.client.texture.MissingIcon;
+import appeng.core.features.*;
+import appeng.helpers.AEGlassMaterial;
+import appeng.helpers.ICustomCollision;
+import appeng.tile.AEBaseTile;
+import appeng.util.LookDirection;
+import appeng.util.Platform;
 import com.google.common.base.Optional;
-
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -35,35 +45,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.api.util.IOrientable;
-import appeng.api.util.IOrientableBlock;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.render.BlockRenderInfo;
-import appeng.client.render.WorldRender;
-import appeng.client.texture.FlippableIcon;
-import appeng.client.texture.MissingIcon;
-import appeng.core.features.AEBlockFeatureHandler;
-import appeng.core.features.AEFeature;
-import appeng.core.features.FeatureNameExtractor;
-import appeng.core.features.IAEFeature;
-import appeng.core.features.IFeatureHandler;
-import appeng.helpers.AEGlassMaterial;
-import appeng.helpers.ICustomCollision;
-import appeng.tile.AEBaseTile;
-import appeng.util.LookDirection;
-import appeng.util.Platform;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 
 public abstract class AEBaseBlock extends Block implements IAEFeature
@@ -426,7 +415,7 @@ public abstract class AEBaseBlock extends Block implements IAEFeature
 	{
 		if( this instanceof IOrientableBlock )
 		{
-			return ( (IOrientableBlock) this ).getOrientable( w, x, y, z );
+			return this.getOrientable( w, x, y, z );
 		}
 		return null;
 	}

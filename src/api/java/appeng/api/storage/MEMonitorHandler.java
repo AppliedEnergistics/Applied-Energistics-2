@@ -24,17 +24,16 @@
 package appeng.api.storage;
 
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
-
-import com.google.common.collect.ImmutableList;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import com.google.common.collect.ImmutableList;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 
 /**
@@ -161,7 +160,9 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 	public AccessRestriction getAccess()
 	{
 		return this.getHandler().getAccess();
-	}	@Override
+	}
+
+	@Override
 	public IItemList<StackType> getStorageList()
 	{
 		if( this.hasChanged )
@@ -184,7 +185,9 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 	public boolean canAccept( final StackType input )
 	{
 		return this.getHandler().canAccept( input );
-	}	@Override
+	}
+
+	@Override
 	public IItemList<StackType> getAvailableItems( final IItemList out )
 	{
 		return this.getHandler().getAvailableItems( out );
@@ -207,8 +210,5 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 	{
 		return this.getHandler().validForPass( i );
 	}
-
-
-
 
 }

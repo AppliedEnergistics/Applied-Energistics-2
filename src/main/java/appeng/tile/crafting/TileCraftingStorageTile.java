@@ -19,10 +19,9 @@
 package appeng.tile.crafting;
 
 
-import net.minecraft.item.ItemStack;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;
+import net.minecraft.item.ItemStack;
 
 
 public class TileCraftingStorageTile extends TileCraftingTile

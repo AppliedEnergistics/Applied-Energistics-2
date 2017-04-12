@@ -19,14 +19,14 @@
 package appeng.me.storage;
 
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherHost;
 import appeng.api.storage.data.IAEStack;
 import appeng.me.cache.GridStorageCache;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 
 
 /**

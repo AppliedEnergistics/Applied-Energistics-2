@@ -24,17 +24,16 @@
 package appeng.api.parts;
 
 
-import java.io.IOException;
-
 import io.netty.buffer.ByteBuf;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.io.IOException;
 
 
 /**
  * Used Internally.
- *
+ * <p>
  * not intended for implementation.
  */
 public interface IFacadeContainer
@@ -73,9 +72,7 @@ public interface IFacadeContainer
 	 * read from stream
 	 *
 	 * @param data to be read data
-	 *
 	 * @return true if it was readable
-	 *
 	 * @throws IOException
 	 */
 	boolean readFromStream( ByteBuf data ) throws IOException;
@@ -91,7 +88,6 @@ public interface IFacadeContainer
 	 * write to stream
 	 *
 	 * @param data to be written data
-	 *
 	 * @throws IOException
 	 */
 	void writeToStream( ByteBuf data ) throws IOException;

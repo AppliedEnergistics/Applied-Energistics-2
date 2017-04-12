@@ -19,17 +19,6 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-import java.util.List;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
@@ -41,11 +30,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.AEBaseMEGui;
-import appeng.client.gui.widgets.GuiImgButton;
-import appeng.client.gui.widgets.GuiScrollbar;
-import appeng.client.gui.widgets.GuiTabButton;
-import appeng.client.gui.widgets.ISortSource;
-import appeng.client.gui.widgets.MEGuiTextField;
+import appeng.client.gui.widgets.*;
 import appeng.client.me.InternalSlotME;
 import appeng.client.me.ItemRepo;
 import appeng.container.implementations.ContainerMEMonitorable;
@@ -66,6 +51,15 @@ import appeng.parts.reporting.AbstractPartTerminal;
 import appeng.tile.misc.TileSecurity;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+
+import java.io.IOException;
+import java.util.List;
 
 
 public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfigManagerHost

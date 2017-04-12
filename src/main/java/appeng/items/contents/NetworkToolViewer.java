@@ -19,14 +19,13 @@
 package appeng.items.contents;
 
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.networking.IGridHost;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 
 
 public class NetworkToolViewer implements INetworkTool

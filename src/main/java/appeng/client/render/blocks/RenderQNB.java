@@ -19,9 +19,15 @@
 package appeng.client.render.blocks;
 
 
-import java.util.Collection;
-import java.util.EnumSet;
-
+import appeng.api.AEApi;
+import appeng.api.definitions.IBlocks;
+import appeng.api.definitions.IDefinitions;
+import appeng.api.definitions.IParts;
+import appeng.api.util.AEColor;
+import appeng.block.qnb.BlockQuantumBase;
+import appeng.client.render.BaseBlockRender;
+import appeng.client.texture.ExtraBlockTextures;
+import appeng.tile.qnb.TileQuantumBridge;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
@@ -32,15 +38,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.api.AEApi;
-import appeng.api.definitions.IBlocks;
-import appeng.api.definitions.IDefinitions;
-import appeng.api.definitions.IParts;
-import appeng.api.util.AEColor;
-import appeng.block.qnb.BlockQuantumBase;
-import appeng.client.render.BaseBlockRender;
-import appeng.client.texture.ExtraBlockTextures;
-import appeng.tile.qnb.TileQuantumBridge;
+import java.util.Collection;
+import java.util.EnumSet;
 
 
 public class RenderQNB extends BaseBlockRender<BlockQuantumBase, TileQuantumBridge>

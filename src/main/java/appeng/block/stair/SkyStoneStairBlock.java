@@ -19,12 +19,11 @@
 package appeng.block.stair;
 
 
-import java.util.EnumSet;
-
-import net.minecraft.block.Block;
-
 import appeng.block.AEBaseStairBlock;
 import appeng.core.features.AEFeature;
+import net.minecraft.block.Block;
+
+import java.util.EnumSet;
 
 
 public class SkyStoneStairBlock extends AEBaseStairBlock

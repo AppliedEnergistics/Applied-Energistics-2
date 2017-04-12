@@ -19,14 +19,13 @@
 package appeng.integration.modules.waila.part;
 
 
-import java.util.List;
-
-import mcp.mobius.waila.api.IWailaConfigHandler;
-import mcp.mobius.waila.api.IWailaDataAccessor;
-
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.parts.IPart;
 import appeng.core.localization.WailaText;
+import mcp.mobius.waila.api.IWailaConfigHandler;
+import mcp.mobius.waila.api.IWailaDataAccessor;
+
+import java.util.List;
 
 
 /**
@@ -41,11 +40,10 @@ public final class PowerStateWailaDataProvider extends BasePartWailaDataProvider
 	/**
 	 * Adds state to the tooltip
 	 *
-	 * @param part part with state
+	 * @param part           part with state
 	 * @param currentToolTip to be added to tooltip
-	 * @param accessor wrapper for various information
-	 * @param config config settings
-	 *
+	 * @param accessor       wrapper for various information
+	 * @param config         config settings
 	 * @return modified tooltip
 	 */
 	@Override
@@ -64,9 +62,8 @@ public final class PowerStateWailaDataProvider extends BasePartWailaDataProvider
 	/**
 	 * Gets the corresponding tool tip for different values of {@code #isActive} and {@code #isPowered}
 	 *
-	 * @param isActive if part is active
+	 * @param isActive  if part is active
 	 * @param isPowered if part is powered
-	 *
 	 * @return tooltip of the state
 	 */
 	private String getToolTip( final boolean isActive, final boolean isPowered )

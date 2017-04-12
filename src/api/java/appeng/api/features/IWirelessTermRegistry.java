@@ -44,14 +44,12 @@ public interface IWirelessTermRegistry
 
 	/**
 	 * @param is item which might have a handler
-	 *
 	 * @return true if there is a handler for this item
 	 */
 	boolean isWirelessTerminal( ItemStack is );
 
 	/**
 	 * @param is item with handler
-	 *
 	 * @return a register handler for the item in question, or null if there
 	 * isn't one
 	 */

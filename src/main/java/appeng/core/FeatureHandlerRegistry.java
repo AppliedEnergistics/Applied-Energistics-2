@@ -19,10 +19,10 @@
 package appeng.core;
 
 
+import appeng.core.features.IFeatureHandler;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import appeng.core.features.IFeatureHandler;
 
 
 public final class FeatureHandlerRegistry

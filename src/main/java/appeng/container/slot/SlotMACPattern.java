@@ -19,10 +19,9 @@
 package appeng.container.slot;
 
 
+import appeng.container.implementations.ContainerMAC;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-
-import appeng.container.implementations.ContainerMAC;
 
 
 public class SlotMACPattern extends AppEngSlot

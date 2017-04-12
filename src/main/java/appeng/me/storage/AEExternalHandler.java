@@ -19,9 +19,6 @@
 package appeng.me.storage;
 
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.implementations.tiles.ITileStorageMonitorable;
 import appeng.api.networking.security.BaseActionSource;
 import appeng.api.storage.IExternalStorageHandler;
@@ -31,6 +28,8 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.tile.misc.TileCondenser;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 
 
 public class AEExternalHandler implements IExternalStorageHandler

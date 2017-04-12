@@ -32,11 +32,10 @@ public interface IGridVisitor
 
 	/**
 	 * Called for each node on the network.
-	 *
+	 * <p>
 	 * By returning false your informing the host to stop visiting nodes beyond the current node.
 	 *
 	 * @param n the current node.
-	 *
 	 * @return true to continue visiting nodes beyond this node.
 	 */
 	boolean visitNode( IGridNode n );

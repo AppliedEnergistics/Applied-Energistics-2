@@ -19,19 +19,6 @@
 package appeng.items.storage;
 
 
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-
-import com.google.common.base.Optional;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
@@ -54,6 +41,17 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.materials.MaterialType;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+import com.google.common.base.Optional;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
 
 
 public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, IItemGroup

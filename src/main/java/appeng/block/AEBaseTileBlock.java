@@ -19,32 +19,6 @@
 package appeng.block;
 
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.ReflectionHelper;
-
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.implementations.tiles.IColorableTile;
@@ -60,6 +34,28 @@ import appeng.tile.networking.TileCableBus;
 import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+import cpw.mods.fml.relauncher.ReflectionHelper;
+import net.minecraft.block.Block;
+import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 
 public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature, ITileEntityProvider
@@ -221,7 +217,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	{
 		super.onBlockEventReceived( p_149696_1_, p_149696_2_, p_149696_3_, p_149696_4_, p_149696_5_, p_149696_6_ );
 		final TileEntity tileentity = p_149696_1_.getTileEntity( p_149696_2_, p_149696_3_, p_149696_4_ );
-		return tileentity != null ? tileentity.receiveClientEvent( p_149696_5_, p_149696_6_ ) : false;
+		return tileentity != null && tileentity.receiveClientEvent( p_149696_5_, p_149696_6_ );
 	}
 
 	@Override

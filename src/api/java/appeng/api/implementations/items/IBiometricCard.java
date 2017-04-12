@@ -24,15 +24,13 @@
 package appeng.api.implementations.items;
 
 
-import java.util.EnumSet;
-
-import net.minecraft.item.ItemStack;
-
-import com.mojang.authlib.GameProfile;
-
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.security.ISecurityRegistry;
+import com.mojang.authlib.GameProfile;
+import net.minecraft.item.ItemStack;
+
+import java.util.EnumSet;
 
 
 public interface IBiometricCard
@@ -50,7 +48,6 @@ public interface IBiometricCard
 
 	/**
 	 * @param itemStack card
-	 *
 	 * @return the full list of permissions encoded on the card.
 	 */
 	EnumSet<SecurityPermissions> getPermissions( ItemStack itemStack );
@@ -59,7 +56,6 @@ public interface IBiometricCard
 	 * Check if a permission is encoded on the card.
 	 *
 	 * @param permission card
-	 *
 	 * @return true if this permission is set on the card.
 	 */
 	boolean hasPermission( ItemStack is, SecurityPermissions permission );

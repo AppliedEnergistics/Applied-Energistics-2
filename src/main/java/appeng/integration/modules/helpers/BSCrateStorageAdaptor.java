@@ -19,17 +19,16 @@
 package appeng.integration.modules.helpers;
 
 
-import java.util.Iterator;
-
-import net.mcft.copy.betterstorage.api.crate.ICrateStorage;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.config.FuzzyMode;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.ItemSlot;
 import appeng.util.iterators.StackToSlotIterator;
+import net.mcft.copy.betterstorage.api.crate.ICrateStorage;
+import net.minecraft.item.ItemStack;
+
+import java.util.Iterator;
 
 
 public class BSCrateStorageAdaptor extends InventoryAdaptor

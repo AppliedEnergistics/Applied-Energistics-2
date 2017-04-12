@@ -24,14 +24,13 @@
 package appeng.api.events;
 
 
-import cpw.mods.fml.common.eventhandler.Event;
-
 import appeng.api.features.ILocatable;
+import cpw.mods.fml.common.eventhandler.Event;
 
 
 /**
  * Input Event:
- *
+ * <p>
  * Used to Notify the Location Registry of objects, and their availability.
  */
 public class LocatableEventAnnounce extends Event

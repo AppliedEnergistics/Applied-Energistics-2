@@ -19,11 +19,13 @@
 package appeng.block.solids;
 
 
-import java.util.EnumSet;
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
+import appeng.api.AEApi;
+import appeng.api.exceptions.MissingDefinition;
+import appeng.block.AEBaseBlock;
+import appeng.client.render.blocks.RenderQuartzOre;
+import appeng.core.features.AEFeature;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -31,14 +33,9 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.api.AEApi;
-import appeng.api.exceptions.MissingDefinition;
-import appeng.block.AEBaseBlock;
-import appeng.client.render.blocks.RenderQuartzOre;
-import appeng.core.features.AEFeature;
+import javax.annotation.Nullable;
+import java.util.EnumSet;
+import java.util.Random;
 
 
 public class OreQuartz extends AEBaseBlock

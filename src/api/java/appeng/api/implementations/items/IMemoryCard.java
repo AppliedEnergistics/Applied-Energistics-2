@@ -31,7 +31,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * Memory Card API
- *
+ * <p>
  * AE's Memory Card Item Class implements this interface.
  */
 public interface IMemoryCard
@@ -55,14 +55,12 @@ public interface IMemoryCard
 	 * previous call to setMemoryCardContents.
 	 *
 	 * @param is item
-	 *
 	 * @return setting name
 	 */
 	String getSettingsName( ItemStack is );
 
 	/**
 	 * @param is item
-	 *
 	 * @return the NBT Data previously saved by setMemoryCardContents, or an
 	 * empty NBTCompound
 	 */

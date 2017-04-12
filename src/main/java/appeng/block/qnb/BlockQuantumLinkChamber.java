@@ -19,25 +19,23 @@
 package appeng.block.qnb;
 
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.client.EffectType;
 import appeng.core.CommonHelper;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.AEGlassMaterial;
 import appeng.tile.qnb.TileQuantumBridge;
 import appeng.util.Platform;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 
 public class BlockQuantumLinkChamber extends BlockQuantumBase

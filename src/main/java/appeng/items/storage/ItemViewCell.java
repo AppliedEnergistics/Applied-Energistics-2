@@ -19,11 +19,6 @@
 package appeng.items.storage;
 
 
-import java.util.EnumSet;
-
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Upgrades;
@@ -41,6 +36,10 @@ import appeng.util.prioitylist.FuzzyPriorityList;
 import appeng.util.prioitylist.IPartitionList;
 import appeng.util.prioitylist.MergedPriorityList;
 import appeng.util.prioitylist.PrecisePriorityList;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+
+import java.util.EnumSet;
 
 
 public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem

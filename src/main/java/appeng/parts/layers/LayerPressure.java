@@ -19,15 +19,13 @@
 package appeng.parts.layers;
 
 
-import javax.annotation.Nullable;
-
+import appeng.api.parts.IPart;
+import appeng.api.parts.LayerBase;
 import net.minecraftforge.common.util.ForgeDirection;
-
 import pneumaticCraft.api.tileentity.IAirHandler;
 import pneumaticCraft.api.tileentity.ISidedPneumaticMachine;
 
-import appeng.api.parts.IPart;
-import appeng.api.parts.LayerBase;
+import javax.annotation.Nullable;
 
 
 public class LayerPressure extends LayerBase implements ISidedPneumaticMachine

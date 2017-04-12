@@ -19,14 +19,14 @@
 package appeng.core.features;
 
 
-import java.util.regex.Pattern;
-
 import appeng.items.AEBaseItem;
+
+import java.util.regex.Pattern;
 
 
 /**
  * This class is used to rename items to match the persistent stored items.
- *
+ * <p>
  * This can be removed, when a new iteration of minecraft arrives or a new world is used.
  * Remember to differentiate the currently renamed items later on correctly.
  *

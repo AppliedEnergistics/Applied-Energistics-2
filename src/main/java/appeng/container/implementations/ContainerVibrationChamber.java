@@ -19,14 +19,13 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
-
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.misc.TileVibrationChamber;
 import appeng.util.Platform;
+import net.minecraft.entity.player.InventoryPlayer;
 
 
 public class ContainerVibrationChamber extends AEBaseContainer implements IProgressProvider

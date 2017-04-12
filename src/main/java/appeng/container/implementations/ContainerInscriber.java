@@ -19,10 +19,6 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.features.IInscriberRecipe;
@@ -32,6 +28,9 @@ import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.misc.TileInscriber;
 import appeng.util.Platform;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 
 
 /**
@@ -76,7 +75,7 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 	@Override
 	/**
 	 * Overridden super.setupConfig to prevent setting up the fake slots
-	 */protected void setupConfig()
+	 */ protected void setupConfig()
 	{
 		this.setupUpgrades();
 	}
@@ -127,10 +126,10 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 			for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 			{
 				final boolean matchA = ( top == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( top, recipe.getTopOptional().orNull() ) ) && // and...
-				( bot == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( bot, recipe.getBottomOptional().orNull() ) );
+						( bot == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( bot, recipe.getBottomOptional().orNull() ) );
 
 				final boolean matchB = ( bot == null && !recipe.getTopOptional().isPresent() ) || ( Platform.isSameItemPrecise( bot, recipe.getTopOptional().orNull() ) ) && // and...
-				( top == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( top, recipe.getBottomOptional().orNull() ) );
+						( top == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.isSameItemPrecise( top, recipe.getBottomOptional().orNull() ) );
 
 				if( matchA || matchB )
 				{

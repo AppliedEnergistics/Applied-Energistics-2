@@ -19,9 +19,17 @@
 package appeng.block.solids;
 
 
-import java.util.EnumSet;
-import java.util.List;
-
+import appeng.api.util.IOrientable;
+import appeng.api.util.IOrientableBlock;
+import appeng.block.AEBaseBlock;
+import appeng.core.features.AEFeature;
+import appeng.core.worlddata.WorldData;
+import appeng.helpers.LocationRotation;
+import appeng.helpers.NullRotation;
+import appeng.util.Platform;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -36,18 +44,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.api.util.IOrientable;
-import appeng.api.util.IOrientableBlock;
-import appeng.block.AEBaseBlock;
-import appeng.core.features.AEFeature;
-import appeng.core.worlddata.WorldData;
-import appeng.helpers.LocationRotation;
-import appeng.helpers.NullRotation;
-import appeng.util.Platform;
+import java.util.EnumSet;
+import java.util.List;
 
 
 public class BlockSkyStone extends AEBaseBlock implements IOrientableBlock

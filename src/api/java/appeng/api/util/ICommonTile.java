@@ -24,10 +24,10 @@
 package appeng.api.util;
 
 
-import java.util.List;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 
 public interface ICommonTile

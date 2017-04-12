@@ -24,11 +24,10 @@
 package appeng.api.features;
 
 
-import javax.annotation.Nullable;
-
+import appeng.api.config.TunnelType;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.config.TunnelType;
+import javax.annotation.Nullable;
 
 
 /**
@@ -50,7 +49,6 @@ public interface IP2PTunnelRegistry
 	 * returns null if no attunement can be found.
 	 *
 	 * @param trigger attunement trigger
-	 *
 	 * @return null if no attunement can be found or attunement
 	 */
 	@Nullable

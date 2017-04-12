@@ -24,14 +24,12 @@
 package appeng.api.storage;
 
 
+import appeng.api.implementations.tiles.IChestOrDrive;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.api.implementations.tiles.IChestOrDrive;
 
 
 /**
@@ -45,7 +43,6 @@ public interface ICellHandler
 	 * request a handler )
 	 *
 	 * @param is to be checked item
-	 *
 	 * @return return true, if getCellHandler will not return null.
 	 */
 	boolean isCell( ItemStack is );
@@ -57,7 +54,6 @@ public interface ICellHandler
 	 * @param host    anytime the contents of your storage cell changes it should use this to request a save, please
 	 *                note, this value can be null.
 	 * @param channel the storage channel requested.
-	 *
 	 * @return a new IMEHandler for the provided item
 	 */
 	IMEInventoryHandler getCellInventory( ItemStack is, ISaveProvider host, StorageChannel channel );
@@ -102,16 +98,15 @@ public interface ICellHandler
 
 	/**
 	 * 0 - cell is missing.
-	 *
+	 * <p>
 	 * 1 - green, ( usually means available room for types or items. )
-	 *
+	 * <p>
 	 * 2 - orange, ( usually means available room for items, but not types. )
-	 *
+	 * <p>
 	 * 3 - red, ( usually means the cell is 100% full )
 	 *
 	 * @param is      the cell item. ( use the handler for any details you can )
 	 * @param handler the handler for the cell is provides for reference, you can cast this to your handler.
-	 *
 	 * @return get the status of the cell based on its contents.
 	 */
 	int getStatusForCell( ItemStack is, IMEInventory handler );

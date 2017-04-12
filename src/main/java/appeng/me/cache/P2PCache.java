@@ -19,17 +19,7 @@
 package appeng.me.cache;
 
 
-import java.util.HashMap;
-
-import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Multimap;
-
-import appeng.api.networking.GridFlags;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridCache;
-import appeng.api.networking.IGridHost;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IGridStorage;
+import appeng.api.networking.*;
 import appeng.api.networking.events.MENetworkBootingStatusChange;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
@@ -37,6 +27,10 @@ import appeng.api.networking.ticking.ITickManager;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.parts.p2p.PartP2PTunnel;
 import appeng.parts.p2p.PartP2PTunnelME;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
+
+import java.util.HashMap;
 
 
 public class P2PCache implements IGridCache

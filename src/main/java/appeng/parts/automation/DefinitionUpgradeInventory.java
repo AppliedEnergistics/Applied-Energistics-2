@@ -1,12 +1,10 @@
-
 package appeng.parts.automation;
 
-
-import net.minecraft.item.ItemStack;
 
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IItemDefinition;
 import appeng.tile.inventory.IAEAppEngInventory;
+import net.minecraft.item.ItemStack;
 
 
 public final class DefinitionUpgradeInventory extends UpgradeInventory

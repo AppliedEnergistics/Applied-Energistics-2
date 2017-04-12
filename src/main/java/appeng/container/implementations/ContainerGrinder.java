@@ -19,13 +19,12 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
-
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotInaccessible;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.grindstone.TileGrinder;
+import net.minecraft.entity.player.InventoryPlayer;
 
 
 public class ContainerGrinder extends AEBaseContainer

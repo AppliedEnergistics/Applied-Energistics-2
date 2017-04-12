@@ -19,6 +19,10 @@
 package appeng.recipes.loader;
 
 
+import com.google.common.base.Preconditions;
+import org.apache.commons.io.FileUtils;
+
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,11 +37,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.annotation.Nonnull;
-
-import com.google.common.base.Preconditions;
-
-import org.apache.commons.io.FileUtils;
 
 
 /**
@@ -66,7 +65,6 @@ public class RecipeResourceCopier
 
 	/**
 	 * @param root source root folder of the recipes inside the jar.
-	 *
 	 * @throws NullPointerException if root is <tt>null</tt>
 	 */
 	public RecipeResourceCopier( @Nonnull final String root )
@@ -79,9 +77,8 @@ public class RecipeResourceCopier
 	/**
 	 * copies recipes found in the root to destination.
 	 *
-	 * @param identifier only copy files which end with the identifier
+	 * @param identifier  only copy files which end with the identifier
 	 * @param destination destination folder to which the recipes are copied to
-	 *
 	 * @throws URISyntaxException       {@see #getResourceListing}
 	 * @throws IOException              {@see #getResourceListing} and if copying the detected resource to file is not possible
 	 * @throws NullPointerException     if either parameter is <tt>null</tt>
@@ -97,13 +94,13 @@ public class RecipeResourceCopier
 
 	/**
 	 * @param destination destination folder to which the recipes are copied to
-	 * @param directory the folder to copy.
-	 *
+	 * @param directory   the folder to copy.
 	 * @throws URISyntaxException {@see #getResourceListing}
 	 * @throws IOException        {@see #getResourceListing} and if copying the detected resource to file is not possible
 	 * @see {RecipeResourceCopier#copyTo(File)}
 	 */
-	private void copyTo( @Nonnull final String identifier, @Nonnull final File destination, @Nonnull final String directory ) throws URISyntaxException, IOException
+	private void copyTo( @Nonnull final String identifier, @Nonnull final File destination, @Nonnull final String directory )
+			throws URISyntaxException, IOException
 	{
 		assert identifier != null;
 		assert destination != null;
@@ -133,9 +130,8 @@ public class RecipeResourceCopier
 	 * Copies a single file inside a folder to the destination.
 	 *
 	 * @param destination folder to which the file is copied to
-	 * @param directory the directory containing the file
-	 * @param fileName the file to copy
-	 *
+	 * @param directory   the directory containing the file
+	 * @param fileName    the file to copy
 	 * @throws IOException if copying the file is not possible
 	 */
 	private void copyFile( @Nonnull final File destination, @Nonnull final String directory, @Nonnull final String fileName ) throws IOException
@@ -159,10 +155,8 @@ public class RecipeResourceCopier
 	 * List directory contents for a resource folder. Not recursive. This is basically a brute-force implementation. Works for regular files and also JARs.
 	 *
 	 * @param clazz Any java class that lives in the same place as the resources you want.
-	 * @param path Should end with "/", but not start with one.
-	 *
+	 * @param path  Should end with "/", but not start with one.
 	 * @return Just the name of each member item, not the full paths.
-	 *
 	 * @throws URISyntaxException            if it is a file path and the URL can not be converted to URI
 	 * @throws IOException                   if jar path can not be decoded
 	 * @throws UnsupportedOperationException if it is neither in jar nor in file path

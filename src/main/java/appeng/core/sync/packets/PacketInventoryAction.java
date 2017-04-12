@@ -19,15 +19,6 @@
 package appeng.core.sync.packets;
 
 
-import java.io.IOException;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.tileentity.TileEntity;
-
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.ClientHelper;
 import appeng.container.AEBaseContainer;
@@ -39,6 +30,13 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.tileentity.TileEntity;
+
+import java.io.IOException;
 
 
 public class PacketInventoryAction extends AppEngPacket

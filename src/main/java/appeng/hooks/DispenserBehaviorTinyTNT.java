@@ -19,14 +19,13 @@
 package appeng.hooks;
 
 
+import appeng.entity.EntityTinyTNTPrimed;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-
-import appeng.entity.EntityTinyTNTPrimed;
 
 
 public final class DispenserBehaviorTinyTNT extends BehaviorDefaultDispenseItem

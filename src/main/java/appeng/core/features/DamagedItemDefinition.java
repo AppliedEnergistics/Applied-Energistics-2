@@ -19,17 +19,15 @@
 package appeng.core.features;
 
 
-import javax.annotation.Nonnull;
-
+import appeng.api.definitions.IItemDefinition;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 
-import appeng.api.definitions.IItemDefinition;
+import javax.annotation.Nonnull;
 
 
 public final class DamagedItemDefinition implements IItemDefinition
@@ -94,6 +92,7 @@ public final class DamagedItemDefinition implements IItemDefinition
 			return input.getItem();
 		}
 	}
+
 
 	private static class ItemStackTransformer implements Function<IStackSrc, ItemStack>
 	{

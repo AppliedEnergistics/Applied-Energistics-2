@@ -19,18 +19,17 @@
 package appeng.block.grindstone;
 
 
-import java.util.EnumSet;
-
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.block.AEBaseTileBlock;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.tile.grindstone.TileGrinder;
 import appeng.util.Platform;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.EnumSet;
 
 
 public class BlockGrinder extends AEBaseTileBlock

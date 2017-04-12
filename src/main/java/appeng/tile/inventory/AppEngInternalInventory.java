@@ -19,18 +19,17 @@
 package appeng.tile.inventory;
 
 
-import java.util.Iterator;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-
 import appeng.api.storage.IMEInventory;
 import appeng.core.AELog;
 import appeng.me.storage.MEIInventoryWrapper;
 import appeng.util.Platform;
 import appeng.util.iterators.InvIterator;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+
+import java.util.Iterator;
 
 
 public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>

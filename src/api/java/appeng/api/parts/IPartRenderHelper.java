@@ -39,7 +39,7 @@ public interface IPartRenderHelper
 
 	/**
 	 * sets the Render Helpers Block Bounds. 0.0 - 16.0 block coords.
-	 *
+	 * <p>
 	 * No complaints about the size, I like using pixels :P
 	 *
 	 * @param minX minimal x bound
@@ -53,7 +53,7 @@ public interface IPartRenderHelper
 
 	/**
 	 * static renderer
-	 *
+	 * <p>
 	 * render a single face.
 	 *
 	 * @param x        x coord of part
@@ -68,7 +68,7 @@ public interface IPartRenderHelper
 
 	/**
 	 * static renderer
-	 *
+	 * <p>
 	 * render a box with a cut out box in the center.
 	 *
 	 * @param x             x pos of part
@@ -84,7 +84,7 @@ public interface IPartRenderHelper
 
 	/**
 	 * static renderer
-	 *
+	 * <p>
 	 * render a block of specified bounds.
 	 *
 	 * @param x        x pos of block
@@ -115,7 +115,7 @@ public interface IPartRenderHelper
 
 	/**
 	 * inventory, and static renderer.
-	 *
+	 * <p>
 	 * set unique icons for each side of the block.
 	 *
 	 * @param down  down face
@@ -129,7 +129,7 @@ public interface IPartRenderHelper
 
 	/**
 	 * inventory, and static renderer.
-	 *
+	 * <p>
 	 * set all sides to a single IIcon.
 	 *
 	 * @param ico to be set icon
@@ -166,7 +166,7 @@ public interface IPartRenderHelper
 	/**
 	 * Pre-Calculates default lighting for the part, call this before using the render helper to render anything else to
 	 * get simplified, but faster lighting for more then one block.
-	 *
+	 * <p>
 	 * Only worth it if you render more then 1 block.
 	 */
 	ISimplifiedBundle useSimplifiedRendering( int x, int y, int z, IBoxProvider p, ISimplifiedBundle sim );

@@ -19,13 +19,13 @@
 package appeng.helpers;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import appeng.api.AEApi;
+import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.storage.data.IAEItemStack;
+import appeng.container.ContainerNull;
+import appeng.util.ItemSorters;
+import appeng.util.Platform;
+import appeng.util.item.AEItemStack;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -35,13 +35,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
-import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.container.ContainerNull;
-import appeng.util.ItemSorters;
-import appeng.util.Platform;
-import appeng.util.item.AEItemStack;
+import java.util.*;
 
 
 public class PatternHelper implements ICraftingPatternDetails, Comparable<PatternHelper>
@@ -407,6 +401,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	{
 		ACCEPT, DECLINE, TEST
 	}
+
 
 	private static final class TestLookup
 	{

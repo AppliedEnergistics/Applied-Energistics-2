@@ -1,4 +1,4 @@
-// Blocks
+# Blocks
 tile.appliedenergistics2.BlockCableBus.name=AE2 Kábel és/vagy Busz
 tile.appliedenergistics2.BlockCellWorkbench.name=Cella Munkaasztal
 tile.appliedenergistics2.BlockCharger.name=Töltő
@@ -52,7 +52,7 @@ tile.appliedenergistics2.BlockCraftingUnit.name=Barkácsoló Egység
 tile.appliedenergistics2.BlockMolecularAssembler.name=Molekuláris Összeállító
 
 
-// Stairs
+# Stairs
 tile.appliedenergistics2.ChiseledQuartzStairBlock.name=Finom Certus Kvarc Lépcső
 tile.appliedenergistics2.FluixStairBlock.name=Fluix Lépcső
 tile.appliedenergistics2.QuartzPillarStairBlock.name=Certus Kvarc Oszlop Lépcső
@@ -62,7 +62,7 @@ tile.appliedenergistics2.SkyStoneBrickStairBlock.name=Égboltkő Tégla Lépcső
 tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=Kicsi Égboltkő Tégla Lépcső
 tile.appliedenergistics2.SkyStoneStairBlock.name=Égboltkő Lépcső
 
-// Slabs
+# Slabs
 tile.appliedenergistics2.ChiseledQuartzSlabBlock.name=Finom Certus Kvarc Lépcsőfok
 tile.appliedenergistics2.FluixSlabBlock.name=Fluix Lépcsőfok
 tile.appliedenergistics2.QuartzPillarSlabBlock.name=Certus Kvarc Oszlop Lépcsőfok
@@ -72,7 +72,7 @@ tile.appliedenergistics2.SkyStoneBrickSlabBlock.name=Égboltkő Tégla Lépcsőf
 tile.appliedenergistics2.SkyStoneSmallBrickSlabBlock.name=Kicsi Égboltkő Tégla Lépcsőfok
 tile.appliedenergistics2.SkyStoneSlabBlock.name=Égboltkő Lépcsőfok
 
-// Chat Messages
+# Chat Messages
 chat.appliedenergistics2.ChestCannotReadStorageCell=Az ME Láda nem tudja olvasni a tároló cellát.
 chat.appliedenergistics2.SettingCleared=Beállítások törölve.
 chat.appliedenergistics2.OutOfRange=A vezetéknélküli hozzáférési pont hatókörön kívül van.
@@ -89,11 +89,11 @@ chat.appliedenergistics2.AmmoDepleted=A lőszer kiürült.
 chat.appliedenergistics2.isNowLocked=Monitor zárolva.
 chat.appliedenergistics2.isNowUnlocked=Monitor feloldva.
 
-// Creative Tabs
+# Creative Tabs
 itemGroup.appliedenergistics2=Applied Energistics 2
 itemGroup.appliedenergistics2.facades=Applied Energistics 2 - Látszatok
 
-// GUI
+# GUI
 gui.appliedenergistics2.CraftingTerminal=Barkácsoló Terminál
 gui.appliedenergistics2.METunnel=ME Csatorna
 gui.appliedenergistics2.ItemTunnel=Tárgy Csatorna
@@ -234,7 +234,7 @@ gui.appliedenergistics2.SmallFontCraft=Barkács
 gui.appliedenergistics2.LargeFontCraft=+
 gui.appliedenergistics2.Nothing=Semmi
 
-// GUI Tooltips
+# GUI Tooltips
 gui.tooltips.appliedenergistics2.Stash=Tárgyak raktározása
 gui.tooltips.appliedenergistics2.StashDesc=A tárgyak barkácsfelületről való hálózatba helyezése.
 gui.tooltips.appliedenergistics2.Substitutions=Érc-szótár pótlás
@@ -327,14 +327,14 @@ gui.tooltips.appliedenergistics2.SchedulingModeRandom=Eltávolítás véletlensz
 gui.tooltips.appliedenergistics2.ItemsStored=Tárolt tárgyak száma: %s
 gui.tooltips.appliedenergistics2.ItemsRequestable=Kérhető Tárgyak száma: %s
 
-// Units
+# Units
 gui.appliedenergistics2.units.appliedenergstics=AE
 gui.appliedenergistics2.units.ic2=Energia Egység
 gui.appliedenergistics2.units.mekanism=Joule
 gui.appliedenergistics2.units.rotarycraft=Watt
 gui.appliedenergistics2.units.thermalexpansion=Vöröskő Flux
 
-// Colors
+# Colors
 gui.appliedenergistics2.White=Fehér
 gui.appliedenergistics2.Orange=Narancs
 gui.appliedenergistics2.Magenta=Bíborvörös
@@ -353,7 +353,7 @@ gui.appliedenergistics2.Red=Vörös
 gui.appliedenergistics2.Black=Fekete
 gui.appliedenergistics2.Fluix=Fluix
 
-// Waila
+# Waila
 waila.appliedenergistics2.Crafting=Barkácsol
 waila.appliedenergistics2.DeviceOnline=Eszköz Online
 waila.appliedenergistics2.DeviceOffline=Eszköz Offline
@@ -364,7 +364,7 @@ waila.appliedenergistics2.Showing=Mutatott tárgy
 waila.appliedenergistics2.Contains=Energiaszint
 waila.appliedenergistics2.Channels=%2$d Csatornából %1$d használatban
 
-// Items
+# Items
 item.appliedenergistics2.ItemBasicStorageCell.1k.name=1k ME Tároló Cella
 item.appliedenergistics2.ItemBasicStorageCell.4k.name=4k ME Tároló Cella
 item.appliedenergistics2.ItemBasicStorageCell.16k.name=16k ME Tároló Cella
@@ -497,7 +497,7 @@ item.appliedenergistics2.ToolBiometricCard.name=Biometrikus Kártya
 item.appliedenergistics2.ToolDebugCard.name=Dev.Debug Kártya
 item.appliedenergistics2.ToolReplicatorCard.name=Dev.Replikátor Kártya
 
-// Commands
+# Commands
 commands.ae2.usage=Applied Energistics 2 által nyújtott parancsok - Használd az /ae2 list parancsot hogy kilistázza őket, és az /ae2 help _____ parancsot a segítséghez.
 commands.ae2.permissions=Nincs elegendő engedélyed hogy futtasd ezt a parancsot.
 commands.ae2.ChunkLogger=Állítgatja a Darabka betöltési és kitöltési naplót ( OP )
@@ -505,7 +505,7 @@ commands.ae2.ChunkLoggerOn=Darabka naplózás bekapcsolva
 commands.ae2.ChunkLoggerOff=Darabka naplózás kikapcsolva
 commands.ae2.Supporters=Megjelenít egy listát az AE2-höz hozzájárulókról
 
-// Achievements
+# Achievements
 achievement.ae2.Compass=Meteorit vadász
 achievement.ae2.Compass.desc=Készíts egy Meteor Iránytűt
 achievement.ae2.Presses=Ismeretlen technológia
@@ -557,7 +557,7 @@ achievement.ae2.StorageBus.desc=Készíts egy Tároló Buszt
 achievement.ae2.QNB=Kvantum Alagutazás
 achievement.ae2.QNB.desc=Készíts egy Kvantum Összeköttetést.
 
-// Stats
+# Stats
 stat.ae2.ItemsInserted=Tárgyak hozzáadva ME tárolókhoz
 stat.ae2.ItemsExtracted=Tárgyak eltávolítva ME tárolókból
 stat.ae2.TurnedCranks=Kurblik forgatva

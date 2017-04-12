@@ -19,19 +19,6 @@
 package appeng.integration.modules;
 
 
-import java.lang.reflect.Method;
-
-import com.google.common.base.Optional;
-
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-
-import mods.immibis.core.api.multipart.ICoverSystem;
-import mods.immibis.core.api.multipart.IMultipartTile;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.parts.IPartHost;
@@ -41,6 +28,16 @@ import appeng.helpers.Reflected;
 import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.IImmibisMicroblocks;
+import com.google.common.base.Optional;
+import mods.immibis.core.api.multipart.ICoverSystem;
+import mods.immibis.core.api.multipart.IMultipartTile;
+import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+
+import java.lang.reflect.Method;
 
 
 public class ImmibisMicroblocks implements IImmibisMicroblocks, IIntegrationModule

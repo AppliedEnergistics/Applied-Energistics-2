@@ -19,9 +19,8 @@
 package appeng.client.gui.widgets;
 
 
-import org.lwjgl.opengl.GL11;
-
 import appeng.client.gui.AEBaseGui;
+import org.lwjgl.opengl.GL11;
 
 
 public class GuiScrollbar implements IScrollSource

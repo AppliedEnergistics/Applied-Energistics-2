@@ -19,13 +19,12 @@
 package appeng.client.render;
 
 
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.block.AEBaseBlock;
 import appeng.client.texture.FlippableIcon;
 import appeng.client.texture.TmpFlippableIcon;
 import appeng.tile.AEBaseTile;
+import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
 
 
 public class BlockRenderInfo

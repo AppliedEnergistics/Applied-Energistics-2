@@ -19,15 +19,14 @@
 package appeng.core.features.registries;
 
 
-import java.util.HashMap;
-
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.features.IMatterCannonAmmoRegistry;
 import appeng.recipes.ores.IOreListener;
 import appeng.recipes.ores.OreDictionaryHandler;
 import appeng.util.Platform;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+
+import java.util.HashMap;
 
 
 public class MatterCannonAmmoRegistry implements IOreListener, IMatterCannonAmmoRegistry

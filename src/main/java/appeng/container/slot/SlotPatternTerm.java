@@ -19,12 +19,6 @@
 package appeng.container.slot;
 
 
-import java.io.IOException;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.AEApi;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.BaseActionSource;
@@ -32,6 +26,11 @@ import appeng.api.storage.IStorageMonitorable;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.packets.PacketPatternSlot;
 import appeng.helpers.IContainerCraftingPacket;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+
+import java.io.IOException;
 
 
 public class SlotPatternTerm extends SlotCraftingTerm

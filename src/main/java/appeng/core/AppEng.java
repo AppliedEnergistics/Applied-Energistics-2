@@ -19,29 +19,6 @@
 package appeng.core;
 
 
-import java.io.File;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.Nonnull;
-
-import com.google.common.base.Stopwatch;
-
-import net.minecraftforge.common.config.Configuration;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLInterModComms;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppedEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-
 import appeng.core.crash.CrashInfo;
 import appeng.core.crash.IntegrationCrashEnhancement;
 import appeng.core.crash.ModCrashEnhancement;
@@ -60,6 +37,18 @@ import appeng.services.export.ExportProcess;
 import appeng.services.export.ForgeExportConfig;
 import appeng.services.version.VersionCheckerConfig;
 import appeng.util.Platform;
+import com.google.common.base.Stopwatch;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import net.minecraftforge.common.config.Configuration;
+
+import javax.annotation.Nonnull;
+import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 
 @Mod( modid = AppEng.MOD_ID, acceptedMinecraftVersions = "[1.7.10]", name = AppEng.MOD_NAME, version = AEConfig.VERSION, dependencies = AppEng.MOD_DEPENDENCIES, guiFactory = "appeng.client.gui.config.AEConfigGuiFactory" )
@@ -89,7 +78,7 @@ public final class AppEng
 
 	/**
 	 * Folder for recipes
-	 *
+	 * <p>
 	 * used for CSV item names and the recipes
 	 */
 	private File recipeDirectory;

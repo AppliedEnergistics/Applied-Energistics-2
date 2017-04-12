@@ -19,14 +19,13 @@
 package appeng.tile.networking;
 
 
-import net.minecraftforge.common.util.ForgeDirection;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.util.AECableType;
 import appeng.tile.grid.AENetworkTile;
+import net.minecraftforge.common.util.ForgeDirection;
 
 
 public class TileCreativeEnergyCell extends AENetworkTile implements IAEPowerStorage

@@ -19,23 +19,20 @@
 package appeng.block.solids;
 
 
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinition;
 import appeng.client.render.effects.ChargedOreFX;
 import appeng.core.AEConfig;
 import appeng.core.CommonHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.util.Random;
 
 
 public class OreQuartzCharged extends OreQuartz

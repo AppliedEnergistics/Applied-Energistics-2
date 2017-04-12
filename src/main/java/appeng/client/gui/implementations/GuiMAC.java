@@ -19,8 +19,6 @@
 package appeng.client.gui.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
-
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.client.gui.widgets.GuiImgButton;
@@ -29,6 +27,7 @@ import appeng.client.gui.widgets.GuiProgressBar.Direction;
 import appeng.container.implementations.ContainerMAC;
 import appeng.core.localization.GuiText;
 import appeng.tile.crafting.TileMolecularAssembler;
+import net.minecraft.entity.player.InventoryPlayer;
 
 
 public class GuiMAC extends GuiUpgradeable

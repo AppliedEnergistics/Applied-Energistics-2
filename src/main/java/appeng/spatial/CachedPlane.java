@@ -19,11 +19,14 @@
 package appeng.spatial;
 
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map.Entry;
-
+import appeng.api.AEApi;
+import appeng.api.definitions.IBlockDefinition;
+import appeng.api.movable.IMovableHandler;
+import appeng.api.movable.IMovableRegistry;
+import appeng.api.util.WorldCoord;
+import appeng.core.AELog;
+import appeng.core.worlddata.WorldData;
+import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.ChunkPosition;
@@ -33,14 +36,10 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import appeng.api.AEApi;
-import appeng.api.definitions.IBlockDefinition;
-import appeng.api.movable.IMovableHandler;
-import appeng.api.movable.IMovableRegistry;
-import appeng.api.util.WorldCoord;
-import appeng.core.AELog;
-import appeng.core.worlddata.WorldData;
-import appeng.util.Platform;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map.Entry;
 
 
 public class CachedPlane

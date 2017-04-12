@@ -19,22 +19,20 @@
 package appeng.client.render;
 
 
-import java.util.HashMap;
-import java.util.Map;
-
+import appeng.block.AEBaseBlock;
+import appeng.core.AELog;
+import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
+import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 
-import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import appeng.block.AEBaseBlock;
-import appeng.core.AELog;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @SideOnly( Side.CLIENT )
