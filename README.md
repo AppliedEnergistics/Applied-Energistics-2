@@ -1,6 +1,6 @@
-* Travis:[![Travis branch](https://img.shields.io/travis/xsun2001/Applied-Energistics-2-Unofficial/rv3-1.7.10.svg?style=flat-square)](https://travis-ci.org/xsun2001/Applied-Energistics-2-Unofficial)
-* AppVeyor:[![AppVeyor branch](https://img.shields.io/appveyor/ci/xsun2001/applied-energistics-2-unofficial/rv3-1.7.10.svg?style=flat-square)](https://ci.appveyor.com/project/xsun2001/applied-energistics-2-unofficial)
-* [![GitHub release](https://img.shields.io/github/release/xsun2001/Applied-Energistics-2-Unofficial.svg?style=flat-square)](https://github.com/xsun2001/Applied-Energistics-2-Unofficial/releases)
+[![Build Status](https://travis-ci.org/xsun2001/Applied-Energistics-2-Unofficial.svg?branch=rv3-1.7.10)](https://travis-ci.org/xsun2001/Applied-Energistics-2-Unofficial)
+[![Build status](https://ci.appveyor.com/api/projects/status/dkc9k9fvpajb374f?svg=true)](https://ci.appveyor.com/project/xsun2001/applied-energistics-2-unofficial)
+[![GitHub release](https://img.shields.io/github/release/xsun2001/Applied-Energistics-2-Unofficial.svg?style=flat-square)](https://github.com/xsun2001/Applied-Energistics-2-Unofficial/releases)
 
 # Applied Energistics 2 Unofficial
 
