@@ -1,8 +1,8 @@
-[![Latest Build](https://img.shields.io/teamcity/http/ci.tsr.me/s/AppliedEnergistics_AutoHeadBuild.svg?label=Latest Build&style=flat-square)](http://ci.tsr.me/viewType.html?buildTypeId=AppliedEnergistics_AutoHeadBuild&tab=buildTypeStatusDiv)
-[![Latest Tag](https://img.shields.io/github/tag/AppliedEnergistics/Applied-Energistics-2.svg?label=Latest Tag&style=flat-square)](https://github.com/AppliedEnergistics/Applied-Energistics-2/tags)
-[![Latest Release](https://img.shields.io/github/release/AppliedEnergistics/Applied-Energistics-2.svg?label=Latest Release&style=flat-square)](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases)
+* Travis:[![Travis branch](https://img.shields.io/travis/xsun2001/Applied-Energistics-2-Unofficial/rv3-1.7.10.svg?style=flat-square)](https://travis-ci.org/xsun2001/Applied-Energistics-2-Unofficial)
+* AppVeyor:[![AppVeyor branch](https://img.shields.io/appveyor/ci/xsun2001/applied-energistics-2-unofficial/rv3-1.7.10.svg?style=flat-square)](https://ci.appveyor.com/project/xsun2001/applied-energistics-2-unofficial)
+* [![GitHub release](https://img.shields.io/github/release/xsun2001/Applied-Energistics-2-Unofficial.svg?style=flat-square)](https://github.com/xsun2001/Applied-Energistics-2-Unofficial/releases)
 
-# Applied Energistics 2
+# Applied Energistics 2 Unofficial
 
 ## Table of Contents
 
@@ -20,12 +20,15 @@
 
 ## About
 
-A Mod about Matter, Energy and using them to conquer the world..
+>A Mod about Matter, Energy and using them to conquer the world..
+
+This project is to fix some bugs in Applied Energistics 2 that are no longer maintained for version 1.7.10. This project will also be discontinued after the vast majority of players have transitioned to over MC1.7.10.
 
 ## Contacts
 
-* [Website](http://ae-mod.info/)
+* [Website](http://ae-mod.info/) _This website will contain nothing about this unofficial version._
 * [IRC #appliedenergistics on esper.net](http://webchat.esper.net/?channels=appliedenergistics&prompt=1)
+* [Original GitHub](https://github.com/xsun2001/Applied-Energistics-2-Unofficial)
 * [GitHub](https://github.com/AppliedEnergistics/Applied-Energistics-2)
 
 ## License
@@ -44,7 +47,7 @@ A Mod about Matter, Energy and using them to conquer the world..
 
 ## Downloads
 
-Downloads can be found on [CurseForge](http://www.curse.com/mc-mods/minecraft/223794-applied-energistics-2) or on the [official website](http://ae-mod.info/Downloads/).
+You can find its download address at [GitHub releases](https://github.com/xsun2001/Applied-Energistics-2-Unofficial/releases).
 
 ## Installation
 
@@ -55,7 +58,7 @@ You install this mod by putting it into the `minecraft/mods/` folder. It has no 
 Applied Energistics 2 crashing, have a suggestion, found a bug?  Create an issue now!
 
 1. Make sure your issue has not already been answered or fixed and you are using the latest version. Also think about whether your issue is a valid one before submitting it.
-2. Go to [the issues page](https://github.com/AppliedEnergistics/Applied-Energistics-2/issues) and click [new issue](https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/new)
+2. Go to [the issues page](https://github.com/xsun2001/Applied-Energistics-2-Unofficial/issues) and click [new issue](https://github.com/xsun2001/Applied-Energistics-2-Unofficial/issues/new)
 3. Enter your a title of your issue (something that summarizes your issue), and then create a detailed description of the issue.
     * Do not tag it with something like `[Feature]` or `[Bug]`. When it is applicable, we will take care of it.
     * The following details are required. Not including them can cause the issue to be closed.
@@ -83,8 +86,8 @@ Providing as many details as possible does help us to find and resolve the issue
 ## Building
 
 1. Clone this repository via 
-  - SSH `git clone git@github.com:AppliedEnergistics/Applied-Energistics-2.git` or 
-  - HTTPS `git clone https://github.com/AppliedEnergistics/Applied-Energistics-2.git`
+  - SSH `git clone git@github.com:xsun2001/Applied-Energistics-2-Unofficial.git` or 
+  - HTTPS `git clone https://github.com/xsun2001/Applied-Energistics-2-Unofficial.git`
 2. Setup workspace 
   - Decompiled source `gradlew setupDecompWorkspace`
   - Obfuscated source `gradlew setupDevWorkspace`
@@ -102,7 +105,7 @@ Providing as many details as possible does help us to find and resolve the issue
 Before you want to add major changes, you might want to discuss them with us first, before wasting your time.
 If you are still willing to contribute to this project, you can contribute via [Pull-Request](https://help.github.com/articles/creating-a-pull-request).
 
-The [guidelines for contributing](https://github.com/AppliedEnergistics/Applied-Energistics-2/blob/master/CONTRIBUTING.md) contain more detailed information about topics like the used code style and should also be considered.
+The [guidelines for contributing](https://github.com/xsun2001/Applied-Energistics-2-Unofficial/blob/master/CONTRIBUTING.md) contain more detailed information about topics like the used code style and should also be considered.
 
 Here are a few things to keep in mind that will help get your PR approved.
 
@@ -134,7 +137,7 @@ If you are only doing single file pull requests, GitHub supports using a quick w
 
 The API for Applied Energistics 2. It is open source to discuss changes, improve documentation, and provide better add-on support in general.
 
-Development and standard builds can be obtained [Here](http://ae2.ae-mod.info/Downloads/).
+Development and standard builds can be obtained at [GitHub releases](https://github.com/xsun2001/Applied-Energistics-2-Unofficial/releases) too.
 
 ### Maven
 
@@ -185,4 +188,4 @@ Thanks to
 * Notch et al for Minecraft
 * Lex et al for MinecraftForge
 * AlgorithmX2 for AppliedEnergistics2
-* all [contributors](https://github.com/AppliedEnergistics/Applied-Energistics-2/graphs/contributors)
+* all [contributors](https://github.com/xsun2001/Applied-Energistics-2-Unofficial/graphs/contributors)
