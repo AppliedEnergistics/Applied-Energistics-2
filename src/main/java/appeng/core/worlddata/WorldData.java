@@ -19,27 +19,24 @@
 package appeng.core.worlddata;
 
 
+import appeng.core.AEConfig;
+import appeng.services.CompassService;
+import appeng.services.compass.CompassThreadFactory;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.config.Configuration;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.config.Configuration;
-
-import appeng.core.AEConfig;
-import appeng.services.CompassService;
-import appeng.services.compass.CompassThreadFactory;
-
 
 /**
  * Singleton access to anything related to world-based data.
- *
+ * <p>
  * Data will change depending which world is loaded. Will probably not affect SMP at all since only one world is loaded,
  * but SSP more, cause they play on
  * different worlds.
@@ -102,12 +99,11 @@ public final class WorldData implements IWorldData
 		this.spawnData = spawnData;
 
 		this.startables = Lists.<IOnWorldStartable>newArrayList( playerData, dimensionData, storageData );
-		this.stoppables = Lists.<IOnWorldStoppable>newArrayList( playerData, dimensionData, storageData, compassData );
+		this.stoppables = Lists.newArrayList( playerData, dimensionData, storageData, compassData );
 	}
 
 	/**
 	 * @return ae2 data related to a specific world
-	 *
 	 * @deprecated do not use singletons which are dependent on specific world state
 	 */
 	@Deprecated
@@ -119,7 +115,7 @@ public final class WorldData implements IWorldData
 
 	/**
 	 * Requires to start up from external from here
-	 *
+	 * <p>
 	 * drawback of the singleton build style
 	 */
 	public static void onServerAboutToStart()
