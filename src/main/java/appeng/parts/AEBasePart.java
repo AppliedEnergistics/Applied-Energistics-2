@@ -57,6 +57,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -435,6 +437,8 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	private boolean useMemoryCard( final EntityPlayer player )
 	{
 		final ItemStack memCardIS = player.inventory.getCurrentItem();
+		if( ForgeEventFactory.onItemUseStart( player, memCardIS, 1 ) <= 0 )
+			return false;
 
 		if( memCardIS != null && this.useStandardMemoryCard() && memCardIS.getItem() instanceof IMemoryCard )
 		{
@@ -490,7 +494,9 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 			return true;
 		}
 
-		return this.onPartActivate( player, pos );
+		int x = (int) pos.xCoord, y = (int) pos.yCoord, z = (int) pos.zCoord;
+		PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract( player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, x, y, z, this.side.flag, player.getEntityWorld() );
+		return !event.isCanceled() && this.onPartActivate( player, pos );
 	}
 
 	@Override
@@ -501,7 +507,9 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 			return true;
 		}
 
-		return this.onPartShiftActivate( player, pos );
+		int x = (int) pos.xCoord, y = (int) pos.yCoord, z = (int) pos.zCoord;
+		PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract( player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, x, y, z, this.side.flag, player.getEntityWorld() );
+		return !event.isCanceled() && this.onPartShiftActivate( player, pos );
 	}
 
 	public boolean onPartActivate( final EntityPlayer player, final Vec3 pos )
