@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/xsun2001/Applied-Energistics-2-Unofficial.svg?branch=rv3-1.7.10)](https://travis-ci.org/xsun2001/Applied-Energistics-2-Unofficial)
 [![Build status](https://ci.appveyor.com/api/projects/status/dkc9k9fvpajb374f?svg=true)](https://ci.appveyor.com/project/xsun2001/applied-energistics-2-unofficial)
-[![GitHub release](https://img.shields.io/github/release/xsun2001/Applied-Energistics-2-Unofficial.svg?style=flat-square)](https://github.com/xsun2001/Applied-Energistics-2-Unofficial/releases)
+[![GitHub release](https://img.shields.io/github/release/xsun2001/Applied-Energistics-2-Unofficial.svg?style=flat)](https://github.com/xsun2001/Applied-Energistics-2-Unofficial/releases)
 
 # Applied Energistics 2 Unofficial
 
@@ -48,6 +48,8 @@ This project is to fix some bugs in Applied Energistics 2 that are no longer mai
 ## Downloads
 
 You can find its download address at [GitHub releases](https://github.com/xsun2001/Applied-Energistics-2-Unofficial/releases).
+
+The early build will be find at [AppVeyor](https://ci.appveyor.com/project/xsun2001/applied-energistics-2-unofficial/build/artifacts).
 
 ## Installation
 
