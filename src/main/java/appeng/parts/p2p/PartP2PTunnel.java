@@ -47,6 +47,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -229,6 +230,9 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		final TunnelType tt = AEApi.instance().registries().p2pTunnel().getTunnelTypeByItem( is );
 		if( is != null && is.getItem() instanceof IMemoryCard )
 		{
+			if( ForgeEventFactory.onItemUseStart( player, is, 1 ) <= 0 )
+				return false;
+
 			final IMemoryCard mc = (IMemoryCard) is.getItem();
 			final NBTTagCompound data = mc.getData( is );
 
@@ -386,6 +390,9 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		final ItemStack is = player.inventory.getCurrentItem();
 		if( is != null && is.getItem() instanceof IMemoryCard )
 		{
+			if( ForgeEventFactory.onItemUseStart( player, is, 1 ) <= 0 )
+				return false;
+
 			final IMemoryCard mc = (IMemoryCard) is.getItem();
 			final NBTTagCompound data = new NBTTagCompound();
 

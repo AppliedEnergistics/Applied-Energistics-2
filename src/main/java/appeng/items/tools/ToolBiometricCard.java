@@ -36,6 +36,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -57,7 +58,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	@Override
 	public ItemStack onItemRightClick( final ItemStack is, final World w, final EntityPlayer p )
 	{
-		if( p.isSneaking() )
+		if( ForgeEventFactory.onItemUseStart( p, is, 1 ) > 0 && p.isSneaking() )
 		{
 			this.encode( is, p );
 			p.swingItem();

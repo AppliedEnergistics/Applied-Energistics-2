@@ -50,6 +50,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -243,6 +244,8 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 			{
 				if( Platform.isWrench( player, is, x, y, z ) && player.isSneaking() )
 				{
+					if( ForgeEventFactory.onItemUseStart( player, is, 1 ) <= 0 )
+						return false;
 					final Block id = w.getBlock( x, y, z );
 					if( id != null )
 					{
@@ -284,6 +287,8 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 
 				if( is.getItem() instanceof IMemoryCard && !( this instanceof BlockCableBus ) )
 				{
+					if( ForgeEventFactory.onItemUseStart( player, is, 1 ) <= 0 )
+						return false;
 					final IMemoryCard memoryCard = (IMemoryCard) is.getItem();
 					if( player.isSneaking() )
 					{

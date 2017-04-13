@@ -41,6 +41,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -58,7 +59,8 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	@Override
 	public ItemStack onItemRightClick( final ItemStack item, final World w, final EntityPlayer player )
 	{
-		AEApi.instance().registries().wireless().openWirelessTerminalGui( item, w, player );
+		if( ForgeEventFactory.onItemUseStart( player, item, 1 ) > 0 )
+			AEApi.instance().registries().wireless().openWirelessTerminalGui( item, w, player );
 		return item;
 	}
 

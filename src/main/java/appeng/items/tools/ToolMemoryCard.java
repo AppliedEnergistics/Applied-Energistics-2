@@ -31,6 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -140,6 +141,8 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	{
 		if( player.isSneaking() && !w.isRemote )
 		{
+			if( ForgeEventFactory.onItemUseStart( player, is, 1 ) <= 0 )
+				return false;
 			final IMemoryCard mem = (IMemoryCard) is.getItem();
 			mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
 			is.setTagCompound( null );

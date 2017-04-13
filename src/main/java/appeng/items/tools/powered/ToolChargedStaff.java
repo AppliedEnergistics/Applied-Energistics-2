@@ -27,8 +27,10 @@ import appeng.server.ServerHelper;
 import appeng.util.Platform;
 import com.google.common.base.Optional;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.EnumSet;
 
@@ -45,6 +47,9 @@ public class ToolChargedStaff extends AEBasePoweredItem
 	@Override
 	public boolean hitEntity( final ItemStack item, final EntityLivingBase target, final EntityLivingBase hitter )
 	{
+		if( hitter instanceof EntityPlayer && ForgeEventFactory.onItemUseStart( (EntityPlayer) hitter, item, 1 ) <= 0 )
+			return false;
+
 		if( this.getAECurrentPower( item ) > 300 )
 		{
 			this.extractAEPower( item, 300 );
