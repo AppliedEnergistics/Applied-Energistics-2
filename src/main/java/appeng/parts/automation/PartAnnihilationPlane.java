@@ -21,6 +21,7 @@ package appeng.parts.automation;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.config.YesNo;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -75,10 +76,13 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	private static final IIcon BACK_ICON = CableBusTextures.PartTransitionPlaneBack.getIcon();
 	private static final IIcon STATUS_ICON = CableBusTextures.PartMonitorSidesStatus.getIcon();
 	private static final IIcon ACTIVE_ICON = CableBusTextures.BlockAnnihilationPlaneOn.getIcon();
+	private static final int MAX_CACHE_TIME = 60;
 
 	private final BaseActionSource mySrc = new MachineSource( this );
 	private boolean isAccepting = true;
 	private boolean breaking = false;
+	private YesNo permissionCache = YesNo.UNDECIDED;
+	private int cacheTime = 0;
 
 	public PartAnnihilationPlane( final ItemStack is )
 	{
@@ -476,6 +480,12 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 			return TickRateModulation.URGENT;
 		}
 
+		if( ticksSinceLastCall == 120 || cacheTime >= MAX_CACHE_TIME )
+		{
+			cacheTime = 0;
+			permissionCache = YesNo.UNDECIDED;
+		}
+		cacheTime += ticksSinceLastCall - 120;
 		this.isAccepting = true;
 		return this.breakBlock( false );
 	}
@@ -490,11 +500,13 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		final float hardness = block.getBlockHardness( w, x, y, z );
 		final boolean ignoreMaterials = material == Material.air || material == Material.lava || material == Material.water || material.isLiquid();
 		final boolean ignoreBlocks = block == Blocks.bedrock || block == Blocks.end_portal || block == Blocks.end_portal_frame || block == Blocks.command_block;
-		BlockEvent.BreakEvent event = new BlockEvent.BreakEvent( x, y, z, w, block, w.getBlockMetadata( x, y, z ), Platform.getPlayer( w ) );
-		MinecraftForge.EVENT_BUS.post( event );
-		final boolean havePermission = !event.isCanceled();
-
-		return havePermission && !ignoreMaterials && !ignoreBlocks && !w.isAirBlock( x, y, z ) && w.blockExists( x, y, z ) && w.canMineBlock( Platform.getPlayer( w ), x, y, z ) && hardness >= 0f;
+		if( permissionCache == YesNo.UNDECIDED )
+		{
+			BlockEvent.BreakEvent event = new BlockEvent.BreakEvent( x, y, z, w, block, w.getBlockMetadata( x, y, z ), Platform.getPlayer( w ) );
+			MinecraftForge.EVENT_BUS.post( event );
+			permissionCache = ( event.isCanceled() ) ? YesNo.NO : YesNo.YES;
+		}
+		return permissionCache == YesNo.YES && !ignoreMaterials && !ignoreBlocks && !w.isAirBlock( x, y, z ) && w.blockExists( x, y, z ) && w.canMineBlock( Platform.getPlayer( w ), x, y, z ) && hardness >= 0f;
 	}
 
 	protected List<ItemStack> obtainBlockDrops( final WorldServer w, final int x, final int y, final int z )
