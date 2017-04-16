@@ -947,7 +947,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			{
 				if( this.isBlocking() )
 				{
-					if( ad.simulateRemove( 1, null, null ) != null )
+					if( ad.containsItems() )
 					{
 						continue;
 					}
