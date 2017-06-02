@@ -112,7 +112,7 @@ public abstract class AEBaseBlock extends Block
 	}
 
 	@Override
-	public void addCollisionBoxToList( final IBlockState state, final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
+	public void addCollisionBoxToList( final IBlockState state, final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, @Nullable final Entity e, boolean  p_185477_7_)
 	{
 		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
 
@@ -131,7 +131,7 @@ public abstract class AEBaseBlock extends Block
 		}
 		else
 		{
-			super.addCollisionBoxToList( state, w, pos, bb, out, e );
+			super.addCollisionBoxToList( state, w, pos, bb, out, e, p_185477_7_ );
 		}
 	}
 
