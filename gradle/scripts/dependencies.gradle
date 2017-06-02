@@ -43,6 +43,11 @@ repositories {
         name 'tterrag maven'
         url "http://maven.tterrag.com/"
     }
+    
+    maven { // McJtyLib
+        name 'mcjty'
+        url "http://maven.k-4u.nl/"
+    }
 }
 
 configurations {
@@ -54,6 +59,7 @@ dependencies {
     //mods "mcp.mobius.waila:Waila:${waila_version}"
     //mods "net.industrial-craft:industrialcraft-2:${ic2_version}:dev"
     mods "mcjty.theoneprobe:TheOneProbe:${top_version}"
+    mods "com.github.mcjty:compatlayer:${compatlayer_version}"
 
     // compile against provided APIs
     compileOnly "mezz.jei:jei_${minecraft_version}:${jei_version}:api"
