@@ -19,22 +19,22 @@
 package appeng.integration;
 
 
-import appeng.integration.modules.ic2.IC2Module;
+// import appeng.integration.modules.ic2.IC2Module;
 import appeng.integration.modules.jei.JEIModule;
 import appeng.integration.modules.theoneprobe.TheOneProbeModule;
-import appeng.integration.modules.waila.WailaModule;
+// import appeng.integration.modules.waila.WailaModule;
 
 
 public enum IntegrationType
 {
-	IC2( IntegrationSide.BOTH, "Industrial Craft 2", "IC2" )
-	{
-		@Override
-		public IIntegrationModule createInstance()
-		{
-			return Integrations.setIc2( new IC2Module() );
-		}
-	},
+//	IC2( IntegrationSide.BOTH, "Industrial Craft 2", "IC2" )
+//	{
+//		@Override
+//		public IIntegrationModule createInstance()
+//		{
+//			return Integrations.setIc2( new IC2Module() );
+//		}
+//	},
 
 	RC( IntegrationSide.BOTH, "Railcraft", "Railcraft" ),
 
@@ -44,14 +44,14 @@ public enum IntegrationType
 
 	MFR( IntegrationSide.BOTH, "Mine Factory Reloaded", "MineFactoryReloaded" ),
 
-	Waila( IntegrationSide.BOTH, "Waila", "Waila" )
-	{
-		@Override
-		public IIntegrationModule createInstance()
-		{
-			return new WailaModule();
-		}
-	},
+//	Waila( IntegrationSide.BOTH, "Waila", "Waila" )
+//	{
+//		@Override
+//		public IIntegrationModule createInstance()
+//		{
+//			return new WailaModule();
+//		}
+//	},
 
 	InvTweaks( IntegrationSide.CLIENT, "Inventory Tweaks", "inventorytweaks" ),
 
