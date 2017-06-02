@@ -61,6 +61,7 @@ import net.minecraft.stats.Achievement;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -76,6 +77,8 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
@@ -1817,5 +1820,25 @@ public class Platform
 		isPurified |= materials.purifiedNetherQuartzCrystal().isSameAs( what );
 
 		return isPurified;
+	}
+
+	/**
+	 * Added because the internal Forge GameRegistry method changed a bit
+	 * @param tileEntityClass
+	 * @param id
+	 * @param alternatives
+	 */
+	public static void registerTileEntityWithAlternatives(Class<? extends TileEntity> tileEntityClass, String id, String... alternatives)
+	{
+		ResourceLocation rloc = GameData.getTileEntityRegistry().getNameForObject(tileEntityClass);
+
+		/**
+		 * If there's no mention of said TE in the registry, add it, otherwise add the aliases.
+		 */
+		if(rloc == null) {
+			GameRegistry.registerTileEntityWithAlternatives( tileEntityClass, AppEng.MOD_ID.toLowerCase() + ":" + id, id );
+		} else {
+			GameData.getTileEntityRegistry().addLegacyName(new ResourceLocation(id), new ResourceLocation(AppEng.MOD_ID.toLowerCase() + ":" + id));
+		}
 	}
 }
