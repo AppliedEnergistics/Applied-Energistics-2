@@ -38,7 +38,7 @@ public enum IntegrationType
 		}
 	},
 
-	RF( IntegrationSide.BOTH, "RedstoneFlux Power - Tiles", "CoFHAPI" )
+	RF( IntegrationSide.BOTH, "RedstoneFlux Power - Tiles", "cofhapi" )
 	{
 
 		@Override
@@ -48,7 +48,7 @@ public enum IntegrationType
 		}
 	},
 
-	RFItem( IntegrationSide.BOTH, "RedstoneFlux Power - Items", "CoFHAPI" )
+	RFItem( IntegrationSide.BOTH, "RedstoneFlux Power - Items", "cofhapi" )
 	{
 
 		@Override
