@@ -80,6 +80,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
+import cofh.api.item.IToolHammer;
+
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -803,7 +805,20 @@ public class Platform
 			{ // explodes without BC
 
 			}
-
+			
+			// CoFH Wrench Support
+            try {
+                if( eq.getItem() instanceof IToolHammer )
+                {
+                    IToolHammer wrench = (IToolHammer) eq.getItem();
+                    return wrench.isUsable( eq, player, pos );
+                }
+            }
+            catch( final Throwable ignore )
+            {
+            
+            }
+            
 			if( eq.getItem() instanceof IAEWrench )
 			{
 				final IAEWrench wrench = (IAEWrench) eq.getItem();
