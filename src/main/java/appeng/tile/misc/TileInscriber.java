@@ -104,7 +104,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	private int finalStep;
 	private long clientStart;
 	private final IItemHandler topItemHandler = new ItemHandler( 0, 0 );
-	private final IItemHandler bottomItemHandler = new ItemHandler( 1, 0 );
+	private final IItemHandler bottomItemHandler = new ItemHandler( 1, 1 );
 	private final IItemHandler sideItemHandler = new ItemHandler( 2, 3 );
 
 	@Reflected
