@@ -53,7 +53,7 @@ public class StackSizeRenderer
 			final boolean unicodeFlag = fontRenderer.getUnicodeFlag();
 			fontRenderer.setUnicodeFlag( false );
 
-			if( is.stackSize == 0 )
+			if( is.stackSize == 0 && ( aeStack == null || aeStack.getCountRequestable() == 0 ) )
 			{
 				final String craftLabelText = AEConfig.instance().useTerminalUseLargeFont() ? GuiText.LargeFontCraft.getLocal() : GuiText.SmallFontCraft.getLocal();
 				GlStateManager.disableLighting();
