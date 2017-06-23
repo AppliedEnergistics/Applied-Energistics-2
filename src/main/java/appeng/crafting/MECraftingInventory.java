@@ -95,6 +95,13 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		}
 
 		this.localCache = this.target.getAvailableItems( new ItemListIgnoreCrafting<>( AEApi.instance().storage().createItemList() ) );
+		for( IAEItemStack is : this.localCache )
+		{
+			if( is.getCountRequestable() > 0 )
+			{
+				is.incStackSize( is.getCountRequestable() );
+			}
+		}
 
 		this.par = parent;
 	}
@@ -134,8 +141,13 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		}
 
 		this.localCache = new ItemListIgnoreCrafting<>( AEApi.instance().storage().createItemList() );
-		for( final IAEItemStack is : target.getStorageList() )
+		for( IAEItemStack is : target.getStorageList() )
 		{
+			if( is.getCountRequestable() > 0 )
+			{
+				is = is.copy();
+				is.incStackSize( is.getCountRequestable() );
+			}
 			this.localCache.add( target.extractItems( is, Actionable.SIMULATE, src ) );
 		}
 
@@ -177,6 +189,13 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		}
 
 		this.localCache = target.getAvailableItems( AEApi.instance().storage().createItemList() );
+		for( IAEItemStack is : this.localCache )
+		{
+			if(is.getCountRequestable() > 0)
+			{
+				is.incStackSize( is.getCountRequestable() );
+			}
+		}
 		this.par = null;
 	}
 
