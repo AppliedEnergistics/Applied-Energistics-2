@@ -20,6 +20,7 @@ package appeng.container.slot;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -162,6 +163,8 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 		if( is != null && Platform.itemComparisons().isEqualItem( request, is ) )
 		{
 			final ItemStack[] set = new ItemStack[this.getPattern().getSizeInventory()];
+			// Safeguard for empty slots in the inventory for now
+			Arrays.fill(set, ItemStack.EMPTY);
 
 			// add one of each item to the items on the board...
 			if( Platform.isServer() )
