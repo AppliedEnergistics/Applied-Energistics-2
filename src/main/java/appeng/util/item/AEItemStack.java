@@ -164,7 +164,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		short itemNumericId = data.readShort();
 		d.setString( "id", String.valueOf( itemNumericId ) );
 		d.setShort( "Damage", data.readShort() );
-		d.setByte( "Count", (byte) 0 );
+		d.setByte( "Count", (byte) 1 );
 
 		if( hasTagCompound )
 		{
