@@ -231,9 +231,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		i.setString( "id", resourcelocation == null ? "minecraft:air" : resourcelocation.toString() );
 
 		/*
-		 * if ( Count != null && Count instanceof NBTTagByte ) ((NBTTagByte) Count).data = (byte) 0; else
+		 * if ( Count != null && Count instanceof NBTTagByte ) ((NBTTagByte) Count).data = (byte) 1; else
 		 */
-		i.setByte( "Count", (byte) 0 );
+		i.setByte( "Count", (byte) 1 );
 
 		/*
 		 * if ( Cnt != null && Cnt instanceof NBTTagLong ) ((NBTTagLong) Cnt).data = this.stackSize; else
