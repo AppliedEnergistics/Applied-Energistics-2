@@ -57,6 +57,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		this.setStackSize( is.getStackSize() );
 		this.setCraftable( is.isCraftable() );
 		this.setCountRequestable( is.getCountRequestable() );
+		this.setShowCraftingLabel( is.getShowCraftingLabel() );
 	}
 
 	private AEItemStack( final ItemStack is )
@@ -156,6 +157,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		final byte countReqType = (byte) ( ( mask & 0x30 ) >> 4 );
 		final boolean isCraftable = ( mask & 0x40 ) > 0;
 		final boolean hasTagCompound = ( mask & 0x80 ) > 0;
+		boolean showCraftingLabel = data.readBoolean();
 
 		// don't send this...
 		final NBTTagCompound d = new NBTTagCompound();
@@ -182,6 +184,11 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		final long countRequestable = getPacketValue( countReqType, data );
 
 		final ItemStack itemstack = new ItemStack( d );
+
+		if(!showCraftingLabel) {
+			showCraftingLabel = stackSize == 0;
+		}
+
 		if( itemstack == null )
 		{
 			return null;
@@ -189,7 +196,8 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 		final AEItemStack item = AEItemStack.create( itemstack );
 		// item.priority = (int) priority;
-		item.setStackSize( stackSize );
+		item.setStackSize( showCraftingLabel ? 1 : stackSize );
+		item.setShowCraftingLabel( showCraftingLabel );
 		item.setCountRequestable( countRequestable );
 		item.setCraftable( isCraftable );
 		return item;
@@ -209,6 +217,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		this.incStackSize( option.getStackSize() );
 		this.setCountRequestable( this.getCountRequestable() + option.getCountRequestable() );
 		this.setCraftable( this.isCraftable() || option.isCraftable() );
+		this.setShowCraftingLabel( this.getShowCraftingLabel() || option.getShowCraftingLabel() );
 	}
 
 	@Override

@@ -60,6 +60,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		// priority = is.priority;
 		this.setCraftable( is.isCraftable() );
 		this.setCountRequestable( is.getCountRequestable() );
+		this.setShowCraftingLabel( is.getShowCraftingLabel() );
 
 		this.myHash = is.myHash;
 	}
@@ -120,6 +121,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		final byte countReqType = (byte) ( ( mask & 0x30 ) >> 4 );
 		final boolean isCraftable = ( mask & 0x40 ) > 0;
 		final boolean hasTagCompound = ( mask & 0x80 ) > 0;
+		boolean showCraftingLabel = data.readBoolean();
 
 		// don't send this...
 		final NBTTagCompound d = new NBTTagCompound();
@@ -147,6 +149,11 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		final long countRequestable = getPacketValue( countReqType, data );
 
 		final FluidStack fluidStack = FluidStack.loadFluidStackFromNBT( d );
+
+		if (!showCraftingLabel) {
+			showCraftingLabel = stackSize == 0;
+		}
+
 		if( fluidStack == null )
 		{
 			return null;
@@ -155,6 +162,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		final AEFluidStack fluid = AEFluidStack.create( fluidStack );
 		// fluid.priority = (int) priority;
 		fluid.setStackSize( stackSize );
+		fluid.setShowCraftingLabel( showCraftingLabel );
 		fluid.setCountRequestable( countRequestable );
 		fluid.setCraftable( isCraftable );
 		return fluid;
@@ -174,6 +182,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		this.incStackSize( option.getStackSize() );
 		this.setCountRequestable( this.getCountRequestable() + option.getCountRequestable() );
 		this.setCraftable( this.isCraftable() || option.isCraftable() );
+		this.setShowCraftingLabel( this.getShowCraftingLabel() || option.getShowCraftingLabel() );
 	}
 
 	@Override
