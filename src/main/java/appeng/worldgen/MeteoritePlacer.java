@@ -252,29 +252,29 @@ public final class MeteoritePlacer
 							r = (int) ( Math.random() * 1000 );
 						}
 
-						ItemStack toAdd = null;
+						ItemStack toAdd = ItemStack.EMPTY;
 						final IMaterials materials = AEApi.instance().definitions().materials();
 
 						switch( r % 4 )
 						{
 							case 0:
-								toAdd = materials.calcProcessorPress().maybeStack( 1 ).orElse( null );
+								toAdd = materials.calcProcessorPress().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 								break;
 							case 1:
-								toAdd = materials.engProcessorPress().maybeStack( 1 ).orElse( null );
+								toAdd = materials.engProcessorPress().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 								break;
 							case 2:
-								toAdd = materials.logicProcessorPress().maybeStack( 1 ).orElse( null );
+								toAdd = materials.logicProcessorPress().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 								break;
 							case 3:
-								toAdd = materials.siliconPress().maybeStack( 1 ).orElse( null );
+								toAdd = materials.siliconPress().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 								break;
 							default:
 						}
 
-						if( toAdd != null )
+						if( !toAdd.isEmpty() )
 						{
-							if( ap.simulateRemove( 1, toAdd, null ) == null )
+							if( ap.simulateRemove( 1, toAdd, null ).isEmpty() )
 							{
 								ap.addItems( toAdd );
 							}
@@ -310,7 +310,7 @@ public final class MeteoritePlacer
 							possibles.add( new ItemStack( net.minecraft.init.Items.GOLD_NUGGET ) );
 
 							ItemStack nugget = Platform.pickRandom( possibles );
-							if( nugget != null )
+							if( !nugget.isEmpty() )
 							{
 								nugget = nugget.copy();
 								nugget.setCount( (int) ( Math.random() * 12 ) + 1 );

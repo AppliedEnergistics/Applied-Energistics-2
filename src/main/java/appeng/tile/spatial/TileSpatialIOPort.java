@@ -114,7 +114,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 
 	private boolean isSpatialCell( final ItemStack cell )
 	{
-		if( cell != null && cell.getItem() instanceof ISpatialStorageCell )
+		if( !cell.isEmpty() && cell.getItem() instanceof ISpatialStorageCell )
 		{
 			final ISpatialStorageCell sc = (ISpatialStorageCell) cell.getItem();
 			return sc != null && sc.isSpatialStorage( cell );
@@ -126,7 +126,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 	public Void call( final World world ) throws Exception
 	{
 		final ItemStack cell = this.getStackInSlot( 0 );
-		if( this.isSpatialCell( cell ) && this.getStackInSlot( 1 ) == null )
+		if( this.isSpatialCell( cell ) && this.getStackInSlot( 1 ).isEmpty() )
 		{
 			final IGrid gi = this.getProxy().getGrid();
 			final IEnergyGrid energy = this.getProxy().getEnergy();
@@ -147,7 +147,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 						if( tr.success )
 						{
 							energy.extractAEPower( req, Actionable.MODULATE, PowerMultiplier.CONFIG );
-							this.setInventorySlotContents( 0, null );
+							this.setInventorySlotContents( 0, ItemStack.EMPTY );
 							this.setInventorySlotContents( 1, cell );
 						}
 					}

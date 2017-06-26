@@ -81,7 +81,7 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 
 		for( final ItemStack is : this.viewCell )
 		{
-			if( is != null )
+			if( !is.isEmpty() )
 			{
 				drops.add( is );
 			}

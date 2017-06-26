@@ -92,7 +92,7 @@ public abstract class AEBaseGui extends GuiContainer
 	private GuiScrollbar myScrollBar = null;
 	private boolean disableShiftClick = false;
 	private Stopwatch dbl_clickTimer = Stopwatch.createStarted();
-	private ItemStack dbl_whichItem;
+	private ItemStack dbl_whichItem = ItemStack.EMPTY;
 	private Slot bl_clicked;
 	private boolean subGui;
 
@@ -304,7 +304,7 @@ public abstract class AEBaseGui extends GuiContainer
 			this.getScrollBar().click( this, x - this.guiLeft, y - this.guiTop );
 		}
 
-		if( slot instanceof SlotFake && itemstack != null )
+		if( slot instanceof SlotFake && !itemstack.isEmpty() )
 		{
 			this.drag_click.add( slot );
 			if( this.drag_click.size() > 1 )
@@ -453,7 +453,7 @@ public abstract class AEBaseGui extends GuiContainer
 					action = ( mouseButton == 1 ) ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
 					stack = ( (SlotME) slot ).getAEStack();
 
-					if( stack != null && action == InventoryAction.PICKUP_OR_SET_DOWN && stack.getShowCraftingLabel())
+					if( stack != null && action == InventoryAction.PICKUP_OR_SET_DOWN && stack.getShowCraftingLabel() )
 					{
 						action = InventoryAction.AUTO_CRAFT;
 					}
@@ -499,21 +499,21 @@ public abstract class AEBaseGui extends GuiContainer
 		{
 			this.disableShiftClick = true;
 
-			if( this.dbl_whichItem == null || this.bl_clicked != slot || this.dbl_clickTimer.elapsed( TimeUnit.MILLISECONDS ) > 150 )
+			if( this.dbl_whichItem.isEmpty() || this.bl_clicked != slot || this.dbl_clickTimer.elapsed( TimeUnit.MILLISECONDS ) > 150 )
 			{
 				// some simple double click logic.
 				this.bl_clicked = slot;
 				this.dbl_clickTimer = Stopwatch.createStarted();
 				if( slot != null )
 				{
-					this.dbl_whichItem = slot.getHasStack() ? slot.getStack().copy() : null;
+					this.dbl_whichItem = slot.getHasStack() ? slot.getStack().copy() : ItemStack.EMPTY;
 				}
 				else
 				{
-					this.dbl_whichItem = null;
+					this.dbl_whichItem = ItemStack.EMPTY;
 				}
 			}
-			else if( this.dbl_whichItem != null )
+			else if( !this.dbl_whichItem.isEmpty() )
 			{
 				// a replica of the weird broken vanilla feature.
 
@@ -540,7 +540,7 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		final Slot theSlot = this.getSlotUnderMouse();
 
-		if( this.mc.player.inventory.getItemStack() == null && theSlot != null )
+		if( this.mc.player.inventory.getItemStack().isEmpty() && theSlot != null )
 		{
 			for( int j = 0; j < 9; ++j )
 			{
@@ -728,7 +728,7 @@ public abstract class AEBaseGui extends GuiContainer
 			try
 			{
 				final ItemStack is = s.getStack();
-				if( s instanceof AppEngSlot && ( ( (AppEngSlot) s ).renderIconWithItem() || is == null ) && ( ( (AppEngSlot) s ).shouldDisplay() ) )
+				if( s instanceof AppEngSlot && ( ( (AppEngSlot) s ).renderIconWithItem() || is.isEmpty() ) && ( ( (AppEngSlot) s ).shouldDisplay() ) )
 				{
 					final AppEngSlot aes = (AppEngSlot) s;
 					if( aes.getIcon() >= 0 )
@@ -776,7 +776,7 @@ public abstract class AEBaseGui extends GuiContainer
 					}
 				}
 
-				if( is != null && s instanceof AppEngSlot )
+				if( !is.isEmpty() && s instanceof AppEngSlot )
 				{
 					if( ( (AppEngSlot) s ).getIsValid() == hasCalculatedValidness.NotAvailable )
 					{

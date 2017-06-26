@@ -89,7 +89,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 
 	public void doClick( final InventoryAction action, final EntityPlayer who )
 	{
-		if( this.getStack() == null )
+		if( this.getStack().isEmpty() )
 		{
 			return;
 		}
@@ -128,18 +128,18 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 		}
 
 		final ItemStack rs = Platform.cloneItemStack( this.getStack() );
-		if( rs == null )
+		if( rs.isEmpty() )
 		{
 			return;
 		}
 
 		for( int x = 0; x < maxTimesToCraft; x++ )
 		{
-			if( ia.simulateAdd( rs ) == null )
+			if( ia.simulateAdd( rs ).isEmpty() )
 			{
 				final IItemList<IAEItemStack> all = inv.getStorageList();
 				final ItemStack extra = ia.addItems( this.craftItem( who, rs, inv, all ) );
-				if( extra != null )
+				if( !extra.isEmpty() )
 				{
 					final List<ItemStack> drops = new ArrayList<ItemStack>();
 					drops.add( extra );
@@ -160,7 +160,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 		// update crafting matrix...
 		ItemStack is = this.getStack();
 
-		if( is != null && Platform.itemComparisons().isEqualItem( request, is ) )
+		if( !is.isEmpty() && Platform.itemComparisons().isEqualItem( request, is ) )
 		{
 			final ItemStack[] set = new ItemStack[this.getPattern().getSizeInventory()];
 			// Safeguard for empty slots in the inventory for now
@@ -186,7 +186,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 						for( int x = 0; x < ic.getSizeInventory(); x++ )
 						{
 							final ItemStack pis = ic.getStackInSlot( x );
-							if( pis == null )
+							if( pis.isEmpty() )
 							{
 								continue;
 							}
@@ -212,7 +212,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 				{
 					for( int x = 0; x < this.getPattern().getSizeInventory(); x++ )
 					{
-						if( this.getPattern().getStackInSlot( x ) != null )
+						if( !this.getPattern().getStackInSlot( x ).isEmpty() )
 						{
 							set[x] = Platform.extractItemsByRecipe( this.energySrc, this.mySrc, inv, p.world, r, is, ic, this.getPattern().getStackInSlot( x ), x, all, Actionable.MODULATE, ItemViewCell.createFilter( this.container.getViewCells() ) );
 							ic.setInventorySlotContents( x, set[x] );
@@ -257,11 +257,11 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 			// set new items onto the crafting table...
 			for( int x = 0; x < this.craftInv.getSizeInventory(); x++ )
 			{
-				if( this.craftInv.getStackInSlot( x ) == null )
+				if( this.craftInv.getStackInSlot( x ).isEmpty() )
 				{
 					this.craftInv.setInventorySlotContents( x, set[x] );
 				}
-				else if( set[x] != null )
+				else if( !set[x].isEmpty() )
 				{
 					// eek! put it back!
 					final IAEItemStack fail = inv.injectItems( AEItemStack.create( set[x] ), Actionable.MODULATE, this.mySrc );

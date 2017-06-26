@@ -168,7 +168,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			}
 			else
 			{
-				this.inv.setInventorySlotContents( num, null );
+				this.inv.setInventorySlotContents( num, ItemStack.EMPTY );
 			}
 		}
 
@@ -215,7 +215,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		for( int h = 0; h < this.upgrades.getSizeInventory(); h++ )
 		{
 			final ItemStack is = this.upgrades.getStackInSlot( h );
-			if( is != null )
+			if( !is.isEmpty() )
 			{
 				drops.add( is );
 			}
@@ -344,17 +344,17 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		final ItemStack plateB = this.getStackInSlot( 1 );
 		ItemStack renamedItem = this.getStackInSlot( 2 );
 
-		if( plateA != null && plateA.getCount() > 1 )
+		if( !plateA.isEmpty() && plateA.getCount() > 1 )
 		{
 			return null;
 		}
 
-		if( plateB != null && plateB.getCount() > 1 )
+		if( !plateB.isEmpty() && plateB.getCount() > 1 )
 		{
 			return null;
 		}
 
-		if( renamedItem != null && renamedItem.getCount() > 1 )
+		if( !renamedItem.isEmpty() && renamedItem.getCount() > 1 )
 		{
 			return null;
 		}
@@ -363,19 +363,19 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		final boolean isNameA = namePress.isSameAs( plateA );
 		final boolean isNameB = namePress.isSameAs( plateB );
 
-		if( ( isNameA || isNameB ) && ( isNameA || plateA == null ) && ( isNameB || plateB == null ) )
+		if( ( isNameA || isNameB ) && ( isNameA || plateA.isEmpty() ) && ( isNameB || plateB.isEmpty() ) )
 		{
-			if( renamedItem != null )
+			if( !renamedItem.isEmpty() )
 			{
 				String name = "";
 
-				if( plateA != null )
+				if( !plateA.isEmpty() )
 				{
 					final NBTTagCompound tag = Platform.openNbtData( plateA );
 					name += tag.getString( "InscribeName" );
 				}
 
-				if( plateB != null )
+				if( !plateB.isEmpty() )
 				{
 					final NBTTagCompound tag = Platform.openNbtData( plateB );
 					if( name.length() > 0 )
@@ -417,15 +417,15 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 		{
 
-			final boolean matchA = ( plateA == null && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateA,
-					recipe.getTopOptional().orElse( null ) ) ) && // and...
-					( plateB == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.itemComparisons().isSameItem( plateB,
-							recipe.getBottomOptional().orElse( null ) ) );
+			final boolean matchA = ( plateA.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateA,
+					recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) ) && // and...
+					( plateB.isEmpty() && !recipe.getBottomOptional().isPresent() ) | ( Platform.itemComparisons().isSameItem( plateB,
+							recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) );
 
-			final boolean matchB = ( plateB == null && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateB,
-					recipe.getTopOptional().orElse( null ) ) ) && // and...
-					( plateA == null && !recipe.getBottomOptional().isPresent() ) | ( Platform.itemComparisons().isSameItem( plateA,
-							recipe.getBottomOptional().orElse( null ) ) );
+			final boolean matchB = ( plateB.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateB,
+					recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) ) && // and...
+					( plateA.isEmpty() && !recipe.getBottomOptional().isPresent() ) | ( Platform.itemComparisons().isSameItem( plateA,
+							recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) );
 
 			if( matchA || matchB )
 			{
@@ -455,15 +455,15 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 					final ItemStack outputCopy = out.getOutput().copy();
 					final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this.inv, SLOT_OUT, 1, true ), EnumFacing.UP );
 
-					if( ad.addItems( outputCopy ) == null )
+					if( ad.addItems( outputCopy ).isEmpty() )
 					{
 						this.setProcessingTime( 0 );
 						if( out.getProcessType() == InscriberProcessType.PRESS )
 						{
-							this.setInventorySlotContents( SLOT_TOP, null );
-							this.setInventorySlotContents( SLOT_BOTTOM, null );
+							this.setInventorySlotContents( SLOT_TOP, ItemStack.EMPTY );
+							this.setInventorySlotContents( SLOT_BOTTOM, ItemStack.EMPTY );
 						}
-						this.setInventorySlotContents( SLOT_MIDDLE, null );
+						this.setInventorySlotContents( SLOT_MIDDLE, ItemStack.EMPTY );
 					}
 				}
 
@@ -522,7 +522,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				{
 					final ItemStack outputCopy = out.getOutput().copy();
 					final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( new WrapperInventoryRange( this.inv, SLOT_OUT, 1, true ), EnumFacing.UP );
-					if( ad.simulateAdd( outputCopy ) == null )
+					if( ad.simulateAdd( outputCopy ).isEmpty() )
 					{
 						this.setSmash( true );
 						this.finalStep = 0;
@@ -678,13 +678,13 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		@Override
 		public ItemStack insertItem( int slot, ItemStack stack, boolean simulate )
 		{
-			if( slot != 0 || stack == null )
+			if( slot != 0 || stack.isEmpty() )
 			{
 				return stack;
 			}
 
 			// If there's already an item stack in the slot, we don't allow insertion and don't do any other checks
-			if( inv.getStackInSlot( insertSlot ) != null )
+			if( !inv.getStackInSlot( insertSlot ).isEmpty() )
 			{
 				return stack;
 			}
@@ -715,11 +715,11 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 			if( simulate )
 			{
-				return adapter.simulateRemove( amount, null, null );
+				return adapter.simulateRemove( amount, ItemStack.EMPTY, null );
 			}
 			else
 			{
-				return adapter.removeItems( amount, null, null );
+				return adapter.removeItems( amount, ItemStack.EMPTY, null );
 			}
 		}
 

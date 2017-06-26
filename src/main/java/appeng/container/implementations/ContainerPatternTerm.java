@@ -190,14 +190,14 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		}
 
 		// first check the output slots, should either be null, or a pattern
-		if( output != null && !this.isPattern( output ) )
+		if( !output.isEmpty() && !this.isPattern( output ) )
 		{
 			return;
 		} // if nothing is there we should snag a new pattern.
-		else if( output == null )
+		else if( output.isEmpty() )
 		{
 			output = this.patternSlotIN.getStack();
-			if( output == null || !this.isPattern( output ) )
+			if( output.isEmpty()  || !this.isPattern( output ) )
 			{
 				return; // no blanks.
 			}
@@ -206,7 +206,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			output.setCount( output.getCount() );
 			if( output.getCount() == 0 )
 			{
-				this.patternSlotIN.putStack( null );
+				this.patternSlotIN.putStack( ItemStack.EMPTY );
 			}
 
 			// add a new encoded pattern.
@@ -250,7 +250,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		for( int x = 0; x < this.craftingSlots.length; x++ )
 		{
 			input[x] = this.craftingSlots[x].getStack();
-			if( input[x] != null )
+			if( !input[x].isEmpty() )
 			{
 				hasValue = true;
 			}
@@ -270,7 +270,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		{
 			final ItemStack out = this.getAndUpdateOutput();
 
-			if( out != null && out.getCount() > 0 )
+			if( !out.isEmpty() && out.getCount() > 0 )
 			{
 				return new ItemStack[] { out };
 			}
@@ -284,7 +284,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			{
 				final ItemStack out = outputSlot.getStack();
 
-				if( out != null && out.getCount() > 0 )
+				if( !out.isEmpty() && out.getCount() > 0 )
 				{
 					list.add( out );
 					hasValue = true;
@@ -302,7 +302,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 	private boolean isPattern( final ItemStack output )
 	{
-		if( output == null )
+		if( output.isEmpty() )
 		{
 			return false;
 		}
@@ -357,7 +357,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 				inv = playerInv;
 			}
 
-			if( inv.simulateAdd( out.getItemStack() ) != null )
+			if( !inv.simulateAdd( out.getItemStack() ).isEmpty() )
 			{
 				return;
 			}
@@ -381,7 +381,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 			for( int x = 0; x < 9; x++ )
 			{
-				ic.setInventorySlotContents( x, packetPatternSlot.pattern[x] == null ? null : packetPatternSlot.pattern[x].getItemStack() );
+				ic.setInventorySlotContents( x, packetPatternSlot.pattern[x] == null ? ItemStack.EMPTY : packetPatternSlot.pattern[x].getItemStack() );
 			}
 
 			final IRecipe r = Platform.findMatchingRecipe( ic, p.world );
@@ -398,7 +398,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 			for( int x = 0; x < ic.getSizeInventory(); x++ )
 			{
-				if( ic.getStackInSlot( x ) != null )
+				if( !ic.getStackInSlot( x ).isEmpty() )
 				{
 					final ItemStack pulled = Platform.extractItemsByRecipe( this.getPowerSource(), this.getActionSource(), storage, p.world, r, is, ic, ic.getStackInSlot( x ), x, all, Actionable.MODULATE, ItemViewCell.createFilter( this.getViewCells() ) );
 					real.setInventorySlotContents( x, pulled );
@@ -416,7 +416,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 				{
 					final ItemStack failed = playerInv.addItems( real.getStackInSlot( x ) );
 
-					if( failed != null )
+					if( !failed.isEmpty() )
 					{
 						p.dropItem( failed, false );
 					}
@@ -434,7 +434,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 				for( int x = 0; x < real.getSizeInventory(); x++ )
 				{
 					final ItemStack failed = real.getStackInSlot( x );
-					if( failed != null )
+					if( !failed.isEmpty() )
 					{
 						this.getCellInventory().injectItems( AEItemStack.create( failed ), Actionable.MODULATE, new MachineSource( this.getPatternTerminal() ) );
 					}
@@ -498,12 +498,12 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	{
 		for( final Slot s : this.craftingSlots )
 		{
-			s.putStack( null );
+			s.putStack( ItemStack.EMPTY );
 		}
 
 		for( final Slot s : this.outputSlots )
 		{
-			s.putStack( null );
+			s.putStack( ItemStack.EMPTY );
 		}
 
 		this.detectAndSendChanges();

@@ -59,8 +59,8 @@ public final class Press extends InscriberProcess
 		final ItemStack[] realInput = this.getImprintable().getItemStackSet();
 		final List<ItemStack> inputs = new ArrayList<ItemStack>( realInput.length );
 		Collections.addAll( inputs, realInput );
-		final ItemStack top = ( this.getTopOptional() == null ) ? null : this.getTopOptional().getItemStack();
-		final ItemStack bot = ( this.getBotOptional() == null ) ? null : this.getBotOptional().getItemStack();
+		final ItemStack top = ( this.getTopOptional() == null ) ? ItemStack.EMPTY : this.getTopOptional().getItemStack();
+		final ItemStack bot = ( this.getBotOptional() == null ) ? ItemStack.EMPTY : this.getBotOptional().getItemStack();
 		final ItemStack output = this.getOutput().getItemStack();
 		final InscriberProcessType type = InscriberProcessType.PRESS;
 

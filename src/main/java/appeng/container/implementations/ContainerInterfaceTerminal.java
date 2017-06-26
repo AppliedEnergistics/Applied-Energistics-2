@@ -204,7 +204,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 		if( inv != null )
 		{
 			final ItemStack is = inv.server.getStackInSlot( slot );
-			final boolean hasItemInHand = player.inventory.getItemStack() != null;
+			final boolean hasItemInHand = !player.inventory.getItemStack().isEmpty();
 
 			final InventoryAdaptor playerHand = new AdaptorPlayerHand( player );
 
@@ -220,7 +220,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 					if( hasItemInHand )
 					{
 						ItemStack inSlot = theSlot.getStackInSlot( 0 );
-						if( inSlot == null )
+						if( inSlot.isEmpty() )
 						{
 							player.inventory.setItemStack( interfaceSlot.addItems( player.inventory.getItemStack() ) );
 						}
@@ -229,12 +229,12 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 							inSlot = inSlot.copy();
 							final ItemStack inHand = player.inventory.getItemStack().copy();
 
-							theSlot.setInventorySlotContents( 0, null );
-							player.inventory.setItemStack( null );
+							theSlot.setInventorySlotContents( 0, ItemStack.EMPTY );
+							player.inventory.setItemStack( ItemStack.EMPTY );
 
 							player.inventory.setItemStack( interfaceSlot.addItems( inHand.copy() ) );
 
-							if( player.inventory.getItemStack() == null )
+							if( player.inventory.getItemStack().isEmpty() )
 							{
 								player.inventory.setItemStack( inSlot );
 							}
@@ -256,24 +256,24 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 
 					if( hasItemInHand )
 					{
-						ItemStack extra = playerHand.removeItems( 1, null, null );
-						if( extra != null )
+						ItemStack extra = playerHand.removeItems( 1, ItemStack.EMPTY, null );
+						if( !extra.isEmpty() )
 						{
 							extra = interfaceSlot.addItems( extra );
 						}
-						if( extra != null )
+						if( !extra.isEmpty() )
 						{
 							playerHand.addItems( extra );
 						}
 					}
-					else if( is != null )
+					else if( !is.isEmpty() )
 					{
-						ItemStack extra = interfaceSlot.removeItems( ( is.getCount() + 1 ) / 2, null, null );
-						if( extra != null )
+						ItemStack extra = interfaceSlot.removeItems( ( is.getCount() + 1 ) / 2, ItemStack.EMPTY, null );
+						if( !extra.isEmpty() )
 						{
 							extra = playerHand.addItems( extra );
 						}
-						if( extra != null )
+						if( !extra.isEmpty() )
 						{
 							interfaceSlot.addItems( extra );
 						}
@@ -300,7 +300,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 
 					if( player.capabilities.isCreativeMode && !hasItemInHand )
 					{
-						player.inventory.setItemStack( is == null ? null : is.copy() );
+						player.inventory.setItemStack( is.isEmpty() ? ItemStack.EMPTY : is.copy() );
 					}
 
 					break;
@@ -357,12 +357,12 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 
 	private boolean isDifferent( final ItemStack a, final ItemStack b )
 	{
-		if( a == null && b == null )
+		if( a.isEmpty() && b.isEmpty() )
 		{
 			return false;
 		}
 
-		if( a == null || b == null )
+		if( a.isEmpty() || b.isEmpty() )
 		{
 			return true;
 		}
@@ -388,9 +388,9 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 			final ItemStack is = inv.server.getStackInSlot( x + offset );
 
 			// "update" client side.
-			inv.client.setInventorySlotContents( x + offset, is == null ? null : is.copy() );
+			inv.client.setInventorySlotContents( x + offset, is.isEmpty() ? ItemStack.EMPTY : is.copy() );
 
-			if( is != null )
+			if( !is.isEmpty() )
 			{
 				is.writeToNBT( itemNBT );
 			}

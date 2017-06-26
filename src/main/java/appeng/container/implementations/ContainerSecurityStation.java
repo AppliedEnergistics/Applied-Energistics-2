@@ -75,7 +75,7 @@ public class ContainerSecurityStation extends ContainerMEMonitorable implements 
 			final SecurityPermissions permission = SecurityPermissions.valueOf( value );
 
 			final ItemStack a = this.configSlot.getStack();
-			if( a != null && a.getItem() instanceof IBiometricCard )
+			if( !a.isEmpty() && a.getItem() instanceof IBiometricCard )
 			{
 				final IBiometricCard bc = (IBiometricCard) a.getItem();
 				if( bc.hasPermission( a, permission ) )
@@ -102,7 +102,7 @@ public class ContainerSecurityStation extends ContainerMEMonitorable implements 
 		this.setPermissionMode( 0 );
 
 		final ItemStack a = this.configSlot.getStack();
-		if( a != null && a.getItem() instanceof IBiometricCard )
+		if( !a.isEmpty() && a.getItem() instanceof IBiometricCard )
 		{
 			final IBiometricCard bc = (IBiometricCard) a.getItem();
 
@@ -164,7 +164,7 @@ public class ContainerSecurityStation extends ContainerMEMonitorable implements 
 				{
 					networkEncodable.setEncryptionKey( term, String.valueOf( this.securityBox.getSecurityKey() ), "" );
 
-					this.wirelessIn.putStack( null );
+					this.wirelessIn.putStack( ItemStack.EMPTY );
 					this.wirelessOut.putStack( term );
 
 					// update the two slots in question...

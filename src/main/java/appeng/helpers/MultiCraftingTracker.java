@@ -83,7 +83,7 @@ public class MultiCraftingTracker
 
 	public boolean handleCrafting( final int x, final long itemToCraft, final IAEItemStack ais, final InventoryAdaptor d, final World w, final IGrid g, final ICraftingGrid cg, final BaseActionSource mySrc )
 	{
-		if( ais != null && d.simulateAdd( ais.getItemStack() ) == null )
+		if( ais != null && d.simulateAdd( ais.getItemStack() ).isEmpty() )
 		{
 			final Future<ICraftingJob> craftingJob = this.getJob( x );
 

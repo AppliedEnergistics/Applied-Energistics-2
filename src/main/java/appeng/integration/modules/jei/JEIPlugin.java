@@ -126,7 +126,7 @@ public class JEIPlugin extends BlankModPlugin
 	private void registerGrinderRecipes( IDefinitions definitions, IModRegistry registry )
 	{
 
-		ItemStack grindstone = definitions.blocks().grindstone().maybeStack( 1 ).orElse( null );
+		ItemStack grindstone = definitions.blocks().grindstone().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 
 		if( grindstone == null )
 		{
@@ -142,19 +142,19 @@ public class JEIPlugin extends BlankModPlugin
 	private void registerCondenserRecipes( IDefinitions definitions, IModRegistry registry )
 	{
 
-		ItemStack condenser = definitions.blocks().condenser().maybeStack( 1 ).orElse( null );
+		ItemStack condenser = definitions.blocks().condenser().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 		if( condenser == null )
 		{
 			return;
 		}
 
-		ItemStack matterBall = definitions.materials().matterBall().maybeStack( 1 ).orElse( null );
+		ItemStack matterBall = definitions.materials().matterBall().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 		if( matterBall != null )
 		{
 			registry.addRecipes( ImmutableList.of( CondenserOutput.MATTER_BALLS ) );
 		}
 
-		ItemStack singularity = definitions.materials().singularity().maybeStack( 1 ).orElse( null );
+		ItemStack singularity = definitions.materials().singularity().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 		if( singularity != null )
 		{
 			registry.addRecipes( ImmutableList.of( CondenserOutput.SINGULARITY ) );

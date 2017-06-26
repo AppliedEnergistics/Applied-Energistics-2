@@ -63,7 +63,7 @@ public class PartCraftingTerminal extends AbstractPartTerminal
 
 		for( final ItemStack is : this.craftingGrid )
 		{
-			if( is != null )
+			if( !is.isEmpty() )
 			{
 				drops.add( is );
 			}

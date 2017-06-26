@@ -45,9 +45,9 @@ class InscriberRecipeWrapper extends BlankRecipeWrapper
 	public void getIngredients( IIngredients ingredients )
 	{
 		List<List<ItemStack>> inputSlots = new ArrayList<>( 3 );
-		inputSlots.add( Collections.singletonList( recipe.getTopOptional().orElse( null ) ) );
+		inputSlots.add( Collections.singletonList( recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) );
 		inputSlots.add( recipe.getInputs() );
-		inputSlots.add( Collections.singletonList( recipe.getBottomOptional().orElse( null ) ) );
+		inputSlots.add( Collections.singletonList( recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) );
 		ingredients.setInputLists( ItemStack.class, inputSlots );
 
 		ingredients.setOutput( ItemStack.class, recipe.getOutput() );

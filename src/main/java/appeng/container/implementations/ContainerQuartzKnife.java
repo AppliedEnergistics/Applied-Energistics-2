@@ -143,7 +143,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 					compound.setString( "InscribeName", this.myName );
 
 					return namePressStack;
-				} ).orElse( null );
+				} ).orElse( ItemStack.EMPTY );
 			}
 		}
 
@@ -154,7 +154,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	public ItemStack decrStackSize( final int var1, final int var2 )
 	{
 		final ItemStack is = this.getStackInSlot( 0 );
-		if( is != null )
+		if( !is.isEmpty() )
 		{
 			if( this.makePlate() )
 			{
@@ -272,7 +272,7 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 	@Override
 	public void clear()
 	{
-		this.inSlot.setInventorySlotContents( 0, null );
+		this.inSlot.setInventorySlotContents( 0, ItemStack.EMPTY );
 	}
 
 	@Override

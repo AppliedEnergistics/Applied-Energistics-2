@@ -177,7 +177,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 				}
 			} );
 
-			this.setInventorySlotContents( 6, null );
+			this.setInventorySlotContents( 6, ItemStack.EMPTY );
 		}
 	}
 
@@ -189,7 +189,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 		}
 
 		final ItemStack notAdded = sia.addItems( output );
-		if( notAdded != null )
+		if( !notAdded.isEmpty() )
 		{
 			final List<ItemStack> out = new ArrayList<ItemStack>();
 			out.add( notAdded );

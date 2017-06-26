@@ -165,7 +165,7 @@ public class FacadeContainer implements IFacadeContainer
 			if( t != null )
 			{
 				final ItemStack is = new ItemStack( t );
-				if( is != null )
+				if( !is.isEmpty() )
 				{
 					final Item i = is.getItem();
 					if( i instanceof IFacadeItem )

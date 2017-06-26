@@ -47,24 +47,24 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	public ItemStack removeItems( final int amount, final ItemStack filter, final IInventoryDestination destination )
 	{
 		final ItemStack hand = this.player.inventory.getItemStack();
-		if( hand == null )
+		if( hand.isEmpty() )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
-		if( filter == null || Platform.itemComparisons().isSameItem( filter, hand ) )
+		if( filter.isEmpty() || Platform.itemComparisons().isSameItem( filter, hand ) )
 		{
 			final ItemStack result = hand.copy();
 			result.setCount( hand.getCount() > amount ? amount : hand.getCount() );
 			hand.grow( -amount );
 			if( hand.getCount() <= 0 )
 			{
-				this.player.inventory.setItemStack( null );
+				this.player.inventory.setItemStack( ItemStack.EMPTY );
 			}
 			return result;
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -72,9 +72,9 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	{
 
 		final ItemStack hand = this.player.inventory.getItemStack();
-		if( hand == null )
+		if( hand.isEmpty() )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		if( filter == null || Platform.itemComparisons().isSameItem( filter, hand ) )
@@ -84,31 +84,31 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 			return result;
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public ItemStack removeSimilarItems( final int amount, final ItemStack filter, final FuzzyMode fuzzyMode, final IInventoryDestination destination )
 	{
 		final ItemStack hand = this.player.inventory.getItemStack();
-		if( hand == null )
+		if( hand.isEmpty() )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
-		if( filter == null || Platform.itemComparisons().isFuzzyEqualItem( filter, hand, fuzzyMode ) )
+		if( filter.isEmpty() || Platform.itemComparisons().isFuzzyEqualItem( filter, hand, fuzzyMode ) )
 		{
 			final ItemStack result = hand.copy();
 			result.setCount( hand.getCount() > amount ? amount : hand.getCount() );
 			hand.grow( -amount );
 			if( hand.getCount() <= 0 )
 			{
-				this.player.inventory.setItemStack( null );
+				this.player.inventory.setItemStack( ItemStack.EMPTY );
 			}
 			return result;
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -116,32 +116,32 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 	{
 
 		final ItemStack hand = this.player.inventory.getItemStack();
-		if( hand == null )
+		if( hand.isEmpty() )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
-		if( filter == null || Platform.itemComparisons().isFuzzyEqualItem( filter, hand, fuzzyMode ) )
+		if( filter.isEmpty() || Platform.itemComparisons().isFuzzyEqualItem( filter, hand, fuzzyMode ) )
 		{
 			final ItemStack result = hand.copy();
 			result.setCount( hand.getCount() > amount ? amount : hand.getCount() );
 			return result;
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public ItemStack addItems( final ItemStack toBeAdded )
 	{
 
-		if( toBeAdded == null )
+		if( toBeAdded.isEmpty() )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		if( toBeAdded.getCount() == 0 )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		if( this.player == null )
 		{
@@ -154,14 +154,14 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 
 		final ItemStack hand = this.player.inventory.getItemStack();
 
-		if( hand != null && !Platform.itemComparisons().isSameItem( toBeAdded, hand ) )
+		if( !hand.isEmpty() && !Platform.itemComparisons().isSameItem( toBeAdded, hand ) )
 		{
 			return toBeAdded;
 		}
 
 		int original = 0;
-		ItemStack newHand = null;
-		if( hand == null )
+		ItemStack newHand = ItemStack.EMPTY;
+		if( hand.isEmpty() )
 		{
 			newHand = toBeAdded.copy();
 		}
@@ -182,26 +182,26 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 		}
 
 		this.player.inventory.setItemStack( newHand );
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public ItemStack simulateAdd( final ItemStack toBeSimulated )
 	{
 		final ItemStack hand = this.player.inventory.getItemStack();
-		if( toBeSimulated == null )
+		if( toBeSimulated.isEmpty() )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
-		if( hand != null && !Platform.itemComparisons().isEqualItem( toBeSimulated, hand ) )
+		if( !hand.isEmpty() && !Platform.itemComparisons().isEqualItem( toBeSimulated, hand ) )
 		{
 			return toBeSimulated;
 		}
 
 		int original = 0;
-		ItemStack newHand = null;
-		if( hand == null )
+		ItemStack newHand = ItemStack.EMPTY;
+		if( hand.isEmpty() )
 		{
 			newHand = toBeSimulated.copy();
 		}
@@ -220,13 +220,13 @@ public class AdaptorPlayerHand extends InventoryAdaptor
 			return B;
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public boolean containsItems()
 	{
-		return this.player.inventory.getItemStack() != null;
+		return !this.player.inventory.getItemStack().isEmpty();
 	}
 
 	@Override

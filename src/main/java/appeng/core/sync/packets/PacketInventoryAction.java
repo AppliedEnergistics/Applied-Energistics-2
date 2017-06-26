@@ -167,7 +167,7 @@ public class PacketInventoryAction extends AppEngPacket
 		{
 			if( this.slotItem == null )
 			{
-				AppEng.proxy.getPlayers().get( 0 ).inventory.setItemStack( null );
+				AppEng.proxy.getPlayers().get( 0 ).inventory.setItemStack( ItemStack.EMPTY );
 			}
 			else
 			{

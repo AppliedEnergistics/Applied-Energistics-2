@@ -140,7 +140,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 		for( int x = 0; x < inv.getSizeInventory(); x++ )
 		{
 			final ItemStack is = inv.getStackInSlot( x );
-			if( is != null && is.getItem() instanceof IUpgradeModule )
+			if( !is.isEmpty() && is.getItem() instanceof IUpgradeModule )
 			{
 				if( ( (IUpgradeModule) is.getItem() ).getType( is ) == Upgrades.FUZZY )
 				{

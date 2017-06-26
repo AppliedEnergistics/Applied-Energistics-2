@@ -538,7 +538,7 @@ public class Platform
 		{
 			for( final ItemStack i : drops )
 			{
-				if( i != null )
+				if( !i.isEmpty() )
 				{
 					if( i.getCount() > 0 )
 					{
@@ -790,7 +790,7 @@ public class Platform
 
 	public static boolean isWrench( final EntityPlayer player, final ItemStack eq, final BlockPos pos )
 	{
-		if( eq != null )
+		if( !eq.isEmpty() )
 		{
 			try
 			{
@@ -819,7 +819,7 @@ public class Platform
 
 	public static boolean isChargeable( final ItemStack i )
 	{
-		if( i == null )
+		if( i.isEmpty() )
 		{
 			return false;
 		}
@@ -1345,7 +1345,7 @@ public class Platform
 		final IItemList<IAEItemStack> itemChanges = AEApi.instance().storage().createItemList();
 		final IItemList<IAEFluidStack> fluidChanges = AEApi.instance().storage().createFluidList();
 
-		if( removed != null )
+		if( !removed.isEmpty() )
 		{
 			final IMEInventory<IAEItemStack> myItems = AEApi.instance().registries().cell().getCellInventory( removed, null, StorageChannel.ITEMS );
 
@@ -1368,7 +1368,7 @@ public class Platform
 			}
 		}
 
-		if( added != null )
+		if( !added.isEmpty() )
 		{
 			final IMEInventory<IAEItemStack> myItems = AEApi.instance().registries().cell().getCellInventory( added, null, StorageChannel.ITEMS );
 
@@ -1641,7 +1641,7 @@ public class Platform
 				if( ae_ext != null )
 				{
 					final ItemStack extracted = ae_ext.getItemStack();
-					if( extracted != null )
+					if( !extracted.isEmpty() )
 					{
 						energySrc.extractAEPower( 1, realForFake, PowerMultiplier.CONFIG );
 						return extracted;
@@ -1709,7 +1709,7 @@ public class Platform
 		}
 
 		ItemStack ci = i.getContainerItem( stackInSlot.copy() );
-		if( ci != null && ci.isItemStackDamageable() && ci.getItemDamage() == ci.getMaxDamage() )
+		if( !ci.isEmpty() && ci.isItemStackDamageable() && ci.getItemDamage() == ci.getMaxDamage() )
 		{
 			ci = ItemStack.EMPTY;
 		}
@@ -1727,7 +1727,7 @@ public class Platform
 
 	public static boolean canRepair( final AEFeature type, final ItemStack a, final ItemStack b )
 	{
-		if( b == null || a == null )
+		if( b.isEmpty() || a.isEmpty() )
 		{
 			return false;
 		}

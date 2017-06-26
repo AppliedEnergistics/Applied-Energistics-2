@@ -52,7 +52,7 @@ class ItemHandlerIterator implements Iterator<ItemSlot>
 		{
 			throw new NoSuchElementException();
 		}
-		itemSlot.setExtractable( itemHandler.extractItem( slot, 1, true ) != null );
+		itemSlot.setExtractable( !itemHandler.extractItem( slot, 1, true ).isEmpty() );
 		itemSlot.setItemStack( itemHandler.getStackInSlot( slot ) );
 		itemSlot.setSlot( slot );
 		slot++;

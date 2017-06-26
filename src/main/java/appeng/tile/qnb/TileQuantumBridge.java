@@ -94,7 +94,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	{
 		int out = this.constructed;
 
-		if( this.getStackInSlot( 0 ) != null && this.constructed != -1 )
+		if( !this.getStackInSlot( 0 ).isEmpty() && this.constructed != -1 )
 		{
 			out |= this.hasSingularity;
 		}
@@ -272,7 +272,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	public long getQEFrequency()
 	{
 		final ItemStack is = this.internalInventory.getStackInSlot( 0 );
-		if( is != null )
+		if( !is.isEmpty() )
 		{
 			final NBTTagCompound c = is.getTagCompound();
 			if( c != null )

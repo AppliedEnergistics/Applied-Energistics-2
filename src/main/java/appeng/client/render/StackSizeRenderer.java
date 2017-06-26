@@ -44,7 +44,7 @@ public class StackSizeRenderer
 
 	public void renderStackSize( FontRenderer fontRenderer, IAEItemStack aeStack, ItemStack is, int xPos, int yPos )
 	{
-		if( is != null )
+		if( !is.isEmpty() )
 		{
 			final float scaleFactor = AEConfig.instance().useTerminalUseLargeFont() ? 0.85f : 0.5f;
 			final float inverseScaleFactor = 1.0f / scaleFactor;

@@ -67,7 +67,7 @@ public class WrapperMCISidedInventory extends WrapperInventoryRange implements I
 	@Override
 	public boolean canRemoveItemFromSlot( final int i, final ItemStack is )
 	{
-		if( is == null )
+		if( is.isEmpty() )
 		{
 			return false;
 		}

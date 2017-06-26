@@ -229,7 +229,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 
 	private ItemStack copy( final ItemStack is )
 	{
-		if( is != null )
+		if( !is.isEmpty() )
 		{
 			return is.copy();
 		}

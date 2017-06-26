@@ -1052,12 +1052,12 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			{
 				IPart p = this.getPart( side );
 				final ItemStack iss = new ItemStack( def );
-				if( iss == null )
+				if( iss.isEmpty() )
 				{
 					continue;
 				}
 
-				final ItemStack current = p == null ? null : p.getItemStack( PartItemStack.WORLD );
+				final ItemStack current = p == null ? ItemStack.EMPTY : p.getItemStack( PartItemStack.WORLD );
 
 				if( Platform.itemComparisons().isEqualItemType( iss, current ) )
 				{

@@ -60,7 +60,7 @@ public class SlotME extends Slot
 		{
 			return this.mySlot.getStack();
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class SlotME extends Slot
 	{
 		if( this.mySlot.hasPower() )
 		{
-			return this.getStack() != null;
+			return !this.getStack().isEmpty();
 		}
 		return false;
 	}
@@ -88,7 +88,7 @@ public class SlotME extends Slot
 	@Override
 	public ItemStack decrStackSize( final int par1 )
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

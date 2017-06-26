@@ -84,7 +84,7 @@ public class ItemRepo
 
 		if( idx >= this.dsp.size() )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		return this.dsp.get( idx );
 	}

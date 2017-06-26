@@ -157,7 +157,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	private boolean canEatFuel()
 	{
 		final ItemStack is = this.getStackInSlot( FUEL_SLOT_INDEX );
-		if( is != null )
+		if( !is.isEmpty() )
 		{
 			final int newBurnTime = TileEntityFurnace.getItemBurnTime( is );
 			if( newBurnTime > 0 && is.getCount() > 0 )
@@ -244,7 +244,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	private void eatFuel()
 	{
 		final ItemStack is = this.getStackInSlot( FUEL_SLOT_INDEX );
-		if( is != null )
+		if( !is.isEmpty() )
 		{
 			final int newBurnTime = TileEntityFurnace.getItemBurnTime( is );
 			if( newBurnTime > 0 && is.getCount() > 0 )

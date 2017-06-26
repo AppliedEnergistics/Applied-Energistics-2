@@ -69,7 +69,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	@Override
 	public ItemStack getStackInSlot( final int var1 )
 	{
-		return this.inv[var1];
+		return this.inv[var1] == null ? ItemStack.EMPTY : this.inv[var1];
 	}
 
 	@Override
@@ -78,12 +78,12 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 		if( this.inv[slot] != null )
 		{
 			final ItemStack split = this.getStackInSlot( slot );
-			ItemStack ns = null;
+			ItemStack ns = ItemStack.EMPTY;
 
 			if( qty >= split.getCount() )
 			{
 				ns = this.inv[slot];
-				this.inv[slot] = null;
+				this.inv[slot] = ItemStack.EMPTY;
 			}
 			else
 			{
@@ -92,7 +92,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 
 			if( this.getTileEntity() != null && this.eventsEnabled() )
 			{
-				this.getTileEntity().onChangeInventory( this, slot, InvOperation.decreaseStackSize, ns, null );
+				this.getTileEntity().onChangeInventory( this, slot, InvOperation.decreaseStackSize, ns, ItemStack.EMPTY );
 			}
 
 			this.markDirty();
@@ -124,7 +124,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 			ItemStack removed = oldStack;
 			ItemStack added = newItemStack;
 
-			if( oldStack != null && newItemStack != null && Platform.itemComparisons().isEqualItem( oldStack, newItemStack ) )
+			if( !oldStack.isEmpty() && !newItemStack.isEmpty() && Platform.itemComparisons().isEqualItem( oldStack, newItemStack ) )
 			{
 				if( oldStack.getCount() > newItemStack.getCount() )
 				{
@@ -136,11 +136,11 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 				{
 					added = added.copy();
 					added.grow( -oldStack.getCount() );
-					removed = null;
+					removed = ItemStack.EMPTY;
 				}
 				else
 				{
-					removed = added = null;
+					removed = added = ItemStack.EMPTY;
 				}
 			}
 
@@ -173,7 +173,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	{
 		if( this.getTileEntity() != null && this.eventsEnabled() )
 		{
-			this.getTileEntity().onChangeInventory( this, -1, InvOperation.markDirty, null, null );
+			this.getTileEntity().onChangeInventory( this, -1, InvOperation.markDirty, ItemStack.EMPTY, ItemStack.EMPTY );
 		}
 	}
 
@@ -199,7 +199,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	{
 		if( this.getTileEntity() != null && this.eventsEnabled() )
 		{
-			this.getTileEntity().onChangeInventory( this, slotIndex, InvOperation.markDirty, null, null );
+			this.getTileEntity().onChangeInventory( this, slotIndex, InvOperation.markDirty, ItemStack.EMPTY, ItemStack.EMPTY );
 		}
 	}
 
@@ -306,7 +306,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	{
 		for( int x = 0; x < this.size; x++ )
 		{
-			this.setInventorySlotContents( x, null );
+			this.setInventorySlotContents( x, ItemStack.EMPTY );
 		}
 	}
 

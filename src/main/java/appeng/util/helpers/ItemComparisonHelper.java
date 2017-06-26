@@ -63,7 +63,7 @@ public class ItemComparisonHelper
 	 */
 	public boolean isEqualItemType( final ItemStack that, final ItemStack other )
 	{
-		if( that != null && other != null && that.getItem() == other.getItem() )
+		if( !that.isEmpty() && !other.isEmpty() && that.getItem() == other.getItem() )
 		{
 			if( that.isItemStackDamageable() )
 			{
@@ -80,9 +80,12 @@ public class ItemComparisonHelper
 	 * The benefit is to compare two null item stacks, without any additional null checks.
 	 * 
 	 * Ignores NBT.
+	 *
+	 * Deprecated because ItemStack should never be null...?
 	 * 
 	 * @return true, if both are equal.
 	 */
+	@Deprecated
 	public boolean isEqualItem( @Nullable final ItemStack left, @Nullable final ItemStack right )
 	{
 		return left != null && right != null && left.isItemEqual( right );
@@ -93,9 +96,12 @@ public class ItemComparisonHelper
 	 * 
 	 * Use this when a precise check is required and the same item is required.
 	 * Not just something with different NBT tags.
-	 * 
+	 *
+	 * Deprecated because ItemStack should never be null...?
+	 *
 	 * @return true, if both are identical.
 	 */
+	@Deprecated
 	public boolean isSameItem( @Nullable final ItemStack is, @Nullable final ItemStack filter )
 	{
 		return isEqualItem( is, filter ) && hasSameNbtTag( is, filter );
@@ -111,12 +117,12 @@ public class ItemComparisonHelper
 	 */
 	public boolean isFuzzyEqualItem( final ItemStack a, final ItemStack b, final FuzzyMode mode )
 	{
-		if( a == null && b == null )
+		if( a.isEmpty() && b.isEmpty() )
 		{
 			return true;
 		}
 
-		if( a == null || b == null )
+		if( a.isEmpty() || b.isEmpty() )
 		{
 			return false;
 		}

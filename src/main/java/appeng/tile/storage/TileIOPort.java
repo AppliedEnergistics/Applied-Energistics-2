@@ -343,7 +343,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 			for( int x = 0; x < 6; x++ )
 			{
 				final ItemStack is = this.cells.getStackInSlot( x );
-				if( is != null )
+				if( !is.isEmpty() )
 				{
 					if( ItemsToMove > 0 )
 					{
@@ -513,9 +513,9 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		final WrapperInventoryRange wir = new WrapperInventoryRange( this, this.output, true );
 		final ItemStack result = InventoryAdaptor.getAdaptor( wir, EnumFacing.UP ).addItems( this.getStackInSlot( x ) );
 
-		if( result == null )
+		if( result.isEmpty() )
 		{
-			this.setInventorySlotContents( x, null );
+			this.setInventorySlotContents( x, ItemStack.EMPTY );
 			return true;
 		}
 

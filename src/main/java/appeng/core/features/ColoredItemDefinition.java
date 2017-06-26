@@ -92,7 +92,7 @@ public final class ColoredItemDefinition implements AEColoredItemDefinition
 	{
 		final ItemStackSrc is = this.colors[color.ordinal()];
 
-		if( comparableItem == null || is == null )
+		if( comparableItem.isEmpty() || is == null )
 		{
 			return false;
 		}

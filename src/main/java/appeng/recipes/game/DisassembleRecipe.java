@@ -90,7 +90,7 @@ public final class DisassembleRecipe implements IRecipe
 		for( int slotIndex = 0; slotIndex < inventory.getSizeInventory(); slotIndex++ )
 		{
 			final ItemStack stackInSlot = inventory.getStackInSlot( slotIndex );
-			if( stackInSlot != null )
+			if( !stackInSlot.isEmpty() )
 			{
 				// needs a single input in the recipe
 				itemCount++;

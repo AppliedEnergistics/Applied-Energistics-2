@@ -42,7 +42,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 	private static final int MAX_CRAFT_GRID_WIDTH = 3;
 	private static final int MAX_CRAFT_GRID_HEIGHT = 3;
 
-	private ItemStack output = null;
+	private ItemStack output = ItemStack.EMPTY;
 	private Object[] input = null;
 	private int width = 0;
 	private int height = 0;
@@ -256,7 +256,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 						return false;
 					}
 				}
-				else if( target == null && slot != null )
+				else if( target == null && !slot.isEmpty() )
 				{
 					return false;
 				}
@@ -268,7 +268,7 @@ public class ShapedRecipe implements IRecipe, IRecipeBakeable
 
 	private boolean checkItemEquals( final ItemStack target, final ItemStack input )
 	{
-		if( input == null && target != null || input != null && target == null )
+		if( input.isEmpty() && !target.isEmpty() || !input.isEmpty() && target.isEmpty() )
 		{
 			return false;
 		}

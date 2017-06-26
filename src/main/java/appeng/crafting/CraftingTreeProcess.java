@@ -73,7 +73,7 @@ public class CraftingTreeProcess
 			final IAEItemStack[] is = details.getInputs();
 			for( int x = 0; x < ic.getSizeInventory(); x++ )
 			{
-				ic.setInventorySlotContents( x, is[x] == null ? null : is[x].getItemStack() );
+				ic.setInventorySlotContents( x, is[x] == null ? ItemStack.EMPTY : is[x].getItemStack() );
 			}
 
 			FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) world ), details.getOutput( ic, world ), ic );
@@ -81,7 +81,7 @@ public class CraftingTreeProcess
 			for( int x = 0; x < ic.getSizeInventory(); x++ )
 			{
 				final ItemStack g = ic.getStackInSlot( x );
-				if( g != null && g.getCount() > 1 )
+				if( !g.isEmpty() && g.getCount() > 1 )
 				{
 					this.fullSimulation = true;
 				}
@@ -94,7 +94,7 @@ public class CraftingTreeProcess
 				boolean isAnInput = false;
 				for( final IAEItemStack a : details.getCondensedOutputs() )
 				{
-					if( g != null && a != null && a.equals( g ) )
+					if( !g.isEmpty() && a != null && a.equals( g ) )
 					{
 						isAnInput = true;
 					}
@@ -151,7 +151,7 @@ public class CraftingTreeProcess
 				boolean isAnInput = false;
 				for( final IAEItemStack a : details.getCondensedOutputs() )
 				{
-					if( g != null && a != null && a.equals( g ) )
+					if( !g.isEmpty() && a != null && a.equals( g ) )
 					{
 						isAnInput = true;
 					}

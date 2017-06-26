@@ -27,7 +27,7 @@ import net.minecraft.item.ItemStack;
 public class SlotInaccessible extends AppEngSlot
 {
 
-	private ItemStack dspStack = null;
+	private ItemStack dspStack = ItemStack.EMPTY;
 
 	public SlotInaccessible( final IInventory i, final int slotIdx, final int x, final int y )
 	{
@@ -44,7 +44,7 @@ public class SlotInaccessible extends AppEngSlot
 	public void onSlotChanged()
 	{
 		super.onSlotChanged();
-		this.dspStack = null;
+		this.dspStack = ItemStack.EMPTY;
 	}
 
 	@Override
@@ -56,10 +56,10 @@ public class SlotInaccessible extends AppEngSlot
 	@Override
 	public ItemStack getDisplayStack()
 	{
-		if( this.dspStack == null )
+		if( this.dspStack.isEmpty() )
 		{
 			final ItemStack dsp = super.getDisplayStack();
-			if( dsp != null )
+			if( !dsp.isEmpty() )
 			{
 				this.dspStack = dsp.copy();
 			}

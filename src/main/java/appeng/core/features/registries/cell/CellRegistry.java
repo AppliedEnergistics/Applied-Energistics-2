@@ -53,7 +53,7 @@ public class CellRegistry implements ICellRegistry
 	@Override
 	public boolean isCellHandled( final ItemStack is )
 	{
-		if( is == null )
+		if( is.isEmpty() )
 		{
 			return false;
 		}
@@ -70,7 +70,7 @@ public class CellRegistry implements ICellRegistry
 	@Override
 	public ICellHandler getHandler( final ItemStack is )
 	{
-		if( is == null )
+		if( is.isEmpty() )
 		{
 			return null;
 		}
@@ -87,7 +87,7 @@ public class CellRegistry implements ICellRegistry
 	@Override
 	public IMEInventoryHandler getCellInventory( final ItemStack is, final ISaveProvider container, final StorageChannel chan )
 	{
-		if( is == null )
+		if( is.isEmpty() )
 		{
 			return null;
 		}

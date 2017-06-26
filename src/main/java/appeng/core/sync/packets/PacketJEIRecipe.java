@@ -150,7 +150,7 @@ public class PacketJEIRecipe extends AppEngPacket
 					{
 						final ItemStack is = r.getCraftingResult( testInv );
 
-						if( is != null )
+						if( !is.isEmpty() )
 						{
 							final IMEMonitor<IAEItemStack> storage = inv.getItemInventory();
 							final IItemList all = storage.getStorageList();
@@ -161,13 +161,13 @@ public class PacketJEIRecipe extends AppEngPacket
 								final ItemStack patternItem = testInv.getStackInSlot( x );
 
 								ItemStack currentItem = craftMatrix.getStackInSlot( x );
-								if( currentItem != null )
+								if( !currentItem.isEmpty() )
 								{
 									testInv.setInventorySlotContents( x, currentItem );
-									final ItemStack newItemStack = r.matches( testInv, pmp.world ) ? r.getCraftingResult( testInv ) : null;
+									final ItemStack newItemStack = r.matches( testInv, pmp.world ) ? r.getCraftingResult( testInv ) : ItemStack.EMPTY;
 									testInv.setInventorySlotContents( x, patternItem );
 
-									if( newItemStack == null || !Platform.itemComparisons().isSameItem( newItemStack, is ) )
+									if( newItemStack.isEmpty() || !Platform.itemComparisons().isSameItem( newItemStack, is ) )
 									{
 										final IAEItemStack in = AEItemStack.create( currentItem );
 										if( in != null )
@@ -179,7 +179,7 @@ public class PacketJEIRecipe extends AppEngPacket
 											}
 											else
 											{
-												craftMatrix.setInventorySlotContents( x, null );
+												craftMatrix.setInventorySlotContents( x, ItemStack.EMPTY );
 											}
 
 											currentItem = craftMatrix.getStackInSlot( x );
@@ -188,14 +188,14 @@ public class PacketJEIRecipe extends AppEngPacket
 								}
 
 								// True if we need to fetch an item for the recipe
-								if( patternItem != null && currentItem == null )
+								if( !patternItem.isEmpty() && currentItem.isEmpty() )
 								{
 									// Grab from network by recipe
 									ItemStack whichItem = Platform.extractItemsByRecipe( energy, cct.getActionSource(), storage, player.world, r, is, testInv, patternItem, x, all, realForFake, filter );
 
 									// If that doesn't get it, grab exact items from network (?)
 									// TODO see if this code is necessary
-									if( whichItem == null )
+									if( whichItem.isEmpty() )
 									{
 										for( int y = 0; y < this.recipe[x].length; y++ )
 										{
@@ -217,7 +217,7 @@ public class PacketJEIRecipe extends AppEngPacket
 									}
 
 									// If that doesn't work, grab from the player's inventory
-									if( whichItem == null && playerInventory != null )
+									if( whichItem.isEmpty() && playerInventory != null )
 									{
 										whichItem = this.extractItemFromPlayerInventory( player, realForFake, patternItem );
 									}

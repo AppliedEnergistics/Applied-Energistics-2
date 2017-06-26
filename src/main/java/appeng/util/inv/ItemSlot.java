@@ -36,7 +36,7 @@ public class ItemSlot
 
 	public ItemStack getItemStack()
 	{
-		return this.itemStack == null ? ( this.aeItemStack == null ? null : ( this.itemStack = this.aeItemStack.getItemStack() ) ) : this.itemStack;
+		return this.itemStack.isEmpty() ? ( this.aeItemStack == null ? ItemStack.EMPTY : ( this.itemStack = this.aeItemStack.getItemStack() ) ) : this.itemStack;
 	}
 
 	public void setItemStack( final ItemStack is )
@@ -47,13 +47,13 @@ public class ItemSlot
 
 	public IAEItemStack getAEItemStack()
 	{
-		return this.aeItemStack == null ? ( this.itemStack == null ? null : ( this.aeItemStack = AEItemStack.create( this.itemStack ) ) ) : this.aeItemStack;
+		return this.aeItemStack == null ? ( this.itemStack.isEmpty() ? null : ( this.aeItemStack = AEItemStack.create( this.itemStack ) ) ) : this.aeItemStack;
 	}
 
 	void setAEItemStack( final IAEItemStack is )
 	{
 		this.aeItemStack = is;
-		this.itemStack = null;
+		this.itemStack = ItemStack.EMPTY;
 	}
 
 	public boolean isExtractable()

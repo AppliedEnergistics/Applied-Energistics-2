@@ -62,7 +62,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 	private AEItemStack( final ItemStack is )
 	{
-		if( is == null )
+		if( is.isEmpty() )
 		{
 			throw new InvalidParameterException( "null is not a valid ItemStack for AEItemStack." );
 		}
@@ -125,7 +125,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		}
 
 		final ItemStack itemstack = new ItemStack( i );
-		if( itemstack == null )
+		if( itemstack.isEmpty() )
 		{
 			return null;
 		}
@@ -141,7 +141,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	@Nullable
 	public static AEItemStack create( final ItemStack stack )
 	{
-		if( stack == null )
+		if( stack.isEmpty() )
 		{
 			return null;
 		}
@@ -166,7 +166,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		short itemNumericId = data.readShort();
 		d.setString( "id", String.valueOf( itemNumericId ) );
 		d.setShort( "Damage", data.readShort() );
-		d.setByte( "Count", (byte) 1 );
+		d.setByte( "Count", (byte) 1 );  // 1 Because vanilla'll freak out otherwise
 
 		if( hasTagCompound )
 		{
@@ -189,7 +189,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			showCraftingLabel = stackSize == 0;
 		}
 
-		if( itemstack == null )
+		if( itemstack.isEmpty() )
 		{
 			return null;
 		}
@@ -488,7 +488,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	@Override
 	public boolean isSameType( final ItemStack otherStack )
 	{
-		if( otherStack == null )
+		if( otherStack.isEmpty() )
 		{
 			return false;
 		}

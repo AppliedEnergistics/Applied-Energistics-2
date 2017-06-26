@@ -39,7 +39,7 @@ public class ItemCraftingStorage extends AEBaseItemBlock
 	@Override
 	public ItemStack getContainerItem( final ItemStack itemStack )
 	{
-		return AEApi.instance().definitions().blocks().craftingUnit().maybeStack( 1 ).orElse( null );
+		return AEApi.instance().definitions().blocks().craftingUnit().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
 	@Override

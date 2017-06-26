@@ -23,6 +23,7 @@ import java.util.Iterator;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import net.minecraft.item.ItemStack;
 
 
 public final class IMEAdaptorIterator implements Iterator<ItemSlot>
@@ -68,7 +69,7 @@ public final class IMEAdaptorIterator implements Iterator<ItemSlot>
 			return this.slot;
 		}
 
-		this.slot.setItemStack( null );
+		this.slot.setItemStack( ItemStack.EMPTY );
 		return this.slot;
 	}
 

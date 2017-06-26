@@ -132,7 +132,7 @@ public class WrapperChainedInventory implements IInventory
 		{
 			return io.i.getStackInSlot( idx - io.offset );
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -143,7 +143,7 @@ public class WrapperChainedInventory implements IInventory
 		{
 			return io.i.decrStackSize( idx - io.offset, var2 );
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -154,7 +154,7 @@ public class WrapperChainedInventory implements IInventory
 		{
 			return io.i.removeStackFromSlot( idx - io.offset );
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

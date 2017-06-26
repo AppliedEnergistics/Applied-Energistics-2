@@ -118,7 +118,7 @@ public class ContainerNetworkStatus extends AEBaseContainer
 					{
 						final IGridBlock blk = machine.getGridBlock();
 						final ItemStack is = blk.getMachineRepresentation();
-						if( is != null && is.getItem() != null )
+						if( !is.isEmpty() && is.getItem() != null )
 						{
 							final IAEItemStack ais = AEItemStack.create( is );
 							ais.setStackSize( 1 );

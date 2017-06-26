@@ -70,7 +70,7 @@ public class IMEAdaptor extends InventoryAdaptor
 	{
 		IAEItemStack req = null;
 
-		if( filter == null )
+		if( filter.isEmpty() )
 		{
 			final IItemList<IAEItemStack> list = this.getList();
 			if( !list.isEmpty() )
@@ -96,7 +96,7 @@ public class IMEAdaptor extends InventoryAdaptor
 			return out.getItemStack();
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public class IMEAdaptor extends InventoryAdaptor
 	@Override
 	public ItemStack removeSimilarItems( final int amount, final ItemStack filter, final FuzzyMode fuzzyMode, final IInventoryDestination destination )
 	{
-		if( filter == null )
+		if( filter.isEmpty() )
 		{
 			return this.doRemoveItems( amount, null, destination, Actionable.MODULATE );
 		}
@@ -120,7 +120,7 @@ public class IMEAdaptor extends InventoryAdaptor
 		final IAEItemStack reqFilter = AEItemStack.create( filter );
 		if( reqFilter == null )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		IAEItemStack out = null;
@@ -138,15 +138,15 @@ public class IMEAdaptor extends InventoryAdaptor
 			}
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public ItemStack simulateSimilarRemove( final int amount, final ItemStack filter, final FuzzyMode fuzzyMode, final IInventoryDestination destination )
 	{
-		if( filter == null )
+		if( filter.isEmpty() )
 		{
-			return this.doRemoveItems( amount, null, destination, Actionable.SIMULATE );
+			return this.doRemoveItems( amount, ItemStack.EMPTY, destination, Actionable.SIMULATE );
 		}
 		return this.doRemoveItemsFuzzy( amount, filter, destination, Actionable.SIMULATE, fuzzyMode );
 	}
@@ -163,7 +163,7 @@ public class IMEAdaptor extends InventoryAdaptor
 				return out.getItemStack();
 			}
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -178,7 +178,7 @@ public class IMEAdaptor extends InventoryAdaptor
 				return out.getItemStack();
 			}
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

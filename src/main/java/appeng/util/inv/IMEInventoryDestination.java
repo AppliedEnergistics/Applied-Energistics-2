@@ -41,7 +41,7 @@ public class IMEInventoryDestination implements IInventoryDestination
 	public boolean canInsert( final ItemStack stack )
 	{
 
-		if( stack == null )
+		if( stack.isEmpty() )
 		{
 			return false;
 		}

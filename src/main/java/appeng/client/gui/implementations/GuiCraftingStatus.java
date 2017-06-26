@@ -57,7 +57,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 
 	private GuiTabButton originalGuiBtn;
 	private GuiBridge originalGui;
-	private ItemStack myIcon = null;
+	private ItemStack myIcon = ItemStack.EMPTY;
 
 	public GuiCraftingStatus( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
@@ -70,28 +70,28 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 
 		if( target instanceof WirelessTerminalGuiObject )
 		{
-			myIcon = definitions.items().wirelessTerminal().maybeStack( 1 ).orElse( null );
+			myIcon = definitions.items().wirelessTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 
 			this.originalGui = GuiBridge.GUI_WIRELESS_TERM;
 		}
 
 		if( target instanceof PartTerminal )
 		{
-			myIcon = parts.terminal().maybeStack( 1 ).orElse( null );
+			myIcon = parts.terminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 
 			this.originalGui = GuiBridge.GUI_ME;
 		}
 
 		if( target instanceof PartCraftingTerminal )
 		{
-			myIcon = parts.craftingTerminal().maybeStack( 1 ).orElse( null );
+			myIcon = parts.craftingTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 
 			this.originalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
 		}
 
 		if( target instanceof PartPatternTerminal )
 		{
-			myIcon = parts.patternTerminal().maybeStack( 1 ).orElse( null );
+			myIcon = parts.patternTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 
 			this.originalGui = GuiBridge.GUI_PATTERN_TERMINAL;
 		}
@@ -131,7 +131,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 		// selectCPU.enabled = false;
 		this.buttonList.add( this.selectCPU );
 
-		if( this.myIcon != null )
+		if( !this.myIcon.isEmpty() )
 		{
 			this.buttonList.add( this.originalGuiBtn = new GuiTabButton( this.guiLeft + 213, this.guiTop - 4, this.myIcon, this.myIcon.getDisplayName(), this.itemRender ) );
 			this.originalGuiBtn.setHideEdge( 13 );

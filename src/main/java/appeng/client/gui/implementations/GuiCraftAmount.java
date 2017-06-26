@@ -107,23 +107,23 @@ public class GuiCraftAmount extends AEBaseGui
 
 		if( target instanceof PartTerminal )
 		{
-			myIcon = parts.terminal().maybeStack( 1 ).orElse( null );
+			myIcon = parts.terminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 			this.originalGui = GuiBridge.GUI_ME;
 		}
 
 		if( target instanceof PartCraftingTerminal )
 		{
-			myIcon = parts.craftingTerminal().maybeStack( 1 ).orElse( null );
+			myIcon = parts.craftingTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 			this.originalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
 		}
 
 		if( target instanceof PartPatternTerminal )
 		{
-			myIcon = parts.patternTerminal().maybeStack( 1 ).orElse( null );
+			myIcon = parts.patternTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 			this.originalGui = GuiBridge.GUI_PATTERN_TERMINAL;
 		}
 
-		if( this.originalGui != null && myIcon != null )
+		if( this.originalGui != null && !myIcon.isEmpty() )
 		{
 			this.buttonList.add( this.originalGuiBtn = new GuiTabButton( this.guiLeft + 154, this.guiTop, myIcon, myIcon.getDisplayName(), this.itemRender ) );
 		}

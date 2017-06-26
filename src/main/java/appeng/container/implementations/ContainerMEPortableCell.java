@@ -65,7 +65,7 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 		{
 			if( currentItem != this.civ.getItemStack() )
 			{
-				if( currentItem != null )
+				if( !currentItem.isEmpty() )
 				{
 					if( Platform.itemComparisons().isEqualItem( this.civ.getItemStack(), currentItem ) )
 					{

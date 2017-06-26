@@ -132,15 +132,15 @@ public class InscriberTESR extends TileEntitySpecialRenderer<TileInscriber>
 		GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
 
 		int items = 0;
-		if( tile.getStackInSlot( 0 ) != null )
+		if( !tile.getStackInSlot( 0 ).isEmpty() )
 		{
 			items++;
 		}
-		if( tile.getStackInSlot( 1 ) != null )
+		if( !tile.getStackInSlot( 1 ).isEmpty() )
 		{
 			items++;
 		}
-		if( tile.getStackInSlot( 2 ) != null )
+		if( !tile.getStackInSlot( 2 ).isEmpty() )
 		{
 			items++;
 		}
@@ -151,7 +151,7 @@ public class InscriberTESR extends TileEntitySpecialRenderer<TileInscriber>
 		{
 			ItemStack is = tile.getStackInSlot( 3 );
 
-			if( is == null )
+			if( is.isEmpty() )
 			{
 				final IInscriberRecipe ir = tile.getTask();
 				if( ir != null )
@@ -177,7 +177,7 @@ public class InscriberTESR extends TileEntitySpecialRenderer<TileInscriber>
 
 	private void renderItem( ItemStack sis, final float o, final AEBaseTile tile, final VertexBuffer tess, final double x, final double y, final double z )
 	{
-		if( sis != null )
+		if( !sis.isEmpty() )
 		{
 			sis = sis.copy();
 

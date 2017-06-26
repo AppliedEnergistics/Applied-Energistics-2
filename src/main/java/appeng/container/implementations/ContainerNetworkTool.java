@@ -70,7 +70,7 @@ public class ContainerNetworkTool extends AEBaseContainer
 
 		if( currentItem != this.toolInv.getItemStack() )
 		{
-			if( currentItem != null )
+			if( !currentItem.isEmpty() )
 			{
 				if( Platform.itemComparisons().isEqualItem( this.toolInv.getItemStack(), currentItem ) )
 				{

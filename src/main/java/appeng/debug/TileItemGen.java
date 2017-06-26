@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -78,7 +79,10 @@ public class TileItemGen extends AEBaseTile implements IInventory
 
 	private ItemStack getRandomItem()
 	{
-		return POSSIBLE_ITEMS.peek();
+		// Safeguard for crash
+		ItemStack testStack = POSSIBLE_ITEMS.peek();
+		if( testStack.isEmpty() ) testStack = new ItemStack(Blocks.COBBLESTONE, 1);
+		return testStack;
 	}
 
 	@Override

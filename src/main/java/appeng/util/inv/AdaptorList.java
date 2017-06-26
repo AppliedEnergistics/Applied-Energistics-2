@@ -47,7 +47,7 @@ public class AdaptorList extends InventoryAdaptor
 		for( int x = 0; x < s; x++ )
 		{
 			final ItemStack is = this.i.get( x );
-			if( is != null && ( filter == null || Platform.itemComparisons().isSameItem( is, filter ) ) )
+			if( !is.isEmpty() && ( filter.isEmpty() || Platform.itemComparisons().isSameItem( is, filter ) ) )
 			{
 				if( amount > is.getCount() )
 				{
@@ -74,7 +74,7 @@ public class AdaptorList extends InventoryAdaptor
 				}
 			}
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -82,7 +82,7 @@ public class AdaptorList extends InventoryAdaptor
 	{
 		for( final ItemStack is : this.i )
 		{
-			if( is != null && ( filter == null || Platform.itemComparisons().isSameItem( is, filter ) ) )
+			if( !is.isEmpty() && ( filter.isEmpty() || Platform.itemComparisons().isSameItem( is, filter ) ) )
 			{
 				if( amount > is.getCount() )
 				{
@@ -101,7 +101,7 @@ public class AdaptorList extends InventoryAdaptor
 				}
 			}
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public class AdaptorList extends InventoryAdaptor
 		for( int x = 0; x < s; x++ )
 		{
 			final ItemStack is = this.i.get( x );
-			if( is != null && ( filter == null || Platform.itemComparisons().isFuzzyEqualItem( is, filter, fuzzyMode ) ) )
+			if( !is.isEmpty() && ( filter.isEmpty() || Platform.itemComparisons().isFuzzyEqualItem( is, filter, fuzzyMode ) ) )
 			{
 				if( amount > is.getCount() )
 				{
@@ -138,7 +138,7 @@ public class AdaptorList extends InventoryAdaptor
 				}
 			}
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -146,7 +146,7 @@ public class AdaptorList extends InventoryAdaptor
 	{
 		for( final ItemStack is : this.i )
 		{
-			if( is != null && ( filter == null || Platform.itemComparisons().isFuzzyEqualItem( is, filter, fuzzyMode ) ) )
+			if( !is.isEmpty() && ( filter.isEmpty() || Platform.itemComparisons().isFuzzyEqualItem( is, filter, fuzzyMode ) ) )
 			{
 				if( amount > is.getCount() )
 				{
@@ -165,19 +165,19 @@ public class AdaptorList extends InventoryAdaptor
 				}
 			}
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public ItemStack addItems( final ItemStack toBeAdded )
 	{
-		if( toBeAdded == null )
+		if( toBeAdded.isEmpty() )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 		if( toBeAdded.getCount() == 0 )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		final ItemStack left = toBeAdded.copy();
@@ -187,18 +187,18 @@ public class AdaptorList extends InventoryAdaptor
 			if( Platform.itemComparisons().isEqualItem( is, left ) )
 			{
 				is.grow( left.getCount() );
-				return null;
+				return ItemStack.EMPTY;
 			}
 		}
 
 		this.i.add( left );
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public ItemStack simulateAdd( final ItemStack toBeSimulated )
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -206,7 +206,7 @@ public class AdaptorList extends InventoryAdaptor
 	{
 		for( final ItemStack is : this.i )
 		{
-			if( is != null )
+			if( !is.isEmpty() )
 			{
 				return true;
 			}

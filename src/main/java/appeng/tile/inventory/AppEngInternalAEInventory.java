@@ -56,7 +56,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	{
 		for( int x = 0; x < this.size; x++ )
 		{
-			if( this.getStackInSlot( x ) != null )
+			if( !this.getStackInSlot( x ).isEmpty() )
 			{
 				return false;
 			}
@@ -142,7 +142,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	{
 		if( this.inv[var1] == null )
 		{
-			return null;
+			return ItemStack.EMPTY;
 		}
 
 		return this.inv[var1].getItemStack();
@@ -154,7 +154,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 		if( this.inv[slot] != null )
 		{
 			final ItemStack split = this.getStackInSlot( slot );
-			ItemStack ns = null;
+			ItemStack ns = ItemStack.EMPTY;
 
 			if( qty >= split.getCount() )
 			{
@@ -168,7 +168,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 
 			if( this.te != null && Platform.isServer() )
 			{
-				this.te.onChangeInventory( this, slot, InvOperation.decreaseStackSize, ns, null );
+				this.te.onChangeInventory( this, slot, InvOperation.decreaseStackSize, ns, ItemStack.EMPTY );
 			}
 
 			return ns;
@@ -194,23 +194,23 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 			ItemStack removed = oldStack;
 			ItemStack added = newItemStack;
 
-			if( oldStack != null && newItemStack != null && Platform.itemComparisons().isEqualItem( oldStack, newItemStack ) )
+			if( !oldStack.isEmpty() && !newItemStack.isEmpty() && Platform.itemComparisons().isEqualItem( oldStack, newItemStack ) )
 			{
 				if( oldStack.getCount() > newItemStack.getCount() )
 				{
 					removed = removed.copy();
 					removed.grow( -newItemStack.getCount() );
-					added = null;
+					added = ItemStack.EMPTY;
 				}
 				else if( oldStack.getCount() < newItemStack.getCount() )
 				{
 					added = added.copy();
 					added.grow( -oldStack.getCount() );
-					removed = null;
+					removed = ItemStack.EMPTY;
 				}
 				else
 				{
-					removed = added = null;
+					removed = added = ItemStack.EMPTY;
 				}
 			}
 
@@ -241,7 +241,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	{
 		if( this.te != null && Platform.isServer() )
 		{
-			this.te.onChangeInventory( this, -1, InvOperation.markDirty, null, null );
+			this.te.onChangeInventory( this, -1, InvOperation.markDirty, ItemStack.EMPTY, ItemStack.EMPTY );
 		}
 	}
 
@@ -309,7 +309,7 @@ public class AppEngInternalAEInventory implements IInventory, Iterable<ItemStack
 	{
 		for( int x = 0; x < this.size; x++ )
 		{
-			this.setInventorySlotContents( x, null );
+			this.setInventorySlotContents( x, ItemStack.EMPTY );
 		}
 	}
 }

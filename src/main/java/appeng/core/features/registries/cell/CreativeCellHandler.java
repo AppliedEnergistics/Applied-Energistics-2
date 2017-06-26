@@ -42,13 +42,13 @@ public class CreativeCellHandler implements ICellHandler
 	@Override
 	public boolean isCell( final ItemStack is )
 	{
-		return is != null && is.getItem() instanceof ItemCreativeStorageCell;
+		return !is.isEmpty() && is.getItem() instanceof ItemCreativeStorageCell;
 	}
 
 	@Override
 	public IMEInventoryHandler getCellInventory( final ItemStack is, final ISaveProvider container, final StorageChannel channel )
 	{
-		if( channel == StorageChannel.ITEMS && is != null && is.getItem() instanceof ItemCreativeStorageCell )
+		if( channel == StorageChannel.ITEMS && !is.isEmpty() && is.getItem() instanceof ItemCreativeStorageCell )
 		{
 			return CreativeCellInventory.getCell( is );
 		}

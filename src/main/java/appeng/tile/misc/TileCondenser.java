@@ -97,7 +97,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	public double getStorage()
 	{
 		final ItemStack is = this.inv.getStackInSlot( 2 );
-		if( is != null )
+		if( !is.isEmpty() )
 		{
 			if( is.getItem() instanceof IStorageComponent )
 			{
@@ -118,7 +118,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 
 		final double requiredPower = this.getRequiredPower();
 		final ItemStack output = this.getOutput();
-		while( requiredPower <= this.getStoredPower() && output != null && requiredPower > 0 )
+		while( requiredPower <= this.getStoredPower() && !output.isEmpty()  && requiredPower > 0 )
 		{
 			if( this.canAddOutput( output ) )
 			{
@@ -135,7 +135,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	private boolean canAddOutput( final ItemStack output )
 	{
 		final ItemStack outputStack = this.getStackInSlot( 1 );
-		return outputStack == null || ( Platform.itemComparisons().isEqualItem( outputStack,
+		return outputStack.isEmpty() || ( Platform.itemComparisons().isEqualItem( outputStack,
 				output ) && outputStack.getCount() < outputStack.getMaxStackSize() );
 	}
 
@@ -147,7 +147,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	private void addOutput( final ItemStack output )
 	{
 		final ItemStack outputStack = this.getStackInSlot( 1 );
-		if( outputStack == null )
+		if( outputStack.isEmpty() )
 		{
 			this.setInventorySlotContents( 1, output.copy() );
 		}
@@ -165,10 +165,10 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		switch( (CondenserOutput) this.cm.getSetting( Settings.CONDENSER_OUTPUT ) )
 		{
 			case MATTER_BALLS:
-				return materials.matterBall().maybeStack( 1 ).orElse( null );
+				return materials.matterBall().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 
 			case SINGULARITY:
-				return materials.singularity().maybeStack( 1 ).orElse( null );
+				return materials.singularity().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 
 			case TRASH:
 			default:
@@ -192,7 +192,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	{
 		if( i == 0 )
 		{
-			if( itemstack != null )
+			if( !itemstack.isEmpty() )
 			{
 				this.addPower( itemstack.getCount() );
 			}
@@ -215,10 +215,10 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		if( slot == 0 )
 		{
 			final ItemStack is = inv.getStackInSlot( 0 );
-			if( is != null )
+			if( !is.isEmpty() )
 			{
 				this.addPower( is.getCount() );
-				inv.setInventorySlotContents( 0, null );
+				inv.setInventorySlotContents( 0, ItemStack.EMPTY );
 			}
 		}
 	}
@@ -324,7 +324,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 			{
 				return stack;
 			}
-			if( !simulate && stack != null )
+			if( !simulate && !stack.isEmpty() )
 			{
 				addPower( stack.getCount() );
 			}

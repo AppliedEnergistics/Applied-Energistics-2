@@ -75,7 +75,7 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 				for( int x = 0; x < upgrades.getSizeInventory(); x++ )
 				{
 					final ItemStack is = upgrades.getStackInSlot( x );
-					if( is != null && is.getItem() instanceof IUpgradeModule )
+					if( !is.isEmpty() && is.getItem() instanceof IUpgradeModule )
 					{
 						final Upgrades u = ( (IUpgradeModule) is.getItem() ).getType( is );
 						if( u != null )
@@ -97,7 +97,7 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 				for( int x = 0; x < config.getSizeInventory(); x++ )
 				{
 					final ItemStack is = config.getStackInSlot( x );
-					if( is != null )
+					if( !is.isEmpty() )
 					{
 						priorityList.add( AEItemStack.create( is ) );
 					}

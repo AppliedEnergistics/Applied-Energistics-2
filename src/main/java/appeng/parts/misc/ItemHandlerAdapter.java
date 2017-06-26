@@ -75,7 +75,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		boolean simulate = ( type == Actionable.SIMULATE );
 
 		// This uses a brute force approach and tries to jam it in every slot the inventory exposes.
-		for( int i = 0; i < slotCount && remaining != null; i++ )
+		for( int i = 0; i < slotCount && !remaining.isEmpty(); i++ )
 		{
 			remaining = itemHandler.insertItem( i, remaining, simulate );
 		}
@@ -103,7 +103,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		int remainingSize = requestedItemStack.getCount();
 
 		// Use this to gather the requested items
-		ItemStack gathered = null;
+		ItemStack gathered = ItemStack.EMPTY;
 
 		final boolean simulate = ( mode == Actionable.SIMULATE );
 
@@ -125,7 +125,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			do
 			{
 				extracted = itemHandler.extractItem( i, remainingCurrentSlot, simulate );
-				if( extracted != null )
+				if( !extracted.isEmpty() )
 				{
 					if( extracted.getCount() > remainingCurrentSlot )
 					{
@@ -137,7 +137,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 					}
 
 					// We're just gonna use the first stack we get our hands on as the template for the rest
-					if( gathered == null )
+					if( gathered.isEmpty() )
 					{
 						gathered = extracted;
 					}
@@ -148,7 +148,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 					remainingCurrentSlot -= extracted.getCount();
 				}
 			}
-			while( extracted != null && remainingCurrentSlot > 0 );
+			while( !extracted.isEmpty() && remainingCurrentSlot > 0 );
 
 			remainingSize -= stackSizeCurrentSlot - remainingCurrentSlot;
 
@@ -159,7 +159,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			}
 		}
 
-		if( gathered != null )
+		if( !gathered.isEmpty() )
 		{
 			if( mode == Actionable.MODULATE )
 			{
@@ -170,6 +170,17 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		}
 
 		return null;
+	}
+
+
+	private ItemStack getItemStackInCachedSlot ( int pos ) {
+		if( pos > cachedStacks.length )
+			return ItemStack.EMPTY;
+
+		if( cachedStacks[pos] == null )
+			return ItemStack.EMPTY;
+
+		return cachedStacks[pos];
 	}
 
 	@Override
@@ -189,7 +200,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		for( int slot = 0; slot < slots; slot++ )
 		{
 			// Save the old stuff
-			ItemStack oldIS = cachedStacks[slot];
+			ItemStack oldIS = getItemStackInCachedSlot(slot);
 			IAEItemStack oldAeIS = cachedAeStacks[slot];
 
 			ItemStack newIS = itemHandler.getStackInSlot( slot );
@@ -198,7 +209,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			{
 				addItemChange( slot, oldAeIS, newIS, changes );
 			}
-			else if( newIS != null && oldIS != null )
+			else if( !newIS.isEmpty() && !oldIS.isEmpty() )
 			{
 				addPossibleStackSizeChange( slot, oldAeIS, newIS, changes );
 			}
@@ -275,12 +286,12 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
 	private boolean isDifferent( final ItemStack a, final ItemStack b )
 	{
-		if( a == b && b == null )
+		if( a == b && b.isEmpty() )
 		{
 			return false;
 		}
 
-		return a == null || b == null || !Platform.itemComparisons().isSameItem( a, b );
+		return a.isEmpty() || b.isEmpty() || !Platform.itemComparisons().isSameItem( a, b );
 	}
 
 	private void postDifference( Iterable<IAEItemStack> a )

@@ -166,7 +166,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		// AELog.info( "ID:" + id.toString() + " : " + is.getItemDamage() );
 
 		final TunnelType tt = AEApi.instance().registries().p2pTunnel().getTunnelTypeByItem( is );
-		if( is != null && is.getItem() instanceof IMemoryCard )
+		if( !is.isEmpty() && is.getItem() instanceof IMemoryCard )
 		{
 			final IMemoryCard mc = (IMemoryCard) is.getItem();
 			final NBTTagCompound data = mc.getData( is );
@@ -174,7 +174,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			final ItemStack newType = new ItemStack( data );
 			final long freq = data.getLong( "freq" );
 
-			if( newType != null )
+			if( !newType.isEmpty() )
 			{
 				if( newType.getItem() instanceof IPartItem )
 				{
@@ -219,7 +219,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			switch( tt )
 			{
 				case LIGHT:
-					newType = parts.p2PTunnelLight().maybeStack( 1 ).orElse( null );
+					newType = parts.p2PTunnelLight().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 					break;
 
 				/*
@@ -232,23 +232,23 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 				 */
 
 				//case FLUID:
-				//	newType = parts.p2PTunnelLiquids().maybeStack( 1 ).orElse( null );
+				//	newType = parts.p2PTunnelLiquids().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 				//	break;
 
 				//case IC2_POWER:
-				//	newType = parts.p2PTunnelEU().maybeStack( 1 ).orElse( null );
+				//	newType = parts.p2PTunnelEU().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 				//	break;
 
 				case ITEM:
-					newType = parts.p2PTunnelItems().maybeStack( 1 ).orElse( null );
+					newType = parts.p2PTunnelItems().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 					break;
 
 				case ME:
-					newType = parts.p2PTunnelME().maybeStack( 1 ).orElse( null );
+					newType = parts.p2PTunnelME().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 					break;
 
 				case REDSTONE:
-					newType = parts.p2PTunnelRedstone().maybeStack( 1 ).orElse( null );
+					newType = parts.p2PTunnelRedstone().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 					break;
 
 				/*
@@ -303,7 +303,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	public boolean onPartShiftActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
 		final ItemStack is = player.inventory.getCurrentItem();
-		if( is != null && is.getItem() instanceof IMemoryCard )
+		if( !is.isEmpty() && is.getItem() instanceof IMemoryCard )
 		{
 			final IMemoryCard mc = (IMemoryCard) is.getItem();
 			final NBTTagCompound data = new NBTTagCompound();

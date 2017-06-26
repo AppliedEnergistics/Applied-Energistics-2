@@ -67,7 +67,7 @@ public class AppEngSlot extends Slot
 
 	public void clearStack()
 	{
-		super.putStack( null );
+		super.putStack( ItemStack.EMPTY );
 	}
 
 	@Override

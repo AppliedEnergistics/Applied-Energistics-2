@@ -120,14 +120,14 @@ public class PartConversionMonitor extends AbstractPartMonitor
 							final IAEItemStack insertItem = input.copy();
 							insertItem.setStackSize( targetStack.getCount() );
 							final IAEItemStack failedToInsert = Platform.poweredInsert( energy, cell, insertItem, new PlayerSource( player, this ) );
-							player.inventory.setInventorySlotContents( x, failedToInsert == null ? null : failedToInsert.getItemStack() );
+							player.inventory.setInventorySlotContents( x, failedToInsert == null ? ItemStack.EMPTY : failedToInsert.getItemStack() );
 						}
 					}
 				}
 				else
 				{
 					final IAEItemStack failedToInsert = Platform.poweredInsert( energy, cell, input, new PlayerSource( player, this ) );
-					player.inventory.setInventorySlotContents( player.inventory.currentItem, failedToInsert == null ? null : failedToInsert.getItemStack() );
+					player.inventory.setInventorySlotContents( player.inventory.currentItem, failedToInsert == null ? ItemStack.EMPTY : failedToInsert.getItemStack() );
 				}
 			}
 			catch( final GridAccessException e )
@@ -163,7 +163,7 @@ public class PartConversionMonitor extends AbstractPartMonitor
 					ItemStack newItems = retrieved.getItemStack();
 					final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor( player, EnumFacing.UP );
 					newItems = adaptor.addItems( newItems );
-					if( newItems != null )
+					if( !newItems.isEmpty() )
 					{
 						final TileEntity te = this.getTile();
 						final List<ItemStack> list = Collections.singletonList( newItems );

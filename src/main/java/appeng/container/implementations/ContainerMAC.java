@@ -57,7 +57,7 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
 		final IInventory mac = this.getUpgradeable().getInventoryByName( "mac" );
 
 		final ItemStack is = mac.getStackInSlot( 10 );
-		if( is == null )
+		if( is.isEmpty() )
 		{
 			return false;
 		}

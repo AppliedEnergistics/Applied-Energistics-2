@@ -70,7 +70,7 @@ public class PartPatternTerminal extends AbstractPartTerminal
 	{
 		for( final ItemStack is : this.pattern )
 		{
-			if( is != null )
+			if( !is.isEmpty() )
 			{
 				drops.add( is );
 			}
@@ -125,7 +125,7 @@ public class PartPatternTerminal extends AbstractPartTerminal
 		if( inv == this.pattern && slot == 1 )
 		{
 			final ItemStack is = this.pattern.getStackInSlot( 1 );
-			if( is != null && is.getItem() instanceof ICraftingPatternItem )
+			if( !is.isEmpty() && is.getItem() instanceof ICraftingPatternItem )
 			{
 				final ICraftingPatternItem pattern = (ICraftingPatternItem) is.getItem();
 				final ICraftingPatternDetails details = pattern.getPatternForItem( is, this.getHost().getTile().getWorld() );
@@ -137,13 +137,13 @@ public class PartPatternTerminal extends AbstractPartTerminal
 					for( int x = 0; x < this.crafting.getSizeInventory() && x < details.getInputs().length; x++ )
 					{
 						final IAEItemStack item = details.getInputs()[x];
-						this.crafting.setInventorySlotContents( x, item == null ? null : item.getItemStack() );
+						this.crafting.setInventorySlotContents( x, item == null ? ItemStack.EMPTY : item.getItemStack() );
 					}
 
 					for( int x = 0; x < this.output.getSizeInventory() && x < details.getOutputs().length; x++ )
 					{
 						final IAEItemStack item = details.getOutputs()[x];
-						this.output.setInventorySlotContents( x, item == null ? null : item.getItemStack() );
+						this.output.setInventorySlotContents( x, item == null ? ItemStack.EMPTY : item.getItemStack() );
 					}
 				}
 			}
@@ -163,7 +163,7 @@ public class PartPatternTerminal extends AbstractPartTerminal
 			for( int x = 0; x < this.crafting.getSizeInventory(); x++ )
 			{
 				final ItemStack is = this.crafting.getStackInSlot( x );
-				if( is != null )
+				if( !is.isEmpty() )
 				{
 					is.setCount( 1 );
 				}

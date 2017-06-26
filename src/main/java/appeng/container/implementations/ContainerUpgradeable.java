@@ -97,7 +97,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		for( int x = 0; x < pi.getSizeInventory(); x++ )
 		{
 			final ItemStack pii = pi.getStackInSlot( x );
-			if( pii != null && pii.getItem() instanceof ToolNetworkTool )
+			if( !pii.isEmpty() && pii.getItem() instanceof ToolNetworkTool )
 			{
 				this.lockPlayerInventorySlot( x );
 				this.tbSlot = x;
@@ -204,7 +204,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 			if( o instanceof OptionalSlotFake )
 			{
 				final OptionalSlotFake fs = (OptionalSlotFake) o;
-				if( !fs.isEnabled() && fs.getDisplayStack() != null )
+				if( !fs.isEnabled() && !fs.getDisplayStack().isEmpty() )
 				{
 					fs.clearStack();
 				}
@@ -233,7 +233,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 
 			if( currentItem != this.tbInventory.getItemStack() )
 			{
-				if( currentItem != null )
+				if( !currentItem.isEmpty() )
 				{
 					if( Platform.itemComparisons().isEqualItem( this.tbInventory.getItemStack(), currentItem ) )
 					{

@@ -182,11 +182,11 @@ public final class InscriberRegistry implements IInscriberRegistry
 			{
 				throw new IllegalStateException( "Input must have a size." );
 			}
-			if( this.output == null )
+			if( this.output.isEmpty() )
 			{
 				throw new IllegalStateException( "Output must be defined." );
 			}
-			if( this.topOptional == null && this.bottomOptional == null )
+			if( this.topOptional.isEmpty() && this.bottomOptional.isEmpty() )
 			{
 				throw new IllegalStateException( "One optional must be defined." );
 			}

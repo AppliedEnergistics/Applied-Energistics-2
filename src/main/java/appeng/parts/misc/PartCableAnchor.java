@@ -60,7 +60,7 @@ public class PartCableAnchor implements IPart
 	@PartModels
 	public static final PartModel FACADE_MODELS = new PartModel( false, new ResourceLocation( AppEng.MOD_ID, "part/cable_anchor_short" ) );
 
-	private ItemStack is = null;
+	private ItemStack is = ItemStack.EMPTY;
 	private IPartHost host = null;
 	private AEPartLocation mySide = AEPartLocation.UP;
 

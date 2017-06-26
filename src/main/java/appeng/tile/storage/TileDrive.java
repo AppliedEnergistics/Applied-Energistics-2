@@ -241,7 +241,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	@MENetworkEventSubscribe
 	public void channelRender( final MENetworkChannelsChanged c )
 	{
-		this.recalculateDisplay();
+ 		this.recalculateDisplay();
 	}
 
 	@Override
@@ -312,7 +312,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 				this.invBySlot[x] = null;
 				this.handlersBySlot[x] = null;
 
-				if( is != null )
+				if( !is.isEmpty() )
 				{
 					this.handlersBySlot[x] = AEApi.instance().registries().cell().getHandler( is );
 

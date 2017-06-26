@@ -93,7 +93,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 		}
 		catch( final Throwable t )
 		{
-			this.inv.setInventorySlotContents( 0, null );
+			this.inv.setInventorySlotContents( 0, ItemStack.EMPTY );
 		}
 		return false; // TESR doesn't need updates!
 	}
@@ -217,7 +217,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 		}
 
 		final ItemStack myItem = this.getStackInSlot( 0 );
-		if( myItem == null )
+		if( myItem.isEmpty() )
 		{
 			ItemStack held = player.inventory.getCurrentItem();
 
@@ -231,7 +231,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 		{
 			final List<ItemStack> drops = new ArrayList<ItemStack>();
 			drops.add( myItem );
-			this.setInventorySlotContents( 0, null );
+			this.setInventorySlotContents( 0, ItemStack.EMPTY );
 			Platform.spawnDrops( this.world, this.pos.offset( this.getForward() ), drops );
 		}
 	}
@@ -267,7 +267,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 			return true;
 		}
 
-		if( myItem == null )
+		if( myItem.isEmpty() )
 		{
 			return false;
 		}

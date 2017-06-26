@@ -106,7 +106,7 @@ public class PacketClick extends AppEngPacket
 		final IComparableDefinition maybeMemoryCard = items.memoryCard();
 		final IComparableDefinition maybeColorApplicator = items.colorApplicator();
 
-		if( is != null )
+		if( !is.isEmpty() )
 		{
 			if( is.getItem() instanceof ToolNetworkTool )
 			{

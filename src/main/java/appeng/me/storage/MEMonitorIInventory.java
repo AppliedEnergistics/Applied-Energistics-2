@@ -75,7 +75,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 	@Override
 	public IAEItemStack injectItems( final IAEItemStack input, final Actionable type, final BaseActionSource src )
 	{
-		ItemStack out = null;
+		ItemStack out = ItemStack.EMPTY;
 
 		if( type == Actionable.SIMULATE )
 		{
@@ -91,7 +91,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 			this.onTick();
 		}
 
-		if( out == null )
+		if( out.isEmpty() )
 		{
 			return null;
 		}
@@ -105,7 +105,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 	@Override
 	public IAEItemStack extractItems( final IAEItemStack request, final Actionable type, final BaseActionSource src )
 	{
-		ItemStack out = null;
+		ItemStack out = ItemStack.EMPTY;
 
 		if( type == Actionable.SIMULATE )
 		{
@@ -116,7 +116,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 			out = this.adaptor.removeItems( (int) request.getStackSize(), request.getItemStack(), null );
 		}
 
-		if( out == null )
+		if( out.isEmpty() )
 		{
 			return null;
 		}
@@ -154,7 +154,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 			high = Math.max( high, is.getSlot() );
 
 			final ItemStack newIS = !is.isExtractable() && this.getMode() == StorageFilter.EXTRACTABLE_ONLY ? null : is.getItemStack();
-			final ItemStack oldIS = old == null ? null : old.itemStack;
+			final ItemStack oldIS = old == null ? ItemStack.EMPTY : old.itemStack;
 
 			if( this.isDifferent( newIS, oldIS ) )
 			{
@@ -177,8 +177,8 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 			}
 			else
 			{
-				final int newSize = ( newIS == null ? 0 : newIS.getCount() );
-				final int diff = newSize - ( oldIS == null ? 0 : oldIS.getCount() );
+				final int newSize = ( newIS.isEmpty() ? 0 : newIS.getCount() );
+				final int diff = newSize - ( oldIS.isEmpty() ? 0 : oldIS.getCount() );
 
 				final IAEItemStack stack = ( old == null || old.aeStack == null ? AEApi.instance().storage().createItemStack( newIS ) : old.aeStack.copy() );
 				if( stack != null )
@@ -227,12 +227,12 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 
 	private boolean isDifferent( final ItemStack a, final ItemStack b )
 	{
-		if( a == b && b == null )
+		if( a == b && b.isEmpty() )
 		{
 			return false;
 		}
 
-		if( ( a == null && b != null ) || ( a != null && b == null ) )
+		if( ( a.isEmpty() && !b.isEmpty() ) || ( !a.isEmpty() && b.isEmpty() ) )
 		{
 			return true;
 		}
@@ -344,9 +344,9 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 
 		public CachedItemStack( final ItemStack is )
 		{
-			if( is == null )
+			if( is.isEmpty() )
 			{
-				this.itemStack = null;
+				this.itemStack = ItemStack.EMPTY;
 				this.aeStack = null;
 			}
 			else

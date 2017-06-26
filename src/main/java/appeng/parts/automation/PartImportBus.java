@@ -88,7 +88,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	@Override
 	public boolean canInsert( final ItemStack stack )
 	{
-		if( stack == null || stack.getItem() == null )
+		if( stack.isEmpty() || stack.getItem() == null )
 		{
 			return false;
 		}
@@ -217,14 +217,14 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 		if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 		{
-			newItems = myAdaptor.removeSimilarItems( toSend, whatToImport == null ? null : whatToImport.getItemStack(), fzMode, this.configDestination( inv ) );
+			newItems = myAdaptor.removeSimilarItems( toSend, whatToImport == null ? ItemStack.EMPTY : whatToImport.getItemStack(), fzMode, this.configDestination( inv ) );
 		}
 		else
 		{
-			newItems = myAdaptor.removeItems( toSend, whatToImport == null ? null : whatToImport.getItemStack(), this.configDestination( inv ) );
+			newItems = myAdaptor.removeItems( toSend, whatToImport == null ? ItemStack.EMPTY : whatToImport.getItemStack(), this.configDestination( inv ) );
 		}
 
-		if( newItems != null )
+		if( !newItems.isEmpty() )
 		{
 			newItems.setCount( (int) ( Math.min( newItems.getCount(),
 					energy.extractAEPower( newItems.getCount(), Actionable.SIMULATE, PowerMultiplier.CONFIG ) ) + 0.01 ) );
@@ -266,7 +266,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 		if( whatToImport == null )
 		{
-			itemStackToImport = null;
+			itemStackToImport = ItemStack.EMPTY;
 		}
 		else
 		{

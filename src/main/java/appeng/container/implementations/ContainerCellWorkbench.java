@@ -210,7 +210,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		final IInventory inv = this.getUpgradeable().getInventoryByName( "config" );
 		for( int x = 0; x < inv.getSizeInventory(); x++ )
 		{
-			inv.setInventorySlotContents( x, null );
+			inv.setInventorySlotContents( x, ItemStack.EMPTY );
 		}
 		this.detectAndSendChanges();
 	}
@@ -248,7 +248,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 			}
 			else
 			{
-				inv.setInventorySlotContents( x, null );
+				inv.setInventorySlotContents( x, ItemStack.EMPTY );
 			}
 		}
 

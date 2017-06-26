@@ -176,7 +176,7 @@ public class ServerHelper extends CommonHelper
 			{
 				final ItemStack is = player.inventory.getStackInSlot( x );
 
-				if( is != null && is.getItem() instanceof ToolNetworkTool )
+				if( !is.isEmpty() && is.getItem() instanceof ToolNetworkTool )
 				{
 					final NBTTagCompound c = is.getTagCompound();
 					if( c != null && c.getBoolean( "hideFacades" ) )

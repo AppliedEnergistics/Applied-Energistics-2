@@ -88,7 +88,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	public Item getItem()
 	{
 		final ItemStack is = this.getTextureItem();
-		if( is == null )
+		if( is.isEmpty() )
 		{
 			return null;
 		}
@@ -99,7 +99,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	public int getItemDamage()
 	{
 		final ItemStack is = this.getTextureItem();
-		if( is == null )
+		if( is.isEmpty() )
 		{
 			return 0;
 		}

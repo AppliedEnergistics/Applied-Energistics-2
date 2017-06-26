@@ -199,7 +199,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 			this.fluidCell = null;
 
 			final ItemStack is = this.inv.getStackInSlot( 1 );
-			if( is != null )
+			if( !is.isEmpty() )
 			{
 				this.isCached = true;
 				this.cellHandler = AEApi.instance().registries().cell().getHandler( is );
@@ -393,7 +393,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 			}
 		}
 
-		if( this.inv.getStackInSlot( 0 ) != null )
+		if( !this.inv.getStackInSlot( 0 ).isEmpty() )
 		{
 			this.tryToStoreContents();
 		}
@@ -430,7 +430,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 
 		final ItemStack is = this.inv.getStackInSlot( 1 );
 
-		if( is == null )
+		if( is.isEmpty() )
 		{
 			data.writeInt( 0 );
 		}
@@ -454,7 +454,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 
 		if( item == 0 )
 		{
-			this.storageType = null;
+			this.storageType = ItemStack.EMPTY;
 		}
 		else
 		{
@@ -616,7 +616,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	{
 		try
 		{
-			if( this.getStackInSlot( 0 ) != null )
+			if( !this.getStackInSlot( 0 ).isEmpty() )
 			{
 				final IMEInventory<IAEItemStack> cell = this.getHandler( StorageChannel.ITEMS );
 
@@ -624,7 +624,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 
 				if( returns == null )
 				{
-					this.inv.setInventorySlotContents( 0, null );
+					this.inv.setInventorySlotContents( 0, ItemStack.EMPTY );
 				}
 				else
 				{
