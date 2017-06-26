@@ -88,7 +88,14 @@ public class ItemComparisonHelper
 	@Deprecated
 	public boolean isEqualItem( @Nullable final ItemStack left, @Nullable final ItemStack right )
 	{
-		return left != null && right != null && left.isItemEqual( right );
+		return left != null && right != null && /* left.isItemEqual( right ); */ this.isItemEqual(left, right);
+	}
+
+	/**
+	 * A slightly different method from ItemStack.java to skip the isEmpty() check. This allows you to check for identical empty spots..
+	 */
+	public boolean isItemEqual( ItemStack left, ItemStack right) {
+		return left.getItem() == right.getItem() && left.getItemDamage() == right.getItemDamage();
 	}
 
 	/**
