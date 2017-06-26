@@ -35,7 +35,8 @@ public class UVLightmapJsonTest
 	@EventHandler
 	public void preInit( FMLPreInitializationEvent event )
 	{
-		GameRegistry.register( uvlblock = new Block( Material.IRON ){
+		GameRegistry.register( uvlblock = new Block( Material.IRON )
+		{
 
 			final AxisAlignedBB box = new AxisAlignedBB( 0.25, 0, 7 / 16d, 0.75, 1, 9 / 16d );
 

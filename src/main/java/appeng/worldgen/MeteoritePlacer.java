@@ -511,8 +511,8 @@ public final class MeteoritePlacer
 			}
 		}
 
-		final int minBLocks = 200;
-		if( validBlocks > minBLocks && realValidBlocks > 80 )
+		final int minBlocks = 200;
+		if( validBlocks > minBlocks && realValidBlocks > 80 )
 		{
 			// we can spawn here!
 

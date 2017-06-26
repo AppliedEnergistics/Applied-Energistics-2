@@ -94,7 +94,7 @@ public class ItemComparisonHelper
 	/**
 	 * A slightly different method from ItemStack.java to skip the isEmpty() check. This allows you to check for identical empty spots..
 	 */
-	public boolean isItemEqual( ItemStack left, ItemStack right) {
+	public boolean isItemEqual( ItemStack left, ItemStack right ) {
 		return left.getItem() == right.getItem() && left.getItemDamage() == right.getItemDamage();
 	}
 

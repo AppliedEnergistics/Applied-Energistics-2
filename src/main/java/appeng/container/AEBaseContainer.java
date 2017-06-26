@@ -427,7 +427,7 @@ public abstract class AEBaseContainer extends Container
 		}
 		else
 		{
-			throw new IllegalArgumentException( "Invalid Slot [" + newSlot + "]for AE Container instead of AppEngSlot." );
+			throw new IllegalArgumentException( "Invalid Slot [" + newSlot + "] for AE Container instead of AppEngSlot." );
 		}
 	}
 
