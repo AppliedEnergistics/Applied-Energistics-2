@@ -182,7 +182,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 		for( int num = 0; num < this.inv.getSizeInventory(); num++ )
 		{
-			if( this.inv.getStackInSlot( num ) != null )
+			if( !this.inv.getStackInSlot( num ).isEmpty() )
 			{
 				slot |= ( 1 << num );
 			}
