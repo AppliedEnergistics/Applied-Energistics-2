@@ -186,7 +186,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		final ItemStack itemstack = new ItemStack( d );
 
 		if(!showCraftingLabel) {
-			showCraftingLabel = stackSize == 0;
+			showCraftingLabel = stackSize == 0 && isCraftable;
 		}
 
 		if( itemstack.isEmpty() )
