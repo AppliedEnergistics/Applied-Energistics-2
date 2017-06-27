@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
@@ -640,7 +641,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	/**
 	 * This is an item handler that exposes the inscribers inventory while providing simulation capabilities that do not
 	 * reset the progress if there's already an item in a slot. Previously, the progress of the inscriber was reset when
-	 * another mod attempetd insertion of items when there were already items in the slot.
+	 * another mod attempted insertion of items when there were already items in the slot.
 	 */
 	private class ItemHandler implements IItemHandler
 	{
@@ -662,6 +663,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		}
 
 		@Override
+		@Nonnull
 		public ItemStack getStackInSlot( int slot )
 		{
 			if( slot == 0 )
@@ -676,7 +678,8 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		}
 
 		@Override
-		public ItemStack insertItem( int slot, ItemStack stack, boolean simulate )
+		@Nonnull
+		public ItemStack insertItem( int slot, @Nonnull ItemStack stack, boolean simulate )
 		{
 			if( slot != 0 || stack.isEmpty() )
 			{
@@ -702,6 +705,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		}
 
 		@Override
+		@Nonnull
 		public ItemStack extractItem( int slot, int amount, boolean simulate )
 		{
 			final int validExtractSlot = ( insertSlot == extractSlot ) ? 0 : 1;
