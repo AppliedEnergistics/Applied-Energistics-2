@@ -19,6 +19,7 @@
 package appeng.parts.automation;
 
 
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -117,7 +118,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 
 		for( final ItemStack is : this )
 		{
-			if( is == null || is.getItem() == null || !( is.getItem() instanceof IUpgradeModule ) )
+			if( is == null || is.getItem() == Items.AIR || !( is.getItem() instanceof IUpgradeModule ) )
 			{
 				continue;
 			}

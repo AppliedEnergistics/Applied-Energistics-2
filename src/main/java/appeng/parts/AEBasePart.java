@@ -426,7 +426,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	{
 		final ItemStack memCardIS = player.inventory.getCurrentItem();
 
-		if( memCardIS != null && this.useStandardMemoryCard() && memCardIS.getItem() instanceof IMemoryCard )
+		if( !memCardIS.isEmpty() && this.useStandardMemoryCard() && memCardIS.getItem() instanceof IMemoryCard )
 		{
 			final IMemoryCard memoryCard = (IMemoryCard) memCardIS.getItem();
 

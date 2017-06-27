@@ -21,6 +21,7 @@ package appeng.recipes.handlers;
 
 import java.util.List;
 
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -59,12 +60,12 @@ public class Smelt implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		if( this.in.getItemStack().getItem() == null )
+		if( this.in.getItemStack().getItem() == Items.AIR )
 		{
 			throw new RegistrationError( this.in.toString() + ": Smelting Input is not a valid item." );
 		}
 
-		if( this.out.getItemStack().getItem() == null )
+		if( this.out.getItemStack().getItem() == Items.AIR )
 		{
 			throw new RegistrationError( this.out.toString() + ": Smelting Output is not a valid item." );
 		}

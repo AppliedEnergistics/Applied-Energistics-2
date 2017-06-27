@@ -46,7 +46,7 @@ public class ChargerInfoProvider implements ITileProbInfoProvider
 			final IInventory chargerInventory = charger.getInternalInventory();
 			final ItemStack chargingItem = chargerInventory.getStackInSlot( 0 );
 
-			if( chargingItem != null )
+			if( !chargingItem.isEmpty() )
 			{
 				final String currentInventory = chargingItem.getDisplayName();
 				final IProbeInfo centerAlignedHorizontalLayout = probeInfo

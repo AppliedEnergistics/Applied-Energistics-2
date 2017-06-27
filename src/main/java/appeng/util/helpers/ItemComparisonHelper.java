@@ -26,6 +26,7 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -140,7 +141,7 @@ public class ItemComparisonHelper
 		 */
 
 		// test damageable items..
-		if( a.getItem() != null && b.getItem() != null && a.getItem().isDamageable() && a.getItem() == b.getItem() )
+		if( a.getItem() != Items.AIR && b.getItem() != Items.AIR && a.getItem().isDamageable() && a.getItem() == b.getItem() )
 		{
 			try
 			{
@@ -379,11 +380,11 @@ public class ItemComparisonHelper
 	 */
 	private boolean hasSameNbtTag( final ItemStack a, final ItemStack b )
 	{
-		if( a == null && b == null )
+		if( a.isEmpty() && b.isEmpty() )
 		{
 			return true;
 		}
-		if( a == null || b == null )
+		if( a.isEmpty() || b.isEmpty() )
 		{
 			return false;
 		}

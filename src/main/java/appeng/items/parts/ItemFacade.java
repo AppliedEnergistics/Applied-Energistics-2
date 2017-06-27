@@ -81,7 +81,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		try
 		{
 			final ItemStack in = this.getTextureItem( is );
-			if( in != null )
+			if( !in.isEmpty() )
 			{
 				return super.getItemStackDisplayName( is ) + " - " + in.getDisplayName();
 			}
@@ -112,7 +112,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 				try
 				{
 					final Item item = Item.getItemFromBlock( b );
-					if( item == null )
+					if( item == Items.AIR )
 					{
 						continue;
 					}
@@ -122,7 +122,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 					for( final ItemStack l : tmpList )
 					{
 						final ItemStack facade = this.createFacadeForItem( l, false );
-						if( facade != null )
+						if( !facade.isEmpty() )
 						{
 							this.subTypes.add( facade );
 						}
@@ -153,13 +153,13 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 	public ItemStack createFacadeForItem( final ItemStack l, final boolean returnItem )
 	{
-		if( l == null )
+		if( l.isEmpty() )
 		{
 			return ItemStack.EMPTY;
 		}
 
 		final Block b = Block.getBlockFromItem( l.getItem() );
-		if( b == null || l.hasTagCompound() )
+		if( b == Blocks.AIR || l.hasTagCompound() )
 		{
 			return ItemStack.EMPTY;
 		}
@@ -205,7 +205,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	public FacadePart createPartFromItemStack( final ItemStack is, final AEPartLocation side )
 	{
 		final ItemStack in = this.getTextureItem( is );
-		if( in != null )
+		if( !in.isEmpty() )
 		{
 			return new FacadePart( is, side );
 		}
@@ -265,14 +265,14 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 		ItemStack baseItemStack = getTextureItem( is );
 
-		if( baseItemStack == null )
+		if( baseItemStack.isEmpty() )
 		{
 			return Blocks.GLASS.getDefaultState();
 		}
 
 		Block block = Block.getBlockFromItem( baseItemStack.getItem() );
 
-		if( block == null )
+		if( block == Blocks.AIR )
 		{
 			return Blocks.GLASS.getDefaultState();
 		}

@@ -254,9 +254,9 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 				is.grow( -1 );
 				if( is.getCount() <= 0 )
 				{
-					ItemStack container = null;
+					ItemStack container = ItemStack.EMPTY;
 
-					if( is.getItem() != null && is.getItem().hasContainerItem( is ) )
+					if( is.getItem() != Items.AIR && is.getItem().hasContainerItem( is ) )
 					{
 						container = is.getItem().getContainerItem( is );
 					}

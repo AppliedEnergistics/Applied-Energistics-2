@@ -21,6 +21,7 @@ package appeng.decorative.solid;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -64,7 +65,7 @@ public class BlockSkyStone extends AEBaseBlock
 			final ItemStack is = event.getEntityPlayer().getItemStackFromSlot( EntityEquipmentSlot.MAINHAND );
 			int level = -1;
 
-			if( !is.isEmpty() && is.getItem() != null )
+			if( !is.isEmpty() && is.getItem() != Items.AIR )
 			{
 				level = is.getItem().getHarvestLevel( is, "pickaxe", event.getEntityPlayer(), event.getState() );
 			}

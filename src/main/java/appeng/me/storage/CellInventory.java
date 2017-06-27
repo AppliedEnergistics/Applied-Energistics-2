@@ -462,7 +462,7 @@ public class CellInventory implements ICellInventory
 		try
 		{
 			t = new ItemStack( compoundTag );
-			if( t == null )
+			if( t.isEmpty() )
 			{
 				AELog.warn( "Removing item " + compoundTag + " from storage cell because the associated item type couldn't be found." );
 				return;

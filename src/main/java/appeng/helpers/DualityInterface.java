@@ -32,6 +32,7 @@ import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryCrafting;
@@ -1225,13 +1226,13 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					BAD_BLOCKS.add( directedBlock ); // nope!
 				}
 
-				if( what.getItem() != null )
+				if( what.getItem() != Items.AIR )
 				{
 					return what.getUnlocalizedName();
 				}
 
 				final Item item = Item.getItemFromBlock( directedBlock );
-				if( item == null )
+				if( item == Items.AIR )
 				{
 					return directedBlock.getUnlocalizedName();
 				}

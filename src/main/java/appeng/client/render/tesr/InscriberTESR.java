@@ -1,6 +1,8 @@
 package appeng.client.render.tesr;
 
 
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.block.Block;
@@ -200,7 +202,7 @@ public class InscriberTESR extends TileEntitySpecialRenderer<TileInscriber>
 
 				// heuristic to scale items down much further than blocks
 				final Block blk = Block.getBlockFromItem( sis.getItem() );
-				if( blk == null )
+				if( blk == Blocks.AIR )
 				{
 					GlStateManager.scale( 0.5, 0.5, 0.5 );
 				}

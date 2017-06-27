@@ -430,7 +430,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 		@Override
 		public boolean isItemValid( final ItemStack itemstack )
 		{
-			return itemstack != null && itemstack.getItem() instanceof ItemEncodedPattern;
+			return !itemstack.isEmpty() && itemstack.getItem() instanceof ItemEncodedPattern;
 		}
 	}
 }

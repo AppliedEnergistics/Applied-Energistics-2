@@ -116,7 +116,7 @@ public enum Achievements
 
 	Achievements( final int x, final int y, final AEColoredItemDefinition which, final AchievementType type )
 	{
-		this.stack = ( which != null ) ? which.stack( AEColor.TRANSPARENT, 1 ) : null;
+		this.stack = ( which != null ) ? which.stack( AEColor.TRANSPARENT, 1 ) : ItemStack.EMPTY;
 		this.type = type;
 		this.x = x;
 		this.y = y;
@@ -145,7 +145,7 @@ public enum Achievements
 
 	public Achievement getAchievement()
 	{
-		if( this.stat == null && this.getStack() != null )
+		if( this.stat == null && !this.getStack().isEmpty() )
 		{
 			this.stat = new Achievement( "achievement.ae2." + this.name(), "ae2." + this.name(), this.x, this.y, this.getStack(), this.parent );
 			this.stat.registerStat();

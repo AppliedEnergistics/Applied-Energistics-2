@@ -257,7 +257,7 @@ public class BlockCableBus extends AEBaseTileBlock
 		// Our built-in model has the actual baked sprites we need
 		IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState( getDefaultState() );
 
-		// We cannot add the effect if we dont have the model
+		// We cannot add the effect if we don't have the model
 		if( !( model instanceof CableBusBakedModel ) )
 		{
 			return true;

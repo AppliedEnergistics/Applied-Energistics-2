@@ -91,13 +91,13 @@ public class PartConversionMonitor extends AbstractPartMonitor
 		boolean ModeB = false;
 
 		ItemStack item = player.getHeldItem( hand );
-		if( item == null && this.getDisplayed() != null )
+		if( item.isEmpty() && this.getDisplayed() != null )
 		{
 			ModeB = true;
 			item = ( (IAEItemStack) this.getDisplayed() ).getItemStack();
 		}
 
-		if( item != null )
+		if( !item.isEmpty() )
 		{
 			try
 			{

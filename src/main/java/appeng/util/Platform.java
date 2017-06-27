@@ -681,7 +681,7 @@ public class Platform
 			return new ArrayList();
 		}
 
-		ItemStack itemStack = null;
+		ItemStack itemStack = ItemStack.EMPTY;
 		if( o instanceof AEItemStack )
 		{
 			final AEItemStack ais = (AEItemStack) o;
@@ -724,7 +724,7 @@ public class Platform
 			return "** Null";
 		}
 
-		ItemStack itemStack = null;
+		ItemStack itemStack = ItemStack.EMPTY;
 		if( o instanceof AEItemStack )
 		{
 			final String n = ( (AEItemStack) o ).getDisplayName();

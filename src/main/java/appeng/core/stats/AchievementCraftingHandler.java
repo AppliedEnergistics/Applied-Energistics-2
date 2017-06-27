@@ -44,7 +44,7 @@ public class AchievementCraftingHandler
 	@SubscribeEvent
 	public void onPlayerCraftingEvent( final PlayerEvent.ItemCraftedEvent event )
 	{
-		if( this.differentiator.isNoPlayer( event.player ) || event.crafting == null )
+		if( this.differentiator.isNoPlayer( event.player ) || event.crafting.isEmpty() )
 		{
 			return;
 		}

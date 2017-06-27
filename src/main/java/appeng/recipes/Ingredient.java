@@ -24,6 +24,7 @@ import java.util.List;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -167,7 +168,7 @@ public class Ingredient implements IIngredient
 		if( blk != null )
 		{
 			final Item it = Item.getItemFromBlock( blk );
-			if( it != null )
+			if( it != Items.AIR )
 			{
 				return this.makeItemStack( it, this.qty, this.meta, this.nbt );
 			}

@@ -78,7 +78,7 @@ public final class DisassembleRecipe implements IRecipe
 	@Override
 	public boolean matches( final InventoryCrafting inv, final World w )
 	{
-		return this.getOutput( inv ) != null;
+		return !this.getOutput( inv ).isEmpty();
 	}
 
 	@Nullable
@@ -111,7 +111,7 @@ public final class DisassembleRecipe implements IRecipe
 						final IItemList<IAEItemStack> list = cellInv.getAvailableItems( StorageChannel.ITEMS.createList() );
 						if( !list.isEmpty() )
 						{
-							return null;
+							return ItemStack.EMPTY;
 						}
 					}
 

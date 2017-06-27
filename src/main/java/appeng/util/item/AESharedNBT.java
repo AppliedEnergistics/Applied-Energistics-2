@@ -22,6 +22,7 @@ package appeng.util.item;
 import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
 
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -81,7 +82,7 @@ public class AESharedNBT extends NBTTagCompound implements IAETagCompound
 
 		final Item item = s.getItem();
 		int meta = -1;
-		if( s.getItem() != null && s.isItemStackDamageable() && s.getHasSubtypes() )
+		if( s.getItem() != Items.AIR && s.isItemStackDamageable() && s.getHasSubtypes() )
 		{
 			meta = s.getItemDamage();
 		}

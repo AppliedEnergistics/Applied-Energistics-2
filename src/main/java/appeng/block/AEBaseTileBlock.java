@@ -34,6 +34,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.EnumDyeColor;
@@ -272,7 +273,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	public boolean onBlockActivated( World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ )
 	{
 		ItemStack heldItem;
-		if( player != null && player.getHeldItemMainhand() != null )
+		if( player != null && !player.getHeldItemMainhand().isEmpty() )
 		{
 			heldItem = player.getHeldItemMainhand();
 			

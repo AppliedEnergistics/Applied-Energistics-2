@@ -20,6 +20,7 @@ package appeng.parts.automation;
 
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -88,7 +89,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	@Override
 	public boolean canInsert( final ItemStack stack )
 	{
-		if( stack.isEmpty() || stack.getItem() == null )
+		if( stack.isEmpty() || stack.getItem() == Items.AIR )
 		{
 			return false;
 		}

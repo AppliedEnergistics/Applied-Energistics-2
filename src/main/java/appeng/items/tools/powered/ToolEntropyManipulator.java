@@ -289,7 +289,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 				{
 					final ItemStack result = FurnaceRecipes.instance().getSmeltingResult( i );
 
-					if( result != null )
+					if( !result.isEmpty() )
 					{
 						if( result.getItem() instanceof ItemBlock )
 						{

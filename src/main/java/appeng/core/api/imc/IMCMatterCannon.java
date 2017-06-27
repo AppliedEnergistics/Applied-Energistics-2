@@ -52,7 +52,7 @@ public class IMCMatterCannon implements IIMCProcessor
 		final ItemStack ammo = new ItemStack( item );
 		final double weight = msg.getDouble( "weight" );
 
-		if( ammo == null )
+		if( ammo.isEmpty() )
 		{
 			throw new IllegalStateException( "invalid item in message " + m );
 		}

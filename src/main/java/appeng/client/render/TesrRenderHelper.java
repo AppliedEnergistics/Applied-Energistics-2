@@ -99,7 +99,7 @@ public class TesrRenderHelper
 	 */
 	public static void renderItem2d( ItemStack itemStack, float scale )
 	{
-		if( itemStack != null )
+		if( !itemStack.isEmpty() )
 		{
 			OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, 240.f, 240.0f );
 

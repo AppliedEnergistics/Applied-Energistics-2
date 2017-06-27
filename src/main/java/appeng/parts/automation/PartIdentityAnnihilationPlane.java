@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -86,7 +87,7 @@ public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 			final List<ItemStack> out = new ArrayList<ItemStack>( 1 );
 			final Item item = Item.getItemFromBlock( state.getBlock() );
 
-			if( item != null )
+			if( item != Items.AIR )
 			{
 				int meta = 0;
 				if( item.getHasSubtypes() )

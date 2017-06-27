@@ -93,7 +93,7 @@ public final class EntitySingularity extends AEBaseEntityItem
 				if( e instanceof EntityItem )
 				{
 					final ItemStack other = ( (EntityItem) e ).getEntityItem();
-					if( other != null )
+					if( !other.isEmpty() )
 					{
 						boolean matches = false;
 						for( final ItemStack is : OreDictionary.getOres( "dustEnder" ) )

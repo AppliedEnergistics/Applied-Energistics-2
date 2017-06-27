@@ -436,7 +436,7 @@ public class PartPlacement
 				boolean supportedItem = items.memoryCard().isSameAs( held );
 				supportedItem |= items.colorApplicator().isSameAs( held );
 
-				if( event.getEntityPlayer().isSneaking() && held != null && supportedItem )
+				if( event.getEntityPlayer().isSneaking() && !held.isEmpty() && supportedItem )
 				{
 					NetworkHandler.instance().sendToServer( new PacketClick( event.getPos(), event.getFace(), 0, 0, 0, event.getHand() ) );
 				}

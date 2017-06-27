@@ -25,6 +25,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -90,7 +91,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 		final ItemStack is = this.getTextureItem();
 		if( is.isEmpty() )
 		{
-			return null;
+			return Items.AIR;
 		}
 		return is.getItem();
 	}
@@ -123,7 +124,6 @@ public class FacadePart implements IFacadePart, IBoxProvider
 		return this.getBlockState().isOpaqueCube();
 	}
 
-	@Nullable
 	@Override
 	public ItemStack getTextureItem()
 	{
@@ -137,7 +137,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 			return facade.getTextureItem( this.facade );
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

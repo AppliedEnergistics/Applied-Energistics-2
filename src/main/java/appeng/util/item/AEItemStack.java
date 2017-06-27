@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
 
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -68,14 +69,14 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		}
 
 		final Item item = is.getItem();
-		if( item == null )
+		if( item == Items.AIR )
 		{
 			throw new InvalidParameterException( "Contained item is null, thus not a valid ItemStack for AEItemStack." );
 		}
 
 		this.setDefinition( new AEItemDef( item ) );
 
-		if( this.getDefinition().getItem() == null )
+		if( this.getDefinition().getItem() == Items.AIR )
 		{
 			throw new InvalidParameterException( "This ItemStack is bad, it has a null item." );
 		}

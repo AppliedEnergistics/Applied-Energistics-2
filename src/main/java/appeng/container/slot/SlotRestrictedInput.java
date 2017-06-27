@@ -105,7 +105,7 @@ public class SlotRestrictedInput extends AppEngSlot
 		{
 			return false;
 		}
-		if( i.getItem() == null )
+		if( i.getItem() == Items.AIR )
 		{
 			return false;
 		}

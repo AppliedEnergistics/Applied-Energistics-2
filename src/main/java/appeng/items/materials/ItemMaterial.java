@@ -37,6 +37,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -220,7 +221,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 					{
 						for( final ItemStack is : options )
 						{
-							if( !is.isEmpty() && is.getItem() != null )
+							if( !is.isEmpty() && is.getItem() != Items.AIR )
 							{
 								replacement = is.copy();
 								break;

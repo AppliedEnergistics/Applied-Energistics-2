@@ -172,7 +172,7 @@ final class MinecraftItemCSVExporter implements Exporter
 				final Item item = input.getItem();
 				final String unlocalizedItem = input.getUnlocalizedName();
 				final Block block = Block.getBlockFromItem( item );
-				final boolean isBlock = block != null && !block.equals( Blocks.AIR );
+				final boolean isBlock = block != Blocks.AIR && !block.equals( Blocks.AIR );
 				final Class<? extends ItemStack> stackClass = input.getClass();
 				final String stackClassName = stackClass.getName();
 
@@ -275,7 +275,7 @@ final class MinecraftItemCSVExporter implements Exporter
 			if( this.mode == ExportMode.VERBOSE )
 			{
 				final Block block = Block.getBlockFromItem( input );
-				final boolean isBlock = block != null && !block.equals( Blocks.AIR );
+				final boolean isBlock = block != Blocks.AIR && !block.equals( Blocks.AIR );
 				final Class<? extends Item> itemClass = input.getClass();
 				final String itemClassName = itemClass.getName();
 

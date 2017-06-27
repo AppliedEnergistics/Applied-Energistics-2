@@ -265,7 +265,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	@Override
 	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
 	{
-		return itemstack != null && AEApi.instance().registries().cell().isCellHandled( itemstack );
+		return !itemstack.isEmpty() && AEApi.instance().registries().cell().isCellHandled( itemstack );
 	}
 
 	@Override

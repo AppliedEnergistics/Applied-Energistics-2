@@ -75,12 +75,12 @@ public class IMCGrinder implements IIMCProcessor
 
 		final int turns = msg.getInteger( "turns" );
 
-		if( in == null )
+		if( in.isEmpty() )
 		{
 			throw new IllegalStateException( "invalid input" );
 		}
 
-		if( out == null )
+		if( out.isEmpty() )
 		{
 			throw new IllegalStateException( "invalid output" );
 		}
@@ -90,7 +90,7 @@ public class IMCGrinder implements IIMCProcessor
 			final NBTTagCompound optionalTag = (NBTTagCompound) msg.getTag( "optional" );
 			final ItemStack optional = new ItemStack( optionalTag );
 
-			if( optional == null )
+			if( optional.isEmpty() )
 			{
 				throw new IllegalStateException( "invalid optional" );
 			}

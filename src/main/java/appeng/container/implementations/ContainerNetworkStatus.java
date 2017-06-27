@@ -24,6 +24,7 @@ import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
@@ -118,7 +119,7 @@ public class ContainerNetworkStatus extends AEBaseContainer
 					{
 						final IGridBlock blk = machine.getGridBlock();
 						final ItemStack is = blk.getMachineRepresentation();
-						if( !is.isEmpty() && is.getItem() != null )
+						if( !is.isEmpty() && is.getItem() != Items.AIR )
 						{
 							final IAEItemStack ais = AEItemStack.create( is );
 							ais.setStackSize( 1 );

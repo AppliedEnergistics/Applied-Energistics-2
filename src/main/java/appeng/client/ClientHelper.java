@@ -338,11 +338,11 @@ public class ClientHelper extends ServerHelper
 		if( player.isSneaking() )
 		{
 			final EnumHand hand;
-			if( player.getHeldItem( EnumHand.MAIN_HAND ) != null && player.getHeldItem( EnumHand.MAIN_HAND ).getItem() instanceof IMouseWheelItem )
+			if( !player.getHeldItem( EnumHand.MAIN_HAND ).isEmpty() && player.getHeldItem( EnumHand.MAIN_HAND ).getItem() instanceof IMouseWheelItem )
 			{
 				hand = EnumHand.MAIN_HAND;
 			}
-			else if( player.getHeldItem( EnumHand.OFF_HAND ) != null && player.getHeldItem( EnumHand.OFF_HAND ).getItem() instanceof IMouseWheelItem )
+			else if( !player.getHeldItem( EnumHand.OFF_HAND ).isEmpty() && player.getHeldItem( EnumHand.OFF_HAND ).getItem() instanceof IMouseWheelItem )
 			{
 				hand = EnumHand.OFF_HAND;
 			}

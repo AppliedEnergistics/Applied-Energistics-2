@@ -45,7 +45,7 @@ public class AchievementPickupHandler
 	@SubscribeEvent
 	public void onItemPickUp( final PlayerEvent.ItemPickupEvent event )
 	{
-		if( this.differentiator.isNoPlayer( event.player ) || event.pickedUp == null || event.pickedUp.getEntityItem() == null )
+		if( this.differentiator.isNoPlayer( event.player ) || event.pickedUp == null || event.pickedUp.getEntityItem().isEmpty() )
 		{
 			return;
 		}

@@ -71,7 +71,6 @@ public interface IFacadePart
 	/**
 	 * The item that this facade masquerades as.
 	 */
-	@Nullable
 	ItemStack getTextureItem();
 
 	/**

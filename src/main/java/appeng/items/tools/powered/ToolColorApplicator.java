@@ -243,7 +243,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		{
 			final NBTTagCompound color = c.getCompoundTag( "color" );
 			final ItemStack oldColor = new ItemStack( color );
-			if( oldColor != null )
+			if( !oldColor.isEmpty() )
 			{
 				return oldColor;
 			}

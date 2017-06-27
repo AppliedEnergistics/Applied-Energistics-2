@@ -43,7 +43,7 @@ public class OreDictionaryHandler
 	@SubscribeEvent
 	public void onOreDictionaryRegister( final OreDictionary.OreRegisterEvent event )
 	{
-		if( event.getName() == null || event.getOre() == null )
+		if( event.getName() == null || event.getOre().isEmpty() )
 		{
 			return;
 		}
@@ -111,7 +111,7 @@ public class OreDictionaryHandler
 			{
 				for( final ItemStack item : OreDictionary.getOres( name ) )
 				{
-					if( item != null )
+					if( !item.isEmpty() )
 					{
 						n.oreRegistered( name, item );
 					}

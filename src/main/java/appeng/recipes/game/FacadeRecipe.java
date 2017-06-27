@@ -51,7 +51,7 @@ public final class FacadeRecipe implements IRecipe
 	@Override
 	public boolean matches( final InventoryCrafting inv, final World w )
 	{
-		return this.getOutput( inv, false ) != null;
+		return !this.getOutput( inv, false ).isEmpty();
 	}
 
 	@Nullable
@@ -62,7 +62,7 @@ public final class FacadeRecipe implements IRecipe
 			if( this.anchor.isSameAs( inv.getStackInSlot( 1 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 3 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 5 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 7 ) ) )
 			{
 				final ItemStack facades = facade.createFacadeForItem( inv.getStackInSlot( 4 ), !createFacade );
-				if( facades != null && createFacade )
+				if( !facades.isEmpty() && createFacade )
 				{
 					facades.setCount( 4 );
 				}
@@ -70,7 +70,7 @@ public final class FacadeRecipe implements IRecipe
 			}
 		}
 
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override

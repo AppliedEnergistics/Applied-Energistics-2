@@ -20,6 +20,7 @@ package appeng.core.api.imc;
 
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 
@@ -39,7 +40,7 @@ public class IMCBlackListSpatial implements IIMCProcessor
 		if( !is.isEmpty() )
 		{
 			final Block blk = Block.getBlockFromItem( is.getItem() );
-			if( blk != null )
+			if( blk != Blocks.AIR )
 			{
 				AEApi.instance().registries().movable().blacklistBlock( blk );
 				return;

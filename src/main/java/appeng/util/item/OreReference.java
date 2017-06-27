@@ -26,6 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.storage.data.IAEItemStack;
@@ -54,7 +55,7 @@ public class OreReference
 			{
 				for( final ItemStack is : OreHelper.INSTANCE.getCachedOres( oreName ) )
 				{
-					if( is.getItem() != null )
+					if( is.getItem() != Items.AIR )
 					{
 						this.aeOtherOptions.add( AEItemStack.create( is ) );
 					}
