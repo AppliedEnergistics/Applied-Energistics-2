@@ -48,7 +48,7 @@ import appeng.api.storage.data.IItemList;
 
 public final class DisassembleRecipe implements IRecipe
 {
-	private static final ItemStack MISMATCHED_STACK = null;
+	private static final ItemStack MISMATCHED_STACK = ItemStack.EMPTY;
 
 	private final Map<IItemDefinition, IItemDefinition> cellMappings;
 	private final Map<IItemDefinition, IItemDefinition> nonCellMappings;
