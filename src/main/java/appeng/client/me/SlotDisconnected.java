@@ -79,7 +79,7 @@ public class SlotDisconnected extends AppEngSlot
 	@Override
 	public boolean getHasStack()
 	{
-		return this.getStack() != null;
+		return !this.getStack().isEmpty();
 	}
 
 	@Override

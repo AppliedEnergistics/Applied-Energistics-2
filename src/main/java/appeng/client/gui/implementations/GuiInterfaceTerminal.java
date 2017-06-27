@@ -325,7 +325,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 	private boolean itemStackMatchesSearchTerm( final ItemStack itemStack, final String searchTerm )
 	{
-		if( itemStack == null )
+		if( itemStack.isEmpty() )
 		{
 			return false;
 		}
@@ -345,7 +345,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		{
 
 			final ItemStack parsedItemStack = new ItemStack( outTag.getCompoundTagAt( i ) );
-			if( parsedItemStack != null )
+			if( !parsedItemStack.isEmpty() )
 			{
 				final String displayName = Platform.getItemDisplayName( AEApi.instance().storage().createItemStack( parsedItemStack ) ).toLowerCase();
 				if( displayName.contains( searchTerm ) )
