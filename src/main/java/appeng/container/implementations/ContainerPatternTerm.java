@@ -197,13 +197,13 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		else if( output.isEmpty() )
 		{
 			output = this.patternSlotIN.getStack();
-			if( output.isEmpty()  || !this.isPattern( output ) )
+			if( output.isEmpty() || !this.isPattern( output ) )
 			{
 				return; // no blanks.
 			}
 
 			// remove one, and clear the input slot.
-			output.setCount( output.getCount() );
+			output.setCount( output.getCount() - 1);
 			if( output.getCount() == 0 )
 			{
 				this.patternSlotIN.putStack( ItemStack.EMPTY );
@@ -319,7 +319,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	{
 		final NBTTagCompound c = new NBTTagCompound();
 
-		if( i != null )
+		if( !i.isEmpty() )
 		{
 			i.writeToNBT( c );
 		}

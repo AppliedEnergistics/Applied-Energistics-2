@@ -115,7 +115,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		else
 		{
 			this.standardRecipe = null;
-			this.correctOutput = null;
+			this.correctOutput = ItemStack.EMPTY;
 
 			for( int x = 0; x < outTag.tagCount(); x++ )
 			{
@@ -332,10 +332,10 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	{
 		if( this.crafting.getStackInSlot( slotIndex ).isEmpty() )
 		{
-			return i == null ? TestStatus.ACCEPT : TestStatus.DECLINE;
+			return i.isEmpty() ? TestStatus.ACCEPT : TestStatus.DECLINE;
 		}
 
-		if( i == null )
+		if( i.isEmpty() )
 		{
 			return TestStatus.DECLINE;
 		}
