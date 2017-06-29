@@ -121,7 +121,7 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 			return true;
 		}
 
-		return super.onBlockActivated( w, pos, state, player, hand, heldItem, side, hitX, hitY, hitZ );
+		return super.onBlockActivated( w, pos, state, player, hand, side, hitX, hitY, hitZ );
 	}
 
 	@Override

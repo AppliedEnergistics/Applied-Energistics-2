@@ -158,7 +158,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 			return true;
 		}
 
-		return super.onBlockActivated( w, pos, state, p, hand, heldItem, side, hitX, hitY, hitZ );
+		return super.onBlockActivated( w, pos, state, p, hand, side, hitX, hitY, hitZ );
 	}
 
 	public enum CraftingUnitType
