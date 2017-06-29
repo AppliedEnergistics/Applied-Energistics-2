@@ -22,6 +22,7 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 import java.util.List;
 
+import net.minecraftforge.client.event.GuiOpenEvent;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -377,6 +378,12 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	{
 		super.onGuiClosed();
 		Keyboard.enableRepeatEvents( false );
+		memoryText = this.searchField.getText();
+	}
+
+	@Override
+	public void onGuiOpenEvent(GuiOpenEvent event) {
+		super.onGuiOpenEvent(event);
 		memoryText = this.searchField.getText();
 	}
 
