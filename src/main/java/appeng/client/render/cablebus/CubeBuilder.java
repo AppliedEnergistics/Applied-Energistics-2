@@ -174,10 +174,10 @@ public class CubeBuilder
 				putVertexTR( builder, face, x2, y2, z1, uv );
 				break;
 			case NORTH:
-				putVertexTL( builder, face, x2, y2, z1, uv );
-				putVertexTL( builder, face, x2, y1, z1, uv );
+				putVertexBR( builder, face, x2, y2, z1, uv );
+				putVertexTR( builder, face, x2, y1, z1, uv );
 				putVertexTL( builder, face, x1, y1, z1, uv );
-				putVertexTL( builder, face, x1, y2, z1, uv );
+				putVertexBL( builder, face, x1, y2, z1, uv );
 				break;
 			case SOUTH:
 				putVertexBL( builder, face, x1, y2, z2, uv );
@@ -283,8 +283,7 @@ public class CubeBuilder
 	// uv.u2, uv.v1
 	private void putVertexTR( UnpackedBakedQuad.Builder builder, EnumFacing face, float x, float y, float z, UvVector uv )
 	{
-		float u;
-		float v;
+		float u, v;
 
 		switch( uvRotations[face.ordinal()] )
 		{
