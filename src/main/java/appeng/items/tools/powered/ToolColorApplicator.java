@@ -77,6 +77,7 @@ import appeng.tile.misc.TilePaint;
 import appeng.util.ItemSorters;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import org.apache.commons.lang3.text.WordUtils;
 
 
 public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCell, IItemGroup, IBlockTool, IMouseWheelItem
@@ -86,16 +87,14 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 	static
 	{
+		for( final AEColor color : AEColor.VALID_COLORS )
+ 		{
+			final String dyeName = color.dye.getUnlocalizedName();
+			final String oreDictName = "dye" + WordUtils.capitalize( dyeName );
+			final int oreDictId = OreDictionary.getOreID( oreDictName );
 
-		for( final AEColor col : AEColor.values() )
-		{
-			if( col == AEColor.TRANSPARENT )
-			{
-				continue;
-			}
-
-			ORE_TO_COLOR.put( OreDictionary.getOreID( "dye" + col.name() ), col );
-		}
+			ORE_TO_COLOR.put( oreDictId, color );
+ 		}
 	}
 
 	public ToolColorApplicator()
@@ -122,7 +121,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			}
 			else
 			{
-				paintBall = null;
+				paintBall = ItemStack.EMPTY;
 			}
 
 			if( !Platform.hasPermissions( new DimensionalCoord( w, pos ), p ) )
@@ -131,7 +130,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			}
 
 			final double powerPerUse = 100;
-			if( paintBall != null && paintBall.getItem() instanceof ItemSnowball )
+			if( !paintBall.isEmpty() && paintBall.getItem() instanceof ItemSnowball )
 			{
 				final TileEntity te = w.getTileEntity( pos );
 				// clean cables.
@@ -159,7 +158,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 					return EnumActionResult.SUCCESS;
 				}
 			}
-			else if( paintBall != null )
+			else if( !paintBall.isEmpty() )
 			{
 				final AEColor color = this.getColorFromItem( paintBall );
 
@@ -205,7 +204,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 	private AEColor getColorFromItem( final ItemStack paintBall )
 	{
-		if( paintBall == null )
+		if( paintBall.isEmpty() )
 		{
 			return null;
 		}
@@ -249,18 +248,18 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			}
 		}
 
-		return this.findNextColor( is, null, 0 );
+		return this.findNextColor( is, ItemStack.EMPTY, 0 );
 	}
 
 	private ItemStack findNextColor( final ItemStack is, final ItemStack anchor, final int scrollOffset )
 	{
-		ItemStack newColor = null;
+		ItemStack newColor = ItemStack.EMPTY;
 
 		final IMEInventory<IAEItemStack> inv = AEApi.instance().registries().cell().getCellInventory( is, null, StorageChannel.ITEMS );
 		if( inv != null )
 		{
 			final IItemList<IAEItemStack> itemList = inv.getAvailableItems( AEApi.instance().storage().createItemList() );
-			if( anchor == null )
+			if( anchor.isEmpty() )
 			{
 				final IAEItemStack firstItem = itemList.getFirstItem();
 				if( firstItem != null )
@@ -315,7 +314,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			}
 		}
 
-		if( newColor != null )
+		if( !newColor.isEmpty() )
 		{
 			this.setColor( is, newColor );
 		}
@@ -326,7 +325,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	private void setColor( final ItemStack is, final ItemStack newColor )
 	{
 		final NBTTagCompound data = Platform.openNbtData( is );
-		if( newColor == null )
+		if( newColor.isEmpty() )
 		{
 			data.removeTag( "color" );
 		}
@@ -403,7 +402,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 	public void cycleColors( final ItemStack is, final ItemStack paintBall, final int i )
 	{
-		if( paintBall == null )
+		if( paintBall.isEmpty() )
 		{
 			this.setColor( is, this.getColor( is ) );
 		}
