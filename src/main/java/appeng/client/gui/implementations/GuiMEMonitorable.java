@@ -22,7 +22,9 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 import java.util.List;
 
+import mezz.jei.api.IRecipesGui;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -382,9 +384,13 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	}
 
 	@Override
+	@SubscribeEvent
 	public void onGuiOpenEvent(GuiOpenEvent event) {
 		super.onGuiOpenEvent(event);
-		memoryText = this.searchField.getText();
+		if(event.getGui() instanceof IRecipesGui)
+		{
+			memoryText = this.searchField.getText();
+		}
 	}
 
 	@Override

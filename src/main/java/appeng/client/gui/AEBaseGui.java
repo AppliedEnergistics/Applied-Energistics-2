@@ -38,7 +38,6 @@ import com.google.common.collect.Lists;
 import mezz.jei.api.IRecipesGui;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -586,7 +585,6 @@ public abstract class AEBaseGui extends GuiContainer
 		return false;
 	}
 
-	@SubscribeEvent
 	public void onGuiOpenEvent(GuiOpenEvent event) { // Why oh why mezz? (RecipesGui.java, displayGuiScreenWithoutClose()
 		if(event.getGui() instanceof IRecipesGui)
 		{
