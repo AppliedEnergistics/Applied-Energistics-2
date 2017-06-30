@@ -52,7 +52,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	{
 		for( int x = 0; x < this.size; x++ )
 		{
-			if( this.getStackInSlot( x ) != null )
+			if( !this.getStackInSlot( x ).isEmpty() )
 			{
 				return false;
 			}
@@ -117,7 +117,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 		if( this.inv[slot] == null )
 			return ItemStack.EMPTY;
 
-		else return this.inv[slot];
+		return this.inv[slot];
 	}
 
 	@Override

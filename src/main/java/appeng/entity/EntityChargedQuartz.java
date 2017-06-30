@@ -119,7 +119,7 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 				if( e instanceof EntityItem && !e.isDead )
 				{
 					final ItemStack other = ( (EntityItem) e ).getEntityItem();
-					if( !other.isEmpty() && other.getCount() > 0 )
+					if( !other.isEmpty() )
 					{
 						if( Platform.itemComparisons().isEqualItem( other, new ItemStack( Items.REDSTONE ) ) )
 						{

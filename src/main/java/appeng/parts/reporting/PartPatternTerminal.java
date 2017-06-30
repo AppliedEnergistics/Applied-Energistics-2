@@ -50,7 +50,7 @@ public class PartPatternTerminal extends AbstractPartTerminal
 
 	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF );
 	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, MODEL_ON, MODEL_STATUS_ON ) ;
-	public static final IPartModel MODELS_HAS_CHANNEL =new PartModel( MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL ) ;
+	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL ) ;
 
 	private final AppEngInternalInventory crafting = new AppEngInternalInventory( this, 9 );
 	private final AppEngInternalInventory output = new AppEngInternalInventory( this, 3 );

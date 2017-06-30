@@ -65,7 +65,7 @@ public class BlockSkyStone extends AEBaseBlock
 			final ItemStack is = event.getEntityPlayer().getItemStackFromSlot( EntityEquipmentSlot.MAINHAND );
 			int level = -1;
 
-			if( !is.isEmpty() && is.getItem() != Items.AIR )
+			if( !is.isEmpty() )
 			{
 				level = is.getItem().getHarvestLevel( is, "pickaxe", event.getEntityPlayer(), event.getState() );
 			}

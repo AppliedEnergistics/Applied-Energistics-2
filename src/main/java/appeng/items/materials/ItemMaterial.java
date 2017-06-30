@@ -221,7 +221,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 					{
 						for( final ItemStack is : options )
 						{
-							if( !is.isEmpty() && is.getItem() != Items.AIR )
+							if( !is.isEmpty() )
 							{
 								replacement = is.copy();
 								break;

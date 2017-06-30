@@ -58,7 +58,7 @@ public class SlotPatternTerm extends SlotCraftingTerm
 	{
 		if( !this.isEnabled() )
 		{
-			if( this.getDisplayStack() != null )
+			if( !this.getDisplayStack().isEmpty() )
 			{
 				this.clearStack();
 			}
