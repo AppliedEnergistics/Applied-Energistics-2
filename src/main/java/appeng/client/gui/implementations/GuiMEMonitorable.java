@@ -383,6 +383,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		memoryText = this.searchField.getText();
 	}
 
+	// TODO : Remove when mezz removes displayGuiScreenWithoutClose() in 1.12.
 	@Override
 	@SubscribeEvent
 	public void onGuiOpenEvent(GuiOpenEvent event) {

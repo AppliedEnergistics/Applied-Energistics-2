@@ -104,6 +104,7 @@ public abstract class AEBaseGui extends GuiContainer
 		super( container );
 		this.subGui = switchingGuis;
 		switchingGuis = false;
+		// TODO : Remove when mezz removes displayGuiScreenWithoutClose() in 1.12.
 		MinecraftForge.EVENT_BUS.register( this );
 	}
 
@@ -585,6 +586,7 @@ public abstract class AEBaseGui extends GuiContainer
 		return false;
 	}
 
+	// TODO : Remove when mezz removes displayGuiScreenWithoutClose() in 1.12.
 	public void onGuiOpenEvent(GuiOpenEvent event) { // Why oh why mezz? (RecipesGui.java, displayGuiScreenWithoutClose()
 		if(event.getGui() instanceof IRecipesGui)
 		{
@@ -597,6 +599,8 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		super.onGuiClosed();
 		this.subGui = true; // in case the gui is reopened later ( i'm looking at you NEI )
+		// TODO : Remove when mezz removes displayGuiScreenWithoutClose() in 1.12.
+		MinecraftForge.EVENT_BUS.unregister( this );
 	}
 
 	protected Slot getSlot( final int mouseX, final int mouseY )
