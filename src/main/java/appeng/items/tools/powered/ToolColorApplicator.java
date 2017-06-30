@@ -103,8 +103,9 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	}
 
 	@Override
-	public EnumActionResult onItemUse( ItemStack is, EntityPlayer p, World w, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ )
+	public EnumActionResult onItemUse( EntityPlayer p, World w, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ )
 	{
+		final ItemStack is = p.getHeldItem(hand);
 		final Block blk = w.getBlockState( pos ).getBlock();
 
 		ItemStack paintBall = this.getColor( is );
