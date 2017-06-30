@@ -286,12 +286,12 @@ public final class ApiBlocks implements IBlocks
 
 		this.skyStoneChest = registry.block( "sky_stone_chest", () -> new BlockSkyChest( SkyChestType.STONE ) )
 				.features( AEFeature.SKY_STONE_CHESTS )
-				.tileEntity( TileSkyChest.Stone.class )
+				.tileEntity( TileSkyChest.TileSkyChestStone.class )
 				.rendering( new SkyChestRenderingCustomizer( SkyChestType.STONE ) )
 				.build();
 		this.smoothSkyStoneChest = registry.block( "smooth_sky_stone_chest", () -> new BlockSkyChest( SkyChestType.BLOCK ) )
 				.features( AEFeature.SKY_STONE_CHESTS )
-				.tileEntity( TileSkyChest.Smooth.class )
+				.tileEntity( TileSkyChest.TileSkyChestSmooth.class )
 				.rendering( new SkyChestRenderingCustomizer( SkyChestType.BLOCK ) )
 				.build();
 
