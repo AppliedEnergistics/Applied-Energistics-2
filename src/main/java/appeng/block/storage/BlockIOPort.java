@@ -44,7 +44,6 @@ public class BlockIOPort extends AEBaseTileBlock
 	public BlockIOPort()
 	{
 		super( Material.IRON );
-		this.setTileEntity( TileIOPort.class );
 	}
 
 	@Override

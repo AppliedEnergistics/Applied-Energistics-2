@@ -44,7 +44,6 @@ public class BlockInscriber extends AEBaseTileBlock
 	{
 		super( Material.IRON );
 
-		this.setTileEntity( TileInscriber.class );
 		this.setLightOpacity( 2 );
 		this.setFullSize( this.setOpaque( false ) );
 	}

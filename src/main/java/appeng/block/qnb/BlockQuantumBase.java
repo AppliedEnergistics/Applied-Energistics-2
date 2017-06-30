@@ -48,7 +48,6 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 	public BlockQuantumBase( final Material mat )
 	{
 		super( mat );
-		this.setTileEntity( TileQuantumBridge.class );
 		final float shave = 2.0f / 16.0f;
 		this.boundingBox = new AxisAlignedBB( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );
 		this.setLightOpacity( 0 );

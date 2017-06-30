@@ -41,8 +41,6 @@ public class BlockCellWorkbench extends AEBaseTileBlock
 	public BlockCellWorkbench()
 	{
 		super( Material.IRON );
-
-		this.setTileEntity( TileCellWorkbench.class );
 	}
 
 	@Override

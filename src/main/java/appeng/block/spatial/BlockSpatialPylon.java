@@ -44,7 +44,6 @@ public class BlockSpatialPylon extends AEBaseTileBlock
 	public BlockSpatialPylon()
 	{
 		super( AEGlassMaterial.INSTANCE );
-		this.setTileEntity( TileSpatialPylon.class );
 	}
 
 	@Override

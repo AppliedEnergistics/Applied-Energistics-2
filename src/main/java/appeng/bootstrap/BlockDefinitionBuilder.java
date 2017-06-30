@@ -74,6 +74,8 @@ class BlockDefinitionBuilder implements IBlockBuilder
 
 	private CreativeTabs creativeTab = CreativeTab.instance;
 
+	private Class<? extends AEBaseTile> teClass;
+
 	private boolean disableItem = false;
 
 	private Function<Block, ItemBlock> itemFactory;
@@ -141,6 +143,12 @@ class BlockDefinitionBuilder implements IBlockBuilder
 			customizeForClient( callback );
 		}
 
+		return this;
+	}
+
+	@Override
+	public IBlockBuilder tileEntity(Class<? extends AEBaseTile> tileEntityClass) {
+		teClass = tileEntityClass;
 		return this;
 	}
 
@@ -222,6 +230,9 @@ class BlockDefinitionBuilder implements IBlockBuilder
 			if( block instanceof AEBaseTileBlock )
 			{
 				AEBaseTileBlock tileBlock = (AEBaseTileBlock) block;
+				// Fallback?
+				if ( teClass != null )
+					tileBlock.setTileEntity( teClass );
 				blockRendering.apply( factory, block, tileBlock.getTileEntityClass() );
 			}
 			else
@@ -238,13 +249,14 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		if( block instanceof AEBaseTileBlock )
 		{
 			AEBaseTileBlock tileBlock = (AEBaseTileBlock) block;
+			if( teClass != null )
+				tileBlock.setTileEntity( teClass );
 
 			factory.addPreInit( side -> {
-				Class<? extends AEBaseTile> tileEntityClass = tileBlock.getTileEntityClass();
-				AEBaseTile.registerTileItem( tileEntityClass, new BlockStackSrc( block, 0, ActivityState.Enabled ) );
+				AEBaseTile.registerTileItem( teClass, new BlockStackSrc( block, 0, ActivityState.Enabled ) );
 
 				// TODO: Change after transition phase
-				Platform.registerTileEntityWithAlternatives( tileEntityClass, AppEng.MOD_ID.toLowerCase() + ":" + registryName, registryName );
+				GameRegistry.registerTileEntity( teClass, AppEng.MOD_ID.toLowerCase() + ":" + registryName);
 			} );
 
 			return (T) new TileDefinition( registryName, (AEBaseTileBlock) block, item );

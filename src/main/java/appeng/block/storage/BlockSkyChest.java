@@ -61,7 +61,6 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 	public BlockSkyChest( final SkyChestType type )
 	{
 		super( Material.ROCK );
-		this.setTileEntity( TileSkyChest.class );
 		this.setOpaque( this.setFullSize( false ) );
 		this.lightOpacity = 0;
 		this.setHardness( 50 );

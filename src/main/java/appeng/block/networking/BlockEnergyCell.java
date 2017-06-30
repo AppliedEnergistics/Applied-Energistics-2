@@ -56,8 +56,6 @@ public class BlockEnergyCell extends AEBaseTileBlock
 	public BlockEnergyCell()
 	{
 		super( AEGlassMaterial.INSTANCE );
-
-		this.setTileEntity( TileEnergyCell.class );
 	}
 
 	@Override

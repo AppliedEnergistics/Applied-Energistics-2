@@ -39,6 +39,20 @@ import appeng.tile.inventory.InvOperation;
 public class TileSkyChest extends AEBaseInvTile implements ITickable
 {
 
+	public static class Smooth extends TileSkyChest
+	{
+		public Smooth() {
+			super();
+		}
+	}
+
+	public static class Stone extends TileSkyChest
+	{
+		public Stone() {
+			super();
+		}
+	}
+
 	private final int[] sides = {
 			0,
 			1,

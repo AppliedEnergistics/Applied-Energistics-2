@@ -52,7 +52,6 @@ public class BlockDrive extends AEBaseTileBlock
 	public BlockDrive()
 	{
 		super( Material.IRON );
-		this.setTileEntity( TileDrive.class );
 	}
 
 	@Override

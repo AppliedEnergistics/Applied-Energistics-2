@@ -47,7 +47,6 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 	public BlockCraftingMonitor()
 	{
 		super( CraftingUnitType.MONITOR );
-		this.setTileEntity( TileCraftingMonitorTile.class );
 	}
 
 	@Override

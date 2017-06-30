@@ -42,7 +42,6 @@ public class BlockGrinder extends AEBaseTileBlock
 	{
 		super( Material.ROCK );
 
-		this.setTileEntity( TileGrinder.class );
 		this.setHardness( 3.2F );
 	}
 

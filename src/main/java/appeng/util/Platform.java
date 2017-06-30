@@ -1821,24 +1821,4 @@ public class Platform
 
 		return isPurified;
 	}
-
-	/**
-	 * Added because the internal Forge GameRegistry method changed a bit
-	 * @param tileEntityClass
-	 * @param id
-	 * @param alternatives
-	 */
-	public static void registerTileEntityWithAlternatives(Class<? extends TileEntity> tileEntityClass, String id, String... alternatives)
-	{
-		ResourceLocation rloc = GameData.getTileEntityRegistry().getNameForObject(tileEntityClass);
-
-		/**
-		 * If there's no mention of said TE in the registry, add it, otherwise add the aliases.
-		 */
-		if(rloc == null) {
-			GameRegistry.registerTileEntityWithAlternatives( tileEntityClass, AppEng.MOD_ID.toLowerCase() + ":" + id, id );
-		} else {
-			GameData.getTileEntityRegistry().addLegacyName(new ResourceLocation(id), new ResourceLocation(AppEng.MOD_ID.toLowerCase() + ":" + id));
-		}
-	}
 }

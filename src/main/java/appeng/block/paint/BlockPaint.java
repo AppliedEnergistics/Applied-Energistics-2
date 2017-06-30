@@ -58,7 +58,6 @@ public class BlockPaint extends AEBaseTileBlock
 	{
 		super( new MaterialLiquid( MapColor.AIR ) );
 
-		this.setTileEntity( TilePaint.class );
 		this.setLightOpacity( 0 );
 		this.setFullSize( false );
 		this.setOpaque( false );

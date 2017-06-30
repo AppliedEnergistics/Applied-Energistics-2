@@ -32,6 +32,34 @@ public class TileCraftingStorageTile extends TileCraftingTile
 {
 	private static final int KILO_SCALAR = 1024;
 
+	public static class TileCraftingStorageTile1k extends TileCraftingTile
+	{
+		public TileCraftingStorageTile1k() {
+			super();
+		}
+	}
+
+	public static class TileCraftingStorageTile4k extends TileCraftingTile
+	{
+		public TileCraftingStorageTile4k() {
+			super();
+		}
+	}
+
+	public static class TileCraftingStorageTile16k extends TileCraftingTile
+	{
+		public TileCraftingStorageTile16k() {
+			super();
+		}
+	}
+
+	public static class TileCraftingStorageTile64k extends TileCraftingTile
+	{
+		public TileCraftingStorageTile64k() {
+			super();
+		}
+	}
+
 	@Override
 	protected ItemStack getItemFromTile( final Object obj )
 	{

@@ -49,7 +49,6 @@ public class BlockSecurityStation extends AEBaseTileBlock
 	{
 		super( Material.IRON );
 
-		this.setTileEntity( TileSecurityStation.class );
 		this.setDefaultState( getDefaultState().withProperty( POWERED, false ) );
 	}
 

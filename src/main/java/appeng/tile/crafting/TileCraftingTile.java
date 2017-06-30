@@ -60,6 +60,13 @@ import appeng.util.Platform;
 public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IPowerChannelState
 {
 
+	public static class TileCraftingTileAccelerator extends TileCraftingTile
+	{
+		public TileCraftingTileAccelerator() {
+			super();
+		}
+	}
+
 	private final CraftingCPUCalculator calc = new CraftingCPUCalculator( this );
 	private NBTTagCompound previousState = null;
 	private boolean isCoreBlock = false;

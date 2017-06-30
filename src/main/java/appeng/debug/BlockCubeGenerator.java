@@ -38,7 +38,6 @@ public class BlockCubeGenerator extends AEBaseTileBlock
 	public BlockCubeGenerator()
 	{
 		super( Material.IRON );
-		this.setTileEntity( TileCubeGenerator.class );
 	}
 
 	@Override

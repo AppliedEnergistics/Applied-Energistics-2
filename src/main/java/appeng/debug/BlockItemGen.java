@@ -30,7 +30,6 @@ public class BlockItemGen extends AEBaseTileBlock
 	public BlockItemGen()
 	{
 		super( Material.IRON );
-		this.setTileEntity( TileItemGen.class );
 	}
 
 }

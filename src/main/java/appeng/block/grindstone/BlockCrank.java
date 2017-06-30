@@ -48,7 +48,6 @@ public class BlockCrank extends AEBaseTileBlock
 	{
 		super( Material.WOOD );
 
-		this.setTileEntity( TileCrank.class );
 		this.setLightOpacity( 0 );
 		this.setHarvestLevel( "axe", 0 );
 		this.setFullSize( this.setOpaque( false ) );

@@ -38,7 +38,6 @@ public class BlockPhantomNode extends AEBaseTileBlock
 	public BlockPhantomNode()
 	{
 		super( Material.IRON );
-		this.setTileEntity( TilePhantomNode.class );
 	}
 
 	@Override

@@ -31,6 +31,5 @@ public class BlockEnergyAcceptor extends AEBaseTileBlock
 	public BlockEnergyAcceptor()
 	{
 		super( Material.IRON );
-		this.setTileEntity( TileEnergyAcceptor.class );
 	}
 }

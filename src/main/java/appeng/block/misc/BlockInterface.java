@@ -49,8 +49,6 @@ public class BlockInterface extends AEBaseTileBlock
 	public BlockInterface()
 	{
 		super( Material.IRON );
-
-		this.setTileEntity( TileInterface.class );
 	}
 
 	@Override

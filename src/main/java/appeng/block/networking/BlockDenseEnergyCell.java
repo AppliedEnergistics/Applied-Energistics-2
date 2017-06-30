@@ -26,7 +26,7 @@ public class BlockDenseEnergyCell extends BlockEnergyCell
 
 	public BlockDenseEnergyCell()
 	{
-		this.setTileEntity( TileDenseEnergyCell.class );
+
 	}
 
 	@Override

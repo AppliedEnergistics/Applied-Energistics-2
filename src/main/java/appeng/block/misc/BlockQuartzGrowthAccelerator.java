@@ -52,7 +52,6 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOr
 	{
 		super( Material.ROCK );
 		this.setSoundType( SoundType.METAL );
-		this.setTileEntity( TileQuartzGrowthAccelerator.class );
 		this.setDefaultState( getDefaultState().withProperty( POWERED, false ) );
 	}
 

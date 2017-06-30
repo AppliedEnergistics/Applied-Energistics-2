@@ -42,8 +42,6 @@ public class BlockCondenser extends AEBaseTileBlock
 	public BlockCondenser()
 	{
 		super( Material.IRON );
-
-		this.setTileEntity( TileCondenser.class );
 	}
 
 	@Override

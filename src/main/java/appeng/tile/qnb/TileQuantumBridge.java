@@ -55,6 +55,21 @@ import appeng.util.Platform;
 
 public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock, ITickable
 {
+
+	public static class TileQuantumBridgeGlass extends TileQuantumBridge
+	{
+		public TileQuantumBridgeGlass() {
+			super();
+		}
+	}
+
+	public static class TileQuantumBridgeRing extends TileQuantumBridge
+	{
+		public TileQuantumBridgeRing() {
+			super();
+		}
+	}
+
 	private final byte corner = 16;
 	private final int[] sidesRing = {};
 	private final int[] sidesLink = { 0 };

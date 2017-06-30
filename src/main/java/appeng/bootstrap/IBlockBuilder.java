@@ -22,6 +22,7 @@ package appeng.bootstrap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import appeng.tile.AEBaseTile;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -44,6 +45,8 @@ public interface IBlockBuilder
 	IBlockBuilder addFeatures( AEFeature... features );
 
 	IBlockBuilder rendering( BlockRenderingCustomizer callback );
+
+	IBlockBuilder tileEntity( Class<? extends AEBaseTile> teClass );
 
 	/**
 	 * Don't register an item for this block.

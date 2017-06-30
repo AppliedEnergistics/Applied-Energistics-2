@@ -73,7 +73,6 @@ public class BlockController extends AEBaseTileBlock
 	public BlockController()
 	{
 		super( Material.IRON );
-		this.setTileEntity( TileController.class );
 		this.setHardness( 6 );
 		this.setDefaultState( getDefaultState()
 				.withProperty( CONTROLLER_STATE, ControllerBlockState.offline )

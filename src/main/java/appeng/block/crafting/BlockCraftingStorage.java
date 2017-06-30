@@ -28,7 +28,6 @@ public class BlockCraftingStorage extends BlockCraftingUnit
 	public BlockCraftingStorage( final CraftingUnitType type )
 	{
 		super( type );
-		this.setTileEntity( TileCraftingStorageTile.class );
 	}
 
 }

@@ -29,6 +29,5 @@ public class BlockCreativeEnergyCell extends AEBaseTileBlock
 	public BlockCreativeEnergyCell()
 	{
 		super( AEGlassMaterial.INSTANCE );
-		this.setTileEntity( TileCreativeEnergyCell.class );
 	}
 }

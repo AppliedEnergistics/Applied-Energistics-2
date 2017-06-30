@@ -100,7 +100,6 @@ public class BlockCableBus extends AEBaseTileBlock
 
 		// this will actually be overwritten later through setupTile and the
 		// combined layers
-		this.setTileEntity( TileCableBus.class );
 	}
 
 	@Override
@@ -387,11 +386,14 @@ public class BlockCableBus extends AEBaseTileBlock
 	{
 		noTesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBus.class );
 		this.setTileEntity( noTesrTile );
-		// TODO: Change after transition phase
-		Platform.registerTileEntityWithAlternatives( noTesrTile, AppEng.MOD_ID.toLowerCase() + ":" + "BlockCableBus", "BlockCableBus" );
+
 		if( Platform.isClient() )
 		{
 			setupTesr();
+		}
+		else
+		{
+			GameRegistry.registerTileEntity( noTesrTile, AppEng.MOD_ID.toLowerCase() + ":" + "BlockCableBus" );
 		}
 	}
 
@@ -399,8 +401,7 @@ public class BlockCableBus extends AEBaseTileBlock
 	private static void setupTesr()
 	{
 		tesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBusTESR.class );
-		// TODO: Change after transition phase
-		Platform.registerTileEntityWithAlternatives( tesrTile, AppEng.MOD_ID.toLowerCase() + ":" + "ClientOnly_TESR_CableBus", "ClientOnly_TESR_CableBus" );
+		GameRegistry.registerTileEntity( tesrTile, AppEng.MOD_ID.toLowerCase() + ":" + "ClientOnly_TESR_CableBus" );
 		ClientRegistry.bindTileEntitySpecialRenderer( BlockCableBus.getTesrTile(), new CableBusTESR() );
 	}
 

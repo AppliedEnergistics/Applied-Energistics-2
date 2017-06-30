@@ -60,7 +60,6 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 		super( Material.IRON );
 
 		this.type = type;
-		this.setTileEntity( TileCraftingTile.class );
 	}
 
 	@Override

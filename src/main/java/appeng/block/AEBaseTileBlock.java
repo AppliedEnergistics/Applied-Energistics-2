@@ -112,7 +112,8 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 		return 0;
 	}
 
-	protected void setTileEntity( final Class<? extends AEBaseTile> c )
+	// TODO : Was this change needed?
+	public void setTileEntity( final Class<? extends AEBaseTile> c )
 	{
 		this.tileEntityType = c;
 		this.setInventory( IInventory.class.isAssignableFrom( c ) );
