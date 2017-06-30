@@ -65,7 +65,7 @@ public class PartToggleBus extends PartBasicState
 	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, MODEL_STATUS_HAS_CHANNEL );
 
 	private static final int REDSTONE_FLAG = 4;
-	private final AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", null, true );
+	private final AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", ItemStack.EMPTY, true );
 	private IGridConnection connection;
 	private boolean hasRedstone = false;
 

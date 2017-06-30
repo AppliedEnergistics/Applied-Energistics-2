@@ -63,7 +63,7 @@ public class AENetworkProxy implements IGridBlock
 	private final String nbtName; // name
 	private AEColor myColor = AEColor.TRANSPARENT;
 	private NBTTagCompound data = null; // input
-	private ItemStack myRepInstance;
+	private ItemStack myRepInstance = ItemStack.EMPTY;
 	private boolean isReady = false;
 	private IGridNode node = null;
 	private EnumSet<EnumFacing> validSides;
