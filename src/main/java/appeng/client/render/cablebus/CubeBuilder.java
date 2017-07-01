@@ -213,9 +213,9 @@ public class CubeBuilder
 		{
 			case DOWN:
 				uv.u1 = texture.getInterpolatedU( x1 * 16 );
-				uv.v1 = texture.getInterpolatedV( z1 * 16 );
+				uv.v1 = texture.getInterpolatedV( 16 - z1 * 16 );
 				uv.u2 = texture.getInterpolatedU( x2 * 16 );
-				uv.v2 = texture.getInterpolatedV( z2 * 16 );
+				uv.v2 = texture.getInterpolatedV( 16 - z2 * 16 );
 				break;
 			case UP:
 				uv.u1 = texture.getInterpolatedU( x1 * 16 );
@@ -224,9 +224,9 @@ public class CubeBuilder
 				uv.v2 = texture.getInterpolatedV( z2 * 16 );
 				break;
 			case NORTH:
-				uv.u1 = texture.getInterpolatedU( x1 * 16 );
+				uv.u1 = texture.getInterpolatedU( 16 - x1 * 16 );
 				uv.v1 = texture.getInterpolatedV( 16 - y1 * 16 );
-				uv.u2 = texture.getInterpolatedU( x2 * 16 );
+				uv.u2 = texture.getInterpolatedU( 16 - x2 * 16 );
 				uv.v2 = texture.getInterpolatedV( 16 - y2 * 16 );
 				break;
 			case SOUTH:
@@ -242,9 +242,9 @@ public class CubeBuilder
 				uv.v2 = texture.getInterpolatedV( 16 - y2 * 16 );
 				break;
 			case EAST:
-				uv.u1 = texture.getInterpolatedU( z2 * 16 );
+				uv.u1 = texture.getInterpolatedU( 16 - z2 * 16 );
 				uv.v1 = texture.getInterpolatedV( 16 - y1 * 16 );
-				uv.u2 = texture.getInterpolatedU( z1 * 16 );
+				uv.u2 = texture.getInterpolatedU( 16 - z1 * 16 );
 				uv.v2 = texture.getInterpolatedV( 16 - y2 * 16 );
 				break;
 		}
