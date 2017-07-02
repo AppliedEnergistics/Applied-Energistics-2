@@ -144,9 +144,9 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	{
 		if( player.isSneaking() && !w.isRemote )
 		{
-			final IMemoryCard mem = (IMemoryCard) player.getHeldItemMainhand().getItem();
+			final IMemoryCard mem = (IMemoryCard) player.getHeldItem(hand).getItem();
 			mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
-			player.getHeldItemMainhand().setTagCompound( null );
+			player.getHeldItem(hand).setTagCompound( null );
 			return EnumActionResult.SUCCESS;
 		}
 		else

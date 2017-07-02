@@ -155,12 +155,12 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 	@Override
 	public EnumActionResult onItemUse( final EntityPlayer player, final World w, final BlockPos pos, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
-		if( this.getTypeByStack( player.getHeldItemMainhand() ) == PartType.InvalidType )
+		if( this.getTypeByStack( player.getHeldItem(hand) ) == PartType.InvalidType )
 		{
 			return EnumActionResult.FAIL;
 		}
 
-		return AEApi.instance().partHelper().placeBus( player.getHeldItemMainhand(), pos, side, player, hand, w );
+		return AEApi.instance().partHelper().placeBus( player.getHeldItem(hand), pos, side, player, hand, w );
 	}
 
 	@Override

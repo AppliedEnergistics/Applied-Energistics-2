@@ -67,7 +67,7 @@ public class ToolReplicatorCard extends AEBaseItem
 				tag.setInteger( "z", z );
 				tag.setInteger( "side", side.ordinal() );
 				tag.setInteger( "dimid", world.provider.getDimension() );
-				player.getHeldItemMainhand().setTagCompound( tag );
+				player.getHeldItem(hand).setTagCompound( tag );
 			}
 			else
 			{
@@ -76,7 +76,7 @@ public class ToolReplicatorCard extends AEBaseItem
 		}
 		else
 		{
-			final NBTTagCompound ish = player.getHeldItemMainhand().getTagCompound();
+			final NBTTagCompound ish = player.getHeldItem(hand).getTagCompound();
 			if( ish != null )
 			{
 				final int src_x = ish.getInteger( "x" );
