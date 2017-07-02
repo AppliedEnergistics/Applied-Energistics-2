@@ -215,7 +215,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 		if( target == null )
 		{
-			return new ActionResult<ItemStack>( EnumActionResult.FAIL, p.getHeldItemMainhand() );
+			return new ActionResult<ItemStack>( EnumActionResult.FAIL, p.getHeldItem(hand) );
 		}
 		else
 		{
@@ -232,7 +232,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			}
 		}
 
-		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItemMainhand() );
+		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem(hand) );
 	}
 
 	@Override
