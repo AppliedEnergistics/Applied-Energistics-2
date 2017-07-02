@@ -178,7 +178,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			w.setBlockToAir( pos );
 		}
 
-		if( !r.getDrops().isEmpty() )
+		if( r.getDrops() != null )
 		{
 			Platform.spawnDrops( w, pos, r.getDrops() );
 		}
