@@ -54,7 +54,7 @@ public class InWorldToolOperationResult
 	public static InWorldToolOperationResult getBlockOperationResult( final ItemStack[] items )
 	{
 		final List<ItemStack> temp = new ArrayList<ItemStack>();
-		ItemStack b = null;
+		ItemStack b = ItemStack.EMPTY;
 
 		for( final ItemStack l : items )
 		{
