@@ -261,11 +261,11 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 				 */
 
 				default:
-					newType = null;
+					newType = ItemStack.EMPTY;
 					break;
 			}
 
-			if( newType != null && !Platform.itemComparisons().isEqualItem( newType, this.getItemStack() ) )
+			if( !newType.isEmpty() && !Platform.itemComparisons().isEqualItem( newType, this.getItemStack() ) )
 			{
 				final boolean oldOutput = this.isOutput();
 				final long myFreq = this.getFrequency();

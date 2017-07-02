@@ -128,7 +128,7 @@ public class JEIPlugin extends BlankModPlugin
 
 		ItemStack grindstone = definitions.blocks().grindstone().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 
-		if( grindstone == null )
+		if( grindstone.isEmpty() )
 		{
 			return;
 		}
@@ -143,24 +143,24 @@ public class JEIPlugin extends BlankModPlugin
 	{
 
 		ItemStack condenser = definitions.blocks().condenser().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-		if( condenser == null )
+		if( condenser.isEmpty() )
 		{
 			return;
 		}
 
 		ItemStack matterBall = definitions.materials().matterBall().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-		if( matterBall != null )
+		if( !matterBall.isEmpty() )
 		{
 			registry.addRecipes( ImmutableList.of( CondenserOutput.MATTER_BALLS ) );
 		}
 
 		ItemStack singularity = definitions.materials().singularity().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-		if( singularity != null )
+		if( !singularity.isEmpty() )
 		{
 			registry.addRecipes( ImmutableList.of( CondenserOutput.SINGULARITY ) );
 		}
 
-		if( matterBall != null || singularity != null )
+		if( !matterBall.isEmpty() || !singularity.isEmpty() )
 		{
 			registry.addRecipeCategories( new CondenserCategory( registry.getJeiHelpers().getGuiHelper() ) );
 			registry.addRecipeCategoryCraftingItem( condenser, CondenserCategory.UID );

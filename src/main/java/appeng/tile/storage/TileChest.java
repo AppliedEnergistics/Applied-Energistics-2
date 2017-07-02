@@ -108,7 +108,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 2 );
 	private final BaseActionSource mySrc = new MachineSource( this );
 	private final IConfigManager config = new ConfigManager( this );
-	private ItemStack storageType;
+	private ItemStack storageType = ItemStack.EMPTY;
 	private long lastStateChange = 0;
 	private int priority = 0;
 	private int state = 0;

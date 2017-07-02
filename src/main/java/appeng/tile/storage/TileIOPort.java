@@ -242,7 +242,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		{
 			for( int x = 0; x < 6; x++ )
 			{
-				if( this.cells.getStackInSlot( x ) != null )
+				if( !this.cells.getStackInSlot( x ).isEmpty() )
 				{
 					return true;
 				}
@@ -572,7 +572,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		{
 			final ItemStack stackInSlot = this.upgrades.getStackInSlot( upgradeIndex );
 
-			if( stackInSlot != null )
+			if( !stackInSlot.isEmpty() )
 			{
 				drops.add( stackInSlot );
 			}
