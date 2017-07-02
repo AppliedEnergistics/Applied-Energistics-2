@@ -66,7 +66,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	@Override
 	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
-		return this.clearPattern( player.getHeldItemMainhand(), player ) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
+		return this.clearPattern( player.getHeldItemMainhand(), player ) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
 	}
 
 	private boolean clearPattern( final ItemStack stack, final EntityPlayer player )
