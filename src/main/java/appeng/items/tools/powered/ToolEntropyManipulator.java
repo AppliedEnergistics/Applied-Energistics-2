@@ -238,7 +238,12 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	@Override
 	public EnumActionResult onItemUse( EntityPlayer p, World w, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ )
 	{
-		final ItemStack item = p.getHeldItem(hand);
+		return this.onItemUse( p.getHeldItem(hand), p, w, pos, hand, side, hitX, hitY, hitZ );
+	}
+
+	@Override
+	public EnumActionResult onItemUse( ItemStack item, EntityPlayer p, World w, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ )
+	{
 		if( this.getAECurrentPower( item ) > 1600 )
 		{
 			if( !p.canPlayerEdit( pos, side, item ) )
