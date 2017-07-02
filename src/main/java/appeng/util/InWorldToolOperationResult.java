@@ -35,7 +35,7 @@ public class InWorldToolOperationResult
 
 	public InWorldToolOperationResult()
 	{
-		this.BlockItem = null;
+		this.BlockItem = ItemStack.EMPTY;
 		this.Drops = null;
 	}
 

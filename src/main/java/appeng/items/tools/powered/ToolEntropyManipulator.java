@@ -74,7 +74,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 		final List<ItemStack> snowBalls = new ArrayList<ItemStack>();
 		snowBalls.add( new ItemStack( Items.SNOWBALL ) );
-		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.FLOWING_WATER, true ), new InWorldToolOperationResult( null, snowBalls ) );
+		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.FLOWING_WATER, true ), new InWorldToolOperationResult( ItemStack.EMPTY, snowBalls ) );
 		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.WATER, true ), new InWorldToolOperationResult( new ItemStack( Blocks.ICE ) ) );
 
 		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.ICE.getDefaultState() ), new InWorldToolOperationResult( new ItemStack( Blocks.WATER ) ) );
@@ -131,7 +131,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			r = this.heatUp.get( new InWorldToolOperationIngredient( state.getBlock(), true ) );
 		}
 
-		if( r.getBlockItem() != null )
+		if( !r.getBlockItem().isEmpty() )
 		{
 			final Block blk = Block.getBlockFromItem( r.getBlockItem().getItem() );
 			w.setBlockState( pos, blk.getStateFromMeta( r.getBlockItem().getItemDamage() ), 3 );
@@ -168,7 +168,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			r = this.coolDown.get( new InWorldToolOperationIngredient( state.getBlock(), true ) );
 		}
 
-		if( r.getBlockItem() != null )
+		if( !r.getBlockItem().isEmpty() )
 		{
 			final Block blk = Block.getBlockFromItem( r.getBlockItem().getItem() );
 			w.setBlockState( pos, blk.getStateFromMeta( r.getBlockItem().getItemDamage() ), 3 );
@@ -178,7 +178,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			w.setBlockToAir( pos );
 		}
 
-		if( r.getDrops() != null )
+		if( !r.getDrops().isEmpty() )
 		{
 			Platform.spawnDrops( w, pos, r.getDrops() );
 		}
@@ -320,7 +320,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 					final InWorldToolOperationResult or = InWorldToolOperationResult.getBlockOperationResult( out.toArray( new ItemStack[out.size()] ) );
 					w.playSound( p, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
 
-					if( or.getBlockItem() == null )
+					if( or.getBlockItem().isEmpty() )
 					{
 						w.setBlockState( pos, Platform.AIR_BLOCK.getDefaultState(), 3 );
 					}
