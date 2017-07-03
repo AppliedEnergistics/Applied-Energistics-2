@@ -64,9 +64,9 @@ public class StandardWorld implements IMeteoriteWorld
 	}
 
 	@Override
-	public boolean hasSkyLight()
+	public boolean isNether()
 	{
-		return !this.getWorld().provider.hasSkyLight();
+		return !this.getWorld().provider.isNether();
 	}
 
 	@Override

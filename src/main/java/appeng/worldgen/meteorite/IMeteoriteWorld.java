@@ -35,7 +35,7 @@ public interface IMeteoriteWorld
 
 	int maxZ( int in );
 
-	boolean hasSkyLight();
+	boolean isNether();
 
 	Block getBlock( int x, int y, int z );
 
