@@ -1151,9 +1151,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		final TileEntity hostTile = this.iHost.getTileEntity();
 		final World hostWorld = hostTile.getWorld();
 
-		if( ( (ICustomNameObject) this.iHost ).hasCustomName() )
+		if( ( (ICustomNameObject) this.iHost ).hasCustomInventoryName() )
 		{
-			return ( (ICustomNameObject) this.iHost ).getCustomName();
+			return ( (ICustomNameObject) this.iHost ).getCustomInventoryName();
 		}
 
 		final EnumSet<EnumFacing> possibleDirections = this.iHost.getTargets();

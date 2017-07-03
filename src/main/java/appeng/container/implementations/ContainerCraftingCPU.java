@@ -255,13 +255,13 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	}
 
 	@Override
-	public String getCustomName()
+	public String getCustomInventoryName()
 	{
 		return this.cpuName;
 	}
 
 	@Override
-	public boolean hasCustomName()
+	public boolean hasCustomInventoryName()
 	{
 		return this.cpuName != null && this.cpuName.length() > 0;
 	}

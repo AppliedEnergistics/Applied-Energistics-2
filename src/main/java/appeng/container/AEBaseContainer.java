@@ -1165,9 +1165,9 @@ public abstract class AEBaseContainer extends Container
 
 				if( name != null )
 				{
-					if( name.hasCustomName() )
+					if( name.hasCustomInventoryName() )
 					{
-						this.setCustomName( name.getCustomName() );
+						this.setCustomName( name.getCustomInventoryName() );
 					}
 
 					if( this.getCustomName() != null )

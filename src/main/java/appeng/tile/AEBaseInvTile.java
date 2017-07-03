@@ -55,7 +55,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	@Override
 	public String getName()
 	{
-		return this.getCustomName();
+		return this.getCustomInventoryName();
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
@@ -124,9 +124,14 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	 * Returns if the inventory is named
 	 */
 	@Override
-	public boolean hasCustomName()
+	public boolean hasCustomInventoryName()
 	{
-		return this.getInternalInventory().hasCustomName();
+		return super.hasCustomInventoryName();
+	}
+
+	@Override
+	public boolean hasCustomName() {
+		return this.hasCustomInventoryName();
 	}
 
 	@Override
@@ -218,7 +223,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	{
 		if( this.hasCustomName() )
 		{
-			return new TextComponentString( this.getCustomName() );
+			return new TextComponentString( this.getCustomInventoryName() );
 		}
 		return new TextComponentTranslation( this.getBlockType().getUnlocalizedName() );
 	}

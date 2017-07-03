@@ -22,7 +22,7 @@ package appeng.helpers;
 public interface ICustomNameObject
 {
 
-	String getCustomName();
+	String getCustomInventoryName();
 
-	boolean hasCustomName();
+	boolean hasCustomInventoryName();
 }
