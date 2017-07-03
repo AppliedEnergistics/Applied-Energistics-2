@@ -418,7 +418,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				p.getBoxes( bch );
 				for( AxisAlignedBB bb : boxes )
 				{
-					bb = bb.expand( 0.002, 0.002, 0.002 );
+					bb = bb.grow( 0.002, 0.002, 0.002 );
 					if( bb.contains( pos ) )
 					{
 						return new SelectedPart( p, side );
@@ -441,7 +441,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 					p.getBoxes( bch, null );
 					for( AxisAlignedBB bb : boxes )
 					{
-						bb = bb.expand( 0.01, 0.01, 0.01 );
+						bb = bb.grow( 0.01, 0.01, 0.01 );
 						if( bb.contains( pos ) )
 						{
 							return new SelectedPart( p, side );
