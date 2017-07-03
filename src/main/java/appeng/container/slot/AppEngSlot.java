@@ -141,19 +141,14 @@ public class AppEngSlot extends Slot
 	}
 
 	@Override
-	public boolean canBeHovered()
+	public boolean isEnabled()
 	{
-		return this.isEnabled();
+		return super.isEnabled();
 	}
 
 	public ItemStack getDisplayStack()
 	{
 		return super.getStack();
-	}
-
-	public boolean isEnabled()
-	{
-		return true;
 	}
 
 	public float getOpacityOfIcon()

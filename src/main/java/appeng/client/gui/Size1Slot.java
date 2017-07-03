@@ -83,9 +83,9 @@ class Size1Slot extends Slot
 
 	@Override
 	@SideOnly( Side.CLIENT)
-	public boolean canBeHovered()
+	public boolean isEnabled()
 	{
-		return delegate.canBeHovered();
+		return delegate.isEnabled();
 	}
 
 	@Override
