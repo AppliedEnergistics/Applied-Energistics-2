@@ -103,7 +103,7 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 
 	private boolean transform()
 	{
-		final ItemStack item = this.getEntityItem();
+		final ItemStack item = this.getItem();
 		final IMaterials materials = AEApi.instance().definitions().materials();
 
 		if( materials.certusQuartzCrystalCharged().isSameAs( item ) )
@@ -118,7 +118,7 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 			{
 				if( e instanceof EntityItem && !e.isDead )
 				{
-					final ItemStack other = ( (EntityItem) e ).getEntityItem();
+					final ItemStack other = ( (EntityItem) e ).getItem();
 					if( !other.isEmpty() )
 					{
 						if( Platform.itemComparisons().isEqualItem( other, new ItemStack( Items.REDSTONE ) ) )
@@ -136,21 +136,21 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 
 			if( redstone != null && netherQuartz != null )
 			{
-				this.getEntityItem().grow( -1 );
-				redstone.getEntityItem().grow( -1 );
-				netherQuartz.getEntityItem().grow( -1 );
+				this.getItem().grow( -1 );
+				redstone.getItem().grow( -1 );
+				netherQuartz.getItem().grow( -1 );
 
-				if( this.getEntityItem().getCount() <= 0 )
+				if( this.getItem().getCount() <= 0 )
 				{
 					this.setDead();
 				}
 
-				if( redstone.getEntityItem().getCount() <= 0 )
+				if( redstone.getItem().getCount() <= 0 )
 				{
 					redstone.setDead();
 				}
 
-				if( netherQuartz.getEntityItem().getCount() <= 0 )
+				if( netherQuartz.getItem().getCount() <= 0 )
 				{
 					netherQuartz.setDead();
 				}

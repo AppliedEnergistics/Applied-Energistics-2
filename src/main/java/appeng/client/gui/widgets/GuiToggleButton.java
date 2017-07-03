@@ -46,8 +46,8 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 		this.iconIdxOff = off;
 		this.displayName = displayName;
 		this.displayHint = displayHint;
-		this.xPosition = x;
-		this.yPosition = y;
+		this.x = x;
+		this.y = y;
 		this.width = 16;
 		this.height = 16;
 	}
@@ -66,13 +66,13 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 
 			GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
 			par1Minecraft.renderEngine.bindTexture( new ResourceLocation( "appliedenergistics2", "textures/guis/states.png" ) );
-			this.hovered = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
+			this.hovered = par2 >= this.x && par3 >= this.y && par2 < this.x + this.width && par3 < this.y + this.height;
 
 			final int uv_y = (int) Math.floor( iconIndex / 16 );
 			final int uv_x = iconIndex - uv_y * 16;
 
-			this.drawTexturedModalRect( this.xPosition, this.yPosition, 256 - 16, 256 - 16, 16, 16 );
-			this.drawTexturedModalRect( this.xPosition, this.yPosition, uv_x * 16, uv_y * 16, 16, 16 );
+			this.drawTexturedModalRect( this.x, this.y, 256 - 16, 256 - 16, 16, 16 );
+			this.drawTexturedModalRect( this.x, this.y, uv_x * 16, uv_y * 16, 16, 16 );
 			this.mouseDragged( par1Minecraft, par2, par3 );
 		}
 	}
@@ -120,13 +120,13 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 	@Override
 	public int xPos()
 	{
-		return this.xPosition;
+		return this.x;
 	}
 
 	@Override
 	public int yPos()
 	{
-		return this.yPosition;
+		return this.y;
 	}
 
 	@Override

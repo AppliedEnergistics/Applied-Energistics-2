@@ -59,7 +59,7 @@ class GrinderRecipeWrapper extends BlankRecipeWrapper
 	public void drawInfo( Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY )
 	{
 
-		FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
+		FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
 
 		int x = 118;
 

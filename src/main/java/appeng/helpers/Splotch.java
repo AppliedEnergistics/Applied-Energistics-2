@@ -45,20 +45,20 @@ public class Splotch
 
 		if( side == EnumFacing.SOUTH || side == EnumFacing.NORTH )
 		{
-			x = position.xCoord;
-			y = position.yCoord;
+			x = position.x;
+			y = position.y;
 		}
 
 		else if( side == EnumFacing.UP || side == EnumFacing.DOWN )
 		{
-			x = position.xCoord;
-			y = position.zCoord;
+			x = position.x;
+			y = position.z;
 		}
 
 		else
 		{
-			x = position.yCoord;
-			y = position.zCoord;
+			x = position.y;
+			y = position.z;
 		}
 
 		final int a = (int) ( x * 0xF );

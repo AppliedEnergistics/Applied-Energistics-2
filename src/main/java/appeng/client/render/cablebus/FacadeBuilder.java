@@ -398,7 +398,7 @@ public class FacadeBuilder
 		AEAxisAlignedBB b = null;
 		for( AxisAlignedBB bb : partBoxes )
 		{
-			if( bb.intersectsWith( facadeBox ) )
+			if( bb.intersects( facadeBox ) )
 			{
 				if( b == null )
 				{

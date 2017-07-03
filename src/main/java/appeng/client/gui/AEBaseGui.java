@@ -170,8 +170,8 @@ public abstract class AEBaseGui extends GuiContainer
 			if( c instanceof ITooltip )
 			{
 				final ITooltip tooltip = (ITooltip) c;
-				final int x = tooltip.xPos(); // ((GuiImgButton) c).xPosition;
-				int y = tooltip.yPos(); // ((GuiImgButton) c).yPosition;
+				final int x = tooltip.xPos(); // ((GuiImgButton) c).x;
+				int y = tooltip.yPos(); // ((GuiImgButton) c).y;
 
 				if( x < mouseX && x + tooltip.getWidth() > mouseX && tooltip.isVisible() )
 				{
@@ -218,7 +218,7 @@ public abstract class AEBaseGui extends GuiContainer
 			lines.set( i, TextFormatting.GRAY + lines.get( i ) );
 		}
 
-		this.drawHoveringText( lines, x, y, fontRendererObj );
+		this.drawHoveringText( lines, x, y, fontRenderer );
 	}
 
 	@Override
@@ -728,7 +728,7 @@ public abstract class AEBaseGui extends GuiContainer
 				// Annoying but easier than trying to splice into render item
 				super.drawSlot( new Size1Slot( s ) );
 
-				stackSizeRenderer.renderStackSize( fontRendererObj, ( (SlotME) s ).getAEStack(), s.getStack(), s.xPos, s.yPos );
+				stackSizeRenderer.renderStackSize( fontRenderer, ( (SlotME) s ).getAEStack(), s.getStack(), s.xPos, s.yPos );
 
 			}
 			catch( final Exception err )

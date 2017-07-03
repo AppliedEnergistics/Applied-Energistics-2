@@ -40,8 +40,8 @@ public class GuiTabButton extends GuiButton implements ITooltip
 	{
 		super( 0, 0, 16, "" );
 
-		this.xPosition = x;
-		this.yPosition = y;
+		this.x = x;
+		this.y = y;
 		this.width = 22;
 		this.height = 22;
 		this.myIcon = ico;
@@ -61,8 +61,8 @@ public class GuiTabButton extends GuiButton implements ITooltip
 	public GuiTabButton( final int x, final int y, final ItemStack ico, final String message, final RenderItem ir )
 	{
 		super( 0, 0, 16, "" );
-		this.xPosition = x;
-		this.yPosition = y;
+		this.x = x;
+		this.y = y;
 		this.width = 22;
 		this.height = 22;
 		this.myItem = ico;
@@ -77,20 +77,20 @@ public class GuiTabButton extends GuiButton implements ITooltip
 		{
 			GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
 			minecraft.renderEngine.bindTexture( new ResourceLocation( "appliedenergistics2", "textures/guis/states.png" ) );
-			this.hovered = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width && y < this.yPosition + this.height;
+			this.hovered = x >= this.x && y >= this.y && x < this.x + this.width && y < this.y + this.height;
 
 			int uv_x = ( this.hideEdge > 0 ? 11 : 13 );
 
 			final int offsetX = this.hideEdge > 0 ? 1 : 0;
 
-			this.drawTexturedModalRect( this.xPosition, this.yPosition, uv_x * 16, 0, 25, 22 );
+			this.drawTexturedModalRect( this.x, this.y, uv_x * 16, 0, 25, 22 );
 
 			if( this.myIcon >= 0 )
 			{
 				final int uv_y = (int) Math.floor( this.myIcon / 16 );
 				uv_x = this.myIcon - uv_y * 16;
 
-				this.drawTexturedModalRect( offsetX + this.xPosition + 3, this.yPosition + 3, uv_x * 16, uv_y * 16, 16, 16 );
+				this.drawTexturedModalRect( offsetX + this.x + 3, this.y + 3, uv_x * 16, uv_y * 16, 16, 16 );
 			}
 
 			this.mouseDragged( minecraft, x, y );
@@ -102,7 +102,7 @@ public class GuiTabButton extends GuiButton implements ITooltip
 
 				GlStateManager.enableDepth();
 				RenderHelper.enableGUIStandardItemLighting();
-				this.itemRenderer.renderItemAndEffectIntoGUI( this.myItem, offsetX + this.xPosition + 3, this.yPosition + 3 );
+				this.itemRenderer.renderItemAndEffectIntoGUI( this.myItem, offsetX + this.x + 3, this.y + 3 );
 				GlStateManager.disableDepth();
 
 				this.itemRenderer.zLevel = 0.0F;
@@ -120,13 +120,13 @@ public class GuiTabButton extends GuiButton implements ITooltip
 	@Override
 	public int xPos()
 	{
-		return this.xPosition;
+		return this.x;
 	}
 
 	@Override
 	public int yPos()
 	{
-		return this.yPosition;
+		return this.y;
 	}
 
 	@Override

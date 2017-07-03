@@ -55,8 +55,8 @@ public class GuiVibrationChamber extends AEBaseGui
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.VibrationChamber.getLocal() ), 8, 6, 4210752 );
-		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
+		this.fontRenderer.drawString( this.getGuiDisplayName( GuiText.VibrationChamber.getLocal() ), 8, 6, 4210752 );
+		this.fontRenderer.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
 		this.pb.setFullMsg( this.cvc.getAePerTick() * this.cvc.getCurrentProgress() / 100 + " AE/t" );
 
@@ -75,8 +75,8 @@ public class GuiVibrationChamber extends AEBaseGui
 	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/vibchamber.png" );
-		this.pb.xPosition = 99 + this.guiLeft;
-		this.pb.yPosition = 36 + this.guiTop;
+		this.pb.x = 99 + this.guiLeft;
+		this.pb.y = 36 + this.guiTop;
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
 	}
 }

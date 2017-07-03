@@ -188,7 +188,7 @@ public final class MeteoritePlacer
 
 					if( j > h + distanceFrom * 0.02 )
 					{
-						if( lava && j < y && w.getBlock( x, y - 1, z ).isBlockSolid( w.getWorld(), new BlockPos( i, j, k ), EnumFacing.UP ) )
+						if( lava && j < y && w.getBlock( x, y - 1, z ).causesDownwardCurrent( w.getWorld(), new BlockPos( i, j, k ), EnumFacing.UP ) )
 						{
 							if( j > h + distanceFrom * 0.02 )
 							{
@@ -437,7 +437,7 @@ public final class MeteoritePlacer
 	public boolean spawnMeteorite( final IMeteoriteWorld w, final int x, final int y, final int z )
 	{
 
-		if( !w.hasNoSky() )
+		if( !w.hasSkyLight() )
 		{
 			return false;
 		}

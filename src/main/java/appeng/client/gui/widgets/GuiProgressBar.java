@@ -47,8 +47,8 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 	{
 		super( posX, posY, width, "" );
 		this.source = source;
-		this.xPosition = posX;
-		this.yPosition = posY;
+		this.x = posX;
+		this.y = posY;
 		this.texture = new ResourceLocation( "appliedenergistics2", "textures/" + texture );
 		this.width = width;
 		this.height = height;
@@ -70,12 +70,12 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 			if( this.layout == Direction.VERTICAL )
 			{
 				final int diff = this.height - ( max > 0 ? ( this.height * current ) / max : 0 );
-				this.drawTexturedModalRect( this.xPosition, this.yPosition + diff, this.fill_u, this.fill_v + diff, this.width, this.height - diff );
+				this.drawTexturedModalRect( this.x, this.y + diff, this.fill_u, this.fill_v + diff, this.width, this.height - diff );
 			}
 			else
 			{
 				final int diff = this.width - ( max > 0 ? ( this.width * current ) / max : 0 );
-				this.drawTexturedModalRect( this.xPosition, this.yPosition, this.fill_u + diff, this.fill_v, this.width - diff, this.height );
+				this.drawTexturedModalRect( this.x, this.y, this.fill_u + diff, this.fill_v, this.width - diff, this.height );
 			}
 
 			this.mouseDragged( par1Minecraft, par2, par3 );
@@ -101,13 +101,13 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 	@Override
 	public int xPos()
 	{
-		return this.xPosition - 2;
+		return this.x - 2;
 	}
 
 	@Override
 	public int yPos()
 	{
-		return this.yPosition - 2;
+		return this.y - 2;
 	}
 
 	@Override

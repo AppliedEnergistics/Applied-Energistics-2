@@ -79,7 +79,7 @@ public final class EntitySingularity extends AEBaseEntityItem
 			return;
 		}
 
-		final ItemStack item = this.getEntityItem();
+		final ItemStack item = this.getItem();
 
 		final IMaterials materials = AEApi.instance().definitions().materials();
 
@@ -92,7 +92,7 @@ public final class EntitySingularity extends AEBaseEntityItem
 			{
 				if( e instanceof EntityItem )
 				{
-					final ItemStack other = ( (EntityItem) e ).getEntityItem();
+					final ItemStack other = ( (EntityItem) e ).getItem();
 					if( !other.isEmpty() )
 					{
 						boolean matches = false;

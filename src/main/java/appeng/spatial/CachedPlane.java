@@ -365,7 +365,7 @@ public class CachedPlane
 
 				for( int y = 1; y < 255; y += 32 )
 				{
-					WorldData.instance().compassData().service().updateArea( this.getWorld(), c.xPosition << 4, y, c.zPosition << 4 );
+					WorldData.instance().compassData().service().updateArea( this.getWorld(), c.x << 4, y, c.z << 4 );
 				}
 
 				Platform.sendChunk( c, this.verticalBits );
@@ -407,7 +407,7 @@ public class CachedPlane
 				ExtendedBlockStorage extendedblockstorage = this.storage[by];
 				if( extendedblockstorage == null )
 				{
-					extendedblockstorage = this.storage[by] = new ExtendedBlockStorage( by << 4, !this.c.getWorld().provider.hasNoSky() );
+					extendedblockstorage = this.storage[by] = new ExtendedBlockStorage( by << 4, !this.c.getWorld().provider.hasSkyLight() );
 				}
 			}
 		}
@@ -422,14 +422,14 @@ public class CachedPlane
 			final ExtendedBlockStorage extendedBlockStorage = this.storage[y >> 4];
 			extendedBlockStorage.set( this.x, y & 15, this.z, (IBlockState) blk[0] );
 			// extendedBlockStorage.setExtBlockID( x, y & 15, z, blk[0] );
-			extendedBlockStorage.setExtBlocklightValue( this.x, y & 15, this.z, (Integer) blk[1] );
+			extendedBlockStorage.setBlockLight( this.x, y & 15, this.z, (Integer) blk[1] );
 		}
 
 		private Object[] getDetails( final int y )
 		{
 			final ExtendedBlockStorage extendedblockstorage = this.storage[y >> 4];
 			this.ch[0] = extendedblockstorage.get( this.x, y & 15, this.z );
-			this.ch[1] = extendedblockstorage.getExtBlocklightValue( this.x, y & 15, this.z );
+			this.ch[1] = extendedblockstorage.getBlockLight( this.x, y & 15, this.z );
 			return this.ch;
 		}
 

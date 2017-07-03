@@ -123,7 +123,7 @@ public abstract class AEBaseBlock extends Block
 			for( final AxisAlignedBB b : tmp )
 			{
 				final AxisAlignedBB offset = b.offset( pos.getX(), pos.getY(), pos.getZ() );
-				if( bb.intersectsWith( offset ) )
+				if( bb.intersects( offset ) )
 				{
 					out.add( offset );
 				}
@@ -163,9 +163,9 @@ public abstract class AEBaseBlock extends Block
 
 					if( r != null )
 					{
-						final double xLen = ( ld.getA().xCoord - r.hitVec.xCoord );
-						final double yLen = ( ld.getA().yCoord - r.hitVec.yCoord );
-						final double zLen = ( ld.getA().zCoord - r.hitVec.zCoord );
+						final double xLen = ( ld.getA().x - r.hitVec.x );
+						final double yLen = ( ld.getA().y - r.hitVec.y );
+						final double zLen = ( ld.getA().z - r.hitVec.z );
 
 						final double thisDist = xLen * xLen + yLen * yLen + zLen * zLen;
 
@@ -249,9 +249,9 @@ public abstract class AEBaseBlock extends Block
 
 				if( r != null )
 				{
-					final double xLen = ( a.xCoord - r.hitVec.xCoord );
-					final double yLen = ( a.yCoord - r.hitVec.yCoord );
-					final double zLen = ( a.zCoord - r.hitVec.zCoord );
+					final double xLen = ( a.x - r.hitVec.x );
+					final double yLen = ( a.y - r.hitVec.y );
+					final double zLen = ( a.z - r.hitVec.z );
 
 					final double thisDist = xLen * xLen + yLen * yLen + zLen * zLen;
 					if( br == null || lastDist > thisDist )

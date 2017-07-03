@@ -86,11 +86,11 @@ final class RenderHelper
 		{
 			default:
 			case X:
-				return new Vec3d( vec.xCoord + delta, vec.yCoord, vec.zCoord );
+				return new Vec3d( vec.x + delta, vec.y, vec.z );
 			case Y:
-				return new Vec3d( vec.xCoord, vec.yCoord + delta, vec.zCoord );
+				return new Vec3d( vec.x, vec.y + delta, vec.z );
 			case Z:
-				return new Vec3d( vec.xCoord, vec.yCoord, vec.zCoord + delta );
+				return new Vec3d( vec.x, vec.y, vec.z + delta );
 		}
 	}
 }

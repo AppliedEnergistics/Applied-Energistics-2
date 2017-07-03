@@ -419,7 +419,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				for( AxisAlignedBB bb : boxes )
 				{
 					bb = bb.expand( 0.002, 0.002, 0.002 );
-					if( bb.isVecInside( pos ) )
+					if( bb.contains( pos ) )
 					{
 						return new SelectedPart( p, side );
 					}
@@ -442,7 +442,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 					for( AxisAlignedBB bb : boxes )
 					{
 						bb = bb.expand( 0.01, 0.01, 0.01 );
-						if( bb.isVecInside( pos ) )
+						if( bb.contains( pos ) )
 						{
 							return new SelectedPart( p, side );
 						}

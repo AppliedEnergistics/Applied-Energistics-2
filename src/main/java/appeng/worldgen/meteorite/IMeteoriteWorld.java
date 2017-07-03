@@ -35,7 +35,7 @@ public interface IMeteoriteWorld
 
 	int maxZ( int in );
 
-	boolean hasNoSky();
+	boolean hasSkyLight();
 
 	Block getBlock( int x, int y, int z );
 

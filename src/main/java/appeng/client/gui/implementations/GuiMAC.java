@@ -70,8 +70,8 @@ public class GuiMAC extends GuiUpgradeable
 	@Override
 	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		this.pb.xPosition = 148 + this.guiLeft;
-		this.pb.yPosition = 48 + this.guiTop;
+		this.pb.x = 148 + this.guiLeft;
+		this.pb.y = 48 + this.guiTop;
 		super.drawBG( offsetX, offsetY, mouseX, mouseY );
 	}
 

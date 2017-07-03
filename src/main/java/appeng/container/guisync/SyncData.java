@@ -93,7 +93,7 @@ public class SyncData
 		}
 		else if( this.field.getType().isEnum() )
 		{
-			o.sendProgressBarUpdate( this.source, this.channel, ( (Enum) val ).ordinal() );
+			o.sendWindowProperty( this.source, this.channel, ( (Enum) val ).ordinal() );
 		}
 		else if( val instanceof Long || val.getClass() == long.class )
 		{
@@ -104,11 +104,11 @@ public class SyncData
 		}
 		else if( val instanceof Boolean || val.getClass() == boolean.class )
 		{
-			o.sendProgressBarUpdate( this.source, this.channel, ( (Boolean) val ) ? 1 : 0 );
+			o.sendWindowProperty( this.source, this.channel, ( (Boolean) val ) ? 1 : 0 );
 		}
 		else
 		{
-			o.sendProgressBarUpdate( this.source, this.channel, (Integer) val );
+			o.sendWindowProperty( this.source, this.channel, (Integer) val );
 		}
 
 		this.clientVersion = val;

@@ -321,7 +321,7 @@ public class ClientHelper extends ServerHelper
 
 	private void spawnLightningArc( final World world, final double posX, final double posY, final double posZ, final Vec3d second )
 	{
-		final LightningFX fx = new LightningArcFX( world, posX, posY, posZ, second.xCoord, second.yCoord, second.zCoord, 0.0f, 0.0f, 0.0f );
+		final LightningFX fx = new LightningArcFX( world, posX, posY, posZ, second.x, second.y, second.z, 0.0f, 0.0f, 0.0f );
 		Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 	}
 

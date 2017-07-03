@@ -45,12 +45,12 @@ public class AchievementPickupHandler
 	@SubscribeEvent
 	public void onItemPickUp( final PlayerEvent.ItemPickupEvent event )
 	{
-		if( this.differentiator.isNoPlayer( event.player ) || event.pickedUp == null || event.pickedUp.getEntityItem().isEmpty() )
+		if( this.differentiator.isNoPlayer( event.player ) || event.pickedUp == null || event.pickedUp.getItem().isEmpty() )
 		{
 			return;
 		}
 
-		final ItemStack is = event.pickedUp.getEntityItem();
+		final ItemStack is = event.pickedUp.getItem();
 
 		for( final Achievements achievement : Achievements.values() )
 		{

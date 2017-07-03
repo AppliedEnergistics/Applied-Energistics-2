@@ -46,7 +46,7 @@ public class StorageChunkProvider extends ChunkProviderOverworld
 	}
 
 	@Override
-	public Chunk provideChunk( final int x, final int z )
+	public Chunk generateChunk( final int x, final int z )
 	{
 		final Chunk chunk = new Chunk( this.world, x, z );
 
@@ -105,7 +105,7 @@ public class StorageChunkProvider extends ChunkProviderOverworld
 	}
 
 	@Override
-	public BlockPos getStrongholdGen( World worldIn, String structureName, BlockPos position, boolean p_180513_4_ )
+	public BlockPos getNearestStructurePos( World worldIn, String structureName, BlockPos position, boolean p_180513_4_ )
 	{
 		return null;
 	}

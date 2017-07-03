@@ -27,9 +27,9 @@ public class BiomeGenStorage extends Biome
 	{
 		super(new BiomeProperties( "Storage Cell" ).setRainDisabled().setTemperature( -100 ));
 
-		this.theBiomeDecorator.treesPerChunk = 0;
-		this.theBiomeDecorator.flowersPerChunk = 0;
-		this.theBiomeDecorator.grassPerChunk = 0;
+		this.decorator.treesPerChunk = 0;
+		this.decorator.flowersPerChunk = 0;
+		this.decorator.grassPerChunk = 0;
 
 		this.spawnableMonsterList.clear();
 		this.spawnableCreatureList.clear();

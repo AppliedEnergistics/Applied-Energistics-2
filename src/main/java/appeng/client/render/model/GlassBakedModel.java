@@ -219,10 +219,10 @@ class GlassBakedModel implements IBakedModel
 
 		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder( vertexFormat );
 		builder.setTexture( sprite );
-		putVertex( builder, normal, c1.xCoord, c1.yCoord, c1.zCoord, sprite, u1, v1 );
-		putVertex( builder, normal, c2.xCoord, c2.yCoord, c2.zCoord, sprite, u1, v2 );
-		putVertex( builder, normal, c3.xCoord, c3.yCoord, c3.zCoord, sprite, u2, v2 );
-		putVertex( builder, normal, c4.xCoord, c4.yCoord, c4.zCoord, sprite, u2, v1 );
+		putVertex( builder, normal, c1.x, c1.y, c1.z, sprite, u1, v1 );
+		putVertex( builder, normal, c2.x, c2.y, c2.z, sprite, u1, v2 );
+		putVertex( builder, normal, c3.x, c3.y, c3.z, sprite, u2, v2 );
+		putVertex( builder, normal, c4.x, c4.y, c4.z, sprite, u2, v1 );
 		return builder.build();
 	}
 
@@ -251,7 +251,7 @@ class GlassBakedModel implements IBakedModel
 						break;
 					}
 				case NORMAL:
-					builder.put( e, (float) normal.xCoord, (float) normal.yCoord, (float) normal.zCoord, 0f );
+					builder.put( e, (float) normal.x, (float) normal.y, (float) normal.z, 0f );
 					break;
 				default:
 					builder.put( e );

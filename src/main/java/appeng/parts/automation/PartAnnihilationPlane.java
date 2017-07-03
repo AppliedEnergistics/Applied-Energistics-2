@@ -313,7 +313,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	{
 		if( !entityItem.isDead )
 		{
-			final IAEItemStack overflow = this.storeItemStack( entityItem.getEntityItem() );
+			final IAEItemStack overflow = this.storeItemStack( entityItem.getItem() );
 
 			return this.handleOverflow( entityItem, overflow );
 		}
@@ -367,11 +367,11 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 			return true;
 		}
 
-		final int oldStackSize = entityItem.getEntityItem().getCount();
+		final int oldStackSize = entityItem.getItem().getCount();
 		final int newStackSize = (int) overflow.getStackSize();
 		final boolean changed = oldStackSize != newStackSize;
 
-		entityItem.getEntityItem().setCount( newStackSize );
+		entityItem.getItem().setCount( newStackSize );
 
 		return changed;
 	}

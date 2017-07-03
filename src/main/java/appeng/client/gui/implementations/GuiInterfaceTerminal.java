@@ -87,7 +87,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		this.getScrollBar().setHeight( 106 );
 		this.getScrollBar().setTop( 18 );
 
-		this.searchField = new MEGuiTextField( this.fontRendererObj, this.guiLeft + Math.max( 104, this.offsetX ), this.guiTop + 4, 65, 12 );
+		this.searchField = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 104, this.offsetX ), this.guiTop + 4, 65, 12 );
 		this.searchField.setEnableBackgroundDrawing( false );
 		this.searchField.setMaxStringLength( 25 );
 		this.searchField.setTextColor( 0xFFFFFF );
@@ -98,8 +98,8 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.InterfaceTerminal.getLocal() ), 8, 6, 4210752 );
-		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
+		this.fontRenderer.drawString( this.getGuiDisplayName( GuiText.InterfaceTerminal.getLocal() ), 8, 6, 4210752 );
+		this.fontRenderer.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
 		final int ex = this.getScrollBar().getCurrentScroll();
 
@@ -133,12 +133,12 @@ public class GuiInterfaceTerminal extends AEBaseGui
 					name = name + " (" + rows + ')';
 				}
 
-				while( name.length() > 2 && this.fontRendererObj.getStringWidth( name ) > 155 )
+				while( name.length() > 2 && this.fontRenderer.getStringWidth( name ) > 155 )
 				{
 					name = name.substring( 0, name.length() - 1 );
 				}
 
-				this.fontRendererObj.drawString( name, 10, 6 + offset, 4210752 );
+				this.fontRenderer.drawString( name, 10, 6 + offset, 4210752 );
 			}
 			offset += 18;
 		}

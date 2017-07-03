@@ -133,7 +133,7 @@ public class TesrRenderHelper
 		final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm( stackSize );
 
 		// Render the item count
-		final FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
+		final FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
 		final int width = fr.getStringWidth( renderedStackSize );
 		GlStateManager.translate( 0.0f, spacing, 0 );
 		GlStateManager.scale( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );

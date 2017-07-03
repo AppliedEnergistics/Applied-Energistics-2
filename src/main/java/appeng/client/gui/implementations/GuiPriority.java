@@ -139,7 +139,7 @@ public class GuiPriority extends AEBaseGui
 			this.buttonList.add( this.originalGuiBtn = new GuiTabButton( this.guiLeft + 154, this.guiTop, myIcon, myIcon.getDisplayName(), this.itemRender ) );
 		}
 
-		this.priority = new GuiNumberBox( this.fontRendererObj, this.guiLeft + 62, this.guiTop + 57, 59, this.fontRendererObj.FONT_HEIGHT, Long.class );
+		this.priority = new GuiNumberBox( this.fontRenderer, this.guiLeft + 62, this.guiTop + 57, 59, this.fontRenderer.FONT_HEIGHT, Long.class );
 		this.priority.setEnableBackgroundDrawing( false );
 		this.priority.setMaxStringLength( 16 );
 		this.priority.setTextColor( 0xFFFFFF );
@@ -151,7 +151,7 @@ public class GuiPriority extends AEBaseGui
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		this.fontRendererObj.drawString( GuiText.Priority.getLocal(), 8, 6, 4210752 );
+		this.fontRenderer.drawString( GuiText.Priority.getLocal(), 8, 6, 4210752 );
 	}
 
 	@Override

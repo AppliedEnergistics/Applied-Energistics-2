@@ -49,7 +49,7 @@ public class RenderFloatingItem extends RenderEntityItem
 			{
 				GlStateManager.pushMatrix();
 
-				if( !( efi.getEntityItem().getItem() instanceof ItemBlock ) )
+				if( !( efi.getItem().getItem() instanceof ItemBlock ) )
 				{
 					GlStateManager.translate( 0, -0.3f, 0 );
 				}

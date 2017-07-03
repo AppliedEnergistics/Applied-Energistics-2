@@ -123,7 +123,7 @@ public class StorageHelper
 			else
 			{
 				entity.getServer().getPlayerList().transferEntityToWorld( entity, entity.dimension,
-						entity.getServer().worldServerForDimension( entity.dimension ), (WorldServer) link.dim, new METeleporter( newWorld, link ) );
+						entity.getServer().getWorld( entity.dimension ), (WorldServer) link.dim, new METeleporter( newWorld, link ) );
 			}
 		}
 

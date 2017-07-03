@@ -133,13 +133,13 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	{
 		final ContainerNetworkStatus ns = (ContainerNetworkStatus) this.inventorySlots;
 
-		this.fontRendererObj.drawString( GuiText.NetworkDetails.getLocal(), 8, 6, 4210752 );
+		this.fontRenderer.drawString( GuiText.NetworkDetails.getLocal(), 8, 6, 4210752 );
 
-		this.fontRendererObj.drawString( GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong( ns.getCurrentPower(), false ), 13, 16, 4210752 );
-		this.fontRendererObj.drawString( GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong( ns.getMaxPower(), false ), 13, 26, 4210752 );
+		this.fontRenderer.drawString( GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong( ns.getCurrentPower(), false ), 13, 16, 4210752 );
+		this.fontRenderer.drawString( GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong( ns.getMaxPower(), false ), 13, 26, 4210752 );
 
-		this.fontRendererObj.drawString( GuiText.PowerInputRate.getLocal() + ": " + Platform.formatPowerLong( ns.getAverageAddition(), true ), 13, 143 - 10, 4210752 );
-		this.fontRendererObj.drawString( GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong( ns.getPowerUsage(), true ), 13, 143 - 20, 4210752 );
+		this.fontRenderer.drawString( GuiText.PowerInputRate.getLocal() + ": " + Platform.formatPowerLong( ns.getAverageAddition(), true ), 13, 143 - 10, 4210752 );
+		this.fontRenderer.drawString( GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong( ns.getPowerUsage(), true ), 13, 143 - 20, 4210752 );
 
 		final int sectionLength = 30;
 
@@ -168,8 +168,8 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 					str = Long.toString( refStack.getStackSize() / 1000 ) + 'k';
 				}
 
-				final int w = this.fontRendererObj.getStringWidth( str );
-				this.fontRendererObj.drawString( str, (int) ( ( x * sectionLength + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * 18 + yo + 6 ) * 2, 4210752 );
+				final int w = this.fontRenderer.getStringWidth( str );
+				this.fontRenderer.drawString( str, (int) ( ( x * sectionLength + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * 18 + yo + 6 ) * 2, 4210752 );
 
 				GlStateManager.popMatrix();
 				final int posX = x * sectionLength + xo + sectionLength - 18;

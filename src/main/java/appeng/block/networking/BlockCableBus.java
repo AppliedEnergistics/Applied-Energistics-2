@@ -270,9 +270,9 @@ public class BlockCableBus extends AEBaseTileBlock
 		TextureAtlasSprite texture = Platform.pickRandom( cableBusModel.getParticleTextures( renderState ) );
 		if( texture != null )
 		{
-			double x = target.hitVec.xCoord;
-			double y = target.hitVec.yCoord;
-			double z = target.hitVec.zCoord;
+			double x = target.hitVec.x;
+			double y = target.hitVec.y;
+			double z = target.hitVec.z;
 
 			Particle fx = new DestroyFX( world, x, y, z, 0.0D, 0.0D, 0.0D, state ).setBlockPos( target.getBlockPos() ).multipleParticleScaleBy( 0.8F );
 			fx.setParticleTexture( texture );

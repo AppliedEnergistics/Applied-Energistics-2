@@ -128,7 +128,7 @@ public class GuiCraftAmount extends AEBaseGui
 			this.buttonList.add( this.originalGuiBtn = new GuiTabButton( this.guiLeft + 154, this.guiTop, myIcon, myIcon.getDisplayName(), this.itemRender ) );
 		}
 
-		this.amountToCraft = new GuiNumberBox( this.fontRendererObj, this.guiLeft + 62, this.guiTop + 57, 59, this.fontRendererObj.FONT_HEIGHT, Integer.class );
+		this.amountToCraft = new GuiNumberBox( this.fontRenderer, this.guiLeft + 62, this.guiTop + 57, 59, this.fontRenderer.FONT_HEIGHT, Integer.class );
 		this.amountToCraft.setEnableBackgroundDrawing( false );
 		this.amountToCraft.setMaxStringLength( 16 );
 		this.amountToCraft.setTextColor( 0xFFFFFF );
@@ -140,7 +140,7 @@ public class GuiCraftAmount extends AEBaseGui
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		this.fontRendererObj.drawString( GuiText.SelectAmount.getLocal(), 8, 6, 4210752 );
+		this.fontRenderer.drawString( GuiText.SelectAmount.getLocal(), 8, 6, 4210752 );
 	}
 
 	@Override

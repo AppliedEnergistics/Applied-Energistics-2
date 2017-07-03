@@ -63,16 +63,16 @@ public class GuiInscriber extends AEBaseGui
 	{
 		this.pb.setFullMsg( this.cvc.getCurrentProgress() * 100 / this.cvc.getMaxProgress() + "%" );
 
-		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.Inscriber.getLocal() ), 8, 6, 4210752 );
-		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
+		this.fontRenderer.drawString( this.getGuiDisplayName( GuiText.Inscriber.getLocal() ), 8, 6, 4210752 );
+		this.fontRenderer.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 	}
 
 	@Override
 	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/inscriber.png" );
-		this.pb.xPosition = 135 + this.guiLeft;
-		this.pb.yPosition = 39 + this.guiTop;
+		this.pb.x = 135 + this.guiLeft;
+		this.pb.y = 39 + this.guiTop;
 
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, this.ySize );
 

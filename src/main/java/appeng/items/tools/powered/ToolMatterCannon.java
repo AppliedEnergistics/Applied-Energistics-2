@@ -156,9 +156,9 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 						final Vec3d direction = Vec3d1.subtract( Vec3d );
 						direction.normalize();
 
-						final double d0 = Vec3d.xCoord;
-						final double d1 = Vec3d.yCoord;
-						final double d2 = Vec3d.zCoord;
+						final double d0 = Vec3d.x;
+						final double d1 = Vec3d.y;
+						final double d2 = Vec3d.z;
 
 						final float penetration = AEApi.instance().registries().matterCannon().getPenetration( ammo ); // 196.96655f;
 						if( penetration <= 0 )
@@ -191,7 +191,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 
 	private void shootPaintBalls( final ItemStack type, final World w, final EntityPlayer p, final Vec3d Vec3d, final Vec3d Vec3d1, final Vec3d direction, final double d0, final double d1, final double d2 )
 	{
-		final AxisAlignedBB bb = new AxisAlignedBB( Math.min( Vec3d.xCoord, Vec3d1.xCoord ), Math.min( Vec3d.yCoord, Vec3d1.yCoord ), Math.min( Vec3d.zCoord, Vec3d1.zCoord ), Math.max( Vec3d.xCoord, Vec3d1.xCoord ), Math.max( Vec3d.yCoord, Vec3d1.yCoord ), Math.max( Vec3d.zCoord, Vec3d1.zCoord ) ).expand( 16, 16, 16 );
+		final AxisAlignedBB bb = new AxisAlignedBB( Math.min( Vec3d.x, Vec3d1.x ), Math.min( Vec3d.y, Vec3d1.y ), Math.min( Vec3d.z, Vec3d1.z ), Math.max( Vec3d.x, Vec3d1.x ), Math.max( Vec3d.y, Vec3d1.y ), Math.max( Vec3d.z, Vec3d1.z ) ).expand( 16, 16, 16 );
 
 		Entity entity = null;
 		final List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
@@ -244,7 +244,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 
 		try
 		{
-			AppEng.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, (float) direction.xCoord, (float) direction.yCoord, (float) direction.zCoord, (byte) ( pos == null ? 32 : pos.hitVec.squareDistanceTo( vec ) + 1 ) ) );
+			AppEng.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, (float) direction.x, (float) direction.y, (float) direction.z, (byte) ( pos == null ? 32 : pos.hitVec.squareDistanceTo( vec ) + 1 ) ) );
 		}
 		catch( final Exception err )
 		{
@@ -309,7 +309,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 		{
 			hasDestroyed = false;
 
-			final AxisAlignedBB bb = new AxisAlignedBB( Math.min( Vec3d.xCoord, Vec3d1.xCoord ), Math.min( Vec3d.yCoord, Vec3d1.yCoord ), Math.min( Vec3d.zCoord, Vec3d1.zCoord ), Math.max( Vec3d.xCoord, Vec3d1.xCoord ), Math.max( Vec3d.yCoord, Vec3d1.yCoord ), Math.max( Vec3d.zCoord, Vec3d1.zCoord ) ).expand( 16, 16, 16 );
+			final AxisAlignedBB bb = new AxisAlignedBB( Math.min( Vec3d.x, Vec3d1.x ), Math.min( Vec3d.y, Vec3d1.y ), Math.min( Vec3d.z, Vec3d1.z ), Math.max( Vec3d.x, Vec3d1.x ), Math.max( Vec3d.y, Vec3d1.y ), Math.max( Vec3d.z, Vec3d1.z ) ).expand( 16, 16, 16 );
 
 			Entity entity = null;
 			final List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
@@ -361,7 +361,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 
 			try
 			{
-				AppEng.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, (float) direction.xCoord, (float) direction.yCoord, (float) direction.zCoord, (byte) ( pos == null ? 32 : pos.hitVec.squareDistanceTo( vec ) + 1 ) ) );
+				AppEng.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, (float) direction.x, (float) direction.y, (float) direction.z, (byte) ( pos == null ? 32 : pos.hitVec.squareDistanceTo( vec ) + 1 ) ) );
 			}
 			catch( final Exception err )
 			{
@@ -380,9 +380,9 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 					{
 						final EntityLivingBase el = (EntityLivingBase) pos.entityHit;
 						penetration -= dmg;
-						el.knockBack( p, 0, -direction.xCoord, -direction.zCoord );
-						// el.knockBack( p, 0, Vec3d.xCoord,
-						// Vec3d.zCoord );
+						el.knockBack( p, 0, -direction.x, -direction.z );
+						// el.knockBack( p, 0, Vec3d.x,
+						// Vec3d.z );
 						el.attackEntityFrom( dmgSrc, dmg );
 						if( !el.isEntityAlive() )
 						{

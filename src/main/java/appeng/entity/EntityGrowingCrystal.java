@@ -64,7 +64,7 @@ public final class EntityGrowingCrystal extends EntityItem
 			return;
 		}
 
-		final ItemStack is = this.getEntityItem();
+		final ItemStack is = this.getItem();
 		final Item gc = is.getItem();
 
 		if( gc instanceof IGrowableCrystal ) // if it changes this just stops being an issue...
@@ -143,7 +143,7 @@ public final class EntityGrowingCrystal extends EntityItem
 				if( this.progress_1000 > 1000 )
 				{
 					this.progress_1000 -= 1000;
-					this.setEntityItemStack( cry.triggerGrowth( is ) );
+					this.setItem( cry.triggerGrowth( is ) );
 				}
 			}
 		}

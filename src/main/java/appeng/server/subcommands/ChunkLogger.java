@@ -42,7 +42,7 @@ public class ChunkLogger implements ISubCommand
 	{
 		if( !event.getWorld().isRemote )
 		{
-			AELog.info( "Chunk Loaded:   " + event.getChunk().xPosition + ", " + event.getChunk().zPosition );
+			AELog.info( "Chunk Loaded:   " + event.getChunk().x + ", " + event.getChunk().z );
 			this.displayStack();
 		}
 	}
@@ -71,7 +71,7 @@ public class ChunkLogger implements ISubCommand
 	{
 		if( !unload.getWorld().isRemote )
 		{
-			AELog.info( "Chunk Unloaded: " + unload.getChunk().xPosition + ", " + unload.getChunk().zPosition );
+			AELog.info( "Chunk Unloaded: " + unload.getChunk().x + ", " + unload.getChunk().z );
 			this.displayStack();
 		}
 	}

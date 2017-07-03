@@ -73,8 +73,8 @@ public class GuiWireless extends AEBaseGui
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.Wireless.getLocal() ), 8, 6, 4210752 );
-		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
+		this.fontRenderer.drawString( this.getGuiDisplayName( GuiText.Wireless.getLocal() ), 8, 6, 4210752 );
+		this.fontRenderer.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
 		final ContainerWireless cw = (ContainerWireless) this.inventorySlots;
 
@@ -83,10 +83,10 @@ public class GuiWireless extends AEBaseGui
 			final String firstMessage = GuiText.Range.getLocal() + ": " + ( cw.getRange() / 10.0 ) + " m";
 			final String secondMessage = GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong( cw.getDrain(), true );
 
-			final int strWidth = Math.max( this.fontRendererObj.getStringWidth( firstMessage ), this.fontRendererObj.getStringWidth( secondMessage ) );
+			final int strWidth = Math.max( this.fontRenderer.getStringWidth( firstMessage ), this.fontRenderer.getStringWidth( secondMessage ) );
 			final int cOffset = ( this.xSize / 2 ) - ( strWidth / 2 );
-			this.fontRendererObj.drawString( firstMessage, cOffset, 20, 4210752 );
-			this.fontRendererObj.drawString( secondMessage, cOffset, 20 + 12, 4210752 );
+			this.fontRenderer.drawString( firstMessage, cOffset, 20, 4210752 );
+			this.fontRenderer.drawString( secondMessage, cOffset, 20 + 12, 4210752 );
 		}
 	}
 

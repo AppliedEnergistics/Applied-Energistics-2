@@ -170,7 +170,7 @@ package appeng.parts.p2p;
 //			if( !this.cachedTarget )
 //			{
 //				TileEntity self = this.getTile();
-//				TileEntity te = self.getworld().getTileEntity( self.xCoord + this.side.offsetX, self.yCoord + this.side.offsetY, self.zCoord + this.side.offsetZ );
+//				TileEntity te = self.getworld().getTileEntity( self.x + this.side.offsetX, self.y + this.side.offsetY, self.z + this.side.offsetZ );
 //				this.outputTarget = te instanceof IEnergyReceiver ? (IEnergyReceiver) te : null;
 //				this.cachedTarget = true;
 //			}

@@ -49,7 +49,7 @@ public class GuiQuartzKnife extends AEBaseGui
 	{
 		super.initGui();
 
-		this.name = new GuiTextField( 0, this.fontRendererObj, this.guiLeft + 24, this.guiTop + 32, 79, this.fontRendererObj.FONT_HEIGHT );
+		this.name = new GuiTextField( 0, this.fontRenderer, this.guiLeft + 24, this.guiTop + 32, 79, this.fontRenderer.FONT_HEIGHT );
 		this.name.setEnableBackgroundDrawing( false );
 		this.name.setMaxStringLength( 32 );
 		this.name.setTextColor( 0xFFFFFF );
@@ -60,8 +60,8 @@ public class GuiQuartzKnife extends AEBaseGui
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		this.fontRendererObj.drawString( this.getGuiDisplayName( GuiText.QuartzCuttingKnife.getLocal() ), 8, 6, 4210752 );
-		this.fontRendererObj.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
+		this.fontRenderer.drawString( this.getGuiDisplayName( GuiText.QuartzCuttingKnife.getLocal() ), 8, 6, 4210752 );
+		this.fontRenderer.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 	}
 
 	@Override

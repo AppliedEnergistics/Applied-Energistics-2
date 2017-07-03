@@ -54,7 +54,7 @@ public final class Tracer
 		final Vec3d headVec = this.getCorrectedHeadVec( player );
 		final Vec3d lookVec = player.getLook( 1.0F );
 		final double reach = this.getBlockReachDistance_server( player );
-		final Vec3d endVec = headVec.addVector( lookVec.xCoord * reach, lookVec.yCoord * reach, lookVec.zCoord * reach );
+		final Vec3d endVec = headVec.addVector( lookVec.x * reach, lookVec.y * reach, lookVec.z * reach );
 
 		return blockState.collisionRayTrace( world, pos, headVec, endVec );
 	}
