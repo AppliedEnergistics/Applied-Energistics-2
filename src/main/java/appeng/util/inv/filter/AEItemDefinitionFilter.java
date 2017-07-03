@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2017, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,14 +16,34 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.util.inv;
+package appeng.util.inv.filter;
 
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
+
+import appeng.api.definitions.IItemDefinition;
 
 
-public interface IInventoryWrapper
+public class AEItemDefinitionFilter implements IAEItemFilter
 {
+	private final IItemDefinition definition;
 
-	boolean canRemoveItemFromSlot( int x, ItemStack is );
+	public AEItemDefinitionFilter( IItemDefinition definition )
+	{
+		this.definition = definition;
+	}
+
+	@Override
+	public boolean allowExtract( IItemHandler inv, int slot, int amount )
+	{
+		return true;
+	}
+
+	@Override
+	public boolean allowInsert( IItemHandler inv, int slot, ItemStack stack )
+	{
+		return definition.isSameAs( stack );
+	}
+
 }

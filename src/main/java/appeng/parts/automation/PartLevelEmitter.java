@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.Random;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,6 +33,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
@@ -76,8 +76,8 @@ import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.parts.PartModel;
 import appeng.tile.inventory.AppEngInternalAEInventory;
-import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
+import appeng.util.inv.InvOperation;
 
 
 public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherHost, IStackWatcherHost, ICraftingWatcherHost, IMEMonitorHandlerReceiver<IAEItemStack>, ICraftingProvider
@@ -479,7 +479,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
+	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 		if( inv == this.config )
 		{
@@ -522,7 +522,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public IInventory getInventoryByName( final String name )
+	public IItemHandler getInventoryByName( final String name )
 	{
 		if( name.equals( "config" ) )
 		{

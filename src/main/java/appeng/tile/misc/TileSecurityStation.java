@@ -26,7 +26,6 @@ import java.util.List;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -35,6 +34,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
@@ -72,11 +72,12 @@ import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.inventory.IAEAppEngInventory;
-import appeng.tile.inventory.InvOperation;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import appeng.util.helpers.ItemHandlerUtil;
+import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
 
 
@@ -110,7 +111,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 	}
 
 	@Override
-	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
+	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 
 	}
@@ -118,7 +119,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 	@Override
 	public void getDrops( final World w, final BlockPos pos, final List<ItemStack> drops )
 	{
-		if( !this.getConfigSlot().isEmpty() )
+		if( !ItemHandlerUtil.isEmpty( this.getConfigSlot() ) )
 		{
 			drops.add( this.getConfigSlot().getStackInSlot( 0 ) );
 		}

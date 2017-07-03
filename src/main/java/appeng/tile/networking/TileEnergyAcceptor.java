@@ -19,10 +19,10 @@
 package appeng.tile.networking;
 
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -30,16 +30,11 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkPowerTile;
-import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.inventory.InvOperation;
+import appeng.util.inv.InvOperation;
 
 
 public class TileEnergyAcceptor extends AENetworkPowerTile
 {
-
-	private static final AppEngInternalInventory INTERNAL_INVENTORY = new AppEngInternalInventory( null, 0 );
-	private final int[] sides = {};
-
 	public TileEnergyAcceptor()
 	{
 		this.getProxy().setIdlePowerUsage( 0.0 );
@@ -102,28 +97,14 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 	}
 
 	@Override
-	public IInventory getInternalInventory()
+	public IItemHandler getInternalInventory()
 	{
-		return INTERNAL_INVENTORY;
+		return EmptyHandler.INSTANCE;
 	}
 
 	@Override
-	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
+	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
 
 	}
-
-	@Override
-	public int[] getAccessibleSlotsBySide( final EnumFacing side )
-	{
-		return this.sides;
-	}
-
-	@Override
-	public boolean isEmpty()
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }

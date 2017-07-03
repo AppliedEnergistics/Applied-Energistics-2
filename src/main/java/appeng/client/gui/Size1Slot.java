@@ -13,20 +13,21 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.SlotItemHandler;
 
 
 /**
  * A proxy for a slot that will always return an itemstack with size 1, if there is an item in the slot.
  * Used to prevent the default item count from rendering.
  */
-class Size1Slot extends Slot
+class Size1Slot extends SlotItemHandler
 {
 
-	private final Slot delegate;
+	private final SlotItemHandler delegate;
 
-	public Size1Slot( Slot delegate )
+	public Size1Slot( SlotItemHandler delegate )
 	{
-		super( delegate.inventory, delegate.getSlotIndex(), delegate.xPos, delegate.yPos );
+		super( delegate.getItemHandler(), delegate.getSlotIndex(), delegate.xPos, delegate.yPos );
 		this.delegate = delegate;
 	}
 

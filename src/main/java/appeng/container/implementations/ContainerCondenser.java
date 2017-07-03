@@ -20,6 +20,7 @@ package appeng.container.implementations;
 
 
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
@@ -48,11 +49,12 @@ public class ContainerCondenser extends AEBaseContainer implements IProgressProv
 		super( ip, condenser, null );
 		this.condenser = condenser;
 
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.TRASH, condenser, 0, 51, 52, ip ) );
-		this.addSlotToContainer( new SlotOutput( condenser, 1, 105, 52, -1 ) );
+		IItemHandler inv = condenser.getInternalInventory();
+
+		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.TRASH, inv, 0, 51, 52, ip ) );
+		this.addSlotToContainer( new SlotOutput( inv, 1, 105, 52, -1 ) );
 		this.addSlotToContainer(
-				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_COMPONENT, condenser.getInternalInventory(), 2, 101, 26, ip ) )
-						.setStackLimit( 1 ) );
+				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_COMPONENT, inv, 2, 101, 26, ip ) ).setStackLimit( 1 ) );
 
 		this.bindPlayerInventory( ip, 0, 197 - /* height of player inventory */82 );
 	}

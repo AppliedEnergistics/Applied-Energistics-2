@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
@@ -112,9 +113,8 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 			{
 				for( int u = 0; u < 3; u++ )
 				{
-					this.addSlotToContainer(
-							( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, this.tbInventory, u + v * 3, 186 + u * 18, this
-									.getHeight() - 82 + v * 18, this.getInventoryPlayer() ) ).setPlayerSide() );
+					this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, this.tbInventory
+							.getInternalInventory(), u + v * 3, 186 + u * 18, this.getHeight() - 82 + v * 18, this.getInventoryPlayer() ) ).setPlayerSide() );
 				}
 			}
 		}
@@ -138,7 +138,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	{
 		this.setupUpgrades();
 
-		final IInventory inv = this.getUpgradeable().getInventoryByName( "config" );
+		final IItemHandler inv = this.getUpgradeable().getInventoryByName( "config" );
 		final int y = 40;
 		final int x = 80;
 		this.addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
@@ -159,7 +159,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 
 	protected void setupUpgrades()
 	{
-		final IInventory upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
+		final IItemHandler upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
 		if( this.availableUpgrades() > 0 )
 		{
 			this.addSlotToContainer(

@@ -30,7 +30,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.AEApi;

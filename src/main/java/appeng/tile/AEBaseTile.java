@@ -36,7 +36,6 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -45,6 +44,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.util.ICommonTile;
@@ -508,15 +508,15 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 		if( this instanceof ISegmentedInventory )
 		{
-			final IInventory inv = ( (ISegmentedInventory) this ).getInventoryByName( "config" );
+			final IItemHandler inv = ( (ISegmentedInventory) this ).getInventoryByName( "config" );
 			if( inv instanceof AppEngInternalAEInventory )
 			{
 				final AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
-				final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSizeInventory() );
+				final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSlots() );
 				tmp.readFromNBT( compound, "config" );
-				for( int x = 0; x < tmp.getSizeInventory(); x++ )
+				for( int x = 0; x < tmp.getSlots(); x++ )
 				{
-					target.setInventorySlotContents( x, tmp.getStackInSlot( x ) );
+					target.setStackInSlot( x, tmp.getStackInSlot( x ) );
 				}
 			}
 		}
@@ -534,19 +534,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	@Override
 	public void getDrops( final World w, final BlockPos pos, final List<ItemStack> drops )
 	{
-		if( this instanceof IInventory )
-		{
-			final IInventory inv = (IInventory) this;
 
-			for( int l = 0; l < inv.getSizeInventory(); l++ )
-			{
-				final ItemStack is = inv.getStackInSlot( l );
-				if( !is.isEmpty() )
-				{
-					drops.add( is );
-				}
-			}
-		}
 	}
 
 	public void getNoDrops( final World w, final BlockPos pos, final List<ItemStack> drops )
@@ -594,7 +582,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 		if( this instanceof ISegmentedInventory )
 		{
-			final IInventory inv = ( (ISegmentedInventory) this ).getInventoryByName( "config" );
+			final IItemHandler inv = ( (ISegmentedInventory) this ).getInventoryByName( "config" );
 			if( inv instanceof AppEngInternalAEInventory )
 			{
 				( (AppEngInternalAEInventory) inv ).writeToNBT( output, "config" );

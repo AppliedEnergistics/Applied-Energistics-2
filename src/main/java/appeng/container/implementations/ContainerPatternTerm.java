@@ -27,7 +27,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IContainerListener;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
@@ -38,7 +37,8 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumFacing;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -61,11 +61,12 @@ import appeng.helpers.IContainerCraftingPacket;
 import appeng.items.storage.ItemViewCell;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.inventory.IAEAppEngInventory;
-import appeng.tile.inventory.InvOperation;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-import appeng.util.inv.AdaptorPlayerHand;
+import appeng.util.inv.AdaptorItemHandler;
+import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InvOperation;
+import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.item.AEItemStack;
 
 
@@ -74,7 +75,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 	private final PartPatternTerminal patternTerminal;
 	private final AppEngInternalInventory cOut = new AppEngInternalInventory( null, 1 );
-	private final IInventory crafting;
+	private final IItemHandler crafting;
 	private final SlotFakeCraftingMatrix[] craftingSlots = new SlotFakeCraftingMatrix[9];
 	private final OptionalSlotFake[] outputSlots = new OptionalSlotFake[3];
 	private final SlotPatternTerm craftSlot;
@@ -90,8 +91,8 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		super( ip, monitorable, false );
 		this.patternTerminal = (PartPatternTerminal) monitorable;
 
-		final IInventory patternInv = this.getPatternTerminal().getInventoryByName( "pattern" );
-		final IInventory output = this.getPatternTerminal().getInventoryByName( "output" );
+		final IItemHandler patternInv = this.getPatternTerminal().getInventoryByName( "pattern" );
+		final IItemHandler output = this.getPatternTerminal().getInventoryByName( "output" );
 
 		this.crafting = this.getPatternTerminal().getInventoryByName( "crafting" );
 
@@ -166,7 +167,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		}
 
 		final ItemStack is = CraftingManager.findMatchingResult( ic, this.getPlayerInv().player.world );
-		this.cOut.setInventorySlotContents( 0, is );
+		this.cOut.setStackInSlot( 0, is );
 		return is;
 	}
 
@@ -177,7 +178,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	}
 
 	@Override
-	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
+	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 
 	}
@@ -355,8 +356,8 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		if( packetPatternSlot.slotItem != null && this.getCellInventory() != null )
 		{
 			final IAEItemStack out = packetPatternSlot.slotItem.copy();
-			InventoryAdaptor inv = new AdaptorPlayerHand( this.getPlayerInv().player );
-			final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor( this.getPlayerInv().player, EnumFacing.UP );
+			InventoryAdaptor inv = new AdaptorItemHandler( new WrapperCursorItemHandler( this.getPlayerInv().player.inventory ) );
+			final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor( this.getPlayerInv().player );
 
 			if( packetPatternSlot.shift )
 			{
@@ -527,11 +528,11 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	}
 
 	@Override
-	public IInventory getInventoryByName( final String name )
+	public IItemHandler getInventoryByName( final String name )
 	{
 		if( name.equals( "player" ) )
 		{
-			return this.getInventoryPlayer();
+			return new PlayerInvWrapper( this.getInventoryPlayer() );
 		}
 		return this.getPatternTerminal().getInventoryByName( name );
 	}

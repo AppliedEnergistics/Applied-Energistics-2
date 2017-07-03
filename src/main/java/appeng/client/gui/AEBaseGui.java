@@ -713,7 +713,7 @@ public abstract class AEBaseGui extends GuiContainer
 				this.itemRender.zLevel = 0.0F;
 
 				// Annoying but easier than trying to splice into render item
-				super.drawSlot( new Size1Slot( s ) );
+				super.drawSlot( new Size1Slot( (SlotME) s ) );
 
 				this.stackSizeRenderer.renderStackSize( this.fontRenderer, ( (SlotME) s ).getAEStack(), s.getStack(), s.xPos, s.yPos );
 

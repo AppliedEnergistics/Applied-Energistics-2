@@ -108,7 +108,7 @@ public class BlockChest extends AEBaseTileBlock
 			}
 			else
 			{
-				final ItemStack cell = tg.getStackInSlot( 1 );
+				final ItemStack cell = tg.getCell();
 				if( !cell.isEmpty() )
 				{
 					final ICellHandler ch = AEApi.instance().registries().cell().getHandler( cell );

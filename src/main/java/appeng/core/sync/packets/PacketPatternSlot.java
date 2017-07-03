@@ -26,7 +26,7 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.storage.data.IAEItemStack;
@@ -72,7 +72,7 @@ public class PacketPatternSlot extends AppEngPacket
 	}
 
 	// api
-	public PacketPatternSlot( final IInventory pat, final IAEItemStack slotItem, final boolean shift ) throws IOException
+	public PacketPatternSlot( final IItemHandler pat, final IAEItemStack slotItem, final boolean shift ) throws IOException
 	{
 
 		this.slotItem = slotItem;

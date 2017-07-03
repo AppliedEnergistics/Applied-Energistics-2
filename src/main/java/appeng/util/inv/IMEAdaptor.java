@@ -50,6 +50,12 @@ public class IMEAdaptor extends InventoryAdaptor
 	}
 
 	@Override
+	public boolean hasSlots()
+	{
+		return true;
+	}
+
+	@Override
 	public Iterator<ItemSlot> iterator()
 	{
 		return new IMEAdaptorIterator( this, this.getList() );

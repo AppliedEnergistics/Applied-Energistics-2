@@ -19,13 +19,13 @@
 package appeng.container.slot;
 
 
-import net.minecraft.inventory.IInventory;
+import net.minecraftforge.items.IItemHandler;
 
 
 public class SlotInaccessibleHD extends SlotInaccessible
 {
 
-	public SlotInaccessibleHD( final IInventory i, final int slotIdx, final int x, final int y )
+	public SlotInaccessibleHD( final IItemHandler i, final int slotIdx, final int x, final int y )
 	{
 		super( i, slotIdx, x, y );
 	}

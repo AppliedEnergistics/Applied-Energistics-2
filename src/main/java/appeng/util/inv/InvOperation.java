@@ -16,11 +16,10 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.tile.inventory;
+package appeng.util.inv;
 
 
 public enum InvOperation
 {
-	decreaseStackSize, setInventorySlotContents, markDirty
-
+	EXTRACT, INSERT, SET, DIRTY
 }

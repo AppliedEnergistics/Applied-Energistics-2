@@ -22,11 +22,11 @@ package appeng.parts.reporting;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -41,11 +41,11 @@ import appeng.api.util.IConfigManager;
 import appeng.core.sync.GuiBridge;
 import appeng.me.GridAccessException;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.inventory.IAEAppEngInventory;
-import appeng.tile.inventory.InvOperation;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InvOperation;
 
 
 /**
@@ -170,13 +170,13 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 	}
 
 	@Override
-	public IInventory getViewCellStorage()
+	public IItemHandler getViewCellStorage()
 	{
 		return this.viewCell;
 	}
 
 	@Override
-	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
+	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 		this.getHost().markForSave();
 	}

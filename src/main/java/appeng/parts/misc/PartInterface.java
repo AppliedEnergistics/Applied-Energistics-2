@@ -25,8 +25,6 @@ import java.util.List;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,8 +33,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
@@ -67,13 +65,13 @@ import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartBasicState;
 import appeng.parts.PartModel;
-import appeng.tile.inventory.IAEAppEngInventory;
-import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
+import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.IInventoryDestination;
+import appeng.util.inv.InvOperation;
 
 
-public class PartInterface extends PartBasicState implements IGridTickable, IStorageMonitorable, IInventoryDestination, IInterfaceHost, ISidedInventory, IAEAppEngInventory, IPriorityHost
+public class PartInterface extends PartBasicState implements IGridTickable, IStorageMonitorable, IInventoryDestination, IInterfaceHost, IAEAppEngInventory, IPriorityHost
 {
 
 	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/interface_base" );
@@ -166,7 +164,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public IInventory getInventoryByName( final String name )
+	public IItemHandler getInventoryByName( final String name )
 	{
 		return this.duality.getInventoryByName( name );
 	}
@@ -218,103 +216,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public int getSizeInventory()
-	{
-		return this.duality.getStorage().getSizeInventory();
-	}
-
-	@Override
-	public ItemStack getStackInSlot( final int i )
-	{
-		return this.duality.getStorage().getStackInSlot( i );
-	}
-
-	@Override
-	public ItemStack decrStackSize( final int i, final int j )
-	{
-		return this.duality.getStorage().decrStackSize( i, j );
-	}
-
-	@Override
-	public ItemStack removeStackFromSlot( final int i )
-	{
-		return this.duality.getStorage().removeStackFromSlot( i );
-	}
-
-	@Override
-	public void setInventorySlotContents( final int i, final ItemStack itemstack )
-	{
-		this.duality.getStorage().setInventorySlotContents( i, itemstack );
-	}
-
-	@Override
-	public String getName()
-	{
-		return this.duality.getStorage().getName();
-	}
-
-	@Override
-	public boolean hasCustomName()
-	{
-		return this.duality.getStorage().hasCustomName();
-	}
-
-	@Override
-	public int getInventoryStackLimit()
-	{
-		return this.duality.getStorage().getInventoryStackLimit();
-	}
-
-	@Override
-	public void markDirty()
-	{
-		this.duality.getStorage().markDirty();
-	}
-
-	@Override
-	public boolean isUsableByPlayer( final EntityPlayer entityplayer )
-	{
-		return this.duality.getStorage().isUsableByPlayer( entityplayer );
-	}
-
-	@Override
-	public void openInventory( final EntityPlayer player )
-	{
-		this.duality.getStorage().openInventory( player );
-	}
-
-	@Override
-	public void closeInventory( final EntityPlayer player )
-	{
-		this.duality.getStorage().closeInventory( player );
-	}
-
-	@Override
-	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
-	{
-		return this.duality.getStorage().isItemValidForSlot( i, itemstack );
-	}
-
-	@Override
-	public int[] getSlotsForFace( final EnumFacing side )
-	{
-		return this.duality.getSlotsForFace( side );
-	}
-
-	@Override
-	public boolean canInsertItem( final int i, final ItemStack itemstack, final EnumFacing j )
-	{
-		return true;
-	}
-
-	@Override
-	public boolean canExtractItem( final int i, final ItemStack itemstack, final EnumFacing j )
-	{
-		return true;
-	}
-
-	@Override
-	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
+	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 		this.duality.onChangeInventory( inv, slot, mc, removedStack, newStack );
 	}
@@ -386,36 +288,6 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	}
 
 	@Override
-	public int getField( final int id )
-	{
-		return 0;
-	}
-
-	@Override
-	public void setField( final int id, final int value )
-	{
-
-	}
-
-	@Override
-	public int getFieldCount()
-	{
-		return 0;
-	}
-
-	@Override
-	public void clear()
-	{
-
-	}
-
-	@Override
-	public ITextComponent getDisplayName()
-	{
-		return null;
-	}
-
-	@Override
 	public IPartModel getStaticModels()
 	{
 		if( this.isActive() && this.isPowered() )
@@ -443,12 +315,4 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	{
 		return this.duality.getCapability( capabilityClass, this.getSide().getFacing() );
 	}
-
-	@Override
-	public boolean isEmpty()
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }

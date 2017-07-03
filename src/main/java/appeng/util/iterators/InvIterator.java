@@ -21,21 +21,21 @@ package appeng.util.iterators;
 
 import java.util.Iterator;
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 
 public final class InvIterator implements Iterator<ItemStack>
 {
-	private final IInventory inventory;
+	private final IItemHandler inventory;
 	private final int size;
 
 	private int counter = 0;
 
-	public InvIterator( final IInventory inventory )
+	public InvIterator( final IItemHandler inventory )
 	{
 		this.inventory = inventory;
-		this.size = this.inventory.getSizeInventory();
+		this.size = this.inventory.getSlots();
 	}
 
 	@Override

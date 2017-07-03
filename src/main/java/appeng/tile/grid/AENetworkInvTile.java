@@ -99,17 +99,4 @@ public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionH
 	{
 		return this.getProxy().getNode();
 	}
-
-	@Override
-	public int getField( final int id )
-	{
-		return 0;
-	}
-
-	@Override
-	public int getFieldCount()
-	{
-		return 0;
-	}
-
 }

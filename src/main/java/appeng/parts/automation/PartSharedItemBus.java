@@ -19,11 +19,11 @@
 package appeng.parts.automation;
 
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
@@ -69,7 +69,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	}
 
 	@Override
-	public IInventory getInventoryByName( final String name )
+	public IItemHandler getInventoryByName( final String name )
 	{
 		if( name.equals( "config" ) )
 		{
@@ -125,7 +125,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 
 	protected int availableSlots()
 	{
-		return Math.min( 1 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 4, this.getConfig().getSizeInventory() );
+		return Math.min( 1 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 4, this.getConfig().getSlots() );
 	}
 
 	protected int calculateItemsToSend()

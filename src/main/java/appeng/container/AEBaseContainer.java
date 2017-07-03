@@ -40,7 +40,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -78,13 +79,13 @@ import appeng.helpers.ICustomNameObject;
 import appeng.helpers.InventoryAction;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-import appeng.util.inv.AdaptorPlayerHand;
+import appeng.util.inv.AdaptorItemHandler;
+import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.item.AEItemStack;
 
 
 public abstract class AEBaseContainer extends Container
 {
-
 	private final InventoryPlayer invPlayer;
 	private final BaseActionSource mySrc;
 	private final HashSet<Integer> locked = new HashSet<>();
@@ -386,6 +387,8 @@ public abstract class AEBaseContainer extends Container
 
 	protected void bindPlayerInventory( final InventoryPlayer inventoryPlayer, final int offsetX, final int offsetY )
 	{
+		IItemHandler ih = new PlayerInvWrapper( inventoryPlayer );
+
 		// bind player inventory
 		for( int i = 0; i < 3; i++ )
 		{
@@ -393,11 +396,11 @@ public abstract class AEBaseContainer extends Container
 			{
 				if( this.locked.contains( j + i * 9 + 9 ) )
 				{
-					this.addSlotToContainer( new SlotDisabled( inventoryPlayer, j + i * 9 + 9, 8 + j * 18 + offsetX, offsetY + i * 18 ) );
+					this.addSlotToContainer( new SlotDisabled( ih, j + i * 9 + 9, 8 + j * 18 + offsetX, offsetY + i * 18 ) );
 				}
 				else
 				{
-					this.addSlotToContainer( new SlotPlayerInv( inventoryPlayer, j + i * 9 + 9, 8 + j * 18 + offsetX, offsetY + i * 18 ) );
+					this.addSlotToContainer( new SlotPlayerInv( ih, j + i * 9 + 9, 8 + j * 18 + offsetX, offsetY + i * 18 ) );
 				}
 			}
 		}
@@ -407,11 +410,11 @@ public abstract class AEBaseContainer extends Container
 		{
 			if( this.locked.contains( i ) )
 			{
-				this.addSlotToContainer( new SlotDisabled( inventoryPlayer, i, 8 + i * 18 + offsetX, 58 + offsetY ) );
+				this.addSlotToContainer( new SlotDisabled( ih, i, 8 + i * 18 + offsetX, 58 + offsetY ) );
 			}
 			else
 			{
-				this.addSlotToContainer( new SlotPlayerHotBar( inventoryPlayer, i, 8 + i * 18 + offsetX, 58 + offsetY ) );
+				this.addSlotToContainer( new SlotPlayerHotBar( ih, i, 8 + i * 18 + offsetX, 58 + offsetY ) );
 			}
 		}
 	}
@@ -862,7 +865,7 @@ public abstract class AEBaseContainer extends Container
 
 					ais.setStackSize( myItem.getMaxStackSize() );
 
-					final InventoryAdaptor adp = InventoryAdaptor.getAdaptor( player, EnumFacing.UP );
+					final InventoryAdaptor adp = InventoryAdaptor.getAdaptor( player );
 					myItem.setCount( (int) ais.getStackSize() );
 					myItem = adp.simulateAdd( myItem );
 
@@ -896,7 +899,7 @@ public abstract class AEBaseContainer extends Container
 					ais = Platform.poweredInsert( this.getPowerSource(), this.getCellInventory(), ais, this.getActionSource() );
 					if( ais == null )
 					{
-						final InventoryAdaptor ia = new AdaptorPlayerHand( player );
+						final InventoryAdaptor ia = new AdaptorItemHandler( new WrapperCursorItemHandler( player.inventory ) );
 
 						final ItemStack fail = ia.removeItems( 1, extracted.getItemStack(), null );
 						if( fail.isEmpty() )
@@ -940,7 +943,7 @@ public abstract class AEBaseContainer extends Container
 						ais = Platform.poweredExtraction( this.getPowerSource(), this.getCellInventory(), ais, this.getActionSource() );
 						if( ais != null )
 						{
-							final InventoryAdaptor ia = new AdaptorPlayerHand( player );
+							final InventoryAdaptor ia = new AdaptorItemHandler( new WrapperCursorItemHandler( player.inventory ) );
 
 							final ItemStack fail = ia.addItems( ais.getItemStack() );
 							if( !fail.isEmpty() )
@@ -1070,7 +1073,7 @@ public abstract class AEBaseContainer extends Container
 
 						ais.setStackSize( myItem.getMaxStackSize() );
 
-						final InventoryAdaptor adp = InventoryAdaptor.getAdaptor( player, EnumFacing.UP );
+						final InventoryAdaptor adp = InventoryAdaptor.getAdaptor( player );
 						myItem.setCount( (int) ais.getStackSize() );
 						myItem = adp.simulateAdd( myItem );
 

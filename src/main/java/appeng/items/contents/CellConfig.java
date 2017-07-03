@@ -38,7 +38,7 @@ public class CellConfig extends AppEngInternalInventory
 	}
 
 	@Override
-	public void markDirty()
+	protected void onContentsChanged( int slot )
 	{
 		this.writeToNBT( Platform.openNbtData( this.is ), "list" );
 	}

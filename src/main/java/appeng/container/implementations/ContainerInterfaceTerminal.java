@@ -26,10 +26,9 @@ import java.util.Map.Entry;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
@@ -49,9 +48,11 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.misc.TileInterface;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-import appeng.util.inv.AdaptorIInventory;
-import appeng.util.inv.AdaptorPlayerHand;
-import appeng.util.inv.WrapperInvSlot;
+import appeng.util.helpers.ItemHandlerUtil;
+import appeng.util.inv.AdaptorItemHandler;
+import appeng.util.inv.WrapperFilteredItemHandler;
+import appeng.util.inv.WrapperRangeItemHandler;
+import appeng.util.inv.filter.IAEItemFilter;
 
 
 public final class ContainerInterfaceTerminal extends AEBaseContainer
@@ -172,7 +173,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 			for( final Entry<IInterfaceHost, InvTracker> en : this.diList.entrySet() )
 			{
 				final InvTracker inv = en.getValue();
-				for( int x = 0; x < inv.server.getSizeInventory(); x++ )
+				for( int x = 0; x < inv.server.getSlots(); x++ )
 				{
 					if( this.isDifferent( inv.server.getStackInSlot( x ), inv.client.getStackInSlot( x ) ) )
 					{
@@ -206,12 +207,10 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 			final ItemStack is = inv.server.getStackInSlot( slot );
 			final boolean hasItemInHand = !player.inventory.getItemStack().isEmpty();
 
-			final InventoryAdaptor playerHand = new AdaptorPlayerHand( player );
+			final InventoryAdaptor playerHand = InventoryAdaptor.getAdaptor( player );
 
-			final WrapperInvSlot slotInv = new PatternInvSlot( inv.server );
-
-			final IInventory theSlot = slotInv.getWrapper( slot );
-			final InventoryAdaptor interfaceSlot = new AdaptorIInventory( theSlot );
+			final IItemHandler theSlot = new WrapperFilteredItemHandler( new WrapperRangeItemHandler( inv.server, slot, slot + 1 ), new PatternSlotFilter() );
+			final InventoryAdaptor interfaceSlot = new AdaptorItemHandler( theSlot );
 
 			switch( action )
 			{
@@ -229,7 +228,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 							inSlot = inSlot.copy();
 							final ItemStack inHand = player.inventory.getItemStack().copy();
 
-							theSlot.setInventorySlotContents( 0, ItemStack.EMPTY );
+							ItemHandlerUtil.setStackInSlot( theSlot, 0, ItemStack.EMPTY );
 							player.inventory.setItemStack( ItemStack.EMPTY );
 
 							player.inventory.setItemStack( interfaceSlot.addItems( inHand.copy() ) );
@@ -241,14 +240,13 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 							else
 							{
 								player.inventory.setItemStack( inHand );
-								theSlot.setInventorySlotContents( 0, inSlot );
+								ItemHandlerUtil.setStackInSlot( theSlot, 0, inSlot );
 							}
 						}
 					}
 					else
 					{
-						final IInventory mySlot = slotInv.getWrapper( slot );
-						mySlot.setInventorySlotContents( 0, playerHand.addItems( mySlot.getStackInSlot( 0 ) ) );
+						ItemHandlerUtil.setStackInSlot( theSlot, 0, playerHand.addItems( theSlot.getStackInSlot( 0 ) ) );
 					}
 
 					break;
@@ -282,17 +280,17 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 					break;
 				case SHIFT_CLICK:
 
-					final IInventory mySlot = slotInv.getWrapper( slot );
-					final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor( player, EnumFacing.UP );
-					mySlot.setInventorySlotContents( 0, playerInv.addItems( mySlot.getStackInSlot( 0 ) ) );
+					final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor( player );
+
+					ItemHandlerUtil.setStackInSlot( theSlot, 0, playerInv.addItems( theSlot.getStackInSlot( 0 ) ) );
 
 					break;
 				case MOVE_REGION:
 
-					final InventoryAdaptor playerInvAd = InventoryAdaptor.getAdaptor( player, EnumFacing.UP );
-					for( int x = 0; x < inv.server.getSizeInventory(); x++ )
+					final InventoryAdaptor playerInvAd = InventoryAdaptor.getAdaptor( player );
+					for( int x = 0; x < inv.server.getSlots(); x++ )
 					{
-						inv.server.setInventorySlotContents( x, playerInvAd.addItems( inv.server.getStackInSlot( x ) ) );
+						ItemHandlerUtil.setStackInSlot( inv.server, x, playerInvAd.addItems( inv.server.getStackInSlot( x ) ) );
 					}
 
 					break;
@@ -351,7 +349,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 		{
 			final InvTracker inv = en.getValue();
 			this.byId.put( inv.which, inv );
-			this.addItems( data, inv, 0, inv.server.getSizeInventory() );
+			this.addItems( data, inv, 0, inv.server.getSlots() );
 		}
 	}
 
@@ -388,7 +386,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 			final ItemStack is = inv.server.getStackInSlot( x + offset );
 
 			// "update" client side.
-			inv.client.setInventorySlotContents( x + offset, is.isEmpty() ? ItemStack.EMPTY : is.copy() );
+			ItemHandlerUtil.setStackInSlot( inv.client, x + offset, is.isEmpty() ? ItemStack.EMPTY : is.copy() );
 
 			if( !is.isEmpty() )
 			{
@@ -407,30 +405,30 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 		private final long sortBy;
 		private final long which = autoBase++;
 		private final String unlocalizedName;
-		private final IInventory client;
-		private final IInventory server;
+		private final IItemHandler client;
+		private final IItemHandler server;
 
-		public InvTracker( final DualityInterface dual, final IInventory patterns, final String unlocalizedName )
+		public InvTracker( final DualityInterface dual, final IItemHandler patterns, final String unlocalizedName )
 		{
 			this.server = patterns;
-			this.client = new AppEngInternalInventory( null, this.server.getSizeInventory() );
+			this.client = new AppEngInternalInventory( null, this.server.getSlots() );
 			this.unlocalizedName = unlocalizedName;
 			this.sortBy = dual.getSortValue();
 		}
 	}
 
-	private static class PatternInvSlot extends WrapperInvSlot
+	private static class PatternSlotFilter implements IAEItemFilter
 	{
-
-		public PatternInvSlot( final IInventory inv )
+		@Override
+		public boolean allowExtract( IItemHandler inv, int slot, int amount )
 		{
-			super( inv );
+			return true;
 		}
 
 		@Override
-		public boolean isItemValid( final ItemStack itemstack )
+		public boolean allowInsert( IItemHandler inv, int slot, ItemStack stack )
 		{
-			return !itemstack.isEmpty() && itemstack.getItem() instanceof ItemEncodedPattern;
+			return !stack.isEmpty() && stack.getItem() instanceof ItemEncodedPattern;
 		}
 	}
 }

@@ -24,7 +24,7 @@
 package appeng.api.implementations.guiobjects;
 
 
-import net.minecraft.inventory.IInventory;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.networking.IGridHost;
 
@@ -32,8 +32,9 @@ import appeng.api.networking.IGridHost;
 /**
  * Obtained via {@link IGuiItem} getGuiObject
  */
-public interface INetworkTool extends IInventory, IGuiItemObject
+public interface INetworkTool extends IGuiItemObject
 {
-
 	IGridHost getGridHost(); // null for most purposes.
+	
+	IItemHandler getInventory();
 }

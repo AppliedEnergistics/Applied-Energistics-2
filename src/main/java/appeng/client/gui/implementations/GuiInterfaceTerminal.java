@@ -119,7 +119,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			if( lineObj instanceof ClientDCInternalInv )
 			{
 				final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
-				for( int z = 0; z < inv.getInventory().getSizeInventory(); z++ )
+				for( int z = 0; z < inv.getInventory().getSlots(); z++ )
 				{
 					this.inventorySlots.inventorySlots.add( new SlotDisconnected( inv, z, z * 18 + 8, 1 + offset ) );
 				}
@@ -175,7 +175,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 				final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
 
 				GlStateManager.color( 1, 1, 1, 1 );
-				final int width = inv.getInventory().getSizeInventory() * 18;
+				final int width = inv.getInventory().getSlots() * 18;
 				this.drawTexturedModalRect( offsetX + 7, offsetY + offset, 7, 139, width, 18 );
 			}
 			offset += 18;
@@ -227,12 +227,12 @@ public class GuiInterfaceTerminal extends AEBaseGui
 					final NBTTagCompound invData = in.getCompoundTag( key );
 					final ClientDCInternalInv current = this.getById( id, invData.getLong( "sortBy" ), invData.getString( "un" ) );
 
-					for( int x = 0; x < current.getInventory().getSizeInventory(); x++ )
+					for( int x = 0; x < current.getInventory().getSlots(); x++ )
 					{
 						final String which = Integer.toString( x );
 						if( invData.hasKey( which ) )
 						{
-							current.getInventory().setInventorySlotContents( x, new ItemStack( invData.getCompoundTag( which ) ) );
+							current.getInventory().setStackInSlot( x, new ItemStack( invData.getCompoundTag( which ) ) );
 						}
 					}
 				}

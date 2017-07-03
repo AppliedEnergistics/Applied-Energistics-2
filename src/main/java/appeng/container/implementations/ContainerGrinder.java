@@ -20,6 +20,7 @@ package appeng.container.implementations;
 
 
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotInaccessible;
@@ -35,15 +36,17 @@ public class ContainerGrinder extends AEBaseContainer
 	{
 		super( ip, grinder, null );
 
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, grinder, 0, 12, 17, this.getInventoryPlayer() ) );
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, grinder, 1, 12 + 18, 17, this.getInventoryPlayer() ) );
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, grinder, 2, 12 + 36, 17, this.getInventoryPlayer() ) );
+		IItemHandler inv = grinder.getInternalInventory();
 
-		this.addSlotToContainer( new SlotInaccessible( grinder, 6, 80, 40 ) );
+		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, inv, 0, 12, 17, this.getInventoryPlayer() ) );
+		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, inv, 1, 12 + 18, 17, this.getInventoryPlayer() ) );
+		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, inv, 2, 12 + 36, 17, this.getInventoryPlayer() ) );
 
-		this.addSlotToContainer( new SlotOutput( grinder, 3, 112, 63, 2 * 16 + 15 ) );
-		this.addSlotToContainer( new SlotOutput( grinder, 4, 112 + 18, 63, 2 * 16 + 15 ) );
-		this.addSlotToContainer( new SlotOutput( grinder, 5, 112 + 36, 63, 2 * 16 + 15 ) );
+		this.addSlotToContainer( new SlotInaccessible( inv, 6, 80, 40 ) );
+
+		this.addSlotToContainer( new SlotOutput( inv, 3, 112, 63, 2 * 16 + 15 ) );
+		this.addSlotToContainer( new SlotOutput( inv, 4, 112 + 18, 63, 2 * 16 + 15 ) );
+		this.addSlotToContainer( new SlotOutput( inv, 5, 112 + 36, 63, 2 * 16 + 15 ) );
 
 		this.bindPlayerInventory( ip, 0, 176 - /* height of player inventory */82 );
 	}

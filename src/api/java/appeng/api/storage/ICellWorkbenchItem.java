@@ -24,8 +24,8 @@
 package appeng.api.storage;
 
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
 
@@ -48,7 +48,7 @@ public interface ICellWorkbenchItem
 	 *
 	 * onInventoryChange will be called when saving is needed.
 	 */
-	IInventory getUpgradesInventory( ItemStack is );
+	IItemHandler getUpgradesInventory( ItemStack is );
 
 	/**
 	 * Used to extract, or mirror the contents of the work bench onto the cell.
@@ -57,7 +57,7 @@ public interface ICellWorkbenchItem
 	 *
 	 * onInventoryChange will be called when saving is needed.
 	 */
-	IInventory getConfigInventory( ItemStack is );
+	IItemHandler getConfigInventory( ItemStack is );
 
 	/**
 	 * @return the current fuzzy status.

@@ -19,8 +19,8 @@
 package appeng.helpers;
 
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.BaseActionSource;
@@ -39,7 +39,7 @@ public interface IContainerCraftingPacket
 	 *
 	 * @return the inventory of the part/tile by name.
 	 */
-	IInventory getInventoryByName( String string );
+	IItemHandler getInventoryByName( String string );
 
 	/**
 	 * @return who are we?

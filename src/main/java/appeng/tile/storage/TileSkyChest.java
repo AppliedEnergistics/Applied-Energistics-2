@@ -23,59 +23,21 @@ import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.tile.AEBaseInvTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.inventory.InvOperation;
+import appeng.util.inv.InvOperation;
 
 
 public class TileSkyChest extends AEBaseInvTile implements ITickable
 {
 
-	private final int[] sides = {
-			0,
-			1,
-			2,
-			3,
-			4,
-			5,
-			6,
-			7,
-			8,
-			9,
-			10,
-			11,
-			12,
-			13,
-			14,
-			15,
-			16,
-			17,
-			18,
-			19,
-			20,
-			21,
-			22,
-			23,
-			24,
-			25,
-			26,
-			27,
-			28,
-			29,
-			30,
-			31,
-			32,
-			33,
-			34,
-			35 };
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 9 * 4 );
 	// server
 	private int numPlayersUsing;
@@ -117,12 +79,11 @@ public class TileSkyChest extends AEBaseInvTile implements ITickable
 	}
 
 	@Override
-	public IInventory getInternalInventory()
+	public IItemHandler getInternalInventory()
 	{
 		return this.inv;
 	}
 
-	@Override
 	public void openInventory( final EntityPlayer player )
 	{
 		if( !player.isSpectator() )
@@ -141,7 +102,6 @@ public class TileSkyChest extends AEBaseInvTile implements ITickable
 		}
 	}
 
-	@Override
 	public void closeInventory( final EntityPlayer player )
 	{
 		if( !player.isSpectator() )
@@ -203,15 +163,9 @@ public class TileSkyChest extends AEBaseInvTile implements ITickable
 	}
 
 	@Override
-	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
+	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
 
-	}
-
-	@Override
-	public int[] getAccessibleSlotsBySide( final EnumFacing side )
-	{
-		return this.sides;
 	}
 
 	public float getLidAngle()
@@ -253,12 +207,5 @@ public class TileSkyChest extends AEBaseInvTile implements ITickable
 	private void setLastEvent( final long lastEvent )
 	{
 		this.lastEvent = lastEvent;
-	}
-
-	@Override
-	public boolean isEmpty()
-	{
-		// TODO Auto-generated method stub
-		return false;
 	}
 }

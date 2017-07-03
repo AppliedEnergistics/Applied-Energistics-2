@@ -22,10 +22,10 @@ package appeng.parts.reporting;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -37,7 +37,7 @@ import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.inventory.InvOperation;
+import appeng.util.inv.InvOperation;
 
 
 public class PartPatternTerminal extends AbstractPartTerminal
@@ -120,7 +120,7 @@ public class PartPatternTerminal extends AbstractPartTerminal
 	}
 
 	@Override
-	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
+	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 		if( inv == this.pattern && slot == 1 )
 		{
@@ -134,16 +134,16 @@ public class PartPatternTerminal extends AbstractPartTerminal
 					this.setCraftingRecipe( details.isCraftable() );
 					this.setSubstitution( details.canSubstitute() );
 
-					for( int x = 0; x < this.crafting.getSizeInventory() && x < details.getInputs().length; x++ )
+					for( int x = 0; x < this.crafting.getSlots() && x < details.getInputs().length; x++ )
 					{
 						final IAEItemStack item = details.getInputs()[x];
-						this.crafting.setInventorySlotContents( x, item == null ? ItemStack.EMPTY : item.getItemStack() );
+						this.crafting.setStackInSlot( x, item == null ? ItemStack.EMPTY : item.getItemStack() );
 					}
 
-					for( int x = 0; x < this.output.getSizeInventory() && x < details.getOutputs().length; x++ )
+					for( int x = 0; x < this.output.getSlots() && x < details.getOutputs().length; x++ )
 					{
 						final IAEItemStack item = details.getOutputs()[x];
-						this.output.setInventorySlotContents( x, item == null ? ItemStack.EMPTY : item.getItemStack() );
+						this.output.setStackInSlot( x, item == null ? ItemStack.EMPTY : item.getItemStack() );
 					}
 				}
 			}
@@ -160,7 +160,7 @@ public class PartPatternTerminal extends AbstractPartTerminal
 	{
 		if( this.craftingMode )
 		{
-			for( int x = 0; x < this.crafting.getSizeInventory(); x++ )
+			for( int x = 0; x < this.crafting.getSlots(); x++ )
 			{
 				final ItemStack is = this.crafting.getStackInSlot( x );
 				if( !is.isEmpty() )
@@ -193,7 +193,7 @@ public class PartPatternTerminal extends AbstractPartTerminal
 	}
 
 	@Override
-	public IInventory getInventoryByName( final String name )
+	public IItemHandler getInventoryByName( final String name )
 	{
 		if( name.equals( "crafting" ) )
 		{

@@ -20,14 +20,14 @@ package appeng.container.slot;
 
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 
 public class SlotDisabled extends AppEngSlot
 {
 
-	public SlotDisabled( final IInventory par1iInventory, final int slotIndex, final int x, final int y )
+	public SlotDisabled( final IItemHandler par1iInventory, final int slotIndex, final int x, final int y )
 	{
 		super( par1iInventory, slotIndex, x, y );
 	}

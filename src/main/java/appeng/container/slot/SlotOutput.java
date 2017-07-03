@@ -19,14 +19,14 @@
 package appeng.container.slot;
 
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 
 public class SlotOutput extends AppEngSlot
 {
 
-	public SlotOutput( final IInventory a, final int b, final int c, final int d, final int i )
+	public SlotOutput( final IItemHandler a, final int b, final int c, final int d, final int i )
 	{
 		super( a, b, c, d );
 		this.setIIcon( i );

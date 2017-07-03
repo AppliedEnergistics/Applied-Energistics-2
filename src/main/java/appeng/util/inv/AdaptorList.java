@@ -41,6 +41,12 @@ public class AdaptorList extends InventoryAdaptor
 	}
 
 	@Override
+	public boolean hasSlots()
+	{
+		return !i.isEmpty();
+	}
+
+	@Override
 	public ItemStack removeItems( int amount, final ItemStack filter, final IInventoryDestination destination )
 	{
 		final int s = this.i.size();

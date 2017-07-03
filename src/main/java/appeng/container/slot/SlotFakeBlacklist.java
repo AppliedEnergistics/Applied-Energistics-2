@@ -19,13 +19,13 @@
 package appeng.container.slot;
 
 
-import net.minecraft.inventory.IInventory;
+import net.minecraftforge.items.IItemHandler;
 
 
 public class SlotFakeBlacklist extends SlotFakeTypeOnly
 {
 
-	public SlotFakeBlacklist( final IInventory inv, final int idx, final int x, final int y )
+	public SlotFakeBlacklist( final IItemHandler inv, final int idx, final int x, final int y )
 	{
 		super( inv, idx, x, y );
 	}

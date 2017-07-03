@@ -26,9 +26,9 @@ import javax.annotation.Nonnull;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.items.IItemHandler;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -64,7 +64,7 @@ public final class ChargerWailaDataProvider extends BaseWailaDataProvider
 		if( te instanceof TileCharger )
 		{
 			final TileCharger charger = (TileCharger) te;
-			final IInventory chargerInventory = charger.getInternalInventory();
+			final IItemHandler chargerInventory = charger.getInternalInventory();
 			final ItemStack chargingItem = chargerInventory.getStackInSlot( 0 );
 
 			if( !chargingItem.isEmpty() )

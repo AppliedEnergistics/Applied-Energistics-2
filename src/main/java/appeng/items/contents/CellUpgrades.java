@@ -37,7 +37,7 @@ public final class CellUpgrades extends StackUpgradeInventory
 	}
 
 	@Override
-	public void markDirty()
+	protected void onContentsChanged( int slot )
 	{
 		this.writeToNBT( Platform.openNbtData( this.is ), "upgrades" );
 	}

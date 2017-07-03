@@ -19,223 +19,119 @@
 package appeng.tile;
 
 
-import java.util.EnumMap;
+import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
-import net.minecraftforge.items.wrapper.SidedInvWrapper;
+import net.minecraftforge.items.wrapper.EmptyHandler;
 
-import appeng.block.AEBaseBlock;
 import appeng.tile.events.TileEventType;
-import appeng.tile.inventory.IAEAppEngInventory;
-import appeng.tile.inventory.InvOperation;
+import appeng.util.helpers.ItemHandlerUtil;
+import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InvOperation;
 
 
-public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventory, IAEAppEngInventory
+public abstract class AEBaseInvTile extends AEBaseTile implements IAEAppEngInventory
 {
-
-	private EnumMap<EnumFacing, IItemHandler> sidedItemHandler = new EnumMap<>( EnumFacing.class );
-
-	private IItemHandler itemHandler;
-
-	@Override
-	public String getName()
-	{
-		return this.getCustomInventoryName();
-	}
 
 	@TileEvent( TileEventType.WORLD_NBT_READ )
 	public void readFromNBT_AEBaseInvTile( final net.minecraft.nbt.NBTTagCompound data )
 	{
-		final IInventory inv = this.getInternalInventory();
-		final NBTTagCompound opt = data.getCompoundTag( "inv" );
-		for( int x = 0; x < inv.getSizeInventory(); x++ )
+		final IItemHandler inv = this.getInternalInventory();
+		if( inv != EmptyHandler.INSTANCE )
 		{
-			final NBTTagCompound item = opt.getCompoundTag( "item" + x );
-			inv.setInventorySlotContents( x, new ItemStack( item ) );
+			final NBTTagCompound opt = data.getCompoundTag( "inv" );
+			for( int x = 0; x < inv.getSlots(); x++ )
+			{
+				final NBTTagCompound item = opt.getCompoundTag( "item" + x );
+				ItemHandlerUtil.setStackInSlot( inv, x, new ItemStack( item ) );
+			}
 		}
 	}
 
-	public abstract IInventory getInternalInventory();
+	public abstract @Nonnull IItemHandler getInternalInventory();
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
 	public void writeToNBT_AEBaseInvTile( final net.minecraft.nbt.NBTTagCompound data )
 	{
-		final IInventory inv = this.getInternalInventory();
-		final NBTTagCompound opt = new NBTTagCompound();
-		for( int x = 0; x < inv.getSizeInventory(); x++ )
+		final IItemHandler inv = this.getInternalInventory();
+		if( inv != EmptyHandler.INSTANCE )
 		{
-			final NBTTagCompound item = new NBTTagCompound();
-			final ItemStack is = this.getStackInSlot( x );
+			final NBTTagCompound opt = new NBTTagCompound();
+			for( int x = 0; x < inv.getSlots(); x++ )
+			{
+				final NBTTagCompound item = new NBTTagCompound();
+				final ItemStack is = inv.getStackInSlot( x );
+				if( !is.isEmpty() )
+				{
+					is.writeToNBT( item );
+				}
+				opt.setTag( "item" + x, item );
+			}
+			data.setTag( "inv", opt );
+		}
+	}
+
+	@Override
+	public void getDrops( final World w, final BlockPos pos, final List<ItemStack> drops )
+	{
+		final IItemHandler inv = getInternalInventory();
+
+		for( int l = 0; l < inv.getSlots(); l++ )
+		{
+			final ItemStack is = inv.getStackInSlot( l );
 			if( !is.isEmpty() )
 			{
-				is.writeToNBT( item );
+				drops.add( is );
 			}
-			opt.setTag( "item" + x, item );
 		}
-		data.setTag( "inv", opt );
 	}
 
 	@Override
-	public int getSizeInventory()
-	{
-		return this.getInternalInventory().getSizeInventory();
-	}
-
-	@Override
-	public ItemStack getStackInSlot( final int i )
-	{
-		return this.getInternalInventory().getStackInSlot( i );
-	}
-
-	@Override
-	public ItemStack decrStackSize( final int i, final int j )
-	{
-		return this.getInternalInventory().decrStackSize( i, j );
-	}
-
-	@Override
-	public ItemStack removeStackFromSlot( final int i )
-	{
-		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public void setInventorySlotContents( final int i, @Nullable final ItemStack itemstack )
-	{
-		this.getInternalInventory().setInventorySlotContents( i, itemstack );
-	}
-
-	/**
-	 * Returns if the inventory is named
-	 */
-	@Override
-	public boolean hasCustomInventoryName()
-	{
-		return super.hasCustomInventoryName();
-	}
-
-	@Override
-	public boolean hasCustomName()
-	{
-		return this.hasCustomInventoryName();
-	}
-
-	@Override
-	public int getInventoryStackLimit()
-	{
-		return 64;
-	}
-
-	@Override
-	public boolean isUsableByPlayer( final EntityPlayer p )
-	{
-		final double squaredMCReach = 64.0D;
-
-		return this.world.getTileEntity( this.pos ) == this && p.getDistanceSq( this.pos.getX() + 0.5D, this.pos.getY() + 0.5D,
-				this.pos.getZ() + 0.5D ) <= squaredMCReach;
-	}
-
-	@Override
-	public void openInventory( final EntityPlayer player )
-	{
-
-	}
-
-	;
-
-	@Override
-	public void closeInventory( final EntityPlayer player )
-	{
-
-	}
-
-	@Override
-	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
-	{
-		return true;
-	}
-
-	@Override
-	public abstract void onChangeInventory( IInventory inv, int slot, InvOperation mc, ItemStack removed, ItemStack added );
-
-	@Override
-	public int[] getSlotsForFace( final EnumFacing side )
-	{
-		final Block blk = this.world.getBlockState( this.pos ).getBlock();
-		if( blk instanceof AEBaseBlock )
-		{
-			return this.getAccessibleSlotsBySide( ( (AEBaseBlock) blk ).mapRotation( this, side ) );
-		}
-		return this.getAccessibleSlotsBySide( side );
-	}
-
-	@Override
-	public boolean canInsertItem( final int slotIndex, final ItemStack insertingItem, final EnumFacing side )
-	{
-		return this.isItemValidForSlot( slotIndex, insertingItem );
-	}
-
-	@Override
-	public boolean canExtractItem( final int slotIndex, final ItemStack extractedItem, final EnumFacing side )
-	{
-		return true;
-	}
-
-	@Override
-	public void clear()
-	{
-		this.getInternalInventory().clear();
-	}
-
-	@Override
-	public int getField( final int id )
-	{
-		return 0;
-	}
-
-	@Override
-	public void setField( final int id, final int value )
-	{
-
-	}
-
-	@Override
-	public int getFieldCount()
-	{
-		return 0;
-	}
+	public abstract void onChangeInventory( IItemHandler inv, int slot, InvOperation mc, ItemStack removed, ItemStack added );
 
 	@Override
 	public ITextComponent getDisplayName()
 	{
-		if( this.hasCustomName() )
+		if( this.hasCustomInventoryName() )
 		{
 			return new TextComponentString( this.getCustomInventoryName() );
 		}
 		return new TextComponentTranslation( this.getBlockType().getUnlocalizedName() );
 	}
 
-	public abstract int[] getAccessibleSlotsBySide( EnumFacing whichSide );
+	protected @Nonnull IItemHandler getItemHandlerForSide( @Nonnull EnumFacing side )
+	{
+		return getInternalInventory();
+	}
 
 	@Override
 	public boolean hasCapability( Capability<?> capability, EnumFacing facing )
 	{
-		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability( capability, facing );
+		if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
+		{
+			if( facing == null )
+			{
+				return getInternalInventory() != EmptyHandler.INSTANCE;
+			}
+			else
+			{
+				return getItemHandlerForSide( facing ) != EmptyHandler.INSTANCE;
+			}
+		}
+		return super.hasCapability( capability, facing );
 	}
 
 	@SuppressWarnings( "unchecked" )
@@ -246,15 +142,11 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 		{
 			if( facing == null )
 			{
-				if( this.itemHandler == null )
-				{
-					this.itemHandler = new InvWrapper( this.getInternalInventory() );
-				}
-				return (T) this.itemHandler;
+				return (T) getInternalInventory();
 			}
 			else
 			{
-				return (T) this.sidedItemHandler.computeIfAbsent( facing, side -> new SidedInvWrapper( this, side ) );
+				return (T) getItemHandlerForSide( facing );
 			}
 		}
 		return super.getCapability( capability, facing );

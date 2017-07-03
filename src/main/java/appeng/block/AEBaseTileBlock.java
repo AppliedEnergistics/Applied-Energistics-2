@@ -34,8 +34,6 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -48,6 +46,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
@@ -56,6 +55,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.IOrientable;
 import appeng.block.networking.BlockCableBus;
 import appeng.helpers.ICustomCollision;
+import appeng.tile.AEBaseInvTile;
 import appeng.tile.AEBaseTile;
 import appeng.tile.networking.TileCableBus;
 import appeng.tile.storage.TileSkyChest;
@@ -115,7 +115,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	public void setTileEntity( final Class<? extends AEBaseTile> c )
 	{
 		this.tileEntityType = c;
-		this.setInventory( IInventory.class.isAssignableFrom( c ) );
+		this.setInventory( AEBaseInvTile.class.isAssignableFrom( c ) );
 	}
 
 	@Override
@@ -241,9 +241,13 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	public int getComparatorInputOverride( IBlockState state, final World w, final BlockPos pos )
 	{
 		final TileEntity te = this.getTileEntity( w, pos );
-		if( te instanceof IInventory )
+		if( te instanceof AEBaseInvTile )
 		{
-			return Container.calcRedstoneFromInventory( (IInventory) te );
+			AEBaseInvTile invTile = (AEBaseInvTile) te;
+			if( invTile.getInternalInventory().getSlots() > 0 )
+			{
+				return ItemHandlerHelper.calcRedstoneFromInventory( invTile.getInternalInventory() );
+			}
 		}
 		return 0;
 	}

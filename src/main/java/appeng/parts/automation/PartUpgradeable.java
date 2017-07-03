@@ -21,17 +21,17 @@ package appeng.parts.automation;
 
 import java.util.List;
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
 import appeng.api.util.IConfigManager;
 import appeng.parts.PartBasicState;
-import appeng.tile.inventory.IAEAppEngInventory;
-import appeng.tile.inventory.InvOperation;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
+import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InvOperation;
 
 
 public abstract class PartUpgradeable extends PartBasicState implements IAEAppEngInventory, IConfigManagerHost
@@ -59,7 +59,7 @@ public abstract class PartUpgradeable extends PartBasicState implements IAEAppEn
 	}
 
 	@Override
-	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
+	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 		if( inv == this.upgrades )
 		{
@@ -155,7 +155,7 @@ public abstract class PartUpgradeable extends PartBasicState implements IAEAppEn
 	}
 
 	@Override
-	public IInventory getInventoryByName( final String name )
+	public IItemHandler getInventoryByName( final String name )
 	{
 		if( name.equals( "upgrades" ) )
 		{

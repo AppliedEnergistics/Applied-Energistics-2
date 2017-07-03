@@ -38,7 +38,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -51,6 +50,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.config.Upgrades;
@@ -68,6 +68,7 @@ import appeng.core.features.MaterialStackSrc;
 import appeng.items.AEBaseItem;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+import appeng.util.inv.AdaptorItemHandler;
 
 
 public final class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule
@@ -289,7 +290,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 		if( player.isSneaking() )
 		{
 			final TileEntity te = world.getTileEntity( pos );
-			IInventory upgrades = null;
+			IItemHandler upgrades = null;
 
 			if( te instanceof IPartHost )
 			{
@@ -311,17 +312,14 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 
 				if( u != null )
 				{
-					final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( upgrades, EnumFacing.UP );
-					if( ad != null )
+					if( player.world.isRemote )
 					{
-						if( player.world.isRemote )
-						{
-							return EnumActionResult.PASS;
-						}
-
-						player.inventory.setInventorySlotContents( player.inventory.currentItem, ad.addItems( player.getHeldItem( hand ) ) );
-						return EnumActionResult.SUCCESS;
+						return EnumActionResult.PASS;
 					}
+
+					final InventoryAdaptor ad = new AdaptorItemHandler( upgrades );
+					player.inventory.setInventorySlotContents( player.inventory.currentItem, ad.addItems( player.getHeldItem( hand ) ) );
+					return EnumActionResult.SUCCESS;
 				}
 			}
 		}

@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FullnessMode;
 import appeng.api.config.OperationMode;
@@ -59,7 +59,7 @@ public class ContainerIOPort extends ContainerUpgradeable
 		int offX = 19;
 		int offY = 17;
 
-		final IInventory cells = this.getUpgradeable().getInventoryByName( "cells" );
+		final IItemHandler cells = this.getUpgradeable().getInventoryByName( "cells" );
 
 		for( int y = 0; y < 3; y++ )
 		{
@@ -82,7 +82,7 @@ public class ContainerIOPort extends ContainerUpgradeable
 			}
 		}
 
-		final IInventory upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
+		final IItemHandler upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
 		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getInventoryPlayer() ) )
 				.setNotDraggable() );
 		this.addSlotToContainer(

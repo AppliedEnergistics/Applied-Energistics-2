@@ -33,8 +33,6 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -49,7 +47,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.items.wrapper.RangedWrapper;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -97,15 +95,14 @@ import appeng.parts.automation.StackUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.inventory.IAEAppEngInventory;
-import appeng.tile.inventory.InvOperation;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-import appeng.util.inv.AdaptorIInventory;
+import appeng.util.inv.AdaptorItemHandler;
+import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.IInventoryDestination;
-import appeng.util.inv.WrapperInvSlot;
+import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
 
 
@@ -117,7 +114,6 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	public static final int NUMBER_OF_PATTERN_SLOTS = 9;
 
 	private static final Collection<Block> BAD_BLOCKS = new HashSet<>( 100 );
-	private final int[] sides = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 	private final IAEItemStack[] requireWork = { null, null, null, null, null, null, null, null, null };
 	private final MultiCraftingTracker craftingTracker;
 	private final AENetworkProxy gridProxy;
@@ -128,7 +124,6 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	private final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, NUMBER_OF_CONFIG_SLOTS );
 	private final AppEngInternalInventory storage = new AppEngInternalInventory( this, NUMBER_OF_STORAGE_SLOTS );
 	private final AppEngInternalInventory patterns = new AppEngInternalInventory( this, NUMBER_OF_PATTERN_SLOTS );
-	private final WrapperInvSlot slotInv = new WrapperInvSlot( this.storage );
 	private final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<>( new NullInventory<IAEItemStack>(), StorageChannel.ITEMS );
 	private final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<>( new NullInventory<IAEFluidStack>(), StorageChannel.FLUIDS );
 	private final UpgradeInventory upgrades;
@@ -138,7 +133,6 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	private List<ItemStack> waitingToSend = null;
 	private IMEInventory<IAEItemStack> destination;
 	private boolean isWorking = false;
-	private IItemHandler itemHandler = null;
 	private final Accessor accessor = new Accessor();
 
 	public DualityInterface( final AENetworkProxy networkProxy, final IInterfaceHost ih )
@@ -168,7 +162,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	}
 
 	@Override
-	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
+	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
 		if( this.isWorking )
 		{
@@ -335,7 +329,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	{
 		final Boolean[] accountedFor = { false, false, false, false, false, false, false, false, false }; // 9...
 
-		assert ( accountedFor.length == this.patterns.getSizeInventory() );
+		assert ( accountedFor.length == this.patterns.getSlots() );
 
 		if( !this.gridProxy.isReady() )
 		{
@@ -409,7 +403,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		IAEItemStack req = this.config.getAEStackInSlot( slot );
 		if( req != null && req.getStackSize() <= 0 )
 		{
-			this.config.setInventorySlotContents( slot, ItemStack.EMPTY );
+			this.config.setStackInSlot( slot, ItemStack.EMPTY );
 			req = null;
 		}
 
@@ -517,12 +511,12 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		// return after.stackSize != stack.stackSize;
 	}
 
-	public IInventory getConfig()
+	public IItemHandler getConfig()
 	{
 		return this.config;
 	}
 
-	public IInventory getPatterns()
+	public IItemHandler getPatterns()
 	{
 		return this.patterns;
 	}
@@ -553,22 +547,17 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		return new DimensionalCoord( this.iHost.getTileEntity() );
 	}
 
-	public IInventory getInternalInventory()
+	public IItemHandler getInternalInventory()
 	{
 		return this.storage;
 	}
 
 	public void markDirty()
 	{
-		for( int slot = 0; slot < this.storage.getSizeInventory(); slot++ )
+		for( int slot = 0; slot < this.storage.getSlots(); slot++ )
 		{
-			this.onChangeInventory( this.storage, slot, InvOperation.markDirty, ItemStack.EMPTY, ItemStack.EMPTY );
+			this.storage.markDirty( slot );
 		}
-	}
-
-	public int[] getSlotsForFace( final EnumFacing side )
-	{
-		return this.sides;
 	}
 
 	@Override
@@ -759,7 +748,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	private InventoryAdaptor getAdaptor( final int slot )
 	{
-		return new AdaptorIInventory( this.slotInv.getWrapper( slot ) );
+		return new AdaptorItemHandler( new RangedWrapper( this.storage, slot, slot + 1 ) );
 	}
 
 	private boolean handleCrafting( final int x, final InventoryAdaptor d, final IAEItemStack itemStack )
@@ -813,7 +802,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	}
 
 	@Override
-	public IInventory getInventoryByName( final String name )
+	public IItemHandler getInventoryByName( final String name )
 	{
 		if( name.equals( "storage" ) )
 		{
@@ -838,7 +827,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		return null;
 	}
 
-	public IInventory getStorage()
+	public IItemHandler getStorage()
 	{
 		return this.storage;
 	}
@@ -1185,19 +1174,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor( directedTile, direction.getOpposite() );
 			if( directedTile instanceof ICraftingMachine || adaptor != null )
 			{
-				if( directedTile instanceof IInventory && ( (IInventory) directedTile ).getSizeInventory() == 0 )
+				if( adaptor != null && !adaptor.hasSlots() )
 				{
 					continue;
-				}
-
-				if( directedTile instanceof ISidedInventory )
-				{
-					final int[] sides = ( (ISidedInventory) directedTile ).getSlotsForFace( direction.getOpposite() );
-
-					if( sides == null || sides.length == 0 )
-					{
-						continue;
-					}
 				}
 
 				final IBlockState directedBlockState = hostWorld.getBlockState( targ );
@@ -1285,11 +1264,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	{
 		if( capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
 		{
-			if( this.itemHandler == null )
-			{
-				this.itemHandler = new InvWrapper( this.storage );
-			}
-			return (T) this.itemHandler;
+			return (T) storage;
 		}
 		else if( capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR )
 		{
@@ -1312,7 +1287,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 		public InterfaceInventory( final DualityInterface tileInterface )
 		{
-			super( new AdaptorIInventory( tileInterface.storage ) );
+			super( new AdaptorItemHandler( tileInterface.storage ) );
 			this.setActionSource( new MachineSource( DualityInterface.this.iHost ) );
 		}
 

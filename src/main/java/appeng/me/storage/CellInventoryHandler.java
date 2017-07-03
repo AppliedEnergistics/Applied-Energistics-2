@@ -19,9 +19,9 @@
 package appeng.me.storage;
 
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
@@ -52,14 +52,14 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 		{
 			final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
 
-			final IInventory upgrades = ci.getUpgradesInventory();
-			final IInventory config = ci.getConfigInventory();
+			final IItemHandler upgrades = ci.getUpgradesInventory();
+			final IItemHandler config = ci.getConfigInventory();
 			final FuzzyMode fzMode = ci.getFuzzyMode();
 
 			boolean hasInverter = false;
 			boolean hasFuzzy = false;
 
-			for( int x = 0; x < upgrades.getSizeInventory(); x++ )
+			for( int x = 0; x < upgrades.getSlots(); x++ )
 			{
 				final ItemStack is = upgrades.getStackInSlot( x );
 				if( !is.isEmpty() && is.getItem() instanceof IUpgradeModule )
@@ -81,7 +81,7 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 				}
 			}
 
-			for( int x = 0; x < config.getSizeInventory(); x++ )
+			for( int x = 0; x < config.getSlots(); x++ )
 			{
 				final ItemStack is = config.getStackInSlot( x );
 				if( !is.isEmpty() )

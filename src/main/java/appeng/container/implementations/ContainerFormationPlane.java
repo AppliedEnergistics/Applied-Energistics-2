@@ -20,7 +20,7 @@ package appeng.container.implementations;
 
 
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.SecurityPermissions;
@@ -58,7 +58,7 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 		final int xo = 8;
 		final int yo = 23 + 6;
 
-		final IInventory config = this.getUpgradeable().getInventoryByName( "config" );
+		final IItemHandler config = this.getUpgradeable().getInventoryByName( "config" );
 		for( int y = 0; y < 7; y++ )
 		{
 			for( int x = 0; x < 9; x++ )
@@ -74,7 +74,7 @@ public class ContainerFormationPlane extends ContainerUpgradeable
 			}
 		}
 
-		final IInventory upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
+		final IItemHandler upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
 		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getInventoryPlayer() ) )
 				.setNotDraggable() );
 		this.addSlotToContainer(

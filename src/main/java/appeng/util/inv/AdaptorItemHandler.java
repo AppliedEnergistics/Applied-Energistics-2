@@ -39,6 +39,12 @@ public class AdaptorItemHandler extends InventoryAdaptor
 	}
 
 	@Override
+	public boolean hasSlots()
+	{
+		return itemHandler.getSlots() > 0;
+	}
+
+	@Override
 	public ItemStack removeItems( int amount, ItemStack filter, IInventoryDestination destination )
 	{
 		int slots = this.itemHandler.getSlots();
