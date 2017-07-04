@@ -225,14 +225,17 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		initCallbacks.forEach( consumer -> factory.addInit( side -> consumer.accept( block, item ) ) );
 		postInitCallbacks.forEach( consumer -> factory.addPostInit( side -> consumer.accept( block, item ) ) );
 
+
+		if ( teClass != null && block instanceof AEBaseTileBlock )
+		{
+			((AEBaseTileBlock) block).setTileEntity( teClass );
+		}
+
 		if( Platform.isClient() )
 		{
 			if( block instanceof AEBaseTileBlock )
 			{
 				AEBaseTileBlock tileBlock = (AEBaseTileBlock) block;
-				// Fallback?
-				if ( teClass != null )
-					tileBlock.setTileEntity( teClass );
 				blockRendering.apply( factory, block, tileBlock.getTileEntityClass() );
 			}
 			else
@@ -248,15 +251,8 @@ class BlockDefinitionBuilder implements IBlockBuilder
 
 		if( block instanceof AEBaseTileBlock )
 		{
-			AEBaseTileBlock tileBlock = (AEBaseTileBlock) block;
-			if( teClass != null )
-				tileBlock.setTileEntity( teClass );
-
 			factory.addPreInit( side -> {
 				AEBaseTile.registerTileItem( teClass, new BlockStackSrc( block, 0, ActivityState.Enabled ) );
-
-				// TODO: Change after transition phase
-				GameRegistry.registerTileEntity( teClass, AppEng.MOD_ID.toLowerCase() + ":" + registryName);
 			} );
 
 			return (T) new TileDefinition( registryName, (AEBaseTileBlock) block, item );

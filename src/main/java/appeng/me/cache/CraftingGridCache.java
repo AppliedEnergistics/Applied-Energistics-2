@@ -305,27 +305,17 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	{
 		this.craftingCPUClusters.clear();
 
-		IMachineSet machineSets[] = new IMachineSet[4]; // 4 because we have 4 types of Storage Tiles ATM.
-
-		machineSets[0] = this.grid.getMachines( TileCraftingStorageTile.TileCraftingStorageTile1k.class );
-		machineSets[1] = this.grid.getMachines( TileCraftingStorageTile.TileCraftingStorageTile4k.class );
-		machineSets[2] = this.grid.getMachines( TileCraftingStorageTile.TileCraftingStorageTile16k.class );
-		machineSets[3] = this.grid.getMachines( TileCraftingStorageTile.TileCraftingStorageTile64k.class );
-
-		for ( IMachineSet ms : machineSets )
+		for( final IGridNode cst : this.grid.getMachines( TileCraftingStorageTile.class ) )
 		{
-			for( final IGridNode cst : ms )
+			final TileCraftingStorageTile tile = (TileCraftingStorageTile) cst.getMachine();
+			final CraftingCPUCluster cluster = (CraftingCPUCluster) tile.getCluster();
+			if( cluster != null )
 			{
-				final TileCraftingStorageTile tile = (TileCraftingStorageTile) cst.getMachine();
-				final CraftingCPUCluster cluster = (CraftingCPUCluster) tile.getCluster();
-				if( cluster != null )
-				{
-					this.craftingCPUClusters.add( cluster );
+				this.craftingCPUClusters.add( cluster );
 
-					if( cluster.getLastCraftingLink() != null )
-					{
-						this.addLink( (CraftingLink) cluster.getLastCraftingLink() );
-					}
+				if( cluster.getLastCraftingLink() != null )
+				{
+					this.addLink( (CraftingLink) cluster.getLastCraftingLink() );
 				}
 			}
 		}

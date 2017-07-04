@@ -387,13 +387,11 @@ public class BlockCableBus extends AEBaseTileBlock
 		noTesrTile = Api.INSTANCE.partHelper().getCombinedInstance( TileCableBus.class );
 		this.setTileEntity( noTesrTile );
 
+		GameRegistry.registerTileEntity( noTesrTile, AppEng.MOD_ID.toLowerCase() + ":" + "BlockCableBus" );
+
 		if( Platform.isClient() )
 		{
 			setupTesr();
-		}
-		else
-		{
-			GameRegistry.registerTileEntity( noTesrTile, AppEng.MOD_ID.toLowerCase() + ":" + "BlockCableBus" );
 		}
 	}
 

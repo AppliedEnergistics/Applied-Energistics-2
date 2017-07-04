@@ -19,6 +19,7 @@
 package appeng.core.api.definitions;
 
 
+import appeng.core.AELog;
 import appeng.debug.TileChunkLoader;
 import appeng.debug.TileCubeGenerator;
 import appeng.debug.TileItemGen;
@@ -63,7 +64,9 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemSlab;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
@@ -153,6 +156,9 @@ import appeng.decorative.solid.BlockSkyStone.SkystoneType;
 import appeng.decorative.stair.BlockStairCommon;
 import appeng.hooks.DispenserBehaviorTinyTNT;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Internal implementation for the API blocks
@@ -234,6 +240,22 @@ public final class ApiBlocks implements IBlocks
 	private final IBlockDefinition phantomNode;
 	private final IBlockDefinition cubeGenerator;
 
+//	private List<Class<? extends TileEntity>> registeredClasses = new ArrayList<Class<? extends TileEntity>>();
+
+	private void registerTileEntity( Class<? extends TileEntity> teClass, String name )
+	{
+//		if(this.registeredClasses.contains( teClass ) )
+//		{
+//			AELog.debug( "Already registered " + teClass.getName() +" to Forge!" );
+//			return;
+//		}
+//
+//		registeredClasses.add(teClass);
+
+		GameRegistry.registerTileEntity( teClass, AppEng.MOD_ID.toLowerCase() + ":" + name);
+
+	}
+
 	public ApiBlocks( FeatureFactory registry, PartModels partModels )
 	{
 		// this.quartzOre = new BlockDefinition( "ore.quartz", new OreQuartz() );
@@ -286,12 +308,12 @@ public final class ApiBlocks implements IBlocks
 
 		this.skyStoneChest = registry.block( "sky_stone_chest", () -> new BlockSkyChest( SkyChestType.STONE ) )
 				.features( AEFeature.SKY_STONE_CHESTS )
-				.tileEntity( TileSkyChest.TileSkyChestStone.class )
+				.tileEntity( TileSkyChest.class )
 				.rendering( new SkyChestRenderingCustomizer( SkyChestType.STONE ) )
 				.build();
 		this.smoothSkyStoneChest = registry.block( "smooth_sky_stone_chest", () -> new BlockSkyChest( SkyChestType.BLOCK ) )
 				.features( AEFeature.SKY_STONE_CHESTS )
-				.tileEntity( TileSkyChest.TileSkyChestSmooth.class )
+				.tileEntity( TileSkyChest.class )
 				.rendering( new SkyChestRenderingCustomizer( SkyChestType.BLOCK ) )
 				.build();
 
@@ -343,12 +365,12 @@ public final class ApiBlocks implements IBlocks
 				.build();
 		this.quantumRing = registry.block( "quantum_ring", BlockQuantumRing::new )
 				.features( AEFeature.QUANTUM_NETWORK_BRIDGE )
-				.tileEntity( TileQuantumBridge.TileQuantumBridgeRing.class )
+				.tileEntity( TileQuantumBridge.class )
 				.rendering( new QuantumBridgeRendering() )
 				.build();
 		this.quantumLink = registry.block( "quantum_link", BlockQuantumLinkChamber::new )
 				.features( AEFeature.QUANTUM_NETWORK_BRIDGE )
-				.tileEntity( TileQuantumBridge.TileQuantumBridgeGlass.class )
+				.tileEntity( TileQuantumBridge.class )
 				.rendering( new QuantumBridgeRendering() )
 				.build();
 		this.spatialPylon = registry.block( "spatial_pylon", BlockSpatialPylon::new )
@@ -412,30 +434,30 @@ public final class ApiBlocks implements IBlocks
 				.build();
 		this.craftingAccelerator = crafting.block( "crafting_accelerator", () -> new BlockCraftingUnit( CraftingUnitType.ACCELERATOR ) )
 				.rendering( new CraftingCubeRendering( "crafting_accelerator", CraftingUnitType.ACCELERATOR ) )
-				.tileEntity( TileCraftingTile.TileCraftingTileAccelerator.class )
+				.tileEntity( TileCraftingTile.class )
 				.useCustomItemModel()
 				.build();
 		this.craftingStorage1k = crafting.block( "crafting_storage_1k", () -> new BlockCraftingStorage( CraftingUnitType.STORAGE_1K ) )
 				.item( ItemCraftingStorage::new )
-				.tileEntity( TileCraftingStorageTile.TileCraftingStorageTile1k.class )
+				.tileEntity( TileCraftingStorageTile.class )
 				.rendering( new CraftingCubeRendering( "crafting_storage_1k", CraftingUnitType.STORAGE_1K ) )
 				.useCustomItemModel()
 				.build();
 		this.craftingStorage4k = crafting.block( "crafting_storage_4k", () -> new BlockCraftingStorage( CraftingUnitType.STORAGE_4K ) )
 				.item( ItemCraftingStorage::new )
-				.tileEntity( TileCraftingStorageTile.TileCraftingStorageTile4k.class )
+				.tileEntity( TileCraftingStorageTile.class )
 				.rendering( new CraftingCubeRendering( "crafting_storage_4k", CraftingUnitType.STORAGE_4K ) )
 				.useCustomItemModel()
 				.build();
 		this.craftingStorage16k = crafting.block( "crafting_storage_16k", () -> new BlockCraftingStorage( CraftingUnitType.STORAGE_16K ) )
 				.item( ItemCraftingStorage::new )
-				.tileEntity( TileCraftingStorageTile.TileCraftingStorageTile16k.class )
+				.tileEntity( TileCraftingStorageTile.class )
 				.rendering( new CraftingCubeRendering( "crafting_storage_16k", CraftingUnitType.STORAGE_16K ) )
 				.useCustomItemModel()
 				.build();
 		this.craftingStorage64k = crafting.block( "crafting_storage_64k", () -> new BlockCraftingStorage( CraftingUnitType.STORAGE_64K ) )
 				.item( ItemCraftingStorage::new )
-				.tileEntity( TileCraftingStorageTile.TileCraftingStorageTile64k.class )
+				.tileEntity( TileCraftingStorageTile.class )
 				.rendering( new CraftingCubeRendering( "crafting_storage_64k", CraftingUnitType.STORAGE_64K ) )
 				.useCustomItemModel()
 				.build();
@@ -468,7 +490,8 @@ public final class ApiBlocks implements IBlocks
 
 		this.multiPart = registry.block( "cable_bus", BlockCableBus::new )
 				.rendering( new CableBusRendering( partModels ) )
-				.tileEntity( TileCableBus.class )
+				// (handled in BlockCableBus.java and its setupTile())
+				// .tileEntity( TileCableBus.class )
 				.postInit( ( block, item ) ->
 				{
 					( (BlockCableBus) block ).setupTile();
@@ -504,6 +527,44 @@ public final class ApiBlocks implements IBlocks
 				.tileEntity( TileCubeGenerator.class )
 				.useCustomItemModel()
 				.build();
+
+
+		this.registerTileEntity( TileSkyChest.class, "sky_stone_chest" );
+		this.registerTileEntity( TileSkyCompass.class, "sky_compass" );
+		this.registerTileEntity( TileGrinder.class, "grindstone" );
+		this.registerTileEntity( TileCrank.class, "crank" );
+		this.registerTileEntity( TileInscriber.class, "inscriber" );
+		this.registerTileEntity( TileWireless.class, "wireless_access_point" );
+		this.registerTileEntity( TileCharger.class, "charger" );
+		this.registerTileEntity( TileSecurityStation.class, "security_station" );
+		this.registerTileEntity( TileQuantumBridge.class, "quantum_ring" );
+		this.registerTileEntity( TileSpatialPylon.class, "spatial_pylon" );
+		this.registerTileEntity( TileSpatialIOPort.class, "spatial_io_port" );
+		this.registerTileEntity( TileController.class, "controller" );
+		this.registerTileEntity( TileDrive.class, "drive" );
+		this.registerTileEntity( TileChest.class, "chest" );
+		this.registerTileEntity( TileInterface.class, "interface" );
+		this.registerTileEntity( TileCellWorkbench.class, "cell_workbench" );
+		this.registerTileEntity( TileIOPort.class, "io_port" );
+		this.registerTileEntity( TileCondenser.class, "condenser" );
+		this.registerTileEntity( TileEnergyAcceptor.class, "energy_acceptor" );
+		this.registerTileEntity( TileVibrationChamber.class, "vibration_chamber" );
+		this.registerTileEntity( TileQuartzGrowthAccelerator.class, "quartz_growth_accelerator" );
+		this.registerTileEntity( TileEnergyCell.class, "energy_cell" );
+		this.registerTileEntity( TileDenseEnergyCell.class, "dense_energy_cell" );
+		this.registerTileEntity( TileCreativeEnergyCell.class, "creative_energy_cell" );
+		this.registerTileEntity( TileCraftingTile.class, "crafting_unit" );
+		this.registerTileEntity( TileCraftingStorageTile.class, "crafting_storage" );
+		this.registerTileEntity( TileCraftingMonitorTile.class, "crafting_monitor" );
+		this.registerTileEntity( TileMolecularAssembler.class, "molecular_assembler" );
+		this.registerTileEntity( TileLightDetector.class, "light_detector" );
+		this.registerTileEntity( TilePaint.class, "paint" );
+		// This is handled by TileCableBus.java
+		// this.registerTileEntity( TileCableBus.class, "cable_bus" );
+		this.registerTileEntity( TileItemGen.class, "debug_item_gen" );
+		this.registerTileEntity( TileChunkLoader.class, "debug_chunk_loader" );
+		this.registerTileEntity( TilePhantomNode.class, "debug_phantom_node" );
+		this.registerTileEntity( TileCubeGenerator.class, "debug_cube_gen" );
 	}
 
 	private static IBlockDefinition makeSlab( String slabId, String doubleSlabId, FeatureFactory registry, IBlockDefinition blockDef )
