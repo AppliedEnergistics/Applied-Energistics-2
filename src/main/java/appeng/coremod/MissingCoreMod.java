@@ -72,7 +72,7 @@ public final class MissingCoreMod extends CustomModLoadingErrorDisplayException
 		}
 		else
 		{
-			this.drawCenteredString( fontRenderer, "You're launcher may refer to this by different names,", errorScreen.width / 2, offset, COLOR_WHITE );
+			this.drawCenteredString( fontRenderer, "Your launcher may refer to this by different names,", errorScreen.width / 2, offset, COLOR_WHITE );
 
 			offset += SCREEN_OFFSET + 5;
 

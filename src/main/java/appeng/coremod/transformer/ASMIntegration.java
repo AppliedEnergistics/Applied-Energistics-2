@@ -23,6 +23,7 @@ import java.util.Iterator;
 
 import javax.annotation.Nullable;
 
+import net.minecraftforge.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -32,7 +33,6 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
 
 import appeng.coremod.annotations.Integration;
 import appeng.helpers.Reflected;
@@ -250,6 +250,6 @@ public final class ASMIntegration implements IClassTransformer
 
 	private void log( final String string )
 	{
-		FMLRelaunchLog.log( "AE2-CORE", Level.INFO, string );
+		FMLLog.log( "AE2-CORE", Level.INFO, string );
 	}
 }
