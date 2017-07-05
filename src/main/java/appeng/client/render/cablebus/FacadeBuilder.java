@@ -26,11 +26,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import javax.annotation.Nullable;
 import javax.vecmath.Vector3f;
-
-import com.google.common.base.Function;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;

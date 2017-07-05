@@ -8,6 +8,8 @@ import javax.vecmath.Matrix4f;
 
 import com.google.common.collect.ImmutableMap;
 
+import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Keyboard;
 
@@ -23,7 +25,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 import appeng.items.misc.ItemEncodedPattern;
@@ -34,7 +35,7 @@ import appeng.items.misc.ItemEncodedPattern;
  * showing the encoded pattern itself. Matters are further complicated by only wanting to show the crafting output when the pattern is being
  * rendered in the GUI, and not anywhere else.
  */
-class ItemEncodedPatternBakedModel implements IPerspectiveAwareModel
+class ItemEncodedPatternBakedModel implements IBakedModel
 {
 	private final IBakedModel baseModel;
 
@@ -95,12 +96,12 @@ class ItemEncodedPatternBakedModel implements IPerspectiveAwareModel
 	@Override
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective( ItemCameraTransforms.TransformType cameraTransformType )
 	{
-		if( baseModel instanceof IPerspectiveAwareModel )
+		if( baseModel instanceof IBakedModel )
 		{
-			return ( (IPerspectiveAwareModel) baseModel ).handlePerspective( cameraTransformType );
+			return ( (IBakedModel) baseModel ).handlePerspective( cameraTransformType );
 		}
 
-		return IPerspectiveAwareModel.MapWrapper.handlePerspective( this, transforms, cameraTransformType );
+		return PerspectiveMapWrapper.handlePerspective( this, transforms, cameraTransformType );
 	}
 
 	/**
@@ -110,7 +111,7 @@ class ItemEncodedPatternBakedModel implements IPerspectiveAwareModel
 	 * Usually those methods only matter for rendering on the ground and other cases, where we wouldn't render the crafting output model anyway,
 	 * so in those cases we delegate to the model of the encoded pattern.
 	 */
-	private class ShiftHoldingModelWrapper implements IPerspectiveAwareModel
+	private class ShiftHoldingModelWrapper implements IBakedModel
 	{
 
 		private final IBakedModel outputModel;
@@ -141,12 +142,12 @@ class ItemEncodedPatternBakedModel implements IPerspectiveAwareModel
 				GlStateManager.enableLighting();
 			}
 
-			if( selectedModel instanceof IPerspectiveAwareModel )
+			if( selectedModel instanceof IBakedModel )
 			{
-				return ( (IPerspectiveAwareModel) selectedModel ).handlePerspective( cameraTransformType );
+				return ( (IBakedModel) selectedModel ).handlePerspective( cameraTransformType );
 			}
 
-			return IPerspectiveAwareModel.MapWrapper.handlePerspective( this, transforms, cameraTransformType );
+			return PerspectiveMapWrapper.handlePerspective( this, transforms, cameraTransformType );
 		}
 
 		@Override

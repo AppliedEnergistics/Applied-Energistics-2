@@ -24,6 +24,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 
 public class NullSlot extends Slot
 {
@@ -52,6 +54,7 @@ public class NullSlot extends Slot
 	}
 
 	@Override
+	@Nonnull
 	public ItemStack getStack()
 	{
 		return ItemStack.EMPTY;

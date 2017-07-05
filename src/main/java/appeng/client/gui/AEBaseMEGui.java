@@ -23,6 +23,7 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -116,10 +117,11 @@ public abstract class AEBaseMEGui extends AEBaseGui
 			{
 			}
 
+			ITooltipFlag.TooltipFlags tooltipFlag = this.mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL;
 			if( myStack != null )
 			{
 				@SuppressWarnings( "unchecked" )
-				final List<String> currentToolTip = stack.getTooltip( this.mc.player, this.mc.gameSettings.advancedItemTooltips );
+				final List<String> currentToolTip = stack.getTooltip( this.mc.player, tooltipFlag );
 
 				if( myStack.getStackSize() > BigNumber || ( myStack.getStackSize() > 1 && stack.isItemDamaged() ) )
 				{
@@ -136,7 +138,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 			}
 			else if( stack.getCount() > BigNumber )
 			{
-				List<String> var4 = stack.getTooltip( this.mc.player, this.mc.gameSettings.advancedItemTooltips );
+				List<String> var4 = stack.getTooltip( this.mc.player, tooltipFlag );
 				var4.add( "Items Stored: " + NumberFormat.getNumberInstance( Locale.US ).format( stack.getCount() ) );
 				this.drawTooltip( x, y, var4 );
 				return;

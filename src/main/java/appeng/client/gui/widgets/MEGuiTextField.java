@@ -61,13 +61,14 @@ public class MEGuiTextField extends GuiTextField
 	}
 
 	@Override
-	public void mouseClicked( final int xPos, final int yPos, final int button )
+	public boolean mouseClicked( final int xPos, final int yPos, final int button )
 	{
 		super.mouseClicked( xPos, yPos, button );
 
 		final boolean requiresFocus = this.isMouseIn( xPos, yPos );
 
 		this.setFocused( requiresFocus );
+		return true;
 	}
 
 	/**

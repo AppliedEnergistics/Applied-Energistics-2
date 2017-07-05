@@ -20,7 +20,7 @@ package appeng.client.render.effects;
 
 
 import net.minecraft.client.particle.ParticleBreaking;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -67,7 +67,7 @@ public class CraftingFx extends ParticleBreaking
 	}
 
 	@Override
-	public void renderParticle( final VertexBuffer par1Tessellator, final Entity p_180434_2_, final float partialTick, final float x, final float y, final float z, final float rx, final float rz )
+	public void renderParticle( final BufferBuilder par1Tessellator, final Entity p_180434_2_, final float partialTick, final float x, final float y, final float z, final float rx, final float rz )
 	{
 		if( partialTick < 0 || partialTick > 1 )
 		{

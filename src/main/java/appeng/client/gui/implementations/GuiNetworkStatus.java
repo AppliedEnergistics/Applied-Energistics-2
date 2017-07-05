@@ -22,6 +22,8 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 import java.util.List;
 
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -253,7 +255,8 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 			if( myStack != null )
 			{
-				List<String> currentToolTip = stack.getTooltip( this.mc.player, this.mc.gameSettings.advancedItemTooltips );
+				ITooltipFlag.TooltipFlags tooltipFlag = this.mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL;
+				List<String> currentToolTip = stack.getTooltip( this.mc.player, tooltipFlag );
 
 				while( currentToolTip.size() > 1 )
 				{

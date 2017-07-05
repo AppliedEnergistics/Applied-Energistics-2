@@ -3,8 +3,8 @@ package appeng.client.render.model;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.function.Function;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -14,8 +14,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 
@@ -59,7 +59,7 @@ public class ColorApplicatorModel implements IModel
 		TextureAtlasSprite texMedium = bakedTextureGetter.apply( TEXTURE_MEDIUM );
 		TextureAtlasSprite texBright = bakedTextureGetter.apply( TEXTURE_BRIGHT );
 
-		ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> map = IPerspectiveAwareModel.MapWrapper.getTransforms( state );
+		ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> map = PerspectiveMapWrapper.getTransforms( state );
 
 		return new ColorApplicatorBakedModel( baseModel, map, texDark, texMedium, texBright );
 	}

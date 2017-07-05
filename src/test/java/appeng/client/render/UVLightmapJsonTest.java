@@ -19,6 +19,7 @@
 package appeng.client.render;
 
 
+import appeng.core.Registration;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -37,6 +38,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 
@@ -52,29 +54,33 @@ public class UVLightmapJsonTest
 	@EventHandler
 	public void preInit( FMLPreInitializationEvent event )
 	{
-		GameRegistry.register( uvlblock = new Block( Material.IRON )
+		Registration.addBlockToRegister( uvlblock = new Block( Material.IRON )
 		{
 
 			final AxisAlignedBB box = new AxisAlignedBB( 0.25, 0, 7 / 16d, 0.75, 1, 9 / 16d );
 
+			@SuppressWarnings( "deprecation" )
 			@Override
 			public boolean isFullBlock( IBlockState state )
 			{
 				return false;
 			}
 
+			@SuppressWarnings( "deprecation" )
 			@Override
 			public boolean isOpaqueCube( IBlockState state )
 			{
 				return false;
 			}
 
+			@SuppressWarnings( "deprecation" )
 			@Override
 			public AxisAlignedBB getBoundingBox( IBlockState state, IBlockAccess source, BlockPos pos )
 			{
 				return box;
 			}
 
+			@SuppressWarnings( "deprecation" )
 			@Override
 			public BlockRenderLayer getBlockLayer()
 			{
@@ -82,7 +88,7 @@ public class UVLightmapJsonTest
 			}
 
 		}.setLightLevel( 0.2f ).setCreativeTab( CreativeTabs.DECORATIONS ).setRegistryName( uvlblockR ) );
-		GameRegistry.register( uvlblockItem = new ItemBlock( uvlblock ).setRegistryName( uvlblockR ) );
+		Registration.addItemToRegister( uvlblockItem = new ItemBlock( uvlblock ).setRegistryName( uvlblockR ) );
 
 		ModelBakery.registerItemVariants( uvlblockItem, uvlblockR );
 

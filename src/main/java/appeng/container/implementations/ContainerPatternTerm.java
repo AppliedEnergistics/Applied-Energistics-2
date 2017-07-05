@@ -159,7 +159,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			ic.setInventorySlotContents( x, this.crafting.getStackInSlot( x ) );
 		}
 
-		final ItemStack is = CraftingManager.getInstance().findMatchingRecipe( ic, this.getPlayerInv().player.world );
+		final ItemStack is = CraftingManager.findMatchingResult( ic, this.getPlayerInv().player.world );
 		this.cOut.setInventorySlotContents( 0, is );
 		return is;
 	}

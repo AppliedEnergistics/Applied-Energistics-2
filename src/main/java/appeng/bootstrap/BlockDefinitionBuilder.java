@@ -29,12 +29,15 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
+import appeng.core.Registration;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.gui.ForgeGuiFactory;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -147,7 +150,8 @@ class BlockDefinitionBuilder implements IBlockBuilder
 	}
 
 	@Override
-	public IBlockBuilder tileEntity(Class<? extends AEBaseTile> tileEntityClass) {
+	public IBlockBuilder tileEntity( Class<? extends AEBaseTile> tileEntityClass )
+	{
 		teClass = tileEntityClass;
 		return this;
 	}
@@ -201,6 +205,7 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		// Create block and matching item, and set factory name of both
 		Block block = blockSupplier.get();
 		block.setRegistryName( AppEng.MOD_ID, registryName );
+		block.setUnlocalizedName( "appliedenergistics2." + registryName );
 
 		ItemBlock item = constructItemFromBlock( block );
 		if( item != null )
@@ -210,15 +215,18 @@ class BlockDefinitionBuilder implements IBlockBuilder
 
 		// Register the item and block with the game
 		factory.addPreInit( side -> {
-			GameRegistry.register( block );
+			// GameRegistry.register( block );
+			Registration.addBlockToRegister( block );
+//			ForgeRegistries.BLOCKS.register(block);
 			if( item != null )
 			{
-				GameRegistry.register( item );
+				Registration.addItemToRegister( item );
+//				ForgeRegistries.ITEMS.register(item);
 			}
 		} );
 
 		block.setCreativeTab( creativeTab );
-		block.setUnlocalizedName( "appliedenergistics2." + registryName );
+
 
 		// Register all extra handlers
 		preInitCallbacks.forEach( consumer -> factory.addPreInit( side -> consumer.accept( block, item ) ) );

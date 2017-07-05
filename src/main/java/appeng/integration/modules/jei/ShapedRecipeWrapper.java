@@ -53,7 +53,7 @@ class ShapedRecipeWrapper extends BlankRecipeWrapper implements IShapedCraftingR
 	{
 		final boolean useSingleItems = AEConfig.instance().disableColoredCableRecipesInJEI();
 
-		Object[] items = recipe.getIngredients();
+		Object[] items = recipe.getIIngredients();
 		int width = recipe.getWidth();
 		int height = recipe.getHeight();
 

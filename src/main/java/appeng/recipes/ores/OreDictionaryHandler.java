@@ -25,6 +25,7 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.core.AELog;
@@ -78,7 +79,7 @@ public class OreDictionaryHandler
 	{
 		this.enableRebaking = true;
 
-		for( final Object o : CraftingManager.getInstance().getRecipeList() )
+		for( final Object o : ForgeRegistries.RECIPES.getValues() )
 		{
 			if( o instanceof IRecipeBakeable )
 			{

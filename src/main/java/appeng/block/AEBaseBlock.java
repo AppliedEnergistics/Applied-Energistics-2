@@ -31,6 +31,7 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -99,18 +100,21 @@ public abstract class AEBaseBlock extends Block
 		return new BlockStateContainer( this, this.getAEStates() );
 	}
 
+	@SuppressWarnings( "deprecation" )
 	@Override
 	public final boolean isNormalCube( IBlockState state )
 	{
 		return this.isFullSize() && this.isOpaque();
 	}
 
+	@SuppressWarnings( "deprecation" )
 	@Override
 	public AxisAlignedBB getBoundingBox( IBlockState state, IBlockAccess source, BlockPos pos )
 	{
 		return boundingBox;
 	}
 
+	@SuppressWarnings( "deprecation" )
 	@Override
 	public void addCollisionBoxToList( final IBlockState state, final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, @Nullable final Entity e, boolean  p_185477_7_)
 	{
@@ -135,6 +139,7 @@ public abstract class AEBaseBlock extends Block
 		}
 	}
 
+	@SuppressWarnings( "deprecation" )
 	@Override
 	@SideOnly( Side.CLIENT )
 	public AxisAlignedBB getSelectedBoundingBox( IBlockState state, final World w, final BlockPos pos )
@@ -221,12 +226,14 @@ public abstract class AEBaseBlock extends Block
 		return super.getSelectedBoundingBox( state, w, pos );
 	}
 
+	@SuppressWarnings( "deprecation" )
 	@Override
 	public final boolean isOpaqueCube( IBlockState state )
 	{
 		return this.isOpaque();
 	}
 
+	@SuppressWarnings( "deprecation" )
 	@Override
 	public RayTraceResult collisionRayTrace( final IBlockState state, final World w, final BlockPos pos, final Vec3d a, final Vec3d b )
 	{
@@ -274,12 +281,14 @@ public abstract class AEBaseBlock extends Block
 		return super.collisionRayTrace( state, w, pos, a, b );
 	}
 
+	@SuppressWarnings( "deprecation" )
 	@Override
 	public boolean hasComparatorInputOverride( IBlockState state )
 	{
 		return this.isInventory();
 	}
 
+	@SuppressWarnings( "deprecation" )
 	@Override
 	public int getComparatorInputOverride( IBlockState state, final World worldIn, final BlockPos pos )
 	{
@@ -332,8 +341,9 @@ public abstract class AEBaseBlock extends Block
 		return new EnumFacing[0];
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation( final ItemStack is, final EntityPlayer player, final List<String> lines, final boolean advancedItemTooltips )
+	public void addInformation( final ItemStack is, final World world, final List<String> lines, final ITooltipFlag advancedItemTooltips )
 	{
 
 	}

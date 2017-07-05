@@ -21,11 +21,15 @@ package appeng.items;
 
 import java.util.List;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 public abstract class AEBaseItem extends Item
@@ -43,18 +47,19 @@ public abstract class AEBaseItem extends Item
 		return getClass().getSimpleName() + "[" + regName  + "]";
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	@SuppressWarnings( "unchecked" )
-	public final void addInformation( final ItemStack stack, final EntityPlayer player, final List lines, final boolean displayMoreInfo )
+	public final void addInformation( final ItemStack stack, final World world, final List lines, final ITooltipFlag advancedTooltips )
 	{
-		this.addCheckedInformation( stack, player, lines, displayMoreInfo );
+		this.addCheckedInformation( stack, world, lines, advancedTooltips );
 	}
 
 	@Override
 	@SuppressWarnings( "unchecked" )
-	public final void getSubItems( final Item sameItem, final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
+	public final void getSubItems( final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
 	{
-		this.getCheckedSubItems( sameItem, creativeTab, itemStacks );
+		this.getCheckedSubItems( creativeTab, itemStacks );
 	}
 
 	@Override
@@ -63,14 +68,15 @@ public abstract class AEBaseItem extends Item
 		return false;
 	}
 
-	protected void addCheckedInformation( final ItemStack stack, final EntityPlayer player, final List<String> lines, final boolean displayMoreInfo )
+	@SideOnly(Side.CLIENT)
+	protected void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
-		super.addInformation( stack, player, lines, displayMoreInfo );
+		super.addInformation( stack, world, lines, advancedTooltips );
 	}
 
-	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
+	protected void getCheckedSubItems( final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
 	{
-		super.getSubItems( sameItem, creativeTab, itemStacks );
+		super.getSubItems( creativeTab, itemStacks );
 	}
 
 }

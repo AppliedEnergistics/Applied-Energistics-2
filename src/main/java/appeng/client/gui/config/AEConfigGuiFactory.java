@@ -67,13 +67,7 @@ public class AEConfigGuiFactory implements IModGuiFactory
 	 */
 	@Override
 	public GuiScreen createConfigGui(GuiScreen parentScreen) {
-		return null;
-	}
-
-	@Override
-	public Class<? extends GuiScreen> mainConfigGuiClass()
-	{
-		return AEConfigGui.class;
+		return new AEConfigGui(parentScreen);
 	}
 
 	@Override
@@ -82,9 +76,4 @@ public class AEConfigGuiFactory implements IModGuiFactory
 		return null;
 	}
 
-	@Override
-	public RuntimeOptionGuiHandler getHandlerFor( final RuntimeOptionCategoryElement element )
-	{
-		return null;
-	}
 }

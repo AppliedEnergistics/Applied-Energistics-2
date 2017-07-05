@@ -50,7 +50,7 @@ public class SkyChestTESR extends TileEntitySpecialRenderer<TileSkyChest>
 	}
 
 	@Override
-	public void renderTileEntityAt( TileSkyChest te, double x, double y, double z, float partialTicks, int destroyStage )
+	public void render( TileSkyChest te, double x, double y, double z, float partialTicks, int destroyStage, float p_render_10_ )
 	{
 		GlStateManager.enableDepth();
 		GlStateManager.depthFunc( 515 );

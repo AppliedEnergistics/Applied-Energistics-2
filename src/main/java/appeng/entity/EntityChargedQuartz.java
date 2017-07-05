@@ -82,7 +82,7 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 		final int k = MathHelper.floor( this.posZ );
 
 		IBlockState state = this.world.getBlockState( new BlockPos( j, i, k ) );
-		final Material mat = state.getBlock().getMaterial( state );
+		final Material mat = state.getMaterial();
 
 		if( Platform.isServer() && mat.isLiquid() )
 		{

@@ -23,7 +23,7 @@ import java.util.Random;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.MathHelper;
@@ -96,7 +96,7 @@ public class LightningFX extends Particle
 	}
 
 	@Override
-	public void renderParticle( final VertexBuffer tess, final Entity p_180434_2_, final float l, final float rX, final float rY, final float rZ, final float rYZ, final float rXY )
+	public void renderParticle( final BufferBuilder tess, final Entity p_180434_2_, final float l, final float rX, final float rY, final float rZ, final float rYZ, final float rXY )
 	{
 		final float j = 1.0f;
 		float red = this.particleRed * j * 0.9f;
@@ -222,7 +222,7 @@ public class LightningFX extends Particle
 		this.hasData = false;
 	}
 
-	private void draw( float red, float green, float blue, final VertexBuffer tess, final double[] a, final double[] b, final double f6, final double f8 )
+	private void draw( float red, float green, float blue, final BufferBuilder tess, final double[] a, final double[] b, final double f6, final double f8 )
 	{
 		if( this.hasData )
 		{

@@ -23,6 +23,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -67,15 +68,15 @@ public class AEBaseItemBlock extends ItemBlock
 	@Override
 	@SideOnly( Side.CLIENT )
 	@SuppressWarnings( "unchecked" )
-	public final void addInformation( final ItemStack itemStack, final EntityPlayer player, final List toolTip, final boolean advancedTooltips )
+	public final void addInformation( final ItemStack itemStack, final World world, final List<String> toolTip, final ITooltipFlag advancedTooltips )
 	{
-		this.addCheckedInformation( itemStack, player, toolTip, advancedTooltips );
+		this.addCheckedInformation( itemStack, world, toolTip, advancedTooltips );
 	}
 
 	@SideOnly( Side.CLIENT )
-	public void addCheckedInformation( final ItemStack itemStack, final EntityPlayer player, final List<String> toolTip, final boolean advancedToolTips )
+	public void addCheckedInformation( final ItemStack itemStack, final World world, final List<String> toolTip, final ITooltipFlag advancedTooltips )
 	{
-		this.blockType.addInformation( itemStack, player, toolTip, advancedToolTips );
+		this.blockType.addInformation( itemStack, world, toolTip, advancedTooltips );
 	}
 
 	@Override

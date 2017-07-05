@@ -22,12 +22,12 @@ package appeng.items.tools.powered.powersink;
 import java.text.MessageFormat;
 import java.util.List;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import appeng.api.config.AccessRestriction;
@@ -36,6 +36,8 @@ import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPowerStorage
@@ -52,8 +54,9 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 		this.powerCapacity = powerCapacity;
 	}
 
+	@SideOnly( Side.CLIENT )
 	@Override
-	public void addCheckedInformation( final ItemStack stack, final EntityPlayer player, final List<String> lines, final boolean displayMoreInfo )
+	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
 		final NBTTagCompound tag = stack.getTagCompound();
 		double internalCurrentPower = 0;
@@ -77,9 +80,9 @@ public abstract class AERootPoweredItem extends AEBaseItem implements IAEItemPow
 	}
 
 	@Override
-	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
+	protected void getCheckedSubItems( final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
 	{
-		super.getCheckedSubItems( sameItem, creativeTab, itemStacks );
+		super.getCheckedSubItems( creativeTab, itemStacks );
 
 		final ItemStack charged = new ItemStack( this, 1 );
 		final NBTTagCompound tag = Platform.openNbtData( charged );

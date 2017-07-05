@@ -22,8 +22,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -37,6 +38,7 @@ import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 import appeng.block.storage.DriveSlotState;
+import net.minecraftforge.common.model.animation.IClip;
 
 
 public class DriveModel implements IModel
@@ -93,5 +95,35 @@ public class DriveModel implements IModel
 	public IModelState getDefaultState()
 	{
 		return TRSRTransformation.identity();
+	}
+
+	@Override
+	public Optional<? extends IClip> getClip(String name) {
+		return Optional.empty();
+	}
+
+	@Override
+	public IModel process(ImmutableMap<String, String> customData) {
+		return null;
+	}
+
+	@Override
+	public IModel smoothLighting(boolean value) {
+		return null;
+	}
+
+	@Override
+	public IModel gui3d(boolean value) {
+		return null;
+	}
+
+	@Override
+	public IModel uvlock(boolean value) {
+		return null;
+	}
+
+	@Override
+	public IModel retexture(ImmutableMap<String, String> textures) {
+		return null;
 	}
 }

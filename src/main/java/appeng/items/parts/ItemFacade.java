@@ -95,7 +95,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	protected void getCheckedSubItems( final Item sameItem, final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
+	protected void getCheckedSubItems( final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
 	{
 		this.calculateSubTypes();
 		itemStacks.addAll( this.subTypes );
@@ -118,7 +118,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 					}
 
 					final NonNullList<ItemStack> tmpList = NonNullList.create();
-					b.getSubBlocks( item, b.getCreativeTabToDisplayOn(), tmpList );
+					b.getSubBlocks( b.getCreativeTabToDisplayOn(), tmpList );
 					for( final ItemStack l : tmpList )
 					{
 						final ItemStack facade = this.createFacadeForItem( l, false );

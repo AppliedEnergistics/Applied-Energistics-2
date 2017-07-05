@@ -27,6 +27,8 @@ import net.minecraft.item.ItemStack;
 import appeng.container.AEBaseContainer;
 import appeng.tile.inventory.AppEngInternalInventory;
 
+import javax.annotation.Nonnull;
+
 
 public class AppEngSlot extends Slot
 {
@@ -81,6 +83,7 @@ public class AppEngSlot extends Slot
 	}
 
 	@Override
+	@Nonnull
 	public ItemStack getStack()
 	{
 		if( !this.isEnabled() )

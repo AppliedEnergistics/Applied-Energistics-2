@@ -19,8 +19,8 @@
 package appeng.client.render.tesr;
 
 
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -42,7 +42,7 @@ public class ModularTESR<T extends AEBaseTile> extends TileEntitySpecialRenderer
 	}
 
 	@Override
-	public void renderTileEntityAt( T te, double x, double y, double z, float partialTicks, int destroyStage )
+	public void render( T te, double x, double y, double z, float partialTicks, int destroyStage, float p_render_10_ )
 	{
 		GlStateManager.pushMatrix();
 		GlStateManager.translate( x, y, z );
@@ -57,7 +57,7 @@ public class ModularTESR<T extends AEBaseTile> extends TileEntitySpecialRenderer
 	}
 
 	@Override
-	public void renderTileEntityFast( T te, double x, double y, double z, float partialTicks, int destroyStage, VertexBuffer buffer )
+	public void renderTileEntityFast( T te, double x, double y, double z, float partialTicks, int destroyStage, float p_render_10_, BufferBuilder buffer )
 	{
 		GlStateManager.pushMatrix();
 		GlStateManager.translate( x, y, z );

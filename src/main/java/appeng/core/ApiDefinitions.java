@@ -26,6 +26,11 @@ import appeng.core.api.definitions.ApiItems;
 import appeng.core.api.definitions.ApiMaterials;
 import appeng.core.api.definitions.ApiParts;
 import appeng.core.features.registries.PartModels;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.world.biome.Biome;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 
 /**
@@ -33,8 +38,9 @@ import appeng.core.features.registries.PartModels;
  */
 public final class ApiDefinitions implements IDefinitions
 {
-	private final ApiBlocks blocks;
-	private final ApiItems items;
+	// TODO : Check if this can be final again after the Register part.
+	private ApiBlocks blocks;
+	private ApiItems items;
 	private final ApiMaterials materials;
 	private final ApiParts parts;
 
@@ -47,6 +53,16 @@ public final class ApiDefinitions implements IDefinitions
 		this.materials = new ApiMaterials( registry );
 		this.parts = new ApiParts( registry, partModels );
 	}
+//
+//	public void addBlocks( final PartModels partModels )
+//	{
+//		this.blocks = new ApiBlocks( registry, partModels );
+//	}
+//
+//	public void addItems()
+//	{
+//		this.items = new ApiItems( registry );
+//	}
 
 	public FeatureFactory getRegistry()
 	{

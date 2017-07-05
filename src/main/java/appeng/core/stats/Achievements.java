@@ -19,9 +19,9 @@
 package appeng.core.stats;
 
 
+import net.minecraft.advancements.Advancement;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.stats.Achievement;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IItemDefinition;
@@ -111,8 +111,8 @@ public enum Achievements
 	private final int x;
 	private final int y;
 
-	private Achievement parent;
-	private Achievement stat;
+	private Advancement parent;
+	private Advancement stat;
 
 	Achievements( final int x, final int y, final AEColoredItemDefinition which, final AchievementType type )
 	{
@@ -143,20 +143,20 @@ public enum Achievements
 		this.parent = parent.getAchievement();
 	}
 
-	public Achievement getAchievement()
+	public Advancement getAchievement()
 	{
-		if( this.stat == null && !this.getStack().isEmpty() )
-		{
-			this.stat = new Achievement( "achievement.ae2." + this.name(), "ae2." + this.name(), this.x, this.y, this.getStack(), this.parent );
-			this.stat.registerStat();
-		}
+//		if( this.stat == null && !this.getStack().isEmpty() )
+//		{
+//			this.stat = new Advancement( "achievement.ae2." + this.name(), "ae2." + this.name(), this.x, this.y, this.getStack(), this.parent );
+//			this.stat.registerStat();
+//		}
 
 		return this.stat;
 	}
 
 	public void addToPlayer( final EntityPlayer player )
 	{
-		player.addStat( this.getAchievement(), 1 );
+		// player.addStat( this.getAchievement(), 1 );
 	}
 
 	AchievementType getType()

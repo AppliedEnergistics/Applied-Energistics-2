@@ -351,10 +351,10 @@ public class PathGridCache implements IPathingGrid
 					players.add( n.getPlayerID() );
 				}
 
-				for( final int id : players )
-				{
-					Platform.addStat( id, currentBracket.getAchievement() );
-				}
+//				for( final int id : players )
+//				{
+//					Platform.addStat( id, currentBracket.getAchievement() );
+//				}
 			}
 		}
 		this.lastChannels = this.getChannelsInUse();

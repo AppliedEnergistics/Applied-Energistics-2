@@ -254,7 +254,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		}
 		else
 		{
-			final ItemStack testOutput = CraftingManager.getInstance().findMatchingRecipe( this.testFrame, w );
+			final ItemStack testOutput = CraftingManager.findMatchingResult( this.testFrame, w );
 
 			if( Platform.itemComparisons().isSameItem( this.correctOutput, testOutput ) )
 			{

@@ -31,7 +31,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.stats.AchievementList;
 import net.minecraft.util.NonNullList;
 
 
@@ -89,55 +88,55 @@ public class AppEngCraftingSlot extends AppEngSlot
 		par1ItemStack.onCrafting( this.thePlayer.world, this.thePlayer, this.amountCrafted );
 		this.amountCrafted = 0;
 
-		if( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.CRAFTING_TABLE ) )
-		{
-			this.thePlayer.addStat( AchievementList.BUILD_WORK_BENCH, 1 );
-		}
-
-		if( par1ItemStack.getItem() instanceof ItemPickaxe )
-		{
-			this.thePlayer.addStat( AchievementList.BUILD_PICKAXE, 1 );
-		}
-
-		if( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.FURNACE ) )
-		{
-			this.thePlayer.addStat( AchievementList.BUILD_FURNACE, 1 );
-		}
-
-		if( par1ItemStack.getItem() instanceof ItemHoe )
-		{
-			this.thePlayer.addStat( AchievementList.BUILD_HOE, 1 );
-		}
-
-		if( par1ItemStack.getItem() == Items.BREAD )
-		{
-			this.thePlayer.addStat( AchievementList.MAKE_BREAD, 1 );
-		}
-
-		if( par1ItemStack.getItem() == Items.CAKE )
-		{
-			this.thePlayer.addStat( AchievementList.BAKE_CAKE, 1 );
-		}
-
-		if( par1ItemStack.getItem() instanceof ItemPickaxe && ( (ItemTool) par1ItemStack.getItem() ).getToolMaterial() != Item.ToolMaterial.WOOD )
-		{
-			this.thePlayer.addStat( AchievementList.BUILD_BETTER_PICKAXE, 1 );
-		}
-
-		if( par1ItemStack.getItem() instanceof ItemSword )
-		{
-			this.thePlayer.addStat( AchievementList.BUILD_SWORD, 1 );
-		}
-
-		if( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.ENCHANTING_TABLE ) )
-		{
-			this.thePlayer.addStat( AchievementList.ENCHANTMENTS, 1 );
-		}
-
-		if( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.BOOKSHELF ) )
-		{
-			this.thePlayer.addStat( AchievementList.BOOKCASE, 1 );
-		}
+//		if( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.CRAFTING_TABLE ) )
+//		{
+//			this.thePlayer.addStat( AchievementList.BUILD_WORK_BENCH, 1 );
+//		}
+//
+//		if( par1ItemStack.getItem() instanceof ItemPickaxe )
+//		{
+//			this.thePlayer.addStat( AchievementList.BUILD_PICKAXE, 1 );
+//		}
+//
+//		if( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.FURNACE ) )
+//		{
+//			this.thePlayer.addStat( AchievementList.BUILD_FURNACE, 1 );
+//		}
+//
+//		if( par1ItemStack.getItem() instanceof ItemHoe )
+//		{
+//			this.thePlayer.addStat( AchievementList.BUILD_HOE, 1 );
+//		}
+//
+//		if( par1ItemStack.getItem() == Items.BREAD )
+//		{
+//			this.thePlayer.addStat( AchievementList.MAKE_BREAD, 1 );
+//		}
+//
+//		if( par1ItemStack.getItem() == Items.CAKE )
+//		{
+//			this.thePlayer.addStat( AchievementList.BAKE_CAKE, 1 );
+//		}
+//
+//		if( par1ItemStack.getItem() instanceof ItemPickaxe && ( (ItemTool) par1ItemStack.getItem() ).getToolMaterial() != Item.ToolMaterial.WOOD )
+//		{
+//			this.thePlayer.addStat( AchievementList.BUILD_BETTER_PICKAXE, 1 );
+//		}
+//
+//		if( par1ItemStack.getItem() instanceof ItemSword )
+//		{
+//			this.thePlayer.addStat( AchievementList.BUILD_SWORD, 1 );
+//		}
+//
+//		if( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.ENCHANTING_TABLE ) )
+//		{
+//			this.thePlayer.addStat( AchievementList.ENCHANTMENTS, 1 );
+//		}
+//
+//		if( par1ItemStack.getItem() == Item.getItemFromBlock( Blocks.BOOKSHELF ) )
+//		{
+//			this.thePlayer.addStat( AchievementList.BOOKCASE, 1 );
+//		}
 	}
 
 	@Override
@@ -153,7 +152,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 			ic.setInventorySlotContents( x, this.craftMatrix.getStackInSlot( x ) );
 		}
 
-		final NonNullList<ItemStack> aitemstack = CraftingManager.getInstance().getRemainingItems( ic, playerIn.world );
+		final NonNullList<ItemStack> aitemstack = CraftingManager.getRemainingItems( ic, playerIn.world );
 
 		for( int x = 0; x < this.craftMatrix.getSizeInventory(); x++ )
 		{

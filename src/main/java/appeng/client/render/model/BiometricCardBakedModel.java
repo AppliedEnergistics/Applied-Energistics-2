@@ -14,6 +14,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraftforge.client.model.IModel;
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.block.state.IBlockState;
@@ -27,7 +28,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 import appeng.api.implementations.items.IBiometricCard;
@@ -36,7 +36,7 @@ import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AELog;
 
 
-class BiometricCardBakedModel implements IPerspectiveAwareModel
+class BiometricCardBakedModel implements IBakedModel
 {
 
 	private final VertexFormat format;
@@ -212,9 +212,9 @@ class BiometricCardBakedModel implements IPerspectiveAwareModel
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective( ItemCameraTransforms.TransformType type )
 	{
 		// Delegate to the base model if possible
-		if( baseModel instanceof IPerspectiveAwareModel )
+		if( baseModel instanceof IModel )
 		{
-			IPerspectiveAwareModel pam = (IPerspectiveAwareModel) baseModel;
+			IBakedModel pam = (IBakedModel) baseModel;
 			Pair<? extends IBakedModel, Matrix4f> pair = pam.handlePerspective( type );
 			return Pair.of( this, pair.getValue() );
 		}

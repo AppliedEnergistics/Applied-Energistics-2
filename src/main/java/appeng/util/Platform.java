@@ -39,6 +39,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -57,7 +58,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketChunkData;
 import net.minecraft.server.management.PlayerChunkMap;
 import net.minecraft.server.management.PlayerChunkMapEntry;
-import net.minecraft.stats.Achievement;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
@@ -73,9 +73,11 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.FakePlayerFactory;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
@@ -132,6 +134,7 @@ import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.AESharedNBT;
 import appeng.util.prioritylist.IPartitionList;
+import net.minecraftforge.registries.IForgeRegistry;
 
 
 /**
@@ -434,8 +437,8 @@ public class Platform
 	 */
 	public static IRecipe findMatchingRecipe( final InventoryCrafting inventoryCrafting, final World par2World )
 	{
-		final CraftingManager cm = CraftingManager.getInstance();
-		final List<IRecipe> rl = cm.getRecipeList();
+		IForgeRegistry<IRecipe> recipes = ForgeRegistries.RECIPES;
+		final List<IRecipe> rl = recipes.getValues();
 
 		for( final IRecipe r : rl )
 		{
@@ -667,7 +670,7 @@ public class Platform
 
 	public static ItemStack findMatchingRecipeOutput( final InventoryCrafting ic, final World world )
 	{
-		return CraftingManager.getInstance().findMatchingRecipe( ic, world );
+		return CraftingManager.findMatchingResult( ic, world );
 	}
 
 	@SideOnly( Side.CLIENT )
@@ -695,7 +698,8 @@ public class Platform
 
 		try
 		{
-			return itemStack.getTooltip( Minecraft.getMinecraft().player, false );
+			ITooltipFlag.TooltipFlags tooltipFlag = Minecraft.getMinecraft().gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL;
+			return itemStack.getTooltip( Minecraft.getMinecraft().player, tooltipFlag );
 		}
 		catch( final Exception errB )
 		{
@@ -1186,7 +1190,7 @@ public class Platform
 		final Vec3d vec31 = vec3.addVector( f7 * d3, f6 * d3, f8 * d3 );
 
 		final AxisAlignedBB bb = new AxisAlignedBB( Math.min( vec3.x, vec31.x ), Math.min( vec3.y, vec31.y ), Math.min( vec3.z,
-				vec31.z ), Math.max( vec3.x, vec31.x ), Math.max( vec3.y, vec31.y ), Math.max( vec3.z, vec31.z ) ).expand(
+				vec31.z ), Math.max( vec3.x, vec31.x ), Math.max( vec3.y, vec31.y ), Math.max( vec3.z, vec31.z ) ).grow(
 						16, 16, 16 );
 
 		Entity entity = null;
@@ -1210,7 +1214,7 @@ public class Platform
 						}
 
 						f1 = 0.3F;
-						final AxisAlignedBB boundingBox = entity1.getEntityBoundingBox().expand( f1, f1, f1 );
+						final AxisAlignedBB boundingBox = entity1.getEntityBoundingBox().grow( f1, f1, f1 );
 						final RayTraceResult RayTraceResult = boundingBox.calculateIntercept( vec3, vec31 );
 
 						if( RayTraceResult != null )
@@ -1799,14 +1803,14 @@ public class Platform
 		return (float) ( player.posY + player.getEyeHeight() - player.getDefaultEyeHeight() );
 	}
 
-	public static void addStat( final int playerID, final Achievement achievement )
-	{
-		final EntityPlayer p = AEApi.instance().registries().players().findPlayer( playerID );
-		if( p != null )
-		{
-			p.addStat( achievement, 1 );
-		}
-	}
+//	public static void addStat( final int playerID, final Achievement achievement )
+//	{
+//		final EntityPlayer p = AEApi.instance().registries().players().findPlayer( playerID );
+//		if( p != null )
+//		{
+//			p.addStat( achievement, 1 );
+//		}
+//	}
 
 	public static boolean isRecipePrioritized( final ItemStack what )
 	{

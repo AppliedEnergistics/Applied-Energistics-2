@@ -21,6 +21,7 @@ package appeng.client.render;
 
 import java.util.Random;
 
+import net.minecraft.client.renderer.BufferBuilder;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
@@ -30,7 +31,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.client.IRenderHandler;
 
@@ -77,7 +77,7 @@ public class SpatialSkyRender extends IRenderHandler
 		GlStateManager.depthMask( false );
 		GlStateManager.color( 0.0f, 0.0f, 0.0f, 1.0f );
 		final Tessellator tessellator = Tessellator.getInstance();
-		final VertexBuffer VertexBuffer = tessellator.getBuffer();
+		final BufferBuilder VertexBuffer = tessellator.getBuffer();
 
 		// This renders a skybox around the player at a far, fixed distance from them.
 		// The skybox is pitch black and untextured
@@ -150,7 +150,7 @@ public class SpatialSkyRender extends IRenderHandler
 	private void renderTwinkles()
 	{
 		final Tessellator tessellator = Tessellator.getInstance();
-		final VertexBuffer VertexBuffer = tessellator.getBuffer();
+		final BufferBuilder VertexBuffer = tessellator.getBuffer();
 		VertexBuffer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION );
 
 		for( int i = 0; i < 50; ++i )

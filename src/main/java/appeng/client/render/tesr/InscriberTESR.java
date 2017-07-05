@@ -1,8 +1,8 @@
 package appeng.client.render.tesr;
 
 
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.block.Block;
@@ -10,7 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -41,7 +40,7 @@ public class InscriberTESR extends TileEntitySpecialRenderer<TileInscriber>
 	private static TextureAtlasSprite textureInside;
 
 	@Override
-	public void renderTileEntityAt( TileInscriber tile, double x, double y, double z, float partialTicks, int destroyStage )
+	public void render( TileInscriber tile, double x, double y, double z, float partialTicks, int destroyStage, float p_render_10_ )
 	{
 		// render inscriber
 
@@ -89,7 +88,7 @@ public class InscriberTESR extends TileEntitySpecialRenderer<TileInscriber>
 		float press = 0.2f;
 		press -= progress / 5.0f;
 
-		VertexBuffer buffer = Tessellator.getInstance().getBuffer();
+		BufferBuilder buffer = Tessellator.getInstance().getBuffer();
 		buffer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX );
 
 		float middle = 0.5f;
@@ -177,7 +176,7 @@ public class InscriberTESR extends TileEntitySpecialRenderer<TileInscriber>
 		GlStateManager.enableRescaleNormal();
 	}
 
-	private void renderItem( ItemStack sis, final float o, final AEBaseTile tile, final VertexBuffer tess, final double x, final double y, final double z )
+	private void renderItem( ItemStack sis, final float o, final AEBaseTile tile, final BufferBuilder tess, final double x, final double y, final double z )
 	{
 		if( !sis.isEmpty() )
 		{

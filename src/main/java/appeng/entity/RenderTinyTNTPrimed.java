@@ -79,7 +79,7 @@ public class RenderTinyTNTPrimed extends Render
 		f2 = ( 1.0F - ( tnt.getFuse() - life + 1.0F ) / 100.0F ) * 0.8F;
 		this.bindEntityTexture( tnt );
 		GlStateManager.translate( -0.5F, -0.5F, 0.5F );
-		blockrendererdispatcher.renderBlockBrightness( Blocks.TNT.getDefaultState(), tnt.getBrightness( life ) );
+		blockrendererdispatcher.renderBlockBrightness( Blocks.TNT.getDefaultState(), tnt.getBrightness() );
 		GlStateManager.translate( 0.0F, 0.0F, 1.0F );
 
 		if( tnt.getFuse() / 5 % 2 == 0 )

@@ -38,7 +38,7 @@ import appeng.core.AEConfig;
 import org.apache.logging.log4j.Level;
 
 
-@MCVersion( "1.11.2" )
+@MCVersion( "1.12" )
 public final class AppEngCore extends DummyModContainer implements IFMLLoadingPlugin
 {
 	private final ModMetadata metadata = new ModMetadata();

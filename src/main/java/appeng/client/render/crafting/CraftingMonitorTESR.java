@@ -38,7 +38,7 @@ public class CraftingMonitorTESR extends TileEntitySpecialRenderer<TileCraftingM
 {
 
 	@Override
-	public void renderTileEntityAt( TileCraftingMonitorTile te, double x, double y, double z, float partialTicks, int destroyStage )
+	public void render( TileCraftingMonitorTile te, double x, double y, double z, float partialTicks, int destroyStage, float p_render_10_ )
 	{
 		if( te == null )
 		{

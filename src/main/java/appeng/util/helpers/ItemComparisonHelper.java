@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.init.Items;
@@ -81,15 +82,12 @@ public class ItemComparisonHelper
 	 * The benefit is to compare two null item stacks, without any additional null checks.
 	 * 
 	 * Ignores NBT.
-	 *
-	 * Deprecated because ItemStack should never be null...?
 	 * 
 	 * @return true, if both are equal.
 	 */
-	@Deprecated
-	public boolean isEqualItem( @Nullable final ItemStack left, @Nullable final ItemStack right )
+	public boolean isEqualItem( @Nonnull final ItemStack left, @Nonnull final ItemStack right )
 	{
-		return left != null && right != null && /* left.isItemEqual( right ); */ this.isItemEqual(left, right);
+		return this.isItemEqual(left, right);
 	}
 
 	/**
@@ -105,12 +103,9 @@ public class ItemComparisonHelper
 	 * Use this when a precise check is required and the same item is required.
 	 * Not just something with different NBT tags.
 	 *
-	 * Deprecated because ItemStack should never be null...?
-	 *
 	 * @return true, if both are identical.
 	 */
-	@Deprecated
-	public boolean isSameItem( @Nullable final ItemStack is, @Nullable final ItemStack filter )
+	public boolean isSameItem( @Nonnull final ItemStack is, @Nonnull final ItemStack filter )
 	{
 		return isEqualItem( is, filter ) && hasSameNbtTag( is, filter );
 	}

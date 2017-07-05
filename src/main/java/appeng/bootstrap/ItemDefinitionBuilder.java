@@ -26,10 +26,12 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import appeng.core.Registration;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.dispenser.IBehaviorDispenseItem;
 import net.minecraft.item.Item;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -174,7 +176,7 @@ class ItemDefinitionBuilder implements IItemBuilder
 			} );
 		}
 
-		factory.addPreInit( side -> GameRegistry.register( item ) );
+		factory.addPreInit( side -> Registration.addItemToRegister( item ) );
 
 		if( Platform.isClient() )
 		{

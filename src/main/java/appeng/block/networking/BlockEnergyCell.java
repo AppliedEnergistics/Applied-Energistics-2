@@ -60,9 +60,9 @@ public class BlockEnergyCell extends AEBaseTileBlock
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void getSubBlocks( final Item item, final CreativeTabs tabs, final NonNullList<ItemStack> itemStacks )
+	public void getSubBlocks( final CreativeTabs tabs, final NonNullList<ItemStack> itemStacks )
 	{
-		super.getSubBlocks( item, tabs, itemStacks );
+		super.getSubBlocks( tabs, itemStacks );
 
 		final ItemStack charged = new ItemStack( this, 1 );
 		final NBTTagCompound tag = Platform.openNbtData( charged );

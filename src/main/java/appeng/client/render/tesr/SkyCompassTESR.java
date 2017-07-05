@@ -22,7 +22,7 @@ package appeng.client.render.tesr;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -47,7 +47,7 @@ public class SkyCompassTESR extends FastTESR<TileSkyCompass>
 	private static BlockRendererDispatcher blockRenderer;
 
 	@Override
-	public void renderTileEntityFast( TileSkyCompass te, double x, double y, double z, float partialTicks, int destroyStage, VertexBuffer buffer )
+	public void renderTileEntityFast( TileSkyCompass te, double x, double y, double z, float partialTicks, int destroyStage, float var10, BufferBuilder buffer )
 	{
 
 		if( !te.hasWorld() )

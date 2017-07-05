@@ -55,6 +55,11 @@ public final class Api implements IAppEngApi
 		this.definitions = new ApiDefinitions( (PartModels) this.registryContainer.partModels() );
 	}
 
+	public PartModels getPartModels()
+	{
+		return (PartModels) this.registryContainer.partModels();
+	}
+
 	@Override
 	public IRegistryContainer registries()
 	{

@@ -42,19 +42,8 @@ task deinstallIC2(type: Delete) {
     delete fileTree(dir: minecraft.runDir + "/mods", include: "*industrialcraft-2*.jar")
 }
 
-// COMPATLAYER
-task installCompatLayer(type: Copy, dependsOn: "deinstallCompatLayer") {
-    from { configurations.mods }
-    include "**/*compatlayer*.jar"
-    into file(minecraft.runDir + "/mods")
-}
-
-task deinstallCompatLayer(type: Delete) {
-    delete fileTree(dir: minecraft.runDir + "/mods", include: "*compatlayer*.jar")
-}
-
 // TOP
-task installTop(type: Copy, dependsOn: ["deinstallTop", "installCompatLayer"]) {
+task installTop(type: Copy, dependsOn: ["deinstallTop"]) {
     from { configurations.mods }
     include "**/*TheOneProbe*.jar"
     into file(minecraft.runDir + "/mods")

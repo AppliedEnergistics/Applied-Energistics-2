@@ -19,6 +19,7 @@
 package appeng.client.render.tesr;
 
 
+import net.minecraft.client.renderer.BufferBuilder;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.block.state.IBlockState;
@@ -27,7 +28,6 @@ import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -47,7 +47,7 @@ public class CrankTESR extends TileEntitySpecialRenderer<TileCrank>
 {
 
 	@Override
-	public void renderTileEntityAt( TileCrank te, double x, double y, double z, float partialTicks, int destroyStage )
+	public void render( TileCrank te, double x, double y, double z, float partialTicks, int destroyStage, float p_render_10_ )
 	{
 		// Most of this is blatantly copied from FastTESR
 		Tessellator tessellator = Tessellator.getInstance();
@@ -71,7 +71,7 @@ public class CrankTESR extends TileEntitySpecialRenderer<TileCrank>
 		BlockRendererDispatcher dispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
 		IBakedModel model = dispatcher.getModelForState( blockState );
 
-		VertexBuffer buffer = tessellator.getBuffer();
+		BufferBuilder buffer = tessellator.getBuffer();
 		buffer.begin( GL11.GL_QUADS, DefaultVertexFormats.BLOCK );
 
 		// The translation ensures the vertex buffer positions are relative to 0,0,0 instead of the block pos

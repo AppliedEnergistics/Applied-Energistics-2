@@ -20,7 +20,7 @@ package appeng.client.render.effects;
 
 
 import net.minecraft.client.particle.ParticleBreaking;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -66,7 +66,7 @@ public class EnergyFx extends ParticleBreaking
 	}
 
 	@Override
-	public void renderParticle( final VertexBuffer par1Tessellator, final Entity p_180434_2_, final float partialTicks, final float par3, final float par4, final float par5, final float par6, final float par7 )
+	public void renderParticle( final BufferBuilder par1Tessellator, final Entity p_180434_2_, final float partialTicks, final float par3, final float par4, final float par5, final float par6, final float par7 )
 	{
 		final float f6 = this.particleTextureIndex.getMinU();
 		final float f7 = this.particleTextureIndex.getMaxU();

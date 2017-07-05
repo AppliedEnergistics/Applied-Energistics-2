@@ -22,6 +22,8 @@ package appeng.container.slot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 
 public class OptionalSlotFake extends SlotFake
 {
@@ -42,6 +44,7 @@ public class OptionalSlotFake extends SlotFake
 	}
 
 	@Override
+	@Nonnull
 	public ItemStack getStack()
 	{
 		if( !this.isEnabled() )

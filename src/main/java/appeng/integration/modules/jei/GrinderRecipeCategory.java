@@ -50,6 +50,9 @@ class GrinderRecipeCategory extends BlankRecipeCategory<GrinderRecipeWrapper>
 	}
 
 	@Override
+	public String getModName() { return AppEng.MOD_NAME; }
+
+	@Override
 	public String getUid()
 	{
 		return GrinderRecipeCategory.UID;

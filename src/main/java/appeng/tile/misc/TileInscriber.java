@@ -293,20 +293,20 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			// :P
 		}
 	}
-
-	@Override
-	public boolean canInsertItem( final int slotIndex, final ItemStack insertingItem, final EnumFacing side )
-	{
-		if( !this.isItemValidForSlot( slotIndex, insertingItem ) )
-		{
-			return false;
-		}
-		if( !getStackInSlot( slotIndex ).isEmpty() )
-		{
-			return false;
-		}
-		return true;
-	}
+//
+//	@Override
+//	public boolean canInsertItem( final int slotIndex, final ItemStack insertingItem, final EnumFacing side )
+//	{
+//		if( !this.isItemValidForSlot( slotIndex, insertingItem ) )
+//		{
+//			return false;
+//		}
+//		if( !getStackInSlot( slotIndex ).isEmpty() )
+//		{
+//			return false;
+//		}
+//		return true;
+//	}
 	
 	@Override
 	public boolean canExtractItem( final int slotIndex, final ItemStack extractedItem, final EnumFacing side )

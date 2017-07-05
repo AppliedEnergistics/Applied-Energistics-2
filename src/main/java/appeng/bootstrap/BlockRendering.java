@@ -119,7 +119,8 @@ class BlockRendering implements IBlockRendering
 			factory.modelOverrideComponent.addOverride( block.getRegistryName().getResourcePath(), ( l, m ) -> new AutoRotatingModel( m ) );
 		}
 
-		builtInModels.forEach( factory::addBuiltInModel );
+		// TODO : 1.12
+		 builtInModels.forEach( factory::addBuiltInModel );
 
 		if( blockColor != null )
 		{

@@ -1,6 +1,7 @@
 package appeng.client.gui;
 
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -28,8 +29,8 @@ class Size1Slot extends Slot
 		this.delegate = delegate;
 	}
 
-	@Nullable
 	@Override
+	@Nonnull
 	public ItemStack getStack()
 	{
 		ItemStack orgStack = delegate.getStack();

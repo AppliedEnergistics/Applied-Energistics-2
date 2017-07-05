@@ -20,8 +20,7 @@ package appeng.client.render.cablebus;
 
 
 import java.util.Arrays;
-
-import com.google.common.base.Function;
+import java.util.function.Function;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;

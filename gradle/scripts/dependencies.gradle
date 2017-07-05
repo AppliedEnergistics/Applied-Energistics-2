@@ -58,15 +58,15 @@ dependencies {
     // installable runtime dependencies
     //mods "mcp.mobius.waila:Waila:${waila_version}"
     //mods "net.industrial-craft:industrialcraft-2:${ic2_version}:dev"
-    mods "mcjty.theoneprobe:TheOneProbe:${top_version}"
-    mods "com.github.mcjty:compatlayer:${compatlayer_version}"
+    mods "mcjty.theoneprobe:TheOneProbe-1.12:${top_version}"
+    // mods "com.github.mcjty:compatlayer:${compatlayer_version}"
 
     // compile against provided APIs
     compileOnly "mezz.jei:jei_${minecraft_version}:${jei_version}:api"
     //compileOnly "mcp.mobius.waila:Waila:${waila_version}"
-    compileOnly "net.darkhax.tesla:Tesla:${tesla_version}"
+    compileOnly "net.darkhax.tesla:Tesla-1.12:${tesla_version}"
     //compileOnly "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
-    compileOnly "mcjty.theoneprobe:TheOneProbe:${top_version}:api"
+    compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:${top_version}:api"
 
     // at runtime, use the full JEI jar
     runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"

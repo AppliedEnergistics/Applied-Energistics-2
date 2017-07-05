@@ -140,6 +140,7 @@ class ItemRendering implements IItemRendering
 			factory.addBootstrapComponent( new ItemModelComponent( item, ImmutableMap.of( 0, model ) ) );
 		}
 
+		// TODO : 1.12
 		builtInModels.forEach( factory::addBuiltInModel );
 
 		if( !resources.isEmpty() )

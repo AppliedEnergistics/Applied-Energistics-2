@@ -20,7 +20,7 @@ package appeng.client.render.effects;
 
 
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
@@ -93,7 +93,7 @@ public class AssemblerFX extends Particle implements ICanDie
 	}
 
 	@Override
-	public void renderParticle( final VertexBuffer par1Tessellator, final Entity p_180434_2_, final float l, final float rX, final float rY, final float rZ, final float rYZ, final float rXY )
+	public void renderParticle( final BufferBuilder par1Tessellator, final Entity p_180434_2_, final float l, final float rX, final float rY, final float rZ, final float rYZ, final float rXY )
 	{
 		this.time += l;
 		if( this.time > 4.0 )

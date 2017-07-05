@@ -20,19 +20,36 @@ package appeng.core;
 
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.definitions.IBlockDefinition;
+import appeng.api.definitions.IItemDefinition;
+import appeng.api.definitions.ITileDefinition;
+import appeng.api.util.AEColoredItemDefinition;
+import appeng.core.api.definitions.ApiBlocks;
 import com.google.common.base.Preconditions;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.API;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
@@ -103,13 +120,21 @@ import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
 import appeng.worldgen.MeteoriteWorldGen;
 import appeng.worldgen.QuartzWorldGen;
+import net.minecraftforge.registries.ForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistry;
 
-
+@Mod.EventBusSubscriber(modid = AppEng.MOD_ID)
 public final class Registration
 {
 	private final RecipeHandler recipeHandler;
 	private DimensionType storageDimensionType;
 	private Biome storageBiome;
+
+	// TODO : 1.12 Improve
+	private static List<Block> blocksToRegister = new ArrayList<Block>();
+	private static List<Item> itemsToRegister = new ArrayList<Item>();
+	private static List<IRecipe> recipesToRegister = new ArrayList<IRecipe>();
+
 
 	Registration()
 	{
@@ -121,6 +146,30 @@ public final class Registration
 		return this.storageBiome;
 	}
 
+	public static void addBlockToRegister( Block b )
+	{
+		if( blocksToRegister == null )
+			throw new IllegalStateException( "Past the registration phase already!" );
+		System.out.println("Adding block : " + b +" -> " + b.getRegistryName());
+		blocksToRegister.add( b );
+	}
+
+	public static void addRecipeToRegister( IRecipe r )
+	{
+		if( recipesToRegister == null )
+			throw new IllegalStateException( "Past the registration phase already!" );
+		System.out.println("Adding " + r);
+		recipesToRegister.add( r );
+	}
+
+	public static void addItemToRegister( Item i )
+	{
+		if( itemsToRegister == null )
+			throw new IllegalStateException( "Past the registration phase already!" );
+		System.out.println("Adding item : " + i + " -> " + i.getRegistryName());
+		itemsToRegister.add( i );
+	}
+
 	public DimensionType getStorageDimensionType()
 	{
 		return storageDimensionType;
@@ -128,7 +177,7 @@ public final class Registration
 
 	void preInitialize( final FMLPreInitializationEvent event )
 	{
-		this.registerSpatial( false );
+//		this.registerSpatial( false );
 
 		Capabilities.register();
 
@@ -148,7 +197,7 @@ public final class Registration
 		definitions.getRegistry().getBootstrapComponents().forEach( b -> b.preInitialize( event.getSide() ) );
 	}
 
-	private void registerSpatial( final boolean force )
+	private void registerSpatial( final boolean force, IForgeRegistry<Biome> registry )
 	{
 		if( !AEConfig.instance().isFeatureEnabled( AEFeature.SPATIAL_IO ) )
 		{
@@ -159,24 +208,28 @@ public final class Registration
 
 		if( this.storageBiome == null )
 		{
-			if( force && config.getStorageBiomeID() == -1 )
-			{
-				config.setStorageBiomeID( Platform.findEmpty( Biome.REGISTRY, 0, 256 ) );
-				if( config.getStorageBiomeID() == -1 )
-				{
-					throw new IllegalStateException( "Biome Array is full, please free up some Biome ID's or disable spatial." );
-				}
+//			if( force && config.getStorageBiomeID() == -1 )
+//			{
+//				config.setStorageBiomeID( Platform.findEmpty( Biome.REGISTRY, 0, 256 ) );
+//				if( config.getStorageBiomeID() == -1 )
+//				{
+//					throw new IllegalStateException( "Biome Array is full, please free up some Biome ID's or disable spatial." );
+//				}
+//
+//				this.storageBiome = new BiomeGenStorage();
+//				Biome.registerBiome( config.getStorageBiomeID(), "appliedenergistics2:storage_biome", this.storageBiome );
+//				config.save();
+//			}
+//
+//			if( !force && config.getStorageBiomeID() != -1 )
+//			{
+//				this.storageBiome = new BiomeGenStorage();
+//				Biome.registerBiome( config.getStorageBiomeID(), "appliedenergistics2:storage_biome", this.storageBiome );
+//			}
 
-				this.storageBiome = new BiomeGenStorage();
-				Biome.registerBiome( config.getStorageBiomeID(), "appliedenergistics2:storage_biome", this.storageBiome );
-				config.save();
-			}
-
-			if( !force && config.getStorageBiomeID() != -1 )
-			{
-				this.storageBiome = new BiomeGenStorage();
-				Biome.registerBiome( config.getStorageBiomeID(), "appliedenergistics2:storage_biome", this.storageBiome );
-			}
+			// TODO: 1.12, are modders allowed to even touch the ID's any more?
+			this.storageBiome = new BiomeGenStorage();
+			registry.register( this.storageBiome.setRegistryName("appliedenergistics2:storage_biome") );
 
 		}
 
@@ -297,24 +350,88 @@ public final class Registration
 		registration.registerAchievementHandlers();
 		registration.registerAchievements();
 
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_DISASSEMBLY_CRAFTING ) )
-		{
-			GameRegistry.addRecipe( new DisassembleRecipe() );
-			RecipeSorter.register( "appliedenergistics2:disassemble", DisassembleRecipe.class, Category.SHAPELESS, "after:minecraft:shapeless" );
-		}
+//		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_DISASSEMBLY_CRAFTING ) )
+//		{
+//			// TODO : 1.12 Improve
+//			addRecipeToRegister( new DisassembleRecipe() );
+//			RecipeSorter.register( "appliedenergistics2:disassemble", DisassembleRecipe.class, Category.SHAPELESS, "after:minecraft:shapeless" );
+//		}
+//
+//		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_FACADE_CRAFTING ) )
+//		{
+//			definitions.items().facade().maybeItem().ifPresent( facadeItem -> {
+//				// TODO : 1.12 Improve
+//				addRecipeToRegister( new FacadeRecipe( (ItemFacade) facadeItem ) );
+//				RecipeSorter.register( "appliedenergistics2:facade", FacadeRecipe.class, Category.SHAPED, "after:minecraft:shaped" );
+//			} );
+//		}
+	}
 
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_FACADE_CRAFTING ) )
+	@SubscribeEvent
+	void registerBiomes ( RegistryEvent.Register<Biome> event )
+	{
+		IForgeRegistry<Biome> registry = event.getRegistry();
+		this.registerSpatial( false, registry );
+	}
+
+	@SubscribeEvent
+	void registerBlocks(RegistryEvent.Register<Block> event)
+	{
+		IForgeRegistry<Block> registry = event.getRegistry();
+
+//		try {
+//			for ( Field f : Api.INSTANCE.definitions().blocks().getClass().getDeclaredFields() )
+//			{
+//				f.setAccessible(true);
+//				if( f.getType() == IBlockDefinition.class || f.getType() == ITileDefinition.class ) {
+//					IBlockDefinition block = (IBlockDefinition) f.get(Api.INSTANCE.definitions().blocks());
+//					Block b = block.maybeBlock().get();
+//					System.out.println(b +" -> " + b.getRegistryName());
+//					registry.register(b);
+//				}
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+
+		// TODO : 1.12 Improve
+		for (Block b : blocksToRegister)
 		{
-			definitions.items().facade().maybeItem().ifPresent( facadeItem -> {
-				GameRegistry.addRecipe( new FacadeRecipe( (ItemFacade) facadeItem ) );
-				RecipeSorter.register( "appliedenergistics2:facade", FacadeRecipe.class, Category.SHAPED, "after:minecraft:shaped" );
-			} );
+			System.out.println("Registering block : " + b + " -> " + b.getRegistryName());
+			registry.register( b );
 		}
+		blocksToRegister = null;
+	}
+
+	@SubscribeEvent
+	void registerItems(RegistryEvent.Register<Item> event) {
+
+		IForgeRegistry<Item> registry = event.getRegistry();
+		// TODO : 1.12 Improve
+		for( Item i : itemsToRegister )
+		{
+			System.out.println("Registering item : " + i + " -> " + i.getRegistryName());
+			registry.register( i );
+		}
+		itemsToRegister = null;
+	}
+
+	@SubscribeEvent
+	void registerRecipes(RegistryEvent.Register<IRecipe> event)
+	{
+		IForgeRegistry<IRecipe> registry = event.getRegistry();
+		// TODO : 1.12 Improve
+		for( IRecipe r : recipesToRegister )
+		{
+			registry.register( r );
+		}
+		recipesToRegister = null;
+
 	}
 
 	void postInit( final FMLPostInitializationEvent event )
 	{
-		this.registerSpatial( true );
+		// TODO : 1.12 Improve
 
 		final Api api = Api.INSTANCE;
 		final IRegistryContainer registries = api.registries();

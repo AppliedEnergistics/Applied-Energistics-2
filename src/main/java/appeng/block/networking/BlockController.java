@@ -34,6 +34,9 @@ import net.minecraft.world.World;
 import appeng.block.AEBaseTileBlock;
 import appeng.tile.networking.TileController;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class BlockController extends AEBaseTileBlock
 {
 
@@ -96,6 +99,7 @@ public class BlockController extends AEBaseTileBlock
 	 * controllers and the network state of this controller (offline, online, conflicted). This is used to
 	 * get a rudimentary connected texture feel for the controller based on how it is placed.
 	 */
+	@SuppressWarnings( "deprecation" )
 	@Override
 	public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
 	{
@@ -155,6 +159,7 @@ public class BlockController extends AEBaseTileBlock
 		return state.getValue( CONTROLLER_STATE ).ordinal();
 	}
 
+	@SuppressWarnings( "deprecation" )
 	@Override
 	public IBlockState getStateFromMeta( final int meta )
 	{
@@ -168,6 +173,7 @@ public class BlockController extends AEBaseTileBlock
 		return BlockRenderLayer.CUTOUT;
 	}
 
+	@SuppressWarnings( "deprecation" )
 	@Override
 	public void neighborChanged( IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
 	{

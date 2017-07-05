@@ -22,7 +22,9 @@ package appeng.recipes.handlers;
 import java.util.ArrayList;
 import java.util.List;
 
+import appeng.core.Registration;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import appeng.api.exceptions.MissingIngredientError;
@@ -113,7 +115,7 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 
 		try
 		{
-			GameRegistry.addRecipe( new ShapedRecipe( outIS, args.toArray( new Object[args.size()] ) ) );
+			Registration.addRecipeToRegister( new ShapedRecipe( outIS, args.toArray( new Object[args.size()] ) ) );
 		}
 		catch( final Throwable e )
 		{
