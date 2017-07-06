@@ -120,7 +120,7 @@ class BlockRendering implements IBlockRendering
 		}
 
 		// TODO : 1.12
-		 builtInModels.forEach( factory::addBuiltInModel );
+		builtInModels.forEach( factory::addBuiltInModel );
 
 		if( blockColor != null )
 		{

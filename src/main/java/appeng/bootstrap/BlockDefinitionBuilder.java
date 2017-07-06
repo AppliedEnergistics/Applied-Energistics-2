@@ -36,9 +36,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.gui.ForgeGuiFactory;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -70,6 +67,8 @@ class BlockDefinitionBuilder implements IBlockBuilder
 	private final List<BiConsumer<Block, Item>> preInitCallbacks = new ArrayList<>();
 
 	private final List<BiConsumer<Block, Item>> initCallbacks = new ArrayList<>();
+
+	private final List<BiConsumer<Block, Item>> modelRegCallbacks = new ArrayList<>();
 
 	private final List<BiConsumer<Block, Item>> postInitCallbacks = new ArrayList<>();
 
@@ -113,6 +112,13 @@ class BlockDefinitionBuilder implements IBlockBuilder
 	public BlockDefinitionBuilder init( BiConsumer<Block, Item> callback )
 	{
 		initCallbacks.add( callback );
+		return this;
+	}
+
+	@Override
+	public BlockDefinitionBuilder modelRegInit( BiConsumer<Block, Item> callback )
+	{
+		modelRegCallbacks.add( callback );
 		return this;
 	}
 
@@ -215,13 +221,10 @@ class BlockDefinitionBuilder implements IBlockBuilder
 
 		// Register the item and block with the game
 		factory.addPreInit( side -> {
-			// GameRegistry.register( block );
 			Registration.addBlockToRegister( block );
-//			ForgeRegistries.BLOCKS.register(block);
 			if( item != null )
 			{
 				Registration.addItemToRegister( item );
-//				ForgeRegistries.ITEMS.register(item);
 			}
 		} );
 
@@ -231,6 +234,7 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		// Register all extra handlers
 		preInitCallbacks.forEach( consumer -> factory.addPreInit( side -> consumer.accept( block, item ) ) );
 		initCallbacks.forEach( consumer -> factory.addInit( side -> consumer.accept( block, item ) ) );
+		modelRegCallbacks.forEach(consumer -> factory.addModelReg(side -> consumer.accept( block, item ) ) );
 		postInitCallbacks.forEach( consumer -> factory.addPostInit( side -> consumer.accept( block, item ) ) );
 
 

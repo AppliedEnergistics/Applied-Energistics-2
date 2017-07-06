@@ -38,6 +38,8 @@ public interface IBlockBuilder
 
 	IBlockBuilder init( BiConsumer<Block, Item> callback );
 
+	IBlockBuilder modelRegInit( BiConsumer<Block, Item> callback );
+
 	IBlockBuilder postInit( BiConsumer<Block, Item> callback );
 
 	IBlockBuilder features( AEFeature... features );

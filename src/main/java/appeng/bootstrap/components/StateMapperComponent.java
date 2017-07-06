@@ -31,7 +31,7 @@ import net.minecraftforge.fml.relauncher.Side;
 /**
  * Registers a custom state mapper for a given block.
  */
-public class StateMapperComponent implements PreInitComponent
+public class StateMapperComponent implements ModelRegComponent
 {
 
 	private final Block block;
@@ -45,7 +45,7 @@ public class StateMapperComponent implements PreInitComponent
 	}
 
 	@Override
-	public void preInitialize( Side side )
+	public void modelReg( Side side )
 	{
 		ModelLoader.setCustomStateMapper( block, stateMapper );
 		if( stateMapper instanceof IResourceManagerReloadListener )

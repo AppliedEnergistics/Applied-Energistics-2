@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import appeng.bootstrap.components.ModelRegComponent;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.IModel;
@@ -125,6 +126,11 @@ public class FeatureFactory
 	}
 
 	void addInit( InitComponent component )
+	{
+		this.bootstrapComponents.add( component );
+	}
+
+	void addModelReg( ModelRegComponent component )
 	{
 		this.bootstrapComponents.add( component );
 	}

@@ -20,7 +20,6 @@ package appeng.core;
 
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -28,11 +27,7 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import appeng.api.definitions.IBlockDefinition;
-import appeng.api.definitions.IItemDefinition;
-import appeng.api.definitions.ITileDefinition;
-import appeng.api.util.AEColoredItemDefinition;
-import appeng.core.api.definitions.ApiBlocks;
+import appeng.util.Platform;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.block.Block;
@@ -40,16 +35,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.BiomeManager;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.API;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
@@ -83,7 +76,6 @@ import appeng.core.stats.PlayerStatsRegistration;
 import appeng.hooks.TickHandler;
 import appeng.integration.Integrations;
 import appeng.items.materials.ItemMaterial;
-import appeng.items.parts.ItemFacade;
 import appeng.loot.ChestLoot;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cache.EnergyGridCache;
@@ -97,7 +89,6 @@ import appeng.parts.PartPlacement;
 import appeng.recipes.AEItemResolver;
 import appeng.recipes.CustomRecipeConfig;
 import appeng.recipes.RecipeHandler;
-import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
 import appeng.recipes.game.ShapedRecipe;
 import appeng.recipes.game.ShapelessRecipe;
@@ -117,13 +108,10 @@ import appeng.recipes.ores.OreDictionaryHandler;
 import appeng.spatial.BiomeGenStorage;
 import appeng.spatial.StorageWorldProvider;
 import appeng.tile.AEBaseTile;
-import appeng.util.Platform;
 import appeng.worldgen.MeteoriteWorldGen;
 import appeng.worldgen.QuartzWorldGen;
-import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 
-@Mod.EventBusSubscriber(modid = AppEng.MOD_ID)
 public final class Registration
 {
 	private final RecipeHandler recipeHandler;
@@ -368,56 +356,49 @@ public final class Registration
 	}
 
 	@SubscribeEvent
-	void registerBiomes ( RegistryEvent.Register<Biome> event )
+	public void registerBiomes ( RegistryEvent.Register<Biome> event )
 	{
 		IForgeRegistry<Biome> registry = event.getRegistry();
 		this.registerSpatial( false, registry );
 	}
 
 	@SubscribeEvent
-	void registerBlocks(RegistryEvent.Register<Block> event)
+	public void modelRegistryEvent ( ModelRegistryEvent event )
+	{
+		final Api api = Api.INSTANCE;
+		final IPartHelper partHelper = api.partHelper();
+		final IRegistryContainer registries = api.registries();
+
+		ApiDefinitions definitions = api.definitions();
+		definitions.getRegistry().getBootstrapComponents().forEach( b -> b.modelLoader( FMLCommonHandler.instance().getEffectiveSide() ) );
+	}
+
+	@SubscribeEvent
+	public void registerBlocks(RegistryEvent.Register<Block> event)
 	{
 		IForgeRegistry<Block> registry = event.getRegistry();
-
-//		try {
-//			for ( Field f : Api.INSTANCE.definitions().blocks().getClass().getDeclaredFields() )
-//			{
-//				f.setAccessible(true);
-//				if( f.getType() == IBlockDefinition.class || f.getType() == ITileDefinition.class ) {
-//					IBlockDefinition block = (IBlockDefinition) f.get(Api.INSTANCE.definitions().blocks());
-//					Block b = block.maybeBlock().get();
-//					System.out.println(b +" -> " + b.getRegistryName());
-//					registry.register(b);
-//				}
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-
 		// TODO : 1.12 Improve
 		for (Block b : blocksToRegister)
 		{
-			System.out.println("Registering block : " + b + " -> " + b.getRegistryName());
 			registry.register( b );
 		}
 		blocksToRegister = null;
 	}
 
 	@SubscribeEvent
-	void registerItems(RegistryEvent.Register<Item> event) {
+	public void registerItems(RegistryEvent.Register<Item> event) {
 
 		IForgeRegistry<Item> registry = event.getRegistry();
 		// TODO : 1.12 Improve
 		for( Item i : itemsToRegister )
 		{
-			System.out.println("Registering item : " + i + " -> " + i.getRegistryName());
 			registry.register( i );
 		}
 		itemsToRegister = null;
 	}
 
 	@SubscribeEvent
-	void registerRecipes(RegistryEvent.Register<IRecipe> event)
+	public void registerRecipes(RegistryEvent.Register<IRecipe> event)
 	{
 		IForgeRegistry<IRecipe> registry = event.getRegistry();
 		// TODO : 1.12 Improve
