@@ -9,13 +9,3 @@ shaped=
     mc:redstone_torch netherCrystal mc:redstone_torch,
     oredictionary:stone oredictionary:stone oredictionary:stone
     -> mc:comparator
-    
-shaped=
-    ae2:material.IronNugget ae2:material.IronNugget ae2:material.IronNugget,
-    ae2:material.IronNugget ae2:material.IronNugget ae2:material.IronNugget,
-    ae2:material.IronNugget ae2:material.IronNugget ae2:material.IronNugget
-    -> mc:iron_ingot
-
-shapeless=
-    oredictionary:ingotIron
-    -> 9 ae2:material.IronNugget
