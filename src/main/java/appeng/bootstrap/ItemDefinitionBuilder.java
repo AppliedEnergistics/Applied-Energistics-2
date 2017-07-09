@@ -31,8 +31,6 @@ import net.minecraft.block.BlockDispenser;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.dispenser.IBehaviorDispenseItem;
 import net.minecraft.item.Item;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -58,6 +56,8 @@ class ItemDefinitionBuilder implements IItemBuilder
 	private final List<Consumer<Item>> preInitCallbacks = new ArrayList<>();
 
 	private final List<Consumer<Item>> initCallbacks = new ArrayList<>();
+
+	private final List<Consumer<Item>> modelRegCallbacks = new ArrayList<>();
 
 	private final List<Consumer<Item>> postInitCallbacks = new ArrayList<>();
 
@@ -165,6 +165,7 @@ class ItemDefinitionBuilder implements IItemBuilder
 		// Register all extra handlers
 		preInitCallbacks.forEach( consumer -> factory.addPreInit( side -> consumer.accept( item ) ) );
 		initCallbacks.forEach( consumer -> factory.addInit( side -> consumer.accept( item ) ) );
+		modelRegCallbacks.forEach(consumer -> factory.addModelReg(side -> consumer.accept( item ) ) );
 		postInitCallbacks.forEach( consumer -> factory.addPostInit( side -> consumer.accept( item ) ) );
 
 		// Register custom dispenser behavior if requested

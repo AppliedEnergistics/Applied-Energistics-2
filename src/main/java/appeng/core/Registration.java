@@ -27,12 +27,14 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import appeng.util.Platform;
+import appeng.items.parts.ItemFacade;
+import appeng.recipes.game.DisassembleRecipe;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -111,6 +113,7 @@ import appeng.tile.AEBaseTile;
 import appeng.worldgen.MeteoriteWorldGen;
 import appeng.worldgen.QuartzWorldGen;
 import net.minecraftforge.registries.IForgeRegistry;
+import scala.App;
 
 public final class Registration
 {
@@ -122,7 +125,14 @@ public final class Registration
 	private static List<Block> blocksToRegister = new ArrayList<Block>();
 	private static List<Item> itemsToRegister = new ArrayList<Item>();
 	private static List<IRecipe> recipesToRegister = new ArrayList<IRecipe>();
+	private File recipeDirectory;
+	private CustomRecipeConfig customRecipeConfig;
 
+	public void setRecipeInformation ( File f, CustomRecipeConfig f2)
+	{
+		this.recipeDirectory = f;
+		this.customRecipeConfig = f2;
+	}
 
 	Registration()
 	{
@@ -138,7 +148,6 @@ public final class Registration
 	{
 		if( blocksToRegister == null )
 			throw new IllegalStateException( "Past the registration phase already!" );
-		System.out.println("Adding block : " + b +" -> " + b.getRegistryName());
 		blocksToRegister.add( b );
 	}
 
@@ -146,7 +155,6 @@ public final class Registration
 	{
 		if( recipesToRegister == null )
 			throw new IllegalStateException( "Past the registration phase already!" );
-		System.out.println("Adding " + r);
 		recipesToRegister.add( r );
 	}
 
@@ -154,7 +162,6 @@ public final class Registration
 	{
 		if( itemsToRegister == null )
 			throw new IllegalStateException( "Past the registration phase already!" );
-		System.out.println("Adding item : " + i + " -> " + i.getRegistryName());
 		itemsToRegister.add( i );
 	}
 
@@ -284,8 +291,8 @@ public final class Registration
 		// Perform ore camouflage!
 		ItemMaterial.instance.makeUnique();
 
-		final Runnable recipeLoader = new RecipeLoader( recipeDirectory, customRecipeConfig, this.recipeHandler );
-		recipeLoader.run();
+//		final Runnable recipeLoader = new RecipeLoader( recipeDirectory, customRecipeConfig, this.recipeHandler );
+//		recipeLoader.run();
 
 		if( Integrations.ic2().isEnabled() )
 		{
@@ -332,53 +339,38 @@ public final class Registration
 			registries.matterCannon().registerAmmo( ammoStack, weight );
 		} );
 
-		this.recipeHandler.injectRecipes();
+		// TODO : 1.12 This is way too late for recipes
+//		this.recipeHandler.injectRecipes();
 
 		final PlayerStatsRegistration registration = new PlayerStatsRegistration( MinecraftForge.EVENT_BUS, AEConfig.instance() );
 		registration.registerAchievementHandlers();
 		registration.registerAchievements();
-
-//		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_DISASSEMBLY_CRAFTING ) )
-//		{
-//			// TODO : 1.12 Improve
-//			addRecipeToRegister( new DisassembleRecipe() );
-//			RecipeSorter.register( "appliedenergistics2:disassemble", DisassembleRecipe.class, Category.SHAPELESS, "after:minecraft:shapeless" );
-//		}
-//
-//		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_FACADE_CRAFTING ) )
-//		{
-//			definitions.items().facade().maybeItem().ifPresent( facadeItem -> {
-//				// TODO : 1.12 Improve
-//				addRecipeToRegister( new FacadeRecipe( (ItemFacade) facadeItem ) );
-//				RecipeSorter.register( "appliedenergistics2:facade", FacadeRecipe.class, Category.SHAPED, "after:minecraft:shaped" );
-//			} );
-//		}
 	}
 
 	@SubscribeEvent
-	public void registerBiomes ( RegistryEvent.Register<Biome> event )
+	public void registerBiomes( RegistryEvent.Register<Biome> event )
 	{
 		IForgeRegistry<Biome> registry = event.getRegistry();
 		this.registerSpatial( false, registry );
 	}
 
 	@SubscribeEvent
-	public void modelRegistryEvent ( ModelRegistryEvent event )
+	public void modelRegistryEvent( ModelRegistryEvent event )
 	{
 		final Api api = Api.INSTANCE;
 		final IPartHelper partHelper = api.partHelper();
 		final IRegistryContainer registries = api.registries();
 
 		ApiDefinitions definitions = api.definitions();
-		definitions.getRegistry().getBootstrapComponents().forEach( b -> b.modelLoader( FMLCommonHandler.instance().getEffectiveSide() ) );
+		definitions.getRegistry().getBootstrapComponents().forEach( b -> b.modelReg( FMLCommonHandler.instance().getEffectiveSide() ) );
 	}
 
 	@SubscribeEvent
-	public void registerBlocks(RegistryEvent.Register<Block> event)
+	public void registerBlocks( RegistryEvent.Register<Block> event )
 	{
 		IForgeRegistry<Block> registry = event.getRegistry();
 		// TODO : 1.12 Improve
-		for (Block b : blocksToRegister)
+		for( Block b : blocksToRegister )
 		{
 			registry.register( b );
 		}
@@ -386,7 +378,8 @@ public final class Registration
 	}
 
 	@SubscribeEvent
-	public void registerItems(RegistryEvent.Register<Item> event) {
+	public void registerItems( RegistryEvent.Register<Item> event )
+	{
 
 		IForgeRegistry<Item> registry = event.getRegistry();
 		// TODO : 1.12 Improve
@@ -401,9 +394,44 @@ public final class Registration
 	public void registerRecipes(RegistryEvent.Register<IRecipe> event)
 	{
 		IForgeRegistry<IRecipe> registry = event.getRegistry();
+
+		Api api = Api.INSTANCE;
+		ApiDefinitions definitions = api.definitions();
+
+		final Runnable recipeLoader = new RecipeLoader( recipeDirectory, customRecipeConfig, this.recipeHandler );
+		recipeLoader.run();
+
+		this.recipeHandler.injectRecipes();
+
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_DISASSEMBLY_CRAFTING ) )
+		{
+			DisassembleRecipe r = new DisassembleRecipe();
+			// TODO : 1.12 Improve
+			addRecipeToRegister( r.setRegistryName( AppEng.MOD_ID.toLowerCase(), "disassemble" ) );
+//			RecipeSorter.register( "appliedenergistics2:disassemble", DisassembleRecipe.class, Category.SHAPELESS, "after:minecraft:shapeless" );
+		}
+
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_FACADE_CRAFTING ) )
+		{
+			definitions.items().facade().maybeItem().ifPresent( facadeItem -> {
+				// TODO : 1.12 Improve
+				FacadeRecipe f = new FacadeRecipe( (ItemFacade) facadeItem );
+				addRecipeToRegister( f.setRegistryName( AppEng.MOD_ID.toLowerCase(), "facade" ) );
+//				RecipeSorter.register( "appliedenergistics2:facade", FacadeRecipe.class, Category.SHAPED, "after:minecraft:shaped" );
+			} );
+		}
+
+		int x = 0;
 		// TODO : 1.12 Improve
 		for( IRecipe r : recipesToRegister )
 		{
+			// TODO : 1.12 *really* improve.
+			// Move to json where possible?
+			if( r.getRegistryName() == null )
+			{
+				r.setRegistryName( new ResourceLocation( AppEng.MOD_ID.toLowerCase(), "recipe_" + x ));
+				x++;
+			}
 			registry.register( r );
 		}
 		recipesToRegister = null;
@@ -545,6 +573,7 @@ public final class Registration
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityFlowerPot.class );
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityNote.class );
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityHopper.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityShulkerBox.class );
 
 		/*
 		 * Whitelist AE2

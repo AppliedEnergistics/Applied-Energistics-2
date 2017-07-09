@@ -141,6 +141,7 @@ public final class AppEng
 		this.configDirectory = new File( event.getModConfigurationDirectory().getPath(), "AppliedEnergistics2" );
 		this.recipeDirectory = new File( this.configDirectory, "recipes" );
 
+
 		final File configFile = new File( this.configDirectory, "AppliedEnergistics2.cfg" );
 		final File facadeFile = new File( this.configDirectory, "Facades.cfg" );
 		final File versionFile = new File( this.configDirectory, "VersionChecker.cfg" );
@@ -153,6 +154,8 @@ public final class AppEng
 		final VersionCheckerConfig versionCheckerConfig = new VersionCheckerConfig( versionFile );
 		this.customRecipeConfig = new CustomRecipeForgeConfiguration( recipeConfiguration );
 		this.exportConfig = new ForgeExportConfig( recipeConfiguration );
+
+		this.registration.setRecipeInformation( recipeDirectory, customRecipeConfig );
 
 		AELog.info( "Pre Initialization ( started )" );
 

@@ -37,7 +37,7 @@ import appeng.api.recipes.IIngredient;
 import javax.annotation.Nullable;
 
 
-public class ShapelessRecipe implements IRecipe, IRecipeBakeable
+public class ShapelessRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe, IRecipeBakeable
 {
 
 	private final ArrayList<Object> input = new ArrayList<Object>();
@@ -188,43 +188,5 @@ public class ShapelessRecipe implements IRecipe, IRecipeBakeable
 	public NonNullList<ItemStack> getRemainingItems( final InventoryCrafting inv )
 	{
 		return ForgeHooks.defaultRecipeGetRemainingItems( inv );
-	}
-
-	/**
-	 * Sets a unique name for this Item. This should be used for uniquely identify the instance of the Item.
-	 * This is the valid replacement for the atrocious 'getUnlocalizedName().substring(6)' stuff that everyone does.
-	 * Unlocalized names have NOTHING to do with unique identifiers. As demonstrated by vanilla blocks and items.
-	 * <p>
-	 * The supplied name will be prefixed with the currently active mod's modId.
-	 * If the supplied name already has a prefix that is different, it will be used and a warning will be logged.
-	 * <p>
-	 * If a name already exists, or this Item is already registered in a registry, then an IllegalStateException is thrown.
-	 * <p>
-	 * Returns 'this' to allow for chaining.
-	 *
-	 * @param name Unique registry name
-	 * @return This instance
-	 */
-	@Override
-	public IRecipe setRegistryName(ResourceLocation name) {
-		return null;
-	}
-
-	/**
-	 * A unique identifier for this entry, if this entry is registered already it will return it's official registry name.
-	 * Otherwise it will return the name set in setRegistryName().
-	 * If neither are valid null is returned.
-	 *
-	 * @return Unique identifier or null.
-	 */
-	@Nullable
-	@Override
-	public ResourceLocation getRegistryName() {
-		return null;
-	}
-
-	@Override
-	public Class<IRecipe> getRegistryType() {
-		return null;
 	}
 }

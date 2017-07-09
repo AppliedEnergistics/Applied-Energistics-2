@@ -30,6 +30,8 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.util.registry.IRegistry;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -61,7 +63,8 @@ public class ModelOverrideComponent implements PreInitComponent
 	{
 		IRegistry<ModelResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
 		Set<ModelResourceLocation> keys = Sets.newHashSet( modelRegistry.getKeys() );
-		IBakedModel missingModel = modelRegistry.getObject( MODEL_MISSING );
+//		IBakedModel missingModel = modelRegistry.getObject( MODEL_MISSING );
+		IModel missingModel = ModelLoaderRegistry.getMissingModel();
 
 		for( ModelResourceLocation location : keys )
 		{

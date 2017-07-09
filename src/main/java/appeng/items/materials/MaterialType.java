@@ -49,7 +49,6 @@ public enum MaterialType
 	Flour( 4, "material_flour", EnumSet.of( AEFeature.FLOUR ), "dustWheat" ),
 	GoldDust( 51, "material_gold_dust", EnumSet.of( AEFeature.DUSTS ), "dustGold" ),
 	IronDust( 49, "material_iron_dust", EnumSet.of( AEFeature.DUSTS ), "dustIron" ),
-	IronNugget( 50, "material_iron_nugget", EnumSet.of( AEFeature.NUGGETS ), "nuggetIron" ),
 
 	Silicon( 5, "material_silicon", EnumSet.of( AEFeature.SILICON ), "itemSilicon" ),
 	MatterBall( 6, "material_matter_ball", EnumSet.of( AEFeature.MATTER_BALL ) ),

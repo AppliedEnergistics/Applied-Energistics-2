@@ -160,6 +160,7 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		super.drawDefaultBackground();
 		super.drawScreen( mouseX, mouseY, btn );
+		this.renderHoveredToolTip(mouseX, mouseY);
 
 		for( final Object c : this.buttonList )
 		{
