@@ -246,7 +246,7 @@ public final class ApiBlocks implements IBlocks
 	{
 //		if(this.registeredClasses.contains( teClass ) )
 //		{
-//			AELog.debug( "Already registered " + teClass.getName() +" to Forge!" );
+//			AELog.debug( "Already registered " + teClass.getName() + " to Forge!" );
 //			return;
 //		}
 //

@@ -56,7 +56,7 @@ public final class QuartzWorldGen implements IWorldGenerator
 	}
 
 	@Override
-	public void generate(final Random r, final int chunkX, final int chunkZ, final World w, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider )
+    public void generate( final Random r, final int chunkX, final int chunkZ, final World w, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider )
 	{
 		int seaLevel = w.provider.getAverageGroundLevel() + 1;
 

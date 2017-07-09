@@ -40,7 +40,7 @@ import appeng.worldgen.meteorite.ChunkOnly;
 public final class MeteoriteWorldGen implements IWorldGenerator
 {
 	@Override
-	public void generate(final Random r, final int chunkX, final int chunkZ, final World w, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider )
+	public void generate( final Random r, final int chunkX, final int chunkZ, final World w, final IChunkGenerator chunkGenerator, final IChunkProvider chunkProvider )
 	{
 		if( WorldGenRegistry.INSTANCE.isWorldGenEnabled( WorldGenType.METEORITES, w ) )
 		{

@@ -38,9 +38,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -209,19 +207,19 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 		{
 			if( mt.getOreName() != null )
 			{
-				ItemStack replacement = null;
+				ItemStack replacement = ItemStack.EMPTY;
 
 				final String[] names = mt.getOreName().split( "," );
 
 				for( final String name : names )
 				{
-					if( replacement != null )
+					if( !replacement.isEmpty() )
 					{
 						break;
 					}
 
 					final List<ItemStack> options = OreDictionary.getOres( name );
-					if( options != null && options.size() > 0 )
+					if( options != OreDictionary.EMPTY_LIST && options.size() > 0 )
 					{
 						for( final ItemStack is : options )
 						{
@@ -234,7 +232,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 					}
 				}
 
-				if( replacement == null || AEConfig.instance().useAEVersion( mt ) )
+				if( replacement.isEmpty() || AEConfig.instance().useAEVersion( mt ) )
 				{
 					// continue using the AE2 item.
 					for( final String name : names )
