@@ -287,9 +287,9 @@ public final class Registration
 
 		ApiDefinitions definitions = api.definitions();
 		definitions.getRegistry().getBootstrapComponents().forEach( b -> b.initialize( event.getSide() ) );
-
-		// Perform ore camouflage!
-		ItemMaterial.instance.makeUnique();
+//
+//		// Perform ore camouflage!
+//		ItemMaterial.instance.makeUnique();
 
 //		final Runnable recipeLoader = new RecipeLoader( recipeDirectory, customRecipeConfig, this.recipeHandler );
 //		recipeLoader.run();
@@ -397,6 +397,9 @@ public final class Registration
 
 		Api api = Api.INSTANCE;
 		ApiDefinitions definitions = api.definitions();
+
+		// Perform ore camouflage!
+		ItemMaterial.instance.makeUnique();
 
 		final Runnable recipeLoader = new RecipeLoader( recipeDirectory, customRecipeConfig, this.recipeHandler );
 		recipeLoader.run();
