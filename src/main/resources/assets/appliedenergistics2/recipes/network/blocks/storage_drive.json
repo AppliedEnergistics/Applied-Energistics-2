@@ -1,0 +1,35 @@
+{
+  "result": {
+    "item": "appliedenergistics2:drive"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "aba",
+    "c c",
+    "aba"
+  ],
+  "key": {
+    "b": {
+      "type": "appliedenergistics2:part",
+      "part": "material.EngProcessor"
+    },
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    },
+    "c": [
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_glass"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_covered"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart"
+      }
+    ]
+  }
+}

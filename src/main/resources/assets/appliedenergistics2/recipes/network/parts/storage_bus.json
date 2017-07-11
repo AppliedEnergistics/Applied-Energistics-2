@@ -1,0 +1,24 @@
+{
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "part.StorageBus"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:sticky_piston"
+    },
+    [
+      {
+        "item": "appliedenergistics2:interface"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "part.Interface"
+      }
+    ],
+    {
+      "item": "minecraft:piston"
+    }
+  ]
+}

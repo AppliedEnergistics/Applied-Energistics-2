@@ -24,8 +24,6 @@ import java.util.List;
 
 import appeng.core.Registration;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RecipeError;
@@ -78,7 +76,8 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 
 		try
 		{
-			Registration.addRecipeToRegister( new ShapelessRecipe( outIS, args.toArray( new Object[args.size()] ) ) );
+			// TODO : 1.12 Cleanup/remove the old recipe loader.
+//			Registration.addRecipeToRegister( new ShapelessRecipe( outIS, args.toArray( new Object[args.size()] ) ) );
 		}
 		catch( final Throwable e )
 		{

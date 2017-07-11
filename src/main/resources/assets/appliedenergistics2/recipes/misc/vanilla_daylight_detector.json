@@ -1,0 +1,40 @@
+{
+  "result": {
+    "item": "minecraft:daylight_detector"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "aaa",
+    "bbb",
+    "ccc"
+  ],
+  "key": {
+    "a": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "blockGlass"
+      },
+      {
+        "type": "forge:ore_dict",
+        "ore": "glass"
+      },
+      {
+        "item": "minecraft:glass"
+      }
+    ],
+    "b": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "crystalNetherQuartz"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "material.PurifiedNetherQuartzCrystal"
+      }
+    ],
+    "c": {
+      "type": "forge:ore_dict",
+      "ore": "slabWood"
+    }
+  }
+}

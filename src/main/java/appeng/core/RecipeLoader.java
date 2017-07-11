@@ -77,7 +77,7 @@ public class RecipeLoader implements Runnable
 		if( this.config.isEnabled() )
 		{
 			// setup copying
-			final RecipeResourceCopier copier = new RecipeResourceCopier( "assets/appliedenergistics2/recipes/" );
+			final RecipeResourceCopier copier = new RecipeResourceCopier( "assets/appliedenergistics2/aerecipes/" );
 
 			final File generatedRecipesDir = new File( this.recipeDirectory, "generated" );
 			final File userRecipesDir = new File( this.recipeDirectory, "user" );

@@ -1,0 +1,17 @@
+{
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "part.IdentityAnnihilationPlane"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "type": "appliedenergistics2:part",
+      "part": "part.AnnihilationPlane"
+    },
+    {
+      "type": "appliedenergistics2:part",
+      "part": "material.FluixPearl"
+    }
+  ]
+}

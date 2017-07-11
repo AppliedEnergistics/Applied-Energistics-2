@@ -1,0 +1,34 @@
+{
+  "result": {
+    "item": "appliedenergistics2:entropy_manipulator"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "ab ",
+    "cd ",
+    "  d"
+  ],
+  "key": {
+    "c": {
+      "type": "appliedenergistics2:part",
+      "part": "material.EngProcessor"
+    },
+    "d": {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    },
+    "b": {
+      "item": "appliedenergistics2:energy_cell"
+    },
+    "a": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "crystalFluix"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "material.PurifiedFluixCrystal"
+      }
+    ]
+  }
+}

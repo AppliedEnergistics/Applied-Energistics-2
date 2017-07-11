@@ -1,0 +1,51 @@
+{
+  "result": {
+    "item": "appliedenergistics2:io_port"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "aaa",
+    "bcb",
+    "ded"
+  ],
+  "key": {
+    "a": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "blockGlass"
+      },
+      {
+        "type": "forge:ore_dict",
+        "ore": "glass"
+      },
+      {
+        "item": "minecraft:glass"
+      }
+    ],
+    "d": {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    },
+    "b": {
+      "item": "appliedenergistics2:drive"
+    },
+    "e": {
+      "type": "appliedenergistics2:part",
+      "part": "material.LogicProcessor"
+    },
+    "c": [
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_glass"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_covered"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart"
+      }
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "cable_glass.fluix",
+    "count": 4
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "type": "appliedenergistics2:part",
+      "part": "part.QuartzFiber"
+    },
+    [
+      {
+        "type": "forge:ore_dict",
+        "ore": "crystalFluix"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "material.PurifiedFluixCrystal"
+      }
+    ]
+  ]
+}

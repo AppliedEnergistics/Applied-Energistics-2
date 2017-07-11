@@ -1,0 +1,9 @@
+ {
+  "ingredients": {
+   "part": "appeng.recipes.RecipeHandler$PartFactory"
+  },
+  "recipes": {
+    "part_shaped": "appeng.recipes.helpers.PartRecipeFactory",
+    "part_shapeless": "appeng.recipes.helpers.PartRecipeFactory"
+  }
+}

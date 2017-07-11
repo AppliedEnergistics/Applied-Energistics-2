@@ -1,0 +1,18 @@
+{
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "material.WoodenGear"
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    " a ",
+    "a a",
+    " a "
+  ],
+  "key": {
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "stickWood"
+    }
+  }
+}

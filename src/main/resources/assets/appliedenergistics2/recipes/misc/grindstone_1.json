@@ -1,0 +1,39 @@
+{
+  "result": {
+    "item": "appliedenergistics2:grindstone"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "aba",
+    "cac",
+    "dcd"
+  ],
+  "key": {
+    "c": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "crystalCertusQuartz"
+      },
+      {
+        "type": "forge:ore_dict",
+        "ore": "crystalNetherQuartz"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "material.CertusQuartzCrystalCharged"
+      }
+    ],
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "stone"
+    },
+    "d": {
+      "type": "forge:ore_dict",
+      "ore": "cobblestone"
+    },
+    "b": {
+      "type": "forge:ore_dict",
+      "ore": "gearWood"
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "part.QuartzFiber",
+    "count": 3
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    "aaa",
+    "bbb",
+    "aaa"
+  ],
+  "key": {
+    "a": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "blockGlass"
+      },
+      {
+        "type": "forge:ore_dict",
+        "ore": "glass"
+      },
+      {
+        "item": "minecraft:glass"
+      }
+    ],
+    "b": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "dustCertusQuartz"
+      },
+      {
+        "type": "forge:ore_dict",
+        "ore": "dustNetherQuartz"
+      }
+    ]
+  }
+}

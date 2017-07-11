@@ -1,0 +1,31 @@
+{
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "material.AnnihilationCore",
+    "count": 2
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    "abc"
+  ],
+  "key": {
+    "b": {
+      "type": "forge:ore_dict",
+      "ore": "dustFluix"
+    },
+    "a": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "crystalNetherQuartz"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "material.PurifiedNetherQuartzCrystal"
+      }
+    ],
+    "c": {
+      "type": "appliedenergistics2:part",
+      "part": "material.LogicProcessor"
+    }
+  }
+}

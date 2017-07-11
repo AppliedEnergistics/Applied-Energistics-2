@@ -139,7 +139,7 @@ public final class AppEng
 
 		final Stopwatch watch = Stopwatch.createStarted();
 		this.configDirectory = new File( event.getModConfigurationDirectory().getPath(), "AppliedEnergistics2" );
-		this.recipeDirectory = new File( this.configDirectory, "recipes" );
+		this.recipeDirectory = new File( this.configDirectory, "aerecipes" );
 
 
 		final File configFile = new File( this.configDirectory, "AppliedEnergistics2.cfg" );

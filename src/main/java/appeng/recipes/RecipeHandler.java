@@ -23,13 +23,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -38,12 +33,17 @@ import javax.annotation.Nonnull;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 
+import com.google.gson.JsonObject;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.IIngredientFactory;
+import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.fml.common.LoaderState;
 
 import appeng.api.AEApi;
+import appeng.api.recipes.*;
+import appeng.core.Api;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItems;
@@ -51,10 +51,6 @@ import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RecipeError;
 import appeng.api.exceptions.RegistrationError;
 import appeng.api.features.IRecipeHandlerRegistry;
-import appeng.api.recipes.ICraftHandler;
-import appeng.api.recipes.IIngredient;
-import appeng.api.recipes.IRecipeHandler;
-import appeng.api.recipes.IRecipeLoader;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -766,4 +762,32 @@ public class RecipeHandler implements IRecipeHandler
 
 		return true;
 	}
+
+    public static class PartFactory implements IIngredientFactory
+    {
+
+        @Nonnull
+        @Override
+        public net.minecraft.item.crafting.Ingredient parse( JsonContext context, JsonObject json )
+        {
+			String partName = json.get( "part" ).getAsString();
+			Object result = (Object) Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, partName );
+			if( result instanceof ResolverResultSet )
+			{
+				ResolverResultSet resolverResultSet = (ResolverResultSet) result;
+				return net.minecraft.item.crafting.Ingredient.fromStacks(resolverResultSet.results.toArray(new ItemStack[resolverResultSet.results.size()]));
+			}
+			else if( result instanceof ResolverResult )
+			{
+				ResolverResult resolverResult = (ResolverResult) result;
+
+				Item item = Item.getByNameOrId( AppEng.MOD_ID + ":" + resolverResult.itemName );
+				ItemStack itemStack = new ItemStack( item, 1, resolverResult.damageValue, resolverResult.compound );
+
+				return net.minecraft.item.crafting.Ingredient.fromStacks( itemStack );
+			}
+			return null;
+        }
+    }
+
 }

@@ -1,0 +1,32 @@
+{
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "part.AnnihilationPlane"
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    "ab",
+    "cb",
+    "ab"
+  ],
+  "key": {
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    },
+    "b": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "crystalFluix"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "material.PurifiedFluixCrystal"
+      }
+    ],
+    "c": {
+      "type": "appliedenergistics2:part",
+      "part": "material.AnnihilationCore"
+    }
+  }
+}

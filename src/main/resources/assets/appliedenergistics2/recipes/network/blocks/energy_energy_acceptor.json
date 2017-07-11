@@ -1,0 +1,30 @@
+{
+  "result": {
+    "item": "appliedenergistics2:energy_acceptor"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "key": {
+    "b": {
+      "item": "appliedenergistics2:quartz_glass"
+    },
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    },
+    "c": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "crystalFluix"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "material.PurifiedFluixCrystal"
+      }
+    ]
+  }
+}

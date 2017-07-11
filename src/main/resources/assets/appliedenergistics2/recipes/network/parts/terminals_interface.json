@@ -1,0 +1,28 @@
+{
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "part.InterfaceTerminal"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    [
+      {
+        "type": "forge:ore_dict",
+        "ore": "itemIlluminatedPanel"
+      }
+    ],
+    {
+      "type": "appliedenergistics2:part",
+      "part": "material.EngProcessor"
+    },
+    [
+      {
+        "item": "appliedenergistics2:interface"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "part.Interface"
+      }
+    ]
+  ]
+}

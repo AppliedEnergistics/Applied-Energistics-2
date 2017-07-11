@@ -1,0 +1,19 @@
+{
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "part.StorageMonitor"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "type": "appliedenergistics2:part",
+      "part": "part.LevelEmitter"
+    },
+    [
+      {
+        "type": "forge:ore_dict",
+        "ore": "itemIlluminatedPanel"
+      }
+    ]
+  ]
+}

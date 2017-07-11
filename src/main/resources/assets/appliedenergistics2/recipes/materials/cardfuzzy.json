@@ -1,0 +1,17 @@
+{
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "material.CardFuzzy"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "type": "appliedenergistics2:part",
+      "part": "material.AdvCard"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "wool"
+    }
+  ]
+}

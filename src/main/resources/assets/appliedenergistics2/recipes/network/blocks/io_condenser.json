@@ -1,0 +1,34 @@
+{
+  "result": {
+    "item": "appliedenergistics2:condenser"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "key": {
+    "b": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "blockGlass"
+      },
+      {
+        "type": "forge:ore_dict",
+        "ore": "glass"
+      },
+      {
+        "item": "minecraft:glass"
+      }
+    ],
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    },
+    "c": {
+      "type": "forge:ore_dict",
+      "ore": "dustFluix"
+    }
+  }
+}

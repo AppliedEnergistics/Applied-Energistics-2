@@ -1,0 +1,16 @@
+{
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "material.CardInverter"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone_torch"
+    },
+    {
+      "type": "appliedenergistics2:part",
+      "part": "material.AdvCard"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "result": {
+    "item": "appliedenergistics2:sky_stone_slab",
+    "count": 6
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "aaa"
+  ],
+  "key": {
+    "a": {
+      "item": "appliedenergistics2:sky_stone_block"
+    }
+  }
+}

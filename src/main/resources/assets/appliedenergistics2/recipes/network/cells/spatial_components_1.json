@@ -1,0 +1,26 @@
+{
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "material.Cell128SpatialPart"
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "key": {
+    "c": {
+      "type": "appliedenergistics2:part",
+      "part": "material.EngProcessor"
+    },
+    "b": {
+      "type": "appliedenergistics2:part",
+      "part": "material.Cell16SpatialPart"
+    },
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "dustGlowstone"
+    }
+  }
+}

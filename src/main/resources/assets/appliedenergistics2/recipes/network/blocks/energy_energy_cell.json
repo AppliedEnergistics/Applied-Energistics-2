@@ -1,0 +1,34 @@
+{
+  "result": {
+    "item": "appliedenergistics2:energy_cell"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "key": {
+    "c": {
+      "item": "appliedenergistics2:quartz_glass"
+    },
+    "a": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "crystalCertusQuartz"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "material.CertusQuartzCrystalCharged"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "material.PurifiedCertusQuartzCrystal"
+      }
+    ],
+    "b": {
+      "type": "forge:ore_dict",
+      "ore": "dustFluix"
+    }
+  }
+}

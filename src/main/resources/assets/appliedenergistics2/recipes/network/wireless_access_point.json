@@ -1,0 +1,35 @@
+{
+  "result": {
+    "item": "appliedenergistics2:wireless_access_point"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "a",
+    "b",
+    "c"
+  ],
+  "key": {
+    "a": {
+      "type": "appliedenergistics2:part",
+      "part": "material.Wireless"
+    },
+    "c": [
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_glass"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_covered"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart"
+      }
+    ],
+    "b": {
+      "type": "appliedenergistics2:part",
+      "part": "material.CalcProcessor"
+    }
+  }
+}

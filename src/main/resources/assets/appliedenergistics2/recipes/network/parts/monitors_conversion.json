@@ -1,0 +1,21 @@
+{
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "part.ConversionMonitor"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "type": "appliedenergistics2:part",
+      "part": "material.FormationCore"
+    },
+    {
+      "type": "appliedenergistics2:part",
+      "part": "part.StorageMonitor"
+    },
+    {
+      "type": "appliedenergistics2:part",
+      "part": "material.AnnihilationCore"
+    }
+  ]
+}

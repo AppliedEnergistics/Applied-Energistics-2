@@ -1,0 +1,46 @@
+{
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "material.WirelessBooster",
+    "count": 2
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    "abc",
+    "ddd"
+  ],
+  "key": {
+    "d": {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    },
+    "b": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "crystalCertusQuartz"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "material.CertusQuartzCrystalCharged"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "material.PurifiedCertusQuartzCrystal"
+      }
+    ],
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "dustFluix"
+    },
+    "c": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "dustEnder"
+      },
+      {
+        "type": "forge:ore_dict",
+        "ore": "dustEnderPearl"
+      }
+    ]
+  }
+}

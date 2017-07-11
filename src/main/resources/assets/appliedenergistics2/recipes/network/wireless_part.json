@@ -1,0 +1,26 @@
+{
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "material.Wireless"
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    " a ",
+    "bcb",
+    " b "
+  ],
+  "key": {
+    "b": {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    },
+    "c": {
+      "type": "appliedenergistics2:part",
+      "part": "part.QuartzFiber"
+    },
+    "a": {
+      "type": "appliedenergistics2:part",
+      "part": "material.FluixPearl"
+    }
+  }
+}

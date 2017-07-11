@@ -1,0 +1,27 @@
+{
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "material.CardCapacity"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    [
+      {
+        "type": "forge:ore_dict",
+        "ore": "crystalCertusQuartz"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "material.CertusQuartzCrystalCharged"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "material.PurifiedCertusQuartzCrystal"
+      }
+    ],
+    {
+      "type": "appliedenergistics2:part",
+      "part": "material.BasicCard"
+    }
+  ]
+}

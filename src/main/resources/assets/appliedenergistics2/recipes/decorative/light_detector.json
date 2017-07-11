@@ -1,0 +1,24 @@
+{
+  "result": {
+    "item": "appliedenergistics2:light_detector"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "ab"
+  ],
+  "key": {
+    "a": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "crystalNetherQuartz"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "material.PurifiedNetherQuartzCrystal"
+      }
+    ],
+    "b": {
+      "item": "minecraft:iron_ingot"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "material.CardCrafting"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "type": "forge:ore_dict",
+      "ore": "craftingTableWood"
+    },
+    {
+      "type": "appliedenergistics2:part",
+      "part": "material.BasicCard"
+    }
+  ]
+}

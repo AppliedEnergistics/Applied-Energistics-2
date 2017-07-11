@@ -1,0 +1,27 @@
+{
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "part.Terminal"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "type": "appliedenergistics2:part",
+      "part": "material.FormationCore"
+    },
+    [
+      {
+        "type": "forge:ore_dict",
+        "ore": "itemIlluminatedPanel"
+      }
+    ],
+    {
+      "type": "appliedenergistics2:part",
+      "part": "material.LogicProcessor"
+    },
+    {
+      "type": "appliedenergistics2:part",
+      "part": "material.AnnihilationCore"
+    }
+  ]
+}

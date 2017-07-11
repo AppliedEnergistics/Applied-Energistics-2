@@ -1,0 +1,38 @@
+{
+  "result": {
+    "item": "appliedenergistics2:interface"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "aba",
+    "c d",
+    "aba"
+  ],
+  "key": {
+    "d": {
+      "type": "appliedenergistics2:part",
+      "part": "material.FormationCore"
+    },
+    "b": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "blockGlass"
+      },
+      {
+        "type": "forge:ore_dict",
+        "ore": "glass"
+      },
+      {
+        "item": "minecraft:glass"
+      }
+    ],
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    },
+    "c": {
+      "type": "appliedenergistics2:part",
+      "part": "material.AnnihilationCore"
+    }
+  }
+}

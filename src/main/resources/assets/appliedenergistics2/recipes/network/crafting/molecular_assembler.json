@@ -1,0 +1,32 @@
+{
+  "result": {
+    "item": "appliedenergistics2:molecular_assembler"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "aba",
+    "cde",
+    "aba"
+  ],
+  "key": {
+    "e": {
+      "type": "appliedenergistics2:part",
+      "part": "material.FormationCore"
+    },
+    "b": {
+      "item": "appliedenergistics2:quartz_glass"
+    },
+    "d": {
+      "type": "forge:ore_dict",
+      "ore": "craftingTableWood"
+    },
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    },
+    "c": {
+      "type": "appliedenergistics2:part",
+      "part": "material.AnnihilationCore"
+    }
+  }
+}

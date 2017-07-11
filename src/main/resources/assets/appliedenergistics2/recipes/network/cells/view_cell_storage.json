@@ -1,0 +1,26 @@
+{
+  "result": {
+    "item": "appliedenergistics2:view_cell"
+  },
+  "type": "forge:ore_shapeless",
+  "ingredients": [
+    {
+      "type": "appliedenergistics2:part",
+      "part": "material.EmptyStorageCell"
+    },
+    [
+      {
+        "type": "forge:ore_dict",
+        "ore": "crystalCertusQuartz"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "material.CertusQuartzCrystalCharged"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "material.PurifiedCertusQuartzCrystal"
+      }
+    ]
+  ]
+}

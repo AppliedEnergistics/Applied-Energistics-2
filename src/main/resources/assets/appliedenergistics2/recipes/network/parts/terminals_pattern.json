@@ -1,0 +1,17 @@
+{
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "part.PatternTerminal"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "type": "appliedenergistics2:part",
+      "part": "material.EngProcessor"
+    },
+    {
+      "type": "appliedenergistics2:part",
+      "part": "part.CraftingTerminal"
+    }
+  ]
+}

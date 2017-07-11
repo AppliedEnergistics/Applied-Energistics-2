@@ -1,0 +1,30 @@
+{
+  "result": {
+    "item": "minecraft:comparator"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    " a ",
+    "aba",
+    "ccc"
+  ],
+  "key": {
+    "b": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "crystalNetherQuartz"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "material.PurifiedNetherQuartzCrystal"
+      }
+    ],
+    "a": {
+      "item": "minecraft:redstone_torch"
+    },
+    "c": {
+      "type": "forge:ore_dict",
+      "ore": "stone"
+    }
+  }
+}

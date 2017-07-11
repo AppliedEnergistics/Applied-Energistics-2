@@ -1,0 +1,39 @@
+{
+  "result": {
+    "item": "appliedenergistics2:crafting_unit"
+  },
+  "type": "forge:ore_shaped",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "ingotIron"
+    },
+    "d": {
+      "type": "appliedenergistics2:part",
+      "part": "material.LogicProcessor"
+    },
+    "c": [
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_glass"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_covered"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "cable_smart"
+      }
+    ],
+    "b": {
+      "type": "appliedenergistics2:part",
+      "part": "material.CalcProcessor"
+    }
+  }
+}

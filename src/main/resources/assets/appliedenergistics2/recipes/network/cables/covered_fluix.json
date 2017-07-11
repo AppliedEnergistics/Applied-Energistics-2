@@ -1,0 +1,17 @@
+{
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "cable_covered.fluix"
+  },
+  "type": "appliedenergistics2:part_shapeless",
+  "ingredients": [
+    {
+      "type": "forge:ore_dict",
+      "ore": "wool"
+    },
+    {
+      "type": "appliedenergistics2:part",
+      "part": "cable_glass"
+    }
+  ]
+}

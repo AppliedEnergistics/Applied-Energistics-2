@@ -1,0 +1,36 @@
+{
+  "result": {
+    "type": "appliedenergistics2:part",
+    "part": "material.Cell1kPart"
+  },
+  "type": "appliedenergistics2:part_shaped",
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "dustRedstone"
+    },
+    "b": [
+      {
+        "type": "forge:ore_dict",
+        "ore": "crystalCertusQuartz"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "material.CertusQuartzCrystalCharged"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "material.PurifiedCertusQuartzCrystal"
+      }
+    ],
+    "c": {
+      "type": "appliedenergistics2:part",
+      "part": "material.LogicProcessor"
+    }
+  }
+}
