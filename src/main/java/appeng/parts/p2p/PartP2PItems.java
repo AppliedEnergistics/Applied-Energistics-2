@@ -22,6 +22,7 @@ package appeng.parts.p2p;
 import java.util.LinkedList;
 import java.util.List;
 
+import appeng.util.inv.AdaptorIInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -48,11 +49,16 @@ import appeng.tile.inventory.AppEngNullInventory;
 import appeng.util.Platform;
 import appeng.util.inv.WrapperChainedInventory;
 import appeng.util.inv.WrapperMCISidedInventory;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+
+import javax.annotation.Nonnull;
 
 
 // TODO: BC Integration
 //@Interface( iface = "buildcraft.api.transport.IPipeConnection", iname = IntegrationType.BuildCraftTransport )
-public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPipeConnection, */ISidedInventory, IGridTickable
+public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPipeConnection, */ISidedInventory, IGridTickable, IItemHandler
 {
 
 	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_items" );
@@ -266,10 +272,85 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPip
 		return this.getDestination().getSizeInventory();
 	}
 
+	/**
+	 * Returns the number of slots available
+	 *
+	 * @return The number of slots available
+	 **/
+	@Override
+	public int getSlots()
+	{
+		return this.getSizeInventory();
+	}
+
 	@Override
 	public ItemStack getStackInSlot( final int i )
 	{
 		return this.getDestination().getStackInSlot( i );
+	}
+
+	/**
+	 * Inserts an ItemStack into the given slot and return the remainder.
+	 * The ItemStack should not be modified in this function!
+	 * Note: This behaviour is subtly different from IFluidHandlers.fill()
+	 *
+	 * @param slot     Slot to insert into.
+	 * @param stack    ItemStack to insert.
+	 * @param simulate If true, the insertion is only simulated
+	 * @return The remaining ItemStack that was not inserted (if the entire stack is accepted, then return ItemStack.EMPTY).
+	 * May be the same as the input ItemStack if unchanged, otherwise a new ItemStack.
+	 **/
+	@Nonnull
+	@Override
+	public ItemStack insertItem( int slot, @Nonnull ItemStack stack, boolean simulate )
+	{
+
+		if( isItemValidForSlot( slot, stack )  )
+		{
+			AdaptorIInventory adaptor = new AdaptorIInventory( this.getDestination() );
+
+			if( simulate ) {
+				return adaptor.simulateAdd( stack );
+			}
+			else
+			{
+				return adaptor.addItems( stack );
+			}
+		}
+		return stack;
+	}
+
+	/**
+	 * Extracts an ItemStack from the given slot. The returned value must be null
+	 * if nothing is extracted, otherwise it's stack size must not be greater than amount or the
+	 * itemstacks getMaxStackSize().
+	 *
+	 * @param slot     Slot to extract from.
+	 * @param amount   Amount to extract (may be greater than the current stacks max limit)
+	 * @param simulate If true, the extraction is only simulated
+	 * @return ItemStack extracted from the slot, must be ItemStack.EMPTY, if nothing can be extracted
+	 **/
+	@Nonnull
+	@Override
+	public ItemStack extractItem( int slot, int amount, boolean simulate )
+	{
+		return ItemStack.EMPTY;
+	}
+
+	/**
+	 * Retrieves the maximum stack size allowed to exist in the given slot.
+	 *
+	 * @param slot Slot to query.
+	 * @return The maximum stack size allowed in the slot.
+	 */
+	@Override
+	public int getSlotLimit( int slot )
+	{
+		if( slot >= 0 && slot < getDestination().getSizeInventory() )
+		{
+			return this.getDestination().getInventoryStackLimit();
+		}
+		return 0;
 	}
 
 	@Override
@@ -331,6 +412,28 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPip
 	}
 
 	@Override
+	public boolean hasCapability( Capability<?> capabilityClass )
+	{
+		if( capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
+		{
+			return true;
+		}
+
+		return super.hasCapability( capabilityClass );
+	}
+
+	@Override
+	public <T> T getCapability( Capability<T> capabilityClass )
+	{
+		if( capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
+		{
+			return (T) this;
+		}
+
+		return super.getCapability( capabilityClass );
+	}
+
+	@Override
 	public boolean isItemValidForSlot( final int i, final net.minecraft.item.ItemStack itemstack )
 	{
 		return this.getDestination().isItemValidForSlot( i, itemstack );
@@ -381,7 +484,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPip
 	@Override
 	public void clear()
 	{
-		// probobly not...
+		// probably not...
 	}
 
 	@Override
