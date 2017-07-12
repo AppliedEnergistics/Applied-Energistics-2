@@ -22,8 +22,10 @@ package appeng.core.features.registries;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.sun.istack.internal.NotNull;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -69,7 +71,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		this.addNewAttunement( new ItemStack( Blocks.REDSTONE_WIRE ), TunnelType.REDSTONE );
 		this.addNewAttunement( new ItemStack( Blocks.REDSTONE_BLOCK ), TunnelType.REDSTONE );
 		this.addNewAttunement( new ItemStack( Blocks.LEVER ), TunnelType.REDSTONE );
-		this.addNewAttunement( this.getModItem( "EnderIO", "itemRedstoneConduit", OreDictionary.WILDCARD_VALUE ), TunnelType.REDSTONE );
+		this.addNewAttunement( this.getModItem( "enderio", "itemredstoneconduit", OreDictionary.WILDCARD_VALUE ), TunnelType.REDSTONE );
 
 		/**
 		 * attune based on lots of random item related stuff
@@ -87,10 +89,10 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		this.addNewAttunement( new ItemStack( Blocks.HOPPER ), TunnelType.ITEM );
 		this.addNewAttunement( new ItemStack( Blocks.CHEST ), TunnelType.ITEM );
 		this.addNewAttunement( new ItemStack( Blocks.TRAPPED_CHEST ), TunnelType.ITEM );
-		this.addNewAttunement( this.getModItem( "ExtraUtilities", "extractor_base", 0 ), TunnelType.ITEM );
-		this.addNewAttunement( this.getModItem( "Mekanism", "PartTransmitter", 9 ), TunnelType.ITEM );
-		this.addNewAttunement( this.getModItem( "EnderIO", "itemItemConduit", OreDictionary.WILDCARD_VALUE ), TunnelType.ITEM );
-		this.addNewAttunement( this.getModItem( "ThermalDynamics", "ThermalDynamics_32", 0 ), TunnelType.ITEM );
+		this.addNewAttunement( this.getModItem( "extrautilities", "extractor_base", 0 ), TunnelType.ITEM );
+		this.addNewAttunement( this.getModItem( "mekanism", "parttransmitter", 9 ), TunnelType.ITEM );
+		this.addNewAttunement( this.getModItem( "enderio", "itemitemconduit", OreDictionary.WILDCARD_VALUE ), TunnelType.ITEM );
+		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 0 ), TunnelType.ITEM );
 
 		/**
 		 * attune based on lots of random item related stuff
@@ -99,12 +101,12 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		this.addNewAttunement( new ItemStack( Items.LAVA_BUCKET ), TunnelType.FLUID );
 		this.addNewAttunement( new ItemStack( Items.MILK_BUCKET ), TunnelType.FLUID );
 		this.addNewAttunement( new ItemStack( Items.WATER_BUCKET ), TunnelType.FLUID );
-		this.addNewAttunement( this.getModItem( "Mekanism", "MachineBlock2", 11 ), TunnelType.FLUID );
-		this.addNewAttunement( this.getModItem( "Mekanism", "PartTransmitter", 4 ), TunnelType.FLUID );
-		this.addNewAttunement( this.getModItem( "ExtraUtilities", "extractor_base", 6 ), TunnelType.FLUID );
-		this.addNewAttunement( this.getModItem( "ExtraUtilities", "drum", OreDictionary.WILDCARD_VALUE ), TunnelType.FLUID );
-		this.addNewAttunement( this.getModItem( "EnderIO", "itemLiquidConduit", OreDictionary.WILDCARD_VALUE ), TunnelType.FLUID );
-		this.addNewAttunement( this.getModItem( "ThermalDynamics", "ThermalDynamics_16", 0 ), TunnelType.FLUID );
+		this.addNewAttunement( this.getModItem( "mekanism", "machineblock2", 11 ), TunnelType.FLUID );
+		this.addNewAttunement( this.getModItem( "mekanism", "parttransmitter", 4 ), TunnelType.FLUID );
+		this.addNewAttunement( this.getModItem( "extrautilities", "extractor_base", 6 ), TunnelType.FLUID );
+		this.addNewAttunement( this.getModItem( "extrautilities", "drum", OreDictionary.WILDCARD_VALUE ), TunnelType.FLUID );
+		this.addNewAttunement( this.getModItem( "enderio", "itemliquidconduit", OreDictionary.WILDCARD_VALUE ), TunnelType.FLUID );
+		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 0 ), TunnelType.FLUID );
 
 		for( final AEColor c : AEColor.values() )
 		{
@@ -116,9 +118,9 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 	}
 
 	@Override
-	public void addNewAttunement( @Nullable final ItemStack trigger, @Nullable final TunnelType type )
+	public void addNewAttunement( @Nonnull final ItemStack trigger, @Nullable final TunnelType type )
 	{
-		if( type == null || trigger == null )
+		if( type == null || trigger.isEmpty() )
 		{
 			return;
 		}
@@ -130,7 +132,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 	@Override
 	public TunnelType getTunnelTypeByItem( final ItemStack trigger )
 	{
-		if( trigger != null )
+		if( !trigger.isEmpty() )
 		{
 			// if( FluidRegistry.isContainer( trigger ) )
 			// {
@@ -154,7 +156,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		return null;
 	}
 
-	@Nullable
+	@NotNull
 	private ItemStack getModItem( final String modID, final String name, final int meta )
 	{
 

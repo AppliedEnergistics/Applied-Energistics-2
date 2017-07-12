@@ -160,7 +160,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	@Override
 	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
-		final ItemStack is = player.inventory.getCurrentItem();
+		final ItemStack is = player.getHeldItem( hand );
 
 		// UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor( is.getItem() );
 		// AELog.info( "ID:" + id.toString() + " : " + is.getItemDamage() );
