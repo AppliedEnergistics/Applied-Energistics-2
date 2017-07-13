@@ -129,6 +129,7 @@ import appeng.me.GridAccessException;
 import appeng.me.GridNode;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.util.helpers.ItemComparisonHelper;
+import appeng.util.helpers.P2PHelper;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.AESharedNBT;
 import appeng.util.prioritylist.IPartitionList;
@@ -157,10 +158,16 @@ public class Platform
 	// private static Method getEntry;
 
 	private static final ItemComparisonHelper ITEM_COMPARISON_HELPER = new ItemComparisonHelper();
+	private static final P2PHelper P2P_HELPER = new P2PHelper();
 
 	public static ItemComparisonHelper itemComparisons()
 	{
 		return ITEM_COMPARISON_HELPER;
+	}
+
+	public static P2PHelper p2p()
+	{
+		return P2P_HELPER;
 	}
 
 	public static Random getRandom()
@@ -542,7 +549,8 @@ public class Platform
 						final double offset_x = ( getRandomInt() % 32 - 16 ) / 82;
 						final double offset_y = ( getRandomInt() % 32 - 16 ) / 82;
 						final double offset_z = ( getRandomInt() % 32 - 16 ) / 82;
-						final EntityItem ei = new EntityItem( w, 0.5 + offset_x + pos.getX(), 0.5 + offset_y + pos.getY(), 0.2 + offset_z + pos.getZ(), i.copy() );
+						final EntityItem ei = new EntityItem( w, 0.5 + offset_x + pos.getX(), 0.5 + offset_y + pos.getY(), 0.2 + offset_z + pos.getZ(), i
+								.copy() );
 						w.spawnEntityInWorld( ei );
 					}
 				}
@@ -1493,7 +1501,8 @@ public class Platform
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.LOG_SECURITY_AUDITS ) )
 		{
 			AELog.info(
-					"Audit: " + a_isSecure + " : " + b_isSecure + " @ " + a.getLastSecurityKey() + " vs " + b.getLastSecurityKey() + " & " + a.getPlayerID() + " vs " + b.getPlayerID() );
+					"Audit: " + a_isSecure + " : " + b_isSecure + " @ " + a.getLastSecurityKey() + " vs " + b.getLastSecurityKey() + " & " + a
+							.getPlayerID() + " vs " + b.getPlayerID() );
 		}
 
 		// can't do that son...
@@ -1644,7 +1653,8 @@ public class Platform
 				}
 			}
 
-			final boolean checkFuzzy = ae_req.isOre() || providedTemplate.getItemDamage() == OreDictionary.WILDCARD_VALUE || providedTemplate.hasTagCompound() || providedTemplate.isItemStackDamageable();
+			final boolean checkFuzzy = ae_req.isOre() || providedTemplate.getItemDamage() == OreDictionary.WILDCARD_VALUE || providedTemplate
+					.hasTagCompound() || providedTemplate.isItemStackDamageable();
 
 			if( items != null && checkFuzzy )
 			{
