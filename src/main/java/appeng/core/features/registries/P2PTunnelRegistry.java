@@ -155,7 +155,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		return null;
 	}
 
-	@NonNull
+	@Nonnull
 	private ItemStack getModItem( final String modID, final String name, final int meta )
 	{
 
