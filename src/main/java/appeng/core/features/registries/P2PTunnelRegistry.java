@@ -25,7 +25,6 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.sun.istack.internal.NotNull;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -156,7 +155,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		return null;
 	}
 
-	@NotNull
+	@NonNull
 	private ItemStack getModItem( final String modID, final String name, final int meta )
 	{
 
