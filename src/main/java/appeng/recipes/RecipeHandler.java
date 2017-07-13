@@ -800,7 +800,9 @@ public class RecipeHandler implements IRecipeHandler
 
 				return net.minecraft.item.crafting.Ingredient.fromStacks( itemStack );
 			}
-			return null;
+
+			AELog.warn( "Looking for ingredient with name '" + partName + "' ended up with a null item!" );
+			return net.minecraft.item.crafting.Ingredient.EMPTY;
         }
     }
 

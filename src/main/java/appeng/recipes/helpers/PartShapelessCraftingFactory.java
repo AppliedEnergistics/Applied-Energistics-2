@@ -1,3 +1,21 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2017, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
+
 package appeng.recipes.helpers;
 
 import appeng.api.recipes.ResolverResult;
@@ -8,6 +26,7 @@ import appeng.core.AppEng;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -55,12 +74,17 @@ public class PartShapelessCraftingFactory extends ShapelessOreRecipe
             Item item = Item.getByNameOrId( AppEng.MOD_ID + ":" + resolverResult.itemName );
 
             if( item == null )
+            {
                 AELog.warn( "item was null for " + resolverResult.itemName + " ( " + ingredient + " )!" );
+                throw new JsonSyntaxException ( "Got a null item for " + resolverResult.itemName + " ( " + ingredient + " ). This should never happen!" );
+            }
 
             ItemStack itemStack = new ItemStack( item, count, resolverResult.damageValue, resolverResult.compound );
 
             return new PartShapelessCraftingFactory(group.isEmpty() ? null : new ResourceLocation(group), ings, itemStack);
         }
-        return null;
+
+        throw new JsonSyntaxException( "Couldn't find the resulting item in AE. This means AE was provided a recipe that it shouldn't be handling.\n"
+                                     + "Was looking for : '" + ingredient + "'." );
     }
 }
