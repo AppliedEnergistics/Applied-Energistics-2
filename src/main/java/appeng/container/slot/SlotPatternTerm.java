@@ -56,7 +56,7 @@ public class SlotPatternTerm extends SlotCraftingTerm
 	@Override
 	public ItemStack getStack()
 	{
-		if( !this.isEnabled() )
+		if( !this.isSlotEnabled() )
 		{
 			if( !this.getDisplayStack().isEmpty() )
 			{
@@ -68,7 +68,7 @@ public class SlotPatternTerm extends SlotCraftingTerm
 	}
 
 	@Override
-	public boolean isEnabled()
+	public boolean isSlotEnabled()
 	{
 		if( this.host == null )
 		{

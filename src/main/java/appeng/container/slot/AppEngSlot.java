@@ -26,6 +26,8 @@ import net.minecraft.item.ItemStack;
 
 import appeng.container.AEBaseContainer;
 import appeng.tile.inventory.AppEngInternalInventory;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 
@@ -75,7 +77,7 @@ public class AppEngSlot extends Slot
 	@Override
 	public boolean isItemValid( final ItemStack par1ItemStack )
 	{
-		if( this.isEnabled() )
+		if( this.isSlotEnabled() )
 		{
 			return super.isItemValid( par1ItemStack );
 		}
@@ -86,7 +88,7 @@ public class AppEngSlot extends Slot
 	@Nonnull
 	public ItemStack getStack()
 	{
-		if( !this.isEnabled() )
+		if( !this.isSlotEnabled() )
 		{
 			return ItemStack.EMPTY;
 		}
@@ -107,7 +109,7 @@ public class AppEngSlot extends Slot
 	@Override
 	public void putStack( final ItemStack par1ItemStack )
 	{
-		if( this.isEnabled() )
+		if( this.isSlotEnabled() )
 		{
 			super.putStack( par1ItemStack );
 
@@ -136,7 +138,7 @@ public class AppEngSlot extends Slot
 	@Override
 	public boolean canTakeStack( final EntityPlayer par1EntityPlayer )
 	{
-		if( this.isEnabled() )
+		if( this.isSlotEnabled() )
 		{
 			return super.canTakeStack( par1EntityPlayer );
 		}
@@ -144,9 +146,15 @@ public class AppEngSlot extends Slot
 	}
 
 	@Override
+	@SideOnly( Side.CLIENT )
 	public boolean isEnabled()
 	{
 		return super.isEnabled();
+	}
+
+	public boolean isSlotEnabled()
+	{
+		return true;
 	}
 
 	public ItemStack getDisplayStack()
@@ -176,7 +184,7 @@ public class AppEngSlot extends Slot
 
 	public boolean shouldDisplay()
 	{
-		return this.isEnabled();
+		return this.isSlotEnabled();
 	}
 
 	public int getX()

@@ -251,7 +251,7 @@ public abstract class AEBaseGui extends GuiContainer
 				final OptionalSlotFake fs = (OptionalSlotFake) slot;
 				if( fs.renderDisabled() )
 				{
-					if( fs.isEnabled() )
+					if( fs.isSlotEnabled() )
 					{
 						this.drawTexturedModalRect( ox + fs.xPos - 1, oy + fs.yPos - 1, fs.getSourceX() - 1, fs.getSourceY() - 1, 18,
 								18 );

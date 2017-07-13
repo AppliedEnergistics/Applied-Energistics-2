@@ -47,7 +47,7 @@ public class OptionalSlotFake extends SlotFake
 	@Nonnull
 	public ItemStack getStack()
 	{
-		if( !this.isEnabled() )
+		if( !this.isSlotEnabled() )
 		{
 			if( !this.getDisplayStack().isEmpty() )
 			{
@@ -59,7 +59,7 @@ public class OptionalSlotFake extends SlotFake
 	}
 
 	@Override
-	public boolean isEnabled()
+	public boolean isSlotEnabled()
 	{
 		if( this.host == null )
 		{

@@ -36,7 +36,7 @@ public class OptionalSlotNormal extends AppEngSlot
 	}
 
 	@Override
-	public boolean isEnabled()
+	public boolean isSlotEnabled()
 	{
 		if( this.host == null )
 		{

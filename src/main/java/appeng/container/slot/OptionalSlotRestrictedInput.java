@@ -37,7 +37,7 @@ public class OptionalSlotRestrictedInput extends SlotRestrictedInput
 	}
 
 	@Override
-	public boolean isEnabled()
+	public boolean isSlotEnabled()
 	{
 		if( this.host == null )
 		{

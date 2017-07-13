@@ -204,7 +204,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 			if( o instanceof OptionalSlotFake )
 			{
 				final OptionalSlotFake fs = (OptionalSlotFake) o;
-				if( !fs.isEnabled() && !fs.getDisplayStack().isEmpty() )
+				if( !fs.isSlotEnabled() && !fs.getDisplayStack().isEmpty() )
 				{
 					fs.clearStack();
 				}

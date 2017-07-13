@@ -31,7 +31,7 @@ public class SlotPatternOutputs extends OptionalSlotFake
 	}
 
 	@Override
-	public boolean isEnabled()
+	public boolean isSlotEnabled()
 	{
 		return true;
 	}
@@ -39,6 +39,6 @@ public class SlotPatternOutputs extends OptionalSlotFake
 	@Override
 	public boolean shouldDisplay()
 	{
-		return super.isEnabled();
+		return super.isSlotEnabled();
 	}
 }
