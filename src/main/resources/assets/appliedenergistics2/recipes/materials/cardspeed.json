@@ -1,4 +1,10 @@
 {
+  "conditions": [
+    {
+      "type": "appliedenergistics2:material_exists",
+      "material": "material.CardSpeed"
+    }
+  ],
   "result": {
     "type": "appliedenergistics2:part",
     "part": "material.CardSpeed"
