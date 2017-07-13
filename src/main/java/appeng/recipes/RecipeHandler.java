@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.BooleanSupplier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -36,7 +37,9 @@ import com.google.common.collect.HashMultimap;
 import com.google.gson.JsonObject;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.IConditionFactory;
 import net.minecraftforge.common.crafting.IIngredientFactory;
 import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.fml.common.LoaderState;
@@ -761,6 +764,17 @@ public class RecipeHandler implements IRecipeHandler
 		}
 
 		return true;
+	}
+
+	public static class MaterialExists implements IConditionFactory
+	{
+		@Override
+		public BooleanSupplier parse( JsonContext jsonContext, JsonObject jsonObject ) {
+			String material = JsonUtils.getString( jsonObject, "material" );
+			Object result = (Object) Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, material );
+			return () -> result != null;
+
+		}
 	}
 
     public static class PartFactory implements IIngredientFactory

@@ -47,12 +47,7 @@ public class PartShapelessCraftingFactory extends ShapelessOreRecipe
 
         String ingredient = resultObject.get( "part" ).getAsString();
         Object result = (Object) Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, ingredient );
-        if( result instanceof ResolverResultSet )
-        {
-            ResolverResultSet resolverResultSet = (ResolverResultSet) result;
-            return new PartShapelessCraftingFactory(group.isEmpty() ? null : new ResourceLocation(group), ings, resolverResultSet.results.toArray( new ItemStack[resolverResultSet.results.size()] )[0]);
-        }
-        else if( result instanceof ResolverResult )
+        if( result instanceof ResolverResult )
         {
             ResolverResult resolverResult = (ResolverResult) result;
 

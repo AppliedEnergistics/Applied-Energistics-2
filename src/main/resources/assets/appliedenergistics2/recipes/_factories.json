@@ -1,4 +1,7 @@
  {
+  "conditions": {
+   "material_exists": "appeng.recipes.RecipeHandler$MaterialExists"
+  },
   "ingredients": {
    "part": "appeng.recipes.RecipeHandler$PartFactory"
   },
