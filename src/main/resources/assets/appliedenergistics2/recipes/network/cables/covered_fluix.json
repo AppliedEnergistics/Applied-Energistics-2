@@ -7,7 +7,7 @@
   "ingredients": [
     {
       "type": "forge:ore_dict",
-      "ore": "wool"
+      "ore": "blockWool"
     },
     {
       "type": "appliedenergistics2:part",

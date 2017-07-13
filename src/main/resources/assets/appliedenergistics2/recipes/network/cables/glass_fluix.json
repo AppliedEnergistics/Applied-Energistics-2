@@ -19,6 +19,16 @@
         "type": "appliedenergistics2:part",
         "part": "material.PurifiedFluixCrystal"
       }
+    ],
+    [
+      {
+        "type": "forge:ore_dict",
+        "ore": "crystalFluix"
+      },
+      {
+        "type": "appliedenergistics2:part",
+        "part": "material.PurifiedFluixCrystal"
+      }
     ]
   ]
 }
