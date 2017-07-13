@@ -24,9 +24,9 @@
 package appeng.api.features;
 
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.sun.istack.internal.NotNull;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.config.TunnelType;
@@ -45,7 +45,7 @@ public interface IP2PTunnelRegistry
 	 * @param trigger - the item which triggers attunement. Nullable, but then ignored
 	 * @param type - the type of tunnel. Nullable, but then ignored
 	 */
-	void addNewAttunement( @NotNull ItemStack trigger, @Nullable TunnelType type );
+	void addNewAttunement( @Nonnull ItemStack trigger, @Nullable TunnelType type );
 
 	/**
 	 * returns null if no attunement can be found.
@@ -54,6 +54,6 @@ public interface IP2PTunnelRegistry
 	 *
 	 * @return null if no attunement can be found or attunement
 	 */
-	@NotNull
+	@Nonnull
 	TunnelType getTunnelTypeByItem( ItemStack trigger );
 }
