@@ -39,6 +39,14 @@ public interface IGrinderRegistry
 {
 
 	/**
+	 * Extensible way to create a grinder recipe.
+	 *
+	 * @return builder for grinder recipes
+	 */
+	@Nonnull
+	IGrinderRecipeBuilder builder();
+
+	/**
 	 * An immutable list of the currently registered recipes.
 	 *
 	 * @return currentlyRegisteredRecipes
@@ -47,44 +55,9 @@ public interface IGrinderRegistry
 	Collection<IGrinderRecipe> getRecipes();
 
 	/**
-	 * Add a new recipe with a single input and output and how many turns it requires.
-	 * 
-	 * Will ignore duplicate recipes with the same input item.
-	 *
-	 * @param in The {@link ItemStack} to grind.
-	 * @param out The {@link ItemStack} to output.
-	 * @param turns Amount of turns to turn the input into the output, with turns > 0.
+	 * Add a new recipe to the registry.
 	 */
-	void addRecipe( @Nonnull ItemStack in, @Nonnull ItemStack out, int turns );
-
-	/**
-	 * Add a new recipe with an input, output and a single optional output.
-	 * 
-	 * Will ignore duplicate recipes with the same input item.
-	 *
-	 * @param in The {@link ItemStack} to grind.
-	 * @param out The {@link ItemStack} to output.
-	 * @param optional The optional {@link ItemStack} to output of a certain chance.
-	 * @param chance Chance to get the optional output within 0.0 - 1.0
-	 * @param turns Amount of turns to turn the input into the output, with turns > 0.
-	 */
-	void addRecipe( @Nonnull ItemStack in, @Nonnull ItemStack out, @Nonnull ItemStack optional, float chance, int turns );
-
-	/**
-	 * add a new recipe with optional outputs, duplicates will not be added.
-	 * 
-	 * Will ignore duplicate recipes with the same input item.
-	 *
-	 * @param in The {@link ItemStack} to grind.
-	 * @param out The {@link ItemStack} to output.
-	 * @param optional The first optional {@link ItemStack} to output of a certain chance.
-	 * @param chance Chance to get the first optional output within 0.0 - 1.0
-	 * @param optional2 The second optional {@link ItemStack} to output of a certain chance.
-	 * @param chance2 chance to get the second optional output within 0.0 - 1.0
-	 * @param turns Amount of turns to turn the input into the output, with turns > 0.
-	 * 
-	 */
-	void addRecipe( @Nonnull ItemStack in, @Nonnull ItemStack out, @Nonnull ItemStack optional, float chance, @Nonnull ItemStack optional2, float chance2, int turns );
+	boolean addRecipe( IGrinderRecipe recipe );
 
 	/**
 	 * Remove the specific from the recipe list.

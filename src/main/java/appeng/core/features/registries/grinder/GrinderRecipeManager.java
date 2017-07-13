@@ -24,6 +24,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.annotation.Nonnull;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
@@ -33,7 +35,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.features.IGrinderRecipe;
+import appeng.api.features.IGrinderRecipeBuilder;
 import appeng.api.features.IGrinderRegistry;
+import appeng.api.features.IInscriberRecipe;
+import appeng.api.features.IInscriberRecipeBuilder;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.recipes.ores.IOreListener;
@@ -84,55 +89,17 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 	}
 
 	@Override
+	public boolean addRecipe( IGrinderRecipe recipe )
+	{
+		Preconditions.checkNotNull( recipe, "Cannot add null as recipe." );
+
+		return this.injectRecipe( recipe );
+	}
+
+	@Override
 	public Collection<IGrinderRecipe> getRecipes()
 	{
 		return Collections.unmodifiableCollection( this.recipes.values() );
-	}
-
-	@Override
-	public void addRecipe( final ItemStack in, final ItemStack out, final int cost )
-	{
-		Preconditions.checkNotNull( in, "Null is not accepted as input itemstack." );
-		Preconditions.checkNotNull( out, "Null is not accepted as output itemstack." );
-		Preconditions.checkArgument( cost > 0, "Turns must be > 0" );
-
-		this.log( "Allow Grinding of '%1$s' to '%2$s' for %3$d turn", Platform.getItemDisplayName( in ), Platform.getItemDisplayName( out ), cost );
-
-		this.injectRecipe( new AppEngGrinderRecipe( this.copy( in ), this.copy( out ), cost ) );
-	}
-
-	@Override
-	public void addRecipe( final ItemStack in, final ItemStack out, final ItemStack optional, final float chance, final int cost )
-	{
-		Preconditions.checkNotNull( in, "Null is not accepted as input itemstack." );
-		Preconditions.checkNotNull( out, "Null is not accepted as output itemstack." );
-		Preconditions.checkNotNull( optional, "Null is not accepted as optional itemstack." );
-		Preconditions.checkArgument( chance >= 0.0 && chance <= 1.0, "chance must be within 0.0 - 1.0." );
-		Preconditions.checkArgument( cost > 0, "Turns must be > 0" );
-
-		this.log( "Allow Grinding of '%1$s' to '%2$s' with optional '%3$s' @ %4$.2f for %5$d", Platform.getItemDisplayName( in ),
-				Platform.getItemDisplayName( out ), Platform.getItemDisplayName( optional ), chance, cost );
-
-		this.injectRecipe( new AppEngGrinderRecipe( this.copy( in ), this.copy( out ), this.copy( optional ), chance, cost ) );
-	}
-
-	@Override
-	public void addRecipe( final ItemStack in, final ItemStack out, final ItemStack optional1, final float chance1, final ItemStack optional2, final float chance2, final int cost )
-	{
-		Preconditions.checkNotNull( in, "Null is not accepted as input itemstack." );
-		Preconditions.checkNotNull( out, "Null is not accepted as output itemstack." );
-		Preconditions.checkNotNull( optional1, "Null is not accepted as optional itemstack." );
-		Preconditions.checkArgument( chance1 >= 0.0 && chance1 <= 1.0, "chance must be within 0.0 - 1.0." );
-		Preconditions.checkNotNull( optional2, "Null is not accepted as optional2 itemstack." );
-		Preconditions.checkArgument( chance2 >= 0.0 && chance2 <= 1.0, "chance2 must be within 0.0 - 1.0." );
-		Preconditions.checkArgument( cost > 0, "Turns must be > 0" );
-
-		this.log( "Allow Grinding of '%1$s' to '%2$s' with optional '%3$s' @ %4$.2f and optional2 '%5$s' @ %6$.2f for %7$d", Platform.getItemDisplayName( in ),
-				Platform.getItemDisplayName( out ), Platform.getItemDisplayName( optional1 ), chance1, Platform.getItemDisplayName( optional2 ), chance2,
-				cost );
-
-		this.injectRecipe(
-				new AppEngGrinderRecipe( this.copy( in ), this.copy( out ), this.copy( optional1 ), this.copy( optional2 ), chance1, chance2, cost ) );
 	}
 
 	@Override
@@ -214,26 +181,19 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		}
 	}
 
-	private void injectRecipe( final AppEngGrinderRecipe appEngGrinderRecipe )
+	private boolean injectRecipe( final IGrinderRecipe grinderRecipe )
 	{
-		final CacheKey cacheKey = new CacheKey( appEngGrinderRecipe.getInput() );
+		final CacheKey cacheKey = new CacheKey( grinderRecipe.getInput() );
 
 		if( this.recipes.containsKey( cacheKey ) )
 		{
-			this.log( "Tried to add duplicate recipe for '%1$s'", Platform.getItemDisplayName( appEngGrinderRecipe.getInput() ) );
-			return;
+			this.log( "Tried to add duplicate recipe for '%1$s'", Platform.getItemDisplayName( grinderRecipe.getInput() ) );
+			return false;
 		}
 
-		this.recipes.put( cacheKey, appEngGrinderRecipe );
-	}
+		this.recipes.put( cacheKey, grinderRecipe );
 
-	private ItemStack copy( final ItemStack is )
-	{
-		if( is != null )
-		{
-			return is.copy();
-		}
-		return null;
+		return true;
 	}
 
 	private int getDustToOreRatio( final String name )
@@ -259,11 +219,25 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 			{
 				final ItemStack extra = is.copy();
 				extra.stackSize = ratio - 1;
-				this.addRecipe( item, is, extra, (float) ( AEConfig.instance().getOreDoublePercentage() / 100.0 ), 8 );
+
+				final IGrinderRecipeBuilder builder = this.builder();
+				IGrinderRecipe grinderRecipe = builder.withInput( item )
+						.withOutput( is )
+						.withFirstOptional( extra, (float) ( AEConfig.instance().getOreDoublePercentage() / 100.0 ) )
+						.withTurns( 8 )
+						.build();
+
+				this.addRecipe( grinderRecipe );
 			}
 			else
 			{
-				this.addRecipe( item, is, 8 );
+				final IGrinderRecipeBuilder builder = this.builder();
+				IGrinderRecipe grinderRecipe = builder.withInput( item )
+						.withOutput( is )
+						.withTurns( 8 )
+						.build();
+
+				this.addRecipe( grinderRecipe );
 			}
 		}
 	}
@@ -280,7 +254,13 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 
 		if( this.dusts.containsKey( name ) )
 		{
-			this.addRecipe( item, this.dusts.get( name ), 4 );
+			final IGrinderRecipeBuilder builder = this.builder();
+			IGrinderRecipe grinderRecipe = builder.withInput( item )
+					.withOutput( this.dusts.get( name ) )
+					.withTurns( 4 )
+					.build();
+
+			this.addRecipe( grinderRecipe );
 		}
 	}
 
@@ -311,11 +291,25 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 				{
 					final ItemStack extra = is.copy();
 					extra.stackSize = ratio - 1;
-					this.addRecipe( d.getKey(), is, extra, (float) ( AEConfig.instance().getOreDoublePercentage() / 100.0 ), 8 );
+
+					final IGrinderRecipeBuilder builder = this.builder();
+					IGrinderRecipe grinderRecipe = builder.withInput( d.getKey() )
+							.withOutput( is )
+							.withFirstOptional( extra, (float) ( AEConfig.instance().getOreDoublePercentage() / 100.0 ) )
+							.withTurns( 8 )
+							.build();
+
+					this.addRecipe( grinderRecipe );
 				}
 				else
 				{
-					this.addRecipe( d.getKey(), is, 8 );
+					final IGrinderRecipeBuilder builder = this.builder();
+					IGrinderRecipe grinderRecipe = builder.withInput( d.getKey() )
+							.withOutput( is )
+							.withTurns( 8 )
+							.build();
+
+					this.addRecipe( grinderRecipe );
 				}
 			}
 		}
@@ -324,7 +318,13 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		{
 			if( name.equals( d.getValue() ) )
 			{
-				this.addRecipe( d.getKey(), item, 4 );
+				final IGrinderRecipeBuilder builder = this.builder();
+				IGrinderRecipe grinderRecipe = builder.withInput( d.getKey() )
+						.withOutput( item )
+						.withTurns( 4 )
+						.build();
+
+				this.addRecipe( grinderRecipe );
 			}
 		}
 	}
@@ -392,5 +392,118 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 			return true;
 		}
 
+	}
+
+	@Override
+	public IGrinderRecipeBuilder builder()
+	{
+		return new Builder();
+	}
+
+	/**
+	 * Internal {@link IInscriberRecipeBuilder} implementation.
+	 * Needs to be adapted to represent a correct {@link IInscriberRecipe}
+	 */
+	private static final class Builder implements IGrinderRecipeBuilder
+	{
+
+		private ItemStack in;
+		private ItemStack out;
+
+		private float optionalChance;
+		private ItemStack optionalOutput;
+
+		private float optionalChance2;
+		private ItemStack optionalOutput2;
+
+		private int turns;
+
+		@Override
+		public IGrinderRecipeBuilder withInput( ItemStack input )
+		{
+			this.in = this.copy( input );
+
+			return this;
+		}
+
+		@Override
+		public IGrinderRecipeBuilder withOutput( ItemStack output )
+		{
+			this.out = this.copy( output );
+
+			return this;
+		}
+
+		@Override
+		public IGrinderRecipeBuilder withFirstOptional( ItemStack optional, float chance )
+		{
+			this.optionalOutput = this.copy( optional );
+			this.optionalChance = chance;
+
+			return this;
+		}
+
+		@Override
+		public IGrinderRecipeBuilder withSecondOptional( ItemStack optional, float chance )
+		{
+			this.optionalOutput2 = this.copy( optional );
+			this.optionalChance2 = chance;
+
+			return this;
+		}
+
+		@Override
+		public IGrinderRecipeBuilder withTurns( int turns )
+		{
+			this.turns = turns;
+
+			return this;
+		}
+
+		@Nonnull
+		@Override
+		public IGrinderRecipe build()
+		{
+			if( this.in == null )
+			{
+				throw new IllegalStateException( "Null is not accepted as input itemstack." );
+			}
+
+			if( this.out == null )
+			{
+				throw new IllegalStateException( "Null is not accepted as output itemstack." );
+			}
+
+			if( this.optionalOutput != null && ( this.optionalChance < 0.0 && this.optionalChance > 1.0 ) )
+			{
+				throw new IllegalStateException( "Chance for the first optional must be within 0.0 - 1.0." );
+			}
+
+			if( this.optionalOutput == null && this.optionalOutput2 != null )
+			{
+				throw new IllegalStateException( "Second optional can only be used when the first is also present." );
+			}
+
+			if( this.optionalOutput2 != null && ( this.optionalChance2 < 0.0 && this.optionalChance2 > 1.0 ) )
+			{
+				throw new IllegalStateException( "Chance for the second optional must be within 0.0 - 1.0." );
+			}
+
+			if( this.turns <= 0 )
+			{
+				throw new IllegalStateException( "Turns must be > 0" );
+			}
+
+			return new AppEngGrinderRecipe( this.in, this.out, this.optionalOutput, this.optionalOutput2, this.optionalChance, this.optionalChance2, this.turns );
+		}
+
+		private ItemStack copy( final ItemStack is )
+		{
+			if( is != null )
+			{
+				return is.copy();
+			}
+			return null;
+		}
 	}
 }

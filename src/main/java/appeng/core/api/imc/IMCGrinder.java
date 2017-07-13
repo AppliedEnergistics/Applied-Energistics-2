@@ -58,6 +58,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 
 import appeng.api.AEApi;
+import appeng.api.features.IGrinderRecipe;
+import appeng.api.features.IGrinderRecipeBuilder;
+import appeng.api.features.IGrinderRegistry;
 import appeng.core.api.IIMCProcessor;
 
 
@@ -97,11 +100,27 @@ public class IMCGrinder implements IIMCProcessor
 
 			final float chance = msg.getFloat( "chance" );
 
-			AEApi.instance().registries().grinder().addRecipe( in, out, optional, chance, turns );
+			final IGrinderRegistry grinderRegistry = AEApi.instance().registries().grinder();
+			final IGrinderRecipeBuilder builder = grinderRegistry.builder();
+			IGrinderRecipe grinderRecipe = builder.withInput( in )
+					.withOutput( out )
+					.withFirstOptional( optional, chance )
+					.withTurns( turns )
+					.build();
+
+			grinderRegistry.addRecipe( grinderRecipe );
 		}
 		else
 		{
-			AEApi.instance().registries().grinder().addRecipe( in, out, turns );
+
+			final IGrinderRegistry grinderRegistry = AEApi.instance().registries().grinder();
+			final IGrinderRecipeBuilder builder = grinderRegistry.builder();
+			IGrinderRecipe grinderRecipe = builder.withInput( in )
+					.withOutput( out )
+					.withTurns( turns )
+					.build();
+
+			grinderRegistry.addRecipe( grinderRecipe );
 		}
 	}
 }
