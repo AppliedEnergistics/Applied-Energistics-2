@@ -44,6 +44,7 @@ public class PartShapelessCraftingFactory extends ShapelessOreRecipe
             throw new JsonParseException("No ingredients for shapeless recipe");
 
         JsonObject resultObject = (JsonObject) json.get( "result" );
+        int count = JsonUtils.getInt( resultObject, "count", 1);
 
         String ingredient = resultObject.get( "part" ).getAsString();
         Object result = (Object) Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, ingredient );
@@ -56,7 +57,7 @@ public class PartShapelessCraftingFactory extends ShapelessOreRecipe
             if( item == null )
                 AELog.warn( "item was null for " + resolverResult.itemName + " ( " + ingredient + " )!" );
 
-            ItemStack itemStack = new ItemStack( item, 1, resolverResult.damageValue, resolverResult.compound );
+            ItemStack itemStack = new ItemStack( item, count, resolverResult.damageValue, resolverResult.compound );
 
             return new PartShapelessCraftingFactory(group.isEmpty() ? null : new ResourceLocation(group), ings, itemStack);
         }

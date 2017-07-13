@@ -1,7 +1,6 @@
 package appeng.recipes.helpers;
 
 import appeng.api.recipes.ResolverResult;
-import appeng.api.recipes.ResolverResultSet;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.AppEng;
@@ -95,6 +94,7 @@ public class PartShapedCraftingFactory extends ShapedOreRecipe
             throw new JsonSyntaxException( "Key defines symbols that aren't used in pattern: " + keys );
 
         JsonObject resultObject = (JsonObject) json.get( "result" );
+        int count = JsonUtils.getInt( resultObject, "count", 1);
 
         String ingredient = resultObject.get( "part" ).getAsString();
         Object result = (Object) Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, ingredient );
@@ -105,7 +105,7 @@ public class PartShapedCraftingFactory extends ShapedOreRecipe
             Item item = Item.getByNameOrId( AppEng.MOD_ID + ":" + resolverResult.itemName );
             if(item == null)
                 AELog.warn( "item was null for " + resolverResult.itemName + " ( " + ingredient + " )!" );
-            ItemStack itemStack = new ItemStack( item, 1, resolverResult.damageValue, resolverResult.compound );
+            ItemStack itemStack = new ItemStack( item, count, resolverResult.damageValue, resolverResult.compound );
 
             return new PartShapedCraftingFactory( group.isEmpty() ? null : new ResourceLocation( group ), itemStack, primer );
         }
