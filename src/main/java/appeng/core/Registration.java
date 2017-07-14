@@ -393,10 +393,10 @@ public final class Registration
 	@SubscribeEvent
 	public void registerRecipes(RegistryEvent.Register<IRecipe> event)
 	{
-		IForgeRegistry<IRecipe> registry = event.getRegistry();
+		final IForgeRegistry<IRecipe> registry = event.getRegistry();
 
-		Api api = Api.INSTANCE;
-		ApiDefinitions definitions = api.definitions();
+		final Api api = Api.INSTANCE;
+		final ApiDefinitions definitions = api.definitions();
 
 		// Perform ore camouflage!
 		ItemMaterial.instance.makeUnique();

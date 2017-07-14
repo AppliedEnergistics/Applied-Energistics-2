@@ -100,6 +100,7 @@ public class BlockCableBus extends AEBaseTileBlock
 
 		// this will actually be overwritten later through setupTile and the
 		// combined layers
+		this.setTileEntity( TileCableBus.class );
 	}
 
 	@Override

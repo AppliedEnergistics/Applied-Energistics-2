@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import appeng.bootstrap.components.ModelRegComponent;
+import appeng.bootstrap.components.*;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.IModel;
@@ -33,11 +33,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
-import appeng.bootstrap.components.BuiltInModelComponent;
-import appeng.bootstrap.components.InitComponent;
-import appeng.bootstrap.components.ModelOverrideComponent;
-import appeng.bootstrap.components.PostInitComponent;
-import appeng.bootstrap.components.PreInitComponent;
 import appeng.core.features.AEFeature;
 import appeng.core.features.ActivityState;
 import appeng.core.features.ColoredItemDefinition;
@@ -58,10 +53,15 @@ public class FeatureFactory
 	@SideOnly( Side.CLIENT )
 	private BuiltInModelComponent builtInModelComponent;
 
+	public final TileEntityComponent tileEntityComponent;
+
 	public FeatureFactory()
 	{
 		this.defaultFeatures = new AEFeature[] { AEFeature.CORE };
 		this.bootstrapComponents = new ArrayList<>();
+
+		this.tileEntityComponent = new TileEntityComponent();
+		this.bootstrapComponents.add( tileEntityComponent );
 
 		if( Platform.isClient() )
 		{
@@ -77,6 +77,7 @@ public class FeatureFactory
 	{
 		this.defaultFeatures = defaultFeatures.clone();
 		this.bootstrapComponents = parent.bootstrapComponents;
+		this.tileEntityComponent = parent.tileEntityComponent;
 		if( Platform.isClient() )
 		{
 			this.modelOverrideComponent = parent.modelOverrideComponent;

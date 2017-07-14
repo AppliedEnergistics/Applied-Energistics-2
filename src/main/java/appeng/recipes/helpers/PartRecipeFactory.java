@@ -57,7 +57,7 @@ public class PartRecipeFactory implements IRecipeFactory
         else
         {
             throw new JsonSyntaxException( "Applied Energistics 2 was given a custom recipe that it does not know how to handle!\n"
-                                         + "Type should either be '" + AppEng.MOD_ID + ":shapeless' or '" + AppEng.MOD_ID + ":shaped', got '"+type+"'!" );
+                                         + "Type should either be '" + AppEng.MOD_ID + ":shapeless' or '" + AppEng.MOD_ID + ":shaped', got '" + type + "'!" );
         }
     }
 }

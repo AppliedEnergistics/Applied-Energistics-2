@@ -29,6 +29,7 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
+import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.core.Registration;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -76,7 +77,7 @@ class BlockDefinitionBuilder implements IBlockBuilder
 
 	private CreativeTabs creativeTab = CreativeTab.instance;
 
-	private Class<? extends AEBaseTile> teClass;
+	private TileEntityDefinition tileEntityDefinition;
 
 	private boolean disableItem = false;
 
@@ -156,9 +157,9 @@ class BlockDefinitionBuilder implements IBlockBuilder
 	}
 
 	@Override
-	public IBlockBuilder tileEntity( Class<? extends AEBaseTile> tileEntityClass )
+	public IBlockBuilder tileEntity( TileEntityDefinition tileEntityDefinition )
 	{
-		teClass = tileEntityClass;
+		this.tileEntityDefinition = tileEntityDefinition;
 		return this;
 	}
 
@@ -203,6 +204,7 @@ class BlockDefinitionBuilder implements IBlockBuilder
 	@Override
 	public <T extends IBlockDefinition> T build()
 	{
+		System.out.println("regName = " + registryName);
 		if( !AEConfig.instance().areFeaturesEnabled( features ) )
 		{
 			return (T) new TileDefinition( registryName, null, null );
@@ -238,9 +240,15 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		postInitCallbacks.forEach( consumer -> factory.addPostInit( side -> consumer.accept( block, item ) ) );
 
 
-		if ( teClass != null && block instanceof AEBaseTileBlock )
+
+		if ( tileEntityDefinition != null && block instanceof AEBaseTileBlock )
 		{
-			((AEBaseTileBlock) block).setTileEntity( teClass );
+			( (AEBaseTileBlock) block ).setTileEntity( tileEntityDefinition.getTileEntityClass() );
+			if( tileEntityDefinition.getName() == null )
+			{
+				tileEntityDefinition.setName( registryName );
+			}
+
 		}
 
 		if( Platform.isClient() )
@@ -264,8 +272,13 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		if( block instanceof AEBaseTileBlock )
 		{
 			factory.addPreInit( side -> {
-				AEBaseTile.registerTileItem( teClass, new BlockStackSrc( block, 0, ActivityState.Enabled ) );
+				AEBaseTile.registerTileItem( tileEntityDefinition == null ? ( (AEBaseTileBlock) block ).getTileEntityClass() : tileEntityDefinition.getTileEntityClass(), new BlockStackSrc( block, 0, ActivityState.Enabled ) );
 			} );
+
+			if( tileEntityDefinition != null )
+			{
+				factory.tileEntityComponent.addTileEntity( tileEntityDefinition );
+			}
 
 			return (T) new TileDefinition( registryName, (AEBaseTileBlock) block, item );
 		}
