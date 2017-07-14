@@ -161,8 +161,13 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		 */
 
 		this.addNewAttunement( "thermaldynamics", TunnelType.RF_POWER );
+		this.addNewAttunement( "thermalexpansion", TunnelType.RF_POWER );
+		this.addNewAttunement( "thermalfoundation", TunnelType.RF_POWER );
+		// TODO: Remove when confirmed that the official 1.12 version of EnderIO will support FE.
 		this.addNewAttunement( "enderio", TunnelType.RF_POWER );
+		// TODO: Remove when confirmed that the official 1.12 version of Mekanism will support FE.
 		this.addNewAttunement( "mekanism", TunnelType.RF_POWER );
+		// TODO: Remove when support for RFTools' Powercells support is added
 		this.addNewAttunement( "rftools", TunnelType.RF_POWER );
 		this.addNewAttunement( "ic2", TunnelType.IC2_POWER );
 
