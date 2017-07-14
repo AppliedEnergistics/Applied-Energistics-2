@@ -307,8 +307,6 @@ public final class Registration
 			 partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.redstoneflux.api.IEnergyReceiver" );
 		 }
 
-		partHelper.registerNewLayer( "appeng.parts.layers.LayerForgeEnergy", "net.minecraftforge.energy.IEnergyStorage" );
-
 //		if (IntegrationRegistry.INSTANCE.isEnabled(IntegrationType.RF)) {
 //			partHelper.registerNewLayer("appeng.parts.layers.LayerIEnergyStorager", "net.minecraftforge.common.capabilities.ICapabilityProvider");
 //		}
