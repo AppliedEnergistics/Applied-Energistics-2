@@ -62,8 +62,9 @@ public final class ApiParts implements IParts
 	private final IItemDefinition p2PTunnelRedstone;
 	private final IItemDefinition p2PTunnelItems;
 	private final IItemDefinition p2PTunnelFluids;
-	// private final IItemDefinition p2PTunnelEU;
-	// private final IItemDefinition p2PTunnelRF;
+	private final IItemDefinition p2PTunnelEU;
+	private final IItemDefinition p2PTunnelRF;
+	private final IItemDefinition p2PTunnelFE;
 	private final IItemDefinition p2PTunnelLight;
 	// private final IItemDefinition p2PTunnelOpenComputers;
 	private final IItemDefinition cableAnchor;
@@ -113,8 +114,9 @@ public final class ApiParts implements IParts
 		this.p2PTunnelRedstone = new DamagedItemDefinition( "part.tunnel.redstone", itemPart.createPart( PartType.P2PTunnelRedstone ) );
 		this.p2PTunnelItems = new DamagedItemDefinition( "part.tunnel.item", itemPart.createPart( PartType.P2PTunnelItems ) );
 		this.p2PTunnelFluids = new DamagedItemDefinition( "part.tunnel.fluid", itemPart.createPart( PartType.P2PTunnelFluids ) );
-		// this.p2PTunnelEU = new DamagedItemDefinition( "part.tunnel.eu", itemPart.createPart( PartType.P2PTunnelEU ) );
-		// this.p2PTunnelRF = new DamagedItemDefinition( itemMultiPart.createPart( PartType.P2PTunnelRF ) );
+		this.p2PTunnelEU = new DamagedItemDefinition( "part.tunnel.eu", itemPart.createPart( PartType.P2PTunnelEU ) );
+		this.p2PTunnelRF = new DamagedItemDefinition( "part.tunnel.rf", itemPart.createPart( PartType.P2PTunnelRF ) );
+		this.p2PTunnelFE = new DamagedItemDefinition( "part.tunnel.fe", itemPart.createPart( PartType.P2PTunnelFE ) );
 		this.p2PTunnelLight = new DamagedItemDefinition( "part.tunnel.light", itemPart.createPart( PartType.P2PTunnelLight ) );
 		// this.p2PTunnelOpenComputers = new DamagedItemDefinition( itemMultiPart.createPart(
 		// PartType.P2PTunnelOpenComputers ) );
@@ -286,18 +288,22 @@ public final class ApiParts implements IParts
 		return this.p2PTunnelFluids;
 	}
 
-//	@Override
-//	public IItemDefinition p2PTunnelEU()
-//	{
-//		return this.p2PTunnelEU;
-//	}
+	@Override
+	public IItemDefinition p2PTunnelEU()
+	{
+		return this.p2PTunnelEU;
+	}
 
-	  /* @Override
-	 * public IItemDefinition p2PTunnelRF()
-	 * {
-	 * return this.p2PTunnelRF;
-	 * }
-	 */
+	@Override
+	public IItemDefinition p2PTunnelRF()
+	{
+		return this.p2PTunnelRF;
+	}
+
+	public IItemDefinition p2PTunnelFE()
+	{
+		return this.p2PTunnelFE;
+	}
 
 	@Override
 	public IItemDefinition p2PTunnelLight()

@@ -90,6 +90,7 @@ public enum GuiText
 	OCTunnel,
 	LightTunnel,
 	RFTunnel,
+	FETunnel,
 	PressureTunnel,
 
 	StoredSize,

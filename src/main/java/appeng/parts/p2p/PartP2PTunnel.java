@@ -222,22 +222,17 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 					newType = parts.p2PTunnelLight().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 					break;
 
-				/*
-				 * case RF_POWER:
-				 * for( ItemStack stack : parts.p2PTunnelRF().maybeStack( 1 ).asSet() )
-				 * {
-				 * newType = stack;
-				 * }
-				 * break;
-				 */
+				case RF_POWER:
+					newType = parts.p2PTunnelRF().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+					break;
 
 				case FLUID:
 					newType = parts.p2PTunnelFluids().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 					break;
 
-				//case IC2_POWER:
-				//	newType = parts.p2PTunnelEU().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-				//	break;
+				case IC2_POWER:
+					newType = parts.p2PTunnelEU().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+					break;
 
 				case ITEM:
 					newType = parts.p2PTunnelItems().maybeStack( 1 ).orElse( ItemStack.EMPTY );

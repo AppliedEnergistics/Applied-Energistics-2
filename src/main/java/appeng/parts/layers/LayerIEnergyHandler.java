@@ -19,75 +19,75 @@
 package appeng.parts.layers;
 
 
-//import cofh.api.energy.IEnergyConnection;
-//import cofh.api.energy.IEnergyHandler;
-//import cofh.api.energy.IEnergyProvider;
-//import cofh.api.energy.IEnergyReceiver;
-//import appeng.api.parts.IPart;
-//import appeng.api.parts.LayerBase;
-//import appeng.api.util.ForgeDirection;
-//
-//
-//public class LayerIEnergyHandler extends LayerBase implements IEnergyHandler
-//{
-//
-//	@Override
-//	public int receiveEnergy( ForgeDirection from, int maxReceive, boolean simulate )
-//	{
-//		IPart part = this.getPart( from );
-//		if( part instanceof IEnergyReceiver )
-//		{
-//			return ( (IEnergyReceiver) part ).receiveEnergy( from, maxReceive, simulate );
-//		}
-//
-//		return 0;
-//	}
-//
-//	@Override
-//	public int extractEnergy( ForgeDirection from, int maxExtract, boolean simulate )
-//	{
-//		IPart part = this.getPart( from );
-//		if( part instanceof IEnergyProvider )
-//		{
-//			return ( (IEnergyProvider) part ).extractEnergy( from, maxExtract, simulate );
-//		}
-//
-//		return 0;
-//	}
-//
-//	@Override
-//	public int getEnergyStored( ForgeDirection from )
-//	{
-//		IPart part = this.getPart( from );
-//		if( part instanceof IEnergyProvider )
-//		{
-//			return ( (IEnergyProvider) part ).getEnergyStored( from );
-//		}
-//
-//		return 0;
-//	}
-//
-//	@Override
-//	public int getMaxEnergyStored( ForgeDirection from )
-//	{
-//		IPart part = this.getPart( from );
-//		if( part instanceof IEnergyProvider )
-//		{
-//			return ( (IEnergyProvider) part ).getMaxEnergyStored( from );
-//		}
-//
-//		return 0;
-//	}
-//
-//	@Override
-//	public boolean canConnectEnergy( ForgeDirection from )
-//	{
-//		IPart part = this.getPart( from );
-//		if( part instanceof IEnergyConnection )
-//		{
-//			return ( (IEnergyConnection) part ).canConnectEnergy( from );
-//		}
-//
-//		return false;
-//	}
-// }
+import appeng.api.parts.IPart;
+import appeng.api.parts.LayerBase;
+import cofh.redstoneflux.api.IEnergyConnection;
+import cofh.redstoneflux.api.IEnergyHandler;
+import cofh.redstoneflux.api.IEnergyProvider;
+import cofh.redstoneflux.api.IEnergyReceiver;
+import net.minecraft.util.EnumFacing;
+
+
+public class LayerIEnergyHandler extends LayerBase implements IEnergyHandler, IEnergyReceiver, IEnergyProvider
+{
+
+	@Override
+	public int receiveEnergy( EnumFacing from, int maxReceive, boolean simulate )
+	{
+		IPart part = this.getPart( from );
+		if( part instanceof IEnergyReceiver )
+		{
+			return ( (IEnergyReceiver) part ).receiveEnergy( from, maxReceive, simulate );
+		}
+
+		return 0;
+	}
+
+	@Override
+	public int extractEnergy( EnumFacing from, int maxExtract, boolean simulate )
+	{
+		IPart part = this.getPart( from );
+		if( part instanceof IEnergyProvider )
+		{
+			return ( (IEnergyProvider) part ).extractEnergy( from, maxExtract, simulate );
+		}
+
+		return 0;
+	}
+
+	@Override
+	public int getEnergyStored( EnumFacing from )
+	{
+		IPart part = this.getPart( from );
+		if( part instanceof IEnergyProvider )
+		{
+			return ( (IEnergyProvider) part ).getEnergyStored( from );
+		}
+
+		return 0;
+	}
+
+	@Override
+	public int getMaxEnergyStored( EnumFacing from )
+	{
+		IPart part = this.getPart( from );
+		if( part instanceof IEnergyProvider )
+		{
+			return ( (IEnergyProvider) part ).getMaxEnergyStored( from );
+		}
+
+		return 0;
+	}
+
+	@Override
+	public boolean canConnectEnergy( EnumFacing from )
+	{
+		IPart part = this.getPart( from );
+		if( part instanceof IEnergyConnection )
+		{
+			return ( (IEnergyConnection) part ).canConnectEnergy( from );
+		}
+
+		return false;
+	}
+ }

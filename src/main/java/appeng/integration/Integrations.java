@@ -19,11 +19,7 @@
 package appeng.integration;
 
 
-import appeng.integration.abstraction.IIC2;
-import appeng.integration.abstraction.IInvTweaks;
-import appeng.integration.abstraction.IJEI;
-import appeng.integration.abstraction.IMekanism;
-import appeng.integration.abstraction.IRC;
+import appeng.integration.abstraction.*;
 
 
 /**
@@ -41,6 +37,8 @@ public final class Integrations
 	static IMekanism mekanism = new IMekanism.Stub();
 
 	static IInvTweaks invTweaks = new IInvTweaks.Stub();
+
+	static IRF redstoneflux = new IRF.Stub();
 
 	private Integrations()
 	{
@@ -99,6 +97,12 @@ public final class Integrations
 	{
 		Integrations.invTweaks = invTweaks;
 		return invTweaks;
+	}
+
+	static IRF setRedstoneFlux( IRF redstoneflux )
+	{
+		Integrations.redstoneflux = redstoneflux;
+		return redstoneflux;
 	}
 
 }

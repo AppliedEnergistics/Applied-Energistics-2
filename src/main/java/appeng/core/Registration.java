@@ -27,6 +27,8 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import appeng.integration.IntegrationRegistry;
+import appeng.integration.IntegrationType;
 import appeng.items.parts.ItemFacade;
 import appeng.recipes.game.DisassembleRecipe;
 import com.google.common.base.Preconditions;
@@ -299,11 +301,17 @@ public final class Registration
 			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergySink", "ic2.api.energy.tile.IEnergySink" );
 			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergySource", "ic2.api.energy.tile.IEnergySource" );
 		}
-		//
-		// if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.RF ) )
-		// {
-		// partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.api.energy.IEnergyReceiver" );
-		// }
+
+		 if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.RF ) )
+		 {
+			 partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.redstoneflux.api.IEnergyReceiver" );
+		 }
+
+		partHelper.registerNewLayer( "appeng.parts.layers.LayerForgeEnergy", "net.minecraftforge.energy.IEnergyStorage" );
+
+//		if (IntegrationRegistry.INSTANCE.isEnabled(IntegrationType.RF)) {
+//			partHelper.registerNewLayer("appeng.parts.layers.LayerIEnergyStorager", "net.minecraftforge.common.capabilities.ICapabilityProvider");
+//		}
 		//
 		// if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
 		// {
@@ -445,9 +453,8 @@ public final class Registration
 	{
 		// TODO : 1.12 Improve
 
-		final Api api = Api.INSTANCE;
-		final IRegistryContainer registries = api.registries();
-		ApiDefinitions definitions = api.definitions();
+		final IRegistryContainer registries = Api.INSTANCE.registries();
+		ApiDefinitions definitions = Api.INSTANCE.definitions();
 		final IParts parts = definitions.parts();
 		final IBlocks blocks = definitions.blocks();
 		final IItems items = definitions.items();

@@ -78,9 +78,9 @@ public interface IParts
 
 	IItemDefinition p2PTunnelFluids();
 
-	//IItemDefinition p2PTunnelEU();
+	IItemDefinition p2PTunnelEU();
 
-	// IItemDefinition p2PTunnelRF();
+	IItemDefinition p2PTunnelRF();
 
 	IItemDefinition p2PTunnelLight();
 
