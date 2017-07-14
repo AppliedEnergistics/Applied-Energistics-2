@@ -19,43 +19,58 @@
 package appeng.integration;
 
 
-// import appeng.integration.modules.ic2.IC2Module;
+import appeng.integration.modules.ic2.IC2Module;
 import appeng.integration.modules.jei.JEIModule;
+import appeng.integration.modules.rf.RFModule;
 import appeng.integration.modules.theoneprobe.TheOneProbeModule;
-// import appeng.integration.modules.waila.WailaModule;
+import appeng.integration.modules.waila.WailaModule;
 
 
 public enum IntegrationType
 {
-//	IC2( IntegrationSide.BOTH, "Industrial Craft 2", "IC2" )
-//	{
-//		@Override
-//		public IIntegrationModule createInstance()
-//		{
-//			return Integrations.setIc2( new IC2Module() );
-//		}
-//	},
+	IC2( IntegrationSide.BOTH, "Industrial Craft 2", "ic2" )
+	{
+		@Override
+		public IIntegrationModule createInstance()
+		{
+			return Integrations.setIc2( new IC2Module() );
+		}
+	},
 
-	RC( IntegrationSide.BOTH, "Railcraft", "Railcraft" ),
+	RC( IntegrationSide.BOTH, "Railcraft", "railcraft" ),
 
-	RF( IntegrationSide.BOTH, "RedstoneFlux Power - Tiles", "CoFHAPI" ),
+	RF( IntegrationSide.BOTH, "RedstoneFlux Power - Tiles", "redstoneflux" )
+	{
+		@Override
+		public IIntegrationModule createInstance()
+		{
+			return new RFModule();
+		}
+	},
 
-	RFItem( IntegrationSide.BOTH, "RedstoneFlux Power - Items", "CoFHAPI" ),
+	RFItem( IntegrationSide.BOTH, "RedstoneFlux Power - Items", "redstoneflux" )
+	{
+		@Override
+		public IIntegrationModule createInstance()
+		{
+			return new RFModule();
+		}
+	},
 
-	MFR( IntegrationSide.BOTH, "Mine Factory Reloaded", "MineFactoryReloaded" ),
+	MFR( IntegrationSide.BOTH, "Mine Factory Reloaded", "minefactoryreloaded" ),
 
-//	Waila( IntegrationSide.BOTH, "Waila", "Waila" )
-//	{
-//		@Override
-//		public IIntegrationModule createInstance()
-//		{
-//			return new WailaModule();
-//		}
-//	},
+	Waila( IntegrationSide.BOTH, "Waila", "waila" )
+	{
+		@Override
+		public IIntegrationModule createInstance()
+		{
+			return new WailaModule();
+		}
+	},
 
 	InvTweaks( IntegrationSide.CLIENT, "Inventory Tweaks", "inventorytweaks" ),
 
-	JEI( IntegrationSide.CLIENT, "Just Enough Items", "JEI" )
+	JEI( IntegrationSide.CLIENT, "Just Enough Items", "jei" )
 	{
 		@Override
 		public IIntegrationModule createInstance()
@@ -64,9 +79,9 @@ public enum IntegrationType
 		}
 	},
 
-	Mekanism( IntegrationSide.BOTH, "Mekanism", "Mekanism" ),
+	Mekanism( IntegrationSide.BOTH, "Mekanism", "mekanism" ),
 
-	OpenComputers( IntegrationSide.BOTH, "OpenComputers", "OpenComputers" ),
+	OpenComputers( IntegrationSide.BOTH, "OpenComputers", "opencomputers" ),
 
 	THE_ONE_PROBE( IntegrationSide.BOTH, "TheOneProbe", "theoneprobe" )
 	{
@@ -90,7 +105,9 @@ public enum IntegrationType
 
 	public IIntegrationModule createInstance()
 	{
-		throw new UnsupportedOperationException();
+		return new IIntegrationModule()
+		{
+		};
 	}
 
 }

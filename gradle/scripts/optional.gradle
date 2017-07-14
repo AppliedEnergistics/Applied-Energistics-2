@@ -20,15 +20,15 @@ task wrapper(type: Wrapper) {
     gradleVersion = "2.14"
 }
 
-// WAILA
-task installWaila(type: Copy, dependsOn: "deinstallWaila") {
+// HWYLA
+task installHwyla(type: Copy, dependsOn: "deinstallHwyla") {
     from { configurations.mods }
-    include "**/*Waila*.jar"
+    include "**/*Hwyla*.jar"
     into file(minecraft.runDir + "/mods")
 }
 
-task deinstallWaila(type: Delete) {
-    delete fileTree(dir: minecraft.runDir + "/mods", include: "*Waila*.jar")
+task deinstallHwyla(type: Delete) {
+    delete fileTree(dir: minecraft.runDir + "/mods", include: "*Hwyla*.jar")
 }
 
 // IC2
