@@ -99,6 +99,7 @@ gui.appliedenergistics2.ItemTunnel=Предмет
 gui.appliedenergistics2.FluidTunnel=Жидкость
 gui.appliedenergistics2.RedstoneTunnel=Красный камень
 gui.appliedenergistics2.EUTunnel=EU
+gui.appliedenergistics2.FETunnel=FE
 gui.appliedenergistics2.RFTunnel=RF
 gui.appliedenergistics2.LightTunnel=Свет
 gui.appliedenergistics2.OCTunnel=OpenComputers

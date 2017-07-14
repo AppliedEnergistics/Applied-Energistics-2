@@ -82,6 +82,7 @@ gui.appliedenergistics2.ItemTunnel=아이템
 gui.appliedenergistics2.FluidTunnel=액체
 gui.appliedenergistics2.RedstoneTunnel=레드스톤
 gui.appliedenergistics2.EUTunnel=EU
+gui.appliedenergistics2.FETunnel=FE
 gui.appliedenergistics2.RFTunnel=RF
 gui.appliedenergistics2.LightTunnel=빛
 

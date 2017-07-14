@@ -89,6 +89,7 @@ gui.appliedenergistics2.ItemTunnel=Oggetto
 gui.appliedenergistics2.FluidTunnel=Fluido
 gui.appliedenergistics2.RedstoneTunnel=Pietrarossa
 gui.appliedenergistics2.EUTunnel=EU
+gui.appliedenergistics2.FETunnel=FE
 gui.appliedenergistics2.RFTunnel=RF
 gui.appliedenergistics2.LightTunnel=Luce
 

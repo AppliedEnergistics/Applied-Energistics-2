@@ -99,6 +99,7 @@ gui.appliedenergistics2.ItemTunnel=物品
 gui.appliedenergistics2.FluidTunnel=液体
 gui.appliedenergistics2.RedstoneTunnel=红石
 gui.appliedenergistics2.EUTunnel=EU
+gui.appliedenergistics2.FETunnel=FE
 gui.appliedenergistics2.RFTunnel=RF
 gui.appliedenergistics2.LightTunnel=光
 gui.appliedenergistics2.OCTunnel=OpenComputers

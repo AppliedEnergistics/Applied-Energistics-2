@@ -100,6 +100,7 @@ gui.appliedenergistics2.ItemTunnel=Tárgy Csatorna
 gui.appliedenergistics2.FluidTunnel=Folyadék Csatorna
 gui.appliedenergistics2.RedstoneTunnel=Vöröskő Csatorna
 gui.appliedenergistics2.EUTunnel=EU Csatorna
+gui.appliedenergistics2.FETunnel=FE Csatorna
 gui.appliedenergistics2.RFTunnel=RF Csatorna
 gui.appliedenergistics2.LightTunnel=Fény Csatorna
 gui.appliedenergistics2.OCTunnel=OpenComputers
