@@ -204,7 +204,6 @@ class BlockDefinitionBuilder implements IBlockBuilder
 	@Override
 	public <T extends IBlockDefinition> T build()
 	{
-		System.out.println("regName = " + registryName);
 		if( !AEConfig.instance().areFeaturesEnabled( features ) )
 		{
 			return (T) new TileDefinition( registryName, null, null );
