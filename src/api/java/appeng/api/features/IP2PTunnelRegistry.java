@@ -46,6 +46,7 @@ public interface IP2PTunnelRegistry
 	 * @param type - the type of tunnel. Nullable, but then ignored
 	 */
 	void addNewAttunement( @Nonnull ItemStack trigger, @Nullable TunnelType type );
+	void addNewAttunement( @Nonnull String ModId, @Nullable TunnelType type );
 
 	/**
 	 * returns null if no attunement can be found.

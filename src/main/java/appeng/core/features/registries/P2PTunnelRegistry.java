@@ -29,6 +29,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.AEApi;
@@ -47,14 +49,29 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 	private static final int INITIAL_CAPACITY = 40;
 
 	private final Map<ItemStack, TunnelType> tunnels = new HashMap<ItemStack, TunnelType>( INITIAL_CAPACITY );
+	private final Map<String, TunnelType> modIdTunnels = new HashMap<>( INITIAL_CAPACITY );
 
 	public void configure()
 	{
+
+		final IDefinitions definitions = AEApi.instance().definitions();
+		final IBlocks blocks = definitions.blocks();
+		final IParts parts = definitions.parts();
+
 		/**
 		 * light!
 		 */
 		this.addNewAttunement( new ItemStack( Blocks.TORCH ), TunnelType.LIGHT );
 		this.addNewAttunement( new ItemStack( Blocks.GLOWSTONE ), TunnelType.LIGHT );
+
+		/**
+		 * Forge energy tunnel items
+		 */
+
+		this.addNewAttunement( blocks.energyCellDense(), TunnelType.FE_POWER );
+		this.addNewAttunement( blocks.energyAcceptor(), TunnelType.FE_POWER );
+		this.addNewAttunement( blocks.energyCell(), TunnelType.FE_POWER );
+		this.addNewAttunement( blocks.energyCellCreative(), TunnelType.FE_POWER );
 
 		/**
 		 * RF tunnel items
@@ -96,9 +113,6 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		/**
 		 * attune based on lots of random item related stuff
 		 */
-		final IDefinitions definitions = AEApi.instance().definitions();
-		final IBlocks blocks = definitions.blocks();
-		final IParts parts = definitions.parts();
 
 		this.addNewAttunement( blocks.iface(), TunnelType.ITEM );
 		this.addNewAttunement( parts.iface(), TunnelType.ITEM );
@@ -141,6 +155,26 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 			this.addNewAttunement( parts.cableSmart().stack( c, 1 ), TunnelType.ME );
 			this.addNewAttunement( parts.cableDense().stack( c, 1 ), TunnelType.ME );
 		}
+
+		/**
+		 * attune based on the ItemStack's modId
+		 */
+
+		this.addNewAttunement( "thermaldynamics", TunnelType.RF_POWER );
+		this.addNewAttunement( "enderio", TunnelType.RF_POWER );
+		this.addNewAttunement( "mekanism", TunnelType.RF_POWER );
+		this.addNewAttunement( "rftools", TunnelType.RF_POWER );
+		this.addNewAttunement( "ic2", TunnelType.IC2_POWER );
+
+	}
+
+	public void addNewAttunement( @Nonnull final String modId, @Nullable final TunnelType type )
+	{
+		if( type == null || modId == null )
+		{
+			return;
+		}
+		this.modIdTunnels.put( modId, type );
 	}
 
 	@Override
@@ -175,6 +209,24 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 				if( Platform.itemComparisons().isEqualItem( is, trigger ) )
 				{
 					return this.tunnels.get( is );
+				}
+			}
+
+			// Try by ModId next
+			for( final String modId : this.modIdTunnels.keySet() )
+			{
+				if( trigger.getItem().getRegistryName() != null && trigger.getItem().getRegistryName().getResourceDomain().equals( modId ))
+				{
+					return this.modIdTunnels.get( modId );
+				}
+			}
+
+			// Next, check if the Item you're holding supports Forge Energy
+			for( EnumFacing face : EnumFacing.VALUES )
+			{
+				if( trigger.hasCapability( CapabilityEnergy.ENERGY, face ) )
+				{
+					return TunnelType.FE_POWER;
 				}
 			}
 		}
