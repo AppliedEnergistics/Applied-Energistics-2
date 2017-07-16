@@ -64,7 +64,7 @@ public class ItemPartRendering extends ItemRenderingCustomizer
 
 		// Register all item models as variants so they get loaded
 		rendering.variants( Arrays.stream( PartType.values() )
-				.filter( f -> f != PartType.InvalidType )
+				.filter( f -> f != PartType.INVALID_TYPE )
 				.flatMap( part -> part.getItemModels().stream() )
 				.collect( Collectors.toList() ) );
 

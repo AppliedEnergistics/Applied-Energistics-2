@@ -106,7 +106,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	@Override
 	public AECableType getCableConnectionType( final AEPartLocation dir )
 	{
-		return AECableType.DENSE;
+		return AECableType.DENSE_SMART;
 	}
 
 	@Override

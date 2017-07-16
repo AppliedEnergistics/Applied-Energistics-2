@@ -11,7 +11,7 @@
   "key": {
     "a": {
       "type": "appliedenergistics2:part",
-      "part": "material.FormationCore"
+      "part": "material.formation_core"
     },
     "b": {
       "type": "forge:ore_dict",
@@ -19,7 +19,7 @@
     },
     "c": {
       "type": "appliedenergistics2:part",
-      "part": "material.Cell4kPart"
+      "part": "material.cell4k_part"
     },
     "d": {
       "item": "appliedenergistics2:energy_cell"

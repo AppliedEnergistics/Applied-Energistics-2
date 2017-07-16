@@ -6,11 +6,11 @@
   "ingredients": [
     {
       "type": "appliedenergistics2:part",
-      "part": "material.EmptyStorageCell"
+      "part": "material.empty_storage_cell"
     },
     {
       "type": "appliedenergistics2:part",
-      "part": "material.Cell16SpatialPart"
+      "part": "material.cell16_spatial_part"
     }
   ]
 }

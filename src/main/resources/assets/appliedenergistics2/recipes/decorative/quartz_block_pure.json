@@ -12,7 +12,7 @@
   "key": {
     "a": {
       "type": "appliedenergistics2:part",
-      "part": "material.PurifiedNetherQuartzCrystal"
+      "part": "material.purified_nether_quartz_crystal"
     }
   }
 }

@@ -62,7 +62,7 @@ public class TileController extends AENetworkPowerTile
 	@Override
 	public AECableType getCableConnectionType( final AEPartLocation dir )
 	{
-		return AECableType.DENSE;
+		return AECableType.DENSE_SMART;
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 {
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "part.P2PTunnelME"
+    "part": "part.p2p_tunnel_me"
   },
   "type": "appliedenergistics2:part_shaped",
   "pattern": [
@@ -12,7 +12,7 @@
   "key": {
     "b": {
       "type": "appliedenergistics2:part",
-      "part": "material.EngProcessor"
+      "part": "material.engineering_processor"
     },
     "a": {
       "type": "forge:ore_dict",
@@ -25,7 +25,7 @@
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "material.PurifiedFluixCrystal"
+        "part": "material.purified_fluix_crystal"
       }
     ]
   }

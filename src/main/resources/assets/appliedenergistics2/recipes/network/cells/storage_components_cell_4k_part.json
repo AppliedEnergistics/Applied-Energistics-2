@@ -1,7 +1,7 @@
 {
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "material.Cell4kPart"
+    "part": "material.cell4k_part"
   },
   "type": "appliedenergistics2:part_shaped",
   "pattern": [
@@ -19,11 +19,11 @@
     },
     "c": {
       "type": "appliedenergistics2:part",
-      "part": "material.Cell1kPart"
+      "part": "material.cell1k_part"
     },
     "b": {
       "type": "appliedenergistics2:part",
-      "part": "material.CalcProcessor"
+      "part": "material.calculation_processor"
     }
   }
 }

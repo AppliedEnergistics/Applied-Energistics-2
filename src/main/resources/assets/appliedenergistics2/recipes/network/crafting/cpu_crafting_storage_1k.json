@@ -9,7 +9,7 @@
     },
     {
       "type": "appliedenergistics2:part",
-      "part": "material.Cell1kPart"
+      "part": "material.cell1k_part"
     }
   ]
 }

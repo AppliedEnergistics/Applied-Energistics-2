@@ -11,7 +11,7 @@
   "key": {
     "a": {
       "type": "appliedenergistics2:part",
-      "part": "material.Wireless"
+      "part": "material.wireless"
     },
     "c": [
       {
@@ -29,7 +29,7 @@
     ],
     "b": {
       "type": "appliedenergistics2:part",
-      "part": "material.CalcProcessor"
+      "part": "material.calculation_processor"
     }
   }
 }

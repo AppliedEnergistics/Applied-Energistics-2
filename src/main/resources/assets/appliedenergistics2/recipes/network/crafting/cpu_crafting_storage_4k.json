@@ -6,7 +6,7 @@
   "ingredients": [
     {
       "type": "appliedenergistics2:part",
-      "part": "material.Cell4kPart"
+      "part": "material.cell4k_part"
     },
     {
       "item": "appliedenergistics2:crafting_unit"

@@ -6,7 +6,7 @@
   "ingredients": [
     {
       "type": "appliedenergistics2:part",
-      "part": "part.StorageMonitor"
+      "part": "part.storage_monitor"
     },
     {
       "item": "appliedenergistics2:crafting_unit"

@@ -1,7 +1,7 @@
 {
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "part.FormationPlane"
+    "part": "part.formation_plane"
   },
   "type": "appliedenergistics2:part_shaped",
   "pattern": [
@@ -11,7 +11,7 @@
   "key": {
     "c": {
       "type": "appliedenergistics2:part",
-      "part": "material.FormationCore"
+      "part": "material.formation_core"
     },
     "b": {
       "type": "forge:ore_dict",
@@ -24,7 +24,7 @@
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "material.PurifiedFluixCrystal"
+        "part": "material.purified_fluix_crystal"
       }
     ]
   }

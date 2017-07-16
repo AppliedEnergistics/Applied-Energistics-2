@@ -43,7 +43,6 @@ import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
-import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
@@ -129,7 +128,7 @@ public class PartCable extends AEBasePart implements IPartCable
 			{
 				newPart = parts.cableSmart().stack( newColor, 1 );
 			}
-			else if( this.getCableConnectionType() == AECableType.DENSE )
+			else if( this.getCableConnectionType() == AECableType.DENSE_SMART )
 			{
 				newPart = parts.cableDense().stack( newColor, 1 );
 			}

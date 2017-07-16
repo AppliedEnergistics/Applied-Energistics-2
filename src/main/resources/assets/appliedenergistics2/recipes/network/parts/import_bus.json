@@ -1,7 +1,7 @@
 {
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "part.ImportBus"
+    "part": "part.import_bus"
   },
   "type": "appliedenergistics2:part_shaped",
   "pattern": [
@@ -18,7 +18,7 @@
     },
     "a": {
       "type": "appliedenergistics2:part",
-      "part": "material.AnnihilationCore"
+      "part": "material.annihilation_core"
     }
   }
 }

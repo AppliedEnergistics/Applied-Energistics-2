@@ -1,13 +1,13 @@
 {
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "part.Monitor"
+    "part": "part.monitor"
   },
   "type": "appliedenergistics2:part_shapeless",
   "ingredients": [
     {
       "type": "appliedenergistics2:part",
-      "part": "part.SemiDarkMonitor"
+      "part": "part.semi_dark_monitor"
     }
   ]
 }

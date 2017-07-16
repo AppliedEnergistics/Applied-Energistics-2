@@ -91,12 +91,12 @@ public class AEItemResolver implements ISubItemResolver
 				return this.cableItem( parts.cableSmart(), itemName.substring( itemName.indexOf( '.' ) + 1 ) );
 			}
 
-			if( itemName.equals( "cable_dense" ) )
+			if( itemName.equals( "cable_dense_smart" ) )
 			{
 				return new ResolverResultSet( "cable_dense", parts.cableDense().allStacks( 1 ) );
 			}
 
-			if( itemName.startsWith( "cable_dense." ) )
+			if( itemName.startsWith( "cable_dense_smart." ) )
 			{
 				return this.cableItem( parts.cableDense(), itemName.substring( itemName.indexOf( '.' ) + 1 ) );
 			}
@@ -122,7 +122,7 @@ public class AEItemResolver implements ISubItemResolver
 			if( itemName.startsWith( "material." ) )
 			{
 				final String materialName = itemName.substring( itemName.indexOf( '.' ) + 1 );
-				final MaterialType mt = MaterialType.valueOf( materialName );
+				final MaterialType mt = MaterialType.valueOf( materialName.toUpperCase() );
 				// itemName = itemName.substring( 0, itemName.indexOf( "." ) );
 				if( mt.getItemInstance() == ItemMaterial.instance && mt.getDamageValue() >= 0 && mt.isRegistered() )
 				{
@@ -133,7 +133,7 @@ public class AEItemResolver implements ISubItemResolver
 			if( itemName.startsWith( "part." ) )
 			{
 				final String partName = itemName.substring( itemName.indexOf( '.' ) + 1 );
-				final PartType pt = PartType.valueOf( partName );
+				final PartType pt = PartType.valueOf( partName.toUpperCase() );
 				// itemName = itemName.substring( 0, itemName.indexOf( "." ) );
 				final int dVal = ItemPart.instance.getDamageByType( pt );
 				if( dVal >= 0 )

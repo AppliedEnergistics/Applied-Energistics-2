@@ -2,12 +2,12 @@
   "conditions": [
     {
       "type": "appliedenergistics2:material_exists",
-      "material": "material.FormationCore"
+      "material": "material.formation_core"
     }
   ],
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "material.FormationCore",
+    "part": "material.formation_core",
     "count": 2
   },
   "type": "appliedenergistics2:part_shaped",
@@ -26,16 +26,16 @@
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "material.CertusQuartzCrystalCharged"
+        "part": "material.certus_quartz_crystal_charged"
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "material.PurifiedCertusQuartzCrystal"
+        "part": "material.purified_certus_quartz_crystal"
       }
     ],
     "c": {
       "type": "appliedenergistics2:part",
-      "part": "material.LogicProcessor"
+      "part": "material.logic_processor"
     }
   }
 }

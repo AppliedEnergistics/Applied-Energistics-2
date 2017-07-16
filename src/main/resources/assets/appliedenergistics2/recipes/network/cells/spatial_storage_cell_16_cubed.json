@@ -18,7 +18,7 @@
     },
     "c": {
       "type": "appliedenergistics2:part",
-      "part": "material.Cell16SpatialPart"
+      "part": "material.cell16_spatial_part"
     },
     "b": {
       "type": "forge:ore_dict",

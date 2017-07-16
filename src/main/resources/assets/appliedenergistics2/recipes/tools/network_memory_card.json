@@ -22,7 +22,7 @@
     },
     "a": {
       "type": "appliedenergistics2:part",
-      "part": "material.CalcProcessor"
+      "part": "material.calculation_processor"
     }
   }
 }

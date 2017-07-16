@@ -24,7 +24,7 @@
     ],
     "e": {
       "type": "appliedenergistics2:part",
-      "part": "material.EngProcessor"
+      "part": "material.engineering_processor"
     },
     "d": {
       "type": "forge:ore_dict",

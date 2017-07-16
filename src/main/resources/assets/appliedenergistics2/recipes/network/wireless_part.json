@@ -1,7 +1,7 @@
 {
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "material.Wireless"
+    "part": "material.wireless"
   },
   "type": "appliedenergistics2:part_shaped",
   "pattern": [
@@ -16,11 +16,11 @@
     },
     "c": {
       "type": "appliedenergistics2:part",
-      "part": "part.QuartzFiber"
+      "part": "part.quartz_fiber"
     },
     "a": {
       "type": "appliedenergistics2:part",
-      "part": "material.FluixPearl"
+      "part": "material.fluix_pearl"
     }
   }
 }

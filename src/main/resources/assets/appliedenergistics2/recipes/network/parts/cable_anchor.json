@@ -1,7 +1,7 @@
 {
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "part.CableAnchor",
+    "part": "part.cable_anchor",
     "count": 3
   },
   "type": "appliedenergistics2:part_shapeless",

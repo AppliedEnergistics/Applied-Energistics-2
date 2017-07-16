@@ -36,7 +36,6 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -155,7 +154,7 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 	@Override
 	public EnumActionResult onItemUse( final EntityPlayer player, final World w, final BlockPos pos, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
 	{
-		if( this.getTypeByStack( player.getHeldItem(hand) ) == PartType.InvalidType )
+		if( this.getTypeByStack( player.getHeldItem(hand) ) == PartType.INVALID_TYPE )
 		{
 			return EnumActionResult.FAIL;
 		}
@@ -167,7 +166,7 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 	public String getUnlocalizedName( final ItemStack is )
 	{
 		Preconditions.checkNotNull( is );
-		return "item.appliedenergistics2.multi_part." + getTypeByStack( is ).getUnlocalizedName();
+		return "item.appliedenergistics2.multi_part." + getTypeByStack( is ).getUnlocalizedName().toLowerCase();
 	}
 
 	@Override
@@ -218,7 +217,7 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 			return pt.part;
 		}
 
-		return PartType.InvalidType;
+		return PartType.INVALID_TYPE;
 	}
 
 	@Nullable
@@ -287,14 +286,14 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 				final PartType pt = this.getTypeByStack( stack );
 				switch( pt )
 				{
-					case ImportBus:
+					case IMPORT_BUS:
 						importBus = true;
 						if( u == pt )
 						{
 							group = true;
 						}
 						break;
-					case ExportBus:
+					case EXPORT_BUS:
 						exportBus = true;
 						if( u == pt )
 						{

@@ -1,7 +1,7 @@
 {
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "material.Cell1kPart"
+    "part": "material.cell1k_part"
   },
   "type": "appliedenergistics2:part_shaped",
   "pattern": [
@@ -21,16 +21,16 @@
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "material.CertusQuartzCrystalCharged"
+        "part": "material.certus_quartz_crystal_charged"
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "material.PurifiedCertusQuartzCrystal"
+        "part": "material.purified_certus_quartz_crystal"
       }
     ],
     "c": {
       "type": "appliedenergistics2:part",
-      "part": "material.LogicProcessor"
+      "part": "material.logic_processor"
     }
   }
 }

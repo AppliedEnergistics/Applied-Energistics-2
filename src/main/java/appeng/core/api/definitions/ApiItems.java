@@ -198,10 +198,10 @@ public final class ApiItems implements IItems
 		this.viewCell = registry.item( "view_cell", ItemViewCell::new ).features( AEFeature.VIEW_CELL ).build();
 
 		FeatureFactory storageCells = registry.features( AEFeature.STORAGE_CELLS );
-		this.cell1k = storageCells.item( "storage_cell_1k", () -> new ItemBasicStorageCell( MaterialType.Cell1kPart, 1 ) ).build();
-		this.cell4k = storageCells.item( "storage_cell_4k", () -> new ItemBasicStorageCell( MaterialType.Cell4kPart, 4 ) ).build();
-		this.cell16k = storageCells.item( "storage_cell_16k", () -> new ItemBasicStorageCell( MaterialType.Cell16kPart, 16 ) ).build();
-		this.cell64k = storageCells.item( "storage_cell_64k", () -> new ItemBasicStorageCell( MaterialType.Cell64kPart, 64 ) ).build();
+		this.cell1k = storageCells.item( "storage_cell_1k", () -> new ItemBasicStorageCell( MaterialType.CELL1K_PART, 1 ) ).build();
+		this.cell4k = storageCells.item( "storage_cell_4k", () -> new ItemBasicStorageCell( MaterialType.CELL4K_PART, 4 ) ).build();
+		this.cell16k = storageCells.item( "storage_cell_16k", () -> new ItemBasicStorageCell( MaterialType.CELL16K_PART, 16 ) ).build();
+		this.cell64k = storageCells.item( "storage_cell_64k", () -> new ItemBasicStorageCell( MaterialType.CELL64K_PART, 64 ) ).build();
 
 		FeatureFactory spatialCells = registry.features( AEFeature.SPATIAL_IO );
 		this.spatialCell2 = spatialCells.item( "spatial_storage_cell_2_cubed", () -> new ItemSpatialStorageCell( 2 ) ).build();

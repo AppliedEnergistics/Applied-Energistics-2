@@ -310,7 +310,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	@Override
 	public AECableType getCableConnectionType( final AEPartLocation dir )
 	{
-		return AECableType.DENSE;
+		return AECableType.DENSE_SMART;
 	}
 
 	public void neighborUpdate()

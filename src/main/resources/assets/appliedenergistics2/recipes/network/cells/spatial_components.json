@@ -1,7 +1,7 @@
 {
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "material.Cell2SpatialPart"
+    "part": "material.cell2_spatial_part"
   },
   "type": "appliedenergistics2:part_shaped",
   "pattern": [
@@ -12,7 +12,7 @@
   "key": {
     "c": {
       "type": "appliedenergistics2:part",
-      "part": "material.EngProcessor"
+      "part": "material.engineering_processor"
     },
     "a": {
       "type": "forge:ore_dict",
@@ -20,7 +20,7 @@
     },
     "b": {
       "type": "appliedenergistics2:part",
-      "part": "material.FluixPearl"
+      "part": "material.fluix_crystal"
     }
   }
 }

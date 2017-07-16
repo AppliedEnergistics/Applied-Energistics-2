@@ -2,12 +2,12 @@
   "conditions": [
     {
       "type": "appliedenergistics2:material_exists",
-      "material": "material.CardCapacity"
+      "material": "material.card_capacity"
     }
   ],
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "material.CardCapacity"
+    "part": "material.card_capacity"
   },
   "type": "appliedenergistics2:part_shapeless",
   "ingredients": [
@@ -18,16 +18,16 @@
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "material.CertusQuartzCrystalCharged"
+        "part": "material.certus_quartz_crystal_charged"
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "material.PurifiedCertusQuartzCrystal"
+        "part": "material.purified_certus_quartz_crystal"
       }
     ],
     {
       "type": "appliedenergistics2:part",
-      "part": "material.BasicCard"
+      "part": "material.basic_card"
     }
   ]
 }

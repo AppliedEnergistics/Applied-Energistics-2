@@ -11,11 +11,11 @@
   "key": {
     "d": {
       "type": "appliedenergistics2:part",
-      "part": "material.Cell16kPart"
+      "part": "material.cell16k_part"
     },
     "e": {
       "type": "appliedenergistics2:part",
-      "part": "material.EngProcessor"
+      "part": "material.engineering_processor"
     },
     "b": {
       "item": "appliedenergistics2:chest"

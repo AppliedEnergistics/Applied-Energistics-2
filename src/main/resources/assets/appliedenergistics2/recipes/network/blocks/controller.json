@@ -11,11 +11,11 @@
   "key": {
     "c": {
       "type": "appliedenergistics2:part",
-      "part": "material.EngProcessor"
+      "part": "material.engineering_processor"
     },
     "b": {
       "type": "appliedenergistics2:part",
-      "part": "material.PurifiedFluixCrystal"
+      "part": "material.purified_fluix_crystal"
     },
     "a": {
       "item": "appliedenergistics2:smooth_sky_stone_block"

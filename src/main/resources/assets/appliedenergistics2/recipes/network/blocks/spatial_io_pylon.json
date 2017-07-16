@@ -37,7 +37,7 @@
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "material.PurifiedFluixCrystal"
+        "part": "material.purified_fluix_crystal"
       }
     ]
   }

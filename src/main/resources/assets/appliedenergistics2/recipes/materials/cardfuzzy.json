@@ -2,18 +2,18 @@
   "conditions": [
     {
       "type": "appliedenergistics2:material_exists",
-      "material": "material.CardFuzzy"
+      "material": "material.card_fuzzy"
     }
   ],
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "material.CardFuzzy"
+    "part": "material.card_fuzzy"
   },
   "type": "appliedenergistics2:part_shapeless",
   "ingredients": [
     {
       "type": "appliedenergistics2:part",
-      "part": "material.AdvCard"
+      "part": "material.advanced_card"
     },
     {
       "type": "forge:ore_dict",

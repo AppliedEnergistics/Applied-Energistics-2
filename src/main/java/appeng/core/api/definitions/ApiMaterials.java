@@ -130,74 +130,74 @@ public final class ApiMaterials implements IMaterials
 				} )
 				.build();
 
-		this.cell2SpatialPart = new DamagedItemDefinition( "material.cell.spatial.2", materials.createMaterial( MaterialType.Cell2SpatialPart ) );
-		this.cell16SpatialPart = new DamagedItemDefinition( "material.cell.spatial.16", materials.createMaterial( MaterialType.Cell16SpatialPart ) );
-		this.cell128SpatialPart = new DamagedItemDefinition( "material.cell.spatial.128", materials.createMaterial( MaterialType.Cell128SpatialPart ) );
+		this.cell2SpatialPart = new DamagedItemDefinition( "material.cell.spatial.2", materials.createMaterial( MaterialType.CELL2_SPATIAL_PART ) );
+		this.cell16SpatialPart = new DamagedItemDefinition( "material.cell.spatial.16", materials.createMaterial( MaterialType.CELL16_SPATIAL_PART ) );
+		this.cell128SpatialPart = new DamagedItemDefinition( "material.cell.spatial.128", materials.createMaterial( MaterialType.CELL128_SPATIAL_PART ) );
 
-		this.silicon = new DamagedItemDefinition( "material.silicon", materials.createMaterial( MaterialType.Silicon ) );
-		this.skyDust = new DamagedItemDefinition( "material.dust.sky_stone", materials.createMaterial( MaterialType.SkyDust ) );
+		this.silicon = new DamagedItemDefinition( "material.silicon", materials.createMaterial( MaterialType.SILICON ) );
+		this.skyDust = new DamagedItemDefinition( "material.dust.sky_stone", materials.createMaterial( MaterialType.SKY_DUST ) );
 
-		this.calcProcessorPress = new DamagedItemDefinition( "material.press.processor.calculation", materials.createMaterial( MaterialType.CalcProcessorPress ) );
-		this.engProcessorPress = new DamagedItemDefinition( "material.press.processor.engineering", materials.createMaterial( MaterialType.EngProcessorPress ) );
-		this.logicProcessorPress = new DamagedItemDefinition( "material.press.processor.logic", materials.createMaterial( MaterialType.LogicProcessorPress ) );
-		this.siliconPress = new DamagedItemDefinition( "material.press.silicon", materials.createMaterial( MaterialType.SiliconPress ) );
-		this.namePress = new DamagedItemDefinition( "material.press.name", materials.createMaterial( MaterialType.NamePress ) );
+		this.calcProcessorPress = new DamagedItemDefinition( "material.press.processor.calculation", materials.createMaterial( MaterialType.CALCULATION_PROCESSOR_PRESS ) );
+		this.engProcessorPress = new DamagedItemDefinition( "material.press.processor.engineering", materials.createMaterial( MaterialType.ENGINEERING_PROCESSOR_PRESS ) );
+		this.logicProcessorPress = new DamagedItemDefinition( "material.press.processor.logic", materials.createMaterial( MaterialType.LOGIC_PROCESSOR_PRESS ) );
+		this.siliconPress = new DamagedItemDefinition( "material.press.silicon", materials.createMaterial( MaterialType.SILICON_PRESS ) );
+		this.namePress = new DamagedItemDefinition( "material.press.name", materials.createMaterial( MaterialType.NAME_PRESS ) );
 
-		this.calcProcessorPrint = new DamagedItemDefinition( "material.print.processor.calculation", materials.createMaterial( MaterialType.CalcProcessorPrint ) );
-		this.engProcessorPrint = new DamagedItemDefinition( "material.print.processor.engineering", materials.createMaterial( MaterialType.EngProcessorPrint ) );
-		this.logicProcessorPrint = new DamagedItemDefinition( "material.print.processor.logic", materials.createMaterial( MaterialType.LogicProcessorPrint ) );
-		this.siliconPrint = new DamagedItemDefinition( "material.print.silicon", materials.createMaterial( MaterialType.SiliconPrint ) );
+		this.calcProcessorPrint = new DamagedItemDefinition( "material.print.processor.calculation", materials.createMaterial( MaterialType.CALCULATION_PROCESSOR_PRINT ) );
+		this.engProcessorPrint = new DamagedItemDefinition( "material.print.processor.engineering", materials.createMaterial( MaterialType.ENGINEERING_PROCESSOR_PRINT ) );
+		this.logicProcessorPrint = new DamagedItemDefinition( "material.print.processor.logic", materials.createMaterial( MaterialType.LOGIC_PROCESSOR_PRINT ) );
+		this.siliconPrint = new DamagedItemDefinition( "material.print.silicon", materials.createMaterial( MaterialType.SILICON_PRINT ) );
 
-		this.logicProcessor = new DamagedItemDefinition( "material.processor.logic", materials.createMaterial( MaterialType.LogicProcessor ) );
-		this.calcProcessor = new DamagedItemDefinition( "material.processor.calculation", materials.createMaterial( MaterialType.CalcProcessor ) );
-		this.engProcessor = new DamagedItemDefinition( "material.processor.engineering", materials.createMaterial( MaterialType.EngProcessor ) );
+		this.logicProcessor = new DamagedItemDefinition( "material.processor.logic", materials.createMaterial( MaterialType.LOGIC_PROCESSOR ) );
+		this.calcProcessor = new DamagedItemDefinition( "material.processor.calculation", materials.createMaterial( MaterialType.CALCULATION_PROCESSOR ) );
+		this.engProcessor = new DamagedItemDefinition( "material.processor.engineering", materials.createMaterial( MaterialType.ENGINEERING_PROCESSOR ) );
 
-		this.basicCard = new DamagedItemDefinition( "material.card.basic", materials.createMaterial( MaterialType.BasicCard ) );
-		this.advCard = new DamagedItemDefinition( "material.card.advanced", materials.createMaterial( MaterialType.AdvCard ) );
+		this.basicCard = new DamagedItemDefinition( "material.card.basic", materials.createMaterial( MaterialType.BASIC_CARD ) );
+		this.advCard = new DamagedItemDefinition( "material.card.advanced", materials.createMaterial( MaterialType.ADVANCED_CARD ) );
 
-		this.purifiedCertusQuartzCrystal = new DamagedItemDefinition( "material.crystal.quartz.certus.purified", materials.createMaterial( MaterialType.PurifiedCertusQuartzCrystal ) );
-		this.purifiedNetherQuartzCrystal = new DamagedItemDefinition( "material.crystal.quartz.nether.purified", materials.createMaterial( MaterialType.PurifiedNetherQuartzCrystal ) );
-		this.purifiedFluixCrystal = new DamagedItemDefinition( "material.crystal.fluix.purified", materials.createMaterial( MaterialType.PurifiedFluixCrystal ) );
+		this.purifiedCertusQuartzCrystal = new DamagedItemDefinition( "material.crystal.quartz.certus.purified", materials.createMaterial( MaterialType.PURIFIED_CERTUS_QUARTZ_CRYSTAL ) );
+		this.purifiedNetherQuartzCrystal = new DamagedItemDefinition( "material.crystal.quartz.nether.purified", materials.createMaterial( MaterialType.PURIFIED_NETHER_QUARTZ_CRYSTAL ) );
+		this.purifiedFluixCrystal = new DamagedItemDefinition( "material.crystal.fluix.purified", materials.createMaterial( MaterialType.PURIFIED_FLUIX_CRYSTAL ) );
 
-		this.cell1kPart = new DamagedItemDefinition( "material.cell.storage.1k", materials.createMaterial( MaterialType.Cell1kPart ) );
-		this.cell4kPart = new DamagedItemDefinition( "material.cell.storage.4k", materials.createMaterial( MaterialType.Cell4kPart ) );
-		this.cell16kPart = new DamagedItemDefinition( "material.cell.storage.16k", materials.createMaterial( MaterialType.Cell16kPart ) );
-		this.cell64kPart = new DamagedItemDefinition( "material.cell.storage.64k", materials.createMaterial( MaterialType.Cell64kPart ) );
-		this.emptyStorageCell = new DamagedItemDefinition( "material.cell.storage.empty", materials.createMaterial( MaterialType.EmptyStorageCell ) );
+		this.cell1kPart = new DamagedItemDefinition( "material.cell.storage.1k", materials.createMaterial( MaterialType.CELL1K_PART ) );
+		this.cell4kPart = new DamagedItemDefinition( "material.cell.storage.4k", materials.createMaterial( MaterialType.CELL4K_PART ) );
+		this.cell16kPart = new DamagedItemDefinition( "material.cell.storage.16k", materials.createMaterial( MaterialType.CELL16K_PART ) );
+		this.cell64kPart = new DamagedItemDefinition( "material.cell.storage.64k", materials.createMaterial( MaterialType.CELL64K_PART ) );
+		this.emptyStorageCell = new DamagedItemDefinition( "material.cell.storage.empty", materials.createMaterial( MaterialType.EMPTY_STORAGE_CELL ) );
 
-		this.cardRedstone = new DamagedItemDefinition( "material.card.redstone", materials.createMaterial( MaterialType.CardRedstone ) );
-		this.cardSpeed = new DamagedItemDefinition( "material.card.acceleration", materials.createMaterial( MaterialType.CardSpeed ) );
-		this.cardCapacity = new DamagedItemDefinition( "material.card.capacity", materials.createMaterial( MaterialType.CardCapacity ) );
-		this.cardFuzzy = new DamagedItemDefinition( "material.card.fuzzy", materials.createMaterial( MaterialType.CardFuzzy ) );
-		this.cardInverter = new DamagedItemDefinition( "material.card.inverter", materials.createMaterial( MaterialType.CardInverter ) );
-		this.cardCrafting = new DamagedItemDefinition( "material.card.crafting", materials.createMaterial( MaterialType.CardCrafting ) );
+		this.cardRedstone = new DamagedItemDefinition( "material.card.redstone", materials.createMaterial( MaterialType.CARD_REDSTONE ) );
+		this.cardSpeed = new DamagedItemDefinition( "material.card.acceleration", materials.createMaterial( MaterialType.CARD_SPEED ) );
+		this.cardCapacity = new DamagedItemDefinition( "material.card.capacity", materials.createMaterial( MaterialType.CARD_CAPACITY ) );
+		this.cardFuzzy = new DamagedItemDefinition( "material.card.fuzzy", materials.createMaterial( MaterialType.CARD_FUZZY ) );
+		this.cardInverter = new DamagedItemDefinition( "material.card.inverter", materials.createMaterial( MaterialType.CARD_INVERTER ) );
+		this.cardCrafting = new DamagedItemDefinition( "material.card.crafting", materials.createMaterial( MaterialType.CARD_CRAFTING ) );
 
-		this.enderDust = new DamagedItemDefinition( "material.dust.ender", materials.createMaterial( MaterialType.EnderDust ) );
-		this.flour = new DamagedItemDefinition( "material.flour", materials.createMaterial( MaterialType.Flour ) );
-		this.goldDust = new DamagedItemDefinition( "material.dust.gold", materials.createMaterial( MaterialType.GoldDust ) );
-		this.ironDust = new DamagedItemDefinition( "material.dust.iron", materials.createMaterial( MaterialType.IronDust ) );
-		this.fluixDust = new DamagedItemDefinition( "material.dust.fluix", materials.createMaterial( MaterialType.FluixDust ) );
-		this.certusQuartzDust = new DamagedItemDefinition( "material.dust.quartz.certus", materials.createMaterial( MaterialType.CertusQuartzDust ) );
-		this.netherQuartzDust = new DamagedItemDefinition( "material.dust.quartz.nether", materials.createMaterial( MaterialType.NetherQuartzDust ) );
+		this.enderDust = new DamagedItemDefinition( "material.dust.ender", materials.createMaterial( MaterialType.ENDER_DUST ) );
+		this.flour = new DamagedItemDefinition( "material.flour", materials.createMaterial( MaterialType.FLOUR ) );
+		this.goldDust = new DamagedItemDefinition( "material.dust.gold", materials.createMaterial( MaterialType.GOLD_DUST ) );
+		this.ironDust = new DamagedItemDefinition( "material.dust.iron", materials.createMaterial( MaterialType.IRON_DUST ) );
+		this.fluixDust = new DamagedItemDefinition( "material.dust.fluix", materials.createMaterial( MaterialType.FLUIX_DUST ) );
+		this.certusQuartzDust = new DamagedItemDefinition( "material.dust.quartz.certus", materials.createMaterial( MaterialType.CERTUS_QUARTZ_DUST ) );
+		this.netherQuartzDust = new DamagedItemDefinition( "material.dust.quartz.nether", materials.createMaterial( MaterialType.NETHER_QUARTZ_DUST ) );
 
-		this.matterBall = new DamagedItemDefinition( "material.ammo.matter_ball", materials.createMaterial( MaterialType.MatterBall ) );
+		this.matterBall = new DamagedItemDefinition( "material.ammo.matter_ball", materials.createMaterial( MaterialType.MATTER_BALL ) );
 
-		this.certusQuartzCrystal = new DamagedItemDefinition( "material.crystal.quartz.certus", materials.createMaterial( MaterialType.CertusQuartzCrystal ) );
-		this.certusQuartzCrystalCharged = new DamagedItemDefinition( "material.crystal.quartz.certus.charged", materials.createMaterial( MaterialType.CertusQuartzCrystalCharged ) );
-		this.fluixCrystal = new DamagedItemDefinition( "material.crystal.fluix", materials.createMaterial( MaterialType.FluixCrystal ) );
-		this.fluixPearl = new DamagedItemDefinition( "material.pearl.fluix", materials.createMaterial( MaterialType.FluixPearl ) );
+		this.certusQuartzCrystal = new DamagedItemDefinition( "material.crystal.quartz.certus", materials.createMaterial( MaterialType.CERTUS_QUARTZ_CRYSTAL ) );
+		this.certusQuartzCrystalCharged = new DamagedItemDefinition( "material.crystal.quartz.certus.charged", materials.createMaterial( MaterialType.CERTUS_QUARTZ_CRYSTAL_CHARGED ) );
+		this.fluixCrystal = new DamagedItemDefinition( "material.crystal.fluix", materials.createMaterial( MaterialType.FLUIX_CRYSTAL ) );
+		this.fluixPearl = new DamagedItemDefinition( "material.pearl.fluix", materials.createMaterial( MaterialType.FLUIX_PEARL ) );
 
-		this.woodenGear = new DamagedItemDefinition( "material.gear.wooden", materials.createMaterial( MaterialType.WoodenGear ) );
+		this.woodenGear = new DamagedItemDefinition( "material.gear.wooden", materials.createMaterial( MaterialType.WOODEN_GEAR ) );
 
-		this.wirelessReceiver = new DamagedItemDefinition( "material.wireless.receiver", materials.createMaterial( MaterialType.Wireless ) );
-		this.wirelessBooster = new DamagedItemDefinition( "material.wireless.booster", materials.createMaterial( MaterialType.WirelessBooster ) );
+		this.wirelessReceiver = new DamagedItemDefinition( "material.wireless.receiver", materials.createMaterial( MaterialType.WIRELESS ) );
+		this.wirelessBooster = new DamagedItemDefinition( "material.wireless.booster", materials.createMaterial( MaterialType.WIRELESS_BOOSTER ) );
 
-		this.annihilationCore = new DamagedItemDefinition( "material.core.annihilation", materials.createMaterial( MaterialType.AnnihilationCore ) );
-		this.formationCore = new DamagedItemDefinition( "material.core.formation", materials.createMaterial( MaterialType.FormationCore ) );
+		this.annihilationCore = new DamagedItemDefinition( "material.core.annihilation", materials.createMaterial( MaterialType.ANNIHILATION_CORE ) );
+		this.formationCore = new DamagedItemDefinition( "material.core.formation", materials.createMaterial( MaterialType.FORMATION_CORE ) );
 
-		this.singularity = new DamagedItemDefinition( "material.singularity", materials.createMaterial( MaterialType.Singularity ) );
-		this.qESingularity = new DamagedItemDefinition( "material.singularity.entangled.quantum", materials.createMaterial( MaterialType.QESingularity ) );
-		this.blankPattern = new DamagedItemDefinition( "material.pattern.blank", materials.createMaterial( MaterialType.BlankPattern ) );
+		this.singularity = new DamagedItemDefinition( "material.singularity", materials.createMaterial( MaterialType.SINGULARITY ) );
+		this.qESingularity = new DamagedItemDefinition( "material.singularity.entangled.quantum", materials.createMaterial( MaterialType.QUANTUM_ENTANGLED_SINGULARITY ) );
+		this.blankPattern = new DamagedItemDefinition( "material.pattern.blank", materials.createMaterial( MaterialType.BLANK_PATTERN ) );
 	}
 
 	@Override

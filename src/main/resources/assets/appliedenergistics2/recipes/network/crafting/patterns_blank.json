@@ -1,7 +1,7 @@
 {
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "material.BlankPattern"
+    "part": "material.blank_pattern"
   },
   "type": "appliedenergistics2:part_shaped",
   "pattern": [
@@ -24,11 +24,11 @@
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "material.CertusQuartzCrystalCharged"
+        "part": "material.certus_quartz_crystal_charged"
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "material.PurifiedCertusQuartzCrystal"
+        "part": "material.purified_certus_quartz_crystal"
       }
     ],
     "b": {

@@ -1,7 +1,7 @@
 {
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "part.InterfaceTerminal"
+    "part": "part.interface_terminal"
   },
   "type": "appliedenergistics2:part_shapeless",
   "ingredients": [
@@ -13,7 +13,7 @@
     ],
     {
       "type": "appliedenergistics2:part",
-      "part": "material.EngProcessor"
+      "part": "material.engineering_processor"
     },
     [
       {
@@ -21,7 +21,7 @@
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "part.Interface"
+        "part": "part.interface"
       }
     ]
   ]

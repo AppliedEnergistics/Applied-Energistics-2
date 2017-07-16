@@ -1,7 +1,7 @@
 {
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "part.ToggleBus"
+    "part": "part.toggle_bus"
   },
   "type": "appliedenergistics2:part_shaped",
   "pattern": [

@@ -2,12 +2,12 @@
   "conditions": [
     {
       "type": "appliedenergistics2:material_exists",
-      "material": "material.FluixPearl"
+      "material": "material.fluix_crystal"
     }
   ],
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "material.FluixPearl"
+    "part": "material.fluix_crystal"
   },
   "type": "appliedenergistics2:part_shaped",
   "pattern": [
@@ -30,7 +30,7 @@
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "material.PurifiedFluixCrystal"
+        "part": "material.purified_fluix_crystal"
       }
     ]
   }

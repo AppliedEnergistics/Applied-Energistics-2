@@ -17,7 +17,7 @@
     },
     "a": {
       "type": "appliedenergistics2:part",
-      "part": "material.MatterBall"
+      "part": "material.matter_ball"
     }
   }
 }

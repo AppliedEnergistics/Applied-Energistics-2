@@ -55,7 +55,7 @@ public class PartDenseCable extends PartCable
 	@Override
 	public AECableType getCableConnectionType()
 	{
-		return AECableType.DENSE;
+		return AECableType.DENSE_SMART;
 	}
 
 	@Override
@@ -152,7 +152,7 @@ public class PartDenseCable extends PartCable
 		if( te instanceof IGridHost )
 		{
 			final AECableType t = ( (IGridHost) te ).getCableConnectionType( of.getOpposite() );
-			return t == AECableType.DENSE;
+			return t == AECableType.DENSE_SMART;
 		}
 		return false;
 	}

@@ -12,10 +12,20 @@ import=aliases.recipe
 import=oredict.recipe
 import=groups.recipe
 
-# All actual recipes
-import=decorative/index.recipe
-import=materials/index.recipe
-import=misc/index.recipe
-import=network/index.recipe
 import=processing/index.recipe
-import=tools/index.recipe
+
+### Manually load non-shaped/shapeless recipe files
+import=smelting/smelting.recipe
+import=materials/circuits.recipe
+import=materials/presses.recipe
+import=materials/processors.recipe
+
+
+
+### REPLACED IN 1.12 BY JSON RECIPES
+# All actual recipes
+#import=decorative/index.recipe
+#import=materials/index.recipe
+#import=misc/index.recipe
+#import=network/index.recipe
+#import=tools/index.recipe

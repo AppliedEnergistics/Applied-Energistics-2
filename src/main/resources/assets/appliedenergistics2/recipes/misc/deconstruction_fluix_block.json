@@ -2,12 +2,12 @@
   "conditions": [
     {
       "type": "appliedenergistics2:material_exists",
-      "material": "material.FluixCrystal"
+      "material": "material.fluix_crystal"
     }
   ],
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "material.FluixCrystal",
+    "part": "material.fluix_crystal",
     "count": 4
   },
   "type": "appliedenergistics2:part_shapeless",

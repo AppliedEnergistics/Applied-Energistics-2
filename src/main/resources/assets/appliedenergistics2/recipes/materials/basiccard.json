@@ -2,12 +2,12 @@
   "conditions": [
     {
       "type": "appliedenergistics2:material_exists",
-      "material": "material.BasicCard"
+      "material": "material.basic_card"
     }
   ],
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "material.BasicCard",
+    "part": "material.basic_card",
     "count": 2
   },
   "type": "appliedenergistics2:part_shaped",
@@ -31,7 +31,7 @@
     },
     "d": {
       "type": "appliedenergistics2:part",
-      "part": "material.CalcProcessor"
+      "part": "material.calculation_processor"
     }
   }
 }

@@ -378,7 +378,7 @@ item.appliedenergistics2.ItemFacade.name=Kábel Látszat
 item.appliedenergistics2.ItemCrystalSeed.Certus.name=Certus Kvarc Mag
 item.appliedenergistics2.ItemCrystalSeed.Nether.name=Alvilági Kvarc Mag
 item.appliedenergistics2.ItemCrystalSeed.Fluix.name=Fluix Mag
-item.appliedenergistics2.ItemMaterial.InvalidType.name=Ez a tárgy tiltva van.
+item.appliedenergistics2.ItemMaterial.invalid_type.name=Ez a tárgy tiltva van.
 item.appliedenergistics2.ItemMaterial.AdvCard.name=Fejlett Kártya
 item.appliedenergistics2.ItemMaterial.AnnihilationCore.name=Megsemmisítő Mag
 item.appliedenergistics2.ItemMaterial.BasicCard.name=Egyszerű Kártya
@@ -461,7 +461,7 @@ item.appliedenergistics2.ItemPart.InvertedToggleBus.name=ME Invertált Kapcsoló
 item.appliedenergistics2.ItemPart.ToggleBus.name=ME Kapcsoló Busz
 item.appliedenergistics2.ItemPart.CraftingMonitor.name=ME Barkácsoló Monitor
 item.appliedenergistics2.ItemPart.InterfaceTerminal.name=ME Interfész Terminál
-item.appliedenergistics2.ItemPart.InvalidType.name=Tiltott Tárgy
+item.appliedenergistics2.ItemPart.invalid_type.name=Tiltott Tárgy
 
 item.appliedenergistics2.ItemSpatialStorageCell.128Cubed.name=128³ Térbeli Tároló Cella
 item.appliedenergistics2.ItemSpatialStorageCell.16Cubed.name=16³ Térbeli Tároló Cella

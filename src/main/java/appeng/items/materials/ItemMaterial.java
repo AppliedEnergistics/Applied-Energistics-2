@@ -96,7 +96,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 			return;
 		}
 
-		if( mt == MaterialType.NamePress )
+		if( mt == MaterialType.NAME_PRESS )
 		{
 			final NBTTagCompound c = Platform.openNbtData( stack );
 			lines.add( c.getString( "InscribeName" ) );
@@ -143,7 +143,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	public MaterialType getTypeByStack( final ItemStack is )
 	{
 		MaterialType type = this.dmgToMaterial.get( is.getItemDamage() );
-		return ( type != null ) ? type : MaterialType.InvalidType;
+		return ( type != null ) ? type : MaterialType.INVALID_TYPE;
 	}
 
 	@Override
@@ -151,17 +151,17 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	{
 		switch( this.getTypeByStack( itemstack ) )
 		{
-			case CardCapacity:
+			case CARD_CAPACITY:
 				return Upgrades.CAPACITY;
-			case CardFuzzy:
+			case CARD_FUZZY:
 				return Upgrades.FUZZY;
-			case CardRedstone:
+			case CARD_REDSTONE:
 				return Upgrades.REDSTONE;
-			case CardSpeed:
+			case CARD_SPEED:
 				return Upgrades.SPEED;
-			case CardInverter:
+			case CARD_INVERTER:
 				return Upgrades.INVERTER;
-			case CardCrafting:
+			case CARD_CRAFTING:
 				return Upgrades.CRAFTING;
 			default:
 				return null;
@@ -257,7 +257,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	@Override
 	public String getUnlocalizedName( final ItemStack is )
 	{
-		return "item.appliedenergistics2.material." + this.nameOf( is );
+		return "item.appliedenergistics2.material." + this.nameOf( is ).toLowerCase();
 	}
 
 	@Override
@@ -384,13 +384,13 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	{
 		switch( this.getTypeByStack( is ) )
 		{
-			case Cell1kPart:
+			case CELL1K_PART:
 				return KILO_SCALAR;
-			case Cell4kPart:
+			case CELL4K_PART:
 				return KILO_SCALAR * 4;
-			case Cell16kPart:
+			case CELL16K_PART:
 				return KILO_SCALAR * 16;
-			case Cell64kPart:
+			case CELL64K_PART:
 				return KILO_SCALAR * 64;
 			default:
 		}
@@ -402,10 +402,10 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	{
 		switch( this.getTypeByStack( is ) )
 		{
-			case Cell1kPart:
-			case Cell4kPart:
-			case Cell16kPart:
-			case Cell64kPart:
+			case CELL1K_PART:
+			case CELL4K_PART:
+			case CELL16K_PART:
+			case CELL64K_PART:
 				return true;
 			default:
 		}

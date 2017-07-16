@@ -22,7 +22,7 @@
     },
     "c": {
       "type": "appliedenergistics2:part",
-      "part": "material.Cell64kPart"
+      "part": "material.cell64k_part"
     }
   }
 }

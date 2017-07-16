@@ -1,13 +1,13 @@
 {
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "part.StorageMonitor"
+    "part": "part.storage_monitor"
   },
   "type": "appliedenergistics2:part_shapeless",
   "ingredients": [
     {
       "type": "appliedenergistics2:part",
-      "part": "part.LevelEmitter"
+      "part": "part.level_emitter"
     },
     [
       {

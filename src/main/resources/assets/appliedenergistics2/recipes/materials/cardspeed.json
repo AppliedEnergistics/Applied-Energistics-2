@@ -2,18 +2,18 @@
   "conditions": [
     {
       "type": "appliedenergistics2:material_exists",
-      "material": "material.CardSpeed"
+      "material": "material.card_speed"
     }
   ],
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "material.CardSpeed"
+    "part": "material.card_speed"
   },
   "type": "appliedenergistics2:part_shapeless",
   "ingredients": [
     {
       "type": "appliedenergistics2:part",
-      "part": "material.AdvCard"
+      "part": "material.advanced_card"
     },
     [
       {
@@ -22,7 +22,7 @@
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "material.PurifiedFluixCrystal"
+        "part": "material.purified_fluix_crystal"
       }
     ]
   ]

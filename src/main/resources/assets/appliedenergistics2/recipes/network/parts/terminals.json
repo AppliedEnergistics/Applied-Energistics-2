@@ -1,13 +1,13 @@
 {
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "part.Terminal"
+    "part": "part.terminal"
   },
   "type": "appliedenergistics2:part_shapeless",
   "ingredients": [
     {
       "type": "appliedenergistics2:part",
-      "part": "material.FormationCore"
+      "part": "material.formation_core"
     },
     [
       {
@@ -17,11 +17,11 @@
     ],
     {
       "type": "appliedenergistics2:part",
-      "part": "material.LogicProcessor"
+      "part": "material.logic_processor"
     },
     {
       "type": "appliedenergistics2:part",
-      "part": "material.AnnihilationCore"
+      "part": "material.annihilation_core"
     }
   ]
 }

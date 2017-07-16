@@ -1,13 +1,13 @@
 {
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "part.CraftingTerminal"
+    "part": "part.crafting_terminal"
   },
   "type": "appliedenergistics2:part_shapeless",
   "ingredients": [
     {
       "type": "appliedenergistics2:part",
-      "part": "part.Terminal"
+      "part": "part.terminal"
     },
     {
       "type": "forge:ore_dict",
@@ -15,7 +15,7 @@
     },
     {
       "type": "appliedenergistics2:part",
-      "part": "material.CalcProcessor"
+      "part": "material.calculation_processor"
     }
   ]
 }

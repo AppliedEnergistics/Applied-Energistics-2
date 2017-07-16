@@ -1,7 +1,7 @@
 {
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "part.QuartzFiber",
+    "part": "part.quartz_fiber",
     "count": 3
   },
   "type": "appliedenergistics2:part_shaped",

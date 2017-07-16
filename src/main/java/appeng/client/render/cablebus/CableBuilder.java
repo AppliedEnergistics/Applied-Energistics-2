@@ -101,8 +101,8 @@ class CableBuilder
 			case SMART:
 				textureFolder = "parts/cable/smart/";
 				break;
-			case DENSE:
-				textureFolder = "parts/cable/dense/";
+			case DENSE_SMART:
+				textureFolder = "parts/cable/dense_smart/";
 				break;
 			default:
 				throw new IllegalStateException( "Cable type " + cableType + " does not support connections." );
@@ -127,8 +127,8 @@ class CableBuilder
 			case SMART:
 				addCableCore( CableCoreType.COVERED, color, quadsOut );
 				break;
-			case DENSE:
-				addCableCore( CableCoreType.DENSE, color, quadsOut );
+			case DENSE_SMART:
+				addCableCore( CableCoreType.DENSE_SMART, color, quadsOut );
 				break;
 			default:
 		}
@@ -149,7 +149,7 @@ class CableBuilder
 			case COVERED:
 				cubeBuilder.addCube( 5, 5, 5, 11, 11, 11 );
 				break;
-			case DENSE:
+			case DENSE_SMART:
 				cubeBuilder.addCube( 3, 3, 3, 13, 13, 13 );
 				break;
 		}
@@ -456,7 +456,7 @@ class CableBuilder
 			addSmartConnection( facing, cableColor, connectionType, cableBusAdjacent, channels, quadsOut );
 			return;
 		}
-		else if( connectionType != AECableType.DENSE )
+		else if( connectionType != AECableType.DENSE_SMART )
 		{
 			addCoveredConnection( facing, cableColor, connectionType, cableBusAdjacent, quadsOut );
 			return;
@@ -467,7 +467,7 @@ class CableBuilder
 		// We render all faces except the one on the connection side
 		cubeBuilder.setDrawFaces( EnumSet.complementOf( EnumSet.of( facing ) ) );
 
-		TextureAtlasSprite texture = connectionTextures.get( AECableType.DENSE ).get( cableColor );
+		TextureAtlasSprite texture = connectionTextures.get( AECableType.DENSE_SMART ).get( cableColor );
 		cubeBuilder.setTexture( texture );
 
 		addDenseCableSizedCube( facing, cubeBuilder );
@@ -499,7 +499,7 @@ class CableBuilder
 	{
 		CubeBuilder cubeBuilder = new CubeBuilder( format, quadsOut );
 
-		TextureAtlasSprite texture = connectionTextures.get( AECableType.DENSE ).get( cableColor );
+		TextureAtlasSprite texture = connectionTextures.get( AECableType.DENSE_SMART ).get( cableColor );
 		cubeBuilder.setTexture( texture );
 
 		setStraightCableUVs( cubeBuilder, facing, 5, 11 );

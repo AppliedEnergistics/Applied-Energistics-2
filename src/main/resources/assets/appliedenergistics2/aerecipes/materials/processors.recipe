@@ -1,11 +1,11 @@
 press=
-    oredictionary:dustRedstone ae2:material.LogicProcessorPrint ae2:material.SiliconPrint
-    -> ae2:material.LogicProcessor
+    oredictionary:dustRedstone ae2:material.logic_processor_print ae2:material.silicon_print
+    -> ae2:material.logic_processor
 
 press=
-    oredictionary:dustRedstone ae2:material.CalcProcessorPrint ae2:material.SiliconPrint
-    -> ae2:material.CalcProcessor
+    oredictionary:dustRedstone ae2:material.calculation_processor_print ae2:material.silicon_print
+    -> ae2:material.calculation_processor
 
 press=
-    oredictionary:dustRedstone ae2:material.EngProcessorPrint ae2:material.SiliconPrint
-    -> ae2:material.EngProcessor
+    oredictionary:dustRedstone ae2:material.engineering_processor_print ae2:material.silicon_print
+    -> ae2:material.engineering_processor

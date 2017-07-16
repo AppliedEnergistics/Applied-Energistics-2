@@ -24,7 +24,7 @@
     ],
     "b": {
       "type": "appliedenergistics2:part",
-      "part": "part.Terminal"
+      "part": "part.terminal"
     },
     "d": {
       "type": "forge:ore_dict",
@@ -51,7 +51,7 @@
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "material.PurifiedFluixCrystal"
+        "part": "material.purified_fluix_crystal"
       }
     ]
   }

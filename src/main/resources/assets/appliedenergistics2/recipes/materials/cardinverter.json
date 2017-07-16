@@ -2,12 +2,12 @@
   "conditions": [
     {
       "type": "appliedenergistics2:material_exists",
-      "material": "material.CardInverter"
+      "material": "material.card_inverter"
     }
   ],
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "material.CardInverter"
+    "part": "material.card_inverter"
   },
   "type": "appliedenergistics2:part_shapeless",
   "ingredients": [
@@ -16,7 +16,7 @@
     },
     {
       "type": "appliedenergistics2:part",
-      "part": "material.AdvCard"
+      "part": "material.advanced_card"
     }
   ]
 }

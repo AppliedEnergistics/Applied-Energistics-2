@@ -11,14 +11,14 @@
   "key": {
     "b": {
       "type": "appliedenergistics2:part",
-      "part": "part.Terminal"
+      "part": "part.terminal"
     },
     "c": {
       "item": "appliedenergistics2:dense_energy_cell"
     },
     "a": {
       "type": "appliedenergistics2:part",
-      "part": "material.Wireless"
+      "part": "material.wireless"
     }
   }
 }

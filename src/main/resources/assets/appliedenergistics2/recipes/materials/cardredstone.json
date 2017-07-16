@@ -2,12 +2,12 @@
   "conditions": [
     {
       "type": "appliedenergistics2:material_exists",
-      "material": "material.CardRedstone"
+      "material": "material.card_redstone"
     }
   ],
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "material.CardRedstone"
+    "part": "material.card_redstone"
   },
   "type": "appliedenergistics2:part_shapeless",
   "ingredients": [
@@ -16,7 +16,7 @@
     },
     {
       "type": "appliedenergistics2:part",
-      "part": "material.BasicCard"
+      "part": "material.basic_card"
     }
   ]
 }

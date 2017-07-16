@@ -1,15 +1,15 @@
 inscribe=
-    oredictionary:blockIron ae2:material.LogicProcessorPress
-    -> ae2:material.LogicProcessorPress
+    oredictionary:blockIron ae2:material.logic_processor_press
+    -> ae2:material.logic_processor_press
 
 inscribe=
-    oredictionary:blockIron ae2:material.CalcProcessorPress
-    -> ae2:material.CalcProcessorPress
+    oredictionary:blockIron ae2:material.calculation_processor_press
+    -> ae2:material.calculation_processor_press
 
 inscribe=
-    oredictionary:blockIron ae2:material.EngProcessorPress
-    -> ae2:material.EngProcessorPress
+    oredictionary:blockIron ae2:material.engineering_processor_press
+    -> ae2:material.engineering_processor_press
 
 inscribe=
-    oredictionary:blockIron ae2:material.SiliconPress
-    -> ae2:material.SiliconPress
+    oredictionary:blockIron ae2:material.silicon_press
+    -> ae2:material.silicon_press

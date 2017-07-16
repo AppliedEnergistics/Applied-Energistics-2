@@ -11,7 +11,7 @@
   "key": {
     "b": {
       "type": "appliedenergistics2:part",
-      "part": "material.EngProcessor"
+      "part": "material.engineering_processor"
     },
     "a": {
       "type": "forge:ore_dict",

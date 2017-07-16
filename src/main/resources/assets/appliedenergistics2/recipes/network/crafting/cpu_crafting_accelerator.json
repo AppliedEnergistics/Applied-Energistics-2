@@ -6,7 +6,7 @@
   "ingredients": [
     {
       "type": "appliedenergistics2:part",
-      "part": "material.EngProcessor"
+      "part": "material.engineering_processor"
     },
     {
       "item": "appliedenergistics2:crafting_unit"

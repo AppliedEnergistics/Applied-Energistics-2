@@ -2,12 +2,12 @@
   "conditions": [
     {
       "type": "appliedenergistics2:material_exists",
-      "material": "material.AnnihilationCore"
+      "material": "material.annihilation_core"
     }
   ],
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "material.AnnihilationCore",
+    "part": "material.annihilation_core",
     "count": 2
   },
   "type": "appliedenergistics2:part_shaped",
@@ -26,12 +26,12 @@
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "material.PurifiedNetherQuartzCrystal"
+        "part": "material.purified_nether_quartz_crystal"
       }
     ],
     "c": {
       "type": "appliedenergistics2:part",
-      "part": "material.LogicProcessor"
+      "part": "material.logic_processor"
     }
   }
 }

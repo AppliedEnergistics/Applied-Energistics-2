@@ -2,12 +2,12 @@
   "conditions": [
     {
       "type": "appliedenergistics2:material_exists",
-      "material": "material.WoodenGear"
+      "material": "material.wooden_gear"
     }
   ],
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "material.WoodenGear"
+    "part": "material.wooden_gear"
   },
   "type": "appliedenergistics2:part_shaped",
   "pattern": [

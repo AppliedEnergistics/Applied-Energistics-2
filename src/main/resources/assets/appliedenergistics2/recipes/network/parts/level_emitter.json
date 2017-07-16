@@ -1,7 +1,7 @@
 {
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "part.LevelEmitter"
+    "part": "part.level_emitter"
   },
   "type": "appliedenergistics2:part_shapeless",
   "ingredients": [
@@ -10,7 +10,7 @@
     },
     {
       "type": "appliedenergistics2:part",
-      "part": "material.CalcProcessor"
+      "part": "material.calculation_processor"
     }
   ]
 }

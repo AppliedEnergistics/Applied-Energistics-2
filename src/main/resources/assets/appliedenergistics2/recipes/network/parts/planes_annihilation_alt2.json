@@ -1,7 +1,7 @@
 {
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "part.AnnihilationPlane"
+    "part": "part.annihilation_plane"
   },
   "type": "appliedenergistics2:part_shaped",
   "pattern": [
@@ -21,12 +21,12 @@
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "material.PurifiedFluixCrystal"
+        "part": "material.purified_fluix_crystal"
       }
     ],
     "c": {
       "type": "appliedenergistics2:part",
-      "part": "material.AnnihilationCore"
+      "part": "material.annihilation_core"
     }
   }
 }

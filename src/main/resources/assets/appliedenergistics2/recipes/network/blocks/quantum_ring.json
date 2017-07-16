@@ -11,12 +11,12 @@
   "key": {
     "c": {
       "type": "appliedenergistics2:part",
-      "part": "material.EngProcessor"
+      "part": "material.engineering_processor"
     },
     "e": [
       {
         "type": "appliedenergistics2:part",
-        "part": "cable_dense"
+        "part": "cable_dense_smart"
       }
     ],
     "a": {
@@ -28,7 +28,7 @@
     },
     "b": {
       "type": "appliedenergistics2:part",
-      "part": "material.LogicProcessor"
+      "part": "material.logic_processor"
     }
   }
 }

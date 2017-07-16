@@ -2,12 +2,12 @@
   "conditions": [
     {
       "type": "appliedenergistics2:material_exists",
-      "material": "material.CardCrafting"
+      "material": "material.card_capacity"
     }
   ],
   "result": {
     "type": "appliedenergistics2:part",
-    "part": "material.CardCrafting"
+    "part": "material.card_capacity"
   },
   "type": "appliedenergistics2:part_shapeless",
   "ingredients": [
@@ -17,7 +17,7 @@
     },
     {
       "type": "appliedenergistics2:part",
-      "part": "material.BasicCard"
+      "part": "material.basic_card"
     }
   ]
 }

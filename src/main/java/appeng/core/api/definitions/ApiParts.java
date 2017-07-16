@@ -91,45 +91,45 @@ public final class ApiParts implements IParts
 			partModels.registerModels( partType.getModels() );
 		}
 
-		this.cableSmart = constructColoredDefinition( itemPart, PartType.CableSmart );
-		this.cableCovered = constructColoredDefinition( itemPart, PartType.CableCovered );
-		this.cableGlass = constructColoredDefinition( itemPart, PartType.CableGlass );
-		this.cableDense = constructColoredDefinition( itemPart, PartType.CableDense );
+		this.cableSmart = constructColoredDefinition( itemPart, PartType.CABLE_SMART );
+		this.cableCovered = constructColoredDefinition( itemPart, PartType.CABLE_COVERED );
+		this.cableGlass = constructColoredDefinition( itemPart, PartType.CABLE_GLASS );
+		this.cableDense = constructColoredDefinition( itemPart, PartType.CABLE_DENSE_SMART );
 		// this.lumenCableSmart = Optional.absent(); // has yet to be implemented, no PartType defined for it yet
 		// this.lumenCableCovered = Optional.absent(); // has yet to be implemented, no PartType defined for it yet
 		// this.lumenCableGlass = Optional.absent(); // has yet to be implemented, no PartType defined for it yet
 		// this.lumenCableDense = Optional.absent(); // has yet to be implemented, no PartType defined for it yet
-		this.quartzFiber = new DamagedItemDefinition( "part.quartz_fiber", itemPart.createPart( PartType.QuartzFiber ) );
-		this.toggleBus = new DamagedItemDefinition( "part.toggle_bus", itemPart.createPart( PartType.ToggleBus ) );
-		this.invertedToggleBus = new DamagedItemDefinition( "part.toggle_bus.inverted", itemPart.createPart( PartType.InvertedToggleBus ) );
-		this.storageBus = new DamagedItemDefinition( "part.bus.storage", itemPart.createPart( PartType.StorageBus ) );
-		this.importBus = new DamagedItemDefinition( "part.bus.import", itemPart.createPart( PartType.ImportBus ) );
-		this.exportBus = new DamagedItemDefinition( "part.bus.export", itemPart.createPart( PartType.ExportBus ) );
-		this.iface = new DamagedItemDefinition( "part.interface", itemPart.createPart( PartType.Interface ) );
-		this.levelEmitter = new DamagedItemDefinition( "part.level_emitter", itemPart.createPart( PartType.LevelEmitter ) );
-		this.annihilationPlane = new DamagedItemDefinition( "part.plane.annihilation", itemPart.createPart( PartType.AnnihilationPlane ) );
-		this.identityAnnihilationPlane = new DamagedItemDefinition( "part.plane.annihiliation.identity", itemPart.createPart( PartType.IdentityAnnihilationPlane ) );
-		this.formationPlane = new DamagedItemDefinition( "part.plane.formation", itemPart.createPart( PartType.FormationPlane ) );
-		this.p2PTunnelME = new DamagedItemDefinition( "part.tunnel.me", itemPart.createPart( PartType.P2PTunnelME ) );
-		this.p2PTunnelRedstone = new DamagedItemDefinition( "part.tunnel.redstone", itemPart.createPart( PartType.P2PTunnelRedstone ) );
-		this.p2PTunnelItems = new DamagedItemDefinition( "part.tunnel.item", itemPart.createPart( PartType.P2PTunnelItems ) );
-		this.p2PTunnelFluids = new DamagedItemDefinition( "part.tunnel.fluid", itemPart.createPart( PartType.P2PTunnelFluids ) );
-		this.p2PTunnelEU = new DamagedItemDefinition( "part.tunnel.eu", itemPart.createPart( PartType.P2PTunnelEU ) );
-		this.p2PTunnelRF = new DamagedItemDefinition( "part.tunnel.rf", itemPart.createPart( PartType.P2PTunnelRF ) );
-		this.p2PTunnelFE = new DamagedItemDefinition( "part.tunnel.fe", itemPart.createPart( PartType.P2PTunnelFE ) );
-		this.p2PTunnelLight = new DamagedItemDefinition( "part.tunnel.light", itemPart.createPart( PartType.P2PTunnelLight ) );
+		this.quartzFiber = new DamagedItemDefinition( "part.quartz_fiber", itemPart.createPart( PartType.QUARTZ_FIBER ) );
+		this.toggleBus = new DamagedItemDefinition( "part.toggle_bus", itemPart.createPart( PartType.TOGGLE_BUS ) );
+		this.invertedToggleBus = new DamagedItemDefinition( "part.toggle_bus.inverted", itemPart.createPart( PartType.INVERTED_TOGGLE_BUS ) );
+		this.storageBus = new DamagedItemDefinition( "part.bus.storage", itemPart.createPart( PartType.STORAGE_BUS ) );
+		this.importBus = new DamagedItemDefinition( "part.bus.import", itemPart.createPart( PartType.IMPORT_BUS ) );
+		this.exportBus = new DamagedItemDefinition( "part.bus.export", itemPart.createPart( PartType.EXPORT_BUS ) );
+		this.iface = new DamagedItemDefinition( "part.interface", itemPart.createPart( PartType.INTERFACE ) );
+		this.levelEmitter = new DamagedItemDefinition( "part.level_emitter", itemPart.createPart( PartType.LEVEL_EMITTER ) );
+		this.annihilationPlane = new DamagedItemDefinition( "part.plane.annihilation", itemPart.createPart( PartType.ANNIHILATION_PLANE ) );
+		this.identityAnnihilationPlane = new DamagedItemDefinition( "part.plane.annihiliation.identity", itemPart.createPart( PartType.IDENTITY_ANNIHILATION_PLANE ) );
+		this.formationPlane = new DamagedItemDefinition( "part.plane.formation", itemPart.createPart( PartType.FORMATION_PLANE ) );
+		this.p2PTunnelME = new DamagedItemDefinition( "part.tunnel.me", itemPart.createPart( PartType.P2P_TUNNEL_ME ) );
+		this.p2PTunnelRedstone = new DamagedItemDefinition( "part.tunnel.redstone", itemPart.createPart( PartType.P2P_TUNNEL_REDSTONE ) );
+		this.p2PTunnelItems = new DamagedItemDefinition( "part.tunnel.item", itemPart.createPart( PartType.P2P_TUNNEL_ITEMS ) );
+		this.p2PTunnelFluids = new DamagedItemDefinition( "part.tunnel.fluid", itemPart.createPart( PartType.P2P_TUNNEL_FLUIDS ) );
+		this.p2PTunnelEU = new DamagedItemDefinition( "part.tunnel.eu", itemPart.createPart( PartType.P2P_TUNNEL_IC2 ) );
+		this.p2PTunnelRF = new DamagedItemDefinition( "part.tunnel.rf", itemPart.createPart( PartType.P2P_TUNNEL_RF ) );
+		this.p2PTunnelFE = new DamagedItemDefinition( "part.tunnel.fe", itemPart.createPart( PartType.P2P_TUNNEL_FE ) );
+		this.p2PTunnelLight = new DamagedItemDefinition( "part.tunnel.light", itemPart.createPart( PartType.P2P_TUNNEL_LIGHT ) );
 		// this.p2PTunnelOpenComputers = new DamagedItemDefinition( itemMultiPart.createPart(
 		// PartType.P2PTunnelOpenComputers ) );
-		this.cableAnchor = new DamagedItemDefinition( "part.cable_anchor", itemPart.createPart( PartType.CableAnchor ) );
-		this.monitor = new DamagedItemDefinition( "part.monitor", itemPart.createPart( PartType.Monitor ) );
-		this.semiDarkMonitor = new DamagedItemDefinition( "part.monitor.semi_dark", itemPart.createPart( PartType.SemiDarkMonitor ) );
-		this.darkMonitor = new DamagedItemDefinition( "part.monitor.dark", itemPart.createPart( PartType.DarkMonitor ) );
-		this.interfaceTerminal = new DamagedItemDefinition( "part.terminal.interface", itemPart.createPart( PartType.InterfaceTerminal ) );
-		this.patternTerminal = new DamagedItemDefinition( "part.terminal.pattern", itemPart.createPart( PartType.PatternTerminal ) );
-		this.craftingTerminal = new DamagedItemDefinition( "part.terminal.crafting", itemPart.createPart( PartType.CraftingTerminal ) );
-		this.terminal = new DamagedItemDefinition( "part.terminal", itemPart.createPart( PartType.Terminal ) );
-		this.storageMonitor = new DamagedItemDefinition( "part.monitor.storage", itemPart.createPart( PartType.StorageMonitor ) );
-		this.conversionMonitor = new DamagedItemDefinition( "part.monitor.conversion", itemPart.createPart( PartType.ConversionMonitor ) );
+		this.cableAnchor = new DamagedItemDefinition( "part.cable_anchor", itemPart.createPart( PartType.CABLE_ANCHOR ) );
+		this.monitor = new DamagedItemDefinition( "part.monitor", itemPart.createPart( PartType.MONITOR ) );
+		this.semiDarkMonitor = new DamagedItemDefinition( "part.monitor.semi_dark", itemPart.createPart( PartType.SEMI_DARK_MONITOR ) );
+		this.darkMonitor = new DamagedItemDefinition( "part.monitor.dark", itemPart.createPart( PartType.DARK_MONITOR ) );
+		this.interfaceTerminal = new DamagedItemDefinition( "part.terminal.interface", itemPart.createPart( PartType.INTERFACE_TERMINAL ) );
+		this.patternTerminal = new DamagedItemDefinition( "part.terminal.pattern", itemPart.createPart( PartType.PATTERN_TERMINAL ) );
+		this.craftingTerminal = new DamagedItemDefinition( "part.terminal.crafting", itemPart.createPart( PartType.CRAFTING_TERMINAL ) );
+		this.terminal = new DamagedItemDefinition( "part.terminal", itemPart.createPart( PartType.TERMINAL ) );
+		this.storageMonitor = new DamagedItemDefinition( "part.monitor.storage", itemPart.createPart( PartType.STORAGE_MONITOR ) );
+		this.conversionMonitor = new DamagedItemDefinition( "part.monitor.conversion", itemPart.createPart( PartType.CONVERSION_MONITOR ) );
 	}
 
 	private static AEColoredItemDefinition constructColoredDefinition( final ItemPart target, final PartType type )

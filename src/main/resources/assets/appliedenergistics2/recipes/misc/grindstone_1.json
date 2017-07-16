@@ -20,7 +20,7 @@
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "material.CertusQuartzCrystalCharged"
+        "part": "material.certus_quartz_crystal_charged"
       }
     ],
     "a": {

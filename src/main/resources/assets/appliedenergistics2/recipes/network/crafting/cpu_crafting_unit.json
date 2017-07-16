@@ -15,7 +15,7 @@
     },
     "d": {
       "type": "appliedenergistics2:part",
-      "part": "material.LogicProcessor"
+      "part": "material.logic_processor"
     },
     "c": [
       {
@@ -33,7 +33,7 @@
     ],
     "b": {
       "type": "appliedenergistics2:part",
-      "part": "material.CalcProcessor"
+      "part": "material.calculation_processor"
     }
   }
 }

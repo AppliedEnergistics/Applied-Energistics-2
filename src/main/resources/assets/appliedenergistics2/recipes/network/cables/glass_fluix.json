@@ -8,7 +8,7 @@
   "ingredients": [
     {
       "type": "appliedenergistics2:part",
-      "part": "part.QuartzFiber"
+      "part": "part.quartz_fiber"
     },
     [
       {
@@ -17,7 +17,7 @@
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "material.PurifiedFluixCrystal"
+        "part": "material.purified_fluix_crystal"
       }
     ],
     [
@@ -27,7 +27,7 @@
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "material.PurifiedFluixCrystal"
+        "part": "material.purified_fluix_crystal"
       }
     ]
   ]

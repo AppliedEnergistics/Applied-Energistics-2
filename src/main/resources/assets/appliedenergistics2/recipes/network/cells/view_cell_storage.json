@@ -6,7 +6,7 @@
   "ingredients": [
     {
       "type": "appliedenergistics2:part",
-      "part": "material.EmptyStorageCell"
+      "part": "material.empty_storage_cell"
     },
     [
       {
@@ -15,11 +15,11 @@
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "material.CertusQuartzCrystalCharged"
+        "part": "material.certus_quartz_crystal_charged"
       },
       {
         "type": "appliedenergistics2:part",
-        "part": "material.PurifiedCertusQuartzCrystal"
+        "part": "material.purified_certus_quartz_crystal"
       }
     ]
   ]
