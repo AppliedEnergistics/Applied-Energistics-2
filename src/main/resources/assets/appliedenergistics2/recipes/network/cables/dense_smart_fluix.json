@@ -6,12 +6,24 @@
   "type": "appliedenergistics2:part_shapeless",
   "ingredients": [
     {
-      "type": "forge:ore_dict",
-      "ore": "dustRedstone"
+      "type": "appliedenergistics2:part",
+      "part": "cable_covered"
     },
     {
       "type": "appliedenergistics2:part",
       "part": "cable_covered"
+    },
+    {
+      "type": "appliedenergistics2:part",
+      "part": "cable_covered"
+    },
+    {
+      "type": "appliedenergistics2:part",
+      "part": "cable_covered"
+    },
+    {
+      "type": "forge:ore_dict",
+      "ore": "dustRedstone"
     },
     {
       "type": "forge:ore_dict",
