@@ -70,7 +70,7 @@ public class PacketJEIRecipe extends AppEngPacket
 	// automatic.
 	public PacketJEIRecipe( final ByteBuf stream ) throws IOException
 	{
-		final ByteArrayInputStream bytes = new ByteArrayInputStream( stream.array() );
+		final ByteArrayInputStream bytes = this.getPacketByteArray( stream );
 		bytes.skip( stream.readerIndex() );
 		final NBTTagCompound comp = CompressedStreamTools.readCompressed( bytes );
 		if( comp != null )

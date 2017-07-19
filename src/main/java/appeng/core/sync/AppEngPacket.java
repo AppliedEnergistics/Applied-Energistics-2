@@ -19,6 +19,7 @@
 package appeng.core.sync;
 
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
@@ -91,6 +92,29 @@ public abstract class AppEngPacket implements Packet
 	public void writePacketData( final PacketBuffer buf ) throws IOException
 	{
 		throw new RuntimeException( "Not Implemented" );
+	}
+
+	// TODO: Figure out why Forge/Minecraft on the server sets the stream data buffer to PooledUnsafeDirectByteBuf
+
+	public ByteArrayInputStream getPacketByteArray ( ByteBuf stream, int readerIndex, int readableBytes )
+	{
+		final ByteArrayInputStream bytes;
+		if( stream.hasArray() )
+		{
+			bytes = new ByteArrayInputStream( stream.array(), readerIndex, readableBytes );
+		}
+		else
+		{
+			byte[] data = new byte[stream.capacity()];
+			stream.getBytes( readerIndex, data, 0, readableBytes );
+			bytes = new ByteArrayInputStream( data );
+		}
+		return bytes;
+	}
+
+	public ByteArrayInputStream getPacketByteArray ( ByteBuf stream )
+	{
+		return getPacketByteArray( stream, 0, stream.readableBytes() );
 	}
 
 	public void setCallParam( final PacketCallState call )

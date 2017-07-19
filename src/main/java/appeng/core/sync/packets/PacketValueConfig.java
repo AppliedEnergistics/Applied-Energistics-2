@@ -19,7 +19,6 @@
 package appeng.core.sync.packets;
 
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -66,7 +65,7 @@ public class PacketValueConfig extends AppEngPacket
 	// automatic.
 	public PacketValueConfig( final ByteBuf stream ) throws IOException
 	{
-		final DataInputStream dis = new DataInputStream( new ByteArrayInputStream( stream.array(), stream.readerIndex(), stream.readableBytes() ) );
+		final DataInputStream dis = new DataInputStream( this.getPacketByteArray( stream, stream.readerIndex(), stream.readableBytes() ) );
 		this.Name = dis.readUTF();
 		this.Value = dis.readUTF();
 		// dis.close();
