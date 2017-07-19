@@ -198,7 +198,7 @@ public enum PartType
 		@Override
 		String getUnlocalizedName()
 		{
-			return "P2PTunnel";
+			return "p2p_tunnel";
 		}
 	},
 
@@ -208,7 +208,7 @@ public enum PartType
 		@Override
 		String getUnlocalizedName()
 		{
-			return "P2PTunnel";
+			return "p2p_tunnel";
 		}
 	},
 
@@ -218,7 +218,7 @@ public enum PartType
 		@Override
 		String getUnlocalizedName()
 		{
-			return "P2PTunnel";
+			return "p2p_tunnel";
 		}
 	},
 
@@ -228,7 +228,7 @@ public enum PartType
 		@Override
 		String getUnlocalizedName()
 		{
-			return "P2PTunnel";
+			return "p2p_tunnel";
 		}
 	},
 
@@ -238,7 +238,7 @@ public enum PartType
 		@Override
 		String getUnlocalizedName()
 		{
-			return "P2PTunnel";
+			return "p2p_tunnel";
 		}
 	},
 
@@ -248,7 +248,7 @@ public enum PartType
 		@Override
 		String getUnlocalizedName()
 		{
-			return "P2PTunnel";
+			return "p2p_tunnel";
 		}
 	},
 
@@ -258,7 +258,7 @@ public enum PartType
 		@Override
 		String getUnlocalizedName()
 		{
-			return "P2PTunnel";
+			return "p2p_tunnel";
 		}
 	},
 
@@ -268,7 +268,7 @@ public enum PartType
 		@Override
 		String getUnlocalizedName()
 			{
-				return "P2PTunnel";
+				return "p2p_tunnel";
 			}
 	},
 

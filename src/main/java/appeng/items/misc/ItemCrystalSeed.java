@@ -185,17 +185,17 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 
 		if( damage < CERTUS + SINGLE_OFFSET )
 		{
-			return this.getUnlocalizedName() + ".Certus";
+			return this.getUnlocalizedName() + ".certus";
 		}
 
 		if( damage < NETHER + SINGLE_OFFSET )
 		{
-			return this.getUnlocalizedName() + ".Nether";
+			return this.getUnlocalizedName() + ".nether";
 		}
 
 		if( damage < FLUIX + SINGLE_OFFSET )
 		{
-			return this.getUnlocalizedName() + ".Fluix";
+			return this.getUnlocalizedName() + ".fluix";
 		}
 
 		return this.getUnlocalizedName();
