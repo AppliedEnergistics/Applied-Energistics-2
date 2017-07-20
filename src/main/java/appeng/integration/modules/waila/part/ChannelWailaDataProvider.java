@@ -60,7 +60,7 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	 * <p/>
 	 * The cache will be updated from the server.
 	 */
-	private final TObjectByteMap<IPart> cache = new TObjectByteHashMap<IPart>();
+	private final TObjectByteMap<IPart> cache = new TObjectByteHashMap<>();
 
 	/**
 	 * Adds the used and max channel to the tool tip

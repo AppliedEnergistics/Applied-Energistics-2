@@ -75,7 +75,7 @@ public class GuiImgButton extends GuiButton implements ITooltip
 
 		if( appearances == null )
 		{
-			appearances = new HashMap<EnumPair, ButtonAppearance>();
+			appearances = new HashMap<>();
 			this.registerApp( 16 * 7, Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH, ButtonToolTips.CondenserOutput, ButtonToolTips.Trash );
 			this.registerApp( 16 * 7 + 1, Settings.CONDENSER_OUTPUT, CondenserOutput.MATTER_BALLS, ButtonToolTips.CondenserOutput, ButtonToolTips.MatterBalls );
 			this.registerApp( 16 * 7 + 2, Settings.CONDENSER_OUTPUT, CondenserOutput.SINGULARITY, ButtonToolTips.CondenserOutput, ButtonToolTips.Singularity );

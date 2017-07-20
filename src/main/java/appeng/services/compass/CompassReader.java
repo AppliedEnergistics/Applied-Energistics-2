@@ -30,7 +30,7 @@ import com.google.common.base.Preconditions;
 
 public final class CompassReader
 {
-	private final Map<Long, CompassRegion> regions = new HashMap<Long, CompassRegion>( 100 );
+	private final Map<Long, CompassRegion> regions = new HashMap<>( 100 );
 	private final int dimensionId;
 	private final File worldCompassFolder;
 

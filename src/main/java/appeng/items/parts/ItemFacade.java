@@ -105,7 +105,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	{
 		if( this.subTypes == null )
 		{
-			this.subTypes = new ArrayList<ItemStack>( 1000 );
+			this.subTypes = new ArrayList<>( 1000 );
 			for( final Object blk : Block.REGISTRY )
 			{
 				final Block b = (Block) blk;

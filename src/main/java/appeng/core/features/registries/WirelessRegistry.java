@@ -41,7 +41,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 
 	public WirelessRegistry()
 	{
-		this.handlers = new ArrayList<IWirelessTermHandler>();
+		this.handlers = new ArrayList<>();
 	}
 
 	@Override

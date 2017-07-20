@@ -334,7 +334,7 @@ public enum UVLModelLoader implements ICustomModelLoader
 					return null;
 				}
 				object = object.get( "uvlightmap" ).getAsJsonObject();
-				return new ImmutablePair<Float, Float>( JsonUtils.getFloat( object, "sky", 0 ), JsonUtils.getFloat( object, "block", 0 ) );
+				return new ImmutablePair<>( JsonUtils.getFloat( object, "sky", 0 ), JsonUtils.getFloat( object, "block", 0 ) );
 			}
 		}
 

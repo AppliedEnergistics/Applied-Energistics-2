@@ -52,7 +52,7 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 
 	private final IMEInventoryHandler<StackType> internalHandler;
 	private final IItemList<StackType> cachedList;
-	private final HashMap<IMEMonitorHandlerReceiver<StackType>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<StackType>, Object>();
+	private final HashMap<IMEMonitorHandlerReceiver<StackType>, Object> listeners = new HashMap<>();
 
 	protected boolean hasChanged = true;
 

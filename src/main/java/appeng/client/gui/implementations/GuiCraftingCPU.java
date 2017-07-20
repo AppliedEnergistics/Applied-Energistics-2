@@ -88,7 +88,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	private IItemList<IAEItemStack> active = AEApi.instance().storage().createItemList();
 	private IItemList<IAEItemStack> pending = AEApi.instance().storage().createItemList();
 
-	private List<IAEItemStack> visual = new ArrayList<IAEItemStack>();
+	private List<IAEItemStack> visual = new ArrayList<>();
 	private GuiButton cancel;
 	private int tooltip = -1;
 
@@ -113,7 +113,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		this.storage = AEApi.instance().storage().createItemList();
 		this.active = AEApi.instance().storage().createItemList();
 		this.pending = AEApi.instance().storage().createItemList();
-		this.visual = new ArrayList<IAEItemStack>();
+		this.visual = new ArrayList<>();
 	}
 
 	@Override
@@ -211,7 +211,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		final int viewEnd = viewStart + 3 * 6;
 
 		String dspToolTip = "";
-		final List<String> lineList = new LinkedList<String>();
+		final List<String> lineList = new LinkedList<>();
 		int toolPosX = 0;
 		int toolPosY = 0;
 

@@ -124,9 +124,9 @@ public final class Registration
 	private Biome storageBiome;
 
 	// TODO : 1.12 Improve
-	private static List<Block> blocksToRegister = new ArrayList<Block>();
-	private static List<Item> itemsToRegister = new ArrayList<Item>();
-	private static List<IRecipe> recipesToRegister = new ArrayList<IRecipe>();
+	private static List<Block> blocksToRegister = new ArrayList<>();
+	private static List<Item> itemsToRegister = new ArrayList<>();
+	private static List<IRecipe> recipesToRegister = new ArrayList<>();
 	private File recipeDirectory;
 	private CustomRecipeConfig customRecipeConfig;
 

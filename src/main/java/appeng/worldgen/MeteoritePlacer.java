@@ -59,8 +59,8 @@ public final class MeteoritePlacer
 {
 	private static final double PRESSES_SPAWN_CHANCE = 0.7;
 	private static final int SKYSTONE_SPAWN_LIMIT = 12;
-	private final Collection<Block> validSpawn = new HashSet<Block>();
-	private final Collection<Block> invalidSpawn = new HashSet<Block>();
+	private final Collection<Block> validSpawn = new HashSet<>();
+	private final Collection<Block> invalidSpawn = new HashSet<>();
 	private final IBlockDefinition skyChestDefinition;
 	private final IBlockDefinition skyStoneDefinition;
 	private final MeteoriteBlockPutter putter = new MeteoriteBlockPutter();
@@ -297,7 +297,7 @@ public final class MeteoritePlacer
 							this.skyStoneDefinition.maybeStack( amount ).ifPresent( ap::addItems );
 							break;
 						case 1:
-							final List<ItemStack> possibles = new LinkedList<ItemStack>();
+							final List<ItemStack> possibles = new LinkedList<>();
 							possibles.addAll( OreDictionary.getOres( "nuggetIron" ) );
 							possibles.addAll( OreDictionary.getOres( "nuggetCopper" ) );
 							possibles.addAll( OreDictionary.getOres( "nuggetTin" ) );

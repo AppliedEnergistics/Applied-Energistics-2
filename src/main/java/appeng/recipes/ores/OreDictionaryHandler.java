@@ -36,7 +36,7 @@ public class OreDictionaryHandler
 
 	public static final OreDictionaryHandler INSTANCE = new OreDictionaryHandler();
 
-	private final List<IOreListener> oreListeners = new ArrayList<IOreListener>();
+	private final List<IOreListener> oreListeners = new ArrayList<>();
 
 	private boolean enableRebaking = false;
 

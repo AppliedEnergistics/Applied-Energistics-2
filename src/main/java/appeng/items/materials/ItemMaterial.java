@@ -105,7 +105,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 		final Upgrades u = this.getType( stack );
 		if( u != null )
 		{
-			final List<String> textList = new LinkedList<String>();
+			final List<String> textList = new LinkedList<>();
 			for( final Entry<ItemStack, Integer> j : u.getSupported().entrySet() )
 			{
 				String name = null;

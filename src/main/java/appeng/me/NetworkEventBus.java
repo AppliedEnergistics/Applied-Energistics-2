@@ -36,8 +36,8 @@ import appeng.core.AELog;
 
 public class NetworkEventBus
 {
-	private static final Collection<Class> READ_CLASSES = new HashSet<Class>();
-	private static final Map<Class<? extends MENetworkEvent>, Map<Class, MENetworkEventInfo>> EVENTS = new HashMap<Class<? extends MENetworkEvent>, Map<Class, MENetworkEventInfo>>();
+	private static final Collection<Class> READ_CLASSES = new HashSet<>();
+	private static final Map<Class<? extends MENetworkEvent>, Map<Class, MENetworkEventInfo>> EVENTS = new HashMap<>();
 
 	void readClass( final Class listAs, final Class c )
 	{
@@ -63,7 +63,7 @@ public class NetworkEventBus
 							Map<Class, MENetworkEventInfo> classEvents = EVENTS.get( types[0] );
 							if( classEvents == null )
 							{
-								EVENTS.put( types[0], classEvents = new HashMap<Class, MENetworkEventInfo>() );
+								EVENTS.put( types[0], classEvents = new HashMap<>() );
 							}
 
 							MENetworkEventInfo thisEvent = classEvents.get( listAs );
@@ -201,7 +201,7 @@ public class NetworkEventBus
 	private class MENetworkEventInfo
 	{
 
-		private final List<EventMethod> methods = new ArrayList<EventMethod>();
+		private final List<EventMethod> methods = new ArrayList<>();
 
 		private void Add( final Class Event, final Class ObjClass, final Method ObjMethod )
 		{

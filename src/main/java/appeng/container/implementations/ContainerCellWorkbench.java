@@ -234,7 +234,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		final IMEInventory<IAEItemStack> cellInv = AEApi.instance().registries().cell().getCellInventory(
 				this.getUpgradeable().getInventoryByName( "cell" ).getStackInSlot( 0 ), null, StorageChannel.ITEMS );
 
-		Iterator<IAEItemStack> i = new NullIterator<IAEItemStack>();
+		Iterator<IAEItemStack> i = new NullIterator<>();
 		if( cellInv != null )
 		{
 			final IItemList<IAEItemStack> list = cellInv.getAvailableItems( AEApi.instance().storage().createItemList() );

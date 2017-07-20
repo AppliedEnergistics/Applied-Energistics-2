@@ -157,7 +157,7 @@ public class ContainerStorageBus extends ContainerUpgradeable
 
 		final IMEInventory<IAEItemStack> cellInv = this.storageBus.getInternalHandler();
 
-		Iterator<IAEItemStack> i = new NullIterator<IAEItemStack>();
+		Iterator<IAEItemStack> i = new NullIterator<>();
 		if( cellInv != null )
 		{
 			final IItemList<IAEItemStack> list = cellInv.getAvailableItems( AEApi.instance().storage().createItemList() );

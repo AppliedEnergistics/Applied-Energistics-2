@@ -146,7 +146,7 @@ public class MultiCraftingTracker
 			return ImmutableSet.of();
 		}
 
-		return ImmutableSet.copyOf( new NonNullArrayIterator<ICraftingLink>( this.links ) );
+		return ImmutableSet.copyOf( new NonNullArrayIterator<>( this.links ) );
 	}
 
 	public void jobStateChange( final ICraftingLink link )

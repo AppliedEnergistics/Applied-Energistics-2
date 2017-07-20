@@ -58,10 +58,10 @@ import appeng.tile.networking.TileController;
 public class PathGridCache implements IPathingGrid
 {
 
-	private final LinkedList<PathSegment> active = new LinkedList<PathSegment>();
-	private final Set<TileController> controllers = new HashSet<TileController>();
-	private final Set<IGridNode> requireChannels = new HashSet<IGridNode>();
-	private final Set<IGridNode> blockDense = new HashSet<IGridNode>();
+	private final LinkedList<PathSegment> active = new LinkedList<>();
+	private final Set<TileController> controllers = new HashSet<>();
+	private final Set<IGridNode> requireChannels = new HashSet<>();
+	private final Set<IGridNode> blockDense = new HashSet<>();
 	private final IGrid myGrid;
 	private int channelsInUse = 0;
 	private int channelsByBlocks = 0;
@@ -72,7 +72,7 @@ public class PathGridCache implements IPathingGrid
 	private ControllerState controllerState = ControllerState.NO_CONTROLLER;
 	private int ticksUntilReady = 20;
 	private int lastChannels = 0;
-	private HashSet<IPathItem> semiOpen = new HashSet<IPathItem>();
+	private HashSet<IPathItem> semiOpen = new HashSet<>();
 
 	public PathGridCache( final IGrid g )
 	{
@@ -136,8 +136,8 @@ public class PathGridCache implements IPathingGrid
 			{
 				final int nodes = this.myGrid.getNodes().size();
 				this.ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
-				final HashSet<IPathItem> closedList = new HashSet<IPathItem>();
-				this.semiOpen = new HashSet<IPathItem>();
+				final HashSet<IPathItem> closedList = new HashSet<>();
+				this.semiOpen = new HashSet<>();
 
 				// myGrid.getPivot().beginVisit( new AdHocChannelUpdater( 0 )
 				// );
@@ -149,7 +149,7 @@ public class PathGridCache implements IPathingGrid
 						final GridConnection gc = (GridConnection) gcc;
 						if( !( gc.getOtherSide( node ).getMachine() instanceof TileController ) )
 						{
-							final List<IPathItem> open = new LinkedList<IPathItem>();
+							final List<IPathItem> open = new LinkedList<>();
 							closedList.add( gc );
 							open.add( gc );
 							gc.setControllerRoute( (GridNode) node, true );
@@ -344,7 +344,7 @@ public class PathGridCache implements IPathingGrid
 			final Achievements lastBracket = this.getAchievementBracket( this.lastChannels );
 			if( currentBracket != lastBracket && currentBracket != null )
 			{
-				final Set<Integer> players = new HashSet<Integer>();
+				final Set<Integer> players = new HashSet<>();
 				for( final IGridNode n : this.requireChannels )
 				{
 					players.add( n.getPlayerID() );

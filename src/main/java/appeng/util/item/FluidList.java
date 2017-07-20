@@ -33,7 +33,7 @@ import appeng.api.storage.data.IItemList;
 public final class FluidList implements IItemList<IAEFluidStack>
 {
 
-	private final Map<IAEFluidStack, IAEFluidStack> records = new HashMap<IAEFluidStack, IAEFluidStack>();
+	private final Map<IAEFluidStack, IAEFluidStack> records = new HashMap<>();
 
 	@Override
 	public void add( final IAEFluidStack option )
@@ -177,7 +177,7 @@ public final class FluidList implements IItemList<IAEFluidStack>
 	@Override
 	public Iterator<IAEFluidStack> iterator()
 	{
-		return new MeaningfulFluidIterator<IAEFluidStack>( this.records.values().iterator() );
+		return new MeaningfulFluidIterator<>( this.records.values().iterator() );
 	}
 
 	@Override

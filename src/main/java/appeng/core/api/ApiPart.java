@@ -75,7 +75,7 @@ public class ApiPart implements IPartHelper
 			} );
 
 	private final Map<Class<?>, String> interfaces2Layer = new HashMap<>();
-	private final List<String> desc = new LinkedList<String>();
+	private final List<String> desc = new LinkedList<>();
 
 	/**
 	 * Conceptually this method will build a new class hierarchy that is rooted at the given base class, and includes a

@@ -52,7 +52,7 @@ public class WrapperChainedInventory implements IInventory
 
 	private void calculateSizes()
 	{
-		this.offsets = new HashMap<Integer, WrapperChainedInventory.InvOffset>();
+		this.offsets = new HashMap<>();
 
 		int offset = 0;
 		for( final IInventory in : this.l )
@@ -88,7 +88,7 @@ public class WrapperChainedInventory implements IInventory
 	{
 		if( this.l.size() > 1 )
 		{
-			final List<IInventory> newOrder = new ArrayList<IInventory>( this.l.size() );
+			final List<IInventory> newOrder = new ArrayList<>( this.l.size() );
 			newOrder.add( this.l.get( this.l.size() - 1 ) );
 			for( int x = 0; x < this.l.size() - 1; x++ )
 			{

@@ -121,7 +121,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	{
 		if( this.getItemStack().getCount() > 0 )
 		{
-			final List<ItemStack> items = new ArrayList<ItemStack>();
+			final List<ItemStack> items = new ArrayList<>();
 			items.add( this.is.copy() );
 			this.host.removePart( this.side, false );
 			Platform.spawnDrops( this.tile.getWorld(), this.tile.getPos(), items );

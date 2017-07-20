@@ -675,7 +675,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 				// :P
 			}
 		}
-		return new ArrayList<IMEInventoryHandler>();
+		return new ArrayList<>();
 	}
 
 	@Override

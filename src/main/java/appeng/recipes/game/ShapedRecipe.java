@@ -105,7 +105,7 @@ public class ShapedRecipe extends net.minecraftforge.registries.IForgeRegistryEn
 			throw new IllegalStateException( ret.toString() );
 		}
 
-		final Map<Character, IIngredient> itemMap = new HashMap<Character, IIngredient>();
+		final Map<Character, IIngredient> itemMap = new HashMap<>();
 
 		for( ; idx < recipe.length; idx += 2 )
 		{

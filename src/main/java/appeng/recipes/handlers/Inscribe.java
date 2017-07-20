@@ -57,7 +57,7 @@ public final class Inscribe extends InscriberProcess
 
 		final IInscriberRecipeBuilder builder = AEApi.instance().registries().inscriber().builder();
 		final ItemStack[] realInput = this.getImprintable().getItemStackSet();
-		final List<ItemStack> inputs = new ArrayList<ItemStack>( realInput.length );
+		final List<ItemStack> inputs = new ArrayList<>( realInput.length );
 		Collections.addAll( inputs, realInput );
 		final ItemStack top = ( this.getTopOptional() == null ) ? ItemStack.EMPTY : this.getTopOptional().getItemStack();
 		final ItemStack bot = ( this.getBotOptional() == null ) ? ItemStack.EMPTY : this.getBotOptional().getItemStack();

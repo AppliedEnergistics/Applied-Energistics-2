@@ -60,13 +60,13 @@ public class TickHandler
 {
 
 	public static final TickHandler INSTANCE = new TickHandler();
-	private final Queue<IWorldCallable<?>> serverQueue = new LinkedList<IWorldCallable<?>>();
+	private final Queue<IWorldCallable<?>> serverQueue = new LinkedList<>();
 	private final Multimap<World, CraftingJob> craftingJobs = LinkedListMultimap.create();
-	private final WeakHashMap<World, Queue<IWorldCallable<?>>> callQueue = new WeakHashMap<World, Queue<IWorldCallable<?>>>();
+	private final WeakHashMap<World, Queue<IWorldCallable<?>>> callQueue = new WeakHashMap<>();
 	private final HandlerRep server = new HandlerRep();
 	private final HandlerRep client = new HandlerRep();
-	private final HashMap<Integer, PlayerColor> cliPlayerColors = new HashMap<Integer, PlayerColor>();
-	private final HashMap<Integer, PlayerColor> srvPlayerColors = new HashMap<Integer, PlayerColor>();
+	private final HashMap<Integer, PlayerColor> cliPlayerColors = new HashMap<>();
+	private final HashMap<Integer, PlayerColor> srvPlayerColors = new HashMap<>();
 	private CableRenderMode crm = CableRenderMode.STANDARD;
 
 	public HashMap<Integer, PlayerColor> getPlayerColors()
@@ -90,7 +90,7 @@ public class TickHandler
 
 			if( queue == null )
 			{
-				queue = new LinkedList<IWorldCallable<?>>();
+				queue = new LinkedList<>();
 				this.callQueue.put( w, queue );
 			}
 
@@ -146,7 +146,7 @@ public class TickHandler
 	{
 		if( Platform.isServer() ) // for no there is no reason to care about this on the client...
 		{
-			final LinkedList<IGridNode> toDestroy = new LinkedList<IGridNode>();
+			final LinkedList<IGridNode> toDestroy = new LinkedList<>();
 
 			for( final Grid g : this.getRepo().networks )
 			{
@@ -306,13 +306,13 @@ public class TickHandler
 	private static class HandlerRep
 	{
 
-		private Queue<AEBaseTile> tiles = new LinkedList<AEBaseTile>();
+		private Queue<AEBaseTile> tiles = new LinkedList<>();
 
 		private Collection<Grid> networks = new NetworkList();
 
 		private void clear()
 		{
-			this.tiles = new LinkedList<AEBaseTile>();
+			this.tiles = new LinkedList<>();
 			this.networks = new NetworkList();
 		}
 	}

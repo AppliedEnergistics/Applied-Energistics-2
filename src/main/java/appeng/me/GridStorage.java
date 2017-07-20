@@ -40,7 +40,7 @@ public class GridStorage implements IGridStorage
 	private final long myID;
 	private final NBTTagCompound data;
 	private final GridStorageSearch mySearchEntry; // keep myself in the list until I'm
-	private final WeakHashMap<GridStorage, Boolean> divided = new WeakHashMap<GridStorage, Boolean>();
+	private final WeakHashMap<GridStorage, Boolean> divided = new WeakHashMap<>();
 	private WeakReference<IGrid> internalGrid = null;
 
 	// lost...
@@ -123,7 +123,7 @@ public class GridStorage implements IGridStorage
 
 	void setGrid( final Grid grid )
 	{
-		this.internalGrid = new WeakReference<IGrid>( grid );
+		this.internalGrid = new WeakReference<>( grid );
 	}
 
 	@Override

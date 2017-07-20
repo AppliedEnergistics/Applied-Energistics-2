@@ -54,7 +54,7 @@ public class OreHelper
 		}
 	} );
 
-	private final Map<ItemRef, OreReference> references = new HashMap<ItemRef, OreReference>();
+	private final Map<ItemRef, OreReference> references = new HashMap<>();
 
 	/**
 	 * Test if the passed {@link ItemStack} is an ore.
@@ -73,7 +73,7 @@ public class OreHelper
 			final Collection<Integer> ores = ref.getOres();
 			final Collection<String> set = ref.getEquivalents();
 
-			final Set<String> toAdd = new HashSet<String>();
+			final Set<String> toAdd = new HashSet<>();
 
 			for( final String ore : OreDictionary.getOreNames() )
 			{

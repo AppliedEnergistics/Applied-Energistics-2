@@ -224,7 +224,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 				}
 			}
 
-			final LinkedList<PartP2PTunnelME> newSides = new LinkedList<PartP2PTunnelME>();
+			final LinkedList<PartP2PTunnelME> newSides = new LinkedList<>();
 			try
 			{
 				for( final PartP2PTunnelME me : this.getOutputs() )

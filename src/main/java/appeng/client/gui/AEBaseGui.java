@@ -85,9 +85,9 @@ import appeng.helpers.InventoryAction;
 public abstract class AEBaseGui extends GuiContainer
 {
 	private static boolean switchingGuis;
-	private final List<InternalSlotME> meSlots = new LinkedList<InternalSlotME>();
+	private final List<InternalSlotME> meSlots = new LinkedList<>();
 	// drag y
-	private final Set<Slot> drag_click = new HashSet<Slot>();
+	private final Set<Slot> drag_click = new HashSet<>();
 	private final StackSizeRenderer stackSizeRenderer = new StackSizeRenderer();
 	private GuiScrollbar myScrollBar = null;
 	private boolean disableShiftClick = false;

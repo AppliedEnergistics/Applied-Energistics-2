@@ -52,7 +52,7 @@ public class PathSegment
 	public boolean step()
 	{
 		final List<IPathItem> oldOpen = this.open;
-		this.open = new LinkedList<IPathItem>();
+		this.open = new LinkedList<>();
 
 		for( final IPathItem i : oldOpen )
 		{

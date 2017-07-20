@@ -84,7 +84,7 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 	public void register() throws RegistrationError, MissingIngredientError
 	{
 		char first = 'A';
-		final List<Object> args = new ArrayList<Object>();
+		final List<Object> args = new ArrayList<>();
 
 		for( int y = 0; y < this.rows; y++ )
 		{

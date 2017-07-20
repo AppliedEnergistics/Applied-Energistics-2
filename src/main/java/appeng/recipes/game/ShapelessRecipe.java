@@ -37,7 +37,7 @@ import appeng.api.recipes.IIngredient;
 public class ShapelessRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe, IRecipeBakeable
 {
 
-	private final ArrayList<Object> input = new ArrayList<Object>();
+	private final ArrayList<Object> input = new ArrayList<>();
 	private ItemStack output = ItemStack.EMPTY;
 	private boolean disable = false;
 
@@ -77,7 +77,7 @@ public class ShapelessRecipe extends net.minecraftforge.registries.IForgeRegistr
 			return false;
 		}
 
-		final ArrayList<Object> required = new ArrayList<Object>( this.input );
+		final ArrayList<Object> required = new ArrayList<>( this.input );
 
 		for( int x = 0; x < var1.getSizeInventory(); x++ )
 		{

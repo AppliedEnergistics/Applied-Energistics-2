@@ -155,7 +155,7 @@ public class Platform
 	 * random source, use it for item drop locations...
 	 */
 	private static final Random RANDOM_GENERATOR = new Random();
-	private static final WeakHashMap<World, EntityPlayer> FAKE_PLAYERS = new WeakHashMap<World, EntityPlayer>();
+	private static final WeakHashMap<World, EntityPlayer> FAKE_PLAYERS = new WeakHashMap<>();
 	// private static Method getEntry;
 
 	private static final ItemComparisonHelper ITEM_COMPARISON_HELPER = new ItemComparisonHelper();
@@ -452,7 +452,7 @@ public class Platform
 
 	public static ItemStack[] getBlockDrops( final World w, final BlockPos pos )
 	{
-		List<ItemStack> out = new ArrayList<ItemStack>();
+		List<ItemStack> out = new ArrayList<>();
 		final IBlockState state = w.getBlockState( pos );
 
 		if( state != null )
@@ -1391,7 +1391,7 @@ public class Platform
 
 	public static <T extends IAEStack<T>> void postListChanges( final IItemList<T> before, final IItemList<T> after, final IMEMonitorHandlerReceiver<T> meMonitorPassthrough, final BaseActionSource source )
 	{
-		final LinkedList<T> changes = new LinkedList<T>();
+		final LinkedList<T> changes = new LinkedList<>();
 
 		for( final T is : before )
 		{

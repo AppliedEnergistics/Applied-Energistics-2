@@ -107,7 +107,7 @@ public class PartToggleBus extends PartBasicState
 	{
 		if( this.getItemStack().getCount() > 0 )
 		{
-			final List<ItemStack> items = new ArrayList<ItemStack>();
+			final List<ItemStack> items = new ArrayList<>();
 			items.add( this.getItemStack().copy() );
 			this.getHost().removePart( this.getSide(), false );
 			Platform.spawnDrops( this.getTile().getWorld(), this.getTile().getPos(), items );

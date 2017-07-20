@@ -69,7 +69,7 @@ import appeng.util.Platform;
 public class ContainerCraftConfirm extends AEBaseContainer
 {
 
-	private final ArrayList<CraftingCPURecord> cpus = new ArrayList<CraftingCPURecord>();
+	private final ArrayList<CraftingCPURecord> cpus = new ArrayList<>();
 	private Future<ICraftingJob> job;
 	private ICraftingJob result;
 	@GuiSync( 0 )

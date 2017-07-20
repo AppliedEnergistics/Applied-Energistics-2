@@ -62,7 +62,7 @@ public class GridNode implements IGridNode, IPathItem
 	private static final MENetworkChannelsChanged EVENT = new MENetworkChannelsChanged();
 	private static final int[] CHANNEL_COUNT = { 0, 8, 32 };
 
-	private final List<IGridConnection> connections = new LinkedList<IGridConnection>();
+	private final List<IGridConnection> connections = new LinkedList<>();
 	private final IGridBlock gridProxy;
 	// old power draw, used to diff
 	private double previousDraw = 0.0;
@@ -161,14 +161,14 @@ public class GridNode implements IGridNode, IPathItem
 	{
 		final Object tracker = new Object();
 
-		LinkedList<GridNode> nextRun = new LinkedList<GridNode>();
+		LinkedList<GridNode> nextRun = new LinkedList<>();
 		nextRun.add( this );
 
 		this.visitorIterationNumber = tracker;
 
 		if( g instanceof IGridConnectionVisitor )
 		{
-			final LinkedList<IGridConnection> nextConn = new LinkedList<IGridConnection>();
+			final LinkedList<IGridConnection> nextConn = new LinkedList<>();
 			final IGridConnectionVisitor gcv = (IGridConnectionVisitor) g;
 
 			while( !nextRun.isEmpty() )
@@ -179,7 +179,7 @@ public class GridNode implements IGridNode, IPathItem
 				}
 
 				final Iterable<GridNode> thisRun = nextRun;
-				nextRun = new LinkedList<GridNode>();
+				nextRun = new LinkedList<>();
 
 				for( final GridNode n : thisRun )
 				{
@@ -192,7 +192,7 @@ public class GridNode implements IGridNode, IPathItem
 			while( !nextRun.isEmpty() )
 			{
 				final Iterable<GridNode> thisRun = nextRun;
-				nextRun = new LinkedList<GridNode>();
+				nextRun = new LinkedList<>();
 
 				for( final GridNode n : thisRun )
 				{
@@ -301,7 +301,7 @@ public class GridNode implements IGridNode, IPathItem
 	@Override
 	public IReadOnlyCollection<IGridConnection> getConnections()
 	{
-		return new ReadOnlyCollection<IGridConnection>( this.connections );
+		return new ReadOnlyCollection<>( this.connections );
 	}
 
 	@Override

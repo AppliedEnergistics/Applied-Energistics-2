@@ -229,7 +229,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 		}
 		else
 		{
-			final List<ItemStack> drops = new ArrayList<ItemStack>();
+			final List<ItemStack> drops = new ArrayList<>();
 			drops.add( myItem );
 			this.setInventorySlotContents( 0, ItemStack.EMPTY );
 			Platform.spawnDrops( this.world, this.pos.offset( this.getForward() ), drops );

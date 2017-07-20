@@ -38,7 +38,7 @@ public class CellRegistry implements ICellRegistry
 
 	public CellRegistry()
 	{
-		this.handlers = new ArrayList<ICellHandler>();
+		this.handlers = new ArrayList<>();
 	}
 
 	@Override

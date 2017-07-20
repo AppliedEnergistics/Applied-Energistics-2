@@ -280,7 +280,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			this.cluster.cancel();
 			final IMEInventory<IAEItemStack> inv = this.cluster.getInventory();
 
-			final LinkedList<WorldCoord> places = new LinkedList<WorldCoord>();
+			final LinkedList<WorldCoord> places = new LinkedList<>();
 
 			final Iterator<IGridHost> i = this.cluster.getTiles();
 			while( i.hasNext() )

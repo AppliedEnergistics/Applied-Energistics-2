@@ -49,7 +49,7 @@ final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOn
 
 	private static final String GRID_STORAGE_CATEGORY = "gridstorage";
 
-	private final Map<GridStorageSearch, WeakReference<GridStorageSearch>> loadedStorage = new WeakHashMap<GridStorageSearch, WeakReference<GridStorageSearch>>( 10 );
+	private final Map<GridStorageSearch, WeakReference<GridStorageSearch>> loadedStorage = new WeakHashMap<>( 10 );
 	private final Configuration config;
 
 	private long lastGridStorage;
@@ -80,8 +80,8 @@ final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOn
 			final String id = String.valueOf( storageID );
 			final String data = this.config.get( "gridstorage", id, "" ).getString();
 			final GridStorage thisStorage = new GridStorage( data, storageID, gss );
-			gss.setGridStorage( new WeakReference<GridStorage>( thisStorage ) );
-			this.loadedStorage.put( gss, new WeakReference<GridStorageSearch>( gss ) );
+			gss.setGridStorage( new WeakReference<>( thisStorage ) );
+			this.loadedStorage.put( gss, new WeakReference<>( gss ) );
 			return thisStorage;
 		}
 
@@ -98,8 +98,8 @@ final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOn
 		final long storageID = this.nextGridStorage();
 		final GridStorageSearch gss = new GridStorageSearch( storageID );
 		final GridStorage newStorage = new GridStorage( storageID, gss );
-		gss.setGridStorage( new WeakReference<GridStorage>( newStorage ) );
-		this.loadedStorage.put( gss, new WeakReference<GridStorageSearch>( gss ) );
+		gss.setGridStorage( new WeakReference<>( newStorage ) );
+		this.loadedStorage.put( gss, new WeakReference<>( gss ) );
 
 		return newStorage;
 	}

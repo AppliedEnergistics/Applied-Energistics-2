@@ -62,7 +62,7 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 	 * <p/>
 	 * The cache will be updated from the server.
 	 */
-	private final TObjectLongMap<TileEntity> cache = new TObjectLongHashMap<TileEntity>();
+	private final TObjectLongMap<TileEntity> cache = new TObjectLongHashMap<>();
 
 	/**
 	 * Adds the current and max power to the tool tip

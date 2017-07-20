@@ -50,14 +50,14 @@ public class ToolEraser extends AEBaseItem
 
 		final IBlockState state = world.getBlockState( pos );
 
-		List<BlockPos> next = new LinkedList<BlockPos>();
+		List<BlockPos> next = new LinkedList<>();
 		next.add( pos );
 
 		int blocks = 0;
 		while( blocks < BLOCK_ERASE_LIMIT && !next.isEmpty() )
 		{
 			final List<BlockPos> c = next;
-			next = new LinkedList<BlockPos>();
+			next = new LinkedList<>();
 
 			for( final BlockPos wc : c )
 			{

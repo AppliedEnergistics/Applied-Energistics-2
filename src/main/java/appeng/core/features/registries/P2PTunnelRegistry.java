@@ -48,7 +48,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 {
 	private static final int INITIAL_CAPACITY = 40;
 
-	private final Map<ItemStack, TunnelType> tunnels = new HashMap<ItemStack, TunnelType>( INITIAL_CAPACITY );
+	private final Map<ItemStack, TunnelType> tunnels = new HashMap<>( INITIAL_CAPACITY );
 	private final Map<String, TunnelType> modIdTunnels = new HashMap<>( INITIAL_CAPACITY );
 
 	public void configure()

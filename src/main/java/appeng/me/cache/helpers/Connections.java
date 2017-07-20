@@ -31,7 +31,7 @@ import appeng.util.IWorldCallable;
 public class Connections implements IWorldCallable<Void>
 {
 
-	private final HashMap<IGridNode, TunnelConnection> connections = new HashMap<IGridNode, TunnelConnection>();
+	private final HashMap<IGridNode, TunnelConnection> connections = new HashMap<>();
 	private final PartP2PTunnelME me;
 	private boolean create = false;
 	private boolean destroy = false;

@@ -57,7 +57,7 @@ public class IMCHandler
 	 */
 	public IMCHandler()
 	{
-		this.processors = new HashMap<String, IIMCProcessor>( INITIAL_PROCESSORS_CAPACITY );
+		this.processors = new HashMap<>( INITIAL_PROCESSORS_CAPACITY );
 
 		this.processors.put( "blacklist-block-spatial", new IMCBlackListSpatial() );
 		this.processors.put( "whitelist-spatial", new IMCSpatial() );

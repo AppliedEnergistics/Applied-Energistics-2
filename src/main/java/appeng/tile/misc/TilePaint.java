@@ -245,7 +245,7 @@ public class TilePaint extends AEBaseTile
 
 			if( this.dots == null )
 			{
-				this.dots = new ArrayList<Splotch>();
+				this.dots = new ArrayList<>();
 			}
 
 			if( this.dots.size() > 20 )

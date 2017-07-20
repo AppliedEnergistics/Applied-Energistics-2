@@ -122,7 +122,7 @@ public abstract class AEBaseBlock extends Block
 
 		if( collisionHandler != null && bb != null )
 		{
-			final List<AxisAlignedBB> tmp = new ArrayList<AxisAlignedBB>();
+			final List<AxisAlignedBB> tmp = new ArrayList<>();
 			collisionHandler.addCollidingBlockToList( w, pos, bb, tmp, e );
 			for( final AxisAlignedBB b : tmp )
 			{

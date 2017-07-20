@@ -116,7 +116,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	public static final int NUMBER_OF_CONFIG_SLOTS = 9;
 	public static final int NUMBER_OF_PATTERN_SLOTS = 9;
 
-	private static final Collection<Block> BAD_BLOCKS = new HashSet<Block>( 100 );
+	private static final Collection<Block> BAD_BLOCKS = new HashSet<>( 100 );
 	private final int[] sides = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
 	private final IAEItemStack[] requireWork = { null, null, null, null, null, null, null, null, null };
 	private final MultiCraftingTracker craftingTracker;
@@ -129,8 +129,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	private final AppEngInternalInventory storage = new AppEngInternalInventory( this, NUMBER_OF_STORAGE_SLOTS );
 	private final AppEngInternalInventory patterns = new AppEngInternalInventory( this, NUMBER_OF_PATTERN_SLOTS );
 	private final WrapperInvSlot slotInv = new WrapperInvSlot( this.storage );
-	private final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<IAEItemStack>( new NullInventory<IAEItemStack>(), StorageChannel.ITEMS );
-	private final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<IAEFluidStack>( new NullInventory<IAEFluidStack>(), StorageChannel.FLUIDS );
+	private final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<>( new NullInventory<IAEItemStack>(), StorageChannel.ITEMS );
+	private final MEMonitorPassThrough<IAEFluidStack> fluids = new MEMonitorPassThrough<>( new NullInventory<IAEFluidStack>(), StorageChannel.FLUIDS );
 	private final UpgradeInventory upgrades;
 	private boolean hasConfig = false;
 	private int priority;
@@ -272,7 +272,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 		if( this.waitingToSend == null )
 		{
-			this.waitingToSend = new LinkedList<ItemStack>();
+			this.waitingToSend = new LinkedList<>();
 		}
 
 		this.waitingToSend.add( is );
@@ -489,7 +489,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			{
 				if( this.craftingList == null )
 				{
-					this.craftingList = new LinkedList<ICraftingPatternDetails>();
+					this.craftingList = new LinkedList<>();
 				}
 
 				this.craftingList.add( details );

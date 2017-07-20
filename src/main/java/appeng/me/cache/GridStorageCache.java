@@ -59,13 +59,13 @@ public class GridStorageCache implements IStorageGrid
 {
 
 	private final IGrid myGrid;
-	private final HashSet<ICellProvider> activeCellProviders = new HashSet<ICellProvider>();
-	private final HashSet<ICellProvider> inactiveCellProviders = new HashSet<ICellProvider>();
+	private final HashSet<ICellProvider> activeCellProviders = new HashSet<>();
+	private final HashSet<ICellProvider> inactiveCellProviders = new HashSet<>();
 	private final SetMultimap<IAEStack, ItemWatcher> interests = HashMultimap.create();
-	private final GenericInterestManager<ItemWatcher> interestManager = new GenericInterestManager<ItemWatcher>( this.interests );
-	private final NetworkMonitor<IAEItemStack> itemMonitor = new NetworkMonitor<IAEItemStack>( this, StorageChannel.ITEMS );
-	private final NetworkMonitor<IAEFluidStack> fluidMonitor = new NetworkMonitor<IAEFluidStack>( this, StorageChannel.FLUIDS );
-	private final HashMap<IGridNode, IStackWatcher> watchers = new HashMap<IGridNode, IStackWatcher>();
+	private final GenericInterestManager<ItemWatcher> interestManager = new GenericInterestManager<>( this.interests );
+	private final NetworkMonitor<IAEItemStack> itemMonitor = new NetworkMonitor<>( this, StorageChannel.ITEMS );
+	private final NetworkMonitor<IAEFluidStack> fluidMonitor = new NetworkMonitor<>( this, StorageChannel.FLUIDS );
+	private final HashMap<IGridNode, IStackWatcher> watchers = new HashMap<>();
 	private NetworkInventoryHandler<IAEItemStack> myItemNetwork;
 	private NetworkInventoryHandler<IAEFluidStack> myFluidNetwork;
 
@@ -284,7 +284,7 @@ public class GridStorageCache implements IStorageGrid
 		switch( chan )
 		{
 			case FLUIDS:
-				this.myFluidNetwork = new NetworkInventoryHandler<IAEFluidStack>( StorageChannel.FLUIDS, security );
+				this.myFluidNetwork = new NetworkInventoryHandler<>( StorageChannel.FLUIDS, security );
 				for( final ICellProvider cc : this.activeCellProviders )
 				{
 					for( final IMEInventoryHandler<IAEFluidStack> h : cc.getCellArray( chan ) )
@@ -294,7 +294,7 @@ public class GridStorageCache implements IStorageGrid
 				}
 				break;
 			case ITEMS:
-				this.myItemNetwork = new NetworkInventoryHandler<IAEItemStack>( StorageChannel.ITEMS, security );
+				this.myItemNetwork = new NetworkInventoryHandler<>( StorageChannel.ITEMS, security );
 				for( final ICellProvider cc : this.activeCellProviders )
 				{
 					for( final IMEInventoryHandler<IAEItemStack> h : cc.getCellArray( chan ) )
@@ -402,7 +402,7 @@ public class GridStorageCache implements IStorageGrid
 	private class CellChangeTracker
 	{
 
-		final List<CellChangeTrackerRecord> data = new LinkedList<CellChangeTrackerRecord>();
+		final List<CellChangeTrackerRecord> data = new LinkedList<>();
 
 		public void postChanges( final StorageChannel channel, final int i, final IMEInventoryHandler<? extends IAEStack> h, final BaseActionSource actionSrc )
 		{

@@ -84,7 +84,7 @@ public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 
 		if( state.getBlock().canSilkHarvest( w, pos, state, fakePlayer ) )
 		{
-			final List<ItemStack> out = new ArrayList<ItemStack>( 1 );
+			final List<ItemStack> out = new ArrayList<>( 1 );
 			final Item item = Item.getItemFromBlock( state.getBlock() );
 
 			if( item != Items.AIR )

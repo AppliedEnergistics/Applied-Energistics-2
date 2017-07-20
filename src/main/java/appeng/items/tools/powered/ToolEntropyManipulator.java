@@ -63,8 +63,8 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	{
 		super( AEConfig.instance().getEntropyManipulatorBattery() );
 
-		this.heatUp = new HashMap<InWorldToolOperationIngredient, InWorldToolOperationResult>();
-		this.coolDown = new HashMap<InWorldToolOperationIngredient, InWorldToolOperationResult>();
+		this.heatUp = new HashMap<>();
+		this.coolDown = new HashMap<>();
 
 		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.STONE.getDefaultState() ),
 				new InWorldToolOperationResult( new ItemStack( Blocks.COBBLESTONE ) ) );
@@ -75,7 +75,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 				new InWorldToolOperationResult( new ItemStack( Blocks.OBSIDIAN ) ) );
 		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.GRASS, true ), new InWorldToolOperationResult( new ItemStack( Blocks.DIRT ) ) );
 
-		final List<ItemStack> snowBalls = new ArrayList<ItemStack>();
+		final List<ItemStack> snowBalls = new ArrayList<>();
 		snowBalls.add( new ItemStack( Items.SNOWBALL ) );
 		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.FLOWING_WATER, true ), new InWorldToolOperationResult( ItemStack.EMPTY, snowBalls ) );
 		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.WATER, true ), new InWorldToolOperationResult( new ItemStack( Blocks.ICE ) ) );
@@ -218,7 +218,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 		if( target == null )
 		{
-			return new ActionResult<ItemStack>( EnumActionResult.FAIL, p.getHeldItem( hand ) );
+			return new ActionResult<>( EnumActionResult.FAIL, p.getHeldItem( hand ) );
 		}
 		else
 		{
@@ -235,7 +235,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			}
 		}
 
-		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
+		return new ActionResult<>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
 	}
 
 	@Override
@@ -290,7 +290,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 				}
 
 				final ItemStack[] stack = Platform.getBlockDrops( w, pos );
-				final List<ItemStack> out = new ArrayList<ItemStack>();
+				final List<ItemStack> out = new ArrayList<>();
 				boolean hasFurnaceable = false;
 				boolean canFurnaceable = true;
 

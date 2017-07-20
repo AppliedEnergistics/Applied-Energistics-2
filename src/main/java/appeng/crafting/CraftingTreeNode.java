@@ -52,7 +52,7 @@ public class CraftingTreeNode
 	// what item is this?
 	private final IAEItemStack what;
 	// what are the crafting patterns for this?
-	private final ArrayList<CraftingTreeProcess> nodes = new ArrayList<CraftingTreeProcess>();
+	private final ArrayList<CraftingTreeProcess> nodes = new ArrayList<>();
 	private int bytes = 0;
 	private boolean canEmit = false;
 	private long missing = 0;
@@ -121,7 +121,7 @@ public class CraftingTreeNode
 	{
 		this.job.handlePausing();
 
-		final List<IAEItemStack> thingsUsed = new LinkedList<IAEItemStack>();
+		final List<IAEItemStack> thingsUsed = new LinkedList<>();
 
 		this.what.setStackSize( l );
 		if( this.getSlot() >= 0 && this.parent != null && this.parent.details.isCraftable() )

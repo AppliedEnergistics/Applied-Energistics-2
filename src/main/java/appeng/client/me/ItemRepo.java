@@ -49,8 +49,8 @@ public class ItemRepo
 {
 
 	private final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
-	private final ArrayList<IAEItemStack> view = new ArrayList<IAEItemStack>();
-	private final ArrayList<ItemStack> dsp = new ArrayList<ItemStack>();
+	private final ArrayList<IAEItemStack> view = new ArrayList<>();
+	private final ArrayList<ItemStack> dsp = new ArrayList<>();
 	private final IScrollSource src;
 	private final ISortSource sortSrc;
 

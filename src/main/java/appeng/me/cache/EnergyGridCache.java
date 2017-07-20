@@ -61,12 +61,12 @@ public class EnergyGridCache implements IEnergyGrid
 
 	private final NavigableSet<EnergyThreshold> interests = Sets.newTreeSet();
 	private final double averageLength = 40.0;
-	private final Set<IAEPowerStorage> providers = new LinkedHashSet<IAEPowerStorage>();
-	private final Set<IAEPowerStorage> requesters = new LinkedHashSet<IAEPowerStorage>();
+	private final Set<IAEPowerStorage> providers = new LinkedHashSet<>();
+	private final Set<IAEPowerStorage> requesters = new LinkedHashSet<>();
 	private final Multiset<IEnergyGridProvider> energyGridProviders = HashMultiset.create();
 	private final IGrid myGrid;
-	private final HashMap<IGridNode, IEnergyWatcher> watchers = new HashMap<IGridNode, IEnergyWatcher>();
-	private final Set<IEnergyGrid> localSeen = new HashSet<IEnergyGrid>();
+	private final HashMap<IGridNode, IEnergyWatcher> watchers = new HashMap<>();
+	private final Set<IEnergyGrid> localSeen = new HashSet<>();
 	/**
 	 * estimated power available.
 	 */
@@ -354,7 +354,7 @@ public class EnergyGridCache implements IEnergyGrid
 			while( amt > 0 && i.hasNext() )
 			{
 				final IEnergyGridProvider what = i.next();
-				final Set<IEnergyGrid> listCopy = new HashSet<IEnergyGrid>();
+				final Set<IEnergyGrid> listCopy = new HashSet<>();
 				listCopy.addAll( seen );
 
 				final double cannotHold = what.injectAEPower( amt, Actionable.SIMULATE, listCopy );

@@ -44,8 +44,8 @@ import appeng.util.ReadOnlyCollection;
 public class Grid implements IGrid
 {
 	private final NetworkEventBus eventBus = new NetworkEventBus();
-	private final Map<Class<? extends IGridHost>, MachineSet> machines = new HashMap<Class<? extends IGridHost>, MachineSet>();
-	private final Map<Class<? extends IGridCache>, GridCacheWrapper> caches = new HashMap<Class<? extends IGridCache>, GridCacheWrapper>();
+	private final Map<Class<? extends IGridHost>, MachineSet> machines = new HashMap<>();
+	private final Map<Class<? extends IGridCache>, GridCacheWrapper> caches = new HashMap<>();
 	private GridNode pivot;
 	private int priority; // how import is this network?
 	private GridStorage myStorage;
@@ -233,7 +233,7 @@ public class Grid implements IGrid
 	{
 		final Set<Class<? extends IGridHost>> machineKeys = this.machines.keySet();
 
-		return new ReadOnlyCollection<Class<? extends IGridHost>>( machineKeys );
+		return new ReadOnlyCollection<>( machineKeys );
 	}
 
 	@Override

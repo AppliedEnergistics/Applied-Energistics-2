@@ -92,7 +92,7 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
 					if( slot.getSlotIndex() == slotIndex )
 					{
 						final NBTTagList tags = new NBTTagList();
-						final List<ItemStack> list = new LinkedList<ItemStack>();
+						final List<ItemStack> list = new LinkedList<>();
 
 						// prefer pure crystals.
 						for( ItemStack stack : ingredient.getAllIngredients() )

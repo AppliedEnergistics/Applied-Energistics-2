@@ -191,7 +191,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 		final ItemStack notAdded = sia.addItems( output );
 		if( !notAdded.isEmpty() )
 		{
-			final List<ItemStack> out = new ArrayList<ItemStack>();
+			final List<ItemStack> out = new ArrayList<>();
 			out.add( notAdded );
 
 			Platform.spawnDrops( this.world, this.pos.offset( this.getForward() ), out );

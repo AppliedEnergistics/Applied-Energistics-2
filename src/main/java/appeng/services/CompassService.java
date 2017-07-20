@@ -50,7 +50,7 @@ public final class CompassService
 {
 	private static final int CHUNK_SIZE = 16;
 
-	private final Map<World, CompassReader> worldSet = new HashMap<World, CompassReader>( 10 );
+	private final Map<World, CompassReader> worldSet = new HashMap<>( 10 );
 	private final ExecutorService executor;
 
 	/**

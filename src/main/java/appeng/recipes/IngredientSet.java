@@ -73,7 +73,7 @@ public class IngredientSet implements IIngredient
 			return new ItemStack[0];
 		}
 
-		final List<ItemStack> out = new LinkedList<ItemStack>();
+		final List<ItemStack> out = new LinkedList<>();
 		out.addAll( this.items );
 
 		if( out.isEmpty() )

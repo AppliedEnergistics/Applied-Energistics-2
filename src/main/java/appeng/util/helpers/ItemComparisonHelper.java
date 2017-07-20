@@ -448,7 +448,7 @@ public class ItemComparisonHelper
 			AELog.debug( t );
 		}
 
-		return new ArrayList<NBTBase>();
+		return new ArrayList<>();
 	}
 
 }

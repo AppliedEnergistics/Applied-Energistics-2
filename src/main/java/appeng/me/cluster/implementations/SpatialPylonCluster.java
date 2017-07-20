@@ -34,7 +34,7 @@ public class SpatialPylonCluster implements IAECluster
 
 	private final DimensionalCoord min;
 	private final DimensionalCoord max;
-	private final List<TileSpatialPylon> line = new ArrayList<TileSpatialPylon>();
+	private final List<TileSpatialPylon> line = new ArrayList<>();
 	private boolean isDestroyed = false;
 
 	private Axis currentAxis = Axis.UNFORMED;

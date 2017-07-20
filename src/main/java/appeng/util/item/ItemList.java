@@ -36,7 +36,7 @@ import appeng.api.storage.data.IItemList;
 public final class ItemList implements IItemList<IAEItemStack>
 {
 
-	private final NavigableMap<IAEItemStack, IAEItemStack> records = new ConcurrentSkipListMap<IAEItemStack, IAEItemStack>();
+	private final NavigableMap<IAEItemStack, IAEItemStack> records = new ConcurrentSkipListMap<>();
 
 	@Override
 	public void add( final IAEItemStack option )
@@ -92,7 +92,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			}
 			else
 			{
-				final Collection<IAEItemStack> output = new LinkedList<IAEItemStack>();
+				final Collection<IAEItemStack> output = new LinkedList<>();
 
 				for( final IAEItemStack is : or.getAEEquivalents() )
 				{
@@ -205,7 +205,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 	@Override
 	public Iterator<IAEItemStack> iterator()
 	{
-		return new MeaningfulItemIterator<IAEItemStack>( this.records.values().iterator() );
+		return new MeaningfulItemIterator<>( this.records.values().iterator() );
 	}
 
 	@Override

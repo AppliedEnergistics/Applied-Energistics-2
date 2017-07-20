@@ -223,7 +223,7 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 	public ActionResult<ItemStack> onItemRightClick( final World world, final EntityPlayer player, final EnumHand hand )
 	{
 		this.disassembleDrive( player.getHeldItem( hand ), world, player );
-		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, player.getHeldItem( hand ) );
+		return new ActionResult<>( EnumActionResult.SUCCESS, player.getHeldItem( hand ) );
 	}
 
 	private boolean disassembleDrive( final ItemStack stack, final World world, final EntityPlayer player )

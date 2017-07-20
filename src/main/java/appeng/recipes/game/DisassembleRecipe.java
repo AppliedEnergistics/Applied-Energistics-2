@@ -60,8 +60,8 @@ public final class DisassembleRecipe extends net.minecraftforge.registries.IForg
 		final IItems items = definitions.items();
 		final IMaterials mats = definitions.materials();
 
-		this.cellMappings = new HashMap<IItemDefinition, IItemDefinition>( 4 );
-		this.nonCellMappings = new HashMap<IItemDefinition, IItemDefinition>( 5 );
+		this.cellMappings = new HashMap<>( 4 );
+		this.nonCellMappings = new HashMap<>( 5 );
 
 		this.cellMappings.put( items.cell1k(), mats.cell1kPart() );
 		this.cellMappings.put( items.cell4k(), mats.cell4kPart() );

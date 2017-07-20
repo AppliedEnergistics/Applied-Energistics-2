@@ -30,7 +30,7 @@ public class CompassManager
 {
 
 	public static final CompassManager INSTANCE = new CompassManager();
-	private final HashMap<CompassRequest, CompassResult> requests = new HashMap<CompassRequest, CompassResult>();
+	private final HashMap<CompassRequest, CompassResult> requests = new HashMap<>();
 
 	public void postResult( final long attunement, final int x, final int y, final int z, final CompassResult result )
 	{

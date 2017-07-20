@@ -49,7 +49,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 
 	private final InventoryAdaptor adaptor;
 	private final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
-	private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object>();
+	private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
 	private final NavigableMap<Integer, CachedItemStack> memory;
 	private BaseActionSource mySource;
 	private StorageFilter mode = StorageFilter.EXTRACTABLE_ONLY;
@@ -57,7 +57,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 	public MEMonitorIInventory( final InventoryAdaptor adaptor )
 	{
 		this.adaptor = adaptor;
-		this.memory = new ConcurrentSkipListMap<Integer, CachedItemStack>();
+		this.memory = new ConcurrentSkipListMap<>();
 	}
 
 	@Override
@@ -143,7 +143,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 	public TickRateModulation onTick()
 	{
 
-		final LinkedList<IAEItemStack> changes = new LinkedList<IAEItemStack>();
+		final LinkedList<IAEItemStack> changes = new LinkedList<>();
 
 		this.list.resetStatus();
 		int high = 0;

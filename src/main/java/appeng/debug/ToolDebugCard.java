@@ -95,7 +95,7 @@ public class ToolDebugCard extends AEBaseItem
 					if( pg.getControllerState() == ControllerState.CONTROLLER_ONLINE )
 					{
 
-						Set<IGridNode> next = new HashSet<IGridNode>();
+						Set<IGridNode> next = new HashSet<>();
 						next.add( node );
 
 						final int maxLength = 10000;
@@ -105,7 +105,7 @@ public class ToolDebugCard extends AEBaseItem
 						while( !next.isEmpty() )
 						{
 							final Iterable<IGridNode> current = next;
-							next = new HashSet<IGridNode>();
+							next = new HashSet<>();
 
 							for( final IGridNode n : current )
 							{

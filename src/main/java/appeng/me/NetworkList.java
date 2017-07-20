@@ -31,7 +31,7 @@ import java.util.List;
 public class NetworkList implements Collection<Grid>
 {
 
-	private List<Grid> networks = new LinkedList<Grid>();
+	private List<Grid> networks = new LinkedList<>();
 
 	@Override
 	public int size()
@@ -108,6 +108,6 @@ public class NetworkList implements Collection<Grid>
 	@Override
 	public void clear()
 	{
-		this.networks = new LinkedList<Grid>();
+		this.networks = new LinkedList<>();
 	}
 }

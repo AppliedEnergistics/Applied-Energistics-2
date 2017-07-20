@@ -58,12 +58,12 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	// TODO: copied from GuiMEMonitorable. It looks not changed, maybe unneeded?
 	private final int offsetX = 9;
 
-	private final HashMap<Long, ClientDCInternalInv> byId = new HashMap<Long, ClientDCInternalInv>();
+	private final HashMap<Long, ClientDCInternalInv> byId = new HashMap<>();
 	private final HashMultimap<String, ClientDCInternalInv> byName = HashMultimap.create();
-	private final ArrayList<String> names = new ArrayList<String>();
-	private final ArrayList<Object> lines = new ArrayList<Object>();
+	private final ArrayList<String> names = new ArrayList<>();
+	private final ArrayList<Object> lines = new ArrayList<>();
 
-	private final Map<String, Set<Object>> cachedSearches = new WeakHashMap<String, Set<Object>>();
+	private final Map<String, Set<Object>> cachedSearches = new WeakHashMap<>();
 
 	private boolean refreshList = false;
 	private MEGuiTextField searchField;
@@ -313,7 +313,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		{
 			this.lines.add( n );
 
-			final ArrayList<ClientDCInternalInv> clientInventories = new ArrayList<ClientDCInternalInv>();
+			final ArrayList<ClientDCInternalInv> clientInventories = new ArrayList<>();
 			clientInventories.addAll( this.byName.get( n ) );
 
 			Collections.sort( clientInventories );
@@ -371,7 +371,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	{
 		if( !this.cachedSearches.containsKey( searchTerm ) )
 		{
-			this.cachedSearches.put( searchTerm, new HashSet<Object>() );
+			this.cachedSearches.put( searchTerm, new HashSet<>() );
 		}
 
 		final Set<Object> cache = this.cachedSearches.get( searchTerm );

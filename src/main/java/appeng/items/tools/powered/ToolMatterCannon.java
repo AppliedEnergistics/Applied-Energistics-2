@@ -136,21 +136,21 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 
 						if( Platform.isClient() )
 						{
-							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
+							return new ActionResult<>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
 						}
 
 						aeAmmo.setStackSize( 1 );
 						final ItemStack ammo = ( (IAEItemStack) aeAmmo ).getItemStack();
 						if( ammo == null )
 						{
-							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
+							return new ActionResult<>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
 						}
 
 						ammo.setCount( 1 );
 						aeAmmo = inv.extractItems( aeAmmo, Actionable.MODULATE, new PlayerSource( p, null ) );
 						if( aeAmmo == null )
 						{
-							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
+							return new ActionResult<>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
 						}
 
 						final LookDirection dir = Platform.getPlayerRay( p, p.getEyeHeight() );
@@ -172,7 +172,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 							{
 								this.shootPaintBalls( type, w, p, Vec3d, Vec3d1, direction, d0, d1, d2 );
 							}
-							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
+							return new ActionResult<>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
 						}
 						else
 						{
@@ -186,11 +186,11 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 					{
 						p.sendMessage( PlayerMessages.AmmoDepleted.get() );
 					}
-					return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
+					return new ActionResult<>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
 				}
 			}
 		}
-		return new ActionResult<ItemStack>( EnumActionResult.FAIL, p.getHeldItem( hand ) );
+		return new ActionResult<>( EnumActionResult.FAIL, p.getHeldItem( hand ) );
 	}
 
 	private void shootPaintBalls( final ItemStack type, final World w, final EntityPlayer p, final Vec3d Vec3d, final Vec3d Vec3d1, final Vec3d direction, final double d0, final double d1, final double d2 )

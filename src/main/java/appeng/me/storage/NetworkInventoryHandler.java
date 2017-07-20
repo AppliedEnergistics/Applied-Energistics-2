@@ -47,8 +47,8 @@ import appeng.util.ItemSorters;
 public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 {
 
-	private static final ThreadLocal<LinkedList> DEPTH_MOD = new ThreadLocal<LinkedList>();
-	private static final ThreadLocal<LinkedList> DEPTH_SIM = new ThreadLocal<LinkedList>();
+	private static final ThreadLocal<LinkedList> DEPTH_MOD = new ThreadLocal<>();
+	private static final ThreadLocal<LinkedList> DEPTH_SIM = new ThreadLocal<>();
 	private static final Comparator<Integer> PRIORITY_SORTER = ( o1, o2 ) -> ItemSorters.compareInt( o2, o1 );
 
 	private static int currentPass = 0;

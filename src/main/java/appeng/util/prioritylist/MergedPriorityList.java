@@ -28,8 +28,8 @@ import appeng.api.storage.data.IAEStack;
 public final class MergedPriorityList<T extends IAEStack<T>> implements IPartitionList<T>
 {
 
-	private final Collection<IPartitionList<T>> positive = new ArrayList<IPartitionList<T>>();
-	private final Collection<IPartitionList<T>> negative = new ArrayList<IPartitionList<T>>();
+	private final Collection<IPartitionList<T>> positive = new ArrayList<>();
+	private final Collection<IPartitionList<T>> negative = new ArrayList<>();
 
 	public void addNewList( final IPartitionList<T> list, final boolean isWhitelist )
 	{

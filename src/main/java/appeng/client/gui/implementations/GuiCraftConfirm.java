@@ -66,7 +66,7 @@ public class GuiCraftConfirm extends AEBaseGui
 	private final IItemList<IAEItemStack> pending = AEApi.instance().storage().createItemList();
 	private final IItemList<IAEItemStack> missing = AEApi.instance().storage().createItemList();
 
-	private final List<IAEItemStack> visual = new ArrayList<IAEItemStack>();
+	private final List<IAEItemStack> visual = new ArrayList<>();
 
 	private GuiBridge OriginalGui;
 	private GuiButton cancel;
@@ -237,7 +237,7 @@ public class GuiCraftConfirm extends AEBaseGui
 		final int viewEnd = viewStart + 3 * this.rows;
 
 		String dspToolTip = "";
-		final List<String> lineList = new LinkedList<String>();
+		final List<String> lineList = new LinkedList<>();
 		int toolPosX = 0;
 		int toolPosY = 0;
 

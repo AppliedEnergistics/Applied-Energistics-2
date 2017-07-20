@@ -185,7 +185,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 		final AEBaseTile te = this.getTileEntity( w, pos );
 		if( te != null )
 		{
-			final ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
+			final ArrayList<ItemStack> drops = new ArrayList<>();
 			if( te.dropItems() )
 			{
 				te.getDrops( w, pos, drops );

@@ -90,7 +90,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench /
 			}
 		}
 
-		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
+		return new ActionResult<>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
 	}
 
 	@Override

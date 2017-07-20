@@ -47,8 +47,8 @@ public class SpatialPylonCache implements ISpatialCache
 	private DimensionalCoord captureMin;
 	private DimensionalCoord captureMax;
 	private boolean isValid = false;
-	private List<TileSpatialIOPort> ioPorts = new LinkedList<TileSpatialIOPort>();
-	private HashMap<SpatialPylonCluster, SpatialPylonCluster> clusters = new HashMap<SpatialPylonCluster, SpatialPylonCluster>();
+	private List<TileSpatialIOPort> ioPorts = new LinkedList<>();
+	private HashMap<SpatialPylonCluster, SpatialPylonCluster> clusters = new HashMap<>();
 
 	public SpatialPylonCache( final IGrid g )
 	{
@@ -64,8 +64,8 @@ public class SpatialPylonCache implements ISpatialCache
 	private void reset( final IGrid grid )
 	{
 
-		this.clusters = new HashMap<SpatialPylonCluster, SpatialPylonCluster>();
-		this.ioPorts = new LinkedList<TileSpatialIOPort>();
+		this.clusters = new HashMap<>();
+		this.ioPorts = new LinkedList<>();
 
 		for( final IGridNode gm : grid.getMachines( TileSpatialIOPort.class ) )
 		{

@@ -70,7 +70,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 		this.myGridCache = cache;
 		this.myChannel = chan;
 		this.cachedList = (IItemList<T>) chan.createList();
-		this.listeners = new HashMap<IMEMonitorHandlerReceiver<T>, Object>();
+		this.listeners = new HashMap<>();
 	}
 
 	@Override

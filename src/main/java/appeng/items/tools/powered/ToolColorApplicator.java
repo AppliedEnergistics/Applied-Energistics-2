@@ -87,7 +87,7 @@ import appeng.util.item.AEItemStack;
 public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCell, IItemGroup, IBlockTool, IMouseWheelItem
 {
 
-	private static final Map<Integer, AEColor> ORE_TO_COLOR = new HashMap<Integer, AEColor>();
+	private static final Map<Integer, AEColor> ORE_TO_COLOR = new HashMap<>();
 
 	static
 	{
@@ -279,7 +279,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			}
 			else
 			{
-				final LinkedList<IAEItemStack> list = new LinkedList<IAEItemStack>();
+				final LinkedList<IAEItemStack> list = new LinkedList<>();
 
 				for( final IAEItemStack i : itemList )
 				{

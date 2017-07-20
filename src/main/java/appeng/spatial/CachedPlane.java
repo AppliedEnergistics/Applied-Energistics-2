@@ -56,11 +56,11 @@ public class CachedPlane
 	private final int y_size;
 	private final Chunk[][] myChunks;
 	private final Column[][] myColumns;
-	private final LinkedList<TileEntity> tiles = new LinkedList<TileEntity>();
-	private final LinkedList<NextTickListEntry> ticks = new LinkedList<NextTickListEntry>();
+	private final LinkedList<TileEntity> tiles = new LinkedList<>();
+	private final LinkedList<NextTickListEntry> ticks = new LinkedList<>();
 	private final World world;
 	private final IMovableRegistry reg = AEApi.instance().registries().movable();
-	private final LinkedList<WorldCoord> updates = new LinkedList<WorldCoord>();
+	private final LinkedList<WorldCoord> updates = new LinkedList<>();
 	private final IBlockDefinition matrixFrame = AEApi.instance().definitions().blocks().matrixFrame();
 	private int verticalBits;
 	private final IBlockState matrixBlockState;
@@ -123,8 +123,8 @@ public class CachedPlane
 		{
 			for( int cz = 0; cz < this.cz_size; cz++ )
 			{
-				final LinkedList<Entry<BlockPos, TileEntity>> rawTiles = new LinkedList<Entry<BlockPos, TileEntity>>();
-				final LinkedList<BlockPos> deadTiles = new LinkedList<BlockPos>();
+				final LinkedList<Entry<BlockPos, TileEntity>> rawTiles = new LinkedList<>();
+				final LinkedList<BlockPos> deadTiles = new LinkedList<>();
 
 				final Chunk c = w.getChunkFromChunkCoords( minCX + cx, minCZ + cz );
 				this.myChunks[cx][cz] = c;
@@ -452,7 +452,7 @@ public class CachedPlane
 		{
 			if( this.skipThese == null )
 			{
-				this.skipThese = new LinkedList<Integer>();
+				this.skipThese = new LinkedList<>();
 			}
 			this.skipThese.add( yCoord );
 		}

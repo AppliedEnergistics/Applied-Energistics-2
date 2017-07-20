@@ -68,7 +68,7 @@ public class PartPlacement
 {
 
 	private static float eyeHeight = 0.0f;
-	private final ThreadLocal<Object> placing = new ThreadLocal<Object>();
+	private final ThreadLocal<Object> placing = new ThreadLocal<>();
 	private boolean wasCanceled = false;
 
 	public static EnumActionResult place( final ItemStack held, final BlockPos pos, EnumFacing side, final EntityPlayer player, final EnumHand hand, final World world, PlaceType pass, final int depth )
@@ -103,7 +103,7 @@ public class PartPlacement
 
 					if( mop != null )
 					{
-						final List<ItemStack> is = new LinkedList<ItemStack>();
+						final List<ItemStack> is = new LinkedList<>();
 						final SelectedPart sp = selectPart( player, host,
 								mop.hitVec.addVector( -mop.getBlockPos().getX(), -mop.getBlockPos().getY(), -mop.getBlockPos().getZ() ) );
 

@@ -51,7 +51,7 @@ import appeng.util.Platform;
 public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternItem
 {
 	// rather simple client side caching.
-	private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<ItemStack, ItemStack>();
+	private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<>();
 
 	public ItemEncodedPattern()
 	{
@@ -63,7 +63,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	{
 		this.clearPattern( player.getHeldItem( hand ), player );
 
-		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, player.getHeldItem( hand ) );
+		return new ActionResult<>( EnumActionResult.SUCCESS, player.getHeldItem( hand ) );
 	}
 
 	@Override

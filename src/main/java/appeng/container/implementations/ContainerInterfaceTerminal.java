@@ -62,8 +62,8 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 	 */
 
 	private static long autoBase = Long.MIN_VALUE;
-	private final Map<IInterfaceHost, InvTracker> diList = new HashMap<IInterfaceHost, InvTracker>();
-	private final Map<Long, InvTracker> byId = new HashMap<Long, InvTracker>();
+	private final Map<IInterfaceHost, InvTracker> diList = new HashMap<>();
+	private final Map<Long, InvTracker> byId = new HashMap<>();
 	private IGrid grid;
 	private NBTTagCompound data = new NBTTagCompound();
 

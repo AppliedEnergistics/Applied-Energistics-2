@@ -87,12 +87,12 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	private final WorldCoord min;
 	private final WorldCoord max;
 	private final int[] usedOps = new int[3];
-	private final Map<ICraftingPatternDetails, TaskProgress> tasks = new HashMap<ICraftingPatternDetails, TaskProgress>();
+	private final Map<ICraftingPatternDetails, TaskProgress> tasks = new HashMap<>();
 	// INSTANCE sate
-	private final LinkedList<TileCraftingTile> tiles = new LinkedList<TileCraftingTile>();
-	private final LinkedList<TileCraftingTile> storage = new LinkedList<TileCraftingTile>();
-	private final LinkedList<TileCraftingMonitorTile> status = new LinkedList<TileCraftingMonitorTile>();
-	private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object>();
+	private final LinkedList<TileCraftingTile> tiles = new LinkedList<>();
+	private final LinkedList<TileCraftingTile> storage = new LinkedList<>();
+	private final LinkedList<TileCraftingMonitorTile> status = new LinkedList<>();
+	private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
 	private ICraftingLink myLastLink;
 	private String myName = "";
 	private boolean isDestroyed = false;

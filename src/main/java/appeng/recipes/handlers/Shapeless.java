@@ -64,7 +64,7 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 	@Override
 	public void register() throws RegistrationError, MissingIngredientError
 	{
-		final List<Object> args = new ArrayList<Object>();
+		final List<Object> args = new ArrayList<>();
 		for( final IIngredient i : this.inputs )
 		{
 			args.add( i );

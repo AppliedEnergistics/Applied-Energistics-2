@@ -115,8 +115,8 @@ public final class WorldGenRegistry implements IWorldGen
 	private static class TypeSet
 	{
 
-		final HashSet<Class<? extends WorldProvider>> badProviders = new HashSet<Class<? extends WorldProvider>>();
-		final HashSet<Integer> badDimensions = new HashSet<Integer>();
-		final HashSet<Integer> enabledDimensions = new HashSet<Integer>();
+		final HashSet<Class<? extends WorldProvider>> badProviders = new HashSet<>();
+		final HashSet<Integer> badDimensions = new HashSet<>();
+		final HashSet<Integer> enabledDimensions = new HashSet<>();
 	}
 }

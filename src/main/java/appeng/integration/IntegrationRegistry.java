@@ -30,7 +30,7 @@ public enum IntegrationRegistry
 {
 	INSTANCE;
 
-	private final Collection<IntegrationNode> modules = new LinkedList<IntegrationNode>();
+	private final Collection<IntegrationNode> modules = new LinkedList<>();
 
 	public void add( final IntegrationType type )
 	{

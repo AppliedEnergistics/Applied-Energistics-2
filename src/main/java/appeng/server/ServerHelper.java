@@ -86,7 +86,7 @@ public class ServerHelper extends CommonHelper
 			}
 		}
 
-		return new ArrayList<EntityPlayer>();
+		return new ArrayList<>();
 	}
 
 	@Override

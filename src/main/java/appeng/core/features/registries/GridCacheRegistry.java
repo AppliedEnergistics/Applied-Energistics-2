@@ -32,7 +32,7 @@ import appeng.core.AELog;
 
 public final class GridCacheRegistry implements IGridCacheRegistry
 {
-	private final Map<Class<? extends IGridCache>, Class<? extends IGridCache>> caches = new HashMap<Class<? extends IGridCache>, Class<? extends IGridCache>>();
+	private final Map<Class<? extends IGridCache>, Class<? extends IGridCache>> caches = new HashMap<>();
 
 	@Override
 	public void registerGridCache( final Class<? extends IGridCache> iface, final Class<? extends IGridCache> implementation )
@@ -50,7 +50,7 @@ public final class GridCacheRegistry implements IGridCacheRegistry
 	@Override
 	public HashMap<Class<? extends IGridCache>, IGridCache> createCacheInstance( final IGrid g )
 	{
-		final HashMap<Class<? extends IGridCache>, IGridCache> map = new HashMap<Class<? extends IGridCache>, IGridCache>();
+		final HashMap<Class<? extends IGridCache>, IGridCache> map = new HashMap<>();
 
 		for( final Class<? extends IGridCache> iface : this.caches.keySet() )
 		{

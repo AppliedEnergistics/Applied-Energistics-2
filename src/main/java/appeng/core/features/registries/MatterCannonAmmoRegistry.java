@@ -33,7 +33,7 @@ import appeng.util.Platform;
 public class MatterCannonAmmoRegistry implements IOreListener, IMatterCannonAmmoRegistry
 {
 
-	private final HashMap<ItemStack, Double> DamageModifiers = new HashMap<ItemStack, Double>();
+	private final HashMap<ItemStack, Double> DamageModifiers = new HashMap<>();
 
 	public MatterCannonAmmoRegistry()
 	{

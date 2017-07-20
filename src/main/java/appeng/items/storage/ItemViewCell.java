@@ -51,7 +51,7 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 	{
 		IPartitionList<IAEItemStack> myPartitionList = null;
 
-		final MergedPriorityList<IAEItemStack> myMergedList = new MergedPriorityList<IAEItemStack>();
+		final MergedPriorityList<IAEItemStack> myMergedList = new MergedPriorityList<>();
 
 		for( final ItemStack currentViewCell : list )
 		{
@@ -107,11 +107,11 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 				{
 					if( hasFuzzy )
 					{
-						myMergedList.addNewList( new FuzzyPriorityList<IAEItemStack>( priorityList, fzMode ), !hasInverter );
+						myMergedList.addNewList( new FuzzyPriorityList<>( priorityList, fzMode ), !hasInverter );
 					}
 					else
 					{
-						myMergedList.addNewList( new PrecisePriorityList<IAEItemStack>( priorityList ), !hasInverter );
+						myMergedList.addNewList( new PrecisePriorityList<>( priorityList ), !hasInverter );
 					}
 
 					myPartitionList = myMergedList;
