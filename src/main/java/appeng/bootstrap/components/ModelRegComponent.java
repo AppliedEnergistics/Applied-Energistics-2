@@ -15,6 +15,7 @@ import appeng.bootstrap.IBootstrapComponent;
 public interface ModelRegComponent extends IBootstrapComponent
 {
 
+	@Override
 	void modelReg( Side side );
 
 }

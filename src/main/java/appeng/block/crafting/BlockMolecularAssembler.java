@@ -90,6 +90,7 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 		return layer == BlockRenderLayer.TRANSLUCENT;
 	}
 
+	@Override
 	public boolean isFullCube( IBlockState state )
 	{
 		return false;

@@ -187,6 +187,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 
 	}
 
+	@Override
 	public void addNewAttunement( @Nonnull final String modId, @Nullable final TunnelType type )
 	{
 		if( type == null || modId == null )

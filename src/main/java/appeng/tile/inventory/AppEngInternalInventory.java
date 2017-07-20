@@ -48,6 +48,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 		this.inv = new ItemStack[size];
 	}
 
+	@Override
 	public boolean isEmpty()
 	{
 		for( int x = 0; x < this.size; x++ )

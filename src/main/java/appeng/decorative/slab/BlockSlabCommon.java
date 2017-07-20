@@ -45,6 +45,7 @@ public abstract class BlockSlabCommon extends BlockSlab
 	/**
 	 * Convert the given metadata into a BlockState for this Block
 	 */
+	@Override
 	public IBlockState getStateFromMeta( int meta )
 	{
 		IBlockState iblockstate = this.getDefaultState().withProperty( VARIANT, Variant.DEFAULT );
@@ -60,6 +61,7 @@ public abstract class BlockSlabCommon extends BlockSlab
 	/**
 	 * Convert the BlockState into the correct metadata value
 	 */
+	@Override
 	public int getMetaFromState( IBlockState state )
 	{
 		int i = 0;
@@ -72,17 +74,20 @@ public abstract class BlockSlabCommon extends BlockSlab
 		return i;
 	}
 
+	@Override
 	protected BlockStateContainer createBlockState()
 	{
 		return this.isDouble() ? new BlockStateContainer( this, VARIANT ) : new BlockStateContainer( this, HALF, VARIANT );
 	}
 
+	@Override
 	@Nullable
 	public Item getItemDropped( IBlockState state, Random rand, int fortune )
 	{
 		return Item.getItemFromBlock( this );
 	}
 
+	@Override
 	public ItemStack getItem( World worldIn, BlockPos pos, IBlockState state )
 	{
 		return new ItemStack( this, 1, 0 );
@@ -117,17 +122,20 @@ public abstract class BlockSlabCommon extends BlockSlab
 			this.halfSlabBlock = halfSlabBlock;
 		}
 
+		@Override
 		public boolean isDouble()
 		{
 			return true;
 		}
 
+		@Override
 		@Nullable
 		public Item getItemDropped( IBlockState state, Random rand, int fortune )
 		{
 			return Item.getItemFromBlock( this.halfSlabBlock );
 		}
 
+		@Override
 		public ItemStack getItem( World worldIn, BlockPos pos, IBlockState state )
 		{
 			return new ItemStack( this.halfSlabBlock, 1, 0 );
@@ -143,6 +151,7 @@ public abstract class BlockSlabCommon extends BlockSlab
 			super( block );
 		}
 
+		@Override
 		public boolean isDouble()
 		{
 			return false;
@@ -153,6 +162,7 @@ public abstract class BlockSlabCommon extends BlockSlab
 	{
 		DEFAULT;
 
+		@Override
 		public String getName()
 		{
 			return "default";
