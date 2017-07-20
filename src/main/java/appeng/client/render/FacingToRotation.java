@@ -87,7 +87,7 @@ public enum FacingToRotation
 
 	public Vector3f getRot()
 	{
-		return rot;
+		return this.rot;
 	}
 
 	public Matrix4f getMat()
@@ -97,21 +97,21 @@ public enum FacingToRotation
 
 	public void glRotateCurrentMat()
 	{
-		GlStateManager.rotate( rot.x, 1, 0, 0 );
-		GlStateManager.rotate( rot.y, 0, 1, 0 );
-		GlStateManager.rotate( rot.z, 0, 0, 1 );
+		GlStateManager.rotate( this.rot.x, 1, 0, 0 );
+		GlStateManager.rotate( this.rot.y, 0, 1, 0 );
+		GlStateManager.rotate( this.rot.z, 0, 0, 1 );
 	}
 
 	public EnumFacing rotate( EnumFacing facing )
 	{
-		return TRSRTransformation.rotate( mat, facing );
+		return TRSRTransformation.rotate( this.mat, facing );
 	}
 
 	public EnumFacing resultingRotate( EnumFacing facing )
 	{
 		for( EnumFacing face : EnumFacing.values() )
 		{
-			if( rotate( face ) == facing )
+			if( this.rotate( face ) == facing )
 			{
 				return face;
 			}

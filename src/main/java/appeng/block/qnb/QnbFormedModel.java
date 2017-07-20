@@ -39,7 +39,7 @@ public class QnbFormedModel implements IModel
 	@Override
 	public IBakedModel bake( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
 	{
-		IBakedModel ringModel = getBaseModel( MODEL_RING, state, format, bakedTextureGetter );
+		IBakedModel ringModel = this.getBaseModel( MODEL_RING, state, format, bakedTextureGetter );
 		return new QnbFormedBakedModel( format, ringModel, bakedTextureGetter );
 	}
 

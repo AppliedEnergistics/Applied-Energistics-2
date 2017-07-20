@@ -108,7 +108,7 @@ public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 	@Override
 	public IPartModel getStaticModels()
 	{
-		return MODELS.getModel( getConnections(), isPowered(), isActive() );
+		return MODELS.getModel( this.getConnections(), this.isPowered(), this.isActive() );
 	}
 
 }

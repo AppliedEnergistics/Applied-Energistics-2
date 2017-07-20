@@ -47,22 +47,22 @@ public final class GlassState
 
 	public int getX()
 	{
-		return x;
+		return this.x;
 	}
 
 	public int getY()
 	{
-		return y;
+		return this.y;
 	}
 
 	public int getZ()
 	{
-		return z;
+		return this.z;
 	}
 
 	public boolean isFlushWith( EnumFacing side )
 	{
-		return flushWith.contains( side );
+		return this.flushWith.contains( side );
 	}
 
 }

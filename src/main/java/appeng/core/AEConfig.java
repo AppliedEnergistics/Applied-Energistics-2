@@ -566,82 +566,82 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	// Getters
 	public boolean isRemoveCrashingItemsOnLoad()
 	{
-		return removeCrashingItemsOnLoad;
+		return this.removeCrashingItemsOnLoad;
 	}
 
 	public int getFormationPlaneEntityLimit()
 	{
-		return formationPlaneEntityLimit;
+		return this.formationPlaneEntityLimit;
 	}
 
 	public boolean isEnableEffects()
 	{
-		return enableEffects;
+		return this.enableEffects;
 	}
 
 	public boolean isUseLargeFonts()
 	{
-		return useLargeFonts;
+		return this.useLargeFonts;
 	}
 
 	public boolean isUseColoredCraftingStatus()
 	{
-		return useColoredCraftingStatus;
+		return this.useColoredCraftingStatus;
 	}
 
 	public boolean isDisableColoredCableRecipesInJEI()
 	{
-		return disableColoredCableRecipesInJEI;
+		return this.disableColoredCableRecipesInJEI;
 	}
 
 	public int getCraftingCalculationTimePerTick()
 	{
-		return craftingCalculationTimePerTick;
+		return this.craftingCalculationTimePerTick;
 	}
 
 	public PowerUnits getSelectedPowerUnit()
 	{
-		return selectedPowerUnit;
+		return this.selectedPowerUnit;
 	}
 
 	public int[] getCraftByStacks()
 	{
-		return craftByStacks;
+		return this.craftByStacks;
 	}
 
 	public int[] getPriorityByStacks()
 	{
-		return priorityByStacks;
+		return this.priorityByStacks;
 	}
 
 	public int[] getLevelByStacks()
 	{
-		return levelByStacks;
+		return this.levelByStacks;
 	}
 
 	public int getStorageBiomeID()
 	{
-		return storageBiomeID;
+		return this.storageBiomeID;
 	}
 
 	public int getStorageProviderID()
 	{
-		return storageProviderID;
+		return this.storageProviderID;
 	}
 
 	public double getSpatialPowerExponent()
 	{
-		return spatialPowerExponent;
+		return this.spatialPowerExponent;
 	}
 
 	public double getSpatialPowerMultiplier()
 	{
-		return spatialPowerMultiplier;
+		return this.spatialPowerMultiplier;
 	}
 
 	public String[] getGrinderOres()
 	{
-		return grinderOres;
+		return this.grinderOres;
 	}
 
 	public Set<String> getGrinderBlackList()
@@ -651,117 +651,117 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 
 	public double getOreDoublePercentage()
 	{
-		return oreDoublePercentage;
+		return this.oreDoublePercentage;
 	}
 
 	public int getWirelessTerminalBattery()
 	{
-		return wirelessTerminalBattery;
+		return this.wirelessTerminalBattery;
 	}
 
 	public int getEntropyManipulatorBattery()
 	{
-		return entropyManipulatorBattery;
+		return this.entropyManipulatorBattery;
 	}
 
 	public int getMatterCannonBattery()
 	{
-		return matterCannonBattery;
+		return this.matterCannonBattery;
 	}
 
 	public int getPortableCellBattery()
 	{
-		return portableCellBattery;
+		return this.portableCellBattery;
 	}
 
 	public int getColorApplicatorBattery()
 	{
-		return colorApplicatorBattery;
+		return this.colorApplicatorBattery;
 	}
 
 	public int getChargedStaffBattery()
 	{
-		return chargedStaffBattery;
+		return this.chargedStaffBattery;
 	}
 
 	public float getSpawnChargedChance()
 	{
-		return spawnChargedChance;
+		return this.spawnChargedChance;
 	}
 
 	public int getQuartzOresPerCluster()
 	{
-		return quartzOresPerCluster;
+		return this.quartzOresPerCluster;
 	}
 
 	public int getQuartzOresClusterAmount()
 	{
-		return quartzOresClusterAmount;
+		return this.quartzOresClusterAmount;
 	}
 
 	public int getChargedChange()
 	{
-		return chargedChange;
+		return this.chargedChange;
 	}
 
 	public int getMinMeteoriteDistance()
 	{
-		return minMeteoriteDistance;
+		return this.minMeteoriteDistance;
 	}
 
 	public int getMinMeteoriteDistanceSq()
 	{
-		return minMeteoriteDistanceSq;
+		return this.minMeteoriteDistanceSq;
 	}
 
 	public double getMeteoriteClusterChance()
 	{
-		return meteoriteClusterChance;
+		return this.meteoriteClusterChance;
 	}
 
 	public int getMeteoriteMaximumSpawnHeight()
 	{
-		return meteoriteMaximumSpawnHeight;
+		return this.meteoriteMaximumSpawnHeight;
 	}
 
 	public int[] getMeteoriteDimensionWhitelist()
 	{
-		return meteoriteDimensionWhitelist;
+		return this.meteoriteDimensionWhitelist;
 	}
 
 	public double getWirelessBaseCost()
 	{
-		return wirelessBaseCost;
+		return this.wirelessBaseCost;
 	}
 
 	public double getWirelessCostMultiplier()
 	{
-		return wirelessCostMultiplier;
+		return this.wirelessCostMultiplier;
 	}
 
 	public double getWirelessTerminalDrainMultiplier()
 	{
-		return wirelessTerminalDrainMultiplier;
+		return this.wirelessTerminalDrainMultiplier;
 	}
 
 	public double getWirelessBaseRange()
 	{
-		return wirelessBaseRange;
+		return this.wirelessBaseRange;
 	}
 
 	public double getWirelessBoosterRangeMultiplier()
 	{
-		return wirelessBoosterRangeMultiplier;
+		return this.wirelessBoosterRangeMultiplier;
 	}
 
 	public double getWirelessBoosterExp()
 	{
-		return wirelessBoosterExp;
+		return this.wirelessBoosterExp;
 	}
 
 	public double getWirelessHighWirelessCount()
 	{
-		return wirelessHighWirelessCount;
+		return this.wirelessHighWirelessCount;
 	}
 
 	// Setters keep visibility as low as possible.

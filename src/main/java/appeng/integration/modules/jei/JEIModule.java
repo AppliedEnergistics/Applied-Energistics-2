@@ -34,25 +34,25 @@ public class JEIModule implements IJEI
 
 	public IJEI getJei()
 	{
-		return jei;
+		return this.jei;
 	}
 
 	@Override
 	public String getSearchText()
 	{
-		return jei.getSearchText();
+		return this.jei.getSearchText();
 	}
 
 	@Override
 	public void setSearchText( String searchText )
 	{
-		jei.setSearchText( searchText );
+		this.jei.setSearchText( searchText );
 	}
 
 	@Override
 	public boolean isEnabled()
 	{
-		return jei.isEnabled();
+		return this.jei.isEnabled();
 	}
 
 }

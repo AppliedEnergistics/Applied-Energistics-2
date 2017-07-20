@@ -79,7 +79,7 @@ public class Fallout
 		}
 		else if( a > 0.6 )
 		{
-			skyStoneDefinition.maybeBlock().ifPresent( block -> this.putter.put( w, x, y, z, block ) );
+			this.skyStoneDefinition.maybeBlock().ifPresent( block -> this.putter.put( w, x, y, z, block ) );
 		}
 		else if( a > 0.5 )
 		{

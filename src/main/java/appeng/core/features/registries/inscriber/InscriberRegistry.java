@@ -93,8 +93,8 @@ public final class InscriberRegistry implements IInscriberRegistry
 
 		this.recipes.add( recipe );
 
-		recipe.getTopOptional().ifPresent( optionals::add );
-		recipe.getBottomOptional().ifPresent( optionals::add );
+		recipe.getTopOptional().ifPresent( this.optionals::add );
+		recipe.getBottomOptional().ifPresent( this.optionals::add );
 
 		this.inputs.addAll( recipe.getInputs() );
 	}

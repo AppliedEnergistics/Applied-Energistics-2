@@ -716,7 +716,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	@Override
 	public float getCableConnectionLength( AECableType cable )
 	{
-		return getPart( AEPartLocation.INTERNAL ) instanceof IPartCable ? getPart( AEPartLocation.INTERNAL ).getCableConnectionLength( cable ) : -1;
+		return this.getPart( AEPartLocation.INTERNAL ) instanceof IPartCable ? this.getPart( AEPartLocation.INTERNAL ).getCableConnectionLength( cable ) : -1;
 	}
 
 	@Override
@@ -1150,7 +1150,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	@Override
 	public CableBusRenderState getRenderState()
 	{
-		PartCable cable = (PartCable) getCenter();
+		PartCable cable = (PartCable) this.getCenter();
 
 		CableBusRenderState renderState = new CableBusRenderState();
 
@@ -1209,13 +1209,13 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		for( EnumFacing facing : EnumFacing.values() )
 		{
 
-			FacadeRenderState facadeState = getFacadeRenderState( facing );
+			FacadeRenderState facadeState = this.getFacadeRenderState( facing );
 			if( facadeState != null )
 			{
 				renderState.getFacades().put( facing, facadeState );
 			}
 
-			IPart part = getPart( facing );
+			IPart part = this.getPart( facing );
 
 			if( part == null )
 			{
@@ -1253,14 +1253,14 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	private FacadeRenderState getFacadeRenderState( EnumFacing side )
 	{
 		// Store the "masqueraded" itemstack for the given side, if there is a facade
-		IFacadePart facade = getFacade( side.ordinal() );
+		IFacadePart facade = this.getFacade( side.ordinal() );
 		if( facade != null )
 		{
 			ItemStack textureItem = facade.getTextureItem();
 			IBlockState blockState = facade.getBlockState();
 			if( blockState != null && textureItem != null )
 			{
-				EnumSet<EnumFacing> openFaces = calculateFaceOpenFaces( side );
+				EnumSet<EnumFacing> openFaces = this.calculateFaceOpenFaces( side );
 				return new FacadeRenderState( blockState, openFaces, textureItem );
 			}
 		}
@@ -1271,10 +1271,10 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	private EnumSet<EnumFacing> calculateFaceOpenFaces( EnumFacing side )
 	{
 		final EnumSet<EnumFacing> out = EnumSet.of( side, side.getOpposite() );
-		final IFacadePart facade = getFacade( side.ordinal() );
+		final IFacadePart facade = this.getFacade( side.ordinal() );
 
-		IBlockAccess blockAccess = getTile().getWorld();
-		BlockPos pos = getTile().getPos();
+		IBlockAccess blockAccess = this.getTile().getWorld();
+		BlockPos pos = this.getTile().getPos();
 		for( final EnumFacing it : EnumFacing.values() )
 		{
 			if( !out.contains( it ) && this.hasAlphaDiff( blockAccess.getTileEntity( pos.offset( it ) ), side, facade ) )
@@ -1285,7 +1285,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 		if( out.contains( EnumFacing.UP ) && ( side.getFrontOffsetX() != 0 || side.getFrontOffsetZ() != 0 ) )
 		{
-			final IFacadePart fp = getFacade( EnumFacing.UP.ordinal() );
+			final IFacadePart fp = this.getFacade( EnumFacing.UP.ordinal() );
 			if( fp != null && ( fp.isTransparent() == facade.isTransparent() ) )
 			{
 				out.remove( EnumFacing.UP );
@@ -1294,7 +1294,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 		if( out.contains( EnumFacing.DOWN ) && ( side.getFrontOffsetX() != 0 || side.getFrontOffsetZ() != 0 ) )
 		{
-			final IFacadePart fp = getFacade( EnumFacing.DOWN.ordinal() );
+			final IFacadePart fp = this.getFacade( EnumFacing.DOWN.ordinal() );
 			if( fp != null && ( fp.isTransparent() == facade.isTransparent() ) )
 			{
 				out.remove( EnumFacing.DOWN );
@@ -1303,7 +1303,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 		if( out.contains( EnumFacing.SOUTH ) && ( side.getFrontOffsetX() != 0 ) )
 		{
-			final IFacadePart fp = getFacade( EnumFacing.SOUTH.ordinal() );
+			final IFacadePart fp = this.getFacade( EnumFacing.SOUTH.ordinal() );
 			if( fp != null && ( fp.isTransparent() == facade.isTransparent() ) )
 			{
 				out.remove( EnumFacing.SOUTH );
@@ -1312,7 +1312,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 		if( out.contains( EnumFacing.NORTH ) && ( side.getFrontOffsetX() != 0 ) )
 		{
-			final IFacadePart fp = getFacade( EnumFacing.NORTH.ordinal() );
+			final IFacadePart fp = this.getFacade( EnumFacing.NORTH.ordinal() );
 			if( fp != null && ( fp.isTransparent() == facade.isTransparent() ) )
 			{
 				out.remove( EnumFacing.NORTH );

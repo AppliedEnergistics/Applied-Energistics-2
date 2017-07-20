@@ -44,8 +44,8 @@ public class StorageWorldProvider extends WorldProvider
 	public StorageWorldProvider()
 	{
 		this.hasSkyLight = true;
-		biome = AppEng.instance().getRegistration().getStorageBiome();
-		this.biomeProvider = new BiomeProviderSingle( biome );
+		this.biome = AppEng.instance().getRegistration().getStorageBiome();
+		this.biomeProvider = new BiomeProviderSingle( this.biome );
 	}
 
 	@Override
@@ -155,7 +155,7 @@ public class StorageWorldProvider extends WorldProvider
 	@Override
 	public Biome getBiomeForCoords( BlockPos pos )
 	{
-		return biome;
+		return this.biome;
 	}
 
 }

@@ -37,7 +37,7 @@ public class TileCableBusTESR extends TileCableBus
 			{
 				final TileCableBus tcb = (TileCableBus) BlockCableBus.getNoTesrTile().newInstance();
 				tcb.copyFrom( this );
-				this.getWorld().setTileEntity( pos, tcb );
+				this.getWorld().setTileEntity( this.pos, tcb );
 			}
 			catch( final Throwable ignored )
 			{

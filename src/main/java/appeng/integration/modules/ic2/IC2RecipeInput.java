@@ -61,6 +61,6 @@ public class IC2RecipeInput implements IRecipeInput
 	@Override
 	public List<ItemStack> getInputs()
 	{
-		return Collections.unmodifiableList( Collections.singletonList( itemstack ) );
+		return Collections.unmodifiableList( Collections.singletonList( this.itemstack ) );
 	}
 }

@@ -245,7 +245,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 	@Override
 	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
 	{
-		return doWork() ? TickRateModulation.FASTER : TickRateModulation.SLEEP;
+		return this.doWork() ? TickRateModulation.FASTER : TickRateModulation.SLEEP;
 	}
 
 	private boolean doWork()

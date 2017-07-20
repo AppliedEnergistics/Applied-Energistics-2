@@ -34,17 +34,17 @@ public class FacadeRenderState
 
 	public IBlockState getSourceBlock()
 	{
-		return sourceBlock;
+		return this.sourceBlock;
 	}
 
 	public EnumSet<EnumFacing> getOpenFaces()
 	{
-		return openFaces;
+		return this.openFaces;
 	}
 
 	public int resolveTintColor( int tintIndex )
 	{
-		return Minecraft.getMinecraft().getItemColors().getColorFromItemstack( textureItem, tintIndex );
+		return Minecraft.getMinecraft().getItemColors().getColorFromItemstack( this.textureItem, tintIndex );
 	}
 
 }

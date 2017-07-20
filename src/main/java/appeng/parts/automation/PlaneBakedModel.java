@@ -76,7 +76,7 @@ public class PlaneBakedModel implements IBakedModel
 	{
 		if( side == null )
 		{
-			return quads;
+			return this.quads;
 		}
 		else
 		{
@@ -105,7 +105,7 @@ public class PlaneBakedModel implements IBakedModel
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		return frontTexture;
+		return this.frontTexture;
 	}
 
 	@Override

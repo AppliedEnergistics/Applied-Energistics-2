@@ -53,7 +53,7 @@ public class AssemblerFX extends Particle implements ICanDie
 	@Override
 	public boolean isDead()
 	{
-		return isExpired;
+		return this.isExpired;
 	}
 
 	@Override

@@ -74,24 +74,24 @@ class PlaneModels
 	{
 		if( hasPower && hasChannel )
 		{
-			return modelsHasChannel.get( connections );
+			return this.modelsHasChannel.get( connections );
 		}
 		else if( hasPower )
 		{
-			return modelsOn.get( connections );
+			return this.modelsOn.get( connections );
 		}
 		else
 		{
-			return modelsOff.get( connections );
+			return this.modelsOff.get( connections );
 		}
 	}
 
 	public List<IPartModel> getModels()
 	{
 		List<IPartModel> result = new ArrayList<>();
-		modelsOff.values().forEach( result::add );
-		modelsOn.values().forEach( result::add );
-		modelsHasChannel.values().forEach( result::add );
+		this.modelsOff.values().forEach( result::add );
+		this.modelsOn.values().forEach( result::add );
+		this.modelsHasChannel.values().forEach( result::add );
 		return result;
 	}
 

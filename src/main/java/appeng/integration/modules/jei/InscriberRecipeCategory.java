@@ -70,7 +70,7 @@ class InscriberRecipeCategory extends BlankRecipeCategory<InscriberRecipeWrapper
 	@Override
 	public String getTitle()
 	{
-		return localizedName;
+		return this.localizedName;
 	}
 
 	/**
@@ -88,7 +88,7 @@ class InscriberRecipeCategory extends BlankRecipeCategory<InscriberRecipeWrapper
 	@Override
 	public IDrawable getBackground()
 	{
-		return background;
+		return this.background;
 	}
 
 	@Override

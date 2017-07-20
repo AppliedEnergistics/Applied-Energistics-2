@@ -59,15 +59,15 @@ public class JEIPlugin extends BlankModPlugin
 
 		IDefinitions definitions = AEApi.instance().definitions();
 
-		registerFacadeRecipe( definitions, registry );
+		this.registerFacadeRecipe( definitions, registry );
 
-		registerInscriberRecipes( definitions, registry );
+		this.registerInscriberRecipes( definitions, registry );
 
-		registerCondenserRecipes( definitions, registry );
+		this.registerCondenserRecipes( definitions, registry );
 
-		registerGrinderRecipes( definitions, registry );
+		this.registerGrinderRecipes( definitions, registry );
 
-		registerDescriptions( definitions, registry );
+		this.registerDescriptions( definitions, registry );
 
 		// Allow recipe transfer from JEI to crafting and pattern terminal
 		registry.getRecipeTransferRegistry().addRecipeTransferHandler( new RecipeTransferHandler<>( ContainerCraftingTerm.class ),
@@ -89,30 +89,30 @@ public class JEIPlugin extends BlankModPlugin
 		{
 			message = GuiText.ChargedQuartzFind.getLocal();
 		}
-		addDescription( registry, materials.certusQuartzCrystalCharged(), message );
+		this.addDescription( registry, materials.certusQuartzCrystalCharged(), message );
 
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.METEORITE_WORLD_GEN ) )
 		{
-			addDescription( registry, materials.logicProcessorPress(), GuiText.inWorldCraftingPresses.getLocal() );
-			addDescription( registry, materials.calcProcessorPress(), GuiText.inWorldCraftingPresses.getLocal() );
-			addDescription( registry, materials.engProcessorPress(), GuiText.inWorldCraftingPresses.getLocal() );
+			this.addDescription( registry, materials.logicProcessorPress(), GuiText.inWorldCraftingPresses.getLocal() );
+			this.addDescription( registry, materials.calcProcessorPress(), GuiText.inWorldCraftingPresses.getLocal() );
+			this.addDescription( registry, materials.engProcessorPress(), GuiText.inWorldCraftingPresses.getLocal() );
 		}
 
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.IN_WORLD_FLUIX ) )
 		{
-			addDescription( registry, materials.fluixCrystal(), GuiText.inWorldFluix.getLocal() );
+			this.addDescription( registry, materials.fluixCrystal(), GuiText.inWorldFluix.getLocal() );
 		}
 
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.IN_WORLD_SINGULARITY ) )
 		{
-			addDescription( registry, materials.qESingularity(), GuiText.inWorldSingularity.getLocal() );
+			this.addDescription( registry, materials.qESingularity(), GuiText.inWorldSingularity.getLocal() );
 		}
 
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.IN_WORLD_PURIFICATION ) )
 		{
-			addDescription( registry, materials.purifiedCertusQuartzCrystal(), GuiText.inWorldPurificationCertus.getLocal() );
-			addDescription( registry, materials.purifiedNetherQuartzCrystal(), GuiText.inWorldPurificationNether.getLocal() );
-			addDescription( registry, materials.purifiedFluixCrystal(), GuiText.inWorldPurificationFluix.getLocal() );
+			this.addDescription( registry, materials.purifiedCertusQuartzCrystal(), GuiText.inWorldPurificationCertus.getLocal() );
+			this.addDescription( registry, materials.purifiedNetherQuartzCrystal(), GuiText.inWorldPurificationNether.getLocal() );
+			this.addDescription( registry, materials.purifiedFluixCrystal(), GuiText.inWorldPurificationFluix.getLocal() );
 		}
 
 	}

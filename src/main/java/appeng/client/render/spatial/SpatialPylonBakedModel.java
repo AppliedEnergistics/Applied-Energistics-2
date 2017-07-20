@@ -60,9 +60,9 @@ class SpatialPylonBakedModel implements IBakedModel
 	@Override
 	public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
 	{
-		int flags = getFlags( state );
+		int flags = this.getFlags( state );
 
-		CubeBuilder builder = new CubeBuilder( format );
+		CubeBuilder builder = new CubeBuilder( this.format );
 
 		if( flags != 0 )
 		{
@@ -129,12 +129,12 @@ class SpatialPylonBakedModel implements IBakedModel
 				}
 			}
 
-			builder.setTextures( textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.UP ) ),
-					textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.DOWN ) ),
-					textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.NORTH ) ),
-					textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.SOUTH ) ),
-					textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.EAST ) ),
-					textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.WEST ) ) );
+			builder.setTextures( this.textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.UP ) ),
+					this.textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.DOWN ) ),
+					this.textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.NORTH ) ),
+					this.textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.SOUTH ) ),
+					this.textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.EAST ) ),
+					this.textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.WEST ) ) );
 			builder.addCube( 0, 0, 0, 16, 16, 16 );
 
 			if( ( flags & TileSpatialPylon.DISPLAY_POWERED_ENABLED ) == TileSpatialPylon.DISPLAY_POWERED_ENABLED )
@@ -142,20 +142,20 @@ class SpatialPylonBakedModel implements IBakedModel
 				builder.setRenderFullBright( true );
 			}
 
-			builder.setTextures( textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.UP ) ),
-					textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.DOWN ) ),
-					textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.NORTH ) ),
-					textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.SOUTH ) ),
-					textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.EAST ) ),
-					textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.WEST ) ) );
+			builder.setTextures( this.textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.UP ) ),
+					this.textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.DOWN ) ),
+					this.textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.NORTH ) ),
+					this.textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.SOUTH ) ),
+					this.textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.EAST ) ),
+					this.textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.WEST ) ) );
 			builder.addCube( 0, 0, 0, 16, 16, 16 );
 		}
 		else
 		{
-			builder.setTexture( textures.get( SpatialPylonTextureType.BASE ) );
+			builder.setTexture( this.textures.get( SpatialPylonTextureType.BASE ) );
 			builder.addCube( 0, 0, 0, 16, 16, 16 );
 
-			builder.setTexture( textures.get( SpatialPylonTextureType.DIM ) );
+			builder.setTexture( this.textures.get( SpatialPylonTextureType.DIM ) );
 			builder.addCube( 0, 0, 0, 16, 16, 16 );
 		}
 

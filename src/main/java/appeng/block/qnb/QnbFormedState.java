@@ -25,17 +25,17 @@ public class QnbFormedState
 
 	public Set<EnumFacing> getAdjacentQuantumBridges()
 	{
-		return adjacentQuantumBridges;
+		return this.adjacentQuantumBridges;
 	}
 
 	public boolean isCorner()
 	{
-		return corner;
+		return this.corner;
 	}
 
 	public boolean isPowered()
 	{
-		return powered;
+		return this.powered;
 	}
 
 }

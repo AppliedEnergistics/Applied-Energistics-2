@@ -61,13 +61,13 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 
 	public AERootPoweredTile()
 	{
-		forgeEnergyAdapter = new ForgeEnergyAdapter( this );
+		this.forgeEnergyAdapter = new ForgeEnergyAdapter( this );
 		if( Capabilities.TESLA_CONSUMER != null )
 		{
-			teslaEnergyAdapter = new TeslaEnergyAdapter( this );
+			this.teslaEnergyAdapter = new TeslaEnergyAdapter( this );
 		}
-		ic2Sink = Integrations.ic2().createPowerSink( this, this );
-		ic2Sink.setValidFaces( internalPowerSides );
+		this.ic2Sink = Integrations.ic2().createPowerSink( this, this );
+		this.ic2Sink.setValidFaces( this.internalPowerSides );
 	}
 
 	protected EnumSet<EnumFacing> getPowerSides()
@@ -78,7 +78,7 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	protected void setPowerSides( final EnumSet<EnumFacing> sides )
 	{
 		this.internalPowerSides = sides;
-		ic2Sink.setValidFaces( sides );
+		this.ic2Sink.setValidFaces( sides );
 		// trigger re-calc!
 	}
 
@@ -262,7 +262,7 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	{
 		super.onReady();
 
-		ic2Sink.onLoad();
+		this.ic2Sink.onLoad();
 	}
 
 	@Override
@@ -270,7 +270,7 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	{
 		super.onChunkUnload();
 
-		ic2Sink.onChunkUnload();
+		this.ic2Sink.onChunkUnload();
 	}
 
 	@Override
@@ -278,7 +278,7 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	{
 		super.invalidate();
 
-		ic2Sink.invalidate();
+		this.ic2Sink.invalidate();
 	}
 
 	@Override
@@ -310,14 +310,14 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 		{
 			if( this.getPowerSides().contains( facing ) )
 			{
-				return (T) forgeEnergyAdapter;
+				return (T) this.forgeEnergyAdapter;
 			}
 		}
 		else if( capability == Capabilities.TESLA_CONSUMER )
 		{
 			if( this.getPowerSides().contains( facing ) )
 			{
-				return (T) teslaEnergyAdapter;
+				return (T) this.teslaEnergyAdapter;
 			}
 		}
 

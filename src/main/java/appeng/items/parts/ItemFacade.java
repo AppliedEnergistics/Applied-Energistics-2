@@ -267,7 +267,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	public IBlockState getTextureBlockState( ItemStack is )
 	{
 
-		ItemStack baseItemStack = getTextureItem( is );
+		ItemStack baseItemStack = this.getTextureItem( is );
 
 		if( baseItemStack.isEmpty() )
 		{

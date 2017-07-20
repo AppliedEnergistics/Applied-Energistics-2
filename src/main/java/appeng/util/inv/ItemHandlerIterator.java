@@ -42,21 +42,21 @@ class ItemHandlerIterator implements Iterator<ItemSlot>
 	@Override
 	public boolean hasNext()
 	{
-		return slot < itemHandler.getSlots();
+		return this.slot < this.itemHandler.getSlots();
 	}
 
 	@Override
 	public ItemSlot next()
 	{
-		if( slot >= itemHandler.getSlots() )
+		if( this.slot >= this.itemHandler.getSlots() )
 		{
 			throw new NoSuchElementException();
 		}
-		itemSlot.setExtractable( !itemHandler.extractItem( slot, 1, true ).isEmpty() );
-		itemSlot.setItemStack( itemHandler.getStackInSlot( slot ) );
-		itemSlot.setSlot( slot );
-		slot++;
-		return itemSlot;
+		this.itemSlot.setExtractable( !this.itemHandler.extractItem( this.slot, 1, true ).isEmpty() );
+		this.itemSlot.setItemStack( this.itemHandler.getStackInSlot( this.slot ) );
+		this.itemSlot.setSlot( this.slot );
+		this.slot++;
+		return this.itemSlot;
 	}
 
 }

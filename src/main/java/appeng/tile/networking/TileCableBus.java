@@ -105,7 +105,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 			{
 				final TileCableBus tcb = (TileCableBus) BlockCableBus.getTesrTile().newInstance();
 				tcb.copyFrom( this );
-				this.getWorld().setTileEntity( pos, tcb );
+				this.getWorld().setTileEntity( this.pos, tcb );
 			}
 			catch( final Throwable ignored )
 			{
@@ -388,7 +388,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		// Note that null will be translated to INTERNAL here
 		AEPartLocation partLocation = AEPartLocation.fromFacing( fromSide );
 
-		IPart part = getPart( partLocation );
+		IPart part = this.getPart( partLocation );
 		boolean result = part != null && part.hasCapability( capabilityClass );
 
 		return result || super.hasCapability( capabilityClass, fromSide );
@@ -400,7 +400,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		// Note that null will be translated to INTERNAL here
 		AEPartLocation partLocation = AEPartLocation.fromFacing( fromSide );
 
-		IPart part = getPart( partLocation );
+		IPart part = this.getPart( partLocation );
 		T result = part == null ? null : part.getCapability( capabilityClass );
 
 		if( result != null )

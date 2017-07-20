@@ -53,9 +53,9 @@ class ShapedRecipeWrapper extends BlankRecipeWrapper implements IShapedCraftingR
 	{
 		final boolean useSingleItems = AEConfig.instance().disableColoredCableRecipesInJEI();
 
-		Object[] items = recipe.getIIngredients();
-		int width = recipe.getWidth();
-		int height = recipe.getHeight();
+		Object[] items = this.recipe.getIIngredients();
+		int width = this.recipe.getWidth();
+		int height = this.recipe.getHeight();
 
 		List<List<ItemStack>> in = new ArrayList<>( width * height );
 
@@ -86,18 +86,18 @@ class ShapedRecipeWrapper extends BlankRecipeWrapper implements IShapedCraftingR
 		}
 
 		ingredients.setInputLists( ItemStack.class, in );
-		ingredients.setOutput( ItemStack.class, recipe.getRecipeOutput() );
+		ingredients.setOutput( ItemStack.class, this.recipe.getRecipeOutput() );
 	}
 
 	@Override
 	public int getWidth()
 	{
-		return recipe.getWidth();
+		return this.recipe.getWidth();
 	}
 
 	@Override
 	public int getHeight()
 	{
-		return recipe.getHeight();
+		return this.recipe.getHeight();
 	}
 }

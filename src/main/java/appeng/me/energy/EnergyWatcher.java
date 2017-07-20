@@ -79,7 +79,7 @@ public class EnergyWatcher implements IEnergyWatcher
 	@Override
 	public void reset()
 	{
-		for( Iterator<EnergyThreshold> iterator = myInterests.iterator(); iterator.hasNext(); )
+		for( Iterator<EnergyThreshold> iterator = this.myInterests.iterator(); iterator.hasNext(); )
 		{
 			final EnergyThreshold threshold = iterator.next();
 

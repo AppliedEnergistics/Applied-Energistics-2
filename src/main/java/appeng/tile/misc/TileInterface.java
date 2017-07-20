@@ -95,25 +95,25 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 
 		EnumFacing newForward = facing;
 
-		if( !omniDirectional && getForward() == facing.getOpposite() )
+		if( !this.omniDirectional && this.getForward() == facing.getOpposite() )
 		{
 			newForward = facing;
 		}
-		else if( !omniDirectional && ( getForward() == facing || getForward() == facing.getOpposite() ) )
+		else if( !this.omniDirectional && ( this.getForward() == facing || this.getForward() == facing.getOpposite() ) )
 		{
-			omniDirectional = true;
+			this.omniDirectional = true;
 		}
-		else if( omniDirectional )
+		else if( this.omniDirectional )
 		{
 			newForward = facing.getOpposite();
-			omniDirectional = false;
+			this.omniDirectional = false;
 		}
 		else
 		{
-			newForward = Platform.rotateAround( getForward(), facing );
+			newForward = Platform.rotateAround( this.getForward(), facing );
 		}
 
-		if( omniDirectional )
+		if( this.omniDirectional )
 		{
 			this.setOrientation( EnumFacing.NORTH, EnumFacing.UP );
 		}
@@ -134,13 +134,13 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 
 	private void configureNodeSides()
 	{
-		if( omniDirectional )
+		if( this.omniDirectional )
 		{
 			this.getProxy().setValidSides( EnumSet.allOf( EnumFacing.class ) );
 		}
 		else
 		{
-			this.getProxy().setValidSides( EnumSet.complementOf( EnumSet.of( getForward() ) ) );
+			this.getProxy().setValidSides( EnumSet.complementOf( EnumSet.of( this.getForward() ) ) );
 		}
 	}
 
@@ -174,7 +174,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
 	public void writeToNBT_TileInterface( final NBTTagCompound data )
 	{
-		data.setBoolean( "omniDirectional", omniDirectional );
+		data.setBoolean( "omniDirectional", this.omniDirectional );
 		this.duality.writeToNBT( data );
 	}
 
@@ -191,13 +191,13 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 	{
 		boolean oldOmniDirectional = this.omniDirectional;
 		this.omniDirectional = data.readBoolean();
-		return oldOmniDirectional != omniDirectional;
+		return oldOmniDirectional != this.omniDirectional;
 	}
 
 	@TileEvent( TileEventType.NETWORK_WRITE )
 	public void writeToStream_TileInterface( final ByteBuf data )
 	{
-		data.writeBoolean( omniDirectional );
+		data.writeBoolean( this.omniDirectional );
 	}
 
 	@Override
@@ -263,11 +263,11 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 	@Override
 	public EnumSet<EnumFacing> getTargets()
 	{
-		if( omniDirectional )
+		if( this.omniDirectional )
 		{
 			return EnumSet.allOf( EnumFacing.class );
 		}
-		return EnumSet.of( getForward() );
+		return EnumSet.of( this.getForward() );
 	}
 
 	@Override

@@ -76,7 +76,7 @@ public class UVLightmapJsonTest
 			@Override
 			public AxisAlignedBB getBoundingBox( IBlockState state, IBlockAccess source, BlockPos pos )
 			{
-				return box;
+				return this.box;
 			}
 
 			@SuppressWarnings( "deprecation" )

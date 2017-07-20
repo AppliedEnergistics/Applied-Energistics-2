@@ -43,8 +43,8 @@ public abstract class AEBaseStairBlock extends BlockStairs
 	@Override
 	public String toString()
 	{
-		String regName = getRegistryName() != null ? getRegistryName().getResourcePath() : "unregistered";
-		return getClass().getSimpleName() + "[" + regName + "]";
+		String regName = this.getRegistryName() != null ? this.getRegistryName().getResourcePath() : "unregistered";
+		return this.getClass().getSimpleName() + "[" + regName + "]";
 	}
 
 }

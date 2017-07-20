@@ -62,7 +62,7 @@ class BlockRendering implements IBlockRendering
 	@SideOnly( Side.CLIENT )
 	public IBlockRendering modelCustomizer( BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> customizer )
 	{
-		modelCustomizer = customizer;
+		this.modelCustomizer = customizer;
 		return this;
 	}
 
@@ -99,18 +99,18 @@ class BlockRendering implements IBlockRendering
 
 	void apply( FeatureFactory factory, Block block, Class<?> tileEntityClass )
 	{
-		if( tesr != null )
+		if( this.tesr != null )
 		{
 			if( tileEntityClass == null )
 			{
 				throw new IllegalStateException( "Tried to register a TESR for " + block + " even though no tile entity has been specified." );
 			}
-			factory.addBootstrapComponent( new TesrComponent( tileEntityClass, tesr ) );
+			factory.addBootstrapComponent( new TesrComponent( tileEntityClass, this.tesr ) );
 		}
 
-		if( modelCustomizer != null )
+		if( this.modelCustomizer != null )
 		{
-			factory.modelOverrideComponent.addOverride( block.getRegistryName().getResourcePath(), modelCustomizer );
+			factory.modelOverrideComponent.addOverride( block.getRegistryName().getResourcePath(), this.modelCustomizer );
 		}
 		else if( block instanceof AEBaseTileBlock )
 		{
@@ -120,16 +120,16 @@ class BlockRendering implements IBlockRendering
 		}
 
 		// TODO : 1.12
-		builtInModels.forEach( factory::addBuiltInModel );
+		this.builtInModels.forEach( factory::addBuiltInModel );
 
-		if( blockColor != null )
+		if( this.blockColor != null )
 		{
-			factory.addBootstrapComponent( new BlockColorComponent( block, blockColor ) );
+			factory.addBootstrapComponent( new BlockColorComponent( block, this.blockColor ) );
 		}
 
-		if( stateMapper != null )
+		if( this.stateMapper != null )
 		{
-			factory.addBootstrapComponent( new StateMapperComponent( block, stateMapper ) );
+			factory.addBootstrapComponent( new StateMapperComponent( block, this.stateMapper ) );
 		}
 	}
 }

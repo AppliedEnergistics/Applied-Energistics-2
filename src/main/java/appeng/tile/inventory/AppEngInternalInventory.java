@@ -126,7 +126,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	@Override
 	public void setInventorySlotContents( final int slot, final ItemStack newItemStack )
 	{
-		final ItemStack oldStack = getOldStack( slot );
+		final ItemStack oldStack = this.getOldStack( slot );
 		this.inv[slot] = newItemStack;
 
 		if( this.getTileEntity() != null && this.eventsEnabled() )

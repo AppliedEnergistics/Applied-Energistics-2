@@ -86,7 +86,7 @@ class CraftingCubeModel implements IModel
 		TextureAtlasSprite ringSideHor = bakedTextureGetter.apply( RING_SIDE_HOR );
 		TextureAtlasSprite ringSideVer = bakedTextureGetter.apply( RING_SIDE_VER );
 
-		switch( type )
+		switch( this.type )
 		{
 			case UNIT:
 				return new UnitBakedModel( format, ringCorner, ringSideHor, ringSideVer, bakedTextureGetter.apply( UNIT_BASE ) );
@@ -96,13 +96,13 @@ class CraftingCubeModel implements IModel
 			case STORAGE_16K:
 			case STORAGE_64K:
 				return new LightBakedModel( format, ringCorner, ringSideHor, ringSideVer, bakedTextureGetter
-						.apply( LIGHT_BASE ), getLightTexture( bakedTextureGetter, type ) );
+						.apply( LIGHT_BASE ), getLightTexture( bakedTextureGetter, this.type ) );
 			case MONITOR:
 				return new MonitorBakedModel( format, ringCorner, ringSideHor, ringSideVer, bakedTextureGetter.apply( UNIT_BASE ), bakedTextureGetter
 						.apply( MONITOR_BASE ), bakedTextureGetter.apply(
 								MONITOR_LIGHT_DARK ), bakedTextureGetter.apply( MONITOR_LIGHT_MEDIUM ), bakedTextureGetter.apply( MONITOR_LIGHT_BRIGHT ) );
 			default:
-				throw new IllegalArgumentException( "Unsupported crafting unit type: " + type );
+				throw new IllegalArgumentException( "Unsupported crafting unit type: " + this.type );
 		}
 	}
 

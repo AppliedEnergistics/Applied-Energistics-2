@@ -119,7 +119,7 @@ public final class DisassembleRecipe extends net.minecraftforge.registries.IForg
 				}
 
 				// handle crafting storage blocks
-				output = getNonCellOutput( stackInSlot ).orElse( output );
+				output = this.getNonCellOutput( stackInSlot ).orElse( output );
 			}
 		}
 

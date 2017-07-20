@@ -78,7 +78,7 @@ public class BlockCrank extends AEBaseTileBlock
 	private void dropCrank( final World world, final BlockPos pos )
 	{
 		world.destroyBlock( pos, true ); // w.destroyBlock( x, y, z, true );
-		world.notifyBlockUpdate( pos, getDefaultState(), world.getBlockState( pos ), 3 );
+		world.notifyBlockUpdate( pos, this.getDefaultState(), world.getBlockState( pos ), 3 );
 	}
 
 	@Override

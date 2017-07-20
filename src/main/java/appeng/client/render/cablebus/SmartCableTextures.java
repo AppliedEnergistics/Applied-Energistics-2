@@ -48,7 +48,7 @@ public class SmartCableTextures
 
 	public SmartCableTextures( Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
 	{
-		textures = Arrays.stream( SMART_CHANNELS_TEXTURES ).map( bakedTextureGetter::apply ).toArray( TextureAtlasSprite[]::new );
+		this.textures = Arrays.stream( SMART_CHANNELS_TEXTURES ).map( bakedTextureGetter::apply ).toArray( TextureAtlasSprite[]::new );
 	}
 
 	/**
@@ -58,15 +58,15 @@ public class SmartCableTextures
 	{
 		if( channels < 0 )
 		{
-			return textures[0];
+			return this.textures[0];
 		}
 		else if( channels <= 4 )
 		{
-			return textures[channels];
+			return this.textures[channels];
 		}
 		else
 		{
-			return textures[4];
+			return this.textures[4];
 		}
 	}
 
@@ -77,15 +77,15 @@ public class SmartCableTextures
 	{
 		if( channels < 5 )
 		{
-			return textures[5];
+			return this.textures[5];
 		}
 		else if( channels <= 8 )
 		{
-			return textures[1 + channels];
+			return this.textures[1 + channels];
 		}
 		else
 		{
-			return textures[9];
+			return this.textures[9];
 		}
 	}
 }

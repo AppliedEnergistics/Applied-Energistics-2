@@ -70,7 +70,7 @@ public class ApiPart implements IPartHelper
 				@Override
 				public Class<? extends AEBaseTile> load( CacheKey key ) throws Exception
 				{
-					return generateCombinedClass( key );
+					return ApiPart.this.generateCombinedClass( key );
 				}
 			} );
 
@@ -103,7 +103,7 @@ public class ApiPart implements IPartHelper
 			return baseClass;
 		}
 
-		return cache.getUnchecked( new CacheKey( baseClass, this.desc ) );
+		return this.cache.getUnchecked( new CacheKey( baseClass, this.desc ) );
 	}
 
 	private Class<? extends AEBaseTile> generateCombinedClass( CacheKey cacheKey )
@@ -117,7 +117,7 @@ public class ApiPart implements IPartHelper
 		if( !remainingInterfaces.isEmpty() )
 		{
 			CacheKey parentKey = new CacheKey( cacheKey.getBaseClass(), remainingInterfaces );
-			parentClass = cache.getUnchecked( parentKey );
+			parentClass = this.cache.getUnchecked( parentKey );
 		}
 		else
 		{
@@ -370,12 +370,12 @@ public class ApiPart implements IPartHelper
 
 		private Class<? extends AEBaseTile> getBaseClass()
 		{
-			return baseClass;
+			return this.baseClass;
 		}
 
 		private List<String> getInterfaces()
 		{
-			return interfaces;
+			return this.interfaces;
 		}
 
 		@Override
@@ -385,21 +385,21 @@ public class ApiPart implements IPartHelper
 			{
 				return true;
 			}
-			if( o == null || getClass() != o.getClass() )
+			if( o == null || this.getClass() != o.getClass() )
 			{
 				return false;
 			}
 
 			CacheKey cacheKey = (CacheKey) o;
 
-			return baseClass.equals( cacheKey.baseClass ) && interfaces.equals( cacheKey.interfaces );
+			return this.baseClass.equals( cacheKey.baseClass ) && this.interfaces.equals( cacheKey.interfaces );
 		}
 
 		@Override
 		public int hashCode()
 		{
-			int result = baseClass.hashCode();
-			result = 31 * result + interfaces.hashCode();
+			int result = this.baseClass.hashCode();
+			result = 31 * result + this.interfaces.hashCode();
 			return result;
 		}
 	}

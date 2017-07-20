@@ -61,7 +61,7 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 	@Override
 	public IPartModel getStaticModels()
 	{
-		return MODELS.getModel( isPowered(), isActive() );
+		return MODELS.getModel( this.isPowered(), this.isActive() );
 	}
 
 	@Override

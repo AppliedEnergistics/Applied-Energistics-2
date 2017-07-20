@@ -91,7 +91,7 @@ public abstract class BlockSlabCommon extends BlockSlab
 	@Override
 	public String getUnlocalizedName( int meta )
 	{
-		return getUnlocalizedName();
+		return this.getUnlocalizedName();
 	}
 
 	@Override
@@ -125,12 +125,12 @@ public abstract class BlockSlabCommon extends BlockSlab
 		@Nullable
 		public Item getItemDropped( IBlockState state, Random rand, int fortune )
 		{
-			return Item.getItemFromBlock( halfSlabBlock );
+			return Item.getItemFromBlock( this.halfSlabBlock );
 		}
 
 		public ItemStack getItem( World worldIn, BlockPos pos, IBlockState state )
 		{
-			return new ItemStack( halfSlabBlock, 1, 0 );
+			return new ItemStack( this.halfSlabBlock, 1, 0 );
 		}
 
 	}

@@ -257,7 +257,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power> implements I
 	@Override
 	public IPartModel getStaticModels()
 	{
-		return MODELS.getModel( isPowered(), isActive() );
+		return MODELS.getModel( this.isPowered(), this.isActive() );
 	}
 
 }

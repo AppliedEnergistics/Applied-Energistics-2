@@ -75,7 +75,7 @@ public class BlockController extends AEBaseTileBlock
 	{
 		super( Material.IRON );
 		this.setHardness( 6 );
-		this.setDefaultState( getDefaultState()
+		this.setDefaultState( this.getDefaultState()
 				.withProperty( CONTROLLER_STATE, ControllerBlockState.offline )
 				.withProperty( CONTROLLER_TYPE, ControllerRenderType.block ) );
 	}
@@ -89,7 +89,7 @@ public class BlockController extends AEBaseTileBlock
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
-		return new BlockStateContainer( this, getAEStates() );
+		return new BlockStateContainer( this, this.getAEStates() );
 	}
 
 	/**

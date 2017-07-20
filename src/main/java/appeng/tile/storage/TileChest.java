@@ -931,11 +931,11 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	@Override
 	public boolean hasCapability( Capability<?> capability, EnumFacing facing )
 	{
-		if( capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && this.fluidHandler != null && facing != getForward() )
+		if( capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && this.fluidHandler != null && facing != this.getForward() )
 		{
 			return true;
 		}
-		if( capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR && this.accessor != null && facing != getForward() )
+		if( capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR && this.accessor != null && facing != this.getForward() )
 		{
 			return true;
 		}
@@ -946,13 +946,13 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	@Override
 	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
 	{
-		if( capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && this.fluidHandler != null && facing != getForward() )
+		if( capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && this.fluidHandler != null && facing != this.getForward() )
 		{
 			return (T) this.fluidHandler;
 		}
-		if( capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR && this.accessor != null && facing != getForward() )
+		if( capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR && this.accessor != null && facing != this.getForward() )
 		{
-			return (T) accessor;
+			return (T) this.accessor;
 		}
 		return super.getCapability( capability, facing );
 	}
@@ -963,7 +963,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		@Override
 		public IStorageMonitorable getInventory( BaseActionSource src )
 		{
-			if( Platform.canAccess( getProxy(), src ) )
+			if( Platform.canAccess( TileChest.this.getProxy(), src ) )
 			{
 				return TileChest.this;
 			}

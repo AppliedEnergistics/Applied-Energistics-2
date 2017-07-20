@@ -55,55 +55,55 @@ class ItemEncodedPatternBakedModel implements IBakedModel
 	@Override
 	public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
 	{
-		return baseModel.getQuads( state, side, rand );
+		return this.baseModel.getQuads( state, side, rand );
 	}
 
 	@Override
 	public boolean isAmbientOcclusion()
 	{
-		return baseModel.isAmbientOcclusion();
+		return this.baseModel.isAmbientOcclusion();
 	}
 
 	@Override
 	public boolean isGui3d()
 	{
-		return baseModel.isGui3d();
+		return this.baseModel.isGui3d();
 	}
 
 	@Override
 	public boolean isBuiltInRenderer()
 	{
-		return baseModel.isBuiltInRenderer();
+		return this.baseModel.isBuiltInRenderer();
 	}
 
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		return baseModel.getParticleTexture();
+		return this.baseModel.getParticleTexture();
 	}
 
 	@Override
 	@Deprecated
 	public ItemCameraTransforms getItemCameraTransforms()
 	{
-		return baseModel.getItemCameraTransforms();
+		return this.baseModel.getItemCameraTransforms();
 	}
 
 	@Override
 	public ItemOverrideList getOverrides()
 	{
-		return overrides;
+		return this.overrides;
 	}
 
 	@Override
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective( ItemCameraTransforms.TransformType cameraTransformType )
 	{
-		if( baseModel instanceof IBakedModel )
+		if( this.baseModel instanceof IBakedModel )
 		{
-			return ( (IBakedModel) baseModel ).handlePerspective( cameraTransformType );
+			return ( (IBakedModel) this.baseModel ).handlePerspective( cameraTransformType );
 		}
 
-		return PerspectiveMapWrapper.handlePerspective( this, transforms, cameraTransformType );
+		return PerspectiveMapWrapper.handlePerspective( this, this.transforms, cameraTransformType );
 	}
 
 	/**
@@ -135,15 +135,15 @@ class ItemEncodedPatternBakedModel implements IBakedModel
 			// No need to re-check for shift being held since this model is only handed out in that case
 			if( cameraTransformType == ItemCameraTransforms.TransformType.GUI )
 			{
-				selectedModel = outputModel;
+				selectedModel = this.outputModel;
 			}
 			else
 			{
-				selectedModel = baseModel;
+				selectedModel = ItemEncodedPatternBakedModel.this.baseModel;
 			}
 
 			// Now retroactively handle the isGui3d call, for which we always return false below
-			if( selectedModel.isGui3d() != baseModel.isGui3d() )
+			if( selectedModel.isGui3d() != ItemEncodedPatternBakedModel.this.baseModel.isGui3d() )
 			{
 				GlStateManager.enableLighting();
 			}
@@ -153,55 +153,55 @@ class ItemEncodedPatternBakedModel implements IBakedModel
 				return ( (IBakedModel) selectedModel ).handlePerspective( cameraTransformType );
 			}
 
-			return PerspectiveMapWrapper.handlePerspective( this, transforms, cameraTransformType );
+			return PerspectiveMapWrapper.handlePerspective( this, ItemEncodedPatternBakedModel.this.transforms, cameraTransformType );
 		}
 
 		@Override
 		public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
 		{
 			// This may be called for items on the ground, in which case we will always fall back to the pattern
-			return baseModel.getQuads( state, side, rand );
+			return ItemEncodedPatternBakedModel.this.baseModel.getQuads( state, side, rand );
 		}
 
 		@Override
 		public boolean isAmbientOcclusion()
 		{
-			return baseModel.isAmbientOcclusion();
+			return ItemEncodedPatternBakedModel.this.baseModel.isAmbientOcclusion();
 		}
 
 		@Override
 		public boolean isGui3d()
 		{
 			// NOTE: Sadly, Forge will let Minecraft call this method before handling the perspective awareness
-			return baseModel.isGui3d();
+			return ItemEncodedPatternBakedModel.this.baseModel.isGui3d();
 		}
 
 		@Override
 		public boolean isBuiltInRenderer()
 		{
 			// This may be called for items on the ground, in which case we will always fall back to the pattern
-			return baseModel.isBuiltInRenderer();
+			return ItemEncodedPatternBakedModel.this.baseModel.isBuiltInRenderer();
 		}
 
 		@Override
 		public TextureAtlasSprite getParticleTexture()
 		{
 			// This may be called for items on the ground, in which case we will always fall back to the pattern
-			return baseModel.getParticleTexture();
+			return ItemEncodedPatternBakedModel.this.baseModel.getParticleTexture();
 		}
 
 		@Override
 		public ItemCameraTransforms getItemCameraTransforms()
 		{
 			// This may be called for items on the ground, in which case we will always fall back to the pattern
-			return baseModel.getItemCameraTransforms();
+			return ItemEncodedPatternBakedModel.this.baseModel.getItemCameraTransforms();
 		}
 
 		@Override
 		public ItemOverrideList getOverrides()
 		{
 			// This may be called for items on the ground, in which case we will always fall back to the pattern
-			return baseModel.getOverrides();
+			return ItemEncodedPatternBakedModel.this.baseModel.getOverrides();
 		}
 	}
 
@@ -216,7 +216,7 @@ class ItemEncodedPatternBakedModel implements IBakedModel
 
 		CustomOverrideList()
 		{
-			super( baseModel.getOverrides().getOverrides() );
+			super( ItemEncodedPatternBakedModel.this.baseModel.getOverrides().getOverrides() );
 		}
 
 		@Override
@@ -236,7 +236,7 @@ class ItemEncodedPatternBakedModel implements IBakedModel
 				}
 			}
 
-			return baseModel.getOverrides().handleItemState( originalModel, stack, world, entity );
+			return ItemEncodedPatternBakedModel.this.baseModel.getOverrides().handleItemState( originalModel, stack, world, entity );
 		}
 	}
 }

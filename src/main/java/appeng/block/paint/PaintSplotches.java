@@ -25,7 +25,7 @@ class PaintSplotches
 
 	List<Splotch> getSplotches()
 	{
-		return splotches;
+		return this.splotches;
 	}
 
 }

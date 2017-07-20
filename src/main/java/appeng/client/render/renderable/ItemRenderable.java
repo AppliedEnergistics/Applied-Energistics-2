@@ -47,7 +47,7 @@ public class ItemRenderable<T extends TileEntity> implements Renderable<T>
 	@Override
 	public void renderTileEntityAt( T te, double x, double y, double z, float partialTicks, int destroyStage )
 	{
-		Pair<ItemStack, Matrix4f> pair = f.apply( te );
+		Pair<ItemStack, Matrix4f> pair = this.f.apply( te );
 		if( pair != null && pair.getLeft() != null )
 		{
 			GlStateManager.pushMatrix();

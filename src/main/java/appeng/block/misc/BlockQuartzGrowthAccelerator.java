@@ -52,13 +52,13 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOr
 	{
 		super( Material.ROCK );
 		this.setSoundType( SoundType.METAL );
-		this.setDefaultState( getDefaultState().withProperty( POWERED, false ) );
+		this.setDefaultState( this.getDefaultState().withProperty( POWERED, false ) );
 	}
 
 	@Override
 	public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
 	{
-		TileQuartzGrowthAccelerator te = getTileEntity( world, pos );
+		TileQuartzGrowthAccelerator te = this.getTileEntity( world, pos );
 		boolean powered = te != null && te.isPowered();
 
 		return super.getActualState( state, world, pos )

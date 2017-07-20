@@ -23,12 +23,12 @@ class ForgeEnergyAdapter implements IEnergyStorage
 	@Override
 	public final int receiveEnergy( int maxReceive, boolean simulate )
 	{
-		final int networkDemand = (int) Math.floor( sink.getExternalPowerDemand( PowerUnits.RF, maxReceive ) );
+		final int networkDemand = (int) Math.floor( this.sink.getExternalPowerDemand( PowerUnits.RF, maxReceive ) );
 		final int used = Math.min( maxReceive, networkDemand );
 
 		if( !simulate )
 		{
-			sink.injectExternalPower( PowerUnits.RF, used );
+			this.sink.injectExternalPower( PowerUnits.RF, used );
 		}
 
 		return used;
@@ -37,13 +37,13 @@ class ForgeEnergyAdapter implements IEnergyStorage
 	@Override
 	public final int getEnergyStored()
 	{
-		return (int) Math.floor( PowerUnits.AE.convertTo( PowerUnits.RF, sink.getAECurrentPower() ) );
+		return (int) Math.floor( PowerUnits.AE.convertTo( PowerUnits.RF, this.sink.getAECurrentPower() ) );
 	}
 
 	@Override
 	public final int getMaxEnergyStored()
 	{
-		return (int) Math.floor( PowerUnits.AE.convertTo( PowerUnits.RF, sink.getAEMaxPower() ) );
+		return (int) Math.floor( PowerUnits.AE.convertTo( PowerUnits.RF, this.sink.getAEMaxPower() ) );
 	}
 
 	@Override

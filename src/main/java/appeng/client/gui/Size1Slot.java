@@ -34,7 +34,7 @@ class Size1Slot extends Slot
 	@Nonnull
 	public ItemStack getStack()
 	{
-		ItemStack orgStack = delegate.getStack();
+		ItemStack orgStack = this.delegate.getStack();
 		if( !orgStack.isEmpty() )
 		{
 			ItemStack modifiedStack = orgStack.copy();
@@ -48,25 +48,25 @@ class Size1Slot extends Slot
 	@Override
 	public boolean getHasStack()
 	{
-		return delegate.getHasStack();
+		return this.delegate.getHasStack();
 	}
 
 	@Override
 	public boolean isHere( IInventory inv, int slotIn )
 	{
-		return delegate.isHere( inv, slotIn );
+		return this.delegate.isHere( inv, slotIn );
 	}
 
 	@Override
 	public int getSlotStackLimit()
 	{
-		return delegate.getSlotStackLimit();
+		return this.delegate.getSlotStackLimit();
 	}
 
 	@Override
 	public int getItemStackLimit( ItemStack stack )
 	{
-		return delegate.getItemStackLimit( stack );
+		return this.delegate.getItemStackLimit( stack );
 	}
 
 	@Override
@@ -74,45 +74,45 @@ class Size1Slot extends Slot
 	@SideOnly( Side.CLIENT )
 	public String getSlotTexture()
 	{
-		return delegate.getSlotTexture();
+		return this.delegate.getSlotTexture();
 	}
 
 	@Override
 	public boolean canTakeStack( EntityPlayer playerIn )
 	{
-		return delegate.canTakeStack( playerIn );
+		return this.delegate.canTakeStack( playerIn );
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
 	public boolean isEnabled()
 	{
-		return delegate.isEnabled();
+		return this.delegate.isEnabled();
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
 	public ResourceLocation getBackgroundLocation()
 	{
-		return delegate.getBackgroundLocation();
+		return this.delegate.getBackgroundLocation();
 	}
 
 	@Override
 	@SideOnly( Side.CLIENT )
 	public TextureAtlasSprite getBackgroundSprite()
 	{
-		return delegate.getBackgroundSprite();
+		return this.delegate.getBackgroundSprite();
 	}
 
 	@Override
 	public int getSlotIndex()
 	{
-		return delegate.getSlotIndex();
+		return this.delegate.getSlotIndex();
 	}
 
 	@Override
 	public boolean isSameInventory( Slot other )
 	{
-		return delegate.isSameInventory( other );
+		return this.delegate.isSameInventory( other );
 	}
 }

@@ -63,7 +63,7 @@ public class BlockDrive extends AEBaseTileBlock
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
-		return new ExtendedBlockState( this, getAEStates(), new IUnlistedProperty[] {
+		return new ExtendedBlockState( this, this.getAEStates(), new IUnlistedProperty[] {
 				SLOTS_STATE,
 				FORWARD,
 				UP
@@ -73,7 +73,7 @@ public class BlockDrive extends AEBaseTileBlock
 	@Override
 	public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
 	{
-		TileDrive te = getTileEntity( world, pos );
+		TileDrive te = this.getTileEntity( world, pos );
 		if( te == null )
 		{
 			return super.getExtendedState( state, world, pos );

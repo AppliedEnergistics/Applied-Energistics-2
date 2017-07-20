@@ -67,15 +67,15 @@ public class FeatureFactory
 		this.bootstrapComponents = new ArrayList<>();
 
 		this.tileEntityComponent = new TileEntityComponent();
-		this.bootstrapComponents.add( tileEntityComponent );
+		this.bootstrapComponents.add( this.tileEntityComponent );
 
 		if( Platform.isClient() )
 		{
-			modelOverrideComponent = new ModelOverrideComponent();
-			bootstrapComponents.add( modelOverrideComponent );
+			this.modelOverrideComponent = new ModelOverrideComponent();
+			this.bootstrapComponents.add( this.modelOverrideComponent );
 
-			builtInModelComponent = new BuiltInModelComponent();
-			bootstrapComponents.add( builtInModelComponent );
+			this.builtInModelComponent = new BuiltInModelComponent();
+			this.bootstrapComponents.add( this.builtInModelComponent );
 		}
 	}
 
@@ -93,12 +93,12 @@ public class FeatureFactory
 
 	public IBlockBuilder block( String id, Supplier<Block> block )
 	{
-		return new BlockDefinitionBuilder( this, id, block ).features( defaultFeatures );
+		return new BlockDefinitionBuilder( this, id, block ).features( this.defaultFeatures );
 	}
 
 	public IItemBuilder item( String id, Supplier<Item> item )
 	{
-		return new ItemDefinitionBuilder( this, id, item ).features( defaultFeatures );
+		return new ItemDefinitionBuilder( this, id, item ).features( this.defaultFeatures );
 	}
 
 	public AEColoredItemDefinition colored( IItemDefinition target, int offset )
@@ -151,11 +151,11 @@ public class FeatureFactory
 	@SideOnly( Side.CLIENT )
 	void addBuiltInModel( String path, IModel model )
 	{
-		builtInModelComponent.addModel( path, model );
+		this.builtInModelComponent.addModel( path, model );
 	}
 
 	public List<IBootstrapComponent> getBootstrapComponents()
 	{
-		return bootstrapComponents;
+		return this.bootstrapComponents;
 	}
 }

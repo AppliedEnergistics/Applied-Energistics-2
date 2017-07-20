@@ -122,7 +122,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 		{
 			this.world.spawnParticle( EnumParticleTypes.SMOKE_NORMAL, this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D );
 		}
-		this.setFuse( getFuse() - 1 );
+		this.setFuse( this.getFuse() - 1 );
 	}
 
 	// override :P

@@ -55,7 +55,7 @@ public class ItemCrystalSeedRendering extends ItemRenderingCustomizer
 	public void customize( IItemRendering rendering )
 	{
 		rendering.variants( ImmutableList.<ResourceLocation>builder().add( MODELS_CERTUS ).add( MODELS_FLUIX ).add( MODELS_NETHER ).build() );
-		rendering.meshDefinition( getItemMeshDefinition() );
+		rendering.meshDefinition( this.getItemMeshDefinition() );
 	}
 
 	private ItemMeshDefinition getItemMeshDefinition()

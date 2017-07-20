@@ -49,6 +49,6 @@ public class TesrComponent<T extends AEBaseTile> implements PreInitComponent
 	// public void modelReg( Side side )
 	public void preInitialize( Side side )
 	{
-		ClientRegistry.bindTileEntitySpecialRenderer( tileEntityClass, tesr );
+		ClientRegistry.bindTileEntitySpecialRenderer( this.tileEntityClass, this.tesr );
 	}
 }

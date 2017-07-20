@@ -448,7 +448,7 @@ public class CellInventory implements ICellInventory
 		{
 			NBTTagCompound compoundTag = this.tagCompound.getCompoundTag( itemSlots[slot] );
 			int stackSize = this.tagCompound.getInteger( itemSlotCount[slot] );
-			loadCellItem( compoundTag, stackSize );
+			this.loadCellItem( compoundTag, stackSize );
 		}
 
 		// cellItems.clean();

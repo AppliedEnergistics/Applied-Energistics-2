@@ -146,7 +146,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	{
 
 		final EnumFacing facingRight, facingUp;
-		AEPartLocation location = getSide();
+		AEPartLocation location = this.getSide();
 		switch( location )
 		{
 			case UP:
@@ -598,7 +598,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	@Override
 	public IPartModel getStaticModels()
 	{
-		return MODELS.getModel( getConnections(), isPowered(), isActive() );
+		return MODELS.getModel( this.getConnections(), this.isPowered(), this.isActive() );
 	}
 
 }

@@ -76,7 +76,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	public IBlockState getStateFromMeta( final int meta )
 	{
 		EnumFacing facing = EnumFacing.values()[meta];
-		return getDefaultState().withProperty( FACING, facing );
+		return this.getDefaultState().withProperty( FACING, facing );
 	}
 
 	@Override

@@ -45,7 +45,7 @@ final class MatrixVertexTransformer extends QuadGatheringTransformer
 	@Override
 	protected void processQuad()
 	{
-		VertexFormat format = parent.getVertexFormat();
+		VertexFormat format = this.parent.getVertexFormat();
 		int count = format.getElementCount();
 
 		for( int v = 0; v < 4; v++ )
@@ -55,15 +55,15 @@ final class MatrixVertexTransformer extends QuadGatheringTransformer
 				VertexFormatElement element = format.getElement( e );
 				if( element.getUsage() == VertexFormatElement.EnumUsage.POSITION )
 				{
-					parent.put( e, transform( quadData[e][v], element.getElementCount() ) );
+					this.parent.put( e, this.transform( this.quadData[e][v], element.getElementCount() ) );
 				}
 				else if( element.getUsage() == VertexFormatElement.EnumUsage.NORMAL )
 				{
-					parent.put( e, transformNormal( quadData[e][v] ) );
+					this.parent.put( e, this.transformNormal( this.quadData[e][v] ) );
 				}
 				else
 				{
-					parent.put( e, quadData[e][v] );
+					this.parent.put( e, this.quadData[e][v] );
 				}
 			}
 		}
@@ -72,25 +72,25 @@ final class MatrixVertexTransformer extends QuadGatheringTransformer
 	@Override
 	public void setQuadTint( int tint )
 	{
-		parent.setQuadTint( tint );
+		this.parent.setQuadTint( tint );
 	}
 
 	@Override
 	public void setQuadOrientation( EnumFacing orientation )
 	{
-		parent.setQuadOrientation( orientation );
+		this.parent.setQuadOrientation( orientation );
 	}
 
 	@Override
 	public void setApplyDiffuseLighting( boolean diffuse )
 	{
-		parent.setApplyDiffuseLighting( diffuse );
+		this.parent.setApplyDiffuseLighting( diffuse );
 	}
 
 	@Override
 	public void setTexture( TextureAtlasSprite texture )
 	{
-		parent.setTexture( texture );
+		this.parent.setTexture( texture );
 	}
 
 	private float[] transform( float[] fs, int elemCount )
@@ -102,7 +102,7 @@ final class MatrixVertexTransformer extends QuadGatheringTransformer
 				vec.x -= 0.5f;
 				vec.y -= 0.5f;
 				vec.z -= 0.5f;
-				transform.transform( vec );
+				this.transform.transform( vec );
 				vec.x += 0.5f;
 				vec.y += 0.5f;
 				vec.z += 0.5f;
@@ -121,7 +121,7 @@ final class MatrixVertexTransformer extends QuadGatheringTransformer
 				vecc.x -= 0.5f;
 				vecc.y -= 0.5f;
 				vecc.z -= 0.5f;
-				transform.transform( vecc );
+				this.transform.transform( vecc );
 				vecc.x += 0.5f;
 				vecc.y += 0.5f;
 				vecc.z += 0.5f;

@@ -56,10 +56,10 @@ public class CraftingCubeRendering extends BlockRenderingCustomizer
 	@SideOnly( Side.CLIENT )
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{
-		ResourceLocation baseName = new ResourceLocation( AppEng.MOD_ID, registryName );
+		ResourceLocation baseName = new ResourceLocation( AppEng.MOD_ID, this.registryName );
 
 		// Disable auto-rotation
-		if( type != BlockCraftingUnit.CraftingUnitType.MONITOR )
+		if( this.type != BlockCraftingUnit.CraftingUnitType.MONITOR )
 		{
 			rendering.modelCustomizer( ( loc, model ) -> model );
 		}
@@ -68,14 +68,14 @@ public class CraftingCubeRendering extends BlockRenderingCustomizer
 		ModelResourceLocation defaultModel = new ModelResourceLocation( baseName, "normal" );
 
 		// This is the built-in model
-		String builtInName = "models/block/crafting/" + registryName + "/builtin";
+		String builtInName = "models/block/crafting/" + this.registryName + "/builtin";
 		ModelResourceLocation builtInModelName = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, builtInName ), "normal" );
 
-		rendering.builtInModel( builtInName, new CraftingCubeModel( type ) );
+		rendering.builtInModel( builtInName, new CraftingCubeModel( this.type ) );
 
-		rendering.stateMapper( block -> mapState( block, defaultModel, builtInModelName ) );
+		rendering.stateMapper( block -> this.mapState( block, defaultModel, builtInModelName ) );
 
-		if( type == BlockCraftingUnit.CraftingUnitType.MONITOR )
+		if( this.type == BlockCraftingUnit.CraftingUnitType.MONITOR )
 		{
 			rendering.tesr( new CraftingMonitorTESR() );
 		}

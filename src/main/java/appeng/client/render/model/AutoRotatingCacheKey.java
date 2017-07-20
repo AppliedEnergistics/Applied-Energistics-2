@@ -43,22 +43,22 @@ final class AutoRotatingCacheKey
 
 	public IBlockState getBlockState()
 	{
-		return blockState;
+		return this.blockState;
 	}
 
 	public EnumFacing getForward()
 	{
-		return forward;
+		return this.forward;
 	}
 
 	public EnumFacing getUp()
 	{
-		return up;
+		return this.up;
 	}
 
 	public EnumFacing getSide()
 	{
-		return side;
+		return this.side;
 	}
 
 	@Override
@@ -68,22 +68,22 @@ final class AutoRotatingCacheKey
 		{
 			return true;
 		}
-		if( o == null || getClass() != o.getClass() )
+		if( o == null || this.getClass() != o.getClass() )
 		{
 			return false;
 		}
 
 		AutoRotatingCacheKey cacheKey = (AutoRotatingCacheKey) o;
-		return blockState.equals( cacheKey.blockState ) && forward == cacheKey.forward && up == cacheKey.up && side == cacheKey.side;
+		return this.blockState.equals( cacheKey.blockState ) && this.forward == cacheKey.forward && this.up == cacheKey.up && this.side == cacheKey.side;
 	}
 
 	@Override
 	public int hashCode()
 	{
-		int result = blockState.hashCode();
-		result = 31 * result + forward.hashCode();
-		result = 31 * result + up.hashCode();
-		result = 31 * result + ( side != null ? side.hashCode() : 0 );
+		int result = this.blockState.hashCode();
+		result = 31 * result + this.forward.hashCode();
+		result = 31 * result + this.up.hashCode();
+		result = 31 * result + ( this.side != null ? this.side.hashCode() : 0 );
 		return result;
 	}
 }

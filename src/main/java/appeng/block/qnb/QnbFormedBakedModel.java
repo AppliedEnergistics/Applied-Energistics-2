@@ -79,42 +79,42 @@ class QnbFormedBakedModel implements IBakedModel
 		// Get the correct base model
 		if( !( state instanceof IExtendedBlockState ) )
 		{
-			return baseModel.getQuads( state, side, rand );
+			return this.baseModel.getQuads( state, side, rand );
 		}
 
 		IExtendedBlockState extendedBlockState = (IExtendedBlockState) state;
 		QnbFormedState formedState = extendedBlockState.getValue( BlockQuantumBase.FORMED_STATE );
 
-		return getQuads( formedState, state, side, rand );
+		return this.getQuads( formedState, state, side, rand );
 	}
 
 	private List<BakedQuad> getQuads( QnbFormedState formedState, IBlockState state, EnumFacing side, long rand )
 	{
-		CubeBuilder builder = new CubeBuilder( vertexFormat );
+		CubeBuilder builder = new CubeBuilder( this.vertexFormat );
 
-		if( state.getBlock() == linkBlock )
+		if( state.getBlock() == this.linkBlock )
 		{
 			Set<EnumFacing> sides = formedState.getAdjacentQuantumBridges();
 
-			this.renderCableAt( builder, 0.11f * 16, glassCableTexture, 0.141f * 16, sides );
+			this.renderCableAt( builder, 0.11f * 16, this.glassCableTexture, 0.141f * 16, sides );
 
-			this.renderCableAt( builder, 0.188f * 16, coveredCableTexture, 0.1875f * 16, sides );
+			this.renderCableAt( builder, 0.188f * 16, this.coveredCableTexture, 0.1875f * 16, sides );
 
-			builder.setTexture( linkTexture );
+			builder.setTexture( this.linkTexture );
 			builder.addCube( DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX );
 		}
 		else
 		{
 			if( formedState.isCorner() )
 			{
-				this.renderCableAt( builder, 0.188f * 16, coveredCableTexture, 0.05f * 16, formedState.getAdjacentQuantumBridges() );
+				this.renderCableAt( builder, 0.188f * 16, this.coveredCableTexture, 0.05f * 16, formedState.getAdjacentQuantumBridges() );
 
-				builder.setTexture( ringTexture );
+				builder.setTexture( this.ringTexture );
 				builder.addCube( DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX );
 
 				if( formedState.isPowered() )
 				{
-					builder.setTexture( lightCornerTexture );
+					builder.setTexture( this.lightCornerTexture );
 					builder.setRenderFullBright( true );
 					for( EnumFacing facing : EnumFacing.values() )
 					{
@@ -133,7 +133,7 @@ class QnbFormedBakedModel implements IBakedModel
 			}
 			else
 			{
-				builder.setTexture( ringTexture );
+				builder.setTexture( this.ringTexture );
 
 				builder.addCube( 0, DEFAULT_RENDER_MIN, DEFAULT_RENDER_MIN, 16, DEFAULT_RENDER_MAX, DEFAULT_RENDER_MAX );
 
@@ -143,7 +143,7 @@ class QnbFormedBakedModel implements IBakedModel
 
 				if( formedState.isPowered() )
 				{
-					builder.setTexture( lightTexture );
+					builder.setTexture( this.lightTexture );
 					builder.setRenderFullBright( true );
 					for( EnumFacing facing : EnumFacing.values() )
 					{
@@ -203,7 +203,7 @@ class QnbFormedBakedModel implements IBakedModel
 	@Override
 	public boolean isAmbientOcclusion()
 	{
-		return baseModel.isAmbientOcclusion();
+		return this.baseModel.isAmbientOcclusion();
 	}
 
 	@Override
@@ -221,19 +221,19 @@ class QnbFormedBakedModel implements IBakedModel
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		return baseModel.getParticleTexture();
+		return this.baseModel.getParticleTexture();
 	}
 
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms()
 	{
-		return baseModel.getItemCameraTransforms();
+		return this.baseModel.getItemCameraTransforms();
 	}
 
 	@Override
 	public ItemOverrideList getOverrides()
 	{
-		return baseModel.getOverrides();
+		return this.baseModel.getOverrides();
 	}
 
 	public static List<ResourceLocation> getRequiredTextures()

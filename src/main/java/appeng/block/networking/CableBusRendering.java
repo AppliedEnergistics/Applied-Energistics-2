@@ -45,7 +45,7 @@ public class CableBusRendering extends BlockRenderingCustomizer
 	@SideOnly( Side.CLIENT )
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{
-		rendering.builtInModel( "models/block/builtin/cable_bus", new CableBusModel( partModels ) );
+		rendering.builtInModel( "models/block/builtin/cable_bus", new CableBusModel( this.partModels ) );
 		rendering.blockColor( new CableBusColor() );
 		rendering.modelCustomizer( ( loc, model ) -> model );
 	}

@@ -234,7 +234,7 @@ public enum UVLModelLoader implements ICustomModelLoader
 				modelPath = modelPath.substring( "models/".length() );
 			}
 			ResourceLocation armatureLocation = new ResourceLocation( modelLocation.getResourceDomain(), "armatures/" + modelPath + ".json" );
-			ModelBlockAnimation animation = ModelBlockAnimation.loadVanillaAnimation( resourceManager, armatureLocation );
+			ModelBlockAnimation animation = ModelBlockAnimation.loadVanillaAnimation( UVLModelLoader.this.resourceManager, armatureLocation );
 			ModelBlock model;
 			{
 				Reader reader = null;
@@ -249,7 +249,7 @@ public enum UVLModelLoader implements ICustomModelLoader
 							new ResourceLocation( modelLocation.getResourceDomain(), "models/" + modelPath + ".json" ) );
 					reader = new InputStreamReader( iresource.getInputStream(), Charsets.UTF_8 );
 
-					lvt_5_1_ = JsonUtils.gsonDeserialize( UVLSERIALIZER, reader, ModelBlock.class, false );
+					lvt_5_1_ = JsonUtils.gsonDeserialize( this.UVLSERIALIZER, reader, ModelBlock.class, false );
 					lvt_5_1_.name = modelLocation.toString();
 				}
 				catch( IOException e )
@@ -265,34 +265,34 @@ public enum UVLModelLoader implements ICustomModelLoader
 				model = lvt_5_1_;
 			}
 
-			this.parent = vanillaModelWrapper( getLoader(), modelLocation, model, false, animation );
+			this.parent = vanillaModelWrapper( UVLModelLoader.this.getLoader(), modelLocation, model, false, animation );
 		}
 
 		@Override
 		public Collection<ResourceLocation> getDependencies()
 		{
-			return parent.getDependencies();
+			return this.parent.getDependencies();
 		}
 
 		@Override
 		public Collection<ResourceLocation> getTextures()
 		{
-			return parent.getTextures();
+			return this.parent.getTextures();
 		}
 
 		@Override
 		public IBakedModel bake( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
 		{
-			setFaceBakery( getLoader(), new FaceBakeryOverride() );
-			IBakedModel model = parent.bake( state, format, bakedTextureGetter );
-			setFaceBakery( getLoader(), new FaceBakery() );
+			setFaceBakery( UVLModelLoader.this.getLoader(), new FaceBakeryOverride() );
+			IBakedModel model = this.parent.bake( state, format, bakedTextureGetter );
+			setFaceBakery( UVLModelLoader.this.getLoader(), new FaceBakery() );
 			return model;
 		}
 
 		@Override
 		public IModelState getDefaultState()
 		{
-			return parent.getDefaultState();
+			return this.parent.getDefaultState();
 		}
 
 		public class BlockPartFaceOverrideSerializer implements JsonDeserializer<BlockPartFace>
@@ -306,7 +306,7 @@ public enum UVLModelLoader implements ICustomModelLoader
 				String s = this.parseTexture( jsonobject );
 				BlockFaceUV blockfaceuv = (BlockFaceUV) p_deserialize_3_.deserialize( jsonobject, BlockFaceUV.class );
 				BlockPartFace blockFace = new BlockPartFace( enumfacing, i, s, blockfaceuv );
-				uvlightmap.put( blockFace, parseUVL( jsonobject ) );
+				UVLModelWrapper.this.uvlightmap.put( blockFace, this.parseUVL( jsonobject ) );
 				return blockFace;
 			}
 
@@ -346,7 +346,7 @@ public enum UVLModelLoader implements ICustomModelLoader
 			{
 				BakedQuad quad = super.makeBakedQuad( posFrom, posTo, face, sprite, facing, modelRotationIn, partRotation, uvLocked, shade );
 
-				Pair<Float, Float> brightness = uvlightmap.get( face );
+				Pair<Float, Float> brightness = UVLModelWrapper.this.uvlightmap.get( face );
 				if( brightness != null )
 				{
 					VertexFormat newFormat = VertexFormats.getFormatWithLightMap( quad.getFormat() );

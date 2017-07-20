@@ -50,7 +50,7 @@ public class BlockSecurityStation extends AEBaseTileBlock
 	{
 		super( Material.IRON );
 
-		this.setDefaultState( getDefaultState().withProperty( POWERED, false ) );
+		this.setDefaultState( this.getDefaultState().withProperty( POWERED, false ) );
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class BlockSecurityStation extends AEBaseTileBlock
 	public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
 	{
 		boolean powered = false;
-		TileSecurityStation te = getTileEntity( world, pos );
+		TileSecurityStation te = this.getTileEntity( world, pos );
 		if( te != null )
 		{
 			powered = te.isActive();

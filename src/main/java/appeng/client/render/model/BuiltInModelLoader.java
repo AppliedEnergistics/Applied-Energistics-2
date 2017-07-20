@@ -53,19 +53,19 @@ public class BuiltInModelLoader implements ICustomModelLoader
 			return false;
 		}
 
-		return builtInModels.containsKey( modelLocation.getResourcePath() );
+		return this.builtInModels.containsKey( modelLocation.getResourcePath() );
 	}
 
 	@Override
 	public IModel loadModel( ResourceLocation modelLocation ) throws Exception
 	{
-		return builtInModels.get( modelLocation.getResourcePath() );
+		return this.builtInModels.get( modelLocation.getResourcePath() );
 	}
 
 	@Override
 	public void onResourceManagerReload( IResourceManager resourceManager )
 	{
-		for( IModel model : builtInModels.values() )
+		for( IModel model : this.builtInModels.values() )
 		{
 			if( model instanceof IResourceManagerReloadListener )
 			{

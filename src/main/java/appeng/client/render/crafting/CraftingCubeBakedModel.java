@@ -76,12 +76,12 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 		EnumSet<EnumFacing> connections = getConnections( state );
 
 		List<BakedQuad> quads = new ArrayList<>();
-		CubeBuilder builder = new CubeBuilder( format, quads );
+		CubeBuilder builder = new CubeBuilder( this.format, quads );
 
 		builder.setDrawFaces( EnumSet.of( side ) );
 
 		// Add the quads for the ring that frames the entire multi-block structure
-		addRing( builder, side, connections );
+		this.addRing( builder, side, connections );
 
 		// Calculate the bounds of the "inner" block that is framed by the border drawn above
 		float x2 = connections.contains( EnumFacing.EAST ) ? 16 : 13.01f;
@@ -114,7 +114,7 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 				break;
 		}
 
-		addInnerCube( side, state, builder, x1, y1, z1, x2, y2, z2 );
+		this.addInnerCube( side, state, builder, x1, y1, z1, x2, y2, z2 );
 
 		return quads;
 	}
@@ -122,15 +122,15 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 	private void addRing( CubeBuilder builder, @Nullable EnumFacing side, EnumSet<EnumFacing> connections )
 	{
 		// Fill in the corners
-		builder.setTexture( ringCorner );
-		addCornerCap( builder, connections, side, EnumFacing.UP, EnumFacing.EAST, EnumFacing.NORTH );
-		addCornerCap( builder, connections, side, EnumFacing.UP, EnumFacing.EAST, EnumFacing.SOUTH );
-		addCornerCap( builder, connections, side, EnumFacing.UP, EnumFacing.WEST, EnumFacing.NORTH );
-		addCornerCap( builder, connections, side, EnumFacing.UP, EnumFacing.WEST, EnumFacing.SOUTH );
-		addCornerCap( builder, connections, side, EnumFacing.DOWN, EnumFacing.EAST, EnumFacing.NORTH );
-		addCornerCap( builder, connections, side, EnumFacing.DOWN, EnumFacing.EAST, EnumFacing.SOUTH );
-		addCornerCap( builder, connections, side, EnumFacing.DOWN, EnumFacing.WEST, EnumFacing.NORTH );
-		addCornerCap( builder, connections, side, EnumFacing.DOWN, EnumFacing.WEST, EnumFacing.SOUTH );
+		builder.setTexture( this.ringCorner );
+		this.addCornerCap( builder, connections, side, EnumFacing.UP, EnumFacing.EAST, EnumFacing.NORTH );
+		this.addCornerCap( builder, connections, side, EnumFacing.UP, EnumFacing.EAST, EnumFacing.SOUTH );
+		this.addCornerCap( builder, connections, side, EnumFacing.UP, EnumFacing.WEST, EnumFacing.NORTH );
+		this.addCornerCap( builder, connections, side, EnumFacing.UP, EnumFacing.WEST, EnumFacing.SOUTH );
+		this.addCornerCap( builder, connections, side, EnumFacing.DOWN, EnumFacing.EAST, EnumFacing.NORTH );
+		this.addCornerCap( builder, connections, side, EnumFacing.DOWN, EnumFacing.EAST, EnumFacing.SOUTH );
+		this.addCornerCap( builder, connections, side, EnumFacing.DOWN, EnumFacing.WEST, EnumFacing.NORTH );
+		this.addCornerCap( builder, connections, side, EnumFacing.DOWN, EnumFacing.WEST, EnumFacing.SOUTH );
 
 		// Fill in the remaining stripes of the face
 		for( EnumFacing a : EnumFacing.values() )
@@ -143,15 +143,15 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 			// Select the horizontal or vertical ring texture depending on which side we're filling in
 			if( ( side.getAxis() != EnumFacing.Axis.Y ) && ( a == EnumFacing.NORTH || a == EnumFacing.EAST || a == EnumFacing.WEST || a == EnumFacing.SOUTH ) )
 			{
-				builder.setTexture( ringVer );
+				builder.setTexture( this.ringVer );
 			}
 			else if( side.getAxis() == EnumFacing.Axis.Y && ( a == EnumFacing.EAST || a == EnumFacing.WEST ) )
 			{
-				builder.setTexture( ringVer );
+				builder.setTexture( this.ringVer );
 			}
 			else
 			{
-				builder.setTexture( ringHor );
+				builder.setTexture( this.ringHor );
 			}
 
 			// If there's an adjacent crafting cube block on side a, then the core of the block already extends
@@ -296,7 +296,7 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		return ringCorner;
+		return this.ringCorner;
 	}
 
 	@Override

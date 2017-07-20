@@ -88,7 +88,7 @@ public class PartToggleBus extends PartBasicState
 
 	public boolean hasRedstoneFlag()
 	{
-		return ( getClientFlags() & REDSTONE_FLAG ) == REDSTONE_FLAG;
+		return ( this.getClientFlags() & REDSTONE_FLAG ) == REDSTONE_FLAG;
 	}
 
 	protected boolean getIntention()
@@ -225,11 +225,11 @@ public class PartToggleBus extends PartBasicState
 	@Override
 	public IPartModel getStaticModels()
 	{
-		if( hasRedstoneFlag() && isActive() && isPowered() )
+		if( this.hasRedstoneFlag() && this.isActive() && this.isPowered() )
 		{
 			return MODELS_HAS_CHANNEL;
 		}
-		else if( hasRedstoneFlag() && isPowered() )
+		else if( this.hasRedstoneFlag() && this.isPowered() )
 		{
 			return MODELS_ON;
 		}

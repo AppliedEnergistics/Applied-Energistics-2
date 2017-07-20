@@ -68,7 +68,7 @@ public class MetaRotation implements IOrientable
 
 		if( this.facingProp != null )
 		{
-			return state.getValue( facingProp );
+			return state.getValue( this.facingProp );
 		}
 
 		// TODO 1.10.2-R - Temp
@@ -96,9 +96,9 @@ public class MetaRotation implements IOrientable
 	{
 		if( this.w instanceof World )
 		{
-			if( facingProp != null )
+			if( this.facingProp != null )
 			{
-				( (World) this.w ).setBlockState( this.pos, this.w.getBlockState( this.pos ).withProperty( facingProp, up ) );
+				( (World) this.w ).setBlockState( this.pos, this.w.getBlockState( this.pos ).withProperty( this.facingProp, up ) );
 			}
 			else
 			{

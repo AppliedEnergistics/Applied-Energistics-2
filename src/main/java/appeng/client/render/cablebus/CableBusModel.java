@@ -56,8 +56,8 @@ public class CableBusModel implements IModel
 	@Override
 	public Collection<ResourceLocation> getDependencies()
 	{
-		partModels.setInitialized( true );
-		return partModels.getModels();
+		this.partModels.setInitialized( true );
+		return this.partModels.getModels();
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class CableBusModel implements IModel
 	@Override
 	public IBakedModel bake( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
 	{
-		Map<ResourceLocation, IBakedModel> partModels = loadPartModels( state, format, bakedTextureGetter );
+		Map<ResourceLocation, IBakedModel> partModels = this.loadPartModels( state, format, bakedTextureGetter );
 
 		CableBuilder cableBuilder = new CableBuilder( format, bakedTextureGetter );
 		FacadeBuilder facadeBuilder = new FacadeBuilder( format, bakedTextureGetter );
@@ -88,9 +88,9 @@ public class CableBusModel implements IModel
 	{
 		ImmutableMap.Builder<ResourceLocation, IBakedModel> result = ImmutableMap.builder();
 
-		for( ResourceLocation location : partModels.getModels() )
+		for( ResourceLocation location : this.partModels.getModels() )
 		{
-			IModel model = tryLoadPartModel( location );
+			IModel model = this.tryLoadPartModel( location );
 			IBakedModel bakedModel = model.bake( state, format, bakedTextureGetter );
 			result.put( location, bakedModel );
 		}

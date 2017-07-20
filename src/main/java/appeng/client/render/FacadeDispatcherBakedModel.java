@@ -67,13 +67,13 @@ public class FacadeDispatcherBakedModel implements IBakedModel
 	@Override
 	public boolean isAmbientOcclusion()
 	{
-		return baseModel.isAmbientOcclusion();
+		return this.baseModel.isAmbientOcclusion();
 	}
 
 	@Override
 	public boolean isGui3d()
 	{
-		return baseModel.isGui3d();
+		return this.baseModel.isGui3d();
 	}
 
 	@Override
@@ -85,13 +85,13 @@ public class FacadeDispatcherBakedModel implements IBakedModel
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		return baseModel.getParticleTexture();
+		return this.baseModel.getParticleTexture();
 	}
 
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms()
 	{
-		return baseModel.getItemCameraTransforms();
+		return this.baseModel.getItemCameraTransforms();
 	}
 
 	@Override
@@ -112,7 +112,7 @@ public class FacadeDispatcherBakedModel implements IBakedModel
 				IBlockState state = itemFacade.getTextureBlockState( stack );
 				ItemStack textureItem = itemFacade.getTextureItem( stack );
 
-				return new FacadeWithBlockBakedModel( baseModel, state, textureItem, format );
+				return new FacadeWithBlockBakedModel( FacadeDispatcherBakedModel.this.baseModel, state, textureItem, FacadeDispatcherBakedModel.this.format );
 			}
 		};
 	}

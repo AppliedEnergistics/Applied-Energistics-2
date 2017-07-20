@@ -97,36 +97,36 @@ class BlockDefinitionBuilder implements IBlockBuilder
 
 		if( Platform.isClient() )
 		{
-			blockRendering = new BlockRendering();
-			itemRendering = new ItemRendering();
+			this.blockRendering = new BlockRendering();
+			this.itemRendering = new ItemRendering();
 		}
 	}
 
 	@Override
 	public BlockDefinitionBuilder preInit( BiConsumer<Block, Item> callback )
 	{
-		preInitCallbacks.add( callback );
+		this.preInitCallbacks.add( callback );
 		return this;
 	}
 
 	@Override
 	public BlockDefinitionBuilder init( BiConsumer<Block, Item> callback )
 	{
-		initCallbacks.add( callback );
+		this.initCallbacks.add( callback );
 		return this;
 	}
 
 	@Override
 	public BlockDefinitionBuilder modelRegInit( BiConsumer<Block, Item> callback )
 	{
-		modelRegCallbacks.add( callback );
+		this.modelRegCallbacks.add( callback );
 		return this;
 	}
 
 	@Override
 	public BlockDefinitionBuilder postInit( BiConsumer<Block, Item> callback )
 	{
-		postInitCallbacks.add( callback );
+		this.postInitCallbacks.add( callback );
 		return this;
 	}
 
@@ -134,7 +134,7 @@ class BlockDefinitionBuilder implements IBlockBuilder
 	public IBlockBuilder features( AEFeature... features )
 	{
 		this.features.clear();
-		addFeatures( features );
+		this.addFeatures( features );
 		return this;
 	}
 
@@ -150,7 +150,7 @@ class BlockDefinitionBuilder implements IBlockBuilder
 	{
 		if( Platform.isClient() )
 		{
-			customizeForClient( callback );
+			this.customizeForClient( callback );
 		}
 
 		return this;
@@ -166,13 +166,13 @@ class BlockDefinitionBuilder implements IBlockBuilder
 	@Override
 	public IBlockBuilder useCustomItemModel()
 	{
-		rendering( new BlockRenderingCustomizer()
+		this.rendering( new BlockRenderingCustomizer()
 		{
 			@Override
 			@SideOnly( Side.CLIENT )
 			public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 			{
-				ModelResourceLocation model = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, registryName ), "inventory" );
+				ModelResourceLocation model = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, BlockDefinitionBuilder.this.registryName ), "inventory" );
 				itemRendering.model( model ).variants( model );
 			}
 		} );
@@ -197,31 +197,31 @@ class BlockDefinitionBuilder implements IBlockBuilder
 	@SideOnly( Side.CLIENT )
 	private void customizeForClient( BlockRenderingCustomizer callback )
 	{
-		callback.customize( blockRendering, itemRendering );
+		callback.customize( this.blockRendering, this.itemRendering );
 	}
 
 	@SuppressWarnings( "unchecked" )
 	@Override
 	public <T extends IBlockDefinition> T build()
 	{
-		if( !AEConfig.instance().areFeaturesEnabled( features ) )
+		if( !AEConfig.instance().areFeaturesEnabled( this.features ) )
 		{
-			return (T) new TileDefinition( registryName, null, null );
+			return (T) new TileDefinition( this.registryName, null, null );
 		}
 
 		// Create block and matching item, and set factory name of both
-		Block block = blockSupplier.get();
-		block.setRegistryName( AppEng.MOD_ID, registryName );
-		block.setUnlocalizedName( "appliedenergistics2." + registryName );
+		Block block = this.blockSupplier.get();
+		block.setRegistryName( AppEng.MOD_ID, this.registryName );
+		block.setUnlocalizedName( "appliedenergistics2." + this.registryName );
 
-		ItemBlock item = constructItemFromBlock( block );
+		ItemBlock item = this.constructItemFromBlock( block );
 		if( item != null )
 		{
-			item.setRegistryName( AppEng.MOD_ID, registryName );
+			item.setRegistryName( AppEng.MOD_ID, this.registryName );
 		}
 
 		// Register the item and block with the game
-		factory.addPreInit( side ->
+		this.factory.addPreInit( side ->
 		{
 			Registration.addBlockToRegister( block );
 			if( item != null )
@@ -230,20 +230,20 @@ class BlockDefinitionBuilder implements IBlockBuilder
 			}
 		} );
 
-		block.setCreativeTab( creativeTab );
+		block.setCreativeTab( this.creativeTab );
 
 		// Register all extra handlers
-		preInitCallbacks.forEach( consumer -> factory.addPreInit( side -> consumer.accept( block, item ) ) );
-		initCallbacks.forEach( consumer -> factory.addInit( side -> consumer.accept( block, item ) ) );
-		modelRegCallbacks.forEach( consumer -> factory.addModelReg( side -> consumer.accept( block, item ) ) );
-		postInitCallbacks.forEach( consumer -> factory.addPostInit( side -> consumer.accept( block, item ) ) );
+		this.preInitCallbacks.forEach( consumer -> this.factory.addPreInit( side -> consumer.accept( block, item ) ) );
+		this.initCallbacks.forEach( consumer -> this.factory.addInit( side -> consumer.accept( block, item ) ) );
+		this.modelRegCallbacks.forEach( consumer -> this.factory.addModelReg( side -> consumer.accept( block, item ) ) );
+		this.postInitCallbacks.forEach( consumer -> this.factory.addPostInit( side -> consumer.accept( block, item ) ) );
 
-		if( tileEntityDefinition != null && block instanceof AEBaseTileBlock )
+		if( this.tileEntityDefinition != null && block instanceof AEBaseTileBlock )
 		{
-			( (AEBaseTileBlock) block ).setTileEntity( tileEntityDefinition.getTileEntityClass() );
-			if( tileEntityDefinition.getName() == null )
+			( (AEBaseTileBlock) block ).setTileEntity( this.tileEntityDefinition.getTileEntityClass() );
+			if( this.tileEntityDefinition.getName() == null )
 			{
-				tileEntityDefinition.setName( registryName );
+				this.tileEntityDefinition.setName( this.registryName );
 			}
 
 		}
@@ -253,52 +253,52 @@ class BlockDefinitionBuilder implements IBlockBuilder
 			if( block instanceof AEBaseTileBlock )
 			{
 				AEBaseTileBlock tileBlock = (AEBaseTileBlock) block;
-				blockRendering.apply( factory, block, tileBlock.getTileEntityClass() );
+				this.blockRendering.apply( this.factory, block, tileBlock.getTileEntityClass() );
 			}
 			else
 			{
-				blockRendering.apply( factory, block, null );
+				this.blockRendering.apply( this.factory, block, null );
 			}
 
 			if( item != null )
 			{
-				itemRendering.apply( factory, item );
+				this.itemRendering.apply( this.factory, item );
 			}
 		}
 
 		if( block instanceof AEBaseTileBlock )
 		{
-			factory.addPreInit( side ->
+			this.factory.addPreInit( side ->
 			{
 				AEBaseTile.registerTileItem(
-						tileEntityDefinition == null ? ( (AEBaseTileBlock) block ).getTileEntityClass() : tileEntityDefinition.getTileEntityClass(),
+						this.tileEntityDefinition == null ? ( (AEBaseTileBlock) block ).getTileEntityClass() : this.tileEntityDefinition.getTileEntityClass(),
 						new BlockStackSrc( block, 0, ActivityState.Enabled ) );
 			} );
 
-			if( tileEntityDefinition != null )
+			if( this.tileEntityDefinition != null )
 			{
-				factory.tileEntityComponent.addTileEntity( tileEntityDefinition );
+				this.factory.tileEntityComponent.addTileEntity( this.tileEntityDefinition );
 			}
 
-			return (T) new TileDefinition( registryName, (AEBaseTileBlock) block, item );
+			return (T) new TileDefinition( this.registryName, (AEBaseTileBlock) block, item );
 		}
 		else
 		{
-			return (T) new BlockDefinition( registryName, block, item );
+			return (T) new BlockDefinition( this.registryName, block, item );
 		}
 	}
 
 	@Nullable
 	private ItemBlock constructItemFromBlock( Block block )
 	{
-		if( disableItem )
+		if( this.disableItem )
 		{
 			return null;
 		}
 
-		if( itemFactory != null )
+		if( this.itemFactory != null )
 		{
-			return itemFactory.apply( block );
+			return this.itemFactory.apply( block );
 		}
 		else if( block instanceof AEBaseBlock )
 		{

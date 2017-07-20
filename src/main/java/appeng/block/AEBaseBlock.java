@@ -111,7 +111,7 @@ public abstract class AEBaseBlock extends Block
 	@Override
 	public AxisAlignedBB getBoundingBox( IBlockState state, IBlockAccess source, BlockPos pos )
 	{
-		return boundingBox;
+		return this.boundingBox;
 	}
 
 	@SuppressWarnings( "deprecation" )
@@ -421,8 +421,8 @@ public abstract class AEBaseBlock extends Block
 	@Override
 	public String toString()
 	{
-		String regName = getRegistryName() != null ? getRegistryName().getResourcePath() : "unregistered";
-		return getClass().getSimpleName() + "[" + regName + "]";
+		String regName = this.getRegistryName() != null ? this.getRegistryName().getResourcePath() : "unregistered";
+		return this.getClass().getSimpleName() + "[" + regName + "]";
 	}
 
 	protected String getUnlocalizedName( final ItemStack is )

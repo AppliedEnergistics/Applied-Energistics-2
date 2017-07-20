@@ -49,7 +49,7 @@ public class BlockSpatialPylon extends AEBaseTileBlock
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
-		return new ExtendedBlockState( this, getAEStates(), new IUnlistedProperty[] { STATE } );
+		return new ExtendedBlockState( this, this.getAEStates(), new IUnlistedProperty[] { STATE } );
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class BlockSpatialPylon extends AEBaseTileBlock
 	{
 		IExtendedBlockState extState = (IExtendedBlockState) state;
 
-		return extState.withProperty( STATE, getDisplayState( world, pos ) );
+		return extState.withProperty( STATE, this.getDisplayState( world, pos ) );
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class BlockSpatialPylon extends AEBaseTileBlock
 
 	private int getDisplayState( IBlockAccess world, BlockPos pos )
 	{
-		TileSpatialPylon te = getTileEntity( world, pos );
+		TileSpatialPylon te = this.getTileEntity( world, pos );
 
 		if( te == null )
 		{

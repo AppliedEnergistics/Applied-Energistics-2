@@ -63,7 +63,7 @@ class BiometricCardBakedModel implements IBakedModel
 		this.baseModel = baseModel;
 		this.texture = texture;
 		this.hash = hash;
-		this.generalQuads = ImmutableList.copyOf( buildGeneralQuads() );
+		this.generalQuads = ImmutableList.copyOf( this.buildGeneralQuads() );
 		this.modelCache = modelCache;
 	}
 
@@ -78,16 +78,16 @@ class BiometricCardBakedModel implements IBakedModel
 	public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
 	{
 
-		List<BakedQuad> quads = baseModel.getQuads( state, side, rand );
+		List<BakedQuad> quads = this.baseModel.getQuads( state, side, rand );
 
 		if( side != null )
 		{
 			return quads;
 		}
 
-		List<BakedQuad> result = new ArrayList<>( quads.size() + generalQuads.size() );
+		List<BakedQuad> result = new ArrayList<>( quads.size() + this.generalQuads.size() );
 		result.addAll( quads );
-		result.addAll( generalQuads );
+		result.addAll( this.generalQuads );
 		return result;
 	}
 
@@ -95,10 +95,10 @@ class BiometricCardBakedModel implements IBakedModel
 	{
 		CubeBuilder builder = new CubeBuilder( this.format );
 
-		builder.setTexture( texture );
+		builder.setTexture( this.texture );
 
-		AEColor col = AEColor.values()[Math.abs( 3 + hash ) % AEColor.values().length];
-		if( hash == 0 )
+		AEColor col = AEColor.values()[Math.abs( 3 + this.hash ) % AEColor.values().length];
+		if( this.hash == 0 )
 		{
 			col = AEColor.BLACK;
 		}
@@ -116,7 +116,7 @@ class BiometricCardBakedModel implements IBakedModel
 				}
 				else
 				{
-					isLit = ( hash & ( 1 << x ) ) != 0 || ( hash & ( 1 << y ) ) != 0;
+					isLit = ( this.hash & ( 1 << x ) ) != 0 || ( this.hash & ( 1 << y ) ) != 0;
 				}
 
 				if( isLit )
@@ -139,31 +139,31 @@ class BiometricCardBakedModel implements IBakedModel
 	@Override
 	public boolean isAmbientOcclusion()
 	{
-		return baseModel.isAmbientOcclusion();
+		return this.baseModel.isAmbientOcclusion();
 	}
 
 	@Override
 	public boolean isGui3d()
 	{
-		return baseModel.isGui3d();
+		return this.baseModel.isGui3d();
 	}
 
 	@Override
 	public boolean isBuiltInRenderer()
 	{
-		return baseModel.isBuiltInRenderer();
+		return this.baseModel.isBuiltInRenderer();
 	}
 
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		return baseModel.getParticleTexture();
+		return this.baseModel.getParticleTexture();
 	}
 
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms()
 	{
-		return baseModel.getItemCameraTransforms();
+		return this.baseModel.getItemCameraTransforms();
 	}
 
 	@Override
@@ -200,7 +200,7 @@ class BiometricCardBakedModel implements IBakedModel
 
 				try
 				{
-					return modelCache.get( hash, () -> new BiometricCardBakedModel( format, baseModel, texture, hash, modelCache ) );
+					return BiometricCardBakedModel.this.modelCache.get( hash, () -> new BiometricCardBakedModel( BiometricCardBakedModel.this.format, BiometricCardBakedModel.this.baseModel, BiometricCardBakedModel.this.texture, hash, BiometricCardBakedModel.this.modelCache ) );
 				}
 				catch( ExecutionException e )
 				{
@@ -215,9 +215,9 @@ class BiometricCardBakedModel implements IBakedModel
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective( ItemCameraTransforms.TransformType type )
 	{
 		// Delegate to the base model if possible
-		if( baseModel instanceof IModel )
+		if( this.baseModel instanceof IModel )
 		{
-			IBakedModel pam = (IBakedModel) baseModel;
+			IBakedModel pam = (IBakedModel) this.baseModel;
 			Pair<? extends IBakedModel, Matrix4f> pair = pam.handlePerspective( type );
 			return Pair.of( this, pair.getValue() );
 		}

@@ -88,7 +88,7 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 	@Override
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final BlockPos pos, final Entity thePlayer, final boolean b )
 	{
-		final AxisAlignedBB aabb = computeAABB( w, pos );
+		final AxisAlignedBB aabb = this.computeAABB( w, pos );
 
 		return Collections.singletonList( aabb );
 	}
@@ -96,7 +96,7 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 	@Override
 	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
 	{
-		final AxisAlignedBB aabb = computeAABB( w, pos );
+		final AxisAlignedBB aabb = this.computeAABB( w, pos );
 
 		out.add( aabb );
 	}

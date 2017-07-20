@@ -47,7 +47,7 @@ public class TileEntityDefinition
 
 	public Class<? extends AEBaseTile> getTileEntityClass()
 	{
-		return tileEntityClass;
+		return this.tileEntityClass;
 	}
 
 	public void setName( String name )
@@ -57,16 +57,16 @@ public class TileEntityDefinition
 
 	public String getName()
 	{
-		return name;
+		return this.name;
 	}
 
 	public boolean isRegistered()
 	{
-		return isRegistered;
+		return this.isRegistered;
 	}
 
 	public void setRegistered( boolean registered )
 	{
-		isRegistered = registered;
+		this.isRegistered = registered;
 	}
 }

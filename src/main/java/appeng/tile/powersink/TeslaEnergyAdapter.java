@@ -43,12 +43,12 @@ class TeslaEnergyAdapter implements ITeslaConsumer
 		// Cut it down to what we can represent in a double
 		double powerDbl = (double) power;
 
-		double networkDemand = sink.getExternalPowerDemand( PowerUnits.RF, powerDbl );
+		double networkDemand = this.sink.getExternalPowerDemand( PowerUnits.RF, powerDbl );
 		long used = (long) Math.min( powerDbl, networkDemand );
 
 		if( !simulated )
 		{
-			sink.injectExternalPower( PowerUnits.RF, used );
+			this.sink.injectExternalPower( PowerUnits.RF, used );
 		}
 
 		return used;

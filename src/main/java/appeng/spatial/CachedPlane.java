@@ -418,7 +418,7 @@ public class CachedPlane
 
 		private void setBlockIDWithMetadata( final int y, final Object[] blk )
 		{
-			if( blk[0] == matrixBlockState )
+			if( blk[0] == CachedPlane.this.matrixBlockState )
 			{
 				blk[0] = Platform.AIR_BLOCK.getDefaultState();
 			}

@@ -41,7 +41,7 @@ public class StaticItemColor implements IItemColor
 	@Override
 	public int getColorFromItemstack( ItemStack stack, int tintIndex )
 	{
-		return color.getVariantByTintIndex( tintIndex );
+		return this.color.getVariantByTintIndex( tintIndex );
 	}
 
 }

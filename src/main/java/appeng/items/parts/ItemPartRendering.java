@@ -111,13 +111,13 @@ public class ItemPartRendering extends ItemRenderingCustomizer
 		List<ResourceLocation> partResourceLocs = modelNames.stream()
 				.map( name -> new ResourceLocation( AppEng.MOD_ID, name ) )
 				.collect( Collectors.toList() );
-		partModels.registerModels( partResourceLocs );
+		this.partModels.registerModels( partResourceLocs );
 	}
 
 	private ModelResourceLocation getItemMeshDefinition( ItemStack is )
 	{
-		PartType partType = item.getTypeByStack( is );
-		int variant = item.variantOf( is.getItemDamage() );
+		PartType partType = this.item.getTypeByStack( is );
+		int variant = this.item.variantOf( is.getItemDamage() );
 		return partType.getItemModels().get( variant );
 	}
 }

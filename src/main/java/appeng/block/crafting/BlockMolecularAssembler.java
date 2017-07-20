@@ -63,7 +63,7 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 	public IBlockState getActualState( IBlockState state, IBlockAccess worldIn, BlockPos pos )
 	{
 		boolean powered = false;
-		TileMolecularAssembler te = getTileEntity( worldIn, pos );
+		TileMolecularAssembler te = this.getTileEntity( worldIn, pos );
 		if( te != null )
 		{
 			powered = te.isPowered();

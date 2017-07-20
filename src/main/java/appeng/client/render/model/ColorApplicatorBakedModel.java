@@ -41,17 +41,17 @@ class ColorApplicatorBakedModel implements IBakedModel
 		this.transforms = map;
 
 		// Put the tint indices in... Since this is an item model, we are ignoring rand
-		this.generalQuads = fixQuadTint( null, texDark, texMedium, texBright );
+		this.generalQuads = this.fixQuadTint( null, texDark, texMedium, texBright );
 		this.quadsBySide = new EnumMap<>( EnumFacing.class );
 		for( EnumFacing facing : EnumFacing.values() )
 		{
-			this.quadsBySide.put( facing, fixQuadTint( facing, texDark, texMedium, texBright ) );
+			this.quadsBySide.put( facing, this.fixQuadTint( facing, texDark, texMedium, texBright ) );
 		}
 	}
 
 	private List<BakedQuad> fixQuadTint( EnumFacing facing, TextureAtlasSprite texDark, TextureAtlasSprite texMedium, TextureAtlasSprite texBright )
 	{
-		List<BakedQuad> quads = baseModel.getQuads( null, facing, 0 );
+		List<BakedQuad> quads = this.baseModel.getQuads( null, facing, 0 );
 		List<BakedQuad> result = new ArrayList<>( quads.size() );
 		for( BakedQuad quad : quads )
 		{
@@ -88,7 +88,7 @@ class ColorApplicatorBakedModel implements IBakedModel
 	{
 		if( side == null )
 		{
-			return generalQuads;
+			return this.generalQuads;
 		}
 		return this.quadsBySide.get( side );
 	}
@@ -96,42 +96,42 @@ class ColorApplicatorBakedModel implements IBakedModel
 	@Override
 	public boolean isAmbientOcclusion()
 	{
-		return baseModel.isAmbientOcclusion();
+		return this.baseModel.isAmbientOcclusion();
 	}
 
 	@Override
 	public boolean isGui3d()
 	{
-		return baseModel.isGui3d();
+		return this.baseModel.isGui3d();
 	}
 
 	@Override
 	public boolean isBuiltInRenderer()
 	{
-		return baseModel.isBuiltInRenderer();
+		return this.baseModel.isBuiltInRenderer();
 	}
 
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		return baseModel.getParticleTexture();
+		return this.baseModel.getParticleTexture();
 	}
 
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms()
 	{
-		return baseModel.getItemCameraTransforms();
+		return this.baseModel.getItemCameraTransforms();
 	}
 
 	@Override
 	public ItemOverrideList getOverrides()
 	{
-		return baseModel.getOverrides();
+		return this.baseModel.getOverrides();
 	}
 
 	@Override
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective( ItemCameraTransforms.TransformType type )
 	{
-		return PerspectiveMapWrapper.handlePerspective( this, transforms, type );
+		return PerspectiveMapWrapper.handlePerspective( this, this.transforms, type );
 	}
 }

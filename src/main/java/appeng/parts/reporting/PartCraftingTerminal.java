@@ -117,7 +117,7 @@ public class PartCraftingTerminal extends AbstractPartTerminal
 	@Override
 	public IPartModel getStaticModels()
 	{
-		return selectModel( MODELS_OFF, MODELS_ON, MODELS_HAS_CHANNEL );
+		return this.selectModel( MODELS_OFF, MODELS_ON, MODELS_HAS_CHANNEL );
 	}
 
 }

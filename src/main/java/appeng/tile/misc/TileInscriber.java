@@ -589,17 +589,17 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	{
 		if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
 		{
-			if( facing == getUp() )
+			if( facing == this.getUp() )
 			{
-				return (T) topItemHandler;
+				return (T) this.topItemHandler;
 			}
-			else if( facing == getUp().getOpposite() )
+			else if( facing == this.getUp().getOpposite() )
 			{
-				return (T) bottomItemHandler;
+				return (T) this.bottomItemHandler;
 			}
 			else
 			{
-				return (T) sideItemHandler;
+				return (T) this.sideItemHandler;
 			}
 		}
 
@@ -673,7 +673,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		@Override
 		public int getSlots()
 		{
-			return insertSlot != extractSlot ? 2 : 1;
+			return this.insertSlot != this.extractSlot ? 2 : 1;
 		}
 
 		@Override
@@ -682,11 +682,11 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		{
 			if( slot == 0 )
 			{
-				return inv.getStackInSlot( insertSlot );
+				return TileInscriber.this.inv.getStackInSlot( this.insertSlot );
 			}
-			else if( insertSlot != extractSlot && slot == 1 )
+			else if( this.insertSlot != this.extractSlot && slot == 1 )
 			{
-				return inv.getStackInSlot( extractSlot );
+				return TileInscriber.this.inv.getStackInSlot( this.extractSlot );
 			}
 			return ItemStack.EMPTY;
 		}
@@ -701,12 +701,12 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			}
 
 			// If there's already an item stack in the slot, we don't allow insertion and don't do any other checks
-			if( !inv.getStackInSlot( insertSlot ).isEmpty() )
+			if( !TileInscriber.this.inv.getStackInSlot( this.insertSlot ).isEmpty() )
 			{
 				return stack;
 			}
 
-			AdaptorIInventory adapter = new AdaptorIInventory( new WrapperInventoryRange( TileInscriber.this, insertSlot, 1, true ) );
+			AdaptorIInventory adapter = new AdaptorIInventory( new WrapperInventoryRange( TileInscriber.this, this.insertSlot, 1, true ) );
 
 			if( simulate )
 			{
@@ -722,14 +722,14 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		@Nonnull
 		public ItemStack extractItem( int slot, int amount, boolean simulate )
 		{
-			final int validExtractSlot = ( insertSlot == extractSlot ) ? 0 : 1;
+			final int validExtractSlot = ( this.insertSlot == this.extractSlot ) ? 0 : 1;
 
 			if( slot != validExtractSlot || amount == 0 )
 			{
 				return ItemStack.EMPTY;
 			}
 
-			AdaptorIInventory adapter = new AdaptorIInventory( new WrapperInventoryRange( TileInscriber.this, extractSlot, 1, true ) );
+			AdaptorIInventory adapter = new AdaptorIInventory( new WrapperInventoryRange( TileInscriber.this, this.extractSlot, 1, true ) );
 
 			if( simulate )
 			{

@@ -38,19 +38,19 @@ public class AppEngCoreTest
 	@Test
 	public void testTransformerStringsMatchActualClasses()
 	{
-		assertArrayEquals( EXPECTED_TRANSFORMERS, coreModContainer.getASMTransformerClass() );
+		assertArrayEquals( EXPECTED_TRANSFORMERS, this.coreModContainer.getASMTransformerClass() );
 	}
 
 	@Test
 	public void testContainerClassExists()
 	{
-		assertEquals( EXPECTED_CONTAINER_CLASS_NAME, coreModContainer.getModContainerClass() );
+		assertEquals( EXPECTED_CONTAINER_CLASS_NAME, this.coreModContainer.getModContainerClass() );
 	}
 
 	@Test
 	public void testContainerModId()
 	{
-		assertEquals( EXPECTED_CONTAINER_MOD_ID, coreModContainer.getModId() );
+		assertEquals( EXPECTED_CONTAINER_MOD_ID, this.coreModContainer.getModId() );
 	}
 
 }

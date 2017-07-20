@@ -107,7 +107,7 @@ class ItemRendering implements IItemRendering
 	{
 		if( this.itemMeshDefinition != null )
 		{
-			factory.addBootstrapComponent( new ItemMeshDefinitionComponent( item, itemMeshDefinition ) );
+			factory.addBootstrapComponent( new ItemMeshDefinitionComponent( item, this.itemMeshDefinition ) );
 		}
 
 		if( !this.itemModels.isEmpty() )
@@ -115,7 +115,7 @@ class ItemRendering implements IItemRendering
 			factory.addBootstrapComponent( new ItemModelComponent( item, this.itemModels ) );
 		}
 
-		Set<ResourceLocation> resources = new HashSet<>( variants );
+		Set<ResourceLocation> resources = new HashSet<>( this.variants );
 
 		// Register a default item model if neither items by meta nor an item mesh definition exist
 		if( this.itemMeshDefinition == null && this.itemModels.isEmpty() )
@@ -141,13 +141,13 @@ class ItemRendering implements IItemRendering
 		}
 
 		// TODO : 1.12
-		builtInModels.forEach( factory::addBuiltInModel );
+		this.builtInModels.forEach( factory::addBuiltInModel );
 
 		if( !resources.isEmpty() )
 		{
 			factory.addBootstrapComponent( new ItemVariantsComponent( item, resources ) );
 		}
-		else if( !this.itemModels.isEmpty() || itemMeshDefinition != null )
+		else if( !this.itemModels.isEmpty() || this.itemMeshDefinition != null )
 		{
 			// Adding an empty variant list here will prevent Vanilla from trying to load the default item model in this
 			// case
@@ -159,9 +159,9 @@ class ItemRendering implements IItemRendering
 			factory.addBootstrapComponent( new ItemVariantsComponent( item, Collections.emptyList() ) );
 		}
 
-		if( itemColor != null )
+		if( this.itemColor != null )
 		{
-			factory.addBootstrapComponent( new ItemColorComponent( item, itemColor ) );
+			factory.addBootstrapComponent( new ItemColorComponent( item, this.itemColor ) );
 		}
 	}
 
@@ -178,7 +178,7 @@ class ItemRendering implements IItemRendering
 		@Override
 		protected ModelResourceLocation getModelResourceLocation( IBlockState state )
 		{
-			return new ModelResourceLocation( registryName, getPropertyString( state.getProperties() ) );
+			return new ModelResourceLocation( this.registryName, this.getPropertyString( state.getProperties() ) );
 		}
 	}
 }

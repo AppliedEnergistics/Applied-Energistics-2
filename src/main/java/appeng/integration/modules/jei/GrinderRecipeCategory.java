@@ -64,13 +64,13 @@ class GrinderRecipeCategory extends BlankRecipeCategory<GrinderRecipeWrapper>
 	@Override
 	public String getTitle()
 	{
-		return localizedName;
+		return this.localizedName;
 	}
 
 	@Override
 	public IDrawable getBackground()
 	{
-		return background;
+		return this.background;
 	}
 
 	@Override

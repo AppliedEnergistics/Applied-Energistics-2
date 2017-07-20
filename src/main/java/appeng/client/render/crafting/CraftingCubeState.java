@@ -40,6 +40,6 @@ public final class CraftingCubeState
 
 	public EnumSet<EnumFacing> getConnections()
 	{
-		return connections;
+		return this.connections;
 	}
 }

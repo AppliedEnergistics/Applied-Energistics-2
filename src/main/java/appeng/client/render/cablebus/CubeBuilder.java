@@ -84,21 +84,21 @@ public class CubeBuilder
 		// If brightness is forced to specific values, extend the vertex format to contain the multi-texturing lightmap
 		// offset
 		VertexFormat savedFormat = null;
-		if( renderFullBright )
+		if( this.renderFullBright )
 		{
-			savedFormat = format;
-			format = VertexFormats.getFormatWithLightMap( format );
+			savedFormat = this.format;
+			this.format = VertexFormats.getFormatWithLightMap( this.format );
 		}
 
-		for( EnumFacing face : drawFaces )
+		for( EnumFacing face : this.drawFaces )
 		{
-			putFace( face, x1, y1, z1, x2, y2, z2 );
+			this.putFace( face, x1, y1, z1, x2, y2, z2 );
 		}
 
 		// Restore old format
 		if( savedFormat != null )
 		{
-			format = savedFormat;
+			this.format = savedFormat;
 		}
 	}
 
@@ -107,22 +107,22 @@ public class CubeBuilder
 		// If brightness is forced to specific values, extend the vertex format to contain the multi-texturing lightmap
 		// offset
 		VertexFormat savedFormat = null;
-		if( renderFullBright )
+		if( this.renderFullBright )
 		{
-			savedFormat = format;
-			format = new VertexFormat( savedFormat );
-			if( !format.getElements().contains( DefaultVertexFormats.TEX_2S ) )
+			savedFormat = this.format;
+			this.format = new VertexFormat( savedFormat );
+			if( !this.format.getElements().contains( DefaultVertexFormats.TEX_2S ) )
 			{
-				format.addElement( DefaultVertexFormats.TEX_2S );
+				this.format.addElement( DefaultVertexFormats.TEX_2S );
 			}
 		}
 
-		putFace( face, x1, y1, z1, x2, y2, z2 );
+		this.putFace( face, x1, y1, z1, x2, y2, z2 );
 
 		// Restore old format
 		if( savedFormat != null )
 		{
-			format = savedFormat;
+			this.format = savedFormat;
 		}
 	}
 
@@ -137,9 +137,9 @@ public class CubeBuilder
 	private void putFace( EnumFacing face, float x1, float y1, float z1, float x2, float y2, float z2 )
 	{
 
-		TextureAtlasSprite texture = textures.get( face );
+		TextureAtlasSprite texture = this.textures.get( face );
 
-		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder( format );
+		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder( this.format );
 		builder.setTexture( texture );
 		builder.setQuadOrientation( face );
 
@@ -156,51 +156,51 @@ public class CubeBuilder
 		}
 		else
 		{
-			uv = getDefaultUv( face, texture, x1, y1, z1, x2, y2, z2 );
+			uv = this.getDefaultUv( face, texture, x1, y1, z1, x2, y2, z2 );
 		}
 
 		switch( face )
 		{
 			case DOWN:
-				putVertexTR( builder, face, x2, y1, z1, uv );
-				putVertexBR( builder, face, x2, y1, z2, uv );
-				putVertexBL( builder, face, x1, y1, z2, uv );
-				putVertexTL( builder, face, x1, y1, z1, uv );
+				this.putVertexTR( builder, face, x2, y1, z1, uv );
+				this.putVertexBR( builder, face, x2, y1, z2, uv );
+				this.putVertexBL( builder, face, x1, y1, z2, uv );
+				this.putVertexTL( builder, face, x1, y1, z1, uv );
 				break;
 			case UP:
-				putVertexTL( builder, face, x1, y2, z1, uv );
-				putVertexBL( builder, face, x1, y2, z2, uv );
-				putVertexBR( builder, face, x2, y2, z2, uv );
-				putVertexTR( builder, face, x2, y2, z1, uv );
+				this.putVertexTL( builder, face, x1, y2, z1, uv );
+				this.putVertexBL( builder, face, x1, y2, z2, uv );
+				this.putVertexBR( builder, face, x2, y2, z2, uv );
+				this.putVertexTR( builder, face, x2, y2, z1, uv );
 				break;
 			case NORTH:
-				putVertexBR( builder, face, x2, y2, z1, uv );
-				putVertexTR( builder, face, x2, y1, z1, uv );
-				putVertexTL( builder, face, x1, y1, z1, uv );
-				putVertexBL( builder, face, x1, y2, z1, uv );
+				this.putVertexBR( builder, face, x2, y2, z1, uv );
+				this.putVertexTR( builder, face, x2, y1, z1, uv );
+				this.putVertexTL( builder, face, x1, y1, z1, uv );
+				this.putVertexBL( builder, face, x1, y2, z1, uv );
 				break;
 			case SOUTH:
-				putVertexBL( builder, face, x1, y2, z2, uv );
-				putVertexTL( builder, face, x1, y1, z2, uv );
-				putVertexTR( builder, face, x2, y1, z2, uv );
-				putVertexBR( builder, face, x2, y2, z2, uv );
+				this.putVertexBL( builder, face, x1, y2, z2, uv );
+				this.putVertexTL( builder, face, x1, y1, z2, uv );
+				this.putVertexTR( builder, face, x2, y1, z2, uv );
+				this.putVertexBR( builder, face, x2, y2, z2, uv );
 				break;
 			case WEST:
-				putVertexTL( builder, face, x1, y1, z1, uv );
-				putVertexTR( builder, face, x1, y1, z2, uv );
-				putVertexBR( builder, face, x1, y2, z2, uv );
-				putVertexBL( builder, face, x1, y2, z1, uv );
+				this.putVertexTL( builder, face, x1, y1, z1, uv );
+				this.putVertexTR( builder, face, x1, y1, z2, uv );
+				this.putVertexBR( builder, face, x1, y2, z2, uv );
+				this.putVertexBL( builder, face, x1, y2, z1, uv );
 				break;
 			case EAST:
-				putVertexBR( builder, face, x2, y2, z1, uv );
-				putVertexBL( builder, face, x2, y2, z2, uv );
-				putVertexTL( builder, face, x2, y1, z2, uv );
-				putVertexTR( builder, face, x2, y1, z1, uv );
+				this.putVertexBR( builder, face, x2, y2, z1, uv );
+				this.putVertexBL( builder, face, x2, y2, z2, uv );
+				this.putVertexTL( builder, face, x2, y1, z2, uv );
+				this.putVertexTR( builder, face, x2, y1, z1, uv );
 				break;
 		}
 
 		int[] vertexData = builder.build().getVertexData();
-		output.add( new BakedQuad( vertexData, -1, face, texture, true, format ) );
+		this.output.add( new BakedQuad( vertexData, -1, face, texture, true, this.format ) );
 	}
 
 	private UvVector getDefaultUv( EnumFacing face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2, float y2, float z2 )
@@ -256,7 +256,7 @@ public class CubeBuilder
 	{
 		float u, v;
 
-		switch( uvRotations[face.ordinal()] )
+		switch( this.uvRotations[face.ordinal()] )
 		{
 			default:
 			case 0:
@@ -277,7 +277,7 @@ public class CubeBuilder
 				break;
 		}
 
-		putVertex( builder, face, x, y, z, u, v );
+		this.putVertex( builder, face, x, y, z, u, v );
 	}
 
 	// uv.u2, uv.v1
@@ -285,7 +285,7 @@ public class CubeBuilder
 	{
 		float u, v;
 
-		switch( uvRotations[face.ordinal()] )
+		switch( this.uvRotations[face.ordinal()] )
 		{
 			default:
 			case 0:
@@ -305,7 +305,7 @@ public class CubeBuilder
 				v = uv.v2;
 				break;
 		}
-		putVertex( builder, face, x, y, z, u, v );
+		this.putVertex( builder, face, x, y, z, u, v );
 	}
 
 	// uv.u2, uv.v2
@@ -315,7 +315,7 @@ public class CubeBuilder
 		float u;
 		float v;
 
-		switch( uvRotations[face.ordinal()] )
+		switch( this.uvRotations[face.ordinal()] )
 		{
 			default:
 			case 0:
@@ -336,7 +336,7 @@ public class CubeBuilder
 				break;
 		}
 
-		putVertex( builder, face, x, y, z, u, v );
+		this.putVertex( builder, face, x, y, z, u, v );
 	}
 
 	// uv.u1, uv.v2
@@ -346,7 +346,7 @@ public class CubeBuilder
 		float u;
 		float v;
 
-		switch( uvRotations[face.ordinal()] )
+		switch( this.uvRotations[face.ordinal()] )
 		{
 			default:
 			case 0:
@@ -367,7 +367,7 @@ public class CubeBuilder
 				break;
 		}
 
-		putVertex( builder, face, x, y, z, u, v );
+		this.putVertex( builder, face, x, y, z, u, v );
 	}
 
 	private void putVertex( UnpackedBakedQuad.Builder builder, EnumFacing face, float x, float y, float z, float u, float v )
@@ -387,10 +387,10 @@ public class CubeBuilder
 					break;
 				case COLOR:
 					// Color format is RGBA
-					float r = ( color >> 16 & 0xFF ) / 255f;
-					float g = ( color >> 8 & 0xFF ) / 255f;
-					float b = ( color & 0xFF ) / 255f;
-					float a = ( color >> 24 & 0xFF ) / 255f;
+					float r = ( this.color >> 16 & 0xFF ) / 255f;
+					float g = ( this.color >> 8 & 0xFF ) / 255f;
+					float b = ( this.color & 0xFF ) / 255f;
+					float a = ( this.color >> 24 & 0xFF ) / 255f;
 					builder.put( i, r, g, b, a );
 					break;
 				case UV:
@@ -418,23 +418,23 @@ public class CubeBuilder
 	{
 		for( EnumFacing face : EnumFacing.values() )
 		{
-			textures.put( face, texture );
+			this.textures.put( face, texture );
 		}
 	}
 
 	public void setTextures( TextureAtlasSprite up, TextureAtlasSprite down, TextureAtlasSprite north, TextureAtlasSprite south, TextureAtlasSprite east, TextureAtlasSprite west )
 	{
-		textures.put( EnumFacing.UP, up );
-		textures.put( EnumFacing.DOWN, down );
-		textures.put( EnumFacing.NORTH, north );
-		textures.put( EnumFacing.SOUTH, south );
-		textures.put( EnumFacing.EAST, east );
-		textures.put( EnumFacing.WEST, west );
+		this.textures.put( EnumFacing.UP, up );
+		this.textures.put( EnumFacing.DOWN, down );
+		this.textures.put( EnumFacing.NORTH, north );
+		this.textures.put( EnumFacing.SOUTH, south );
+		this.textures.put( EnumFacing.EAST, east );
+		this.textures.put( EnumFacing.WEST, west );
 	}
 
 	public void setTexture( EnumFacing facing, TextureAtlasSprite sprite )
 	{
-		textures.put( facing, sprite );
+		this.textures.put( facing, sprite );
 	}
 
 	public void setDrawFaces( EnumSet<EnumFacing> drawFaces )
@@ -452,12 +452,12 @@ public class CubeBuilder
 	 */
 	public void setColorRGB( int color )
 	{
-		setColor( color | 0xFF000000 );
+		this.setColor( color | 0xFF000000 );
 	}
 
 	public void setColorRGB( float r, float g, float b )
 	{
-		setColorRGB( (int) ( r * 255 ) << 16 | (int) ( g * 255 ) << 8 | (int) ( b * 255 ) );
+		this.setColorRGB( (int) ( r * 255 ) << 16 | (int) ( g * 255 ) << 8 | (int) ( b * 255 ) );
 	}
 
 	public void setRenderFullBright( boolean renderFullBright )
@@ -467,7 +467,7 @@ public class CubeBuilder
 
 	public void setCustomUv( EnumFacing facing, float u1, float v1, float u2, float v2 )
 	{
-		customUv.put( facing, new Vector4f( u1, v1, u2, v2 ) );
+		this.customUv.put( facing, new Vector4f( u1, v1, u2, v2 ) );
 	}
 
 	public void setUvRotation( EnumFacing facing, int rotation )
@@ -481,11 +481,11 @@ public class CubeBuilder
 			rotation = 2;
 		}
 		Preconditions.checkArgument( rotation >= 0 && rotation <= 3, "rotation" );
-		uvRotations[facing.ordinal()] = (byte) rotation;
+		this.uvRotations[facing.ordinal()] = (byte) rotation;
 	}
 
 	public List<BakedQuad> getOutput()
 	{
-		return output;
+		return this.output;
 	}
 }

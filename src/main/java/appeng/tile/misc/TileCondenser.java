@@ -287,15 +287,15 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	{
 		if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
 		{
-			return (T) itemHandler;
+			return (T) this.itemHandler;
 		}
 		else if( capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY )
 		{
-			return (T) fluidHandler;
+			return (T) this.fluidHandler;
 		}
 		else if( capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR )
 		{
-			return (T) meHandler;
+			return (T) this.meHandler;
 		}
 		return super.getCapability( capability, facing );
 	}
@@ -326,7 +326,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 			}
 			if( !simulate && !stack.isEmpty() )
 			{
-				addPower( stack.getCount() );
+				TileCondenser.this.addPower( stack.getCount() );
 			}
 			return ItemStack.EMPTY;
 		}
@@ -364,7 +364,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		{
 			if( doFill )
 			{
-				addPower( ( resource == null ? 0.0 : (double) resource.amount ) / 500.0 );
+				TileCondenser.this.addPower( ( resource == null ? 0.0 : (double) resource.amount ) / 500.0 );
 			}
 
 			return resource == null ? 0 : resource.amount;
@@ -408,13 +408,13 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		@Override
 		public IMEMonitor<IAEItemStack> getItemInventory()
 		{
-			return itemInventory;
+			return this.itemInventory;
 		}
 
 		@Override
 		public IMEMonitor<IAEFluidStack> getFluidInventory()
 		{
-			return fluidInventory;
+			return this.fluidInventory;
 		}
 	}
 

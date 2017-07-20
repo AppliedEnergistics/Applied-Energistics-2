@@ -75,7 +75,7 @@ public class BlockPaint extends AEBaseTileBlock
 	{
 		IExtendedBlockState extState = (IExtendedBlockState) state;
 
-		TilePaint te = getTileEntity( world, pos );
+		TilePaint te = this.getTileEntity( world, pos );
 
 		Collection<Splotch> splotches = Collections.emptyList();
 		if( te != null )

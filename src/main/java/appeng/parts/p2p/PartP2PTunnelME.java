@@ -264,7 +264,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	@Override
 	public IPartModel getStaticModels()
 	{
-		return MODELS.getModel( isPowered(), isActive() );
+		return MODELS.getModel( this.isPowered(), this.isActive() );
 	}
 
 }

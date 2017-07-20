@@ -41,12 +41,12 @@ public class AdaptorItemHandler extends InventoryAdaptor
 	@Override
 	public ItemStack removeItems( int amount, ItemStack filter, IInventoryDestination destination )
 	{
-		int slots = itemHandler.getSlots();
+		int slots = this.itemHandler.getSlots();
 		ItemStack rv = ItemStack.EMPTY;
 
 		for( int slot = 0; slot < slots && amount > 0; slot++ )
 		{
-			final ItemStack is = itemHandler.getStackInSlot( slot );
+			final ItemStack is = this.itemHandler.getStackInSlot( slot );
 			if( is.isEmpty() || ( !filter.isEmpty() && !Platform.itemComparisons().isSameItem( is, filter ) ) )
 			{
 				continue;
@@ -54,7 +54,7 @@ public class AdaptorItemHandler extends InventoryAdaptor
 
 			if( destination != null )
 			{
-				ItemStack extracted = itemHandler.extractItem( slot, amount, true );
+				ItemStack extracted = this.itemHandler.extractItem( slot, amount, true );
 				if( extracted.isEmpty() )
 				{
 					continue;
@@ -67,7 +67,7 @@ public class AdaptorItemHandler extends InventoryAdaptor
 			}
 
 			// Attempt extracting it
-			ItemStack extracted = itemHandler.extractItem( slot, amount, false );
+			ItemStack extracted = this.itemHandler.extractItem( slot, amount, false );
 
 			if( extracted.isEmpty() )
 			{
@@ -95,15 +95,15 @@ public class AdaptorItemHandler extends InventoryAdaptor
 	@Override
 	public ItemStack simulateRemove( int amount, ItemStack filter, IInventoryDestination destination )
 	{
-		int slots = itemHandler.getSlots();
+		int slots = this.itemHandler.getSlots();
 		ItemStack rv = ItemStack.EMPTY;
 
 		for( int slot = 0; slot < slots && amount > 0; slot++ )
 		{
-			final ItemStack is = itemHandler.getStackInSlot( slot );
+			final ItemStack is = this.itemHandler.getStackInSlot( slot );
 			if( !is.isEmpty() && ( filter.isEmpty() || Platform.itemComparisons().isSameItem( is, filter ) ) )
 			{
-				ItemStack extracted = itemHandler.extractItem( slot, amount, true );
+				ItemStack extracted = this.itemHandler.extractItem( slot, amount, true );
 
 				if( extracted.isEmpty() )
 				{
@@ -144,12 +144,12 @@ public class AdaptorItemHandler extends InventoryAdaptor
 	@Override
 	public ItemStack removeSimilarItems( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
 	{
-		int slots = itemHandler.getSlots();
+		int slots = this.itemHandler.getSlots();
 		ItemStack extracted = ItemStack.EMPTY;
 
 		for( int slot = 0; slot < slots && extracted.isEmpty(); slot++ )
 		{
-			final ItemStack is = itemHandler.getStackInSlot( slot );
+			final ItemStack is = this.itemHandler.getStackInSlot( slot );
 			if( is.isEmpty() || ( !filter.isEmpty() && !Platform.itemComparisons().isFuzzyEqualItem( is, filter, fuzzyMode ) ) )
 			{
 				continue;
@@ -157,7 +157,7 @@ public class AdaptorItemHandler extends InventoryAdaptor
 
 			if( destination != null )
 			{
-				ItemStack simulated = itemHandler.extractItem( slot, amount, true );
+				ItemStack simulated = this.itemHandler.extractItem( slot, amount, true );
 				if( simulated.isEmpty() )
 				{
 					continue;
@@ -170,7 +170,7 @@ public class AdaptorItemHandler extends InventoryAdaptor
 			}
 
 			// Attempt extracting it
-			extracted = itemHandler.extractItem( slot, amount, false );
+			extracted = this.itemHandler.extractItem( slot, amount, false );
 		}
 
 		return extracted;
@@ -179,19 +179,19 @@ public class AdaptorItemHandler extends InventoryAdaptor
 	@Override
 	public ItemStack simulateSimilarRemove( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination )
 	{
-		int slots = itemHandler.getSlots();
+		int slots = this.itemHandler.getSlots();
 		ItemStack extracted = ItemStack.EMPTY;
 
 		for( int slot = 0; slot < slots && extracted.isEmpty(); slot++ )
 		{
-			final ItemStack is = itemHandler.getStackInSlot( slot );
+			final ItemStack is = this.itemHandler.getStackInSlot( slot );
 			if( is.isEmpty() || ( !filter.isEmpty() && !Platform.itemComparisons().isFuzzyEqualItem( is, filter, fuzzyMode ) ) )
 			{
 				continue;
 			}
 
 			// Attempt extracting it
-			extracted = itemHandler.extractItem( slot, amount, true );
+			extracted = this.itemHandler.extractItem( slot, amount, true );
 
 			if( !extracted.isEmpty() && destination != null )
 			{
@@ -208,13 +208,13 @@ public class AdaptorItemHandler extends InventoryAdaptor
 	@Override
 	public ItemStack addItems( ItemStack toBeAdded )
 	{
-		return addItems( toBeAdded, false );
+		return this.addItems( toBeAdded, false );
 	}
 
 	@Override
 	public ItemStack simulateAdd( ItemStack toBeSimulated )
 	{
-		return addItems( toBeSimulated, true );
+		return this.addItems( toBeSimulated, true );
 	}
 
 	private ItemStack addItems( final ItemStack itemsToAdd, final boolean simulate )
@@ -226,13 +226,13 @@ public class AdaptorItemHandler extends InventoryAdaptor
 
 		ItemStack left = itemsToAdd.copy();
 
-		for( int slot = 0; slot < itemHandler.getSlots(); slot++ )
+		for( int slot = 0; slot < this.itemHandler.getSlots(); slot++ )
 		{
-			ItemStack is = itemHandler.getStackInSlot( slot );
+			ItemStack is = this.itemHandler.getStackInSlot( slot );
 
 			if( is.isEmpty() || Platform.itemComparisons().isSameItem( is, left ) )
 			{
-				left = itemHandler.insertItem( slot, left, simulate );
+				left = this.itemHandler.insertItem( slot, left, simulate );
 
 				if( left.isEmpty() || left.getCount() <= 0 )
 				{
@@ -247,10 +247,10 @@ public class AdaptorItemHandler extends InventoryAdaptor
 	@Override
 	public boolean containsItems()
 	{
-		int slots = itemHandler.getSlots();
+		int slots = this.itemHandler.getSlots();
 		for( int slot = 0; slot < slots; slot++ )
 		{
-			if( !itemHandler.getStackInSlot( slot ).isEmpty() )
+			if( !this.itemHandler.getStackInSlot( slot ).isEmpty() )
 			{
 				return true;
 			}
@@ -261,6 +261,6 @@ public class AdaptorItemHandler extends InventoryAdaptor
 	@Override
 	public Iterator<ItemSlot> iterator()
 	{
-		return new ItemHandlerIterator( itemHandler );
+		return new ItemHandlerIterator( this.itemHandler );
 	}
 }

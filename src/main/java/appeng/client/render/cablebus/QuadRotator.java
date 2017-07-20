@@ -53,7 +53,7 @@ public class QuadRotator
 
 		for( BakedQuad quad : quads )
 		{
-			result.add( rotateQuad( quad, newForward, newUp ) );
+			result.add( this.rotateQuad( quad, newForward, newUp ) );
 		}
 
 		return result;
@@ -82,7 +82,7 @@ public class QuadRotator
 
 		// Figure out where the position is in the array
 		VertexFormat format = quad.getFormat();
-		int posIdx = findPositionOffset( format ) / 4;
+		int posIdx = this.findPositionOffset( format ) / 4;
 		int stride = format.getNextOffset() / 4;
 		int normalIdx = format.getNormalOffset();
 		VertexFormatElement.EnumType normalType = null;

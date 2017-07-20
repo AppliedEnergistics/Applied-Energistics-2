@@ -80,7 +80,7 @@ public class FacadeBuilder
 	{
 		boolean thinFacades = isUseThinFacades( partBoxes );
 
-		CubeBuilder builder = new CubeBuilder( format, quads );
+		CubeBuilder builder = new CubeBuilder( this.format, quads );
 
 		facadesState.forEach( ( side, state ) ->
 		{
@@ -90,7 +90,7 @@ public class FacadeBuilder
 
 			try
 			{
-				addFacade( layer, facadesState, side, cutOutBox, thinFacades, renderStilt, rand, builder );
+				this.addFacade( layer, facadesState, side, cutOutBox, thinFacades, renderStilt, rand, builder );
 			}
 			catch( Throwable t )
 			{
@@ -179,7 +179,7 @@ public class FacadeBuilder
 		// We only render the stilt if we don't intersect with any part directly, and if there's no part on our side
 		if( renderStilt && busBounds == null && layer == BlockRenderLayer.CUTOUT )
 		{
-			builder.setTexture( facadeTexture );
+			builder.setTexture( this.facadeTexture );
 			switch( side )
 			{
 				case DOWN:
@@ -251,7 +251,7 @@ public class FacadeBuilder
 			else
 			{
 				builder.setColor( color );
-				builder.setTexture( facing, facadeTexture );
+				builder.setTexture( facing, this.facadeTexture );
 			}
 		}
 
@@ -478,12 +478,12 @@ public class FacadeBuilder
 
 		public TextureAtlasSprite getSprite()
 		{
-			return sprite;
+			return this.sprite;
 		}
 
 		public int getTint()
 		{
-			return tint;
+			return this.tint;
 		}
 
 	}

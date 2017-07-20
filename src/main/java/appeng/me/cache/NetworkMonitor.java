@@ -93,11 +93,11 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 			return this.getHandler().extractItems( request, mode, src );
 		}
 
-		localDepthSemaphore++;
+		this.localDepthSemaphore++;
 		final T leftover = this.getHandler().extractItems( request, mode, src );
-		localDepthSemaphore--;
+		this.localDepthSemaphore--;
 
-		if( localDepthSemaphore == 0 )
+		if( this.localDepthSemaphore == 0 )
 		{
 			this.monitorDifference( request.copy(), leftover, true, src );
 		}
@@ -157,11 +157,11 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 			return this.getHandler().injectItems( input, mode, src );
 		}
 
-		localDepthSemaphore++;
+		this.localDepthSemaphore++;
 		final T leftover = this.getHandler().injectItems( input, mode, src );
-		localDepthSemaphore--;
+		this.localDepthSemaphore--;
 
-		if( localDepthSemaphore == 0 )
+		if( this.localDepthSemaphore == 0 )
 		{
 			this.monitorDifference( input.copy(), leftover, false, src );
 		}
@@ -255,13 +255,13 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 
 	protected void postChange( final boolean add, final Iterable<T> changes, final BaseActionSource src )
 	{
-		if( localDepthSemaphore > 0 || GLOBAL_DEPTH.contains( this ) )
+		if( this.localDepthSemaphore > 0 || GLOBAL_DEPTH.contains( this ) )
 		{
 			return;
 		}
 
 		GLOBAL_DEPTH.push( this );
-		localDepthSemaphore++;
+		this.localDepthSemaphore++;
 
 		this.sendEvent = true;
 
@@ -304,7 +304,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 		}
 
 		final NetworkMonitor<?> last = GLOBAL_DEPTH.pop();
-		localDepthSemaphore--;
+		this.localDepthSemaphore--;
 
 		if( last != this )
 		{

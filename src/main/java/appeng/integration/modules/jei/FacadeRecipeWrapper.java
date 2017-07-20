@@ -66,18 +66,18 @@ class FacadeRecipeWrapper extends BlankRecipeWrapper implements IShapedCraftingR
 		List<ItemStack> input = new ArrayList<>( 9 );
 
 		input.add( ItemStack.EMPTY );
-		input.add( cableAnchor );
+		input.add( this.cableAnchor );
 		input.add( ItemStack.EMPTY );
 
-		input.add( cableAnchor );
-		input.add( textureItem );
-		input.add( cableAnchor );
+		input.add( this.cableAnchor );
+		input.add( this.textureItem );
+		input.add( this.cableAnchor );
 
 		input.add( ItemStack.EMPTY );
-		input.add( cableAnchor );
+		input.add( this.cableAnchor );
 		input.add( ItemStack.EMPTY );
 
 		ingredients.setInputs( ItemStack.class, input );
-		ingredients.setOutput( ItemStack.class, facade );
+		ingredients.setOutput( ItemStack.class, this.facade );
 	}
 }

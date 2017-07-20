@@ -108,7 +108,7 @@ public class ItemComparisonHelper
 	 */
 	public boolean isSameItem( @Nonnull final ItemStack is, @Nonnull final ItemStack filter )
 	{
-		return isEqualItem( is, filter ) && hasSameNbtTag( is, filter );
+		return this.isEqualItem( is, filter ) && this.hasSameNbtTag( is, filter );
 	}
 
 	/**
@@ -240,7 +240,7 @@ public class ItemComparisonHelper
 							return false;
 						}
 
-						if( !isNbtTagEqual( tag, aTag ) )
+						if( !this.isNbtTagEqual( tag, aTag ) )
 						{
 							return false;
 						}
@@ -258,8 +258,8 @@ public class ItemComparisonHelper
 						return false;
 					}
 
-					final List<NBTBase> tag = tagList( lA );
-					final List<NBTBase> aTag = tagList( lB );
+					final List<NBTBase> tag = this.tagList( lA );
+					final List<NBTBase> aTag = this.tagList( lB );
 					if( tag.size() != aTag.size() )
 					{
 						return false;
@@ -272,7 +272,7 @@ public class ItemComparisonHelper
 							return false;
 						}
 
-						if( !isNbtTagEqual( tag.get( x ), aTag.get( x ) ) )
+						if( !this.isNbtTagEqual( tag.get( x ), aTag.get( x ) ) )
 						{
 							return false;
 						}
@@ -327,7 +327,7 @@ public class ItemComparisonHelper
 
 				for( final String name : cA )
 				{
-					hash += name.hashCode() ^ createUnorderedNbtHash( ctA.getTag( name ) );
+					hash += name.hashCode() ^ this.createUnorderedNbtHash( ctA.getTag( name ) );
 				}
 
 				return hash;
@@ -338,10 +338,10 @@ public class ItemComparisonHelper
 				final NBTTagList lA = (NBTTagList) nbt;
 				hash += 9 * lA.tagCount();
 
-				final List<NBTBase> l = tagList( lA );
+				final List<NBTBase> l = this.tagList( lA );
 				for( int x = 0; x < l.size(); x++ )
 				{
-					hash += ( (Integer) x ).hashCode() ^ createUnorderedNbtHash( l.get( x ) );
+					hash += ( (Integer) x ).hashCode() ^ this.createUnorderedNbtHash( l.get( x ) );
 				}
 
 				return hash;
@@ -413,7 +413,7 @@ public class ItemComparisonHelper
 			return ta == tb;
 		}
 
-		return isNbtTagEqual( ta, tb );
+		return this.isNbtTagEqual( ta, tb );
 	}
 
 	private List<NBTBase> tagList( final NBTTagList lB )

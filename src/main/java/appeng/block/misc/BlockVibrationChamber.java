@@ -55,7 +55,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 	{
 		super( Material.IRON );
 		this.setHardness( 4.2F );
-		this.setDefaultState( getDefaultState().withProperty( ACTIVE, false ) );
+		this.setDefaultState( this.getDefaultState().withProperty( ACTIVE, false ) );
 	}
 
 	@Override

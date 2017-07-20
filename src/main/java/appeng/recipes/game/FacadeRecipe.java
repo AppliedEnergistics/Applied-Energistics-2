@@ -62,7 +62,7 @@ public final class FacadeRecipe extends net.minecraftforge.registries.IForgeRegi
 			if( this.anchor.isSameAs( inv.getStackInSlot( 1 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 3 ) ) && this.anchor
 					.isSameAs( inv.getStackInSlot( 5 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 7 ) ) )
 			{
-				final ItemStack facades = facade.createFacadeForItem( inv.getStackInSlot( 4 ), !createFacade );
+				final ItemStack facades = this.facade.createFacadeForItem( inv.getStackInSlot( 4 ), !createFacade );
 				if( !facades.isEmpty() && createFacade )
 				{
 					facades.setCount( 4 );

@@ -57,11 +57,11 @@ public class PartInvertedToggleBus extends PartToggleBus
 	@Override
 	public IPartModel getStaticModels()
 	{
-		if( hasRedstoneFlag() && isActive() && isPowered() )
+		if( this.hasRedstoneFlag() && this.isActive() && this.isPowered() )
 		{
 			return MODELS_HAS_CHANNEL;
 		}
-		else if( hasRedstoneFlag() && isPowered() )
+		else if( this.hasRedstoneFlag() && this.isPowered() )
 		{
 			return MODELS_ON;
 		}

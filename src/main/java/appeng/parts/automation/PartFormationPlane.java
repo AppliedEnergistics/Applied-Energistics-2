@@ -281,7 +281,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	{
 
 		final EnumFacing facingRight, facingUp;
-		AEPartLocation location = getSide();
+		AEPartLocation location = this.getSide();
 		switch( location )
 		{
 			case UP:
@@ -617,7 +617,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	@Override
 	public IPartModel getStaticModels()
 	{
-		return MODELS.getModel( getConnections(), isPowered(), isActive() );
+		return MODELS.getModel( this.getConnections(), this.isPowered(), this.isActive() );
 	}
 
 }

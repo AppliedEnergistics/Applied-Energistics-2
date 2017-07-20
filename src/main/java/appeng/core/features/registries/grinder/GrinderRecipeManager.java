@@ -353,8 +353,8 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		{
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + damage;
-			result = prime * result + ( ( item == null ) ? 0 : item.hashCode() );
+			result = prime * result + this.damage;
+			result = prime * result + ( ( this.item == null ) ? 0 : this.item.hashCode() );
 			return result;
 		}
 
@@ -365,26 +365,26 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 			{
 				return true;
 			}
-			if( obj == null || getClass() != obj.getClass() )
+			if( obj == null || this.getClass() != obj.getClass() )
 			{
 				return false;
 			}
 
 			CacheKey other = (CacheKey) obj;
 
-			if( damage != other.damage )
+			if( this.damage != other.damage )
 			{
 				return false;
 			}
 
-			if( item == null )
+			if( this.item == null )
 			{
 				if( other.item != null )
 				{
 					return false;
 				}
 			}
-			else if( item != other.item )
+			else if( this.item != other.item )
 			{
 				return false;
 			}

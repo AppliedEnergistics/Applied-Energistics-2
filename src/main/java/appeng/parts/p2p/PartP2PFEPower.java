@@ -60,7 +60,7 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower> implements IEn
 	@Override
 	public IPartModel getStaticModels()
 	{
-		return MODELS.getModel( isPowered(), isActive() );
+		return MODELS.getModel( this.isPowered(), this.isActive() );
 	}
 
 	public PartP2PFEPower( ItemStack is )

@@ -52,7 +52,7 @@ public class BlockChest extends AEBaseTileBlock
 	public BlockChest()
 	{
 		super( Material.IRON );
-		this.setDefaultState( getDefaultState().withProperty( SLOT_STATE, DriveSlotState.EMPTY ) );
+		this.setDefaultState( this.getDefaultState().withProperty( SLOT_STATE, DriveSlotState.EMPTY ) );
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class BlockChest extends AEBaseTileBlock
 	{
 		DriveSlotState slotState = DriveSlotState.EMPTY;
 
-		TileChest te = getTileEntity( worldIn, pos );
+		TileChest te = this.getTileEntity( worldIn, pos );
 
 		if( te != null )
 		{

@@ -54,7 +54,7 @@ public class ColorApplicatorModel implements IModel
 	@Override
 	public IBakedModel bake( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
 	{
-		IBakedModel baseModel = getBaseModel( state, format, bakedTextureGetter );
+		IBakedModel baseModel = this.getBaseModel( state, format, bakedTextureGetter );
 
 		TextureAtlasSprite texDark = bakedTextureGetter.apply( TEXTURE_DARK );
 		TextureAtlasSprite texMedium = bakedTextureGetter.apply( TEXTURE_MEDIUM );

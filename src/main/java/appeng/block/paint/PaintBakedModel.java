@@ -66,7 +66,7 @@ class PaintBakedModel implements IBakedModel
 			// This is the inventory model which should usually not be used other than in special cases
 			List<BakedQuad> quads = new ArrayList<>( 1 );
 			CubeBuilder builder = new CubeBuilder( this.vertexFormat, quads );
-			builder.setTexture( textures[0] );
+			builder.setTexture( this.textures[0] );
 			builder.addCube( 0, 0, 0, 16, 16, 16 );
 			return quads;
 		}
@@ -81,7 +81,7 @@ class PaintBakedModel implements IBakedModel
 
 		List<Splotch> splotches = splotchesState.getSplotches();
 
-		CubeBuilder builder = new CubeBuilder( vertexFormat );
+		CubeBuilder builder = new CubeBuilder( this.vertexFormat );
 
 		float offsetConstant = 0.001f;
 		for( final Splotch s : splotches )
@@ -109,7 +109,7 @@ class PaintBakedModel implements IBakedModel
 			pos_x = Math.max( buffer, Math.min( 1.0f - buffer, pos_x ) );
 			pos_y = Math.max( buffer, Math.min( 1.0f - buffer, pos_y ) );
 
-			TextureAtlasSprite ico = textures[s.getSeed() % textures.length];
+			TextureAtlasSprite ico = this.textures[s.getSeed() % this.textures.length];
 			builder.setTexture( ico );
 			builder.setCustomUv( s.getSide().getOpposite(), 0, 0, 16, 16 );
 
@@ -176,7 +176,7 @@ class PaintBakedModel implements IBakedModel
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		return textures[0];
+		return this.textures[0];
 	}
 
 	@Override

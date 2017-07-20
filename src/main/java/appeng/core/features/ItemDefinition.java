@@ -73,7 +73,7 @@ public class ItemDefinition implements IItemDefinition
 	@Override
 	public final boolean isSameAs( final ItemStack comparableStack )
 	{
-		return isEnabled() && Platform.itemComparisons().isEqualItemType( comparableStack, this.maybeStack( 1 ).get() );
+		return this.isEnabled() && Platform.itemComparisons().isEqualItemType( comparableStack, this.maybeStack( 1 ).get() );
 	}
 
 }

@@ -61,7 +61,7 @@ public class BlockInterface extends AEBaseTileBlock
 	public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
 	{
 		// Determine whether the interface is omni-directional or not
-		TileInterface te = getTileEntity( world, pos );
+		TileInterface te = this.getTileEntity( world, pos );
 		boolean omniDirectional = true; // The default
 		if( te != null )
 		{

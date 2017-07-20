@@ -59,7 +59,7 @@ public class DriveBakedModel implements IBakedModel
 
 		List<BakedQuad> result = new ArrayList<>();
 
-		result.addAll( bakedBase.getQuads( state, side, rand ) );
+		result.addAll( this.bakedBase.getQuads( state, side, rand ) );
 
 		if( side == null && state instanceof IExtendedBlockState )
 		{
@@ -72,7 +72,7 @@ public class DriveBakedModel implements IBakedModel
 				{
 					DriveSlotState slotState = slotsState.getState( row * 2 + col );
 
-					IBakedModel bakedCell = bakedCells.get( slotState );
+					IBakedModel bakedCell = this.bakedCells.get( slotState );
 
 					Matrix4f transform = new Matrix4f();
 					transform.setIdentity();
@@ -103,36 +103,36 @@ public class DriveBakedModel implements IBakedModel
 	@Override
 	public boolean isAmbientOcclusion()
 	{
-		return bakedBase.isAmbientOcclusion();
+		return this.bakedBase.isAmbientOcclusion();
 	}
 
 	@Override
 	public boolean isGui3d()
 	{
-		return bakedBase.isGui3d();
+		return this.bakedBase.isGui3d();
 	}
 
 	@Override
 	public boolean isBuiltInRenderer()
 	{
-		return bakedBase.isGui3d();
+		return this.bakedBase.isGui3d();
 	}
 
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		return bakedBase.getParticleTexture();
+		return this.bakedBase.getParticleTexture();
 	}
 
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms()
 	{
-		return bakedBase.getItemCameraTransforms();
+		return this.bakedBase.getItemCameraTransforms();
 	}
 
 	@Override
 	public ItemOverrideList getOverrides()
 	{
-		return bakedBase.getOverrides();
+		return this.bakedBase.getOverrides();
 	}
 }

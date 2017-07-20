@@ -101,7 +101,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 	public PartType getType()
 	{
-		return ItemPart.instance.getTypeByStack( is );
+		return ItemPart.instance.getTypeByStack( this.is );
 	}
 
 	@Override

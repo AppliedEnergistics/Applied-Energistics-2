@@ -45,7 +45,7 @@ public class BiometricCardModel implements IModel
 	{
 		TextureAtlasSprite texture = bakedTextureGetter.apply( TEXTURE );
 
-		IBakedModel baseModel = getBaseModel( state, format, bakedTextureGetter );
+		IBakedModel baseModel = this.getBaseModel( state, format, bakedTextureGetter );
 
 		return new BiometricCardBakedModel( format, baseModel, texture );
 	}

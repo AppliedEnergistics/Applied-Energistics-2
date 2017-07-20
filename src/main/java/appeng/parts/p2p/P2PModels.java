@@ -46,33 +46,33 @@ class P2PModels
 	public P2PModels( String frontModelPath )
 	{
 		ResourceLocation frontModel = new ResourceLocation( AppEng.MOD_ID, frontModelPath );
-		modelsOff = new PartModel( MODEL_STATUS_OFF, frontModel );
-		modelsOn = new PartModel( MODEL_STATUS_ON, frontModel );
-		modelsHasChannel = new PartModel( MODEL_STATUS_HAS_CHANNEL, frontModel );
+		this.modelsOff = new PartModel( MODEL_STATUS_OFF, frontModel );
+		this.modelsOn = new PartModel( MODEL_STATUS_ON, frontModel );
+		this.modelsHasChannel = new PartModel( MODEL_STATUS_HAS_CHANNEL, frontModel );
 	}
 
 	public IPartModel getModel( boolean hasPower, boolean hasChannel )
 	{
 		if( hasPower && hasChannel )
 		{
-			return modelsHasChannel;
+			return this.modelsHasChannel;
 		}
 		else if( hasPower )
 		{
-			return modelsOn;
+			return this.modelsOn;
 		}
 		else
 		{
-			return modelsOff;
+			return this.modelsOff;
 		}
 	}
 
 	public List<IPartModel> getModels()
 	{
 		List<IPartModel> result = new ArrayList<>();
-		result.add( modelsOff );
-		result.add( modelsOn );
-		result.add( modelsHasChannel );
+		result.add( this.modelsOff );
+		result.add( this.modelsOn );
+		result.add( this.modelsHasChannel );
 		return result;
 	}
 

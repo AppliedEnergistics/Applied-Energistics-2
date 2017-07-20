@@ -254,7 +254,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		EnumFacing facing = this.getSide().getFacing();
 
 		TesrRenderHelper.moveToFace( facing );
-		TesrRenderHelper.rotateToFace( facing, getSpin() );
+		TesrRenderHelper.rotateToFace( facing, this.getSpin() );
 		TesrRenderHelper.renderItem2dWithAmount( ais, 0.8f, 0.17f );
 
 		GlStateManager.popMatrix();
@@ -319,9 +319,9 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 
 	protected IPartModel selectModel( IPartModel off, IPartModel on, IPartModel hasChannel, IPartModel lockedOff, IPartModel lockedOn, IPartModel lockedHasChannel )
 	{
-		if( isActive() )
+		if( this.isActive() )
 		{
-			if( isLocked() )
+			if( this.isLocked() )
 			{
 				return lockedHasChannel;
 			}
@@ -330,9 +330,9 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 				return hasChannel;
 			}
 		}
-		else if( isPowered() )
+		else if( this.isPowered() )
 		{
-			if( isLocked() )
+			if( this.isLocked() )
 			{
 				return lockedOn;
 			}
@@ -343,7 +343,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		}
 		else
 		{
-			if( isLocked() )
+			if( this.isLocked() )
 			{
 				return lockedOff;
 			}

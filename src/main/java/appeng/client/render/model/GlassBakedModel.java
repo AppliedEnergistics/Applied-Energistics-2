@@ -125,13 +125,13 @@ class GlassBakedModel implements IBakedModel
 			v /= 2;
 		}
 
-		TextureAtlasSprite glassTexture = glassTextures[texIdx];
+		TextureAtlasSprite glassTexture = this.glassTextures[texIdx];
 
 		// Render the glass side
 		List<BakedQuad> quads = new ArrayList<>( 5 ); // At most 5
 
 		List<Vec3d> corners = RenderHelper.getFaceCorners( side );
-		quads.add( createQuad( side, corners, glassTexture, u, v ) );
+		quads.add( this.createQuad( side, corners, glassTexture, u, v ) );
 
 		/*
 		 * This needs some explanation:
@@ -144,10 +144,10 @@ class GlassBakedModel implements IBakedModel
 		 * That texture had "0101" in its filename to indicate this.
 		 */
 		int edgeBitmask = makeBitmask( glassState, side );
-		TextureAtlasSprite sideSprite = frameTextures[edgeBitmask];
+		TextureAtlasSprite sideSprite = this.frameTextures[edgeBitmask];
 		if( sideSprite != null )
 		{
-			quads.add( createQuad( side, corners, sideSprite, 0, 0 ) );
+			quads.add( this.createQuad( side, corners, sideSprite, 0, 0 ) );
 		}
 
 		return quads;
@@ -203,7 +203,7 @@ class GlassBakedModel implements IBakedModel
 
 	private BakedQuad createQuad( EnumFacing side, List<Vec3d> corners, TextureAtlasSprite sprite, float uOffset, float vOffset )
 	{
-		return createQuad( side, corners.get( 0 ), corners.get( 1 ), corners.get( 2 ), corners.get( 3 ), sprite, uOffset, vOffset );
+		return this.createQuad( side, corners.get( 0 ), corners.get( 1 ), corners.get( 2 ), corners.get( 3 ), sprite, uOffset, vOffset );
 	}
 
 	private BakedQuad createQuad( EnumFacing side, Vec3d c1, Vec3d c2, Vec3d c3, Vec3d c4, TextureAtlasSprite sprite, float uOffset, float vOffset )
@@ -217,12 +217,12 @@ class GlassBakedModel implements IBakedModel
 		float v1 = MathHelper.clamp( 0 - vOffset, 0, 16 );
 		float v2 = MathHelper.clamp( 16 - vOffset, 0, 16 );
 
-		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder( vertexFormat );
+		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder( this.vertexFormat );
 		builder.setTexture( sprite );
-		putVertex( builder, normal, c1.x, c1.y, c1.z, sprite, u1, v1 );
-		putVertex( builder, normal, c2.x, c2.y, c2.z, sprite, u1, v2 );
-		putVertex( builder, normal, c3.x, c3.y, c3.z, sprite, u2, v2 );
-		putVertex( builder, normal, c4.x, c4.y, c4.z, sprite, u2, v1 );
+		this.putVertex( builder, normal, c1.x, c1.y, c1.z, sprite, u1, v1 );
+		this.putVertex( builder, normal, c2.x, c2.y, c2.z, sprite, u1, v2 );
+		this.putVertex( builder, normal, c3.x, c3.y, c3.z, sprite, u2, v2 );
+		this.putVertex( builder, normal, c4.x, c4.y, c4.z, sprite, u2, v1 );
 		return builder.build();
 	}
 
@@ -233,9 +233,9 @@ class GlassBakedModel implements IBakedModel
 	 */
 	private void putVertex( UnpackedBakedQuad.Builder builder, Vec3d normal, double x, double y, double z, TextureAtlasSprite sprite, float u, float v )
 	{
-		for( int e = 0; e < vertexFormat.getElementCount(); e++ )
+		for( int e = 0; e < this.vertexFormat.getElementCount(); e++ )
 		{
-			switch( vertexFormat.getElement( e ).getUsage() )
+			switch( this.vertexFormat.getElement( e ).getUsage() )
 			{
 				case POSITION:
 					builder.put( e, (float) x, (float) y, (float) z, 1.0f );
@@ -244,7 +244,7 @@ class GlassBakedModel implements IBakedModel
 					builder.put( e, 1.0f, 1.0f, 1.0f, 1.0f );
 					break;
 				case UV:
-					if( vertexFormat.getElement( e ).getIndex() == 0 )
+					if( this.vertexFormat.getElement( e ).getIndex() == 0 )
 					{
 						u = sprite.getInterpolatedU( u );
 						v = sprite.getInterpolatedV( v );
@@ -288,7 +288,7 @@ class GlassBakedModel implements IBakedModel
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		return frameTextures[frameTextures.length - 1];
+		return this.frameTextures[this.frameTextures.length - 1];
 	}
 
 	@Override

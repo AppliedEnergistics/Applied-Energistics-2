@@ -118,11 +118,11 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	@Nonnull
 	public IBlockState getBlockState()
 	{
-		if( state == null )
+		if( this.state == null )
 		{
-			state = world.getBlockState( getPos() );
+			this.state = this.world.getBlockState( this.getPos() );
 		}
-		return state;
+		return this.state;
 	}
 
 	/**
@@ -197,7 +197,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket()
 	{
-		return new SPacketUpdateTileEntity( this.pos, 64, getUpdateTag() );
+		return new SPacketUpdateTileEntity( this.pos, 64, this.getUpdateTag() );
 	}
 
 	private boolean hasHandlerFor( final TileEventType type )
@@ -213,7 +213,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		// / pkt.actionType
 		if( pkt.getTileEntityType() == 64 )
 		{
-			handleUpdateTag( pkt.getNbtCompound() );
+			this.handleUpdateTag( pkt.getNbtCompound() );
 		}
 	}
 
@@ -260,16 +260,16 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	@Override
 	public NBTTagCompound getUpdateTag()
 	{
-		final NBTTagCompound data = writeUpdateData();
+		final NBTTagCompound data = this.writeUpdateData();
 
 		if( data == null )
 		{
 			return new NBTTagCompound();
 		}
 
-		data.setInteger( "x", pos.getX() );
-		data.setInteger( "y", pos.getY() );
-		data.setInteger( "z", pos.getZ() );
+		data.setInteger( "x", this.pos.getX() );
+		data.setInteger( "y", this.pos.getY() );
+		data.setInteger( "z", this.pos.getZ() );
 		return data;
 	}
 
@@ -340,7 +340,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			if( this.world != null )
 			{
 				AELog.blockUpdate( this.pos, this );
-				this.world.notifyBlockUpdate( this.pos, getBlockState(), getBlockState(), 3 );
+				this.world.notifyBlockUpdate( this.pos, this.getBlockState(), this.getBlockState(), 3 );
 			}
 		}
 	}

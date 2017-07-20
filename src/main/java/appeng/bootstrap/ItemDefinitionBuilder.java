@@ -75,28 +75,28 @@ class ItemDefinitionBuilder implements IItemBuilder
 		this.itemSupplier = itemSupplier;
 		if( Platform.isClient() )
 		{
-			itemRendering = new ItemRendering();
+			this.itemRendering = new ItemRendering();
 		}
 	}
 
 	@Override
 	public ItemDefinitionBuilder preInit( Consumer<Item> callback )
 	{
-		preInitCallbacks.add( callback );
+		this.preInitCallbacks.add( callback );
 		return this;
 	}
 
 	@Override
 	public ItemDefinitionBuilder init( Consumer<Item> callback )
 	{
-		initCallbacks.add( callback );
+		this.initCallbacks.add( callback );
 		return this;
 	}
 
 	@Override
 	public ItemDefinitionBuilder postInit( Consumer<Item> callback )
 	{
-		postInitCallbacks.add( callback );
+		this.postInitCallbacks.add( callback );
 		return this;
 	}
 
@@ -104,7 +104,7 @@ class ItemDefinitionBuilder implements IItemBuilder
 	public IItemBuilder features( AEFeature... features )
 	{
 		this.features.clear();
-		addFeatures( features );
+		this.addFeatures( features );
 		return this;
 	}
 
@@ -127,7 +127,7 @@ class ItemDefinitionBuilder implements IItemBuilder
 	{
 		if( Platform.isClient() )
 		{
-			customizeForClient( callback );
+			this.customizeForClient( callback );
 		}
 
 		return this;
@@ -143,46 +143,46 @@ class ItemDefinitionBuilder implements IItemBuilder
 	@SideOnly( Side.CLIENT )
 	private void customizeForClient( ItemRenderingCustomizer callback )
 	{
-		callback.customize( itemRendering );
+		callback.customize( this.itemRendering );
 	}
 
 	@Override
 	public ItemDefinition build()
 	{
-		if( !AEConfig.instance().areFeaturesEnabled( features ) )
+		if( !AEConfig.instance().areFeaturesEnabled( this.features ) )
 		{
-			return new ItemDefinition( registryName, null );
+			return new ItemDefinition( this.registryName, null );
 		}
 
-		Item item = itemSupplier.get();
-		item.setRegistryName( AppEng.MOD_ID, registryName );
+		Item item = this.itemSupplier.get();
+		item.setRegistryName( AppEng.MOD_ID, this.registryName );
 
-		ItemDefinition definition = new ItemDefinition( registryName, item );
+		ItemDefinition definition = new ItemDefinition( this.registryName, item );
 
-		item.setUnlocalizedName( "appliedenergistics2." + registryName );
-		item.setCreativeTab( creativeTab );
+		item.setUnlocalizedName( "appliedenergistics2." + this.registryName );
+		item.setCreativeTab( this.creativeTab );
 
 		// Register all extra handlers
-		preInitCallbacks.forEach( consumer -> factory.addPreInit( side -> consumer.accept( item ) ) );
-		initCallbacks.forEach( consumer -> factory.addInit( side -> consumer.accept( item ) ) );
-		modelRegCallbacks.forEach( consumer -> factory.addModelReg( side -> consumer.accept( item ) ) );
-		postInitCallbacks.forEach( consumer -> factory.addPostInit( side -> consumer.accept( item ) ) );
+		this.preInitCallbacks.forEach( consumer -> this.factory.addPreInit( side -> consumer.accept( item ) ) );
+		this.initCallbacks.forEach( consumer -> this.factory.addInit( side -> consumer.accept( item ) ) );
+		this.modelRegCallbacks.forEach( consumer -> this.factory.addModelReg( side -> consumer.accept( item ) ) );
+		this.postInitCallbacks.forEach( consumer -> this.factory.addPostInit( side -> consumer.accept( item ) ) );
 
 		// Register custom dispenser behavior if requested
-		if( dispenserBehaviorSupplier != null )
+		if( this.dispenserBehaviorSupplier != null )
 		{
-			factory.addPostInit( side ->
+			this.factory.addPostInit( side ->
 			{
-				IBehaviorDispenseItem behavior = dispenserBehaviorSupplier.get();
+				IBehaviorDispenseItem behavior = this.dispenserBehaviorSupplier.get();
 				BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( item, behavior );
 			} );
 		}
 
-		factory.addPreInit( side -> Registration.addItemToRegister( item ) );
+		this.factory.addPreInit( side -> Registration.addItemToRegister( item ) );
 
 		if( Platform.isClient() )
 		{
-			itemRendering.apply( factory, item );
+			this.itemRendering.apply( this.factory, item );
 		}
 
 		return definition;

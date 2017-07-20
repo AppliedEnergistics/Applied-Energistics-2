@@ -43,7 +43,7 @@ public class UnlistedProperty<T> implements IUnlistedProperty<T>
 	@Override
 	public String getName()
 	{
-		return name;
+		return this.name;
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class UnlistedProperty<T> implements IUnlistedProperty<T>
 	@Override
 	public Class<T> getType()
 	{
-		return clazz;
+		return this.clazz;
 	}
 
 	@Override

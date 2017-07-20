@@ -360,11 +360,11 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	@Override
 	public IPartModel getStaticModels()
 	{
-		if( isActive() && isPowered() )
+		if( this.isActive() && this.isPowered() )
 		{
 			return MODELS_HAS_CHANNEL;
 		}
-		else if( isPowered() )
+		else if( this.isPowered() )
 		{
 			return MODELS_ON;
 		}

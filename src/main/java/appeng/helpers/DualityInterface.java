@@ -1285,15 +1285,15 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	{
 		if( capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
 		{
-			if( itemHandler == null )
+			if( this.itemHandler == null )
 			{
-				itemHandler = new InvWrapper( storage );
+				this.itemHandler = new InvWrapper( this.storage );
 			}
-			return (T) itemHandler;
+			return (T) this.itemHandler;
 		}
 		else if( capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR )
 		{
-			return (T) accessor;
+			return (T) this.accessor;
 		}
 		return null;
 	}
@@ -1346,7 +1346,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		@Override
 		public IStorageMonitorable getInventory( BaseActionSource src )
 		{
-			return getMonitorable( src, DualityInterface.this );
+			return DualityInterface.this.getMonitorable( src, DualityInterface.this );
 		}
 
 	}

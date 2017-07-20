@@ -75,7 +75,7 @@ public class CableBusRenderState
 
 	public CableCoreType getCoreType()
 	{
-		return coreType;
+		return this.coreType;
 	}
 
 	public void setCoreType( CableCoreType coreType )
@@ -85,7 +85,7 @@ public class CableBusRenderState
 
 	public AECableType getCableType()
 	{
-		return cableType;
+		return this.cableType;
 	}
 
 	public void setCableType( AECableType cableType )
@@ -95,7 +95,7 @@ public class CableBusRenderState
 
 	public AEColor getCableColor()
 	{
-		return cableColor;
+		return this.cableColor;
 	}
 
 	public void setCableColor( AEColor cableColor )
@@ -105,12 +105,12 @@ public class CableBusRenderState
 
 	public EnumMap<EnumFacing, Integer> getChannelsOnSide()
 	{
-		return channelsOnSide;
+		return this.channelsOnSide;
 	}
 
 	public EnumMap<EnumFacing, AECableType> getConnectionTypes()
 	{
-		return connectionTypes;
+		return this.connectionTypes;
 	}
 
 	public void setConnectionTypes( EnumMap<EnumFacing, AECableType> connectionTypes )
@@ -125,7 +125,7 @@ public class CableBusRenderState
 
 	public EnumSet<EnumFacing> getCableBusAdjacent()
 	{
-		return cableBusAdjacent;
+		return this.cableBusAdjacent;
 	}
 
 	public void setCableBusAdjacent( EnumSet<EnumFacing> cableBusAdjacent )
@@ -135,22 +135,22 @@ public class CableBusRenderState
 
 	public EnumMap<EnumFacing, IPartModel> getAttachments()
 	{
-		return attachments;
+		return this.attachments;
 	}
 
 	public EnumMap<EnumFacing, Integer> getAttachmentConnections()
 	{
-		return attachmentConnections;
+		return this.attachmentConnections;
 	}
 
 	public EnumMap<EnumFacing, FacadeRenderState> getFacades()
 	{
-		return facades;
+		return this.facades;
 	}
 
 	public List<AxisAlignedBB> getBoundingBoxes()
 	{
-		return boundingBoxes;
+		return this.boundingBoxes;
 	}
 
 }

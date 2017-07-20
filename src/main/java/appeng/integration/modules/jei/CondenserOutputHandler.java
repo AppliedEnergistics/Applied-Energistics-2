@@ -67,9 +67,9 @@ class CondenserOutputHandler implements IRecipeHandler<CondenserOutput>
 		switch( recipe )
 		{
 			case MATTER_BALLS:
-				return new CondenserOutputWrapper( recipe, matterBall, iconButtonMatterBall );
+				return new CondenserOutputWrapper( recipe, this.matterBall, this.iconButtonMatterBall );
 			case SINGULARITY:
-				return new CondenserOutputWrapper( recipe, singularity, iconButtonSingularity );
+				return new CondenserOutputWrapper( recipe, this.singularity, this.iconButtonSingularity );
 			default:
 				return null;
 		}
@@ -81,9 +81,9 @@ class CondenserOutputHandler implements IRecipeHandler<CondenserOutput>
 		switch( recipe )
 		{
 			case MATTER_BALLS:
-				return matterBall != null;
+				return this.matterBall != null;
 			case SINGULARITY:
-				return singularity != null;
+				return this.singularity != null;
 			default:
 				return false;
 		}

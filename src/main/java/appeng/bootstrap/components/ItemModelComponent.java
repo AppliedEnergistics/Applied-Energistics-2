@@ -52,9 +52,9 @@ public class ItemModelComponent implements InitComponent
 	{
 		ItemModelMesher itemMesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
 
-		modelsByMeta.forEach( ( meta, model ) ->
+		this.modelsByMeta.forEach( ( meta, model ) ->
 		{
-			itemMesher.register( item, meta, model );
+			itemMesher.register( this.item, meta, model );
 		} );
 	}
 

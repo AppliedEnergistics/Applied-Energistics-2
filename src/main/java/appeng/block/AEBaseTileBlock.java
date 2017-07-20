@@ -86,7 +86,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 			return state;
 		}
 
-		AEBaseTile tile = getTileEntity( world, pos );
+		AEBaseTile tile = this.getTileEntity( world, pos );
 		if( tile == null )
 		{
 			return state; // No info available
@@ -99,7 +99,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
-		return new ExtendedBlockState( this, getAEStates(), new IUnlistedProperty[] {
+		return new ExtendedBlockState( this, this.getAEStates(), new IUnlistedProperty[] {
 				FORWARD,
 				UP
 		} );
@@ -121,7 +121,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	@Override
 	public boolean hasTileEntity( IBlockState state )
 	{
-		return hasBlockTileEntity();
+		return this.hasBlockTileEntity();
 	}
 
 	private boolean hasBlockTileEntity()

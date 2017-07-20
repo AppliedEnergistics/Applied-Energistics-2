@@ -42,8 +42,8 @@ public abstract class AEBaseItem extends Item
 	@Override
 	public String toString()
 	{
-		String regName = getRegistryName() != null ? getRegistryName().getResourcePath() : "unregistered";
-		return getClass().getSimpleName() + "[" + regName + "]";
+		String regName = this.getRegistryName() != null ? this.getRegistryName().getResourcePath() : "unregistered";
+		return this.getClass().getSimpleName() + "[" + regName + "]";
 	}
 
 	@SideOnly( Side.CLIENT )
@@ -58,7 +58,7 @@ public abstract class AEBaseItem extends Item
 	@SuppressWarnings( "unchecked" )
 	public final void getSubItems( final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
 	{
-		if( isInCreativeTab( creativeTab ) )
+		if( this.isInCreativeTab( creativeTab ) )
 		{
 			this.getCheckedSubItems( creativeTab, itemStacks );
 		}

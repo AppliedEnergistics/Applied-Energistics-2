@@ -144,7 +144,7 @@ public class RegistryContainer implements IRegistryContainer
 	@Override
 	public IPartModels partModels()
 	{
-		return partModels;
+		return this.partModels;
 	}
 
 }

@@ -59,23 +59,23 @@ class CondenserOutputWrapper extends BlankRecipeWrapper
 	@Override
 	public void getIngredients( IIngredients ingredients )
 	{
-		ingredients.setOutput( ItemStack.class, outputItem );
+		ingredients.setOutput( ItemStack.class, this.outputItem );
 	}
 
 	public CondenserOutput getCondenserOutput()
 	{
-		return condenserOutput;
+		return this.condenserOutput;
 	}
 
 	@Nullable
 	@Override
 	public List<String> getTooltipStrings( int mouseX, int mouseY )
 	{
-		if( buttonHoverChecker.checkHover( mouseX, mouseY ) )
+		if( this.buttonHoverChecker.checkHover( mouseX, mouseY ) )
 		{
 			String key;
 
-			switch( condenserOutput )
+			switch( this.condenserOutput )
 			{
 				case MATTER_BALLS:
 					key = "gui.tooltips.appliedenergistics2.MatterBalls";
@@ -87,7 +87,7 @@ class CondenserOutputWrapper extends BlankRecipeWrapper
 					return Collections.emptyList();
 			}
 
-			return Splitter.on( "\\n" ).splitToList( I18n.format( key, condenserOutput.requiredPower ) );
+			return Splitter.on( "\\n" ).splitToList( I18n.format( key, this.condenserOutput.requiredPower ) );
 		}
 		return Collections.emptyList();
 	}
@@ -95,6 +95,6 @@ class CondenserOutputWrapper extends BlankRecipeWrapper
 	@Override
 	public void drawInfo( Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY )
 	{
-		buttonIcon.draw( minecraft );
+		this.buttonIcon.draw( minecraft );
 	}
 }

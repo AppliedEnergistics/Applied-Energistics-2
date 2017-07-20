@@ -52,7 +52,7 @@ class InscriberRegistryPlugin implements IRecipeRegistryPlugin
 		if( focus.getMode() == IFocus.Mode.INPUT )
 		{
 			ItemStack input = (ItemStack) focus.getValue();
-			for( ItemStack validInput : inscriber.getInputs() )
+			for( ItemStack validInput : this.inscriber.getInputs() )
 			{
 
 			}

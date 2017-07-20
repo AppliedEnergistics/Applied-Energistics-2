@@ -292,11 +292,11 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 
 	protected IPartModel selectModel( IPartModel offModels, IPartModel onModels, IPartModel hasChannelModels )
 	{
-		if( isActive() )
+		if( this.isActive() )
 		{
 			return hasChannelModels;
 		}
-		else if( isPowered() )
+		else if( this.isPowered() )
 		{
 			return onModels;
 		}

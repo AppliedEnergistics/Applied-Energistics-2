@@ -53,7 +53,7 @@ public enum DriveSlotState implements IStringSerializable
 	@Override
 	public String getName()
 	{
-		return name;
+		return this.name;
 	}
 
 	public static DriveSlotState fromCellStatus( int cellStatus )

@@ -42,16 +42,16 @@ public class BuiltInModelComponent implements PreInitComponent
 
 	public void addModel( String path, IModel model )
 	{
-		Preconditions.checkState( !hasInitialized );
-		builtInModels.put( path, model );
+		Preconditions.checkState( !this.hasInitialized );
+		this.builtInModels.put( path, model );
 	}
 
 	@Override
 	public void preInitialize( Side side )
 	{
-		hasInitialized = true;
+		this.hasInitialized = true;
 
-		BuiltInModelLoader loader = new BuiltInModelLoader( builtInModels );
+		BuiltInModelLoader loader = new BuiltInModelLoader( this.builtInModels );
 		ModelLoaderRegistry.registerLoader( loader );
 	}
 }

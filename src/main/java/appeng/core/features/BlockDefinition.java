@@ -65,6 +65,6 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	@Override
 	public final boolean isSameAs( final IBlockAccess world, final BlockPos pos )
 	{
-		return block.isPresent() && world.getBlockState( pos ).getBlock() == this.block.get();
+		return this.block.isPresent() && world.getBlockState( pos ).getBlock() == this.block.get();
 	}
 }

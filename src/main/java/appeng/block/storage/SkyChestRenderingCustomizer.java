@@ -46,7 +46,7 @@ public class SkyChestRenderingCustomizer extends BlockRenderingCustomizer
 		rendering.tesr( new SkyChestTESR() );
 
 		// Register a custom non-tesr item model
-		String modelName = getModelFromType();
+		String modelName = this.getModelFromType();
 		ModelResourceLocation model = new ModelResourceLocation( "appliedenergistics2:" + modelName, "inventory" );
 		itemRendering.model( model ).variants( model );
 	}
@@ -54,7 +54,7 @@ public class SkyChestRenderingCustomizer extends BlockRenderingCustomizer
 	private String getModelFromType()
 	{
 		final String modelName;
-		switch( type )
+		switch( this.type )
 		{
 			default:
 			case STONE:

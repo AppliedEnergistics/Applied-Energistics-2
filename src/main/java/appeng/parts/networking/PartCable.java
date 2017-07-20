@@ -384,7 +384,7 @@ public class PartCable extends AEBasePart implements IPartCable
 				// Only read channels if there's a part on this side or a cable connection
 				// This works only because cables are always read *last* from the packet update for
 				// a cable bus
-				if( conOnSide || getHost().getPart( d ) != null )
+				if( conOnSide || this.getHost().getPart( d ) != null )
 				{
 					ch = ( (int) data.readByte() ) & 0xFF;
 				}
@@ -407,7 +407,7 @@ public class PartCable extends AEBasePart implements IPartCable
 
 	public int getChannelsOnSide( EnumFacing side )
 	{
-		if( !powered )
+		if( !this.powered )
 		{
 			return 0;
 		}

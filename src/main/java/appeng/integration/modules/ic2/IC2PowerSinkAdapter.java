@@ -70,19 +70,19 @@ public class IC2PowerSinkAdapter extends BasicSink implements IC2PowerSink
 	@Override
 	public double getDemandedEnergy()
 	{
-		return powerSink.getExternalPowerDemand( PowerUnits.EU, Double.MAX_VALUE );
+		return this.powerSink.getExternalPowerDemand( PowerUnits.EU, Double.MAX_VALUE );
 	}
 
 	@Override
 	public double injectEnergy( EnumFacing directionFrom, double amount, double voltage )
 	{
-		return PowerUnits.EU.convertTo( PowerUnits.AE, powerSink.injectExternalPower( PowerUnits.EU, amount ) );
+		return PowerUnits.EU.convertTo( PowerUnits.AE, this.powerSink.injectExternalPower( PowerUnits.EU, amount ) );
 	}
 
 	@Override
 	public boolean acceptsEnergyFrom( IEnergyEmitter iEnergyEmitter, EnumFacing side )
 	{
-		return validFaces.contains( side );
+		return this.validFaces.contains( side );
 	}
 
 	@Override

@@ -36,7 +36,7 @@ public class UnlistedDirection implements IUnlistedProperty<EnumFacing>
 	@Override
 	public String getName()
 	{
-		return name;
+		return this.name;
 	}
 
 	@Override

@@ -114,7 +114,7 @@ public abstract class AppEngPacket implements Packet
 
 	public ByteArrayInputStream getPacketByteArray( ByteBuf stream )
 	{
-		return getPacketByteArray( stream, 0, stream.readableBytes() );
+		return this.getPacketByteArray( stream, 0, stream.readableBytes() );
 	}
 
 	public void setCallParam( final PacketCallState call )

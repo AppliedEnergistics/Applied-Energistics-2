@@ -92,7 +92,7 @@ final class IntegrationNode
 
 						if( enabled )
 						{
-							this.mod = type.createInstance();
+							this.mod = this.type.createInstance();
 						}
 						else
 						{

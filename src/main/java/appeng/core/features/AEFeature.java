@@ -204,17 +204,17 @@ public enum AEFeature
 
 	public String key()
 	{
-		return key;
+		return this.key;
 	}
 
 	public String category()
 	{
-		return category;
+		return this.category;
 	}
 
 	public boolean isEnabled()
 	{
-		return enabled;
+		return this.enabled;
 	}
 
 	private enum Constants

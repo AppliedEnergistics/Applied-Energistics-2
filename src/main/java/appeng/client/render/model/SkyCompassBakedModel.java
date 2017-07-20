@@ -83,13 +83,13 @@ public class SkyCompassBakedModel implements IBakedModel
 		else if( state == null )
 		{
 			// This is used to render a compass pointing in a specific direction when being held in hand
-			rotation = fallbackRotation;
+			rotation = this.fallbackRotation;
 		}
 
 		// Pre-compute the quad count to avoid list resizes
 		List<BakedQuad> quads = new ArrayList<>();
 
-		quads.addAll( base.getQuads( state, side, rand ) );
+		quads.addAll( this.base.getQuads( state, side, rand ) );
 
 		// We'll add the pointer as "sideless"
 		if( side == null )
@@ -100,7 +100,7 @@ public class SkyCompassBakedModel implements IBakedModel
 			matrix.setRotation( new AxisAngle4f( 0, 1, 0, rotation ) );
 
 			MatrixVertexTransformer transformer = new MatrixVertexTransformer( matrix );
-			for( BakedQuad bakedQuad : pointer.getQuads( state, side, rand ) )
+			for( BakedQuad bakedQuad : this.pointer.getQuads( state, side, rand ) )
 			{
 				UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder( bakedQuad.getFormat() );
 
@@ -120,7 +120,7 @@ public class SkyCompassBakedModel implements IBakedModel
 	@Override
 	public boolean isAmbientOcclusion()
 	{
-		return base.isAmbientOcclusion();
+		return this.base.isAmbientOcclusion();
 	}
 
 	@Override
@@ -138,13 +138,13 @@ public class SkyCompassBakedModel implements IBakedModel
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		return base.getParticleTexture();
+		return this.base.getParticleTexture();
 	}
 
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms()
 	{
-		return base.getItemCameraTransforms();
+		return this.base.getItemCameraTransforms();
 	}
 
 	@Override
@@ -167,11 +167,11 @@ public class SkyCompassBakedModel implements IBakedModel
 
 					float offRads = (float) ( player.rotationYaw / 180.0f * (float) Math.PI + Math.PI );
 
-					fallbackRotation = offRads + getAnimatedRotation( player.getPosition(), true );
+					SkyCompassBakedModel.this.fallbackRotation = offRads + getAnimatedRotation( player.getPosition(), true );
 				}
 				else
 				{
-					fallbackRotation = getAnimatedRotation( null, false );
+					SkyCompassBakedModel.this.fallbackRotation = getAnimatedRotation( null, false );
 				}
 
 				return originalModel;

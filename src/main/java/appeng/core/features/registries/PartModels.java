@@ -38,17 +38,17 @@ public class PartModels implements IPartModels
 	@Override
 	public void registerModels( Collection<ResourceLocation> partModels )
 	{
-		if( initialized )
+		if( this.initialized )
 		{
 			throw new IllegalStateException( "Cannot register models after the pre-initialization phase!" );
 		}
 
-		models.addAll( partModels );
+		this.models.addAll( partModels );
 	}
 
 	public Set<ResourceLocation> getModels()
 	{
-		return models;
+		return this.models;
 	}
 
 	public void setInitialized( boolean initialized )

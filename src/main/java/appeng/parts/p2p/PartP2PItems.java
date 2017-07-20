@@ -306,7 +306,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPip
 	public ItemStack insertItem( int slot, @Nonnull ItemStack stack, boolean simulate )
 	{
 
-		if( isItemValidForSlot( slot, stack ) )
+		if( this.isItemValidForSlot( slot, stack ) )
 		{
 			AdaptorIInventory adaptor = new AdaptorIInventory( this.getDestination() );
 
@@ -348,7 +348,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPip
 	@Override
 	public int getSlotLimit( int slot )
 	{
-		if( slot >= 0 && slot < getDestination().getSizeInventory() )
+		if( slot >= 0 && slot < this.getDestination().getSizeInventory() )
 		{
 			return this.getDestination().getInventoryStackLimit();
 		}
@@ -498,7 +498,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPip
 	@Override
 	public IPartModel getStaticModels()
 	{
-		return MODELS.getModel( isPowered(), isActive() );
+		return MODELS.getModel( this.isPowered(), this.isActive() );
 	}
 
 	@Override

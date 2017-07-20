@@ -227,7 +227,7 @@ public class TileSkyChest extends AEBaseInvTile implements ITickable
 
 	public float getPrevLidAngle()
 	{
-		return prevLidAngle;
+		return this.prevLidAngle;
 	}
 
 	public void setPrevLidAngle( float prevLidAngle )

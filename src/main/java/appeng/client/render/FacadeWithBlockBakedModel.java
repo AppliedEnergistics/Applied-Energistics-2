@@ -73,13 +73,13 @@ public class FacadeWithBlockBakedModel implements IBakedModel
 		if( side == EnumFacing.NORTH )
 		{
 			List<BakedQuad> quads = new ArrayList<>( 1 );
-			CubeBuilder builder = new CubeBuilder( format, quads );
-			FacadeBuilder.TextureAtlasAndTint sprite = FacadeBuilder.getSprite( textureModel, blockState, side, rand );
+			CubeBuilder builder = new CubeBuilder( this.format, quads );
+			FacadeBuilder.TextureAtlasAndTint sprite = FacadeBuilder.getSprite( this.textureModel, this.blockState, side, rand );
 			if( sprite != null && sprite.getSprite() != null )
 			{
 				if( sprite.getTint() != -1 )
 				{
-					builder.setColor( Minecraft.getMinecraft().getItemColors().getColorFromItemstack( textureItem, sprite.getTint() ) );
+					builder.setColor( Minecraft.getMinecraft().getItemColors().getColorFromItemstack( this.textureItem, sprite.getTint() ) );
 				}
 				builder.setTexture( sprite.getSprite() );
 				builder.setDrawFaces( EnumSet.of( EnumFacing.NORTH ) );
@@ -88,13 +88,13 @@ public class FacadeWithBlockBakedModel implements IBakedModel
 			}
 		}
 
-		return baseModel.getQuads( state, side, rand );
+		return this.baseModel.getQuads( state, side, rand );
 	}
 
 	@Override
 	public boolean isAmbientOcclusion()
 	{
-		return baseModel.isAmbientOcclusion();
+		return this.baseModel.isAmbientOcclusion();
 	}
 
 	@Override
@@ -112,13 +112,13 @@ public class FacadeWithBlockBakedModel implements IBakedModel
 	@Override
 	public TextureAtlasSprite getParticleTexture()
 	{
-		return baseModel.getParticleTexture();
+		return this.baseModel.getParticleTexture();
 	}
 
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms()
 	{
-		return baseModel.getItemCameraTransforms();
+		return this.baseModel.getItemCameraTransforms();
 	}
 
 	@Override

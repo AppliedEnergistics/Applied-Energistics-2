@@ -41,7 +41,7 @@ public class BlockColorComponent implements InitComponent
 	@Override
 	public void initialize( Side side )
 	{
-		Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler( blockColor, block );
+		Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler( this.blockColor, this.block );
 	}
 
 }

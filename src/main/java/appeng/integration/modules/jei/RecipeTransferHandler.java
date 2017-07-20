@@ -59,7 +59,7 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
 	@Override
 	public Class<T> getContainerClass()
 	{
-		return containerClass;
+		return this.containerClass;
 	}
 
 	@Nullable

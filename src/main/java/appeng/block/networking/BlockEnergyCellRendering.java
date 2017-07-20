@@ -57,7 +57,7 @@ public class BlockEnergyCellRendering extends BlockRenderingCustomizer
 		double fillFactor = getFillFactor( is );
 
 		int storageLevel = TileEnergyCell.getStorageLevelFromFillFactor( fillFactor );
-		return new ModelResourceLocation( baseModel, "fullness=" + storageLevel );
+		return new ModelResourceLocation( this.baseModel, "fullness=" + storageLevel );
 	}
 
 	/**

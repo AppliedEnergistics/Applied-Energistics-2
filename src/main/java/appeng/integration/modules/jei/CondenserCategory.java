@@ -83,7 +83,7 @@ class CondenserCategory extends BlankRecipeCategory<CondenserOutputWrapper>
 	@Override
 	public String getTitle()
 	{
-		return localizedName;
+		return this.localizedName;
 	}
 
 	/**
@@ -101,15 +101,15 @@ class CondenserCategory extends BlankRecipeCategory<CondenserOutputWrapper>
 	@Override
 	public IDrawable getBackground()
 	{
-		return background;
+		return this.background;
 	}
 
 	@Override
 	public void drawExtras( Minecraft minecraft )
 	{
-		progress.draw( minecraft );
-		iconTrash.draw( minecraft );
-		iconButton.draw( minecraft );
+		this.progress.draw( minecraft );
+		this.iconTrash.draw( minecraft );
+		this.iconButton.draw( minecraft );
 	}
 
 	@Override
@@ -120,7 +120,7 @@ class CondenserCategory extends BlankRecipeCategory<CondenserOutputWrapper>
 
 		// Get all storage cells and cycle them through a fake input slot
 		itemStacks.init( 1, true, 50, 0 );
-		itemStacks.set( 1, getViableStorageComponents( recipeWrapper ) );
+		itemStacks.set( 1, this.getViableStorageComponents( recipeWrapper ) );
 
 		// This only sets the output
 		itemStacks.set( ingredients );
@@ -131,10 +131,10 @@ class CondenserCategory extends BlankRecipeCategory<CondenserOutputWrapper>
 		CondenserOutput condenserOutput = recipeWrapper.getCondenserOutput();
 		IMaterials materials = AEApi.instance().definitions().materials();
 		List<ItemStack> viableComponents = new ArrayList<>();
-		materials.cell1kPart().maybeStack( 1 ).ifPresent( itemStack -> addViableComponent( condenserOutput, viableComponents, itemStack ) );
-		materials.cell4kPart().maybeStack( 1 ).ifPresent( itemStack -> addViableComponent( condenserOutput, viableComponents, itemStack ) );
-		materials.cell16kPart().maybeStack( 1 ).ifPresent( itemStack -> addViableComponent( condenserOutput, viableComponents, itemStack ) );
-		materials.cell64kPart().maybeStack( 1 ).ifPresent( itemStack -> addViableComponent( condenserOutput, viableComponents, itemStack ) );
+		materials.cell1kPart().maybeStack( 1 ).ifPresent( itemStack -> this.addViableComponent( condenserOutput, viableComponents, itemStack ) );
+		materials.cell4kPart().maybeStack( 1 ).ifPresent( itemStack -> this.addViableComponent( condenserOutput, viableComponents, itemStack ) );
+		materials.cell16kPart().maybeStack( 1 ).ifPresent( itemStack -> this.addViableComponent( condenserOutput, viableComponents, itemStack ) );
+		materials.cell64kPart().maybeStack( 1 ).ifPresent( itemStack -> this.addViableComponent( condenserOutput, viableComponents, itemStack ) );
 		return viableComponents;
 	}
 

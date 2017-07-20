@@ -37,16 +37,16 @@ public class DriveSlotsState
 
 	public DriveSlotState getState( int index )
 	{
-		if( index >= slots.length )
+		if( index >= this.slots.length )
 		{
 			return DriveSlotState.EMPTY;
 		}
-		return slots[index];
+		return this.slots[index];
 	}
 
 	public int getSlotCount()
 	{
-		return slots.length;
+		return this.slots.length;
 	}
 
 	/**

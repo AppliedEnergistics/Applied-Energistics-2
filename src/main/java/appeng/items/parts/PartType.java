@@ -314,13 +314,13 @@ public enum PartType
 		this.enabled = features.stream().allMatch( AEConfig.instance()::isFeatureEnabled ) && integrations.stream()
 				.allMatch( IntegrationRegistry.INSTANCE::isEnabled );
 
-		if( enabled )
+		if( this.enabled )
 		{
 			// Only load models if the part is enabled, otherwise we also run into class-loading issues while
 			// scanning for annotations
 			if( Platform.isClientInstall() )
 			{
-				this.itemModels = createItemModels( itemModel );
+				this.itemModels = this.createItemModels( itemModel );
 			}
 			if( c != null )
 			{
@@ -355,7 +355,7 @@ public enum PartType
 
 	public boolean isEnabled()
 	{
-		return enabled;
+		return this.enabled;
 	}
 
 	int getBaseDamage()
@@ -385,7 +385,7 @@ public enum PartType
 
 	String getUnlocalizedName()
 	{
-		return name().toLowerCase();
+		return this.name().toLowerCase();
 	}
 
 	GuiText getExtraName()
@@ -406,12 +406,12 @@ public enum PartType
 	@SideOnly( Side.CLIENT )
 	public List<ModelResourceLocation> getItemModels()
 	{
-		return itemModels;
+		return this.itemModels;
 	}
 
 	public Set<ResourceLocation> getModels()
 	{
-		return models;
+		return this.models;
 	}
 
 }

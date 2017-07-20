@@ -166,7 +166,7 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 	public String getUnlocalizedName( final ItemStack is )
 	{
 		Preconditions.checkNotNull( is );
-		return "item.appliedenergistics2.multi_part." + getTypeByStack( is ).getUnlocalizedName().toLowerCase();
+		return "item.appliedenergistics2.multi_part." + this.getTypeByStack( is ).getUnlocalizedName().toLowerCase();
 	}
 
 	@Override

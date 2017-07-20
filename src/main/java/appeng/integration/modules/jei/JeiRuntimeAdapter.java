@@ -45,12 +45,12 @@ class JeiRuntimeAdapter implements IJEI
 	@Override
 	public String getSearchText()
 	{
-		return Strings.nullToEmpty( runtime.getItemListOverlay().getFilterText() );
+		return Strings.nullToEmpty( this.runtime.getItemListOverlay().getFilterText() );
 	}
 
 	@Override
 	public void setSearchText( String searchText )
 	{
-		runtime.getItemListOverlay().setFilterText( Strings.nullToEmpty( searchText ) );
+		this.runtime.getItemListOverlay().setFilterText( Strings.nullToEmpty( searchText ) );
 	}
 }

@@ -68,12 +68,12 @@ class MonitorBakedModel extends CraftingCubeBakedModel
 		// For sides other than the front, use the chassis texture
 		if( side != forward )
 		{
-			builder.setTexture( chassisTexture );
+			builder.setTexture( this.chassisTexture );
 			builder.addCube( x1, y1, z1, x2, y2, z2 );
 			return;
 		}
 
-		builder.setTexture( baseTexture );
+		builder.setTexture( this.baseTexture );
 		builder.addCube( x1, y1, z1, x2, y2, z2 );
 
 		// Now add the three layered light textures
@@ -83,15 +83,15 @@ class MonitorBakedModel extends CraftingCubeBakedModel
 		builder.setRenderFullBright( powered );
 
 		builder.setColorRGB( color.whiteVariant );
-		builder.setTexture( lightBrightTexture );
+		builder.setTexture( this.lightBrightTexture );
 		builder.addCube( x1, y1, z1, x2, y2, z2 );
 
 		builder.setColorRGB( color.mediumVariant );
-		builder.setTexture( lightMediumTexture );
+		builder.setTexture( this.lightMediumTexture );
 		builder.addCube( x1, y1, z1, x2, y2, z2 );
 
 		builder.setColorRGB( color.blackVariant );
-		builder.setTexture( lightDarkTexture );
+		builder.setTexture( this.lightDarkTexture );
 		builder.addCube( x1, y1, z1, x2, y2, z2 );
 
 	}

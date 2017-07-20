@@ -44,7 +44,7 @@ class UnitBakedModel extends CraftingCubeBakedModel
 	@Override
 	protected void addInnerCube( EnumFacing facing, IBlockState state, CubeBuilder builder, float x1, float y1, float z1, float x2, float y2, float z2 )
 	{
-		builder.setTexture( unitTexture );
+		builder.setTexture( this.unitTexture );
 		builder.addCube( x1, y1, z1, x2, y2, z2 );
 	}
 }

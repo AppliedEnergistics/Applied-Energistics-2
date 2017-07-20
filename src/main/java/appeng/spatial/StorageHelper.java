@@ -101,7 +101,7 @@ public class StorageHelper
 			for( Entity passanger : passangers )
 			{
 				passanger.dismountRidingEntity();
-				passangersOnOtherSide.add( teleportEntity( passanger, link ) );
+				passangersOnOtherSide.add( this.teleportEntity( passanger, link ) );
 			}
 			// We keep track of all so we can remount them on the other side.
 		}

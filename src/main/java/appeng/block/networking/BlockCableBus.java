@@ -118,7 +118,7 @@ public class BlockCableBus extends AEBaseTileBlock
 	@Override
 	public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
 	{
-		CableBusRenderState renderState = cb( world, pos ).getRenderState();
+		CableBusRenderState renderState = this.cb( world, pos ).getRenderState();
 		return ( (IExtendedBlockState) state ).withProperty( RENDER_STATE_PROPERTY, renderState );
 	}
 
@@ -255,7 +255,7 @@ public class BlockCableBus extends AEBaseTileBlock
 		ICableBusContainer cb = this.cb( world, target.getBlockPos() );
 
 		// Our built-in model has the actual baked sprites we need
-		IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState( getDefaultState() );
+		IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState( this.getDefaultState() );
 
 		// We cannot add the effect if we don't have the model
 		if( !( model instanceof CableBusBakedModel ) )
@@ -290,7 +290,7 @@ public class BlockCableBus extends AEBaseTileBlock
 		ICableBusContainer cb = this.cb( world, pos );
 
 		// Our built-in model has the actual baked sprites we need
-		IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState( getDefaultState() );
+		IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState( this.getDefaultState() );
 
 		// We cannot add the effect if we dont have the model
 		if( !( model instanceof CableBusBakedModel ) )
@@ -320,7 +320,7 @@ public class BlockCableBus extends AEBaseTileBlock
 						double d1 = (double) pos.getY() + ( (double) k + 0.5D ) / 4.0D;
 						double d2 = (double) pos.getZ() + ( (double) l + 0.5D ) / 4.0D;
 						ParticleDigging particle = new DestroyFX( world, d0, d1, d2, d0 - (double) pos.getX() - 0.5D, d1 - (double) pos
-								.getY() - 0.5D, d2 - (double) pos.getZ() - 0.5D, getDefaultState() ).setBlockPos( pos );
+								.getY() - 0.5D, d2 - (double) pos.getZ() - 0.5D, this.getDefaultState() ).setBlockPos( pos );
 						particle.setParticleTexture( texture );
 						effectRenderer.addEffect( particle );
 					}

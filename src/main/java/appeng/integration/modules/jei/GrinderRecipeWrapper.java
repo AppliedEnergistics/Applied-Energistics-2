@@ -47,11 +47,11 @@ class GrinderRecipeWrapper extends BlankRecipeWrapper
 	@Override
 	public void getIngredients( IIngredients ingredients )
 	{
-		ingredients.setInput( ItemStack.class, recipe.getInput() );
+		ingredients.setInput( ItemStack.class, this.recipe.getInput() );
 		List<ItemStack> outputs = new ArrayList<>( 3 );
-		outputs.add( recipe.getOutput() );
-		recipe.getOptionalOutput().ifPresent( outputs::add );
-		recipe.getSecondOptionalOutput().ifPresent( outputs::add );
+		outputs.add( this.recipe.getOutput() );
+		this.recipe.getOptionalOutput().ifPresent( outputs::add );
+		this.recipe.getSecondOptionalOutput().ifPresent( outputs::add );
 		ingredients.setOutputs( ItemStack.class, outputs );
 	}
 
@@ -67,18 +67,18 @@ class GrinderRecipeWrapper extends BlankRecipeWrapper
 		final float invScale = 1 / scale;
 		GlStateManager.scale( scale, scale, 1 );
 
-		if( recipe.getOptionalOutput() != null )
+		if( this.recipe.getOptionalOutput() != null )
 		{
-			String text = String.format( "%d%%", (int) ( recipe.getOptionalChance() * 100 ) );
+			String text = String.format( "%d%%", (int) ( this.recipe.getOptionalChance() * 100 ) );
 			float width = fr.getStringWidth( text ) * scale;
 			int xScaled = (int) Math.round( ( x + ( 18 - width ) / 2 ) * invScale );
 			fr.drawString( text, xScaled, (int) ( 65 * invScale ), Color.gray.getRGB() );
 			x += 18;
 		}
 
-		if( recipe.getSecondOptionalOutput() != null )
+		if( this.recipe.getSecondOptionalOutput() != null )
 		{
-			String text = String.format( "%d%%", (int) ( recipe.getSecondOptionalChance() * 100 ) );
+			String text = String.format( "%d%%", (int) ( this.recipe.getSecondOptionalChance() * 100 ) );
 			float width = fr.getStringWidth( text ) * scale;
 			int xScaled = (int) Math.round( ( x + ( 18 - width ) / 2 ) * invScale );
 			fr.drawString( text, xScaled, (int) ( 65 * invScale ), Color.gray.getRGB() );

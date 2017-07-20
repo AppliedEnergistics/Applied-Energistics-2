@@ -54,7 +54,7 @@ public class BakingPipeline<F, T> implements BakingPipelineElement<F, T>
 	@Override
 	public List pipe( List things, IBakedModel parent, IBlockState state, EnumFacing side, long rand )
 	{
-		for( BakingPipelineElement pipe : pipeline )
+		for( BakingPipelineElement pipe : this.pipeline )
 		{
 			things = pipe.pipe( things, parent, state, side, rand );
 		}

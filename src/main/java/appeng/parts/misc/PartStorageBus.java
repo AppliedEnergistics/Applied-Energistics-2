@@ -374,7 +374,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 		if( accessor != null )
 		{
-			IStorageMonitorable inventory = accessor.getInventory( mySrc );
+			IStorageMonitorable inventory = accessor.getInventory( this.mySrc );
 			if( inventory != null )
 			{
 				return inventory.getItemInventory();
@@ -422,7 +422,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		this.monitor = null;
 		if( target != null )
 		{
-			IMEInventory<? extends IAEStack> inv = getInventoryWrapper( target );
+			IMEInventory<? extends IAEStack> inv = this.getInventoryWrapper( target );
 
 			if( inv instanceof MEMonitorIInventory )
 			{
@@ -586,11 +586,11 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	@Override
 	public IPartModel getStaticModels()
 	{
-		if( isActive() && isPowered() )
+		if( this.isActive() && this.isPowered() )
 		{
 			return MODELS_HAS_CHANNEL;
 		}
-		else if( isPowered() )
+		else if( this.isPowered() )
 		{
 			return MODELS_ON;
 		}

@@ -47,11 +47,11 @@ public class StateMapperComponent implements ModelRegComponent
 	@Override
 	public void modelReg( Side side )
 	{
-		ModelLoader.setCustomStateMapper( block, stateMapper );
-		if( stateMapper instanceof IResourceManagerReloadListener )
+		ModelLoader.setCustomStateMapper( this.block, this.stateMapper );
+		if( this.stateMapper instanceof IResourceManagerReloadListener )
 		{
 			( (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager() )
-					.registerReloadListener( (IResourceManagerReloadListener) stateMapper );
+					.registerReloadListener( (IResourceManagerReloadListener) this.stateMapper );
 		}
 	}
 }

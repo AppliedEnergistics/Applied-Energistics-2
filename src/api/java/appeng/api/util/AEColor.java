@@ -146,14 +146,14 @@ public enum AEColor
 			case 0:
 				return -1;
 			case TINTINDEX_DARK:
-				return blackVariant;
+				return this.blackVariant;
 			case TINTINDEX_MEDIUM:
-				return mediumVariant;
+				return this.mediumVariant;
 			case TINTINDEX_BRIGHT:
-				return whiteVariant;
+				return this.whiteVariant;
 			case TINTINDEX_MEDIUM_BRIGHT:
-				final int light = whiteVariant;
-				final int dark = mediumVariant;
+				final int light = this.whiteVariant;
+				final int dark = this.mediumVariant;
 				return ( ( ( ( ( light >> 16 ) & 0xff ) + ( ( dark >> 16 ) & 0xff ) ) / 2 ) << 16 ) | ( ( ( ( ( light >> 8 ) & 0xff ) + ( ( dark >> 8 ) & 0xff ) ) / 2 ) << 8 ) | ( ( ( ( light ) & 0xff ) + ( ( dark ) & 0xff ) ) / 2 );
 			default:
 				return -1;

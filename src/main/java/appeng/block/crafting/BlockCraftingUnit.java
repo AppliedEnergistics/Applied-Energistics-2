@@ -76,7 +76,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 
 		for( EnumFacing facing : EnumFacing.values() )
 		{
-			if( isConnected( world, pos, facing ) )
+			if( this.isConnected( world, pos, facing ) )
 			{
 				connections.add( facing );
 			}
@@ -96,7 +96,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
-		return new ExtendedBlockState( this, getAEStates(), new IUnlistedProperty[] { STATE } );
+		return new ExtendedBlockState( this, this.getAEStates(), new IUnlistedProperty[] { STATE } );
 	}
 
 	@Override

@@ -233,7 +233,7 @@ public enum MaterialType
 
 	public ModelResourceLocation getModel()
 	{
-		return model;
+		return this.model;
 	}
 
 }

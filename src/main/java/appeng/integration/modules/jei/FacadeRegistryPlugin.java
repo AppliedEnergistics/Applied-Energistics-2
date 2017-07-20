@@ -66,7 +66,7 @@ class FacadeRegistryPlugin implements IRecipeRegistryPlugin
 			// Looking up if a certain block can be used to make a facade
 			ItemStack itemStack = (ItemStack) focus.getValue();
 
-			if( !itemFacade.createFacadeForItem( itemStack, true ).isEmpty() )
+			if( !this.itemFacade.createFacadeForItem( itemStack, true ).isEmpty() )
 			{
 				return Collections.singletonList( VanillaRecipeCategoryUid.CRAFTING );
 			}
@@ -92,7 +92,7 @@ class FacadeRegistryPlugin implements IRecipeRegistryPlugin
 			{
 				ItemFacade facadeItem = (ItemFacade) itemStack.getItem();
 				ItemStack textureItem = facadeItem.getTextureItem( itemStack );
-				return Collections.singletonList( (T) new FacadeRecipeWrapper( textureItem, cableAnchor, itemStack ) );
+				return Collections.singletonList( (T) new FacadeRecipeWrapper( textureItem, this.cableAnchor, itemStack ) );
 			}
 		}
 		else if( focus.getMode() == IFocus.Mode.INPUT && focus.getValue() instanceof ItemStack )
@@ -100,11 +100,11 @@ class FacadeRegistryPlugin implements IRecipeRegistryPlugin
 			// Looking up if a certain block can be used to make a facade
 
 			ItemStack itemStack = (ItemStack) focus.getValue();
-			ItemStack facade = itemFacade.createFacadeForItem( itemStack, false );
+			ItemStack facade = this.itemFacade.createFacadeForItem( itemStack, false );
 
 			if( !facade.isEmpty() )
 			{
-				return Collections.singletonList( (T) new FacadeRecipeWrapper( itemStack, cableAnchor, facade ) );
+				return Collections.singletonList( (T) new FacadeRecipeWrapper( itemStack, this.cableAnchor, facade ) );
 			}
 		}
 

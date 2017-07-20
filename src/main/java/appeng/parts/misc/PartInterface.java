@@ -418,11 +418,11 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	@Override
 	public IPartModel getStaticModels()
 	{
-		if( isActive() && isPowered() )
+		if( this.isActive() && this.isPowered() )
 		{
 			return MODELS_HAS_CHANNEL;
 		}
-		else if( isPowered() )
+		else if( this.isPowered() )
 		{
 			return MODELS_ON;
 		}
@@ -435,13 +435,13 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	@Override
 	public boolean hasCapability( Capability<?> capabilityClass )
 	{
-		return this.duality.hasCapability( capabilityClass, getSide().getFacing() );
+		return this.duality.hasCapability( capabilityClass, this.getSide().getFacing() );
 	}
 
 	@Override
 	public <T> T getCapability( Capability<T> capabilityClass )
 	{
-		return this.duality.getCapability( capabilityClass, getSide().getFacing() );
+		return this.duality.getCapability( capabilityClass, this.getSide().getFacing() );
 	}
 
 	@Override

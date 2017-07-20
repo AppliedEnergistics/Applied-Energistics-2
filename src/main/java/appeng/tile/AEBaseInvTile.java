@@ -246,15 +246,15 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 		{
 			if( facing == null )
 			{
-				if( itemHandler == null )
+				if( this.itemHandler == null )
 				{
-					itemHandler = new InvWrapper( getInternalInventory() );
+					this.itemHandler = new InvWrapper( this.getInternalInventory() );
 				}
-				return (T) itemHandler;
+				return (T) this.itemHandler;
 			}
 			else
 			{
-				return (T) sidedItemHandler.computeIfAbsent( facing, side -> new SidedInvWrapper( this, side ) );
+				return (T) this.sidedItemHandler.computeIfAbsent( facing, side -> new SidedInvWrapper( this, side ) );
 			}
 		}
 		return super.getCapability( capability, facing );

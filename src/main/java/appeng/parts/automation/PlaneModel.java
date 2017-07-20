@@ -62,17 +62,17 @@ public class PlaneModel implements IModel
 	@Override
 	public Collection<ResourceLocation> getTextures()
 	{
-		return Lists.newArrayList( frontTexture, sidesTexture, backTexture );
+		return Lists.newArrayList( this.frontTexture, this.sidesTexture, this.backTexture );
 	}
 
 	@Override
 	public IBakedModel bake( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
 	{
-		TextureAtlasSprite frontSprite = bakedTextureGetter.apply( frontTexture );
-		TextureAtlasSprite sidesSprite = bakedTextureGetter.apply( sidesTexture );
-		TextureAtlasSprite backSprite = bakedTextureGetter.apply( backTexture );
+		TextureAtlasSprite frontSprite = bakedTextureGetter.apply( this.frontTexture );
+		TextureAtlasSprite sidesSprite = bakedTextureGetter.apply( this.sidesTexture );
+		TextureAtlasSprite backSprite = bakedTextureGetter.apply( this.backTexture );
 
-		return new PlaneBakedModel( format, frontSprite, sidesSprite, backSprite, connections );
+		return new PlaneBakedModel( format, frontSprite, sidesSprite, backSprite, this.connections );
 	}
 
 	@Override

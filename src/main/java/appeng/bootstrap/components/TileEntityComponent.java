@@ -25,16 +25,16 @@ public class TileEntityComponent implements PreInitComponent
 
 	public void addTileEntity( TileEntityDefinition tileEntityDefinition )
 	{
-		if( !tileEntityDefinitions.contains( tileEntityDefinition ) )
+		if( !this.tileEntityDefinitions.contains( tileEntityDefinition ) )
 		{
-			tileEntityDefinitions.add( tileEntityDefinition );
+			this.tileEntityDefinitions.add( tileEntityDefinition );
 		}
 	}
 
 	@Override
 	public void preInitialize( Side side )
 	{
-		for( TileEntityDefinition tileEntityDefinition : tileEntityDefinitions )
+		for( TileEntityDefinition tileEntityDefinition : this.tileEntityDefinitions )
 		{
 			if( !tileEntityDefinition.isRegistered() )
 			{

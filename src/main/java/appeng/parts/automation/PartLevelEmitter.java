@@ -563,17 +563,17 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	@Override
 	public IPartModel getStaticModels()
 	{
-		if( isActive() && isPowered() )
+		if( this.isActive() && this.isPowered() )
 		{
-			return isLevelEmitterOn() ? MODEL_ON_HAS_CHANNEL : MODEL_OFF_HAS_CHANNEL;
+			return this.isLevelEmitterOn() ? MODEL_ON_HAS_CHANNEL : MODEL_OFF_HAS_CHANNEL;
 		}
-		else if( isPowered() )
+		else if( this.isPowered() )
 		{
-			return isLevelEmitterOn() ? MODEL_ON_ON : MODEL_OFF_ON;
+			return this.isLevelEmitterOn() ? MODEL_ON_ON : MODEL_OFF_ON;
 		}
 		else
 		{
-			return isLevelEmitterOn() ? MODEL_ON_OFF : MODEL_OFF_OFF;
+			return this.isLevelEmitterOn() ? MODEL_ON_OFF : MODEL_OFF_OFF;
 		}
 	}
 }

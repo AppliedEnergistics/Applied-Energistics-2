@@ -175,7 +175,7 @@ public final class Registration
 
 	public DimensionType getStorageDimensionType()
 	{
-		return storageDimensionType;
+		return this.storageDimensionType;
 	}
 
 	void preInitialize( final FMLPreInitializationEvent event )
@@ -241,7 +241,7 @@ public final class Registration
 
 		if( config.getStorageProviderID() != -1 )
 		{
-			storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.getStorageProviderID(), StorageWorldProvider.class, false );
+			this.storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.getStorageProviderID(), StorageWorldProvider.class, false );
 		}
 
 		if( config.getStorageProviderID() == -1 && force )
@@ -259,7 +259,7 @@ public final class Registration
 				config.setStorageProviderID( config.getStorageProviderID() - 1 );
 			}
 
-			storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.getStorageProviderID(), StorageWorldProvider.class, false );
+			this.storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.getStorageProviderID(), StorageWorldProvider.class, false );
 
 			config.save();
 		}
@@ -418,7 +418,7 @@ public final class Registration
 		// Perform ore camouflage!
 		ItemMaterial.instance.makeUnique();
 
-		final Runnable recipeLoader = new RecipeLoader( recipeDirectory, customRecipeConfig, this.recipeHandler );
+		final Runnable recipeLoader = new RecipeLoader( this.recipeDirectory, this.customRecipeConfig, this.recipeHandler );
 		recipeLoader.run();
 
 		this.recipeHandler.injectRecipes();

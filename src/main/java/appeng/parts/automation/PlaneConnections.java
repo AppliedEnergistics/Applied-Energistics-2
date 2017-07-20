@@ -76,28 +76,28 @@ public final class PlaneConnections
 
 	public boolean isUp()
 	{
-		return up;
+		return this.up;
 	}
 
 	public boolean isRight()
 	{
-		return right;
+		return this.right;
 	}
 
 	public boolean isDown()
 	{
-		return down;
+		return this.down;
 	}
 
 	public boolean isLeft()
 	{
-		return left;
+		return this.left;
 	}
 
 	// The combination of connections expressed as a number ranging from [0,15]
 	public int getIndex()
 	{
-		return getIndex( up, right, down, left );
+		return getIndex( this.up, this.right, this.down, this.left );
 	}
 
 	private static int getIndex( boolean up, boolean right, boolean down, boolean left )
@@ -108,7 +108,7 @@ public final class PlaneConnections
 	// Returns a suffix that expresses the connection states as a string
 	public String getFilenameSuffix()
 	{
-		String suffix = Integer.toBinaryString( getIndex() );
+		String suffix = Integer.toBinaryString( this.getIndex() );
 		return Strings.padStart( suffix, 4, '0' );
 	}
 
@@ -119,22 +119,22 @@ public final class PlaneConnections
 		{
 			return true;
 		}
-		if( o == null || getClass() != o.getClass() )
+		if( o == null || this.getClass() != o.getClass() )
 		{
 			return false;
 		}
 
 		PlaneConnections that = (PlaneConnections) o;
-		return up == that.up && right == that.right && down == that.down && left == that.left;
+		return this.up == that.up && this.right == that.right && this.down == that.down && this.left == that.left;
 	}
 
 	@Override
 	public int hashCode()
 	{
-		int result = ( up ? 1 : 0 );
-		result = 31 * result + ( right ? 1 : 0 );
-		result = 31 * result + ( down ? 1 : 0 );
-		result = 31 * result + ( left ? 1 : 0 );
+		int result = ( this.up ? 1 : 0 );
+		result = 31 * result + ( this.right ? 1 : 0 );
+		result = 31 * result + ( this.down ? 1 : 0 );
+		result = 31 * result + ( this.left ? 1 : 0 );
 		return result;
 	}
 }

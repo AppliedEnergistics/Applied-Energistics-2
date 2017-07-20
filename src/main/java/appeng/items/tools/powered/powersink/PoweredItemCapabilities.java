@@ -77,7 +77,7 @@ class PoweredItemCapabilities implements ICapabilityProvider, IEnergyStorage
 		}
 		else if( capability == Capabilities.TESLA_CONSUMER || capability == Capabilities.TESLA_HOLDER )
 		{
-			return (T) teslaAdapter;
+			return (T) this.teslaAdapter;
 		}
 		return null;
 	}
@@ -87,7 +87,7 @@ class PoweredItemCapabilities implements ICapabilityProvider, IEnergyStorage
 	{
 		if( simulate )
 		{
-			final int required = (int) PowerUnits.AE.convertTo( PowerUnits.RF, item.getAEMaxPower( is ) - item.getAECurrentPower( is ) );
+			final int required = (int) PowerUnits.AE.convertTo( PowerUnits.RF, this.item.getAEMaxPower( this.is ) - this.item.getAECurrentPower( this.is ) );
 
 			if( maxReceive < required )
 			{
@@ -97,7 +97,7 @@ class PoweredItemCapabilities implements ICapabilityProvider, IEnergyStorage
 		}
 		else
 		{
-			final double powerRemainder = item.injectAEPower( is, PowerUnits.RF.convertTo( PowerUnits.AE, maxReceive ) );
+			final double powerRemainder = this.item.injectAEPower( this.is, PowerUnits.RF.convertTo( PowerUnits.AE, maxReceive ) );
 			return maxReceive - (int) PowerUnits.AE.convertTo( PowerUnits.RF, powerRemainder );
 		}
 	}
@@ -111,13 +111,13 @@ class PoweredItemCapabilities implements ICapabilityProvider, IEnergyStorage
 	@Override
 	public int getEnergyStored()
 	{
-		return (int) PowerUnits.AE.convertTo( PowerUnits.RF, item.getAECurrentPower( is ) );
+		return (int) PowerUnits.AE.convertTo( PowerUnits.RF, this.item.getAECurrentPower( this.is ) );
 	}
 
 	@Override
 	public int getMaxEnergyStored()
 	{
-		return (int) PowerUnits.AE.convertTo( PowerUnits.RF, item.getAEMaxPower( is ) );
+		return (int) PowerUnits.AE.convertTo( PowerUnits.RF, this.item.getAEMaxPower( this.is ) );
 	}
 
 	@Override
@@ -138,19 +138,19 @@ class PoweredItemCapabilities implements ICapabilityProvider, IEnergyStorage
 		@Override
 		public long givePower( long power, boolean simulated )
 		{
-			return receiveEnergy( (int) power, simulated );
+			return PoweredItemCapabilities.this.receiveEnergy( (int) power, simulated );
 		}
 
 		@Override
 		public long getStoredPower()
 		{
-			return getEnergyStored();
+			return PoweredItemCapabilities.this.getEnergyStored();
 		}
 
 		@Override
 		public long getCapacity()
 		{
-			return getMaxEnergyStored();
+			return PoweredItemCapabilities.this.getMaxEnergyStored();
 		}
 	}
 }

@@ -53,7 +53,7 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 		this.boundingBox = new AxisAlignedBB( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );
 		this.setLightOpacity( 0 );
 		this.setFullSize( this.setOpaque( false ) );
-		this.setDefaultState( getDefaultState().withProperty( FORMED, false ) );
+		this.setDefaultState( this.getDefaultState().withProperty( FORMED, false ) );
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
-		return new ExtendedBlockState( this, getAEStates(), new IUnlistedProperty[] { FORMED_STATE } );
+		return new ExtendedBlockState( this, this.getAEStates(), new IUnlistedProperty[] { FORMED_STATE } );
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 	{
 		IExtendedBlockState extState = (IExtendedBlockState) state;
 
-		TileQuantumBridge bridge = getTileEntity( world, pos );
+		TileQuantumBridge bridge = this.getTileEntity( world, pos );
 		if( bridge != null )
 		{
 			QnbFormedState formedState = new QnbFormedState( bridge.getAdjacentQuantumBridges(), bridge.isCorner(), bridge.isPowered() );
@@ -86,7 +86,7 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 	@Override
 	public IBlockState getActualState( IBlockState state, IBlockAccess worldIn, BlockPos pos )
 	{
-		TileQuantumBridge bridge = getTileEntity( worldIn, pos );
+		TileQuantumBridge bridge = this.getTileEntity( worldIn, pos );
 		if( bridge != null )
 		{
 			state = state.withProperty( FORMED, bridge.isFormed() );

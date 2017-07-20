@@ -45,7 +45,7 @@ public class StaticBlockColor implements IBlockColor
 	@Override
 	public int colorMultiplier( IBlockState state, @Nullable IBlockAccess worldIn, @Nullable BlockPos pos, int tintIndex )
 	{
-		return color.getVariantByTintIndex( tintIndex );
+		return this.color.getVariantByTintIndex( tintIndex );
 	}
 
 }

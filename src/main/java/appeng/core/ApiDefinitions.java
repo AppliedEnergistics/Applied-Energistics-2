@@ -43,10 +43,10 @@ public final class ApiDefinitions implements IDefinitions
 
 	public ApiDefinitions( final PartModels partModels )
 	{
-		this.blocks = new ApiBlocks( registry, partModels );
-		this.items = new ApiItems( registry );
-		this.materials = new ApiMaterials( registry );
-		this.parts = new ApiParts( registry, partModels );
+		this.blocks = new ApiBlocks( this.registry, partModels );
+		this.items = new ApiItems( this.registry );
+		this.materials = new ApiMaterials( this.registry );
+		this.parts = new ApiParts( this.registry, partModels );
 	}
 	//
 	// public void addBlocks( final PartModels partModels )
@@ -61,7 +61,7 @@ public final class ApiDefinitions implements IDefinitions
 
 	public FeatureFactory getRegistry()
 	{
-		return registry;
+		return this.registry;
 	}
 
 	@Override

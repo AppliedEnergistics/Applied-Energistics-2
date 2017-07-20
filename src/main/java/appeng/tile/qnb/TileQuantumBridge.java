@@ -147,7 +147,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 				.blocks()
 				.quantumLink()
 				.maybeBlock()
-				.map( link -> getBlockType() == link )
+				.map( link -> this.getBlockType() == link )
 				.orElse( false );
 	}
 

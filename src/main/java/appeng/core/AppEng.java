@@ -136,7 +136,7 @@ public final class AppEng
 		{
 			AppEng.proxy.missingCoreMod();
 		}
-		MinecraftForge.EVENT_BUS.register( registration );
+		MinecraftForge.EVENT_BUS.register( this.registration );
 
 		final Stopwatch watch = Stopwatch.createStarted();
 		this.configDirectory = new File( event.getModConfigurationDirectory().getPath(), "AppliedEnergistics2" );
@@ -155,7 +155,7 @@ public final class AppEng
 		this.customRecipeConfig = new CustomRecipeForgeConfiguration( recipeConfiguration );
 		this.exportConfig = new ForgeExportConfig( recipeConfiguration );
 
-		this.registration.setRecipeInformation( recipeDirectory, customRecipeConfig );
+		this.registration.setRecipeInformation( this.recipeDirectory, this.customRecipeConfig );
 
 		AELog.info( "Pre Initialization ( started )" );
 

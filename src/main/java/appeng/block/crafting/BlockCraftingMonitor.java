@@ -51,7 +51,7 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 	@Override
 	protected BlockStateContainer createBlockState()
 	{
-		return new ExtendedBlockState( this, getAEStates(), new IUnlistedProperty[] {
+		return new ExtendedBlockState( this, this.getAEStates(), new IUnlistedProperty[] {
 				STATE,
 				COLOR,
 				FORWARD,
@@ -66,7 +66,7 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 		EnumFacing forward = EnumFacing.NORTH;
 		EnumFacing up = EnumFacing.UP;
 
-		TileCraftingMonitorTile te = getTileEntity( world, pos );
+		TileCraftingMonitorTile te = this.getTileEntity( world, pos );
 		if( te != null )
 		{
 			color = te.getColor();

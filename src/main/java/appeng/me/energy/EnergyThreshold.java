@@ -51,7 +51,7 @@ public class EnergyThreshold implements Comparable<EnergyThreshold>
 
 	public IEnergyWatcher getEnergyWatcher()
 	{
-		return watcher;
+		return this.watcher;
 	}
 
 	@Override
@@ -73,9 +73,9 @@ public class EnergyThreshold implements Comparable<EnergyThreshold>
 		final int prime = 31;
 		int result = 1;
 		long temp;
-		temp = Double.doubleToLongBits( threshold );
+		temp = Double.doubleToLongBits( this.threshold );
 		result = prime * result + (int) ( temp ^ ( temp >>> 32 ) );
-		result = prime * result + ( ( watcher == null ) ? 0 : watcher.hashCode() );
+		result = prime * result + ( ( this.watcher == null ) ? 0 : this.watcher.hashCode() );
 		return result;
 	}
 
@@ -90,25 +90,25 @@ public class EnergyThreshold implements Comparable<EnergyThreshold>
 		{
 			return false;
 		}
-		if( getClass() != obj.getClass() )
+		if( this.getClass() != obj.getClass() )
 		{
 			return false;
 		}
 
 		EnergyThreshold other = (EnergyThreshold) obj;
-		if( Double.doubleToLongBits( threshold ) != Double.doubleToLongBits( other.threshold ) )
+		if( Double.doubleToLongBits( this.threshold ) != Double.doubleToLongBits( other.threshold ) )
 		{
 			return false;
 		}
 
-		if( watcher == null )
+		if( this.watcher == null )
 		{
 			if( other.watcher != null )
 			{
 				return false;
 			}
 		}
-		else if( !watcher.equals( other.watcher ) )
+		else if( !this.watcher.equals( other.watcher ) )
 		{
 			return false;
 		}
