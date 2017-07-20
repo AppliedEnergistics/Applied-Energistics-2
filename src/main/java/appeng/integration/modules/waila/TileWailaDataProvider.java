@@ -107,7 +107,7 @@ public final class TileWailaDataProvider implements IWailaDataProvider
 	}
 
 	@Override
-	public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos)
+	public NBTTagCompound getNBTData( EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos )
 	{
 		for( final IWailaDataProvider provider : this.providers )
 		{

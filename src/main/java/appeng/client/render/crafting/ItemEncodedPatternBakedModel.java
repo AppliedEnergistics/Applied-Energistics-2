@@ -1,3 +1,4 @@
+
 package appeng.client.render.crafting;
 
 
@@ -31,8 +32,10 @@ import appeng.items.misc.ItemEncodedPattern;
 
 
 /**
- * This special model handles switching between rendering the crafting output of an encoded pattern (when shift is being held), and
- * showing the encoded pattern itself. Matters are further complicated by only wanting to show the crafting output when the pattern is being
+ * This special model handles switching between rendering the crafting output of an encoded pattern (when shift is being
+ * held), and
+ * showing the encoded pattern itself. Matters are further complicated by only wanting to show the crafting output when
+ * the pattern is being
  * rendered in the GUI, and not anywhere else.
  */
 class ItemEncodedPatternBakedModel implements IBakedModel
@@ -105,10 +108,14 @@ class ItemEncodedPatternBakedModel implements IBakedModel
 	}
 
 	/**
-	 * Since the ItemOverrideList handling comes before handling the perspective awareness (which is the first place where we
-	 * know how we are being rendered) we need to remember the model of the crafting output, and make the decision on which to render later on.
-	 * Sadly, Forge is pretty inconsistent when it will call the handlePerspective method, so some methods are called even on this interim-model.
-	 * Usually those methods only matter for rendering on the ground and other cases, where we wouldn't render the crafting output model anyway,
+	 * Since the ItemOverrideList handling comes before handling the perspective awareness (which is the first place
+	 * where we
+	 * know how we are being rendered) we need to remember the model of the crafting output, and make the decision on
+	 * which to render later on.
+	 * Sadly, Forge is pretty inconsistent when it will call the handlePerspective method, so some methods are called
+	 * even on this interim-model.
+	 * Usually those methods only matter for rendering on the ground and other cases, where we wouldn't render the
+	 * crafting output model anyway,
 	 * so in those cases we delegate to the model of the encoded pattern.
 	 */
 	private class ShiftHoldingModelWrapper implements IBakedModel
@@ -199,10 +206,11 @@ class ItemEncodedPatternBakedModel implements IBakedModel
 		}
 	}
 
-
 	/**
-	 * Item Override Lists are the only point during item rendering where we can access the item stack that is being rendered.
-	 * So this is the point where we actually check if shift is being held, and if so, determine the crafting output model.
+	 * Item Override Lists are the only point during item rendering where we can access the item stack that is being
+	 * rendered.
+	 * So this is the point where we actually check if shift is being held, and if so, determine the crafting output
+	 * model.
 	 */
 	private class CustomOverrideList extends ItemOverrideList
 	{

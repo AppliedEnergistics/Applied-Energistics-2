@@ -40,7 +40,7 @@ public enum PlayerMessages
 	DeviceNotWirelessTerminal,
 	DeviceNotLinked,
 	StationCanNotBeLocated,
-	SettingCleared, ;
+	SettingCleared,;
 
 	public ITextComponent get()
 	{

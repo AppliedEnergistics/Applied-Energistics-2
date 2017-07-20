@@ -53,4 +53,3 @@ class InscriberRecipeWrapper extends BlankRecipeWrapper
 		ingredients.setOutput( ItemStack.class, recipe.getOutput() );
 	}
 }
-

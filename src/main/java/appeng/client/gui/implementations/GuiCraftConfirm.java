@@ -120,7 +120,8 @@ public class GuiCraftConfirm extends AEBaseGui
 		this.start.enabled = false;
 		this.buttonList.add( this.start );
 
-		this.selectCPU = new GuiButton( 0, this.guiLeft + ( 219 - 180 ) / 2, this.guiTop + this.ySize - 68, 180, 20, GuiText.CraftingCPU.getLocal() + ": " + GuiText.Automatic );
+		this.selectCPU = new GuiButton( 0, this.guiLeft + ( 219 - 180 ) / 2, this.guiTop + this.ySize - 68, 180, 20, GuiText.CraftingCPU
+				.getLocal() + ": " + GuiText.Automatic );
 		this.selectCPU.enabled = false;
 		this.buttonList.add( this.selectCPU );
 
@@ -219,7 +220,8 @@ public class GuiCraftConfirm extends AEBaseGui
 		}
 		else
 		{
-			dsp = this.ccc.getCpuAvailableBytes() > 0 ? ( GuiText.Bytes.getLocal() + ": " + this.ccc.getCpuAvailableBytes() + " : " + GuiText.CoProcessors.getLocal() + ": " + this.ccc.getCpuCoProcessors() ) : GuiText.Bytes.getLocal() + ": N/A : " + GuiText.CoProcessors.getLocal() + ": N/A";
+			dsp = this.ccc.getCpuAvailableBytes() > 0 ? ( GuiText.Bytes.getLocal() + ": " + this.ccc.getCpuAvailableBytes() + " : " + GuiText.CoProcessors
+					.getLocal() + ": " + this.ccc.getCpuCoProcessors() ) : GuiText.Bytes.getLocal() + ": N/A : " + GuiText.CoProcessors.getLocal() + ": N/A";
 		}
 
 		final int offset = ( 219 - this.fontRenderer.getStringWidth( dsp ) ) / 2;
@@ -285,7 +287,8 @@ public class GuiCraftConfirm extends AEBaseGui
 
 					str = GuiText.FromStorage.getLocal() + ": " + str;
 					final int w = 4 + this.fontRenderer.getStringWidth( str );
-					this.fontRenderer.drawString( str, (int) ( ( x * ( 1 + sectionLength ) + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
+					this.fontRenderer.drawString( str, (int) ( ( x * ( 1 + sectionLength ) + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ),
+							( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
 
 					if( this.tooltip == z - viewStart )
 					{
@@ -310,7 +313,8 @@ public class GuiCraftConfirm extends AEBaseGui
 
 					str = GuiText.Missing.getLocal() + ": " + str;
 					final int w = 4 + this.fontRenderer.getStringWidth( str );
-					this.fontRenderer.drawString( str, (int) ( ( x * ( 1 + sectionLength ) + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
+					this.fontRenderer.drawString( str, (int) ( ( x * ( 1 + sectionLength ) + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ),
+							( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
 
 					if( this.tooltip == z - viewStart )
 					{
@@ -335,7 +339,8 @@ public class GuiCraftConfirm extends AEBaseGui
 
 					str = GuiText.ToCraft.getLocal() + ": " + str;
 					final int w = 4 + this.fontRenderer.getStringWidth( str );
-					this.fontRenderer.drawString( str, (int) ( ( x * ( 1 + sectionLength ) + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
+					this.fontRenderer.drawString( str, (int) ( ( x * ( 1 + sectionLength ) + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ),
+							( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
 
 					if( this.tooltip == z - viewStart )
 					{

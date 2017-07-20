@@ -131,7 +131,8 @@ public enum PartType
 		}
 	},
 
-	CABLE_DENSE_SMART( 60, "cable_dense_smart", EnumSet.of( AEFeature.CHANNELS, AEFeature.DENSE_CABLES ), EnumSet.noneOf( IntegrationType.class ), PartDenseCable.class )
+	CABLE_DENSE_SMART( 60, "cable_dense_smart", EnumSet.of( AEFeature.CHANNELS, AEFeature.DENSE_CABLES ), EnumSet
+			.noneOf( IntegrationType.class ), PartDenseCable.class )
 	{
 		@Override
 		public boolean isCable()
@@ -181,7 +182,8 @@ public enum PartType
 
 	PATTERN_TERMINAL( 340, "pattern_terminal", EnumSet.of( AEFeature.PATTERNS ), EnumSet.noneOf( IntegrationType.class ), PartPatternTerminal.class ),
 
-	CRAFTING_TERMINAL( 360, "crafting_terminal", EnumSet.of( AEFeature.CRAFTING_TERMINAL ), EnumSet.noneOf( IntegrationType.class ), PartCraftingTerminal.class ),
+	CRAFTING_TERMINAL( 360, "crafting_terminal", EnumSet.of( AEFeature.CRAFTING_TERMINAL ), EnumSet
+			.noneOf( IntegrationType.class ), PartCraftingTerminal.class ),
 
 	TERMINAL( 380, "terminal", EnumSet.of( AEFeature.TERMINAL ), EnumSet.noneOf( IntegrationType.class ), PartTerminal.class ),
 
@@ -233,7 +235,7 @@ public enum PartType
 	},
 
 	P2P_TUNNEL_IC2( 465, "p2p_tunnel_ic2", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_EU ), EnumSet
-			.of ( IntegrationType.IC2 ), PartP2PIC2Power.class, GuiText.EUTunnel )
+			.of( IntegrationType.IC2 ), PartP2PIC2Power.class, GuiText.EUTunnel )
 	{
 		@Override
 		String getUnlocalizedName()
@@ -243,7 +245,7 @@ public enum PartType
 	},
 
 	P2P_TUNNEL_RF( 466, "p2p_tunnel_rf", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_RF ), EnumSet
-			.of ( IntegrationType.RF ), PartP2PRFPower.class, GuiText.RFTunnel )
+			.of( IntegrationType.RF ), PartP2PRFPower.class, GuiText.RFTunnel )
 	{
 		@Override
 		String getUnlocalizedName()
@@ -263,13 +265,13 @@ public enum PartType
 	},
 
 	P2P_TUNNEL_FE( 469, "p2p_tunnel_fe", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_FE ), EnumSet
-				.noneOf( IntegrationType.class ), PartP2PFEPower.class, GuiText.FETunnel )
+			.noneOf( IntegrationType.class ), PartP2PFEPower.class, GuiText.FETunnel )
 	{
 		@Override
 		String getUnlocalizedName()
-			{
-				return "p2p_tunnel";
-			}
+		{
+			return "p2p_tunnel";
+		}
 	},
 
 	// P2PTunnelOpenComputers( 468, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelOpenComputers ), EnumSet.of(

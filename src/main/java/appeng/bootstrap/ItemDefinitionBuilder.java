@@ -165,13 +165,14 @@ class ItemDefinitionBuilder implements IItemBuilder
 		// Register all extra handlers
 		preInitCallbacks.forEach( consumer -> factory.addPreInit( side -> consumer.accept( item ) ) );
 		initCallbacks.forEach( consumer -> factory.addInit( side -> consumer.accept( item ) ) );
-		modelRegCallbacks.forEach(consumer -> factory.addModelReg(side -> consumer.accept( item ) ) );
+		modelRegCallbacks.forEach( consumer -> factory.addModelReg( side -> consumer.accept( item ) ) );
 		postInitCallbacks.forEach( consumer -> factory.addPostInit( side -> consumer.accept( item ) ) );
 
 		// Register custom dispenser behavior if requested
 		if( dispenserBehaviorSupplier != null )
 		{
-			factory.addPostInit( side -> {
+			factory.addPostInit( side ->
+			{
 				IBehaviorDispenseItem behavior = dispenserBehaviorSupplier.get();
 				BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( item, behavior );
 			} );

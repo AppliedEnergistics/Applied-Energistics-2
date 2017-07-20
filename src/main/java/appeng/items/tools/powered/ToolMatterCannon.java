@@ -112,17 +112,17 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 	@Override
 	public ActionResult<ItemStack> onItemRightClick( final World w, final EntityPlayer p, final @Nullable EnumHand hand )
 	{
-		if( this.getAECurrentPower( p.getHeldItem(hand) ) > 1600 )
+		if( this.getAECurrentPower( p.getHeldItem( hand ) ) > 1600 )
 		{
 			int shots = 1;
 
-			final CellUpgrades cu = (CellUpgrades) this.getUpgradesInventory( p.getHeldItem(hand) );
+			final CellUpgrades cu = (CellUpgrades) this.getUpgradesInventory( p.getHeldItem( hand ) );
 			if( cu != null )
 			{
 				shots += cu.getInstalledUpgrades( Upgrades.SPEED );
 			}
 
-			final IMEInventory inv = AEApi.instance().registries().cell().getCellInventory( p.getHeldItem(hand), null, StorageChannel.ITEMS );
+			final IMEInventory inv = AEApi.instance().registries().cell().getCellInventory( p.getHeldItem( hand ), null, StorageChannel.ITEMS );
 			if( inv != null )
 			{
 				final IItemList itemList = inv.getAvailableItems( AEApi.instance().storage().createItemList() );
@@ -132,25 +132,25 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 					shots = Math.min( shots, (int) aeAmmo.getStackSize() );
 					for( int sh = 0; sh < shots; sh++ )
 					{
-						this.extractAEPower( p.getHeldItem(hand), 1600 );
+						this.extractAEPower( p.getHeldItem( hand ), 1600 );
 
 						if( Platform.isClient() )
 						{
-							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem(hand) );
+							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
 						}
 
 						aeAmmo.setStackSize( 1 );
 						final ItemStack ammo = ( (IAEItemStack) aeAmmo ).getItemStack();
 						if( ammo == null )
 						{
-							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem(hand) );
+							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
 						}
 
 						ammo.setCount( 1 );
 						aeAmmo = inv.extractItems( aeAmmo, Actionable.MODULATE, new PlayerSource( p, null ) );
 						if( aeAmmo == null )
 						{
-							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem(hand) );
+							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
 						}
 
 						final LookDirection dir = Platform.getPlayerRay( p, p.getEyeHeight() );
@@ -172,7 +172,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 							{
 								this.shootPaintBalls( type, w, p, Vec3d, Vec3d1, direction, d0, d1, d2 );
 							}
-							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem(hand) );
+							return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
 						}
 						else
 						{
@@ -186,16 +186,17 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 					{
 						p.sendMessage( PlayerMessages.AmmoDepleted.get() );
 					}
-					return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem(hand) );
+					return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
 				}
 			}
 		}
-		return new ActionResult<ItemStack>( EnumActionResult.FAIL, p.getHeldItem(hand) );
+		return new ActionResult<ItemStack>( EnumActionResult.FAIL, p.getHeldItem( hand ) );
 	}
 
 	private void shootPaintBalls( final ItemStack type, final World w, final EntityPlayer p, final Vec3d Vec3d, final Vec3d Vec3d1, final Vec3d direction, final double d0, final double d1, final double d2 )
 	{
-		final AxisAlignedBB bb = new AxisAlignedBB( Math.min( Vec3d.x, Vec3d1.x ), Math.min( Vec3d.y, Vec3d1.y ), Math.min( Vec3d.z, Vec3d1.z ), Math.max( Vec3d.x, Vec3d1.x ), Math.max( Vec3d.y, Vec3d1.y ), Math.max( Vec3d.z, Vec3d1.z ) ).grow( 16, 16, 16 );
+		final AxisAlignedBB bb = new AxisAlignedBB( Math.min( Vec3d.x, Vec3d1.x ), Math.min( Vec3d.y, Vec3d1.y ), Math.min( Vec3d.z, Vec3d1.z ), Math
+				.max( Vec3d.x, Vec3d1.x ), Math.max( Vec3d.y, Vec3d1.y ), Math.max( Vec3d.z, Vec3d1.z ) ).grow( 16, 16, 16 );
 
 		Entity entity = null;
 		final List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
@@ -248,7 +249,9 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 
 		try
 		{
-			AppEng.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, (float) direction.x, (float) direction.y, (float) direction.z, (byte) ( pos == null ? 32 : pos.hitVec.squareDistanceTo( vec ) + 1 ) ) );
+			AppEng.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w,
+					new PacketMatterCannon( d0, d1, d2, (float) direction.x, (float) direction.y, (float) direction.z, (byte) ( pos == null ? 32 : pos.hitVec
+							.squareDistanceTo( vec ) + 1 ) ) );
 		}
 		catch( final Exception err )
 		{
@@ -313,7 +316,8 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 		{
 			hasDestroyed = false;
 
-			final AxisAlignedBB bb = new AxisAlignedBB( Math.min( Vec3d.x, Vec3d1.x ), Math.min( Vec3d.y, Vec3d1.y ), Math.min( Vec3d.z, Vec3d1.z ), Math.max( Vec3d.x, Vec3d1.x ), Math.max( Vec3d.y, Vec3d1.y ), Math.max( Vec3d.z, Vec3d1.z ) ).grow( 16, 16, 16 );
+			final AxisAlignedBB bb = new AxisAlignedBB( Math.min( Vec3d.x, Vec3d1.x ), Math.min( Vec3d.y, Vec3d1.y ), Math.min( Vec3d.z, Vec3d1.z ), Math
+					.max( Vec3d.x, Vec3d1.x ), Math.max( Vec3d.y, Vec3d1.y ), Math.max( Vec3d.z, Vec3d1.z ) ).grow( 16, 16, 16 );
 
 			Entity entity = null;
 			final List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
@@ -365,7 +369,9 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 
 			try
 			{
-				AppEng.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, (float) direction.x, (float) direction.y, (float) direction.z, (byte) ( pos == null ? 32 : pos.hitVec.squareDistanceTo( vec ) + 1 ) ) );
+				AppEng.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w,
+						new PacketMatterCannon( d0, d1, d2, (float) direction.x, (float) direction.y, (float) direction.z, (byte) ( pos == null ? 32 : pos.hitVec
+								.squareDistanceTo( vec ) + 1 ) ) );
 			}
 			catch( final Exception err )
 			{

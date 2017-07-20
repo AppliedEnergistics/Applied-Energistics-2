@@ -62,7 +62,8 @@ public class GuiInterface extends GuiUpgradeable
 		this.BlockMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.BLOCK, YesNo.NO );
 		this.buttonList.add( this.BlockMode );
 
-		this.interfaceMode = new GuiToggleButton( this.guiLeft - 18, this.guiTop + 26, 84, 85, GuiText.InterfaceTerminal.getLocal(), GuiText.InterfaceTerminalHint.getLocal() );
+		this.interfaceMode = new GuiToggleButton( this.guiLeft - 18, this.guiTop + 26, 84, 85, GuiText.InterfaceTerminal
+				.getLocal(), GuiText.InterfaceTerminalHint.getLocal() );
 		this.buttonList.add( this.interfaceMode );
 	}
 

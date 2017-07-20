@@ -117,6 +117,7 @@ import appeng.worldgen.QuartzWorldGen;
 import net.minecraftforge.registries.IForgeRegistry;
 import scala.App;
 
+
 public final class Registration
 {
 	private final RecipeHandler recipeHandler;
@@ -130,7 +131,7 @@ public final class Registration
 	private File recipeDirectory;
 	private CustomRecipeConfig customRecipeConfig;
 
-	public void setRecipeInformation ( File f, CustomRecipeConfig f2)
+	public void setRecipeInformation( File f, CustomRecipeConfig f2 )
 	{
 		this.recipeDirectory = f;
 		this.customRecipeConfig = f2;
@@ -174,7 +175,7 @@ public final class Registration
 
 	void preInitialize( final FMLPreInitializationEvent event )
 	{
-//		this.registerSpatial( false );
+		// this.registerSpatial( false );
 
 		Capabilities.register();
 
@@ -205,28 +206,31 @@ public final class Registration
 
 		if( this.storageBiome == null )
 		{
-//			if( force && config.getStorageBiomeID() == -1 )
-//			{
-//				config.setStorageBiomeID( Platform.findEmpty( Biome.REGISTRY, 0, 256 ) );
-//				if( config.getStorageBiomeID() == -1 )
-//				{
-//					throw new IllegalStateException( "Biome Array is full, please free up some Biome ID's or disable spatial." );
-//				}
-//
-//				this.storageBiome = new BiomeGenStorage();
-//				Biome.registerBiome( config.getStorageBiomeID(), "appliedenergistics2:storage_biome", this.storageBiome );
-//				config.save();
-//			}
-//
-//			if( !force && config.getStorageBiomeID() != -1 )
-//			{
-//				this.storageBiome = new BiomeGenStorage();
-//				Biome.registerBiome( config.getStorageBiomeID(), "appliedenergistics2:storage_biome", this.storageBiome );
-//			}
+			// if( force && config.getStorageBiomeID() == -1 )
+			// {
+			// config.setStorageBiomeID( Platform.findEmpty( Biome.REGISTRY, 0, 256 ) );
+			// if( config.getStorageBiomeID() == -1 )
+			// {
+			// throw new IllegalStateException( "Biome Array is full, please free up some Biome ID's or disable
+			// spatial." );
+			// }
+			//
+			// this.storageBiome = new BiomeGenStorage();
+			// Biome.registerBiome( config.getStorageBiomeID(), "appliedenergistics2:storage_biome", this.storageBiome
+			// );
+			// config.save();
+			// }
+			//
+			// if( !force && config.getStorageBiomeID() != -1 )
+			// {
+			// this.storageBiome = new BiomeGenStorage();
+			// Biome.registerBiome( config.getStorageBiomeID(), "appliedenergistics2:storage_biome", this.storageBiome
+			// );
+			// }
 
 			// TODO: 1.12, are modders allowed to even touch the ID's any more?
 			this.storageBiome = new BiomeGenStorage();
-			registry.register( this.storageBiome.setRegistryName("appliedenergistics2:storage_biome") );
+			registry.register( this.storageBiome.setRegistryName( "appliedenergistics2:storage_biome" ) );
 
 		}
 
@@ -289,12 +293,12 @@ public final class Registration
 
 		ApiDefinitions definitions = api.definitions();
 		definitions.getRegistry().getBootstrapComponents().forEach( b -> b.initialize( event.getSide() ) );
-//
-//		// Perform ore camouflage!
-//		ItemMaterial.instance.makeUnique();
+		//
+		// // Perform ore camouflage!
+		// ItemMaterial.instance.makeUnique();
 
-//		final Runnable recipeLoader = new RecipeLoader( recipeDirectory, customRecipeConfig, this.recipeHandler );
-//		recipeLoader.run();
+		// final Runnable recipeLoader = new RecipeLoader( recipeDirectory, customRecipeConfig, this.recipeHandler );
+		// recipeLoader.run();
 
 		if( Integrations.ic2().isEnabled() )
 		{
@@ -302,14 +306,15 @@ public final class Registration
 			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergySource", "ic2.api.energy.tile.IEnergySource" );
 		}
 
-		 if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.RF ) )
-		 {
-			 partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.redstoneflux.api.IEnergyReceiver" );
-		 }
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.RF ) )
+		{
+			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.redstoneflux.api.IEnergyReceiver" );
+		}
 
-//		if (IntegrationRegistry.INSTANCE.isEnabled(IntegrationType.RF)) {
-//			partHelper.registerNewLayer("appeng.parts.layers.LayerIEnergyStorager", "net.minecraftforge.common.capabilities.ICapabilityProvider");
-//		}
+		// if (IntegrationRegistry.INSTANCE.isEnabled(IntegrationType.RF)) {
+		// partHelper.registerNewLayer("appeng.parts.layers.LayerIEnergyStorager",
+		// "net.minecraftforge.common.capabilities.ICapabilityProvider");
+		// }
 		//
 		// if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
 		// {
@@ -339,14 +344,15 @@ public final class Registration
 		registries.cell().addCellHandler( new BasicCellHandler() );
 		registries.cell().addCellHandler( new CreativeCellHandler() );
 
-		api.definitions().materials().matterBall().maybeStack( 1 ).ifPresent( ammoStack -> {
+		api.definitions().materials().matterBall().maybeStack( 1 ).ifPresent( ammoStack ->
+		{
 			final double weight = 32;
 
 			registries.matterCannon().registerAmmo( ammoStack, weight );
 		} );
 
 		// TODO : 1.12 This is way too late for recipes
-//		this.recipeHandler.injectRecipes();
+		// this.recipeHandler.injectRecipes();
 
 		final PlayerStatsRegistration registration = new PlayerStatsRegistration( MinecraftForge.EVENT_BUS, AEConfig.instance() );
 		registration.registerAchievementHandlers();
@@ -397,7 +403,7 @@ public final class Registration
 	}
 
 	@SubscribeEvent
-	public void registerRecipes(RegistryEvent.Register<IRecipe> event)
+	public void registerRecipes( RegistryEvent.Register<IRecipe> event )
 	{
 		final IForgeRegistry<IRecipe> registry = event.getRegistry();
 
@@ -417,16 +423,19 @@ public final class Registration
 			DisassembleRecipe r = new DisassembleRecipe();
 			// TODO : 1.12 Improve
 			addRecipeToRegister( r.setRegistryName( AppEng.MOD_ID.toLowerCase(), "disassemble" ) );
-//			RecipeSorter.register( "appliedenergistics2:disassemble", DisassembleRecipe.class, Category.SHAPELESS, "after:minecraft:shapeless" );
+			// RecipeSorter.register( "appliedenergistics2:disassemble", DisassembleRecipe.class, Category.SHAPELESS,
+			// "after:minecraft:shapeless" );
 		}
 
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_FACADE_CRAFTING ) )
 		{
-			definitions.items().facade().maybeItem().ifPresent( facadeItem -> {
+			definitions.items().facade().maybeItem().ifPresent( facadeItem ->
+			{
 				// TODO : 1.12 Improve
 				FacadeRecipe f = new FacadeRecipe( (ItemFacade) facadeItem );
 				addRecipeToRegister( f.setRegistryName( AppEng.MOD_ID.toLowerCase(), "facade" ) );
-//				RecipeSorter.register( "appliedenergistics2:facade", FacadeRecipe.class, Category.SHAPED, "after:minecraft:shaped" );
+				// RecipeSorter.register( "appliedenergistics2:facade", FacadeRecipe.class, Category.SHAPED,
+				// "after:minecraft:shaped" );
 			} );
 		}
 
@@ -438,7 +447,7 @@ public final class Registration
 			// Move to json where possible?
 			if( r.getRegistryName() == null )
 			{
-				r.setRegistryName( new ResourceLocation( AppEng.MOD_ID.toLowerCase(), "recipe_" + x ));
+				r.setRegistryName( new ResourceLocation( AppEng.MOD_ID.toLowerCase(), "recipe_" + x ) );
 				x++;
 			}
 			registry.register( r );
@@ -531,7 +540,8 @@ public final class Registration
 		// Inscriber
 		Upgrades.SPEED.registerItem( blocks.inscriber(), 3 );
 
-		items.wirelessTerminal().maybeItem().ifPresent( terminal -> {
+		items.wirelessTerminal().maybeItem().ifPresent( terminal ->
+		{
 			registries.wireless().registerWirelessHandler( (IWirelessTermHandler) terminal );
 		} );
 

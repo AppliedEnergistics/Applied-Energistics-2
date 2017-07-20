@@ -138,7 +138,8 @@ public class ShapelessRecipe extends net.minecraftforge.registries.IForgeRegistr
 	}
 
 	@Override
-	public boolean canFit(int i, int i1) {
+	public boolean canFit( int i, int i1 )
+	{
 		return false;
 	}
 
@@ -150,7 +151,8 @@ public class ShapelessRecipe extends net.minecraftforge.registries.IForgeRegistr
 
 	private boolean checkItemEquals( final ItemStack target, final ItemStack input )
 	{
-		return( target.getItem() == input.getItem() && ( target.getItemDamage() == OreDictionary.WILDCARD_VALUE || target.getItemDamage() == input.getItemDamage() ) );
+		return( target.getItem() == input
+				.getItem() && ( target.getItemDamage() == OreDictionary.WILDCARD_VALUE || target.getItemDamage() == input.getItemDamage() ) );
 	}
 
 	/**

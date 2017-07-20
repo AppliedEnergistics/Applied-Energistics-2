@@ -18,6 +18,7 @@
 
 package appeng.recipes.helpers;
 
+
 import appeng.api.recipes.ResolverResult;
 import appeng.api.recipes.ResolverResultSet;
 import appeng.core.AELog;
@@ -39,52 +40,52 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import javax.annotation.Nonnull;
 
+
 /**
  * @author GuntherDW
  */
 public class PartShapelessCraftingFactory extends ShapelessOreRecipe
 {
 
-    public PartShapelessCraftingFactory( ResourceLocation group, NonNullList<Ingredient> input, @Nonnull ItemStack result )
-    {
-        super( group, input, result );
-    }
+	public PartShapelessCraftingFactory( ResourceLocation group, NonNullList<Ingredient> input, @Nonnull ItemStack result )
+	{
+		super( group, input, result );
+	}
 
-    // Copied from ShapelessOreRecipe.java, modified a bit.
-    public static PartShapelessCraftingFactory factory( JsonContext context, JsonObject json)
-    {
-        String group = JsonUtils.getString(json, "group", "");
+	// Copied from ShapelessOreRecipe.java, modified a bit.
+	public static PartShapelessCraftingFactory factory( JsonContext context, JsonObject json )
+	{
+		String group = JsonUtils.getString( json, "group", "" );
 
-        NonNullList<Ingredient> ings = NonNullList.create();
-        for( JsonElement ele : JsonUtils.getJsonArray( json, "ingredients" ) )
-            ings.add( CraftingHelper.getIngredient( ele, context ) );
+		NonNullList<Ingredient> ings = NonNullList.create();
+		for( JsonElement ele : JsonUtils.getJsonArray( json, "ingredients" ) )
+			ings.add( CraftingHelper.getIngredient( ele, context ) );
 
-        if( ings.isEmpty() )
-            throw new JsonParseException("No ingredients for shapeless recipe");
+		if( ings.isEmpty() )
+			throw new JsonParseException( "No ingredients for shapeless recipe" );
 
-        JsonObject resultObject = (JsonObject) json.get( "result" );
-        int count = JsonUtils.getInt( resultObject, "count", 1);
+		JsonObject resultObject = (JsonObject) json.get( "result" );
+		int count = JsonUtils.getInt( resultObject, "count", 1 );
 
-        String ingredient = resultObject.get( "part" ).getAsString();
-        Object result = (Object) Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, ingredient );
-        if( result instanceof ResolverResult )
-        {
-            ResolverResult resolverResult = (ResolverResult) result;
+		String ingredient = resultObject.get( "part" ).getAsString();
+		Object result = (Object) Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, ingredient );
+		if( result instanceof ResolverResult )
+		{
+			ResolverResult resolverResult = (ResolverResult) result;
 
-            Item item = Item.getByNameOrId( AppEng.MOD_ID + ":" + resolverResult.itemName );
+			Item item = Item.getByNameOrId( AppEng.MOD_ID + ":" + resolverResult.itemName );
 
-            if( item == null )
-            {
-                AELog.warn( "item was null for " + resolverResult.itemName + " ( " + ingredient + " )!" );
-                throw new JsonSyntaxException ( "Got a null item for " + resolverResult.itemName + " ( " + ingredient + " ). This should never happen!" );
-            }
+			if( item == null )
+			{
+				AELog.warn( "item was null for " + resolverResult.itemName + " ( " + ingredient + " )!" );
+				throw new JsonSyntaxException( "Got a null item for " + resolverResult.itemName + " ( " + ingredient + " ). This should never happen!" );
+			}
 
-            ItemStack itemStack = new ItemStack( item, count, resolverResult.damageValue, resolverResult.compound );
+			ItemStack itemStack = new ItemStack( item, count, resolverResult.damageValue, resolverResult.compound );
 
-            return new PartShapelessCraftingFactory(group.isEmpty() ? null : new ResourceLocation(group), ings, itemStack);
-        }
+			return new PartShapelessCraftingFactory( group.isEmpty() ? null : new ResourceLocation( group ), ings, itemStack );
+		}
 
-        throw new JsonSyntaxException( "Couldn't find the resulting item in AE. This means AE was provided a recipe that it shouldn't be handling.\n"
-                                     + "Was looking for : '" + ingredient + "'." );
-    }
+		throw new JsonSyntaxException( "Couldn't find the resulting item in AE. This means AE was provided a recipe that it shouldn't be handling.\n" + "Was looking for : '" + ingredient + "'." );
+	}
 }

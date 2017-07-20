@@ -94,7 +94,8 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 
 		if( this.isInWater() && Platform.isServer() ) // put out the fuse.
 		{
-			AEApi.instance().definitions().blocks().tinyTNT().maybeStack( 1 ).ifPresent( tntStack -> {
+			AEApi.instance().definitions().blocks().tinyTNT().maybeStack( 1 ).ifPresent( tntStack ->
+			{
 				final EntityItem item = new EntityItem( this.world, this.posX, this.posY, this.posZ, tntStack );
 
 				item.motionX = this.motionX;
@@ -128,14 +129,16 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 	// override :P
 	void explode()
 	{
-		this.world.playSound( null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F, ( 1.0F + ( this.world.rand.nextFloat() - this.world.rand.nextFloat() ) * 0.2F ) * 32.9F );
+		this.world.playSound( null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F,
+				( 1.0F + ( this.world.rand.nextFloat() - this.world.rand.nextFloat() ) * 0.2F ) * 32.9F );
 
 		if( this.isInWater() )
 		{
 			return;
 		}
 
-		for( final Object e : this.world.getEntitiesWithinAABBExcludingEntity( this, new AxisAlignedBB( this.posX - 1.5, this.posY - 1.5f, this.posZ - 1.5, this.posX + 1.5, this.posY + 1.5, this.posZ + 1.5 ) ) )
+		for( final Object e : this.world.getEntitiesWithinAABBExcludingEntity( this,
+				new AxisAlignedBB( this.posX - 1.5, this.posY - 1.5f, this.posZ - 1.5, this.posX + 1.5, this.posY + 1.5, this.posZ + 1.5 ) ) )
 		{
 			if( e instanceof Entity )
 			{

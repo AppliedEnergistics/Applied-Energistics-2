@@ -81,7 +81,8 @@ public class SlotRestrictedInput extends AppEngSlot
 	{
 		if( this.which == PlacableItemType.VALID_ENCODED_PATTERN_W_OUTPUT )
 		{
-			final ICraftingPatternDetails ap = is.getItem() instanceof ICraftingPatternItem ? ( (ICraftingPatternItem) is.getItem() ).getPatternForItem( is, theWorld ) : null;
+			final ICraftingPatternDetails ap = is.getItem() instanceof ICraftingPatternItem ? ( (ICraftingPatternItem) is.getItem() ).getPatternForItem( is,
+					theWorld ) : null;
 			return ap != null;
 		}
 		return true;

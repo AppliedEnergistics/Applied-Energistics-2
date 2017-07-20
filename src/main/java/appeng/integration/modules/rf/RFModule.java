@@ -18,21 +18,22 @@
 
 package appeng.integration.modules.rf;
 
+
 import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
+
 
 /**
  * @author GuntherDW
  */
 public class RFModule implements IIntegrationModule
 {
-    public RFModule()
-    {
-        IntegrationHelper.testClassExistence( this, cofh.redstoneflux.api.IEnergyContainerItem.class );
-        IntegrationHelper.testClassExistence( this, cofh.redstoneflux.api.IEnergyProvider.class );
-        IntegrationHelper.testClassExistence( this, cofh.redstoneflux.api.IEnergyConnection.class );
-        IntegrationHelper.testClassExistence( this, cofh.redstoneflux.api.IEnergyContainerItem.class );
-    }
-
+	public RFModule()
+	{
+		IntegrationHelper.testClassExistence( this, cofh.redstoneflux.api.IEnergyContainerItem.class );
+		IntegrationHelper.testClassExistence( this, cofh.redstoneflux.api.IEnergyProvider.class );
+		IntegrationHelper.testClassExistence( this, cofh.redstoneflux.api.IEnergyConnection.class );
+		IntegrationHelper.testClassExistence( this, cofh.redstoneflux.api.IEnergyContainerItem.class );
+	}
 
 }

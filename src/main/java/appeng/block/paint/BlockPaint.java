@@ -49,6 +49,7 @@ import appeng.helpers.Splotch;
 import appeng.tile.misc.TilePaint;
 import appeng.util.Platform;
 
+
 public class BlockPaint extends AEBaseTileBlock
 {
 

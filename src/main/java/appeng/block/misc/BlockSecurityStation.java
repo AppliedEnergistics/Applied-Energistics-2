@@ -40,6 +40,7 @@ import appeng.core.sync.GuiBridge;
 import appeng.tile.misc.TileSecurityStation;
 import appeng.util.Platform;
 
+
 public class BlockSecurityStation extends AEBaseTileBlock
 {
 

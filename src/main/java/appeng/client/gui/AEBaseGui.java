@@ -160,7 +160,7 @@ public abstract class AEBaseGui extends GuiContainer
 	{
 		super.drawDefaultBackground();
 		super.drawScreen( mouseX, mouseY, btn );
-		this.renderHoveredToolTip(mouseX, mouseY);
+		this.renderHoveredToolTip( mouseX, mouseY );
 
 		for( final Object c : this.buttonList )
 		{
@@ -760,15 +760,27 @@ public abstract class AEBaseGui extends GuiContainer
 							final float f1 = 0.00390625F;
 							final float f = 0.00390625F;
 							final float par6 = 16;
-							vb.pos( par1 + 0, par2 + par6, this.zLevel ).tex( ( par3 + 0 ) * f, ( par4 + par6 ) * f1 ).color( 1.0f, 1.0f, 1.0f,
-									aes.getOpacityOfIcon() ).endVertex();
+							vb.pos( par1 + 0, par2 + par6, this.zLevel )
+									.tex( ( par3 + 0 ) * f, ( par4 + par6 ) * f1 )
+									.color( 1.0f, 1.0f, 1.0f,
+											aes.getOpacityOfIcon() )
+									.endVertex();
 							final float par5 = 16;
-							vb.pos( par1 + par5, par2 + par6, this.zLevel ).tex( ( par3 + par5 ) * f, ( par4 + par6 ) * f1 ).color( 1.0f, 1.0f, 1.0f,
-									aes.getOpacityOfIcon() ).endVertex();
-							vb.pos( par1 + par5, par2 + 0, this.zLevel ).tex( ( par3 + par5 ) * f, ( par4 + 0 ) * f1 ).color( 1.0f, 1.0f, 1.0f,
-									aes.getOpacityOfIcon() ).endVertex();
-							vb.pos( par1 + 0, par2 + 0, this.zLevel ).tex( ( par3 + 0 ) * f, ( par4 + 0 ) * f1 ).color( 1.0f, 1.0f, 1.0f,
-									aes.getOpacityOfIcon() ).endVertex();
+							vb.pos( par1 + par5, par2 + par6, this.zLevel )
+									.tex( ( par3 + par5 ) * f, ( par4 + par6 ) * f1 )
+									.color( 1.0f, 1.0f, 1.0f,
+											aes.getOpacityOfIcon() )
+									.endVertex();
+							vb.pos( par1 + par5, par2 + 0, this.zLevel )
+									.tex( ( par3 + par5 ) * f, ( par4 + 0 ) * f1 )
+									.color( 1.0f, 1.0f, 1.0f,
+											aes.getOpacityOfIcon() )
+									.endVertex();
+							vb.pos( par1 + 0, par2 + 0, this.zLevel )
+									.tex( ( par3 + 0 ) * f, ( par4 + 0 ) * f1 )
+									.color( 1.0f, 1.0f, 1.0f,
+											aes.getOpacityOfIcon() )
+									.endVertex();
 							tessellator.draw();
 
 						}

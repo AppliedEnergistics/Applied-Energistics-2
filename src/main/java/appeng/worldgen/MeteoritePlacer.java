@@ -204,7 +204,8 @@ public final class MeteoritePlacer
 			}
 		}
 
-		for( final Object o : w.getWorld().getEntitiesWithinAABB( EntityItem.class, new AxisAlignedBB( w.minX( x - 30 ), y - 5, w.minZ( z - 30 ), w.maxX( x + 30 ), y + 30, w.maxZ( z + 30 ) ) ) )
+		for( final Object o : w.getWorld().getEntitiesWithinAABB( EntityItem.class,
+				new AxisAlignedBB( w.minX( x - 30 ), y - 5, w.minZ( z - 30 ), w.maxX( x + 30 ), y + 30, w.maxZ( z + 30 ) ) ) )
 		{
 			final Entity e = (Entity) o;
 			e.setDead();
@@ -213,7 +214,6 @@ public final class MeteoritePlacer
 
 	private void placeMeteorite( final IMeteoriteWorld w, final int x, final int y, final int z )
 	{
-
 
 		// spawn meteor
 		this.skyStoneDefinition.maybeBlock().ifPresent( block -> placeMeteoriteSkyStone( w, x, y, z, block ) );

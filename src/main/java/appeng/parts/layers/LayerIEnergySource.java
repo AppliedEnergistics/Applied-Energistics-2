@@ -202,6 +202,4 @@ public class LayerIEnergySource extends LayerBase implements IEnergySource
 		return 0;
 	}
 
-
-
 }

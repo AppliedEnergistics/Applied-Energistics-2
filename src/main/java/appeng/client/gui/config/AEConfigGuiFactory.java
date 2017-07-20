@@ -41,7 +41,8 @@ public class AEConfigGuiFactory implements IModGuiFactory
 	 * @return true if this object provides a config gui screen, false otherwise
 	 */
 	@Override
-	public boolean hasConfigGui() {
+	public boolean hasConfigGui()
+	{
 		return false;
 	}
 
@@ -61,13 +62,14 @@ public class AEConfigGuiFactory implements IModGuiFactory
 	 * can be changed here.
 	 *
 	 * @param parentScreen The screen to which must be returned when closing the
-	 *                     returned screen.
+	 * returned screen.
 	 * @return A class that will be instantiated on clicks on the config button
 	 * or null if no GUI is desired.
 	 */
 	@Override
-	public GuiScreen createConfigGui(GuiScreen parentScreen) {
-		return new AEConfigGui(parentScreen);
+	public GuiScreen createConfigGui( GuiScreen parentScreen )
+	{
+		return new AEConfigGui( parentScreen );
 	}
 
 	@Override

@@ -66,10 +66,13 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		this.heatUp = new HashMap<InWorldToolOperationIngredient, InWorldToolOperationResult>();
 		this.coolDown = new HashMap<InWorldToolOperationIngredient, InWorldToolOperationResult>();
 
-		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.STONE.getDefaultState() ), new InWorldToolOperationResult( new ItemStack( Blocks.COBBLESTONE ) ) );
-		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.STONEBRICK.getDefaultState() ), new InWorldToolOperationResult( new ItemStack( Blocks.STONEBRICK, 1, 2 ) ) );
+		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.STONE.getDefaultState() ),
+				new InWorldToolOperationResult( new ItemStack( Blocks.COBBLESTONE ) ) );
+		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.STONEBRICK.getDefaultState() ),
+				new InWorldToolOperationResult( new ItemStack( Blocks.STONEBRICK, 1, 2 ) ) );
 		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.LAVA, true ), new InWorldToolOperationResult( new ItemStack( Blocks.OBSIDIAN ) ) );
-		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.FLOWING_LAVA, true ), new InWorldToolOperationResult( new ItemStack( Blocks.OBSIDIAN ) ) );
+		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.FLOWING_LAVA, true ),
+				new InWorldToolOperationResult( new ItemStack( Blocks.OBSIDIAN ) ) );
 		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.GRASS, true ), new InWorldToolOperationResult( new ItemStack( Blocks.DIRT ) ) );
 
 		final List<ItemStack> snowBalls = new ArrayList<ItemStack>();
@@ -215,7 +218,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 		if( target == null )
 		{
-			return new ActionResult<ItemStack>( EnumActionResult.FAIL, p.getHeldItem(hand) );
+			return new ActionResult<ItemStack>( EnumActionResult.FAIL, p.getHeldItem( hand ) );
 		}
 		else
 		{
@@ -232,13 +235,13 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			}
 		}
 
-		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem(hand) );
+		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
 	}
 
 	@Override
 	public EnumActionResult onItemUse( EntityPlayer p, World w, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ )
 	{
-		return this.onItemUse( p.getHeldItem(hand), p, w, pos, hand, side, hitX, hitY, hitZ );
+		return this.onItemUse( p.getHeldItem( hand ), p, w, pos, hand, side, hitX, hitY, hitZ );
 	}
 
 	@Override
@@ -299,7 +302,8 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 					{
 						if( result.getItem() instanceof ItemBlock )
 						{
-							if( Block.getBlockFromItem( result.getItem() ) == blockID && result.getItem().getDamage( result ) == blockID.getMetaFromState( state ) )
+							if( Block.getBlockFromItem( result.getItem() ) == blockID && result.getItem().getDamage( result ) == blockID
+									.getMetaFromState( state ) )
 							{
 								canFurnaceable = false;
 							}
@@ -318,7 +322,8 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 				{
 					this.extractAEPower( item, 1600 );
 					final InWorldToolOperationResult or = InWorldToolOperationResult.getBlockOperationResult( out.toArray( new ItemStack[out.size()] ) );
-					w.playSound( p, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
+					w.playSound( p, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F,
+							itemRand.nextFloat() * 0.4F + 0.8F );
 
 					if( or.getBlockItem().isEmpty() )
 					{
@@ -349,7 +354,8 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 					if( w.isAirBlock( offsetPos ) )
 					{
 						this.extractAEPower( item, 1600 );
-						w.playSound( p, offsetPos.getX() + 0.5D, offsetPos.getY() + 0.5D, offsetPos.getZ() + 0.5D, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
+						w.playSound( p, offsetPos.getX() + 0.5D, offsetPos.getY() + 0.5D, offsetPos.getZ() + 0.5D, SoundEvents.ITEM_FLINTANDSTEEL_USE,
+								SoundCategory.PLAYERS, 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
 						w.setBlockState( offsetPos, Blocks.FIRE.getDefaultState() );
 					}
 

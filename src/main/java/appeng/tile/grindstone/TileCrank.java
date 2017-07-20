@@ -168,7 +168,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 		final double xOff = -0.15 * this.getUp().getFrontOffsetX();
 		final double yOff = -0.15 * this.getUp().getFrontOffsetY();
 		final double zOff = -0.15 * this.getUp().getFrontOffsetZ();
-		out.add( new AxisAlignedBB( xOff + 0.15, yOff + 0.15, zOff + 0.15,// ahh
+		out.add( new AxisAlignedBB( xOff + 0.15, yOff + 0.15, zOff + 0.15, // ahh
 				xOff + 0.85, yOff + 0.85, zOff + 0.85 ) );
 	}
 

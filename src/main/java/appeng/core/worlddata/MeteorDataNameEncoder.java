@@ -78,6 +78,7 @@ public class MeteorDataNameEncoder
 		final int shiftedX = chunkX >> this.bitScale;
 		final int shiftedZ = chunkZ >> this.bitScale;
 
-		return String.format( "%d%c%d%c%d%c%s", dimension, this.dataSeparator, shiftedX, this.dataSeparator, shiftedZ, this.baseExtSeparator, this.fileExtension );
+		return String.format( "%d%c%d%c%d%c%s", dimension, this.dataSeparator, shiftedX, this.dataSeparator, shiftedZ, this.baseExtSeparator,
+				this.fileExtension );
 	}
 }

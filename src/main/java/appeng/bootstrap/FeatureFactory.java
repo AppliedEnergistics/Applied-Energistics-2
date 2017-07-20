@@ -99,7 +99,8 @@ public class FeatureFactory
 	{
 		ColoredItemDefinition definition = new ColoredItemDefinition();
 
-		target.maybeItem().ifPresent( targetItem -> {
+		target.maybeItem().ifPresent( targetItem ->
+		{
 			for( final AEColor color : AEColor.VALID_COLORS )
 			{
 				final ActivityState state = ActivityState.from( target.isEnabled() );

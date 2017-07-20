@@ -698,7 +698,8 @@ public class Platform
 
 		try
 		{
-			ITooltipFlag.TooltipFlags tooltipFlag = Minecraft.getMinecraft().gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL;
+			ITooltipFlag.TooltipFlags tooltipFlag = Minecraft
+					.getMinecraft().gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL;
 			return itemStack.getTooltip( Minecraft.getMinecraft().player, tooltipFlag );
 		}
 		catch( final Exception errB )
@@ -1803,14 +1804,14 @@ public class Platform
 		return (float) ( player.posY + player.getEyeHeight() - player.getDefaultEyeHeight() );
 	}
 
-//	public static void addStat( final int playerID, final Achievement achievement )
-//	{
-//		final EntityPlayer p = AEApi.instance().registries().players().findPlayer( playerID );
-//		if( p != null )
-//		{
-//			p.addStat( achievement, 1 );
-//		}
-//	}
+	// public static void addStat( final int playerID, final Achievement achievement )
+	// {
+	// final EntityPlayer p = AEApi.instance().registries().players().findPlayer( playerID );
+	// if( p != null )
+	// {
+	// p.addStat( achievement, 1 );
+	// }
+	// }
 
 	public static boolean isRecipePrioritized( final ItemStack what )
 	{

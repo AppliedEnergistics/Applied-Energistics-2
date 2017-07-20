@@ -64,28 +64,35 @@ import appeng.tile.networking.TileCableBus;
 public class ApiPart implements IPartHelper
 {
 
-	private final LoadingCache<CacheKey, Class<? extends AEBaseTile>> cache = CacheBuilder.newBuilder().build( new CacheLoader<CacheKey, Class<? extends AEBaseTile>>()
-	{
-		@Override
-		public Class<? extends AEBaseTile> load( CacheKey key ) throws Exception
-		{
-			return generateCombinedClass( key );
-		}
-	} );
+	private final LoadingCache<CacheKey, Class<? extends AEBaseTile>> cache = CacheBuilder.newBuilder()
+			.build( new CacheLoader<CacheKey, Class<? extends AEBaseTile>>()
+			{
+				@Override
+				public Class<? extends AEBaseTile> load( CacheKey key ) throws Exception
+				{
+					return generateCombinedClass( key );
+				}
+			} );
 
 	private final Map<Class<?>, String> interfaces2Layer = new HashMap<>();
 	private final List<String> desc = new LinkedList<String>();
 
 	/**
-	 * Conceptually this method will build a new class hierarchy that is rooted at the given base class, and includes a chain of all registered layers.
+	 * Conceptually this method will build a new class hierarchy that is rooted at the given base class, and includes a
+	 * chain of all registered layers.
 	 * <p/>
-	 * To accomplish this, it takes the first registered layer, replaces it's inheritance from LayerBase with an inheritance from the given baseClass,
-	 * and uses the resulting class as the parent class for the next registered layer, for which it repeats this process. This process is then repeated
-	 * until a class hierarchy of all layers is formed. While janking out the inheritance from LayerBase, it'll make also sure that calls to that
+	 * To accomplish this, it takes the first registered layer, replaces it's inheritance from LayerBase with an
+	 * inheritance from the given baseClass,
+	 * and uses the resulting class as the parent class for the next registered layer, for which it repeats this
+	 * process. This process is then repeated
+	 * until a class hierarchy of all layers is formed. While janking out the inheritance from LayerBase, it'll make
+	 * also sure that calls to that
 	 * classes method will instead be forwarded to the superclass that was inserted as part of the described process.
 	 * <p/>
-	 * Example: If layers A and B are registered, and TileCableBus is passed in as the baseClass, a synthetic class A_B_TileCableBus should be returned,
-	 * which has A_B_TileCableBus -extends-> B_TileCableBus -extends-> TileCableBus as it's class hierarchy, where A_B_TileCableBus has been generated
+	 * Example: If layers A and B are registered, and TileCableBus is passed in as the baseClass, a synthetic class
+	 * A_B_TileCableBus should be returned,
+	 * which has A_B_TileCableBus -extends-> B_TileCableBus -extends-> TileCableBus as it's class hierarchy, where
+	 * A_B_TileCableBus has been generated
 	 * from A, and B_TileCableBus has been generated from B.
 	 */
 	public Class<? extends AEBaseTile> getCombinedInstance( final Class<? extends AEBaseTile> baseClass )
@@ -122,7 +129,8 @@ public class ApiPart implements IPartHelper
 
 		try
 		{
-			// This is the particular interface that this layer was registered for. Loading the class may fail if i.e. an API is broken or not present
+			// This is the particular interface that this layer was registered for. Loading the class may fail if i.e.
+			// an API is broken or not present
 			// and in this case, the layer will be skipped!
 			Class<?> interfaceClass = Class.forName( interfaceName );
 			String layerImpl = this.interfaces2Layer.get( interfaceClass );
@@ -347,7 +355,6 @@ public class ApiPart implements IPartHelper
 			return o;
 		}
 	}
-
 
 	private static class CacheKey
 	{

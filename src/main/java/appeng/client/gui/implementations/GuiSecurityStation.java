@@ -101,15 +101,20 @@ public class GuiSecurityStation extends GuiMEMonitorable
 		super.initGui();
 
 		final int top = this.guiTop + this.ySize - 116;
-		this.buttonList.add( this.inject = new GuiToggleButton( this.guiLeft + 56, top, 11 * 16, 12 * 16, SecurityPermissions.INJECT.getUnlocalizedName(), SecurityPermissions.INJECT.getUnlocalizedTip() ) );
+		this.buttonList.add( this.inject = new GuiToggleButton( this.guiLeft + 56, top, 11 * 16, 12 * 16, SecurityPermissions.INJECT
+				.getUnlocalizedName(), SecurityPermissions.INJECT.getUnlocalizedTip() ) );
 
-		this.buttonList.add( this.extract = new GuiToggleButton( this.guiLeft + 56 + 18, top, 11 * 16 + 1, 12 * 16 + 1, SecurityPermissions.EXTRACT.getUnlocalizedName(), SecurityPermissions.EXTRACT.getUnlocalizedTip() ) );
+		this.buttonList.add( this.extract = new GuiToggleButton( this.guiLeft + 56 + 18, top, 11 * 16 + 1, 12 * 16 + 1, SecurityPermissions.EXTRACT
+				.getUnlocalizedName(), SecurityPermissions.EXTRACT.getUnlocalizedTip() ) );
 
-		this.buttonList.add( this.craft = new GuiToggleButton( this.guiLeft + 56 + 18 * 2, top, 11 * 16 + 2, 12 * 16 + 2, SecurityPermissions.CRAFT.getUnlocalizedName(), SecurityPermissions.CRAFT.getUnlocalizedTip() ) );
+		this.buttonList.add( this.craft = new GuiToggleButton( this.guiLeft + 56 + 18 * 2, top, 11 * 16 + 2, 12 * 16 + 2, SecurityPermissions.CRAFT
+				.getUnlocalizedName(), SecurityPermissions.CRAFT.getUnlocalizedTip() ) );
 
-		this.buttonList.add( this.build = new GuiToggleButton( this.guiLeft + 56 + 18 * 3, top, 11 * 16 + 3, 12 * 16 + 3, SecurityPermissions.BUILD.getUnlocalizedName(), SecurityPermissions.BUILD.getUnlocalizedTip() ) );
+		this.buttonList.add( this.build = new GuiToggleButton( this.guiLeft + 56 + 18 * 3, top, 11 * 16 + 3, 12 * 16 + 3, SecurityPermissions.BUILD
+				.getUnlocalizedName(), SecurityPermissions.BUILD.getUnlocalizedTip() ) );
 
-		this.buttonList.add( this.security = new GuiToggleButton( this.guiLeft + 56 + 18 * 4, top, 11 * 16 + 4, 12 * 16 + 4, SecurityPermissions.SECURITY.getUnlocalizedName(), SecurityPermissions.SECURITY.getUnlocalizedTip() ) );
+		this.buttonList.add( this.security = new GuiToggleButton( this.guiLeft + 56 + 18 * 4, top, 11 * 16 + 4, 12 * 16 + 4, SecurityPermissions.SECURITY
+				.getUnlocalizedName(), SecurityPermissions.SECURITY.getUnlocalizedTip() ) );
 	}
 
 	@Override

@@ -18,15 +18,17 @@
 
 package appeng.integration.abstraction;
 
+
 import appeng.integration.IIntegrationModule;
+
 
 /**
  * @author GuntherDW
  */
 public interface IRF
 {
-    class Stub extends IIntegrationModule.Stub implements IRF
-    {
+	class Stub extends IIntegrationModule.Stub implements IRF
+	{
 
-    }
+	}
 }

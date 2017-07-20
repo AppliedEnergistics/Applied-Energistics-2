@@ -294,10 +294,11 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPip
 	 * The ItemStack should not be modified in this function!
 	 * Note: This behaviour is subtly different from IFluidHandlers.fill()
 	 *
-	 * @param slot     Slot to insert into.
-	 * @param stack    ItemStack to insert.
+	 * @param slot Slot to insert into.
+	 * @param stack ItemStack to insert.
 	 * @param simulate If true, the insertion is only simulated
-	 * @return The remaining ItemStack that was not inserted (if the entire stack is accepted, then return ItemStack.EMPTY).
+	 * @return The remaining ItemStack that was not inserted (if the entire stack is accepted, then return
+	 * ItemStack.EMPTY).
 	 * May be the same as the input ItemStack if unchanged, otherwise a new ItemStack.
 	 **/
 	@Nonnull
@@ -305,11 +306,12 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPip
 	public ItemStack insertItem( int slot, @Nonnull ItemStack stack, boolean simulate )
 	{
 
-		if( isItemValidForSlot( slot, stack )  )
+		if( isItemValidForSlot( slot, stack ) )
 		{
 			AdaptorIInventory adaptor = new AdaptorIInventory( this.getDestination() );
 
-			if( simulate ) {
+			if( simulate )
+			{
 				return adaptor.simulateAdd( stack );
 			}
 			else
@@ -325,8 +327,8 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements /* IPip
 	 * if nothing is extracted, otherwise it's stack size must not be greater than amount or the
 	 * itemstacks getMaxStackSize().
 	 *
-	 * @param slot     Slot to extract from.
-	 * @param amount   Amount to extract (may be greater than the current stacks max limit)
+	 * @param slot Slot to extract from.
+	 * @param amount Amount to extract (may be greater than the current stacks max limit)
 	 * @param simulate If true, the extraction is only simulated
 	 * @return ItemStack extracted from the slot, must be ItemStack.EMPTY, if nothing can be extracted
 	 **/

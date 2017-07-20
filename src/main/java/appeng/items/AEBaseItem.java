@@ -44,10 +44,10 @@ public abstract class AEBaseItem extends Item
 	public String toString()
 	{
 		String regName = getRegistryName() != null ? getRegistryName().getResourcePath() : "unregistered";
-		return getClass().getSimpleName() + "[" + regName  + "]";
+		return getClass().getSimpleName() + "[" + regName + "]";
 	}
 
-	@SideOnly(Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	@Override
 	@SuppressWarnings( "unchecked" )
 	public final void addInformation( final ItemStack stack, final World world, final List lines, final ITooltipFlag advancedTooltips )
@@ -59,7 +59,7 @@ public abstract class AEBaseItem extends Item
 	@SuppressWarnings( "unchecked" )
 	public final void getSubItems( final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
 	{
-		if(isInCreativeTab(creativeTab))
+		if( isInCreativeTab( creativeTab ) )
 			this.getCheckedSubItems( creativeTab, itemStacks );
 	}
 
@@ -69,7 +69,7 @@ public abstract class AEBaseItem extends Item
 		return false;
 	}
 
-	@SideOnly(Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	protected void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
 		super.addInformation( stack, world, lines, advancedTooltips );

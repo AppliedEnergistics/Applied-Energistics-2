@@ -347,8 +347,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 	@Override
 	public boolean hasCapability( Capability<?> capability, @Nullable EnumFacing facing )
 	{
-		return this.duality.hasCapability( capability, facing )
-				|| super.hasCapability( capability, facing );
+		return this.duality.hasCapability( capability, facing ) || super.hasCapability( capability, facing );
 	}
 
 	@Override

@@ -47,7 +47,7 @@ public class StorageWorldProvider extends WorldProvider
 		biome = AppEng.instance().getRegistration().getStorageBiome();
 		this.biomeProvider = new BiomeProviderSingle( biome );
 	}
-	
+
 	@Override
 	public IChunkGenerator createChunkGenerator()
 	{

@@ -38,6 +38,7 @@ import appeng.api.recipes.IIngredient;
 
 import javax.annotation.Nullable;
 
+
 public class ShapedRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe, IRecipeBakeable
 {
 	// Added in for future ease of change, but hard coded for now.
@@ -178,7 +179,8 @@ public class ShapedRecipe extends net.minecraftforge.registries.IForgeRegistryEn
 	}
 
 	@Override
-	public boolean canFit(int i, int i1) {
+	public boolean canFit( int i, int i1 )
+	{
 		return false;
 	}
 
@@ -273,7 +275,8 @@ public class ShapedRecipe extends net.minecraftforge.registries.IForgeRegistryEn
 		{
 			return false;
 		}
-		return( target.getItem() == input.getItem() && ( target.getItemDamage() == OreDictionary.WILDCARD_VALUE || target.getItemDamage() == input.getItemDamage() ) );
+		return( target.getItem() == input
+				.getItem() && ( target.getItemDamage() == OreDictionary.WILDCARD_VALUE || target.getItemDamage() == input.getItemDamage() ) );
 	}
 
 	public ShapedRecipe setMirrored( final boolean mirror )

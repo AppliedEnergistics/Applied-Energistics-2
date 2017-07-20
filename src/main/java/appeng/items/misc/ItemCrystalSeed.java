@@ -66,14 +66,19 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	{
 		this.setHasSubtypes( true );
 
-		EntityRegistry.registerModEntity( new ResourceLocation( "appliedenergistics2", EntityGrowingCrystal.class.getName() ), EntityGrowingCrystal.class, EntityGrowingCrystal.class.getSimpleName(), EntityIds.get( EntityGrowingCrystal.class ), AppEng.instance(), 16, 4, true );
+		EntityRegistry.registerModEntity( new ResourceLocation( "appliedenergistics2", EntityGrowingCrystal.class.getName() ), EntityGrowingCrystal.class,
+				EntityGrowingCrystal.class.getSimpleName(), EntityIds.get( EntityGrowingCrystal.class ), AppEng.instance(), 16, 4, true );
 	}
 
 	@Nullable
 	public static ResolverResult getResolver( final int certus2 )
 	{
 
-		return AEApi.instance().definitions().items().crystalSeed().maybeStack( 1 )
+		return AEApi.instance()
+				.definitions()
+				.items()
+				.crystalSeed()
+				.maybeStack( 1 )
 				.map( crystalSeedStack ->
 				{
 					crystalSeedStack.setItemDamage( certus2 );
@@ -236,7 +241,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 
 		// Cannot read the pickup delay of the original item, so we
 		// use the pickup delay used for items dropped by a player instead
-		egc.setPickupDelay(40);
+		egc.setPickupDelay( 40 );
 
 		return egc;
 	}

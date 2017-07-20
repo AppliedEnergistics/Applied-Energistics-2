@@ -274,10 +274,10 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	public boolean onBlockActivated( World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ )
 	{
 		ItemStack heldItem;
-		if( player != null && !player.getHeldItem(hand).isEmpty() )
+		if( player != null && !player.getHeldItem( hand ).isEmpty() )
 		{
-			heldItem = player.getHeldItem(hand);
-			
+			heldItem = player.getHeldItem( hand );
+
 			if( Platform.isWrench( player, heldItem, pos ) && player.isSneaking() )
 			{
 				final IBlockState blockState = world.getBlockState( pos );
@@ -366,7 +366,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 			}
 		}
 
-		return this.onActivated( world, pos, player, hand, player.getHeldItem(hand), facing, hitX, hitY, hitZ );
+		return this.onActivated( world, pos, player, hand, player.getHeldItem( hand ), facing, hitX, hitY, hitZ );
 	}
 
 	@Override

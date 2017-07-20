@@ -47,7 +47,7 @@ import appeng.util.Platform;
 public class BlockDrive extends AEBaseTileBlock
 {
 
-	public static final UnlistedProperty<DriveSlotsState> SLOTS_STATE = new UnlistedProperty<>("drive_slots_state", DriveSlotsState.class);
+	public static final UnlistedProperty<DriveSlotsState> SLOTS_STATE = new UnlistedProperty<>( "drive_slots_state", DriveSlotsState.class );
 
 	public BlockDrive()
 	{

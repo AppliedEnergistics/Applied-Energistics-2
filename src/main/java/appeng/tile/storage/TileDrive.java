@@ -241,7 +241,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	@MENetworkEventSubscribe
 	public void channelRender( final MENetworkChannelsChanged c )
 	{
- 		this.recalculateDisplay();
+		this.recalculateDisplay();
 	}
 
 	@Override

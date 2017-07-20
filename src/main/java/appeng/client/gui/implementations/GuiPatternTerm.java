@@ -78,7 +78,8 @@ public class GuiPatternTerm extends GuiMEMonitorable
 
 			if( this.tabCraftButton == btn || this.tabProcessButton == btn )
 			{
-				NetworkHandler.instance().sendToServer( new PacketValueConfig( "PatternTerminal.CraftMode", this.tabProcessButton == btn ? CRAFTMODE_CRFTING : CRAFTMODE_PROCESSING ) );
+				NetworkHandler.instance().sendToServer(
+						new PacketValueConfig( "PatternTerminal.CraftMode", this.tabProcessButton == btn ? CRAFTMODE_CRFTING : CRAFTMODE_PROCESSING ) );
 			}
 
 			if( this.encodeBtn == btn )
@@ -93,7 +94,8 @@ public class GuiPatternTerm extends GuiMEMonitorable
 
 			if( this.substitutionsEnabledBtn == btn || this.substitutionsDisabledBtn == btn )
 			{
-				NetworkHandler.instance().sendToServer( new PacketValueConfig( "PatternTerminal.Substitute", this.substitutionsEnabledBtn == btn ? SUBSITUTION_DISABLE : SUBSITUTION_ENABLE ) );
+				NetworkHandler.instance().sendToServer(
+						new PacketValueConfig( "PatternTerminal.Substitute", this.substitutionsEnabledBtn == btn ? SUBSITUTION_DISABLE : SUBSITUTION_ENABLE ) );
 			}
 		}
 		catch( final IOException e )
@@ -107,10 +109,12 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	{
 		super.initGui();
 
-		this.tabCraftButton = new GuiTabButton( this.guiLeft + 173, this.guiTop + this.ySize - 177, new ItemStack( Blocks.CRAFTING_TABLE ), GuiText.CraftingPattern.getLocal(), this.itemRender );
+		this.tabCraftButton = new GuiTabButton( this.guiLeft + 173, this.guiTop + this.ySize - 177, new ItemStack( Blocks.CRAFTING_TABLE ), GuiText.CraftingPattern
+				.getLocal(), this.itemRender );
 		this.buttonList.add( this.tabCraftButton );
 
-		this.tabProcessButton = new GuiTabButton( this.guiLeft + 173, this.guiTop + this.ySize - 177, new ItemStack( Blocks.FURNACE ), GuiText.ProcessingPattern.getLocal(), this.itemRender );
+		this.tabProcessButton = new GuiTabButton( this.guiLeft + 173, this.guiTop + this.ySize - 177, new ItemStack( Blocks.FURNACE ), GuiText.ProcessingPattern
+				.getLocal(), this.itemRender );
 		this.buttonList.add( this.tabProcessButton );
 
 		this.substitutionsEnabledBtn = new GuiImgButton( this.guiLeft + 84, this.guiTop + this.ySize - 163, Settings.ACTIONS, ItemSubstitution.ENABLED );

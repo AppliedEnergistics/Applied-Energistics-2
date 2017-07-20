@@ -19,173 +19,176 @@
 package appeng.parts.p2p;
 
 
-//import javax.annotation.Nullable;
+// import javax.annotation.Nullable;
 //
-//import net.minecraft.item.ItemStack;
-//import net.minecraft.nbt.NBTTagCompound;
-//import net.minecraft.util.IIcon;
-//import net.minecraftforge.common.util.ForgeDirection;
+// import net.minecraft.item.ItemStack;
+// import net.minecraft.nbt.NBTTagCompound;
+// import net.minecraft.util.IIcon;
+// import net.minecraftforge.common.util.ForgeDirection;
 //
-//import cpw.mods.fml.relauncher.Side;
-//import cpw.mods.fml.relauncher.SideOnly;
+// import cpw.mods.fml.relauncher.Side;
+// import cpw.mods.fml.relauncher.SideOnly;
 //
-//import li.cil.oc.api.API;
-//import li.cil.oc.api.Items;
-//import li.cil.oc.api.Network;
-//import li.cil.oc.api.network.Environment;
-//import li.cil.oc.api.network.Message;
-//import li.cil.oc.api.network.Node;
-//import li.cil.oc.api.network.SidedEnvironment;
-//import li.cil.oc.api.network.Visibility;
+// import li.cil.oc.api.API;
+// import li.cil.oc.api.Items;
+// import li.cil.oc.api.Network;
+// import li.cil.oc.api.network.Environment;
+// import li.cil.oc.api.network.Message;
+// import li.cil.oc.api.network.Node;
+// import li.cil.oc.api.network.SidedEnvironment;
+// import li.cil.oc.api.network.Visibility;
 //
-//import appeng.api.networking.events.MENetworkBootingStatusChange;
-//import appeng.api.networking.events.MENetworkChannelsChanged;
-//import appeng.api.networking.events.MENetworkEventSubscribe;
-//import appeng.api.networking.events.MENetworkPowerStatusChange;
-//import appeng.integration.IntegrationRegistry;
-//import appeng.integration.IntegrationType;
-//import appeng.coremod.annotations.Integration.Interface;
-//import appeng.coremod.annotations.Integration.InterfaceList;
+// import appeng.api.networking.events.MENetworkBootingStatusChange;
+// import appeng.api.networking.events.MENetworkChannelsChanged;
+// import appeng.api.networking.events.MENetworkEventSubscribe;
+// import appeng.api.networking.events.MENetworkPowerStatusChange;
+// import appeng.integration.IntegrationRegistry;
+// import appeng.integration.IntegrationType;
+// import appeng.coremod.annotations.Integration.Interface;
+// import appeng.coremod.annotations.Integration.InterfaceList;
 //
 //
-//@InterfaceList( value = { @Interface( iface = "li.cil.oc.api.network.Environment", iname = IntegrationType.OpenComputers ), @Interface( iface = "li.cil.oc.api.network.SidedEnvironment", iname = IntegrationType.OpenComputers ) } )
-//public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenComputers> implements Environment, SidedEnvironment
-//{
-//	@Nullable
-//	private final Node node;
+// @InterfaceList( value = { @Interface( iface = "li.cil.oc.api.network.Environment", iname =
+// IntegrationType.OpenComputers ), @Interface( iface = "li.cil.oc.api.network.SidedEnvironment", iname =
+// IntegrationType.OpenComputers ) } )
+// public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenComputers> implements Environment,
+// SidedEnvironment
+// {
+// @Nullable
+// private final Node node;
 //
-//	public PartP2POpenComputers( final ItemStack is )
-//	{
-//		super( is );
+// public PartP2POpenComputers( final ItemStack is )
+// {
+// super( is );
 //
-//		if( !IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
-//		{
-//			throw new RuntimeException( "OpenComputers is not installed!" );
-//		}
+// if( !IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
+// {
+// throw new RuntimeException( "OpenComputers is not installed!" );
+// }
 //
-//		// Avoid NPE when called in pre-init phase (part population).
-//		if( API.network != null )
-//		{
-//			this.node = Network.newNode( this, Visibility.None ).create();
-//		}
-//		else
-//		{
-//			this.node = null; // to satisfy final
-//		}
-//	}
+// // Avoid NPE when called in pre-init phase (part population).
+// if( API.network != null )
+// {
+// this.node = Network.newNode( this, Visibility.None ).create();
+// }
+// else
+// {
+// this.node = null; // to satisfy final
+// }
+// }
 //
-//	@MENetworkEventSubscribe
-//	public void changeStateA( final MENetworkBootingStatusChange bs )
-//	{
-//		this.updateConnections();
-//	}
+// @MENetworkEventSubscribe
+// public void changeStateA( final MENetworkBootingStatusChange bs )
+// {
+// this.updateConnections();
+// }
 //
-//	@MENetworkEventSubscribe
-//	public void changeStateB( final MENetworkChannelsChanged bs )
-//	{
-//		this.updateConnections();
-//	}
+// @MENetworkEventSubscribe
+// public void changeStateB( final MENetworkChannelsChanged bs )
+// {
+// this.updateConnections();
+// }
 //
-//	@MENetworkEventSubscribe
-//	public void changeStateC( final MENetworkPowerStatusChange bs )
-//	{
-//		this.updateConnections();
-//	}
+// @MENetworkEventSubscribe
+// public void changeStateC( final MENetworkPowerStatusChange bs )
+// {
+// this.updateConnections();
+// }
 //
-//	@Override
-//	@SideOnly( Side.CLIENT )
-//	public IIcon getTypeTexture()
-//	{
-//		return Items.get( "adapter" ).block().getBlockTextureFromSide( 2 );
-//	}
+// @Override
+// @SideOnly( Side.CLIENT )
+// public IIcon getTypeTexture()
+// {
+// return Items.get( "adapter" ).block().getBlockTextureFromSide( 2 );
+// }
 //
-//	@Override
-//	public void removeFromWorld()
-//	{
-//		super.removeFromWorld();
-//		if( this.node != null )
-//		{
-//			this.node.remove();
-//		}
-//	}
+// @Override
+// public void removeFromWorld()
+// {
+// super.removeFromWorld();
+// if( this.node != null )
+// {
+// this.node.remove();
+// }
+// }
 //
-//	@Override
-//	public void onTunnelNetworkChange()
-//	{
-//		this.updateConnections();
-//	}
+// @Override
+// public void onTunnelNetworkChange()
+// {
+// this.updateConnections();
+// }
 //
-//	@Override
-//	public void readFromNBT( final NBTTagCompound data )
-//	{
-//		super.readFromNBT( data );
-//		if( this.node != null )
-//		{
-//			this.node.load( data );
-//		}
-//	}
+// @Override
+// public void readFromNBT( final NBTTagCompound data )
+// {
+// super.readFromNBT( data );
+// if( this.node != null )
+// {
+// this.node.load( data );
+// }
+// }
 //
-//	@Override
-//	public void writeToNBT( final NBTTagCompound data )
-//	{
-//		super.writeToNBT( data );
-//		if( this.node != null )
-//		{
-//			this.node.save( data );
-//		}
-//	}
+// @Override
+// public void writeToNBT( final NBTTagCompound data )
+// {
+// super.writeToNBT( data );
+// if( this.node != null )
+// {
+// this.node.save( data );
+// }
+// }
 //
-//	private void updateConnections()
-//	{
-//		if( this.getProxy().isPowered() && this.getProxy().isActive() )
-//		{
-//			// Make sure we're connected to existing OC nodes in the world.
-//			Network.joinOrCreateNetwork( this.getTile() );
+// private void updateConnections()
+// {
+// if( this.getProxy().isPowered() && this.getProxy().isActive() )
+// {
+// // Make sure we're connected to existing OC nodes in the world.
+// Network.joinOrCreateNetwork( this.getTile() );
 //
-//			if( this.isOutput() && this.getInput() != null && this.node != null )
-//			{
-//				Network.joinOrCreateNetwork( this.getInput().getTile() );
-//				this.node.connect( this.getInput().node() );
-//			}
-//		}
-//		else if( this.node != null )
-//		{
-//			this.node.remove();
-//		}
-//	}
+// if( this.isOutput() && this.getInput() != null && this.node != null )
+// {
+// Network.joinOrCreateNetwork( this.getInput().getTile() );
+// this.node.connect( this.getInput().node() );
+// }
+// }
+// else if( this.node != null )
+// {
+// this.node.remove();
+// }
+// }
 //
-//	@Nullable
-//	@Override
-//	public Node node()
-//	{
-//		return this.node;
-//	}
+// @Nullable
+// @Override
+// public Node node()
+// {
+// return this.node;
+// }
 //
-//	@Override
-//	public void onConnect( final Node node )
-//	{
-//	}
+// @Override
+// public void onConnect( final Node node )
+// {
+// }
 //
-//	@Override
-//	public void onDisconnect( final Node node )
-//	{
-//	}
+// @Override
+// public void onDisconnect( final Node node )
+// {
+// }
 //
-//	@Override
-//	public void onMessage( final Message message )
-//	{
-//	}
+// @Override
+// public void onMessage( final Message message )
+// {
+// }
 //
-//	@Nullable
-//	@Override
-//	public Node sidedNode( final ForgeDirection side )
-//	{
-//		return side == this.getSide() ? this.node : null;
-//	}
+// @Nullable
+// @Override
+// public Node sidedNode( final ForgeDirection side )
+// {
+// return side == this.getSide() ? this.node : null;
+// }
 //
-//	@Override
-//	public boolean canConnect( final ForgeDirection side )
-//	{
-//		return side == this.getSide();
-//	}
-//}
+// @Override
+// public boolean canConnect( final ForgeDirection side )
+// {
+// return side == this.getSide();
+// }
+// }

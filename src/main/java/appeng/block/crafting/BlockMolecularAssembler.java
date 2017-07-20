@@ -104,7 +104,7 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 			Platform.openGUI( p, tg, AEPartLocation.fromFacing( side ), GuiBridge.GUI_MAC );
 			return true;
 		}
-		
+
 		return super.onBlockActivated( w, pos, state, p, hand, side, hitX, hitY, hitZ );
 	}
 }

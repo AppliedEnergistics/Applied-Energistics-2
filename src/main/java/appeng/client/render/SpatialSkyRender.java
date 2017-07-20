@@ -130,7 +130,7 @@ public class SpatialSkyRender extends IRenderHandler
 			GlStateManager.enableBlend();
 			GlStateManager.disableTexture2D();
 			GlStateManager.depthMask( false );
-			OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+			OpenGlHelper.glBlendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0 );
 
 			RenderHelper.disableStandardItemLighting();
 

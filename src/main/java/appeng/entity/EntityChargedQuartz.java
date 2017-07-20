@@ -78,7 +78,7 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 		this.delay++;
 
 		final int j = MathHelper.floor( this.posX );
-		final int i = MathHelper.floor( (this.getEntityBoundingBox().minY + this.getEntityBoundingBox().maxY) / 2.0D );
+		final int i = MathHelper.floor( ( this.getEntityBoundingBox().minY + this.getEntityBoundingBox().maxY ) / 2.0D );
 		final int k = MathHelper.floor( this.posZ );
 
 		IBlockState state = this.world.getBlockState( new BlockPos( j, i, k ) );

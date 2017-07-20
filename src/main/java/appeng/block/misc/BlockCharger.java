@@ -119,7 +119,8 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 				{
 					if( AppEng.proxy.shouldAddParticles( r ) )
 					{
-						final LightningFX fx = new LightningFX( w, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(), zOff + 0.5 + pos.getZ(), 0.0D, 0.0D, 0.0D );
+						final LightningFX fx = new LightningFX( w, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(), zOff + 0.5 + pos
+								.getZ(), 0.0D, 0.0D, 0.0D );
 						Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 					}
 				}

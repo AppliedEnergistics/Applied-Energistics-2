@@ -38,6 +38,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
+
 public class ItemCreativeStorageCell extends AEBaseItem implements ICellWorkbenchItem
 {
 
@@ -82,7 +83,7 @@ public class ItemCreativeStorageCell extends AEBaseItem implements ICellWorkbenc
 	{
 		final IMEInventoryHandler<?> inventory = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
 
-		if( inventory instanceof ICellInventoryHandler)
+		if( inventory instanceof ICellInventoryHandler )
 		{
 			final CellConfig cc = new CellConfig( stack );
 

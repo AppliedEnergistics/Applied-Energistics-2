@@ -67,7 +67,7 @@ public final class DamagedItemDefinition implements IItemDefinition
 	@Override
 	public Optional<ItemStack> maybeStack( final int stackSize )
 	{
-		return this.source.map( input -> input.stack( stackSize ));
+		return this.source.map( input -> input.stack( stackSize ) );
 	}
 
 	@Override

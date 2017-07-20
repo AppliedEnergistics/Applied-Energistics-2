@@ -55,7 +55,8 @@ public class ContainerVibrationChamber extends AEBaseContainer implements IProgr
 	{
 		if( Platform.isServer() )
 		{
-			this.burnProgress = (int) ( this.vibrationChamber.getMaxBurnTime() <= 0 ? 0 : 12 * this.vibrationChamber.getBurnTime() / this.vibrationChamber.getMaxBurnTime() );
+			this.burnProgress = (int) ( this.vibrationChamber.getMaxBurnTime() <= 0 ? 0 : 12 * this.vibrationChamber.getBurnTime() / this.vibrationChamber
+					.getMaxBurnTime() );
 			this.burnSpeed = this.vibrationChamber.getBurnSpeed();
 		}
 

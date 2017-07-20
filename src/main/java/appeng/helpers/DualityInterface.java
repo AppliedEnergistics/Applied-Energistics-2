@@ -628,7 +628,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					}
 					else
 					{
-						whatToSend.setCount( whatToSend.getCount() - (whatToSend.getCount() - result.getCount()) );
+						whatToSend.setCount( whatToSend.getCount() - ( whatToSend.getCount() - result.getCount() ) );
 					}
 
 					if( whatToSend.isEmpty() )

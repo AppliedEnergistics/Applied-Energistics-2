@@ -1,3 +1,4 @@
+
 package appeng.block.qnb;
 
 
@@ -117,7 +118,8 @@ class QnbFormedBakedModel implements IBakedModel
 					builder.setRenderFullBright( true );
 					for( EnumFacing facing : EnumFacing.values() )
 					{
-						// Offset the face by a slight amount so that it is drawn over the already drawn ring texture (avoids z-fighting)
+						// Offset the face by a slight amount so that it is drawn over the already drawn ring texture
+						// (avoids z-fighting)
 						float xOffset = Math.abs( facing.getFrontOffsetX() * 0.01f );
 						float yOffset = Math.abs( facing.getFrontOffsetY() * 0.01f );
 						float zOffset = Math.abs( facing.getFrontOffsetZ() * 0.01f );
@@ -125,8 +127,7 @@ class QnbFormedBakedModel implements IBakedModel
 						builder.setDrawFaces( EnumSet.of( facing ) );
 						builder.addCube(
 								DEFAULT_RENDER_MIN - xOffset, DEFAULT_RENDER_MIN - yOffset, DEFAULT_RENDER_MIN - zOffset,
-								DEFAULT_RENDER_MAX + xOffset, DEFAULT_RENDER_MAX + yOffset, DEFAULT_RENDER_MAX + zOffset
-						);
+								DEFAULT_RENDER_MAX + xOffset, DEFAULT_RENDER_MAX + yOffset, DEFAULT_RENDER_MAX + zOffset );
 					}
 				}
 			}
@@ -146,7 +147,8 @@ class QnbFormedBakedModel implements IBakedModel
 					builder.setRenderFullBright( true );
 					for( EnumFacing facing : EnumFacing.values() )
 					{
-						// Offset the face by a slight amount so that it is drawn over the already drawn ring texture (avoids z-fighting)
+						// Offset the face by a slight amount so that it is drawn over the already drawn ring texture
+						// (avoids z-fighting)
 						float xOffset = Math.abs( facing.getFrontOffsetX() * 0.01f );
 						float yOffset = Math.abs( facing.getFrontOffsetY() * 0.01f );
 						float zOffset = Math.abs( facing.getFrontOffsetZ() * 0.01f );
@@ -154,8 +156,7 @@ class QnbFormedBakedModel implements IBakedModel
 						builder.setDrawFaces( EnumSet.of( facing ) );
 						builder.addCube(
 								-xOffset, -yOffset, -zOffset,
-								16 + xOffset, 16 + yOffset, 16 + zOffset
-						);
+								16 + xOffset, 16 + yOffset, 16 + zOffset );
 					}
 				}
 			}
@@ -238,7 +239,6 @@ class QnbFormedBakedModel implements IBakedModel
 	public static List<ResourceLocation> getRequiredTextures()
 	{
 		return ImmutableList.of(
-				TEXTURE_LINK, TEXTURE_RING, TEXTURE_CABLE_GLASS, TEXTURE_COVERED_CABLE, TEXTURE_RING_LIGHT, TEXTURE_RING_LIGHT_CORNER
-		);
+				TEXTURE_LINK, TEXTURE_RING, TEXTURE_CABLE_GLASS, TEXTURE_COVERED_CABLE, TEXTURE_RING_LIGHT, TEXTURE_RING_LIGHT_CORNER );
 	}
 }

@@ -20,6 +20,7 @@
 
 package appeng.parts.p2p;
 
+
 import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
@@ -36,194 +37,196 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
+
 /**
  * @author GuntherDW
  */
 public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower> implements IEnergyStorage
 {
-    private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_fe" );
+	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_fe" );
 
-   	private boolean cachedTarget = false;
+	private boolean cachedTarget = false;
 
-   	private IEnergyStorage outputTarget;
+	private IEnergyStorage outputTarget;
 
-   	@PartModels
-   	public static List<IPartModel> getModels()
-   	{
-   		return MODELS.getModels();
-   	}
+	@PartModels
+	public static List<IPartModel> getModels()
+	{
+		return MODELS.getModels();
+	}
 
-    @Override
-    public IPartModel getStaticModels()
-    {
-        return MODELS.getModel( isPowered(), isActive() );
-    }
+	@Override
+	public IPartModel getStaticModels()
+	{
+		return MODELS.getModel( isPowered(), isActive() );
+	}
 
-    public PartP2PFEPower( ItemStack is )
-    {
-        super( is );
-    }
+	public PartP2PFEPower( ItemStack is )
+	{
+		super( is );
+	}
 
-    @Override
-   	public void onTunnelNetworkChange()
-   	{
-   		this.getHost().notifyNeighbors();
-   	}
+	@Override
+	public void onTunnelNetworkChange()
+	{
+		this.getHost().notifyNeighbors();
+	}
 
-   	@Override
-   	public void onNeighborChanged()
-   	{
-   		super.onNeighborChanged();
+	@Override
+	public void onNeighborChanged()
+	{
+		super.onNeighborChanged();
 
-   		this.cachedTarget = false;
-   	}
+		this.cachedTarget = false;
+	}
 
-   	@Override
-   	public int receiveEnergy( int maxReceive, boolean simulate )
-   	{
-   		if( this.isOutput() )
-   		{
-   			return 0;
-   		}
+	@Override
+	public int receiveEnergy( int maxReceive, boolean simulate )
+	{
+		if( this.isOutput() )
+		{
+			return 0;
+		}
 
-   		if( this.isActive() )
-   		{
-   			int total = 0;
+		if( this.isActive() )
+		{
+			int total = 0;
 
-   			try
-   			{
-   				for( PartP2PFEPower t : this.getOutputs() )
-   				{
-   					if( Platform.getRandomInt() % 2 > 0 )
-   					{
-   						int receiver = t.getOutput().receiveEnergy( maxReceive, simulate );
-   						maxReceive -= receiver;
-   						total += receiver;
+			try
+			{
+				for( PartP2PFEPower t : this.getOutputs() )
+				{
+					if( Platform.getRandomInt() % 2 > 0 )
+					{
+						int receiver = t.getOutput().receiveEnergy( maxReceive, simulate );
+						maxReceive -= receiver;
+						total += receiver;
 
-   						if( maxReceive <= 0 )
-   						{
-   							break;
-   						}
-   					}
-   				}
+						if( maxReceive <= 0 )
+						{
+							break;
+						}
+					}
+				}
 
-   				if( maxReceive > 0 )
-   				{
-   					for( PartP2PFEPower t : this.getOutputs() )
-   					{
-   						int receiver = t.getOutput().receiveEnergy( maxReceive, simulate );
-   						maxReceive -= receiver;
-   						total += receiver;
+				if( maxReceive > 0 )
+				{
+					for( PartP2PFEPower t : this.getOutputs() )
+					{
+						int receiver = t.getOutput().receiveEnergy( maxReceive, simulate );
+						maxReceive -= receiver;
+						total += receiver;
 
-   						if( maxReceive <= 0 )
-   						{
-   							break;
-   						}
-   					}
-   				}
+						if( maxReceive <= 0 )
+						{
+							break;
+						}
+					}
+				}
 
-   				this.queueTunnelDrain( PowerUnits.RF, total );
-   			}
-   			catch( GridAccessException ignored )
-   			{
-   			}
+				this.queueTunnelDrain( PowerUnits.RF, total );
+			}
+			catch( GridAccessException ignored )
+			{
+			}
 
-   			return total;
-   		}
+			return total;
+		}
 
-   		return 0;
-   	}
+		return 0;
+	}
 
-    @Override
-    public int extractEnergy( int maxExtract, boolean simulate )
-    {
-        return 0;
-    }
+	@Override
+	public int extractEnergy( int maxExtract, boolean simulate )
+	{
+		return 0;
+	}
 
-   	private IEnergyStorage getOutput()
-   	{
-   		if( this.isOutput() )
-   		{
-   			if( !this.cachedTarget )
-   			{
-   				TileEntity self = this.getTile();
-   				TileEntity te = self.getWorld().getTileEntity( new BlockPos( self.getPos().getX() + this.getSide().xOffset, self.getPos().getY() + this.getSide().yOffset, self.getPos().getZ() + this.getSide().zOffset ) );
-   				this.outputTarget = te.hasCapability( CapabilityEnergy.ENERGY, this.getSide().getOpposite().getFacing() ) ? te.getCapability( CapabilityEnergy.ENERGY, this.getSide().getOpposite().getFacing() ) : null;
-   				this.cachedTarget = true;
-   			}
+	private IEnergyStorage getOutput()
+	{
+		if( this.isOutput() )
+		{
+			if( !this.cachedTarget )
+			{
+				TileEntity self = this.getTile();
+				TileEntity te = self.getWorld().getTileEntity( new BlockPos( self.getPos().getX() + this.getSide().xOffset, self.getPos()
+						.getY() + this.getSide().yOffset, self.getPos().getZ() + this.getSide().zOffset ) );
+				this.outputTarget = te.hasCapability( CapabilityEnergy.ENERGY, this.getSide().getOpposite().getFacing() ) ? te
+						.getCapability( CapabilityEnergy.ENERGY, this.getSide().getOpposite().getFacing() ) : null;
+				this.cachedTarget = true;
+			}
 
-   			if( this.outputTarget == null || !this.outputTarget.canReceive() )
-   			{
-   				return null;
-   			}
+			if( this.outputTarget == null || !this.outputTarget.canReceive() )
+			{
+				return null;
+			}
 
-   			return this.outputTarget;
-   		}
-   		return null;
-   	}
+			return this.outputTarget;
+		}
+		return null;
+	}
 
-   	@Override
-   	public int getEnergyStored()
-   	{
-   		if( this.isOutput() || !this.isActive() )
-   		{
-   			return 0;
-   		}
+	@Override
+	public int getEnergyStored()
+	{
+		if( this.isOutput() || !this.isActive() )
+		{
+			return 0;
+		}
 
-   		int total = 0;
+		int total = 0;
 
-   		try
-   		{
-   			for( PartP2PFEPower t : this.getOutputs() )
-   			{
-   				total += t.getOutput().getEnergyStored();
-   			}
-   		}
-   		catch( GridAccessException e )
-   		{
-   			return 0;
-   		}
+		try
+		{
+			for( PartP2PFEPower t : this.getOutputs() )
+			{
+				total += t.getOutput().getEnergyStored();
+			}
+		}
+		catch( GridAccessException e )
+		{
+			return 0;
+		}
 
+		return total;
+	}
 
-   		return total;
-   	}
+	@Override
+	public int getMaxEnergyStored()
+	{
+		if( this.isOutput() || !this.isActive() )
+		{
+			return 0;
+		}
 
-   	@Override
-   	public int getMaxEnergyStored()
-   	{
-   		if( this.isOutput() || !this.isActive() )
-   		{
-   			return 0;
-   		}
+		int total = 0;
 
-   		int total = 0;
+		try
+		{
+			for( PartP2PFEPower t : this.getOutputs() )
+			{
+				total += t.getOutput().getMaxEnergyStored();
+			}
+		}
+		catch( GridAccessException e )
+		{
+			return 0;
+		}
 
-   		try
-   		{
-   			for( PartP2PFEPower t : this.getOutputs() )
-   			{
-   				total += t.getOutput().getMaxEnergyStored();
-   			}
-   		}
-   		catch( GridAccessException e )
-   		{
-   			return 0;
-   		}
+		return total;
+	}
 
-   		return total;
-   	}
+	@Override
+	public boolean canExtract()
+	{
+		return false;
+	}
 
-    @Override
-    public boolean canExtract()
-    {
-        return false;
-    }
-
-    @Override
-   	public boolean canReceive()
-   	{
-   		return true;
-   	}
+	@Override
+	public boolean canReceive()
+	{
+		return true;
+	}
 
 	@Override
 	public boolean hasCapability( @Nonnull Capability<?> capability )

@@ -759,7 +759,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 							if( details.isCraftable() )
 							{
-								FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) this.getWorld() ), details.getOutput( ic, this.getWorld() ), ic );
+								FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) this.getWorld() ),
+										details.getOutput( ic, this.getWorld() ), ic );
 
 								for( int x = 0; x < ic.getSizeInventory(); x++ )
 								{
@@ -981,7 +982,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		final int hash = System.identityHashCode( this );
 		final int hmm = this.finalOutput == null ? 0 : this.finalOutput.hashCode();
 
-		return Long.toString( now, Character.MAX_RADIX ) + '-' + Integer.toString( hash, Character.MAX_RADIX ) + '-' + Integer.toString( hmm, Character.MAX_RADIX );
+		return Long.toString( now, Character.MAX_RADIX ) + '-' + Integer.toString( hash, Character.MAX_RADIX ) + '-' + Integer.toString( hmm,
+				Character.MAX_RADIX );
 	}
 
 	private NBTTagCompound generateLinkData( final String craftingID, final boolean standalone, final boolean req )

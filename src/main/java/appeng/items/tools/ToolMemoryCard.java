@@ -148,9 +148,9 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	{
 		if( player.isSneaking() && !w.isRemote )
 		{
-			final IMemoryCard mem = (IMemoryCard) player.getHeldItem(hand).getItem();
+			final IMemoryCard mem = (IMemoryCard) player.getHeldItem( hand ).getItem();
 			mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
-			player.getHeldItem(hand).setTagCompound( null );
+			player.getHeldItem( hand ).setTagCompound( null );
 			return EnumActionResult.SUCCESS;
 		}
 		else
@@ -158,7 +158,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 			return super.onItemUse( player, w, pos, hand, side, hx, hy, hz );
 		}
 	}
-	
+
 	@Override
 	public boolean doesSneakBypassUse( final ItemStack itemstack, final IBlockAccess world, final BlockPos pos, final EntityPlayer player )
 	{

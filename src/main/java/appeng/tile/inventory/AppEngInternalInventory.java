@@ -113,7 +113,8 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 		return ItemStack.EMPTY;
 	}
 
-	private ItemStack getOldStack( int slot ) {
+	private ItemStack getOldStack( int slot )
+	{
 		if( this.inv[slot] == null )
 			return ItemStack.EMPTY;
 
@@ -123,7 +124,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	@Override
 	public void setInventorySlotContents( final int slot, final ItemStack newItemStack )
 	{
-		final ItemStack oldStack = getOldStack(slot);
+		final ItemStack oldStack = getOldStack( slot );
 		this.inv[slot] = newItemStack;
 
 		if( this.getTileEntity() != null && this.eventsEnabled() )

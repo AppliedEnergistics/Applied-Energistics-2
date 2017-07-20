@@ -87,13 +87,15 @@ public class ItemComparisonHelper
 	 */
 	public boolean isEqualItem( @Nonnull final ItemStack left, @Nonnull final ItemStack right )
 	{
-		return this.isItemEqual(left, right);
+		return this.isItemEqual( left, right );
 	}
 
 	/**
-	 * A slightly different method from ItemStack.java to skip the isEmpty() check. This allows you to check for identical empty spots..
+	 * A slightly different method from ItemStack.java to skip the isEmpty() check. This allows you to check for
+	 * identical empty spots..
 	 */
-	public boolean isItemEqual( ItemStack left, ItemStack right ) {
+	public boolean isItemEqual( ItemStack left, ItemStack right )
+	{
 		return left.getItem() == right.getItem() && left.getItemDamage() == right.getItemDamage();
 	}
 
@@ -395,7 +397,8 @@ public class ItemComparisonHelper
 			return true;
 		}
 
-		if( ( ta == null && tb == null ) || ( ta != null && ta.hasNoTags() && tb == null ) || ( tb != null && tb.hasNoTags() && ta == null ) || ( ta != null && ta.hasNoTags() && tb != null && tb.hasNoTags() ) )
+		if( ( ta == null && tb == null ) || ( ta != null && ta.hasNoTags() && tb == null ) || ( tb != null && tb
+				.hasNoTags() && ta == null ) || ( ta != null && ta.hasNoTags() && tb != null && tb.hasNoTags() ) )
 		{
 			return true;
 		}

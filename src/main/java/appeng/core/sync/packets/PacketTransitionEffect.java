@@ -91,16 +91,19 @@ public class PacketTransitionEffect extends AppEngPacket
 		{
 			if( AppEng.proxy.shouldAddParticles( Platform.getRandom() ) )
 			{
-				final EnergyFx fx = new EnergyFx( world, this.x + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), this.y + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), this.z + ( this.mode ? ( Platform.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), Items.DIAMOND );
+				final EnergyFx fx = new EnergyFx( world, this.x + ( this.mode ? ( Platform
+						.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), this.y + ( this.mode ? ( Platform
+								.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), this.z + ( this.mode ? ( Platform
+										.getRandomInt() % 100 ) * 0.01 : ( Platform.getRandomInt() % 100 ) * 0.005 - 0.25 ), Items.DIAMOND );
 
 				if( !this.mode )
 				{
 					fx.fromItem( this.d );
 				}
 
-				fx.setMotionX( -0.1f * this.d.xOffset);
-				fx.setMotionY( -0.1f * this.d.yOffset);
-				fx.setMotionZ( -0.1f * this.d.zOffset);
+				fx.setMotionX( -0.1f * this.d.xOffset );
+				fx.setMotionY( -0.1f * this.d.yOffset );
+				fx.setMotionZ( -0.1f * this.d.zOffset );
 
 				Minecraft.getMinecraft().effectRenderer.addEffect( fx );
 			}
@@ -110,7 +113,11 @@ public class PacketTransitionEffect extends AppEngPacket
 		{
 			final Block block = world.getBlockState( new BlockPos( (int) this.x, (int) this.y, (int) this.z ) ).getBlock();
 
-			Minecraft.getMinecraft().getSoundHandler().playSound( new PositionedSoundRecord( block.getSoundType().getBreakSound(), SoundCategory.BLOCKS, ( block.getSoundType().getVolume() + 1.0F ) / 2.0F, block.getSoundType().getPitch() * 0.8F, (float) this.x + 0.5F, (float) this.y + 0.5F, (float) this.z + 0.5F ) );
+			Minecraft.getMinecraft()
+					.getSoundHandler()
+					.playSound( new PositionedSoundRecord( block.getSoundType()
+							.getBreakSound(), SoundCategory.BLOCKS, ( block.getSoundType().getVolume() + 1.0F ) / 2.0F, block.getSoundType()
+									.getPitch() * 0.8F, (float) this.x + 0.5F, (float) this.y + 0.5F, (float) this.z + 0.5F ) );
 		}
 	}
 }

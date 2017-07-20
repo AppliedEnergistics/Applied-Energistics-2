@@ -37,6 +37,7 @@ import appeng.tile.networking.TileController;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+
 public class BlockController extends AEBaseTileBlock
 {
 
@@ -52,11 +53,11 @@ public class BlockController extends AEBaseTileBlock
 
 	}
 
-    /**
-     * Controls the rendering of the controller block (connected texture style).
-     * inside_a and inside_b are alternating patterns for a controller that is enclosed by other controllers,
-     * and since they are always offline, they do not have the usual sub-states.
-     */
+	/**
+	 * Controls the rendering of the controller block (connected texture style).
+	 * inside_a and inside_b are alternating patterns for a controller that is enclosed by other controllers,
+	 * and since they are always offline, they do not have the usual sub-states.
+	 */
 	public enum ControllerRenderType implements IStringSerializable
 	{
 		block, column_x, column_y, column_z, inside_a, inside_b;
@@ -112,9 +113,12 @@ public class BlockController extends AEBaseTileBlock
 		int z = pos.getZ();
 
 		// Detect whether controllers are on both sides of the x, y, and z axes
-		final boolean xx = this.getTileEntity( world, x - 1, y, z ) instanceof TileController && this.getTileEntity( world, x + 1, y, z ) instanceof TileController;
-		final boolean yy = this.getTileEntity( world, x, y - 1, z ) instanceof TileController && this.getTileEntity( world, x, y + 1, z ) instanceof TileController;
-		final boolean zz = this.getTileEntity( world, x, y, z - 1 ) instanceof TileController && this.getTileEntity( world, x, y, z + 1 ) instanceof TileController;
+		final boolean xx = this.getTileEntity( world, x - 1, y, z ) instanceof TileController && this.getTileEntity( world, x + 1, y,
+				z ) instanceof TileController;
+		final boolean yy = this.getTileEntity( world, x, y - 1, z ) instanceof TileController && this.getTileEntity( world, x, y + 1,
+				z ) instanceof TileController;
+		final boolean zz = this.getTileEntity( world, x, y, z - 1 ) instanceof TileController && this.getTileEntity( world, x, y,
+				z + 1 ) instanceof TileController;
 
 		if( xx && !yy && !zz )
 		{

@@ -50,7 +50,8 @@ public class StateMapperComponent implements ModelRegComponent
 		ModelLoader.setCustomStateMapper( block, stateMapper );
 		if( stateMapper instanceof IResourceManagerReloadListener )
 		{
-			( (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager() ).registerReloadListener( (IResourceManagerReloadListener) stateMapper );
+			( (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager() )
+					.registerReloadListener( (IResourceManagerReloadListener) stateMapper );
 		}
 	}
 }

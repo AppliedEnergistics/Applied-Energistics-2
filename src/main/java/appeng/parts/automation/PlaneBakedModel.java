@@ -49,8 +49,7 @@ public class PlaneBakedModel implements IBakedModel
 
 	private final List<BakedQuad> quads;
 
-	PlaneBakedModel( VertexFormat format, TextureAtlasSprite frontTexture, TextureAtlasSprite sidesTexture, TextureAtlasSprite backTexture,
-			PlaneConnections connections )
+	PlaneBakedModel( VertexFormat format, TextureAtlasSprite frontTexture, TextureAtlasSprite sidesTexture, TextureAtlasSprite backTexture, PlaneConnections connections )
 	{
 		this.frontTexture = frontTexture;
 

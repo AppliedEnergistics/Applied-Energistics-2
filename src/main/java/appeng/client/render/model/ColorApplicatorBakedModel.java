@@ -1,3 +1,4 @@
+
 package appeng.client.render.model;
 
 
@@ -34,8 +35,7 @@ class ColorApplicatorBakedModel implements IBakedModel
 
 	private final List<BakedQuad> generalQuads;
 
-	ColorApplicatorBakedModel( IBakedModel baseModel, ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> map,
-			TextureAtlasSprite texDark, TextureAtlasSprite texMedium, TextureAtlasSprite texBright )
+	ColorApplicatorBakedModel( IBakedModel baseModel, ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> map, TextureAtlasSprite texDark, TextureAtlasSprite texMedium, TextureAtlasSprite texBright )
 	{
 		this.baseModel = baseModel;
 		this.transforms = map;
@@ -75,14 +75,8 @@ class ColorApplicatorBakedModel implements IBakedModel
 				continue;
 			}
 
-			BakedQuad newQuad = new BakedQuad(
-					quad.getVertexData(),
-					tint,
-					quad.getFace(),
-					quad.getSprite(),
-					quad.shouldApplyDiffuseLighting(),
-					quad.getFormat()
-			);
+			BakedQuad newQuad = new BakedQuad( quad.getVertexData(), tint, quad.getFace(), quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad
+					.getFormat() );
 			result.add( newQuad );
 		}
 

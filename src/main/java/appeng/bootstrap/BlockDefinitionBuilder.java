@@ -221,7 +221,8 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		}
 
 		// Register the item and block with the game
-		factory.addPreInit( side -> {
+		factory.addPreInit( side ->
+		{
 			Registration.addBlockToRegister( block );
 			if( item != null )
 			{
@@ -231,16 +232,13 @@ class BlockDefinitionBuilder implements IBlockBuilder
 
 		block.setCreativeTab( creativeTab );
 
-
 		// Register all extra handlers
 		preInitCallbacks.forEach( consumer -> factory.addPreInit( side -> consumer.accept( block, item ) ) );
 		initCallbacks.forEach( consumer -> factory.addInit( side -> consumer.accept( block, item ) ) );
-		modelRegCallbacks.forEach(consumer -> factory.addModelReg(side -> consumer.accept( block, item ) ) );
+		modelRegCallbacks.forEach( consumer -> factory.addModelReg( side -> consumer.accept( block, item ) ) );
 		postInitCallbacks.forEach( consumer -> factory.addPostInit( side -> consumer.accept( block, item ) ) );
 
-
-
-		if ( tileEntityDefinition != null && block instanceof AEBaseTileBlock )
+		if( tileEntityDefinition != null && block instanceof AEBaseTileBlock )
 		{
 			( (AEBaseTileBlock) block ).setTileEntity( tileEntityDefinition.getTileEntityClass() );
 			if( tileEntityDefinition.getName() == null )
@@ -270,8 +268,11 @@ class BlockDefinitionBuilder implements IBlockBuilder
 
 		if( block instanceof AEBaseTileBlock )
 		{
-			factory.addPreInit( side -> {
-				AEBaseTile.registerTileItem( tileEntityDefinition == null ? ( (AEBaseTileBlock) block ).getTileEntityClass() : tileEntityDefinition.getTileEntityClass(), new BlockStackSrc( block, 0, ActivityState.Enabled ) );
+			factory.addPreInit( side ->
+			{
+				AEBaseTile.registerTileItem(
+						tileEntityDefinition == null ? ( (AEBaseTileBlock) block ).getTileEntityClass() : tileEntityDefinition.getTileEntityClass(),
+						new BlockStackSrc( block, 0, ActivityState.Enabled ) );
 			} );
 
 			if( tileEntityDefinition != null )

@@ -78,7 +78,8 @@ public class NetworkEventBus
 						}
 						else
 						{
-							throw new IllegalStateException( "Invalid ME Network Event Subscriber, " + m.getName() + "s Parameter must extend MENetworkEvent." );
+							throw new IllegalStateException( "Invalid ME Network Event Subscriber, " + m
+									.getName() + "s Parameter must extend MENetworkEvent." );
 						}
 					}
 					else

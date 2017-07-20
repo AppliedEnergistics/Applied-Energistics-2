@@ -1,3 +1,4 @@
+
 package appeng.client.render.crafting;
 
 
@@ -54,7 +55,7 @@ class ItemEncodedPatternModel implements IModel
 			throw new RuntimeException( e );
 		}
 
-		ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms = PerspectiveMapWrapper.getTransforms(state);
+		ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms = PerspectiveMapWrapper.getTransforms( state );
 
 		return new ItemEncodedPatternBakedModel( baseModel, transforms );
 	}

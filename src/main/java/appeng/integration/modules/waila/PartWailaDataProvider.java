@@ -91,7 +91,6 @@ public final class PartWailaDataProvider implements IWailaDataProvider
 		final TileEntity te = accessor.getTileEntity();
 		final RayTraceResult mop = accessor.getMOP();
 
-
 		final Optional<IPart> maybePart = this.accessor.getMaybePart( te, mop );
 
 		if( maybePart.isPresent() )

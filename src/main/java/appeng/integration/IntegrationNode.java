@@ -79,7 +79,8 @@ final class IntegrationNode
 						final ModAPIManager apiManager = ModAPIManager.INSTANCE;
 						boolean enabled = this.modID == null || Loader.isModLoaded( this.modID ) || apiManager.hasAPI( this.modID );
 
-						AEConfig.instance().addCustomCategoryComment( "ModIntegration", "Valid Values are 'AUTO', 'ON', or 'OFF' - defaults to 'AUTO' ; Suggested that you leave this alone unless your experiencing an issue, or wish to disable the integration for a reason." );
+						AEConfig.instance().addCustomCategoryComment( "ModIntegration",
+								"Valid Values are 'AUTO', 'ON', or 'OFF' - defaults to 'AUTO' ; Suggested that you leave this alone unless your experiencing an issue, or wish to disable the integration for a reason." );
 						final String mode = AEConfig.instance().get( "ModIntegration", this.displayName.replace( " ", "" ), "AUTO" ).getString();
 
 						if( mode.toUpperCase().equals( "ON" ) )

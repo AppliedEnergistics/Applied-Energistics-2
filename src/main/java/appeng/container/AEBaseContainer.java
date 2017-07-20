@@ -797,7 +797,7 @@ public abstract class AEBaseContainer extends Container
 							}
 							else if( hand.isItemEqual( is ) )
 							{
-								is.setCount(Math.min( is.getMaxStackSize(), is.getCount() + 1 ));
+								is.setCount( Math.min( is.getMaxStackSize(), is.getCount() + 1 ) );
 							}
 							else
 							{
@@ -1251,7 +1251,7 @@ public abstract class AEBaseContainer extends Container
 
 		if( !testB.isEmpty() && testB.getCount() > b.getSlotStackLimit() )
 		{
-			if ( !testA.isEmpty() )
+			if( !testA.isEmpty() )
 			{
 				return;
 			}
@@ -1260,7 +1260,7 @@ public abstract class AEBaseContainer extends Container
 			testB.setCount( b.getSlotStackLimit() );
 			testA = testB.copy();
 
-			testA.setCount(  totalB - testA.getCount() );
+			testA.setCount( totalB - testA.getCount() );
 		}
 
 		a.putStack( testA );

@@ -1,3 +1,4 @@
+
 package appeng.client.render.model;
 
 
@@ -23,7 +24,8 @@ import appeng.core.AppEng;
 
 
 /**
- * A color applicator uses the base model, and extends it with additional layers that are colored according to the selected color of the applicator.
+ * A color applicator uses the base model, and extends it with additional layers that are colored according to the
+ * selected color of the applicator.
  */
 public class ColorApplicatorModel implements IModel
 {
@@ -46,8 +48,7 @@ public class ColorApplicatorModel implements IModel
 		return ImmutableList.of(
 				TEXTURE_DARK,
 				TEXTURE_MEDIUM,
-				TEXTURE_BRIGHT
-		);
+				TEXTURE_BRIGHT );
 	}
 
 	@Override

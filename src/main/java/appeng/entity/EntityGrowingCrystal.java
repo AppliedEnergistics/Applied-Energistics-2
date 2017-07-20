@@ -70,7 +70,7 @@ public final class EntityGrowingCrystal extends EntityItem
 		if( gc instanceof IGrowableCrystal ) // if it changes this just stops being an issue...
 		{
 			final int j = MathHelper.floor( this.posX );
-			final int i = MathHelper.floor( (this.getEntityBoundingBox().minY + this.getEntityBoundingBox().maxY) / 2.0D );
+			final int i = MathHelper.floor( ( this.getEntityBoundingBox().minY + this.getEntityBoundingBox().maxY ) / 2.0D );
 			final int k = MathHelper.floor( this.posZ );
 
 			final IBlockState state = this.world.getBlockState( new BlockPos( j, i, k ) );

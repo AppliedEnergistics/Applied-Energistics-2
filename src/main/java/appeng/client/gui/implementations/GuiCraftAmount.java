@@ -173,7 +173,8 @@ public class GuiCraftAmount extends AEBaseGui
 			{
 				this.actionPerformed( this.next );
 			}
-			if( ( key == 211 || key == 205 || key == 203 || key == 14 || character == '-' || Character.isDigit( character ) ) && this.amountToCraft.textboxKeyTyped( character, key ) )
+			if( ( key == 211 || key == 205 || key == 203 || key == 14 || character == '-' || Character.isDigit( character ) ) && this.amountToCraft
+					.textboxKeyTyped( character, key ) )
 			{
 				try
 				{

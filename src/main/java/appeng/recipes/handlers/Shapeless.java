@@ -77,7 +77,8 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 		try
 		{
 			// TODO : 1.12 Cleanup/remove the old recipe loader.
-//			Registration.addRecipeToRegister( new ShapelessRecipe( outIS, args.toArray( new Object[args.size()] ) ) );
+			// Registration.addRecipeToRegister( new ShapelessRecipe( outIS, args.toArray( new Object[args.size()] ) )
+			// );
 		}
 		catch( final Throwable e )
 		{

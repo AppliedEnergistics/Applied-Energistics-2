@@ -127,7 +127,8 @@ public class PartConversionMonitor extends AbstractPartMonitor
 				else
 				{
 					final IAEItemStack failedToInsert = Platform.poweredInsert( energy, cell, input, new PlayerSource( player, this ) );
-					player.inventory.setInventorySlotContents( player.inventory.currentItem, failedToInsert == null ? ItemStack.EMPTY : failedToInsert.getItemStack() );
+					player.inventory.setInventorySlotContents( player.inventory.currentItem,
+							failedToInsert == null ? ItemStack.EMPTY : failedToInsert.getItemStack() );
 				}
 			}
 			catch( final GridAccessException e )

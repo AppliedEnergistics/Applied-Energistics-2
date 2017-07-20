@@ -26,7 +26,8 @@ import com.google.common.base.Strings;
 
 
 /**
- * Models in which directions - looking at the front face - a plane (annihilation, formation, etc.) is connected to other planes of the same type.
+ * Models in which directions - looking at the front face - a plane (annihilation, formation, etc.) is connected to
+ * other planes of the same type.
  */
 public final class PlaneConnections
 {
@@ -108,7 +109,7 @@ public final class PlaneConnections
 	public String getFilenameSuffix()
 	{
 		String suffix = Integer.toBinaryString( getIndex() );
-		return Strings.padStart(suffix, 4, '0');
+		return Strings.padStart( suffix, 4, '0' );
 	}
 
 	@Override

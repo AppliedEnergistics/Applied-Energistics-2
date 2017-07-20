@@ -1,3 +1,4 @@
+
 package appeng.client.render.model;
 
 
@@ -66,7 +67,8 @@ class BiometricCardBakedModel implements IBakedModel
 		this.modelCache = modelCache;
 	}
 
-	private static Cache<Integer, BiometricCardBakedModel> createCache() {
+	private static Cache<Integer, BiometricCardBakedModel> createCache()
+	{
 		return CacheBuilder.newBuilder()
 				.maximumSize( 100 )
 				.build();
@@ -124,7 +126,8 @@ class BiometricCardBakedModel implements IBakedModel
 				else
 				{
 					final float scale = 0.3f / 255.0f;
-					builder.setColorRGB( ( ( col.blackVariant >> 16 ) & 0xff ) * scale, ( ( col.blackVariant >> 8 ) & 0xff ) * scale, ( col.blackVariant & 0xff ) * scale );
+					builder.setColorRGB( ( ( col.blackVariant >> 16 ) & 0xff ) * scale, ( ( col.blackVariant >> 8 ) & 0xff ) * scale,
+							( col.blackVariant & 0xff ) * scale );
 				}
 
 				builder.addCube( 4 + x, 6 + y, 7.5f, 4 + x + 1, 6 + y + 1, 8.5f );

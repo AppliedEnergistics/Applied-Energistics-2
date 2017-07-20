@@ -31,7 +31,7 @@ import appeng.tile.AEBaseTile;
  *
  * @param <T>
  */
-//public class TesrComponent<T extends AEBaseTile> implements ModelRegComponent
+// public class TesrComponent<T extends AEBaseTile> implements ModelRegComponent
 public class TesrComponent<T extends AEBaseTile> implements PreInitComponent
 {
 
@@ -46,7 +46,7 @@ public class TesrComponent<T extends AEBaseTile> implements PreInitComponent
 	}
 
 	@Override
-//	public void modelReg( Side side )
+	// public void modelReg( Side side )
 	public void preInitialize( Side side )
 	{
 		ClientRegistry.bindTileEntitySpecialRenderer( tileEntityClass, tesr );

@@ -47,7 +47,8 @@ public final class DispenserBlockTool extends BehaviorDefaultDispenseItem
 			final World w = dispenser.getWorld();
 			if( w instanceof WorldServer )
 			{
-				tm.onItemUse( dispensedItem, Platform.getPlayer( (WorldServer) w ), w, dispenser.getBlockPos().offset( enumfacing ), EnumHand.MAIN_HAND, enumfacing, 0.5f, 0.5f, 0.5f );
+				tm.onItemUse( dispensedItem, Platform.getPlayer( (WorldServer) w ), w, dispenser.getBlockPos().offset( enumfacing ), EnumHand.MAIN_HAND,
+						enumfacing, 0.5f, 0.5f, 0.5f );
 			}
 		}
 		return dispensedItem;

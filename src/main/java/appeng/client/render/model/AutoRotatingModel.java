@@ -59,7 +59,8 @@ public class AutoRotatingModel implements IBakedModel
 	{
 		this.parent = parent;
 		// 6 (DUNSWE) * 6 (DUNSWE) * 7 (DUNSWE + null) = 252
-		this.quadCache = CacheBuilder.newBuilder().maximumSize( 252 ).build( new CacheLoader<AutoRotatingCacheKey, List<BakedQuad>>(){
+		this.quadCache = CacheBuilder.newBuilder().maximumSize( 252 ).build( new CacheLoader<AutoRotatingCacheKey, List<BakedQuad>>()
+		{
 			@Override
 			public List<BakedQuad> load( AutoRotatingCacheKey key ) throws Exception
 			{
@@ -98,13 +99,8 @@ public class AutoRotatingModel implements IBakedModel
 			// Packing it back to the vanilla vertex format will fix this inconsistency because it converts
 			// the normal back to a byte-based format, which then re-applies Forge's own bug when piping it
 			// to the AO lighter, thus fixing our problem.
-			BakedQuad packedQuad = new BakedQuad( unpackedQuad.getVertexData(),
-					quad.getTintIndex(),
-					unpackedQuad.getFace(),
-					quad.getSprite(),
-					quad.shouldApplyDiffuseLighting(),
-					quad.getFormat()
-			);
+			BakedQuad packedQuad = new BakedQuad( unpackedQuad.getVertexData(), quad.getTintIndex(), unpackedQuad.getFace(), quad.getSprite(), quad
+					.shouldApplyDiffuseLighting(), quad.getFormat() );
 			rotated.add( packedQuad );
 		}
 		return rotated;

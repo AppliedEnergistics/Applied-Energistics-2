@@ -177,7 +177,7 @@ public class PartPlacement
 									;
 									if( held.getCount() == 0 )
 									{
-										player.inventory.mainInventory.set(player.inventory.currentItem, ItemStack.EMPTY);
+										player.inventory.mainInventory.set( player.inventory.currentItem, ItemStack.EMPTY );
 										MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( player, held, hand ) );
 									}
 								}
@@ -352,7 +352,7 @@ public class PartPlacement
 					;
 					if( held.getCount() == 0 )
 					{
-						player.inventory.mainInventory.set(player.inventory.currentItem, ItemStack.EMPTY);
+						player.inventory.mainInventory.set( player.inventory.currentItem, ItemStack.EMPTY );
 						MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( player, held, hand ) );
 					}
 				}

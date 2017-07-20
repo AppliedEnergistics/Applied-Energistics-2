@@ -77,7 +77,7 @@ public class SkyChestTESR extends TileEntitySpecialRenderer<TileSkyChest>
 
 		GlStateManager.pushMatrix();
 		GlStateManager.enableRescaleNormal();
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
 		GlStateManager.translate( (float) x, (float) y + 1.0F, (float) z + 1.0F );
 		GlStateManager.scale( 1.0F, -1.0F, -1.0F );
 		if( te != null )

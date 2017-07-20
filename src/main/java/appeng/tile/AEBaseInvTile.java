@@ -130,7 +130,8 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	}
 
 	@Override
-	public boolean hasCustomName() {
+	public boolean hasCustomName()
+	{
 		return this.hasCustomInventoryName();
 	}
 
@@ -145,7 +146,8 @@ public abstract class AEBaseInvTile extends AEBaseTile implements ISidedInventor
 	{
 		final double squaredMCReach = 64.0D;
 
-		return this.world.getTileEntity( this.pos ) == this && p.getDistanceSq( this.pos.getX() + 0.5D, this.pos.getY() + 0.5D, this.pos.getZ() + 0.5D ) <= squaredMCReach;
+		return this.world.getTileEntity( this.pos ) == this && p.getDistanceSq( this.pos.getX() + 0.5D, this.pos.getY() + 0.5D,
+				this.pos.getZ() + 0.5D ) <= squaredMCReach;
 	}
 
 	@Override

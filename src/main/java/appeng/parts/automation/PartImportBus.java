@@ -218,7 +218,8 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 		if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 		{
-			newItems = myAdaptor.removeSimilarItems( toSend, whatToImport == null ? ItemStack.EMPTY : whatToImport.getItemStack(), fzMode, this.configDestination( inv ) );
+			newItems = myAdaptor.removeSimilarItems( toSend, whatToImport == null ? ItemStack.EMPTY : whatToImport.getItemStack(), fzMode,
+					this.configDestination( inv ) );
 		}
 		else
 		{

@@ -107,7 +107,8 @@ public class SkyCompassBakedModel implements IBakedModel
 				transformer.setParent( builder );
 				transformer.setVertexFormat( builder.getVertexFormat() );
 				bakedQuad.pipe( transformer );
-				builder.setQuadOrientation( null ); // After rotation, facing a specific side cannot be guaranteed anymore
+				builder.setQuadOrientation( null ); // After rotation, facing a specific side cannot be guaranteed
+													// anymore
 				BakedQuad q = builder.build();
 				quads.add( q );
 			}
@@ -150,8 +151,9 @@ public class SkyCompassBakedModel implements IBakedModel
 	public ItemOverrideList getOverrides()
 	{
 		/*
-		 This handles setting the rotation of the compass when being held in hand. If it's not held in hand, it'll animate using the
-		 spinning animation.
+		 * This handles setting the rotation of the compass when being held in hand. If it's not held in hand, it'll
+		 * animate using the
+		 * spinning animation.
 		 */
 		return new ItemOverrideList( Collections.emptyList() )
 		{
@@ -188,7 +190,8 @@ public class SkyCompassBakedModel implements IBakedModel
 		{
 			CompassResult cr = CompassManager.INSTANCE.getCompassDirection( 0, pos.getX(), pos.getY(), pos.getZ() );
 
-			// Prefetch meteor positions from the server for adjacent blocks so they are available more quickly when we're moving
+			// Prefetch meteor positions from the server for adjacent blocks so they are available more quickly when
+			// we're moving
 			if( prefetch )
 			{
 				for( int i = 0; i < 3; i++ )

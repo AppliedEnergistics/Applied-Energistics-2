@@ -60,7 +60,8 @@ public final class FacadeRecipe extends net.minecraftforge.registries.IForgeRegi
 	{
 		if( inv.getStackInSlot( 0 ).isEmpty() && inv.getStackInSlot( 2 ).isEmpty() && inv.getStackInSlot( 6 ).isEmpty() && inv.getStackInSlot( 8 ).isEmpty() )
 		{
-			if( this.anchor.isSameAs( inv.getStackInSlot( 1 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 3 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 5 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 7 ) ) )
+			if( this.anchor.isSameAs( inv.getStackInSlot( 1 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 3 ) ) && this.anchor
+					.isSameAs( inv.getStackInSlot( 5 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 7 ) ) )
 			{
 				final ItemStack facades = facade.createFacadeForItem( inv.getStackInSlot( 4 ), !createFacade );
 				if( !facades.isEmpty() && createFacade )
@@ -81,7 +82,8 @@ public final class FacadeRecipe extends net.minecraftforge.registries.IForgeRegi
 	}
 
 	@Override
-	public boolean canFit(int i, int i1) {
+	public boolean canFit( int i, int i1 )
+	{
 		return false;
 	}
 

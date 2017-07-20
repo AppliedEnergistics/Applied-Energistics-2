@@ -167,7 +167,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		short itemNumericId = data.readShort();
 		d.setString( "id", String.valueOf( itemNumericId ) );
 		d.setShort( "Damage", data.readShort() );
-		d.setByte( "Count", (byte) 1 );  // 1 Because vanilla'll freak out otherwise
+		d.setByte( "Count", (byte) 1 ); // 1 Because vanilla'll freak out otherwise
 
 		if( hasTagCompound )
 		{
@@ -186,7 +186,8 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 		final ItemStack itemstack = new ItemStack( d );
 
-		if(!showCraftingLabel) {
+		if( !showCraftingLabel )
+		{
 			showCraftingLabel = stackSize == 0 && isCraftable;
 		}
 
@@ -448,7 +449,8 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	@Override
 	public ItemStack getItemStack()
 	{
-		final ItemStack is = new ItemStack( this.getDefinition().getItem(), (int) Math.min( Integer.MAX_VALUE, this.getStackSize() ), this.getDefinition().getDamageValue() );
+		final ItemStack is = new ItemStack( this.getDefinition().getItem(), (int) Math.min( Integer.MAX_VALUE, this.getStackSize() ), this.getDefinition()
+				.getDamageValue() );
 		if( this.getDefinition().getTagCompound() != null )
 		{
 			is.setTagCompound( this.getDefinition().getTagCompound().getNBTTagCompoundCopy() );
@@ -524,7 +526,8 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 					return true;
 				}
 
-				if( ( ta == null && tb == null ) || ( ta != null && ta.hasNoTags() && tb == null ) || ( tb != null && tb.hasNoTags() && ta == null ) || ( ta != null && ta.hasNoTags() && tb != null && tb.hasNoTags() ) )
+				if( ( ta == null && tb == null ) || ( ta != null && ta.hasNoTags() && tb == null ) || ( tb != null && tb
+						.hasNoTags() && ta == null ) || ( ta != null && ta.hasNoTags() && tb != null && tb.hasNoTags() ) )
 				{
 					return true;
 				}
@@ -577,7 +580,8 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 	private int compareNBT( final AEItemDef b )
 	{
-		final int nbt = this.compare( ( this.getDefinition().getTagCompound() == null ? 0 : this.getDefinition().getTagCompound().getHash() ), ( b.getTagCompound() == null ? 0 : b.getTagCompound().getHash() ) );
+		final int nbt = this.compare( ( this.getDefinition().getTagCompound() == null ? 0 : this.getDefinition().getTagCompound().getHash() ),
+				( b.getTagCompound() == null ? 0 : b.getTagCompound().getHash() ) );
 		if( nbt == 0 )
 		{
 			return this.compare( System.identityHashCode( this.getDefinition().getTagCompound() ), System.identityHashCode( b.getTagCompound() ) );
@@ -611,7 +615,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 
 		return this.getDefinition().getDisplayName();
 	}
-	
+
 	@SideOnly( Side.CLIENT )
 	public String getModID()
 	{

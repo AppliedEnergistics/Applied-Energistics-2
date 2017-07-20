@@ -156,7 +156,8 @@ public final class VersionParser
 	 */
 	private Channel parseChannel( @Nonnull final String rawChannel ) throws InvalidChannelException
 	{
-		if( !( rawChannel.equalsIgnoreCase( Channel.Alpha.name() ) || rawChannel.equalsIgnoreCase( Channel.Beta.name() ) || rawChannel.equalsIgnoreCase( Channel.Stable.name() ) ) )
+		if( !( rawChannel.equalsIgnoreCase( Channel.Alpha.name() ) || rawChannel.equalsIgnoreCase( Channel.Beta.name() ) || rawChannel
+				.equalsIgnoreCase( Channel.Stable.name() ) ) )
 		{
 			throw new InvalidChannelException();
 		}

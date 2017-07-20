@@ -304,10 +304,10 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 				upgrades = ( (ISegmentedInventory) te ).getInventoryByName( "upgrades" );
 			}
 
-			if( upgrades != null && !player.getHeldItem(hand).isEmpty() && player.getHeldItem(hand).getItem() instanceof IUpgradeModule )
+			if( upgrades != null && !player.getHeldItem( hand ).isEmpty() && player.getHeldItem( hand ).getItem() instanceof IUpgradeModule )
 			{
-				final IUpgradeModule um = (IUpgradeModule) player.getHeldItem(hand).getItem();
-				final Upgrades u = um.getType( player.getHeldItem(hand) );
+				final IUpgradeModule um = (IUpgradeModule) player.getHeldItem( hand ).getItem();
+				final Upgrades u = um.getType( player.getHeldItem( hand ) );
 
 				if( u != null )
 				{
@@ -319,7 +319,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 							return EnumActionResult.PASS;
 						}
 
-						player.inventory.setInventorySlotContents( player.inventory.currentItem, ad.addItems( player.getHeldItem(hand) ) );
+						player.inventory.setInventorySlotContents( player.inventory.currentItem, ad.addItems( player.getHeldItem( hand ) ) );
 						return EnumActionResult.SUCCESS;
 					}
 				}

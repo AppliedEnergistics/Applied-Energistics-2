@@ -1,3 +1,4 @@
+
 package appeng.client.gui;
 
 
@@ -70,7 +71,7 @@ class Size1Slot extends Slot
 
 	@Override
 	@Nullable
-	@SideOnly( Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	public String getSlotTexture()
 	{
 		return delegate.getSlotTexture();
@@ -83,21 +84,21 @@ class Size1Slot extends Slot
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	public boolean isEnabled()
 	{
 		return delegate.isEnabled();
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	public ResourceLocation getBackgroundLocation()
 	{
 		return delegate.getBackgroundLocation();
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	public TextureAtlasSprite getBackgroundSprite()
 	{
 		return delegate.getBackgroundSprite();

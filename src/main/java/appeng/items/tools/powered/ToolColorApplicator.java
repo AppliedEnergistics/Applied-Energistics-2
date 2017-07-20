@@ -91,13 +91,13 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	static
 	{
 		for( final AEColor color : AEColor.VALID_COLORS )
- 		{
+		{
 			final String dyeName = color.dye.getUnlocalizedName();
 			final String oreDictName = "dye" + WordUtils.capitalize( dyeName );
 			final int oreDictId = OreDictionary.getOreID( oreDictName );
 
 			ORE_TO_COLOR.put( oreDictId, color );
- 		}
+		}
 	}
 
 	public ToolColorApplicator()
@@ -108,7 +108,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	@Override
 	public EnumActionResult onItemUse( EntityPlayer p, World w, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ )
 	{
-		return this.onItemUse( p.getHeldItem(hand), p, w, pos, hand, side, hitX, hitY, hitZ );
+		return this.onItemUse( p.getHeldItem( hand ), p, w, pos, hand, side, hitX, hitY, hitZ );
 	}
 
 	@Override
@@ -285,7 +285,8 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 					list.add( i );
 				}
 
-				Collections.sort( list, new Comparator<IAEItemStack>(){
+				Collections.sort( list, new Comparator<IAEItemStack>()
+				{
 
 					@Override
 					public int compare( final IAEItemStack a, final IAEItemStack b )

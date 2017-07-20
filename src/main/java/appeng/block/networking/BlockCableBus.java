@@ -319,7 +319,8 @@ public class BlockCableBus extends AEBaseTileBlock
 						double d0 = (double) pos.getX() + ( (double) j + 0.5D ) / 4.0D;
 						double d1 = (double) pos.getY() + ( (double) k + 0.5D ) / 4.0D;
 						double d2 = (double) pos.getZ() + ( (double) l + 0.5D ) / 4.0D;
-						ParticleDigging particle = new DestroyFX( world, d0, d1, d2, d0 - (double) pos.getX() - 0.5D, d1 - (double) pos.getY() - 0.5D, d2 - (double) pos.getZ() - 0.5D, getDefaultState() ).setBlockPos( pos );
+						ParticleDigging particle = new DestroyFX( world, d0, d1, d2, d0 - (double) pos.getX() - 0.5D, d1 - (double) pos
+								.getY() - 0.5D, d2 - (double) pos.getZ() - 0.5D, getDefaultState() ).setBlockPos( pos );
 						particle.setParticleTexture( texture );
 						effectRenderer.addEffect( particle );
 					}

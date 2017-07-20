@@ -18,7 +18,9 @@
 
 package appeng.bootstrap.definitions;
 
+
 import appeng.tile.AEBaseTile;
+
 
 /**
  * @author GuntherDW
@@ -26,45 +28,45 @@ import appeng.tile.AEBaseTile;
 public class TileEntityDefinition
 {
 
-    private final Class<? extends AEBaseTile> tileEntityClass;
-    private String name;
-    private boolean isRegistered = false;
+	private final Class<? extends AEBaseTile> tileEntityClass;
+	private String name;
+	private boolean isRegistered = false;
 
-    // This signals the BlockDefinitionBuilder to set the name of the TE to the blockname.
-    public TileEntityDefinition( Class<? extends AEBaseTile> tileEntityClass )
-    {
-        this.tileEntityClass = tileEntityClass;
-        this.name = null;
-    }
+	// This signals the BlockDefinitionBuilder to set the name of the TE to the blockname.
+	public TileEntityDefinition( Class<? extends AEBaseTile> tileEntityClass )
+	{
+		this.tileEntityClass = tileEntityClass;
+		this.name = null;
+	}
 
-    public TileEntityDefinition( Class<? extends AEBaseTile> tileEntityClass, String optionalName )
-    {
-        this.tileEntityClass = tileEntityClass;
-        this.name = optionalName;
-    }
+	public TileEntityDefinition( Class<? extends AEBaseTile> tileEntityClass, String optionalName )
+	{
+		this.tileEntityClass = tileEntityClass;
+		this.name = optionalName;
+	}
 
-    public Class<? extends AEBaseTile> getTileEntityClass()
-    {
-        return tileEntityClass;
-    }
+	public Class<? extends AEBaseTile> getTileEntityClass()
+	{
+		return tileEntityClass;
+	}
 
-    public void setName( String name )
-    {
-        this.name = name;
-    }
+	public void setName( String name )
+	{
+		this.name = name;
+	}
 
-    public String getName()
-    {
-        return name;
-    }
+	public String getName()
+	{
+		return name;
+	}
 
-    public boolean isRegistered()
-    {
-        return isRegistered;
-    }
+	public boolean isRegistered()
+	{
+		return isRegistered;
+	}
 
-    public void setRegistered( boolean registered )
-    {
-        isRegistered = registered;
-    }
+	public void setRegistered( boolean registered )
+	{
+		isRegistered = registered;
+	}
 }

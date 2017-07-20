@@ -78,8 +78,10 @@ public class SkyCompassTESR extends FastTESR<TileSkyCompass>
 			// Flip forward/up for rendering, the base model is facing up without any rotation
 			EnumFacing forward = exState.getValue( AEBaseTileBlock.FORWARD );
 			EnumFacing up = exState.getValue( AEBaseTileBlock.UP );
-			// This ensures the needle isn't flipped by the model rotator. Since the model is symmetrical, this should not affect the appearance
-			if ( forward == EnumFacing.UP || forward == EnumFacing.DOWN ) {
+			// This ensures the needle isn't flipped by the model rotator. Since the model is symmetrical, this should
+			// not affect the appearance
+			if( forward == EnumFacing.UP || forward == EnumFacing.DOWN )
+			{
 				up = EnumFacing.NORTH;
 			}
 			exState = exState.withProperty( AEBaseTileBlock.FORWARD, up )

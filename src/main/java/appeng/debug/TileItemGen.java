@@ -81,7 +81,8 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	{
 		// Safeguard for crash
 		ItemStack testStack = POSSIBLE_ITEMS.peek();
-		if( testStack.isEmpty() ) testStack = new ItemStack(Blocks.COBBLESTONE, 1);
+		if( testStack.isEmpty() )
+			testStack = new ItemStack( Blocks.COBBLESTONE, 1 );
 		return testStack;
 	}
 

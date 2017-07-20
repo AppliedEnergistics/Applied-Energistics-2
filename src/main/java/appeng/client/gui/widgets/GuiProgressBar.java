@@ -95,7 +95,8 @@ public class GuiProgressBar extends GuiButton implements ITooltip
 			return this.fullMsg;
 		}
 
-		return ( this.titleName != null ? this.titleName : "" ) + '\n' + this.source.getCurrentProgress() + ' ' + GuiText.Of.getLocal() + ' ' + this.source.getMaxProgress();
+		return ( this.titleName != null ? this.titleName : "" ) + '\n' + this.source.getCurrentProgress() + ' ' + GuiText.Of.getLocal() + ' ' + this.source
+				.getMaxProgress();
 	}
 
 	@Override

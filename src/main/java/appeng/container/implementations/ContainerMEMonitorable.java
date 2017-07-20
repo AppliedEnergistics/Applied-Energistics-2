@@ -151,7 +151,8 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		{
 			for( int y = 0; y < 5; y++ )
 			{
-				this.cellView[y] = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.VIEW_CELL, ( (IViewCellStorage) monitorable ).getViewCellStorage(), y, 206, y * 18 + 8, this.getInventoryPlayer() );
+				this.cellView[y] = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.VIEW_CELL, ( (IViewCellStorage) monitorable )
+						.getViewCellStorage(), y, 206, y * 18 + 8, this.getInventoryPlayer() );
 				this.cellView[y].setAllowEdit( this.canAccessViewCells );
 				this.addSlotToContainer( this.cellView[y] );
 			}

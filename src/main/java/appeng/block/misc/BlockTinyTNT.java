@@ -47,6 +47,7 @@ import appeng.block.AEBaseBlock;
 import appeng.entity.EntityTinyTNTPrimed;
 import appeng.helpers.ICustomCollision;
 
+
 public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 {
 
@@ -60,7 +61,8 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 		this.setHardness( 0F );
 
 		// TODO: 1.11
-		//EntityRegistry.registerModEntity( EntityTinyTNTPrimed.class, "EntityTinyTNTPrimed", EntityIds.get( EntityTinyTNTPrimed.class ), AppEng.instance(), 16, 4, true );
+		// EntityRegistry.registerModEntity( EntityTinyTNTPrimed.class, "EntityTinyTNTPrimed", EntityIds.get(
+		// EntityTinyTNTPrimed.class ), AppEng.instance(), 16, 4, true );
 	}
 
 	@Override
@@ -85,7 +87,8 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 		{
 			final EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, igniter );
 			w.spawnEntity( primedTinyTNTEntity );
-			w.playSound( null, primedTinyTNTEntity.posX, primedTinyTNTEntity.posY, primedTinyTNTEntity.posZ, SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1, 1 );
+			w.playSound( null, primedTinyTNTEntity.posX, primedTinyTNTEntity.posY, primedTinyTNTEntity.posZ, SoundEvents.ENTITY_TNT_PRIMED,
+					SoundCategory.BLOCKS, 1, 1 );
 		}
 	}
 
@@ -138,7 +141,8 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 		super.onBlockExploded( w, pos, exp );
 		if( !w.isRemote )
 		{
-			final EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, exp.getExplosivePlacedBy() );
+			final EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, exp
+					.getExplosivePlacedBy() );
 			primedTinyTNTEntity.setFuse( w.rand.nextInt( primedTinyTNTEntity.getFuse() / 4 ) + primedTinyTNTEntity.getFuse() / 8 );
 			w.spawnEntity( primedTinyTNTEntity );
 		}

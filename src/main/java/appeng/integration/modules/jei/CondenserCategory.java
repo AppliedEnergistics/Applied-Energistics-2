@@ -93,7 +93,8 @@ class CondenserCategory extends BlankRecipeCategory<CondenserOutputWrapper>
 	 * @since JEI 4.5.0
 	 */
 	@Override
-	public String getModName() {
+	public String getModName()
+	{
 		return AppEng.MOD_NAME;
 	}
 

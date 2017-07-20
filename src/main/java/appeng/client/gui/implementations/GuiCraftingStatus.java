@@ -127,13 +127,15 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	{
 		super.initGui();
 
-		this.selectCPU = new GuiButton( 0, this.guiLeft + 8, this.guiTop + this.ySize - 25, 150, 20, GuiText.CraftingCPU.getLocal() + ": " + GuiText.NoCraftingCPUs );
+		this.selectCPU = new GuiButton( 0, this.guiLeft + 8, this.guiTop + this.ySize - 25, 150, 20, GuiText.CraftingCPU
+				.getLocal() + ": " + GuiText.NoCraftingCPUs );
 		// selectCPU.enabled = false;
 		this.buttonList.add( this.selectCPU );
 
 		if( !this.myIcon.isEmpty() )
 		{
-			this.buttonList.add( this.originalGuiBtn = new GuiTabButton( this.guiLeft + 213, this.guiTop - 4, this.myIcon, this.myIcon.getDisplayName(), this.itemRender ) );
+			this.buttonList.add(
+					this.originalGuiBtn = new GuiTabButton( this.guiLeft + 213, this.guiTop - 4, this.myIcon, this.myIcon.getDisplayName(), this.itemRender ) );
 			this.originalGuiBtn.setHideEdge( 13 );
 		}
 	}

@@ -18,19 +18,29 @@
 
 package appeng.core.localization;
 
+
 import net.minecraft.util.text.translation.I18n;
+
 
 public enum WailaText
 {
 	Crafting,
 
-	DeviceOnline, DeviceOffline, DeviceMissingChannel,
+	DeviceOnline,
+	DeviceOffline,
+	DeviceMissingChannel,
 
-	P2PUnlinked, P2PInputOneOutput, P2PInputManyOutputs, P2POutput,
+	P2PUnlinked,
+	P2PInputOneOutput,
+	P2PInputManyOutputs,
+	P2POutput,
 
-	Locked, Unlocked, Showing,
+	Locked,
+	Unlocked,
+	Showing,
 
-	Contains, Channels;
+	Contains,
+	Channels;
 
 	private final String root;
 

@@ -134,7 +134,8 @@ public class FacadeContainer implements IFacadeContainer
 				ids[0] = Math.abs( ids[0] );
 
 				Optional<Item> maybeFacadeItem = AEApi.instance().definitions().items().facade().maybeItem();
-				if (maybeFacadeItem.isPresent()) {
+				if( maybeFacadeItem.isPresent() )
+				{
 					final ItemFacade ifa = (ItemFacade) maybeFacadeItem.get();
 					final ItemStack facade = ifa.createFromIDs( ids );
 					if( facade != null )

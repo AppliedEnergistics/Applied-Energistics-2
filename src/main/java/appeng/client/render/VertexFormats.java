@@ -34,7 +34,8 @@ public final class VertexFormats
 	// Standard item format extended with lightmap coordinates
 	private static final VertexFormat itemFormatWithLightMap = new VertexFormat( DefaultVertexFormats.ITEM ).addElement( DefaultVertexFormats.TEX_2S );
 
-	private VertexFormats() {
+	private VertexFormats()
+	{
 	}
 
 	public static VertexFormat getFormatWithLightMap( VertexFormat format )

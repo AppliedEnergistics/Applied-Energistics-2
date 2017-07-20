@@ -114,7 +114,8 @@ final class MatrixVertexTransformer extends QuadGatheringTransformer
 			case 4:
 				Vector4f vecc = new Vector4f( fs[0], fs[1], fs[2], fs[3] );
 				// Otherwise all translation is lost
-				if (elemCount == 3) {
+				if( elemCount == 3 )
+				{
 					vecc.w = 1;
 				}
 				vecc.x -= 0.5f;

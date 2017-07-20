@@ -343,7 +343,8 @@ public final class CompassService
 
 				if( closest < Integer.MAX_VALUE )
 				{
-					this.callback.calculatedDirection( true, false, CompassService.this.rad( cx, cz, chosen_x, chosen_z ), CompassService.this.dist( cx, cz, chosen_x, chosen_z ) );
+					this.callback.calculatedDirection( true, false, CompassService.this.rad( cx, cz, chosen_x, chosen_z ),
+							CompassService.this.dist( cx, cz, chosen_x, chosen_z ) );
 
 					if( CompassService.this.jobSize() < 2 )
 					{

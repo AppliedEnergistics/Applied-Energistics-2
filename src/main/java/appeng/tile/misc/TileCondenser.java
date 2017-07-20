@@ -118,7 +118,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 
 		final double requiredPower = this.getRequiredPower();
 		final ItemStack output = this.getOutput();
-		while( requiredPower <= this.getStoredPower() && !output.isEmpty()  && requiredPower > 0 )
+		while( requiredPower <= this.getStoredPower() && !output.isEmpty() && requiredPower > 0 )
 		{
 			if( this.canAddOutput( output ) )
 			{

@@ -170,7 +170,8 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 				}
 
 				final int floorBuffer = 64;
-				StorageHelper.getInstance().swapRegions( w, min.x + 1, min.y + 1, min.z + 1, destination, 0, floorBuffer, 0, targetX - 1, targetY - 1, targetZ - 1 );
+				StorageHelper.getInstance().swapRegions( w, min.x + 1, min.y + 1, min.z + 1, destination, 0, floorBuffer, 0, targetX - 1, targetY - 1,
+						targetZ - 1 );
 				this.setStoredSize( is, targetX, targetY, targetZ );
 
 				return new TransitionResult( true, 0 );

@@ -172,7 +172,8 @@ public class PacketJEIRecipe extends AppEngPacket
 										final IAEItemStack in = AEItemStack.create( currentItem );
 										if( in != null )
 										{
-											final IAEItemStack out = realForFake == Actionable.SIMULATE ? null : Platform.poweredInsert( energy, storage, in, cct.getActionSource() );
+											final IAEItemStack out = realForFake == Actionable.SIMULATE ? null : Platform.poweredInsert( energy, storage, in,
+													cct.getActionSource() );
 											if( out != null )
 											{
 												craftMatrix.setInventorySlotContents( x, out.getItemStack() );
@@ -191,7 +192,8 @@ public class PacketJEIRecipe extends AppEngPacket
 								if( !patternItem.isEmpty() && currentItem.isEmpty() )
 								{
 									// Grab from network by recipe
-									ItemStack whichItem = Platform.extractItemsByRecipe( energy, cct.getActionSource(), storage, player.world, r, is, testInv, patternItem, x, all, realForFake, filter );
+									ItemStack whichItem = Platform.extractItemsByRecipe( energy, cct.getActionSource(), storage, player.world, r, is, testInv,
+											patternItem, x, all, realForFake, filter );
 
 									// If that doesn't get it, grab exact items from network (?)
 									// TODO see if this code is necessary
@@ -246,7 +248,8 @@ public class PacketJEIRecipe extends AppEngPacket
 		final InventoryAdaptor ia = InventoryAdaptor.getAdaptor( player, EnumFacing.UP );
 		final AEItemStack request = AEItemStack.create( patternItem );
 		final boolean isSimulated = mode == Actionable.SIMULATE;
-		final boolean checkFuzzy = request.isOre() || patternItem.getItemDamage() == OreDictionary.WILDCARD_VALUE || patternItem.hasTagCompound() || patternItem.isItemStackDamageable();
+		final boolean checkFuzzy = request.isOre() || patternItem.getItemDamage() == OreDictionary.WILDCARD_VALUE || patternItem.hasTagCompound() || patternItem
+				.isItemStackDamageable();
 
 		if( !checkFuzzy )
 		{

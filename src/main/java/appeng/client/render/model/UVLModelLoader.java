@@ -106,7 +106,8 @@ public enum UVLModelLoader implements ICustomModelLoader
 			modifiers.set( faceBakery, faceBakery.getModifiers() & ( ~Modifier.FINAL ) );
 
 			Class clas = Class.forName( ModelLoader.class.getName() + "$VanillaModelWrapper" );
-			vanillaModelWrapper = clas.getDeclaredConstructor( ModelLoader.class, ResourceLocation.class, ModelBlock.class, boolean.class, ModelBlockAnimation.class );
+			vanillaModelWrapper = clas.getDeclaredConstructor( ModelLoader.class, ResourceLocation.class, ModelBlock.class, boolean.class,
+					ModelBlockAnimation.class );
 			vanillaModelWrapper.setAccessible( true );
 
 			Class<?> vanillaLoaderClass = Class.forName( ModelLoader.class.getName() + "$VanillaLoader" );
@@ -190,7 +191,10 @@ public enum UVLModelLoader implements ICustomModelLoader
 		{
 			modelPath = modelPath.substring( "models/".length() );
 		}
-		try( InputStreamReader io = new InputStreamReader( Minecraft.getMinecraft().getResourceManager().getResource( new ResourceLocation( modelLocation.getResourceDomain(), "models/" + modelPath + ".json" ) ).getInputStream() ) )
+		try( InputStreamReader io = new InputStreamReader( Minecraft.getMinecraft()
+				.getResourceManager()
+				.getResource( new ResourceLocation( modelLocation.getResourceDomain(), "models/" + modelPath + ".json" ) )
+				.getInputStream() ) )
 		{
 			return gson.fromJson( io, UVLMarker.class ).uvlMarker;
 		}
@@ -209,7 +213,14 @@ public enum UVLModelLoader implements ICustomModelLoader
 
 	public class UVLModelWrapper implements IModel
 	{
-		final Gson UVLSERIALIZER = ( new GsonBuilder() ).registerTypeAdapter( ModelBlock.class, deserializer( ModelBlock.class ) ).registerTypeAdapter( BlockPart.class, deserializer( BlockPart.class ) ).registerTypeAdapter( BlockPartFace.class, new BlockPartFaceOverrideSerializer() ).registerTypeAdapter( BlockFaceUV.class, deserializer( BlockFaceUV.class ) ).registerTypeAdapter( ItemTransformVec3f.class, deserializer( ItemTransformVec3f.class ) ).registerTypeAdapter( ItemCameraTransforms.class, deserializer( ItemCameraTransforms.class ) ).registerTypeAdapter( ItemOverride.class, deserializer( ItemOverride.class ) ).create();
+		final Gson UVLSERIALIZER = ( new GsonBuilder() ).registerTypeAdapter( ModelBlock.class, deserializer( ModelBlock.class ) )
+				.registerTypeAdapter( BlockPart.class, deserializer( BlockPart.class ) )
+				.registerTypeAdapter( BlockPartFace.class, new BlockPartFaceOverrideSerializer() )
+				.registerTypeAdapter( BlockFaceUV.class, deserializer( BlockFaceUV.class ) )
+				.registerTypeAdapter( ItemTransformVec3f.class, deserializer( ItemTransformVec3f.class ) )
+				.registerTypeAdapter( ItemCameraTransforms.class, deserializer( ItemCameraTransforms.class ) )
+				.registerTypeAdapter( ItemOverride.class, deserializer( ItemOverride.class ) )
+				.create();
 
 		private Map<BlockPartFace, Pair<Float, Float>> uvlightmap = new HashMap<>();
 
@@ -234,7 +245,8 @@ public enum UVLModelLoader implements ICustomModelLoader
 				{
 					String s = modelLocation.getResourcePath();
 
-					iresource = Minecraft.getMinecraft().getResourceManager().getResource( new ResourceLocation( modelLocation.getResourceDomain(), "models/" + modelPath + ".json" ) );
+					iresource = Minecraft.getMinecraft().getResourceManager().getResource(
+							new ResourceLocation( modelLocation.getResourceDomain(), "models/" + modelPath + ".json" ) );
 					reader = new InputStreamReader( iresource.getInputStream(), Charsets.UTF_8 );
 
 					lvt_5_1_ = JsonUtils.gsonDeserialize( UVLSERIALIZER, reader, ModelBlock.class, false );
@@ -339,7 +351,8 @@ public enum UVLModelLoader implements ICustomModelLoader
 				{
 					VertexFormat newFormat = VertexFormats.getFormatWithLightMap( quad.getFormat() );
 					UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder( newFormat );
-					VertexLighterFlat trans = new VertexLighterFlat( Minecraft.getMinecraft().getBlockColors() ){
+					VertexLighterFlat trans = new VertexLighterFlat( Minecraft.getMinecraft().getBlockColors() )
+					{
 
 						@Override
 						protected void updateLightmap( float[] normal, float[] lightmap, float x, float y, float z )

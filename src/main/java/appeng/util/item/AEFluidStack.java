@@ -150,7 +150,8 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 
 		final FluidStack fluidStack = FluidStack.loadFluidStackFromNBT( d );
 
-		if (!showCraftingLabel) {
+		if( !showCraftingLabel )
+		{
 			showCraftingLabel = stackSize == 0;
 		}
 
@@ -321,7 +322,8 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 					return true;
 				}
 
-				if( ( ta == null && tb == null ) || ( ta != null && ta.hasNoTags() && tb == null ) || ( tb != null && tb.hasNoTags() && ta == null ) || ( ta != null && ta.hasNoTags() && tb != null && tb.hasNoTags() ) )
+				if( ( ta == null && tb == null ) || ( ta != null && ta.hasNoTags() && tb == null ) || ( tb != null && tb
+						.hasNoTags() && ta == null ) || ( ta != null && ta.hasNoTags() && tb != null && tb.hasNoTags() ) )
 				{
 					return true;
 				}

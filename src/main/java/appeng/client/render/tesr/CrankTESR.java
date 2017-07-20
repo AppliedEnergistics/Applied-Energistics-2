@@ -40,7 +40,8 @@ import appeng.tile.grindstone.TileCrank;
 
 
 /**
- * This FastTESR only handles the animated model of the turning crank. When the crank is at rest, it is rendered using a normal model.
+ * This FastTESR only handles the animated model of the turning crank. When the crank is at rest, it is rendered using a
+ * normal model.
  */
 @SideOnly( Side.CLIENT )
 public class CrankTESR extends TileEntitySpecialRenderer<TileCrank>

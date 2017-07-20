@@ -44,9 +44,9 @@ public class PartCraftingTerminal extends AbstractPartTerminal
 	@PartModels
 	public static final ResourceLocation MODEL_ON = new ResourceLocation( AppEng.MOD_ID, "part/crafting_terminal_on" );
 
-	public static final IPartModel MODELS_OFF =  new PartModel( MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF  );
-	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, MODEL_ON, MODEL_STATUS_ON  );
-	public static final IPartModel MODELS_HAS_CHANNEL =  new PartModel( MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL  );
+	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF );
+	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, MODEL_ON, MODEL_STATUS_ON );
+	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL );
 
 	private final AppEngInternalInventory craftingGrid = new AppEngInternalInventory( this, 9 );
 

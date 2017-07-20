@@ -77,12 +77,18 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		 * RF tunnel items
 		 */
 
-		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 0 ), TunnelType.RF_POWER ); // leadstone fluxduct
-		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 1 ), TunnelType.RF_POWER ); // hardened fluxduct
-		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 2 ), TunnelType.RF_POWER ); // redstone fluxduct
-		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 3 ), TunnelType.RF_POWER ); // signalum fluxduct
-		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 4 ), TunnelType.RF_POWER ); // resonant fluxduct
-		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 5 ), TunnelType.RF_POWER ); // cryo-stabilized fluxduct
+		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 0 ), TunnelType.RF_POWER ); // leadstone
+																											// fluxduct
+		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 1 ), TunnelType.RF_POWER ); // hardened
+																											// fluxduct
+		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 2 ), TunnelType.RF_POWER ); // redstone
+																											// fluxduct
+		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 3 ), TunnelType.RF_POWER ); // signalum
+																											// fluxduct
+		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 4 ), TunnelType.RF_POWER ); // resonant
+																											// fluxduct
+		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_0", 5 ), TunnelType.RF_POWER ); // cryo-stabilized
+																											// fluxduct
 
 		/**
 		 * EU tunnel items
@@ -127,9 +133,13 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		this.addNewAttunement( this.getModItem( "mekanism", "parttransmitter", 9 ), TunnelType.ITEM );
 		this.addNewAttunement( this.getModItem( "enderio", "itemitemconduit", OreDictionary.WILDCARD_VALUE ), TunnelType.ITEM );
 		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 0 ), TunnelType.ITEM ); // itemduct
-		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 1 ), TunnelType.ITEM ); // itemduct (opaque)
-		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 2 ), TunnelType.ITEM ); // impulse itemduct
-		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 3 ), TunnelType.ITEM ); // impulse itemduct (opaque)
+		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 1 ), TunnelType.ITEM ); // itemduct
+																										// (opaque)
+		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 2 ), TunnelType.ITEM ); // impulse
+																										// itemduct
+		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 3 ), TunnelType.ITEM ); // impulse
+																										// itemduct
+																										// (opaque)
 
 		/**
 		 * attune based on lots of random item related stuff
@@ -144,9 +154,13 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		this.addNewAttunement( this.getModItem( "extrautilities", "drum", OreDictionary.WILDCARD_VALUE ), TunnelType.FLUID );
 		this.addNewAttunement( this.getModItem( "enderio", "itemliquidconduit", OreDictionary.WILDCARD_VALUE ), TunnelType.FLUID );
 		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 0 ), TunnelType.FLUID ); // fluiduct
-		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 1 ), TunnelType.FLUID ); // fluiduct (opaque)
-		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 2 ), TunnelType.FLUID ); // fluiduct hardened
-		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 3 ), TunnelType.FLUID ); // fluiduct hardened (opaque)
+		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 1 ), TunnelType.FLUID ); // fluiduct
+																										// (opaque)
+		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 2 ), TunnelType.FLUID ); // fluiduct
+																										// hardened
+		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 3 ), TunnelType.FLUID ); // fluiduct
+																										// hardened
+																										// (opaque)
 
 		for( final AEColor c : AEColor.values() )
 		{
@@ -220,7 +234,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 			// Try by ModId next
 			for( final String modId : this.modIdTunnels.keySet() )
 			{
-				if( trigger.getItem().getRegistryName() != null && trigger.getItem().getRegistryName().getResourceDomain().equals( modId ))
+				if( trigger.getItem().getRegistryName() != null && trigger.getItem().getRegistryName().getResourceDomain().equals( modId ) )
 				{
 					return this.modIdTunnels.get( modId );
 				}

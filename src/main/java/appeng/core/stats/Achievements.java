@@ -145,11 +145,12 @@ public enum Achievements
 
 	public Advancement getAchievement()
 	{
-//		if( this.stat == null && !this.getStack().isEmpty() )
-//		{
-//			this.stat = new Advancement( "achievement.ae2." + this.name(), "ae2." + this.name(), this.x, this.y, this.getStack(), this.parent );
-//			this.stat.registerStat();
-//		}
+		// if( this.stat == null && !this.getStack().isEmpty() )
+		// {
+		// this.stat = new Advancement( "achievement.ae2." + this.name(), "ae2." + this.name(), this.x, this.y,
+		// this.getStack(), this.parent );
+		// this.stat.registerStat();
+		// }
 
 		return this.stat;
 	}

@@ -69,7 +69,8 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	 * Given a fill factor, return the storage level (0-7) used for the state of the block.
 	 * This is also used for determining the item model.
 	 */
-	public static int getStorageLevelFromFillFactor( double fillFactor ) {
+	public static int getStorageLevelFromFillFactor( double fillFactor )
+	{
 		byte boundMetadata = (byte) ( 8.0 * ( fillFactor ) );
 
 		if( boundMetadata > 7 )

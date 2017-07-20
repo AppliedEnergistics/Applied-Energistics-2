@@ -65,12 +65,13 @@ import appeng.services.export.ForgeExportConfig;
 import appeng.services.version.VersionCheckerConfig;
 import appeng.util.Platform;
 
+
 @Mod( modid = AppEng.MOD_ID, acceptedMinecraftVersions = "[1.12]", name = AppEng.MOD_NAME, version = AEConfig.VERSION, dependencies = AppEng.MOD_DEPENDENCIES, guiFactory = "appeng.client.gui.config.AEConfigGuiFactory" )
 public final class AppEng
 {
 	@SidedProxy( clientSide = "appeng.client.ClientHelper", serverSide = "appeng.server.ServerHelper", modId = AppEng.MOD_ID )
 	public static CommonHelper proxy;
-	
+
 	public static final String MOD_ID = "appliedenergistics2";
 	public static final String MOD_NAME = "Applied Energistics 2";
 
@@ -83,10 +84,10 @@ public final class AppEng
 
 			// depend on version of forge used for build.
 			"after:appliedenergistics2-core;";// + "required-after:Forge@[" // require forge.
-					//+ net.minecraftforge.common.ForgeVersion.majorVersion + '.' // majorVersion
-					//+ net.minecraftforge.common.ForgeVersion.minorVersion + '.' // minorVersion
-					//+ net.minecraftforge.common.ForgeVersion.revisionVersion + '.' // revisionVersion
-					//+ net.minecraftforge.common.ForgeVersion.buildVersion + ",)"; // buildVersion
+	// + net.minecraftforge.common.ForgeVersion.majorVersion + '.' // majorVersion
+	// + net.minecraftforge.common.ForgeVersion.minorVersion + '.' // minorVersion
+	// + net.minecraftforge.common.ForgeVersion.revisionVersion + '.' // revisionVersion
+	// + net.minecraftforge.common.ForgeVersion.buildVersion + ",)"; // buildVersion
 
 	@Nonnull
 	private static final AppEng INSTANCE = new AppEng();
@@ -140,7 +141,6 @@ public final class AppEng
 		final Stopwatch watch = Stopwatch.createStarted();
 		this.configDirectory = new File( event.getModConfigurationDirectory().getPath(), "AppliedEnergistics2" );
 		this.recipeDirectory = new File( this.configDirectory, "aerecipes" );
-
 
 		final File configFile = new File( this.configDirectory, "AppliedEnergistics2.cfg" );
 		final File facadeFile = new File( this.configDirectory, "Facades.cfg" );

@@ -69,7 +69,7 @@ public class PacketClick extends AppEngPacket
 		this.hitX = stream.readFloat();
 		this.hitY = stream.readFloat();
 		this.hitZ = stream.readFloat();
-		this.hand = EnumHand.values()[ stream.readByte() ];
+		this.hand = EnumHand.values()[stream.readByte()];
 	}
 
 	// api
@@ -111,7 +111,8 @@ public class PacketClick extends AppEngPacket
 			if( is.getItem() instanceof ToolNetworkTool )
 			{
 				final ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
-				tnt.serverSideToolLogic( is, player, this.hand, player.world, new BlockPos( this.x, this.y, this.z ), this.side, this.hitX, this.hitY, this.hitZ );
+				tnt.serverSideToolLogic( is, player, this.hand, player.world, new BlockPos( this.x, this.y, this.z ), this.side, this.hitX, this.hitY,
+						this.hitZ );
 			}
 
 			else if( maybeMemoryCard.isSameAs( is ) )

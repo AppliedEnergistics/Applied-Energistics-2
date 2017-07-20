@@ -48,7 +48,8 @@ public class AppEngClientPacketHandler extends AppEngPacketHandlerBase implement
 			final int packetType = stream.readInt();
 			final AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( stream );
 
-			final PacketCallState callState = new PacketCallState(){
+			final PacketCallState callState = new PacketCallState()
+			{
 
 				@Override
 				public void call( final AppEngPacket appEngPacket )

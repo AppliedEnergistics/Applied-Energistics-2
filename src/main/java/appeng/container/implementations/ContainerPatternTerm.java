@@ -102,7 +102,8 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			}
 		}
 
-		this.addSlotToContainer( this.craftSlot = new SlotPatternTerm( ip.player, this.getActionSource(), this.getPowerSource(), monitorable, this.crafting, patternInv, this.cOut, 110, -76 + 18, this, 2, this ) );
+		this.addSlotToContainer( this.craftSlot = new SlotPatternTerm( ip.player, this.getActionSource(), this
+				.getPowerSource(), monitorable, this.crafting, patternInv, this.cOut, 110, -76 + 18, this, 2, this ) );
 		this.craftSlot.setIIcon( -1 );
 
 		for( int y = 0; y < 3; y++ )
@@ -112,8 +113,12 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			this.outputSlots[y].setIIcon( -1 );
 		}
 
-		this.addSlotToContainer( this.patternSlotIN = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.BLANK_PATTERN, patternInv, 0, 147, -72 - 9, this.getInventoryPlayer() ) );
-		this.addSlotToContainer( this.patternSlotOUT = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ENCODED_PATTERN, patternInv, 1, 147, -72 + 34, this.getInventoryPlayer() ) );
+		this.addSlotToContainer(
+				this.patternSlotIN = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.BLANK_PATTERN, patternInv, 0, 147, -72 - 9, this
+						.getInventoryPlayer() ) );
+		this.addSlotToContainer(
+				this.patternSlotOUT = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ENCODED_PATTERN, patternInv, 1, 147, -72 + 34, this
+						.getInventoryPlayer() ) );
 
 		this.patternSlotOUT.setStackLimit( 1 );
 
@@ -203,7 +208,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			}
 
 			// remove one, and clear the input slot.
-			output.setCount( output.getCount() - 1);
+			output.setCount( output.getCount() - 1 );
 			if( output.getCount() == 0 )
 			{
 				this.patternSlotIN.putStack( ItemStack.EMPTY );
@@ -400,7 +405,8 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			{
 				if( !ic.getStackInSlot( x ).isEmpty() )
 				{
-					final ItemStack pulled = Platform.extractItemsByRecipe( this.getPowerSource(), this.getActionSource(), storage, p.world, r, is, ic, ic.getStackInSlot( x ), x, all, Actionable.MODULATE, ItemViewCell.createFilter( this.getViewCells() ) );
+					final ItemStack pulled = Platform.extractItemsByRecipe( this.getPowerSource(), this.getActionSource(), storage, p.world, r, is, ic,
+							ic.getStackInSlot( x ), x, all, Actionable.MODULATE, ItemViewCell.createFilter( this.getViewCells() ) );
 					real.setInventorySlotContents( x, pulled );
 				}
 			}
@@ -436,7 +442,8 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 					final ItemStack failed = real.getStackInSlot( x );
 					if( !failed.isEmpty() )
 					{
-						this.getCellInventory().injectItems( AEItemStack.create( failed ), Actionable.MODULATE, new MachineSource( this.getPatternTerminal() ) );
+						this.getCellInventory().injectItems( AEItemStack.create( failed ), Actionable.MODULATE,
+								new MachineSource( this.getPatternTerminal() ) );
 					}
 				}
 			}

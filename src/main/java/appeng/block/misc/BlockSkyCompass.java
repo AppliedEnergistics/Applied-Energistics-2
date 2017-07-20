@@ -40,6 +40,7 @@ import appeng.block.AEBaseTileBlock;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.misc.TileSkyCompass;
 
+
 public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 {
 

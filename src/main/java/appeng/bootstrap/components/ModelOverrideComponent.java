@@ -63,7 +63,7 @@ public class ModelOverrideComponent implements PreInitComponent
 	{
 		IRegistry<ModelResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
 		Set<ModelResourceLocation> keys = Sets.newHashSet( modelRegistry.getKeys() );
-//		IBakedModel missingModel = modelRegistry.getObject( MODEL_MISSING );
+		// IBakedModel missingModel = modelRegistry.getObject( MODEL_MISSING );
 		IModel missingModel = ModelLoaderRegistry.getMissingModel();
 
 		for( ModelResourceLocation location : keys )

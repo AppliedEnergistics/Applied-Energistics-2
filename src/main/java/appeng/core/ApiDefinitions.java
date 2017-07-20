@@ -53,22 +53,21 @@ public final class ApiDefinitions implements IDefinitions
 		this.materials = new ApiMaterials( registry );
 		this.parts = new ApiParts( registry, partModels );
 	}
-//
-//	public void addBlocks( final PartModels partModels )
-//	{
-//		this.blocks = new ApiBlocks( registry, partModels );
-//	}
-//
-//	public void addItems()
-//	{
-//		this.items = new ApiItems( registry );
-//	}
+	//
+	// public void addBlocks( final PartModels partModels )
+	// {
+	// this.blocks = new ApiBlocks( registry, partModels );
+	// }
+	//
+	// public void addItems()
+	// {
+	// this.items = new ApiItems( registry );
+	// }
 
 	public FeatureFactory getRegistry()
 	{
 		return registry;
 	}
-
 
 	@Override
 	public ApiBlocks blocks()

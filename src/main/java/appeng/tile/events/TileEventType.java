@@ -21,7 +21,8 @@ package appeng.tile.events;
 
 public enum TileEventType
 {
-	WORLD_NBT_READ, WORLD_NBT_WRITE,
+	WORLD_NBT_READ,
+	WORLD_NBT_WRITE,
 
 	/**
 	 * Methods annotated with this need to return a boolean

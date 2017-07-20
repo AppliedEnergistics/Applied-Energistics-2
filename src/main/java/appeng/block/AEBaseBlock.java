@@ -116,7 +116,7 @@ public abstract class AEBaseBlock extends Block
 
 	@SuppressWarnings( "deprecation" )
 	@Override
-	public void addCollisionBoxToList( final IBlockState state, final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, @Nullable final Entity e, boolean  p_185477_7_)
+	public void addCollisionBoxToList( final IBlockState state, final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, @Nullable final Entity e, boolean p_185477_7_ )
 	{
 		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
 
@@ -341,7 +341,7 @@ public abstract class AEBaseBlock extends Block
 		return new EnumFacing[0];
 	}
 
-	@SideOnly(Side.CLIENT)
+	@SideOnly( Side.CLIENT )
 	@Override
 	public void addInformation( final ItemStack is, final World world, final List<String> lines, final ITooltipFlag advancedItemTooltips )
 	{

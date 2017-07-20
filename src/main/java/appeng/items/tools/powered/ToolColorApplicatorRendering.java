@@ -1,3 +1,4 @@
+
 package appeng.items.tools.powered;
 
 
@@ -32,7 +33,8 @@ public class ToolColorApplicatorRendering extends ItemRenderingCustomizer
 
 	private ModelResourceLocation getMesh( ItemStack itemStack )
 	{
-		// If the stack has no color, don't use the colored model since the impact of calling getColor for every quad is extremely high,
+		// If the stack has no color, don't use the colored model since the impact of calling getColor for every quad is
+		// extremely high,
 		// if the stack tries to re-search its inventory for a new paintball everytime
 		AEColor col = ( (ToolColorApplicator) itemStack.getItem() ).getActiveColor( itemStack );
 		return ( col != null ) ? MODEL_COLORED : MODEL_UNCOLORED;

@@ -110,9 +110,11 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 
 			if( cellInventory != null )
 			{
-				lines.add( cellInventory.getUsedBytes() + " " + GuiText.Of.getLocal() + ' ' + cellInventory.getTotalBytes() + ' ' + GuiText.BytesUsed.getLocal() );
+				lines.add(
+						cellInventory.getUsedBytes() + " " + GuiText.Of.getLocal() + ' ' + cellInventory.getTotalBytes() + ' ' + GuiText.BytesUsed.getLocal() );
 
-				lines.add( cellInventory.getStoredItemTypes() + " " + GuiText.Of.getLocal() + ' ' + cellInventory.getTotalItemTypes() + ' ' + GuiText.Types.getLocal() );
+				lines.add( cellInventory.getStoredItemTypes() + " " + GuiText.Of.getLocal() + ' ' + cellInventory.getTotalItemTypes() + ' ' + GuiText.Types
+						.getLocal() );
 
 				if( handler.isPreformatted() )
 				{
@@ -220,8 +222,8 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 	@Override
 	public ActionResult<ItemStack> onItemRightClick( final World world, final EntityPlayer player, final EnumHand hand )
 	{
-		this.disassembleDrive( player.getHeldItem(hand), world, player );
-		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, player.getHeldItem(hand) );
+		this.disassembleDrive( player.getHeldItem( hand ), world, player );
+		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, player.getHeldItem( hand ) );
 	}
 
 	private boolean disassembleDrive( final ItemStack stack, final World world, final EntityPlayer player )
@@ -287,13 +289,17 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 	@Override
 	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
-		return this.disassembleDrive( player.getHeldItem(hand), world, player ) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
+		return this.disassembleDrive( player.getHeldItem( hand ), world, player ) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
 	}
 
 	@Override
 	public ItemStack getContainerItem( final ItemStack itemStack )
 	{
-		return AEApi.instance().definitions().materials().emptyStorageCell().maybeStack( 1 )
+		return AEApi.instance()
+				.definitions()
+				.materials()
+				.emptyStorageCell()
+				.maybeStack( 1 )
 				.orElseThrow( () -> new MissingDefinition( "Tried to use empty storage cells while basic storage cells are defined." ) );
 	}
 

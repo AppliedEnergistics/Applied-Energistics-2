@@ -94,7 +94,8 @@ public class CompassManager
 			this.cx = x >> 4;
 			this.cdy = y >> 5;
 			this.cz = z >> 4;
-			this.hash = ( (Integer) this.cx ).hashCode() ^ ( (Integer) this.cdy ).hashCode() ^ ( (Integer) this.cz ).hashCode() ^ ( (Long) attunement ).hashCode();
+			this.hash = ( (Integer) this.cx ).hashCode() ^ ( (Integer) this.cdy ).hashCode() ^ ( (Integer) this.cz ).hashCode() ^ ( (Long) attunement )
+					.hashCode();
 		}
 
 		@Override

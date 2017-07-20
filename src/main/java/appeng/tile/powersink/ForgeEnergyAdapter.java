@@ -1,5 +1,5 @@
-package appeng.tile.powersink;
 
+package appeng.tile.powersink;
 
 
 import net.minecraftforge.energy.IEnergyStorage;
@@ -41,7 +41,7 @@ class ForgeEnergyAdapter implements IEnergyStorage
 	}
 
 	@Override
-	public final int getMaxEnergyStored( )
+	public final int getMaxEnergyStored()
 	{
 		return (int) Math.floor( PowerUnits.AE.convertTo( PowerUnits.RF, sink.getAEMaxPower() ) );
 	}

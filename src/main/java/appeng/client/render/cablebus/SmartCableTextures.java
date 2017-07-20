@@ -34,7 +34,12 @@ import appeng.core.AppEng;
 public class SmartCableTextures
 {
 
-	public static final ResourceLocation[] SMART_CHANNELS_TEXTURES = { new ResourceLocation( AppEng.MOD_ID, "parts/cable/smart/channels_00" ), new ResourceLocation( AppEng.MOD_ID, "parts/cable/smart/channels_01" ), new ResourceLocation( AppEng.MOD_ID, "parts/cable/smart/channels_02" ), new ResourceLocation( AppEng.MOD_ID, "parts/cable/smart/channels_03" ), new ResourceLocation( AppEng.MOD_ID, "parts/cable/smart/channels_04" ), new ResourceLocation( AppEng.MOD_ID, "parts/cable/smart/channels_10" ), new ResourceLocation( AppEng.MOD_ID, "parts/cable/smart/channels_11" ), new ResourceLocation( AppEng.MOD_ID, "parts/cable/smart/channels_12" ), new ResourceLocation( AppEng.MOD_ID, "parts/cable/smart/channels_13" ), new ResourceLocation( AppEng.MOD_ID, "parts/cable/smart/channels_14" )
+	public static final ResourceLocation[] SMART_CHANNELS_TEXTURES = { new ResourceLocation( AppEng.MOD_ID, "parts/cable/smart/channels_00" ),
+			new ResourceLocation( AppEng.MOD_ID, "parts/cable/smart/channels_01" ), new ResourceLocation( AppEng.MOD_ID, "parts/cable/smart/channels_02" ),
+			new ResourceLocation( AppEng.MOD_ID, "parts/cable/smart/channels_03" ), new ResourceLocation( AppEng.MOD_ID, "parts/cable/smart/channels_04" ),
+			new ResourceLocation( AppEng.MOD_ID, "parts/cable/smart/channels_10" ), new ResourceLocation( AppEng.MOD_ID, "parts/cable/smart/channels_11" ),
+			new ResourceLocation( AppEng.MOD_ID, "parts/cable/smart/channels_12" ), new ResourceLocation( AppEng.MOD_ID, "parts/cable/smart/channels_13" ),
+			new ResourceLocation( AppEng.MOD_ID, "parts/cable/smart/channels_14" )
 	};
 
 	// Textures used to display channels on smart cables. There's two sets of 5 textures each, and

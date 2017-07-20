@@ -37,6 +37,7 @@ import appeng.core.sync.GuiBridge;
 import appeng.tile.misc.TileInscriber;
 import appeng.util.Platform;
 
+
 public class BlockInscriber extends AEBaseTileBlock
 {
 

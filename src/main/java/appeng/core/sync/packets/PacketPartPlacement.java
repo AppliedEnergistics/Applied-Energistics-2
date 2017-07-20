@@ -52,7 +52,7 @@ public class PacketPartPlacement extends AppEngPacket
 		this.z = stream.readInt();
 		this.face = stream.readByte();
 		this.eyeHeight = stream.readFloat();
-		this.hand = EnumHand.values()[ stream.readByte() ];
+		this.hand = EnumHand.values()[stream.readByte()];
 	}
 
 	// api
@@ -77,7 +77,8 @@ public class PacketPartPlacement extends AppEngPacket
 		final EntityPlayerMP sender = (EntityPlayerMP) player;
 		AppEng.proxy.updateRenderMode( sender );
 		PartPlacement.setEyeHeight( this.eyeHeight );
-		PartPlacement.place( sender.getHeldItem( hand ), new BlockPos( this.x, this.y, this.z ), EnumFacing.VALUES[this.face], sender, hand, sender.world, PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
+		PartPlacement.place( sender.getHeldItem( hand ), new BlockPos( this.x, this.y, this.z ), EnumFacing.VALUES[this.face], sender, hand, sender.world,
+				PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
 		AppEng.proxy.updateRenderMode( null );
 	}
 }

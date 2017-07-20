@@ -75,7 +75,7 @@ public class FacadeWithBlockBakedModel implements IBakedModel
 			List<BakedQuad> quads = new ArrayList<>( 1 );
 			CubeBuilder builder = new CubeBuilder( format, quads );
 			FacadeBuilder.TextureAtlasAndTint sprite = FacadeBuilder.getSprite( textureModel, blockState, side, rand );
-			if ( sprite != null && sprite.getSprite() != null )
+			if( sprite != null && sprite.getSprite() != null )
 			{
 				if( sprite.getTint() != -1 )
 				{

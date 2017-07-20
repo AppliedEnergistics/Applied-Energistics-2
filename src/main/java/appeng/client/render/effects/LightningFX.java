@@ -80,19 +80,19 @@ public class LightningFX extends Particle
 	public void onUpdate()
 	{
 		this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+		this.prevPosY = this.posY;
+		this.prevPosZ = this.posZ;
 
-        if (this.particleAge++ >= this.particleMaxAge)
-        {
-            this.setExpired();
-        }
+		if( this.particleAge++ >= this.particleMaxAge )
+		{
+			this.setExpired();
+		}
 
-        this.motionY -= 0.04D * (double)this.particleGravity;
-        this.move(this.motionX, this.motionY, this.motionZ);
-        this.motionX *= 0.9800000190734863D;
-        this.motionY *= 0.9800000190734863D;
-        this.motionZ *= 0.9800000190734863D;
+		this.motionY -= 0.04D * (double) this.particleGravity;
+		this.move( this.motionX, this.motionY, this.motionZ );
+		this.motionX *= 0.9800000190734863D;
+		this.motionY *= 0.9800000190734863D;
+		this.motionZ *= 0.9800000190734863D;
 	}
 
 	@Override
@@ -190,7 +190,8 @@ public class LightningFX extends Particle
 						oz = ( xD * 0 ) - ( 1 * yD );
 					}
 
-					final double ss = Math.sqrt( ox * ox + oy * oy + oz * oz ) / ( ( ( (double) LightningFX.STEPS - (double) s ) / LightningFX.STEPS ) * scale );
+					final double ss = Math
+							.sqrt( ox * ox + oy * oy + oz * oz ) / ( ( ( (double) LightningFX.STEPS - (double) s ) / LightningFX.STEPS ) * scale );
 					ox /= ss;
 					oy /= ss;
 					oz /= ss;
@@ -227,8 +228,16 @@ public class LightningFX extends Particle
 		if( this.hasData )
 		{
 			tess.pos( a[0], a[1], a[2] ).tex( f6, f8 ).color( red, green, blue, this.particleAlpha ).lightmap( BRIGHTNESS, BRIGHTNESS ).endVertex();
-			tess.pos( this.vertices[0], this.vertices[1], this.vertices[2] ).tex( f6, f8 ).color( red, green, blue, this.particleAlpha ).lightmap( BRIGHTNESS, BRIGHTNESS ).endVertex();
-			tess.pos( this.verticesWithUV[0], this.verticesWithUV[1], this.verticesWithUV[2] ).tex( f6, f8 ).color( red, green, blue, this.particleAlpha ).lightmap( BRIGHTNESS, BRIGHTNESS ).endVertex();
+			tess.pos( this.vertices[0], this.vertices[1], this.vertices[2] )
+					.tex( f6, f8 )
+					.color( red, green, blue, this.particleAlpha )
+					.lightmap( BRIGHTNESS, BRIGHTNESS )
+					.endVertex();
+			tess.pos( this.verticesWithUV[0], this.verticesWithUV[1], this.verticesWithUV[2] )
+					.tex( f6, f8 )
+					.color( red, green, blue, this.particleAlpha )
+					.lightmap( BRIGHTNESS, BRIGHTNESS )
+					.endVertex();
 			tess.pos( b[0], b[1], b[2] ).tex( f6, f8 ).color( red, green, blue, this.particleAlpha ).lightmap( BRIGHTNESS, BRIGHTNESS ).endVertex();
 		}
 		this.hasData = true;

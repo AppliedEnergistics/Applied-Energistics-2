@@ -163,7 +163,8 @@ public final class DisassembleRecipe extends net.minecraftforge.registries.IForg
 	}
 
 	@Override
-	public boolean canFit(int i, int i1) {
+	public boolean canFit( int i, int i1 )
+	{
 		return false;
 	}
 

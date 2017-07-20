@@ -66,13 +66,18 @@ public final class VersionCheckerConfig
 		// initializes default values by caching
 		this.isEnabled = this.config.getBoolean( "enabled", "general", true, "If true, the version checker is enabled. Acts as a master switch." );
 
-		this.lastCheck = this.config.getString( "lastCheck", "cache", "0", "The number of milliseconds since January 1, 1970, 00:00:00 GMT of the last successful check." );
-		this.interval = this.config.getInt( "interval", "cache", DEFAULT_INTERVAL_HOURS, MIN_INTERVAL_HOURS, MAX_INTERVAL_HOURS, "Waits as many hours, until it checks again." );
+		this.lastCheck = this.config.getString( "lastCheck", "cache", "0",
+				"The number of milliseconds since January 1, 1970, 00:00:00 GMT of the last successful check." );
+		this.interval = this.config.getInt( "interval", "cache", DEFAULT_INTERVAL_HOURS, MIN_INTERVAL_HOURS, MAX_INTERVAL_HOURS,
+				"Waits as many hours, until it checks again." );
 
-		this.level = this.config.getString( "level", "channel", "Beta", "Determines the channel level which should be checked for updates. Can be either Stable, Beta or Alpha." );
+		this.level = this.config.getString( "level", "channel", "Beta",
+				"Determines the channel level which should be checked for updates. Can be either Stable, Beta or Alpha." );
 
-		this.shouldNotifyPlayer = this.config.getBoolean( "notify", "client", true, "If true, the player is getting a notification, that a new version is available." );
-		this.shouldPostChangelog = this.config.getBoolean( "changelog", "client", true, "If true, the player is getting a notification including changelog. Only happens if notification are enabled." );
+		this.shouldNotifyPlayer = this.config.getBoolean( "notify", "client", true,
+				"If true, the player is getting a notification, that a new version is available." );
+		this.shouldPostChangelog = this.config.getBoolean( "changelog", "client", true,
+				"If true, the player is getting a notification including changelog. Only happens if notification are enabled." );
 	}
 
 	public boolean isVersionCheckingEnabled()

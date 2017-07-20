@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
+
 package appeng.client.render.model;
 
 

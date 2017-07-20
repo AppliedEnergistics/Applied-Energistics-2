@@ -416,7 +416,6 @@ public class RecipeHandler implements IRecipeHandler
 			}
 		}
 
-
 		for( final Entry<Class, Integer> e : processed.entrySet() )
 		{
 			AELog.info( "Recipes Loading: " + e.getKey().getSimpleName() + ": " + e.getValue() + " loaded." );
@@ -769,7 +768,8 @@ public class RecipeHandler implements IRecipeHandler
 	public static class MaterialExists implements IConditionFactory
 	{
 		@Override
-		public BooleanSupplier parse( JsonContext jsonContext, JsonObject jsonObject ) {
+		public BooleanSupplier parse( JsonContext jsonContext, JsonObject jsonObject )
+		{
 			String material = JsonUtils.getString( jsonObject, "material" );
 			Object result = (Object) Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, material );
 			return () -> result != null;
@@ -777,19 +777,20 @@ public class RecipeHandler implements IRecipeHandler
 		}
 	}
 
-    public static class PartFactory implements IIngredientFactory
-    {
+	public static class PartFactory implements IIngredientFactory
+	{
 
-        @Nonnull
-        @Override
-        public net.minecraft.item.crafting.Ingredient parse( JsonContext context, JsonObject json )
-        {
+		@Nonnull
+		@Override
+		public net.minecraft.item.crafting.Ingredient parse( JsonContext context, JsonObject json )
+		{
 			String partName = json.get( "part" ).getAsString();
 			Object result = (Object) Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, partName );
 			if( result instanceof ResolverResultSet )
 			{
 				ResolverResultSet resolverResultSet = (ResolverResultSet) result;
-				return net.minecraft.item.crafting.Ingredient.fromStacks(resolverResultSet.results.toArray(new ItemStack[resolverResultSet.results.size()]));
+				return net.minecraft.item.crafting.Ingredient
+						.fromStacks( resolverResultSet.results.toArray( new ItemStack[resolverResultSet.results.size()] ) );
 			}
 			else if( result instanceof ResolverResult )
 			{
@@ -803,7 +804,7 @@ public class RecipeHandler implements IRecipeHandler
 
 			AELog.warn( "Looking for ingredient with name '" + partName + "' ended up with a null item!" );
 			return net.minecraft.item.crafting.Ingredient.EMPTY;
-        }
-    }
+		}
+	}
 
 }

@@ -1196,7 +1196,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			}
 
 			// Collect the number of channels used per side
-			// We have to do this even for non-smart cables since a glass cable can display a connection as smart if the adjacent tile requires it
+			// We have to do this even for non-smart cables since a glass cable can display a connection as smart if the
+			// adjacent tile requires it
 			for( EnumFacing facing : EnumFacing.values() )
 			{
 				int channels = cable.getChannelsOnSide( facing );
@@ -1209,7 +1210,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		{
 
 			FacadeRenderState facadeState = getFacadeRenderState( facing );
-			if ( facadeState != null )
+			if( facadeState != null )
 			{
 				renderState.getFacades().put( facing, facadeState );
 			}
@@ -1249,7 +1250,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return renderState;
 	}
 
-	private FacadeRenderState getFacadeRenderState( EnumFacing side ) {
+	private FacadeRenderState getFacadeRenderState( EnumFacing side )
+	{
 		// Store the "masqueraded" itemstack for the given side, if there is a facade
 		IFacadePart facade = getFacade( side.ordinal() );
 		if( facade != null )
@@ -1332,6 +1334,5 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 		return true;
 	}
-
 
 }

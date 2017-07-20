@@ -18,6 +18,7 @@
 
 package appeng.integration.modules.ic2;
 
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 

@@ -86,7 +86,8 @@ public class GridConnection implements IGridConnection, IPathItem
 			final String aCoordinates = a.getGridBlock().getLocation().toString();
 			final String bCoordinates = b.getGridBlock().getLocation().toString();
 
-			throw new ExistingConnectionException( String.format( EXISTING_CONNECTION_MESSAGE, aMachineClass, aCoordinates, bMachineClass, bCoordinates, fromAtoB ) );
+			throw new ExistingConnectionException( String.format( EXISTING_CONNECTION_MESSAGE, aMachineClass, aCoordinates, bMachineClass, bCoordinates,
+					fromAtoB ) );
 		}
 
 		this.sideA = a;

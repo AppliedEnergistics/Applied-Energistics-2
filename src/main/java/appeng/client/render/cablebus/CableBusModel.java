@@ -77,7 +77,8 @@ public class CableBusModel implements IModel
 		CableBuilder cableBuilder = new CableBuilder( format, bakedTextureGetter );
 		FacadeBuilder facadeBuilder = new FacadeBuilder( format, bakedTextureGetter );
 
-		// This should normally not be used, but we *have* to provide a particle texture or otherwise damage models will crash
+		// This should normally not be used, but we *have* to provide a particle texture or otherwise damage models will
+		// crash
 		TextureAtlasSprite particleTexture = cableBuilder.getCoreTexture( CableCoreType.GLASS, AEColor.TRANSPARENT );
 
 		return new CableBusBakedModel( cableBuilder, facadeBuilder, partModels, particleTexture );

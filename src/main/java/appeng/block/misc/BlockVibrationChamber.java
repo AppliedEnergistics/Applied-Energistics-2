@@ -44,6 +44,7 @@ import appeng.tile.AEBaseTile;
 import appeng.tile.misc.TileVibrationChamber;
 import appeng.util.Platform;
 
+
 public final class BlockVibrationChamber extends AEBaseTileBlock
 {
 
@@ -70,7 +71,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 	@Override
 	protected IProperty[] getAEStates()
 	{
-		return new IProperty[]{ ACTIVE };
+		return new IProperty[] { ACTIVE };
 	}
 
 	@Override
@@ -93,7 +94,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 
 		return true;
 	}
-	
+
 	@Override
 	public void randomDisplayTick( final IBlockState state, final World w, final BlockPos pos, final Random r )
 	{

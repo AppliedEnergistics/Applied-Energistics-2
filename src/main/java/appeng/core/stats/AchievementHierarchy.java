@@ -32,30 +32,30 @@ public class AchievementHierarchy
 	 */
 	void registerAchievementHierarchy()
 	{
-//		Achievements.Presses.setParent( Achievements.Compass );
-//
-//		Achievements.Fluix.setParent( Achievements.ChargedQuartz );
-//
-//		Achievements.Charger.setParent( Achievements.Fluix );
-//
-//		Achievements.CrystalGrowthAccelerator.setParent( Achievements.Charger );
-//
-//		Achievements.GlassCable.setParent( Achievements.Charger );
-//
-//		Achievements.SpatialIOExplorer.setParent( Achievements.SpatialIO );
-//
-//		Achievements.IOPort.setParent( Achievements.StorageCell );
-//
-//		Achievements.PatternTerminal.setParent( Achievements.CraftingTerminal );
-//
-//		Achievements.Controller.setParent( Achievements.Networking1 );
-//
-//		Achievements.Networking2.setParent( Achievements.Controller );
-//
-//		Achievements.Networking3.setParent( Achievements.Networking2 );
-//
-//		Achievements.P2P.setParent( Achievements.Controller );
-//
-//		Achievements.Recursive.setParent( Achievements.Controller );
+		// Achievements.Presses.setParent( Achievements.Compass );
+		//
+		// Achievements.Fluix.setParent( Achievements.ChargedQuartz );
+		//
+		// Achievements.Charger.setParent( Achievements.Fluix );
+		//
+		// Achievements.CrystalGrowthAccelerator.setParent( Achievements.Charger );
+		//
+		// Achievements.GlassCable.setParent( Achievements.Charger );
+		//
+		// Achievements.SpatialIOExplorer.setParent( Achievements.SpatialIO );
+		//
+		// Achievements.IOPort.setParent( Achievements.StorageCell );
+		//
+		// Achievements.PatternTerminal.setParent( Achievements.CraftingTerminal );
+		//
+		// Achievements.Controller.setParent( Achievements.Networking1 );
+		//
+		// Achievements.Networking2.setParent( Achievements.Controller );
+		//
+		// Achievements.Networking3.setParent( Achievements.Networking2 );
+		//
+		// Achievements.P2P.setParent( Achievements.Controller );
+		//
+		// Achievements.Recursive.setParent( Achievements.Controller );
 	}
 }

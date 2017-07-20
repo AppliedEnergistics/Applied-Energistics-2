@@ -74,7 +74,8 @@ class CraftingCubeModel implements IModel
 	@Override
 	public Collection<ResourceLocation> getTextures()
 	{
-		return ImmutableList.of( RING_CORNER, RING_SIDE_HOR, RING_SIDE_VER, UNIT_BASE, LIGHT_BASE, ACCELERATOR_LIGHT, STORAGE_1K_LIGHT, STORAGE_4K_LIGHT, STORAGE_16K_LIGHT, STORAGE_64K_LIGHT, MONITOR_BASE, MONITOR_LIGHT_DARK, MONITOR_LIGHT_MEDIUM, MONITOR_LIGHT_BRIGHT );
+		return ImmutableList.of( RING_CORNER, RING_SIDE_HOR, RING_SIDE_VER, UNIT_BASE, LIGHT_BASE, ACCELERATOR_LIGHT, STORAGE_1K_LIGHT, STORAGE_4K_LIGHT,
+				STORAGE_16K_LIGHT, STORAGE_64K_LIGHT, MONITOR_BASE, MONITOR_LIGHT_DARK, MONITOR_LIGHT_MEDIUM, MONITOR_LIGHT_BRIGHT );
 	}
 
 	@Override
@@ -94,9 +95,12 @@ class CraftingCubeModel implements IModel
 			case STORAGE_4K:
 			case STORAGE_16K:
 			case STORAGE_64K:
-				return new LightBakedModel( format, ringCorner, ringSideHor, ringSideVer, bakedTextureGetter.apply( LIGHT_BASE ), getLightTexture( bakedTextureGetter, type ) );
+				return new LightBakedModel( format, ringCorner, ringSideHor, ringSideVer, bakedTextureGetter
+						.apply( LIGHT_BASE ), getLightTexture( bakedTextureGetter, type ) );
 			case MONITOR:
-				return new MonitorBakedModel( format, ringCorner, ringSideHor, ringSideVer, bakedTextureGetter.apply( UNIT_BASE ), bakedTextureGetter.apply( MONITOR_BASE ), bakedTextureGetter.apply( MONITOR_LIGHT_DARK ), bakedTextureGetter.apply( MONITOR_LIGHT_MEDIUM ), bakedTextureGetter.apply( MONITOR_LIGHT_BRIGHT ) );
+				return new MonitorBakedModel( format, ringCorner, ringSideHor, ringSideVer, bakedTextureGetter.apply( UNIT_BASE ), bakedTextureGetter
+						.apply( MONITOR_BASE ), bakedTextureGetter.apply(
+								MONITOR_LIGHT_DARK ), bakedTextureGetter.apply( MONITOR_LIGHT_MEDIUM ), bakedTextureGetter.apply( MONITOR_LIGHT_BRIGHT ) );
 			default:
 				throw new IllegalArgumentException( "Unsupported crafting unit type: " + type );
 		}

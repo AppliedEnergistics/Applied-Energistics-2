@@ -172,8 +172,8 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		return null;
 	}
 
-
-	private ItemStack getItemStackInCachedSlot ( int pos ) {
+	private ItemStack getItemStackInCachedSlot( int pos )
+	{
 		if( pos > cachedStacks.length )
 			return ItemStack.EMPTY;
 
@@ -200,7 +200,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		for( int slot = 0; slot < slots; slot++ )
 		{
 			// Save the old stuff
-			ItemStack oldIS = getItemStackInCachedSlot(slot);
+			ItemStack oldIS = getItemStackInCachedSlot( slot );
 			IAEItemStack oldAeIS = cachedAeStacks[slot];
 
 			ItemStack newIS = itemHandler.getStackInSlot( slot );

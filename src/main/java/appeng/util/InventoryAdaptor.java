@@ -42,8 +42,10 @@ import appeng.util.inv.WrapperMCISidedInventory;
 
 
 /**
- * Universal Facade for other inventories. Used to conveniently interact with various types of inventories. This is not used for
- * actually monitoring an inventory. It is just for insertion and extraction, and is primarily used by import/export buses.
+ * Universal Facade for other inventories. Used to conveniently interact with various types of inventories. This is not
+ * used for
+ * actually monitoring an inventory. It is just for insertion and extraction, and is primarily used by import/export
+ * buses.
  */
 public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 {
@@ -56,7 +58,7 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 			return null;
 		}
 
-		if ( te instanceof ICapabilityProvider )
+		if( te instanceof ICapabilityProvider )
 		{
 			ICapabilityProvider capProvider = (ICapabilityProvider) te;
 

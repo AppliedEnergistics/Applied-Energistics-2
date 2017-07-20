@@ -18,6 +18,7 @@
 
 package appeng.parts.p2p;
 
+
 import java.util.List;
 import java.util.Stack;
 
@@ -26,7 +27,6 @@ import appeng.items.parts.PartModels;
 import cofh.redstoneflux.api.IEnergyReceiver;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-
 
 import appeng.api.config.PowerUnits;
 import appeng.integration.IntegrationType;
@@ -141,7 +141,8 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 			if( !this.cachedTarget )
 			{
 				TileEntity self = this.getTile();
-				TileEntity te = self.getWorld().getTileEntity( new BlockPos( self.getPos().getX() + this.getSide().xOffset, self.getPos().getY() + this.getSide().yOffset, self.getPos().getZ() + this.getSide().zOffset ) );
+				TileEntity te = self.getWorld().getTileEntity( new BlockPos( self.getPos().getX() + this.getSide().xOffset, self.getPos()
+						.getY() + this.getSide().yOffset, self.getPos().getZ() + this.getSide().zOffset ) );
 				this.outputTarget = te instanceof IEnergyReceiver ? (IEnergyReceiver) te : null;
 				this.cachedTarget = true;
 			}
@@ -211,4 +212,4 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 	{
 		return true;
 	}
- }
+}

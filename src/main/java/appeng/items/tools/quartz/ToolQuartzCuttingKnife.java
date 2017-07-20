@@ -67,7 +67,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 			Platform.openGUI( p, null, AEPartLocation.INTERNAL, GuiBridge.GUI_QUARTZ_KNIFE );
 		}
 		p.swingArm( hand );
-		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem(hand) );
+		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
 	}
 
 	@Override

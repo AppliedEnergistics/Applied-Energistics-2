@@ -59,7 +59,8 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 			}
 		}
 
-		this.addSlotToContainer( this.outputSlot = new SlotCraftingTerm( this.getPlayerInv().player, this.getActionSource(), this.getPowerSource(), monitorable, crafting, crafting, this.output, 131, -72 + 18, this ) );
+		this.addSlotToContainer( this.outputSlot = new SlotCraftingTerm( this.getPlayerInv().player, this.getActionSource(), this
+				.getPowerSource(), monitorable, crafting, crafting, this.output, 131, -72 + 18, this ) );
 
 		this.bindPlayerInventory( ip, 0, 0 );
 

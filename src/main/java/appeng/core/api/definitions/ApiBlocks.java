@@ -155,6 +155,7 @@ import appeng.decorative.solid.BlockSkyStone.SkystoneType;
 import appeng.decorative.stair.BlockStairCommon;
 import appeng.hooks.DispenserBehaviorTinyTNT;
 
+
 /**
  * Internal implementation for the API blocks
  */
@@ -397,7 +398,7 @@ public final class ApiBlocks implements IBlocks
 				.build();
 		this.condenser = registry.block( "condenser", BlockCondenser::new )
 				.features( AEFeature.CONDENSER )
-				.tileEntity( new TileEntityDefinition(  TileCondenser.class ) )
+				.tileEntity( new TileEntityDefinition( TileCondenser.class ) )
 				.build();
 		this.energyAcceptor = registry.block( "energy_acceptor", BlockEnergyAcceptor::new )
 				.features( AEFeature.ENERGY_ACCEPTOR )
@@ -515,17 +516,17 @@ public final class ApiBlocks implements IBlocks
 
 		this.itemGen = registry.block( "debug_item_gen", BlockItemGen::new )
 				.features( AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE )
-				.tileEntity( new TileEntityDefinition ( TileItemGen.class ) )
+				.tileEntity( new TileEntityDefinition( TileItemGen.class ) )
 				.useCustomItemModel()
 				.build();
 		this.chunkLoader = registry.block( "debug_chunk_loader", BlockChunkloader::new )
 				.features( AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE )
-				.tileEntity( new TileEntityDefinition ( TileChunkLoader.class ) )
+				.tileEntity( new TileEntityDefinition( TileChunkLoader.class ) )
 				.useCustomItemModel()
 				.build();
 		this.phantomNode = registry.block( "debug_phantom_node", BlockPhantomNode::new )
 				.features( AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE )
-				.tileEntity( new TileEntityDefinition ( TilePhantomNode.class ) )
+				.tileEntity( new TileEntityDefinition( TilePhantomNode.class ) )
 				.useCustomItemModel()
 				.build();
 		this.cubeGenerator = registry.block( "debug_cube_gen", BlockCubeGenerator::new )

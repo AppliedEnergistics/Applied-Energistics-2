@@ -552,7 +552,8 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	{
 		try
 		{
-			return (int) ( this.getProxy().getEnergy().extractAEPower( ticksPassed * bonusValue * acceleratorTax, Actionable.MODULATE, PowerMultiplier.CONFIG ) / acceleratorTax );
+			return (int) ( this.getProxy().getEnergy().extractAEPower( ticksPassed * bonusValue * acceleratorTax, Actionable.MODULATE,
+					PowerMultiplier.CONFIG ) / acceleratorTax );
 		}
 		catch( final GridAccessException e )
 		{

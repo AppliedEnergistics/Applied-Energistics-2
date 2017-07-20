@@ -101,7 +101,8 @@ public class QuadRotator
 
 		for( int i = 0; i < 4; i++ )
 		{
-			Point3f pos = new Point3f( Float.intBitsToFloat( newData[i * stride + posIdx] ) - 0.5f, Float.intBitsToFloat( newData[i * stride + posIdx + 1] ) - 0.5f, Float.intBitsToFloat( newData[i * stride + posIdx + 2] ) - 0.5f );
+			Point3f pos = new Point3f( Float.intBitsToFloat( newData[i * stride + posIdx] ) - 0.5f, Float
+					.intBitsToFloat( newData[i * stride + posIdx + 1] ) - 0.5f, Float.intBitsToFloat( newData[i * stride + posIdx + 2] ) - 0.5f );
 
 			// Rotate stuff around
 			mat.transform( pos );
@@ -116,7 +117,8 @@ public class QuadRotator
 			{
 				if( normalType == VertexFormatElement.EnumType.FLOAT )
 				{
-					Vector3f normal = new Vector3f( Float.intBitsToFloat( newData[i * stride + normalIdx] ), Float.intBitsToFloat( newData[i * stride + normalIdx + 1] ), Float.intBitsToFloat( newData[i * stride + normalIdx + 2] ) );
+					Vector3f normal = new Vector3f( Float.intBitsToFloat( newData[i * stride + normalIdx] ), Float
+							.intBitsToFloat( newData[i * stride + normalIdx + 1] ), Float.intBitsToFloat( newData[i * stride + normalIdx + 2] ) );
 
 					// Rotate stuff around
 					mat.transform( normal );
@@ -129,7 +131,8 @@ public class QuadRotator
 				else if( normalType == VertexFormatElement.EnumType.BYTE )
 				{
 					int idx = i * stride * 4 + normalIdx;
-					Vector3f normal = new Vector3f( getByte( newData, idx ) / 127.0f, getByte( newData, idx + 1 ) / 127.0f, getByte( newData, idx + 2 ) / 127.0f );
+					Vector3f normal = new Vector3f( getByte( newData, idx ) / 127.0f, getByte( newData, idx + 1 ) / 127.0f, getByte( newData,
+							idx + 2 ) / 127.0f );
 
 					// Rotate stuff around
 					mat.transform( normal );

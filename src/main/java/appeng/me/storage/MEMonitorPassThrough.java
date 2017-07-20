@@ -60,7 +60,8 @@ public class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T
 		}
 
 		this.monitor = null;
-		final IItemList<T> before = this.getInternal() == null ? this.getWrappedChannel().createList() : this.getInternal().getAvailableItems( new ItemListIgnoreCrafting( this.getWrappedChannel().createList() ) );
+		final IItemList<T> before = this.getInternal() == null ? this.getWrappedChannel().createList() : this.getInternal()
+				.getAvailableItems( new ItemListIgnoreCrafting( this.getWrappedChannel().createList() ) );
 
 		super.setInternal( i );
 		if( i instanceof IMEMonitor )
@@ -68,7 +69,8 @@ public class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T
 			this.monitor = (IMEMonitor<T>) i;
 		}
 
-		final IItemList<T> after = this.getInternal() == null ? this.getWrappedChannel().createList() : this.getInternal().getAvailableItems( new ItemListIgnoreCrafting( this.getWrappedChannel().createList() ) );
+		final IItemList<T> after = this.getInternal() == null ? this.getWrappedChannel().createList() : this.getInternal()
+				.getAvailableItems( new ItemListIgnoreCrafting( this.getWrappedChannel().createList() ) );
 
 		if( this.monitor != null )
 		{

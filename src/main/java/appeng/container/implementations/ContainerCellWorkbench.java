@@ -116,7 +116,9 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 			for( int z = 0; z < 8; z++ )
 			{
 				final int iSLot = zz * 8 + z;
-				this.addSlotToContainer( new OptionalSlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgradeInventory, this, iSLot, 187 + zz * 18, 8 + 18 * z, iSLot, this.getInventoryPlayer() ) );
+				this.addSlotToContainer(
+						new OptionalSlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgradeInventory, this, iSLot, 187 + zz * 18, 8 + 18 * z, iSLot, this
+								.getInventoryPlayer() ) );
 			}
 		}
 		/*
@@ -229,7 +231,8 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 	{
 		final IInventory inv = this.getUpgradeable().getInventoryByName( "config" );
 
-		final IMEInventory<IAEItemStack> cellInv = AEApi.instance().registries().cell().getCellInventory( this.getUpgradeable().getInventoryByName( "cell" ).getStackInSlot( 0 ), null, StorageChannel.ITEMS );
+		final IMEInventory<IAEItemStack> cellInv = AEApi.instance().registries().cell().getCellInventory(
+				this.getUpgradeable().getInventoryByName( "cell" ).getStackInSlot( 0 ), null, StorageChannel.ITEMS );
 
 		Iterator<IAEItemStack> i = new NullIterator<IAEItemStack>();
 		if( cellInv != null )

@@ -68,7 +68,8 @@ public class GuiNetworkTool extends AEBaseGui
 	{
 		super.initGui();
 
-		this.tFacades = new GuiToggleButton( this.guiLeft - 18, this.guiTop + 8, 23, 22, GuiText.TransparentFacades.getLocal(), GuiText.TransparentFacadesHint.getLocal() );
+		this.tFacades = new GuiToggleButton( this.guiLeft - 18, this.guiTop + 8, 23, 22, GuiText.TransparentFacades.getLocal(), GuiText.TransparentFacadesHint
+				.getLocal() );
 
 		this.buttonList.add( this.tFacades );
 	}

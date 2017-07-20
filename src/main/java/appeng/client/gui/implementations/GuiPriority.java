@@ -228,7 +228,8 @@ public class GuiPriority extends AEBaseGui
 	{
 		if( !this.checkHotbarKeys( key ) )
 		{
-			if( ( key == 211 || key == 205 || key == 203 || key == 14 || character == '-' || Character.isDigit( character ) ) && this.priority.textboxKeyTyped( character, key ) )
+			if( ( key == 211 || key == 205 || key == 203 || key == 14 || character == '-' || Character.isDigit( character ) ) && this.priority
+					.textboxKeyTyped( character, key ) )
 			{
 				try
 				{

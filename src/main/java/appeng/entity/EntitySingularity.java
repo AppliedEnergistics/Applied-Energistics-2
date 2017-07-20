@@ -122,7 +122,8 @@ public final class EntitySingularity extends AEBaseEntityItem
 						{
 							while( item.getCount() > 0 && other.getCount() > 0 )
 							{
-								other.grow( -1 );;
+								other.grow( -1 );
+								;
 								if( other.getCount() == 0 )
 								{
 									e.setDead();

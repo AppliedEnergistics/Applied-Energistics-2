@@ -36,7 +36,6 @@ import appeng.core.sync.AppEngPacket;
 public abstract class CommonHelper
 {
 
-
 	public abstract void preinit();
 
 	public abstract void init();

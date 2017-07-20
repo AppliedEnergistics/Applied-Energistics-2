@@ -38,6 +38,7 @@ import appeng.block.AEBaseTileBlock;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.qnb.TileQuantumBridge;
 
+
 public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICustomCollision
 {
 

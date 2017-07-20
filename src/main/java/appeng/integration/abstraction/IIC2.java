@@ -37,7 +37,8 @@ public interface IIC2 extends IIntegrationModule
 	/**
 	 * Create an IC2 power sink for the given external sink.
 	 */
-	default IC2PowerSink createPowerSink( TileEntity tileEntity, IExternalPowerSink externalSink ) {
+	default IC2PowerSink createPowerSink( TileEntity tileEntity, IExternalPowerSink externalSink )
+	{
 		return IC2PowerSinkStub.INSTANCE;
 	}
 

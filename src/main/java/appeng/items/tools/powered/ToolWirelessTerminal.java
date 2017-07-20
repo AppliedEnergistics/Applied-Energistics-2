@@ -59,8 +59,8 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	@Override
 	public ActionResult<ItemStack> onItemRightClick( final World w, final EntityPlayer player, final EnumHand hand )
 	{
-		AEApi.instance().registries().wireless().openWirelessTerminalGui( player.getHeldItem(hand), w, player );
-		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, player.getHeldItem(hand) );
+		AEApi.instance().registries().wireless().openWirelessTerminalGui( player.getHeldItem( hand ), w, player );
+		return new ActionResult<ItemStack>( EnumActionResult.SUCCESS, player.getHeldItem( hand ) );
 	}
 
 	@SideOnly( Side.CLIENT )
@@ -120,7 +120,8 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	@Override
 	public IConfigManager getConfigManager( final ItemStack target )
 	{
-		final ConfigManager out = new ConfigManager( new IConfigManagerHost(){
+		final ConfigManager out = new ConfigManager( new IConfigManagerHost()
+		{
 
 			@Override
 			public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
@@ -153,9 +154,9 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 		tag.setString( "name", name );
 	}
 
-        @Override
-        public boolean shouldCauseReequipAnimation( ItemStack oldStack, ItemStack newStack, boolean slotChanged ) 
+	@Override
+	public boolean shouldCauseReequipAnimation( ItemStack oldStack, ItemStack newStack, boolean slotChanged )
 	{
-	        return slotChanged;
-        }
+		return slotChanged;
+	}
 }

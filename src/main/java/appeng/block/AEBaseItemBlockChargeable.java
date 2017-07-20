@@ -63,24 +63,25 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 
 		final double percent = internalCurrentPower / internalMaxPower;
 
-		lines.add( GuiText.StoredEnergy.getLocal() + ':' + MessageFormat.format( " {0,number,#} ", internalCurrentPower ) + Platform.gui_localize( PowerUnits.AE.unlocalizedName ) + " - " + MessageFormat.format( " {0,number,#.##%} ", percent ) );
+		lines.add( GuiText.StoredEnergy.getLocal() + ':' + MessageFormat.format( " {0,number,#} ", internalCurrentPower ) + Platform
+				.gui_localize( PowerUnits.AE.unlocalizedName ) + " - " + MessageFormat.format( " {0,number,#.##%} ", percent ) );
 	}
 
 	private double getMaxEnergyCapacity()
 	{
 		final Block blockID = Block.getBlockFromItem( this );
 		final IBlockDefinition energyCell = Api.INSTANCE.definitions().blocks().energyCell();
-		return energyCell.maybeBlock().map( block -> {
-					if( blockID == block )
-					{
-						return 200000;
-					}
-					else
-					{
-						return 8 * 200000;
-					}
-				}
-		).orElse( 0 );
+		return energyCell.maybeBlock().map( block ->
+		{
+			if( blockID == block )
+			{
+				return 200000;
+			}
+			else
+			{
+				return 8 * 200000;
+			}
+		} ).orElse( 0 );
 	}
 
 	@Override

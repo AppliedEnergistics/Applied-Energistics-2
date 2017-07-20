@@ -71,7 +71,7 @@ public class MetaRotation implements IOrientable
 			return state.getValue( facingProp );
 		}
 
-		//TODO 1.10.2-R - Temp
+		// TODO 1.10.2-R - Temp
 		Axis a = state.getValue( BlockQuartzPillar.AXIS_ORIENTATION );
 
 		if( a == null )
@@ -102,7 +102,7 @@ public class MetaRotation implements IOrientable
 			}
 			else
 			{
-				//TODO 1.10.2-R - Temp
+				// TODO 1.10.2-R - Temp
 				( (World) this.w ).setBlockState( this.pos, this.w.getBlockState( this.pos ).withProperty( BlockQuartzPillar.AXIS_ORIENTATION, up.getAxis() ) );
 			}
 		}

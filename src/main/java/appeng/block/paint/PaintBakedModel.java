@@ -1,3 +1,4 @@
+
 package appeng.block.paint;
 
 
@@ -27,7 +28,8 @@ import appeng.helpers.Splotch;
 
 
 /**
- * Renders paint blocks, which render multiple "splotches" that have been applied to the sides of adjacent blocks using a
+ * Renders paint blocks, which render multiple "splotches" that have been applied to the sides of adjacent blocks using
+ * a
  * matter cannon with paint balls.
  */
 class PaintBakedModel implements IBakedModel
@@ -82,7 +84,8 @@ class PaintBakedModel implements IBakedModel
 		CubeBuilder builder = new CubeBuilder( vertexFormat );
 
 		float offsetConstant = 0.001f;
-		for( final Splotch s : splotches) {
+		for( final Splotch s : splotches )
+		{
 
 			if( s.isLumen() )
 			{
@@ -191,7 +194,6 @@ class PaintBakedModel implements IBakedModel
 	static List<ResourceLocation> getRequiredTextures()
 	{
 		return ImmutableList.of(
-				TEXTURE_PAINT1, TEXTURE_PAINT2, TEXTURE_PAINT3
-		);
+				TEXTURE_PAINT1, TEXTURE_PAINT2, TEXTURE_PAINT3 );
 	}
 }

@@ -164,7 +164,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 		{
 			final ItemStack[] set = new ItemStack[this.getPattern().getSizeInventory()];
 			// Safeguard for empty slots in the inventory for now
-			Arrays.fill(set, ItemStack.EMPTY);
+			Arrays.fill( set, ItemStack.EMPTY );
 
 			// add one of each item to the items on the board...
 			if( Platform.isServer() )
@@ -214,7 +214,8 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 					{
 						if( !this.getPattern().getStackInSlot( x ).isEmpty() )
 						{
-							set[x] = Platform.extractItemsByRecipe( this.energySrc, this.mySrc, inv, p.world, r, is, ic, this.getPattern().getStackInSlot( x ), x, all, Actionable.MODULATE, ItemViewCell.createFilter( this.container.getViewCells() ) );
+							set[x] = Platform.extractItemsByRecipe( this.energySrc, this.mySrc, inv, p.world, r, is, ic, this.getPattern().getStackInSlot( x ),
+									x, all, Actionable.MODULATE, ItemViewCell.createFilter( this.container.getViewCells() ) );
 							ic.setInventorySlotContents( x, set[x] );
 						}
 					}

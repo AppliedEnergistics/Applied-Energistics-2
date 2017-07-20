@@ -114,7 +114,7 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 		try
 		{
 			// TODO : 1.12 Cleanup/remove the old recipe loader.
-//			Registration.addRecipeToRegister( new ShapedRecipe( outIS, args.toArray( new Object[args.size()] ) ) );
+			// Registration.addRecipeToRegister( new ShapedRecipe( outIS, args.toArray( new Object[args.size()] ) ) );
 		}
 		catch( final Throwable e )
 		{

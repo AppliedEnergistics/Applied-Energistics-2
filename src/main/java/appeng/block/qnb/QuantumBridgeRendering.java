@@ -1,3 +1,4 @@
+
 package appeng.block.qnb;
 
 
@@ -18,6 +19,6 @@ public class QuantumBridgeRendering extends BlockRenderingCustomizer
 	{
 		rendering.builtInModel( "models/block/qnb/qnb_formed", new QnbFormedModel() );
 		// Disable auto rotation
-		rendering.modelCustomizer( (location, model) -> model );
+		rendering.modelCustomizer( ( location, model ) -> model );
 	}
 }

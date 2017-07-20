@@ -60,9 +60,12 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 		super( ip, te );
 		this.ti = te;
 
-		this.addSlotToContainer( this.top = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, this.ti, 0, 45, 16, this.getInventoryPlayer() ) );
-		this.addSlotToContainer( this.bottom = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, this.ti, 1, 45, 62, this.getInventoryPlayer() ) );
-		this.addSlotToContainer( this.middle = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_INPUT, this.ti, 2, 63, 39, this.getInventoryPlayer() ) );
+		this.addSlotToContainer(
+				this.top = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, this.ti, 0, 45, 16, this.getInventoryPlayer() ) );
+		this.addSlotToContainer(
+				this.bottom = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, this.ti, 1, 45, 62, this.getInventoryPlayer() ) );
+		this.addSlotToContainer(
+				this.middle = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_INPUT, this.ti, 2, 63, 39, this.getInventoryPlayer() ) );
 
 		this.addSlotToContainer( new SlotOutput( this.ti, 3, 113, 40, -1 ) );
 	}
@@ -76,7 +79,8 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 	@Override
 	/**
 	 * Overridden super.setupConfig to prevent setting up the fake slots
-	 */protected void setupConfig()
+	 */
+	protected void setupConfig()
 	{
 		this.setupUpgrades();
 	}
@@ -126,11 +130,15 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 
 			for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 			{
-				final boolean matchA = ( top.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( top, recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) ) && // and...
-				( bot.isEmpty() && !recipe.getBottomOptional().isPresent() ) | ( Platform.itemComparisons().isSameItem( bot, recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) );
+				final boolean matchA = ( top.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( top,
+						recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) ) && // and...
+						( bot.isEmpty() && !recipe.getBottomOptional().isPresent() ) | ( Platform.itemComparisons().isSameItem( bot,
+								recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) );
 
-				final boolean matchB = ( bot.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( bot, recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) ) && // and...
-				( top.isEmpty() && !recipe.getBottomOptional().isPresent() ) | ( Platform.itemComparisons().isSameItem( top, recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) );
+				final boolean matchB = ( bot.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( bot,
+						recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) ) && // and...
+						( top.isEmpty() && !recipe.getBottomOptional().isPresent() ) | ( Platform.itemComparisons().isSameItem( top,
+								recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) );
 
 				if( matchA || matchB )
 				{

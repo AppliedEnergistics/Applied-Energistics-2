@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
+
 package appeng.client.render.model;
 
 
@@ -49,8 +50,7 @@ public class DriveModel implements IModel
 			DriveSlotState.OFFLINE, new ResourceLocation( "appliedenergistics2:block/drive_cell_off" ),
 			DriveSlotState.ONLINE, new ResourceLocation( "appliedenergistics2:block/drive_cell_on" ),
 			DriveSlotState.TYPES_FULL, new ResourceLocation( "appliedenergistics2:block/drive_cell_types_full" ),
-			DriveSlotState.FULL, new ResourceLocation( "appliedenergistics2:block/drive_cell_full" )
-	);
+			DriveSlotState.FULL, new ResourceLocation( "appliedenergistics2:block/drive_cell_full" ) );
 
 	@Override
 	public Collection<ResourceLocation> getDependencies()

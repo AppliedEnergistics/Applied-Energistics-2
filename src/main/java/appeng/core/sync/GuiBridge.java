@@ -352,7 +352,8 @@ public enum GuiBridge implements IGuiHandler
 
 			if( target == null )
 			{
-				throw new IllegalStateException( "Cannot find " + this.containerClass.getName() + "( " + this.typeName( inventory ) + ", " + this.typeName( tE ) + " )" );
+				throw new IllegalStateException( "Cannot find " + this.containerClass.getName() + "( " + this.typeName( inventory ) + ", " + this
+						.typeName( tE ) + " )" );
 			}
 
 			final Object o = target.newInstance( inventory, tE );
@@ -489,7 +490,8 @@ public enum GuiBridge implements IGuiHandler
 
 			if( target == null )
 			{
-				throw new IllegalStateException( "Cannot find " + this.containerClass.getName() + "( " + this.typeName( inventory ) + ", " + this.typeName( tE ) + " )" );
+				throw new IllegalStateException( "Cannot find " + this.containerClass.getName() + "( " + this.typeName( inventory ) + ", " + this
+						.typeName( tE ) + " )" );
 			}
 
 			return target.newInstance( inventory, tE );

@@ -97,7 +97,8 @@ public class FacadeDispatcherBakedModel implements IBakedModel
 	@Override
 	public ItemOverrideList getOverrides()
 	{
-		return new ItemOverrideList( Collections.emptyList() ){
+		return new ItemOverrideList( Collections.emptyList() )
+		{
 			@Override
 			public IBakedModel handleItemState( IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity )
 			{

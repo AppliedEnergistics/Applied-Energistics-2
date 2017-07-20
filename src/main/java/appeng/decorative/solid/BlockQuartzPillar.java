@@ -32,6 +32,7 @@ import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
 import appeng.helpers.MetaRotation;
 
+
 public class BlockQuartzPillar extends AEBaseBlock implements IOrientableBlock
 {
 	public static final PropertyEnum<EnumFacing.Axis> AXIS_ORIENTATION = PropertyEnum.create( "axis", EnumFacing.Axis.class );

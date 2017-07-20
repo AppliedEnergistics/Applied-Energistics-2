@@ -112,7 +112,8 @@ public class CachedPlane
 		{
 			for( int z = 0; z < this.z_size; z++ )
 			{
-				this.myColumns[x][z] = new Column( w.getChunkFromChunkCoords( ( minX + x ) >> 4, ( minZ + z ) >> 4 ), ( minX + x ) & 0xF, ( minZ + z ) & 0xF, minCY, cy_size );
+				this.myColumns[x][z] = new Column( w.getChunkFromChunkCoords( ( minX + x ) >> 4,
+						( minZ + z ) >> 4 ), ( minX + x ) & 0xF, ( minZ + z ) & 0xF, minCY, cy_size );
 			}
 		}
 
@@ -135,7 +136,8 @@ public class CachedPlane
 					final TileEntity te = tx.getValue();
 
 					final BlockPos tePOS = te.getPos();
-					if( tePOS.getX() >= minX && tePOS.getX() <= maxX && tePOS.getY() >= minY && tePOS.getY() <= maxY && tePOS.getZ() >= minZ && tePOS.getZ() <= maxZ )
+					if( tePOS.getX() >= minX && tePOS.getX() <= maxX && tePOS.getY() >= minY && tePOS.getY() <= maxY && tePOS.getZ() >= minZ && tePOS
+							.getZ() <= maxZ )
 					{
 						if( mr.askToMove( te ) )
 						{
@@ -148,7 +150,8 @@ public class CachedPlane
 							final Block blk = (Block) details[0];
 
 							// don't skip air, just let the code replace it...
-							if( blk != null && blk.isAir( c.getWorld().getBlockState( tePOS ), c.getWorld(), tePOS ) && blk.isReplaceable( c.getWorld(), tePOS ) )
+							if( blk != null && blk.isAir( c.getWorld().getBlockState( tePOS ), c.getWorld(), tePOS ) && blk.isReplaceable( c.getWorld(),
+									tePOS ) )
 							{
 								c.getWorld().setBlockToAir( tePOS );
 							}
@@ -173,7 +176,8 @@ public class CachedPlane
 					{
 						final NextTickListEntry entry = (NextTickListEntry) o;
 						final BlockPos tePOS = entry.position;
-						if( tePOS.getX() >= minX && tePOS.getX() <= maxX && tePOS.getY() >= minY && tePOS.getY() <= maxY && tePOS.getZ() >= minZ && tePOS.getZ() <= maxZ )
+						if( tePOS.getX() >= minX && tePOS.getX() <= maxX && tePOS.getY() >= minY && tePOS.getY() <= maxY && tePOS.getZ() >= minZ && tePOS
+								.getZ() <= maxZ )
 						{
 							final NextTickListEntry newEntry = new NextTickListEntry( tePOS, entry.getBlock() );
 							newEntry.scheduledTime = entry.scheduledTime - k;

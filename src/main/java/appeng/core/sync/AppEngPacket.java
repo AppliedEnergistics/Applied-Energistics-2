@@ -96,7 +96,7 @@ public abstract class AppEngPacket implements Packet
 
 	// TODO: Figure out why Forge/Minecraft on the server sets the stream data buffer to PooledUnsafeDirectByteBuf
 
-	public ByteArrayInputStream getPacketByteArray ( ByteBuf stream, int readerIndex, int readableBytes )
+	public ByteArrayInputStream getPacketByteArray( ByteBuf stream, int readerIndex, int readableBytes )
 	{
 		final ByteArrayInputStream bytes;
 		if( stream.hasArray() )
@@ -112,7 +112,7 @@ public abstract class AppEngPacket implements Packet
 		return bytes;
 	}
 
-	public ByteArrayInputStream getPacketByteArray ( ByteBuf stream )
+	public ByteArrayInputStream getPacketByteArray( ByteBuf stream )
 	{
 		return getPacketByteArray( stream, 0, stream.readableBytes() );
 	}

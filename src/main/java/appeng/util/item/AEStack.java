@@ -109,12 +109,14 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	}
 
 	@Override
-	public boolean getShowCraftingLabel() {
+	public boolean getShowCraftingLabel()
+	{
 		return this.showCraftingLabel;
 	}
 
 	@Override
-	public void setShowCraftingLabel(boolean showCraftingLabel) {
+	public void setShowCraftingLabel( boolean showCraftingLabel )
+	{
 		this.showCraftingLabel = showCraftingLabel;
 	}
 
@@ -151,7 +153,8 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	@Override
 	public void writeToPacket( final ByteBuf i ) throws IOException
 	{
-		final byte mask = (byte) ( this.getType( 0 ) | ( this.getType( this.stackSize ) << 2 ) | ( this.getType( this.countRequestable ) << 4 ) | ( (byte) ( this.isCraftable ? 1 : 0 ) << 6 ) | ( this.hasTagCompound() ? 1 : 0 ) << 7 );
+		final byte mask = (byte) ( this.getType( 0 ) | ( this.getType( this.stackSize ) << 2 ) | ( this
+				.getType( this.countRequestable ) << 4 ) | ( (byte) ( this.isCraftable ? 1 : 0 ) << 6 ) | ( this.hasTagCompound() ? 1 : 0 ) << 7 );
 
 		i.writeByte( mask );
 		i.writeBoolean( this.showCraftingLabel );

@@ -64,7 +64,8 @@ public enum TickRates
 
 	public void Load( final AEConfig config )
 	{
-		config.addCustomCategoryComment( "TickRates", " Min / Max Tickrates for dynamic ticking, most of these components also use sleeping, to prevent constant ticking, adjust with care, non standard rates are not supported or tested." );
+		config.addCustomCategoryComment( "TickRates",
+				" Min / Max Tickrates for dynamic ticking, most of these components also use sleeping, to prevent constant ticking, adjust with care, non standard rates are not supported or tested." );
 		this.setMin( config.get( "TickRates", this.name() + ".min", this.getMin() ).getInt( this.getMin() ) );
 		this.setMax( config.get( "TickRates", this.name() + ".max", this.getMax() ).getInt( this.getMax() ) );
 	}

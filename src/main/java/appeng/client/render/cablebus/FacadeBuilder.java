@@ -99,7 +99,7 @@ public class FacadeBuilder
 		} );
 	}
 
-	public static TextureAtlasAndTint getSprite( IBakedModel blockModel, IBlockState state, EnumFacing facing, long rand)
+	public static TextureAtlasAndTint getSprite( IBakedModel blockModel, IBlockState state, EnumFacing facing, long rand )
 	{
 
 		TextureAtlasAndTint firstFound = null;
@@ -107,7 +107,8 @@ public class FacadeBuilder
 
 		try
 		{
-			// Some other mods also distinguish between layers, so we're doing this in a loop from most likely to least likely
+			// Some other mods also distinguish between layers, so we're doing this in a loop from most likely to least
+			// likely
 			for( BlockRenderLayer layer : BlockRenderLayer.values() )
 			{
 
@@ -258,16 +259,8 @@ public class FacadeBuilder
 
 		AxisAlignedBB primaryBox = getFacadeBox( side, thinFacades );
 
-		Vector3f min = new Vector3f(
-				(float) primaryBox.minX * 16,
-				(float) primaryBox.minY * 16,
-				(float) primaryBox.minZ * 16
-		);
-		Vector3f max = new Vector3f(
-				(float) primaryBox.maxX * 16,
-				(float) primaryBox.maxY * 16,
-				(float) primaryBox.maxZ * 16
-		);
+		Vector3f min = new Vector3f( (float) primaryBox.minX * 16, (float) primaryBox.minY * 16, (float) primaryBox.minZ * 16 );
+		Vector3f max = new Vector3f( (float) primaryBox.maxX * 16, (float) primaryBox.maxY * 16, (float) primaryBox.maxZ * 16 );
 
 		if( busBounds == null )
 		{
@@ -311,8 +304,8 @@ public class FacadeBuilder
 		}
 		else
 		{
-			Vector3f busMin = new Vector3f( (float) busBounds.minX * 16, (float) busBounds.minY	* 16, (float) busBounds.minZ * 16 );
-			Vector3f busMax = new Vector3f( (float) busBounds.maxX * 16, (float) busBounds.maxY	* 16, (float) busBounds.maxZ * 16 );
+			Vector3f busMin = new Vector3f( (float) busBounds.minX * 16, (float) busBounds.minY * 16, (float) busBounds.minZ * 16 );
+			Vector3f busMax = new Vector3f( (float) busBounds.maxX * 16, (float) busBounds.maxY * 16, (float) busBounds.maxZ * 16 );
 
 			if( side == EnumFacing.UP || side == EnumFacing.DOWN )
 			{
@@ -368,8 +361,7 @@ public class FacadeBuilder
 		}
 	}
 
-	private void renderSegmentBlockCurrentBounds( CubeBuilder builder, Vector3f min, Vector3f max,
-			float minX, float minY, float minZ, float maxX, float maxY, float maxZ ) 
+	private void renderSegmentBlockCurrentBounds( CubeBuilder builder, Vector3f min, Vector3f max, float minX, float minY, float minZ, float maxX, float maxY, float maxZ )
 	{
 		minX = Math.max( min.x, minX );
 		minY = Math.max( min.y, minY );
@@ -379,7 +371,7 @@ public class FacadeBuilder
 		maxZ = Math.min( max.z, maxZ );
 
 		// don't draw it if its not at least a pixel wide...
-		if( maxX - minX >= 1.0 && maxY - minY >= 1.0  && maxZ - minZ >= 1.0 )
+		if( maxX - minX >= 1.0 && maxY - minY >= 1.0 && maxZ - minZ >= 1.0 )
 		{
 			builder.addCube( minX, minY, minZ, maxX, maxY, maxZ );
 		}
@@ -387,7 +379,8 @@ public class FacadeBuilder
 	}
 
 	/**
-	 * Given the actual facade bounding box, and the bounding boxes of all parts, determine the biggest union of AABB that intersect with the
+	 * Given the actual facade bounding box, and the bounding boxes of all parts, determine the biggest union of AABB
+	 * that intersect with the
 	 * facade's bounding box. This AABB will need to be "cut out" when the facade is rendered.
 	 */
 	@Nullable

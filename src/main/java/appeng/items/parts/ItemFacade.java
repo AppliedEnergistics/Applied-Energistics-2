@@ -72,7 +72,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	@Override
 	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
-		return AEApi.instance().partHelper().placeBus( player.getHeldItem(hand), pos, side, player, hand, world );
+		return AEApi.instance().partHelper().placeBus( player.getHeldItem( hand ), pos, side, player, hand, world );
 	}
 
 	@Override
@@ -183,7 +183,8 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			return ItemStack.EMPTY;
 		}
 
-		final boolean defaultValue = ( b.isTopSolid( blockState ) && hasSimpleModel( blockState ) && !b.getTickRandomly() && !hasTile && !disableOre ) || enableGlass;
+		final boolean defaultValue = ( b
+				.isTopSolid( blockState ) && hasSimpleModel( blockState ) && !b.getTickRandomly() && !hasTile && !disableOre ) || enableGlass;
 		if( FacadeConfig.instance().checkEnabled( b, metadata, defaultValue ) )
 		{
 			if( returnItem )
@@ -236,13 +237,16 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			}
 
 			Item item = Item.REGISTRY.getObjectById( data[0] );
-			if ( item == null ) {
+			if( item == null )
+			{
 				return ItemStack.EMPTY;
 			}
 
 			itemId = item.getRegistryName();
 			itemDamage = data[1];
-		} else {
+		}
+		else
+		{
 			// First item is numeric item id, second is damage
 			itemId = new ResourceLocation( nbt.getString( TAG_ITEM_ID ) );
 			itemDamage = nbt.getInteger( TAG_DAMAGE );
@@ -309,12 +313,17 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 	public ItemStack createFromIDs( final int[] ids )
 	{
-		ItemStack facadeStack = AEApi.instance().definitions().items().facade().maybeStack( 1 )
+		ItemStack facadeStack = AEApi.instance()
+				.definitions()
+				.items()
+				.facade()
+				.maybeStack( 1 )
 				.orElseThrow( () -> new MissingDefinition( "Tried to create a facade, while facades are being deactivated." ) );
 
 		// Convert back to a registry name...
 		Item item = Item.REGISTRY.getObjectById( ids[0] );
-		if ( item == null ) {
+		if( item == null )
+		{
 			return ItemStack.EMPTY;
 		}
 
