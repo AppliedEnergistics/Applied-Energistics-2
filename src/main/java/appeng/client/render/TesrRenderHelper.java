@@ -121,7 +121,7 @@ public class TesrRenderHelper
 
 	/**
 	 * Render an item in 2D and the given text below it.
-	 * 
+	 *
 	 * @param spacing Specifies how far apart the item and the item stack amount are rendered.
 	 */
 	public static void renderItem2dWithAmount( IAEItemStack itemStack, float itemScale, float spacing )

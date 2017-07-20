@@ -122,7 +122,7 @@ public final class WorldData implements IWorldData
 	 * Requires to start up from external from here
 	 *
 	 * drawback of the singleton build style
-	 * 
+	 *
 	 * @param server
 	 */
 	public static void onServerAboutToStart( MinecraftServer server )

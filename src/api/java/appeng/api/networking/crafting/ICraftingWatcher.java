@@ -29,16 +29,16 @@ import appeng.api.storage.data.IAEStack;
 
 /**
  * DO NOT IMPLEMENT.
- * 
+ *
  * Will be injected when adding an {@link ICraftingWatcherHost} to a grid.
  */
 public interface ICraftingWatcher
 {
 	/**
 	 * Add a specific {@link IAEStack} to watch.
-	 * 
+	 *
 	 * Supports multiple values, duplicate ones will not be added.
-	 * 
+	 *
 	 * @param stack
 	 * @return true, if successfully added.
 	 */
@@ -46,7 +46,7 @@ public interface ICraftingWatcher
 
 	/**
 	 * Remove a specific {@link IAEStack} from the watcher.
-	 * 
+	 *
 	 * @param stack
 	 * @return true, if successfully removed.
 	 */

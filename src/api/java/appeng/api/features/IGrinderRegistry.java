@@ -48,7 +48,7 @@ public interface IGrinderRegistry
 
 	/**
 	 * Add a new recipe with a single input and output and how many turns it requires.
-	 * 
+	 *
 	 * Will ignore duplicate recipes with the same input item.
 	 *
 	 * @param in The {@link ItemStack} to grind.
@@ -59,7 +59,7 @@ public interface IGrinderRegistry
 
 	/**
 	 * Add a new recipe with an input, output and a single optional output.
-	 * 
+	 *
 	 * Will ignore duplicate recipes with the same input item.
 	 *
 	 * @param in The {@link ItemStack} to grind.
@@ -72,7 +72,7 @@ public interface IGrinderRegistry
 
 	/**
 	 * add a new recipe with optional outputs, duplicates will not be added.
-	 * 
+	 *
 	 * Will ignore duplicate recipes with the same input item.
 	 *
 	 * @param in The {@link ItemStack} to grind.
@@ -82,13 +82,13 @@ public interface IGrinderRegistry
 	 * @param optional2 The second optional {@link ItemStack} to output of a certain chance.
 	 * @param chance2 chance to get the second optional output within 0.0 - 1.0
 	 * @param turns Amount of turns to turn the input into the output, with turns > 0.
-	 * 
+	 *
 	 */
 	void addRecipe( @Nonnull ItemStack in, @Nonnull ItemStack out, @Nonnull ItemStack optional, float chance, @Nonnull ItemStack optional2, float chance2, int turns );
 
 	/**
 	 * Remove the specific from the recipe list.
-	 * 
+	 *
 	 * @param recipe The recipe to be removed.
 	 * @return true, if it was removed
 	 */
@@ -106,11 +106,11 @@ public interface IGrinderRegistry
 
 	/**
 	 * Allows do add a custom ratio from an ore to dust when being grinded.
-	 * 
+	 *
 	 * The default ratio is 1 ore to 2 dusts.
-	 * 
+	 *
 	 * These have to be added before any recipe is registered. Otherwise it will use the default value.
-	 * 
+	 *
 	 * @param oredictName The name of the ore;
 	 * @param ratio The amount, must be > 0;
 	 */
@@ -118,9 +118,9 @@ public interface IGrinderRegistry
 
 	/**
 	 * Remove a custom ratio for a specific ore name.
-	 * 
+	 *
 	 * Will use the default of 2 value afterwards.
-	 * 
+	 *
 	 * @param oredictName The name of the ore;
 	 */
 	boolean removeDustRatio( @Nonnull String oredictName );

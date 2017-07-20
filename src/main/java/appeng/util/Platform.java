@@ -908,7 +908,7 @@ public class Platform
 
 	/**
 	 * Returns a random element from the given collection.
-	 * 
+	 *
 	 * @return null if the collection is empty
 	 */
 	@Nullable

@@ -41,9 +41,9 @@ public interface IPartModel
 	/**
 	 * A solid {@link IPartModel} indicates that the rendering requires a cable connection, which will also result in
 	 * creating an intersection for the cable.
-	 * 
+	 *
 	 * This should be true for pretty much all parts.
-	 * 
+	 *
 	 * @return true for a solid part.
 	 */
 	default boolean requireCableConnection()
@@ -53,7 +53,7 @@ public interface IPartModel
 
 	/**
 	 * A collection of {@link ResourceLocation} used as models for a part.
-	 * 
+	 *
 	 * @return a collection of models, never null.
 	 */
 	@Nonnull

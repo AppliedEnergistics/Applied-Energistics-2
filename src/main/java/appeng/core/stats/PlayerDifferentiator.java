@@ -34,7 +34,7 @@ public class PlayerDifferentiator
 	/**
 	 * Can determine if an {@link net.minecraft.entity.player.EntityPlayer} is not a real player.
 	 * This is based on if the
-	 * 
+	 *
 	 * @param player is:
 	 * - null
 	 * - dead

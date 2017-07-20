@@ -29,5 +29,5 @@ public enum BusSupport
 	CABLE,
 
 	DENSE_CABLE
-	
+
 }

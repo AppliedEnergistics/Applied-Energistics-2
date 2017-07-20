@@ -24,7 +24,7 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 
 /**
  * A generic implementation for {@link IUnlistedProperty}.
- * 
+ *
  * @param <T>
  */
 public class UnlistedProperty<T> implements IUnlistedProperty<T>

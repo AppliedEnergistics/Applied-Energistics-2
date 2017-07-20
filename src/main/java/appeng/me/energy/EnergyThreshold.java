@@ -38,7 +38,7 @@ public class EnergyThreshold implements Comparable<EnergyThreshold>
 
 	/**
 	 * Special constructor to allow querying a for a subset of thresholds.
-	 * 
+	 *
 	 * @param lim
 	 * @param bound
 	 */

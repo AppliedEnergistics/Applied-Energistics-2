@@ -31,7 +31,7 @@ import ic2.api.recipe.IRecipeInput;
 
 /**
  * Implementation of IRecipeInput for the macerator recipe.
- * 
+ *
  * @author GuntherDW
  */
 public class IC2RecipeInput implements IRecipeInput

@@ -54,12 +54,12 @@ public class ItemComparisonHelper
 
 	/**
 	 * Compare the two {@link ItemStack}s based on the same {@link Item} and damage value.
-	 * 
+	 *
 	 * In case of the item being damageable, only the {@link Item} will be considered.
 	 * If not it will also compare both damage values.
-	 * 
+	 *
 	 * Ignores NBT.
-	 * 
+	 *
 	 * @return true, if both are equal.
 	 */
 	public boolean isEqualItemType( final ItemStack that, final ItemStack other )
@@ -77,11 +77,11 @@ public class ItemComparisonHelper
 
 	/**
 	 * A wrapper around {@link ItemStack#isItemEqual(ItemStack)}.
-	 * 
+	 *
 	 * The benefit is to compare two null item stacks, without any additional null checks.
-	 * 
+	 *
 	 * Ignores NBT.
-	 * 
+	 *
 	 * @return true, if both are equal.
 	 */
 	public boolean isEqualItem( @Nonnull final ItemStack left, @Nonnull final ItemStack right )
@@ -100,7 +100,7 @@ public class ItemComparisonHelper
 
 	/**
 	 * Compares two {@link ItemStack} and their NBT tag for equality.
-	 * 
+	 *
 	 * Use this when a precise check is required and the same item is required.
 	 * Not just something with different NBT tags.
 	 *
@@ -115,7 +115,7 @@ public class ItemComparisonHelper
 	 * Similar to {@link ItemComparisonHelper#isEqualItem(ItemStack, ItemStack)},
 	 * but it can further check, if both match the same {@link FuzzyMode}
 	 * or are considered equal by the {@link OreDictionary}
-	 * 
+	 *
 	 * @param mode how to compare the two {@link ItemStack}s
 	 * @return true, if both are matching the mode or considered equal by the {@link OreDictionary}
 	 */
