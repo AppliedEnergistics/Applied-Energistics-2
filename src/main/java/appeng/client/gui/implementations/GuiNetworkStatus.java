@@ -22,12 +22,11 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 import java.util.List;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;

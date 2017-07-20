@@ -53,7 +53,6 @@ import appeng.me.pathfinding.ControllerValidator;
 import appeng.me.pathfinding.IPathItem;
 import appeng.me.pathfinding.PathSegment;
 import appeng.tile.networking.TileController;
-import appeng.util.Platform;
 
 
 public class PathGridCache implements IPathingGrid

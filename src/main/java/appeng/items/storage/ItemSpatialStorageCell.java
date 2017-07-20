@@ -22,11 +22,12 @@ package appeng.items.storage;
 import java.util.List;
 
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.implementations.TransitionResult;
 import appeng.api.implementations.items.ISpatialStorageCell;
@@ -37,8 +38,6 @@ import appeng.items.AEBaseItem;
 import appeng.spatial.StorageHelper;
 import appeng.spatial.StorageWorldProvider;
 import appeng.util.Platform;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorageCell

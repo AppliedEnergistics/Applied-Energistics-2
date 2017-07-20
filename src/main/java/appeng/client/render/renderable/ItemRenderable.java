@@ -22,12 +22,12 @@ package appeng.client.render.renderable;
 import java.nio.FloatBuffer;
 import java.util.function.Function;
 
-import net.minecraft.client.renderer.BufferBuilder;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Matrix4f;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;

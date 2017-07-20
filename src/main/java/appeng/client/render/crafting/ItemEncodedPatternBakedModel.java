@@ -9,8 +9,6 @@ import javax.vecmath.Matrix4f;
 
 import com.google.common.collect.ImmutableMap;
 
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Keyboard;
 
@@ -26,6 +24,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 import appeng.items.misc.ItemEncodedPattern;

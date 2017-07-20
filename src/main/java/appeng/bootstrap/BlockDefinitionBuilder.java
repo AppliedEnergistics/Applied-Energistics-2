@@ -29,8 +29,6 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import appeng.bootstrap.definitions.TileEntityDefinition;
-import appeng.core.Registration;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
@@ -44,9 +42,11 @@ import appeng.api.definitions.IBlockDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseItemBlock;
 import appeng.block.AEBaseTileBlock;
+import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
+import appeng.core.Registration;
 import appeng.core.features.AEFeature;
 import appeng.core.features.ActivityState;
 import appeng.core.features.BlockDefinition;

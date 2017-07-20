@@ -73,7 +73,6 @@ import appeng.api.util.IConfigManager;
 import appeng.capabilities.Capabilities;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
-import appeng.core.stats.Achievements;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;

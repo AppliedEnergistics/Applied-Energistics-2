@@ -27,10 +27,6 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
-import appeng.items.parts.ItemFacade;
-import appeng.recipes.game.DisassembleRecipe;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.block.Block;
@@ -50,6 +46,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IBlocks;
@@ -78,8 +75,11 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.stats.PlayerStatsRegistration;
 import appeng.hooks.TickHandler;
+import appeng.integration.IntegrationRegistry;
+import appeng.integration.IntegrationType;
 import appeng.integration.Integrations;
 import appeng.items.materials.ItemMaterial;
+import appeng.items.parts.ItemFacade;
 import appeng.loot.ChestLoot;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cache.EnergyGridCache;
@@ -93,6 +93,7 @@ import appeng.parts.PartPlacement;
 import appeng.recipes.AEItemResolver;
 import appeng.recipes.CustomRecipeConfig;
 import appeng.recipes.RecipeHandler;
+import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
 import appeng.recipes.game.ShapedRecipe;
 import appeng.recipes.game.ShapelessRecipe;
@@ -114,8 +115,6 @@ import appeng.spatial.StorageWorldProvider;
 import appeng.tile.AEBaseTile;
 import appeng.worldgen.MeteoriteWorldGen;
 import appeng.worldgen.QuartzWorldGen;
-import net.minecraftforge.registries.IForgeRegistry;
-import scala.App;
 
 
 public final class Registration

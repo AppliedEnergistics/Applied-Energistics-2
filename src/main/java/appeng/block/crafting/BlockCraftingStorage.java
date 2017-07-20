@@ -18,10 +18,6 @@
 
 package appeng.block.crafting;
 
-
-import appeng.tile.crafting.TileCraftingStorageTile;
-
-
 public class BlockCraftingStorage extends BlockCraftingUnit
 {
 

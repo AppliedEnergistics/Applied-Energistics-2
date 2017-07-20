@@ -19,10 +19,10 @@
 package appeng.container.slot;
 
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-
-import javax.annotation.Nonnull;
 
 
 public class OptionalSlotFake extends SlotFake

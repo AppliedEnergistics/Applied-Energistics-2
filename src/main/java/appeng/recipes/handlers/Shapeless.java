@@ -22,7 +22,6 @@ package appeng.recipes.handlers;
 import java.util.ArrayList;
 import java.util.List;
 
-import appeng.core.Registration;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.exceptions.MissingIngredientError;
@@ -32,7 +31,6 @@ import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
 import appeng.core.AELog;
 import appeng.recipes.RecipeHandler;
-import appeng.recipes.game.ShapelessRecipe;
 import appeng.util.Platform;
 
 

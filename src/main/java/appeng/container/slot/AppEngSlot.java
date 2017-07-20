@@ -19,17 +19,17 @@
 package appeng.container.slot;
 
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-
-import appeng.container.AEBaseContainer;
-import appeng.tile.inventory.AppEngInternalInventory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
+import appeng.container.AEBaseContainer;
+import appeng.tile.inventory.AppEngInternalInventory;
 
 
 public class AppEngSlot extends Slot

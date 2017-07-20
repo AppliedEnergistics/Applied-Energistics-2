@@ -21,11 +21,11 @@
 package appeng.parts.p2p;
 
 
-import appeng.api.config.PowerUnits;
-import appeng.api.parts.IPartModel;
-import appeng.items.parts.PartModels;
-import appeng.me.GridAccessException;
-import appeng.util.Platform;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -33,9 +33,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
+import appeng.api.config.PowerUnits;
+import appeng.api.parts.IPartModel;
+import appeng.items.parts.PartModels;
+import appeng.me.GridAccessException;
+import appeng.util.Platform;
 
 
 /**

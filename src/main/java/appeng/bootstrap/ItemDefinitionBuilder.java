@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import appeng.core.Registration;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.dispenser.IBehaviorDispenseItem;
@@ -37,6 +36,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
+import appeng.core.Registration;
 import appeng.core.features.AEFeature;
 import appeng.core.features.ItemDefinition;
 import appeng.util.Platform;

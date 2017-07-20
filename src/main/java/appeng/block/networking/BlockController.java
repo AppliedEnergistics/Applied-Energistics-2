@@ -34,9 +34,6 @@ import net.minecraft.world.World;
 import appeng.block.AEBaseTileBlock;
 import appeng.tile.networking.TileController;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 
 public class BlockController extends AEBaseTileBlock
 {

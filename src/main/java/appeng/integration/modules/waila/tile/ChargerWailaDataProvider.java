@@ -21,6 +21,8 @@ package appeng.integration.modules.waila.tile;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,8 +36,6 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 import appeng.core.localization.WailaText;
 import appeng.integration.modules.waila.BaseWailaDataProvider;
 import appeng.tile.misc.TileCharger;
-
-import javax.annotation.Nonnull;
 
 
 /**

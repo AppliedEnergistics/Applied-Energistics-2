@@ -22,7 +22,6 @@ package appeng.block.networking;
 import net.minecraft.block.material.Material;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.tile.networking.TileEnergyAcceptor;
 
 
 public class BlockEnergyAcceptor extends AEBaseTileBlock

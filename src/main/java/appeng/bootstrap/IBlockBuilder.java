@@ -22,12 +22,12 @@ package appeng.bootstrap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import appeng.bootstrap.definitions.TileEntityDefinition;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 
 import appeng.api.definitions.IBlockDefinition;
+import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.core.features.AEFeature;
 
 

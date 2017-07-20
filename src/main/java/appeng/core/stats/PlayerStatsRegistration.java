@@ -19,7 +19,6 @@
 package appeng.core.stats;
 
 
-import net.minecraft.advancements.Advancement;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
 
 import appeng.core.AEConfig;

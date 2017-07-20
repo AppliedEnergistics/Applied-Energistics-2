@@ -18,10 +18,6 @@
 
 package appeng.block.networking;
 
-
-import appeng.tile.networking.TileDenseEnergyCell;
-
-
 public class BlockDenseEnergyCell extends BlockEnergyCell
 {
 

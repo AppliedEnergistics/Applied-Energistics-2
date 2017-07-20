@@ -33,6 +33,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
@@ -56,8 +58,6 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.materials.MaterialType;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, IItemGroup

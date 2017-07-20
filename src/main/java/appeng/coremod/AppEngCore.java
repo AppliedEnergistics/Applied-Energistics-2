@@ -25,6 +25,8 @@ import javax.annotation.Nullable;
 
 import com.google.common.eventbus.EventBus;
 
+import org.apache.logging.log4j.Level;
+
 import net.minecraftforge.fml.common.DummyModContainer;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.LoadController;
@@ -35,7 +37,6 @@ import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.MCVersion;
 
 import appeng.core.AEConfig;
-import org.apache.logging.log4j.Level;
 
 
 @MCVersion( "1.12" )

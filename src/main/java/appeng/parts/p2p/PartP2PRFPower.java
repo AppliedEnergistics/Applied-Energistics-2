@@ -20,22 +20,22 @@ package appeng.parts.p2p;
 
 
 import java.util.List;
-import java.util.Stack;
 
-import appeng.api.parts.IPartModel;
-import appeng.items.parts.PartModels;
-import cofh.redstoneflux.api.IEnergyReceiver;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-
-import appeng.api.config.PowerUnits;
-import appeng.integration.IntegrationType;
-import appeng.me.GridAccessException;
-import appeng.coremod.annotations.Integration.Interface;
-import appeng.coremod.annotations.Integration.InterfaceList;
-import appeng.util.Platform;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+
+import cofh.redstoneflux.api.IEnergyReceiver;
+
+import appeng.api.config.PowerUnits;
+import appeng.api.parts.IPartModel;
+import appeng.coremod.annotations.Integration.Interface;
+import appeng.coremod.annotations.Integration.InterfaceList;
+import appeng.integration.IntegrationType;
+import appeng.items.parts.PartModels;
+import appeng.me.GridAccessException;
+import appeng.util.Platform;
 
 
 @InterfaceList( value = { @Interface( iface = "cofh.redstoneflux.api.IEnergyReceiver", iname = IntegrationType.RF ) } )

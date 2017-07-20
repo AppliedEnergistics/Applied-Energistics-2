@@ -28,10 +28,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.ChunkGeneratorOverworld;
 
 import appeng.api.AEApi;
 import appeng.core.AppEng;
-import net.minecraft.world.gen.ChunkGeneratorOverworld;
 
 
 public class StorageChunkProvider extends ChunkGeneratorOverworld

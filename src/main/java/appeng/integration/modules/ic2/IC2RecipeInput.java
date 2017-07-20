@@ -19,12 +19,14 @@
 package appeng.integration.modules.ic2;
 
 
-import ic2.api.recipe.IRecipeInput;
-import net.minecraft.item.ItemStack;
-
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nonnull;
+
+import net.minecraft.item.ItemStack;
+
+import ic2.api.recipe.IRecipeInput;
 
 
 /**

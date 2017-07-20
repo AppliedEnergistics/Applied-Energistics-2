@@ -34,6 +34,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.features.IPlayerRegistry;
@@ -42,8 +44,6 @@ import appeng.api.networking.security.ISecurityRegistry;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 public class ToolBiometricCard extends AEBaseItem implements IBiometricCard

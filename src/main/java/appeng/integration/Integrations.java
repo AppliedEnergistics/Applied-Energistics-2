@@ -19,7 +19,12 @@
 package appeng.integration;
 
 
-import appeng.integration.abstraction.*;
+import appeng.integration.abstraction.IIC2;
+import appeng.integration.abstraction.IInvTweaks;
+import appeng.integration.abstraction.IJEI;
+import appeng.integration.abstraction.IMekanism;
+import appeng.integration.abstraction.IRC;
+import appeng.integration.abstraction.IRF;
 
 
 /**

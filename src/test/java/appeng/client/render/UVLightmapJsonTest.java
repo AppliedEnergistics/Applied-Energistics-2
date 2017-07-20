@@ -19,7 +19,6 @@
 package appeng.client.render;
 
 
-import appeng.core.Registration;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -38,8 +37,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+
+import appeng.core.Registration;
 
 
 @Mod( modid = "UVLightmapJsonTest", name = "UVLightmapJsonTest", version = "0.0.0" )

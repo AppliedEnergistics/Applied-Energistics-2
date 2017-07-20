@@ -19,15 +19,13 @@
 package appeng.recipes.helpers;
 
 
-import appeng.api.recipes.ResolverResult;
-import appeng.api.recipes.ResolverResultSet;
-import appeng.core.AELog;
-import appeng.core.Api;
-import appeng.core.AppEng;
+import javax.annotation.Nonnull;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -38,7 +36,10 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-import javax.annotation.Nonnull;
+import appeng.api.recipes.ResolverResult;
+import appeng.core.AELog;
+import appeng.core.Api;
+import appeng.core.AppEng;
 
 
 /**

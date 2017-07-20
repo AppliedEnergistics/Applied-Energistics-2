@@ -45,7 +45,6 @@ import appeng.container.implementations.ContainerPatternTerm;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
-import appeng.integration.Integrations;
 import appeng.items.parts.ItemFacade;
 
 

@@ -19,13 +19,15 @@
 package appeng.parts.layers;
 
 
-import appeng.api.parts.IPart;
-import appeng.api.parts.LayerBase;
+import net.minecraft.util.EnumFacing;
+
 import cofh.redstoneflux.api.IEnergyConnection;
 import cofh.redstoneflux.api.IEnergyHandler;
 import cofh.redstoneflux.api.IEnergyProvider;
 import cofh.redstoneflux.api.IEnergyReceiver;
-import net.minecraft.util.EnumFacing;
+
+import appeng.api.parts.IPart;
+import appeng.api.parts.LayerBase;
 
 
 public class LayerIEnergyHandler extends LayerBase implements IEnergyHandler, IEnergyReceiver, IEnergyProvider

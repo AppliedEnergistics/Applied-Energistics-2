@@ -2,13 +2,14 @@
 package appeng.bootstrap.components;
 
 
-import appeng.bootstrap.definitions.TileEntityDefinition;
-import appeng.core.AppEng;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
-import java.util.ArrayList;
-import java.util.List;
+import appeng.bootstrap.definitions.TileEntityDefinition;
+import appeng.core.AppEng;
 
 
 /**

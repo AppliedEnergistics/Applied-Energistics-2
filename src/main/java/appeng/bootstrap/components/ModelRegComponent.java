@@ -2,8 +2,9 @@
 package appeng.bootstrap.components;
 
 
-import appeng.bootstrap.IBootstrapComponent;
 import net.minecraftforge.fml.relauncher.Side;
+
+import appeng.bootstrap.IBootstrapComponent;
 
 
 /**

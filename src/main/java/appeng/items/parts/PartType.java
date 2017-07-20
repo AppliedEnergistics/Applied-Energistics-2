@@ -28,8 +28,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import appeng.integration.IntegrationHelper;
-import appeng.parts.p2p.*;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -61,6 +59,14 @@ import appeng.parts.networking.PartCableGlass;
 import appeng.parts.networking.PartCableSmart;
 import appeng.parts.networking.PartDenseCable;
 import appeng.parts.networking.PartQuartzFiber;
+import appeng.parts.p2p.PartP2PFEPower;
+import appeng.parts.p2p.PartP2PFluids;
+import appeng.parts.p2p.PartP2PIC2Power;
+import appeng.parts.p2p.PartP2PItems;
+import appeng.parts.p2p.PartP2PLight;
+import appeng.parts.p2p.PartP2PRFPower;
+import appeng.parts.p2p.PartP2PRedstone;
+import appeng.parts.p2p.PartP2PTunnelME;
 import appeng.parts.reporting.PartConversionMonitor;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartDarkPanel;

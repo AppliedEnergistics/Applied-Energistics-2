@@ -26,11 +26,6 @@ import appeng.core.api.definitions.ApiItems;
 import appeng.core.api.definitions.ApiMaterials;
 import appeng.core.api.definitions.ApiParts;
 import appeng.core.features.registries.PartModels;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.world.biome.Biome;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 
 /**
