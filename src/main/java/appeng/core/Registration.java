@@ -149,21 +149,27 @@ public final class Registration
 	public static void addBlockToRegister( Block b )
 	{
 		if( blocksToRegister == null )
+		{
 			throw new IllegalStateException( "Past the registration phase already!" );
+		}
 		blocksToRegister.add( b );
 	}
 
 	public static void addRecipeToRegister( IRecipe r )
 	{
 		if( recipesToRegister == null )
+		{
 			throw new IllegalStateException( "Past the registration phase already!" );
+		}
 		recipesToRegister.add( r );
 	}
 
 	public static void addItemToRegister( Item i )
 	{
 		if( itemsToRegister == null )
+		{
 			throw new IllegalStateException( "Past the registration phase already!" );
+		}
 		itemsToRegister.add( i );
 	}
 

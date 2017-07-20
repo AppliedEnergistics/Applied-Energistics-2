@@ -59,7 +59,9 @@ public abstract class AEBaseItem extends Item
 	public final void getSubItems( final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
 	{
 		if( isInCreativeTab( creativeTab ) )
+		{
 			this.getCheckedSubItems( creativeTab, itemStacks );
+		}
 	}
 
 	@Override

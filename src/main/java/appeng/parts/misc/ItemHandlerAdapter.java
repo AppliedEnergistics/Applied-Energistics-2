@@ -175,10 +175,14 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	private ItemStack getItemStackInCachedSlot( int pos )
 	{
 		if( pos > cachedStacks.length )
+		{
 			return ItemStack.EMPTY;
+		}
 
 		if( cachedStacks[pos] == null )
+		{
 			return ItemStack.EMPTY;
+		}
 
 		return cachedStacks[pos];
 	}

@@ -116,7 +116,9 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 	private ItemStack getOldStack( int slot )
 	{
 		if( this.inv[slot] == null )
+		{
 			return ItemStack.EMPTY;
+		}
 
 		return this.inv[slot];
 	}

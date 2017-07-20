@@ -60,10 +60,14 @@ public class PartShapelessCraftingFactory extends ShapelessOreRecipe
 
 		NonNullList<Ingredient> ings = NonNullList.create();
 		for( JsonElement ele : JsonUtils.getJsonArray( json, "ingredients" ) )
+		{
 			ings.add( CraftingHelper.getIngredient( ele, context ) );
+		}
 
 		if( ings.isEmpty() )
+		{
 			throw new JsonParseException( "No ingredients for shapeless recipe" );
+		}
 
 		JsonObject resultObject = (JsonObject) json.get( "result" );
 		int count = JsonUtils.getInt( resultObject, "count", 1 );

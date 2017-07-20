@@ -67,9 +67,13 @@ public class PartShapedCraftingFactory extends ShapedOreRecipe
 		for( Map.Entry<String, JsonElement> entry : JsonUtils.getJsonObject( json, "key" ).entrySet() )
 		{
 			if( entry.getKey().length() != 1 )
+			{
 				throw new JsonSyntaxException( "Invalid key entry: '" + entry.getKey() + "' is an invalid symbol (must be 1 character only)." );
+			}
 			if( " ".equals( entry.getKey() ) )
+			{
 				throw new JsonSyntaxException( "Invalid key entry: ' ' is a reserved symbol." );
+			}
 
 			ingMap.put( entry.getKey().toCharArray()[0], CraftingHelper.getIngredient( entry.getValue(), context ) );
 		}
@@ -79,14 +83,18 @@ public class PartShapedCraftingFactory extends ShapedOreRecipe
 		JsonArray patternJ = JsonUtils.getJsonArray( json, "pattern" );
 
 		if( patternJ.size() == 0 )
+		{
 			throw new JsonSyntaxException( "Invalid pattern: empty pattern not allowed" );
+		}
 
 		String[] pattern = new String[patternJ.size()];
 		for( int x = 0; x < pattern.length; ++x )
 		{
 			String line = JsonUtils.getString( patternJ.get( x ), "pattern[" + x + "]" );
 			if( x > 0 && pattern[0].length() != line.length() )
+			{
 				throw new JsonSyntaxException( "Invalid pattern: each row must  be the same width" );
+			}
 			pattern[x] = line;
 		}
 
@@ -106,14 +114,18 @@ public class PartShapedCraftingFactory extends ShapedOreRecipe
 			{
 				net.minecraft.item.crafting.Ingredient ing = ingMap.get( chr );
 				if( ing == null )
+				{
 					throw new JsonSyntaxException( "Pattern references symbol '" + chr + "' but it's not defined in the key" );
+				}
 				primer.input.set( x++, ing );
 				keys.remove( chr );
 			}
 		}
 
 		if( !keys.isEmpty() )
+		{
 			throw new JsonSyntaxException( "Key defines symbols that aren't used in pattern: " + keys );
+		}
 
 		JsonObject resultObject = (JsonObject) json.get( "result" );
 		int count = JsonUtils.getInt( resultObject, "count", 1 );
