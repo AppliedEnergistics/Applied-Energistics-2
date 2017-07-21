@@ -29,6 +29,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
@@ -59,7 +60,6 @@ import appeng.core.sync.packets.PacketPatternSlot;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.items.storage.ItemViewCell;
 import appeng.parts.reporting.PartPatternTerminal;
-import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.tile.inventory.InvOperation;
 import appeng.util.InventoryAdaptor;
@@ -72,7 +72,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 {
 
 	private final PartPatternTerminal patternTerminal;
-	private final AppEngInternalInventory cOut = new AppEngInternalInventory( null, 1 );
+	private final InventoryCraftResult cOut = new InventoryCraftResult();
 	private final IInventory crafting;
 	private final SlotFakeCraftingMatrix[] craftingSlots = new SlotFakeCraftingMatrix[9];
 	private final OptionalSlotFake[] outputSlots = new OptionalSlotFake[3];
@@ -415,6 +415,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 			if( rr == r && Platform.itemComparisons().isSameItem( rr.getCraftingResult( real ), is ) )
 			{
+				this.cOut.setRecipeUsed(rr);
 				final SlotCrafting sc = new SlotCrafting( p, real, this.cOut, 0, 0, 0 );
 				sc.onTake( p, is );
 
