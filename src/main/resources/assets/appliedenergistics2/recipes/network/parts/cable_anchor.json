@@ -49,10 +49,12 @@
     ],
     [
       {
-        "item": "appliedenergistics2:certus_quartz_cutting_knife"
+        "item": "appliedenergistics2:certus_quartz_cutting_knife",
+        "data": 32767
       },
       {
-        "item": "appliedenergistics2:nether_quartz_cutting_knife"
+        "item": "appliedenergistics2:nether_quartz_cutting_knife",
+        "data": 32767
       }
     ]
   ]
