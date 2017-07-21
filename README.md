@@ -1,5 +1,5 @@
 [![Travis](https://img.shields.io/travis/AppliedEnergistics/Applied-Energistics-2.svg?maxAge=2592000&style=flat-square)](https://travis-ci.org/AppliedEnergistics/Applied-Energistics-2)
-[![Latest Release](https://img.shields.io/github/release/AppliedEnergistics/Applied-Energistics-2.svg?label=Latest Release&style=flat-square)](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases)
+[![Latest Release](https://img.shields.io/github/release/AppliedEnergistics/Applied-Energistics-2.svg?label=Latest%20Release&style=flat-square)](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases)
 
 # Applied Energistics 2
 
@@ -9,7 +9,6 @@
 * [Contacts](#contacts)
 * [License](#license)
 * [Downloads](#downloads)
-* [Nightly Builds](#nightly-builds)
 * [Installation](#installation)
 * [Issues](#issues)
 * [Building](#building)
@@ -31,13 +30,13 @@ A Mod about Matter, Energy and using them to conquer the world..
 ## License
 
 * Applied Energistics 2 API
-  - (c) 2013 - 2015 AlgorithmX2 et al
+  - (c) 2013 - 2017 AlgorithmX2 et al
   - [![License](https://img.shields.io/badge/License-MIT-red.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 * Applied Energistics 2
-  - (c) 2013 - 2015 AlgorithmX2 et al
+  - (c) 2013 - 2017 AlgorithmX2 et al
   - [![License](https://img.shields.io/badge/License-LGPLv3-blue.svg?style=flat-square)](https://raw.githubusercontent.com/AppliedEnergistics/Applied-Energistics-2/rv2/LICENSE)
 * Textures and Models
-  - (c) 2013 - 2015 AlgorithmX2 et al
+  - (c) 2013 - 2017 AlgorithmX2 et al
   - [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%203.0-yellow.svg?style=flat-square)](https://creativecommons.org/licenses/by-nc-sa/3.0/)
 * Text and Translations
   - [![License](https://img.shields.io/badge/License-No%20Restriction-green.svg?style=flat-square)](https://creativecommons.org/publicdomain/zero/1.0/)
@@ -45,14 +44,6 @@ A Mod about Matter, Energy and using them to conquer the world..
 ## Downloads
 
 Downloads can be found on [CurseForge](http://www.curse.com/mc-mods/minecraft/223794-applied-energistics-2) or on the [official website](http://ae-mod.info/Downloads/).
-
-## Nightly Builds
-
-[![Build status](https://ci.appveyor.com/api/projects/status/w0sg7upakn0vj5gc?svg=true)](https://ci.appveyor.com/project/shartte/applied-energistics-2/history)
-
-[Download Latest Nightly Build](https://ci.appveyor.com/api/projects/shartte/applied-energistics-2/artifacts/ae2-rv4-nightly.zip?branch=master)
-
-Nightly builds for the Minecraft 1.10.2 branch of AE2 (rv4-alpha) are available from [AppVeyor](https://ci.appveyor.com/project/shartte/applied-energistics-2/history). These builds are only for testing purposes and might lead to loss of data, and will contain significant bugs. Please see below on how you can report bugs you find during testing.
 
 ## Installation
 
@@ -63,15 +54,18 @@ You install this mod by putting it into the `minecraft/mods/` folder. It has no 
 Applied Energistics 2 crashing, have a suggestion, found a bug?  Create an issue now!
 
 1. Make sure your issue has not already been answered or fixed and you are using the latest version. Also think about whether your issue is a valid one before submitting it.
+    * If it is already possible with vanilla and AE2 itself, the suggestion will be considered invalid.
+    * Asking for a smaller version, more compact version, or more efficient version of something will also be considered invalid.
 2. Go to [the issues page](https://github.com/AppliedEnergistics/Applied-Energistics-2/issues) and click [new issue](https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/new)
 3. Enter your a title of your issue (something that summarizes your issue), and then create a detailed description of the issue.
-    * Do not tag it with something like `[Feature]` or `[Bug]`. When it is applicable, we will take care of it.
-    * The following details are required. Not including them can cause the issue to be closed.
+    * Do not tag it with something like `[Feature]`, `[Bug]`, or a version.
+    * Restrict it to a single bug or feature, it makes managing them way easier for us.
+    * The following details are required. Also refer to the issue template when creating one.
         * Forge version
         * AE2 version
         * Crash log, when reporting a crash (Please make sure to use [pastebin](http://pastebin.com/))
-            * Do not post an excerpt of what you consider important, instead:
-            * Post the full log
+            * Never post an excerpt of what you consider important
+            * Always post the full log
         * Other mods and their version, when reporting an issue between AE and another mod
             * Also consider updating these before submitting a new issue, it might be already fixed
         * A detailed description of the bug or feature
@@ -84,9 +78,11 @@ Applied Energistics 2 crashing, have a suggestion, found a bug?  Create an issue
         * Mod Pack using and version?
             * Keep in mind that some mods might use an outdated version of AE2
             * If so you should report it to your modpack
-5. Click `Submit New Issue`, and wait for feedback!
+4. Click `Submit New Issue`, and wait for feedback!
 
 Providing as many details as possible does help us to find and resolve the issue faster and also you getting a fixed version as fast as possible.
+
+Please note that we might close any issue not matching these requirements. 
 
 ## Building
 
@@ -110,7 +106,7 @@ Providing as many details as possible does help us to find and resolve the issue
 Before you want to add major changes, you might want to discuss them with us first, before wasting your time.
 If you are still willing to contribute to this project, you can contribute via [Pull-Request](https://help.github.com/articles/creating-a-pull-request).
 
-The [guidelines for contributing](https://github.com/AppliedEnergistics/Applied-Energistics-2/blob/master/CONTRIBUTING.md) contain more detailed information about topics like the used code style and should also be considered.
+The [guidelines for contributing](https://github.com/AppliedEnergistics/Applied-Energistics-2/blob/master/.github/CONTRIBUTING.md) contain more detailed information about topics like the used code style and should also be considered.
 
 Here are a few things to keep in mind that will help get your PR approved.
 
@@ -122,7 +118,7 @@ Here are a few things to keep in mind that will help get your PR approved.
   - Does your feature simplify another feature of AE2? These changes will not be accepted.
   - If your feature can be done by any popular mod, discuss with us first.
 
-Getting Started
+**Getting Started**
 
 1. Fork this repository
 2. Clone the fork via
@@ -142,7 +138,7 @@ If you are only doing single file pull requests, GitHub supports using a quick w
 
 The API for Applied Energistics 2. It is open source to discuss changes, improve documentation, and provide better add-on support in general.
 
-Development and standard builds can be obtained [Here](http://ae2.ae-mod.info/Downloads/).
+Universal builds obtained [Here](http://ae2.ae-mod.info/Downloads/) should work in a development environment.
 
 ### Maven
 
