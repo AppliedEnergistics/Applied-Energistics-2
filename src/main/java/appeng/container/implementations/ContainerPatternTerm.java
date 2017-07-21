@@ -28,6 +28,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
@@ -415,7 +416,10 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 			if( rr == r && Platform.itemComparisons().isSameItem( rr.getCraftingResult( real ), is ) )
 			{
-				final SlotCrafting sc = new SlotCrafting( p, real, this.cOut, 0, 0, 0 );
+				final InventoryCraftResult craftingResult = new InventoryCraftResult();
+				craftingResult.setRecipeUsed( rr );
+
+				final SlotCrafting sc = new SlotCrafting( p, real, craftingResult, 0, 0, 0 );
 				sc.onTake( p, is );
 
 				for( int x = 0; x < real.getSizeInventory(); x++ )
