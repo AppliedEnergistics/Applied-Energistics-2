@@ -113,9 +113,9 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 				{
 					if( item.getCount() >= r.getInput().getCount() )
 					{
-						item.grow( -r.getInput().getCount() );
 						final ItemStack ais = item.copy();
 						ais.setCount( r.getInput().getCount() );
+						item.shrink( r.getInput().getCount() );
 
 						if( item.getCount() <= 0 )
 						{
