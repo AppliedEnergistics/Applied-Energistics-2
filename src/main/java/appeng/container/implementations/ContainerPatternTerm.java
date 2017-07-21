@@ -499,6 +499,11 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			}
 			this.detectAndSendChanges();
 		}
+
+		if( s == this.craftSlot && Platform.isClient() )
+		{
+			this.getAndUpdateOutput();
+		}
 	}
 
 	public void clear()
