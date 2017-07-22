@@ -6,56 +6,11 @@
   },
   "type": "appliedenergistics2:part_shapeless",
   "ingredients": [
-    [
-      {
-        "item": "minecraft:iron_ingot"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "ingotCopper"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "ingotTin"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "ingotSilver"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "ingotLead"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "ingotBronze"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "ingotBrass"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "ingotNickel"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "ingotInvar"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "ingotAluminium"
-      }
-    ],
-    [
-      {
-        "item": "appliedenergistics2:certus_quartz_cutting_knife",
-        "data": 32767
-      },
-      {
-        "item": "appliedenergistics2:nether_quartz_cutting_knife",
-        "data": 32767
-      }
-    ]
+    {
+      "item": "#appliedenergistics2:metalIngots"
+    },
+    {
+      "item": "#appliedenergistics2:knife"
+    }
   ]
 }

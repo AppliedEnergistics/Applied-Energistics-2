@@ -20,15 +20,8 @@
     "b": {
       "item": "appliedenergistics2:energy_cell"
     },
-    "a": [
-      {
-        "type": "forge:ore_dict",
-        "ore": "crystalFluix"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "material.purified_fluix_crystal"
-      }
-    ]
+    "a": {
+      "item": "#appliedenergistics2:fluixCrystal"
+    }
   }
 }

@@ -9,19 +9,9 @@
     "ded"
   ],
   "key": {
-    "a": [
-      {
-        "type": "forge:ore_dict",
-        "ore": "blockGlass"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "glass"
-      },
-      {
-        "item": "minecraft:glass"
-      }
-    ],
+    "a": {
+      "item": "#appliedenergistics2:glass"
+    },
     "e": {
       "type": "appliedenergistics2:part",
       "part": "material.engineering_processor"
@@ -33,19 +23,8 @@
     "c": {
       "item": "appliedenergistics2:io_port"
     },
-    "b": [
-      {
-        "type": "appliedenergistics2:part",
-        "part": "cable_glass"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "cable_covered"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "cable_smart"
-      }
-    ]
+    "b": {
+      "item": "#appliedenergistics2:cable"
+    }
   }
 }

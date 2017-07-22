@@ -9,19 +9,9 @@
     "ded"
   ],
   "key": {
-    "a": [
-      {
-        "type": "forge:ore_dict",
-        "ore": "blockGlass"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "glass"
-      },
-      {
-        "item": "minecraft:glass"
-      }
-    ],
+    "a": {
+      "item": "#appliedenergistics2:glass"
+    },
     "b": {
       "type": "appliedenergistics2:part",
       "part": "part.terminal"
@@ -30,29 +20,11 @@
       "type": "forge:ore_dict",
       "ore": "ingotIron"
     },
-    "c": [
-      {
-        "type": "appliedenergistics2:part",
-        "part": "cable_glass"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "cable_covered"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "cable_smart"
-      }
-    ],
-    "e": [
-      {
-        "type": "forge:ore_dict",
-        "ore": "crystalFluix"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "material.purified_fluix_crystal"
-      }
-    ]
+    "c": {
+      "item": "#appliedenergistics2:cable"
+    },
+    "e": {
+      "item": "#appliedenergistics2:fluixCrystal"
+    }
   }
 }

@@ -12,20 +12,9 @@
     "c": {
       "item": "appliedenergistics2:quartz_glass"
     },
-    "a": [
-      {
-        "type": "forge:ore_dict",
-        "ore": "crystalCertusQuartz"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "material.certus_quartz_crystal_charged"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "material.purified_certus_quartz_crystal"
-      }
-    ],
+    "a": {
+      "item": "#appliedenergistics2:certusCrystal"
+    },
     "b": {
       "type": "forge:ore_dict",
       "ore": "dustFluix"

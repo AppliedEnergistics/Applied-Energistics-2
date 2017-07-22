@@ -9,12 +9,10 @@
       "type": "appliedenergistics2:part",
       "part": "material.formation_core"
     },
-    [
-      {
-        "type": "forge:ore_dict",
-        "ore": "itemIlluminatedPanel"
-      }
-    ],
+    {
+      "type": "forge:ore_dict",
+      "ore": "itemIlluminatedPanel"
+    },
     {
       "type": "appliedenergistics2:part",
       "part": "material.logic_processor"

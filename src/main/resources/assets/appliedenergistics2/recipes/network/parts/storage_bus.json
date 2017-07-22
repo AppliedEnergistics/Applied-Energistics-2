@@ -8,15 +8,9 @@
     {
       "item": "minecraft:sticky_piston"
     },
-    [
-      {
-        "item": "appliedenergistics2:interface"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "part.interface"
-      }
-    ],
+    {
+      "item": "#appliedenergistics2:interface"
+    },
     {
       "item": "minecraft:piston"
     }

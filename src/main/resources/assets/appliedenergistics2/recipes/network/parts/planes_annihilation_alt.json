@@ -13,16 +13,9 @@
       "type": "forge:ore_dict",
       "ore": "ingotIron"
     },
-    "a": [
-      {
-        "type": "forge:ore_dict",
-        "ore": "crystalFluix"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "material.purified_fluix_crystal"
-      }
-    ],
+    "a": {
+      "item": "#appliedenergistics2:fluixCrystal"
+    },
     "c": {
       "type": "appliedenergistics2:part",
       "part": "material.annihilation_core"

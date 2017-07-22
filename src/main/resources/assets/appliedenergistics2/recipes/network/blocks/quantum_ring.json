@@ -13,12 +13,10 @@
       "type": "appliedenergistics2:part",
       "part": "material.engineering_processor"
     },
-    "e": [
-      {
-        "type": "appliedenergistics2:part",
-        "part": "cable_dense_smart"
-      }
-    ],
+    "e": {
+      "type": "appliedenergistics2:part",
+      "part": "cable_dense_smart"
+    },
     "a": {
       "type": "forge:ore_dict",
       "ore": "ingotIron"

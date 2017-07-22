@@ -9,11 +9,9 @@
       "type": "appliedenergistics2:part",
       "part": "part.level_emitter"
     },
-    [
-      {
-        "type": "forge:ore_dict",
-        "ore": "itemIlluminatedPanel"
-      }
-    ]
+    {
+      "type": "forge:ore_dict",
+      "ore": "itemIlluminatedPanel"
+    }
   ]
 }

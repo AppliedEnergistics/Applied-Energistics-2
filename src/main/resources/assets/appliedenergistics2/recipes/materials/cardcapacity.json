@@ -11,20 +11,9 @@
   },
   "type": "appliedenergistics2:part_shapeless",
   "ingredients": [
-    [
-      {
-        "type": "forge:ore_dict",
-        "ore": "crystalCertusQuartz"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "material.certus_quartz_crystal_charged"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "material.purified_certus_quartz_crystal"
-      }
-    ],
+    {
+      "item": "#appliedenergistics2:certusCrystal"
+    },
     {
       "type": "appliedenergistics2:part",
       "part": "material.basic_card"

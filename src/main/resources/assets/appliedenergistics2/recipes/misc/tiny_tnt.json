@@ -11,15 +11,8 @@
     "b": {
       "item": "minecraft:gunpowder"
     },
-    "a": [
-      {
-        "type": "forge:ore_dict",
-        "ore": "dustCertusQuartz"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "dustNetherQuartz"
-      }
-    ]
+    "a": {
+      "item": "#appliedenergistics2:dustQuartz"
+    }
   }
 }

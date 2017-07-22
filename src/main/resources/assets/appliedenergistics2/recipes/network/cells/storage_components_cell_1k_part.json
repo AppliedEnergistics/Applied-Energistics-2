@@ -14,20 +14,9 @@
       "type": "forge:ore_dict",
       "ore": "dustRedstone"
     },
-    "b": [
-      {
-        "type": "forge:ore_dict",
-        "ore": "crystalCertusQuartz"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "material.certus_quartz_crystal_charged"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "material.purified_certus_quartz_crystal"
-      }
-    ],
+    "b": {
+      "item": "#appliedenergistics2:certusCrystal"
+    },
     "c": {
       "type": "appliedenergistics2:part",
       "part": "material.logic_processor"

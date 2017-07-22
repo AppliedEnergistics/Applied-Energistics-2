@@ -9,19 +9,9 @@
     "aba"
   ],
   "key": {
-    "b": [
-      {
-        "type": "forge:ore_dict",
-        "ore": "blockGlass"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "glass"
-      },
-      {
-        "item": "minecraft:glass"
-      }
-    ],
+    "b": {
+      "item": "#appliedenergistics2:glass"
+    },
     "a": {
       "type": "forge:ore_dict",
       "ore": "ingotIron"

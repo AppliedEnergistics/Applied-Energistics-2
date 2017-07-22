@@ -9,29 +9,12 @@
     "ccc"
   ],
   "key": {
-    "a": [
-      {
-        "type": "forge:ore_dict",
-        "ore": "blockGlass"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "glass"
-      },
-      {
-        "item": "minecraft:glass"
-      }
-    ],
-    "b": [
-      {
-        "type": "forge:ore_dict",
-        "ore": "crystalNetherQuartz"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "material.purified_nether_quartz_crystal"
-      }
-    ],
+    "a": {
+      "item": "#appliedenergistics2:glass"
+    },
+    "b": {
+      "item": "#appliedenergistics2:netherCrystal"
+    },
     "c": {
       "type": "forge:ore_dict",
       "ore": "slabWood"

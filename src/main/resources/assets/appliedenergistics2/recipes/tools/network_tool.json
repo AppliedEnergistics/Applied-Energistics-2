@@ -4,24 +4,17 @@
   },
   "type": "forge:ore_shapeless",
   "ingredients": [
-    [
-      {
-        "type": "forge:ore_dict",
-        "ore": "itemIlluminatedPanel"
-      }
-    ],
+    {
+      "type": "forge:ore_dict",
+      "ore": "itemIlluminatedPanel"
+    },
     {
       "type": "forge:ore_dict",
       "ore": "chestWood"
     },
-    [
-      {
-        "item": "appliedenergistics2:certus_quartz_wrench"
-      },
-      {
-        "item": "appliedenergistics2:nether_quartz_wrench"
-      }
-    ],
+    {
+      "item": "#appliedenergistics2:wrench"
+    },
     {
       "type": "appliedenergistics2:part",
       "part": "material.calculation_processor"

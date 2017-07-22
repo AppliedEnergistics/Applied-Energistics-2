@@ -9,16 +9,9 @@
     "ccc"
   ],
   "key": {
-    "b": [
-      {
-        "type": "forge:ore_dict",
-        "ore": "crystalNetherQuartz"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "material.purified_nether_quartz_crystal"
-      }
-    ],
+    "b": {
+      "item": "#appliedenergistics2:netherCrystal"
+    },
     "a": {
       "item": "minecraft:redstone_torch"
     },

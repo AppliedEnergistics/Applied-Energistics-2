@@ -10,28 +10,11 @@
     "aba"
   ],
   "key": {
-    "b": [
-      {
-        "type": "forge:ore_dict",
-        "ore": "blockGlass"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "glass"
-      },
-      {
-        "item": "minecraft:glass"
-      }
-    ],
-    "a": [
-      {
-        "type": "forge:ore_dict",
-        "ore": "dustCertusQuartz"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "dustNetherQuartz"
-      }
-    ]
+    "b": {
+      "item": "#appliedenergistics2:glass"
+    },
+    "a": {
+      "item": "#appliedenergistics2:dustQuartz"
+    }
   }
 }

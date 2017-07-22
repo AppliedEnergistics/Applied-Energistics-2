@@ -19,16 +19,9 @@
       "type": "forge:ore_dict",
       "ore": "dustFluix"
     },
-    "a": [
-      {
-        "type": "forge:ore_dict",
-        "ore": "crystalNetherQuartz"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "material.purified_nether_quartz_crystal"
-      }
-    ],
+    "a": {
+      "item": "#appliedenergistics2:netherCrystal"
+    },
     "c": {
       "type": "appliedenergistics2:part",
       "part": "material.logic_processor"

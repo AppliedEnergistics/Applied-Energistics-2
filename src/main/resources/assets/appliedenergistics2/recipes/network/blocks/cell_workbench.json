@@ -14,8 +14,7 @@
       "ore": "ingotIron"
     },
     "a": {
-      "type": "forge:ore_dict",
-      "ore": "wool"
+      "item": "#appliedenergistics2:wool"
     },
     "d": {
       "type": "forge:ore_dict",

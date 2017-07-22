@@ -9,20 +9,9 @@
     "dcd"
   ],
   "key": {
-    "c": [
-      {
-        "type": "forge:ore_dict",
-        "ore": "crystalCertusQuartz"
-      },
-      {
-        "type": "forge:ore_dict",
-        "ore": "crystalNetherQuartz"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "material.certus_quartz_crystal_charged"
-      }
-    ],
+    "c": {
+      "item": "#appliedenergistics2:crystalQuartz"
+    },
     "a": {
       "type": "forge:ore_dict",
       "ore": "stone"

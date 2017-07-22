@@ -17,20 +17,9 @@
       "type": "appliedenergistics2:part",
       "part": "material.logic_processor"
     },
-    "c": [
-      {
-        "type": "appliedenergistics2:part",
-        "part": "cable_glass"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "cable_covered"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "cable_smart"
-      }
-    ],
+    "c": {
+      "item": "#appliedenergistics2:cable"
+    },
     "b": {
       "type": "appliedenergistics2:part",
       "part": "material.calculation_processor"

@@ -6,8 +6,7 @@
   "type": "appliedenergistics2:part_shapeless",
   "ingredients": [
     {
-      "type": "forge:ore_dict",
-      "ore": "blockWool"
+      "item": "#appliedenergistics2:wool"
     },
     {
       "type": "appliedenergistics2:part",

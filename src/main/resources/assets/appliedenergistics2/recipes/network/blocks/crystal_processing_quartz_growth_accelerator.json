@@ -16,20 +16,9 @@
       "type": "forge:ore_dict",
       "ore": "ingotIron"
     },
-    "b": [
-      {
-        "type": "appliedenergistics2:part",
-        "part": "cable_glass"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "cable_covered"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "cable_smart"
-      }
-    ],
+    "b": {
+      "item": "#appliedenergistics2:cable"
+    },
     "d": {
       "item": "appliedenergistics2:fluix_block"
     }

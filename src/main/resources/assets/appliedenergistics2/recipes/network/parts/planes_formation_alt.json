@@ -18,15 +18,8 @@
       "type": "forge:ore_dict",
       "ore": "ingotIron"
     },
-    "b": [
-      {
-        "type": "forge:ore_dict",
-        "ore": "crystalFluix"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "material.purified_fluix_crystal"
-      }
-    ]
+    "b": {
+      "item": "#appliedenergistics2:fluixCrystal"
+    }
   }
 }

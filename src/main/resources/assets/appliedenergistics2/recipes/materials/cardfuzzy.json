@@ -16,8 +16,7 @@
       "part": "material.advanced_card"
     },
     {
-      "type": "forge:ore_dict",
-      "ore": "wool"
+      "item": "#appliedenergistics2:wool"
     }
   ]
 }

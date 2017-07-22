@@ -15,15 +15,8 @@
       "type": "appliedenergistics2:part",
       "part": "material.advanced_card"
     },
-    [
-      {
-        "type": "forge:ore_dict",
-        "ore": "crystalFluix"
-      },
-      {
-        "type": "appliedenergistics2:part",
-        "part": "material.purified_fluix_crystal"
-      }
-    ]
+    {
+      "item": "#appliedenergistics2:fluixCrystal"
+    }
   ]
 }
