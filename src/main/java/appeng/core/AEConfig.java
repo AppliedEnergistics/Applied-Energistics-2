@@ -146,7 +146,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		MinecraftForge.EVENT_BUS.register( this );
 
 		PowerUnits.EU.conversionRatio = this.get( "PowerRatios", "IC2", DEFAULT_IC2_EXCHANGE ).getDouble( DEFAULT_IC2_EXCHANGE );
-		PowerUnits.RF.conversionRatio = this.get( "PowerRatios", "Forge Energy", DEFAULT_RF_EXCHANGE ).getDouble( DEFAULT_RF_EXCHANGE );
+		PowerUnits.RF.conversionRatio = this.get( "PowerRatios", "ForgeEnergy", DEFAULT_RF_EXCHANGE ).getDouble( DEFAULT_RF_EXCHANGE );
 
 		final double usageEffective = this.get( "PowerRatios", "UsageMultiplier", 1.0 ).getDouble( 1.0 );
 		PowerMultiplier.CONFIG.multiplier = Math.max( 0.01, usageEffective );

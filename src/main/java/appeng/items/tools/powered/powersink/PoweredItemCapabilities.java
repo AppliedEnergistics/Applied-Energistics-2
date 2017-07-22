@@ -64,14 +64,14 @@ class PoweredItemCapabilities implements ICapabilityProvider, IEnergyStorage
 	@Override
 	public boolean hasCapability( Capability<?> capability, @Nullable EnumFacing facing )
 	{
-		return capability == CapabilityEnergy.ENERGY || capability == Capabilities.TESLA_CONSUMER || capability == Capabilities.TESLA_HOLDER;
+		return capability == Capabilities.FORGE_ENERGY || capability == Capabilities.TESLA_CONSUMER || capability == Capabilities.TESLA_HOLDER;
 	}
 
 	@SuppressWarnings( "unchecked" )
 	@Override
 	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
 	{
-		if( capability == CapabilityEnergy.ENERGY )
+		if( capability == Capabilities.FORGE_ENERGY )
 		{
 			return (T) this;
 		}

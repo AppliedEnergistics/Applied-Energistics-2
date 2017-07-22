@@ -90,7 +90,9 @@ public enum IntegrationType
 		{
 			return new TheOneProbeModule();
 		}
-	};
+	},
+
+	TESLA( IntegrationSide.BOTH, "Tesla", "tesla" );
 
 	public final IntegrationSide side;
 	public final String dspName;

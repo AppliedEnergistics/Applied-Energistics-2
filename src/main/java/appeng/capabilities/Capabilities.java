@@ -26,8 +26,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import appeng.api.storage.IStorageMonitorableAccessor;
+import appeng.integration.IntegrationRegistry;
+import appeng.integration.IntegrationType;
 
 
 /**
@@ -40,14 +43,13 @@ public final class Capabilities
 	{
 	}
 
-	@CapabilityInject( IStorageMonitorableAccessor.class )
 	public static Capability<IStorageMonitorableAccessor> STORAGE_MONITORABLE_ACCESSOR;
 
-	@CapabilityInject( ITeslaConsumer.class )
 	public static Capability<ITeslaConsumer> TESLA_CONSUMER;
 
-	@CapabilityInject( ITeslaHolder.class )
 	public static Capability<ITeslaHolder> TESLA_HOLDER;
+
+	public static Capability<IEnergyStorage> FORGE_ENERGY;
 
 	/**
 	 * Register AE2 provided capabilities.
@@ -55,6 +57,36 @@ public final class Capabilities
 	public static void register()
 	{
 		CapabilityManager.INSTANCE.register( IStorageMonitorableAccessor.class, createNullStorage(), NullMENetworkAccessor::new );
+	}
+
+	@CapabilityInject( IStorageMonitorableAccessor.class )
+	private static void capIStorageMonitorableAccessorRegistered( Capability<IStorageMonitorableAccessor> cap )
+	{
+		STORAGE_MONITORABLE_ACCESSOR = cap;
+	}
+
+	@CapabilityInject( ITeslaConsumer.class )
+	private static void capITeslaConsumerRegistered( Capability<ITeslaConsumer> cap )
+	{
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.TESLA ) )
+		{
+			TESLA_CONSUMER = cap;
+		}
+	}
+
+	@CapabilityInject( ITeslaHolder.class )
+	private static void capITeslaHolderRegistered( Capability<ITeslaHolder> cap )
+	{
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.TESLA ) )
+		{
+			TESLA_HOLDER = cap;
+		}
+	}
+
+	@CapabilityInject( IEnergyStorage.class )
+	private static void capIEnergyStorageRegistered( Capability<IEnergyStorage> cap )
+	{
+		FORGE_ENERGY = cap;
 	}
 
 	// Create a storage implementation that does not do anything

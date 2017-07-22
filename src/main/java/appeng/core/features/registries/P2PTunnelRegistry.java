@@ -41,6 +41,7 @@ import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IParts;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.util.AEColor;
+import appeng.capabilities.Capabilities;
 import appeng.util.Platform;
 
 
@@ -244,7 +245,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 			// Next, check if the Item you're holding supports Forge Energy
 			for( EnumFacing face : EnumFacing.VALUES )
 			{
-				if( trigger.hasCapability( CapabilityEnergy.ENERGY, face ) )
+				if( trigger.hasCapability( Capabilities.FORGE_ENERGY, face ) )
 				{
 					return TunnelType.FE_POWER;
 				}

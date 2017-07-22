@@ -35,6 +35,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartModel;
+import appeng.capabilities.Capabilities;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.util.Platform;
@@ -153,8 +154,8 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower> implements IEn
 				TileEntity self = this.getTile();
 				TileEntity te = self.getWorld().getTileEntity( new BlockPos( self.getPos().getX() + this.getSide().xOffset, self.getPos()
 						.getY() + this.getSide().yOffset, self.getPos().getZ() + this.getSide().zOffset ) );
-				this.outputTarget = te.hasCapability( CapabilityEnergy.ENERGY, this.getSide().getOpposite().getFacing() ) ? te
-						.getCapability( CapabilityEnergy.ENERGY, this.getSide().getOpposite().getFacing() ) : null;
+				this.outputTarget = te.hasCapability( Capabilities.FORGE_ENERGY, this.getSide().getOpposite().getFacing() ) ? te
+						.getCapability( Capabilities.FORGE_ENERGY, this.getSide().getOpposite().getFacing() ) : null;
 				this.cachedTarget = true;
 			}
 
@@ -233,7 +234,7 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower> implements IEn
 	@Override
 	public boolean hasCapability( @Nonnull Capability<?> capability )
 	{
-		if( capability == CapabilityEnergy.ENERGY )
+		if( capability == Capabilities.FORGE_ENERGY )
 		{
 			return true;
 		}
@@ -245,7 +246,7 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower> implements IEn
 	@Override
 	public <T> T getCapability( @Nonnull Capability<T> capability )
 	{
-		if( capability == CapabilityEnergy.ENERGY )
+		if( capability == Capabilities.FORGE_ENERGY )
 		{
 			return (T) this;
 		}

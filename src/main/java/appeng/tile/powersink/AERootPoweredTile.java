@@ -284,7 +284,7 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	@Override
 	public boolean hasCapability( Capability<?> capability, EnumFacing facing )
 	{
-		if( capability == CapabilityEnergy.ENERGY )
+		if( capability == Capabilities.FORGE_ENERGY )
 		{
 			if( this.getPowerSides().contains( facing ) )
 			{
@@ -306,7 +306,7 @@ public abstract class AERootPoweredTile extends AEBaseInvTile implements IAEPowe
 	@Override
 	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
 	{
-		if( capability == CapabilityEnergy.ENERGY )
+		if( capability == Capabilities.FORGE_ENERGY )
 		{
 			if( this.getPowerSides().contains( facing ) )
 			{
