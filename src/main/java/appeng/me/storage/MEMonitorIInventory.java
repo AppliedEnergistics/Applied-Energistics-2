@@ -153,7 +153,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 			final CachedItemStack old = this.memory.get( is.getSlot() );
 			high = Math.max( high, is.getSlot() );
 
-			final ItemStack newIS = !is.isExtractable() && this.getMode() == StorageFilter.EXTRACTABLE_ONLY ? null : is.getItemStack();
+			final ItemStack newIS = !is.isExtractable() && this.getMode() == StorageFilter.EXTRACTABLE_ONLY ? ItemStack.EMPTY : is.getItemStack();
 			final ItemStack oldIS = old == null ? ItemStack.EMPTY : old.itemStack;
 
 			if( this.isDifferent( newIS, oldIS ) )
