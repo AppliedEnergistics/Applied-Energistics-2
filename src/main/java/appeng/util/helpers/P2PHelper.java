@@ -33,9 +33,9 @@ public class P2PHelper
 
 		for( int i = 0; i < 4; i++ )
 		{
-			int twoBits = ( frequency >> 4 * ( 3 - i ) ) & 0xF;
+			int nibble = ( frequency >> 4 * ( 3 - i ) ) & 0xF;
 
-			colours[i] = AEColor.values()[twoBits];
+			colours[i] = AEColor.values()[nibble];
 		}
 
 		return colours;
