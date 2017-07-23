@@ -177,10 +177,12 @@ public class ItemRepo
 			if( viewMode == ViewItems.CRAFTABLE )
 			{
 				is = is.copy();
-				is.setStackSize( 0 );
+				// is.setStackSize( 0 ) triggers isEmpty() and thus only shows empty stacks!
+				is.setStackSize( 1 );
+				is.setShowCraftingLabel( true );
 			}
 
-			if( viewMode == ViewItems.STORED && is.getStackSize() == 0 )
+			if( viewMode == ViewItems.STORED && is.getShowCraftingLabel() )
 			{
 				continue;
 			}
