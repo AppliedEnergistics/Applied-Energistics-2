@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Random;
 
 import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 
 import appeng.api.networking.GridFlags;
@@ -40,7 +39,6 @@ import appeng.core.AELog;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.parts.p2p.PartP2PTunnel;
 import appeng.parts.p2p.PartP2PTunnelME;
-import appeng.util.Platform;
 
 
 public class P2PCache implements IGridCache
