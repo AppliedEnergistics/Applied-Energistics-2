@@ -149,7 +149,7 @@ public class AppEngSlot extends Slot
 	@SideOnly( Side.CLIENT )
 	public boolean isEnabled()
 	{
-		return super.isEnabled();
+		return this.isSlotEnabled();
 	}
 
 	public boolean isSlotEnabled()
