@@ -210,7 +210,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			}
 			mc.notifyUser( player, MemoryCardMessages.INVALID_MACHINE );
 		}
-		else // attunement
+		else if( tt != null ) // attunement
 		{
 			final ItemStack newType;
 
