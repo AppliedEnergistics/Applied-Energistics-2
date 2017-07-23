@@ -55,7 +55,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 	private final AppEngNullInventory nullInventory = new AppEngNullInventory();
 	@GuiSync( 2 )
 	public CopyMode copyMode = CopyMode.CLEAR_ON_REMOVE;
-	private ItemStack prevStack = null;
+	private ItemStack prevStack = ItemStack.EMPTY;
 	private int lastUpgrades = 0;
 
 	public ContainerCellWorkbench( final InventoryPlayer ip, final TileCellWorkbench te )
