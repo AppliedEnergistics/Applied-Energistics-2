@@ -41,37 +41,22 @@ import appeng.integration.IntegrationType;
 
 
 @Reflected
-public final class ASMIntegration implements IClassTransformer
+public final class IntegrationTransformer implements IClassTransformer
 {
 	@Reflected
-	public ASMIntegration()
+	public IntegrationTransformer()
 	{
-
-		/**
-		 * Side, Display Name, ModID ClassPostFix
-		 */
-
 		for( final IntegrationType type : IntegrationType.values() )
 		{
 			IntegrationRegistry.INSTANCE.add( type );
 		}
-
-		// integrationModules.add( IntegrationSide.BOTH, "Thermal Expansion", "ThermalExpansion", IntegrationType.TE );
-		// integrationModules.add( IntegrationSide.BOTH, "Mystcraft", "Mystcraft", IntegrationType.Mystcraft );
-		// integrationModules.add( IntegrationSide.BOTH, "Greg Tech", "gregtech_addon", IntegrationType.GT );
-		// integrationModules.add( IntegrationSide.BOTH, "Universal Electricity", null, IntegrationType.UE );
-		// integrationModules.add( IntegrationSide.BOTH, "Logistics Pipes", "LogisticsPipes|Main", IntegrationType.LP );
-		// integrationModules.add( IntegrationSide.BOTH, "Better Storage", IntegrationType.betterstorage );
-		// integrationModules.add( IntegrationSide.BOTH, "Forestry", "Forestry", IntegrationType.Forestry );
-		// integrationModules.add( IntegrationSide.BOTH, "Mekanism", "Mekanism", IntegrationType.Mekanism );
-
 	}
 
 	@Nullable
 	@Override
 	public byte[] transform( final String name, final String transformedName, final byte[] basicClass )
 	{
-		if( basicClass == null || transformedName.startsWith( "appeng.coremod" ) )
+		if( basicClass == null )
 		{
 			return basicClass;
 		}

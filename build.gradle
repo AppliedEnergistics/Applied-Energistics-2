@@ -68,7 +68,7 @@ jar {
 }
 
 minecraft {
-    coreMod = "appeng.coremod.AppEngCore"
+    coreMod = "appeng.coremod.AppEngLoadingPlugin"
 
     version = minecraft_version + "-" + forge_version
 

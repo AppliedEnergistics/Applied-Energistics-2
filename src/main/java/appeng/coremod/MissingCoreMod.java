@@ -68,7 +68,7 @@ public final class MissingCoreMod extends CustomModLoadingErrorDisplayException
 			this.drawCenteredString( fontRenderer, "In a developer environment add the following too your args,", errorScreen.width / 2, offset, COLOR_WHITE );
 
 			offset += SCREEN_OFFSET;
-			this.drawCenteredString( fontRenderer, "-Dfml.coreMods.load=appeng.coremod.AppEngCore", errorScreen.width / 2, offset, SHADOW_WHITE );
+			this.drawCenteredString( fontRenderer, "-Dfml.coreMods.load=appeng.coremod.AppEngCoreContainer", errorScreen.width / 2, offset, SHADOW_WHITE );
 		}
 		else
 		{

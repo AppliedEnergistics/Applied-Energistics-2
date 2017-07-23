@@ -22,29 +22,38 @@ package appeng.coremod;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Before;
 import org.junit.Test;
 
 
 public class AppEngCoreTest
 {
-	private final static String EXPECTED_CONTAINER_CLASS_NAME = appeng.coremod.AppEngCore.class.getName();
+	private final static String EXPECTED_CONTAINER_CLASS_NAME = appeng.coremod.AppEngCoreContainer.class.getName();
 	private final static String EXPECTED_CONTAINER_MOD_ID = "appliedenergistics2-core";
 	private final static String[] EXPECTED_TRANSFORMERS = new String[] {
-			appeng.coremod.transformer.ASMIntegration.class.getName()
+			appeng.coremod.transformer.IntegrationTransformer.class.getName()
 	};
 
-	private AppEngCore coreModContainer = new AppEngCore();
+	private AppEngCoreContainer coreModContainer;
+	private AppEngLoadingPlugin loadingPlugin;
+
+	@Before
+	public void setup()
+	{
+		this.coreModContainer = new AppEngCoreContainer();
+		this.loadingPlugin = new AppEngLoadingPlugin();
+	}
 
 	@Test
 	public void testTransformerStringsMatchActualClasses()
 	{
-		assertArrayEquals( EXPECTED_TRANSFORMERS, coreModContainer.getASMTransformerClass() );
+		assertArrayEquals( EXPECTED_TRANSFORMERS, loadingPlugin.getASMTransformerClass() );
 	}
 
 	@Test
 	public void testContainerClassExists()
 	{
-		assertEquals( EXPECTED_CONTAINER_CLASS_NAME, coreModContainer.getModContainerClass() );
+		assertEquals( EXPECTED_CONTAINER_CLASS_NAME, loadingPlugin.getModContainerClass() );
 	}
 
 	@Test
