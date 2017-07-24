@@ -27,29 +27,29 @@ import appeng.api.util.AEColor;
 public class P2PHelper
 {
 
-	public AEColor[] toColours( short frequency )
+	public AEColor[] toColors( short frequency )
 	{
-		final AEColor[] colours = new AEColor[4];
+		final AEColor[] colors = new AEColor[4];
 
 		for( int i = 0; i < 4; i++ )
 		{
-			int twoBits = ( frequency >> 4 * ( 3 - i ) ) & 0xF;
+			int nibble = ( frequency >> 4 * ( 3 - i ) ) & 0xF;
 
-			colours[i] = AEColor.values()[twoBits];
+			colors[i] = AEColor.values()[nibble];
 		}
 
-		return colours;
+		return colors;
 	}
 
-	public short fromColours( AEColor[] colours )
+	public short fromColors( AEColor[] colors )
 	{
-		Preconditions.checkArgument( colours.length == 4 );
+		Preconditions.checkArgument( colors.length == 4 );
 
 		int t = 0;
 
 		for( int i = 0; i < 4; i++ )
 		{
-			int code = colours[3 - i].ordinal() << 4 * i;
+			int code = colors[3 - i].ordinal() << 4 * i;
 
 			t |= code;
 		}

@@ -19,7 +19,8 @@
 package appeng.util.helpers;
 
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -32,36 +33,36 @@ public class P2PHelperTest
 	private P2PHelper unitUnderTest = new P2PHelper();
 
 	private static short WHITE_FREQUENCY = 0;
-	private static AEColor[] WHITE_COLOURS = new AEColor[] { AEColor.WHITE, AEColor.WHITE, AEColor.WHITE, AEColor.WHITE };
+	private static AEColor[] WHITE_COLORS = new AEColor[] { AEColor.WHITE, AEColor.WHITE, AEColor.WHITE, AEColor.WHITE };
 
 	private static short BLACK_FREQUENCY = (short) 0xFFFF;
-	private static AEColor[] BLACK_COLOURS = new AEColor[] { AEColor.BLACK, AEColor.BLACK, AEColor.BLACK, AEColor.BLACK };
+	private static AEColor[] BLACK_COLORS = new AEColor[] { AEColor.BLACK, AEColor.BLACK, AEColor.BLACK, AEColor.BLACK };
 
-	private static short MULTI_FREQUENCY = (short) -5935;
-	private static AEColor[] MULTI_COLOURS = new AEColor[] { AEColor.RED, AEColor.LIGHT_GRAY, AEColor.GREEN, AEColor.ORANGE };
+	private static short MULTI_FREQUENCY = (short) 0xE8D1;
+	private static AEColor[] MULTI_COLORS = new AEColor[] { AEColor.RED, AEColor.LIGHT_GRAY, AEColor.GREEN, AEColor.ORANGE };
 
 	@Test
-	public void testToColours()
+	public void testToColors()
 	{
-		assertArrayEquals( WHITE_COLOURS, unitUnderTest.toColours( WHITE_FREQUENCY ) );
-		assertArrayEquals( BLACK_COLOURS, unitUnderTest.toColours( BLACK_FREQUENCY ) );
-		assertArrayEquals( MULTI_COLOURS, unitUnderTest.toColours( MULTI_FREQUENCY ) );
+		assertArrayEquals( WHITE_COLORS, unitUnderTest.toColors( WHITE_FREQUENCY ) );
+		assertArrayEquals( BLACK_COLORS, unitUnderTest.toColors( BLACK_FREQUENCY ) );
+		assertArrayEquals( MULTI_COLORS, unitUnderTest.toColors( MULTI_FREQUENCY ) );
 	}
 
 	@Test
-	public void testFromColours()
+	public void testFromColors()
 	{
-		assertEquals( WHITE_FREQUENCY, unitUnderTest.fromColours( WHITE_COLOURS ) );
-		assertEquals( BLACK_FREQUENCY, unitUnderTest.fromColours( BLACK_COLOURS ) );
-		assertEquals( MULTI_FREQUENCY, unitUnderTest.fromColours( MULTI_COLOURS ) );
+		assertEquals( WHITE_FREQUENCY, unitUnderTest.fromColors( WHITE_COLORS ) );
+		assertEquals( BLACK_FREQUENCY, unitUnderTest.fromColors( BLACK_COLORS ) );
+		assertEquals( MULTI_FREQUENCY, unitUnderTest.fromColors( MULTI_COLORS ) );
 	}
 
 	@Test
-	public void testToAndFromColours()
+	public void testToAndFromColors()
 	{
 		for( short i = Short.MIN_VALUE; i < Short.MAX_VALUE; i++ )
 		{
-			assertEquals( i, unitUnderTest.fromColours( unitUnderTest.toColours( i ) ) );
+			assertEquals( i, unitUnderTest.fromColors( unitUnderTest.toColors( i ) ) );
 		}
 	}
 

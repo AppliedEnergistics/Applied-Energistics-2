@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Random;
 
 import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 
 import appeng.api.networking.GridFlags;
@@ -40,12 +39,11 @@ import appeng.core.AELog;
 import appeng.me.cache.helpers.TunnelCollection;
 import appeng.parts.p2p.PartP2PTunnel;
 import appeng.parts.p2p.PartP2PTunnelME;
-import appeng.util.Platform;
 
 
 public class P2PCache implements IGridCache
 {
-	private static final TunnelCollection NULL_COLLECTION = new TunnelCollection<PartP2PTunnel>( null, null );
+	private static final TunnelCollection<PartP2PTunnel> NULL_COLLECTION = new TunnelCollection<PartP2PTunnel>( null, null );
 
 	private final IGrid myGrid;
 	private final HashMap<Short, PartP2PTunnel> inputs = new HashMap<>();
@@ -228,7 +226,7 @@ public class P2PCache implements IGridCache
 		}
 		while( newFrequency == 0 || this.inputs.containsKey( newFrequency ) );
 
-		if( cycles > 10 )
+		if( cycles > 25 )
 		{
 			AELog.debug( "Generating a new P2P frequency '%1$d' took %2$d cycles", newFrequency, cycles );
 		}
@@ -239,12 +237,14 @@ public class P2PCache implements IGridCache
 	public TunnelCollection<PartP2PTunnel> getOutputs( final short freq, final Class<? extends PartP2PTunnel> c )
 	{
 		final PartP2PTunnel in = this.inputs.get( freq );
+
 		if( in == null )
 		{
 			return NULL_COLLECTION;
 		}
 
 		final TunnelCollection<PartP2PTunnel> out = this.inputs.get( freq ).getCollection( this.outputs.get( freq ), c );
+
 		if( out == null )
 		{
 			return NULL_COLLECTION;
