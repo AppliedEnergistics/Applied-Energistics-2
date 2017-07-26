@@ -453,6 +453,9 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 			{
 				final EntityPlayer player = Platform.getPlayer( (WorldServer) w );
 				Platform.configurePlayer( player, side, this.getTile() );
+				EnumHand hand = player.getActiveHand();
+				player.setHeldItem( hand, is );
+
 
 				// TODO: LIMIT FIREWORKS
 				/*
@@ -481,32 +484,32 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 						if( side.xOffset == 0 && side.zOffset == 0 )
 						{
-							Worked = i.onItemUse( player, w, tePos.offset( side.getFacing() ), null, side.getFacing().getOpposite(), side.xOffset,
+							Worked = i.onItemUse( player, w, tePos.offset( side.getFacing() ), hand, side.getFacing().getOpposite(), side.xOffset,
 									side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
 						}
 
 						if( !Worked && side.xOffset == 0 && side.zOffset == 0 )
 						{
-							Worked = i.onItemUse( player, w, tePos.offset( side.getFacing().getOpposite() ), null, side.getFacing(), side.xOffset,
+							Worked = i.onItemUse( player, w, tePos.offset( side.getFacing().getOpposite() ), hand, side.getFacing(), side.xOffset,
 									side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
 						}
 
 						if( !Worked && side.yOffset == 0 )
 						{
-							Worked = i.onItemUse( player, w, tePos.offset( EnumFacing.DOWN ), null, EnumFacing.UP, side.xOffset, side.yOffset,
+							Worked = i.onItemUse( player, w, tePos.offset( EnumFacing.DOWN ), hand, EnumFacing.UP, side.xOffset, side.yOffset,
 									side.zOffset ) == EnumActionResult.SUCCESS;
 						}
 
 						if( !Worked )
 						{
-							i.onItemUse( player, w, tePos, null, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset );
+							i.onItemUse( player, w, tePos, hand, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset );
 						}
 
 						maxStorage -= is.getCount();
 					}
 					else
 					{
-						i.onItemUse( player, w, tePos, null, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset );
+						i.onItemUse( player, w, tePos, hand, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset );
 						maxStorage -= is.getCount();
 					}
 				}
@@ -514,6 +517,9 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 				{
 					maxStorage = 1;
 				}
+
+				// Safe keeping
+				player.setHeldItem( hand, ItemStack.EMPTY );
 			}
 			else
 			{
