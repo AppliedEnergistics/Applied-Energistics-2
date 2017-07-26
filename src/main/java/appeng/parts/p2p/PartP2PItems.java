@@ -20,7 +20,6 @@ package appeng.parts.p2p;
 
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -58,7 +57,6 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IItemHa
 		return MODELS.getModels();
 	}
 
-	private final LinkedList<IItemHandler> which = new LinkedList<IItemHandler>();
 	private int oldSize = 0;
 	private boolean requested;
 	private IItemHandler cachedInv;
@@ -121,28 +119,16 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IItemHa
 
 	private IItemHandler getOutputInv()
 	{
-		IItemHandler output = null;
-
 		if( this.getProxy().isActive() )
 		{
 			final TileEntity te = this.getTile().getWorld().getTileEntity( this.getTile().getPos().offset( this.getSide().getFacing() ) );
 
-			if( this.which.contains( this ) )
+			if( te != null && te.hasCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.getSide().getFacing().getOpposite() ) )
 			{
-				return null;
+				return te.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.getSide().getFacing().getOpposite() );
 			}
-
-			this.which.add( this );
-
-			if( output == null && te.hasCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.getSide().getFacing().getOpposite() ) )
-			{
-				output = te.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.getSide().getFacing().getOpposite() );
-			}
-
-			this.which.pop();
 		}
-
-		return output;
+		return null;
 	}
 
 	@Override
