@@ -24,6 +24,7 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -50,6 +51,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IItemHa
 {
 	private static final float POWER_DRAIN = 2.0f;
 	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_items" );
+	private boolean partVisited = false;
 
 	@PartModels
 	public static List<IPartModel> getModels()
@@ -101,7 +103,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IItemHa
 		for( final PartP2PItems t : itemTunnels )
 		{
 			final IItemHandler inv = t.getOutputInv();
-			if( inv != null )
+			if( inv != null && inv != this )
 			{
 				if( Platform.getRandomInt() % 2 == 0 )
 				{
@@ -119,16 +121,23 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IItemHa
 
 	private IItemHandler getOutputInv()
 	{
-		if( this.getProxy().isActive() )
+		IItemHandler ret = null;
+		if( !partVisited )
 		{
-			final TileEntity te = this.getTile().getWorld().getTileEntity( this.getTile().getPos().offset( this.getSide().getFacing() ) );
-
-			if( te != null && te.hasCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.getSide().getFacing().getOpposite() ) )
+			partVisited = true;
+			if( this.getProxy().isActive() )
 			{
-				return te.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.getSide().getFacing().getOpposite() );
+				final EnumFacing facing = this.getSide().getFacing();
+				final TileEntity te = this.getTile().getWorld().getTileEntity( this.getTile().getPos().offset( facing ) );
+
+				if( te != null && te.hasCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing.getOpposite() ) )
+				{
+					ret = te.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing.getOpposite() );
+				}
 			}
+			partVisited = false;
 		}
-		return null;
+		return ret;
 	}
 
 	@Override
