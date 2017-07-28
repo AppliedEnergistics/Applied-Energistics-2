@@ -46,8 +46,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -58,7 +56,6 @@ import net.minecraft.network.play.server.SPacketChunkData;
 import net.minecraft.server.management.PlayerChunkMap;
 import net.minecraft.server.management.PlayerChunkMapEntry;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -115,7 +112,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
-import appeng.capabilities.Capabilities;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -1340,70 +1336,6 @@ public class Platform
 		{
 			meMonitorPassthrough.postChange( null, changes, source );
 		}
-	}
-
-	public static int generateTileHash( final TileEntity target )
-	{
-		if( target == null )
-		{
-			return 0;
-		}
-
-		int hash = target.hashCode();
-
-		if( target.hasCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, null ) )
-		{
-			return 0;
-		}
-		else if( target instanceof TileEntityChest )
-		{
-			final TileEntityChest chest = (TileEntityChest) target;
-			chest.checkForAdjacentChests();
-			if( chest.adjacentChestZNeg != null )
-			{
-				hash ^= chest.adjacentChestZNeg.hashCode();
-			}
-			else if( chest.adjacentChestZPos != null )
-			{
-				hash ^= chest.adjacentChestZPos.hashCode();
-			}
-			else if( chest.adjacentChestXPos != null )
-			{
-				hash ^= chest.adjacentChestXPos.hashCode();
-			}
-			else if( chest.adjacentChestXNeg != null )
-			{
-				hash ^= chest.adjacentChestXNeg.hashCode();
-			}
-		}
-		else if( target instanceof IInventory )
-		{
-			hash ^= ( (IInventory) target ).getSizeInventory();
-
-			if( target instanceof ISidedInventory )
-			{
-				for( final EnumFacing dir : EnumFacing.VALUES )
-				{
-
-					final int[] sides = ( (ISidedInventory) target ).getSlotsForFace( dir );
-
-					if( sides == null )
-					{
-						return 0;
-					}
-
-					int offset = 0;
-					for( final int side : sides )
-					{
-						final int c = ( side << ( offset % 8 ) ) ^ ( 1 << dir.ordinal() );
-						offset++;
-						hash = c + ( hash << 6 ) + ( hash << 16 ) - hash;
-					}
-				}
-			}
-		}
-
-		return hash;
 	}
 
 	public static boolean securityCheck( final GridNode a, final GridNode b )

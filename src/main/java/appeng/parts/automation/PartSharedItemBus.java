@@ -33,15 +33,12 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.me.GridAccessException;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.InventoryAdaptor;
-import appeng.util.Platform;
 
 
 public abstract class PartSharedItemBus extends PartUpgradeable implements IGridTickable
 {
 
 	private final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 9 );
-	private int adaptorHash = 0;
-	private InventoryAdaptor adaptor;
 	private boolean lastRedstone = false;
 
 	public PartSharedItemBus( final ItemStack is )
@@ -102,17 +99,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 		final TileEntity self = this.getHost().getTile();
 		final TileEntity target = this.getTileEntity( self, self.getPos().offset( this.getSide().getFacing() ) );
 
-		final int newAdaptorHash = Platform.generateTileHash( target );
-
-		if( this.adaptorHash == newAdaptorHash && newAdaptorHash != 0 )
-		{
-			return this.adaptor;
-		}
-
-		this.adaptorHash = newAdaptorHash;
-		this.adaptor = InventoryAdaptor.getAdaptor( target, this.getSide().getFacing().getOpposite() );
-
-		return this.adaptor;
+		return InventoryAdaptor.getAdaptor( target, this.getSide().getFacing().getOpposite() );
 	}
 
 	private TileEntity getTileEntity( final TileEntity self, final BlockPos pos )
