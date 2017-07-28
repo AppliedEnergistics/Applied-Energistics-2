@@ -19,6 +19,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.features.IInscriberRecipe;
 import appeng.client.render.FacingToRotation;
@@ -133,16 +134,18 @@ public class InscriberTESR extends TileEntitySpecialRenderer<TileInscriber>
 		// render items.
 		GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
 
+		IItemHandler tileInv = tile.getInternalInventory();
+
 		int items = 0;
-		if( !tile.getStackInSlot( 0 ).isEmpty() )
+		if( !tileInv.getStackInSlot( 0 ).isEmpty() )
 		{
 			items++;
 		}
-		if( !tile.getStackInSlot( 1 ).isEmpty() )
+		if( !tileInv.getStackInSlot( 1 ).isEmpty() )
 		{
 			items++;
 		}
-		if( !tile.getStackInSlot( 2 ).isEmpty() )
+		if( !tileInv.getStackInSlot( 2 ).isEmpty() )
 		{
 			items++;
 		}
@@ -151,7 +154,7 @@ public class InscriberTESR extends TileEntitySpecialRenderer<TileInscriber>
 
 		if( relativeProgress > 1.0f || items == 0 )
 		{
-			ItemStack is = tile.getStackInSlot( 3 );
+			ItemStack is = tileInv.getStackInSlot( 3 );
 
 			if( is.isEmpty() )
 			{
@@ -166,9 +169,9 @@ public class InscriberTESR extends TileEntitySpecialRenderer<TileInscriber>
 		}
 		else
 		{
-			this.renderItem( tile.getStackInSlot( 0 ), press, tile, buffer, x, y, z );
-			this.renderItem( tile.getStackInSlot( 1 ), -press, tile, buffer, x, y, z );
-			this.renderItem( tile.getStackInSlot( 2 ), 0.0f, tile, buffer, x, y, z );
+			this.renderItem( tileInv.getStackInSlot( 0 ), press, tile, buffer, x, y, z );
+			this.renderItem( tileInv.getStackInSlot( 1 ), -press, tile, buffer, x, y, z );
+			this.renderItem( tileInv.getStackInSlot( 2 ), 0.0f, tile, buffer, x, y, z );
 		}
 
 		// Tessellator.getInstance().draw();

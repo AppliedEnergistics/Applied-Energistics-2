@@ -200,7 +200,8 @@ class BiometricCardBakedModel implements IBakedModel
 
 				try
 				{
-					return BiometricCardBakedModel.this.modelCache.get( hash, () -> new BiometricCardBakedModel( BiometricCardBakedModel.this.format, BiometricCardBakedModel.this.baseModel, BiometricCardBakedModel.this.texture, hash, BiometricCardBakedModel.this.modelCache ) );
+					return BiometricCardBakedModel.this.modelCache.get( hash,
+							() -> new BiometricCardBakedModel( BiometricCardBakedModel.this.format, BiometricCardBakedModel.this.baseModel, BiometricCardBakedModel.this.texture, hash, BiometricCardBakedModel.this.modelCache ) );
 				}
 				catch( ExecutionException e )
 				{

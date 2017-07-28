@@ -21,9 +21,9 @@ package appeng.integration.modules.theoneprobe.tile;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
 
 import mcjty.theoneprobe.api.ElementAlignment;
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -43,7 +43,7 @@ public class ChargerInfoProvider implements ITileProbInfoProvider
 		if( tile instanceof TileCharger )
 		{
 			final TileCharger charger = (TileCharger) tile;
-			final IInventory chargerInventory = charger.getInternalInventory();
+			final IItemHandler chargerInventory = charger.getInternalInventory();
 			final ItemStack chargingItem = chargerInventory.getStackInSlot( 0 );
 
 			if( !chargingItem.isEmpty() )

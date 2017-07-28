@@ -19,8 +19,8 @@
 package appeng.items.storage;
 
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
@@ -65,14 +65,14 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 				final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
 
 				final ICellWorkbenchItem vc = (ICellWorkbenchItem) currentViewCell.getItem();
-				final IInventory upgrades = vc.getUpgradesInventory( currentViewCell );
-				final IInventory config = vc.getConfigInventory( currentViewCell );
+				final IItemHandler upgrades = vc.getUpgradesInventory( currentViewCell );
+				final IItemHandler config = vc.getConfigInventory( currentViewCell );
 				final FuzzyMode fzMode = vc.getFuzzyMode( currentViewCell );
 
 				boolean hasInverter = false;
 				boolean hasFuzzy = false;
 
-				for( int x = 0; x < upgrades.getSizeInventory(); x++ )
+				for( int x = 0; x < upgrades.getSlots(); x++ )
 				{
 					final ItemStack is = upgrades.getStackInSlot( x );
 					if( !is.isEmpty() && is.getItem() instanceof IUpgradeModule )
@@ -94,7 +94,7 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 					}
 				}
 
-				for( int x = 0; x < config.getSizeInventory(); x++ )
+				for( int x = 0; x < config.getSlots(); x++ )
 				{
 					final ItemStack is = config.getStackInSlot( x );
 					if( !is.isEmpty() )
@@ -129,13 +129,13 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 	}
 
 	@Override
-	public IInventory getUpgradesInventory( final ItemStack is )
+	public IItemHandler getUpgradesInventory( final ItemStack is )
 	{
 		return new CellUpgrades( is, 2 );
 	}
 
 	@Override
-	public IInventory getConfigInventory( final ItemStack is )
+	public IItemHandler getConfigInventory( final ItemStack is )
 	{
 		return new CellConfig( is );
 	}

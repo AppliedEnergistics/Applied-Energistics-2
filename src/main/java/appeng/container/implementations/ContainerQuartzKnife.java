@@ -19,34 +19,31 @@
 package appeng.container.implementations;
 
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.container.AEBaseContainer;
-import appeng.container.slot.QuartzKnifeOutput;
+import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.items.contents.QuartzKnifeObj;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.inventory.IAEAppEngInventory;
-import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
 
 
-public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngInventory, IInventory
+public class ContainerQuartzKnife extends AEBaseContainer
 {
 
 	private final QuartzKnifeObj toolInv;
 
-	private final AppEngInternalInventory inSlot = new AppEngInternalInventory( this, 1 );
-	private final SlotRestrictedInput metals;
-	private final QuartzKnifeOutput output;
+	private final IItemHandler inSlot = new AppEngInternalInventory( null, 1, 1 );
 	private String myName = "";
 
 	public ContainerQuartzKnife( final InventoryPlayer ip, final QuartzKnifeObj te )
@@ -54,11 +51,8 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 		super( ip, null, null );
 		this.toolInv = te;
 
-		this.metals = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.METAL_INGOTS, this.inSlot, 0, 94, 44, ip );
-		this.addSlotToContainer( this.metals );
-
-		this.output = new QuartzKnifeOutput( this, 0, 134, 44, -1 );
-		this.addSlotToContainer( this.output );
+		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.METAL_INGOTS, this.inSlot, 0, 94, 44, ip ) );
+		this.addSlotToContainer( new QuartzKniveSlot( this.inSlot, 0, 134, 44, -1 ) );
 
 		this.lockPlayerInventorySlot( ip.currentItem );
 
@@ -106,179 +100,73 @@ public class ContainerQuartzKnife extends AEBaseContainer implements IAEAppEngIn
 		}
 	}
 
-	@Override
-	public void saveChanges()
+	private class QuartzKniveSlot extends SlotOutput
 	{
-
-	}
-
-	@Override
-	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
-	{
-
-	}
-
-	@Override
-	public int getSizeInventory()
-	{
-		return 1;
-	}
-
-	@Override
-	public ItemStack getStackInSlot( final int var1 )
-	{
-		final ItemStack input = this.inSlot.getStackInSlot( 0 );
-		if( input == ItemStack.EMPTY )
+		QuartzKniveSlot( IItemHandler a, int b, int c, int d, int i )
 		{
+			super( a, b, c, d, i );
+		}
+
+		@Override
+		public ItemStack getStack()
+		{
+			final IItemHandler baseInv = getItemHandler();
+			final ItemStack input = baseInv.getStackInSlot( 0 );
+			if( input == ItemStack.EMPTY )
+			{
+				return ItemStack.EMPTY;
+			}
+
+			if( SlotRestrictedInput.isMetalIngot( input ) )
+			{
+				if( ContainerQuartzKnife.this.myName.length() > 0 )
+				{
+					return AEApi.instance().definitions().materials().namePress().maybeStack( 1 ).map( namePressStack ->
+					{
+						final NBTTagCompound compound = Platform.openNbtData( namePressStack );
+						compound.setString( "InscribeName", ContainerQuartzKnife.this.myName );
+
+						return namePressStack;
+					} ).orElse( ItemStack.EMPTY );
+				}
+			}
 			return ItemStack.EMPTY;
 		}
 
-		if( SlotRestrictedInput.isMetalIngot( input ) )
+		@Override
+		@Nonnull
+		public ItemStack decrStackSize( int amount )
 		{
-			if( this.myName.length() > 0 )
+			ItemStack ret = getStack();
+			if( !ret.isEmpty() )
 			{
-				return AEApi.instance().definitions().materials().namePress().maybeStack( 1 ).map( namePressStack ->
+				makePlate();
+			}
+			return ret;
+		}
+
+		@Override
+		public void putStack( final ItemStack stack )
+		{
+			if( stack.isEmpty() )
+			{
+				makePlate();
+			}
+		}
+
+		private void makePlate()
+		{
+			if( !getItemHandler().extractItem( 0, 1, false ).isEmpty() )
+			{
+				final ItemStack item = ContainerQuartzKnife.this.toolInv.getItemStack();
+				item.damageItem( 1, getPlayerInv().player );
+
+				if( item.getCount() == 0 )
 				{
-					final NBTTagCompound compound = Platform.openNbtData( namePressStack );
-					compound.setString( "InscribeName", this.myName );
-
-					return namePressStack;
-				} ).orElse( ItemStack.EMPTY );
+					getPlayerInv().mainInventory.add( getPlayerInv().currentItem, ItemStack.EMPTY );
+					MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( getPlayerInv().player, item, null ) );
+				}
 			}
 		}
-
-		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public ItemStack decrStackSize( final int var1, final int var2 )
-	{
-		final ItemStack is = this.getStackInSlot( 0 );
-		if( !is.isEmpty() )
-		{
-			if( this.makePlate() )
-			{
-				return is;
-			}
-		}
-		return ItemStack.EMPTY;
-	}
-
-	private boolean makePlate()
-	{
-		if( this.inSlot.decrStackSize( 0, 1 ) != null )
-		{
-			final ItemStack item = this.toolInv.getItemStack();
-			item.damageItem( 1, this.getPlayerInv().player );
-
-			if( item.getCount() == 0 )
-			{
-				this.getPlayerInv().mainInventory.add( this.getPlayerInv().currentItem, ItemStack.EMPTY );
-				MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( this.getPlayerInv().player, item, null ) );
-			}
-
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public ItemStack removeStackFromSlot( final int var1 )
-	{
-		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public void setInventorySlotContents( final int var1, final ItemStack var2 )
-	{
-		if( var2.isEmpty() && Platform.isServer() )
-		{
-			this.makePlate();
-		}
-	}
-
-	@Override
-	public String getName()
-	{
-		return "Quartz Knife Output";
-	}
-
-	@Override
-	public boolean hasCustomName()
-	{
-		return false;
-	}
-
-	@Override
-	public int getInventoryStackLimit()
-	{
-		return 1;
-	}
-
-	@Override
-	public void markDirty()
-	{
-
-	}
-
-	@Override
-	public boolean isUsableByPlayer( EntityPlayer player )
-	{
-		return false;
-	}
-
-	@Override
-	public void openInventory( final EntityPlayer player )
-	{
-
-	}
-
-	@Override
-	public void closeInventory( final EntityPlayer player )
-	{
-
-	}
-
-	@Override
-	public boolean isItemValidForSlot( final int var1, final ItemStack var2 )
-	{
-		return false;
-	}
-
-	@Override
-	public ITextComponent getDisplayName()
-	{
-		return null;
-	}
-
-	@Override
-	public int getField( final int id )
-	{
-		return 0;
-	}
-
-	@Override
-	public void setField( final int id, final int value )
-	{
-
-	}
-
-	@Override
-	public int getFieldCount()
-	{
-		return 0;
-	}
-
-	@Override
-	public void clear()
-	{
-		this.inSlot.setInventorySlotContents( 0, ItemStack.EMPTY );
-	}
-
-	@Override
-	public boolean isEmpty()
-	{
-		// TODO Auto-generated method stub
-		return false;
 	}
 }

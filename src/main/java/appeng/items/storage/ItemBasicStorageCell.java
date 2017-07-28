@@ -25,7 +25,6 @@ import java.util.Set;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -35,6 +34,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
@@ -188,13 +188,13 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 	}
 
 	@Override
-	public IInventory getUpgradesInventory( final ItemStack is )
+	public IItemHandler getUpgradesInventory( final ItemStack is )
 	{
 		return new CellUpgrades( is, 2 );
 	}
 
 	@Override
-	public IInventory getConfigInventory( final ItemStack is )
+	public IItemHandler getConfigInventory( final ItemStack is )
 	{
 		return new CellConfig( is );
 	}
@@ -239,7 +239,7 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 			final IMEInventoryHandler inv = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
 			if( inv != null && playerInventory.getCurrentItem() == stack )
 			{
-				final InventoryAdaptor ia = InventoryAdaptor.getAdaptor( player, EnumFacing.UP );
+				final InventoryAdaptor ia = InventoryAdaptor.getAdaptor( player );
 				final IItemList<IAEItemStack> list = inv.getAvailableItems( StorageChannel.ITEMS.createList() );
 				if( list.isEmpty() && ia != null )
 				{
@@ -253,8 +253,8 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 					}
 
 					// drop upgrades
-					final IInventory upgradesInventory = this.getUpgradesInventory( stack );
-					for( int upgradeIndex = 0; upgradeIndex < upgradesInventory.getSizeInventory(); upgradeIndex++ )
+					final IItemHandler upgradesInventory = this.getUpgradesInventory( stack );
+					for( int upgradeIndex = 0; upgradeIndex < upgradesInventory.getSlots(); upgradeIndex++ )
 					{
 						final ItemStack upgradeStack = upgradesInventory.getStackInSlot( upgradeIndex );
 						final ItemStack leftStack = ia.addItems( upgradeStack );

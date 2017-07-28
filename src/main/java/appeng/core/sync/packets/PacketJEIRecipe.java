@@ -30,14 +30,13 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumFacing;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.config.Actionable;
@@ -58,6 +57,8 @@ import appeng.helpers.IContainerCraftingPacket;
 import appeng.items.storage.ItemViewCell;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+import appeng.util.helpers.ItemHandlerUtil;
+import appeng.util.inv.WrapperInvItemHandler;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.IPartitionList;
 
@@ -128,8 +129,8 @@ public class PacketJEIRecipe extends AppEngPacket
 				final IStorageGrid inv = grid.getCache( IStorageGrid.class );
 				final IEnergyGrid energy = grid.getCache( IEnergyGrid.class );
 				final ISecurityGrid security = grid.getCache( ISecurityGrid.class );
-				final IInventory craftMatrix = cct.getInventoryByName( "crafting" );
-				final IInventory playerInventory = cct.getInventoryByName( "player" );
+				final IItemHandler craftMatrix = cct.getInventoryByName( "crafting" );
+				final IItemHandler playerInventory = cct.getInventoryByName( "player" );
 
 				final Actionable realForFake = cct.useRealItems() ? Actionable.MODULATE : Actionable.SIMULATE;
 
@@ -156,7 +157,7 @@ public class PacketJEIRecipe extends AppEngPacket
 							final IItemList all = storage.getStorageList();
 							final IPartitionList<IAEItemStack> filter = ItemViewCell.createFilter( cct.getViewCells() );
 
-							for( int x = 0; x < craftMatrix.getSizeInventory(); x++ )
+							for( int x = 0; x < craftMatrix.getSlots(); x++ )
 							{
 								final ItemStack patternItem = testInv.getStackInSlot( x );
 
@@ -176,11 +177,11 @@ public class PacketJEIRecipe extends AppEngPacket
 													cct.getActionSource() );
 											if( out != null )
 											{
-												craftMatrix.setInventorySlotContents( x, out.getItemStack() );
+												ItemHandlerUtil.setStackInSlot( craftMatrix, x, out.getItemStack() );
 											}
 											else
 											{
-												craftMatrix.setInventorySlotContents( x, ItemStack.EMPTY );
+												ItemHandlerUtil.setStackInSlot( craftMatrix, x, ItemStack.EMPTY );
 											}
 
 											currentItem = craftMatrix.getStackInSlot( x );
@@ -224,10 +225,10 @@ public class PacketJEIRecipe extends AppEngPacket
 										whichItem = this.extractItemFromPlayerInventory( player, realForFake, patternItem );
 									}
 
-									craftMatrix.setInventorySlotContents( x, whichItem );
+									ItemHandlerUtil.setStackInSlot( craftMatrix, x, whichItem );
 								}
 							}
-							con.onCraftMatrixChanged( craftMatrix );
+							con.onCraftMatrixChanged( new WrapperInvItemHandler( craftMatrix ) );
 						}
 					}
 				}
@@ -245,7 +246,7 @@ public class PacketJEIRecipe extends AppEngPacket
 	 */
 	private ItemStack extractItemFromPlayerInventory( final EntityPlayer player, final Actionable mode, final ItemStack patternItem )
 	{
-		final InventoryAdaptor ia = InventoryAdaptor.getAdaptor( player, EnumFacing.UP );
+		final InventoryAdaptor ia = InventoryAdaptor.getAdaptor( player );
 		final AEItemStack request = AEItemStack.create( patternItem );
 		final boolean isSimulated = mode == Actionable.SIMULATE;
 		final boolean checkFuzzy = request.isOre() || patternItem.getItemDamage() == OreDictionary.WILDCARD_VALUE || patternItem.hasTagCompound() || patternItem

@@ -22,6 +22,7 @@ package appeng.container.implementations;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IItemDefinition;
@@ -60,14 +61,16 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 		super( ip, te );
 		this.ti = te;
 
-		this.addSlotToContainer(
-				this.top = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, this.ti, 0, 45, 16, this.getInventoryPlayer() ) );
-		this.addSlotToContainer(
-				this.bottom = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, this.ti, 1, 45, 62, this.getInventoryPlayer() ) );
-		this.addSlotToContainer(
-				this.middle = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_INPUT, this.ti, 2, 63, 39, this.getInventoryPlayer() ) );
+		IItemHandler inv = te.getInternalInventory();
 
-		this.addSlotToContainer( new SlotOutput( this.ti, 3, 113, 40, -1 ) );
+		this.addSlotToContainer(
+				this.top = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, inv, 0, 45, 16, this.getInventoryPlayer() ) );
+		this.addSlotToContainer(
+				this.bottom = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, inv, 1, 45, 62, this.getInventoryPlayer() ) );
+		this.addSlotToContainer(
+				this.middle = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_INPUT, inv, 2, 63, 39, this.getInventoryPlayer() ) );
+
+		this.addSlotToContainer( new SlotOutput( inv, 3, 113, 40, -1 ) );
 	}
 
 	@Override
@@ -112,8 +115,8 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 	@Override
 	public boolean isValidForSlot( final Slot s, final ItemStack is )
 	{
-		final ItemStack top = this.ti.getStackInSlot( 0 );
-		final ItemStack bot = this.ti.getStackInSlot( 1 );
+		final ItemStack top = this.ti.getInternalInventory().getStackInSlot( 0 );
+		final ItemStack bot = this.ti.getInternalInventory().getStackInSlot( 1 );
 
 		if( s == this.middle )
 		{
@@ -132,12 +135,12 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 			{
 				final boolean matchA = ( top.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( top,
 						recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) ) && // and...
-						( bot.isEmpty() && !recipe.getBottomOptional().isPresent() ) | ( Platform.itemComparisons().isSameItem( bot,
+						( bot.isEmpty() && !recipe.getBottomOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( bot,
 								recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) );
 
 				final boolean matchB = ( bot.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( bot,
 						recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) ) && // and...
-						( top.isEmpty() && !recipe.getBottomOptional().isPresent() ) | ( Platform.itemComparisons().isSameItem( top,
+						( top.isEmpty() && !recipe.getBottomOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( top,
 								recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) );
 
 				if( matchA || matchB )

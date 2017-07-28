@@ -109,7 +109,7 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 		{
 			final TileCharger tc = (TileCharger) tile;
 
-			if( AEApi.instance().definitions().materials().certusQuartzCrystalCharged().isSameAs( tc.getStackInSlot( 0 ) ) )
+			if( AEApi.instance().definitions().materials().certusQuartzCrystalCharged().isSameAs( tc.getInternalInventory().getStackInSlot( 0 ) ) )
 			{
 				final double xOff = 0.0;
 				final double yOff = 0.0;
@@ -201,7 +201,7 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 	{
 		Matrix4f transform = new Matrix4f();
 		transform.translate( new Vector3f( 0.5f, 0.4f, 0.5f ) );
-		return new ImmutablePair<>( tile.getStackInSlot( 0 ), transform );
+		return new ImmutablePair<>( tile.getInternalInventory().getStackInSlot( 0 ), transform );
 	}
 
 }

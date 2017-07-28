@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -85,8 +84,8 @@ import appeng.me.storage.MEMonitorIInventory;
 import appeng.parts.PartModel;
 import appeng.parts.automation.PartUpgradeable;
 import appeng.tile.inventory.AppEngInternalAEInventory;
-import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
+import appeng.util.inv.InvOperation;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
@@ -170,7 +169,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
+	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
 
@@ -204,7 +203,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public IInventory getInventoryByName( final String name )
+	public IItemHandler getInventoryByName( final String name )
 	{
 		if( name.equals( "config" ) )
 		{
@@ -449,7 +448,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 				final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
 
 				final int slotsToUse = 18 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 9;
-				for( int x = 0; x < this.Config.getSizeInventory() && x < slotsToUse; x++ )
+				for( int x = 0; x < this.Config.getSlots() && x < slotsToUse; x++ )
 				{
 					final IAEItemStack is = this.Config.getAEStackInSlot( x );
 					if( is != null )

@@ -35,7 +35,7 @@ public final class AEInvIterator implements Iterator<IAEItemStack>
 	public AEInvIterator( final AppEngInternalAEInventory inventory )
 	{
 		this.inventory = inventory;
-		this.size = this.inventory.getSizeInventory();
+		this.size = this.inventory.getSlots();
 	}
 
 	@Override

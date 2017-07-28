@@ -25,8 +25,8 @@ import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.ActionItems;
 import appeng.api.config.CopyMode;
@@ -137,8 +137,8 @@ public class GuiCellWorkbench extends GuiUpgradeable
 		this.copyMode.setState( this.workbench.getCopyMode() == CopyMode.CLEAR_ON_REMOVE );
 
 		boolean hasFuzzy = false;
-		final IInventory inv = this.workbench.getCellUpgradeInventory();
-		for( int x = 0; x < inv.getSizeInventory(); x++ )
+		final IItemHandler inv = this.workbench.getCellUpgradeInventory();
+		for( int x = 0; x < inv.getSlots(); x++ )
 		{
 			final ItemStack is = inv.getStackInSlot( x );
 			if( !is.isEmpty() && is.getItem() instanceof IUpgradeModule )

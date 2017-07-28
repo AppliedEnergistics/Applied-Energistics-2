@@ -22,10 +22,10 @@ package appeng.parts.reporting;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
@@ -105,7 +105,7 @@ public class PartCraftingTerminal extends AbstractPartTerminal
 	}
 
 	@Override
-	public IInventory getInventoryByName( final String name )
+	public IItemHandler getInventoryByName( final String name )
 	{
 		if( name.equals( "crafting" ) )
 		{

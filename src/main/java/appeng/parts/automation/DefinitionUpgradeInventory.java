@@ -23,7 +23,7 @@ import net.minecraft.item.ItemStack;
 
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IItemDefinition;
-import appeng.tile.inventory.IAEAppEngInventory;
+import appeng.util.inv.IAEAppEngInventory;
 
 
 public final class DefinitionUpgradeInventory extends UpgradeInventory

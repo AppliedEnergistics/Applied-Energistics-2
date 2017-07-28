@@ -29,7 +29,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -223,10 +222,9 @@ public final class MeteoritePlacer
 			this.skyChestDefinition.maybeBlock().ifPresent( block -> this.putter.put( w, x, y, z, block ) );
 
 			final TileEntity te = w.getTileEntity( x, y, z );
-			if( te instanceof IInventory )
+			final InventoryAdaptor ap = InventoryAdaptor.getAdaptor( te, EnumFacing.UP );
+			if( ap != null )
 			{
-				final InventoryAdaptor ap = InventoryAdaptor.getAdaptor( te, EnumFacing.UP );
-
 				int primary = Math.max( 1, (int) ( Math.random() * 4 ) );
 
 				if( primary > 3 ) // in case math breaks...

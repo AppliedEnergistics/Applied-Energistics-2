@@ -24,6 +24,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
 import appeng.api.storage.ITerminalHost;
 import appeng.container.ContainerNull;
@@ -32,8 +34,9 @@ import appeng.container.slot.SlotCraftingTerm;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.inventory.IAEAppEngInventory;
-import appeng.tile.inventory.InvOperation;
+import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InvOperation;
+import appeng.util.inv.WrapperInvItemHandler;
 
 
 public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAEAppEngInventory, IContainerCraftingPacket
@@ -49,7 +52,7 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 		super( ip, monitorable, false );
 		this.ct = (PartCraftingTerminal) monitorable;
 
-		final IInventory crafting = this.ct.getInventoryByName( "crafting" );
+		final IItemHandler crafting = this.ct.getInventoryByName( "crafting" );
 
 		for( int y = 0; y < 3; y++ )
 		{
@@ -64,14 +67,15 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 
 		this.bindPlayerInventory( ip, 0, 0 );
 
-		this.onCraftMatrixChanged( crafting );
+		this.onCraftMatrixChanged( new WrapperInvItemHandler( crafting ) );
 	}
 
 	/**
 	 * Callback for when the crafting matrix is changed.
 	 */
+
 	@Override
-	public void onCraftMatrixChanged( final IInventory par1IInventory )
+	public void onCraftMatrixChanged( IInventory inventory )
 	{
 		final ContainerNull cn = new ContainerNull();
 		final InventoryCrafting ic = new InventoryCrafting( cn, 3, 3 );
@@ -82,6 +86,7 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 		}
 
 		this.outputSlot.putStack( CraftingManager.findMatchingResult( ic, this.getPlayerInv().player.world ) );
+		super.onCraftMatrixChanged( inventory );
 	}
 
 	@Override
@@ -91,17 +96,17 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 	}
 
 	@Override
-	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
+	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 
 	}
 
 	@Override
-	public IInventory getInventoryByName( final String name )
+	public IItemHandler getInventoryByName( final String name )
 	{
 		if( name.equals( "player" ) )
 		{
-			return this.getInventoryPlayer();
+			return new PlayerInvWrapper( this.getInventoryPlayer() );
 		}
 		return this.ct.getInventoryByName( name );
 	}

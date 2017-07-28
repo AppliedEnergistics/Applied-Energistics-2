@@ -22,11 +22,11 @@ package appeng.items.storage;
 import java.util.List;
 
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
@@ -53,13 +53,13 @@ public class ItemCreativeStorageCell extends AEBaseItem implements ICellWorkbenc
 	}
 
 	@Override
-	public IInventory getUpgradesInventory( final ItemStack is )
+	public IItemHandler getUpgradesInventory( final ItemStack is )
 	{
 		return null;
 	}
 
 	@Override
-	public IInventory getConfigInventory( final ItemStack is )
+	public IItemHandler getConfigInventory( final ItemStack is )
 	{
 		return new CellConfig( is );
 	}

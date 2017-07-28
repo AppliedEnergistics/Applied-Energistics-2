@@ -49,7 +49,6 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -68,7 +67,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.RegistryNamespaced;
 import net.minecraft.util.text.translation.I18n;
-import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
@@ -564,86 +562,6 @@ public class Platform
 	public static int getRandomInt()
 	{
 		return Math.abs( RANDOM_GENERATOR.nextInt() );
-	}
-
-	/*
-	 * Utility function to get the full inventory for a Double Chest in the World.
-	 */
-	public static IInventory GetChestInv( final Object te )
-	{
-		TileEntityChest teA = (TileEntityChest) te;
-		TileEntity teB = null;
-		final IBlockState myBlockID = teA.getWorld().getBlockState( teA.getPos() );
-
-		final BlockPos posX = teA.getPos().offset( EnumFacing.EAST );
-		final BlockPos negX = teA.getPos().offset( EnumFacing.WEST );
-
-		if( teA.getWorld().getBlockState( posX ) == myBlockID )
-		{
-			teB = teA.getWorld().getTileEntity( posX );
-			if( !( teB instanceof TileEntityChest ) )
-			{
-				teB = null;
-			}
-		}
-
-		if( teB == null )
-		{
-			if( teA.getWorld().getBlockState( negX ) == myBlockID )
-			{
-				teB = teA.getWorld().getTileEntity( negX );
-				if( !( teB instanceof TileEntityChest ) )
-				{
-					teB = null;
-				}
-				else
-				{
-					final TileEntityChest x = teA;
-					teA = (TileEntityChest) teB;
-					teB = x;
-				}
-			}
-		}
-
-		final BlockPos posY = teA.getPos().offset( EnumFacing.SOUTH );
-		final BlockPos negY = teA.getPos().offset( EnumFacing.NORTH );
-
-		if( teB == null )
-		{
-			if( teA.getWorld().getBlockState( posY ) == myBlockID )
-			{
-				teB = teA.getWorld().getTileEntity( posY );
-				if( !( teB instanceof TileEntityChest ) )
-				{
-					teB = null;
-				}
-			}
-		}
-
-		if( teB == null )
-		{
-			if( teA.getWorld().getBlockState( negY ) == myBlockID )
-			{
-				teB = teA.getWorld().getTileEntity( negY );
-				if( !( teB instanceof TileEntityChest ) )
-				{
-					teB = null;
-				}
-				else
-				{
-					final TileEntityChest x = teA;
-					teA = (TileEntityChest) teB;
-					teB = x;
-				}
-			}
-		}
-
-		if( teB == null )
-		{
-			return teA;
-		}
-
-		return new InventoryLargeChest( "", teA, (ILockableContainer) teB );
 	}
 
 	public static boolean isModLoaded( final String modid )

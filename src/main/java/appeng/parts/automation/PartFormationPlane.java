@@ -26,7 +26,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemFirework;
@@ -43,6 +42,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -78,8 +78,8 @@ import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.tile.inventory.AppEngInternalAEInventory;
-import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
+import appeng.util.inv.InvOperation;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
@@ -119,7 +119,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
 
 		final int slotsToUse = 18 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 9;
-		for( int x = 0; x < this.Config.getSizeInventory() && x < slotsToUse; x++ )
+		for( int x = 0; x < this.Config.getSlots() && x < slotsToUse; x++ )
 		{
 			final IAEItemStack is = this.Config.getAEStackInSlot( x );
 			if( is != null )
@@ -161,7 +161,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
+	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
 		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
 
@@ -195,7 +195,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	public IInventory getInventoryByName( final String name )
+	public IItemHandler getInventoryByName( final String name )
 	{
 		if( name.equals( "config" ) )
 		{
@@ -455,7 +455,6 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 				Platform.configurePlayer( player, side, this.getTile() );
 				EnumHand hand = player.getActiveHand();
 				player.setHeldItem( hand, is );
-
 
 				// TODO: LIMIT FIREWORKS
 				/*

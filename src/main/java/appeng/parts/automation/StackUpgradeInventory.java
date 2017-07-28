@@ -22,8 +22,8 @@ package appeng.parts.automation;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.config.Upgrades;
-import appeng.tile.inventory.IAEAppEngInventory;
 import appeng.util.Platform;
+import appeng.util.inv.IAEAppEngInventory;
 
 
 public class StackUpgradeInventory extends UpgradeInventory

@@ -22,11 +22,10 @@ package appeng.tile.misc;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.init.Items;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.util.EnumFacing;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNode;
@@ -44,19 +43,18 @@ import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.inventory.InvOperation;
 import appeng.util.Platform;
+import appeng.util.inv.InvOperation;
+import appeng.util.inv.filter.IAEItemFilter;
 
 
 public class TileVibrationChamber extends AENetworkInvTile implements IGridTickable
 {
-	private static final int FUEL_SLOT_INDEX = 0;
 	private static final double POWER_PER_TICK = 5;
-	private static final int[] ACCESSIBLE_SLOTS = { FUEL_SLOT_INDEX };
 	private static final int MAX_BURN_SPEED = 200;
 	private static final double DILATION_SCALING = 100.0;
 	private static final int MIN_BURN_SPEED = 20;
-	private final IInventory inv = new AppEngInternalInventory( this, 1 );
+	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 1 );
 
 	private int burnSpeed = 100;
 	private double burnTime = 0;
@@ -67,6 +65,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 
 	public TileVibrationChamber()
 	{
+		this.inv.setFilter( new FuelSlotFilter() );
 		this.getProxy().setIdlePowerUsage( 0 );
 		this.getProxy().setFlags();
 	}
@@ -112,19 +111,13 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	}
 
 	@Override
-	public IInventory getInternalInventory()
+	public IItemHandler getInternalInventory()
 	{
 		return this.inv;
 	}
 
 	@Override
-	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
-	{
-		return TileEntityFurnace.getItemBurnTime( itemstack ) > 0;
-	}
-
-	@Override
-	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
+	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
 		if( this.getBurnTime() <= 0 )
 		{
@@ -142,21 +135,9 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		}
 	}
 
-	@Override
-	public boolean canExtractItem( final int slotIndex, final ItemStack extractedItem, final EnumFacing side )
-	{
-		return extractedItem.getItem() == Items.BUCKET;
-	}
-
-	@Override
-	public int[] getAccessibleSlotsBySide( final EnumFacing side )
-	{
-		return ACCESSIBLE_SLOTS;
-	}
-
 	private boolean canEatFuel()
 	{
-		final ItemStack is = this.getStackInSlot( FUEL_SLOT_INDEX );
+		final ItemStack is = this.inv.getStackInSlot( 0 );
 		if( !is.isEmpty() )
 		{
 			final int newBurnTime = TileEntityFurnace.getItemBurnTime( is );
@@ -243,7 +224,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 
 	private void eatFuel()
 	{
-		final ItemStack is = this.getStackInSlot( FUEL_SLOT_INDEX );
+		final ItemStack is = this.inv.getStackInSlot( 0 );
 		if( !is.isEmpty() )
 		{
 			final int newBurnTime = TileEntityFurnace.getItemBurnTime( is );
@@ -261,11 +242,11 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 						container = is.getItem().getContainerItem( is );
 					}
 
-					this.setInventorySlotContents( 0, container );
+					this.inv.setStackInSlot( 0, container );
 				}
 				else
 				{
-					this.setInventorySlotContents( 0, is );
+					this.inv.setStackInSlot( 0, is );
 				}
 
 				this.markDirty();
@@ -327,10 +308,18 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		this.burnTime = burnTime;
 	}
 
-	@Override
-	public boolean isEmpty()
+	private class FuelSlotFilter implements IAEItemFilter
 	{
-		// TODO Auto-generated method stub
-		return false;
+		@Override
+		public boolean allowExtract( IItemHandler inv, int slot, int amount )
+		{
+			return inv.getStackInSlot( slot ).getItem() == Items.BUCKET;
+		}
+
+		@Override
+		public boolean allowInsert( IItemHandler inv, int slot, ItemStack stack )
+		{
+			return TileEntityFurnace.getItemBurnTime( stack ) > 0;
+		}
 	}
 }

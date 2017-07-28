@@ -34,7 +34,6 @@ import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -45,6 +44,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
@@ -344,7 +344,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public IInventory getInventoryByName( final String name )
+	public IItemHandler getInventoryByName( final String name )
 	{
 		return null;
 	}
@@ -372,15 +372,15 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 			pHost.setPriority( compound.getInteger( "priority" ) );
 		}
 
-		final IInventory inv = this.getInventoryByName( "config" );
+		final IItemHandler inv = this.getInventoryByName( "config" );
 		if( inv instanceof AppEngInternalAEInventory )
 		{
 			final AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
-			final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSizeInventory() );
+			final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSlots() );
 			tmp.readFromNBT( compound, "config" );
-			for( int x = 0; x < tmp.getSizeInventory(); x++ )
+			for( int x = 0; x < tmp.getSlots(); x++ )
 			{
-				target.setInventorySlotContents( x, tmp.getStackInSlot( x ) );
+				target.setStackInSlot( x, tmp.getStackInSlot( x ) );
 			}
 		}
 	}
@@ -408,7 +408,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 			output.setInteger( "priority", pHost.getPriority() );
 		}
 
-		final IInventory inv = this.getInventoryByName( "config" );
+		final IItemHandler inv = this.getInventoryByName( "config" );
 		if( inv instanceof AppEngInternalAEInventory )
 		{
 			( (AppEngInternalAEInventory) inv ).writeToNBT( output, "config" );

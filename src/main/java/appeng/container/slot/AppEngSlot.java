@@ -23,17 +23,22 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.container.AEBaseContainer;
-import appeng.tile.inventory.AppEngInternalInventory;
+import appeng.util.helpers.ItemHandlerUtil;
 
 
 public class AppEngSlot extends Slot
 {
+	private static IInventory emptyInventory = new InventoryBasic( "[Null]", true, 0 );
+	private final IItemHandler itemHandler;
+	private final int index;
 
 	private final int defX;
 	private final int defY;
@@ -44,9 +49,12 @@ public class AppEngSlot extends Slot
 	private hasCalculatedValidness isValid;
 	private boolean isDisplay = false;
 
-	public AppEngSlot( final IInventory inv, final int idx, final int x, final int y )
+	public AppEngSlot( final IItemHandler inv, final int idx, final int x, final int y )
 	{
-		super( inv, idx, x, y );
+		super( emptyInventory, idx, x, y );
+		this.itemHandler = inv;
+		this.index = idx;
+
 		this.defX = x;
 		this.defY = y;
 		this.setIsValid( hasCalculatedValidness.NotAvailable );
@@ -75,11 +83,11 @@ public class AppEngSlot extends Slot
 	}
 
 	@Override
-	public boolean isItemValid( final ItemStack par1ItemStack )
+	public boolean isItemValid( @Nonnull final ItemStack par1ItemStack )
 	{
 		if( this.isSlotEnabled() )
 		{
-			return super.isItemValid( par1ItemStack );
+			return ItemHandlerUtil.isItemValidForSlot( this.itemHandler, this.index, par1ItemStack );
 		}
 		return false;
 	}
@@ -93,7 +101,7 @@ public class AppEngSlot extends Slot
 			return ItemStack.EMPTY;
 		}
 
-		if( this.inventory.getSizeInventory() <= this.getSlotIndex() )
+		if( this.itemHandler.getSlots() <= this.getSlotIndex() )
 		{
 			return ItemStack.EMPTY;
 		}
@@ -103,15 +111,17 @@ public class AppEngSlot extends Slot
 			this.setDisplay( false );
 			return this.getDisplayStack();
 		}
-		return super.getStack();
+
+		return this.itemHandler.getStackInSlot( index );
 	}
 
 	@Override
-	public void putStack( final ItemStack par1ItemStack )
+	public void putStack( final ItemStack stack )
 	{
 		if( this.isSlotEnabled() )
 		{
-			super.putStack( par1ItemStack );
+			ItemHandlerUtil.setStackInSlot( this.itemHandler, index, stack );
+			this.onSlotChanged();
 
 			if( this.getContainer() != null )
 			{
@@ -120,19 +130,28 @@ public class AppEngSlot extends Slot
 		}
 	}
 
+	public IItemHandler getItemHandler()
+	{
+		return this.itemHandler;
+	}
+
 	@Override
 	public void onSlotChanged()
 	{
-		if( this.inventory instanceof AppEngInternalInventory )
-		{
-			( (AppEngInternalInventory) this.inventory ).markDirty( this.getSlotIndex() );
-		}
-		else
-		{
-			super.onSlotChanged();
-		}
-
+		ItemHandlerUtil.markDirty( this.itemHandler, this.index );
 		this.setIsValid( hasCalculatedValidness.NotAvailable );
+	}
+
+	@Override
+	public int getSlotStackLimit()
+	{
+		return this.itemHandler.getSlotLimit( this.index );
+	}
+
+	@Override
+	public int getItemStackLimit( @Nonnull ItemStack stack )
+	{
+		return Math.min( getSlotStackLimit(), stack.getMaxStackSize() );
 	}
 
 	@Override
@@ -140,9 +159,22 @@ public class AppEngSlot extends Slot
 	{
 		if( this.isSlotEnabled() )
 		{
-			return super.canTakeStack( par1EntityPlayer );
+			return !this.itemHandler.extractItem( index, 1, true ).isEmpty();
 		}
 		return false;
+	}
+
+	@Override
+	@Nonnull
+	public ItemStack decrStackSize( int amount )
+	{
+		return this.itemHandler.extractItem( index, amount, false );
+	}
+
+	@Override
+	public boolean isSameInventory( Slot other )
+	{
+		return other instanceof AppEngSlot && ( (AppEngSlot) other ).itemHandler == this.itemHandler;
 	}
 
 	@Override
@@ -159,7 +191,7 @@ public class AppEngSlot extends Slot
 
 	public ItemStack getDisplayStack()
 	{
-		return super.getStack();
+		return this.itemHandler.getStackInSlot( index );
 	}
 
 	public float getOpacityOfIcon()

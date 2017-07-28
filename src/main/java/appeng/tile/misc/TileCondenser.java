@@ -21,7 +21,6 @@ package appeng.tile.misc;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -52,10 +51,10 @@ import appeng.tile.AEBaseInvTile;
 import appeng.tile.TileEvent;
 import appeng.tile.events.TileEventType;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.inventory.InvOperation;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
-import appeng.util.Platform;
+import appeng.util.inv.InvOperation;
+import appeng.util.inv.WrapperChainedItemHandler;
 
 
 public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, IConfigurableObject
@@ -63,15 +62,14 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 
 	public static final int BYTE_MULTIPLIER = 8;
 
-	private final int[] sides = {
-			0,
-			1
-	};
-	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 3 );
+	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 2 );
 	private final ConfigManager cm = new ConfigManager( this );
-	private final IItemHandler itemHandler = new ItemHandler();
+
+	private final IItemHandler inputSlot = new CondenseItemHandler();
 	private final IFluidHandler fluidHandler = new FluidHandler();
 	private final MEHandler meHandler = new MEHandler();
+
+	private final IItemHandler combinedInv = new WrapperChainedItemHandler( inputSlot, inv );
 
 	private double storedPower = 0;
 
@@ -96,7 +94,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 
 	public double getStorage()
 	{
-		final ItemStack is = this.inv.getStackInSlot( 2 );
+		final ItemStack is = this.inv.getStackInSlot( 1 );
 		if( !is.isEmpty() )
 		{
 			if( is.getItem() instanceof IStorageComponent )
@@ -134,9 +132,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 
 	private boolean canAddOutput( final ItemStack output )
 	{
-		final ItemStack outputStack = this.getStackInSlot( 1 );
-		return outputStack.isEmpty() || ( Platform.itemComparisons().isEqualItem( outputStack,
-				output ) && outputStack.getCount() < outputStack.getMaxStackSize() );
+		return inv.insertItem( 0, output, true ).isEmpty();
 	}
 
 	/**
@@ -146,16 +142,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	 */
 	private void addOutput( final ItemStack output )
 	{
-		final ItemStack outputStack = this.getStackInSlot( 1 );
-		if( outputStack.isEmpty() )
-		{
-			this.setInventorySlotContents( 1, output.copy() );
-		}
-		else
-		{
-			outputStack.grow( 1 );
-			this.setInventorySlotContents( 1, outputStack );
-		}
+		inv.insertItem( 0, output, false );
 	}
 
 	private ItemStack getOutput()
@@ -182,63 +169,15 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	}
 
 	@Override
-	public IInventory getInternalInventory()
+	public IItemHandler getInternalInventory()
 	{
-		return this.inv;
+		return this.combinedInv;
 	}
 
 	@Override
-	public void setInventorySlotContents( final int i, final ItemStack itemstack )
+	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
-		if( i == 0 )
-		{
-			if( !itemstack.isEmpty() )
-			{
-				this.addPower( itemstack.getCount() );
-			}
-		}
-		else
-		{
-			this.inv.setInventorySlotContents( 1, itemstack );
-		}
-	}
-
-	@Override
-	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
-	{
-		return i == 0;
-	}
-
-	@Override
-	public void onChangeInventory( final IInventory inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
-	{
-		if( slot == 0 )
-		{
-			final ItemStack is = inv.getStackInSlot( 0 );
-			if( !is.isEmpty() )
-			{
-				this.addPower( is.getCount() );
-				inv.setInventorySlotContents( 0, ItemStack.EMPTY );
-			}
-		}
-	}
-
-	@Override
-	public boolean canInsertItem( final int slotIndex, final ItemStack insertingItem, final EnumFacing side )
-	{
-		return slotIndex == 0;
-	}
-
-	@Override
-	public boolean canExtractItem( final int slotIndex, final ItemStack extractedItem, final EnumFacing side )
-	{
-		return slotIndex != 0;
-	}
-
-	@Override
-	public int[] getAccessibleSlotsBySide( final EnumFacing side )
-	{
-		return this.sides;
+		// nothing
 	}
 
 	@Override
@@ -266,11 +205,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	@Override
 	public boolean hasCapability( Capability<?> capability, EnumFacing facing )
 	{
-		if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
-		{
-			return true;
-		}
-		else if( capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY )
+		if( capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY )
 		{
 			return true;
 		}
@@ -287,7 +222,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	{
 		if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
 		{
-			return (T) this.itemHandler;
+			return (T) inputSlot;
 		}
 		else if( capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY )
 		{
@@ -300,7 +235,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		return super.getCapability( capability, facing );
 	}
 
-	private class ItemHandler implements IItemHandler
+	private class CondenseItemHandler implements IItemHandler
 	{
 
 		@Override
@@ -416,12 +351,5 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		{
 			return this.fluidInventory;
 		}
-	}
-
-	@Override
-	public boolean isEmpty()
-	{
-		// TODO Auto-generated method stub
-		return false;
 	}
 }

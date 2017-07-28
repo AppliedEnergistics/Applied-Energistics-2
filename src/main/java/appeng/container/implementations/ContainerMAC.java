@@ -20,9 +20,9 @@ package appeng.container.implementations;
 
 
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.SecurityPermissions;
@@ -54,7 +54,7 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
 
 	public boolean isValidItemForSlot( final int slotIndex, final ItemStack i )
 	{
-		final IInventory mac = this.getUpgradeable().getInventoryByName( "mac" );
+		final IItemHandler mac = this.getUpgradeable().getInventoryByName( "mac" );
 
 		final ItemStack is = mac.getStackInSlot( 10 );
 		if( is.isEmpty() )
@@ -88,7 +88,7 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
 		int offX = 29;
 		int offY = 30;
 
-		final IInventory mac = this.getUpgradeable().getInventoryByName( "mac" );
+		final IItemHandler mac = this.getUpgradeable().getInventoryByName( "mac" );
 
 		for( int y = 0; y < 3; y++ )
 		{
@@ -109,7 +109,7 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
 		offX = 122;
 		offY = 17;
 
-		final IInventory upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
+		final IItemHandler upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
 		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getInventoryPlayer() ) )
 				.setNotDraggable() );
 		this.addSlotToContainer(

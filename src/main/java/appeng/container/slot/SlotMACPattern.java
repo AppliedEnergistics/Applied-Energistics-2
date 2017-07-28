@@ -19,8 +19,8 @@
 package appeng.container.slot;
 
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.container.implementations.ContainerMAC;
 
@@ -30,7 +30,7 @@ public class SlotMACPattern extends AppEngSlot
 
 	private final ContainerMAC mac;
 
-	public SlotMACPattern( final ContainerMAC mac, final IInventory i, final int slotIdx, final int x, final int y )
+	public SlotMACPattern( final ContainerMAC mac, final IItemHandler i, final int slotIdx, final int x, final int y )
 	{
 		super( i, slotIdx, x, y );
 		this.mac = mac;

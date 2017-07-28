@@ -21,13 +21,13 @@ package appeng.client.me;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.SlotItemHandler;
 
 import appeng.api.storage.data.IAEItemStack;
 
 
-public class SlotME extends Slot
+public class SlotME extends SlotItemHandler
 {
 
 	private final InternalSlotME mySlot;

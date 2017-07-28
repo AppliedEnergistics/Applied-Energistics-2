@@ -22,9 +22,9 @@ package appeng.container.implementations;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
@@ -75,7 +75,7 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 	@Override
 	protected void setupConfig()
 	{
-		final IInventory upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
+		final IItemHandler upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
 		if( this.availableUpgrades() > 0 )
 		{
 			this.addSlotToContainer(
@@ -101,7 +101,7 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 							.setNotDraggable() );
 		}
 
-		final IInventory inv = this.getUpgradeable().getInventoryByName( "config" );
+		final IItemHandler inv = this.getUpgradeable().getInventoryByName( "config" );
 		final int y = 40;
 		final int x = 80 + 44;
 		this.addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
