@@ -67,4 +67,10 @@ public class TunnelCollection<T extends PartP2PTunnel> implements Iterable<T>
 	{
 		return this.clz;
 	}
+
+	public int size()
+	{
+		return this.tunnelSources == null ? 0 : this.tunnelSources.size();
+	}
+
 }

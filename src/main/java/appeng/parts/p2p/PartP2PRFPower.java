@@ -35,13 +35,13 @@ import appeng.coremod.annotations.Integration.InterfaceList;
 import appeng.integration.IntegrationType;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
-import appeng.util.Platform;
 
 
 @InterfaceList( value = { @Interface( iface = "cofh.redstoneflux.api.IEnergyReceiver", iname = IntegrationType.RF ) } )
 public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implements IEnergyReceiver
 {
 	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_rf" );
+	private static final IEnergyReceiver NULL_ENERGY_RECEIVER = new NullEnergyReceiver();
 
 	private boolean cachedTarget = false;
 
@@ -92,34 +92,24 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 
 			try
 			{
-				for( PartP2PRFPower t : this.getOutputs() )
-				{
-					if( Platform.getRandomInt() % 2 > 0 )
-					{
-						int receiver = t.getOutput().receiveEnergy( t.getSide().getFacing().getOpposite(), maxReceive, simulate );
-						maxReceive -= receiver;
-						total += receiver;
+				final int outputTunnels = this.getOutputs().size();
 
-						if( maxReceive <= 0 )
-						{
-							break;
-						}
-					}
+				if( outputTunnels == 0 )
+				{
+					return 0;
 				}
 
-				if( maxReceive > 0 )
-				{
-					for( PartP2PRFPower t : this.getOutputs() )
-					{
-						int receiver = t.getOutput().receiveEnergy( t.getSide().getFacing().getOpposite(), maxReceive, simulate );
-						maxReceive -= receiver;
-						total += receiver;
+				final int amountPerOutput = maxReceive / outputTunnels;
+				int overflow = maxReceive % amountPerOutput;
 
-						if( maxReceive <= 0 )
-						{
-							break;
-						}
-					}
+				for( PartP2PRFPower target : this.getOutputs() )
+				{
+					final IEnergyReceiver output = target.getOutput();
+					final int toSend = amountPerOutput + overflow;
+					final int received = output.receiveEnergy( target.getSide().getFacing().getOpposite(), toSend, simulate );
+
+					overflow = toSend - received;
+					total += received;
 				}
 
 				this.queueTunnelDrain( PowerUnits.RF, total );
@@ -140,21 +130,21 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 		{
 			if( !this.cachedTarget )
 			{
-				TileEntity self = this.getTile();
-				TileEntity te = self.getWorld().getTileEntity( new BlockPos( self.getPos().getX() + this.getSide().xOffset, self.getPos()
+				final TileEntity self = this.getTile();
+				final TileEntity te = self.getWorld().getTileEntity( new BlockPos( self.getPos().getX() + this.getSide().xOffset, self.getPos()
 						.getY() + this.getSide().yOffset, self.getPos().getZ() + this.getSide().zOffset ) );
+
 				this.outputTarget = te instanceof IEnergyReceiver ? (IEnergyReceiver) te : null;
 				this.cachedTarget = true;
 			}
 
-			if( this.outputTarget == null || !this.outputTarget.canConnectEnergy( this.getSide().getOpposite().getFacing() ) )
+			if( this.outputTarget != null && this.outputTarget.canConnectEnergy( this.getSide().getOpposite().getFacing() ) )
 			{
-				return null;
+				return this.outputTarget;
 			}
-
-			return this.outputTarget;
 		}
-		return null;
+
+		return NULL_ENERGY_RECEIVER;
 	}
 
 	@Override
@@ -212,4 +202,34 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 	{
 		return true;
 	}
+
+	private static class NullEnergyReceiver implements IEnergyReceiver
+	{
+
+		@Override
+		public int getEnergyStored( EnumFacing from )
+		{
+			return 0;
+		}
+
+		@Override
+		public int getMaxEnergyStored( EnumFacing from )
+		{
+			return 0;
+		}
+
+		@Override
+		public boolean canConnectEnergy( EnumFacing from )
+		{
+			return true;
+		}
+
+		@Override
+		public int receiveEnergy( EnumFacing from, int maxReceive, boolean simulate )
+		{
+			return 0;
+		}
+
+	}
+
 }
