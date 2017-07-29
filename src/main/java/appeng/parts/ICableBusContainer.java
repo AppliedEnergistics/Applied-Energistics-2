@@ -29,6 +29,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -51,7 +52,7 @@ public interface ICableBusContainer
 
 	boolean activate( EntityPlayer player, EnumHand hand, Vec3d vecFromPool );
 
-	void onNeighborChanged();
+	void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor );
 
 	boolean isSolidOnSide( EnumFacing side );
 

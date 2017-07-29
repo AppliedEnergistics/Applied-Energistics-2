@@ -27,6 +27,8 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import appeng.api.networking.IGridNode;
@@ -122,7 +124,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	}
 
 	@Override
-	public void onNeighborChanged()
+	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
 	{
 		this.opacity = -1;
 

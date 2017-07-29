@@ -823,7 +823,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public void onNeighborChanged()
+	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
 	{
 		this.hasRedstone = YesNo.UNDECIDED;
 
@@ -832,7 +832,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			final IPart part = this.getPart( s );
 			if( part != null )
 			{
-				part.onNeighborChanged();
+				part.onNeighborChanged( w, pos, neighbor );
 			}
 		}
 	}

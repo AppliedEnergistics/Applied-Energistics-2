@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 
 import cofh.redstoneflux.api.IEnergyReceiver;
 
@@ -71,9 +72,9 @@ public final class PartP2PRFPower extends PartP2PTunnel<PartP2PRFPower> implemen
 	}
 
 	@Override
-	public void onNeighborChanged()
+	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
 	{
-		super.onNeighborChanged();
+		super.onNeighborChanged( w, pos, neighbor );
 
 		this.cachedTarget = false;
 	}

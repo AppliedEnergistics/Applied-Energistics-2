@@ -42,6 +42,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
@@ -129,7 +130,7 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 	/**
 	 * a block around the bus's host has been changed.
 	 */
-	void onNeighborChanged();
+	void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor );
 
 	/**
 	 * @return output redstone on facing side

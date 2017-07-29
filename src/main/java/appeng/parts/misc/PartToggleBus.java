@@ -29,6 +29,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 
 import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnection;
@@ -122,7 +124,7 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public void onNeighborChanged()
+	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
 	{
 		final boolean oldHasRedstone = this.hasRedstone;
 		this.hasRedstone = this.getHost().hasRedstone( this.getSide() );
