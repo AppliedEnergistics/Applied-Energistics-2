@@ -22,6 +22,7 @@ package appeng.parts.automation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
@@ -80,15 +81,18 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	}
 
 	@Override
-	public void onNeighborChanged()
+	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
 	{
-		this.updateState();
-		if( this.lastRedstone != this.getHost().hasRedstone( this.getSide() ) )
+		if( pos.offset( this.getSide().getFacing() ).equals( neighbor ) )
 		{
-			this.lastRedstone = !this.lastRedstone;
-			if( this.lastRedstone && this.getRSMode() == RedstoneMode.SIGNAL_PULSE )
+			this.updateState();
+			if( this.lastRedstone != this.getHost().hasRedstone( this.getSide() ) )
 			{
-				this.doBusWork();
+				this.lastRedstone = !this.lastRedstone;
+				if( this.lastRedstone && this.getRSMode() == RedstoneMode.SIGNAL_PULSE )
+				{
+					this.doBusWork();
+				}
 			}
 		}
 	}

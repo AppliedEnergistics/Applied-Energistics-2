@@ -33,6 +33,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -212,16 +213,11 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	}
 
 	@Override
-	public void onNeighborChanged()
+	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
 	{
-		this.isAccepting = true;
-		try
+		if( pos.offset( this.getSide().getFacing() ).equals( neighbor ) )
 		{
-			this.getProxy().getTick().alertDevice( this.getProxy().getNode() );
-		}
-		catch( final GridAccessException e )
-		{
-			// :P
+			this.refresh();
 		}
 	}
 
@@ -419,7 +415,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	@MENetworkEventSubscribe
 	public void chanRender( final MENetworkChannelsChanged c )
 	{
-		this.onNeighborChanged();
+		this.refresh();
 		this.getHost().markForUpdate();
 	}
 
@@ -427,7 +423,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	@MENetworkEventSubscribe
 	public void powerRender( final MENetworkPowerStatusChange c )
 	{
-		this.onNeighborChanged();
+		this.refresh();
 		this.getHost().markForUpdate();
 	}
 
@@ -592,6 +588,20 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		{
 			final IAEItemStack overflow = this.storeItemStack( snaggedItem );
 			this.spawnOverflow( overflow );
+		}
+	}
+
+	private void refresh()
+	{
+		this.isAccepting = true;
+
+		try
+		{
+			this.getProxy().getTick().alertDevice( this.getProxy().getNode() );
+		}
+		catch( final GridAccessException e )
+		{
+			// :P
 		}
 	}
 

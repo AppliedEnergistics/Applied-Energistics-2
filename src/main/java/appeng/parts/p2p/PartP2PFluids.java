@@ -26,6 +26,8 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -74,7 +76,7 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 	}
 
 	@Override
-	public void onNeighborChanged()
+	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
 	{
 		this.cachedTank = null;
 

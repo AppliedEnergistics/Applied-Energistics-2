@@ -131,7 +131,7 @@ public class BlockCableBus extends AEBaseTileBlock
 	@Override
 	public void onNeighborChange( final IBlockAccess w, final BlockPos pos, final BlockPos neighbor )
 	{
-		this.cb( w, pos ).onNeighborChanged();
+		this.cb( w, pos ).onNeighborChanged( w, pos, neighbor );
 	}
 
 	@Override
@@ -336,7 +336,7 @@ public class BlockCableBus extends AEBaseTileBlock
 	{
 		if( Platform.isServer() )
 		{
-			this.cb( world, pos ).onNeighborChanged();
+			this.cb( world, pos ).onNeighborChanged( world, pos, fromPos );
 		}
 	}
 

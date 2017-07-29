@@ -38,6 +38,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
@@ -347,15 +348,17 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	public void onNeighborChanged()
+	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
 	{
-		final TileEntity te = this.getHost().getTile();
-		final World w = te.getWorld();
-		final AEPartLocation side = this.getSide();
+		if( pos.offset( this.getSide().getFacing() ).equals( neighbor ) )
+		{
+			final TileEntity te = this.getHost().getTile();
+			final AEPartLocation side = this.getSide();
 
-		final BlockPos tePos = te.getPos().offset( side.getFacing() );
+			final BlockPos tePos = te.getPos().offset( side.getFacing() );
 
-		this.blocked = !w.getBlockState( tePos ).getBlock().isReplaceable( w, tePos );
+			this.blocked = !w.getBlockState( tePos ).getBlock().isReplaceable( w, tePos );
+		}
 	}
 
 	@Override
