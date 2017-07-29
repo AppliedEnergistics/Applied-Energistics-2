@@ -405,15 +405,19 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 	private int createHandlerHash( TileEntity target )
 	{
+		if( target == null )
+		{
+			return 0;
+		}
 		final EnumFacing targetSide = this.getSide().getFacing().getOpposite();
 		if( target.hasCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide ) )
 		{
 			return 0;
 		}
-		IItemHandler handler = target.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide );
+		final IItemHandler itemHandler = target.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide );
 		if( handler != null )
 		{
-			return Objects.hash( target, handler, handler.getSlots() );
+			return Objects.hash( target, itemHandler, itemHandler.getSlots() );
 		}
 		return 0;
 	}
