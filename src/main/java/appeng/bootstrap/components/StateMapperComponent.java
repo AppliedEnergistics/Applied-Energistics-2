@@ -24,16 +24,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 
-import appeng.bootstrap.IBootstrapComponent;
+import appeng.bootstrap.IModelRegistry;
 
 
 /**
  * Registers a custom state mapper for a given block.
  */
-public class StateMapperComponent implements IBootstrapComponent
+public class StateMapperComponent implements IModelRegistrationComponent
 {
 
 	private final Block block;
@@ -47,9 +46,9 @@ public class StateMapperComponent implements IBootstrapComponent
 	}
 
 	@Override
-	public void modelRegistration( Side side )
+	public void modelRegistration( Side side, IModelRegistry registry )
 	{
-		ModelLoader.setCustomStateMapper( this.block, this.stateMapper );
+		registry.setCustomStateMapper( this.block, this.stateMapper );
 		if( this.stateMapper instanceof IResourceManagerReloadListener )
 		{
 			( (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager() )

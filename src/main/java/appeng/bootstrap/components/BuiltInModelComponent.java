@@ -29,12 +29,11 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.bootstrap.IBootstrapComponent;
 import appeng.client.render.model.BuiltInModelLoader;
 
 
 @SideOnly( Side.CLIENT )
-public class BuiltInModelComponent implements IBootstrapComponent
+public class BuiltInModelComponent implements IPreInitComponent
 {
 
 	private final Map<String, IModel> builtInModels = new HashMap<>();

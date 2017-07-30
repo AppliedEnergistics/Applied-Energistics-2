@@ -25,17 +25,16 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 
-import appeng.bootstrap.IBootstrapComponent;
+import appeng.bootstrap.IModelRegistry;
 
 
 /**
  * Registers the models that should by used for an item, including the ability to
  * distinguish by meta.
  */
-public class ItemModelComponent implements IBootstrapComponent
+public class ItemModelComponent implements IModelRegistrationComponent
 {
 
 	private final Item item;
@@ -49,11 +48,11 @@ public class ItemModelComponent implements IBootstrapComponent
 	}
 
 	@Override
-	public void modelRegistration( Side side )
+	public void modelRegistration( Side side, IModelRegistry registry )
 	{
 		this.modelsByMeta.forEach( ( meta, model ) ->
 		{
-			ModelLoader.setCustomModelResourceLocation( this.item, meta, model );
+			registry.setCustomModelResourceLocation( this.item, meta, model );
 		} );
 	}
 

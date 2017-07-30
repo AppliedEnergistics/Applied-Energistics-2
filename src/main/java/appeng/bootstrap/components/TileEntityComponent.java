@@ -8,7 +8,6 @@ import java.util.List;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
-import appeng.bootstrap.IBootstrapComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.core.AppEng;
 
@@ -16,7 +15,7 @@ import appeng.core.AppEng;
 /**
  * @author GuntherDW
  */
-public class TileEntityComponent implements IBootstrapComponent
+public class TileEntityComponent implements IPreInitComponent
 {
 	private List<TileEntityDefinition> tileEntityDefinitions = new ArrayList<>();
 

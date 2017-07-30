@@ -30,12 +30,16 @@ import javax.annotation.Nonnull;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -66,6 +70,7 @@ import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPartHelper;
+import appeng.bootstrap.IModelRegistry;
 import appeng.capabilities.Capabilities;
 import appeng.core.features.AEFeature;
 import appeng.core.features.registries.P2PTunnelRegistry;
@@ -375,7 +380,8 @@ public final class Registration
 	public void modelRegistryEvent( ModelRegistryEvent event )
 	{
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
-		definitions.getRegistry().getBootstrapComponents().forEach( b -> b.modelRegistration( FMLCommonHandler.instance().getEffectiveSide() ) );
+		final IModelRegistry registry = new ModelLoaderWrapper();
+		definitions.getRegistry().getBootstrapComponents().forEach( b -> b.modelRegistration( FMLCommonHandler.instance().getEffectiveSide(), registry ) );
 	}
 
 	@SubscribeEvent
@@ -624,4 +630,34 @@ public final class Registration
 		 */
 		OreDictionaryHandler.INSTANCE.bakeRecipes();
 	}
+
+	private static class ModelLoaderWrapper implements IModelRegistry
+	{
+
+		@Override
+		public void registerItemVariants( Item item, ResourceLocation... names )
+		{
+			ModelLoader.registerItemVariants( item, names );
+		}
+
+		@Override
+		public void setCustomModelResourceLocation( Item item, int metadata, ModelResourceLocation model )
+		{
+			ModelLoader.setCustomModelResourceLocation( item, metadata, model );
+		}
+
+		@Override
+		public void setCustomMeshDefinition( Item item, ItemMeshDefinition meshDefinition )
+		{
+			ModelLoader.setCustomMeshDefinition( item, meshDefinition );
+		}
+
+		@Override
+		public void setCustomStateMapper( Block block, IStateMapper mapper )
+		{
+			ModelLoader.setCustomStateMapper( block, mapper );
+		}
+
+	}
+
 }

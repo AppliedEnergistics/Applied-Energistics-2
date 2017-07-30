@@ -22,6 +22,7 @@ package appeng.bootstrap.components;
 import net.minecraftforge.fml.relauncher.Side;
 
 import appeng.bootstrap.IBootstrapComponent;
+import appeng.bootstrap.IModelRegistry;
 
 
 /**
@@ -33,6 +34,6 @@ public interface IModelRegistrationComponent extends IBootstrapComponent
 {
 
 	@Override
-	void modelRegistration( Side side );
+	void modelRegistration( Side side, IModelRegistry registry );
 
 }

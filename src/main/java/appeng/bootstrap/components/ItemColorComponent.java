@@ -24,10 +24,8 @@ import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.relauncher.Side;
 
-import appeng.bootstrap.IBootstrapComponent;
 
-
-public class ItemColorComponent implements IBootstrapComponent
+public class ItemColorComponent implements IInitComponent
 {
 
 	private final Item item;

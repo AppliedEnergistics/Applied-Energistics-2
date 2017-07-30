@@ -32,7 +32,7 @@ public interface IBootstrapComponent
 	{
 	}
 
-	default void modelRegistration( Side side )
+	default void modelRegistration( Side side, IModelRegistry registry )
 	{
 	}
 

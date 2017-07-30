@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2017, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,38 +16,24 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.bootstrap.components;
+package appeng.bootstrap;
 
 
-import javax.annotation.Nonnull;
-
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.item.Item;
-import net.minecraftforge.fml.relauncher.Side;
-
-import appeng.bootstrap.IModelRegistry;
+import net.minecraft.util.ResourceLocation;
 
 
-/**
- * Registers a custom item mesh definition that can be used to dynamically determine the item model based on
- * item stack properties.
- */
-public class ItemMeshDefinitionComponent implements IModelRegistrationComponent
+public interface IModelRegistry
 {
+	void registerItemVariants( Item item, ResourceLocation... names );
 
-	private final Item item;
+	void setCustomModelResourceLocation( Item item, int metadata, ModelResourceLocation model );
 
-	private final ItemMeshDefinition meshDefinition;
+	void setCustomMeshDefinition( Item item, ItemMeshDefinition meshDefinition );
 
-	public ItemMeshDefinitionComponent( @Nonnull Item item, @Nonnull ItemMeshDefinition meshDefinition )
-	{
-		this.item = item;
-		this.meshDefinition = meshDefinition;
-	}
-
-	@Override
-	public void modelRegistration( Side side, IModelRegistry registry )
-	{
-		registry.setCustomMeshDefinition( this.item, this.meshDefinition );
-	}
+	void setCustomStateMapper( Block block, IStateMapper mapper );
 }
