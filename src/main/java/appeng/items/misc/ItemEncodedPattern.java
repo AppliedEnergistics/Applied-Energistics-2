@@ -43,6 +43,7 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
+import appeng.helpers.InvalidPatternHelper;
 import appeng.helpers.PatternHelper;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
@@ -109,6 +110,42 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		if( details == null )
 		{
 			lines.add( TextFormatting.RED + GuiText.InvalidPattern.getLocal() );
+
+			try
+			{
+				InvalidPatternHelper invalid = new InvalidPatternHelper( stack, world );
+
+				final String label = ( invalid.isCraftable() ? GuiText.Crafts.getLocal() : GuiText.Creates.getLocal() ) + ": ";
+				final String and = ' ' + GuiText.And.getLocal() + ' ';
+				final String with = GuiText.With.getLocal() + ": ";
+
+				boolean first = true;
+				for( final String output : invalid.getOutputs() )
+				{
+					lines.add( ( first ? label : and ) + output );
+					first = false;
+				}
+
+				first = true;
+				for( final String input : invalid.getInputs() )
+				{
+					lines.add( ( first ? with : and ) + input);
+					first = false;
+				}
+
+				if( invalid.isCraftable() )
+				{
+					final String substitutionLabel = GuiText.Substitute.getLocal() + " ";
+					final String canSubstitute = invalid.canSubstitute() ? GuiText.Yes.getLocal() : GuiText.No.getLocal();
+
+					lines.add( substitutionLabel + canSubstitute );
+				}
+			}
+			catch( IllegalArgumentException e )
+			{
+				// at least we tried
+			}
+
 			return;
 		}
 
