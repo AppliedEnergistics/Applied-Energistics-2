@@ -22,21 +22,27 @@ package appeng.debug;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.tile.AEBaseTile;
 
 
-public class TileItemGen extends AEBaseTile implements IInventory
+public class TileItemGen extends AEBaseTile
 {
 
 	private static final Queue<ItemStack> POSSIBLE_ITEMS = new LinkedList<>();
+
+	private final IItemHandler handler = new QueuedItemHandler();
 
 	public TileItemGen()
 	{
@@ -45,7 +51,7 @@ public class TileItemGen extends AEBaseTile implements IInventory
 			for( final Object obj : Item.REGISTRY )
 			{
 				final Item mi = (Item) obj;
-				if( mi != null )
+				if( mi != null && mi != Items.AIR )
 				{
 					if( mi.isDamageable() )
 					{
@@ -66,126 +72,75 @@ public class TileItemGen extends AEBaseTile implements IInventory
 	}
 
 	@Override
-	public int getSizeInventory()
+	public boolean hasCapability( Capability<?> capability, @Nullable EnumFacing facing )
 	{
-		return 1;
-	}
-
-	@Override
-	public ItemStack getStackInSlot( final int i )
-	{
-		return this.getRandomItem();
-	}
-
-	private ItemStack getRandomItem()
-	{
-		// Safeguard for crash
-		ItemStack testStack = POSSIBLE_ITEMS.peek();
-		if( testStack.isEmpty() )
+		if( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY == capability )
 		{
-			testStack = new ItemStack( Blocks.COBBLESTONE, 1 );
+			return true;
 		}
-		return testStack;
+		return super.hasCapability( capability, facing );
 	}
 
 	@Override
-	public ItemStack decrStackSize( final int i, final int j )
+	@Nullable
+	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
 	{
-		final ItemStack a = POSSIBLE_ITEMS.poll();
-		final ItemStack out = a.copy();
-		POSSIBLE_ITEMS.add( a );
-		return out;
+		if( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY == capability )
+		{
+			return (T) handler;
+		}
+		return super.getCapability( capability, facing );
 	}
 
-	@Override
-	public ItemStack removeStackFromSlot( final int i )
-	{
-		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public void setInventorySlotContents( final int i, final ItemStack itemstack )
-	{
-		final ItemStack a = POSSIBLE_ITEMS.poll();
-		POSSIBLE_ITEMS.add( a );
-	}
-
-	@Override
-	public String getName()
-	{
-		return null;
-	}
-
-	@Override
-	public boolean hasCustomName()
-	{
-		return false;
-	}
-
-	@Override
-	public int getInventoryStackLimit()
-	{
-		return 1;
-	}
-
-	@Override
-	public boolean isUsableByPlayer( final EntityPlayer entityplayer )
-	{
-		return false;
-	}
-
-	@Override
-	public void openInventory( final EntityPlayer player )
+	class QueuedItemHandler implements IItemHandler
 	{
 
-	}
+		@Override
+		@Nonnull
+		public ItemStack insertItem( int slot, @Nonnull ItemStack stack, boolean simulate )
+		{
+			return stack;
+		}
 
-	@Override
-	public void closeInventory( final EntityPlayer player )
-	{
+		@Override
+		@Nonnull
+		public ItemStack getStackInSlot( int slot )
+		{
+			return POSSIBLE_ITEMS.peek() != null ? POSSIBLE_ITEMS.peek().copy() : ItemStack.EMPTY;
+		}
 
-	}
+		@Override
+		public int getSlots()
+		{
+			return 1;
+		}
 
-	@Override
-	public boolean isItemValidForSlot( final int i, final ItemStack itemstack )
-	{
-		return false;
-	}
+		@Override
+		public int getSlotLimit( int slot )
+		{
+			return 1;
+		}
 
-	@Override
-	public ITextComponent getDisplayName()
-	{
-		return null;
-	}
+		@Override
+		@Nonnull
+		public ItemStack extractItem( int slot, int amount, boolean simulate )
+		{
+			final ItemStack is = POSSIBLE_ITEMS.peek();
 
-	@Override
-	public int getField( final int id )
-	{
-		return 0;
-	}
+			if( is == null )
+			{
+				return ItemStack.EMPTY;
+			}
 
-	@Override
-	public void setField( final int id, final int value )
-	{
+			return simulate ? is.copy() : getNextItem();
+		}
 
-	}
+		private ItemStack getNextItem()
+		{
+			final ItemStack is = POSSIBLE_ITEMS.poll();
 
-	@Override
-	public int getFieldCount()
-	{
-		return 0;
-	}
-
-	@Override
-	public void clear()
-	{
-
-	}
-
-	@Override
-	public boolean isEmpty()
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
+			POSSIBLE_ITEMS.add( is );
+			return is.copy();
+		}
+	};
 }
