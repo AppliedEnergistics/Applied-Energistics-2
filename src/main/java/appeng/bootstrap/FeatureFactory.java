@@ -33,11 +33,11 @@ import appeng.api.definitions.IItemDefinition;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.bootstrap.components.BuiltInModelComponent;
-import appeng.bootstrap.components.InitComponent;
+import appeng.bootstrap.components.IInitComponent;
+import appeng.bootstrap.components.IModelRegistrationComponent;
+import appeng.bootstrap.components.IPostInitComponent;
+import appeng.bootstrap.components.IPreInitComponent;
 import appeng.bootstrap.components.ModelOverrideComponent;
-import appeng.bootstrap.components.ModelRegComponent;
-import appeng.bootstrap.components.PostInitComponent;
-import appeng.bootstrap.components.PreInitComponent;
 import appeng.bootstrap.components.TileEntityComponent;
 import appeng.core.features.AEFeature;
 import appeng.core.features.ActivityState;
@@ -128,22 +128,22 @@ public class FeatureFactory
 		this.bootstrapComponents.add( component );
 	}
 
-	void addPreInit( PreInitComponent component )
+	void addPreInit( IPreInitComponent component )
 	{
 		this.bootstrapComponents.add( component );
 	}
 
-	void addInit( InitComponent component )
+	void addInit( IInitComponent component )
 	{
 		this.bootstrapComponents.add( component );
 	}
 
-	void addModelReg( ModelRegComponent component )
+	void addModelReg( IModelRegistrationComponent component )
 	{
 		this.bootstrapComponents.add( component );
 	}
 
-	void addPostInit( PostInitComponent component )
+	void addPostInit( IPostInitComponent component )
 	{
 		this.bootstrapComponents.add( component );
 	}

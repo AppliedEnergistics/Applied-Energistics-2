@@ -24,11 +24,15 @@ import net.minecraftforge.fml.relauncher.Side;
 import appeng.bootstrap.IBootstrapComponent;
 
 
+/**
+ * @author GuntherDW
+ */
+
 @FunctionalInterface
-public interface InitComponent extends IBootstrapComponent
+public interface IModelRegistrationComponent extends IBootstrapComponent
 {
 
 	@Override
-	void initialize( Side side );
+	void modelRegistration( Side side );
 
 }

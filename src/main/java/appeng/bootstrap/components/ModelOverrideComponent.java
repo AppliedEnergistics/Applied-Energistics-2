@@ -36,10 +36,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
+import appeng.bootstrap.IBootstrapComponent;
 import appeng.core.AppEng;
 
 
-public class ModelOverrideComponent implements PreInitComponent
+public class ModelOverrideComponent implements IBootstrapComponent
 {
 
 	private static final ModelResourceLocation MODEL_MISSING = new ModelResourceLocation( "builtin/missing", "missing" );

@@ -24,8 +24,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraftforge.fml.relauncher.Side;
 
+import appeng.bootstrap.IBootstrapComponent;
 
-public class BlockColorComponent implements InitComponent
+
+public class BlockColorComponent implements IBootstrapComponent
 {
 
 	private final Block block;
