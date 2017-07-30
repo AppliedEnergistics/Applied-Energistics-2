@@ -26,7 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
 
 import appeng.util.Platform;
 
@@ -34,12 +33,12 @@ import appeng.util.Platform;
 public class InvalidPatternHelper
 {
 
-	private final List<String> outputs = new ArrayList<>();
-	private final List<String> inputs = new ArrayList<>();
+	private final List<PatternIngredient> outputs = new ArrayList<>();
+	private final List<PatternIngredient> inputs = new ArrayList<>();
 	private final boolean isCrafting;
 	private final boolean canSubstitute;
 
-	public InvalidPatternHelper( final ItemStack is, final World w )
+	public InvalidPatternHelper( final ItemStack is )
 	{
 		final NBTTagCompound encodedValue = is.getTagCompound();
 
@@ -56,17 +55,7 @@ public class InvalidPatternHelper
 
 		for( int i = 0; i < outTag.tagCount(); i++ )
 		{
-			NBTTagCompound out = outTag.getCompoundTagAt( i );
-
-			ItemStack stack = new ItemStack( out );
-			if( stack.isEmpty() )
-			{
-				outputs.add( TextFormatting.RED + String.valueOf( out.getByte( "Count" ) ) + ' ' + out.getString( "id" ) + '@' + String.valueOf( Math.max( 0, out.getShort( "Damage" ) ) ) );
-			}
-			else
-			{
-				outputs.add( String.valueOf( stack.getCount() ) + ' ' + Platform.getItemDisplayName( stack ) );
-			}
+			outputs.add( new PatternIngredient( outTag.getCompoundTagAt( i ) ) );
 		}
 
 		for( int i = 0; i < inTag.tagCount(); i++ )
@@ -79,24 +68,16 @@ public class InvalidPatternHelper
 				continue;
 			}
 
-			ItemStack stack = new ItemStack( in );
-			if( stack.isEmpty() )
-			{
-				inputs.add( TextFormatting.RED + String.valueOf( in.getByte( "Count" ) ) + ' ' + in.getString( "id" ) + '@' + String.valueOf( Math.max( 0, in.getShort( "Damage" ) ) ) );
-			}
-			else
-			{
-				inputs.add( String.valueOf( stack.getCount() ) + ' ' + Platform.getItemDisplayName( stack ) );
-			}
+			inputs.add( new PatternIngredient( in ) );
 		}
 	}
 
-	public List<String> getOutputs()
+	public List<PatternIngredient> getOutputs()
 	{
 		return this.outputs;
 	}
 
-	public List<String> getInputs()
+	public List<PatternIngredient> getInputs()
 	{
 		return this.inputs;
 	}
@@ -109,5 +90,68 @@ public class InvalidPatternHelper
 	public boolean canSubstitute()
 	{
 		return this.canSubstitute;
+	}
+
+	public class PatternIngredient
+	{
+		private String id;
+		private int count;
+		private int damage;
+
+		private ItemStack stack;
+
+		public PatternIngredient( NBTTagCompound tag )
+		{
+			this.stack = new ItemStack( tag );
+
+			if( stack.isEmpty() )
+			{
+				this.id = tag.getString( "id" );
+				this.count = tag.getByte( "Count" );
+				this.damage = Math.max( 0, tag.getShort( "Damage" ) );
+			}
+		}
+
+		public boolean isValid()
+		{
+			return !stack.isEmpty();
+		}
+
+		public String getName()
+		{
+			return isValid() ? Platform.getItemDisplayName( stack ) : id + '@' + String.valueOf( getDamage() );
+		}
+
+		public int getDamage()
+		{
+			return isValid() ? stack.getItemDamage() : damage;
+		}
+
+		public int getCount()
+		{
+			return isValid() ? stack.getCount() : count;
+		}
+
+		public ItemStack getItem() throws IllegalArgumentException
+		{
+			if( !isValid() )
+			{
+				throw new IllegalArgumentException( "There is no valid ItemStack for this PatternIngredient" );
+			}
+
+			return stack;
+		}
+
+		public String getFormattedToolTip()
+		{
+			String result = String.valueOf( getCount() ) + ' ' + getName();
+
+			if( !isValid() )
+			{
+				result = TextFormatting.RED + ( ' ' + result );
+			}
+
+			return result;
+		}
 	}
 }

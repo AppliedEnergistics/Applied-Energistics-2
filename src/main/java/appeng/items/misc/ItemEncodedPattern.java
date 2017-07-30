@@ -113,23 +113,23 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 
 			try
 			{
-				InvalidPatternHelper invalid = new InvalidPatternHelper( stack, world );
+				InvalidPatternHelper invalid = new InvalidPatternHelper( stack );
 
 				final String label = ( invalid.isCraftable() ? GuiText.Crafts.getLocal() : GuiText.Creates.getLocal() ) + ": ";
 				final String and = ' ' + GuiText.And.getLocal() + ' ';
 				final String with = GuiText.With.getLocal() + ": ";
 
 				boolean first = true;
-				for( final String output : invalid.getOutputs() )
+				for( final InvalidPatternHelper.PatternIngredient output : invalid.getOutputs() )
 				{
-					lines.add( ( first ? label : and ) + output );
+					lines.add( ( first ? label : and ) + output.getFormattedToolTip() );
 					first = false;
 				}
 
 				first = true;
-				for( final String input : invalid.getInputs() )
+				for( final InvalidPatternHelper.PatternIngredient input : invalid.getInputs() )
 				{
-					lines.add( ( first ? with : and ) + input);
+					lines.add( ( first ? with : and ) + input.getFormattedToolTip() );
 					first = false;
 				}
 
