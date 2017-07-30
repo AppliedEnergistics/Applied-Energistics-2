@@ -43,7 +43,7 @@ public class ItemVariantsComponent implements IBootstrapComponent
 	}
 
 	@Override
-	public void preInitialize( Side side )
+	public void modelReg( Side side )
 	{
 		ResourceLocation[] resourceArr = this.resources.toArray( new ResourceLocation[0] );
 		ModelBakery.registerItemVariants( this.item, resourceArr );

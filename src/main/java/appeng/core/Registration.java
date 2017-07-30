@@ -374,11 +374,7 @@ public final class Registration
 	@SubscribeEvent
 	public void modelRegistryEvent( ModelRegistryEvent event )
 	{
-		final Api api = Api.INSTANCE;
-		final IPartHelper partHelper = api.partHelper();
-		final IRegistryContainer registries = api.registries();
-
-		ApiDefinitions definitions = api.definitions();
+		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		definitions.getRegistry().getBootstrapComponents().forEach( b -> b.modelReg( FMLCommonHandler.instance().getEffectiveSide() ) );
 	}
 
