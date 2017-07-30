@@ -16,6 +16,6 @@ public interface ModelRegComponent extends IBootstrapComponent
 {
 
 	@Override
-	void modelReg( Side side );
+	void modelRegistration( Side side );
 
 }

@@ -49,7 +49,7 @@ public class ItemModelComponent implements IBootstrapComponent
 	}
 
 	@Override
-	public void modelReg( Side side )
+	public void modelRegistration( Side side )
 	{
 		this.modelsByMeta.forEach( ( meta, model ) ->
 		{

@@ -47,7 +47,7 @@ public class ItemMeshDefinitionComponent implements IBootstrapComponent
 	}
 
 	@Override
-	public void modelReg( Side side )
+	public void modelRegistration( Side side )
 	{
 		ModelLoader.setCustomMeshDefinition( this.item, this.meshDefinition );
 	}

@@ -375,7 +375,7 @@ public final class Registration
 	public void modelRegistryEvent( ModelRegistryEvent event )
 	{
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
-		definitions.getRegistry().getBootstrapComponents().forEach( b -> b.modelReg( FMLCommonHandler.instance().getEffectiveSide() ) );
+		definitions.getRegistry().getBootstrapComponents().forEach( b -> b.modelRegistration( FMLCommonHandler.instance().getEffectiveSide() ) );
 	}
 
 	@SubscribeEvent

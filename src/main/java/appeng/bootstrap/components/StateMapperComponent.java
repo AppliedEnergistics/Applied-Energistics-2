@@ -45,7 +45,7 @@ public class StateMapperComponent implements ModelRegComponent
 	}
 
 	@Override
-	public void modelReg( Side side )
+	public void modelRegistration( Side side )
 	{
 		ModelLoader.setCustomStateMapper( this.block, this.stateMapper );
 		if( this.stateMapper instanceof IResourceManagerReloadListener )
