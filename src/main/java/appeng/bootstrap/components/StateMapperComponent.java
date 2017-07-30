@@ -27,11 +27,13 @@ import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 
+import appeng.bootstrap.IBootstrapComponent;
+
 
 /**
  * Registers a custom state mapper for a given block.
  */
-public class StateMapperComponent implements ModelRegComponent
+public class StateMapperComponent implements IBootstrapComponent
 {
 
 	private final Block block;
