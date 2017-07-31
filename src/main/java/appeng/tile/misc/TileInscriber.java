@@ -576,7 +576,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				return false;
 			}
 
-			return inv == topItemHandler || slot == 1;
+			return inv == topItemHandler || inv == bottomItemHandler || slot == 1;
 		}
 
 		@Override
