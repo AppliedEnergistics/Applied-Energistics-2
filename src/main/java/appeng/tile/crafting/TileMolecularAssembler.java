@@ -76,6 +76,7 @@ import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperChainedItemHandler;
+import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
 
@@ -83,8 +84,9 @@ import appeng.util.item.AEItemStack;
 public class TileMolecularAssembler extends AENetworkInvTile implements IUpgradeableHost, IConfigManagerHost, IGridTickable, ICraftingMachine, IPowerChannelState
 {
 	private final InventoryCrafting craftingInv;
-	private final AppEngInternalInventory gridInv = new AppEngInternalInventory( this, 9 + 1, 1, new CraftingGridFilter() );
+	private final AppEngInternalInventory gridInv = new AppEngInternalInventory( this, 9 + 1, 1 );
 	private final AppEngInternalInventory patternInv = new AppEngInternalInventory( this, 1, 1 );
+	private final IItemHandler gridInvExt = new WrapperFilteredItemHandler( gridInv, new CraftingGridFilter() );
 	private final IItemHandler internalInv = new WrapperChainedItemHandler( gridInv, patternInv );
 	private final IConfigManager settings;
 	private final UpgradeInventory upgrades;
@@ -347,7 +349,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	@Override
 	protected IItemHandler getItemHandlerForSide( EnumFacing side )
 	{
-		return gridInv;
+		return gridInvExt;
 	}
 
 	@Override
