@@ -22,6 +22,7 @@ package appeng.parts.misc;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -402,6 +403,25 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 	}
 
+	private int createHandlerHash( TileEntity target )
+	{
+		if( target == null )
+		{
+			return 0;
+		}
+		final EnumFacing targetSide = this.getSide().getFacing().getOpposite();
+		if( target.hasCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide ) )
+		{
+			return 0;
+		}
+		final IItemHandler itemHandler = target.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide );
+		if( handler != null )
+		{
+			return Objects.hash( target, itemHandler, itemHandler.getSlots() );
+		}
+		return 0;
+	}
+
 	public MEInventoryHandler getInternalHandler()
 	{
 		if( this.cached )
@@ -414,9 +434,9 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		this.cached = true;
 		final TileEntity self = this.getHost().getTile();
 		final TileEntity target = self.getWorld().getTileEntity( self.getPos().offset( this.getSide().getFacing() ) );
-		final int newHandlerHash = Platform.generateTileHash( target );
+		final int newHandlerHash = createHandlerHash( target );
 
-		if( this.handlerHash == newHandlerHash && this.handlerHash != 0 )
+		if( newHandlerHash != 0 && newHandlerHash == this.handlerHash )
 		{
 			return this.handler;
 		}
@@ -603,5 +623,4 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 			return MODELS_OFF;
 		}
 	}
-
 }
