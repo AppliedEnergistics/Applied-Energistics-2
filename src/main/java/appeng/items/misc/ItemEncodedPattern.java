@@ -109,7 +109,12 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 
 		if( details == null )
 		{
-			lines.add( TextFormatting.RED + GuiText.InvalidPattern.getLocal() );
+			if( !stack.hasTagCompound() )
+			{
+				return;
+			}
+
+			stack.setStackDisplayName( TextFormatting.RED + GuiText.InvalidPattern.getLocal() );
 
 			try
 			{

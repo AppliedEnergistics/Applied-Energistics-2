@@ -132,7 +132,7 @@ public class InvalidPatternHelper
 			return isValid() ? stack.getCount() : count;
 		}
 
-		public ItemStack getItem() throws IllegalArgumentException
+		public ItemStack getItem()
 		{
 			if( !isValid() )
 			{
