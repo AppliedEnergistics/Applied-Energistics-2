@@ -116,39 +116,32 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 
 			stack.setStackDisplayName( TextFormatting.RED + GuiText.InvalidPattern.getLocal() );
 
-			try
+			InvalidPatternHelper invalid = new InvalidPatternHelper( stack );
+
+			final String label = ( invalid.isCraftable() ? GuiText.Crafts.getLocal() : GuiText.Creates.getLocal() ) + ": ";
+			final String and = ' ' + GuiText.And.getLocal() + ' ';
+			final String with = GuiText.With.getLocal() + ": ";
+
+			boolean first = true;
+			for( final InvalidPatternHelper.PatternIngredient output : invalid.getOutputs() )
 			{
-				InvalidPatternHelper invalid = new InvalidPatternHelper( stack );
-
-				final String label = ( invalid.isCraftable() ? GuiText.Crafts.getLocal() : GuiText.Creates.getLocal() ) + ": ";
-				final String and = ' ' + GuiText.And.getLocal() + ' ';
-				final String with = GuiText.With.getLocal() + ": ";
-
-				boolean first = true;
-				for( final InvalidPatternHelper.PatternIngredient output : invalid.getOutputs() )
-				{
-					lines.add( ( first ? label : and ) + output.getFormattedToolTip() );
-					first = false;
-				}
-
-				first = true;
-				for( final InvalidPatternHelper.PatternIngredient input : invalid.getInputs() )
-				{
-					lines.add( ( first ? with : and ) + input.getFormattedToolTip() );
-					first = false;
-				}
-
-				if( invalid.isCraftable() )
-				{
-					final String substitutionLabel = GuiText.Substitute.getLocal() + " ";
-					final String canSubstitute = invalid.canSubstitute() ? GuiText.Yes.getLocal() : GuiText.No.getLocal();
-
-					lines.add( substitutionLabel + canSubstitute );
-				}
+				lines.add( ( first ? label : and ) + output.getFormattedToolTip() );
+				first = false;
 			}
-			catch( IllegalArgumentException e )
+
+			first = true;
+			for( final InvalidPatternHelper.PatternIngredient input : invalid.getInputs() )
 			{
-				// at least we tried
+				lines.add( ( first ? with : and ) + input.getFormattedToolTip() );
+				first = false;
+			}
+
+			if( invalid.isCraftable() )
+			{
+				final String substitutionLabel = GuiText.Substitute.getLocal() + " ";
+				final String canSubstitute = invalid.canSubstitute() ? GuiText.Yes.getLocal() : GuiText.No.getLocal();
+
+				lines.add( substitutionLabel + canSubstitute );
 			}
 
 			return;
