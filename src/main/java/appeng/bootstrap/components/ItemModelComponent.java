@@ -23,18 +23,18 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.relauncher.Side;
+
+import appeng.bootstrap.IModelRegistry;
 
 
 /**
  * Registers the models that should by used for an item, including the ability to
  * distinguish by meta.
  */
-public class ItemModelComponent implements InitComponent
+public class ItemModelComponent implements IModelRegistrationComponent
 {
 
 	private final Item item;
@@ -48,13 +48,11 @@ public class ItemModelComponent implements InitComponent
 	}
 
 	@Override
-	public void initialize( Side side )
+	public void modelRegistration( Side side, IModelRegistry registry )
 	{
-		ItemModelMesher itemMesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
-
 		this.modelsByMeta.forEach( ( meta, model ) ->
 		{
-			itemMesher.register( this.item, meta, model );
+			registry.setCustomModelResourceLocation( this.item, meta, model );
 		} );
 	}
 

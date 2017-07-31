@@ -39,7 +39,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import appeng.core.AppEng;
 
 
-public class ModelOverrideComponent implements PreInitComponent
+public class ModelOverrideComponent implements IPreInitComponent
 {
 
 	private static final ModelResourceLocation MODEL_MISSING = new ModelResourceLocation( "builtin/missing", "missing" );

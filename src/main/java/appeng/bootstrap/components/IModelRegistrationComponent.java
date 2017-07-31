@@ -22,13 +22,18 @@ package appeng.bootstrap.components;
 import net.minecraftforge.fml.relauncher.Side;
 
 import appeng.bootstrap.IBootstrapComponent;
+import appeng.bootstrap.IModelRegistry;
 
+
+/**
+ * @author GuntherDW
+ */
 
 @FunctionalInterface
-public interface PreInitComponent extends IBootstrapComponent
+public interface IModelRegistrationComponent extends IBootstrapComponent
 {
 
 	@Override
-	void preInitialize( Side side );
+	void modelRegistration( Side side, IModelRegistry registry );
 
 }

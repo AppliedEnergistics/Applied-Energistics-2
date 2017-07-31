@@ -25,7 +25,7 @@ import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraftforge.fml.relauncher.Side;
 
 
-public class BlockColorComponent implements InitComponent
+public class BlockColorComponent implements IInitComponent
 {
 
 	private final Block block;

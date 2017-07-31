@@ -15,7 +15,7 @@ import appeng.core.AppEng;
 /**
  * @author GuntherDW
  */
-public class TileEntityComponent implements PreInitComponent
+public class TileEntityComponent implements IPreInitComponent
 {
 	private List<TileEntityDefinition> tileEntityDefinitions = new ArrayList<>();
 

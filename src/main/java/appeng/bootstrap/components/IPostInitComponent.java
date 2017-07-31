@@ -19,36 +19,15 @@
 package appeng.bootstrap.components;
 
 
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
-import appeng.tile.AEBaseTile;
+import appeng.bootstrap.IBootstrapComponent;
 
 
-/**
- * Registers a TESR for a given tile entity class.
- *
- * @param <T>
- */
-// public class TesrComponent<T extends AEBaseTile> implements ModelRegComponent
-public class TesrComponent<T extends AEBaseTile> implements IPreInitComponent
+@FunctionalInterface
+public interface IPostInitComponent extends IBootstrapComponent
 {
 
-	private final Class<T> tileEntityClass;
-
-	private final TileEntitySpecialRenderer<? super T> tesr;
-
-	public TesrComponent( Class<T> tileEntityClass, TileEntitySpecialRenderer<? super T> tesr )
-	{
-		this.tileEntityClass = tileEntityClass;
-		this.tesr = tesr;
-	}
-
 	@Override
-	// public void modelReg( Side side )
-	public void preInitialize( Side side )
-	{
-		ClientRegistry.bindTileEntitySpecialRenderer( this.tileEntityClass, this.tesr );
-	}
+	void postInitialize( Side side );
 }

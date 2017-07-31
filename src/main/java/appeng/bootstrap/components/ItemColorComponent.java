@@ -25,7 +25,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.fml.relauncher.Side;
 
 
-public class ItemColorComponent implements InitComponent
+public class ItemColorComponent implements IInitComponent
 {
 
 	private final Item item;

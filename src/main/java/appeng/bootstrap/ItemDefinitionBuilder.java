@@ -165,7 +165,7 @@ class ItemDefinitionBuilder implements IItemBuilder
 		// Register all extra handlers
 		this.preInitCallbacks.forEach( consumer -> this.factory.addPreInit( side -> consumer.accept( item ) ) );
 		this.initCallbacks.forEach( consumer -> this.factory.addInit( side -> consumer.accept( item ) ) );
-		this.modelRegCallbacks.forEach( consumer -> this.factory.addModelReg( side -> consumer.accept( item ) ) );
+		this.modelRegCallbacks.forEach( consumer -> this.factory.addModelReg( ( side, reg ) -> consumer.accept( item ) ) );
 		this.postInitCallbacks.forEach( consumer -> this.factory.addPostInit( side -> consumer.accept( item ) ) );
 
 		// Register custom dispenser behavior if requested

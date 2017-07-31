@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2017, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,18 +16,24 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.bootstrap.components;
+package appeng.bootstrap;
 
 
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.IStateMapper;
+import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 
-import appeng.bootstrap.IBootstrapComponent;
 
-
-@FunctionalInterface
-public interface PostInitComponent extends IBootstrapComponent
+public interface IModelRegistry
 {
+	void registerItemVariants( Item item, ResourceLocation... names );
 
-	@Override
-	void postInitialize( Side side );
+	void setCustomModelResourceLocation( Item item, int metadata, ModelResourceLocation model );
+
+	void setCustomMeshDefinition( Item item, ItemMeshDefinition meshDefinition );
+
+	void setCustomStateMapper( Block block, IStateMapper mapper );
 }

@@ -33,7 +33,7 @@ import appeng.client.render.model.BuiltInModelLoader;
 
 
 @SideOnly( Side.CLIENT )
-public class BuiltInModelComponent implements PreInitComponent
+public class BuiltInModelComponent implements IPreInitComponent
 {
 
 	private final Map<String, IModel> builtInModels = new HashMap<>();

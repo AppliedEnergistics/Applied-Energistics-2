@@ -25,7 +25,7 @@ import appeng.bootstrap.IBootstrapComponent;
 
 
 @FunctionalInterface
-public interface InitComponent extends IBootstrapComponent
+public interface IInitComponent extends IBootstrapComponent
 {
 
 	@Override

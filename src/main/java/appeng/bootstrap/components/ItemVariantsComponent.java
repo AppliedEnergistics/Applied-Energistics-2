@@ -21,15 +21,14 @@ package appeng.bootstrap.components;
 
 import java.util.Collection;
 
-import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 
-import appeng.bootstrap.IBootstrapComponent;
+import appeng.bootstrap.IModelRegistry;
 
 
-public class ItemVariantsComponent implements IBootstrapComponent
+public class ItemVariantsComponent implements IModelRegistrationComponent
 {
 
 	private final Item item;
@@ -43,9 +42,9 @@ public class ItemVariantsComponent implements IBootstrapComponent
 	}
 
 	@Override
-	public void preInitialize( Side side )
+	public void modelRegistration( Side side, IModelRegistry registry )
 	{
 		ResourceLocation[] resourceArr = this.resources.toArray( new ResourceLocation[0] );
-		ModelBakery.registerItemVariants( this.item, resourceArr );
+		registry.registerItemVariants( this.item, resourceArr );
 	}
 }

@@ -235,7 +235,7 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		// Register all extra handlers
 		this.preInitCallbacks.forEach( consumer -> this.factory.addPreInit( side -> consumer.accept( block, item ) ) );
 		this.initCallbacks.forEach( consumer -> this.factory.addInit( side -> consumer.accept( block, item ) ) );
-		this.modelRegCallbacks.forEach( consumer -> this.factory.addModelReg( side -> consumer.accept( block, item ) ) );
+		this.modelRegCallbacks.forEach( consumer -> this.factory.addModelReg( ( side, reg ) -> consumer.accept( block, item ) ) );
 		this.postInitCallbacks.forEach( consumer -> this.factory.addPostInit( side -> consumer.accept( block, item ) ) );
 
 		if( this.tileEntityDefinition != null && block instanceof AEBaseTileBlock )
