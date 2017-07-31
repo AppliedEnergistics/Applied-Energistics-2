@@ -96,6 +96,9 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	private final AppEngInternalInventory topItemHandler = new AppEngInternalInventory( this, 1, 1 );
 	private final AppEngInternalInventory bottomItemHandler = new AppEngInternalInventory( this, 1, 1 );
 	private final AppEngInternalInventory sideItemHandler = new AppEngInternalInventory( this, 2, 1 );
+
+	private final IItemHandler topItemHandlerExtern;
+	private final IItemHandler bottomItemHandlerExtern;
 	private final IItemHandler sideItemHandlerExtern;
 
 	private final IItemHandlerModifiable inv = new WrapperChainedItemHandler( topItemHandler, bottomItemHandler, sideItemHandler );
@@ -112,10 +115,9 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		this.upgrades = new DefinitionUpgradeInventory( inscriberDefinition, this, this.getUpgradeSlots() );
 
 		final IAEItemFilter filter = new ItemHandlerFilter();
-		topItemHandler.setFilter( filter );
-		bottomItemHandler.setFilter( filter );
+		topItemHandlerExtern = new WrapperFilteredItemHandler( topItemHandler, filter );
+		bottomItemHandlerExtern = new WrapperFilteredItemHandler( bottomItemHandler, filter );
 		sideItemHandlerExtern = new WrapperFilteredItemHandler( sideItemHandler, filter );
-
 	}
 
 	private int getUpgradeSlots()
@@ -360,13 +362,13 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 			final boolean matchA = ( plateA.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateA,
 					recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) ) && // and...
-					( plateB.isEmpty() && !recipe.getBottomOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateB,
-							recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) );
+					( ( plateB.isEmpty() && !recipe.getBottomOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateB,
+							recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) ) );
 
 			final boolean matchB = ( plateB.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateB,
 					recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) ) && // and...
-					( plateA.isEmpty() && !recipe.getBottomOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateA,
-							recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) );
+					( ( plateA.isEmpty() && !recipe.getBottomOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateA,
+							recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) ) );
 
 			if( matchA || matchB )
 			{
@@ -501,11 +503,11 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	{
 		if( facing == getUp() )
 		{
-			return topItemHandler;
+			return topItemHandlerExtern;
 		}
 		else if( facing == getUp().getOpposite() )
 		{
-			return bottomItemHandler;
+			return bottomItemHandlerExtern;
 		}
 		else
 		{
