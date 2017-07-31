@@ -50,6 +50,7 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.AdaptorItemHandler;
+import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.WrapperRangeItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -207,7 +208,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 			final ItemStack is = inv.server.getStackInSlot( slot );
 			final boolean hasItemInHand = !player.inventory.getItemStack().isEmpty();
 
-			final InventoryAdaptor playerHand = InventoryAdaptor.getAdaptor( player );
+			final InventoryAdaptor playerHand = new AdaptorItemHandler( new WrapperCursorItemHandler( player.inventory ) );
 
 			final IItemHandler theSlot = new WrapperFilteredItemHandler( new WrapperRangeItemHandler( inv.server, slot, slot + 1 ), new PatternSlotFilter() );
 			final InventoryAdaptor interfaceSlot = new AdaptorItemHandler( theSlot );
