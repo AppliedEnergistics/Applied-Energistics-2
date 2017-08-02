@@ -147,6 +147,11 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 			return;
 		}
 
+		if( stack.hasDisplayName() )
+		{
+			stack.removeSubCompound( "display" );
+		}
+
 		final boolean isCrafting = details.isCraftable();
 		final boolean substitute = details.canSubstitute();
 
