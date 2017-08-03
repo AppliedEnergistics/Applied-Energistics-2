@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import appeng.integration.Integrations;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -198,7 +199,7 @@ public class JEIPlugin extends BlankModPlugin
 	@Override
 	public void onRuntimeAvailable( IJeiRuntime jeiRuntime )
 	{
-		// JEIModule jeiModule = (JEIModule) Integrations.jei();
-		// jeiModule.setJei( new JeiRuntimeAdapter( jeiRuntime ) );
+		JEIModule jeiModule = (JEIModule) Integrations.jei();
+		jeiModule.setJei( new JeiRuntimeAdapter( jeiRuntime ) );
 	}
 }
