@@ -85,7 +85,13 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 		for( int x = 0; x < inTag.tagCount(); x++ )
 		{
-			final ItemStack gs = new ItemStack( inTag.getCompoundTagAt( x ) );
+			NBTTagCompound ingredient = inTag.getCompoundTagAt( x );
+			final ItemStack gs = new ItemStack( ingredient );
+
+			if( !ingredient.hasNoTags() && gs.isEmpty() )
+			{
+				throw new IllegalArgumentException( "No pattern here!" );
+			}
 
 			this.crafting.setInventorySlotContents( x, gs );
 
@@ -119,7 +125,13 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 			for( int x = 0; x < outTag.tagCount(); x++ )
 			{
-				final ItemStack gs = new ItemStack( outTag.getCompoundTagAt( x ) );
+				NBTTagCompound resultItemTag = outTag.getCompoundTagAt( x );
+				final ItemStack gs = new ItemStack( resultItemTag );
+
+				if( !resultItemTag.hasNoTags() && gs.isEmpty() )
+				{
+					throw new IllegalArgumentException( "No pattern here!" );
+				}
 
 				if( !gs.isEmpty() )
 				{

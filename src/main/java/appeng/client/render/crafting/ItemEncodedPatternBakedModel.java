@@ -227,7 +227,7 @@ class ItemEncodedPatternBakedModel implements IBakedModel
 			{
 				ItemEncodedPattern iep = (ItemEncodedPattern) stack.getItem();
 				ItemStack output = iep.getOutput( stack );
-				if( output != null )
+				if( !output.isEmpty() )
 				{
 					IBakedModel realModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel( output );
 					// Give the item model a chance to handle the overrides as well
