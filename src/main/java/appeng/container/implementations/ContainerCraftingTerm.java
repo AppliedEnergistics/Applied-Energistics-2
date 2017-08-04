@@ -86,7 +86,6 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 		}
 
 		this.outputSlot.putStack( CraftingManager.findMatchingResult( ic, this.getPlayerInv().player.world ) );
-		super.onCraftMatrixChanged( inventory );
 	}
 
 	@Override
