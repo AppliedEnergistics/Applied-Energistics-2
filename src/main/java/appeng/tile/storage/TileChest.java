@@ -221,7 +221,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 			this.accessor = null;
 			this.fluidHandler = null;
 
-			final ItemStack is = this.cellInventory.getStackInSlot( 0 );
+			final ItemStack is = this.getCell();
 			if( !is.isEmpty() )
 			{
 				this.isCached = true;
@@ -305,7 +305,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 			return ( this.state >> ( slot * 3 ) ) & 3;
 		}
 
-		final ItemStack cell = this.cellInventory.getStackInSlot( 0 );
+		final ItemStack cell = this.getCell();
 		final ICellHandler ch = AEApi.instance().registries().cell().getHandler( cell );
 
 		if( ch != null )
@@ -462,7 +462,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		data.writeByte( this.state );
 		data.writeByte( this.paintedColor.ordinal() );
 
-		final ItemStack is = this.cellInventory.getStackInSlot( 1 );
+		final ItemStack is = this.getCell();
 
 		if( is.isEmpty() )
 		{
