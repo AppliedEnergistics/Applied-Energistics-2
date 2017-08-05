@@ -308,7 +308,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		is.setCount( (int) this.itemToSend );
 
 		final ItemStack o = d.simulateAdd( is );
-		final long canFit = o == null ? this.itemToSend : this.itemToSend - o.getCount();
+		final long canFit = o.isEmpty() ? this.itemToSend : this.itemToSend - o.getCount();
 
 		if( canFit > 0 )
 		{
@@ -321,7 +321,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 				this.itemToSend -= itemsToAdd.getStackSize();
 
 				final ItemStack failed = d.addItems( itemsToAdd.getItemStack() );
-				if( failed != null )
+				if( !failed.isEmpty() )
 				{
 					ais.setStackSize( failed.getCount() );
 					inv.injectItems( ais, Actionable.MODULATE, this.mySrc );
