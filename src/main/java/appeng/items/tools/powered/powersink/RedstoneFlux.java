@@ -29,7 +29,7 @@ import appeng.integration.IntegrationType;
 
 
 @Interface( iface = "cofh.redstoneflux.api.IEnergyContainerItem", iname = IntegrationType.RFItem )
-public abstract class RedstoneFlux extends AERootPoweredItem implements IEnergyContainerItem
+public abstract class RedstoneFlux extends IC2 implements IEnergyContainerItem
 {
 	public RedstoneFlux( final double powerCapacity )
 	{
