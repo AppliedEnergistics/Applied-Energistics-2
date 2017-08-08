@@ -33,10 +33,14 @@ import net.minecraft.item.Item;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import appeng.bootstrap.components.IInitComponent;
+import appeng.bootstrap.components.IItemRegistrationComponent;
+import appeng.bootstrap.components.IModelRegistrationComponent;
+import appeng.bootstrap.components.IPostInitComponent;
+import appeng.bootstrap.components.IPreInitComponent;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
-import appeng.core.Registration;
 import appeng.core.features.AEFeature;
 import appeng.core.features.ItemDefinition;
 import appeng.util.Platform;
@@ -163,22 +167,23 @@ class ItemDefinitionBuilder implements IItemBuilder
 		item.setCreativeTab( this.creativeTab );
 
 		// Register all extra handlers
-		this.preInitCallbacks.forEach( consumer -> this.factory.addPreInit( side -> consumer.accept( item ) ) );
-		this.initCallbacks.forEach( consumer -> this.factory.addInit( side -> consumer.accept( item ) ) );
-		this.modelRegCallbacks.forEach( consumer -> this.factory.addModelReg( ( side, reg ) -> consumer.accept( item ) ) );
-		this.postInitCallbacks.forEach( consumer -> this.factory.addPostInit( side -> consumer.accept( item ) ) );
+		this.preInitCallbacks.forEach( consumer -> this.factory.<IPreInitComponent>addBootstrapComponent( side -> consumer.accept( item ) ) );
+		this.initCallbacks.forEach( consumer -> this.factory.<IInitComponent>addBootstrapComponent( side -> consumer.accept( item ) ) );
+		this.modelRegCallbacks
+				.forEach( consumer -> this.factory.<IModelRegistrationComponent>addBootstrapComponent( ( side, reg ) -> consumer.accept( item ) ) );
+		this.postInitCallbacks.forEach( consumer -> this.factory.<IPostInitComponent>addBootstrapComponent( side -> consumer.accept( item ) ) );
 
 		// Register custom dispenser behavior if requested
 		if( this.dispenserBehaviorSupplier != null )
 		{
-			this.factory.addPostInit( side ->
+			this.factory.<IPostInitComponent>addBootstrapComponent( side ->
 			{
 				IBehaviorDispenseItem behavior = this.dispenserBehaviorSupplier.get();
 				BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( item, behavior );
 			} );
 		}
 
-		this.factory.addPreInit( side -> Registration.addItemToRegister( item ) );
+		this.factory.<IItemRegistrationComponent>addBootstrapComponent( ( side, reg ) -> reg.register( item ) );
 
 		if( Platform.isClient() )
 		{

@@ -27,8 +27,5 @@ import appeng.bootstrap.IBootstrapComponent;
 @FunctionalInterface
 public interface IPreInitComponent extends IBootstrapComponent
 {
-
-	@Override
 	void preInitialize( Side side );
-
 }

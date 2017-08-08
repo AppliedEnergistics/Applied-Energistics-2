@@ -114,6 +114,7 @@ public final class AppEng
 		FMLCommonHandler.instance().registerCrashCallable( new ModCrashEnhancement( CrashInfo.MOD_VERSION ) );
 
 		this.registration = new Registration();
+		MinecraftForge.EVENT_BUS.register( this.registration );
 	}
 
 	@Nonnull
@@ -136,7 +137,6 @@ public final class AppEng
 		{
 			AppEng.proxy.missingCoreMod();
 		}
-		MinecraftForge.EVENT_BUS.register( this.registration );
 
 		final Stopwatch watch = Stopwatch.createStarted();
 		this.configDirectory = new File( event.getModConfigurationDirectory().getPath(), "AppliedEnergistics2" );

@@ -20,9 +20,7 @@ package appeng.core;
 
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -48,8 +46,8 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.oredict.RecipeSorter;
-import net.minecraftforge.oredict.RecipeSorter.Category;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.api.config.Upgrades;
@@ -70,7 +68,15 @@ import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPartHelper;
+import appeng.api.recipes.IRecipeHandler;
 import appeng.bootstrap.IModelRegistry;
+import appeng.bootstrap.components.IBlockRegistrationComponent;
+import appeng.bootstrap.components.IInitComponent;
+import appeng.bootstrap.components.IItemRegistrationComponent;
+import appeng.bootstrap.components.IModelRegistrationComponent;
+import appeng.bootstrap.components.IPostInitComponent;
+import appeng.bootstrap.components.IPreInitComponent;
+import appeng.bootstrap.components.IRecipeRegistrationComponent;
 import appeng.capabilities.Capabilities;
 import appeng.core.features.AEFeature;
 import appeng.core.features.registries.P2PTunnelRegistry;
@@ -100,8 +106,6 @@ import appeng.recipes.CustomRecipeConfig;
 import appeng.recipes.RecipeHandler;
 import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
-import appeng.recipes.game.ShapedRecipe;
-import appeng.recipes.game.ShapelessRecipe;
 import appeng.recipes.handlers.Crusher;
 import appeng.recipes.handlers.Grind;
 import appeng.recipes.handlers.HCCrusher;
@@ -111,8 +115,6 @@ import appeng.recipes.handlers.MekCrusher;
 import appeng.recipes.handlers.MekEnrichment;
 import appeng.recipes.handlers.Press;
 import appeng.recipes.handlers.Pulverizer;
-import appeng.recipes.handlers.Shaped;
-import appeng.recipes.handlers.Shapeless;
 import appeng.recipes.handlers.Smelt;
 import appeng.recipes.ores.OreDictionaryHandler;
 import appeng.spatial.BiomeGenStorage;
@@ -124,14 +126,9 @@ import appeng.worldgen.QuartzWorldGen;
 
 public final class Registration
 {
-	private final RecipeHandler recipeHandler;
 	private DimensionType storageDimensionType;
 	private Biome storageBiome;
 
-	// TODO : 1.12 Improve
-	private static List<Block> blocksToRegister = new ArrayList<>();
-	private static List<Item> itemsToRegister = new ArrayList<>();
-	private static List<IRecipe> recipesToRegister = new ArrayList<>();
 	private File recipeDirectory;
 	private CustomRecipeConfig customRecipeConfig;
 
@@ -143,39 +140,11 @@ public final class Registration
 
 	Registration()
 	{
-		this.recipeHandler = new RecipeHandler();
 	}
 
 	public Biome getStorageBiome()
 	{
 		return this.storageBiome;
-	}
-
-	public static void addBlockToRegister( Block b )
-	{
-		if( blocksToRegister == null )
-		{
-			throw new IllegalStateException( "Past the registration phase already!" );
-		}
-		blocksToRegister.add( b );
-	}
-
-	public static void addRecipeToRegister( IRecipe r )
-	{
-		if( recipesToRegister == null )
-		{
-			throw new IllegalStateException( "Past the registration phase already!" );
-		}
-		recipesToRegister.add( r );
-	}
-
-	public static void addItemToRegister( Item i )
-	{
-		if( itemsToRegister == null )
-		{
-			throw new IllegalStateException( "Past the registration phase already!" );
-		}
-		itemsToRegister.add( i );
 	}
 
 	public DimensionType getStorageDimensionType()
@@ -185,24 +154,22 @@ public final class Registration
 
 	void preInitialize( final FMLPreInitializationEvent event )
 	{
-		// this.registerSpatial( false );
-
 		Capabilities.register();
 
 		final Api api = Api.INSTANCE;
 		final IRecipeHandlerRegistry recipeRegistry = api.registries().recipes();
 		this.registerCraftHandlers( recipeRegistry );
 
-		RecipeSorter.register( "AE2-Facade", FacadeRecipe.class, Category.SHAPED, "" );
-		RecipeSorter.register( "AE2-Shaped", ShapedRecipe.class, Category.SHAPED, "" );
-		RecipeSorter.register( "AE2-Shapeless", ShapelessRecipe.class, Category.SHAPELESS, "" );
+		// RecipeSorter.register( "AE2-Facade", FacadeRecipe.class, Category.SHAPED, "" );
+		// RecipeSorter.register( "AE2-Shaped", ShapedRecipe.class, Category.SHAPED, "" );
+		// RecipeSorter.register( "AE2-Shapeless", ShapelessRecipe.class, Category.SHAPELESS, "" );
 
 		MinecraftForge.EVENT_BUS.register( OreDictionaryHandler.INSTANCE );
 
 		ApiDefinitions definitions = api.definitions();
 
 		// Register all detected handlers and features (items, blocks) in pre-init
-		definitions.getRegistry().getBootstrapComponents().forEach( b -> b.preInitialize( event.getSide() ) );
+		definitions.getRegistry().getBootstrapComponents( IPreInitComponent.class ).forEachRemaining( b -> b.preInitialize( event.getSide() ) );
 	}
 
 	private void registerSpatial( final boolean force, IForgeRegistry<Biome> registry )
@@ -216,33 +183,10 @@ public final class Registration
 
 		if( this.storageBiome == null )
 		{
-			// if( force && config.getStorageBiomeID() == -1 )
-			// {
-			// config.setStorageBiomeID( Platform.findEmpty( Biome.REGISTRY, 0, 256 ) );
-			// if( config.getStorageBiomeID() == -1 )
-			// {
-			// throw new IllegalStateException( "Biome Array is full, please free up some Biome ID's or disable
-			// spatial." );
-			// }
-			//
-			// this.storageBiome = new BiomeGenStorage();
-			// Biome.registerBiome( config.getStorageBiomeID(), "appliedenergistics2:storage_biome", this.storageBiome
-			// );
-			// config.save();
-			// }
-			//
-			// if( !force && config.getStorageBiomeID() != -1 )
-			// {
-			// this.storageBiome = new BiomeGenStorage();
-			// Biome.registerBiome( config.getStorageBiomeID(), "appliedenergistics2:storage_biome", this.storageBiome
-			// );
-			// }
-
-			// TODO: 1.12, are modders allowed to even touch the ID's any more?
 			this.storageBiome = new BiomeGenStorage();
-			registry.register( this.storageBiome.setRegistryName( "appliedenergistics2:storage_biome" ) );
-
 		}
+
+		registry.register( this.storageBiome.setRegistryName( "appliedenergistics2:storage_biome" ) );
 
 		if( config.getStorageProviderID() != -1 )
 		{
@@ -285,9 +229,6 @@ public final class Registration
 		registry.addNewCraftHandler( "smelt", Smelt.class );
 		registry.addNewCraftHandler( "inscribe", Inscribe.class );
 		registry.addNewCraftHandler( "press", Press.class );
-
-		registry.addNewCraftHandler( "shaped", Shaped.class );
-		registry.addNewCraftHandler( "shapeless", Shapeless.class );
 	}
 
 	public void initialize( @Nonnull final FMLInitializationEvent event, @Nonnull final File recipeDirectory, @Nonnull final CustomRecipeConfig customRecipeConfig )
@@ -302,7 +243,8 @@ public final class Registration
 		final IRegistryContainer registries = api.registries();
 
 		ApiDefinitions definitions = api.definitions();
-		definitions.getRegistry().getBootstrapComponents().forEach( b -> b.initialize( event.getSide() ) );
+		definitions.getRegistry().getBootstrapComponents( IInitComponent.class ).forEachRemaining( b -> b.initialize( event.getSide() ) );
+
 		//
 		// // Perform ore camouflage!
 		// ItemMaterial.instance.makeUnique();
@@ -372,41 +314,36 @@ public final class Registration
 	@SubscribeEvent
 	public void registerBiomes( RegistryEvent.Register<Biome> event )
 	{
-		IForgeRegistry<Biome> registry = event.getRegistry();
+		final IForgeRegistry<Biome> registry = event.getRegistry();
 		this.registerSpatial( false, registry );
 	}
 
 	@SubscribeEvent
+	@SideOnly( Side.CLIENT )
 	public void modelRegistryEvent( ModelRegistryEvent event )
 	{
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		final IModelRegistry registry = new ModelLoaderWrapper();
-		definitions.getRegistry().getBootstrapComponents().forEach( b -> b.modelRegistration( FMLCommonHandler.instance().getEffectiveSide(), registry ) );
+		final Side side = FMLCommonHandler.instance().getEffectiveSide();
+		definitions.getRegistry().getBootstrapComponents( IModelRegistrationComponent.class ).forEachRemaining( b -> b.modelRegistration( side, registry ) );
 	}
 
 	@SubscribeEvent
 	public void registerBlocks( RegistryEvent.Register<Block> event )
 	{
-		IForgeRegistry<Block> registry = event.getRegistry();
-		// TODO : 1.12 Improve
-		for( Block b : blocksToRegister )
-		{
-			registry.register( b );
-		}
-		blocksToRegister = null;
+		final IForgeRegistry<Block> registry = event.getRegistry();
+		final ApiDefinitions definitions = Api.INSTANCE.definitions();
+		final Side side = FMLCommonHandler.instance().getEffectiveSide();
+		definitions.getRegistry().getBootstrapComponents( IBlockRegistrationComponent.class ).forEachRemaining( b -> b.blockRegistration( side, registry ) );
 	}
 
 	@SubscribeEvent
 	public void registerItems( RegistryEvent.Register<Item> event )
 	{
-
-		IForgeRegistry<Item> registry = event.getRegistry();
-		// TODO : 1.12 Improve
-		for( Item i : itemsToRegister )
-		{
-			registry.register( i );
-		}
-		itemsToRegister = null;
+		final IForgeRegistry<Item> registry = event.getRegistry();
+		final ApiDefinitions definitions = Api.INSTANCE.definitions();
+		final Side side = FMLCommonHandler.instance().getEffectiveSide();
+		definitions.getRegistry().getBootstrapComponents( IItemRegistrationComponent.class ).forEachRemaining( b -> b.itemRegistration( side, registry ) );
 	}
 
 	@SubscribeEvent
@@ -416,20 +353,15 @@ public final class Registration
 
 		final Api api = Api.INSTANCE;
 		final ApiDefinitions definitions = api.definitions();
+		final Side side = FMLCommonHandler.instance().getEffectiveSide();
 
 		// Perform ore camouflage!
 		ItemMaterial.instance.makeUnique();
 
-		final Runnable recipeLoader = new RecipeLoader( this.recipeDirectory, this.customRecipeConfig, this.recipeHandler );
-		recipeLoader.run();
-
-		this.recipeHandler.injectRecipes();
-
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_DISASSEMBLY_CRAFTING ) )
 		{
 			DisassembleRecipe r = new DisassembleRecipe();
-			// TODO : 1.12 Improve
-			addRecipeToRegister( r.setRegistryName( AppEng.MOD_ID.toLowerCase(), "disassemble" ) );
+			registry.register( r.setRegistryName( AppEng.MOD_ID.toLowerCase(), "disassemble" ) );
 			// RecipeSorter.register( "appliedenergistics2:disassemble", DisassembleRecipe.class, Category.SHAPELESS,
 			// "after:minecraft:shapeless" );
 		}
@@ -438,34 +370,23 @@ public final class Registration
 		{
 			definitions.items().facade().maybeItem().ifPresent( facadeItem ->
 			{
-				// TODO : 1.12 Improve
 				FacadeRecipe f = new FacadeRecipe( (ItemFacade) facadeItem );
-				addRecipeToRegister( f.setRegistryName( AppEng.MOD_ID.toLowerCase(), "facade" ) );
+				registry.register( f.setRegistryName( AppEng.MOD_ID.toLowerCase(), "facade" ) );
 				// RecipeSorter.register( "appliedenergistics2:facade", FacadeRecipe.class, Category.SHAPED,
 				// "after:minecraft:shaped" );
 			} );
 		}
 
-		int x = 0;
-		// TODO : 1.12 Improve
-		for( IRecipe r : recipesToRegister )
-		{
-			// TODO : 1.12 *really* improve.
-			// Move to json where possible?
-			if( r.getRegistryName() == null )
-			{
-				r.setRegistryName( new ResourceLocation( AppEng.MOD_ID.toLowerCase(), "recipe_" + x ) );
-				x++;
-			}
-			registry.register( r );
-		}
-		recipesToRegister = null;
-
+		definitions.getRegistry().getBootstrapComponents( IRecipeRegistrationComponent.class ).forEachRemaining( b -> b.recipeRegistration( side, registry ) );
 	}
 
 	void postInit( final FMLPostInitializationEvent event )
 	{
-		// TODO : 1.12 Improve
+		// load machine recipes
+		final IRecipeHandler recipeHandler = new RecipeHandler();
+		final Runnable recipeLoader = new RecipeLoader( this.recipeDirectory, this.customRecipeConfig, recipeHandler );
+		recipeLoader.run();
+		recipeHandler.injectRecipes();
 
 		final IRegistryContainer registries = Api.INSTANCE.registries();
 		ApiDefinitions definitions = Api.INSTANCE.definitions();
@@ -480,7 +401,7 @@ public final class Registration
 		PlayerMessages.values();
 		GuiText.values();
 
-		definitions.getRegistry().getBootstrapComponents().forEach( b -> b.postInitialize( event.getSide() ) );
+		definitions.getRegistry().getBootstrapComponents( IPostInitComponent.class ).forEachRemaining( b -> b.postInitialize( event.getSide() ) );
 
 		// Interface
 		Upgrades.CRAFTING.registerItem( parts.iface(), 1 );
@@ -556,7 +477,7 @@ public final class Registration
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.VILLAGER_TRADING ) )
 		{
 			// TODO: VILLAGER TRADING
-			// VillagerRegistry.instance().getRegisteredVillagers()..registerVillageTradeHandler( 3, new AETrading() );
+			// VillagerRegistry.instance().getRegisteredVillagers().registerVillageTradeHandler( 3, new AETrading() );
 		}
 
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.CERTUS_QUARTZ_WORLD_GEN ) )
@@ -657,7 +578,6 @@ public final class Registration
 		{
 			ModelLoader.setCustomStateMapper( block, mapper );
 		}
-
 	}
 
 }

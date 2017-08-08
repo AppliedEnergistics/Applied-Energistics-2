@@ -42,11 +42,16 @@ import appeng.api.definitions.IBlockDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseItemBlock;
 import appeng.block.AEBaseTileBlock;
+import appeng.bootstrap.components.IBlockRegistrationComponent;
+import appeng.bootstrap.components.IInitComponent;
+import appeng.bootstrap.components.IItemRegistrationComponent;
+import appeng.bootstrap.components.IModelRegistrationComponent;
+import appeng.bootstrap.components.IPostInitComponent;
+import appeng.bootstrap.components.IPreInitComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
-import appeng.core.Registration;
 import appeng.core.features.AEFeature;
 import appeng.core.features.ActivityState;
 import appeng.core.features.BlockDefinition;
@@ -221,22 +226,20 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		}
 
 		// Register the item and block with the game
-		this.factory.addPreInit( side ->
+		this.factory.<IBlockRegistrationComponent>addBootstrapComponent( ( side, registry ) -> registry.register( block ) );
+		if( item != null )
 		{
-			Registration.addBlockToRegister( block );
-			if( item != null )
-			{
-				Registration.addItemToRegister( item );
-			}
-		} );
+			this.factory.<IItemRegistrationComponent>addBootstrapComponent( ( side, registry ) -> registry.register( item ) );
+		}
 
 		block.setCreativeTab( this.creativeTab );
 
 		// Register all extra handlers
-		this.preInitCallbacks.forEach( consumer -> this.factory.addPreInit( side -> consumer.accept( block, item ) ) );
-		this.initCallbacks.forEach( consumer -> this.factory.addInit( side -> consumer.accept( block, item ) ) );
-		this.modelRegCallbacks.forEach( consumer -> this.factory.addModelReg( ( side, reg ) -> consumer.accept( block, item ) ) );
-		this.postInitCallbacks.forEach( consumer -> this.factory.addPostInit( side -> consumer.accept( block, item ) ) );
+		this.preInitCallbacks.forEach( consumer -> this.factory.<IPreInitComponent>addBootstrapComponent( side -> consumer.accept( block, item ) ) );
+		this.initCallbacks.forEach( consumer -> this.factory.<IInitComponent>addBootstrapComponent( side -> consumer.accept( block, item ) ) );
+		this.modelRegCallbacks
+				.forEach( consumer -> this.factory.<IModelRegistrationComponent>addBootstrapComponent( ( side, reg ) -> consumer.accept( block, item ) ) );
+		this.postInitCallbacks.forEach( consumer -> this.factory.<IPostInitComponent>addBootstrapComponent( side -> consumer.accept( block, item ) ) );
 
 		if( this.tileEntityDefinition != null && block instanceof AEBaseTileBlock )
 		{
@@ -268,7 +271,7 @@ class BlockDefinitionBuilder implements IBlockBuilder
 
 		if( block instanceof AEBaseTileBlock )
 		{
-			this.factory.addPreInit( side ->
+			this.factory.<IPreInitComponent>addBootstrapComponent( side ->
 			{
 				AEBaseTile.registerTileItem(
 						this.tileEntityDefinition == null ? ( (AEBaseTileBlock) block ).getTileEntityClass() : this.tileEntityDefinition.getTileEntityClass(),

@@ -32,8 +32,5 @@ import appeng.bootstrap.IModelRegistry;
 @FunctionalInterface
 public interface IModelRegistrationComponent extends IBootstrapComponent
 {
-
-	@Override
 	void modelRegistration( Side side, IModelRegistry registry );
-
 }

@@ -128,15 +128,13 @@ class ItemRendering implements IItemRendering
 				Block block = ( (ItemBlock) item ).getBlock();
 
 				// We can only do this once the blocks are actually registered...
-				StateMapperHelper helper = new StateMapperHelper( block.getRegistryName() );
+				StateMapperHelper helper = new StateMapperHelper( item.getRegistryName() );
 				model = helper.getModelResourceLocation( block.getDefaultState() );
 			}
 			else
 			{
 				model = new ModelResourceLocation( item.getRegistryName(), "inventory" );
-				resources.add( model );
 			}
-
 			factory.addBootstrapComponent( new ItemModelComponent( item, ImmutableMap.of( 0, model ) ) );
 		}
 
@@ -147,15 +145,10 @@ class ItemRendering implements IItemRendering
 		{
 			factory.addBootstrapComponent( new ItemVariantsComponent( item, resources ) );
 		}
-		else if( !this.itemModels.isEmpty() || this.itemMeshDefinition != null )
+		else if( this.itemMeshDefinition != null )
 		{
 			// Adding an empty variant list here will prevent Vanilla from trying to load the default item model in this
 			// case
-			factory.addBootstrapComponent( new ItemVariantsComponent( item, Collections.emptyList() ) );
-		}
-		else if( item instanceof ItemBlock )
-		{
-			// The default for block items is to register the block model
 			factory.addBootstrapComponent( new ItemVariantsComponent( item, Collections.emptyList() ) );
 		}
 
