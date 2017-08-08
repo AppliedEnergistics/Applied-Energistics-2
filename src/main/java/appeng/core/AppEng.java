@@ -28,6 +28,8 @@ import javax.annotation.Nonnull;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -124,10 +126,14 @@ public final class AppEng
 		return INSTANCE;
 	}
 
-	@Nonnull
-	public final Registration getRegistration()
+	public Biome getStorageBiome()
 	{
-		return this.registration;
+		return this.registration.storageBiome;
+	}
+
+	public DimensionType getStorageDimensionType()
+	{
+		return this.registration.storageDimensionType;
 	}
 
 	@EventHandler

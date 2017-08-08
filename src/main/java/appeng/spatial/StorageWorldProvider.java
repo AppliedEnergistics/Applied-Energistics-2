@@ -44,7 +44,7 @@ public class StorageWorldProvider extends WorldProvider
 	public StorageWorldProvider()
 	{
 		this.hasSkyLight = true;
-		this.biome = AppEng.instance().getRegistration().getStorageBiome();
+		this.biome = AppEng.instance().getStorageBiome();
 		this.biomeProvider = new BiomeProviderSingle( this.biome );
 	}
 
@@ -101,7 +101,7 @@ public class StorageWorldProvider extends WorldProvider
 	@Override
 	public DimensionType getDimensionType()
 	{
-		return AppEng.instance().getRegistration().getStorageDimensionType();
+		return AppEng.instance().getStorageDimensionType();
 	}
 
 	@Override

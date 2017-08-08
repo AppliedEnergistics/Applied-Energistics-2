@@ -88,7 +88,7 @@ final class DimensionData implements IWorldDimensionData, IOnWorldStartable, IOn
 	{
 		for( final Integer storageCellDimID : this.storageCellDimensionIDs )
 		{
-			DimensionManager.registerDimension( storageCellDimID, AppEng.instance().getRegistration().getStorageDimensionType() );
+			DimensionManager.registerDimension( storageCellDimID, AppEng.instance().getStorageDimensionType() );
 		}
 
 		this.config.save();
@@ -111,7 +111,7 @@ final class DimensionData implements IWorldDimensionData, IOnWorldStartable, IOn
 	public void addStorageCell( final int newStorageCellID )
 	{
 		this.storageCellDimensionIDs.add( newStorageCellID );
-		DimensionManager.registerDimension( newStorageCellID, AppEng.instance().getRegistration().getStorageDimensionType() );
+		DimensionManager.registerDimension( newStorageCellID, AppEng.instance().getStorageDimensionType() );
 
 		NetworkHandler.instance().sendToAll( new PacketNewStorageDimension( newStorageCellID ) );
 

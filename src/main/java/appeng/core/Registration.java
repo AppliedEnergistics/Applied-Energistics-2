@@ -124,10 +124,10 @@ import appeng.worldgen.MeteoriteWorldGen;
 import appeng.worldgen.QuartzWorldGen;
 
 
-public final class Registration
+final class Registration
 {
-	private DimensionType storageDimensionType;
-	private Biome storageBiome;
+	DimensionType storageDimensionType;
+	Biome storageBiome;
 
 	private File recipeDirectory;
 	private CustomRecipeConfig customRecipeConfig;
@@ -136,20 +136,6 @@ public final class Registration
 	{
 		this.recipeDirectory = f;
 		this.customRecipeConfig = f2;
-	}
-
-	Registration()
-	{
-	}
-
-	public Biome getStorageBiome()
-	{
-		return this.storageBiome;
-	}
-
-	public DimensionType getStorageDimensionType()
-	{
-		return this.storageDimensionType;
 	}
 
 	void preInitialize( final FMLPreInitializationEvent event )
@@ -303,9 +289,6 @@ public final class Registration
 			registries.matterCannon().registerAmmo( ammoStack, weight );
 		} );
 
-		// TODO : 1.12 This is way too late for recipes
-		// this.recipeHandler.injectRecipes();
-
 		final PlayerStatsRegistration registration = new PlayerStatsRegistration( MinecraftForge.EVENT_BUS, AEConfig.instance() );
 		registration.registerAchievementHandlers();
 		registration.registerAchievements();
@@ -378,16 +361,16 @@ public final class Registration
 		}
 
 		definitions.getRegistry().getBootstrapComponents( IRecipeRegistrationComponent.class ).forEachRemaining( b -> b.recipeRegistration( side, registry ) );
-	}
 
-	void postInit( final FMLPostInitializationEvent event )
-	{
 		// load machine recipes
 		final IRecipeHandler recipeHandler = new RecipeHandler();
 		final Runnable recipeLoader = new RecipeLoader( this.recipeDirectory, this.customRecipeConfig, recipeHandler );
 		recipeLoader.run();
 		recipeHandler.injectRecipes();
+	}
 
+	void postInit( final FMLPostInitializationEvent event )
+	{
 		final IRegistryContainer registries = Api.INSTANCE.registries();
 		ApiDefinitions definitions = Api.INSTANCE.definitions();
 		final IParts parts = definitions.parts();
