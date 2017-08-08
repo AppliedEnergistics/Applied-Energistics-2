@@ -308,6 +308,7 @@ public final class ApiBlocks implements IBlocks
 				.features( AEFeature.GRIND_STONE )
 				.tileEntity( new TileEntityDefinition( TileCrank.class ) )
 				.rendering( new CrankRendering() )
+				.useCustomItemModel()
 				.build();
 		this.inscriber = registry.block( "inscriber", BlockInscriber::new )
 				.features( AEFeature.INSCRIBER )

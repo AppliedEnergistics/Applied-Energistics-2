@@ -1,5 +1,7 @@
 {
+  "forge_marker": 1,
   "variants": {
-    "normal": { "model": "appliedenergistics2:crank" }
+    "normal": { "model": "appliedenergistics2:crank" },
+    "inventory": { "model": "appliedenergistics2:crank_inventory" }
   }
 }
