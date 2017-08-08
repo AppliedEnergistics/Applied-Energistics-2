@@ -80,16 +80,13 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	@Override
 	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
 	{
-		if( pos.offset( this.getSide().getFacing() ).equals( neighbor ) )
+		this.updateState();
+		if( this.lastRedstone != this.getHost().hasRedstone( this.getSide() ) )
 		{
-			this.updateState();
-			if( this.lastRedstone != this.getHost().hasRedstone( this.getSide() ) )
+			this.lastRedstone = !this.lastRedstone;
+			if( this.lastRedstone && this.getRSMode() == RedstoneMode.SIGNAL_PULSE )
 			{
-				this.lastRedstone = !this.lastRedstone;
-				if( this.lastRedstone && this.getRSMode() == RedstoneMode.SIGNAL_PULSE )
-				{
-					this.doBusWork();
-				}
+				this.doBusWork();
 			}
 		}
 	}
