@@ -107,8 +107,12 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 		if( ForgeEventFactory.onItemUseStart( player, is, 1 ) <= 0 )
 			return true;
 
-		if( ForgeEventFactory.onPlayerInteract( player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, x, y, z, side, world ).isCanceled() )
-			return true;
+		Block blk = world.getBlock( x, y, z );
+		if( blk != null )
+			if( ForgeEventFactory.onPlayerInteract( player,
+					blk.isAir( world, x, y, z ) ? PlayerInteractEvent.Action.RIGHT_CLICK_AIR : PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK,
+					x, y, z, side, world ).isCanceled() )
+				return true;
 
 		final MovingObjectPosition mop = new MovingObjectPosition( x, y, z, side, Vec3.createVectorHelper( hitX, hitY, hitZ ) );
 		final TileEntity te = world.getTileEntity( x, y, z );

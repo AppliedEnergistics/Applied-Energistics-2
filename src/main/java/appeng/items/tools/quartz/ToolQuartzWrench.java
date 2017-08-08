@@ -60,7 +60,9 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolWren
 
 		final Block b = world.getBlock( x, y, z );
 
-		if( b != null && ForgeEventFactory.onPlayerInteract( player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, x, y, z, side, world ).isCanceled() )
+		if( b != null && ForgeEventFactory.onPlayerInteract( player,
+				b.isAir( world, x, y, z ) ? PlayerInteractEvent.Action.RIGHT_CLICK_AIR : PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK,
+				x, y, z, side, world ).isCanceled() )
 			return true;
 
 		if( b != null && !player.isSneaking() && Platform.hasPermissions( new DimensionalCoord( world, x, y, z ), player ) )
