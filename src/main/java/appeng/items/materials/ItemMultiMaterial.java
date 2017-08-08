@@ -52,6 +52,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.*;
@@ -324,6 +325,9 @@ public final class ItemMultiMaterial extends AEBaseItem implements IStorageCompo
 	@Override
 	public boolean onItemUseFirst( final ItemStack is, final EntityPlayer player, final World world, final int x, final int y, final int z, final int side, final float hitX, final float hitY, final float hitZ )
 	{
+		if( ForgeEventFactory.onItemUseStart( player, is, 1 ) <= 0 )
+			return true;
+
 		if( player.isSneaking() )
 		{
 			final TileEntity te = world.getTileEntity( x, y, z );

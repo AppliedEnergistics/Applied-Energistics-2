@@ -49,6 +49,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import java.util.EnumSet;
 
@@ -104,7 +105,10 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	public boolean onItemUseFirst( final ItemStack is, final EntityPlayer player, final World world, final int x, final int y, final int z, final int side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( ForgeEventFactory.onItemUseStart( player, is, 1 ) <= 0 )
-			return false;
+			return true;
+
+		if( ForgeEventFactory.onPlayerInteract( player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, x, y, z, side, world ).isCanceled() )
+			return true;
 
 		final MovingObjectPosition mop = new MovingObjectPosition( x, y, z, side, Vec3.createVectorHelper( hitX, hitY, hitZ ) );
 		final TileEntity te = world.getTileEntity( x, y, z );

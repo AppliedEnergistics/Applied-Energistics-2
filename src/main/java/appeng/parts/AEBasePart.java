@@ -489,27 +489,33 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	@Override
 	public final boolean onActivate( final EntityPlayer player, final Vec3 pos )
 	{
+		int x = (int) pos.xCoord, y = (int) pos.yCoord, z = (int) pos.zCoord;
+		PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract( player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, x, y, z, this.side.flag, player.getEntityWorld() );
+		if( event.isCanceled() )
+			return false;
+
 		if( this.useMemoryCard( player ) )
 		{
 			return true;
 		}
 
-		int x = (int) pos.xCoord, y = (int) pos.yCoord, z = (int) pos.zCoord;
-		PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract( player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, x, y, z, this.side.flag, player.getEntityWorld() );
-		return !event.isCanceled() && this.onPartActivate( player, pos );
+		return onPartActivate( player, pos );
 	}
 
 	@Override
 	public final boolean onShiftActivate( final EntityPlayer player, final Vec3 pos )
 	{
+		int x = (int) pos.xCoord, y = (int) pos.yCoord, z = (int) pos.zCoord;
+		PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract( player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, x, y, z, this.side.flag, player.getEntityWorld() );
+		if( event.isCanceled() )
+			return false;
+
 		if( this.useMemoryCard( player ) )
 		{
 			return true;
 		}
 
-		int x = (int) pos.xCoord, y = (int) pos.yCoord, z = (int) pos.zCoord;
-		PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract( player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, x, y, z, this.side.flag, player.getEntityWorld() );
-		return !event.isCanceled() && this.onPartShiftActivate( player, pos );
+		return this.onPartShiftActivate( player, pos );
 	}
 
 	public boolean onPartActivate( final EntityPlayer player, final Vec3 pos )

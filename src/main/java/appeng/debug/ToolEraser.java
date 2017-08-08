@@ -30,6 +30,8 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import java.util.Collection;
 import java.util.EnumSet;
@@ -56,6 +58,9 @@ public class ToolEraser extends AEBaseItem
 	@Override
 	public boolean onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final int x, final int y, final int z, final int side, final float hitX, final float hitY, final float hitZ )
 	{
+		if( ForgeEventFactory.onItemUseStart( player, stack, 1 ) <= 0 )
+			return true;
+
 		if( Platform.isClient() )
 		{
 			return false;
@@ -63,6 +68,9 @@ public class ToolEraser extends AEBaseItem
 
 		final Block blk = world.getBlock( x, y, z );
 		final int meta = world.getBlockMetadata( x, y, z );
+
+		if( blk != null && ForgeEventFactory.onPlayerInteract( player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, x, y, z, side, world ).isCanceled() )
+			return true;
 
 		List<WorldCoord> next = new LinkedList<WorldCoord>();
 		next.add( new WorldCoord( x, y, z ) );

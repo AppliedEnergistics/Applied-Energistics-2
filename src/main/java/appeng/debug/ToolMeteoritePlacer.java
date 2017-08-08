@@ -30,6 +30,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.EnumSet;
 
@@ -50,6 +51,9 @@ public class ToolMeteoritePlacer extends AEBaseItem
 	@Override
 	public boolean onItemUseFirst( final ItemStack stack, final EntityPlayer player, final World world, final int x, final int y, final int z, final int side, final float hitX, final float hitY, final float hitZ )
 	{
+		if( ForgeEventFactory.onItemUseStart( player, stack, 1 ) <= 0 )
+			return true;
+
 		if( Platform.isClient() )
 		{
 			return false;
