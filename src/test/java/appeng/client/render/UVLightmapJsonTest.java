@@ -19,11 +19,13 @@
 package appeng.client.render;
 
 
+import java.util.Arrays;
+
+import com.google.common.collect.ImmutableMap;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -35,68 +37,59 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-import appeng.core.Registration;
+import appeng.bootstrap.FeatureFactory;
+import appeng.bootstrap.components.IBlockRegistrationComponent;
+import appeng.bootstrap.components.IItemRegistrationComponent;
+import appeng.bootstrap.components.ItemModelComponent;
+import appeng.bootstrap.components.ItemVariantsComponent;
+import appeng.core.Api;
 
 
-@Mod( modid = "UVLightmapJsonTest", name = "UVLightmapJsonTest", version = "0.0.0" )
+@Mod( modid = "uvlightmapjsontest", name = "UVLightmapJsonTest", version = "0.0.0" )
 public class UVLightmapJsonTest
 {
-
-	private static final ResourceLocation uvlblockR = new ResourceLocation( "UVLightmapJsonTest", "uvlblock" );
-
-	public static Block uvlblock;
-	public static Item uvlblockItem;
-
 	@EventHandler
 	public void preInit( FMLPreInitializationEvent event )
 	{
-		Registration.addBlockToRegister( uvlblock = new Block( Material.IRON )
+		final ResourceLocation uvlblockR = new ResourceLocation( "uvlightmapjsontest", "uvlblock" );
+		final Block uvlblock = new Block( Material.IRON )
 		{
-
 			final AxisAlignedBB box = new AxisAlignedBB( 0.25, 0, 7 / 16d, 0.75, 1, 9 / 16d );
 
-			@SuppressWarnings( "deprecation" )
 			@Override
 			public boolean isFullBlock( IBlockState state )
 			{
 				return false;
 			}
 
-			@SuppressWarnings( "deprecation" )
 			@Override
 			public boolean isOpaqueCube( IBlockState state )
 			{
 				return false;
 			}
 
-			@SuppressWarnings( "deprecation" )
 			@Override
 			public AxisAlignedBB getBoundingBox( IBlockState state, IBlockAccess source, BlockPos pos )
 			{
 				return this.box;
 			}
 
-			@SuppressWarnings( "deprecation" )
 			@Override
 			public BlockRenderLayer getBlockLayer()
 			{
 				return BlockRenderLayer.CUTOUT;
 			}
 
-		}.setLightLevel( 0.2f ).setCreativeTab( CreativeTabs.DECORATIONS ).setRegistryName( uvlblockR ) );
-		Registration.addItemToRegister( uvlblockItem = new ItemBlock( uvlblock ).setRegistryName( uvlblockR ) );
-
-		ModelBakery.registerItemVariants( uvlblockItem, uvlblockR );
-
+		}.setLightLevel( 0.2f ).setCreativeTab( CreativeTabs.DECORATIONS ).setRegistryName( uvlblockR );
+		
+		final Item uvlblockItem = new ItemBlock( uvlblock ).setRegistryName( uvlblockR );
+		
+		FeatureFactory fact = Api.INSTANCE.definitions().getRegistry();
+		fact.<IBlockRegistrationComponent>addBootstrapComponent( ( side, registry ) -> registry.register( uvlblock ) );
+		fact.<IItemRegistrationComponent>addBootstrapComponent(	( side, registry ) -> registry.register( uvlblockItem ) );
+		fact.addBootstrapComponent( new ItemVariantsComponent( uvlblockItem, Arrays.asList( uvlblockR ) ));
+		fact.addBootstrapComponent( new ItemModelComponent( uvlblockItem, ImmutableMap.of( 0, new ModelResourceLocation( uvlblockR, "inventory" ) ) ) );
 	}
-
-	@EventHandler
-	public void init( FMLInitializationEvent event )
-	{
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register( uvlblockItem, 0, new ModelResourceLocation( uvlblockR, "inventory" ) );
-	}
-
 }
