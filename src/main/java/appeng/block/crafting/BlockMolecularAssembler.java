@@ -79,7 +79,7 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 			Platform.openGUI( p, tg, ForgeDirection.getOrientation( side ), GuiBridge.GUI_MAC );
 			return true;
 		}
-		return false;
+		return super.onBlockActivated( w, x, y, z, p, side, hitX, hitY, hitZ );
 	}
 
 	public static boolean isBooleanAlphaPass()

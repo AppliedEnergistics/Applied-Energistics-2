@@ -94,7 +94,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 			return true;
 		}
 
-		return false;
+		return super.onBlockActivated( w, x, y, z, p, side, hitX, hitY, hitZ );
 	}
 
 	@Override
