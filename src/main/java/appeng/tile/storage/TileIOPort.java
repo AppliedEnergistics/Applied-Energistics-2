@@ -74,6 +74,7 @@ import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.AdaptorItemHandler;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperChainedItemHandler;
+import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.AEItemFilters;
 
 
@@ -85,10 +86,11 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	private final AppEngInternalInventory outputCells = new AppEngInternalInventory( this, 6 );
 	private final IItemHandler combinedInventory = new WrapperChainedItemHandler( inputCells, outputCells );
 
+	private final IItemHandler inputCellsExt = new WrapperFilteredItemHandler( inputCells, AEItemFilters.INSERT_ONLY );
+	private final IItemHandler outputCellsExt = new WrapperFilteredItemHandler( outputCells, AEItemFilters.EXTRACT_ONLY );
+
 	private final UpgradeInventory upgrades;
-
 	private final BaseActionSource mySrc;
-
 	private YesNo lastRedstoneState;
 	private ItemStack currentCell;
 	private IMEInventory<IAEFluidStack> cachedFluid;
@@ -107,9 +109,6 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 
 		final Block ioPortBlock = AEApi.instance().definitions().blocks().iOPort().maybeBlock().get();
 		this.upgrades = new BlockUpgradeInventory( ioPortBlock, this, 3 );
-
-		inputCells.setFilter( AEItemFilters.INSERT_ONLY );
-		outputCells.setFilter( AEItemFilters.EXTRACT_ONLY );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
@@ -259,11 +258,11 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	{
 		if( facing == getUp() || facing == getUp().getOpposite() )
 		{
-			return inputCells;
+			return inputCellsExt;
 		}
 		else
 		{
-			return outputCells;
+			return outputCellsExt;
 		}
 	}
 
