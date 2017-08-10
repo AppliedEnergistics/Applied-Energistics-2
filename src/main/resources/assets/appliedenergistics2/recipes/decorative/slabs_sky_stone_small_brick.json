@@ -1,6 +1,7 @@
 {
   "result": {
     "item": "appliedenergistics2:sky_stone_small_brick_slab",
+    "data": 0,
     "count": 6
   },
   "type": "forge:ore_shaped",
