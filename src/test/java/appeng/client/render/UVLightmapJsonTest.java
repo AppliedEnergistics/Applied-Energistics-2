@@ -87,8 +87,8 @@ public class UVLightmapJsonTest
 		final Item uvlblockItem = new ItemBlock( uvlblock ).setRegistryName( uvlblockR );
 		
 		FeatureFactory fact = Api.INSTANCE.definitions().getRegistry();
-		fact.<IBlockRegistrationComponent>addBootstrapComponent( ( side, registry ) -> registry.register( uvlblock ) );
-		fact.<IItemRegistrationComponent>addBootstrapComponent(	( side, registry ) -> registry.register( uvlblockItem ) );
+		fact.addBootstrapComponent( (IBlockRegistrationComponent) ( side, registry ) -> registry.register( uvlblock ) );
+		fact.addBootstrapComponent( (IItemRegistrationComponent) ( side, registry ) -> registry.register( uvlblockItem ) );
 		fact.addBootstrapComponent( new ItemVariantsComponent( uvlblockItem, Arrays.asList( uvlblockR ) ));
 		fact.addBootstrapComponent( new ItemModelComponent( uvlblockItem, ImmutableMap.of( 0, new ModelResourceLocation( uvlblockR, "inventory" ) ) ) );
 	}

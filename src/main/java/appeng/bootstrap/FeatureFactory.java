@@ -127,7 +127,7 @@ public class FeatureFactory
 		return new FeatureFactory( this, features );
 	}
 
-	public <T extends IBootstrapComponent> void addBootstrapComponent( T component )
+	public void addBootstrapComponent( IBootstrapComponent component )
 	{
 		Arrays.stream( component.getClass().getInterfaces() )
 				.filter( i -> IBootstrapComponent.class.isAssignableFrom( i ) )

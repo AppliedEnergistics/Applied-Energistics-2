@@ -74,6 +74,7 @@ import appeng.bootstrap.components.IBlockRegistrationComponent;
 import appeng.bootstrap.components.IInitComponent;
 import appeng.bootstrap.components.IItemRegistrationComponent;
 import appeng.bootstrap.components.IModelRegistrationComponent;
+import appeng.bootstrap.components.IOreDictComponent;
 import appeng.bootstrap.components.IPostInitComponent;
 import appeng.bootstrap.components.IPreInitComponent;
 import appeng.bootstrap.components.IRecipeRegistrationComponent;
@@ -154,7 +155,8 @@ final class Registration
 
 		ApiDefinitions definitions = api.definitions();
 
-		// Register all detected handlers and features (items, blocks) in pre-init
+		// Register
+		definitions.getRegistry().getBootstrapComponents( IOreDictComponent.class ).forEachRemaining( b -> b.oreRegistration( event.getSide() ) );
 		definitions.getRegistry().getBootstrapComponents( IPreInitComponent.class ).forEachRemaining( b -> b.preInitialize( event.getSide() ) );
 	}
 
