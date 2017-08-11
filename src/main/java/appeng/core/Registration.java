@@ -156,7 +156,6 @@ final class Registration
 		ApiDefinitions definitions = api.definitions();
 
 		// Register
-		definitions.getRegistry().getBootstrapComponents( IOreDictComponent.class ).forEachRemaining( b -> b.oreRegistration( event.getSide() ) );
 		definitions.getRegistry().getBootstrapComponents( IPreInitComponent.class ).forEachRemaining( b -> b.preInitialize( event.getSide() ) );
 	}
 
@@ -231,6 +230,7 @@ final class Registration
 		final IRegistryContainer registries = api.registries();
 
 		ApiDefinitions definitions = api.definitions();
+		definitions.getRegistry().getBootstrapComponents( IOreDictComponent.class ).forEachRemaining( b -> b.oreRegistration( event.getSide() ) );
 		definitions.getRegistry().getBootstrapComponents( IInitComponent.class ).forEachRemaining( b -> b.initialize( event.getSide() ) );
 
 		//
