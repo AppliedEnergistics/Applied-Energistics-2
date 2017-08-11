@@ -21,6 +21,7 @@ package appeng.bootstrap;
 
 /**
  * Bootstrap components can be registered to take part in the various initialization phases of Forge.
+ * See the individual subclasses for a specific forge initalization event.
  */
 public interface IBootstrapComponent
 {
