@@ -43,7 +43,7 @@ public class AdaptorList extends InventoryAdaptor
 	@Override
 	public boolean hasSlots()
 	{
-		return !i.isEmpty();
+		return !this.i.isEmpty();
 	}
 
 	@Override

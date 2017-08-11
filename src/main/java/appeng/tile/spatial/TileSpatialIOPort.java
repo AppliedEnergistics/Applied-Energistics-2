@@ -59,7 +59,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 	public TileSpatialIOPort()
 	{
 		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
-		inv.setFilter( new SpatialIOFilter() );
+		this.inv.setFilter( new SpatialIOFilter() );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )

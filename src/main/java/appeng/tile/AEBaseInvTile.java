@@ -87,7 +87,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements IAEAppEngInven
 	@Override
 	public void getDrops( final World w, final BlockPos pos, final List<ItemStack> drops )
 	{
-		final IItemHandler inv = getInternalInventory();
+		final IItemHandler inv = this.getInternalInventory();
 
 		for( int l = 0; l < inv.getSlots(); l++ )
 		{
@@ -114,7 +114,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements IAEAppEngInven
 
 	protected @Nonnull IItemHandler getItemHandlerForSide( @Nonnull EnumFacing side )
 	{
-		return getInternalInventory();
+		return this.getInternalInventory();
 	}
 
 	@Override
@@ -124,11 +124,11 @@ public abstract class AEBaseInvTile extends AEBaseTile implements IAEAppEngInven
 		{
 			if( facing == null )
 			{
-				return getInternalInventory() != EmptyHandler.INSTANCE;
+				return this.getInternalInventory() != EmptyHandler.INSTANCE;
 			}
 			else
 			{
-				return getItemHandlerForSide( facing ) != EmptyHandler.INSTANCE;
+				return this.getItemHandlerForSide( facing ) != EmptyHandler.INSTANCE;
 			}
 		}
 		return super.hasCapability( capability, facing );
@@ -142,11 +142,11 @@ public abstract class AEBaseInvTile extends AEBaseTile implements IAEAppEngInven
 		{
 			if( facing == null )
 			{
-				return (T) getInternalInventory();
+				return (T) this.getInternalInventory();
 			}
 			else
 			{
-				return (T) getItemHandlerForSide( facing );
+				return (T) this.getItemHandlerForSide( facing );
 			}
 		}
 		return super.getCapability( capability, facing );

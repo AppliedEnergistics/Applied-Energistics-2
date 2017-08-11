@@ -43,7 +43,7 @@ public class AEItemDefinitionFilter implements IAEItemFilter
 	@Override
 	public boolean allowInsert( IItemHandler inv, int slot, ItemStack stack )
 	{
-		return definition.isSameAs( stack );
+		return this.definition.isSameAs( stack );
 	}
 
 }

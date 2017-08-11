@@ -55,7 +55,7 @@ public class InvalidPatternHelper
 
 		for( int i = 0; i < outTag.tagCount(); i++ )
 		{
-			outputs.add( new PatternIngredient( outTag.getCompoundTagAt( i ) ) );
+			this.outputs.add( new PatternIngredient( outTag.getCompoundTagAt( i ) ) );
 		}
 
 		for( int i = 0; i < inTag.tagCount(); i++ )
@@ -68,7 +68,7 @@ public class InvalidPatternHelper
 				continue;
 			}
 
-			inputs.add( new PatternIngredient( in ) );
+			this.inputs.add( new PatternIngredient( in ) );
 		}
 	}
 
@@ -104,7 +104,7 @@ public class InvalidPatternHelper
 		{
 			this.stack = new ItemStack( tag );
 
-			if( stack.isEmpty() )
+			if( this.stack.isEmpty() )
 			{
 				this.id = tag.getString( "id" );
 				this.count = tag.getByte( "Count" );
@@ -114,39 +114,39 @@ public class InvalidPatternHelper
 
 		public boolean isValid()
 		{
-			return !stack.isEmpty();
+			return !this.stack.isEmpty();
 		}
 
 		public String getName()
 		{
-			return isValid() ? Platform.getItemDisplayName( stack ) : id + '@' + String.valueOf( getDamage() );
+			return this.isValid() ? Platform.getItemDisplayName( this.stack ) : this.id + '@' + String.valueOf( this.getDamage() );
 		}
 
 		public int getDamage()
 		{
-			return isValid() ? stack.getItemDamage() : damage;
+			return this.isValid() ? this.stack.getItemDamage() : this.damage;
 		}
 
 		public int getCount()
 		{
-			return isValid() ? stack.getCount() : count;
+			return this.isValid() ? this.stack.getCount() : this.count;
 		}
 
 		public ItemStack getItem()
 		{
-			if( !isValid() )
+			if( !this.isValid() )
 			{
 				throw new IllegalArgumentException( "There is no valid ItemStack for this PatternIngredient" );
 			}
 
-			return stack;
+			return this.stack;
 		}
 
 		public String getFormattedToolTip()
 		{
-			String result = String.valueOf( getCount() ) + ' ' + getName();
+			String result = String.valueOf( this.getCount() ) + ' ' + this.getName();
 
-			if( !isValid() )
+			if( !this.isValid() )
 			{
 				result = TextFormatting.RED + ( ' ' + result );
 			}

@@ -35,10 +35,10 @@ public class Lazy<T> implements Supplier<T>
 	@Override
 	public T get()
 	{
-		if( instance == null )
+		if( this.instance == null )
 		{
-			instance = supplier.get();
+			this.instance = this.supplier.get();
 		}
-		return instance;
+		return this.instance;
 	}
 }

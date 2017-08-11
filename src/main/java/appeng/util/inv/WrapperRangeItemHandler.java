@@ -43,16 +43,16 @@ public class WrapperRangeItemHandler implements IInternalItemHandler
 	@Override
 	public int getSlots()
 	{
-		return maxSlot - minSlot;
+		return this.maxSlot - this.minSlot;
 	}
 
 	@Override
 	@Nonnull
 	public ItemStack getStackInSlot( int slot )
 	{
-		if( checkSlot( slot ) )
+		if( this.checkSlot( slot ) )
 		{
-			return compose.getStackInSlot( slot + minSlot );
+			return this.compose.getStackInSlot( slot + this.minSlot );
 		}
 
 		return ItemStack.EMPTY;
@@ -62,9 +62,9 @@ public class WrapperRangeItemHandler implements IInternalItemHandler
 	@Nonnull
 	public ItemStack insertItem( int slot, @Nonnull ItemStack stack, boolean simulate )
 	{
-		if( checkSlot( slot ) )
+		if( this.checkSlot( slot ) )
 		{
-			return compose.insertItem( slot + minSlot, stack, simulate );
+			return this.compose.insertItem( slot + this.minSlot, stack, simulate );
 		}
 
 		return stack;
@@ -74,9 +74,9 @@ public class WrapperRangeItemHandler implements IInternalItemHandler
 	@Nonnull
 	public ItemStack extractItem( int slot, int amount, boolean simulate )
 	{
-		if( checkSlot( slot ) )
+		if( this.checkSlot( slot ) )
 		{
-			return compose.extractItem( slot + minSlot, amount, simulate );
+			return this.compose.extractItem( slot + this.minSlot, amount, simulate );
 		}
 
 		return ItemStack.EMPTY;
@@ -85,18 +85,18 @@ public class WrapperRangeItemHandler implements IInternalItemHandler
 	@Override
 	public void setStackInSlot( int slot, @Nonnull ItemStack stack )
 	{
-		if( checkSlot( slot ) )
+		if( this.checkSlot( slot ) )
 		{
-			ItemHandlerUtil.setStackInSlot( compose, slot + minSlot, stack );
+			ItemHandlerUtil.setStackInSlot( this.compose, slot + this.minSlot, stack );
 		}
 	}
 
 	@Override
 	public int getSlotLimit( int slot )
 	{
-		if( checkSlot( slot ) )
+		if( this.checkSlot( slot ) )
 		{
-			return compose.getSlotLimit( slot + minSlot );
+			return this.compose.getSlotLimit( slot + this.minSlot );
 		}
 
 		return 0;
@@ -104,15 +104,15 @@ public class WrapperRangeItemHandler implements IInternalItemHandler
 
 	private boolean checkSlot( int localSlot )
 	{
-		return localSlot + minSlot < maxSlot;
+		return localSlot + this.minSlot < this.maxSlot;
 	}
 
 	@Override
 	public boolean isItemValidForSlot( int slot, ItemStack stack )
 	{
-		if( checkSlot( slot ) )
+		if( this.checkSlot( slot ) )
 		{
-			return ItemHandlerUtil.isItemValidForSlot( compose, slot + minSlot, stack );
+			return ItemHandlerUtil.isItemValidForSlot( this.compose, slot + this.minSlot, stack );
 		}
 		return false;
 	}
@@ -120,9 +120,9 @@ public class WrapperRangeItemHandler implements IInternalItemHandler
 	@Override
 	public void markDirty( int slot )
 	{
-		if( checkSlot( slot ) )
+		if( this.checkSlot( slot ) )
 		{
-			ItemHandlerUtil.markDirty( compose, slot + minSlot );
+			ItemHandlerUtil.markDirty( this.compose, slot + this.minSlot );
 		}
 	}
 

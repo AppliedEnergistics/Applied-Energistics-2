@@ -86,8 +86,8 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	private final InventoryCrafting craftingInv;
 	private final AppEngInternalInventory gridInv = new AppEngInternalInventory( this, 9 + 1, 1 );
 	private final AppEngInternalInventory patternInv = new AppEngInternalInventory( this, 1, 1 );
-	private final IItemHandler gridInvExt = new WrapperFilteredItemHandler( gridInv, new CraftingGridFilter() );
-	private final IItemHandler internalInv = new WrapperChainedItemHandler( gridInv, patternInv );
+	private final IItemHandler gridInvExt = new WrapperFilteredItemHandler( this.gridInv, new CraftingGridFilter() );
+	private final IItemHandler internalInv = new WrapperChainedItemHandler( this.gridInv, this.patternInv );
 	private final IConfigManager settings;
 	private final UpgradeInventory upgrades;
 	private boolean isPowered = false;
@@ -121,7 +121,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	{
 		if( this.myPattern.isEmpty() )
 		{
-			boolean isEmpty = ItemHandlerUtil.isEmpty( gridInv ) && ItemHandlerUtil.isEmpty( patternInv );
+			boolean isEmpty = ItemHandlerUtil.isEmpty( this.gridInv ) && ItemHandlerUtil.isEmpty( this.patternInv );
 
 			if( isEmpty && patternDetails.isCraftable() )
 			{
@@ -349,7 +349,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	@Override
 	protected IItemHandler getItemHandlerForSide( EnumFacing side )
 	{
-		return gridInvExt;
+		return this.gridInvExt;
 	}
 
 	@Override
@@ -646,7 +646,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 				return false;
 			}
 
-			if( hasPattern() )
+			if( this.hasPattern() )
 			{
 				return TileMolecularAssembler.this.myPlan.isValidItemForSlot( slot, stack, TileMolecularAssembler.this.getWorld() );
 			}

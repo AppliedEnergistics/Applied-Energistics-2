@@ -84,10 +84,10 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 
 	private final AppEngInternalInventory inputCells = new AppEngInternalInventory( this, 6 );
 	private final AppEngInternalInventory outputCells = new AppEngInternalInventory( this, 6 );
-	private final IItemHandler combinedInventory = new WrapperChainedItemHandler( inputCells, outputCells );
+	private final IItemHandler combinedInventory = new WrapperChainedItemHandler( this.inputCells, this.outputCells );
 
-	private final IItemHandler inputCellsExt = new WrapperFilteredItemHandler( inputCells, AEItemFilters.INSERT_ONLY );
-	private final IItemHandler outputCellsExt = new WrapperFilteredItemHandler( outputCells, AEItemFilters.EXTRACT_ONLY );
+	private final IItemHandler inputCellsExt = new WrapperFilteredItemHandler( this.inputCells, AEItemFilters.INSERT_ONLY );
+	private final IItemHandler outputCellsExt = new WrapperFilteredItemHandler( this.outputCells, AEItemFilters.EXTRACT_ONLY );
 
 	private final UpgradeInventory upgrades;
 	private final BaseActionSource mySrc;
@@ -232,7 +232,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	{
 		if( this.isEnabled() )
 		{
-			return !ItemHandlerUtil.isEmpty( inputCells );
+			return !ItemHandlerUtil.isEmpty( this.inputCells );
 		}
 
 		return false;
@@ -256,13 +256,13 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	@Override
 	protected IItemHandler getItemHandlerForSide( final EnumFacing facing )
 	{
-		if( facing == getUp() || facing == getUp().getOpposite() )
+		if( facing == this.getUp() || facing == this.getUp().getOpposite() )
 		{
-			return inputCellsExt;
+			return this.inputCellsExt;
 		}
 		else
 		{
-			return outputCellsExt;
+			return this.outputCellsExt;
 		}
 	}
 
@@ -470,10 +470,10 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 
 	private boolean moveSlot( final int x )
 	{
-		final InventoryAdaptor ad = new AdaptorItemHandler( outputCells );
-		if( ad.addItems( inputCells.getStackInSlot( x ) ).isEmpty() )
+		final InventoryAdaptor ad = new AdaptorItemHandler( this.outputCells );
+		if( ad.addItems( this.inputCells.getStackInSlot( x ) ).isEmpty() )
 		{
-			inputCells.setStackInSlot( x, ItemStack.EMPTY );
+			this.inputCells.setStackInSlot( x, ItemStack.EMPTY );
 			return true;
 		}
 		return false;

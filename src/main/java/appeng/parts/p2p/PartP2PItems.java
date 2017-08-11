@@ -124,9 +124,9 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IItemHa
 	private IItemHandler getOutputInv()
 	{
 		IItemHandler ret = null;
-		if( !partVisited )
+		if( !this.partVisited )
 		{
-			partVisited = true;
+			this.partVisited = true;
 			if( this.getProxy().isActive() )
 			{
 				final EnumFacing facing = this.getSide().getFacing();
@@ -137,7 +137,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IItemHa
 					ret = te.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing.getOpposite() );
 				}
 			}
-			partVisited = false;
+			this.partVisited = false;
 		}
 		return ret;
 	}
@@ -291,6 +291,6 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IItemHa
 	@Override
 	public IPartModel getStaticModels()
 	{
-		return MODELS.getModel( isPowered(), isActive() );
+		return MODELS.getModel( this.isPowered(), this.isActive() );
 	}
 }

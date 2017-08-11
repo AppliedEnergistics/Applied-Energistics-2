@@ -70,14 +70,14 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 	@Override
 	public int getSlotLimit( int slot )
 	{
-		return maxStack;
+		return this.maxStack;
 	}
 
 	@Override
 	public void setStackInSlot( int slot, @Nonnull ItemStack stack )
 	{
-		currentOp = InvOperation.SET;
-		previousStack = getStackInSlot( slot );
+		this.currentOp = InvOperation.SET;
+		this.previousStack = this.getStackInSlot( slot );
 		super.setStackInSlot( slot, stack );
 	}
 
@@ -85,13 +85,13 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 	@Nonnull
 	public ItemStack insertItem( int slot, @Nonnull ItemStack stack, boolean simulate )
 	{
-		if( filter != null && !filter.allowInsert( this, slot, stack ) )
+		if( this.filter != null && !this.filter.allowInsert( this, slot, stack ) )
 		{
 			return stack;
 		}
 
-		currentOp = InvOperation.INSERT;
-		previousStack = getStackInSlot( slot ).copy();
+		this.currentOp = InvOperation.INSERT;
+		this.previousStack = this.getStackInSlot( slot ).copy();
 		return super.insertItem( slot, stack, simulate );
 	}
 
@@ -99,13 +99,13 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 	@Nonnull
 	public ItemStack extractItem( int slot, int amount, boolean simulate )
 	{
-		if( filter != null && !filter.allowExtract( this, slot, amount ) )
+		if( this.filter != null && !this.filter.allowExtract( this, slot, amount ) )
 		{
 			return ItemStack.EMPTY;
 		}
 
-		currentOp = InvOperation.EXTRACT;
-		previousStack = getStackInSlot( slot );
+		this.currentOp = InvOperation.EXTRACT;
+		this.previousStack = this.getStackInSlot( slot );
 		return super.extractItem( slot, amount, simulate );
 	}
 
@@ -114,18 +114,18 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 	{
 		if( this.getTileEntity() != null && this.eventsEnabled() )
 		{
-			ItemStack added = getStackInSlot( slot ).copy();
-			ItemStack removed = previousStack.copy();
+			ItemStack added = this.getStackInSlot( slot ).copy();
+			ItemStack removed = this.previousStack.copy();
 
-			if( currentOp == InvOperation.INSERT )
+			if( this.currentOp == InvOperation.INSERT )
 			{
 				added.grow( -removed.getCount() );
 			}
-			else if( currentOp == InvOperation.EXTRACT )
+			else if( this.currentOp == InvOperation.EXTRACT )
 			{
 				removed.grow( -added.getCount() );
 			}
-			this.getTileEntity().onChangeInventory( this, slot, currentOp, removed, added );
+			this.getTileEntity().onChangeInventory( this, slot, this.currentOp, removed, added );
 		}
 		super.onContentsChanged( slot );
 	}
@@ -157,14 +157,14 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 		}
 		if( this.filter != null )
 		{
-			return filter.allowInsert( this, slot, stack );
+			return this.filter.allowInsert( this, slot, stack );
 		}
 		return true;
 	}
 
 	public void writeToNBT( final NBTTagCompound data, final String name )
 	{
-		data.setTag( name, serializeNBT() );
+		data.setTag( name, this.serializeNBT() );
 	}
 
 	public void readFromNBT( final NBTTagCompound data, final String name )
@@ -172,13 +172,13 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 		final NBTTagCompound c = data.getCompoundTag( name );
 		if( c != null )
 		{
-			readFromNBT( c );
+			this.readFromNBT( c );
 		}
 	}
 
 	public void readFromNBT( final NBTTagCompound data )
 	{
-		deserializeNBT( data );
+		this.deserializeNBT( data );
 	}
 
 	@Override

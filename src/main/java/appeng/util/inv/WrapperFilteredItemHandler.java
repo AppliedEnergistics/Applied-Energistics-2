@@ -42,62 +42,62 @@ public class WrapperFilteredItemHandler implements IInternalItemHandler
 	@Override
 	public void setStackInSlot( int slot, ItemStack stack )
 	{
-		ItemHandlerUtil.setStackInSlot( handler, slot, stack );
+		ItemHandlerUtil.setStackInSlot( this.handler, slot, stack );
 	}
 
 	@Override
 	public int getSlots()
 	{
-		return handler.getSlots();
+		return this.handler.getSlots();
 	}
 
 	@Override
 	public ItemStack getStackInSlot( int slot )
 	{
-		return handler.getStackInSlot( slot );
+		return this.handler.getStackInSlot( slot );
 	}
 
 	@Override
 	public ItemStack insertItem( int slot, ItemStack stack, boolean simulate )
 	{
-		if( !filter.allowInsert( handler, slot, stack ) )
+		if( !this.filter.allowInsert( this.handler, slot, stack ) )
 		{
 			return stack;
 		}
 
-		return handler.insertItem( slot, stack, simulate );
+		return this.handler.insertItem( slot, stack, simulate );
 	}
 
 	@Override
 	public ItemStack extractItem( int slot, int amount, boolean simulate )
 	{
-		if( !filter.allowExtract( handler, slot, amount ) )
+		if( !this.filter.allowExtract( this.handler, slot, amount ) )
 		{
 			return ItemStack.EMPTY;
 		}
 
-		return handler.extractItem( slot, amount, simulate );
+		return this.handler.extractItem( slot, amount, simulate );
 	}
 
 	@Override
 	public int getSlotLimit( int slot )
 	{
-		return handler.getSlotLimit( slot );
+		return this.handler.getSlotLimit( slot );
 	}
 
 	@Override
 	public boolean isItemValidForSlot( int slot, ItemStack stack )
 	{
-		if( !filter.allowInsert( handler, slot, stack ) )
+		if( !this.filter.allowInsert( this.handler, slot, stack ) )
 		{
 			return false;
 		}
-		return ItemHandlerUtil.isItemValidForSlot( handler, slot, stack );
+		return ItemHandlerUtil.isItemValidForSlot( this.handler, slot, stack );
 	}
 
 	@Override
 	public void markDirty( int slot )
 	{
-		ItemHandlerUtil.markDirty( handler, slot );
+		ItemHandlerUtil.markDirty( this.handler, slot );
 	}
 }

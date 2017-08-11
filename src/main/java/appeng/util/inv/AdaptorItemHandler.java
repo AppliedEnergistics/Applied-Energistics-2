@@ -41,7 +41,7 @@ public class AdaptorItemHandler extends InventoryAdaptor
 	@Override
 	public boolean hasSlots()
 	{
-		return itemHandler.getSlots() > 0;
+		return this.itemHandler.getSlots() > 0;
 	}
 
 	@Override

@@ -110,7 +110,7 @@ public class ContainerQuartzKnife extends AEBaseContainer
 		@Override
 		public ItemStack getStack()
 		{
-			final IItemHandler baseInv = getItemHandler();
+			final IItemHandler baseInv = this.getItemHandler();
 			final ItemStack input = baseInv.getStackInSlot( 0 );
 			if( input == ItemStack.EMPTY )
 			{
@@ -137,10 +137,10 @@ public class ContainerQuartzKnife extends AEBaseContainer
 		@Nonnull
 		public ItemStack decrStackSize( int amount )
 		{
-			ItemStack ret = getStack();
+			ItemStack ret = this.getStack();
 			if( !ret.isEmpty() )
 			{
-				makePlate();
+				this.makePlate();
 			}
 			return ret;
 		}
@@ -150,21 +150,21 @@ public class ContainerQuartzKnife extends AEBaseContainer
 		{
 			if( stack.isEmpty() )
 			{
-				makePlate();
+				this.makePlate();
 			}
 		}
 
 		private void makePlate()
 		{
-			if( !getItemHandler().extractItem( 0, 1, false ).isEmpty() )
+			if( !this.getItemHandler().extractItem( 0, 1, false ).isEmpty() )
 			{
 				final ItemStack item = ContainerQuartzKnife.this.toolInv.getItemStack();
-				item.damageItem( 1, getPlayerInv().player );
+				item.damageItem( 1, ContainerQuartzKnife.this.getPlayerInv().player );
 
 				if( item.getCount() == 0 )
 				{
-					getPlayerInv().mainInventory.add( getPlayerInv().currentItem, ItemStack.EMPTY );
-					MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( getPlayerInv().player, item, null ) );
+					ContainerQuartzKnife.this.getPlayerInv().mainInventory.add( ContainerQuartzKnife.this.getPlayerInv().currentItem, ItemStack.EMPTY );
+					MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( ContainerQuartzKnife.this.getPlayerInv().player, item, null ) );
 				}
 			}
 		}

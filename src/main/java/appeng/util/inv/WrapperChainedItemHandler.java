@@ -38,18 +38,18 @@ public class WrapperChainedItemHandler implements IInternalItemHandler
 
 	public WrapperChainedItemHandler( IItemHandler... itemHandler )
 	{
-		setItemHandlers( itemHandler );
+		this.setItemHandlers( itemHandler );
 	}
 
 	private void setItemHandlers( IItemHandler[] handlers )
 	{
 		this.itemHandler = handlers;
-		this.baseIndex = new int[itemHandler.length];
+		this.baseIndex = new int[this.itemHandler.length];
 		int index = 0;
-		for( int i = 0; i < itemHandler.length; i++ )
+		for( int i = 0; i < this.itemHandler.length; i++ )
 		{
-			index += itemHandler[i].getSlots();
-			baseIndex[i] = index;
+			index += this.itemHandler[i].getSlots();
+			this.baseIndex[i] = index;
 		}
 		this.slotCount = index;
 	}
@@ -62,9 +62,9 @@ public class WrapperChainedItemHandler implements IInternalItemHandler
 			return -1;
 		}
 
-		for( int i = 0; i < baseIndex.length; i++ )
+		for( int i = 0; i < this.baseIndex.length; i++ )
 		{
-			if( slot - baseIndex[i] < 0 )
+			if( slot - this.baseIndex[i] < 0 )
 			{
 				return i;
 			}
@@ -74,20 +74,20 @@ public class WrapperChainedItemHandler implements IInternalItemHandler
 
 	private IItemHandler getHandlerFromIndex( int index )
 	{
-		if( index < 0 || index >= itemHandler.length )
+		if( index < 0 || index >= this.itemHandler.length )
 		{
 			return EmptyHandler.INSTANCE;
 		}
-		return itemHandler[index];
+		return this.itemHandler[index];
 	}
 
 	private int getSlotFromIndex( int slot, int index )
 	{
-		if( index <= 0 || index >= baseIndex.length )
+		if( index <= 0 || index >= this.baseIndex.length )
 		{
 			return slot;
 		}
-		return slot - baseIndex[index - 1];
+		return slot - this.baseIndex[index - 1];
 	}
 
 	public void cycleOrder()
@@ -107,16 +107,16 @@ public class WrapperChainedItemHandler implements IInternalItemHandler
 	@Override
 	public int getSlots()
 	{
-		return slotCount;
+		return this.slotCount;
 	}
 
 	@Override
 	@Nonnull
 	public ItemStack getStackInSlot( final int slot )
 	{
-		int index = getIndexForSlot( slot );
-		IItemHandler handler = getHandlerFromIndex( index );
-		int targetSlot = getSlotFromIndex( slot, index );
+		int index = this.getIndexForSlot( slot );
+		IItemHandler handler = this.getHandlerFromIndex( index );
+		int targetSlot = this.getSlotFromIndex( slot, index );
 		return handler.getStackInSlot( targetSlot );
 	}
 
@@ -124,9 +124,9 @@ public class WrapperChainedItemHandler implements IInternalItemHandler
 	@Nonnull
 	public ItemStack insertItem( final int slot, @Nonnull ItemStack stack, boolean simulate )
 	{
-		int index = getIndexForSlot( slot );
-		IItemHandler handler = getHandlerFromIndex( index );
-		int targetSlot = getSlotFromIndex( slot, index );
+		int index = this.getIndexForSlot( slot );
+		IItemHandler handler = this.getHandlerFromIndex( index );
+		int targetSlot = this.getSlotFromIndex( slot, index );
 		return handler.insertItem( targetSlot, stack, simulate );
 	}
 
@@ -134,45 +134,45 @@ public class WrapperChainedItemHandler implements IInternalItemHandler
 	@Nonnull
 	public ItemStack extractItem( int slot, int amount, boolean simulate )
 	{
-		int index = getIndexForSlot( slot );
-		IItemHandler handler = getHandlerFromIndex( index );
-		int targetSlot = getSlotFromIndex( slot, index );
+		int index = this.getIndexForSlot( slot );
+		IItemHandler handler = this.getHandlerFromIndex( index );
+		int targetSlot = this.getSlotFromIndex( slot, index );
 		return handler.extractItem( targetSlot, amount, simulate );
 	}
 
 	@Override
 	public int getSlotLimit( int slot )
 	{
-		int index = getIndexForSlot( slot );
-		IItemHandler handler = getHandlerFromIndex( index );
-		int localSlot = getSlotFromIndex( slot, index );
+		int index = this.getIndexForSlot( slot );
+		IItemHandler handler = this.getHandlerFromIndex( index );
+		int localSlot = this.getSlotFromIndex( slot, index );
 		return handler.getSlotLimit( localSlot );
 	}
 
 	@Override
 	public void setStackInSlot( int slot, ItemStack stack )
 	{
-		int index = getIndexForSlot( slot );
-		IItemHandler handler = getHandlerFromIndex( index );
-		int targetSlot = getSlotFromIndex( slot, index );
+		int index = this.getIndexForSlot( slot );
+		IItemHandler handler = this.getHandlerFromIndex( index );
+		int targetSlot = this.getSlotFromIndex( slot, index );
 		ItemHandlerUtil.setStackInSlot( handler, targetSlot, stack );
 	}
 
 	@Override
 	public boolean isItemValidForSlot( int slot, ItemStack stack )
 	{
-		int index = getIndexForSlot( slot );
-		IItemHandler handler = getHandlerFromIndex( index );
-		int targetSlot = getSlotFromIndex( slot, index );
+		int index = this.getIndexForSlot( slot );
+		IItemHandler handler = this.getHandlerFromIndex( index );
+		int targetSlot = this.getSlotFromIndex( slot, index );
 		return ItemHandlerUtil.isItemValidForSlot( handler, targetSlot, stack );
 	}
 
 	@Override
 	public void markDirty( int slot )
 	{
-		int index = getIndexForSlot( slot );
-		IItemHandler handler = getHandlerFromIndex( index );
-		int targetSlot = getSlotFromIndex( slot, index );
+		int index = this.getIndexForSlot( slot );
+		IItemHandler handler = this.getHandlerFromIndex( index );
+		int targetSlot = this.getSlotFromIndex( slot, index );
 		ItemHandlerUtil.markDirty( handler, targetSlot );
 	}
 }

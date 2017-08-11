@@ -87,7 +87,7 @@ public class TileItemGen extends AEBaseTile
 	{
 		if( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY == capability )
 		{
-			return (T) handler;
+			return (T) this.handler;
 		}
 		return super.getCapability( capability, facing );
 	}
@@ -132,7 +132,7 @@ public class TileItemGen extends AEBaseTile
 				return ItemStack.EMPTY;
 			}
 
-			return simulate ? is.copy() : getNextItem();
+			return simulate ? is.copy() : this.getNextItem();
 		}
 
 		private ItemStack getNextItem()

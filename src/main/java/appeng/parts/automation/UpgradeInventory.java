@@ -179,7 +179,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 				final Upgrades u = ( (IUpgradeModule) it ).getType( itemstack );
 				if( u != null )
 				{
-					return getInstalledUpgrades( u ) < getMaxInstalled( u );
+					return UpgradeInventory.this.getInstalledUpgrades( u ) < UpgradeInventory.this.getMaxInstalled( u );
 				}
 			}
 			return false;

@@ -54,7 +54,7 @@ public class NetworkToolViewer implements INetworkTool, IAEAppEngInventory
 	@Override
 	public void saveChanges()
 	{
-		inv.markDirty( -1 );
+		this.inv.markDirty( -1 );
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class NetworkToolViewer implements INetworkTool, IAEAppEngInventory
 
 	public IItemHandler getInternalInventory()
 	{
-		return inv;
+		return this.inv;
 	}
 
 	@Override

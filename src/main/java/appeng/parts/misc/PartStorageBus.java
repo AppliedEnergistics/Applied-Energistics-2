@@ -439,7 +439,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		this.cached = true;
 		final TileEntity self = this.getHost().getTile();
 		final TileEntity target = self.getWorld().getTileEntity( self.getPos().offset( this.getSide().getFacing() ) );
-		final int newHandlerHash = createHandlerHash( target );
+		final int newHandlerHash = this.createHandlerHash( target );
 
 		if( newHandlerHash != 0 && newHandlerHash == this.handlerHash )
 		{

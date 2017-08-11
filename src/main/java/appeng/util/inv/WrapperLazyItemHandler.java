@@ -40,48 +40,48 @@ public class WrapperLazyItemHandler implements IInternalItemHandler
 	@Override
 	public int getSlots()
 	{
-		return sourceHandler.get().getSlots();
+		return this.sourceHandler.get().getSlots();
 	}
 
 	@Override
 	public ItemStack getStackInSlot( int slot )
 	{
-		return sourceHandler.get().getStackInSlot( slot );
+		return this.sourceHandler.get().getStackInSlot( slot );
 	}
 
 	@Override
 	public ItemStack insertItem( int slot, ItemStack stack, boolean simulate )
 	{
-		return sourceHandler.get().insertItem( slot, stack, simulate );
+		return this.sourceHandler.get().insertItem( slot, stack, simulate );
 	}
 
 	@Override
 	public ItemStack extractItem( int slot, int amount, boolean simulate )
 	{
-		return sourceHandler.get().extractItem( slot, amount, simulate );
+		return this.sourceHandler.get().extractItem( slot, amount, simulate );
 	}
 
 	@Override
 	public int getSlotLimit( int slot )
 	{
-		return sourceHandler.get().getSlotLimit( slot );
+		return this.sourceHandler.get().getSlotLimit( slot );
 	}
 
 	@Override
 	public void setStackInSlot( int slot, ItemStack stack )
 	{
-		ItemHandlerUtil.setStackInSlot( sourceHandler.get(), slot, stack );
+		ItemHandlerUtil.setStackInSlot( this.sourceHandler.get(), slot, stack );
 	}
 
 	@Override
 	public boolean isItemValidForSlot( int slot, ItemStack stack )
 	{
-		return ItemHandlerUtil.isItemValidForSlot( sourceHandler.get(), slot, stack );
+		return ItemHandlerUtil.isItemValidForSlot( this.sourceHandler.get(), slot, stack );
 	}
 
 	@Override
 	public void markDirty( int slot )
 	{
-		ItemHandlerUtil.markDirty( sourceHandler.get(), slot );
+		ItemHandlerUtil.markDirty( this.sourceHandler.get(), slot );
 	}
 }

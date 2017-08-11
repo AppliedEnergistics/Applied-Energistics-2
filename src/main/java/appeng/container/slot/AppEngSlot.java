@@ -112,7 +112,7 @@ public class AppEngSlot extends Slot
 			return this.getDisplayStack();
 		}
 
-		return this.itemHandler.getStackInSlot( index );
+		return this.itemHandler.getStackInSlot( this.index );
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public class AppEngSlot extends Slot
 	{
 		if( this.isSlotEnabled() )
 		{
-			ItemHandlerUtil.setStackInSlot( this.itemHandler, index, stack );
+			ItemHandlerUtil.setStackInSlot( this.itemHandler, this.index, stack );
 			this.onSlotChanged();
 
 			if( this.getContainer() != null )
@@ -151,7 +151,7 @@ public class AppEngSlot extends Slot
 	@Override
 	public int getItemStackLimit( @Nonnull ItemStack stack )
 	{
-		return Math.min( getSlotStackLimit(), stack.getMaxStackSize() );
+		return Math.min( this.getSlotStackLimit(), stack.getMaxStackSize() );
 	}
 
 	@Override
@@ -159,7 +159,7 @@ public class AppEngSlot extends Slot
 	{
 		if( this.isSlotEnabled() )
 		{
-			return !this.itemHandler.extractItem( index, 1, true ).isEmpty();
+			return !this.itemHandler.extractItem( this.index, 1, true ).isEmpty();
 		}
 		return false;
 	}
@@ -168,7 +168,7 @@ public class AppEngSlot extends Slot
 	@Nonnull
 	public ItemStack decrStackSize( int amount )
 	{
-		return this.itemHandler.extractItem( index, amount, false );
+		return this.itemHandler.extractItem( this.index, amount, false );
 	}
 
 	@Override
@@ -191,7 +191,7 @@ public class AppEngSlot extends Slot
 
 	public ItemStack getDisplayStack()
 	{
-		return this.itemHandler.getStackInSlot( index );
+		return this.itemHandler.getStackInSlot( this.index );
 	}
 
 	public float getOpacityOfIcon()

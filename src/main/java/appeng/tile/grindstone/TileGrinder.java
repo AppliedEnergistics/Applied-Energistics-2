@@ -44,7 +44,7 @@ import appeng.util.inv.filter.IAEItemFilter;
 public class TileGrinder extends AEBaseInvTile implements ICrankable
 {
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 7 );
-	private final IItemHandler invExt = new WrapperFilteredItemHandler( inv, new GrinderFilter() );
+	private final IItemHandler invExt = new WrapperFilteredItemHandler( this.inv, new GrinderFilter() );
 	private int points;
 
 	@Override
@@ -85,7 +85,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 		{
 			for( int x = 0; x < 3; x++ )
 			{
-				ItemStack item = inv.getStackInSlot( x );
+				ItemStack item = this.inv.getStackInSlot( x );
 				if( item.isEmpty() )
 				{
 					continue;
@@ -105,8 +105,8 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 							item = ItemStack.EMPTY;
 						}
 
-						inv.setStackInSlot( x, item );
-						inv.setStackInSlot( 6, ais );
+						this.inv.setStackInSlot( x, item );
+						this.inv.setStackInSlot( 6, ais );
 						return true;
 					}
 				}
@@ -126,7 +126,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 
 		this.points++;
 
-		final ItemStack processing = inv.getStackInSlot( 6 );
+		final ItemStack processing = this.inv.getStackInSlot( 6 );
 		final IGrinderRecipe r = AEApi.instance().registries().grinder().getRecipeForInput( processing );
 		if( r != null )
 		{
@@ -136,7 +136,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 			}
 
 			this.points = 0;
-			final InventoryAdaptor sia = new AdaptorItemHandler( new RangedWrapper( inv, 3, 6 ) );
+			final InventoryAdaptor sia = new AdaptorItemHandler( new RangedWrapper( this.inv, 3, 6 ) );
 
 			this.addItem( sia, r.getOutput() );
 
@@ -160,7 +160,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 				}
 			} );
 
-			inv.setStackInSlot( 6, ItemStack.EMPTY );
+			this.inv.setStackInSlot( 6, ItemStack.EMPTY );
 		}
 	}
 

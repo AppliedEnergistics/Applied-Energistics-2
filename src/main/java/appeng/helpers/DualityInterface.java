@@ -1264,7 +1264,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	{
 		if( capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
 		{
-			return (T) storage;
+			return (T) this.storage;
 		}
 		else if( capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR )
 		{

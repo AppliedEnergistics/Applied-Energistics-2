@@ -123,7 +123,7 @@ public class AppEngInternalAEInventory implements IInternalItemHandler, Iterable
 
 	protected int getStackLimit( int slot, @Nonnull ItemStack stack )
 	{
-		return Math.min( getSlotLimit( slot ), stack.getMaxStackSize() );
+		return Math.min( this.getSlotLimit( slot ), stack.getMaxStackSize() );
 	}
 
 	@Override
@@ -151,8 +151,8 @@ public class AppEngInternalAEInventory implements IInternalItemHandler, Iterable
 			return ItemStack.EMPTY;
 		}
 
-		ItemStack existing = getStackInSlot( slot );
-		int limit = getStackLimit( slot, stack );
+		ItemStack existing = this.getStackInSlot( slot );
+		int limit = this.getStackLimit( slot, stack );
 
 		if( !existing.isEmpty() )
 		{
@@ -181,7 +181,8 @@ public class AppEngInternalAEInventory implements IInternalItemHandler, Iterable
 			{
 				existing.grow( reachedLimit ? limit : stack.getCount() );
 			}
-			fireOnChangeInventory( slot, InvOperation.INSERT, ItemStack.EMPTY, reachedLimit ? ItemHandlerHelper.copyStackWithSize( stack, limit ) : stack );
+			this.fireOnChangeInventory( slot, InvOperation.INSERT, ItemStack.EMPTY,
+					reachedLimit ? ItemHandlerHelper.copyStackWithSize( stack, limit ) : stack );
 		}
 		return reachedLimit ? ItemHandlerHelper.copyStackWithSize( stack, stack.getCount() - limit ) : ItemStack.EMPTY;
 	}
@@ -198,7 +199,7 @@ public class AppEngInternalAEInventory implements IInternalItemHandler, Iterable
 				if( !simulate )
 				{
 					this.inv[slot] = null;
-					fireOnChangeInventory( slot, InvOperation.EXTRACT, split, ItemStack.EMPTY );
+					this.fireOnChangeInventory( slot, InvOperation.EXTRACT, split, ItemStack.EMPTY );
 				}
 				return split;
 			}
@@ -207,7 +208,7 @@ public class AppEngInternalAEInventory implements IInternalItemHandler, Iterable
 				if( !simulate )
 				{
 					split.grow( -amount );
-					fireOnChangeInventory( slot, InvOperation.EXTRACT, ItemHandlerHelper.copyStackWithSize( split, amount ), ItemStack.EMPTY );
+					this.fireOnChangeInventory( slot, InvOperation.EXTRACT, ItemHandlerHelper.copyStackWithSize( split, amount ), ItemStack.EMPTY );
 				}
 				return ItemHandlerHelper.copyStackWithSize( split, amount );
 			}
@@ -245,7 +246,7 @@ public class AppEngInternalAEInventory implements IInternalItemHandler, Iterable
 					removed = added = ItemStack.EMPTY;
 				}
 			}
-			fireOnChangeInventory( slot, InvOperation.SET, removed, added );
+			this.fireOnChangeInventory( slot, InvOperation.SET, removed, added );
 		}
 	}
 
@@ -283,6 +284,6 @@ public class AppEngInternalAEInventory implements IInternalItemHandler, Iterable
 	@Override
 	public void markDirty( int slot )
 	{
-		fireOnChangeInventory( slot, InvOperation.DIRTY, ItemStack.EMPTY, ItemStack.EMPTY );
+		this.fireOnChangeInventory( slot, InvOperation.DIRTY, ItemStack.EMPTY, ItemStack.EMPTY );
 	}
 }

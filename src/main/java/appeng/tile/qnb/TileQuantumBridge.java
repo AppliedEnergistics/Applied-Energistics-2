@@ -93,7 +93,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	{
 		int out = this.constructed;
 
-		if( !internalInventory.getStackInSlot( 0 ).isEmpty() && this.constructed != -1 )
+		if( !this.internalInventory.getStackInSlot( 0 ).isEmpty() && this.constructed != -1 )
 		{
 			out |= this.hasSingularity;
 		}

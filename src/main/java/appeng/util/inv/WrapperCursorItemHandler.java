@@ -32,12 +32,12 @@ public class WrapperCursorItemHandler extends ItemStackHandler
 		super( 1 );
 
 		this.inv = inventoryPlayer;
-		setStackInSlot( 0, inventoryPlayer.getItemStack() );
+		this.setStackInSlot( 0, inventoryPlayer.getItemStack() );
 	}
 
 	@Override
 	protected void onContentsChanged( int slot )
 	{
-		this.inv.setItemStack( getStackInSlot( slot ) );
+		this.inv.setItemStack( this.getStackInSlot( slot ) );
 	}
 }

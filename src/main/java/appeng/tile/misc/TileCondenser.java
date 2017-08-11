@@ -69,7 +69,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	private final IFluidHandler fluidHandler = new FluidHandler();
 	private final MEHandler meHandler = new MEHandler();
 
-	private final IItemHandler combinedInv = new WrapperChainedItemHandler( inputSlot, inv );
+	private final IItemHandler combinedInv = new WrapperChainedItemHandler( this.inputSlot, this.inv );
 
 	private double storedPower = 0;
 
@@ -132,7 +132,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 
 	private boolean canAddOutput( final ItemStack output )
 	{
-		return inv.insertItem( 0, output, true ).isEmpty();
+		return this.inv.insertItem( 0, output, true ).isEmpty();
 	}
 
 	/**
@@ -142,7 +142,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	 */
 	private void addOutput( final ItemStack output )
 	{
-		inv.insertItem( 0, output, false );
+		this.inv.insertItem( 0, output, false );
 	}
 
 	private ItemStack getOutput()
@@ -222,7 +222,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	{
 		if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
 		{
-			return (T) inputSlot;
+			return (T) this.inputSlot;
 		}
 		else if( capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY )
 		{

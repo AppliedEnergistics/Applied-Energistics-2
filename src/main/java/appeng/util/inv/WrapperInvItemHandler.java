@@ -58,46 +58,46 @@ public class WrapperInvItemHandler implements IInventory
 	@Override
 	public int getSizeInventory()
 	{
-		return inv.getSlots();
+		return this.inv.getSlots();
 	}
 
 	@Override
 	public boolean isEmpty()
 	{
-		return ItemHandlerUtil.isEmpty( inv );
+		return ItemHandlerUtil.isEmpty( this.inv );
 	}
 
 	@Override
 	public ItemStack getStackInSlot( int index )
 	{
-		return inv.getStackInSlot( index );
+		return this.inv.getStackInSlot( index );
 	}
 
 	@Override
 	public ItemStack decrStackSize( int index, int count )
 	{
-		return inv.extractItem( index, count, false );
+		return this.inv.extractItem( index, count, false );
 	}
 
 	@Override
 	public ItemStack removeStackFromSlot( int index )
 	{
-		return inv.extractItem( index, inv.getSlotLimit( index ), false );
+		return this.inv.extractItem( index, this.inv.getSlotLimit( index ), false );
 	}
 
 	@Override
 	public void setInventorySlotContents( int index, ItemStack stack )
 	{
-		ItemHandlerUtil.setStackInSlot( inv, index, stack );
+		ItemHandlerUtil.setStackInSlot( this.inv, index, stack );
 	}
 
 	@Override
 	public int getInventoryStackLimit()
 	{
 		int max = 0;
-		for( int i = 0; i < inv.getSlots(); ++i )
+		for( int i = 0; i < this.inv.getSlots(); ++i )
 		{
-			max = Math.max( max, inv.getSlotLimit( i ) );
+			max = Math.max( max, this.inv.getSlotLimit( i ) );
 		}
 		return max;
 	}
@@ -105,7 +105,7 @@ public class WrapperInvItemHandler implements IInventory
 	@Override
 	public void markDirty()
 	{
-		ItemHandlerUtil.markDirty( inv, -1 );
+		ItemHandlerUtil.markDirty( this.inv, -1 );
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public class WrapperInvItemHandler implements IInventory
 	@Override
 	public boolean isItemValidForSlot( int index, ItemStack stack )
 	{
-		return ItemHandlerUtil.isItemValidForSlot( inv, index, stack );
+		return ItemHandlerUtil.isItemValidForSlot( this.inv, index, stack );
 	}
 
 	@Override
@@ -153,7 +153,7 @@ public class WrapperInvItemHandler implements IInventory
 	@Override
 	public void clear()
 	{
-		ItemHandlerUtil.clear( inv );
+		ItemHandlerUtil.clear( this.inv );
 	}
 
 }

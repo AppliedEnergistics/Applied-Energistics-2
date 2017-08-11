@@ -101,7 +101,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	private final IItemHandler bottomItemHandlerExtern;
 	private final IItemHandler sideItemHandlerExtern;
 
-	private final IItemHandlerModifiable inv = new WrapperChainedItemHandler( topItemHandler, bottomItemHandler, sideItemHandler );
+	private final IItemHandlerModifiable inv = new WrapperChainedItemHandler( this.topItemHandler, this.bottomItemHandler, this.sideItemHandler );
 
 	@Reflected
 	public TileInscriber()
@@ -115,9 +115,9 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		this.upgrades = new DefinitionUpgradeInventory( inscriberDefinition, this, this.getUpgradeSlots() );
 
 		final IAEItemFilter filter = new ItemHandlerFilter();
-		topItemHandlerExtern = new WrapperFilteredItemHandler( topItemHandler, filter );
-		bottomItemHandlerExtern = new WrapperFilteredItemHandler( bottomItemHandler, filter );
-		sideItemHandlerExtern = new WrapperFilteredItemHandler( sideItemHandler, filter );
+		this.topItemHandlerExtern = new WrapperFilteredItemHandler( this.topItemHandler, filter );
+		this.bottomItemHandlerExtern = new WrapperFilteredItemHandler( this.bottomItemHandler, filter );
+		this.sideItemHandlerExtern = new WrapperFilteredItemHandler( this.sideItemHandler, filter );
 	}
 
 	private int getUpgradeSlots()
@@ -236,7 +236,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	@Override
 	public IItemHandler getInternalInventory()
 	{
-		return inv;
+		return this.inv;
 	}
 
 	@Override
@@ -463,7 +463,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				if( out != null )
 				{
 					final ItemStack outputCopy = out.getOutput().copy();
-					if( sideItemHandler.insertItem( 1, outputCopy, true ).isEmpty() )
+					if( this.sideItemHandler.insertItem( 1, outputCopy, true ).isEmpty() )
 					{
 						this.setSmash( true );
 						this.finalStep = 0;
@@ -501,17 +501,17 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	@Override
 	protected IItemHandler getItemHandlerForSide( @Nonnull EnumFacing facing )
 	{
-		if( facing == getUp() )
+		if( facing == this.getUp() )
 		{
-			return topItemHandlerExtern;
+			return this.topItemHandlerExtern;
 		}
-		else if( facing == getUp().getOpposite() )
+		else if( facing == this.getUp().getOpposite() )
 		{
-			return bottomItemHandlerExtern;
+			return this.bottomItemHandlerExtern;
 		}
 		else
 		{
-			return sideItemHandlerExtern;
+			return this.sideItemHandlerExtern;
 		}
 	}
 
@@ -576,7 +576,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				return false;
 			}
 
-			return inv == topItemHandler || inv == bottomItemHandler || slot == 1;
+			return inv == TileInscriber.this.topItemHandler || inv == TileInscriber.this.bottomItemHandler || slot == 1;
 		}
 
 		@Override
@@ -593,7 +593,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				return false;
 			}
 
-			if( inv == topItemHandler || inv == bottomItemHandler )
+			if( inv == TileInscriber.this.topItemHandler || inv == TileInscriber.this.bottomItemHandler )
 			{
 				if( AEApi.instance().definitions().materials().namePress().isSameAs( stack ) )
 				{
