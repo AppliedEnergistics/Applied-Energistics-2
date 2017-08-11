@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import appeng.integration.Integrations;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -46,6 +45,7 @@ import appeng.container.implementations.ContainerPatternTerm;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
+import appeng.integration.Integrations;
 import appeng.items.parts.ItemFacade;
 
 
