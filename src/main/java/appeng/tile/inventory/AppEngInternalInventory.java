@@ -140,6 +140,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 		this.maxStack = s;
 	}
 
+	@Override
 	public void markDirty( final int slot )
 	{
 		if( this.getTileEntity() != null && this.eventsEnabled() )

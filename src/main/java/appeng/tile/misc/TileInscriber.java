@@ -264,6 +264,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 	//
 	// @Override
+	@Override
 	public TickingRequest getTickingRequest( final IGridNode node )
 	{
 		return new TickingRequest( TickRates.Inscriber.getMin(), TickRates.Inscriber.getMax(), !this.hasWork(), false );
