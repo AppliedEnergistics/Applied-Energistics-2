@@ -136,13 +136,7 @@ public class FeatureFactory
 
 	private <T extends IBootstrapComponent> void addBootstrapComponent( Class<? extends IBootstrapComponent> eventType, T component )
 	{
-		List<IBootstrapComponent> eventList = bootstrapComponents.get( eventType );
-		if( eventList == null )
-		{
-			eventList = new ArrayList<>();
-			bootstrapComponents.put( eventType, eventList );
-		}
-		eventList.add( component );
+		bootstrapComponents.computeIfAbsent( eventType, c -> new ArrayList<IBootstrapComponent>() ).add( component );
 	}
 
 	@SideOnly( Side.CLIENT )
@@ -159,11 +153,6 @@ public class FeatureFactory
 
 	public <T extends IBootstrapComponent> Iterator<T> getBootstrapComponents( Class<T> eventType )
 	{
-		List<IBootstrapComponent> ret = this.bootstrapComponents.get( eventType );
-		if( ret == null )
-		{
-			return Collections.emptyIterator();
-		}
-		return (Iterator<T>) ret.iterator();
+		return (Iterator<T>) this.bootstrapComponents.getOrDefault( eventType, Collections.emptyList() ).iterator();
 	}
 }
