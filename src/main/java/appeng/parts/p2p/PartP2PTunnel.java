@@ -317,7 +317,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 				{
 					newFreq = this.getProxy().getP2P().newFrequency();
 				}
-				
+
 				this.getProxy().getP2P().updateFreq( this, newFreq );
 			}
 			catch( final GridAccessException e )
