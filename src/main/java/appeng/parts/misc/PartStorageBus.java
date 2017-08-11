@@ -409,16 +409,21 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		{
 			return 0;
 		}
+
 		final EnumFacing targetSide = this.getSide().getFacing().getOpposite();
+
 		if( target.hasCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide ) )
 		{
 			return 0;
 		}
+
 		final IItemHandler itemHandler = target.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide );
-		if( handler != null )
+
+		if( itemHandler != null )
 		{
 			return Objects.hash( target, itemHandler, itemHandler.getSlots() );
 		}
+
 		return 0;
 	}
 
