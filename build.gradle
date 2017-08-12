@@ -45,6 +45,12 @@ apply from: 'gradle/scripts/optional.gradle'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
+// ensure everything uses UTF-8 and not some random codepage chosen by gradle
+compileJava.options.encoding = 'UTF-8'
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
 version = aeversion + "-" + aechannel + "-" + aebuild
 group = aegroup
 archivesBaseName = aebasename
