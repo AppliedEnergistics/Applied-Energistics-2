@@ -114,6 +114,8 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		final ITileDefinition inscriberDefinition = AEApi.instance().definitions().blocks().inscriber();
 		this.upgrades = new DefinitionUpgradeInventory( inscriberDefinition, this, this.getUpgradeSlots() );
 
+		this.sideItemHandler.setMaxStackSize( 1, 64 );
+
 		final IAEItemFilter filter = new ItemHandlerFilter();
 		this.topItemHandlerExtern = new WrapperFilteredItemHandler( this.topItemHandler, filter );
 		this.bottomItemHandlerExtern = new WrapperFilteredItemHandler( this.bottomItemHandler, filter );

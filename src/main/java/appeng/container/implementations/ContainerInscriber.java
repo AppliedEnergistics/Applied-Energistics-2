@@ -135,13 +135,13 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 			{
 				final boolean matchA = ( top.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( top,
 						recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) ) && // and...
-						( bot.isEmpty() && !recipe.getBottomOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( bot,
-								recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) );
+						( ( bot.isEmpty() && !recipe.getBottomOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( bot,
+								recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) ) );
 
 				final boolean matchB = ( bot.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( bot,
 						recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) ) && // and...
-						( top.isEmpty() && !recipe.getBottomOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( top,
-								recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) );
+						( ( top.isEmpty() && !recipe.getBottomOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( top,
+								recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) ) );
 
 				if( matchA || matchB )
 				{

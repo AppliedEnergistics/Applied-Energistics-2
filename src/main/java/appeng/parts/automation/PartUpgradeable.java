@@ -43,7 +43,6 @@ public abstract class PartUpgradeable extends PartBasicState implements IAEAppEn
 	{
 		super( is );
 		this.upgrades = new StackUpgradeInventory( this.getItemStack(), this, this.getUpgradeSlots() );
-		this.upgrades.setMaxStackSize( 1 );
 		this.manager = new ConfigManager( this );
 	}
 

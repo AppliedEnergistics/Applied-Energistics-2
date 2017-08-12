@@ -57,7 +57,7 @@ import appeng.util.inv.InvOperation;
 public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock, ITickable
 {
 	private final byte corner = 16;
-	private final AppEngInternalInventory internalInventory = new AppEngInternalInventory( this, 1 );
+	private final AppEngInternalInventory internalInventory = new AppEngInternalInventory( this, 1, 1 );
 	private final byte hasSingularity = 32;
 	private final byte powered = 64;
 
@@ -71,7 +71,6 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
 		this.getProxy().setFlags( GridFlags.DENSE_CAPACITY );
 		this.getProxy().setIdlePowerUsage( 22 );
-		this.internalInventory.setMaxStackSize( 1 );
 	}
 
 	@Override
