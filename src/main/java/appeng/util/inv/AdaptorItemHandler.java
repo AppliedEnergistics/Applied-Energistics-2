@@ -225,12 +225,12 @@ public class AdaptorItemHandler extends InventoryAdaptor
 
 	protected ItemStack addItems( final ItemStack itemsToAdd, final boolean simulate )
 	{
-		if( itemsToAdd.isEmpty() || itemsToAdd.getCount() == 0 )
+		if( itemsToAdd.isEmpty() )
 		{
 			return ItemStack.EMPTY;
 		}
 
-		ItemStack left = itemsToAdd;
+		ItemStack left = itemsToAdd.copy();
 
 		for( int slot = 0; slot < this.itemHandler.getSlots(); slot++ )
 		{
