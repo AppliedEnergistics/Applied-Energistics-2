@@ -21,6 +21,8 @@ package appeng.util.helpers;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.util.text.TextFormatting;
+
 import appeng.api.util.AEColor;
 
 
@@ -55,6 +57,34 @@ public class P2PHelper
 		}
 
 		return (short) ( t & 0xFFFF );
+	}
+
+	public String toHexDigit( AEColor color )
+	{
+		return String.format( "%01X", color.ordinal() );
+	}
+
+	public String toHexString( short frequency )
+	{
+		return String.format( "%04X", frequency );
+	}
+
+	public String toColorHexDigit( AEColor color )
+	{
+		return TextFormatting.fromColorIndex( color.ordinal() ) + this.toHexDigit( color );
+	}
+
+	public String toColorHexString( short frequency )
+	{
+		final AEColor[] colors = toColors( frequency );
+		final StringBuilder builder = new StringBuilder();
+
+		for( AEColor aeColor : colors )
+		{
+			builder.append( this.toColorHexDigit( aeColor ) );
+		}
+
+		return builder.toString();
 	}
 
 }
