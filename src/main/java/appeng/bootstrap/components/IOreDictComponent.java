@@ -25,7 +25,7 @@ import appeng.bootstrap.IBootstrapComponent;
 
 
 @FunctionalInterface
-public interface IPreInitComponent extends IBootstrapComponent
+public interface IOreDictComponent extends IBootstrapComponent
 {
-	void preInitialize( Side side );
+	void oreRegistration( Side side );
 }

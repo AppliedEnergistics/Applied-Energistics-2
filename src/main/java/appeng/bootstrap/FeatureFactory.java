@@ -20,10 +20,18 @@ package appeng.bootstrap;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.fml.relauncher.Side;
@@ -33,10 +41,6 @@ import appeng.api.definitions.IItemDefinition;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.bootstrap.components.BuiltInModelComponent;
-import appeng.bootstrap.components.IInitComponent;
-import appeng.bootstrap.components.IModelRegistrationComponent;
-import appeng.bootstrap.components.IPostInitComponent;
-import appeng.bootstrap.components.IPreInitComponent;
 import appeng.bootstrap.components.ModelOverrideComponent;
 import appeng.bootstrap.components.TileEntityComponent;
 import appeng.core.features.AEFeature;
@@ -51,10 +55,10 @@ public class FeatureFactory
 
 	private final AEFeature[] defaultFeatures;
 
-	private final List<IBootstrapComponent> bootstrapComponents;
+	private final Map<Class<? extends IBootstrapComponent>, List<IBootstrapComponent>> bootstrapComponents;
 
 	@SideOnly( Side.CLIENT )
-	ModelOverrideComponent modelOverrideComponent;
+	private ModelOverrideComponent modelOverrideComponent;
 
 	@SideOnly( Side.CLIENT )
 	private BuiltInModelComponent builtInModelComponent;
@@ -64,18 +68,18 @@ public class FeatureFactory
 	public FeatureFactory()
 	{
 		this.defaultFeatures = new AEFeature[] { AEFeature.CORE };
-		this.bootstrapComponents = new ArrayList<>();
+		this.bootstrapComponents = new HashMap<>();
 
 		this.tileEntityComponent = new TileEntityComponent();
-		this.bootstrapComponents.add( this.tileEntityComponent );
+		this.addBootstrapComponent( this.tileEntityComponent );
 
 		if( Platform.isClient() )
 		{
 			this.modelOverrideComponent = new ModelOverrideComponent();
-			this.bootstrapComponents.add( this.modelOverrideComponent );
+			this.addBootstrapComponent( this.modelOverrideComponent );
 
 			this.builtInModelComponent = new BuiltInModelComponent();
-			this.bootstrapComponents.add( this.builtInModelComponent );
+			this.addBootstrapComponent( this.builtInModelComponent );
 		}
 	}
 
@@ -123,29 +127,16 @@ public class FeatureFactory
 		return new FeatureFactory( this, features );
 	}
 
-	void addBootstrapComponent( IBootstrapComponent component )
+	public void addBootstrapComponent( IBootstrapComponent component )
 	{
-		this.bootstrapComponents.add( component );
+		Arrays.stream( component.getClass().getInterfaces() )
+				.filter( i -> IBootstrapComponent.class.isAssignableFrom( i ) )
+				.forEach( i -> this.addBootstrapComponent( (Class<? extends IBootstrapComponent>) i, component ) );
 	}
 
-	void addPreInit( IPreInitComponent component )
+	private <T extends IBootstrapComponent> void addBootstrapComponent( Class<? extends IBootstrapComponent> eventType, T component )
 	{
-		this.bootstrapComponents.add( component );
-	}
-
-	void addInit( IInitComponent component )
-	{
-		this.bootstrapComponents.add( component );
-	}
-
-	void addModelReg( IModelRegistrationComponent component )
-	{
-		this.bootstrapComponents.add( component );
-	}
-
-	void addPostInit( IPostInitComponent component )
-	{
-		this.bootstrapComponents.add( component );
+		bootstrapComponents.computeIfAbsent( eventType, c -> new ArrayList<IBootstrapComponent>() ).add( component );
 	}
 
 	@SideOnly( Side.CLIENT )
@@ -154,8 +145,14 @@ public class FeatureFactory
 		this.builtInModelComponent.addModel( path, model );
 	}
 
-	public List<IBootstrapComponent> getBootstrapComponents()
+	@SideOnly( Side.CLIENT )
+	void addModelOverride( String resourcePath, BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> customizer )
 	{
-		return this.bootstrapComponents;
+		this.modelOverrideComponent.addOverride( resourcePath, customizer );
+	}
+
+	public <T extends IBootstrapComponent> Iterator<T> getBootstrapComponents( Class<T> eventType )
+	{
+		return (Iterator<T>) this.bootstrapComponents.getOrDefault( eventType, Collections.emptyList() ).iterator();
 	}
 }

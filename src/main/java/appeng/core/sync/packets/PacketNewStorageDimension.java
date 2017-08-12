@@ -62,7 +62,7 @@ public class PacketNewStorageDimension extends AppEngPacket
 	{
 		try
 		{
-			DimensionManager.registerDimension( this.newDim, AppEng.instance().getRegistration().getStorageDimensionType() );
+			DimensionManager.registerDimension( this.newDim, AppEng.instance().getStorageDimensionType() );
 		}
 		catch( final IllegalArgumentException iae )
 		{

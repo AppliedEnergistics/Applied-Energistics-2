@@ -110,13 +110,13 @@ class BlockRendering implements IBlockRendering
 
 		if( this.modelCustomizer != null )
 		{
-			factory.modelOverrideComponent.addOverride( block.getRegistryName().getResourcePath(), this.modelCustomizer );
+			factory.addModelOverride( block.getRegistryName().getResourcePath(), this.modelCustomizer );
 		}
 		else if( block instanceof AEBaseTileBlock )
 		{
 			// This is a default rotating model if the base-block uses an AE tile entity which exposes UP/FRONT as
 			// extended props
-			factory.modelOverrideComponent.addOverride( block.getRegistryName().getResourcePath(), ( l, m ) -> new AutoRotatingModel( m ) );
+			factory.addModelOverride( block.getRegistryName().getResourcePath(), ( l, m ) -> new AutoRotatingModel( m ) );
 		}
 
 		// TODO : 1.12

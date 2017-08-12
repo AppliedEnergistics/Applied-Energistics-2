@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -42,11 +42,13 @@ import appeng.api.definitions.IBlockDefinition;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseItemBlock;
 import appeng.block.AEBaseTileBlock;
+import appeng.bootstrap.components.IBlockRegistrationComponent;
+import appeng.bootstrap.components.IItemRegistrationComponent;
+import appeng.bootstrap.components.IPreInitComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
-import appeng.core.Registration;
 import appeng.core.features.AEFeature;
 import appeng.core.features.ActivityState;
 import appeng.core.features.BlockDefinition;
@@ -65,13 +67,7 @@ class BlockDefinitionBuilder implements IBlockBuilder
 
 	private final Supplier<? extends Block> blockSupplier;
 
-	private final List<BiConsumer<Block, Item>> preInitCallbacks = new ArrayList<>();
-
-	private final List<BiConsumer<Block, Item>> initCallbacks = new ArrayList<>();
-
-	private final List<BiConsumer<Block, Item>> modelRegCallbacks = new ArrayList<>();
-
-	private final List<BiConsumer<Block, Item>> postInitCallbacks = new ArrayList<>();
+	private final List<BiFunction<Block, Item, IBootstrapComponent>> bootstrapComponents = new ArrayList<>();
 
 	private final EnumSet<AEFeature> features = EnumSet.noneOf( AEFeature.class );
 
@@ -103,30 +99,9 @@ class BlockDefinitionBuilder implements IBlockBuilder
 	}
 
 	@Override
-	public BlockDefinitionBuilder preInit( BiConsumer<Block, Item> callback )
+	public BlockDefinitionBuilder bootstrap( BiFunction<Block, Item, IBootstrapComponent> callback )
 	{
-		this.preInitCallbacks.add( callback );
-		return this;
-	}
-
-	@Override
-	public BlockDefinitionBuilder init( BiConsumer<Block, Item> callback )
-	{
-		this.initCallbacks.add( callback );
-		return this;
-	}
-
-	@Override
-	public BlockDefinitionBuilder modelRegInit( BiConsumer<Block, Item> callback )
-	{
-		this.modelRegCallbacks.add( callback );
-		return this;
-	}
-
-	@Override
-	public BlockDefinitionBuilder postInit( BiConsumer<Block, Item> callback )
-	{
-		this.postInitCallbacks.add( callback );
+		this.bootstrapComponents.add( callback );
 		return this;
 	}
 
@@ -221,22 +196,16 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		}
 
 		// Register the item and block with the game
-		this.factory.addPreInit( side ->
+		this.factory.addBootstrapComponent( (IBlockRegistrationComponent) ( side, registry ) -> registry.register( block ) );
+		if( item != null )
 		{
-			Registration.addBlockToRegister( block );
-			if( item != null )
-			{
-				Registration.addItemToRegister( item );
-			}
-		} );
+			this.factory.addBootstrapComponent( (IItemRegistrationComponent) ( side, registry ) -> registry.register( item ) );
+		}
 
 		block.setCreativeTab( this.creativeTab );
 
 		// Register all extra handlers
-		this.preInitCallbacks.forEach( consumer -> this.factory.addPreInit( side -> consumer.accept( block, item ) ) );
-		this.initCallbacks.forEach( consumer -> this.factory.addInit( side -> consumer.accept( block, item ) ) );
-		this.modelRegCallbacks.forEach( consumer -> this.factory.addModelReg( ( side, reg ) -> consumer.accept( block, item ) ) );
-		this.postInitCallbacks.forEach( consumer -> this.factory.addPostInit( side -> consumer.accept( block, item ) ) );
+		this.bootstrapComponents.forEach( component -> this.factory.addBootstrapComponent( component.apply( block, item ) ) );
 
 		if( this.tileEntityDefinition != null && block instanceof AEBaseTileBlock )
 		{
@@ -268,7 +237,7 @@ class BlockDefinitionBuilder implements IBlockBuilder
 
 		if( block instanceof AEBaseTileBlock )
 		{
-			this.factory.addPreInit( side ->
+			this.factory.addBootstrapComponent( (IPreInitComponent) side ->
 			{
 				AEBaseTile.registerTileItem(
 						this.tileEntityDefinition == null ? ( (AEBaseTileBlock) block ).getTileEntityClass() : this.tileEntityDefinition.getTileEntityClass(),

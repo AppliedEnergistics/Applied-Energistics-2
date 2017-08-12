@@ -27,7 +27,5 @@ import appeng.bootstrap.IBootstrapComponent;
 @FunctionalInterface
 public interface IPostInitComponent extends IBootstrapComponent
 {
-
-	@Override
 	void postInitialize( Side side );
 }

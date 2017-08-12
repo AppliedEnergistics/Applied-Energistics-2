@@ -93,6 +93,9 @@ import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.FeatureFactory;
 import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;
+import appeng.bootstrap.components.IOreDictComponent;
+import appeng.bootstrap.components.IPostInitComponent;
+import appeng.bootstrap.components.IPreInitComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.client.render.crafting.CraftingCubeRendering;
 import appeng.client.render.model.GlassModel;
@@ -239,17 +242,11 @@ public final class ApiBlocks implements IBlocks
 		// this.quartzOre = new BlockDefinition( "ore.quartz", new OreQuartz() );
 		this.quartzOre = registry.block( "quartz_ore", BlockQuartzOre::new )
 				.features( AEFeature.CERTUS_ORE )
-				.postInit( ( block, item ) ->
-				{
-					OreDictionary.registerOre( "oreCertusQuartz", new ItemStack( block ) );
-				} )
+				.bootstrap( ( block, item ) -> (IOreDictComponent) side -> OreDictionary.registerOre( "oreCertusQuartz", new ItemStack( block ) ) )
 				.build();
 		this.quartzOreCharged = registry.block( "charged_quartz_ore", BlockChargedQuartzOre::new )
 				.features( AEFeature.CERTUS_ORE, AEFeature.CHARGED_CERTUS_ORE )
-				.postInit( ( block, item ) ->
-				{
-					OreDictionary.registerOre( "oreCertusQuartz", new ItemStack( block ) );
-				} )
+				.bootstrap( ( block, item ) -> (IOreDictComponent) side -> OreDictionary.registerOre( "oreCertusQuartz", new ItemStack( block ) ) )
 				.build();
 		this.matrixFrame = registry.block( "matrix_frame", BlockMatrixFrame::new ).features( AEFeature.SPATIAL_IO ).build();
 
@@ -308,6 +305,7 @@ public final class ApiBlocks implements IBlocks
 				.features( AEFeature.GRIND_STONE )
 				.tileEntity( new TileEntityDefinition( TileCrank.class ) )
 				.rendering( new CrankRendering() )
+				.useCustomItemModel()
 				.build();
 		this.inscriber = registry.block( "inscriber", BlockInscriber::new )
 				.features( AEFeature.INSCRIBER )
@@ -334,10 +332,8 @@ public final class ApiBlocks implements IBlocks
 				.build();
 		this.tinyTNT = registry.block( "tiny_tnt", BlockTinyTNT::new )
 				.features( AEFeature.TINY_TNT )
-				.postInit( ( block, item ) ->
-				{
-					BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( item, new DispenserBehaviorTinyTNT() );
-				} )
+				.bootstrap( ( block, item ) -> (IPreInitComponent) side -> BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( item,
+						new DispenserBehaviorTinyTNT() ) )
 				.build();
 		this.securityStation = registry.block( "security_station", BlockSecurityStation::new )
 				.features( AEFeature.SECURITY )
@@ -497,10 +493,8 @@ public final class ApiBlocks implements IBlocks
 				.rendering( new CableBusRendering( partModels ) )
 				// (handled in BlockCableBus.java and its setupTile())
 				// .tileEntity( TileCableBus.class )
-				.postInit( ( block, item ) ->
-				{
-					( (BlockCableBus) block ).setupTile();
-				} )
+				// TODO: why the custom registration?
+				.bootstrap( ( block, item ) -> (IPostInitComponent) side -> ( (BlockCableBus) block ).setupTile() )
 				.build();
 
 		this.skyStoneSlab = makeSlab( "sky_stone_slab", "sky_stone_double_slab", registry, this.skyStoneBlock() );

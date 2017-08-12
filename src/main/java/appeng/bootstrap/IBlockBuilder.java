@@ -19,7 +19,7 @@
 package appeng.bootstrap;
 
 
-import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import net.minecraft.block.Block;
@@ -33,14 +33,7 @@ import appeng.core.features.AEFeature;
 
 public interface IBlockBuilder
 {
-
-	IBlockBuilder preInit( BiConsumer<Block, Item> callback );
-
-	IBlockBuilder init( BiConsumer<Block, Item> callback );
-
-	IBlockBuilder modelRegInit( BiConsumer<Block, Item> callback );
-
-	IBlockBuilder postInit( BiConsumer<Block, Item> callback );
+	IBlockBuilder bootstrap( BiFunction<Block, Item, IBootstrapComponent> component );
 
 	IBlockBuilder features( AEFeature... features );
 

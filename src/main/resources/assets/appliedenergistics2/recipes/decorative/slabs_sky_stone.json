@@ -1,6 +1,7 @@
 {
   "result": {
-    "item": "appliedenergistics2:fluix_slab",
+    "item": "appliedenergistics2:sky_stone_slab",
+    "data": 0,
     "count": 6
   },
   "type": "forge:ore_shaped",
@@ -9,7 +10,7 @@
   ],
   "key": {
     "a": {
-      "item": "appliedenergistics2:fluix_block"
+      "item": "appliedenergistics2:sky_stone_block"
     }
   }
 }

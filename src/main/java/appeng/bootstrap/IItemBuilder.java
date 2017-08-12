@@ -19,7 +19,7 @@
 package appeng.bootstrap;
 
 
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -36,12 +36,7 @@ import appeng.core.features.ItemDefinition;
  */
 public interface IItemBuilder
 {
-
-	IItemBuilder preInit( Consumer<Item> callback );
-
-	IItemBuilder init( Consumer<Item> callback );
-
-	IItemBuilder postInit( Consumer<Item> callback );
+	IItemBuilder bootstrap( Function<Item, IBootstrapComponent> component );
 
 	IItemBuilder features( AEFeature... features );
 

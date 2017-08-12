@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import net.minecraft.block.BlockDispenser;
@@ -33,10 +33,11 @@ import net.minecraft.item.Item;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import appeng.bootstrap.components.IItemRegistrationComponent;
+import appeng.bootstrap.components.IPostInitComponent;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
-import appeng.core.Registration;
 import appeng.core.features.AEFeature;
 import appeng.core.features.ItemDefinition;
 import appeng.util.Platform;
@@ -53,13 +54,7 @@ class ItemDefinitionBuilder implements IItemBuilder
 
 	private final EnumSet<AEFeature> features = EnumSet.noneOf( AEFeature.class );
 
-	private final List<Consumer<Item>> preInitCallbacks = new ArrayList<>();
-
-	private final List<Consumer<Item>> initCallbacks = new ArrayList<>();
-
-	private final List<Consumer<Item>> modelRegCallbacks = new ArrayList<>();
-
-	private final List<Consumer<Item>> postInitCallbacks = new ArrayList<>();
+	private final List<Function<Item, IBootstrapComponent>> boostrapComponents = new ArrayList<>();
 
 	private Supplier<IBehaviorDispenseItem> dispenserBehaviorSupplier;
 
@@ -80,23 +75,9 @@ class ItemDefinitionBuilder implements IItemBuilder
 	}
 
 	@Override
-	public ItemDefinitionBuilder preInit( Consumer<Item> callback )
+	public IItemBuilder bootstrap( Function<Item, IBootstrapComponent> component )
 	{
-		this.preInitCallbacks.add( callback );
-		return this;
-	}
-
-	@Override
-	public ItemDefinitionBuilder init( Consumer<Item> callback )
-	{
-		this.initCallbacks.add( callback );
-		return this;
-	}
-
-	@Override
-	public ItemDefinitionBuilder postInit( Consumer<Item> callback )
-	{
-		this.postInitCallbacks.add( callback );
+		this.boostrapComponents.add( component );
 		return this;
 	}
 
@@ -163,22 +144,19 @@ class ItemDefinitionBuilder implements IItemBuilder
 		item.setCreativeTab( this.creativeTab );
 
 		// Register all extra handlers
-		this.preInitCallbacks.forEach( consumer -> this.factory.addPreInit( side -> consumer.accept( item ) ) );
-		this.initCallbacks.forEach( consumer -> this.factory.addInit( side -> consumer.accept( item ) ) );
-		this.modelRegCallbacks.forEach( consumer -> this.factory.addModelReg( ( side, reg ) -> consumer.accept( item ) ) );
-		this.postInitCallbacks.forEach( consumer -> this.factory.addPostInit( side -> consumer.accept( item ) ) );
+		this.boostrapComponents.forEach( component -> component.apply( item ) );
 
 		// Register custom dispenser behavior if requested
 		if( this.dispenserBehaviorSupplier != null )
 		{
-			this.factory.addPostInit( side ->
+			this.factory.addBootstrapComponent( (IPostInitComponent) side ->
 			{
 				IBehaviorDispenseItem behavior = this.dispenserBehaviorSupplier.get();
 				BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( item, behavior );
 			} );
 		}
 
-		this.factory.addPreInit( side -> Registration.addItemToRegister( item ) );
+		this.factory.addBootstrapComponent( (IItemRegistrationComponent) ( side, reg ) -> reg.register( item ) );
 
 		if( Platform.isClient() )
 		{
@@ -187,4 +165,5 @@ class ItemDefinitionBuilder implements IItemBuilder
 
 		return definition;
 	}
+
 }
