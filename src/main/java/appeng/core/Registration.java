@@ -460,10 +460,9 @@ final class Registration
 		// Inscriber
 		Upgrades.SPEED.registerItem( blocks.inscriber(), 3 );
 
-		items.wirelessTerminal().maybeItem().ifPresent( terminal ->
-		{
-			registries.wireless().registerWirelessHandler( (IWirelessTermHandler) terminal );
-		} );
+		// Wireless Terminal
+		items.wirelessTerminal().maybeItem().ifPresent( terminal -> registries.wireless().registerWirelessHandler( (IWirelessTermHandler) terminal ) );
+		items.wirelessTerminal().maybeStack( 1 ).ifPresent( terminal -> registries.charger().addChargeRate( terminal, 10000d ) );
 
 		// add villager trading to black smiths for a few basic materials
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.VILLAGER_TRADING ) )

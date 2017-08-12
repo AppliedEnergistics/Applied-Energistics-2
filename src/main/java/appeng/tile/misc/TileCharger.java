@@ -215,6 +215,57 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 	private boolean doWork()
 	{
 		final ItemStack myItem = this.inv.getStackInSlot( 0 );
+		boolean changed = false;
+
+		if( !myItem.isEmpty() )
+		{
+			final IMaterials materials = AEApi.instance().definitions().materials();
+
+			if( Platform.isChargeable( myItem ) )
+			{
+				final IAEItemPowerStorage ps = (IAEItemPowerStorage) myItem.getItem();
+
+				if( ps.getAEMaxPower( myItem ) > ps.getAECurrentPower( myItem ) )
+				{
+					final double chargeRate = AEApi.instance().registries().charger().getChargeRate( myItem );
+
+					double extractedAmount = this.extractAEPower( chargeRate, Actionable.MODULATE, PowerMultiplier.CONFIG );
+
+					final double missingChargeRate = chargeRate - extractedAmount;
+					final double missingAEPower = ps.getAEMaxPower( myItem ) - ps.getAECurrentPower( myItem );
+					final double toExtract = Math.min( missingChargeRate, missingAEPower );
+
+					try
+					{
+						extractedAmount += this.getProxy().getEnergy().extractAEPower( toExtract, Actionable.MODULATE, PowerMultiplier.ONE );
+					}
+					catch( GridAccessException e1 )
+					{
+						// Ignore.
+					}
+
+					if( extractedAmount > 0 )
+					{
+						final double adjustment = ps.injectAEPower( myItem, extractedAmount, Actionable.MODULATE );
+
+						this.setInternalCurrentPower( this.getInternalCurrentPower() + adjustment );
+
+						changed = true;
+					}
+				}
+			}
+			else if( this.getInternalCurrentPower() > 1499 && materials.certusQuartzCrystal().isSameAs( myItem ) )
+			{
+				if( Platform.getRandomFloat() > 0.8f ) // simulate wait
+				{
+					this.extractAEPower( this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG );// 1500
+
+					materials.certusQuartzCrystalCharged().maybeStack( myItem.getCount() ).ifPresent( charged -> this.inv.setStackInSlot( 0, charged ) );
+
+					changed = true;
+				}
+			}
+		}
 
 		// charge from the network!
 		if( this.getInternalCurrentPower() < 1499 )
@@ -229,41 +280,12 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 				// continue!
 			}
 
-			return true;
+			changed = true;
 		}
 
-		if( myItem.isEmpty() )
+		if( changed )
 		{
-			return false;
-		}
-
-		final IMaterials materials = AEApi.instance().definitions().materials();
-
-		if( this.getInternalCurrentPower() > 149 && Platform.isChargeable( myItem ) )
-		{
-			final IAEItemPowerStorage ps = (IAEItemPowerStorage) myItem.getItem();
-			if( ps.getAEMaxPower( myItem ) > ps.getAECurrentPower( myItem ) )
-			{
-				final double oldPower = this.getInternalCurrentPower();
-
-				final double adjustment = ps.injectAEPower( myItem, this.extractAEPower( 150.0, Actionable.MODULATE, PowerMultiplier.CONFIG ),
-						Actionable.MODULATE );
-				this.setInternalCurrentPower( this.getInternalCurrentPower() + adjustment );
-
-				if( oldPower > this.getInternalCurrentPower() )
-				{
-					this.markForUpdate();
-				}
-			}
-		}
-		else if( this.getInternalCurrentPower() > 1499 && materials.certusQuartzCrystal().isSameAs( myItem ) )
-		{
-			if( Platform.getRandomFloat() > 0.8f ) // simulate wait
-			{
-				this.extractAEPower( this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG );// 1500
-
-				materials.certusQuartzCrystalCharged().maybeStack( myItem.getCount() ).ifPresent( charged -> this.inv.setStackInSlot( 0, charged ) );
-			}
+			this.markForUpdate();
 		}
 
 		return true;
