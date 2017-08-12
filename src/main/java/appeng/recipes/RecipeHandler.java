@@ -30,7 +30,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.function.BooleanSupplier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -38,15 +37,10 @@ import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
-import com.google.gson.JsonObject;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.IConditionFactory;
-import net.minecraftforge.common.crafting.IIngredientFactory;
-import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.fml.common.LoaderState;
 
 import appeng.api.AEApi;
@@ -61,11 +55,8 @@ import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
 import appeng.api.recipes.IRecipeHandler;
 import appeng.api.recipes.IRecipeLoader;
-import appeng.api.recipes.ResolverResult;
-import appeng.api.recipes.ResolverResultSet;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.items.materials.ItemMaterial;
@@ -773,48 +764,6 @@ public class RecipeHandler implements IRecipeHandler
 		}
 
 		return true;
-	}
-
-	public static class MaterialExists implements IConditionFactory
-	{
-		@Override
-		public BooleanSupplier parse( JsonContext jsonContext, JsonObject jsonObject )
-		{
-			String material = JsonUtils.getString( jsonObject, "material" );
-			Object result = (Object) Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, material );
-			return () -> result != null;
-
-		}
-	}
-
-	public static class PartFactory implements IIngredientFactory
-	{
-
-		@Nonnull
-		@Override
-		public net.minecraft.item.crafting.Ingredient parse( JsonContext context, JsonObject json )
-		{
-			String partName = json.get( "part" ).getAsString();
-			Object result = (Object) Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, partName );
-			if( result instanceof ResolverResultSet )
-			{
-				ResolverResultSet resolverResultSet = (ResolverResultSet) result;
-				return net.minecraft.item.crafting.Ingredient
-						.fromStacks( resolverResultSet.results.toArray( new ItemStack[resolverResultSet.results.size()] ) );
-			}
-			else if( result instanceof ResolverResult )
-			{
-				ResolverResult resolverResult = (ResolverResult) result;
-
-				Item item = Item.getByNameOrId( AppEng.MOD_ID + ":" + resolverResult.itemName );
-				ItemStack itemStack = new ItemStack( item, 1, resolverResult.damageValue, resolverResult.compound );
-
-				return net.minecraft.item.crafting.Ingredient.fromStacks( itemStack );
-			}
-
-			AELog.warn( "Looking for ingredient with name '" + partName + "' ended up with a null item!" );
-			return net.minecraft.item.crafting.Ingredient.EMPTY;
-		}
 	}
 
 }
