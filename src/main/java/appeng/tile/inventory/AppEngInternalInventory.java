@@ -19,6 +19,7 @@
 package appeng.tile.inventory;
 
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 
@@ -39,7 +40,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 {
 	private boolean enableClientEvents = false;
 	private IAEAppEngInventory te;
-	private int maxStack;
+	private final int[] maxStack;
 	private InvOperation currentOp;
 	private ItemStack previousStack = ItemStack.EMPTY;
 	private IAEItemFilter filter;
@@ -49,7 +50,8 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 		super( size );
 		this.setTileEntity( inventory );
 		this.setFilter( filter );
-		this.maxStack = maxStack;
+		this.maxStack = new int[size];
+		Arrays.fill( this.maxStack, maxStack );
 	}
 
 	public AppEngInternalInventory( final IAEAppEngInventory inventory, final int size, final int maxStack )
@@ -70,7 +72,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 	@Override
 	public int getSlotLimit( int slot )
 	{
-		return this.maxStack;
+		return this.maxStack[slot];
 	}
 
 	@Override
@@ -135,9 +137,9 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 		return Platform.isServer() || this.isEnableClientEvents();
 	}
 
-	public void setMaxStackSize( final int s )
+	public void setMaxStackSize( final int slot, final int size )
 	{
-		this.maxStack = s;
+		this.maxStack[slot] = size;
 	}
 
 	@Override
@@ -152,7 +154,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 	@Override
 	public boolean isItemValidForSlot( int slot, ItemStack stack )
 	{
-		if( this.maxStack == 0 )
+		if( this.maxStack[slot] == 0 )
 		{
 			return false;
 		}
