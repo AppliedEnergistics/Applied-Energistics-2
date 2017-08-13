@@ -1179,7 +1179,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				TileEntity adjacentTe = this.getTile().getWorld().getTileEntity( adjacentPos );
 				if( adjacentTe instanceof IGridHost )
 				{
-					if( !( adjacentTe instanceof IPartHost ) || cable.getCableConnectionType() == AECableType.DENSE_SMART )
+					if( !( adjacentTe instanceof IPartHost ) || cable.getCableConnectionType() == AECableType.DENSE_SMART || cable
+							.getCableConnectionType() == AECableType.DENSE_COVERED )
 					{
 						IGridHost gridHost = (IGridHost) adjacentTe;
 						connectionType = gridHost.getCableConnectionType( AEPartLocation.fromFacing( facing.getOpposite() ) );

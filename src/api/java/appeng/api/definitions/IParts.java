@@ -38,6 +38,8 @@ public interface IParts
 
 	AEColoredItemDefinition cableGlass();
 
+	AEColoredItemDefinition cableDenseCovered();
+	
 	AEColoredItemDefinition cableDenseSmart();
 
 	AEColoredItemDefinition lumenCableSmart();

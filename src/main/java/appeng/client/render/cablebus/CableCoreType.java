@@ -55,6 +55,7 @@ public enum CableCoreType
 		result.put( AECableType.GLASS, CableCoreType.GLASS );
 		result.put( AECableType.COVERED, CableCoreType.COVERED );
 		result.put( AECableType.SMART, CableCoreType.COVERED );
+		result.put( AECableType.DENSE_COVERED, CableCoreType.DENSE_SMART );
 		result.put( AECableType.DENSE_SMART, CableCoreType.DENSE_SMART );
 
 		return ImmutableMap.copyOf( result );

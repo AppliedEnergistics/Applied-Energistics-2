@@ -457,6 +457,7 @@ item.appliedenergistics2.multi_part.cable_anchor.name=Cable Anchor
 item.appliedenergistics2.multi_part.cable_covered.name=ME Covered Cable
 item.appliedenergistics2.multi_part.cable_glass.name=ME Glass Cable
 item.appliedenergistics2.multi_part.cable_smart.name=ME Smart Cable
+item.appliedenergistics2.multi_part.cable_dense_covered.name=ME Dense Covered Cable
 item.appliedenergistics2.multi_part.cable_dense_smart.name=ME Dense Smart Cable
 item.appliedenergistics2.multi_part.storage_monitor.name=ME Storage Monitor
 item.appliedenergistics2.multi_part.conversion_monitor.name=ME Conversion Monitor
