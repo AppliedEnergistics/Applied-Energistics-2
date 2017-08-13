@@ -480,9 +480,9 @@ item.appliedenergistics2.multi_part.crafting_monitor.name=ME Crafting Monitor
 item.appliedenergistics2.multi_part.interface_terminal.name=ME Interface Terminal
 item.appliedenergistics2.multi_part.invalid_type.name=Disabled Item
 
-item.appliedenergistics2.spatial_storage_cell_128_cubed.name=128? Spatial Storage Cell
-item.appliedenergistics2.spatial_storage_cell_16_cubed.name=16? Spatial Storage Cell
-item.appliedenergistics2.spatial_storage_cell_2_cubed.name=2? Spatial Storage Cell
+item.appliedenergistics2.spatial_storage_cell_128_cubed.name=128³ Spatial Storage Cell
+item.appliedenergistics2.spatial_storage_cell_16_cubed.name=16³ Spatial Storage Cell
+item.appliedenergistics2.spatial_storage_cell_2_cubed.name=2³ Spatial Storage Cell
 
 item.appliedenergistics2.certus_quartz_axe.name=Certus Quartz Axe
 item.appliedenergistics2.certus_quartz_cutting_knife.name=Certus Quartz Cutting Knife
