@@ -489,7 +489,8 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	@Override
 	public final boolean onActivate( final EntityPlayer player, final Vec3 pos )
 	{
-		int x = (int) pos.xCoord, y = (int) pos.yCoord, z = (int) pos.zCoord;
+		//		int x = (int) pos.xCoord, y = (int) pos.yCoord, z = (int) pos.zCoord;
+		int x = this.tile.xCoord, y = this.tile.yCoord, z = this.tile.zCoord;
 		PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract( player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, x, y, z, this.side.flag, player.getEntityWorld() );
 		if( event.isCanceled() )
 			return false;
@@ -505,7 +506,8 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	@Override
 	public final boolean onShiftActivate( final EntityPlayer player, final Vec3 pos )
 	{
-		int x = (int) pos.xCoord, y = (int) pos.yCoord, z = (int) pos.zCoord;
+		//		int x = (int) pos.xCoord, y = (int) pos.yCoord, z = (int) pos.zCoord;
+		int x = this.tile.xCoord, y = this.tile.yCoord, z = this.tile.zCoord;
 		PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract( player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, x, y, z, this.side.flag, player.getEntityWorld() );
 		if( event.isCanceled() )
 			return false;
