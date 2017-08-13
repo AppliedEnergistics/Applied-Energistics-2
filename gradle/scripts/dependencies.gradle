@@ -100,7 +100,7 @@ dependencies {
     mods "codechicken:Translocator:${minecraft_version}-${translocator_version}:dev"
     mods "net.industrial-craft:industrialcraft-2:${ic2_version}-experimental:dev"
     mods "com.enderio:EnderIO:${minecraft_version}-${enderio_version}:dev"
-    mods "net.mcft.copy.betterstorage:BetterStorage:${minecraft_version}-${betterstorage_version}:deobf"
+//    mods "net.mcft.copy.betterstorage:BetterStorage:${minecraft_version}-${betterstorage_version}:deobf"
     mods "inventorytweaks:InventoryTweaks:${invtweaks_version}:deobf"
     mods "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:dev"
 
@@ -121,7 +121,8 @@ dependencies {
     // provided APIs
     compile "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:api"
     compile "net.industrial-craft:industrialcraft-2:${ic2_version}-experimental:api"
-    compile "net.mcft.copy.betterstorage:BetterStorage:${minecraft_version}-${betterstorage_version}:api"
+//    compile "net.mcft.copy.betterstorage:BetterStorage:${minecraft_version}-${betterstorage_version}:api"
+    compile files('lib/BetterStorage-1.7.10-0.11.3.123.20-api.jar')
 
     // self compiled APIs
     compile "appeng:Waila:${waila_version}_${minecraft_version}:api"
