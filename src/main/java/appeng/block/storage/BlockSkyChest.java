@@ -22,6 +22,7 @@ package appeng.block.storage;
 import appeng.api.AEApi;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.blocks.RenderBlockSkyChest;
+import appeng.core.features.AEFeature;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.storage.TileSkyChest;
@@ -44,6 +45,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 
 
@@ -54,16 +56,7 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 	private static final double AABB_OFFSET_SIDES = 0;
 	private static final double AABB_OFFSET_TOP = .125d;
 
-
-	public enum SkyChestType
-	{
-		STONE, BLOCK
-	}
-
-
-	public final SkyChestType type;
-
-	public BlockSkyChest( final SkyChestType type )
+	public BlockSkyChest()
 	{
 		super( Material.rock );
 		this.setTileEntity( TileSkyChest.class );
@@ -71,7 +64,7 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 		this.lightOpacity = 0;
 		this.setHardness( 50 );
 		this.blockResistance = 150.0f;
-		this.type = type;
+		this.setFeature( EnumSet.of( AEFeature.Core, AEFeature.SkyStoneChests ) );
 	}
 
 	@Override
