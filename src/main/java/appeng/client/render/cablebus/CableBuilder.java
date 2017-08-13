@@ -448,7 +448,7 @@ class CableBuilder
 		addCoveredCableSizedCube( facing, distanceFromEdge, cubeBuilder );
 	}
 
-	public void addDenseConnection( EnumFacing facing, AEColor cableColor, AECableType connectionType, boolean cableBusAdjacent, int channels, List<BakedQuad> quadsOut )
+	public void addDenseSmartConnection( EnumFacing facing, AEColor cableColor, AECableType connectionType, boolean cableBusAdjacent, int channels, List<BakedQuad> quadsOut )
 	{
 		// Dense cables only render their connections as dense if the adjacent blocks actually wants that
 		if( connectionType == AECableType.SMART )

@@ -1626,7 +1626,7 @@ public class Platform
 				return Collections.singletonList( stack );
 			}
 
-			if( parts.cableDense().sameAs( AEColor.TRANSPARENT, stack ) )
+			if( parts.cableDenseSmart().sameAs( AEColor.TRANSPARENT, stack ) )
 			{
 				return Collections.singletonList( stack );
 			}

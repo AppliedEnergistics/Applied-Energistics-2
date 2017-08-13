@@ -36,10 +36,10 @@ import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 
-public class PartDenseCable extends PartCable
+public class PartDenseCableSmart extends PartCable
 {
 	@Reflected
-	public PartDenseCable( final ItemStack is )
+	public PartDenseCableSmart( final ItemStack is )
 	{
 		super( is );
 

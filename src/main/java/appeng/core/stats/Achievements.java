@@ -80,7 +80,7 @@ public enum Achievements
 	Networking2( 4, 0, AEApi.instance().definitions().parts().cableSmart(), AchievementType.Custom ),
 
 	// done
-	Networking3( 4, 2, AEApi.instance().definitions().parts().cableDense(), AchievementType.Custom ),
+	Networking3( 4, 2, AEApi.instance().definitions().parts().cableDenseSmart(), AchievementType.Custom ),
 
 	// done
 	P2P( 2, -2, AEApi.instance().definitions().parts().p2PTunnelME(), AchievementType.Craft ),

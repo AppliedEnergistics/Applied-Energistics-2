@@ -31,7 +31,7 @@ import mcjty.theoneprobe.api.ProbeMode;
 import appeng.api.parts.IPart;
 import appeng.integration.modules.theoneprobe.TheOneProbeText;
 import appeng.parts.networking.PartCableSmart;
-import appeng.parts.networking.PartDenseCable;
+import appeng.parts.networking.PartDenseCableSmart;
 
 
 public class ChannelInfoProvider implements IPartProbInfoProvider
@@ -40,10 +40,10 @@ public class ChannelInfoProvider implements IPartProbInfoProvider
 	@Override
 	public void addProbeInfo( IPart part, ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data )
 	{
-		if( part instanceof PartDenseCable || part instanceof PartCableSmart )
+		if( part instanceof PartDenseCableSmart || part instanceof PartCableSmart )
 		{
 			final int usedChannels;
-			final int maxChannels = ( part instanceof PartDenseCable ) ? 32 : 8;
+			final int maxChannels = ( part instanceof PartDenseCableSmart ) ? 32 : 8;
 
 			if( part.getGridNode().isActive() )
 			{

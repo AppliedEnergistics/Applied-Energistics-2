@@ -254,7 +254,7 @@ public class CableBusBakedModel implements IBakedModel
 					this.cableBuilder.addSmartConnection( facing, cableColor, connectionType, cableBusAdjacent, channels, quadsOut );
 					break;
 				case DENSE_SMART:
-					this.cableBuilder.addDenseConnection( facing, cableColor, connectionType, cableBusAdjacent, channels, quadsOut );
+					this.cableBuilder.addDenseSmartConnection( facing, cableColor, connectionType, cableBusAdjacent, channels, quadsOut );
 					break;
 			}
 		}

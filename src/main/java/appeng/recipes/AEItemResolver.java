@@ -93,12 +93,12 @@ public class AEItemResolver implements ISubItemResolver
 
 			if( itemName.equals( "cable_dense_smart" ) )
 			{
-				return new ResolverResultSet( "cable_dense", parts.cableDense().allStacks( 1 ) );
+				return new ResolverResultSet( "cable_dense", parts.cableDenseSmart().allStacks( 1 ) );
 			}
 
 			if( itemName.startsWith( "cable_dense_smart." ) )
 			{
-				return this.cableItem( parts.cableDense(), itemName.substring( itemName.indexOf( '.' ) + 1 ) );
+				return this.cableItem( parts.cableDenseSmart(), itemName.substring( itemName.indexOf( '.' ) + 1 ) );
 			}
 
 			if( itemName.startsWith( "crystal_seed." ) )

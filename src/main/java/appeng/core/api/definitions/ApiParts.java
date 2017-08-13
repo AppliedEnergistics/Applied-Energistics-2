@@ -166,7 +166,7 @@ public final class ApiParts implements IParts
 	}
 
 	@Override
-	public AEColoredItemDefinition cableDense()
+	public AEColoredItemDefinition cableDenseSmart()
 	{
 		return this.cableDense;
 	}
@@ -193,7 +193,7 @@ public final class ApiParts implements IParts
 	}
 
 	@Override
-	public AEColoredItemDefinition lumenCableDense()
+	public AEColoredItemDefinition lumenDenseCableSmart()
 	{
 		throw new MissingDefinition( "Lumen Dense Cable has yet to be implemented." );
 		// return this.lumenCableDense;
