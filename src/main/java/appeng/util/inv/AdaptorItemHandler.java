@@ -31,7 +31,7 @@ import appeng.util.Platform;
 
 public class AdaptorItemHandler extends InventoryAdaptor
 {
-	private final IItemHandler itemHandler;
+	protected final IItemHandler itemHandler;
 
 	public AdaptorItemHandler( IItemHandler itemHandler )
 	{
@@ -223,9 +223,9 @@ public class AdaptorItemHandler extends InventoryAdaptor
 		return this.addItems( toBeSimulated, true );
 	}
 
-	private ItemStack addItems( final ItemStack itemsToAdd, final boolean simulate )
+	protected ItemStack addItems( final ItemStack itemsToAdd, final boolean simulate )
 	{
-		if( itemsToAdd.isEmpty() || itemsToAdd.getCount() == 0 )
+		if( itemsToAdd.isEmpty() )
 		{
 			return ItemStack.EMPTY;
 		}
@@ -234,16 +234,11 @@ public class AdaptorItemHandler extends InventoryAdaptor
 
 		for( int slot = 0; slot < this.itemHandler.getSlots(); slot++ )
 		{
-			ItemStack is = this.itemHandler.getStackInSlot( slot );
+			left = this.itemHandler.insertItem( slot, left, simulate );
 
-			if( is.isEmpty() || Platform.itemComparisons().isSameItem( is, left ) )
+			if( left.isEmpty() )
 			{
-				left = this.itemHandler.insertItem( slot, left, simulate );
-
-				if( left.isEmpty() || left.getCount() <= 0 )
-				{
-					return ItemStack.EMPTY;
-				}
+				return ItemStack.EMPTY;
 			}
 		}
 

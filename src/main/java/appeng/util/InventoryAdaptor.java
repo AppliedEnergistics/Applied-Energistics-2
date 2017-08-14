@@ -25,10 +25,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
 import appeng.api.config.FuzzyMode;
 import appeng.util.inv.AdaptorItemHandler;
+import appeng.util.inv.AdaptorItemHandlerPlayerInv;
 import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.ItemSlot;
 
@@ -59,7 +59,7 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 	{
 		if( te != null )
 		{
-			return new AdaptorItemHandler( new PlayerInvWrapper( te.inventory ) );
+			return new AdaptorItemHandlerPlayerInv( te );
 		}
 		return null;
 	}
