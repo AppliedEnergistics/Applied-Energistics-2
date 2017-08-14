@@ -164,6 +164,8 @@ public class CableBusBakedModel implements IBakedModel
 		{
 			case GLASS:
 				return firstType == AECableType.GLASS && secondType == AECableType.GLASS;
+			case DENSE_COVERED:
+				return firstType == AECableType.DENSE_COVERED && secondType == AECableType.DENSE_COVERED;
 			case DENSE_SMART:
 				return firstType == AECableType.DENSE_SMART && secondType == AECableType.DENSE_SMART;
 		}
@@ -231,6 +233,7 @@ public class CableBusBakedModel implements IBakedModel
 				case SMART:
 					this.cableBuilder.addConstrainedSmartConnection( facing, cableColor, distance, channels, quadsOut );
 					break;
+				case DENSE_COVERED:
 				case DENSE_SMART:
 					// Dense cables do not render connections to parts since none can be attached
 					break;
