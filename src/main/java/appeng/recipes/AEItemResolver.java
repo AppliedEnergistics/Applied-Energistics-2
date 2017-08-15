@@ -91,9 +91,19 @@ public class AEItemResolver implements ISubItemResolver
 				return this.cableItem( parts.cableSmart(), itemName.substring( itemName.indexOf( '.' ) + 1 ) );
 			}
 
+			if( itemName.equals( "cable_dense_covered" ) )
+			{
+				return new ResolverResultSet( "cable_covered", parts.cableDenseCovered().allStacks( 1 ) );
+			}
+
+			if( itemName.startsWith( "cable_dense_covered." ) )
+			{
+				return this.cableItem( parts.cableDenseCovered(), itemName.substring( itemName.indexOf( '.' ) + 1 ) );
+			}
+
 			if( itemName.equals( "cable_dense_smart" ) )
 			{
-				return new ResolverResultSet( "cable_dense", parts.cableDenseSmart().allStacks( 1 ) );
+				return new ResolverResultSet( "cable_dense_smart", parts.cableDenseSmart().allStacks( 1 ) );
 			}
 
 			if( itemName.startsWith( "cable_dense_smart." ) )
