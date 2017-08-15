@@ -757,8 +757,6 @@ public abstract class AEBaseContainer extends Container
 					case CRAFT_STACK:
 						( (SlotCraftingTerm) s ).doClick( action, player );
 						this.updateHeld( player );
-					case MOVE_REGION:
-						return;
 					default:
 				}
 			}
@@ -830,11 +828,11 @@ public abstract class AEBaseContainer extends Container
 
 			if( action == InventoryAction.MOVE_REGION )
 			{
-				final List<Slot> from = new LinkedList<>();
+				final List<Slot> from = new ArrayList<>();
 
 				for( final Object j : this.inventorySlots )
 				{
-					if( j instanceof Slot && j.getClass() == s.getClass() )
+					if( j instanceof Slot && j.getClass() == s.getClass() && !( j instanceof SlotCraftingTerm ) )
 					{
 						from.add( (Slot) j );
 					}
