@@ -343,7 +343,16 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 		@Override
 		public int compare( final Entry<Integer, PartTypeWithVariant> o1, final Entry<Integer, PartTypeWithVariant> o2 )
 		{
-			return o1.getValue().part.name().compareTo( o2.getValue().part.name() );
+			final String string1 = o1.getValue().part.name();
+			final String string2 = o2.getValue().part.name();
+			final int comparedString = string1.compareTo( string2 );
+
+			if( comparedString == 0 )
+			{
+				return Integer.compare( o1.getKey(), o2.getKey() );
+			}
+
+			return comparedString;
 		}
 	}
 
