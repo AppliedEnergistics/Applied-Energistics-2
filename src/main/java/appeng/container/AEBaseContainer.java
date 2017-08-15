@@ -757,6 +757,8 @@ public abstract class AEBaseContainer extends Container
 					case CRAFT_STACK:
 						( (SlotCraftingTerm) s ).doClick( action, player );
 						this.updateHeld( player );
+					case MOVE_REGION:
+						return;
 					default:
 				}
 			}
