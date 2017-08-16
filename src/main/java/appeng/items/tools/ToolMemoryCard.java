@@ -146,11 +146,14 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	@Override
 	public EnumActionResult onItemUse( final EntityPlayer player, final World w, final BlockPos pos, final EnumHand hand, final EnumFacing side, final float hx, final float hy, final float hz )
 	{
-		if( player.isSneaking() && !w.isRemote )
+		if( player.isSneaking() )
 		{
-			final IMemoryCard mem = (IMemoryCard) player.getHeldItem( hand ).getItem();
-			mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
-			player.getHeldItem( hand ).setTagCompound( null );
+			if( !w.isRemote )
+			{
+				final IMemoryCard mem = (IMemoryCard) player.getHeldItem( hand ).getItem();
+				mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
+				player.getHeldItem( hand ).setTagCompound( null );
+			}
 			return EnumActionResult.SUCCESS;
 		}
 		else
