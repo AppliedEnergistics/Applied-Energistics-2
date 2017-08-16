@@ -122,28 +122,36 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 	@Override
 	public double injectAEPower( final ItemStack is, final double amount, Actionable mode )
 	{
-		if( mode == Actionable.SIMULATE )
-		{
-			final double required = this.getAEMaxPower( is ) - this.getAECurrentPower( is );
-			final double overflow = amount - required;
+		final double maxStorage = this.getAEMaxPower( is );
+		final double currentStorage = this.getAECurrentPower( is );
+		final double required = maxStorage - currentStorage;
+		final double overflow = amount - required;
 
-			return Math.max( 0, overflow );
+		if( mode == Actionable.MODULATE )
+		{
+			final NBTTagCompound data = Platform.openNbtData( is );
+			final double toAdd = Math.min( amount, required );
+
+			data.setDouble( CURRENT_POWER_NBT_KEY, currentStorage + toAdd );
 		}
 
-		return this.getInternalBattery( is, batteryOperation.INJECT, amount );
+		return Math.max( 0, overflow );
 	}
 
 	@Override
 	public double extractAEPower( final ItemStack is, final double amount, Actionable mode )
 	{
-		if( mode == Actionable.SIMULATE )
-		{
-			final double stored = this.getAECurrentPower( is );
+		final double currentStorage = this.getAECurrentPower( is );
+		final double fulfillable = Math.min( amount, currentStorage );
 
-			return Math.min( amount, stored );
+		if( mode == Actionable.MODULATE )
+		{
+			final NBTTagCompound data = Platform.openNbtData( is );
+
+			data.setDouble( CURRENT_POWER_NBT_KEY, currentStorage - fulfillable );
 		}
 
-		return this.getInternalBattery( is, batteryOperation.EXTRACT, amount );
+		return fulfillable;
 	}
 
 	@Override
@@ -155,7 +163,9 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 	@Override
 	public double getAECurrentPower( final ItemStack is )
 	{
-		return this.getInternalBattery( is, batteryOperation.STORAGE, 0 );
+		final NBTTagCompound data = Platform.openNbtData( is );
+
+		return data.getDouble( CURRENT_POWER_NBT_KEY );
 	}
 
 	@Override
@@ -168,45 +178,5 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 	public ICapabilityProvider initCapabilities( ItemStack stack, NBTTagCompound nbt )
 	{
 		return new PoweredItemCapabilities( stack, this );
-	}
-
-	private double getInternalBattery( final ItemStack is, final batteryOperation op, final double adjustment )
-	{
-		final NBTTagCompound data = Platform.openNbtData( is );
-
-		final double maxStorage = this.getAEMaxPower( is );
-		double currentStorage = data.getDouble( CURRENT_POWER_NBT_KEY );
-
-		switch( op )
-		{
-			case INJECT:
-				currentStorage += adjustment;
-				if( currentStorage > maxStorage )
-				{
-					final double diff = currentStorage - maxStorage;
-					data.setDouble( CURRENT_POWER_NBT_KEY, maxStorage );
-					return diff;
-				}
-				data.setDouble( CURRENT_POWER_NBT_KEY, currentStorage );
-				return 0;
-			case EXTRACT:
-				if( currentStorage > adjustment )
-				{
-					currentStorage -= adjustment;
-					data.setDouble( CURRENT_POWER_NBT_KEY, currentStorage );
-					return adjustment;
-				}
-				data.setDouble( CURRENT_POWER_NBT_KEY, 0 );
-				return currentStorage;
-			default:
-				break;
-		}
-
-		return currentStorage;
-	}
-
-	private enum batteryOperation
-	{
-		STORAGE, INJECT, EXTRACT
 	}
 }
