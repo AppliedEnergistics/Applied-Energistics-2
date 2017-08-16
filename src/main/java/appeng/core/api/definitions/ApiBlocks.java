@@ -246,6 +246,7 @@ public final class ApiBlocks implements IBlocks
 				.build();
 		this.quartzOreCharged = registry.block( "charged_quartz_ore", BlockChargedQuartzOre::new )
 				.features( AEFeature.CERTUS_ORE, AEFeature.CHARGED_CERTUS_ORE )
+				.useCustomItemModel()
 				.bootstrap( ( block, item ) -> (IOreDictComponent) side -> OreDictionary.registerOre( "oreCertusQuartz", new ItemStack( block ) ) )
 				.build();
 		this.matrixFrame = registry.block( "matrix_frame", BlockMatrixFrame::new ).features( AEFeature.SPATIAL_IO ).build();
