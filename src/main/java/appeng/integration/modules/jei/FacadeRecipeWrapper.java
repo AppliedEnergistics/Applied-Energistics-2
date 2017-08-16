@@ -25,14 +25,13 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
 import mezz.jei.api.recipe.wrapper.IShapedCraftingRecipeWrapper;
 
 
 /**
  * Acts as a fake facade recipe wrapper, created by {@link FacadeRegistryPlugin}.
  */
-class FacadeRecipeWrapper extends BlankRecipeWrapper implements IShapedCraftingRecipeWrapper
+class FacadeRecipeWrapper implements IShapedCraftingRecipeWrapper
 {
 
 	private final ItemStack textureItem;

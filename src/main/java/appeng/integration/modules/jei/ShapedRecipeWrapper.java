@@ -26,7 +26,6 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
 import mezz.jei.api.recipe.wrapper.IShapedCraftingRecipeWrapper;
 import scala.actors.threadpool.Arrays;
 
@@ -38,7 +37,7 @@ import appeng.recipes.game.ShapedRecipe;
 import appeng.util.Platform;
 
 
-class ShapedRecipeWrapper extends BlankRecipeWrapper implements IShapedCraftingRecipeWrapper
+class ShapedRecipeWrapper implements IShapedCraftingRecipeWrapper
 {
 
 	private final ShapedRecipe recipe;

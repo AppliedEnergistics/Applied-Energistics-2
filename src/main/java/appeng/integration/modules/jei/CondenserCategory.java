@@ -22,6 +22,7 @@ package appeng.integration.modules.jei;
 import java.util.ArrayList;
 import java.util.List;
 
+import mezz.jei.api.recipe.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
@@ -34,7 +35,6 @@ import mezz.jei.api.gui.IDrawableStatic;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.BlankRecipeCategory;
 
 import appeng.api.AEApi;
 import appeng.api.config.CondenserOutput;
@@ -44,7 +44,7 @@ import appeng.core.AppEng;
 import appeng.tile.misc.TileCondenser;
 
 
-class CondenserCategory extends BlankRecipeCategory<CondenserOutputWrapper>
+class CondenserCategory implements IRecipeCategory<CondenserOutputWrapper>
 {
 
 	public static final String UID = "appliedenergistics2.condenser";

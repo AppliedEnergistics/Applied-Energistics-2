@@ -23,15 +23,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import appeng.api.features.IGrinderRecipe;
+import appeng.recipes.game.ShapedRecipe;
+import appeng.recipes.game.ShapelessRecipe;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import mezz.jei.api.BlankModPlugin;
 import mezz.jei.api.IJeiRuntime;
+import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
+import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 
 import appeng.api.AEApi;
@@ -50,13 +54,22 @@ import appeng.items.parts.ItemFacade;
 
 
 @mezz.jei.api.JEIPlugin
-public class JEIPlugin extends BlankModPlugin
+public class JEIPlugin implements IModPlugin
 {
+
+	@Override
+	public void registerCategories( IRecipeCategoryRegistration registry )
+	{
+		registry.addRecipeCategories( new GrinderRecipeCategory( registry.getJeiHelpers().getGuiHelper() ) );
+		registry.addRecipeCategories( new CondenserCategory( registry.getJeiHelpers().getGuiHelper() ) );
+		registry.addRecipeCategories( new InscriberRecipeCategory( registry.getJeiHelpers().getGuiHelper() ) );
+	}
 
 	@Override
 	public void register( IModRegistry registry )
 	{
-		registry.addRecipeHandlers( new ShapedRecipeHandler(), new ShapelessRecipeHandler() );
+		registry.handleRecipes( ShapedRecipe.class, new ShapedRecipeHandler(), VanillaRecipeCategoryUid.CRAFTING );
+		registry.handleRecipes( ShapelessRecipe.class, new ShapelessRecipeHandler(), VanillaRecipeCategoryUid.CRAFTING );
 
 		IDefinitions definitions = AEApi.instance().definitions();
 
@@ -120,7 +133,7 @@ public class JEIPlugin extends BlankModPlugin
 
 	private void addDescription( IModRegistry registry, IItemDefinition itemDefinition, String message )
 	{
-		itemDefinition.maybeStack( 1 ).ifPresent( itemStack -> registry.addDescription( itemStack, message ) );
+		itemDefinition.maybeStack( 1 ).ifPresent( itemStack -> registry.addIngredientInfo( itemStack, ItemStack.class, message ) );
 	}
 
 	private void registerGrinderRecipes( IDefinitions definitions, IModRegistry registry )
@@ -133,10 +146,9 @@ public class JEIPlugin extends BlankModPlugin
 			return;
 		}
 
-		registry.addRecipes( Lists.newArrayList( AEApi.instance().registries().grinder().getRecipes() ) );
-		registry.addRecipeHandlers( new GrinderRecipeHandler() );
-		registry.addRecipeCategories( new GrinderRecipeCategory( registry.getJeiHelpers().getGuiHelper() ) );
-		registry.addRecipeCategoryCraftingItem( grindstone, GrinderRecipeCategory.UID );
+		registry.handleRecipes( IGrinderRecipe.class, new GrinderRecipeHandler(), GrinderRecipeCategory.UID );
+		registry.addRecipes( Lists.newArrayList( AEApi.instance().registries().grinder().getRecipes() ), GrinderRecipeCategory.UID );
+		registry.addRecipeCatalyst( grindstone, GrinderRecipeCategory.UID );
 	}
 
 	private void registerCondenserRecipes( IDefinitions definitions, IModRegistry registry )
@@ -151,38 +163,34 @@ public class JEIPlugin extends BlankModPlugin
 		ItemStack matterBall = definitions.materials().matterBall().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 		if( !matterBall.isEmpty() )
 		{
-			registry.addRecipes( ImmutableList.of( CondenserOutput.MATTER_BALLS ) );
+			registry.addRecipes( ImmutableList.of( CondenserOutput.MATTER_BALLS ), CondenserCategory.UID );
 		}
 
 		ItemStack singularity = definitions.materials().singularity().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 		if( !singularity.isEmpty() )
 		{
-			registry.addRecipes( ImmutableList.of( CondenserOutput.SINGULARITY ) );
+			registry.addRecipes( ImmutableList.of( CondenserOutput.SINGULARITY ), CondenserCategory.UID );
 		}
 
 		if( !matterBall.isEmpty() || !singularity.isEmpty() )
 		{
-			registry.addRecipeCategories( new CondenserCategory( registry.getJeiHelpers().getGuiHelper() ) );
-			registry.addRecipeCategoryCraftingItem( condenser, CondenserCategory.UID );
-			registry.addRecipeHandlers( new CondenserOutputHandler( registry.getJeiHelpers().getGuiHelper(), matterBall, singularity ) );
+			registry.addRecipeCatalyst( condenser, CondenserCategory.UID );
+			registry.handleRecipes( CondenserOutput.class, new CondenserOutputHandler( registry.getJeiHelpers().getGuiHelper(), matterBall, singularity) , CondenserCategory.UID );
 		}
 	}
 
 	private void registerInscriberRecipes( IDefinitions definitions, IModRegistry registry )
 	{
-
-		registry.addRecipeHandlers( new InscriberRecipeHandler() );
-
-		registry.addRecipeCategories( new InscriberRecipeCategory( registry.getJeiHelpers().getGuiHelper() ) );
+		registry.handleRecipes( IInscriberRecipe.class, new InscriberRecipeHandler(), InscriberRecipeCategory.UID );
 
 		// Register the inscriber as the crafting item for the inscription category
 		definitions.blocks().inscriber().maybeStack( 1 ).ifPresent( inscriber ->
 		{
-			registry.addRecipeCategoryCraftingItem( inscriber, InscriberRecipeCategory.UID );
+			registry.addRecipeCatalyst( inscriber, InscriberRecipeCategory.UID );
 		} );
 
 		List<IInscriberRecipe> inscriberRecipes = new ArrayList<>( AEApi.instance().registries().inscriber().getRecipes() );
-		registry.addRecipes( inscriberRecipes );
+		registry.addRecipes( inscriberRecipes, InscriberRecipeCategory.UID );
 	}
 
 	// Handle the generic crafting recipe for patterns in JEI

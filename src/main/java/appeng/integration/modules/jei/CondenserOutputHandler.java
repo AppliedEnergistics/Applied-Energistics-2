@@ -19,19 +19,19 @@
 package appeng.integration.modules.jei;
 
 
+import mezz.jei.api.recipe.IRecipeWrapperFactory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
-import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 
 import appeng.api.config.CondenserOutput;
 import appeng.core.AppEng;
 
 
-class CondenserOutputHandler implements IRecipeHandler<CondenserOutput>
+class CondenserOutputHandler implements IRecipeWrapperFactory<CondenserOutput>
 {
 
 	private final ItemStack matterBall;
@@ -50,18 +50,6 @@ class CondenserOutputHandler implements IRecipeHandler<CondenserOutput>
 	}
 
 	@Override
-	public Class<CondenserOutput> getRecipeClass()
-	{
-		return CondenserOutput.class;
-	}
-
-	@Override
-	public String getRecipeCategoryUid( CondenserOutput recipe )
-	{
-		return CondenserCategory.UID;
-	}
-
-	@Override
 	public IRecipeWrapper getRecipeWrapper( CondenserOutput recipe )
 	{
 		switch( recipe )
@@ -72,20 +60,6 @@ class CondenserOutputHandler implements IRecipeHandler<CondenserOutput>
 				return new CondenserOutputWrapper( recipe, this.singularity, this.iconButtonSingularity );
 			default:
 				return null;
-		}
-	}
-
-	@Override
-	public boolean isRecipeValid( CondenserOutput recipe )
-	{
-		switch( recipe )
-		{
-			case MATTER_BALLS:
-				return this.matterBall != null;
-			case SINGULARITY:
-				return this.singularity != null;
-			default:
-				return false;
 		}
 	}
 }

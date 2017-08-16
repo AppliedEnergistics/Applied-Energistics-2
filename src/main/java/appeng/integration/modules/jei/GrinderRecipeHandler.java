@@ -19,36 +19,16 @@
 package appeng.integration.modules.jei;
 
 
-import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 
 import appeng.api.features.IGrinderRecipe;
+import mezz.jei.api.recipe.IRecipeWrapperFactory;
 
 
-class GrinderRecipeHandler implements IRecipeHandler<IGrinderRecipe>
+class GrinderRecipeHandler implements IRecipeWrapperFactory<IGrinderRecipe>
 {
-
-	@Override
-	public Class<IGrinderRecipe> getRecipeClass()
-	{
-		return IGrinderRecipe.class;
-	}
-
-	@Override
-	public String getRecipeCategoryUid( IGrinderRecipe recipe )
-	{
-		return GrinderRecipeCategory.UID;
-	}
-
-	@Override
 	public IRecipeWrapper getRecipeWrapper( IGrinderRecipe recipe )
 	{
 		return new GrinderRecipeWrapper( recipe );
-	}
-
-	@Override
-	public boolean isRecipeValid( IGrinderRecipe recipe )
-	{
-		return true;
 	}
 }
