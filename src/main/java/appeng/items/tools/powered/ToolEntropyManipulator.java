@@ -45,6 +45,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
+import appeng.api.config.Actionable;
 import appeng.api.util.DimensionalCoord;
 import appeng.block.misc.BlockTinyTNT;
 import appeng.core.AEConfig;
@@ -204,7 +205,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	{
 		if( this.getAECurrentPower( item ) > 1600 )
 		{
-			this.extractAEPower( item, 1600 );
+			this.extractAEPower( item, 1600, Actionable.MODULATE );
 			target.setFire( 8 );
 		}
 
@@ -261,7 +262,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			{
 				if( this.canCool( state ) )
 				{
-					this.extractAEPower( item, 1600 );
+					this.extractAEPower( item, 1600, Actionable.MODULATE );
 					this.cool( state, w, pos );
 					return EnumActionResult.SUCCESS;
 				}
@@ -284,7 +285,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 				if( this.canHeat( state ) )
 				{
-					this.extractAEPower( item, 1600 );
+					this.extractAEPower( item, 1600, Actionable.MODULATE );
 					this.heat( state, w, pos );
 					return EnumActionResult.SUCCESS;
 				}
@@ -320,7 +321,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 				if( hasFurnaceable && canFurnaceable )
 				{
-					this.extractAEPower( item, 1600 );
+					this.extractAEPower( item, 1600, Actionable.MODULATE );
 					final InWorldToolOperationResult or = InWorldToolOperationResult.getBlockOperationResult( out.toArray( new ItemStack[out.size()] ) );
 					w.playSound( p, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F,
 							itemRand.nextFloat() * 0.4F + 0.8F );
@@ -353,7 +354,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 					if( w.isAirBlock( offsetPos ) )
 					{
-						this.extractAEPower( item, 1600 );
+						this.extractAEPower( item, 1600, Actionable.MODULATE );
 						w.playSound( p, offsetPos.getX() + 0.5D, offsetPos.getY() + 0.5D, offsetPos.getZ() + 0.5D, SoundEvents.ITEM_FLINTANDSTEEL_USE,
 								SoundCategory.PLAYERS, 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
 						w.setBlockState( offsetPos, Blocks.FIRE.getDefaultState() );

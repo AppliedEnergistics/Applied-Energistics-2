@@ -132,7 +132,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 					shots = Math.min( shots, (int) aeAmmo.getStackSize() );
 					for( int sh = 0; sh < shots; sh++ )
 					{
-						this.extractAEPower( p.getHeldItem( hand ), 1600 );
+						this.extractAEPower( p.getHeldItem( hand ), 1600, Actionable.MODULATE );
 
 						if( Platform.isClient() )
 						{

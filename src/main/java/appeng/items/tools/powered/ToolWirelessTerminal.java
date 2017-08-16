@@ -34,6 +34,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
+import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -108,7 +109,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	@Override
 	public boolean usePower( final EntityPlayer player, final double amount, final ItemStack is )
 	{
-		return this.extractAEPower( is, amount ) >= amount - 0.5;
+		return this.extractAEPower( is, amount, Actionable.MODULATE ) >= amount - 0.5;
 	}
 
 	@Override

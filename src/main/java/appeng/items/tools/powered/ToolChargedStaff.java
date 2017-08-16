@@ -24,6 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 
+import appeng.api.config.Actionable;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.sync.packets.PacketLightning;
@@ -44,7 +45,7 @@ public class ToolChargedStaff extends AEBasePoweredItem
 	{
 		if( this.getAECurrentPower( item ) > 300 )
 		{
-			this.extractAEPower( item, 300 );
+			this.extractAEPower( item, 300, Actionable.MODULATE );
 			if( Platform.isServer() )
 			{
 				for( int x = 0; x < 2; x++ )

@@ -23,13 +23,14 @@ import net.minecraft.item.ItemStack;
 
 import cofh.redstoneflux.api.IEnergyContainerItem;
 
+import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnits;
 import appeng.coremod.annotations.Integration.Interface;
 import appeng.integration.IntegrationType;
 
 
 @Interface( iface = "cofh.redstoneflux.api.IEnergyContainerItem", iname = IntegrationType.RFItem )
-public abstract class RedstoneFlux extends IC2 implements IEnergyContainerItem
+public abstract class RedstoneFlux extends AEBasePoweredItem implements IEnergyContainerItem
 {
 	public RedstoneFlux( final double powerCapacity )
 	{
@@ -39,7 +40,10 @@ public abstract class RedstoneFlux extends IC2 implements IEnergyContainerItem
 	@Override
 	public int receiveEnergy( final ItemStack is, final int maxReceive, final boolean simulate )
 	{
-		return maxReceive - (int) this.injectExternalPower( PowerUnits.RF, is, maxReceive, simulate );
+		final double convertedPower = PowerUnits.RF.convertTo( PowerUnits.AE, maxReceive );
+		final double overflow = (int) this.injectAEPower( is, convertedPower, simulate ? Actionable.SIMULATE : Actionable.MODULATE );
+
+		return (int) ( maxReceive - overflow );
 	}
 
 	@Override
