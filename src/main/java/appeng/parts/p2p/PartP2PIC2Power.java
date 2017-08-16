@@ -144,7 +144,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power>
 	private class SinkSource extends BasicSinkSource
 	{
 
-		public SinkSource( World world, BlockPos pos, int i, int j, int k )
+		SinkSource( World world, BlockPos pos, int i, int j, int k )
 		{
 			super( world, pos, i, j, k );
 		}

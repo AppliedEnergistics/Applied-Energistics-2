@@ -43,7 +43,8 @@ import appeng.util.Platform;
 
 public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPowerStorage
 {
-	private static final String POWER_NBT_KEY = "internalCurrentPower";
+	private static final String CURRENT_POWER_NBT_KEY = "internalCurrentPower";
+	private static final String MAX_POWER_NBT_KEY = "internalMaxPower";
 	private final double powerCapacity;
 
 	public AEBasePoweredItem( final double powerCapacity )
@@ -66,7 +67,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
 		if( tag != null )
 		{
-			internalCurrentPower = tag.getDouble( "internalCurrentPower" );
+			internalCurrentPower = tag.getDouble( CURRENT_POWER_NBT_KEY );
 		}
 
 		final double percent = internalCurrentPower / internalMaxPower;
@@ -88,8 +89,8 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
 		final ItemStack charged = new ItemStack( this, 1 );
 		final NBTTagCompound tag = Platform.openNbtData( charged );
-		tag.setDouble( "internalCurrentPower", this.getAEMaxPower( charged ) );
-		tag.setDouble( "internalMaxPower", this.getAEMaxPower( charged ) );
+		tag.setDouble( CURRENT_POWER_NBT_KEY, this.getAEMaxPower( charged ) );
+		tag.setDouble( MAX_POWER_NBT_KEY, this.getAEMaxPower( charged ) );
 
 		itemStacks.add( charged );
 	}
@@ -173,8 +174,8 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 	{
 		final NBTTagCompound data = Platform.openNbtData( is );
 
-		double currentStorage = data.getDouble( POWER_NBT_KEY );
 		final double maxStorage = this.getAEMaxPower( is );
+		double currentStorage = data.getDouble( CURRENT_POWER_NBT_KEY );
 
 		switch( op )
 		{
@@ -183,19 +184,19 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 				if( currentStorage > maxStorage )
 				{
 					final double diff = currentStorage - maxStorage;
-					data.setDouble( POWER_NBT_KEY, maxStorage );
+					data.setDouble( CURRENT_POWER_NBT_KEY, maxStorage );
 					return diff;
 				}
-				data.setDouble( POWER_NBT_KEY, currentStorage );
+				data.setDouble( CURRENT_POWER_NBT_KEY, currentStorage );
 				return 0;
 			case EXTRACT:
 				if( currentStorage > adjustment )
 				{
 					currentStorage -= adjustment;
-					data.setDouble( POWER_NBT_KEY, currentStorage );
+					data.setDouble( CURRENT_POWER_NBT_KEY, currentStorage );
 					return adjustment;
 				}
-				data.setDouble( POWER_NBT_KEY, 0 );
+				data.setDouble( CURRENT_POWER_NBT_KEY, 0 );
 				return currentStorage;
 			default:
 				break;
