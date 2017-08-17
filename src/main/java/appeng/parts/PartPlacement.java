@@ -349,10 +349,9 @@ public class PartPlacement
 				if( !player.capabilities.isCreativeMode )
 				{
 					held.grow( -1 );
-					;
 					if( held.getCount() == 0 )
 					{
-						player.inventory.mainInventory.set( player.inventory.currentItem, ItemStack.EMPTY );
+						player.setHeldItem( hand, ItemStack.EMPTY );
 						MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( player, held, hand ) );
 					}
 				}
