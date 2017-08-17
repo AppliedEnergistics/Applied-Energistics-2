@@ -21,7 +21,6 @@ package appeng.integration;
 
 import appeng.integration.modules.ic2.IC2Module;
 import appeng.integration.modules.jei.JEIModule;
-import appeng.integration.modules.rf.RFModule;
 import appeng.integration.modules.theoneprobe.TheOneProbeModule;
 import appeng.integration.modules.waila.WailaModule;
 
@@ -38,24 +37,6 @@ public enum IntegrationType
 	},
 
 	RC( IntegrationSide.BOTH, "Railcraft", "railcraft" ),
-
-	RF( IntegrationSide.BOTH, "RedstoneFlux Power - Tiles", "redstoneflux" )
-	{
-		@Override
-		public IIntegrationModule createInstance()
-		{
-			return new RFModule();
-		}
-	},
-
-	RFItem( IntegrationSide.BOTH, "RedstoneFlux Power - Items", "redstoneflux" )
-	{
-		@Override
-		public IIntegrationModule createInstance()
-		{
-			return new RFModule();
-		}
-	},
 
 	MFR( IntegrationSide.BOTH, "Mine Factory Reloaded", "minefactoryreloaded" ),
 

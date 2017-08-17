@@ -73,7 +73,6 @@ gui.appliedenergistics2.FluidTunnel=Fluidos
 gui.appliedenergistics2.RedstoneTunnel=Redstone
 gui.appliedenergistics2.EUTunnel=EU
 gui.appliedenergistics2.FETunnel=FE
-gui.appliedenergistics2.RFTunnel=RF
 gui.appliedenergistics2.LightTunnel=Luz
 
 gui.appliedenergistics2.security.extract.name=Retirar

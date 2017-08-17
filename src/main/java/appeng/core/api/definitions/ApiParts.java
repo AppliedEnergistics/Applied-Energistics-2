@@ -64,7 +64,6 @@ public final class ApiParts implements IParts
 	private final IItemDefinition p2PTunnelItems;
 	private final IItemDefinition p2PTunnelFluids;
 	private final IItemDefinition p2PTunnelEU;
-	private final IItemDefinition p2PTunnelRF;
 	private final IItemDefinition p2PTunnelFE;
 	private final IItemDefinition p2PTunnelLight;
 	// private final IItemDefinition p2PTunnelOpenComputers;
@@ -118,7 +117,6 @@ public final class ApiParts implements IParts
 		this.p2PTunnelItems = new DamagedItemDefinition( "part.tunnel.item", itemPart.createPart( PartType.P2P_TUNNEL_ITEMS ) );
 		this.p2PTunnelFluids = new DamagedItemDefinition( "part.tunnel.fluid", itemPart.createPart( PartType.P2P_TUNNEL_FLUIDS ) );
 		this.p2PTunnelEU = new DamagedItemDefinition( "part.tunnel.eu", itemPart.createPart( PartType.P2P_TUNNEL_IC2 ) );
-		this.p2PTunnelRF = new DamagedItemDefinition( "part.tunnel.rf", itemPart.createPart( PartType.P2P_TUNNEL_RF ) );
 		this.p2PTunnelFE = new DamagedItemDefinition( "part.tunnel.fe", itemPart.createPart( PartType.P2P_TUNNEL_FE ) );
 		this.p2PTunnelLight = new DamagedItemDefinition( "part.tunnel.light", itemPart.createPart( PartType.P2P_TUNNEL_LIGHT ) );
 		// this.p2PTunnelOpenComputers = new DamagedItemDefinition( itemMultiPart.createPart(
@@ -301,12 +299,6 @@ public final class ApiParts implements IParts
 	public IItemDefinition p2PTunnelEU()
 	{
 		return this.p2PTunnelEU;
-	}
-
-	@Override
-	public IItemDefinition p2PTunnelRF()
-	{
-		return this.p2PTunnelRF;
 	}
 
 	@Override

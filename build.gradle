@@ -58,7 +58,6 @@ archivesBaseName = aebasename
 // Add Coremod Manifest
 jar {
     manifest {
-        attributes 'FMLCorePluginContainsFMLMod': 'true'
         attributes 'FMLAT': 'appeng_at.cfg'
     }
 
@@ -74,8 +73,6 @@ jar {
 }
 
 minecraft {
-    coreMod = "appeng.coremod.AppEngCore"
-
     version = minecraft_version + "-" + forge_version
 
     replaceIn "AEConfig.java"

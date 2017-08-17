@@ -28,7 +28,6 @@ public enum TunnelType
 {
 	ME, // Network Tunnel
 	IC2_POWER, // EU Tunnel
-	RF_POWER, // RF Tunnel
 	FE_POWER, // Forge Energy tunnel
 	REDSTONE, // Redstone Tunnel
 	FLUID, // Fluid Tunnel
