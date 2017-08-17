@@ -57,7 +57,8 @@ import appeng.parts.misc.PartToggleBus;
 import appeng.parts.networking.PartCableCovered;
 import appeng.parts.networking.PartCableGlass;
 import appeng.parts.networking.PartCableSmart;
-import appeng.parts.networking.PartDenseCable;
+import appeng.parts.networking.PartDenseCableCovered;
+import appeng.parts.networking.PartDenseCableSmart;
 import appeng.parts.networking.PartQuartzFiber;
 import appeng.parts.p2p.PartP2PFEPower;
 import appeng.parts.p2p.PartP2PFluids;
@@ -138,7 +139,26 @@ public enum PartType
 	},
 
 	CABLE_DENSE_SMART( 60, "cable_dense_smart", EnumSet.of( AEFeature.CHANNELS, AEFeature.DENSE_CABLES ), EnumSet
-			.noneOf( IntegrationType.class ), PartDenseCable.class )
+			.noneOf( IntegrationType.class ), PartDenseCableSmart.class )
+	{
+		@Override
+		public boolean isCable()
+		{
+			return true;
+		}
+
+		@Override
+		@SideOnly( Side.CLIENT )
+		protected List<ModelResourceLocation> createItemModels( String baseName )
+		{
+			return Arrays.stream( AEColor.values() )
+					.map( color -> modelFromBaseName( baseName + "_" + color.name().toLowerCase() ) )
+					.collect( Collectors.toList() );
+		}
+	},
+
+	CABLE_DENSE_COVERED( 500, "cable_dense_covered", EnumSet.of( AEFeature.CHANNELS, AEFeature.DENSE_CABLES ), EnumSet
+			.noneOf( IntegrationType.class ), PartDenseCableCovered.class )
 	{
 		@Override
 		public boolean isCable()

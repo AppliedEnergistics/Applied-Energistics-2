@@ -164,6 +164,8 @@ public class CableBusBakedModel implements IBakedModel
 		{
 			case GLASS:
 				return firstType == AECableType.GLASS && secondType == AECableType.GLASS;
+			case DENSE_COVERED:
+				return firstType == AECableType.DENSE_COVERED && secondType == AECableType.DENSE_COVERED;
 			case DENSE_SMART:
 				return firstType == AECableType.DENSE_SMART && secondType == AECableType.DENSE_SMART;
 		}
@@ -200,8 +202,11 @@ public class CableBusBakedModel implements IBakedModel
 				case SMART:
 					this.cableBuilder.addStraightSmartConnection( facing, cableColor, renderState.getChannelsOnSide().get( facing ), quadsOut );
 					break;
+				case DENSE_COVERED:
+					this.cableBuilder.addStraightDenseCoveredConnection( facing, cableColor, quadsOut );
+					break;
 				case DENSE_SMART:
-					this.cableBuilder.addStraightDenseConnection( facing, cableColor, renderState.getChannelsOnSide().get( facing ), quadsOut );
+					this.cableBuilder.addStraightDenseSmartConnection( facing, cableColor, renderState.getChannelsOnSide().get( facing ), quadsOut );
 					break;
 			}
 
@@ -228,6 +233,7 @@ public class CableBusBakedModel implements IBakedModel
 				case SMART:
 					this.cableBuilder.addConstrainedSmartConnection( facing, cableColor, distance, channels, quadsOut );
 					break;
+				case DENSE_COVERED:
 				case DENSE_SMART:
 					// Dense cables do not render connections to parts since none can be attached
 					break;
@@ -253,8 +259,11 @@ public class CableBusBakedModel implements IBakedModel
 				case SMART:
 					this.cableBuilder.addSmartConnection( facing, cableColor, connectionType, cableBusAdjacent, channels, quadsOut );
 					break;
+				case DENSE_COVERED:
+					this.cableBuilder.addDenseCoveredConnection( facing, cableColor, connectionType, cableBusAdjacent, quadsOut );
+					break;
 				case DENSE_SMART:
-					this.cableBuilder.addDenseConnection( facing, cableColor, connectionType, cableBusAdjacent, channels, quadsOut );
+					this.cableBuilder.addDenseSmartConnection( facing, cableColor, connectionType, cableBusAdjacent, channels, quadsOut );
 					break;
 			}
 		}

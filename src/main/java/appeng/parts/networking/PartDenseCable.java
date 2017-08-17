@@ -36,7 +36,7 @@ import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 
-public class PartDenseCable extends PartCable
+public abstract class PartDenseCable extends PartCable
 {
 	@Reflected
 	public PartDenseCable( final ItemStack is )
@@ -50,12 +50,6 @@ public class PartDenseCable extends PartCable
 	public BusSupport supportsBuses()
 	{
 		return BusSupport.DENSE_CABLE;
-	}
-
-	@Override
-	public AECableType getCableConnectionType()
-	{
-		return AECableType.DENSE_SMART;
 	}
 
 	@Override
@@ -135,25 +129,16 @@ public class PartDenseCable extends PartCable
 		}
 	}
 
-	private boolean isSmart( final AEPartLocation of )
-	{
-		final TileEntity te = this.getTile().getWorld().getTileEntity( this.getTile().getPos().offset( of.getFacing() ) );
-		if( te instanceof IGridHost )
-		{
-			final AECableType t = ( (IGridHost) te ).getCableConnectionType( of.getOpposite() );
-			return t == AECableType.SMART;
-		}
-		return false;
-	}
-
 	private boolean isDense( final AEPartLocation of )
 	{
 		final TileEntity te = this.getTile().getWorld().getTileEntity( this.getTile().getPos().offset( of.getFacing() ) );
+
 		if( te instanceof IGridHost )
 		{
 			final AECableType t = ( (IGridHost) te ).getCableConnectionType( of.getOpposite() );
-			return t == AECableType.DENSE_SMART;
+			return t == AECableType.DENSE_COVERED || t == AECableType.DENSE_SMART;
 		}
+
 		return false;
 	}
 

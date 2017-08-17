@@ -35,7 +35,7 @@ import mcp.mobius.waila.api.IWailaDataAccessor;
 import appeng.api.parts.IPart;
 import appeng.core.localization.WailaText;
 import appeng.parts.networking.PartCableSmart;
-import appeng.parts.networking.PartDenseCable;
+import appeng.parts.networking.PartDenseCableSmart;
 
 
 /**
@@ -75,7 +75,7 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	@Override
 	public List<String> getWailaBody( final IPart part, final List<String> currentToolTip, final IWailaDataAccessor accessor, final IWailaConfigHandler config )
 	{
-		if( part instanceof PartCableSmart || part instanceof PartDenseCable )
+		if( part instanceof PartCableSmart || part instanceof PartDenseCableSmart )
 		{
 			final NBTTagCompound tag = accessor.getNBTData();
 
@@ -83,7 +83,7 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 
 			if( usedChannels >= 0 )
 			{
-				final byte maxChannels = (byte) ( ( part instanceof PartDenseCable ) ? 32 : 8 );
+				final byte maxChannels = (byte) ( ( part instanceof PartDenseCableSmart ) ? 32 : 8 );
 
 				final String formattedToolTip = String.format( WailaText.Channels.getLocal(), usedChannels, maxChannels );
 				currentToolTip.add( formattedToolTip );
@@ -144,7 +144,7 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	@Override
 	public NBTTagCompound getNBTData( EntityPlayerMP player, IPart part, TileEntity te, NBTTagCompound tag, World world, BlockPos pos )
 	{
-		if( part instanceof PartCableSmart || part instanceof PartDenseCable )
+		if( part instanceof PartCableSmart || part instanceof PartDenseCableSmart )
 		{
 			final NBTTagCompound tempTag = new NBTTagCompound();
 
