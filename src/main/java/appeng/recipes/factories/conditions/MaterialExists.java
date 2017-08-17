@@ -33,15 +33,26 @@ import appeng.core.AppEng;
 
 public class MaterialExists implements IConditionFactory
 {
-	private static final String JSON_FEATURES_KEY = "material";
+	private static final String JSON_MATERIAL_KEY = "material";
 
 	@Override
 	public BooleanSupplier parse( JsonContext jsonContext, JsonObject jsonObject )
 	{
-		final String material = JsonUtils.getString( jsonObject, JSON_FEATURES_KEY );
-		final Object result = Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, material );
+		final boolean result;
 
-		return () -> result != null;
+		if( JsonUtils.isString( jsonObject, JSON_MATERIAL_KEY ) )
+		{
+			final String material = JsonUtils.getString( jsonObject, JSON_MATERIAL_KEY );
+			final Object item = Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, material );
+
+			result = item != null;
+		}
+		else
+		{
+			result = false;
+		}
+
+		return () -> result;
 
 	}
 }
