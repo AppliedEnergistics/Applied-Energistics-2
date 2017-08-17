@@ -17,7 +17,8 @@
       "ore": "dustFluix"
     },
     "b": {
-      "item": "#appliedenergistics2:cable"
+      "type": "appliedenergistics2:part",
+      "part": "cable_glass.fluix"
     },
     "d": {
       "item": "#appliedenergistics2:fluixCrystal"

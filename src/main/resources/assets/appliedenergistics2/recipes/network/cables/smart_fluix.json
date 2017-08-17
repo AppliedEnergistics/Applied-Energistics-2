@@ -7,7 +7,7 @@
   "ingredients": [
     {
       "type": "appliedenergistics2:part",
-      "part": "cable_covered"
+      "part": "cable_covered.fluix"
     },
     {
       "type": "forge:ore_dict",

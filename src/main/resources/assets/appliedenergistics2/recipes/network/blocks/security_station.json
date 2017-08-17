@@ -25,7 +25,8 @@
       "ore": "ingotIron"
     },
     "c": {
-      "item": "#appliedenergistics2:cable"
+      "type": "appliedenergistics2:part",
+      "part": "cable_glass.fluix"
     }
   }
 }

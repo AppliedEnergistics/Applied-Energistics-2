@@ -13,7 +13,7 @@
   "key": {
     "a": {
       "type": "appliedenergistics2:part",
-      "part": "cable_smart"
+      "part": "cable_smart.fluix"
     },
     "b": {
       "type": "forge:ore_dict",

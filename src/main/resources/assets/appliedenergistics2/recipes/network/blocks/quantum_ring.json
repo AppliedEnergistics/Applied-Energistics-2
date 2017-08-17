@@ -15,7 +15,7 @@
     },
     "e": {
       "type": "appliedenergistics2:part",
-      "part": "cable_dense_smart"
+      "part": "cable_dense_smart.fluix"
     },
     "a": {
       "type": "forge:ore_dict",

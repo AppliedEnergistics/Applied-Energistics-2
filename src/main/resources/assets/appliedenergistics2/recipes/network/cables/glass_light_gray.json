@@ -13,7 +13,7 @@
   "key": {
     "a": {
       "type": "appliedenergistics2:part",
-      "part": "cable_glass"
+      "part": "cable_glass.fluix"
     },
     "b": {
       "type": "forge:ore_dict",

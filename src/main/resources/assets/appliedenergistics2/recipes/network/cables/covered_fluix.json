@@ -10,7 +10,7 @@
     },
     {
       "type": "appliedenergistics2:part",
-      "part": "cable_glass"
+      "part": "cable_glass.fluix"
     }
   ]
 }
