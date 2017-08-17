@@ -96,11 +96,11 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 	{
 		if( capability == Capabilities.FORGE_ENERGY )
 		{
-			if( !this.isOutput() )
+			if( this.isOutput() )
 			{
-				return (T) this.inputHandler;
+				return (T) NULL_ENERGY_STORAGE;
 			}
-			return (T) NULL_ENERGY_STORAGE;
+			return (T) this.inputHandler;
 		}
 		return super.getCapability( capability );
 	}
