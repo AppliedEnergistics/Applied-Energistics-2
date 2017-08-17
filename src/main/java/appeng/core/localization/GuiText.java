@@ -89,7 +89,6 @@ public enum GuiText
 	FluidTunnel,
 	OCTunnel,
 	LightTunnel,
-	RFTunnel,
 	FETunnel,
 	PressureTunnel,
 

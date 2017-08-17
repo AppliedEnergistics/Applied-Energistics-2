@@ -82,8 +82,6 @@ public interface IParts
 
 	IItemDefinition p2PTunnelEU();
 
-	IItemDefinition p2PTunnelRF();
-
 	IItemDefinition p2PTunnelFE();
 
 	IItemDefinition p2PTunnelLight();

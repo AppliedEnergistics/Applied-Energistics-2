@@ -240,16 +240,6 @@ final class Registration
 		// final Runnable recipeLoader = new RecipeLoader( recipeDirectory, customRecipeConfig, this.recipeHandler );
 		// recipeLoader.run();
 
-		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.RF ) )
-		{
-			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.redstoneflux.api.IEnergyReceiver" );
-		}
-
-		// if (IntegrationRegistry.INSTANCE.isEnabled(IntegrationType.RF)) {
-		// partHelper.registerNewLayer("appeng.parts.layers.LayerIEnergyStorager",
-		// "net.minecraftforge.common.capabilities.ICapabilityProvider");
-		// }
-		//
 		// if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
 		// {
 		// partHelper.registerNewLayer( "appeng.parts.layers.LayerSidedEnvironment",

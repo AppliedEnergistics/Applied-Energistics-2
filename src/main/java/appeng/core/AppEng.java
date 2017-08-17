@@ -33,7 +33,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -57,6 +56,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.integration.IntegrationRegistry;
+import appeng.integration.IntegrationType;
 import appeng.recipes.CustomRecipeConfig;
 import appeng.recipes.CustomRecipeForgeConfiguration;
 import appeng.server.AECommand;
@@ -139,11 +139,6 @@ public final class AppEng
 	@EventHandler
 	private void preInit( final FMLPreInitializationEvent event )
 	{
-		if( !Loader.isModLoaded( "appliedenergistics2-core" ) )
-		{
-			AppEng.proxy.missingCoreMod();
-		}
-
 		final Stopwatch watch = Stopwatch.createStarted();
 		this.configDirectory = new File( event.getModConfigurationDirectory().getPath(), "AppliedEnergistics2" );
 		this.recipeDirectory = new File( this.configDirectory, "aerecipes" );
@@ -171,6 +166,11 @@ public final class AppEng
 			CreativeTabFacade.init();
 		}
 
+		for( final IntegrationType type : IntegrationType.values() )
+		{
+			IntegrationRegistry.INSTANCE.add( type );
+		}
+		
 		this.registration.preInitialize( event );
 
 		if( Platform.isClient() )
