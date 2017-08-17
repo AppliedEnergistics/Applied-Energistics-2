@@ -170,7 +170,6 @@ public class TileSkyChest extends AEBaseInvTile implements ITickable
 
 	public float getLidAngle()
 	{
-		// System.out.println( lidAngle );
 		return this.lidAngle;
 	}
 

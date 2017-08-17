@@ -151,7 +151,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 						if( ( (IColorableTile) te ).recolourBlock( side, AEColor.TRANSPARENT, p ) )
 						{
 							inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
-							this.extractAEPower( is, powerPerUse );
+							this.extractAEPower( is, powerPerUse, Actionable.MODULATE );
 							return EnumActionResult.SUCCESS;
 						}
 					}
@@ -163,7 +163,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				if( this.getAECurrentPower( is ) > powerPerUse && testBlk instanceof BlockPaint && painted instanceof TilePaint )
 				{
 					inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
-					this.extractAEPower( is, powerPerUse );
+					this.extractAEPower( is, powerPerUse, Actionable.MODULATE );
 					( (TilePaint) painted ).cleanSide( side.getOpposite() );
 					return EnumActionResult.SUCCESS;
 				}
@@ -177,7 +177,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 					if( color != AEColor.TRANSPARENT && this.recolourBlock( blk, side, w, pos, side, color, p ) )
 					{
 						inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
-						this.extractAEPower( is, powerPerUse );
+						this.extractAEPower( is, powerPerUse, Actionable.MODULATE );
 						return EnumActionResult.SUCCESS;
 					}
 				}

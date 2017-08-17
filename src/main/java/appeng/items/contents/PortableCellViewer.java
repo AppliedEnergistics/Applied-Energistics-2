@@ -79,7 +79,7 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 			return usePowerMultiplier.divide( Math.min( amt, this.ips.getAECurrentPower( this.target ) ) );
 		}
 
-		return usePowerMultiplier.divide( this.ips.extractAEPower( this.target, amt ) );
+		return usePowerMultiplier.divide( this.ips.extractAEPower( this.target, amt, Actionable.MODULATE ) );
 	}
 
 	@Override

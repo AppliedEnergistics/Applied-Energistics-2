@@ -240,12 +240,6 @@ final class Registration
 		// final Runnable recipeLoader = new RecipeLoader( recipeDirectory, customRecipeConfig, this.recipeHandler );
 		// recipeLoader.run();
 
-		if( Integrations.ic2().isEnabled() )
-		{
-			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergySink", "ic2.api.energy.tile.IEnergySink" );
-			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergySource", "ic2.api.energy.tile.IEnergySource" );
-		}
-
 		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.RF ) )
 		{
 			partHelper.registerNewLayer( "appeng.parts.layers.LayerIEnergyHandler", "cofh.redstoneflux.api.IEnergyReceiver" );

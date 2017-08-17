@@ -31,6 +31,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.config.AccessRestriction;
+import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnits;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.implementations.items.IAEItemPowerStorage;
@@ -66,67 +67,39 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 				.gui_localize( PowerUnits.AE.unlocalizedName ) + " - " + MessageFormat.format( " {0,number,#.##%} ", percent ) );
 	}
 
-	private double getMaxEnergyCapacity()
+	@Override
+	public double injectAEPower( final ItemStack is, double amount, Actionable mode )
 	{
-		final Block blockID = Block.getBlockFromItem( this );
-		final IBlockDefinition energyCell = Api.INSTANCE.definitions().blocks().energyCell();
-		return energyCell.maybeBlock().map( block ->
+		final double internalCurrentPower = this.getInternal( is );
+		final double internalMaxPower = this.getAEMaxPower( is );
+		final double required = internalMaxPower - internalCurrentPower;
+		final double overflow = Math.max( 0, amount - required );
+
+		if( mode == Actionable.MODULATE )
 		{
-			if( blockID == block )
-			{
-				return 200000;
-			}
-			else
-			{
-				return 8 * 200000;
-			}
-		} ).orElse( 0 );
+			final double toAdd = Math.min( required, amount );
+			final double newPowerStored = internalCurrentPower + toAdd;
+
+			this.setInternal( is, newPowerStored );
+		}
+
+		return overflow;
 	}
 
 	@Override
-	public double injectAEPower( final ItemStack is, double amt )
+	public double extractAEPower( final ItemStack is, double amount, Actionable mode )
 	{
-		double internalCurrentPower = this.getInternal( is );
-		final double internalMaxPower = this.getMaxEnergyCapacity();
-		internalCurrentPower += amt;
-		if( internalCurrentPower > internalMaxPower )
+		final double internalCurrentPower = this.getInternal( is );
+		final double fulfillable = Math.min( amount, internalCurrentPower );
+
+		if( mode == Actionable.MODULATE )
 		{
-			amt = internalCurrentPower - internalMaxPower;
-			internalCurrentPower = internalMaxPower;
-			this.setInternal( is, internalCurrentPower );
-			return amt;
+			final double newPowerStored = internalCurrentPower - fulfillable;
+
+			this.setInternal( is, newPowerStored );
 		}
 
-		this.setInternal( is, internalCurrentPower );
-		return 0;
-	}
-
-	private double getInternal( final ItemStack is )
-	{
-		final NBTTagCompound nbt = Platform.openNbtData( is );
-		return nbt.getDouble( "internalCurrentPower" );
-	}
-
-	private void setInternal( final ItemStack is, final double amt )
-	{
-		final NBTTagCompound nbt = Platform.openNbtData( is );
-		nbt.setDouble( "internalCurrentPower", amt );
-	}
-
-	@Override
-	public double extractAEPower( final ItemStack is, double amt )
-	{
-		double internalCurrentPower = this.getInternal( is );
-		if( internalCurrentPower > amt )
-		{
-			internalCurrentPower -= amt;
-			this.setInternal( is, internalCurrentPower );
-			return amt;
-		}
-
-		amt = internalCurrentPower;
-		this.setInternal( is, 0 );
-		return amt;
+		return fulfillable;
 	}
 
 	@Override
@@ -145,5 +118,35 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 	public AccessRestriction getPowerFlow( final ItemStack is )
 	{
 		return AccessRestriction.WRITE;
+	}
+
+	private double getMaxEnergyCapacity()
+	{
+		final Block blockID = Block.getBlockFromItem( this );
+		final IBlockDefinition energyCell = Api.INSTANCE.definitions().blocks().energyCell();
+
+		return energyCell.maybeBlock().map( block ->
+		{
+			if( blockID == block )
+			{
+				return 200000;
+			}
+			else
+			{
+				return 8 * 200000;
+			}
+		} ).orElse( 0 );
+	}
+
+	private double getInternal( final ItemStack is )
+	{
+		final NBTTagCompound nbt = Platform.openNbtData( is );
+		return nbt.getDouble( "internalCurrentPower" );
+	}
+
+	private void setInternal( final ItemStack is, final double amt )
+	{
+		final NBTTagCompound nbt = Platform.openNbtData( is );
+		nbt.setDouble( "internalCurrentPower", amt );
 	}
 }

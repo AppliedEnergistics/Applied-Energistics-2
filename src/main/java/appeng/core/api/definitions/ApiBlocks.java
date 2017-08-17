@@ -421,7 +421,6 @@ public final class ApiBlocks implements IBlocks
 				.build();
 		this.energyCellCreative = registry.block( "creative_energy_cell", BlockCreativeEnergyCell::new )
 				.features( AEFeature.CREATIVE )
-				.item( AEBaseItemBlockChargeable::new )
 				.tileEntity( new TileEntityDefinition( TileCreativeEnergyCell.class ) )
 				.build();
 

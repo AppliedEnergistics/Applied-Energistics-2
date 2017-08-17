@@ -22,12 +22,15 @@ package appeng.integration.modules.ic2;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
+import ic2.api.item.ElectricItem;
+
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.integration.IntegrationHelper;
 import appeng.integration.abstraction.IC2PowerSink;
 import appeng.integration.abstraction.IIC2;
+import appeng.integration.modules.ic2.energy.PoweredItemManager;
 import appeng.tile.powersink.IExternalPowerSink;
 
 
@@ -39,7 +42,11 @@ public class IC2Module implements IIC2
 	public IC2Module()
 	{
 		IntegrationHelper.testClassExistence( this, ic2.api.energy.tile.IEnergyTile.class );
+		IntegrationHelper.testClassExistence( this, ic2.api.energy.tile.IEnergyAcceptor.class );
+		IntegrationHelper.testClassExistence( this, ic2.api.energy.tile.IEnergyEmitter.class );
+		IntegrationHelper.testClassExistence( this, ic2.api.energy.prefab.BasicSinkSource.class );
 		IntegrationHelper.testClassExistence( this, ic2.api.item.IC2Items.class );
+		IntegrationHelper.testClassExistence( this, ic2.api.item.IBackupElectricItemManager.class );
 		IntegrationHelper.testClassExistence( this, ic2.api.recipe.Recipes.class );
 		IntegrationHelper.testClassExistence( this, ic2.api.recipe.IRecipeInput.class );
 	}
@@ -53,6 +60,8 @@ public class IC2Module implements IIC2
 		{
 			reg.addNewAttunement( this.getCable( string ), TunnelType.IC2_POWER );
 		}
+
+		ElectricItem.registerBackupManager( new PoweredItemManager() );
 	}
 
 	private ItemStack getItem( final String name, String variant )

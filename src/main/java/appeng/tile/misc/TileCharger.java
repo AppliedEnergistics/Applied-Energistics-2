@@ -246,7 +246,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 			{
 				final double oldPower = this.getInternalCurrentPower();
 
-				final double adjustment = ps.injectAEPower( myItem, this.extractAEPower( 150.0, Actionable.MODULATE, PowerMultiplier.CONFIG ) );
+				final double adjustment = ps.injectAEPower( myItem, this.extractAEPower( 150.0, Actionable.MODULATE, PowerMultiplier.CONFIG ), Actionable.MODULATE );
 				this.setInternalCurrentPower( this.getInternalCurrentPower() + adjustment );
 
 				if( oldPower > this.getInternalCurrentPower() )

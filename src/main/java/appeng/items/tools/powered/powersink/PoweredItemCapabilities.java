@@ -29,6 +29,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.IEnergyStorage;
 
+import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnits;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.capabilities.Capabilities;
@@ -96,7 +97,7 @@ class PoweredItemCapabilities implements ICapabilityProvider, IEnergyStorage
 		}
 		else
 		{
-			final double powerRemainder = this.item.injectAEPower( this.is, PowerUnits.RF.convertTo( PowerUnits.AE, maxReceive ) );
+			final double powerRemainder = this.item.injectAEPower( this.is, PowerUnits.RF.convertTo( PowerUnits.AE, maxReceive ), Actionable.MODULATE );
 			return maxReceive - (int) PowerUnits.AE.convertTo( PowerUnits.RF, powerRemainder );
 		}
 	}
