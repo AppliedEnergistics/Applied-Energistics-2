@@ -41,6 +41,7 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_fe" );
 	private static final IEnergyStorage NULL_ENERGY_STORAGE = new NullEnergyStorage();
 	private final IEnergyStorage inputHandler = new InputEnergyStorage();
+	private final IEnergyStorage outputHandler = new OutputEnergyStorage();
 
 	public PartP2PFEPower( ItemStack is )
 	{
@@ -65,9 +66,9 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 		this.getHost().notifyNeighbors();
 	}
 
-	private IEnergyStorage getOutput()
+	private IEnergyStorage getAttachedEnergyStorage()
 	{
-		if( this.isOutput() )
+		if( this.isActive() )
 		{
 			final TileEntity self = this.getTile();
 			final TileEntity te = self.getWorld().getTileEntity( self.getPos().offset( this.getSide().getFacing() ) );
@@ -98,7 +99,7 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 		{
 			if( this.isOutput() )
 			{
-				return (T) NULL_ENERGY_STORAGE;
+				return (T) this.outputHandler;
 			}
 			return (T) this.inputHandler;
 		}
@@ -132,7 +133,7 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 
 				for( PartP2PFEPower target : PartP2PFEPower.this.getOutputs() )
 				{
-					final IEnergyStorage output = target.getOutput();
+					final IEnergyStorage output = target.getAttachedEnergyStorage();
 					final int toSend = amountPerOutput + overflow;
 					final int received = output.receiveEnergy( toSend, simulate );
 
@@ -170,7 +171,7 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 			{
 				for( PartP2PFEPower t : PartP2PFEPower.this.getOutputs() )
 				{
-					total += t.getOutput().getMaxEnergyStored();
+					total += t.getAttachedEnergyStorage().getMaxEnergyStored();
 				}
 			}
 			catch( GridAccessException e )
@@ -190,7 +191,7 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 			{
 				for( PartP2PFEPower t : PartP2PFEPower.this.getOutputs() )
 				{
-					total += t.getOutput().getEnergyStored();
+					total += t.getAttachedEnergyStorage().getEnergyStored();
 				}
 			}
 			catch( GridAccessException e )
@@ -199,6 +200,45 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 			}
 
 			return total;
+		}
+	}
+
+	private class OutputEnergyStorage implements IEnergyStorage
+	{
+		@Override
+		public int extractEnergy( int maxExtract, boolean simulate )
+		{
+			return PartP2PFEPower.this.getAttachedEnergyStorage().extractEnergy( maxExtract, simulate );
+		}
+
+		@Override
+		public int receiveEnergy( int maxReceive, boolean simulate )
+		{
+			return 0;
+		}
+
+		@Override
+		public boolean canExtract()
+		{
+			return true;
+		}
+
+		@Override
+		public boolean canReceive()
+		{
+			return false;
+		}
+
+		@Override
+		public int getMaxEnergyStored()
+		{
+			return PartP2PFEPower.this.getAttachedEnergyStorage().getMaxEnergyStored();
+		}
+
+		@Override
+		public int getEnergyStored()
+		{
+			return PartP2PFEPower.this.getAttachedEnergyStorage().getEnergyStored();
 		}
 	}
 
