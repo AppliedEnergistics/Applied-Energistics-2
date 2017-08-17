@@ -26,8 +26,6 @@ import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -38,17 +36,11 @@ import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 
 
-/**
- * @author GuntherDW
- */
-public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower> implements IEnergyStorage
+public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 {
 	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_fe" );
 	private static final IEnergyStorage NULL_ENERGY_STORAGE = new NullEnergyStorage();
-
-	private boolean cachedTarget = false;
-
-	private IEnergyStorage outputTarget;
+	private final IEnergyStorage inputHandler = new InputEnergyStorage();
 
 	public PartP2PFEPower( ItemStack is )
 	{
@@ -73,157 +65,19 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower> implements IEn
 		this.getHost().notifyNeighbors();
 	}
 
-	@Override
-	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
-	{
-		super.onNeighborChanged( w, pos, neighbor );
-
-		this.cachedTarget = false;
-	}
-
-	@Override
-	public int receiveEnergy( int maxReceive, boolean simulate )
-	{
-		if( this.isOutput() )
-		{
-			return 0;
-		}
-
-		if( this.isActive() )
-		{
-			int total = 0;
-
-			try
-			{
-				final int outputTunnels = this.getOutputs().size();
-
-				if( outputTunnels == 0 )
-				{
-					return 0;
-				}
-
-				final int amountPerOutput = maxReceive / outputTunnels;
-				int overflow = maxReceive % amountPerOutput;
-
-				for( PartP2PFEPower target : this.getOutputs() )
-				{
-					final IEnergyStorage output = target.getOutput();
-					final int toSend = amountPerOutput + overflow;
-					final int received = output.receiveEnergy( toSend, simulate );
-
-					overflow = toSend - received;
-					total += received;
-				}
-
-				this.queueTunnelDrain( PowerUnits.RF, total );
-			}
-			catch( GridAccessException ignored )
-			{
-			}
-
-			return total;
-		}
-
-		return 0;
-	}
-
-	@Override
-	public int extractEnergy( int maxExtract, boolean simulate )
-	{
-		return 0;
-	}
-
 	private IEnergyStorage getOutput()
 	{
 		if( this.isOutput() )
 		{
-			if( !this.cachedTarget )
+			final TileEntity self = this.getTile();
+			final TileEntity te = self.getWorld().getTileEntity( self.getPos().offset( this.getSide().getFacing() ) );
+
+			if( te != null && te.hasCapability( Capabilities.FORGE_ENERGY, this.getSide().getOpposite().getFacing() ) )
 			{
-				final TileEntity self = this.getTile();
-				final TileEntity te = self.getWorld().getTileEntity( new BlockPos( self.getPos().getX() + this.getSide().xOffset, self.getPos()
-						.getY() + this.getSide().yOffset, self.getPos().getZ() + this.getSide().zOffset ) );
-
-				if( te != null && te.hasCapability( Capabilities.FORGE_ENERGY, this.getSide().getOpposite().getFacing() ) )
-				{
-					this.outputTarget = te.getCapability( Capabilities.FORGE_ENERGY, this.getSide().getOpposite().getFacing() );
-				}
-				else
-				{
-					this.outputTarget = null;
-				}
-
-				this.cachedTarget = true;
-			}
-
-			if( this.outputTarget != null && this.outputTarget.canReceive() )
-			{
-				return this.outputTarget;
+				return te.getCapability( Capabilities.FORGE_ENERGY, this.getSide().getOpposite().getFacing() );
 			}
 		}
-
 		return NULL_ENERGY_STORAGE;
-	}
-
-	@Override
-	public int getEnergyStored()
-	{
-		if( this.isOutput() || !this.isActive() )
-		{
-			return 0;
-		}
-
-		int total = 0;
-
-		try
-		{
-			for( PartP2PFEPower t : this.getOutputs() )
-			{
-				total += t.getOutput().getEnergyStored();
-			}
-		}
-		catch( GridAccessException e )
-		{
-			return 0;
-		}
-
-		return total;
-	}
-
-	@Override
-	public int getMaxEnergyStored()
-	{
-		if( this.isOutput() || !this.isActive() )
-		{
-			return 0;
-		}
-
-		int total = 0;
-
-		try
-		{
-			for( PartP2PFEPower t : this.getOutputs() )
-			{
-				total += t.getOutput().getMaxEnergyStored();
-			}
-		}
-		catch( GridAccessException e )
-		{
-			return 0;
-		}
-
-		return total;
-	}
-
-	@Override
-	public boolean canExtract()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean canReceive()
-	{
-		return true;
 	}
 
 	@Override
@@ -231,9 +85,8 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower> implements IEn
 	{
 		if( capability == Capabilities.FORGE_ENERGY )
 		{
-			return true;
+			return !this.isOutput();
 		}
-
 		return super.hasCapability( capability );
 	}
 
@@ -243,10 +96,125 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower> implements IEn
 	{
 		if( capability == Capabilities.FORGE_ENERGY )
 		{
-			return (T) this;
+			if( !this.isOutput() )
+			{
+				return (T) this.inputHandler;
+			}
+			return (T) NULL_ENERGY_STORAGE;
+		}
+		return super.getCapability( capability );
+	}
+
+	private class InputEnergyStorage implements IEnergyStorage
+	{
+		@Override
+		public int extractEnergy( int maxExtract, boolean simulate )
+		{
+			return 0;
 		}
 
-		return super.getCapability( capability );
+		@Override
+		public int receiveEnergy( int maxReceive, boolean simulate )
+		{
+			if( PartP2PFEPower.this.isActive() )
+			{
+				int total = 0;
+
+				try
+				{
+					final int outputTunnels = PartP2PFEPower.this.getOutputs().size();
+
+					if( outputTunnels == 0 )
+					{
+						return 0;
+					}
+
+					final int amountPerOutput = maxReceive / outputTunnels;
+					int overflow = maxReceive % amountPerOutput;
+
+					for( PartP2PFEPower target : PartP2PFEPower.this.getOutputs() )
+					{
+						final IEnergyStorage output = target.getOutput();
+						final int toSend = amountPerOutput + overflow;
+						final int received = output.receiveEnergy( toSend, simulate );
+
+						overflow = toSend - received;
+						total += received;
+					}
+
+					PartP2PFEPower.this.queueTunnelDrain( PowerUnits.RF, total );
+				}
+				catch( GridAccessException ignored )
+				{
+				}
+
+				return total;
+			}
+
+			return 0;
+		}
+
+		@Override
+		public boolean canExtract()
+		{
+			return false;
+		}
+
+		@Override
+		public boolean canReceive()
+		{
+			return true;
+		}
+
+		@Override
+		public int getMaxEnergyStored()
+		{
+			if( !PartP2PFEPower.this.isActive() )
+			{
+				return 0;
+			}
+
+			int total = 0;
+
+			try
+			{
+				for( PartP2PFEPower t : PartP2PFEPower.this.getOutputs() )
+				{
+					total += t.getOutput().getMaxEnergyStored();
+				}
+			}
+			catch( GridAccessException e )
+			{
+				return 0;
+			}
+
+			return total;
+		}
+
+		@Override
+		public int getEnergyStored()
+		{
+			if( !PartP2PFEPower.this.isActive() )
+			{
+				return 0;
+			}
+
+			int total = 0;
+
+			try
+			{
+				for( PartP2PFEPower t : PartP2PFEPower.this.getOutputs() )
+				{
+					total += t.getOutput().getEnergyStored();
+				}
+			}
+			catch( GridAccessException e )
+			{
+				return 0;
+			}
+
+			return total;
+		}
 	}
 
 	private static class NullEnergyStorage implements IEnergyStorage
@@ -285,7 +253,7 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower> implements IEn
 		@Override
 		public boolean canReceive()
 		{
-			return true;
+			return false;
 		}
 
 	}
