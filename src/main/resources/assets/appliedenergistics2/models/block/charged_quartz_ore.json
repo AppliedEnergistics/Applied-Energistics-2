@@ -1,6 +1,99 @@
 {
-    "parent": "block/cube_all",
+    "uvlMarker": true,
+    "parent": "block/block",
     "textures": {
-        "all": "appliedenergistics2:blocks/charged_quartz_ore"
-    }
+        "block": "blocks/stone",
+        "quartz": "appliedenergistics2:blocks/charged_quartz_ore_light"
+    },    
+    "elements": [
+        {
+           "faces": {
+                "down": {
+                    "texture": "#block"
+                },
+                "east": {
+                    "texture": "#block"
+                },
+                "north": {
+                    "texture": "#block"
+                },
+                "south": {
+                    "texture": "#block"
+                },
+                "up": {
+                    "texture": "#block"
+                },
+                "west": {
+                    "texture": "#block"
+                }
+            },
+            "from": [
+                0,
+                0,
+                0
+            ],
+            "to": [
+                16,
+                16,
+                16
+            ]
+        },
+        {
+           "faces": {
+                "down": {
+                    "texture": "#quartz",
+                    "uvlightmap": {
+                        "block": 0.007,
+                        "sky": 0.007
+                    }
+                },
+                "east": {
+                    "texture": "#quartz",
+                    "uvlightmap": {
+                        "block": 0.007,
+                        "sky": 0.007
+                    }
+                },
+                "north": {
+                    "texture": "#quartz",
+                    "uvlightmap": {
+                        "block": 0.007,
+                        "sky": 0.007
+                    }
+                },
+                "south": {
+                    "texture": "#quartz",
+                    "uvlightmap": {
+                        "block": 0.007,
+                        "sky": 0.007
+                    }
+                },
+                "up": {
+                    "texture": "#quartz",
+                    "uvlightmap": {
+                        "block": 0.007,
+                        "sky": 0.007
+                    }
+                },
+                "west": {
+                    "texture": "#quartz",
+                    "uvlightmap": {
+                        "block": 0.007,
+                        "sky": 0.007
+                    }
+                }
+            },
+            "from": [
+                0,
+                0,
+                0
+            ],
+            "shade": false,
+            "to": [
+                16,
+                16,
+                16
+            ]
+        }
+    ]
 }
