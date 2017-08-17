@@ -85,7 +85,7 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 	{
 		if( capability == Capabilities.FORGE_ENERGY )
 		{
-			return !this.isOutput();
+			return true;
 		}
 		return super.hasCapability( capability );
 	}
