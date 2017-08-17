@@ -1,6 +1,12 @@
 [
   {
     "name": "appliedenergistics2:interface",
+    "conditions": [
+      {
+        "type": "appliedenergistics2:features",
+        "features": ["interface"]
+      }
+    ],
     "ingredient": [
       {
         "item": "appliedenergistics2:interface"
@@ -13,6 +19,12 @@
   },
   {
     "name": "appliedenergistics2:knife",
+    "conditions": [
+      {
+        "type": "appliedenergistics2:features",
+        "features": "quartz_knife"
+      }
+    ],
     "ingredient": [
       {
         "item": "appliedenergistics2:certus_quartz_cutting_knife",
@@ -26,6 +38,12 @@
   },
   {
     "name": "appliedenergistics2:wrench",
+    "conditions": [
+      {
+        "type": "appliedenergistics2:features",
+        "features": ["quartz_wrench"]
+      }
+    ],
     "ingredient": [
       {
         "item": "appliedenergistics2:certus_quartz_wrench"

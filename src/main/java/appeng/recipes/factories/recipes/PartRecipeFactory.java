@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.recipes.helpers;
+package appeng.recipes.factories.recipes;
 
 
 import com.google.gson.JsonObject;
@@ -30,6 +30,8 @@ import net.minecraftforge.common.crafting.IRecipeFactory;
 import net.minecraftforge.common.crafting.JsonContext;
 
 import appeng.core.AppEng;
+import appeng.recipes.helpers.PartShapedCraftingFactory;
+import appeng.recipes.helpers.PartShapelessCraftingFactory;
 
 
 /**
