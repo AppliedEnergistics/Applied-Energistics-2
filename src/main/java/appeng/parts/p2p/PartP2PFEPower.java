@@ -220,7 +220,7 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 		@Override
 		public boolean canExtract()
 		{
-			return true;
+			return PartP2PFEPower.this.getAttachedEnergyStorage().canExtract();
 		}
 
 		@Override
