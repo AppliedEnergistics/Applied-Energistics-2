@@ -116,42 +116,37 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 		@Override
 		public int receiveEnergy( int maxReceive, boolean simulate )
 		{
-			if( PartP2PFEPower.this.isActive() )
+			int total = 0;
+
+			try
 			{
-				int total = 0;
+				final int outputTunnels = PartP2PFEPower.this.getOutputs().size();
 
-				try
+				if( outputTunnels == 0 )
 				{
-					final int outputTunnels = PartP2PFEPower.this.getOutputs().size();
-
-					if( outputTunnels == 0 )
-					{
-						return 0;
-					}
-
-					final int amountPerOutput = maxReceive / outputTunnels;
-					int overflow = maxReceive % amountPerOutput;
-
-					for( PartP2PFEPower target : PartP2PFEPower.this.getOutputs() )
-					{
-						final IEnergyStorage output = target.getOutput();
-						final int toSend = amountPerOutput + overflow;
-						final int received = output.receiveEnergy( toSend, simulate );
-
-						overflow = toSend - received;
-						total += received;
-					}
-
-					PartP2PFEPower.this.queueTunnelDrain( PowerUnits.RF, total );
-				}
-				catch( GridAccessException ignored )
-				{
+					return 0;
 				}
 
-				return total;
+				final int amountPerOutput = maxReceive / outputTunnels;
+				int overflow = maxReceive % amountPerOutput;
+
+				for( PartP2PFEPower target : PartP2PFEPower.this.getOutputs() )
+				{
+					final IEnergyStorage output = target.getOutput();
+					final int toSend = amountPerOutput + overflow;
+					final int received = output.receiveEnergy( toSend, simulate );
+
+					overflow = toSend - received;
+					total += received;
+				}
+
+				PartP2PFEPower.this.queueTunnelDrain( PowerUnits.RF, total );
+			}
+			catch( GridAccessException ignored )
+			{
 			}
 
-			return 0;
+			return total;
 		}
 
 		@Override
@@ -169,11 +164,6 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 		@Override
 		public int getMaxEnergyStored()
 		{
-			if( !PartP2PFEPower.this.isActive() )
-			{
-				return 0;
-			}
-
 			int total = 0;
 
 			try
@@ -194,11 +184,6 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 		@Override
 		public int getEnergyStored()
 		{
-			if( !PartP2PFEPower.this.isActive() )
-			{
-				return 0;
-			}
-
 			int total = 0;
 
 			try
