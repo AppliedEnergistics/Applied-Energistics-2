@@ -156,22 +156,23 @@ final class Registration
 		definitions.getRegistry().getBootstrapComponents( IPreInitComponent.class ).forEachRemaining( b -> b.preInitialize( event.getSide() ) );
 	}
 
-	private void registerSpatial( IForgeRegistry<Biome> registry )
+	private void registerSpatialBiome( IForgeRegistry<Biome> registry )
 	{
 		if( !AEConfig.instance().isFeatureEnabled( AEFeature.SPATIAL_IO ) )
 		{
 			return;
 		}
 
-		final AEConfig config = AEConfig.instance();
-
 		if( this.storageBiome == null )
 		{
 			this.storageBiome = new BiomeGenStorage();
 		}
-
 		registry.register( this.storageBiome.setRegistryName( "appliedenergistics2:storage_biome" ) );
+	}
 
+	private void registerSpatialDimension()
+	{
+		final AEConfig config = AEConfig.instance();
 		if( config.getStorageProviderID() == -1 )
 		{
 			final Set<Integer> ids = new HashSet<>();
@@ -275,7 +276,7 @@ final class Registration
 	public void registerBiomes( RegistryEvent.Register<Biome> event )
 	{
 		final IForgeRegistry<Biome> registry = event.getRegistry();
-		this.registerSpatial( registry );
+		this.registerSpatialBiome( registry );
 	}
 
 	@SubscribeEvent
@@ -353,6 +354,8 @@ final class Registration
 		final IParts parts = definitions.parts();
 		final IBlocks blocks = definitions.blocks();
 		final IItems items = definitions.items();
+
+		registerSpatialDimension();
 
 		// default settings..
 		( (P2PTunnelRegistry) registries.p2pTunnel() ).configure();
