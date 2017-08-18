@@ -173,6 +173,11 @@ final class Registration
 	private void registerSpatialDimension()
 	{
 		final AEConfig config = AEConfig.instance();
+		if( !config.isFeatureEnabled( AEFeature.SPATIAL_IO ) )
+		{
+			return;
+		}
+
 		if( config.getStorageProviderID() == -1 )
 		{
 			final Set<Integer> ids = new HashSet<>();
