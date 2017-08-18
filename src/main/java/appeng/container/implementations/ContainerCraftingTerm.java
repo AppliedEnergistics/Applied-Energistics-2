@@ -131,4 +131,9 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 	{
 		return true;
 	}
+
+	public IRecipe getCurrentRecipe()
+	{
+		return this.currentRecipe;
+	}
 }
