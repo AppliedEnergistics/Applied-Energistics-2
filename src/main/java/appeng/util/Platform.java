@@ -432,25 +432,6 @@ public class Platform
 		}
 	}
 
-	/*
-	 * The usual version of this returns an ItemStack, this version returns the recipe.
-	 */
-	public static IRecipe findMatchingRecipe( final InventoryCrafting inventoryCrafting, final World par2World )
-	{
-		IForgeRegistry<IRecipe> recipes = ForgeRegistries.RECIPES;
-		final List<IRecipe> rl = recipes.getValues();
-
-		for( final IRecipe r : rl )
-		{
-			if( r.matches( inventoryCrafting, par2World ) )
-			{
-				return r;
-			}
-		}
-
-		return null;
-	}
-
 	public static ItemStack[] getBlockDrops( final World w, final BlockPos pos )
 	{
 		List<ItemStack> out = new ArrayList<>();

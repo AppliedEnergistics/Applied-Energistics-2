@@ -27,6 +27,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.items.IItemHandler;
@@ -178,7 +179,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 					ic.setInventorySlotContents( x, this.getPattern().getStackInSlot( x ) );
 				}
 
-				final IRecipe r = Platform.findMatchingRecipe( ic, p.world );
+				final IRecipe r = CraftingManager.findMatchingRecipe( ic, p.world );
 
 				if( r == null )
 				{

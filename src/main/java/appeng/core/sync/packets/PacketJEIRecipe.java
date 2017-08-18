@@ -32,6 +32,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -145,7 +146,7 @@ public class PacketJEIRecipe extends AppEngPacket
 						}
 					}
 
-					final IRecipe r = Platform.findMatchingRecipe( testInv, pmp.world );
+					final IRecipe r =  CraftingManager.findMatchingRecipe( testInv, pmp.world );
 
 					if( r != null && security.hasPermission( player, SecurityPermissions.EXTRACT ) )
 					{

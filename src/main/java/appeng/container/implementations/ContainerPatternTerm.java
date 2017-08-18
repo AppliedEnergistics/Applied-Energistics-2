@@ -391,7 +391,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 				ic.setInventorySlotContents( x, packetPatternSlot.pattern[x] == null ? ItemStack.EMPTY : packetPatternSlot.pattern[x].getItemStack() );
 			}
 
-			final IRecipe r = Platform.findMatchingRecipe( ic, p.world );
+			final IRecipe r = CraftingManager.findMatchingRecipe( ic, p.world );
 
 			if( r == null )
 			{
@@ -413,7 +413,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 				}
 			}
 
-			final IRecipe rr = Platform.findMatchingRecipe( real, p.world );
+			final IRecipe rr = CraftingManager.findMatchingRecipe( real, p.world );
 
 			if( rr == r && Platform.itemComparisons().isSameItem( rr.getCraftingResult( real ), is ) )
 			{
