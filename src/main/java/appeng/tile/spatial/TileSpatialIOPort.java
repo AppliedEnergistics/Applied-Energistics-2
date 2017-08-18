@@ -19,8 +19,11 @@
 package appeng.tile.spatial;
 
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
@@ -47,6 +50,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
+import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
 
 
@@ -54,12 +58,12 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 {
 
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 2 );
+	private final IItemHandler invExt = new WrapperFilteredItemHandler( inv, new SpatialIOFilter() );
 	private YesNo lastRedstoneState = YesNo.UNDECIDED;
 
 	public TileSpatialIOPort()
 	{
 		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
-		this.inv.setFilter( new SpatialIOFilter() );
 	}
 
 	@TileEvent( TileEventType.WORLD_NBT_WRITE )
@@ -168,6 +172,12 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 	public DimensionalCoord getLocation()
 	{
 		return new DimensionalCoord( this );
+	}
+
+	@Override
+	protected @Nonnull IItemHandler getItemHandlerForSide( @Nonnull EnumFacing side )
+	{
+		return this.invExt;
 	}
 
 	@Override
