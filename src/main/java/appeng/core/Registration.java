@@ -200,7 +200,7 @@ final class Registration
 			config.save();
 		}
 
-		this.storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.getStorageProviderID(), StorageWorldProvider.class, false );
+		this.storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.getStorageProviderID(), StorageWorldProvider.class, true );
 
 		if( config.getStorageDimensionID() == -1 )
 		{
