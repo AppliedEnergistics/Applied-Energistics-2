@@ -39,7 +39,6 @@ import appeng.core.sync.packets.PacketLightning;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
 import appeng.core.sync.packets.PacketMatterCannon;
 import appeng.core.sync.packets.PacketMockExplosion;
-import appeng.core.sync.packets.PacketNewStorageDimension;
 import appeng.core.sync.packets.PacketPaintedEntity;
 import appeng.core.sync.packets.PacketPartPlacement;
 import appeng.core.sync.packets.PacketPartialItem;
@@ -82,8 +81,6 @@ public class AppEngPacketHandlerBase
 		PACKET_PROGRESS_VALUE( PacketProgressBar.class ),
 
 		PACKET_CLICK( PacketClick.class ),
-
-		PACKET_NEW_STORAGE_DIMENSION( PacketNewStorageDimension.class ),
 
 		PACKET_SWITCH_GUIS( PacketSwitchGuis.class ),
 

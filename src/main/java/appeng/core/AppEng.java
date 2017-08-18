@@ -136,6 +136,11 @@ public final class AppEng
 		return this.registration.storageDimensionType;
 	}
 
+	public int getStorageDimensionID()
+	{
+		return this.registration.storageDimensionID;
+	}
+
 	@EventHandler
 	private void preInit( final FMLPreInitializationEvent event )
 	{
@@ -170,7 +175,7 @@ public final class AppEng
 		{
 			IntegrationRegistry.INSTANCE.add( type );
 		}
-		
+
 		this.registration.preInitialize( event );
 
 		if( Platform.isClient() )

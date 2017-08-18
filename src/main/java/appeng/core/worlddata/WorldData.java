@@ -60,7 +60,6 @@ public final class WorldData implements IWorldData
 	private static IWorldData instance;
 
 	private final IWorldPlayerData playerData;
-	private final IWorldDimensionData dimensionData;
 	private final IWorldGridStorageData storageData;
 	private final IWorldCompassData compassData;
 	private final IWorldSpawnData spawnData;
@@ -87,7 +86,6 @@ public final class WorldData implements IWorldData
 		this.sharedConfig = new Configuration( settingsFile, AEConfig.VERSION );
 
 		final PlayerData playerData = new PlayerData( this.sharedConfig );
-		final DimensionData dimensionData = new DimensionData( this.sharedConfig );
 		final StorageData storageData = new StorageData( this.sharedConfig );
 
 		final ThreadFactory compassThreadFactory = new CompassThreadFactory();
@@ -97,13 +95,12 @@ public final class WorldData implements IWorldData
 		final IWorldSpawnData spawnData = new SpawnData( this.spawnDirectory );
 
 		this.playerData = playerData;
-		this.dimensionData = dimensionData;
 		this.storageData = storageData;
 		this.compassData = compassData;
 		this.spawnData = spawnData;
 
-		this.startables = Lists.<IOnWorldStartable>newArrayList( playerData, dimensionData, storageData );
-		this.stoppables = Lists.<IOnWorldStoppable>newArrayList( playerData, dimensionData, storageData, compassData );
+		this.startables = Lists.<IOnWorldStartable>newArrayList( playerData, storageData );
+		this.stoppables = Lists.<IOnWorldStoppable>newArrayList( playerData, storageData, compassData );
 	}
 
 	/**
@@ -196,13 +193,6 @@ public final class WorldData implements IWorldData
 	public IWorldPlayerData playerData()
 	{
 		return this.playerData;
-	}
-
-	@Nonnull
-	@Override
-	public IWorldDimensionData dimensionData()
-	{
-		return this.dimensionData;
 	}
 
 	@Nonnull

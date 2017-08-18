@@ -35,10 +35,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -86,6 +89,7 @@ import appeng.core.features.registries.cell.CreativeCellHandler;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.stats.PlayerStatsRegistration;
+import appeng.core.worlddata.SpatialDimensionManager;
 import appeng.hooks.TickHandler;
 import appeng.items.materials.ItemMaterial;
 import appeng.items.parts.ItemFacade;
@@ -125,6 +129,7 @@ import appeng.worldgen.QuartzWorldGen;
 final class Registration
 {
 	DimensionType storageDimensionType;
+	int storageDimensionID;
 	Biome storageBiome;
 
 	private File recipeDirectory;
@@ -196,6 +201,15 @@ final class Registration
 		}
 
 		this.storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.getStorageProviderID(), StorageWorldProvider.class, false );
+
+		if( config.getStorageDimensionID() == -1 )
+		{
+			config.setStorageDimensionID( DimensionManager.getNextFreeDimId() );
+			config.save();
+		}
+		this.storageDimensionID = config.getStorageDimensionID();
+
+		DimensionManager.registerDimension( this.storageDimensionID, this.storageDimensionType );
 	}
 
 	private void registerCraftHandlers( final IRecipeHandlerRegistry registry )
@@ -350,6 +364,16 @@ final class Registration
 		final Runnable recipeLoader = new RecipeLoader( this.recipeDirectory, this.customRecipeConfig, recipeHandler );
 		recipeLoader.run();
 		recipeHandler.injectRecipes();
+	}
+
+	@SubscribeEvent
+	public void attachSpatialDimensionManager( AttachCapabilitiesEvent<World> event )
+	{
+		if( AEConfig.instance()
+				.isFeatureEnabled( AEFeature.SPATIAL_IO ) && event.getObject() == DimensionManager.getWorld( AEConfig.instance().getStorageDimensionID() ) )
+		{
+			event.addCapability( new ResourceLocation( "appliedenergistics2:spatial_dimension_manager" ), new SpatialDimensionManager( event.getObject() ) );
+		}
 	}
 
 	void postInit( final FMLPostInitializationEvent event )

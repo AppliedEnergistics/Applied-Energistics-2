@@ -40,9 +40,6 @@ public interface IWorldData
 	IWorldPlayerData playerData();
 
 	@Nonnull
-	IWorldDimensionData dimensionData();
-
-	@Nonnull
 	IWorldCompassData compassData();
 
 	@Nonnull

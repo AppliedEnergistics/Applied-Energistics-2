@@ -147,7 +147,8 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 					final MENetworkEvent res = gi.postEvent( new MENetworkSpatialEvent( this, req ) );
 					if( !res.isCanceled() )
 					{
-						final TransitionResult tr = sc.doSpatialTransition( cell, this.world, spc.getMin(), spc.getMax(), true );
+						// TODO get owner
+						final TransitionResult tr = sc.doSpatialTransition( cell, this.world, spc.getMin(), spc.getMax(), null, true );
 						if( tr.success )
 						{
 							energy.extractAEPower( req, Actionable.MODULATE, PowerMultiplier.CONFIG );

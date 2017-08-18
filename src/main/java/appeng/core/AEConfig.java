@@ -96,6 +96,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 
 	// Spatial IO/Dimension
 	private int storageProviderID = -1;
+	private int storageDimensionID = -1;
 	private double spatialPowerExponent = 1.35;
 	private double spatialPowerMultiplier = 1250.0;
 
@@ -251,6 +252,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		if( this.isFeatureEnabled( AEFeature.SPATIAL_IO ) )
 		{
 			this.storageProviderID = this.get( "spatialio", "storageProviderID", this.storageProviderID ).getInt( this.storageProviderID );
+			this.storageDimensionID = this.get( "spatialio", "storageDimensionID", this.storageDimensionID ).getInt( this.storageDimensionID );
 			this.spatialPowerMultiplier = this.get( "spatialio", "spatialPowerMultiplier", this.spatialPowerMultiplier ).getDouble(
 					this.spatialPowerMultiplier );
 			this.spatialPowerExponent = this.get( "spatialio", "spatialPowerExponent", this.spatialPowerExponent ).getDouble( this.spatialPowerExponent );
@@ -396,6 +398,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		if( this.isFeatureEnabled( AEFeature.SPATIAL_IO ) )
 		{
 			this.get( "spatialio", "storageProviderID", this.storageProviderID ).set( this.storageProviderID );
+			this.get( "spatialio", "storageDimensionID", this.storageDimensionID ).set( this.storageDimensionID );
 		}
 
 		this.get( "Client", "PowerUnit", this.selectedPowerUnit.name(), this.getListComment( this.selectedPowerUnit ) ).set( this.selectedPowerUnit.name() );
@@ -621,6 +624,11 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		return this.storageProviderID;
 	}
 
+	public int getStorageDimensionID()
+	{
+		return this.storageDimensionID;
+	}
+
 	public double getSpatialPowerExponent()
 	{
 		return this.spatialPowerExponent;
@@ -761,5 +769,10 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	void setStorageProviderID( int id )
 	{
 		this.storageProviderID = id;
+	}
+
+	void setStorageDimensionID( int id )
+	{
+		this.storageDimensionID = id;
 	}
 }
