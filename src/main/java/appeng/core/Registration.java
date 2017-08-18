@@ -87,9 +87,6 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.stats.PlayerStatsRegistration;
 import appeng.hooks.TickHandler;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
-import appeng.integration.Integrations;
 import appeng.items.materials.ItemMaterial;
 import appeng.items.parts.ItemFacade;
 import appeng.loot.ChestLoot;
@@ -159,7 +156,7 @@ final class Registration
 		definitions.getRegistry().getBootstrapComponents( IPreInitComponent.class ).forEachRemaining( b -> b.preInitialize( event.getSide() ) );
 	}
 
-	private void registerSpatial( final boolean force, IForgeRegistry<Biome> registry )
+	private void registerSpatial( IForgeRegistry<Biome> registry )
 	{
 		if( !AEConfig.instance().isFeatureEnabled( AEFeature.SPATIAL_IO ) )
 		{
@@ -175,12 +172,7 @@ final class Registration
 
 		registry.register( this.storageBiome.setRegistryName( "appliedenergistics2:storage_biome" ) );
 
-		if( config.getStorageProviderID() != -1 )
-		{
-			this.storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.getStorageProviderID(), StorageWorldProvider.class, false );
-		}
-
-		if( config.getStorageProviderID() == -1 && force )
+		if( config.getStorageProviderID() == -1 )
 		{
 			final Set<Integer> ids = new HashSet<>();
 			for( DimensionType type : DimensionType.values() )
@@ -188,17 +180,16 @@ final class Registration
 				ids.add( type.getId() );
 			}
 
-			config.setStorageProviderID( -11 );
-
-			while( ids.contains( config.getStorageProviderID() ) )
+			int newId = -11;
+			while( ids.contains( newId ) )
 			{
-				config.setStorageProviderID( config.getStorageProviderID() - 1 );
+				--newId;
 			}
-
-			this.storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.getStorageProviderID(), StorageWorldProvider.class, false );
-
+			config.setStorageProviderID( newId );
 			config.save();
 		}
+
+		this.storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.getStorageProviderID(), StorageWorldProvider.class, false );
 	}
 
 	private void registerCraftHandlers( final IRecipeHandlerRegistry registry )
@@ -284,7 +275,7 @@ final class Registration
 	public void registerBiomes( RegistryEvent.Register<Biome> event )
 	{
 		final IForgeRegistry<Biome> registry = event.getRegistry();
-		this.registerSpatial( false, registry );
+		this.registerSpatial( registry );
 	}
 
 	@SubscribeEvent
