@@ -25,7 +25,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.relauncher.Side;
@@ -113,7 +112,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		final int targetZ = max.z - min.z - 1;
 		final int maxSize = this.getMaxStoredDim( is );
 
-		final Vec3i targetSize = new Vec3i( targetX, targetY, targetZ );
+		final BlockPos targetSize = new BlockPos( targetX, targetY, targetZ );
 
 		ISpatialDimension manager = this.getSpatialDimension();
 
@@ -127,7 +126,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		{
 			if( manager.isCellDimension( cellid ) )
 			{
-				Vec3i scale = manager.getCellContentSize( cellid );
+				BlockPos scale = manager.getCellContentSize( cellid );
 
 				if( scale.equals( targetSize ) )
 				{
@@ -165,7 +164,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		return -1;
 	}
 
-	private void setStorageCellID( final ItemStack is, int id, Vec3i size )
+	private void setStorageCellID( final ItemStack is, int id, BlockPos size )
 	{
 		final NBTTagCompound c = Platform.openNbtData( is );
 

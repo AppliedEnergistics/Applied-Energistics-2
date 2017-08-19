@@ -3,7 +3,6 @@ package appeng.api.storage;
 
 
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 
 
@@ -11,7 +10,7 @@ public interface ISpatialDimension
 {
 	World getWorld();
 
-	int createNewCellDimension( Vec3i contentSize, int playerId );
+	int createNewCellDimension( BlockPos contentSize, int playerId );
 
 	void deleteCellDimension( int cellDimId );
 
@@ -21,5 +20,5 @@ public interface ISpatialDimension
 
 	BlockPos getCellDimensionOrigin( int cellDimId );
 
-	Vec3i getCellContentSize( int cellDimId );
+	BlockPos getCellContentSize( int cellDimId );
 }

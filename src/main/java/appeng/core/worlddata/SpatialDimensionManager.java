@@ -9,7 +9,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -38,7 +37,7 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 	}
 
 	@Override
-	public int createNewCellDimension( Vec3i contentSize, int owner )
+	public int createNewCellDimension( BlockPos contentSize, int owner )
 	{
 		int newId = this.getNextId();
 
@@ -92,7 +91,7 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 	}
 
 	@Override
-	public Vec3i getCellContentSize( int cellStorageId )
+	public BlockPos getCellContentSize( int cellStorageId )
 	{
 		StorageCellData cell = this.spatialData.get( cellStorageId );
 		if( cell != null )
@@ -199,7 +198,7 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 
 	private static class StorageCellData implements INBTSerializable<NBTTagCompound>
 	{
-		public Vec3i contentDimension;
+		public BlockPos contentDimension;
 		public int owner;
 
 		@Override
@@ -216,7 +215,7 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 		@Override
 		public void deserializeNBT( NBTTagCompound nbt )
 		{
-			contentDimension = new Vec3i( nbt.getInteger( "dim_x" ), nbt.getInteger( "dim_y" ), nbt.getInteger( "dim_z" ) );
+			contentDimension = new BlockPos( nbt.getInteger( "dim_x" ), nbt.getInteger( "dim_y" ), nbt.getInteger( "dim_z" ) );
 			owner = nbt.getInteger( "owner" );
 		}
 	}
