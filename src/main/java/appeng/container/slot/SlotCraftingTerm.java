@@ -175,6 +175,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 	}
 
 	// TODO: This is really hacky and NEEDS to be solved with a full container/gui refactoring.
+	@Override
 	protected NonNullList<ItemStack> getRemainingItems( InventoryCrafting ic, World world )
 	{
 		if( this.container instanceof ContainerCraftingTerm )
