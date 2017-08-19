@@ -492,6 +492,7 @@ final class Registration
 		/*
 		 * White List Vanilla...
 		 */
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityBanner.class );
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityBeacon.class );
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityBrewingStand.class );
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityChest.class );
@@ -503,15 +504,15 @@ final class Registration
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityEnchantmentTable.class );
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityEnderChest.class );
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityEndPortal.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntitySkull.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityFurnace.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityMobSpawner.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntitySign.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityPiston.class );
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityFlowerPot.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityNote.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityFurnace.class );
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityHopper.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityMobSpawner.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityNote.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityPiston.class );
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityShulkerBox.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntitySign.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntitySkull.class );
 
 		/*
 		 * Whitelist AE2
