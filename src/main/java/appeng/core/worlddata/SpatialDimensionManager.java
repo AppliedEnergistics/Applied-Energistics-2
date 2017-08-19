@@ -4,13 +4,12 @@ package appeng.core.worlddata;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -39,16 +38,13 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 	}
 
 	@Override
-	public int createNewCellStorage( EntityPlayer owner )
+	public int createNewCellDimension( Vec3i contentSize, int owner )
 	{
 		int newId = this.getNextId();
 
 		StorageCellData data = new StorageCellData();
-		data.offset = this.getBlockPosFromId( newId );
-		if( owner != null )
-		{
-			data.owner = owner.getPersistentID();
-		}
+		data.contentDimension = contentSize;
+		data.owner = owner;
 
 		this.initCellArea( data );
 
@@ -58,7 +54,7 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 	}
 
 	@Override
-	public void deleteCellStorage( int cellStorageId )
+	public void deleteCellDimension( int cellStorageId )
 	{
 		// TODO cleanup blocks
 		StorageCellData removed = spatialData.remove( cellStorageId );
@@ -69,23 +65,39 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 	}
 
 	@Override
-	public UUID getCellStorageOwner( int cellStorageId )
+	public boolean isCellDimension( int cellStorageId )
+	{
+		return this.spatialData.containsKey( cellStorageId );
+	}
+
+	@Override
+	public int getCellDimensionOwner( int cellStorageId )
 	{
 		StorageCellData cell = this.spatialData.get( cellStorageId );
 		if( cell != null )
 		{
 			return cell.owner;
 		}
+		return -1;
+	}
+
+	@Override
+	public BlockPos getCellDimensionOrigin( int cellStorageId )
+	{
+		if( this.isCellDimension( cellStorageId ) )
+		{
+			return getBlockPosFromId( cellStorageId );
+		}
 		return null;
 	}
 
 	@Override
-	public BlockPos getCellStorageOffset( int cellStorageId )
+	public Vec3i getCellContentSize( int cellStorageId )
 	{
 		StorageCellData cell = this.spatialData.get( cellStorageId );
 		if( cell != null )
 		{
-			return cell.offset;
+			return cell.contentDimension;
 		}
 		return null;
 	}
@@ -187,31 +199,25 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 
 	private static class StorageCellData implements INBTSerializable<NBTTagCompound>
 	{
-		public BlockPos offset;
-		public UUID owner;
+		public Vec3i contentDimension;
+		public int owner;
 
 		@Override
 		public NBTTagCompound serializeNBT()
 		{
 			NBTTagCompound nbt = new NBTTagCompound();
-			nbt.setInteger( "offset_x", offset.getX() );
-			nbt.setInteger( "offset_y", offset.getY() );
-			nbt.setInteger( "offset_z", offset.getZ() );
-			if( owner != null )
-			{
-				nbt.setUniqueId( "owner", owner );
-			}
+			nbt.setInteger( "dim_x", contentDimension.getX() );
+			nbt.setInteger( "dim_y", contentDimension.getY() );
+			nbt.setInteger( "dim_z", contentDimension.getZ() );
+			nbt.setInteger( "owner", owner );
 			return nbt;
 		}
 
 		@Override
 		public void deserializeNBT( NBTTagCompound nbt )
 		{
-			offset = new BlockPos( nbt.getInteger( "offset_x" ), nbt.getInteger( "offset_y" ), nbt.getInteger( "offset_z" ) );
-			if( nbt.hasKey( "owner" ) )
-			{
-				owner = nbt.getUniqueId( "owner" );
-			}
+			contentDimension = new Vec3i( nbt.getInteger( "dim_x" ), nbt.getInteger( "dim_y" ), nbt.getInteger( "dim_z" ) );
+			owner = nbt.getInteger( "owner" );
 		}
 	}
 }

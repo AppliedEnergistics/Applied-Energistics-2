@@ -148,10 +148,9 @@ public class CachedPlane
 						{
 							final Object[] details = this.myColumns[tePOS.getX() - minX][tePOS.getZ() - minZ].getDetails( tePOS.getY() );
 							final IBlockState blkState = (IBlockState) details[0];
-							
 
 							// don't skip air, just let the code replace it...
-							if( blkState != null && blkState.getBlock() == Platform.AIR_BLOCK  && blkState.getMaterial().isReplaceable() )
+							if( blkState != null && blkState.getBlock() == Platform.AIR_BLOCK && blkState.getMaterial().isReplaceable() )
 							{
 								w.setBlockToAir( tePOS );
 							}

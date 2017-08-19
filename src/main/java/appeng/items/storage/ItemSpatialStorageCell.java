@@ -22,10 +22,10 @@ package appeng.items.storage;
 import java.util.List;
 
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.relauncher.Side;
@@ -106,52 +106,52 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	}
 
 	@Override
-	public TransitionResult doSpatialTransition( final ItemStack is, final World w, final WorldCoord min, final WorldCoord max, EntityPlayer player, final boolean doTransition )
+	public TransitionResult doSpatialTransition( final ItemStack is, final World w, final WorldCoord min, final WorldCoord max, int playerId )
 	{
-		final WorldCoord scale = this.getStoredSize( is );
-
 		final int targetX = max.x - min.x - 1;
 		final int targetY = max.y - min.y - 1;
 		final int targetZ = max.z - min.z - 1;
 		final int maxSize = this.getMaxStoredDim( is );
+
+		final Vec3i targetSize = new Vec3i( targetX, targetY, targetZ );
 
 		ISpatialDimension manager = this.getSpatialDimension();
 
 		int cellid = this.getStorageCellID( is );
 		if( cellid < 0 )
 		{
-			cellid = manager.createNewCellStorage( player );
-			this.setStorageCellID( is, cellid );
+			cellid = manager.createNewCellDimension( targetSize, playerId );
 		}
 
-		if( ( scale.x == 0 && scale.y == 0 && scale.z == 0 ) || ( scale.x == targetX && scale.y == targetY && scale.z == targetZ ) )
+		try
 		{
-			if( targetX <= maxSize && targetY <= maxSize && targetZ <= maxSize )
+			if( manager.isCellDimension( cellid ) )
 			{
-				BlockPos offset = manager.getCellStorageOffset( cellid );
-				if( offset != null )
-				{
-					StorageHelper.getInstance().swapRegions( w, min.x + 1, min.y + 1, min.z + 1, manager.getWorld(), offset.getX(), offset.getY(),
-							offset.getZ(), targetX - 1, targetY - 1,
-							targetZ - 1 );
-					this.setStoredSize( is, targetX, targetY, targetZ );
+				Vec3i scale = manager.getCellContentSize( cellid );
 
-					return new TransitionResult( true, 0 );
+				if( scale.equals( targetSize ) )
+				{
+					if( targetX <= maxSize && targetY <= maxSize && targetZ <= maxSize )
+					{
+						BlockPos offset = manager.getCellDimensionOrigin( cellid );
+
+						StorageHelper.getInstance().swapRegions( w, min.x + 1, min.y + 1, min.z + 1, manager.getWorld(), offset.getX(), offset.getY(),
+								offset.getZ(), targetX - 1, targetY - 1,
+								targetZ - 1 );
+						this.setStorageCellID( is, cellid, targetSize );
+						return new TransitionResult( true, 0 );
+					}
 				}
 			}
+			return new TransitionResult( false, 0 );
 		}
-
-		return new TransitionResult( false, 0 );
-	}
-
-	private void setStoredSize( final ItemStack is, final int targetX, final int targetY, final int targetZ )
-	{
-		if( is.hasTagCompound() )
+		finally
 		{
-			final NBTTagCompound c = is.getTagCompound();
-			c.setInteger( "sizeX", targetX );
-			c.setInteger( "sizeY", targetY );
-			c.setInteger( "sizeZ", targetZ );
+			// clean up newly created dimensions that failed transfer
+			if( manager.isCellDimension( cellid ) && this.getStorageCellID( is ) < 0 )
+			{
+				manager.deleteCellDimension( cellid );
+			}
 		}
 	}
 
@@ -165,9 +165,13 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		return -1;
 	}
 
-	private void setStorageCellID( final ItemStack is, int id )
+	private void setStorageCellID( final ItemStack is, int id, Vec3i size )
 	{
 		final NBTTagCompound c = Platform.openNbtData( is );
+
 		c.setInteger( "StorageCellID", id );
+		c.setInteger( "sizeX", size.getX() );
+		c.setInteger( "sizeY", size.getY() );
+		c.setInteger( "sizeZ", size.getZ() );
 	}
 }

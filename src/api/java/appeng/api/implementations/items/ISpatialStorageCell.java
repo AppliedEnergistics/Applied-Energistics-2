@@ -24,7 +24,6 @@
 package appeng.api.implementations.items;
 
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -59,7 +58,7 @@ public interface ISpatialStorageCell
 	 *
 	 * @return the world for this cell
 	 */
-	 ISpatialDimension getSpatialDimension();
+	ISpatialDimension getSpatialDimension();
 
 	/**
 	 * get the currently stored size.
@@ -77,9 +76,9 @@ public interface ISpatialStorageCell
 	 * @param w world of spatial
 	 * @param min min coord
 	 * @param max max coord
-	 * @param doTransition transition
+	 * @param playerId owner of current grid or -1
 	 *
 	 * @return result of transition
 	 */
-	TransitionResult doSpatialTransition( ItemStack is, World w, WorldCoord min, WorldCoord max, EntityPlayer player, boolean doTransition );
+	TransitionResult doSpatialTransition( ItemStack is, World w, WorldCoord min, WorldCoord max, int playerId );
 }

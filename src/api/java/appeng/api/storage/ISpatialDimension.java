@@ -1,18 +1,25 @@
+
 package appeng.api.storage;
 
-import java.util.UUID;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
+
 
 public interface ISpatialDimension
 {
 	World getWorld();
-	
-	int createNewCellStorage( EntityPlayer owner );
-	void deleteCellStorage( int cellStorageId );
-	
-	UUID getCellStorageOwner ( int cellStorageId );
-	BlockPos getCellStorageOffset( int cellStorageId );	
+
+	int createNewCellDimension( Vec3i contentSize, int playerId );
+
+	void deleteCellDimension( int cellDimId );
+
+	boolean isCellDimension( int cellDimID );
+
+	int getCellDimensionOwner( int cellDimId );
+
+	BlockPos getCellDimensionOrigin( int cellDimId );
+
+	Vec3i getCellContentSize( int cellDimId );
 }
