@@ -19,12 +19,15 @@
 package appeng.tile.misc;
 
 
+import javax.annotation.Nonnull;
+
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
@@ -45,6 +48,7 @@ import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
+import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
 
 
@@ -55,6 +59,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	private static final double DILATION_SCALING = 100.0;
 	private static final int MIN_BURN_SPEED = 20;
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 1 );
+	private final IItemHandler invExt = new WrapperFilteredItemHandler( inv, new FuelSlotFilter() );
 
 	private int burnSpeed = 100;
 	private double burnTime = 0;
@@ -65,7 +70,6 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 
 	public TileVibrationChamber()
 	{
-		this.inv.setFilter( new FuelSlotFilter() );
 		this.getProxy().setIdlePowerUsage( 0 );
 		this.getProxy().setFlags();
 	}
@@ -108,6 +112,12 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		this.setBurnTime( data.getDouble( "burnTime" ) );
 		this.setMaxBurnTime( data.getDouble( "maxBurnTime" ) );
 		this.setBurnSpeed( data.getInteger( "burnSpeed" ) );
+	}
+
+	@Override
+	protected IItemHandler getItemHandlerForSide( @Nonnull EnumFacing facing )
+	{
+		return this.invExt;
 	}
 
 	@Override
