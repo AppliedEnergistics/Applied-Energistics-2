@@ -45,8 +45,6 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 		data.contentDimension = contentSize;
 		data.owner = owner;
 
-		this.initCellArea( data );
-
 		this.spatialData.put( newId, data );
 
 		return newId;
@@ -55,11 +53,10 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 	@Override
 	public void deleteCellDimension( int cellStorageId )
 	{
-		// TODO cleanup blocks
 		StorageCellData removed = spatialData.remove( cellStorageId );
 		if( removed != null )
 		{
-			this.clearCellArea( removed );
+			this.clearCellArea( cellStorageId, removed );
 		}
 	}
 
@@ -186,14 +183,9 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 		return new BlockPos( posx, 64, posz );
 	}
 
-	private void initCellArea( StorageCellData cell )
+	private void clearCellArea( int cellId, StorageCellData cell )
 	{
-		// TODO lets build a wall
-	}
-
-	private void clearCellArea( StorageCellData cell )
-	{
-		// TODO clear all blocks in area?
+		// TODO reset chunks?
 	}
 
 	private static class StorageCellData implements INBTSerializable<NBTTagCompound>
