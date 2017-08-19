@@ -20,7 +20,6 @@ package appeng.parts.networking;
 
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.Set;
@@ -169,8 +168,11 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 		try
 		{
 			final IEnergyGrid eg = this.getProxy().getEnergy();
+
 			if( !seen.contains( eg ) )
+			{
 				acquiredPower += eg.extractProviderPower( amt - acquiredPower, mode, seen );
+			}
 		}
 		catch( final GridAccessException e )
 		{
@@ -180,8 +182,11 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 		try
 		{
 			final IEnergyGrid eg = this.outerProxy.getEnergy();
+
 			if( !seen.contains( eg ) )
+			{
 				acquiredPower += eg.extractProviderPower( amt - acquiredPower, mode, seen );
+			}
 		}
 		catch( final GridAccessException e )
 		{
@@ -201,7 +206,9 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 		{
 			final IEnergyGrid eg = this.getProxy().getEnergy();
 			if( !seen.contains( eg ) )
+			{
 				amount = eg.injectProviderPower( amount, mode, seen );
+			}
 		}
 		catch( final GridAccessException e )
 		{
@@ -212,7 +219,9 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 		{
 			final IEnergyGrid eg = this.outerProxy.getEnergy();
 			if( !seen.contains( eg ) )
+			{
 				amount = eg.injectProviderPower( amount, mode, seen );
+			}
 		}
 		catch( final GridAccessException e )
 		{
@@ -231,7 +240,9 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 		{
 			final IEnergyGrid eg = this.getProxy().getEnergy();
 			if( !seen.contains( eg ) )
+			{
 				demand += eg.getProviderEnergyDemand( amt - demand, seen );
+			}
 		}
 		catch( final GridAccessException e )
 		{
@@ -242,7 +253,9 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 		{
 			final IEnergyGrid eg = this.outerProxy.getEnergy();
 			if( !seen.contains( eg ) )
+			{
 				demand += eg.getProviderEnergyDemand( amt - demand, seen );
+			}
 		}
 		catch( final GridAccessException e )
 		{

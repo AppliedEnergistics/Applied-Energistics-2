@@ -19,13 +19,13 @@
 package appeng.me.cache;
 
 
+import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.NavigableSet;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -64,23 +64,15 @@ import appeng.me.energy.EnergyWatcher;
 public class EnergyGridCache implements IEnergyGrid
 {
 
-	private static final Comparator<IEnergyGridProvider> COMPARATOR_HIGHEST_AMOUNT_STORED_FIRST = new Comparator<IEnergyGridProvider>()
-	{
-		public int compare( IEnergyGridProvider o1, IEnergyGridProvider o2 )
-		{
-			return Double.compare( o2.getProviderStoredEnergy(), o1.getProviderStoredEnergy() );
-		}
-	};
+	private static final Comparator<IEnergyGridProvider> COMPARATOR_HIGHEST_AMOUNT_STORED_FIRST = ( o1, o2 ) -> Double.compare( o2.getProviderStoredEnergy(),
+			o1.getProviderStoredEnergy() );
 
-	private static final Comparator<IEnergyGridProvider> COMPARATOR_LOWEST_PERCENTAGE_FIRST = new Comparator<IEnergyGridProvider>()
+	private static final Comparator<IEnergyGridProvider> COMPARATOR_LOWEST_PERCENTAGE_FIRST = ( o1, o2 ) ->
 	{
-		public int compare( IEnergyGridProvider o1, IEnergyGridProvider o2 )
-		{
-			final double percent1 = ( o1.getProviderStoredEnergy() + 1 ) / ( o1.getProviderMaxEnergy() + 1 );
-			final double percent2 = ( o2.getProviderStoredEnergy() + 1 ) / ( o2.getProviderMaxEnergy() + 1 );
+		final double percent1 = ( o1.getProviderStoredEnergy() + 1 ) / ( o1.getProviderMaxEnergy() + 1 );
+		final double percent2 = ( o2.getProviderStoredEnergy() + 1 ) / ( o2.getProviderMaxEnergy() + 1 );
 
-			return Double.compare( percent1, percent2 );
-		}
+		return Double.compare( percent1, percent2 );
 	};
 
 	private final NavigableSet<EnergyThreshold> interests = Sets.newTreeSet();
@@ -459,7 +451,7 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public double injectPower( final double amt, final Actionable mode )
 	{
-		final Queue<IEnergyGridProvider> toVisit = new PriorityQueue<>(COMPARATOR_LOWEST_PERCENTAGE_FIRST);
+		final Queue<IEnergyGridProvider> toVisit = new PriorityQueue<>( COMPARATOR_LOWEST_PERCENTAGE_FIRST );
 		final Set<IEnergyGridProvider> visited = new HashSet<>();
 		toVisit.add( this );
 
@@ -471,8 +463,7 @@ public class EnergyGridCache implements IEnergyGrid
 			visited.add( next );
 
 			final double cannotHold = next.injectProviderPower( amt, Actionable.SIMULATE, visited );
-			leftover = next.injectProviderPower( leftover - cannotHold, mode, visited );
-
+			next.injectProviderPower( leftover - cannotHold, mode, visited );
 			leftover = cannotHold;
 
 			for( IEnergyGridProvider iEnergyGridProvider : next.providers() )
@@ -523,7 +514,7 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public double getEnergyDemand( final double maxRequired )
 	{
-		final Queue<IEnergyGridProvider> toVisit = new LinkedList<>();
+		final Queue<IEnergyGridProvider> toVisit = new ArrayDeque<>();
 		final Set<IEnergyGridProvider> visited = new HashSet<>();
 		toVisit.add( this );
 
