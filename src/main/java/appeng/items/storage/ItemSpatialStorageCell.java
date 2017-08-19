@@ -145,10 +145,11 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 					{
 						BlockPos offset = manager.getCellDimensionOrigin( cellid );
 
+						this.setStorageCell( is, cellid, targetSize );
 						StorageHelper.getInstance().swapRegions( w, min.x + 1, min.y + 1, min.z + 1, manager.getWorld(), offset.getX(), offset.getY(),
 								offset.getZ(), targetX - 1, targetY - 1,
 								targetZ - 1 );
-						this.setStorageCellID( is, cellid, targetSize );
+
 						return new TransitionResult( true, 0 );
 					}
 				}
@@ -165,7 +166,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		}
 	}
 
-	private void setStorageCellID( final ItemStack is, int id, BlockPos size )
+	private void setStorageCell( final ItemStack is, int id, BlockPos size )
 	{
 		final NBTTagCompound c = Platform.openNbtData( is );
 
