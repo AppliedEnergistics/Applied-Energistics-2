@@ -114,6 +114,8 @@ public enum GuiText
 	MaxPower,
 	RequiredPower,
 	Efficiency,
+	SCSSize,
+	SCSSInvalid,
 	InWorldCrafting,
 
 	inWorldFluix,
