@@ -143,14 +143,36 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 
 	private int getNextId()
 	{
-		// TODO
 		return this.spatialData.keySet().stream().max( Integer::compare ).orElse( -1 ) + 1;
 	}
 
 	private BlockPos getBlockPosFromId( int id )
 	{
-		// TODO need a better algorithm
-		return new BlockPos( MAX_CELL_DIMENSION * id, 64, 0 );
+		int signBits = id & 0b11;
+		int offsetBits = id >> 2;
+		int offsetScale = 1;
+		int posx = MAX_CELL_DIMENSION / 2;
+		int posz = MAX_CELL_DIMENSION / 2;
+
+		// find quadrant
+		while( offsetBits != 0 )
+		{
+			posx += MAX_CELL_DIMENSION * offsetScale * ( offsetBits & 0b01 );
+			posz += MAX_CELL_DIMENSION * offsetScale * ( offsetBits >> 1 & 0b01 );
+
+			offsetBits >>= 2;
+			offsetScale <<= 1;
+		}
+
+		// mirror in one of 4 directions
+		posx *= ( signBits & 0x01 ) - 1;
+		posz *= ( signBits >> 1 & 0x01 ) - 1;
+
+		// offset from cell center
+		posx -= 64;
+		posz -= 64;
+
+		return new BlockPos( posx, 64, posz );
 	}
 
 	private void initCellArea( StorageCellData cell )
