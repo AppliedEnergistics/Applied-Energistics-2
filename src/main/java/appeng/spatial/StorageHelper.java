@@ -241,8 +241,9 @@ public class StorageHelper
 		@Override
 		public void visit( final BlockPos pos )
 		{
-			final Block blk = this.dst.getBlockState( pos ).getBlock();
-			blk.neighborChanged( Platform.AIR_BLOCK.getDefaultState(), this.dst, pos, Platform.AIR_BLOCK, pos );
+			final IBlockState state = this.dst.getBlockState( pos );
+			final Block blk = state.getBlock();
+			blk.neighborChanged( state, this.dst, pos, blk, pos );
 		}
 	}
 
