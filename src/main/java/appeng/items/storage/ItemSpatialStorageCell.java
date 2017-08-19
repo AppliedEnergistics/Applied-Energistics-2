@@ -105,6 +105,17 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	}
 
 	@Override
+	public int getStoredDimensionID( final ItemStack is )
+	{
+		if( is.hasTagCompound() )
+		{
+			final NBTTagCompound c = is.getTagCompound();
+			return c.getInteger( "StorageCellID" );
+		}
+		return -1;
+	}
+
+	@Override
 	public TransitionResult doSpatialTransition( final ItemStack is, final World w, final WorldCoord min, final WorldCoord max, int playerId )
 	{
 		final int targetX = max.x - min.x - 1;
@@ -116,7 +127,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 
 		ISpatialDimension manager = this.getSpatialDimension();
 
-		int cellid = this.getStorageCellID( is );
+		int cellid = this.getStoredDimensionID( is );
 		if( cellid < 0 )
 		{
 			cellid = manager.createNewCellDimension( targetSize, playerId );
@@ -147,21 +158,11 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		finally
 		{
 			// clean up newly created dimensions that failed transfer
-			if( manager.isCellDimension( cellid ) && this.getStorageCellID( is ) < 0 )
+			if( manager.isCellDimension( cellid ) && this.getStoredDimensionID( is ) < 0 )
 			{
 				manager.deleteCellDimension( cellid );
 			}
 		}
-	}
-
-	private int getStorageCellID( final ItemStack is )
-	{
-		if( is.hasTagCompound() )
-		{
-			final NBTTagCompound c = is.getTagCompound();
-			return c.getInteger( "StorageCellID" );
-		}
-		return -1;
 	}
 
 	private void setStorageCellID( final ItemStack is, int id, BlockPos size )

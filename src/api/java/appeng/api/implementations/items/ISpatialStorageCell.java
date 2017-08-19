@@ -70,6 +70,15 @@ public interface ISpatialStorageCell
 	WorldCoord getStoredSize( ItemStack is );
 
 	/**
+	 * get the currently stored Dimension id.
+	 *
+	 * @param is spatial storage cell
+	 *
+	 * @return dimension id or -1
+	 */
+	int getStoredDimensionID( ItemStack is );
+
+	/**
 	 * Perform a spatial swap with the contents of the cell, and the world.
 	 *
 	 * @param is spatial storage cell
