@@ -167,7 +167,7 @@ public class PacketJEIRecipe extends AppEngPacket
 				if( currentItem.isEmpty() && this.recipe[x] != null )
 				{
 					// for each variant
-					for( int y = 0; y < this.recipe[x].length; y++ )
+					for( int y = 0; y < this.recipe[x].length && currentItem.isEmpty(); y++ )
 					{
 						final IAEItemStack request = AEItemStack.create( this.recipe[x][y] );
 						if( request != null )
@@ -209,7 +209,6 @@ public class PacketJEIRecipe extends AppEngPacket
 						}
 					}
 				}
-
 				ItemHandlerUtil.setStackInSlot( craftMatrix, x, currentItem );
 			}
 			con.onCraftMatrixChanged( new WrapperInvItemHandler( craftMatrix ) );
