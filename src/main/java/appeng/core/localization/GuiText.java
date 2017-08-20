@@ -94,7 +94,7 @@ public enum GuiText
 
 	// spatial
 	StoredSize,
-	DimensionId,
+	CellId,
 
 	CopyMode,
 	CopyModeDesc,

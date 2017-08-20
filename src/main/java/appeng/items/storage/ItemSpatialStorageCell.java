@@ -64,7 +64,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		final int id = this.getStoredDimensionID( stack );
 		if( id >= 0 )
 		{
-			lines.add( GuiText.DimensionId.getLocal() + ": " + id );
+			lines.add( GuiText.CellId.getLocal() + ": " + id );
 		}
 
 		final WorldCoord wc = this.getStoredSize( stack );
