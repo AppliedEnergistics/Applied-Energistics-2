@@ -205,7 +205,15 @@ public class PacketJEIRecipe extends AppEngPacket
 												if( filter == null || filter.isListed( request ) )
 												{
 													request.setStackSize( 1 );
-													final IAEItemStack out = Platform.poweredExtraction( energy, storage, request, cct.getActionSource() );
+													IAEItemStack out;
+													if ( realForFake == Actionable.SIMULATE )
+													{
+														out = storage.extractItems( request, Actionable.SIMULATE, cct.getActionSource() );
+													}
+													else
+													{
+														out = Platform.poweredExtraction( energy, storage, request, cct.getActionSource() );
+													}
 													if( out != null )
 													{
 														whichItem = out.getItemStack();
