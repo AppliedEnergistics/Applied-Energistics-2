@@ -92,7 +92,10 @@ public enum GuiText
 	FETunnel,
 	PressureTunnel,
 
+	// spatial
 	StoredSize,
+	DimensionId,
+
 	CopyMode,
 	CopyModeDesc,
 	PatternTerminal,

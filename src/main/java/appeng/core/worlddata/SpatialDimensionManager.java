@@ -37,6 +37,9 @@ import appeng.capabilities.Capabilities;
 
 public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySerializable<NBTTagCompound>
 {
+	private static final String NBT_SPATIAL_DATA_KEY = "spatial_data";
+	private static final String NBT_SPATIAL_ID_KEY = "id";
+
 	private World world;
 	private Map<Integer, StorageCellData> spatialData = new HashMap<>();
 
@@ -140,26 +143,26 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 		for( Map.Entry<Integer, StorageCellData> entry : this.spatialData.entrySet() )
 		{
 			final NBTTagCompound nbt = entry.getValue().serializeNBT();
-			nbt.setInteger( "id", entry.getKey() );
+			nbt.setInteger( NBT_SPATIAL_ID_KEY, entry.getKey() );
 			list.appendTag( nbt );
 		}
-		ret.setTag( "spatial_data", list );
+		ret.setTag( NBT_SPATIAL_DATA_KEY, list );
 		return ret;
 	}
 
 	@Override
 	public void deserializeNBT( NBTTagCompound nbt )
 	{
-		if( nbt.hasKey( "spatial_data" ) )
+		if( nbt.hasKey( NBT_SPATIAL_DATA_KEY ) )
 		{
-			final NBTTagList list = (NBTTagList) nbt.getTag( "spatial_data" );
+			final NBTTagList list = (NBTTagList) nbt.getTag( NBT_SPATIAL_DATA_KEY );
 
 			this.spatialData.clear();
 			for( int i = 0; i < list.tagCount(); ++i )
 			{
 				final NBTTagCompound entry = list.getCompoundTagAt( i );
 				final StorageCellData data = new StorageCellData();
-				final int id = entry.getInteger( "id" );
+				final int id = entry.getInteger( NBT_SPATIAL_ID_KEY );
 				data.deserializeNBT( entry );
 				this.spatialData.put( id, data );
 			}
@@ -213,6 +216,11 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 
 	private static class StorageCellData implements INBTSerializable<NBTTagCompound>
 	{
+		private static final String NBT_OWNER_KEY = "owner";
+		private static final String NBT_DIM_X_KEY = "dim_x";
+		private static final String NBT_DIM_Y_KEY = "dim_y";
+		private static final String NBT_DIM_Z_KEY = "dim_z";
+
 		public BlockPos contentDimension;
 		public int owner;
 
@@ -220,18 +228,18 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 		public NBTTagCompound serializeNBT()
 		{
 			NBTTagCompound nbt = new NBTTagCompound();
-			nbt.setInteger( "dim_x", contentDimension.getX() );
-			nbt.setInteger( "dim_y", contentDimension.getY() );
-			nbt.setInteger( "dim_z", contentDimension.getZ() );
-			nbt.setInteger( "owner", owner );
+			nbt.setInteger( NBT_DIM_X_KEY, contentDimension.getX() );
+			nbt.setInteger( NBT_DIM_Y_KEY, contentDimension.getY() );
+			nbt.setInteger( NBT_DIM_Z_KEY, contentDimension.getZ() );
+			nbt.setInteger( NBT_OWNER_KEY, owner );
 			return nbt;
 		}
 
 		@Override
 		public void deserializeNBT( NBTTagCompound nbt )
 		{
-			contentDimension = new BlockPos( nbt.getInteger( "dim_x" ), nbt.getInteger( "dim_y" ), nbt.getInteger( "dim_z" ) );
-			owner = nbt.getInteger( "owner" );
+			contentDimension = new BlockPos( nbt.getInteger( NBT_DIM_X_KEY ), nbt.getInteger( NBT_DIM_Y_KEY ), nbt.getInteger( NBT_DIM_Z_KEY ) );
+			owner = nbt.getInteger( NBT_OWNER_KEY );
 		}
 	}
 }

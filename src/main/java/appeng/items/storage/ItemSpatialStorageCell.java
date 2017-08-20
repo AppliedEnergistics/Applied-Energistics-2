@@ -44,6 +44,11 @@ import appeng.util.Platform;
 
 public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorageCell
 {
+	private static final String NBT_CELL_ID_KEY = "StorageCellID";
+	private static final String NBT_SIZE_X_KEY = "sizeX";
+	private static final String NBT_SIZE_Y_KEY = "sizeY";
+	private static final String NBT_SIZE_Z_KEY = "sizeZ";
+
 	private final int maxRegion;
 
 	public ItemSpatialStorageCell( final int spatialScale )
@@ -56,6 +61,12 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	@Override
 	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
+		final int id = this.getStoredDimensionID( stack );
+		if( id >= 0 )
+		{
+			lines.add( GuiText.DimensionId.getLocal() + ": " + id );
+		}
+
 		final WorldCoord wc = this.getStoredSize( stack );
 		if( wc.x > 0 )
 		{
@@ -99,7 +110,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		if( is.hasTagCompound() )
 		{
 			final NBTTagCompound c = is.getTagCompound();
-			return new WorldCoord( c.getInteger( "sizeX" ), c.getInteger( "sizeY" ), c.getInteger( "sizeZ" ) );
+			return new WorldCoord( c.getInteger( NBT_SIZE_X_KEY ), c.getInteger( NBT_SIZE_Y_KEY ), c.getInteger( NBT_SIZE_Z_KEY ) );
 		}
 		return new WorldCoord( 0, 0, 0 );
 	}
@@ -110,7 +121,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		if( is.hasTagCompound() )
 		{
 			final NBTTagCompound c = is.getTagCompound();
-			return c.getInteger( "StorageCellID" );
+			return c.getInteger( NBT_CELL_ID_KEY );
 		}
 		return -1;
 	}
@@ -170,9 +181,9 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	{
 		final NBTTagCompound c = Platform.openNbtData( is );
 
-		c.setInteger( "StorageCellID", id );
-		c.setInteger( "sizeX", size.getX() );
-		c.setInteger( "sizeY", size.getY() );
-		c.setInteger( "sizeZ", size.getZ() );
+		c.setInteger( NBT_CELL_ID_KEY, id );
+		c.setInteger( NBT_SIZE_X_KEY, size.getX() );
+		c.setInteger( NBT_SIZE_Y_KEY, size.getY() );
+		c.setInteger( NBT_SIZE_Z_KEY, size.getZ() );
 	}
 }
