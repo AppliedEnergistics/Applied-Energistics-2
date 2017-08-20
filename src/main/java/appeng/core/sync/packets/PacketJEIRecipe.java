@@ -37,6 +37,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -152,7 +153,7 @@ public class PacketJEIRecipe extends AppEngPacket
 							}
 
 							// put away old item
-							if( newItem != currentItem )
+							if( newItem != currentItem && security.hasPermission( player, SecurityPermissions.INJECT ) )
 							{
 								final IAEItemStack in = AEItemStack.create( currentItem );
 								final IAEItemStack out = cct.useRealItems() ? Platform.poweredInsert( energy, storage, in, cct.getActionSource() ) : null;
@@ -176,7 +177,7 @@ public class PacketJEIRecipe extends AppEngPacket
 								if( request != null )
 								{
 									// try ae
-									if( filter == null || filter.isListed( request ) )
+									if( ( filter == null || filter.isListed( request ) ) && security.hasPermission( player, SecurityPermissions.EXTRACT ) )
 									{
 										request.setStackSize( 1 );
 										IAEItemStack out;
