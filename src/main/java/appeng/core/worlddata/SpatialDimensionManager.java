@@ -190,8 +190,14 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 		}
 
 		// mirror in one of 4 directions
-		posx *= ( signBits & 0x01 ) - 1;
-		posz *= ( signBits >> 1 & 0x01 ) - 1;
+		if( ( signBits & 0b01 ) == 0 )
+		{
+			posx *= -1;
+		}
+		if( ( signBits & 0b10 ) == 0 )
+		{
+			posz *= -1;
+		}
 
 		// offset from cell center
 		posx -= 64;
