@@ -141,7 +141,10 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 					total += received;
 				}
 
-				PartP2PFEPower.this.queueTunnelDrain( PowerUnits.RF, total );
+				if( !simulate )
+				{
+					PartP2PFEPower.this.queueTunnelDrain( PowerUnits.RF, total );
+				}
 			}
 			catch( GridAccessException ignored )
 			{
@@ -208,7 +211,14 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 		@Override
 		public int extractEnergy( int maxExtract, boolean simulate )
 		{
-			return PartP2PFEPower.this.getAttachedEnergyStorage().extractEnergy( maxExtract, simulate );
+			final int total = PartP2PFEPower.this.getAttachedEnergyStorage().extractEnergy( maxExtract, simulate );
+
+			if( !simulate )
+			{
+				PartP2PFEPower.this.queueTunnelDrain( PowerUnits.RF, total );
+			}
+
+			return total;
 		}
 
 		@Override
