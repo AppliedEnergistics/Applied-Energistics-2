@@ -688,11 +688,13 @@ public class EnergyGridCache implements IEnergyGrid
 			double extracted = Math.min( amt, this.stored );
 
 			if( mode == Actionable.MODULATE )
+			{
 				this.stored -= extracted;
 
-			if( this.stored < MAX_BUFFER_STORAGE - 0.001 )
-			{
-				EnergyGridCache.this.myGrid.postEvent( new MENetworkPowerStorage( this, PowerEventType.REQUEST_POWER ) );
+				if( this.stored < MAX_BUFFER_STORAGE - 0.001 )
+				{
+					EnergyGridCache.this.myGrid.postEvent( new MENetworkPowerStorage( this, PowerEventType.REQUEST_POWER ) );
+				}
 			}
 
 			if( extracted < amt )
@@ -715,7 +717,9 @@ public class EnergyGridCache implements IEnergyGrid
 			double toStore = Math.min( amt, MAX_BUFFER_STORAGE - this.stored );
 
 			if( mode == Actionable.MODULATE )
+			{
 				this.stored += toStore;
+			}
 
 			return amt - toStore;
 		}
@@ -747,6 +751,5 @@ public class EnergyGridCache implements IEnergyGrid
 		{
 			this.stored += amount;
 		}
-	};
-
+	}
 }
