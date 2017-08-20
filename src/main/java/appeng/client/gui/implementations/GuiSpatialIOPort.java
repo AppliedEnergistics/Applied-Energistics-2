@@ -78,12 +78,23 @@ public class GuiSpatialIOPort extends AEBaseGui
 		this.fontRenderer.drawString( GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong( this.container.getCurrentPower(), false ), 13, 21,
 				4210752 );
 		this.fontRenderer.drawString( GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong( this.container.getMaxPower(), false ), 13, 31, 4210752 );
-		this.fontRenderer.drawString( GuiText.RequiredPower.getLocal() + ": " + Platform.formatPowerLong( this.container.getRequiredPower(), false ), 13, 78,
+		this.fontRenderer.drawString( GuiText.RequiredPower.getLocal() + ": " + Platform.formatPowerLong( this.container.getRequiredPower(), false ), 13, 73,
 				4210752 );
-		this.fontRenderer.drawString( GuiText.Efficiency.getLocal() + ": " + ( ( (float) this.container.getEfficency() ) / 100 ) + '%', 13, 88, 4210752 );
+		this.fontRenderer.drawString( GuiText.Efficiency.getLocal() + ": " + ( ( (float) this.container.getEfficency() ) / 100 ) + '%', 13, 83, 4210752 );
 
 		this.fontRenderer.drawString( this.getGuiDisplayName( GuiText.SpatialIOPort.getLocal() ), 8, 6, 4210752 );
 		this.fontRenderer.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96, 4210752 );
+
+		if( this.container.xSize != 0 && this.container.ySize != 0 && this.container.zSize != 0 )
+		{
+			final String text = GuiText.SCSSize.getLocal() + ": " + this.container.xSize + "x" + this.container.ySize + "x" + this.container.zSize;
+			this.fontRenderer.drawString( text, 13, 93, 4210752 );
+		}
+		else
+		{
+			this.fontRenderer.drawString( GuiText.SCSSize.getLocal() + ": " + GuiText.SCSSInvalid.getLocal(), 13, 93, 4210752 );
+		}
+
 	}
 
 	@Override

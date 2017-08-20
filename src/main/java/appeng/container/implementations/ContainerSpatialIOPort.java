@@ -26,6 +26,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.util.AEPartLocation;
+import appeng.api.util.DimensionalCoord;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotOutput;
@@ -47,6 +48,13 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 	public long eff;
 	private IGrid network;
 	private int delay = 40;
+
+	@GuiSync( 31 )
+	public int xSize;
+	@GuiSync( 32 )
+	public int ySize;
+	@GuiSync( 33 )
+	public int zSize;
 
 	public ContainerSpatialIOPort( final InventoryPlayer ip, final TileSpatialIOPort spatialIOPort )
 	{
@@ -85,6 +93,22 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 					this.setMaxPower( (long) ( 100.0 * eg.getMaxStoredPower() ) );
 					this.setRequiredPower( (long) ( 100.0 * sc.requiredPower() ) );
 					this.setEfficency( (long) ( 100.0f * sc.currentEfficiency() ) );
+
+					final DimensionalCoord min = sc.getMin();
+					final DimensionalCoord max = sc.getMax();
+
+					if( min != null && max != null && sc.isValidRegion() )
+					{
+						this.xSize = sc.getMax().x - sc.getMin().x - 1;
+						this.ySize = sc.getMax().y - sc.getMin().y - 1;
+						this.zSize = sc.getMax().z - sc.getMin().z - 1;
+					}
+					else
+					{
+						this.xSize = 0;
+						this.ySize = 0;
+						this.zSize = 0;
+					}
 				}
 			}
 		}

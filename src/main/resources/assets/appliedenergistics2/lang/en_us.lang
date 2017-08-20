@@ -117,6 +117,8 @@ gui.appliedenergistics2.security.build.tip=User can modify the physical structur
 gui.appliedenergistics2.security.security.tip=User can access and modify the security terminal of the network.
 
 gui.appliedenergistics2.Efficiency=Efficiency
+gui.appliedenergistics2.SCSSize=SCS Size
+gui.appliedenergistics2.SCSInvalid=Invalid
 gui.appliedenergistics2.RequiredPower=Required Power
 gui.appliedenergistics2.StoredPower=Stored Power
 gui.appliedenergistics2.MaxPower=Max Power
