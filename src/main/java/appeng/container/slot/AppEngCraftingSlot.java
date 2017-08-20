@@ -24,6 +24,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.util.NonNullList;
+import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.util.helpers.ItemHandlerUtil;
@@ -149,7 +150,7 @@ public class AppEngCraftingSlot extends AppEngSlot
 			ic.setInventorySlotContents( x, this.craftMatrix.getStackInSlot( x ) );
 		}
 
-		final NonNullList<ItemStack> aitemstack = CraftingManager.getRemainingItems( ic, playerIn.world );
+		final NonNullList<ItemStack> aitemstack = this.getRemainingItems( ic, playerIn.world );
 
 		ItemHandlerUtil.copy( ic, this.craftMatrix, false );
 
@@ -194,5 +195,11 @@ public class AppEngCraftingSlot extends AppEngSlot
 		}
 
 		return super.decrStackSize( par1 );
+	}
+
+	// TODO: This is really hacky and NEEDS to be solved with a full container/gui refactoring.
+	protected NonNullList<ItemStack> getRemainingItems( InventoryCrafting ic, World world )
+	{
+		return CraftingManager.getRemainingItems( ic, world );
 	}
 }

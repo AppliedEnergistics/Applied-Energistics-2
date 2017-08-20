@@ -106,7 +106,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 		if( this.isCrafting )
 		{
-			this.standardRecipe = Platform.findMatchingRecipe( this.crafting, w );
+			this.standardRecipe = CraftingManager.findMatchingRecipe( this.crafting, w );
 
 			if( this.standardRecipe != null )
 			{

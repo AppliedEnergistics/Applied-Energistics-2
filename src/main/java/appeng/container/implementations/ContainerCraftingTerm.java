@@ -24,6 +24,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
@@ -46,6 +47,7 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 	private final AppEngInternalInventory output = new AppEngInternalInventory( this, 1 );
 	private final SlotCraftingMatrix[] craftingSlots = new SlotCraftingMatrix[9];
 	private final SlotCraftingTerm outputSlot;
+	private IRecipe currentRecipe;
 
 	public ContainerCraftingTerm( final InventoryPlayer ip, final ITerminalHost monitorable )
 	{
@@ -85,7 +87,21 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 			ic.setInventorySlotContents( x, this.craftingSlots[x].getStack() );
 		}
 
-		this.outputSlot.putStack( CraftingManager.findMatchingResult( ic, this.getPlayerInv().player.world ) );
+		if( this.currentRecipe == null || !this.currentRecipe.matches( ic, this.getPlayerInv().player.world ) )
+		{
+			this.currentRecipe = CraftingManager.findMatchingRecipe( ic, this.getPlayerInv().player.world );
+		}
+
+		if( this.currentRecipe == null )
+		{
+			this.outputSlot.putStack( ItemStack.EMPTY );
+		}
+		else
+		{
+			final ItemStack craftingResult = this.currentRecipe.getCraftingResult( ic );
+
+			this.outputSlot.putStack( craftingResult );
+		}
 	}
 
 	@Override
@@ -114,5 +130,10 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 	public boolean useRealItems()
 	{
 		return true;
+	}
+
+	public IRecipe getCurrentRecipe()
+	{
+		return this.currentRecipe;
 	}
 }
