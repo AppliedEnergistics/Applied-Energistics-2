@@ -30,19 +30,13 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
@@ -50,15 +44,13 @@ import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
-import appeng.container.ContainerNull;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.items.storage.ItemViewCell;
-import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
+import appeng.util.inv.AdaptorItemHandler;
 import appeng.util.inv.WrapperInvItemHandler;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.IPartitionList;
@@ -133,146 +125,98 @@ public class PacketJEIRecipe extends AppEngPacket
 				final IItemHandler craftMatrix = cct.getInventoryByName( "crafting" );
 				final IItemHandler playerInventory = cct.getInventoryByName( "player" );
 
-				final Actionable realForFake = cct.useRealItems() ? Actionable.MODULATE : Actionable.SIMULATE;
-
 				if( inv != null && this.recipe != null && security != null )
 				{
-					final InventoryCrafting testInv = new InventoryCrafting( new ContainerNull(), 3, 3 );
-					for( int x = 0; x < 9; x++ )
+					final IMEMonitor<IAEItemStack> storage = inv.getItemInventory();
+					final IPartitionList<IAEItemStack> filter = ItemViewCell.createFilter( cct.getViewCells() );
+
+					for( int x = 0; x < craftMatrix.getSlots(); x++ )
 					{
-						if( this.recipe[x] != null && this.recipe[x].length > 0 )
+						ItemStack currentItem = craftMatrix.getStackInSlot( x );
+
+						// prepare slots
+						if( !currentItem.isEmpty() )
 						{
-							testInv.setInventorySlotContents( x, this.recipe[x][0] );
-						}
-					}
-
-					final IRecipe r =  CraftingManager.findMatchingRecipe( testInv, pmp.world );
-
-					if( r != null && security.hasPermission( player, SecurityPermissions.EXTRACT ) )
-					{
-						final ItemStack is = r.getCraftingResult( testInv );
-
-						if( !is.isEmpty() )
-						{
-							final IMEMonitor<IAEItemStack> storage = inv.getItemInventory();
-							final IItemList all = storage.getStorageList();
-							final IPartitionList<IAEItemStack> filter = ItemViewCell.createFilter( cct.getViewCells() );
-
-							for( int x = 0; x < craftMatrix.getSlots(); x++ )
+							ItemStack newItem = ItemStack.EMPTY;
+							// already the correct item?
+							if( this.recipe[x] != null )
 							{
-								final ItemStack patternItem = testInv.getStackInSlot( x );
-
-								ItemStack currentItem = craftMatrix.getStackInSlot( x );
-								if( !currentItem.isEmpty() )
+								for( ItemStack option : this.recipe[x] )
 								{
-									testInv.setInventorySlotContents( x, currentItem );
-									final ItemStack newItemStack = r.matches( testInv, pmp.world ) ? r.getCraftingResult( testInv ) : ItemStack.EMPTY;
-									testInv.setInventorySlotContents( x, patternItem );
-
-									if( newItemStack.isEmpty() || !Platform.itemComparisons().isSameItem( newItemStack, is ) )
+									if( currentItem.isItemEqual( option ) )
 									{
-										final IAEItemStack in = AEItemStack.create( currentItem );
-										if( in != null )
-										{
-											final IAEItemStack out = realForFake == Actionable.SIMULATE ? null : Platform.poweredInsert( energy, storage, in,
-													cct.getActionSource() );
-											if( out != null )
-											{
-												ItemHandlerUtil.setStackInSlot( craftMatrix, x, out.getItemStack() );
-											}
-											else
-											{
-												ItemHandlerUtil.setStackInSlot( craftMatrix, x, ItemStack.EMPTY );
-											}
-
-											currentItem = craftMatrix.getStackInSlot( x );
-										}
+										newItem = currentItem;
+										break;
 									}
-								}
-
-								// True if we need to fetch an item for the recipe
-								if( !patternItem.isEmpty() && currentItem.isEmpty() )
-								{
-									// Grab from network by recipe
-									ItemStack whichItem = Platform.extractItemsByRecipe( energy, cct.getActionSource(), storage, player.world, r, is, testInv,
-											patternItem, x, all, realForFake, filter );
-
-									// If that doesn't get it, grab exact items from network (?)
-									// TODO see if this code is necessary
-									if( whichItem.isEmpty() )
-									{
-										for( int y = 0; y < this.recipe[x].length; y++ )
-										{
-											final IAEItemStack request = AEItemStack.create( this.recipe[x][y] );
-											if( request != null )
-											{
-												if( filter == null || filter.isListed( request ) )
-												{
-													request.setStackSize( 1 );
-													final IAEItemStack out = Platform.poweredExtraction( energy, storage, request, cct.getActionSource() );
-													if( out != null )
-													{
-														whichItem = out.getItemStack();
-														break;
-													}
-												}
-											}
-										}
-									}
-
-									// If that doesn't work, grab from the player's inventory
-									if( whichItem.isEmpty() && playerInventory != null )
-									{
-										whichItem = this.extractItemFromPlayerInventory( player, realForFake, patternItem );
-									}
-
-									ItemHandlerUtil.setStackInSlot( craftMatrix, x, whichItem );
 								}
 							}
-							con.onCraftMatrixChanged( new WrapperInvItemHandler( craftMatrix ) );
+
+							// put away old item
+							if( newItem != currentItem )
+							{
+								final IAEItemStack in = AEItemStack.create( currentItem );
+								final IAEItemStack out = cct.useRealItems() ? Platform.poweredInsert( energy, storage, in, cct.getActionSource() ) : null;
+								if( out != null )
+								{
+									currentItem = out.getItemStack();
+								}
+								else
+								{
+									currentItem = ItemStack.EMPTY;
+								}
+							}
 						}
+
+						if( currentItem.isEmpty() && this.recipe[x] != null )
+						{
+							// for each variant
+							for( int y = 0; y < this.recipe[x].length; y++ )
+							{
+								final IAEItemStack request = AEItemStack.create( this.recipe[x][y] );
+								if( request != null )
+								{
+									// try ae
+									if( filter == null || filter.isListed( request ) )
+									{
+										request.setStackSize( 1 );
+										IAEItemStack out;
+										if( cct.useRealItems() )
+										{
+											out = Platform.poweredExtraction( energy, storage, request, cct.getActionSource() );
+										}
+										else
+										{
+											out = storage.extractItems( request, Actionable.SIMULATE, cct.getActionSource() );
+										}
+
+										if( out != null )
+										{
+											currentItem = out.getItemStack();
+										}
+									}
+
+									// try inventory
+									if( currentItem.isEmpty() )
+									{
+										AdaptorItemHandler ad = new AdaptorItemHandler( playerInventory );
+
+										if( cct.useRealItems() )
+										{
+											currentItem = ad.removeItems( 1, this.recipe[x][y], null );
+										}
+										else
+										{
+											currentItem = ad.simulateRemove( 1, this.recipe[x][y], null );
+										}
+									}
+								}
+							}
+						}
+
+						ItemHandlerUtil.setStackInSlot( craftMatrix, x, currentItem );
 					}
+					con.onCraftMatrixChanged( new WrapperInvItemHandler( craftMatrix ) );
 				}
-			}
-		}
-	}
-
-	/**
-	 * Tries to extract an item from the player inventory. Does account for fuzzy items.
-	 *
-	 * @param player the {@link EntityPlayer} to extract from
-	 * @param mode the {@link Actionable} to simulate or modulate the operation
-	 * @param patternItem which {@link ItemStack} to extract
-	 * @return null or a found {@link ItemStack}
-	 */
-	private ItemStack extractItemFromPlayerInventory( final EntityPlayer player, final Actionable mode, final ItemStack patternItem )
-	{
-		final InventoryAdaptor ia = InventoryAdaptor.getAdaptor( player );
-		final AEItemStack request = AEItemStack.create( patternItem );
-		final boolean isSimulated = mode == Actionable.SIMULATE;
-		final boolean checkFuzzy = request.isOre() || patternItem.getItemDamage() == OreDictionary.WILDCARD_VALUE || patternItem.hasTagCompound() || patternItem
-				.isItemStackDamageable();
-
-		if( !checkFuzzy )
-		{
-			if( isSimulated )
-			{
-				return ia.simulateRemove( 1, patternItem, null );
-			}
-			else
-			{
-				return ia.removeItems( 1, patternItem, null );
-			}
-		}
-		else
-		{
-			if( isSimulated )
-			{
-				return ia.simulateSimilarRemove( 1, patternItem, FuzzyMode.IGNORE_ALL, null );
-			}
-			else
-			{
-				return ia.removeSimilarItems( 1, patternItem, FuzzyMode.IGNORE_ALL, null );
 			}
 		}
 	}
