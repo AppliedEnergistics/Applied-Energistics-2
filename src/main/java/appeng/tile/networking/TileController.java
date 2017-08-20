@@ -29,6 +29,7 @@ import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkControllerChange;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
@@ -137,7 +138,9 @@ public class TileController extends AENetworkPowerTile
 	{
 		try
 		{
-			return this.getProxy().getEnergy().getEnergyDemand( 8000 );
+			final IEnergyGrid grid = this.getProxy().getEnergy();
+
+			return grid.getEnergyDemand( maxReceived );
 		}
 		catch( final GridAccessException e )
 		{
@@ -151,12 +154,10 @@ public class TileController extends AENetworkPowerTile
 	{
 		try
 		{
-			final double ret = this.getProxy().getEnergy().injectPower( power, mode );
-			if( mode == Actionable.SIMULATE )
-			{
-				return ret;
-			}
-			return 0;
+			final IEnergyGrid grid = this.getProxy().getEnergy();
+			final double leftOver = grid.injectPower( power, mode );
+
+			return leftOver;
 		}
 		catch( final GridAccessException e )
 		{

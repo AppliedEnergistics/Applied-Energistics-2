@@ -28,6 +28,7 @@ import net.minecraft.util.EnumFacing;
 import ic2.api.energy.prefab.BasicSink;
 import ic2.api.energy.tile.IEnergyEmitter;
 
+import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnits;
 import appeng.integration.abstraction.IC2PowerSink;
 import appeng.tile.powersink.IExternalPowerSink;
@@ -76,7 +77,7 @@ public class IC2PowerSinkAdapter extends BasicSink implements IC2PowerSink
 	@Override
 	public double injectEnergy( EnumFacing directionFrom, double amount, double voltage )
 	{
-		return PowerUnits.EU.convertTo( PowerUnits.AE, this.powerSink.injectExternalPower( PowerUnits.EU, amount ) );
+		return PowerUnits.EU.convertTo( PowerUnits.AE, this.powerSink.injectExternalPower( PowerUnits.EU, amount, Actionable.MODULATE ) );
 	}
 
 	@Override

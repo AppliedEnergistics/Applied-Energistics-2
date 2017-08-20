@@ -4,6 +4,7 @@ package appeng.tile.powersink;
 
 import net.minecraftforge.energy.IEnergyStorage;
 
+import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnits;
 
 
@@ -23,15 +24,10 @@ class ForgeEnergyAdapter implements IEnergyStorage
 	@Override
 	public final int receiveEnergy( int maxReceive, boolean simulate )
 	{
-		final int networkDemand = (int) Math.floor( this.sink.getExternalPowerDemand( PowerUnits.RF, maxReceive ) );
-		final int used = Math.min( maxReceive, networkDemand );
+		final double offered = (double) maxReceive;
+		final double overflow = this.sink.injectExternalPower( PowerUnits.RF, offered, simulate ? Actionable.SIMULATE : Actionable.MODULATE );
 
-		if( !simulate )
-		{
-			this.sink.injectExternalPower( PowerUnits.RF, used );
-		}
-
-		return used;
+		return (int) ( maxReceive - overflow );
 	}
 
 	@Override
