@@ -93,6 +93,13 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
 					{
 						final NBTTagList tags = new NBTTagList();
 						final List<ItemStack> list = new LinkedList<>();
+						final ItemStack displayed = ingredient.getDisplayedIngredient();
+
+						// prefer currently displayed item
+						if( displayed != null && !displayed.isEmpty() )
+						{
+							list.add( displayed );
+						}
 
 						// prefer pure crystals.
 						for( ItemStack stack : ingredient.getAllIngredients() )
