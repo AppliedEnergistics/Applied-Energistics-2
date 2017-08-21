@@ -3,7 +3,8 @@
     "parent": "block/block",
     "textures": {
         "block": "blocks/stone",
-        "quartz": "appliedenergistics2:blocks/charged_quartz_ore_light"
+        "quartz": "appliedenergistics2:blocks/charged_quartz_ore_light",
+        "particle": "appliedenergistics2:blocks/charged_quartz_ore"
     },    
     "elements": [
         {
