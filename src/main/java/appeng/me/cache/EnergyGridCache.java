@@ -55,7 +55,6 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.events.MENetworkPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
 import appeng.api.networking.pathing.IPathingGrid;
-import appeng.api.networking.storage.IStackWatcherHost;
 import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.me.energy.EnergyThreshold;
@@ -551,7 +550,7 @@ public class EnergyGridCache implements IEnergyGrid
 	{
 		if( machine instanceof IEnergyGridProvider )
 		{
-			this.energyGridProviders.remove( machine );
+			this.energyGridProviders.remove( (IEnergyGridProvider) machine );
 		}
 
 		// idle draw.
@@ -580,18 +579,19 @@ public class EnergyGridCache implements IEnergyGrid
 					this.lastRequester = null;
 				}
 
-				this.providers.remove( machine );
-				this.requesters.remove( machine );
+				this.providers.remove( ps );
+				this.requesters.remove( ps );
 			}
 		}
 
-		if( machine instanceof IStackWatcherHost )
+		if( machine instanceof IEnergyWatcherHost )
 		{
-			final IEnergyWatcher myWatcher = this.watchers.get( machine );
-			if( myWatcher != null )
+			final IEnergyWatcher watcher = this.watchers.get( node );
+
+			if( watcher != null )
 			{
-				myWatcher.reset();
-				this.watchers.remove( machine );
+				watcher.reset();
+				this.watchers.remove( node );
 			}
 		}
 	}
@@ -641,6 +641,7 @@ public class EnergyGridCache implements IEnergyGrid
 		{
 			final IEnergyWatcherHost swh = (IEnergyWatcherHost) machine;
 			final EnergyWatcher iw = new EnergyWatcher( this, swh );
+
 			this.watchers.put( node, iw );
 			swh.updateWatcher( iw );
 		}
