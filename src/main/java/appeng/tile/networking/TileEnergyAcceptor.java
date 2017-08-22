@@ -20,7 +20,6 @@ package appeng.tile.networking;
 
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
@@ -39,22 +38,6 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 	{
 		this.getProxy().setIdlePowerUsage( 0.0 );
 		this.setInternalMaxPower( 0 );
-	}
-
-	@Override
-	public void readFromNBT_AENetwork( final NBTTagCompound data )
-	{
-		/**
-		 * Does nothing here since the NBT tag in the parent is not needed anymore
-		 */
-	}
-
-	@Override
-	public void writeToNBT_AENetwork( final NBTTagCompound data )
-	{
-		/**
-		 * Does nothing here since the NBT tag in the parent is not needed anymore
-		 */
 	}
 
 	@Override

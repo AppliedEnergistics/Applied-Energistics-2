@@ -19,12 +19,9 @@
 package appeng.tile;
 
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -55,8 +52,6 @@ import appeng.core.AELog;
 import appeng.core.features.IStackSrc;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
-import appeng.tile.events.AETileEventHandler;
-import appeng.tile.events.TileEventType;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
@@ -66,7 +61,6 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 {
 
 	private static final ThreadLocal<WeakReference<AEBaseTile>> DROP_NO_ITEMS = new ThreadLocal<>();
-	private static final Map<Class<? extends AEBaseTile>, Map<TileEventType, List<AETileEventHandler>>> HANDLERS = new HashMap<>();
 	private static final Map<Class<? extends TileEntity>, IStackSrc> ITEM_STACKS = new HashMap<>();
 	private int renderFragment = 0;
 	@Nullable
@@ -138,7 +132,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	@Override
 	// NOTE: WAS FINAL, changed for Immibis
-	public final void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final NBTTagCompound data )
 	{
 		super.readFromNBT( data );
 
@@ -162,16 +156,11 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		catch( final IllegalArgumentException ignored )
 		{
 		}
-
-		for( final AETileEventHandler h : this.getHandlerListFor( TileEventType.WORLD_NBT_READ ) )
-		{
-			h.readFromNBT( this, data );
-		}
 	}
 
 	@Override
 	// NOTE: WAS FINAL, changed for Immibis
-	public final NBTTagCompound writeToNBT( final NBTTagCompound data )
+	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
 		super.writeToNBT( data );
 
@@ -186,11 +175,6 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			data.setString( "customName", this.customName );
 		}
 
-		for( final AETileEventHandler h : this.getHandlerListFor( TileEventType.WORLD_NBT_WRITE ) )
-		{
-			h.writeToNBT( this, data );
-		}
-
 		return data;
 	}
 
@@ -198,13 +182,6 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	public SPacketUpdateTileEntity getUpdatePacket()
 	{
 		return new SPacketUpdateTileEntity( this.pos, 64, this.getUpdateTag() );
-	}
-
-	private boolean hasHandlerFor( final TileEventType type )
-	{
-		final List<AETileEventHandler> list = this.getHandlerListFor( type );
-
-		return !list.isEmpty();
 	}
 
 	@Override
@@ -254,6 +231,30 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		return data;
 	}
 
+	private boolean readUpdateData( ByteBuf stream )
+	{
+		boolean output = false;
+
+		try
+		{
+			this.renderFragment = 100;
+
+			output = readFromStream( stream );
+
+			if( ( this.renderFragment & 1 ) == 1 )
+			{
+				output = true;
+			}
+			this.renderFragment = 0;
+		}
+		catch( final Throwable t )
+		{
+			AELog.debug( t );
+		}
+
+		return output;
+	}
+
 	/**
 	 * Handles tile entites that are being sent to the client as part of a full chunk.
 	 */
@@ -280,52 +281,36 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	public void handleUpdateTag( NBTTagCompound tag )
 	{
 		final ByteBuf stream = Unpooled.copiedBuffer( tag.getByteArray( "X" ) );
-		if( this.readFromStream( stream ) )
+
+		if( this.readUpdateData( stream ) )
 		{
 			this.markForUpdate();
 		}
 	}
 
-	private final boolean readFromStream( final ByteBuf data )
+	protected boolean readFromStream( final ByteBuf data ) throws IOException
 	{
-		boolean output = false;
-
-		try
+		if( this.canBeRotated() )
 		{
+			final EnumFacing old_Forward = this.forward;
+			final EnumFacing old_Up = this.up;
 
-			if( this.canBeRotated() )
-			{
-				final EnumFacing old_Forward = this.forward;
-				final EnumFacing old_Up = this.up;
+			final byte orientation = data.readByte();
+			this.forward = EnumFacing.VALUES[orientation & 0x7];
+			this.up = EnumFacing.VALUES[orientation >> 3];
 
-				final byte orientation = data.readByte();
-				this.forward = EnumFacing.VALUES[orientation & 0x7];
-				this.up = EnumFacing.VALUES[orientation >> 3];
-
-				output = this.forward != old_Forward || this.up != old_Up;
-			}
-
-			this.renderFragment = 100;
-			for( final AETileEventHandler h : this.getHandlerListFor( TileEventType.NETWORK_READ ) )
-			{
-				if( h.readFromStream( this, data ) )
-				{
-					output = true;
-				}
-			}
-
-			if( ( this.renderFragment & 1 ) == 1 )
-			{
-				output = true;
-			}
-			this.renderFragment = 0;
+			return this.forward != old_Forward || this.up != old_Up;
 		}
-		catch( final Throwable t )
+		return false;
+	}
+
+	protected void writeToStream( final ByteBuf data ) throws IOException
+	{
+		if( this.canBeRotated() )
 		{
-			AELog.debug( t );
+			final byte orientation = (byte) ( ( this.up.ordinal() << 3 ) | this.forward.ordinal() );
+			data.writeByte( orientation );
 		}
-
-		return output;
 	}
 
 	public void markForUpdate()
@@ -345,27 +330,6 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		}
 	}
 
-	private final void writeToStream( final ByteBuf data )
-	{
-		try
-		{
-			if( this.canBeRotated() )
-			{
-				final byte orientation = (byte) ( ( this.up.ordinal() << 3 ) | this.forward.ordinal() );
-				data.writeByte( orientation );
-			}
-
-			for( final AETileEventHandler h : this.getHandlerListFor( TileEventType.NETWORK_WRITE ) )
-			{
-				h.writeToStream( this, data );
-			}
-		}
-		catch( final Throwable t )
-		{
-			AELog.debug( t );
-		}
-	}
-
 	/**
 	 * By default all blocks can have orientation, this handles saving, and loading, as well as synchronization.
 	 *
@@ -375,75 +339,6 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	public boolean canBeRotated()
 	{
 		return true;
-	}
-
-	@Nonnull
-	private List<AETileEventHandler> getHandlerListFor( final TileEventType type )
-	{
-		final Map<TileEventType, List<AETileEventHandler>> eventToHandlers = this.getEventToHandlers();
-		final List<AETileEventHandler> handlers = this.getHandlers( eventToHandlers, type );
-
-		return handlers;
-	}
-
-	@Nonnull
-	private Map<TileEventType, List<AETileEventHandler>> getEventToHandlers()
-	{
-		final Class<? extends AEBaseTile> clazz = this.getClass();
-		final Map<TileEventType, List<AETileEventHandler>> storedHandlers = HANDLERS.get( clazz );
-
-		if( storedHandlers == null )
-		{
-			final Map<TileEventType, List<AETileEventHandler>> newStoredHandlers = new EnumMap<>( TileEventType.class );
-
-			HANDLERS.put( clazz, newStoredHandlers );
-
-			for( final Method method : clazz.getMethods() )
-			{
-				final TileEvent event = method.getAnnotation( TileEvent.class );
-				if( event != null )
-				{
-					this.addHandler( newStoredHandlers, event.value(), method );
-				}
-			}
-
-			return newStoredHandlers;
-		}
-		else
-		{
-			return storedHandlers;
-		}
-	}
-
-	@Nonnull
-	private List<AETileEventHandler> getHandlers( final Map<TileEventType, List<AETileEventHandler>> eventToHandlers, final TileEventType event )
-	{
-		final List<AETileEventHandler> oldHandlers = eventToHandlers.get( event );
-
-		if( oldHandlers == null )
-		{
-			final List<AETileEventHandler> newHandlers = new LinkedList<>();
-			eventToHandlers.put( event, newHandlers );
-
-			return newHandlers;
-		}
-		else
-		{
-			return oldHandlers;
-		}
-	}
-
-	private void addHandler( final Map<TileEventType, List<AETileEventHandler>> handlerSet, final TileEventType value, final Method m )
-	{
-		List<AETileEventHandler> list = handlerSet.get( value );
-
-		if( list == null )
-		{
-			list = new ArrayList<>();
-			handlerSet.put( value, list );
-		}
-
-		list.add( new AETileEventHandler( m ) );
 	}
 
 	@Override

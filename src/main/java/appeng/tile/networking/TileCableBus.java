@@ -54,8 +54,6 @@ import appeng.helpers.ICustomCollision;
 import appeng.hooks.TickHandler;
 import appeng.parts.CableBusContainer;
 import appeng.tile.AEBaseTile;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
 
 
@@ -66,21 +64,25 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 
 	private int oldLV = -1; // on re-calculate light when it changes
 
-	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileCableBus( final NBTTagCompound data )
+	@Override
+	public void readFromNBT( final NBTTagCompound data )
 	{
+		super.readFromNBT( data );
 		this.getCableBus().readFromNBT( data );
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileCableBus( final NBTTagCompound data )
+	@Override
+	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
+		super.writeToNBT( data );
 		this.getCableBus().writeToNBT( data );
+		return data;
 	}
 
-	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileCableBus( final ByteBuf data ) throws IOException
+	@Override
+	protected boolean readFromStream( final ByteBuf data ) throws IOException
 	{
+		final boolean c = super.readFromStream( data );
 		final boolean ret = this.getCableBus().readFromStream( data );
 
 		final int newLV = this.getCableBus().getLightValue();
@@ -91,7 +93,14 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		}
 
 		this.updateTileSetting();
-		return ret;
+		return ret || c;
+	}
+
+	@Override
+	protected void writeToStream( final ByteBuf data ) throws IOException
+	{
+		super.writeToStream( data );
+		this.getCableBus().writeToStream( data );
 	}
 
 	/**
@@ -120,12 +129,6 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		this.setCableBus( oldTile.getCableBus() );
 		this.oldLV = oldTile.oldLV;
 		oldTile.setCableBus( tmpCB );
-	}
-
-	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileCableBus( final ByteBuf data ) throws IOException
-	{
-		this.getCableBus().writeToStream( data );
 	}
 
 	@Override

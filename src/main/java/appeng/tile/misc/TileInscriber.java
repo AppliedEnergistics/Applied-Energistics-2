@@ -58,12 +58,9 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.core.settings.TickRates;
-import appeng.helpers.Reflected;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.DefinitionUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkPowerTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
@@ -103,7 +100,6 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 	private final IItemHandlerModifiable inv = new WrapperChainedItemHandler( this.topItemHandler, this.bottomItemHandler, this.sideItemHandler );
 
-	@Reflected
 	public TileInscriber()
 	{
 		this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
@@ -133,29 +129,27 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		return AECableType.COVERED;
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileInscriber( final NBTTagCompound data )
+	@Override
+	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
-		this.topItemHandler.writeToNBT( data, "inscriberInvTop" );
-		this.bottomItemHandler.writeToNBT( data, "inscriberInvBottom" );
-		this.sideItemHandler.writeToNBT( data, "inscriberInvSided" );
+		super.writeToNBT( data );
 		this.upgrades.writeToNBT( data, "upgrades" );
 		this.settings.writeToNBT( data );
+		return data;
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileInscriber( final NBTTagCompound data )
+	@Override
+	public void readFromNBT( final NBTTagCompound data )
 	{
-		this.topItemHandler.readFromNBT( data, "inscriberInvTop" );
-		this.bottomItemHandler.readFromNBT( data, "inscriberInvBottom" );
-		this.sideItemHandler.readFromNBT( data, "inscriberInvSided" );
+		super.readFromNBT( data );
 		this.upgrades.readFromNBT( data, "upgrades" );
 		this.settings.readFromNBT( data );
 	}
 
-	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileInscriber( final ByteBuf data ) throws IOException
+	@Override
+	protected boolean readFromStream( final ByteBuf data ) throws IOException
 	{
+		final boolean c = super.readFromStream( data );
 		final int slot = data.readByte();
 
 		final boolean oldSmash = this.isSmash();
@@ -179,12 +173,13 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			}
 		}
 
-		return false;
+		return c;
 	}
 
-	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileInscriber( final ByteBuf data ) throws IOException
+	@Override
+	protected void writeToStream( final ByteBuf data ) throws IOException
 	{
+		super.writeToStream( data );
 		int slot = this.isSmash() ? 64 : 0;
 
 		for( int num = 0; num < this.inv.getSlots(); num++ )

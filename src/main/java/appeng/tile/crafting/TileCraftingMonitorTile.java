@@ -32,8 +32,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.util.item.AEItemStack;
 
 
@@ -49,9 +47,10 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	private IAEItemStack dspPlay;
 	private AEColor paintedColor = AEColor.TRANSPARENT;
 
-	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileCraftingMonitorTile( final ByteBuf data ) throws IOException
+	@Override
+	protected boolean readFromStream( final ByteBuf data ) throws IOException
 	{
+		final boolean c = super.readFromStream( data );
 		final AEColor oldPaintedColor = this.paintedColor;
 		this.paintedColor = AEColor.values()[data.readByte()];
 
@@ -67,12 +66,13 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 		}
 
 		this.setUpdateList( true );
-		return oldPaintedColor != this.paintedColor; // tesr!
+		return oldPaintedColor != this.paintedColor || c; // tesr!
 	}
 
-	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileCraftingMonitorTile( final ByteBuf data ) throws IOException
+	@Override
+	protected void writeToStream( final ByteBuf data ) throws IOException
 	{
+		super.writeToStream( data );
 		data.writeByte( this.paintedColor.ordinal() );
 
 		if( this.dspPlay == null )
@@ -86,19 +86,22 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 		}
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileCraftingMonitorTile( final NBTTagCompound data )
+	@Override
+	public void readFromNBT( final NBTTagCompound data )
 	{
+		super.readFromNBT( data );
 		if( data.hasKey( "paintedColor" ) )
 		{
 			this.paintedColor = AEColor.values()[data.getByte( "paintedColor" )];
 		}
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileCraftingMonitorTile( final NBTTagCompound data )
+	@Override
+	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
+		super.writeToNBT( data );
 		data.setByte( "paintedColor", (byte) this.paintedColor.ordinal() );
+		return data;
 	}
 
 	@Override

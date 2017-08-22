@@ -19,6 +19,7 @@
 package appeng.tile.qnb;
 
 
+import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Optional;
 
@@ -46,8 +47,6 @@ import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.QuantumCalculator;
 import appeng.me.cluster.implementations.QuantumCluster;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
@@ -87,9 +86,10 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		}
 	}
 
-	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void onNetworkWriteEvent( final ByteBuf data )
+	@Override
+	protected void writeToStream( final ByteBuf data ) throws IOException
 	{
+		super.writeToStream( data );
 		int out = this.constructed;
 
 		if( !this.internalInventory.getStackInSlot( 0 ).isEmpty() && this.constructed != -1 )
@@ -105,12 +105,13 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		data.writeByte( (byte) out );
 	}
 
-	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean onNetworkReadEvent( final ByteBuf data )
+	@Override
+	protected boolean readFromStream( final ByteBuf data ) throws IOException
 	{
+		final boolean c = super.readFromStream( data );
 		final int oldValue = this.constructed;
 		this.constructed = data.readByte();
-		return this.constructed != oldValue;
+		return this.constructed != oldValue || c;
 	}
 
 	@Override

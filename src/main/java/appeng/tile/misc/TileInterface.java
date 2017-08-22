@@ -19,6 +19,7 @@
 package appeng.tile.misc;
 
 
+import java.io.IOException;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -58,8 +59,6 @@ import appeng.api.util.IConfigManager;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.util.Platform;
 import appeng.util.inv.IInventoryDestination;
@@ -171,32 +170,37 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 		this.duality.initialize();
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileInterface( final NBTTagCompound data )
+	@Override
+	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
+		super.writeToNBT( data );
 		data.setBoolean( "omniDirectional", this.omniDirectional );
 		this.duality.writeToNBT( data );
+		return data;
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileInterface( final NBTTagCompound data )
+	@Override
+	public void readFromNBT( final NBTTagCompound data )
 	{
+		super.readFromNBT( data );
 		this.omniDirectional = data.getBoolean( "omniDirectional" );
 
 		this.duality.readFromNBT( data );
 	}
 
-	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileInterface( final ByteBuf data )
+	@Override
+	protected boolean readFromStream( final ByteBuf data ) throws IOException
 	{
+		final boolean c = super.readFromStream( data );
 		boolean oldOmniDirectional = this.omniDirectional;
 		this.omniDirectional = data.readBoolean();
-		return oldOmniDirectional != this.omniDirectional;
+		return oldOmniDirectional != this.omniDirectional || c;
 	}
 
-	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileInterface( final ByteBuf data )
+	@Override
+	protected void writeToStream( final ByteBuf data ) throws IOException
 	{
+		super.writeToStream( data );
 		data.writeBoolean( this.omniDirectional );
 	}
 

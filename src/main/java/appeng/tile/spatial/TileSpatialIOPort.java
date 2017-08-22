@@ -43,8 +43,6 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.hooks.TickHandler;
 import appeng.me.cache.SpatialPylonCache;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.IWorldCallable;
@@ -66,15 +64,18 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileSpatialIOPort( final NBTTagCompound data )
+	@Override
+	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
+		super.writeToNBT( data );
 		data.setInteger( "lastRedstoneState", this.lastRedstoneState.ordinal() );
+		return data;
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileSpatialIOPort( final NBTTagCompound data )
+	@Override
+	public void readFromNBT( final NBTTagCompound data )
 	{
+		super.readFromNBT( data );
 		if( data.hasKey( "lastRedstoneState" ) )
 		{
 			this.lastRedstoneState = YesNo.values()[data.getInteger( "lastRedstoneState" )];

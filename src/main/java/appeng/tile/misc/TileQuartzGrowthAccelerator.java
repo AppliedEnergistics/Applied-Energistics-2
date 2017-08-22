@@ -19,6 +19,7 @@
 package appeng.tile.misc;
 
 
+import java.io.IOException;
 import java.util.EnumSet;
 
 import io.netty.buffer.ByteBuf;
@@ -32,8 +33,6 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.me.GridAccessException;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 import appeng.util.Platform;
 
@@ -62,17 +61,19 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 		return AECableType.COVERED;
 	}
 
-	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileQuartzGrowthAccelerator( final ByteBuf data )
+	@Override
+	public boolean readFromStream( final ByteBuf data ) throws IOException
 	{
+		final boolean c = super.readFromStream( data );
 		final boolean hadPower = this.isPowered();
 		this.setPowered( data.readBoolean() );
-		return this.isPowered() != hadPower;
+		return this.isPowered() != hadPower || c;
 	}
 
-	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileQuartzGrowthAccelerator( final ByteBuf data )
+	@Override
+	public void writeToStream( final ByteBuf data ) throws IOException
 	{
+		super.writeToStream( data );
 		try
 		{
 			data.writeBoolean( this.getProxy().getEnergy().isNetworkPowered() );

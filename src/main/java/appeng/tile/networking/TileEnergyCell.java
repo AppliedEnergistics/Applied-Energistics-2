@@ -31,8 +31,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.block.networking.BlockEnergyCell;
 import appeng.me.GridAccessException;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 import appeng.util.SettingsFrom;
 
@@ -100,18 +98,18 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 		}
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileEnergyCell( final NBTTagCompound data )
+	@Override
+	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
-		if( !this.world.isRemote )
-		{
-			data.setDouble( "internalCurrentPower", this.internalCurrentPower );
-		}
+		super.writeToNBT( data );
+		data.setDouble( "internalCurrentPower", this.internalCurrentPower );
+		return data;
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileEnergyCell( final NBTTagCompound data )
+	@Override
+	public void readFromNBT( final NBTTagCompound data )
 	{
+		super.readFromNBT( data );
 		this.internalCurrentPower = data.getDouble( "internalCurrentPower" );
 	}
 

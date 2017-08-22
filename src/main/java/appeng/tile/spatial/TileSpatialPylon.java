@@ -19,6 +19,7 @@
 package appeng.tile.spatial;
 
 
+import java.io.IOException;
 import java.util.EnumSet;
 
 import io.netty.buffer.ByteBuf;
@@ -35,8 +36,6 @@ import appeng.me.cluster.implementations.SpatialPylonCalculator;
 import appeng.me.cluster.implementations.SpatialPylonCluster;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.AENetworkProxyMultiblock;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 
 
@@ -217,17 +216,19 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 		return 0;
 	}
 
-	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileSpatialPylon( final ByteBuf data )
+	@Override
+	protected boolean readFromStream( final ByteBuf data ) throws IOException
 	{
+		final boolean c = super.readFromStream( data );
 		final int old = this.displayBits;
 		this.displayBits = data.readByte();
-		return old != this.displayBits;
+		return old != this.displayBits || c;
 	}
 
-	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileSpatialPylon( final ByteBuf data )
+	@Override
+	protected void writeToStream( final ByteBuf data ) throws IOException
 	{
+		super.writeToStream( data );
 		data.writeByte( this.displayBits );
 	}
 

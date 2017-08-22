@@ -38,8 +38,6 @@ import appeng.capabilities.Capabilities;
 import appeng.integration.Integrations;
 import appeng.integration.abstraction.IC2PowerSink;
 import appeng.tile.AEBaseInvTile;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 
 
 public abstract class AEBasePoweredTile extends AEBaseInvTile implements IAEPowerStorage, IExternalPowerSink
@@ -81,15 +79,18 @@ public abstract class AEBasePoweredTile extends AEBaseInvTile implements IAEPowe
 		// trigger re-calc!
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_AERootPoweredTile( final NBTTagCompound data )
+	@Override
+	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
+		super.writeToNBT( data );
 		data.setDouble( "internalCurrentPower", this.getInternalCurrentPower() );
+		return data;
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_AERootPoweredTile( final NBTTagCompound data )
+	@Override
+	public void readFromNBT( final NBTTagCompound data )
 	{
+		super.readFromNBT( data );
 		this.setInternalCurrentPower( data.getDouble( "internalCurrentPower" ) );
 	}
 

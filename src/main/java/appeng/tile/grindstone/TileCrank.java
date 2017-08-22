@@ -19,6 +19,7 @@
 package appeng.tile.grindstone;
 
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,8 +37,6 @@ import net.minecraft.world.World;
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.AEBaseTile;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.util.Platform;
 
 
@@ -90,16 +89,18 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 		return null;
 	}
 
-	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileCrank( final ByteBuf data )
+	@Override
+	protected boolean readFromStream( final ByteBuf data ) throws IOException
 	{
+		final boolean c = super.readFromStream( data );
 		this.rotation = data.readInt();
-		return false;
+		return c;
 	}
 
-	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileCrank( final ByteBuf data )
+	@Override
+	protected void writeToStream( final ByteBuf data ) throws IOException
 	{
+		super.writeToStream( data );
 		data.writeInt( this.rotation );
 	}
 

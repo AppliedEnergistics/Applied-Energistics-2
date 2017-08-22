@@ -19,6 +19,7 @@
 package appeng.tile.storage;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,8 +52,6 @@ import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.storage.DriveWatcher;
 import appeng.me.storage.MEInventoryHandler;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
@@ -99,9 +98,10 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 		this.inv.setFilter( new CellValidInventoryFilter() );
 	}
 
-	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileDrive( final ByteBuf data )
+	@Override
+	protected void writeToStream( final ByteBuf data ) throws IOException
 	{
+		super.writeToStream( data );
 		int newState = 0;
 
 		if( this.getProxy().isActive() )
@@ -115,6 +115,15 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 		}
 
 		data.writeInt( newState );
+	}
+
+	@Override
+	protected boolean readFromStream( final ByteBuf data ) throws IOException
+	{
+		final boolean c = super.readFromStream( data );
+		final int oldState = this.state;
+		this.state = data.readInt();
+		return ( this.state & BIT_STATE_MASK ) != ( oldState & BIT_STATE_MASK ) || c;
 	}
 
 	@Override
@@ -176,25 +185,20 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 		return ( ( this.state >> ( slot * 3 + 2 ) ) & 0x01 ) == 0x01;
 	}
 
-	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileDrive( final ByteBuf data )
+	@Override
+	public void readFromNBT( final NBTTagCompound data )
 	{
-		final int oldState = this.state;
-		this.state = data.readInt();
-		return ( this.state & BIT_STATE_MASK ) != ( oldState & BIT_STATE_MASK );
-	}
-
-	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileDrive( final NBTTagCompound data )
-	{
+		super.readFromNBT( data );
 		this.isCached = false;
 		this.priority = data.getInteger( "priority" );
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileDrive( final NBTTagCompound data )
+	@Override
+	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
+		super.writeToNBT( data );
 		data.setInteger( "priority", this.priority );
+		return data;
 	}
 
 	@MENetworkEventSubscribe

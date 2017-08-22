@@ -48,8 +48,6 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.capabilities.Capabilities;
 import appeng.tile.AEBaseInvTile;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
@@ -78,16 +76,19 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		this.cm.registerSetting( Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH );
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileCondenser( final NBTTagCompound data )
+	@Override
+	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
+		super.writeToNBT( data );
 		this.cm.writeToNBT( data );
 		data.setDouble( "storedPower", this.getStoredPower() );
+		return data;
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileCondenser( final NBTTagCompound data )
+	@Override
+	public void readFromNBT( final NBTTagCompound data )
 	{
+		super.readFromNBT( data );
 		this.cm.readFromNBT( data );
 		this.setStoredPower( data.getDouble( "storedPower" ) );
 	}

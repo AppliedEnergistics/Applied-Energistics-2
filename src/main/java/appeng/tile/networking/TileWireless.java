@@ -19,6 +19,7 @@
 package appeng.tile.networking;
 
 
+import java.io.IOException;
 import java.util.EnumSet;
 
 import io.netty.buffer.ByteBuf;
@@ -40,8 +41,6 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.me.GridAccessException;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
@@ -85,18 +84,20 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 		this.markForUpdate();
 	}
 
-	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileWireless( final ByteBuf data )
+	@Override
+	protected boolean readFromStream( final ByteBuf data ) throws IOException
 	{
+		final boolean c = super.readFromStream( data );
 		final int old = this.getClientFlags();
 		this.setClientFlags( data.readByte() );
 
-		return old != this.getClientFlags();
+		return old != this.getClientFlags() || c;
 	}
 
-	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileWireless( final ByteBuf data )
+	@Override
+	protected void writeToStream( final ByteBuf data ) throws IOException
 	{
+		super.writeToStream( data );
 		this.setClientFlags( 0 );
 
 		try

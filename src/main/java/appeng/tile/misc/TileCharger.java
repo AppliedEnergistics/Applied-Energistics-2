@@ -49,8 +49,6 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkPowerTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
@@ -81,9 +79,10 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 		return AECableType.COVERED;
 	}
 
-	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileCharger( final ByteBuf data )
+	@Override
+	protected boolean readFromStream( final ByteBuf data ) throws IOException
 	{
+		final boolean c = super.readFromStream( data );
 		try
 		{
 			final IAEItemStack item = AEItemStack.loadItemStackFromPacket( data );
@@ -94,12 +93,13 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 		{
 			this.inv.setStackInSlot( 0, ItemStack.EMPTY );
 		}
-		return false; // TESR doesn't need updates!
+		return c; // TESR doesn't need updates!
 	}
 
-	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileCharger( final ByteBuf data ) throws IOException
+	@Override
+	protected void writeToStream( final ByteBuf data ) throws IOException
 	{
+		super.writeToStream( data );
 		final AEItemStack is = AEItemStack.create( this.inv.getStackInSlot( 0 ) );
 		if( is != null )
 		{
