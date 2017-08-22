@@ -78,8 +78,7 @@ dependencies {
     compileOnly "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:${top_version}:api"
 
-//    deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}"
-    deobfCompile "cofh:RedstoneFlux:${minecraft_version}-${rf_version}:universal"
+    // deobfCompile "mcp.mobius.waila:Hwyla:${hwyla_version}"
 
     // at runtime, use the full JEI jar
     runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"
