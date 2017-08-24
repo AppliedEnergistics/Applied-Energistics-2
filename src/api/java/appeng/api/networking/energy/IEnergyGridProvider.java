@@ -24,6 +24,7 @@
 package appeng.api.networking.energy;
 
 
+import java.util.Collection;
 import java.util.Set;
 
 import appeng.api.config.Actionable;
@@ -37,15 +38,30 @@ public interface IEnergyGridProvider
 	/**
 	 * internal use only
 	 */
-	double extractAEPower( double amt, Actionable mode, Set<IEnergyGrid> seen );
+	Collection<IEnergyGridProvider> providers();
 
 	/**
 	 * internal use only
 	 */
-	double injectAEPower( double amt, Actionable mode, Set<IEnergyGrid> seen );
+	double extractProviderPower( double amt, Actionable mode, Set<IEnergyGridProvider> seen );
 
 	/**
 	 * internal use only
 	 */
-	double getEnergyDemand( double d, Set<IEnergyGrid> seen );
+	double injectProviderPower( double amt, Actionable mode, Set<IEnergyGridProvider> seen );
+
+	/**
+	 * internal use only
+	 */
+	double getProviderEnergyDemand( double d, Set<IEnergyGridProvider> seen );
+
+	/**
+	 * internal use only
+	 */
+	double getProviderStoredEnergy();
+
+	/**
+	 * internal use only
+	 */
+	double getProviderMaxEnergy();
 }

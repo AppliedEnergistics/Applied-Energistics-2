@@ -21,6 +21,7 @@ package appeng.tile.powersink;
 
 import net.darkhax.tesla.api.ITeslaConsumer;
 
+import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnits;
 
 
@@ -41,17 +42,10 @@ class TeslaEnergyAdapter implements ITeslaConsumer
 	public long givePower( long power, boolean simulated )
 	{
 		// Cut it down to what we can represent in a double
-		double powerDbl = (double) power;
+		double offeredPower = (double) power;
 
-		double networkDemand = this.sink.getExternalPowerDemand( PowerUnits.RF, powerDbl );
-		long used = (long) Math.min( powerDbl, networkDemand );
+		final double overflow = this.sink.injectExternalPower( PowerUnits.RF, offeredPower, simulated ? Actionable.SIMULATE : Actionable.MODULATE );
 
-		if( !simulated )
-		{
-			this.sink.injectExternalPower( PowerUnits.RF, used );
-		}
-
-		return used;
+		return (long) ( power - overflow );
 	}
-
 }

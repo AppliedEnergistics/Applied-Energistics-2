@@ -105,9 +105,9 @@ public abstract class AEBasePoweredTile extends AEBaseInvTile implements IAEPowe
 	}
 
 	@Override
-	public final double injectExternalPower( final PowerUnits input, final double amt )
+	public final double injectExternalPower( final PowerUnits input, final double amt, Actionable mode )
 	{
-		return PowerUnits.AE.convertTo( input, this.funnelPowerIntoStorage( input.convertTo( PowerUnits.AE, amt ), Actionable.MODULATE ) );
+		return PowerUnits.AE.convertTo( input, this.funnelPowerIntoStorage( input.convertTo( PowerUnits.AE, amt ), mode ) );
 	}
 
 	protected double funnelPowerIntoStorage( final double power, final Actionable mode )
@@ -123,34 +123,20 @@ public abstract class AEBasePoweredTile extends AEBaseInvTile implements IAEPowe
 			return 0;
 		}
 
-		if( mode == Actionable.SIMULATE )
-		{
-			final double fakeBattery = this.getInternalCurrentPower() + amt;
+		final double required = this.getAEMaxPower() - this.getAECurrentPower();
+		final double insertable = Math.min( required, amt );
 
-			if( fakeBattery > this.getInternalMaxPower() )
-			{
-				return fakeBattery - this.getInternalMaxPower();
-			}
-
-			return 0;
-		}
-		else
+		if( mode == Actionable.MODULATE )
 		{
-			if( this.getInternalCurrentPower() < 0.01 && amt > 0.01 )
+			if( this.getInternalCurrentPower() < 0.01 && insertable > 0.01 )
 			{
 				this.PowerEvent( PowerEventType.PROVIDE_POWER );
 			}
 
-			this.setInternalCurrentPower( this.getInternalCurrentPower() + amt );
-			if( this.getInternalCurrentPower() > this.getInternalMaxPower() )
-			{
-				amt = this.getInternalCurrentPower() - this.getInternalMaxPower();
-				this.setInternalCurrentPower( this.getInternalMaxPower() );
-				return amt;
-			}
-
-			return 0;
+			this.setInternalCurrentPower( this.getInternalCurrentPower() + insertable );
 		}
+
+		return amt - insertable;
 	}
 
 	protected void PowerEvent( final PowerEventType x )

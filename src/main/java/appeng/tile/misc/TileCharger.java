@@ -130,7 +130,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 	@Override
 	public void applyTurn()
 	{
-		this.injectExternalPower( PowerUnits.AE, 150 );
+		this.injectExternalPower( PowerUnits.AE, 150, Actionable.MODULATE );
 
 		final ItemStack myItem = this.inv.getStackInSlot( 0 );
 		if( this.getInternalCurrentPower() > 1499 )
@@ -222,7 +222,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 			try
 			{
 				this.injectExternalPower( PowerUnits.AE, this.getProxy().getEnergy().extractAEPower( Math.min( 500.0, 1500.0 - this.getInternalCurrentPower() ),
-						Actionable.MODULATE, PowerMultiplier.ONE ) );
+						Actionable.MODULATE, PowerMultiplier.ONE ), Actionable.MODULATE );
 			}
 			catch( final GridAccessException e )
 			{
@@ -246,7 +246,8 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 			{
 				final double oldPower = this.getInternalCurrentPower();
 
-				final double adjustment = ps.injectAEPower( myItem, this.extractAEPower( 150.0, Actionable.MODULATE, PowerMultiplier.CONFIG ), Actionable.MODULATE );
+				final double adjustment = ps.injectAEPower( myItem, this.extractAEPower( 150.0, Actionable.MODULATE, PowerMultiplier.CONFIG ),
+						Actionable.MODULATE );
 				this.setInternalCurrentPower( this.getInternalCurrentPower() + adjustment );
 
 				if( oldPower > this.getInternalCurrentPower() )

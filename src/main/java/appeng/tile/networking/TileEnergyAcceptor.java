@@ -69,6 +69,7 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 		try
 		{
 			final IEnergyGrid grid = this.getProxy().getEnergy();
+
 			return grid.getEnergyDemand( maxRequired );
 		}
 		catch( final GridAccessException e )
@@ -84,11 +85,8 @@ public class TileEnergyAcceptor extends AENetworkPowerTile
 		{
 			final IEnergyGrid grid = this.getProxy().getEnergy();
 			final double leftOver = grid.injectPower( power, mode );
-			if( mode == Actionable.SIMULATE )
-			{
-				return leftOver;
-			}
-			return 0.0;
+
+			return leftOver;
 		}
 		catch( final GridAccessException e )
 		{

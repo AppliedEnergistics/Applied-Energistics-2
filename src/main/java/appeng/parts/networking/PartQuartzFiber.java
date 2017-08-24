@@ -19,7 +19,9 @@
 package appeng.parts.networking;
 
 
+import java.util.Collection;
 import java.util.EnumSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -131,14 +133,14 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	}
 
 	@Override
-	public double extractAEPower( final double amt, final Actionable mode, final Set<IEnergyGrid> seen )
+	public Collection<IEnergyGridProvider> providers()
 	{
-		double acquiredPower = 0;
+		Collection<IEnergyGridProvider> stuff = new LinkedList<>();
 
 		try
 		{
 			final IEnergyGrid eg = this.getProxy().getEnergy();
-			acquiredPower += eg.extractAEPower( amt - acquiredPower, mode, seen );
+			stuff.add( eg );
 		}
 		catch( final GridAccessException e )
 		{
@@ -148,7 +150,43 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 		try
 		{
 			final IEnergyGrid eg = this.outerProxy.getEnergy();
-			acquiredPower += eg.extractAEPower( amt - acquiredPower, mode, seen );
+			stuff.add( eg );
+		}
+		catch( final GridAccessException e )
+		{
+			// :P
+		}
+
+		return stuff;
+	}
+
+	@Override
+	public double extractProviderPower( final double amt, final Actionable mode, final Set<IEnergyGridProvider> seen )
+	{
+		double acquiredPower = 0;
+
+		try
+		{
+			final IEnergyGrid eg = this.getProxy().getEnergy();
+
+			if( !seen.contains( eg ) )
+			{
+				acquiredPower += eg.extractProviderPower( amt - acquiredPower, mode, seen );
+			}
+		}
+		catch( final GridAccessException e )
+		{
+			// :P
+		}
+
+		try
+		{
+			final IEnergyGrid eg = this.outerProxy.getEnergy();
+
+			if( !seen.contains( eg ) )
+			{
+				acquiredPower += eg.extractProviderPower( amt - acquiredPower, mode, seen );
+			}
 		}
 		catch( final GridAccessException e )
 		{
@@ -159,15 +197,17 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	}
 
 	@Override
-	public double injectAEPower( final double amt, final Actionable mode, final Set<IEnergyGrid> seen )
+	public double injectProviderPower( final double amt, final Actionable mode, final Set<IEnergyGridProvider> seen )
 	{
+
+		double amount = amt;
 
 		try
 		{
 			final IEnergyGrid eg = this.getProxy().getEnergy();
 			if( !seen.contains( eg ) )
 			{
-				return eg.injectAEPower( amt, mode, seen );
+				amount = eg.injectProviderPower( amount, mode, seen );
 			}
 		}
 		catch( final GridAccessException e )
@@ -180,7 +220,7 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 			final IEnergyGrid eg = this.outerProxy.getEnergy();
 			if( !seen.contains( eg ) )
 			{
-				return eg.injectAEPower( amt, mode, seen );
+				amount = eg.injectProviderPower( amount, mode, seen );
 			}
 		}
 		catch( final GridAccessException e )
@@ -188,18 +228,21 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 			// :P
 		}
 
-		return amt;
+		return amount;
 	}
 
 	@Override
-	public double getEnergyDemand( final double amt, final Set<IEnergyGrid> seen )
+	public double getProviderEnergyDemand( final double amt, final Set<IEnergyGridProvider> seen )
 	{
 		double demand = 0;
 
 		try
 		{
 			final IEnergyGrid eg = this.getProxy().getEnergy();
-			demand += eg.getEnergyDemand( amt - demand, seen );
+			if( !seen.contains( eg ) )
+			{
+				demand += eg.getProviderEnergyDemand( amt - demand, seen );
+			}
 		}
 		catch( final GridAccessException e )
 		{
@@ -209,7 +252,10 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 		try
 		{
 			final IEnergyGrid eg = this.outerProxy.getEnergy();
-			demand += eg.getEnergyDemand( amt - demand, seen );
+			if( !seen.contains( eg ) )
+			{
+				demand += eg.getProviderEnergyDemand( amt - demand, seen );
+			}
 		}
 		catch( final GridAccessException e )
 		{
@@ -217,6 +263,18 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 		}
 
 		return demand;
+	}
+
+	@Override
+	public double getProviderStoredEnergy()
+	{
+		return 0;
+	}
+
+	@Override
+	public double getProviderMaxEnergy()
+	{
+		return 0;
 	}
 
 	@Override
