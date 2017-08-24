@@ -24,6 +24,7 @@ import java.util.List;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.relauncher.Side;
@@ -31,17 +32,23 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.implementations.TransitionResult;
 import appeng.api.implementations.items.ISpatialStorageCell;
+import appeng.api.storage.ISpatialDimension;
 import appeng.api.util.WorldCoord;
+import appeng.capabilities.Capabilities;
+import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
-import appeng.core.worlddata.WorldData;
 import appeng.items.AEBaseItem;
 import appeng.spatial.StorageHelper;
-import appeng.spatial.StorageWorldProvider;
 import appeng.util.Platform;
 
 
 public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorageCell
 {
+	private static final String NBT_CELL_ID_KEY = "StorageCellID";
+	private static final String NBT_SIZE_X_KEY = "sizeX";
+	private static final String NBT_SIZE_Y_KEY = "sizeY";
+	private static final String NBT_SIZE_Z_KEY = "sizeZ";
+
 	private final int maxRegion;
 
 	public ItemSpatialStorageCell( final int spatialScale )
@@ -54,6 +61,12 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	@Override
 	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
+		final int id = this.getStoredDimensionID( stack );
+		if( id >= 0 )
+		{
+			lines.add( GuiText.CellId.getLocal() + ": " + id );
+		}
+
 		final WorldCoord wc = this.getStoredSize( stack );
 		if( wc.x > 0 )
 		{
@@ -74,26 +87,19 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	}
 
 	@Override
-	public World getWorld( final ItemStack is )
+	public ISpatialDimension getSpatialDimension()
 	{
-		if( is.hasTagCompound() )
+		final int id = AppEng.instance().getStorageDimensionID();
+		World w = DimensionManager.getWorld( id );
+		if( w == null )
 		{
-			final NBTTagCompound c = is.getTagCompound();
-			final int dim = c.getInteger( "StorageDim" );
-			World w = DimensionManager.getWorld( dim );
-			if( w == null )
-			{
-				DimensionManager.initDimension( dim );
-				w = DimensionManager.getWorld( dim );
-			}
+			DimensionManager.initDimension( id );
+			w = DimensionManager.getWorld( id );
+		}
 
-			if( w != null )
-			{
-				if( w.provider instanceof StorageWorldProvider )
-				{
-					return w;
-				}
-			}
+		if( w != null && w.hasCapability( Capabilities.SPATIAL_DIMENSION, null ) )
+		{
+			return w.getCapability( Capabilities.SPATIAL_DIMENSION, null );
 		}
 		return null;
 	}
@@ -104,102 +110,80 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		if( is.hasTagCompound() )
 		{
 			final NBTTagCompound c = is.getTagCompound();
-			if( Platform.isServer() )
-			{
-				final int dim = c.getInteger( "StorageDim" );
-				return WorldData.instance().dimensionData().getStoredSize( dim );
-			}
-			else
-			{
-				return new WorldCoord( c.getInteger( "sizeX" ), c.getInteger( "sizeY" ), c.getInteger( "sizeZ" ) );
-			}
+			return new WorldCoord( c.getInteger( NBT_SIZE_X_KEY ), c.getInteger( NBT_SIZE_Y_KEY ), c.getInteger( NBT_SIZE_Z_KEY ) );
 		}
 		return new WorldCoord( 0, 0, 0 );
 	}
 
 	@Override
-	public WorldCoord getMin( final ItemStack is )
+	public int getStoredDimensionID( final ItemStack is )
 	{
-		final World w = this.getWorld( is );
-		if( w != null )
+		if( is.hasTagCompound() )
 		{
-			final NBTTagCompound info = (NBTTagCompound) w.getWorldInfo().getAdditionalProperty( "storageCell" );
-			if( info != null )
-			{
-				return new WorldCoord( info.getInteger( "minX" ), info.getInteger( "minY" ), info.getInteger( "minZ" ) );
-			}
+			final NBTTagCompound c = is.getTagCompound();
+			return c.getInteger( NBT_CELL_ID_KEY );
 		}
-		return new WorldCoord( 0, 0, 0 );
+		return -1;
 	}
 
 	@Override
-	public WorldCoord getMax( final ItemStack is )
+	public TransitionResult doSpatialTransition( final ItemStack is, final World w, final WorldCoord min, final WorldCoord max, int playerId )
 	{
-		final World w = this.getWorld( is );
-		if( w != null )
-		{
-			final NBTTagCompound info = (NBTTagCompound) w.getWorldInfo().getAdditionalProperty( "storageCell" );
-			if( info != null )
-			{
-				return new WorldCoord( info.getInteger( "maxX" ), info.getInteger( "maxY" ), info.getInteger( "maxZ" ) );
-			}
-		}
-		return new WorldCoord( 0, 0, 0 );
-	}
-
-	@Override
-	public TransitionResult doSpatialTransition( final ItemStack is, final World w, final WorldCoord min, final WorldCoord max, final boolean doTransition )
-	{
-		final WorldCoord scale = this.getStoredSize( is );
-
 		final int targetX = max.x - min.x - 1;
 		final int targetY = max.y - min.y - 1;
 		final int targetZ = max.z - min.z - 1;
 		final int maxSize = this.getMaxStoredDim( is );
 
-		World destination = this.getWorld( is );
+		final BlockPos targetSize = new BlockPos( targetX, targetY, targetZ );
 
-		if( ( scale.x == 0 && scale.y == 0 && scale.z == 0 ) || ( scale.x == targetX && scale.y == targetY && scale.z == targetZ ) )
+		ISpatialDimension manager = this.getSpatialDimension();
+
+		int cellid = this.getStoredDimensionID( is );
+		if( cellid < 0 )
 		{
-			if( targetX <= maxSize && targetY <= maxSize && targetZ <= maxSize )
+			cellid = manager.createNewCellDimension( targetSize, playerId );
+		}
+
+		try
+		{
+			if( manager.isCellDimension( cellid ) )
 			{
-				if( destination == null )
+				BlockPos scale = manager.getCellContentSize( cellid );
+
+				if( scale.equals( targetSize ) )
 				{
-					destination = this.createNewWorld( is );
+					if( targetX <= maxSize && targetY <= maxSize && targetZ <= maxSize )
+					{
+						BlockPos offset = manager.getCellDimensionOrigin( cellid );
+
+						this.setStorageCell( is, cellid, targetSize );
+						StorageHelper.getInstance().swapRegions( w, min.x + 1, min.y + 1, min.z + 1, manager.getWorld(), offset.getX(), offset.getY(),
+								offset.getZ(), targetX - 1, targetY - 1,
+								targetZ - 1 );
+
+						return new TransitionResult( true, 0 );
+					}
 				}
-
-				final int floorBuffer = 64;
-				StorageHelper.getInstance().swapRegions( w, min.x + 1, min.y + 1, min.z + 1, destination, 0, floorBuffer, 0, targetX - 1, targetY - 1,
-						targetZ - 1 );
-				this.setStoredSize( is, targetX, targetY, targetZ );
-
-				return new TransitionResult( true, 0 );
+			}
+			return new TransitionResult( false, 0 );
+		}
+		finally
+		{
+			// clean up newly created dimensions that failed transfer
+			if( manager.isCellDimension( cellid ) && this.getStoredDimensionID( is ) < 0 )
+			{
+				manager.deleteCellDimension( cellid );
 			}
 		}
-
-		return new TransitionResult( false, 0 );
 	}
 
-	private World createNewWorld( final ItemStack is )
+	private void setStorageCell( final ItemStack is, int id, BlockPos size )
 	{
 		final NBTTagCompound c = Platform.openNbtData( is );
-		final int newDim = DimensionManager.getNextFreeDimId();
-		c.setInteger( "StorageDim", newDim );
-		WorldData.instance().dimensionData().addStorageCell( newDim );
-		DimensionManager.initDimension( newDim );
-		return DimensionManager.getWorld( newDim );
-	}
 
-	private void setStoredSize( final ItemStack is, final int targetX, final int targetY, final int targetZ )
-	{
-		if( is.hasTagCompound() )
-		{
-			final NBTTagCompound c = is.getTagCompound();
-			final int dim = c.getInteger( "StorageDim" );
-			c.setInteger( "sizeX", targetX );
-			c.setInteger( "sizeY", targetY );
-			c.setInteger( "sizeZ", targetZ );
-			WorldData.instance().dimensionData().setStoredSize( dim, targetX, targetY, targetZ );
-		}
+		c.setInteger( NBT_CELL_ID_KEY, id );
+		c.setInteger( NBT_SIZE_X_KEY, size.getX() );
+		c.setInteger( NBT_SIZE_Y_KEY, size.getY() );
+		c.setInteger( NBT_SIZE_Z_KEY, size.getZ() );
 	}
 }

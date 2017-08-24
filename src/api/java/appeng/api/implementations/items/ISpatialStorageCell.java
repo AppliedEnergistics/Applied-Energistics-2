@@ -29,6 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import appeng.api.implementations.TransitionResult;
+import appeng.api.storage.ISpatialDimension;
 import appeng.api.util.WorldCoord;
 
 
@@ -57,7 +58,7 @@ public interface ISpatialStorageCell
 	 *
 	 * @return the world for this cell
 	 */
-	World getWorld( ItemStack is );
+	ISpatialDimension getSpatialDimension();
 
 	/**
 	 * get the currently stored size.
@@ -69,22 +70,13 @@ public interface ISpatialStorageCell
 	WorldCoord getStoredSize( ItemStack is );
 
 	/**
-	 * Minimum coordinates in its world for the storage cell.
+	 * get the currently stored Dimension id.
 	 *
 	 * @param is spatial storage cell
 	 *
-	 * @return minimum coordinate of dimension
+	 * @return dimension id or -1
 	 */
-	WorldCoord getMin( ItemStack is );
-
-	/**
-	 * Maximum coordinates in its world for the storage cell.
-	 *
-	 * @param is spatial storage cell
-	 *
-	 * @return maximum coordinate of dimension
-	 */
-	WorldCoord getMax( ItemStack is );
+	int getStoredDimensionID( ItemStack is );
 
 	/**
 	 * Perform a spatial swap with the contents of the cell, and the world.
@@ -93,9 +85,9 @@ public interface ISpatialStorageCell
 	 * @param w world of spatial
 	 * @param min min coord
 	 * @param max max coord
-	 * @param doTransition transition
+	 * @param playerId owner of current grid or -1
 	 *
 	 * @return result of transition
 	 */
-	TransitionResult doSpatialTransition( ItemStack is, World w, WorldCoord min, WorldCoord max, boolean doTransition );
+	TransitionResult doSpatialTransition( ItemStack is, World w, WorldCoord min, WorldCoord max, int playerId );
 }

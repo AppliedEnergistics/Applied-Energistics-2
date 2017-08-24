@@ -24,15 +24,12 @@ import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.ThreadQuickExitException;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.network.FMLEventChannel;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientCustomPacketEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent.ServerConnectionFromClientEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ServerCustomPacketEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import appeng.core.sync.AppEngPacket;
-import appeng.core.worlddata.WorldData;
 
 
 public class NetworkHandler
@@ -86,21 +83,6 @@ public class NetworkHandler
 		catch( final Throwable t )
 		{
 			return null;
-		}
-	}
-
-	@SubscribeEvent
-	public void newConnection( final ServerConnectionFromClientEvent ev )
-	{
-		WorldData.instance().dimensionData().sendToPlayer( ev.getManager() );
-	}
-
-	@SubscribeEvent
-	public void newConnection( final PlayerLoggedInEvent loginEvent )
-	{
-		if( loginEvent.player instanceof EntityPlayerMP )
-		{
-			WorldData.instance().dimensionData().sendToPlayer( null );
 		}
 	}
 

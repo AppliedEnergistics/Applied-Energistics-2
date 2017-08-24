@@ -35,10 +35,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -86,10 +89,8 @@ import appeng.core.features.registries.cell.CreativeCellHandler;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.stats.PlayerStatsRegistration;
+import appeng.core.worlddata.SpatialDimensionManager;
 import appeng.hooks.TickHandler;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
-import appeng.integration.Integrations;
 import appeng.items.materials.ItemMaterial;
 import appeng.items.parts.ItemFacade;
 import appeng.loot.ChestLoot;
@@ -128,6 +129,7 @@ import appeng.worldgen.QuartzWorldGen;
 final class Registration
 {
 	DimensionType storageDimensionType;
+	int storageDimensionID;
 	Biome storageBiome;
 
 	private File recipeDirectory;
@@ -159,28 +161,29 @@ final class Registration
 		definitions.getRegistry().getBootstrapComponents( IPreInitComponent.class ).forEachRemaining( b -> b.preInitialize( event.getSide() ) );
 	}
 
-	private void registerSpatial( final boolean force, IForgeRegistry<Biome> registry )
+	private void registerSpatialBiome( IForgeRegistry<Biome> registry )
 	{
 		if( !AEConfig.instance().isFeatureEnabled( AEFeature.SPATIAL_IO ) )
 		{
 			return;
 		}
 
-		final AEConfig config = AEConfig.instance();
-
 		if( this.storageBiome == null )
 		{
 			this.storageBiome = new BiomeGenStorage();
 		}
-
 		registry.register( this.storageBiome.setRegistryName( "appliedenergistics2:storage_biome" ) );
+	}
 
-		if( config.getStorageProviderID() != -1 )
+	private void registerSpatialDimension()
+	{
+		final AEConfig config = AEConfig.instance();
+		if( !config.isFeatureEnabled( AEFeature.SPATIAL_IO ) )
 		{
-			this.storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.getStorageProviderID(), StorageWorldProvider.class, false );
+			return;
 		}
 
-		if( config.getStorageProviderID() == -1 && force )
+		if( config.getStorageProviderID() == -1 )
 		{
 			final Set<Integer> ids = new HashSet<>();
 			for( DimensionType type : DimensionType.values() )
@@ -188,17 +191,25 @@ final class Registration
 				ids.add( type.getId() );
 			}
 
-			config.setStorageProviderID( -11 );
-
-			while( ids.contains( config.getStorageProviderID() ) )
+			int newId = -11;
+			while( ids.contains( newId ) )
 			{
-				config.setStorageProviderID( config.getStorageProviderID() - 1 );
+				--newId;
 			}
-
-			this.storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.getStorageProviderID(), StorageWorldProvider.class, false );
-
+			config.setStorageProviderID( newId );
 			config.save();
 		}
+
+		this.storageDimensionType = DimensionType.register( "Storage Cell", "_cell", config.getStorageProviderID(), StorageWorldProvider.class, true );
+
+		if( config.getStorageDimensionID() == -1 )
+		{
+			config.setStorageDimensionID( DimensionManager.getNextFreeDimId() );
+			config.save();
+		}
+		this.storageDimensionID = config.getStorageDimensionID();
+
+		DimensionManager.registerDimension( this.storageDimensionID, this.storageDimensionType );
 	}
 
 	private void registerCraftHandlers( final IRecipeHandlerRegistry registry )
@@ -284,7 +295,7 @@ final class Registration
 	public void registerBiomes( RegistryEvent.Register<Biome> event )
 	{
 		final IForgeRegistry<Biome> registry = event.getRegistry();
-		this.registerSpatial( false, registry );
+		this.registerSpatialBiome( registry );
 	}
 
 	@SubscribeEvent
@@ -355,6 +366,16 @@ final class Registration
 		recipeHandler.injectRecipes();
 	}
 
+	@SubscribeEvent
+	public void attachSpatialDimensionManager( AttachCapabilitiesEvent<World> event )
+	{
+		if( AEConfig.instance()
+				.isFeatureEnabled( AEFeature.SPATIAL_IO ) && event.getObject() == DimensionManager.getWorld( AEConfig.instance().getStorageDimensionID() ) )
+		{
+			event.addCapability( new ResourceLocation( "appliedenergistics2:spatial_dimension_manager" ), new SpatialDimensionManager( event.getObject() ) );
+		}
+	}
+
 	void postInit( final FMLPostInitializationEvent event )
 	{
 		final IRegistryContainer registries = Api.INSTANCE.registries();
@@ -362,6 +383,8 @@ final class Registration
 		final IParts parts = definitions.parts();
 		final IBlocks blocks = definitions.blocks();
 		final IItems items = definitions.items();
+
+		registerSpatialDimension();
 
 		// default settings..
 		( (P2PTunnelRegistry) registries.p2pTunnel() ).configure();
@@ -469,6 +492,7 @@ final class Registration
 		/*
 		 * White List Vanilla...
 		 */
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityBanner.class );
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityBeacon.class );
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityBrewingStand.class );
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityChest.class );
@@ -480,15 +504,15 @@ final class Registration
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityEnchantmentTable.class );
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityEnderChest.class );
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityEndPortal.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntitySkull.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityFurnace.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityMobSpawner.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntitySign.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityPiston.class );
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityFlowerPot.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityNote.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityFurnace.class );
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityHopper.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityMobSpawner.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityNote.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityPiston.class );
 		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityShulkerBox.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntitySign.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntitySkull.class );
 
 		/*
 		 * Whitelist AE2

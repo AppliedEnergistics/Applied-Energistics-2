@@ -28,6 +28,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.energy.IEnergyStorage;
 
+import appeng.api.storage.ISpatialDimension;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
@@ -45,6 +46,8 @@ public final class Capabilities
 
 	public static Capability<IStorageMonitorableAccessor> STORAGE_MONITORABLE_ACCESSOR;
 
+	public static Capability<ISpatialDimension> SPATIAL_DIMENSION;
+
 	public static Capability<ITeslaConsumer> TESLA_CONSUMER;
 
 	public static Capability<ITeslaHolder> TESLA_HOLDER;
@@ -57,12 +60,19 @@ public final class Capabilities
 	public static void register()
 	{
 		CapabilityManager.INSTANCE.register( IStorageMonitorableAccessor.class, createNullStorage(), NullMENetworkAccessor::new );
+		CapabilityManager.INSTANCE.register( ISpatialDimension.class, createNullStorage(), NullSpatialDimension::new );
 	}
 
 	@CapabilityInject( IStorageMonitorableAccessor.class )
 	private static void capIStorageMonitorableAccessorRegistered( Capability<IStorageMonitorableAccessor> cap )
 	{
 		STORAGE_MONITORABLE_ACCESSOR = cap;
+	}
+
+	@CapabilityInject( ISpatialDimension.class )
+	private static void capISpatialDimensionRegistered( Capability<ISpatialDimension> cap )
+	{
+		SPATIAL_DIMENSION = cap;
 	}
 
 	@CapabilityInject( ITeslaConsumer.class )

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2017, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,32 +16,26 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.worlddata;
+package appeng.api.storage;
 
 
-import javax.annotation.Nonnull;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 
-/**
- * @author thatsIch
- * @version rv3 - 02.11.2015
- * @since rv3 30.05.2015
- */
-public interface IWorldData
+public interface ISpatialDimension
 {
-	void onServerStopping();
+	World getWorld();
 
-	void onServerStoppped();
+	int createNewCellDimension( BlockPos contentSize, int playerId );
 
-	@Nonnull
-	IWorldGridStorageData storageData();
+	void deleteCellDimension( int cellDimId );
 
-	@Nonnull
-	IWorldPlayerData playerData();
+	boolean isCellDimension( int cellDimID );
 
-	@Nonnull
-	IWorldCompassData compassData();
+	int getCellDimensionOwner( int cellDimId );
 
-	@Nonnull
-	IWorldSpawnData spawnData();
+	BlockPos getCellDimensionOrigin( int cellDimId );
+
+	BlockPos getCellContentSize( int cellDimId );
 }

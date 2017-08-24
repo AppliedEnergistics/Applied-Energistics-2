@@ -95,8 +95,8 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	private final int[] levelByStacks = { 1, 10, 100, 1000 };
 
 	// Spatial IO/Dimension
-	private int storageBiomeID = -1;
 	private int storageProviderID = -1;
+	private int storageDimensionID = -1;
 	private double spatialPowerExponent = 1.35;
 	private double spatialPowerMultiplier = 1250.0;
 
@@ -251,8 +251,8 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 
 		if( this.isFeatureEnabled( AEFeature.SPATIAL_IO ) )
 		{
-			this.storageBiomeID = this.get( "spatialio", "storageBiomeID", this.storageBiomeID ).getInt( this.storageBiomeID );
 			this.storageProviderID = this.get( "spatialio", "storageProviderID", this.storageProviderID ).getInt( this.storageProviderID );
+			this.storageDimensionID = this.get( "spatialio", "storageDimensionID", this.storageDimensionID ).getInt( this.storageDimensionID );
 			this.spatialPowerMultiplier = this.get( "spatialio", "spatialPowerMultiplier", this.spatialPowerMultiplier ).getDouble(
 					this.spatialPowerMultiplier );
 			this.spatialPowerExponent = this.get( "spatialio", "spatialPowerExponent", this.spatialPowerExponent ).getDouble( this.spatialPowerExponent );
@@ -397,8 +397,8 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	{
 		if( this.isFeatureEnabled( AEFeature.SPATIAL_IO ) )
 		{
-			this.get( "spatialio", "storageBiomeID", this.storageBiomeID ).set( this.storageBiomeID );
 			this.get( "spatialio", "storageProviderID", this.storageProviderID ).set( this.storageProviderID );
+			this.get( "spatialio", "storageDimensionID", this.storageDimensionID ).set( this.storageDimensionID );
 		}
 
 		this.get( "Client", "PowerUnit", this.selectedPowerUnit.name(), this.getListComment( this.selectedPowerUnit ) ).set( this.selectedPowerUnit.name() );
@@ -619,14 +619,14 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		return this.levelByStacks;
 	}
 
-	public int getStorageBiomeID()
-	{
-		return this.storageBiomeID;
-	}
-
 	public int getStorageProviderID()
 	{
 		return this.storageProviderID;
+	}
+
+	public int getStorageDimensionID()
+	{
+		return this.storageDimensionID;
 	}
 
 	public double getSpatialPowerExponent()
@@ -766,13 +766,13 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 
 	// Setters keep visibility as low as possible.
 
-	void setStorageBiomeID( int id )
-	{
-		this.storageBiomeID = id;
-	}
-
 	void setStorageProviderID( int id )
 	{
 		this.storageProviderID = id;
+	}
+
+	void setStorageDimensionID( int id )
+	{
+		this.storageDimensionID = id;
 	}
 }
