@@ -131,7 +131,6 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	}
 
 	@Override
-	// NOTE: WAS FINAL, changed for Immibis
 	public void readFromNBT( final NBTTagCompound data )
 	{
 		super.readFromNBT( data );
@@ -159,7 +158,6 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	}
 
 	@Override
-	// NOTE: WAS FINAL, changed for Immibis
 	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
 		super.writeToNBT( data );
