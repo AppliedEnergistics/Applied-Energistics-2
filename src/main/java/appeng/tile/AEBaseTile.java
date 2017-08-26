@@ -119,11 +119,10 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		return this.state;
 	}
 
-	/**
-	 * for dormant chunk cache.
-	 */
-	public void onChunkLoad()
+	@Override
+	public void onLoad()
 	{
+		super.onLoad();
 		if( this.isInvalid() )
 		{
 			this.validate();

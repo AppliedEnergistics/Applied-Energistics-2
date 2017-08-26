@@ -167,18 +167,6 @@ public class TickHandler
 	}
 
 	@SubscribeEvent
-	public void onChunkLoad( final ChunkEvent.Load load )
-	{
-		for( final Object te : load.getChunk().getTileEntityMap().values() )
-		{
-			if( te instanceof AEBaseTile )
-			{
-				( (AEBaseTile) te ).onChunkLoad();
-			}
-		}
-	}
-
-	@SubscribeEvent
 	public void onTick( final TickEvent ev )
 	{
 
