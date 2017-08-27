@@ -19,7 +19,6 @@
 package appeng.me.cache;
 
 
-import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -118,6 +117,7 @@ public class EnergyGridCache implements IEnergyGrid
 	{
 		this.myGrid = g;
 		this.requesters.add( this.localStorage );
+		this.providers.add( this.localStorage );
 	}
 
 	@MENetworkEventSubscribe
@@ -198,12 +198,12 @@ public class EnergyGridCache implements IEnergyGrid
 
 		if( this.drainPerTick > 0.0001 )
 		{
-			final double drained = this.localStorage.extractAEPower( this.getIdlePowerUsage(), Actionable.MODULATE, PowerMultiplier.CONFIG );
+			final double drained = this.extractAEPower( this.getIdlePowerUsage(), Actionable.MODULATE, PowerMultiplier.CONFIG );
 			currentlyHasPower = drained >= this.drainPerTick - 0.001;
 		}
 		else
 		{
-			currentlyHasPower = this.localStorage.extractAEPower( 0.1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0;
+			currentlyHasPower = this.extractAEPower( 0.1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0;
 		}
 
 		// ticks since change..
@@ -285,7 +285,7 @@ public class EnergyGridCache implements IEnergyGrid
 	private void refreshPower()
 	{
 		this.availableTicksSinceUpdate = 0;
-		this.globalAvailablePower = this.localStorage.getAECurrentPower();
+		this.globalAvailablePower = 0;
 		for( final IAEPowerStorage p : this.providers )
 		{
 			this.globalAvailablePower += p.getAECurrentPower();
@@ -453,7 +453,7 @@ public class EnergyGridCache implements IEnergyGrid
 		final Set<IEnergyGridProvider> visited = new HashSet<>();
 		toVisit.add( this );
 
-		double leftover = this.localStorage.injectAEPower( amt, mode );
+		double leftover = amt;
 
 		while( !toVisit.isEmpty() && leftover > 0 )
 		{
@@ -508,7 +508,7 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public double getEnergyDemand( final double maxRequired )
 	{
-		final Queue<IEnergyGridProvider> toVisit = new ArrayDeque<>();
+		final Queue<IEnergyGridProvider> toVisit = new PriorityQueue<>( COMPARATOR_LOWEST_PERCENTAGE_FIRST );
 		final Set<IEnergyGridProvider> visited = new HashSet<>();
 		toVisit.add( this );
 
@@ -698,11 +698,6 @@ public class EnergyGridCache implements IEnergyGrid
 				}
 			}
 
-			if( extracted < amt )
-			{
-				extracted += EnergyGridCache.this.extractAEPower( amt - extracted, Actionable.MODULATE, PowerMultiplier.CONFIG );
-			}
-
 			return extracted;
 		}
 
@@ -720,6 +715,11 @@ public class EnergyGridCache implements IEnergyGrid
 			if( mode == Actionable.MODULATE )
 			{
 				this.stored += toStore;
+
+				if( this.stored > 0.01 )
+				{
+					EnergyGridCache.this.myGrid.postEvent( new MENetworkPowerStorage( this, PowerEventType.PROVIDE_POWER ) );
+				}
 			}
 
 			return amt - toStore;
