@@ -67,7 +67,6 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	private String customName;
 	private EnumFacing forward = null;
 	private EnumFacing up = null;
-
 	private IBlockState state;
 
 	@Override
@@ -117,16 +116,6 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			this.state = this.world.getBlockState( this.getPos() );
 		}
 		return this.state;
-	}
-
-	@Override
-	public void onLoad()
-	{
-		super.onLoad();
-		if( this.isInvalid() )
-		{
-			this.validate();
-		}
 	}
 
 	@Override
@@ -191,13 +180,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		}
 	}
 
-	@Override
-	public void onChunkUnload()
+	public void onReady()
 	{
-		if( !this.isInvalid() )
-		{
-			this.invalidate();
-		}
 	}
 
 	/**
@@ -430,11 +414,6 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	}
 
 	public void getNoDrops( final World w, final BlockPos pos, final List<ItemStack> drops )
-	{
-
-	}
-
-	public void onReady()
 	{
 
 	}
