@@ -19,6 +19,7 @@
 package appeng.tile.misc;
 
 
+import java.io.IOException;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -68,8 +69,6 @@ import appeng.api.util.IConfigManager;
 import appeng.helpers.PlayerSecurityWrapper;
 import appeng.me.GridAccessException;
 import appeng.me.storage.SecurityStationInventory;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
@@ -135,28 +134,31 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 		return this.inventory;
 	}
 
-	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileSecurity( final ByteBuf data )
+	@Override
+	protected boolean readFromStream( final ByteBuf data ) throws IOException
 	{
+		final boolean c = super.readFromStream( data );
 		final boolean wasActive = this.isActive;
 		this.isActive = data.readBoolean();
 
 		final AEColor oldPaintedColor = this.paintedColor;
 		this.paintedColor = AEColor.values()[data.readByte()];
 
-		return oldPaintedColor != this.paintedColor || wasActive != this.isActive;
+		return oldPaintedColor != this.paintedColor || wasActive != this.isActive || c;
 	}
 
-	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileSecurity( final ByteBuf data )
+	@Override
+	protected void writeToStream( final ByteBuf data ) throws IOException
 	{
+		super.writeToStream( data );
 		data.writeBoolean( this.getProxy().isActive() );
 		data.writeByte( this.paintedColor.ordinal() );
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileSecurity( final NBTTagCompound data )
+	@Override
+	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
+		super.writeToNBT( data );
 		this.cm.writeToNBT( data );
 		data.setByte( "paintedColor", (byte) this.paintedColor.ordinal() );
 
@@ -175,11 +177,13 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 		}
 
 		data.setTag( "storedItems", storedItems );
+		return data;
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileSecurity( final NBTTagCompound data )
+	@Override
+	public void readFromNBT( final NBTTagCompound data )
 	{
+		super.readFromNBT( data );
 		this.cm.readFromNBT( data );
 		if( data.hasKey( "paintedColor" ) )
 		{

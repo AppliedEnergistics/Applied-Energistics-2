@@ -65,8 +65,6 @@ import appeng.items.misc.ItemEncodedPattern;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.DefinitionUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
@@ -198,23 +196,26 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		return this.upgrades.getInstalledUpgrades( u );
 	}
 
-	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileMolecularAssembler( final ByteBuf data )
+	@Override
+	protected boolean readFromStream( final ByteBuf data ) throws IOException
 	{
+		final boolean c = super.readFromStream( data );
 		final boolean oldPower = this.isPowered;
 		this.isPowered = data.readBoolean();
-		return this.isPowered != oldPower;
+		return this.isPowered != oldPower || c;
 	}
 
-	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileMolecularAssembler( final ByteBuf data )
+	@Override
+	protected void writeToStream( final ByteBuf data ) throws IOException
 	{
+		super.writeToStream( data );
 		data.writeBoolean( this.isPowered );
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileMolecularAssembler( final NBTTagCompound data )
+	@Override
+	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
+		super.writeToNBT( data );
 		if( this.forcePlan && this.myPlan != null )
 		{
 			final ItemStack pattern = this.myPlan.getPattern();
@@ -228,14 +229,14 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		}
 
 		this.upgrades.writeToNBT( data, "upgrades" );
-		this.gridInv.writeToNBT( data, "inv" );
-		this.patternInv.writeToNBT( data, "pattern" );
 		this.settings.writeToNBT( data );
+		return data;
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileMolecularAssembler( final NBTTagCompound data )
+	@Override
+	public void readFromNBT( final NBTTagCompound data )
 	{
+		super.readFromNBT( data );
 		if( data.hasKey( "myPlan" ) )
 		{
 			final ItemStack myPat = new ItemStack( data.getCompoundTag( "myPlan" ) );
@@ -255,8 +256,6 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		}
 
 		this.upgrades.readFromNBT( data, "upgrades" );
-		this.gridInv.readFromNBT( data, "inv" );
-		this.patternInv.readFromNBT( data, "pattern" );
 		this.settings.readFromNBT( data );
 		this.recalculatePlan();
 	}

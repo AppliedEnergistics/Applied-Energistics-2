@@ -19,6 +19,7 @@
 package appeng.tile.misc;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,8 +41,6 @@ import appeng.api.util.AEColor;
 import appeng.helpers.Splotch;
 import appeng.items.misc.ItemPaintBall;
 import appeng.tile.AEBaseTile;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 
 
 public class TilePaint extends AEBaseTile
@@ -58,15 +57,17 @@ public class TilePaint extends AEBaseTile
 		return false;
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TilePaint( final NBTTagCompound data )
+	@Override
+	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
+		super.writeToNBT( data );
 		final ByteBuf myDat = Unpooled.buffer();
 		this.writeBuffer( myDat );
 		if( myDat.hasArray() )
 		{
 			data.setByteArray( "dots", myDat.array() );
 		}
+		return data;
 	}
 
 	private void writeBuffer( final ByteBuf out )
@@ -85,9 +86,10 @@ public class TilePaint extends AEBaseTile
 		}
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TilePaint( final NBTTagCompound data )
+	@Override
+	public void readFromNBT( final NBTTagCompound data )
 	{
+		super.readFromNBT( data );
 		if( data.hasKey( "dots" ) )
 		{
 			this.readBuffer( Unpooled.copiedBuffer( data.getByteArray( "dots" ) ) );
@@ -136,15 +138,17 @@ public class TilePaint extends AEBaseTile
 		}
 	}
 
-	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TilePaint( final ByteBuf data )
+	@Override
+	protected void writeToStream( final ByteBuf data ) throws IOException
 	{
+		super.writeToStream( data );
 		this.writeBuffer( data );
 	}
 
-	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TilePaint( final ByteBuf data )
+	@Override
+	protected boolean readFromStream( final ByteBuf data ) throws IOException
 	{
+		super.readFromStream( data );
 		this.readBuffer( data );
 		return true;
 	}

@@ -34,8 +34,6 @@ import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.storage.ICellWorkbenchItem;
 import appeng.api.util.IConfigManager;
 import appeng.tile.AEBaseTile;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
@@ -104,17 +102,20 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 		return null;
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileCellWorkbench( final NBTTagCompound data )
+	@Override
+	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
+		super.writeToNBT( data );
 		this.cell.writeToNBT( data, "cell" );
 		this.config.writeToNBT( data, "config" );
 		this.manager.writeToNBT( data );
+		return data;
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileCellWorkbench( final NBTTagCompound data )
+	@Override
+	public void readFromNBT( final NBTTagCompound data )
 	{
+		super.readFromNBT( data );
 		this.cell.readFromNBT( data, "cell" );
 		this.config.readFromNBT( data, "config" );
 		this.manager.readFromNBT( data );

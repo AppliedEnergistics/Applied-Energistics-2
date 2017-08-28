@@ -19,6 +19,7 @@
 package appeng.tile.storage;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -89,8 +90,6 @@ import appeng.capabilities.Capabilities;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkPowerTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
@@ -433,9 +432,11 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		}
 	}
 
-	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileChest( final ByteBuf data )
+	@Override
+	protected void writeToStream( final ByteBuf data ) throws IOException
 	{
+		super.writeToStream( data );
+
 		if( this.world.getTotalWorldTime() - this.lastStateChange > 8 )
 		{
 			this.state = 0;
@@ -474,9 +475,11 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		}
 	}
 
-	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileChest( final ByteBuf data )
+	@Override
+	protected boolean readFromStream( final ByteBuf data ) throws IOException
 	{
+		final boolean c = super.readFromStream( data );
+
 		final int oldState = this.state;
 		final ItemStack oldType = this.storageType;
 
@@ -498,12 +501,13 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		this.lastStateChange = this.world.getTotalWorldTime();
 
 		return oldPaintedColor != this.paintedColor || ( this.state & 0xDB6DB6DB ) != ( oldState & 0xDB6DB6DB ) || !Platform.itemComparisons()
-				.isSameItem( oldType, this.storageType );
+				.isSameItem( oldType, this.storageType ) || c;
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileChest( final NBTTagCompound data )
+	@Override
+	public void readFromNBT( final NBTTagCompound data )
 	{
+		super.readFromNBT( data );
 		this.config.readFromNBT( data );
 		this.priority = data.getInteger( "priority" );
 		if( data.hasKey( "paintedColor" ) )
@@ -512,12 +516,14 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		}
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileChest( final NBTTagCompound data )
+	@Override
+	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
+		super.writeToNBT( data );
 		this.config.writeToNBT( data );
 		data.setInteger( "priority", this.priority );
 		data.setByte( "paintedColor", (byte) this.paintedColor.ordinal() );
+		return data;
 	}
 
 	@MENetworkEventSubscribe

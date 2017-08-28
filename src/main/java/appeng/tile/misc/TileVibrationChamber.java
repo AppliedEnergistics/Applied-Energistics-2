@@ -19,6 +19,8 @@
 package appeng.tile.misc;
 
 
+import java.io.IOException;
+
 import javax.annotation.Nonnull;
 
 import io.netty.buffer.ByteBuf;
@@ -40,10 +42,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.settings.TickRates;
-import appeng.helpers.Reflected;
 import appeng.me.GridAccessException;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
@@ -80,35 +79,38 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		return AECableType.COVERED;
 	}
 
-	@Reflected
-	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean hasUpdate( final ByteBuf data )
+	@Override
+	protected boolean readFromStream( final ByteBuf data ) throws IOException
 	{
+		final boolean c = super.readFromStream( data );
 		final boolean wasOn = this.isOn;
 
 		this.isOn = data.readBoolean();
 
-		return wasOn != this.isOn; // TESR doesn't need updates!
+		return wasOn != this.isOn || c; // TESR doesn't need updates!
 	}
 
-	@Reflected
-	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToNetwork( final ByteBuf data )
+	@Override
+	protected void writeToStream( final ByteBuf data ) throws IOException
 	{
+		super.writeToStream( data );
 		data.writeBoolean( this.getBurnTime() > 0 );
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileVibrationChamber( final NBTTagCompound data )
+	@Override
+	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
+		super.writeToNBT( data );
 		data.setDouble( "burnTime", this.getBurnTime() );
 		data.setDouble( "maxBurnTime", this.getMaxBurnTime() );
 		data.setInteger( "burnSpeed", this.getBurnSpeed() );
+		return data;
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileVibrationChamber( final NBTTagCompound data )
+	@Override
+	public void readFromNBT( final NBTTagCompound data )
 	{
+		super.readFromNBT( data );
 		this.setBurnTime( data.getDouble( "burnTime" ) );
 		this.setMaxBurnTime( data.getDouble( "maxBurnTime" ) );
 		this.setBurnSpeed( data.getInteger( "burnSpeed" ) );

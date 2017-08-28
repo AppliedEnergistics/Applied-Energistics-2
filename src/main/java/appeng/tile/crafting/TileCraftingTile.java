@@ -51,8 +51,6 @@ import appeng.me.cluster.implementations.CraftingCPUCalculator;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.AENetworkProxyMultiblock;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkTile;
 import appeng.util.Platform;
 
@@ -194,19 +192,22 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		return this.cluster != null;
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileCraftingTile( final NBTTagCompound data )
+	@Override
+	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
+		super.writeToNBT( data );
 		data.setBoolean( "core", this.isCoreBlock() );
 		if( this.isCoreBlock() && this.cluster != null )
 		{
 			this.cluster.writeToNBT( data );
 		}
+		return data;
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileCraftingTile( final NBTTagCompound data )
+	@Override
+	public void readFromNBT( final NBTTagCompound data )
 	{
+		super.readFromNBT( data );
 		this.setCoreBlock( data.getBoolean( "core" ) );
 		if( this.isCoreBlock() )
 		{

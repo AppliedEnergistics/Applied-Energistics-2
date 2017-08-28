@@ -19,6 +19,8 @@
 package appeng.tile.storage;
 
 
+import java.io.IOException;
+
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,8 +31,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.tile.AEBaseInvTile;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.inv.InvOperation;
 
@@ -46,15 +46,17 @@ public class TileSkyChest extends AEBaseInvTile implements ITickable
 	private float lidAngle;
 	private float prevLidAngle;
 
-	@TileEvent( TileEventType.NETWORK_WRITE )
-	public void writeToStream_TileSkyChest( final ByteBuf data )
+	@Override
+	protected void writeToStream( final ByteBuf data ) throws IOException
 	{
+		super.writeToStream( data );
 		data.writeBoolean( this.getPlayerOpen() > 0 );
 	}
 
-	@TileEvent( TileEventType.NETWORK_READ )
-	public boolean readFromStream_TileSkyChest( final ByteBuf data )
+	@Override
+	protected boolean readFromStream( final ByteBuf data ) throws IOException
 	{
+		final boolean c = super.readFromStream( data );
 		final int wasOpen = this.getPlayerOpen();
 		this.setPlayerOpen( data.readBoolean() ? 1 : 0 );
 
@@ -63,7 +65,7 @@ public class TileSkyChest extends AEBaseInvTile implements ITickable
 			this.setLastEvent( System.currentTimeMillis() );
 		}
 
-		return false; // TESR yo!
+		return c; // TESR yo!
 	}
 
 	@Override

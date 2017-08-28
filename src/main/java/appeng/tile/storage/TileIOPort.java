@@ -58,12 +58,9 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.core.settings.TickRates;
-import appeng.helpers.Reflected;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.BlockUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
-import appeng.tile.TileEvent;
-import appeng.tile.events.TileEventType;
 import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
@@ -96,7 +93,6 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	private IMEInventory<IAEFluidStack> cachedFluid;
 	private IMEInventory<IAEItemStack> cachedItem;
 
-	@Reflected
 	public TileIOPort()
 	{
 		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
@@ -111,22 +107,21 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		this.upgrades = new BlockUpgradeInventory( ioPortBlock, this, 3 );
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_TileIOPort( final NBTTagCompound data )
+	@Override
+	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
+		super.writeToNBT( data );
 		this.manager.writeToNBT( data );
-		this.inputCells.writeToNBT( data, "cellsInput" );
-		this.outputCells.writeToNBT( data, "cellsOutput" );
 		this.upgrades.writeToNBT( data, "upgrades" );
 		data.setInteger( "lastRedstoneState", this.lastRedstoneState.ordinal() );
+		return data;
 	}
 
-	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_TileIOPort( final NBTTagCompound data )
+	@Override
+	public void readFromNBT( final NBTTagCompound data )
 	{
+		super.readFromNBT( data );
 		this.manager.readFromNBT( data );
-		this.inputCells.readFromNBT( data, "cellsInput" );
-		this.outputCells.readFromNBT( data, "cellsOutput" );
 		this.upgrades.readFromNBT( data, "upgrades" );
 		if( data.hasKey( "lastRedstoneState" ) )
 		{

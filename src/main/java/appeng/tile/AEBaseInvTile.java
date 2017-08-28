@@ -37,7 +37,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
-import appeng.tile.events.TileEventType;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
@@ -46,9 +45,10 @@ import appeng.util.inv.InvOperation;
 public abstract class AEBaseInvTile extends AEBaseTile implements IAEAppEngInventory
 {
 
-	@TileEvent( TileEventType.WORLD_NBT_READ )
-	public void readFromNBT_AEBaseInvTile( final net.minecraft.nbt.NBTTagCompound data )
+	@Override
+	public void readFromNBT( final NBTTagCompound data )
 	{
+		super.readFromNBT( data );
 		final IItemHandler inv = this.getInternalInventory();
 		if( inv != EmptyHandler.INSTANCE )
 		{
@@ -63,9 +63,10 @@ public abstract class AEBaseInvTile extends AEBaseTile implements IAEAppEngInven
 
 	public abstract @Nonnull IItemHandler getInternalInventory();
 
-	@TileEvent( TileEventType.WORLD_NBT_WRITE )
-	public void writeToNBT_AEBaseInvTile( final net.minecraft.nbt.NBTTagCompound data )
+	@Override
+	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
+		super.writeToNBT( data );
 		final IItemHandler inv = this.getInternalInventory();
 		if( inv != EmptyHandler.INSTANCE )
 		{
@@ -82,6 +83,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements IAEAppEngInven
 			}
 			data.setTag( "inv", opt );
 		}
+		return data;
 	}
 
 	@Override

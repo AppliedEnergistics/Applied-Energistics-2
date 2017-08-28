@@ -32,7 +32,6 @@ import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
 import net.minecraft.world.World;
-import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -162,18 +161,6 @@ public class TickHandler
 			for( final IGridNode n : toDestroy )
 			{
 				n.destroy();
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public void onChunkLoad( final ChunkEvent.Load load )
-	{
-		for( final Object te : load.getChunk().getTileEntityMap().values() )
-		{
-			if( te instanceof AEBaseTile )
-			{
-				( (AEBaseTile) te ).onChunkLoad();
 			}
 		}
 	}
