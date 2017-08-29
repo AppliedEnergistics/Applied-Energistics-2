@@ -180,6 +180,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 		if( this.getTileEntity() != null && this.eventsEnabled() )
 		{
 			this.getTileEntity().onChangeInventory( this, -1, InvOperation.markDirty, null, null );
+			this.getTileEntity().saveChanges();
 		}
 	}
 
@@ -216,6 +217,7 @@ public class AppEngInternalInventory implements IInventory, Iterable<ItemStack>
 		if( this.getTileEntity() != null && this.eventsEnabled() )
 		{
 			this.getTileEntity().onChangeInventory( this, slotIndex, InvOperation.markDirty, null, null );
+			this.getTileEntity().saveChanges();
 		}
 	}
 
