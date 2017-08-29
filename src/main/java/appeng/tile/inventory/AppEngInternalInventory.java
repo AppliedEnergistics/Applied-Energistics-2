@@ -119,13 +119,16 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 			ItemStack added = this.getStackInSlot( slot ).copy();
 			ItemStack removed = this.previousStack.copy();
 
-			if( this.currentOp == InvOperation.INSERT )
+			if( !added.isEmpty() && !removed.isEmpty() && Platform.itemComparisons().isEqualItem( added, removed ) )
 			{
-				added.grow( -removed.getCount() );
-			}
-			else if( this.currentOp == InvOperation.EXTRACT )
-			{
-				removed.grow( -added.getCount() );
+				if( this.currentOp == InvOperation.INSERT )
+				{
+					added.grow( -removed.getCount() );
+				}
+				else if( this.currentOp == InvOperation.EXTRACT )
+				{
+					removed.grow( -added.getCount() );
+				}
 			}
 			this.getTileEntity().onChangeInventory( this, slot, this.currentOp, removed, added );
 			this.getTileEntity().saveChanges();
