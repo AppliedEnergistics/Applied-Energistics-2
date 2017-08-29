@@ -128,6 +128,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 				removed.grow( -added.getCount() );
 			}
 			this.getTileEntity().onChangeInventory( this, slot, this.currentOp, removed, added );
+			this.getTileEntity().saveChanges();
 		}
 		super.onContentsChanged( slot );
 	}
@@ -148,6 +149,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 		if( this.getTileEntity() != null && this.eventsEnabled() )
 		{
 			this.getTileEntity().onChangeInventory( this, slot, InvOperation.DIRTY, ItemStack.EMPTY, ItemStack.EMPTY );
+			this.getTileEntity().saveChanges();
 		}
 	}
 
