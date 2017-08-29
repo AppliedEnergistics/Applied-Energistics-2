@@ -79,7 +79,7 @@ public class AppEngSlot extends Slot
 
 	public void clearStack()
 	{
-		ItemHandlerUtil.setStackInSlot( this.itemHandler, this.slotNumber, ItemStack.EMPTY );
+		ItemHandlerUtil.setStackInSlot( this.itemHandler, this.index, ItemStack.EMPTY );
 	}
 
 	@Override
