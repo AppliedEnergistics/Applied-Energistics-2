@@ -88,7 +88,6 @@ import appeng.capabilities.Capabilities;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
-import appeng.me.helpers.PlayerSource;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.tile.grid.AENetworkPowerTile;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -799,7 +798,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		@Override
 		public void postChange( final IBaseMonitor<T> monitor, final Iterable<T> change, final IActionSource source )
 		{
-			if( source == TileChest.this.mySrc || ( source.machine().isPresent() && source.machine().get() == TileChest.this ) )
+			if( source == TileChest.this.mySrc || source.machine().map( machine -> machine == TileChest.this ).orElse( false ) )
 			{
 				try
 				{

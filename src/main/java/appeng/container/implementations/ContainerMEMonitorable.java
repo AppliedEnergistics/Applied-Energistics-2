@@ -123,22 +123,22 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 				{
 					this.setPowerSource( (IEnergySource) monitorable );
 				}
-				else if( monitorable instanceof IGridHost )
+				else if( monitorable instanceof IGridHost || monitorable instanceof IActionHost )
 				{
-					final IGridNode node = ( (IGridHost) monitorable ).getGridNode( AEPartLocation.INTERNAL );
-					if( node != null )
+					final IGridNode node;
+					if( monitorable instanceof IGridHost )
 					{
-						this.networkNode = node;
-						final IGrid g = node.getGrid();
-						if( g != null )
-						{
-							this.setPowerSource( new ChannelPowerSrc( this.networkNode, (IEnergySource) g.getCache( IEnergyGrid.class ) ) );
-						}
+						node = ( (IGridHost) monitorable ).getGridNode( AEPartLocation.INTERNAL );
 					}
-				}
-				else if( monitorable instanceof IActionHost )
-				{
-					final IGridNode node = ( (IActionHost) monitorable ).getActionableNode();
+					else if( monitorable instanceof IActionHost )
+					{
+						node = ( (IActionHost) monitorable ).getActionableNode();
+					}
+					else
+					{
+						node = null;
+					}
+
 					if( node != null )
 					{
 						this.networkNode = node;

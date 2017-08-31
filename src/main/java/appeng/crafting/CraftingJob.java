@@ -45,7 +45,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AELog;
 import appeng.hooks.TickHandler;
-import appeng.me.helpers.PlayerSource;
 
 
 public class CraftingJob implements Runnable, ICraftingJob
@@ -376,7 +375,6 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 			if( this.actionSrc.player().isPresent() )
 			{
-				final PlayerSource source = (PlayerSource) this.actionSrc;
 				final EntityPlayer player = this.actionSrc.player().get();
 
 				actionSource = player.toString();
