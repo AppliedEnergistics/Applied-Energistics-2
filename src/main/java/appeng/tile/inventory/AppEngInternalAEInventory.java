@@ -219,34 +219,30 @@ public class AppEngInternalAEInventory implements IInternalItemHandler, Iterable
 	@Override
 	public void setStackInSlot( final int slot, final ItemStack newItemStack )
 	{
-		final ItemStack oldStack = this.getStackInSlot( slot );
+		ItemStack oldStack = this.getStackInSlot( slot ).copy();
 		this.inv[slot] = AEApi.instance().storage().createItemStack( newItemStack );
 
 		if( this.te != null && Platform.isServer() )
 		{
-			ItemStack removed = oldStack;
-			ItemStack added = newItemStack;
+			ItemStack newStack = newItemStack.copy();
+			InvOperation op = InvOperation.SET;
 
-			if( !oldStack.isEmpty() && !newItemStack.isEmpty() && Platform.itemComparisons().isEqualItem( oldStack, newItemStack ) )
+			if( Platform.itemComparisons().isEqualItem( oldStack, newStack ) )
 			{
-				if( oldStack.getCount() > newItemStack.getCount() )
+				if( newStack.getCount() > oldStack.getCount() )
 				{
-					removed = removed.copy();
-					removed.grow( -newItemStack.getCount() );
-					added = ItemStack.EMPTY;
-				}
-				else if( oldStack.getCount() < newItemStack.getCount() )
-				{
-					added = added.copy();
-					added.grow( -oldStack.getCount() );
-					removed = ItemStack.EMPTY;
+					newStack.shrink( oldStack.getCount() );
+					oldStack = ItemStack.EMPTY;
+					op = InvOperation.INSERT;
 				}
 				else
 				{
-					removed = added = ItemStack.EMPTY;
+					oldStack.shrink( newStack.getCount() );
+					newStack = ItemStack.EMPTY;
+					op = InvOperation.EXTRACT;
 				}
 			}
-			this.fireOnChangeInventory( slot, InvOperation.SET, removed, added );
+			this.fireOnChangeInventory( slot, op, oldStack, newStack );
 		}
 	}
 
@@ -255,6 +251,7 @@ public class AppEngInternalAEInventory implements IInternalItemHandler, Iterable
 		if( this.te != null && Platform.isServer() )
 		{
 			this.te.onChangeInventory( this, slot, op, removed, inserted );
+			this.te.saveChanges();
 		}
 	}
 

@@ -41,7 +41,6 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 	private boolean enableClientEvents = false;
 	private IAEAppEngInventory te;
 	private final int[] maxStack;
-	private InvOperation currentOp;
 	private ItemStack previousStack = ItemStack.EMPTY;
 	private IAEItemFilter filter;
 
@@ -78,8 +77,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 	@Override
 	public void setStackInSlot( int slot, @Nonnull ItemStack stack )
 	{
-		this.currentOp = InvOperation.SET;
-		this.previousStack = this.getStackInSlot( slot );
+		this.previousStack = this.getStackInSlot( slot ).copy();
 		super.setStackInSlot( slot, stack );
 	}
 
@@ -92,8 +90,10 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 			return stack;
 		}
 
-		this.currentOp = InvOperation.INSERT;
-		this.previousStack = this.getStackInSlot( slot ).copy();
+		if( !simulate )
+		{
+			this.previousStack = this.getStackInSlot( slot ).copy();
+		}
 		return super.insertItem( slot, stack, simulate );
 	}
 
@@ -106,8 +106,10 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 			return ItemStack.EMPTY;
 		}
 
-		this.currentOp = InvOperation.EXTRACT;
-		this.previousStack = this.getStackInSlot( slot );
+		if( !simulate )
+		{
+			this.previousStack = this.getStackInSlot( slot ).copy();
+		}
 		return super.extractItem( slot, amount, simulate );
 	}
 
@@ -116,22 +118,29 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 	{
 		if( this.getTileEntity() != null && this.eventsEnabled() )
 		{
-			ItemStack added = this.getStackInSlot( slot ).copy();
-			ItemStack removed = this.previousStack.copy();
+			ItemStack newStack = this.getStackInSlot( slot ).copy();
+			ItemStack oldStack = this.previousStack;
+			InvOperation op = InvOperation.SET;
 
-			if( !added.isEmpty() && !removed.isEmpty() && Platform.itemComparisons().isEqualItem( added, removed ) )
+			if( newStack.isEmpty() || oldStack.isEmpty() || Platform.itemComparisons().isEqualItem( newStack, oldStack ) )
 			{
-				if( this.currentOp == InvOperation.INSERT )
+				if( newStack.getCount() > oldStack.getCount() )
 				{
-					added.grow( -removed.getCount() );
+					newStack.shrink( oldStack.getCount() );
+					oldStack = ItemStack.EMPTY;
+					op = InvOperation.INSERT;
 				}
-				else if( this.currentOp == InvOperation.EXTRACT )
+				else
 				{
-					removed.grow( -added.getCount() );
+					oldStack.shrink( newStack.getCount() );
+					newStack = ItemStack.EMPTY;
+					op = InvOperation.EXTRACT;
 				}
 			}
-			this.getTileEntity().onChangeInventory( this, slot, this.currentOp, removed, added );
+
+			this.getTileEntity().onChangeInventory( this, slot, op, oldStack, newStack );
 			this.getTileEntity().saveChanges();
+			this.previousStack = ItemStack.EMPTY;
 		}
 		super.onContentsChanged( slot );
 	}
