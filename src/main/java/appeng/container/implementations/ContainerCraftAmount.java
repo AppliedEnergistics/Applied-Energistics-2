@@ -27,13 +27,13 @@ import net.minecraft.world.World;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.IActionHost;
-import appeng.api.networking.security.PlayerSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotInaccessible;
+import appeng.me.helpers.PlayerSource;
 import appeng.tile.inventory.AppEngInternalInventory;
 
 
@@ -69,7 +69,7 @@ public class ContainerCraftAmount extends AEBaseContainer
 		return this.getPlayerInv().player.world;
 	}
 
-	public BaseActionSource getActionSrc()
+	public IActionSource getActionSrc()
 	{
 		return new PlayerSource( this.getPlayerInv().player, (IActionHost) this.getTarget() );
 	}

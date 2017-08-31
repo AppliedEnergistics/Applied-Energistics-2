@@ -42,8 +42,7 @@ import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergyGrid;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
@@ -60,6 +59,7 @@ import appeng.helpers.MultiCraftingTracker;
 import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
+import appeng.me.helpers.MachineSource;
 import appeng.parts.PartModel;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
@@ -81,7 +81,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/export_bus_has_channel" ) );
 
 	private final MultiCraftingTracker craftingTracker = new MultiCraftingTracker( this, 9 );
-	private final BaseActionSource mySrc;
+	private final IActionSource mySrc;
 	private long itemToSend = 1;
 	private boolean didSomething = false;
 	private int nextSlot = 0;

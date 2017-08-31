@@ -37,16 +37,15 @@ import appeng.api.networking.crafting.ICraftingCallback;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.IActionHost;
-import appeng.api.networking.security.MachineSource;
-import appeng.api.networking.security.PlayerSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AELog;
 import appeng.hooks.TickHandler;
+import appeng.me.helpers.PlayerSource;
 
 
 public class CraftingJob implements Runnable, ICraftingJob
@@ -66,7 +65,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 	private boolean simulate = false;
 	private MECraftingInventory availableCheck;
 	private long bytes = 0;
-	private final BaseActionSource actionSrc;
+	private final IActionSource actionSrc;
 	private final ICraftingCallback callback;
 	private boolean running = false;
 	private boolean done = false;
@@ -78,7 +77,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 		return w;
 	}
 
-	public CraftingJob( final World w, final IGrid grid, final BaseActionSource actionSrc, final IAEItemStack what, final ICraftingCallback callback )
+	public CraftingJob( final World w, final IGrid grid, final IActionSource actionSrc, final IAEItemStack what, final ICraftingCallback callback )
 	{
 		this.world = this.wrapWorld( w );
 		this.output = what.copy();
@@ -375,21 +374,21 @@ public class CraftingJob implements Runnable, ICraftingJob
 			final long elapsedTime = timer.elapsed( TimeUnit.MILLISECONDS );
 			final String actionSource;
 
-			if( this.actionSrc instanceof MachineSource )
+			if( this.actionSrc.player().isPresent() )
 			{
-				final IActionHost machineSource = ( (MachineSource) this.actionSrc ).via;
+				final PlayerSource source = (PlayerSource) this.actionSrc;
+				final EntityPlayer player = this.actionSrc.player().get();
+
+				actionSource = player.toString();
+			}
+			else if( this.actionSrc.machine().isPresent() )
+			{
+				final IActionHost machineSource = this.actionSrc.machine().get();
 				final IGridNode actionableNode = machineSource.getActionableNode();
 				final IGridHost machine = actionableNode.getMachine();
 				final DimensionalCoord location = actionableNode.getGridBlock().getLocation();
 
 				actionSource = String.format( LOG_MACHINE_SOURCE_DETAILS, machine, location );
-			}
-			else if( this.actionSrc instanceof PlayerSource )
-			{
-				final PlayerSource source = (PlayerSource) this.actionSrc;
-				final EntityPlayer player = source.player;
-
-				actionSource = player.toString();
 			}
 			else
 			{

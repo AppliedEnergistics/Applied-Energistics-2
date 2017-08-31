@@ -33,7 +33,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.exceptions.AppEngException;
 import appeng.api.implementations.items.IStorageCell;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
@@ -202,7 +202,7 @@ public class CellInventory implements ICellInventory
 	}
 
 	@Override
-	public IAEItemStack injectItems( final IAEItemStack input, final Actionable mode, final BaseActionSource src )
+	public IAEItemStack injectItems( final IAEItemStack input, final Actionable mode, final IActionSource src )
 	{
 		if( input == null )
 		{
@@ -299,7 +299,7 @@ public class CellInventory implements ICellInventory
 	}
 
 	@Override
-	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final BaseActionSource src )
+	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final IActionSource src )
 	{
 		if( request == null )
 		{

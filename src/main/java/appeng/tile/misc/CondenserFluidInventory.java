@@ -21,7 +21,7 @@ package appeng.tile.misc;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.StorageChannel;
@@ -41,7 +41,7 @@ class CondenserFluidInventory implements IMEMonitor<IAEFluidStack>
 	}
 
 	@Override
-	public IAEFluidStack injectItems( final IAEFluidStack input, final Actionable mode, final BaseActionSource src )
+	public IAEFluidStack injectItems( final IAEFluidStack input, final Actionable mode, final IActionSource src )
 	{
 		if( mode == Actionable.SIMULATE )
 		{
@@ -56,7 +56,7 @@ class CondenserFluidInventory implements IMEMonitor<IAEFluidStack>
 	}
 
 	@Override
-	public IAEFluidStack extractItems( final IAEFluidStack request, final Actionable mode, final BaseActionSource src )
+	public IAEFluidStack extractItems( final IAEFluidStack request, final Actionable mode, final IActionSource src )
 	{
 		return null;
 	}

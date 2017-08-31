@@ -27,7 +27,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.networking.energy.IEnergySource;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.packets.PacketPatternSlot;
@@ -40,7 +40,7 @@ public class SlotPatternTerm extends SlotCraftingTerm
 	private final int groupNum;
 	private final IOptionalSlotHost host;
 
-	public SlotPatternTerm( final EntityPlayer player, final BaseActionSource mySrc, final IEnergySource energySrc, final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix, final IItemHandler output, final int x, final int y, final IOptionalSlotHost h, final int groupNumber, final IContainerCraftingPacket c )
+	public SlotPatternTerm( final EntityPlayer player, final IActionSource mySrc, final IEnergySource energySrc, final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix, final IItemHandler output, final int x, final int y, final IOptionalSlotHost h, final int groupNumber, final IContainerCraftingPacket c )
 	{
 		super( player, mySrc, energySrc, storage, cMatrix, secondMatrix, output, x, y, c );
 

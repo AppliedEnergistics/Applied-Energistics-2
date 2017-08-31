@@ -21,7 +21,7 @@ package appeng.crafting;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.StorageChannel;
@@ -99,7 +99,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		this.par = parent;
 	}
 
-	public MECraftingInventory( final IMEMonitor<IAEItemStack> target, final BaseActionSource src, final boolean logExtracted, final boolean logInjections, final boolean logMissing )
+	public MECraftingInventory( final IMEMonitor<IAEItemStack> target, final IActionSource src, final boolean logExtracted, final boolean logInjections, final boolean logMissing )
 	{
 		this.target = target;
 		this.logExtracted = logExtracted;
@@ -181,7 +181,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack injectItems( final IAEItemStack input, final Actionable mode, final BaseActionSource src )
+	public IAEItemStack injectItems( final IAEItemStack input, final Actionable mode, final IActionSource src )
 	{
 		if( input == null )
 		{
@@ -201,7 +201,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final BaseActionSource src )
+	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final IActionSource src )
 	{
 		if( request == null )
 		{
@@ -265,7 +265,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		return this.localCache;
 	}
 
-	public boolean commit( final BaseActionSource src )
+	public boolean commit( final IActionSource src )
 	{
 		final IItemList<IAEItemStack> added = AEApi.instance().storage().createItemList();
 		final IItemList<IAEItemStack> pulled = AEApi.instance().storage().createItemList();

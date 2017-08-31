@@ -57,7 +57,7 @@ import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
@@ -427,7 +427,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	public IAEItemStack injectItems( final IAEItemStack input, final Actionable type, final BaseActionSource src )
+	public IAEItemStack injectItems( final IAEItemStack input, final Actionable type, final IActionSource src )
 	{
 		if( this.blocked || input == null || input.getStackSize() <= 0 )
 		{
@@ -599,7 +599,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final BaseActionSource src )
+	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final IActionSource src )
 	{
 		return null;
 	}

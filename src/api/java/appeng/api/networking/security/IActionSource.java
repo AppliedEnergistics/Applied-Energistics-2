@@ -24,26 +24,50 @@
 package appeng.api.networking.security;
 
 
+import java.util.Optional;
+
 import net.minecraft.entity.player.EntityPlayer;
 
+
 /**
- * TODO: Consider refactoring.
+ * The source of any action.
+ * 
+ * This can either be a {@link EntityPlayer} or an {@link IActionHost}.
+ * 
+ * In most cases this is used for security checks, but can be used to validate the source itself.
+ *
  */
-public class PlayerSource extends BaseActionSource
+public interface IActionSource
 {
 
-	public final EntityPlayer player;
-	public final IActionHost via;
+	/**
+	 * If present, AE will consider the player being the source for the action.
+	 * 
+	 * This will take precedence over {@link IActionSource#machine()} in any case.
+	 * 
+	 * @return An optional player issuing the action.
+	 */
+	Optional<EntityPlayer> player();
 
-	public PlayerSource( final EntityPlayer p, final IActionHost v )
-	{
-		this.player = p;
-		this.via = v;
-	}
+	/**
+	 * If present, it indicates the {@link IActionHost} of the source.
+	 * 
+	 * Should {@link IActionSource#player()} be absent, it will consider a machine as source.
+	 * 
+	 * It is recommended to include the machine even when a player is present.
+	 * 
+	 * @return An optional machine issuing the action or acting as proxy for a player.
+	 */
+	Optional<IActionHost> machine();
 
-	@Override
-	public boolean isPlayer()
-	{
-		return true;
-	}
+	/**
+	 * An optional priority.
+	 * 
+	 * This is usually only valid in the context of a similar {@link IActionHost}.
+	 * 
+	 * An applicable use case is to prevent ME interfaces stealing items from other ME interfaces with the same or a
+	 * higher priority.
+	 */
+	Optional<Integer> priority();
+
 }

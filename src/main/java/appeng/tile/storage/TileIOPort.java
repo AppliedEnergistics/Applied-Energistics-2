@@ -41,8 +41,7 @@ import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergySource;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
@@ -59,6 +58,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.core.settings.TickRates;
 import appeng.me.GridAccessException;
+import appeng.me.helpers.MachineSource;
 import appeng.parts.automation.BlockUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.grid.AENetworkInvTile;
@@ -87,7 +87,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	private final IItemHandler outputCellsExt = new WrapperFilteredItemHandler( this.outputCells, AEItemFilters.EXTRACT_ONLY );
 
 	private final UpgradeInventory upgrades;
-	private final BaseActionSource mySrc;
+	private final IActionSource mySrc;
 	private YesNo lastRedstoneState;
 	private ItemStack currentCell;
 	private IMEInventory<IAEFluidStack> cachedFluid;

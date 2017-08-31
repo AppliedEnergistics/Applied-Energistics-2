@@ -35,8 +35,8 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IMachineSet;
-import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
@@ -44,7 +44,6 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
@@ -225,7 +224,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public IAEItemStack injectItems( final IAEItemStack input, final Actionable type, final BaseActionSource src )
+	public IAEItemStack injectItems( final IAEItemStack input, final Actionable type, final IActionSource src )
 	{
 		if( this.itemStorage != null )
 		{
@@ -235,7 +234,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final BaseActionSource src )
+	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final IActionSource src )
 	{
 		if( this.itemStorage != null )
 		{
@@ -278,24 +277,6 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	public IConfigManager getConfigManager()
 	{
 		return this.wth.getConfigManager( this.effectiveItem );
-	}
-
-	@Override
-	public IGridNode getGridNode( final AEPartLocation dir )
-	{
-		return this.getActionableNode();
-	}
-
-	@Override
-	public AECableType getCableConnectionType( final AEPartLocation dir )
-	{
-		return AECableType.NONE;
-	}
-
-	@Override
-	public void securityBreak()
-	{
-
 	}
 
 	@Override

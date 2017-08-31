@@ -44,9 +44,8 @@ import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.crafting.ICraftingLink;
-import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.IActionHost;
-import appeng.api.networking.security.PlayerSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.ITerminalHost;
@@ -60,6 +59,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.helpers.WirelessTerminalGuiObject;
+import appeng.me.helpers.PlayerSource;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.parts.reporting.PartTerminal;
@@ -361,7 +361,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 		}
 	}
 
-	private BaseActionSource getActionSrc()
+	private IActionSource getActionSrc()
 	{
 		return new PlayerSource( this.getPlayerInv().player, (IActionHost) this.getTarget() );
 	}

@@ -16,43 +16,42 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.helpers;
+package appeng.me.helpers;
 
 
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import java.util.Optional;
 
-import appeng.api.networking.IGridNode;
+import net.minecraft.entity.player.EntityPlayer;
+
+import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 
 
-public interface IContainerCraftingPacket
+public class MachineSource implements IActionSource
 {
 
-	/**
-	 * @return gain access to network infrastructure.
-	 */
-	IGridNode getNetworkNode();
+	private final IActionHost via;
 
-	/**
-	 * @param string name of inventory
-	 *
-	 * @return the inventory of the part/tile by name.
-	 */
-	IItemHandler getInventoryByName( String string );
+	public MachineSource( final IActionHost v )
+	{
+		this.via = v;
+	}
 
-	/**
-	 * @return who are we?
-	 */
-	IActionSource getActionSource();
+	@Override
+	public Optional<EntityPlayer> player()
+	{
+		return Optional.empty();
+	}
 
-	/**
-	 * @return consume items?
-	 */
-	boolean useRealItems();
+	@Override
+	public Optional<IActionHost> machine()
+	{
+		return Optional.of( this.via );
+	}
 
-	/**
-	 * @return array of view cells
-	 */
-	ItemStack[] getViewCells();
+	@Override
+	public Optional<Integer> priority()
+	{
+		return Optional.empty();
+	}
 }

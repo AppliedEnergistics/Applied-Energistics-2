@@ -36,7 +36,7 @@ import com.google.common.collect.Lists;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.events.MENetworkStorageEvent;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
@@ -86,7 +86,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 	}
 
 	@Override
-	public T extractItems( final T request, final Actionable mode, final BaseActionSource src )
+	public T extractItems( final T request, final Actionable mode, final IActionSource src )
 	{
 		if( mode == Actionable.SIMULATE )
 		{
@@ -150,7 +150,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 	}
 
 	@Override
-	public T injectItems( final T input, final Actionable mode, final BaseActionSource src )
+	public T injectItems( final T input, final Actionable mode, final IActionSource src )
 	{
 		if( mode == Actionable.SIMULATE )
 		{
@@ -207,7 +207,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 		return this.listeners.entrySet().iterator();
 	}
 
-	private T monitorDifference( final IAEStack original, final T leftOvers, final boolean extraction, final BaseActionSource src )
+	private T monitorDifference( final IAEStack original, final T leftOvers, final boolean extraction, final IActionSource src )
 	{
 		final T diff = (T) original.copy();
 
@@ -228,7 +228,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 		return leftOvers;
 	}
 
-	private void notifyListenersOfChange( final Iterable<T> diff, final BaseActionSource src )
+	private void notifyListenersOfChange( final Iterable<T> diff, final IActionSource src )
 	{
 		this.hasChanged = true;
 		final Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.getListeners();
@@ -248,12 +248,12 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 		}
 	}
 
-	private void postChangesToListeners( final Iterable<T> changes, final BaseActionSource src )
+	private void postChangesToListeners( final Iterable<T> changes, final IActionSource src )
 	{
 		this.postChange( true, changes, src );
 	}
 
-	protected void postChange( final boolean add, final Iterable<T> changes, final BaseActionSource src )
+	protected void postChange( final boolean add, final Iterable<T> changes, final IActionSource src )
 	{
 		if( this.localDepthSemaphore > 0 || GLOBAL_DEPTH.contains( this ) )
 		{

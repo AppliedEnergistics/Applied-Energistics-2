@@ -67,7 +67,7 @@ import appeng.api.networking.events.MENetworkCraftingCpuChange;
 import appeng.api.networking.events.MENetworkCraftingPatternChange;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPostCacheConstruction;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.ICellProvider;
 import appeng.api.storage.IMEInventoryHandler;
@@ -80,6 +80,7 @@ import appeng.crafting.CraftingLink;
 import appeng.crafting.CraftingLinkNexus;
 import appeng.crafting.CraftingWatcher;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
+import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.GenericInterestManager;
 import appeng.tile.crafting.TileCraftingStorageTile;
 import appeng.tile.crafting.TileCraftingTile;
@@ -431,7 +432,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	}
 
 	@Override
-	public IAEStack injectItems( IAEStack input, final Actionable type, final BaseActionSource src )
+	public IAEStack injectItems( IAEStack input, final Actionable type, final IActionSource src )
 	{
 		for( final CraftingCPUCluster cpu : this.craftingCPUClusters )
 		{
@@ -442,7 +443,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	}
 
 	@Override
-	public IAEStack extractItems( final IAEStack request, final Actionable mode, final BaseActionSource src )
+	public IAEStack extractItems( final IAEStack request, final Actionable mode, final IActionSource src )
 	{
 		return null;
 	}
@@ -498,7 +499,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	}
 
 	@Override
-	public Future<ICraftingJob> beginCraftingJob( final World world, final IGrid grid, final BaseActionSource actionSrc, final IAEItemStack slotItem, final ICraftingCallback cb )
+	public Future<ICraftingJob> beginCraftingJob( final World world, final IGrid grid, final IActionSource actionSrc, final IAEItemStack slotItem, final ICraftingCallback cb )
 	{
 		if( world == null || grid == null || actionSrc == null || slotItem == null )
 		{
@@ -511,7 +512,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	}
 
 	@Override
-	public ICraftingLink submitJob( final ICraftingJob job, final ICraftingRequester requestingMachine, final ICraftingCPU target, final boolean prioritizePower, final BaseActionSource src )
+	public ICraftingLink submitJob( final ICraftingJob job, final ICraftingRequester requestingMachine, final ICraftingCPU target, final boolean prioritizePower, final IActionSource src )
 	{
 		if( job.isSimulation() )
 		{

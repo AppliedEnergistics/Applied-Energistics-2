@@ -28,7 +28,7 @@ import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
@@ -40,10 +40,10 @@ public class IMEAdaptor extends InventoryAdaptor
 {
 
 	private final IMEInventory<IAEItemStack> target;
-	private final BaseActionSource src;
+	private final IActionSource src;
 	private int maxSlots = 0;
 
-	public IMEAdaptor( final IMEInventory<IAEItemStack> input, final BaseActionSource src )
+	public IMEAdaptor( final IMEInventory<IAEItemStack> input, final IActionSource src )
 	{
 		this.target = input;
 		this.src = src;

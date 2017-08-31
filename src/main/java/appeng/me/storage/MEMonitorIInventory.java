@@ -32,7 +32,7 @@ import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.StorageFilter;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
@@ -51,7 +51,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 	private final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
 	private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
 	private final NavigableMap<Integer, CachedItemStack> memory;
-	private BaseActionSource mySource;
+	private IActionSource mySource;
 	private StorageFilter mode = StorageFilter.EXTRACTABLE_ONLY;
 
 	public MEMonitorIInventory( final InventoryAdaptor adaptor )
@@ -73,7 +73,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 	}
 
 	@Override
-	public IAEItemStack injectItems( final IAEItemStack input, final Actionable type, final BaseActionSource src )
+	public IAEItemStack injectItems( final IAEItemStack input, final Actionable type, final IActionSource src )
 	{
 		ItemStack out = ItemStack.EMPTY;
 
@@ -103,7 +103,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 	}
 
 	@Override
-	public IAEItemStack extractItems( final IAEItemStack request, final Actionable type, final BaseActionSource src )
+	public IAEItemStack extractItems( final IAEItemStack request, final Actionable type, final IActionSource src )
 	{
 		ItemStack out = ItemStack.EMPTY;
 
@@ -325,13 +325,13 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 		this.mode = mode;
 	}
 
-	private BaseActionSource getActionSource()
+	private IActionSource getActionSource()
 	{
 		return this.mySource;
 	}
 
 	@Override
-	public void setActionSource( final BaseActionSource mySource )
+	public void setActionSource( final IActionSource mySource )
 	{
 		this.mySource = mySource;
 	}
