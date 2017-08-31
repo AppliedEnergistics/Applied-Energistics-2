@@ -84,7 +84,6 @@ import appeng.helpers.InventoryAction;
 
 public abstract class AEBaseGui extends GuiContainer
 {
-	private static boolean switchingGuis;
 	private final List<InternalSlotME> meSlots = new LinkedList<>();
 	// drag y
 	private final Set<Slot> drag_click = new HashSet<>();
@@ -94,13 +93,10 @@ public abstract class AEBaseGui extends GuiContainer
 	private Stopwatch dbl_clickTimer = Stopwatch.createStarted();
 	private ItemStack dbl_whichItem = ItemStack.EMPTY;
 	private Slot bl_clicked;
-	private boolean subGui;
 
 	public AEBaseGui( final Container container )
 	{
 		super( container );
-		this.subGui = switchingGuis;
-		switchingGuis = false;
 	}
 
 	protected static String join( final Collection<String> toolTip, final String delimiter )
@@ -121,11 +117,6 @@ public abstract class AEBaseGui extends GuiContainer
 		{
 			return 0;
 		}
-	}
-
-	public boolean isSubGui()
-	{
-		return this.subGui;
 	}
 
 	@Override
@@ -588,7 +579,6 @@ public abstract class AEBaseGui extends GuiContainer
 	public void onGuiClosed()
 	{
 		super.onGuiClosed();
-		this.subGui = true; // in case the gui is reopened later ( i'm looking at you NEI )
 	}
 
 	protected Slot getSlot( final int mouseX, final int mouseY )
@@ -870,15 +860,5 @@ public abstract class AEBaseGui extends GuiContainer
 	protected List<InternalSlotME> getMeSlots()
 	{
 		return this.meSlots;
-	}
-
-	public static final synchronized boolean isSwitchingGuis()
-	{
-		return switchingGuis;
-	}
-
-	public static final synchronized void setSwitchingGuis( final boolean switchingGuis )
-	{
-		AEBaseGui.switchingGuis = switchingGuis;
 	}
 }

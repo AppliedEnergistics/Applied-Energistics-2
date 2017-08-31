@@ -57,7 +57,6 @@ import appeng.core.AELog;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
-import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.me.helpers.PlayerSource;
 import appeng.parts.reporting.PartCraftingTerminal;
@@ -353,8 +352,6 @@ public class ContainerCraftConfirm extends AEBaseContainer
 			this.setAutoStart( false );
 			if( g != null && originalGui != null && this.getOpenContext() != null )
 			{
-				NetworkHandler.instance().sendTo( new PacketSwitchGuis( originalGui ), (EntityPlayerMP) this.getInventoryPlayer().player );
-
 				final TileEntity te = this.getOpenContext().getTile();
 				Platform.openGUI( this.getInventoryPlayer().player, te, this.getOpenContext().getSide(), originalGui );
 			}

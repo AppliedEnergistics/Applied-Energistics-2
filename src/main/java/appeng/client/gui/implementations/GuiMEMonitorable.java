@@ -60,6 +60,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.helpers.WirelessTerminalGuiObject;
+import appeng.integration.Integrations;
 import appeng.parts.reporting.AbstractPartTerminal;
 import appeng.tile.misc.TileSecurityStation;
 import appeng.util.IConfigManagerHost;
@@ -304,6 +305,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		this.searchField.setEnableBackgroundDrawing( false );
 		this.searchField.setMaxStringLength( 25 );
 		this.searchField.setTextColor( 0xFFFFFF );
+		this.searchField.setSelectionColor( 0xFF99FF99 );
 		this.searchField.setVisible( true );
 
 		if( this.viewCell || this instanceof GuiWirelessTerm )
@@ -313,13 +315,19 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 			this.craftingStatusBtn.setHideEdge( 13 );
 		}
 
-		// Enum setting = AEConfig.instance().getSetting( "Terminal", SearchBoxMode.class, SearchBoxMode.AUTOSEARCH );
 		final Enum setting = AEConfig.instance().getConfigManager().getSetting( Settings.SEARCH_MODE );
-		this.searchField.setFocused( SearchBoxMode.AUTOSEARCH == setting || SearchBoxMode.JEI_AUTOSEARCH == setting );
+		this.searchField.setFocused( true );
+		this.searchField.setCanLoseFocus( SearchBoxMode.MANUAL_SEARCH == setting || SearchBoxMode.JEI_MANUAL_SEARCH == setting );
 
-		if( this.isSubGui() )
+		if( setting == SearchBoxMode.JEI_AUTOSEARCH || setting == SearchBoxMode.JEI_MANUAL_SEARCH )
+		{
+			memoryText = Integrations.jei().getSearchText();
+		}
+
+		if( memoryText != null && !memoryText.isEmpty() )
 		{
 			this.searchField.setText( memoryText );
+			this.searchField.selectAll();
 			this.repo.setSearchString( memoryText );
 			this.repo.updateView();
 			this.setScrollBar();
@@ -363,12 +371,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	@Override
 	protected void mouseClicked( final int xCoord, final int yCoord, final int btn ) throws IOException
 	{
-		final Enum searchMode = AEConfig.instance().getConfigManager().getSetting( Settings.SEARCH_MODE );
-
-		if( searchMode != SearchBoxMode.AUTOSEARCH && searchMode != SearchBoxMode.JEI_AUTOSEARCH )
-		{
-			this.searchField.mouseClicked( xCoord, yCoord, btn );
-		}
+		this.searchField.mouseClicked( xCoord, yCoord, btn );
 
 		if( btn == 1 && this.searchField.isMouseIn( xCoord, yCoord ) )
 		{

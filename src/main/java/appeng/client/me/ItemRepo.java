@@ -194,7 +194,7 @@ public class ItemRepo
 				notDone = false;
 			}
 
-			if( terminalSearchToolTips && notDone )
+			if( terminalSearchToolTips && notDone && !searchMod )
 			{
 				for( final Object lp : Platform.getTooltip( is ) )
 				{
