@@ -126,8 +126,10 @@ public class TesrRenderHelper
 	 */
 	public static void renderItem2dWithAmount( IAEItemStack itemStack, float itemScale, float spacing )
 	{
+		final ItemStack renderStack = itemStack.getItemStack();
+		renderStack.setCount( 1 );
 
-		TesrRenderHelper.renderItem2d( itemStack.getItemStack(), itemScale );
+		TesrRenderHelper.renderItem2d( renderStack, itemScale );
 
 		final long stackSize = itemStack.getStackSize();
 		final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm( stackSize );
