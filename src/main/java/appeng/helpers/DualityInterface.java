@@ -1276,18 +1276,35 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	private class InterfaceRequestSource extends MachineSource
 	{
+		private final InterfaceRequestContext context;
 
 		public InterfaceRequestSource( IActionHost v )
 		{
 			super( v );
+			this.context = new InterfaceRequestContext();
 		}
 
 		@Override
-		public Optional<Integer> priority()
+		public <T> Optional<T> context( Class<T> key )
 		{
-			return Optional.of( DualityInterface.this.priority );
+			if( key == InterfaceRequestContext.class )
+			{
+				return (Optional<T>) Optional.of( this.context );
+			}
+
+			return super.context( key );
 		}
 
+	}
+
+	private class InterfaceRequestContext implements Comparable<Integer>
+	{
+
+		@Override
+		public int compareTo( Integer o )
+		{
+			return Integer.compare( DualityInterface.this.priority, o );
+		}
 	}
 
 	private class InterfaceInventory extends MEMonitorIInventory
@@ -1302,7 +1319,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		@Override
 		public IAEItemStack injectItems( final IAEItemStack input, final Actionable type, final IActionSource src )
 		{
-			final boolean isInterface = src.machine().map( machine -> machine instanceof IInterfaceHost ).orElse( false );
+			final Optional<InterfaceRequestContext> context = src.context( InterfaceRequestContext.class );
+			final boolean isInterface = context.isPresent();
 
 			if( isInterface )
 			{
@@ -1315,8 +1333,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		@Override
 		public IAEItemStack extractItems( final IAEItemStack request, final Actionable type, final IActionSource src )
 		{
-			final boolean isInterface = src.machine().map( machine -> machine instanceof IInterfaceHost ).orElse( false );
-			final boolean hasHigherPriority = src.priority().map( p -> DualityInterface.this.priority >= p ).orElse( false );
+			final Optional<InterfaceRequestContext> context = src.context( InterfaceRequestContext.class );
+			final boolean isInterface = context.isPresent();
+			final boolean hasHigherPriority = context.map( c -> c.compareTo( DualityInterface.this.priority ) < 0 ).orElse( false );
 
 			if( isInterface && hasHigherPriority )
 			{

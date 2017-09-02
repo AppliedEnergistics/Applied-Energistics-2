@@ -26,6 +26,8 @@ package appeng.api.networking.security;
 
 import java.util.Optional;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.EntityPlayer;
 
 
@@ -47,27 +49,29 @@ public interface IActionSource
 	 * 
 	 * @return An optional player issuing the action.
 	 */
+	@Nonnull
 	Optional<EntityPlayer> player();
 
 	/**
 	 * If present, it indicates the {@link IActionHost} of the source.
 	 * 
 	 * Should {@link IActionSource#player()} be absent, it will consider a machine as source.
-	 * 
+	 *
 	 * It is recommended to include the machine even when a player is present.
 	 * 
 	 * @return An optional machine issuing the action or acting as proxy for a player.
 	 */
+	@Nonnull
 	Optional<IActionHost> machine();
 
 	/**
-	 * An optional priority.
+	 * An {@link IActionSource} can have multiple optional contexts.
 	 * 
-	 * This is usually only valid in the context of a similar {@link IActionHost}.
+	 * It is strongly recommended to limit the uses for absolutely necessary cases.
 	 * 
-	 * An applicable use case is to prevent ME interfaces stealing items from other ME interfaces with the same or a
-	 * higher priority.
+	 * Currently there are no public contexts made available by AE.
+	 * An example would be the context interfaces use internally to avoid looping items between each other.
 	 */
-	Optional<Integer> priority();
-
+	@Nonnull
+	<T> Optional<T> context( @Nonnull Class<T> key );
 }

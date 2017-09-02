@@ -50,8 +50,9 @@ public class MachineSource implements IActionSource
 	}
 
 	@Override
-	public Optional<Integer> priority()
+	public <T> Optional<T> context( Class<T> key )
 	{
 		return Optional.empty();
 	}
+
 }
