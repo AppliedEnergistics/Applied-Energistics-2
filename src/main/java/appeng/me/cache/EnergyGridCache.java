@@ -317,7 +317,7 @@ public class EnergyGridCache implements IEnergyGrid
 		// got more then we wanted?
 		if( extractedPower > amt )
 		{
-			this.localStorage.addAECurrentPower( extractedPower - amt );
+			this.localStorage.addCurrentAEPower( extractedPower - amt );
 			this.globalAvailablePower -= amt;
 
 			this.tickDrainPerTick += amt;
@@ -653,14 +653,14 @@ public class EnergyGridCache implements IEnergyGrid
 	public void onSplit( final IGridStorage storageB )
 	{
 		final double newBuffer = this.localStorage.getAECurrentPower() / 2;
-		this.localStorage.setAECurrentPower( newBuffer );
+		this.localStorage.removeCurrentAEPower( newBuffer );
 		storageB.dataObject().setDouble( "buffer", newBuffer );
 	}
 
 	@Override
 	public void onJoin( final IGridStorage storageB )
 	{
-		this.localStorage.addAECurrentPower( storageB.dataObject().getDouble( "buffer" ) );
+		this.localStorage.addCurrentAEPower( storageB.dataObject().getDouble( "buffer" ) );
 	}
 
 	@Override
@@ -681,7 +681,7 @@ public class EnergyGridCache implements IEnergyGrid
 
 	private class GridPowerStorage implements IAEPowerStorage
 	{
-		double stored = 0;
+		private double stored = 0;
 
 		@Override
 		public double extractAEPower( double amt, Actionable mode, PowerMultiplier usePowerMultiplier )
@@ -690,12 +690,7 @@ public class EnergyGridCache implements IEnergyGrid
 
 			if( mode == Actionable.MODULATE )
 			{
-				this.stored -= extracted;
-
-				if( this.stored < MAX_BUFFER_STORAGE - 0.001 )
-				{
-					EnergyGridCache.this.myGrid.postEvent( new MENetworkPowerStorage( this, PowerEventType.REQUEST_POWER ) );
-				}
+				this.removeCurrentAEPower( extracted );
 			}
 
 			return extracted;
@@ -714,12 +709,7 @@ public class EnergyGridCache implements IEnergyGrid
 
 			if( mode == Actionable.MODULATE )
 			{
-				this.stored += toStore;
-
-				if( this.stored > 0.01 )
-				{
-					EnergyGridCache.this.myGrid.postEvent( new MENetworkPowerStorage( this, PowerEventType.PROVIDE_POWER ) );
-				}
+				this.addCurrentAEPower( toStore );
 			}
 
 			return amt - toStore;
@@ -743,14 +733,24 @@ public class EnergyGridCache implements IEnergyGrid
 			return this.stored;
 		}
 
-		public void setAECurrentPower( double amount )
-		{
-			this.stored = amount;
-		}
-
-		public void addAECurrentPower( double amount )
+		private void addCurrentAEPower( double amount )
 		{
 			this.stored += amount;
+
+			if( this.stored > 0.01 )
+			{
+				EnergyGridCache.this.myGrid.postEvent( new MENetworkPowerStorage( this, PowerEventType.PROVIDE_POWER ) );
+			}
+		}
+
+		private void removeCurrentAEPower( double amount )
+		{
+			this.stored -= amount;
+
+			if( this.stored < MAX_BUFFER_STORAGE - 0.001 )
+			{
+				EnergyGridCache.this.myGrid.postEvent( new MENetworkPowerStorage( this, PowerEventType.REQUEST_POWER ) );
+			}
 		}
 	}
 }
