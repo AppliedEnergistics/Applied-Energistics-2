@@ -276,7 +276,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		@Override
 		public int getSlotLimit( int slot )
 		{
-			return 0;
+			return 64;
 		}
 	}
 
