@@ -352,7 +352,8 @@ public class GuiCraftConfirm extends AEBaseGui
 				final int posX = x * ( 1 + sectionLength ) + xo + sectionLength - 19;
 				final int posY = y * offY + yo;
 
-				final ItemStack is = refStack.copy().getItemStack();
+				final ItemStack is = refStack.getItemStack();
+				is.setCount( 1 );
 
 				if( this.tooltip == z - viewStart )
 				{

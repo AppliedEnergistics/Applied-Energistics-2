@@ -455,7 +455,8 @@ public abstract class AEBaseGui extends GuiContainer
 					action = ( mouseButton == 1 ) ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
 					stack = ( (SlotME) slot ).getAEStack();
 
-					if( stack != null && action == InventoryAction.PICKUP_OR_SET_DOWN && stack.getShowCraftingLabel() && player.inventory.getItemStack().isEmpty() )
+					if( stack != null && action == InventoryAction.PICKUP_OR_SET_DOWN && stack.getStackSize() == 0 && player.inventory.getItemStack()
+							.isEmpty() )
 					{
 						action = InventoryAction.AUTO_CRAFT;
 					}
@@ -715,7 +716,7 @@ public abstract class AEBaseGui extends GuiContainer
 				// Annoying but easier than trying to splice into render item
 				super.drawSlot( new Size1Slot( (SlotME) s ) );
 
-				this.stackSizeRenderer.renderStackSize( this.fontRenderer, ( (SlotME) s ).getAEStack(), s.getStack(), s.xPos, s.yPos );
+				this.stackSizeRenderer.renderStackSize( this.fontRenderer, ( (SlotME) s ).getAEStack(), s.xPos, s.yPos );
 
 			}
 			catch( final Exception err )

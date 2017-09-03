@@ -203,15 +203,4 @@ public interface IAEStack<StackType extends IAEStack>
 	 * @return ITEM or FLUID
 	 */
 	StorageChannel getChannel();
-
-	/**
-	 * @return true if it should show the crafting label.
-	 */
-	boolean getShowCraftingLabel();
-
-	/**
-	 * Used internally to show that it should show a Crafting label instead of a "1"
-	 */
-	void setShowCraftingLabel( boolean showCraftingLabel );
-
 }

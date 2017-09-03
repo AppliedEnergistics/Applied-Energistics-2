@@ -177,12 +177,10 @@ public class ItemRepo
 			if( viewMode == ViewItems.CRAFTABLE )
 			{
 				is = is.copy();
-				// is.setStackSize( 0 ) triggers isEmpty() and thus only shows empty stacks!
-				is.setStackSize( 1 );
-				is.setShowCraftingLabel( true );
+				is.setStackSize( 0 );
 			}
 
-			if( viewMode == ViewItems.STORED && is.getShowCraftingLabel() )
+			if( viewMode == ViewItems.STORED && is.getStackSize() == 0 )
 			{
 				continue;
 			}
@@ -240,7 +238,9 @@ public class ItemRepo
 
 		for( final IAEItemStack is : this.view )
 		{
-			this.dsp.add( is.getItemStack() );
+			final ItemStack displayStack = is.getItemStack();
+			displayStack.setCount( 1 );
+			this.dsp.add( displayStack );
 		}
 	}
 
