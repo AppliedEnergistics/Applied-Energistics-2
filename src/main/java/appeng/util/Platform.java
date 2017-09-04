@@ -1423,7 +1423,7 @@ public class Platform
 
 		if( target.hasCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, null ) )
 		{
-			return 0;
+			return target.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, null ).hashCode();
 		}
 		else if( target instanceof TileEntityChest )
 		{
