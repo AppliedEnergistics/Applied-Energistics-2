@@ -86,9 +86,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 			// :P
 		}
 
-		if( obj instanceof IGridHost )
+		if( obj instanceof IActionHost )
 		{
-			final IGridNode n = ( (IGridHost) obj ).getGridNode( AEPartLocation.INTERNAL );
+			final IGridNode n = ( (IActionHost) obj ).getActionableNode();
 			if( n != null )
 			{
 				this.targetGrid = n.getGrid();
