@@ -1334,10 +1334,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		public IAEItemStack extractItems( final IAEItemStack request, final Actionable type, final IActionSource src )
 		{
 			final Optional<InterfaceRequestContext> context = src.context( InterfaceRequestContext.class );
-			final boolean isInterface = context.isPresent();
-			final boolean hasHigherPriority = context.map( c -> c.compareTo( DualityInterface.this.priority ) < 0 ).orElse( false );
+			final boolean hasLowerOrEqualPriority = context.map( c -> c.compareTo( DualityInterface.this.priority ) <= 0 ).orElse( false );
 
-			if( isInterface && hasHigherPriority )
+			if( hasLowerOrEqualPriority )
 			{
 				return null;
 			}
