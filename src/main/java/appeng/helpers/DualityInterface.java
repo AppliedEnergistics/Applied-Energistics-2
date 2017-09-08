@@ -135,6 +135,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	private IMEInventory<IAEItemStack> destination;
 	private boolean isWorking = false;
 	private final Accessor accessor = new Accessor();
+	private boolean workNeedsUpdate = false;
 
 	public DualityInterface( final AENetworkProxy networkProxy, final IInterfaceHost ih )
 	{
@@ -385,6 +386,11 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		{
 			return true;
 		}
+		else if( this.workNeedsUpdate )
+		{
+			this.workNeedsUpdate = false;
+			return true;
+		}
 		else
 		{
 			for( final IAEItemStack requiredWork : this.requireWork )
@@ -408,34 +414,34 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			req = null;
 		}
 
-		final ItemStack Stored = this.storage.getStackInSlot( slot );
+		final ItemStack stored = this.storage.getStackInSlot( slot );
 
-		if( req == null && !Stored.isEmpty() )
+		if( req == null && !stored.isEmpty() )
 		{
-			final IAEItemStack work = AEApi.instance().storage().createItemStack( Stored );
+			final IAEItemStack work = AEApi.instance().storage().createItemStack( stored );
 			this.requireWork[slot] = work.setStackSize( -work.getStackSize() );
 			return;
 		}
 		else if( req != null )
 		{
-			if( Stored.isEmpty() ) // need to add stuff!
+			if( stored.isEmpty() ) // need to add stuff!
 			{
 				this.requireWork[slot] = req.copy();
 				return;
 			}
-			else if( req.isSameType( Stored ) ) // same type ( qty different? )!
+			else if( req.isSameType( stored ) ) // same type ( qty different? )!
 			{
-				if( req.getStackSize() != Stored.getCount() )
+				if( req.getStackSize() != stored.getCount() )
 				{
 					this.requireWork[slot] = req.copy();
-					this.requireWork[slot].setStackSize( req.getStackSize() - Stored.getCount() );
+					this.requireWork[slot].setStackSize( req.getStackSize() - stored.getCount() );
 					return;
 				}
 			}
 			else
 			// Stored != null; dispose!
 			{
-				final IAEItemStack work = AEApi.instance().storage().createItemStack( Stored );
+				final IAEItemStack work = AEApi.instance().storage().createItemStack( stored );
 				this.requireWork[slot] = work.setStackSize( -work.getStackSize() );
 				return;
 			}
@@ -1327,6 +1333,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				return input;
 			}
 
+			DualityInterface.this.workNeedsUpdate = true;
+
 			return super.injectItems( input, type, src );
 		}
 
@@ -1340,6 +1348,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			{
 				return null;
 			}
+
+			DualityInterface.this.workNeedsUpdate = true;
 
 			return super.extractItems( request, type, src );
 		}
