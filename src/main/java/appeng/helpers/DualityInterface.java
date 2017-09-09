@@ -133,9 +133,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	private List<ICraftingPatternDetails> craftingList = null;
 	private List<ItemStack> waitingToSend = null;
 	private IMEInventory<IAEItemStack> destination;
-	private boolean isWorking = false;
+	private int isWorking = -1;
 	private final Accessor accessor = new Accessor();
-	private boolean workNeedsUpdate = false;
 
 	public DualityInterface( final AENetworkProxy networkProxy, final IInterfaceHost ih )
 	{
@@ -166,7 +165,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	@Override
 	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
-		if( this.isWorking )
+		if( this.isWorking == slot )
 		{
 			return;
 		}
@@ -384,11 +383,6 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	{
 		if( this.hasItemsToSend() )
 		{
-			return true;
-		}
-		else if( this.workNeedsUpdate )
-		{
-			this.workNeedsUpdate = false;
 			return true;
 		}
 		else
@@ -664,7 +658,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	private boolean usePlan( final int x, final IAEItemStack itemStack )
 	{
 		final InventoryAdaptor adaptor = this.getAdaptor( x );
-		this.isWorking = true;
+		this.isWorking = x;
 
 		boolean changed = false;
 		try
@@ -749,7 +743,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			this.updatePlan( x );
 		}
 
-		this.isWorking = false;
+		this.isWorking = -1;
 		return changed;
 	}
 
@@ -1333,8 +1327,6 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				return input;
 			}
 
-			DualityInterface.this.workNeedsUpdate = true;
-
 			return super.injectItems( input, type, src );
 		}
 
@@ -1348,8 +1340,6 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			{
 				return null;
 			}
-
-			DualityInterface.this.workNeedsUpdate = true;
 
 			return super.extractItems( request, type, src );
 		}
