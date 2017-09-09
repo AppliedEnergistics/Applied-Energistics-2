@@ -22,6 +22,7 @@ package appeng.client.render.effects;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import appeng.api.storage.data.IAEItemStack;
@@ -45,7 +46,9 @@ public class AssemblerFX extends Particle implements ICanDie
 		this.motionY = 0;
 		this.motionZ = 0;
 		this.speed = speed;
-		this.fi = new EntityFloatingItem( this, w, x, y, z, is.getItemStack() );
+		final ItemStack displayItem = is.getItemStack();
+		displayItem.setCount( 1 );
+		this.fi = new EntityFloatingItem( this, w, x, y, z, displayItem );
 		w.spawnEntity( this.fi );
 		this.particleMaxAge = (int) Math.ceil( Math.max( 1, 100.0f / speed ) ) + 2;
 	}

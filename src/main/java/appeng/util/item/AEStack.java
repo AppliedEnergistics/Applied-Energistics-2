@@ -32,7 +32,6 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	private boolean isCraftable;
 	private long stackSize;
 	private long countRequestable;
-	private boolean showCraftingLabel = false;
 
 	static long getPacketValue( final byte type, final ByteBuf tag )
 	{
@@ -104,20 +103,7 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 		// priority = Integer.MIN_VALUE;
 		this.setCountRequestable( 0 );
 		this.setCraftable( false );
-		this.setShowCraftingLabel( false );
 		return (StackType) this;
-	}
-
-	@Override
-	public boolean getShowCraftingLabel()
-	{
-		return this.showCraftingLabel;
-	}
-
-	@Override
-	public void setShowCraftingLabel( boolean showCraftingLabel )
-	{
-		this.showCraftingLabel = showCraftingLabel;
 	}
 
 	@Override
@@ -157,7 +143,6 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 				.getType( this.countRequestable ) << 4 ) | ( (byte) ( this.isCraftable ? 1 : 0 ) << 6 ) | ( this.hasTagCompound() ? 1 : 0 ) << 7 );
 
 		i.writeByte( mask );
-		i.writeBoolean( this.showCraftingLabel );
 
 		this.writeIdentity( i );
 

@@ -142,7 +142,7 @@ public class PacketInventoryAction extends AppEngPacket
 						if( baseContainer.getTargetStack() != null )
 						{
 							// Force to stack size 1 to fix a client-side display problem...
-							ItemStack displayIs = baseContainer.getTargetStack().getItemStack().copy();
+							ItemStack displayIs = baseContainer.getTargetStack().getItemStack();
 							displayIs.setCount( 1 );
 							cca.getCraftingItem().putStack( displayIs );
 							// This is the *actual* item that matters, not the display item above

@@ -21,7 +21,6 @@ package appeng.client.render;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.item.ItemStack;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
@@ -42,9 +41,9 @@ public class StackSizeRenderer
 	private static final ISlimReadableNumberConverter SLIM_CONVERTER = ReadableNumberConverter.INSTANCE;
 	private static final IWideReadableNumberConverter WIDE_CONVERTER = ReadableNumberConverter.INSTANCE;
 
-	public void renderStackSize( FontRenderer fontRenderer, IAEItemStack aeStack, ItemStack is, int xPos, int yPos )
+	public void renderStackSize( FontRenderer fontRenderer, IAEItemStack aeStack, int xPos, int yPos )
 	{
-		if( !is.isEmpty() )
+		if( aeStack != null )
 		{
 			final float scaleFactor = AEConfig.instance().useTerminalUseLargeFont() ? 0.85f : 0.5f;
 			final float inverseScaleFactor = 1.0f / scaleFactor;
@@ -53,7 +52,7 @@ public class StackSizeRenderer
 			final boolean unicodeFlag = fontRenderer.getUnicodeFlag();
 			fontRenderer.setUnicodeFlag( false );
 
-			if( aeStack.getShowCraftingLabel() )
+			if( aeStack.getStackSize() == 0 && aeStack.isCraftable() )
 			{
 				final String craftLabelText = AEConfig.instance().useTerminalUseLargeFont() ? GuiText.LargeFontCraft.getLocal() : GuiText.SmallFontCraft
 						.getLocal();
@@ -71,10 +70,9 @@ public class StackSizeRenderer
 				GlStateManager.enableBlend();
 			}
 
-			final long amount = aeStack != null ? aeStack.getStackSize() : is.getCount();
-			if( amount != 0 && !aeStack.getShowCraftingLabel() )
+			if( aeStack.getStackSize() > 0 )
 			{
-				final String stackSize = this.getToBeRenderedStackSize( amount );
+				final String stackSize = this.getToBeRenderedStackSize( aeStack.getStackSize() );
 
 				GlStateManager.disableLighting();
 				GlStateManager.disableDepth();

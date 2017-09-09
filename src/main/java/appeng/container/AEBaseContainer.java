@@ -225,10 +225,11 @@ public abstract class AEBaseContainer extends Container
 		// client doesn't need to re-send, makes for lower overhead rapid packets.
 		if( Platform.isClient() )
 		{
-			final ItemStack a = stack == null ? ItemStack.EMPTY : stack.getItemStack();
-			final ItemStack b = this.clientRequestedTargetItem == null ? ItemStack.EMPTY : this.clientRequestedTargetItem.getItemStack();
-
-			if( Platform.itemComparisons().isSameItem( a, b ) )
+			if( stack == null && this.clientRequestedTargetItem == null )
+			{
+				return;
+			}
+			if( stack != null && stack.isSameType( this.clientRequestedTargetItem ) )
 			{
 				return;
 			}

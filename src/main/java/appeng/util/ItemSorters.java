@@ -80,9 +80,9 @@ public class ItemSorters
 		{
 			if( getDirection() == SortDir.ASCENDING )
 			{
-				return compareLong( o2.getStackSize() - ( o2.getShowCraftingLabel() ? 1 : 0 ), o1.getStackSize() - ( o1.getShowCraftingLabel() ? 1 : 0 ) );
+				return compareLong( o2.getStackSize(), o1.getStackSize() );
 			}
-			return compareLong( o1.getStackSize() - ( o1.getShowCraftingLabel() ? 1 : 0 ), o2.getStackSize() - ( o2.getShowCraftingLabel() ? 1 : 0 ) );
+			return compareLong( o1.getStackSize(), o2.getStackSize() );
 		}
 	};
 	private static IInvTweaks api;
