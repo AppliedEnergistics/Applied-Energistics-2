@@ -990,7 +990,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
 				if( ad != null )
 				{
-					if( !ad.simulateRemove( 1, ItemStack.EMPTY, null ).isEmpty() )
+					if( ad.simulateRemove( 1, ItemStack.EMPTY, null ).isEmpty() )
 					{
 						allAreBusy = false;
 						break;
