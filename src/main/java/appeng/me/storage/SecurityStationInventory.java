@@ -26,8 +26,7 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.items.IBiometricCard;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.PlayerSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -48,7 +47,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 	}
 
 	@Override
-	public IAEItemStack injectItems( final IAEItemStack input, final Actionable type, final BaseActionSource src )
+	public IAEItemStack injectItems( final IAEItemStack input, final Actionable type, final IActionSource src )
 	{
 		if( this.hasPermission( src ) )
 		{
@@ -70,13 +69,13 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 		return input;
 	}
 
-	private boolean hasPermission( final BaseActionSource src )
+	private boolean hasPermission( final IActionSource src )
 	{
-		if( src.isPlayer() )
+		if( src.player().isPresent() )
 		{
 			try
 			{
-				return this.securityTile.getProxy().getSecurity().hasPermission( ( (PlayerSource) src ).player, SecurityPermissions.SECURITY );
+				return this.securityTile.getProxy().getSecurity().hasPermission( src.player().get(), SecurityPermissions.SECURITY );
 			}
 			catch( final GridAccessException e )
 			{
@@ -87,7 +86,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 	}
 
 	@Override
-	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final BaseActionSource src )
+	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final IActionSource src )
 	{
 		if( this.hasPermission( src ) )
 		{

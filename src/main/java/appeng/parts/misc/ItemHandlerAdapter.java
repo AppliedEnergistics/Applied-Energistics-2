@@ -30,7 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.storage.IMEInventory;
@@ -52,7 +52,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
 	private final Map<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
 
-	private BaseActionSource mySource;
+	private IActionSource mySource;
 
 	private final IItemHandler itemHandler;
 
@@ -66,7 +66,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	}
 
 	@Override
-	public IAEItemStack injectItems( IAEItemStack iox, Actionable type, BaseActionSource src )
+	public IAEItemStack injectItems( IAEItemStack iox, Actionable type, IActionSource src )
 	{
 		ItemStack orgInput = iox.getItemStack();
 		ItemStack remaining = orgInput;
@@ -96,7 +96,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	}
 
 	@Override
-	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, BaseActionSource src )
+	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, IActionSource src )
 	{
 
 		ItemStack requestedItemStack = request.getItemStack();
@@ -317,7 +317,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	}
 
 	@Override
-	public void setActionSource( final BaseActionSource mySource )
+	public void setActionSource( final IActionSource mySource )
 	{
 		this.mySource = mySource;
 	}

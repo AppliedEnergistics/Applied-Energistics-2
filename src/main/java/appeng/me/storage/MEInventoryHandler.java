@@ -22,7 +22,7 @@ package appeng.me.storage;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
@@ -96,7 +96,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	}
 
 	@Override
-	public T injectItems( final T input, final Actionable type, final BaseActionSource src )
+	public T injectItems( final T input, final Actionable type, final IActionSource src )
 	{
 		if( !this.canAccept( input ) )
 		{
@@ -107,7 +107,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	}
 
 	@Override
-	public T extractItems( final T request, final Actionable type, final BaseActionSource src )
+	public T extractItems( final T request, final Actionable type, final IActionSource src )
 	{
 		if( !this.hasReadAccess )
 		{

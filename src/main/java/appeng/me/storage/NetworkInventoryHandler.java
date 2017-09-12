@@ -32,10 +32,8 @@ import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityGrid;
-import appeng.api.networking.security.MachineSource;
-import appeng.api.networking.security.PlayerSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEStack;
@@ -77,7 +75,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	}
 
 	@Override
-	public T injectItems( T input, final Actionable type, final BaseActionSource src )
+	public T injectItems( T input, final Actionable type, final IActionSource src )
 	{
 		if( this.diveList( this, type ) )
 		{
@@ -137,20 +135,20 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 		return false;
 	}
 
-	private boolean testPermission( final BaseActionSource src, final SecurityPermissions permission )
+	private boolean testPermission( final IActionSource src, final SecurityPermissions permission )
 	{
-		if( src.isPlayer() )
+		if( src.player().isPresent() )
 		{
-			if( !this.security.hasPermission( ( (PlayerSource) src ).player, permission ) )
+			if( !this.security.hasPermission( src.player().get(), permission ) )
 			{
 				return true;
 			}
 		}
-		else if( src.isMachine() )
+		else if( src.machine().isPresent() )
 		{
 			if( this.security.isAvailable() )
 			{
-				final IGridNode n = ( (MachineSource) src ).via.getActionableNode();
+				final IGridNode n = src.machine().get().getActionableNode();
 				if( n == null )
 				{
 					return true;
@@ -197,7 +195,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	}
 
 	@Override
-	public T extractItems( T request, final Actionable mode, final BaseActionSource src )
+	public T extractItems( T request, final Actionable mode, final IActionSource src )
 	{
 		if( this.diveList( this, mode ) )
 		{

@@ -38,7 +38,7 @@ import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
 import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IStorageComponent;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
@@ -336,7 +336,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 
 		@Nullable
 		@Override
-		public IStorageMonitorable getInventory( BaseActionSource src )
+		public IStorageMonitorable getInventory( IActionSource src )
 		{
 			return this;
 		}

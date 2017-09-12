@@ -51,10 +51,9 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergySource;
-import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityGrid;
-import appeng.api.networking.security.PlayerSource;
 import appeng.api.parts.IPart;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.data.IAEItemStack;
@@ -77,6 +76,7 @@ import appeng.core.sync.packets.PacketPartialItem;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.InventoryAction;
+import appeng.me.helpers.PlayerSource;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorItemHandler;
@@ -87,7 +87,7 @@ import appeng.util.item.AEItemStack;
 public abstract class AEBaseContainer extends Container
 {
 	private final InventoryPlayer invPlayer;
-	private final BaseActionSource mySrc;
+	private final IActionSource mySrc;
 	private final HashSet<Integer> locked = new HashSet<>();
 	private final TileEntity tileEntity;
 	private final IPart part;
@@ -280,7 +280,7 @@ public abstract class AEBaseContainer extends Container
 		this.clientRequestedTargetItem = stack == null ? null : stack.copy();
 	}
 
-	public BaseActionSource getActionSource()
+	public IActionSource getActionSource()
 	{
 		return this.mySrc;
 	}

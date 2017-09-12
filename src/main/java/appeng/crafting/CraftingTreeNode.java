@@ -33,7 +33,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -117,7 +117,7 @@ public class CraftingTreeNode
 		return this.parent.notRecursive( details );
 	}
 
-	IAEItemStack request( final MECraftingInventory inv, long l, final BaseActionSource src ) throws CraftBranchFailure, InterruptedException
+	IAEItemStack request( final MECraftingInventory inv, long l, final IActionSource src ) throws CraftBranchFailure, InterruptedException
 	{
 		this.job.handlePausing();
 
@@ -346,7 +346,7 @@ public class CraftingTreeNode
 		}
 	}
 
-	public void setJob( final MECraftingInventory storage, final CraftingCPUCluster craftingCPUCluster, final BaseActionSource src ) throws CraftBranchFailure
+	public void setJob( final MECraftingInventory storage, final CraftingCPUCluster craftingCPUCluster, final IActionSource src ) throws CraftBranchFailure
 	{
 		for( final IAEItemStack i : this.used )
 		{

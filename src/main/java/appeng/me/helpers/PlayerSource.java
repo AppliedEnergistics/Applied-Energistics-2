@@ -16,43 +16,47 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.helpers;
+package appeng.me.helpers;
 
 
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import java.util.Optional;
 
-import appeng.api.networking.IGridNode;
+import com.google.common.base.Preconditions;
+
+import net.minecraft.entity.player.EntityPlayer;
+
+import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 
 
-public interface IContainerCraftingPacket
+public class PlayerSource implements IActionSource
 {
 
-	/**
-	 * @return gain access to network infrastructure.
-	 */
-	IGridNode getNetworkNode();
+	private final EntityPlayer player;
+	private final IActionHost via;
 
-	/**
-	 * @param string name of inventory
-	 *
-	 * @return the inventory of the part/tile by name.
-	 */
-	IItemHandler getInventoryByName( String string );
+	public PlayerSource( final EntityPlayer p, final IActionHost v )
+	{
+		Preconditions.checkNotNull( p );
+		this.player = p;
+		this.via = v;
+	}
 
-	/**
-	 * @return who are we?
-	 */
-	IActionSource getActionSource();
+	@Override
+	public Optional<EntityPlayer> player()
+	{
+		return Optional.of( this.player );
+	}
 
-	/**
-	 * @return consume items?
-	 */
-	boolean useRealItems();
+	@Override
+	public Optional<IActionHost> machine()
+	{
+		return Optional.ofNullable( this.via );
+	}
 
-	/**
-	 * @return array of view cells
-	 */
-	ItemStack[] getViewCells();
+	@Override
+	public <T> Optional<T> context( Class<T> key )
+	{
+		return Optional.empty();
+	}
 }

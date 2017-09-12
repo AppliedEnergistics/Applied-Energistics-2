@@ -28,11 +28,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingJob;
-import appeng.api.util.AEPartLocation;
+import appeng.api.networking.security.IActionHost;
 import appeng.container.ContainerOpenContext;
 import appeng.container.implementations.ContainerCraftAmount;
 import appeng.container.implementations.ContainerCraftConfirm;
@@ -77,10 +76,10 @@ public class PacketCraftRequest extends AppEngPacket
 		{
 			final ContainerCraftAmount cca = (ContainerCraftAmount) player.openContainer;
 			final Object target = cca.getTarget();
-			if( target instanceof IGridHost )
+			if( target instanceof IActionHost )
 			{
-				final IGridHost gh = (IGridHost) target;
-				final IGridNode gn = gh.getGridNode( AEPartLocation.INTERNAL );
+				final IActionHost ah = (IActionHost) target;
+				final IGridNode gn = ah.getActionableNode();
 				if( gn == null )
 				{
 					return;

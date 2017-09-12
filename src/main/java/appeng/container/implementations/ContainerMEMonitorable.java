@@ -47,7 +47,8 @@ import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergySource;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.parts.IPart;
 import appeng.api.storage.IMEMonitor;
@@ -122,9 +123,22 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 				{
 					this.setPowerSource( (IEnergySource) monitorable );
 				}
-				else if( monitorable instanceof IGridHost )
+				else if( monitorable instanceof IGridHost || monitorable instanceof IActionHost )
 				{
-					final IGridNode node = ( (IGridHost) monitorable ).getGridNode( AEPartLocation.INTERNAL );
+					final IGridNode node;
+					if( monitorable instanceof IGridHost )
+					{
+						node = ( (IGridHost) monitorable ).getGridNode( AEPartLocation.INTERNAL );
+					}
+					else if( monitorable instanceof IActionHost )
+					{
+						node = ( (IActionHost) monitorable ).getActionableNode();
+					}
+					else
+					{
+						node = null;
+					}
+
 					if( node != null )
 					{
 						this.networkNode = node;
@@ -374,7 +388,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
-	public void postChange( final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change, final BaseActionSource source )
+	public void postChange( final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change, final IActionSource source )
 	{
 		for( final IAEItemStack is : change )
 		{

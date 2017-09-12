@@ -28,16 +28,14 @@ import net.minecraft.inventory.IContainerListener;
 
 import appeng.api.AEApi;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridHost;
-import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.CraftingItemList;
 import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
-import appeng.api.util.AEPartLocation;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.core.AELog;
@@ -65,15 +63,11 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	public ContainerCraftingCPU( final InventoryPlayer ip, final Object te )
 	{
 		super( ip, te );
-		final IGridHost host = (IGridHost) ( te instanceof IGridHost ? te : null );
+		final IActionHost host = (IActionHost) ( te instanceof IActionHost ? te : null );
 
-		if( host != null )
+		if( host != null && host.getActionableNode() != null )
 		{
-			this.findNode( host, AEPartLocation.INTERNAL );
-			for( final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS )
-			{
-				this.findNode( host, d );
-			}
+			this.setNetwork( host.getActionableNode().getGrid() );
 		}
 
 		if( te instanceof TileCraftingTile )
@@ -84,18 +78,6 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 		if( this.getNetwork() == null && Platform.isServer() )
 		{
 			this.setValidContainer( false );
-		}
-	}
-
-	private void findNode( final IGridHost host, final AEPartLocation d )
-	{
-		if( this.getNetwork() == null )
-		{
-			final IGridNode node = host.getGridNode( d );
-			if( node != null )
-			{
-				this.setNetwork( node.getGrid() );
-			}
 		}
 	}
 
@@ -238,7 +220,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	}
 
 	@Override
-	public void postChange( final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change, final BaseActionSource actionSource )
+	public void postChange( final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change, final IActionSource actionSource )
 	{
 		for( IAEItemStack is : change )
 		{

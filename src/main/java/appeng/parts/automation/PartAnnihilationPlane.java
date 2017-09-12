@@ -44,8 +44,7 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -63,6 +62,7 @@ import appeng.core.sync.packets.PacketTransitionEffect;
 import appeng.hooks.TickHandler;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
+import appeng.me.helpers.MachineSource;
 import appeng.parts.PartBasicState;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
@@ -80,7 +80,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		return MODELS.getModels();
 	}
 
-	private final BaseActionSource mySrc = new MachineSource( this );
+	private final IActionSource mySrc = new MachineSource( this );
 	private boolean isAccepting = true;
 	private boolean breaking = false;
 

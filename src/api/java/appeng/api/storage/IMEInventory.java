@@ -25,7 +25,7 @@ package appeng.api.storage;
 
 
 import appeng.api.config.Actionable;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
@@ -52,7 +52,7 @@ public interface IMEInventory<StackType extends IAEStack>
 	 *
 	 * @return returns the number of items not added.
 	 */
-	StackType injectItems( StackType input, Actionable type, BaseActionSource src );
+	StackType injectItems( StackType input, Actionable type, IActionSource src );
 
 	/**
 	 * Extract the specified item from the ME Inventory
@@ -62,7 +62,7 @@ public interface IMEInventory<StackType extends IAEStack>
 	 *
 	 * @return returns the number of items extracted, null
 	 */
-	StackType extractItems( StackType request, Actionable mode, BaseActionSource src );
+	StackType extractItems( StackType request, Actionable mode, IActionSource src );
 
 	/**
 	 * request a full report of all available items, storage.

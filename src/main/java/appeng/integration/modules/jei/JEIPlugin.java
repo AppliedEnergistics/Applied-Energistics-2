@@ -23,9 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import appeng.api.features.IGrinderRecipe;
-import appeng.recipes.game.ShapedRecipe;
-import appeng.recipes.game.ShapelessRecipe;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
@@ -43,6 +40,7 @@ import appeng.api.config.CondenserOutput;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
+import appeng.api.features.IGrinderRecipe;
 import appeng.api.features.IInscriberRecipe;
 import appeng.container.implementations.ContainerCraftingTerm;
 import appeng.container.implementations.ContainerPatternTerm;
@@ -51,6 +49,8 @@ import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.integration.Integrations;
 import appeng.items.parts.ItemFacade;
+import appeng.recipes.game.ShapedRecipe;
+import appeng.recipes.game.ShapelessRecipe;
 
 
 @mezz.jei.api.JEIPlugin

@@ -36,8 +36,7 @@ import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergySource;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
@@ -52,6 +51,7 @@ import appeng.core.sync.GuiBridge;
 import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
+import appeng.me.helpers.MachineSource;
 import appeng.parts.PartModel;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
@@ -70,7 +70,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	@PartModels
 	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/import_bus_has_channel" ) );
 
-	private final BaseActionSource source;
+	private final IActionSource source;
 	private IMEInventory<IAEItemStack> destination = null;
 	private IAEItemStack lastItemChecked = null;
 	private int itemToSend; // used in tickingRequest

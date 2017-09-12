@@ -20,9 +20,9 @@ package appeng.integration.modules.jei;
 
 
 import mezz.jei.api.recipe.IRecipeWrapper;
+import mezz.jei.api.recipe.IRecipeWrapperFactory;
 
 import appeng.api.features.IInscriberRecipe;
-import mezz.jei.api.recipe.IRecipeWrapperFactory;
 
 
 class InscriberRecipeHandler implements IRecipeWrapperFactory<IInscriberRecipe>

@@ -36,7 +36,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.energy.IEnergySource;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.data.IAEItemStack;
@@ -61,12 +61,12 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 	private final IItemHandler craftInv;
 	private final IItemHandler pattern;
 
-	private final BaseActionSource mySrc;
+	private final IActionSource mySrc;
 	private final IEnergySource energySrc;
 	private final IStorageMonitorable storage;
 	private final IContainerCraftingPacket container;
 
-	public SlotCraftingTerm( final EntityPlayer player, final BaseActionSource mySrc, final IEnergySource energySrc, final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix, final IItemHandler output, final int x, final int y, final IContainerCraftingPacket ccp )
+	public SlotCraftingTerm( final EntityPlayer player, final IActionSource mySrc, final IEnergySource energySrc, final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix, final IItemHandler output, final int x, final int y, final IContainerCraftingPacket ccp )
 	{
 		super( player, cMatrix, output, 0, x, y );
 		this.energySrc = energySrc;

@@ -64,11 +64,9 @@ import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.events.MENetworkPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
-import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityGrid;
-import appeng.api.networking.security.MachineSource;
-import appeng.api.networking.security.PlayerSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.ICellHandler;
@@ -89,6 +87,7 @@ import appeng.api.util.IConfigManager;
 import appeng.capabilities.Capabilities;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
+import appeng.me.helpers.MachineSource;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.tile.grid.AENetworkPowerTile;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -111,7 +110,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	private final AppEngInternalInventory cellInventory = new AppEngInternalInventory( this, 1 );
 	private final IItemHandler internalInventory = new WrapperChainedItemHandler( this.inputInventory, this.cellInventory );
 
-	private final BaseActionSource mySrc = new MachineSource( this );
+	private final IActionSource mySrc = new MachineSource( this );
 	private final IConfigManager config = new ConfigManager( this );
 	private ItemStack storageType = ItemStack.EMPTY;
 	private long lastStateChange = 0;
@@ -797,9 +796,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		}
 
 		@Override
-		public void postChange( final IBaseMonitor<T> monitor, final Iterable<T> change, final BaseActionSource source )
+		public void postChange( final IBaseMonitor<T> monitor, final Iterable<T> change, final IActionSource source )
 		{
-			if( source == TileChest.this.mySrc || ( source instanceof PlayerSource && ( (PlayerSource) source ).via == TileChest.this ) )
+			if( source == TileChest.this.mySrc || source.machine().map( machine -> machine == TileChest.this ).orElse( false ) )
 			{
 				try
 				{
@@ -843,9 +842,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		}
 
 		@Override
-		public T injectItems( final T input, final Actionable mode, final BaseActionSource src )
+		public T injectItems( final T input, final Actionable mode, final IActionSource src )
 		{
-			if( src.isPlayer() && !this.securityCheck( ( (PlayerSource) src ).player, SecurityPermissions.INJECT ) )
+			if( src.player().map( player -> !this.securityCheck( player, SecurityPermissions.INJECT ) ).orElse( false ) )
 			{
 				return input;
 			}
@@ -887,9 +886,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		}
 
 		@Override
-		public T extractItems( final T request, final Actionable mode, final BaseActionSource src )
+		public T extractItems( final T request, final Actionable mode, final IActionSource src )
 		{
-			if( src.isPlayer() && !this.securityCheck( ( (PlayerSource) src ).player, SecurityPermissions.EXTRACT ) )
+			if( src.player().map( player -> !this.securityCheck( player, SecurityPermissions.EXTRACT ) ).orElse( false ) )
 			{
 				return null;
 			}
@@ -930,7 +929,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	{
 		@Nullable
 		@Override
-		public IStorageMonitorable getInventory( BaseActionSource src )
+		public IStorageMonitorable getInventory( IActionSource src )
 		{
 			if( Platform.canAccess( TileChest.this.getProxy(), src ) )
 			{

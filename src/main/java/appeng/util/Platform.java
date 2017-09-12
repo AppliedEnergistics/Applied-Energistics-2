@@ -71,11 +71,9 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -94,11 +92,9 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergySource;
-import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityGrid;
-import appeng.api.networking.security.MachineSource;
-import appeng.api.networking.security.PlayerSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
@@ -1162,7 +1158,7 @@ public class Platform
 		return 0;
 	}
 
-	public static <StackType extends IAEStack> StackType poweredExtraction( final IEnergySource energy, final IMEInventory<StackType> cell, final StackType request, final BaseActionSource src )
+	public static <StackType extends IAEStack> StackType poweredExtraction( final IEnergySource energy, final IMEInventory<StackType> cell, final StackType request, final IActionSource src )
 	{
 		final StackType possible = cell.extractItems( (StackType) request.copy(), Actionable.SIMULATE, src );
 
@@ -1183,9 +1179,9 @@ public class Platform
 			possible.setStackSize( itemToExtract );
 			final StackType ret = cell.extractItems( possible, Actionable.MODULATE, src );
 
-			if( ret != null && src.isPlayer() )
+			if( ret != null )
 			{
-				Stats.ItemsExtracted.addToPlayer( ( (PlayerSource) src ).player, (int) ret.getStackSize() );
+				src.player().ifPresent( player -> Stats.ItemsExtracted.addToPlayer( player, (int) ret.getStackSize() ) );
 			}
 
 			return ret;
@@ -1194,7 +1190,7 @@ public class Platform
 		return null;
 	}
 
-	public static <StackType extends IAEStack> StackType poweredInsert( final IEnergySource energy, final IMEInventory<StackType> cell, final StackType input, final BaseActionSource src )
+	public static <StackType extends IAEStack> StackType poweredInsert( final IEnergySource energy, final IMEInventory<StackType> cell, final StackType input, final IActionSource src )
 	{
 		final StackType possible = cell.injectItems( (StackType) input.copy(), Actionable.SIMULATE, src );
 
@@ -1220,22 +1216,22 @@ public class Platform
 				input.setStackSize( itemToAdd );
 				split.add( cell.injectItems( input, Actionable.MODULATE, src ) );
 
-				if( src.isPlayer() )
+				src.player().ifPresent( player ->
 				{
 					final long diff = original - split.getStackSize();
-					Stats.ItemsInserted.addToPlayer( ( (PlayerSource) src ).player, (int) diff );
-				}
+					Stats.ItemsInserted.addToPlayer( player, (int) diff );
+				} );
 
 				return split;
 			}
 
 			final StackType ret = cell.injectItems( input, Actionable.MODULATE, src );
 
-			if( src.isPlayer() )
+			src.player().ifPresent( player ->
 			{
 				final long diff = ret == null ? input.getStackSize() : input.getStackSize() - ret.getStackSize();
-				Stats.ItemsInserted.addToPlayer( ( (PlayerSource) src ).player, (int) diff );
-			}
+				Stats.ItemsInserted.addToPlayer( player, (int) diff );
+			} );
 
 			return ret;
 		}
@@ -1243,7 +1239,7 @@ public class Platform
 		return input;
 	}
 
-	public static void postChanges( final IStorageGrid gs, final ItemStack removed, final ItemStack added, final BaseActionSource src )
+	public static void postChanges( final IStorageGrid gs, final ItemStack removed, final ItemStack added, final IActionSource src )
 	{
 		final IItemList<IAEItemStack> itemChanges = AEApi.instance().storage().createItemList();
 		final IItemList<IAEFluidStack> fluidChanges = AEApi.instance().storage().createFluidList();
@@ -1291,7 +1287,7 @@ public class Platform
 		gs.postAlterationOfStoredItems( StorageChannel.ITEMS, itemChanges, src );
 	}
 
-	public static <T extends IAEStack<T>> void postListChanges( final IItemList<T> before, final IItemList<T> after, final IMEMonitorHandlerReceiver<T> meMonitorPassthrough, final BaseActionSource source )
+	public static <T extends IAEStack<T>> void postListChanges( final IItemList<T> before, final IItemList<T> after, final IMEMonitorHandlerReceiver<T> meMonitorPassthrough, final IActionSource source )
 	{
 		final LinkedList<T> changes = new LinkedList<>();
 
@@ -1431,17 +1427,17 @@ public class Platform
 		player.rotationYaw = player.prevCameraYaw = player.cameraYaw = yaw;
 	}
 
-	public static boolean canAccess( final AENetworkProxy gridProxy, final BaseActionSource src )
+	public static boolean canAccess( final AENetworkProxy gridProxy, final IActionSource src )
 	{
 		try
 		{
-			if( src.isPlayer() )
+			if( src.player().isPresent() )
 			{
-				return gridProxy.getSecurity().hasPermission( ( (PlayerSource) src ).player, SecurityPermissions.BUILD );
+				return gridProxy.getSecurity().hasPermission( src.player().get(), SecurityPermissions.BUILD );
 			}
-			else if( src.isMachine() )
+			else if( src.machine().isPresent() )
 			{
-				final IActionHost te = ( (MachineSource) src ).via;
+				final IActionHost te = src.machine().get();
 				final IGridNode n = te.getActionableNode();
 				if( n == null )
 				{
@@ -1462,7 +1458,7 @@ public class Platform
 		}
 	}
 
-	public static ItemStack extractItemsByRecipe( final IEnergySource energySrc, final BaseActionSource mySrc, final IMEMonitor<IAEItemStack> src, final World w, final IRecipe r, final ItemStack output, final InventoryCrafting ci, final ItemStack providedTemplate, final int slot, final IItemList<IAEItemStack> items, final Actionable realForFake, final IPartitionList<IAEItemStack> filter )
+	public static ItemStack extractItemsByRecipe( final IEnergySource energySrc, final IActionSource mySrc, final IMEMonitor<IAEItemStack> src, final World w, final IRecipe r, final ItemStack output, final InventoryCrafting ci, final ItemStack providedTemplate, final int slot, final IItemList<IAEItemStack> items, final Actionable realForFake, final IPartitionList<IAEItemStack> filter )
 	{
 		if( energySrc.extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.9 )
 		{

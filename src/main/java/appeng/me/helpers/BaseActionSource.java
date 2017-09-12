@@ -16,43 +16,35 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.helpers;
+package appeng.me.helpers;
 
 
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import java.util.Optional;
 
-import appeng.api.networking.IGridNode;
+import net.minecraft.entity.player.EntityPlayer;
+
+import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 
 
-public interface IContainerCraftingPacket
+public class BaseActionSource implements IActionSource
 {
 
-	/**
-	 * @return gain access to network infrastructure.
-	 */
-	IGridNode getNetworkNode();
+	@Override
+	public Optional<EntityPlayer> player()
+	{
+		return Optional.empty();
+	}
 
-	/**
-	 * @param string name of inventory
-	 *
-	 * @return the inventory of the part/tile by name.
-	 */
-	IItemHandler getInventoryByName( String string );
+	@Override
+	public Optional<IActionHost> machine()
+	{
+		return Optional.empty();
+	}
 
-	/**
-	 * @return who are we?
-	 */
-	IActionSource getActionSource();
-
-	/**
-	 * @return consume items?
-	 */
-	boolean useRealItems();
-
-	/**
-	 * @return array of view cells
-	 */
-	ItemStack[] getViewCells();
+	@Override
+	public <T> Optional<T> context( Class<T> key )
+	{
+		return Optional.empty();
+	}
 }

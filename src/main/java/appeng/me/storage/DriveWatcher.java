@@ -23,7 +23,7 @@ import net.minecraft.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.implementations.tiles.IChestOrDrive;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ICellHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEStack;
@@ -46,7 +46,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 	}
 
 	@Override
-	public T injectItems( final T input, final Actionable type, final BaseActionSource src )
+	public T injectItems( final T input, final Actionable type, final IActionSource src )
 	{
 		final long size = input.getStackSize();
 
@@ -67,7 +67,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 	}
 
 	@Override
-	public T extractItems( final T request, final Actionable type, final BaseActionSource src )
+	public T extractItems( final T request, final Actionable type, final IActionSource src )
 	{
 		final T a = super.extractItems( request, type, src );
 

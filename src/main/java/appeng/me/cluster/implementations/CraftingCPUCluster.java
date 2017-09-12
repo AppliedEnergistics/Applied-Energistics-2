@@ -55,8 +55,7 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.events.MENetworkCraftingCpuChange;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.networking.security.MachineSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
@@ -73,6 +72,7 @@ import appeng.crafting.CraftingWatcher;
 import appeng.crafting.MECraftingInventory;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cluster.IAECluster;
+import appeng.me.helpers.MachineSource;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
@@ -236,7 +236,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		return false;
 	}
 
-	public IAEStack injectItems( final IAEStack input, final Actionable type, final BaseActionSource src )
+	public IAEStack injectItems( final IAEStack input, final Actionable type, final IActionSource src )
 	{
 		if( !( input instanceof IAEItemStack ) )
 		{
@@ -365,7 +365,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		return input;
 	}
 
-	private void postChange( final IAEItemStack diff, final BaseActionSource src )
+	private void postChange( final IAEItemStack diff, final IActionSource src )
 	{
 		final Iterator<Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object>> i = this.getListeners();
 
@@ -469,7 +469,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		{
 			return null;
 		}
-		return (TileCraftingTile) this.machineSrc.via;
+		return (TileCraftingTile) this.machineSrc.machine().get();
 	}
 
 	private IGrid getGrid()
@@ -844,7 +844,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		this.markDirty();
 	}
 
-	public ICraftingLink submitJob( final IGrid g, final ICraftingJob job, final BaseActionSource src, final ICraftingRequester requestingMachine )
+	public ICraftingLink submitJob( final IGrid g, final ICraftingJob job, final IActionSource src, final ICraftingRequester requestingMachine )
 	{
 		if( !this.tasks.isEmpty() || !this.waitingFor.isEmpty() )
 		{
@@ -935,7 +935,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	}
 
 	@Override
-	public BaseActionSource getActionSource()
+	public IActionSource getActionSource()
 	{
 		return this.machineSrc;
 	}

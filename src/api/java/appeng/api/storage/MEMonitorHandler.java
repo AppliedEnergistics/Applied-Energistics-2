@@ -32,7 +32,7 @@ import com.google.common.collect.ImmutableList;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
@@ -81,7 +81,7 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 	}
 
 	@Override
-	public StackType injectItems( final StackType input, final Actionable mode, final BaseActionSource src )
+	public StackType injectItems( final StackType input, final Actionable mode, final IActionSource src )
 	{
 		if( mode == Actionable.SIMULATE )
 		{
@@ -95,7 +95,7 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 		return this.internalHandler;
 	}
 
-	private StackType monitorDifference( final IAEStack original, final StackType leftOvers, final boolean extraction, final BaseActionSource src )
+	private StackType monitorDifference( final IAEStack original, final StackType leftOvers, final boolean extraction, final IActionSource src )
 	{
 		final StackType diff = (StackType) original.copy();
 
@@ -116,12 +116,12 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 		return leftOvers;
 	}
 
-	protected void postChangesToListeners( final Iterable<StackType> changes, final BaseActionSource src )
+	protected void postChangesToListeners( final Iterable<StackType> changes, final IActionSource src )
 	{
 		this.notifyListenersOfChange( changes, src );
 	}
 
-	protected void notifyListenersOfChange( final Iterable<StackType> diff, final BaseActionSource src )
+	protected void notifyListenersOfChange( final Iterable<StackType> diff, final IActionSource src )
 	{
 		this.hasChanged = true;// need to update the cache.
 		final Iterator<Entry<IMEMonitorHandlerReceiver<StackType>, Object>> i = this.getListeners();
@@ -146,7 +146,7 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 	}
 
 	@Override
-	public StackType extractItems( final StackType request, final Actionable mode, final BaseActionSource src )
+	public StackType extractItems( final StackType request, final Actionable mode, final IActionSource src )
 	{
 		if( mode == Actionable.SIMULATE )
 		{

@@ -33,7 +33,7 @@ import net.minecraft.world.World;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridCache;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.IAEItemStack;
 
 
@@ -63,7 +63,7 @@ public interface ICraftingGrid extends IGridCache
 	 * @return a future which will at an undetermined point in the future get you the {@link ICraftingJob} do not wait
 	 * on this, your be waiting forever.
 	 */
-	Future<ICraftingJob> beginCraftingJob( World world, IGrid grid, BaseActionSource actionSrc, IAEItemStack craftWhat, ICraftingCallback callback );
+	Future<ICraftingJob> beginCraftingJob( World world, IGrid grid, IActionSource actionSrc, IAEItemStack craftWhat, ICraftingCallback callback );
 
 	/**
 	 * Submit the job to the Crafting system for processing.
@@ -82,7 +82,7 @@ public interface ICraftingGrid extends IGridCache
 	 * {@link ICraftingRequester} methods. if you send null, this object should be discarded after verifying the
 	 * return state.
 	 */
-	ICraftingLink submitJob( ICraftingJob job, ICraftingRequester requestingMachine, ICraftingCPU target, boolean prioritizePower, BaseActionSource src );
+	ICraftingLink submitJob( ICraftingJob job, ICraftingRequester requestingMachine, ICraftingCPU target, boolean prioritizePower, IActionSource src );
 
 	/**
 	 * @return list of all the crafting cpus on the grid

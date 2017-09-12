@@ -34,10 +34,9 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
 import appeng.api.networking.events.MENetworkEventSubscribe;
-import appeng.api.networking.security.BaseActionSource;
 import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityGrid;
-import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherHost;
 import appeng.api.networking.storage.IStorageGrid;
@@ -50,7 +49,9 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.GenericInterestManager;
+import appeng.me.helpers.MachineSource;
 import appeng.me.storage.ItemWatcher;
 import appeng.me.storage.NetworkInventoryHandler;
 
@@ -161,7 +162,7 @@ public class GridStorageCache implements IStorageGrid
 			this.inactiveCellProviders.remove( cc );
 			this.activeCellProviders.add( cc );
 
-			BaseActionSource actionSrc = new BaseActionSource();
+			IActionSource actionSrc = new BaseActionSource();
 			if( cc instanceof IActionHost )
 			{
 				actionSrc = new MachineSource( (IActionHost) cc );
@@ -188,7 +189,7 @@ public class GridStorageCache implements IStorageGrid
 			this.activeCellProviders.remove( cc );
 			this.inactiveCellProviders.add( cc );
 
-			BaseActionSource actionSrc = new BaseActionSource();
+			IActionSource actionSrc = new BaseActionSource();
 
 			if( cc instanceof IActionHost )
 			{
@@ -254,7 +255,7 @@ public class GridStorageCache implements IStorageGrid
 		tracker.applyChanges();
 	}
 
-	private void postChangesToNetwork( final StorageChannel chan, final int upOrDown, final IItemList availableItems, final BaseActionSource src )
+	private void postChangesToNetwork( final StorageChannel chan, final int upOrDown, final IItemList availableItems, final IActionSource src )
 	{
 		switch( chan )
 		{
@@ -317,7 +318,7 @@ public class GridStorageCache implements IStorageGrid
 	}
 
 	@Override
-	public void postAlterationOfStoredItems( final StorageChannel chan, final Iterable<? extends IAEStack> input, final BaseActionSource src )
+	public void postAlterationOfStoredItems( final StorageChannel chan, final Iterable<? extends IAEStack> input, final IActionSource src )
 	{
 		if( chan == StorageChannel.ITEMS )
 		{
@@ -371,9 +372,9 @@ public class GridStorageCache implements IStorageGrid
 		final StorageChannel channel;
 		final int up_or_down;
 		final IItemList list;
-		final BaseActionSource src;
+		final IActionSource src;
 
-		public CellChangeTrackerRecord( final StorageChannel channel, final int i, final IMEInventoryHandler<? extends IAEStack> h, final BaseActionSource actionSrc )
+		public CellChangeTrackerRecord( final StorageChannel channel, final int i, final IMEInventoryHandler<? extends IAEStack> h, final IActionSource actionSrc )
 		{
 			this.channel = channel;
 			this.up_or_down = i;
@@ -404,7 +405,7 @@ public class GridStorageCache implements IStorageGrid
 
 		final List<CellChangeTrackerRecord> data = new LinkedList<>();
 
-		public void postChanges( final StorageChannel channel, final int i, final IMEInventoryHandler<? extends IAEStack> h, final BaseActionSource actionSrc )
+		public void postChanges( final StorageChannel channel, final int i, final IMEInventoryHandler<? extends IAEStack> h, final IActionSource actionSrc )
 		{
 			this.data.add( new CellChangeTrackerRecord( channel, i, h, actionSrc ) );
 		}
