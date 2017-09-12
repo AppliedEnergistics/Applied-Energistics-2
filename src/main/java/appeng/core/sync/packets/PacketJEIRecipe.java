@@ -155,7 +155,7 @@ public class PacketJEIRecipe extends AppEngPacket
 						final IAEItemStack out = cct.useRealItems() ? Platform.poweredInsert( energy, storage, in, cct.getActionSource() ) : null;
 						if( out != null )
 						{
-							currentItem = out.getItemStack();
+							currentItem = out.createItemStack();
 						}
 						else
 						{
@@ -188,7 +188,7 @@ public class PacketJEIRecipe extends AppEngPacket
 
 								if( out != null )
 								{
-									currentItem = out.getItemStack();
+									currentItem = out.createItemStack();
 								}
 							}
 

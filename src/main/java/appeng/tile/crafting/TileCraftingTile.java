@@ -317,7 +317,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			for( IAEItemStack ais : inv.getAvailableItems( AEApi.instance().storage().createItemList() ) )
 			{
 				ais = ais.copy();
-				ais.setStackSize( ais.getItemStack().getMaxStackSize() );
+				ais.setStackSize( ais.getDefinition().getMaxStackSize() );
 				while( true )
 				{
 					final IAEItemStack g = inv.extractItems( ais.copy(), Actionable.MODULATE, this.cluster.getActionSource() );
@@ -329,7 +329,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 					final WorldCoord wc = places.poll();
 					places.add( wc );
 
-					Platform.spawnDrops( this.world, wc.getPos(), Collections.singletonList( g.getItemStack() ) );
+					Platform.spawnDrops( this.world, wc.getPos(), Collections.singletonList( g.createItemStack() ) );
 				}
 			}
 

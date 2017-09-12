@@ -97,7 +97,7 @@ public class ItemSorters
 				return CONFIG_BASED_SORT_BY_NAME.compare( o1, o2 );
 			}
 
-			final int cmp = api.compareItems( o1.getItemStack(), o2.getItemStack() );
+			final int cmp = api.compareItems( o1.getDisplayStack(), o2.getDisplayStack() );
 
 			if( getDirection() == SortDir.ASCENDING )
 			{

@@ -68,7 +68,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	@Override
 	public IAEItemStack injectItems( IAEItemStack iox, Actionable type, IActionSource src )
 	{
-		ItemStack orgInput = iox.getItemStack();
+		ItemStack orgInput = iox.createItemStack();
 		ItemStack remaining = orgInput;
 
 		int slotCount = this.itemHandler.getSlots();
@@ -99,7 +99,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	public IAEItemStack extractItems( IAEItemStack request, Actionable mode, IActionSource src )
 	{
 
-		ItemStack requestedItemStack = request.getItemStack();
+		ItemStack requestedItemStack = request.createItemStack();
 		int remainingSize = requestedItemStack.getCount();
 
 		// Use this to gather the requested items

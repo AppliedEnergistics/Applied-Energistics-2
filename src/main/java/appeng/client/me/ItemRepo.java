@@ -238,9 +238,7 @@ public class ItemRepo
 
 		for( final IAEItemStack is : this.view )
 		{
-			final ItemStack displayStack = is.getItemStack();
-			displayStack.setCount( 1 );
-			this.dsp.add( displayStack );
+			this.dsp.add( is.getDisplayStack() );
 		}
 	}
 

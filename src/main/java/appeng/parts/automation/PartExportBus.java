@@ -266,9 +266,9 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 				{
 					if( mode == Actionable.MODULATE )
 					{
-						return AEItemStack.create( d.addItems( items.getItemStack() ) );
+						return AEItemStack.create( d.addItems( items.createItemStack() ) );
 					}
-					return AEItemStack.create( d.simulateAdd( items.getItemStack() ) );
+					return AEItemStack.create( d.simulateAdd( items.createItemStack() ) );
 				}
 			}
 		}
@@ -304,7 +304,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 	private void pushItemIntoTarget( final InventoryAdaptor d, final IEnergyGrid energy, final IMEInventory<IAEItemStack> inv, IAEItemStack ais )
 	{
-		final ItemStack is = ais.getItemStack();
+		final ItemStack is = ais.createItemStack();
 		is.setCount( (int) this.itemToSend );
 
 		final ItemStack o = d.simulateAdd( is );
@@ -320,7 +320,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 			{
 				this.itemToSend -= itemsToAdd.getStackSize();
 
-				final ItemStack failed = d.addItems( itemsToAdd.getItemStack() );
+				final ItemStack failed = d.addItems( itemsToAdd.createItemStack() );
 				if( !failed.isEmpty() )
 				{
 					ais.setStackSize( failed.getCount() );

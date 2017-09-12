@@ -673,7 +673,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			else if( itemStack.getStackSize() > 0 )
 			{
 				// make sure strange things didn't happen...
-				if( !adaptor.simulateAdd( itemStack.getItemStack() ).isEmpty() )
+				if( !adaptor.simulateAdd( itemStack.createItemStack() ).isEmpty() )
 				{
 					changed = true;
 					throw new GridAccessException();
@@ -683,7 +683,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				if( acquired != null )
 				{
 					changed = true;
-					final ItemStack issue = adaptor.addItems( acquired.getItemStack() );
+					final ItemStack issue = adaptor.addItems( acquired.createItemStack() );
 					if( !issue.isEmpty() )
 					{
 						throw new IllegalStateException( "bad attempt at managing inventory. ( addItems )" );
@@ -702,7 +702,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 				long diff = toStore.getStackSize();
 
 				// make sure strange things didn't happen...
-				final ItemStack canExtract = adaptor.simulateRemove( (int) diff, toStore.getItemStack(), null );
+				// TODO: check if OK
+				final ItemStack canExtract = adaptor.simulateRemove( (int) diff, toStore.getDefinition(), null );
 				if( canExtract.isEmpty() || canExtract.getCount() != diff )
 				{
 					changed = true;
@@ -1118,11 +1119,11 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 			if( mode == Actionable.SIMULATE )
 			{
-				return AEItemStack.create( adaptor.simulateAdd( acquired.getItemStack() ) );
+				return AEItemStack.create( adaptor.simulateAdd( acquired.createItemStack() ) );
 			}
 			else
 			{
-				final IAEItemStack is = AEItemStack.create( adaptor.addItems( acquired.getItemStack() ) );
+				final IAEItemStack is = AEItemStack.create( adaptor.addItems( acquired.createItemStack() ) );
 				this.updatePlan( slot );
 				return is;
 			}

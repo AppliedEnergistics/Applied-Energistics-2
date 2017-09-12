@@ -26,7 +26,7 @@ import io.netty.buffer.ByteBuf;
 import appeng.api.storage.data.IAEStack;
 
 
-public abstract class AEStack<StackType extends IAEStack> implements IAEStack<StackType>
+public abstract class AEStack<StackType extends IAEStack<StackType>> implements IAEStack<StackType>
 {
 
 	private boolean isCraftable;
@@ -107,6 +107,14 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	}
 
 	@Override
+	public StackType empty()
+	{
+		final StackType dup = this.copy();
+		dup.reset();
+		return dup;
+	}
+
+	@Override
 	public boolean isMeaningful()
 	{
 		return this.stackSize != 0 || this.countRequestable > 0 || this.isCraftable;
@@ -144,14 +152,13 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 
 		i.writeByte( mask );
 
-		this.writeIdentity( i );
+		this.writeToStream( i );
 
-		this.readNBT( i );
-
-		// putPacketValue( i, priority );
 		this.putPacketValue( i, this.stackSize );
 		this.putPacketValue( i, this.countRequestable );
 	}
+
+	protected abstract void writeToStream( final ByteBuf data ) throws IOException;
 
 	private byte getType( final long num )
 	{
@@ -174,10 +181,6 @@ public abstract class AEStack<StackType extends IAEStack> implements IAEStack<St
 	}
 
 	abstract boolean hasTagCompound();
-
-	abstract void writeIdentity( ByteBuf i ) throws IOException;
-
-	abstract void readNBT( ByteBuf i ) throws IOException;
 
 	private void putPacketValue( final ByteBuf tag, final long num )
 	{

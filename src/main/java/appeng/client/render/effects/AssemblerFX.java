@@ -46,8 +46,7 @@ public class AssemblerFX extends Particle implements ICanDie
 		this.motionY = 0;
 		this.motionZ = 0;
 		this.speed = speed;
-		final ItemStack displayItem = is.getItemStack();
-		displayItem.setCount( 1 );
+		final ItemStack displayItem = is.getDisplayStack();
 		this.fi = new EntityFloatingItem( this, w, x, y, z, displayItem );
 		w.spawnEntity( this.fi );
 		this.particleMaxAge = (int) Math.ceil( Math.max( 1, 100.0f / speed ) ) + 2;

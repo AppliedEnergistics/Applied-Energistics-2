@@ -218,7 +218,7 @@ public class CellInventory implements ICellInventory
 			return input;
 		}
 
-		final ItemStack sharedItemStack = input.getItemStack();
+		final ItemStack sharedItemStack = input.createItemStack();
 
 		if( CellInventory.isStorageCell( sharedItemStack ) )
 		{

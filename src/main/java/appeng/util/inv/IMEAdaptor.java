@@ -99,7 +99,7 @@ public class IMEAdaptor extends InventoryAdaptor
 
 		if( out != null )
 		{
-			return out.getItemStack();
+			return out.createItemStack();
 		}
 
 		return ItemStack.EMPTY;
@@ -139,7 +139,7 @@ public class IMEAdaptor extends InventoryAdaptor
 				out = this.target.extractItems( req, type, this.src );
 				if( out != null )
 				{
-					return out.getItemStack();
+					return out.createItemStack();
 				}
 			}
 		}
@@ -166,7 +166,7 @@ public class IMEAdaptor extends InventoryAdaptor
 			final IAEItemStack out = this.target.injectItems( in, Actionable.MODULATE, this.src );
 			if( out != null )
 			{
-				return out.getItemStack();
+				return out.createItemStack();
 			}
 		}
 		return ItemStack.EMPTY;
@@ -181,7 +181,7 @@ public class IMEAdaptor extends InventoryAdaptor
 			final IAEItemStack out = this.target.injectItems( in, Actionable.SIMULATE, this.src );
 			if( out != null )
 			{
-				return out.getItemStack();
+				return out.createItemStack();
 			}
 		}
 		return ItemStack.EMPTY;

@@ -36,7 +36,7 @@ import appeng.api.storage.data.IItemList;
 public final class ItemList implements IItemList<IAEItemStack>
 {
 
-	private final NavigableMap<IAEItemStack, IAEItemStack> records = new ConcurrentSkipListMap<>();
+	private final NavigableMap<AESharedItemStack, IAEItemStack> records = new ConcurrentSkipListMap<>();
 
 	@Override
 	public void add( final IAEItemStack option )
@@ -46,7 +46,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			return;
 		}
 
-		final IAEItemStack st = this.records.get( option );
+		final IAEItemStack st = this.records.get( ( (AEItemStack) option ).getSharedStack() );
 
 		if( st != null )
 		{
@@ -67,7 +67,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			return null;
 		}
 
-		return this.records.get( itemStack );
+		return this.records.get( ( (AEItemStack) itemStack ).getSharedStack() );
 	}
 
 	@Override
@@ -80,10 +80,8 @@ public final class ItemList implements IItemList<IAEItemStack>
 
 		final AEItemStack ais = (AEItemStack) filter;
 
-		if( ais.isOre() )
+		return ais.getOre().map( or ->
 		{
-			final OreReference or = ais.getDefinition().getIsOre();
-
 			if( or.getAEEquivalents().size() == 1 )
 			{
 				final IAEItemStack is = or.getAEEquivalents().get( 0 );
@@ -101,9 +99,8 @@ public final class ItemList implements IItemList<IAEItemStack>
 
 				return output;
 			}
-		}
-
-		return this.findFuzzyDamage( ais, fuzzy, false );
+		} )
+				.orElse( this.findFuzzyDamage( ais, fuzzy, false ) );
 	}
 
 	@Override
@@ -120,7 +117,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			return;
 		}
 
-		final IAEItemStack st = this.records.get( option );
+		final IAEItemStack st = this.records.get( ( (AEItemStack) option ).getSharedStack() );
 
 		if( st != null )
 		{
@@ -146,7 +143,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			return;
 		}
 
-		final IAEItemStack st = this.records.get( option );
+		final IAEItemStack st = this.records.get( ( (AEItemStack) option ).getSharedStack() );
 
 		if( st != null )
 		{
@@ -169,7 +166,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			return;
 		}
 
-		final IAEItemStack st = this.records.get( option );
+		final IAEItemStack st = this.records.get( ( (AEItemStack) option ).getSharedStack() );
 
 		if( st != null )
 		{
@@ -219,13 +216,13 @@ public final class ItemList implements IItemList<IAEItemStack>
 
 	private IAEItemStack putItemRecord( final IAEItemStack itemStack )
 	{
-		return this.records.put( itemStack, itemStack );
+		return this.records.put( ( (AEItemStack) itemStack ).getSharedStack(), itemStack );
 	}
 
 	private Collection<IAEItemStack> findFuzzyDamage( final AEItemStack filter, final FuzzyMode fuzzy, final boolean ignoreMeta )
 	{
-		final IAEItemStack low = filter.getLow( fuzzy, ignoreMeta );
-		final IAEItemStack high = filter.getHigh( fuzzy, ignoreMeta );
+		final AESharedItemStack low = ( (AEItemStack) filter ).getSharedStack().getLow( fuzzy, ignoreMeta );
+		final AESharedItemStack high = ( (AEItemStack) filter ).getSharedStack().getHigh( fuzzy, ignoreMeta );
 
 		return this.records.subMap( low, true, high, true ).descendingMap().values();
 	}

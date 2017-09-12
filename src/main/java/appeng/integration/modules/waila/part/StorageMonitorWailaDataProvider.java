@@ -62,10 +62,11 @@ public final class StorageMonitorWailaDataProvider extends BasePartWailaDataProv
 			final IAEStack<?> displayed = monitor.getDisplayed();
 			final boolean isLocked = monitor.isLocked();
 
+			// TODO: generalize
 			if( displayed instanceof IAEItemStack )
 			{
 				final IAEItemStack ais = (IAEItemStack) displayed;
-				currentToolTip.add( WailaText.Showing.getLocal() + ": " + ais.getItemStack().getDisplayName() );
+				currentToolTip.add( WailaText.Showing.getLocal() + ": " + ais.getDisplayStack().getDisplayName() );
 			}
 			else if( displayed instanceof IAEFluidStack )
 			{

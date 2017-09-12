@@ -309,7 +309,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 					final IAEItemStack fail = inv.injectItems( AEItemStack.create( set[x] ), Actionable.MODULATE, this.mySrc );
 					if( fail != null )
 					{
-						drops.add( fail.getItemStack() );
+						drops.add( fail.createItemStack() );
 					}
 				}
 			}

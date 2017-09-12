@@ -620,7 +620,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 				}
 				else
 				{
-					this.inputInventory.setStackInSlot( 0, returns.getItemStack() );
+					this.inputInventory.setStackInSlot( 0, returns.createItemStack() );
 				}
 			}
 		}

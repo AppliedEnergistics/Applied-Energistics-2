@@ -38,7 +38,6 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.config.FuzzyMode;
 import appeng.core.AELog;
-import appeng.util.item.AESharedNBT;
 import appeng.util.item.OreHelper;
 import appeng.util.item.OreReference;
 
@@ -183,8 +182,8 @@ public class ItemComparisonHelper
 			}
 		}
 
-		final OreReference aOR = OreHelper.INSTANCE.isOre( a );
-		final OreReference bOR = OreHelper.INSTANCE.isOre( b );
+		final OreReference aOR = OreHelper.INSTANCE.getOre( a ).orElse( null );
+		final OreReference bOR = OreHelper.INSTANCE.getOre( b ).orElse( null );
 
 		if( OreHelper.INSTANCE.sameOre( aOR, bOR ) )
 		{
@@ -405,12 +404,6 @@ public class ItemComparisonHelper
 		if( ( ta == null && tb != null ) || ( ta != null && tb == null ) )
 		{
 			return false;
-		}
-
-		// if both tags are shared this is easy...
-		if( AESharedNBT.isShared( ta ) && AESharedNBT.isShared( tb ) )
-		{
-			return ta == tb;
 		}
 
 		return this.isNbtTagEqual( ta, tb );

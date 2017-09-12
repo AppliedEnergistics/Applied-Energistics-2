@@ -46,7 +46,7 @@ public interface IAEItemStack extends IAEStack<IAEItemStack>
 	 *
 	 * @return new ItemStack
 	 */
-	ItemStack getItemStack();
+	ItemStack createItemStack();
 
 	/**
 	 * is there NBT Data for this item?
@@ -105,4 +105,11 @@ public interface IAEItemStack extends IAEStack<IAEItemStack>
 	 * @return true if it is the same type (same item, damage, nbt)
 	 */
 	boolean isSameType( ItemStack stored );
+	
+	
+	/**
+	 * NEVER MODIFY
+	 * @return
+	 */
+	ItemStack getDefinition();
 }

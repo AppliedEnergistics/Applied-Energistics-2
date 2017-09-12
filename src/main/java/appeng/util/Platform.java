@@ -103,7 +103,6 @@ import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAETagCompound;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
@@ -123,7 +122,6 @@ import appeng.me.helpers.AENetworkProxy;
 import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.helpers.P2PHelper;
 import appeng.util.item.AEItemStack;
-import appeng.util.item.AESharedNBT;
 import appeng.util.prioritylist.IPartitionList;
 
 
@@ -571,11 +569,11 @@ public class Platform
 	}
 
 	@SideOnly( Side.CLIENT )
-	public static List getTooltip( final Object o )
+	public static List<String> getTooltip( final Object o )
 	{
 		if( o == null )
 		{
-			return new ArrayList();
+			return new ArrayList<>();
 		}
 
 		ItemStack itemStack = ItemStack.EMPTY;
@@ -590,7 +588,7 @@ public class Platform
 		}
 		else
 		{
-			return new ArrayList();
+			return new ArrayList<>();
 		}
 
 		try
@@ -601,7 +599,7 @@ public class Platform
 		}
 		catch( final Exception errB )
 		{
-			return new ArrayList();
+			return new ArrayList<>();
 		}
 	}
 
@@ -659,32 +657,6 @@ public class Platform
 				return "** Exception";
 			}
 		}
-	}
-
-	public static boolean hasSpecialComparison( final IAEItemStack willAdd )
-	{
-		if( willAdd == null )
-		{
-			return false;
-		}
-		final IAETagCompound tag = willAdd.getTagCompound();
-		if( tag != null && tag.getSpecialComparison() != null )
-		{
-			return true;
-		}
-		return false;
-	}
-
-	public static boolean hasSpecialComparison( final ItemStack willAdd )
-	{
-		if( AESharedNBT.isShared( willAdd.getTagCompound() ) )
-		{
-			if( ( (IAETagCompound) willAdd.getTagCompound() ).getSpecialComparison() != null )
-			{
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public static boolean isWrench( final EntityPlayer player, final ItemStack eq, final BlockPos pos )
@@ -1475,7 +1447,7 @@ public class Platform
 				final IAEItemStack ae_ext = src.extractItems( ae_req, realForFake, mySrc );
 				if( ae_ext != null )
 				{
-					final ItemStack extracted = ae_ext.getItemStack();
+					final ItemStack extracted = ae_ext.createItemStack();
 					if( !extracted.isEmpty() )
 					{
 						energySrc.extractAEPower( 1, realForFake, PowerMultiplier.CONFIG );
@@ -1484,14 +1456,14 @@ public class Platform
 				}
 			}
 
-			final boolean checkFuzzy = ae_req.isOre() || providedTemplate.getItemDamage() == OreDictionary.WILDCARD_VALUE || providedTemplate
+			final boolean checkFuzzy = ae_req.getOre().isPresent() || providedTemplate.getItemDamage() == OreDictionary.WILDCARD_VALUE || providedTemplate
 					.hasTagCompound() || providedTemplate.isItemStackDamageable();
 
 			if( items != null && checkFuzzy )
 			{
 				for( final IAEItemStack x : items )
 				{
-					final ItemStack sh = x.getItemStack();
+					final ItemStack sh = x.getDefinition();
 					if( ( Platform.itemComparisons().isEqualItemType( providedTemplate,
 							sh ) || ae_req.sameOre( x ) ) && !Platform.itemComparisons().isEqualItem( sh, output ) )
 					{ // Platform.isSameItemType( sh, providedTemplate )
@@ -1508,7 +1480,7 @@ public class Platform
 								if( ex != null )
 								{
 									energySrc.extractAEPower( 1, realForFake, PowerMultiplier.CONFIG );
-									return ex.getItemStack();
+									return ex.createItemStack();
 								}
 							}
 						}

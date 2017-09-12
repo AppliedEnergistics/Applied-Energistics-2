@@ -125,7 +125,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 
 		for( final IAEItemStack ais : this.inventory.getStoredItems() )
 		{
-			drops.add( ais.getItemStack() );
+			drops.add( ais.createItemStack() );
 		}
 	}
 
@@ -171,7 +171,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 		for( final IAEItemStack ais : this.inventory.getStoredItems() )
 		{
 			final NBTTagCompound it = new NBTTagCompound();
-			ais.getItemStack().writeToNBT( it );
+			ais.createItemStack().writeToNBT( it );
 			storedItems.setTag( String.valueOf( offset ), it );
 			offset++;
 		}
@@ -322,7 +322,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 		// read permissions
 		for( final IAEItemStack ais : this.inventory.getStoredItems() )
 		{
-			final ItemStack is = ais.getItemStack();
+			final ItemStack is = ais.createItemStack();
 			final Item i = is.getItem();
 			if( i instanceof IBiometricCard )
 			{

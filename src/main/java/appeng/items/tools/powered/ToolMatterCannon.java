@@ -140,13 +140,12 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 						}
 
 						aeAmmo.setStackSize( 1 );
-						final ItemStack ammo = ( (IAEItemStack) aeAmmo ).getItemStack();
+						final ItemStack ammo = ( (IAEItemStack) aeAmmo ).getDefinition();
 						if( ammo == null )
 						{
 							return new ActionResult<>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
 						}
 
-						ammo.setCount( 1 );
 						aeAmmo = inv.extractItems( aeAmmo, Actionable.MODULATE, new PlayerSource( p, null ) );
 						if( aeAmmo == null )
 						{
@@ -167,7 +166,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 						final float penetration = AEApi.instance().registries().matterCannon().getPenetration( ammo ); // 196.96655f;
 						if( penetration <= 0 )
 						{
-							final ItemStack type = ( (IAEItemStack) aeAmmo ).getItemStack();
+							final ItemStack type = aeAmmo.getDisplayStack();
 							if( type.getItem() instanceof ItemPaintBall )
 							{
 								this.shootPaintBalls( type, w, p, Vec3d, Vec3d1, direction, d0, d1, d2 );
@@ -497,7 +496,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 	@Override
 	public boolean isBlackListed( final ItemStack cellItem, final IAEItemStack requestedAddition )
 	{
-		final float pen = AEApi.instance().registries().matterCannon().getPenetration( requestedAddition.getItemStack() );
+		final float pen = AEApi.instance().registries().matterCannon().getPenetration( requestedAddition.getDefinition() );
 		if( pen > 0 )
 		{
 			return false;

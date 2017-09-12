@@ -88,12 +88,14 @@ class GrinderRecipeCategory implements IRecipeCategory<GrinderRecipeWrapper>, IR
 		itemStacks.set( ingredients );
 	}
 
-	@Override public void addRecipeCategories( IRecipeCategory... recipeCategories )
+	@Override
+	public void addRecipeCategories( IRecipeCategory... recipeCategories )
 	{
 
 	}
 
-	@Override public IJeiHelpers getJeiHelpers()
+	@Override
+	public IJeiHelpers getJeiHelpers()
 	{
 		return null;
 	}

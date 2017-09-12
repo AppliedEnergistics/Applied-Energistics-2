@@ -137,13 +137,13 @@ public class PartPatternTerminal extends AbstractPartTerminal
 					for( int x = 0; x < this.crafting.getSlots() && x < details.getInputs().length; x++ )
 					{
 						final IAEItemStack item = details.getInputs()[x];
-						this.crafting.setStackInSlot( x, item == null ? ItemStack.EMPTY : item.getItemStack() );
+						this.crafting.setStackInSlot( x, item == null ? ItemStack.EMPTY : item.createItemStack() );
 					}
 
 					for( int x = 0; x < this.output.getSlots() && x < details.getOutputs().length; x++ )
 					{
 						final IAEItemStack item = details.getOutputs()[x];
-						this.output.setStackInSlot( x, item == null ? ItemStack.EMPTY : item.getItemStack() );
+						this.output.setStackInSlot( x, item == null ? ItemStack.EMPTY : item.createItemStack() );
 					}
 				}
 			}

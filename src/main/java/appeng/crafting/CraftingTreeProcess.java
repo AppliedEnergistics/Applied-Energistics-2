@@ -73,7 +73,7 @@ public class CraftingTreeProcess
 			final IAEItemStack[] is = details.getInputs();
 			for( int x = 0; x < ic.getSizeInventory(); x++ )
 			{
-				ic.setInventorySlotContents( x, is[x] == null ? ItemStack.EMPTY : is[x].getItemStack() );
+				ic.setInventorySlotContents( x, is[x] == null ? ItemStack.EMPTY : is[x].createItemStack() );
 			}
 
 			FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) world ), details.getOutput( ic, world ), ic );
@@ -89,7 +89,7 @@ public class CraftingTreeProcess
 
 			for( final IAEItemStack part : details.getCondensedInputs() )
 			{
-				final ItemStack g = part.getItemStack();
+				final ItemStack g = part.createItemStack();
 
 				boolean isAnInput = false;
 				for( final IAEItemStack a : details.getCondensedOutputs() )
@@ -146,7 +146,7 @@ public class CraftingTreeProcess
 		{
 			for( final IAEItemStack part : details.getCondensedInputs() )
 			{
-				final ItemStack g = part.getItemStack();
+				final ItemStack g = part.createItemStack();
 
 				boolean isAnInput = false;
 				for( final IAEItemStack a : details.getCondensedOutputs() )
@@ -197,7 +197,7 @@ public class CraftingTreeProcess
 				final IAEItemStack item = entry.getKey().getStack( entry.getValue() );
 				final IAEItemStack stack = entry.getKey().request( inv, item.getStackSize(), src );
 
-				ic.setInventorySlotContents( entry.getKey().getSlot(), stack.getItemStack() );
+				ic.setInventorySlotContents( entry.getKey().getSlot(), stack.createItemStack() );
 			}
 
 			FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) this.world ), this.details.getOutput( ic, this.world ), ic );
@@ -225,7 +225,7 @@ public class CraftingTreeProcess
 
 				if( this.containerItems )
 				{
-					final ItemStack is = Platform.getContainerItem( stack.getItemStack() );
+					final ItemStack is = Platform.getContainerItem( stack.createItemStack() );
 					final IAEItemStack o = AEApi.instance().storage().createItemStack( is );
 					if( o != null )
 					{

@@ -48,10 +48,11 @@ public class StorageMonitorInfoProvider implements IPartProbInfoProvider
 			final IAEStack<?> displayed = monitor.getDisplayed();
 			final boolean isLocked = monitor.isLocked();
 
+			// TODO: generalize
 			if( displayed instanceof IAEItemStack )
 			{
 				final IAEItemStack ais = (IAEItemStack) displayed;
-				probeInfo.text( TheOneProbeText.SHOWING.getLocal() + ": " + ais.getItemStack().getDisplayName() );
+				probeInfo.text( TheOneProbeText.SHOWING.getLocal() + ": " + ais.getDisplayStack().getDisplayName() );
 			}
 			else if( displayed instanceof IAEFluidStack )
 			{

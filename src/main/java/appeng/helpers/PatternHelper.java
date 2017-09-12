@@ -334,7 +334,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 		if( this.outputs != null && this.outputs.length > 0 )
 		{
-			return this.outputs[0].getItemStack();
+			return this.outputs[0].createItemStack();
 		}
 
 		return ItemStack.EMPTY;

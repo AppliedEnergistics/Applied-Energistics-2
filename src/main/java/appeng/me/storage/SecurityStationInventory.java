@@ -51,7 +51,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 	{
 		if( this.hasPermission( src ) )
 		{
-			if( AEApi.instance().definitions().items().biometricCard().isSameAs( input.getItemStack() ) )
+			if( AEApi.instance().definitions().items().biometricCard().isSameAs( input.getDefinition() ) )
 			{
 				if( this.canAccept( input ) )
 				{
@@ -143,7 +143,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 		if( input.getItem() instanceof IBiometricCard )
 		{
 			final IBiometricCard tbc = (IBiometricCard) input.getItem();
-			final GameProfile newUser = tbc.getProfile( input.getItemStack() );
+			final GameProfile newUser = tbc.getProfile( input.getDefinition() );
 
 			final int PlayerID = AEApi.instance().registries().players().getID( newUser );
 			if( this.securityTile.getOwner() == PlayerID )
@@ -155,7 +155,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 			{
 				if( ais.isMeaningful() )
 				{
-					final GameProfile thisUser = tbc.getProfile( ais.getItemStack() );
+					final GameProfile thisUser = tbc.getProfile( ais.getDefinition() );
 					if( thisUser == newUser )
 					{
 						return false;
