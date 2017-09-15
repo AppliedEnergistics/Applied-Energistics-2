@@ -97,11 +97,11 @@ public final class AESharedItemStack implements Comparable<AESharedItemStack>
 			return 0;
 		}
 
-		if( this.itemStack.getTagCompound() == LOW_TAG )
+		if( this.itemStack.getTagCompound() == LOW_TAG || b.itemStack.getTagCompound() == HIGH_TAG )
 		{
 			return -1;
 		}
-		if( this.itemStack.getTagCompound() == HIGH_TAG )
+		if( this.itemStack.getTagCompound() == HIGH_TAG || b.itemStack.getTagCompound() == LOW_TAG)
 		{
 			return 1;
 		}
