@@ -736,16 +736,21 @@ public class EnergyGridCache implements IEnergyGrid
 		private void addCurrentAEPower( double amount )
 		{
 			this.stored += amount;
-
-			if( this.stored > 0.01 )
-			{
-				EnergyGridCache.this.myGrid.postEvent( new MENetworkPowerStorage( this, PowerEventType.PROVIDE_POWER ) );
-			}
+			this.updatePowerStorage();
 		}
 
 		private void removeCurrentAEPower( double amount )
 		{
 			this.stored -= amount;
+			this.updatePowerStorage();
+		}
+
+		private void updatePowerStorage()
+		{
+			if( this.stored > 0.01 )
+			{
+				EnergyGridCache.this.myGrid.postEvent( new MENetworkPowerStorage( this, PowerEventType.PROVIDE_POWER ) );
+			}
 
 			if( this.stored < MAX_BUFFER_STORAGE - 0.001 )
 			{
