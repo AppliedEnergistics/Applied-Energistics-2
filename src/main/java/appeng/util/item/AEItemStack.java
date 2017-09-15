@@ -432,12 +432,6 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	}
 
 	@Override
-	public NBTTagCompound getTagCompound()
-	{
-		return this.getDefinition().getTagCompound();
-	}
-
-	@Override
 	public boolean hasTagCompound()
 	{
 		return this.getDefinition().hasTagCompound();

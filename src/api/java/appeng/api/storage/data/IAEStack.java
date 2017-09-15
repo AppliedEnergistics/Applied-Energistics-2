@@ -184,13 +184,6 @@ public interface IAEStack<StackType extends IAEStack<StackType>>
 	StackType empty();
 
 	/**
-	 * obtain the NBT Data for the item.
-	 *
-	 * @return nbt data
-	 */
-	NBTTagCompound getTagCompound();
-
-	/**
 	 * @return true if the stack is a {@link IAEItemStack}
 	 */
 	boolean isItem();

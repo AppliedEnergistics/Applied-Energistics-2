@@ -263,12 +263,6 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	}
 
 	@Override
-	public NBTTagCompound getTagCompound()
-	{
-		return this.tagCompound;
-	}
-
-	@Override
 	public boolean isItem()
 	{
 		return false;
