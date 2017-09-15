@@ -39,6 +39,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStackSearchKey;
 import appeng.util.Platform;
 
 
@@ -69,7 +70,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		this.setStackSize( size );
 		this.setCraftable( false );
 		this.setCountRequestable( 0 );
-		this.oreReference = OreHelper.INSTANCE.getOre( is.getItemStack() );
+		this.oreReference = OreHelper.INSTANCE.getOre( is.getDefinition() );
 	}
 
 	public static IAEItemStack loadItemStackFromNBT( final NBTTagCompound i )
@@ -446,12 +447,18 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	@Override
 	public ItemStack getDefinition()
 	{
-		return this.sharedStack.getItemStack();
+		return this.sharedStack.getDefinition();
 	}
 
 	AESharedItemStack getSharedStack()
 	{
 		return this.sharedStack;
+	}
+
+	@Override
+	public IAEStackSearchKey<ItemStack> getSearchKey()
+	{
+		return this.getSharedStack();
 	}
 
 }

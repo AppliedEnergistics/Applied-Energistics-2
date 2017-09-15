@@ -26,9 +26,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import appeng.api.config.FuzzyMode;
+import appeng.api.storage.data.IAEStackSearchKey;
 
 
-public final class AESharedItemStack implements Comparable<AESharedItemStack>
+final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
 {
 	private static final NBTTagCompound LOW_TAG = new NBTTagCompound();
 	private static final NBTTagCompound HIGH_TAG = new NBTTagCompound();
@@ -40,7 +41,8 @@ public final class AESharedItemStack implements Comparable<AESharedItemStack>
 		this.itemStack = itemStack;
 	}
 
-	public ItemStack getItemStack()
+	@Override
+	public ItemStack getDefinition()
 	{
 		return this.itemStack;
 	}
@@ -68,54 +70,55 @@ public final class AESharedItemStack implements Comparable<AESharedItemStack>
 	}
 
 	@Override
-	public int compareTo( AESharedItemStack b )
+	public int compareTo( final IAEStackSearchKey<ItemStack> b )
 	{
-		if( this.itemStack == b.itemStack )
+		if( this.itemStack == b.getDefinition() )
 		{
 			return 0;
 		}
 
-		final int id = Item.getIdFromItem( this.itemStack.getItem() ) - Item.getIdFromItem( b.itemStack.getItem() );
+		final int id = Item.getIdFromItem( this.itemStack.getItem() ) - Item.getIdFromItem( b.getDefinition().getItem() );
 		if( id != 0 )
 		{
 			return id;
 		}
 
-		final int damageValue = this.itemStack.getItemDamage() - b.itemStack.getItemDamage();
+		final int damageValue = this.itemStack.getItemDamage() - b.getDefinition().getItemDamage();
 		if( damageValue != 0 )
 		{
 			return damageValue;
 		}
 
-		return this.compareNBT( b );
+		return this.compareNBT( b.getDefinition() );
 	}
 
-	private int compareNBT( final AESharedItemStack b )
+	private int compareNBT( final ItemStack b )
 	{
-		if( this.itemStack.getTagCompound() == b.itemStack.getTagCompound() )
+		if( this.itemStack.getTagCompound() == b.getTagCompound() )
 		{
 			return 0;
 		}
 
-		if( this.itemStack.getTagCompound() == LOW_TAG || b.itemStack.getTagCompound() == HIGH_TAG )
+		if( this.itemStack.getTagCompound() == LOW_TAG || b.getTagCompound() == HIGH_TAG )
 		{
 			return -1;
 		}
-		if( this.itemStack.getTagCompound() == HIGH_TAG || b.itemStack.getTagCompound() == LOW_TAG)
+		if( this.itemStack.getTagCompound() == HIGH_TAG || b.getTagCompound() == LOW_TAG )
 		{
 			return 1;
 		}
 
-		final int nbt = ( this.itemStack == null ? 0 : this.itemStack.hashCode() ) - ( b.itemStack == null ? 0 : b.itemStack.hashCode() );
+		final int nbt = ( this.itemStack.hasTagCompound() ? this.itemStack.getTagCompound().hashCode() : 0 ) - ( b.hasTagCompound() ? b.getTagCompound()
+				.hashCode() : 0 );
 		if( nbt != 0 )
 		{
 			return nbt;
 		}
 
-		return System.identityHashCode( this.itemStack.getTagCompound() ) - System.identityHashCode( b.itemStack.getTagCompound() );
+		return System.identityHashCode( this.itemStack.getTagCompound() ) - System.identityHashCode( b.getTagCompound() );
 	}
 
-	AESharedItemStack getLow( final FuzzyMode fuzzy, final boolean ignoreMeta )
+	public AESharedItemStack getLowerBound( final FuzzyMode fuzzy, final boolean ignoreMeta )
 	{
 		final ItemStack newDef = this.itemStack.copy();
 
@@ -154,7 +157,7 @@ public final class AESharedItemStack implements Comparable<AESharedItemStack>
 		return new AESharedItemStack( newDef );
 	}
 
-	AESharedItemStack getHigh( final FuzzyMode fuzzy, final boolean ignoreMeta )
+	public AESharedItemStack getUpperBound( final FuzzyMode fuzzy, final boolean ignoreMeta )
 	{
 		final ItemStack newDef = this.itemStack.copy();
 

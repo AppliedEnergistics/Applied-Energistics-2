@@ -105,10 +105,12 @@ public interface IAEItemStack extends IAEStack<IAEItemStack>
 	 * @return true if it is the same type (same item, damage, nbt)
 	 */
 	boolean isSameType( ItemStack stored );
-	
-	
+
+	IAEStackSearchKey<ItemStack> getSearchKey();
+
 	/**
 	 * NEVER MODIFY
+	 * 
 	 * @return
 	 */
 	ItemStack getDefinition();
