@@ -21,6 +21,8 @@ package appeng.util.item;
 
 import java.util.Objects;
 
+import com.google.common.base.Preconditions;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -62,6 +64,9 @@ final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
 		{
 			final AESharedItemStack other = (AESharedItemStack) obj;
 
+			Preconditions.checkState( this.itemStack.getCount() == 1, "ItemStack#getCount() has to be 1" );
+			Preconditions.checkArgument( other.getDefinition().getCount() != 1, "ItemStack#getCount() has to be 1" );
+			
 			if( this.itemStack == other.itemStack )
 			{
 				return true;
@@ -74,6 +79,9 @@ final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
 	@Override
 	public int compareTo( final IAEStackSearchKey<ItemStack> b )
 	{
+		Preconditions.checkState( this.itemStack.getCount() == 1, "ItemStack#getCount() has to be 1" );
+		Preconditions.checkArgument( b.getDefinition().getCount() != 1, "ItemStack#getCount() has to be 1" );
+		
 		if( this.itemStack == b.getDefinition() )
 		{
 			return 0;
@@ -122,6 +130,7 @@ final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
 
 	public AESharedItemStack getLowerBound( final FuzzyMode fuzzy, final boolean ignoreMeta )
 	{
+		Preconditions.checkState( this.itemStack.getCount() == 1, "ItemStack#getCount() has to be 1" );
 		final ItemStack newDef = this.itemStack.copy();
 
 		if( ignoreMeta )
@@ -161,6 +170,7 @@ final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
 
 	public AESharedItemStack getUpperBound( final FuzzyMode fuzzy, final boolean ignoreMeta )
 	{
+		Preconditions.checkState( this.itemStack.getCount() == 1, "ItemStack#getCount() has to be 1" );
 		final ItemStack newDef = this.itemStack.copy();
 
 		if( ignoreMeta )
