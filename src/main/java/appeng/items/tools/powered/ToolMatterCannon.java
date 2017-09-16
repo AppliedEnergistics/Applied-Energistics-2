@@ -140,7 +140,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 						}
 
 						aeAmmo.setStackSize( 1 );
-						final ItemStack ammo = ( (IAEItemStack) aeAmmo ).getDefinition();
+						final ItemStack ammo = ( (IAEItemStack) aeAmmo ).createItemStack();
 						if( ammo == null )
 						{
 							return new ActionResult<>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
@@ -496,7 +496,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 	@Override
 	public boolean isBlackListed( final ItemStack cellItem, final IAEItemStack requestedAddition )
 	{
-		final float pen = AEApi.instance().registries().matterCannon().getPenetration( requestedAddition.getDefinition() );
+		final float pen = AEApi.instance().registries().matterCannon().getPenetration( requestedAddition.createItemStack() );
 		if( pen > 0 )
 		{
 			return false;
