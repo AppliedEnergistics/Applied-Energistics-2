@@ -65,7 +65,7 @@ final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
 			final AESharedItemStack other = (AESharedItemStack) obj;
 
 			Preconditions.checkState( this.itemStack.getCount() == 1, "ItemStack#getCount() has to be 1" );
-			Preconditions.checkArgument( other.getDefinition().getCount() != 1, "ItemStack#getCount() has to be 1" );
+			Preconditions.checkArgument( other.getDefinition().getCount() == 1, "ItemStack#getCount() has to be 1" );
 			
 			if( this.itemStack == other.itemStack )
 			{
@@ -80,7 +80,7 @@ final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
 	public int compareTo( final IAEStackSearchKey<ItemStack> b )
 	{
 		Preconditions.checkState( this.itemStack.getCount() == 1, "ItemStack#getCount() has to be 1" );
-		Preconditions.checkArgument( b.getDefinition().getCount() != 1, "ItemStack#getCount() has to be 1" );
+		Preconditions.checkArgument( b.getDefinition().getCount() == 1, "ItemStack#getCount() has to be 1" );
 		
 		if( this.itemStack == b.getDefinition() )
 		{
