@@ -199,7 +199,7 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 		i = list.iterator();
 		int used = 0;
 
-		while( i.hasNext() )
+		while( i.hasNext() && available > 0 )
 		{
 			final PartP2PFluids l = i.next();
 
@@ -221,7 +221,7 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 			}
 
 			available -= insert.amount;
-			used += insert.amount;
+			used += l.tmpUsed;
 		}
 
 		if( stack.pop() != this )
