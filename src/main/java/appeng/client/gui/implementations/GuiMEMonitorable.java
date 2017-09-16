@@ -316,7 +316,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		}
 
 		final Enum setting = AEConfig.instance().getConfigManager().getSetting( Settings.SEARCH_MODE );
-		this.searchField.setFocused( true );
+		this.searchField.setFocused( SearchBoxMode.AUTOSEARCH == setting || SearchBoxMode.JEI_AUTOSEARCH == setting );
 		this.searchField.setCanLoseFocus( SearchBoxMode.MANUAL_SEARCH == setting || SearchBoxMode.JEI_MANUAL_SEARCH == setting );
 
 		if( setting == SearchBoxMode.JEI_AUTOSEARCH || setting == SearchBoxMode.JEI_MANUAL_SEARCH )
