@@ -150,7 +150,8 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 
 		i = list.iterator();
 		int used = 0;
-		while( i.hasNext() )
+
+		while( i.hasNext() && available > 0 )
 		{
 			final PartP2PLiquids l = i.next();
 
@@ -172,7 +173,7 @@ public class PartP2PLiquids extends PartP2PTunnel<PartP2PLiquids> implements IFl
 			}
 
 			available -= insert.amount;
-			used += insert.amount;
+			used += l.tmpUsed;
 		}
 
 		if( stack.pop() != this )
