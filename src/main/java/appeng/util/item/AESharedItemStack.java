@@ -34,11 +34,13 @@ final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
 	private static final NBTTagCompound LOW_TAG = new NBTTagCompound();
 	private static final NBTTagCompound HIGH_TAG = new NBTTagCompound();
 
-	private ItemStack itemStack;
+	private final ItemStack itemStack;
+	private final int itemId;
 
 	public AESharedItemStack( final ItemStack itemStack )
 	{
 		this.itemStack = itemStack;
+		this.itemId = Item.getIdFromItem( itemStack.getItem() );
 	}
 
 	@Override
@@ -77,7 +79,7 @@ final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
 			return 0;
 		}
 
-		final int id = Item.getIdFromItem( this.itemStack.getItem() ) - Item.getIdFromItem( b.getDefinition().getItem() );
+		final int id = itemId - ( b instanceof AESharedItemStack ? ( (AESharedItemStack) b ).itemId : Item.getIdFromItem( b.getDefinition().getItem() ) );
 		if( id != 0 )
 		{
 			return id;
