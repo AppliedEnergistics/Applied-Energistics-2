@@ -368,22 +368,10 @@ public class CellInventory implements ICellInventory
 		{
 			itemCount += v.getStackSize();
 
-			final NBTBase c = this.tagCompound.getTag( itemSlots[x] );
-			if( c instanceof NBTTagCompound )
-			{
-				v.writeToNBT( (NBTTagCompound) c );
-			}
-			else
-			{
-				final NBTTagCompound g = new NBTTagCompound();
-				v.writeToNBT( g );
-				this.tagCompound.setTag( itemSlots[x], g );
-			}
+			final NBTTagCompound g = new NBTTagCompound();
+			v.writeToNBT( g );
+			this.tagCompound.setTag( itemSlots[x], g );
 
-			/*
-			 * NBTBase tagSlotCount = tagCompound.getTag( itemSlotCount[x] ); if ( tagSlotCount instanceof
-			 * NBTTagInt ) ((NBTTagInt) tagSlotCount).data = (int) v.getStackSize(); else
-			 */
 			this.tagCompound.setInteger( itemSlotCount[x], (int) v.getStackSize() );
 
 			x++;
