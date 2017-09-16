@@ -26,7 +26,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
 
-import appeng.client.gui.AEBaseGui;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerOpenContext;
 import appeng.core.sync.AppEngPacket;
@@ -51,11 +50,6 @@ public class PacketSwitchGuis extends AppEngPacket
 	{
 		this.newGui = newGui;
 
-		if( Platform.isClient() )
-		{
-			AEBaseGui.setSwitchingGuis( true );
-		}
-
 		final ByteBuf data = Unpooled.buffer();
 
 		data.writeInt( this.getPacketID() );
@@ -78,11 +72,5 @@ public class PacketSwitchGuis extends AppEngPacket
 				Platform.openGUI( player, te, context.getSide(), this.newGui );
 			}
 		}
-	}
-
-	@Override
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
-	{
-		AEBaseGui.setSwitchingGuis( true );
 	}
 }

@@ -21,6 +21,10 @@ package appeng.client.gui.widgets;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 
 /**
@@ -39,6 +43,7 @@ public class MEGuiTextField extends GuiTextField
 	private final int _yPos;
 	private final int _width;
 	private final int _height;
+	private int selectionColor = 0xFF00FF00;
 
 	/**
 	 * Uses the values to instantiate a padded version of a text field.
@@ -66,8 +71,11 @@ public class MEGuiTextField extends GuiTextField
 		super.mouseClicked( xPos, yPos, button );
 
 		final boolean requiresFocus = this.isMouseIn( xPos, yPos );
+		if( !this.isFocused() )
+		{
+			this.setFocused( requiresFocus );
+		}
 
-		this.setFocused( requiresFocus );
 		return true;
 	}
 
@@ -85,5 +93,70 @@ public class MEGuiTextField extends GuiTextField
 		final boolean withinYRange = this._yPos <= yCoord && yCoord < this._yPos + this._height;
 
 		return withinXRange && withinYRange;
+	}
+
+	public void selectAll()
+	{
+		this.setCursorPosition( 0 );
+		this.setSelectionPos( this.getMaxStringLength() );
+	}
+
+	public void setSelectionColor( int color )
+	{
+		this.selectionColor = color;
+	}
+
+	@Override
+	public void drawSelectionBox( int startX, int startY, int endX, int endY )
+	{
+		if( startX < endX )
+		{
+			int i = startX;
+			startX = endX;
+			endX = i;
+		}
+
+		startX += 1;
+		endX -= 1;
+
+		if( startY < endY )
+		{
+			int j = startY;
+			startY = endY;
+			endY = j;
+		}
+
+		startY -= PADDING;
+
+		if( endX > this.x + this.width )
+		{
+			endX = this.x + this.width;
+		}
+
+		if( startX > this.x + this.width )
+		{
+			startX = this.x + this.width;
+		}
+
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder bufferbuilder = tessellator.getBuffer();
+
+		float red = (float) ( this.selectionColor >> 16 & 255 ) / 255.0F;
+		float blue = (float) ( this.selectionColor >> 8 & 255 ) / 255.0F;
+		float green = (float) ( this.selectionColor & 255 ) / 255.0F;
+		float alpha = (float) ( this.selectionColor >> 24 & 255 ) / 255.0F;
+
+		GlStateManager.color( red, green, blue, alpha );
+		GlStateManager.disableTexture2D();
+		GlStateManager.enableColorLogic();
+		GlStateManager.colorLogicOp( GlStateManager.LogicOp.OR_REVERSE );
+		bufferbuilder.begin( 7, DefaultVertexFormats.POSITION );
+		bufferbuilder.pos( (double) startX, (double) endY, 0.0D ).endVertex();
+		bufferbuilder.pos( (double) endX, (double) endY, 0.0D ).endVertex();
+		bufferbuilder.pos( (double) endX, (double) startY, 0.0D ).endVertex();
+		bufferbuilder.pos( (double) startX, (double) startY, 0.0D ).endVertex();
+		tessellator.draw();
+		GlStateManager.disableColorLogic();
+		GlStateManager.enableTexture2D();
 	}
 }
