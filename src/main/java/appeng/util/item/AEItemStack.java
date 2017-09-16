@@ -122,7 +122,6 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		}
 
 		final AEItemStack item = AEItemStack.create( itemstack );
-		// item.priority = (int) priority;
 		item.setStackSize( stackSize );
 		item.setCountRequestable( countRequestable );
 		item.setCraftable( isCraftable );
@@ -136,9 +135,6 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		{
 			return;
 		}
-
-		// if ( priority < ((AEItemStack) option).priority )
-		// priority = ((AEItemStack) option).priority;
 
 		this.incStackSize( option.getStackSize() );
 		this.setCountRequestable( this.getCountRequestable() + option.getCountRequestable() );
