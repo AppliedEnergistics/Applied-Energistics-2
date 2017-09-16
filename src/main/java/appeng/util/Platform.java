@@ -1464,13 +1464,13 @@ public class Platform
 				for( final IAEItemStack x : items )
 				{
 					final ItemStack sh = x.getDefinition();
-					if( ( Platform.itemComparisons().isEqualItemType( providedTemplate,
-							sh ) || ae_req.sameOre( x ) ) && !Platform.itemComparisons().isEqualItem( sh, output ) )
+					if( ( Platform.itemComparisons().isEqualItemType( providedTemplate, sh ) || ae_req.sameOre( x ) ) && !ItemStack.areItemsEqual( sh,
+							output ) )
 					{ // Platform.isSameItemType( sh, providedTemplate )
-						final ItemStack cp = Platform.cloneItemStack( sh );
+						final ItemStack cp = sh.copy();
 						cp.setCount( 1 );
 						ci.setInventorySlotContents( slot, cp );
-						if( r.matches( ci, w ) && Platform.itemComparisons().isEqualItem( r.getCraftingResult( ci ), output ) )
+						if( r.matches( ci, w ) && ItemStack.areItemsEqual( r.getCraftingResult( ci ), output ) )
 						{
 							final IAEItemStack ax = x.copy();
 							ax.setStackSize( 1 );
@@ -1490,11 +1490,6 @@ public class Platform
 			}
 		}
 		return ItemStack.EMPTY;
-	}
-
-	public static ItemStack cloneItemStack( final ItemStack a )
-	{
-		return a.copy();
 	}
 
 	public static ItemStack getContainerItem( final ItemStack stackInSlot )

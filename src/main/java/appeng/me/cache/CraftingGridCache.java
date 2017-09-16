@@ -485,7 +485,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 					if( ais.getItem() == whatToCraft.getItem() && ( !ais.getItem().getHasSubtypes() || ais.getItemDamage() == whatToCraft.getItemDamage() ) )
 					{
 						// TODO: check if OK
-						if( details.isValidItemForSlot( slotIndex, ais.getDefinition(), world ) )
+						if( details.isValidItemForSlot( slotIndex, ais.createItemStack(), world ) )
 						{
 							return this.craftableItems.get( ais );
 						}

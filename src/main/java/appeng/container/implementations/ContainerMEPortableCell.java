@@ -26,7 +26,6 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.container.interfaces.IInventorySlotAware;
-import appeng.util.Platform;
 
 
 public class ContainerMEPortableCell extends ContainerMEMonitorable
@@ -67,7 +66,7 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 			{
 				if( !currentItem.isEmpty() )
 				{
-					if( Platform.itemComparisons().isEqualItem( this.civ.getItemStack(), currentItem ) )
+					if( ItemStack.areItemsEqual( this.civ.getItemStack(), currentItem ) )
 					{
 						this.getPlayerInv().setInventorySlotContents( this.getPlayerInv().currentItem, this.civ.getItemStack() );
 					}

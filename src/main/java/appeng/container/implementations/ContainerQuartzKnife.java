@@ -73,7 +73,7 @@ public class ContainerQuartzKnife extends AEBaseContainer
 		{
 			if( !currentItem.isEmpty() )
 			{
-				if( Platform.itemComparisons().isEqualItem( this.toolInv.getItemStack(), currentItem ) )
+				if( ItemStack.areItemsEqual( this.toolInv.getItemStack(), currentItem ) )
 				{
 					this.getPlayerInv().setInventorySlotContents( this.getPlayerInv().currentItem, this.toolInv.getItemStack() );
 				}

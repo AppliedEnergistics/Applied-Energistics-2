@@ -269,11 +269,11 @@ public class CellInventory implements ICellInventory
 			{
 				if( input.getStackSize() > remainingItemCount )
 				{
-					final ItemStack toReturn = Platform.cloneItemStack( sharedItemStack );
+					final ItemStack toReturn = sharedItemStack.copy();
 					toReturn.setCount( sharedItemStack.getCount() - remainingItemCount );
 					if( mode == Actionable.MODULATE )
 					{
-						final ItemStack toWrite = Platform.cloneItemStack( sharedItemStack );
+						final ItemStack toWrite = sharedItemStack.copy();
 						toWrite.setCount( remainingItemCount );
 
 						this.cellItems.add( AEItemStack.create( toWrite ) );

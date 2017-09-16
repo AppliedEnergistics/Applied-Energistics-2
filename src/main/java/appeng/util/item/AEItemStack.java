@@ -386,7 +386,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	{
 		if( this.tooltip == null )
 		{
-			this.tooltip = Platform.getTooltip( this.getDefinition() );
+			this.tooltip = Platform.getTooltip( this.getDisplayStack() );
 		}
 		return this.tooltip;
 	}
@@ -396,7 +396,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	{
 		if( this.displayName == null )
 		{
-			this.displayName = Platform.getItemDisplayName( this.getDefinition() );
+			this.displayName = Platform.getItemDisplayName( this.getDisplayStack() );
 		}
 		return this.displayName;
 	}
@@ -437,7 +437,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	@Override
 	public ItemStack getDisplayStack()
 	{
-		return getDefinition();
+		return getDefinition().copy();
 	}
 
 	@Override
@@ -446,15 +446,10 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		return this.sharedStack.getDefinition();
 	}
 
-	AESharedItemStack getSharedStack()
-	{
-		return this.sharedStack;
-	}
-
 	@Override
 	public IAEStackSearchKey<ItemStack> getSearchKey()
 	{
-		return this.getSharedStack();
+		return this.sharedStack;
 	}
 
 }

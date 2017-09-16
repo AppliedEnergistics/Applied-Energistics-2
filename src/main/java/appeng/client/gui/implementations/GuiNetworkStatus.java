@@ -180,7 +180,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 				if( this.tooltip == z - viewStart )
 				{
-					toolTip = Platform.getItemDisplayName( this.repo.getItem( z ) );
+					toolTip = Platform.getItemDisplayName( refStack );
 
 					toolTip += ( '\n' + GuiText.Installed.getLocal() + ": " + ( refStack.getStackSize() ) );
 					if( refStack.getCountRequestable() > 0 )
@@ -192,7 +192,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 					toolPosY = y * 18 + yo;
 				}
 
-				this.drawItem( posX, posY, this.repo.getItem( z ) );
+				this.drawItem( posX, posY, refStack.getDisplayStack() );
 
 				x++;
 

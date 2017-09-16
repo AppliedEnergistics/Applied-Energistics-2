@@ -41,7 +41,6 @@ import appeng.api.definitions.IParts;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.util.AEColor;
 import appeng.capabilities.Capabilities;
-import appeng.util.Platform;
 
 
 public final class P2PTunnelRegistry implements IP2PTunnelRegistry
@@ -216,7 +215,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 					return this.tunnels.get( is );
 				}
 
-				if( Platform.itemComparisons().isEqualItem( is, trigger ) )
+				if( ItemStack.areItemsEqual( is, trigger ) )
 				{
 					return this.tunnels.get( is );
 				}

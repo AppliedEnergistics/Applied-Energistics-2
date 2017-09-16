@@ -27,7 +27,6 @@ import net.minecraft.item.ItemStack;
 import appeng.api.features.IMatterCannonAmmoRegistry;
 import appeng.recipes.ores.IOreListener;
 import appeng.recipes.ores.OreDictionaryHandler;
-import appeng.util.Platform;
 
 
 public class MatterCannonAmmoRegistry implements IOreListener, IMatterCannonAmmoRegistry
@@ -52,7 +51,7 @@ public class MatterCannonAmmoRegistry implements IOreListener, IMatterCannonAmmo
 	{
 		for( final ItemStack o : this.DamageModifiers.keySet() )
 		{
-			if( Platform.itemComparisons().isEqualItem( o, is ) )
+			if( ItemStack.areItemsEqual( o, is ) )
 			{
 				return this.DamageModifiers.get( o ).floatValue();
 			}

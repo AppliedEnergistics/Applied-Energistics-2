@@ -134,7 +134,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 			return;
 		}
 
-		final ItemStack rs = Platform.cloneItemStack( this.getStack() );
+		final ItemStack rs = this.getStack().copy();
 		if( rs.isEmpty() )
 		{
 			return;
@@ -202,7 +202,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 		// update crafting matrix...
 		ItemStack is = this.getStack();
 
-		if( !is.isEmpty() && Platform.itemComparisons().isEqualItem( request, is ) )
+		if( !is.isEmpty() && ItemStack.areItemsEqual( request, is ) )
 		{
 			final ItemStack[] set = new ItemStack[this.getPattern().getSlots()];
 			// Safeguard for empty slots in the inventory for now

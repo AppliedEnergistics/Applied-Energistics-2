@@ -122,7 +122,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 			ItemStack oldStack = this.previousStack;
 			InvOperation op = InvOperation.SET;
 
-			if( newStack.isEmpty() || oldStack.isEmpty() || Platform.itemComparisons().isEqualItem( newStack, oldStack ) )
+			if( newStack.isEmpty() || oldStack.isEmpty() || ItemStack.areItemsEqual( newStack, oldStack ) )
 			{
 				if( newStack.getCount() > oldStack.getCount() )
 				{

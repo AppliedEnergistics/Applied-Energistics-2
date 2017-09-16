@@ -50,7 +50,6 @@ public class ItemRepo
 
 	private final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
 	private final ArrayList<IAEItemStack> view = new ArrayList<>();
-	private final ArrayList<ItemStack> dsp = new ArrayList<>();
 	private final IScrollSource src;
 	private final ISortSource sortSrc;
 
@@ -76,17 +75,6 @@ public class ItemRepo
 			return null;
 		}
 		return this.view.get( idx );
-	}
-
-	public ItemStack getItem( int idx )
-	{
-		idx += this.src.getCurrentScroll() * this.rowSize;
-
-		if( idx >= this.dsp.size() )
-		{
-			return ItemStack.EMPTY;
-		}
-		return this.dsp.get( idx );
 	}
 
 	void setSearch( final String search )
@@ -118,10 +106,8 @@ public class ItemRepo
 	public void updateView()
 	{
 		this.view.clear();
-		this.dsp.clear();
 
 		this.view.ensureCapacity( this.list.size() );
-		this.dsp.ensureCapacity( this.list.size() );
 
 		final Enum viewMode = this.sortSrc.getSortDisplay();
 		final Enum searchMode = AEConfig.instance().getConfigManager().getSetting( Settings.SEARCH_MODE );
@@ -234,11 +220,6 @@ public class ItemRepo
 		else
 		{
 			Collections.sort( this.view, ItemSorters.CONFIG_BASED_SORT_BY_NAME );
-		}
-
-		for( final IAEItemStack is : this.view )
-		{
-			this.dsp.add( is.getDisplayStack() );
 		}
 	}
 

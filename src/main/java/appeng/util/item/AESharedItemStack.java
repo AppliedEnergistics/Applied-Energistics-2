@@ -29,6 +29,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEStackSearchKey;
+import appeng.util.Platform;
 
 
 final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
@@ -66,7 +67,7 @@ final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
 
 			Preconditions.checkState( this.itemStack.getCount() == 1, "ItemStack#getCount() has to be 1" );
 			Preconditions.checkArgument( other.getDefinition().getCount() == 1, "ItemStack#getCount() has to be 1" );
-			
+
 			if( this.itemStack == other.itemStack )
 			{
 				return true;
@@ -81,7 +82,7 @@ final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
 	{
 		Preconditions.checkState( this.itemStack.getCount() == 1, "ItemStack#getCount() has to be 1" );
 		Preconditions.checkArgument( b.getDefinition().getCount() == 1, "ItemStack#getCount() has to be 1" );
-		
+
 		if( this.itemStack == b.getDefinition() )
 		{
 			return 0;
@@ -104,7 +105,7 @@ final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
 
 	private int compareNBT( final ItemStack b )
 	{
-		if( this.itemStack.getTagCompound() == b.getTagCompound() )
+		if( Platform.itemComparisons().isNbtTagEqual( this.itemStack.getTagCompound(), b.getTagCompound() ) )
 		{
 			return 0;
 		}

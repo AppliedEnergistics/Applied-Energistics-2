@@ -19,25 +19,15 @@
 package appeng.util.helpers;
 
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import javax.annotation.Nonnull;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTPrimitive;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.config.FuzzyMode;
-import appeng.core.AELog;
 import appeng.util.item.OreHelper;
 import appeng.util.item.OreReference;
 
@@ -49,8 +39,6 @@ import appeng.util.item.OreReference;
 public class ItemComparisonHelper
 {
 
-	private static Field tagList;
-
 	/**
 	 * Compare the two {@link ItemStack}s based on the same {@link Item} and damage value.
 	 *
@@ -61,7 +49,7 @@ public class ItemComparisonHelper
 	 *
 	 * @return true, if both are equal.
 	 */
-	public boolean isEqualItemType( final ItemStack that, final ItemStack other )
+	public boolean isEqualItemType( @Nonnull final ItemStack that, @Nonnull final ItemStack other )
 	{
 		if( !that.isEmpty() && !other.isEmpty() && that.getItem() == other.getItem() )
 		{
@@ -75,29 +63,6 @@ public class ItemComparisonHelper
 	}
 
 	/**
-	 * A wrapper around {@link ItemStack#isItemEqual(ItemStack)}.
-	 *
-	 * The benefit is to compare two null item stacks, without any additional null checks.
-	 *
-	 * Ignores NBT.
-	 *
-	 * @return true, if both are equal.
-	 */
-	public boolean isEqualItem( @Nonnull final ItemStack left, @Nonnull final ItemStack right )
-	{
-		return this.isItemEqual( left, right );
-	}
-
-	/**
-	 * A slightly different method from ItemStack.java to skip the isEmpty() check. This allows you to check for
-	 * identical empty spots..
-	 */
-	public boolean isItemEqual( ItemStack left, ItemStack right )
-	{
-		return left.getItem() == right.getItem() && left.getItemDamage() == right.getItemDamage();
-	}
-
-	/**
 	 * Compares two {@link ItemStack} and their NBT tag for equality.
 	 *
 	 * Use this when a precise check is required and the same item is required.
@@ -107,7 +72,7 @@ public class ItemComparisonHelper
 	 */
 	public boolean isSameItem( @Nonnull final ItemStack is, @Nonnull final ItemStack filter )
 	{
-		return this.isEqualItem( is, filter ) && this.hasSameNbtTag( is, filter );
+		return ItemStack.areItemsEqual( is, filter ) && this.isNbtTagEqual( is.getTagCompound(), filter.getTagCompound() );
 	}
 
 	/**
@@ -211,237 +176,14 @@ public class ItemComparisonHelper
 	 */
 	public boolean isNbtTagEqual( final NBTBase left, final NBTBase right )
 	{
-		// same type?
-		final byte id = left.getId();
-		if( id == right.getId() )
+		if( left == right )
 		{
-			switch( id )
-			{
-				case 10:
-				{
-					final NBTTagCompound ctA = (NBTTagCompound) left;
-					final NBTTagCompound ctB = (NBTTagCompound) right;
-
-					final Set<String> cA = ctA.getKeySet();
-					final Set<String> cB = ctB.getKeySet();
-
-					if( cA.size() != cB.size() )
-					{
-						return false;
-					}
-
-					for( final String name : cA )
-					{
-						final NBTBase tag = ctA.getTag( name );
-						final NBTBase aTag = ctB.getTag( name );
-						if( aTag == null )
-						{
-							return false;
-						}
-
-						if( !this.isNbtTagEqual( tag, aTag ) )
-						{
-							return false;
-						}
-					}
-
-					return true;
-				}
-
-				case 9: // ) // A instanceof NBTTagList )
-				{
-					final NBTTagList lA = (NBTTagList) left;
-					final NBTTagList lB = (NBTTagList) right;
-					if( lA.tagCount() != lB.tagCount() )
-					{
-						return false;
-					}
-
-					final List<NBTBase> tag = this.tagList( lA );
-					final List<NBTBase> aTag = this.tagList( lB );
-					if( tag.size() != aTag.size() )
-					{
-						return false;
-					}
-
-					for( int x = 0; x < tag.size(); x++ )
-					{
-						if( aTag.get( x ) == null )
-						{
-							return false;
-						}
-
-						if( !this.isNbtTagEqual( tag.get( x ), aTag.get( x ) ) )
-						{
-							return false;
-						}
-					}
-
-					return true;
-				}
-
-				case 1: // NBTTagByte
-					return ( (NBTPrimitive) left ).getByte() == ( (NBTPrimitive) right ).getByte();
-
-				case 4: // NBTTagLong
-					return ( (NBTPrimitive) left ).getLong() == ( (NBTPrimitive) right ).getLong();
-
-				case 8: // NBTTagString
-					return ( (NBTTagString) left ).getString().equals( ( (NBTTagString) right ).getString() );
-
-				case 6: // NBTTagDouble
-					return ( (NBTPrimitive) left ).getDouble() == ( (NBTPrimitive) right ).getDouble();
-
-				case 5: // NBTTagFloat
-					return ( (NBTPrimitive) left ).getFloat() == ( (NBTPrimitive) right ).getFloat();
-
-				case 3: // NBTTagInt
-					return ( (NBTPrimitive) left ).getInt() == ( (NBTPrimitive) right ).getInt();
-
-				default:
-					return left.equals( right );
-			}
+			return true;
 		}
-
+		if( left != null )
+		{
+			return left.equals( right );
+		}
 		return false;
 	}
-
-	/**
-	 * Unordered hash of NBT Data, used to work thought huge piles fast, but ignores the order just in case MC
-	 * decided to change it... WHICH IS BAD...
-	 */
-	public int createUnorderedNbtHash( final NBTBase nbt )
-	{
-		// same type?
-		int hash = 0;
-		final byte id = nbt.getId();
-		hash += id;
-		switch( id )
-		{
-			case 10:
-			{
-				final NBTTagCompound ctA = (NBTTagCompound) nbt;
-
-				final Set<String> cA = ctA.getKeySet();
-
-				for( final String name : cA )
-				{
-					hash += name.hashCode() ^ this.createUnorderedNbtHash( ctA.getTag( name ) );
-				}
-
-				return hash;
-			}
-
-			case 9: // ) // A instanceof NBTTagList )
-			{
-				final NBTTagList lA = (NBTTagList) nbt;
-				hash += 9 * lA.tagCount();
-
-				final List<NBTBase> l = this.tagList( lA );
-				for( int x = 0; x < l.size(); x++ )
-				{
-					hash += ( (Integer) x ).hashCode() ^ this.createUnorderedNbtHash( l.get( x ) );
-				}
-
-				return hash;
-			}
-
-			case 1: // NBTTagByte
-				return hash + ( (NBTPrimitive) nbt ).getByte();
-
-			case 4: // NBTTagLong
-				return hash + (int) ( (NBTPrimitive) nbt ).getLong();
-
-			case 8: // NBTTagString
-				return hash + ( (NBTTagString) nbt ).getString().hashCode();
-
-			case 6: // NBTTagDouble
-				return hash + (int) ( (NBTPrimitive) nbt ).getDouble();
-
-			case 5: // NBTTagFloat
-				return hash + (int) ( (NBTPrimitive) nbt ).getFloat();
-
-			case 3: // NBTTagInt
-				return hash + ( (NBTPrimitive) nbt ).getInt();
-
-			default:
-				return hash;
-		}
-	}
-
-	/**
-	 * Lots of silliness to try and account for weird tag related junk, basically requires that two tags have at least
-	 * something in their tags before it wastes its time comparing them.
-	 */
-	private boolean hasSameNbtTag( final ItemStack a, final ItemStack b )
-	{
-		if( a.isEmpty() && b.isEmpty() )
-		{
-			return true;
-		}
-		if( a.isEmpty() || b.isEmpty() )
-		{
-			return false;
-		}
-		if( a == b )
-		{
-			return true;
-		}
-
-		final NBTTagCompound ta = a.getTagCompound();
-		final NBTTagCompound tb = b.getTagCompound();
-		if( ta == tb )
-		{
-			return true;
-		}
-
-		if( ( ta == null && tb == null ) || ( ta != null && ta.hasNoTags() && tb == null ) || ( tb != null && tb
-				.hasNoTags() && ta == null ) || ( ta != null && ta.hasNoTags() && tb != null && tb.hasNoTags() ) )
-		{
-			return true;
-		}
-
-		if( ( ta == null && tb != null ) || ( ta != null && tb == null ) )
-		{
-			return false;
-		}
-
-		return this.isNbtTagEqual( ta, tb );
-	}
-
-	private List<NBTBase> tagList( final NBTTagList lB )
-	{
-		if( tagList == null )
-		{
-			try
-			{
-				tagList = lB.getClass().getDeclaredField( "tagList" );
-			}
-			catch( final Throwable t )
-			{
-				try
-				{
-					tagList = lB.getClass().getDeclaredField( "field_74747_a" );
-				}
-				catch( final Throwable z )
-				{
-					AELog.debug( t );
-					AELog.debug( z );
-				}
-			}
-		}
-
-		try
-		{
-			tagList.setAccessible( true );
-			return (List<NBTBase>) tagList.get( lB );
-		}
-		catch( final Throwable t )
-		{
-			AELog.debug( t );
-		}
-
-		return new ArrayList<>();
-	}
-
 }

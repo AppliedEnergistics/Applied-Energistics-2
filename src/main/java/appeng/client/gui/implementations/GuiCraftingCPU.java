@@ -313,7 +313,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 
 				if( this.tooltip == z - viewStart )
 				{
-					dspToolTip = Platform.getItemDisplayName( is );
+					dspToolTip = Platform.getItemDisplayName( refStack );
 
 					if( lineList.size() > 0 )
 					{
