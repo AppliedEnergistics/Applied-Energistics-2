@@ -20,6 +20,7 @@ package appeng.integration.modules.jei;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,7 +28,6 @@ import net.minecraft.item.ItemStack;
 
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.wrapper.IShapedCraftingRecipeWrapper;
-import scala.actors.threadpool.Arrays;
 
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RegistrationError;
