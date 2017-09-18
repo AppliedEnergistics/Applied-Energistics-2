@@ -19,8 +19,6 @@
 package appeng.helpers;
 
 
-import scala.NotImplementedError;
-
 import java.util.Iterator;
 
 
@@ -58,6 +56,6 @@ public class NonNullArrayIterator<E> implements Iterator<E>
 	@Override
 	public void remove()
 	{
-		throw new NotImplementedError();
+		throw new UnsupportedOperationException();
 	}
 }
