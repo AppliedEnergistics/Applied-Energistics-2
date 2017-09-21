@@ -52,7 +52,7 @@ public class StorageMonitorInfoProvider implements IPartProbInfoProvider
 			if( displayed instanceof IAEItemStack )
 			{
 				final IAEItemStack ais = (IAEItemStack) displayed;
-				probeInfo.text( TheOneProbeText.SHOWING.getLocal() + ": " + ais.getDisplayStack().getDisplayName() );
+				probeInfo.text( TheOneProbeText.SHOWING.getLocal() + ": " + ais.asItemStackRepresentation().getDisplayName() );
 			}
 			else if( displayed instanceof IAEFluidStack )
 			{

@@ -126,7 +126,7 @@ public class TesrRenderHelper
 	 */
 	public static void renderItem2dWithAmount( IAEItemStack itemStack, float itemScale, float spacing )
 	{
-		final ItemStack renderStack = itemStack.getDisplayStack();
+		final ItemStack renderStack = itemStack.asItemStackRepresentation();
 
 		TesrRenderHelper.renderItem2d( renderStack, itemScale );
 

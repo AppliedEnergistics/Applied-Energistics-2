@@ -192,7 +192,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 					toolPosY = y * 18 + yo;
 				}
 
-				this.drawItem( posX, posY, refStack.getDisplayStack() );
+				this.drawItem( posX, posY, refStack.asItemStackRepresentation() );
 
 				x++;
 

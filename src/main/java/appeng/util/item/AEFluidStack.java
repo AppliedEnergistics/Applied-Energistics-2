@@ -361,7 +361,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	}
 
 	@Override
-	public ItemStack getDisplayStack()
+	public ItemStack asItemStackRepresentation()
 	{
 		// TODO: fluids, how do they even work?
 		return FluidUtil.getFilledBucket( getFluidStack() );

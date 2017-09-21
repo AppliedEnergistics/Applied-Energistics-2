@@ -199,9 +199,9 @@ public interface IAEStack<StackType extends IAEStack<StackType>>
 	StorageChannel getChannel();
 
 	/**
-	 * Returns itemstack for display purposes. Always has a count of 1.
+	 * Returns itemstack for display and similar purposes. Always has a count of 1.
 	 * 
 	 * @return itemstack
 	 */
-	ItemStack getDisplayStack();
+	ItemStack asItemStackRepresentation();
 }

@@ -42,7 +42,7 @@ public class InternalSlotME
 
 	ItemStack getStack()
 	{
-		return this.getAEStack() == null ? ItemStack.EMPTY : this.getAEStack().getDisplayStack();
+		return this.getAEStack() == null ? ItemStack.EMPTY : this.getAEStack().asItemStackRepresentation();
 	}
 
 	IAEItemStack getAEStack()

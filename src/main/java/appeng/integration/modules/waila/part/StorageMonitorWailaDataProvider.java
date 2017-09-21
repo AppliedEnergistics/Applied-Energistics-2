@@ -66,7 +66,7 @@ public final class StorageMonitorWailaDataProvider extends BasePartWailaDataProv
 			if( displayed instanceof IAEItemStack )
 			{
 				final IAEItemStack ais = (IAEItemStack) displayed;
-				currentToolTip.add( WailaText.Showing.getLocal() + ": " + ais.getDisplayStack().getDisplayName() );
+				currentToolTip.add( WailaText.Showing.getLocal() + ": " + ais.asItemStackRepresentation().getDisplayName() );
 			}
 			else if( displayed instanceof IAEFluidStack )
 			{

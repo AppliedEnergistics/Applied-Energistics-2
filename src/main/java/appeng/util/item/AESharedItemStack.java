@@ -28,11 +28,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.storage.data.IAEStackSearchKey;
 import appeng.util.Platform;
 
 
-final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
+final class AESharedItemStack implements Comparable<AESharedItemStack>
 {
 	private static final NBTTagCompound LOW_TAG = new NBTTagCompound();
 	private static final NBTTagCompound HIGH_TAG = new NBTTagCompound();
@@ -48,10 +47,14 @@ final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
 		this.itemDamage = itemStack.getItemDamage();
 	}
 
-	@Override
-	public ItemStack getDefinition()
+	ItemStack getDefinition()
 	{
 		return this.itemStack;
+	}
+
+	int getItemDamage()
+	{
+		return this.itemDamage;
 	}
 
 	@Override
@@ -80,7 +83,7 @@ final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
 	}
 
 	@Override
-	public int compareTo( final IAEStackSearchKey<ItemStack> b )
+	public int compareTo( final AESharedItemStack b )
 	{
 		Preconditions.checkState( this.itemStack.getCount() == 1, "ItemStack#getCount() has to be 1" );
 		Preconditions.checkArgument( b.getDefinition().getCount() == 1, "ItemStack#getCount() has to be 1" );
@@ -90,13 +93,13 @@ final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
 			return 0;
 		}
 
-		final int id = itemId - ( b instanceof AESharedItemStack ? ( (AESharedItemStack) b ).itemId : Item.getIdFromItem( b.getDefinition().getItem() ) );
+		final int id = this.itemId - b.itemId;
 		if( id != 0 )
 		{
 			return id;
 		}
 
-		final int damageValue = this.itemDamage - ( b instanceof AESharedItemStack ? ( (AESharedItemStack) b ).itemDamage : b.getDefinition().getItemDamage() );
+		final int damageValue = this.itemDamage - b.itemDamage;
 		if( damageValue != 0 )
 		{
 			return damageValue;

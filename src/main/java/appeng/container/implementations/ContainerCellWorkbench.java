@@ -241,7 +241,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 			if( i.hasNext() )
 			{
 				// TODO: check if ok
-				final ItemStack g = i.next().getDisplayStack();
+				final ItemStack g = i.next().asItemStackRepresentation();
 				ItemHandlerUtil.setStackInSlot( inv, x, g );
 			}
 			else

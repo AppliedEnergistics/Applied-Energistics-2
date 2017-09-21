@@ -166,7 +166,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 						final float penetration = AEApi.instance().registries().matterCannon().getPenetration( ammo ); // 196.96655f;
 						if( penetration <= 0 )
 						{
-							final ItemStack type = aeAmmo.getDisplayStack();
+							final ItemStack type = aeAmmo.asItemStackRepresentation();
 							if( type.getItem() instanceof ItemPaintBall )
 							{
 								this.shootPaintBalls( type, w, p, Vec3d, Vec3d1, direction, d0, d1, d2 );

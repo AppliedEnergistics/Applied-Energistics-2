@@ -63,7 +63,7 @@ public final class CraftingMonitorWailaDataProvider extends BaseWailaDataProvide
 
 			if( displayStack != null )
 			{
-				final String currentCrafting = displayStack.getDisplayStack().getDisplayName();
+				final String currentCrafting = displayStack.asItemStackRepresentation().getDisplayName();
 
 				currentToolTip.add( WailaText.Crafting.getLocal() + ": " + currentCrafting );
 			}

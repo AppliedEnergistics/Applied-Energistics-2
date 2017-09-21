@@ -141,7 +141,7 @@ public class PacketInventoryAction extends AppEngPacket
 
 						if( baseContainer.getTargetStack() != null )
 						{
-							cca.getCraftingItem().putStack( baseContainer.getTargetStack().getDisplayStack() );
+							cca.getCraftingItem().putStack( baseContainer.getTargetStack().asItemStackRepresentation() );
 							// This is the *actual* item that matters, not the display item above
 							cca.setItemToCraft( baseContainer.getTargetStack() );
 						}

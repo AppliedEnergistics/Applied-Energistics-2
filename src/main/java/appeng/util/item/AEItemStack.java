@@ -39,7 +39,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStackSearchKey;
 import appeng.util.Platform;
 
 
@@ -319,7 +318,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	@Override
 	public int getItemDamage()
 	{
-		return this.getDefinition().getItemDamage();
+		return this.sharedStack.getItemDamage();
 	}
 
 	@Override
@@ -386,7 +385,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	{
 		if( this.tooltip == null )
 		{
-			this.tooltip = Platform.getTooltip( this.getDisplayStack() );
+			this.tooltip = Platform.getTooltip( this.asItemStackRepresentation() );
 		}
 		return this.tooltip;
 	}
@@ -396,7 +395,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	{
 		if( this.displayName == null )
 		{
-			this.displayName = Platform.getItemDisplayName( this.getDisplayStack() );
+			this.displayName = Platform.getItemDisplayName( this.asItemStackRepresentation() );
 		}
 		return this.displayName;
 	}
@@ -435,7 +434,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	}
 
 	@Override
-	public ItemStack getDisplayStack()
+	public ItemStack asItemStackRepresentation()
 	{
 		return getDefinition().copy();
 	}
@@ -446,8 +445,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		return this.sharedStack.getDefinition();
 	}
 
-	@Override
-	public IAEStackSearchKey<ItemStack> getSearchKey()
+	AESharedItemStack getSharedStack()
 	{
 		return this.sharedStack;
 	}

@@ -26,19 +26,17 @@ import java.util.LinkedList;
 import java.util.NavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStackSearchKey;
 import appeng.api.storage.data.IItemList;
 
 
 public final class ItemList implements IItemList<IAEItemStack>
 {
 
-	private final NavigableMap<IAEStackSearchKey<ItemStack>, IAEItemStack> records = new ConcurrentSkipListMap<>();
+	private final NavigableMap<AESharedItemStack, IAEItemStack> records = new ConcurrentSkipListMap<>();
 
 	@Override
 	public void add( final IAEItemStack option )
@@ -48,7 +46,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			return;
 		}
 
-		final IAEItemStack st = this.records.get( option.getSearchKey() );
+		final IAEItemStack st = this.records.get( ( (AEItemStack) option ).getSharedStack() );
 
 		if( st != null )
 		{
@@ -69,7 +67,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			return null;
 		}
 
-		return this.records.get( itemStack.getSearchKey() );
+		return this.records.get( ( (AEItemStack) itemStack ).getSharedStack() );
 	}
 
 	@Override
@@ -119,7 +117,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			return;
 		}
 
-		final IAEItemStack st = this.records.get( option.getSearchKey() );
+		final IAEItemStack st = this.records.get( ( (AEItemStack) option ).getSharedStack() );
 
 		if( st != null )
 		{
@@ -145,7 +143,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			return;
 		}
 
-		final IAEItemStack st = this.records.get( option.getSearchKey() );
+		final IAEItemStack st = this.records.get( ( (AEItemStack) option ).getSharedStack() );
 
 		if( st != null )
 		{
@@ -168,7 +166,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			return;
 		}
 
-		final IAEItemStack st = this.records.get( option.getSearchKey() );
+		final IAEItemStack st = this.records.get( ( (AEItemStack) option ).getSharedStack() );
 
 		if( st != null )
 		{
@@ -218,13 +216,14 @@ public final class ItemList implements IItemList<IAEItemStack>
 
 	private IAEItemStack putItemRecord( final IAEItemStack itemStack )
 	{
-		return this.records.put( itemStack.getSearchKey(), itemStack );
+		return this.records.put( ( (AEItemStack) itemStack ).getSharedStack(), itemStack );
 	}
 
 	private Collection<IAEItemStack> findFuzzyDamage( final IAEItemStack filter, final FuzzyMode fuzzy, final boolean ignoreMeta )
 	{
-		final IAEStackSearchKey<ItemStack> low = filter.getSearchKey().getLowerBound( fuzzy, ignoreMeta );
-		final IAEStackSearchKey<ItemStack> high = filter.getSearchKey().getUpperBound( fuzzy, ignoreMeta );
+		final AEItemStack itemStack = (AEItemStack) filter;
+		final AESharedItemStack low = itemStack.getSharedStack().getLowerBound( fuzzy, ignoreMeta );
+		final AESharedItemStack high = itemStack.getSharedStack().getUpperBound( fuzzy, ignoreMeta );
 
 		return this.records.subMap( low, true, high, true ).descendingMap().values();
 	}
