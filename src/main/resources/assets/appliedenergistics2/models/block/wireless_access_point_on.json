@@ -1,5 +1,5 @@
 {
-    "uvlMarker": true,
+    "ae2_uvl_marker": true,
     "ambientocclusion": false,
     "textures": {
         "torch": "appliedenergistics2:blocks/wireless_access_point_on"

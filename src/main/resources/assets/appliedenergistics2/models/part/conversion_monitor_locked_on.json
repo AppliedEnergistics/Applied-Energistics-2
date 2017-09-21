@@ -1,5 +1,5 @@
 {
-  "uvlMarker": true,
+  "ae2_uvl_marker": true,
   "textures": {
     "lightsBright": "appliedenergistics2:parts/conversion_monitor_bright",
     "lightsMedium": "appliedenergistics2:parts/conversion_monitor_medium_locked",

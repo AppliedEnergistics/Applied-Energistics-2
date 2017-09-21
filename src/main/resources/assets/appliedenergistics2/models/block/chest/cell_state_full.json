@@ -1,5 +1,5 @@
 {
-  "uvlMarker": true,
+  "ae2_uvl_marker": true,
   "textures": {
     "backdrop": "appliedenergistics2:blocks/chest/cell_state_backdrop",
     "state": "appliedenergistics2:blocks/chest/cell_state_full"
