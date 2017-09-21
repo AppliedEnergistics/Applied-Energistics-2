@@ -136,10 +136,12 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 						extracted.setCount( remainingCurrentSlot );
 					}
 
-					// We're just gonna use the first stack we get our hands on as the template for the rest
+					// We're just gonna use the first stack we get our hands on as the template for the rest.
+					// In case some stupid itemhandler (aka forge) returns an internal state we have to do a second
+					// expensive copy again.
 					if( gathered.isEmpty() )
 					{
-						gathered = extracted;
+						gathered = extracted.copy();
 					}
 					else
 					{
