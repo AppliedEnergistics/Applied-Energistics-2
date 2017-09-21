@@ -197,11 +197,10 @@ public interface IAEStack<StackType extends IAEStack<StackType>>
 	 * @return ITEM or FLUID
 	 */
 	StorageChannel getChannel();
-	
-	
+
 	/**
-	 * returns itemstack for displaying.
-	 * DO NOT MODIFY THIS STACK! NEVER. If you think about it .. DON'T
+	 * Returns itemstack for display purposes. Always has a count of 1.
+	 * 
 	 * @return itemstack
 	 */
 	ItemStack getDisplayStack();

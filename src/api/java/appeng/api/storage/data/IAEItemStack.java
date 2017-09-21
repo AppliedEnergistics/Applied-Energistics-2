@@ -106,12 +106,17 @@ public interface IAEItemStack extends IAEStack<IAEItemStack>
 	 */
 	boolean isSameType( ItemStack stored );
 
+	/**
+	 * Returns a object that implements equality and ordering of the stack.
+	 * 
+	 * @return search key
+	 */
 	IAEStackSearchKey<ItemStack> getSearchKey();
 
 	/**
-	 * NEVER MODIFY
+	 * DO NOT MODIFY THIS STACK! NEVER. If you think about it .. DON'T
 	 * 
-	 * @return
+	 * @return definition stack
 	 */
 	ItemStack getDefinition();
 }
