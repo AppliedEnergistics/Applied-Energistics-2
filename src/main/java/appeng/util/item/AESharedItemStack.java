@@ -39,11 +39,13 @@ final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
 
 	private final ItemStack itemStack;
 	private final int itemId;
+	private final int itemDamage;
 
 	public AESharedItemStack( final ItemStack itemStack )
 	{
 		this.itemStack = itemStack;
 		this.itemId = Item.getIdFromItem( itemStack.getItem() );
+		this.itemDamage = itemStack.getItemDamage();
 	}
 
 	@Override
@@ -55,7 +57,7 @@ final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash( itemStack.getItem(), itemStack.getItemDamage() );
+		return Objects.hash( itemStack.getItem(), this.itemDamage );
 	}
 
 	@Override
@@ -94,7 +96,7 @@ final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
 			return id;
 		}
 
-		final int damageValue = this.itemStack.getItemDamage() - b.getDefinition().getItemDamage();
+		final int damageValue = this.itemDamage - ( b instanceof AESharedItemStack ? ( (AESharedItemStack) b ).itemDamage : b.getDefinition().getItemDamage() );
 		if( damageValue != 0 )
 		{
 			return damageValue;
@@ -160,7 +162,7 @@ final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
 				else
 				{
 					final int breakpoint = fuzzy.calculateBreakPoint( this.itemStack.getMaxDamage() );
-					newDef.setItemDamage( breakpoint <= this.itemStack.getItemDamage() ? breakpoint : 0 );
+					newDef.setItemDamage( breakpoint <= this.itemDamage ? breakpoint : 0 );
 				}
 			}
 			newDef.setTagCompound( LOW_TAG );
@@ -200,7 +202,7 @@ final class AESharedItemStack implements IAEStackSearchKey<ItemStack>
 				else
 				{
 					final int breakpoint = fuzzy.calculateBreakPoint( this.itemStack.getMaxDamage() );
-					newDef.setItemDamage( this.itemStack.getItemDamage() < breakpoint ? breakpoint - 1 : this.itemStack.getMaxDamage() + 1 );
+					newDef.setItemDamage( this.itemDamage < breakpoint ? breakpoint - 1 : this.itemStack.getMaxDamage() + 1 );
 				}
 			}
 			newDef.setTagCompound( HIGH_TAG );
