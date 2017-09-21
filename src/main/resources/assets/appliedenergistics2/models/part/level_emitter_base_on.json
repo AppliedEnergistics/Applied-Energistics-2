@@ -1,5 +1,5 @@
 {
-  "uvlMarker": true,
+  "ae2_uvl_marker": true,
   "ambientocclusion": false,
   "textures": {
     "emitter": "appliedenergistics2:parts/level_emitter_on",

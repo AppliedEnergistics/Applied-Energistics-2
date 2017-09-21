@@ -1,5 +1,5 @@
 {
-    "uvlMarker": true,
+    "ae2_uvl_marker": true,
     "parent": "block/block",
     "textures": {
         "block": "appliedenergistics2:blocks/controller_powered",

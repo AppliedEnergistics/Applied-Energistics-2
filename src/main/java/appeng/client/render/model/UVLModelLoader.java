@@ -191,17 +191,19 @@ public enum UVLModelLoader implements ICustomModelLoader
 		{
 			modelPath = modelPath.substring( "models/".length() );
 		}
+
 		try( InputStreamReader io = new InputStreamReader( Minecraft.getMinecraft()
 				.getResourceManager()
 				.getResource( new ResourceLocation( modelLocation.getResourceDomain(), "models/" + modelPath + ".json" ) )
 				.getInputStream() ) )
 		{
-			return gson.fromJson( io, UVLMarker.class ).uvlMarker;
+			return gson.fromJson( io, UVLMarker.class ).ae2_uvl_marker;
 		}
-		catch( IOException e )
+		catch( Exception e )
 		{
-
+			// Catch-all in case of any JSON parser issues.
 		}
+
 		return false;
 	}
 
@@ -387,7 +389,7 @@ public enum UVLModelLoader implements ICustomModelLoader
 
 	class UVLMarker
 	{
-		boolean uvlMarker = false;
+		boolean ae2_uvl_marker = false;
 	}
 
 }
