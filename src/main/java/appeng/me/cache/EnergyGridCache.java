@@ -125,7 +125,7 @@ public class EnergyGridCache implements IEnergyGrid
 	}
 
 	@MENetworkEventSubscribe
-	public void EnergyNodeChanges( final MENetworkPowerIdleChange ev )
+	public void nodeIdlePowerChangeHandler( final MENetworkPowerIdleChange ev )
 	{
 		// update power usage based on event.
 		final GridNode node = (GridNode) ev.node;
@@ -139,7 +139,7 @@ public class EnergyGridCache implements IEnergyGrid
 	}
 
 	@MENetworkEventSubscribe
-	public void EnergyNodeChanges( final MENetworkPowerStorage ev )
+	public void storagePowerChangeHandler( final MENetworkPowerStorage ev )
 	{
 		if( ev.storage.isAEPublicPowerStorage() )
 		{
