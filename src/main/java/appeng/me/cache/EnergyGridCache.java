@@ -245,7 +245,7 @@ public class EnergyGridCache implements IEnergyGrid
 			final IEnergyGridProvider next = toVisit.poll();
 			visited.add( next );
 
-			extracted += next.extractProviderPower( toExtract - extracted, mode, visited );
+			extracted += next.extractProviderPower( toExtract - extracted, mode );
 
 			for( IEnergyGridProvider iEnergyGridProvider : next.providers() )
 			{
@@ -297,7 +297,7 @@ public class EnergyGridCache implements IEnergyGrid
 	}
 
 	@Override
-	public double extractProviderPower( final double amt, final Actionable mode, final Set<IEnergyGridProvider> seen )
+	public double extractProviderPower( final double amt, final Actionable mode )
 	{
 		double extractedPower = 0;
 
@@ -334,7 +334,7 @@ public class EnergyGridCache implements IEnergyGrid
 	}
 
 	@Override
-	public double injectProviderPower( double amt, final Actionable mode, final Set<IEnergyGridProvider> seen )
+	public double injectProviderPower( double amt, final Actionable mode )
 	{
 		if( mode == Actionable.MODULATE )
 		{
@@ -358,7 +358,7 @@ public class EnergyGridCache implements IEnergyGrid
 	}
 
 	@Override
-	public double getProviderEnergyDemand( final double maxRequired, final Set<IEnergyGridProvider> seen )
+	public double getProviderEnergyDemand( final double maxRequired )
 	{
 		double required = 0;
 
@@ -407,7 +407,7 @@ public class EnergyGridCache implements IEnergyGrid
 			final IEnergyGridProvider next = toVisit.poll();
 			visited.add( next );
 
-			leftover = next.injectProviderPower( leftover, mode, visited );
+			leftover = next.injectProviderPower( leftover, mode );
 
 			for( IEnergyGridProvider iEnergyGridProvider : next.providers() )
 			{
@@ -452,7 +452,7 @@ public class EnergyGridCache implements IEnergyGrid
 			final IEnergyGridProvider next = toVisit.poll();
 			visited.add( next );
 
-			required += next.getProviderEnergyDemand( maxRequired - required, visited );
+			required += next.getProviderEnergyDemand( maxRequired - required );
 
 			for( IEnergyGridProvider iEnergyGridProvider : next.providers() )
 			{

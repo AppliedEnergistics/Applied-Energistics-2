@@ -22,7 +22,6 @@ package appeng.parts.networking;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.LinkedList;
-import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -163,19 +162,19 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	}
 
 	@Override
-	public double extractProviderPower( final double amt, final Actionable mode, final Set<IEnergyGridProvider> seen )
+	public double extractProviderPower( final double amt, final Actionable mode )
 	{
 		return 0;
 	}
 
 	@Override
-	public double injectProviderPower( final double amt, final Actionable mode, final Set<IEnergyGridProvider> seen )
+	public double injectProviderPower( final double amt, final Actionable mode )
 	{
 		return amt;
 	}
 
 	@Override
-	public double getProviderEnergyDemand( final double amt, final Set<IEnergyGridProvider> seen )
+	public double getProviderEnergyDemand( final double amt )
 	{
 		return 0;
 	}

@@ -25,7 +25,9 @@ package appeng.api.networking.energy;
 
 
 import java.util.Collection;
-import java.util.Set;
+
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 
 import appeng.api.config.Actionable;
 
@@ -37,31 +39,90 @@ public interface IEnergyGridProvider
 {
 	/**
 	 * internal use only
+	 * 
+	 * Can return a list of providers behind the current.
+	 * 
+	 * An example would be something acting as proxy between different {@link IEnergyGrid}s.
+	 * 
+	 * This can contain duplicate entries, AE will ensure that each provider is only visited once.
+	 * 
+	 * internal use only
 	 */
+	@Nonnull
 	Collection<IEnergyGridProvider> providers();
 
 	/**
 	 * internal use only
+	 * 
+	 * Extracts the requested amount from the provider.
+	 * 
+	 * This should never forward a call to another {@link IEnergyGridProvider}, instead return them via
+	 * {@link IEnergyGridProvider#providers()}
+	 * 
+	 * @return the used amount
 	 */
-	double extractProviderPower( double amt, Actionable mode, Set<IEnergyGridProvider> seen );
+	@Nonnegative
+	double extractProviderPower( @Nonnegative double amt, @Nonnull Actionable mode );
+
+	/**
+	 * Injects the offered amount into the provider.
+	 * 
+	 * This should never forward a call to another {@link IEnergyGridProvider}, instead return them via
+	 * {@link IEnergyGridProvider#providers()}
+	 * 
+	 * internal use only
+	 * 
+	 * @return the leftover amount
+	 */
+	@Nonnegative
+	double injectProviderPower( @Nonnegative double amt, @Nonnull Actionable mode );
 
 	/**
 	 * internal use only
+	 * 
+	 * Returns the current demand of an provider.
+	 * 
+	 * This should never forward a call to another {@link IEnergyGridProvider}, instead return them via
+	 * {@link IEnergyGridProvider#providers()}
+	 * 
+	 * 
+	 * @param d the max amount offered, the demand should never exceed it.
+	 * @return the total amount demanded
 	 */
-	double injectProviderPower( double amt, Actionable mode, Set<IEnergyGridProvider> seen );
+	@Nonnegative
+	double getProviderEnergyDemand( @Nonnegative double d );
 
 	/**
 	 * internal use only
+	 * 
+	 * AE currently uses this to enqueue the next visited provider.
+	 * 
+	 * There is no guarantee that this works on in a perfect way.
+	 * It can be limited to the returns of the past {@link IEnergyGridProvider#providers()}, but not any future one
+	 * discovered by visiting further providers.
+	 * 
+	 * E.g. inject into the the lowest one first or extract from the highest one.
+	 * 
+	 * @return the current stored amount.
+	 * 
+	 * 
 	 */
-	double getProviderEnergyDemand( double d, Set<IEnergyGridProvider> seen );
-
-	/**
-	 * internal use only
-	 */
+	@Nonnegative
 	double getProviderStoredEnergy();
 
 	/**
 	 * internal use only
+	 * 
+	 * AE currently uses this to enqueue the next visited provider.
+	 * 
+	 * There is no guarantee that this works on in a perfect way.
+	 * It can be limited to the returns of the past {@link IEnergyGridProvider#providers()}, but not any future one
+	 * discovered by visiting further providers.
+	 * 
+	 * E.g. inject into the the lowest one first or extract from the highest one.
+	 * 
+	 * @return the maximum amount stored.
 	 */
+	@Nonnegative
 	double getProviderMaxEnergy();
 }
