@@ -84,32 +84,44 @@ public final class InscriberRegistry implements IInscriberRegistry
 	}
 
 	@Override
-	public void addRecipe( final IInscriberRecipe recipe )
+	public boolean addRecipe( final IInscriberRecipe recipe )
 	{
 		if( recipe == null )
 		{
 			throw new IllegalArgumentException( "Tried to add an invalid (null) inscriber recipe to the registry." );
 		}
+		
+		if( this.recipes.add( recipe ) )
+		{
+			this.recipes.add( recipe );
 
-		this.recipes.add( recipe );
+			recipe.getTopOptional().ifPresent( this.optionals::add );
+			recipe.getBottomOptional().ifPresent( this.optionals::add );
 
-		recipe.getTopOptional().ifPresent( this.optionals::add );
-		recipe.getBottomOptional().ifPresent( this.optionals::add );
+			this.inputs.addAll( recipe.getInputs() );
 
-		this.inputs.addAll( recipe.getInputs() );
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override
-	public void removeRecipe( final IInscriberRecipe toBeRemovedRecipe )
+	public boolean removeRecipe( final IInscriberRecipe toBeRemovedRecipe )
 	{
+		boolean changed = false;
+
 		for( final Iterator<IInscriberRecipe> iterator = this.recipes.iterator(); iterator.hasNext(); )
 		{
 			final IInscriberRecipe recipe = iterator.next();
 			if( recipe.equals( toBeRemovedRecipe ) )
 			{
+				changed = true;
 				iterator.remove();
 			}
 		}
+
+		return changed;
 	}
 
 	/**
