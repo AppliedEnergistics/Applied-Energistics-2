@@ -276,6 +276,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		{
 			return;
 		}
+
 		if( this.dusts.containsKey( name ) )
 		{
 			this.log( "Rejecting Dust: '%1$s'", Platform.getItemDisplayName( item ) );
@@ -299,7 +300,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 					extra.setCount( ratio - 1 );
 
 					final IGrinderRecipeBuilder builder = this.builder();
-					IGrinderRecipe grinderRecipe = builder.withInput( d.getKey() )
+					final IGrinderRecipe grinderRecipe = builder.withInput( d.getKey() )
 							.withOutput( is )
 							.withFirstOptional( extra, (float) ( AEConfig.instance().getOreDoublePercentage() / 100.0 ) )
 							.withTurns( 8 )
@@ -310,7 +311,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 				else
 				{
 					final IGrinderRecipeBuilder builder = this.builder();
-					IGrinderRecipe grinderRecipe = builder.withInput( d.getKey() )
+					final IGrinderRecipe grinderRecipe = builder.withInput( d.getKey() )
 							.withOutput( is )
 							.withTurns( 8 )
 							.build();
@@ -325,7 +326,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 			if( name.equals( d.getValue() ) )
 			{
 				final IGrinderRecipeBuilder builder = this.builder();
-				IGrinderRecipe grinderRecipe = builder.withInput( d.getKey() )
+				final IGrinderRecipe grinderRecipe = builder.withInput( d.getKey() )
 						.withOutput( item )
 						.withTurns( 4 )
 						.build();
@@ -416,12 +417,13 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		private float optionalChance2;
 		private ItemStack optionalOutput2;
 
-		private int turns;
+		private int turns = 8;
 
 		@Override
 		public IGrinderRecipeBuilder withInput( ItemStack input )
 		{
 			Preconditions.checkNotNull( input );
+			Preconditions.checkArgument( !input.isEmpty(), "Input cannot be empty." );
 
 			this.in = this.copy( input );
 
@@ -432,6 +434,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		public IGrinderRecipeBuilder withOutput( ItemStack output )
 		{
 			Preconditions.checkNotNull( output );
+			Preconditions.checkArgument( !output.isEmpty(), "Output cannot be empty." );
 
 			this.out = this.copy( output );
 
@@ -442,6 +445,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		public IGrinderRecipeBuilder withFirstOptional( ItemStack optional, float chance )
 		{
 			Preconditions.checkNotNull( optional );
+			Preconditions.checkArgument( !optional.isEmpty(), "Optional cannot be empty." );
 			Preconditions.checkArgument( chance >= 0 && chance <= 1.0 );
 
 			this.optionalOutput = this.copy( optional );
@@ -454,6 +458,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		public IGrinderRecipeBuilder withSecondOptional( ItemStack optional, float chance )
 		{
 			Preconditions.checkNotNull( optional );
+			Preconditions.checkArgument( !optional.isEmpty(), "Optional cannot be empty." );
 			Preconditions.checkArgument( chance >= 0 && chance <= 1.0 );
 
 			this.optionalOutput2 = this.copy( optional );
@@ -476,35 +481,8 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		@Override
 		public IGrinderRecipe build()
 		{
-			if( this.in == null )
-			{
-				throw new IllegalStateException( "Null is not accepted as input itemstack." );
-			}
-
-			if( this.out == null )
-			{
-				throw new IllegalStateException( "Null is not accepted as output itemstack." );
-			}
-
-			if( this.optionalOutput != null && ( this.optionalChance < 0.0 && this.optionalChance > 1.0 ) )
-			{
-				throw new IllegalStateException( "Chance for the first optional must be within 0.0 - 1.0." );
-			}
-
-			if( this.optionalOutput == null && this.optionalOutput2 != null )
-			{
-				throw new IllegalStateException( "Second optional can only be used when the first is also present." );
-			}
-
-			if( this.optionalOutput2 != null && ( this.optionalChance2 < 0.0 && this.optionalChance2 > 1.0 ) )
-			{
-				throw new IllegalStateException( "Chance for the second optional must be within 0.0 - 1.0." );
-			}
-
-			if( this.turns <= 0 )
-			{
-				throw new IllegalStateException( "Turns must be > 0" );
-			}
+			Preconditions.checkState( this.in != null, "Input itemstack must be defined." );
+			Preconditions.checkState( this.out != null, "Output itemstack must be defined." );
 
 			return new AppEngGrinderRecipe( this.in, this.out, this.optionalOutput, this.optionalOutput2, this.optionalChance, this.optionalChance2, this.turns );
 		}

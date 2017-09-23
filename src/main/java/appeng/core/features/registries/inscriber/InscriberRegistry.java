@@ -29,6 +29,8 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import com.google.common.base.Preconditions;
+
 import net.minecraft.item.ItemStack;
 
 import appeng.api.features.IInscriberRecipe;
@@ -86,11 +88,8 @@ public final class InscriberRegistry implements IInscriberRegistry
 	@Override
 	public boolean addRecipe( final IInscriberRecipe recipe )
 	{
-		if( recipe == null )
-		{
-			throw new IllegalArgumentException( "Tried to add an invalid (null) inscriber recipe to the registry." );
-		}
-		
+		Preconditions.checkNotNull( recipe, "Tried to add (null) as inscriber recipe to the registry." );
+
 		if( this.recipes.add( recipe ) )
 		{
 			this.recipes.add( recipe );
@@ -109,6 +108,8 @@ public final class InscriberRegistry implements IInscriberRegistry
 	@Override
 	public boolean removeRecipe( final IInscriberRecipe toBeRemovedRecipe )
 	{
+		Preconditions.checkNotNull( toBeRemovedRecipe, "Tried to remove (null) from the registry." );
+
 		boolean changed = false;
 
 		for( final Iterator<IInscriberRecipe> iterator = this.recipes.iterator(); iterator.hasNext(); )
@@ -140,6 +141,9 @@ public final class InscriberRegistry implements IInscriberRegistry
 		@Override
 		public Builder withInputs( @Nonnull final Collection<ItemStack> inputs )
 		{
+			Preconditions.checkNotNull( inputs );
+			Preconditions.checkArgument( !inputs.isEmpty() );
+
 			this.inputs = new ArrayList<>( inputs.size() );
 			this.inputs.addAll( inputs );
 
@@ -150,6 +154,9 @@ public final class InscriberRegistry implements IInscriberRegistry
 		@Override
 		public Builder withOutput( @Nonnull final ItemStack output )
 		{
+			Preconditions.checkNotNull( output );
+			Preconditions.checkArgument( !output.isEmpty() );
+
 			this.output = output;
 
 			return this;
@@ -159,6 +166,9 @@ public final class InscriberRegistry implements IInscriberRegistry
 		@Override
 		public Builder withTopOptional( @Nonnull final ItemStack topOptional )
 		{
+			Preconditions.checkNotNull( topOptional );
+			Preconditions.checkArgument( !topOptional.isEmpty() );
+
 			this.topOptional = topOptional;
 
 			return this;
@@ -168,6 +178,9 @@ public final class InscriberRegistry implements IInscriberRegistry
 		@Override
 		public Builder withBottomOptional( @Nonnull final ItemStack bottomOptional )
 		{
+			Preconditions.checkNotNull( bottomOptional );
+			Preconditions.checkArgument( !bottomOptional.isEmpty() );
+
 			this.bottomOptional = bottomOptional;
 
 			return this;
@@ -177,6 +190,8 @@ public final class InscriberRegistry implements IInscriberRegistry
 		@Override
 		public Builder withProcessType( @Nonnull final InscriberProcessType type )
 		{
+			Preconditions.checkNotNull( type );
+
 			this.type = type;
 
 			return this;
@@ -186,26 +201,11 @@ public final class InscriberRegistry implements IInscriberRegistry
 		@Override
 		public IInscriberRecipe build()
 		{
-			if( this.inputs == null )
-			{
-				throw new IllegalStateException( "Input must be defined." );
-			}
-			if( this.inputs.isEmpty() )
-			{
-				throw new IllegalStateException( "Input must have a size." );
-			}
-			if( this.output.isEmpty() )
-			{
-				throw new IllegalStateException( "Output must be defined." );
-			}
-			if( this.topOptional.isEmpty() && this.bottomOptional.isEmpty() )
-			{
-				throw new IllegalStateException( "One optional must be defined." );
-			}
-			if( this.type == null )
-			{
-				throw new IllegalStateException( "Process type must be defined." );
-			}
+			Preconditions.checkState( this.inputs != null, "Input must be defined." );
+			Preconditions.checkState( !this.inputs.isEmpty(), "Input must have a size." );
+			Preconditions.checkState( !this.output.isEmpty(), "Output cannot be empty." );
+			Preconditions.checkState( !this.topOptional.isEmpty() || !this.bottomOptional.isEmpty(), "One optional must be defined." );
+			Preconditions.checkState( this.type != null, "Process type must be defined." );
 
 			return new InscriberRecipe( this.inputs, this.output, this.topOptional, this.bottomOptional, this.type );
 		}

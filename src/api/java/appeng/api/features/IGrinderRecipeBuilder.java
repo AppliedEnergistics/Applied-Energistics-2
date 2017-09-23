@@ -31,7 +31,9 @@ import net.minecraft.item.ItemStack;
 
 
 /**
- * Builder for a grinder recipe
+ * Builder for a grinder recipe.
+ * 
+ * The only default value provided are turns at a value of 8.
  *
  * @author yueh
  * @version rv5
@@ -86,7 +88,8 @@ public interface IGrinderRecipeBuilder
 
 	/**
 	 * Creates an grinder recipe with the amount of turns as cost.
-	 * Needs to be invoked.
+	 * 
+	 * Defaults to 8 when not called.
 	 *
 	 * @param turns new turns for the recipe, must be > 0
 	 *
@@ -99,7 +102,7 @@ public interface IGrinderRecipeBuilder
 	 * Finalizes the process of making the recipe.
 	 * Needs to be invoked to fetch grinder recipe.
 	 *
-	 * @return legal grinder recipe
+	 * @return valid grinder recipe
 	 *
 	 * @throws IllegalStateException when input is not defined
 	 * @throws IllegalStateException when input has no size
