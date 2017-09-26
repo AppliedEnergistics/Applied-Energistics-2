@@ -123,13 +123,13 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 			{
 				final int outputTunnels = PartP2PFEPower.this.getOutputs().size();
 
-				if( outputTunnels == 0 )
+				if( outputTunnels == 0 | maxReceive == 0 )
 				{
 					return 0;
 				}
 
 				final int amountPerOutput = maxReceive / outputTunnels;
-				int overflow = maxReceive % amountPerOutput;
+				int overflow = amountPerOutput == 0 ? maxReceive : maxReceive % amountPerOutput;
 
 				for( PartP2PFEPower target : PartP2PFEPower.this.getOutputs() )
 				{
