@@ -22,7 +22,6 @@ package appeng.parts.networking;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.LinkedList;
-import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -135,12 +134,13 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	@Override
 	public Collection<IEnergyGridProvider> providers()
 	{
-		Collection<IEnergyGridProvider> stuff = new LinkedList<>();
+		Collection<IEnergyGridProvider> providers = new LinkedList<>();
 
 		try
 		{
 			final IEnergyGrid eg = this.getProxy().getEnergy();
-			stuff.add( eg );
+
+			providers.add( eg );
 		}
 		catch( final GridAccessException e )
 		{
@@ -150,119 +150,33 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 		try
 		{
 			final IEnergyGrid eg = this.outerProxy.getEnergy();
-			stuff.add( eg );
+
+			providers.add( eg );
 		}
 		catch( final GridAccessException e )
 		{
 			// :P
 		}
 
-		return stuff;
+		return providers;
 	}
 
 	@Override
-	public double extractProviderPower( final double amt, final Actionable mode, final Set<IEnergyGridProvider> seen )
+	public double extractProviderPower( final double amt, final Actionable mode )
 	{
-		double acquiredPower = 0;
-
-		try
-		{
-			final IEnergyGrid eg = this.getProxy().getEnergy();
-
-			if( !seen.contains( eg ) )
-			{
-				acquiredPower += eg.extractProviderPower( amt - acquiredPower, mode, seen );
-			}
-		}
-		catch( final GridAccessException e )
-		{
-			// :P
-		}
-
-		try
-		{
-			final IEnergyGrid eg = this.outerProxy.getEnergy();
-
-			if( !seen.contains( eg ) )
-			{
-				acquiredPower += eg.extractProviderPower( amt - acquiredPower, mode, seen );
-			}
-		}
-		catch( final GridAccessException e )
-		{
-			// :P
-		}
-
-		return acquiredPower;
+		return 0;
 	}
 
 	@Override
-	public double injectProviderPower( final double amt, final Actionable mode, final Set<IEnergyGridProvider> seen )
+	public double injectProviderPower( final double amt, final Actionable mode )
 	{
-
-		double amount = amt;
-
-		try
-		{
-			final IEnergyGrid eg = this.getProxy().getEnergy();
-			if( !seen.contains( eg ) )
-			{
-				amount = eg.injectProviderPower( amount, mode, seen );
-			}
-		}
-		catch( final GridAccessException e )
-		{
-			// :P
-		}
-
-		try
-		{
-			final IEnergyGrid eg = this.outerProxy.getEnergy();
-			if( !seen.contains( eg ) )
-			{
-				amount = eg.injectProviderPower( amount, mode, seen );
-			}
-		}
-		catch( final GridAccessException e )
-		{
-			// :P
-		}
-
-		return amount;
+		return amt;
 	}
 
 	@Override
-	public double getProviderEnergyDemand( final double amt, final Set<IEnergyGridProvider> seen )
+	public double getProviderEnergyDemand( final double amt )
 	{
-		double demand = 0;
-
-		try
-		{
-			final IEnergyGrid eg = this.getProxy().getEnergy();
-			if( !seen.contains( eg ) )
-			{
-				demand += eg.getProviderEnergyDemand( amt - demand, seen );
-			}
-		}
-		catch( final GridAccessException e )
-		{
-			// :P
-		}
-
-		try
-		{
-			final IEnergyGrid eg = this.outerProxy.getEnergy();
-			if( !seen.contains( eg ) )
-			{
-				demand += eg.getProviderEnergyDemand( amt - demand, seen );
-			}
-		}
-		catch( final GridAccessException e )
-		{
-			// :P
-		}
-
-		return demand;
+		return 0;
 	}
 
 	@Override
