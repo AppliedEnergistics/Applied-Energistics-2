@@ -27,6 +27,9 @@ import appeng.api.AEApi;
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RecipeError;
 import appeng.api.exceptions.RegistrationError;
+import appeng.api.features.IGrinderRecipe;
+import appeng.api.features.IGrinderRecipeBuilder;
+import appeng.api.features.IGrinderRegistry;
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
 import appeng.recipes.RecipeHandler;
@@ -60,7 +63,14 @@ public class Grind implements ICraftHandler, IWebsiteSerializer
 	{
 		for( final ItemStack is : this.pro_input.getItemStackSet() )
 		{
-			AEApi.instance().registries().grinder().addRecipe( is, this.pro_output[0].getItemStack(), 8 );
+			final IGrinderRegistry grinderRegistry = AEApi.instance().registries().grinder();
+			final IGrinderRecipeBuilder builder = grinderRegistry.builder();
+			final IGrinderRecipe grinderRecipe = builder.withInput( is )
+					.withOutput( this.pro_output[0].getItemStack() )
+					.withTurns( 8 )
+					.build();
+
+			grinderRegistry.addRecipe( grinderRecipe );
 		}
 	}
 
