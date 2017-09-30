@@ -28,13 +28,14 @@ import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.StorageChannel;
 
 
-public interface IAEStack<StackType extends IAEStack>
+public interface IAEStack<StackType extends IAEStack<StackType>>
 {
 
 	/**
@@ -183,13 +184,6 @@ public interface IAEStack<StackType extends IAEStack>
 	StackType empty();
 
 	/**
-	 * obtain the NBT Data for the item.
-	 *
-	 * @return nbt data
-	 */
-	IAETagCompound getTagCompound();
-
-	/**
 	 * @return true if the stack is a {@link IAEItemStack}
 	 */
 	boolean isItem();
@@ -203,4 +197,11 @@ public interface IAEStack<StackType extends IAEStack>
 	 * @return ITEM or FLUID
 	 */
 	StorageChannel getChannel();
+
+	/**
+	 * Returns itemstack for display and similar purposes. Always has a count of 1.
+	 * 
+	 * @return itemstack
+	 */
+	ItemStack asItemStackRepresentation();
 }

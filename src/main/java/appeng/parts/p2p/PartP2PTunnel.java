@@ -160,11 +160,11 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	@Override
 	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
-		if ( hand == EnumHand.OFF_HAND )
+		if( hand == EnumHand.OFF_HAND )
 		{
 			return false;
 		}
-		
+
 		final ItemStack is = player.getHeldItem( hand );
 
 		// UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor( is.getItem() );
@@ -265,7 +265,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 					break;
 			}
 
-			if( !newType.isEmpty() && !Platform.itemComparisons().isEqualItem( newType, this.getItemStack() ) )
+			if( !newType.isEmpty() && !ItemStack.areItemsEqual( newType, this.getItemStack() ) )
 			{
 				final boolean oldOutput = this.isOutput();
 				final short myFreq = this.getFrequency();

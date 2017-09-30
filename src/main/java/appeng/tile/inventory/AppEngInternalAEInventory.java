@@ -140,7 +140,7 @@ public class AppEngInternalAEInventory implements IInternalItemHandler, Iterable
 			return ItemStack.EMPTY;
 		}
 
-		return this.inv[var1].getItemStack();
+		return this.inv[var1].createItemStack();
 	}
 
 	@Override
@@ -227,7 +227,7 @@ public class AppEngInternalAEInventory implements IInternalItemHandler, Iterable
 			ItemStack newStack = newItemStack.copy();
 			InvOperation op = InvOperation.SET;
 
-			if( Platform.itemComparisons().isEqualItem( oldStack, newStack ) )
+			if( ItemStack.areItemsEqual( oldStack, newStack ) )
 			{
 				if( newStack.getCount() > oldStack.getCount() )
 				{

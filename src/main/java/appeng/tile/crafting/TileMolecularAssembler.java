@@ -273,7 +273,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 		if( !is.isEmpty() && is.getItem() instanceof ItemEncodedPattern )
 		{
-			if( !Platform.itemComparisons().isEqualItem( is, this.myPattern ) )
+			if( !ItemStack.areItemsEqual( is, this.myPattern ) )
 			{
 				final World w = this.getWorld();
 				final ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();

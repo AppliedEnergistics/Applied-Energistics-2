@@ -93,7 +93,7 @@ public class PartConversionMonitor extends AbstractPartMonitor
 		if( item.isEmpty() && this.getDisplayed() != null )
 		{
 			ModeB = true;
-			item = ( (IAEItemStack) this.getDisplayed() ).getItemStack();
+			item = ( (IAEItemStack) this.getDisplayed() ).createItemStack();
 		}
 
 		if( !item.isEmpty() )
@@ -119,7 +119,7 @@ public class PartConversionMonitor extends AbstractPartMonitor
 							final IAEItemStack insertItem = input.copy();
 							insertItem.setStackSize( targetStack.getCount() );
 							final IAEItemStack failedToInsert = Platform.poweredInsert( energy, cell, insertItem, new PlayerSource( player, this ) );
-							player.inventory.setInventorySlotContents( x, failedToInsert == null ? ItemStack.EMPTY : failedToInsert.getItemStack() );
+							player.inventory.setInventorySlotContents( x, failedToInsert == null ? ItemStack.EMPTY : failedToInsert.createItemStack() );
 						}
 					}
 				}
@@ -127,7 +127,7 @@ public class PartConversionMonitor extends AbstractPartMonitor
 				{
 					final IAEItemStack failedToInsert = Platform.poweredInsert( energy, cell, input, new PlayerSource( player, this ) );
 					player.inventory.setInventorySlotContents( player.inventory.currentItem,
-							failedToInsert == null ? ItemStack.EMPTY : failedToInsert.getItemStack() );
+							failedToInsert == null ? ItemStack.EMPTY : failedToInsert.createItemStack() );
 				}
 			}
 			catch( final GridAccessException e )
@@ -154,13 +154,13 @@ public class PartConversionMonitor extends AbstractPartMonitor
 				final IEnergySource energy = this.getProxy().getEnergy();
 				final IMEMonitor<IAEItemStack> cell = this.getProxy().getStorage().getItemInventory();
 
-				final ItemStack is = input.getItemStack();
+				final ItemStack is = input.createItemStack();
 				input.setStackSize( is.getMaxStackSize() );
 
 				final IAEItemStack retrieved = Platform.poweredExtraction( energy, cell, input, new PlayerSource( player, this ) );
 				if( retrieved != null )
 				{
-					ItemStack newItems = retrieved.getItemStack();
+					ItemStack newItems = retrieved.createItemStack();
 					final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor( player );
 					newItems = adaptor.addItems( newItems );
 					if( !newItems.isEmpty() )

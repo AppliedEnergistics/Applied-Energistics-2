@@ -37,7 +37,7 @@ public class ItemSlot
 	public ItemStack getItemStack()
 	{
 		return this.itemStack
-				.isEmpty() ? ( this.aeItemStack == null ? ItemStack.EMPTY : ( this.itemStack = this.aeItemStack.getItemStack() ) ) : this.itemStack;
+				.isEmpty() ? ( this.aeItemStack == null ? ItemStack.EMPTY : ( this.itemStack = this.aeItemStack.createItemStack() ) ) : this.itemStack;
 	}
 
 	public void setItemStack( final ItemStack is )

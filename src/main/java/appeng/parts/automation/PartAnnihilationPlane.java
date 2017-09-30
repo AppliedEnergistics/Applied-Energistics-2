@@ -393,7 +393,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		final double y = add.getY();
 		final double z = add.getZ();
 
-		final EntityItem overflowEntity = new EntityItem( w, x, y, z, overflow.getItemStack() );
+		final EntityItem overflowEntity = new EntityItem( w, x, y, z, overflow.createItemStack() );
 		overflowEntity.motionX = 0;
 		overflowEntity.motionY = 0;
 		overflowEntity.motionZ = 0;

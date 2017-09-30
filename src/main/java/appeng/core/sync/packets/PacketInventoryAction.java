@@ -141,10 +141,7 @@ public class PacketInventoryAction extends AppEngPacket
 
 						if( baseContainer.getTargetStack() != null )
 						{
-							// Force to stack size 1 to fix a client-side display problem...
-							ItemStack displayIs = baseContainer.getTargetStack().getItemStack();
-							displayIs.setCount( 1 );
-							cca.getCraftingItem().putStack( displayIs );
+							cca.getCraftingItem().putStack( baseContainer.getTargetStack().asItemStackRepresentation() );
 							// This is the *actual* item that matters, not the display item above
 							cca.setItemToCraft( baseContainer.getTargetStack() );
 						}
@@ -171,7 +168,7 @@ public class PacketInventoryAction extends AppEngPacket
 			}
 			else
 			{
-				AppEng.proxy.getPlayers().get( 0 ).inventory.setItemStack( this.slotItem.getItemStack() );
+				AppEng.proxy.getPlayers().get( 0 ).inventory.setItemStack( this.slotItem.createItemStack() );
 			}
 		}
 	}

@@ -862,7 +862,7 @@ public abstract class AEBaseContainer extends Container
 				if( slotItem != null )
 				{
 					IAEItemStack ais = slotItem.copy();
-					ItemStack myItem = ais.getItemStack();
+					ItemStack myItem = ais.createItemStack();
 
 					ais.setStackSize( myItem.getMaxStackSize() );
 
@@ -878,7 +878,7 @@ public abstract class AEBaseContainer extends Container
 					ais = Platform.poweredExtraction( this.getPowerSource(), this.getCellInventory(), ais, this.getActionSource() );
 					if( ais != null )
 					{
-						adp.addItems( ais.getItemStack() );
+						adp.addItems( ais.createItemStack() );
 					}
 				}
 				break;
@@ -902,7 +902,7 @@ public abstract class AEBaseContainer extends Container
 					{
 						final InventoryAdaptor ia = new AdaptorItemHandler( new WrapperCursorItemHandler( player.inventory ) );
 
-						final ItemStack fail = ia.removeItems( 1, extracted.getItemStack(), null );
+						final ItemStack fail = ia.removeItems( 1, extracted.getDefinition(), null );
 						if( fail.isEmpty() )
 						{
 							this.getCellInventory().extractItems( extracted, Actionable.MODULATE, this.getActionSource() );
@@ -931,7 +931,7 @@ public abstract class AEBaseContainer extends Container
 						{
 							liftQty = 0;
 						}
-						if( !Platform.itemComparisons().isSameItem( slotItem.getItemStack(), item ) )
+						if( !Platform.itemComparisons().isSameItem( slotItem.getDefinition(), item ) )
 						{
 							liftQty = 0;
 						}
@@ -946,7 +946,7 @@ public abstract class AEBaseContainer extends Container
 						{
 							final InventoryAdaptor ia = new AdaptorItemHandler( new WrapperCursorItemHandler( player.inventory ) );
 
-							final ItemStack fail = ia.addItems( ais.getItemStack() );
+							final ItemStack fail = ia.addItems( ais.createItemStack() );
 							if( !fail.isEmpty() )
 							{
 								this.getCellInventory().injectItems( ais, Actionable.MODULATE, this.getActionSource() );
@@ -968,11 +968,11 @@ public abstract class AEBaseContainer extends Container
 					if( slotItem != null )
 					{
 						IAEItemStack ais = slotItem.copy();
-						ais.setStackSize( ais.getItemStack().getMaxStackSize() );
+						ais.setStackSize( ais.getDefinition().getMaxStackSize() );
 						ais = Platform.poweredExtraction( this.getPowerSource(), this.getCellInventory(), ais, this.getActionSource() );
 						if( ais != null )
 						{
-							player.inventory.setItemStack( ais.getItemStack() );
+							player.inventory.setItemStack( ais.createItemStack() );
 						}
 						else
 						{
@@ -987,7 +987,7 @@ public abstract class AEBaseContainer extends Container
 					ais = Platform.poweredInsert( this.getPowerSource(), this.getCellInventory(), ais, this.getActionSource() );
 					if( ais != null )
 					{
-						player.inventory.setItemStack( ais.getItemStack() );
+						player.inventory.setItemStack( ais.createItemStack() );
 					}
 					else
 					{
@@ -1008,7 +1008,7 @@ public abstract class AEBaseContainer extends Container
 					if( slotItem != null )
 					{
 						IAEItemStack ais = slotItem.copy();
-						final long maxSize = ais.getItemStack().getMaxStackSize();
+						final long maxSize = ais.getDefinition().getMaxStackSize();
 						ais.setStackSize( maxSize );
 						ais = this.getCellInventory().extractItems( ais, Actionable.SIMULATE, this.getActionSource() );
 
@@ -1021,7 +1021,7 @@ public abstract class AEBaseContainer extends Container
 
 						if( ais != null )
 						{
-							player.inventory.setItemStack( ais.getItemStack() );
+							player.inventory.setItemStack( ais.createItemStack() );
 						}
 						else
 						{
@@ -1051,7 +1051,7 @@ public abstract class AEBaseContainer extends Container
 			case CREATIVE_DUPLICATE:
 				if( player.capabilities.isCreativeMode && slotItem != null )
 				{
-					final ItemStack is = slotItem.getItemStack();
+					final ItemStack is = slotItem.createItemStack();
 					is.setCount( is.getMaxStackSize() );
 					player.inventory.setItemStack( is );
 					this.updateHeld( player );
@@ -1070,7 +1070,7 @@ public abstract class AEBaseContainer extends Container
 					for( int slotNum = 0; slotNum < playerInv; slotNum++ )
 					{
 						IAEItemStack ais = slotItem.copy();
-						ItemStack myItem = ais.getItemStack();
+						ItemStack myItem = ais.createItemStack();
 
 						ais.setStackSize( myItem.getMaxStackSize() );
 
@@ -1086,7 +1086,7 @@ public abstract class AEBaseContainer extends Container
 						ais = Platform.poweredExtraction( this.getPowerSource(), this.getCellInventory(), ais, this.getActionSource() );
 						if( ais != null )
 						{
-							adp.addItems( ais.getItemStack() );
+							adp.addItems( ais.createItemStack() );
 						}
 						else
 						{
@@ -1129,7 +1129,7 @@ public abstract class AEBaseContainer extends Container
 		{
 			return ItemStack.EMPTY;
 		}
-		return ais.getItemStack();
+		return ais.createItemStack();
 	}
 
 	private void updateSlot( final Slot clickSlot )

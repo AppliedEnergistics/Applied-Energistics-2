@@ -240,8 +240,8 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		{
 			if( i.hasNext() )
 			{
-				final ItemStack g = i.next().getItemStack();
-				g.setCount( 1 );
+				// TODO: check if ok
+				final ItemStack g = i.next().asItemStackRepresentation();
 				ItemHandlerUtil.setStackInSlot( inv, x, g );
 			}
 			else

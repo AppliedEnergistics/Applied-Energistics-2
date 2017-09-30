@@ -364,7 +364,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 				inv = playerInv;
 			}
 
-			if( !inv.simulateAdd( out.getItemStack() ).isEmpty() )
+			if( !inv.simulateAdd( out.createItemStack() ).isEmpty() )
 			{
 				return;
 			}
@@ -374,7 +374,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 			if( extracted != null )
 			{
-				inv.addItems( extracted.getItemStack() );
+				inv.addItems( extracted.createItemStack() );
 				if( p instanceof EntityPlayerMP )
 				{
 					this.updateHeld( (EntityPlayerMP) p );
@@ -388,7 +388,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 			for( int x = 0; x < 9; x++ )
 			{
-				ic.setInventorySlotContents( x, packetPatternSlot.pattern[x] == null ? ItemStack.EMPTY : packetPatternSlot.pattern[x].getItemStack() );
+				ic.setInventorySlotContents( x, packetPatternSlot.pattern[x] == null ? ItemStack.EMPTY : packetPatternSlot.pattern[x].createItemStack() );
 			}
 
 			final IRecipe r = CraftingManager.findMatchingRecipe( ic, p.world );

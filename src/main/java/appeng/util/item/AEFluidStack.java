@@ -35,12 +35,12 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IAETagCompound;
 import appeng.util.Platform;
 
 
@@ -49,7 +49,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 
 	private final int myHash;
 	private final Fluid fluid;
-	private IAETagCompound tagCompound;
+	private NBTTagCompound tagCompound;
 
 	private AEFluidStack( final AEFluidStack is )
 	{
@@ -263,12 +263,6 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	}
 
 	@Override
-	public IAETagCompound getTagCompound()
-	{
-		return this.tagCompound;
-	}
-
-	@Override
 	public boolean isItem()
 	{
 		return false;
@@ -330,11 +324,6 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 					return false;
 				}
 
-				if( AESharedNBT.isShared( tb ) )
-				{
-					return ta == tb;
-				}
-
 				return Platform.itemComparisons().isNbtTagEqual( ta, tb );
 			}
 		}
@@ -359,7 +348,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		final FluidStack is = new FluidStack( this.fluid, (int) Math.min( Integer.MAX_VALUE, this.getStackSize() ) );
 		if( this.tagCompound != null )
 		{
-			is.tag = this.tagCompound.getNBTTagCompoundCopy();
+			is.tag = this.tagCompound.copy();
 		}
 
 		return is;
@@ -372,22 +361,24 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	}
 
 	@Override
-	void writeIdentity( final ByteBuf i ) throws IOException
+	public ItemStack asItemStackRepresentation()
+	{
+		// TODO: fluids, how do they even work?
+		return FluidUtil.getFilledBucket( getFluidStack() );
+	}
+
+	@Override
+	protected void writeToStream( final ByteBuf i ) throws IOException
 	{
 		final byte[] name = this.fluid.getName().getBytes( "UTF-8" );
 		i.writeByte( (byte) name.length );
 		i.writeBytes( name );
-	}
-
-	@Override
-	void readNBT( final ByteBuf i ) throws IOException
-	{
 		if( this.hasTagCompound() )
 		{
 			final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 			final DataOutputStream data = new DataOutputStream( bytes );
 
-			CompressedStreamTools.write( (NBTTagCompound) this.tagCompound, data );
+			CompressedStreamTools.write( this.tagCompound, data );
 
 			final byte[] tagBytes = bytes.toByteArray();
 			final int size = tagBytes.length;

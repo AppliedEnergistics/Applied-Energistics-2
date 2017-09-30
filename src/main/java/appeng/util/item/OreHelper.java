@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import com.google.common.cache.CacheBuilder;
@@ -63,7 +64,7 @@ public class OreHelper
 	 *
 	 * @return true if an ore entry exists, false otherwise
 	 */
-	public OreReference isOre( final ItemStack itemStack )
+	public Optional<OreReference> getOre( final ItemStack itemStack )
 	{
 		final ItemRef ir = new ItemRef( itemStack );
 
@@ -109,13 +110,13 @@ public class OreHelper
 			}
 		}
 
-		return this.references.get( ir );
+		return Optional.ofNullable( this.references.get( ir ) );
 	}
 
 	boolean sameOre( final AEItemStack aeItemStack, final IAEItemStack is )
 	{
-		final OreReference a = aeItemStack.getDefinition().getIsOre();
-		final OreReference b = aeItemStack.getDefinition().getIsOre();
+		final OreReference a = aeItemStack.getOre().orElse( null );
+		final OreReference b = aeItemStack.getOre().orElse( null );
 
 		return this.sameOre( a, b );
 	}
@@ -146,24 +147,21 @@ public class OreHelper
 
 	boolean sameOre( final AEItemStack aeItemStack, final ItemStack o )
 	{
-		final OreReference a = aeItemStack.getDefinition().getIsOre();
-		if( a == null )
+		return aeItemStack.getOre().map( a ->
 		{
-			return false;
-		}
-
-		for( final String oreName : a.getEquivalents() )
-		{
-			for( final ItemStack oreItem : this.oreDictCache.getUnchecked( oreName ) )
+			for( final String oreName : a.getEquivalents() )
 			{
-				if( OreDictionary.itemMatches( oreItem, o, false ) )
+				for( final ItemStack oreItem : this.oreDictCache.getUnchecked( oreName ) )
 				{
-					return true;
+					if( OreDictionary.itemMatches( oreItem, o, false ) )
+					{
+						return true;
+					}
 				}
 			}
-		}
-
-		return false;
+			return false;
+		} )
+				.orElse( false );
 	}
 
 	List<ItemStack> getCachedOres( final String oreName )

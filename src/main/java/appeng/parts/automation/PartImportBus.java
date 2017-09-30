@@ -218,12 +218,12 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 		if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 		{
-			newItems = myAdaptor.removeSimilarItems( toSend, whatToImport == null ? ItemStack.EMPTY : whatToImport.getItemStack(), fzMode,
+			newItems = myAdaptor.removeSimilarItems( toSend, whatToImport == null ? ItemStack.EMPTY : whatToImport.getDefinition(), fzMode,
 					this.configDestination( inv ) );
 		}
 		else
 		{
-			newItems = myAdaptor.removeItems( toSend, whatToImport == null ? ItemStack.EMPTY : whatToImport.getItemStack(), this.configDestination( inv ) );
+			newItems = myAdaptor.removeItems( toSend, whatToImport == null ? ItemStack.EMPTY : whatToImport.getDefinition(), this.configDestination( inv ) );
 		}
 
 		if( !newItems.isEmpty() )
@@ -245,7 +245,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 			if( failed != null )
 			{
-				myAdaptor.addItems( failed.getItemStack() );
+				myAdaptor.addItems( failed.createItemStack() );
 				return true;
 			}
 			else
@@ -272,7 +272,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 		}
 		else
 		{
-			itemStackToImport = whatToImport.getItemStack();
+			itemStackToImport = whatToImport.getDefinition();
 		}
 
 		final IAEItemStack itemAmountNotStorable;

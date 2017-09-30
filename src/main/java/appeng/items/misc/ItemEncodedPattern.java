@@ -229,7 +229,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 			return ItemStack.EMPTY;
 		}
 
-		SIMPLE_CACHE.put( item, out = details.getCondensedOutputs()[0].getItemStack() );
+		SIMPLE_CACHE.put( item, out = details.getCondensedOutputs()[0].createItemStack() );
 		return out;
 	}
 }

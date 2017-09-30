@@ -79,11 +79,11 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 
 		if( type == Actionable.SIMULATE )
 		{
-			out = this.adaptor.simulateAdd( input.getItemStack() );
+			out = this.adaptor.simulateAdd( input.createItemStack() );
 		}
 		else
 		{
-			out = this.adaptor.addItems( input.getItemStack() );
+			out = this.adaptor.addItems( input.createItemStack() );
 		}
 
 		if( type == Actionable.MODULATE )
@@ -109,11 +109,11 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 
 		if( type == Actionable.SIMULATE )
 		{
-			out = this.adaptor.simulateRemove( (int) request.getStackSize(), request.getItemStack(), null );
+			out = this.adaptor.simulateRemove( (int) request.getStackSize(), request.getDefinition(), null );
 		}
 		else
 		{
-			out = this.adaptor.removeItems( (int) request.getStackSize(), request.getItemStack(), null );
+			out = this.adaptor.removeItems( (int) request.getStackSize(), request.getDefinition(), null );
 		}
 
 		if( out.isEmpty() )

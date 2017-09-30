@@ -42,7 +42,7 @@ public class InternalSlotME
 
 	ItemStack getStack()
 	{
-		return this.repo.getItem( this.offset );
+		return this.getAEStack() == null ? ItemStack.EMPTY : this.getAEStack().asItemStackRepresentation();
 	}
 
 	IAEItemStack getAEStack()

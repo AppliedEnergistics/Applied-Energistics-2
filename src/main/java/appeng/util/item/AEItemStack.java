@@ -19,102 +19,57 @@
 package appeng.util.item;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.security.InvalidParameterException;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.StorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAETagCompound;
 import appeng.util.Platform;
 
 
-public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemStack, Comparable<AEItemStack>
+public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemStack
 {
+	private AESharedItemStack sharedStack;
+	private Optional<OreReference> oreReference;
 
-	private AEItemDef def;
+	@SideOnly( Side.CLIENT )
+	private String displayName;
+	@SideOnly( Side.CLIENT )
+	private List<String> tooltip;
+	@SideOnly( Side.CLIENT )
+	private ResourceLocation uniqueID;
 
 	private AEItemStack( final AEItemStack is )
 	{
-		this.setDefinition( is.getDefinition() );
 		this.setStackSize( is.getStackSize() );
 		this.setCraftable( is.isCraftable() );
 		this.setCountRequestable( is.getCountRequestable() );
+		this.sharedStack = is.sharedStack;
+		this.oreReference = is.oreReference;
 	}
 
-	private AEItemStack( final ItemStack is )
+	private AEItemStack( final AESharedItemStack is, long size )
 	{
-		if( is.isEmpty() )
-		{
-			throw new InvalidParameterException( "null is not a valid ItemStack for AEItemStack." );
-		}
-
-		final Item item = is.getItem();
-		if( item == Items.AIR )
-		{
-			throw new InvalidParameterException( "Contained item is null, thus not a valid ItemStack for AEItemStack." );
-		}
-
-		this.setDefinition( new AEItemDef( item ) );
-
-		if( this.getDefinition().getItem() == Items.AIR )
-		{
-			throw new InvalidParameterException( "This ItemStack is bad, it has a null item." );
-		}
-
-		/*
-		 * Prevent an Item from changing the damage value on me... Either, this or a core mod.
-		 */
-
-		/*
-		 * Super hackery.
-		 * is.itemID = appeng.api.Materials.matQuartz.itemID; damageValue = is.getItemDamage(); is.itemID = itemID;
-		 */
-
-		/*
-		 * Kinda hackery
-		 */
-		this.getDefinition().setDamageValue( this.def.getDamageValueHack( is ) );
-		if( !is.getItem().isDamageable() )
-		{
-			this.getDefinition().setDisplayDamage( Integer.MAX_VALUE );
-		}
-		else
-		{
-			this.getDefinition().setDisplayDamage( (int) ( is.getItem().getDurabilityForDisplay( is ) * Integer.MAX_VALUE ) );
-		}
-		this.getDefinition().setMaxDamage( is.getMaxDamage() );
-
-		final NBTTagCompound tagCompound = is.getTagCompound();
-		if( tagCompound != null )
-		{
-			this.getDefinition().setTagCompound( (AESharedNBT) AESharedNBT.getSharedTagCompound( tagCompound, is ) );
-		}
-
-		this.setStackSize( is.getCount() );
+		this.sharedStack = is;
+		this.setStackSize( size );
 		this.setCraftable( false );
 		this.setCountRequestable( 0 );
-
-		this.getDefinition().reHash();
-		this.getDefinition().setIsOre( OreHelper.INSTANCE.isOre( is ) );
+		this.oreReference = OreHelper.INSTANCE.getOre( is.getDefinition() );
 	}
 
 	public static IAEItemStack loadItemStackFromNBT( final NBTTagCompound i )
@@ -131,7 +86,6 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		}
 
 		final AEItemStack item = AEItemStack.create( itemstack );
-		// item.priority = i.getInteger( "Priority" );
 		item.setStackSize( i.getLong( "Cnt" ) );
 		item.setCountRequestable( i.getLong( "Req" ) );
 		item.setCraftable( i.getBoolean( "Craft" ) );
@@ -146,7 +100,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			return null;
 		}
 
-		return new AEItemStack( stack );
+		return new AEItemStack( AEItemStackRegistry.getRegisteredStack( stack ), stack.getCount() );
 	}
 
 	public static IAEItemStack loadItemStackFromPacket( final ByteBuf data ) throws IOException
@@ -156,33 +110,10 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		final byte stackType = (byte) ( ( mask & 0x0C ) >> 2 );
 		final byte countReqType = (byte) ( ( mask & 0x30 ) >> 4 );
 		final boolean isCraftable = ( mask & 0x40 ) > 0;
-		final boolean hasTagCompound = ( mask & 0x80 ) > 0;
 
-		// don't send this...
-		final NBTTagCompound d = new NBTTagCompound();
-
-		// For some insane reason, Vanilla can only parse numeric item ids if they are strings
-		short itemNumericId = data.readShort();
-		d.setString( "id", String.valueOf( itemNumericId ) );
-		d.setShort( "Damage", data.readShort() );
-		d.setByte( "Count", (byte) 1 ); // 1 Because vanilla'll freak out otherwise
-
-		if( hasTagCompound )
-		{
-			final int len = data.readInt();
-
-			final byte[] bd = new byte[len];
-			data.readBytes( bd );
-
-			final ByteArrayInputStream di = new ByteArrayInputStream( bd );
-			d.setTag( "tag", CompressedStreamTools.read( new DataInputStream( di ) ) );
-		}
-
-		// long priority = getPacketValue( PriorityType, data );
+		final ItemStack itemstack = ByteBufUtils.readItemStack( data );
 		final long stackSize = getPacketValue( stackType, data );
 		final long countRequestable = getPacketValue( countReqType, data );
-
-		final ItemStack itemstack = new ItemStack( d );
 
 		if( itemstack.isEmpty() )
 		{
@@ -190,7 +121,6 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		}
 
 		final AEItemStack item = AEItemStack.create( itemstack );
-		// item.priority = (int) priority;
 		item.setStackSize( stackSize );
 		item.setCountRequestable( countRequestable );
 		item.setCraftable( isCraftable );
@@ -205,9 +135,6 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			return;
 		}
 
-		// if ( priority < ((AEItemStack) option).priority )
-		// priority = ((AEItemStack) option).priority;
-
 		this.incStackSize( option.getStackSize() );
 		this.setCountRequestable( this.getCountRequestable() + option.getCountRequestable() );
 		this.setCraftable( this.isCraftable() || option.isCraftable() );
@@ -216,57 +143,10 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	@Override
 	public void writeToNBT( final NBTTagCompound i )
 	{
-		/*
-		 * Mojang Fucked this over ; GC Optimization - Ugly Yes, but it saves a lot in the memory department.
-		 */
-
-		/*
-		 * NBTBase id = i.getTag( "id" ); NBTBase Count = i.getTag( "Count" ); NBTBase Cnt = i.getTag( "Cnt" ); NBTBase
-		 * Req = i.getTag( "Req" ); NBTBase Craft = i.getTag( "Craft" ); NBTBase Damage = i.getTag( "Damage" );
-		 */
-
-		/*
-		 * if ( id != null && id instanceof NBTTagShort ) ((NBTTagShort) id).data = (short) this.def.item.itemID; else
-		 */
-		// i.setShort( "id", (short) Item.REGISTRY.getIDForObject( this.getDefinition().getItem() ) );
-		ResourceLocation resourcelocation = Item.REGISTRY.getNameForObject( this.getItem() );
-		i.setString( "id", resourcelocation == null ? "minecraft:air" : resourcelocation.toString() );
-
-		/*
-		 * if ( Count != null && Count instanceof NBTTagByte ) ((NBTTagByte) Count).data = (byte) 1; else
-		 */
-		i.setByte( "Count", (byte) 1 );
-
-		/*
-		 * if ( Cnt != null && Cnt instanceof NBTTagLong ) ((NBTTagLong) Cnt).data = this.stackSize; else
-		 */
+		this.getDefinition().writeToNBT( i );
 		i.setLong( "Cnt", this.getStackSize() );
-
-		/*
-		 * if ( Req != null && Req instanceof NBTTagLong ) ((NBTTagLong) Req).data = this.stackSize; else
-		 */
 		i.setLong( "Req", this.getCountRequestable() );
-
-		/*
-		 * if ( Craft != null && Craft instanceof NBTTagByte ) ((NBTTagByte) Craft).data = (byte) (this.isCraftable() ?
-		 * 1 : 0); else
-		 */
 		i.setBoolean( "Craft", this.isCraftable() );
-
-		/*
-		 * if ( Damage != null && Damage instanceof NBTTagShort ) ((NBTTagShort) Damage).data = (short)
-		 * this.def.damageValue; else
-		 */
-		i.setShort( "Damage", (short) this.getDefinition().getDamageValue() );
-
-		if( this.getDefinition().getTagCompound() != null )
-		{
-			i.setTag( "tag", this.getDefinition().getTagCompound() );
-		}
-		else
-		{
-			i.removeTag( "tag" );
-		}
 	}
 
 	@Override
@@ -285,8 +165,8 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			{
 				if( this.getDefinition().getItem().isDamageable() )
 				{
-					final ItemStack a = this.getItemStack();
-					final ItemStack b = o.getItemStack();
+					final ItemStack a = this.getDefinition();
+					final ItemStack b = o.getDefinition();
 
 					try
 					{
@@ -346,7 +226,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			{
 				if( this.getDefinition().getItem().isDamageable() )
 				{
-					final ItemStack a = this.getItemStack();
+					final ItemStack a = this.getDefinition();
 
 					try
 					{
@@ -406,20 +286,6 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	}
 
 	@Override
-	public IAEItemStack empty()
-	{
-		final IAEItemStack dup = this.copy();
-		dup.reset();
-		return dup;
-	}
-
-	@Override
-	public IAETagCompound getTagCompound()
-	{
-		return this.getDefinition().getTagCompound();
-	}
-
-	@Override
 	public boolean isItem()
 	{
 		return true;
@@ -438,16 +304,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	}
 
 	@Override
-	public ItemStack getItemStack()
+	public ItemStack createItemStack()
 	{
-		final ItemStack is = new ItemStack( this.getDefinition().getItem(), (int) Math.min( Integer.MAX_VALUE, this.getStackSize() ), this.getDefinition()
-				.getDamageValue() );
-		if( this.getDefinition().getTagCompound() != null )
-		{
-			is.setTagCompound( this.getDefinition().getTagCompound().getNBTTagCompoundCopy() );
-		}
-
-		return is;
+		return ItemHandlerHelper.copyStackWithSize( this.getDefinition(), (int) Math.min( Integer.MAX_VALUE, this.getStackSize() ) );
 	}
 
 	@Override
@@ -459,7 +318,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	@Override
 	public int getItemDamage()
 	{
-		return this.getDefinition().getDamageValue();
+		return this.sharedStack.getItemDamage();
 	}
 
 	@Override
@@ -476,7 +335,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			return false;
 		}
 
-		return this.getDefinition().equals( ( (AEItemStack) otherStack ).getDefinition() );
+		return this.sharedStack == ( (AEItemStack) otherStack ).sharedStack;
 	}
 
 	@Override
@@ -486,14 +345,19 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		{
 			return false;
 		}
+		int oldSize = otherStack.getCount();
 
-		return this.getDefinition().isItem( otherStack );
+		otherStack.setCount( 1 );
+		boolean ret = ItemStack.areItemStacksEqual( this.getDefinition(), otherStack );
+		otherStack.setCount( oldSize );
+
+		return ret;
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return this.getDefinition().getMyHash();
+		return this.sharedStack.hashCode();
 	}
 
 	@Override
@@ -501,40 +365,11 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	{
 		if( ia instanceof AEItemStack )
 		{
-			return ( (AEItemStack) ia ).getDefinition().equals( this.def );// && def.tagCompound == ((AEItemStack)
-																			// ia).def.tagCompound;
+			return this.isSameType( (AEItemStack) ia );
 		}
 		else if( ia instanceof ItemStack )
 		{
-			final ItemStack is = (ItemStack) ia;
-
-			if( is.getItem() == this.getDefinition().getItem() && is.getItemDamage() == this.getDefinition().getDamageValue() )
-			{
-				final NBTTagCompound ta = this.getDefinition().getTagCompound();
-				final NBTTagCompound tb = is.getTagCompound();
-				if( ta == tb )
-				{
-					return true;
-				}
-
-				if( ( ta == null && tb == null ) || ( ta != null && ta.hasNoTags() && tb == null ) || ( tb != null && tb
-						.hasNoTags() && ta == null ) || ( ta != null && ta.hasNoTags() && tb != null && tb.hasNoTags() ) )
-				{
-					return true;
-				}
-
-				if( ( ta == null && tb != null ) || ( ta != null && tb == null ) )
-				{
-					return false;
-				}
-
-				if( AESharedNBT.isShared( tb ) )
-				{
-					return ta == tb;
-				}
-
-				return Platform.itemComparisons().isNbtTagEqual( ta, tb );
-			}
+			return this.isSameType( (ItemStack) ia );
 		}
 		return false;
 	}
@@ -542,226 +377,77 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	@Override
 	public String toString()
 	{
-		return this.getItemStack().toString();
-	}
-
-	@Override
-	public int compareTo( final AEItemStack b )
-	{
-		final int id = this.getDefinition().getItemID() - b.getDefinition().getItemID();
-		if( id != 0 )
-		{
-			return id;
-		}
-
-		final int damageValue = this.getDefinition().getDamageValue() - b.getDefinition().getDamageValue();
-		if( damageValue != 0 )
-		{
-			return damageValue;
-		}
-
-		final int displayDamage = this.getDefinition().getDisplayDamage() - b.getDefinition().getDisplayDamage();
-		if( displayDamage != 0 )
-		{
-			return displayDamage;
-		}
-
-		return ( this.getDefinition().getTagCompound() == b.getDefinition().getTagCompound() ) ? 0 : this.compareNBT( b.getDefinition() );
-	}
-
-	private int compareNBT( final AEItemDef b )
-	{
-		final int nbt = this.compare( ( this.getDefinition().getTagCompound() == null ? 0 : this.getDefinition().getTagCompound().getHash() ),
-				( b.getTagCompound() == null ? 0 : b.getTagCompound().getHash() ) );
-		if( nbt == 0 )
-		{
-			return this.compare( System.identityHashCode( this.getDefinition().getTagCompound() ), System.identityHashCode( b.getTagCompound() ) );
-		}
-		return nbt;
-	}
-
-	private int compare( final int l, final int m )
-	{
-		return l < m ? -1 : ( l > m ? 1 : 0 );
+		return this.getDefinition().toString();
 	}
 
 	@SideOnly( Side.CLIENT )
-	public List getToolTip()
+	public List<String> getToolTip()
 	{
-		if( this.getDefinition().getTooltip() == null )
+		if( this.tooltip == null )
 		{
-			final ItemStack is = this.getItemStack();
-			is.setCount( 1 );
-			this.getDefinition().setTooltip( Platform.getTooltip( is ) );
+			this.tooltip = Platform.getTooltip( this.asItemStackRepresentation() );
 		}
-
-		return this.getDefinition().getTooltip();
+		return this.tooltip;
 	}
 
 	@SideOnly( Side.CLIENT )
 	public String getDisplayName()
 	{
-		if( this.getDefinition().getDisplayName() == null )
+		if( this.displayName == null )
 		{
-			final ItemStack is = this.getItemStack();
-			is.setCount( 1 );
-			this.getDefinition().setDisplayName( Platform.getItemDisplayName( is ) );
+			this.displayName = Platform.getItemDisplayName( this.asItemStackRepresentation() );
 		}
-
-		return this.getDefinition().getDisplayName();
+		return this.displayName;
 	}
 
 	@SideOnly( Side.CLIENT )
 	public String getModID()
 	{
-		if( this.getDefinition().getUniqueID() != null )
+		if( this.uniqueID == null )
 		{
-			return this.getModName( this.getDefinition().getUniqueID() );
+			this.uniqueID = Item.REGISTRY.getNameForObject( this.getDefinition().getItem() );
 		}
 
-		return this.getModName( this.getDefinition().setUniqueID( Item.REGISTRY.getNameForObject( this.getDefinition().getItem() ) ) );
-	}
-
-	private String getModName( final ResourceLocation uniqueIdentifier )
-	{
-		if( uniqueIdentifier == null )
+		if( this.uniqueID == null )
 		{
 			return "** Null";
 		}
 
-		return uniqueIdentifier.getResourceDomain() == null ? "** Null" : uniqueIdentifier.getResourceDomain();
+		return this.uniqueID.getResourceDomain() == null ? "** Null" : this.uniqueID.getResourceDomain();
 	}
 
-	IAEItemStack getLow( final FuzzyMode fuzzy, final boolean ignoreMeta )
+	public Optional<OreReference> getOre()
 	{
-		final AEItemStack bottom = new AEItemStack( this );
-		final AEItemDef newDef = bottom.setDefinition( bottom.getDefinition().copy() );
-
-		if( ignoreMeta )
-		{
-			newDef.setDisplayDamage( newDef.setDamageValue( 0 ) );
-			newDef.reHash();
-			return bottom;
-		}
-
-		if( newDef.getItem().isDamageable() )
-		{
-			if( fuzzy == FuzzyMode.IGNORE_ALL )
-			{
-				newDef.setDisplayDamage( 0 );
-			}
-			else if( fuzzy == FuzzyMode.PERCENT_99 )
-			{
-				if( this.getDefinition().getDamageValue() == 0 )
-				{
-					newDef.setDisplayDamage( 0 );
-				}
-				else
-				{
-					newDef.setDisplayDamage( 1 );
-				}
-			}
-			else
-			{
-				final int breakpoint = fuzzy.calculateBreakPoint( this.getDefinition().getMaxDamage() );
-				newDef.setDisplayDamage( breakpoint <= this.getDefinition().getDisplayDamage() ? breakpoint : 0 );
-			}
-
-			newDef.setDamageValue( newDef.getDisplayDamage() );
-		}
-
-		newDef.setTagCompound( AEItemDef.LOW_TAG );
-		newDef.reHash();
-		return bottom;
-	}
-
-	IAEItemStack getHigh( final FuzzyMode fuzzy, final boolean ignoreMeta )
-	{
-		final AEItemStack top = new AEItemStack( this );
-		final AEItemDef newDef = top.setDefinition( top.getDefinition().copy() );
-
-		if( ignoreMeta )
-		{
-			newDef.setDisplayDamage( newDef.setDamageValue( Integer.MAX_VALUE ) );
-			newDef.reHash();
-			return top;
-		}
-
-		if( newDef.getItem().isDamageable() )
-		{
-			if( fuzzy == FuzzyMode.IGNORE_ALL )
-			{
-				newDef.setDisplayDamage( this.getDefinition().getMaxDamage() + 1 );
-			}
-			else if( fuzzy == FuzzyMode.PERCENT_99 )
-			{
-				if( this.getDefinition().getDamageValue() == 0 )
-				{
-					newDef.setDisplayDamage( 0 );
-				}
-				else
-				{
-					newDef.setDisplayDamage( this.getDefinition().getMaxDamage() + 1 );
-				}
-			}
-			else
-			{
-				final int breakpoint = fuzzy.calculateBreakPoint( this.getDefinition().getMaxDamage() );
-				newDef.setDisplayDamage( this.getDefinition().getDisplayDamage() < breakpoint ? breakpoint - 1 : this.getDefinition().getMaxDamage() + 1 );
-			}
-
-			newDef.setDamageValue( newDef.getDisplayDamage() );
-		}
-
-		newDef.setTagCompound( AEItemDef.HIGH_TAG );
-		newDef.reHash();
-		return top;
-	}
-
-	public boolean isOre()
-	{
-		return this.getDefinition().getIsOre() != null;
+		return this.oreReference;
 	}
 
 	@Override
-	void writeIdentity( final ByteBuf i ) throws IOException
+	protected void writeToStream( final ByteBuf data ) throws IOException
 	{
-		i.writeShort( Item.REGISTRY.getIDForObject( this.getDefinition().getItem() ) );
-		i.writeShort( this.getItemDamage() );
-	}
-
-	@Override
-	void readNBT( final ByteBuf i ) throws IOException
-	{
-		if( this.hasTagCompound() )
-		{
-			final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-			final DataOutputStream data = new DataOutputStream( bytes );
-
-			CompressedStreamTools.write( (NBTTagCompound) this.getTagCompound(), data );
-
-			final byte[] tagBytes = bytes.toByteArray();
-			final int size = tagBytes.length;
-
-			i.writeInt( size );
-			i.writeBytes( tagBytes );
-		}
+		ByteBufUtils.writeItemStack( data, this.getDefinition() );
 	}
 
 	@Override
 	public boolean hasTagCompound()
 	{
-		return this.getDefinition().getTagCompound() != null;
+		return this.getDefinition().hasTagCompound();
 	}
 
-	AEItemDef getDefinition()
+	@Override
+	public ItemStack asItemStackRepresentation()
 	{
-		return this.def;
+		return getDefinition().copy();
 	}
 
-	private AEItemDef setDefinition( final AEItemDef def )
+	@Override
+	public ItemStack getDefinition()
 	{
-		this.def = def;
-		return def;
+		return this.sharedStack.getDefinition();
 	}
+
+	AESharedItemStack getSharedStack()
+	{
+		return this.sharedStack;
+	}
+
 }

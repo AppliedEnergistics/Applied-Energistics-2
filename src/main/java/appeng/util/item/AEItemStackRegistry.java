@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2013 AlgorithmX2
+ * Copyright (c) 2017 AlgorithmX2
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -21,39 +21,51 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.storage.data;
+package appeng.util.item;
 
 
-import net.minecraft.nbt.NBTTagCompound;
+import java.lang.ref.WeakReference;
+import java.util.WeakHashMap;
 
-import appeng.api.features.IItemComparison;
+import javax.annotation.Nonnull;
+
+import net.minecraft.item.ItemStack;
 
 
-/**
- * Don't cast this... either compare with it, or copy it.
- *
- * Don't Implement.
- */
-public interface IAETagCompound
+public final class AEItemStackRegistry
 {
+	private static final WeakHashMap<AESharedItemStack, WeakReference<AESharedItemStack>> REGISTRY = new WeakHashMap<>();
 
-	/**
-	 * @return a copy ( the copy will not be a IAETagCompound, it will be a NBTTagCompound )
-	 */
-	NBTTagCompound getNBTTagCompoundCopy();
+	private AEItemStackRegistry()
+	{
+	}
 
-	/**
-	 * compare to other NBTTagCompounds or IAETagCompounds
-	 *
-	 * @param a compared object
-	 *
-	 * @return true, if they are the same.
-	 */
-	@Override
-	boolean equals( Object a );
+	static synchronized AESharedItemStack getRegisteredStack( final @Nonnull ItemStack itemStack )
+	{
+		if( itemStack.isEmpty() )
+		{
+			throw new IllegalArgumentException( "stack cannot be empty" );
+		}
 
-	/**
-	 * @return the special comparison for this tag
-	 */
-	IItemComparison getSpecialComparison();
+		int oldStackSize = itemStack.getCount();
+		itemStack.setCount( 1 );
+
+		AESharedItemStack search = new AESharedItemStack( itemStack );
+		WeakReference<AESharedItemStack> weak = REGISTRY.get( search );
+		AESharedItemStack ret = null;
+
+		if( weak != null )
+		{
+			ret = weak.get();
+		}
+
+		if( ret == null )
+		{
+			ret = new AESharedItemStack( itemStack.copy() );
+			REGISTRY.put( ret, new WeakReference<>( ret ) );
+		}
+		itemStack.setCount( oldStackSize );
+
+		return ret;
+	}
 }

@@ -309,12 +309,11 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 				final int posX = x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19;
 				final int posY = y * offY + ITEMSTACK_TOP_OFFSET;
 
-				final ItemStack is = refStack.getItemStack();
-				is.setCount( 1 );
+				final ItemStack is = refStack.asItemStackRepresentation();
 
 				if( this.tooltip == z - viewStart )
 				{
-					dspToolTip = Platform.getItemDisplayName( is );
+					dspToolTip = Platform.getItemDisplayName( refStack );
 
 					if( lineList.size() > 0 )
 					{

@@ -175,7 +175,8 @@ public class JEIPlugin implements IModPlugin
 		if( !matterBall.isEmpty() || !singularity.isEmpty() )
 		{
 			registry.addRecipeCatalyst( condenser, CondenserCategory.UID );
-			registry.handleRecipes( CondenserOutput.class, new CondenserOutputHandler( registry.getJeiHelpers().getGuiHelper(), matterBall, singularity) , CondenserCategory.UID );
+			registry.handleRecipes( CondenserOutput.class, new CondenserOutputHandler( registry.getJeiHelpers().getGuiHelper(), matterBall, singularity ),
+					CondenserCategory.UID );
 		}
 	}
 

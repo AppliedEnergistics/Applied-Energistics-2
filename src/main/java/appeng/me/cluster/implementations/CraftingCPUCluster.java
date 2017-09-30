@@ -504,7 +504,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 					fuzz = fuzz.copy();
 					fuzz.setStackSize( g.getStackSize() );
 					final IAEItemStack ais = this.inventory.extractItems( fuzz, Actionable.SIMULATE, this.machineSrc );
-					final ItemStack is = ais == null ? ItemStack.EMPTY : ais.getItemStack();
+					final ItemStack is = ais == null ? ItemStack.EMPTY : ais.createItemStack();
 
 					if( !is.isEmpty() && is.getCount() == g.getStackSize() )
 					{
@@ -526,7 +526,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			else
 			{
 				final IAEItemStack ais = this.inventory.extractItems( g.copy(), Actionable.SIMULATE, this.machineSrc );
-				final ItemStack is = ais == null ? ItemStack.EMPTY : ais.getItemStack();
+				final ItemStack is = ais == null ? ItemStack.EMPTY : ais.createItemStack();
 
 				if( is.isEmpty() || is.getCount() < g.getStackSize() )
 				{
@@ -690,10 +690,10 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 											fuzz = fuzz.copy();
 											fuzz.setStackSize( input[x].getStackSize() );
 
-											if( details.isValidItemForSlot( x, fuzz.getItemStack(), this.getWorld() ) )
+											if( details.isValidItemForSlot( x, fuzz.createItemStack(), this.getWorld() ) )
 											{
 												final IAEItemStack ais = this.inventory.extractItems( fuzz, Actionable.MODULATE, this.machineSrc );
-												final ItemStack is = ais == null ? ItemStack.EMPTY : ais.getItemStack();
+												final ItemStack is = ais == null ? ItemStack.EMPTY : ais.createItemStack();
 
 												if( !is.isEmpty() )
 												{
@@ -708,7 +708,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 									else
 									{
 										final IAEItemStack ais = this.inventory.extractItems( input[x].copy(), Actionable.MODULATE, this.machineSrc );
-										final ItemStack is = ais == null ? ItemStack.EMPTY : ais.getItemStack();
+										final ItemStack is = ais == null ? ItemStack.EMPTY : ais.createItemStack();
 
 										if( !is.isEmpty() )
 										{
@@ -1217,7 +1217,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			if( pattern != null && pattern.getItem() instanceof ICraftingPatternItem )
 			{
 				final ICraftingPatternItem cpi = (ICraftingPatternItem) pattern.getItem();
-				final ICraftingPatternDetails details = cpi.getPatternForItem( pattern.getItemStack(), this.getWorld() );
+				final ICraftingPatternDetails details = cpi.getPatternForItem( pattern.createItemStack(), this.getWorld() );
 				if( details != null )
 				{
 					final TaskProgress tp = new TaskProgress();

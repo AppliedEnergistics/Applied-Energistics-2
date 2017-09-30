@@ -436,7 +436,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 		final YesNo placeBlock = (YesNo) this.getConfigManager().getSetting( Settings.PLACE_BLOCK );
 
-		final ItemStack is = input.getItemStack();
+		final ItemStack is = input.createItemStack();
 		final Item i = is.getItem();
 
 		long maxStorage = Math.min( input.getStackSize(), is.getMaxStackSize() );

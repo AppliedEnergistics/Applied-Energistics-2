@@ -190,7 +190,7 @@ public class AdaptorList extends InventoryAdaptor
 
 		for( final ItemStack is : this.i )
 		{
-			if( Platform.itemComparisons().isEqualItem( is, left ) )
+			if( ItemStack.areItemsEqual( is, left ) )
 			{
 				is.grow( left.getCount() );
 				return ItemStack.EMPTY;

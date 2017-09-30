@@ -22,7 +22,6 @@ package appeng.parts.automation;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.config.Upgrades;
-import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
 
 
@@ -43,7 +42,7 @@ public class StackUpgradeInventory extends UpgradeInventory
 
 		for( final ItemStack is : upgrades.getSupported().keySet() )
 		{
-			if( Platform.itemComparisons().isEqualItem( this.stack, is ) )
+			if( ItemStack.areItemsEqual( this.stack, is ) )
 			{
 				max = upgrades.getSupported().get( is );
 				break;

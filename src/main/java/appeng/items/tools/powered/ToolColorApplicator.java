@@ -126,7 +126,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 			if( option != null )
 			{
-				paintBall = option.getItemStack();
+				paintBall = option.createItemStack();
 				paintBall.setCount( 1 );
 			}
 			else
@@ -274,7 +274,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				final IAEItemStack firstItem = itemList.getFirstItem();
 				if( firstItem != null )
 				{
-					newColor = firstItem.getItemStack();
+					newColor = firstItem.createItemStack();
 				}
 			}
 			else
@@ -321,7 +321,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 					list.addFirst( list.removeLast() );
 				}
 
-				return list.get( 0 ).getItemStack();
+				return list.get( 0 ).createItemStack();
 			}
 		}
 
@@ -465,7 +465,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	{
 		if( requestedAddition != null )
 		{
-			final int[] id = OreDictionary.getOreIDs( requestedAddition.getItemStack() );
+			final int[] id = OreDictionary.getOreIDs( requestedAddition.getDefinition() );
 
 			for( final int x : id )
 			{

@@ -23,7 +23,6 @@ import java.util.HashSet;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
@@ -218,7 +217,7 @@ public class CellInventory implements ICellInventory
 			return input;
 		}
 
-		final ItemStack sharedItemStack = input.getItemStack();
+		final ItemStack sharedItemStack = input.createItemStack();
 
 		if( CellInventory.isStorageCell( sharedItemStack ) )
 		{
@@ -269,11 +268,11 @@ public class CellInventory implements ICellInventory
 			{
 				if( input.getStackSize() > remainingItemCount )
 				{
-					final ItemStack toReturn = Platform.cloneItemStack( sharedItemStack );
+					final ItemStack toReturn = sharedItemStack.copy();
 					toReturn.setCount( sharedItemStack.getCount() - remainingItemCount );
 					if( mode == Actionable.MODULATE )
 					{
-						final ItemStack toWrite = Platform.cloneItemStack( sharedItemStack );
+						final ItemStack toWrite = sharedItemStack.copy();
 						toWrite.setCount( remainingItemCount );
 
 						this.cellItems.add( AEItemStack.create( toWrite ) );
@@ -368,22 +367,10 @@ public class CellInventory implements ICellInventory
 		{
 			itemCount += v.getStackSize();
 
-			final NBTBase c = this.tagCompound.getTag( itemSlots[x] );
-			if( c instanceof NBTTagCompound )
-			{
-				v.writeToNBT( (NBTTagCompound) c );
-			}
-			else
-			{
-				final NBTTagCompound g = new NBTTagCompound();
-				v.writeToNBT( g );
-				this.tagCompound.setTag( itemSlots[x], g );
-			}
+			final NBTTagCompound g = new NBTTagCompound();
+			v.writeToNBT( g );
+			this.tagCompound.setTag( itemSlots[x], g );
 
-			/*
-			 * NBTBase tagSlotCount = tagCompound.getTag( itemSlotCount[x] ); if ( tagSlotCount instanceof
-			 * NBTTagInt ) ((NBTTagInt) tagSlotCount).data = (int) v.getStackSize(); else
-			 */
 			this.tagCompound.setInteger( itemSlotCount[x], (int) v.getStackSize() );
 
 			x++;
