@@ -28,7 +28,6 @@ import net.minecraft.item.ItemStack;
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingIngredientError;
 import appeng.api.exceptions.RegistrationError;
-import appeng.api.features.IInscriberRecipe;
 import appeng.api.features.IInscriberRecipeBuilder;
 import appeng.api.features.InscriberProcessType;
 
@@ -59,18 +58,22 @@ public final class Inscribe extends InscriberProcess
 		final ItemStack[] realInput = this.getImprintable().getItemStackSet();
 		final List<ItemStack> inputs = new ArrayList<>( realInput.length );
 		Collections.addAll( inputs, realInput );
-		final ItemStack top = ( this.getTopOptional() == null ) ? ItemStack.EMPTY : this.getTopOptional().getItemStack();
-		final ItemStack bot = ( this.getBotOptional() == null ) ? ItemStack.EMPTY : this.getBotOptional().getItemStack();
 		final ItemStack output = this.getOutput().getItemStack();
 		final InscriberProcessType type = InscriberProcessType.INSCRIBE;
 
-		final IInscriberRecipe recipe = builder.withInputs( inputs )
+		builder.withInputs( inputs )
 				.withOutput( output )
-				.withTopOptional( top )
-				.withBottomOptional( bot )
-				.withProcessType( type )
-				.build();
+				.withProcessType( type );
 
-		AEApi.instance().registries().inscriber().addRecipe( recipe );
+		if( this.getTopOptional() != null && !this.getTopOptional().getItemStack().isEmpty() )
+		{
+			builder.withTopOptional( this.getTopOptional().getItemStack() );
+		}
+		if( this.getBotOptional() != null && !this.getBotOptional().getItemStack().isEmpty() )
+		{
+			builder.withBottomOptional( this.getBotOptional().getItemStack() );
+		}
+
+		AEApi.instance().registries().inscriber().addRecipe( builder.build() );
 	}
 }

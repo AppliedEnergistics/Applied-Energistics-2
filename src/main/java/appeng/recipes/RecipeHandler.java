@@ -403,7 +403,7 @@ public class RecipeHandler implements IRecipeHandler
 					}
 				}
 			}
-			catch( final Throwable e )
+			catch( final RegistrationError e )
 			{
 				AELog.warn( "Unable to register a recipe: " + e.getMessage() );
 				if( this.data.exceptions )
