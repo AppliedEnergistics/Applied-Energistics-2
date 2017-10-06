@@ -232,7 +232,7 @@ gui.appliedenergistics2.Excluded=排除匹配
 gui.appliedenergistics2.Partitioned=分区
 gui.appliedenergistics2.Precise=精确匹配
 gui.appliedenergistics2.Fuzzy=模糊匹配
-gui.appliedenergistics2.SmallFontCraft=合成
+gui.appliedenergistics2.SmallFontCraft=Craft
 gui.appliedenergistics2.LargeFontCraft=+
 gui.appliedenergistics2.Nothing=无
 
