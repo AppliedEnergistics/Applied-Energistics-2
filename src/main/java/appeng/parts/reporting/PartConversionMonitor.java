@@ -29,9 +29,11 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
+import appeng.api.AEApi;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AppEng;
 import appeng.helpers.Reflected;
@@ -106,8 +108,9 @@ public class PartConversionMonitor extends AbstractPartMonitor
 				}
 
 				final IEnergySource energy = this.getProxy().getEnergy();
-				final IMEMonitor<IAEItemStack> cell = this.getProxy().getStorage().getItemInventory();
-				final IAEItemStack input = AEItemStack.create( item );
+				final IMEMonitor<IAEItemStack> cell = this.getProxy().getStorage().getInventory(
+						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+				final IAEItemStack input = AEItemStack.fromItemStack( item );
 
 				if( ModeB )
 				{
@@ -152,7 +155,8 @@ public class PartConversionMonitor extends AbstractPartMonitor
 				}
 
 				final IEnergySource energy = this.getProxy().getEnergy();
-				final IMEMonitor<IAEItemStack> cell = this.getProxy().getStorage().getItemInventory();
+				final IMEMonitor<IAEItemStack> cell = this.getProxy().getStorage().getInventory(
+						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
 				final ItemStack is = input.createItemStack();
 				input.setStackSize( is.getMaxStackSize() );

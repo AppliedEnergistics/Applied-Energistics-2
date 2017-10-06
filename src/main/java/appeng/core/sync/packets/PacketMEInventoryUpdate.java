@@ -113,7 +113,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 
 		while( uncompressed.readableBytes() > 0 )
 		{
-			this.list.add( AEItemStack.loadItemStackFromPacket( uncompressed ) );
+			this.list.add( AEItemStack.fromPacket( uncompressed ) );
 		}
 
 		this.empty = this.list.isEmpty();

@@ -53,7 +53,7 @@ public class PacketAssemblerAnimation extends AppEngPacket
 		this.y = stream.readInt();
 		this.z = stream.readInt();
 		this.rate = stream.readByte();
-		this.is = AEItemStack.loadItemStackFromPacket( stream );
+		this.is = AEItemStack.fromPacket( stream );
 	}
 
 	// api

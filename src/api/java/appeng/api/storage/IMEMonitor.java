@@ -29,7 +29,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
 
-public interface IMEMonitor<T extends IAEStack> extends IMEInventoryHandler<T>, IBaseMonitor<T>
+public interface IMEMonitor<T extends IAEStack<T>> extends IMEInventoryHandler<T>, IBaseMonitor<T>
 {
 
 	/**
@@ -37,7 +37,7 @@ public interface IMEMonitor<T extends IAEStack> extends IMEInventoryHandler<T>, 
 	 */
 	@Override
 	@Deprecated
-	IItemList<T> getAvailableItems( IItemList out );
+	IItemList<T> getAvailableItems( IItemList<T> out );
 
 	/**
 	 * Get access to the full item list of the network, preferred over {@link IMEInventory} .getAvailableItems(...)

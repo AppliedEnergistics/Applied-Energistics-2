@@ -32,7 +32,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.IStorageChannel;
 
 
 public interface IAEStack<StackType extends IAEStack<StackType>>
@@ -196,7 +196,7 @@ public interface IAEStack<StackType extends IAEStack<StackType>>
 	/**
 	 * @return ITEM or FLUID
 	 */
-	StorageChannel getChannel();
+	IStorageChannel getChannel();
 
 	/**
 	 * Returns itemstack for display and similar purposes. Always has a count of 1.

@@ -29,6 +29,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.PowerMultiplier;
@@ -49,6 +50,7 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.core.AELog;
@@ -128,7 +130,8 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		try
 		{
 			final InventoryAdaptor destination = this.getHandler();
-			final IMEMonitor<IAEItemStack> inv = this.getProxy().getStorage().getItemInventory();
+			final IMEMonitor<IAEItemStack> inv = this.getProxy().getStorage().getInventory(
+					AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 			final IEnergyGrid energy = this.getProxy().getEnergy();
 			final ICraftingGrid cg = this.getProxy().getCrafting();
 			final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
@@ -266,9 +269,9 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 				{
 					if( mode == Actionable.MODULATE )
 					{
-						return AEItemStack.create( d.addItems( items.createItemStack() ) );
+						return AEItemStack.fromItemStack( d.addItems( items.createItemStack() ) );
 					}
-					return AEItemStack.create( d.simulateAdd( items.createItemStack() ) );
+					return AEItemStack.fromItemStack( d.simulateAdd( items.createItemStack() ) );
 				}
 			}
 		}

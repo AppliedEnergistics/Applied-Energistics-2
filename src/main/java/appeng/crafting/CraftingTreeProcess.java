@@ -34,6 +34,7 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerNull;
@@ -207,7 +208,7 @@ public class CraftingTreeProcess
 				ItemStack is = ic.getStackInSlot( x );
 				is = Platform.getContainerItem( is );
 
-				final IAEItemStack o = AEApi.instance().storage().createItemStack( is );
+				final IAEItemStack o = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( is );
 				if( o != null )
 				{
 					this.bytes++;
@@ -226,7 +227,7 @@ public class CraftingTreeProcess
 				if( this.containerItems )
 				{
 					final ItemStack is = Platform.getContainerItem( stack.createItemStack() );
-					final IAEItemStack o = AEApi.instance().storage().createItemStack( is );
+					final IAEItemStack o = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( is );
 					if( o != null )
 					{
 						this.bytes++;

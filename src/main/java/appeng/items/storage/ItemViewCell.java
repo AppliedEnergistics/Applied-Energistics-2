@@ -27,6 +27,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.ICellWorkbenchItem;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.items.AEBaseItem;
@@ -62,7 +63,7 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 
 			if( ( currentViewCell.getItem() instanceof ItemViewCell ) )
 			{
-				final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
+				final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 
 				final ICellWorkbenchItem vc = (ICellWorkbenchItem) currentViewCell.getItem();
 				final IItemHandler upgrades = vc.getUpgradesInventory( currentViewCell );
@@ -99,7 +100,7 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 					final ItemStack is = config.getStackInSlot( x );
 					if( !is.isEmpty() )
 					{
-						priorityList.add( AEItemStack.create( is ) );
+						priorityList.add( AEItemStack.fromItemStack( is ) );
 					}
 				}
 

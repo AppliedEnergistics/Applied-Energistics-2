@@ -35,7 +35,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.cache.SecurityCache;
@@ -50,12 +50,12 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	private static final Comparator<Integer> PRIORITY_SORTER = ( o1, o2 ) -> ItemSorters.compareInt( o2, o1 );
 
 	private static int currentPass = 0;
-	private final StorageChannel myChannel;
+	private final IStorageChannel<T> myChannel;
 	private final SecurityCache security;
 	private final NavigableMap<Integer, List<IMEInventoryHandler<T>>> priorityInventory;
 	private int myPass = 0;
 
-	public NetworkInventoryHandler( final StorageChannel chan, final SecurityCache security )
+	public NetworkInventoryHandler( final IStorageChannel<T> chan, final SecurityCache security )
 	{
 		this.myChannel = chan;
 		this.security = security;
@@ -240,7 +240,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	}
 
 	@Override
-	public IItemList<T> getAvailableItems( IItemList out )
+	public IItemList<T> getAvailableItems( IItemList<T> out )
 	{
 		if( this.diveIteration( this, Actionable.SIMULATE ) )
 		{
@@ -286,7 +286,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public IStorageChannel<T> getChannel()
 	{
 		return this.myChannel;
 	}

@@ -27,7 +27,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
 
-public class ItemListIgnoreCrafting<T extends IAEStack> implements IItemList<T>
+public class ItemListIgnoreCrafting<T extends IAEStack<T>> implements IItemList<T>
 {
 
 	private final IItemList<T> target;

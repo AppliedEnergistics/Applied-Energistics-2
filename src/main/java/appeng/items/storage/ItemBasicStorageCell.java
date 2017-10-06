@@ -46,7 +46,7 @@ import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AEConfig;
@@ -101,7 +101,8 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 	@Override
 	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
-		final IMEInventoryHandler<?> inventory = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
+		final IMEInventoryHandler<?> inventory = AEApi.instance().registries().cell().getCellInventory( stack, null,
+				AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
 		if( inventory instanceof ICellInventoryHandler )
 		{
@@ -236,11 +237,13 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 			}
 
 			final InventoryPlayer playerInventory = player.inventory;
-			final IMEInventoryHandler inv = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
+			final IMEInventoryHandler inv = AEApi.instance().registries().cell().getCellInventory( stack, null,
+					AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 			if( inv != null && playerInventory.getCurrentItem() == stack )
 			{
 				final InventoryAdaptor ia = InventoryAdaptor.getAdaptor( player );
-				final IItemList<IAEItemStack> list = inv.getAvailableItems( StorageChannel.ITEMS.createList() );
+				final IItemList<IAEItemStack> list = inv
+						.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
 				if( list.isEmpty() && ia != null )
 				{
 					playerInventory.setInventorySlotContents( playerInventory.currentItem, ItemStack.EMPTY );

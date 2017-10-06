@@ -40,6 +40,7 @@ import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.storage.IMEInventory;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.WorldCoord;
@@ -314,7 +315,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 				throw new IllegalStateException( this.cluster + " does not contain any kind of blocks, which were destroyed." );
 			}
 
-			for( IAEItemStack ais : inv.getAvailableItems( AEApi.instance().storage().createItemList() ) )
+			for( IAEItemStack ais : inv.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() ) )
 			{
 				ais = ais.copy();
 				ais.setStackSize( ais.getDefinition().getMaxStackSize() );

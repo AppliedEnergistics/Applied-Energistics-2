@@ -40,10 +40,12 @@ import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.channels.IFluidStorageChannel;
+import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.capabilities.Capabilities;
@@ -342,15 +344,17 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		}
 
 		@Override
-		public IMEMonitor<IAEItemStack> getItemInventory()
+		public <T extends IAEStack<T>, C extends IStorageChannel<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )
 		{
-			return this.itemInventory;
-		}
-
-		@Override
-		public IMEMonitor<IAEFluidStack> getFluidInventory()
-		{
-			return this.fluidInventory;
+			if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
+			{
+				return (IMEMonitor<T>) this.itemInventory;
+			}
+			else if( channel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
+			{
+				return (IMEMonitor<T>) this.fluidInventory;
+			}
+			return null;
 		}
 	}
 }

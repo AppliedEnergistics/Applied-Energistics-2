@@ -39,6 +39,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
 import appeng.api.AEApi;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.MEGuiTextField;
@@ -347,7 +348,9 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			final ItemStack parsedItemStack = new ItemStack( outTag.getCompoundTagAt( i ) );
 			if( !parsedItemStack.isEmpty() )
 			{
-				final String displayName = Platform.getItemDisplayName( AEApi.instance().storage().createItemStack( parsedItemStack ) ).toLowerCase();
+				final String displayName = Platform
+						.getItemDisplayName( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( parsedItemStack ) )
+						.toLowerCase();
 				if( displayName.contains( searchTerm ) )
 				{
 					return true;

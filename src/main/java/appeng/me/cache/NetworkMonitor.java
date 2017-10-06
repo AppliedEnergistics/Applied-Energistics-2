@@ -40,7 +40,7 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.storage.ItemWatcher;
@@ -54,7 +54,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 	@Nonnull
 	private final GridStorageCache myGridCache;
 	@Nonnull
-	private final StorageChannel myChannel;
+	private final IStorageChannel<T> myChannel;
 	@Nonnull
 	private final IItemList<T> cachedList;
 	@Nonnull
@@ -65,11 +65,11 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 	@Nonnegative
 	private int localDepthSemaphore = 0;
 
-	public NetworkMonitor( final GridStorageCache cache, final StorageChannel chan )
+	public NetworkMonitor( final GridStorageCache cache, final IStorageChannel<T> chan )
 	{
 		this.myGridCache = cache;
 		this.myChannel = chan;
-		this.cachedList = (IItemList<T>) chan.createList();
+		this.cachedList = chan.createList();
 		this.listeners = new HashMap<>();
 	}
 
@@ -112,13 +112,13 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 	}
 
 	@Override
-	public IItemList<T> getAvailableItems( final IItemList out )
+	public IItemList<T> getAvailableItems( final IItemList<T> out )
 	{
 		return this.getHandler().getAvailableItems( out );
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public IStorageChannel<T> getChannel()
 	{
 		return this.getHandler().getChannel();
 	}
@@ -188,18 +188,9 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 	}
 
 	@Nullable
-	@SuppressWarnings( "unchecked" )
 	private IMEInventoryHandler<T> getHandler()
 	{
-		switch( this.myChannel )
-		{
-			case ITEMS:
-				return (IMEInventoryHandler<T>) this.myGridCache.getItemInventoryHandler();
-			case FLUIDS:
-				return (IMEInventoryHandler<T>) this.myGridCache.getFluidInventoryHandler();
-			default:
-		}
-		return null;
+		return this.myGridCache.getInventoryHandler( this.myChannel );
 	}
 
 	private Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> getListeners()
@@ -207,7 +198,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 		return this.listeners.entrySet().iterator();
 	}
 
-	private T monitorDifference( final IAEStack original, final T leftOvers, final boolean extraction, final IActionSource src )
+	private T monitorDifference( final IAEStack<T> original, final T leftOvers, final boolean extraction, final IActionSource src )
 	{
 		final T diff = (T) original.copy();
 
@@ -283,7 +274,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 
 				if( !list.isEmpty() )
 				{
-					IAEStack fullStack = this.getStorageList().findPrecise( changedItem );
+					IAEStack<T> fullStack = this.getStorageList().findPrecise( changedItem );
 
 					if( fullStack == null )
 					{
@@ -341,5 +332,4 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 			this.myGridCache.getGrid().postEvent( new MENetworkStorageEvent( this, this.myChannel ) );
 		}
 	}
-
 }

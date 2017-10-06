@@ -61,7 +61,7 @@ import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventory;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
@@ -119,10 +119,11 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 		ItemStack paintBall = this.getColor( is );
 
-		final IMEInventory<IAEItemStack> inv = AEApi.instance().registries().cell().getCellInventory( is, null, StorageChannel.ITEMS );
+		final IMEInventory<IAEItemStack> inv = AEApi.instance().registries().cell().getCellInventory( is, null,
+				AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 		if( inv != null )
 		{
-			final IAEItemStack option = inv.extractItems( AEItemStack.create( paintBall ), Actionable.SIMULATE, new BaseActionSource() );
+			final IAEItemStack option = inv.extractItems( AEItemStack.fromItemStack( paintBall ), Actionable.SIMULATE, new BaseActionSource() );
 
 			if( option != null )
 			{
@@ -150,7 +151,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 					{
 						if( ( (IColorableTile) te ).recolourBlock( side, AEColor.TRANSPARENT, p ) )
 						{
-							inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
+							inv.extractItems( AEItemStack.fromItemStack( paintBall ), Actionable.MODULATE, new BaseActionSource() );
 							this.extractAEPower( is, powerPerUse, Actionable.MODULATE );
 							return EnumActionResult.SUCCESS;
 						}
@@ -162,7 +163,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				final TileEntity painted = w.getTileEntity( pos.offset( side ) );
 				if( this.getAECurrentPower( is ) > powerPerUse && testBlk instanceof BlockPaint && painted instanceof TilePaint )
 				{
-					inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
+					inv.extractItems( AEItemStack.fromItemStack( paintBall ), Actionable.MODULATE, new BaseActionSource() );
 					this.extractAEPower( is, powerPerUse, Actionable.MODULATE );
 					( (TilePaint) painted ).cleanSide( side.getOpposite() );
 					return EnumActionResult.SUCCESS;
@@ -176,7 +177,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				{
 					if( color != AEColor.TRANSPARENT && this.recolourBlock( blk, side, w, pos, side, color, p ) )
 					{
-						inv.extractItems( AEItemStack.create( paintBall ), Actionable.MODULATE, new BaseActionSource() );
+						inv.extractItems( AEItemStack.fromItemStack( paintBall ), Actionable.MODULATE, new BaseActionSource() );
 						this.extractAEPower( is, powerPerUse, Actionable.MODULATE );
 						return EnumActionResult.SUCCESS;
 					}
@@ -265,10 +266,12 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	{
 		ItemStack newColor = ItemStack.EMPTY;
 
-		final IMEInventory<IAEItemStack> inv = AEApi.instance().registries().cell().getCellInventory( is, null, StorageChannel.ITEMS );
+		final IMEInventory<IAEItemStack> inv = AEApi.instance().registries().cell().getCellInventory( is, null,
+				AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 		if( inv != null )
 		{
-			final IItemList<IAEItemStack> itemList = inv.getAvailableItems( AEApi.instance().storage().createItemList() );
+			final IItemList<IAEItemStack> itemList = inv
+					.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
 			if( anchor.isEmpty() )
 			{
 				final IAEItemStack firstItem = itemList.getFirstItem();
@@ -429,7 +432,8 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	{
 		super.addCheckedInformation( stack, world, lines, advancedTooltips );
 
-		final IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
+		final IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( stack, null,
+				AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
 		if( cdi instanceof CellInventoryHandler )
 		{

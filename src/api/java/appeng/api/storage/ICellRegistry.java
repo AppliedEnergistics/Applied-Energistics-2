@@ -27,6 +27,7 @@ package appeng.api.storage;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.IAppEngApi;
+import appeng.api.storage.data.IAEStack;
 
 
 /**
@@ -73,5 +74,5 @@ public interface ICellRegistry
 	 *
 	 * @return new IMEInventoryHandler, or null if there isn't one.
 	 */
-	IMEInventoryHandler getCellInventory( ItemStack is, ISaveProvider host, StorageChannel chan );
+	<T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory( ItemStack is, ISaveProvider host, IStorageChannel<T> chan );
 }

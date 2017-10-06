@@ -28,7 +28,7 @@ import appeng.api.storage.ICellHandler;
 import appeng.api.storage.ICellRegistry;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.ISaveProvider;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.IStorageChannel;
 
 
 public class CellRegistry implements ICellRegistry
@@ -85,7 +85,7 @@ public class CellRegistry implements ICellRegistry
 	}
 
 	@Override
-	public IMEInventoryHandler getCellInventory( final ItemStack is, final ISaveProvider container, final StorageChannel chan )
+	public IMEInventoryHandler getCellInventory( final ItemStack is, final ISaveProvider container, final IStorageChannel chan )
 	{
 		if( is.isEmpty() )
 		{

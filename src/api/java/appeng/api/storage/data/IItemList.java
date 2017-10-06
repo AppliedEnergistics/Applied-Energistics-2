@@ -34,7 +34,7 @@ import java.util.Iterator;
  *
  * Construct with Util.createItemList()
  */
-public interface IItemList<StackType extends IAEStack> extends IItemContainer<StackType>, Iterable<StackType>
+public interface IItemList<T extends IAEStack<T>> extends IItemContainer<T>, Iterable<T>
 {
 
 	/**
@@ -43,14 +43,14 @@ public interface IItemList<StackType extends IAEStack> extends IItemContainer<St
 	 *
 	 * @param option stacktype option
 	 */
-	void addStorage( StackType option ); // adds a stack as stored
+	void addStorage( T option ); // adds a stack as stored
 
 	/**
 	 * add a stack to the list as craftable, this will merge the stack with an item already in the list if found.
 	 *
 	 * @param option stacktype option
 	 */
-	void addCrafting( StackType option );
+	void addCrafting( T option );
 
 	/**
 	 * add a stack to the list, stack size is used to add to requestable, this will merge the stack with an item already
@@ -58,12 +58,12 @@ public interface IItemList<StackType extends IAEStack> extends IItemContainer<St
 	 *
 	 * @param option stacktype option
 	 */
-	void addRequestable( StackType option ); // adds a stack as requestable
+	void addRequestable( T option ); // adds a stack as requestable
 
 	/**
 	 * @return the first item in the list
 	 */
-	StackType getFirstItem();
+	T getFirstItem();
 
 	/**
 	 * @return the number of items in the list
@@ -74,7 +74,7 @@ public interface IItemList<StackType extends IAEStack> extends IItemContainer<St
 	 * allows you to iterate the list.
 	 */
 	@Override
-	Iterator<StackType> iterator();
+	Iterator<T> iterator();
 
 	/**
 	 * resets stack sizes to 0.

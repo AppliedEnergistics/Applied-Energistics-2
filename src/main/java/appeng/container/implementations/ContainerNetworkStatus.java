@@ -33,6 +33,7 @@ import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
@@ -113,14 +114,14 @@ public class ContainerNetworkStatus extends AEBaseContainer
 
 				for( final Class<? extends IGridHost> machineClass : this.network.getMachinesClasses() )
 				{
-					final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
+					final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 					for( final IGridNode machine : this.network.getMachines( machineClass ) )
 					{
 						final IGridBlock blk = machine.getGridBlock();
 						final ItemStack is = blk.getMachineRepresentation();
 						if( !is.isEmpty() )
 						{
-							final IAEItemStack ais = AEItemStack.create( is );
+							final IAEItemStack ais = AEItemStack.fromItemStack( is );
 							ais.setStackSize( 1 );
 							ais.setCountRequestable( (long) ( blk.getIdlePowerUsage() * 100.0 ) );
 							list.add( ais );
