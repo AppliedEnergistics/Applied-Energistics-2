@@ -157,13 +157,13 @@ public class GridStorageCache implements IStorageGrid
 
 	}
 
-	public <T extends IAEStack<T>, C extends IStorageChannel<T>> IMEInventoryHandler<T> getInventoryHandler( IStorageChannel<T> channel )
+	public <T extends IAEStack<T>> IMEInventoryHandler<T> getInventoryHandler( IStorageChannel<T> channel )
 	{
 		return (IMEInventoryHandler<T>) this.storageNetworks.computeIfAbsent( channel, this::buildNetworkStorage );
 	}
 
 	@Override
-	public <T extends IAEStack<T>, C extends IStorageChannel<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )
+	public <T extends IAEStack<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )
 	{
 		return (IMEMonitor<T>) this.storageMonitors.get( channel );
 	}

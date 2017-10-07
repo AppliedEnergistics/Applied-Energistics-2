@@ -543,7 +543,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	}
 
 	@Override
-	public <T extends IAEStack<T>, C extends IStorageChannel<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )
+	public <T extends IAEStack<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )
 	{
 		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 		{

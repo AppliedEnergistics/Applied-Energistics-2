@@ -136,7 +136,7 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 	}
 
 	@Override
-	public <T extends IAEStack<T>, C extends IStorageChannel<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )
+	public <T extends IAEStack<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )
 	{
 		try
 		{
