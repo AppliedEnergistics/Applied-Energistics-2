@@ -139,11 +139,6 @@ public class Platform
 
 	public static final int DEF_OFFSET = 16;
 
-	// public static final IStorageChannel<IAEItemStack> ITEM_CHANNEL = AEApi.instance().storage().getStorageChannel(
-	// IItemStorageChannel.class );
-	// public static final IStorageChannel<IAEFluidStack> FLUID_CHANNEL = AEApi.instance().storage().getStorageChannel(
-	// IFluidStorageChannel.class );
-
 	private static final boolean CLIENT_INSTALL = FMLCommonHandler.instance().getSide().isClient();
 
 	/*

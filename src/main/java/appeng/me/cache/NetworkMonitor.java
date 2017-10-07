@@ -200,7 +200,7 @@ public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 
 	private T monitorDifference( final IAEStack<T> original, final T leftOvers, final boolean extraction, final IActionSource src )
 	{
-		final T diff = (T) original.copy();
+		final T diff = original.copy();
 
 		if( extraction )
 		{
