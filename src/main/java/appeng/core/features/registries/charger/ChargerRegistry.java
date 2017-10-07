@@ -73,11 +73,14 @@ public class ChargerRegistry implements IChargerRegistry
 	private static final class CachedItemStack
 	{
 
+		@Nonnull
 		private final Item item;
 		private final int metaData;
 
-		CachedItemStack( ItemStack itemStack )
+		CachedItemStack( @Nonnull ItemStack itemStack )
 		{
+			Preconditions.checkNotNull( itemStack.getItem() );
+
 			this.item = itemStack.getItem();
 			this.metaData = itemStack.getMetadata();
 		}
@@ -110,21 +113,7 @@ public class ChargerRegistry implements IChargerRegistry
 
 			final CachedItemStack other = (CachedItemStack) obj;
 
-			if( item == null && other.item != null )
-			{
-				return false;
-			}
-			else if( !item.equals( other.item ) )
-			{
-				return false;
-			}
-
-			if( metaData != other.metaData )
-			{
-				return false;
-			}
-
-			return true;
+			return this.item == other.item && this.metaData == other.metaData;
 		}
 
 	}
