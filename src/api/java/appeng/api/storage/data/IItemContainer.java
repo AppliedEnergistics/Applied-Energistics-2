@@ -34,9 +34,8 @@ import appeng.api.config.FuzzyMode;
  *
  * Don't Implement.
  *
- * Construct with Util.createItemList()
  */
-public interface IItemContainer<StackType extends IAEStack>
+public interface IItemContainer<T extends IAEStack<T>>
 {
 
 	/**
@@ -44,7 +43,7 @@ public interface IItemContainer<StackType extends IAEStack>
 	 *
 	 * @param option added stack
 	 */
-	void add( StackType option ); // adds stack as is
+	void add( T option ); // adds stack as is
 
 	/**
 	 * @param i compared item
@@ -52,14 +51,14 @@ public interface IItemContainer<StackType extends IAEStack>
 	 * @return a stack equivalent to the stack passed in, but with the correct stack size information, or null if its
 	 * not present
 	 */
-	StackType findPrecise( StackType i );
+	T findPrecise( T i );
 
 	/**
 	 * @param input compared item
 	 *
 	 * @return a list of relevant fuzzy matched stacks
 	 */
-	Collection<StackType> findFuzzy( StackType input, FuzzyMode fuzzy );
+	Collection<T> findFuzzy( T input, FuzzyMode fuzzy );
 
 	/**
 	 * @return true if there are no items in the list

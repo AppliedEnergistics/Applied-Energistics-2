@@ -75,6 +75,17 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		this.oreReference = OreHelper.INSTANCE.getOre( is.getDefinition() );
 	}
 
+	@Nullable
+	public static AEItemStack fromItemStack( @Nonnull final ItemStack stack )
+	{
+		if( stack.isEmpty() )
+		{
+			return null;
+		}
+
+		return new AEItemStack( AEItemStackRegistry.getRegisteredStack( stack ), stack.getCount() );
+	}
+
 	public static IAEItemStack fromNBT( final NBTTagCompound i )
 	{
 		if( i == null )
@@ -93,17 +104,6 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		item.setCountRequestable( i.getLong( "Req" ) );
 		item.setCraftable( i.getBoolean( "Craft" ) );
 		return item;
-	}
-
-	@Nullable
-	public static AEItemStack fromItemStack( @Nonnull final ItemStack stack )
-	{
-		if( stack.isEmpty() )
-		{
-			return null;
-		}
-
-		return new AEItemStack( AEItemStackRegistry.getRegisteredStack( stack ), stack.getCount() );
 	}
 
 	public static IAEItemStack fromPacket( final ByteBuf data ) throws IOException

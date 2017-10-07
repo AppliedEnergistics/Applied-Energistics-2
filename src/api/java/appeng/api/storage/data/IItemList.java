@@ -26,13 +26,18 @@ package appeng.api.storage.data;
 
 import java.util.Iterator;
 
+import appeng.api.storage.IStorageChannel;
+
 
 /**
  * Represents a list of items in AE.
  *
  * Don't Implement.
  *
- * Construct with Util.createItemList()
+ * Construct with
+ * - For items: AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class).createList()
+ * - For fluids: AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class).createList()
+ * - Replace with the corresponding {@link IStorageChannel} type for non native channels
  */
 public interface IItemList<T extends IAEStack<T>> extends IItemContainer<T>, Iterable<T>
 {
