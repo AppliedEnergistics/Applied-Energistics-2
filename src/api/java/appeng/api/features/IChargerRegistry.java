@@ -38,11 +38,11 @@ public interface IChargerRegistry
 	/**
 	 * Fetch a charge rate for a specific item.
 	 * 
-	 * If no custom exists, it will return a default of 150.
+	 * If no custom exists, it will return a default of 160.
 	 * 
 	 * 
 	 * @param item A {@link Item} implementing {@link IAEItemPowerStorage}.
-	 * @return custom rate or 150
+	 * @return custom rate or 160
 	 */
 	@Nonnegative
 	double getChargeRate( @Nonnull Item item );

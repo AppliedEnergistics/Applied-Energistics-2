@@ -33,6 +33,8 @@ import appeng.api.features.IChargerRegistry;
 
 public class ChargerRegistry implements IChargerRegistry
 {
+	private static final double DEFAULT_CHARGE_RATE = 160d;
+	private static final double CAPPED_CHARGE_RATE = 16000d;
 
 	private final Map<Item, Double> chargeRates;
 
@@ -46,7 +48,7 @@ public class ChargerRegistry implements IChargerRegistry
 	{
 		Preconditions.checkNotNull( item );
 
-		return this.chargeRates.getOrDefault( item, 150d );
+		return this.chargeRates.getOrDefault( item, DEFAULT_CHARGE_RATE );
 	}
 
 	@Override
@@ -55,7 +57,7 @@ public class ChargerRegistry implements IChargerRegistry
 		Preconditions.checkNotNull( item );
 		Preconditions.checkArgument( value > 0d );
 
-		final double cappedValue = Math.min( value, 16000d );
+		final double cappedValue = Math.min( value, CAPPED_CHARGE_RATE );
 
 		this.chargeRates.put( item, cappedValue );
 	}
