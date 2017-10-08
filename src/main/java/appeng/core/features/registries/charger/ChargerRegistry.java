@@ -19,7 +19,7 @@
 package appeng.core.features.registries.charger;
 
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -27,7 +27,6 @@ import javax.annotation.Nonnull;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 
 import appeng.api.features.IChargerRegistry;
 
@@ -35,86 +34,38 @@ import appeng.api.features.IChargerRegistry;
 public class ChargerRegistry implements IChargerRegistry
 {
 
-	private final Map<CachedItemStack, Double> chargeRates;
+	private final Map<Item, Double> chargeRates;
 
 	public ChargerRegistry()
 	{
-		this.chargeRates = new HashMap<>();
+		this.chargeRates = new IdentityHashMap<>();
 	}
 
 	@Override
-	public double getChargeRate( ItemStack itemStack )
+	public double getChargeRate( Item item )
 	{
-		Preconditions.checkNotNull( itemStack );
-		Preconditions.checkArgument( !itemStack.isEmpty() );
+		Preconditions.checkNotNull( item );
 
-		return this.chargeRates.getOrDefault( new CachedItemStack( itemStack ), 150d );
+		return this.chargeRates.getOrDefault( item, 150d );
 	}
 
 	@Override
-	public void addChargeRate( ItemStack itemStack, double value )
+	public void addChargeRate( Item item, double value )
 	{
-		Preconditions.checkNotNull( itemStack );
-		Preconditions.checkArgument( !itemStack.isEmpty() );
+		Preconditions.checkNotNull( item );
 		Preconditions.checkArgument( value > 0d );
 
-		this.chargeRates.put( new CachedItemStack( itemStack ), value );
+		final double cappedValue = Math.min( value, 16000d );
+
+		this.chargeRates.put( item, cappedValue );
 	}
 
 	@Override
-	public void removeChargeRate( @Nonnull ItemStack itemStack )
+	public void removeChargeRate( @Nonnull Item item )
 	{
-		Preconditions.checkNotNull( itemStack );
-		Preconditions.checkArgument( !itemStack.isEmpty() );
+		Preconditions.checkNotNull( item );
 
-		this.chargeRates.remove( new CachedItemStack( itemStack ) );
+		this.chargeRates.remove( item );
 	}
 
-	private static final class CachedItemStack
-	{
-
-		@Nonnull
-		private final Item item;
-		private final int metaData;
-
-		CachedItemStack( @Nonnull ItemStack itemStack )
-		{
-			Preconditions.checkNotNull( itemStack.getItem() );
-
-			this.item = itemStack.getItem();
-			this.metaData = itemStack.getMetadata();
-		}
-
-		@Override
-		public int hashCode()
-		{
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ( ( item == null ) ? 0 : item.hashCode() );
-			result = prime * result + metaData;
-			return result;
-		}
-
-		@Override
-		public boolean equals( Object obj )
-		{
-			if( this == obj )
-			{
-				return true;
-			}
-			if( obj == null )
-			{
-				return false;
-			}
-			if( getClass() != obj.getClass() )
-			{
-				return false;
-			}
-
-			final CachedItemStack other = (CachedItemStack) obj;
-
-			return this.item == other.item && this.metaData == other.metaData;
-		}
-
-	}
 }

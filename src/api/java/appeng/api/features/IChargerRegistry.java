@@ -28,7 +28,6 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 
 import appeng.api.implementations.items.IAEItemPowerStorage;
 
@@ -41,35 +40,30 @@ public interface IChargerRegistry
 	 * 
 	 * If no custom exists, it will return a default of 150.
 	 * 
-	 * Note that the {@link Item} has to implement {@link IAEItemPowerStorage}.
 	 * 
-	 * @param item A non empty {@link ItemStack}
+	 * @param item A {@link Item} implementing {@link IAEItemPowerStorage}.
 	 * @return custom rate or 150
 	 */
 	@Nonnegative
-	double getChargeRate( @Nonnull ItemStack item );
+	double getChargeRate( @Nonnull Item item );
 
 	/**
 	 * Register a custom charge rate for a specific item.
 	 * 
-	 * This will currently match an exact combination of {@link Item} and a metadata.
-	 * No wildcard support for now.
+	 * Capped at 16000 to avoid extracting too much energy from a network for each operation.
 	 * 
-	 * 
-	 * Note that the {@link Item} has to implement {@link IAEItemPowerStorage}.
-	 * 
-	 * @param itemStack A non empty {@link ItemStack}
-	 * @param chargeRate the custom rate, must be > 0
+	 * @param item A {@link Item} implementing {@link IAEItemPowerStorage}.
+	 * @param chargeRate the custom rate, must be > 0, capped to 16000d
 	 */
-	void addChargeRate( @Nonnull ItemStack itemStack, @Nonnull double chargeRate );
+	void addChargeRate( @Nonnull Item item, @Nonnull double chargeRate );
 
 	/**
 	 * Remove the custom rate for a specific item.
 	 * 
 	 * It will still use the default value after removing it.
 	 * 
-	 * @param itemStack A non empty {@link ItemStack}
+	 * @param item A {@link Item} implementing {@link IAEItemPowerStorage}.
 	 */
-	void removeChargeRate( @Nonnull ItemStack itemStack );
+	void removeChargeRate( @Nonnull Item item );
 
 }

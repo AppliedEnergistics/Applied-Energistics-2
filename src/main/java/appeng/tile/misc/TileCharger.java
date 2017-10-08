@@ -227,7 +227,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 
 				if( ps.getAEMaxPower( myItem ) > ps.getAECurrentPower( myItem ) )
 				{
-					final double chargeRate = AEApi.instance().registries().charger().getChargeRate( myItem );
+					final double chargeRate = AEApi.instance().registries().charger().getChargeRate( myItem.getItem() );
 
 					double extractedAmount = this.extractAEPower( chargeRate, Actionable.MODULATE, PowerMultiplier.CONFIG );
 
