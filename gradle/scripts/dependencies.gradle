@@ -76,6 +76,7 @@ dependencies {
     compileOnly "net.darkhax.tesla:Tesla-1.12:${tesla_version}"
     compileOnly "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:${top_version}:api"
+    compileOnly "cofh:CoFHCore:${cofhcore_version}:deobf"
 
     // at runtime, use the full JEI jar
     runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"

@@ -20,6 +20,8 @@ package appeng.items.tools.quartz;
 
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
@@ -28,6 +30,9 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional.Interface;
+
+import cofh.api.item.IToolHammer;
 
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.util.DimensionalCoord;
@@ -37,7 +42,8 @@ import appeng.util.Platform;
 
 // TODO BC Integration
 //@Interface( iface = "buildcraft.api.tools.IToolWrench", iname = IntegrationType.BuildCraftCore )
-public class ToolQuartzWrench extends AEBaseItem implements IAEWrench /* , IToolWrench */
+@Interface( iface = "cofh.api.item.IToolHammer", modid = "cofhcore" )
+public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolHammer /* , IToolWrench */
 {
 
 	public ToolQuartzWrench()
@@ -80,6 +86,32 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench /* , ITool
 	{
 		return true;
 	}
+
+	// IToolHammer - start
+	@Override
+	public boolean isUsable( ItemStack item, EntityLivingBase user, BlockPos pos )
+	{
+		return true;
+	}
+
+	@Override
+	public boolean isUsable( ItemStack item, EntityLivingBase user, Entity entity )
+	{
+		return true;
+	}
+
+	@Override
+	public void toolUsed( ItemStack item, EntityLivingBase user, BlockPos pos )
+	{
+		user.swingArm( user.getActiveHand() );
+	}
+
+	@Override
+	public void toolUsed( ItemStack item, EntityLivingBase user, Entity entity )
+	{
+		user.swingArm( user.getActiveHand() );
+	}
+	// IToolHammer - end
 
 	// TODO: BC Wrench Integration
 	/*
