@@ -23,12 +23,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
+import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.storage.ICellHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.ISaveProvider;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.util.AEPartLocation;
 import appeng.core.sync.GuiBridge;
 import appeng.items.storage.ItemCreativeStorageCell;
@@ -46,9 +48,10 @@ public class CreativeCellHandler implements ICellHandler
 	}
 
 	@Override
-	public IMEInventoryHandler getCellInventory( final ItemStack is, final ISaveProvider container, final StorageChannel channel )
+	public IMEInventoryHandler getCellInventory( final ItemStack is, final ISaveProvider container, final IStorageChannel channel )
 	{
-		if( channel == StorageChannel.ITEMS && !is.isEmpty() && is.getItem() instanceof ItemCreativeStorageCell )
+		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) && !is.isEmpty() && is
+				.getItem() instanceof ItemCreativeStorageCell )
 		{
 			return CreativeCellInventory.getCell( is );
 		}
@@ -56,7 +59,7 @@ public class CreativeCellHandler implements ICellHandler
 	}
 
 	@Override
-	public void openChestGui( final EntityPlayer player, final IChestOrDrive chest, final ICellHandler cellHandler, final IMEInventoryHandler inv, final ItemStack is, final StorageChannel chan )
+	public void openChestGui( final EntityPlayer player, final IChestOrDrive chest, final ICellHandler cellHandler, final IMEInventoryHandler inv, final ItemStack is, final IStorageChannel chan )
 	{
 		Platform.openGUI( player, (TileEntity) chest, AEPartLocation.fromFacing( chest.getUp() ), GuiBridge.GUI_ME );
 	}

@@ -36,7 +36,8 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.InventoryAdaptor;
@@ -48,7 +49,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 {
 
 	private final InventoryAdaptor adaptor;
-	private final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
+	private final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
 	private final NavigableMap<Integer, CachedItemStack> memory;
 	private IActionSource mySource;
@@ -134,9 +135,9 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public IStorageChannel getChannel()
 	{
-		return StorageChannel.ITEMS;
+		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override
@@ -180,7 +181,10 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 				final int newSize = ( newIS.isEmpty() ? 0 : newIS.getCount() );
 				final int diff = newSize - ( oldIS.isEmpty() ? 0 : oldIS.getCount() );
 
-				final IAEItemStack stack = ( old == null || old.aeStack == null ? AEApi.instance().storage().createItemStack( newIS ) : old.aeStack.copy() );
+				final IAEItemStack stack = ( old == null || old.aeStack == null ? AEApi.instance()
+						.storage()
+						.getStorageChannel( IItemStorageChannel.class )
+						.createStack( newIS ) : old.aeStack.copy() );
 				if( stack != null )
 				{
 					stack.setStackSize( newSize );
@@ -352,7 +356,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 			else
 			{
 				this.itemStack = is.copy();
-				this.aeStack = AEApi.instance().storage().createItemStack( is );
+				this.aeStack = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( is );
 			}
 		}
 	}

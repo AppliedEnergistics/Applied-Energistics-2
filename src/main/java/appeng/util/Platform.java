@@ -99,7 +99,8 @@ import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.channels.IFluidStorageChannel;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -1135,9 +1136,9 @@ public class Platform
 		return 0;
 	}
 
-	public static <StackType extends IAEStack> StackType poweredExtraction( final IEnergySource energy, final IMEInventory<StackType> cell, final StackType request, final IActionSource src )
+	public static <T extends IAEStack<T>> T poweredExtraction( final IEnergySource energy, final IMEInventory<T> cell, final T request, final IActionSource src )
 	{
-		final StackType possible = cell.extractItems( (StackType) request.copy(), Actionable.SIMULATE, src );
+		final T possible = cell.extractItems( (T) request.copy(), Actionable.SIMULATE, src );
 
 		long retrieved = 0;
 		if( possible != null )
@@ -1154,7 +1155,7 @@ public class Platform
 			energy.extractAEPower( retrieved, Actionable.MODULATE, PowerMultiplier.CONFIG );
 
 			possible.setStackSize( itemToExtract );
-			final StackType ret = cell.extractItems( possible, Actionable.MODULATE, src );
+			final T ret = cell.extractItems( possible, Actionable.MODULATE, src );
 
 			if( ret != null )
 			{
@@ -1167,9 +1168,9 @@ public class Platform
 		return null;
 	}
 
-	public static <StackType extends IAEStack> StackType poweredInsert( final IEnergySource energy, final IMEInventory<StackType> cell, final StackType input, final IActionSource src )
+	public static <T extends IAEStack<T>> T poweredInsert( final IEnergySource energy, final IMEInventory<T> cell, final T input, final IActionSource src )
 	{
-		final StackType possible = cell.injectItems( (StackType) input.copy(), Actionable.SIMULATE, src );
+		final T possible = cell.injectItems( (T) input.copy(), Actionable.SIMULATE, src );
 
 		long stored = input.getStackSize();
 		if( possible != null )
@@ -1188,7 +1189,7 @@ public class Platform
 			if( itemToAdd < input.getStackSize() )
 			{
 				final long original = input.getStackSize();
-				final StackType split = (StackType) input.copy();
+				final T split = (T) input.copy();
 				split.decStackSize( itemToAdd );
 				input.setStackSize( itemToAdd );
 				split.add( cell.injectItems( input, Actionable.MODULATE, src ) );
@@ -1202,7 +1203,7 @@ public class Platform
 				return split;
 			}
 
-			final StackType ret = cell.injectItems( input, Actionable.MODULATE, src );
+			final T ret = cell.injectItems( input, Actionable.MODULATE, src );
 
 			src.player().ifPresent( player ->
 			{
@@ -1218,12 +1219,15 @@ public class Platform
 
 	public static void postChanges( final IStorageGrid gs, final ItemStack removed, final ItemStack added, final IActionSource src )
 	{
-		final IItemList<IAEItemStack> itemChanges = AEApi.instance().storage().createItemList();
-		final IItemList<IAEFluidStack> fluidChanges = AEApi.instance().storage().createFluidList();
+
+		final IItemStorageChannel itemChannel = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
+		final IFluidStorageChannel fluidChannel = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
+		final IItemList<IAEItemStack> itemChanges = itemChannel.createList();
+		final IItemList<IAEFluidStack> fluidChanges = fluidChannel.createList();
 
 		if( !removed.isEmpty() )
 		{
-			final IMEInventory<IAEItemStack> myItems = AEApi.instance().registries().cell().getCellInventory( removed, null, StorageChannel.ITEMS );
+			final IMEInventory<IAEItemStack> myItems = AEApi.instance().registries().cell().getCellInventory( removed, null, itemChannel );
 
 			if( myItems != null )
 			{
@@ -1233,7 +1237,7 @@ public class Platform
 				}
 			}
 
-			final IMEInventory<IAEFluidStack> myFluids = AEApi.instance().registries().cell().getCellInventory( removed, null, StorageChannel.FLUIDS );
+			final IMEInventory<IAEFluidStack> myFluids = AEApi.instance().registries().cell().getCellInventory( removed, null, fluidChannel );
 
 			if( myFluids != null )
 			{
@@ -1246,14 +1250,14 @@ public class Platform
 
 		if( !added.isEmpty() )
 		{
-			final IMEInventory<IAEItemStack> myItems = AEApi.instance().registries().cell().getCellInventory( added, null, StorageChannel.ITEMS );
+			final IMEInventory<IAEItemStack> myItems = AEApi.instance().registries().cell().getCellInventory( added, null, itemChannel );
 
 			if( myItems != null )
 			{
 				myItems.getAvailableItems( itemChanges );
 			}
 
-			final IMEInventory<IAEFluidStack> myFluids = AEApi.instance().registries().cell().getCellInventory( added, null, StorageChannel.FLUIDS );
+			final IMEInventory<IAEFluidStack> myFluids = AEApi.instance().registries().cell().getCellInventory( added, null, fluidChannel );
 
 			if( myFluids != null )
 			{
@@ -1261,7 +1265,7 @@ public class Platform
 			}
 		}
 
-		gs.postAlterationOfStoredItems( StorageChannel.ITEMS, itemChanges, src );
+		gs.postAlterationOfStoredItems( itemChannel, itemChanges, src );
 	}
 
 	public static <T extends IAEStack<T>> void postListChanges( final IItemList<T> before, final IItemList<T> after, final IMEMonitorHandlerReceiver<T> meMonitorPassthrough, final IActionSource source )
@@ -1444,7 +1448,7 @@ public class Platform
 				return ItemStack.EMPTY;
 			}
 
-			final AEItemStack ae_req = AEItemStack.create( providedTemplate );
+			final AEItemStack ae_req = AEItemStack.fromItemStack( providedTemplate );
 			ae_req.setStackSize( 1 );
 
 			if( filter == null || filter.isListed( ae_req ) )

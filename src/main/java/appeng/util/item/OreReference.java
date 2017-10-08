@@ -57,7 +57,7 @@ public class OreReference
 				{
 					if( is.getItem() != Items.AIR )
 					{
-						this.aeOtherOptions.add( AEItemStack.create( is ) );
+						this.aeOtherOptions.add( AEItemStack.fromItemStack( is ) );
 					}
 				}
 			}

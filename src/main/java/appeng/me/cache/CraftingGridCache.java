@@ -44,6 +44,7 @@ import com.google.common.collect.Multimap;
 
 import net.minecraft.world.World;
 
+import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
@@ -71,7 +72,8 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.ICellProvider;
 import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
@@ -87,7 +89,7 @@ import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.ItemSorters;
 
 
-public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler<IAEStack>
+public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler<IAEItemStack>
 {
 
 	private static final ExecutorService CRAFTING_POOL;
@@ -264,7 +266,8 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		this.emitableItems.clear();
 
 		// update the stuff that was in the list...
-		this.storageGrid.postAlterationOfStoredItems( StorageChannel.ITEMS, oldItems.keySet(), new BaseActionSource() );
+		this.storageGrid.postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), oldItems.keySet(),
+				new BaseActionSource() );
 
 		// re-create list..
 		for( final ICraftingProvider provider : this.craftingProviders )
@@ -300,7 +303,8 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			this.craftableItems.put( e.getKey(), ImmutableList.copyOf( e.getValue() ) );
 		}
 
-		this.storageGrid.postAlterationOfStoredItems( StorageChannel.ITEMS, this.craftableItems.keySet(), new BaseActionSource() );
+		this.storageGrid.postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), this.craftableItems.keySet(),
+				new BaseActionSource() );
 	}
 
 	private void updateCPUClusters()
@@ -375,11 +379,11 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	}
 
 	@Override
-	public List<IMEInventoryHandler> getCellArray( final StorageChannel channel )
+	public List<IMEInventoryHandler> getCellArray( final IStorageChannel channel )
 	{
 		final List<IMEInventoryHandler> list = new ArrayList<>( 1 );
 
-		if( channel == StorageChannel.ITEMS )
+		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
 			list.add( this );
 		}
@@ -400,13 +404,13 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	}
 
 	@Override
-	public boolean isPrioritized( final IAEStack input )
+	public boolean isPrioritized( final IAEItemStack input )
 	{
 		return true;
 	}
 
 	@Override
-	public boolean canAccept( final IAEStack input )
+	public boolean canAccept( final IAEItemStack input )
 	{
 		for( final CraftingCPUCluster cpu : this.craftingCPUClusters )
 		{
@@ -432,7 +436,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	}
 
 	@Override
-	public IAEStack injectItems( IAEStack input, final Actionable type, final IActionSource src )
+	public IAEItemStack injectItems( IAEItemStack input, final Actionable type, final IActionSource src )
 	{
 		for( final CraftingCPUCluster cpu : this.craftingCPUClusters )
 		{
@@ -443,13 +447,13 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	}
 
 	@Override
-	public IAEStack extractItems( final IAEStack request, final Actionable mode, final IActionSource src )
+	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final IActionSource src )
 	{
 		return null;
 	}
 
 	@Override
-	public IItemList<IAEStack> getAvailableItems( final IItemList<IAEStack> out )
+	public IItemList<IAEItemStack> getAvailableItems( final IItemList<IAEItemStack> out )
 	{
 		// add craftable items!
 		for( final IAEItemStack stack : this.craftableItems.keySet() )
@@ -466,9 +470,9 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public IStorageChannel<IAEItemStack> getChannel()
 	{
-		return StorageChannel.ITEMS;
+		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override

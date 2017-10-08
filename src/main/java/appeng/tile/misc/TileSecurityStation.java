@@ -57,10 +57,12 @@ import appeng.api.networking.events.MENetworkSecurityChange;
 import appeng.api.networking.security.ISecurityProvider;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.MEMonitorHandler;
-import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
@@ -199,7 +201,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 			final NBTBase obj = storedItems.getTag( (String) key );
 			if( obj instanceof NBTTagCompound )
 			{
-				this.inventory.getStoredItems().add( AEItemStack.create( new ItemStack( (NBTTagCompound) obj ) ) );
+				this.inventory.getStoredItems().add( AEItemStack.fromItemStack( new ItemStack( (NBTTagCompound) obj ) ) );
 			}
 		}
 	}
@@ -274,15 +276,14 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 	}
 
 	@Override
-	public IMEMonitor<IAEItemStack> getItemInventory()
+	public <T extends IAEStack<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )
 	{
-		return this.securityMonitor;
-	}
-
-	@Override
-	public IMEMonitor<IAEFluidStack> getFluidInventory()
-	{
+		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
+		{
+			return (IMEMonitor<T>) this.securityMonitor;
+		}
 		return null;
+
 	}
 
 	@Override

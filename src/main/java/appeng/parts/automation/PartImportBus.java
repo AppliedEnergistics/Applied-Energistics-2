@@ -43,6 +43,7 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.core.AppEng;
@@ -94,7 +95,8 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 			return false;
 		}
 
-		final IAEItemStack out = this.destination.injectItems( this.lastItemChecked = AEApi.instance().storage().createItemStack( stack ), Actionable.SIMULATE,
+		final IAEItemStack out = this.destination.injectItems(
+				this.lastItemChecked = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( stack ), Actionable.SIMULATE,
 				this.source );
 		if( out == null )
 		{
@@ -167,7 +169,8 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 				this.itemToSend = Math.min( this.itemToSend,
 						(int) ( 0.01 + this.getProxy().getEnergy().extractAEPower( this.itemToSend, Actionable.SIMULATE, PowerMultiplier.CONFIG ) ) );
 
-				final IMEMonitor<IAEItemStack> inv = this.getProxy().getStorage().getItemInventory();
+				final IMEMonitor<IAEItemStack> inv = this.getProxy().getStorage().getInventory(
+						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 				final IEnergyGrid energy = this.getProxy().getEnergy();
 
 				boolean Configured = false;
@@ -234,7 +237,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 			if( this.lastItemChecked == null || !this.lastItemChecked.isSameType( newItems ) )
 			{
-				this.lastItemChecked = AEApi.instance().storage().createItemStack( newItems );
+				this.lastItemChecked = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( newItems );
 			}
 			else
 			{
@@ -280,12 +283,12 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 		if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 		{
 			simResult = myAdaptor.simulateSimilarRemove( toSend, itemStackToImport, fzMode, this.configDestination( inv ) );
-			itemAmountNotStorable = this.destination.injectItems( AEItemStack.create( simResult ), Actionable.SIMULATE, this.source );
+			itemAmountNotStorable = this.destination.injectItems( AEItemStack.fromItemStack( simResult ), Actionable.SIMULATE, this.source );
 		}
 		else
 		{
 			simResult = myAdaptor.simulateRemove( toSend, itemStackToImport, this.configDestination( inv ) );
-			itemAmountNotStorable = this.destination.injectItems( AEItemStack.create( simResult ), Actionable.SIMULATE, this.source );
+			itemAmountNotStorable = this.destination.injectItems( AEItemStack.fromItemStack( simResult ), Actionable.SIMULATE, this.source );
 		}
 
 		if( itemAmountNotStorable != null )

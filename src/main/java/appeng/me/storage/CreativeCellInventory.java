@@ -26,7 +26,8 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.items.contents.CellConfig;
@@ -36,7 +37,7 @@ import appeng.util.item.AEItemStack;
 public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 {
 
-	private final IItemList<IAEItemStack> itemListCache = AEApi.instance().storage().createItemList();
+	private final IItemList<IAEItemStack> itemListCache = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 
 	protected CreativeCellInventory( final ItemStack o )
 	{
@@ -45,7 +46,7 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 		{
 			if( !is.isEmpty() )
 			{
-				final IAEItemStack i = AEItemStack.create( is );
+				final IAEItemStack i = AEItemStack.fromItemStack( is );
 				i.setStackSize( Integer.MAX_VALUE );
 				this.itemListCache.add( i );
 			}
@@ -92,9 +93,9 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public IStorageChannel getChannel()
 	{
-		return StorageChannel.ITEMS;
+		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override

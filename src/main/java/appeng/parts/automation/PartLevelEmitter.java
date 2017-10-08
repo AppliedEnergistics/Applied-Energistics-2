@@ -35,6 +35,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
 import appeng.api.config.RedstoneMode;
@@ -62,7 +63,8 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
@@ -274,7 +276,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 				this.updateState();
 
 				// no more item stuff..
-				this.getProxy().getStorage().getItemInventory().removeListener( this );
+				this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).removeListener( this );
 			}
 			catch( final GridAccessException e )
 			{
@@ -288,11 +290,12 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		{
 			if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 || myStack == null )
 			{
-				this.getProxy().getStorage().getItemInventory().addListener( this, this.getProxy().getGrid() );
+				this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).addListener( this,
+						this.getProxy().getGrid() );
 			}
 			else
 			{
-				this.getProxy().getStorage().getItemInventory().removeListener( this );
+				this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).removeListener( this );
 
 				if( this.myWatcher != null )
 				{
@@ -300,7 +303,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 				}
 			}
 
-			this.updateReportingValue( this.getProxy().getStorage().getItemInventory() );
+			this.updateReportingValue( this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ) );
 		}
 		catch( final GridAccessException e )
 		{
@@ -354,9 +357,10 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public void onStackChange( final IItemList o, final IAEStack fullStack, final IAEStack diffStack, final IActionSource src, final StorageChannel chan )
+	public void onStackChange( final IItemList o, final IAEStack fullStack, final IAEStack diffStack, final IActionSource src, final IStorageChannel chan )
 	{
-		if( chan == StorageChannel.ITEMS && fullStack.equals( this.config.getAEStackInSlot( 0 ) ) && this.getInstalledUpgrades( Upgrades.FUZZY ) == 0 )
+		if( chan == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) && fullStack.equals( this.config.getAEStackInSlot( 0 ) ) && this
+				.getInstalledUpgrades( Upgrades.FUZZY ) == 0 )
 		{
 			this.lastReportedValue = fullStack.getStackSize();
 			this.updateState();
@@ -401,7 +405,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	{
 		try
 		{
-			this.updateReportingValue( this.getProxy().getStorage().getItemInventory() );
+			this.updateReportingValue( this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ) );
 		}
 		catch( final GridAccessException e )
 		{

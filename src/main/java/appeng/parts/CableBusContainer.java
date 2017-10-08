@@ -632,7 +632,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 							{
 								try
 								{
-									AEApi.instance().createGridConnection( cn, sn );
+									AEApi.instance().grid().createGridConnection( cn, sn );
 								}
 								catch( final FailedConnection e )
 								{

@@ -24,7 +24,7 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
@@ -32,10 +32,10 @@ import appeng.api.storage.data.IItemList;
 public class MEPassThrough<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 {
 
-	private final StorageChannel wrappedChannel;
+	private final IStorageChannel wrappedChannel;
 	private IMEInventory<T> internal;
 
-	public MEPassThrough( final IMEInventory<T> i, final StorageChannel channel )
+	public MEPassThrough( final IMEInventory<T> i, final IStorageChannel channel )
 	{
 		this.wrappedChannel = channel;
 		this.setInternal( i );
@@ -70,7 +70,7 @@ public class MEPassThrough<T extends IAEStack<T>> implements IMEInventoryHandler
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public IStorageChannel getChannel()
 	{
 		return this.internal.getChannel();
 	}
@@ -111,7 +111,7 @@ public class MEPassThrough<T extends IAEStack<T>> implements IMEInventoryHandler
 		return true;
 	}
 
-	StorageChannel getWrappedChannel()
+	IStorageChannel getWrappedChannel()
 	{
 		return this.wrappedChannel;
 	}

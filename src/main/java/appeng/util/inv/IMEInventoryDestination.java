@@ -46,7 +46,7 @@ public class IMEInventoryDestination implements IInventoryDestination
 			return false;
 		}
 
-		final IAEItemStack failed = this.me.injectItems( AEItemStack.create( stack ), Actionable.SIMULATE, null );
+		final IAEItemStack failed = this.me.injectItems( AEItemStack.fromItemStack( stack ), Actionable.SIMULATE, null );
 
 		if( failed == null )
 		{

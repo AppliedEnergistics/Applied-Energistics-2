@@ -59,7 +59,7 @@ public class PacketInventoryAction extends AppEngPacket
 		final boolean hasItem = stream.readBoolean();
 		if( hasItem )
 		{
-			this.slotItem = AEItemStack.loadItemStackFromPacket( stream );
+			this.slotItem = AEItemStack.fromPacket( stream );
 		}
 		else
 		{

@@ -58,7 +58,7 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 
 		if( hasItem )
 		{
-			this.dspPlay = AEItemStack.loadItemStackFromPacket( data );
+			this.dspPlay = AEItemStack.fromPacket( data );
 		}
 		else
 		{

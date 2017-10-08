@@ -33,7 +33,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.ICellWorkbenchItem;
 import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 
@@ -80,7 +80,8 @@ public class ItemCreativeStorageCell extends AEBaseItem implements ICellWorkbenc
 	@Override
 	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
-		final IMEInventoryHandler<?> inventory = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
+		final IMEInventoryHandler<?> inventory = AEApi.instance().registries().cell().getCellInventory( stack, null,
+				AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
 		if( inventory instanceof ICellInventoryHandler )
 		{

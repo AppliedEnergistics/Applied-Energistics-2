@@ -40,7 +40,7 @@ import appeng.api.storage.data.IItemList;
  * If you want to request a stack of an item, you should should determine that prior to requesting the stack from the
  * inventory.
  */
-public interface IMEInventory<StackType extends IAEStack>
+public interface IMEInventory<T extends IAEStack<T>>
 {
 
 	/**
@@ -52,7 +52,7 @@ public interface IMEInventory<StackType extends IAEStack>
 	 *
 	 * @return returns the number of items not added.
 	 */
-	StackType injectItems( StackType input, Actionable type, IActionSource src );
+	T injectItems( T input, Actionable type, IActionSource src );
 
 	/**
 	 * Extract the specified item from the ME Inventory
@@ -62,7 +62,7 @@ public interface IMEInventory<StackType extends IAEStack>
 	 *
 	 * @return returns the number of items extracted, null
 	 */
-	StackType extractItems( StackType request, Actionable mode, IActionSource src );
+	T extractItems( T request, Actionable mode, IActionSource src );
 
 	/**
 	 * request a full report of all available items, storage.
@@ -71,10 +71,10 @@ public interface IMEInventory<StackType extends IAEStack>
 	 *
 	 * @return returns same list that was passed in, is passed out
 	 */
-	IItemList<StackType> getAvailableItems( IItemList<StackType> out );
+	IItemList<T> getAvailableItems( IItemList<T> out );
 
 	/**
 	 * @return the type of channel your handler should be part of
 	 */
-	StorageChannel getChannel();
+	IStorageChannel<T> getChannel();
 }

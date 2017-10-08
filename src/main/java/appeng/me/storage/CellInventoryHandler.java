@@ -31,7 +31,7 @@ import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventory;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.Platform;
@@ -45,12 +45,12 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 
 	CellInventoryHandler( final IMEInventory c )
 	{
-		super( c, StorageChannel.ITEMS );
+		super( c, AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
 		final ICellInventory ci = this.getCellInv();
 		if( ci != null )
 		{
-			final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
+			final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 
 			final IItemHandler upgrades = ci.getUpgradesInventory();
 			final IItemHandler config = ci.getConfigInventory();
@@ -86,7 +86,7 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 				final ItemStack is = config.getStackInSlot( x );
 				if( !is.isEmpty() )
 				{
-					priorityList.add( AEItemStack.create( is ) );
+					priorityList.add( AEItemStack.fromItemStack( is ) );
 				}
 			}
 

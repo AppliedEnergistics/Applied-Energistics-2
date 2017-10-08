@@ -29,13 +29,15 @@ import java.util.Map;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AELog;
@@ -92,7 +94,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			this.onTick();
 		}
 
-		return AEItemStack.create( remaining );
+		return AEItemStack.fromItemStack( remaining );
 	}
 
 	@Override
@@ -168,7 +170,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 				this.onTick();
 			}
 
-			return AEItemStack.create( gathered );
+			return AEItemStack.fromItemStack( gathered );
 		}
 
 		return null;
@@ -255,7 +257,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	{
 		// Completely different item
 		this.cachedStacks[slot] = newIS;
-		this.cachedAeStacks[slot] = AEItemStack.create( newIS );
+		this.cachedAeStacks[slot] = AEItemStack.fromItemStack( newIS );
 
 		// If we had a stack previously in this slot, notify the newtork about its disappearance
 		if( oldAeIS != null )
@@ -330,16 +332,16 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 
 		for( int i = 0; i < this.itemHandler.getSlots(); i++ )
 		{
-			out.addStorage( AEItemStack.create( this.itemHandler.getStackInSlot( i ) ) );
+			out.addStorage( AEItemStack.fromItemStack( this.itemHandler.getStackInSlot( i ) ) );
 		}
 
 		return out;
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public IStorageChannel getChannel()
 	{
-		return StorageChannel.ITEMS;
+		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override

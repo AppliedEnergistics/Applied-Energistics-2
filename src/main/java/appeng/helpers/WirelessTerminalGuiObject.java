@@ -39,9 +39,10 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.StorageChannel;
-import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
@@ -95,7 +96,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 					this.sg = this.targetGrid.getCache( IStorageGrid.class );
 					if( this.sg != null )
 					{
-						this.itemStorage = this.sg.getItemInventory();
+						this.itemStorage = this.sg.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 					}
 				}
 			}
@@ -108,23 +109,9 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public IMEMonitor<IAEItemStack> getItemInventory()
+	public <T extends IAEStack<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )
 	{
-		if( this.sg == null )
-		{
-			return null;
-		}
-		return this.sg.getItemInventory();
-	}
-
-	@Override
-	public IMEMonitor<IAEFluidStack> getFluidInventory()
-	{
-		if( this.sg == null )
-		{
-			return null;
-		}
-		return this.sg.getFluidInventory();
+		return this.sg.getInventory( channel );
 	}
 
 	@Override
@@ -146,7 +133,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems( final IItemList out )
+	public IItemList<IAEItemStack> getAvailableItems( final IItemList<IAEItemStack> out )
 	{
 		if( this.itemStorage != null )
 		{
@@ -242,13 +229,13 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public IStorageChannel getChannel()
 	{
 		if( this.itemStorage != null )
 		{
 			return this.itemStorage.getChannel();
 		}
-		return StorageChannel.ITEMS;
+		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override

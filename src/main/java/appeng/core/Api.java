@@ -20,20 +20,14 @@ package appeng.core;
 
 
 import appeng.api.IAppEngApi;
-import appeng.api.exceptions.FailedConnection;
 import appeng.api.features.IRegistryContainer;
-import appeng.api.networking.IGridBlock;
-import appeng.api.networking.IGridConnection;
-import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridHelper;
 import appeng.api.storage.IStorageHelper;
-import appeng.api.util.AEPartLocation;
+import appeng.core.api.ApiGrid;
 import appeng.core.api.ApiPart;
 import appeng.core.api.ApiStorage;
 import appeng.core.features.registries.PartModels;
 import appeng.core.features.registries.RegistryContainer;
-import appeng.me.GridConnection;
-import appeng.me.GridNode;
-import appeng.util.Platform;
 
 
 public final class Api implements IAppEngApi
@@ -45,11 +39,13 @@ public final class Api implements IAppEngApi
 	// private MovableTileRegistry MovableRegistry = new MovableTileRegistry();
 	private final IRegistryContainer registryContainer;
 	private final IStorageHelper storageHelper;
+	private final IGridHelper networkHelper;
 	private final ApiDefinitions definitions;
 
 	private Api()
 	{
 		this.storageHelper = new ApiStorage();
+		this.networkHelper = new ApiGrid();
 		this.registryContainer = new RegistryContainer();
 		this.partHelper = new ApiPart();
 		this.definitions = new ApiDefinitions( (PartModels) this.registryContainer.partModels() );
@@ -73,6 +69,12 @@ public final class Api implements IAppEngApi
 	}
 
 	@Override
+	public IGridHelper grid()
+	{
+		return this.networkHelper;
+	}
+
+	@Override
 	public ApiPart partHelper()
 	{
 		return this.partHelper;
@@ -82,22 +84,5 @@ public final class Api implements IAppEngApi
 	public ApiDefinitions definitions()
 	{
 		return this.definitions;
-	}
-
-	@Override
-	public IGridNode createGridNode( final IGridBlock blk )
-	{
-		if( Platform.isClient() )
-		{
-			throw new IllegalStateException( "Grid features for " + blk + " are server side only." );
-		}
-
-		return new GridNode( blk );
-	}
-
-	@Override
-	public IGridConnection createGridConnection( final IGridNode a, final IGridNode b ) throws FailedConnection
-	{
-		return new GridConnection( a, b, AEPartLocation.INTERNAL );
 	}
 }

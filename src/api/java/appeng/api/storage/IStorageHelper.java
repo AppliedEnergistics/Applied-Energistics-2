@@ -24,25 +24,62 @@
 package appeng.api.storage;
 
 
-import java.io.IOException;
+import java.util.Collection;
 
-import io.netty.buffer.ByteBuf;
+import javax.annotation.Nonnull;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
-import appeng.api.networking.energy.IEnergySource;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
+import appeng.api.storage.data.IAEStack;
 
 
 public interface IStorageHelper
 {
+
+	/**
+	 * Register a new storage channel.
+	 * 
+	 * AE2 already provides native channels for {@link IAEItemStack} and {@link IAEFluidStack}.
+	 * 
+	 * Each {@link IAEStack} subtype can only have a single factory instance. Overwriting is not intended.
+	 * Each subtype should be a direct one, this might be enforced at any time.
+	 * 
+	 * Channel class and factory instance can be used interchangeable as identifier. In most cases the factory instance
+	 * is used as key as having direct access the methods is more beneficial compared to being forced to query the
+	 * registry each time.
+	 * 
+	 * Caching the factory instance in a field or local variable is perfectly for performance reasons. But do not use
+	 * any AE2 internal field as they can change randomly between releases.
+	 * 
+	 * @param channel The channel type, must be a subtype of {@link IStorageChannel}
+	 * @param factory An instance implementing the channel, must be be an instance of channel
+	 */
+	@Nonnull
+	<T extends IAEStack<T>, C extends IStorageChannel<T>> void registerStorageChannel( @Nonnull Class<C> channel, @Nonnull C factory );
+
+	/**
+	 * Fetch the factory instance for a specific storage channel.
+	 * 
+	 * Channel must be a direct subtype of {@link IStorageChannel}.
+	 * 
+	 * @throws NullPointerException when fetching an unregistered channel.
+	 * @param channel The channel type
+	 * @return the factory instance
+	 */
+	@Nonnull
+	<T extends IAEStack<T>, C extends IStorageChannel<T>> C getStorageChannel( @Nonnull Class<C> channel );
+
+	/**
+	 * An unmodifiable collection of all registered factory instance.
+	 * 
+	 * This is mainly used as helper to let storage grids construct their internal storage for each type.
+	 */
+	@Nonnull
+	Collection<IStorageChannel<? extends IAEStack<?>>> storageChannels();
 
 	/**
 	 * load a crafting link from nbt data.
@@ -53,73 +90,4 @@ public interface IStorageHelper
 	 */
 	ICraftingLink loadCraftingLink( NBTTagCompound data, ICraftingRequester req );
 
-	/**
-	 * @param is An ItemStack
-	 *
-	 * @return a new INSTANCE of {@link IAEItemStack} from a MC {@link ItemStack}
-	 */
-	IAEItemStack createItemStack( ItemStack is );
-
-	/**
-	 * @param is A FluidStack
-	 *
-	 * @return a new INSTANCE of {@link IAEFluidStack} from a Forge {@link FluidStack}
-	 */
-	IAEFluidStack createFluidStack( FluidStack is );
-
-	/**
-	 * @return a new INSTANCE of {@link IItemList} for items
-	 */
-	IItemList<IAEItemStack> createItemList();
-
-	/**
-	 * @return a new INSTANCE of {@link IItemList} for fluids
-	 */
-	IItemList<IAEFluidStack> createFluidList();
-
-	/**
-	 * Read a AE Item Stack from a byte stream, returns a AE item stack or null.
-	 *
-	 * @param input to be loaded data
-	 *
-	 * @return item based of data
-	 *
-	 * @throws IOException if file could not be read
-	 */
-	IAEItemStack readItemFromPacket( ByteBuf input ) throws IOException;
-
-	/**
-	 * Read a AE Fluid Stack from a byte stream, returns a AE fluid stack or null.
-	 *
-	 * @param input to be loaded data
-	 *
-	 * @return fluid based on data
-	 *
-	 * @throws IOException if file could not be written
-	 */
-	IAEFluidStack readFluidFromPacket( ByteBuf input ) throws IOException;
-
-	/**
-	 * use energy from energy, to remove request items from cell, at the request of src.
-	 *
-	 * @param energy to be drained energy source
-	 * @param cell cell of requested items
-	 * @param request requested items
-	 * @param src action source
-	 *
-	 * @return items that successfully extracted.
-	 */
-	IAEItemStack poweredExtraction( IEnergySource energy, IMEInventory<IAEItemStack> cell, IAEItemStack request, IActionSource src );
-
-	/**
-	 * use energy from energy, to inject input items into cell, at the request of src
-	 *
-	 * @param energy to be added energy source
-	 * @param cell injected cell
-	 * @param input to be injected items
-	 * @param src action source
-	 *
-	 * @return items that failed to insert.
-	 */
-	IAEItemStack poweredInsert( IEnergySource energy, IMEInventory<IAEItemStack> cell, IAEItemStack input, IActionSource src );
 }

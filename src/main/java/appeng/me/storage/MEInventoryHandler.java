@@ -25,7 +25,7 @@ import appeng.api.config.IncludeExclude;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.prioritylist.DefaultPriorityList;
@@ -45,7 +45,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	private boolean hasReadAccess;
 	private boolean hasWriteAccess;
 
-	public MEInventoryHandler( final IMEInventory<T> i, final StorageChannel channel )
+	public MEInventoryHandler( final IMEInventory<T> i, final IStorageChannel<T> channel )
 	{
 		if( i instanceof IMEInventoryHandler )
 		{
@@ -129,7 +129,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public IStorageChannel getChannel()
 	{
 		return this.internal.getChannel();
 	}

@@ -240,7 +240,8 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 					try
 					{
 						connections.getConnections().put( me.getGridNode(),
-								new TunnelConnection( me, AEApi.instance().createGridConnection( this.outerProxy.getNode(), me.outerProxy.getNode() ) ) );
+								new TunnelConnection( me, AEApi.instance().grid().createGridConnection( this.outerProxy.getNode(),
+										me.outerProxy.getNode() ) ) );
 					}
 					catch( final FailedConnection e )
 					{

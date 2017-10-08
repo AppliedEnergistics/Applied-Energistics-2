@@ -36,6 +36,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -44,6 +45,7 @@ import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -135,7 +137,7 @@ public class PacketJEIRecipe extends AppEngPacket
 
 		if( inv != null && this.recipe != null && security != null )
 		{
-			final IMEMonitor<IAEItemStack> storage = inv.getItemInventory();
+			final IMEMonitor<IAEItemStack> storage = inv.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 			final IPartitionList<IAEItemStack> filter = ItemViewCell.createFilter( cct.getViewCells() );
 
 			for( int x = 0; x < craftMatrix.getSlots(); x++ )
@@ -151,7 +153,7 @@ public class PacketJEIRecipe extends AppEngPacket
 					// put away old item
 					if( newItem != currentItem && security.hasPermission( player, SecurityPermissions.INJECT ) )
 					{
-						final IAEItemStack in = AEItemStack.create( currentItem );
+						final IAEItemStack in = AEItemStack.fromItemStack( currentItem );
 						final IAEItemStack out = cct.useRealItems() ? Platform.poweredInsert( energy, storage, in, cct.getActionSource() ) : null;
 						if( out != null )
 						{
@@ -169,7 +171,7 @@ public class PacketJEIRecipe extends AppEngPacket
 					// for each variant
 					for( int y = 0; y < this.recipe[x].length && currentItem.isEmpty(); y++ )
 					{
-						final IAEItemStack request = AEItemStack.create( this.recipe[x][y] );
+						final IAEItemStack request = AEItemStack.fromItemStack( this.recipe[x][y] );
 						if( request != null )
 						{
 							// try ae

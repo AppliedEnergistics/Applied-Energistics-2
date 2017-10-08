@@ -19,12 +19,14 @@
 package appeng.tile.misc;
 
 
+import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.item.FluidList;
@@ -74,9 +76,9 @@ class CondenserFluidInventory implements IMEMonitor<IAEFluidStack>
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public IStorageChannel<IAEFluidStack> getChannel()
 	{
-		return StorageChannel.FLUIDS;
+		return AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
 	}
 
 	@Override

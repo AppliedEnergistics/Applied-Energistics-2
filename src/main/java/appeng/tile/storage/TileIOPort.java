@@ -47,7 +47,9 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.channels.IFluidStorageChannel;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -292,8 +294,10 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 
 		try
 		{
-			final IMEInventory<IAEItemStack> itemNet = this.getProxy().getStorage().getItemInventory();
-			final IMEInventory<IAEFluidStack> fluidNet = this.getProxy().getStorage().getFluidInventory();
+			final IMEInventory<IAEItemStack> itemNet = this.getProxy().getStorage().getInventory(
+					AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+			final IMEInventory<IAEFluidStack> fluidNet = this.getProxy().getStorage().getInventory(
+					AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
 			final IEnergySource energy = this.getProxy().getEnergy();
 			for( int x = 0; x < 6; x++ )
 			{
@@ -302,29 +306,34 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 				{
 					if( ItemsToMove > 0 )
 					{
-						final IMEInventory<IAEItemStack> itemInv = this.getInv( is, StorageChannel.ITEMS );
-						final IMEInventory<IAEFluidStack> fluidInv = this.getInv( is, StorageChannel.FLUIDS );
+						final IMEInventory<IAEItemStack> itemInv = this.getInv( is, AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+						final IMEInventory<IAEFluidStack> fluidInv = this.getInv( is,
+								AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
 
 						if( this.manager.getSetting( Settings.OPERATION_MODE ) == OperationMode.EMPTY )
 						{
 							if( itemInv != null )
 							{
-								ItemsToMove = this.transferContents( energy, itemInv, itemNet, ItemsToMove, StorageChannel.ITEMS );
+								ItemsToMove = this.transferContents( energy, itemInv, itemNet, ItemsToMove,
+										AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 							}
 							if( fluidInv != null )
 							{
-								ItemsToMove = this.transferContents( energy, fluidInv, fluidNet, ItemsToMove, StorageChannel.FLUIDS );
+								ItemsToMove = this.transferContents( energy, fluidInv, fluidNet, ItemsToMove,
+										AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
 							}
 						}
 						else
 						{
 							if( itemInv != null )
 							{
-								ItemsToMove = this.transferContents( energy, itemNet, itemInv, ItemsToMove, StorageChannel.ITEMS );
+								ItemsToMove = this.transferContents( energy, itemNet, itemInv, ItemsToMove,
+										AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 							}
 							if( fluidInv != null )
 							{
-								ItemsToMove = this.transferContents( energy, fluidNet, fluidInv, ItemsToMove, StorageChannel.FLUIDS );
+								ItemsToMove = this.transferContents( energy, fluidNet, fluidInv, ItemsToMove,
+										AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
 							}
 						}
 
@@ -357,16 +366,18 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		return this.upgrades.getInstalledUpgrades( u );
 	}
 
-	private IMEInventory getInv( final ItemStack is, final StorageChannel chan )
+	private IMEInventory getInv( final ItemStack is, final IStorageChannel chan )
 	{
 		if( this.currentCell != is )
 		{
 			this.currentCell = is;
-			this.cachedFluid = AEApi.instance().registries().cell().getCellInventory( is, null, StorageChannel.FLUIDS );
-			this.cachedItem = AEApi.instance().registries().cell().getCellInventory( is, null, StorageChannel.ITEMS );
+			this.cachedFluid = AEApi.instance().registries().cell().getCellInventory( is, null,
+					AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
+			this.cachedItem = AEApi.instance().registries().cell().getCellInventory( is, null,
+					AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 		}
 
-		if( StorageChannel.ITEMS == chan )
+		if( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) == chan )
 		{
 			return this.cachedItem;
 		}
@@ -374,7 +385,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		return this.cachedFluid;
 	}
 
-	private long transferContents( final IEnergySource energy, final IMEInventory src, final IMEInventory destination, long itemsToMove, final StorageChannel chan )
+	private long transferContents( final IEnergySource energy, final IMEInventory src, final IMEInventory destination, long itemsToMove, final IStorageChannel chan )
 	{
 		final IItemList<? extends IAEStack> myList;
 		if( src instanceof IMEMonitor )

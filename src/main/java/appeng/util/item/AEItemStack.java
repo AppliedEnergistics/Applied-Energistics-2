@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
@@ -36,8 +37,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.Platform;
 
@@ -72,7 +75,18 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		this.oreReference = OreHelper.INSTANCE.getOre( is.getDefinition() );
 	}
 
-	public static IAEItemStack loadItemStackFromNBT( final NBTTagCompound i )
+	@Nullable
+	public static AEItemStack fromItemStack( @Nonnull final ItemStack stack )
+	{
+		if( stack.isEmpty() )
+		{
+			return null;
+		}
+
+		return new AEItemStack( AEItemStackRegistry.getRegisteredStack( stack ), stack.getCount() );
+	}
+
+	public static IAEItemStack fromNBT( final NBTTagCompound i )
 	{
 		if( i == null )
 		{
@@ -85,25 +99,14 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			return null;
 		}
 
-		final AEItemStack item = AEItemStack.create( itemstack );
+		final AEItemStack item = AEItemStack.fromItemStack( itemstack );
 		item.setStackSize( i.getLong( "Cnt" ) );
 		item.setCountRequestable( i.getLong( "Req" ) );
 		item.setCraftable( i.getBoolean( "Craft" ) );
 		return item;
 	}
 
-	@Nullable
-	public static AEItemStack create( final ItemStack stack )
-	{
-		if( stack.isEmpty() )
-		{
-			return null;
-		}
-
-		return new AEItemStack( AEItemStackRegistry.getRegisteredStack( stack ), stack.getCount() );
-	}
-
-	public static IAEItemStack loadItemStackFromPacket( final ByteBuf data ) throws IOException
+	public static IAEItemStack fromPacket( final ByteBuf data ) throws IOException
 	{
 		final byte mask = data.readByte();
 		// byte PriorityType = (byte) (mask & 0x03);
@@ -120,7 +123,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			return null;
 		}
 
-		final AEItemStack item = AEItemStack.create( itemstack );
+		final AEItemStack item = AEItemStack.fromItemStack( itemstack );
 		item.setStackSize( stackSize );
 		item.setCountRequestable( countRequestable );
 		item.setCraftable( isCraftable );
@@ -298,9 +301,9 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public IStorageChannel<IAEItemStack> getChannel()
 	{
-		return StorageChannel.ITEMS;
+		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override

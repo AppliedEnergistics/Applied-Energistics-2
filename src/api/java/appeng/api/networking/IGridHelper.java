@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2013 AlgorithmX2
+ * Copyright (c) 2017 AlgorithmX2
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -21,54 +21,44 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.storage.data;
+package appeng.api.networking;
 
 
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
+import appeng.api.exceptions.FailedConnection;
 
 
 /**
- * An alternate version of FluidStack for AE to keep tabs on things easier, and
- * to support larger storage. stackSizes of getFluidStack will be capped.
- *
- * You may hold on to these if you want, just make sure you let go of them when
- * your not using them.
- *
- * Don't Implement.
- *
- * Construct with AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class).createStack( FluidStack )
+ * A helper responsible for creating new {@link IGridNode}, {@link IGridConnection} or potentially similar tasks.
+ * 
+ * @author yueh
+ * @version rv5
+ * @since rv5
  */
-public interface IAEFluidStack extends IAEStack<IAEFluidStack>
+public interface IGridHelper
 {
 
 	/**
-	 * creates a standard Forge FluidStack for the fluid.
+	 * Create a grid node for your {@link IGridHost}
+	 * 
+	 * The passed {@link IGridBlock} represents the definition for properties like connectable sides.
+	 * Refer to its documentation for further details.
 	 *
-	 * @return new FluidStack
+	 * @param block grid block
+	 *
+	 * @return grid node of block
 	 */
-	FluidStack getFluidStack();
+	IGridNode createGridNode( IGridBlock block );
 
 	/**
-	 * Combines two IAEItemStacks via addition.
+	 * Create a direct connection between two {@link IGridNode}.
+	 * 
+	 * This will be considered as having a distance of 1, regardless of the location of both nodes.
+	 * 
+	 * @param a to be connected gridnode
+	 * @param b to be connected gridnode
 	 *
-	 * @param option , to add to the current one.
+	 * @throws appeng.api.exceptions.FailedConnection
 	 */
-	@Override
-	void add( IAEFluidStack option );
+	IGridConnection createGridConnection( IGridNode a, IGridNode b ) throws FailedConnection;
 
-	/**
-	 * create a AE Fluid clone.
-	 *
-	 * @return the copy.
-	 */
-	@Override
-	IAEFluidStack copy();
-
-	/**
-	 * quick way to get access to the Forge Fluid Definition.
-	 *
-	 * @return fluid definition
-	 */
-	Fluid getFluid();
 }

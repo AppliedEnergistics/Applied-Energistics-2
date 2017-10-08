@@ -85,7 +85,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 		final boolean c = super.readFromStream( data );
 		try
 		{
-			final IAEItemStack item = AEItemStack.loadItemStackFromPacket( data );
+			final IAEItemStack item = AEItemStack.fromPacket( data );
 			final ItemStack is = item.createItemStack();
 			this.inv.setStackInSlot( 0, is );
 		}
@@ -100,7 +100,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 	protected void writeToStream( final ByteBuf data ) throws IOException
 	{
 		super.writeToStream( data );
-		final AEItemStack is = AEItemStack.create( this.inv.getStackInSlot( 0 ) );
+		final AEItemStack is = AEItemStack.fromItemStack( this.inv.getStackInSlot( 0 ) );
 		if( is != null )
 		{
 			is.writeToPacket( data );

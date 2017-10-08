@@ -37,6 +37,7 @@ import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
 import appeng.api.storage.ITerminalHost;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.client.gui.AEBaseGui;
@@ -62,9 +63,9 @@ public class GuiCraftConfirm extends AEBaseGui
 
 	private final int rows = 5;
 
-	private final IItemList<IAEItemStack> storage = AEApi.instance().storage().createItemList();
-	private final IItemList<IAEItemStack> pending = AEApi.instance().storage().createItemList();
-	private final IItemList<IAEItemStack> missing = AEApi.instance().storage().createItemList();
+	private final IItemList<IAEItemStack> storage = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+	private final IItemList<IAEItemStack> pending = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+	private final IItemList<IAEItemStack> missing = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 
 	private final List<IAEItemStack> visual = new ArrayList<>();
 

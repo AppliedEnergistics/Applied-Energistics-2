@@ -28,7 +28,8 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.items.IBiometricCard;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.GridAccessException;
@@ -38,7 +39,7 @@ import appeng.tile.misc.TileSecurityStation;
 public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStack>
 {
 
-	private final IItemList<IAEItemStack> storedItems = AEApi.instance().storage().createItemList();
+	private final IItemList<IAEItemStack> storedItems = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private final TileSecurityStation securityTile;
 
 	public SecurityStationInventory( final TileSecurityStation ts )
@@ -120,9 +121,9 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public IStorageChannel getChannel()
 	{
-		return StorageChannel.ITEMS;
+		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override

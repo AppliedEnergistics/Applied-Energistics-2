@@ -37,10 +37,11 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
+import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEStack;
 import appeng.util.Platform;
 
 
@@ -80,14 +81,26 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		this.myHash = this.fluid.hashCode() ^ ( this.tagCompound == null ? 0 : System.identityHashCode( this.tagCompound ) );
 	}
 
-	public static IAEFluidStack loadFluidStackFromNBT( final NBTTagCompound i )
+	public static AEFluidStack fromFluidStack( final FluidStack input )
 	{
-		final ItemStack itemstack = new ItemStack( i );
-		if( itemstack.isEmpty() )
+		if( input == null )
 		{
 			return null;
 		}
-		final AEFluidStack fluid = AEFluidStack.create( itemstack );
+
+		return new AEFluidStack( input );
+	}
+
+	public static IAEFluidStack fromNBT( final NBTTagCompound i )
+	{
+		final FluidStack fluidStack = FluidStack.loadFluidStackFromNBT( i );
+
+		if( fluidStack == null )
+		{
+			return null;
+		}
+
+		final AEFluidStack fluid = AEFluidStack.fromFluidStack( fluidStack );
 		// fluid.priority = i.getInteger( "Priority" );
 		fluid.setStackSize( i.getLong( "Cnt" ) );
 		fluid.setCountRequestable( i.getLong( "Req" ) );
@@ -95,24 +108,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		return fluid;
 	}
 
-	public static AEFluidStack create( final Object a )
-	{
-		if( a == null )
-		{
-			return null;
-		}
-		if( a instanceof AEFluidStack )
-		{
-			( (IAEStack<IAEFluidStack>) a ).copy();
-		}
-		if( a instanceof FluidStack )
-		{
-			return new AEFluidStack( (FluidStack) a );
-		}
-		return null;
-	}
-
-	public static IAEFluidStack loadFluidStackFromPacket( final ByteBuf data ) throws IOException
+	public static IAEFluidStack fromPacket( final ByteBuf data ) throws IOException
 	{
 		final byte mask = data.readByte();
 		// byte PriorityType = (byte) (mask & 0x03);
@@ -159,7 +155,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 			return null;
 		}
 
-		final AEFluidStack fluid = AEFluidStack.create( fluidStack );
+		final AEFluidStack fluid = AEFluidStack.fromFluidStack( fluidStack );
 		// fluid.priority = (int) priority;
 		fluid.setStackSize( stackSize );
 		fluid.setCountRequestable( countRequestable );
@@ -275,9 +271,9 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public IStorageChannel<IAEFluidStack> getChannel()
 	{
-		return StorageChannel.FLUIDS;
+		return AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
 	}
 
 	@Override

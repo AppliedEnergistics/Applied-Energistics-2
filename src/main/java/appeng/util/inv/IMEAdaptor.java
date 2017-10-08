@@ -30,6 +30,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventory;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.InventoryAdaptor;
@@ -63,7 +64,7 @@ public class IMEAdaptor extends InventoryAdaptor
 
 	private IItemList<IAEItemStack> getList()
 	{
-		return this.target.getAvailableItems( AEApi.instance().storage().createItemList() );
+		return this.target.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
 	}
 
 	@Override
@@ -86,7 +87,7 @@ public class IMEAdaptor extends InventoryAdaptor
 		}
 		else
 		{
-			req = AEItemStack.create( filter );
+			req = AEItemStack.fromItemStack( filter );
 		}
 
 		IAEItemStack out = null;
@@ -123,7 +124,7 @@ public class IMEAdaptor extends InventoryAdaptor
 
 	private ItemStack doRemoveItemsFuzzy( final int amount, final ItemStack filter, final IInventoryDestination destination, final Actionable type, final FuzzyMode fuzzyMode )
 	{
-		final IAEItemStack reqFilter = AEItemStack.create( filter );
+		final IAEItemStack reqFilter = AEItemStack.fromItemStack( filter );
 		if( reqFilter == null )
 		{
 			return ItemStack.EMPTY;
@@ -160,7 +161,7 @@ public class IMEAdaptor extends InventoryAdaptor
 	@Override
 	public ItemStack addItems( final ItemStack toBeAdded )
 	{
-		final IAEItemStack in = AEItemStack.create( toBeAdded );
+		final IAEItemStack in = AEItemStack.fromItemStack( toBeAdded );
 		if( in != null )
 		{
 			final IAEItemStack out = this.target.injectItems( in, Actionable.MODULATE, this.src );
@@ -175,7 +176,7 @@ public class IMEAdaptor extends InventoryAdaptor
 	@Override
 	public ItemStack simulateAdd( final ItemStack toBeSimulated )
 	{
-		final IAEItemStack in = AEItemStack.create( toBeSimulated );
+		final IAEItemStack in = AEItemStack.fromItemStack( toBeSimulated );
 		if( in != null )
 		{
 			final IAEItemStack out = this.target.injectItems( in, Actionable.SIMULATE, this.src );

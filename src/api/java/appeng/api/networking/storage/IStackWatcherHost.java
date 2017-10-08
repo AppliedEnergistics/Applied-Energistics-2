@@ -25,7 +25,7 @@ package appeng.api.networking.storage;
 
 
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
@@ -50,5 +50,5 @@ public interface IStackWatcherHost
 	 * @param src action source
 	 * @param chan storage channel
 	 */
-	void onStackChange( IItemList o, IAEStack fullStack, IAEStack diffStack, IActionSource src, StorageChannel chan );
+	void onStackChange( IItemList o, IAEStack fullStack, IAEStack diffStack, IActionSource src, IStorageChannel chan );
 }

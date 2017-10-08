@@ -29,6 +29,7 @@ import appeng.api.AEApi;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.packets.PacketPatternSlot;
 import appeng.helpers.IContainerCraftingPacket;
@@ -50,7 +51,8 @@ public class SlotPatternTerm extends SlotCraftingTerm
 
 	public AppEngPacket getRequest( final boolean shift ) throws IOException
 	{
-		return new PacketPatternSlot( this.getPattern(), AEApi.instance().storage().createItemStack( this.getStack() ), shift );
+		return new PacketPatternSlot( this
+				.getPattern(), AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( this.getStack() ), shift );
 	}
 
 	@Override

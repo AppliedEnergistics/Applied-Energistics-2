@@ -66,7 +66,8 @@ import appeng.api.parts.IPartModel;
 import appeng.api.storage.ICellContainer;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
@@ -96,7 +97,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		return MODELS.getModels();
 	}
 
-	private final MEInventoryHandler myHandler = new MEInventoryHandler( this, StorageChannel.ITEMS );
+	private final MEInventoryHandler myHandler = new MEInventoryHandler( this, AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 	private final AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
 	private int priority = 0;
 	private boolean wasActive = false;
@@ -117,7 +118,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		this.myHandler.setWhitelist( this.getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );
 		this.myHandler.setPriority( this.priority );
 
-		final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().createItemList();
+		final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 
 		final int slotsToUse = 18 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 9;
 		for( int x = 0; x < this.Config.getSlots() && x < slotsToUse; x++ )
@@ -395,9 +396,9 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	public List<IMEInventoryHandler> getCellArray( final StorageChannel channel )
+	public List<IMEInventoryHandler> getCellArray( final IStorageChannel channel )
 	{
-		if( this.getProxy().isActive() && channel == StorageChannel.ITEMS )
+		if( this.getProxy().isActive() && channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
 			final List<IMEInventoryHandler> Handler = new ArrayList<>( 1 );
 			Handler.add( this.myHandler );
@@ -611,9 +612,9 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public IStorageChannel getChannel()
 	{
-		return StorageChannel.ITEMS;
+		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override

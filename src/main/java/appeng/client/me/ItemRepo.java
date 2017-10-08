@@ -33,6 +33,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.config.YesNo;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.client.gui.widgets.IScrollSource;
@@ -48,7 +49,7 @@ import appeng.util.prioritylist.IPartitionList;
 public class ItemRepo
 {
 
-	private final IItemList<IAEItemStack> list = AEApi.instance().storage().createItemList();
+	private final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private final ArrayList<IAEItemStack> view = new ArrayList<>();
 	private final IScrollSource src;
 	private final ISortSource sortSrc;

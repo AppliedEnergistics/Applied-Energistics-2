@@ -28,6 +28,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.implementations.tiles.IChestOrDrive;
+import appeng.api.storage.data.IAEStack;
 
 
 /**
@@ -56,7 +57,7 @@ public interface ICellHandler
 	 *
 	 * @return a new IMEHandler for the provided item
 	 */
-	IMEInventoryHandler getCellInventory( ItemStack is, ISaveProvider host, StorageChannel channel );
+	<T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory( ItemStack is, ISaveProvider host, IStorageChannel<T> channel );
 
 	/**
 	 * Called when the storage cell is planed in an ME Chest and the user tries to open the terminal side, if your item
@@ -70,7 +71,7 @@ public interface ICellHandler
 	 * @param is item
 	 * @param chan storage channel
 	 */
-	void openChestGui( EntityPlayer player, IChestOrDrive chest, ICellHandler cellHandler, IMEInventoryHandler inv, ItemStack is, StorageChannel chan );
+	<T extends IAEStack<T>> void openChestGui( EntityPlayer player, IChestOrDrive chest, ICellHandler cellHandler, IMEInventoryHandler<T> inv, ItemStack is, IStorageChannel<T> chan );
 
 	/**
 	 * 0 - cell is missing.
@@ -86,10 +87,10 @@ public interface ICellHandler
 	 *
 	 * @return get the status of the cell based on its contents.
 	 */
-	int getStatusForCell( ItemStack is, IMEInventory handler );
+	<T extends IAEStack<T>> int getStatusForCell( ItemStack is, IMEInventory<T> handler );
 
 	/**
 	 * @return the ae/t to drain for this storage cell inside a chest/drive.
 	 */
-	double cellIdleDrain( ItemStack is, IMEInventory handler );
+	<T extends IAEStack<T>> double cellIdleDrain( ItemStack is, IMEInventory<T> handler );
 }

@@ -42,7 +42,9 @@ import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.ICellHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.channels.IFluidStorageChannel;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
@@ -149,7 +151,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 			return 0;
 		}
 
-		if( handler.getChannel() == StorageChannel.ITEMS )
+		if( handler.getChannel() == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
 			if( ch != null )
 			{
@@ -157,7 +159,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 			}
 		}
 
-		if( handler.getChannel() == StorageChannel.FLUIDS )
+		if( handler.getChannel() == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
 		{
 			if( ch != null )
 			{
@@ -310,7 +312,8 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 
 					if( this.handlersBySlot[x] != null )
 					{
-						IMEInventoryHandler cell = this.handlersBySlot[x].getCellInventory( is, this, StorageChannel.ITEMS );
+						IMEInventoryHandler cell = this.handlersBySlot[x].getCellInventory( is, this,
+								AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
 						if( cell != null )
 						{
@@ -323,7 +326,8 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 						}
 						else
 						{
-							cell = this.handlersBySlot[x].getCellInventory( is, this, StorageChannel.FLUIDS );
+							cell = this.handlersBySlot[x].getCellInventory( is, this,
+									AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
 
 							if( cell != null )
 							{
@@ -353,12 +357,12 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	}
 
 	@Override
-	public List<IMEInventoryHandler> getCellArray( final StorageChannel channel )
+	public List<IMEInventoryHandler> getCellArray( final IStorageChannel channel )
 	{
 		if( this.getProxy().isActive() )
 		{
 			this.updateState();
-			return (List) ( channel == StorageChannel.ITEMS ? this.items : this.fluids );
+			return (List) ( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ? this.items : this.fluids );
 		}
 		return new ArrayList();
 	}

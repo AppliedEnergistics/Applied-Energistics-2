@@ -43,7 +43,7 @@ import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventory;
-import appeng.api.storage.StorageChannel;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AEConfig;
@@ -84,7 +84,8 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	{
 		super.addCheckedInformation( stack, world, lines, advancedTooltips );
 
-		final IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( stack, null, StorageChannel.ITEMS );
+		final IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( stack, null,
+				AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
 		if( cdi instanceof CellInventoryHandler )
 		{

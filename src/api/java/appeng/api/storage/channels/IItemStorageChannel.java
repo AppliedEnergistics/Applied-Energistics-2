@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2013 AlgorithmX2
+ * Copyright (c) 2017 AlgorithmX2
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -21,44 +21,14 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.storage;
+package appeng.api.storage.channels;
 
 
-import appeng.api.AEApi;
-import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
 
 
-public enum StorageChannel
+public interface IItemStorageChannel extends IStorageChannel<IAEItemStack>
 {
-	/**
-	 * AE2's Default Storage.
-	 */
-	ITEMS( IAEItemStack.class ),
 
-	/**
-	 * AE2's Fluid Based Storage ( mainly added to better support ExtraCells )
-	 */
-	FLUIDS( IAEFluidStack.class );
-
-	public final Class<? extends IAEStack> type;
-
-	StorageChannel( final Class<? extends IAEStack> t )
-	{
-		this.type = t;
-	}
-
-	public IItemList createList()
-	{
-		if( this == ITEMS )
-		{
-			return AEApi.instance().storage().createItemList();
-		}
-		else
-		{
-			return AEApi.instance().storage().createFluidList();
-		}
-	}
 }

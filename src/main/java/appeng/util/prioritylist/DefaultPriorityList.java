@@ -19,16 +19,13 @@
 package appeng.util.prioritylist;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
 import appeng.api.storage.data.IAEStack;
 
 
 public class DefaultPriorityList<T extends IAEStack<T>> implements IPartitionList<T>
 {
-
-	private static final List NULL_LIST = new ArrayList();
 
 	@Override
 	public boolean isListed( final T input )
@@ -45,6 +42,6 @@ public class DefaultPriorityList<T extends IAEStack<T>> implements IPartitionLis
 	@Override
 	public Iterable<T> getItems()
 	{
-		return NULL_LIST;
+		return Collections.emptyList();
 	}
 }
