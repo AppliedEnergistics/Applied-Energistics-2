@@ -59,17 +59,17 @@ import appeng.util.item.AEItemStack;
 
 public class TileCharger extends AENetworkPowerTile implements ICrankable, IGridTickable
 {
-	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 1, 1, new ChargerInvFilter() );
-	private int tickTickTimer = 0;
+	private static final int POWER_MAXIMUM_AMOUNT = 1600;
+	private static final int POWER_THRESHOLD = POWER_MAXIMUM_AMOUNT - 1;
+	private static final int POWER_PER_CRANK_TURN = 160;
 
-	private int lastUpdate = 0;
-	private boolean requiresUpdate = false;
+	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 1, 1, new ChargerInvFilter() );
 
 	public TileCharger()
 	{
 		this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
 		this.getProxy().setFlags();
-		this.setInternalMaxPower( 1500 );
+		this.setInternalMaxPower( POWER_MAXIMUM_AMOUNT );
 		this.getProxy().setIdlePowerUsage( 0 );
 	}
 
@@ -130,16 +130,16 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 	@Override
 	public void applyTurn()
 	{
-		this.injectExternalPower( PowerUnits.AE, 150, Actionable.MODULATE );
+		this.injectExternalPower( PowerUnits.AE, POWER_PER_CRANK_TURN, Actionable.MODULATE );
 
 		final ItemStack myItem = this.inv.getStackInSlot( 0 );
-		if( this.getInternalCurrentPower() > 1499 )
+		if( this.getInternalCurrentPower() > POWER_THRESHOLD )
 		{
 			final IMaterials materials = AEApi.instance().definitions().materials();
 
 			if( materials.certusQuartzCrystal().isSameAs( myItem ) )
 			{
-				this.extractAEPower( this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG );// 1500
+				this.extractAEPower( this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG );
 
 				materials.certusQuartzCrystalCharged().maybeStack( myItem.getCount() ).ifPresent( charged -> this.inv.setStackInSlot( 0, charged ) );
 			}
@@ -215,55 +215,79 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 	private boolean doWork()
 	{
 		final ItemStack myItem = this.inv.getStackInSlot( 0 );
+		boolean changed = false;
+
+		if( !myItem.isEmpty() )
+		{
+			final IMaterials materials = AEApi.instance().definitions().materials();
+
+			if( Platform.isChargeable( myItem ) )
+			{
+				final IAEItemPowerStorage ps = (IAEItemPowerStorage) myItem.getItem();
+
+				if( ps.getAEMaxPower( myItem ) > ps.getAECurrentPower( myItem ) )
+				{
+					final double chargeRate = AEApi.instance().registries().charger().getChargeRate( myItem.getItem() );
+
+					double extractedAmount = this.extractAEPower( chargeRate, Actionable.MODULATE, PowerMultiplier.CONFIG );
+
+					final double missingChargeRate = chargeRate - extractedAmount;
+					final double missingAEPower = ps.getAEMaxPower( myItem ) - ps.getAECurrentPower( myItem );
+					final double toExtract = Math.min( missingChargeRate, missingAEPower );
+
+					try
+					{
+						extractedAmount += this.getProxy().getEnergy().extractAEPower( toExtract, Actionable.MODULATE, PowerMultiplier.ONE );
+					}
+					catch( GridAccessException e1 )
+					{
+						// Ignore.
+					}
+
+					if( extractedAmount > 0 )
+					{
+						final double adjustment = ps.injectAEPower( myItem, extractedAmount, Actionable.MODULATE );
+
+						this.setInternalCurrentPower( this.getInternalCurrentPower() + adjustment );
+
+						changed = true;
+					}
+				}
+			}
+			else if( this.getInternalCurrentPower() > POWER_THRESHOLD && materials.certusQuartzCrystal().isSameAs( myItem ) )
+			{
+				if( Platform.getRandomFloat() > 0.8f ) // simulate wait
+				{
+					this.extractAEPower( this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG );
+
+					materials.certusQuartzCrystalCharged().maybeStack( myItem.getCount() ).ifPresent( charged -> this.inv.setStackInSlot( 0, charged ) );
+
+					changed = true;
+				}
+			}
+		}
 
 		// charge from the network!
-		if( this.getInternalCurrentPower() < 1499 )
+		if( this.getInternalCurrentPower() < POWER_THRESHOLD )
 		{
 			try
 			{
-				this.injectExternalPower( PowerUnits.AE, this.getProxy().getEnergy().extractAEPower( Math.min( 500.0, 1500.0 - this.getInternalCurrentPower() ),
-						Actionable.MODULATE, PowerMultiplier.ONE ), Actionable.MODULATE );
+				final double toExtract = Math.min( 800.0, this.getInternalMaxPower() - this.getInternalCurrentPower() );
+				final double extracted = this.getProxy().getEnergy().extractAEPower( toExtract, Actionable.MODULATE, PowerMultiplier.ONE );
+
+				this.injectExternalPower( PowerUnits.AE, extracted, Actionable.MODULATE );
 			}
 			catch( final GridAccessException e )
 			{
 				// continue!
 			}
 
-			return true;
+			changed = true;
 		}
 
-		if( myItem.isEmpty() )
+		if( changed )
 		{
-			return false;
-		}
-
-		final IMaterials materials = AEApi.instance().definitions().materials();
-
-		if( this.getInternalCurrentPower() > 149 && Platform.isChargeable( myItem ) )
-		{
-			final IAEItemPowerStorage ps = (IAEItemPowerStorage) myItem.getItem();
-			if( ps.getAEMaxPower( myItem ) > ps.getAECurrentPower( myItem ) )
-			{
-				final double oldPower = this.getInternalCurrentPower();
-
-				final double adjustment = ps.injectAEPower( myItem, this.extractAEPower( 150.0, Actionable.MODULATE, PowerMultiplier.CONFIG ),
-						Actionable.MODULATE );
-				this.setInternalCurrentPower( this.getInternalCurrentPower() + adjustment );
-
-				if( oldPower > this.getInternalCurrentPower() )
-				{
-					this.markForUpdate();
-				}
-			}
-		}
-		else if( this.getInternalCurrentPower() > 1499 && materials.certusQuartzCrystal().isSameAs( myItem ) )
-		{
-			if( Platform.getRandomFloat() > 0.8f ) // simulate wait
-			{
-				this.extractAEPower( this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG );// 1500
-
-				materials.certusQuartzCrystalCharged().maybeStack( myItem.getCount() ).ifPresent( charged -> this.inv.setStackInSlot( 0, charged ) );
-			}
+			this.markForUpdate();
 		}
 
 		return true;

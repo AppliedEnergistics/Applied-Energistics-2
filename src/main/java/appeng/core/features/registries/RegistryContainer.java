@@ -19,6 +19,7 @@
 package appeng.core.features.registries;
 
 
+import appeng.api.features.IChargerRegistry;
 import appeng.api.features.IGrinderRegistry;
 import appeng.api.features.IInscriberRegistry;
 import appeng.api.features.ILocatableRegistry;
@@ -35,6 +36,7 @@ import appeng.api.networking.IGridCacheRegistry;
 import appeng.api.parts.IPartModels;
 import appeng.api.storage.ICellRegistry;
 import appeng.core.features.registries.cell.CellRegistry;
+import appeng.core.features.registries.charger.ChargerRegistry;
 import appeng.core.features.registries.grinder.GrinderRecipeManager;
 import appeng.core.features.registries.inscriber.InscriberRegistry;
 
@@ -44,13 +46,15 @@ import appeng.core.features.registries.inscriber.InscriberRegistry;
  *
  * @author AlgorithmX2
  * @author thatsIch
- * @version rv2
+ * @author yueh
+ * @version rv5
  * @since rv0
  */
 public class RegistryContainer implements IRegistryContainer
 {
 	private final IGrinderRegistry grinder = new GrinderRecipeManager();
 	private final IInscriberRegistry inscriber = new InscriberRegistry();
+	private final IChargerRegistry charger = new ChargerRegistry();
 	private final ICellRegistry cell = new CellRegistry();
 	private final ILocatableRegistry locatable = new LocatableRegistry();
 	private final ISpecialComparisonRegistry comparison = new SpecialComparisonRegistry();
@@ -103,6 +107,12 @@ public class RegistryContainer implements IRegistryContainer
 	public IInscriberRegistry inscriber()
 	{
 		return this.inscriber;
+	}
+
+	@Override
+	public IChargerRegistry charger()
+	{
+		return this.charger;
 	}
 
 	@Override
