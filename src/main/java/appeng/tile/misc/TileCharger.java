@@ -59,9 +59,9 @@ import appeng.util.item.AEItemStack;
 
 public class TileCharger extends AENetworkPowerTile implements ICrankable, IGridTickable
 {
-	private final static int POWER_MAXIMUM_AMOUNT = 1600;
-	private final static int POWER_THRESHOLD = POWER_MAXIMUM_AMOUNT - 1;
-	private final static int POWER_PER_CRANK_TURN = 160;
+	private static final int POWER_MAXIMUM_AMOUNT = 1600;
+	private static final int POWER_THRESHOLD = POWER_MAXIMUM_AMOUNT - 1;
+	private static final int POWER_PER_CRANK_TURN = 160;
 
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 1, 1, new ChargerInvFilter() );
 
