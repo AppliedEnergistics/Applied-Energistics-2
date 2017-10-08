@@ -44,7 +44,7 @@ public class FacadeRenderState
 
 	public int resolveTintColor( int tintIndex )
 	{
-		return Minecraft.getMinecraft().getItemColors().getColorFromItemstack( this.textureItem, tintIndex );
+		return Minecraft.getMinecraft().getItemColors().colorMultiplier( this.textureItem, tintIndex );
 	}
 
 }

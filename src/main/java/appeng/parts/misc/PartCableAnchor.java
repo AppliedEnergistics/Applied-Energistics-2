@@ -128,7 +128,7 @@ public class PartCableAnchor implements IPart
 	@Override
 	public boolean isLadder( final EntityLivingBase entity )
 	{
-		return this.mySide.yOffset == 0 && ( entity.isCollidedHorizontally || !entity.onGround );
+		return this.mySide.yOffset == 0 && ( entity.collidedHorizontally || !entity.onGround );
 	}
 
 	@Override

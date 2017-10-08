@@ -79,7 +79,7 @@ public class FacadeWithBlockBakedModel implements IBakedModel
 			{
 				if( sprite.getTint() != -1 )
 				{
-					builder.setColor( Minecraft.getMinecraft().getItemColors().getColorFromItemstack( this.textureItem, sprite.getTint() ) );
+					builder.setColor( Minecraft.getMinecraft().getItemColors().colorMultiplier( this.textureItem, sprite.getTint() ) );
 				}
 				builder.setTexture( sprite.getSprite() );
 				builder.setDrawFaces( EnumSet.of( EnumFacing.NORTH ) );
