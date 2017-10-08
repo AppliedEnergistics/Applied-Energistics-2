@@ -21,7 +21,7 @@ package appeng.core;
 
 import appeng.api.IAppEngApi;
 import appeng.api.features.IRegistryContainer;
-import appeng.api.networking.INetworkHelper;
+import appeng.api.networking.IGridHelper;
 import appeng.api.storage.IStorageHelper;
 import appeng.core.api.ApiNetwork;
 import appeng.core.api.ApiPart;
@@ -39,7 +39,7 @@ public final class Api implements IAppEngApi
 	// private MovableTileRegistry MovableRegistry = new MovableTileRegistry();
 	private final IRegistryContainer registryContainer;
 	private final IStorageHelper storageHelper;
-	private final INetworkHelper networkHelper;
+	private final IGridHelper networkHelper;
 	private final ApiDefinitions definitions;
 
 	private Api()
@@ -69,7 +69,7 @@ public final class Api implements IAppEngApi
 	}
 
 	@Override
-	public INetworkHelper network()
+	public IGridHelper grid()
 	{
 		return this.networkHelper;
 	}

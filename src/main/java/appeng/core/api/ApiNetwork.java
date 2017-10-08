@@ -25,14 +25,14 @@ import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.INetworkHelper;
+import appeng.api.networking.IGridHelper;
 import appeng.api.util.AEPartLocation;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
 import appeng.util.Platform;
 
 
-public class ApiNetwork implements INetworkHelper
+public class ApiNetwork implements IGridHelper
 {
 
 	@Override

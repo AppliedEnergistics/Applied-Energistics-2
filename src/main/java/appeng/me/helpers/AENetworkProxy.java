@@ -147,7 +147,7 @@ public class AENetworkProxy implements IGridBlock
 	{
 		if( this.node == null && Platform.isServer() && this.isReady )
 		{
-			this.node = AEApi.instance().network().createGridNode( this );
+			this.node = AEApi.instance().grid().createGridNode( this );
 			this.readFromNBT( this.data );
 			this.node.updateState();
 		}
