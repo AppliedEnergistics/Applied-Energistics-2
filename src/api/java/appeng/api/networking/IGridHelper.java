@@ -25,11 +25,10 @@ package appeng.api.networking;
 
 
 import appeng.api.exceptions.FailedConnection;
-import appeng.me.GridConnection;
 
 
 /**
- * A helper responsible for creating new {@link IGridNode}, {@link GridConnection} or potentially similiar tasks.
+ * A helper responsible for creating new {@link IGridNode}, {@link IGridConnection} or potentially similar tasks.
  * 
  * @author yueh
  * @version rv5
@@ -39,7 +38,7 @@ public interface IGridHelper
 {
 
 	/**
-	 * Create a grid node for your {@link IGridHost}.
+	 * Create a grid node for your {@link IGridHost}
 	 * 
 	 * The passed {@link IGridBlock} represents the definition for properties like connectable sides.
 	 * Refer to its documentation for further details.
