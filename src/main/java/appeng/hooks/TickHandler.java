@@ -21,9 +21,11 @@ package appeng.hooks;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -49,7 +51,6 @@ import appeng.core.AppEng;
 import appeng.core.sync.packets.PacketPaintedEntity;
 import appeng.crafting.CraftingJob;
 import appeng.me.Grid;
-import appeng.me.NetworkList;
 import appeng.tile.AEBaseTile;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
@@ -118,7 +119,7 @@ public class TickHandler
 	{
 		if( Platform.isServer() ) // for no there is no reason to care about this on the client...
 		{
-			this.getRepo().networks.add( grid );
+			this.getRepo().addNetwork( grid );
 		}
 	}
 
@@ -126,7 +127,7 @@ public class TickHandler
 	{
 		if( Platform.isServer() ) // for no there is no reason to care about this on the client...
 		{
-			this.getRepo().networks.remove( grid );
+			this.getRepo().removeNetwork( grid );
 		}
 	}
 
@@ -147,6 +148,7 @@ public class TickHandler
 		{
 			final LinkedList<IGridNode> toDestroy = new LinkedList<>();
 
+			this.getRepo().updateNetworks();
 			for( final Grid g : this.getRepo().networks )
 			{
 				for( final IGridNode n : g.getNodes() )
@@ -218,6 +220,7 @@ public class TickHandler
 			}
 
 			// tick networks.
+			this.getRepo().updateNetworks();
 			for( final Grid g : this.getRepo().networks )
 			{
 				g.update();
@@ -295,12 +298,37 @@ public class TickHandler
 
 		private Queue<AEBaseTile> tiles = new LinkedList<>();
 
-		private Collection<Grid> networks = new NetworkList();
+		private Set<Grid> networks = new HashSet<>();
+		private Set<Grid> toAdd = new HashSet<>();
+		private Set<Grid> toRemove = new HashSet<>();
 
 		private void clear()
 		{
 			this.tiles = new LinkedList<>();
-			this.networks = new NetworkList();
+			this.networks = new HashSet<>();
+			this.toAdd = new HashSet<>();
+			this.toRemove = new HashSet<>();
+		}
+
+		private synchronized void addNetwork( Grid g )
+		{
+			this.toAdd.add( g );
+			this.toRemove.remove( g );
+		}
+
+		private synchronized void removeNetwork( Grid g )
+		{
+			this.toRemove.add( g );
+			this.toAdd.remove( g );
+		}
+
+		private synchronized void updateNetworks()
+		{
+			this.networks.removeAll( this.toRemove );
+			this.toRemove.clear();
+
+			this.networks.addAll( this.toAdd );
+			this.toAdd.clear();
 		}
 	}
 
