@@ -103,7 +103,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	public TileInscriber()
 	{
 		this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
-		this.setInternalMaxPower( 1500 );
+		this.setInternalMaxPower( 1600 );
 		this.getProxy().setIdlePowerUsage( 0 );
 		this.settings = new ConfigManager( this );
 
