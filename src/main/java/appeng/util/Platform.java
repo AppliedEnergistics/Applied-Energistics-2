@@ -673,6 +673,11 @@ public class Platform
 				 * return wrench.canWrench( player, x, y, z );
 				 * }
 				 */
+
+				if( eq.getItem() instanceof cofh.api.item.IToolHammer )
+				{
+					return ( (cofh.api.item.IToolHammer) eq.getItem() ).isUsable( eq, player, pos );
+				}
 			}
 			catch( final Throwable ignore )
 			{ // explodes without BC
