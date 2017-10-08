@@ -32,17 +32,30 @@ import net.minecraft.item.Item;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 
 
+/**
+ * A registry to allow mapping {@link Item}s to a specific charge rate when being placed inside a charger.
+ * 
+ * The registry is used in favor of an additional method for {@link IAEItemPowerStorage} with a fixed value per item.
+ * This allows more flexibility for other charger like machines to choose their own values when needed.
+ * 
+ * There is no guarantee that this is charged per tick, it only represents the value per operation.
+ * By default this is one charging operation every 10 ticks in case of an AE2 charger.
+ * 
+ * @author yueh
+ * @version rv5
+ * @since rv5
+ */
 public interface IChargerRegistry
 {
 
 	/**
 	 * Fetch a charge rate for a specific item.
 	 * 
-	 * If no custom exists, it will return a default of 160.
-	 * 
+	 * The specific item does not need to have a mapping registered at all.
+	 * In this case it will use a default value of 160 AE.
 	 * 
 	 * @param item A {@link Item} implementing {@link IAEItemPowerStorage}.
-	 * @return custom rate or 160
+	 * @return custom rate or default of 160
 	 */
 	@Nonnegative
 	double getChargeRate( @Nonnull Item item );
@@ -51,16 +64,18 @@ public interface IChargerRegistry
 	 * Register a custom charge rate for a specific item.
 	 * 
 	 * Capped at 16000 to avoid extracting too much energy from a network for each operation.
+	 * This is done silently without any feedback or exception.
+	 * Further the cap is not fixed, it can change at any time in the future should power issues arise.
 	 * 
 	 * @param item A {@link Item} implementing {@link IAEItemPowerStorage}.
 	 * @param chargeRate the custom rate, must be > 0, capped to 16000d
 	 */
-	void addChargeRate( @Nonnull Item item, @Nonnull double chargeRate );
+	void addChargeRate( @Nonnull Item item, @Nonnegative double chargeRate );
 
 	/**
 	 * Remove the custom rate for a specific item.
 	 * 
-	 * It will still use the default value after removing it.
+	 * It will revert to the default value afterwards.
 	 * 
 	 * @param item A {@link Item} implementing {@link IAEItemPowerStorage}.
 	 */

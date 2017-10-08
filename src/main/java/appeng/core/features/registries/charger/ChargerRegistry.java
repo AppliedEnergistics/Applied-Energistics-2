@@ -22,6 +22,7 @@ package appeng.core.features.registries.charger;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
@@ -44,7 +45,8 @@ public class ChargerRegistry implements IChargerRegistry
 	}
 
 	@Override
-	public double getChargeRate( Item item )
+	@Nonnegative
+	public double getChargeRate( @Nonnull Item item )
 	{
 		Preconditions.checkNotNull( item );
 
@@ -52,7 +54,7 @@ public class ChargerRegistry implements IChargerRegistry
 	}
 
 	@Override
-	public void addChargeRate( Item item, double value )
+	public void addChargeRate( @Nonnull Item item, @Nonnegative double value )
 	{
 		Preconditions.checkNotNull( item );
 		Preconditions.checkArgument( value > 0d );
