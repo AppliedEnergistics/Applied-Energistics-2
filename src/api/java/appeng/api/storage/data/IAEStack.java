@@ -35,7 +35,7 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
 
 
-public interface IAEStack<StackType extends IAEStack<StackType>>
+public interface IAEStack<T extends IAEStack<T>>
 {
 
 	/**
@@ -43,7 +43,7 @@ public interface IAEStack<StackType extends IAEStack<StackType>>
 	 *
 	 * @param is added item
 	 */
-	void add( StackType is );
+	void add( T is );
 
 	/**
 	 * number of items in the stack.
@@ -57,7 +57,7 @@ public interface IAEStack<StackType extends IAEStack<StackType>>
 	 *
 	 * @param stackSize , ItemStack.stackSize = N
 	 */
-	StackType setStackSize( long stackSize );
+	T setStackSize( long stackSize );
 
 	/**
 	 * Same as getStackSize, but for requestable items. ( LP )
@@ -71,7 +71,7 @@ public interface IAEStack<StackType extends IAEStack<StackType>>
 	 *
 	 * @return basically itemStack.stackSize = N but for setStackSize items.
 	 */
-	StackType setCountRequestable( long countRequestable );
+	T setCountRequestable( long countRequestable );
 
 	/**
 	 * true, if the item can be crafted.
@@ -85,12 +85,12 @@ public interface IAEStack<StackType extends IAEStack<StackType>>
 	 *
 	 * @param isCraftable can item be crafted
 	 */
-	StackType setCraftable( boolean isCraftable );
+	T setCraftable( boolean isCraftable );
 
 	/**
 	 * clears, requestable, craftable, and stack sizes.
 	 */
-	StackType reset();
+	T reset();
 
 	/**
 	 * returns true, if the item can be crafted, requested, or extracted.
@@ -174,14 +174,14 @@ public interface IAEStack<StackType extends IAEStack<StackType>>
 	 *
 	 * @return a new Stack, which is copied from the original.
 	 */
-	StackType copy();
+	T copy();
 
 	/**
 	 * create an empty stack.
 	 *
 	 * @return a new stack, which represents an empty copy of the original.
 	 */
-	StackType empty();
+	T empty();
 
 	/**
 	 * @return true if the stack is a {@link IAEItemStack}
@@ -196,7 +196,7 @@ public interface IAEStack<StackType extends IAEStack<StackType>>
 	/**
 	 * @return ITEM or FLUID
 	 */
-	IStorageChannel getChannel();
+	IStorageChannel<T> getChannel();
 
 	/**
 	 * Returns itemstack for display and similar purposes. Always has a count of 1.

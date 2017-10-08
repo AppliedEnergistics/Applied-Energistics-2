@@ -21,6 +21,8 @@ package appeng.api.exceptions;
 
 public class MissingDefinition extends RuntimeException
 {
+	private static final long serialVersionUID = -6547396584255825761L;
+
 	public MissingDefinition( final String message )
 	{
 		super( message );

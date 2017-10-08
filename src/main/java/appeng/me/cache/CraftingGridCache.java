@@ -379,7 +379,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	}
 
 	@Override
-	public List<IMEInventoryHandler> getCellArray( final IStorageChannel channel )
+	public List<IMEInventoryHandler> getCellArray( final IStorageChannel<?> channel )
 	{
 		final List<IMEInventoryHandler> list = new ArrayList<>( 1 );
 
