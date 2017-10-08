@@ -24,15 +24,20 @@ import com.google.common.base.Preconditions;
 import appeng.api.exceptions.FailedConnection;
 import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridConnection;
-import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridHelper;
+import appeng.api.networking.IGridNode;
 import appeng.api.util.AEPartLocation;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
 import appeng.util.Platform;
 
 
-public class ApiNetwork implements IGridHelper
+/**
+ * @author yueh
+ * @version rv5
+ * @since rv5
+ */
+public class ApiGrid implements IGridHelper
 {
 
 	@Override

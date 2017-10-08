@@ -23,7 +23,7 @@ import appeng.api.IAppEngApi;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.networking.IGridHelper;
 import appeng.api.storage.IStorageHelper;
-import appeng.core.api.ApiNetwork;
+import appeng.core.api.ApiGrid;
 import appeng.core.api.ApiPart;
 import appeng.core.api.ApiStorage;
 import appeng.core.features.registries.PartModels;
@@ -45,7 +45,7 @@ public final class Api implements IAppEngApi
 	private Api()
 	{
 		this.storageHelper = new ApiStorage();
-		this.networkHelper = new ApiNetwork();
+		this.networkHelper = new ApiGrid();
 		this.registryContainer = new RegistryContainer();
 		this.partHelper = new ApiPart();
 		this.definitions = new ApiDefinitions( (PartModels) this.registryContainer.partModels() );
