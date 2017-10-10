@@ -163,8 +163,8 @@ gui.appliedenergistics2.VibrationChamber=谐振仓
 gui.appliedenergistics2.NetworkDetails=网络信息
 gui.appliedenergistics2.StorageCells=ME存储元件
 gui.appliedenergistics2.IOBuses=ME输入/输出总线
-gui.appliedenergistics2.Stores=商店
-gui.appliedenergistics2.BytesUsed=字节已使用
+gui.appliedenergistics2.Stores =存储
+gui.appliedenergistics2.BytesUsed =字节已使用
 gui.appliedenergistics2.Types=类型
 gui.appliedenergistics2.Blank=空白
 gui.appliedenergistics2.Unlinked=未链接
@@ -307,7 +307,7 @@ gui.tooltips.appliedenergistics2.LevelType=检测类型
 gui.tooltips.appliedenergistics2.LevelType_Energy=能源(ae)
 gui.tooltips.appliedenergistics2.LevelType_Item=物品
 gui.tooltips.appliedenergistics2.InventoryTweaks=InventoryTweak(R键整理)
-gui.tooltips.appliedenergistics2.Mod=模组
+gui.tooltips.appliedenergistics2.Mod=Mod
 gui.tooltips.appliedenergistics2.TerminalStyle=终端风格
 gui.tooltips.appliedenergistics2.TerminalStyle_Full=全屏
 gui.tooltips.appliedenergistics2.TerminalStyle_Tall=长
@@ -353,9 +353,7 @@ gui.appliedenergistics2.Red=红色
 gui.appliedenergistics2.Black=黑色
 gui.appliedenergistics2.Fluix=Fluix默认色
 
-//方块信查看模组配置字段---------------------------------------------------
-
-// Waila 维拉(What am I looking at)
+// Waila
 waila.appliedenergistics2.Crafting=合成中
 waila.appliedenergistics2.DeviceOnline=设备开启
 waila.appliedenergistics2.DeviceOffline=设备关闭
@@ -370,7 +368,7 @@ waila.appliedenergistics2.P2PInputOneOutput=已连接(输入端)
 waila.appliedenergistics2.P2PInputManyOutputs=已连接(输入端)- %d 输出
 waila.appliedenergistics2.P2POutput=已连接(输出端)
 
-// TheOneProbe 一个探测仪
+// TheOneProbe
 theoneprobe.appliedenergistics2.crafting=合成中: %1$s
 theoneprobe.appliedenergistics2.device_online=设备开启
 theoneprobe.appliedenergistics2.device_offline=设备关闭
@@ -385,8 +383,6 @@ theoneprobe.appliedenergistics2.p2p_input_one_output=已连接(输入端)
 theoneprobe.appliedenergistics2.p2p_input_many_outputs=已连接(输入端)- %d 输出
 theoneprobe.appliedenergistics2.p2p_output=已连接(输出端)
 theoneprobe.appliedenergistics2.stored_energy=%1$d / %2$d
-
-//方块信查看模组配置字段---------------------------------------------------
 
 // 物品
 item.appliedenergistics2.storage_cell_1k.name=1k-ME存储元件
