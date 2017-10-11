@@ -20,6 +20,7 @@ package appeng.parts.automation;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
@@ -400,11 +401,11 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	{
 		if( this.getProxy().isActive() && channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
-			final List<IMEInventoryHandler> Handler = new ArrayList<>( 1 );
-			Handler.add( this.myHandler );
-			return Handler;
+			final List<IMEInventoryHandler> handler = new ArrayList<>( 1 );
+			handler.add( this.myHandler );
+			return handler;
 		}
-		return new ArrayList<>();
+		return Collections.emptyList();
 	}
 
 	@Override

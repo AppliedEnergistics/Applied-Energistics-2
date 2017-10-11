@@ -33,6 +33,7 @@ import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEPartLocation;
 import appeng.core.sync.GuiBridge;
 import appeng.me.storage.CellInventory;
@@ -50,7 +51,7 @@ public class BasicCellHandler implements ICellHandler
 	}
 
 	@Override
-	public IMEInventoryHandler getCellInventory( final ItemStack is, final ISaveProvider container, final IStorageChannel channel )
+	public <T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory( final ItemStack is, final ISaveProvider container, final IStorageChannel<T> channel )
 	{
 		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 		{

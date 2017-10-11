@@ -643,14 +643,19 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		{
 			try
 			{
-				return Collections.singletonList( this.getHandler( channel ) );
+				final IMEInventoryHandler handler = this.getHandler( channel );
+
+				if( handler != null )
+				{
+					return Collections.singletonList( handler );
+				}
 			}
 			catch( final ChestNoHandler e )
 			{
 				// :P
 			}
 		}
-		return new ArrayList<>();
+		return Collections.emptyList();
 	}
 
 	@Override

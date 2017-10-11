@@ -577,7 +577,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 				return Collections.singletonList( out );
 			}
 		}
-		return Arrays.asList( new IMEInventoryHandler[] {} );
+		return Collections.emptyList();
 	}
 
 	@Override
