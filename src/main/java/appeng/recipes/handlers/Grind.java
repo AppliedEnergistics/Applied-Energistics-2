@@ -24,9 +24,9 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
-import appeng.api.exceptions.MissingIngredientError;
-import appeng.api.exceptions.RecipeError;
-import appeng.api.exceptions.RegistrationError;
+import appeng.api.exceptions.MissingIngredientException;
+import appeng.api.exceptions.RecipeException;
+import appeng.api.exceptions.RegistrationException;
 import appeng.api.features.IGrinderRecipe;
 import appeng.api.features.IGrinderRecipeBuilder;
 import appeng.api.features.IGrinderRegistry;
@@ -43,7 +43,7 @@ public class Grind implements ICraftHandler, IWebsiteSerializer
 	private IIngredient[] pro_output;
 
 	@Override
-	public void setup( final List<List<IIngredient>> input, final List<List<IIngredient>> output ) throws RecipeError
+	public void setup( final List<List<IIngredient>> input, final List<List<IIngredient>> output ) throws RecipeException
 	{
 		if( input.size() == 1 && output.size() == 1 )
 		{
@@ -55,11 +55,11 @@ public class Grind implements ICraftHandler, IWebsiteSerializer
 				return;
 			}
 		}
-		throw new RecipeError( "Grind must have a single input, and single output." );
+		throw new RecipeException( "Grind must have a single input, and single output." );
 	}
 
 	@Override
-	public void register() throws RegistrationError, MissingIngredientError
+	public void register() throws RegistrationException, MissingIngredientException
 	{
 		for( final ItemStack is : this.pro_input.getItemStackSet() )
 		{
@@ -81,7 +81,7 @@ public class Grind implements ICraftHandler, IWebsiteSerializer
 	}
 
 	@Override
-	public boolean canCraft( final ItemStack output ) throws RegistrationError, MissingIngredientError
+	public boolean canCraft( final ItemStack output ) throws RegistrationException, MissingIngredientException
 	{
 		return Platform.itemComparisons().isSameItem( this.pro_output[0].getItemStack(), output );
 	}

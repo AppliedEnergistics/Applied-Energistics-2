@@ -29,8 +29,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.OreDictionary;
 
-import appeng.api.exceptions.MissingIngredientError;
-import appeng.api.exceptions.RegistrationError;
+import appeng.api.exceptions.MissingIngredientException;
+import appeng.api.exceptions.RegistrationException;
 import appeng.api.recipes.IIngredient;
 
 
@@ -100,11 +100,11 @@ public class ShapelessRecipe extends net.minecraftforge.registries.IForgeRegistr
 								match = match || this.checkItemEquals( item, slot );
 							}
 						}
-						catch( final RegistrationError e )
+						catch( final RegistrationException e )
 						{
 							// :P
 						}
-						catch( final MissingIngredientError e )
+						catch( final MissingIngredientException e )
 						{
 							// :P
 						}
@@ -164,7 +164,7 @@ public class ShapelessRecipe extends net.minecraftforge.registries.IForgeRegistr
 	}
 
 	@Override
-	public void bake() throws RegistrationError
+	public void bake() throws RegistrationException
 	{
 		try
 		{
@@ -177,7 +177,7 @@ public class ShapelessRecipe extends net.minecraftforge.registries.IForgeRegistr
 				}
 			}
 		}
-		catch( final MissingIngredientError e )
+		catch( final MissingIngredientException e )
 		{
 			this.disable = true;
 		}

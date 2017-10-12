@@ -30,7 +30,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.AEApi;
-import appeng.api.exceptions.MissingDefinition;
+import appeng.api.exceptions.MissingDefinitionException;
 import appeng.client.render.effects.ChargedOreFX;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
@@ -53,7 +53,7 @@ public final class BlockChargedQuartzOre extends BlockQuartzOre
 				.materials()
 				.certusQuartzCrystalCharged()
 				.maybeItem()
-				.orElseThrow( () -> new MissingDefinition( "Tried to access charged certus quartz crystal, even though they are disabled" ) );
+				.orElseThrow( () -> new MissingDefinitionException( "Tried to access charged certus quartz crystal, even though they are disabled" ) );
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public final class BlockChargedQuartzOre extends BlockQuartzOre
 				.materials()
 				.certusQuartzCrystalCharged()
 				.maybeStack( 1 )
-				.orElseThrow( () -> new MissingDefinition( "Tried to access charged certus quartz crystal, even though they are disabled" ) )
+				.orElseThrow( () -> new MissingDefinitionException( "Tried to access charged certus quartz crystal, even though they are disabled" ) )
 				.getItemDamage();
 	}
 

@@ -31,8 +31,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.OreDictionary;
 
-import appeng.api.exceptions.MissingIngredientError;
-import appeng.api.exceptions.RegistrationError;
+import appeng.api.exceptions.MissingIngredientException;
+import appeng.api.exceptions.RegistrationException;
 import appeng.api.recipes.IIngredient;
 
 
@@ -228,11 +228,11 @@ public class ShapedRecipe extends net.minecraftforge.registries.IForgeRegistryEn
 							matched = matched || this.checkItemEquals( item, slot );
 						}
 					}
-					catch( final RegistrationError e )
+					catch( final RegistrationException e )
 					{
 						// :P
 					}
-					catch( final MissingIngredientError e )
+					catch( final MissingIngredientException e )
 					{
 						// :P
 					}
@@ -309,7 +309,7 @@ public class ShapedRecipe extends net.minecraftforge.registries.IForgeRegistryEn
 	}
 
 	@Override
-	public void bake() throws RegistrationError
+	public void bake() throws RegistrationException
 	{
 		try
 		{
@@ -322,7 +322,7 @@ public class ShapedRecipe extends net.minecraftforge.registries.IForgeRegistryEn
 				}
 			}
 		}
-		catch( final MissingIngredientError err )
+		catch( final MissingIngredientException err )
 		{
 			this.disable = true;
 		}

@@ -31,7 +31,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 
 import appeng.api.AEApi;
-import appeng.api.exceptions.FailedConnection;
+import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
@@ -243,7 +243,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 								new TunnelConnection( me, AEApi.instance().grid().createGridConnection( this.outerProxy.getNode(),
 										me.outerProxy.getNode() ) ) );
 					}
-					catch( final FailedConnection e )
+					catch( final FailedConnectionException e )
 					{
 						final TileEntity start = this.getTile();
 						final TileEntity end = me.getTile();

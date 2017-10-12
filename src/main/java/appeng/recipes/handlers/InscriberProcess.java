@@ -25,9 +25,9 @@ import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
 
-import appeng.api.exceptions.MissingIngredientError;
-import appeng.api.exceptions.RecipeError;
-import appeng.api.exceptions.RegistrationError;
+import appeng.api.exceptions.MissingIngredientException;
+import appeng.api.exceptions.RecipeException;
+import appeng.api.exceptions.RegistrationException;
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
 import appeng.recipes.RecipeHandler;
@@ -57,7 +57,7 @@ public abstract class InscriberProcess implements ICraftHandler, IWebsiteSeriali
 	private IIngredient output;
 
 	@Override
-	public void setup( final List<List<IIngredient>> input, final List<List<IIngredient>> output ) throws RecipeError
+	public void setup( final List<List<IIngredient>> input, final List<List<IIngredient>> output ) throws RecipeException
 	{
 		if( output.size() == 1 && output.get( 0 ).size() == 1 )
 		{
@@ -76,17 +76,17 @@ public abstract class InscriberProcess implements ICraftHandler, IWebsiteSeriali
 			}
 			else
 			{
-				throw new RecipeError( "Inscriber recipes cannot have rows, and must have more then one input." );
+				throw new RecipeException( "Inscriber recipes cannot have rows, and must have more then one input." );
 			}
 		}
 		else
 		{
-			throw new RecipeError( "Inscriber recipes must produce a single output." );
+			throw new RecipeException( "Inscriber recipes must produce a single output." );
 		}
 	}
 
 	@Override
-	public boolean canCraft( final ItemStack reqOutput ) throws RegistrationError, MissingIngredientError
+	public boolean canCraft( final ItemStack reqOutput ) throws RegistrationException, MissingIngredientException
 	{
 		return this.output != null && Platform.itemComparisons().isSameItem( this.output.getItemStack(), reqOutput );
 	}

@@ -21,7 +21,7 @@ package appeng.core.api.definitions;
 
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IParts;
-import appeng.api.exceptions.MissingDefinition;
+import appeng.api.exceptions.MissingDefinitionException;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.bootstrap.FeatureFactory;
@@ -180,28 +180,28 @@ public final class ApiParts implements IParts
 	@Override
 	public AEColoredItemDefinition lumenCableSmart()
 	{
-		throw new MissingDefinition( "Lumen Smart Cable has yet to be implemented." );
+		throw new MissingDefinitionException( "Lumen Smart Cable has yet to be implemented." );
 		// return this.lumenCableSmart;
 	}
 
 	@Override
 	public AEColoredItemDefinition lumenCableCovered()
 	{
-		throw new MissingDefinition( "Lumen Covered Cable has yet to be implemented." );
+		throw new MissingDefinitionException( "Lumen Covered Cable has yet to be implemented." );
 		// return this.lumenCableCovered;
 	}
 
 	@Override
 	public AEColoredItemDefinition lumenCableGlass()
 	{
-		throw new MissingDefinition( "Lumen Glass Cable has yet to be implemented." );
+		throw new MissingDefinitionException( "Lumen Glass Cable has yet to be implemented." );
 		// return this.lumenCableGlass;
 	}
 
 	@Override
 	public AEColoredItemDefinition lumenDenseCableSmart()
 	{
-		throw new MissingDefinition( "Lumen Dense Cable has yet to be implemented." );
+		throw new MissingDefinitionException( "Lumen Dense Cable has yet to be implemented." );
 		// return this.lumenCableDense;
 	}
 

@@ -25,9 +25,9 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import appeng.api.exceptions.MissingIngredientError;
-import appeng.api.exceptions.RecipeError;
-import appeng.api.exceptions.RegistrationError;
+import appeng.api.exceptions.MissingIngredientException;
+import appeng.api.exceptions.RecipeException;
+import appeng.api.exceptions.RegistrationException;
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
 import appeng.recipes.RecipeHandler;
@@ -41,7 +41,7 @@ public class Smelt implements ICraftHandler, IWebsiteSerializer
 	private IIngredient out;
 
 	@Override
-	public void setup( final List<List<IIngredient>> input, final List<List<IIngredient>> output ) throws RecipeError
+	public void setup( final List<List<IIngredient>> input, final List<List<IIngredient>> output ) throws RecipeException
 	{
 		if( input.size() == 1 && output.size() == 1 )
 		{
@@ -54,20 +54,20 @@ public class Smelt implements ICraftHandler, IWebsiteSerializer
 				return;
 			}
 		}
-		throw new RecipeError( "Smelting recipe can only have a single input and output." );
+		throw new RecipeException( "Smelting recipe can only have a single input and output." );
 	}
 
 	@Override
-	public void register() throws RegistrationError, MissingIngredientError
+	public void register() throws RegistrationException, MissingIngredientException
 	{
 		if( this.in.getItemStack().getItem() == Items.AIR )
 		{
-			throw new RegistrationError( this.in.toString() + ": Smelting Input is not a valid item." );
+			throw new RegistrationException( this.in.toString() + ": Smelting Input is not a valid item." );
 		}
 
 		if( this.out.getItemStack().getItem() == Items.AIR )
 		{
-			throw new RegistrationError( this.out.toString() + ": Smelting Output is not a valid item." );
+			throw new RegistrationException( this.out.toString() + ": Smelting Output is not a valid item." );
 		}
 
 		GameRegistry.addSmelting( this.in.getItemStack(), this.out.getItemStack(), 0 );
@@ -80,7 +80,7 @@ public class Smelt implements ICraftHandler, IWebsiteSerializer
 	}
 
 	@Override
-	public boolean canCraft( final ItemStack reqOutput ) throws RegistrationError, MissingIngredientError
+	public boolean canCraft( final ItemStack reqOutput ) throws RegistrationException, MissingIngredientException
 	{
 		return Platform.itemComparisons().isSameItem( this.out.getItemStack(), reqOutput );
 	}

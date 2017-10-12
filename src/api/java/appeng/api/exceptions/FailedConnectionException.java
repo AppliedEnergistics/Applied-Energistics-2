@@ -24,13 +24,33 @@
 package appeng.api.exceptions;
 
 
-public class RecipeError extends Exception
+import appeng.api.networking.IGridNode;
+
+
+/**
+ * Exception indicating a failed connection between two {@link IGridNode}s.
+ *
+ * Intended to signal an internal exception and not intended to be thrown by
+ * any 3rd party module.
+ *
+ * See any subclass for a more specific reason.
+ *
+ * @author AlgorithmX2
+ * @author yueh
+ * @version rv3
+ * @since rv0
+ */
+public class FailedConnectionException extends Exception
 {
 
-	private static final long serialVersionUID = -6602870588617670262L;
+	private static final long serialVersionUID = -2544208090248293753L;
 
-	public RecipeError( final String n )
+	public FailedConnectionException()
 	{
-		super( n );
+	}
+
+	public FailedConnectionException( String message )
+	{
+		super( message );
 	}
 }

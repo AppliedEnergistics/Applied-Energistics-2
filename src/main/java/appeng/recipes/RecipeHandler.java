@@ -47,9 +47,9 @@ import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItems;
-import appeng.api.exceptions.MissingIngredientError;
-import appeng.api.exceptions.RecipeError;
-import appeng.api.exceptions.RegistrationError;
+import appeng.api.exceptions.MissingIngredientException;
+import appeng.api.exceptions.RecipeException;
+import appeng.api.exceptions.RegistrationException;
 import appeng.api.features.IRecipeHandlerRegistry;
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
@@ -102,7 +102,7 @@ public class RecipeHandler implements IRecipeHandler
 				return this.getName( is );
 			}
 		}
-		catch( final RecipeError ignored )
+		catch( final RecipeException ignored )
 		{
 		}
 		catch( final Throwable t )
@@ -114,7 +114,7 @@ public class RecipeHandler implements IRecipeHandler
 		return i.getNameSpace() + ':' + i.getItemName();
 	}
 
-	private String getName( final ItemStack is ) throws RecipeError
+	private String getName( final ItemStack is ) throws RecipeException
 	{
 		Preconditions.checkNotNull( is );
 
@@ -123,7 +123,7 @@ public class RecipeHandler implements IRecipeHandler
 
 		if( !id.getResourceDomain().equals( AppEng.MOD_ID ) && !id.getResourceDomain().equals( "minecraft" ) )
 		{
-			throw new RecipeError( "Not applicable for website" );
+			throw new RecipeException( "Not applicable for website" );
 		}
 
 		final IDefinitions definitions = AEApi.instance().definitions();
@@ -388,7 +388,7 @@ public class RecipeHandler implements IRecipeHandler
 					processed.put( clz, i + 1 );
 				}
 			}
-			catch( final MissingIngredientError e )
+			catch( final MissingIngredientException e )
 			{
 				if( this.data.errorOnMissing )
 				{
@@ -403,7 +403,7 @@ public class RecipeHandler implements IRecipeHandler
 					}
 				}
 			}
-			catch( final RegistrationError e )
+			catch( final RegistrationException e )
 			{
 				AELog.warn( "Unable to register a recipe: " + e.getMessage() );
 				if( this.data.exceptions )
@@ -447,7 +447,7 @@ public class RecipeHandler implements IRecipeHandler
 							}
 						}
 					}
-					catch( final RecipeError ignored )
+					catch( final RecipeException ignored )
 					{
 
 					}
@@ -455,11 +455,11 @@ public class RecipeHandler implements IRecipeHandler
 					{
 
 					}
-					catch( final RegistrationError ignored )
+					catch( final RegistrationException ignored )
 					{
 
 					}
-					catch( final MissingIngredientError ignored )
+					catch( final MissingIngredientException ignored )
 					{
 
 					}
@@ -521,7 +521,7 @@ public class RecipeHandler implements IRecipeHandler
 		return this.data;
 	}
 
-	private void processTokens( final IRecipeLoader loader, final String file, final int line ) throws RecipeError
+	private void processTokens( final IRecipeLoader loader, final String file, final int line ) throws RecipeException
 	{
 		try
 		{
@@ -545,7 +545,7 @@ public class RecipeHandler implements IRecipeHandler
 					}
 					else
 					{
-						throw new RecipeError( "Alias must have exactly 1 input and 1 output." );
+						throw new RecipeException( "Alias must have exactly 1 input and 1 output." );
 					}
 				}
 				else if( operation.equals( "group" ) )
@@ -561,7 +561,7 @@ public class RecipeHandler implements IRecipeHandler
 					}
 					else
 					{
-						throw new RecipeError( "Group must have exactly 1 output, and 1 or more inputs." );
+						throw new RecipeException( "Group must have exactly 1 output, and 1 or more inputs." );
 					}
 				}
 				else if( operation.equals( "ore" ) )
@@ -578,7 +578,7 @@ public class RecipeHandler implements IRecipeHandler
 					}
 					else
 					{
-						throw new RecipeError( "Group must have exactly 1 output, and 1 or more inputs in a single row." );
+						throw new RecipeException( "Group must have exactly 1 output, and 1 or more inputs in a single row." );
 					}
 				}
 				else
@@ -598,7 +598,7 @@ public class RecipeHandler implements IRecipeHandler
 					}
 					else
 					{
-						throw new RecipeError( "Invalid crafting type: " + operation );
+						throw new RecipeException( "Invalid crafting type: " + operation );
 					}
 				}
 			}
@@ -614,7 +614,7 @@ public class RecipeHandler implements IRecipeHandler
 					}
 					else
 					{
-						throw new RecipeError( "exceptions must be true or false explicitly." );
+						throw new RecipeException( "exceptions must be true or false explicitly." );
 					}
 				}
 				else if( operation.equals( "crash" ) && ( this.tokens.get( 0 ).equals( "true" ) || this.tokens.get( 0 ).equals( "false" ) ) )
@@ -625,7 +625,7 @@ public class RecipeHandler implements IRecipeHandler
 					}
 					else
 					{
-						throw new RecipeError( "crash must be true or false explicitly." );
+						throw new RecipeException( "crash must be true or false explicitly." );
 					}
 				}
 				else if( operation.equals( "erroronmissing" ) )
@@ -636,7 +636,7 @@ public class RecipeHandler implements IRecipeHandler
 					}
 					else
 					{
-						throw new RecipeError( "erroronmissing must be true or false explicitly." );
+						throw new RecipeException( "erroronmissing must be true or false explicitly." );
 					}
 				}
 				else if( operation.equals( "import" ) )
@@ -647,16 +647,16 @@ public class RecipeHandler implements IRecipeHandler
 					}
 					else
 					{
-						throw new RecipeError( "Import must have exactly 1 input." );
+						throw new RecipeException( "Import must have exactly 1 input." );
 					}
 				}
 				else
 				{
-					throw new RecipeError( operation + ": " + this.tokens.toString() + "; recipe without an output." );
+					throw new RecipeException( operation + ": " + this.tokens.toString() + "; recipe without an output." );
 				}
 			}
 		}
-		catch( final RecipeError e )
+		catch( final RecipeException e )
 		{
 			AELog.warn( "Recipe Error '" + e.getMessage() + "' near line:" + line + " in " + file + " with: " + this.tokens.toString() );
 			if( this.data.exceptions )
@@ -672,7 +672,7 @@ public class RecipeHandler implements IRecipeHandler
 		this.tokens.clear();
 	}
 
-	private List<List<IIngredient>> parseLines( final Iterable<String> subList ) throws RecipeError
+	private List<List<IIngredient>> parseLines( final Iterable<String> subList ) throws RecipeException
 	{
 		final List<List<IIngredient>> out = new LinkedList<>();
 		List<IIngredient> cList = new LinkedList<>();
@@ -686,7 +686,7 @@ public class RecipeHandler implements IRecipeHandler
 			{
 				if( hasQty )
 				{
-					throw new RecipeError( "Qty found with no item." );
+					throw new RecipeException( "Qty found with no item." );
 				}
 				if( !cList.isEmpty() )
 				{
@@ -700,7 +700,7 @@ public class RecipeHandler implements IRecipeHandler
 				{
 					if( hasQty )
 					{
-						throw new RecipeError( "Qty found with no item." );
+						throw new RecipeException( "Qty found with no item." );
 					}
 					hasQty = true;
 					qty = Integer.parseInt( v );
@@ -728,7 +728,7 @@ public class RecipeHandler implements IRecipeHandler
 		return out;
 	}
 
-	private IIngredient findIngredient( final String v, final int qty ) throws RecipeError
+	private IIngredient findIngredient( final String v, final int qty ) throws RecipeException
 	{
 		final GroupIngredient gi = this.data.groups.get( v );
 

@@ -24,7 +24,7 @@
 package appeng.api.networking;
 
 
-import appeng.api.exceptions.FailedConnection;
+import appeng.api.exceptions.FailedConnectionException;
 
 
 /**
@@ -57,8 +57,8 @@ public interface IGridHelper
 	 * @param a to be connected gridnode
 	 * @param b to be connected gridnode
 	 *
-	 * @throws appeng.api.exceptions.FailedConnection
+	 * @throws appeng.api.exceptions.FailedConnectionException
 	 */
-	IGridConnection createGridConnection( IGridNode a, IGridNode b ) throws FailedConnection;
+	IGridConnection createGridConnection( IGridNode a, IGridNode b ) throws FailedConnectionException;
 
 }

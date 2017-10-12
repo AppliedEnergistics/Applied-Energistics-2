@@ -34,7 +34,7 @@ package appeng.api.exceptions;
  * @version rv3
  * @since rv3
  */
-public class SecurityConnectionException extends FailedConnection
+public class SecurityConnectionException extends FailedConnectionException
 {
 	private static final long serialVersionUID = 5048714900434215426L;
 	private static final String DEFAULT_MESSAGE = "Connection failed due to different security realms.";

@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 
 import appeng.api.exceptions.ExistingConnectionException;
-import appeng.api.exceptions.FailedConnection;
+import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.exceptions.NullNodeConnectionException;
 import appeng.api.exceptions.SecurityConnectionException;
 import appeng.api.networking.GridFlags;
@@ -54,7 +54,7 @@ public class GridConnection implements IGridConnection, IPathItem
 	private AEPartLocation fromAtoB;
 	private GridNode sideB;
 
-	public GridConnection( final IGridNode aNode, final IGridNode bNode, final AEPartLocation fromAtoB ) throws FailedConnection
+	public GridConnection( final IGridNode aNode, final IGridNode bNode, final AEPartLocation fromAtoB ) throws FailedConnectionException
 	{
 
 		final GridNode a = (GridNode) aNode;

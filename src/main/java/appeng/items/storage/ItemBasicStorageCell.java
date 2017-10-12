@@ -39,7 +39,7 @@ import net.minecraftforge.items.IItemHandler;
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
-import appeng.api.exceptions.MissingDefinition;
+import appeng.api.exceptions.MissingDefinitionException;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.implementations.items.IUpgradeModule;
@@ -303,7 +303,7 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 				.materials()
 				.emptyStorageCell()
 				.maybeStack( 1 )
-				.orElseThrow( () -> new MissingDefinition( "Tried to use empty storage cells while basic storage cells are defined." ) );
+				.orElseThrow( () -> new MissingDefinitionException( "Tried to use empty storage cells while basic storage cells are defined." ) );
 	}
 
 	@Override

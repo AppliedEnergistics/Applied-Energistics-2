@@ -31,7 +31,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
-import appeng.api.exceptions.MissingDefinition;
+import appeng.api.exceptions.MissingDefinitionException;
 import appeng.block.AEBaseBlock;
 
 
@@ -98,7 +98,7 @@ public class BlockQuartzOre extends AEBaseBlock
 				.materials()
 				.certusQuartzCrystal()
 				.maybeItem()
-				.orElseThrow( () -> new MissingDefinition( "Tried to access certus quartz crystal, even though they are disabled" ) );
+				.orElseThrow( () -> new MissingDefinitionException( "Tried to access certus quartz crystal, even though they are disabled" ) );
 	}
 
 	@Override
@@ -122,7 +122,7 @@ public class BlockQuartzOre extends AEBaseBlock
 				.materials()
 				.certusQuartzCrystal()
 				.maybeStack( 1 )
-				.orElseThrow( () -> new MissingDefinition( "Tried to access certus quartz crystal, even though they are disabled" ) )
+				.orElseThrow( () -> new MissingDefinitionException( "Tried to access certus quartz crystal, even though they are disabled" ) )
 				.getItemDamage();
 	}
 

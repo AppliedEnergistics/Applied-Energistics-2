@@ -48,7 +48,7 @@ import net.minecraft.world.World;
 
 import appeng.api.AEApi;
 import appeng.api.config.YesNo;
-import appeng.api.exceptions.FailedConnection;
+import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.implementations.parts.IPartCable;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -243,7 +243,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 									{
 										new GridConnection( cn, sn, AEPartLocation.INTERNAL );
 									}
-									catch( final FailedConnection e )
+									catch( final FailedConnectionException e )
 									{
 										// ekk!
 
@@ -294,7 +294,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 							{
 								new GridConnection( cn, sn, AEPartLocation.INTERNAL );
 							}
-							catch( final FailedConnection e )
+							catch( final FailedConnectionException e )
 							{
 								// ekk!
 
@@ -634,7 +634,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 								{
 									AEApi.instance().grid().createGridConnection( cn, sn );
 								}
-								catch( final FailedConnection e )
+								catch( final FailedConnectionException e )
 								{
 									// ekk
 								}
