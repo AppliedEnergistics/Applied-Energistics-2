@@ -32,7 +32,6 @@ import net.minecraft.util.text.translation.I18n;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.ActionItems;
 import appeng.api.config.CondenserOutput;
-import appeng.api.config.FilterMode;
 import appeng.api.config.FullnessMode;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.ItemSubstitution;
@@ -111,9 +110,13 @@ public class GuiImgButton extends GuiButton implements ITooltip
 			this.registerApp( 16 * 2 + 5, Settings.SEARCH_MODE, SearchBoxMode.JEI_AUTOSEARCH, ButtonToolTips.SearchMode, ButtonToolTips.SearchMode_JEIAuto );
 			this.registerApp( 16 * 2 + 6, Settings.SEARCH_MODE, SearchBoxMode.JEI_MANUAL_SEARCH, ButtonToolTips.SearchMode,
 					ButtonToolTips.SearchMode_JEIStandard );
-
-			this.registerApp( 16 * 2 + 7, Settings.FILTER_MODE, FilterMode.KEEP, ButtonToolTips.FilterMode, ButtonToolTips.FilterModeKeep );
-			this.registerApp( 16 * 2 + 8, Settings.FILTER_MODE, FilterMode.CLEAR, ButtonToolTips.FilterMode, ButtonToolTips.FilterModeClear );
+			this.registerApp( 16 * 2 + 7, Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH_KEEP, ButtonToolTips.SearchMode, ButtonToolTips.SearchMode_AutoKeep );
+			this.registerApp( 16 * 2 + 8, Settings.SEARCH_MODE, SearchBoxMode.MANUAL_SEARCH_KEEP, ButtonToolTips.SearchMode,
+					ButtonToolTips.SearchMode_StandardKeep );
+			this.registerApp( 16 * 2 + 9, Settings.SEARCH_MODE, SearchBoxMode.JEI_AUTOSEARCH_KEEP, ButtonToolTips.SearchMode,
+					ButtonToolTips.SearchMode_JEIAutoKeep );
+			this.registerApp( 16 * 2 + 10, Settings.SEARCH_MODE, SearchBoxMode.JEI_MANUAL_SEARCH_KEEP, ButtonToolTips.SearchMode,
+					ButtonToolTips.SearchMode_JEIStandardKeep );
 
 			this.registerApp( 16 * 5 + 3, Settings.LEVEL_TYPE, LevelType.ENERGY_LEVEL, ButtonToolTips.LevelType, ButtonToolTips.LevelType_Energy );
 			this.registerApp( 16 * 4 + 3, Settings.LEVEL_TYPE, LevelType.ITEM_LEVEL, ButtonToolTips.LevelType, ButtonToolTips.LevelType_Item );

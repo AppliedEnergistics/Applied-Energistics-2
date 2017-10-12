@@ -30,7 +30,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.config.FilterMode;
 import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
@@ -96,7 +95,6 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	private GuiImgButton SortDirBox;
 	private GuiImgButton searchBoxSettings;
 	private GuiImgButton terminalStyleBox;
-	private GuiImgButton filterMode;
 
 	public GuiMEMonitorable( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
@@ -189,10 +187,6 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 					AEConfig.instance().getConfigManager().putSetting( iBtn.getSetting(), next );
 				}
 				else if( btn == this.searchBoxSettings )
-				{
-					AEConfig.instance().getConfigManager().putSetting( iBtn.getSetting(), next );
-				}
-				else if( btn == this.filterMode )
 				{
 					AEConfig.instance().getConfigManager().putSetting( iBtn.getSetting(), next );
 				}
@@ -298,11 +292,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		this.buttonList.add(
 				this.searchBoxSettings = new GuiImgButton( this.guiLeft - 18, offset, Settings.SEARCH_MODE, AEConfig.instance().getConfigManager().getSetting(
 						Settings.SEARCH_MODE ) ) );
-		offset += 20;
 
-		this.buttonList.add(
-				this.filterMode = new GuiImgButton( this.guiLeft - 18, offset, Settings.FILTER_MODE, AEConfig.instance().getConfigManager().getSetting(
-						Settings.FILTER_MODE ) ) );
 		offset += 20;
 
 		if( !( this instanceof GuiMEPortableCell ) || this instanceof GuiWirelessTerm )
@@ -327,21 +317,21 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		}
 
 		final Enum searchModeSetting = AEConfig.instance().getConfigManager().getSetting( Settings.SEARCH_MODE );
-		final Enum searchFilterSetting = AEConfig.instance().getConfigManager().getSetting( Settings.FILTER_MODE );
 
-		this.searchField.setFocused( SearchBoxMode.AUTOSEARCH == searchModeSetting || SearchBoxMode.JEI_AUTOSEARCH == searchModeSetting );
-		this.searchField.setCanLoseFocus( SearchBoxMode.MANUAL_SEARCH == searchModeSetting || SearchBoxMode.JEI_MANUAL_SEARCH == searchModeSetting );
+		final boolean isAutoFocus = SearchBoxMode.AUTOSEARCH == searchModeSetting || SearchBoxMode.JEI_AUTOSEARCH == searchModeSetting || SearchBoxMode.AUTOSEARCH_KEEP == searchModeSetting || SearchBoxMode.JEI_AUTOSEARCH_KEEP == searchModeSetting;
+		final boolean isManualFocus = SearchBoxMode.MANUAL_SEARCH == searchModeSetting || SearchBoxMode.JEI_MANUAL_SEARCH == searchModeSetting	 || SearchBoxMode.MANUAL_SEARCH_KEEP == searchModeSetting || SearchBoxMode.JEI_MANUAL_SEARCH_KEEP == searchModeSetting;
+		final boolean isKeepFilter = SearchBoxMode.AUTOSEARCH_KEEP == searchModeSetting || SearchBoxMode.JEI_AUTOSEARCH_KEEP == searchModeSetting || SearchBoxMode.MANUAL_SEARCH_KEEP == searchModeSetting || SearchBoxMode.JEI_MANUAL_SEARCH_KEEP == searchModeSetting;
+		final boolean isJEIEnabled = SearchBoxMode.JEI_AUTOSEARCH == searchModeSetting || SearchBoxMode.JEI_MANUAL_SEARCH == searchModeSetting;
 
-		if( searchFilterSetting == FilterMode.KEEP && ( searchModeSetting == SearchBoxMode.JEI_AUTOSEARCH || searchModeSetting == SearchBoxMode.JEI_MANUAL_SEARCH ) )
+		this.searchField.setFocused( isAutoFocus );
+		this.searchField.setCanLoseFocus( isManualFocus );
+
+		if( isJEIEnabled )
 		{
 			memoryText = Integrations.jei().getSearchText();
 		}
-		else if( searchFilterSetting == FilterMode.CLEAR )
-		{
-			memoryText = "";
-		}
 
-		if( memoryText != null )
+		if( isKeepFilter && memoryText != null && !memoryText.isEmpty() )
 		{
 			this.searchField.setText( memoryText );
 			this.searchField.selectAll();
@@ -541,11 +531,6 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		if( this.ViewBox != null )
 		{
 			this.ViewBox.set( this.configSrc.getSetting( Settings.VIEW_MODE ) );
-		}
-
-		if( this.filterMode != null )
-		{
-			this.filterMode.set( this.configSrc.getSetting( Settings.FILTER_MODE ) );
 		}
 
 		this.repo.updateView();

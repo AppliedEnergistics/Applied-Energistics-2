@@ -81,9 +81,7 @@ public enum Settings
 
 	PLACE_BLOCK( EnumSet.of( YesNo.YES, YesNo.NO ) ),
 
-	SCHEDULING_MODE( EnumSet.allOf( SchedulingMode.class ) ),
-
-	FILTER_MODE( EnumSet.of( FilterMode.KEEP, FilterMode.CLEAR ) );
+	SCHEDULING_MODE( EnumSet.allOf( SchedulingMode.class ) );
 
 	private final EnumSet<? extends Enum<?>> values;
 

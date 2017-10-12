@@ -37,7 +37,6 @@ import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import appeng.api.config.CondenserOutput;
-import appeng.api.config.FilterMode;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.SearchBoxMode;
@@ -172,7 +171,6 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		this.settings.registerSetting( Settings.SEARCH_TOOLTIPS, YesNo.YES );
 		this.settings.registerSetting( Settings.TERMINAL_STYLE, TerminalStyle.TALL );
 		this.settings.registerSetting( Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH );
-		this.settings.registerSetting( Settings.FILTER_MODE, FilterMode.KEEP );
 
 		this.spawnChargedChance = (float) ( 1.0 - this.get( "worldGen", "spawnChargedChance", 1.0 - this.spawnChargedChance ).getDouble(
 				1.0 - this.spawnChargedChance ) );
