@@ -337,7 +337,7 @@ public final class ApiItems implements IItems
 	@Override
 	public IItemDefinition biometricCard()
 	{
-		return this.biometricCard;
+		return this.chargedStaff;
 	}
 
 	@Override

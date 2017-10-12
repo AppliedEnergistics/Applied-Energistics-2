@@ -120,7 +120,6 @@ public abstract class AEBaseMEGui extends AEBaseGui
 			ITooltipFlag.TooltipFlags tooltipFlag = this.mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL;
 			if( myStack != null )
 			{
-				@SuppressWarnings( "unchecked" )
 				final List<String> currentToolTip = stack.getTooltip( this.mc.player, tooltipFlag );
 
 				if( myStack.getStackSize() > BigNumber || ( myStack.getStackSize() > 1 && stack.isItemDamaged() ) )

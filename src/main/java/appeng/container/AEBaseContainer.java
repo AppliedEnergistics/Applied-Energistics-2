@@ -1108,7 +1108,8 @@ public abstract class AEBaseContainer extends Container
 		{
 			try
 			{
-				NetworkHandler.instance().sendTo( new PacketInventoryAction( InventoryAction.UPDATE_HAND, 0, AEItemStack.fromItemStack( p.inventory.getItemStack() ) ),
+				NetworkHandler.instance().sendTo(
+						new PacketInventoryAction( InventoryAction.UPDATE_HAND, 0, AEItemStack.fromItemStack( p.inventory.getItemStack() ) ),
 						p );
 			}
 			catch( final IOException e )

@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.storage;
+package appeng.me.helpers;
 
 
 import java.util.HashMap;
@@ -33,6 +33,10 @@ import com.google.common.collect.ImmutableList;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
@@ -42,11 +46,9 @@ import appeng.api.storage.data.IItemList;
  * listeners.
  *
  * @param <T>
- * @deprecated
  *
- * TODO: Needs to be redesigned to solve performance issues. Also should not be part of the API as class.
+ * TODO: Needs to be redesigned to solve performance issues.
  */
-@Deprecated
 public class MEMonitorHandler<T extends IAEStack<T>> implements IMEMonitor<T>
 {
 

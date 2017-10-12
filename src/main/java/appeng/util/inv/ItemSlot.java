@@ -48,7 +48,8 @@ public class ItemSlot
 
 	public IAEItemStack getAEItemStack()
 	{
-		return this.aeItemStack == null ? ( this.itemStack.isEmpty() ? null : ( this.aeItemStack = AEItemStack.fromItemStack( this.itemStack ) ) ) : this.aeItemStack;
+		return this.aeItemStack == null ? ( this.itemStack
+				.isEmpty() ? null : ( this.aeItemStack = AEItemStack.fromItemStack( this.itemStack ) ) ) : this.aeItemStack;
 	}
 
 	void setAEItemStack( final IAEItemStack is )

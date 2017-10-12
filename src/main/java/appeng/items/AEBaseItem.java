@@ -55,7 +55,6 @@ public abstract class AEBaseItem extends Item
 	}
 
 	@Override
-	@SuppressWarnings( "unchecked" )
 	public final void getSubItems( final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
 	{
 		if( this.isInCreativeTab( creativeTab ) )
