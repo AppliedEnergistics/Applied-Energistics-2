@@ -137,7 +137,11 @@ public enum ButtonToolTips
 	SchedulingMode,
 	SchedulingModeDefault,
 	SchedulingModeRoundRobin,
-	SchedulingModeRandom;
+	SchedulingModeRandom,
+
+	FilterMode,
+	FilterModeKeep,
+	FilterModeClear;
 
 	private final String root;
 

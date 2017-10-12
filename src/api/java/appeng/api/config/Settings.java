@@ -33,31 +33,57 @@ public enum Settings
 {
 	LEVEL_EMITTER_MODE( EnumSet.allOf( LevelEmitterMode.class ) ),
 
-	REDSTONE_EMITTER( EnumSet.of( RedstoneMode.HIGH_SIGNAL, RedstoneMode.LOW_SIGNAL ) ), REDSTONE_CONTROLLED( EnumSet.allOf( RedstoneMode.class ) ),
+	REDSTONE_EMITTER( EnumSet.of( RedstoneMode.HIGH_SIGNAL, RedstoneMode.LOW_SIGNAL ) ),
+
+	REDSTONE_CONTROLLED( EnumSet.allOf( RedstoneMode.class ) ),
 
 	CONDENSER_OUTPUT( EnumSet.allOf( CondenserOutput.class ) ),
 
-	POWER_UNITS( EnumSet.allOf( PowerUnits.class ) ), ACCESS( EnumSet.of( AccessRestriction.READ_WRITE, AccessRestriction.READ, AccessRestriction.WRITE ) ),
+	POWER_UNITS( EnumSet.allOf( PowerUnits.class ) ),
 
-	SORT_DIRECTION( EnumSet.allOf( SortDir.class ) ), SORT_BY( EnumSet.allOf( SortOrder.class ) ),
+	ACCESS( EnumSet.of( AccessRestriction.READ_WRITE, AccessRestriction.READ, AccessRestriction.WRITE ) ),
 
-	SEARCH_TOOLTIPS( EnumSet.of( YesNo.YES, YesNo.NO ) ), VIEW_MODE( EnumSet.allOf( ViewItems.class ) ), SEARCH_MODE( EnumSet.allOf( SearchBoxMode.class ) ),
+	SORT_DIRECTION( EnumSet.allOf( SortDir.class ) ),
 
-	ACTIONS( EnumSet.allOf( ActionItems.class ) ), IO_DIRECTION( EnumSet.of( RelativeDirection.LEFT, RelativeDirection.RIGHT ) ),
+	SORT_BY( EnumSet.allOf( SortOrder.class ) ),
 
-	BLOCK( EnumSet.of( YesNo.YES, YesNo.NO ) ), OPERATION_MODE( EnumSet.allOf( OperationMode.class ) ),
+	SEARCH_TOOLTIPS( EnumSet.of( YesNo.YES, YesNo.NO ) ),
 
-	FULLNESS_MODE( EnumSet.allOf( FullnessMode.class ) ), CRAFT_ONLY( EnumSet.of( YesNo.YES, YesNo.NO ) ),
+	VIEW_MODE( EnumSet.allOf( ViewItems.class ) ),
 
-	FUZZY_MODE( EnumSet.allOf( FuzzyMode.class ) ), LEVEL_TYPE( EnumSet.allOf( LevelType.class ) ),
+	SEARCH_MODE( EnumSet.allOf( SearchBoxMode.class ) ),
 
-	TERMINAL_STYLE( EnumSet.of( TerminalStyle.TALL, TerminalStyle.SMALL ) ), COPY_MODE( EnumSet.allOf( CopyMode.class ) ),
+	ACTIONS( EnumSet.allOf( ActionItems.class ) ),
 
-	INTERFACE_TERMINAL( EnumSet.of( YesNo.YES, YesNo.NO ) ), CRAFT_VIA_REDSTONE( EnumSet.of( YesNo.YES, YesNo.NO ) ),
+	IO_DIRECTION( EnumSet.of( RelativeDirection.LEFT, RelativeDirection.RIGHT ) ),
 
-	STORAGE_FILTER( EnumSet.allOf( StorageFilter.class ) ), PLACE_BLOCK( EnumSet.of( YesNo.YES, YesNo.NO ) ),
+	BLOCK( EnumSet.of( YesNo.YES, YesNo.NO ) ),
 
-	SCHEDULING_MODE( EnumSet.allOf( SchedulingMode.class ) );
+	OPERATION_MODE( EnumSet.allOf( OperationMode.class ) ),
+
+	FULLNESS_MODE( EnumSet.allOf( FullnessMode.class ) ),
+
+	CRAFT_ONLY( EnumSet.of( YesNo.YES, YesNo.NO ) ),
+
+	FUZZY_MODE( EnumSet.allOf( FuzzyMode.class ) ),
+
+	LEVEL_TYPE( EnumSet.allOf( LevelType.class ) ),
+
+	TERMINAL_STYLE( EnumSet.of( TerminalStyle.TALL, TerminalStyle.SMALL ) ),
+
+	COPY_MODE( EnumSet.allOf( CopyMode.class ) ),
+
+	INTERFACE_TERMINAL( EnumSet.of( YesNo.YES, YesNo.NO ) ),
+
+	CRAFT_VIA_REDSTONE( EnumSet.of( YesNo.YES, YesNo.NO ) ),
+
+	STORAGE_FILTER( EnumSet.allOf( StorageFilter.class ) ),
+
+	PLACE_BLOCK( EnumSet.of( YesNo.YES, YesNo.NO ) ),
+
+	SCHEDULING_MODE( EnumSet.allOf( SchedulingMode.class ) ),
+
+	FILTER_MODE( EnumSet.of( FilterMode.KEEP, FilterMode.CLEAR ) );
 
 	private final EnumSet<? extends Enum<?>> values;
 

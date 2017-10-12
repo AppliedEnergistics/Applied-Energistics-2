@@ -326,6 +326,9 @@ gui.tooltips.appliedenergistics2.SchedulingMode=Scheduling Mode
 gui.tooltips.appliedenergistics2.SchedulingModeDefault=Export the first item until the network is empty, then try the next ones.
 gui.tooltips.appliedenergistics2.SchedulingModeRoundRobin=Export using round robin mode.
 gui.tooltips.appliedenergistics2.SchedulingModeRandom=Export items in random mode.
+gui.tooltips.appliedenergistics2.FilterMode=Search Filter Mode
+gui.tooltips.appliedenergistics2.FilterModeKeep=Restore previous search filter.
+gui.tooltips.appliedenergistics2.FilterModeClear=Clear on each opening.
 gui.tooltips.appliedenergistics2.ItemsStored=Items Stored: %s
 gui.tooltips.appliedenergistics2.ItemsRequestable=Items Requestable: %s
 
