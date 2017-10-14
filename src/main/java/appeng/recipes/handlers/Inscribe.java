@@ -26,8 +26,8 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
-import appeng.api.exceptions.MissingIngredientError;
-import appeng.api.exceptions.RegistrationError;
+import appeng.api.exceptions.MissingIngredientException;
+import appeng.api.exceptions.RegistrationException;
 import appeng.api.features.IInscriberRecipeBuilder;
 import appeng.api.features.InscriberProcessType;
 
@@ -43,7 +43,7 @@ import appeng.api.features.InscriberProcessType;
 public final class Inscribe extends InscriberProcess
 {
 	@Override
-	public void register() throws RegistrationError, MissingIngredientError
+	public void register() throws RegistrationException, MissingIngredientException
 	{
 		if( this.getImprintable() == null )
 		{

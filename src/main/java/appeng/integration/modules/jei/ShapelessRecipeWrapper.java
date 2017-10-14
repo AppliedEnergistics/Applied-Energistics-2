@@ -29,8 +29,8 @@ import net.minecraft.item.ItemStack;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 
-import appeng.api.exceptions.MissingIngredientError;
-import appeng.api.exceptions.RegistrationError;
+import appeng.api.exceptions.MissingIngredientException;
+import appeng.api.exceptions.RegistrationException;
 import appeng.api.recipes.IIngredient;
 import appeng.recipes.game.ShapelessRecipe;
 
@@ -60,7 +60,7 @@ class ShapelessRecipeWrapper implements IRecipeWrapper
 				{
 					inputs.add( Lists.newArrayList( ingredient.getItemStackSet() ) );
 				}
-				catch( RegistrationError | MissingIngredientError registrationError )
+				catch( RegistrationException | MissingIngredientException registrationError )
 				{
 					throw new RuntimeException( "Unable to register recipe with JEI" );
 				}

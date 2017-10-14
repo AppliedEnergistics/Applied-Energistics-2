@@ -24,9 +24,9 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import appeng.api.exceptions.MissingIngredientError;
-import appeng.api.exceptions.RecipeError;
-import appeng.api.exceptions.RegistrationError;
+import appeng.api.exceptions.MissingIngredientException;
+import appeng.api.exceptions.RecipeException;
+import appeng.api.exceptions.RegistrationException;
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
 
@@ -44,13 +44,13 @@ public class OreRegistration implements ICraftHandler
 	}
 
 	@Override
-	public void setup( final List<List<IIngredient>> input, final List<List<IIngredient>> output ) throws RecipeError
+	public void setup( final List<List<IIngredient>> input, final List<List<IIngredient>> output ) throws RecipeException
 	{
 
 	}
 
 	@Override
-	public void register() throws RegistrationError, MissingIngredientError
+	public void register() throws RegistrationException, MissingIngredientException
 	{
 		for( final IIngredient i : this.inputs )
 		{

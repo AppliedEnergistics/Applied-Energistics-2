@@ -37,7 +37,7 @@ import appeng.api.networking.IGridNode;
  * @version rv3
  * @since rv3
  */
-public class ExistingConnectionException extends FailedConnection
+public class ExistingConnectionException extends FailedConnectionException
 {
 
 	private static final long serialVersionUID = 2975450379720353182L;

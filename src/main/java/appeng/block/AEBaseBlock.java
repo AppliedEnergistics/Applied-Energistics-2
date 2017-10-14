@@ -100,14 +100,12 @@ public abstract class AEBaseBlock extends Block
 		return new BlockStateContainer( this, this.getAEStates() );
 	}
 
-	@SuppressWarnings( "deprecation" )
 	@Override
 	public final boolean isNormalCube( IBlockState state )
 	{
 		return this.isFullSize() && this.isOpaque();
 	}
 
-	@SuppressWarnings( "deprecation" )
 	@Override
 	public AxisAlignedBB getBoundingBox( IBlockState state, IBlockAccess source, BlockPos pos )
 	{
@@ -226,7 +224,6 @@ public abstract class AEBaseBlock extends Block
 		return super.getSelectedBoundingBox( state, w, pos );
 	}
 
-	@SuppressWarnings( "deprecation" )
 	@Override
 	public final boolean isOpaqueCube( IBlockState state )
 	{
@@ -281,14 +278,12 @@ public abstract class AEBaseBlock extends Block
 		return super.collisionRayTrace( state, w, pos, a, b );
 	}
 
-	@SuppressWarnings( "deprecation" )
 	@Override
 	public boolean hasComparatorInputOverride( IBlockState state )
 	{
 		return this.isInventory();
 	}
 
-	@SuppressWarnings( "deprecation" )
 	@Override
 	public int getComparatorInputOverride( IBlockState state, final World worldIn, final BlockPos pos )
 	{

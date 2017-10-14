@@ -28,7 +28,7 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.data.IAEStack;
 
 
-public interface IBaseMonitor<T extends IAEStack>
+public interface IBaseMonitor<T extends IAEStack<T>>
 {
 
 	/**

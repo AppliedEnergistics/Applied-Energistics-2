@@ -27,8 +27,8 @@ import com.google.common.base.Preconditions;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import appeng.api.exceptions.MissingIngredientError;
-import appeng.api.exceptions.RegistrationError;
+import appeng.api.exceptions.MissingIngredientException;
+import appeng.api.exceptions.RegistrationException;
 import appeng.api.recipes.IIngredient;
 import appeng.api.recipes.ResolverResultSet;
 
@@ -55,13 +55,13 @@ public class IngredientSet implements IIngredient
 	}
 
 	@Override
-	public ItemStack getItemStack() throws RegistrationError, MissingIngredientError
+	public ItemStack getItemStack() throws RegistrationException, MissingIngredientException
 	{
-		throw new RegistrationError( "Cannot pass group of items to a recipe which desires a single recipe item." );
+		throw new RegistrationException( "Cannot pass group of items to a recipe which desires a single recipe item." );
 	}
 
 	@Override
-	public ItemStack[] getItemStackSet() throws RegistrationError, MissingIngredientError
+	public ItemStack[] getItemStackSet() throws RegistrationException, MissingIngredientException
 	{
 		if( this.baked != null )
 		{
@@ -78,7 +78,7 @@ public class IngredientSet implements IIngredient
 
 		if( out.isEmpty() )
 		{
-			throw new MissingIngredientError( this.toString() + " - group could not be resolved to any items." );
+			throw new MissingIngredientException( this.toString() + " - group could not be resolved to any items." );
 		}
 
 		for( final ItemStack is : out )
@@ -120,7 +120,7 @@ public class IngredientSet implements IIngredient
 	}
 
 	@Override
-	public void bake() throws RegistrationError, MissingIngredientError
+	public void bake() throws RegistrationException, MissingIngredientException
 	{
 		this.baked = null;
 		this.baked = this.getItemStackSet();

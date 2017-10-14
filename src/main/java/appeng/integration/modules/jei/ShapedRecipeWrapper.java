@@ -29,8 +29,8 @@ import net.minecraft.item.ItemStack;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.wrapper.IShapedCraftingRecipeWrapper;
 
-import appeng.api.exceptions.MissingIngredientError;
-import appeng.api.exceptions.RegistrationError;
+import appeng.api.exceptions.MissingIngredientException;
+import appeng.api.exceptions.RegistrationException;
 import appeng.api.recipes.IIngredient;
 import appeng.core.AEConfig;
 import appeng.recipes.game.ShapedRecipe;
@@ -72,7 +72,7 @@ class ShapedRecipeWrapper implements IShapedCraftingRecipeWrapper
 						ItemStack[] is = ing.getItemStackSet();
 						slotList = useSingleItems ? Platform.findPreferred( is ) : Arrays.asList( is );
 					}
-					catch( final RegistrationError | MissingIngredientError ignored )
+					catch( final RegistrationException | MissingIngredientException ignored )
 					{
 					}
 					in.add( slotList );

@@ -24,9 +24,9 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 
-import appeng.api.exceptions.MissingIngredientError;
-import appeng.api.exceptions.RecipeError;
-import appeng.api.exceptions.RegistrationError;
+import appeng.api.exceptions.MissingIngredientException;
+import appeng.api.exceptions.RecipeException;
+import appeng.api.exceptions.RegistrationException;
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
 import appeng.core.AELog;
@@ -43,7 +43,7 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 	private int cols;
 
 	@Override
-	public void setup( final List<List<IIngredient>> input, final List<List<IIngredient>> output ) throws RecipeError
+	public void setup( final List<List<IIngredient>> input, final List<List<IIngredient>> output ) throws RecipeException
 	{
 		if( output.size() == 1 && output.get( 0 ).size() == 1 )
 		{
@@ -57,7 +57,7 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 					{
 						if( anInput.size() != this.cols )
 						{
-							throw new RecipeError( "all rows in a shaped crafting recipe must contain the same number of ingredients." );
+							throw new RecipeException( "all rows in a shaped crafting recipe must contain the same number of ingredients." );
 						}
 					}
 
@@ -66,22 +66,22 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 				}
 				else
 				{
-					throw new RecipeError( "Crafting recipes must have 1-3 columns." );
+					throw new RecipeException( "Crafting recipes must have 1-3 columns." );
 				}
 			}
 			else
 			{
-				throw new RecipeError( "shaped crafting recipes must have 1-3 rows." );
+				throw new RecipeException( "shaped crafting recipes must have 1-3 rows." );
 			}
 		}
 		else
 		{
-			throw new RecipeError( "Crafting must produce a single output." );
+			throw new RecipeException( "Crafting must produce a single output." );
 		}
 	}
 
 	@Override
-	public void register() throws RegistrationError, MissingIngredientError
+	public void register() throws RegistrationException, MissingIngredientException
 	{
 		char first = 'A';
 		final List<Object> args = new ArrayList<>();
@@ -117,7 +117,7 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 		catch( final Throwable e )
 		{
 			AELog.debug( e );
-			throw new RegistrationError( "Error while adding shaped recipe." );
+			throw new RegistrationException( "Error while adding shaped recipe." );
 		}
 	}
 
@@ -149,7 +149,7 @@ public class Shaped implements ICraftHandler, IWebsiteSerializer
 	}
 
 	@Override
-	public boolean canCraft( final ItemStack reqOutput ) throws RegistrationError, MissingIngredientError
+	public boolean canCraft( final ItemStack reqOutput ) throws RegistrationException, MissingIngredientException
 	{
 		for( int y = 0; y < this.rows; y++ )
 		{

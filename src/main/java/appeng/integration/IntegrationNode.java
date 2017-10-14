@@ -22,7 +22,7 @@ package appeng.integration;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModAPIManager;
 
-import appeng.api.exceptions.ModNotInstalled;
+import appeng.api.exceptions.ModNotInstalledException;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 
@@ -96,7 +96,7 @@ final class IntegrationNode
 						}
 						else
 						{
-							throw new ModNotInstalled( this.modID );
+							throw new ModNotInstalledException( this.modID );
 						}
 
 						this.mod.preInit();
@@ -130,7 +130,7 @@ final class IntegrationNode
 			if( this.getState() == IntegrationStage.FAILED )
 			{
 				AELog.info( this.displayName + " - Integration Disabled" );
-				if( !( this.exception instanceof ModNotInstalled ) )
+				if( !( this.exception instanceof ModNotInstalledException ) )
 				{
 					AELog.integration( this.exception );
 				}

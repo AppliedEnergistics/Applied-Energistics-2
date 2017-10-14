@@ -67,7 +67,6 @@ public class AEBaseItemBlock extends ItemBlock
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	@SuppressWarnings( "unchecked" )
 	public final void addInformation( final ItemStack itemStack, final World world, final List<String> toolTip, final ITooltipFlag advancedTooltips )
 	{
 		this.addCheckedInformation( itemStack, world, toolTip, advancedTooltips );

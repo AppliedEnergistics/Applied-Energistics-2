@@ -28,9 +28,9 @@ import com.google.common.base.Preconditions;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import appeng.api.exceptions.MissingIngredientError;
-import appeng.api.exceptions.RecipeError;
-import appeng.api.exceptions.RegistrationError;
+import appeng.api.exceptions.MissingIngredientException;
+import appeng.api.exceptions.RecipeException;
+import appeng.api.exceptions.RegistrationException;
 import appeng.api.recipes.IIngredient;
 
 
@@ -43,7 +43,7 @@ public class GroupIngredient implements IIngredient
 	private ItemStack[] baked;
 	private boolean isInside = false;
 
-	public GroupIngredient( final String myName, final List<IIngredient> ingredients, final int qty ) throws RecipeError
+	public GroupIngredient( final String myName, final List<IIngredient> ingredients, final int qty ) throws RecipeException
 	{
 		Preconditions.checkNotNull( myName );
 		Preconditions.checkNotNull( ingredients );
@@ -57,27 +57,27 @@ public class GroupIngredient implements IIngredient
 		{
 			if( ingredient.isAir() )
 			{
-				throw new RecipeError( "Cannot include air in a group." );
+				throw new RecipeException( "Cannot include air in a group." );
 			}
 		}
 
 		this.ingredients = ingredients;
 	}
 
-	IIngredient copy( final int qty ) throws RecipeError
+	IIngredient copy( final int qty ) throws RecipeException
 	{
 		Preconditions.checkState( qty > 0 );
 		return new GroupIngredient( this.name, this.ingredients, qty );
 	}
 
 	@Override
-	public ItemStack getItemStack() throws RegistrationError, MissingIngredientError
+	public ItemStack getItemStack() throws RegistrationException, MissingIngredientException
 	{
-		throw new RegistrationError( "Cannot pass group of items to a recipe which desires a single recipe item." );
+		throw new RegistrationException( "Cannot pass group of items to a recipe which desires a single recipe item." );
 	}
 
 	@Override
-	public ItemStack[] getItemStackSet() throws RegistrationError, MissingIngredientError
+	public ItemStack[] getItemStackSet() throws RegistrationException, MissingIngredientException
 	{
 		if( this.baked != null )
 		{
@@ -99,7 +99,7 @@ public class GroupIngredient implements IIngredient
 				{
 					out.addAll( Arrays.asList( i.getItemStackSet() ) );
 				}
-				catch( final MissingIngredientError mir )
+				catch( final MissingIngredientException mir )
 				{
 					// oh well this is a group!
 				}
@@ -112,7 +112,7 @@ public class GroupIngredient implements IIngredient
 
 		if( out.isEmpty() )
 		{
-			throw new MissingIngredientError( this.toString() + " - group could not be resolved to any items." );
+			throw new MissingIngredientException( this.toString() + " - group could not be resolved to any items." );
 		}
 
 		for( final ItemStack is : out )
@@ -154,7 +154,7 @@ public class GroupIngredient implements IIngredient
 	}
 
 	@Override
-	public void bake() throws RegistrationError, MissingIngredientError
+	public void bake() throws RegistrationException, MissingIngredientException
 	{
 		this.baked = null;
 		this.baked = this.getItemStackSet();

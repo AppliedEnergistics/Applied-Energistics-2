@@ -31,9 +31,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.AEApi;
-import appeng.api.exceptions.MissingIngredientError;
-import appeng.api.exceptions.RecipeError;
-import appeng.api.exceptions.RegistrationError;
+import appeng.api.exceptions.MissingIngredientException;
+import appeng.api.exceptions.RecipeException;
+import appeng.api.exceptions.RegistrationException;
 import appeng.api.recipes.IIngredient;
 import appeng.api.recipes.ResolverResult;
 import appeng.api.recipes.ResolverResultSet;
@@ -50,7 +50,7 @@ public class Ingredient implements IIngredient
 	private NBTTagCompound nbt = null;
 	private ItemStack[] baked;
 
-	public Ingredient( final RecipeHandler handler, final String input, final int qty ) throws RecipeError, MissedIngredientSet
+	public Ingredient( final RecipeHandler handler, final String input, final int qty ) throws RecipeException, MissedIngredientSet
 	{
 		Preconditions.checkNotNull( handler );
 		Preconditions.checkNotNull( input );
@@ -83,7 +83,7 @@ public class Ingredient implements IIngredient
 				{
 					if( parts.length == 3 )
 					{
-						throw new RecipeError( "Cannot specify meta when using ore dictionary." );
+						throw new RecipeException( "Cannot specify meta when using ore dictionary." );
 					}
 					sel = OreDictionary.WILDCARD_VALUE;
 				}
@@ -106,7 +106,7 @@ public class Ingredient implements IIngredient
 					}
 					catch( final IllegalArgumentException e )
 					{
-						throw new RecipeError( tmpName + " is not a valid ae2 item definition." );
+						throw new RecipeException( tmpName + " is not a valid ae2 item definition." );
 					}
 				}
 
@@ -126,7 +126,7 @@ public class Ingredient implements IIngredient
 					}
 					catch( final NumberFormatException e )
 					{
-						throw new RecipeError( "Invalid Metadata." );
+						throw new RecipeException( "Invalid Metadata." );
 					}
 				}
 			}
@@ -134,7 +134,7 @@ public class Ingredient implements IIngredient
 		}
 		else
 		{
-			throw new RecipeError( input + " : Needs at least Namespace and Name." );
+			throw new RecipeException( input + " : Needs at least Namespace and Name." );
 		}
 
 		handler.getData().knownItem.add( this.toString() );
@@ -147,16 +147,16 @@ public class Ingredient implements IIngredient
 	}
 
 	@Override
-	public ItemStack getItemStack() throws RegistrationError, MissingIngredientError
+	public ItemStack getItemStack() throws RegistrationException, MissingIngredientException
 	{
 		if( this.isAir )
 		{
-			throw new RegistrationError( "Found blank item and expected a real item." );
+			throw new RegistrationException( "Found blank item and expected a real item." );
 		}
 
 		if( this.nameSpace.equalsIgnoreCase( "oreDictionary" ) )
 		{
-			throw new RegistrationError( "Recipe format expected a single item, but got a set of items." );
+			throw new RegistrationException( "Recipe format expected a single item, but got a set of items." );
 		}
 
 		Block blk = Block.getBlockFromName( this.nameSpace + ":" + this.itemName );
@@ -195,7 +195,7 @@ public class Ingredient implements IIngredient
 		 * instanceof BlockAir)) ) return new ItemStack( (Block) o, qty, meta );
 		 */
 
-		throw new MissingIngredientError( "Unable to find item: " + this.toString() );
+		throw new MissingIngredientException( "Unable to find item: " + this.toString() );
 	}
 
 	private ItemStack makeItemStack( final Item it, final int quantity, final int damageValue, final NBTTagCompound compound )
@@ -206,7 +206,7 @@ public class Ingredient implements IIngredient
 	}
 
 	@Override
-	public ItemStack[] getItemStackSet() throws RegistrationError, MissingIngredientError
+	public ItemStack[] getItemStackSet() throws RegistrationException, MissingIngredientException
 	{
 		if( this.baked != null )
 		{
@@ -228,7 +228,7 @@ public class Ingredient implements IIngredient
 
 			if( set.length == 0 )
 			{
-				throw new MissingIngredientError( this.itemName + " - ore dictionary could not be resolved to any items." );
+				throw new MissingIngredientException( this.itemName + " - ore dictionary could not be resolved to any items." );
 			}
 
 			return set;
@@ -268,7 +268,7 @@ public class Ingredient implements IIngredient
 	}
 
 	@Override
-	public void bake() throws RegistrationError, MissingIngredientError
+	public void bake() throws RegistrationException, MissingIngredientException
 	{
 		this.baked = null;
 		this.baked = this.getItemStackSet();

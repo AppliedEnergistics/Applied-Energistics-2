@@ -21,7 +21,7 @@ package appeng.core.api;
 
 import com.google.common.base.Preconditions;
 
-import appeng.api.exceptions.FailedConnection;
+import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridHelper;
@@ -54,7 +54,7 @@ public class ApiGrid implements IGridHelper
 	}
 
 	@Override
-	public IGridConnection createGridConnection( final IGridNode a, final IGridNode b ) throws FailedConnection
+	public IGridConnection createGridConnection( final IGridNode a, final IGridNode b ) throws FailedConnectionException
 	{
 		Preconditions.checkNotNull( a );
 		Preconditions.checkNotNull( b );

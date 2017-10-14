@@ -45,7 +45,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 import appeng.api.AEApi;
-import appeng.api.exceptions.MissingDefinition;
+import appeng.api.exceptions.MissingDefinitionException;
 import appeng.api.parts.IAlphaPassItem;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
@@ -318,7 +318,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 				.items()
 				.facade()
 				.maybeStack( 1 )
-				.orElseThrow( () -> new MissingDefinition( "Tried to create a facade, while facades are being deactivated." ) );
+				.orElseThrow( () -> new MissingDefinitionException( "Tried to create a facade, while facades are being deactivated." ) );
 
 		// Convert back to a registry name...
 		Item item = Item.REGISTRY.getObjectById( ids[0] );

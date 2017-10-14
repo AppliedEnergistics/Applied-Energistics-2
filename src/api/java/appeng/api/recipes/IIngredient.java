@@ -26,8 +26,8 @@ package appeng.api.recipes;
 
 import net.minecraft.item.ItemStack;
 
-import appeng.api.exceptions.MissingIngredientError;
-import appeng.api.exceptions.RegistrationError;
+import appeng.api.exceptions.MissingIngredientException;
+import appeng.api.exceptions.RegistrationException;
 
 
 public interface IIngredient
@@ -39,10 +39,10 @@ public interface IIngredient
 	 *
 	 * @return a single ItemStack for the recipe handler.
 	 *
-	 * @throws RegistrationError
-	 * @throws MissingIngredientError
+	 * @throws RegistrationException
+	 * @throws MissingIngredientException
 	 */
-	ItemStack getItemStack() throws RegistrationError, MissingIngredientError;
+	ItemStack getItemStack() throws RegistrationException, MissingIngredientException;
 
 	/**
 	 * Acquire a list of all the input stacks for the current recipe, this is for handlers that support
@@ -50,10 +50,10 @@ public interface IIngredient
 	 *
 	 * @return an array of ItemStacks for the recipe handler.
 	 *
-	 * @throws RegistrationError
-	 * @throws MissingIngredientError
+	 * @throws RegistrationException
+	 * @throws MissingIngredientException
 	 */
-	ItemStack[] getItemStackSet() throws RegistrationError, MissingIngredientError;
+	ItemStack[] getItemStackSet() throws RegistrationException, MissingIngredientException;
 
 	/**
 	 * If you wish to support air, you must test before getting the ItemStack, or ItemStackSet
@@ -85,8 +85,8 @@ public interface IIngredient
 	/**
 	 * Bakes the lists in for faster runtime look-ups.
 	 *
-	 * @throws MissingIngredientError
-	 * @throws RegistrationError
+	 * @throws MissingIngredientException
+	 * @throws RegistrationException
 	 */
-	void bake() throws RegistrationError, MissingIngredientError;
+	void bake() throws RegistrationException, MissingIngredientException;
 }

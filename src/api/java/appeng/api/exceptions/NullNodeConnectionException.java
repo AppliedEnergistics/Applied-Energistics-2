@@ -34,7 +34,7 @@ package appeng.api.exceptions;
  * @version rv3
  * @since rv3
  */
-public class NullNodeConnectionException extends FailedConnection
+public class NullNodeConnectionException extends FailedConnectionException
 {
 
 	private static final long serialVersionUID = -2143719383495321764L;

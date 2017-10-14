@@ -276,7 +276,7 @@ public class GridStorageCache implements IStorageGrid
 	}
 
 	@Override
-	public void postAlterationOfStoredItems( final IStorageChannel chan, final Iterable<? extends IAEStack> input, final IActionSource src )
+	public void postAlterationOfStoredItems( final IStorageChannel<?> chan, final Iterable<? extends IAEStack<?>> input, final IActionSource src )
 	{
 		this.storageMonitors.get( chan ).postChange( true, (Iterable) input, src );
 	}

@@ -32,7 +32,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import appeng.api.exceptions.FailedConnection;
+import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridNotification;
 import appeng.api.networking.IGrid;
@@ -457,7 +457,7 @@ public class GridNode implements IGridNode, IPathItem
 						{
 							new GridConnection( node, this, f.getOpposite() );
 						}
-						catch( final FailedConnection e )
+						catch( final FailedConnectionException e )
 						{
 							TickHandler.INSTANCE.addCallable( node.getWorld(), new MachineSecurityBreak( this ) );
 
@@ -484,7 +484,7 @@ public class GridNode implements IGridNode, IPathItem
 				{
 					new GridConnection( node, this, f.getOpposite() );
 				}
-				catch( final FailedConnection e )
+				catch( final FailedConnectionException e )
 				{
 					TickHandler.INSTANCE.addCallable( node.getWorld(), new MachineSecurityBreak( this ) );
 

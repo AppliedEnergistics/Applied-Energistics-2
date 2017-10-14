@@ -24,9 +24,9 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 
-import appeng.api.exceptions.MissingIngredientError;
-import appeng.api.exceptions.RecipeError;
-import appeng.api.exceptions.RegistrationError;
+import appeng.api.exceptions.MissingIngredientException;
+import appeng.api.exceptions.RecipeException;
+import appeng.api.exceptions.RegistrationException;
 import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IIngredient;
 import appeng.core.AELog;
@@ -41,7 +41,7 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 	private IIngredient output;
 
 	@Override
-	public void setup( final List<List<IIngredient>> input, final List<List<IIngredient>> output ) throws RecipeError
+	public void setup( final List<List<IIngredient>> input, final List<List<IIngredient>> output ) throws RecipeException
 	{
 		if( output.size() == 1 && output.get( 0 ).size() == 1 )
 		{
@@ -52,17 +52,17 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 			}
 			else
 			{
-				throw new RecipeError( "Shapeless crafting recipes cannot have rows." );
+				throw new RecipeException( "Shapeless crafting recipes cannot have rows." );
 			}
 		}
 		else
 		{
-			throw new RecipeError( "Crafting must produce a single output." );
+			throw new RecipeException( "Crafting must produce a single output." );
 		}
 	}
 
 	@Override
-	public void register() throws RegistrationError, MissingIngredientError
+	public void register() throws RegistrationException, MissingIngredientException
 	{
 		final List<Object> args = new ArrayList<>();
 		for( final IIngredient i : this.inputs )
@@ -81,7 +81,7 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 		catch( final Throwable e )
 		{
 			AELog.debug( e );
-			throw new RegistrationError( "Error while adding shapeless recipe." );
+			throw new RegistrationException( "Error while adding shapeless recipe." );
 		}
 	}
 
@@ -119,7 +119,7 @@ public class Shapeless implements ICraftHandler, IWebsiteSerializer
 	}
 
 	@Override
-	public boolean canCraft( final ItemStack reqOutput ) throws RegistrationError, MissingIngredientError
+	public boolean canCraft( final ItemStack reqOutput ) throws RegistrationException, MissingIngredientException
 	{
 
 		for( final IIngredient i : this.inputs )

@@ -32,7 +32,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import appeng.api.AEApi;
 import appeng.api.events.LocatableEventAnnounce;
 import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
-import appeng.api.exceptions.FailedConnection;
+import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.features.ILocatable;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -158,7 +158,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 					sideA.connection = sideB.connection = new ConnectionWrapper( AEApi.instance().grid().createGridConnection( sideA.getNode(),
 							sideB.getNode() ) );
 				}
-				catch( final FailedConnection e )
+				catch( final FailedConnectionException e )
 				{
 					// :(
 				}
