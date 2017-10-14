@@ -344,12 +344,8 @@ public class Platform
 			return true;
 		}
 
-		if( e == SearchBoxMode.JEI_AUTOSEARCH && !Integrations.jei().isEnabled() )
-		{
-			return true;
-		}
-
-		if( e == SearchBoxMode.JEI_MANUAL_SEARCH && !Integrations.jei().isEnabled() )
+		final boolean isJEI = e == SearchBoxMode.JEI_AUTOSEARCH || e == SearchBoxMode.JEI_AUTOSEARCH_KEEP || e == SearchBoxMode.JEI_MANUAL_SEARCH || e == SearchBoxMode.JEI_MANUAL_SEARCH_KEEP;
+		if( isJEI && !Integrations.jei().isEnabled() )
 		{
 			return true;
 		}
