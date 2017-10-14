@@ -64,11 +64,15 @@ public enum ButtonToolTips
 
 	TransferToStorageCell,
 	ToggleSortDirection,
-	SearchMode_Auto,
 
+	SearchMode_Auto,
 	SearchMode_Standard,
 	SearchMode_JEIAuto,
 	SearchMode_JEIStandard,
+	SearchMode_AutoKeep,
+	SearchMode_StandardKeep,
+	SearchMode_JEIAutoKeep,
+	SearchMode_JEIStandardKeep,
 
 	SearchMode,
 	ItemName,
@@ -137,7 +141,11 @@ public enum ButtonToolTips
 	SchedulingMode,
 	SchedulingModeDefault,
 	SchedulingModeRoundRobin,
-	SchedulingModeRandom;
+	SchedulingModeRandom,
+
+	FilterMode,
+	FilterModeKeep,
+	FilterModeClear;
 
 	private final String root;
 

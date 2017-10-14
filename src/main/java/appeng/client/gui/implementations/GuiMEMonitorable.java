@@ -292,6 +292,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		this.buttonList.add(
 				this.searchBoxSettings = new GuiImgButton( this.guiLeft - 18, offset, Settings.SEARCH_MODE, AEConfig.instance().getConfigManager().getSetting(
 						Settings.SEARCH_MODE ) ) );
+
 		offset += 20;
 
 		if( !( this instanceof GuiMEPortableCell ) || this instanceof GuiWirelessTerm )
@@ -315,16 +316,22 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 			this.craftingStatusBtn.setHideEdge( 13 );
 		}
 
-		final Enum setting = AEConfig.instance().getConfigManager().getSetting( Settings.SEARCH_MODE );
-		this.searchField.setFocused( SearchBoxMode.AUTOSEARCH == setting || SearchBoxMode.JEI_AUTOSEARCH == setting );
-		this.searchField.setCanLoseFocus( SearchBoxMode.MANUAL_SEARCH == setting || SearchBoxMode.JEI_MANUAL_SEARCH == setting );
+		final Enum searchModeSetting = AEConfig.instance().getConfigManager().getSetting( Settings.SEARCH_MODE );
 
-		if( setting == SearchBoxMode.JEI_AUTOSEARCH || setting == SearchBoxMode.JEI_MANUAL_SEARCH )
+		final boolean isAutoFocus = SearchBoxMode.AUTOSEARCH == searchModeSetting || SearchBoxMode.JEI_AUTOSEARCH == searchModeSetting || SearchBoxMode.AUTOSEARCH_KEEP == searchModeSetting || SearchBoxMode.JEI_AUTOSEARCH_KEEP == searchModeSetting;
+		final boolean isManualFocus = SearchBoxMode.MANUAL_SEARCH == searchModeSetting || SearchBoxMode.JEI_MANUAL_SEARCH == searchModeSetting	 || SearchBoxMode.MANUAL_SEARCH_KEEP == searchModeSetting || SearchBoxMode.JEI_MANUAL_SEARCH_KEEP == searchModeSetting;
+		final boolean isKeepFilter = SearchBoxMode.AUTOSEARCH_KEEP == searchModeSetting || SearchBoxMode.JEI_AUTOSEARCH_KEEP == searchModeSetting || SearchBoxMode.MANUAL_SEARCH_KEEP == searchModeSetting || SearchBoxMode.JEI_MANUAL_SEARCH_KEEP == searchModeSetting;
+		final boolean isJEIEnabled = SearchBoxMode.JEI_AUTOSEARCH == searchModeSetting || SearchBoxMode.JEI_MANUAL_SEARCH == searchModeSetting;
+
+		this.searchField.setFocused( isAutoFocus );
+		this.searchField.setCanLoseFocus( isManualFocus );
+
+		if( isJEIEnabled )
 		{
 			memoryText = Integrations.jei().getSearchText();
 		}
 
-		if( memoryText != null && !memoryText.isEmpty() )
+		if( isKeepFilter && memoryText != null && !memoryText.isEmpty() )
 		{
 			this.searchField.setText( memoryText );
 			this.searchField.selectAll();
@@ -359,6 +366,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		craftingGridOffsetX -= 25;
 		craftingGridOffsetY -= 6;
+
 	}
 
 	@Override
