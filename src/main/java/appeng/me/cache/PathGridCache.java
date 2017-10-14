@@ -26,6 +26,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+
+import appeng.api.AEApi;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridBlock;
@@ -43,8 +47,9 @@ import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
+import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
-import appeng.core.stats.Achievements;
+import appeng.core.stats.IAdvancementTrigger;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
 import appeng.me.pathfinding.AdHocChannelUpdater;
@@ -340,26 +345,24 @@ public class PathGridCache implements IPathingGrid
 	{
 		if( this.lastChannels != this.getChannelsInUse() && AEConfig.instance().isFeatureEnabled( AEFeature.CHANNELS ) )
 		{
-			final Achievements currentBracket = this.getAchievementBracket( this.getChannelsInUse() );
-			final Achievements lastBracket = this.getAchievementBracket( this.lastChannels );
+			final IAdvancementTrigger currentBracket = this.getAchievementBracket( this.getChannelsInUse() );
+			final IAdvancementTrigger lastBracket = this.getAchievementBracket( this.lastChannels );
 			if( currentBracket != lastBracket && currentBracket != null )
 			{
-				final Set<Integer> players = new HashSet<>();
 				for( final IGridNode n : this.requireChannels )
 				{
-					players.add( n.getPlayerID() );
+					EntityPlayer player = AEApi.instance().registries().players().findPlayer( n.getPlayerID() );
+					if( player instanceof EntityPlayerMP )
+					{
+						currentBracket.trigger( (EntityPlayerMP) player );
+					}
 				}
-
-				// for( final int id : players )
-				// {
-				// Platform.addStat( id, currentBracket.getAchievement() );
-				// }
 			}
 		}
 		this.lastChannels = this.getChannelsInUse();
 	}
 
-	private Achievements getAchievementBracket( final int ch )
+	private IAdvancementTrigger getAchievementBracket( final int ch )
 	{
 		if( ch < 8 )
 		{
@@ -368,15 +371,15 @@ public class PathGridCache implements IPathingGrid
 
 		if( ch < 128 )
 		{
-			return Achievements.Networking1;
+			return AppEng.instance().getAdvancementTriggers().getNetworkApprentice();
 		}
 
 		if( ch < 2048 )
 		{
-			return Achievements.Networking2;
+			return AppEng.instance().getAdvancementTriggers().getNetworkEngineer();
 		}
 
-		return Achievements.Networking3;
+		return AppEng.instance().getAdvancementTriggers().getNetworkAdmin();
 	}
 
 	@MENetworkEventSubscribe

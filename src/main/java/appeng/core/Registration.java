@@ -20,6 +20,8 @@ package appeng.core;
 
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,6 +29,9 @@ import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.ICriterionInstance;
+import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -49,6 +54,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -72,6 +78,7 @@ import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPartHelper;
 import appeng.api.recipes.IRecipeHandler;
+import appeng.bootstrap.ICriterionTriggerRegistry;
 import appeng.bootstrap.IModelRegistry;
 import appeng.bootstrap.components.IBlockRegistrationComponent;
 import appeng.bootstrap.components.IInitComponent;
@@ -88,7 +95,7 @@ import appeng.core.features.registries.cell.BasicCellHandler;
 import appeng.core.features.registries.cell.CreativeCellHandler;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
-import appeng.core.stats.PlayerStatsRegistration;
+import appeng.core.stats.AdvancementTriggers;
 import appeng.core.worlddata.SpatialDimensionManager;
 import appeng.hooks.TickHandler;
 import appeng.items.materials.ItemMaterial;
@@ -131,6 +138,7 @@ final class Registration
 	DimensionType storageDimensionType;
 	int storageDimensionID;
 	Biome storageBiome;
+	AdvancementTriggers advancementTriggers;
 
 	private File recipeDirectory;
 	private CustomRecipeConfig customRecipeConfig;
@@ -286,9 +294,7 @@ final class Registration
 			registries.matterCannon().registerAmmo( ammoStack, weight );
 		} );
 
-		final PlayerStatsRegistration registration = new PlayerStatsRegistration( MinecraftForge.EVENT_BUS, AEConfig.instance() );
-		registration.registerAchievementHandlers();
-		registration.registerAchievements();
+		this.advancementTriggers = new AdvancementTriggers( new CriterionTrigggerRegistry() );
 	}
 
 	@SubscribeEvent
@@ -579,6 +585,31 @@ final class Registration
 		{
 			ModelLoader.setCustomStateMapper( block, mapper );
 		}
+	}
+
+	private static class CriterionTrigggerRegistry implements ICriterionTriggerRegistry
+	{
+		private Method method;
+
+		public CriterionTrigggerRegistry()
+		{
+			this.method = ReflectionHelper.findMethod( CriteriaTriggers.class, "register", "func_192118_a", ICriterionTrigger.class );
+			method.setAccessible( true );
+		}
+
+		@Override
+		public void register( ICriterionTrigger<? extends ICriterionInstance> trigger )
+		{
+			try
+			{
+				method.invoke( null, trigger );
+			}
+			catch( IllegalAccessException | IllegalArgumentException | InvocationTargetException e )
+			{
+				AELog.debug( e );
+			}
+		}
+
 	}
 
 }

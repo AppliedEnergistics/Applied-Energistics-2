@@ -20,7 +20,6 @@ package appeng.tile.storage;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

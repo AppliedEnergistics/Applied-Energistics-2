@@ -51,6 +51,7 @@ import appeng.core.crash.CrashInfo;
 import appeng.core.crash.IntegrationCrashEnhancement;
 import appeng.core.crash.ModCrashEnhancement;
 import appeng.core.features.AEFeature;
+import appeng.core.stats.AdvancementTriggers;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.worlddata.WorldData;
@@ -139,6 +140,11 @@ public final class AppEng
 	public int getStorageDimensionID()
 	{
 		return this.registration.storageDimensionID;
+	}
+
+	public AdvancementTriggers getAdvancementTriggers()
+	{
+		return this.registration.advancementTriggers;
 	}
 
 	@EventHandler
