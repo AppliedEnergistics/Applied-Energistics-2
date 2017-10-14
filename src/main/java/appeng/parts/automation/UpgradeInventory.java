@@ -144,7 +144,10 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 	@Override
 	public void saveChanges()
 	{
-		this.parent.saveChanges();
+		if( this.parent != null )
+		{
+			this.parent.saveChanges();
+		}
 	}
 
 	@Override
