@@ -58,14 +58,24 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	public BlockTinyTNT()
 	{
 		super( Material.TNT );
-		this.setLightOpacity( 1 );
+
 		this.boundingBox = new AxisAlignedBB( 0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f );
-		this.setFullSize( this.setOpaque( false ) );
+
+		this.setLightOpacity( 2 );
+		this.setFullSize( false );
+		this.setOpaque( false );
+
 		this.setSoundType( SoundType.GROUND );
 		this.setHardness( 0F );
 
 		EntityRegistry.registerModEntity( new ResourceLocation( AppEng.MOD_ID, EntityTinyTNTPrimed.class.getName() ), EntityTinyTNTPrimed.class,
 				"EntityTinyTNTPrimed", EntityIds.get( EntityTinyTNTPrimed.class ), AppEng.instance(), 16, 4, true );
+	}
+
+	@Override
+	public boolean isFullCube( IBlockState state )
+	{
+		return false;
 	}
 
 	@Override
