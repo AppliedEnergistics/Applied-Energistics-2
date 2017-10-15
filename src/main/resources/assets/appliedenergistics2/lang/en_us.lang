@@ -533,6 +533,8 @@ commands.ae2.ChunkLoggerOff=Chunk Logging is now off
 commands.ae2.Supporters=Displays a list of AE2 Supporters
 
 // Achievements
+achievement.ae2.Root=Applied Energistics
+achievement.ae2.Root.desc=When a chest is simply not enough.
 achievement.ae2.Compass=Meteorite Hunter
 achievement.ae2.Compass.desc=Craft a Meteorite Compass
 achievement.ae2.Presses=Unknown Technology

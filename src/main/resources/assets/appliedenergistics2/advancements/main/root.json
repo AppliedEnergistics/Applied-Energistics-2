@@ -1,11 +1,10 @@
 {
     "display": {
         "icon": { 
-             "item": "appliedenergistics2:material", 
-             "data": 0 
+             "item": "appliedenergistics2:dense_energy_cell" 
          },
-        "title": "Certus?",
-        "description": "What does this even mean?",
+        "title": { "translate": "achievement.ae2.Root" },
+        "description": { "translate": "achievement.ae2.Root.desc" },
        	"background": "appliedenergistics2:textures/blocks/sky_stone_brick.png",
     	"show_toast": false,
     	"announce_to_chat": false
