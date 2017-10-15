@@ -37,13 +37,17 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 import appeng.block.AEBaseBlock;
+import appeng.core.AppEng;
+import appeng.entity.EntityIds;
 import appeng.entity.EntityTinyTNTPrimed;
 import appeng.helpers.ICustomCollision;
 
@@ -60,9 +64,8 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 		this.setSoundType( SoundType.GROUND );
 		this.setHardness( 0F );
 
-		// TODO: 1.11
-		// EntityRegistry.registerModEntity( EntityTinyTNTPrimed.class, "EntityTinyTNTPrimed", EntityIds.get(
-		// EntityTinyTNTPrimed.class ), AppEng.instance(), 16, 4, true );
+		EntityRegistry.registerModEntity( new ResourceLocation( AppEng.MOD_ID, EntityTinyTNTPrimed.class.getName() ), EntityTinyTNTPrimed.class,
+				"EntityTinyTNTPrimed", EntityIds.get( EntityTinyTNTPrimed.class ), AppEng.instance(), 16, 4, true );
 	}
 
 	@Override
