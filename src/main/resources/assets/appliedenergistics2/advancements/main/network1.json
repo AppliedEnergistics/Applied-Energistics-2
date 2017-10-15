@@ -9,7 +9,7 @@
     "parent": "appliedenergistics2:main/cable_glass",
     "criteria": {
         "cable": {
-            "trigger": "network_apprentice"            
+            "trigger": "appliedenergistics2:network_apprentice"            
         }
     }
 }

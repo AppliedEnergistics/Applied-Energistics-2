@@ -35,6 +35,8 @@ import net.minecraft.advancements.critereon.AbstractCriterionInstance;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
 
+import appeng.core.AppEng;
+
 
 public class AppEngAdvancementTrigger implements ICriterionTrigger<AppEngAdvancementTrigger.Instance>, IAdvancementTrigger
 {
@@ -44,13 +46,7 @@ public class AppEngAdvancementTrigger implements ICriterionTrigger<AppEngAdvance
 	public AppEngAdvancementTrigger( String parString )
 	{
 		super();
-		ID = new ResourceLocation( parString );
-	}
-
-	public AppEngAdvancementTrigger( ResourceLocation parRL )
-	{
-		super();
-		ID = parRL;
+		ID = new ResourceLocation( AppEng.MOD_ID, parString );
 	}
 
 	@Override

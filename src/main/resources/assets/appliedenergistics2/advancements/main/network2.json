@@ -9,7 +9,7 @@
     "parent": "appliedenergistics2:main/network1",
     "criteria": {
         "cable": {
-            "trigger": "network_engineer"
+            "trigger": "appliedenergistics2:network_engineer"
         }
     }
 }

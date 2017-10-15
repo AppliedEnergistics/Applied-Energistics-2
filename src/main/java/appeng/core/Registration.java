@@ -96,6 +96,7 @@ import appeng.core.features.registries.cell.CreativeCellHandler;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.stats.AdvancementTriggers;
+import appeng.core.stats.PartItemPredicate;
 import appeng.core.worlddata.SpatialDimensionManager;
 import appeng.hooks.TickHandler;
 import appeng.items.materials.ItemMaterial;
@@ -294,6 +295,7 @@ final class Registration
 			registries.matterCannon().registerAmmo( ammoStack, weight );
 		} );
 
+		PartItemPredicate.register();
 		this.advancementTriggers = new AdvancementTriggers( new CriterionTrigggerRegistry() );
 	}
 

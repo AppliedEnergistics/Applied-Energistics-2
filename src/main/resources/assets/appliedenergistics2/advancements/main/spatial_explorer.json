@@ -9,7 +9,7 @@
     "parent": "appliedenergistics2:main/spatial_ioport",
     "criteria": {
         "explorer": {
-            "trigger": "spatial_explorer"            
+            "trigger": "appliedenergistics2:spatial_explorer"            
         }
     }
 }
