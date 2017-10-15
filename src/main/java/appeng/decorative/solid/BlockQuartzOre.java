@@ -27,7 +27,6 @@ import net.minecraft.item.Item;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -37,18 +36,11 @@ import appeng.block.AEBaseBlock;
 
 public class BlockQuartzOre extends AEBaseBlock
 {
-	private int boostBrightnessLow;
-	private int boostBrightnessHigh;
-	private boolean enhanceBrightness;
-
 	public BlockQuartzOre()
 	{
 		super( Material.ROCK );
 		this.setHardness( 3.0F );
 		this.setResistance( 5.0F );
-		this.boostBrightnessLow = 0;
-		this.boostBrightnessHigh = 1;
-		this.enhanceBrightness = false;
 	}
 
 	@Override
@@ -58,76 +50,7 @@ public class BlockQuartzOre extends AEBaseBlock
 	}
 
 	@Override
-	public int getLightValue( final IBlockState state, final IBlockAccess worldIn, final BlockPos pos )
-	{
-		int j1 = super.getLightValue( state, worldIn, pos );
-		if( this.enhanceBrightness )
-		{
-			j1 = Math.max( j1 >> 20, j1 >> 4 );
-
-			if( j1 > 4 )
-			{
-				j1 += this.boostBrightnessHigh;
-			}
-			else
-			{
-				j1 += this.boostBrightnessLow;
-			}
-
-			if( j1 > 15 )
-			{
-				j1 = 15;
-			}
-			return j1 << 20 | j1 << 4;
-		}
-		return j1;
-	}
-
-	@Override
-	public int quantityDropped( final Random rand )
-	{
-		return 1 + rand.nextInt( 2 );
-	}
-
-	@Override
-	public Item getItemDropped( final IBlockState state, /* is null */
-			final Random rand, final int fortune )
-	{
-		return AEApi.instance()
-				.definitions()
-				.materials()
-				.certusQuartzCrystal()
-				.maybeItem()
-				.orElseThrow( () -> new MissingDefinitionException( "Tried to access certus quartz crystal, even though they are disabled" ) );
-	}
-
-	@Override
-	public void dropBlockAsItemWithChance( final World w, final BlockPos pos, final IBlockState state, final float chance, final int fortune )
-	{
-		super.dropBlockAsItemWithChance( w, pos, state, chance, fortune );
-
-		if( this.getItemDropped( state, w.rand, fortune ) != Item.getItemFromBlock( this ) )
-		{
-			final int xp = MathHelper.getInt( w.rand, 2, 5 );
-
-			this.dropXpOnBlockBreak( w, pos, xp );
-		}
-	}
-
-	@Override
-	public int damageDropped( final IBlockState state )
-	{
-		return AEApi.instance()
-				.definitions()
-				.materials()
-				.certusQuartzCrystal()
-				.maybeStack( 1 )
-				.orElseThrow( () -> new MissingDefinitionException( "Tried to access certus quartz crystal, even though they are disabled" ) )
-				.getItemDamage();
-	}
-
-	@Override
-	public int quantityDroppedWithBonus( final int fortune, final Random rand )
+	public int quantityDropped( IBlockState state, int fortune, Random rand )
 	{
 		if( fortune > 0 && Item.getItemFromBlock( this ) != this.getItemDropped( null, rand, fortune ) )
 		{
@@ -146,18 +69,39 @@ public class BlockQuartzOre extends AEBaseBlock
 		}
 	}
 
-	void setBoostBrightnessLow( final int boostBrightnessLow )
+	@Override
+	public void dropBlockAsItemWithChance( final World w, final BlockPos pos, final IBlockState state, final float chance, final int fortune )
 	{
-		this.boostBrightnessLow = boostBrightnessLow;
+		super.dropBlockAsItemWithChance( w, pos, state, chance, fortune );
+
+		if( this.getItemDropped( state, w.rand, fortune ) != Item.getItemFromBlock( this ) )
+		{
+			final int xp = MathHelper.getInt( w.rand, 2, 5 );
+
+			this.dropXpOnBlockBreak( w, pos, xp );
+		}
 	}
 
-	void setBoostBrightnessHigh( final int boostBrightnessHigh )
+	@Override
+	public Item getItemDropped( final IBlockState state, final Random rand, final int fortune )
 	{
-		this.boostBrightnessHigh = boostBrightnessHigh;
+		return AEApi.instance()
+				.definitions()
+				.materials()
+				.certusQuartzCrystal()
+				.maybeItem()
+				.orElseThrow( () -> new MissingDefinitionException( "Tried to access certus quartz crystal, even though they are disabled" ) );
 	}
 
-	public void setEnhanceBrightness( final boolean enhanceBrightness )
+	@Override
+	public int damageDropped( final IBlockState state )
 	{
-		this.enhanceBrightness = enhanceBrightness;
+		return AEApi.instance()
+				.definitions()
+				.materials()
+				.certusQuartzCrystal()
+				.maybeStack( 1 )
+				.orElseThrow( () -> new MissingDefinitionException( "Tried to access certus quartz crystal, even though they are disabled" ) )
+				.getItemDamage();
 	}
 }
