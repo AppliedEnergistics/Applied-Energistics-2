@@ -70,6 +70,12 @@ public class BlockQuartzOre extends AEBaseBlock
 	}
 
 	@Override
+	public int quantityDropped( final Random rand )
+	{
+		return 1 + rand.nextInt( 2 );
+	}
+
+	@Override
 	public void dropBlockAsItemWithChance( final World w, final BlockPos pos, final IBlockState state, final float chance, final int fortune )
 	{
 		super.dropBlockAsItemWithChance( w, pos, state, chance, fortune );
