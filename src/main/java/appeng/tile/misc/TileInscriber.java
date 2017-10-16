@@ -346,12 +346,19 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				final InscriberProcessType type = InscriberProcessType.INSCRIBE;
 
 				final IInscriberRecipeBuilder builder = AEApi.instance().registries().inscriber().builder();
-				return builder.withInputs( inputs )
-						.withOutput( renamedItem )
-						.withTopOptional( plateA )
-						.withBottomOptional( plateB )
-						.withProcessType( type )
-						.build();
+				builder.withInputs( inputs ).withOutput( renamedItem ).withProcessType( type );
+
+				if( isNameA )
+				{
+					builder.withTopOptional( plateA );
+				}
+
+				if( isNameB )
+				{
+					builder.withBottomOptional( plateB );
+				}
+
+				return builder.build();
 			}
 		}
 
