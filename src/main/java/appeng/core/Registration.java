@@ -97,6 +97,7 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.PartItemPredicate;
+import appeng.core.stats.Stats;
 import appeng.core.worlddata.SpatialDimensionManager;
 import appeng.hooks.TickHandler;
 import appeng.items.materials.ItemMaterial;
@@ -296,6 +297,7 @@ final class Registration
 		} );
 
 		PartItemPredicate.register();
+		Stats.register();
 		this.advancementTriggers = new AdvancementTriggers( new CriterionTrigggerRegistry() );
 	}
 

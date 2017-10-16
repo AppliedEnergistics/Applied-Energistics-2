@@ -44,18 +44,18 @@ public enum Stats
 
 	public void addToPlayer( final EntityPlayer player, final int howMany )
 	{
-		player.addStat( this.getStat(), howMany );
+		player.addStat( this.stat, howMany );
 	}
 
-	StatBasic getStat()
+	public static void register()
 	{
-		if( this.stat == null )
+		for( final Stats s : Stats.values() )
 		{
-			this.stat = new StatBasic( "stat.ae2." + this.name(), new TextComponentTranslation( "stat.ae2." + this.name() ) );
-			this.stat.registerStat();
+			if( s.stat == null )
+			{
+				s.stat = new StatBasic( "stat.ae2." + s.name(), new TextComponentTranslation( "stat.ae2." + s.name() ) );
+				s.stat.registerStat();
+			}
 		}
-
-		return this.stat;
 	}
-
 }
