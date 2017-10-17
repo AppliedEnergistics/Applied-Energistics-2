@@ -65,6 +65,6 @@ public class PartItemPredicate extends ItemPredicate
 
 	public static void register()
 	{
-		ItemPredicates.register( new ResourceLocation( AppEng.MOD_ID, "part" ), json -> PartItemPredicate.deserialize( json ) );
+		ItemPredicates.register( new ResourceLocation( AppEng.MOD_ID, "part" ), PartItemPredicate::deserialize );
 	}
 }

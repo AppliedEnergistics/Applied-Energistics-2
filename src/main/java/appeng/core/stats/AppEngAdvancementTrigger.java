@@ -125,7 +125,7 @@ public class AppEngAdvancementTrigger implements ICriterionTrigger<AppEngAdvance
 		private final PlayerAdvancements playerAdvancements;
 		private final Set<ICriterionTrigger.Listener<AppEngAdvancementTrigger.Instance>> listeners = new HashSet<>();
 
-		public Listeners( PlayerAdvancements playerAdvancementsIn )
+		Listeners( PlayerAdvancements playerAdvancementsIn )
 		{
 			this.playerAdvancements = playerAdvancementsIn;
 		}

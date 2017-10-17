@@ -595,7 +595,7 @@ final class Registration
 	{
 		private Method method;
 
-		public CriterionTrigggerRegistry()
+		CriterionTrigggerRegistry()
 		{
 			this.method = ReflectionHelper.findMethod( CriteriaTriggers.class, "register", "func_192118_a", ICriterionTrigger.class );
 			method.setAccessible( true );

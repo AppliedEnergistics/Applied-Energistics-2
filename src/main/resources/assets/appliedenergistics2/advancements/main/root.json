@@ -1,7 +1,7 @@
 {
     "display": {
         "icon": { 
-             "item": "appliedenergistics2:dense_energy_cell" 
+             "item": "appliedenergistics2:controller" 
          },
         "title": { "translate": "achievement.ae2.Root" },
         "description": { "translate": "achievement.ae2.Root.desc" },

@@ -349,9 +349,7 @@ public enum GuiBridge implements IGuiHandler
 						.typeName( tE ) + " )" );
 			}
 
-			final Object o = target.newInstance( inventory, tE );
-
-			return o;
+			return target.newInstance( inventory, tE );
 		}
 		catch( final Throwable t )
 		{
