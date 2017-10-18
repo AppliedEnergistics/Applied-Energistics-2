@@ -1,7 +1,8 @@
 {
     "display": {
         "icon": { 
-             "item": "appliedenergistics2:controller" 
+             "item": "appliedenergistics2:material", 
+             "data": 0 
          },
         "title": { "translate": "achievement.ae2.Root" },
         "description": { "translate": "achievement.ae2.Root.desc" },
