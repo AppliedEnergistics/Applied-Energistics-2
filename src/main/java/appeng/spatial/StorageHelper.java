@@ -35,7 +35,7 @@ import net.minecraft.world.WorldServer;
 
 import appeng.api.AEApi;
 import appeng.api.util.WorldCoord;
-import appeng.core.stats.Achievements;
+import appeng.core.AppEng;
 import appeng.util.Platform;
 
 
@@ -115,7 +115,7 @@ public class StorageHelper
 			{
 				if( link.dim.provider instanceof StorageWorldProvider )
 				{
-					Achievements.SpatialIOExplorer.addToPlayer( player );
+					AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger( player );
 				}
 
 				player.mcServer.getPlayerList().transferPlayerToDimension( player, link.dim.provider.getDimension(), new METeleporter( newWorld, link ) );

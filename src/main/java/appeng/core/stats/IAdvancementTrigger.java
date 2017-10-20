@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2017, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,34 +19,11 @@
 package appeng.core.stats;
 
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.util.FakePlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 
-/**
- * Can differentiate if a {@link net.minecraft.entity.player.EntityPlayer} is a real player or not
- *
- * @author thatsIch
- * @since rv2
- */
-public class PlayerDifferentiator
+@FunctionalInterface
+public interface IAdvancementTrigger
 {
-	/**
-	 * Can determine if an {@link net.minecraft.entity.player.EntityPlayer} is not a real player.
-	 * This is based on if the
-	 *
-	 * @param player is:
-	 * - null
-	 * - dead
-	 * - fake
-	 *
-	 * @param player to be checked player
-	 *
-	 * @return true if
-	 * @param player is not a real player
-	 */
-	boolean isNoPlayer( final EntityPlayer player )
-	{
-		return player == null || player.isDead || player instanceof FakePlayer;
-	}
+	void trigger( EntityPlayerMP parPlayer );
 }

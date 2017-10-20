@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2017, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,12 +16,15 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.stats;
+package appeng.bootstrap;
 
 
-public enum AchievementType
+import net.minecraft.advancements.ICriterionInstance;
+import net.minecraft.advancements.ICriterionTrigger;
+
+
+@FunctionalInterface
+public interface ICriterionTriggerRegistry
 {
-
-	Craft, CraftItem, Pickup, Custom
-
+	void register( ICriterionTrigger<? extends ICriterionInstance> trigger );
 }

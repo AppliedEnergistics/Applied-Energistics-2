@@ -20,13 +20,9 @@ package appeng.core.sync;
 
 
 import java.lang.reflect.Constructor;
-import java.util.List;
-
-import com.google.common.collect.Lists;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -36,8 +32,6 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
-import appeng.api.definitions.IComparableDefinition;
-import appeng.api.definitions.IMaterials;
 import appeng.api.exceptions.AppEngException;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.implementations.IUpgradeableHost;
@@ -92,7 +86,6 @@ import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.implementations.ContainerVibrationChamber;
 import appeng.container.implementations.ContainerWireless;
 import appeng.container.implementations.ContainerWirelessTerm;
-import appeng.core.stats.Achievements;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.helpers.WirelessTerminalGuiObject;
@@ -356,27 +349,7 @@ public enum GuiBridge implements IGuiHandler
 						.typeName( tE ) + " )" );
 			}
 
-			final Object o = target.newInstance( inventory, tE );
-
-			/**
-			 * triggers achievement when the player sees presses.
-			 */
-			if( o instanceof AEBaseContainer )
-			{
-				final AEBaseContainer bc = (AEBaseContainer) o;
-				for( final Object so : bc.inventorySlots )
-				{
-					if( so instanceof Slot )
-					{
-						final ItemStack is = ( (Slot) so ).getStack();
-
-						final IMaterials materials = AEApi.instance().definitions().materials();
-						this.addPressAchievementToPlayer( is, materials, inventory.player );
-					}
-				}
-			}
-
-			return o;
+			return target.newInstance( inventory, tE );
 		}
 		catch( final Throwable t )
 		{
@@ -408,26 +381,6 @@ public enum GuiBridge implements IGuiHandler
 		}
 
 		return inventory.getClass().getName();
-	}
-
-	private void addPressAchievementToPlayer( final ItemStack newItem, final IMaterials possibleMaterials, final EntityPlayer player )
-	{
-		final IComparableDefinition logic = possibleMaterials.logicProcessorPress();
-		final IComparableDefinition eng = possibleMaterials.engProcessorPress();
-		final IComparableDefinition calc = possibleMaterials.calcProcessorPress();
-		final IComparableDefinition silicon = possibleMaterials.siliconPress();
-
-		final List<IComparableDefinition> presses = Lists.newArrayList( logic, eng, calc, silicon );
-
-		for( final IComparableDefinition press : presses )
-		{
-			if( press.isSameAs( newItem ) )
-			{
-				Achievements.Presses.addToPlayer( player );
-
-				return;
-			}
-		}
 	}
 
 	@Override
