@@ -205,7 +205,7 @@ public abstract class AEBaseContainer extends Container
 			final NBTTagCompound data = CompressedStreamTools.readCompressed( new ByteArrayInputStream( buffer ) );
 			if( data != null )
 			{
-				this.setTargetStack( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( new ItemStack( data ) ) );
+				this.setTargetStack( AEItemStack.fromNBT( data ) );
 			}
 		}
 		catch( final IOException e )

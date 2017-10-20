@@ -28,7 +28,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import appeng.api.config.FuzzyMode;
-import appeng.util.Platform;
 
 
 final class AESharedItemStack implements Comparable<AESharedItemStack>
@@ -60,7 +59,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash( itemStack.getItem(), this.itemDamage );
+		return Objects.hash( this.itemId, this.itemDamage, this.itemStack.hasTagCompound() ? this.itemStack.getTagCompound() : 0 );
 	}
 
 	@Override
@@ -110,11 +109,10 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 
 	private int compareNBT( final ItemStack b )
 	{
-		if( Platform.itemComparisons().isNbtTagEqual( this.itemStack.getTagCompound(), b.getTagCompound() ) )
+		if( this.itemStack.getTagCompound() == b.getTagCompound() )
 		{
 			return 0;
 		}
-
 		if( this.itemStack.getTagCompound() == LOW_TAG || b.getTagCompound() == HIGH_TAG )
 		{
 			return -1;
@@ -123,14 +121,6 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 		{
 			return 1;
 		}
-
-		final int nbt = ( this.itemStack.hasTagCompound() ? this.itemStack.getTagCompound().hashCode() : 0 ) - ( b.hasTagCompound() ? b.getTagCompound()
-				.hashCode() : 0 );
-		if( nbt != 0 )
-		{
-			return nbt;
-		}
-
 		return System.identityHashCode( this.itemStack.getTagCompound() ) - System.identityHashCode( b.getTagCompound() );
 	}
 
