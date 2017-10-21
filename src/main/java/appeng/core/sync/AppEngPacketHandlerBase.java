@@ -90,7 +90,7 @@ public class AppEngPacketHandlerBase
 
 		PACKET_RECIPE_JEI( PacketJEIRecipe.class ),
 
-		PACKET_PARTIAL_ITEM( PacketTargetItemStack.class ),
+		PACKET_TARGET_ITEM( PacketTargetItemStack.class ),
 
 		PACKET_CRAFTING_REQUEST( PacketCraftRequest.class ),
 
