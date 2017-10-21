@@ -101,7 +101,6 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		}
 
 		final AEFluidStack fluid = AEFluidStack.fromFluidStack( fluidStack );
-		// fluid.priority = i.getInteger( "Priority" );
 		fluid.setStackSize( i.getLong( "Cnt" ) );
 		fluid.setCountRequestable( i.getLong( "Req" ) );
 		fluid.setCraftable( i.getBoolean( "Craft" ) );
@@ -111,12 +110,10 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	public static IAEFluidStack fromPacket( final ByteBuf data ) throws IOException
 	{
 		final byte mask = data.readByte();
-		// byte PriorityType = (byte) (mask & 0x03);
 		final byte stackType = (byte) ( ( mask & 0x0C ) >> 2 );
 		final byte countReqType = (byte) ( ( mask & 0x30 ) >> 4 );
 		final boolean isCraftable = ( mask & 0x40 ) > 0;
 		final boolean hasTagCompound = ( mask & 0x80 ) > 0;
-		boolean showCraftingLabel = data.readBoolean();
 
 		// don't send this...
 		final NBTTagCompound d = new NBTTagCompound();
@@ -139,16 +136,10 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 			d.setTag( "tag", CompressedStreamTools.read( di ) );
 		}
 
-		// long priority = getPacketValue( PriorityType, data );
 		final long stackSize = getPacketValue( stackType, data );
 		final long countRequestable = getPacketValue( countReqType, data );
 
 		final FluidStack fluidStack = FluidStack.loadFluidStackFromNBT( d );
-
-		if( !showCraftingLabel )
-		{
-			showCraftingLabel = stackSize == 0;
-		}
 
 		if( fluidStack == null )
 		{
@@ -170,10 +161,6 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		{
 			return;
 		}
-
-		// if ( priority < ((AEFluidStack) option).priority )
-		// priority = ((AEFluidStack) option).priority;
-
 		this.incStackSize( option.getStackSize() );
 		this.setCountRequestable( this.getCountRequestable() + option.getCountRequestable() );
 		this.setCraftable( this.isCraftable() || option.isCraftable() );
@@ -366,7 +353,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	@Override
 	public void writeToPacket( final ByteBuf i ) throws IOException
 	{
-		final byte mask = (byte) ( this.getType( 0 ) | ( this.getType( this.getStackSize() ) << 2 ) | ( this
+		final byte mask = (byte) ( ( this.getType( this.getStackSize() ) << 2 ) | ( this
 				.getType( this.getCountRequestable() ) << 4 ) | ( (byte) ( this.isCraftable() ? 1 : 0 ) << 6 ) | ( this.hasTagCompound() ? 1 : 0 ) << 7 );
 
 		i.writeByte( mask );

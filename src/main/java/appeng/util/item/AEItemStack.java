@@ -19,7 +19,6 @@
 package appeng.util.item;
 
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -117,7 +116,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		i.setBoolean( "Craft", this.isCraftable() );
 	}
 
-	public static AEItemStack fromPacket( final ByteBuf data ) throws IOException
+	public static AEItemStack fromPacket( final ByteBuf data )
 	{
 		final byte mask = data.readByte();
 		final byte stackType = (byte) ( ( mask & 0x0C ) >> 2 );
@@ -140,7 +139,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	}
 
 	@Override
-	public void writeToPacket( final ByteBuf i ) throws IOException
+	public void writeToPacket( final ByteBuf i )
 	{
 		final byte mask = (byte) ( ( this.getType( this.getStackSize() ) << 2 ) | ( this
 				.getType( this.getCountRequestable() ) << 4 ) | ( (byte) ( this.isCraftable() ? 1 : 0 ) << 6 ) | ( this.hasTagCompound() ? 1 : 0 ) << 7 );
