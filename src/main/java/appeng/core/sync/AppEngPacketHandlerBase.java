@@ -41,11 +41,11 @@ import appeng.core.sync.packets.PacketMatterCannon;
 import appeng.core.sync.packets.PacketMockExplosion;
 import appeng.core.sync.packets.PacketPaintedEntity;
 import appeng.core.sync.packets.PacketPartPlacement;
-import appeng.core.sync.packets.PacketPartialItem;
 import appeng.core.sync.packets.PacketPatternSlot;
 import appeng.core.sync.packets.PacketProgressBar;
 import appeng.core.sync.packets.PacketSwapSlots;
 import appeng.core.sync.packets.PacketSwitchGuis;
+import appeng.core.sync.packets.PacketTargetItemStack;
 import appeng.core.sync.packets.PacketTransitionEffect;
 import appeng.core.sync.packets.PacketValueConfig;
 
@@ -90,7 +90,7 @@ public class AppEngPacketHandlerBase
 
 		PACKET_RECIPE_JEI( PacketJEIRecipe.class ),
 
-		PACKET_PARTIAL_ITEM( PacketPartialItem.class ),
+		PACKET_PARTIAL_ITEM( PacketTargetItemStack.class ),
 
 		PACKET_CRAFTING_REQUEST( PacketCraftRequest.class ),
 

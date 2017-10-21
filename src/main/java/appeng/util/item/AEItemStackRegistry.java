@@ -31,16 +31,33 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 
+import appeng.util.Platform;
+
 
 public final class AEItemStackRegistry
 {
-	private static final WeakHashMap<AESharedItemStack, WeakReference<AESharedItemStack>> REGISTRY = new WeakHashMap<>();
+	private static final WeakHashMap<AESharedItemStack, WeakReference<AESharedItemStack>> SERVER_REGISTRY = new WeakHashMap<>();
+	private static final WeakHashMap<AESharedItemStack, WeakReference<AESharedItemStack>> CLIENT_REGISTRY = new WeakHashMap<>();
+
+	private static long nextStackId = 0l;
 
 	private AEItemStackRegistry()
 	{
 	}
 
-	static synchronized AESharedItemStack getRegisteredStack( final @Nonnull ItemStack itemStack )
+	static private WeakHashMap<AESharedItemStack, WeakReference<AESharedItemStack>> registry()
+	{
+		if( Platform.isClient() )
+		{
+			return CLIENT_REGISTRY;
+		}
+		else
+		{
+			return SERVER_REGISTRY;
+		}
+	}
+
+	static synchronized AESharedItemStack getRegisteredStack( final @Nonnull ItemStack itemStack, final long serverStackId )
 	{
 		if( itemStack.isEmpty() )
 		{
@@ -50,8 +67,8 @@ public final class AEItemStackRegistry
 		int oldStackSize = itemStack.getCount();
 		itemStack.setCount( 1 );
 
-		AESharedItemStack search = new AESharedItemStack( itemStack );
-		WeakReference<AESharedItemStack> weak = REGISTRY.get( search );
+		AESharedItemStack search = new AESharedItemStack( itemStack, -1 );
+		WeakReference<AESharedItemStack> weak = registry().get( search );
 		AESharedItemStack ret = null;
 
 		if( weak != null )
@@ -61,11 +78,31 @@ public final class AEItemStackRegistry
 
 		if( ret == null )
 		{
-			ret = new AESharedItemStack( itemStack.copy() );
-			REGISTRY.put( ret, new WeakReference<>( ret ) );
+			final long newStackId = Platform.isClient() ? serverStackId : ++nextStackId;
+			ret = new AESharedItemStack( itemStack.copy(), newStackId );
+			registry().put( ret, new WeakReference<>( ret ) );
 		}
 		itemStack.setCount( oldStackSize );
 
 		return ret;
+	}
+
+	static synchronized AESharedItemStack getRegisteredStack( final long itemStackId )
+	{
+		if( itemStackId <= 0 )
+		{
+			return null;
+		}
+
+		// TODO: better search
+		for( AESharedItemStack key : registry().keySet() )
+		{
+			if( key.getStackId() == itemStackId )
+			{
+				return key;
+			}
+		}
+
+		return null;
 	}
 }

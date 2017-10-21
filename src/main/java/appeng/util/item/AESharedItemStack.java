@@ -38,12 +38,14 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 	private final ItemStack itemStack;
 	private final int itemId;
 	private final int itemDamage;
+	private final long sharedStackId;
 
-	public AESharedItemStack( final ItemStack itemStack )
+	public AESharedItemStack( final ItemStack itemStack, final long sharedStackId )
 	{
 		this.itemStack = itemStack;
 		this.itemId = Item.getIdFromItem( itemStack.getItem() );
 		this.itemDamage = itemStack.getItemDamage();
+		this.sharedStackId = sharedStackId;
 	}
 
 	ItemStack getDefinition()
@@ -54,6 +56,11 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 	int getItemDamage()
 	{
 		return this.itemDamage;
+	}
+
+	long getStackId()
+	{
+		return this.sharedStackId;
 	}
 
 	@Override
@@ -161,7 +168,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 			newDef.setTagCompound( LOW_TAG );
 		}
 
-		return new AESharedItemStack( newDef );
+		return new AESharedItemStack( newDef, -1 );
 	}
 
 	public AESharedItemStack getUpperBound( final FuzzyMode fuzzy, final boolean ignoreMeta )
@@ -201,6 +208,6 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 			newDef.setTagCompound( HIGH_TAG );
 		}
 
-		return new AESharedItemStack( newDef );
+		return new AESharedItemStack( newDef, -1 );
 	}
 }

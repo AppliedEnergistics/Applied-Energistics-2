@@ -364,7 +364,20 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	}
 
 	@Override
-	protected void writeToStream( final ByteBuf i ) throws IOException
+	public void writeToPacket( final ByteBuf i ) throws IOException
+	{
+		final byte mask = (byte) ( this.getType( 0 ) | ( this.getType( this.getStackSize() ) << 2 ) | ( this
+				.getType( this.getCountRequestable() ) << 4 ) | ( (byte) ( this.isCraftable() ? 1 : 0 ) << 6 ) | ( this.hasTagCompound() ? 1 : 0 ) << 7 );
+
+		i.writeByte( mask );
+
+		writeToStream( i );
+
+		this.putPacketValue( i, this.getStackSize() );
+		this.putPacketValue( i, this.getCountRequestable() );
+	}
+
+	private void writeToStream( final ByteBuf i ) throws IOException
 	{
 		final byte[] name = this.fluid.getName().getBytes( "UTF-8" );
 		i.writeByte( (byte) name.length );
