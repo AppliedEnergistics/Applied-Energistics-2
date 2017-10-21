@@ -39,13 +39,11 @@ public final class AEItemStackRegistry
 	private static final WeakHashMap<AESharedItemStack, WeakReference<AESharedItemStack>> SERVER_REGISTRY = new WeakHashMap<>();
 	private static final WeakHashMap<AESharedItemStack, WeakReference<AESharedItemStack>> CLIENT_REGISTRY = new WeakHashMap<>();
 
-	private static long nextStackId = 0l;
-
 	private AEItemStackRegistry()
 	{
 	}
 
-	static private WeakHashMap<AESharedItemStack, WeakReference<AESharedItemStack>> registry()
+	private static WeakHashMap<AESharedItemStack, WeakReference<AESharedItemStack>> registry()
 	{
 		if( Platform.isClient() )
 		{
@@ -57,7 +55,7 @@ public final class AEItemStackRegistry
 		}
 	}
 
-	static synchronized AESharedItemStack getRegisteredStack( final @Nonnull ItemStack itemStack, final long serverStackId )
+	static synchronized AESharedItemStack getRegisteredStack( final @Nonnull ItemStack itemStack )
 	{
 		if( itemStack.isEmpty() )
 		{
@@ -67,7 +65,7 @@ public final class AEItemStackRegistry
 		int oldStackSize = itemStack.getCount();
 		itemStack.setCount( 1 );
 
-		AESharedItemStack search = new AESharedItemStack( itemStack, -1 );
+		AESharedItemStack search = new AESharedItemStack( itemStack );
 		WeakReference<AESharedItemStack> weak = registry().get( search );
 		AESharedItemStack ret = null;
 
@@ -78,31 +76,11 @@ public final class AEItemStackRegistry
 
 		if( ret == null )
 		{
-			final long newStackId = Platform.isClient() ? serverStackId : ++nextStackId;
-			ret = new AESharedItemStack( itemStack.copy(), newStackId );
+			ret = new AESharedItemStack( itemStack.copy() );
 			registry().put( ret, new WeakReference<>( ret ) );
 		}
 		itemStack.setCount( oldStackSize );
 
 		return ret;
-	}
-
-	static synchronized AESharedItemStack getRegisteredStack( final long itemStackId )
-	{
-		if( itemStackId <= 0 )
-		{
-			return null;
-		}
-
-		// TODO: better search
-		for( AESharedItemStack key : registry().keySet() )
-		{
-			if( key.getStackId() == itemStackId )
-			{
-				return key;
-			}
-		}
-
-		return null;
 	}
 }
