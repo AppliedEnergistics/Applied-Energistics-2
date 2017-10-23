@@ -85,21 +85,10 @@ class PoweredItemCapabilities implements ICapabilityProvider, IEnergyStorage
 	@Override
 	public int receiveEnergy( int maxReceive, boolean simulate )
 	{
-		if( simulate )
-		{
-			final int required = (int) PowerUnits.AE.convertTo( PowerUnits.RF, this.item.getAEMaxPower( this.is ) - this.item.getAECurrentPower( this.is ) );
+		final double convertedOffer = PowerUnits.RF.convertTo( PowerUnits.AE, maxReceive );
+		final double overflow = this.item.injectAEPower( this.is, convertedOffer, simulate ? Actionable.SIMULATE : Actionable.MODULATE );
 
-			if( maxReceive < required )
-			{
-				return 0;
-			}
-			return maxReceive - required;
-		}
-		else
-		{
-			final double powerRemainder = this.item.injectAEPower( this.is, PowerUnits.RF.convertTo( PowerUnits.AE, maxReceive ), Actionable.MODULATE );
-			return maxReceive - (int) PowerUnits.AE.convertTo( PowerUnits.RF, powerRemainder );
-		}
+		return maxReceive - (int) PowerUnits.AE.convertTo( PowerUnits.RF, overflow );
 	}
 
 	@Override
