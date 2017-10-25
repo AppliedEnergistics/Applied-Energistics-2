@@ -1,15 +1,31 @@
 {
-  "textures": {
-    "front": "appliedenergistics2:blocks/drive_cell_states"
-  },
-  "elements": [
-    {
-      "name": "Cell",
-      "from": [ 9.0, 13.0, 0.0 ],
-      "to": [ 14.0, 15.0, 1.0 ],
-      "faces": {
-        "north": { "texture": "#front", "uv": [0, 0, 5, 2] }
-      }
-    }
-  ]
+    "textures": {
+        "front": "appliedenergistics2:blocks/drive_cell_states"
+    },
+    "elements": [
+        {
+            "name": "Cell",
+            "from": [
+                9.0,
+                13.0,
+                0.0
+            ],
+            "to": [
+                14.0,
+                15.0,
+                1.0
+            ],
+            "faces": {
+                "north": {
+                    "texture": "#front",
+                    "uv": [
+                        0,
+                        0,
+                        5,
+                        2
+                    ]
+                }
+            }
+        }
+    ]
 }

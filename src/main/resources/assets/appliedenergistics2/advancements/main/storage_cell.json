@@ -1,10 +1,14 @@
 {
     "display": {
-        "icon": { 
-             "item": "appliedenergistics2:storage_cell_64k"
-         },
-        "title": { "translate": "achievement.ae2.StorageCell" },
-        "description": { "translate": "achievement.ae2.StorageCell.desc" }
+        "icon": {
+            "item": "appliedenergistics2:storage_cell_64k"
+        },
+        "title": {
+            "translate": "achievement.ae2.StorageCell"
+        },
+        "description": {
+            "translate": "achievement.ae2.StorageCell.desc"
+        }
     },
     "parent": "appliedenergistics2:main/controller",
     "criteria": {
@@ -47,9 +51,14 @@
                     }
                 ]
             }
-        }   
+        }
     },
     "requirements": [
-    	[ "c1k", "c4k", "c16k", "c64k" ]
+        [
+            "c1k",
+            "c4k",
+            "c16k",
+            "c64k"
+        ]
     ]
 }

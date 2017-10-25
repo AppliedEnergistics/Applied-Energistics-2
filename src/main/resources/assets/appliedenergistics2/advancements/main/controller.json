@@ -1,10 +1,14 @@
 {
     "display": {
-        "icon": { 
-             "item": "appliedenergistics2:controller"
-         },
-        "title": { "translate": "achievement.ae2.Controller" },
-        "description": { "translate": "achievement.ae2.Controller.desc" }
+        "icon": {
+            "item": "appliedenergistics2:controller"
+        },
+        "title": {
+            "translate": "achievement.ae2.Controller"
+        },
+        "description": {
+            "translate": "achievement.ae2.Controller.desc"
+        }
     },
     "parent": "appliedenergistics2:main/presses",
     "criteria": {

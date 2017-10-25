@@ -1,15 +1,15 @@
 {
-  "result": {
-    "item": "appliedenergistics2:chiseled_quartz_block",
-    "count": 2
-  },
-  "type": "forge:ore_shaped",
-  "pattern": [
-    "aa"
-  ],
-  "key": {
-    "a": {
-      "item": "appliedenergistics2:quartz_block"
+    "result": {
+        "item": "appliedenergistics2:chiseled_quartz_block",
+        "count": 2
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aa"
+    ],
+    "key": {
+        "a": {
+            "item": "appliedenergistics2:quartz_block"
+        }
     }
-  }
 }

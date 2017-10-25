@@ -1,6 +1,8 @@
 {
-  "__comment": "This block is rendered via TESR, so this is only used for the particle texture.",
-  "variants": {
-    "normal": { "model": "appliedenergistics2:smooth_sky_stone_block" }
-  }
+    "__comment": "This block is rendered via TESR, so this is only used for the particle texture.",
+    "variants": {
+        "normal": {
+            "model": "appliedenergistics2:smooth_sky_stone_block"
+        }
+    }
 }

@@ -1,5 +1,7 @@
 {
-  "variants": {
-    "normal": { "model": "appliedenergistics2:crafting/storage_16k" }
-  }
+    "variants": {
+        "normal": {
+            "model": "appliedenergistics2:crafting/storage_16k"
+        }
+    }
 }

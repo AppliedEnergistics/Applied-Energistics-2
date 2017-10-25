@@ -1,5 +1,7 @@
 {
-  "variants": {
-    "normal": { "model": "appliedenergistics2:builtin/sky_compass" }
-  }
+    "variants": {
+        "normal": {
+            "model": "appliedenergistics2:builtin/sky_compass"
+        }
+    }
 }

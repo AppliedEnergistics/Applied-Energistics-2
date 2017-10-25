@@ -1,8 +1,14 @@
 {
     "display": {
-        "icon": { "item": "appliedenergistics2:facade" },
-        "title": { "translate": "achievement.ae2.Facade" },
-        "description": { "translate": "achievement.ae2.Facade.desc" }
+        "icon": {
+            "item": "appliedenergistics2:facade"
+        },
+        "title": {
+            "translate": "achievement.ae2.Facade"
+        },
+        "description": {
+            "translate": "achievement.ae2.Facade.desc"
+        }
     },
     "parent": "appliedenergistics2:main/cable_glass",
     "criteria": {

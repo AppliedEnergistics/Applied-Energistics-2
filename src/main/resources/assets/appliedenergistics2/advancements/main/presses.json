@@ -1,8 +1,15 @@
 {
     "display": {
-        "icon": { "item": "appliedenergistics2:material", "data": 15 },
-        "title": { "translate": "achievement.ae2.Presses" },
-        "description": { "translate": "achievement.ae2.Presses.desc" }
+        "icon": {
+            "item": "appliedenergistics2:material",
+            "data": 15
+        },
+        "title": {
+            "translate": "achievement.ae2.Presses"
+        },
+        "description": {
+            "translate": "achievement.ae2.Presses.desc"
+        }
     },
     "parent": "appliedenergistics2:main/root",
     "criteria": {
@@ -11,7 +18,8 @@
             "conditions": {
                 "items": [
                     {
-                        "item": "appliedenergistics2:material", "data": 13
+                        "item": "appliedenergistics2:material",
+                        "data": 13
                     }
                 ]
             }
@@ -21,7 +29,8 @@
             "conditions": {
                 "items": [
                     {
-                        "item": "appliedenergistics2:material", "data": 14
+                        "item": "appliedenergistics2:material",
+                        "data": 14
                     }
                 ]
             }
@@ -31,7 +40,8 @@
             "conditions": {
                 "items": [
                     {
-                        "item": "appliedenergistics2:material", "data": 15
+                        "item": "appliedenergistics2:material",
+                        "data": 15
                     }
                 ]
             }
@@ -41,13 +51,19 @@
             "conditions": {
                 "items": [
                     {
-                        "item": "appliedenergistics2:material", "data": 19
+                        "item": "appliedenergistics2:material",
+                        "data": 19
                     }
                 ]
             }
         }
     },
     "requirements": [
-    	[ "calc", "eng", "logic", "silicon" ]
+        [
+            "calc",
+            "eng",
+            "logic",
+            "silicon"
+        ]
     ]
 }

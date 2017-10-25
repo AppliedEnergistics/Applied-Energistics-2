@@ -1,5 +1,7 @@
 {
-  "variants": {
-    "normal": { "model": "appliedenergistics2:builtin/drive" }
-  }
+    "variants": {
+        "normal": {
+            "model": "appliedenergistics2:builtin/drive"
+        }
+    }
 }

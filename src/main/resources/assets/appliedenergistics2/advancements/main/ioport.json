@@ -1,10 +1,14 @@
 {
     "display": {
-        "icon": { 
-             "item": "appliedenergistics2:io_port"
-         },
-        "title": { "translate": "achievement.ae2.IOPort" },
-        "description": { "translate": "achievement.ae2.IOPort.desc" }
+        "icon": {
+            "item": "appliedenergistics2:io_port"
+        },
+        "title": {
+            "translate": "achievement.ae2.IOPort"
+        },
+        "description": {
+            "translate": "achievement.ae2.IOPort.desc"
+        }
     },
     "parent": "appliedenergistics2:main/storage_cell",
     "criteria": {

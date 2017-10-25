@@ -1,6 +1,6 @@
 {
-  "parent": "appliedenergistics2:part/toggle_bus_base",
-  "textures": {
-    "bus": "appliedenergistics2:items/part/inverted_toggle_bus"
-  }
+    "parent": "appliedenergistics2:part/toggle_bus_base",
+    "textures": {
+        "bus": "appliedenergistics2:items/part/inverted_toggle_bus"
+    }
 }

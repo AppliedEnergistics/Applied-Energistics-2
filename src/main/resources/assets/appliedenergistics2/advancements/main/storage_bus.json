@@ -1,10 +1,15 @@
 {
     "display": {
-        "icon": { 
-             "item": "appliedenergistics2:part", "data": 220
-         },
-        "title": { "translate": "achievement.ae2.StorageBus" },
-        "description": { "translate": "achievement.ae2.StorageBus.desc" }
+        "icon": {
+            "item": "appliedenergistics2:part",
+            "data": 220
+        },
+        "title": {
+            "translate": "achievement.ae2.StorageBus"
+        },
+        "description": {
+            "translate": "achievement.ae2.StorageBus.desc"
+        }
     },
     "parent": "appliedenergistics2:main/interface",
     "criteria": {
@@ -13,8 +18,8 @@
             "conditions": {
                 "items": [
                     {
-                       "type": "appliedenergistics2:part", 
-                       "part": "STORAGE_BUS"
+                        "type": "appliedenergistics2:part",
+                        "part": "STORAGE_BUS"
                     }
                 ]
             }

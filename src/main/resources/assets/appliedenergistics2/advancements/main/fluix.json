@@ -1,11 +1,15 @@
 {
     "display": {
-        "icon": { 
-             "item": "appliedenergistics2:material", 
-             "data": 7 
-         },
-        "title": { "translate": "achievement.ae2.Fluix" },
-        "description": { "translate": "achievement.ae2.Fluix.desc" }
+        "icon": {
+            "item": "appliedenergistics2:material",
+            "data": 7
+        },
+        "title": {
+            "translate": "achievement.ae2.Fluix"
+        },
+        "description": {
+            "translate": "achievement.ae2.Fluix.desc"
+        }
     },
     "parent": "appliedenergistics2:main/charged_quartz",
     "criteria": {
@@ -14,7 +18,7 @@
             "conditions": {
                 "items": [
                     {
-                        "item": "appliedenergistics2:material", 
+                        "item": "appliedenergistics2:material",
                         "data": 7
                     }
                 ]

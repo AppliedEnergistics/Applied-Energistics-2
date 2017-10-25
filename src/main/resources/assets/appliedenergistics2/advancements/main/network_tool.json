@@ -1,8 +1,14 @@
 {
     "display": {
-        "icon": { "item": "appliedenergistics2:network_tool" },
-        "title": { "translate": "achievement.ae2.NetworkTool" },
-        "description": { "translate": "achievement.ae2.NetworkTool.desc" }
+        "icon": {
+            "item": "appliedenergistics2:network_tool"
+        },
+        "title": {
+            "translate": "achievement.ae2.NetworkTool"
+        },
+        "description": {
+            "translate": "achievement.ae2.NetworkTool.desc"
+        }
     },
     "parent": "appliedenergistics2:main/controller",
     "criteria": {

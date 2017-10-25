@@ -1,6 +1,10 @@
 {
     "variants": {
-        "half=bottom,variant=default": { "model": "appliedenergistics2:slabs/sky_stone_small_brick_half" },
-        "half=top,variant=default": { "model": "appliedenergistics2:slabs/sky_stone_small_brick_upper" }
+        "half=bottom,variant=default": {
+            "model": "appliedenergistics2:slabs/sky_stone_small_brick_half"
+        },
+        "half=top,variant=default": {
+            "model": "appliedenergistics2:slabs/sky_stone_small_brick_upper"
+        }
     }
 }

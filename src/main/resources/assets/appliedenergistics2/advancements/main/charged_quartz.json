@@ -1,11 +1,15 @@
 {
     "display": {
-        "icon": { 
-             "item": "appliedenergistics2:material", 
-             "data": 1 
-         },
-        "title": { "translate": "achievement.ae2.ChargedQuartz" },
-        "description": { "translate": "achievement.ae2.ChargedQuartz.desc" }
+        "icon": {
+            "item": "appliedenergistics2:material",
+            "data": 1
+        },
+        "title": {
+            "translate": "achievement.ae2.ChargedQuartz"
+        },
+        "description": {
+            "translate": "achievement.ae2.ChargedQuartz.desc"
+        }
     },
     "parent": "appliedenergistics2:main/root",
     "criteria": {
@@ -14,7 +18,7 @@
             "conditions": {
                 "items": [
                     {
-                        "item": "appliedenergistics2:material", 
+                        "item": "appliedenergistics2:material",
                         "data": 1
                     }
                 ]
