@@ -1,8 +1,5 @@
 {
   "parent": "appliedenergistics2:item/part/part",
-  "textures": {
-    "channels": "appliedenergistics2:parts/cable/dense_covered/0"
-  },
   "elements": [
     {
       "name": "Base",
