@@ -56,6 +56,11 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 		return this.itemDamage;
 	}
 
+	int getItemID()
+	{
+		return this.itemId;
+	}
+
 	@Override
 	public int hashCode()
 	{
@@ -104,7 +109,17 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 			return damageValue;
 		}
 
-		return this.compareNBT( b.getDefinition() );
+		final int nbt = this.compareNBT( b.getDefinition() );
+		if( nbt != 0 )
+		{
+			return nbt;
+		}
+
+		if( !this.itemStack.areCapsCompatible( b.getDefinition() ) )
+		{
+			return System.identityHashCode( this.itemStack ) - System.identityHashCode( b.getDefinition() );
+		}
+		return 0;
 	}
 
 	private int compareNBT( final ItemStack b )

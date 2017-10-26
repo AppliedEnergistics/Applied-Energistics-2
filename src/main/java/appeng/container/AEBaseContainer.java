@@ -19,14 +19,11 @@
 package appeng.container;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -37,8 +34,6 @@ import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
@@ -73,7 +68,7 @@ import appeng.container.slot.SlotPlayerInv;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
-import appeng.core.sync.packets.PacketPartialItem;
+import appeng.core.sync.packets.PacketTargetItemStack;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.InventoryAction;
@@ -93,7 +88,6 @@ public abstract class AEBaseContainer extends Container
 	private final TileEntity tileEntity;
 	private final IPart part;
 	private final IGuiItemObject obj;
-	private final List<PacketPartialItem> dataChunks = new LinkedList<>();
 	private final HashMap<Integer, SyncData> syncData = new HashMap<>();
 	private boolean isContainerValid = true;
 	private String customName;
@@ -175,47 +169,6 @@ public abstract class AEBaseContainer extends Container
 		this.prepareSync();
 	}
 
-	public void postPartial( final PacketPartialItem packetPartialItem )
-	{
-		this.dataChunks.add( packetPartialItem );
-		if( packetPartialItem.getPageCount() == this.dataChunks.size() )
-		{
-			this.parsePartials();
-		}
-	}
-
-	private void parsePartials()
-	{
-		int total = 0;
-		for( final PacketPartialItem ppi : this.dataChunks )
-		{
-			total += ppi.getSize();
-		}
-
-		final byte[] buffer = new byte[total];
-		int cursor = 0;
-
-		for( final PacketPartialItem ppi : this.dataChunks )
-		{
-			cursor = ppi.write( buffer, cursor );
-		}
-
-		try
-		{
-			final NBTTagCompound data = CompressedStreamTools.readCompressed( new ByteArrayInputStream( buffer ) );
-			if( data != null )
-			{
-				this.setTargetStack( AEItemStack.fromNBT( data ) );
-			}
-		}
-		catch( final IOException e )
-		{
-			AELog.debug( e );
-		}
-
-		this.dataChunks.clear();
-	}
-
 	public IAEItemStack getTargetStack()
 	{
 		return this.clientRequestedTargetItem;
@@ -235,47 +188,7 @@ public abstract class AEBaseContainer extends Container
 				return;
 			}
 
-			final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-			final NBTTagCompound item = new NBTTagCompound();
-
-			if( stack != null )
-			{
-				stack.writeToNBT( item );
-			}
-
-			try
-			{
-				CompressedStreamTools.writeCompressed( item, stream );
-
-				final int maxChunkSize = 30000;
-				final List<byte[]> miniPackets = new LinkedList<>();
-
-				final byte[] data = stream.toByteArray();
-
-				final ByteArrayInputStream bis = new ByteArrayInputStream( data, 0, stream.size() );
-				while( bis.available() > 0 )
-				{
-					final int nextBLock = bis.available() > maxChunkSize ? maxChunkSize : bis.available();
-					final byte[] nextSegment = new byte[nextBLock];
-					bis.read( nextSegment );
-					miniPackets.add( nextSegment );
-				}
-				bis.close();
-				stream.close();
-
-				int page = 0;
-				for( final byte[] packet : miniPackets )
-				{
-					final PacketPartialItem ppi = new PacketPartialItem( page, miniPackets.size(), packet );
-					page++;
-					NetworkHandler.instance().sendToServer( ppi );
-				}
-			}
-			catch( final IOException e )
-			{
-				AELog.debug( e );
-				return;
-			}
+			NetworkHandler.instance().sendToServer( new PacketTargetItemStack( (AEItemStack) stack ) );
 		}
 
 		this.clientRequestedTargetItem = stack == null ? null : stack.copy();

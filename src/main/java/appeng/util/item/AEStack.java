@@ -19,8 +19,6 @@
 package appeng.util.item;
 
 
-import java.io.IOException;
-
 import io.netty.buffer.ByteBuf;
 
 import appeng.api.storage.data.IAEStack;
@@ -144,23 +142,7 @@ public abstract class AEStack<StackType extends IAEStack<StackType>> implements 
 		this.countRequestable -= i;
 	}
 
-	@Override
-	public void writeToPacket( final ByteBuf i ) throws IOException
-	{
-		final byte mask = (byte) ( this.getType( 0 ) | ( this.getType( this.stackSize ) << 2 ) | ( this
-				.getType( this.countRequestable ) << 4 ) | ( (byte) ( this.isCraftable ? 1 : 0 ) << 6 ) | ( this.hasTagCompound() ? 1 : 0 ) << 7 );
-
-		i.writeByte( mask );
-
-		this.writeToStream( i );
-
-		this.putPacketValue( i, this.stackSize );
-		this.putPacketValue( i, this.countRequestable );
-	}
-
-	protected abstract void writeToStream( final ByteBuf data ) throws IOException;
-
-	private byte getType( final long num )
+	protected byte getType( final long num )
 	{
 		if( num <= 255 )
 		{
@@ -182,7 +164,7 @@ public abstract class AEStack<StackType extends IAEStack<StackType>> implements 
 
 	abstract boolean hasTagCompound();
 
-	private void putPacketValue( final ByteBuf tag, final long num )
+	protected void putPacketValue( final ByteBuf tag, final long num )
 	{
 		if( num <= 255 )
 		{

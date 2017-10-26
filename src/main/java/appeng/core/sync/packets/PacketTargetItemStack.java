@@ -25,35 +25,56 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
 
 import appeng.container.AEBaseContainer;
+import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.util.item.AEItemStack;
 
 
-public class PacketPartialItem extends AppEngPacket
+public class PacketTargetItemStack extends AppEngPacket
 {
-
-	private final short pageNum;
-	private final byte[] data;
+	private AEItemStack stack;
 
 	// automatic.
-	public PacketPartialItem( final ByteBuf stream )
+	public PacketTargetItemStack( final ByteBuf stream )
 	{
-		this.pageNum = stream.readShort();
-		stream.readBytes( this.data = new byte[stream.readableBytes()] );
+		try
+		{
+			if( stream.readableBytes() > 0 )
+			{
+				this.stack = AEItemStack.fromPacket( stream );
+			}
+			else
+			{
+				this.stack = null;
+			}
+		}
+		catch( Exception ex )
+		{
+			AELog.debug( ex );
+			this.stack = null;
+		}
 	}
 
 	// api
-	public PacketPartialItem( final int page, final int maxPages, final byte[] buf )
+	public PacketTargetItemStack( AEItemStack stack )
 	{
 
+		this.stack = stack;
+
 		final ByteBuf data = Unpooled.buffer();
-
-		this.pageNum = (short) ( page | ( maxPages << 8 ) );
-		this.data = buf;
 		data.writeInt( this.getPacketID() );
-		data.writeShort( this.pageNum );
-		data.writeBytes( buf );
-
+		if( stack != null )
+		{
+			try
+			{
+				stack.writeToPacket( data );
+			}
+			catch( Exception ex )
+			{
+				AELog.debug( ex );
+			}
+		}
 		this.configureWrite( data );
 	}
 
@@ -62,23 +83,8 @@ public class PacketPartialItem extends AppEngPacket
 	{
 		if( player.openContainer instanceof AEBaseContainer )
 		{
-			( (AEBaseContainer) player.openContainer ).postPartial( this );
+			( (AEBaseContainer) player.openContainer ).setTargetStack( this.stack );
 		}
 	}
 
-	public int getPageCount()
-	{
-		return this.pageNum >> 8;
-	}
-
-	public int getSize()
-	{
-		return this.data.length;
-	}
-
-	public int write( final byte[] buffer, final int cursor )
-	{
-		System.arraycopy( this.data, 0, buffer, cursor, this.data.length );
-		return cursor + this.data.length;
-	}
 }

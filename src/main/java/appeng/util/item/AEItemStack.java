@@ -19,8 +19,8 @@
 package appeng.util.item;
 
 
-import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -106,15 +106,23 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		return item;
 	}
 
-	public static IAEItemStack fromPacket( final ByteBuf data ) throws IOException
+	@Override
+	public void writeToNBT( final NBTTagCompound i )
+	{
+		this.getDefinition().writeToNBT( i );
+		i.setLong( "Cnt", this.getStackSize() );
+		i.setLong( "Req", this.getCountRequestable() );
+		i.setBoolean( "Craft", this.isCraftable() );
+	}
+
+	public static AEItemStack fromPacket( final ByteBuf data )
 	{
 		final byte mask = data.readByte();
-		// byte PriorityType = (byte) (mask & 0x03);
 		final byte stackType = (byte) ( ( mask & 0x0C ) >> 2 );
 		final byte countReqType = (byte) ( ( mask & 0x30 ) >> 4 );
 		final boolean isCraftable = ( mask & 0x40 ) > 0;
 
-		final ItemStack itemstack = ByteBufUtils.readItemStack( data );
+		final ItemStack itemstack = new ItemStack( ByteBufUtils.readTag( data ) );
 		final long stackSize = getPacketValue( stackType, data );
 		final long countRequestable = getPacketValue( countReqType, data );
 
@@ -123,11 +131,22 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			return null;
 		}
 
-		final AEItemStack item = AEItemStack.fromItemStack( itemstack );
-		item.setStackSize( stackSize );
+		final AEItemStack item = new AEItemStack( AEItemStackRegistry.getRegisteredStack( itemstack ), stackSize );
 		item.setCountRequestable( countRequestable );
 		item.setCraftable( isCraftable );
 		return item;
+	}
+
+	@Override
+	public void writeToPacket( final ByteBuf i )
+	{
+		final byte mask = (byte) ( ( this.getType( this.getStackSize() ) << 2 ) | ( this
+				.getType( this.getCountRequestable() ) << 4 ) | ( (byte) ( this.isCraftable() ? 1 : 0 ) << 6 ) | ( this.hasTagCompound() ? 1 : 0 ) << 7 );
+
+		i.writeByte( mask );
+		ByteBufUtils.writeTag( i, this.getDefinition().serializeNBT() );
+		this.putPacketValue( i, this.getStackSize() );
+		this.putPacketValue( i, this.getCountRequestable() );
 	}
 
 	@Override
@@ -141,15 +160,6 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		this.incStackSize( option.getStackSize() );
 		this.setCountRequestable( this.getCountRequestable() + option.getCountRequestable() );
 		this.setCraftable( this.isCraftable() || option.isCraftable() );
-	}
-
-	@Override
-	public void writeToNBT( final NBTTagCompound i )
-	{
-		this.getDefinition().writeToNBT( i );
-		i.setLong( "Cnt", this.getStackSize() );
-		i.setLong( "Req", this.getCountRequestable() );
-		i.setBoolean( "Craft", this.isCraftable() );
 	}
 
 	@Override
@@ -338,7 +348,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			return false;
 		}
 
-		return this.sharedStack == ( (AEItemStack) otherStack ).sharedStack;
+		return Objects.equals( this.sharedStack, ( (AEItemStack) otherStack ).sharedStack );
 	}
 
 	@Override
@@ -422,12 +432,6 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	public Optional<OreReference> getOre()
 	{
 		return this.oreReference;
-	}
-
-	@Override
-	protected void writeToStream( final ByteBuf data ) throws IOException
-	{
-		ByteBufUtils.writeItemStack( data, this.getDefinition() );
 	}
 
 	@Override
