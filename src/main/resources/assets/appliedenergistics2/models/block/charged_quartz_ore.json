@@ -5,10 +5,10 @@
         "block": "blocks/stone",
         "quartz": "appliedenergistics2:blocks/charged_quartz_ore_light",
         "particle": "appliedenergistics2:blocks/charged_quartz_ore"
-    },    
+    },
     "elements": [
         {
-           "faces": {
+            "faces": {
                 "down": {
                     "texture": "#block"
                 },
@@ -40,7 +40,7 @@
             ]
         },
         {
-           "faces": {
+            "faces": {
                 "down": {
                     "texture": "#quartz",
                     "uvlightmap": {

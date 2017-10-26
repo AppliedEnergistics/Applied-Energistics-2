@@ -1,60 +1,60 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "appliedenergistics2:chest/base"
-  },
-  "variants": {
-    "slot_state": {
-      "empty": {
-        "submodel": {
-          "lights": {
-            "model": "appliedenergistics2:chest/lights_off"
-          },
-          "state": {
-            "model": "appliedenergistics2:chest/cell_state_empty"
-          }
+    "forge_marker": 1,
+    "defaults": {
+        "model": "appliedenergistics2:chest/base"
+    },
+    "variants": {
+        "slot_state": {
+            "empty": {
+                "submodel": {
+                    "lights": {
+                        "model": "appliedenergistics2:chest/lights_off"
+                    },
+                    "state": {
+                        "model": "appliedenergistics2:chest/cell_state_empty"
+                    }
+                }
+            },
+            "offline": {
+                "submodel": {
+                    "lights": {
+                        "model": "appliedenergistics2:chest/lights_off"
+                    },
+                    "state": {
+                        "model": "appliedenergistics2:chest/cell_state_offline"
+                    }
+                }
+            },
+            "online": {
+                "submodel": {
+                    "lights": {
+                        "model": "appliedenergistics2:chest/lights_on"
+                    },
+                    "state": {
+                        "model": "appliedenergistics2:chest/cell_state_online"
+                    }
+                }
+            },
+            "types_full": {
+                "submodel": {
+                    "lights": {
+                        "model": "appliedenergistics2:chest/lights_on"
+                    },
+                    "state": {
+                        "model": "appliedenergistics2:chest/cell_state_types_full"
+                    }
+                }
+            },
+            "full": {
+                "submodel": {
+                    "lights": {
+                        "model": "appliedenergistics2:chest/lights_on"
+                    },
+                    "state": {
+                        "model": "appliedenergistics2:chest/cell_state_full"
+                    }
+                }
+            }
         }
-      },
-      "offline": {
-        "submodel": {
-          "lights": {
-            "model": "appliedenergistics2:chest/lights_off"
-          },
-          "state": {
-            "model": "appliedenergistics2:chest/cell_state_offline"
-          }
-        }
-      },
-      "online": {
-        "submodel": {
-          "lights": {
-            "model": "appliedenergistics2:chest/lights_on"
-          },
-          "state": {
-            "model": "appliedenergistics2:chest/cell_state_online"
-          }
-        }
-      },
-      "types_full": {
-        "submodel": {
-          "lights": {
-            "model": "appliedenergistics2:chest/lights_on"
-          },
-          "state": {
-            "model": "appliedenergistics2:chest/cell_state_types_full"
-          }
-        }
-      },
-      "full": {
-        "submodel": {
-          "lights": {
-            "model": "appliedenergistics2:chest/lights_on"
-          },
-          "state": {
-            "model": "appliedenergistics2:chest/cell_state_full"
-          }
-        }
-      }
     }
-  }
 }

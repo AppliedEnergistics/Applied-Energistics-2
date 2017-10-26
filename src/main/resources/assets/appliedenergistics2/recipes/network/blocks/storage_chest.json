@@ -1,31 +1,31 @@
 {
-  "result": {
-    "item": "appliedenergistics2:chest"
-  },
-  "type": "forge:ore_shaped",
-  "pattern": [
-    "aba",
-    "c c",
-    "ded"
-  ],
-  "key": {
-    "a": {
-      "item": "#appliedenergistics2:glass"
+    "result": {
+        "item": "appliedenergistics2:chest"
     },
-    "b": {
-      "type": "appliedenergistics2:part",
-      "part": "part.terminal"
-    },
-    "d": {
-      "type": "forge:ore_dict",
-      "ore": "ingotIron"
-    },
-    "c": {
-      "type": "appliedenergistics2:part",
-      "part": "cable_glass.fluix"
-    },
-    "e": {
-      "item": "#appliedenergistics2:fluixCrystal"
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "aba",
+        "c c",
+        "ded"
+    ],
+    "key": {
+        "a": {
+            "item": "#appliedenergistics2:glass"
+        },
+        "b": {
+            "type": "appliedenergistics2:part",
+            "part": "part.terminal"
+        },
+        "d": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "c": {
+            "type": "appliedenergistics2:part",
+            "part": "cable_glass.fluix"
+        },
+        "e": {
+            "item": "#appliedenergistics2:fluixCrystal"
+        }
     }
-  }
 }

@@ -1,23 +1,47 @@
 {
-  "ae2_uvl_marker": true,
-  "textures": {
-    "backdrop": "appliedenergistics2:blocks/chest/cell_state_backdrop",
-    "state": "appliedenergistics2:blocks/chest/cell_state_types_full"
-  },
-  "elements": [
-    {
-      "from": [0, 0, 0],
-      "to": [16, 16, 16],
-      "faces": {
-        "north": {"texture": "#backdrop" }
-      }
+    "ae2_uvl_marker": true,
+    "textures": {
+        "backdrop": "appliedenergistics2:blocks/chest/cell_state_backdrop",
+        "state": "appliedenergistics2:blocks/chest/cell_state_types_full"
     },
-    {
-      "from": [0, 0, 0],
-      "to": [16, 16, 16],
-      "faces": {
-        "north": {"texture": "#state", "uvlightmap": { "block": 0.007,  "sky": 0.007 }}
-      }
-    }
-  ]
+    "elements": [
+        {
+            "from": [
+                0,
+                0,
+                0
+            ],
+            "to": [
+                16,
+                16,
+                16
+            ],
+            "faces": {
+                "north": {
+                    "texture": "#backdrop"
+                }
+            }
+        },
+        {
+            "from": [
+                0,
+                0,
+                0
+            ],
+            "to": [
+                16,
+                16,
+                16
+            ],
+            "faces": {
+                "north": {
+                    "texture": "#state",
+                    "uvlightmap": {
+                        "block": 0.007,
+                        "sky": 0.007
+                    }
+                }
+            }
+        }
+    ]
 }

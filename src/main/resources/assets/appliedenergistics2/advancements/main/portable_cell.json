@@ -1,8 +1,14 @@
 {
     "display": {
-        "icon": { "item": "appliedenergistics2:portable_cell" },
-        "title": { "translate": "achievement.ae2.PortableCell" },
-        "description": { "translate": "achievement.ae2.PortableCell.desc" }
+        "icon": {
+            "item": "appliedenergistics2:portable_cell"
+        },
+        "title": {
+            "translate": "achievement.ae2.PortableCell"
+        },
+        "description": {
+            "translate": "achievement.ae2.PortableCell.desc"
+        }
     },
     "parent": "appliedenergistics2:main/storage_cell",
     "criteria": {

@@ -1,14 +1,15 @@
 {
-  "forge_marker": 1,
-  "defaults": {
-    "model": "appliedenergistics2:molecular_assembler"
-  },
-  "variants": {
-    "powered": {
-      "false": {},
-      "true": {
-        "submodel": "appliedenergistics2:molecular_assembler_lights"
-      }
+    "forge_marker": 1,
+    "defaults": {
+        "model": "appliedenergistics2:molecular_assembler"
+    },
+    "variants": {
+        "powered": {
+            "false": {
+            },
+            "true": {
+                "submodel": "appliedenergistics2:molecular_assembler_lights"
+            }
+        }
     }
-  }
 }

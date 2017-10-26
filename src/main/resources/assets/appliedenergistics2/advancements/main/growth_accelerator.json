@@ -1,10 +1,14 @@
 {
     "display": {
-        "icon": { 
-             "item": "appliedenergistics2:quartz_growth_accelerator"
-         },
-        "title": { "translate": "achievement.ae2.CrystalGrowthAccelerator" },
-        "description": { "translate": "achievement.ae2.CrystalGrowthAccelerator.desc" }
+        "icon": {
+            "item": "appliedenergistics2:quartz_growth_accelerator"
+        },
+        "title": {
+            "translate": "achievement.ae2.CrystalGrowthAccelerator"
+        },
+        "description": {
+            "translate": "achievement.ae2.CrystalGrowthAccelerator.desc"
+        }
     },
     "parent": "appliedenergistics2:main/fluix",
     "criteria": {

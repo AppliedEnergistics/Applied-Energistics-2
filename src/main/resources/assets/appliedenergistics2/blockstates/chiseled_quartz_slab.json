@@ -1,6 +1,10 @@
 {
     "variants": {
-        "half=bottom,variant=default": { "model": "appliedenergistics2:slabs/chiseled_quartz_half" },
-        "half=top,variant=default": { "model": "appliedenergistics2:slabs/chiseled_quartz_upper" }
+        "half=bottom,variant=default": {
+            "model": "appliedenergistics2:slabs/chiseled_quartz_half"
+        },
+        "half=top,variant=default": {
+            "model": "appliedenergistics2:slabs/chiseled_quartz_upper"
+        }
     }
 }

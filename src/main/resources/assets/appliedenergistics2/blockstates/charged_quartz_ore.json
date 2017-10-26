@@ -6,11 +6,15 @@
         }
     },
     "variants": {
-        "normal": [{
-            "model": "appliedenergistics2:charged_quartz_ore"
-        }],
-        "inventory": [{
-            "model": "cube_all"
-        }]
+        "normal": [
+            {
+                "model": "appliedenergistics2:charged_quartz_ore"
+            }
+        ],
+        "inventory": [
+            {
+                "model": "cube_all"
+            }
+        ]
     }
 }

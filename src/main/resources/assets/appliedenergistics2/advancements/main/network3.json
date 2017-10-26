@@ -1,10 +1,15 @@
 {
     "display": {
-        "icon": { 
-             "item": "appliedenergistics2:part", "data": 76
-         },
-        "title": { "translate": "achievement.ae2.Networking3" },
-        "description": { "translate": "achievement.ae2.Networking3.desc" }
+        "icon": {
+            "item": "appliedenergistics2:part",
+            "data": 76
+        },
+        "title": {
+            "translate": "achievement.ae2.Networking3"
+        },
+        "description": {
+            "translate": "achievement.ae2.Networking3.desc"
+        }
     },
     "parent": "appliedenergistics2:main/network2",
     "criteria": {

@@ -1,5 +1,7 @@
 {
     "variants": {
-        "variant=default": { "model": "appliedenergistics2:quartz_block" }
+        "variant=default": {
+            "model": "appliedenergistics2:quartz_block"
+        }
     }
 }

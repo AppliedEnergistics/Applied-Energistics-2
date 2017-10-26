@@ -1,24 +1,60 @@
 {
-  "ae2_uvl_marker": true,
-  "textures": {
-    "front": "appliedenergistics2:blocks/drive_cell_states"
-  },
-  "elements": [
-    {
-      "name": "Cell Backdrop",
-      "from": [ 9.0, 13.0, 0.0 ],
-      "to": [ 14.0, 15.0, 1.0 ],
-      "faces": {
-        "north": { "texture": "#front", "uv": [0, 8, 5, 10] }
-      }
+    "ae2_uvl_marker": true,
+    "textures": {
+        "front": "appliedenergistics2:blocks/drive_cell_states"
     },
-    {
-      "name": "Cell Light",
-      "from": [ 9.0, 13.0, 0.0 ],
-      "to": [ 14.0, 15.0, 1.0 ],
-      "faces": {
-        "north": { "texture": "#front", "uv": [0, 2, 5, 4], "uvlightmap": { "sky": 0.007, "block": 0.007 } }
-      }
-    }
-  ]
+    "elements": [
+        {
+            "name": "Cell Backdrop",
+            "from": [
+                9.0,
+                13.0,
+                0.0
+            ],
+            "to": [
+                14.0,
+                15.0,
+                1.0
+            ],
+            "faces": {
+                "north": {
+                    "texture": "#front",
+                    "uv": [
+                        0,
+                        8,
+                        5,
+                        10
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Cell Light",
+            "from": [
+                9.0,
+                13.0,
+                0.0
+            ],
+            "to": [
+                14.0,
+                15.0,
+                1.0
+            ],
+            "faces": {
+                "north": {
+                    "texture": "#front",
+                    "uv": [
+                        0,
+                        2,
+                        5,
+                        4
+                    ],
+                    "uvlightmap": {
+                        "sky": 0.007,
+                        "block": 0.007
+                    }
+                }
+            }
+        }
+    ]
 }

@@ -1,10 +1,14 @@
 {
     "display": {
-        "icon": { 
-             "item": "appliedenergistics2:spatial_io_port"
-         },
-        "title": { "translate": "achievement.ae2.SpatialIO" },
-        "description": { "translate": "achievement.ae2.SpatialIO.desc" }
+        "icon": {
+            "item": "appliedenergistics2:spatial_io_port"
+        },
+        "title": {
+            "translate": "achievement.ae2.SpatialIO"
+        },
+        "description": {
+            "translate": "achievement.ae2.SpatialIO.desc"
+        }
     },
     "parent": "appliedenergistics2:main/ioport",
     "criteria": {

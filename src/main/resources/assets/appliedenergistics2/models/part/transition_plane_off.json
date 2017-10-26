@@ -1,31 +1,65 @@
 {
-  "textures": {
-    "sides": "appliedenergistics2:parts/monitor_sides_status",
-    "back": "appliedenergistics2:parts/transition_plane_back",
-    "indicator": "appliedenergistics2:parts/monitor_sides_status_off",
-    "particle": "appliedenergistics2:parts/transition_plane_back"
-  },
-  "elements": [
-    {
-      "from": [ 5, 5, 1 ],
-      "to": [ 11, 11, 2 ],
-      "faces": {
-        "east": { "texture": "#sides" },
-        "south": { "texture": "#back" },
-        "west": { "texture": "#sides" },
-        "up": { "texture": "#sides" },
-        "down": { "texture": "#sides" }
-      }
+    "textures": {
+        "sides": "appliedenergistics2:parts/monitor_sides_status",
+        "back": "appliedenergistics2:parts/transition_plane_back",
+        "indicator": "appliedenergistics2:parts/monitor_sides_status_off",
+        "particle": "appliedenergistics2:parts/transition_plane_back"
     },
-    {
-      "from": [ 5, 5, 1 ],
-      "to": [ 11, 11, 2 ],
-      "faces": {
-        "east": { "texture": "#indicator" },
-        "west": { "texture": "#indicator" },
-        "up": { "texture": "#indicator" },
-        "down": { "texture": "#indicator" }
-      }
-    }
-  ]
+    "elements": [
+        {
+            "from": [
+                5,
+                5,
+                1
+            ],
+            "to": [
+                11,
+                11,
+                2
+            ],
+            "faces": {
+                "east": {
+                    "texture": "#sides"
+                },
+                "south": {
+                    "texture": "#back"
+                },
+                "west": {
+                    "texture": "#sides"
+                },
+                "up": {
+                    "texture": "#sides"
+                },
+                "down": {
+                    "texture": "#sides"
+                }
+            }
+        },
+        {
+            "from": [
+                5,
+                5,
+                1
+            ],
+            "to": [
+                11,
+                11,
+                2
+            ],
+            "faces": {
+                "east": {
+                    "texture": "#indicator"
+                },
+                "west": {
+                    "texture": "#indicator"
+                },
+                "up": {
+                    "texture": "#indicator"
+                },
+                "down": {
+                    "texture": "#indicator"
+                }
+            }
+        }
+    ]
 }
