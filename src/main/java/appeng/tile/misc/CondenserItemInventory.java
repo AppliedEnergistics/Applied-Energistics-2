@@ -19,6 +19,13 @@
 package appeng.tile.misc;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
+
+import net.minecraft.item.ItemStack;
+
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -29,13 +36,18 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.me.helpers.BaseActionSource;
+import appeng.util.item.AEItemStack;
 import appeng.util.item.ItemList;
 
 
 class CondenserItemInventory implements IMEMonitor<IAEItemStack>
 {
-
+	private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
 	private final TileCondenser target;
+	private boolean hasChanged = true;
+	private final ItemList cachedList = new ItemList();
+	private final IActionSource actionSource = new BaseActionSource();
 
 	CondenserItemInventory( final TileCondenser te )
 	{
@@ -49,30 +61,46 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>
 		{
 			this.target.addPower( input.getStackSize() );
 		}
-
 		return null;
 	}
 
 	@Override
 	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final IActionSource src )
 	{
-		return null;
+		AEItemStack ret = null;
+		ItemStack slotItem = target.getOutputSlot().getStackInSlot( 0 );
+		if( !slotItem.isEmpty() && request.isSameType( slotItem ) )
+		{
+			int count = (int) Math.min( request.getStackSize(), Integer.MAX_VALUE );
+			ret = AEItemStack.fromItemStack( target.getOutputSlot().extractItem( 0, count, mode == Actionable.SIMULATE ) );
+		}
+		return ret;
 	}
 
 	@Override
-	public IItemList<IAEItemStack> getAvailableItems( final IItemList out )
+	public IItemList<IAEItemStack> getAvailableItems( final IItemList<IAEItemStack> out )
 	{
+		if( !target.getOutputSlot().getStackInSlot( 0 ).isEmpty() )
+		{
+			out.add( AEItemStack.fromItemStack( target.getOutputSlot().getStackInSlot( 0 ) ) );
+		}
 		return out;
 	}
 
 	@Override
 	public IItemList<IAEItemStack> getStorageList()
 	{
-		return new ItemList();
+		if( this.hasChanged )
+		{
+			this.hasChanged = false;
+			this.cachedList.resetStatus();
+			return this.getAvailableItems( this.cachedList );
+		}
+		return this.cachedList;
 	}
 
 	@Override
-	public IStorageChannel getChannel()
+	public IStorageChannel<IAEItemStack> getChannel()
 	{
 		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
@@ -80,7 +108,7 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>
 	@Override
 	public AccessRestriction getAccess()
 	{
-		return AccessRestriction.WRITE;
+		return AccessRestriction.READ_WRITE;
 	}
 
 	@Override
@@ -114,14 +142,47 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>
 	}
 
 	@Override
-	public void addListener( IMEMonitorHandlerReceiver<IAEItemStack> l, Object verificationToken )
+	public void addListener( final IMEMonitorHandlerReceiver<IAEItemStack> l, final Object verificationToken )
 	{
-		// Not implemented since the Condenser automatically voids everything, and there are no updates
+		this.listeners.put( l, verificationToken );
 	}
 
 	@Override
-	public void removeListener( IMEMonitorHandlerReceiver<IAEItemStack> l )
+	public void removeListener( final IMEMonitorHandlerReceiver<IAEItemStack> l )
 	{
-		// Not implemented since we don't remember registered listeners anyway
+		this.listeners.remove( l );
+	}
+
+	public void updateOutput( ItemStack added, ItemStack removed )
+	{
+		this.hasChanged = true;
+		ArrayList<IAEItemStack> changes = new ArrayList<>( 2 );
+		if( !added.isEmpty() )
+		{
+			changes.add( AEItemStack.fromItemStack( added ) );
+		}
+		if( !removed.isEmpty() )
+		{
+			changes.add( AEItemStack.fromItemStack( removed ).setStackSize( -removed.getCount() ) );
+		}
+		postDifference( changes );
+	}
+
+	private void postDifference( final Iterable<IAEItemStack> a )
+	{
+		final Iterator<Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object>> i = this.listeners.entrySet().iterator();
+		while( i.hasNext() )
+		{
+			final Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object> l = i.next();
+			final IMEMonitorHandlerReceiver<IAEItemStack> key = l.getKey();
+			if( key.isValid( l.getValue() ) )
+			{
+				key.postChange( this, a, this.actionSource );
+			}
+			else
+			{
+				i.remove();
+			}
+		}
 	}
 }

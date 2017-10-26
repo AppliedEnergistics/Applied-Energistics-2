@@ -152,6 +152,11 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		this.outputSlot.insertItem( 0, output, false );
 	}
 
+	IItemHandler getOutputSlot()
+	{
+		return this.outputSlot;
+	}
+
 	private ItemStack getOutput()
 	{
 		final IMaterials materials = AEApi.instance().definitions().materials();
@@ -184,7 +189,10 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	@Override
 	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
-		// nothing
+		if( inv == this.outputSlot )
+		{
+			this.meHandler.outputChanged( added, removed );
+		}
 	}
 
 	@Override
@@ -339,6 +347,11 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		private final CondenserFluidInventory fluidInventory = new CondenserFluidInventory( TileCondenser.this );
 
 		private final CondenserItemInventory itemInventory = new CondenserItemInventory( TileCondenser.this );
+
+		void outputChanged( ItemStack added, ItemStack removed )
+		{
+			itemInventory.updateOutput( added, removed );
+		}
 
 		@Nullable
 		@Override
