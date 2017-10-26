@@ -31,7 +31,6 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
@@ -123,7 +122,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		final byte countReqType = (byte) ( ( mask & 0x30 ) >> 4 );
 		final boolean isCraftable = ( mask & 0x40 ) > 0;
 
-		final ItemStack itemstack = ByteBufUtils.readItemStack( data );
+		final ItemStack itemstack = new ItemStack( ByteBufUtils.readTag( data ) );
 		final long stackSize = getPacketValue( stackType, data );
 		final long countRequestable = getPacketValue( countReqType, data );
 
@@ -145,20 +144,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 				.getType( this.getCountRequestable() ) << 4 ) | ( (byte) ( this.isCraftable() ? 1 : 0 ) << 6 ) | ( this.hasTagCompound() ? 1 : 0 ) << 7 );
 
 		i.writeByte( mask );
-
-		if( this.getDefinition().hasTagCompound() )
-		{
-			PacketBuffer pb = new PacketBuffer( i );
-			pb.writeShort( this.getSharedStack().getItemID() );
-			pb.writeByte( 1 );
-			pb.writeShort( this.getItemDamage() );
-			pb.writeCompoundTag( this.getDefinition().getTagCompound() );
-		}
-		else
-		{
-			ByteBufUtils.writeItemStack( i, this.getDefinition() );
-		}
-
+		ByteBufUtils.writeTag( i, this.getDefinition().serializeNBT() );
 		this.putPacketValue( i, this.getStackSize() );
 		this.putPacketValue( i, this.getCountRequestable() );
 	}
