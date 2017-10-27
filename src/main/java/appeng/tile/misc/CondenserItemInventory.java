@@ -19,7 +19,6 @@
 package appeng.tile.misc;
 
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -30,6 +29,7 @@ import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
@@ -37,17 +37,19 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.helpers.BaseActionSource;
+import appeng.me.storage.ITickingMonitor;
 import appeng.util.item.AEItemStack;
 import appeng.util.item.ItemList;
 
 
-class CondenserItemInventory implements IMEMonitor<IAEItemStack>
+class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonitor
 {
 	private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
 	private final TileCondenser target;
 	private boolean hasChanged = true;
 	private final ItemList cachedList = new ItemList();
-	private final IActionSource actionSource = new BaseActionSource();
+	private IActionSource actionSource = new BaseActionSource();
+	private ItemList changeSet = new ItemList();
 
 	CondenserItemInventory( final TileCondenser te )
 	{
@@ -156,20 +158,27 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>
 	public void updateOutput( ItemStack added, ItemStack removed )
 	{
 		this.hasChanged = true;
-		ArrayList<IAEItemStack> changes = new ArrayList<>( 2 );
 		if( !added.isEmpty() )
 		{
-			changes.add( AEItemStack.fromItemStack( added ) );
+			this.changeSet.add( AEItemStack.fromItemStack( added ) );
 		}
 		if( !removed.isEmpty() )
 		{
-			changes.add( AEItemStack.fromItemStack( removed ).setStackSize( -removed.getCount() ) );
+			this.changeSet.add( AEItemStack.fromItemStack( removed ).setStackSize( -removed.getCount() ) );
 		}
-		postDifference( changes );
 	}
 
-	private void postDifference( final Iterable<IAEItemStack> a )
+	@Override
+	public TickRateModulation onTick()
 	{
+		final ItemList currentChanges = this.changeSet;
+
+		if( currentChanges.isEmpty() )
+		{
+			return TickRateModulation.SLOWER;
+		}
+
+		this.changeSet = new ItemList();
 		final Iterator<Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object>> i = this.listeners.entrySet().iterator();
 		while( i.hasNext() )
 		{
@@ -177,12 +186,20 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>
 			final IMEMonitorHandlerReceiver<IAEItemStack> key = l.getKey();
 			if( key.isValid( l.getValue() ) )
 			{
-				key.postChange( this, a, this.actionSource );
+				key.postChange( this, currentChanges, this.actionSource );
 			}
 			else
 			{
 				i.remove();
 			}
 		}
+
+		return TickRateModulation.URGENT;
+	}
+
+	@Override
+	public void setActionSource( IActionSource actionSource )
+	{
+		this.actionSource = actionSource;
 	}
 }
