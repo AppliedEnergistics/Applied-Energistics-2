@@ -175,7 +175,7 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonito
 
 		if( currentChanges.isEmpty() )
 		{
-			return TickRateModulation.SLOWER;
+			return TickRateModulation.IDLE;
 		}
 
 		this.changeSet = new ItemList();
