@@ -30,7 +30,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.model.IModelState;
-import net.minecraftforge.common.model.TRSRTransformation;
 
 import appeng.core.AppEng;
 
@@ -41,9 +40,26 @@ import appeng.core.AppEng;
  */
 public class FacadeItemModel implements IModel
 {
-
 	// We use this to get the default item transforms and make our lives easier
 	private static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "item/facade_base" );
+
+	private IModel baseModel = null;
+
+	private IModel getBaseModel()
+	{
+		if( this.baseModel == null )
+		{
+			try
+			{
+				baseModel = ModelLoaderRegistry.getModel( MODEL_BASE );
+			}
+			catch( Exception e )
+			{
+				throw new RuntimeException( e );
+			}
+		}
+		return this.baseModel;
+	}
 
 	@Override
 	public Collection<ResourceLocation> getDependencies()
@@ -60,17 +76,7 @@ public class FacadeItemModel implements IModel
 	@Override
 	public IBakedModel bake( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
 	{
-		IModel baseModel;
-		try
-		{
-			baseModel = ModelLoaderRegistry.getModel( MODEL_BASE );
-		}
-		catch( Exception e )
-		{
-			throw new RuntimeException( e );
-		}
-
-		IBakedModel bakedBaseModel = baseModel.bake( state, format, bakedTextureGetter );
+		IBakedModel bakedBaseModel = this.getBaseModel().bake( state, format, bakedTextureGetter );
 
 		return new FacadeDispatcherBakedModel( bakedBaseModel, format );
 	}
@@ -78,6 +84,6 @@ public class FacadeItemModel implements IModel
 	@Override
 	public IModelState getDefaultState()
 	{
-		return TRSRTransformation.identity();
+		return getBaseModel().getDefaultState();
 	}
 }

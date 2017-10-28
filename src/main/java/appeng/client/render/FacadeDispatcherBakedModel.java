@@ -27,9 +27,7 @@ import javax.annotation.Nullable;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -44,16 +42,13 @@ import appeng.items.parts.ItemFacade;
  * on the item stack.
  * A custom Item Override List is used to accomplish this.
  */
-public class FacadeDispatcherBakedModel implements IBakedModel
+public class FacadeDispatcherBakedModel extends DelegateBakedModel
 {
-
-	private final IBakedModel baseModel;
-
 	private final VertexFormat format;
 
 	public FacadeDispatcherBakedModel( IBakedModel baseModel, VertexFormat format )
 	{
-		this.baseModel = baseModel;
+		super( baseModel );
 		this.format = format;
 	}
 
@@ -65,33 +60,15 @@ public class FacadeDispatcherBakedModel implements IBakedModel
 	}
 
 	@Override
-	public boolean isAmbientOcclusion()
-	{
-		return this.baseModel.isAmbientOcclusion();
-	}
-
-	@Override
 	public boolean isGui3d()
 	{
-		return this.baseModel.isGui3d();
+		return this.getBaseModel().isGui3d();
 	}
 
 	@Override
 	public boolean isBuiltInRenderer()
 	{
 		return false;
-	}
-
-	@Override
-	public TextureAtlasSprite getParticleTexture()
-	{
-		return this.baseModel.getParticleTexture();
-	}
-
-	@Override
-	public ItemCameraTransforms getItemCameraTransforms()
-	{
-		return this.baseModel.getItemCameraTransforms();
 	}
 
 	@Override
@@ -112,7 +89,8 @@ public class FacadeDispatcherBakedModel implements IBakedModel
 				IBlockState state = itemFacade.getTextureBlockState( stack );
 				ItemStack textureItem = itemFacade.getTextureItem( stack );
 
-				return new FacadeWithBlockBakedModel( FacadeDispatcherBakedModel.this.baseModel, state, textureItem, FacadeDispatcherBakedModel.this.format );
+				return new FacadeWithBlockBakedModel( FacadeDispatcherBakedModel.this
+						.getBaseModel(), state, textureItem, FacadeDispatcherBakedModel.this.format );
 			}
 		};
 	}

@@ -29,9 +29,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -44,11 +42,8 @@ import appeng.client.render.cablebus.FacadeBuilder;
  * This is the actual baked model that will combine the north face of a given block state
  * with the base facade item model to achieve what is then actually rendered on screen.
  */
-public class FacadeWithBlockBakedModel implements IBakedModel
+public class FacadeWithBlockBakedModel extends DelegateBakedModel
 {
-
-	private final IBakedModel baseModel;
-
 	private final IBlockState blockState;
 
 	private final IBakedModel textureModel;
@@ -59,7 +54,7 @@ public class FacadeWithBlockBakedModel implements IBakedModel
 
 	public FacadeWithBlockBakedModel( IBakedModel baseModel, IBlockState blockState, ItemStack textureItem, VertexFormat format )
 	{
-		this.baseModel = baseModel;
+		super( baseModel );
 		this.blockState = blockState;
 		this.textureItem = textureItem;
 		this.textureModel = Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState( blockState );
@@ -88,13 +83,7 @@ public class FacadeWithBlockBakedModel implements IBakedModel
 			}
 		}
 
-		return this.baseModel.getQuads( state, side, rand );
-	}
-
-	@Override
-	public boolean isAmbientOcclusion()
-	{
-		return this.baseModel.isAmbientOcclusion();
+		return this.getBaseModel().getQuads( state, side, rand );
 	}
 
 	@Override
@@ -107,18 +96,6 @@ public class FacadeWithBlockBakedModel implements IBakedModel
 	public boolean isBuiltInRenderer()
 	{
 		return false;
-	}
-
-	@Override
-	public TextureAtlasSprite getParticleTexture()
-	{
-		return this.baseModel.getParticleTexture();
-	}
-
-	@Override
-	public ItemCameraTransforms getItemCameraTransforms()
-	{
-		return this.baseModel.getItemCameraTransforms();
 	}
 
 	@Override
