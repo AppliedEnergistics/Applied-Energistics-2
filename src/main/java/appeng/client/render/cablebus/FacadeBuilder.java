@@ -175,6 +175,7 @@ public class FacadeBuilder
 
 		// Reset to no color multiplicator
 		builder.setColorRGB( 0xFFFFFF );
+		builder.useStandardUV();
 
 		// We only render the stilt if we don't intersect with any part directly, and if there's no part on our side
 		if( renderStilt && busBounds == null && layer == BlockRenderLayer.CUTOUT )
@@ -438,22 +439,22 @@ public class FacadeBuilder
 
 	private static AxisAlignedBB getFacadeBox( EnumFacing side, boolean thinFacades )
 	{
-		int thickness = thinFacades ? 1 : 2;
+		double thickness = ( thinFacades ? 1 : 2 ) / 16.0;
 
 		switch( side )
 		{
 			case DOWN:
-				return new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, ( thickness ) / 16.0, 1.0 );
+				return new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, thickness, 1.0 );
 			case EAST:
-				return new AxisAlignedBB( ( 16.0 - thickness ) / 16.0, 0.0, 0.0, 1.0, 1.0, 1.0 );
+				return new AxisAlignedBB( 1.0 - thickness, 0.0, 0.0, 1.0, 1.0, 1.0 );
 			case NORTH:
-				return new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, 1.0, ( thickness ) / 16.0 );
+				return new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, 1.0, thickness );
 			case SOUTH:
-				return new AxisAlignedBB( 0.0, 0.0, ( 16.0 - thickness ) / 16.0, 1.0, 1.0, 1.0 );
+				return new AxisAlignedBB( 0.0, 0.0, 1.0 - thickness, 1.0, 1.0, 1.0 );
 			case UP:
-				return new AxisAlignedBB( 0.0, ( 16.0 - thickness ) / 16.0, 0.0, 1.0, 1.0, 1.0 );
+				return new AxisAlignedBB( 0.0, 1.0 - thickness, 0.0, 1.0, 1.0, 1.0 );
 			case WEST:
-				return new AxisAlignedBB( 0.0, 0.0, 0.0, ( thickness ) / 16.0, 1.0, 1.0 );
+				return new AxisAlignedBB( 0.0, 0.0, 0.0, thickness, 1.0, 1.0 );
 			default:
 				throw new IllegalArgumentException( "Unsupported face: " + side );
 		}
