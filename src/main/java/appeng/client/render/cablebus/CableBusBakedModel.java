@@ -22,6 +22,7 @@ package appeng.client.render.cablebus;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,8 @@ import appeng.block.networking.BlockCableBus;
 
 public class CableBusBakedModel implements IBakedModel
 {
+
+	private final static Map<CableBusRenderState, List<BakedQuad>> CABLE_MODEL_CACHE = new HashMap<>();
 
 	private final CableBuilder cableBuilder;
 
@@ -88,8 +91,15 @@ public class CableBusBakedModel implements IBakedModel
 		// translucent facades further down below.
 		if( layer == BlockRenderLayer.CUTOUT )
 		{
+
 			// First, handle the cable at the center of the cable bus
-			this.addCableQuads( renderState, quads );
+			final List<BakedQuad> cableModel = CABLE_MODEL_CACHE.computeIfAbsent( renderState, k ->
+			{
+				final List<BakedQuad> model = new ArrayList<>();
+				this.addCableQuads( renderState, model );
+				return model;
+			} );
+			quads.addAll( cableModel );
 
 			// Then handle attachments
 			for( EnumFacing facing : EnumFacing.values() )
@@ -308,10 +318,8 @@ public class CableBusBakedModel implements IBakedModel
 
 				TextureAtlasSprite particleTexture = bakedModel.getParticleTexture();
 
-				// If a part sub-model has no particle texture (indicated by it being the missing texture), don't
-				// add
-				// it,
-				// so we don't get ugly missing texture break particles.
+				// If a part sub-model has no particle texture (indicated by it being the missing texture),
+				// don't add it, so we don't get ugly missing texture break particles.
 				if( this.textureMap.getMissingSprite() != particleTexture )
 				{
 					result.add( particleTexture );

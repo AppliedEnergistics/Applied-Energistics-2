@@ -153,4 +153,128 @@ public class CableBusRenderState
 		return this.boundingBoxes;
 	}
 
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( attachmentConnections == null ) ? 0 : attachmentConnections.hashCode() );
+		result = prime * result + ( ( attachments == null ) ? 0 : attachments.hashCode() );
+		result = prime * result + ( ( boundingBoxes == null ) ? 0 : boundingBoxes.hashCode() );
+		result = prime * result + ( ( cableBusAdjacent == null ) ? 0 : cableBusAdjacent.hashCode() );
+		result = prime * result + ( ( cableColor == null ) ? 0 : cableColor.hashCode() );
+		result = prime * result + ( ( cableType == null ) ? 0 : cableType.hashCode() );
+		result = prime * result + ( ( channelsOnSide == null ) ? 0 : channelsOnSide.hashCode() );
+		result = prime * result + ( ( connectionTypes == null ) ? 0 : connectionTypes.hashCode() );
+		result = prime * result + ( ( coreType == null ) ? 0 : coreType.hashCode() );
+		result = prime * result + ( ( facades == null ) ? 0 : facades.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		if( this == obj )
+		{
+			return true;
+		}
+		if( obj == null )
+		{
+			return false;
+		}
+		if( getClass() != obj.getClass() )
+		{
+			return false;
+		}
+		final CableBusRenderState other = (CableBusRenderState) obj;
+		if( attachmentConnections == null )
+		{
+			if( other.attachmentConnections != null )
+			{
+				return false;
+			}
+		}
+		else if( !attachmentConnections.equals( other.attachmentConnections ) )
+		{
+			return false;
+		}
+		if( attachments == null )
+		{
+			if( other.attachments != null )
+			{
+				return false;
+			}
+		}
+		else if( !attachments.equals( other.attachments ) )
+			return false;
+		if( boundingBoxes == null )
+		{
+			if( other.boundingBoxes != null )
+			{
+				return false;
+			}
+		}
+		else if( !boundingBoxes.equals( other.boundingBoxes ) )
+		{
+			return false;
+		}
+		if( cableBusAdjacent == null )
+		{
+			if( other.cableBusAdjacent != null )
+			{
+				return false;
+			}
+		}
+		else if( !cableBusAdjacent.equals( other.cableBusAdjacent ) )
+		{
+			return false;
+		}
+		if( cableColor != other.cableColor )
+		{
+			return false;
+		}
+		if( cableType != other.cableType )
+		{
+			return false;
+		}
+		if( channelsOnSide == null )
+		{
+			if( other.channelsOnSide != null )
+			{
+				return false;
+			}
+		}
+		else if( !channelsOnSide.equals( other.channelsOnSide ) )
+		{
+			return false;
+		}
+		if( connectionTypes == null )
+		{
+			if( other.connectionTypes != null )
+			{
+				return false;
+			}
+		}
+		else if( !connectionTypes.equals( other.connectionTypes ) )
+		{
+			return false;
+		}
+		if( coreType != other.coreType )
+		{
+			return false;
+		}
+		if( facades == null )
+		{
+			if( other.facades != null )
+			{
+				return false;
+			}
+		}
+		else if( !facades.equals( other.facades ) )
+		{
+			return false;
+		}
+		return true;
+	}
+
 }
