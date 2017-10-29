@@ -144,7 +144,9 @@ public class CubeBuilder
 		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder( this.format );
 		builder.setTexture( texture );
 		builder.setQuadOrientation( face );
-
+		builder.setQuadTint( -1 );
+		builder.setApplyDiffuseLighting( true );
+		
 		UvVector uv = new UvVector();
 
 		// The user might have set specific UV coordinates for this face
@@ -205,8 +207,7 @@ public class CubeBuilder
 				break;
 		}
 
-		int[] vertexData = builder.build().getVertexData();
-		this.output.add( new BakedQuad( vertexData, -1, face, texture, true, this.format ) );
+		this.output.add( builder.build() );
 	}
 
 	private UvVector getDefaultUv( EnumFacing face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2, float y2, float z2 )
