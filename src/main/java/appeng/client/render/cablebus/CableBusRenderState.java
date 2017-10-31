@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -151,6 +152,45 @@ public class CableBusRenderState
 	public List<AxisAlignedBB> getBoundingBoxes()
 	{
 		return this.boundingBoxes;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( this.attachmentConnections == null ) ? 0 : this.attachmentConnections.hashCode() );
+		result = prime * result + ( ( this.cableBusAdjacent == null ) ? 0 : this.cableBusAdjacent.hashCode() );
+		result = prime * result + ( ( this.cableColor == null ) ? 0 : this.cableColor.hashCode() );
+		result = prime * result + ( ( this.cableType == null ) ? 0 : this.cableType.hashCode() );
+		result = prime * result + ( ( this.channelsOnSide == null ) ? 0 : this.channelsOnSide.hashCode() );
+		result = prime * result + ( ( this.connectionTypes == null ) ? 0 : this.connectionTypes.hashCode() );
+		result = prime * result + ( ( this.coreType == null ) ? 0 : this.coreType.hashCode() );
+		return result;
+	}
+
+	@Override
+	public boolean equals( Object obj )
+	{
+		if( this == obj )
+		{
+			return true;
+		}
+		if( obj == null )
+		{
+			return false;
+		}
+		if( getClass() != obj.getClass() )
+		{
+			return false;
+		}
+
+		final CableBusRenderState other = (CableBusRenderState) obj;
+
+		return this.cableColor == other.cableColor && this.cableType == other.cableType && this.coreType == other.coreType && Objects
+				.equals( this.attachmentConnections, other.attachmentConnections ) && Objects.equals( this.cableBusAdjacent,
+						other.cableBusAdjacent ) && Objects.equals( this.channelsOnSide, other.channelsOnSide ) && Objects.equals( this.connectionTypes,
+								other.connectionTypes );
 	}
 
 }
