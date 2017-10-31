@@ -21,7 +21,7 @@ package appeng.util.inv;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.wrapper.PlayerInvWrapper;
+import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 import appeng.util.Platform;
 
@@ -30,7 +30,7 @@ public class AdaptorItemHandlerPlayerInv extends AdaptorItemHandler
 {
 	public AdaptorItemHandlerPlayerInv( final EntityPlayer playerInv )
 	{
-		super( new PlayerInvWrapper( playerInv.inventory ) );
+		super( new PlayerMainInvWrapper( playerInv.inventory ) );
 	}
 
 	/**
