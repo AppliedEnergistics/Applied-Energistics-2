@@ -53,7 +53,7 @@ import appeng.block.networking.BlockCableBus;
 public class CableBusBakedModel implements IBakedModel
 {
 
-	private final static Map<CableBusRenderState, List<BakedQuad>> CABLE_MODEL_CACHE = new HashMap<>();
+	private static final Map<CableBusRenderState, List<BakedQuad>> CABLE_MODEL_CACHE = new HashMap<>();
 
 	private final CableBuilder cableBuilder;
 

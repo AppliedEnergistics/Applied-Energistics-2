@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -158,16 +159,13 @@ public class CableBusRenderState
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ( ( attachmentConnections == null ) ? 0 : attachmentConnections.hashCode() );
-		result = prime * result + ( ( attachments == null ) ? 0 : attachments.hashCode() );
-		result = prime * result + ( ( boundingBoxes == null ) ? 0 : boundingBoxes.hashCode() );
-		result = prime * result + ( ( cableBusAdjacent == null ) ? 0 : cableBusAdjacent.hashCode() );
-		result = prime * result + ( ( cableColor == null ) ? 0 : cableColor.hashCode() );
-		result = prime * result + ( ( cableType == null ) ? 0 : cableType.hashCode() );
-		result = prime * result + ( ( channelsOnSide == null ) ? 0 : channelsOnSide.hashCode() );
-		result = prime * result + ( ( connectionTypes == null ) ? 0 : connectionTypes.hashCode() );
-		result = prime * result + ( ( coreType == null ) ? 0 : coreType.hashCode() );
-		result = prime * result + ( ( facades == null ) ? 0 : facades.hashCode() );
+		result = prime * result + ( ( this.attachmentConnections == null ) ? 0 : this.attachmentConnections.hashCode() );
+		result = prime * result + ( ( this.cableBusAdjacent == null ) ? 0 : this.cableBusAdjacent.hashCode() );
+		result = prime * result + ( ( this.cableColor == null ) ? 0 : this.cableColor.hashCode() );
+		result = prime * result + ( ( this.cableType == null ) ? 0 : this.cableType.hashCode() );
+		result = prime * result + ( ( this.channelsOnSide == null ) ? 0 : this.channelsOnSide.hashCode() );
+		result = prime * result + ( ( this.connectionTypes == null ) ? 0 : this.connectionTypes.hashCode() );
+		result = prime * result + ( ( this.coreType == null ) ? 0 : this.coreType.hashCode() );
 		return result;
 	}
 
@@ -186,95 +184,13 @@ public class CableBusRenderState
 		{
 			return false;
 		}
+
 		final CableBusRenderState other = (CableBusRenderState) obj;
-		if( attachmentConnections == null )
-		{
-			if( other.attachmentConnections != null )
-			{
-				return false;
-			}
-		}
-		else if( !attachmentConnections.equals( other.attachmentConnections ) )
-		{
-			return false;
-		}
-		if( attachments == null )
-		{
-			if( other.attachments != null )
-			{
-				return false;
-			}
-		}
-		else if( !attachments.equals( other.attachments ) )
-			return false;
-		if( boundingBoxes == null )
-		{
-			if( other.boundingBoxes != null )
-			{
-				return false;
-			}
-		}
-		else if( !boundingBoxes.equals( other.boundingBoxes ) )
-		{
-			return false;
-		}
-		if( cableBusAdjacent == null )
-		{
-			if( other.cableBusAdjacent != null )
-			{
-				return false;
-			}
-		}
-		else if( !cableBusAdjacent.equals( other.cableBusAdjacent ) )
-		{
-			return false;
-		}
-		if( cableColor != other.cableColor )
-		{
-			return false;
-		}
-		if( cableType != other.cableType )
-		{
-			return false;
-		}
-		if( channelsOnSide == null )
-		{
-			if( other.channelsOnSide != null )
-			{
-				return false;
-			}
-		}
-		else if( !channelsOnSide.equals( other.channelsOnSide ) )
-		{
-			return false;
-		}
-		if( connectionTypes == null )
-		{
-			if( other.connectionTypes != null )
-			{
-				return false;
-			}
-		}
-		else if( !connectionTypes.equals( other.connectionTypes ) )
-		{
-			return false;
-		}
-		if( coreType != other.coreType )
-		{
-			return false;
-		}
-		if( facades == null )
-		{
-			if( other.facades != null )
-			{
-				return false;
-			}
-		}
-		else if( !facades.equals( other.facades ) )
-		{
-			return false;
-		}
-		return true;
+
+		return this.cableColor == other.cableColor && this.cableType == other.cableType && this.coreType == other.coreType && Objects
+				.equals( this.attachmentConnections, other.attachmentConnections ) && Objects.equals( this.cableBusAdjacent,
+						other.cableBusAdjacent ) && Objects.equals( this.channelsOnSide, other.channelsOnSide ) && Objects.equals( this.connectionTypes,
+								other.connectionTypes );
 	}
 
 }
