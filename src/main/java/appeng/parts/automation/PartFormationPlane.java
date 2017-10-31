@@ -29,6 +29,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemBlockSpecial;
 import net.minecraft.item.ItemFirework;
 import net.minecraft.item.ItemSkull;
 import net.minecraft.item.ItemStack;
@@ -452,31 +453,13 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 
 		if( w.getBlockState( tePos ).getBlock().isReplaceable( w, tePos ) )
 		{
-			if( placeBlock == YesNo.YES && ( i instanceof ItemBlock || i instanceof IPlantable || i instanceof ItemSkull || i instanceof ItemFirework || i instanceof IPartItem || i == Item
-					.getItemFromBlock(
-							Blocks.REEDS ) ) )
+			if( placeBlock == YesNo.YES && ( i instanceof ItemBlock || i instanceof ItemBlockSpecial || i instanceof IPlantable || i instanceof ItemSkull || i instanceof ItemFirework || i instanceof IPartItem || i == Item
+					.getItemFromBlock( Blocks.REEDS ) ) )
 			{
 				final EntityPlayer player = Platform.getPlayer( (WorldServer) w );
 				Platform.configurePlayer( player, side, this.getTile() );
 				EnumHand hand = player.getActiveHand();
 				player.setHeldItem( hand, is );
-
-				// TODO: LIMIT FIREWORKS
-				/*
-				 * if( i instanceof ItemFirework )
-				 * {
-				 * Chunk c = w.getChunkFromBlockCoords( tePos );
-				 * int sum = 0;
-				 * for( List Z : c.geten )
-				 * {
-				 * sum += Z.size();
-				 * }
-				 * if( sum > 32 )
-				 * {
-				 * return input;
-				 * }
-				 * }
-				 */
 
 				maxStorage = is.getCount();
 				worked = true;
