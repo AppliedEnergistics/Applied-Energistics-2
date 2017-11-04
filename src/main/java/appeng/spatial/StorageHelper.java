@@ -122,6 +122,11 @@ public class StorageHelper
 			}
 			else
 			{
+				// really remove from world, forge only marks it as removed
+				final boolean wasDead = entity.isDead;
+				oldWorld.removeEntityDangerously( entity );
+				entity.isDead = wasDead;
+
 				entity.getServer().getPlayerList().transferEntityToWorld( entity, entity.dimension,
 						entity.getServer().getWorld( entity.dimension ), (WorldServer) link.dim, new METeleporter( newWorld, link ) );
 			}
