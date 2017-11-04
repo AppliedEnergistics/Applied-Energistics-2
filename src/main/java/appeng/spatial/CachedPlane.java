@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.NextTickListEntry;
 import net.minecraft.world.World;
@@ -192,6 +193,10 @@ public class CachedPlane
 			try
 			{
 				this.getWorld().loadedTileEntityList.remove( te );
+				if( te instanceof ITickable )
+				{
+					this.getWorld().tickableTileEntities.remove( te );
+				}
 			}
 			catch( final Exception e )
 			{
