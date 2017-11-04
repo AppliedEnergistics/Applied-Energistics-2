@@ -35,7 +35,6 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 import appeng.api.AEApi;
-import appeng.api.definitions.IBlockDefinition;
 import appeng.api.movable.IMovableHandler;
 import appeng.api.movable.IMovableRegistry;
 import appeng.api.util.AEPartLocation;
@@ -62,7 +61,6 @@ public class CachedPlane
 	private final World world;
 	private final IMovableRegistry reg = AEApi.instance().registries().movable();
 	private final LinkedList<WorldCoord> updates = new LinkedList<>();
-	private final IBlockDefinition matrixFrame = AEApi.instance().definitions().blocks().matrixFrame();
 	private int verticalBits;
 	private final IBlockState matrixBlockState;
 
@@ -147,11 +145,11 @@ public class CachedPlane
 						}
 						else
 						{
-							final Object[] details = this.myColumns[tePOS.getX() - minX][tePOS.getZ() - minZ].getDetails( tePOS.getY() );
-							final IBlockState blkState = (IBlockState) details[0];
+							final BlockStorageData details = new BlockStorageData();
+							this.myColumns[tePOS.getX() - minX][tePOS.getZ() - minZ].fillData( tePOS.getY(), details );
 
 							// don't skip air, just let the code replace it...
-							if( blkState != null && blkState.getBlock() == Platform.AIR_BLOCK && blkState.getMaterial().isReplaceable() )
+							if( details.state != null && details.state.getBlock() == Platform.AIR_BLOCK && details.state.getMaterial().isReplaceable() )
 							{
 								w.setBlockToAir( tePOS );
 							}
@@ -169,12 +167,11 @@ public class CachedPlane
 				}
 
 				final long k = this.getWorld().getTotalWorldTime();
-				final List list = this.getWorld().getPendingBlockUpdates( c, false );
+				final List<NextTickListEntry> list = this.getWorld().getPendingBlockUpdates( c, false );
 				if( list != null )
 				{
-					for( final Object o : list )
+					for( final NextTickListEntry entry : list )
 					{
-						final NextTickListEntry entry = (NextTickListEntry) o;
 						final BlockPos tePOS = entry.position;
 						if( tePOS.getX() >= minX && tePOS.getX() <= maxX && tePOS.getY() >= minY && tePOS.getY() <= maxY && tePOS.getZ() >= minZ && tePOS
 								.getZ() <= maxZ )
@@ -220,6 +217,8 @@ public class CachedPlane
 			AELog.info( "Block Copy Scale: " + this.x_size + ", " + this.y_size + ", " + this.z_size );
 
 			long startTime = System.nanoTime();
+			final BlockStorageData aD = new BlockStorageData();
+			final BlockStorageData bD = new BlockStorageData();
 
 			for( int x = 0; x < this.x_size; x++ )
 			{
@@ -235,8 +234,8 @@ public class CachedPlane
 
 						if( a.doNotSkip( src_y ) && b.doNotSkip( dst_y ) )
 						{
-							final Object[] aD = a.getDetails( src_y );
-							final Object[] bD = b.getDetails( dst_y );
+							a.fillData( src_y, aD );
+							b.fillData( dst_y, bD );
 
 							a.setBlockIDWithMetadata( src_y, bD );
 							b.setBlockIDWithMetadata( dst_y, aD );
@@ -391,14 +390,17 @@ public class CachedPlane
 		return this.world;
 	}
 
+	private static class BlockStorageData
+	{
+		public IBlockState state;
+		public int light;
+	}
+
 	private class Column
 	{
-
 		private final int x;
 		private final int z;
 		private final Chunk c;
-		private final Object[] ch = { 0, 0 };
-		private final ExtendedBlockStorage[] storage;
 		private List<Integer> skipThese = null;
 
 		public Column( final Chunk chunk, final int x, final int z, final int chunkY, final int chunkHeight )
@@ -406,44 +408,46 @@ public class CachedPlane
 			this.x = x;
 			this.z = z;
 			this.c = chunk;
-			this.storage = this.c.getBlockStorageArray();
+
+			final ExtendedBlockStorage[] storage = this.c.getBlockStorageArray();
 
 			// make sure storage exists before hand...
 			for( int ay = 0; ay < chunkHeight; ay++ )
 			{
 				final int by = ( ay + chunkY );
-				ExtendedBlockStorage extendedblockstorage = this.storage[by];
+				ExtendedBlockStorage extendedblockstorage = storage[by];
 				if( extendedblockstorage == null )
 				{
-					extendedblockstorage = this.storage[by] = new ExtendedBlockStorage( by << 4, !this.c.getWorld().provider.hasSkyLight() );
+					extendedblockstorage = storage[by] = new ExtendedBlockStorage( by << 4, !this.c.getWorld().provider.hasSkyLight() );
 				}
 			}
 		}
 
-		private void setBlockIDWithMetadata( final int y, final Object[] blk )
+		private void setBlockIDWithMetadata( final int y, BlockStorageData data )
 		{
-			if( blk[0] == CachedPlane.this.matrixBlockState )
+			if( data.state == CachedPlane.this.matrixBlockState )
 			{
-				blk[0] = Platform.AIR_BLOCK.getDefaultState();
+				data.state = Platform.AIR_BLOCK.getDefaultState();
 			}
-
-			final ExtendedBlockStorage extendedBlockStorage = this.storage[y >> 4];
-			extendedBlockStorage.set( this.x, y & 15, this.z, (IBlockState) blk[0] );
-			// extendedBlockStorage.setExtBlockID( x, y & 15, z, blk[0] );
-			extendedBlockStorage.setBlockLight( this.x, y & 15, this.z, (Integer) blk[1] );
+			final ExtendedBlockStorage[] storage = this.c.getBlockStorageArray();
+			final ExtendedBlockStorage extendedBlockStorage = storage[y >> 4];
+			extendedBlockStorage.set( this.x, y & 15, this.z, data.state );
+			extendedBlockStorage.setBlockLight( this.x, y & 15, this.z, data.light );
 		}
 
-		private Object[] getDetails( final int y )
+		private void fillData( final int y, BlockStorageData data )
 		{
-			final ExtendedBlockStorage extendedblockstorage = this.storage[y >> 4];
-			this.ch[0] = extendedblockstorage.get( this.x, y & 15, this.z );
-			this.ch[1] = extendedblockstorage.getBlockLight( this.x, y & 15, this.z );
-			return this.ch;
+			final ExtendedBlockStorage[] storage = this.c.getBlockStorageArray();
+			final ExtendedBlockStorage extendedblockstorage = storage[y >> 4];
+
+			data.state = extendedblockstorage.get( this.x, y & 15, this.z );
+			data.light = extendedblockstorage.getBlockLight( this.x, y & 15, this.z );
 		}
 
 		private boolean doNotSkip( final int y )
 		{
-			final ExtendedBlockStorage extendedblockstorage = this.storage[y >> 4];
+			final ExtendedBlockStorage[] storage = this.c.getBlockStorageArray();
+			final ExtendedBlockStorage extendedblockstorage = storage[y >> 4];
 			if( CachedPlane.this.reg.isBlacklisted( extendedblockstorage.get( this.x, y & 15, this.z ).getBlock() ) )
 			{
 				return false;
