@@ -19,6 +19,7 @@
 package appeng.spatial;
 
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -54,8 +55,9 @@ public class DefaultSpatialHandler implements IMovableHandler
 
 		if( c.isLoaded() )
 		{
+			final IBlockState state = w.getBlockState( newPosition );
 			w.addTileEntity( te );
-			w.notifyBlockUpdate( newPosition, w.getBlockState( newPosition ), w.getBlockState( newPosition ), 0 );
+			w.notifyBlockUpdate( newPosition, state, state, 1 );
 		}
 	}
 }
