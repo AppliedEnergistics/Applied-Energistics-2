@@ -1087,7 +1087,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		this.getFacadeContainer().readFromNBT( data );
 	}
 
-	public List getDrops( final List drops )
+	public List<ItemStack> getDrops( final List<ItemStack> drops )
 	{
 		for( final AEPartLocation s : AEPartLocation.values() )
 		{
@@ -1111,7 +1111,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return drops;
 	}
 
-	public List getNoDrops( final List drops )
+	public List<ItemStack> getNoDrops( final List<ItemStack> drops )
 	{
 		for( final AEPartLocation s : AEPartLocation.values() )
 		{
@@ -1150,12 +1150,15 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	@Override
 	public CableBusRenderState getRenderState()
 	{
-		PartCable cable = (PartCable) this.getCenter();
+		final PartCable cable = (PartCable) this.getCenter();
 
-		CableBusRenderState renderState = new CableBusRenderState();
+		final CableBusRenderState renderState = new CableBusRenderState();
 
 		if( cable != null )
 		{
+			final boolean isSmart = cable.getCableConnectionType() == AECableType.SMART || cable.getCableConnectionType() == AECableType.DENSE_SMART;
+			final boolean isDense = cable.getCableConnectionType() == AECableType.DENSE_COVERED || cable.getCableConnectionType() == AECableType.DENSE_SMART;
+
 			renderState.setCableColor( cable.getCableColor() );
 			renderState.setCableType( cable.getCableConnectionType() );
 			renderState.setCoreType( CableCoreType.fromCableType( cable.getCableConnectionType() ) );
@@ -1175,12 +1178,12 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				// Only use the incoming cable-type of the adjacent block, if it's not a cable bus itself
 				// Dense cables however also respect the adjacent cable-type since their outgoing connection
 				// point would look too big for other cable types
-				BlockPos adjacentPos = this.getTile().getPos().offset( facing );
-				TileEntity adjacentTe = this.getTile().getWorld().getTileEntity( adjacentPos );
+				final BlockPos adjacentPos = this.getTile().getPos().offset( facing );
+				final TileEntity adjacentTe = this.getTile().getWorld().getTileEntity( adjacentPos );
+
 				if( adjacentTe instanceof IGridHost )
 				{
-					if( !( adjacentTe instanceof IPartHost ) || cable.getCableConnectionType() == AECableType.DENSE_SMART || cable
-							.getCableConnectionType() == AECableType.DENSE_COVERED )
+					if( !( adjacentTe instanceof IPartHost ) || isDense )
 					{
 						IGridHost gridHost = (IGridHost) adjacentTe;
 						connectionType = gridHost.getCableConnectionType( AEPartLocation.fromFacing( facing.getOpposite() ) );
@@ -1201,7 +1204,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			// adjacent tile requires it
 			for( EnumFacing facing : EnumFacing.values() )
 			{
-				int channels = cable.getChannelsOnSide( facing );
+				int channels = isSmart ? cable.getChannelsOnSide( facing ) : 0;
 				renderState.getChannelsOnSide().put( facing, channels );
 			}
 		}
@@ -1209,14 +1212,14 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		// Determine attachments and facades
 		for( EnumFacing facing : EnumFacing.values() )
 		{
+			final FacadeRenderState facadeState = this.getFacadeRenderState( facing );
 
-			FacadeRenderState facadeState = this.getFacadeRenderState( facing );
 			if( facadeState != null )
 			{
 				renderState.getFacades().put( facing, facadeState );
 			}
 
-			IPart part = this.getPart( facing );
+			final IPart part = this.getPart( facing );
 
 			if( part == null )
 			{
@@ -1224,15 +1227,17 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			}
 
 			// This will add the part's bounding boxes to the render state, which is required for facades
-			AEPartLocation loc = AEPartLocation.fromFacing( facing );
-			IPartCollisionHelper bch = new BusCollisionHelper( renderState.getBoundingBoxes(), loc, null, true );
+			final AEPartLocation loc = AEPartLocation.fromFacing( facing );
+			final IPartCollisionHelper bch = new BusCollisionHelper( renderState.getBoundingBoxes(), loc, null, true );
+
 			part.getBoxes( bch );
 
 			if( part instanceof IGridHost )
 			{
 				// Some attachments want a thicker cable than glass, account for that
-				IGridHost gridHost = (IGridHost) part;
-				AECableType desiredType = gridHost.getCableConnectionType( AEPartLocation.INTERNAL );
+				final IGridHost gridHost = (IGridHost) part;
+				final AECableType desiredType = gridHost.getCableConnectionType( AEPartLocation.INTERNAL );
+
 				if( renderState.getCoreType() == CableCoreType.GLASS && ( desiredType == AECableType.SMART || desiredType == AECableType.COVERED ) )
 				{
 					renderState.setCoreType( CableCoreType.COVERED );
@@ -1254,14 +1259,16 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	private FacadeRenderState getFacadeRenderState( EnumFacing side )
 	{
 		// Store the "masqueraded" itemstack for the given side, if there is a facade
-		IFacadePart facade = this.getFacade( side.ordinal() );
+		final IFacadePart facade = this.getFacade( side.ordinal() );
+
 		if( facade != null )
 		{
-			ItemStack textureItem = facade.getTextureItem();
-			IBlockState blockState = facade.getBlockState();
+			final ItemStack textureItem = facade.getTextureItem();
+			final IBlockState blockState = facade.getBlockState();
+
 			if( blockState != null && textureItem != null )
 			{
-				EnumSet<EnumFacing> openFaces = this.calculateFaceOpenFaces( side );
+				final EnumSet<EnumFacing> openFaces = this.calculateFaceOpenFaces( side );
 				return new FacadeRenderState( blockState, openFaces, textureItem );
 			}
 		}
@@ -1273,9 +1280,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	{
 		final EnumSet<EnumFacing> out = EnumSet.of( side, side.getOpposite() );
 		final IFacadePart facade = this.getFacade( side.ordinal() );
+		final IBlockAccess blockAccess = this.getTile().getWorld();
+		final BlockPos pos = this.getTile().getPos();
 
-		IBlockAccess blockAccess = this.getTile().getWorld();
-		BlockPos pos = this.getTile().getPos();
 		for( final EnumFacing it : EnumFacing.values() )
 		{
 			if( !out.contains( it ) && this.hasAlphaDiff( blockAccess.getTileEntity( pos.offset( it ) ), side, facade ) )
