@@ -54,13 +54,12 @@ public class NetworkToolViewer implements INetworkTool, IAEAppEngInventory
 	@Override
 	public void saveChanges()
 	{
-		this.inv.markDirty( -1 );
+		this.inv.writeToNBT( Platform.openNbtData( this.is ), "inv" );
 	}
 
 	@Override
 	public void onChangeInventory( IItemHandler inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
 	{
-		this.inv.writeToNBT( Platform.openNbtData( this.is ), "inv" );
 	}
 
 	@Override

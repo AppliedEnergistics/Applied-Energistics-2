@@ -43,6 +43,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 	private final int[] maxStack;
 	private ItemStack previousStack = ItemStack.EMPTY;
 	private IAEItemFilter filter;
+	private boolean dirtyFlag = false;
 
 	public AppEngInternalInventory( final IAEAppEngInventory inventory, final int size, final int maxStack, IAEItemFilter filter )
 	{
@@ -118,6 +119,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 	{
 		if( this.getTileEntity() != null && this.eventsEnabled() )
 		{
+			this.dirtyFlag = true;
 			ItemStack newStack = this.getStackInSlot( slot ).copy();
 			ItemStack oldStack = this.previousStack;
 			InvOperation op = InvOperation.SET;
@@ -141,6 +143,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 			this.getTileEntity().onChangeInventory( this, slot, op, oldStack, newStack );
 			this.getTileEntity().saveChanges();
 			this.previousStack = ItemStack.EMPTY;
+			this.dirtyFlag = false;
 		}
 		super.onContentsChanged( slot );
 	}
@@ -158,10 +161,12 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 	@Override
 	public void markDirty( final int slot )
 	{
-		if( this.getTileEntity() != null && this.eventsEnabled() )
+		if( this.getTileEntity() != null && this.eventsEnabled() && !this.dirtyFlag )
 		{
+			this.dirtyFlag = true;
 			this.getTileEntity().onChangeInventory( this, slot, InvOperation.DIRTY, ItemStack.EMPTY, ItemStack.EMPTY );
 			this.getTileEntity().saveChanges();
+			this.dirtyFlag = false;
 		}
 	}
 

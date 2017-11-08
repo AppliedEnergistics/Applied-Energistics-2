@@ -46,6 +46,7 @@ public class AppEngInternalAEInventory implements IInternalItemHandler, Iterable
 	private final IAEItemStack[] inv;
 	private final int size;
 	private int maxStack;
+	private boolean dirtyFlag = false;
 
 	public AppEngInternalAEInventory( final IAEAppEngInventory te, final int s )
 	{
@@ -252,8 +253,10 @@ public class AppEngInternalAEInventory implements IInternalItemHandler, Iterable
 	{
 		if( this.te != null && Platform.isServer() )
 		{
+			this.dirtyFlag = true;
 			this.te.onChangeInventory( this, slot, op, removed, inserted );
 			this.te.saveChanges();
+			this.dirtyFlag = false;
 		}
 	}
 
@@ -283,6 +286,9 @@ public class AppEngInternalAEInventory implements IInternalItemHandler, Iterable
 	@Override
 	public void markDirty( int slot )
 	{
-		this.fireOnChangeInventory( slot, InvOperation.DIRTY, ItemStack.EMPTY, ItemStack.EMPTY );
+		if( !this.dirtyFlag )
+		{
+			this.fireOnChangeInventory( slot, InvOperation.DIRTY, ItemStack.EMPTY, ItemStack.EMPTY );
+		}
 	}
 }
