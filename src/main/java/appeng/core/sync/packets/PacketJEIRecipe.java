@@ -41,6 +41,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IStorageGrid;
@@ -132,6 +133,7 @@ public class PacketJEIRecipe extends AppEngPacket
 		final IStorageGrid inv = grid.getCache( IStorageGrid.class );
 		final IEnergyGrid energy = grid.getCache( IEnergyGrid.class );
 		final ISecurityGrid security = grid.getCache( ISecurityGrid.class );
+		final ICraftingGrid crafting = grid.getCache( ICraftingGrid.class );
 		final IItemHandler craftMatrix = cct.getInventoryByName( "crafting" );
 		final IItemHandler playerInventory = cct.getInventoryByName( "player" );
 
@@ -179,13 +181,23 @@ public class PacketJEIRecipe extends AppEngPacket
 							{
 								request.setStackSize( 1 );
 								IAEItemStack out;
+
 								if( cct.useRealItems() )
 								{
 									out = Platform.poweredExtraction( energy, storage, request, cct.getActionSource() );
 								}
 								else
 								{
-									out = storage.extractItems( request, Actionable.SIMULATE, cct.getActionSource() );
+									// Query the crafting grid if there is a pattern providing the item
+									if( !crafting.getCraftingFor( request, null, 0, null ).isEmpty() )
+									{
+										out = request;
+									}
+									else
+									{
+										// Fall back using an existing item
+										out = storage.extractItems( request, Actionable.SIMULATE, cct.getActionSource() );
+									}
 								}
 
 								if( out != null )
