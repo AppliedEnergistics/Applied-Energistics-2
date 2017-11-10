@@ -29,7 +29,6 @@ import net.minecraft.util.math.Vec3d;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
-import appeng.api.config.PowerMultiplier;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
@@ -41,7 +40,6 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -72,9 +70,8 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/import_bus_has_channel" ) );
 
 	private final IActionSource source;
-	private IMEInventory<IAEItemStack> destination = null;
 	private IAEItemStack lastItemChecked = null;
-	private int itemToSend; // used in tickingRequest
+	private int itemsToSend; // used in tickingRequest
 	private boolean worked; // used in tickingRequest
 
 	@Reflected
@@ -95,14 +92,24 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 			return false;
 		}
 
-		final IAEItemStack out = this.destination.injectItems(
-				this.lastItemChecked = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( stack ), Actionable.SIMULATE,
-				this.source );
-		if( out == null )
+		try
 		{
-			return true;
+			final IMEMonitor<IAEItemStack> inv = this.getProxy().getStorage().getInventory(
+					AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+
+			final IAEItemStack out = inv.injectItems(
+					this.lastItemChecked = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( stack ), Actionable.SIMULATE,
+					this.source );
+			if( out == null )
+			{
+				return true;
+			}
+			return out.getStackSize() != stack.getCount();
 		}
-		return out.getStackSize() != stack.getCount();
+		catch( GridAccessException ex )
+		{
+			return false;
+		}
 	}
 
 	@Override
@@ -165,9 +172,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 		{
 			try
 			{
-				this.itemToSend = this.calculateItemsToSend();
-				this.itemToSend = Math.min( this.itemToSend,
-						(int) ( 0.01 + this.getProxy().getEnergy().extractAEPower( this.itemToSend, Actionable.SIMULATE, PowerMultiplier.CONFIG ) ) );
+				this.itemsToSend = this.calculateItemsToSend();
 
 				final IMEMonitor<IAEItemStack> inv = this.getProxy().getStorage().getInventory(
 						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
@@ -177,10 +182,10 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 				for( int x = 0; x < this.availableSlots(); x++ )
 				{
 					final IAEItemStack ais = this.getConfig().getAEStackInSlot( x );
-					if( ais != null && this.itemToSend > 0 )
+					if( ais != null && itemsToSend > 0 )
 					{
 						Configured = true;
-						while( this.itemToSend > 0 )
+						while( itemsToSend > 0 )
 						{
 							if( this.importStuff( myAdaptor, ais, inv, energy, fzMode ) )
 							{
@@ -192,7 +197,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 				if( !Configured )
 				{
-					while( this.itemToSend > 0 )
+					while( itemsToSend > 0 )
 					{
 						if( this.importStuff( myAdaptor, null, inv, energy, fzMode ) )
 						{
@@ -221,19 +226,15 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 		if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 		{
-			newItems = myAdaptor.removeSimilarItems( toSend, whatToImport == null ? ItemStack.EMPTY : whatToImport.getDefinition(), fzMode,
-					this.configDestination( inv ) );
+			newItems = myAdaptor.removeSimilarItems( toSend, whatToImport == null ? ItemStack.EMPTY : whatToImport.getDefinition(), fzMode, this );
 		}
 		else
 		{
-			newItems = myAdaptor.removeItems( toSend, whatToImport == null ? ItemStack.EMPTY : whatToImport.getDefinition(), this.configDestination( inv ) );
+			newItems = myAdaptor.removeItems( toSend, whatToImport == null ? ItemStack.EMPTY : whatToImport.getDefinition(), this );
 		}
 
 		if( !newItems.isEmpty() )
 		{
-			newItems.setCount( (int) ( Math.min( newItems.getCount(),
-					energy.extractAEPower( newItems.getCount(), Actionable.SIMULATE, PowerMultiplier.CONFIG ) ) + 0.01 ) );
-			this.itemToSend -= newItems.getCount();
 
 			if( this.lastItemChecked == null || !this.lastItemChecked.isSameType( newItems ) )
 			{
@@ -244,7 +245,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 				this.lastItemChecked.setStackSize( newItems.getCount() );
 			}
 
-			final IAEItemStack failed = Platform.poweredInsert( energy, this.destination, this.lastItemChecked, this.source );
+			final IAEItemStack failed = Platform.poweredInsert( energy, inv, this.lastItemChecked, this.source );
 
 			if( failed != null )
 			{
@@ -253,6 +254,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 			}
 			else
 			{
+				this.itemsToSend -= newItems.getCount();
 				this.worked = true;
 			}
 		}
@@ -266,7 +268,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 	private int calculateMaximumAmountToImport( final InventoryAdaptor myAdaptor, final IAEItemStack whatToImport, final IMEMonitor<IAEItemStack> inv, final FuzzyMode fzMode )
 	{
-		final int toSend = Math.min( this.itemToSend, 64 );
+		final int toSend = Math.min( this.itemsToSend, 64 );
 		final ItemStack itemStackToImport;
 
 		if( whatToImport == null )
@@ -282,13 +284,13 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 		final ItemStack simResult;
 		if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 		{
-			simResult = myAdaptor.simulateSimilarRemove( toSend, itemStackToImport, fzMode, this.configDestination( inv ) );
-			itemAmountNotStorable = this.destination.injectItems( AEItemStack.fromItemStack( simResult ), Actionable.SIMULATE, this.source );
+			simResult = myAdaptor.simulateSimilarRemove( toSend, itemStackToImport, fzMode, this );
+			itemAmountNotStorable = inv.injectItems( AEItemStack.fromItemStack( simResult ), Actionable.SIMULATE, this.source );
 		}
 		else
 		{
-			simResult = myAdaptor.simulateRemove( toSend, itemStackToImport, this.configDestination( inv ) );
-			itemAmountNotStorable = this.destination.injectItems( AEItemStack.fromItemStack( simResult ), Actionable.SIMULATE, this.source );
+			simResult = myAdaptor.simulateRemove( toSend, itemStackToImport, this );
+			itemAmountNotStorable = inv.injectItems( AEItemStack.fromItemStack( simResult ), Actionable.SIMULATE, this.source );
 		}
 
 		if( itemAmountNotStorable != null )
@@ -297,12 +299,6 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 		}
 
 		return toSend;
-	}
-
-	private IInventoryDestination configDestination( final IMEMonitor<IAEItemStack> itemInventory )
-	{
-		this.destination = itemInventory;
-		return this;
 	}
 
 	@Override
