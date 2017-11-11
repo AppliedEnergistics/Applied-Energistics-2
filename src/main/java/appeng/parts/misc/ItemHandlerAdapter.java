@@ -41,7 +41,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AELog;
 import appeng.me.GridAccessException;
-import appeng.me.helpers.AENetworkProxy;
+import appeng.me.helpers.IGridProxyable;
 import appeng.me.storage.ITickingMonitor;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
@@ -55,13 +55,13 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	private final Map<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
 	private IActionSource mySource;
 	private final IItemHandler itemHandler;
-	private final AENetworkProxy proxy;
+	private final IGridProxyable proxyable;
 	private final InventoryCache cache;
 
-	ItemHandlerAdapter( IItemHandler itemHandler, AENetworkProxy proxy )
+	ItemHandlerAdapter( IItemHandler itemHandler, IGridProxyable proxy )
 	{
 		this.itemHandler = itemHandler;
-		this.proxy = proxy;
+		this.proxyable = proxy;
 		this.cache = new InventoryCache( this.itemHandler );
 	}
 
@@ -91,7 +91,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		{
 			try
 			{
-				this.proxy.getTick().alertDevice( this.proxy.getNode() );
+				this.proxyable.getProxy().getTick().alertDevice( this.proxyable.getProxy().getNode() );
 			}
 			catch( GridAccessException ex )
 			{
@@ -174,7 +174,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			{
 				try
 				{
-					this.proxy.getTick().alertDevice( this.proxy.getNode() );
+					this.proxyable.getProxy().getTick().alertDevice( this.proxyable.getProxy().getNode() );
 				}
 				catch( GridAccessException ex )
 				{

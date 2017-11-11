@@ -397,7 +397,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		IItemHandler handlerExt = target.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide );
 		if( handlerExt != null )
 		{
-			return new ItemHandlerAdapter( handlerExt, this.getProxy() );
+			return new ItemHandlerAdapter( handlerExt, this );
 		}
 
 		return null;
