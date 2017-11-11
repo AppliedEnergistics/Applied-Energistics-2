@@ -66,7 +66,6 @@ import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
@@ -112,7 +111,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	private int priority = 0;
 	private boolean cached = false;
 	private ITickingMonitor monitor = null;
-	private MEInventoryHandler<? extends IAEStack> handler = null;
+	private MEInventoryHandler<IAEItemStack> handler = null;
 	private int handlerHash = 0;
 	private boolean wasActive = false;
 	private byte resetCacheLogic = 0;
@@ -354,23 +353,19 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		}
 
 		final IMEInventory<IAEItemStack> out = this.getInternalHandler();
-		/*
-		 * if( this.monitor != null )
-		 * {
-		 * this.monitor.onTick();
-		 * }
-		 */
-		IItemList<IAEItemStack> after = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
-		if( out != null )
-		{
-			after = out.getAvailableItems( after );
-		}
 
-		Platform.postListChanges( before, after, this, this.mySrc );
+		if( in != out )
+		{
+			IItemList<IAEItemStack> after = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+			if( out != null )
+			{
+				after = out.getAvailableItems( after );
+			}
+			Platform.postListChanges( before, after, this, this.mySrc );
+		}
 	}
 
-	@SuppressWarnings( "unchecked" )
-	private IMEInventory<? extends IAEItemStack> getInventoryWrapper( TileEntity target )
+	private IMEInventory<IAEItemStack> getInventoryWrapper( TileEntity target )
 	{
 
 		EnumFacing targetSide = this.getSide().getFacing().getOpposite();
@@ -428,7 +423,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		return 0;
 	}
 
-	public MEInventoryHandler getInternalHandler()
+	public MEInventoryHandler<IAEItemStack> getInternalHandler()
 	{
 		if( this.cached )
 		{
@@ -452,7 +447,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		this.monitor = null;
 		if( target != null )
 		{
-			IMEInventory<? extends IAEStack> inv = this.getInventoryWrapper( target );
+			IMEInventory<IAEItemStack> inv = this.getInventoryWrapper( target );
 
 			if( inv instanceof MEMonitorIInventory )
 			{
@@ -470,7 +465,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 			{
 				this.checkInterfaceVsStorageBus( target, this.getSide().getOpposite() );
 
-				this.handler = new MEInventoryHandler( inv, AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+				this.handler = new MEInventoryHandler<IAEItemStack>( inv, AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
 				this.handler.setBaseAccess( (AccessRestriction) this.getConfigManager().getSetting( Settings.ACCESS ) );
 				this.handler.setWhitelist( this.getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );
@@ -491,16 +486,17 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 				if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 				{
 					this.handler
-							.setPartitionList( new FuzzyPriorityList( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
+							.setPartitionList( new FuzzyPriorityList<IAEItemStack>( priorityList, (FuzzyMode) this.getConfigManager()
+									.getSetting( Settings.FUZZY_MODE ) ) );
 				}
 				else
 				{
-					this.handler.setPartitionList( new PrecisePriorityList( priorityList ) );
+					this.handler.setPartitionList( new PrecisePriorityList<IAEItemStack>( priorityList ) );
 				}
 
 				if( inv instanceof IBaseMonitor )
 				{
-					( (IBaseMonitor) inv ).addListener( this, this.handler );
+					( (IBaseMonitor<IAEItemStack>) inv ).addListener( this, this.handler );
 				}
 			}
 		}
@@ -570,7 +566,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	{
 		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
-			final IMEInventoryHandler out = this.getProxy().isActive() ? this.getInternalHandler() : null;
+			final IMEInventoryHandler<IAEItemStack> out = this.getProxy().isActive() ? this.getInternalHandler() : null;
 			if( out != null )
 			{
 				return Collections.singletonList( out );
