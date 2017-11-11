@@ -75,7 +75,7 @@ public class PartRecipeFactory implements IRecipeFactory
 	// Copied from ShapedOreRecipe.java, modified a bit.
 	private static ShapedOreRecipe shapedFactory( JsonContext context, JsonObject json )
 	{
-		String group = JsonUtils.getString( json, "group", AppEng.MOD_ID + ":part_shaped_crafting" );
+		String group = JsonUtils.getString( json, "group", "" );
 
 		Map<Character, Ingredient> ingMap = Maps.newHashMap();
 		for( Map.Entry<String, JsonElement> entry : JsonUtils.getJsonObject( json, "key" ).entrySet() )
@@ -158,7 +158,7 @@ public class PartRecipeFactory implements IRecipeFactory
 			}
 			ItemStack itemStack = new ItemStack( item, count, resolverResult.damageValue, resolverResult.compound );
 
-			return new ShapedOreRecipe( new ResourceLocation( group ), itemStack, primer );
+			return new ShapedOreRecipe( group.isEmpty() ? null : new ResourceLocation( group ), itemStack, primer );
 		}
 
 		// Should never reach this part unless mangled JSON or bug in AE.
@@ -168,7 +168,7 @@ public class PartRecipeFactory implements IRecipeFactory
 	// Copied from ShapelessOreRecipe.java, modified a bit.
 	private static ShapelessOreRecipe shapelessFactory( JsonContext context, JsonObject json )
 	{
-		String group = JsonUtils.getString( json, "group", AppEng.MOD_ID + ":part_shapeless_crafting" );
+		String group = JsonUtils.getString( json, "group", "" );
 
 		NonNullList<Ingredient> ings = NonNullList.create();
 		for( JsonElement ele : JsonUtils.getJsonArray( json, "ingredients" ) )
@@ -200,7 +200,7 @@ public class PartRecipeFactory implements IRecipeFactory
 
 			ItemStack itemStack = new ItemStack( item, count, resolverResult.damageValue, resolverResult.compound );
 
-			return new ShapelessOreRecipe( new ResourceLocation( group ), ings, itemStack );
+			return new ShapelessOreRecipe( group.isEmpty() ? null : new ResourceLocation( group ), ings, itemStack );
 		}
 
 		throw new JsonSyntaxException( "Couldn't find the resulting item in AE. This means AE was provided a recipe that it shouldn't be handling.\n" + "Was looking for : '" + ingredient + "'." );
