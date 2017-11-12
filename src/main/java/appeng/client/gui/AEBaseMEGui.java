@@ -23,7 +23,6 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -43,70 +42,17 @@ public abstract class AEBaseMEGui extends AEBaseGui
 		super( container );
 	}
 
-	public List<String> handleItemTooltip( final ItemStack stack, final int mouseX, final int mouseY, final List<String> currentToolTip )
-	{
-		if( !stack.isEmpty() )
-		{
-			final Slot s = this.getSlot( mouseX, mouseY );
-			if( s instanceof SlotME )
-			{
-				final int BigNumber = AEConfig.instance().useTerminalUseLargeFont() ? 999 : 9999;
-
-				IAEItemStack myStack = null;
-
-				try
-				{
-					final SlotME theSlotField = (SlotME) s;
-					myStack = theSlotField.getAEStack();
-				}
-				catch( final Throwable ignore )
-				{
-				}
-
-				if( myStack != null )
-				{
-					if( myStack.getStackSize() > BigNumber || ( myStack.getStackSize() > 1 && stack.isItemDamaged() ) )
-					{
-						final String local = ButtonToolTips.ItemsStored.getLocal();
-						final String formattedAmount = NumberFormat.getNumberInstance( Locale.US ).format( myStack.getStackSize() );
-						final String format = String.format( local, formattedAmount );
-
-						currentToolTip.add( TextFormatting.GRAY + format );
-					}
-
-					if( myStack.getCountRequestable() > 0 )
-					{
-						final String local = ButtonToolTips.ItemsRequestable.getLocal();
-						final String formattedAmount = NumberFormat.getNumberInstance( Locale.US ).format( myStack.getCountRequestable() );
-						final String format = String.format( local, formattedAmount );
-
-						currentToolTip.add( TextFormatting.GRAY + format );
-					}
-				}
-				else if( stack.getCount() > BigNumber || ( stack.getCount() > 1 && stack.isItemDamaged() ) )
-				{
-					final String local = ButtonToolTips.ItemsStored.getLocal();
-					final String formattedAmount = NumberFormat.getNumberInstance( Locale.US ).format( stack.getCount() );
-					final String format = String.format( local, formattedAmount );
-
-					currentToolTip.add( TextFormatting.GRAY + format );
-				}
-			}
-		}
-		return currentToolTip;
-	}
-
-	// Vanilla version...
-	// protected void drawItemStackTooltip(ItemStack stack, int x, int y)
 	@Override
 	protected void renderToolTip( final ItemStack stack, final int x, final int y )
 	{
 		final Slot s = this.getSlot( x, y );
+
 		if( s instanceof SlotME && !stack.isEmpty() )
 		{
-			final int BigNumber = AEConfig.instance().useTerminalUseLargeFont() ? 999 : 9999;
+			final int bigNumber = AEConfig.instance().useTerminalUseLargeFont() ? 999 : 9999;
 
 			IAEItemStack myStack = null;
+			final List<String> currentToolTip = this.getItemToolTip( stack );
 
 			try
 			{
@@ -117,33 +63,44 @@ public abstract class AEBaseMEGui extends AEBaseGui
 			{
 			}
 
-			ITooltipFlag.TooltipFlags tooltipFlag = this.mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL;
 			if( myStack != null )
 			{
-				final List<String> currentToolTip = stack.getTooltip( this.mc.player, tooltipFlag );
-
-				if( myStack.getStackSize() > BigNumber || ( myStack.getStackSize() > 1 && stack.isItemDamaged() ) )
+				if( myStack.getStackSize() > bigNumber || ( myStack.getStackSize() > 1 && stack.isItemDamaged() ) )
 				{
-					currentToolTip.add( "Items Stored: " + NumberFormat.getNumberInstance( Locale.US ).format( myStack.getStackSize() ) );
+					final String local = ButtonToolTips.ItemsStored.getLocal();
+					final String formattedAmount = NumberFormat.getNumberInstance( Locale.US ).format( myStack.getStackSize() );
+					final String format = String.format( local, formattedAmount );
+
+					currentToolTip.add( TextFormatting.GRAY + format );
 				}
 
 				if( myStack.getCountRequestable() > 0 )
 				{
-					currentToolTip.add( "Items Requestable: " + NumberFormat.getNumberInstance( Locale.US ).format( myStack.getCountRequestable() ) );
+					final String local = ButtonToolTips.ItemsRequestable.getLocal();
+					final String formattedAmount = NumberFormat.getNumberInstance( Locale.US ).format( myStack.getCountRequestable() );
+					final String format = String.format( local, formattedAmount );
+
+					currentToolTip.add( format );
 				}
 
-				this.drawTooltip( x, y, currentToolTip );
+				this.drawHoveringText( currentToolTip, x, y, this.fontRenderer );
+
 				return;
 			}
-			else if( stack.getCount() > BigNumber )
+			else if( stack.getCount() > bigNumber )
 			{
-				List<String> var4 = stack.getTooltip( this.mc.player, tooltipFlag );
-				var4.add( "Items Stored: " + NumberFormat.getNumberInstance( Locale.US ).format( stack.getCount() ) );
-				this.drawTooltip( x, y, var4 );
+				final String local = ButtonToolTips.ItemsStored.getLocal();
+				final String formattedAmount = NumberFormat.getNumberInstance( Locale.US ).format( stack.getCount() );
+				final String format = String.format( local, formattedAmount );
+
+				currentToolTip.add( TextFormatting.GRAY + format );
+
+				this.drawHoveringText( currentToolTip, x, y, this.fontRenderer );
+
 				return;
 			}
 		}
+
 		super.renderToolTip( stack, x, y );
-		// super.drawItemStackTooltip( stack, x, y );
 	}
 }

@@ -237,10 +237,11 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 		this.getScrollBar().setRange( 0, ( size + 4 ) / 5 - this.rows, 1 );
 	}
 
-	// Vanilla version...
-	protected void drawItemStackTooltip( final ItemStack stack, final int x, final int y )
+	@Override
+	protected void renderToolTip( final ItemStack stack, final int x, final int y )
 	{
 		final Slot s = this.getSlot( x, y );
+
 		if( s instanceof SlotME && stack != null )
 		{
 			IAEItemStack myStack = null;
@@ -270,7 +271,8 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 				this.drawTooltip( x, y, currentToolTip );
 			}
 		}
-		// super.drawItemStackTooltip( stack, x, y );
+
+		super.renderToolTip( stack, x, y );
 	}
 
 	@Override
