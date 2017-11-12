@@ -41,6 +41,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
+import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
@@ -208,6 +209,7 @@ public class PartToggleBus extends PartBasicState
 					catch( final FailedConnectionException e )
 					{
 						// :(
+						AELog.debug( e );
 					}
 				}
 				else

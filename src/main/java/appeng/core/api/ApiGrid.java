@@ -59,7 +59,7 @@ public class ApiGrid implements IGridHelper
 		Preconditions.checkNotNull( a );
 		Preconditions.checkNotNull( b );
 
-		return new GridConnection( a, b, AEPartLocation.INTERNAL );
+		return GridConnection.create( a, b, AEPartLocation.INTERNAL );
 	}
 
 }

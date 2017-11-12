@@ -209,8 +209,7 @@ public class TileController extends AENetworkPowerTile
 	 */
 	private boolean checkController( final BlockPos pos )
 	{
-		final BlockPos ownPos = this.getPos();
-		if( this.world.getChunkProvider().getLoadedChunk( ownPos.getX() >> 4, ownPos.getZ() >> 4 ) != null )
+		if( this.world.getChunkProvider().getLoadedChunk( pos.getX() >> 4, pos.getZ() >> 4 ) != null )
 		{
 			return this.world.getTileEntity( pos ) instanceof TileController;
 		}

@@ -54,11 +54,26 @@ public class GridConnection implements IGridConnection, IPathItem
 	private AEPartLocation fromAtoB;
 	private GridNode sideB;
 
-	public GridConnection( final IGridNode aNode, final IGridNode bNode, final AEPartLocation fromAtoB ) throws FailedConnectionException
+	public static GridConnection create( final IGridNode aNode, final IGridNode bNode, final AEPartLocation fromAtoB ) throws FailedConnectionException
 	{
+		if( aNode == null || bNode == null )
+		{
+			throw new NullNodeConnectionException();
+		}
 
 		final GridNode a = (GridNode) aNode;
 		final GridNode b = (GridNode) bNode;
+
+		if( a.hasConnection( b ) || b.hasConnection( a ) )
+		{
+			final String aMachineClass = a.getGridBlock().getMachine().getClass().getSimpleName();
+			final String bMachineClass = b.getGridBlock().getMachine().getClass().getSimpleName();
+			final String aCoordinates = a.getGridBlock().getLocation().toString();
+			final String bCoordinates = b.getGridBlock().getLocation().toString();
+
+			throw new ExistingConnectionException( String.format( EXISTING_CONNECTION_MESSAGE, aMachineClass, aCoordinates, bMachineClass, bCoordinates,
+					fromAtoB ) );
+		}
 
 		if( Platform.securityCheck( a, b ) )
 		{
@@ -74,27 +89,11 @@ public class GridConnection implements IGridConnection, IPathItem
 			throw new SecurityConnectionException();
 		}
 
-		if( a == null || b == null )
-		{
-			throw new NullNodeConnectionException();
-		}
+		// Create the actual connection
+		final GridConnection connection = new GridConnection( a, b, fromAtoB );
 
-		if( a.hasConnection( b ) || b.hasConnection( a ) )
-		{
-			final String aMachineClass = a.getGridBlock().getMachine().getClass().getSimpleName();
-			final String bMachineClass = b.getGridBlock().getMachine().getClass().getSimpleName();
-			final String aCoordinates = a.getGridBlock().getLocation().toString();
-			final String bCoordinates = b.getGridBlock().getLocation().toString();
-
-			throw new ExistingConnectionException( String.format( EXISTING_CONNECTION_MESSAGE, aMachineClass, aCoordinates, bMachineClass, bCoordinates,
-					fromAtoB ) );
-		}
-
-		this.sideA = a;
-		this.fromAtoB = fromAtoB;
-		this.sideB = b;
-
-		if( b.getMyGrid() == null )
+		// Update both nodes with the new connection.
+		if( a.getMyGrid() == null )
 		{
 			b.setGrid( a.getInternalGrid() );
 		}
@@ -103,14 +102,14 @@ public class GridConnection implements IGridConnection, IPathItem
 			if( a.getMyGrid() == null )
 			{
 				final GridPropagator gp = new GridPropagator( b.getInternalGrid() );
-				a.beginVisit( gp );
+				aNode.beginVisit( gp );
 			}
 			else if( b.getMyGrid() == null )
 			{
 				final GridPropagator gp = new GridPropagator( a.getInternalGrid() );
-				b.beginVisit( gp );
+				bNode.beginVisit( gp );
 			}
-			else if( this.isNetworkABetter( a, b ) )
+			else if( connection.isNetworkABetter( a, b ) )
 			{
 				final GridPropagator gp = new GridPropagator( a.getInternalGrid() );
 				b.beginVisit( gp );
@@ -123,11 +122,20 @@ public class GridConnection implements IGridConnection, IPathItem
 		}
 
 		// a connection was destroyed RE-PATH!!
-		final IPathingGrid p = this.sideA.getInternalGrid().getCache( IPathingGrid.class );
+		final IPathingGrid p = connection.sideA.getInternalGrid().getCache( IPathingGrid.class );
 		p.repath();
 
-		this.sideA.addConnection( this );
-		this.sideB.addConnection( this );
+		connection.sideA.addConnection( connection );
+		connection.sideB.addConnection( connection );
+
+		return connection;
+	}
+
+	private GridConnection( final GridNode aNode, final GridNode bNode, final AEPartLocation fromAtoB )
+	{
+		this.sideA = aNode;
+		this.fromAtoB = fromAtoB;
+		this.sideB = bNode;
 	}
 
 	private boolean isNetworkABetter( final GridNode a, final GridNode b )

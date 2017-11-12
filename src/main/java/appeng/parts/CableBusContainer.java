@@ -241,11 +241,12 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 								{
 									try
 									{
-										new GridConnection( cn, sn, AEPartLocation.INTERNAL );
+										GridConnection.create( cn, sn, AEPartLocation.INTERNAL );
 									}
 									catch( final FailedConnectionException e )
 									{
 										// ekk!
+										AELog.debug( e );
 
 										bp.removeFromWorld();
 										this.setCenter( null );
@@ -292,11 +293,12 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 						{
 							try
 							{
-								new GridConnection( cn, sn, AEPartLocation.INTERNAL );
+								GridConnection.create( cn, sn, AEPartLocation.INTERNAL );
 							}
 							catch( final FailedConnectionException e )
 							{
 								// ekk!
+								AELog.debug( e );
 
 								bp.removeFromWorld();
 								this.setSide( side, null );
@@ -637,6 +639,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 								catch( final FailedConnectionException e )
 								{
 									// ekk
+									AELog.debug( e );
 								}
 							}
 						}

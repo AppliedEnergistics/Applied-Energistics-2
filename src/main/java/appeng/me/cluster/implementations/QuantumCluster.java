@@ -38,6 +38,7 @@ import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.WorldCoord;
+import appeng.core.AELog;
 import appeng.me.cache.helpers.ConnectionWrapper;
 import appeng.me.cluster.IAECluster;
 import appeng.tile.qnb.TileQuantumBridge;
@@ -161,6 +162,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 				catch( final FailedConnectionException e )
 				{
 					// :(
+					AELog.debug( e );
 				}
 			}
 			else
