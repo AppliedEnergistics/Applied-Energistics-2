@@ -54,80 +54,11 @@ public class GridConnection implements IGridConnection, IPathItem
 	private AEPartLocation fromAtoB;
 	private GridNode sideB;
 
-	public GridConnection( final IGridNode aNode, final IGridNode bNode, final AEPartLocation fromAtoB ) throws FailedConnectionException
+	private GridConnection( final GridNode aNode, final GridNode bNode, final AEPartLocation fromAtoB )
 	{
-
-		final GridNode a = (GridNode) aNode;
-		final GridNode b = (GridNode) bNode;
-
-		if( Platform.securityCheck( a, b ) )
-		{
-			if( AEConfig.instance().isFeatureEnabled( AEFeature.LOG_SECURITY_AUDITS ) )
-			{
-				final DimensionalCoord aCoordinates = a.getGridBlock().getLocation();
-				final DimensionalCoord bCoordinates = b.getGridBlock().getLocation();
-
-				AELog.info( "Security audit 1 failed at [%s] belonging to player [id=%d]", aCoordinates.toString(), a.getPlayerID() );
-				AELog.info( "Security audit 2 failed at [%s] belonging to player [id=%d]", bCoordinates.toString(), b.getPlayerID() );
-			}
-
-			throw new SecurityConnectionException();
-		}
-
-		if( a == null || b == null )
-		{
-			throw new NullNodeConnectionException();
-		}
-
-		if( a.hasConnection( b ) || b.hasConnection( a ) )
-		{
-			final String aMachineClass = a.getGridBlock().getMachine().getClass().getSimpleName();
-			final String bMachineClass = b.getGridBlock().getMachine().getClass().getSimpleName();
-			final String aCoordinates = a.getGridBlock().getLocation().toString();
-			final String bCoordinates = b.getGridBlock().getLocation().toString();
-
-			throw new ExistingConnectionException( String.format( EXISTING_CONNECTION_MESSAGE, aMachineClass, aCoordinates, bMachineClass, bCoordinates,
-					fromAtoB ) );
-		}
-
-		this.sideA = a;
+		this.sideA = aNode;
 		this.fromAtoB = fromAtoB;
-		this.sideB = b;
-
-		if( b.getMyGrid() == null )
-		{
-			b.setGrid( a.getInternalGrid() );
-		}
-		else
-		{
-			if( a.getMyGrid() == null )
-			{
-				final GridPropagator gp = new GridPropagator( b.getInternalGrid() );
-				a.beginVisit( gp );
-			}
-			else if( b.getMyGrid() == null )
-			{
-				final GridPropagator gp = new GridPropagator( a.getInternalGrid() );
-				b.beginVisit( gp );
-			}
-			else if( this.isNetworkABetter( a, b ) )
-			{
-				final GridPropagator gp = new GridPropagator( a.getInternalGrid() );
-				b.beginVisit( gp );
-			}
-			else
-			{
-				final GridPropagator gp = new GridPropagator( b.getInternalGrid() );
-				a.beginVisit( gp );
-			}
-		}
-
-		// a connection was destroyed RE-PATH!!
-		final IPathingGrid p = this.sideA.getInternalGrid().getCache( IPathingGrid.class );
-		p.repath();
-
-		this.sideA.addConnection( this );
-		this.sideB.addConnection( this );
+		this.sideB = bNode;
 	}
 
 	private boolean isNetworkABetter( final GridNode a, final GridNode b )
@@ -290,5 +221,82 @@ public class GridConnection implements IGridConnection, IPathItem
 	void setVisitorIterationNumber( final Object visitorIterationNumber )
 	{
 		this.visitorIterationNumber = visitorIterationNumber;
+	}
+
+	public static GridConnection create( final IGridNode aNode, final IGridNode bNode, final AEPartLocation fromAtoB ) throws FailedConnectionException
+	{
+		if( aNode == null || bNode == null )
+		{
+			throw new NullNodeConnectionException();
+		}
+
+		final GridNode a = (GridNode) aNode;
+		final GridNode b = (GridNode) bNode;
+
+		if( a.hasConnection( b ) || b.hasConnection( a ) )
+		{
+			final String aMachineClass = a.getGridBlock().getMachine().getClass().getSimpleName();
+			final String bMachineClass = b.getGridBlock().getMachine().getClass().getSimpleName();
+			final String aCoordinates = a.getGridBlock().getLocation().toString();
+			final String bCoordinates = b.getGridBlock().getLocation().toString();
+
+			throw new ExistingConnectionException( String.format( EXISTING_CONNECTION_MESSAGE, aMachineClass, aCoordinates, bMachineClass, bCoordinates,
+					fromAtoB ) );
+		}
+
+		if( !Platform.securityCheck( a, b ) )
+		{
+			if( AEConfig.instance().isFeatureEnabled( AEFeature.LOG_SECURITY_AUDITS ) )
+			{
+				final DimensionalCoord aCoordinates = a.getGridBlock().getLocation();
+				final DimensionalCoord bCoordinates = b.getGridBlock().getLocation();
+
+				AELog.info( "Security audit 1 failed at [%s] belonging to player [id=%d]", aCoordinates.toString(), a.getPlayerID() );
+				AELog.info( "Security audit 2 failed at [%s] belonging to player [id=%d]", bCoordinates.toString(), b.getPlayerID() );
+			}
+
+			throw new SecurityConnectionException();
+		}
+
+		// Create the actual connection
+		final GridConnection connection = new GridConnection( a, b, fromAtoB );
+
+		// Update both nodes with the new connection.
+		if( a.getMyGrid() == null )
+		{
+			b.setGrid( a.getInternalGrid() );
+		}
+		else
+		{
+			if( a.getMyGrid() == null )
+			{
+				final GridPropagator gp = new GridPropagator( b.getInternalGrid() );
+				aNode.beginVisit( gp );
+			}
+			else if( b.getMyGrid() == null )
+			{
+				final GridPropagator gp = new GridPropagator( a.getInternalGrid() );
+				bNode.beginVisit( gp );
+			}
+			else if( connection.isNetworkABetter( a, b ) )
+			{
+				final GridPropagator gp = new GridPropagator( a.getInternalGrid() );
+				b.beginVisit( gp );
+			}
+			else
+			{
+				final GridPropagator gp = new GridPropagator( b.getInternalGrid() );
+				a.beginVisit( gp );
+			}
+		}
+
+		// a connection was destroyed RE-PATH!!
+		final IPathingGrid p = connection.sideA.getInternalGrid().getCache( IPathingGrid.class );
+		p.repath();
+
+		connection.sideA.addConnection( connection );
+		connection.sideB.addConnection( connection );
+
+		return connection;
 	}
 }

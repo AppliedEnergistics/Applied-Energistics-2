@@ -33,6 +33,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.api.exceptions.FailedConnectionException;
+import appeng.api.exceptions.SecurityConnectionException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridNotification;
 import appeng.api.networking.IGrid;
@@ -50,6 +51,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IReadOnlyCollection;
+import appeng.core.AELog;
 import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.me.pathfinding.IPathItem;
@@ -216,7 +218,7 @@ public class GridNode implements IGridNode, IPathItem
 			this.compressedData |= ( 1 << ( dir.ordinal() + 8 ) );
 		}
 
-		this.FindConnections();
+		this.findConnections();
 		this.getInternalGrid();
 	}
 
@@ -393,7 +395,7 @@ public class GridNode implements IGridNode, IPathItem
 		return this.usedChannels;
 	}
 
-	private void FindConnections()
+	private void findConnections()
 	{
 		if( !this.gridProxy.isWorldAccessible() )
 		{
@@ -455,11 +457,18 @@ public class GridNode implements IGridNode, IPathItem
 						// construct a new connection between these two nodes.
 						try
 						{
-							new GridConnection( node, this, f.getOpposite() );
+							GridConnection.create( node, this, f.getOpposite() );
+						}
+						catch( SecurityConnectionException e )
+						{
+							AELog.debug( e );
+							TickHandler.INSTANCE.addCallable( node.getWorld(), new MachineSecurityBreak( this ) );
+
+							return;
 						}
 						catch( final FailedConnectionException e )
 						{
-							TickHandler.INSTANCE.addCallable( node.getWorld(), new MachineSecurityBreak( this ) );
+							AELog.debug( e );
 
 							return;
 						}
@@ -482,11 +491,19 @@ public class GridNode implements IGridNode, IPathItem
 				// construct a new connection between these two nodes.
 				try
 				{
-					new GridConnection( node, this, f.getOpposite() );
+					GridConnection.create( node, this, f.getOpposite() );
+				}
+				catch( SecurityConnectionException e )
+				{
+					AELog.debug( e );
+
+					TickHandler.INSTANCE.addCallable( node.getWorld(), new MachineSecurityBreak( this ) );
+
+					return;
 				}
 				catch( final FailedConnectionException e )
 				{
-					TickHandler.INSTANCE.addCallable( node.getWorld(), new MachineSecurityBreak( this ) );
+					AELog.debug( e );
 
 					return;
 				}
