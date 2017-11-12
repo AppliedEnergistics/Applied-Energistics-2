@@ -75,7 +75,7 @@ public class GridConnection implements IGridConnection, IPathItem
 					fromAtoB ) );
 		}
 
-		if( Platform.securityCheck( a, b ) )
+		if( !Platform.securityCheck( a, b ) )
 		{
 			if( AEConfig.instance().isFeatureEnabled( AEFeature.LOG_SECURITY_AUDITS ) )
 			{

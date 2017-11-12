@@ -1296,11 +1296,11 @@ public class Platform
 	{
 		if( a.getLastSecurityKey() == -1 && b.getLastSecurityKey() == -1 )
 		{
-			return false;
+			return true;
 		}
 		else if( a.getLastSecurityKey() == b.getLastSecurityKey() )
 		{
-			return false;
+			return true;
 		}
 
 		final boolean a_isSecure = isPowered( a.getGrid() ) && a.getLastSecurityKey() != -1;
@@ -1308,15 +1308,17 @@ public class Platform
 
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.LOG_SECURITY_AUDITS ) )
 		{
-			AELog.info(
-					"Audit: " + a_isSecure + " : " + b_isSecure + " @ " + a.getLastSecurityKey() + " vs " + b.getLastSecurityKey() + " & " + a
-							.getPlayerID() + " vs " + b.getPlayerID() );
+			final String locationA = a.getGridBlock().isWorldAccessible() ? a.getGridBlock().getLocation().toString() : "notInWorld";
+			final String locationB = b.getGridBlock().isWorldAccessible() ? b.getGridBlock().getLocation().toString() : "notInWorld";
+
+			AELog.info( "Audit: Node A [isSecure=%b, key=%d, playerID=%d, location={%s}] vs Node B[isSecure=%b, key=%d, playerID=%d, location={%s}]",
+					a_isSecure, a.getLastSecurityKey(), a.getPlayerID(), locationA, b_isSecure, b.getLastSecurityKey(), b.getPlayerID(), locationB );
 		}
 
 		// can't do that son...
 		if( a_isSecure && b_isSecure )
 		{
-			return true;
+			return false;
 		}
 
 		if( !a_isSecure && b_isSecure )
@@ -1329,7 +1331,7 @@ public class Platform
 			return checkPlayerPermissions( a.getGrid(), b.getPlayerID() );
 		}
 
-		return false;
+		return true;
 	}
 
 	private static boolean isPowered( final IGrid grid )
@@ -1347,22 +1349,22 @@ public class Platform
 	{
 		if( grid == null )
 		{
-			return false;
+			return true;
 		}
 
 		final ISecurityGrid gs = grid.getCache( ISecurityGrid.class );
 
 		if( gs == null )
 		{
-			return false;
+			return true;
 		}
 
 		if( !gs.isAvailable() )
 		{
-			return false;
+			return true;
 		}
 
-		return !gs.hasPermission( playerID, SecurityPermissions.BUILD );
+		return gs.hasPermission( playerID, SecurityPermissions.BUILD );
 	}
 
 	public static void configurePlayer( final EntityPlayer player, final AEPartLocation side, final TileEntity tile )
