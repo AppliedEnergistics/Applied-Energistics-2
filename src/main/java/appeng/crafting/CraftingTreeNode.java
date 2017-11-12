@@ -363,7 +363,7 @@ public class CraftingTreeNode
 
 		if( this.howManyEmitted > 0 )
 		{
-			final IAEItemStack i = this.what.copy();
+			final IAEItemStack i = this.what.copy().reset();
 			i.setStackSize( this.howManyEmitted );
 			craftingCPUCluster.addEmitable( i );
 		}

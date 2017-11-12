@@ -440,7 +440,6 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		this.lastTime = 0;
 		this.elapsedTime = 0;
 		this.isComplete = true;
-
 	}
 
 	private void updateCPU()
