@@ -33,6 +33,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import appeng.api.exceptions.FailedConnectionException;
+import appeng.api.exceptions.SecurityConnectionException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridNotification;
 import appeng.api.networking.IGrid;
@@ -458,12 +459,16 @@ public class GridNode implements IGridNode, IPathItem
 						{
 							GridConnection.create( node, this, f.getOpposite() );
 						}
+						catch( SecurityConnectionException e )
+						{
+							AELog.debug( e );
+							TickHandler.INSTANCE.addCallable( node.getWorld(), new MachineSecurityBreak( this ) );
+
+							return;
+						}
 						catch( final FailedConnectionException e )
 						{
-							e.printStackTrace();
 							AELog.debug( e );
-
-							TickHandler.INSTANCE.addCallable( node.getWorld(), new MachineSecurityBreak( this ) );
 
 							return;
 						}
@@ -488,12 +493,17 @@ public class GridNode implements IGridNode, IPathItem
 				{
 					GridConnection.create( node, this, f.getOpposite() );
 				}
-				catch( final FailedConnectionException e )
+				catch( SecurityConnectionException e )
 				{
-					e.printStackTrace();
 					AELog.debug( e );
 
 					TickHandler.INSTANCE.addCallable( node.getWorld(), new MachineSecurityBreak( this ) );
+
+					return;
+				}
+				catch( final FailedConnectionException e )
+				{
+					AELog.debug( e );
 
 					return;
 				}
