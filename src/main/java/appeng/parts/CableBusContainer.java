@@ -246,6 +246,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 									catch( final FailedConnectionException e )
 									{
 										// ekk!
+										e.printStackTrace();
 										AELog.debug( e );
 
 										bp.removeFromWorld();
@@ -298,6 +299,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 							catch( final FailedConnectionException e )
 							{
 								// ekk!
+								e.printStackTrace();
 								AELog.debug( e );
 
 								bp.removeFromWorld();

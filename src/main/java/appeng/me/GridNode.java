@@ -460,6 +460,7 @@ public class GridNode implements IGridNode, IPathItem
 						}
 						catch( final FailedConnectionException e )
 						{
+							e.printStackTrace();
 							AELog.debug( e );
 
 							TickHandler.INSTANCE.addCallable( node.getWorld(), new MachineSecurityBreak( this ) );
@@ -489,6 +490,7 @@ public class GridNode implements IGridNode, IPathItem
 				}
 				catch( final FailedConnectionException e )
 				{
+					e.printStackTrace();
 					AELog.debug( e );
 
 					TickHandler.INSTANCE.addCallable( node.getWorld(), new MachineSecurityBreak( this ) );
