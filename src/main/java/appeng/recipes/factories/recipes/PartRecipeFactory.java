@@ -72,6 +72,48 @@ public class PartRecipeFactory implements IRecipeFactory
 		}
 	}
 
+	public static ItemStack getResult( JsonObject json, JsonContext context )
+	{
+		JsonObject resultObject = JsonUtils.getJsonObject( json, "result" );
+
+		if( resultObject.has( "part" ) )
+		{
+			return getPart( resultObject );
+		}
+		else if( resultObject.has( "item" ) )
+		{
+			return CraftingHelper.getItemStack( resultObject, context );
+		}
+		else
+		{
+			throw new JsonSyntaxException( "Result has no 'part' or 'item' property." );
+		}
+	}
+
+	private static ItemStack getPart( JsonObject resultObject )
+	{
+		String ingredient = JsonUtils.getString( resultObject, "part" );
+		Object result = (Object) Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, ingredient );
+		if( result instanceof ResolverResult )
+		{
+			ResolverResult resolverResult = (ResolverResult) result;
+
+			Item item = Item.getByNameOrId( AppEng.MOD_ID + ":" + resolverResult.itemName );
+
+			if( item == null )
+			{
+				AELog.warn( "item was null for " + resolverResult.itemName + " ( " + ingredient + " )!" );
+				throw new JsonSyntaxException( "Got a null item for " + resolverResult.itemName + " ( " + ingredient + " ). This should never happen!" );
+			}
+
+			return new ItemStack( item, JsonUtils.getInt( resultObject, "count", 1 ), resolverResult.damageValue, resolverResult.compound );
+		}
+		else
+		{
+			throw new JsonSyntaxException( "Couldn't find the resulting item in AE. This means AE was provided a recipe that it shouldn't be handling.\n" + "Was looking for : '" + ingredient + "'." );
+		}
+	}
+
 	// Copied from ShapedOreRecipe.java, modified a bit.
 	private static ShapedOreRecipe shapedFactory( JsonContext context, JsonObject json )
 	{
@@ -141,28 +183,7 @@ public class PartRecipeFactory implements IRecipeFactory
 			throw new JsonSyntaxException( "Key defines symbols that aren't used in pattern: " + keys );
 		}
 
-		JsonObject resultObject = (JsonObject) json.get( "result" );
-		int count = JsonUtils.getInt( resultObject, "count", 1 );
-
-		String ingredient = resultObject.get( "part" ).getAsString();
-		Object result = (Object) Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, ingredient );
-		if( result instanceof ResolverResult )
-		{
-			ResolverResult resolverResult = (ResolverResult) result;
-
-			Item item = Item.getByNameOrId( AppEng.MOD_ID + ":" + resolverResult.itemName );
-			if( item == null )
-			{
-				AELog.warn( "item was null for " + resolverResult.itemName + " ( " + ingredient + " )!" );
-				throw new JsonSyntaxException( "Got a null item for " + resolverResult.itemName + " ( " + ingredient + " ). This should never happen!" );
-			}
-			ItemStack itemStack = new ItemStack( item, count, resolverResult.damageValue, resolverResult.compound );
-
-			return new ShapedOreRecipe( group.isEmpty() ? null : new ResourceLocation( group ), itemStack, primer );
-		}
-
-		// Should never reach this part unless mangled JSON or bug in AE.
-		throw new JsonSyntaxException( "Couldn't find the resulting item in AE. This means AE was provided a recipe that it shouldn't be handling.\nWas looking for : '" + ingredient + "'." );
+		return new ShapedOreRecipe( group.isEmpty() ? null : new ResourceLocation( group ), getResult( json, context ), primer );
 	}
 
 	// Copied from ShapelessOreRecipe.java, modified a bit.
@@ -181,28 +202,6 @@ public class PartRecipeFactory implements IRecipeFactory
 			throw new JsonParseException( "No ingredients for shapeless recipe" );
 		}
 
-		JsonObject resultObject = (JsonObject) json.get( "result" );
-		int count = JsonUtils.getInt( resultObject, "count", 1 );
-
-		String ingredient = resultObject.get( "part" ).getAsString();
-		Object result = (Object) Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, ingredient );
-		if( result instanceof ResolverResult )
-		{
-			ResolverResult resolverResult = (ResolverResult) result;
-
-			Item item = Item.getByNameOrId( AppEng.MOD_ID + ":" + resolverResult.itemName );
-
-			if( item == null )
-			{
-				AELog.warn( "item was null for " + resolverResult.itemName + " ( " + ingredient + " )!" );
-				throw new JsonSyntaxException( "Got a null item for " + resolverResult.itemName + " ( " + ingredient + " ). This should never happen!" );
-			}
-
-			ItemStack itemStack = new ItemStack( item, count, resolverResult.damageValue, resolverResult.compound );
-
-			return new ShapelessOreRecipe( group.isEmpty() ? null : new ResourceLocation( group ), ings, itemStack );
-		}
-
-		throw new JsonSyntaxException( "Couldn't find the resulting item in AE. This means AE was provided a recipe that it shouldn't be handling.\n" + "Was looking for : '" + ingredient + "'." );
+		return new ShapelessOreRecipe( group.isEmpty() ? null : new ResourceLocation( group ), ings, getResult( json, context ) );
 	}
 }
