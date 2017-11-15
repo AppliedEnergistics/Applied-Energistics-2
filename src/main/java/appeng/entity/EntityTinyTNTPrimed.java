@@ -19,6 +19,8 @@
 package appeng.entity;
 
 
+import java.util.List;
+
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.block.Block;
@@ -136,19 +138,20 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 			return;
 		}
 
-		for( final Object e : this.world.getEntitiesWithinAABBExcludingEntity( this,
-				new AxisAlignedBB( this.posX - 1.5, this.posY - 1.5f, this.posZ - 1.5, this.posX + 1.5, this.posY + 1.5, this.posZ + 1.5 ) ) )
+		final Explosion ex = new Explosion( this.world, this, this.posX, this.posY, this.posZ, 0.2f, false, false );
+		final AxisAlignedBB area = new AxisAlignedBB( this.posX - 1.5, this.posY - 1.5f, this.posZ - 1.5, this.posX + 1.5, this.posY + 1.5, this.posZ + 1.5 );
+		final List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity( this, area );
+
+		net.minecraftforge.event.ForgeEventFactory.onExplosionDetonate( this.world, ex, list, 0.2f * 2d );
+
+		for( final Entity e : list )
 		{
-			if( e instanceof Entity )
-			{
-				( (Entity) e ).attackEntityFrom( DamageSource.causeExplosionDamage( (Explosion) null ), 6 );
-			}
+			e.attackEntityFrom( DamageSource.causeExplosionDamage( ex ), 6 );
 		}
 
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.TINY_TNT_BLOCK_DAMAGE ) )
 		{
 			this.posY -= 0.25;
-			final Explosion ex = new Explosion( this.world, this, this.posX, this.posY, this.posZ, 0.2f, false, false );
 
 			for( int x = (int) ( this.posX - 2 ); x <= this.posX + 2; x++ )
 			{
@@ -159,6 +162,7 @@ public final class EntityTinyTNTPrimed extends EntityTNTPrimed implements IEntit
 						final BlockPos point = new BlockPos( x, y, z );
 						final IBlockState state = this.world.getBlockState( point );
 						final Block block = state.getBlock();
+
 						if( block != null && !block.isAir( state, this.world, point ) )
 						{
 							float strength = (float) ( 2.3f - ( ( ( x + 0.5f ) - this.posX ) * ( ( x + 0.5f ) - this.posX ) + ( ( y + 0.5f ) - this.posY ) * ( ( y + 0.5f ) - this.posY ) + ( ( z + 0.5f ) - this.posZ ) * ( ( z + 0.5f ) - this.posZ ) ) );
