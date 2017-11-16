@@ -86,7 +86,6 @@ dependencies {
 
     // at runtime, use the full JEI jar
     runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"
-    runtime "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.+"
 
     // unit test dependencies
     testCompile "junit:junit:4.12"
