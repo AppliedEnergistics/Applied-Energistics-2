@@ -1,5 +1,0 @@
-shaped=
-    _ oredictionary:ingotIron _,
-    oredictionary:ingotIron ae2:material.EngProcessor oredictionary:ingotIron,
-    fluixCrystal fluixCrystal fluixCrystal
-    -> ae2:part.P2PTunnelME

@@ -1,8 +1,0 @@
-shapeless=
-    certusCrystal ae2:material.EmptyStorageCell -> ae2:view_cell
-
-shaped=
-    ae2:quartz_glass oredictionary:dustRedstone ae2:quartz_glass,
-    oredictionary:dustRedstone certusCrystal oredictionary:dustRedstone,
-    oredictionary:ingotIron oredictionary:ingotIron oredictionary:ingotIron
-    -> ae2:view_cell

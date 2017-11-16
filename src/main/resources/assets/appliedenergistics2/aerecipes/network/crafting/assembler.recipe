@@ -1,5 +1,0 @@
-shaped=
-    oredictionary:ingotIron ae2:quartz_glass oredictionary:ingotIron,
-    ae2:material.AnnihilationCore oredictionary:craftingTableWood ae2:material.FormationCore,
-    oredictionary:ingotIron ae2:quartz_glass oredictionary:ingotIron
-    -> ae2:molecular_assembler

@@ -1,0 +1,11 @@
+{
+	"type": "appliedenergistics2:smelt",
+	"result": {
+		"item": "minecraft:bread"
+	},
+	"input": {
+		"type": "appliedenergistics2:part",
+		"part": "material.flour"	
+	},
+	"xp" : 0.0
+}

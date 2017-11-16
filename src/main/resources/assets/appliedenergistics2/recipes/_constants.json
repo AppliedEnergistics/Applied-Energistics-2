@@ -169,7 +169,7 @@
             },
             {
                 "type": "forge:ore_dict",
-                "ore": "crystalNetherQuartz"
+                "ore": "gemQuartz"
             },
             {
                 "type": "appliedenergistics2:part",
@@ -212,7 +212,7 @@
         "ingredient": [
             {
                 "type": "forge:ore_dict",
-                "ore": "crystalNetherQuartz"
+                "ore": "gemQuartz"
             },
             {
                 "type": "appliedenergistics2:part",

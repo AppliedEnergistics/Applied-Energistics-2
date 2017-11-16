@@ -1,0 +1,12 @@
+{
+	"type": "appliedenergistics2:grinder",
+	"input": {
+		"item": "appliedenergistics2:sky_stone_block"
+	},
+	"result": {
+		"primary": {
+			"part": "material.sky_dust"
+		}
+	},
+	"turns": 8
+}

@@ -1,7 +1,0 @@
-shaped=
-    ae2:material.CertusQuartzCrystalCharged mc:iron_ingot
-    -> 2 ae2:quartz_fixture
-
-shaped=
-    netherCrystal mc:iron_ingot
-    -> ae2:light_detector

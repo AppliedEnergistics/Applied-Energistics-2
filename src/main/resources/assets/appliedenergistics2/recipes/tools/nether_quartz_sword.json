@@ -11,7 +11,7 @@
     "key": {
         "a": {
             "type": "forge:ore_dict",
-            "ore": "crystalNetherQuartz"
+            "ore": "gemQuartz"
         },
         "b": {
             "type": "forge:ore_dict",

@@ -77,7 +77,6 @@ import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.parts.IPartHelper;
-import appeng.api.recipes.IRecipeHandler;
 import appeng.bootstrap.ICriterionTriggerRegistry;
 import appeng.bootstrap.IModelRegistry;
 import appeng.bootstrap.components.IBlockRegistrationComponent;
@@ -102,6 +101,7 @@ import appeng.core.worlddata.SpatialDimensionManager;
 import appeng.hooks.TickHandler;
 import appeng.items.materials.ItemMaterial;
 import appeng.items.parts.ItemFacade;
+import appeng.items.parts.ItemPart;
 import appeng.loot.ChestLoot;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cache.EnergyGridCache;
@@ -113,20 +113,9 @@ import appeng.me.cache.SpatialPylonCache;
 import appeng.me.cache.TickManagerCache;
 import appeng.parts.PartPlacement;
 import appeng.recipes.AEItemResolver;
-import appeng.recipes.CustomRecipeConfig;
-import appeng.recipes.RecipeHandler;
+import appeng.recipes.AERecipeLoader;
 import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.game.FacadeRecipe;
-import appeng.recipes.handlers.Crusher;
-import appeng.recipes.handlers.Grind;
-import appeng.recipes.handlers.HCCrusher;
-import appeng.recipes.handlers.Inscribe;
-import appeng.recipes.handlers.Macerator;
-import appeng.recipes.handlers.MekCrusher;
-import appeng.recipes.handlers.MekEnrichment;
-import appeng.recipes.handlers.Press;
-import appeng.recipes.handlers.Pulverizer;
-import appeng.recipes.handlers.Smelt;
 import appeng.recipes.ores.OreDictionaryHandler;
 import appeng.spatial.BiomeGenStorage;
 import appeng.spatial.StorageWorldProvider;
@@ -142,15 +131,6 @@ final class Registration
 	Biome storageBiome;
 	AdvancementTriggers advancementTriggers;
 
-	private File recipeDirectory;
-	private CustomRecipeConfig customRecipeConfig;
-
-	public void setRecipeInformation( File f, CustomRecipeConfig f2 )
-	{
-		this.recipeDirectory = f;
-		this.customRecipeConfig = f2;
-	}
-
 	void preInitialize( final FMLPreInitializationEvent event )
 	{
 		Capabilities.register();
@@ -158,10 +138,6 @@ final class Registration
 		final Api api = Api.INSTANCE;
 		final IRecipeHandlerRegistry recipeRegistry = api.registries().recipes();
 		this.registerCraftHandlers( recipeRegistry );
-
-		// RecipeSorter.register( "AE2-Facade", FacadeRecipe.class, Category.SHAPED, "" );
-		// RecipeSorter.register( "AE2-Shaped", ShapedRecipe.class, Category.SHAPED, "" );
-		// RecipeSorter.register( "AE2-Shapeless", ShapelessRecipe.class, Category.SHAPELESS, "" );
 
 		MinecraftForge.EVENT_BUS.register( OreDictionaryHandler.INSTANCE );
 
@@ -225,26 +201,13 @@ final class Registration
 	private void registerCraftHandlers( final IRecipeHandlerRegistry registry )
 	{
 		registry.addNewSubItemResolver( new AEItemResolver() );
-
-		registry.addNewCraftHandler( "hccrusher", HCCrusher.class );
-		registry.addNewCraftHandler( "mekcrusher", MekCrusher.class );
-		registry.addNewCraftHandler( "mekechamber", MekEnrichment.class );
-		registry.addNewCraftHandler( "grind", Grind.class );
-		registry.addNewCraftHandler( "crusher", Crusher.class );
-		registry.addNewCraftHandler( "pulverizer", Pulverizer.class );
-		registry.addNewCraftHandler( "macerator", Macerator.class );
-
-		registry.addNewCraftHandler( "smelt", Smelt.class );
-		registry.addNewCraftHandler( "inscribe", Inscribe.class );
-		registry.addNewCraftHandler( "press", Press.class );
 	}
 
-	public void initialize( @Nonnull final FMLInitializationEvent event, @Nonnull final File recipeDirectory, @Nonnull final CustomRecipeConfig customRecipeConfig )
+	public void initialize( @Nonnull final FMLInitializationEvent event, @Nonnull final File recipeDirectory )
 	{
 		Preconditions.checkNotNull( event );
 		Preconditions.checkNotNull( recipeDirectory );
 		Preconditions.checkArgument( !recipeDirectory.isFile() );
-		Preconditions.checkNotNull( customRecipeConfig );
 
 		final Api api = Api.INSTANCE;
 		final IPartHelper partHelper = api.partHelper();
@@ -253,19 +216,6 @@ final class Registration
 		ApiDefinitions definitions = api.definitions();
 		definitions.getRegistry().getBootstrapComponents( IOreDictComponent.class ).forEachRemaining( b -> b.oreRegistration( event.getSide() ) );
 		definitions.getRegistry().getBootstrapComponents( IInitComponent.class ).forEachRemaining( b -> b.initialize( event.getSide() ) );
-
-		//
-		// // Perform ore camouflage!
-		// ItemMaterial.instance.makeUnique();
-
-		// final Runnable recipeLoader = new RecipeLoader( recipeDirectory, customRecipeConfig, this.recipeHandler );
-		// recipeLoader.run();
-
-		// if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
-		// {
-		// partHelper.registerNewLayer( "appeng.parts.layers.LayerSidedEnvironment",
-		// "li.cil.oc.api.network.SidedEnvironment" );
-		// }
 
 		MinecraftForge.EVENT_BUS.register( TickHandler.INSTANCE );
 
@@ -347,13 +297,12 @@ final class Registration
 
 		// Perform ore camouflage!
 		ItemMaterial.instance.makeUnique();
+		ItemPart.instance.registerOreDicts();
 
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_DISASSEMBLY_CRAFTING ) )
 		{
 			DisassembleRecipe r = new DisassembleRecipe();
 			registry.register( r.setRegistryName( AppEng.MOD_ID.toLowerCase(), "disassemble" ) );
-			// RecipeSorter.register( "appliedenergistics2:disassemble", DisassembleRecipe.class, Category.SHAPELESS,
-			// "after:minecraft:shapeless" );
 		}
 
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_FACADE_CRAFTING ) )
@@ -362,18 +311,13 @@ final class Registration
 			{
 				FacadeRecipe f = new FacadeRecipe( (ItemFacade) facadeItem );
 				registry.register( f.setRegistryName( AppEng.MOD_ID.toLowerCase(), "facade" ) );
-				// RecipeSorter.register( "appliedenergistics2:facade", FacadeRecipe.class, Category.SHAPED,
-				// "after:minecraft:shaped" );
 			} );
 		}
 
 		definitions.getRegistry().getBootstrapComponents( IRecipeRegistrationComponent.class ).forEachRemaining( b -> b.recipeRegistration( side, registry ) );
 
-		// load machine recipes
-		final IRecipeHandler recipeHandler = new RecipeHandler();
-		final Runnable recipeLoader = new RecipeLoader( this.recipeDirectory, this.customRecipeConfig, recipeHandler );
-		recipeLoader.run();
-		recipeHandler.injectRecipes();
+		final AERecipeLoader ldr = new AERecipeLoader();
+		ldr.loadProcessingRecipes();
 	}
 
 	@SubscribeEvent
@@ -556,11 +500,6 @@ final class Registration
 		{
 			registries.worldgen().enableWorldGenForDimension( WorldGenType.METEORITES, dimension );
 		}
-
-		/*
-		 * initial recipe bake, if ore dictionary changes after this it re-bakes.
-		 */
-		OreDictionaryHandler.INSTANCE.bakeRecipes();
 	}
 
 	private static class ModelLoaderWrapper implements IModelRegistry

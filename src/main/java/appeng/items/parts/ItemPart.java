@@ -33,6 +33,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -43,6 +44,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.items.IItemGroup;
@@ -353,6 +355,22 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 			}
 
 			return comparedString;
+		}
+	}
+
+	public void registerOreDicts()
+	{
+		for( final PartTypeWithVariant mt : ImmutableSet.copyOf( this.registered.values() ) )
+		{
+			if( mt.part.getOreName() != null )
+			{
+				final String[] names = mt.part.getOreName().split( "," );
+
+				for( final String name : names )
+				{
+					OreDictionary.registerOre( name, new ItemStack( this, 1, mt.part.getBaseDamage() + mt.variant ) );
+				}
+			}
 		}
 	}
 

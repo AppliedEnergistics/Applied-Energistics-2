@@ -146,7 +146,7 @@ public class CubeBuilder
 		builder.setQuadOrientation( face );
 		builder.setQuadTint( -1 );
 		builder.setApplyDiffuseLighting( true );
-		
+
 		UvVector uv = new UvVector();
 
 		// The user might have set specific UV coordinates for this face

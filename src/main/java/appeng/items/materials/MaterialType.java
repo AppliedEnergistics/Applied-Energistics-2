@@ -45,7 +45,7 @@ public enum MaterialType
 	CERTUS_QUARTZ_CRYSTAL_CHARGED( 1, "material_certus_quartz_crystal_charged", EnumSet.of( AEFeature.CERTUS ), EntityChargedQuartz.class ),
 
 	CERTUS_QUARTZ_DUST( 2, "material_certus_quartz_dust", EnumSet.of( AEFeature.DUSTS, AEFeature.CERTUS ), "dustCertusQuartz" ),
-	NETHER_QUARTZ_DUST( 3, "material_nether_quartz_dust", EnumSet.of( AEFeature.DUSTS ), "dustNetherQuartz" ),
+	NETHER_QUARTZ_DUST( 3, "material_nether_quartz_dust", EnumSet.of( AEFeature.DUSTS ), "dustNetherQuartz,dustQuartz" ),
 	FLOUR( 4, "material_flour", EnumSet.of( AEFeature.FLOUR ), "dustWheat" ),
 	GOLD_DUST( 51, "material_gold_dust", EnumSet.of( AEFeature.DUSTS ), "dustGold" ),
 	IRON_DUST( 49, "material_iron_dust", EnumSet.of( AEFeature.DUSTS ), "dustIron" ),
@@ -57,9 +57,10 @@ public enum MaterialType
 	FLUIX_DUST( 8, "material_fluix_dust", EnumSet.of( AEFeature.FLUIX, AEFeature.DUSTS ), "dustFluix" ),
 	FLUIX_PEARL( 9, "material_fluix_pearl", EnumSet.of( AEFeature.FLUIX ), "pearlFluix" ),
 
-	PURIFIED_CERTUS_QUARTZ_CRYSTAL( 10, "material_purified_certus_quartz_crystal", EnumSet.of( AEFeature.CERTUS, AEFeature.PURE_CRYSTALS ) ),
-	PURIFIED_NETHER_QUARTZ_CRYSTAL( 11, "material_purified_nether_quartz_crystal", EnumSet.of( AEFeature.PURE_CRYSTALS ) ),
-	PURIFIED_FLUIX_CRYSTAL( 12, "material_purified_fluix_crystal", EnumSet.of( AEFeature.FLUIX, AEFeature.PURE_CRYSTALS ) ),
+	PURIFIED_CERTUS_QUARTZ_CRYSTAL( 10, "material_purified_certus_quartz_crystal", EnumSet.of( AEFeature.CERTUS,
+			AEFeature.PURE_CRYSTALS ), "crystalPureCertusQuartz" ),
+	PURIFIED_NETHER_QUARTZ_CRYSTAL( 11, "material_purified_nether_quartz_crystal", EnumSet.of( AEFeature.PURE_CRYSTALS ), "crystalPureNetherQuartz" ),
+	PURIFIED_FLUIX_CRYSTAL( 12, "material_purified_fluix_crystal", EnumSet.of( AEFeature.FLUIX, AEFeature.PURE_CRYSTALS ), "crystalPureFluix" ),
 
 	CALCULATION_PROCESSOR_PRESS( 13, "material_calculation_processor_press", EnumSet.of( AEFeature.PRESSES ) ),
 	ENGINEERING_PROCESSOR_PRESS( 14, "material_engineering_processor_press", EnumSet.of( AEFeature.PRESSES ) ),

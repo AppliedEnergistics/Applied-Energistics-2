@@ -1,5 +1,0 @@
-shaped=
-    ae2:smooth_sky_stone_block ae2:material.PurifiedFluixCrystal ae2:smooth_sky_stone_block,
-    ae2:material.PurifiedFluixCrystal ae2:material.EngProcessor ae2:material.PurifiedFluixCrystal,
-    ae2:smooth_sky_stone_block ae2:material.PurifiedFluixCrystal ae2:smooth_sky_stone_block
-    -> ae2:controller

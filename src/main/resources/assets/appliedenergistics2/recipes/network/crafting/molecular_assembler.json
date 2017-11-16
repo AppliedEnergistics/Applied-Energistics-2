@@ -18,7 +18,7 @@
         },
         "d": {
             "type": "forge:ore_dict",
-            "ore": "craftingTableWood"
+            "ore": "workbench"
         },
         "a": {
             "type": "forge:ore_dict",

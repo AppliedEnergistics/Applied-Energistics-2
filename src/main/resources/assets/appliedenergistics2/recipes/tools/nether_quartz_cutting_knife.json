@@ -15,7 +15,7 @@
         },
         "c": {
             "type": "forge:ore_dict",
-            "ore": "crystalNetherQuartz"
+            "ore": "gemQuartz"
         },
         "a": {
             "type": "forge:ore_dict",

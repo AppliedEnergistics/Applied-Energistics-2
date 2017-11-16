@@ -1,0 +1,14 @@
+{
+	"type": "appliedenergistics2:grinder",
+	"input": {
+		"item": "minecraft:bone"
+	},
+	"result": {
+		"primary": {
+			"item": "minecraft:dye",
+			"data": 15,
+			"count": 4
+		}
+	},
+	"turns": 8
+}
