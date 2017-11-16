@@ -1,3 +1,20 @@
+/*
+ * This file is part of Applied Energistics 2.
+ * Copyright (c) 2013 - 2017, AlgorithmX2, All rights reserved.
+ *
+ * Applied Energistics 2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Applied Energistics 2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
+ */
 
 package appeng.integration.modules.crafttweaker;
 
@@ -15,6 +32,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 import appeng.api.AEApi;
 import appeng.api.features.IInscriberRecipe;
 import appeng.api.features.IInscriberRecipeBuilder;
+import appeng.api.features.IInscriberRegistry;
 import appeng.api.features.InscriberProcessType;
 
 
@@ -45,9 +63,9 @@ public class InscriberRecipes
 	}
 
 	@ZenMethod
-	public static void removeRecipe( IItemStack input )
+	public static void removeRecipe( IItemStack output )
 	{
-		CTModule.REMOVALS.add( new Remove( (ItemStack) input.getInternal() ) );
+		CTModule.REMOVALS.add( new Remove( (ItemStack) output.getInternal() ) );
 	}
 
 	private static class Add implements IAction
@@ -84,18 +102,11 @@ public class InscriberRecipes
 		@Override
 		public void apply()
 		{
-			IInscriberRecipe recipe = AEApi.instance()
-					.registries()
-					.inscriber()
-					.getRecipes()
+			final IInscriberRegistry inscriber = AEApi.instance().registries().inscriber();
+			inscriber.getRecipes()
 					.stream()
 					.filter( r -> r.getOutput().isItemEqual( this.stack ) )
-					.findFirst()
-					.orElse( null );
-			if( recipe != null )
-			{
-				AEApi.instance().registries().inscriber().removeRecipe( recipe );
-			}
+					.forEach( inscriber::removeRecipe );
 		}
 
 		@Override
