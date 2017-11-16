@@ -43,9 +43,9 @@ import net.minecraftforge.common.crafting.JsonContext;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
+import appeng.api.AEApi;
 import appeng.api.recipes.ResolverResult;
 import appeng.core.AELog;
-import appeng.core.Api;
 import appeng.core.AppEng;
 
 
@@ -93,7 +93,7 @@ public class PartRecipeFactory implements IRecipeFactory
 	private static ItemStack getPart( JsonObject resultObject )
 	{
 		String ingredient = JsonUtils.getString( resultObject, "part" );
-		Object result = Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, ingredient );
+		Object result = AEApi.instance().registries().recipes().resolveItem( AppEng.MOD_ID, ingredient );
 		if( result instanceof ResolverResult )
 		{
 			ResolverResult resolverResult = (ResolverResult) result;
