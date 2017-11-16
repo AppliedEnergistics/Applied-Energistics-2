@@ -47,13 +47,16 @@ public enum IntegrationRegistry
 		this.modules.add( new IntegrationNode( type.dspName, type.modID, type ) );
 	}
 
-	public void init()
+	public void preInit()
 	{
 		for( final IntegrationNode node : this.modules )
 		{
 			node.call( IntegrationStage.PRE_INIT );
 		}
+	}
 
+	public void init()
+	{
 		for( final IntegrationNode node : this.modules )
 		{
 			node.call( IntegrationStage.INIT );

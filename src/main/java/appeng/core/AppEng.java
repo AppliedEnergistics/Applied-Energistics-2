@@ -189,6 +189,8 @@ public final class AppEng
 			AppEng.proxy.preinit();
 		}
 
+		IntegrationRegistry.INSTANCE.preInit();
+
 		if( versionCheckerConfig.isVersionCheckingEnabled() )
 		{
 			final VersionChecker versionChecker = new VersionChecker( versionCheckerConfig );
