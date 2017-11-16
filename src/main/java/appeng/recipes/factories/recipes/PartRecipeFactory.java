@@ -93,7 +93,7 @@ public class PartRecipeFactory implements IRecipeFactory
 	private static ItemStack getPart( JsonObject resultObject )
 	{
 		String ingredient = JsonUtils.getString( resultObject, "part" );
-		Object result = (Object) Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, ingredient );
+		Object result = Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, ingredient );
 		if( result instanceof ResolverResult )
 		{
 			ResolverResult resolverResult = (ResolverResult) result;
