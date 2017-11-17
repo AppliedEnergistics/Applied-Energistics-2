@@ -8,6 +8,7 @@
     },
     "recipes": {
         "part_shaped": "appeng.recipes.factories.recipes.PartRecipeFactory",
-        "part_shapeless": "appeng.recipes.factories.recipes.PartRecipeFactory"
+        "part_shapeless": "appeng.recipes.factories.recipes.PartRecipeFactory",
+        "damaged": "appeng.recipes.factories.recipes.DamagedRecipeFactory"
     }
 }
