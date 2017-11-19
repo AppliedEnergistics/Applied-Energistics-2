@@ -63,21 +63,20 @@ public class CTModule implements ICraftTweaker
 			return (ItemStack) iStack.getInternal();
 		}
 	}
-	
-	
+
 	public static Optional<Collection<ItemStack>> toStacks( IIngredient ingredient )
 	{
-		if ( ingredient == null )
+		if( ingredient == null )
 		{
 			return Optional.empty();
 		}
-		ArrayList<ItemStack> ret = new ArrayList<>();			
-		ingredient.getItems().stream().map( i -> CTModule.toStack( i ) ).filter( i -> i != ItemStack.EMPTY ).forEach( ret::add );
-		if ( ret.isEmpty() )
+		ArrayList<ItemStack> ret = new ArrayList<>();
+		ingredient.getItems().stream().map( i -> CTModule.toStack( i ) ).filter( i -> !i.isEmpty() ).forEach( ret::add );
+		if( ret.isEmpty() )
 		{
 			return Optional.empty();
-		}		
+		}
 		return Optional.of( ret );
 	}
-	
+
 }
