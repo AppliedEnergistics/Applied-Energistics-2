@@ -172,7 +172,7 @@ public class SlotRestrictedInput extends AppEngSlot
 
 				for( final ItemStack optional : AEApi.instance().registries().inscriber().getOptionals() )
 				{
-					if( Platform.itemComparisons().matchesItem( i, optional ) )
+					if( Platform.itemComparisons().isSameItem( i, optional ) )
 					{
 						return true;
 					}

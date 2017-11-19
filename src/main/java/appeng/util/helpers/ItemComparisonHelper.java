@@ -76,26 +76,6 @@ public class ItemComparisonHelper
 	}
 
 	/**
-	 * Like {@link ItemComparisonHelper#isSameItem(ItemStack, ItemStack)} but allows the filter with wildcard metadata
-	 *
-	 * @return true, if is can be used for filter.
-	 */
-	public boolean matchesItem( @Nonnull final ItemStack is, @Nonnull final ItemStack filter )
-	{
-		if( !this.isNbtTagEqual( is.getTagCompound(), filter.getTagCompound() ) )
-		{
-			return false;
-		}
-
-		if( is.getItem() != filter.getItem() )
-		{
-			return false;
-		}
-
-		return filter.getMetadata() == OreDictionary.WILDCARD_VALUE || filter.getMetadata() == is.getMetadata();
-	}
-
-	/**
 	 * Similar to {@link ItemComparisonHelper#isEqualItem(ItemStack, ItemStack)},
 	 * but it can further check, if both match the same {@link FuzzyMode}
 	 * or are considered equal by the {@link OreDictionary}

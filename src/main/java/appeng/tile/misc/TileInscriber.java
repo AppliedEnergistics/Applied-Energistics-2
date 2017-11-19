@@ -369,21 +369,21 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 		{
 
-			final boolean matchA = ( plateA.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().matchesItem( plateA,
+			final boolean matchA = ( plateA.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateA,
 					recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) ) && // and...
-					( ( plateB.isEmpty() && !recipe.getBottomOptional().isPresent() ) || ( Platform.itemComparisons().matchesItem( plateB,
+					( ( plateB.isEmpty() && !recipe.getBottomOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateB,
 							recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) ) );
 
-			final boolean matchB = ( plateB.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().matchesItem( plateB,
+			final boolean matchB = ( plateB.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateB,
 					recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) ) && // and...
-					( ( plateA.isEmpty() && !recipe.getBottomOptional().isPresent() ) || ( Platform.itemComparisons().matchesItem( plateA,
+					( ( plateA.isEmpty() && !recipe.getBottomOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateA,
 							recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) ) );
 
 			if( matchA || matchB )
 			{
 				for( final ItemStack option : recipe.getInputs() )
 				{
-					if( Platform.itemComparisons().matchesItem( this.sideItemHandler.getStackInSlot( 0 ), option ) )
+					if( Platform.itemComparisons().isSameItem( this.sideItemHandler.getStackInSlot( 0 ), option ) )
 					{
 						return recipe;
 					}
@@ -610,7 +610,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				}
 				for( final ItemStack optionals : AEApi.instance().registries().inscriber().getOptionals() )
 				{
-					if( Platform.itemComparisons().matchesItem( stack, optionals ) )
+					if( Platform.itemComparisons().isSameItem( stack, optionals ) )
 					{
 						return true;
 					}

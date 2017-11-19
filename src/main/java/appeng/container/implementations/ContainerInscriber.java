@@ -132,20 +132,20 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 			for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 			{
 				final boolean matchA = !top
-						.isEmpty() && ( Platform.itemComparisons().matchesItem( top, recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) || Platform
+						.isEmpty() && ( Platform.itemComparisons().isSameItem( top, recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) || Platform
 								.itemComparisons()
-								.matchesItem( top, recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) );
+								.isSameItem( top, recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) );
 				final boolean matchB = !bot
-						.isEmpty() && ( Platform.itemComparisons().matchesItem( bot, recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) || Platform
+						.isEmpty() && ( Platform.itemComparisons().isSameItem( bot, recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) || Platform
 								.itemComparisons()
-								.matchesItem( bot, recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) );
+								.isSameItem( bot, recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) );
 
 				if( matchA || matchB )
 				{
 					matches = true;
 					for( final ItemStack option : recipe.getInputs() )
 					{
-						if( Platform.itemComparisons().matchesItem( is, option ) )
+						if( Platform.itemComparisons().isSameItem( is, option ) )
 						{
 							found = true;
 						}
@@ -182,13 +182,13 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 			boolean isValid = false;
 			for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 			{
-				if( Platform.itemComparisons().matchesItem( otherSlot, recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) )
+				if( Platform.itemComparisons().isSameItem( otherSlot, recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) )
 				{
-					isValid = Platform.itemComparisons().matchesItem( is, recipe.getBottomOptional().orElse( ItemStack.EMPTY ) );
+					isValid = Platform.itemComparisons().isSameItem( is, recipe.getBottomOptional().orElse( ItemStack.EMPTY ) );
 				}
-				else if( Platform.itemComparisons().matchesItem( otherSlot, recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) )
+				else if( Platform.itemComparisons().isSameItem( otherSlot, recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) )
 				{
-					isValid = Platform.itemComparisons().matchesItem( is, recipe.getTopOptional().orElse( ItemStack.EMPTY ) );
+					isValid = Platform.itemComparisons().isSameItem( is, recipe.getTopOptional().orElse( ItemStack.EMPTY ) );
 				}
 
 				if( isValid )
