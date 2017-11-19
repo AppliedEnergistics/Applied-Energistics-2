@@ -65,9 +65,12 @@ public class GrinderRecipes
 	}
 
 	@ZenMethod
-	public static void removeRecipe( IItemStack input )
+	public static void removeRecipe( IIngredient input )
 	{
-		CTModule.MODIFICATIONS.add( new Remove( (ItemStack) input.getInternal() ) );
+		for( ItemStack inStack : CTModule.toStacks( input ).orElse( Collections.emptySet() ) )
+		{
+			CTModule.MODIFICATIONS.add( new Remove( inStack ) );
+		}
 	}
 
 	private static class Add implements IAction
