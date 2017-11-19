@@ -19,13 +19,16 @@
 package appeng.integration.modules.crafttweaker;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 
 import net.minecraft.item.ItemStack;
 
 import crafttweaker.IAction;
+import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
-import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
@@ -40,32 +43,43 @@ import appeng.api.features.InscriberProcessType;
 public class InscriberRecipes
 {
 	@ZenMethod
-	public static void addRecipe( IItemStack output, IItemStack input, boolean inscribe, @Optional IItemStack top, @Optional IItemStack bottom )
+	public static void addRecipe( IItemStack output, IIngredient input, boolean inscribe, @stanhebben.zenscript.annotations.Optional IIngredient top, @stanhebben.zenscript.annotations.Optional IIngredient bottom )
 	{
-
-		IInscriberRecipeBuilder builder = AEApi.instance().registries().inscriber().builder();
-		builder.withProcessType( inscribe ? InscriberProcessType.INSCRIBE : InscriberProcessType.PRESS )
-				.withOutput( CTModule.toStack( output ) )
-				.withInputs( Collections.singleton( CTModule.toStack( input ) ) );
-
-		final ItemStack s1 = CTModule.toStack( top );
-		if( !s1.isEmpty() )
+		Optional<Collection<ItemStack>> inStacks = CTModule.toStacks( input );		
+		if ( !inStacks.isPresent() )
 		{
-			builder.withTopOptional( s1 );
+			return;
 		}
-		final ItemStack s2 = CTModule.toStack( bottom );
-		if( !s2.isEmpty() )
+		
+		Collection<ItemStack> topList = CTModule.toStacks( top ).orElse( Collections.singleton( ItemStack.EMPTY ) );				
+		Collection<ItemStack> bottomList = CTModule.toStacks( bottom ).orElse( Collections.singleton( ItemStack.EMPTY ) );				
+					
+		for(ItemStack topStack: topList)
 		{
-			builder.withBottomOptional( s2 );
-		}
+			for(ItemStack bottomStack: bottomList)
+			{
+				final IInscriberRecipeBuilder builder = AEApi.instance().registries().inscriber().builder();
+				builder.withProcessType( inscribe ? InscriberProcessType.INSCRIBE : InscriberProcessType.PRESS )
+						.withOutput( CTModule.toStack( output ) )
+						.withInputs( inStacks.get() );
 
-		CTModule.ADDITIONS.add( new Add( builder.build() ) );
+				if( !topStack.isEmpty() )
+				{
+					builder.withTopOptional( topStack );
+				}
+				if( !bottomStack.isEmpty() )
+				{
+					builder.withBottomOptional( bottomStack );
+				}
+				CTModule.MODIFICATIONS.add( new Add( builder.build() ) );				
+			}
+		}
 	}
 
 	@ZenMethod
 	public static void removeRecipe( IItemStack output )
 	{
-		CTModule.REMOVALS.add( new Remove( (ItemStack) output.getInternal() ) );
+		CTModule.MODIFICATIONS.add( new Remove( (ItemStack) output.getInternal() ) );
 	}
 
 	private static class Add implements IAction
@@ -103,10 +117,12 @@ public class InscriberRecipes
 		public void apply()
 		{
 			final IInscriberRegistry inscriber = AEApi.instance().registries().inscriber();
+			final ArrayList<IInscriberRecipe> toRemove = new ArrayList<>();
 			inscriber.getRecipes()
 					.stream()
 					.filter( r -> r.getOutput().isItemEqual( this.stack ) )
-					.forEach( inscriber::removeRecipe );
+					.forEach( toRemove::add );
+			toRemove.forEach( inscriber::removeRecipe );
 		}
 
 		@Override

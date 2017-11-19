@@ -20,12 +20,16 @@ package appeng.integration.modules.crafttweaker;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import crafttweaker.CraftTweakerAPI;
 import crafttweaker.IAction;
+import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
 
 import appeng.integration.abstraction.ICraftTweaker;
@@ -33,8 +37,7 @@ import appeng.integration.abstraction.ICraftTweaker;
 
 public class CTModule implements ICraftTweaker
 {
-	static final List<IAction> ADDITIONS = new ArrayList<>();
-	static final List<IAction> REMOVALS = new ArrayList<>();
+	static final List<IAction> MODIFICATIONS = new ArrayList<>();
 
 	@Override
 	public void preInit()
@@ -46,8 +49,7 @@ public class CTModule implements ICraftTweaker
 	@Override
 	public void postInit()
 	{
-		ADDITIONS.forEach( CraftTweakerAPI::apply );
-		REMOVALS.forEach( CraftTweakerAPI::apply );
+		MODIFICATIONS.forEach( CraftTweakerAPI::apply );
 	}
 
 	public static ItemStack toStack( IItemStack iStack )
@@ -61,4 +63,21 @@ public class CTModule implements ICraftTweaker
 			return (ItemStack) iStack.getInternal();
 		}
 	}
+	
+	
+	public static Optional<Collection<ItemStack>> toStacks( IIngredient ingredient )
+	{
+		if ( ingredient == null )
+		{
+			return Optional.empty();
+		}
+		ArrayList<ItemStack> ret = new ArrayList<>();			
+		ingredient.getItems().stream().map( i -> CTModule.toStack( i ) ).filter( i -> i != ItemStack.EMPTY ).forEach( ret::add );
+		if ( ret.isEmpty() )
+		{
+			return Optional.empty();
+		}		
+		return Optional.of( ret );
+	}
+	
 }

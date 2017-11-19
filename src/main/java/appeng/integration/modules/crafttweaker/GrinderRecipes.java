@@ -19,11 +19,14 @@
 package appeng.integration.modules.crafttweaker;
 
 
+import java.util.Collection;
+import java.util.Collections;
+
 import net.minecraft.item.ItemStack;
 
 import crafttweaker.IAction;
+import crafttweaker.api.item.IIngredient;
 import crafttweaker.api.item.IItemStack;
-import stanhebben.zenscript.annotations.Optional;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
@@ -36,32 +39,35 @@ import appeng.api.features.IGrinderRecipeBuilder;
 public class GrinderRecipes
 {
 	@ZenMethod
-	public static void addRecipe( IItemStack output, IItemStack input, int turns, @Optional IItemStack secondary1Output, @Optional Float secondary1Chance, @Optional IItemStack secondary2Output, @Optional Float secondary2Chance )
+	public static void addRecipe( IItemStack output, IIngredient input, int turns, @stanhebben.zenscript.annotations.Optional IItemStack secondary1Output, @stanhebben.zenscript.annotations.Optional Float secondary1Chance, @stanhebben.zenscript.annotations.Optional IItemStack secondary2Output, @stanhebben.zenscript.annotations.Optional Float secondary2Chance )
 	{
-
-		IGrinderRecipeBuilder builder = AEApi.instance().registries().grinder().builder();
-		builder.withInput( CTModule.toStack( input ) )
+		Collection<ItemStack> inStacks = CTModule.toStacks( input ).orElse( Collections.emptySet() );		
+		
+		for(ItemStack inStack: inStacks)
+		{		
+			IGrinderRecipeBuilder builder = AEApi.instance().registries().grinder().builder();
+			builder.withInput( inStack )
 				.withOutput( CTModule.toStack( output ) )
 				.withTurns( turns );
 
-		final ItemStack s1 = CTModule.toStack( secondary1Output );
-		if( !s1.isEmpty() )
-		{
-			builder.withFirstOptional( s1, secondary1Chance == null ? 1.0f : secondary1Chance );
+			final ItemStack s1 = CTModule.toStack( secondary1Output );
+			if( !s1.isEmpty() )
+			{
+				builder.withFirstOptional( s1, secondary1Chance == null ? 1.0f : secondary1Chance );
+			}
+			final ItemStack s2 = CTModule.toStack( secondary2Output );
+			if( !s2.isEmpty() )
+			{
+				builder.withFirstOptional( s2, secondary2Chance == null ? 1.0f : secondary2Chance );
+			}
+			CTModule.MODIFICATIONS.add( new Add( builder.build() ) );
 		}
-		final ItemStack s2 = CTModule.toStack( secondary2Output );
-		if( !s2.isEmpty() )
-		{
-			builder.withFirstOptional( s2, secondary2Chance == null ? 1.0f : secondary2Chance );
-		}
-
-		CTModule.ADDITIONS.add( new Add( builder.build() ) );
 	}
 
 	@ZenMethod
 	public static void removeRecipe( IItemStack input )
 	{
-		CTModule.REMOVALS.add( new Remove( (ItemStack) input.getInternal() ) );
+		CTModule.MODIFICATIONS.add( new Remove( (ItemStack) input.getInternal() ) );
 	}
 
 	private static class Add implements IAction
