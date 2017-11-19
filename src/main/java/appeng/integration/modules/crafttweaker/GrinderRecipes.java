@@ -41,14 +41,14 @@ public class GrinderRecipes
 	@ZenMethod
 	public static void addRecipe( IItemStack output, IIngredient input, int turns, @stanhebben.zenscript.annotations.Optional IItemStack secondary1Output, @stanhebben.zenscript.annotations.Optional Float secondary1Chance, @stanhebben.zenscript.annotations.Optional IItemStack secondary2Output, @stanhebben.zenscript.annotations.Optional Float secondary2Chance )
 	{
-		Collection<ItemStack> inStacks = CTModule.toStacks( input ).orElse( Collections.emptySet() );		
-		
-		for(ItemStack inStack: inStacks)
-		{		
+		Collection<ItemStack> inStacks = CTModule.toStacks( input ).orElse( Collections.emptySet() );
+
+		for( ItemStack inStack : inStacks )
+		{
 			IGrinderRecipeBuilder builder = AEApi.instance().registries().grinder().builder();
 			builder.withInput( inStack )
-				.withOutput( CTModule.toStack( output ) )
-				.withTurns( turns );
+					.withOutput( CTModule.toStack( output ) )
+					.withTurns( turns );
 
 			final ItemStack s1 = CTModule.toStack( secondary1Output );
 			if( !s1.isEmpty() )

@@ -45,18 +45,18 @@ public class InscriberRecipes
 	@ZenMethod
 	public static void addRecipe( IItemStack output, IIngredient input, boolean inscribe, @stanhebben.zenscript.annotations.Optional IIngredient top, @stanhebben.zenscript.annotations.Optional IIngredient bottom )
 	{
-		Optional<Collection<ItemStack>> inStacks = CTModule.toStacks( input );		
-		if ( !inStacks.isPresent() )
+		Optional<Collection<ItemStack>> inStacks = CTModule.toStacks( input );
+		if( !inStacks.isPresent() )
 		{
 			return;
 		}
-		
-		Collection<ItemStack> topList = CTModule.toStacks( top ).orElse( Collections.singleton( ItemStack.EMPTY ) );				
-		Collection<ItemStack> bottomList = CTModule.toStacks( bottom ).orElse( Collections.singleton( ItemStack.EMPTY ) );				
-					
-		for(ItemStack topStack: topList)
+
+		Collection<ItemStack> topList = CTModule.toStacks( top ).orElse( Collections.singleton( ItemStack.EMPTY ) );
+		Collection<ItemStack> bottomList = CTModule.toStacks( bottom ).orElse( Collections.singleton( ItemStack.EMPTY ) );
+
+		for( ItemStack topStack : topList )
 		{
-			for(ItemStack bottomStack: bottomList)
+			for( ItemStack bottomStack : bottomList )
 			{
 				final IInscriberRecipeBuilder builder = AEApi.instance().registries().inscriber().builder();
 				builder.withProcessType( inscribe ? InscriberProcessType.INSCRIBE : InscriberProcessType.PRESS )
@@ -71,7 +71,7 @@ public class InscriberRecipes
 				{
 					builder.withBottomOptional( bottomStack );
 				}
-				CTModule.MODIFICATIONS.add( new Add( builder.build() ) );				
+				CTModule.MODIFICATIONS.add( new Add( builder.build() ) );
 			}
 		}
 	}

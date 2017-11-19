@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import crafttweaker.CraftTweakerAPI;
