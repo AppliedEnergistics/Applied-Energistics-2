@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import net.minecraft.item.ItemStack;
 
@@ -69,8 +70,7 @@ public class CTModule implements ICraftTweaker
 		{
 			return Optional.empty();
 		}
-		ArrayList<ItemStack> ret = new ArrayList<>();
-		ingredient.getItems().stream().map( i -> CTModule.toStack( i ) ).filter( i -> !i.isEmpty() ).forEach( ret::add );
+		List<ItemStack> ret = ingredient.getItems().stream().map( CTModule::toStack ).filter( i -> !i.isEmpty() ).collect( Collectors.toList() );
 		if( ret.isEmpty() )
 		{
 			return Optional.empty();

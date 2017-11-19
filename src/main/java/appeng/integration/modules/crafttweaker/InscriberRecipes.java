@@ -19,10 +19,10 @@
 package appeng.integration.modules.crafttweaker;
 
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import net.minecraft.item.ItemStack;
 
@@ -117,12 +117,11 @@ public class InscriberRecipes
 		public void apply()
 		{
 			final IInscriberRegistry inscriber = AEApi.instance().registries().inscriber();
-			final ArrayList<IInscriberRecipe> toRemove = new ArrayList<>();
 			inscriber.getRecipes()
 					.stream()
 					.filter( r -> r.getOutput().isItemEqual( this.stack ) )
-					.forEach( toRemove::add );
-			toRemove.forEach( inscriber::removeRecipe );
+					.collect( Collectors.toList() )
+					.forEach( inscriber::removeRecipe );
 		}
 
 		@Override
