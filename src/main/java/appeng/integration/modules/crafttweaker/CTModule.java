@@ -51,6 +51,9 @@ public class CTModule implements ICraftTweaker
 	{
 		CraftTweakerAPI.registerClass( GrinderRecipes.class );
 		CraftTweakerAPI.registerClass( InscriberRecipes.class );
+		CraftTweakerAPI.registerClass( SpatialRegistry.class );
+		CraftTweakerAPI.registerClass( AttunementRegistry.class );
+		CraftTweakerAPI.registerClass( CannonRegistry.class );
 	}
 
 	@Override
