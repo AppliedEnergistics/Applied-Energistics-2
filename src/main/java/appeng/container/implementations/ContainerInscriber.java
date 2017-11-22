@@ -120,15 +120,13 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 
 		if( s == this.middle )
 		{
-			boolean matches = false;
-			boolean found = false;
-
 			IItemDefinition press = AEApi.instance().definitions().materials().namePress();
 			if( press.isSameAs( top ) || press.isSameAs( bot ) )
 			{
 				return !press.isSameAs( is );
 			}
 
+			boolean matches = false;
 			for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 			{
 				final boolean matchA = !top
@@ -147,21 +145,19 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 					{
 						if( Platform.itemComparisons().isSameItem( is, option ) )
 						{
-							found = true;
+							return true;
 						}
 					}
 				}
 			}
-
-			if( matches && !found )
+			if( matches )
 			{
 				return false;
 			}
 		}
-
-		if( ( s == this.top && !bot.isEmpty() ) || ( s == this.bottom && !top.isEmpty() ) )
+		else if( ( s == this.top && !bot.isEmpty() ) || ( s == this.bottom && !top.isEmpty() ) )
 		{
-			ItemStack otherSlot = ItemStack.EMPTY;
+			ItemStack otherSlot;
 			if( s == this.top )
 			{
 				otherSlot = this.bottom.getStack();
@@ -179,9 +175,9 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 			}
 
 			// everything else
-			boolean isValid = false;
 			for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 			{
+				boolean isValid = false;
 				if( Platform.itemComparisons().isSameItem( otherSlot, recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) )
 				{
 					isValid = Platform.itemComparisons().isSameItem( is, recipe.getBottomOptional().orElse( ItemStack.EMPTY ) );
@@ -193,14 +189,10 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 
 				if( isValid )
 				{
-					break;
+					return true;
 				}
 			}
-
-			if( !isValid )
-			{
-				return false;
-			}
+			return false;
 		}
 
 		return true;
