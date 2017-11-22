@@ -102,7 +102,7 @@ public class CTModule implements ICraftTweaker
 		{
 			return Optional.empty();
 		}
-		Set<ItemStack> ret = new TreeSet<ItemStack>( CTModule::compareItemStacks );
+		Set<ItemStack> ret = new TreeSet<>( CTModule::compareItemStacks );
 		ingredient.getItems().stream().map( CTModule::toStackExpand ).forEach( ret::addAll );
 		if( ret.isEmpty() )
 		{

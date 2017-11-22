@@ -31,6 +31,10 @@ import appeng.core.AELog;
 @ZenClass( "mods.appliedenergistics2.Spatial" )
 public class SpatialRegistry
 {
+	private SpatialRegistry()
+	{
+	}
+
 	@ZenMethod
 	public static void whitelistEntity( String entityClassName )
 	{

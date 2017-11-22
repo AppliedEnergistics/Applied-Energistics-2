@@ -42,6 +42,10 @@ import appeng.api.features.InscriberProcessType;
 @ZenClass( "mods.appliedenergistics2.Inscriber" )
 public class InscriberRecipes
 {
+	private InscriberRecipes()
+	{
+	}
+
 	@ZenMethod
 	public static void addRecipe( IItemStack output, IIngredient input, boolean inscribe, @stanhebben.zenscript.annotations.Optional IIngredient top, @stanhebben.zenscript.annotations.Optional IIngredient bottom )
 	{

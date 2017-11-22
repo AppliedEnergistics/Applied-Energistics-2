@@ -31,6 +31,10 @@ import appeng.api.features.IP2PTunnelRegistry;
 @ZenClass( "mods.appliedenergistics2.Attunement" )
 public class AttunementRegistry
 {
+	private AttunementRegistry()
+	{
+	}
+
 	@ZenMethod
 	public static void attuneME( IIngredient itemStack )
 	{
@@ -124,6 +128,5 @@ public class AttunementRegistry
 	private static void attune( String modid, TunnelType type )
 	{
 		AEApi.instance().registries().p2pTunnel().addNewAttunement( modid, type );
-		;
 	}
 }

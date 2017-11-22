@@ -30,6 +30,10 @@ import appeng.api.features.IMatterCannonAmmoRegistry;
 @ZenClass( "mods.appliedenergistics2.Cannon" )
 public class CannonRegistry
 {
+	private CannonRegistry()
+	{
+	}
+
 	@ZenMethod
 	public static void registerAmmo( IIngredient itemStack, double weight )
 	{

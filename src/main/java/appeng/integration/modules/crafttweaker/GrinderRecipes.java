@@ -38,6 +38,10 @@ import appeng.api.features.IGrinderRecipeBuilder;
 @ZenClass( "mods.appliedenergistics2.Grinder" )
 public class GrinderRecipes
 {
+	private GrinderRecipes()
+	{
+	}
+
 	@ZenMethod
 	public static void addRecipe( IItemStack output, IIngredient input, int turns, @stanhebben.zenscript.annotations.Optional IItemStack secondary1Output, @stanhebben.zenscript.annotations.Optional Float secondary1Chance, @stanhebben.zenscript.annotations.Optional IItemStack secondary2Output, @stanhebben.zenscript.annotations.Optional Float secondary2Chance )
 	{
