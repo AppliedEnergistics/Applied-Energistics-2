@@ -1,5 +1,5 @@
 {
-    "type": "appliedenergistics2:damaged",
+    "type": "appliedenergistics2:part_shapeless",
     "result": {
         "part": "part.cable_anchor",
         "count": 3
