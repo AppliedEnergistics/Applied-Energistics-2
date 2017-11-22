@@ -383,7 +383,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			{
 				for( final ItemStack option : recipe.getInputs() )
 				{
-					if( Platform.itemComparisons().isSameItem( this.sideItemHandler.getStackInSlot( 0 ), option ) )
+					if( Platform.itemComparisons().isSameItem( input, option ) )
 					{
 						return recipe;
 					}
