@@ -14,6 +14,7 @@
 * [Building](#building)
 * [Contribution](#contribution)
 * [API](#applied-energistics-2-api)
+* [CraftTweaker](#applied-energistics-2-crafttweaker)
 * [Localization](#applied-energistics-2-localization)
 * [Credits](#credits)
 
@@ -153,6 +154,57 @@ or add the compile line to your existing dependencies task to your build.gradle
 Where the __ are filled in with the correct version criteria; AE2 is available from the default forge maven so no additional repositories are necessary.
 
 An example string would be `appeng:appliedenergistics2:rv2-alpha-30:dev`
+
+## Applied Energistics 2 CraftTweaker
+
+### Inscriber
+Add a recipe. When `inscribe` is true the bottom and top inputs are not consumed.
+
+	mods.appliedenergistics2.Inscriber.addRecipe(ItemStack output, ItemStack input, boolean inscribe, 
+	                                             @Optional ItemStack topInput, @Optional ItemStack bottomInput );
+
+Remove all recipes for this output stack. 
+	                                             
+	mods.appliedenergistics2.Inscriber.removeRecipe(ItemStack output);	
+
+### Grindstone
+Add a recipe.
+
+	mods.appliedenergistics2.Grinder.addRecipe( ItemStack output, ItemStack input, int turns, 
+	                                            @Optional ItemStack secondary1Output, @Optional float secondary1Chance,
+	                                            @Optional ItemStack secondary2Output, @Optional float secondary2Chance);
+	
+Remove recipes for this input.
+
+	mods.appliedenergistics2.Grinder.removeRecipe(ItemStack input);	
+
+### Spatial
+Whitelist a TileEntity class for Spatial IO.
+
+	mods.appliedenergistics2.Spatial.whitelistEntity( String fullEntityClassName );
+
+### Attunement
+Attune a ItemStack or ModID to a specific P2P-Tunnel type. ModID's are used as fallback when no ItemStack was found.
+
+	mods.appliedenergistics2.Attunement.attuneME( ItemStack itemStack );
+	mods.appliedenergistics2.Attunement.attuneME( String modID );
+	mods.appliedenergistics2.Attunement.attuneItem( ItemStack itemStack );
+	mods.appliedenergistics2.Attunement.attuneItem( String modID );
+	mods.appliedenergistics2.Attunement.attuneFluid( ItemStack itemStack );
+	mods.appliedenergistics2.Attunement.attuneFluid( String modID );
+	mods.appliedenergistics2.Attunement.attuneRedstone( ItemStack itemStack );
+	mods.appliedenergistics2.Attunement.attuneRedstone( String modID );
+	mods.appliedenergistics2.Attunement.attuneRF( ItemStack itemStack );
+	mods.appliedenergistics2.Attunement.attuneRF( String modID );
+	mods.appliedenergistics2.Attunement.attuneIC2( ItemStack itemStack );
+	mods.appliedenergistics2.Attunement.attuneIC2( String modID );
+	mods.appliedenergistics2.Attunement.attuneLight( ItemStack itemStack );
+	mods.appliedenergistics2.Attunement.attuneLight( String modID );
+
+### Cannon
+Add ammo types for the matter cannon.
+
+	mods.appliedenergistics2.Cannon.registerAmmo( ItemStack itemStack, double weight );
 
 ## Applied Energistics 2 Localization
 
