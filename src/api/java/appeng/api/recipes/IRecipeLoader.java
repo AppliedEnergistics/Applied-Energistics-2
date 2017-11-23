@@ -28,7 +28,7 @@ import java.io.BufferedReader;
 
 import javax.annotation.Nonnull;
 
-
+@Deprecated
 public interface IRecipeLoader
 {
 	/**

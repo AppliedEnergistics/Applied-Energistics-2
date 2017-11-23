@@ -30,7 +30,7 @@ import appeng.api.exceptions.MissingIngredientException;
 import appeng.api.exceptions.RecipeException;
 import appeng.api.exceptions.RegistrationException;
 
-
+@Deprecated
 public interface ICraftHandler
 {
 

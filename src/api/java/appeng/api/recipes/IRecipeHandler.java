@@ -27,6 +27,7 @@ package appeng.api.recipes;
 /**
  * Represents the AE2 Recipe Loading/Reading Class
  */
+@Deprecated
 public interface IRecipeHandler
 {
 
