@@ -103,14 +103,13 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolHamm
 	@Override
 	public void toolUsed( ItemStack item, EntityLivingBase user, BlockPos pos )
 	{
-		user.swingArm( user.getActiveHand() );
 	}
 
 	@Override
 	public void toolUsed( ItemStack item, EntityLivingBase user, Entity entity )
 	{
-		user.swingArm( user.getActiveHand() );
 	}
+
 	// IToolHammer - end
 
 	// TODO: BC Wrench Integration
