@@ -118,7 +118,7 @@ public enum GuiText
 	RequiredPower,
 	Efficiency,
 	SCSSize,
-	SCSSInvalid,
+	SCSInvalid,
 	InWorldCrafting,
 
 	inWorldFluix,

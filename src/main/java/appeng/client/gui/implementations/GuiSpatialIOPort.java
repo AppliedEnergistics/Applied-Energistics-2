@@ -92,7 +92,7 @@ public class GuiSpatialIOPort extends AEBaseGui
 		}
 		else
 		{
-			this.fontRenderer.drawString( GuiText.SCSSize.getLocal() + ": " + GuiText.SCSSInvalid.getLocal(), 13, 93, 4210752 );
+			this.fontRenderer.drawString( GuiText.SCSSize.getLocal() + ": " + GuiText.SCSInvalid.getLocal(), 13, 93, 4210752 );
 		}
 
 	}
