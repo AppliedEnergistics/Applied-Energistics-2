@@ -281,9 +281,13 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	@Nullable
 	public IInscriberRecipe getTask()
 	{
-		final ItemStack plateA = this.topItemHandler.getStackInSlot( 0 );
-		final ItemStack plateB = this.bottomItemHandler.getStackInSlot( 0 );
-		ItemStack renamedItem = this.sideItemHandler.getStackInSlot( 0 );
+		return getTask( this.sideItemHandler.getStackInSlot( 0 ), this.topItemHandler.getStackInSlot( 0 ), this.bottomItemHandler.getStackInSlot( 0 ) );
+	}
+
+	@Nullable
+	private IInscriberRecipe getTask( final ItemStack input, final ItemStack plateA, final ItemStack plateB )
+	{
+		ItemStack renamedItem = input;
 
 		if( !plateA.isEmpty() && plateA.getCount() > 1 )
 		{
@@ -379,7 +383,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			{
 				for( final ItemStack option : recipe.getInputs() )
 				{
-					if( Platform.itemComparisons().isSameItem( option, this.sideItemHandler.getStackInSlot( 0 ) ) )
+					if( Platform.itemComparisons().isSameItem( input, option ) )
 					{
 						return recipe;
 					}
@@ -606,7 +610,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				}
 				for( final ItemStack optionals : AEApi.instance().registries().inscriber().getOptionals() )
 				{
-					if( Platform.itemComparisons().isSameItem( optionals, stack ) )
+					if( Platform.itemComparisons().isSameItem( stack, optionals ) )
 					{
 						return true;
 					}
