@@ -1,3 +1,9 @@
+##########################################################
+# DEPRECATED                                             #
+# Until vanilla/Forge JSON is capable of supporting most #
+# of our use cases use CraftTweaker for custom recipes   #
+##########################################################
+
 # Forge Ore Dictionary
 # logWood, slabWood, stairWood, treeSapling, treeLeaves,
 # oreGold, oreIron, oreLapis, oreDiamond, oreRedstone, oreEmerald, oreQuartz, oreCoal,
