@@ -211,6 +211,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	public ItemStack getOutput( final ItemStack item )
 	{
 		ItemStack out = SIMPLE_CACHE.get( item );
+
 		if( out != null )
 		{
 			return out;
@@ -224,12 +225,9 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 
 		final ICraftingPatternDetails details = this.getPatternForItem( item, w );
 
-		if( details == null )
-		{
-			return ItemStack.EMPTY;
-		}
+		out = details != null ? details.getOutputs()[0].createItemStack() : ItemStack.EMPTY;
 
-		SIMPLE_CACHE.put( item, out = details.getCondensedOutputs()[0].createItemStack() );
+		SIMPLE_CACHE.put( item, out );
 		return out;
 	}
 }
