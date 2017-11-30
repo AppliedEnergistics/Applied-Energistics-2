@@ -28,6 +28,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.capabilities.Capability;
 
 import appeng.api.config.TunnelType;
 
@@ -47,6 +48,7 @@ public interface IP2PTunnelRegistry
 	 */
 	void addNewAttunement( @Nonnull ItemStack trigger, @Nullable TunnelType type );
 	void addNewAttunement( @Nonnull String ModId, @Nullable TunnelType type );
+	void addNewAttunement( @Nonnull Capability<?> cap, @Nullable TunnelType type );
 
 	/**
 	 * returns null if no attunement can be found.
