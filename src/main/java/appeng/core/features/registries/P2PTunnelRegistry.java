@@ -21,6 +21,7 @@ package appeng.core.features.registries;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,6 +31,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.AEApi;
@@ -49,6 +52,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 
 	private final Map<ItemStack, TunnelType> tunnels = new HashMap<>( INITIAL_CAPACITY );
 	private final Map<String, TunnelType> modIdTunnels = new HashMap<>( INITIAL_CAPACITY );
+	private final Map<Capability<?>, TunnelType> capTunnels = new HashMap<>( INITIAL_CAPACITY );
 
 	public void configure()
 	{
@@ -160,6 +164,12 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		}
 
 		/**
+		 * attune based caps
+		 */
+		this.addNewAttunement( Capabilities.FORGE_ENERGY, TunnelType.FE_POWER );
+		this.addNewAttunement( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, TunnelType.FLUID );
+
+		/**
 		 * attune based on the ItemStack's modId
 		 */
 
@@ -187,6 +197,16 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 	}
 
 	@Override
+	public void addNewAttunement( @Nonnull final Capability<?> cap, @Nullable final TunnelType type )
+	{
+		if( type == null || cap == null )
+		{
+			return;
+		}
+		this.capTunnels.put( cap, type );
+	}
+
+	@Override
 	public void addNewAttunement( @Nonnull final ItemStack trigger, @Nullable final TunnelType type )
 	{
 		if( type == null || trigger.isEmpty() )
@@ -203,39 +223,40 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 	{
 		if( !trigger.isEmpty() )
 		{
-			// if( FluidRegistry.isContainer( trigger ) )
-			// {
-			// return TunnelType.FLUID;
-			// }
-
-			for( final ItemStack is : this.tunnels.keySet() )
+			// First match exact items
+			for( final Entry<ItemStack, TunnelType> entry : this.tunnels.entrySet() )
 			{
+				final ItemStack is = entry.getKey();
+
 				if( is.getItem() == trigger.getItem() && is.getItemDamage() == OreDictionary.WILDCARD_VALUE )
 				{
-					return this.tunnels.get( is );
+					return entry.getValue();
 				}
 
 				if( ItemStack.areItemsEqual( is, trigger ) )
 				{
-					return this.tunnels.get( is );
+					return entry.getValue();
 				}
 			}
 
-			// Try by ModId next
-			for( final String modId : this.modIdTunnels.keySet() )
-			{
-				if( trigger.getItem().getRegistryName() != null && trigger.getItem().getRegistryName().getResourceDomain().equals( modId ) )
-				{
-					return this.modIdTunnels.get( modId );
-				}
-			}
-
-			// Next, check if the Item you're holding supports Forge Energy
+			// Next, check if the Item you're holding supports any registered capability
 			for( EnumFacing face : EnumFacing.VALUES )
 			{
-				if( trigger.hasCapability( Capabilities.FORGE_ENERGY, face ) )
+				for( Entry<Capability<?>, TunnelType> entry : this.capTunnels.entrySet() )
 				{
-					return TunnelType.FE_POWER;
+					if( trigger.hasCapability( entry.getKey(), face ) )
+					{
+						return entry.getValue();
+					}
+				}
+			}
+
+			// Use the mod id as last option.
+			for( final Entry<String, TunnelType> entry : this.modIdTunnels.entrySet() )
+			{
+				if( trigger.getItem().getRegistryName() != null && trigger.getItem().getRegistryName().getResourceDomain().equals( entry.getKey() ) )
+				{
+					return entry.getValue();
 				}
 			}
 		}
