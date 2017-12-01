@@ -164,7 +164,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 					}
 					else
 					{
-						newDef.setItemDamage( 0 );
+						newDef.setItemDamage( 1 );
 					}
 				}
 				else
