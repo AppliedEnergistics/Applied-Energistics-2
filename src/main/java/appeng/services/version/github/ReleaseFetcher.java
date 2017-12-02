@@ -39,7 +39,7 @@ import java.util.List;
 
 public final class ReleaseFetcher
 {
-	private static final String GITHUB_RELEASES_URL = "https://api.github.com/repos/AppliedEnergistics/Applied-Energistics-2/releases";
+	private static final String GITHUB_RELEASES_URL = "https://api.github.com/repos/xsun2001/Applied-Energistics-2-Unofficial/releases";
 	private static final FormattedRelease EXCEPTIONAL_RELEASE = new MissingFormattedRelease();
 
 	@Nonnull

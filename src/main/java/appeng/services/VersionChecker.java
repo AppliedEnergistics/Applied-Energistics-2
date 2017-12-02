@@ -176,7 +176,7 @@ public final class VersionChecker implements Runnable
 			versionInf.setString( "modDisplayName", AppEng.MOD_NAME );
 			versionInf.setString( "oldVersion", modFormatted );
 			versionInf.setString( "newVersion", ghFormatted );
-			versionInf.setString( "updateUrl", "http://ae-mod.info/builds/appliedenergistics2-" + ghFormatted + ".jar" );
+			versionInf.setString( "updateUrl", "https://github.com/xsun2001/Applied-Energistics-2-Unofficial/releases/download/rv3.beta.13/appliedenergistics2" + ghFormatted + ".jar" );
 			versionInf.setBoolean( "isDirectLink", true );
 
 			if( !changelog.isEmpty() )
