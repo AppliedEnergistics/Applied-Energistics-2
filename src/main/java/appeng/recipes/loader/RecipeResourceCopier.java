@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -58,7 +57,6 @@ public class RecipeResourceCopier
 	private static final String FILE_PROTOCOL = "file";
 	private static final String CLASS_EXTENSION = ".class";
 	private static final String JAR_PROTOCOL = "jar";
-	private static final String UTF_8_ENCODING = "UTF-8";
 
 	/**
 	 * copy source in the jar
@@ -225,9 +223,9 @@ public class RecipeResourceCopier
 			{
 				/* A JAR path */
 				final String dirPath = dirURL.getPath();
-				final String jarPath = dirPath.substring( 5, dirPath.indexOf( '!' ) ); // strip out only
+				final String jarPath = dirPath.substring( 0, dirPath.indexOf( '!' ) ); // strip out only
 				// the JAR file
-				final JarFile jar = new JarFile( URLDecoder.decode( jarPath, UTF_8_ENCODING ) );
+				final JarFile jar = new JarFile( new File( new URI( jarPath ) ) );
 				try
 				{
 					final Enumeration<JarEntry> entries = jar.entries(); // gives ALL entries in jar
