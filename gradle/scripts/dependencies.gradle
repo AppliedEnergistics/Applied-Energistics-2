@@ -115,14 +115,13 @@ dependencies {
     compileOnly "codechicken:CodeChickenCore:${minecraft_version}-${code_chicken_core_version}:dev"
     compileOnly "codechicken:NotEnoughItems:${minecraft_version}-${nei_version}:dev"
 
-    compile "com.mod-buildcraft:buildcraft:${bc_version}:dev"
-    compile "pneumaticCraft:PneumaticCraft-${minecraft_version}:${pneumaticcraft_version}:api"
+    compile files("lib/buildcraft-${bc_version}-dev.jar")
+    compile files("lib/PneumaticCraft-${minecraft_version}-${pneumaticcraft_version}-api.jar")
 
     // provided APIs
-    compile "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:api"
-    compile "net.industrial-craft:industrialcraft-2:${ic2_version}-experimental:api"
-//    compile "net.mcft.copy.betterstorage:BetterStorage:${minecraft_version}-${betterstorage_version}:api"
-    compile files('lib/BetterStorage-1.7.10-0.11.3.123.20-api.jar')
+    compile files("lib/OpenComputers-MC${minecraft_version}-${opencomputers_version}-api.jar")
+    compile files("lib/industrialcraft-2-${ic2_version}-experimental-api.jar")
+    compile files("lib/BetterStorage-${minecraft_version}-${betterstorage_version}-api.jar")
 
     // self compiled APIs
     compile "appeng:Waila:${waila_version}_${minecraft_version}:api"
