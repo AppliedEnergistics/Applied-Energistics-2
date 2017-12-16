@@ -56,8 +56,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
@@ -79,6 +81,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	private static final int MAX_CACHE_TIME = 60;
 
 	private final BaseActionSource mySrc = new MachineSource( this );
+	private EntityPlayer owner = null;
 	private boolean isAccepting = true;
 	private boolean breaking = false;
 	private YesNo permissionCache = YesNo.UNDECIDED;
@@ -87,6 +90,13 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	public PartAnnihilationPlane( final ItemStack is )
 	{
 		super( is );
+	}
+
+	@Override
+	public void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
+	{
+		super.onPlacement( player, held, side );
+		this.owner = player;
 	}
 
 	@Override
@@ -500,13 +510,14 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		final float hardness = block.getBlockHardness( w, x, y, z );
 		final boolean ignoreMaterials = material == Material.air || material == Material.lava || material == Material.water || material.isLiquid();
 		final boolean ignoreBlocks = block == Blocks.bedrock || block == Blocks.end_portal || block == Blocks.end_portal_frame || block == Blocks.command_block;
+		final EntityPlayer player = owner == null ? Platform.getPlayer( w ) : owner;
 		if( permissionCache == YesNo.UNDECIDED )
 		{
-			BlockEvent.BreakEvent event = new BlockEvent.BreakEvent( x, y, z, w, block, w.getBlockMetadata( x, y, z ), Platform.getPlayer( w ) );
+			BlockEvent.BreakEvent event = new BlockEvent.BreakEvent( x, y, z, w, block, w.getBlockMetadata( x, y, z ), player );
 			MinecraftForge.EVENT_BUS.post( event );
 			permissionCache = ( event.isCanceled() ) ? YesNo.NO : YesNo.YES;
 		}
-		return permissionCache == YesNo.YES && !ignoreMaterials && !ignoreBlocks && !w.isAirBlock( x, y, z ) && w.blockExists( x, y, z ) && w.canMineBlock( Platform.getPlayer( w ), x, y, z ) && hardness >= 0f;
+		return permissionCache == YesNo.YES && !ignoreMaterials && !ignoreBlocks && !w.isAirBlock( x, y, z ) && w.blockExists( x, y, z ) && w.canMineBlock( player , x, y, z ) && hardness >= 0f;
 	}
 
 	protected List<ItemStack> obtainBlockDrops( final WorldServer w, final int x, final int y, final int z )

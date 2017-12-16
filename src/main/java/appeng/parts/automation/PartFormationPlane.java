@@ -74,10 +74,10 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 {
 	private final MEInventoryHandler myHandler = new MEInventoryHandler( this, StorageChannel.ITEMS );
 	private final AppEngInternalAEInventory Config = new AppEngInternalAEInventory( this, 63 );
+	private EntityPlayer owner = null;
 	private int priority = 0;
 	private boolean wasActive = false;
 	private boolean blocked = false;
-
 	public PartFormationPlane( final ItemStack is )
 	{
 		super( is );
@@ -85,6 +85,13 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		this.getConfigManager().registerSetting( Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 		this.getConfigManager().registerSetting( Settings.PLACE_BLOCK, YesNo.YES );
 		this.updateHandler();
+	}
+
+	@Override
+	public void onPlacement( EntityPlayer player, ItemStack held, ForgeDirection side )
+	{
+		super.onPlacement( player, held, side );
+		this.owner = player;
 	}
 
 	private void updateHandler()
@@ -472,7 +479,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 					{
 						player.setCurrentItemOrArmor( 0, is.copy() );
 						BlockSnapshot blockSnapshot = new BlockSnapshot( w, x, y, z, ( (ItemBlock) i ).field_150939_a, i.getMetadata( is.getItemDamage() ) );
-						BlockEvent.PlaceEvent event = new BlockEvent.PlaceEvent( blockSnapshot, w.getBlock( x, y, z ), player );
+						BlockEvent.PlaceEvent event = new BlockEvent.PlaceEvent( blockSnapshot, w.getBlock( x, y, z ), owner == null ? player : owner );
 						MinecraftForge.EVENT_BUS.post( event );
 						if( !event.isCanceled() )
 						{
