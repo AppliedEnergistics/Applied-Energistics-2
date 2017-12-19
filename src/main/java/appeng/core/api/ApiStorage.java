@@ -161,6 +161,12 @@ public class ApiStorage implements IStorageHelper
 	{
 
 		@Override
+		public int transferFactor()
+		{
+			return 1000;
+		}
+
+		@Override
 		public IItemList<IAEFluidStack> createList()
 		{
 			return new FluidList();
@@ -195,7 +201,7 @@ public class ApiStorage implements IStorageHelper
 			Preconditions.checkNotNull( request );
 			Preconditions.checkNotNull( src );
 
-			return null;
+			return Platform.poweredExtraction( energy, cell, request, src );
 		}
 
 		@Override
@@ -206,7 +212,7 @@ public class ApiStorage implements IStorageHelper
 			Preconditions.checkNotNull( input );
 			Preconditions.checkNotNull( src );
 
-			return input;
+			return Platform.poweredInsert( energy, cell, input, src );
 		}
 	}
 
