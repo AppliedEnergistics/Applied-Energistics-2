@@ -300,6 +300,8 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 				final ItemStack is = this.inputCells.getStackInSlot( x );
 				if( !is.isEmpty() )
 				{
+					boolean shouldMove = true;
+
 					for( IStorageChannel<? extends IAEStack<?>> c : AEApi.instance().storage().storageChannels() )
 					{
 						if( itemsToMove > 0 )
@@ -321,7 +323,9 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 								itemsToMove = this.transferContents( energy, network, inv, itemsToMove, c );
 							}
 
-							if( itemsToMove > 0 && this.shouldMove( inv ) && !this.moveSlot( x ) )
+							shouldMove &= this.shouldMove( inv );
+
+							if( itemsToMove > 0 )
 							{
 								ret = TickRateModulation.IDLE;
 							}
@@ -330,6 +334,15 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 								ret = TickRateModulation.URGENT;
 							}
 						}
+					}
+
+					if( itemsToMove > 0 && shouldMove && this.moveSlot( x ) )
+					{
+						ret = TickRateModulation.URGENT;
+					}
+					else
+					{
+						ret = TickRateModulation.URGENT;
 					}
 
 				}
