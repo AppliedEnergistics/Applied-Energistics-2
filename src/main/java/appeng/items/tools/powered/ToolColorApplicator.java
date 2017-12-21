@@ -277,7 +277,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				final IAEItemStack firstItem = itemList.getFirstItem();
 				if( firstItem != null )
 				{
-					newColor = firstItem.createItemStack();
+					newColor = firstItem.asItemStackRepresentation();
 				}
 			}
 			else
@@ -324,7 +324,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 					list.addFirst( list.removeLast() );
 				}
 
-				return list.get( 0 ).createItemStack();
+				return list.get( 0 ).asItemStackRepresentation();
 			}
 		}
 
