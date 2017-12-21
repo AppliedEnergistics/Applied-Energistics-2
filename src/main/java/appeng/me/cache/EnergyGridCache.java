@@ -336,10 +336,7 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public double injectProviderPower( double amt, final Actionable mode )
 	{
-		if( mode == Actionable.MODULATE )
-		{
-			this.tickInjectionPerTick += amt;
-		}
+		final double originalAmount = amt;
 
 		final Iterator<IAEPowerStorage> it = this.requesters.iterator();
 
@@ -354,7 +351,14 @@ public class EnergyGridCache implements IEnergyGrid
 			}
 		}
 
-		return Math.max( 0.0, amt );
+		final double overflow = Math.max( 0.0, amt );
+
+		if( mode == Actionable.MODULATE )
+		{
+			this.tickInjectionPerTick += originalAmount - overflow;
+		}
+
+		return overflow;
 	}
 
 	@Override

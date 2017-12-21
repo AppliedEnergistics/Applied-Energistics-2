@@ -106,10 +106,12 @@ import appeng.core.features.BlockDefinition;
 import appeng.core.features.registries.PartModels;
 import appeng.debug.BlockChunkloader;
 import appeng.debug.BlockCubeGenerator;
+import appeng.debug.BlockEnergyGenerator;
 import appeng.debug.BlockItemGen;
 import appeng.debug.BlockPhantomNode;
 import appeng.debug.TileChunkLoader;
 import appeng.debug.TileCubeGenerator;
+import appeng.debug.TileEnergyGenerator;
 import appeng.debug.TileItemGen;
 import appeng.debug.TilePhantomNode;
 import appeng.decorative.slab.BlockSlabCommon;
@@ -236,6 +238,7 @@ public final class ApiBlocks implements IBlocks
 	private final IBlockDefinition chunkLoader;
 	private final IBlockDefinition phantomNode;
 	private final IBlockDefinition cubeGenerator;
+	private final IBlockDefinition energyGenerator;
 
 	public ApiBlocks( FeatureFactory registry, PartModels partModels )
 	{
@@ -524,6 +527,11 @@ public final class ApiBlocks implements IBlocks
 		this.cubeGenerator = registry.block( "debug_cube_gen", BlockCubeGenerator::new )
 				.features( AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE )
 				.tileEntity( new TileEntityDefinition( TileCubeGenerator.class ) )
+				.useCustomItemModel()
+				.build();
+		this.energyGenerator = registry.block( "debug_energy_gen", BlockEnergyGenerator::new )
+				.features( AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE )
+				.tileEntity( new TileEntityDefinition( TileEnergyGenerator.class ) )
 				.useCustomItemModel()
 				.build();
 	}
@@ -1013,5 +1021,10 @@ public final class ApiBlocks implements IBlocks
 	public IBlockDefinition cubeGenerator()
 	{
 		return this.cubeGenerator;
+	}
+
+	public IBlockDefinition energyGenerator()
+	{
+		return energyGenerator;
 	}
 }
