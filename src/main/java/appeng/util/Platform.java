@@ -1174,13 +1174,13 @@ public class Platform
 			stored -= possible.getStackSize();
 		}
 
-		final double availablePower = energy.extractAEPower( stored, Actionable.SIMULATE, PowerMultiplier.CONFIG );
-
+		final int energyFactor = Math.min( 1, input.getChannel().transferFactor() );
+		final double availablePower = energy.extractAEPower( stored / energyFactor, Actionable.SIMULATE, PowerMultiplier.CONFIG );
 		final long itemToAdd = Math.min( (long) ( availablePower + 0.9 ), stored );
 
 		if( itemToAdd > 0 )
 		{
-			energy.extractAEPower( stored, Actionable.MODULATE, PowerMultiplier.CONFIG );
+			energy.extractAEPower( stored / energyFactor, Actionable.MODULATE, PowerMultiplier.CONFIG );
 
 			if( itemToAdd < input.getStackSize() )
 			{

@@ -44,6 +44,19 @@ public interface IStorageChannel<T extends IAEStack<T>>
 {
 
 	/**
+	 * Can be used as factor for transferring stacks of a channel.
+	 * 
+	 * E.g. used by IO Ports to transfer 1000 mB, not 1 mB to match the
+	 * item channel transferring a full bucket per operation.
+	 * 
+	 * @return
+	 */
+	default int transferFactor()
+	{
+		return 1;
+	}
+
+	/**
 	 * Create a new {@link IItemList} of the specific type.
 	 * 
 	 * @return
