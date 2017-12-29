@@ -192,7 +192,11 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 			}
 			else
 			{
-				b.onBlockActivated( w, x, y, z, p, side, hitX, hitY, hitZ );
+				if( b != null )
+					if( !ForgeEventFactory.onPlayerInteract( p,
+							b.isAir( w, x, y, z ) ? PlayerInteractEvent.Action.RIGHT_CLICK_AIR : PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK,
+							x, y, z, side, w ).isCanceled() )
+						b.onBlockActivated( w, x, y, z, p, side, hitX, hitY, hitZ );
 			}
 		}
 		else
