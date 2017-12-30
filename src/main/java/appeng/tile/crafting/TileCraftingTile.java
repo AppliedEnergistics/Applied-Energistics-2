@@ -143,7 +143,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 
 	public void updateMeta( final boolean updateFormed )
 	{
-		if( this.world == null || this.notLoaded() )
+		if( this.world == null || this.notLoaded() || this.isInvalid() )
 		{
 			return;
 		}

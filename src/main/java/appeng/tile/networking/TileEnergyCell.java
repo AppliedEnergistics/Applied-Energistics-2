@@ -84,7 +84,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 
 	private void changePowerLevel()
 	{
-		if( this.notLoaded() )
+		if( this.notLoaded() || this.isInvalid() )
 		{
 			return;
 		}
