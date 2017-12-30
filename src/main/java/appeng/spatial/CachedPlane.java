@@ -418,7 +418,7 @@ public class CachedPlane
 				ExtendedBlockStorage extendedblockstorage = storage[by];
 				if( extendedblockstorage == null )
 				{
-					extendedblockstorage = storage[by] = new ExtendedBlockStorage( by << 4, !this.c.getWorld().provider.hasSkyLight() );
+					extendedblockstorage = storage[by] = new ExtendedBlockStorage( by << 4, this.c.getWorld().provider.hasSkyLight() );
 				}
 			}
 		}
