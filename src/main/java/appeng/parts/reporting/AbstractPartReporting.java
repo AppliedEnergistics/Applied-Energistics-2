@@ -172,6 +172,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 		}
 
 		data.writeByte( (byte) this.getClientFlags() );
+		data.writeFloat( this.opacity );
 	}
 
 	@Override
@@ -179,9 +180,13 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	{
 		super.readFromStream( data );
 		final int oldFlags = this.getClientFlags();
+		final float oldOpacity = this.opacity;
+
 		this.clientFlags = data.readByte();
+		this.opacity = data.readFloat();
+
 		this.spin = (byte) ( this.getClientFlags() & 3 );
-		if( this.getClientFlags() == oldFlags )
+		if( this.getClientFlags() == oldFlags && this.opacity == oldOpacity )
 		{
 			return false;
 		}
