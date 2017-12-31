@@ -55,7 +55,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	}
 
 	private int lastValue = 0;
-	private float opacity = -1;
+	private int opacity = -1;
 
 	public PartP2PLight( final ItemStack is )
 	{
@@ -81,7 +81,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	{
 		super.writeToStream( data );
 		data.writeInt( this.isOutput() ? this.lastValue : 0 );
-		data.writeFloat( this.opacity );
+		data.writeInt( this.opacity );
 	}
 
 	@Override
@@ -89,10 +89,10 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	{
 		super.readFromStream( data );
 		final int oldValue = this.lastValue;
-		final float oldOpacity = this.opacity;
+		final int oldOpacity = this.opacity;
 
 		this.lastValue = data.readInt();
-		this.opacity = data.readFloat();
+		this.opacity = data.readInt();
 
 		this.setOutput( this.lastValue > 0 );
 		return lastValue != oldValue || oldOpacity != this.opacity;
@@ -175,10 +175,6 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	public void readFromNBT( final NBTTagCompound tag )
 	{
 		super.readFromNBT( tag );
-		if( tag.hasKey( "opacity" ) )
-		{
-			this.opacity = tag.getFloat( "opacity" );
-		}
 		this.lastValue = tag.getInteger( "lastValue" );
 	}
 
@@ -186,7 +182,6 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	public void writeToNBT( final NBTTagCompound tag )
 	{
 		super.writeToNBT( tag );
-		tag.setFloat( "opacity", this.opacity );
 		tag.setInteger( "lastValue", this.lastValue );
 	}
 
