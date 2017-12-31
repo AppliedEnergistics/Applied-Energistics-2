@@ -74,7 +74,7 @@ public class TileCraftingStorageTile extends TileCraftingTile
 	@Override
 	public int getStorageBytes()
 	{
-		if( this.world == null || this.notLoaded() )
+		if( this.world == null || this.notLoaded() || this.isInvalid() )
 		{
 			return 0;
 		}
