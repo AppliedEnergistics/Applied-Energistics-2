@@ -54,6 +54,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
+import net.minecraftforge.event.world.BlockEvent;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -101,6 +102,10 @@ public class PartPlacement
 					{
 						final List<ItemStack> is = new LinkedList<ItemStack>();
 						final SelectedPart sp = selectPart( player, host, mop.hitVec.addVector( -mop.blockX, -mop.blockY, -mop.blockZ ) );
+
+						BlockEvent.BreakEvent event = new BlockEvent.BreakEvent( x, y, z, world, block, world.getBlockMetadata( x, y, z ), player );
+						MinecraftForge.EVENT_BUS.post(event);
+						if(event.isCanceled()) return true;
 
 						if( sp.part != null )
 						{
@@ -423,6 +428,16 @@ public class PartPlacement
 		return null;
 	}
 
+	private static float getEyeHeight()
+	{
+		return eyeHeight;
+	}
+
+	public static void setEyeHeight( final float eyeHeight )
+	{
+		PartPlacement.eyeHeight = eyeHeight;
+	}
+
 	@SubscribeEvent
 	public void playerInteract( final TickEvent.ClientTickEvent event )
 	{
@@ -483,16 +498,6 @@ public class PartPlacement
 
 			this.placing.set( null );
 		}
-	}
-
-	private static float getEyeHeight()
-	{
-		return eyeHeight;
-	}
-
-	public static void setEyeHeight( final float eyeHeight )
-	{
-		PartPlacement.eyeHeight = eyeHeight;
 	}
 
 	public enum PlaceType
