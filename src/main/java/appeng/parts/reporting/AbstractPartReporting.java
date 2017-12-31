@@ -117,8 +117,11 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	@Override
 	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
 	{
-		this.opacity = -1;
-		this.getHost().markForUpdate();
+		if( pos.offset( this.getSide().getFacing() ).equals( neighbor ) )
+		{
+			this.opacity = -1;
+			this.getHost().markForUpdate();
+		}
 	}
 
 	@Override
