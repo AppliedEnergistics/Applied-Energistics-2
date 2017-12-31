@@ -43,7 +43,11 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.*;
@@ -120,10 +124,11 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		}
 	}
 
-	private void heat( final Block blockID, final int metadata, final World w, final int x, final int y, final int z )
+	private boolean heat( final Block blockID,final EntityPlayer p,final int metadata, final World w, final int x, final int y, final int z )
 	{
 		InWorldToolOperationResult r = this.heatUp.get( new InWorldToolOperationIngredient( blockID, metadata ) );
 
+		if(!breakBlockWithCheck( w,p,x,y,z ))return false;
 		if( r == null )
 		{
 			r = this.heatUp.get( new InWorldToolOperationIngredient( blockID, OreDictionary.WILDCARD_VALUE ) );
@@ -133,15 +138,14 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		{
 			w.setBlock( x, y, z, Block.getBlockFromItem( r.getBlockItem().getItem() ), r.getBlockItem().getItemDamage(), 3 );
 		}
-		else
-		{
-			w.setBlock( x, y, z, Platform.AIR_BLOCK, 0, 3 );
-		}
+
 
 		if( r.getDrops() != null )
 		{
 			Platform.spawnDrops( w, x, y, z, r.getDrops() );
 		}
+
+		return true;
 	}
 
 	private boolean canHeat( final Block blockID, final int metadata )
@@ -156,7 +160,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		return r != null;
 	}
 
-	private void cool( final Block blockID, final int metadata, final World w, final int x, final int y, final int z )
+	private boolean cool( final Block blockID,final EntityPlayer p, final int metadata, final World w, final int x, final int y, final int z )
 	{
 		InWorldToolOperationResult r = this.coolDown.get( new InWorldToolOperationIngredient( blockID, metadata ) );
 
@@ -165,19 +169,18 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			r = this.coolDown.get( new InWorldToolOperationIngredient( blockID, OreDictionary.WILDCARD_VALUE ) );
 		}
 
+		if(!breakBlockWithCheck( w,p,x,y,z ))return false;
 		if( r.getBlockItem() != null )
 		{
 			w.setBlock( x, y, z, Block.getBlockFromItem( r.getBlockItem().getItem() ), r.getBlockItem().getItemDamage(), 3 );
-		}
-		else
-		{
-			w.setBlock( x, y, z, Platform.AIR_BLOCK, 0, 3 );
 		}
 
 		if( r.getDrops() != null )
 		{
 			Platform.spawnDrops( w, x, y, z, r.getDrops() );
 		}
+
+		return true;
 	}
 
 	private boolean canCool( final Block blockID, final int metadata )
@@ -247,36 +250,46 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			final Block blockID = w.getBlock( x, y, z );
 			final int metadata = w.getBlockMetadata( x, y, z );
 
+			if( blockID == null || ForgeEventFactory.onPlayerInteract( p,
+					blockID.isAir( w, x, y, z ) ? PlayerInteractEvent.Action.RIGHT_CLICK_AIR : PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK,
+					x, y, z, side, w ).isCanceled() ) return false;
+
 			if( p.isSneaking() )
 			{
 				if( this.canCool( blockID, metadata ) )
 				{
-					this.extractAEPower( item, 1600 );
-					this.cool( blockID, metadata, w, x, y, z );
-					return true;
+					if(this.cool( blockID, p, metadata, w, x, y, z ))
+					{
+						this.extractAEPower( item, 1600 );
+						return true;
+					}
+					return false;
 				}
 			}
 			else
 			{
 				if( blockID instanceof BlockTNT )
 				{
-					w.setBlock( x, y, z, Platform.AIR_BLOCK, 0, 3 );
+					if(!breakBlockWithCheck( w,p,x,y,z )) return false;
 					( (BlockTNT) blockID ).func_150114_a( w, x, y, z, 1, p );
 					return true;
 				}
 
 				if( blockID instanceof BlockTinyTNT )
 				{
-					w.setBlock( x, y, z, Platform.AIR_BLOCK, 0, 3 );
+					if(!breakBlockWithCheck( w,p,x,y,z )) return false;
 					( (BlockTinyTNT) blockID ).startFuse( w, x, y, z, p );
 					return true;
 				}
 
 				if( this.canHeat( blockID, metadata ) )
 				{
-					this.extractAEPower( item, 1600 );
-					this.heat( blockID, metadata, w, x, y, z );
-					return true;
+					if(this.heat( blockID, p, metadata, w, x, y, z ))
+					{
+						this.extractAEPower( item, 1600 );
+						return true;
+					}
+					return false;
 				}
 
 				final ItemStack[] stack = Platform.getBlockDrops( w, x, y, z );
@@ -313,11 +326,8 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 					final InWorldToolOperationResult or = InWorldToolOperationResult.getBlockOperationResult( out.toArray( new ItemStack[out.size()] ) );
 					w.playSoundEffect( x + 0.5D, y + 0.5D, z + 0.5D, "fire.ignite", 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
 
-					if( or.getBlockItem() == null )
-					{
-						w.setBlock( x, y, z, Platform.AIR_BLOCK, 0, 3 );
-					}
-					else
+					if(!breakBlockWithCheck( w,p,x,y,z )) return false;
+					if( or.getBlockItem() != null )
 					{
 						w.setBlock( x, y, z, Block.getBlockFromItem( or.getBlockItem().getItem() ), or.getBlockItem().getItemDamage(), 3 );
 					}
@@ -355,4 +365,12 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 		return false;
 	}
+
+	private static final boolean breakBlockWithCheck(final World w,final EntityPlayer p,final int x,final int y,final int z)
+	{
+		BlockEvent.BreakEvent event = new BlockEvent.BreakEvent( x, y, z, w, w.getBlock( x, y, z ), w.getBlockMetadata( x, y, z ), p );
+		MinecraftForge.EVENT_BUS.post( event );
+		return !event.isCanceled() && w.setBlockToAir( x, y, z );
+	}
+
 }
