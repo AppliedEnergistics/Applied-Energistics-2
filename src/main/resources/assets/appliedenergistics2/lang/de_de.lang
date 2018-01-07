@@ -28,7 +28,7 @@ tile.appliedenergistics2.quartz_fixture.name=Geladene Quarzleuchte
 tile.appliedenergistics2.light_detector.name=Quarzlichtsensor
 tile.appliedenergistics2.spatial_io_port.name=IO-Raumport
 tile.appliedenergistics2.spatial_pylon.name=Raumpylon
-tile.appliedenergistics2.tiny_tnt.name=Mini-TNT
+tile.appliedenergistics2.tiny_tnt.name=Winziges TNT
 tile.appliedenergistics2.vibration_chamber.name=Vibrationskammer
 tile.appliedenergistics2.wireless_access_point.name=Drahtloser ME-Zugangspunkt
 tile.appliedenergistics2.quartz_ore.name=Certusquarzerz
@@ -49,23 +49,23 @@ tile.appliedenergistics2.crafting_storage_16k.name=16k-Fertigungsspeicher
 tile.appliedenergistics2.crafting_storage_64k.name=64k-Fertigungsspeicher
 tile.appliedenergistics2.crafting_accelerator.name=Fertigungs-Prozessoreinheit
 tile.appliedenergistics2.crafting_unit.name=Fertigungseinheit
-tile.appliedenergistics2.molecular_assembler.name=Molekularassembler
+tile.appliedenergistics2.molecular_assembler.name=Molekularmonteur
 
 // Stairs
-tile.appliedenergistics2.ChiseledQuartzStairBlock.name=Gemeißelte Certusquartztreppe
+tile.appliedenergistics2.ChiseledQuartzStairBlock.name=Gemeißelte Certusquarztreppe
 tile.appliedenergistics2.FluixStairBlock.name=Fluixtreppe
-tile.appliedenergistics2.QuartzPillarStairBlock.name=Certusquartzsäulentreppe
-tile.appliedenergistics2.QuartzStairBlock.name=Certusquartztreppe
+tile.appliedenergistics2.QuartzPillarStairBlock.name=Certusquarzsäulentreppe
+tile.appliedenergistics2.QuartzStairBlock.name=Certusquarztreppe
 tile.appliedenergistics2.SkyStoneBlockStairBlock.name=Himmelssteinblocktreppe
 tile.appliedenergistics2.SkyStoneBrickStairBlock.name=Himmelssteinziegeltreppe
 tile.appliedenergistics2.SkyStoneSmallBrickStairBlock.name=Himmelssteinkleinziegeltreppe
 tile.appliedenergistics2.SkyStoneStairBlock.name=Himmelssteintreppe
 
 // Slabs
-tile.appliedenergistics2.chiseled_quartz_slab.name=Gemeißelte Certusquartzstufe
+tile.appliedenergistics2.chiseled_quartz_slab.name=Gemeißelte Certusquarzstufe
 tile.appliedenergistics2.fluix_slab.name=Fluixstufe
-tile.appliedenergistics2.quartz_pillar_slab.name=Certusquartzsäulenstufe
-tile.appliedenergistics2.quartz_slab.name=Certusquartzstufe
+tile.appliedenergistics2.quartz_pillar_slab.name=Certusquarzsäulenstufe
+tile.appliedenergistics2.quartz_slab.name=Certusquarzstufe
 tile.appliedenergistics2.smooth_sky_stone_slab.name=Himmelssteinblockstufe
 tile.appliedenergistics2.sky_stone_brick_slab.name=Himmelssteinziegelstufe
 tile.appliedenergistics2.sky_stone_small_brick_slab.name=Himmelssteinkleinziegelstufe
