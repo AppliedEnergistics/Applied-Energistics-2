@@ -49,7 +49,7 @@ tile.appliedenergistics2.crafting_storage_16k.name=16k-Fertigungsspeicher
 tile.appliedenergistics2.crafting_storage_64k.name=64k-Fertigungsspeicher
 tile.appliedenergistics2.crafting_accelerator.name=Fertigungs-Prozessoreinheit
 tile.appliedenergistics2.crafting_unit.name=Fertigungseinheit
-tile.appliedenergistics2.molecular_assembler.name=Molekularmonteur
+tile.appliedenergistics2.molecular_assembler.name=Molekularfabrikator
 
 // Stairs
 tile.appliedenergistics2.ChiseledQuartzStairBlock.name=Gemeißelte Certusquarztreppe
