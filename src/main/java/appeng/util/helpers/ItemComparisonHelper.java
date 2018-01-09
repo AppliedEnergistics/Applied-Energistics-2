@@ -25,6 +25,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.config.FuzzyMode;
@@ -73,6 +74,20 @@ public class ItemComparisonHelper
 	public boolean isSameItem( @Nonnull final ItemStack is, @Nonnull final ItemStack filter )
 	{
 		return ItemStack.areItemsEqual( is, filter ) && this.isNbtTagEqual( is.getTagCompound(), filter.getTagCompound() );
+	}
+
+	/**
+	 * 
+	 * Compares two {@link ItemStack} and their NBT tag for equality.
+	 *
+	 * This is slightly more permissive than {@link #isSameItem(ItemStack, ItemStack)} in regards to NBT tags.
+	 * Mostly that it considers null and empty {@link NBTTagCompound} to be equal.
+	 *
+	 * @return true, if both are identical.
+	 */
+	public boolean isPermissivelySameItem( @Nonnull final ItemStack is, @Nonnull final ItemStack filter )
+	{
+		return ItemStack.areItemsEqual( is, filter ) && this.isNbtTagPermissivelyEqual( is.getTagCompound(), filter.getTagCompound() );
 	}
 
 	/**
@@ -185,5 +200,26 @@ public class ItemComparisonHelper
 			return left.equals( right );
 		}
 		return false;
+	}
+
+	private boolean isNbtTagPermissivelyEqual( final NBTBase left, final NBTBase right )
+	{
+		if( left == right )
+		{
+			return true;
+		}
+
+		if( ( left == null && right == null ) || ( left != null && left.hasNoTags() && right == null ) || ( right != null && right
+				.hasNoTags() && left == null ) || ( left != null && left.hasNoTags() && right != null && right.hasNoTags() ) )
+		{
+			return true;
+		}
+
+		if( ( left == null && right != null ) || ( left != null && right == null ) )
+		{
+			return false;
+		}
+
+		return isNbtTagEqual( left, right );
 	}
 }

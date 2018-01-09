@@ -258,7 +258,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		{
 			final ItemStack testOutput = this.standardRecipe.getCraftingResult( this.testFrame );
 
-			if( Platform.itemComparisons().isSameItem( this.correctOutput, testOutput ) )
+			if( Platform.itemComparisons().isPermissivelySameItem( this.correctOutput, testOutput ) )
 			{
 				this.testFrame.setInventorySlotContents( slotIndex, this.crafting.getStackInSlot( slotIndex ) );
 				this.markItemAs( slotIndex, i, TestStatus.ACCEPT );
@@ -269,7 +269,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		{
 			final ItemStack testOutput = CraftingManager.findMatchingResult( this.testFrame, w );
 
-			if( Platform.itemComparisons().isSameItem( this.correctOutput, testOutput ) )
+			if( Platform.itemComparisons().isPermissivelySameItem( this.correctOutput, testOutput ) )
 			{
 				this.testFrame.setInventorySlotContents( slotIndex, this.crafting.getStackInSlot( slotIndex ) );
 				this.markItemAs( slotIndex, i, TestStatus.ACCEPT );
