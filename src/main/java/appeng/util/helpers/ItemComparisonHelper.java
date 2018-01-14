@@ -180,10 +180,25 @@ public class ItemComparisonHelper
 		{
 			return true;
 		}
+
+		final boolean isLeftEmpty = left == null || left.hasNoTags();
+		final boolean isRightEmpty = right == null || right.hasNoTags();
+
+		if( isLeftEmpty && isRightEmpty )
+		{
+			return true;
+		}
+
+		if( isLeftEmpty != isRightEmpty )
+		{
+			return false;
+		}
+
 		if( left != null )
 		{
 			return left.equals( right );
 		}
+
 		return false;
 	}
 }
