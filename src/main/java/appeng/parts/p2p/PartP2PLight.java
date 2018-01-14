@@ -55,7 +55,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	}
 
 	private int lastValue = 0;
-	private float opacity = -1;
+	private int opacity = -1;
 
 	public PartP2PLight( final ItemStack is )
 	{
@@ -81,15 +81,21 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	{
 		super.writeToStream( data );
 		data.writeInt( this.isOutput() ? this.lastValue : 0 );
+		data.writeInt( this.opacity );
 	}
 
 	@Override
 	public boolean readFromStream( final ByteBuf data ) throws IOException
 	{
 		super.readFromStream( data );
+		final int oldValue = this.lastValue;
+		final int oldOpacity = this.opacity;
+
 		this.lastValue = data.readInt();
+		this.opacity = data.readInt();
+
 		this.setOutput( this.lastValue > 0 );
-		return false;
+		return lastValue != oldValue || oldOpacity != this.opacity;
 	}
 
 	private boolean doWork()
@@ -126,13 +132,14 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	@Override
 	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
 	{
-		this.opacity = -1;
-
-		this.doWork();
-
-		if( this.isOutput() )
+		if( this.isOutput() && pos.offset( this.getSide().getFacing() ).equals( neighbor ) )
 		{
+			this.opacity = -1;
 			this.getHost().markForUpdate();
+		}
+		else
+		{
+			this.doWork();
 		}
 	}
 
@@ -168,10 +175,6 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	public void readFromNBT( final NBTTagCompound tag )
 	{
 		super.readFromNBT( tag );
-		if( tag.hasKey( "opacity" ) )
-		{
-			this.opacity = tag.getFloat( "opacity" );
-		}
 		this.lastValue = tag.getInteger( "lastValue" );
 	}
 
@@ -179,7 +182,6 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	public void writeToNBT( final NBTTagCompound tag )
 	{
 		super.writeToNBT( tag );
-		tag.setFloat( "opacity", this.opacity );
 		tag.setInteger( "lastValue", this.lastValue );
 	}
 
@@ -219,7 +221,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	@Override
 	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
 	{
-		return this.doWork() ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
+		return this.doWork() ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
 	}
 
 	public float getPowerDrainPerTick()

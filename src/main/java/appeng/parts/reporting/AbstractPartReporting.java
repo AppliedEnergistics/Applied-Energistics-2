@@ -70,7 +70,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 
 	private byte spin = 0; // 0-3
 	private int clientFlags = 0; // sent as byte.
-	private float opacity = -1;
+	private int opacity = -1;
 
 	public AbstractPartReporting( final ItemStack is )
 	{
@@ -128,10 +128,6 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	public void readFromNBT( final NBTTagCompound data )
 	{
 		super.readFromNBT( data );
-		if( data.hasKey( "opacity" ) )
-		{
-			this.opacity = data.getFloat( "opacity" );
-		}
 		this.spin = data.getByte( "spin" );
 	}
 
@@ -139,7 +135,6 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	public void writeToNBT( final NBTTagCompound data )
 	{
 		super.writeToNBT( data );
-		data.setFloat( "opacity", this.opacity );
 		data.setByte( "spin", this.getSpin() );
 	}
 
@@ -172,6 +167,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 		}
 
 		data.writeByte( (byte) this.getClientFlags() );
+		data.writeInt( this.opacity );
 	}
 
 	@Override
@@ -179,9 +175,13 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	{
 		super.readFromStream( data );
 		final int oldFlags = this.getClientFlags();
+		final int oldOpacity = this.opacity;
+
 		this.clientFlags = data.readByte();
+		this.opacity = data.readInt();
+
 		this.spin = (byte) ( this.getClientFlags() & 3 );
-		if( this.getClientFlags() == oldFlags )
+		if( this.getClientFlags() == oldFlags && this.opacity == oldOpacity )
 		{
 			return false;
 		}

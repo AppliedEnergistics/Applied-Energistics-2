@@ -83,13 +83,14 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	protected boolean readFromStream( final ByteBuf data ) throws IOException
 	{
 		final boolean c = super.readFromStream( data );
-		final boolean ret = this.getCableBus().readFromStream( data );
+		boolean ret = this.getCableBus().readFromStream( data );
 
 		final int newLV = this.getCableBus().getLightValue();
 		if( newLV != this.oldLV )
 		{
 			this.oldLV = newLV;
 			this.world.checkLight( this.pos );
+			ret = true;
 		}
 
 		this.updateTileSetting();
@@ -189,7 +190,6 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		{
 			this.oldLV = newLV;
 			this.world.checkLight( this.pos );
-			// world.updateAllLightTypes( xCoord, yCoord, zCoord );
 		}
 
 		super.markForUpdate();
