@@ -121,18 +121,16 @@ class CableBuilder
 	 */
 	public void addCableCore( AECableType cableType, AEColor color, List<BakedQuad> quadsOut )
 	{
-		switch( cableType )
+		switch( cableType.size() )
 		{
-			case GLASS:
+			case THIN:
 				this.addCableCore( CableCoreType.GLASS, color, quadsOut );
 				break;
-			case COVERED:
-			case SMART:
+			case NORMAL:
 				this.addCableCore( CableCoreType.COVERED, color, quadsOut );
 				break;
-			case DENSE_COVERED:
-			case DENSE_SMART:
-				this.addCableCore( CableCoreType.DENSE_SMART, color, quadsOut );
+			case DENSE:
+				this.addCableCore( CableCoreType.DENSE, color, quadsOut );
 				break;
 			default:
 		}
@@ -153,7 +151,7 @@ class CableBuilder
 			case COVERED:
 				cubeBuilder.addCube( 5, 5, 5, 11, 11, 11 );
 				break;
-			case DENSE_SMART:
+			case DENSE:
 				cubeBuilder.addCube( 3, 3, 3, 13, 13, 13 );
 				break;
 		}
@@ -329,7 +327,6 @@ class CableBuilder
 
 	public void addConstrainedCoveredConnection( EnumFacing facing, AEColor cableColor, int distanceFromEdge, List<BakedQuad> quadsOut )
 	{
-
 		// The core of a covered cable reaches up to 5 voxels from the block edge, so
 		// drawing a connection can only occur from there onwards
 		if( distanceFromEdge >= 5 )
@@ -348,6 +345,11 @@ class CableBuilder
 
 	public void addSmartConnection( EnumFacing facing, AEColor cableColor, AECableType connectionType, boolean cableBusAdjacent, int channels, List<BakedQuad> quadsOut )
 	{
+		if( connectionType == AECableType.COVERED || connectionType == AECableType.GLASS )
+		{
+			this.addCoveredConnection( facing, cableColor, connectionType, cableBusAdjacent, quadsOut );
+			return;
+		}
 
 		CubeBuilder cubeBuilder = new CubeBuilder( this.format, quadsOut );
 

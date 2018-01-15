@@ -1157,9 +1157,6 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 		if( cable != null )
 		{
-			final boolean isSmart = cable.getCableConnectionType() == AECableType.SMART || cable.getCableConnectionType() == AECableType.DENSE_SMART;
-			final boolean isDense = cable.getCableConnectionType() == AECableType.DENSE_COVERED || cable.getCableConnectionType() == AECableType.DENSE_SMART;
-
 			renderState.setCableColor( cable.getCableColor() );
 			renderState.setCableType( cable.getCableConnectionType() );
 			renderState.setCoreType( CableCoreType.fromCableType( cable.getCableConnectionType() ) );
@@ -1184,11 +1181,10 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 				if( adjacentTe instanceof IGridHost )
 				{
-					if( !( adjacentTe instanceof IPartHost ) || isDense )
-					{
-						IGridHost gridHost = (IGridHost) adjacentTe;
-						connectionType = gridHost.getCableConnectionType( AEPartLocation.fromFacing( facing.getOpposite() ) );
-					}
+					final IGridHost gridHost = (IGridHost) adjacentTe;
+					final AECableType adjacentType = gridHost.getCableConnectionType( AEPartLocation.fromFacing( facing.getOpposite() ) );
+
+					connectionType = AECableType.min( connectionType, adjacentType );
 				}
 
 				// Check if the adjacent TE is a cable bus or not
@@ -1205,7 +1201,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			// adjacent tile requires it
 			for( EnumFacing facing : EnumFacing.values() )
 			{
-				int channels = isSmart ? cable.getChannelsOnSide( facing ) : 0;
+				int channels = cable.getCableConnectionType().isSmart() ? cable.getChannelsOnSide( facing ) : 0;
 				renderState.getChannelsOnSide().put( facing, channels );
 			}
 		}

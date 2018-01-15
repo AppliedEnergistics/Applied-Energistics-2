@@ -29,32 +29,32 @@ public enum AECableType
 	/**
 	 * No Cable present.
 	 */
-	NONE,
+	NONE( AECableVariant.NONE, AECableSize.NONE ),
 
 	/**
 	 * Connections to this block should render as glass.
 	 */
-	GLASS,
+	GLASS( AECableVariant.GLASS, AECableSize.THIN ),
 
 	/**
 	 * Connections to this block should render as covered.
 	 */
-	COVERED,
+	COVERED( AECableVariant.COVERED, AECableSize.NORMAL ),
 
 	/**
 	 * Connections to this block should render as smart.
 	 */
-	SMART,
+	SMART( AECableVariant.SMART, AECableSize.NORMAL ),
 
 	/**
 	 * Smart Dense Cable, represents a tier 2 block that can carry 32 channels.
 	 */
-	DENSE_COVERED,
+	DENSE_COVERED( AECableVariant.COVERED, AECableSize.DENSE ),
 
 	/**
 	 * Smart Dense Cable, represents a tier 2 block that can carry 32 channels.
 	 */
-	DENSE_SMART;
+	DENSE_SMART( AECableVariant.SMART, AECableSize.DENSE );
 
 	public static final AECableType[] VALIDCABLES = {
 			GLASS,
@@ -64,4 +64,97 @@ public enum AECableType
 			DENSE_SMART
 	};
 
+	private final AECableVariant variant;
+	private final AECableSize size;
+
+	private AECableType( AECableVariant variant, AECableSize size )
+	{
+		this.variant = variant;
+		this.size = size;
+	}
+
+	public AECableSize size()
+	{
+		return size;
+	}
+
+	public AECableVariant variant()
+	{
+		return variant;
+	}
+
+	public boolean isValid()
+	{
+		return this.variant != AECableVariant.NONE && this.size != AECableSize.NONE;
+	}
+
+	public boolean isDense()
+	{
+		return this.size == AECableSize.DENSE;
+	}
+
+	public boolean isSmart()
+	{
+		return this.variant == AECableVariant.SMART;
+	}
+
+	public static AECableType min( AECableType a, AECableType b )
+	{
+		final AECableVariant v = AECableVariant.min( a.variant(), b.variant() );
+		final AECableSize s = AECableSize.min( a.size(), b.size() );
+
+		return AECableType.from( v, s );
+	}
+
+	public static AECableType max( AECableType a, AECableType b )
+	{
+		final AECableVariant v = AECableVariant.max( a.variant(), b.variant() );
+		final AECableSize s = AECableSize.max( a.size(), b.size() );
+
+		return AECableType.from( v, s );
+	}
+
+	private static AECableType from( AECableVariant variant, AECableSize size )
+	{
+		switch( variant )
+		{
+			case GLASS:
+				switch( size )
+				{
+					case THIN:
+						return GLASS;
+					default:
+						break;
+				}
+
+				break;
+			case COVERED:
+				switch( size )
+				{
+					case NORMAL:
+						return COVERED;
+					case DENSE:
+						return DENSE_COVERED;
+					default:
+						break;
+				}
+
+				break;
+			case SMART:
+				switch( size )
+				{
+					case NORMAL:
+						return SMART;
+					case DENSE:
+						return DENSE_SMART;
+					default:
+						break;
+				}
+				break;
+			default:
+				break;
+		}
+
+		return NONE;
+	}
 }
