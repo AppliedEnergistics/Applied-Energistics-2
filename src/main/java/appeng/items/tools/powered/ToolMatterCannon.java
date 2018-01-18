@@ -55,6 +55,7 @@ import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventory;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -82,7 +83,7 @@ import appeng.util.LookDirection;
 import appeng.util.Platform;
 
 
-public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
+public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<IAEItemStack>
 {
 
 	public ToolMatterCannon()
@@ -528,5 +529,11 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 	public double getIdleDrain()
 	{
 		return 0.5;
+	}
+
+	@Override
+	public IStorageChannel<IAEItemStack> getChannel()
+	{
+		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 }

@@ -23,7 +23,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
 import appeng.api.config.Upgrades;
@@ -31,26 +30,25 @@ import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventory;
-import appeng.api.storage.channels.IItemStorageChannel;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.Platform;
-import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
 
-public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> implements ICellInventoryHandler
+public class CellInventoryHandler<T extends IAEStack<T>> extends MEInventoryHandler<T> implements ICellInventoryHandler<T>
 {
 
-	CellInventoryHandler( final IMEInventory c )
+	public CellInventoryHandler( final IMEInventory c, final IStorageChannel<T> channel )
 	{
-		super( c, AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+		super( c, channel );
 
 		final ICellInventory ci = this.getCellInv();
 		if( ci != null )
 		{
-			final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+			final IItemList<T> priorityList = channel.createList();
 
 			final IItemHandler upgrades = ci.getUpgradesInventory();
 			final IItemHandler config = ci.getConfigInventory();
@@ -86,7 +84,7 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 				final ItemStack is = config.getStackInSlot( x );
 				if( !is.isEmpty() )
 				{
-					priorityList.add( AEItemStack.fromItemStack( is ) );
+					priorityList.add( channel.createStack( is ) );
 				}
 			}
 

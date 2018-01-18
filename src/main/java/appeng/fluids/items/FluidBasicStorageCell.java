@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2018, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,25 +16,30 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.items.storage;
+package appeng.fluids.items;
 
 
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.channels.IItemStorageChannel;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.channels.IFluidStorageChannel;
+import appeng.api.storage.data.IAEFluidStack;
 import appeng.items.materials.MaterialType;
+import appeng.items.storage.ItemStorageCellBase;
 
 
-public final class ItemBasicStorageCell extends ItemStorageCellBase<IAEItemStack>
+/**
+ * @author DrummerMC
+ * @version rv6 - 2018-01-17
+ * @since rv6 2018-01-17
+ */
+public final class FluidBasicStorageCell extends ItemStorageCellBase<IAEFluidStack>
 {
 
-
-	protected final int perType;
-	protected final double idleDrain;
-	public ItemBasicStorageCell( final MaterialType whichCell, final int kilobytes )
+	private final int perType;
+	private final double idleDrain;
+	public FluidBasicStorageCell( final MaterialType whichCell, final int kilobytes )
 	{
 		super(whichCell, kilobytes);
 		switch( whichCell )
@@ -75,8 +80,14 @@ public final class ItemBasicStorageCell extends ItemStorageCellBase<IAEItemStack
 	}
 
 	@Override
-	public IStorageChannel<IAEItemStack> getChannel()
+	public IStorageChannel<IAEFluidStack> getChannel()
 	{
-		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
+		return AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
+	}
+
+	@Override
+	public int getTotalTypes( final ItemStack cellItem )
+	{
+		return 5;
 	}
 }
