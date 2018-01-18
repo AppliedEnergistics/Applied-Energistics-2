@@ -33,10 +33,12 @@ import appeng.api.AEApi;
 import appeng.api.config.CopyMode;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
+import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.ICellWorkbenchItem;
 import appeng.api.storage.IMEInventory;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OptionalSlotRestrictedInput;
@@ -224,17 +226,18 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 
 	public void partition()
 	{
+
 		final IItemHandler inv = this.getUpgradeable().getInventoryByName( "config" );
 
-		final IMEInventory<IAEItemStack> cellInv = AEApi.instance().registries().cell().getCellInventory(
-				this.getUpgradeable().getInventoryByName( "cell" ).getStackInSlot( 0 ), null,
-				AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+		final ItemStack is = this.getUpgradeable().getInventoryByName( "cell" ).getStackInSlot( 0 );
+		final IStorageChannel channel = is.getItem() instanceof IStorageCell ? ((IStorageCell)is.getItem()).getChannel() : AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 
-		Iterator<IAEItemStack> i = new NullIterator<>();
+		final IMEInventory cellInv = AEApi.instance().registries().cell().getCellInventory(is, null, channel );
+
+		Iterator<IAEStack> i = new NullIterator<>();
 		if( cellInv != null )
 		{
-			final IItemList<IAEItemStack> list = cellInv
-					.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
+			final IItemList list = cellInv.getAvailableItems( channel.createList() );
 			i = list.iterator();
 		}
 
