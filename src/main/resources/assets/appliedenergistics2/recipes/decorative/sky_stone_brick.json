@@ -1,0 +1,11 @@
+{
+    "result": {
+        "item": "appliedenergistics2:sky_stone_brick"
+    },
+    "type": "forge:ore_shapeless",
+    "ingredients": [
+        {
+            "item": "appliedenergistics2:smooth_sky_stone_block"
+        }
+    ]
+}
