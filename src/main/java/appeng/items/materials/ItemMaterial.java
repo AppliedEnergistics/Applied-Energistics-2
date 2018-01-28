@@ -318,7 +318,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 					}
 
 					final InventoryAdaptor ad = new AdaptorItemHandler( upgrades );
-					player.inventory.setInventorySlotContents( player.inventory.currentItem, ad.addItems( player.getHeldItem( hand ) ) );
+					player.setHeldItem( hand, ad.addItems( player.getHeldItem( hand ) ) );
 					return EnumActionResult.SUCCESS;
 				}
 			}
