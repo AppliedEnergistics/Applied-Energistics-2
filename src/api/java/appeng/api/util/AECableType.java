@@ -34,7 +34,7 @@ public enum AECableType
 	/**
 	 * Connections to this block should render as glass.
 	 */
-	GLASS( AECableVariant.GLASS, AECableSize.THIN ),
+	GLASS( AECableVariant.GLASS, AECableSize.NORMAL ),
 
 	/**
 	 * Connections to this block should render as covered.
@@ -121,7 +121,7 @@ public enum AECableType
 			case GLASS:
 				switch( size )
 				{
-					case THIN:
+					case NORMAL:
 						return GLASS;
 					default:
 						break;

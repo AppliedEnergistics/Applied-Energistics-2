@@ -121,15 +121,17 @@ class CableBuilder
 	 */
 	public void addCableCore( AECableType cableType, AEColor color, List<BakedQuad> quadsOut )
 	{
-		switch( cableType.size() )
+		switch( cableType )
 		{
-			case THIN:
+			case GLASS:
 				this.addCableCore( CableCoreType.GLASS, color, quadsOut );
 				break;
-			case NORMAL:
+			case COVERED:
+			case SMART:
 				this.addCableCore( CableCoreType.COVERED, color, quadsOut );
 				break;
-			case DENSE:
+			case DENSE_COVERED:
+			case DENSE_SMART:
 				this.addCableCore( CableCoreType.DENSE, color, quadsOut );
 				break;
 			default:

@@ -27,7 +27,6 @@ package appeng.api.util;
 public enum AECableSize
 {
 	NONE,
-	THIN,
 	NORMAL,
 	DENSE;
 
