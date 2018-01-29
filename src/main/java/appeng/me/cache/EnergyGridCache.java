@@ -311,26 +311,26 @@ public class EnergyGridCache implements IEnergyGrid
 			final double newPower = node.extractAEPower( req, mode, PowerMultiplier.ONE );
 			extractedPower += newPower;
 
-			if( newPower < req )
+			if( newPower < req && mode == Actionable.MODULATE )
 			{
 				it.remove();
 			}
 		}
 
-		// got more then we wanted?
-		if( extractedPower > amt )
-		{
-			this.localStorage.addCurrentAEPower( extractedPower - amt );
-			this.globalAvailablePower -= amt;
+		final double result = Math.min( extractedPower, amt );
 
-			this.tickDrainPerTick += amt;
-			return amt;
+		if( mode == Actionable.MODULATE )
+		{
+			if( extractedPower > amt )
+			{
+				this.localStorage.addCurrentAEPower( extractedPower - amt );
+			}
+
+			this.globalAvailablePower -= result;
+			this.tickDrainPerTick += result;
 		}
 
-		// go less or the correct amount?
-		this.globalAvailablePower -= extractedPower;
-		this.tickDrainPerTick += extractedPower;
-		return extractedPower;
+		return result;
 	}
 
 	@Override
@@ -345,7 +345,7 @@ public class EnergyGridCache implements IEnergyGrid
 			final IAEPowerStorage node = it.next();
 			amt = node.injectAEPower( amt, mode );
 
-			if( amt > 0 )
+			if( amt > 0 && mode == Actionable.MODULATE )
 			{
 				it.remove();
 			}
