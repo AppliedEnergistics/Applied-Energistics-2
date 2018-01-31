@@ -95,7 +95,7 @@ public class ItemComparisonHelper
 		}
 
 		// test damageable items..
-		if( a.getItem().isDamageable() && a.getItem() == b.getItem() )
+		if( a.getItem() == b.getItem() && a.getItem().isDamageable() && b.getItem().isDamageable() )
 		{
 			if( mode == FuzzyMode.IGNORE_ALL )
 			{
