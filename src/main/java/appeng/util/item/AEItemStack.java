@@ -365,7 +365,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	{
 		if( a.getItem() == b.getItem() )
 		{
-			if( a.getItem().isDamageable() && b.getItem().isDamageable() )
+			if( a.getItem().isDamageable() )
 			{
 				if( mode == FuzzyMode.IGNORE_ALL )
 				{
