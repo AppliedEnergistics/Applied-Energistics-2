@@ -78,7 +78,7 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.ItemPaintBall;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.BaseActionSource;
-import appeng.me.storage.CellInventoryHandler;
+import appeng.me.storage.ItemCellInventoryHandler;
 import appeng.tile.misc.TilePaint;
 import appeng.util.ItemSorters;
 import appeng.util.Platform;
@@ -436,7 +436,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		final IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( stack, null,
 				AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
-		if( cdi instanceof CellInventoryHandler )
+		if( cdi instanceof ItemCellInventoryHandler )
 		{
 			final ICellInventory cd = ( (ICellInventoryHandler) cdi ).getCellInv();
 			if( cd != null )

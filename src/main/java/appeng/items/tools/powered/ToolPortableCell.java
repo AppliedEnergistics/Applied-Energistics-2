@@ -54,7 +54,7 @@ import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.items.contents.PortableCellViewer;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
-import appeng.me.storage.CellInventoryHandler;
+import appeng.me.storage.ItemCellInventoryHandler;
 import appeng.util.Platform;
 
 
@@ -88,7 +88,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell<
 		final IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( stack, null,
 				AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
-		if( cdi instanceof CellInventoryHandler )
+		if( cdi instanceof ItemCellInventoryHandler )
 		{
 			final ICellInventory cd = ( (ICellInventoryHandler) cdi ).getCellInv();
 			if( cd != null )

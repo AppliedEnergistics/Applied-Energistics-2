@@ -111,6 +111,12 @@ public final class ApiMaterials implements IMaterials
 	private final IItemDefinition qESingularity;
 	private final IItemDefinition blankPattern;
 
+	private final IItemDefinition fluidCell1kPart;
+	private final IItemDefinition fluidCell4kPart;
+	private final IItemDefinition fluidCell16kPart;
+	private final IItemDefinition fluidCell64kPart;
+	private final IItemDefinition emptyFluidStorageCell;
+
 	public ApiMaterials( FeatureFactory registry )
 	{
 		final ItemMaterial materials = new ItemMaterial();
@@ -210,6 +216,12 @@ public final class ApiMaterials implements IMaterials
 		this.qESingularity = new DamagedItemDefinition( "material.singularity.entangled.quantum", materials
 				.createMaterial( MaterialType.QUANTUM_ENTANGLED_SINGULARITY ) );
 		this.blankPattern = new DamagedItemDefinition( "material.pattern.blank", materials.createMaterial( MaterialType.BLANK_PATTERN ) );
+
+		this.fluidCell1kPart = new DamagedItemDefinition( "material.cell.storage.1k", materials.createMaterial( MaterialType.FLUID_CELL1K_PART ) );
+		this.fluidCell4kPart = new DamagedItemDefinition( "material.cell.storage.4k", materials.createMaterial( MaterialType.FLUID_CELL4K_PART ) );
+		this.fluidCell16kPart = new DamagedItemDefinition( "material.cell.storage.16k", materials.createMaterial( MaterialType.FLUID_CELL16K_PART ) );
+		this.fluidCell64kPart = new DamagedItemDefinition( "material.cell.storage.64k", materials.createMaterial( MaterialType.FLUID_CELL64K_PART ) );
+		this.emptyFluidStorageCell = new DamagedItemDefinition( "material.cell.storage.empty", materials.createMaterial( MaterialType.EMPTY_FLUID_STORAGE_CELL ) );
 	}
 
 	@Override
@@ -528,5 +540,35 @@ public final class ApiMaterials implements IMaterials
 	public IItemDefinition blankPattern()
 	{
 		return this.blankPattern;
+	}
+
+	@Override
+	public IItemDefinition fluidCell1kPart()
+	{
+		return this.fluidCell1kPart;
+	}
+
+	@Override
+	public IItemDefinition fluidCell4kPart()
+	{
+		return this.fluidCell4kPart;
+	}
+
+	@Override
+	public IItemDefinition fluidCell16kPart()
+	{
+		return this.fluidCell16kPart;
+	}
+
+	@Override
+	public IItemDefinition fluidCell64kPart()
+	{
+		return this.fluidCell64kPart;
+	}
+
+	@Override
+	public IItemDefinition emptyFluidStorageCell()
+	{
+		return this.emptyFluidStorageCell;
 	}
 }

@@ -30,7 +30,9 @@ import appeng.debug.ToolDebugCard;
 import appeng.debug.ToolEraser;
 import appeng.debug.ToolMeteoritePlacer;
 import appeng.debug.ToolReplicatorCard;
-import appeng.fluids.items.FluidBasicStorageCell;
+import appeng.fluids.items.BasicFluidStorageCell;
+import appeng.fluids.items.FluidDummyItem;
+import appeng.fluids.items.FluidDummyItemRendering;
 import appeng.hooks.DispenserBlockTool;
 import appeng.hooks.DispenserMatterCannon;
 import appeng.items.materials.MaterialType;
@@ -41,7 +43,7 @@ import appeng.items.misc.ItemPaintBall;
 import appeng.items.misc.ItemPaintBallRendering;
 import appeng.items.parts.FacadeRendering;
 import appeng.items.parts.ItemFacade;
-import appeng.items.storage.ItemBasicStorageCell;
+import appeng.items.storage.BasicItemStorageCell;
 import appeng.items.storage.ItemCreativeStorageCell;
 import appeng.items.storage.ItemSpatialStorageCell;
 import appeng.items.storage.ItemViewCell;
@@ -129,6 +131,8 @@ public final class ApiItems implements IItems
 	private final IItemDefinition toolDebugCard;
 	private final IItemDefinition toolReplicatorCard;
 
+	private final IItemDefinition dummyFluidItem;
+
 	public ApiItems( FeatureFactory registry )
 	{
 		FeatureFactory certusTools = registry.features( AEFeature.CERTUS_QUARTZ_TOOLS );
@@ -204,15 +208,15 @@ public final class ApiItems implements IItems
 		this.viewCell = registry.item( "view_cell", ItemViewCell::new ).features( AEFeature.VIEW_CELL ).build();
 
 		FeatureFactory storageCells = registry.features( AEFeature.STORAGE_CELLS );
-		this.cell1k = storageCells.item( "storage_cell_1k", () -> new ItemBasicStorageCell( MaterialType.CELL1K_PART, 1 ) ).build();
-		this.cell4k = storageCells.item( "storage_cell_4k", () -> new ItemBasicStorageCell( MaterialType.CELL4K_PART, 4 ) ).build();
-		this.cell16k = storageCells.item( "storage_cell_16k", () -> new ItemBasicStorageCell( MaterialType.CELL16K_PART, 16 ) ).build();
-		this.cell64k = storageCells.item( "storage_cell_64k", () -> new ItemBasicStorageCell( MaterialType.CELL64K_PART, 64 ) ).build();
+		this.cell1k = storageCells.item( "storage_cell_1k", () -> new BasicItemStorageCell( MaterialType.CELL1K_PART, 1 ) ).build();
+		this.cell4k = storageCells.item( "storage_cell_4k", () -> new BasicItemStorageCell( MaterialType.CELL4K_PART, 4 ) ).build();
+		this.cell16k = storageCells.item( "storage_cell_16k", () -> new BasicItemStorageCell( MaterialType.CELL16K_PART, 16 ) ).build();
+		this.cell64k = storageCells.item( "storage_cell_64k", () -> new BasicItemStorageCell( MaterialType.CELL64K_PART, 64 ) ).build();
 
-		this.fluidCell1k = storageCells.item( "fluid_storage_cell_1k", () -> new FluidBasicStorageCell( MaterialType.CELL1K_PART, 1 ) ).build();
-		this.fluidCell4k = storageCells.item( "fluid_storage_cell_4k", () -> new FluidBasicStorageCell( MaterialType.CELL4K_PART, 4 ) ).build();
-		this.fluidCell16k = storageCells.item( "fluid_storage_cell_16k", () -> new FluidBasicStorageCell( MaterialType.CELL16K_PART, 16 ) ).build();
-		this.fluidCell64k = storageCells.item( "fluid_storage_cell_64k", () -> new FluidBasicStorageCell( MaterialType.CELL64K_PART, 64 ) ).build();
+		this.fluidCell1k = storageCells.item( "fluid_storage_cell_1k", () -> new BasicFluidStorageCell( MaterialType.FLUID_CELL1K_PART, 1 ) ).build();
+		this.fluidCell4k = storageCells.item( "fluid_storage_cell_4k", () -> new BasicFluidStorageCell( MaterialType.FLUID_CELL4K_PART, 4 ) ).build();
+		this.fluidCell16k = storageCells.item( "fluid_storage_cell_16k", () -> new BasicFluidStorageCell( MaterialType.FLUID_CELL16K_PART, 16 ) ).build();
+		this.fluidCell64k = storageCells.item( "fluid_storage_cell_64k", () -> new BasicFluidStorageCell( MaterialType.FLUID_CELL64K_PART, 64 ) ).build();
 
 		FeatureFactory spatialCells = registry.features( AEFeature.SPATIAL_IO );
 		this.spatialCell2 = spatialCells.item( "spatial_storage_cell_2_cubed", () -> new ItemSpatialStorageCell( 2 ) ).build();
@@ -247,6 +251,8 @@ public final class ApiItems implements IItems
 		this.toolMeteoritePlacer = debugTools.item( "debug_meteorite_placer", ToolMeteoritePlacer::new ).build();
 		this.toolDebugCard = debugTools.item( "debug_card", ToolDebugCard::new ).build();
 		this.toolReplicatorCard = debugTools.item( "debug_replicator_card", ToolReplicatorCard::new ).build();
+
+		this.dummyFluidItem = registry.item( "dummy_fluid_item", FluidDummyItem::new ).rendering( new FluidDummyItemRendering() ).build();
 	}
 
 	@Override
@@ -518,5 +524,10 @@ public final class ApiItems implements IItems
 	public IItemDefinition toolReplicatorCard()
 	{
 		return this.toolReplicatorCard;
+	}
+
+	public IItemDefinition dummyFluidItem()
+	{
+		return this.dummyFluidItem;
 	}
 }

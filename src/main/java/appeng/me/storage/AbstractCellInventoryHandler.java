@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2018, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -38,10 +38,14 @@ import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
 
-public class CellInventoryHandler<T extends IAEStack<T>> extends MEInventoryHandler<T> implements ICellInventoryHandler<T>
+/**
+ * @author DrummerMC
+ * @version rv6 - 2018-01-23
+ * @since rv6 2018-01-23
+ */
+public abstract class AbstractCellInventoryHandler<T extends IAEStack<T>> extends MEInventoryHandler<T> implements ICellInventoryHandler<T>
 {
-
-	public CellInventoryHandler( final IMEInventory c, final IStorageChannel<T> channel )
+	public AbstractCellInventoryHandler( final IMEInventory c, final IStorageChannel<T> channel )
 	{
 		super( c, channel );
 
@@ -84,7 +88,7 @@ public class CellInventoryHandler<T extends IAEStack<T>> extends MEInventoryHand
 				final ItemStack is = config.getStackInSlot( x );
 				if( !is.isEmpty() )
 				{
-					priorityList.add( channel.createStack( is ) );
+					priorityList.add( createConfigStackFromItem( is ) );
 				}
 			}
 
@@ -103,6 +107,8 @@ public class CellInventoryHandler<T extends IAEStack<T>> extends MEInventoryHand
 			}
 		}
 	}
+
+	protected abstract T createConfigStackFromItem( ItemStack is );
 
 	@Override
 	public ICellInventory getCellInv()

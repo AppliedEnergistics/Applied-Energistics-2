@@ -24,7 +24,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.AEApi;
-import appeng.api.implementations.items.IStorageCell;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.storage.ICellHandler;
 import appeng.api.storage.ICellInventory;
@@ -33,39 +32,30 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEPartLocation;
 import appeng.core.sync.GuiBridge;
-import appeng.me.storage.CellInventoryHandler;
-import appeng.fluids.storage.FluidCellInventory;
+import appeng.me.storage.ItemCellInventoryHandler;
 import appeng.me.storage.ItemCellInventory;
 import appeng.util.Platform;
 
 
-public class BasicCellHandler implements ICellHandler
+public class BasicItemCellHandler implements ICellHandler
 {
 
 	@Override
 	public boolean isCell( final ItemStack is )
 	{
-		return ItemCellInventory.isCell( is ) || FluidCellInventory.isCell( is );
+		return ItemCellInventory.isCell( is );
 	}
 
 	@Override
 	public <T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory( final ItemStack is, final ISaveProvider container, final IStorageChannel<T> channel )
 	{
-		if (channel == ( (IStorageCell) is.getItem() ).getChannel())
+		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
-			if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
-			{
-				return ItemCellInventory.getCell( is, container );
-			}
-			else if( channel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
-			{
-				return FluidCellInventory.getCell( is, container );
-			}
+			return ItemCellInventory.getCell( is, container );
 		}
 
 		return null;
@@ -83,9 +73,9 @@ public class BasicCellHandler implements ICellHandler
 	@Override
 	public int getStatusForCell( final ItemStack is, final IMEInventory handler )
 	{
-		if( handler instanceof CellInventoryHandler )
+		if( handler instanceof ItemCellInventoryHandler )
 		{
-			final CellInventoryHandler ci = (CellInventoryHandler) handler;
+			final ItemCellInventoryHandler ci = (ItemCellInventoryHandler) handler;
 			return ci.getStatusForCell();
 		}
 		return 0;

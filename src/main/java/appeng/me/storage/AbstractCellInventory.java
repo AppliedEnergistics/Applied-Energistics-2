@@ -40,7 +40,7 @@ import appeng.util.Platform;
  * @version rv6 - 2018-01-17
  * @since rv6 2018-01-17
  */
-public abstract class CellInventoryBase<T extends IAEStack<T>> implements ICellInventory<T>
+public abstract class AbstractCellInventory<T extends IAEStack<T>> implements ICellInventory<T>
 {
 
 	private static final String ITEM_TYPE_TAG = "it";
@@ -61,16 +61,16 @@ public abstract class CellInventoryBase<T extends IAEStack<T>> implements ICellI
 	protected IItemList<T> cellItems;
 	protected ItemStack i;
 	protected IStorageCell cellType;
-	private final int itemsPerByte;
+	protected final int itemsPerByte;
 
-	protected CellInventoryBase( final NBTTagCompound data, final ISaveProvider container, final int itemsPerByte )
+	protected AbstractCellInventory( final NBTTagCompound data, final ISaveProvider container, final int itemsPerByte )
 	{
 		this.tagCompound = data;
 		this.container = container;
 		this.itemsPerByte = itemsPerByte;
 	}
 
-	protected CellInventoryBase( final ItemStack o, final ISaveProvider container, final int itemsPerByte ) throws AppEngException
+	protected AbstractCellInventory( final ItemStack o, final ISaveProvider container, final int itemsPerByte ) throws AppEngException
 	{
 		this.itemsPerByte = itemsPerByte;
 		if( itemSlots == null )

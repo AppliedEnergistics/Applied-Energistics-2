@@ -19,8 +19,6 @@
 package appeng.fluids.storage;
 
 
-import java.util.HashSet;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -38,8 +36,7 @@ import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.me.storage.CellInventoryBase;
-import appeng.me.storage.CellInventoryHandler;
+import appeng.me.storage.AbstractCellInventory;
 import appeng.util.item.AEFluidStack;
 
 
@@ -48,10 +45,8 @@ import appeng.util.item.AEFluidStack;
  * @version rv6 - 2018-01-16
  * @since rv6 2018-01-16
  */
-public class FluidCellInventory extends CellInventoryBase<IAEFluidStack>
+public class FluidCellInventory extends AbstractCellInventory<IAEFluidStack>
 {
-	private static final HashSet<String> BLACK_LIST = new HashSet<>();
-
 	protected FluidCellInventory( final NBTTagCompound data, final ISaveProvider container )
 	{
 		super( data, container, 8000 );
@@ -66,7 +61,7 @@ public class FluidCellInventory extends CellInventoryBase<IAEFluidStack>
 	{
 		try
 		{
-			return new CellInventoryHandler( new FluidCellInventory( o, container2 ), AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
+			return new FluidCellInventoryHandler( new FluidCellInventory( o, container2 ) );
 		}
 		catch( final AppEngException e )
 		{
@@ -93,16 +88,6 @@ public class FluidCellInventory extends CellInventoryBase<IAEFluidStack>
 		return false;
 	}
 
-	public static void addBasicBlackList( final String fluidName )
-	{
-		BLACK_LIST.add( fluidName );
-	}
-
-	private static boolean isBlackListed( final IAEFluidStack input )
-	{
-		return BLACK_LIST.contains( input.getFluid().getName() );
-	}
-
 	@Override
 	public IAEFluidStack injectItems( final IAEFluidStack input, final Actionable mode, final IActionSource src )
 	{
@@ -115,7 +100,7 @@ public class FluidCellInventory extends CellInventoryBase<IAEFluidStack>
 			return null;
 		}
 
-		if( isBlackListed( input ) || this.cellType.isBlackListed( this.i, input ) )
+		if( this.cellType.isBlackListed( this.i, input ) )
 		{
 			return input;
 		}
@@ -157,7 +142,7 @@ public class FluidCellInventory extends CellInventoryBase<IAEFluidStack>
 
 		if( this.canHoldNewItem() ) // room for new type, and for at least one item!
 		{
-			final int remainingItemCount = (int) this.getRemainingItemCount() - this.getBytesPerType() * 8;
+			final int remainingItemCount = (int) this.getRemainingItemCount() - this.getBytesPerType() * itemsPerByte;
 			if( remainingItemCount > 0 )
 			{
 				if( input.getStackSize() > remainingItemCount )
@@ -263,7 +248,7 @@ public class FluidCellInventory extends CellInventoryBase<IAEFluidStack>
 			throw ex;
 		}
 
-		t.amount = stackSize ;
+		t.amount = stackSize;
 
 		if( t.amount > 0 )
 		{

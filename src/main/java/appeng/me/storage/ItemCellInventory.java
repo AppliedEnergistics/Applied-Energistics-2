@@ -19,12 +19,9 @@
 package appeng.me.storage;
 
 
-import java.util.HashSet;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -39,14 +36,11 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 
-public class ItemCellInventory extends CellInventoryBase<IAEItemStack>
+public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
 {
-	private static final HashSet<Integer> BLACK_LIST = new HashSet<>();
-
 	protected ItemCellInventory( final NBTTagCompound data, final ISaveProvider container )
 	{
 		super( data, container, 8 );
@@ -61,7 +55,7 @@ public class ItemCellInventory extends CellInventoryBase<IAEItemStack>
 	{
 		try
 		{
-			return new CellInventoryHandler( new ItemCellInventory( o, container2 ), AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+			return new ItemCellInventoryHandler( new ItemCellInventory( o, container2 ) );
 		}
 		catch( final AppEngException e )
 		{
@@ -111,20 +105,6 @@ public class ItemCellInventory extends CellInventoryBase<IAEItemStack>
 		return false;
 	}
 
-	public static void addBasicBlackList( final int itemID, final int meta )
-	{
-		BLACK_LIST.add( ( meta << Platform.DEF_OFFSET ) | itemID );
-	}
-
-	private static boolean isBlackListed( final IAEItemStack input )
-	{
-		if( BLACK_LIST.contains( ( OreDictionary.WILDCARD_VALUE << Platform.DEF_OFFSET ) | Item.getIdFromItem( input.getItem() ) ) )
-		{
-			return true;
-		}
-		return BLACK_LIST.contains( ( input.getItemDamage() << Platform.DEF_OFFSET ) | Item.getIdFromItem( input.getItem() ) );
-	}
-
 	@Override
 	public IAEItemStack injectItems( final IAEItemStack input, final Actionable mode, final IActionSource src )
 	{
@@ -137,7 +117,7 @@ public class ItemCellInventory extends CellInventoryBase<IAEItemStack>
 			return null;
 		}
 
-		if( isBlackListed( input ) || this.cellType.isBlackListed( this.i, input ) )
+		if( this.cellType.isBlackListed( this.i, input ) )
 		{
 			return input;
 		}
@@ -188,7 +168,7 @@ public class ItemCellInventory extends CellInventoryBase<IAEItemStack>
 
 		if( this.canHoldNewItem() ) // room for new type, and for at least one item!
 		{
-			final int remainingItemCount = (int) this.getRemainingItemCount() - this.getBytesPerType() * 8;
+			final int remainingItemCount = (int) this.getRemainingItemCount() - this.getBytesPerType() * itemsPerByte;
 			if( remainingItemCount > 0 )
 			{
 				if( input.getStackSize() > remainingItemCount )

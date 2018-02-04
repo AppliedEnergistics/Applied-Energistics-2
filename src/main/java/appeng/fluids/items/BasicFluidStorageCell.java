@@ -19,14 +19,18 @@
 package appeng.fluids.items;
 
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.fluids.contents.FluidCellConfig;
 import appeng.items.materials.MaterialType;
-import appeng.items.storage.ItemStorageCellBase;
+import appeng.items.storage.AbstractStorageCell;
+import appeng.util.InventoryAdaptor;
 
 
 /**
@@ -34,29 +38,29 @@ import appeng.items.storage.ItemStorageCellBase;
  * @version rv6 - 2018-01-17
  * @since rv6 2018-01-17
  */
-public final class FluidBasicStorageCell extends ItemStorageCellBase<IAEFluidStack>
+public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidStack>
 {
 
 	private final int perType;
 	private final double idleDrain;
-	public FluidBasicStorageCell( final MaterialType whichCell, final int kilobytes )
+	public BasicFluidStorageCell( final MaterialType whichCell, final int kilobytes )
 	{
 		super(whichCell, kilobytes);
 		switch( whichCell )
 		{
-			case CELL1K_PART:
+			case FLUID_CELL1K_PART:
 				this.idleDrain = 0.5;
 				this.perType = 8;
 				break;
-			case CELL4K_PART:
+			case FLUID_CELL4K_PART:
 				this.idleDrain = 1.0;
 				this.perType = 32;
 				break;
-			case CELL16K_PART:
+			case FLUID_CELL16K_PART:
 				this.idleDrain = 1.5;
 				this.perType = 128;
 				break;
-			case CELL64K_PART:
+			case FLUID_CELL64K_PART:
 				this.idleDrain = 2.0;
 				this.perType = 512;
 				break;
@@ -89,5 +93,23 @@ public final class FluidBasicStorageCell extends ItemStorageCellBase<IAEFluidSta
 	public int getTotalTypes( final ItemStack cellItem )
 	{
 		return 5;
+	}
+
+	@Override
+	protected void dropEmptyStorageCellCase( final InventoryAdaptor ia, final EntityPlayer player )
+	{
+		AEApi.instance().definitions().materials().emptyFluidStorageCell().maybeStack( 1 ).ifPresent( is -> {
+			final ItemStack extraA = ia.addItems( is );
+			if( !extraA.isEmpty() )
+			{
+				player.dropItem( extraA, false );
+			}
+		} );
+	}
+
+	@Override
+	public IItemHandler getConfigInventory( final ItemStack is )
+	{
+		return new FluidCellConfig( is );
 	}
 }

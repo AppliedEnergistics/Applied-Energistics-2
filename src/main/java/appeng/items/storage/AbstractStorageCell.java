@@ -65,12 +65,12 @@ import appeng.util.Platform;
  * @version rv6 - 2018-01-17
  * @since rv6 2018-01-17
  */
-public abstract class ItemStorageCellBase<T extends IAEStack<T>> extends AEBaseItem implements IStorageCell<T>, IItemGroup
+public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseItem implements IStorageCell<T>, IItemGroup
 {
 	protected final MaterialType component;
 	protected final int totalBytes;
 
-	public ItemStorageCellBase( final MaterialType whichCell, final int kilobytes )
+	public AbstractStorageCell( final MaterialType whichCell, final int kilobytes )
 	{
 		this.setMaxStackSize( 1 );
 		this.totalBytes = kilobytes * 1024;
@@ -231,13 +231,7 @@ public abstract class ItemStorageCellBase<T extends IAEStack<T>> extends AEBaseI
 					}
 
 					// drop empty storage cell case
-					AEApi.instance().definitions().materials().emptyStorageCell().maybeStack( 1 ).ifPresent( is -> {
-						final ItemStack extraA = ia.addItems( is );
-						if( !extraA.isEmpty() )
-						{
-							player.dropItem( extraA, false );
-						}
-					} );
+					dropEmptyStorageCellCase( ia, player );
 
 					if( player.inventoryContainer != null )
 					{
@@ -250,6 +244,8 @@ public abstract class ItemStorageCellBase<T extends IAEStack<T>> extends AEBaseI
 		}
 		return false;
 	}
+
+	protected abstract void dropEmptyStorageCellCase( final InventoryAdaptor ia, final EntityPlayer player );
 
 	@Override
 	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
