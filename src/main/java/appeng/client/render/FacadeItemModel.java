@@ -43,22 +43,16 @@ public class FacadeItemModel implements IModel
 	// We use this to get the default item transforms and make our lives easier
 	private static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "item/facade_base" );
 
-	private IModel baseModel = null;
-
 	private IModel getBaseModel()
 	{
-		if( this.baseModel == null )
+		try
 		{
-			try
-			{
-				baseModel = ModelLoaderRegistry.getModel( MODEL_BASE );
-			}
-			catch( Exception e )
-			{
-				throw new RuntimeException( e );
-			}
+			return ModelLoaderRegistry.getModel( MODEL_BASE );
 		}
-		return this.baseModel;
+		catch( Exception e )
+		{
+			throw new RuntimeException( e );
+		}
 	}
 
 	@Override
@@ -84,6 +78,6 @@ public class FacadeItemModel implements IModel
 	@Override
 	public IModelState getDefaultState()
 	{
-		return getBaseModel().getDefaultState();
+		return this.getBaseModel().getDefaultState();
 	}
 }
