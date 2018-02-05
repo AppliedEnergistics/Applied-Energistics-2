@@ -21,7 +21,6 @@ package appeng.util.helpers;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -95,55 +94,23 @@ public class ItemComparisonHelper
 			return false;
 		}
 
-		/*
-		 * if ( a.itemID != 0 && b.itemID != 0 && a.isItemStackDamageable() && ! a.getHasSubtypes() && a.itemID ==
-		 * b.itemID ) { return (a.getItemDamage() > 0) == (b.getItemDamage() > 0); }
-		 */
-
 		// test damageable items..
-		if( a.getItem() != Items.AIR && b.getItem() != Items.AIR && a.getItem().isDamageable() && a.getItem() == b.getItem() )
+		if( a.getItem() == b.getItem() && a.getItem().isDamageable() )
 		{
-			try
+			if( mode == FuzzyMode.IGNORE_ALL )
 			{
-				if( mode == FuzzyMode.IGNORE_ALL )
-				{
-					return true;
-				}
-				else if( mode == FuzzyMode.PERCENT_99 )
-				{
-					final Item ai = a.getItem();
-					final Item bi = b.getItem();
-
-					return ( ai.getDurabilityForDisplay( a ) > 1 ) == ( bi.getDurabilityForDisplay( b ) > 1 );
-				}
-				else
-				{
-					final Item ai = a.getItem();
-					final Item bi = b.getItem();
-
-					final float percentDamagedOfA = 1.0f - (float) ai.getDurabilityForDisplay( a );
-					final float percentDamagedOfB = 1.0f - (float) bi.getDurabilityForDisplay( b );
-
-					return ( percentDamagedOfA > mode.breakPoint ) == ( percentDamagedOfB > mode.breakPoint );
-				}
+				return true;
 			}
-			catch( final Throwable e )
+			else if( mode == FuzzyMode.PERCENT_99 )
 			{
-				if( mode == FuzzyMode.IGNORE_ALL )
-				{
-					return true;
-				}
-				else if( mode == FuzzyMode.PERCENT_99 )
-				{
-					return ( a.getItemDamage() > 1 ) == ( b.getItemDamage() > 1 );
-				}
-				else
-				{
-					final float percentDamagedOfA = (float) a.getItemDamage() / (float) a.getMaxDamage();
-					final float percentDamagedOfB = (float) b.getItemDamage() / (float) b.getMaxDamage();
+				return ( a.getItemDamage() > 1 ) == ( b.getItemDamage() > 1 );
+			}
+			else
+			{
+				final float percentDamagedOfA = (float) a.getItemDamage() / (float) a.getMaxDamage();
+				final float percentDamagedOfB = (float) b.getItemDamage() / (float) b.getMaxDamage();
 
-					return ( percentDamagedOfA > mode.breakPoint ) == ( percentDamagedOfB > mode.breakPoint );
-				}
+				return ( percentDamagedOfA > mode.breakPoint ) == ( percentDamagedOfB > mode.breakPoint );
 			}
 		}
 
@@ -154,17 +121,6 @@ public class ItemComparisonHelper
 		{
 			return true;
 		}
-
-		/*
-		 * // test ore dictionary.. int OreID = getOreID( a ); if ( OreID != -1 ) return OreID == getOreID( b );
-		 * if ( Mode != FuzzyMode.IGNORE_ALL ) { if ( a.hasTagCompound() && !isShared( a.getTagCompound() ) ) { a =
-		 * Platform.getSharedItemStack( AEItemStack.create( a ) ); }
-		 * if ( b.hasTagCompound() && !isShared( b.getTagCompound() ) ) { b = Platform.getSharedItemStack(
-		 * AEItemStack.create( b ) ); }
-		 * // test regular items with damage values and what not... if ( isShared( a.getTagCompound() ) && isShared(
-		 * b.getTagCompound() ) && a.itemID == b.itemID ) { return ((AppEngSharedNBTTagCompound)
-		 * a.getTagCompound()).compareFuzzyWithRegistry( (AppEngSharedNBTTagCompound) b.getTagCompound() ); } }
-		 */
 
 		return a.isItemEqual( b );
 	}
