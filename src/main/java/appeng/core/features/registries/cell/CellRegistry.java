@@ -22,6 +22,9 @@ package appeng.core.features.registries.cell;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Verify;
+
 import net.minecraft.item.ItemStack;
 
 import appeng.api.storage.ICellHandler;
@@ -43,12 +46,15 @@ public class CellRegistry implements ICellRegistry
 	}
 
 	@Override
-	public void addCellHandler( final ICellHandler h )
+	public void addCellHandler( final ICellHandler handler )
 	{
-		if( h != null )
-		{
-			this.handlers.add( h );
-		}
+		Preconditions.checkNotNull( handler, "Called before FMLInitializationEvent." );
+		Preconditions.checkArgument( !this.handlers.contains( handler ), "Tried to register the same handler instance twice." );
+
+		this.handlers.add( handler );
+
+		// Verify that the first entry is always our own handler.
+		Verify.verify( this.handlers.get( 0 ) instanceof BasicCellHandler );
 	}
 
 	@Override
