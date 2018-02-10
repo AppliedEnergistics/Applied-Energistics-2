@@ -31,7 +31,6 @@ import io.netty.buffer.ByteBuf;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -207,7 +206,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 
 		if( this.tagCompound != null )
 		{
-			i.setTag( "tag", (NBTBase) this.tagCompound );
+			i.setTag( "tag", this.tagCompound );
 		}
 		else
 		{
@@ -216,19 +215,9 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	}
 
 	@Override
-	public boolean fuzzyComparison( final Object st, final FuzzyMode mode )
+	public boolean fuzzyComparison( final IAEFluidStack other, final FuzzyMode mode )
 	{
-		if( st instanceof FluidStack )
-		{
-			return ( (FluidStack) st ).getFluid() == this.fluid;
-		}
-
-		if( st instanceof IAEFluidStack )
-		{
-			return ( (IAEFluidStack) st ).getFluid() == this.fluid;
-		}
-
-		return false;
+		return this.fluid == other.getFluid();
 	}
 
 	@Override
@@ -289,7 +278,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 
 			if( is.getFluid() == this.fluid )
 			{
-				final NBTTagCompound ta = (NBTTagCompound) this.tagCompound;
+				final NBTTagCompound ta = this.tagCompound;
 				final NBTTagCompound tb = is.tag;
 				if( ta == tb )
 				{
@@ -347,7 +336,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	public ItemStack asItemStackRepresentation()
 	{
 		// TODO: fluids, how do they even work?
-		return FluidUtil.getFilledBucket( getFluidStack() );
+		return FluidUtil.getFilledBucket( this.getFluidStack() );
 	}
 
 	@Override
@@ -358,7 +347,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 
 		i.writeByte( mask );
 
-		writeToStream( i );
+		this.writeToStream( i );
 
 		this.putPacketValue( i, this.getStackSize() );
 		this.putPacketValue( i, this.getCountRequestable() );
