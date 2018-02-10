@@ -180,7 +180,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 			return this.fuzzyItemStackComparison( itemStack, otherStack, mode );
 		}
 
-		if( st instanceof IAEItemStack )
+		if( st instanceof ItemStack )
 		{
 			final ItemStack otherStack = (ItemStack) st;
 
