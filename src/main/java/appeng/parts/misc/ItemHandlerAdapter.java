@@ -284,14 +284,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 				final IAEItemStack oldAeIS = this.cachedAeStacks[slot];
 				final ItemStack newIS = this.itemHandler.getStackInSlot( slot );
 
-				if( oldAeIS != null && oldAeIS.isSameType( newIS ) )
-				{
-					this.addPossibleStackSizeChange( slot, oldAeIS, newIS, changes );
-				}
-				else
-				{
-					this.addItemChange( slot, oldAeIS, newIS, changes );
-				}
+				this.handlePossibleSlotChanges( slot, oldAeIS, newIS, changes );
 			}
 
 			// Handle cases where the number of slots actually is lower now than before
@@ -316,7 +309,19 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			return changes;
 		}
 
-		private void addPossibleStackSizeChange( int slot, IAEItemStack oldAeIS, ItemStack newIS, List<IAEItemStack> changes )
+		private void handlePossibleSlotChanges( int slot, IAEItemStack oldAeIS, ItemStack newIS, List<IAEItemStack> changes )
+		{
+			if( oldAeIS != null && oldAeIS.isSameType( newIS ) )
+			{
+				this.handleStackSizeChanged( slot, oldAeIS, newIS, changes );
+			}
+			else
+			{
+				this.handleItemChanged( slot, oldAeIS, newIS, changes );
+			}
+		}
+
+		private void handleStackSizeChanged( int slot, IAEItemStack oldAeIS, ItemStack newIS, List<IAEItemStack> changes )
 		{
 			// Still the same item, but amount might have changed
 			final long diff = newIS.getCount() - oldAeIS.getStackSize();
@@ -334,7 +339,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 			}
 		}
 
-		private void addItemChange( int slot, IAEItemStack oldAeIS, ItemStack newIS, List<IAEItemStack> changes )
+		private void handleItemChanged( int slot, IAEItemStack oldAeIS, ItemStack newIS, List<IAEItemStack> changes )
 		{
 			// Completely different item
 			this.cachedAeStacks[slot] = AEItemStack.fromItemStack( newIS );
