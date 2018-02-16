@@ -49,7 +49,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.event.world.BlockEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -255,6 +257,13 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 						}
 
 						if( tile instanceof TileCableBus || tile instanceof TileSkyChest )
+						{
+							return false;
+						}
+
+						BlockEvent.BreakEvent event = new BlockEvent.BreakEvent( x, y, z, w, this, 0, player );
+						MinecraftForge.EVENT_BUS.post( event );
+						if( event.isCanceled() )
 						{
 							return false;
 						}

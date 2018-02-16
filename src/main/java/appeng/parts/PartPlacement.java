@@ -50,6 +50,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -104,8 +105,11 @@ public class PartPlacement
 						final SelectedPart sp = selectPart( player, host, mop.hitVec.addVector( -mop.blockX, -mop.blockY, -mop.blockZ ) );
 
 						BlockEvent.BreakEvent event = new BlockEvent.BreakEvent( x, y, z, world, block, world.getBlockMetadata( x, y, z ), player );
-						MinecraftForge.EVENT_BUS.post(event);
-						if(event.isCanceled()) return true;
+						MinecraftForge.EVENT_BUS.post( event );
+						if( event.isCanceled() )
+						{
+							return false;
+						}
 
 						if( sp.part != null )
 						{
@@ -361,6 +365,12 @@ public class PartPlacement
 				return false;
 			}
 
+			BlockEvent.PlaceEvent event = new BlockEvent.PlaceEvent( BlockSnapshot.getBlockSnapshot( world, x, y, z ), world.getBlock( x, y, z ), player );
+			MinecraftForge.EVENT_BUS.post( event );
+			if( event.isCanceled() )
+			{
+				return false;
+			}
 			final ForgeDirection mySide = host.addPart( held, side, player );
 			if( mySide != null )
 			{
