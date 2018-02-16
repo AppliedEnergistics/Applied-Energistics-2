@@ -31,7 +31,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Queues;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -49,7 +49,7 @@ import appeng.me.storage.ItemWatcher;
 public class NetworkMonitor<T extends IAEStack<T>> implements IMEMonitor<T>
 {
 	@Nonnull
-	private static final Deque<NetworkMonitor<?>> GLOBAL_DEPTH = Lists.newLinkedList();
+	private static final Deque<NetworkMonitor<?>> GLOBAL_DEPTH = Queues.newArrayDeque();
 
 	@Nonnull
 	private final GridStorageCache myGridCache;
