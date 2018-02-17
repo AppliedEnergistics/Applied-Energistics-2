@@ -19,9 +19,9 @@
 package appeng.worldgen;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -295,7 +295,7 @@ public final class MeteoritePlacer
 							this.skyStoneDefinition.maybeStack( amount ).ifPresent( ap::addItems );
 							break;
 						case 1:
-							final List<ItemStack> possibles = new LinkedList<>();
+							final List<ItemStack> possibles = new ArrayList<>();
 							possibles.addAll( OreDictionary.getOres( "nuggetIron" ) );
 							possibles.addAll( OreDictionary.getOres( "nuggetCopper" ) );
 							possibles.addAll( OreDictionary.getOres( "nuggetTin" ) );

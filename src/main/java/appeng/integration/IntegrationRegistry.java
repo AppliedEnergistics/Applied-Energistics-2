@@ -19,8 +19,8 @@
 package appeng.integration;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -30,7 +30,7 @@ public enum IntegrationRegistry
 {
 	INSTANCE;
 
-	private final Collection<IntegrationNode> modules = new LinkedList<>();
+	private final Collection<IntegrationNode> modules = new ArrayList<>();
 
 	public void add( final IntegrationType type )
 	{

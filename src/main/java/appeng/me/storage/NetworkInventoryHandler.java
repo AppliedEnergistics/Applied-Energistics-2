@@ -19,10 +19,11 @@
 package appeng.me.storage;
 
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -45,8 +46,8 @@ import appeng.util.ItemSorters;
 public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T>
 {
 
-	private static final ThreadLocal<LinkedList> DEPTH_MOD = new ThreadLocal<>();
-	private static final ThreadLocal<LinkedList> DEPTH_SIM = new ThreadLocal<>();
+	private static final ThreadLocal<Deque> DEPTH_MOD = new ThreadLocal<>();
+	private static final ThreadLocal<Deque> DEPTH_SIM = new ThreadLocal<>();
 	private static final Comparator<Integer> PRIORITY_SORTER = ( o1, o2 ) -> ItemSorters.compareInt( o2, o1 );
 
 	private static int currentPass = 0;
@@ -125,7 +126,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 
 	private boolean diveList( final NetworkInventoryHandler<T> networkInventoryHandler, final Actionable type )
 	{
-		final LinkedList cDepth = this.getDepth( type );
+		final Deque cDepth = this.getDepth( type );
 		if( cDepth.contains( networkInventoryHandler ) )
 		{
 			return true;
@@ -180,15 +181,15 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 		}
 	}
 
-	private LinkedList getDepth( final Actionable type )
+	private Deque getDepth( final Actionable type )
 	{
-		final ThreadLocal<LinkedList> depth = type == Actionable.MODULATE ? DEPTH_MOD : DEPTH_SIM;
+		final ThreadLocal<Deque> depth = type == Actionable.MODULATE ? DEPTH_MOD : DEPTH_SIM;
 
-		LinkedList s = depth.get();
+		Deque s = depth.get();
 
 		if( s == null )
 		{
-			depth.set( s = new LinkedList() );
+			depth.set( s = new ArrayDeque<>() );
 		}
 
 		return s;
@@ -263,7 +264,7 @@ public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInvent
 
 	private boolean diveIteration( final NetworkInventoryHandler<T> networkInventoryHandler, final Actionable type )
 	{
-		final LinkedList cDepth = this.getDepth( type );
+		final Deque cDepth = this.getDepth( type );
 		if( cDepth.isEmpty() )
 		{
 			currentPass++;

@@ -19,10 +19,10 @@
 package appeng.me.cache;
 
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -63,7 +63,7 @@ import appeng.tile.networking.TileController;
 public class PathGridCache implements IPathingGrid
 {
 
-	private final LinkedList<PathSegment> active = new LinkedList<>();
+	private final List<PathSegment> active = new ArrayList<>();
 	private final Set<TileController> controllers = new HashSet<>();
 	private final Set<IGridNode> requireChannels = new HashSet<>();
 	private final Set<IGridNode> blockDense = new HashSet<>();
@@ -154,7 +154,7 @@ public class PathGridCache implements IPathingGrid
 						final GridConnection gc = (GridConnection) gcc;
 						if( !( gc.getOtherSide( node ).getMachine() instanceof TileController ) )
 						{
-							final List<IPathItem> open = new LinkedList<>();
+							final List<IPathItem> open = new ArrayList<>();
 							closedList.add( gc );
 							open.add( gc );
 							gc.setControllerRoute( (GridNode) node, true );

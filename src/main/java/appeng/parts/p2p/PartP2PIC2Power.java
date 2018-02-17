@@ -19,7 +19,7 @@
 package appeng.parts.p2p;
 
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -205,7 +205,7 @@ public class PartP2PIC2Power extends PartP2PTunnel<PartP2PIC2Power>
 				return amount;
 			}
 
-			LinkedList<PartP2PIC2Power> options = new LinkedList<>();
+			List<PartP2PIC2Power> options = new ArrayList<>();
 			for( PartP2PIC2Power o : outs )
 			{
 				if( o.bufferedEnergy1 <= 0.01 )

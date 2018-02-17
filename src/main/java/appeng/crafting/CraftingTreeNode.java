@@ -21,7 +21,6 @@ package appeng.crafting;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -122,7 +121,7 @@ public class CraftingTreeNode
 	{
 		this.job.handlePausing();
 
-		final List<IAEItemStack> thingsUsed = new LinkedList<>();
+		final List<IAEItemStack> thingsUsed = new ArrayList<>();
 
 		this.what.setStackSize( l );
 		if( this.getSlot() >= 0 && this.parent != null && this.parent.details.isCraftable() )

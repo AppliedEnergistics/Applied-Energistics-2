@@ -357,7 +357,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 		if( blk instanceof BlockColored )
 		{
-			final EnumDyeColor color = (EnumDyeColor) state.getValue( BlockColored.COLOR );
+			final EnumDyeColor color = state.getValue( BlockColored.COLOR );
 
 			if( newColor.dye == color )
 			{
@@ -374,7 +374,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 		if( blk == Blocks.STAINED_GLASS )
 		{
-			final EnumDyeColor color = (EnumDyeColor) state.getValue( BlockStainedGlass.COLOR );
+			final EnumDyeColor color = state.getValue( BlockStainedGlass.COLOR );
 
 			if( newColor.dye == color )
 			{
@@ -391,7 +391,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 		if( blk == Blocks.STAINED_GLASS_PANE )
 		{
-			final EnumDyeColor color = (EnumDyeColor) state.getValue( BlockStainedGlassPane.COLOR );
+			final EnumDyeColor color = state.getValue( BlockStainedGlassPane.COLOR );
 
 			if( newColor.dye == color )
 			{

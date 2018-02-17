@@ -22,9 +22,9 @@ package appeng.core.api;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -75,7 +75,7 @@ public class ApiPart implements IPartHelper
 			} );
 
 	private final Map<Class<?>, String> interfaces2Layer = new HashMap<>();
-	private final List<String> desc = new LinkedList<>();
+	private final List<String> desc = new ArrayList<>();
 
 	/**
 	 * Conceptually this method will build a new class hierarchy that is rooted at the given base class, and includes a

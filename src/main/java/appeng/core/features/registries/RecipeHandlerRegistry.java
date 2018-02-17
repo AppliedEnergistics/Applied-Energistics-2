@@ -19,9 +19,9 @@
 package appeng.core.features.registries;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
 
@@ -44,7 +44,7 @@ import appeng.recipes.RecipeHandler;
 public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 {
 	private final Map<String, Class<? extends ICraftHandler>> handlers = new HashMap<>( 20 );
-	private final Collection<ISubItemResolver> resolvers = new LinkedList<>();
+	private final Collection<ISubItemResolver> resolvers = new ArrayList<>();
 
 	@Override
 	public void addNewCraftHandler( final String name, final Class<? extends ICraftHandler> handler )

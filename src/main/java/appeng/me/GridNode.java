@@ -19,11 +19,12 @@
 package appeng.me;
 
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.EnumSet;
-import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.nbt.NBTTagCompound;
@@ -64,7 +65,7 @@ public class GridNode implements IGridNode, IPathItem
 	private static final MENetworkChannelsChanged EVENT = new MENetworkChannelsChanged();
 	private static final int[] CHANNEL_COUNT = { 0, 8, 32 };
 
-	private final List<IGridConnection> connections = new LinkedList<>();
+	private final List<IGridConnection> connections = new ArrayList<>();
 	private final IGridBlock gridProxy;
 	// old power draw, used to diff
 	private double previousDraw = 0.0;
@@ -163,14 +164,14 @@ public class GridNode implements IGridNode, IPathItem
 	{
 		final Object tracker = new Object();
 
-		LinkedList<GridNode> nextRun = new LinkedList<>();
+		Deque<GridNode> nextRun = new ArrayDeque<>();
 		nextRun.add( this );
 
 		this.visitorIterationNumber = tracker;
 
 		if( g instanceof IGridConnectionVisitor )
 		{
-			final LinkedList<IGridConnection> nextConn = new LinkedList<>();
+			final Deque<IGridConnection> nextConn = new ArrayDeque<>();
 			final IGridConnectionVisitor gcv = (IGridConnectionVisitor) g;
 
 			while( !nextRun.isEmpty() )
@@ -181,7 +182,7 @@ public class GridNode implements IGridNode, IPathItem
 				}
 
 				final Iterable<GridNode> thisRun = nextRun;
-				nextRun = new LinkedList<>();
+				nextRun = new ArrayDeque<>();
 
 				for( final GridNode n : thisRun )
 				{
@@ -194,7 +195,7 @@ public class GridNode implements IGridNode, IPathItem
 			while( !nextRun.isEmpty() )
 			{
 				final Iterable<GridNode> thisRun = nextRun;
-				nextRun = new LinkedList<>();
+				nextRun = new ArrayDeque<>();
 
 				for( final GridNode n : thisRun )
 				{
