@@ -320,7 +320,7 @@ public class GridNode implements IGridNode, IPathItem
 		{
 			final IPathingGrid pg = g.getCache( IPathingGrid.class );
 			final IEnergyGrid eg = g.getCache( IEnergyGrid.class );
-			return this.meetsChannelRequirements() && eg.isNetworkPowered() && !pg.isNetworkBooting();
+			return eg.isNetworkPowered() && !pg.isNetworkBooting() && this.meetsChannelRequirements();
 		}
 		return false;
 	}

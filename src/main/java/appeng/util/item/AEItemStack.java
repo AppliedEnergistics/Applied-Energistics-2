@@ -294,7 +294,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	@Override
 	public String toString()
 	{
-		return this.getDefinition().toString();
+		return this.getStackSize() + "x" + this.getDefinition().getItem().getUnlocalizedName() + "@" + this.getDefinition().getItemDamage();
 	}
 
 	@SideOnly( Side.CLIENT )
@@ -347,7 +347,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	@Override
 	public ItemStack asItemStackRepresentation()
 	{
-		return getDefinition().copy();
+		return this.getDefinition().copy();
 	}
 
 	@Override
