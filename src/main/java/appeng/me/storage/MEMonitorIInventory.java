@@ -19,9 +19,10 @@
 package appeng.me.storage;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -144,7 +145,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 	public TickRateModulation onTick()
 	{
 
-		final LinkedList<IAEItemStack> changes = new LinkedList<>();
+		final List<IAEItemStack> changes = new ArrayList<>();
 
 		this.list.resetStatus();
 		int high = 0;
