@@ -36,18 +36,18 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEPartLocation;
 import appeng.core.sync.GuiBridge;
-import appeng.me.storage.CellInventory;
-import appeng.me.storage.CellInventoryHandler;
+import appeng.me.storage.ItemCellInventoryHandler;
+import appeng.me.storage.ItemCellInventory;
 import appeng.util.Platform;
 
 
-public class BasicCellHandler implements ICellHandler
+public class BasicItemCellHandler implements ICellHandler
 {
 
 	@Override
 	public boolean isCell( final ItemStack is )
 	{
-		return CellInventory.isCell( is );
+		return ItemCellInventory.isCell( is );
 	}
 
 	@Override
@@ -55,23 +55,27 @@ public class BasicCellHandler implements ICellHandler
 	{
 		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
-			return CellInventory.getCell( is, container );
+			return ItemCellInventory.getCell( is, container );
 		}
+
 		return null;
 	}
 
 	@Override
 	public void openChestGui( final EntityPlayer player, final IChestOrDrive chest, final ICellHandler cellHandler, final IMEInventoryHandler inv, final ItemStack is, final IStorageChannel chan )
 	{
-		Platform.openGUI( player, (TileEntity) chest, AEPartLocation.fromFacing( chest.getUp() ), GuiBridge.GUI_ME );
+		if( chan == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
+		{
+			Platform.openGUI( player, (TileEntity) chest, AEPartLocation.fromFacing( chest.getUp() ), GuiBridge.GUI_ME );
+		}
 	}
 
 	@Override
 	public int getStatusForCell( final ItemStack is, final IMEInventory handler )
 	{
-		if( handler instanceof CellInventoryHandler )
+		if( handler instanceof ItemCellInventoryHandler )
 		{
-			final CellInventoryHandler ci = (CellInventoryHandler) handler;
+			final ItemCellInventoryHandler ci = (ItemCellInventoryHandler) handler;
 			return ci.getStatusForCell();
 		}
 		return 0;

@@ -91,7 +91,8 @@ import appeng.bootstrap.components.IRecipeRegistrationComponent;
 import appeng.capabilities.Capabilities;
 import appeng.core.features.AEFeature;
 import appeng.core.features.registries.P2PTunnelRegistry;
-import appeng.core.features.registries.cell.BasicCellHandler;
+import appeng.fluids.registries.BasicFluidCellHandler;
+import appeng.core.features.registries.cell.BasicItemCellHandler;
 import appeng.core.features.registries.cell.CreativeCellHandler;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
@@ -286,8 +287,9 @@ final class Registration
 		gcr.registerGridCache( ISecurityGrid.class, SecurityCache.class );
 		gcr.registerGridCache( ICraftingGrid.class, CraftingGridCache.class );
 
-		registries.cell().addCellHandler( new BasicCellHandler() );
+		registries.cell().addCellHandler( new BasicItemCellHandler() );
 		registries.cell().addCellHandler( new CreativeCellHandler() );
+		registries.cell().addCellHandler( new BasicFluidCellHandler() );
 
 		api.definitions().materials().matterBall().maybeStack( 1 ).ifPresent( ammoStack ->
 		{

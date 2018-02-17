@@ -134,4 +134,14 @@ public interface IMaterials
 	IItemDefinition qESingularity();
 
 	IItemDefinition blankPattern();
+
+	IItemDefinition fluidCell1kPart();
+
+	IItemDefinition fluidCell4kPart();
+
+	IItemDefinition fluidCell16kPart();
+
+	IItemDefinition fluidCell64kPart();
+
+	IItemDefinition emptyFluidStorageCell();
 }

@@ -55,7 +55,7 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 
 	public static IMEInventoryHandler getCell( final ItemStack o )
 	{
-		return new CellInventoryHandler( new CreativeCellInventory( o ) );
+		return new ItemCellInventoryHandler( new CreativeCellInventory( o ) );
 	}
 
 	@Override

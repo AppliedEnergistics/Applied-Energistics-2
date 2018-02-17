@@ -28,10 +28,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 
 
-public interface ICellInventory extends IMEInventory<IAEItemStack>
+public interface ICellInventory<T extends IAEStack<T>> extends IMEInventory<T>
 {
 
 	/**
