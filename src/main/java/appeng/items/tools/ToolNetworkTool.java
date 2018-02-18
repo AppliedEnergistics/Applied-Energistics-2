@@ -156,6 +156,13 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 			}
 
 			final Block b = w.getBlock( x, y, z );
+
+			if( b != null )
+				if( ForgeEventFactory.onPlayerInteract( p,
+						b.isAir( w, x, y, z ) ? PlayerInteractEvent.Action.RIGHT_CLICK_AIR : PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK,
+						x, y, z, side, w ).isCanceled() )
+					return false;
+
 			if( b != null && !p.isSneaking() )
 			{
 				final TileEntity te = w.getTileEntity( x, y, z );
@@ -192,11 +199,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 			}
 			else
 			{
-				if( b != null )
-					if( !ForgeEventFactory.onPlayerInteract( p,
-							b.isAir( w, x, y, z ) ? PlayerInteractEvent.Action.RIGHT_CLICK_AIR : PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK,
-							x, y, z, side, w ).isCanceled() )
-						b.onBlockActivated( w, x, y, z, p, side, hitX, hitY, hitZ );
+				b.onBlockActivated( w, x, y, z, p, side, hitX, hitY, hitZ );
 			}
 		}
 		else
