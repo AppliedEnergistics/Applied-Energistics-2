@@ -73,7 +73,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 
 			for( int i = 0; i < 4; i++ )
 			{
-				result.append( TextFormatting.fromColorIndex( colors[i].dye.getDyeDamage() ) ).append( TextFormatting.OBFUSCATED ).append( "##" );
+				result.append( TextFormatting.fromColorIndex( colors[i].dye.getDyeDamage() ) ).append(String.format("%X", colors[i].ordinal()));
 			}
 
 			lines.add( I18n.translateToLocalFormatted( "gui.tooltips.appliedenergistics2.P2PFrequency", result.toString() ) );
