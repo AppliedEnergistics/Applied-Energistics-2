@@ -212,13 +212,7 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 	@Override
 	public IItemList<IAEItemStack> getAvailableItems( IItemList<IAEItemStack> out )
 	{
-
-		for( int i = 0; i < this.itemHandler.getSlots(); i++ )
-		{
-			out.addStorage( AEItemStack.fromItemStack( this.itemHandler.getStackInSlot( i ) ) );
-		}
-
-		return out;
+		return this.cache.getAvailableItems( out );
 	}
 
 	@Override
@@ -265,6 +259,12 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 		public InventoryCache( IItemHandler itemHandler )
 		{
 			this.itemHandler = itemHandler;
+		}
+
+		public IItemList<IAEItemStack> getAvailableItems( IItemList<IAEItemStack> out )
+		{
+			Arrays.stream( this.cachedAeStacks ).forEach( out::add );
+			return out;
 		}
 
 		public List<IAEItemStack> update()
