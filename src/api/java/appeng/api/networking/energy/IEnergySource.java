@@ -24,6 +24,9 @@
 package appeng.api.networking.energy;
 
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 
@@ -39,5 +42,6 @@ public interface IEnergySource
 	 *
 	 * @return returns extracted power.
 	 */
-	double extractAEPower( double amt, Actionable mode, PowerMultiplier usePowerMultiplier );
+	@Nonnegative
+	double extractAEPower( @Nonnegative double amt, @Nonnull Actionable mode, @Nonnull PowerMultiplier usePowerMultiplier );
 }

@@ -24,6 +24,8 @@
 package appeng.api.networking.ticking;
 
 
+import javax.annotation.Nonnull;
+
 import appeng.api.networking.IGridNode;
 
 
@@ -45,18 +47,18 @@ public interface IGridTickable
 	 */
 
 	/**
-	 * You can return null, if you wish to tick using MC's ticking mechanism, or
-	 * you can return a valid TickingRequest to tell AE a guide for which type
-	 * of responsiveness your device wants.
+	 * Return a valid TickingRequest to tell AE a guide for which type of
+	 * responsiveness your device wants.
 	 *
-	 * this will be called for your tile any time your tile changes grids, this
+	 * This will be called for your tile any time your tile changes grids, this
 	 * can happen at any time, so if your using the sleep feature you may wish
 	 * to preserve your sleep, in the result of this method. or you can simply
 	 * reset it.
 	 *
-	 * @return null or a valid new TickingRequest
+	 * @return a valid new TickingRequest
 	 */
-	TickingRequest getTickingRequest( IGridNode node );
+	@Nonnull
+	TickingRequest getTickingRequest( @Nonnull IGridNode node );
 
 	/**
 	 * AE lets you adjust your tick rate based on the results of your tick, if
@@ -73,5 +75,6 @@ public interface IGridTickable
 	 *
 	 * @return tick rate adjustment.
 	 */
-	TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall );
+	@Nonnull
+	TickRateModulation tickingRequest( @Nonnull IGridNode node, int TicksSinceLastCall );
 }

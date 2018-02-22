@@ -21,8 +21,8 @@ package appeng.tile.misc;
 
 import java.io.IOException;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.netty.buffer.ByteBuf;
 
@@ -316,7 +316,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 	}
 
 	@Override
-	public void readPermissions( final HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms )
+	public void readPermissions( final Map<Integer, EnumSet<SecurityPermissions>> playerPerms )
 	{
 		final IPlayerRegistry pr = AEApi.instance().registries().players();
 

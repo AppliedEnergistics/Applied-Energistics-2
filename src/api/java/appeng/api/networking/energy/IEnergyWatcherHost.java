@@ -24,6 +24,9 @@
 package appeng.api.networking.energy;
 
 
+import javax.annotation.Nonnull;
+
+
 public interface IEnergyWatcherHost
 {
 
@@ -33,12 +36,12 @@ public interface IEnergyWatcherHost
 	 *
 	 * @param newWatcher new watcher
 	 */
-	void updateWatcher( IEnergyWatcher newWatcher );
+	void updateWatcher( @Nonnull IEnergyWatcher newWatcher );
 
 	/**
 	 * Called when a threshold is crossed.
 	 *
 	 * @param energyGrid grid
 	 */
-	void onThresholdPass( IEnergyGrid energyGrid );
+	void onThresholdPass( @Nonnull IEnergyGrid energyGrid );
 }
