@@ -21,6 +21,7 @@ package appeng.client.me;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
@@ -112,6 +113,8 @@ public class ItemRepo
 
 		final Enum viewMode = this.sortSrc.getSortDisplay();
 		final Enum searchMode = AEConfig.instance().getConfigManager().getSetting( Settings.SEARCH_MODE );
+		final boolean needsZeroCopy = viewMode == ViewItems.CRAFTABLE;
+
 		if( searchMode == SearchBoxMode.JEI_AUTOSEARCH || searchMode == SearchBoxMode.JEI_MANUAL_SEARCH || searchMode == SearchBoxMode.JEI_AUTOSEARCH_KEEP || searchMode == SearchBoxMode.JEI_MANUAL_SEARCH_KEEP )
 		{
 			this.updateJEI( this.searchString );
@@ -160,43 +163,46 @@ public class ItemRepo
 				continue;
 			}
 
-			if( viewMode == ViewItems.CRAFTABLE )
-			{
-				is = is.copy();
-				is.setStackSize( 0 );
-			}
-
 			if( viewMode == ViewItems.STORED && is.getStackSize() == 0 )
 			{
 				continue;
 			}
 
 			final String dspName = searchMod ? Platform.getModId( is ) : Platform.getItemDisplayName( is );
+			boolean foundMatchingItemStack = false;
 			notDone = true;
 
 			if( m.matcher( dspName.toLowerCase() ).find() )
 			{
-				this.view.add( is );
 				notDone = false;
+				foundMatchingItemStack = true;
 			}
 
 			if( terminalSearchToolTips && notDone && !searchMod )
 			{
-				for( final Object lp : Platform.getTooltip( is ) )
+				final List<String> tooltip = Platform.getTooltip( is );
+
+				for( final String line : tooltip )
 				{
-					if( lp instanceof String && m.matcher( (CharSequence) lp ).find() )
+					if( m.matcher( line ).find() )
 					{
-						this.view.add( is );
+						foundMatchingItemStack = true;
 						notDone = false;
 						break;
 					}
 				}
 			}
 
-			/*
-			 * if ( terminalSearchMods && notDone ) { if ( m.matcher( Platform.getMod( is.getItemStack() ) ).find() ) {
-			 * view.add( is ); notDone = false; } }
-			 */
+			if( foundMatchingItemStack )
+			{
+				if( needsZeroCopy )
+				{
+					is = is.copy();
+					is.setStackSize( 0 );
+				}
+
+				this.view.add( is );
+			}
 		}
 
 		final Enum SortBy = this.sortSrc.getSortBy();
