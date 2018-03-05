@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringJoiner;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -40,6 +41,7 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerNull;
+import appeng.core.AELog;
 import appeng.util.ItemSorters;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
@@ -267,6 +269,11 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		}
 		else
 		{
+			if( AELog.isCraftingDebugLogEnabled() )
+			{
+				this.warnAboutCraftingManager();
+			}
+
 			final ItemStack testOutput = CraftingManager.findMatchingResult( this.testFrame, w );
 
 			if( Platform.itemComparisons().isSameItem( this.correctOutput, testOutput ) )
@@ -393,6 +400,22 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	public int hashCode()
 	{
 		return this.pattern.hashCode();
+	}
+
+	private void warnAboutCraftingManager()
+	{
+		final StringJoiner joinActualInputs = new StringJoiner( ", " );
+		for( int j = 0; j < this.testFrame.getSizeInventory(); j++ )
+		{
+			final ItemStack stack = this.testFrame.getStackInSlot( j );
+			if( !stack.isEmpty() )
+			{
+				joinActualInputs.add( stack.toString() );
+			}
+		}
+
+		AELog.warn( "Using CraftingManager fallback: Recipe <%s> for output <%s> rejected inputs [%s].",
+				this.standardRecipe.getRegistryName(), this.standardRecipe.getRecipeOutput(), joinActualInputs );
 	}
 
 	@Override
