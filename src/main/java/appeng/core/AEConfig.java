@@ -213,7 +213,9 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		{
 			if( feature.isVisible() )
 			{
-				if( this.get( "Features." + feature.category(), feature.key(), feature.isEnabled() ).getBoolean( feature.isEnabled() ) )
+				final Property option = this.get( "Features." + feature.category(), feature.key(), feature.isEnabled(), feature.comment() );
+
+				if( option.getBoolean( feature.isEnabled() ) )
 				{
 					this.featureFlags.add( feature );
 				}

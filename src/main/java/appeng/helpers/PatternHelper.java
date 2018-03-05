@@ -41,7 +41,9 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerNull;
+import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.features.AEFeature;
 import appeng.util.ItemSorters;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
@@ -267,7 +269,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 				return true;
 			}
 		}
-		else
+		else if( AEConfig.instance().isFeatureEnabled( AEFeature.CRAFTING_MANAGER_FALLBACK ) )
 		{
 			final ItemStack testOutput = CraftingManager.findMatchingResult( this.testFrame, w );
 
