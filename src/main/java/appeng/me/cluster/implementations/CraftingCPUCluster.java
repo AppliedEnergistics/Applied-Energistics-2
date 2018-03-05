@@ -19,6 +19,7 @@
 package appeng.me.cluster.implementations;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -227,7 +228,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	{
 		if( input instanceof IAEItemStack )
 		{
-			final IAEItemStack is = this.waitingFor.findPrecise( (IAEItemStack) input );
+			final IAEItemStack is = this.waitingFor.findPrecise( input );
 			if( is != null && is.getStackSize() > 0 )
 			{
 				return true;
@@ -243,7 +244,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			return input;
 		}
 
-		final IAEItemStack what = (IAEItemStack) input.copy();
+		final IAEItemStack what = input.copy();
 		final IAEItemStack is = this.waitingFor.findPrecise( what );
 
 		if( type == Actionable.SIMULATE )// causes crafting to lock up?
@@ -684,7 +685,25 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 									if( details.isCraftable() )
 									{
-										for( IAEItemStack fuzz : this.inventory.getItemList().findFuzzy( input[x], FuzzyMode.IGNORE_ALL ) )
+										final Collection<IAEItemStack> itemList;
+
+										if( details.canSubstitute() )
+										{
+											itemList = this.inventory.getItemList().findFuzzy( input[x], FuzzyMode.IGNORE_ALL );
+										}
+										else
+										{
+											itemList = new ArrayList<>( 1 );
+
+											final IAEItemStack item = this.inventory.getItemList().findPrecise( input[x] );
+
+											if( item != null )
+											{
+												itemList.add( item );
+											}
+										}
+
+										for( IAEItemStack fuzz : itemList )
 										{
 											fuzz = fuzz.copy();
 											fuzz.setStackSize( input[x].getStackSize() );
