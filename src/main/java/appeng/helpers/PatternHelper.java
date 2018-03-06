@@ -269,19 +269,22 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		}
 		else
 		{
-			if( AELog.isCraftingDebugLogEnabled() )
-			{
-				this.warnAboutCraftingManager();
-			}
-
 			final ItemStack testOutput = CraftingManager.findMatchingResult( this.testFrame, w );
 
 			if( Platform.itemComparisons().isSameItem( this.correctOutput, testOutput ) )
 			{
 				this.testFrame.setInventorySlotContents( slotIndex, this.crafting.getStackInSlot( slotIndex ) );
 				this.markItemAs( slotIndex, i, TestStatus.ACCEPT );
+
+				if( AELog.isCraftingDebugLogEnabled() )
+				{
+					this.warnAboutCraftingManager( true );
+				}
+
 				return true;
 			}
+
+			this.warnAboutCraftingManager( false );
 		}
 
 		this.markItemAs( slotIndex, i, TestStatus.DECLINE );
@@ -402,8 +405,10 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		return this.pattern.hashCode();
 	}
 
-	private void warnAboutCraftingManager()
+	private void warnAboutCraftingManager( boolean foundAlternative )
 	{
+		final String foundAlternativeRecipe = foundAlternative ? "Found alternative recipe." : "NOT FOUND, please report.";
+
 		final StringJoiner joinActualInputs = new StringJoiner( ", " );
 		for( int j = 0; j < this.testFrame.getSizeInventory(); j++ )
 		{
@@ -414,8 +419,8 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			}
 		}
 
-		AELog.warn( "Using CraftingManager fallback: Recipe <%s> for output <%s> rejected inputs [%s].",
-				this.standardRecipe.getRegistryName(), this.standardRecipe.getRecipeOutput(), joinActualInputs );
+		AELog.warn( "Using CraftingManager fallback: Recipe <%s> for output <%s> rejected inputs [%s]. %s",
+				this.standardRecipe.getRegistryName(), this.standardRecipe.getRecipeOutput(), joinActualInputs, foundAlternativeRecipe );
 	}
 
 	@Override
