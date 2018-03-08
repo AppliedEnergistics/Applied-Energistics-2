@@ -155,6 +155,7 @@ public enum AEFeature
 	MOLECULAR_ASSEMBLER( "MolecularAssembler", Constants.CATEGORY_CRAFTING_FEATURES ),
 	PATTERNS( "Patterns", Constants.CATEGORY_CRAFTING_FEATURES ),
 	CRAFTING_CPU( "CraftingCPU", Constants.CATEGORY_CRAFTING_FEATURES ),
+	CRAFTING_MANAGER_FALLBACK( "CraftingManagerFallback", Constants.CATEGORY_CRAFTING_FEATURES, "Use CraftingManager to find an alternative recipe, after a pattern rejected an ingredient. Should be enabled to avoid issues, but can have a minor performance impact." ),
 
 	BASIC_CARDS( "BasicCards", Constants.CATEGORY_UPGRADES ),
 	ADVANCED_CARDS( "AdvancedCards", Constants.CATEGORY_UPGRADES ),
@@ -178,17 +179,29 @@ public enum AEFeature
 	private final String key;
 	private final String category;
 	private final boolean enabled;
+	private final String comment;
 
 	AEFeature( final String key, final String cat )
 	{
 		this( key, cat, true );
 	}
 
+	AEFeature( final String key, final String cat, final String comment )
+	{
+		this( key, cat, true, comment );
+	}
+
 	AEFeature( final String key, final String cat, final boolean enabled )
+	{
+		this( key, cat, enabled, null );
+	}
+
+	AEFeature( final String key, final String cat, final boolean enabled, final String comment )
 	{
 		this.key = key;
 		this.category = cat;
 		this.enabled = enabled;
+		this.comment = comment;
 	}
 
 	/**
@@ -214,6 +227,11 @@ public enum AEFeature
 	public boolean isEnabled()
 	{
 		return this.enabled;
+	}
+
+	public String comment()
+	{
+		return this.comment;
 	}
 
 	private enum Constants
