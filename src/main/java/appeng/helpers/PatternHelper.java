@@ -44,7 +44,6 @@ import appeng.container.ContainerNull;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.features.AEFeature;
-import appeng.util.ItemSorters;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
@@ -398,7 +397,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	@Override
 	public int compareTo( final PatternHelper o )
 	{
-		return ItemSorters.compareInt( o.priority, this.priority );
+		return Integer.compare( o.priority, this.priority );
 	}
 
 	@Override

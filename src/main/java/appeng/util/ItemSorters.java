@@ -80,9 +80,9 @@ public class ItemSorters
 		{
 			if( getDirection() == SortDir.ASCENDING )
 			{
-				return compareLong( o2.getStackSize(), o1.getStackSize() );
+				return Long.compare( o2.getStackSize(), o1.getStackSize() );
 			}
-			return compareLong( o1.getStackSize(), o2.getStackSize() );
+			return Long.compare( o1.getStackSize(), o2.getStackSize() );
 		}
 	};
 	private static IInvTweaks api;
@@ -122,45 +122,6 @@ public class ItemSorters
 		{
 			api = null;
 		}
-	}
-
-	public static int compareInt( final int a, final int b )
-	{
-		if( a == b )
-		{
-			return 0;
-		}
-		if( a < b )
-		{
-			return -1;
-		}
-		return 1;
-	}
-
-	public static int compareLong( final long a, final long b )
-	{
-		if( a == b )
-		{
-			return 0;
-		}
-		if( a < b )
-		{
-			return -1;
-		}
-		return 1;
-	}
-
-	public static int compareDouble( final double a, final double b )
-	{
-		if( a == b )
-		{
-			return 0;
-		}
-		if( a < b )
-		{
-			return -1;
-		}
-		return 1;
 	}
 
 	private static SortDir getDirection()
