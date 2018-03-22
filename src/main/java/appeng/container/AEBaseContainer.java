@@ -356,6 +356,11 @@ public abstract class AEBaseContainer extends Container
 
 		if( Platform.isServer() )
 		{
+			if( this.tileEntity != null && this.tileEntity.getWorld().getTileEntity( this.tileEntity.getPos() ) != this.tileEntity )
+			{
+				this.setValidContainer( false );
+			}
+
 			for( final IContainerListener listener : this.listeners )
 			{
 				for( final SyncData sd : this.syncData.values() )
