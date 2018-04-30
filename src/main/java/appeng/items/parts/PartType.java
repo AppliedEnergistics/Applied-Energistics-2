@@ -49,6 +49,7 @@ import appeng.parts.automation.PartFormationPlane;
 import appeng.parts.automation.PartIdentityAnnihilationPlane;
 import appeng.parts.automation.PartImportBus;
 import appeng.parts.automation.PartLevelEmitter;
+import appeng.parts.automation.fluids.PartImportBusFluids;
 import appeng.parts.misc.PartCableAnchor;
 import appeng.parts.misc.PartInterface;
 import appeng.parts.misc.PartInvertedToggleBus;
@@ -192,6 +193,8 @@ public enum PartType
 	STORAGE_BUS( 220, "storage_bus", EnumSet.of( AEFeature.STORAGE_BUS ), EnumSet.noneOf( IntegrationType.class ), PartStorageBus.class ),
 
 	IMPORT_BUS( 240, "import_bus", EnumSet.of( AEFeature.IMPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartImportBus.class ),
+
+	IMPORT_BUS_FLUIDS( 241, "import_bus_fluids", EnumSet.of( AEFeature.IMPORT_BUS_FLUIDS ), EnumSet.noneOf( IntegrationType.class ), PartImportBusFluids.class ),
 
 	EXPORT_BUS( 260, "export_bus", EnumSet.of( AEFeature.EXPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartExportBus.class ),
 

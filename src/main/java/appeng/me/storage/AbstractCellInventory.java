@@ -347,7 +347,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 	@Override
 	public int getUnusedItemCount()
 	{
-		final int div = (int) ( this.getStoredItemCount() % 8000 );
+		final int div = (int) ( this.getStoredItemCount() % 8 );
 
 		if( div == 0 )
 		{

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2018, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -84,6 +84,7 @@ public enum AEFeature
 	ANNIHILATION_PLANE( "AnnihilationPlane", Constants.CATEGORY_NETWORK_BUSES ),
 	IDENTITY_ANNIHILATION_PLANE( "IdentityAnnihilationPlane", Constants.CATEGORY_NETWORK_BUSES ),
 	IMPORT_BUS( "ImportBus", Constants.CATEGORY_NETWORK_BUSES ),
+	IMPORT_BUS_FLUIDS( "ImportBusFluids", Constants.CATEGORY_NETWORK_BUSES ),
 	EXPORT_BUS( "ExportBus", Constants.CATEGORY_NETWORK_BUSES ),
 	STORAGE_BUS( "StorageBus", Constants.CATEGORY_NETWORK_BUSES ),
 	PART_CONVERSION_MONITOR( "PartConversionMonitor", Constants.CATEGORY_NETWORK_BUSES ),

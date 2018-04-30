@@ -53,6 +53,7 @@ public final class ApiParts implements IParts
 	private final IItemDefinition invertedToggleBus;
 	private final IItemDefinition storageBus;
 	private final IItemDefinition importBus;
+	private final IItemDefinition importBusFluids;
 	private final IItemDefinition exportBus;
 	private final IItemDefinition iface;
 	private final IItemDefinition levelEmitter;
@@ -81,9 +82,7 @@ public final class ApiParts implements IParts
 	public ApiParts( FeatureFactory registry, PartModels partModels )
 	{
 		final ItemPart itemPart = new ItemPart();
-		registry.item( "part", () -> itemPart )
-				.rendering( new ItemPartRendering( partModels, itemPart ) )
-				.build();
+		registry.item( "part", () -> itemPart ).rendering( new ItemPartRendering( partModels, itemPart ) ).build();
 
 		// Register all part models
 		for( PartType partType : PartType.values() )
@@ -105,12 +104,12 @@ public final class ApiParts implements IParts
 		this.invertedToggleBus = new DamagedItemDefinition( "part.toggle_bus.inverted", itemPart.createPart( PartType.INVERTED_TOGGLE_BUS ) );
 		this.storageBus = new DamagedItemDefinition( "part.bus.storage", itemPart.createPart( PartType.STORAGE_BUS ) );
 		this.importBus = new DamagedItemDefinition( "part.bus.import", itemPart.createPart( PartType.IMPORT_BUS ) );
+		this.importBusFluids = new DamagedItemDefinition( "part.bus.import.fluid", itemPart.createPart( PartType.IMPORT_BUS_FLUIDS ) );
 		this.exportBus = new DamagedItemDefinition( "part.bus.export", itemPart.createPart( PartType.EXPORT_BUS ) );
 		this.iface = new DamagedItemDefinition( "part.interface", itemPart.createPart( PartType.INTERFACE ) );
 		this.levelEmitter = new DamagedItemDefinition( "part.level_emitter", itemPart.createPart( PartType.LEVEL_EMITTER ) );
 		this.annihilationPlane = new DamagedItemDefinition( "part.plane.annihilation", itemPart.createPart( PartType.ANNIHILATION_PLANE ) );
-		this.identityAnnihilationPlane = new DamagedItemDefinition( "part.plane.annihiliation.identity", itemPart
-				.createPart( PartType.IDENTITY_ANNIHILATION_PLANE ) );
+		this.identityAnnihilationPlane = new DamagedItemDefinition( "part.plane.annihiliation.identity", itemPart.createPart( PartType.IDENTITY_ANNIHILATION_PLANE ) );
 		this.formationPlane = new DamagedItemDefinition( "part.plane.formation", itemPart.createPart( PartType.FORMATION_PLANE ) );
 		this.p2PTunnelME = new DamagedItemDefinition( "part.tunnel.me", itemPart.createPart( PartType.P2P_TUNNEL_ME ) );
 		this.p2PTunnelRedstone = new DamagedItemDefinition( "part.tunnel.redstone", itemPart.createPart( PartType.P2P_TUNNEL_REDSTONE ) );
@@ -233,6 +232,12 @@ public final class ApiParts implements IParts
 	public IItemDefinition importBus()
 	{
 		return this.importBus;
+	}
+
+	@Override
+	public IItemDefinition importBusFluids()
+	{
+		return this.importBusFluids;
 	}
 
 	@Override
