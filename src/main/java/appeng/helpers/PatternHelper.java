@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringJoiner;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -40,6 +41,9 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerNull;
+import appeng.core.AEConfig;
+import appeng.core.AELog;
+import appeng.core.features.AEFeature;
 import appeng.util.ItemSorters;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
@@ -265,7 +269,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 				return true;
 			}
 		}
-		else
+		else if( AEConfig.instance().isFeatureEnabled( AEFeature.CRAFTING_MANAGER_FALLBACK ) )
 		{
 			final ItemStack testOutput = CraftingManager.findMatchingResult( this.testFrame, w );
 
@@ -273,8 +277,16 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			{
 				this.testFrame.setInventorySlotContents( slotIndex, this.crafting.getStackInSlot( slotIndex ) );
 				this.markItemAs( slotIndex, i, TestStatus.ACCEPT );
+
+				if( AELog.isCraftingDebugLogEnabled() )
+				{
+					this.warnAboutCraftingManager( true );
+				}
+
 				return true;
 			}
+
+			this.warnAboutCraftingManager( false );
 		}
 
 		this.markItemAs( slotIndex, i, TestStatus.DECLINE );
@@ -393,6 +405,24 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	public int hashCode()
 	{
 		return this.pattern.hashCode();
+	}
+
+	private void warnAboutCraftingManager( boolean foundAlternative )
+	{
+		final String foundAlternativeRecipe = foundAlternative ? "Found alternative recipe." : "NOT FOUND, please report.";
+
+		final StringJoiner joinActualInputs = new StringJoiner( ", " );
+		for( int j = 0; j < this.testFrame.getSizeInventory(); j++ )
+		{
+			final ItemStack stack = this.testFrame.getStackInSlot( j );
+			if( !stack.isEmpty() )
+			{
+				joinActualInputs.add( stack.toString() );
+			}
+		}
+
+		AELog.warn( "Using CraftingManager fallback: Recipe <%s> for output <%s> rejected inputs [%s]. %s",
+				this.standardRecipe.getRegistryName(), this.standardRecipe.getRecipeOutput(), joinActualInputs, foundAlternativeRecipe );
 	}
 
 	@Override

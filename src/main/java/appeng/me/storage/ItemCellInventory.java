@@ -36,7 +36,6 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.util.item.AEItemStack;
 
 
 public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
@@ -121,12 +120,12 @@ public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
 		{
 			return input;
 		}
-
-		final ItemStack sharedItemStack = input.createItemStack();
-
-		if( ItemCellInventory.isStorageCell( sharedItemStack ) )
+		// This is slightly hacky as it expects a read-only access, but fine for now.
+		// TODO: Guarantee a read-only access. E.g. provide an isEmpty() method and ensure CellInventory does not write
+		// any NBT data for empty cells instead of relying on an empty IItemContainer
+		if( ItemCellInventory.isStorageCell( input.getDefinition() ) )
 		{
-			final IMEInventory meInventory = getCell( sharedItemStack, null );
+			final IMEInventory meInventory = getCell( input.getDefinition(), null );
 			if( meInventory != null && !this.isEmpty( meInventory ) )
 			{
 				return input;
@@ -136,20 +135,20 @@ public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
 		final IAEItemStack l = this.getCellItems().findPrecise( input );
 		if( l != null )
 		{
-			final long remainingItemSlots = this.getRemainingItemCount();
-			if( remainingItemSlots < 0 )
+			final long remainingItemCount = this.getRemainingItemCount();
+			if( remainingItemCount < 0 )
 			{
 				return input;
 			}
 
-			if( input.getStackSize() > remainingItemSlots )
+			if( input.getStackSize() > remainingItemCount )
 			{
 				final IAEItemStack r = input.copy();
-				r.setStackSize( r.getStackSize() - remainingItemSlots );
+				r.setStackSize( r.getStackSize() - remainingItemCount );
 				if( mode == Actionable.MODULATE )
 				{
-					l.setStackSize( l.getStackSize() + remainingItemSlots );
-					this.updateItemCount( remainingItemSlots );
+					l.setStackSize( l.getStackSize() + remainingItemCount );
+					this.updateItemCount( remainingItemCount );
 					this.saveChanges();
 				}
 				return r;
@@ -173,19 +172,19 @@ public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
 			{
 				if( input.getStackSize() > remainingItemCount )
 				{
-					final ItemStack toReturn = sharedItemStack.copy();
-					toReturn.setCount( sharedItemStack.getCount() - remainingItemCount );
+					final IAEItemStack toReturn = input.copy();
+					toReturn.setStackSize( input.getStackSize() - remainingItemCount );
 					if( mode == Actionable.MODULATE )
 					{
-						final ItemStack toWrite = sharedItemStack.copy();
-						toWrite.setCount( remainingItemCount );
+						final IAEItemStack toWrite = input.copy();
+						toWrite.setStackSize( remainingItemCount );
 
-						this.cellItems.add( AEItemStack.fromItemStack( toWrite ) );
-						this.updateItemCount( toWrite.getCount() );
+						this.cellItems.add( toWrite );
+						this.updateItemCount( toWrite.getStackSize() );
 
 						this.saveChanges();
 					}
-					return AEItemStack.fromItemStack( toReturn );
+					return toReturn;
 				}
 
 				if( mode == Actionable.MODULATE )

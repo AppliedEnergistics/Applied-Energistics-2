@@ -150,11 +150,6 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		final ItemStack is = this.workBench.getInventoryByName( "cell" ).getStackInSlot( 0 );
 		if( Platform.isServer() )
 		{
-			if( this.workBench.getWorld().getTileEntity( this.workBench.getPos() ) != this.workBench )
-			{
-				this.setValidContainer( false );
-			}
-
 			for( final IContainerListener listener : this.listeners )
 			{
 				if( this.prevStack != is )

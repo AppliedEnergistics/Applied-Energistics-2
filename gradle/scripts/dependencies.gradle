@@ -31,7 +31,7 @@ repositories {
 
     maven {
         name = "Tesla repo"
-        url "http://maven.epoxide.xyz"
+        url "http://maven.mcmoddev.com"
     }
 
     maven {
@@ -48,7 +48,7 @@ repositories {
         name 'tterrag maven'
         url "http://maven.tterrag.com/"
     }
-    
+
     maven { // McJtyLib
         name 'mcjty'
         url "http://maven.k-4u.nl/"
@@ -58,10 +58,15 @@ repositories {
         name 'tehnut'
         url "http://tehnut.info/maven"
     }
-    
+
    	maven { // CraftTweaker
         name 'jared maven'
         url "http://maven.blamejared.com/"
+    }
+
+    maven { // modmaven, maven proxy
+        name 'modmaven'
+        url "https://modmaven.k-4u.nl/"
     }
 }
 

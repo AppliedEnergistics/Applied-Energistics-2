@@ -167,126 +167,30 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	{
 		if( st instanceof IAEItemStack )
 		{
-			final IAEItemStack o = (IAEItemStack) st;
+			final IAEItemStack other = (IAEItemStack) st;
 
-			if( this.sameOre( o ) )
+			if( OreHelper.INSTANCE.sameOre( this, other ) )
 			{
 				return true;
 			}
 
-			if( o.getItem() == this.getItem() )
-			{
-				if( this.getDefinition().getItem().isDamageable() )
-				{
-					final ItemStack a = this.getDefinition();
-					final ItemStack b = o.getDefinition();
+			final ItemStack itemStack = this.getDefinition();
+			final ItemStack otherStack = other.getDefinition();
 
-					try
-					{
-						if( mode == FuzzyMode.IGNORE_ALL )
-						{
-							return true;
-						}
-						else if( mode == FuzzyMode.PERCENT_99 )
-						{
-							final Item ai = a.getItem();
-							final Item bi = b.getItem();
-
-							return ( ai.getDurabilityForDisplay( a ) < 0.001f ) == ( bi.getDurabilityForDisplay( b ) < 0.001f );
-						}
-						else
-						{
-							final Item ai = a.getItem();
-							final Item bi = b.getItem();
-
-							final float percentDamageOfA = 1.0f - (float) ai.getDurabilityForDisplay( a );
-							final float percentDamageOfB = 1.0f - (float) bi.getDurabilityForDisplay( b );
-
-							return ( percentDamageOfA > mode.breakPoint ) == ( percentDamageOfB > mode.breakPoint );
-						}
-					}
-					catch( final Throwable e )
-					{
-						if( mode == FuzzyMode.IGNORE_ALL )
-						{
-							return true;
-						}
-						else if( mode == FuzzyMode.PERCENT_99 )
-						{
-							return ( a.getItemDamage() > 1 ) == ( b.getItemDamage() > 1 );
-						}
-						else
-						{
-							final float percentDamageOfA = (float) a.getItemDamage() / (float) a.getMaxDamage();
-							final float percentDamageOfB = (float) b.getItemDamage() / (float) b.getMaxDamage();
-
-							return ( percentDamageOfA > mode.breakPoint ) == ( percentDamageOfB > mode.breakPoint );
-						}
-					}
-				}
-
-				return this.getItemDamage() == o.getItemDamage();
-			}
+			return this.fuzzyItemStackComparison( itemStack, otherStack, mode );
 		}
 
 		if( st instanceof ItemStack )
 		{
-			final ItemStack o = (ItemStack) st;
+			final ItemStack otherStack = (ItemStack) st;
 
-			OreHelper.INSTANCE.sameOre( this, o );
-
-			if( o.getItem() == this.getItem() )
+			if( OreHelper.INSTANCE.sameOre( this, otherStack ) )
 			{
-				if( this.getDefinition().getItem().isDamageable() )
-				{
-					final ItemStack a = this.getDefinition();
-
-					try
-					{
-						if( mode == FuzzyMode.IGNORE_ALL )
-						{
-							return true;
-						}
-						else if( mode == FuzzyMode.PERCENT_99 )
-						{
-							final Item ai = a.getItem();
-							final Item bi = o.getItem();
-
-							return ( ai.getDurabilityForDisplay( a ) < 0.001f ) == ( bi.getDurabilityForDisplay( o ) < 0.001f );
-						}
-						else
-						{
-							final Item ai = a.getItem();
-							final Item bi = o.getItem();
-
-							final float percentDamageOfA = 1.0f - (float) ai.getDurabilityForDisplay( a );
-							final float percentDamageOfB = 1.0f - (float) bi.getDurabilityForDisplay( o );
-
-							return ( percentDamageOfA > mode.breakPoint ) == ( percentDamageOfB > mode.breakPoint );
-						}
-					}
-					catch( final Throwable e )
-					{
-						if( mode == FuzzyMode.IGNORE_ALL )
-						{
-							return true;
-						}
-						else if( mode == FuzzyMode.PERCENT_99 )
-						{
-							return ( a.getItemDamage() > 1 ) == ( o.getItemDamage() > 1 );
-						}
-						else
-						{
-							final float percentDamageOfA = (float) a.getItemDamage() / (float) a.getMaxDamage();
-							final float percentDamageOfB = (float) o.getItemDamage() / (float) o.getMaxDamage();
-
-							return ( percentDamageOfA > mode.breakPoint ) == ( percentDamageOfB > mode.breakPoint );
-						}
-					}
-				}
-
-				return this.getItemDamage() == o.getItemDamage();
+				return true;
 			}
+
+			final ItemStack itemStack = this.getDefinition();
+			return this.fuzzyItemStackComparison( itemStack, otherStack, mode );
 		}
 
 		return false;
@@ -390,7 +294,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	@Override
 	public String toString()
 	{
-		return this.getDefinition().toString();
+		return this.getStackSize() + "x" + this.getDefinition().getItem().getUnlocalizedName() + "@" + this.getDefinition().getItemDamage();
 	}
 
 	@SideOnly( Side.CLIENT )
@@ -443,7 +347,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	@Override
 	public ItemStack asItemStackRepresentation()
 	{
-		return getDefinition().copy();
+		return this.getDefinition().copy();
 	}
 
 	@Override
@@ -455,6 +359,35 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	AESharedItemStack getSharedStack()
 	{
 		return this.sharedStack;
+	}
+
+	private boolean fuzzyItemStackComparison( ItemStack a, ItemStack b, FuzzyMode mode )
+	{
+		if( a.getItem() == b.getItem() )
+		{
+			if( a.getItem().isDamageable() )
+			{
+				if( mode == FuzzyMode.IGNORE_ALL )
+				{
+					return true;
+				}
+				else if( mode == FuzzyMode.PERCENT_99 )
+				{
+					return ( a.getItemDamage() > 1 ) == ( b.getItemDamage() > 1 );
+				}
+				else
+				{
+					final float percentDamageOfA = (float) a.getItemDamage() / (float) a.getMaxDamage();
+					final float percentDamageOfB = (float) b.getItemDamage() / (float) b.getMaxDamage();
+
+					return ( percentDamageOfA > mode.breakPoint ) == ( percentDamageOfB > mode.breakPoint );
+				}
+			}
+
+			return a.getMetadata() == b.getMetadata();
+		}
+
+		return false;
 	}
 
 }
