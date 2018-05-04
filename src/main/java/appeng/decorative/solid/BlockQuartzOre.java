@@ -77,7 +77,7 @@ public class BlockQuartzOre extends AEBaseBlock
 	}
 
 	@Override
-	public int getExpDrop ( IBlockState state, IBlockAccess world, BlockPos pos, int fortune )
+	public int getExpDrop( IBlockState state, IBlockAccess world, BlockPos pos, int fortune )
 	{
 		Random rand = world instanceof World ? ( (World) world ).rand : new Random();
 	
