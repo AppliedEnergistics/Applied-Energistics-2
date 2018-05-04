@@ -77,13 +77,15 @@ public class BlockQuartzOre extends AEBaseBlock
 	}
 
 	@Override
-	public int getExpDrop(IBlockState state, IBlockAccess world, BlockPos pos, int fortune) {
-		Random rand = world instanceof World ? ((World) world).rand : new Random();
+	public int getExpDrop ( IBlockState state, IBlockAccess world, BlockPos pos, int fortune )
+	{
+		Random rand = world instanceof World ? ( (World) world ).rand : new Random();
 	
-	    if (this.getItemDropped(state, rand, fortune) != Item.getItemFromBlock(this)) {
+	    if ( this.getItemDropped( state, rand, fortune ) != Item.getItemFromBlock( this ) )  
+	    {
 			return MathHelper.getInt( rand, 2, 5 );
 		}
-		return super.getExpDrop(state, world, pos, fortune);
+		return super.getExpDrop( state, world, pos, fortune );
 	}
 
 	@Override
