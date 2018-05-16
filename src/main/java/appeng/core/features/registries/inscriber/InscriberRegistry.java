@@ -202,10 +202,15 @@ public final class InscriberRegistry implements IInscriberRegistry
 			Preconditions.checkState( this.inputs != null, "Input must be defined." );
 			Preconditions.checkState( !this.inputs.isEmpty(), "Input must have a size." );
 			Preconditions.checkState( !this.output.isEmpty(), "Output cannot be empty." );
-			Preconditions.checkState( !this.topOptional.isEmpty() || !this.bottomOptional.isEmpty(), "One optional must be defined." );
+			Preconditions.checkState( hasAnOptional(), "One optional must be defined." );
 			Preconditions.checkState( this.type != null, "Process type must be defined." );
 
 			return new InscriberRecipe( this.inputs, this.output, this.topOptional, this.bottomOptional, this.type );
+		}
+
+		private boolean hasAnOptional()
+		{
+			return ( this.topOptional != null && !this.topOptional.isEmpty() ) || ( this.bottomOptional != null && !this.bottomOptional.isEmpty() );
 		}
 	}
 }
