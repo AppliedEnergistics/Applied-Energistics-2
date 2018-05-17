@@ -54,9 +54,9 @@ public interface ISpatialStorageCell
 	int getMaxStoredDim( ItemStack is );
 
 	/**
-	 * @param is spatial storage cell
+	 * Get the spatial dimension for this cell.
 	 *
-	 * @return the world for this cell
+	 * @return spatial dimension
 	 */
 	ISpatialDimension getSpatialDimension();
 

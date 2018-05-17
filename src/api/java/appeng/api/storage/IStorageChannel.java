@@ -45,11 +45,11 @@ public interface IStorageChannel<T extends IAEStack<T>>
 
 	/**
 	 * Can be used as factor for transferring stacks of a channel.
-	 * 
+	 *
 	 * E.g. used by IO Ports to transfer 1000 mB, not 1 mB to match the
 	 * item channel transferring a full bucket per operation.
-	 * 
-	 * @return
+	 *
+	 * @return 1 "unit" by default.
 	 */
 	default int transferFactor()
 	{
@@ -58,20 +58,20 @@ public interface IStorageChannel<T extends IAEStack<T>>
 
 	/**
 	 * Create a new {@link IItemList} of the specific type.
-	 * 
-	 * @return
+	 *
+	 * @return A new list.
 	 */
 	@Nonnull
 	IItemList<T> createList();
 
 	/**
 	 * Create a new {@link IAEStack} subtype of the specific object.
-	 * 
+	 *
 	 * The parameter is unbound to allow a slightly more flexible approach.
 	 * But the general intention is about converting an {@link ItemStack} into the corresponding {@link IAEItemStack}.
 	 * Another valid case might be to use it instead of {@link IAEStack#copy()}, but this might not be supported by all
 	 * types.
-	 * 
+	 *
 	 * @param input The object to turn into an {@link IAEStack}
 	 * @return The converted stack or null
 	 */
@@ -79,9 +79,9 @@ public interface IStorageChannel<T extends IAEStack<T>>
 	T createStack( @Nonnull Object input );
 
 	/**
-	 * 
+	 *
 	 * @param input
-	 * @return
+	 * @return a new instance of T.
 	 * @throws IOException
 	 */
 	@Nullable
