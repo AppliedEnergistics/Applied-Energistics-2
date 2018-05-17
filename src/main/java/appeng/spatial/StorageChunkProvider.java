@@ -51,7 +51,7 @@ public class StorageChunkProvider extends ChunkGeneratorOverworld
 		final Chunk chunk = new Chunk( this.world, x, z );
 
 		final byte[] biomes = chunk.getBiomeArray();
-		Biome biome = AppEng.instance().getStorageBiome();
+		Biome biome = AppEng.instance.getStorageBiome();
 		byte biomeId = (byte) Biome.getIdForBiome( biome );
 
 		for( int k = 0; k < biomes.length; ++k )

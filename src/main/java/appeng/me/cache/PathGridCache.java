@@ -371,15 +371,15 @@ public class PathGridCache implements IPathingGrid
 
 		if( ch < 128 )
 		{
-			return AppEng.instance().getAdvancementTriggers().getNetworkApprentice();
+			return AppEng.instance.getAdvancementTriggers().getNetworkApprentice();
 		}
 
 		if( ch < 2048 )
 		{
-			return AppEng.instance().getAdvancementTriggers().getNetworkEngineer();
+			return AppEng.instance.getAdvancementTriggers().getNetworkEngineer();
 		}
 
-		return AppEng.instance().getAdvancementTriggers().getNetworkAdmin();
+		return AppEng.instance.getAdvancementTriggers().getNetworkAdmin();
 	}
 
 	@MENetworkEventSubscribe

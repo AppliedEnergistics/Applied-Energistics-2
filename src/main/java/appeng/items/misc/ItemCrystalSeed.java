@@ -66,7 +66,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		this.setHasSubtypes( true );
 
 		EntityRegistry.registerModEntity( new ResourceLocation( "appliedenergistics2", EntityGrowingCrystal.class.getName() ), EntityGrowingCrystal.class,
-				EntityGrowingCrystal.class.getSimpleName(), EntityIds.get( EntityGrowingCrystal.class ), AppEng.instance(), 16, 4, true );
+				EntityGrowingCrystal.class.getSimpleName(), EntityIds.get( EntityGrowingCrystal.class ), AppEng.instance, 16, 4, true );
 	}
 
 	@Nullable
