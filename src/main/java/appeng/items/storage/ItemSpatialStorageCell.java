@@ -89,7 +89,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	@Override
 	public ISpatialDimension getSpatialDimension()
 	{
-		final int id = AppEng.instance().getStorageDimensionID();
+		final int id = AppEng.instance.getStorageDimensionID();
 		World w = DimensionManager.getWorld( id );
 		if( w == null )
 		{

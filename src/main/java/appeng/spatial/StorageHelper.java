@@ -115,7 +115,7 @@ public class StorageHelper
 			{
 				if( link.dim.provider instanceof StorageWorldProvider )
 				{
-					AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger( player );
+					AppEng.instance.getAdvancementTriggers().getSpatialExplorer().trigger( player );
 				}
 
 				player.mcServer.getPlayerList().transferPlayerToDimension( player, link.dim.provider.getDimension(), new METeleporter( newWorld, link ) );

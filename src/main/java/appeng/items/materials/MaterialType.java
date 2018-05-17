@@ -145,7 +145,7 @@ public enum MaterialType
 
 		EntityRegistry.registerModEntity( new ResourceLocation( "appliedenergistics2", this.droppedEntity.getName() ), this.droppedEntity,
 				this.droppedEntity.getSimpleName(),
-				EntityIds.get( this.droppedEntity ), AppEng.instance(), 16, 4,
+				EntityIds.get( this.droppedEntity ), AppEng.instance, 16, 4,
 				true );
 	}
 
@@ -156,7 +156,7 @@ public enum MaterialType
 		this.droppedEntity = c;
 		EntityRegistry.registerModEntity( new ResourceLocation( "appliedenergistics2", this.droppedEntity.getName() ), this.droppedEntity,
 				this.droppedEntity.getSimpleName(),
-				EntityIds.get( this.droppedEntity ), AppEng.instance(), 16, 4,
+				EntityIds.get( this.droppedEntity ), AppEng.instance, 16, 4,
 				true );
 	}
 

@@ -23,8 +23,6 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nonnull;
-
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
@@ -35,6 +33,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
@@ -92,8 +91,8 @@ public final class AppEng
 	// + net.minecraftforge.common.ForgeVersion.revisionVersion + '.' // revisionVersion
 	// + net.minecraftforge.common.ForgeVersion.buildVersion + ",)"; // buildVersion
 
-	@Nonnull
-	private static final AppEng INSTANCE = new AppEng();
+	@Instance( MOD_ID )
+	public static AppEng instance;
 
 	private final Registration registration;
 
@@ -112,19 +111,12 @@ public final class AppEng
 	 */
 	private ExportConfig exportConfig;
 
-	private AppEng()
+	public AppEng()
 	{
 		FMLCommonHandler.instance().registerCrashCallable( new ModCrashEnhancement( CrashInfo.MOD_VERSION ) );
 
 		this.registration = new Registration();
 		MinecraftForge.EVENT_BUS.register( this.registration );
-	}
-
-	@Nonnull
-	@Mod.InstanceFactory
-	public static AppEng instance()
-	{
-		return INSTANCE;
 	}
 
 	public Biome getStorageBiome()

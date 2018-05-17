@@ -60,7 +60,7 @@ public class TileChunkLoader extends AEBaseTile implements ITickable
 			return;
 		}
 
-		this.ct = ForgeChunkManager.requestTicket( AppEng.instance(), this.world, Type.NORMAL );
+		this.ct = ForgeChunkManager.requestTicket( AppEng.instance, this.world, Type.NORMAL );
 
 		if( this.ct == null )
 		{
