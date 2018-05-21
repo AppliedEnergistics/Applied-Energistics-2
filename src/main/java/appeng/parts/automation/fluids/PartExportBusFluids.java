@@ -19,12 +19,9 @@
 package appeng.parts.automation.fluids;
 
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -39,6 +36,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
@@ -56,19 +54,22 @@ import appeng.util.item.AEFluidStack;
  * @version rv6 - 30/04/2018
  * @since rv6 30/04/2018
  */
-public class PartImportBusFluids extends PartSharedFluidBus
+public class PartExportBusFluids extends PartSharedFluidBus
 {
-	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/import_bus_base" );
+	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/export_bus_base" );
+
 	@PartModels
-	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/import_bus_off" ) );
+	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/export_bus_off" ) );
+
 	@PartModels
-	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/import_bus_on" ) );
+	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/export_bus_on" ) );
+
 	@PartModels
-	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/import_bus_has_channel" ) );
+	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/export_bus_has_channel" ) );
 
 	private final IActionSource source;
 
-	public PartImportBusFluids( ItemStack is )
+	public PartExportBusFluids( ItemStack is )
 	{
 		super( is );
 		this.getConfigManager().registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
@@ -108,20 +109,29 @@ public class PartImportBusFluids extends PartSharedFluidBus
 				final IMEMonitor<IAEFluidStack> inv = this.getProxy().getStorage().getInventory( this.getChannel() );
 				if( fh != null )
 				{
-					FluidStack fluidStack = fh.drain( this.calculateAmountToSend(), false );
-					if( this.filterEnabled() && !this.isInFilter( fluidStack ) )
+					for( int i = 0; i < this.getConfig().getSlots(); i++ )
 					{
-						return TickRateModulation.SLOWER;
-					}
-					AEFluidStack aeFluidStack = AEFluidStack.fromFluidStack( fluidStack );
-					if( aeFluidStack != null )
-					{
-						IAEFluidStack notInserted = inv.injectItems( aeFluidStack, Actionable.MODULATE, this.source );
-						if( notInserted != null && notInserted.getStackSize() > 0 )
+						IAEItemStack stack = this.getConfig().getAEStackInSlot( i );
+						if( stack != null && stack.getDefinition() != null )
 						{
-							aeFluidStack.decStackSize( notInserted.getStackSize() );
+							IFluidHandlerItem ifh = stack.getDefinition().getCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null );
+							if( ifh == null )
+							{
+								throw new NullPointerException( "IFluidHandlerItem is null" );
+							}
+							AEFluidStack toExtract = AEFluidStack.fromFluidStack( ifh.drain( Integer.MAX_VALUE, false ) );
+							toExtract.setStackSize( this.calculateAmountToSend() );
+							IAEFluidStack out = inv.extractItems( toExtract, Actionable.SIMULATE, this.source );
+							if( out != null )
+							{
+								int wasInserted = fh.fill( out.getFluidStack(), true );
+								if( wasInserted > 0 )
+								{
+									inv.extractItems( toExtract, Actionable.MODULATE, this.source );
+									return TickRateModulation.FASTER;
+								}
+							}
 						}
-						fh.drain( aeFluidStack.getFluidStack(), true );
 					}
 				}
 			}
@@ -134,41 +144,15 @@ public class PartImportBusFluids extends PartSharedFluidBus
 		return TickRateModulation.SLOWER;
 	}
 
-	private boolean isInFilter( FluidStack fluid )
+	@Override
+	public void getBoxes( final IPartCollisionHelper bch )
 	{
-		for( int i = 0; i < this.getConfig().getSlots(); i++ )
-		{
-			IAEItemStack stack = this.getConfig().getAEStackInSlot( i );
-			if( stack != null && stack.getDefinition() != null )
-			{
-				IFluidHandlerItem fh = stack.getDefinition().getCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null );
-				if( fh == null )
-				{
-					throw new NullPointerException( "IFluidHandlerItem is null" );
-				}
-				FluidStack filtered = fh.drain( Integer.MAX_VALUE, false );
-				if( filtered != null && filtered.isFluidEqual( fluid ) )
-				{
-					return true;
-				}
-			}
-		}
-		return false;
+		bch.addBox( 4, 4, 12, 12, 12, 14 );
+		bch.addBox( 5, 5, 14, 11, 11, 15 );
+		bch.addBox( 6, 6, 15, 10, 10, 16 );
+		bch.addBox( 6, 6, 11, 10, 10, 12 );
 	}
 
-	private boolean filterEnabled(){
-		for( int i = 0; i < this.getConfig().getSlots(); i++ )
-		{
-			IAEItemStack stack = this.getConfig().getAEStackInSlot( i );
-			if( stack != null)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Nonnull
 	@Override
 	public IPartModel getStaticModels()
 	{

@@ -62,6 +62,8 @@ import appeng.container.implementations.ContainerCraftingCPU;
 import appeng.container.implementations.ContainerCraftingStatus;
 import appeng.container.implementations.ContainerCraftingTerm;
 import appeng.container.implementations.ContainerDrive;
+import appeng.container.implementations.ContainerFluidIO;
+import appeng.container.implementations.ContainerFluidTerm;
 import appeng.container.implementations.ContainerFormationPlane;
 import appeng.container.implementations.ContainerGrinder;
 import appeng.container.implementations.ContainerIOPort;
@@ -92,8 +94,10 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.items.contents.QuartzKnifeObj;
 import appeng.parts.automation.PartFormationPlane;
 import appeng.parts.automation.PartLevelEmitter;
+import appeng.parts.automation.fluids.PartSharedFluidBus;
 import appeng.parts.misc.PartStorageBus;
 import appeng.parts.reporting.PartCraftingTerminal;
+import appeng.parts.reporting.PartFluidTerminal;
 import appeng.parts.reporting.PartInterfaceTerminal;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.tile.crafting.TileCraftingTile;
@@ -152,6 +156,8 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_BUS( ContainerUpgradeable.class, IUpgradeableHost.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
+	GUI_BUS_FLUID( ContainerFluidIO.class, PartSharedFluidBus.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
+
 	GUI_IOPORT( ContainerIOPort.class, TileIOPort.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
 	GUI_STORAGEBUS( ContainerStorageBus.class, PartStorageBus.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
@@ -165,6 +171,8 @@ public enum GuiBridge implements IGuiHandler
 	GUI_CRAFTING_TERMINAL( ContainerCraftingTerm.class, PartCraftingTerminal.class, GuiHostType.WORLD, SecurityPermissions.CRAFT ),
 
 	GUI_PATTERN_TERMINAL( ContainerPatternTerm.class, PartPatternTerminal.class, GuiHostType.WORLD, SecurityPermissions.CRAFT ),
+
+	GUI_FLUID_TERMINAL( ContainerFluidTerm.class, PartFluidTerminal.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
 	// extends (Container/Gui) + Bus
 	GUI_LEVEL_EMITTER( ContainerLevelEmitter.class, PartLevelEmitter.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),

@@ -19,30 +19,59 @@
 package appeng.parts.automation.fluids;
 
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
+import appeng.api.config.Upgrades;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.util.AECableType;
+import appeng.core.sync.GuiBridge;
 import appeng.parts.automation.PartUpgradeable;
+import appeng.tile.inventory.AppEngInternalAEInventory;
+import appeng.util.Platform;
 
 
 /**
  * @author BrockWS
- * @version rv3 - 30/04/2018
- * @since rv3 30/04/2018
+ * @version rv6 - 30/04/2018
+ * @since rv6 30/04/2018
  */
 public abstract class PartSharedFluidBus extends PartUpgradeable implements IGridTickable
 {
+
+	private final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 9 );
+
 	public PartSharedFluidBus( ItemStack is )
 	{
 		super( is );
+	}
+
+	@Override
+	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	{
+		if( !player.isSneaking() )
+		{
+			if( Platform.isClient() )
+			{
+				return true;
+			}
+
+			Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_BUS_FLUID );
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override
@@ -53,7 +82,7 @@ public abstract class PartSharedFluidBus extends PartUpgradeable implements IGri
 		bch.addBox( 4, 4, 14, 12, 12, 16 );
 	}
 
-	public TileEntity getConnectedTE()
+	protected TileEntity getConnectedTE()
 	{
 		TileEntity self = this.getHost().getTile();
 		return this.getTileEntity( self, self.getPos().offset( this.getSide().getFacing() ) );
@@ -69,6 +98,54 @@ public abstract class PartSharedFluidBus extends PartUpgradeable implements IGri
 		}
 
 		return null;
+	}
+
+	@Override
+	public IItemHandler getInventoryByName( final String name )
+	{
+		if( name.equals( "config" ) )
+		{
+			return this.getConfig();
+		}
+
+		return super.getInventoryByName( name );
+	}
+
+	protected int calculateAmountToSend()
+	{
+		switch( this.getInstalledUpgrades( Upgrades.SPEED ) )
+		{
+			default:
+			case 0:
+				return 1000;
+			case 1:
+				return 2000;
+			case 2:
+				return 4000;
+			case 3:
+				return 8000;
+			case 4:
+				return 16000;
+		}
+	}
+
+	@Override
+	public void readFromNBT( NBTTagCompound extra )
+	{
+		super.readFromNBT( extra );
+		this.getConfig().readFromNBT( extra, "config" );
+	}
+
+	@Override
+	public void writeToNBT( NBTTagCompound extra )
+	{
+		super.writeToNBT( extra );
+		this.getConfig().writeToNBT( extra, "config" );
+	}
+
+	public AppEngInternalAEInventory getConfig()
+	{
+		return this.config;
 	}
 
 	protected IFluidStorageChannel getChannel(){

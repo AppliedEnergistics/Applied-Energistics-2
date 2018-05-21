@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -278,7 +277,9 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 	public String getUnlocalizedGroupName( final Set<ItemStack> others, final ItemStack is )
 	{
 		boolean importBus = false;
+		boolean importBusFluids = false;
 		boolean exportBus = false;
+		boolean exportBusFluids = false;
 		boolean group = false;
 
 		final PartType u = this.getTypeByStack( is );
@@ -297,8 +298,22 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 							group = true;
 						}
 						break;
+					case IMPORT_BUS_FLUIDS:
+						importBusFluids = true;
+						if( u == pt )
+						{
+							group = true;
+						}
+						break;
 					case EXPORT_BUS:
 						exportBus = true;
+						if( u == pt )
+						{
+							group = true;
+						}
+						break;
+					case EXPORT_BUS_FLUIDS:
+						exportBusFluids = true;
 						if( u == pt )
 						{
 							group = true;
@@ -309,9 +324,13 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 			}
 		}
 
-		if( group && importBus && exportBus )
+		if( group && importBus && exportBus && ( u == PartType.IMPORT_BUS || u == PartType.EXPORT_BUS ) )
 		{
 			return GuiText.IOBuses.getUnlocalized();
+		}
+		if( group && importBusFluids && exportBusFluids && ( u == PartType.IMPORT_BUS_FLUIDS || u == PartType.EXPORT_BUS_FLUIDS ) )
+		{
+			return GuiText.IOBusesFluids.getUnlocalized();
 		}
 
 		return null;

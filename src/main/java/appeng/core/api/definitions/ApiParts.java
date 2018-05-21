@@ -53,7 +53,6 @@ public final class ApiParts implements IParts
 	private final IItemDefinition invertedToggleBus;
 	private final IItemDefinition storageBus;
 	private final IItemDefinition importBus;
-	private final IItemDefinition importBusFluids;
 	private final IItemDefinition exportBus;
 	private final IItemDefinition iface;
 	private final IItemDefinition levelEmitter;
@@ -78,6 +77,9 @@ public final class ApiParts implements IParts
 	private final IItemDefinition terminal;
 	private final IItemDefinition storageMonitor;
 	private final IItemDefinition conversionMonitor;
+	private final IItemDefinition importBusFluids;
+	private final IItemDefinition exportBusFluids;
+	private final IItemDefinition fluidTerminal;
 
 	public ApiParts( FeatureFactory registry, PartModels partModels )
 	{
@@ -104,7 +106,6 @@ public final class ApiParts implements IParts
 		this.invertedToggleBus = new DamagedItemDefinition( "part.toggle_bus.inverted", itemPart.createPart( PartType.INVERTED_TOGGLE_BUS ) );
 		this.storageBus = new DamagedItemDefinition( "part.bus.storage", itemPart.createPart( PartType.STORAGE_BUS ) );
 		this.importBus = new DamagedItemDefinition( "part.bus.import", itemPart.createPart( PartType.IMPORT_BUS ) );
-		this.importBusFluids = new DamagedItemDefinition( "part.bus.import.fluid", itemPart.createPart( PartType.IMPORT_BUS_FLUIDS ) );
 		this.exportBus = new DamagedItemDefinition( "part.bus.export", itemPart.createPart( PartType.EXPORT_BUS ) );
 		this.iface = new DamagedItemDefinition( "part.interface", itemPart.createPart( PartType.INTERFACE ) );
 		this.levelEmitter = new DamagedItemDefinition( "part.level_emitter", itemPart.createPart( PartType.LEVEL_EMITTER ) );
@@ -130,6 +131,9 @@ public final class ApiParts implements IParts
 		this.terminal = new DamagedItemDefinition( "part.terminal", itemPart.createPart( PartType.TERMINAL ) );
 		this.storageMonitor = new DamagedItemDefinition( "part.monitor.storage", itemPart.createPart( PartType.STORAGE_MONITOR ) );
 		this.conversionMonitor = new DamagedItemDefinition( "part.monitor.conversion", itemPart.createPart( PartType.CONVERSION_MONITOR ) );
+		this.importBusFluids = new DamagedItemDefinition( "part.bus.import.fluid", itemPart.createPart( PartType.IMPORT_BUS_FLUIDS ) );
+		this.exportBusFluids = new DamagedItemDefinition( "part.bus.export.fluid", itemPart.createPart( PartType.EXPORT_BUS_FLUIDS ) );
+		this.fluidTerminal = new DamagedItemDefinition( "part.terminal.fluid", itemPart.createPart( PartType.FLUID_TERMINAL ) );
 	}
 
 	private static AEColoredItemDefinition constructColoredDefinition( final ItemPart target, final PartType type )
@@ -232,12 +236,6 @@ public final class ApiParts implements IParts
 	public IItemDefinition importBus()
 	{
 		return this.importBus;
-	}
-
-	@Override
-	public IItemDefinition importBusFluids()
-	{
-		return this.importBusFluids;
 	}
 
 	@Override
@@ -384,5 +382,23 @@ public final class ApiParts implements IParts
 	public IItemDefinition conversionMonitor()
 	{
 		return this.conversionMonitor;
+	}
+
+	@Override
+	public IItemDefinition fluidTerminal()
+	{
+		return this.fluidTerminal;
+	}
+
+	@Override
+	public IItemDefinition importBusFluids()
+	{
+		return this.importBusFluids;
+	}
+
+	@Override
+	public IItemDefinition exportBusFluids()
+	{
+		return this.exportBusFluids;
 	}
 }

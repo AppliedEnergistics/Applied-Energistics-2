@@ -46,6 +46,8 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
@@ -54,6 +56,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.widgets.GuiScrollbar;
@@ -66,7 +70,8 @@ import appeng.container.AEBaseContainer;
 import appeng.container.slot.AppEngCraftingSlot;
 import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.AppEngSlot.hasCalculatedValidness;
-import appeng.container.slot.OptionalSlotFake;
+import appeng.container.slot.IFluidSlot;
+import appeng.container.slot.IOptionalSlot;
 import appeng.container.slot.SlotCraftingTerm;
 import appeng.container.slot.SlotDisabled;
 import appeng.container.slot.SlotFake;
@@ -209,6 +214,22 @@ public abstract class AEBaseGui extends GuiContainer
 	}
 
 	@Override
+	protected void renderHoveredToolTip( int mouseX, int mouseY )
+	{
+		Slot slot = this.getSlot( mouseX, mouseY );
+		if( slot != null && slot.isEnabled() && slot instanceof IFluidSlot)
+		{
+			IFluidSlot fluidSlot = (IFluidSlot) slot;
+			if (fluidSlot.getFluidInSlot() != null && fluidSlot.shouldRenderAsFluid()) {
+				FluidStack fluidStack = fluidSlot.getFluidInSlot();
+				this.drawHoveringText( fluidStack.getLocalizedName(), mouseX, mouseY );
+				return;
+			}
+		}
+		super.renderHoveredToolTip( mouseX, mouseY );
+	}
+
+	@Override
 	protected final void drawGuiContainerForegroundLayer( final int x, final int y )
 	{
 		final int ox = this.guiLeft; // (width - xSize) / 2;
@@ -236,21 +257,22 @@ public abstract class AEBaseGui extends GuiContainer
 		final List<Slot> slots = this.getInventorySlots();
 		for( final Slot slot : slots )
 		{
-			if( slot instanceof OptionalSlotFake )
+			if( slot instanceof IOptionalSlot )
 			{
-				final OptionalSlotFake fs = (OptionalSlotFake) slot;
-				if( fs.renderDisabled() )
+				final IOptionalSlot optionalSlot = (IOptionalSlot) slot;
+				if( optionalSlot.isRenderDisabled() )
 				{
-					if( fs.isSlotEnabled() )
+					final AppEngSlot aeSlot = (AppEngSlot) slot;
+					if( aeSlot.isSlotEnabled() )
 					{
-						this.drawTexturedModalRect( ox + fs.xPos - 1, oy + fs.yPos - 1, fs.getSourceX() - 1, fs.getSourceY() - 1, 18,
+						this.drawTexturedModalRect( ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1, optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1, 18,
 								18 );
 					}
 					else
 					{
 						GlStateManager.color( 1.0F, 1.0F, 1.0F, 0.4F );
 						GlStateManager.enableBlend();
-						this.drawTexturedModalRect( ox + fs.xPos - 1, oy + fs.yPos - 1, fs.getSourceX() - 1, fs.getSourceY() - 1, 18,
+						this.drawTexturedModalRect( ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1, optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1, 18,
 								18 );
 						GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
 					}
@@ -714,6 +736,18 @@ public abstract class AEBaseGui extends GuiContainer
 			}
 
 			return;
+		}
+		else if( s instanceof IFluidSlot && ( (IFluidSlot) s ).shouldRenderAsFluid() )
+		{
+			FluidStack fs = ( (IFluidSlot) s ).getFluidInSlot();
+			if (fs != null) {
+				Fluid fluid = fs.getFluid();
+				Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.LOCATION_BLOCKS_TEXTURE);
+				TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(fluid.getStill().toString());
+				GlStateManager.color(1.0F, 1.0F, 1.0F);
+				this.drawTexturedModalRect(s.xPos, s.yPos, sprite, 16, 16);
+				return;
+			}
 		}
 		else
 		{

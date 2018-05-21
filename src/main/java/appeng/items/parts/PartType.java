@@ -49,6 +49,7 @@ import appeng.parts.automation.PartFormationPlane;
 import appeng.parts.automation.PartIdentityAnnihilationPlane;
 import appeng.parts.automation.PartImportBus;
 import appeng.parts.automation.PartLevelEmitter;
+import appeng.parts.automation.fluids.PartExportBusFluids;
 import appeng.parts.automation.fluids.PartImportBusFluids;
 import appeng.parts.misc.PartCableAnchor;
 import appeng.parts.misc.PartInterface;
@@ -71,6 +72,7 @@ import appeng.parts.p2p.PartP2PTunnelME;
 import appeng.parts.reporting.PartConversionMonitor;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartDarkPanel;
+import appeng.parts.reporting.PartFluidTerminal;
 import appeng.parts.reporting.PartInterfaceTerminal;
 import appeng.parts.reporting.PartPanel;
 import appeng.parts.reporting.PartPatternTerminal;
@@ -198,6 +200,8 @@ public enum PartType
 
 	EXPORT_BUS( 260, "export_bus", EnumSet.of( AEFeature.EXPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartExportBus.class ),
 
+	EXPORT_BUS_FLUIDS( 261, "export_bus_fluids", EnumSet.of( AEFeature.EXPORT_BUS_FLUIDS ), EnumSet.noneOf( IntegrationType.class ), PartExportBusFluids.class ),
+
 	LEVEL_EMITTER( 280, "level_emitter", EnumSet.of( AEFeature.LEVEL_EMITTER ), EnumSet.noneOf( IntegrationType.class ), PartLevelEmitter.class ),
 
 	ANNIHILATION_PLANE( 300, "annihilation_plane", EnumSet.of( AEFeature.ANNIHILATION_PLANE ), EnumSet
@@ -296,7 +300,9 @@ public enum PartType
 	// IntegrationType.OpenComputers ), PartP2POpenComputers.class, GuiText.OCTunnel ),
 
 	INTERFACE_TERMINAL( 480, "interface_terminal", EnumSet.of( AEFeature.INTERFACE_TERMINAL ), EnumSet
-			.noneOf( IntegrationType.class ), PartInterfaceTerminal.class );
+			.noneOf( IntegrationType.class ), PartInterfaceTerminal.class ),
+
+	FLUID_TERMINAL ( 520, "fluid_terminal", EnumSet.of( AEFeature.FLUID_TERMINAL ), EnumSet.noneOf( IntegrationType.class ), PartFluidTerminal.class );
 
 	private final int baseDamage;
 	private final Set<AEFeature> features;

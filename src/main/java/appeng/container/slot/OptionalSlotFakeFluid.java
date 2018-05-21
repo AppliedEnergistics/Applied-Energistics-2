@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2018, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,20 +19,48 @@
 package appeng.container.slot;
 
 
+import javax.annotation.Nonnull;
+
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 
-public class OptionalSlotNormal extends AppEngSlot implements IOptionalSlot
+/**
+ * @author BrockWS
+ * @version rv6 - 1/05/2018
+ * @since rv6 1/05/2018
+ */
+public class OptionalSlotFakeFluid extends SlotFakeFluid implements IOptionalSlot
 {
 
+	private final int srcX;
+	private final int srcY;
 	private final int groupNum;
 	private final IOptionalSlotHost host;
+	private boolean renderDisabled = true;
 
-	public OptionalSlotNormal( final IItemHandler inv, final IOptionalSlotHost containerBus, final int slot, final int xPos, final int yPos, final int groupNum )
+	public OptionalSlotFakeFluid( final IItemHandler inv, final IOptionalSlotHost containerBus, final int idx, final int x, final int y, final int offX, final int offY, final int groupNum )
 	{
-		super( inv, slot, xPos, yPos );
+		super( inv, idx, x + offX * 18, y + offY * 18 );
+		this.srcX = x;
+		this.srcY = y;
 		this.groupNum = groupNum;
 		this.host = containerBus;
+	}
+
+	@Override
+	@Nonnull
+	public ItemStack getStack()
+	{
+		if( !this.isSlotEnabled() )
+		{
+			if( !this.getDisplayStack().isEmpty() )
+			{
+				this.clearStack();
+			}
+		}
+
+		return super.getStack();
 	}
 
 	@Override
@@ -46,15 +74,23 @@ public class OptionalSlotNormal extends AppEngSlot implements IOptionalSlot
 		return this.host.isSlotEnabled( this.groupNum );
 	}
 
-	@Override
-	public int getSourceX()
+	public boolean isRenderDisabled()
 	{
-		return this.xPos;
+		return this.renderDisabled;
 	}
 
-	@Override
+	public void setRenderDisabled( final boolean renderDisabled )
+	{
+		this.renderDisabled = renderDisabled;
+	}
+
+	public int getSourceX()
+	{
+		return this.srcX;
+	}
+
 	public int getSourceY()
 	{
-		return this.yPos;
+		return this.srcY;
 	}
 }

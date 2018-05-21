@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2018, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,42 +19,17 @@
 package appeng.container.slot;
 
 
-import net.minecraftforge.items.IItemHandler;
-
-
-public class OptionalSlotNormal extends AppEngSlot implements IOptionalSlot
+/**
+ * @author BrockWS
+ * @version rv6 - 2/05/2018
+ * @since rv6 2/05/2018
+ */
+public interface IOptionalSlot
 {
-
-	private final int groupNum;
-	private final IOptionalSlotHost host;
-
-	public OptionalSlotNormal( final IItemHandler inv, final IOptionalSlotHost containerBus, final int slot, final int xPos, final int yPos, final int groupNum )
-	{
-		super( inv, slot, xPos, yPos );
-		this.groupNum = groupNum;
-		this.host = containerBus;
+	default boolean isRenderDisabled(){
+		return false;
 	}
 
-	@Override
-	public boolean isSlotEnabled()
-	{
-		if( this.host == null )
-		{
-			return false;
-		}
-
-		return this.host.isSlotEnabled( this.groupNum );
-	}
-
-	@Override
-	public int getSourceX()
-	{
-		return this.xPos;
-	}
-
-	@Override
-	public int getSourceY()
-	{
-		return this.yPos;
-	}
+	int getSourceX();
+	int getSourceY();
 }

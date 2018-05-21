@@ -425,12 +425,22 @@ final class Registration
 		Upgrades.CAPACITY.registerItem( parts.importBus(), 2 );
 		Upgrades.SPEED.registerItem( parts.importBus(), 4 );
 
+		// Fluid Import Bus
+		Upgrades.CAPACITY.registerItem( parts.importBusFluids(), 2 );
+		Upgrades.REDSTONE.registerItem( parts.importBusFluids(), 1 );
+		Upgrades.SPEED.registerItem( parts.importBusFluids(), 4 );
+
 		// Export Bus
 		Upgrades.FUZZY.registerItem( parts.exportBus(), 1 );
 		Upgrades.REDSTONE.registerItem( parts.exportBus(), 1 );
 		Upgrades.CAPACITY.registerItem( parts.exportBus(), 2 );
 		Upgrades.SPEED.registerItem( parts.exportBus(), 4 );
 		Upgrades.CRAFTING.registerItem( parts.exportBus(), 1 );
+
+		// Fluid Export Bus
+		Upgrades.CAPACITY.registerItem( parts.exportBusFluids(), 2 );
+		Upgrades.REDSTONE.registerItem( parts.exportBusFluids(), 1 );
+		Upgrades.SPEED.registerItem( parts.exportBusFluids(), 4 );
 
 		// Storage Cells
 		Upgrades.FUZZY.registerItem( items.cell1k(), 1 );
