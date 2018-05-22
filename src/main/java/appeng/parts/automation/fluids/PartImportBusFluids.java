@@ -58,13 +58,13 @@ import appeng.util.item.AEFluidStack;
  */
 public class PartImportBusFluids extends PartSharedFluidBus
 {
-	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/import_bus_base" );
+	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/import_bus_fluids_base" );
 	@PartModels
-	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/import_bus_off" ) );
+	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/import_bus_fluids_off" ) );
 	@PartModels
-	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/import_bus_on" ) );
+	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/import_bus_fluids_on" ) );
 	@PartModels
-	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/import_bus_has_channel" ) );
+	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/import_bus_fluids_has_channel" ) );
 
 	private final IActionSource source;
 
@@ -81,7 +81,7 @@ public class PartImportBusFluids extends PartSharedFluidBus
 	@Override
 	public TickingRequest getTickingRequest( IGridNode node )
 	{
-		return new TickingRequest( 5, 40, false, false );
+		return new TickingRequest( 5, 40, this.isSleeping(), false );
 	}
 
 	@Override
@@ -93,12 +93,17 @@ public class PartImportBusFluids extends PartSharedFluidBus
 	@Override
 	protected boolean canDoBusWork()
 	{
-		return true;
+		return this.getProxy().isActive();
 	}
 
 	@Override
 	protected TickRateModulation doBusWork()
 	{
+		if( !this.canDoBusWork() )
+		{
+			return TickRateModulation.IDLE;
+		}
+
 		final TileEntity te = this.getConnectedTE();
 		if( te != null && te.hasCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing() ) )
 		{
@@ -122,6 +127,7 @@ public class PartImportBusFluids extends PartSharedFluidBus
 							aeFluidStack.decStackSize( notInserted.getStackSize() );
 						}
 						fh.drain( aeFluidStack.getFluidStack(), true );
+						return TickRateModulation.FASTER;
 					}
 				}
 			}
@@ -131,7 +137,7 @@ public class PartImportBusFluids extends PartSharedFluidBus
 			}
 		}
 
-		return TickRateModulation.SLOWER;
+		return TickRateModulation.SLEEP;
 	}
 
 	private boolean isInFilter( FluidStack fluid )
@@ -166,6 +172,12 @@ public class PartImportBusFluids extends PartSharedFluidBus
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public RedstoneMode getRSMode()
+	{
+		return (RedstoneMode) this.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED );
 	}
 
 	@Nonnull

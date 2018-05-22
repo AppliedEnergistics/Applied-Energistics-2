@@ -19,6 +19,8 @@
 package appeng.parts.automation.fluids;
 
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -56,16 +58,13 @@ import appeng.util.item.AEFluidStack;
  */
 public class PartExportBusFluids extends PartSharedFluidBus
 {
-	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/export_bus_base" );
-
+	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/export_bus_fluids_base" );
 	@PartModels
-	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/export_bus_off" ) );
-
+	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/export_bus_fluids_off" ) );
 	@PartModels
-	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/export_bus_on" ) );
-
+	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/export_bus_fluids_on" ) );
 	@PartModels
-	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/export_bus_has_channel" ) );
+	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/export_bus_fluids_has_channel" ) );
 
 	private final IActionSource source;
 
@@ -82,7 +81,7 @@ public class PartExportBusFluids extends PartSharedFluidBus
 	@Override
 	public TickingRequest getTickingRequest( IGridNode node )
 	{
-		return new TickingRequest( 5, 40, false, false );
+		return new TickingRequest( 5, 40, this.isSleeping(), false );
 	}
 
 	@Override
@@ -94,12 +93,17 @@ public class PartExportBusFluids extends PartSharedFluidBus
 	@Override
 	protected boolean canDoBusWork()
 	{
-		return true;
+		return this.getProxy().isActive();
 	}
 
 	@Override
 	protected TickRateModulation doBusWork()
 	{
+		if( !this.canDoBusWork() )
+		{
+			return TickRateModulation.IDLE;
+		}
+
 		final TileEntity te = this.getConnectedTE();
 		if( te != null && te.hasCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing() ) )
 		{
@@ -133,6 +137,7 @@ public class PartExportBusFluids extends PartSharedFluidBus
 							}
 						}
 					}
+					return TickRateModulation.SLOWER;
 				}
 			}
 			catch( GridAccessException e )
@@ -141,7 +146,7 @@ public class PartExportBusFluids extends PartSharedFluidBus
 			}
 		}
 
-		return TickRateModulation.SLOWER;
+		return TickRateModulation.SLEEP;
 	}
 
 	@Override
@@ -153,6 +158,13 @@ public class PartExportBusFluids extends PartSharedFluidBus
 		bch.addBox( 6, 6, 11, 10, 10, 12 );
 	}
 
+	@Override
+	public RedstoneMode getRSMode()
+	{
+		return (RedstoneMode) this.getConfigManager().getSetting( Settings.REDSTONE_CONTROLLED );
+	}
+
+	@Nonnull
 	@Override
 	public IPartModel getStaticModels()
 	{

@@ -51,6 +51,7 @@ import appeng.container.implementations.ContainerPriority;
 import appeng.container.implementations.ContainerQuartzKnife;
 import appeng.container.implementations.ContainerSecurityStation;
 import appeng.container.implementations.ContainerStorageBus;
+import appeng.container.implementations.ContainerStorageBusFluid;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.IMouseWheelItem;
@@ -179,18 +180,31 @@ public class PacketValueConfig extends AppEngPacket
 				cpt.getPatternTerminal().setSubstitution( this.Value.equals( "1" ) );
 			}
 		}
-		else if( this.Name.startsWith( "StorageBus." ) && c instanceof ContainerStorageBus )
+		else if( this.Name.startsWith( "StorageBus." ) )
 		{
-			final ContainerStorageBus ccw = (ContainerStorageBus) c;
 			if( this.Name.equals( "StorageBus.Action" ) )
 			{
 				if( this.Value.equals( "Partition" ) )
 				{
-					ccw.partition();
+					if( c instanceof ContainerStorageBus )
+					{
+						( (ContainerStorageBus) c ).partition();
+					}
+					else if( c instanceof ContainerStorageBusFluid )
+					{
+						( (ContainerStorageBusFluid) c ).partition();
+					}
 				}
 				else if( this.Value.equals( "Clear" ) )
 				{
-					ccw.clear();
+					if( c instanceof ContainerStorageBus )
+					{
+						( (ContainerStorageBus) c ).clear();
+					}
+					else if( c instanceof ContainerStorageBusFluid )
+					{
+						( (ContainerStorageBusFluid) c ).clear();
+					}
 				}
 			}
 		}

@@ -84,6 +84,7 @@ import appeng.container.implementations.ContainerSecurityStation;
 import appeng.container.implementations.ContainerSkyChest;
 import appeng.container.implementations.ContainerSpatialIOPort;
 import appeng.container.implementations.ContainerStorageBus;
+import appeng.container.implementations.ContainerStorageBusFluid;
 import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.implementations.ContainerVibrationChamber;
 import appeng.container.implementations.ContainerWireless;
@@ -96,6 +97,7 @@ import appeng.parts.automation.PartFormationPlane;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.parts.automation.fluids.PartSharedFluidBus;
 import appeng.parts.misc.PartStorageBus;
+import appeng.parts.misc.PartStorageBusFluids;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartFluidTerminal;
 import appeng.parts.reporting.PartInterfaceTerminal;
@@ -161,6 +163,8 @@ public enum GuiBridge implements IGuiHandler
 	GUI_IOPORT( ContainerIOPort.class, TileIOPort.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
 	GUI_STORAGEBUS( ContainerStorageBus.class, PartStorageBus.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
+
+	GUI_STORAGEBUS_FLUID( ContainerStorageBusFluid.class, PartStorageBusFluids.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
 	GUI_FORMATION_PLANE( ContainerFormationPlane.class, PartFormationPlane.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 

@@ -26,10 +26,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
+import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -37,6 +39,7 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.util.AECableType;
 import appeng.core.sync.GuiBridge;
+import appeng.me.GridAccessException;
 import appeng.parts.automation.PartUpgradeable;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
@@ -51,10 +54,50 @@ public abstract class PartSharedFluidBus extends PartUpgradeable implements IGri
 {
 
 	private final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 9 );
+	private boolean lastRedstone;
 
 	public PartSharedFluidBus( ItemStack is )
 	{
 		super( is );
+	}
+
+	@Override
+	public void upgradesChanged()
+	{
+		this.updateState();
+	}
+
+	@Override
+	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
+	{
+		this.updateState();
+		if( this.lastRedstone != this.getHost().hasRedstone( this.getSide() ) )
+		{
+			this.lastRedstone = !this.lastRedstone;
+			if( this.lastRedstone && this.getRSMode() == RedstoneMode.SIGNAL_PULSE )
+			{
+				this.doBusWork();
+			}
+		}
+	}
+
+	private void updateState()
+	{
+		try
+		{
+			if( !this.isSleeping() )
+			{
+				this.getProxy().getTick().wakeDevice( this.getProxy().getNode() );
+			}
+			else
+			{
+				this.getProxy().getTick().sleepDevice( this.getProxy().getNode() );
+			}
+		}
+		catch( final GridAccessException e )
+		{
+			// :P
+		}
 	}
 
 	@Override

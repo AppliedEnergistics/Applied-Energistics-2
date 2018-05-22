@@ -129,6 +129,9 @@ public enum ButtonToolTips
 	ReportInaccessibleItems,
 	ReportInaccessibleItemsYes,
 	ReportInaccessibleItemsNo,
+	ReportInaccessibleFluids,
+	ReportInaccessibleFluidsYes,
+	ReportInaccessibleFluidsNo,
 
 	BlockPlacement,
 	BlockPlacementYes,

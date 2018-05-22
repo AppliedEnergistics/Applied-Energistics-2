@@ -113,4 +113,8 @@ public interface IParts
 	IItemDefinition importBusFluids();
 
 	IItemDefinition exportBusFluids();
+
+	IItemDefinition storageBusFluids();
+
+	IItemDefinition levelEmitterFluids();
 }

@@ -76,6 +76,7 @@ public enum AEFeature
 
 	INTERFACE( "Interface", Constants.CATEGORY_NETWORK_BUSES ),
 	LEVEL_EMITTER( "LevelEmitter", Constants.CATEGORY_NETWORK_BUSES ),
+	LEVEL_EMITTER_FLUIDS( "LevelEmitterFluids", Constants.CATEGORY_NETWORK_BUSES ),
 	FLUID_TERMINAL( "FluidTerminal", Constants.CATEGORY_NETWORK_BUSES ),
 	CRAFTING_TERMINAL( "CraftingTerminal", Constants.CATEGORY_NETWORK_BUSES ),
 	TERMINAL( "Terminal", Constants.CATEGORY_NETWORK_BUSES ),
@@ -89,6 +90,7 @@ public enum AEFeature
 	EXPORT_BUS( "ExportBus", Constants.CATEGORY_NETWORK_BUSES ),
 	EXPORT_BUS_FLUIDS( "ExportBusFluids", Constants.CATEGORY_NETWORK_BUSES ),
 	STORAGE_BUS( "StorageBus", Constants.CATEGORY_NETWORK_BUSES ),
+	STORAGE_BUS_FLUIDS( "StorageBusFluids", Constants.CATEGORY_NETWORK_BUSES ),
 	PART_CONVERSION_MONITOR( "PartConversionMonitor", Constants.CATEGORY_NETWORK_BUSES ),
 	TOGGLE_BUS( "ToggleBus", Constants.CATEGORY_NETWORK_BUSES ),
 	PANELS( "Panels", Constants.CATEGORY_NETWORK_BUSES ),

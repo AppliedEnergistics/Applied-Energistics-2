@@ -68,7 +68,7 @@ public class SlotFakeFluid extends SlotFake implements IFluidSlot
 			IFluidHandlerItem fh = this.getStack().getCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null );
 			if( fh == null )
 			{
-				throw new NullPointerException( "Item did not give IFluidHandlerItem " + this.getStack().getDisplayName() );
+				throw new NullPointerException( "Item did not give IFluidHandlerItem: " + this.getStack().getDisplayName() );
 			}
 			return fh.drain( Integer.MAX_VALUE, false );
 		}

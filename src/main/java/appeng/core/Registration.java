@@ -466,6 +466,10 @@ final class Registration
 		Upgrades.INVERTER.registerItem( parts.storageBus(), 1 );
 		Upgrades.CAPACITY.registerItem( parts.storageBus(), 5 );
 
+		// Storage Bus Fluids
+		Upgrades.INVERTER.registerItem( parts.storageBusFluids(), 1 );
+		Upgrades.CAPACITY.registerItem( parts.storageBusFluids(), 5 );
+
 		// Formation Plane
 		Upgrades.FUZZY.registerItem( parts.formationPlane(), 1 );
 		Upgrades.INVERTER.registerItem( parts.formationPlane(), 1 );

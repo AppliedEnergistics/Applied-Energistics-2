@@ -80,6 +80,8 @@ public final class ApiParts implements IParts
 	private final IItemDefinition importBusFluids;
 	private final IItemDefinition exportBusFluids;
 	private final IItemDefinition fluidTerminal;
+	private final IItemDefinition storageBusFluids;
+	private final IItemDefinition levelEmitterFluids;
 
 	public ApiParts( FeatureFactory registry, PartModels partModels )
 	{
@@ -134,6 +136,8 @@ public final class ApiParts implements IParts
 		this.importBusFluids = new DamagedItemDefinition( "part.bus.import.fluid", itemPart.createPart( PartType.IMPORT_BUS_FLUIDS ) );
 		this.exportBusFluids = new DamagedItemDefinition( "part.bus.export.fluid", itemPart.createPart( PartType.EXPORT_BUS_FLUIDS ) );
 		this.fluidTerminal = new DamagedItemDefinition( "part.terminal.fluid", itemPart.createPart( PartType.FLUID_TERMINAL ) );
+		this.storageBusFluids = new DamagedItemDefinition( "part.bus.storage.fluids", itemPart.createPart( PartType.STORAGE_BUS_FLUIDS ) );
+		this.levelEmitterFluids = new DamagedItemDefinition( "part.level_emitter.fluids", itemPart.createPart( PartType.LEVEL_EMITTER_FLUIDS ) );
 	}
 
 	private static AEColoredItemDefinition constructColoredDefinition( final ItemPart target, final PartType type )
@@ -400,5 +404,17 @@ public final class ApiParts implements IParts
 	public IItemDefinition exportBusFluids()
 	{
 		return this.exportBusFluids;
+	}
+
+	@Override
+	public IItemDefinition storageBusFluids()
+	{
+		return this.storageBusFluids;
+	}
+
+	@Override
+	public IItemDefinition levelEmitterFluids()
+	{
+		return this.levelEmitterFluids;
 	}
 }
