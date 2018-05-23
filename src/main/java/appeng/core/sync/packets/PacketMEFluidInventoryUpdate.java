@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2018, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -39,18 +39,20 @@ import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.api.storage.data.IAEItemStack;
-import appeng.client.gui.implementations.GuiCraftConfirm;
-import appeng.client.gui.implementations.GuiCraftingCPU;
-import appeng.client.gui.implementations.GuiMEMonitorable;
-import appeng.client.gui.implementations.GuiNetworkStatus;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.client.gui.implementations.GuiFluidTerm;
 import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.util.item.AEItemStack;
+import appeng.util.item.AEFluidStack;
 
 
-public class PacketMEInventoryUpdate extends AppEngPacket
+/**
+ * @author BrockWS
+ * @version rv6 - 22/05/2018
+ * @since rv6 22/05/2018
+ */
+public class PacketMEFluidInventoryUpdate extends AppEngPacket
 {
 	private static final int UNCOMPRESSED_PACKET_BYTE_LIMIT = 16 * 1024 * 1024;
 	private static final int OPERATION_BYTE_LIMIT = 2 * 1024;
@@ -59,7 +61,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 
 	// input.
 	@Nullable
-	private final List<IAEItemStack> list;
+	private final List<IAEFluidStack> list;
 	// output...
 	private final byte ref;
 
@@ -72,7 +74,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	private boolean empty = true;
 
 	// automatic.
-	public PacketMEInventoryUpdate( final ByteBuf stream ) throws IOException
+	public PacketMEFluidInventoryUpdate( final ByteBuf stream ) throws IOException
 	{
 		this.data = null;
 		this.compressFrame = null;
@@ -112,20 +114,20 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 
 		while( uncompressed.readableBytes() > 0 )
 		{
-			this.list.add( AEItemStack.fromPacket( uncompressed ) );
+			this.list.add( AEFluidStack.fromPacket( uncompressed ) );
 		}
 
 		this.empty = this.list.isEmpty();
 	}
 
 	// api
-	public PacketMEInventoryUpdate() throws IOException
+	public PacketMEFluidInventoryUpdate() throws IOException
 	{
 		this( (byte) 0 );
 	}
 
 	// api
-	public PacketMEInventoryUpdate( final byte ref ) throws IOException
+	public PacketMEFluidInventoryUpdate( final byte ref ) throws IOException
 	{
 		this.ref = ref;
 		this.data = Unpooled.buffer( OPERATION_BYTE_LIMIT );
@@ -137,7 +139,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 			@Override
 			public void write( final int value ) throws IOException
 			{
-				PacketMEInventoryUpdate.this.data.writeByte( value );
+				PacketMEFluidInventoryUpdate.this.data.writeByte( value );
 			}
 		} );
 
@@ -150,24 +152,9 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	{
 		final GuiScreen gs = Minecraft.getMinecraft().currentScreen;
 
-		if( gs instanceof GuiCraftConfirm )
+		if( gs instanceof GuiFluidTerm )
 		{
-			( (GuiCraftConfirm) gs ).postUpdate( this.list, this.ref );
-		}
-
-		if( gs instanceof GuiCraftingCPU )
-		{
-			( (GuiCraftingCPU) gs ).postUpdate( this.list, this.ref );
-		}
-
-		if( gs instanceof GuiMEMonitorable )
-		{
-			( (GuiMEMonitorable) gs ).postUpdate( this.list );
-		}
-
-		if( gs instanceof GuiNetworkStatus )
-		{
-			( (GuiNetworkStatus) gs ).postUpdate( this.list );
+			( (GuiFluidTerm) gs ).postUpdate( this.list );
 		}
 	}
 
@@ -190,10 +177,10 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 		return null;
 	}
 
-	public void appendItem( final IAEItemStack is ) throws IOException, BufferOverflowException
+	public void appendFluid( final IAEFluidStack fs ) throws IOException, BufferOverflowException
 	{
 		final ByteBuf tmp = Unpooled.buffer( OPERATION_BYTE_LIMIT );
-		is.writeToPacket( tmp );
+		fs.writeToPacket( tmp );
 
 		this.compressFrame.flush();
 		if( this.writtenBytes + tmp.readableBytes() > UNCOMPRESSED_PACKET_BYTE_LIMIT )

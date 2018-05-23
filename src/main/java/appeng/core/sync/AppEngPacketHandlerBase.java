@@ -36,6 +36,7 @@ import appeng.core.sync.packets.PacketCraftRequest;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.sync.packets.PacketJEIRecipe;
 import appeng.core.sync.packets.PacketLightning;
+import appeng.core.sync.packets.PacketMEFluidInventoryUpdate;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
 import appeng.core.sync.packets.PacketMatterCannon;
 import appeng.core.sync.packets.PacketMockExplosion;
@@ -45,6 +46,7 @@ import appeng.core.sync.packets.PacketPatternSlot;
 import appeng.core.sync.packets.PacketProgressBar;
 import appeng.core.sync.packets.PacketSwapSlots;
 import appeng.core.sync.packets.PacketSwitchGuis;
+import appeng.core.sync.packets.PacketTargetFluidStack;
 import appeng.core.sync.packets.PacketTargetItemStack;
 import appeng.core.sync.packets.PacketTransitionEffect;
 import appeng.core.sync.packets.PacketValueConfig;
@@ -63,6 +65,8 @@ public class AppEngPacketHandlerBase
 		PACKET_INVENTORY_ACTION( PacketInventoryAction.class ),
 
 		PACKET_ME_INVENTORY_UPDATE( PacketMEInventoryUpdate.class ),
+
+		PACKET_ME_FLUID_INVENTORY_UPDATE( PacketMEFluidInventoryUpdate.class ),
 
 		PACKET_CONFIG_BUTTON( PacketConfigButton.class ),
 
@@ -91,6 +95,8 @@ public class AppEngPacketHandlerBase
 		PACKET_RECIPE_JEI( PacketJEIRecipe.class ),
 
 		PACKET_TARGET_ITEM( PacketTargetItemStack.class ),
+
+		PACKET_TARGET_FLUID( PacketTargetFluidStack.class ),
 
 		PACKET_CRAFTING_REQUEST( PacketCraftRequest.class ),
 

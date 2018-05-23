@@ -29,7 +29,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.WeakHashMap;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -68,6 +67,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.util.FakePlayerFactory;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
@@ -122,6 +123,7 @@ import appeng.me.GridNode;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.helpers.P2PHelper;
+import appeng.util.item.AEFluidStack;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.IPartitionList;
 
@@ -611,6 +613,17 @@ public class Platform
 		return n == null ? "** Null" : n;
 	}
 
+	public static String getModId( final IAEFluidStack fs )
+	{
+		if( fs == null || fs.getFluidStack() == null )
+		{
+			return "** Null";
+		}
+
+		final String n = FluidRegistry.getModId( fs.getFluidStack() );
+		return n == null ? "** Null" : n;
+	}
+
 	public static String getItemDisplayName( final Object o )
 	{
 		if( o == null )
@@ -654,6 +667,33 @@ public class Platform
 				return "** Exception";
 			}
 		}
+	}
+
+	public static String getFluidDisplayName( Object o )
+	{
+		if( o == null )
+		{
+			return "** Null";
+		}
+		FluidStack fluidStack = null;
+		if( o instanceof AEFluidStack )
+		{
+			fluidStack = ( (AEFluidStack) o ).getFluidStack();
+		}
+		else if( o instanceof FluidStack )
+		{
+			fluidStack = (FluidStack) o;
+		}
+		else
+		{
+			return "**Invalid Object";
+		}
+		String n = fluidStack.getLocalizedName();
+		if( n == null || n.equalsIgnoreCase( "" ) )
+		{
+			n = fluidStack.getUnlocalizedName();
+		}
+		return n == null ? "** Null" : n;
 	}
 
 	public static boolean isWrench( final EntityPlayer player, final ItemStack eq, final BlockPos pos )

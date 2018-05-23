@@ -32,6 +32,10 @@ public enum InventoryAction
 	CRAFT_ITEM,
 	CRAFT_SHIFT,
 
+	// fluid term
+	FILL_ITEM,
+	EMPTY_ITEM,
+
 	// extra...
 	MOVE_REGION,
 	PICKUP_SINGLE,
