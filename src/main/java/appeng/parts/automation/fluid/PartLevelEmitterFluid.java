@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.parts.automation.fluids;
+package appeng.parts.automation.fluid;
 
 
 import net.minecraft.item.ItemStack;
@@ -29,10 +29,10 @@ import appeng.parts.automation.PartLevelEmitter;
  * @version rv6 - 22/05/2018
  * @since rv6 22/05/2018
  */
-public class PartLevelEmitterFluids extends PartLevelEmitter
+public class PartLevelEmitterFluid extends PartLevelEmitter
 {
 
-	public PartLevelEmitterFluids( ItemStack is )
+	public PartLevelEmitterFluid( ItemStack is )
 	{
 		super( is );
 	}

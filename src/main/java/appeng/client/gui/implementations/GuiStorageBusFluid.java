@@ -41,7 +41,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;
-import appeng.parts.misc.PartStorageBusFluids;
+import appeng.parts.misc.PartStorageBusFluid;
 
 
 /**
@@ -57,7 +57,7 @@ public class GuiStorageBusFluid extends GuiUpgradeable
 	private GuiImgButton partition;
 	private GuiImgButton clear;
 
-	public GuiStorageBusFluid( InventoryPlayer inventoryPlayer, PartStorageBusFluids te )
+	public GuiStorageBusFluid( InventoryPlayer inventoryPlayer, PartStorageBusFluid te )
 	{
 		super( new ContainerStorageBusFluid( inventoryPlayer, te ) );
 		this.ySize = 251;

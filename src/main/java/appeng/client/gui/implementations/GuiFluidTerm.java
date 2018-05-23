@@ -31,7 +31,9 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.common.Loader;
 
 import appeng.api.config.Settings;
 import appeng.api.storage.data.IAEFluidStack;
@@ -56,6 +58,7 @@ import appeng.helpers.InventoryAction;
 import appeng.parts.reporting.PartFluidTerminal;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import appeng.util.item.AEFluidStack;
 
 
 /**
@@ -173,15 +176,20 @@ public class GuiFluidTerm extends AEBaseMEGui implements ISortSource, IConfigMan
 				List<String> list = new ArrayList<>();
 				list.add( fluidStack.getLocalizedName() );
 				int amount = fluidStack.amount;
-				DecimalFormat formatter = new DecimalFormat( "#,###" );
-				String amountStr = amount + "mb";
-				if( amount >= 1000 )
+				DecimalFormat formatter = new DecimalFormat( "#,###.##" );
+				String amountStr = formatter.format( amount ) + "mb";
+				if( amount >= 10000 )
 				{
 					amountStr += " ( ";
 					amountStr += formatter.format( amount / 1000 ) + "B";
 					amountStr += " )";
 				}
 				list.add( amountStr );
+				String modName = "";
+				modName += TextFormatting.BLUE;
+				modName += TextFormatting.ITALIC;
+				modName += Loader.instance().getIndexedModList().get( Platform.getModId( AEFluidStack.fromFluidStack( fluidStack ) ) ).getName();
+				list.add( modName );
 				this.drawHoveringText( list, mouseX, mouseY );
 				return;
 			}

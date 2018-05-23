@@ -89,7 +89,7 @@ import appeng.util.prioritylist.PrecisePriorityList;
  * @version rv6 - 22/05/2018
  * @since rv6 22/05/2018
  */
-public class PartStorageBusFluids extends PartSharedStorageBus implements IMEMonitorHandlerReceiver<IAEFluidStack>
+public class PartStorageBusFluid extends PartSharedStorageBus implements IMEMonitorHandlerReceiver<IAEFluidStack>
 {
 	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_fluids_base" );
 	@PartModels
@@ -107,7 +107,7 @@ public class PartStorageBusFluids extends PartSharedStorageBus implements IMEMon
 	private int handlerHash = 0;
 	private byte resetCacheLogic = 0;
 
-	public PartStorageBusFluids( ItemStack is )
+	public PartStorageBusFluid( ItemStack is )
 	{
 		super( is );
 		this.getConfigManager().registerSetting( Settings.ACCESS, AccessRestriction.READ_WRITE );

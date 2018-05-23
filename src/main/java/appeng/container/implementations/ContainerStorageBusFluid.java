@@ -40,7 +40,7 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OptionalSlotFakeFluid;
 import appeng.container.slot.SlotFakeFluid;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.parts.misc.PartStorageBusFluids;
+import appeng.parts.misc.PartStorageBusFluid;
 import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.iterators.NullIterator;
@@ -54,7 +54,7 @@ import appeng.util.iterators.NullIterator;
 public class ContainerStorageBusFluid extends ContainerUpgradeable
 {
 
-	private final PartStorageBusFluids storageBus;
+	private final PartStorageBusFluid storageBus;
 
 	@GuiSync( 3 )
 	public AccessRestriction rwMode = AccessRestriction.READ_WRITE;
@@ -62,7 +62,7 @@ public class ContainerStorageBusFluid extends ContainerUpgradeable
 	@GuiSync( 4 )
 	public StorageFilter storageFilter = StorageFilter.EXTRACTABLE_ONLY;
 
-	public ContainerStorageBusFluid( InventoryPlayer ip, PartStorageBusFluids te )
+	public ContainerStorageBusFluid( InventoryPlayer ip, PartStorageBusFluid te )
 	{
 		super( ip, te );
 		this.storageBus = te;

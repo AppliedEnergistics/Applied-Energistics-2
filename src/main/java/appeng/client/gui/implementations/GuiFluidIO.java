@@ -24,7 +24,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.container.implementations.ContainerFluidIO;
 import appeng.core.localization.GuiText;
-import appeng.parts.automation.fluids.PartImportBusFluids;
+import appeng.parts.automation.fluid.PartImportBusFluid;
 
 
 /**
@@ -43,6 +43,6 @@ public class GuiFluidIO extends GuiUpgradeable
 	@Override
 	protected GuiText getName()
 	{
-		return this.bc instanceof PartImportBusFluids ? GuiText.ImportBusFluids : GuiText.ExportBusFluids;
+		return this.bc instanceof PartImportBusFluid ? GuiText.ImportBusFluids : GuiText.ExportBusFluids;
 	}
 }

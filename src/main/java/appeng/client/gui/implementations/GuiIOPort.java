@@ -37,7 +37,6 @@ import appeng.container.implementations.ContainerIOPort;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
-import appeng.parts.automation.fluids.PartImportBusFluids;
 import appeng.tile.storage.TileIOPort;
 
 

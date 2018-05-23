@@ -95,9 +95,9 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.items.contents.QuartzKnifeObj;
 import appeng.parts.automation.PartFormationPlane;
 import appeng.parts.automation.PartLevelEmitter;
-import appeng.parts.automation.fluids.PartSharedFluidBus;
+import appeng.parts.automation.fluid.PartSharedFluidBus;
 import appeng.parts.misc.PartStorageBus;
-import appeng.parts.misc.PartStorageBusFluids;
+import appeng.parts.misc.PartStorageBusFluid;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartFluidTerminal;
 import appeng.parts.reporting.PartInterfaceTerminal;
@@ -164,7 +164,7 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_STORAGEBUS( ContainerStorageBus.class, PartStorageBus.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
-	GUI_STORAGEBUS_FLUID( ContainerStorageBusFluid.class, PartStorageBusFluids.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
+	GUI_STORAGEBUS_FLUID( ContainerStorageBusFluid.class, PartStorageBusFluid.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
 	GUI_FORMATION_PLANE( ContainerFormationPlane.class, PartFormationPlane.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
