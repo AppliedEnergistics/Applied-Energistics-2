@@ -44,6 +44,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AppEng;
+import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
@@ -81,7 +82,7 @@ public class PartImportBusFluid extends PartSharedFluidBus
 	@Override
 	public TickingRequest getTickingRequest( IGridNode node )
 	{
-		return new TickingRequest( 5, 40, this.isSleeping(), false );
+		return new TickingRequest( TickRates.ImportBus.getMin(), TickRates.ImportBus.getMax(), this.isSleeping(), false );
 	}
 
 	@Override

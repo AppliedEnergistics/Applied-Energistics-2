@@ -68,6 +68,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
 import appeng.capabilities.Capabilities;
 import appeng.core.AppEng;
+import appeng.core.settings.TickRates;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.IInterfaceHost;
 import appeng.items.parts.PartModels;
@@ -477,7 +478,7 @@ public class PartStorageBusFluid extends PartSharedStorageBus implements IMEMoni
 	@Override
 	public TickingRequest getTickingRequest( IGridNode node )
 	{
-		return new TickingRequest( 5, 60, this.isSleeping(), true );
+		return new TickingRequest( TickRates.StorageBus.getMin(), TickRates.StorageBus.getMax(), this.isSleeping(), true );
 	}
 
 	@Override
