@@ -77,11 +77,11 @@ public final class ApiParts implements IParts
 	private final IItemDefinition terminal;
 	private final IItemDefinition storageMonitor;
 	private final IItemDefinition conversionMonitor;
-	private final IItemDefinition importBusFluids;
-	private final IItemDefinition exportBusFluids;
+	private final IItemDefinition importBusFluid;
+	private final IItemDefinition exportBusFluid;
 	private final IItemDefinition fluidTerminal;
-	private final IItemDefinition storageBusFluids;
-	private final IItemDefinition levelEmitterFluids;
+	private final IItemDefinition storageBusFluid;
+	private final IItemDefinition levelEmitterFluid;
 
 	public ApiParts( FeatureFactory registry, PartModels partModels )
 	{
@@ -133,11 +133,11 @@ public final class ApiParts implements IParts
 		this.terminal = new DamagedItemDefinition( "part.terminal", itemPart.createPart( PartType.TERMINAL ) );
 		this.storageMonitor = new DamagedItemDefinition( "part.monitor.storage", itemPart.createPart( PartType.STORAGE_MONITOR ) );
 		this.conversionMonitor = new DamagedItemDefinition( "part.monitor.conversion", itemPart.createPart( PartType.CONVERSION_MONITOR ) );
-		this.importBusFluids = new DamagedItemDefinition( "part.bus.import.fluid", itemPart.createPart( PartType.IMPORT_BUS_FLUIDS ) );
-		this.exportBusFluids = new DamagedItemDefinition( "part.bus.export.fluid", itemPart.createPart( PartType.EXPORT_BUS_FLUIDS ) );
+		this.importBusFluid = new DamagedItemDefinition( "part.bus.import.fluid", itemPart.createPart( PartType.IMPORT_BUS_FLUID ) );
+		this.exportBusFluid = new DamagedItemDefinition( "part.bus.export.fluid", itemPart.createPart( PartType.EXPORT_BUS_FLUID ) );
 		this.fluidTerminal = new DamagedItemDefinition( "part.terminal.fluid", itemPart.createPart( PartType.FLUID_TERMINAL ) );
-		this.storageBusFluids = new DamagedItemDefinition( "part.bus.storage.fluids", itemPart.createPart( PartType.STORAGE_BUS_FLUIDS ) );
-		this.levelEmitterFluids = new DamagedItemDefinition( "part.level_emitter.fluids", itemPart.createPart( PartType.LEVEL_EMITTER_FLUIDS ) );
+		this.storageBusFluid = new DamagedItemDefinition( "part.bus.storage.fluid", itemPart.createPart( PartType.STORAGE_BUS_FLUID ) );
+		this.levelEmitterFluid = new DamagedItemDefinition( "part.level_emitter.fluid", itemPart.createPart( PartType.LEVEL_EMITTER_FLUID ) );
 	}
 
 	private static AEColoredItemDefinition constructColoredDefinition( final ItemPart target, final PartType type )
@@ -397,24 +397,24 @@ public final class ApiParts implements IParts
 	@Override
 	public IItemDefinition importBusFluids()
 	{
-		return this.importBusFluids;
+		return this.importBusFluid;
 	}
 
 	@Override
 	public IItemDefinition exportBusFluids()
 	{
-		return this.exportBusFluids;
+		return this.exportBusFluid;
 	}
 
 	@Override
 	public IItemDefinition storageBusFluids()
 	{
-		return this.storageBusFluids;
+		return this.storageBusFluid;
 	}
 
 	@Override
 	public IItemDefinition levelEmitterFluids()
 	{
-		return this.levelEmitterFluids;
+		return this.levelEmitterFluid;
 	}
 }

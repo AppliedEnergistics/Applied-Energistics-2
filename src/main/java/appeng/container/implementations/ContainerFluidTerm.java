@@ -203,6 +203,16 @@ public class ContainerFluidTerm extends AEBaseContainer implements IConfigManage
 	}
 
 	@Override
+	public void onContainerClosed( final EntityPlayer player )
+	{
+		super.onContainerClosed( player );
+		if( this.monitor != null )
+		{
+			this.monitor.removeListener( this );
+		}
+	}
+
+	@Override
 	public void doAction( EntityPlayerMP player, InventoryAction action, int slot, long id )
 	{
 		if( action != InventoryAction.FILL_ITEM && action != InventoryAction.EMPTY_ITEM )

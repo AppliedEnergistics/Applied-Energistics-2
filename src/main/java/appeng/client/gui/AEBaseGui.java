@@ -749,6 +749,10 @@ public abstract class AEBaseGui extends GuiContainer
 				this.drawTexturedModalRect(s.xPos, s.yPos, sprite, 16, 16);
 				GlStateManager.enableLighting();
 			}
+			if( !this.isPowered() )
+			{
+				drawRect( s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111 );
+			}
 			return;
 		}
 		else

@@ -349,6 +349,12 @@ public class GuiFluidTerm extends AEBaseMEGui implements ISortSource, IConfigMan
 		return this.meFluidSlots;
 	}
 
+	@Override
+	protected boolean isPowered()
+	{
+		return this.repo.hasPower();
+	}
+
 	protected String getBackground()
 	{
 		return "guis/terminal.png";

@@ -195,18 +195,18 @@ public enum PartType
 	DARK_MONITOR( 200, "dark_monitor", EnumSet.of( AEFeature.PANELS ), EnumSet.noneOf( IntegrationType.class ), PartDarkPanel.class ),
 
 	STORAGE_BUS( 220, "storage_bus", EnumSet.of( AEFeature.STORAGE_BUS ), EnumSet.noneOf( IntegrationType.class ), PartStorageBus.class ),
-	STORAGE_BUS_FLUIDS( 221, "storage_bus_fluids", EnumSet.of( AEFeature.STORAGE_BUS_FLUIDS ), EnumSet.noneOf( IntegrationType.class ), PartStorageBusFluid.class ),
+	STORAGE_BUS_FLUID( 221, "storage_bus_fluid", EnumSet.of( AEFeature.STORAGE_BUS_FLUID ), EnumSet.noneOf( IntegrationType.class ), PartStorageBusFluid.class ),
 
 	IMPORT_BUS( 240, "import_bus", EnumSet.of( AEFeature.IMPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartImportBus.class ),
 
-	IMPORT_BUS_FLUIDS( 241, "import_bus_fluids", EnumSet.of( AEFeature.IMPORT_BUS_FLUIDS ), EnumSet.noneOf( IntegrationType.class ), PartImportBusFluid.class ),
+	IMPORT_BUS_FLUID( 241, "import_bus_fluid", EnumSet.of( AEFeature.IMPORT_BUS_FLUID ), EnumSet.noneOf( IntegrationType.class ), PartImportBusFluid.class ),
 
 	EXPORT_BUS( 260, "export_bus", EnumSet.of( AEFeature.EXPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartExportBus.class ),
 
-	EXPORT_BUS_FLUIDS( 261, "export_bus_fluids", EnumSet.of( AEFeature.EXPORT_BUS_FLUIDS ), EnumSet.noneOf( IntegrationType.class ), PartExportBusFluid.class ),
+	EXPORT_BUS_FLUID( 261, "export_bus_fluid", EnumSet.of( AEFeature.EXPORT_BUS_FLUID ), EnumSet.noneOf( IntegrationType.class ), PartExportBusFluid.class ),
 
 	LEVEL_EMITTER( 280, "level_emitter", EnumSet.of( AEFeature.LEVEL_EMITTER ), EnumSet.noneOf( IntegrationType.class ), PartLevelEmitter.class ),
-	LEVEL_EMITTER_FLUIDS( 281, "level_emitter_fluids", EnumSet.of( AEFeature.LEVEL_EMITTER_FLUIDS ), EnumSet.noneOf( IntegrationType.class ), PartLevelEmitterFluid.class ),
+	LEVEL_EMITTER_FLUID( 281, "level_emitter_fluid", EnumSet.of( AEFeature.LEVEL_EMITTER_FLUID ), EnumSet.noneOf( IntegrationType.class ), PartLevelEmitterFluid.class ),
 
 	ANNIHILATION_PLANE( 300, "annihilation_plane", EnumSet.of( AEFeature.ANNIHILATION_PLANE ), EnumSet
 			.noneOf( IntegrationType.class ), PartAnnihilationPlane.class ),
