@@ -24,7 +24,6 @@ import javax.annotation.Nonnull;
 import net.minecraft.util.text.translation.I18n;
 
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.util.ItemSorters;
 
 
 public class ClientDCInternalInv implements Comparable<ClientDCInternalInv>
@@ -57,7 +56,7 @@ public class ClientDCInternalInv implements Comparable<ClientDCInternalInv>
 	@Override
 	public int compareTo( @Nonnull final ClientDCInternalInv o )
 	{
-		return ItemSorters.compareLong( this.sortBy, o.sortBy );
+		return Long.compare( this.sortBy, o.sortBy );
 	}
 
 	public AppEngInternalInventory getInventory()
