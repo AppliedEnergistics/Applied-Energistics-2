@@ -188,7 +188,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	{
 		if( Platform.isClient() )
 		{
-			return (boolean) this.world.getBlockState( this.pos ).getValue( BlockCraftingUnit.FORMED );
+			return this.world.getBlockState( this.pos ).getValue( BlockCraftingUnit.FORMED );
 		}
 		return this.cluster != null;
 	}
@@ -218,7 +218,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			}
 			else
 			{
-				this.setPreviousState( (NBTTagCompound) data.copy() );
+				this.setPreviousState( data.copy() );
 			}
 		}
 	}
@@ -343,7 +343,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	{
 		if( Platform.isClient() )
 		{
-			return (boolean) this.world.getBlockState( this.pos ).getValue( BlockCraftingUnit.POWERED );
+			return this.world.getBlockState( this.pos ).getValue( BlockCraftingUnit.POWERED );
 		}
 		return this.getProxy().isActive();
 	}

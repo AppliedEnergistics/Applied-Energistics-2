@@ -20,8 +20,8 @@ package appeng.parts;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -412,7 +412,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			final IPart p = this.getPart( side );
 			if( p != null )
 			{
-				final List<AxisAlignedBB> boxes = new LinkedList<>();
+				final List<AxisAlignedBB> boxes = new ArrayList<>();
 
 				final IPartCollisionHelper bch = new BusCollisionHelper( boxes, side, null, true );
 				p.getBoxes( bch );
@@ -435,7 +435,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				final IFacadePart p = fc.getFacade( side );
 				if( p != null )
 				{
-					final List<AxisAlignedBB> boxes = new LinkedList<>();
+					final List<AxisAlignedBB> boxes = new ArrayList<>();
 
 					final IPartCollisionHelper bch = new BusCollisionHelper( boxes, side, null, true );
 					p.getBoxes( bch, null );
@@ -465,7 +465,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	{
 		if( this.getCenter() == null )
 		{
-			final List<ItemStack> facades = new LinkedList<>();
+			final List<ItemStack> facades = new ArrayList<>();
 
 			final IFacadeContainer fc = this.getFacadeContainer();
 			for( final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS )
@@ -735,7 +735,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final boolean ignoreConnections, final boolean includeFacades, final Entity e, final boolean visual )
 	{
-		final List<AxisAlignedBB> boxes = new LinkedList<>();
+		final List<AxisAlignedBB> boxes = new ArrayList<>();
 
 		final IFacadeContainer fc = this.getFacadeContainer();
 		for( final AEPartLocation s : AEPartLocation.values() )

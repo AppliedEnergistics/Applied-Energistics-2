@@ -19,10 +19,10 @@
 package appeng.util.item;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.NavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
@@ -90,7 +90,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 			}
 			else
 			{
-				final Collection<IAEItemStack> output = new LinkedList<>();
+				final Collection<IAEItemStack> output = new ArrayList<>();
 
 				for( final IAEItemStack is : or.getAEEquivalents() )
 				{

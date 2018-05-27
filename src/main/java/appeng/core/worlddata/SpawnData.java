@@ -23,8 +23,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 
 import javax.annotation.Nonnull;
 
@@ -101,7 +101,7 @@ final class SpawnData implements IWorldSpawnData
 	@Override
 	public Collection<NBTTagCompound> getNearByMeteorites( final int dim, final int chunkX, final int chunkZ )
 	{
-		final Collection<NBTTagCompound> ll = new LinkedList<>();
+		final Collection<NBTTagCompound> ll = new ArrayList<>();
 
 		synchronized( SpawnData.class )
 		{

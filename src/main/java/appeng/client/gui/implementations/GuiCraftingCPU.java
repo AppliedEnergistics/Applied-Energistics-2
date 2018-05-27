@@ -22,7 +22,6 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -212,7 +211,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 		final int viewEnd = viewStart + 3 * 6;
 
 		String dspToolTip = "";
-		final List<String> lineList = new LinkedList<>();
+		final List<String> lineList = new ArrayList<>();
 		int toolPosX = 0;
 		int toolPosY = 0;
 

@@ -19,9 +19,10 @@
 package appeng.core.features.registries;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
@@ -39,8 +40,8 @@ public class MovableTileRegistry implements IMovableRegistry
 	private final HashSet<Block> blacklisted = new HashSet<>();
 
 	private final HashMap<Class<? extends TileEntity>, IMovableHandler> Valid = new HashMap<>();
-	private final LinkedList<Class<? extends TileEntity>> test = new LinkedList<>();
-	private final LinkedList<IMovableHandler> handlers = new LinkedList<>();
+	private final List<Class<? extends TileEntity>> test = new ArrayList<>();
+	private final List<IMovableHandler> handlers = new ArrayList<>();
 	private final DefaultSpatialHandler dsh = new DefaultSpatialHandler();
 
 	private final IMovableHandler nullHandler = new DefaultSpatialHandler();

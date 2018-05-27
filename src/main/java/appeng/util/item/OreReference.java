@@ -22,7 +22,6 @@ package appeng.util.item;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -35,7 +34,7 @@ import appeng.api.storage.data.IAEItemStack;
 public class OreReference
 {
 
-	private final List<String> otherOptions = new LinkedList<>();
+	private final List<String> otherOptions = new ArrayList<>();
 	private final Set<Integer> ores = new HashSet<>();
 	private List<IAEItemStack> aeOtherOptions = null;
 

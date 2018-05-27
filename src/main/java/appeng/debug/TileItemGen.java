@@ -19,7 +19,7 @@
 package appeng.debug;
 
 
-import java.util.LinkedList;
+import java.util.ArrayDeque;
 import java.util.Queue;
 
 import javax.annotation.Nonnull;
@@ -40,7 +40,7 @@ import appeng.tile.AEBaseTile;
 public class TileItemGen extends AEBaseTile
 {
 
-	private static final Queue<ItemStack> POSSIBLE_ITEMS = new LinkedList<>();
+	private static final Queue<ItemStack> POSSIBLE_ITEMS = new ArrayDeque<>();
 
 	private final IItemHandler handler = new QueuedItemHandler();
 

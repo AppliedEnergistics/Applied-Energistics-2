@@ -19,9 +19,9 @@
 package appeng.me.pathfinding;
 
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -52,7 +52,7 @@ public class PathSegment
 	public boolean step()
 	{
 		final List<IPathItem> oldOpen = this.open;
-		this.open = new LinkedList<>();
+		this.open = new ArrayList<>();
 
 		for( final IPathItem i : oldOpen )
 		{

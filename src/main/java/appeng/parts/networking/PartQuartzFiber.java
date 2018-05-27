@@ -19,9 +19,9 @@
 package appeng.parts.networking;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.LinkedList;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -134,7 +134,7 @@ public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
 	@Override
 	public Collection<IEnergyGridProvider> providers()
 	{
-		Collection<IEnergyGridProvider> providers = new LinkedList<>();
+		Collection<IEnergyGridProvider> providers = new ArrayList<>();
 
 		try
 		{

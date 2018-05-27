@@ -19,11 +19,11 @@
 package appeng.items.materials;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -106,7 +106,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 		final Upgrades u = this.getType( stack );
 		if( u != null )
 		{
-			final List<String> textList = new LinkedList<>();
+			final List<String> textList = new ArrayList<>();
 			for( final Entry<ItemStack, Integer> j : u.getSupported().entrySet() )
 			{
 				String name = null;
