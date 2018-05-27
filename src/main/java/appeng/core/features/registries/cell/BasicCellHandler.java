@@ -41,7 +41,7 @@ import appeng.me.storage.CellInventoryHandler;
 import appeng.util.Platform;
 
 
-public class BasicCellHandler implements ICellHandler
+public final class BasicCellHandler implements ICellHandler
 {
 
 	@Override
