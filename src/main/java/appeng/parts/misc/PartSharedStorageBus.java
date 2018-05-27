@@ -75,10 +75,6 @@ public abstract class PartSharedStorageBus extends PartUpgradeable implements IG
 		super( is );
 	}
 
-	// *******************************************
-	// Class Methods
-	// *******************************************
-
 	protected void updateStatus()
 	{
 		final boolean currentActive = this.getProxy().isActive();
@@ -117,10 +113,6 @@ public abstract class PartSharedStorageBus extends PartUpgradeable implements IG
 
 	protected abstract void resetCache( boolean fullReset );
 
-	// *******************************************
-	// ICellContainer Methods
-	// *******************************************
-
 	@Override
 	public List<IMEInventoryHandler> getCellArray( final IStorageChannel channel )
 	{
@@ -137,10 +129,6 @@ public abstract class PartSharedStorageBus extends PartUpgradeable implements IG
 	{
 	}
 
-	// *******************************************
-	// IPriorityHost Methods
-	// *******************************************
-
 	@Override
 	public int getPriority()
 	{
@@ -154,10 +142,6 @@ public abstract class PartSharedStorageBus extends PartUpgradeable implements IG
 		this.getHost().markForSave();
 		this.resetCache( true );
 	}
-
-	// *******************************************
-	// Superclass Overrides
-	// *******************************************
 
 	@Override
 	@MENetworkEventSubscribe

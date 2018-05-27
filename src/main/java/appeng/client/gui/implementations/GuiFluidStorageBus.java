@@ -33,7 +33,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiTabButton;
-import appeng.container.implementations.ContainerStorageBusFluid;
+import appeng.container.implementations.ContainerFluidStorageBus;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
@@ -41,7 +41,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;
-import appeng.parts.misc.PartStorageBusFluid;
+import appeng.parts.misc.PartFluidStorageBus;
 
 
 /**
@@ -49,7 +49,7 @@ import appeng.parts.misc.PartStorageBusFluid;
  * @version rv6 - 22/05/2018
  * @since rv6 22/05/2018
  */
-public class GuiStorageBusFluid extends GuiUpgradeable
+public class GuiFluidStorageBus extends GuiUpgradeable
 {
 	private GuiImgButton rwMode;
 	private GuiImgButton storageFilter;
@@ -57,9 +57,9 @@ public class GuiStorageBusFluid extends GuiUpgradeable
 	private GuiImgButton partition;
 	private GuiImgButton clear;
 
-	public GuiStorageBusFluid( InventoryPlayer inventoryPlayer, PartStorageBusFluid te )
+	public GuiFluidStorageBus( InventoryPlayer inventoryPlayer, PartFluidStorageBus te )
 	{
-		super( new ContainerStorageBusFluid( inventoryPlayer, te ) );
+		super( new ContainerFluidStorageBus( inventoryPlayer, te ) );
 		this.ySize = 251;
 	}
 
@@ -94,12 +94,12 @@ public class GuiStorageBusFluid extends GuiUpgradeable
 
 		if( this.storageFilter != null )
 		{
-			this.storageFilter.set( ( (ContainerStorageBusFluid) this.cvb ).getStorageFilter() );
+			this.storageFilter.set( ( (ContainerFluidStorageBus) this.cvb ).getStorageFilter() );
 		}
 
 		if( this.rwMode != null )
 		{
-			this.rwMode.set( ( (ContainerStorageBusFluid) this.cvb ).getReadWriteMode() );
+			this.rwMode.set( ( (ContainerFluidStorageBus) this.cvb ).getReadWriteMode() );
 		}
 	}
 

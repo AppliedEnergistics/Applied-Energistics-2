@@ -1190,7 +1190,6 @@ public abstract class AEBaseContainer extends Container
 
 		a.putStack( testA );
 		b.putStack( testB );
-		b.putStack( testB );
 	}
 
 	public void onUpdate( final String field, final Object oldValue, final Object newValue )

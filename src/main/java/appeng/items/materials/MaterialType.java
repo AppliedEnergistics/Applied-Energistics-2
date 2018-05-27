@@ -119,8 +119,7 @@ public enum MaterialType
 	FLUID_CELL1K_PART( 54, "material_fluid_cell1k_part", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
 	FLUID_CELL4K_PART( 55, "material_fluid_cell4k_part", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
 	FLUID_CELL16K_PART( 56, "material_fluid_cell16k_part", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
-	FLUID_CELL64K_PART( 57, "material_fluid_cell64k_part", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
-	EMPTY_FLUID_STORAGE_CELL( 58, "material_empty_fluid_storage_cell", EnumSet.of( AEFeature.STORAGE_CELLS ) );
+	FLUID_CELL64K_PART( 57, "material_fluid_cell64k_part", EnumSet.of( AEFeature.STORAGE_CELLS ) );
 
 	private final Set<AEFeature> features;
 	private final ModelResourceLocation model;

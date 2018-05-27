@@ -70,7 +70,7 @@ import appeng.container.AEBaseContainer;
 import appeng.container.slot.AppEngCraftingSlot;
 import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.AppEngSlot.hasCalculatedValidness;
-import appeng.container.slot.IFluidSlot;
+import appeng.container.slot.ISlotFluid;
 import appeng.container.slot.IOptionalSlot;
 import appeng.container.slot.SlotCraftingTerm;
 import appeng.container.slot.SlotDisabled;
@@ -217,9 +217,9 @@ public abstract class AEBaseGui extends GuiContainer
 	protected void renderHoveredToolTip( int mouseX, int mouseY )
 	{
 		Slot slot = this.getSlot( mouseX, mouseY );
-		if( slot != null && slot.isEnabled() && slot instanceof IFluidSlot)
+		if( slot != null && slot.isEnabled() && slot instanceof ISlotFluid )
 		{
-			IFluidSlot fluidSlot = (IFluidSlot) slot;
+			ISlotFluid fluidSlot = (ISlotFluid) slot;
 			if (fluidSlot.getFluidInSlot() != null && fluidSlot.shouldRenderAsFluid()) {
 				FluidStack fluidStack = fluidSlot.getFluidInSlot();
 				this.drawHoveringText( fluidStack.getLocalizedName(), mouseX, mouseY );
@@ -737,9 +737,9 @@ public abstract class AEBaseGui extends GuiContainer
 
 			return;
 		}
-		else if( s instanceof IFluidSlot && ( (IFluidSlot) s ).shouldRenderAsFluid() )
+		else if( s instanceof ISlotFluid && ( (ISlotFluid) s ).shouldRenderAsFluid() )
 		{
-			FluidStack fs = ( (IFluidSlot) s ).getFluidInSlot();
+			FluidStack fs = ( (ISlotFluid) s ).getFluidInSlot();
 			if (fs != null) {
 				GlStateManager.disableLighting();
 				Fluid fluid = fs.getFluid();

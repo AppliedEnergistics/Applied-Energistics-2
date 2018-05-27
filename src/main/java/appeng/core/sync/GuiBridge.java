@@ -63,7 +63,7 @@ import appeng.container.implementations.ContainerCraftingStatus;
 import appeng.container.implementations.ContainerCraftingTerm;
 import appeng.container.implementations.ContainerDrive;
 import appeng.container.implementations.ContainerFluidIO;
-import appeng.container.implementations.ContainerFluidTerm;
+import appeng.container.implementations.ContainerFluidTerminal;
 import appeng.container.implementations.ContainerFormationPlane;
 import appeng.container.implementations.ContainerGrinder;
 import appeng.container.implementations.ContainerIOPort;
@@ -84,7 +84,7 @@ import appeng.container.implementations.ContainerSecurityStation;
 import appeng.container.implementations.ContainerSkyChest;
 import appeng.container.implementations.ContainerSpatialIOPort;
 import appeng.container.implementations.ContainerStorageBus;
-import appeng.container.implementations.ContainerStorageBusFluid;
+import appeng.container.implementations.ContainerFluidStorageBus;
 import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.implementations.ContainerVibrationChamber;
 import appeng.container.implementations.ContainerWireless;
@@ -97,7 +97,7 @@ import appeng.parts.automation.PartFormationPlane;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.parts.automation.fluid.PartSharedFluidBus;
 import appeng.parts.misc.PartStorageBus;
-import appeng.parts.misc.PartStorageBusFluid;
+import appeng.parts.misc.PartFluidStorageBus;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartFluidTerminal;
 import appeng.parts.reporting.PartInterfaceTerminal;
@@ -164,7 +164,7 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_STORAGEBUS( ContainerStorageBus.class, PartStorageBus.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
-	GUI_STORAGEBUS_FLUID( ContainerStorageBusFluid.class, PartStorageBusFluid.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
+	GUI_STORAGEBUS_FLUID( ContainerFluidStorageBus.class, PartFluidStorageBus.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
 	GUI_FORMATION_PLANE( ContainerFormationPlane.class, PartFormationPlane.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
@@ -176,7 +176,7 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_PATTERN_TERMINAL( ContainerPatternTerm.class, PartPatternTerminal.class, GuiHostType.WORLD, SecurityPermissions.CRAFT ),
 
-	GUI_FLUID_TERMINAL( ContainerFluidTerm.class, PartFluidTerminal.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
+	GUI_FLUID_TERMINAL( ContainerFluidTerminal.class, PartFluidTerminal.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
 	// extends (Container/Gui) + Bus
 	GUI_LEVEL_EMITTER( ContainerLevelEmitter.class, PartLevelEmitter.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),

@@ -115,7 +115,6 @@ public final class ApiMaterials implements IMaterials
 	private final IItemDefinition fluidCell4kPart;
 	private final IItemDefinition fluidCell16kPart;
 	private final IItemDefinition fluidCell64kPart;
-	private final IItemDefinition emptyFluidStorageCell;
 
 	public ApiMaterials( FeatureFactory registry )
 	{
@@ -221,7 +220,6 @@ public final class ApiMaterials implements IMaterials
 		this.fluidCell4kPart = new DamagedItemDefinition( "material.cell.storage.4k", materials.createMaterial( MaterialType.FLUID_CELL4K_PART ) );
 		this.fluidCell16kPart = new DamagedItemDefinition( "material.cell.storage.16k", materials.createMaterial( MaterialType.FLUID_CELL16K_PART ) );
 		this.fluidCell64kPart = new DamagedItemDefinition( "material.cell.storage.64k", materials.createMaterial( MaterialType.FLUID_CELL64K_PART ) );
-		this.emptyFluidStorageCell = new DamagedItemDefinition( "material.cell.storage.empty", materials.createMaterial( MaterialType.EMPTY_FLUID_STORAGE_CELL ) );
 	}
 
 	@Override
@@ -564,11 +562,5 @@ public final class ApiMaterials implements IMaterials
 	public IItemDefinition fluidCell64kPart()
 	{
 		return this.fluidCell64kPart;
-	}
-
-	@Override
-	public IItemDefinition emptyFluidStorageCell()
-	{
-		return this.emptyFluidStorageCell;
 	}
 }

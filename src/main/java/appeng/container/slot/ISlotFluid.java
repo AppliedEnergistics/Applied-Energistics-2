@@ -16,24 +16,23 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.parts.automation.fluid;
+package appeng.container.slot;
 
 
-import net.minecraft.item.ItemStack;
-
-import appeng.parts.automation.PartLevelEmitter;
+import net.minecraftforge.fluids.FluidStack;
 
 
 /**
  * @author BrockWS
- * @version rv6 - 22/05/2018
- * @since rv6 22/05/2018
+ * @version rv6 - 3/05/2018
+ * @since rv6 3/05/2018
  */
-public class PartLevelEmitterFluid extends PartLevelEmitter
+public interface ISlotFluid
 {
+	FluidStack getFluidInSlot();
 
-	public PartLevelEmitterFluid( ItemStack is )
+	default boolean shouldRenderAsFluid()
 	{
-		super( is );
+		return true;
 	}
 }

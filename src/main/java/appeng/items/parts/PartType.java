@@ -49,14 +49,13 @@ import appeng.parts.automation.PartFormationPlane;
 import appeng.parts.automation.PartIdentityAnnihilationPlane;
 import appeng.parts.automation.PartImportBus;
 import appeng.parts.automation.PartLevelEmitter;
-import appeng.parts.automation.fluid.PartExportBusFluid;
-import appeng.parts.automation.fluid.PartImportBusFluid;
-import appeng.parts.automation.fluid.PartLevelEmitterFluid;
-import appeng.parts.misc.PartStorageBusFluid;
+import appeng.parts.automation.fluid.PartFluidExportBus;
+import appeng.parts.automation.fluid.PartFluidImportBus;
 import appeng.parts.misc.PartCableAnchor;
 import appeng.parts.misc.PartInterface;
 import appeng.parts.misc.PartInvertedToggleBus;
 import appeng.parts.misc.PartStorageBus;
+import appeng.parts.misc.PartFluidStorageBus;
 import appeng.parts.misc.PartToggleBus;
 import appeng.parts.networking.PartCableCovered;
 import appeng.parts.networking.PartCableGlass;
@@ -195,18 +194,17 @@ public enum PartType
 	DARK_MONITOR( 200, "dark_monitor", EnumSet.of( AEFeature.PANELS ), EnumSet.noneOf( IntegrationType.class ), PartDarkPanel.class ),
 
 	STORAGE_BUS( 220, "storage_bus", EnumSet.of( AEFeature.STORAGE_BUS ), EnumSet.noneOf( IntegrationType.class ), PartStorageBus.class ),
-	STORAGE_BUS_FLUID( 221, "storage_bus_fluid", EnumSet.of( AEFeature.STORAGE_BUS_FLUID ), EnumSet.noneOf( IntegrationType.class ), PartStorageBusFluid.class ),
+	FLUID_STORAGE_BUS( 221, "fluid_storage_bus", EnumSet.of( AEFeature.FLUID_STORAGE_BUS ), EnumSet.noneOf( IntegrationType.class ), PartFluidStorageBus.class ),
 
 	IMPORT_BUS( 240, "import_bus", EnumSet.of( AEFeature.IMPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartImportBus.class ),
 
-	IMPORT_BUS_FLUID( 241, "import_bus_fluid", EnumSet.of( AEFeature.IMPORT_BUS_FLUID ), EnumSet.noneOf( IntegrationType.class ), PartImportBusFluid.class ),
+	FLUID_IMPORT_BUS( 241, "fluid_import_bus", EnumSet.of( AEFeature.FLUID_IMPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartFluidImportBus.class ),
 
 	EXPORT_BUS( 260, "export_bus", EnumSet.of( AEFeature.EXPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartExportBus.class ),
 
-	EXPORT_BUS_FLUID( 261, "export_bus_fluid", EnumSet.of( AEFeature.EXPORT_BUS_FLUID ), EnumSet.noneOf( IntegrationType.class ), PartExportBusFluid.class ),
+	FLUID_EXPORT_BUS( 261, "fluid_export_bus", EnumSet.of( AEFeature.FLUID_EXPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartFluidExportBus.class ),
 
 	LEVEL_EMITTER( 280, "level_emitter", EnumSet.of( AEFeature.LEVEL_EMITTER ), EnumSet.noneOf( IntegrationType.class ), PartLevelEmitter.class ),
-	LEVEL_EMITTER_FLUID( 281, "level_emitter_fluid", EnumSet.of( AEFeature.LEVEL_EMITTER_FLUID ), EnumSet.noneOf( IntegrationType.class ), PartLevelEmitterFluid.class ),
 
 	ANNIHILATION_PLANE( 300, "annihilation_plane", EnumSet.of( AEFeature.ANNIHILATION_PLANE ), EnumSet
 			.noneOf( IntegrationType.class ), PartAnnihilationPlane.class ),

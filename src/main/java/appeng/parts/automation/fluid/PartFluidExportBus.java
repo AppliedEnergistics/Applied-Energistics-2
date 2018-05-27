@@ -57,19 +57,19 @@ import appeng.util.item.AEFluidStack;
  * @version rv6 - 30/04/2018
  * @since rv6 30/04/2018
  */
-public class PartExportBusFluid extends PartSharedFluidBus
+public class PartFluidExportBus extends PartSharedFluidBus
 {
-	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/export_bus_fluids_base" );
+	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/fluid_export_bus_base" );
 	@PartModels
-	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/export_bus_fluids_off" ) );
+	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/fluid_export_bus_off" ) );
 	@PartModels
-	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/export_bus_fluids_on" ) );
+	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/fluid_export_bus_on" ) );
 	@PartModels
-	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/export_bus_fluids_has_channel" ) );
+	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/fluid_export_bus_has_channel" ) );
 
 	private final IActionSource source;
 
-	public PartExportBusFluid( ItemStack is )
+	public PartFluidExportBus( ItemStack is )
 	{
 		super( is );
 		this.getConfigManager().registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );

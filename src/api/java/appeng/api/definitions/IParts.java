@@ -110,11 +110,9 @@ public interface IParts
 
 	IItemDefinition fluidTerminal();
 
-	IItemDefinition importBusFluids();
+	IItemDefinition fluidImportBus();
 
-	IItemDefinition exportBusFluids();
+	IItemDefinition fluidExportBus();
 
-	IItemDefinition storageBusFluids();
-
-	IItemDefinition levelEmitterFluids();
+	IItemDefinition fluidStorageBus();
 }

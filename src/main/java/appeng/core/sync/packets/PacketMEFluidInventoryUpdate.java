@@ -40,7 +40,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.client.gui.implementations.GuiFluidTerm;
+import appeng.client.gui.implementations.GuiFluidTerminal;
 import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -152,9 +152,9 @@ public class PacketMEFluidInventoryUpdate extends AppEngPacket
 	{
 		final GuiScreen gs = Minecraft.getMinecraft().currentScreen;
 
-		if( gs instanceof GuiFluidTerm )
+		if( gs instanceof GuiFluidTerminal )
 		{
-			( (GuiFluidTerm) gs ).postUpdate( this.list );
+			( (GuiFluidTerminal) gs ).postUpdate( this.list );
 		}
 	}
 

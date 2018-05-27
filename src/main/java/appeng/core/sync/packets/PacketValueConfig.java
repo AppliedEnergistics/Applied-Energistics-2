@@ -51,7 +51,7 @@ import appeng.container.implementations.ContainerPriority;
 import appeng.container.implementations.ContainerQuartzKnife;
 import appeng.container.implementations.ContainerSecurityStation;
 import appeng.container.implementations.ContainerStorageBus;
-import appeng.container.implementations.ContainerStorageBusFluid;
+import appeng.container.implementations.ContainerFluidStorageBus;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.IMouseWheelItem;
@@ -190,9 +190,9 @@ public class PacketValueConfig extends AppEngPacket
 					{
 						( (ContainerStorageBus) c ).partition();
 					}
-					else if( c instanceof ContainerStorageBusFluid )
+					else if( c instanceof ContainerFluidStorageBus )
 					{
-						( (ContainerStorageBusFluid) c ).partition();
+						( (ContainerFluidStorageBus) c ).partition();
 					}
 				}
 				else if( this.Value.equals( "Clear" ) )
@@ -201,9 +201,9 @@ public class PacketValueConfig extends AppEngPacket
 					{
 						( (ContainerStorageBus) c ).clear();
 					}
-					else if( c instanceof ContainerStorageBusFluid )
+					else if( c instanceof ContainerFluidStorageBus )
 					{
-						( (ContainerStorageBusFluid) c ).clear();
+						( (ContainerFluidStorageBus) c ).clear();
 					}
 				}
 			}

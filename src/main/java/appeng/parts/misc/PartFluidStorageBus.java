@@ -90,15 +90,15 @@ import appeng.util.prioritylist.PrecisePriorityList;
  * @version rv6 - 22/05/2018
  * @since rv6 22/05/2018
  */
-public class PartStorageBusFluid extends PartSharedStorageBus implements IMEMonitorHandlerReceiver<IAEFluidStack>
+public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMonitorHandlerReceiver<IAEFluidStack>
 {
-	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_fluids_base" );
+	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/fluid_storage_bus_base" );
 	@PartModels
-	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_fluids_off" ) );
+	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/fluid_storage_bus_off" ) );
 	@PartModels
-	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_fluids_on" ) );
+	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/fluid_storage_bus_on" ) );
 	@PartModels
-	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_fluids_has_channel" ) );
+	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/fluid_storage_bus_has_channel" ) );
 
 	private final IActionSource source;
 	private final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 63 );
@@ -108,7 +108,7 @@ public class PartStorageBusFluid extends PartSharedStorageBus implements IMEMoni
 	private int handlerHash = 0;
 	private byte resetCacheLogic = 0;
 
-	public PartStorageBusFluid( ItemStack is )
+	public PartFluidStorageBus( ItemStack is )
 	{
 		super( is );
 		this.getConfigManager().registerSetting( Settings.ACCESS, AccessRestriction.READ_WRITE );

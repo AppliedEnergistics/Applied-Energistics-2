@@ -31,7 +31,7 @@ import net.minecraftforge.items.IItemHandler;
  * @version rv6 - 1/05/2018
  * @since rv6 1/05/2018
  */
-public class SlotFakeFluid extends SlotFake implements IFluidSlot
+public class SlotFakeFluid extends SlotFake implements ISlotFluid
 {
 	public SlotFakeFluid( IItemHandler inv, int idx, int x, int y )
 	{

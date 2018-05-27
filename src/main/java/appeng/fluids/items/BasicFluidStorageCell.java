@@ -98,7 +98,7 @@ public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidSta
 	@Override
 	protected void dropEmptyStorageCellCase( final InventoryAdaptor ia, final EntityPlayer player )
 	{
-		AEApi.instance().definitions().materials().emptyFluidStorageCell().maybeStack( 1 ).ifPresent( is -> {
+		AEApi.instance().definitions().materials().emptyStorageCell().maybeStack( 1 ).ifPresent( is -> {
 			final ItemStack extraA = ia.addItems( is );
 			if( !extraA.isEmpty() )
 			{

@@ -24,7 +24,7 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import appeng.container.implementations.ContainerFluidTerm;
+import appeng.container.implementations.ContainerFluidTerminal;
 import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -86,9 +86,9 @@ public class PacketTargetFluidStack extends AppEngPacket
 	@Override
 	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
 	{
-		if( player.openContainer instanceof ContainerFluidTerm )
+		if( player.openContainer instanceof ContainerFluidTerminal )
 		{
-			( (ContainerFluidTerm) player.openContainer ).setTargetStack( this.stack );
+			( (ContainerFluidTerminal) player.openContainer ).setTargetStack( this.stack );
 		}
 	}
 }

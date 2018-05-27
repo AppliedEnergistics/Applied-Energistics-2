@@ -298,7 +298,7 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 							group = true;
 						}
 						break;
-					case IMPORT_BUS_FLUID:
+					case FLUID_IMPORT_BUS:
 						importBusFluids = true;
 						if( u == pt )
 						{
@@ -312,7 +312,7 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 							group = true;
 						}
 						break;
-					case EXPORT_BUS_FLUID:
+					case FLUID_EXPORT_BUS:
 						exportBusFluids = true;
 						if( u == pt )
 						{
@@ -328,7 +328,7 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 		{
 			return GuiText.IOBuses.getUnlocalized();
 		}
-		if( group && importBusFluids && exportBusFluids && ( u == PartType.IMPORT_BUS_FLUID || u == PartType.EXPORT_BUS_FLUID ) )
+		if( group && importBusFluids && exportBusFluids && ( u == PartType.FLUID_IMPORT_BUS || u == PartType.FLUID_EXPORT_BUS ) )
 		{
 			return GuiText.IOBusesFluids.getUnlocalized();
 		}

@@ -426,9 +426,9 @@ final class Registration
 		Upgrades.SPEED.registerItem( parts.importBus(), 4 );
 
 		// Fluid Import Bus
-		Upgrades.CAPACITY.registerItem( parts.importBusFluids(), 2 );
-		Upgrades.REDSTONE.registerItem( parts.importBusFluids(), 1 );
-		Upgrades.SPEED.registerItem( parts.importBusFluids(), 4 );
+		Upgrades.CAPACITY.registerItem( parts.fluidImportBus(), 2 );
+		Upgrades.REDSTONE.registerItem( parts.fluidImportBus(), 1 );
+		Upgrades.SPEED.registerItem( parts.fluidImportBus(), 4 );
 
 		// Export Bus
 		Upgrades.FUZZY.registerItem( parts.exportBus(), 1 );
@@ -438,9 +438,9 @@ final class Registration
 		Upgrades.CRAFTING.registerItem( parts.exportBus(), 1 );
 
 		// Fluid Export Bus
-		Upgrades.CAPACITY.registerItem( parts.exportBusFluids(), 2 );
-		Upgrades.REDSTONE.registerItem( parts.exportBusFluids(), 1 );
-		Upgrades.SPEED.registerItem( parts.exportBusFluids(), 4 );
+		Upgrades.CAPACITY.registerItem( parts.fluidExportBus(), 2 );
+		Upgrades.REDSTONE.registerItem( parts.fluidExportBus(), 1 );
+		Upgrades.SPEED.registerItem( parts.fluidExportBus(), 4 );
 
 		// Storage Cells
 		Upgrades.FUZZY.registerItem( items.cell1k(), 1 );
@@ -467,8 +467,8 @@ final class Registration
 		Upgrades.CAPACITY.registerItem( parts.storageBus(), 5 );
 
 		// Storage Bus Fluids
-		Upgrades.INVERTER.registerItem( parts.storageBusFluids(), 1 );
-		Upgrades.CAPACITY.registerItem( parts.storageBusFluids(), 5 );
+		Upgrades.INVERTER.registerItem( parts.fluidStorageBus(), 1 );
+		Upgrades.CAPACITY.registerItem( parts.fluidStorageBus(), 5 );
 
 		// Formation Plane
 		Upgrades.FUZZY.registerItem( parts.formationPlane(), 1 );
