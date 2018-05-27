@@ -24,6 +24,8 @@
 package appeng.api.networking;
 
 
+import javax.annotation.Nonnull;
+
 import appeng.api.networking.events.MENetworkEvent;
 import appeng.api.util.IReadOnlyCollection;
 
@@ -43,7 +45,8 @@ public interface IGrid
 	 *
 	 * @return the IGridCache you requested.
 	 */
-	<C extends IGridCache> C getCache( Class<? extends IGridCache> iface );
+	@Nonnull
+	<C extends IGridCache> C getCache( @Nonnull Class<? extends IGridCache> iface );
 
 	/**
 	 * Post an event into the network event bus.
@@ -52,7 +55,8 @@ public interface IGrid
 	 *
 	 * @return returns ev back to original poster
 	 */
-	MENetworkEvent postEvent( MENetworkEvent ev );
+	@Nonnull
+	MENetworkEvent postEvent( @Nonnull MENetworkEvent ev );
 
 	/**
 	 * Post an event into the network event bus, but direct it at a single node.
@@ -61,7 +65,8 @@ public interface IGrid
 	 *
 	 * @return returns ev back to original poster
 	 */
-	MENetworkEvent postEventTo( IGridNode node, MENetworkEvent ev );
+	@Nonnull
+	MENetworkEvent postEventTo( @Nonnull IGridNode node, @Nonnull MENetworkEvent ev );
 
 	/**
 	 * get a list of the diversity of classes, you can use this to better detect which machines your interested in,
@@ -69,6 +74,7 @@ public interface IGrid
 	 *
 	 * @return IReadOnlyCollection of all available host types (Of Type IGridHost).
 	 */
+	@Nonnull
 	IReadOnlyCollection<Class<? extends IGridHost>> getMachinesClasses();
 
 	/**
@@ -78,11 +84,13 @@ public interface IGrid
 	 *
 	 * @return IMachineSet of all nodes belonging to hosts of specified class.
 	 */
-	IMachineSet getMachines( Class<? extends IGridHost> gridHostClass );
+	@Nonnull
+	IMachineSet getMachines( @Nonnull Class<? extends IGridHost> gridHostClass );
 
 	/**
 	 * @return IReadOnlyCollection for all nodes on the network, node visitors are preferred.
 	 */
+	@Nonnull
 	IReadOnlyCollection<IGridNode> getNodes();
 
 	/**
@@ -93,5 +101,6 @@ public interface IGrid
 	/**
 	 * @return the node considered the pivot point of the grid.
 	 */
+	@Nonnull
 	IGridNode getPivot();
 }

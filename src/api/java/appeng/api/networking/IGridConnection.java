@@ -24,6 +24,8 @@
 package appeng.api.networking;
 
 
+import javax.annotation.Nonnull;
+
 import appeng.api.util.AEPartLocation;
 
 
@@ -45,6 +47,7 @@ public interface IGridConnection
 	 *
 	 * @return the IGridNode which represents the opposite side of the connection.
 	 */
+	@Nonnull
 	IGridNode getOtherSide( IGridNode gridNode );
 
 	/**
@@ -54,6 +57,7 @@ public interface IGridConnection
 	 *
 	 * @return the direction of the connection, only valid for in world connections.
 	 */
+	@Nonnull
 	AEPartLocation getDirection( IGridNode gridNode );
 
 	/**
@@ -65,11 +69,13 @@ public interface IGridConnection
 	/**
 	 * @return node A
 	 */
+	@Nonnull
 	IGridNode a();
 
 	/**
 	 * @return node B
 	 */
+	@Nonnull
 	IGridNode b();
 
 	/**

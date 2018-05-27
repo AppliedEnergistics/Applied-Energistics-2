@@ -26,6 +26,8 @@ package appeng.api.networking;
 
 import java.util.EnumSet;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
@@ -50,7 +52,7 @@ public interface IGridNode
 	 *
 	 * @param visitor visitor
 	 */
-	void beginVisit( IGridVisitor visitor );
+	void beginVisit( @Nonnull IGridVisitor visitor );
 
 	/**
 	 * inform the node that your IGridBlock has changed its internal state, and force the node to update.
@@ -68,6 +70,7 @@ public interface IGridNode
 	 *
 	 * @return grid host
 	 */
+	@Nonnull
 	IGridHost getMachine();
 
 	/**
@@ -75,6 +78,7 @@ public interface IGridNode
 	 *
 	 * @return grid
 	 */
+	@Nonnull
 	IGrid getGrid();
 
 	/**
@@ -86,11 +90,13 @@ public interface IGridNode
 	/**
 	 * @return the world the node is located in
 	 */
+	@Nonnull
 	World getWorld();
 
 	/**
 	 * @return a set of the connected sides, INTERNAL represents an invisible connection
 	 */
+	@Nonnull
 	EnumSet<AEPartLocation> getConnectedSides();
 
 	/**
@@ -98,11 +104,13 @@ public interface IGridNode
 	 *
 	 * @return grid connections
 	 */
+	@Nonnull
 	IReadOnlyCollection<IGridConnection> getConnections();
 
 	/**
 	 * @return the IGridBlock for this node
 	 */
+	@Nonnull
 	IGridBlock getGridBlock();
 
 	/**
@@ -122,7 +130,7 @@ public interface IGridNode
 	 * @param name nbt name
 	 * @param nodeData to be loaded data
 	 */
-	void loadFromNBT( String name, NBTTagCompound nodeData );
+	void loadFromNBT( @Nonnull String name, @Nonnull NBTTagCompound nodeData );
 
 	/**
 	 * this should be called for each node you maintain, you can save all your nodes to the same tag with different
@@ -131,7 +139,7 @@ public interface IGridNode
 	 * @param name nbt name
 	 * @param nodeData to be saved data
 	 */
-	void saveToNBT( String name, NBTTagCompound nodeData );
+	void saveToNBT( @Nonnull String name, @Nonnull NBTTagCompound nodeData );
 
 	/**
 	 * @return if the node's channel requirements are currently met, use this for display purposes, use isActive for
@@ -146,7 +154,7 @@ public interface IGridNode
 	 *
 	 * @return true if has flag
 	 */
-	boolean hasFlag( GridFlags flag );
+	boolean hasFlag( @Nonnull GridFlags flag );
 
 	/**
 	 * @return the ownerID this represents the person who placed the node.

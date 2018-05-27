@@ -24,6 +24,8 @@
 package appeng.api.networking.energy;
 
 
+import javax.annotation.Nonnull;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 
@@ -42,7 +44,7 @@ public interface IAEPowerStorage extends IEnergySource
 	 *
 	 * @return amount of power which was unable to be stored
 	 */
-	double injectAEPower( double amt, Actionable mode );
+	double injectAEPower( double amt, @Nonnull Actionable mode );
 
 	/**
 	 * @return the current maximum power ( this can change :P )
@@ -67,5 +69,6 @@ public interface IAEPowerStorage extends IEnergySource
 	 *
 	 * @return access restriction what the network can do
 	 */
+	@Nonnull
 	AccessRestriction getPowerFlow();
 }

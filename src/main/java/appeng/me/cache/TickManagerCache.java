@@ -22,6 +22,8 @@ package appeng.me.cache;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
+import com.google.common.base.Preconditions;
+
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.util.ReportedException;
@@ -156,25 +158,26 @@ public class TickManagerCache implements ITickManager
 	{
 		if( machine instanceof IGridTickable )
 		{
-			final TickingRequest tr = ( (IGridTickable) machine ).getTickingRequest( gridNode );
-			if( tr != null )
+			final IGridTickable tickable = ( (IGridTickable) machine );
+			final TickingRequest tr = tickable.getTickingRequest( gridNode );
+
+			Preconditions.checkNotNull( tr );
+
+			final TickTracker tt = new TickTracker( tr, gridNode, (IGridTickable) machine, this.currentTick, this );
+
+			if( tr.canBeAlerted )
 			{
-				final TickTracker tt = new TickTracker( tr, gridNode, (IGridTickable) machine, this.currentTick, this );
+				this.alertable.put( gridNode, tt );
+			}
 
-				if( tr.canBeAlerted )
-				{
-					this.alertable.put( gridNode, tt );
-				}
-
-				if( tr.isSleeping )
-				{
-					this.sleeping.put( gridNode, tt );
-				}
-				else
-				{
-					this.awake.put( gridNode, tt );
-					this.addToQueue( tt );
-				}
+			if( tr.isSleeping )
+			{
+				this.sleeping.put( gridNode, tt );
+			}
+			else
+			{
+				this.awake.put( gridNode, tt );
+				this.addToQueue( tt );
 			}
 		}
 	}
@@ -200,6 +203,8 @@ public class TickManagerCache implements ITickManager
 	@Override
 	public boolean alertDevice( final IGridNode node )
 	{
+		Preconditions.checkNotNull( node );
+
 		final TickTracker tt = this.alertable.get( node );
 		if( tt == null )
 		{
@@ -226,6 +231,8 @@ public class TickManagerCache implements ITickManager
 	@Override
 	public boolean sleepDevice( final IGridNode node )
 	{
+		Preconditions.checkNotNull( node );
+
 		if( this.awake.containsKey( node ) )
 		{
 			final TickTracker gt = this.awake.get( node );
@@ -241,6 +248,8 @@ public class TickManagerCache implements ITickManager
 	@Override
 	public boolean wakeDevice( final IGridNode node )
 	{
+		Preconditions.checkNotNull( node );
+
 		if( this.sleeping.containsKey( node ) )
 		{
 			final TickTracker gt = this.sleeping.get( node );

@@ -26,6 +26,8 @@ package appeng.api.networking.security;
 
 import java.util.EnumSet;
 
+import javax.annotation.Nonnull;
+
 import appeng.api.config.SecurityPermissions;
 
 
@@ -41,5 +43,5 @@ public interface ISecurityRegistry
 	 * @param playerID player id
 	 * @param permissions permissions of player
 	 */
-	void addPlayer( int playerID, EnumSet<SecurityPermissions> permissions );
+	void addPlayer( int playerID, @Nonnull EnumSet<SecurityPermissions> permissions );
 }

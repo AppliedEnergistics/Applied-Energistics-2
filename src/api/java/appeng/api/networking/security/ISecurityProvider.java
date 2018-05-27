@@ -25,7 +25,7 @@ package appeng.api.networking.security;
 
 
 import java.util.EnumSet;
-import java.util.HashMap;
+import java.util.Map;
 
 import appeng.api.config.SecurityPermissions;
 
@@ -48,7 +48,7 @@ public interface ISecurityProvider
 	 *
 	 * @param playerPerms player permissions
 	 */
-	void readPermissions( HashMap<Integer, EnumSet<SecurityPermissions>> playerPerms );
+	void readPermissions( Map<Integer, EnumSet<SecurityPermissions>> playerPerms );
 
 	/**
 	 * @return is security on or off?

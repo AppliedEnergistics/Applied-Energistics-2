@@ -24,6 +24,8 @@
 package appeng.api.networking.security;
 
 
+import javax.annotation.Nonnull;
+
 import appeng.api.networking.IGridNode;
 
 
@@ -38,5 +40,6 @@ public interface IActionHost
 	 * @return the the gridnode that actions from this IGridHost are preformed
 	 * by.
 	 */
+	@Nonnull
 	IGridNode getActionableNode();
 }

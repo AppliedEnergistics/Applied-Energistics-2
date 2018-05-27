@@ -24,6 +24,9 @@
 package appeng.api.networking.energy;
 
 
+import javax.annotation.Nonnegative;
+
+
 /**
  * DO NOT IMPLEMENT.
  *
@@ -39,7 +42,7 @@ public interface IEnergyWatcher
 	 * @param amount
 	 * @return true, if successfully added.
 	 */
-	boolean add( double amount );
+	boolean add( @Nonnegative double amount );
 
 	/**
 	 * Remove a specific threshold from the watcher.
@@ -47,7 +50,7 @@ public interface IEnergyWatcher
 	 * @param amount
 	 * @return true, if successfully removed.
 	 */
-	boolean remove( double amount );
+	boolean remove( @Nonnegative double amount );
 
 	/**
 	 * Removes all thresholds and resets the watcher to a clean state.

@@ -24,6 +24,9 @@
 package appeng.api.networking.energy;
 
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridCache;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
@@ -38,17 +41,20 @@ public interface IEnergyGrid extends IGridCache, IEnergySource, IEnergyGridProvi
 	/**
 	 * @return the current calculated idle energy drain each tick, is used internally to drain power for each tick.
 	 */
+	@Nonnegative
 	double getIdlePowerUsage();
 
 	/**
 	 * @return the average power drain over the past 10 ticks, includes idle usage during this time, and all use of
 	 * extractPower.
 	 */
+	@Nonnegative
 	double getAvgPowerUsage();
 
 	/**
 	 * @return the average energy injected into the system per tick, for the last 10 ticks.
 	 */
+	@Nonnegative
 	double getAvgPowerInjection();
 
 	/**
@@ -79,13 +85,15 @@ public interface IEnergyGrid extends IGridCache, IEnergySource, IEnergyGridProvi
 	 *
 	 * @return the amount of power that the network has OVER the limit.
 	 */
-	double injectPower( double amt, Actionable mode );
+	@Nonnegative
+	double injectPower( @Nonnegative double amt, @Nonnull Actionable mode );
 
 	/**
 	 * this is should be considered an estimate, and not relied upon for real calculations.
 	 *
 	 * @return estimated available power.
 	 */
+	@Nonnegative
 	double getStoredPower();
 
 	/**
@@ -93,6 +101,7 @@ public interface IEnergyGrid extends IGridCache, IEnergySource, IEnergyGridProvi
 	 *
 	 * @return estimated available power.
 	 */
+	@Nonnegative
 	double getMaxStoredPower();
 
 	/**
@@ -101,5 +110,6 @@ public interface IEnergyGrid extends IGridCache, IEnergySource, IEnergyGridProvi
 	 *
 	 * @return Amount of power required to charge the grid, in AE.
 	 */
-	double getEnergyDemand( double maxRequired );
+	@Nonnegative
+	double getEnergyDemand( @Nonnegative double maxRequired );
 }

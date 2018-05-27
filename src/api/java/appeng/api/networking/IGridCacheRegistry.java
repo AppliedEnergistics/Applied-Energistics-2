@@ -24,7 +24,9 @@
 package appeng.api.networking;
 
 
-import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Nonnull;
 
 
 /**
@@ -38,14 +40,14 @@ public interface IGridCacheRegistry
 	 *
 	 * @param iface grid cache class
 	 */
-	void registerGridCache( Class<? extends IGridCache> iface, Class<? extends IGridCache> implementation );
+	void registerGridCache( @Nonnull Class<? extends IGridCache> iface, @Nonnull Class<? extends IGridCache> implementation );
 
 	/**
 	 * requests a new INSTANCE of a grid cache for use, used internally
 	 *
 	 * @param grid grid
 	 *
-	 * @return a new HashMap of IGridCaches from the registry, called from IGrid when constructing a new grid.
+	 * @return a new Map of IGridCaches from the registry, called from IGrid when constructing a new grid.
 	 */
-	HashMap<Class<? extends IGridCache>, IGridCache> createCacheInstance( IGrid grid );
+	Map<Class<? extends IGridCache>, IGridCache> createCacheInstance( IGrid grid );
 }
