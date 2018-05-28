@@ -150,7 +150,6 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 
 	protected void saveChanges()
 	{
-		// cellItems.clean();
 		int itemCount = 0;
 
 		// add new pretty stuff...
@@ -168,14 +167,8 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 			x++;
 		}
 
-		// NBTBase tagType = tagCompound.getTag( ITEM_TYPE_TAG );
-		// NBTBase tagCount = tagCompound.getTag( ITEM_COUNT_TAG );
 		final short oldStoredItems = this.storedItems;
 
-		/*
-		 * if ( tagType instanceof NBTTagShort ) ((NBTTagShort) tagType).data = storedItems = (short) cellItems.size();
-		 * else
-		 */
 		this.storedItems = (short) this.cellItems.size();
 		if( this.cellItems.isEmpty() )
 		{
@@ -186,9 +179,6 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 			this.tagCompound.setShort( ITEM_TYPE_TAG, this.storedItems );
 		}
 
-		/*
-		 * if ( tagCount instanceof NBTTagInt ) ((NBTTagInt) tagCount).data = storedItemCount = itemCount; else
-		 */
 		this.storedItemCount = itemCount;
 		if( itemCount == 0 )
 		{
@@ -229,8 +219,6 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 			int stackSize = this.tagCompound.getInteger( itemSlotCount[slot] );
 			this.loadCellItem( compoundTag, stackSize );
 		}
-
-		// cellItems.clean();
 	}
 
 	protected abstract void loadCellItem( NBTTagCompound compoundTag, int stackSize );
@@ -238,9 +226,9 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 	@Override
 	public IItemList getAvailableItems( final IItemList out )
 	{
-		for( final T i : this.getCellItems() )
+		for( final T item : this.getCellItems() )
 		{
-			out.add( i );
+			out.add( item );
 		}
 
 		return out;

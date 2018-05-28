@@ -70,8 +70,8 @@ import appeng.container.AEBaseContainer;
 import appeng.container.slot.AppEngCraftingSlot;
 import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.AppEngSlot.hasCalculatedValidness;
-import appeng.container.slot.ISlotFluid;
 import appeng.container.slot.IOptionalSlot;
+import appeng.container.slot.ISlotFluid;
 import appeng.container.slot.SlotCraftingTerm;
 import appeng.container.slot.SlotDisabled;
 import appeng.container.slot.SlotFake;
@@ -740,13 +740,21 @@ public abstract class AEBaseGui extends GuiContainer
 		else if( s instanceof ISlotFluid && ( (ISlotFluid) s ).shouldRenderAsFluid() )
 		{
 			FluidStack fs = ( (ISlotFluid) s ).getFluidInSlot();
-			if (fs != null) {
+			if( fs != null )
+			{
 				GlStateManager.disableLighting();
 				Fluid fluid = fs.getFluid();
-				Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.LOCATION_BLOCKS_TEXTURE);
-				TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(fluid.getStill().toString());
-				GlStateManager.color(1.0F, 1.0F, 1.0F);
-				this.drawTexturedModalRect(s.xPos, s.yPos, sprite, 16, 16);
+				Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.LOCATION_BLOCKS_TEXTURE );
+				TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite( fluid.getStill().toString() );
+
+				// Set color for dynamic fluids
+				// Convert int color to RGB
+				float red = ( fluid.getColor() >> 16 & 255 ) / 255.0F;
+				float green = ( fluid.getColor() >> 8 & 255 ) / 255.0F;
+				float blue = ( fluid.getColor() & 255 ) / 255.0F;
+				GlStateManager.color( red, green, blue );
+
+				this.drawTexturedModalRect( s.xPos, s.yPos, sprite, 16, 16 );
 				GlStateManager.enableLighting();
 			}
 			if( !this.isPowered() )

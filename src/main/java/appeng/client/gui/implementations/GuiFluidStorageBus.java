@@ -41,7 +41,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;
-import appeng.parts.misc.PartFluidStorageBus;
+import appeng.fluids.parts.PartFluidStorageBus;
 
 
 /**

@@ -29,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.WeakHashMap;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -689,7 +690,7 @@ public class Platform
 			return "**Invalid Object";
 		}
 		String n = fluidStack.getLocalizedName();
-		if( n == null || n.equalsIgnoreCase( "" ) )
+		if( n == null || "".equalsIgnoreCase( n ) )
 		{
 			n = fluidStack.getUnlocalizedName();
 		}

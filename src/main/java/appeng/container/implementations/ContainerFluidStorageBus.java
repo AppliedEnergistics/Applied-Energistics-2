@@ -40,7 +40,7 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.slot.OptionalSlotFakeFluid;
 import appeng.container.slot.SlotFakeFluid;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.parts.misc.PartFluidStorageBus;
+import appeng.fluids.parts.PartFluidStorageBus;
 import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.iterators.NullIterator;
@@ -162,7 +162,6 @@ public class ContainerFluidStorageBus extends ContainerUpgradeable
 		{
 			if( i.hasNext() && this.isSlotEnabled( ( x / 9 ) - 2 ) )
 			{
-				// TODO: check if ok
 				final ItemStack g = i.next().asItemStackRepresentation();
 				ItemHandlerUtil.setStackInSlot( inv, x, g );
 			}

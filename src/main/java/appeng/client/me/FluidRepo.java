@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
+
 import javax.annotation.Nonnull;
 
 import appeng.api.AEApi;
@@ -57,7 +58,6 @@ public class FluidRepo
 
 	private String searchString = "";
 	private IPartitionList<IAEFluidStack> myPartitionList;
-	private String innerSearch = "";
 	private boolean hasPower;
 
 	public FluidRepo( final IScrollSource src, final ISortSource sortSrc )
@@ -73,45 +73,42 @@ public class FluidRepo
 		this.view.ensureCapacity( this.list.size() );
 
 		final Enum viewMode = this.sortSrc.getSortDisplay();
-		final Enum searchMode = AEConfig.instance().getConfigManager().getSetting( Settings.SEARCH_MODE );
-		final boolean needsZeroCopy = viewMode == ViewItems.CRAFTABLE;
 
-		this.innerSearch = this.searchString;
-		final boolean terminalSearchToolTips = AEConfig.instance().getConfigManager().getSetting( Settings.SEARCH_TOOLTIPS ) != YesNo.NO;
+		String innerSearch = this.searchString;
 
 		boolean searchMod = false;
-		if( this.innerSearch.startsWith( "@" ) )
+		if( innerSearch.startsWith( "@" ) )
 		{
 			searchMod = true;
-			this.innerSearch = this.innerSearch.substring( 1 );
+			innerSearch = innerSearch.substring( 1 );
 		}
 
 		Pattern m;
 		try
 		{
-			m = Pattern.compile( this.innerSearch.toLowerCase(), Pattern.CASE_INSENSITIVE );
+			m = Pattern.compile( innerSearch.toLowerCase(), Pattern.CASE_INSENSITIVE );
 		}
-		catch( final Throwable ignore )
+		catch( final Exception ignore1 )
 		{
 			try
 			{
-				m = Pattern.compile( Pattern.quote( this.innerSearch.toLowerCase() ), Pattern.CASE_INSENSITIVE );
+				m = Pattern.compile( Pattern.quote( innerSearch.toLowerCase() ), Pattern.CASE_INSENSITIVE );
 			}
-			catch( final Throwable __ )
+			catch( final Exception ignore2 )
 			{
 				return;
 			}
 		}
 
+		final boolean needsZeroCopy = viewMode == ViewItems.CRAFTABLE;
+		final boolean terminalSearchToolTips = AEConfig.instance().getConfigManager().getSetting( Settings.SEARCH_TOOLTIPS ) != YesNo.NO;
+
 		boolean notDone = false;
 		for( IAEFluidStack fs : this.list )
 		{
-			if( this.myPartitionList != null )
+			if( this.myPartitionList != null && !this.myPartitionList.isListed( fs ) )
 			{
-				if( !this.myPartitionList.isListed( fs ) )
-				{
-					continue;
-				}
+				continue;
 			}
 
 			if( viewMode == ViewItems.CRAFTABLE && !fs.isCraftable() )
@@ -143,7 +140,6 @@ public class FluidRepo
 					if( m.matcher( line ).find() )
 					{
 						foundMatchingFluidStack = true;
-						notDone = false;
 						break;
 					}
 				}
@@ -161,16 +157,16 @@ public class FluidRepo
 			}
 		}
 
-		final Enum SortBy = this.sortSrc.getSortBy();
-		final Enum SortDir = this.sortSrc.getSortDir();
+		final Enum sortBy = this.sortSrc.getSortBy();
+		final Enum sortDir = this.sortSrc.getSortDir();
 
-		FluidSorters.setDirection( (appeng.api.config.SortDir) SortDir );
+		FluidSorters.setDirection( (appeng.api.config.SortDir) sortDir );
 
-		if( SortBy == SortOrder.MOD )
+		if( sortBy == SortOrder.MOD )
 		{
 			Collections.sort( this.view, FluidSorters.CONFIG_BASED_SORT_BY_MOD );
 		}
-		else if( SortBy == SortOrder.AMOUNT )
+		else if( sortBy == SortOrder.AMOUNT )
 		{
 			Collections.sort( this.view, FluidSorters.CONFIG_BASED_SORT_BY_SIZE );
 		}
@@ -204,11 +200,6 @@ public class FluidRepo
 			return null;
 		}
 		return this.view.get( idx );
-	}
-
-	void setSearch( final String search )
-	{
-		this.searchString = search == null ? "" : search;
 	}
 
 	public int size()

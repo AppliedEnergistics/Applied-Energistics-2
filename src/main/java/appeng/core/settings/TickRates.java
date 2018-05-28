@@ -29,7 +29,11 @@ public enum TickRates
 
 	ImportBus( 5, 40 ),
 
+	FluidImportBus( 5, 40 ),
+
 	ExportBus( 5, 60 ),
+
+	FluidExportBus( 5, 60 ),
 
 	AnnihilationPlane( 2, 120 ),
 
@@ -44,6 +48,8 @@ public enum TickRates
 	VibrationChamber( 10, 40 ),
 
 	StorageBus( 5, 60 ),
+
+	FluidStorageBus( 5, 60 ),
 
 	ItemTunnel( 5, 60 ),
 

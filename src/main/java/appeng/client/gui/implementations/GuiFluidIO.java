@@ -24,7 +24,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.container.implementations.ContainerFluidIO;
 import appeng.core.localization.GuiText;
-import appeng.parts.automation.fluid.PartFluidImportBus;
+import appeng.fluids.parts.PartFluidImportBus;
 
 
 /**
