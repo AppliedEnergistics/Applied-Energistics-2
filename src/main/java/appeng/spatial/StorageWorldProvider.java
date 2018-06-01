@@ -51,7 +51,7 @@ public class StorageWorldProvider extends WorldProvider
 	@Override
 	public IChunkGenerator createChunkGenerator()
 	{
-		return new StorageChunkProvider( this.world, 0 );
+		return new StorageChunkProvider( this.world );
 	}
 
 	@Override

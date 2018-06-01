@@ -28,39 +28,32 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.ChunkGeneratorOverworld;
+import net.minecraft.world.chunk.ChunkPrimer;
+import net.minecraft.world.gen.IChunkGenerator;
 
 import appeng.api.AEApi;
 import appeng.core.AppEng;
 
 
-public class StorageChunkProvider extends ChunkGeneratorOverworld
+public class StorageChunkProvider implements IChunkGenerator
 {
 
 	private final World world;
 
-	public StorageChunkProvider( final World world, final long i )
+	public StorageChunkProvider( final World world )
 	{
-		super( world, i, false, null );
 		this.world = world;
 	}
 
 	@Override
 	public Chunk generateChunk( final int x, final int z )
 	{
-		final Chunk chunk = new Chunk( this.world, x, z );
+		ChunkPrimer primer = new ChunkPrimer();
 
-		final byte[] biomes = chunk.getBiomeArray();
-		Biome biome = AppEng.instance().getStorageBiome();
-		byte biomeId = (byte) Biome.getIdForBiome( biome );
+		AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().ifPresent( block -> this.fillChunk( primer, block.getDefaultState() ) );
 
-		for( int k = 0; k < biomes.length; ++k )
-		{
-			biomes[k] = biomeId;
-		}
-
-		AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().ifPresent( block -> this.fillChunk( chunk, block.getDefaultState() ) );
-
+		Chunk chunk = new Chunk( this.world, primer, x, z );
+		
 		chunk.setModified( false );
 
 		if( !chunk.isTerrainPopulated() )
@@ -72,7 +65,7 @@ public class StorageChunkProvider extends ChunkGeneratorOverworld
 		return chunk;
 	}
 
-	private void fillChunk( Chunk chunk, IBlockState defaultState )
+	private void fillChunk( ChunkPrimer primer, IBlockState defaultState )
 	{
 		for( int cx = 0; cx < 16; cx++ )
 		{
@@ -80,7 +73,7 @@ public class StorageChunkProvider extends ChunkGeneratorOverworld
 			{
 				for( int cy = 0; cy < 256; cy++ )
 				{
-					chunk.setBlockState( new BlockPos( cx, cy, cz ), defaultState );
+					primer.setBlockState( cx, cy, cz, defaultState );
 				}
 			}
 		}
@@ -114,5 +107,10 @@ public class StorageChunkProvider extends ChunkGeneratorOverworld
 	public void recreateStructures( Chunk chunkIn, int x, int z )
 	{
 
+	}
+	
+	@Override
+	public boolean isInsideStructure( World worldIn, String structure, BlockPos pos){
+		return false;
 	}
 }
