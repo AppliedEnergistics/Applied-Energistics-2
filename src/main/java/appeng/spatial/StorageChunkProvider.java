@@ -54,6 +54,15 @@ public class StorageChunkProvider implements IChunkGenerator
 
 		Chunk chunk = new Chunk( this.world, primer, x, z );
 		
+		final byte[] biomes = chunk.getBiomeArray();
+		Biome biome = AppEng.instance().getStorageBiome();
+		byte biomeId = (byte) Biome.getIdForBiome( biome );
+
+		for( int k = 0; k < biomes.length; ++k )
+		{
+			biomes[k] = biomeId;
+		}
+		
 		chunk.setModified( false );
 
 		if( !chunk.isTerrainPopulated() )
