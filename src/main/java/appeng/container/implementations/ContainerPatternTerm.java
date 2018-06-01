@@ -37,6 +37,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
@@ -82,6 +83,8 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	private final SlotPatternTerm craftSlot;
 	private final SlotRestrictedInput patternSlotIN;
 	private final SlotRestrictedInput patternSlotOUT;
+
+	private IRecipe currentRecipe;
 	@GuiSync( 97 )
 	public boolean craftingMode = true;
 	@GuiSync( 96 )
@@ -160,6 +163,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 	private ItemStack getAndUpdateOutput()
 	{
+		final World world = this.getPlayerInv().player.world;
 		final InventoryCrafting ic = new InventoryCrafting( this, 3, 3 );
 
 		for( int x = 0; x < ic.getSizeInventory(); x++ )
@@ -167,7 +171,22 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			ic.setInventorySlotContents( x, this.crafting.getStackInSlot( x ) );
 		}
 
-		final ItemStack is = CraftingManager.findMatchingResult( ic, this.getPlayerInv().player.world );
+		if( this.currentRecipe == null || !this.currentRecipe.matches( ic, world ) )
+		{
+			this.currentRecipe = CraftingManager.findMatchingRecipe( ic, world );
+		}
+
+		final ItemStack is;
+
+		if( this.currentRecipe == null )
+		{
+			is = ItemStack.EMPTY;
+		}
+		else
+		{
+			is = this.currentRecipe.getCraftingResult( ic );
+		}
+
 		this.cOut.setStackInSlot( 0, is );
 		return is;
 	}
