@@ -54,7 +54,7 @@ public class CellRegistry implements ICellRegistry
 		this.handlers.add( handler );
 
 		// Verify that the first entry is always our own handler.
-		Verify.verify( this.handlers.get( 0 ) instanceof BasicCellHandler );
+		Verify.verify( this.handlers.get( 0 ) instanceof BasicItemCellHandler );
 	}
 
 	@Override
