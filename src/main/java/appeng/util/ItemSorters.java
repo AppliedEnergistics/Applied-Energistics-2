@@ -39,13 +39,11 @@ public class ItemSorters
 		@Override
 		public int compare( final IAEItemStack o1, final IAEItemStack o2 )
 		{
-			if( getDirection() == SortDir.ASCENDING )
-			{
-				return Platform.getItemDisplayName( o1 ).compareToIgnoreCase( Platform.getItemDisplayName( o2 ) );
-			}
-			return Platform.getItemDisplayName( o2 ).compareToIgnoreCase( Platform.getItemDisplayName( o1 ) );
+			final int cmp = Platform.getItemDisplayName( o1 ).compareToIgnoreCase( Platform.getItemDisplayName( o2 ) );
+			return applyDirection( cmp );
 		}
 	};
+
 	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_MOD = new Comparator<IAEItemStack>()
 	{
 
@@ -54,38 +52,30 @@ public class ItemSorters
 		{
 			final AEItemStack op1 = (AEItemStack) o1;
 			final AEItemStack op2 = (AEItemStack) o2;
+			int cmp = op1.getModID().compareToIgnoreCase( op2.getModID() );
 
-			if( getDirection() == SortDir.ASCENDING )
+			if( cmp == 0 )
 			{
-				return this.secondarySort( op2.getModID().compareToIgnoreCase( op1.getModID() ), o1, o2 );
-			}
-			return this.secondarySort( op1.getModID().compareToIgnoreCase( op2.getModID() ), o2, o1 );
-		}
-
-		private int secondarySort( final int compareToIgnoreCase, final IAEItemStack o1, final IAEItemStack o2 )
-		{
-			if( compareToIgnoreCase == 0 )
-			{
-				return Platform.getItemDisplayName( o2 ).compareToIgnoreCase( Platform.getItemDisplayName( o1 ) );
+				cmp = Platform.getItemDisplayName( o1 ).compareToIgnoreCase( Platform.getItemDisplayName( o2 ) );
 			}
 
-			return compareToIgnoreCase;
+			return applyDirection( cmp );
 		}
 	};
+
 	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_SIZE = new Comparator<IAEItemStack>()
 	{
 
 		@Override
 		public int compare( final IAEItemStack o1, final IAEItemStack o2 )
 		{
-			if( getDirection() == SortDir.ASCENDING )
-			{
-				return Long.compare( o2.getStackSize(), o1.getStackSize() );
-			}
-			return Long.compare( o1.getStackSize(), o2.getStackSize() );
+			final int cmp = Long.compare( o2.getStackSize(), o1.getStackSize() );
+			return applyDirection( cmp );
 		}
 	};
+
 	private static IInvTweaks api;
+
 	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_INV_TWEAKS = new Comparator<IAEItemStack>()
 	{
 
@@ -98,12 +88,7 @@ public class ItemSorters
 			}
 
 			final int cmp = api.compareItems( o1.asItemStackRepresentation(), o2.asItemStackRepresentation() );
-
-			if( getDirection() == SortDir.ASCENDING )
-			{
-				return cmp;
-			}
-			return -cmp;
+			return applyDirection( cmp );
 		}
 	};
 
@@ -132,5 +117,14 @@ public class ItemSorters
 	public static void setDirection( final SortDir direction )
 	{
 		Direction = direction;
+	}
+
+	private static int applyDirection( int cmp )
+        {
+		if ( getDirection() == SortDir.ASCENDING )
+		{
+			return cmp;
+		}
+		return -cmp;
 	}
 }
