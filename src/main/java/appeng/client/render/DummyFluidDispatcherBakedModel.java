@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
@@ -98,16 +99,18 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel
 				FluidDummyItem itemFacade = (FluidDummyItem) stack.getItem();
 
 				FluidStack fluidStack = itemFacade.getFluidStack( stack );
-				if (fluidStack == null){
+				if( fluidStack == null )
+				{
 					fluidStack = new FluidStack( FluidRegistry.WATER, Fluid.BUCKET_VOLUME );
 				}
 
-				TextureAtlasSprite sprite = bakedTextureGetter.apply(fluidStack.getFluid().getStill( fluidStack ));
-				if (sprite == null) {
-					return new DummyFluidBakedModel( ImmutableList.of());
+				TextureAtlasSprite sprite = bakedTextureGetter.apply( fluidStack.getFluid().getStill( fluidStack ) );
+				if( sprite == null )
+				{
+					return new DummyFluidBakedModel( ImmutableList.of() );
 				}
 
-				return new DummyFluidBakedModel( ItemLayerModel.getQuadsForSprite(0, sprite, format, Optional.empty()));
+				return new DummyFluidBakedModel( ItemLayerModel.getQuadsForSprite( 0, sprite, format, Optional.empty() ) );
 			}
 		};
 	}

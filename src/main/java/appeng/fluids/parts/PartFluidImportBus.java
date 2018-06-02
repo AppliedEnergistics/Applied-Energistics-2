@@ -92,12 +92,6 @@ public class PartFluidImportBus extends PartSharedFluidBus
 	}
 
 	@Override
-	protected boolean canDoBusWork()
-	{
-		return this.getProxy().isActive();
-	}
-
-	@Override
 	protected TickRateModulation doBusWork()
 	{
 		if( !this.canDoBusWork() )
@@ -141,6 +135,12 @@ public class PartFluidImportBus extends PartSharedFluidBus
 		return TickRateModulation.SLEEP;
 	}
 
+	@Override
+	protected boolean canDoBusWork()
+	{
+		return this.getProxy().isActive();
+	}
+
 	private boolean isInFilter( FluidStack fluid )
 	{
 		for( int i = 0; i < this.getConfig().getSlots(); i++ )
@@ -163,11 +163,12 @@ public class PartFluidImportBus extends PartSharedFluidBus
 		return false;
 	}
 
-	private boolean filterEnabled(){
+	private boolean filterEnabled()
+	{
 		for( int i = 0; i < this.getConfig().getSlots(); i++ )
 		{
 			IAEItemStack stack = this.getConfig().getAEStackInSlot( i );
-			if( stack != null)
+			if( stack != null )
 			{
 				return true;
 			}

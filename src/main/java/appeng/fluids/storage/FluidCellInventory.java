@@ -186,16 +186,16 @@ public class FluidCellInventory extends AbstractCellInventory<IAEFluidStack>
 
 		final long size = Math.min( Integer.MAX_VALUE, request.getStackSize() );
 
-		IAEFluidStack Results = null;
+		IAEFluidStack results = null;
 
 		final IAEFluidStack l = this.getCellItems().findPrecise( request );
 		if( l != null )
 		{
-			Results = l.copy();
+			results = l.copy();
 
 			if( l.getStackSize() <= size )
 			{
-				Results.setStackSize( l.getStackSize() );
+				results.setStackSize( l.getStackSize() );
 				if( mode == Actionable.MODULATE )
 				{
 					this.updateItemCount( -l.getStackSize() );
@@ -205,7 +205,7 @@ public class FluidCellInventory extends AbstractCellInventory<IAEFluidStack>
 			}
 			else
 			{
-				Results.setStackSize( size );
+				results.setStackSize( size );
 				if( mode == Actionable.MODULATE )
 				{
 					l.setStackSize( l.getStackSize() - size );
@@ -215,7 +215,7 @@ public class FluidCellInventory extends AbstractCellInventory<IAEFluidStack>
 			}
 		}
 
-		return Results;
+		return results;
 	}
 
 	@Override

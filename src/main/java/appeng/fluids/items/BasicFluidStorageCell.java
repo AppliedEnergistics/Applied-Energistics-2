@@ -43,9 +43,10 @@ public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidSta
 
 	private final int perType;
 	private final double idleDrain;
+
 	public BasicFluidStorageCell( final MaterialType whichCell, final int kilobytes )
 	{
-		super(whichCell, kilobytes);
+		super( whichCell, kilobytes );
 		switch( whichCell )
 		{
 			case FLUID_CELL1K_PART:
@@ -96,6 +97,12 @@ public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidSta
 	}
 
 	@Override
+	public IItemHandler getConfigInventory( final ItemStack is )
+	{
+		return new FluidCellConfig( is );
+	}
+
+	@Override
 	protected void dropEmptyStorageCellCase( final InventoryAdaptor ia, final EntityPlayer player )
 	{
 		AEApi.instance().definitions().materials().emptyStorageCell().maybeStack( 1 ).ifPresent( is -> {
@@ -105,11 +112,5 @@ public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidSta
 				player.dropItem( extraA, false );
 			}
 		} );
-	}
-
-	@Override
-	public IItemHandler getConfigInventory( final ItemStack is )
-	{
-		return new FluidCellConfig( is );
 	}
 }
