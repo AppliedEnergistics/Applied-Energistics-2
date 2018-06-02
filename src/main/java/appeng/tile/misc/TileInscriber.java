@@ -281,13 +281,16 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	@Nullable
 	public IInscriberRecipe getTask()
 	{
-		return getTask( this.sideItemHandler.getStackInSlot( 0 ), this.topItemHandler.getStackInSlot( 0 ), this.bottomItemHandler.getStackInSlot( 0 ) );
+		return this.getTask( this.sideItemHandler.getStackInSlot( 0 ), this.topItemHandler.getStackInSlot( 0 ), this.bottomItemHandler.getStackInSlot( 0 ) );
 	}
 
 	@Nullable
 	private IInscriberRecipe getTask( final ItemStack input, final ItemStack plateA, final ItemStack plateB )
 	{
-		ItemStack renamedItem = input;
+		if( input.isEmpty() || input.getCount() > 1 )
+		{
+			return null;
+		}
 
 		if( !plateA.isEmpty() && plateA.getCount() > 1 )
 		{
@@ -299,71 +302,17 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			return null;
 		}
 
-		if( !renamedItem.isEmpty() && renamedItem.getCount() > 1 )
-		{
-			return null;
-		}
-
 		final IComparableDefinition namePress = AEApi.instance().definitions().materials().namePress();
 		final boolean isNameA = namePress.isSameAs( plateA );
 		final boolean isNameB = namePress.isSameAs( plateB );
 
-		if( ( isNameA || isNameB ) && ( isNameA || plateA.isEmpty() ) && ( isNameB || plateB.isEmpty() ) )
+		if( ( isNameA && isNameB ) || isNameA && plateB.isEmpty() )
 		{
-			if( !renamedItem.isEmpty() )
-			{
-				String name = "";
-
-				if( !plateA.isEmpty() )
-				{
-					final NBTTagCompound tag = Platform.openNbtData( plateA );
-					name += tag.getString( "InscribeName" );
-				}
-
-				if( !plateB.isEmpty() )
-				{
-					final NBTTagCompound tag = Platform.openNbtData( plateB );
-					if( name.length() > 0 )
-					{
-						name += " ";
-					}
-					name += tag.getString( "InscribeName" );
-				}
-
-				final ItemStack startingItem = renamedItem.copy();
-				renamedItem = renamedItem.copy();
-				final NBTTagCompound tag = Platform.openNbtData( renamedItem );
-
-				final NBTTagCompound display = tag.getCompoundTag( "display" );
-				tag.setTag( "display", display );
-
-				if( name.length() > 0 )
-				{
-					display.setString( "Name", name );
-				}
-				else
-				{
-					display.removeTag( "Name" );
-				}
-
-				final List<ItemStack> inputs = Lists.newArrayList( startingItem );
-				final InscriberProcessType type = InscriberProcessType.INSCRIBE;
-
-				final IInscriberRecipeBuilder builder = AEApi.instance().registries().inscriber().builder();
-				builder.withInputs( inputs ).withOutput( renamedItem ).withProcessType( type );
-
-				if( isNameA )
-				{
-					builder.withTopOptional( plateA );
-				}
-
-				if( isNameB )
-				{
-					builder.withBottomOptional( plateB );
-				}
-
-				return builder.build();
-			}
+			return this.makeNamePressRecipe( input, plateA, plateB );
+		}
+		else if( plateA.isEmpty() && isNameB )
+		{
+			return this.makeNamePressRecipe( input, plateB, plateA );
 		}
 
 		for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
@@ -390,6 +339,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				}
 			}
 		}
+
 		return null;
 	}
 
@@ -568,6 +518,57 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	private void setProcessingTime( final int processingTime )
 	{
 		this.processingTime = processingTime;
+	}
+
+	private IInscriberRecipe makeNamePressRecipe( ItemStack input, ItemStack plateA, ItemStack plateB )
+	{
+		String name = "";
+
+		if( !plateA.isEmpty() )
+		{
+			final NBTTagCompound tag = Platform.openNbtData( plateA );
+			name += tag.getString( "InscribeName" );
+		}
+
+		if( !plateB.isEmpty() )
+		{
+			final NBTTagCompound tag = Platform.openNbtData( plateB );
+			name += " " + tag.getString( "InscribeName" );
+		}
+
+		final ItemStack startingItem = input.copy();
+		final ItemStack renamedItem = input.copy();
+		final NBTTagCompound tag = Platform.openNbtData( renamedItem );
+
+		final NBTTagCompound display = tag.getCompoundTag( "display" );
+		tag.setTag( "display", display );
+
+		if( name.length() > 0 )
+		{
+			display.setString( "Name", name );
+		}
+		else
+		{
+			display.removeTag( "Name" );
+		}
+
+		final List<ItemStack> inputs = Lists.newArrayList( startingItem );
+		final InscriberProcessType type = InscriberProcessType.INSCRIBE;
+
+		final IInscriberRecipeBuilder builder = AEApi.instance().registries().inscriber().builder();
+		builder.withInputs( inputs ).withOutput( renamedItem ).withProcessType( type );
+
+		if( !plateA.isEmpty() )
+		{
+			builder.withTopOptional( plateA );
+		}
+
+		if( !plateB.isEmpty() )
+		{
+			builder.withBottomOptional( plateB );
+		}
+
+		return builder.build();
 	}
 
 	/**
