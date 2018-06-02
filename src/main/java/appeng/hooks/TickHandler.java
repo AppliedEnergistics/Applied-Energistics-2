@@ -19,11 +19,13 @@
 package appeng.hooks;
 
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -60,7 +62,7 @@ public class TickHandler
 {
 
 	public static final TickHandler INSTANCE = new TickHandler();
-	private final Queue<IWorldCallable<?>> serverQueue = new LinkedList<>();
+	private final Queue<IWorldCallable<?>> serverQueue = new ArrayDeque<>();
 	private final Multimap<World, CraftingJob> craftingJobs = LinkedListMultimap.create();
 	private final WeakHashMap<World, Queue<IWorldCallable<?>>> callQueue = new WeakHashMap<>();
 	private final HandlerRep server = new HandlerRep();
@@ -90,7 +92,7 @@ public class TickHandler
 
 			if( queue == null )
 			{
-				queue = new LinkedList<>();
+				queue = new ArrayDeque<>();
 				this.callQueue.put( w, queue );
 			}
 
@@ -146,7 +148,7 @@ public class TickHandler
 	{
 		if( Platform.isServer() ) // for no there is no reason to care about this on the client...
 		{
-			final LinkedList<IGridNode> toDestroy = new LinkedList<>();
+			final List<IGridNode> toDestroy = new ArrayList<>();
 
 			this.getRepo().updateNetworks();
 			for( final Grid g : this.getRepo().networks )
@@ -296,15 +298,14 @@ public class TickHandler
 	private static class HandlerRep
 	{
 
-		private Queue<AEBaseTile> tiles = new LinkedList<>();
-
+		private Queue<AEBaseTile> tiles = new ArrayDeque<>();
 		private Set<Grid> networks = new HashSet<>();
 		private Set<Grid> toAdd = new HashSet<>();
 		private Set<Grid> toRemove = new HashSet<>();
 
 		private void clear()
 		{
-			this.tiles = new LinkedList<>();
+			this.tiles = new ArrayDeque<>();
 			this.networks = new HashSet<>();
 			this.toAdd = new HashSet<>();
 			this.toRemove = new HashSet<>();

@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.BufferOverflowException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -77,7 +77,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	{
 		this.data = null;
 		this.compressFrame = null;
-		this.list = new LinkedList<>();
+		this.list = new ArrayList<>();
 		this.ref = stream.readByte();
 
 		// int originalBytes = stream.readableBytes();

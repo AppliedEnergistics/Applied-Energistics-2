@@ -22,11 +22,11 @@ package appeng.client.gui;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -89,7 +89,7 @@ import appeng.helpers.InventoryAction;
 
 public abstract class AEBaseGui extends GuiContainer
 {
-	private final List<InternalSlotME> meSlots = new LinkedList<>();
+	private final List<InternalSlotME> meSlots = new ArrayList<>();
 	// drag y
 	private final Set<Slot> drag_click = new HashSet<>();
 	private final StackSizeRenderer stackSizeRenderer = new StackSizeRenderer();

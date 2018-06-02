@@ -24,6 +24,9 @@
 package appeng.api.networking;
 
 
+import javax.annotation.Nonnull;
+
+
 /**
  * Allows you to create a network wise service, AE2 uses these for providing
  * item, spatial, and tunnel services.
@@ -50,7 +53,7 @@ public interface IGridCache
 	 * @param gridNode removed from that grid
 	 * @param machine to be removed machine
 	 */
-	void removeNode( IGridNode gridNode, IGridHost machine );
+	void removeNode( @Nonnull IGridNode gridNode, @Nonnull IGridHost machine );
 
 	/**
 	 * informs you cache that a machine was added to the grid.
@@ -62,7 +65,7 @@ public interface IGridCache
 	 * @param gridNode added to grid node
 	 * @param machine to be added machine
 	 */
-	void addNode( IGridNode gridNode, IGridHost machine );
+	void addNode( @Nonnull IGridNode gridNode, @Nonnull IGridHost machine );
 
 	/**
 	 * Called when a grid splits into two grids, AE will call a split as it
@@ -71,7 +74,7 @@ public interface IGridCache
 	 *
 	 * @param destinationStorage storage which receives half of old grid
 	 */
-	void onSplit( IGridStorage destinationStorage );
+	void onSplit( @Nonnull IGridStorage destinationStorage );
 
 	/**
 	 * Called when two grids merge into one, AE will call a join as it
@@ -80,12 +83,12 @@ public interface IGridCache
 	 *
 	 * @param sourceStorage old storage
 	 */
-	void onJoin( IGridStorage sourceStorage );
+	void onJoin( @Nonnull IGridStorage sourceStorage );
 
 	/**
 	 * Called when saving changes,
 	 *
 	 * @param destinationStorage storage
 	 */
-	void populateGridStorage( IGridStorage destinationStorage );
+	void populateGridStorage( @Nonnull IGridStorage destinationStorage );
 }

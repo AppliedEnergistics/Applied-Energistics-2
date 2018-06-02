@@ -169,20 +169,7 @@ public class CableBusBakedModel implements IBakedModel
 
 		final AECableType secondType = sides.get( firstSide.getOpposite() );
 
-		// Certain cable types have restrictions on when they're rendered as a straight connection
-		switch( cableType )
-		{
-			case GLASS:
-				return firstType == AECableType.GLASS && secondType == AECableType.GLASS;
-			case DENSE_COVERED:
-				return firstType == AECableType.DENSE_COVERED && secondType == AECableType.DENSE_COVERED;
-			case DENSE_SMART:
-				return firstType == AECableType.DENSE_SMART && secondType == AECableType.DENSE_SMART;
-			default:
-				break;
-		}
-
-		return true;
+		return firstType == secondType;
 	}
 
 	private void addCableQuads( CableBusRenderState renderState, List<BakedQuad> quadsOut )

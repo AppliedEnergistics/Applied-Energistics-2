@@ -20,8 +20,8 @@ package appeng.parts;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -412,7 +412,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			final IPart p = this.getPart( side );
 			if( p != null )
 			{
-				final List<AxisAlignedBB> boxes = new LinkedList<>();
+				final List<AxisAlignedBB> boxes = new ArrayList<>();
 
 				final IPartCollisionHelper bch = new BusCollisionHelper( boxes, side, null, true );
 				p.getBoxes( bch );
@@ -435,7 +435,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				final IFacadePart p = fc.getFacade( side );
 				if( p != null )
 				{
-					final List<AxisAlignedBB> boxes = new LinkedList<>();
+					final List<AxisAlignedBB> boxes = new ArrayList<>();
 
 					final IPartCollisionHelper bch = new BusCollisionHelper( boxes, side, null, true );
 					p.getBoxes( bch, null );
@@ -465,7 +465,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	{
 		if( this.getCenter() == null )
 		{
-			final List<ItemStack> facades = new LinkedList<>();
+			final List<ItemStack> facades = new ArrayList<>();
 
 			final IFacadeContainer fc = this.getFacadeContainer();
 			for( final AEPartLocation d : AEPartLocation.SIDE_LOCATIONS )
@@ -735,7 +735,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final boolean ignoreConnections, final boolean includeFacades, final Entity e, final boolean visual )
 	{
-		final List<AxisAlignedBB> boxes = new LinkedList<>();
+		final List<AxisAlignedBB> boxes = new ArrayList<>();
 
 		final IFacadeContainer fc = this.getFacadeContainer();
 		for( final AEPartLocation s : AEPartLocation.values() )
@@ -1157,9 +1157,6 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 		if( cable != null )
 		{
-			final boolean isSmart = cable.getCableConnectionType() == AECableType.SMART || cable.getCableConnectionType() == AECableType.DENSE_SMART;
-			final boolean isDense = cable.getCableConnectionType() == AECableType.DENSE_COVERED || cable.getCableConnectionType() == AECableType.DENSE_SMART;
-
 			renderState.setCableColor( cable.getCableColor() );
 			renderState.setCableType( cable.getCableConnectionType() );
 			renderState.setCoreType( CableCoreType.fromCableType( cable.getCableConnectionType() ) );
@@ -1184,11 +1181,10 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 				if( adjacentTe instanceof IGridHost )
 				{
-					if( !( adjacentTe instanceof IPartHost ) || isDense )
-					{
-						IGridHost gridHost = (IGridHost) adjacentTe;
-						connectionType = gridHost.getCableConnectionType( AEPartLocation.fromFacing( facing.getOpposite() ) );
-					}
+					final IGridHost gridHost = (IGridHost) adjacentTe;
+					final AECableType adjacentType = gridHost.getCableConnectionType( AEPartLocation.fromFacing( facing.getOpposite() ) );
+
+					connectionType = AECableType.min( connectionType, adjacentType );
 				}
 
 				// Check if the adjacent TE is a cable bus or not
@@ -1205,7 +1201,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			// adjacent tile requires it
 			for( EnumFacing facing : EnumFacing.values() )
 			{
-				int channels = isSmart ? cable.getChannelsOnSide( facing ) : 0;
+				int channels = cable.getCableConnectionType().isSmart() ? cable.getChannelsOnSide( facing ) : 0;
 				renderState.getChannelsOnSide().put( facing, channels );
 			}
 		}

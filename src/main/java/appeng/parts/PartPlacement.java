@@ -19,7 +19,7 @@
 package appeng.parts;
 
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -103,7 +103,7 @@ public class PartPlacement
 
 					if( mop != null )
 					{
-						final List<ItemStack> is = new LinkedList<>();
+						final List<ItemStack> is = new ArrayList<>();
 						final SelectedPart sp = selectPart( player, host,
 								mop.hitVec.addVector( -mop.getBlockPos().getX(), -mop.getBlockPos().getY(), -mop.getBlockPos().getZ() ) );
 

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2013 - 2015 AlgorithmX2
+ * Copyright (c) 2013 AlgorithmX2
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -21,27 +21,23 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.networking.security;
+package appeng.api.util;
 
 
-import java.util.EnumSet;
-
-import javax.annotation.Nonnull;
-
-import appeng.api.config.SecurityPermissions;
-
-
-/**
- * Used by vanilla Security Terminal to post biometric data into the security cache.
- */
-public interface ISecurityRegistry
+public enum AECableVariant
 {
+	NONE,
+	GLASS,
+	COVERED,
+	SMART;
 
-	/**
-	 * Submit Permissions into the register.
-	 *
-	 * @param playerID player id
-	 * @param permissions permissions of player
-	 */
-	void addPlayer( int playerID, @Nonnull EnumSet<SecurityPermissions> permissions );
+	public static AECableVariant min( AECableVariant a, AECableVariant b )
+	{
+		return a.compareTo( b ) < 0 ? a : b;
+	}
+
+	public static AECableVariant max( AECableVariant a, AECableVariant b )
+	{
+		return a.compareTo( b ) > 0 ? a : b;
+	}
 }

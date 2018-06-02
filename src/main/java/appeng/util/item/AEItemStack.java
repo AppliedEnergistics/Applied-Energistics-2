@@ -163,37 +163,17 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	}
 
 	@Override
-	public boolean fuzzyComparison( final Object st, final FuzzyMode mode )
+	public boolean fuzzyComparison( final IAEItemStack other, final FuzzyMode mode )
 	{
-		if( st instanceof IAEItemStack )
+		if( mode == FuzzyMode.IGNORE_ALL && OreHelper.INSTANCE.sameOre( this, other ) )
 		{
-			final IAEItemStack other = (IAEItemStack) st;
-
-			if( OreHelper.INSTANCE.sameOre( this, other ) )
-			{
-				return true;
-			}
-
-			final ItemStack itemStack = this.getDefinition();
-			final ItemStack otherStack = other.getDefinition();
-
-			return this.fuzzyItemStackComparison( itemStack, otherStack, mode );
+			return true;
 		}
 
-		if( st instanceof ItemStack )
-		{
-			final ItemStack otherStack = (ItemStack) st;
+		final ItemStack itemStack = this.getDefinition();
+		final ItemStack otherStack = other.getDefinition();
 
-			if( OreHelper.INSTANCE.sameOre( this, otherStack ) )
-			{
-				return true;
-			}
-
-			final ItemStack itemStack = this.getDefinition();
-			return this.fuzzyItemStackComparison( itemStack, otherStack, mode );
-		}
-
-		return false;
+		return this.fuzzyItemStackComparison( itemStack, otherStack, mode );
 	}
 
 	@Override

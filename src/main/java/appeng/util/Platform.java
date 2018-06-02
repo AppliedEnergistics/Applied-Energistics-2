@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.WeakHashMap;
@@ -1175,7 +1174,7 @@ public class Platform
 
 	public static <T extends IAEStack<T>> T poweredExtraction( final IEnergySource energy, final IMEInventory<T> cell, final T request, final IActionSource src )
 	{
-		final T possible = cell.extractItems( (T) request.copy(), Actionable.SIMULATE, src );
+		final T possible = cell.extractItems( request.copy(), Actionable.SIMULATE, src );
 
 		long retrieved = 0;
 		if( possible != null )
@@ -1207,7 +1206,7 @@ public class Platform
 
 	public static <T extends IAEStack<T>> T poweredInsert( final IEnergySource energy, final IMEInventory<T> cell, final T input, final IActionSource src )
 	{
-		final T possible = cell.injectItems( (T) input.copy(), Actionable.SIMULATE, src );
+		final T possible = cell.injectItems( input.copy(), Actionable.SIMULATE, src );
 
 		long stored = input.getStackSize();
 		if( possible != null )
@@ -1226,7 +1225,7 @@ public class Platform
 			if( itemToAdd < input.getStackSize() )
 			{
 				final long original = input.getStackSize();
-				final T split = (T) input.copy();
+				final T split = input.copy();
 				split.decStackSize( itemToAdd );
 				input.setStackSize( itemToAdd );
 				split.add( cell.injectItems( input, Actionable.MODULATE, src ) );
@@ -1307,7 +1306,7 @@ public class Platform
 
 	public static <T extends IAEStack<T>> void postListChanges( final IItemList<T> before, final IItemList<T> after, final IMEMonitorHandlerReceiver<T> meMonitorPassthrough, final IActionSource source )
 	{
-		final LinkedList<T> changes = new LinkedList<>();
+		final List<T> changes = new ArrayList<>();
 
 		for( final T is : before )
 		{

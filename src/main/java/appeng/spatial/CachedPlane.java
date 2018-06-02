@@ -19,8 +19,8 @@
 package appeng.spatial;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -56,11 +56,11 @@ public class CachedPlane
 	private final int y_size;
 	private final Chunk[][] myChunks;
 	private final Column[][] myColumns;
-	private final LinkedList<TileEntity> tiles = new LinkedList<>();
-	private final LinkedList<NextTickListEntry> ticks = new LinkedList<>();
+	private final List<TileEntity> tiles = new ArrayList<>();
+	private final List<NextTickListEntry> ticks = new ArrayList<>();
 	private final World world;
 	private final IMovableRegistry reg = AEApi.instance().registries().movable();
-	private final LinkedList<WorldCoord> updates = new LinkedList<>();
+	private final List<WorldCoord> updates = new ArrayList<>();
 	private int verticalBits;
 	private final IBlockState matrixBlockState;
 
@@ -122,8 +122,8 @@ public class CachedPlane
 		{
 			for( int cz = 0; cz < this.cz_size; cz++ )
 			{
-				final LinkedList<Entry<BlockPos, TileEntity>> rawTiles = new LinkedList<>();
-				final LinkedList<BlockPos> deadTiles = new LinkedList<>();
+				final List<Entry<BlockPos, TileEntity>> rawTiles = new ArrayList<>();
+				final List<BlockPos> deadTiles = new ArrayList<>();
 
 				final Chunk c = w.getChunkFromChunkCoords( minCX + cx, minCZ + cz );
 				this.myChunks[cx][cz] = c;
@@ -380,7 +380,7 @@ public class CachedPlane
 		}
 	}
 
-	LinkedList<WorldCoord> getUpdates()
+	List<WorldCoord> getUpdates()
 	{
 		return this.updates;
 	}
@@ -460,7 +460,7 @@ public class CachedPlane
 		{
 			if( this.skipThese == null )
 			{
-				this.skipThese = new LinkedList<>();
+				this.skipThese = new ArrayList<>();
 			}
 			this.skipThese.add( yCoord );
 		}

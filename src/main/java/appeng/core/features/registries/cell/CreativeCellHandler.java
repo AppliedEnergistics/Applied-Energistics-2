@@ -38,7 +38,7 @@ import appeng.me.storage.CreativeCellInventory;
 import appeng.util.Platform;
 
 
-public class CreativeCellHandler implements ICellHandler
+public final class CreativeCellHandler implements ICellHandler
 {
 
 	@Override

@@ -136,7 +136,7 @@ public abstract class PartDenseCable extends PartCable
 		if( te instanceof IGridHost )
 		{
 			final AECableType t = ( (IGridHost) te ).getCableConnectionType( of.getOpposite() );
-			return t == AECableType.DENSE_COVERED || t == AECableType.DENSE_SMART;
+			return t.isDense();
 		}
 
 		return false;

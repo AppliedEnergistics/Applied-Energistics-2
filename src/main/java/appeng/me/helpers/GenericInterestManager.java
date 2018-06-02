@@ -19,8 +19,9 @@
 package appeng.me.helpers;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.List;
 
 import com.google.common.collect.Multimap;
 
@@ -31,7 +32,7 @@ public class GenericInterestManager<T>
 {
 
 	private final Multimap<IAEStack, T> container;
-	private LinkedList<SavedTransactions> transactions = null;
+	private List<SavedTransactions> transactions = null;
 	private int transDepth = 0;
 
 	public GenericInterestManager( final Multimap<IAEStack, T> interests )
@@ -43,7 +44,7 @@ public class GenericInterestManager<T>
 	{
 		if( this.transDepth == 0 )
 		{
-			this.transactions = new LinkedList<>();
+			this.transactions = new ArrayList<>();
 		}
 
 		this.transDepth++;
@@ -55,7 +56,7 @@ public class GenericInterestManager<T>
 
 		if( this.transDepth == 0 )
 		{
-			final LinkedList<SavedTransactions> myActions = this.transactions;
+			final List<SavedTransactions> myActions = this.transactions;
 			this.transactions = null;
 
 			for( final SavedTransactions t : myActions )

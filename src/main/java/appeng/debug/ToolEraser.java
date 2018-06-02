@@ -19,7 +19,7 @@
 package appeng.debug;
 
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.state.IBlockState;
@@ -50,14 +50,14 @@ public class ToolEraser extends AEBaseItem
 
 		final IBlockState state = world.getBlockState( pos );
 
-		List<BlockPos> next = new LinkedList<>();
+		List<BlockPos> next = new ArrayList<>();
 		next.add( pos );
 
 		int blocks = 0;
 		while( blocks < BLOCK_ERASE_LIMIT && !next.isEmpty() )
 		{
 			final List<BlockPos> c = next;
-			next = new LinkedList<>();
+			next = new ArrayList<>();
 
 			for( final BlockPos wc : c )
 			{

@@ -19,9 +19,10 @@
 package appeng.parts.p2p;
 
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -252,7 +253,7 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 
 		if( s == null )
 		{
-			DEPTH.set( s = new LinkedList<>() );
+			DEPTH.set( s = new ArrayDeque<>() );
 		}
 
 		return s;
@@ -260,7 +261,7 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 
 	private List<PartP2PFluids> getOutputs( final Fluid input )
 	{
-		final List<PartP2PFluids> outs = new LinkedList<>();
+		final List<PartP2PFluids> outs = new ArrayList<>();
 
 		try
 		{

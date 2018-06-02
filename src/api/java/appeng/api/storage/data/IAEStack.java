@@ -149,16 +149,14 @@ public interface IAEStack<T extends IAEStack<T>>
 	boolean equals( Object obj );
 
 	/**
-	 * compare stacks using fuzzy logic
+	 * Compare the same subtype of {@link IAEStack} with another using a fuzzy comparison.
 	 *
-	 * a IAEItemStack to another AEItemStack or a ItemStack.
-	 *
-	 * @param st stacks
-	 * @param mode used fuzzy mode
+	 * @param other The stack to compare.
+	 * @param mode Which {@link FuzzyMode} should be used.
 	 *
 	 * @return true if two stacks are equal based on AE Fuzzy Comparison.
 	 */
-	boolean fuzzyComparison( Object st, FuzzyMode mode );
+	boolean fuzzyComparison( T other, FuzzyMode mode );
 
 	/**
 	 * Slower for disk saving, but smaller/more efficient for packets.
@@ -200,7 +198,7 @@ public interface IAEStack<T extends IAEStack<T>>
 
 	/**
 	 * Returns itemstack for display and similar purposes. Always has a count of 1.
-	 * 
+	 *
 	 * @return itemstack
 	 */
 	ItemStack asItemStackRepresentation();

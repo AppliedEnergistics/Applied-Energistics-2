@@ -19,10 +19,10 @@
 package appeng.me.cache;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -215,7 +215,7 @@ public class GridStorageCache implements IStorageGrid
 	{
 		this.storageNetworks.clear();
 
-		final List<ICellProvider> ll = new LinkedList<ICellProvider>();
+		final List<ICellProvider> ll = new ArrayList<ICellProvider>();
 		ll.addAll( this.inactiveCellProviders );
 		ll.addAll( this.activeCellProviders );
 
@@ -331,7 +331,7 @@ public class GridStorageCache implements IStorageGrid
 	private class CellChangeTracker<T extends IAEStack<T>>
 	{
 
-		final List<CellChangeTrackerRecord<T>> data = new LinkedList<>();
+		final List<CellChangeTrackerRecord<T>> data = new ArrayList<>();
 
 		public void postChanges( final IStorageChannel<T> channel, final int i, final IMEInventoryHandler<T> h, final IActionSource actionSrc )
 		{

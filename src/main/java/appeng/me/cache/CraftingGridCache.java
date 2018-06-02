@@ -86,7 +86,6 @@ import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.GenericInterestManager;
 import appeng.tile.crafting.TileCraftingStorageTile;
 import appeng.tile.crafting.TileCraftingTile;
-import appeng.util.ItemSorters;
 
 
 public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler<IAEItemStack>
@@ -550,20 +549,20 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 				{
 					if( prioritizePower )
 					{
-						final int comparison = ItemSorters.compareLong( nextCluster.getCoProcessors(), firstCluster.getCoProcessors() );
+						final int comparison = Long.compare( nextCluster.getCoProcessors(), firstCluster.getCoProcessors() );
 						if( comparison != 0 )
 						{
 							return comparison;
 						}
-						return ItemSorters.compareLong( nextCluster.getAvailableStorage(), firstCluster.getAvailableStorage() );
+						return Long.compare( nextCluster.getAvailableStorage(), firstCluster.getAvailableStorage() );
 					}
 
-					final int comparison = ItemSorters.compareLong( firstCluster.getCoProcessors(), nextCluster.getCoProcessors() );
+					final int comparison = Long.compare( firstCluster.getCoProcessors(), nextCluster.getCoProcessors() );
 					if( comparison != 0 )
 					{
 						return comparison;
 					}
-					return ItemSorters.compareLong( firstCluster.getAvailableStorage(), nextCluster.getAvailableStorage() );
+					return Long.compare( firstCluster.getAvailableStorage(), nextCluster.getAvailableStorage() );
 				}
 			} );
 

@@ -24,6 +24,9 @@
 package appeng.api.networking.security;
 
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.EntityPlayer;
 
 import appeng.api.config.SecurityPermissions;
@@ -46,7 +49,7 @@ public interface ISecurityGrid extends IGridCache
 	 *
 	 * @return true if the player has permissions.
 	 */
-	boolean hasPermission( EntityPlayer player, SecurityPermissions perm );
+	boolean hasPermission( @Nonnull EntityPlayer player, @Nonnull SecurityPermissions perm );
 
 	/**
 	 * Check if a player has permissions.
@@ -56,7 +59,7 @@ public interface ISecurityGrid extends IGridCache
 	 *
 	 * @return true if the player has permissions.
 	 */
-	boolean hasPermission( int playerID, SecurityPermissions perm );
+	boolean hasPermission( @Nonnegative int playerID, @Nonnull SecurityPermissions perm );
 
 	/**
 	 * @return PlayerID of the admin, or owner, this is the person who placed the security block.

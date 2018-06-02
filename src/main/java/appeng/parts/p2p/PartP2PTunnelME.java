@@ -19,9 +19,9 @@
 package appeng.parts.p2p;
 
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -224,7 +224,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 				}
 			}
 
-			final LinkedList<PartP2PTunnelME> newSides = new LinkedList<>();
+			final List<PartP2PTunnelME> newSides = new ArrayList<>();
 			try
 			{
 				for( final PartP2PTunnelME me : this.getOutputs() )
@@ -247,7 +247,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 					{
 						final TileEntity start = this.getTile();
 						final TileEntity end = me.getTile();
-						
+
 						AELog.debug( e );
 
 						AELog.warn( "Failed to establish a ME P2P Tunnel between the tunnels at [x=%d, y=%d, z=%d] and [x=%d, y=%d, z=%d]",

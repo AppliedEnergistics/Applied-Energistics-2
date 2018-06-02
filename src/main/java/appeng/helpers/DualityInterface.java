@@ -19,11 +19,11 @@
 package appeng.helpers;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -274,7 +274,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 		if( this.waitingToSend == null )
 		{
-			this.waitingToSend = new LinkedList<>();
+			this.waitingToSend = new ArrayList<>();
 		}
 
 		this.waitingToSend.add( is );
@@ -491,7 +491,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			{
 				if( this.craftingList == null )
 				{
-					this.craftingList = new LinkedList<>();
+					this.craftingList = new ArrayList<>();
 				}
 
 				this.craftingList.add( details );

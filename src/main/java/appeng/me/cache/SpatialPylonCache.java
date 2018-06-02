@@ -19,8 +19,8 @@
 package appeng.me.cache;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 import appeng.api.networking.IGrid;
@@ -47,7 +47,7 @@ public class SpatialPylonCache implements ISpatialCache
 	private DimensionalCoord captureMin;
 	private DimensionalCoord captureMax;
 	private boolean isValid = false;
-	private List<TileSpatialIOPort> ioPorts = new LinkedList<>();
+	private List<TileSpatialIOPort> ioPorts = new ArrayList<>();
 	private HashMap<SpatialPylonCluster, SpatialPylonCluster> clusters = new HashMap<>();
 
 	public SpatialPylonCache( final IGrid g )
@@ -65,7 +65,7 @@ public class SpatialPylonCache implements ISpatialCache
 	{
 
 		this.clusters = new HashMap<>();
-		this.ioPorts = new LinkedList<>();
+		this.ioPorts = new ArrayList<>();
 
 		for( final IGridNode gm : grid.getMachines( TileSpatialIOPort.class ) )
 		{

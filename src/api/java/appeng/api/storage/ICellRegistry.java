@@ -24,7 +24,11 @@
 package appeng.api.storage;
 
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 
 import appeng.api.IAppEngApi;
 import appeng.api.storage.data.IAEStack;
@@ -42,9 +46,12 @@ public interface ICellRegistry
 	/**
 	 * Register a new handler.
 	 *
+	 * Never be call before {@link FMLInitializationEvent} was handled by AE2.
+	 * Will throw an exception otherwise.
+	 *
 	 * @param handler cell handler
 	 */
-	void addCellHandler( ICellHandler handler );
+	void addCellHandler( @Nonnull ICellHandler handler );
 
 	/**
 	 * return true, if you can get a InventoryHandler for the item passed.
@@ -63,6 +70,7 @@ public interface ICellRegistry
 	 *
 	 * @return the handler registered for this item type.
 	 */
+	@Nullable
 	ICellHandler getHandler( ItemStack is );
 
 	/**
@@ -74,5 +82,6 @@ public interface ICellRegistry
 	 *
 	 * @return new IMEInventoryHandler, or null if there isn't one.
 	 */
+	@Nullable
 	<T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory( ItemStack is, ISaveProvider host, IStorageChannel<T> chan );
 }

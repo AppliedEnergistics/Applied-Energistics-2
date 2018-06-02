@@ -26,6 +26,10 @@ package appeng.api.networking;
 
 import java.util.EnumSet;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 
@@ -49,6 +53,7 @@ public interface IGridBlock
 	 *
 	 * @return ae/t to use.
 	 */
+	@Nonnegative
 	double getIdlePowerUsage();
 
 	/**
@@ -56,10 +61,11 @@ public interface IGridBlock
 	 *
 	 * @return Set of flags for this IGridBlock
 	 */
+	@Nonnull
 	EnumSet<GridFlags> getFlags();
 
 	/**
-	 * generally speaking you will return true for this, the one exception is buses, or worm holes where the node
+	 * Generally speaking you will return true for this, the one exception is buses, or worm holes where the node
 	 * represents something that isn't a real connection in the world, but rather one represented internally to the
 	 * block.
 	 *
@@ -68,37 +74,46 @@ public interface IGridBlock
 	boolean isWorldAccessible();
 
 	/**
+	 * Must not return when {@link #isWorldAccessible()} is true.
+	 * Otherwise the behavior is unspecified.
+	 *
 	 * @return current location of this node
 	 */
+	@Nonnull
 	DimensionalCoord getLocation();
 
 	/**
 	 * @return Transparent, or a valid color, NULL IS NOT A VALID RETURN
 	 */
+	@Nonnull
 	AEColor getGridColor();
 
 	/**
 	 * Notifies your IGridBlock that changes were made to your connections
 	 */
-	void onGridNotification( GridNotification notification );
+	void onGridNotification( @Nonnull GridNotification notification );
 
 	/**
 	 * Update Blocks network/connection/booting status. grid,
 	 *
 	 * @param grid grid
 	 * @param channelsInUse used channels
+	 * @deprecated to be removed in rv7
 	 */
+	@Deprecated
 	void setNetworkStatus( IGrid grid, int channelsInUse );
 
 	/**
 	 * Determine which sides of the block can be connected too, only used when isWorldAccessible returns true, not used
 	 * for {@link IPart} implementations.
 	 */
+	@Nonnull
 	EnumSet<EnumFacing> getConnectableSides();
 
 	/**
 	 * @return the IGridHost for the node, this will be an IGridPart or a TileEntity generally speaking.
 	 */
+	@Nonnull
 	IGridHost getMachine();
 
 	/**
@@ -111,5 +126,6 @@ public interface IGridBlock
 	 *
 	 * @return the render item stack to use to render this node, null is valid, and will not show this node.
 	 */
+	@Nullable
 	ItemStack getMachineRepresentation();
 }

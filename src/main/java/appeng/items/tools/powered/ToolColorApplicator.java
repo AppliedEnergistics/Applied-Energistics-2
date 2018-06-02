@@ -80,7 +80,6 @@ import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.storage.ItemCellInventoryHandler;
 import appeng.tile.misc.TilePaint;
-import appeng.util.ItemSorters;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
@@ -296,7 +295,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 					@Override
 					public int compare( final IAEItemStack a, final IAEItemStack b )
 					{
-						return ItemSorters.compareInt( a.getItemDamage(), b.getItemDamage() );
+						return Integer.compare( a.getItemDamage(), b.getItemDamage() );
 					}
 				} );
 
@@ -358,7 +357,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 		if( blk instanceof BlockColored )
 		{
-			final EnumDyeColor color = (EnumDyeColor) state.getValue( BlockColored.COLOR );
+			final EnumDyeColor color = state.getValue( BlockColored.COLOR );
 
 			if( newColor.dye == color )
 			{
@@ -375,7 +374,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 		if( blk == Blocks.STAINED_GLASS )
 		{
-			final EnumDyeColor color = (EnumDyeColor) state.getValue( BlockStainedGlass.COLOR );
+			final EnumDyeColor color = state.getValue( BlockStainedGlass.COLOR );
 
 			if( newColor.dye == color )
 			{
@@ -392,7 +391,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 		if( blk == Blocks.STAINED_GLASS_PANE )
 		{
-			final EnumDyeColor color = (EnumDyeColor) state.getValue( BlockStainedGlassPane.COLOR );
+			final EnumDyeColor color = state.getValue( BlockStainedGlassPane.COLOR );
 
 			if( newColor.dye == color )
 			{

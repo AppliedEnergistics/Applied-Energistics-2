@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.google.common.base.Joiner;
@@ -238,7 +237,7 @@ public class GuiCraftConfirm extends AEBaseGui
 		final int viewEnd = viewStart + 3 * this.rows;
 
 		String dspToolTip = "";
-		final List<String> lineList = new LinkedList<>();
+		final List<String> lineList = new ArrayList<>();
 		int toolPosX = 0;
 		int toolPosY = 0;
 

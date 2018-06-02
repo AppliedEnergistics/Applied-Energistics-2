@@ -24,6 +24,9 @@
 package appeng.api.networking.crafting;
 
 
+import javax.annotation.Nonnull;
+
+
 public interface ICraftingCallback
 {
 
@@ -32,5 +35,5 @@ public interface ICraftingCallback
 	 *
 	 * @param job - final job
 	 */
-	void calculationComplete( ICraftingJob job );
+	void calculationComplete( @Nonnull ICraftingJob job );
 }

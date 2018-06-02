@@ -20,7 +20,7 @@ package appeng.integration.modules.jei;
 
 
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -92,7 +92,7 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
 					if( slot.getSlotIndex() == slotIndex )
 					{
 						final NBTTagList tags = new NBTTagList();
-						final List<ItemStack> list = new LinkedList<>();
+						final List<ItemStack> list = new ArrayList<>();
 						final ItemStack displayed = ingredient.getDisplayedIngredient();
 
 						// prefer currently displayed item
