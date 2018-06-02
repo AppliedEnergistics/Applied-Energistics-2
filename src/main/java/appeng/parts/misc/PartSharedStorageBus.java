@@ -21,6 +21,7 @@ package appeng.parts.misc;
 
 import java.util.Collections;
 import java.util.List;
+
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
@@ -86,7 +87,7 @@ public abstract class PartSharedStorageBus extends PartUpgradeable implements IG
 				this.getProxy().getGrid().postEvent( new MENetworkCellArrayUpdate() );
 				this.getHost().markForUpdate();
 			}
-			catch( final GridAccessException e )
+			catch( final GridAccessException ignore )
 			{
 				// :P
 			}

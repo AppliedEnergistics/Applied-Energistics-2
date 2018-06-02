@@ -75,7 +75,6 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 		FluidStack fluidStack = input.getFluidStack();
 
 		// Insert
-		// TODO: May need to brute force like ItemHandlerAdapter
 		int wasFillled = this.fluidHandler.fill( fluidStack, type != Actionable.SIMULATE );
 		int remaining = fluidStack.amount - wasFillled;
 		if( fluidStack.amount == remaining )
@@ -90,7 +89,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 			{
 				this.proxyable.getProxy().getTick().alertDevice( this.proxyable.getProxy().getNode() );
 			}
-			catch( GridAccessException ex )
+			catch( GridAccessException ignore )
 			{
 				// meh
 			}
@@ -121,7 +120,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 			{
 				this.proxyable.getProxy().getTick().alertDevice( this.proxyable.getProxy().getNode() );
 			}
-			catch( GridAccessException ex )
+			catch( GridAccessException ignore )
 			{
 				// meh
 			}

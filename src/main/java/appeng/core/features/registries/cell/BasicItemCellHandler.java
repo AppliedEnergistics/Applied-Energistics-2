@@ -36,8 +36,8 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEPartLocation;
 import appeng.core.sync.GuiBridge;
-import appeng.me.storage.ItemCellInventoryHandler;
 import appeng.me.storage.ItemCellInventory;
+import appeng.me.storage.ItemCellInventoryHandler;
 import appeng.util.Platform;
 
 

@@ -22,6 +22,7 @@ package appeng.fluids.parts;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -149,7 +150,7 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
+	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
 	{
 		if( this.resetCacheLogic != 0 )
 		{
@@ -330,7 +331,7 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 			{
 				this.checkInterfaceVsStorageBus( target, this.getSide().getOpposite() );
 
-				this.handler = new MEInventoryHandler<IAEFluidStack>( inv, AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
+				this.handler = new MEInventoryHandler<>( inv, AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
 
 				this.handler.setBaseAccess( (AccessRestriction) this.getConfigManager().getSetting( Settings.ACCESS ) );
 				this.handler.setWhitelist( this.getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );

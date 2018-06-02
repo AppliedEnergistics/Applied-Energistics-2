@@ -69,6 +69,7 @@ public class OptionalSlotFake extends SlotFake implements IOptionalSlot
 		return this.host.isSlotEnabled( this.groupNum );
 	}
 
+	@Override
 	public boolean isRenderDisabled()
 	{
 		return this.renderDisabled;
