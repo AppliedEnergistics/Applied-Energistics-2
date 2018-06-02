@@ -21,6 +21,7 @@ package appeng.container.implementations;
 
 import java.io.IOException;
 import java.nio.BufferOverflowException;
+
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -81,14 +82,12 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 	private final IConfigManager clientCM;
 	private final IMEMonitor<IAEFluidStack> monitor;
 	private final IItemList<IAEFluidStack> fluids = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList();
+	@GuiSync( 99 )
+	public boolean hasPower = false;
 	private PartFluidTerminal terminal;
 	private IConfigManager serverCM;
 	private IConfigManagerHost gui;
 	private IGridNode networkNode;
-
-	@GuiSync( 99 )
-	public boolean hasPower = false;
-
 	// Holds the fluid the client wishes to extract, or null for insert
 	private IAEFluidStack clientRequestedTargetFluid = null;
 
@@ -143,6 +142,15 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
+	public void onListUpdate()
+	{
+		for( final IContainerListener c : this.listeners )
+		{
+			this.queueInventory( c );
+		}
+	}
+
+	@Override
 	public void addListener( IContainerListener listener )
 	{
 		super.addListener( listener );
@@ -151,11 +159,12 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
-	public void onListUpdate()
+	public void onContainerClosed( final EntityPlayer player )
 	{
-		for( final IContainerListener c : this.listeners )
+		super.onContainerClosed( player );
+		if( this.monitor != null )
 		{
-			this.queueInventory( c );
+			this.monitor.removeListener( this );
 		}
 	}
 
@@ -202,130 +211,6 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 		return this.clientCM;
 	}
 
-	@Override
-	public void onContainerClosed( final EntityPlayer player )
-	{
-		super.onContainerClosed( player );
-		if( this.monitor != null )
-		{
-			this.monitor.removeListener( this );
-		}
-	}
-
-	@Override
-	public void doAction( EntityPlayerMP player, InventoryAction action, int slot, long id )
-	{
-		if( action != InventoryAction.FILL_ITEM && action != InventoryAction.EMPTY_ITEM )
-		{
-			super.doAction( player, action, slot, id );
-			return;
-		}
-		ItemStack held = player.inventory.getItemStack();
-		if( !held.hasCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null ) )
-		{ // For now only do simple i/o with held tanks
-			return;
-		}
-		IFluidHandlerItem fh = FluidUtil.getFluidHandler( held );
-		if( fh == null )
-		{
-			throw new NullPointerException( held.getDisplayName() + " did not give FLUID_HANDLER_ITEM_CAPABILITY" );
-		}
-		boolean isBucket = held.getItem() == Items.BUCKET ||
-				held.getItem() == Items.WATER_BUCKET ||
-				held.getItem() == Items.LAVA_BUCKET ||
-				held.getItem() == Items.MILK_BUCKET ||
-				held.getItem() == ForgeModContainer.getInstance().universalBucket;
-
-		if( action == InventoryAction.FILL_ITEM && this.clientRequestedTargetFluid != null )
-		{
-			// Fill held item
-			// Grab a fresh copy from the system
-			//AEFluidStack stack = (AEFluidStack) this.monitor.extractItems( this.clientRequestedTargetFluid, Actionable.SIMULATE, this.getActionSource() );
-			AEFluidStack stack = (AEFluidStack) this.clientRequestedTargetFluid.copy();
-
-			AELog.info( "Filling %s with %s, %s mb", held.getDisplayName(), this.clientRequestedTargetFluid.getFluidStack().getLocalizedName(), stack.getStackSize() );
-
-			if( isBucket && stack.getStackSize() < 1000 )
-			{ // Although buckets support less than a buckets worth of fluid, it does not display how much it holds
-				return;
-			}
-
-			// Check how much we can store in the item
-			stack.setStackSize( Integer.MAX_VALUE );
-			int amountAllowed = fh.fill( stack.getFluidStack(), false );
-			stack.setStackSize( amountAllowed );
-
-			// Check if we can pull out of the system
-			IAEFluidStack canPull = this.monitor.extractItems( stack, Actionable.SIMULATE, this.getActionSource() );
-			if( canPull == null || canPull.getStackSize() < 1 || ( isBucket && canPull.getStackSize() < 1000 ) )
-			{
-				// Either we couldn't pull out of the system,
-				// or we are using a bucket and can only pull out less than a buckets worth of fluid
-				return;
-			}
-
-			// Now actually pull out of the system
-			IAEFluidStack pulled = Platform.poweredExtraction( this.getPowerSource(), this.monitor, stack, this.getActionSource() );
-			if( pulled == null || pulled.getStackSize() < 1 )
-			{
-				// Something went wrong
-				AELog.error( "Unable to pull fluid out of the ME system even though the simulation said yes " );
-				return;
-			}
-
-			if( isBucket )
-			{
-				// We need to handle buckets separately
-				ItemStack filledBucket = FluidUtil.getFilledBucket( pulled.getFluidStack() );
-				player.inventory.setItemStack( filledBucket );
-			}
-			else
-			{
-				fh.fill( pulled.getFluidStack(), true );
-			}
-			this.updateHeld( player );
-		}
-		else if( action == InventoryAction.EMPTY_ITEM )
-		{
-			// Empty held item
-			AELog.info( "Emptying %s", held.getDisplayName() );
-
-			// See how much we can drain from the item
-			FluidStack extract = fh.drain( Integer.MAX_VALUE, false );
-			if( extract == null || extract.amount < 1 )
-			{
-				return;
-			}
-
-			// Check if we can push into the system
-			IAEFluidStack canPush = this.monitor.injectItems( AEFluidStack.fromFluidStack( extract ), Actionable.SIMULATE, this.getActionSource() );
-			if( isBucket && canPush != null && canPush.getStackSize() > 0 )
-			{
-				// We can't push enough for the bucket
-				return;
-			}
-
-			IAEFluidStack inserted = Platform.poweredInsert( this.getPowerSource(), this.monitor, AEFluidStack.fromFluidStack( extract ), this.getActionSource() );
-			if( inserted != null && inserted.getStackSize() > 0 )
-			{
-				// Only try to extract the amount we DID insert
-				extract.amount -= Math.toIntExact( inserted.getStackSize() );
-			}
-
-			if( isBucket )
-			{
-				// Remove bucket and replace with EmptyBucket
-				player.inventory.setItemStack( new ItemStack( Items.BUCKET, 1 ) );
-			}
-			else
-			{
-				// Actually drain
-				fh.drain( extract, true );
-			}
-			this.updateHeld( player );
-		}
-	}
-
 	public void setTargetStack( final IAEFluidStack stack )
 	{
 		if( Platform.isClient() )
@@ -334,7 +219,8 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 			{
 				return;
 			}
-			if( stack != null && this.clientRequestedTargetFluid != null && stack.getFluidStack().isFluidEqual( this.clientRequestedTargetFluid.getFluidStack() ) )
+			if( stack != null && this.clientRequestedTargetFluid != null && stack.getFluidStack()
+					.isFluidEqual( this.clientRequestedTargetFluid.getFluidStack() ) )
 			{
 				return;
 			}
@@ -434,6 +320,119 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 		}
 	}
 
+	@Override
+	public void doAction( EntityPlayerMP player, InventoryAction action, int slot, long id )
+	{
+		if( action != InventoryAction.FILL_ITEM && action != InventoryAction.EMPTY_ITEM )
+		{
+			super.doAction( player, action, slot, id );
+			return;
+		}
+		ItemStack held = player.inventory.getItemStack();
+		if( !held.hasCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null ) )
+		{ // For now only do simple i/o with held tanks
+			return;
+		}
+		IFluidHandlerItem fh = FluidUtil.getFluidHandler( held );
+		if( fh == null )
+		{
+			throw new NullPointerException( held.getDisplayName() + " did not give FLUID_HANDLER_ITEM_CAPABILITY" );
+		}
+		boolean isBucket = held.getItem() == Items.BUCKET ||
+				held.getItem() == Items.WATER_BUCKET ||
+				held.getItem() == Items.LAVA_BUCKET ||
+				held.getItem() == Items.MILK_BUCKET ||
+				held.getItem() == ForgeModContainer.getInstance().universalBucket;
+
+		if( action == InventoryAction.FILL_ITEM && this.clientRequestedTargetFluid != null )
+		{
+			AEFluidStack stack = (AEFluidStack) this.clientRequestedTargetFluid.copy();
+
+			AELog.info( "Filling %s with %s, %s mb", held.getDisplayName(), this.clientRequestedTargetFluid.getFluidStack().getLocalizedName(),
+					stack.getStackSize() );
+
+			if( isBucket && stack.getStackSize() < 1000 )
+			{ // Although buckets support less than a buckets worth of fluid, it does not display how much it holds
+				return;
+			}
+
+			// Check how much we can store in the item
+			stack.setStackSize( Integer.MAX_VALUE );
+			int amountAllowed = fh.fill( stack.getFluidStack(), false );
+			stack.setStackSize( amountAllowed );
+
+			// Check if we can pull out of the system
+			IAEFluidStack canPull = this.monitor.extractItems( stack, Actionable.SIMULATE, this.getActionSource() );
+			if( canPull == null || canPull.getStackSize() < 1 || ( isBucket && canPull.getStackSize() < 1000 ) )
+			{
+				// Either we couldn't pull out of the system,
+				// or we are using a bucket and can only pull out less than a buckets worth of fluid
+				return;
+			}
+
+			// Now actually pull out of the system
+			IAEFluidStack pulled = Platform.poweredExtraction( this.getPowerSource(), this.monitor, stack, this.getActionSource() );
+			if( pulled == null || pulled.getStackSize() < 1 )
+			{
+				// Something went wrong
+				AELog.error( "Unable to pull fluid out of the ME system even though the simulation said yes " );
+				return;
+			}
+
+			if( isBucket )
+			{
+				// We need to handle buckets separately
+				ItemStack filledBucket = FluidUtil.getFilledBucket( pulled.getFluidStack() );
+				player.inventory.setItemStack( filledBucket );
+			}
+			else
+			{
+				fh.fill( pulled.getFluidStack(), true );
+			}
+			this.updateHeld( player );
+		}
+		else if( action == InventoryAction.EMPTY_ITEM )
+		{
+			// Empty held item
+			AELog.info( "Emptying %s", held.getDisplayName() );
+
+			// See how much we can drain from the item
+			FluidStack extract = fh.drain( Integer.MAX_VALUE, false );
+			if( extract == null || extract.amount < 1 )
+			{
+				return;
+			}
+
+			// Check if we can push into the system
+			IAEFluidStack canPush = this.monitor.injectItems( AEFluidStack.fromFluidStack( extract ), Actionable.SIMULATE, this.getActionSource() );
+			if( isBucket && canPush != null && canPush.getStackSize() > 0 )
+			{
+				// We can't push enough for the bucket
+				return;
+			}
+
+			IAEFluidStack inserted = Platform.poweredInsert( this.getPowerSource(), this.monitor, AEFluidStack.fromFluidStack( extract ),
+					this.getActionSource() );
+			if( inserted != null && inserted.getStackSize() > 0 )
+			{
+				// Only try to extract the amount we DID insert
+				extract.amount -= Math.toIntExact( inserted.getStackSize() );
+			}
+
+			if( isBucket )
+			{
+				// Remove bucket and replace with EmptyBucket
+				player.inventory.setItemStack( new ItemStack( Items.BUCKET, 1 ) );
+			}
+			else
+			{
+				// Actually drain
+				fh.drain( extract, true );
+			}
+			this.updateHeld( player );
+		}
+	}
+
 	protected void updatePowerStatus()
 	{
 		try
@@ -451,7 +450,7 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 				this.setPowered( this.getPowerSource().extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.8 );
 			}
 		}
-		catch( final Throwable t )
+		catch( final Exception ignore )
 		{
 			// :P
 		}

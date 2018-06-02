@@ -42,8 +42,9 @@ public class FluidCellInventoryHandler extends AbstractCellInventoryHandler<IAEF
 	@Override
 	protected IAEFluidStack createConfigStackFromItem( ItemStack is )
 	{
-		if ( is.getItem() instanceof FluidDummyItem ){
-			FluidStack fs = ((FluidDummyItem)is.getItem()).getFluidStack( is );
+		if( is.getItem() instanceof FluidDummyItem )
+		{
+			FluidStack fs = ( (FluidDummyItem) is.getItem() ).getFluidStack( is );
 			return fs != null ? AEFluidStack.fromFluidStack( fs ) : null;
 		}
 		return null;

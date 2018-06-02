@@ -320,13 +320,6 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 		if( target != null )
 		{
 			IMEInventory<IAEFluidStack> inv = this.getInventoryWrapper( target );
-			//TODO: Do something here
-			/*if( inv instanceof MEMonitorIInventory )
-			{
-				final MEMonitorIInventory h = (MEMonitorIInventory) inv;
-				h.setMode( (StorageFilter) this.getConfigManager().getSetting( Settings.STORAGE_FILTER ) );
-			}*/
-
 			if( inv instanceof ITickingMonitor )
 			{
 				this.monitor = (ITickingMonitor) inv;
@@ -393,7 +386,7 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 					tm.wakeDevice( this.getProxy().getNode() );
 				}
 			}
-			catch( final GridAccessException e )
+			catch( final GridAccessException ignore )
 			{
 				// :(
 			}
@@ -404,7 +397,7 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 			// force grid to update handlers...
 			this.getProxy().getGrid().postEvent( new MENetworkCellArrayUpdate() );
 		}
-		catch( final GridAccessException e )
+		catch( final GridAccessException ignore )
 		{
 			// :3
 		}

@@ -26,10 +26,12 @@ package appeng.container.slot;
  */
 public interface IOptionalSlot
 {
-	default boolean isRenderDisabled(){
+	default boolean isRenderDisabled()
+	{
 		return false;
 	}
 
 	int getSourceX();
+
 	int getSourceY();
 }

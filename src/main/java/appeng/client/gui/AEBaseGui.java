@@ -220,7 +220,8 @@ public abstract class AEBaseGui extends GuiContainer
 		if( slot != null && slot.isEnabled() && slot instanceof ISlotFluid )
 		{
 			ISlotFluid fluidSlot = (ISlotFluid) slot;
-			if (fluidSlot.getFluidInSlot() != null && fluidSlot.shouldRenderAsFluid()) {
+			if( fluidSlot.getFluidInSlot() != null && fluidSlot.shouldRenderAsFluid() )
+			{
 				FluidStack fluidStack = fluidSlot.getFluidInSlot();
 				this.drawHoveringText( fluidStack.getLocalizedName(), mouseX, mouseY );
 				return;

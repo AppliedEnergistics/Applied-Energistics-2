@@ -86,7 +86,7 @@ public class PartFluidImportBus extends PartSharedFluidBus
 	}
 
 	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int TicksSinceLastCall )
+	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
 	{
 		return this.canDoBusWork() ? this.doBusWork() : TickRateModulation.IDLE;
 	}

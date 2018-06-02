@@ -72,8 +72,6 @@ public class FluidRepo
 
 		this.view.ensureCapacity( this.list.size() );
 
-		final Enum viewMode = this.sortSrc.getSortDisplay();
-
 		String innerSearch = this.searchString;
 
 		boolean searchMod = false;
@@ -100,6 +98,7 @@ public class FluidRepo
 			}
 		}
 
+		final Enum viewMode = this.sortSrc.getSortDisplay();
 		final boolean needsZeroCopy = viewMode == ViewItems.CRAFTABLE;
 		final boolean terminalSearchToolTips = AEConfig.instance().getConfigManager().getSetting( Settings.SEARCH_TOOLTIPS ) != YesNo.NO;
 
