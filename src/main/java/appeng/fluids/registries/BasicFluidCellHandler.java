@@ -16,12 +16,11 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.features.registries.cell;
+package appeng.fluids.registries;
 
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
@@ -32,46 +31,48 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.util.AEPartLocation;
-import appeng.core.sync.GuiBridge;
-import appeng.me.storage.CellInventory;
-import appeng.me.storage.CellInventoryHandler;
-import appeng.util.Platform;
+import appeng.fluids.storage.FluidCellInventory;
+import appeng.fluids.storage.FluidCellInventoryHandler;
 
 
-public final class BasicCellHandler implements ICellHandler
+public class BasicFluidCellHandler implements ICellHandler
 {
 
 	@Override
 	public boolean isCell( final ItemStack is )
 	{
-		return CellInventory.isCell( is );
+		return FluidCellInventory.isCell( is );
 	}
 
 	@Override
 	public <T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory( final ItemStack is, final ISaveProvider container, final IStorageChannel<T> channel )
 	{
-		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
+		if( channel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
 		{
-			return CellInventory.getCell( is, container );
+			return FluidCellInventory.getCell( is, container );
 		}
+
 		return null;
 	}
 
 	@Override
 	public void openChestGui( final EntityPlayer player, final IChestOrDrive chest, final ICellHandler cellHandler, final IMEInventoryHandler inv, final ItemStack is, final IStorageChannel chan )
 	{
-		Platform.openGUI( player, (TileEntity) chest, AEPartLocation.fromFacing( chest.getUp() ), GuiBridge.GUI_ME );
+		if( chan == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
+		{
+			//TODO: Open Gui
+			//Platform.openGUI( player, (TileEntity) chest, AEPartLocation.fromFacing( chest.getUp() ), GuiBridge.GUI_ME );
+		}
 	}
 
 	@Override
 	public int getStatusForCell( final ItemStack is, final IMEInventory handler )
 	{
-		if( handler instanceof CellInventoryHandler )
+		if( handler instanceof FluidCellInventoryHandler )
 		{
-			final CellInventoryHandler ci = (CellInventoryHandler) handler;
+			final FluidCellInventoryHandler ci = (FluidCellInventoryHandler) handler;
 			return ci.getStatusForCell();
 		}
 		return 0;

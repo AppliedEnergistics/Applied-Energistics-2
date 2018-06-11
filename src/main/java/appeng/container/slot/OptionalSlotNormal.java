@@ -22,7 +22,7 @@ package appeng.container.slot;
 import net.minecraftforge.items.IItemHandler;
 
 
-public class OptionalSlotNormal extends AppEngSlot
+public class OptionalSlotNormal extends AppEngSlot implements IOptionalSlot
 {
 
 	private final int groupNum;
@@ -44,5 +44,17 @@ public class OptionalSlotNormal extends AppEngSlot
 		}
 
 		return this.host.isSlotEnabled( this.groupNum );
+	}
+
+	@Override
+	public int getSourceX()
+	{
+		return this.xPos;
+	}
+
+	@Override
+	public int getSourceY()
+	{
+		return this.yPos;
 	}
 }

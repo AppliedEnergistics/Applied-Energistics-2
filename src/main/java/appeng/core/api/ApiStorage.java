@@ -163,7 +163,7 @@ public class ApiStorage implements IStorageHelper
 		@Override
 		public int transferFactor()
 		{
-			return 1000;
+			return 125;
 		}
 
 		@Override

@@ -114,7 +114,12 @@ public enum MaterialType
 	QUANTUM_ENTANGLED_SINGULARITY( 48, "material_quantum_entangled_singularity", EnumSet.of( AEFeature.QUANTUM_NETWORK_BRIDGE ), EntitySingularity.class ),
 
 	BLANK_PATTERN( 52, "material_blank_pattern", EnumSet.of( AEFeature.PATTERNS ) ),
-	CARD_CRAFTING( 53, "material_card_crafting", EnumSet.of( AEFeature.ADVANCED_CARDS, AEFeature.CRAFTING_CPU ) );
+	CARD_CRAFTING( 53, "material_card_crafting", EnumSet.of( AEFeature.ADVANCED_CARDS, AEFeature.CRAFTING_CPU ) ),
+
+	FLUID_CELL1K_PART( 54, "material_fluid_cell1k_part", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
+	FLUID_CELL4K_PART( 55, "material_fluid_cell4k_part", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
+	FLUID_CELL16K_PART( 56, "material_fluid_cell16k_part", EnumSet.of( AEFeature.STORAGE_CELLS ) ),
+	FLUID_CELL64K_PART( 57, "material_fluid_cell64k_part", EnumSet.of( AEFeature.STORAGE_CELLS ) );
 
 	private final Set<AEFeature> features;
 	private final ModelResourceLocation model;

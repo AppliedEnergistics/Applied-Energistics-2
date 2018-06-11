@@ -27,7 +27,8 @@ package appeng.api.implementations.items;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.storage.ICellWorkbenchItem;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.data.IAEStack;
 
 
 /**
@@ -40,7 +41,7 @@ import appeng.api.storage.data.IAEItemStack;
  *
  * The standard AE implementation only provides 1-63 Types
  */
-public interface IStorageCell extends ICellWorkbenchItem
+public interface IStorageCell<T extends IAEStack<T>> extends ICellWorkbenchItem
 {
 
 	/**
@@ -82,7 +83,7 @@ public interface IStorageCell extends ICellWorkbenchItem
 	 *
 	 * @return true to preventAdditionOfItem
 	 */
-	boolean isBlackListed( ItemStack cellItem, IAEItemStack requestedAddition );
+	boolean isBlackListed( ItemStack cellItem, T requestedAddition );
 
 	/**
 	 * Allows you to specify if this storage cell can be stored inside other
@@ -109,4 +110,9 @@ public interface IStorageCell extends ICellWorkbenchItem
 	 * @return drain in ae/t this storage cell will use.
 	 */
 	double getIdleDrain();
+
+	/**
+	 * @return the type of channel your cell should be part of
+	 */
+	IStorageChannel<T> getChannel();
 }

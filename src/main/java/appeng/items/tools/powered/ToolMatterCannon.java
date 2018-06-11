@@ -55,6 +55,7 @@ import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventory;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -76,13 +77,13 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.ItemPaintBall;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
-import appeng.me.storage.CellInventoryHandler;
+import appeng.me.storage.ItemCellInventoryHandler;
 import appeng.tile.misc.TilePaint;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
 
 
-public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
+public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<IAEItemStack>
 {
 
 	public ToolMatterCannon()
@@ -99,7 +100,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 		final IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( stack, null,
 				AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
-		if( cdi instanceof CellInventoryHandler )
+		if( cdi instanceof ItemCellInventoryHandler )
 		{
 			final ICellInventory cd = ( (ICellInventoryHandler) cdi ).getCellInv();
 			if( cd != null )
@@ -528,5 +529,11 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell
 	public double getIdleDrain()
 	{
 		return 0.5;
+	}
+
+	@Override
+	public IStorageChannel<IAEItemStack> getChannel()
+	{
+		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 }

@@ -1,0 +1,25 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "material.fluid_cell1k_part"
+    },
+    "type": "appliedenergistics2:part_shaped",
+    "pattern": [
+        "aba",
+        "bcb",
+        "aba"
+    ],
+    "key": {
+        "a": {
+            "item": "minecraft:dye",
+            "data": 4
+        },
+        "b": {
+            "item": "#appliedenergistics2:certusCrystal"
+        },
+        "c": {
+            "type": "appliedenergistics2:part",
+            "part": "material.logic_processor"
+        }
+    }
+}

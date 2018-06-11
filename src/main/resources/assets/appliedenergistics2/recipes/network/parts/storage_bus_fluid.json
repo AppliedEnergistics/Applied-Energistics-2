@@ -1,0 +1,22 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "part.storage_bus_fluid"
+    },
+    "type": "appliedenergistics2:part_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:sticky_piston"
+        },
+        {
+            "item": "#appliedenergistics2:interface"
+        },
+        {
+            "item": "minecraft:piston"
+        },
+        {
+            "item": "minecraft:dye",
+            "data": 4
+        }
+    ]
+}

@@ -39,7 +39,7 @@ public interface IParts
 	AEColoredItemDefinition cableGlass();
 
 	AEColoredItemDefinition cableDenseCovered();
-	
+
 	AEColoredItemDefinition cableDenseSmart();
 
 	AEColoredItemDefinition lumenCableSmart();
@@ -107,4 +107,12 @@ public interface IParts
 	IItemDefinition storageMonitor();
 
 	IItemDefinition conversionMonitor();
+
+	IItemDefinition fluidTerminal();
+
+	IItemDefinition fluidImportBus();
+
+	IItemDefinition fluidExportBus();
+
+	IItemDefinition fluidStorageBus();
 }

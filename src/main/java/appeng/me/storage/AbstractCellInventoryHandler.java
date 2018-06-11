@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2018, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,7 +23,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
 import appeng.api.config.Upgrades;
@@ -31,26 +30,29 @@ import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventory;
-import appeng.api.storage.channels.IItemStorageChannel;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.util.Platform;
-import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
 
-public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> implements ICellInventoryHandler
+/**
+ * @author DrummerMC
+ * @version rv6 - 2018-01-23
+ * @since rv6 2018-01-23
+ */
+public abstract class AbstractCellInventoryHandler<T extends IAEStack<T>> extends MEInventoryHandler<T> implements ICellInventoryHandler<T>
 {
-
-	CellInventoryHandler( final IMEInventory c )
+	public AbstractCellInventoryHandler( final IMEInventory c, final IStorageChannel<T> channel )
 	{
-		super( c, AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+		super( c, channel );
 
 		final ICellInventory ci = this.getCellInv();
 		if( ci != null )
 		{
-			final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+			final IItemList<T> priorityList = channel.createList();
 
 			final IItemHandler upgrades = ci.getUpgradesInventory();
 			final IItemHandler config = ci.getConfigInventory();
@@ -86,7 +88,7 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 				final ItemStack is = config.getStackInSlot( x );
 				if( !is.isEmpty() )
 				{
-					priorityList.add( AEItemStack.fromItemStack( is ) );
+					priorityList.add( createConfigStackFromItem( is ) );
 				}
 			}
 
@@ -105,6 +107,8 @@ public class CellInventoryHandler extends MEInventoryHandler<IAEItemStack> imple
 			}
 		}
 	}
+
+	protected abstract T createConfigStackFromItem( ItemStack is );
 
 	@Override
 	public ICellInventory getCellInv()

@@ -43,6 +43,7 @@ import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventory;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEPartLocation;
@@ -53,11 +54,11 @@ import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.items.contents.PortableCellViewer;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
-import appeng.me.storage.CellInventoryHandler;
+import appeng.me.storage.ItemCellInventoryHandler;
 import appeng.util.Platform;
 
 
-public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell, IGuiItem, IItemGroup
+public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell<IAEItemStack>, IGuiItem, IItemGroup
 {
 	public ToolPortableCell()
 	{
@@ -87,7 +88,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 		final IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( stack, null,
 				AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
-		if( cdi instanceof CellInventoryHandler )
+		if( cdi instanceof ItemCellInventoryHandler )
 		{
 			final ICellInventory cd = ( (ICellInventoryHandler) cdi ).getCellInv();
 			if( cd != null )
@@ -138,6 +139,12 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell,
 	public double getIdleDrain()
 	{
 		return 0.5;
+	}
+
+	@Override
+	public IStorageChannel<IAEItemStack> getChannel()
+	{
+		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override

@@ -25,7 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 
-public class OptionalSlotFake extends SlotFake
+public class OptionalSlotFake extends SlotFake implements IOptionalSlot
 {
 
 	private final int srcX;
@@ -69,12 +69,8 @@ public class OptionalSlotFake extends SlotFake
 		return this.host.isSlotEnabled( this.groupNum );
 	}
 
-	public boolean renderDisabled()
-	{
-		return this.isRenderDisabled();
-	}
-
-	private boolean isRenderDisabled()
+	@Override
+	public boolean isRenderDisabled()
 	{
 		return this.renderDisabled;
 	}

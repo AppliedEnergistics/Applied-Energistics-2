@@ -44,12 +44,15 @@ public enum GuiText
 	StoredItems,
 	Patterns,
 	ImportBus,
+	ImportBusFluids,
 	ExportBus,
+	ExportBusFluids,
 
 	CellWorkbench,
 	NetworkDetails,
 	StorageCells,
 	IOBuses,
+	IOBusesFluids,
 
 	IOPort,
 	BytesUsed,
@@ -64,6 +67,7 @@ public enum GuiText
 	EnergyDrain,
 
 	StorageBus,
+	StorageBusFluids,
 	Priority,
 	Security,
 	Encoded,

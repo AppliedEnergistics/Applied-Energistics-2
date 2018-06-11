@@ -278,7 +278,9 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 	public String getUnlocalizedGroupName( final Set<ItemStack> others, final ItemStack is )
 	{
 		boolean importBus = false;
+		boolean importBusFluids = false;
 		boolean exportBus = false;
+		boolean exportBusFluids = false;
 		boolean group = false;
 
 		final PartType u = this.getTypeByStack( is );
@@ -297,8 +299,22 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 							group = true;
 						}
 						break;
+					case FLUID_IMPORT_BUS:
+						importBusFluids = true;
+						if( u == pt )
+						{
+							group = true;
+						}
+						break;
 					case EXPORT_BUS:
 						exportBus = true;
+						if( u == pt )
+						{
+							group = true;
+						}
+						break;
+					case FLUID_EXPORT_BUS:
+						exportBusFluids = true;
 						if( u == pt )
 						{
 							group = true;
@@ -309,9 +325,13 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 			}
 		}
 
-		if( group && importBus && exportBus )
+		if( group && importBus && exportBus && ( u == PartType.IMPORT_BUS || u == PartType.EXPORT_BUS ) )
 		{
 			return GuiText.IOBuses.getUnlocalized();
+		}
+		if( group && importBusFluids && exportBusFluids && ( u == PartType.FLUID_IMPORT_BUS || u == PartType.FLUID_EXPORT_BUS ) )
+		{
+			return GuiText.IOBusesFluids.getUnlocalized();
 		}
 
 		return null;

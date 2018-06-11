@@ -77,6 +77,10 @@ public final class ApiParts implements IParts
 	private final IItemDefinition terminal;
 	private final IItemDefinition storageMonitor;
 	private final IItemDefinition conversionMonitor;
+	private final IItemDefinition fluidImportBus;
+	private final IItemDefinition fluidExportBus;
+	private final IItemDefinition fluidTerminal;
+	private final IItemDefinition fluidStorageBus;
 
 	public ApiParts( FeatureFactory registry, PartModels partModels )
 	{
@@ -109,8 +113,8 @@ public final class ApiParts implements IParts
 		this.iface = new DamagedItemDefinition( "part.interface", itemPart.createPart( PartType.INTERFACE ) );
 		this.levelEmitter = new DamagedItemDefinition( "part.level_emitter", itemPart.createPart( PartType.LEVEL_EMITTER ) );
 		this.annihilationPlane = new DamagedItemDefinition( "part.plane.annihilation", itemPart.createPart( PartType.ANNIHILATION_PLANE ) );
-		this.identityAnnihilationPlane = new DamagedItemDefinition( "part.plane.annihiliation.identity", itemPart
-				.createPart( PartType.IDENTITY_ANNIHILATION_PLANE ) );
+		this.identityAnnihilationPlane = new DamagedItemDefinition( "part.plane.annihiliation.identity",
+				itemPart.createPart( PartType.IDENTITY_ANNIHILATION_PLANE ) );
 		this.formationPlane = new DamagedItemDefinition( "part.plane.formation", itemPart.createPart( PartType.FORMATION_PLANE ) );
 		this.p2PTunnelME = new DamagedItemDefinition( "part.tunnel.me", itemPart.createPart( PartType.P2P_TUNNEL_ME ) );
 		this.p2PTunnelRedstone = new DamagedItemDefinition( "part.tunnel.redstone", itemPart.createPart( PartType.P2P_TUNNEL_REDSTONE ) );
@@ -131,6 +135,10 @@ public final class ApiParts implements IParts
 		this.terminal = new DamagedItemDefinition( "part.terminal", itemPart.createPart( PartType.TERMINAL ) );
 		this.storageMonitor = new DamagedItemDefinition( "part.monitor.storage", itemPart.createPart( PartType.STORAGE_MONITOR ) );
 		this.conversionMonitor = new DamagedItemDefinition( "part.monitor.conversion", itemPart.createPart( PartType.CONVERSION_MONITOR ) );
+		this.fluidImportBus = new DamagedItemDefinition( "part.bus.import.fluid", itemPart.createPart( PartType.FLUID_IMPORT_BUS ) );
+		this.fluidExportBus = new DamagedItemDefinition( "part.bus.export.fluid", itemPart.createPart( PartType.FLUID_EXPORT_BUS ) );
+		this.fluidTerminal = new DamagedItemDefinition( "part.terminal.fluid", itemPart.createPart( PartType.FLUID_TERMINAL ) );
+		this.fluidStorageBus = new DamagedItemDefinition( "part.bus.storage.fluid", itemPart.createPart( PartType.FLUID_STORAGE_BUS ) );
 	}
 
 	private static AEColoredItemDefinition constructColoredDefinition( final ItemPart target, final PartType type )
@@ -379,5 +387,29 @@ public final class ApiParts implements IParts
 	public IItemDefinition conversionMonitor()
 	{
 		return this.conversionMonitor;
+	}
+
+	@Override
+	public IItemDefinition fluidTerminal()
+	{
+		return this.fluidTerminal;
+	}
+
+	@Override
+	public IItemDefinition fluidImportBus()
+	{
+		return this.fluidImportBus;
+	}
+
+	@Override
+	public IItemDefinition fluidExportBus()
+	{
+		return this.fluidExportBus;
+	}
+
+	@Override
+	public IItemDefinition fluidStorageBus()
+	{
+		return this.fluidStorageBus;
 	}
 }

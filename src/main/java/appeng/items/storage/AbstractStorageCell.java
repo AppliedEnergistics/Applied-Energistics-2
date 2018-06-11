@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2018, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -46,8 +46,8 @@ import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
@@ -60,49 +60,28 @@ import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 
 
-public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCell, IItemGroup
+/**
+ * @author DrummerMC
+ * @version rv6 - 2018-01-17
+ * @since rv6 2018-01-17
+ */
+public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseItem implements IStorageCell<T>, IItemGroup
 {
-	private final MaterialType component;
-	private final int totalBytes;
-	private final int perType;
-	private final double idleDrain;
+	protected final MaterialType component;
+	protected final int totalBytes;
 
-	public ItemBasicStorageCell( final MaterialType whichCell, final int kilobytes )
+	public AbstractStorageCell( final MaterialType whichCell, final int kilobytes )
 	{
 		this.setMaxStackSize( 1 );
 		this.totalBytes = kilobytes * 1024;
 		this.component = whichCell;
-
-		switch( this.component )
-		{
-			case CELL1K_PART:
-				this.idleDrain = 0.5;
-				this.perType = 8;
-				break;
-			case CELL4K_PART:
-				this.idleDrain = 1.0;
-				this.perType = 32;
-				break;
-			case CELL16K_PART:
-				this.idleDrain = 1.5;
-				this.perType = 128;
-				break;
-			case CELL64K_PART:
-				this.idleDrain = 2.0;
-				this.perType = 512;
-				break;
-			default:
-				this.idleDrain = 0.0;
-				this.perType = 8;
-		}
 	}
 
 	@SideOnly( Side.CLIENT )
 	@Override
 	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
-		final IMEInventoryHandler<?> inventory = AEApi.instance().registries().cell().getCellInventory( stack, null,
-				AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+		final IMEInventoryHandler<?> inventory = AEApi.instance().registries().cell().getCellInventory( stack, null, getChannel() );
 
 		if( inventory instanceof ICellInventoryHandler )
 		{
@@ -111,11 +90,9 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 
 			if( cellInventory != null )
 			{
-				lines.add(
-						cellInventory.getUsedBytes() + " " + GuiText.Of.getLocal() + ' ' + cellInventory.getTotalBytes() + ' ' + GuiText.BytesUsed.getLocal() );
+				lines.add( cellInventory.getUsedBytes() + " " + GuiText.Of.getLocal() + ' ' + cellInventory.getTotalBytes() + ' ' + GuiText.BytesUsed.getLocal() );
 
-				lines.add( cellInventory.getStoredItemTypes() + " " + GuiText.Of.getLocal() + ' ' + cellInventory.getTotalItemTypes() + ' ' + GuiText.Types
-						.getLocal() );
+				lines.add( cellInventory.getStoredItemTypes() + " " + GuiText.Of.getLocal() + ' ' + cellInventory.getTotalItemTypes() + ' ' + GuiText.Types.getLocal() );
 
 				if( handler.isPreformatted() )
 				{
@@ -141,19 +118,13 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 	}
 
 	@Override
-	public int getBytesPerType( final ItemStack cellItem )
-	{
-		return this.perType;
-	}
-
-	@Override
 	public int getTotalTypes( final ItemStack cellItem )
 	{
 		return 63;
 	}
 
 	@Override
-	public boolean isBlackListed( final ItemStack cellItem, final IAEItemStack requestedAddition )
+	public boolean isBlackListed( final ItemStack cellItem, final T requestedAddition )
 	{
 		return false;
 	}
@@ -168,12 +139,6 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 	public boolean isStorageCell( final ItemStack i )
 	{
 		return true;
-	}
-
-	@Override
-	public double getIdleDrain()
-	{
-		return this.idleDrain;
 	}
 
 	@Override
@@ -237,13 +202,11 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 			}
 
 			final InventoryPlayer playerInventory = player.inventory;
-			final IMEInventoryHandler inv = AEApi.instance().registries().cell().getCellInventory( stack, null,
-					AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+			final IMEInventoryHandler inv = AEApi.instance().registries().cell().getCellInventory( stack, null, getChannel() );
 			if( inv != null && playerInventory.getCurrentItem() == stack )
 			{
 				final InventoryAdaptor ia = InventoryAdaptor.getAdaptor( player );
-				final IItemList<IAEItemStack> list = inv
-						.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
+				final IItemList<IAEItemStack> list = inv.getAvailableItems( getChannel().createList() );
 				if( list.isEmpty() && ia != null )
 				{
 					playerInventory.setInventorySlotContents( playerInventory.currentItem, ItemStack.EMPTY );
@@ -268,14 +231,7 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 					}
 
 					// drop empty storage cell case
-					AEApi.instance().definitions().materials().emptyStorageCell().maybeStack( 1 ).ifPresent( is ->
-					{
-						final ItemStack extraA = ia.addItems( is );
-						if( !extraA.isEmpty() )
-						{
-							player.dropItem( extraA, false );
-						}
-					} );
+					dropEmptyStorageCellCase( ia, player );
 
 					if( player.inventoryContainer != null )
 					{
@@ -289,6 +245,8 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 		return false;
 	}
 
+	protected abstract void dropEmptyStorageCellCase( final InventoryAdaptor ia, final EntityPlayer player );
+
 	@Override
 	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
 	{
@@ -298,12 +256,7 @@ public final class ItemBasicStorageCell extends AEBaseItem implements IStorageCe
 	@Override
 	public ItemStack getContainerItem( final ItemStack itemStack )
 	{
-		return AEApi.instance()
-				.definitions()
-				.materials()
-				.emptyStorageCell()
-				.maybeStack( 1 )
-				.orElseThrow( () -> new MissingDefinitionException( "Tried to use empty storage cells while basic storage cells are defined." ) );
+		return AEApi.instance().definitions().materials().emptyStorageCell().maybeStack( 1 ).orElseThrow( () -> new MissingDefinitionException( "Tried to use empty storage cells while basic storage cells are defined." ) );
 	}
 
 	@Override

@@ -61,6 +61,7 @@ import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventory;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
@@ -77,13 +78,13 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.ItemPaintBall;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.BaseActionSource;
-import appeng.me.storage.CellInventoryHandler;
+import appeng.me.storage.ItemCellInventoryHandler;
 import appeng.tile.misc.TilePaint;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 
 
-public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCell, IItemGroup, IBlockTool, IMouseWheelItem
+public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCell<IAEItemStack>, IItemGroup, IBlockTool, IMouseWheelItem
 {
 
 	private static final Map<Integer, AEColor> ORE_TO_COLOR = new HashMap<>();
@@ -434,7 +435,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		final IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( stack, null,
 				AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
-		if( cdi instanceof CellInventoryHandler )
+		if( cdi instanceof ItemCellInventoryHandler )
 		{
 			final ICellInventory cd = ( (ICellInventoryHandler) cdi ).getCellInv();
 			if( cd != null )
@@ -504,6 +505,12 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	public double getIdleDrain()
 	{
 		return 0.5;
+	}
+
+	@Override
+	public IStorageChannel<IAEItemStack> getChannel()
+	{
+		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override

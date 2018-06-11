@@ -25,10 +25,10 @@ package appeng.api.storage;
 
 
 import appeng.api.config.IncludeExclude;
-import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 
 
-public interface ICellInventoryHandler extends IMEInventoryHandler<IAEItemStack>
+public interface ICellInventoryHandler<T extends IAEStack<T>> extends IMEInventoryHandler<T>
 {
 
 	/**

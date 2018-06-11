@@ -91,7 +91,7 @@ import appeng.bootstrap.components.IRecipeRegistrationComponent;
 import appeng.capabilities.Capabilities;
 import appeng.core.features.AEFeature;
 import appeng.core.features.registries.P2PTunnelRegistry;
-import appeng.core.features.registries.cell.BasicCellHandler;
+import appeng.core.features.registries.cell.BasicItemCellHandler;
 import appeng.core.features.registries.cell.CreativeCellHandler;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
@@ -99,6 +99,7 @@ import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.PartItemPredicate;
 import appeng.core.stats.Stats;
 import appeng.core.worlddata.SpatialDimensionManager;
+import appeng.fluids.registries.BasicFluidCellHandler;
 import appeng.hooks.TickHandler;
 import appeng.items.materials.ItemMaterial;
 import appeng.items.parts.ItemFacade;
@@ -286,8 +287,9 @@ final class Registration
 		gcr.registerGridCache( ISecurityGrid.class, SecurityCache.class );
 		gcr.registerGridCache( ICraftingGrid.class, CraftingGridCache.class );
 
-		registries.cell().addCellHandler( new BasicCellHandler() );
+		registries.cell().addCellHandler( new BasicItemCellHandler() );
 		registries.cell().addCellHandler( new CreativeCellHandler() );
+		registries.cell().addCellHandler( new BasicFluidCellHandler() );
 
 		api.definitions().materials().matterBall().maybeStack( 1 ).ifPresent( ammoStack ->
 		{
@@ -423,12 +425,22 @@ final class Registration
 		Upgrades.CAPACITY.registerItem( parts.importBus(), 2 );
 		Upgrades.SPEED.registerItem( parts.importBus(), 4 );
 
+		// Fluid Import Bus
+		Upgrades.CAPACITY.registerItem( parts.fluidImportBus(), 2 );
+		Upgrades.REDSTONE.registerItem( parts.fluidImportBus(), 1 );
+		Upgrades.SPEED.registerItem( parts.fluidImportBus(), 4 );
+
 		// Export Bus
 		Upgrades.FUZZY.registerItem( parts.exportBus(), 1 );
 		Upgrades.REDSTONE.registerItem( parts.exportBus(), 1 );
 		Upgrades.CAPACITY.registerItem( parts.exportBus(), 2 );
 		Upgrades.SPEED.registerItem( parts.exportBus(), 4 );
 		Upgrades.CRAFTING.registerItem( parts.exportBus(), 1 );
+
+		// Fluid Export Bus
+		Upgrades.CAPACITY.registerItem( parts.fluidExportBus(), 2 );
+		Upgrades.REDSTONE.registerItem( parts.fluidExportBus(), 1 );
+		Upgrades.SPEED.registerItem( parts.fluidExportBus(), 4 );
 
 		// Storage Cells
 		Upgrades.FUZZY.registerItem( items.cell1k(), 1 );
@@ -453,6 +465,10 @@ final class Registration
 		Upgrades.FUZZY.registerItem( parts.storageBus(), 1 );
 		Upgrades.INVERTER.registerItem( parts.storageBus(), 1 );
 		Upgrades.CAPACITY.registerItem( parts.storageBus(), 5 );
+
+		// Storage Bus Fluids
+		Upgrades.INVERTER.registerItem( parts.fluidStorageBus(), 1 );
+		Upgrades.CAPACITY.registerItem( parts.fluidStorageBus(), 5 );
 
 		// Formation Plane
 		Upgrades.FUZZY.registerItem( parts.formationPlane(), 1 );

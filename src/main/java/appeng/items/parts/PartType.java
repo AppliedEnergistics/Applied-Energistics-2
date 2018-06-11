@@ -41,6 +41,9 @@ import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
+import appeng.fluids.parts.PartFluidExportBus;
+import appeng.fluids.parts.PartFluidImportBus;
+import appeng.fluids.parts.PartFluidStorageBus;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
 import appeng.parts.automation.PartAnnihilationPlane;
@@ -70,6 +73,7 @@ import appeng.parts.p2p.PartP2PTunnelME;
 import appeng.parts.reporting.PartConversionMonitor;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartDarkPanel;
+import appeng.parts.reporting.PartFluidTerminal;
 import appeng.parts.reporting.PartInterfaceTerminal;
 import appeng.parts.reporting.PartPanel;
 import appeng.parts.reporting.PartPatternTerminal;
@@ -190,10 +194,15 @@ public enum PartType
 	DARK_MONITOR( 200, "dark_monitor", EnumSet.of( AEFeature.PANELS ), EnumSet.noneOf( IntegrationType.class ), PartDarkPanel.class ),
 
 	STORAGE_BUS( 220, "storage_bus", EnumSet.of( AEFeature.STORAGE_BUS ), EnumSet.noneOf( IntegrationType.class ), PartStorageBus.class ),
+	FLUID_STORAGE_BUS( 221, "fluid_storage_bus", EnumSet.of( AEFeature.FLUID_STORAGE_BUS ), EnumSet.noneOf( IntegrationType.class ), PartFluidStorageBus.class ),
 
 	IMPORT_BUS( 240, "import_bus", EnumSet.of( AEFeature.IMPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartImportBus.class ),
 
+	FLUID_IMPORT_BUS( 241, "fluid_import_bus", EnumSet.of( AEFeature.FLUID_IMPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartFluidImportBus.class ),
+
 	EXPORT_BUS( 260, "export_bus", EnumSet.of( AEFeature.EXPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartExportBus.class ),
+
+	FLUID_EXPORT_BUS( 261, "fluid_export_bus", EnumSet.of( AEFeature.FLUID_EXPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartFluidExportBus.class ),
 
 	LEVEL_EMITTER( 280, "level_emitter", EnumSet.of( AEFeature.LEVEL_EMITTER ), EnumSet.noneOf( IntegrationType.class ), PartLevelEmitter.class ),
 
@@ -293,7 +302,9 @@ public enum PartType
 	// IntegrationType.OpenComputers ), PartP2POpenComputers.class, GuiText.OCTunnel ),
 
 	INTERFACE_TERMINAL( 480, "interface_terminal", EnumSet.of( AEFeature.INTERFACE_TERMINAL ), EnumSet
-			.noneOf( IntegrationType.class ), PartInterfaceTerminal.class );
+			.noneOf( IntegrationType.class ), PartInterfaceTerminal.class ),
+
+	FLUID_TERMINAL( 520, "fluid_terminal", EnumSet.of( AEFeature.FLUID_TERMINAL ), EnumSet.noneOf( IntegrationType.class ), PartFluidTerminal.class );
 
 	private final int baseDamage;
 	private final Set<AEFeature> features;

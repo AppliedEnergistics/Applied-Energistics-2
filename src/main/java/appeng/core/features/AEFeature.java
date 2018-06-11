@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2018, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -76,6 +76,7 @@ public enum AEFeature
 
 	INTERFACE( "Interface", Constants.CATEGORY_NETWORK_BUSES ),
 	LEVEL_EMITTER( "LevelEmitter", Constants.CATEGORY_NETWORK_BUSES ),
+	FLUID_TERMINAL( "FluidTerminal", Constants.CATEGORY_NETWORK_BUSES ),
 	CRAFTING_TERMINAL( "CraftingTerminal", Constants.CATEGORY_NETWORK_BUSES ),
 	TERMINAL( "Terminal", Constants.CATEGORY_NETWORK_BUSES ),
 	STORAGE_MONITOR( "StorageMonitor", Constants.CATEGORY_NETWORK_BUSES ),
@@ -84,8 +85,11 @@ public enum AEFeature
 	ANNIHILATION_PLANE( "AnnihilationPlane", Constants.CATEGORY_NETWORK_BUSES ),
 	IDENTITY_ANNIHILATION_PLANE( "IdentityAnnihilationPlane", Constants.CATEGORY_NETWORK_BUSES ),
 	IMPORT_BUS( "ImportBus", Constants.CATEGORY_NETWORK_BUSES ),
+	FLUID_IMPORT_BUS( "FluidImportBus", Constants.CATEGORY_NETWORK_BUSES ),
 	EXPORT_BUS( "ExportBus", Constants.CATEGORY_NETWORK_BUSES ),
+	FLUID_EXPORT_BUS( "FluidExportBus", Constants.CATEGORY_NETWORK_BUSES ),
 	STORAGE_BUS( "StorageBus", Constants.CATEGORY_NETWORK_BUSES ),
+	FLUID_STORAGE_BUS( "FluidStorageBus", Constants.CATEGORY_NETWORK_BUSES ),
 	PART_CONVERSION_MONITOR( "PartConversionMonitor", Constants.CATEGORY_NETWORK_BUSES ),
 	TOGGLE_BUS( "ToggleBus", Constants.CATEGORY_NETWORK_BUSES ),
 	PANELS( "Panels", Constants.CATEGORY_NETWORK_BUSES ),
