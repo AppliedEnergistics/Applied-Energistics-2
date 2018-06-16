@@ -238,7 +238,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 	@Override
 	public boolean onBlockActivated( final World w, final int x, final int y, final int z, final EntityPlayer player, final int side, final float hitX, final float hitY, final float hitZ )
 	{
-		if( player != null )
+		if( player != null && player.inventory.getCurrentItem() != null)
 		{
 		    final ItemStack heldItem = player.inventory.getCurrentItem();
 			if( Platform.isWrench( player, heldItem, x, y, z ) && player.isSneaking() )
@@ -258,6 +258,13 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements IAEFeature,
 				}
 
 				if( tile instanceof TileCableBus || tile instanceof TileSkyChest )
+				{
+					return false;
+				}
+
+				BlockEvent.BreakEvent event = new BlockEvent.BreakEvent( x, y, z, w, this, 0, player );
+				MinecraftForge.EVENT_BUS.post( event );
+				if( event.isCanceled() )
 				{
 					return false;
 				}
