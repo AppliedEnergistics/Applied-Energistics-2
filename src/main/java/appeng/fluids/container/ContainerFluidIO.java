@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.container.implementations;
+package appeng.fluids.container;
 
 
 import net.minecraft.entity.player.InventoryPlayer;
@@ -26,6 +26,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.implementations.IUpgradeableHost;
+import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.slot.OptionalSlotFakeFluid;
 import appeng.container.slot.SlotFakeFluid;
 

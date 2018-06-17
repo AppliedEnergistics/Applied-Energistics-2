@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.parts.reporting;
+package appeng.fluids.parts;
 
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -28,6 +28,7 @@ import appeng.core.AppEng;
 import appeng.core.sync.GuiBridge;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
+import appeng.parts.reporting.AbstractPartTerminal;
 
 
 /**
@@ -39,9 +40,9 @@ public class PartFluidTerminal extends AbstractPartTerminal
 {
 
 	@PartModels
-	public static final ResourceLocation MODEL_OFF = new ResourceLocation( AppEng.MOD_ID, "part/crafting_terminal_off" );
+	public static final ResourceLocation MODEL_OFF = new ResourceLocation( AppEng.MOD_ID, "part/fluid_terminal_off" );
 	@PartModels
-	public static final ResourceLocation MODEL_ON = new ResourceLocation( AppEng.MOD_ID, "part/crafting_terminal_on" );
+	public static final ResourceLocation MODEL_ON = new ResourceLocation( AppEng.MOD_ID, "part/fluid_terminal_on" );
 
 	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF );
 	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, MODEL_ON, MODEL_STATUS_ON );

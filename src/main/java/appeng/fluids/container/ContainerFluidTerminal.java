@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.container.implementations;
+package appeng.fluids.container;
 
 
 import java.io.IOException;
@@ -63,9 +63,9 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEFluidInventoryUpdate;
 import appeng.core.sync.packets.PacketTargetFluidStack;
 import appeng.core.sync.packets.PacketValueConfig;
+import appeng.fluids.parts.PartFluidTerminal;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.ChannelPowerSrc;
-import appeng.parts.reporting.PartFluidTerminal;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;

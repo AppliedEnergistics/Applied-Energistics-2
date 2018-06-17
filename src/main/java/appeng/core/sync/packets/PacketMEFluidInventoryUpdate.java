@@ -40,10 +40,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.client.gui.implementations.GuiFluidTerminal;
 import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.fluids.client.gui.GuiFluidTerminal;
 import appeng.util.item.AEFluidStack;
 
 

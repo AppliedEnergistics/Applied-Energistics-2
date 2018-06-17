@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.container.implementations;
+package appeng.fluids.container;
 
 
 import java.util.Iterator;
@@ -37,6 +37,7 @@ import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.guisync.GuiSync;
+import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.slot.OptionalSlotFakeFluid;
 import appeng.container.slot.SlotFakeFluid;
 import appeng.container.slot.SlotRestrictedInput;
