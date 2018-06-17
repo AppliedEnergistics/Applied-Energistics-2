@@ -85,7 +85,7 @@ public final class QuartzWorldGen implements IWorldGenerator
 			}
 
 			final WorldGenMinable whichOre = isCharged ? this.oreCharged : this.oreNormal;
-			if( whichOre != null && ShouldGenerate( isCharged, w ) )
+			if( whichOre != null && shouldGenerate( isCharged, w ) )
 			{
 				final int cx = chunkX * 16 + r.nextInt( 16 );
 				final int cy = r.nextInt( 40 * seaLevel / 64 ) + r.nextInt( 22 * seaLevel / 64 ) + 12 * seaLevel / 64;
@@ -95,7 +95,7 @@ public final class QuartzWorldGen implements IWorldGenerator
 		}
 	}
 
-	private static boolean ShouldGenerate( final boolean isCharged, final World w )
+	private static boolean shouldGenerate( final boolean isCharged, final World w )
 	{
 		return WorldGenRegistry.INSTANCE.isWorldGenEnabled( isCharged ? WorldGenType.CHARGED_CERTUS_QUARTZ : WorldGenType.CERTUS_QUARTZ, w );
 	}
