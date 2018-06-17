@@ -16,14 +16,15 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui.implementations;
+package appeng.fluids.client.gui;
 
 
 import net.minecraft.entity.player.InventoryPlayer;
 
 import appeng.api.implementations.IUpgradeableHost;
-import appeng.container.implementations.ContainerFluidIO;
+import appeng.client.gui.implementations.GuiUpgradeable;
 import appeng.core.localization.GuiText;
+import appeng.fluids.container.ContainerFluidIO;
 import appeng.fluids.parts.PartFluidImportBus;
 
 

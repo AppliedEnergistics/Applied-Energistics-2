@@ -289,7 +289,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		return this.fzMode;
 	}
 
-	void setFuzzyMode( final FuzzyMode fzMode )
+	protected void setFuzzyMode( final FuzzyMode fzMode )
 	{
 		this.fzMode = fzMode;
 	}
@@ -324,7 +324,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		this.schedulingMode = schedulingMode;
 	}
 
-	IUpgradeableHost getUpgradeable()
+	protected IUpgradeableHost getUpgradeable()
 	{
 		return this.upgradeable;
 	}

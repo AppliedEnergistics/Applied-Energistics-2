@@ -44,7 +44,6 @@ import appeng.container.implementations.ContainerCellWorkbench;
 import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.container.implementations.ContainerCraftingCPU;
 import appeng.container.implementations.ContainerCraftingStatus;
-import appeng.container.implementations.ContainerFluidStorageBus;
 import appeng.container.implementations.ContainerLevelEmitter;
 import appeng.container.implementations.ContainerNetworkTool;
 import appeng.container.implementations.ContainerPatternTerm;
@@ -54,6 +53,7 @@ import appeng.container.implementations.ContainerSecurityStation;
 import appeng.container.implementations.ContainerStorageBus;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.fluids.container.ContainerFluidStorageBus;
 import appeng.helpers.IMouseWheelItem;
 
 

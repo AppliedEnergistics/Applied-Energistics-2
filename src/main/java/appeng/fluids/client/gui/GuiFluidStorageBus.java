@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui.implementations;
+package appeng.fluids.client.gui;
 
 
 import java.io.IOException;
@@ -31,9 +31,9 @@ import appeng.api.config.ActionItems;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
+import appeng.client.gui.implementations.GuiUpgradeable;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiTabButton;
-import appeng.container.implementations.ContainerFluidStorageBus;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
@@ -41,6 +41,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;
+import appeng.fluids.container.ContainerFluidStorageBus;
 import appeng.fluids.parts.PartFluidStorageBus;
 
 
