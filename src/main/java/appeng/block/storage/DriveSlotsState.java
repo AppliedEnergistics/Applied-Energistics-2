@@ -75,4 +75,14 @@ public class DriveSlotsState
 		}
 		return new DriveSlotsState( slots );
 	}
+
+	public static DriveSlotsState createEmpty( int slotCount )
+	{
+		DriveSlotState[] slots = new DriveSlotState[slotCount];
+		for( int i = 0; i < slotCount; i++ )
+		{
+			slots[i] = DriveSlotState.EMPTY;
+		}
+		return new DriveSlotsState( slots );
+	}
 }

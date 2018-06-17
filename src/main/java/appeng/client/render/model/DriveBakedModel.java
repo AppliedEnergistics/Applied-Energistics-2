@@ -66,11 +66,6 @@ public class DriveBakedModel implements IBakedModel
 			IExtendedBlockState extState = (IExtendedBlockState) state;
 			DriveSlotsState slotsState = extState.getValue( BlockDrive.SLOTS_STATE );
 
-			if( slotsState == null )
-			{
-				return result;
-			}
-
 			for( int row = 0; row < 5; row++ )
 			{
 				for( int col = 0; col < 2; col++ )
