@@ -1302,6 +1302,7 @@ public class Platform
 		}
 
 		gs.postAlterationOfStoredItems( itemChannel, itemChanges, src );
+		gs.postAlterationOfStoredItems( fluidChannel, fluidChanges, src );
 	}
 
 	public static <T extends IAEStack<T>> void postListChanges( final IItemList<T> before, final IItemList<T> after, final IMEMonitorHandlerReceiver<T> meMonitorPassthrough, final IActionSource source )
