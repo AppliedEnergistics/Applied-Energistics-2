@@ -436,6 +436,8 @@ public abstract class AEBaseContainer extends Container
 			}
 			else
 			{
+				tis = tis.copy();
+
 				// target slots in the container...
 				for( final Object inventorySlot : this.inventorySlots )
 				{
@@ -496,7 +498,7 @@ public abstract class AEBaseContainer extends Container
 					{
 						if( d.getHasStack() )
 						{
-							final ItemStack t = d.getStack();
+							final ItemStack t = d.getStack().copy();
 
 							if( Platform.itemComparisons().isSameItem( tis, t ) ) // t.isItemEqual(tis))
 							{
@@ -515,6 +517,8 @@ public abstract class AEBaseContainer extends Container
 
 								t.setCount( t.getCount() + placeAble );
 								tis.setCount( tis.getCount() - placeAble );
+
+								d.putStack( t );
 
 								if( tis.getCount() <= 0 )
 								{
@@ -548,7 +552,7 @@ public abstract class AEBaseContainer extends Container
 					{
 						if( d.getHasStack() )
 						{
-							final ItemStack t = d.getStack();
+							final ItemStack t = d.getStack().copy();
 
 							if( Platform.itemComparisons().isSameItem( t, tis ) )
 							{
@@ -567,6 +571,8 @@ public abstract class AEBaseContainer extends Container
 
 								t.setCount( t.getCount() + placeAble );
 								tis.setCount( tis.getCount() - placeAble );
+
+								d.putStack( t );
 
 								if( tis.getCount() <= 0 )
 								{
@@ -626,7 +632,7 @@ public abstract class AEBaseContainer extends Container
 				}
 			}
 
-			clickSlot.putStack( !tis.isEmpty() ? tis.copy() : ItemStack.EMPTY );
+			clickSlot.putStack( !tis.isEmpty() ? tis : ItemStack.EMPTY );
 		}
 
 		this.updateSlot( clickSlot );
