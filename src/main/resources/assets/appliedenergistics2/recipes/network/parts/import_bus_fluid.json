@@ -1,7 +1,7 @@
 {
     "result": {
         "type": "appliedenergistics2:part",
-        "part": "part.import_bus_fluid"
+        "part": "part.fluid_import_bus"
     },
     "type": "appliedenergistics2:part_shaped",
     "pattern": [
