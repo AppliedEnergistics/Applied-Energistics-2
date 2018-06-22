@@ -28,7 +28,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.SlotItemHandler;
 
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.container.slot.ISlotFluid;
+import appeng.fluids.container.slots.IMEFluidSlot;
 
 
 /**
@@ -36,8 +36,9 @@ import appeng.container.slot.ISlotFluid;
  * @version rv6 - 22/05/2018
  * @since rv6 22/05/2018
  */
-public class SlotFluidME extends SlotItemHandler implements ISlotFluid
+public class SlotFluidME extends SlotItemHandler implements IMEFluidSlot
 {
+
 	private InternalFluidSlotME slot;
 
 	public SlotFluidME( InternalFluidSlotME slot )
@@ -46,7 +47,8 @@ public class SlotFluidME extends SlotItemHandler implements ISlotFluid
 		this.slot = slot;
 	}
 
-	public IAEFluidStack getAEStack()
+	@Override
+	public IAEFluidStack getAEFluidStack()
 	{
 		if( this.slot.hasPower() )
 		{
@@ -69,7 +71,7 @@ public class SlotFluidME extends SlotItemHandler implements ISlotFluid
 	}
 
 	@Override
-	public FluidStack getFluidInSlot()
+	public FluidStack getFluidStack()
 	{
 		return this.slot.getStack();
 	}
@@ -79,7 +81,7 @@ public class SlotFluidME extends SlotItemHandler implements ISlotFluid
 	{
 		if( this.slot.hasPower() )
 		{
-			return this.getAEStack() != null;
+			return this.getAEFluidStack() != null;
 		}
 		return false;
 	}

@@ -27,8 +27,8 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.container.implementations.ContainerUpgradeable;
-import appeng.container.slot.OptionalSlotFakeFluid;
-import appeng.container.slot.SlotFakeFluid;
+import appeng.fluids.container.slots.OptionalSlotFakeFluid;
+import appeng.fluids.container.slots.SlotFakeFluid;
 
 
 /**
