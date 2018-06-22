@@ -21,6 +21,8 @@ package appeng.fluids.parts;
 
 import javax.annotation.Nonnull;
 
+import com.google.common.base.Verify;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -106,38 +108,47 @@ public class PartFluidExportBus extends PartSharedFluidBus
 		}
 
 		final TileEntity te = this.getConnectedTE();
+
 		if( te != null && te.hasCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing() ) )
 		{
 			try
 			{
 				final IFluidHandler fh = te.getCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing() );
 				final IMEMonitor<IAEFluidStack> inv = this.getProxy().getStorage().getInventory( this.getChannel() );
+
 				if( fh != null )
 				{
 					for( int i = 0; i < this.getConfig().getSlots(); i++ )
 					{
-						IAEItemStack stack = this.getConfig().getAEStackInSlot( i );
+						final IAEItemStack stack = this.getConfig().getAEStackInSlot( i );
+
 						if( stack != null && stack.getDefinition() != null )
 						{
-							IFluidHandlerItem ifh = stack.getDefinition().getCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null );
-							if( ifh == null )
-							{
-								throw new NullPointerException( "IFluidHandlerItem is null" );
-							}
-							AEFluidStack toExtract = AEFluidStack.fromFluidStack( ifh.drain( Integer.MAX_VALUE, false ) );
+							final IFluidHandlerItem ifh = stack.getDefinition().getCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null );
+
+							Verify.verifyNotNull( ifh, "IFluidHandlerItem is null" );
+
+							final AEFluidStack toExtract = AEFluidStack.fromFluidStack( ifh.drain( Integer.MAX_VALUE, false ) );
+
 							toExtract.setStackSize( this.calculateAmountToSend() );
-							IAEFluidStack out = inv.extractItems( toExtract, Actionable.SIMULATE, this.source );
+
+							final IAEFluidStack out = inv.extractItems( toExtract, Actionable.SIMULATE, this.source );
+
 							if( out != null )
 							{
 								int wasInserted = fh.fill( out.getFluidStack(), true );
+
 								if( wasInserted > 0 )
 								{
+									toExtract.setStackSize( wasInserted );
 									inv.extractItems( toExtract, Actionable.MODULATE, this.source );
+
 									return TickRateModulation.FASTER;
 								}
 							}
 						}
 					}
+
 					return TickRateModulation.SLOWER;
 				}
 			}
