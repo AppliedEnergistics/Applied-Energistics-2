@@ -21,6 +21,8 @@ package appeng.fluids.parts;
 
 import javax.annotation.Nonnull;
 
+import com.google.common.base.Verify;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -100,28 +102,36 @@ public class PartFluidImportBus extends PartSharedFluidBus
 		}
 
 		final TileEntity te = this.getConnectedTE();
+
 		if( te != null && te.hasCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing() ) )
 		{
 			try
 			{
 				final IFluidHandler fh = te.getCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing() );
 				final IMEMonitor<IAEFluidStack> inv = this.getProxy().getStorage().getInventory( this.getChannel() );
+
 				if( fh != null )
 				{
-					FluidStack fluidStack = fh.drain( this.calculateAmountToSend(), false );
+					final FluidStack fluidStack = fh.drain( this.calculateAmountToSend(), false );
+
 					if( this.filterEnabled() && !this.isInFilter( fluidStack ) )
 					{
 						return TickRateModulation.SLOWER;
 					}
-					AEFluidStack aeFluidStack = AEFluidStack.fromFluidStack( fluidStack );
+
+					final AEFluidStack aeFluidStack = AEFluidStack.fromFluidStack( fluidStack );
+
 					if( aeFluidStack != null )
 					{
-						IAEFluidStack notInserted = inv.injectItems( aeFluidStack, Actionable.MODULATE, this.source );
+						final IAEFluidStack notInserted = inv.injectItems( aeFluidStack, Actionable.MODULATE, this.source );
+
 						if( notInserted != null && notInserted.getStackSize() > 0 )
 						{
 							aeFluidStack.decStackSize( notInserted.getStackSize() );
 						}
+
 						fh.drain( aeFluidStack.getFluidStack(), true );
+
 						return TickRateModulation.FASTER;
 					}
 				}
@@ -145,15 +155,16 @@ public class PartFluidImportBus extends PartSharedFluidBus
 	{
 		for( int i = 0; i < this.getConfig().getSlots(); i++ )
 		{
-			IAEItemStack stack = this.getConfig().getAEStackInSlot( i );
+			final IAEItemStack stack = this.getConfig().getAEStackInSlot( i );
+
 			if( stack != null && stack.getDefinition() != null )
 			{
-				IFluidHandlerItem fh = stack.getDefinition().getCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null );
-				if( fh == null )
-				{
-					throw new NullPointerException( "IFluidHandlerItem is null" );
-				}
-				FluidStack filtered = fh.drain( Integer.MAX_VALUE, false );
+				final IFluidHandlerItem fh = stack.getDefinition().getCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null );
+
+				Verify.verifyNotNull( fh, "IFluidHandlerItem is null" );
+
+				final FluidStack filtered = fh.drain( Integer.MAX_VALUE, false );
+
 				if( filtered != null && filtered.isFluidEqual( fluid ) )
 				{
 					return true;
@@ -167,7 +178,8 @@ public class PartFluidImportBus extends PartSharedFluidBus
 	{
 		for( int i = 0; i < this.getConfig().getSlots(); i++ )
 		{
-			IAEItemStack stack = this.getConfig().getAEStackInSlot( i );
+			final IAEItemStack stack = this.getConfig().getAEStackInSlot( i );
+
 			if( stack != null )
 			{
 				return true;
