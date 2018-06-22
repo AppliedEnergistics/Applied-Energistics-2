@@ -103,11 +103,11 @@ public class PartFluidImportBus extends PartSharedFluidBus
 
 		final TileEntity te = this.getConnectedTE();
 
-		if( te != null && te.hasCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing() ) )
+		if( te != null && te.hasCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing().getOpposite() ) )
 		{
 			try
 			{
-				final IFluidHandler fh = te.getCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing() );
+				final IFluidHandler fh = te.getCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing().getOpposite() );
 				final IMEMonitor<IAEFluidStack> inv = this.getProxy().getStorage().getInventory( this.getChannel() );
 
 				if( fh != null )
@@ -134,6 +134,8 @@ public class PartFluidImportBus extends PartSharedFluidBus
 
 						return TickRateModulation.FASTER;
 					}
+
+					return TickRateModulation.IDLE;
 				}
 			}
 			catch( GridAccessException e )
