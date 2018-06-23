@@ -69,6 +69,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	private final AEFluidTank[] tanks;
 	private final IFluidHandler storage;
 	private final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, NUMBER_OF_TANKS );
+	private final IAEFluidStack[] configStacks;
 	private final IAEFluidStack[] requireWork;
 	private int isWorking = -1;
 
@@ -93,10 +94,12 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 
 		this.tanks = new AEFluidTank[NUMBER_OF_TANKS];
 		this.requireWork = new IAEFluidStack[NUMBER_OF_TANKS];
+		this.configStacks = new IAEFluidStack[NUMBER_OF_TANKS];
 		for( int i = 0; i < NUMBER_OF_TANKS; ++i )
 		{
 			this.tanks[i] = new AEFluidTank( this, TANK_CAPACITY );
 			this.requireWork[i] = null;
+			this.configStacks[i] = null;
 		}
 		this.storage = new FluidHandlerConcatenate( this.tanks );
 	}
@@ -240,6 +243,20 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 
 		for( int x = 0; x < NUMBER_OF_TANKS; x++ )
 		{
+			this.configStacks[x] = null;
+			ItemStack is = this.config.getStackInSlot( x );
+			if( !is.isEmpty() )
+			{
+				IFluidHandlerItem fh = is.getCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null );
+				if( fh != null )
+				{
+					FluidStack fs = fh.drain( Fluid.BUCKET_VOLUME, false );
+					if( fs != null && fs.amount > 0 )
+					{
+						this.configStacks[x] = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createStack( fs );
+					}
+				}
+			}
 			this.updatePlan( x );
 		}
 
@@ -307,28 +324,28 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 
 	private void updatePlan( final int slot )
 	{
-		final FluidStack req = this.getConfiguredFluid( slot );
+		final IAEFluidStack req = this.configStacks[slot];
 		final FluidStack stored = this.tanks[slot].drain( TANK_CAPACITY, false );
 
-		if( ( req == null || req.amount == 0 ) && ( stored != null && stored.amount > 0 ) )
+		if( req == null && ( stored != null && stored.amount > 0 ) )
 		{
 			final IAEFluidStack work = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createStack( stored );
 			this.requireWork[slot] = work.setStackSize( -work.getStackSize() );
 			return;
 		}
-		else if( req != null && req.amount > 0 )
+		else if( req != null )
 		{
 			if( stored == null || stored.amount == 0 ) // need to add stuff!
 			{
-				this.requireWork[slot] = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createStack( req );
+				this.requireWork[slot] = req.copy();
 				return;
 			}
 			else if( req.getFluid().equals( stored.getFluid() ) ) // same type ( qty different? )!
 			{
-				if( req.amount != stored.amount )
+				if( stored.amount < TANK_CAPACITY )
 				{
-					this.requireWork[slot] = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createStack( req );
-					this.requireWork[slot].setStackSize( req.amount - stored.amount );
+					this.requireWork[slot] = req.copy();
+					this.requireWork[slot].setStackSize( TANK_CAPACITY - stored.amount );
 					return;
 				}
 			}
@@ -342,21 +359,6 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		}
 
 		this.requireWork[slot] = null;
-	}
-
-	private FluidStack getConfiguredFluid( int slot )
-	{
-		ItemStack is = this.config.getStackInSlot( slot );
-		if( !is.isEmpty() )
-		{
-			IFluidHandlerItem fh = is.getCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null );
-			if( fh == null )
-			{
-				throw new NullPointerException( "Item did not give IFluidHandlerItem: " + is.getDisplayName() );
-			}
-			return fh.drain( Fluid.BUCKET_VOLUME, false );
-		}
-		return null;
 	}
 
 	private boolean usePlan( final int slot )
