@@ -1,0 +1,11 @@
+{
+    "variants": {
+        "omnidirectional=true": {
+            "model": "appliedenergistics2:interface"
+        },
+        "omnidirectional=false": {
+            "model": "appliedenergistics2:interface_oriented",
+            "x": 90
+        }
+    }
+}

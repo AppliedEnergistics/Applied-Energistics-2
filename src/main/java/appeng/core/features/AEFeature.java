@@ -75,6 +75,7 @@ public enum AEFeature
 	CHANNELS( "Channels", Constants.CATEGORY_NETWORK_FEATURES ),
 
 	INTERFACE( "Interface", Constants.CATEGORY_NETWORK_BUSES ),
+	FLUID_INTERFACE( "FluidInterface", Constants.CATEGORY_NETWORK_BUSES ),
 	LEVEL_EMITTER( "LevelEmitter", Constants.CATEGORY_NETWORK_BUSES ),
 	FLUID_TERMINAL( "FluidTerminal", Constants.CATEGORY_NETWORK_BUSES ),
 	CRAFTING_TERMINAL( "CraftingTerminal", Constants.CATEGORY_NETWORK_BUSES ),

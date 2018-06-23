@@ -87,8 +87,10 @@ import appeng.container.implementations.ContainerVibrationChamber;
 import appeng.container.implementations.ContainerWireless;
 import appeng.container.implementations.ContainerWirelessTerm;
 import appeng.fluids.container.ContainerFluidIO;
+import appeng.fluids.container.ContainerFluidInterface;
 import appeng.fluids.container.ContainerFluidStorageBus;
 import appeng.fluids.container.ContainerFluidTerminal;
+import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.fluids.parts.PartFluidStorageBus;
 import appeng.fluids.parts.PartFluidTerminal;
 import appeng.fluids.parts.PartSharedFluidBus;
@@ -155,6 +157,8 @@ public enum GuiBridge implements IGuiHandler
 	GUI_CONDENSER( ContainerCondenser.class, TileCondenser.class, GuiHostType.WORLD, null ),
 
 	GUI_INTERFACE( ContainerInterface.class, IInterfaceHost.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
+
+	GUI_FLUID_INTERFACE( ContainerFluidInterface.class, IFluidInterfaceHost.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
 	GUI_BUS( ContainerUpgradeable.class, IUpgradeableHost.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
