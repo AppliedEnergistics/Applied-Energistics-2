@@ -36,8 +36,9 @@ import appeng.util.ReadableNumberConverter;
 /**
  * @author AlgorithmX2
  * @author thatsIch
- * @version rv2
- * @since rv0
+ * @author yueh
+ * @version rv6
+ * @since rv6
  */
 public class FluidStackSizeRenderer
 {
