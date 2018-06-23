@@ -42,6 +42,8 @@ import appeng.util.ReadableNumberConverter;
 public class FluidStackSizeRenderer
 {
 
+	private static final String[] NUMBER_FORMATS = new String[] { "#.000", "#.00", "#.0", "#" };
+
 	private static final ISlimReadableNumberConverter SLIM_CONVERTER = ReadableNumberConverter.INSTANCE;
 	private static final IWideReadableNumberConverter WIDE_CONVERTER = ReadableNumberConverter.INSTANCE;
 
@@ -80,27 +82,52 @@ public class FluidStackSizeRenderer
 
 	private String getToBeRenderedStackSize( final long originalSize )
 	{
-		if( originalSize < 1000 * 1000 )
+		// Handle any value below 100 (large font) or 1000 (small font) Buckets with a custom formatter,
+		// otherwise pass it to the normal number converter
+		if( originalSize < 1000 * 100 && AEConfig.instance().useTerminalUseLargeFont() )
 		{
-			final DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-			symbols.setDecimalSeparator( '.' );
-			final DecimalFormat format = new DecimalFormat( ".#;0.#" );
-			format.setDecimalFormatSymbols( symbols );
-			format.setRoundingMode( RoundingMode.DOWN );
+			return this.getSlimRenderedStacksize( originalSize );
+		}
+		else if( originalSize < 1000 * 1000 && !AEConfig.instance().useTerminalUseLargeFont() )
+		{
+			return this.getWideRenderedStacksize( originalSize );
+		}
 
-			return format.format( originalSize / 1000f );
+		if( AEConfig.instance().useTerminalUseLargeFont() )
+		{
+			return SLIM_CONVERTER.toSlimReadableForm( originalSize / 1000 );
 		}
 		else
 		{
-			if( AEConfig.instance().useTerminalUseLargeFont() )
-			{
-				return SLIM_CONVERTER.toSlimReadableForm( originalSize / 1000 );
-			}
-			else
-			{
-				return WIDE_CONVERTER.toWideReadableForm( originalSize / 1000 );
-			}
+			return WIDE_CONVERTER.toWideReadableForm( originalSize / 1000 );
 		}
+	}
+
+	private String getSlimRenderedStacksize( final long originalSize )
+	{
+		final int log = 1 + (int) Math.floor( Math.log10( originalSize ) ) / 2;
+
+		return this.getRenderedFluidStackSize( originalSize, log );
+	}
+
+	private String getWideRenderedStacksize( final long originalSize )
+	{
+		final int log = (int) Math.floor( Math.log10( originalSize ) ) / 2;
+
+		return this.getRenderedFluidStackSize( originalSize, log );
+	}
+
+	private String getRenderedFluidStackSize( final long originalSize, final int log )
+	{
+		final int index = Math.max( 0, Math.min( 3, log ) );
+
+		final DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+		symbols.setDecimalSeparator( '.' );
+		final DecimalFormat format = new DecimalFormat( NUMBER_FORMATS[index] );
+		format.setDecimalFormatSymbols( symbols );
+		format.setRoundingMode( RoundingMode.DOWN );
+
+		return format.format( originalSize / 1000f );
 	}
 
 }
