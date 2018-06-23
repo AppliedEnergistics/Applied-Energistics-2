@@ -2,12 +2,9 @@
 package appeng.fluids.tile;
 
 
-import java.io.IOException;
 import java.util.EnumSet;
 
 import javax.annotation.Nullable;
-
-import io.netty.buffer.ByteBuf;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -26,16 +23,12 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IFluidInterfaceHost;
-import appeng.helpers.ICustomRotatable;
 import appeng.tile.grid.AENetworkTile;
-import appeng.util.Platform;
 
 
-public class TileFluidInterface extends AENetworkTile implements IGridTickable, IFluidInterfaceHost, ICustomRotatable
+public class TileFluidInterface extends AENetworkTile implements IGridTickable, IFluidInterfaceHost
 {
 	private final DualityFluidInterface duality = new DualityFluidInterface( this.getProxy(), this );
-	// Indicates that this interface has no specific direction set
-	private boolean omniDirectional = true;
 
 	@MENetworkEventSubscribe
 	public void stateChange( final MENetworkChannelsChanged c )
@@ -86,17 +79,9 @@ public class TileFluidInterface extends AENetworkTile implements IGridTickable, 
 	}
 
 	@Override
-	public void onReady()
-	{
-		this.configureNodeSides();
-		super.onReady();
-	}
-
-	@Override
 	public NBTTagCompound writeToNBT( final NBTTagCompound data )
 	{
 		super.writeToNBT( data );
-		data.setBoolean( "omniDirectional", this.omniDirectional );
 		this.duality.writeToNBT( data );
 		return data;
 	}
@@ -105,25 +90,7 @@ public class TileFluidInterface extends AENetworkTile implements IGridTickable, 
 	public void readFromNBT( final NBTTagCompound data )
 	{
 		super.readFromNBT( data );
-		this.omniDirectional = data.getBoolean( "omniDirectional" );
-
 		this.duality.readFromNBT( data );
-	}
-
-	@Override
-	protected boolean readFromStream( final ByteBuf data ) throws IOException
-	{
-		final boolean c = super.readFromStream( data );
-		boolean oldOmniDirectional = this.omniDirectional;
-		this.omniDirectional = data.readBoolean();
-		return oldOmniDirectional != this.omniDirectional || c;
-	}
-
-	@Override
-	protected void writeToStream( final ByteBuf data ) throws IOException
-	{
-		super.writeToStream( data );
-		data.writeBoolean( this.omniDirectional );
 	}
 
 	@Override
@@ -141,11 +108,7 @@ public class TileFluidInterface extends AENetworkTile implements IGridTickable, 
 	@Override
 	public EnumSet<EnumFacing> getTargets()
 	{
-		if( this.omniDirectional )
-		{
-			return EnumSet.allOf( EnumFacing.class );
-		}
-		return EnumSet.of( this.getForward() );
+		return EnumSet.allOf( EnumFacing.class );
 	}
 
 	@Override
@@ -164,63 +127,4 @@ public class TileFluidInterface extends AENetworkTile implements IGridTickable, 
 		}
 		return super.getCapability( capability, facing );
 	}
-
-	public void setSide( final EnumFacing facing )
-	{
-		if( Platform.isClient() )
-		{
-			return;
-		}
-
-		EnumFacing newForward = facing;
-
-		if( !this.omniDirectional && this.getForward() == facing.getOpposite() )
-		{
-			newForward = facing;
-		}
-		else if( !this.omniDirectional && ( this.getForward() == facing || this.getForward() == facing.getOpposite() ) )
-		{
-			this.omniDirectional = true;
-		}
-		else if( this.omniDirectional )
-		{
-			newForward = facing.getOpposite();
-			this.omniDirectional = false;
-		}
-		else
-		{
-			newForward = Platform.rotateAround( this.getForward(), facing );
-		}
-
-		if( this.omniDirectional )
-		{
-			this.setOrientation( EnumFacing.NORTH, EnumFacing.UP );
-		}
-		else
-		{
-			EnumFacing newUp = EnumFacing.UP;
-			if( newForward == EnumFacing.UP || newForward == EnumFacing.DOWN )
-			{
-				newUp = EnumFacing.NORTH;
-			}
-			this.setOrientation( newForward, newUp );
-		}
-
-		this.configureNodeSides();
-		this.markForUpdate();
-		this.markDirty();
-	}
-
-	private void configureNodeSides()
-	{
-		if( this.omniDirectional )
-		{
-			this.getProxy().setValidSides( EnumSet.allOf( EnumFacing.class ) );
-		}
-		else
-		{
-			this.getProxy().setValidSides( EnumSet.complementOf( EnumSet.of( this.getForward() ) ) );
-		}
-	}
-
 }

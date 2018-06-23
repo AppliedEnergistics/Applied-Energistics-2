@@ -57,7 +57,6 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.helpers.DualityInterface;
-import appeng.helpers.ICustomRotatable;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.tile.grid.AENetworkInvTile;
@@ -66,7 +65,7 @@ import appeng.util.inv.IInventoryDestination;
 import appeng.util.inv.InvOperation;
 
 
-public class TileInterface extends AENetworkInvTile implements IGridTickable, IInventoryDestination, IInterfaceHost, IPriorityHost, ICustomRotatable
+public class TileInterface extends AENetworkInvTile implements IGridTickable, IInventoryDestination, IInterfaceHost, IPriorityHost
 {
 
 	private final DualityInterface duality = new DualityInterface( this.getProxy(), this );
