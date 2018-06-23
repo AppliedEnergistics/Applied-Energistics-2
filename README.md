@@ -27,17 +27,18 @@ A Mod about Matter, Energy and using them to conquer the world..
 * [Website](http://ae-mod.info/)
 * [IRC #appliedenergistics on esper.net](http://webchat.esper.net/?channels=appliedenergistics&prompt=1)
 * [GitHub](https://github.com/AppliedEnergistics/Applied-Energistics-2)
+* [Discord](https://discord.gg/DJ9hVAN)
 
 ## License
 
 * Applied Energistics 2 API
-  - (c) 2013 - 2017 AlgorithmX2 et al
+  - (c) 2013 - 2018 AlgorithmX2 et al
   - [![License](https://img.shields.io/badge/License-MIT-red.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 * Applied Energistics 2
-  - (c) 2013 - 2017 AlgorithmX2 et al
+  - (c) 2013 - 2018 AlgorithmX2 et al
   - [![License](https://img.shields.io/badge/License-LGPLv3-blue.svg?style=flat-square)](https://raw.githubusercontent.com/AppliedEnergistics/Applied-Energistics-2/rv2/LICENSE)
 * Textures and Models
-  - (c) 2013 - 2017 AlgorithmX2 et al
+  - (c) 2013 - 2018 AlgorithmX2 et al
   - [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%203.0-yellow.svg?style=flat-square)](https://creativecommons.org/licenses/by-nc-sa/3.0/)
 * Text and Translations
   - [![License](https://img.shields.io/badge/License-No%20Restriction-green.svg?style=flat-square)](https://creativecommons.org/publicdomain/zero/1.0/)
@@ -146,14 +147,14 @@ Universal builds obtained [Here](http://ae2.ae-mod.info/Downloads/) should work 
 When compiling against the AE2 API you can use gradle dependencies, just add
 
     dependencies {
-        compile "appeng:appliedenergistics2:rv_-_____-__:dev"
+        compile "appeng:appliedenergistics2:rv_-_____-__:api"
     }
 
 or add the compile line to your existing dependencies task to your build.gradle
 
 Where the __ are filled in with the correct version criteria; AE2 is available from the default forge maven so no additional repositories are necessary.
 
-An example string would be `appeng:appliedenergistics2:rv2-alpha-30:dev`
+An example string would be `appeng:appliedenergistics2:rv5-stable-1:api` for the API only or `appeng:appliedenergistics2:rv5-stable-1`  for the whole mod.
 
 ## Applied Energistics 2 CraftTweaker
 

@@ -83,7 +83,7 @@ dependencies {
     // compile against provided APIs
     compileOnly "mezz.jei:jei_${minecraft_version}:${jei_version}:api"
     compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}"
-    compileOnly "net.darkhax.tesla:Tesla-1.12:${tesla_version}"
+    compileOnly "net.darkhax.tesla:Tesla-1.12.2:${tesla_version}"
     compileOnly "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:${top_version}:api"
     compileOnly "cofh:CoFHCore:${cofhcore_version}:deobf"
