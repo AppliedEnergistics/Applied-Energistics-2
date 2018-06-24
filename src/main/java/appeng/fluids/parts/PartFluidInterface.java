@@ -19,7 +19,10 @@
 package appeng.fluids.parts;
 
 
+import java.io.IOException;
 import java.util.EnumSet;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -120,6 +123,20 @@ public class PartFluidInterface extends PartBasicState implements IGridTickable,
 	{
 		super.writeToNBT( data );
 		this.duality.writeToNBT( data );
+	}
+
+	@Override
+	public void writeToStream( final ByteBuf data ) throws IOException
+	{
+		super.writeToStream( data );
+		this.duality.writeToStream( data );
+	}
+
+	@Override
+	public boolean readFromStream( final ByteBuf data ) throws IOException
+	{
+		boolean c = super.readFromStream( data );
+		return this.duality.readFromStream( data ) || c;
 	}
 
 	@Override

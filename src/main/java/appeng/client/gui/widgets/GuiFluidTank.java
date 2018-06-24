@@ -79,7 +79,7 @@ public class GuiFluidTank extends GuiButton implements ITooltip
 					}
 				}
 			}
-			
+
 			GlStateManager.enableLighting();
 			GlStateManager.enableBlend();
 		}

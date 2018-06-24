@@ -19,8 +19,11 @@
 package appeng.fluids.helper;
 
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,6 +37,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerConcatenate;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -120,7 +124,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 			this.tanks[i] = new AEFluidTank( this, TANK_CAPACITY );
 			this.requireWork[i] = null;
 			this.configStacks[i] = null;
-			this.tankChanged[i] = true;
+			this.tankChanged[i] = false;
 		}
 		this.storage = new FluidHandlerConcatenate( this.tanks );
 	}
@@ -201,11 +205,6 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 
 	public void markDirty()
 	{
-		// rescan inventory
-		for( IFluidHandler ih : this.tanks )
-		{
-			onFluidInventoryChanged( ih );
-		}
 	}
 
 	public void gridChanged()
@@ -463,7 +462,9 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	public void onFluidInventoryChanged( final IFluidHandler inventory )
 	{
 		final int slot = getTankSlot( inventory );
+
 		this.tankChanged[slot] = true;
+		this.saveChanges();
 
 		if( this.isWorking == slot )
 		{
@@ -536,6 +537,17 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		this.readConfig();
 	}
 
+	public boolean readFromStream( final ByteBuf data ) throws IOException
+	{
+		readTankInfo( data );
+		return false; // no block update needed
+	}
+
+	public void writeToStream( final ByteBuf data ) throws IOException
+	{
+		writeTankInfo( data );
+	}
+
 	public IItemHandler getConfig()
 	{
 		return this.config;
@@ -544,6 +556,22 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	public AEFluidTank getTank( final int i )
 	{
 		return this.tanks[i];
+	}
+
+	private void writeTankInfo( final ByteBuf data )
+	{
+		for( int i = 0; i < NUMBER_OF_TANKS; ++i )
+		{
+			ByteBufUtils.writeTag( data, this.tanks[i].writeToNBT( new NBTTagCompound() ) );
+		}
+	}
+
+	private void readTankInfo( final ByteBuf data )
+	{
+		for( int i = 0; i < NUMBER_OF_TANKS; ++i )
+		{
+			this.tanks[i].readFromNBT( ByteBufUtils.readTag( data ) );
+		}
 	}
 
 	public boolean writeTankInfo( final Map<Integer, NBTTagCompound> tagMap )
@@ -564,7 +592,6 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	public boolean readTankInfo( final Map<Integer, NBTTagCompound> tagMap )
 	{
 		boolean changed = false;
-
 		for( int i = 0; i < NUMBER_OF_TANKS; ++i )
 		{
 			if( tagMap.containsKey( i ) )
