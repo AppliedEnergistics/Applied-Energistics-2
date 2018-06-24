@@ -751,6 +751,7 @@ public abstract class AEBaseGui extends GuiContainer
 			if( fs != null && this.isPowered() )
 			{
 				GlStateManager.disableLighting();
+				GlStateManager.disableBlend();
 				Fluid fluid = fs.getFluid();
 				Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.LOCATION_BLOCKS_TEXTURE );
 				TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite( fluid.getStill().toString() );
@@ -764,6 +765,7 @@ public abstract class AEBaseGui extends GuiContainer
 
 				this.drawTexturedModalRect( s.xPos, s.yPos, sprite, 16, 16 );
 				GlStateManager.enableLighting();
+				GlStateManager.enableBlend();
 
 				if( s instanceof IMEFluidSlot )
 				{
