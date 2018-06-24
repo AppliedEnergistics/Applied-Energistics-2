@@ -39,8 +39,6 @@ import appeng.core.sync.network.NetworkHandler;
 
 public abstract class AppEngPacket implements Packet
 {
-
-	private AppEngPacketHandlerBase.PacketTypes id;
 	private PacketBuffer p;
 	private PacketCallState caller;
 

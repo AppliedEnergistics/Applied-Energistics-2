@@ -2,6 +2,7 @@
 package appeng.fluids.helper;
 
 
+import java.util.Map;
 import java.util.Optional;
 
 import net.minecraft.item.ItemStack;
@@ -71,6 +72,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	private final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, NUMBER_OF_TANKS );
 	private final IAEFluidStack[] configStacks;
 	private final IAEFluidStack[] requireWork;
+	private final boolean[] tankChanged;
 	private int isWorking = -1;
 
 	private final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<>( new NullInventory<IAEItemStack>(), AEApi.instance()
@@ -95,11 +97,13 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		this.tanks = new AEFluidTank[NUMBER_OF_TANKS];
 		this.requireWork = new IAEFluidStack[NUMBER_OF_TANKS];
 		this.configStacks = new IAEFluidStack[NUMBER_OF_TANKS];
+		this.tankChanged = new boolean[NUMBER_OF_TANKS];
 		for( int i = 0; i < NUMBER_OF_TANKS; ++i )
 		{
 			this.tanks[i] = new AEFluidTank( this, TANK_CAPACITY );
 			this.requireWork[i] = null;
 			this.configStacks[i] = null;
+			this.tankChanged[i] = true;
 		}
 		this.storage = new FluidHandlerConcatenate( this.tanks );
 	}
@@ -409,7 +413,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 				else
 				{
 					IAEFluidStack notStored = Platform.poweredInsert( src, dest, toStore, this.interfaceRequestSource );
-					toStore.setStackSize( toStore.getStackSize() - notStored.getStackSize() );
+					toStore.setStackSize( toStore.getStackSize() - (notStored == null ? 0 : notStored.getStackSize()));
 
 					if( toStore.getStackSize() > 0 )
 					{
@@ -442,11 +446,13 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	public void onFluidInventoryChanged( final IFluidHandler inventory )
 	{
 		final int slot = getTankSlot( inventory );
+		this.tankChanged[slot] = true;
+
 		if( this.isWorking == slot )
 		{
 			return;
 		}
-
+		
 		final boolean had = this.hasWorkToDo();
 
 		this.updatePlan( slot );
@@ -516,6 +522,41 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	public IItemHandler getConfig()
 	{
 		return this.config;
+	}
+	
+	public AEFluidTank getTank( final int i )
+	{
+		return this.tanks[i];
+	}
+	
+	public boolean writeTankInfo(final Map<Integer, NBTTagCompound> tagMap)
+	{
+		boolean empty = true;
+		for(int i = 0; i < NUMBER_OF_TANKS; ++i)
+		{
+			if (this.tankChanged[i])
+			{
+				tagMap.put( i, this.tanks[i].writeToNBT( new NBTTagCompound() ) );			
+				this.tankChanged[i] = false;
+				empty = false;
+			}			
+		}
+		return !empty;
+	}
+	
+	public boolean readTankInfo(final Map<Integer, NBTTagCompound> tagMap)
+	{
+		boolean changed = false;
+		
+		for(int i = 0; i < NUMBER_OF_TANKS; ++i)
+		{
+			if (tagMap.containsKey( i ))
+			{
+				this.tanks[i].readFromNBT( tagMap.get( i ) );			
+				changed = true;
+			}			
+		}				
+		return changed;
 	}
 
 	private class InterfaceRequestSource extends MachineSource
