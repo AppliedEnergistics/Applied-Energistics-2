@@ -66,7 +66,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	private final IActionSource mySource;
 	private final IActionSource interfaceRequestSource;
 	private boolean hasConfig = false;
-	private final IStorageMonitorableAccessor accessor = ( src ) -> getMonitorable( src );
+	private final IStorageMonitorableAccessor accessor = this::getMonitorable;
 	private final AEFluidTank[] tanks;
 	private final IFluidHandler storage;
 	private final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, NUMBER_OF_TANKS );
@@ -413,7 +413,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 				else
 				{
 					IAEFluidStack notStored = Platform.poweredInsert( src, dest, toStore, this.interfaceRequestSource );
-					toStore.setStackSize( toStore.getStackSize() - (notStored == null ? 0 : notStored.getStackSize()));
+					toStore.setStackSize( toStore.getStackSize() - ( notStored == null ? 0 : notStored.getStackSize() ) );
 
 					if( toStore.getStackSize() > 0 )
 					{
@@ -452,7 +452,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		{
 			return;
 		}
-		
+
 		final boolean had = this.hasWorkToDo();
 
 		this.updatePlan( slot );
@@ -523,39 +523,39 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	{
 		return this.config;
 	}
-	
+
 	public AEFluidTank getTank( final int i )
 	{
 		return this.tanks[i];
 	}
-	
-	public boolean writeTankInfo(final Map<Integer, NBTTagCompound> tagMap)
+
+	public boolean writeTankInfo( final Map<Integer, NBTTagCompound> tagMap )
 	{
 		boolean empty = true;
-		for(int i = 0; i < NUMBER_OF_TANKS; ++i)
+		for( int i = 0; i < NUMBER_OF_TANKS; ++i )
 		{
-			if (this.tankChanged[i])
+			if( this.tankChanged[i] )
 			{
-				tagMap.put( i, this.tanks[i].writeToNBT( new NBTTagCompound() ) );			
+				tagMap.put( i, this.tanks[i].writeToNBT( new NBTTagCompound() ) );
 				this.tankChanged[i] = false;
 				empty = false;
-			}			
+			}
 		}
 		return !empty;
 	}
-	
-	public boolean readTankInfo(final Map<Integer, NBTTagCompound> tagMap)
+
+	public boolean readTankInfo( final Map<Integer, NBTTagCompound> tagMap )
 	{
 		boolean changed = false;
-		
-		for(int i = 0; i < NUMBER_OF_TANKS; ++i)
+
+		for( int i = 0; i < NUMBER_OF_TANKS; ++i )
 		{
-			if (tagMap.containsKey( i ))
+			if( tagMap.containsKey( i ) )
 			{
-				this.tanks[i].readFromNBT( tagMap.get( i ) );			
+				this.tanks[i].readFromNBT( tagMap.get( i ) );
 				changed = true;
-			}			
-		}				
+			}
+		}
 		return changed;
 	}
 
@@ -563,7 +563,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	{
 		private final InterfaceRequestContext context;
 
-		public InterfaceRequestSource( IActionHost v )
+		InterfaceRequestSource( IActionHost v )
 		{
 			super( v );
 			this.context = new InterfaceRequestContext();
@@ -588,7 +588,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	private class InterfaceInventory extends MEMonitorIFluidHandler
 	{
 
-		public InterfaceInventory( final DualityFluidInterface tileInterface )
+		InterfaceInventory( final DualityFluidInterface tileInterface )
 		{
 			super( tileInterface.storage );
 			this.setActionSource( new MachineSource( tileInterface.iHost ) );

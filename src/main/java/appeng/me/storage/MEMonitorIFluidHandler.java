@@ -58,7 +58,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 	@Override
 	public IAEFluidStack injectItems( final IAEFluidStack input, final Actionable type, final IActionSource src )
 	{
-		final int filled = this.handler.fill( input.getFluidStack(), type == type.MODULATE );
+		final int filled = this.handler.fill( input.getFluidStack(), type == Actionable.MODULATE );
 
 		if( filled == 0 )
 		{
@@ -148,10 +148,15 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 				final int newSize = newIS == null ? 0 : newIS.amount;
 				final int diff = newSize - ( oldIS == null ? 0 : oldIS.amount );
 
-				final IAEFluidStack stack = ( old == null || old.aeStack == null ? AEApi.instance()
-						.storage()
-						.getStorageChannel( IFluidStorageChannel.class )
-						.createStack( newIS ) : old.aeStack.copy() );
+				IAEFluidStack stack = null;
+
+				if( newIS != null )
+				{
+					stack = ( old == null || old.aeStack == null ? AEApi.instance()
+							.storage()
+							.getStorageChannel( IFluidStorageChannel.class )
+							.createStack( newIS ) : old.aeStack.copy() );
+				}
 				if( stack != null )
 				{
 					stack.setStackSize( newSize );
@@ -310,7 +315,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 		private final FluidStack fluidStack;
 		private final IAEFluidStack aeStack;
 
-		public CachedFluidStack( final FluidStack is )
+		CachedFluidStack( final FluidStack is )
 		{
 			if( is == null )
 			{

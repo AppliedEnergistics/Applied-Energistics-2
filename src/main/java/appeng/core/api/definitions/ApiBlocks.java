@@ -901,6 +901,12 @@ public final class ApiBlocks implements IBlocks
 	}
 
 	@Override
+	public ITileDefinition fluidIface()
+	{
+		return this.fluidIface;
+	}
+
+	@Override
 	public ITileDefinition cellWorkbench()
 	{
 		return this.cellWorkbench;

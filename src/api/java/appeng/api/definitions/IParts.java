@@ -64,6 +64,8 @@ public interface IParts
 
 	IItemDefinition iface();
 
+	IItemDefinition fluidIface();
+
 	IItemDefinition levelEmitter();
 
 	IItemDefinition annihilationPlane();

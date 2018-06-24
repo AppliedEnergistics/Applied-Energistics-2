@@ -258,6 +258,12 @@ public final class ApiParts implements IParts
 	}
 
 	@Override
+	public IItemDefinition fluidIface()
+	{
+		return this.fluidIface;
+	}
+
+	@Override
 	public IItemDefinition levelEmitter()
 	{
 		return this.levelEmitter;
