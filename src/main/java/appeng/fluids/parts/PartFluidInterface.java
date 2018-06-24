@@ -1,0 +1,189 @@
+
+package appeng.fluids.parts;
+
+
+import java.util.EnumSet;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.common.capabilities.Capability;
+
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.events.MENetworkChannelsChanged;
+import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartModel;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IStorageChannel;
+import appeng.api.storage.IStorageMonitorable;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.util.AECableType;
+import appeng.core.AppEng;
+import appeng.core.sync.GuiBridge;
+import appeng.fluids.helper.DualityFluidInterface;
+import appeng.fluids.helper.IFluidInterfaceHost;
+import appeng.helpers.Reflected;
+import appeng.items.parts.PartModels;
+import appeng.parts.PartBasicState;
+import appeng.parts.PartModel;
+import appeng.util.Platform;
+
+
+public class PartFluidInterface extends PartBasicState implements IGridTickable, IStorageMonitorable, IFluidInterfaceHost
+{
+	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/interface_base" );
+
+	@PartModels
+	public static final PartModel MODELS_OFF = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/interface_off" ) );
+
+	@PartModels
+	public static final PartModel MODELS_ON = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/interface_on" ) );
+
+	@PartModels
+	public static final PartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/interface_has_channel" ) );
+
+	private final DualityFluidInterface duality = new DualityFluidInterface( this.getProxy(), this );
+
+	@Reflected
+	public PartFluidInterface( final ItemStack is )
+	{
+		super( is );
+	}
+
+	@Override
+	public DualityFluidInterface getDualityFluidInterface()
+	{
+		return duality;
+	}
+
+	@MENetworkEventSubscribe
+	public void stateChange( final MENetworkChannelsChanged c )
+	{
+		this.duality.notifyNeighbors();
+	}
+
+	@MENetworkEventSubscribe
+	public void stateChange( final MENetworkPowerStatusChange c )
+	{
+		this.duality.notifyNeighbors();
+	}
+
+	@Override
+	public void getBoxes( final IPartCollisionHelper bch )
+	{
+		bch.addBox( 2, 2, 14, 14, 14, 16 );
+		bch.addBox( 5, 5, 12, 11, 11, 14 );
+	}
+
+	@Override
+	public void gridChanged()
+	{
+		this.duality.gridChanged();
+	}
+
+	@Override
+	public void readFromNBT( final NBTTagCompound data )
+	{
+		super.readFromNBT( data );
+		this.duality.readFromNBT( data );
+	}
+
+	@Override
+	public void writeToNBT( final NBTTagCompound data )
+	{
+		super.writeToNBT( data );
+		this.duality.writeToNBT( data );
+	}
+
+	@Override
+	public float getCableConnectionLength( AECableType cable )
+	{
+		return 4;
+	}
+
+	@Override
+	public boolean onPartActivate( final EntityPlayer p, final EnumHand hand, final Vec3d pos )
+	{
+		if( p.isSneaking() )
+		{
+			return false;
+		}
+
+		if( Platform.isServer() )
+		{
+			Platform.openGUI( p, this.getTileEntity(), this.getSide(), GuiBridge.GUI_FLUID_INTERFACE );
+		}
+
+		return true;
+	}
+
+	@Override
+	public <T extends IAEStack<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )
+	{
+		return this.duality.getInventory( channel );
+	}
+
+	@Override
+	public TickingRequest getTickingRequest( final IGridNode node )
+	{
+		return this.duality.getTickingRequest( node );
+	}
+
+	@Override
+	public TickRateModulation tickingRequest( final IGridNode node, final int ticksSinceLastCall )
+	{
+		return this.duality.tickingRequest( node, ticksSinceLastCall );
+	}
+
+	@Override
+	public EnumSet<EnumFacing> getTargets()
+	{
+		return EnumSet.of( this.getSide().getFacing() );
+	}
+
+	@Override
+	public TileEntity getTileEntity()
+	{
+		return super.getHost().getTile();
+	}
+
+	@Override
+	public IPartModel getStaticModels()
+	{
+		if( this.isActive() && this.isPowered() )
+		{
+			return MODELS_HAS_CHANNEL;
+		}
+		else if( this.isPowered() )
+		{
+			return MODELS_ON;
+		}
+		else
+		{
+			return MODELS_OFF;
+		}
+	}
+
+	@Override
+	public boolean hasCapability( Capability<?> capabilityClass )
+	{
+		return this.duality.hasCapability( capabilityClass, this.getSide().getFacing() );
+	}
+
+	@Override
+	public <T> T getCapability( Capability<T> capabilityClass )
+	{
+		return this.duality.getCapability( capabilityClass, this.getSide().getFacing() );
+	}
+
+}

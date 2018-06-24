@@ -1,0 +1,12 @@
+{
+    "result": {
+        "item": "appliedenergistics2:fluid_interface"
+    },
+    "type": "forge:ore_shapeless",
+    "ingredients": [
+        {
+            "type": "appliedenergistics2:part",
+            "part": "part.fluid_interface"
+        }
+    ]
+}
