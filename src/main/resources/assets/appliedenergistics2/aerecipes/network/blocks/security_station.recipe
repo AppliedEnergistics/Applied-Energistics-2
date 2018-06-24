@@ -1,5 +1,0 @@
-shaped=
-    oredictionary:ingotIron ae2:chest oredictionary:ingotIron,
-    cable ae2:material.Cell16kPart cable,
-    oredictionary:ingotIron ae2:material.EngProcessor oredictionary:ingotIron
-    -> ae2:security_station

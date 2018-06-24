@@ -1,7 +1,0 @@
-shapeless=
-    ae2:part.LevelEmitter monitor
-    -> ae2:part.StorageMonitor
-
-shapeless=
-    ae2:material.AnnihilationCore ae2:part.StorageMonitor ae2:material.FormationCore
-    -> ae2:part.ConversionMonitor

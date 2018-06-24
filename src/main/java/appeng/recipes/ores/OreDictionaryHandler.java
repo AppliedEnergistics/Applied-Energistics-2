@@ -24,11 +24,7 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
-
-import appeng.core.AELog;
-import appeng.recipes.game.IRecipeBakeable;
 
 
 public class OreDictionaryHandler
@@ -37,8 +33,6 @@ public class OreDictionaryHandler
 	public static final OreDictionaryHandler INSTANCE = new OreDictionaryHandler();
 
 	private final List<IOreListener> oreListeners = new ArrayList<>();
-
-	private boolean enableRebaking = false;
 
 	@SubscribeEvent
 	public void onOreDictionaryRegister( final OreDictionary.OreRegisterEvent event )
@@ -55,11 +49,6 @@ public class OreDictionaryHandler
 				v.oreRegistered( event.getName(), event.getOre() );
 			}
 		}
-
-		if( this.enableRebaking )
-		{
-			this.bakeRecipes();
-		}
 	}
 
 	/**
@@ -72,26 +61,6 @@ public class OreDictionaryHandler
 	private boolean shouldCare( final String name )
 	{
 		return true;
-	}
-
-	public void bakeRecipes()
-	{
-		this.enableRebaking = true;
-
-		for( final Object o : ForgeRegistries.RECIPES.getValues() )
-		{
-			if( o instanceof IRecipeBakeable )
-			{
-				try
-				{
-					( (IRecipeBakeable) o ).bake();
-				}
-				catch( final Throwable e )
-				{
-					AELog.debug( e );
-				}
-			}
-		}
 	}
 
 	/**

@@ -58,8 +58,6 @@ import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
 import appeng.integration.IntegrationRegistry;
 import appeng.integration.IntegrationType;
-import appeng.recipes.CustomRecipeConfig;
-import appeng.recipes.CustomRecipeForgeConfiguration;
 import appeng.server.AECommand;
 import appeng.services.VersionChecker;
 import appeng.services.export.ExportConfig;
@@ -98,14 +96,6 @@ public final class AppEng
 	private final Registration registration;
 
 	private File configDirectory;
-	private CustomRecipeConfig customRecipeConfig;
-
-	/**
-	 * Folder for recipes
-	 *
-	 * used for CSV item names and the recipes
-	 */
-	private File recipeDirectory;
 
 	/**
 	 * determined in pre-init but used in init
@@ -152,7 +142,6 @@ public final class AppEng
 	{
 		final Stopwatch watch = Stopwatch.createStarted();
 		this.configDirectory = new File( event.getModConfigurationDirectory().getPath(), "AppliedEnergistics2" );
-		this.recipeDirectory = new File( this.configDirectory, "aerecipes" );
 
 		final File configFile = new File( this.configDirectory, "AppliedEnergistics2.cfg" );
 		final File facadeFile = new File( this.configDirectory, "Facades.cfg" );
@@ -164,10 +153,7 @@ public final class AppEng
 		FacadeConfig.init( facadeFile );
 
 		final VersionCheckerConfig versionCheckerConfig = new VersionCheckerConfig( versionFile );
-		this.customRecipeConfig = new CustomRecipeForgeConfiguration( recipeConfiguration );
 		this.exportConfig = new ForgeExportConfig( recipeConfiguration );
-
-		this.registration.setRecipeInformation( this.recipeDirectory, this.customRecipeConfig );
 
 		AELog.info( "Pre Initialization ( started )" );
 
@@ -226,7 +212,7 @@ public final class AppEng
 		{
 			if( FMLCommonHandler.instance().getSide().isClient() )
 			{
-				final ExportProcess process = new ExportProcess( this.recipeDirectory, this.exportConfig );
+				final ExportProcess process = new ExportProcess( this.configDirectory, this.exportConfig );
 				final Thread exportProcessThread = new Thread( process );
 
 				this.startService( "AE2 CSV Export", exportProcessThread );
@@ -237,7 +223,7 @@ public final class AppEng
 			}
 		}
 
-		this.registration.initialize( event, this.recipeDirectory, this.customRecipeConfig );
+		this.registration.initialize( event, this.configDirectory );
 		IntegrationRegistry.INSTANCE.init();
 
 		AELog.info( "Initialization ( ended after " + start.elapsed( TimeUnit.MILLISECONDS ) + "ms )" );

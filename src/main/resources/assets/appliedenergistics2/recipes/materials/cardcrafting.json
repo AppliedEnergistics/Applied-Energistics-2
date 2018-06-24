@@ -13,7 +13,7 @@
     "ingredients": [
         {
             "type": "forge:ore_dict",
-            "ore": "craftingTableWood"
+            "ore": "workbench"
         },
         {
             "type": "appliedenergistics2:part",

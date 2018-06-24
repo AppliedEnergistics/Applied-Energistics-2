@@ -1,5 +1,0 @@
-shaped=
-    ae2:quartz_glass oredictionary:dustRedstone ae2:quartz_glass,
-    oredictionary:dustRedstone _ oredictionary:dustRedstone,
-    oredictionary:ingotIron oredictionary:ingotIron oredictionary:ingotIron
-    -> ae2:material.EmptyStorageCell

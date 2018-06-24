@@ -1,0 +1,17 @@
+{
+	"type": "appliedenergistics2:inscriber",
+	"mode": "inscribe",
+	"result": {
+		"part": "material.logic_processor_print"
+	},
+	"ingredients": {
+		"top": {
+			"type": "appliedenergistics2:part",
+			"part": "material.logic_processor_press"
+		},
+		"middle": {
+			"type": "forge:ore_dict",
+			"ore": "ingotGold"
+		}
+	}
+}

@@ -1,9 +1,0 @@
-pulverizer= ae2:material.fluix_crystal -> ae2:material.fluix_dust
-pulverizer= ae2:sky_stone_block:0 -> ae2:material.sky_dust
-pulverizer= mc:ender_pearl -> ae2:material.ender_dust
-pulverizer= oredictionary:cropWheat -> ae2:material.flour
-pulverizer= ae2:material.certus_quartz_crystal_charged -> ae2:material.certus_quartz_dust
-pulverizer= ae2:material.certus_quartz_crystal -> ae2:material.certus_quartz_dust
-pulverizer= mc:quartz -> ae2:material.nether_quartz_dust
-pulverizer= ae2:quartz_ore -> 2 ae2:material.certus_quartz_dust
-pulverizer= ae2:charged_quartz_ore -> 2 ae2:material.certus_quartz_dust

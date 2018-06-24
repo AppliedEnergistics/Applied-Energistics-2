@@ -74,7 +74,12 @@ public class PartRecipeFactory implements IRecipeFactory
 
 	public static ItemStack getResult( JsonObject json, JsonContext context )
 	{
-		JsonObject resultObject = JsonUtils.getJsonObject( json, "result" );
+		return getResult( json, context, "result" );
+	}
+
+	public static ItemStack getResult( JsonObject json, JsonContext context, String name )
+	{
+		JsonObject resultObject = JsonUtils.getJsonObject( json, name );
 
 		if( resultObject.has( "part" ) )
 		{

@@ -1,8 +1,0 @@
-shaped=
-    ae2:quartz_block,
-    ae2:quartz_block
-    -> 2 ae2:quartz_pillar
-
-shaped=
-    ae2:quartz_block ae2:quartz_block
-    -> 2 ae2:chiseled_quartz_block

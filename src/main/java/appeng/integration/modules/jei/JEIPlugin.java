@@ -49,8 +49,6 @@ import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.integration.Integrations;
 import appeng.items.parts.ItemFacade;
-import appeng.recipes.game.ShapedRecipe;
-import appeng.recipes.game.ShapelessRecipe;
 
 
 @mezz.jei.api.JEIPlugin
@@ -68,9 +66,6 @@ public class JEIPlugin implements IModPlugin
 	@Override
 	public void register( IModRegistry registry )
 	{
-		registry.handleRecipes( ShapedRecipe.class, new ShapedRecipeHandler(), VanillaRecipeCategoryUid.CRAFTING );
-		registry.handleRecipes( ShapelessRecipe.class, new ShapelessRecipeHandler(), VanillaRecipeCategoryUid.CRAFTING );
-
 		IDefinitions definitions = AEApi.instance().definitions();
 
 		this.registerFacadeRecipe( definitions, registry );

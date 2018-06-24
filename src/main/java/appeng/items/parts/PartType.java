@@ -187,11 +187,12 @@ public enum PartType
 
 	QUARTZ_FIBER( 140, "quartz_fiber", EnumSet.of( AEFeature.QUARTZ_FIBER ), EnumSet.noneOf( IntegrationType.class ), PartQuartzFiber.class ),
 
-	MONITOR( 160, "monitor", EnumSet.of( AEFeature.PANELS ), EnumSet.noneOf( IntegrationType.class ), PartPanel.class ),
+	MONITOR( 160, "monitor", EnumSet.of( AEFeature.PANELS ), EnumSet.noneOf( IntegrationType.class ), PartPanel.class, "itemIlluminatedPanel" ),
 
-	SEMI_DARK_MONITOR( 180, "semi_dark_monitor", EnumSet.of( AEFeature.PANELS ), EnumSet.noneOf( IntegrationType.class ), PartSemiDarkPanel.class ),
+	SEMI_DARK_MONITOR( 180, "semi_dark_monitor", EnumSet.of( AEFeature.PANELS ), EnumSet
+			.noneOf( IntegrationType.class ), PartSemiDarkPanel.class, "itemIlluminatedPanel" ),
 
-	DARK_MONITOR( 200, "dark_monitor", EnumSet.of( AEFeature.PANELS ), EnumSet.noneOf( IntegrationType.class ), PartDarkPanel.class ),
+	DARK_MONITOR( 200, "dark_monitor", EnumSet.of( AEFeature.PANELS ), EnumSet.noneOf( IntegrationType.class ), PartDarkPanel.class, "itemIlluminatedPanel" ),
 
 	STORAGE_BUS( 220, "storage_bus", EnumSet.of( AEFeature.STORAGE_BUS ), EnumSet.noneOf( IntegrationType.class ), PartStorageBus.class ),
 	FLUID_STORAGE_BUS( 221, "fluid_storage_bus", EnumSet.of( AEFeature.FLUID_STORAGE_BUS ), EnumSet.noneOf( IntegrationType.class ), PartFluidStorageBus.class ),
@@ -316,19 +317,31 @@ public enum PartType
 	private final Set<ResourceLocation> models;
 	private final boolean enabled;
 	private Constructor<? extends IPart> constructor;
+	private final String oreName;
 
 	PartType( final int baseMetaValue, final String itemModel, final Set<AEFeature> features, final Set<IntegrationType> integrations, final Class<? extends IPart> c )
 	{
-		this( baseMetaValue, itemModel, features, integrations, c, null );
+		this( baseMetaValue, itemModel, features, integrations, c, null, null );
+	}
+
+	PartType( final int baseMetaValue, final String itemModel, final Set<AEFeature> features, final Set<IntegrationType> integrations, final Class<? extends IPart> c, final String oreDict )
+	{
+		this( baseMetaValue, itemModel, features, integrations, c, null, oreDict );
 	}
 
 	PartType( final int baseMetaValue, final String itemModel, final Set<AEFeature> features, final Set<IntegrationType> integrations, final Class<? extends IPart> c, final GuiText en )
+	{
+		this( baseMetaValue, itemModel, features, integrations, c, en, null );
+	}
+
+	PartType( final int baseMetaValue, final String itemModel, final Set<AEFeature> features, final Set<IntegrationType> integrations, final Class<? extends IPart> c, final GuiText en, final String oreDict )
 	{
 		this.baseDamage = baseMetaValue;
 		this.features = Collections.unmodifiableSet( features );
 		this.integrations = Collections.unmodifiableSet( integrations );
 		this.myPart = c;
 		this.extraName = en;
+		this.oreName = oreDict;
 
 		// The part is enabled if all features + integrations it needs are enabled
 		this.enabled = features.stream().allMatch( AEConfig.instance()::isFeatureEnabled ) && integrations.stream()
@@ -421,6 +434,11 @@ public enum PartType
 	void setConstructor( final Constructor<? extends IPart> constructor )
 	{
 		this.constructor = constructor;
+	}
+
+	public String getOreName()
+	{
+		return this.oreName;
 	}
 
 	@SideOnly( Side.CLIENT )

@@ -1,0 +1,10 @@
+{
+	"type": "appliedenergistics2:smelt",
+	"result": {
+		"item": "appliedenergistics2:smooth_sky_stone_block"
+	},
+	"input": {
+		"item": "appliedenergistics2:sky_stone_block"	
+	},
+	"xp" : 0.0
+}

@@ -1,0 +1,11 @@
+{
+	"type": "appliedenergistics2:smelt",
+	"result": {
+		"item": "minecraft:iron_ingot"
+	},
+	"input": {
+		"type": "forge:ore_dict",
+		"ore": "dustIron"	
+	},
+	"xp" : 0.0
+}
