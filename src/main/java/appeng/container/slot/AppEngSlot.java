@@ -274,7 +274,7 @@ public class AppEngSlot extends Slot
 		this.isValid = isValid;
 	}
 
-	AEBaseContainer getContainer()
+	protected AEBaseContainer getContainer()
 	{
 		return this.myContainer;
 	}

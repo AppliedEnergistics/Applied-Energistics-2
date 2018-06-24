@@ -71,7 +71,6 @@ import appeng.container.slot.AppEngCraftingSlot;
 import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.AppEngSlot.hasCalculatedValidness;
 import appeng.container.slot.IOptionalSlot;
-import appeng.container.slot.ISlotFluid;
 import appeng.container.slot.SlotCraftingTerm;
 import appeng.container.slot.SlotDisabled;
 import appeng.container.slot.SlotFake;
@@ -84,6 +83,9 @@ import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.sync.packets.PacketSwapSlots;
+import appeng.fluids.client.render.FluidStackSizeRenderer;
+import appeng.fluids.container.slots.IFluidSlot;
+import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
 
 
@@ -93,6 +95,7 @@ public abstract class AEBaseGui extends GuiContainer
 	// drag y
 	private final Set<Slot> drag_click = new HashSet<>();
 	private final StackSizeRenderer stackSizeRenderer = new StackSizeRenderer();
+	private final FluidStackSizeRenderer fluidStackSizeRenderer = new FluidStackSizeRenderer();
 	private GuiScrollbar myScrollBar = null;
 	private boolean disableShiftClick = false;
 	private Stopwatch dbl_clickTimer = Stopwatch.createStarted();
@@ -217,12 +220,12 @@ public abstract class AEBaseGui extends GuiContainer
 	protected void renderHoveredToolTip( int mouseX, int mouseY )
 	{
 		Slot slot = this.getSlot( mouseX, mouseY );
-		if( slot != null && slot.isEnabled() && slot instanceof ISlotFluid )
+		if( slot != null && slot.isEnabled() && slot instanceof IFluidSlot )
 		{
-			ISlotFluid fluidSlot = (ISlotFluid) slot;
-			if( fluidSlot.getFluidInSlot() != null && fluidSlot.shouldRenderAsFluid() )
+			IFluidSlot fluidSlot = (IFluidSlot) slot;
+			if( fluidSlot.getFluidStack() != null && fluidSlot.shouldRenderAsFluid() )
 			{
-				FluidStack fluidStack = fluidSlot.getFluidInSlot();
+				FluidStack fluidStack = fluidSlot.getFluidStack();
 				this.drawHoveringText( fluidStack.getLocalizedName(), mouseX, mouseY );
 				return;
 			}
@@ -266,14 +269,16 @@ public abstract class AEBaseGui extends GuiContainer
 					final AppEngSlot aeSlot = (AppEngSlot) slot;
 					if( aeSlot.isSlotEnabled() )
 					{
-						this.drawTexturedModalRect( ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1, optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1, 18,
+						this.drawTexturedModalRect( ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1, optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1,
+								18,
 								18 );
 					}
 					else
 					{
 						GlStateManager.color( 1.0F, 1.0F, 1.0F, 0.4F );
 						GlStateManager.enableBlend();
-						this.drawTexturedModalRect( ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1, optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1, 18,
+						this.drawTexturedModalRect( ox + aeSlot.xPos - 1, oy + aeSlot.yPos - 1, optionalSlot.getSourceX() - 1, optionalSlot.getSourceY() - 1,
+								18,
 								18 );
 						GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
 					}
@@ -738,10 +743,12 @@ public abstract class AEBaseGui extends GuiContainer
 
 			return;
 		}
-		else if( s instanceof ISlotFluid && ( (ISlotFluid) s ).shouldRenderAsFluid() )
+		else if( s instanceof IFluidSlot && ( (IFluidSlot) s ).shouldRenderAsFluid() )
 		{
-			FluidStack fs = ( (ISlotFluid) s ).getFluidInSlot();
-			if( fs != null )
+			final IFluidSlot slot = (IFluidSlot) s;
+			final FluidStack fs = slot.getFluidStack();
+
+			if( fs != null && this.isPowered() )
 			{
 				GlStateManager.disableLighting();
 				Fluid fluid = fs.getFluid();
@@ -757,11 +764,18 @@ public abstract class AEBaseGui extends GuiContainer
 
 				this.drawTexturedModalRect( s.xPos, s.yPos, sprite, 16, 16 );
 				GlStateManager.enableLighting();
+
+				if( s instanceof IMEFluidSlot )
+				{
+					final IMEFluidSlot meFluidSlot = (IMEFluidSlot) s;
+					this.fluidStackSizeRenderer.renderStackSize( this.fontRenderer, meFluidSlot.getAEFluidStack(), s.xPos, s.yPos );
+				}
 			}
-			if( !this.isPowered() )
+			else if( !this.isPowered() )
 			{
 				drawRect( s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111 );
 			}
+
 			return;
 		}
 		else

@@ -20,10 +20,11 @@ package appeng.fluids.client.gui;
 
 
 import java.io.IOException;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import org.lwjgl.input.Mouse;
 
@@ -32,7 +33,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Loader;
 
 import appeng.api.config.Settings;
@@ -45,20 +45,19 @@ import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.client.gui.widgets.MEGuiTextField;
 import appeng.client.me.FluidRepo;
-import appeng.client.me.SlotFluidME;
 import appeng.client.me.InternalFluidSlotME;
-import appeng.container.slot.ISlotFluid;
+import appeng.client.me.SlotFluidME;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.fluids.container.ContainerFluidTerminal;
+import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.fluids.parts.PartFluidTerminal;
 import appeng.helpers.InventoryAction;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
-import appeng.util.item.AEFluidStack;
 
 
 /**
@@ -115,7 +114,8 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 		this.buttonList.add( this.sortByBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_BY, this.configSrc.getSetting( Settings.SORT_BY ) ) );
 		offset += 20;
 
-		this.buttonList.add( this.sortDirBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, this.configSrc.getSetting( Settings.SORT_DIRECTION ) ) );
+		this.buttonList.add( this.sortDirBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, this.configSrc
+				.getSetting( Settings.SORT_DIRECTION ) ) );
 
 		for( int y = 0; y < this.rows; y++ )
 		{
@@ -166,31 +166,30 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 	@Override
 	protected void renderHoveredToolTip( int mouseX, int mouseY )
 	{
-		Slot slot = this.getSlot( mouseX, mouseY );
-		if( slot != null && slot.isEnabled() && slot instanceof ISlotFluid )
+		final Slot slot = this.getSlot( mouseX, mouseY );
+
+		if( slot != null && slot instanceof IMEFluidSlot && slot.isEnabled() )
 		{
-			ISlotFluid fluidSlot = (ISlotFluid) slot;
-			if( fluidSlot.getFluidInSlot() != null && fluidSlot.shouldRenderAsFluid() )
+			final IMEFluidSlot fluidSlot = (IMEFluidSlot) slot;
+
+			if( fluidSlot.getFluidStack() != null && fluidSlot.shouldRenderAsFluid() )
 			{
-				FluidStack fluidStack = fluidSlot.getFluidInSlot();
-				List<String> list = new ArrayList<>();
-				list.add( fluidStack.getLocalizedName() );
-				int amount = fluidStack.amount;
-				DecimalFormat formatter = new DecimalFormat( "#,###.##" );
-				String amountStr = formatter.format( amount ) + "mb";
-				if( amount >= 10000 )
-				{
-					amountStr += " ( ";
-					amountStr += formatter.format( amount / 1000 ) + "B";
-					amountStr += " )";
-				}
-				list.add( amountStr );
-				String modName = "";
-				modName += TextFormatting.BLUE;
-				modName += TextFormatting.ITALIC;
-				modName += Loader.instance().getIndexedModList().get( Platform.getModId( AEFluidStack.fromFluidStack( fluidStack ) ) ).getName();
+				final IAEFluidStack fluidStack = fluidSlot.getAEFluidStack();
+				final String formattedAmount = NumberFormat.getNumberInstance( Locale.US ).format( fluidStack.getStackSize() ) + " mB";
+
+				final String modName = "" + TextFormatting.BLUE + TextFormatting.ITALIC + Loader.instance()
+						.getIndexedModList()
+						.get( Platform.getModId( fluidStack ) )
+						.getName();
+
+				final List<String> list = new ArrayList<>();
+
+				list.add( fluidStack.getFluidStack().getLocalizedName() );
+				list.add( formattedAmount );
 				list.add( modName );
+
 				this.drawHoveringText( list, mouseX, mouseY );
+
 				return;
 			}
 		}
@@ -203,8 +202,8 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 		if( btn instanceof GuiImgButton )
 		{
 			final boolean backwards = Mouse.isButtonDown( 1 );
-
 			final GuiImgButton iBtn = (GuiImgButton) btn;
+
 			if( iBtn.getSetting() != Settings.ACTIONS )
 			{
 				final Enum cv = iBtn.getCurrentValue();
@@ -229,22 +228,23 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 	{
 		if( slot instanceof SlotFluidME )
 		{
-			SlotFluidME meSlot = (SlotFluidME) slot;
+			final SlotFluidME meSlot = (SlotFluidME) slot;
+
 			if( clickType == ClickType.PICKUP )
 			{
 				// TODO: Allow more options
 				if( mouseButton == 0 && meSlot.getHasStack() )
 				{
-					this.container.setTargetStack( meSlot.getAEStack() );
-					AELog.info( "mouse0 GUI STACK SIZE %s", meSlot.getAEStack().getStackSize() );
+					this.container.setTargetStack( meSlot.getAEFluidStack() );
+					AELog.info( "mouse0 GUI STACK SIZE %s", meSlot.getAEFluidStack().getStackSize() );
 					NetworkHandler.instance().sendToServer( new PacketInventoryAction( InventoryAction.FILL_ITEM, slot.slotNumber, 0 ) );
 				}
 				else
 				{
-					this.container.setTargetStack( meSlot.getAEStack() );
-					if( meSlot.getAEStack() != null )
+					this.container.setTargetStack( meSlot.getAEFluidStack() );
+					if( meSlot.getAEFluidStack() != null )
 					{
-						AELog.info( "mouse1 GUI STACK SIZE %s", meSlot.getAEStack().getStackSize() );
+						AELog.info( "mouse1 GUI STACK SIZE %s", meSlot.getAEFluidStack().getStackSize() );
 					}
 					NetworkHandler.instance().sendToServer( new PacketInventoryAction( InventoryAction.EMPTY_ITEM, slot.slotNumber, 0 ) );
 				}

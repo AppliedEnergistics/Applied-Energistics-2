@@ -16,13 +16,16 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.container.slot;
+package appeng.fluids.container.slots;
 
 
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+
+import appeng.container.slot.IOptionalSlot;
+import appeng.container.slot.IOptionalSlotHost;
 
 
 /**

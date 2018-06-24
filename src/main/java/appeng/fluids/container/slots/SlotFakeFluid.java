@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.container.slot;
+package appeng.fluids.container.slots;
 
 
 import net.minecraft.item.ItemStack;
@@ -25,13 +25,15 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.container.slot.SlotFake;
+
 
 /**
  * @author BrockWS
  * @version rv6 - 1/05/2018
  * @since rv6 1/05/2018
  */
-public class SlotFakeFluid extends SlotFake implements ISlotFluid
+public class SlotFakeFluid extends SlotFake implements IFluidSlot
 {
 	public SlotFakeFluid( IItemHandler inv, int idx, int x, int y )
 	{
@@ -61,7 +63,7 @@ public class SlotFakeFluid extends SlotFake implements ISlotFluid
 	}
 
 	@Override
-	public FluidStack getFluidInSlot()
+	public FluidStack getFluidStack()
 	{
 		if( !this.getStack().isEmpty() )
 		{

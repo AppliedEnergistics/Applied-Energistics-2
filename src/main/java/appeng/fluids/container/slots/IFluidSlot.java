@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.container.slot;
+package appeng.fluids.container.slots;
 
 
 import net.minecraftforge.fluids.FluidStack;
@@ -27,9 +27,9 @@ import net.minecraftforge.fluids.FluidStack;
  * @version rv6 - 3/05/2018
  * @since rv6 3/05/2018
  */
-public interface ISlotFluid
+public interface IFluidSlot
 {
-	FluidStack getFluidInSlot();
+	FluidStack getFluidStack();
 
 	default boolean shouldRenderAsFluid()
 	{
