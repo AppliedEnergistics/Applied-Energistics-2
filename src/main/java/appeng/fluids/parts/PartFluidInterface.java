@@ -49,6 +49,7 @@ import appeng.core.AppEng;
 import appeng.core.sync.GuiBridge;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IFluidInterfaceHost;
+import appeng.helpers.IPriorityHost;
 import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartBasicState;
@@ -56,7 +57,7 @@ import appeng.parts.PartModel;
 import appeng.util.Platform;
 
 
-public class PartFluidInterface extends PartBasicState implements IGridTickable, IStorageMonitorable, IFluidInterfaceHost
+public class PartFluidInterface extends PartBasicState implements IGridTickable, IStorageMonitorable, IFluidInterfaceHost, IPriorityHost
 {
 	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/interface_base" );
 
@@ -189,6 +190,18 @@ public class PartFluidInterface extends PartBasicState implements IGridTickable,
 		{
 			return MODELS_OFF;
 		}
+	}
+
+	@Override
+	public int getPriority()
+	{
+		return this.duality.getPriority();
+	}
+
+	@Override
+	public void setPriority( final int newValue )
+	{
+		this.duality.setPriority( newValue );
 	}
 
 	@Override

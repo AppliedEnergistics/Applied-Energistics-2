@@ -61,6 +61,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.capabilities.Capabilities;
 import appeng.core.settings.TickRates;
+import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.MachineSource;
@@ -73,7 +74,7 @@ import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 
 
-public class DualityFluidInterface implements IGridTickable, IStorageMonitorable, IAEFluidInventory, IAEAppEngInventory
+public class DualityFluidInterface implements IGridTickable, IStorageMonitorable, IAEFluidInventory, IAEAppEngInventory, IPriorityHost
 {
 	public static final int NUMBER_OF_TANKS = 9;
 	public static final int TANK_CAPACITY = Fluid.BUCKET_VOLUME * 4;
@@ -91,6 +92,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	private final IAEFluidStack[] requireWork;
 	private final boolean[] tankChanged;
 	private int isWorking = -1;
+	private int priority;
 
 	private final MEMonitorPassThrough<IAEItemStack> items = new MEMonitorPassThrough<>( new NullInventory<IAEItemStack>(), AEApi.instance()
 			.storage()
@@ -503,6 +505,18 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		}
 	}
 
+	@Override
+	public int getPriority()
+	{
+		return this.priority;
+	}
+
+	@Override
+	public void setPriority( final int newValue )
+	{
+		this.priority = newValue;
+	}
+
 	public void writeToNBT( final NBTTagCompound data )
 	{
 		final NBTTagList tankContents = new NBTTagList();
@@ -511,6 +525,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 			tankContents.appendTag( this.tanks[i].writeToNBT( new NBTTagCompound() ) );
 		}
 
+		data.setInteger( "priority", this.priority );
 		data.setTag( "storage", tankContents );
 		this.config.writeToNBT( data, "config" );
 	}
@@ -526,6 +541,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 				this.tanks[i].readFromNBT( tankContents.getCompoundTagAt( i ) );
 			}
 		}
+		this.priority = data.getInteger( "priority" );
 		this.readConfig();
 	}
 
@@ -590,8 +606,13 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		}
 	}
 
-	private class InterfaceRequestContext
+	private class InterfaceRequestContext implements Comparable<Integer>
 	{
+		@Override
+		public int compareTo( Integer o )
+		{
+			return Integer.compare( DualityFluidInterface.this.priority, o );
+		}
 	}
 
 	private class InterfaceInventory extends MEMonitorIFluidHandler
@@ -621,9 +642,9 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		public IAEFluidStack extractItems( final IAEFluidStack request, final Actionable type, final IActionSource src )
 		{
 			final Optional<InterfaceRequestContext> context = src.context( InterfaceRequestContext.class );
-			final boolean isInterface = context.isPresent();
+			final boolean hasLowerOrEqualPriority = context.map( c -> c.compareTo( DualityFluidInterface.this.priority ) <= 0 ).orElse( false );
 
-			if( isInterface )
+			if( hasLowerOrEqualPriority )
 			{
 				return null;
 			}

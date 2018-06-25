@@ -40,10 +40,11 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IFluidInterfaceHost;
+import appeng.helpers.IPriorityHost;
 import appeng.tile.grid.AENetworkTile;
 
 
-public class TileFluidInterface extends AENetworkTile implements IGridTickable, IFluidInterfaceHost
+public class TileFluidInterface extends AENetworkTile implements IGridTickable, IFluidInterfaceHost, IPriorityHost
 {
 	private final DualityFluidInterface duality = new DualityFluidInterface( this.getProxy(), this );
 
@@ -120,6 +121,18 @@ public class TileFluidInterface extends AENetworkTile implements IGridTickable, 
 	public EnumSet<EnumFacing> getTargets()
 	{
 		return EnumSet.allOf( EnumFacing.class );
+	}
+
+	@Override
+	public int getPriority()
+	{
+		return this.duality.getPriority();
+	}
+
+	@Override
+	public void setPriority( final int newValue )
+	{
+		this.duality.setPriority( newValue );
 	}
 
 	@Override

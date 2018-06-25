@@ -19,11 +19,18 @@
 package appeng.fluids.client.gui;
 
 
+import java.io.IOException;
+
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiFluidTank;
+import appeng.client.gui.widgets.GuiTabButton;
 import appeng.core.localization.GuiText;
+import appeng.core.sync.GuiBridge;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.fluids.container.ContainerFluidInterface;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IFluidInterfaceHost;
@@ -34,6 +41,7 @@ public class GuiFluidInterface extends AEBaseGui
 	public final static int ID_BUTTON_TANK = 222;
 
 	private final IFluidInterfaceHost host;
+	private GuiTabButton priority;
 
 	public GuiFluidInterface( final InventoryPlayer ip, final IFluidInterfaceHost te )
 	{
@@ -52,6 +60,9 @@ public class GuiFluidInterface extends AEBaseGui
 			this.buttonList.add( new GuiFluidTank( ID_BUTTON_TANK + i, this.host.getDualityFluidInterface()
 					.getTank( i ), this.getGuiLeft() + 7 + 18 * i, this.getGuiTop() + 16 + 8, 16, 80 ) );
 		}
+
+		this.priority = new GuiTabButton( this.getGuiLeft() + 154, this.getGuiTop(), 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRender );
+		this.buttonList.add( this.priority );
 	}
 
 	@Override
@@ -66,5 +77,16 @@ public class GuiFluidInterface extends AEBaseGui
 	{
 		this.bindTexture( "guis/interfacefluid.png" );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+	}
+
+	@Override
+	protected void actionPerformed( final GuiButton btn ) throws IOException
+	{
+		super.actionPerformed( btn );
+
+		if( btn == this.priority )
+		{
+			NetworkHandler.instance().sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
+		}
 	}
 }
