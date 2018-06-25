@@ -19,12 +19,9 @@
 package appeng.fluids.tile;
 
 
-import java.io.IOException;
 import java.util.EnumSet;
 
 import javax.annotation.Nullable;
-
-import io.netty.buffer.ByteBuf;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -87,12 +84,6 @@ public class TileFluidInterface extends AENetworkTile implements IGridTickable, 
 	}
 
 	@Override
-	public void markDirty()
-	{
-		this.duality.markDirty();
-	}
-
-	@Override
 	public void gridChanged()
 	{
 		this.duality.gridChanged();
@@ -111,20 +102,6 @@ public class TileFluidInterface extends AENetworkTile implements IGridTickable, 
 	{
 		super.readFromNBT( data );
 		this.duality.readFromNBT( data );
-	}
-
-	@Override
-	protected boolean readFromStream( final ByteBuf data ) throws IOException
-	{
-		final boolean c = super.readFromStream( data );
-		return this.duality.readFromStream( data ) || c;
-	}
-
-	@Override
-	protected void writeToStream( final ByteBuf data ) throws IOException
-	{
-		super.writeToStream( data );
-		this.duality.writeToStream( data );
 	}
 
 	@Override

@@ -44,7 +44,6 @@ import appeng.util.Platform;
 
 public class ContainerFluidInterface extends AEBaseContainer
 {
-
 	private final DualityFluidInterface myDuality;
 
 	public ContainerFluidInterface( final InventoryPlayer ip, final IFluidInterfaceHost te )
@@ -68,21 +67,45 @@ public class ContainerFluidInterface extends AEBaseContainer
 
 		if( Platform.isServer() )
 		{
-			sendTankInfo();
+			this.sendTankUpdate();
 		}
 
 		super.detectAndSendChanges();
 	}
 
-	public void sendTankInfo()
+	@Override
+	public void addListener( IContainerListener listener )
+	{
+		super.addListener( listener );
+		this.sendTankInfo( listener );
+	}
+
+	private void sendTankUpdate( final IContainerListener l, final HashMap<Integer, NBTTagCompound> updateMap )
+	{
+		if( l instanceof EntityPlayerMP )
+		{
+			NetworkHandler.instance().sendTo( new PacketFluidTank( updateMap ), (EntityPlayerMP) l );
+		}
+	}
+
+	private void sendTankUpdate()
 	{
 		final HashMap<Integer, NBTTagCompound> updateMap = new HashMap<>();
-		if( this.myDuality.writeTankInfo( updateMap ) )
+		if( this.myDuality.writeTankInfo( updateMap, false ) )
 		{
 			for( final IContainerListener listener : this.listeners )
 			{
-				NetworkHandler.instance().sendTo( new PacketFluidTank( updateMap ), (EntityPlayerMP) listener );
+				this.sendTankUpdate( listener, updateMap );
 			}
+		}
+	}
+
+	private void sendTankInfo( final IContainerListener l )
+	{
+		final HashMap<Integer, NBTTagCompound> updateMap = new HashMap<>();
+		if( this.myDuality.writeTankInfo( updateMap, true ) )
+		{
+			this.sendTankUpdate( l, updateMap );
 		}
 	}
 

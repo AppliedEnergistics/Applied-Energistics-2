@@ -19,11 +19,8 @@
 package appeng.fluids.helper;
 
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
-
-import io.netty.buffer.ByteBuf;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -37,7 +34,6 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerConcatenate;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -201,10 +197,6 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		{
 			Platform.notifyBlocksOfNeighbors( te.getWorld(), te.getPos() );
 		}
-	}
-
-	public void markDirty()
-	{
 	}
 
 	public void gridChanged()
@@ -537,17 +529,6 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		this.readConfig();
 	}
 
-	public boolean readFromStream( final ByteBuf data ) throws IOException
-	{
-		readTankInfo( data );
-		return false; // no block update needed
-	}
-
-	public void writeToStream( final ByteBuf data ) throws IOException
-	{
-		writeTankInfo( data );
-	}
-
 	public IItemHandler getConfig()
 	{
 		return this.config;
@@ -558,31 +539,15 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		return this.tanks[i];
 	}
 
-	private void writeTankInfo( final ByteBuf data )
-	{
-		for( int i = 0; i < NUMBER_OF_TANKS; ++i )
-		{
-			ByteBufUtils.writeTag( data, this.tanks[i].writeToNBT( new NBTTagCompound() ) );
-		}
-	}
-
-	private void readTankInfo( final ByteBuf data )
-	{
-		for( int i = 0; i < NUMBER_OF_TANKS; ++i )
-		{
-			this.tanks[i].readFromNBT( ByteBufUtils.readTag( data ) );
-		}
-	}
-
-	public boolean writeTankInfo( final Map<Integer, NBTTagCompound> tagMap )
+	public boolean writeTankInfo( final Map<Integer, NBTTagCompound> tagMap, boolean all )
 	{
 		boolean empty = true;
 		for( int i = 0; i < NUMBER_OF_TANKS; ++i )
 		{
-			if( this.tankChanged[i] )
+			if( all || this.tankChanged[i] )
 			{
 				tagMap.put( i, this.tanks[i].writeToNBT( new NBTTagCompound() ) );
-				this.tankChanged[i] = false;
+				this.tankChanged[i] = !all;
 				empty = false;
 			}
 		}
