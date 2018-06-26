@@ -223,7 +223,7 @@ public class CellInventory implements ICellInventory
 		// any NBT data for empty cells instead of relying on an empty IItemContainer
 		if( CellInventory.isStorageCell( input.getDefinition() ) )
 		{
-			final IMEInventory meInventory = getCell( input.getDefinition(), null );
+			final IMEInventory meInventory = getCell( input.createItemStack(), null );
 			if( meInventory != null && !this.isEmpty( meInventory ) )
 			{
 				return input;
