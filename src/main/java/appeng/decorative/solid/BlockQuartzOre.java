@@ -27,6 +27,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -76,16 +77,15 @@ public class BlockQuartzOre extends AEBaseBlock
 	}
 
 	@Override
-	public void dropBlockAsItemWithChance( final World w, final BlockPos pos, final IBlockState state, final float chance, final int fortune )
+	public int getExpDrop( IBlockState state, IBlockAccess world, BlockPos pos, int fortune )
 	{
-		super.dropBlockAsItemWithChance( w, pos, state, chance, fortune );
-
-		if( this.getItemDropped( state, w.rand, fortune ) != Item.getItemFromBlock( this ) )
-		{
-			final int xp = MathHelper.getInt( w.rand, 2, 5 );
-
-			this.dropXpOnBlockBreak( w, pos, xp );
+		Random rand = world instanceof World ? ( (World) world ).rand : new Random();
+	
+	    if ( this.getItemDropped( state, rand, fortune ) != Item.getItemFromBlock( this ) )  
+	    {
+			return MathHelper.getInt( rand, 2, 5 );
 		}
+		return super.getExpDrop( state, world, pos, fortune );
 	}
 
 	@Override
