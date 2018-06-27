@@ -65,13 +65,11 @@ public class StorageHelper
 	{
 		final WorldServer oldWorld;
 		final WorldServer newWorld;
-		final EntityPlayerMP player;
 
 		try
 		{
 			oldWorld = (WorldServer) entity.world;
 			newWorld = (WorldServer) link.dim;
-			player = ( entity instanceof EntityPlayerMP ) ? (EntityPlayerMP) entity : null;
 		}
 		catch( final Throwable e )
 		{
@@ -111,28 +109,16 @@ public class StorageHelper
 
 		if( newWorld != oldWorld )
 		{
-			if( player != null )
+			if( entity instanceof EntityPlayerMP && link.dim.provider instanceof StorageWorldProvider )
 			{
-				if( link.dim.provider instanceof StorageWorldProvider )
-				{
-					AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger( player );
-				}
+				AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger( (EntityPlayerMP) entity );
+			}
 
-				player.mcServer.getPlayerList().transferPlayerToDimension( player, link.dim.provider.getDimension(), new METeleporter( link ) );
-			}
-			else
-			{
-				entity.changeDimension( link.dim.provider.getDimension(), new METeleporter( link ) );
-			}
+			entity.changeDimension( link.dim.provider.getDimension(), new METeleporter( link ) );
 		}
 
 		if( !passangersOnOtherSide.isEmpty() )
 		{
-			if( player != null )
-			{
-				entity.world.updateEntityWithOptionalForce( entity, true );
-			}
-
 			for( Entity passanger : passangersOnOtherSide )
 			{
 				passanger.startRiding( entity, true );
