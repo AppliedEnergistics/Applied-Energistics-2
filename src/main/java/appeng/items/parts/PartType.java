@@ -43,6 +43,7 @@ import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.fluids.parts.PartFluidExportBus;
 import appeng.fluids.parts.PartFluidImportBus;
+import appeng.fluids.parts.PartFluidInterface;
 import appeng.fluids.parts.PartFluidStorageBus;
 import appeng.fluids.parts.PartFluidTerminal;
 import appeng.integration.IntegrationRegistry;
@@ -195,7 +196,8 @@ public enum PartType
 	DARK_MONITOR( 200, "dark_monitor", EnumSet.of( AEFeature.PANELS ), EnumSet.noneOf( IntegrationType.class ), PartDarkPanel.class, "itemIlluminatedPanel" ),
 
 	STORAGE_BUS( 220, "storage_bus", EnumSet.of( AEFeature.STORAGE_BUS ), EnumSet.noneOf( IntegrationType.class ), PartStorageBus.class ),
-	FLUID_STORAGE_BUS( 221, "fluid_storage_bus", EnumSet.of( AEFeature.FLUID_STORAGE_BUS ), EnumSet.noneOf( IntegrationType.class ), PartFluidStorageBus.class ),
+	FLUID_STORAGE_BUS( 221, "fluid_storage_bus", EnumSet.of( AEFeature.FLUID_STORAGE_BUS ), EnumSet
+			.noneOf( IntegrationType.class ), PartFluidStorageBus.class ),
 
 	IMPORT_BUS( 240, "import_bus", EnumSet.of( AEFeature.IMPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartImportBus.class ),
 
@@ -228,6 +230,7 @@ public enum PartType
 			.noneOf( IntegrationType.class ), PartConversionMonitor.class ),
 
 	INTERFACE( 440, "interface", EnumSet.of( AEFeature.INTERFACE ), EnumSet.noneOf( IntegrationType.class ), PartInterface.class ),
+	FLUID_INTERFACE( 441, "fluid_interface", EnumSet.of( AEFeature.FLUID_INTERFACE ), EnumSet.noneOf( IntegrationType.class ), PartFluidInterface.class ),
 
 	P2P_TUNNEL_ME( 460, "p2p_tunnel_me", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_ME ), EnumSet
 			.noneOf( IntegrationType.class ), PartP2PTunnelME.class, GuiText.METunnel )

@@ -40,6 +40,7 @@ public enum GuiText
 	Terminal,
 
 	Interface,
+	FluidInterface,
 	Config,
 	StoredItems,
 	Patterns,

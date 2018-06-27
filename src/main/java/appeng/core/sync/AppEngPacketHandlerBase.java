@@ -33,6 +33,7 @@ import appeng.core.sync.packets.PacketCompassResponse;
 import appeng.core.sync.packets.PacketCompressedNBT;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketCraftRequest;
+import appeng.core.sync.packets.PacketFluidTank;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.sync.packets.PacketJEIRecipe;
 import appeng.core.sync.packets.PacketLightning;
@@ -104,7 +105,9 @@ public class AppEngPacketHandlerBase
 
 		PACKET_COMPRESSED_NBT( PacketCompressedNBT.class ),
 
-		PACKET_PAINTED_ENTITY( PacketPaintedEntity.class );
+		PACKET_PAINTED_ENTITY( PacketPaintedEntity.class ),
+
+		PACKET_FLUID_TANK( PacketFluidTank.class );
 
 		private final Class<? extends AppEngPacket> packetClass;
 		private final Constructor<? extends AppEngPacket> packetConstructor;

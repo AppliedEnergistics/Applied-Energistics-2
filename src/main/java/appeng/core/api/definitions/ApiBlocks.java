@@ -126,6 +126,8 @@ import appeng.decorative.solid.BlockQuartzPillar;
 import appeng.decorative.solid.BlockSkyStone;
 import appeng.decorative.solid.BlockSkyStone.SkystoneType;
 import appeng.decorative.stair.BlockStairCommon;
+import appeng.fluids.block.BlockFluidInterface;
+import appeng.fluids.tile.TileFluidInterface;
 import appeng.hooks.DispenserBehaviorTinyTNT;
 import appeng.tile.crafting.TileCraftingMonitorTile;
 import appeng.tile.crafting.TileCraftingStorageTile;
@@ -197,6 +199,7 @@ public final class ApiBlocks implements IBlocks
 	private final ITileDefinition drive;
 	private final ITileDefinition chest;
 	private final ITileDefinition iface;
+	private final ITileDefinition fluidIface;
 	private final ITileDefinition cellWorkbench;
 	private final ITileDefinition iOPort;
 	private final ITileDefinition condenser;
@@ -389,6 +392,10 @@ public final class ApiBlocks implements IBlocks
 		this.iface = registry.block( "interface", BlockInterface::new )
 				.features( AEFeature.INTERFACE )
 				.tileEntity( new TileEntityDefinition( TileInterface.class ) )
+				.build();
+		this.fluidIface = registry.block( "fluid_interface", BlockFluidInterface::new )
+				.features( AEFeature.FLUID_INTERFACE )
+				.tileEntity( new TileEntityDefinition( TileFluidInterface.class ) )
 				.build();
 		this.cellWorkbench = registry.block( "cell_workbench", BlockCellWorkbench::new )
 				.features( AEFeature.STORAGE_CELLS )
@@ -891,6 +898,12 @@ public final class ApiBlocks implements IBlocks
 	public ITileDefinition iface()
 	{
 		return this.iface;
+	}
+
+	@Override
+	public ITileDefinition fluidIface()
+	{
+		return this.fluidIface;
 	}
 
 	@Override

@@ -55,6 +55,7 @@ public final class ApiParts implements IParts
 	private final IItemDefinition importBus;
 	private final IItemDefinition exportBus;
 	private final IItemDefinition iface;
+	private final IItemDefinition fluidIface;
 	private final IItemDefinition levelEmitter;
 	private final IItemDefinition annihilationPlane;
 	private final IItemDefinition identityAnnihilationPlane;
@@ -111,10 +112,11 @@ public final class ApiParts implements IParts
 		this.importBus = new DamagedItemDefinition( "part.bus.import", itemPart.createPart( PartType.IMPORT_BUS ) );
 		this.exportBus = new DamagedItemDefinition( "part.bus.export", itemPart.createPart( PartType.EXPORT_BUS ) );
 		this.iface = new DamagedItemDefinition( "part.interface", itemPart.createPart( PartType.INTERFACE ) );
+		this.fluidIface = new DamagedItemDefinition( "part.fluid_interface", itemPart.createPart( PartType.FLUID_INTERFACE ) );
 		this.levelEmitter = new DamagedItemDefinition( "part.level_emitter", itemPart.createPart( PartType.LEVEL_EMITTER ) );
 		this.annihilationPlane = new DamagedItemDefinition( "part.plane.annihilation", itemPart.createPart( PartType.ANNIHILATION_PLANE ) );
-		this.identityAnnihilationPlane = new DamagedItemDefinition( "part.plane.annihiliation.identity",
-				itemPart.createPart( PartType.IDENTITY_ANNIHILATION_PLANE ) );
+		this.identityAnnihilationPlane = new DamagedItemDefinition( "part.plane.annihiliation.identity", itemPart
+				.createPart( PartType.IDENTITY_ANNIHILATION_PLANE ) );
 		this.formationPlane = new DamagedItemDefinition( "part.plane.formation", itemPart.createPart( PartType.FORMATION_PLANE ) );
 		this.p2PTunnelME = new DamagedItemDefinition( "part.tunnel.me", itemPart.createPart( PartType.P2P_TUNNEL_ME ) );
 		this.p2PTunnelRedstone = new DamagedItemDefinition( "part.tunnel.redstone", itemPart.createPart( PartType.P2P_TUNNEL_REDSTONE ) );
@@ -253,6 +255,12 @@ public final class ApiParts implements IParts
 	public IItemDefinition iface()
 	{
 		return this.iface;
+	}
+
+	@Override
+	public IItemDefinition fluidIface()
+	{
+		return this.fluidIface;
 	}
 
 	@Override

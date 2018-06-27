@@ -1,7 +1,7 @@
 {
     "result": {
         "type": "appliedenergistics2:part",
-        "part": "part.storage_bus_fluid"
+        "part": "part.fluid_storage_bus"
     },
     "type": "appliedenergistics2:part_shapeless",
     "ingredients": [
