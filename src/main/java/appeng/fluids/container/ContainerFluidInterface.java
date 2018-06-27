@@ -54,7 +54,7 @@ public class ContainerFluidInterface extends AEBaseContainer
 
 		for( int x = 0; x < DualityFluidInterface.NUMBER_OF_TANKS; x++ )
 		{
-			this.addSlotToContainer( new SlotFakeFluid( this.myDuality.getConfig(), x, 8 + 18 * x, 115 ) );
+			this.addSlotToContainer( new SlotFakeFluid( this.myDuality.getConfig(), x, 35 + 18 * x, 35 ) );
 		}
 
 		this.bindPlayerInventory( ip, 0, 231 - /* height of player inventory */82 );

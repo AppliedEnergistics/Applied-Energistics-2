@@ -160,6 +160,7 @@ gui.appliedenergistics2.Patterns=Patterns
 gui.appliedenergistics2.SpatialIOPort=Spatial IO Port
 gui.appliedenergistics2.StoredEnergy=Stored Energy
 gui.appliedenergistics2.StoredItems=Stored Items
+gui.appliedenergistics2.StoredFluids=Stored Fluids
 gui.appliedenergistics2.Terminal=Terminal
 gui.appliedenergistics2.InterfaceTerminal=Interface Terminal
 gui.appliedenergistics2.InterfaceTerminalHint=Show Or Hide on Interface Terminal.
