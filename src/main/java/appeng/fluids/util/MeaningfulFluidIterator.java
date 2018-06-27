@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.util.item;
+package appeng.fluids.util;
 
 
 import java.util.Iterator;

@@ -16,14 +16,14 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.util;
+package appeng.fluids.util;
 
 
 import java.util.Comparator;
 
 import appeng.api.config.SortDir;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.util.item.AEFluidStack;
+import appeng.util.Platform;
 
 
 /**

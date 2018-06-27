@@ -29,7 +29,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
-import appeng.util.item.FluidList;
+import appeng.fluids.util.FluidList;
 
 
 class CondenserFluidInventory implements IMEMonitor<IAEFluidStack>

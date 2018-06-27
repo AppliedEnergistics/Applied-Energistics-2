@@ -47,11 +47,11 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
+import appeng.fluids.util.AEFluidStack;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.PartModel;
-import appeng.util.item.AEFluidStack;
 
 
 /**

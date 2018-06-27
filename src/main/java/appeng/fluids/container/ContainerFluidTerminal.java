@@ -64,12 +64,12 @@ import appeng.core.sync.packets.PacketMEFluidInventoryUpdate;
 import appeng.core.sync.packets.PacketTargetFluidStack;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.fluids.parts.PartFluidTerminal;
+import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.ChannelPowerSrc;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
-import appeng.util.item.AEFluidStack;
 
 
 /**

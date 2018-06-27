@@ -36,8 +36,8 @@ import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.fluids.util.AEFluidStack;
 import appeng.me.storage.AbstractCellInventory;
-import appeng.util.item.AEFluidStack;
 
 
 /**
