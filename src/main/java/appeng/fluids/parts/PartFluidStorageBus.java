@@ -71,6 +71,7 @@ import appeng.capabilities.Capabilities;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.core.sync.GuiBridge;
+import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.IInterfaceHost;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
@@ -82,7 +83,6 @@ import appeng.parts.misc.PartSharedStorageBus;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
-import appeng.util.item.AEFluidStack;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 

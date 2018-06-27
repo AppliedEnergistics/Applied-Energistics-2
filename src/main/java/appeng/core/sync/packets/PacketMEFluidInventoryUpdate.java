@@ -44,7 +44,7 @@ import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.fluids.client.gui.GuiFluidTerminal;
-import appeng.util.item.AEFluidStack;
+import appeng.fluids.util.AEFluidStack;
 
 
 /**

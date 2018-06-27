@@ -116,6 +116,7 @@ import appeng.core.features.AEFeature;
 import appeng.core.stats.Stats;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.GuiHostType;
+import appeng.fluids.util.AEFluidStack;
 import appeng.hooks.TickHandler;
 import appeng.integration.Integrations;
 import appeng.me.GridAccessException;
@@ -123,7 +124,6 @@ import appeng.me.GridNode;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.helpers.P2PHelper;
-import appeng.util.item.AEFluidStack;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.IPartitionList;
 

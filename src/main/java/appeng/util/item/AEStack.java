@@ -31,7 +31,7 @@ public abstract class AEStack<StackType extends IAEStack<StackType>> implements 
 	private long stackSize;
 	private long countRequestable;
 
-	static long getPacketValue( final byte type, final ByteBuf tag )
+	protected static long getPacketValue( final byte type, final ByteBuf tag )
 	{
 		if( type == 0 )
 		{
@@ -162,7 +162,7 @@ public abstract class AEStack<StackType extends IAEStack<StackType>> implements 
 		}
 	}
 
-	abstract boolean hasTagCompound();
+	protected abstract boolean hasTagCompound();
 
 	protected void putPacketValue( final ByteBuf tag, final long num )
 	{

@@ -27,8 +27,8 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.fluids.items.FluidDummyItem;
+import appeng.fluids.util.AEFluidStack;
 import appeng.me.storage.AbstractCellInventoryHandler;
-import appeng.util.item.AEFluidStack;
 
 
 public class FluidCellInventoryHandler extends AbstractCellInventoryHandler<IAEFluidStack>
