@@ -43,6 +43,7 @@ public enum GuiText
 	FluidInterface,
 	Config,
 	StoredItems,
+	StoredFluids,
 	Patterns,
 	ImportBus,
 	ImportBusFluids,

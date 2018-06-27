@@ -32,6 +32,7 @@ import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.fluids.container.ContainerFluidInterface;
+import appeng.fluids.helper.AEFluidTank;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IFluidInterfaceHost;
 
@@ -57,8 +58,9 @@ public class GuiFluidInterface extends AEBaseGui
 
 		for( int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i )
 		{
-			this.buttonList.add( new GuiFluidTank( ID_BUTTON_TANK + i, this.host.getDualityFluidInterface()
-					.getTank( i ), this.getGuiLeft() + 7 + 18 * i, this.getGuiTop() + 16 + 8, 16, 80 ) );
+			final AEFluidTank fluidTank = this.host.getDualityFluidInterface().getTank( i );
+			final GuiFluidTank guiTank = new GuiFluidTank( ID_BUTTON_TANK + i, fluidTank, this.getGuiLeft() + 35 + 18 * i, this.getGuiTop() + 53, 16, 68 );
+			this.buttonList.add( guiTank );
 		}
 
 		this.priority = new GuiTabButton( this.getGuiLeft() + 154, this.getGuiTop(), 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRender );
@@ -69,6 +71,8 @@ public class GuiFluidInterface extends AEBaseGui
 	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
 		this.fontRenderer.drawString( this.getGuiDisplayName( GuiText.FluidInterface.getLocal() ), 8, 6, 4210752 );
+		this.fontRenderer.drawString( GuiText.Config.getLocal(), 35, 6 + 11 + 7, 4210752 );
+		this.fontRenderer.drawString( GuiText.StoredFluids.getLocal(), 35, 6 + 112 + 7, 4210752 );
 		this.fontRenderer.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 	}
 

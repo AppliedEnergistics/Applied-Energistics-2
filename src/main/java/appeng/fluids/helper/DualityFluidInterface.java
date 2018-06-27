@@ -76,7 +76,7 @@ import appeng.util.inv.InvOperation;
 
 public class DualityFluidInterface implements IGridTickable, IStorageMonitorable, IAEFluidInventory, IAEAppEngInventory, IPriorityHost
 {
-	public static final int NUMBER_OF_TANKS = 9;
+	public static final int NUMBER_OF_TANKS = 6;
 	public static final int TANK_CAPACITY = Fluid.BUCKET_VOLUME * 4;
 
 	private final AENetworkProxy gridProxy;
@@ -455,7 +455,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	@Override
 	public void onFluidInventoryChanged( final IFluidHandler inventory )
 	{
-		final int slot = getTankSlot( inventory );
+		final int slot = this.getTankSlot( inventory );
 
 		this.tankChanged[slot] = true;
 		this.saveChanges();
