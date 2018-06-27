@@ -29,6 +29,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -37,6 +38,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
+import appeng.api.util.AEColor;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.items.AEBaseItem;
@@ -60,6 +62,21 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 		if( data.hasKey( "tooltip" ) )
 		{
 			lines.add( I18n.translateToLocal( this.getLocalizedName( data.getString( "tooltip" ) + ".name", data.getString( "tooltip" ) ) ) );
+		}
+
+		if( data.hasKey( "freq" ) )
+		{
+			final short freq = data.getShort( "freq" );
+			AEColor[] colors = Platform.p2p().toColors( freq );
+
+			StringBuilder result = new StringBuilder();
+
+			for( int i = 0; i < 4; i++ )
+			{
+				result.append( TextFormatting.fromColorIndex( colors[i].dye.getDyeDamage() ) ).append(String.format("%X", colors[i].ordinal()));
+			}
+
+			lines.add( I18n.translateToLocalFormatted( "gui.tooltips.appliedenergistics2.P2PFrequency", result.toString() ) );
 		}
 	}
 

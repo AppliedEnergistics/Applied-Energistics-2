@@ -323,6 +323,7 @@ gui.tooltips.appliedenergistics2.SchedulingModeRoundRobin=Exportiere im Round-Ro
 gui.tooltips.appliedenergistics2.SchedulingModeRandom=Exportiere im Zufallsmodus.
 gui.tooltips.appliedenergistics2.ItemsStored=Items gespeichert: %s
 gui.tooltips.appliedenergistics2.ItemsRequestable=Anfragbare Items: %s
+gui.tooltips.appliedenergistics2.P2PFrequency=Frequenz: %s
 
 // Units
 gui.appliedenergistics2.units.appliedenergstics=AE

@@ -335,6 +335,7 @@ gui.tooltips.appliedenergistics2.FilterModeKeep=Restore previous search filter.
 gui.tooltips.appliedenergistics2.FilterModeClear=Clear on each opening.
 gui.tooltips.appliedenergistics2.ItemsStored=Items Stored: %s
 gui.tooltips.appliedenergistics2.ItemsRequestable=Items Requestable: %s
+gui.tooltips.appliedenergistics2.P2PFrequency=Frequency: %s
 
 // Units
 gui.appliedenergistics2.units.appliedenergstics=AE

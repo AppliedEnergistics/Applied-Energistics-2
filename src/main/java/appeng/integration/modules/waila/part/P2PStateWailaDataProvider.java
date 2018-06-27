@@ -21,12 +21,16 @@ package appeng.integration.modules.waila.part;
 
 import java.util.List;
 
+import appeng.api.util.AEColor;
+import appeng.util.Platform;
 import com.google.common.collect.Iterators;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -87,6 +91,8 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider
 					}
 				}
 			}
+
+			currentToolTip.add( getFrequency( (PartP2PTunnel) part ) );
 		}
 
 		return currentToolTip;
@@ -153,6 +159,22 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider
 		{
 			return String.format( WailaText.P2PInputManyOutputs.getLocal(), outputs );
 		}
+	}
+
+	private static String getFrequency( PartP2PTunnel tunnel )
+	{
+		AEColor[] colors = Platform.p2p().toColors( tunnel.getFrequency() );
+
+		StringBuilder result = new StringBuilder();
+
+		result.append( I18n.translateToLocalFormatted( "gui.tooltips.appliedenergistics2.P2PFrequency", result.toString() ) );
+
+		for( int i = 0; i < 4; i++ )
+		{
+			result.append( TextFormatting.fromColorIndex( colors[i].dye.getDyeDamage() ) ).append(String.format("%X", colors[i].ordinal()));
+		}
+
+		return result.toString();
 	}
 
 }
