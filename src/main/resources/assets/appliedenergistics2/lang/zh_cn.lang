@@ -16,6 +16,7 @@ tile.appliedenergistics2.matrix_frame.name=矩阵框架
 tile.appliedenergistics2.io_port.name=ME-IO端口
 tile.appliedenergistics2.inscriber.name=压印器
 tile.appliedenergistics2.interface.name=ME接口
+tile.appliedenergistics2.fluid_interface.name=ME流体接口
 tile.appliedenergistics2.quantum_link.name=ME量子链接仓
 tile.appliedenergistics2.quantum_ring.name=ME量子环
 tile.appliedenergistics2.fluix_block.name=福鲁伊克斯块
@@ -61,7 +62,7 @@ tile.appliedenergistics2.sky_stone_brick_stairs.name=陨石石砖楼梯
 tile.appliedenergistics2.sky_stone_small_brick_stairs.name=陨石砖块楼梯
 tile.appliedenergistics2.sky_stone_stairs.name=陨石楼梯
 
-// Slabs
+// 台阶
 tile.appliedenergistics2.chiseled_quartz_slab.name=錾制赛特斯石英台阶
 tile.appliedenergistics2.fluix_slab.name=福鲁伊克斯台阶
 tile.appliedenergistics2.quartz_pillar_slab.name=竖纹赛特斯石英台阶
@@ -71,7 +72,7 @@ tile.appliedenergistics2.sky_stone_brick_slab.name=陨石石砖台阶
 tile.appliedenergistics2.sky_stone_small_brick_slab.name=陨石砖块台阶
 tile.appliedenergistics2.sky_stone_slab.name=陨石台阶
 
-// Chat Messages
+// 聊天信息
 chat.appliedenergistics2.ChestCannotReadStorageCell=ME箱子无法读取存储元件.
 chat.appliedenergistics2.SettingCleared=设置已清除.
 chat.appliedenergistics2.OutOfRange=超出无线信号范围.
@@ -88,7 +89,7 @@ chat.appliedenergistics2.AmmoDepleted=弹药告罄.
 chat.appliedenergistics2.isNowLocked=监控器已锁定.
 chat.appliedenergistics2.isNowUnlocked=监控器已解锁.
 
-// Creative Tabs
+// 创造模式物品栏
 itemGroup.appliedenergistics2=应用能源2
 itemGroup.appliedenergistics2.facades=应用能源2-伪装板
 
@@ -131,6 +132,7 @@ gui.appliedenergistics2.SecurityCardEditor=身份卡编辑
 gui.appliedenergistics2.Encoded=已编码
 gui.appliedenergistics2.Priority=优先级
 gui.appliedenergistics2.StorageBus=存储总线
+gui.appliedenergistics2.StorageBusFluids=流体储存总线
 gui.appliedenergistics2.EnergyDrain=被动流失
 gui.appliedenergistics2.Installed=已安装
 gui.appliedenergistics2.NetworkTool=网络工具
@@ -146,15 +148,19 @@ gui.appliedenergistics2.Condenser=物质聚合器
 gui.appliedenergistics2.Config=配置
 gui.appliedenergistics2.Drive=ME驱动器
 gui.appliedenergistics2.ExportBus=ME输出总线
+gui.appliedenergistics2.ExportBusFluids=ME流体输出总线
 gui.appliedenergistics2.GrindStone=磨具
 gui.appliedenergistics2.ImportBus=ME输入总线
+gui.appliedenergistics2.ImportBusFluids=ME流体输入总线
 gui.appliedenergistics2.Interface=ME接口
+gui.appliedenergistics2.FluidInterface=ME流体接口
 gui.appliedenergistics2.LevelEmitter=ME标准发信器
 gui.appliedenergistics2.Of=/
 gui.appliedenergistics2.Patterns=样板
 gui.appliedenergistics2.SpatialIOPort=空间IO端口
 gui.appliedenergistics2.StoredEnergy=已存储能源
 gui.appliedenergistics2.StoredItems=已存储物品
+gui.appliedenergistics2.StoredFluids=已存储流体
 gui.appliedenergistics2.Terminal=终端
 gui.appliedenergistics2.InterfaceTerminal=接口终端
 gui.appliedenergistics2.InterfaceTerminalHint=在接口终端显示或隐藏.
@@ -163,6 +169,7 @@ gui.appliedenergistics2.VibrationChamber=谐振仓
 gui.appliedenergistics2.NetworkDetails=网络信息
 gui.appliedenergistics2.StorageCells=ME存储元件
 gui.appliedenergistics2.IOBuses=ME输入/输出总线
+gui.appliedenergistics2.IOBusesFluids=ME流体输入/输出总线
 gui.appliedenergistics2.Stores=存储
 gui.appliedenergistics2.BytesUsed=字节已使用
 gui.appliedenergistics2.Types=类型
@@ -289,6 +296,10 @@ gui.tooltips.appliedenergistics2.SearchMode_Auto=自动搜索
 gui.tooltips.appliedenergistics2.SearchMode_Standard=标准搜索
 gui.tooltips.appliedenergistics2.SearchMode_JEIAuto=JEI自动同步
 gui.tooltips.appliedenergistics2.SearchMode_JEIStandard=JEI标准同步
+gui.tooltips.appliedenergistics2.SearchMode_AutoKeep=保持自动搜索
+gui.tooltips.appliedenergistics2.SearchMode_StandardKeep=保持标准搜索
+gui.tooltips.appliedenergistics2.SearchMode_JEIAutoKeep=保持JEI自动同步
+gui.tooltips.appliedenergistics2.SearchMode_JEIStandardKeep=保持JEI标准同步
 gui.tooltips.appliedenergistics2.SearchMode=搜索框模式
 gui.tooltips.appliedenergistics2.PartitionStorageHint=基于当前已存储物品进行分区编辑.
 gui.tooltips.appliedenergistics2.ClearSettings=清除配置
@@ -316,9 +327,12 @@ gui.tooltips.appliedenergistics2.DoesntDespawn=该物品不会消失.
 gui.tooltips.appliedenergistics2.EmitterMode=合成发信模式
 gui.tooltips.appliedenergistics2.CraftViaRedstone=发射红石信号来合成物品.
 gui.tooltips.appliedenergistics2.EmitWhenCrafting=在物品合成时发射红石信号.
-gui.tooltips.appliedenergistics2.ReportInaccessibleItems=报告不可交互的物品
+gui.tooltips.appliedenergistics2.ReportInaccessibleItems=显示不可交互的物品
 gui.tooltips.appliedenergistics2.ReportInaccessibleItemsYes=是: 显示无法取出的物品.
 gui.tooltips.appliedenergistics2.ReportInaccessibleItemsNo=否: 只显示可以取出的物品.
+gui.tooltips.appliedenergistics2.ReportInaccessibleFluids=显示不可交互的流体
+gui.tooltips.appliedenergistics2.ReportInaccessibleFluidsYes=是: 显示无法取出的流体.
+gui.tooltips.appliedenergistics2.ReportInaccessibleFluidsNo=否: 只显示可以取出的流体.
 gui.tooltips.appliedenergistics2.BlockPlacement=方块放置方式
 gui.tooltips.appliedenergistics2.BlockPlacementYes=方块将被放置.
 gui.tooltips.appliedenergistics2.BlockPlacementNo=方块将以物品形式掉落.
@@ -326,6 +340,9 @@ gui.tooltips.appliedenergistics2.SchedulingMode=调度模式
 gui.tooltips.appliedenergistics2.SchedulingModeDefault=输出第一个物品直到系统中没有该物品,再输出下一个.
 gui.tooltips.appliedenergistics2.SchedulingModeRoundRobin=循环输出模式.
 gui.tooltips.appliedenergistics2.SchedulingModeRandom=随机输出模式.
+gui.tooltips.appliedenergistics2.FilterMode=搜索过滤器模式
+gui.tooltips.appliedenergistics2.FilterModeKeep=重载上一个搜索过滤器.
+gui.tooltips.appliedenergistics2.FilterModeClear=在每次打开时清空.
 gui.tooltips.appliedenergistics2.ItemsStored=存储物品: %s
 gui.tooltips.appliedenergistics2.ItemsRequestable=可请求: %s
 
@@ -353,7 +370,7 @@ gui.appliedenergistics2.Red=红色
 gui.appliedenergistics2.Black=黑色
 gui.appliedenergistics2.Fluix=Fluix默认色
 
-// Waila
+// Waila支持
 waila.appliedenergistics2.Crafting=合成中
 waila.appliedenergistics2.DeviceOnline=设备开启
 waila.appliedenergistics2.DeviceOffline=设备关闭
@@ -368,7 +385,7 @@ waila.appliedenergistics2.P2PInputOneOutput=已连接(输入端)
 waila.appliedenergistics2.P2PInputManyOutputs=已连接(输入端)- %d 输出
 waila.appliedenergistics2.P2POutput=已连接(输出端)
 
-// TheOneProbe
+// TheOneProbe支持
 theoneprobe.appliedenergistics2.crafting=合成中: %1$s
 theoneprobe.appliedenergistics2.device_online=设备开启
 theoneprobe.appliedenergistics2.device_offline=设备关闭
@@ -389,6 +406,10 @@ item.appliedenergistics2.storage_cell_1k.name=1k-ME存储元件
 item.appliedenergistics2.storage_cell_4k.name=4k-ME存储元件
 item.appliedenergistics2.storage_cell_16k.name=16k-ME存储元件
 item.appliedenergistics2.storage_cell_64k.name=64k-ME存储元件
+item.appliedenergistics2.fluid_storage_cell_1k.name=1k-ME流体储存元件
+item.appliedenergistics2.fluid_storage_cell_4k.name=4k-ME流体储存元件
+item.appliedenergistics2.fluid_storage_cell_16k.name=16k-ME流体储存元件
+item.appliedenergistics2.fluid_storage_cell_64k.name=64k-ME流体储存元件
 item.appliedenergistics2.creative_storage_cell.name=创造型ME存储元件
 item.appliedenergistics2.encoded_pattern.name=编码样板
 item.appliedenergistics2.view_cell.name=显示元件
@@ -415,6 +436,10 @@ item.appliedenergistics2.material.cell1k_part.name=1k-ME存储组件
 item.appliedenergistics2.material.cell4k_part.name=4k-ME存储组件
 item.appliedenergistics2.material.cell16k_part.name=16k-ME存储组件
 item.appliedenergistics2.material.cell64k_part.name=64k-ME存储组件
+item.appliedenergistics2.material.fluid_cell1k_part.name=1k-ME流体存储组件
+item.appliedenergistics2.material.fluid_cell4k_part.name=4k-ME流体存储组件
+item.appliedenergistics2.material.fluid_cell16k_part.name=16k-ME流体存储组件
+item.appliedenergistics2.material.fluid_cell64k_part.name=64k-ME流体存储组件
 item.appliedenergistics2.material.certus_quartz_crystal.name=赛特斯石英水晶
 item.appliedenergistics2.material.certus_quartz_crystal_charged.name=充能赛特斯石英水晶
 item.appliedenergistics2.material.certus_quartz_dust.name=赛特斯石英粉
@@ -468,19 +493,24 @@ item.appliedenergistics2.multi_part.semi_dark_monitor.name=照明面板
 item.appliedenergistics2.multi_part.monitor.name=亮色照明面板
 item.appliedenergistics2.multi_part.dark_monitor.name=暗色照明面板
 item.appliedenergistics2.multi_part.export_bus.name=ME输出总线
+item.appliedenergistics2.multi_part.fluid_export_bus.name=ME流体输出总线
 item.appliedenergistics2.multi_part.formation_plane.name=ME成型面板
 item.appliedenergistics2.multi_part.import_bus.name=ME输入总线
+item.appliedenergistics2.multi_part.fluid_import_bus.name=ME流体输入总线
 item.appliedenergistics2.multi_part.interface.name=ME接口
+item.appliedenergistics2.multi_part.fluid_interface.name=ME流体接口
 item.appliedenergistics2.multi_part.level_emitter.name=ME标准发信器
 item.appliedenergistics2.multi_part.p2p_tunnel.name=P2P通道
 item.appliedenergistics2.multi_part.pattern_terminal.name=ME样板终端
 item.appliedenergistics2.multi_part.quartz_fiber.name=石英纤维
 item.appliedenergistics2.multi_part.storage_bus.name=ME存储总线
+item.appliedenergistics2.multi_part.fluid_storage_bus.name=ME流体储存总线
 item.appliedenergistics2.multi_part.terminal.name=ME终端
 item.appliedenergistics2.multi_part.inverted_toggle_bus.name=ME反相触发总线
 item.appliedenergistics2.multi_part.toggle_bus.name=ME触发总线
 item.appliedenergistics2.multi_part.crafting_monitor.name=ME合成监控器
 item.appliedenergistics2.multi_part.interface_terminal.name=ME接口终端
+item.appliedenergistics2.multi_part.fluid_terminal.name=ME流体终端
 item.appliedenergistics2.multi_part.invalid_type.name=已禁用
 
 item.appliedenergistics2.spatial_storage_cell_128_cubed.name=128³-空间存储元件
@@ -517,7 +547,7 @@ item.appliedenergistics2.biometric_card.name=身份卡
 item.appliedenergistics2.debug_card.name=Dev.调试卡
 item.appliedenergistics2.debug_replicator_card.name=Dev.复制卡
 
-// 命令
+// 指令
 commands.ae2.usage=ae2提供的指令 - 输入/ae2 list查看指令列表,/ae2 help _____查看指令帮助.
 commands.ae2.permissions=你没有足够的权限来执行该指令.
 commands.ae2.ChunkLogger=是否向服务器日志打开区块载入与载出信息.(OP)
@@ -525,15 +555,17 @@ commands.ae2.ChunkLoggerOn=区块日志已打开
 commands.ae2.ChunkLoggerOff=区块日志已关闭
 commands.ae2.Supporters=显示ae2支持者列表
 
-// 成就
+// 进度
+achievement.ae2.Root=Applied Energistics
+achievement.ae2.Root.desc=当箱子只是不够用的时候.
 achievement.ae2.Compass=陨石猎手
 achievement.ae2.Compass.desc=制作一个陨石罗盘
 achievement.ae2.Presses=未知科技
 achievement.ae2.Presses.desc=发现一个处理器模板
 achievement.ae2.SpatialIO=空间协调
 achievement.ae2.SpatialIO.desc=制作一个空间IO端口
-achievement.ae2.SpatialIOExplorerer=大胆去做
-achievement.ae2.SpatialIOExplorerer.desc=已被存入空间存储元件
+achievement.ae2.SpatialIOExplorer=大胆去吧
+achievement.ae2.SpatialIOExplorer.desc=被存储在一个空间储存元件中
 achievement.ae2.StorageCell=比箱子更好
 achievement.ae2.StorageCell.desc=制作一个存储元件
 achievement.ae2.IOPort=元件互通
