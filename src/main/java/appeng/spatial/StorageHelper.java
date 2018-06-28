@@ -29,9 +29,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.Teleporter;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.util.ITeleporter;
 
 import appeng.api.AEApi;
 import appeng.api.util.WorldCoord;
@@ -65,13 +65,11 @@ public class StorageHelper
 	{
 		final WorldServer oldWorld;
 		final WorldServer newWorld;
-		final EntityPlayerMP player;
 
 		try
 		{
 			oldWorld = (WorldServer) entity.world;
 			newWorld = (WorldServer) link.dim;
-			player = ( entity instanceof EntityPlayerMP ) ? (EntityPlayerMP) entity : null;
 		}
 		catch( final Throwable e )
 		{
@@ -83,6 +81,10 @@ public class StorageHelper
 			return entity;
 		}
 		if( newWorld == null )
+		{
+			return entity;
+		}
+		if( newWorld == oldWorld )
 		{
 			return entity;
 		}
@@ -109,43 +111,20 @@ public class StorageHelper
 		// load the chunk!
 		newWorld.getChunkProvider().provideChunk( MathHelper.floor( link.x ) >> 4, MathHelper.floor( link.z ) >> 4 );
 
-		if( newWorld != oldWorld )
+		if( entity instanceof EntityPlayerMP && link.dim.provider instanceof StorageWorldProvider )
 		{
-			if( player != null )
-			{
-				if( link.dim.provider instanceof StorageWorldProvider )
-				{
-					AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger( player );
-				}
-
-				player.mcServer.getPlayerList().transferPlayerToDimension( player, link.dim.provider.getDimension(), new METeleporter( newWorld, link ) );
-			}
-			else
-			{
-				// really remove from world, forge only marks it as removed
-				final boolean wasDead = entity.isDead;
-				oldWorld.removeEntityDangerously( entity );
-				entity.isDead = wasDead;
-
-				entity.getServer().getPlayerList().transferEntityToWorld( entity, entity.dimension,
-						entity.getServer().getWorld( entity.dimension ), (WorldServer) link.dim, new METeleporter( newWorld, link ) );
-			}
+			AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger( (EntityPlayerMP) entity );
 		}
+
+		entity.changeDimension( link.dim.provider.getDimension(), new METeleporter( link ) );
 
 		if( !passangersOnOtherSide.isEmpty() )
 		{
-			if( player != null )
-			{
-				entity.world.updateEntityWithOptionalForce( entity, true );
-			}
-
 			for( Entity passanger : passangersOnOtherSide )
 			{
 				passanger.startRiding( entity, true );
 			}
 		}
-
-		entity.world.updateEntity( entity );
 
 		return entity;
 	}
@@ -182,8 +161,13 @@ public class StorageHelper
 
 	public void swapRegions( final World srcWorld, final int srcX, final int srcY, final int srcZ, final World dstWorld, final int dstX, final int dstY, final int dstZ, final int scaleX, final int scaleY, final int scaleZ )
 	{
-		AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().ifPresent( matrixFrameBlock -> this.transverseEdges( dstX - 1, dstY - 1, dstZ - 1,
-				dstX + scaleX + 1, dstY + scaleY + 1, dstZ + scaleZ + 1, new WrapInMatrixFrame( matrixFrameBlock.getDefaultState(), dstWorld ) ) );
+		AEApi.instance()
+				.definitions()
+				.blocks()
+				.matrixFrame()
+				.maybeBlock()
+				.ifPresent( matrixFrameBlock -> this.transverseEdges( dstX - 1, dstY - 1, dstZ - 1,
+						dstX + scaleX + 1, dstY + scaleY + 1, dstZ + scaleZ + 1, new WrapInMatrixFrame( matrixFrameBlock.getDefaultState(), dstWorld ) ) );
 
 		final AxisAlignedBB srcBox = new AxisAlignedBB( srcX, srcY, srcZ, srcX + scaleX + 1, srcY + scaleY + 1, srcZ + scaleZ + 1 );
 
@@ -273,14 +257,10 @@ public class StorageHelper
 
 	private static class TelDestination
 	{
-
 		private final World dim;
 		private final double x;
 		private final double y;
 		private final double z;
-		private final int xOff;
-		private final int yOff;
-		private final int zOff;
 
 		TelDestination( final World dimension, final AxisAlignedBB srcBox, final double x, final double y, final double z, final int tileX, final int tileY, final int tileZ )
 		{
@@ -288,46 +268,24 @@ public class StorageHelper
 			this.x = Math.min( srcBox.maxX - 0.5, Math.max( srcBox.minX + 0.5, x + tileX ) );
 			this.y = Math.min( srcBox.maxY - 0.5, Math.max( srcBox.minY + 0.5, y + tileY ) );
 			this.z = Math.min( srcBox.maxZ - 0.5, Math.max( srcBox.minZ + 0.5, z + tileZ ) );
-			this.xOff = tileX;
-			this.yOff = tileY;
-			this.zOff = tileZ;
 		}
 	}
 
-	private static class METeleporter extends Teleporter
+	private static class METeleporter implements ITeleporter
 	{
 
 		private final TelDestination destination;
 
-		public METeleporter( final WorldServer par1WorldServer, final TelDestination d )
+		METeleporter( final TelDestination d )
 		{
-			super( par1WorldServer );
 			this.destination = d;
 		}
 
 		@Override
-		public void placeInPortal( final Entity par1Entity, final float rotationYaw )
+		public void placeEntity( World world, Entity entity, float yaw )
 		{
-			par1Entity.setLocationAndAngles( this.destination.x, this.destination.y, this.destination.z, par1Entity.rotationYaw, 0.0F );
-			par1Entity.motionX = par1Entity.motionY = par1Entity.motionZ = 0.0D;
-		}
-
-		@Override
-		public boolean placeInExistingPortal( final Entity entityIn, final float p_180620_2_ )
-		{
-			return false;
-		}
-
-		@Override
-		public boolean makePortal( final Entity par1Entity )
-		{
-			return false;
-		}
-
-		@Override
-		public void removeStalePortalLocations( final long par1 )
-		{
-
+			entity.setLocationAndAngles( this.destination.x, this.destination.y, this.destination.z, yaw, entity.rotationPitch );
+			entity.motionX = entity.motionY = entity.motionZ = 0.0D;
 		}
 	}
 }
