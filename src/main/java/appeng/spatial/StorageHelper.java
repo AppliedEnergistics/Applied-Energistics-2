@@ -84,6 +84,10 @@ public class StorageHelper
 		{
 			return entity;
 		}
+		if( newWorld == oldWorld )
+		{
+			return entity;
+		}
 
 		// Are we riding something? Teleport it instead.
 		if( entity.isRiding() )
@@ -107,15 +111,12 @@ public class StorageHelper
 		// load the chunk!
 		newWorld.getChunkProvider().provideChunk( MathHelper.floor( link.x ) >> 4, MathHelper.floor( link.z ) >> 4 );
 
-		if( newWorld != oldWorld )
+		if( entity instanceof EntityPlayerMP && link.dim.provider instanceof StorageWorldProvider )
 		{
-			if( entity instanceof EntityPlayerMP && link.dim.provider instanceof StorageWorldProvider )
-			{
-				AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger( (EntityPlayerMP) entity );
-			}
-
-			entity.changeDimension( link.dim.provider.getDimension(), new METeleporter( link ) );
+			AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger( (EntityPlayerMP) entity );
 		}
+
+		entity.changeDimension( link.dim.provider.getDimension(), new METeleporter( link ) );
 
 		if( !passangersOnOtherSide.isEmpty() )
 		{
@@ -124,8 +125,6 @@ public class StorageHelper
 				passanger.startRiding( entity, true );
 			}
 		}
-
-		entity.world.updateEntity( entity );
 
 		return entity;
 	}
