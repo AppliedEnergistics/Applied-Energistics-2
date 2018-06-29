@@ -482,6 +482,8 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 				this.repo.setSearchString( this.searchField.getText() );
 				this.repo.updateView();
 				this.setScrollBar();
+				// tell forge the key event is handled and should not be sent out
+				this.keyHandled = true;
 			}
 			else
 			{
