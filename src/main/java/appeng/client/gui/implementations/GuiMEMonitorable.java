@@ -470,6 +470,12 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	{
 		if( !this.checkHotbarKeys( key ) )
 		{
+			if( key == 15 ) // TAB
+			{
+				this.searchField.setFocused( !this.searchField.isFocused() );
+				return;
+			}
+
 			if( character == ' ' && this.searchField.getText().isEmpty() )
 			{
 				return;
