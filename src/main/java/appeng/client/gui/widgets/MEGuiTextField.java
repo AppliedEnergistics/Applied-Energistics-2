@@ -43,6 +43,7 @@ public class MEGuiTextField extends GuiTextField
 	private final int _yPos;
 	private final int _width;
 	private final int _height;
+	private final int _fontPad;
 	private int selectionColor = 0xFF00FF00;
 
 	/**
@@ -59,6 +60,7 @@ public class MEGuiTextField extends GuiTextField
 	{
 		super( 0, fontRenderer, xPos + PADDING, yPos + PADDING, width - 2 * PADDING - fontRenderer.getCharWidth( '_' ), height - 2 * PADDING );
 
+		this._fontPad = fontRenderer.getCharWidth( '_' );
 		this._xPos = xPos;
 		this._yPos = yPos;
 		this._width = width;
@@ -107,8 +109,30 @@ public class MEGuiTextField extends GuiTextField
 	}
 
 	@Override
+	public void drawTextBox()
+	{
+		if( this.getVisible() )
+		{
+			if( this.isFocused() )
+			{
+				drawRect( this.x - PADDING + 1, this.y - PADDING + 1, this.x + this.width + this._fontPad + PADDING - 1, this.y + this.height + PADDING - 1,
+						0xFF606060 );
+			}
+			else
+			{
+				drawRect( this.x - PADDING + 1, this.y - PADDING + 1, this.x + this.width + this._fontPad + PADDING - 1, this.y + this.height + PADDING - 1,
+						0xFFA8A8A8 );
+			}
+			super.drawTextBox();
+		}
+	}
+
+	@Override
 	public void drawSelectionBox( int startX, int startY, int endX, int endY )
 	{
+		if( !this.isFocused() )
+			return;
+
 		if( startX < endX )
 		{
 			int i = startX;
@@ -159,4 +183,5 @@ public class MEGuiTextField extends GuiTextField
 		GlStateManager.disableColorLogic();
 		GlStateManager.enableTexture2D();
 	}
+
 }
