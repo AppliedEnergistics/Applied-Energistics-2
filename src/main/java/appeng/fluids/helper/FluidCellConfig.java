@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.fluids.contents;
+package appeng.fluids.helper;
 
 
 import javax.annotation.Nonnull;
@@ -47,7 +47,7 @@ public class FluidCellConfig extends CellConfig
 		{
 			super.insertItem( slot, stack, simulate );
 		}
-		
+
 		ItemStack fs = FluidDummyItem.createStackfromFluidContainer( stack );
 		if( fs.isEmpty() )
 		{
@@ -75,7 +75,7 @@ public class FluidCellConfig extends CellConfig
 			super.isItemValidForSlot( slot, stack );
 		}
 		ItemStack fs = FluidDummyItem.createStackfromFluidContainer( stack );
-		if (fs.isEmpty())
+		if( fs.isEmpty() )
 		{
 			return false;
 		}
