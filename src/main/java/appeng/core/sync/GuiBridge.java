@@ -88,9 +88,11 @@ import appeng.container.implementations.ContainerWireless;
 import appeng.container.implementations.ContainerWirelessTerm;
 import appeng.fluids.container.ContainerFluidIO;
 import appeng.fluids.container.ContainerFluidInterface;
+import appeng.fluids.container.ContainerFluidLevelEmitter;
 import appeng.fluids.container.ContainerFluidStorageBus;
 import appeng.fluids.container.ContainerFluidTerminal;
 import appeng.fluids.helper.IFluidInterfaceHost;
+import appeng.fluids.parts.PartFluidLevelEmitter;
 import appeng.fluids.parts.PartFluidStorageBus;
 import appeng.fluids.parts.PartFluidTerminal;
 import appeng.fluids.parts.PartSharedFluidBus;
@@ -184,6 +186,8 @@ public enum GuiBridge implements IGuiHandler
 
 	// extends (Container/Gui) + Bus
 	GUI_LEVEL_EMITTER( ContainerLevelEmitter.class, PartLevelEmitter.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
+
+	GUI_FLUID_LEVEL_EMITTER( ContainerFluidLevelEmitter.class, PartFluidLevelEmitter.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
 	GUI_SPATIAL_IO_PORT( ContainerSpatialIOPort.class, TileSpatialIOPort.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 

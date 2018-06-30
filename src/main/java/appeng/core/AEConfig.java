@@ -93,6 +93,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	private final int[] craftByStacks = { 1, 10, 100, 1000 };
 	private final int[] priorityByStacks = { 1, 10, 100, 1000 };
 	private final int[] levelByStacks = { 1, 10, 100, 1000 };
+	private final int[] levelByMillibuckets = { 10, 100, 1000, 10000 };
 
 	// Spatial IO/Dimension
 	private int storageProviderID = -1;
@@ -172,12 +173,14 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		this.settings.registerSetting( Settings.TERMINAL_STYLE, TerminalStyle.TALL );
 		this.settings.registerSetting( Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH );
 
-		this.spawnChargedChance = (float) ( 1.0 - this.get( "worldGen", "spawnChargedChance", 1.0 - this.spawnChargedChance ).getDouble(
-				1.0 - this.spawnChargedChance ) );
+		this.spawnChargedChance = (float) ( 1.0 - this.get( "worldGen", "spawnChargedChance", 1.0 - this.spawnChargedChance )
+				.getDouble(
+						1.0 - this.spawnChargedChance ) );
 		this.minMeteoriteDistance = this.get( "worldGen", "minMeteoriteDistance", this.minMeteoriteDistance ).getInt( this.minMeteoriteDistance );
 		this.meteoriteClusterChance = this.get( "worldGen", "meteoriteClusterChance", this.meteoriteClusterChance ).getDouble( this.meteoriteClusterChance );
-		this.meteoriteMaximumSpawnHeight = this.get( "worldGen", "meteoriteMaximumSpawnHeight", this.meteoriteMaximumSpawnHeight ).getInt(
-				this.meteoriteMaximumSpawnHeight );
+		this.meteoriteMaximumSpawnHeight = this.get( "worldGen", "meteoriteMaximumSpawnHeight", this.meteoriteMaximumSpawnHeight )
+				.getInt(
+						this.meteoriteMaximumSpawnHeight );
 		this.meteoriteDimensionWhitelist = this.get( "worldGen", "meteoriteDimensionWhitelist", this.meteoriteDimensionWhitelist ).getIntList();
 
 		this.quartzOresPerCluster = this.get( "worldGen", "quartzOresPerCluster", this.quartzOresPerCluster ).getInt( this.quartzOresPerCluster );
@@ -191,14 +194,17 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		this.wirelessBaseCost = this.get( "wireless", "wirelessBaseCost", this.wirelessBaseCost ).getDouble( this.wirelessBaseCost );
 		this.wirelessCostMultiplier = this.get( "wireless", "wirelessCostMultiplier", this.wirelessCostMultiplier ).getDouble( this.wirelessCostMultiplier );
 		this.wirelessBaseRange = this.get( "wireless", "wirelessBaseRange", this.wirelessBaseRange ).getDouble( this.wirelessBaseRange );
-		this.wirelessBoosterRangeMultiplier = this.get( "wireless", "wirelessBoosterRangeMultiplier", this.wirelessBoosterRangeMultiplier ).getDouble(
-				this.wirelessBoosterRangeMultiplier );
+		this.wirelessBoosterRangeMultiplier = this.get( "wireless", "wirelessBoosterRangeMultiplier", this.wirelessBoosterRangeMultiplier )
+				.getDouble(
+						this.wirelessBoosterRangeMultiplier );
 		this.wirelessBoosterExp = this.get( "wireless", "wirelessBoosterExp", this.wirelessBoosterExp ).getDouble( this.wirelessBoosterExp );
-		this.wirelessTerminalDrainMultiplier = this.get( "wireless", "wirelessTerminalDrainMultiplier", this.wirelessTerminalDrainMultiplier ).getDouble(
-				this.wirelessTerminalDrainMultiplier );
+		this.wirelessTerminalDrainMultiplier = this.get( "wireless", "wirelessTerminalDrainMultiplier", this.wirelessTerminalDrainMultiplier )
+				.getDouble(
+						this.wirelessTerminalDrainMultiplier );
 
-		this.formationPlaneEntityLimit = this.get( "automation", "formationPlaneEntityLimit", this.formationPlaneEntityLimit ).getInt(
-				this.formationPlaneEntityLimit );
+		this.formationPlaneEntityLimit = this.get( "automation", "formationPlaneEntityLimit", this.formationPlaneEntityLimit )
+				.getInt(
+						this.formationPlaneEntityLimit );
 
 		this.wirelessTerminalBattery = this.get( "battery", "wirelessTerminal", this.wirelessTerminalBattery ).getInt( this.wirelessTerminalBattery );
 		this.chargedStaffBattery = this.get( "battery", "chargedStaff", this.chargedStaffBattery ).getInt( this.chargedStaffBattery );
@@ -255,15 +261,17 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		{
 			this.storageProviderID = this.get( "spatialio", "storageProviderID", this.storageProviderID ).getInt( this.storageProviderID );
 			this.storageDimensionID = this.get( "spatialio", "storageDimensionID", this.storageDimensionID ).getInt( this.storageDimensionID );
-			this.spatialPowerMultiplier = this.get( "spatialio", "spatialPowerMultiplier", this.spatialPowerMultiplier ).getDouble(
-					this.spatialPowerMultiplier );
+			this.spatialPowerMultiplier = this.get( "spatialio", "spatialPowerMultiplier", this.spatialPowerMultiplier )
+					.getDouble(
+							this.spatialPowerMultiplier );
 			this.spatialPowerExponent = this.get( "spatialio", "spatialPowerExponent", this.spatialPowerExponent ).getDouble( this.spatialPowerExponent );
 		}
 
 		if( this.isFeatureEnabled( AEFeature.CRAFTING_CPU ) )
 		{
-			this.craftingCalculationTimePerTick = this.get( "craftingCPU", "craftingCalculationTimePerTick", this.craftingCalculationTimePerTick ).getInt(
-					this.craftingCalculationTimePerTick );
+			this.craftingCalculationTimePerTick = this.get( "craftingCPU", "craftingCalculationTimePerTick", this.craftingCalculationTimePerTick )
+					.getInt(
+							this.craftingCalculationTimePerTick );
 		}
 
 		this.updatable = true;
@@ -528,6 +536,11 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	public int levelByStackAmounts( final int i )
 	{
 		return this.levelByStacks[i];
+	}
+
+	public int levelByMillyBuckets( final int i )
+	{
+		return this.levelByMillibuckets[i];
 	}
 
 	public Enum getSetting( final String category, final Class<? extends Enum> class1, final Enum myDefault )

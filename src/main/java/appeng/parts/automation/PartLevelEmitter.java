@@ -290,8 +290,11 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		{
 			if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 || myStack == null )
 			{
-				this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).addListener( this,
-						this.getProxy().getGrid() );
+				this.getProxy()
+						.getStorage()
+						.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
+						.addListener( this,
+								this.getProxy().getGrid() );
 			}
 			else
 			{

@@ -37,6 +37,7 @@ public enum GuiText
 	VibrationChamber,
 	SpatialIOPort,
 	LevelEmitter,
+	FluidLevelEmitter,
 	Terminal,
 
 	Interface,
