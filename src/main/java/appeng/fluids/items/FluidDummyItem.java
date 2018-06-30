@@ -78,29 +78,29 @@ public class FluidDummyItem extends AEBaseItem
 		}
 	}
 
-	public static ItemStack createStackfromFluidContainer (final ItemStack stack)
+	public static ItemStack createStackfromFluidContainer( final ItemStack stack )
 	{
-		if (stack.isEmpty())
-		{
-			return ItemStack.EMPTY;
-		}		 
-		final IFluidHandlerItem fluidHandler = FluidUtil.getFluidHandler(stack);
-		if (fluidHandler != null)
-		{
-			return createStackfromFluidStack( fluidHandler.drain(Integer.MAX_VALUE, false) );
-		}	        		
-		return ItemStack.EMPTY;
-	}
-	
-	public static ItemStack createStackfromFluidStack( final FluidStack fs )
-	{
-		if ( fs == null || fs.getFluid() == null)
+		if( stack.isEmpty() )
 		{
 			return ItemStack.EMPTY;
 		}
-		
+		final IFluidHandlerItem fluidHandler = FluidUtil.getFluidHandler( stack );
+		if( fluidHandler != null )
+		{
+			return createStackfromFluidStack( fluidHandler.drain( Integer.MAX_VALUE, false ) );
+		}
+		return ItemStack.EMPTY;
+	}
+
+	public static ItemStack createStackfromFluidStack( final FluidStack fs )
+	{
+		if( fs == null || fs.getFluid() == null )
+		{
+			return ItemStack.EMPTY;
+		}
+
 		ItemStack is = Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-		if ( !is.isEmpty() )
+		if( !is.isEmpty() )
 		{
 			FluidDummyItem item = (FluidDummyItem) is.getItem();
 			item.setFluidStack( is, fs );
@@ -108,7 +108,7 @@ public class FluidDummyItem extends AEBaseItem
 		}
 		return ItemStack.EMPTY;
 	}
-	
+
 	public static FluidStack getFluidFromStack( final ItemStack is )
 	{
 		if( !is.isEmpty() && is.getItem() instanceof FluidDummyItem )
@@ -117,11 +117,10 @@ public class FluidDummyItem extends AEBaseItem
 		}
 		return null;
 	}
-	
-	
+
 	@Override
 	protected void getCheckedSubItems( final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
 	{
-		//Don't show this item in CreativeTabs
+		// Don't show this item in CreativeTabs
 	}
 }
