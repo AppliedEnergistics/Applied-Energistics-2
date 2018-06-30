@@ -60,7 +60,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 	private int storedItemCount = 0;
 	protected IItemList<T> cellItems;
 	protected ItemStack i;
-	protected IStorageCell cellType;
+	protected IStorageCell<T> cellType;
 	protected final int itemsPerByte;
 
 	protected AbstractCellInventory( final NBTTagCompound data, final ISaveProvider container, final int itemsPerByte )
@@ -96,7 +96,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 		final Item type = this.i.getItem();
 		if( type instanceof IStorageCell )
 		{
-			this.cellType = (IStorageCell) this.i.getItem();
+			this.cellType = (IStorageCell<T>) this.i.getItem();
 			this.maxItemTypes = this.cellType.getTotalTypes( this.i );
 		}
 
@@ -126,7 +126,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 		this.cellItems = null;
 	}
 
-	protected boolean isEmpty( final IMEInventory meInventory )
+	protected boolean isEmpty( final IMEInventory<T> meInventory )
 	{
 		return meInventory.getAvailableItems( getChannel().createList() ).isEmpty();
 	}
@@ -224,7 +224,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 	protected abstract void loadCellItem( NBTTagCompound compoundTag, int stackSize );
 
 	@Override
-	public IItemList getAvailableItems( final IItemList out )
+	public IItemList<T> getAvailableItems( final IItemList<T> out )
 	{
 		for( final T item : this.getCellItems() )
 		{
@@ -233,7 +233,6 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 
 		return out;
 	}
-
 
 	@Override
 	public ItemStack getItemStack()
@@ -317,7 +316,6 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 		return basedOnStorage > baseOnTotal ? baseOnTotal : basedOnStorage;
 	}
 
-
 	@Override
 	public long getUsedBytes()
 	{
@@ -359,4 +357,3 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 		return 3;
 	}
 }
-

@@ -21,6 +21,7 @@ package appeng.fluids.registries;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
@@ -33,8 +34,11 @@ import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEStack;
+import appeng.api.util.AEPartLocation;
+import appeng.core.sync.GuiBridge;
 import appeng.fluids.storage.FluidCellInventory;
 import appeng.fluids.storage.FluidCellInventoryHandler;
+import appeng.util.Platform;
 
 
 public class BasicFluidCellHandler implements ICellHandler
@@ -51,7 +55,7 @@ public class BasicFluidCellHandler implements ICellHandler
 	{
 		if( channel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
 		{
-			return FluidCellInventory.getCell( is, container );
+			return (IMEInventoryHandler<T>) FluidCellInventory.getCell( is, container );
 		}
 
 		return null;
@@ -62,8 +66,7 @@ public class BasicFluidCellHandler implements ICellHandler
 	{
 		if( chan == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
 		{
-			//TODO: Open Gui
-			//Platform.openGUI( player, (TileEntity) chest, AEPartLocation.fromFacing( chest.getUp() ), GuiBridge.GUI_ME );
+			Platform.openGUI( player, (TileEntity) chest, AEPartLocation.fromFacing( chest.getUp() ), GuiBridge.GUI_FLUID_TERMINAL );
 		}
 	}
 
