@@ -22,11 +22,7 @@ package appeng.fluids.contents;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 
-import appeng.core.Api;
 import appeng.fluids.items.FluidDummyItem;
 import appeng.items.contents.CellConfig;
 
@@ -51,17 +47,13 @@ public class FluidCellConfig extends CellConfig
 		{
 			super.insertItem( slot, stack, simulate );
 		}
-		FluidStack fluid = FluidUtil.getFluidContained( stack );
-		if( fluid == null || !Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).isPresent() )
+		
+		ItemStack fs = FluidDummyItem.createStackfromFluidContainer( stack );
+		if( fs.isEmpty() )
 		{
 			return stack;
 		}
-
-		fluid.amount = Fluid.BUCKET_VOLUME;
-		ItemStack is = Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).get();
-		FluidDummyItem item = (FluidDummyItem) is.getItem();
-		item.setFluidStack( is, fluid );
-		return super.insertItem( slot, is, simulate );
+		return super.insertItem( slot, fs, simulate );
 	}
 
 	@Override
@@ -71,17 +63,8 @@ public class FluidCellConfig extends CellConfig
 		{
 			super.setStackInSlot( slot, stack );
 		}
-		FluidStack fluid = FluidUtil.getFluidContained( stack );
-		if( fluid == null || !Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).isPresent() )
-		{
-			return;
-		}
-
-		fluid.amount = Fluid.BUCKET_VOLUME;
-		ItemStack is = Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).get();
-		FluidDummyItem item = (FluidDummyItem) is.getItem();
-		item.setFluidStack( is, fluid );
-		super.setStackInSlot( slot, is );
+		ItemStack fs = FluidDummyItem.createStackfromFluidContainer( stack );
+		super.setStackInSlot( slot, fs );
 	}
 
 	@Override
@@ -91,16 +74,12 @@ public class FluidCellConfig extends CellConfig
 		{
 			super.isItemValidForSlot( slot, stack );
 		}
-		FluidStack fluid = FluidUtil.getFluidContained( stack );
-		if( fluid == null || !Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).isPresent() )
+		ItemStack fs = FluidDummyItem.createStackfromFluidContainer( stack );
+		if (fs.isEmpty())
 		{
 			return false;
 		}
-		fluid.amount = Fluid.BUCKET_VOLUME;
-		ItemStack is = Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).get();
-		FluidDummyItem item = (FluidDummyItem) is.getItem();
-		item.setFluidStack( is, fluid );
-		return super.isItemValidForSlot( slot, is );
+		return super.isItemValidForSlot( slot, fs );
 	}
 
 }

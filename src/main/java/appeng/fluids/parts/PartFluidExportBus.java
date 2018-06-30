@@ -21,14 +21,11 @@ package appeng.fluids.parts;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Verify;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -44,10 +41,8 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
-import appeng.fluids.util.AEFluidStack;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
@@ -118,17 +113,12 @@ public class PartFluidExportBus extends PartSharedFluidBus
 
 				if( fh != null )
 				{
-					for( int i = 0; i < this.getConfig().getSlots(); i++ )
+					for( int i = 0; i < this.getConfig().length; i++ )
 					{
-						final IAEItemStack stack = this.getConfig().getAEStackInSlot( i );
-
-						if( stack != null && stack.getDefinition() != null )
+						IAEFluidStack fluid = this.getConfig()[i];
+						if( fluid != null )
 						{
-							final IFluidHandlerItem ifh = stack.getDefinition().getCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null );
-
-							Verify.verifyNotNull( ifh, "IFluidHandlerItem is null" );
-
-							final AEFluidStack toExtract = AEFluidStack.fromFluidStack( ifh.drain( Integer.MAX_VALUE, false ) );
+							final IAEFluidStack toExtract = fluid.copy();
 
 							toExtract.setStackSize( this.calculateAmountToSend() );
 

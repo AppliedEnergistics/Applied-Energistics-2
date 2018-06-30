@@ -21,15 +21,12 @@ package appeng.fluids.parts;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.base.Verify;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -44,7 +41,6 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.fluids.util.AEFluidStack;
@@ -155,22 +151,12 @@ public class PartFluidImportBus extends PartSharedFluidBus
 
 	private boolean isInFilter( FluidStack fluid )
 	{
-		for( int i = 0; i < this.getConfig().getSlots(); i++ )
+		for( int i = 0; i < this.getConfig().length; i++ )
 		{
-			final IAEItemStack stack = this.getConfig().getAEStackInSlot( i );
-
-			if( stack != null && stack.getDefinition() != null )
+			final IAEFluidStack stack = this.getConfig()[i];
+			if( stack != null && stack.equals( fluid ) )
 			{
-				final IFluidHandlerItem fh = stack.getDefinition().getCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null );
-
-				Verify.verifyNotNull( fh, "IFluidHandlerItem is null" );
-
-				final FluidStack filtered = fh.drain( Integer.MAX_VALUE, false );
-
-				if( filtered != null && filtered.isFluidEqual( fluid ) )
-				{
-					return true;
-				}
+				return true;
 			}
 		}
 		return false;
@@ -178,10 +164,9 @@ public class PartFluidImportBus extends PartSharedFluidBus
 
 	private boolean filterEnabled()
 	{
-		for( int i = 0; i < this.getConfig().getSlots(); i++ )
+		for( int i = 0; i < this.getConfig().length; i++ )
 		{
-			final IAEItemStack stack = this.getConfig().getAEStackInSlot( i );
-
+			final IAEFluidStack stack = this.getConfig()[i];
 			if( stack != null )
 			{
 				return true;

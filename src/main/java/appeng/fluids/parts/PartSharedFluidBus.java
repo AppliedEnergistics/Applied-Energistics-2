@@ -38,12 +38,16 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.storage.channels.IFluidStorageChannel;
+import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.AECableType;
 import appeng.core.sync.GuiBridge;
+import appeng.fluids.items.FluidDummyItem;
+import appeng.fluids.util.AEFluidStack;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.PartUpgradeable;
-import appeng.tile.inventory.AppEngInternalAEInventory;
+import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
+import appeng.util.inv.InvOperation;
 
 
 /**
@@ -54,12 +58,14 @@ import appeng.util.Platform;
 public abstract class PartSharedFluidBus extends PartUpgradeable implements IGridTickable
 {
 
-	private final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 9 );
+	private final AppEngInternalInventory config = new AppEngInternalInventory( this, 9 );
+	private final IAEFluidStack[] configStacks;
 	private boolean lastRedstone;
 
 	public PartSharedFluidBus( ItemStack is )
 	{
 		super( is );
+		configStacks = new IAEFluidStack[config.getSlots()];
 	}
 
 	@Override
@@ -149,7 +155,7 @@ public abstract class PartSharedFluidBus extends PartUpgradeable implements IGri
 	{
 		if( name.equals( "config" ) )
 		{
-			return this.getConfig();
+			return this.config;
 		}
 
 		return super.getInventoryByName( name );
@@ -178,22 +184,43 @@ public abstract class PartSharedFluidBus extends PartUpgradeable implements IGri
 	public void readFromNBT( NBTTagCompound extra )
 	{
 		super.readFromNBT( extra );
-		this.getConfig().readFromNBT( extra, "config" );
+		this.config.readFromNBT( extra, "config" );
+
+		this.updateFluidStacks();
 	}
 
 	@Override
 	public void writeToNBT( NBTTagCompound extra )
 	{
 		super.writeToNBT( extra );
-		this.getConfig().writeToNBT( extra, "config" );
+		this.config.writeToNBT( extra, "config" );
 	}
 
-	public AppEngInternalAEInventory getConfig()
+	@Override
+	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
 	{
-		return this.config;
+		if( inv == this.config )
+		{
+			this.updateFluidStacks();
+		}
+		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
 	}
 
-	protected IFluidStorageChannel getChannel(){
+	private void updateFluidStacks()
+	{
+		for( int i = 0; i < this.config.getSlots(); ++i )
+		{
+			this.configStacks[i] = AEFluidStack.fromFluidStack( FluidDummyItem.getFluidFromStack( this.config.getStackInSlot( i ) ) );
+		}
+	}
+
+	protected IAEFluidStack[] getConfig()
+	{
+		return this.configStacks;
+	}
+
+	protected IFluidStorageChannel getChannel()
+	{
 		return AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
 	}
 

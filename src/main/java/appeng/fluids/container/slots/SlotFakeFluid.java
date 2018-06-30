@@ -22,10 +22,10 @@ package appeng.fluids.container.slots;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.container.slot.SlotFake;
+import appeng.fluids.items.FluidDummyItem;
 
 
 /**
@@ -35,18 +35,25 @@ import appeng.container.slot.SlotFake;
  */
 public class SlotFakeFluid extends SlotFake implements IFluidSlot
 {
+	private FluidStack cachedStack = null;
+
 	public SlotFakeFluid( IItemHandler inv, int idx, int x, int y )
 	{
 		super( inv, idx, x, y );
 		this.setIIcon( 12 * 16 + 15 );
+		this.updateFluidStack();
 	}
 
 	@Override
 	public void putStack( ItemStack is )
 	{
-		if( this.isItemValid( is ) || is.isEmpty() )
+		if( is.isEmpty() || is.getItem() instanceof FluidDummyItem )
 		{
 			super.putStack( is );
+		}
+		else if( this.isItemValid( is ) )
+		{
+			super.putStack( FluidDummyItem.createStackfromFluidContainer( is ) );
 		}
 	}
 
@@ -63,17 +70,20 @@ public class SlotFakeFluid extends SlotFake implements IFluidSlot
 	}
 
 	@Override
+	public void onSlotChanged()
+	{
+		super.onSlotChanged();
+		this.updateFluidStack();
+	}
+
+	private void updateFluidStack()
+	{
+		this.cachedStack = FluidDummyItem.getFluidFromStack( this.getStack() );
+	}
+
+	@Override
 	public FluidStack getFluidStack()
 	{
-		if( !this.getStack().isEmpty() )
-		{
-			IFluidHandlerItem fh = this.getStack().getCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null );
-			if( fh == null )
-			{
-				throw new NullPointerException( "Item did not give IFluidHandlerItem: " + this.getStack().getDisplayName() );
-			}
-			return fh.drain( Integer.MAX_VALUE, false );
-		}
-		return null;
+		return this.cachedStack;
 	}
 }

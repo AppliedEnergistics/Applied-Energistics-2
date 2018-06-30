@@ -32,7 +32,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerConcatenate;
 import net.minecraftforge.items.IItemHandler;
 
@@ -61,6 +60,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.capabilities.Capabilities;
 import appeng.core.settings.TickRates;
+import appeng.fluids.items.FluidDummyItem;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
@@ -68,7 +68,7 @@ import appeng.me.helpers.MachineSource;
 import appeng.me.storage.MEMonitorIFluidHandler;
 import appeng.me.storage.MEMonitorPassThrough;
 import appeng.me.storage.NullInventory;
-import appeng.tile.inventory.AppEngInternalAEInventory;
+import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
@@ -87,7 +87,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	private final IStorageMonitorableAccessor accessor = this::getMonitorable;
 	private final AEFluidTank[] tanks;
 	private final IFluidHandler storage;
-	private final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, NUMBER_OF_TANKS );
+	private final AppEngInternalInventory config = new AppEngInternalInventory( this, NUMBER_OF_TANKS );
 	private final IAEFluidStack[] configStacks;
 	private final IAEFluidStack[] requireWork;
 	private final boolean[] tankChanged;
@@ -258,19 +258,12 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		for( int x = 0; x < NUMBER_OF_TANKS; x++ )
 		{
 			this.configStacks[x] = null;
-			ItemStack is = this.config.getStackInSlot( x );
-			if( !is.isEmpty() )
+			FluidStack fs = FluidDummyItem.getFluidFromStack( this.config.getStackInSlot( x ) );
+			if( fs != null )
 			{
-				IFluidHandlerItem fh = is.getCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null );
-				if( fh != null )
-				{
-					FluidStack fs = fh.drain( Fluid.BUCKET_VOLUME, false );
-					if( fs != null && fs.amount > 0 )
-					{
-						this.configStacks[x] = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createStack( fs );
-					}
-				}
+				this.configStacks[x] = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createStack( fs );
 			}
+
 			this.updatePlan( x );
 		}
 
@@ -352,6 +345,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 			if( stored == null || stored.amount == 0 ) // need to add stuff!
 			{
 				this.requireWork[slot] = req.copy();
+				this.requireWork[slot].setStackSize( TANK_CAPACITY );
 				return;
 			}
 			else if( req.getFluid().equals( stored.getFluid() ) ) // same type ( qty different? )!
