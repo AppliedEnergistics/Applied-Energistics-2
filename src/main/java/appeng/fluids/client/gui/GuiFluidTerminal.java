@@ -175,7 +175,7 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 			if( fluidSlot.getFluidStack() != null && fluidSlot.shouldRenderAsFluid() )
 			{
 				final IAEFluidStack fluidStack = fluidSlot.getAEFluidStack();
-				final String formattedAmount = NumberFormat.getNumberInstance( Locale.US ).format( fluidStack.getStackSize() ) + " mB";
+				final String formattedAmount = NumberFormat.getNumberInstance( Locale.US ).format( fluidStack.getStackSize() / 1000.0 ) + " B";
 
 				final String modName = "" + TextFormatting.BLUE + TextFormatting.ITALIC + Loader.instance()
 						.getIndexedModList()
