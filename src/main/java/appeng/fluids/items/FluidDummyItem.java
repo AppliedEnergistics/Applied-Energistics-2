@@ -26,10 +26,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
-import appeng.core.Api;
 import appeng.items.AEBaseItem;
 
 
@@ -76,46 +73,6 @@ public class FluidDummyItem extends AEBaseItem
 			fs.writeToNBT( tag );
 			is.setTagCompound( tag );
 		}
-	}
-
-	public static ItemStack createStackfromFluidContainer( final ItemStack stack )
-	{
-		if( stack.isEmpty() )
-		{
-			return ItemStack.EMPTY;
-		}
-		final IFluidHandlerItem fluidHandler = FluidUtil.getFluidHandler( stack );
-		if( fluidHandler != null )
-		{
-			return createStackfromFluidStack( fluidHandler.drain( Integer.MAX_VALUE, false ) );
-		}
-		return ItemStack.EMPTY;
-	}
-
-	public static ItemStack createStackfromFluidStack( final FluidStack fs )
-	{
-		if( fs == null || fs.getFluid() == null )
-		{
-			return ItemStack.EMPTY;
-		}
-
-		ItemStack is = Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-		if( !is.isEmpty() )
-		{
-			FluidDummyItem item = (FluidDummyItem) is.getItem();
-			item.setFluidStack( is, fs );
-			return is;
-		}
-		return ItemStack.EMPTY;
-	}
-
-	public static FluidStack getFluidFromStack( final ItemStack is )
-	{
-		if( !is.isEmpty() && is.getItem() instanceof FluidDummyItem )
-		{
-			return ( (FluidDummyItem) is.getItem() ).getFluidStack( is );
-		}
-		return null;
 	}
 
 	@Override
