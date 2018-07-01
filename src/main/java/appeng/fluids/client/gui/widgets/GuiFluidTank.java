@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui.widgets;
+package appeng.fluids.client.gui.widgets;
 
 
 import net.minecraft.client.Minecraft;
@@ -30,6 +30,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.util.AEColor;
+import appeng.client.gui.widgets.ITooltip;
 
 
 @SideOnly( Side.CLIENT )

@@ -19,10 +19,13 @@
 package appeng.fluids.container;
 
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -39,11 +42,11 @@ import appeng.api.storage.data.IItemList;
 import appeng.container.guisync.GuiSync;
 import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.fluids.container.slots.OptionalSlotFakeFluid;
-import appeng.fluids.container.slots.SlotFakeFluid;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketFluidSlot;
 import appeng.fluids.parts.PartFluidStorageBus;
+import appeng.fluids.util.IAEFluidTank;
 import appeng.util.Platform;
-import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.iterators.NullIterator;
 
 
@@ -52,7 +55,7 @@ import appeng.util.iterators.NullIterator;
  * @version rv6 - 22/05/2018
  * @since rv6 22/05/2018
  */
-public class ContainerFluidStorageBus extends ContainerUpgradeable
+public class ContainerFluidStorageBus extends ContainerUpgradeable implements IFluidSyncContainer
 {
 
 	private final PartFluidStorageBus storageBus;
@@ -78,31 +81,21 @@ public class ContainerFluidStorageBus extends ContainerUpgradeable
 	@Override
 	protected void setupConfig()
 	{
-		final int xo = 8;
-		final int yo = 23 + 6;
-
-		final IItemHandler config = this.getUpgradeable().getInventoryByName( "config" );
-		for( int y = 0; y < 7; y++ )
-		{
-			for( int x = 0; x < 9; x++ )
-			{
-				if( y < 2 )
-				{
-					this.addSlotToContainer( new SlotFakeFluid( config, y * 9 + x, xo + x * 18, yo + y * 18 ) );
-				}
-				else
-				{
-					this.addSlotToContainer( new OptionalSlotFakeFluid( config, this, y * 9 + x, xo, yo, x, y, y - 2 ) );
-				}
-			}
-		}
-
 		final IItemHandler upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
-		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getInventoryPlayer() ) ).setNotDraggable() );
-		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.getInventoryPlayer() ) ).setNotDraggable() );
-		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.getInventoryPlayer() ) ).setNotDraggable() );
-		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.getInventoryPlayer() ) ).setNotDraggable() );
-		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 4, 187, 8 + 18 * 4, this.getInventoryPlayer() ) ).setNotDraggable() );
+		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getInventoryPlayer() ) )
+				.setNotDraggable() );
+		this.addSlotToContainer(
+				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.getInventoryPlayer() ) )
+						.setNotDraggable() );
+		this.addSlotToContainer(
+				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.getInventoryPlayer() ) )
+						.setNotDraggable() );
+		this.addSlotToContainer(
+				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.getInventoryPlayer() ) )
+						.setNotDraggable() );
+		this.addSlotToContainer(
+				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 4, 187, 8 + 18 * 4, this.getInventoryPlayer() ) )
+						.setNotDraggable() );
 	}
 
 	@Override
@@ -127,9 +120,18 @@ public class ContainerFluidStorageBus extends ContainerUpgradeable
 			this.setFuzzyMode( (FuzzyMode) this.getUpgradeable().getConfigManager().getSetting( Settings.FUZZY_MODE ) );
 			this.setReadWriteMode( (AccessRestriction) this.getUpgradeable().getConfigManager().getSetting( Settings.ACCESS ) );
 			this.setStorageFilter( (StorageFilter) this.getUpgradeable().getConfigManager().getSetting( Settings.STORAGE_FILTER ) );
+
+			this.sendFluidSlots( this.storageBus.getConfig() );
 		}
 
 		this.standardDetectAndSendChanges();
+	}
+
+	@Override
+	public void addListener( IContainerListener listener )
+	{
+		super.addListener( listener );
+		this.sendFluidSlots( this.storageBus.getConfig() );
 	}
 
 	@Override
@@ -142,36 +144,39 @@ public class ContainerFluidStorageBus extends ContainerUpgradeable
 
 	public void clear()
 	{
-		ItemHandlerUtil.clear( this.getUpgradeable().getInventoryByName( "config" ) );
+		IAEFluidTank h = this.storageBus.getConfig();
+		for( int i = 0; i < h.getSlots(); ++i )
+		{
+			h.setFluidInSlot( i, null );
+		}
 		this.detectAndSendChanges();
 	}
 
 	public void partition()
 	{
-		final IItemHandler inv = this.getUpgradeable().getInventoryByName( "config" );
+		IAEFluidTank h = this.storageBus.getConfig();
 
 		final IMEInventory<IAEFluidStack> cellInv = this.storageBus.getInternalHandler();
 
 		Iterator<IAEFluidStack> i = new NullIterator<>();
 		if( cellInv != null )
 		{
-			final IItemList<IAEFluidStack> list = cellInv.getAvailableItems( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList() );
+			final IItemList<IAEFluidStack> list = cellInv
+					.getAvailableItems( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList() );
 			i = list.iterator();
 		}
 
-		for( int x = 0; x < inv.getSlots(); x++ )
+		for( int x = 0; x < h.getSlots(); x++ )
 		{
 			if( i.hasNext() && this.isSlotEnabled( ( x / 9 ) - 2 ) )
 			{
-				final ItemStack g = i.next().asItemStackRepresentation();
-				ItemHandlerUtil.setStackInSlot( inv, x, g );
+				h.setFluidInSlot( x, i.next() );
 			}
 			else
 			{
-				ItemHandlerUtil.setStackInSlot( inv, x, ItemStack.EMPTY );
+				h.setFluidInSlot( x, null );
 			}
 		}
-
 		this.detectAndSendChanges();
 	}
 
@@ -193,5 +198,30 @@ public class ContainerFluidStorageBus extends ContainerUpgradeable
 	private void setStorageFilter( final StorageFilter storageFilter )
 	{
 		this.storageFilter = storageFilter;
+	}
+
+	private void sendFluidSlots( IAEFluidTank fluids )
+	{
+		final Map<Integer, IAEFluidStack> sendMap = new HashMap<>();
+		for( int i = 0; i < fluids.getSlots(); ++i )
+		{
+			sendMap.put( i, fluids.getFluidInSlot( i ) );
+		}
+		for( final IContainerListener listener : this.listeners )
+		{
+			if( listener instanceof EntityPlayerMP )
+			{
+				NetworkHandler.instance().sendTo( new PacketFluidSlot( sendMap ), (EntityPlayerMP) listener );
+			}
+		}
+	}
+
+	@Override
+	public void receiveFluidSlots( Map<Integer, IAEFluidStack> fluids )
+	{
+		for( final Map.Entry<Integer, IAEFluidStack> entry : fluids.entrySet() )
+		{
+			this.storageBus.getConfig().setFluidInSlot( entry.getKey(), entry.getValue() );
+		}
 	}
 }

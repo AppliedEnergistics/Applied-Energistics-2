@@ -16,50 +16,59 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.me;
+package appeng.fluids.util;
 
+
+import net.minecraftforge.fluids.FluidTank;
 
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.util.Platform;
 
 
-/**
- * @author BrockWS
- * @version rv6 - 22/05/2018
- * @since rv6 22/05/2018
- */
-public class InternalFluidSlotME
+public class AEFluidTank extends FluidTank implements IAEFluidTank
 {
+	private final IAEFluidInventory host;
 
-	private final int offset;
-	private final int xPos;
-	private final int yPos;
-	private final FluidRepo repo;
-
-	public InternalFluidSlotME( final FluidRepo def, final int offset, final int displayX, final int displayY )
+	public AEFluidTank( IAEFluidInventory host, int capacity )
 	{
-		this.repo = def;
-		this.offset = offset;
-		this.xPos = displayX;
-		this.yPos = displayY;
+		super( capacity );
+		this.host = host;
 	}
 
-	IAEFluidStack getAEStack()
+	@Override
+	protected void onContentsChanged()
 	{
-		return this.repo.getReferenceFluid( this.offset );
+		if( host != null && Platform.isServer() )
+		{
+			host.onFluidInventoryChanged( this, 0 );
+		}
+		super.onContentsChanged();
 	}
 
-	boolean hasPower()
+	@Override
+	public void setFluidInSlot( int slot, IAEFluidStack fluid )
 	{
-		return this.repo.hasPower();
+		if( slot == 0 )
+		{
+			this.setFluid( fluid == null ? null : fluid.getFluidStack() );
+			this.onContentsChanged();
+		}
 	}
 
-	int getxPosition()
+	@Override
+	public IAEFluidStack getFluidInSlot( int slot )
 	{
-		return this.xPos;
+		if( slot == 0 )
+		{
+			return AEFluidStack.fromFluidStack( this.getFluid() );
+		}
+		return null;
 	}
 
-	int getyPosition()
+	@Override
+	public int getSlots()
 	{
-		return this.yPos;
+		return 1;
 	}
+
 }

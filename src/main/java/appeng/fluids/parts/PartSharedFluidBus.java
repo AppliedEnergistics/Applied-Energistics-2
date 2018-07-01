@@ -29,7 +29,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.RedstoneMode;
@@ -38,16 +37,13 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.storage.channels.IFluidStorageChannel;
-import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.AECableType;
 import appeng.core.sync.GuiBridge;
-import appeng.fluids.items.FluidDummyItem;
-import appeng.fluids.util.AEFluidStack;
+import appeng.fluids.util.AEFluidInventory;
+import appeng.fluids.util.IAEFluidTank;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.PartUpgradeable;
-import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
-import appeng.util.inv.InvOperation;
 
 
 /**
@@ -58,14 +54,12 @@ import appeng.util.inv.InvOperation;
 public abstract class PartSharedFluidBus extends PartUpgradeable implements IGridTickable
 {
 
-	private final AppEngInternalInventory config = new AppEngInternalInventory( this, 9 );
-	private final IAEFluidStack[] configStacks;
+	private final AEFluidInventory config = new AEFluidInventory( null, 9 );
 	private boolean lastRedstone;
 
 	public PartSharedFluidBus( ItemStack is )
 	{
 		super( is );
-		configStacks = new IAEFluidStack[config.getSlots()];
 	}
 
 	@Override
@@ -150,17 +144,6 @@ public abstract class PartSharedFluidBus extends PartUpgradeable implements IGri
 		return null;
 	}
 
-	@Override
-	public IItemHandler getInventoryByName( final String name )
-	{
-		if( name.equals( "config" ) )
-		{
-			return this.config;
-		}
-
-		return super.getInventoryByName( name );
-	}
-
 	protected int calculateAmountToSend()
 	{
 		double amount = this.getChannel().transferFactor();
@@ -185,8 +168,6 @@ public abstract class PartSharedFluidBus extends PartUpgradeable implements IGri
 	{
 		super.readFromNBT( extra );
 		this.config.readFromNBT( extra, "config" );
-
-		this.updateFluidStacks();
 	}
 
 	@Override
@@ -196,27 +177,9 @@ public abstract class PartSharedFluidBus extends PartUpgradeable implements IGri
 		this.config.writeToNBT( extra, "config" );
 	}
 
-	@Override
-	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
+	public IAEFluidTank getConfig()
 	{
-		if( inv == this.config )
-		{
-			this.updateFluidStacks();
-		}
-		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
-	}
-
-	private void updateFluidStacks()
-	{
-		for( int i = 0; i < this.config.getSlots(); ++i )
-		{
-			this.configStacks[i] = AEFluidStack.fromFluidStack( FluidDummyItem.getFluidFromStack( this.config.getStackInSlot( i ) ) );
-		}
-	}
-
-	protected IAEFluidStack[] getConfig()
-	{
-		return this.configStacks;
+		return this.config;
 	}
 
 	protected IFluidStorageChannel getChannel()

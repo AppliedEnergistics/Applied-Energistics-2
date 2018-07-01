@@ -151,9 +151,9 @@ public class PartFluidImportBus extends PartSharedFluidBus
 
 	private boolean isInFilter( FluidStack fluid )
 	{
-		for( int i = 0; i < this.getConfig().length; i++ )
+		for( int i = 0; i < this.getConfig().getSlots(); i++ )
 		{
-			final IAEFluidStack stack = this.getConfig()[i];
+			final IAEFluidStack stack = this.getConfig().getFluidInSlot( i );
 			if( stack != null && stack.equals( fluid ) )
 			{
 				return true;
@@ -164,9 +164,9 @@ public class PartFluidImportBus extends PartSharedFluidBus
 
 	private boolean filterEnabled()
 	{
-		for( int i = 0; i < this.getConfig().length; i++ )
+		for( int i = 0; i < this.getConfig().getSlots(); i++ )
 		{
-			final IAEFluidStack stack = this.getConfig()[i];
+			final IAEFluidStack stack = this.getConfig().getFluidInSlot( i );
 			if( stack != null )
 			{
 				return true;

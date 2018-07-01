@@ -113,9 +113,9 @@ public class PartFluidExportBus extends PartSharedFluidBus
 
 				if( fh != null )
 				{
-					for( int i = 0; i < this.getConfig().length; i++ )
+					for( int i = 0; i < this.getConfig().getSlots(); i++ )
 					{
-						IAEFluidStack fluid = this.getConfig()[i];
+						IAEFluidStack fluid = this.getConfig().getFluidInSlot( i );
 						if( fluid != null )
 						{
 							final IAEFluidStack toExtract = fluid.copy();

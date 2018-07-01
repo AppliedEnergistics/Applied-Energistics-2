@@ -19,16 +19,21 @@
 package appeng.fluids.container;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.items.IItemHandler;
+import java.util.HashMap;
+import java.util.Map;
 
-import appeng.api.implementations.IUpgradeableHost;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IContainerListener;
+
+import appeng.api.config.SecurityPermissions;
+import appeng.api.storage.data.IAEFluidStack;
 import appeng.container.implementations.ContainerUpgradeable;
-import appeng.fluids.container.slots.OptionalSlotFakeFluid;
-import appeng.fluids.container.slots.SlotFakeFluid;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketFluidSlot;
+import appeng.fluids.parts.PartSharedFluidBus;
+import appeng.fluids.util.IAEFluidTank;
+import appeng.util.Platform;
 
 
 /**
@@ -36,40 +41,64 @@ import appeng.fluids.container.slots.SlotFakeFluid;
  * @version rv5 - 1/05/2018
  * @since rv5 1/05/2018
  */
-public class ContainerFluidIO extends ContainerUpgradeable
+public class ContainerFluidIO extends ContainerUpgradeable implements IFluidSyncContainer
 {
-	public ContainerFluidIO( InventoryPlayer ip, IUpgradeableHost te )
+	private final PartSharedFluidBus bus;
+
+	public ContainerFluidIO( InventoryPlayer ip, PartSharedFluidBus te )
 	{
 		super( ip, te );
+		this.bus = te;
 	}
 
 	@Override
 	protected void setupConfig()
 	{
 		this.setupUpgrades();
+	}
 
-		final IItemHandler inv = this.getUpgradeable().getInventoryByName( "config" );
-		final int y = 40;
-		final int x = 80;
-		this.addSlotToContainer( new SlotFakeFluid( inv, 0, x, y ) );
+	@Override
+	public void detectAndSendChanges()
+	{
+		this.verifyPermissions( SecurityPermissions.BUILD, false );
 
-		if( this.supportCapacity() )
+		if( Platform.isServer() )
 		{
-			this.addSlotToContainer( new OptionalSlotFakeFluid( inv, this, 1, x, y, -1, 0, 1 ) );
-			this.addSlotToContainer( new OptionalSlotFakeFluid( inv, this, 2, x, y, 1, 0, 1 ) );
-			this.addSlotToContainer( new OptionalSlotFakeFluid( inv, this, 3, x, y, 0, -1, 1 ) );
-			this.addSlotToContainer( new OptionalSlotFakeFluid( inv, this, 4, x, y, 0, 1, 1 ) );
+			this.sendFluidSlots( this.bus.getConfig() );
+		}
 
-			this.addSlotToContainer( new OptionalSlotFakeFluid( inv, this, 5, x, y, -1, -1, 2 ) );
-			this.addSlotToContainer( new OptionalSlotFakeFluid( inv, this, 6, x, y, 1, -1, 2 ) );
-			this.addSlotToContainer( new OptionalSlotFakeFluid( inv, this, 7, x, y, -1, 1, 2 ) );
-			this.addSlotToContainer( new OptionalSlotFakeFluid( inv, this, 8, x, y, 1, 1, 2 ) );
+		super.detectAndSendChanges();
+	}
+
+	@Override
+	public void addListener( IContainerListener listener )
+	{
+		super.addListener( listener );
+		this.sendFluidSlots( this.bus.getConfig() );
+	}
+
+	private void sendFluidSlots( IAEFluidTank fluids )
+	{
+		final Map<Integer, IAEFluidStack> sendMap = new HashMap<>();
+		for( int i = 0; i < fluids.getSlots(); ++i )
+		{
+			sendMap.put( i, fluids.getFluidInSlot( i ) );
+		}
+		for( final IContainerListener listener : this.listeners )
+		{
+			if( listener instanceof EntityPlayerMP )
+			{
+				NetworkHandler.instance().sendTo( new PacketFluidSlot( sendMap ), (EntityPlayerMP) listener );
+			}
 		}
 	}
 
 	@Override
-	public boolean isValidForSlot( Slot s, ItemStack i )
+	public void receiveFluidSlots( Map<Integer, IAEFluidStack> fluids )
 	{
-		return s instanceof SlotFakeFluid ? i.hasCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null ) : super.isValidForSlot( s, i );
+		for( final Map.Entry<Integer, IAEFluidStack> entry : fluids.entrySet() )
+		{
+			( (PartSharedFluidBus) this.getUpgradeable() ).getConfig().setFluidInSlot( entry.getKey(), entry.getValue() );
+		}
 	}
 }

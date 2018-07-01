@@ -30,54 +30,66 @@ import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
+import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.fluids.container.ContainerFluidInterface;
+import appeng.fluids.container.IFluidSyncContainer;
+import appeng.fluids.util.AEFluidStack;
 
 
-public class PacketFluidTank extends AppEngPacket
+public class PacketFluidSlot extends AppEngPacket
 {
-	private final Map<Integer, NBTTagCompound> updateMap;
+	private final Map<Integer, IAEFluidStack> list;
 
-	public PacketFluidTank( final ByteBuf stream )
+	public PacketFluidSlot( final ByteBuf stream )
 	{
-		this.updateMap = new HashMap<>();
-		NBTTagCompound tags = ByteBufUtils.readTag( stream );
+		this.list = new HashMap<>();
+		NBTTagCompound tag = ByteBufUtils.readTag( stream );
 
-		for( final String key : tags.getKeySet() )
+		for( final String key : tag.getKeySet() )
 		{
-			updateMap.put( Integer.parseInt( key ), tags.getCompoundTag( key ) );
+			this.list.put( Integer.parseInt( key ), AEFluidStack.fromNBT( tag.getCompoundTag( key ) ) );
 		}
 	}
 
 	// api
-	public PacketFluidTank( final Map<Integer, NBTTagCompound> updateMap )
+	public PacketFluidSlot( final Map<Integer, IAEFluidStack> list )
 	{
-		this.updateMap = updateMap;
-
-		final NBTTagCompound tag = new NBTTagCompound();
-		for( Map.Entry<Integer, NBTTagCompound> e : updateMap.entrySet() )
+		this.list = list;
+		final NBTTagCompound sendTag = new NBTTagCompound();
+		for( Map.Entry<Integer, IAEFluidStack> fs : list.entrySet() )
 		{
-			tag.setTag( e.getKey().toString(), e.getValue() );
+			final NBTTagCompound tag = new NBTTagCompound();
+			if( fs.getValue() != null )
+			{
+				fs.getValue().writeToNBT( tag );
+			}
+			sendTag.setTag( fs.getKey().toString(), tag );
 		}
+
 		final ByteBuf data = Unpooled.buffer();
 		data.writeInt( this.getPacketID() );
-		ByteBufUtils.writeTag( data, tag );
+		ByteBufUtils.writeTag( data, sendTag );
 		this.configureWrite( data );
-	}
-
-	public Map<Integer, NBTTagCompound> getUpdateMap()
-	{
-		return this.updateMap;
 	}
 
 	@Override
 	public void clientPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
 	{
 		final Container c = player.openContainer;
-		if( c instanceof ContainerFluidInterface )
+		if( c instanceof IFluidSyncContainer )
 		{
-			( (ContainerFluidInterface) c ).receiveTankInfo( this.updateMap );
+			( (IFluidSyncContainer) c ).receiveFluidSlots( this.list );
+		}
+	}
+
+	@Override
+	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	{
+		final Container c = player.openContainer;
+		if( c instanceof IFluidSyncContainer )
+		{
+			( (IFluidSyncContainer) c ).receiveFluidSlots( this.list );
 		}
 	}
 }
