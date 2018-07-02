@@ -19,6 +19,7 @@
 package appeng.fluids.util;
 
 
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidTank;
 
 import appeng.api.storage.data.IAEFluidStack;
@@ -33,6 +34,10 @@ public class AEFluidTank extends FluidTank implements IAEFluidTank
 	{
 		super( capacity );
 		this.host = host;
+		if (host instanceof TileEntity)
+		{
+			this.setTileEntity( (TileEntity) host );
+		}
 	}
 
 	@Override
