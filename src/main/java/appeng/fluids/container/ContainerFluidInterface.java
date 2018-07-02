@@ -19,9 +19,9 @@
 package appeng.fluids.container;
 
 
+import java.util.Collections;
 import java.util.Map;
 
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.tileentity.TileEntity;
@@ -30,9 +30,8 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPart;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.container.AEBaseContainer;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketFluidSlot;
 import appeng.fluids.helper.DualityFluidInterface;
+import appeng.fluids.helper.FluidSyncHelper;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.util.Platform;
 
@@ -40,12 +39,16 @@ import appeng.util.Platform;
 public class ContainerFluidInterface extends AEBaseContainer implements IFluidSyncContainer
 {
 	private final DualityFluidInterface myDuality;
+	private final FluidSyncHelper tankSync;
+	private final FluidSyncHelper configSync;
 
 	public ContainerFluidInterface( final InventoryPlayer ip, final IFluidInterfaceHost te )
 	{
 		super( ip, (TileEntity) ( te instanceof TileEntity ? te : null ), (IPart) ( te instanceof IPart ? te : null ) );
 
 		this.myDuality = te.getDualityFluidInterface();
+		this.tankSync = new FluidSyncHelper( this.myDuality.getTanks(), 0 );
+		this.configSync = new FluidSyncHelper( this.myDuality.getConfig(), DualityFluidInterface.NUMBER_OF_TANKS );
 
 		this.bindPlayerInventory( ip, 0, 231 - /* height of player inventory */82 );
 	}
@@ -57,7 +60,8 @@ public class ContainerFluidInterface extends AEBaseContainer implements IFluidSy
 
 		if( Platform.isServer() )
 		{
-			this.sendFluidSlots( this.myDuality.writeFluidInfo( false ) );
+			this.configSync.sendDiff( this.listeners );
+			this.tankSync.sendDiff( this.listeners );
 		}
 
 		super.detectAndSendChanges();
@@ -67,28 +71,14 @@ public class ContainerFluidInterface extends AEBaseContainer implements IFluidSy
 	public void addListener( IContainerListener listener )
 	{
 		super.addListener( listener );
-		this.sendFluidSlots( listener, this.myDuality.writeFluidInfo( true ) );
-	}
-
-	private void sendFluidSlots( Map<Integer, IAEFluidStack> list )
-	{
-		for( final IContainerListener listener : this.listeners )
-		{
-			this.sendFluidSlots( listener, list );
-		}
-	}
-
-	private void sendFluidSlots( final IContainerListener l, Map<Integer, IAEFluidStack> list )
-	{
-		if( l instanceof EntityPlayerMP )
-		{
-			NetworkHandler.instance().sendTo( new PacketFluidSlot( list ), (EntityPlayerMP) l );
-		}
+		this.configSync.sendFull( Collections.singleton( listener ) );
+		this.tankSync.sendFull( Collections.singleton( listener ) );
 	}
 
 	@Override
 	public void receiveFluidSlots( Map<Integer, IAEFluidStack> fluids )
 	{
-		this.myDuality.readFluidSlots( fluids );
+		this.configSync.readPacket( fluids );
+		this.tankSync.readPacket( fluids );
 	}
 }

@@ -19,20 +19,15 @@
 package appeng.fluids.helper;
 
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerConcatenate;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -60,7 +55,6 @@ import appeng.api.util.DimensionalCoord;
 import appeng.capabilities.Capabilities;
 import appeng.core.settings.TickRates;
 import appeng.fluids.util.AEFluidInventory;
-import appeng.fluids.util.AEFluidTank;
 import appeng.fluids.util.IAEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.helpers.IPriorityHost;
@@ -84,11 +78,9 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	private final IActionSource interfaceRequestSource;
 	private boolean hasConfig = false;
 	private final IStorageMonitorableAccessor accessor = this::getMonitorable;
-	private final AEFluidTank[] tanks;
-	private final IFluidHandler storage;
+	private final AEFluidInventory tanks = new AEFluidInventory( this, NUMBER_OF_TANKS, TANK_CAPACITY );
 	private final AEFluidInventory config = new AEFluidInventory( this, NUMBER_OF_TANKS );
 	private final IAEFluidStack[] requireWork;
-	private boolean fluidsChanged = false;
 	private int isWorking = -1;
 	private int priority;
 
@@ -111,14 +103,11 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		this.fluids.setChangeSource( this.mySource );
 		this.items.setChangeSource( this.mySource );
 
-		this.tanks = new AEFluidTank[NUMBER_OF_TANKS];
 		this.requireWork = new IAEFluidStack[NUMBER_OF_TANKS];
 		for( int i = 0; i < NUMBER_OF_TANKS; ++i )
 		{
-			this.tanks[i] = new AEFluidTank( this, TANK_CAPACITY );
 			this.requireWork[i] = null;
 		}
-		this.storage = new FluidHandlerConcatenate( this.tanks );
 	}
 
 	@Override
@@ -231,7 +220,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	{
 		if( capabilityClass == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY )
 		{
-			return (T) this.storage;
+			return (T) this.tanks;
 		}
 		else if( capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR )
 		{
@@ -304,32 +293,20 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		return false;
 	}
 
-	private int getTankSlot( final IAEFluidTank inventory )
-	{
-		for( int i = 0; i < NUMBER_OF_TANKS; ++i )
-		{
-			if( this.tanks[i] == inventory )
-			{
-				return i;
-			}
-		}
-		throw new IndexOutOfBoundsException();
-	}
-
 	private void updatePlan( final int slot )
 	{
 		final IAEFluidStack req = this.config.getFluidInSlot( slot );
-		final FluidStack stored = this.tanks[slot].drain( TANK_CAPACITY, false );
+		final IAEFluidStack stored = this.tanks.getFluidInSlot( slot );
 
-		if( req == null && ( stored != null && stored.amount > 0 ) )
+		if( req == null && ( stored != null && stored.getStackSize() > 0 ) )
 		{
-			final IAEFluidStack work = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createStack( stored );
+			final IAEFluidStack work = stored.copy();
 			this.requireWork[slot] = work.setStackSize( -work.getStackSize() );
 			return;
 		}
 		else if( req != null )
 		{
-			if( stored == null || stored.amount == 0 ) // need to add stuff!
+			if( stored == null || stored.getStackSize() == 0 ) // need to add stuff!
 			{
 				this.requireWork[slot] = req.copy();
 				this.requireWork[slot].setStackSize( TANK_CAPACITY );
@@ -337,17 +314,17 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 			}
 			else if( req.equals( stored ) ) // same type ( qty different? )!
 			{
-				if( stored.amount < TANK_CAPACITY )
+				if( stored.getStackSize() < TANK_CAPACITY )
 				{
 					this.requireWork[slot] = req.copy();
-					this.requireWork[slot].setStackSize( TANK_CAPACITY - stored.amount );
+					this.requireWork[slot].setStackSize( TANK_CAPACITY - stored.getStackSize() );
 					return;
 				}
 			}
 			else
 			// Stored != null; dispose!
 			{
-				final IAEFluidStack work = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createStack( stored );
+				final IAEFluidStack work = stored.copy();
 				this.requireWork[slot] = work.setStackSize( -work.getStackSize() );
 				return;
 			}
@@ -358,7 +335,6 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 
 	private boolean usePlan( final int slot )
 	{
-		IFluidHandler tank = this.tanks[slot];
 		IAEFluidStack work = this.requireWork[slot];
 		this.isWorking = slot;
 
@@ -372,7 +348,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 			if( work.getStackSize() > 0 )
 			{
 				// make sure strange things didn't happen...
-				if( tank.fill( work.getFluidStack(), false ) != work.getStackSize() )
+				if( this.tanks.fill( slot, work.getFluidStack(), false ) != work.getStackSize() )
 				{
 					changed = true;
 				}
@@ -382,7 +358,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 					if( acquired != null )
 					{
 						changed = true;
-						final int filled = tank.fill( acquired.getFluidStack(), true );
+						final int filled = this.tanks.fill( slot, acquired.getFluidStack(), true );
 						if( filled != acquired.getStackSize() )
 						{
 							throw new IllegalStateException( "bad attempt at managing tanks. ( fill )" );
@@ -396,7 +372,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 				toStore.setStackSize( -toStore.getStackSize() );
 
 				// make sure strange things didn't happen...
-				final FluidStack canExtract = tank.drain( toStore.getFluidStack(), false );
+				final FluidStack canExtract = this.tanks.drain( slot, toStore.getFluidStack(), false );
 				if( canExtract == null || canExtract.amount != toStore.getStackSize() )
 				{
 					changed = true;
@@ -410,7 +386,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 					{
 						// extract items!
 						changed = true;
-						final FluidStack removed = tank.drain( toStore.getFluidStack(), true );
+						final FluidStack removed = this.tanks.drain( slot, toStore.getFluidStack(), true );
 						if( removed == null || toStore.getStackSize() != removed.amount )
 						{
 							throw new IllegalStateException( "bad attempt at managing tanks. ( drain )" );
@@ -434,28 +410,20 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	}
 
 	@Override
-	public void onFluidInventoryChanged( final IAEFluidTank inventory, final int slotIndex )
+	public void onFluidInventoryChanged( final IAEFluidTank inventory, final int slot )
 	{
-		this.fluidsChanged = true;
+		if( this.isWorking == slot )
+		{
+			return;
+		}
 
 		if( inventory == this.config )
 		{
-			if( this.isWorking == slotIndex )
-			{
-				return;
-			}
 			this.readConfig();
 		}
-		else
+		else if( inventory == this.tanks )
 		{
-			final int slot = this.getTankSlot( inventory );
-
 			this.saveChanges();
-
-			if( this.isWorking == slot )
-			{
-				return;
-			}
 
 			final boolean had = this.hasWorkToDo();
 
@@ -498,28 +466,15 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 
 	public void writeToNBT( final NBTTagCompound data )
 	{
-		final NBTTagList tankContents = new NBTTagList();
-		for( int i = 0; i < NUMBER_OF_TANKS; ++i )
-		{
-			tankContents.appendTag( this.tanks[i].writeToNBT( new NBTTagCompound() ) );
-		}
-
 		data.setInteger( "priority", this.priority );
-		data.setTag( "storage", tankContents );
+		this.tanks.writeToNBT( data, "storage" );
 		this.config.writeToNBT( data, "config" );
 	}
 
 	public void readFromNBT( final NBTTagCompound data )
 	{
 		this.config.readFromNBT( data, "config" );
-		final NBTTagList tankContents = data.getTagList( "storage", 10 );
-		if( tankContents != null )
-		{
-			for( int i = 0; i < Math.min( NUMBER_OF_TANKS, tankContents.tagCount() ); ++i )
-			{
-				this.tanks[i].readFromNBT( tankContents.getCompoundTagAt( i ) );
-			}
-		}
+		this.tanks.readFromNBT( data, "storage" );
 		this.priority = data.getInteger( "priority" );
 		this.readConfig();
 	}
@@ -529,45 +484,9 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		return this.config;
 	}
 
-	public AEFluidTank getTank( final int i )
+	public IAEFluidTank getTanks()
 	{
-		return this.tanks[i];
-	}
-
-	public final Map<Integer, IAEFluidStack> writeFluidInfo( final boolean force )
-	{
-		final Map<Integer, IAEFluidStack> ret = new HashMap<>();
-		if( force || this.fluidsChanged )
-		{
-			for( int i = 0; i < NUMBER_OF_TANKS; ++i )
-			{
-				ret.put( i, this.tanks[i].getFluidInSlot( 0 ) );
-			}
-			for( int i = 0; i < NUMBER_OF_TANKS; ++i )
-			{
-				ret.put( i + NUMBER_OF_TANKS, this.config.getFluidInSlot( i ) );
-			}
-			if( !force )
-			{
-				this.fluidsChanged = false;
-			}
-		}
-		return ret;
-	}
-
-	public void readFluidSlots( Map<Integer, IAEFluidStack> tagMap )
-	{
-		for( int i = 0; i < NUMBER_OF_TANKS; ++i )
-		{
-			if( tagMap.containsKey( i ) )
-			{
-				this.tanks[i].setFluidInSlot( 0, tagMap.get( i ) );
-			}
-			if( tagMap.containsKey( i + NUMBER_OF_TANKS ) )
-			{
-				this.config.setFluidInSlot( i, tagMap.get( i + NUMBER_OF_TANKS ) );
-			}
-		}
+		return this.tanks;
 	}
 
 	private class InterfaceRequestSource extends MachineSource
@@ -606,7 +525,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 
 		InterfaceInventory( final DualityFluidInterface tileInterface )
 		{
-			super( tileInterface.storage );
+			super( tileInterface.tanks );
 			this.setActionSource( new MachineSource( tileInterface.iHost ) );
 		}
 

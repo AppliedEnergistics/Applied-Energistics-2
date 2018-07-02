@@ -35,7 +35,6 @@ import appeng.fluids.client.gui.widgets.GuiFluidTank;
 import appeng.fluids.container.ContainerFluidInterface;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IFluidInterfaceHost;
-import appeng.fluids.util.AEFluidTank;
 import appeng.fluids.util.IAEFluidTank;
 
 
@@ -59,11 +58,11 @@ public class GuiFluidInterface extends AEBaseGui
 		super.initGui();
 
 		final IAEFluidTank configFluids = this.host.getDualityFluidInterface().getConfig();
+		final IAEFluidTank fluidTank = this.host.getDualityFluidInterface().getTanks();
 
 		for( int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i )
 		{
-			final AEFluidTank fluidTank = this.host.getDualityFluidInterface().getTank( i );
-			final GuiFluidTank guiTank = new GuiFluidTank( ID_BUTTON_TANK + i, fluidTank, this.getGuiLeft() + 35 + 18 * i, this.getGuiTop() + 53, 16, 68 );
+			final GuiFluidTank guiTank = new GuiFluidTank( ID_BUTTON_TANK + i, fluidTank, i, this.getGuiLeft() + 35 + 18 * i, this.getGuiTop() + 53, 16, 68 );
 			this.buttonList.add( guiTank );
 			this.guiSlots.add( new GuiFluidSlot( configFluids, i, i + DualityFluidInterface.NUMBER_OF_TANKS, 35 + 18 * i, 35 ) );
 		}

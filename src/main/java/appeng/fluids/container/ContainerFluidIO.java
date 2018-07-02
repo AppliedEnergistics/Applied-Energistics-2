@@ -19,20 +19,17 @@
 package appeng.fluids.container;
 
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IContainerListener;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.container.implementations.ContainerUpgradeable;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketFluidSlot;
+import appeng.fluids.helper.FluidSyncHelper;
 import appeng.fluids.parts.PartSharedFluidBus;
-import appeng.fluids.util.IAEFluidTank;
 import appeng.util.Platform;
 
 
@@ -44,11 +41,13 @@ import appeng.util.Platform;
 public class ContainerFluidIO extends ContainerUpgradeable implements IFluidSyncContainer
 {
 	private final PartSharedFluidBus bus;
+	private final FluidSyncHelper configSync;
 
 	public ContainerFluidIO( InventoryPlayer ip, PartSharedFluidBus te )
 	{
 		super( ip, te );
 		this.bus = te;
+		this.configSync = new FluidSyncHelper( this.bus.getConfig(), 0 );
 	}
 
 	@Override
@@ -64,7 +63,7 @@ public class ContainerFluidIO extends ContainerUpgradeable implements IFluidSync
 
 		if( Platform.isServer() )
 		{
-			this.sendFluidSlots( this.bus.getConfig() );
+			this.configSync.sendDiff( this.listeners );
 		}
 
 		super.detectAndSendChanges();
@@ -74,31 +73,12 @@ public class ContainerFluidIO extends ContainerUpgradeable implements IFluidSync
 	public void addListener( IContainerListener listener )
 	{
 		super.addListener( listener );
-		this.sendFluidSlots( this.bus.getConfig() );
-	}
-
-	private void sendFluidSlots( IAEFluidTank fluids )
-	{
-		final Map<Integer, IAEFluidStack> sendMap = new HashMap<>();
-		for( int i = 0; i < fluids.getSlots(); ++i )
-		{
-			sendMap.put( i, fluids.getFluidInSlot( i ) );
-		}
-		for( final IContainerListener listener : this.listeners )
-		{
-			if( listener instanceof EntityPlayerMP )
-			{
-				NetworkHandler.instance().sendTo( new PacketFluidSlot( sendMap ), (EntityPlayerMP) listener );
-			}
-		}
+		this.configSync.sendFull( Collections.singleton( listener ) );
 	}
 
 	@Override
 	public void receiveFluidSlots( Map<Integer, IAEFluidStack> fluids )
 	{
-		for( final Map.Entry<Integer, IAEFluidStack> entry : fluids.entrySet() )
-		{
-			( (PartSharedFluidBus) this.getUpgradeable() ).getConfig().setFluidInSlot( entry.getKey(), entry.getValue() );
-		}
+		this.configSync.readPacket( fluids );
 	}
 }
