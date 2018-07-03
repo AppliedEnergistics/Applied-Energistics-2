@@ -380,7 +380,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 						this.sideItemHandler.setStackInSlot( 0, ItemStack.EMPTY );
 					}
 				}
-				this.markDirty();
+				this.saveChanges();
 			}
 			else if( this.finalStep == 16 )
 			{

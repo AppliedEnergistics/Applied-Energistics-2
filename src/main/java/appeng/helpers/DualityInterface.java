@@ -561,14 +561,6 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		return this.storage;
 	}
 
-	public void markDirty()
-	{
-		for( int slot = 0; slot < this.storage.getSlots(); slot++ )
-		{
-			this.storage.markDirty( slot );
-		}
-	}
-
 	@Override
 	public TickingRequest getTickingRequest( final IGridNode node )
 	{
@@ -869,8 +861,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		{
 			this.cancelCrafting();
 		}
-
-		this.markDirty();
+		this.iHost.saveChanges();
 	}
 
 	private void cancelCrafting()
@@ -1251,8 +1242,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	public void setPriority( final int newValue )
 	{
 		this.priority = newValue;
-		this.markDirty();
-
+		this.iHost.saveChanges();
+		
 		try
 		{
 			this.gridProxy.getGrid().postEvent( new MENetworkCraftingPatternChange( this, this.gridProxy.getNode() ) );

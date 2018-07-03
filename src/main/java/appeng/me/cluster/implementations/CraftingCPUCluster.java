@@ -206,7 +206,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		}
 
 		te.setCoreBlock( false );
-		te.markDirty();
+		te.saveChanges();
 		this.tiles.add( 0, te );
 
 		if( te.isStorage() )
@@ -395,7 +395,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	private void markDirty()
 	{
-		this.getCore().markDirty();
+		this.getCore().saveChanges();
 	}
 
 	private void postCraftingStatusChange( final IAEItemStack diff )

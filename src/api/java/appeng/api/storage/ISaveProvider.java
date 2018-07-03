@@ -24,8 +24,11 @@
 package appeng.api.storage;
 
 
+/**
+ * Tells the cell provider that changes have been made an the cell must be persisted
+ *
+ */
 public interface ISaveProvider
 {
-
-	void saveChanges( IMEInventory<?> cellInventory );
+	void saveChanges( ICellInventory<?> cellInventory );
 }

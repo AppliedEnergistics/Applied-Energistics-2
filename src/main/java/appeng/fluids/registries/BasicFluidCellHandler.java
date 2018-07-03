@@ -51,11 +51,11 @@ public class BasicFluidCellHandler implements ICellHandler
 	}
 
 	@Override
-	public <T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory( final ItemStack is, final ISaveProvider container, final IStorageChannel<T> channel )
+	public <T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory( final ItemStack is, final ISaveProvider container, final IStorageChannel<T> channel )
 	{
 		if( channel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
 		{
-			return (IMEInventoryHandler<T>) FluidCellInventory.getCell( is, container );
+			return (ICellInventoryHandler<T>) FluidCellInventory.getCell( is, container );
 		}
 
 		return null;

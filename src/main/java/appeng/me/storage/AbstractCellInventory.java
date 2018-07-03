@@ -42,7 +42,7 @@ import appeng.util.Platform;
  */
 public abstract class AbstractCellInventory<T extends IAEStack<T>> implements ICellInventory<T>
 {
-
+	private static final int MAX_ITEM_TYPES = 63;
 	private static final String ITEM_TYPE_TAG = "it";
 	private static final String ITEM_COUNT_TAG = "ic";
 	private static final String ITEM_SLOT = "#";
@@ -51,46 +51,37 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 	protected static final String ITEM_PRE_FORMATTED_SLOT = "PF#";
 	protected static final String ITEM_PRE_FORMATTED_NAME = "PN";
 	protected static final String ITEM_PRE_FORMATTED_FUZZY = "FP";
-	private static String[] itemSlots;
-	private static String[] itemSlotCount;
+	private static final String[] ITEM_SLOT_KEYS = new String[MAX_ITEM_TYPES];
+	private static final String[] ITEM_SLOT_COUNT_KEYS = new String[MAX_ITEM_TYPES];
 	private final NBTTagCompound tagCompound;
 	protected final ISaveProvider container;
-	private int maxItemTypes = 63;
+	private int maxItemTypes = MAX_ITEM_TYPES;
 	private short storedItems = 0;
 	private int storedItemCount = 0;
 	protected IItemList<T> cellItems;
-	protected ItemStack i;
-	protected IStorageCell<T> cellType;
+	protected final ItemStack i;
+	protected final IStorageCell<T> cellType;
 	protected final int itemsPerByte;
+	private boolean isPersisted = true;
 
-	protected AbstractCellInventory( final NBTTagCompound data, final ISaveProvider container, final int itemsPerByte )
+	static
 	{
-		this.tagCompound = data;
-		this.container = container;
-		this.itemsPerByte = itemsPerByte;
+		for( int x = 0; x < MAX_ITEM_TYPES; x++ )
+		{
+			ITEM_SLOT_KEYS[x] = ITEM_SLOT + x;
+			ITEM_SLOT_COUNT_KEYS[x] = ITEM_SLOT_COUNT + x;
+		}
 	}
 
 	protected AbstractCellInventory( final ItemStack o, final ISaveProvider container, final int itemsPerByte ) throws AppEngException
 	{
 		this.itemsPerByte = itemsPerByte;
-		if( itemSlots == null )
-		{
-			itemSlots = new String[this.maxItemTypes];
-			itemSlotCount = new String[this.maxItemTypes];
-
-			for( int x = 0; x < this.maxItemTypes; x++ )
-			{
-				itemSlots[x] = ITEM_SLOT + x;
-				itemSlotCount[x] = ITEM_SLOT_COUNT + x;
-			}
-		}
 
 		if( o == null )
 		{
 			throw new AppEngException( "ItemStack was used as a cell, but was not a cell!" );
 		}
 
-		this.cellType = null;
 		this.i = o;
 
 		final Item type = this.i.getItem();
@@ -99,8 +90,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 			this.cellType = (IStorageCell<T>) this.i.getItem();
 			this.maxItemTypes = this.cellType.getTotalTypes( this.i );
 		}
-
-		if( this.cellType == null )
+		else
 		{
 			throw new AppEngException( "ItemStack was used as a cell, but was not a cell!" );
 		}
@@ -110,9 +100,9 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 			throw new AppEngException( "ItemStack was used as a cell, but was not a cell!" );
 		}
 
-		if( this.maxItemTypes > 63 )
+		if( this.maxItemTypes > MAX_ITEM_TYPES )
 		{
-			this.maxItemTypes = 63;
+			this.maxItemTypes = MAX_ITEM_TYPES;
 		}
 		if( this.maxItemTypes < 1 )
 		{
@@ -142,14 +132,14 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 		return this.cellItems;
 	}
 
-	protected void updateItemCount( final long delta )
+	@Override
+	public void persist()
 	{
-		this.storedItemCount += delta;
-		this.tagCompound.setInteger( ITEM_COUNT_TAG, this.storedItemCount );
-	}
+		if( this.isPersisted )
+		{
+			return;
+		}
 
-	protected void saveChanges()
-	{
 		int itemCount = 0;
 
 		// add new pretty stuff...
@@ -160,9 +150,8 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 
 			final NBTTagCompound g = new NBTTagCompound();
 			v.writeToNBT( g );
-			this.tagCompound.setTag( itemSlots[x], g );
-
-			this.tagCompound.setInteger( itemSlotCount[x], (int) v.getStackSize() );
+			this.tagCompound.setTag( ITEM_SLOT_KEYS[x], g );
+			this.tagCompound.setInteger( ITEM_SLOT_COUNT_KEYS[x], (int) v.getStackSize() );
 
 			x++;
 		}
@@ -192,13 +181,32 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 		// clean any old crusty stuff...
 		for( ; x < oldStoredItems && x < this.maxItemTypes; x++ )
 		{
-			this.tagCompound.removeTag( itemSlots[x] );
-			this.tagCompound.removeTag( itemSlotCount[x] );
+			this.tagCompound.removeTag( ITEM_SLOT_KEYS[x] );
+			this.tagCompound.removeTag( ITEM_SLOT_COUNT_KEYS[x] );
 		}
 
+		this.isPersisted = true;
+	}
+
+	protected void saveChanges()
+	{
+		// recalculate values
+		this.storedItems = (short) this.cellItems.size();
+		this.storedItemCount = 0;
+		for( final T v : this.cellItems )
+		{
+			this.storedItemCount += v.getStackSize();
+		}
+
+		this.isPersisted = false;
 		if( this.container != null )
 		{
 			this.container.saveChanges( this );
+		}
+		else
+		{
+			// if there is no ISaveProvider, store to NBT immediately
+			this.persist();
 		}
 	}
 
@@ -215,8 +223,8 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 
 		for( int slot = 0; slot < types; slot++ )
 		{
-			NBTTagCompound compoundTag = this.tagCompound.getCompoundTag( itemSlots[slot] );
-			int stackSize = this.tagCompound.getInteger( itemSlotCount[slot] );
+			NBTTagCompound compoundTag = this.tagCompound.getCompoundTag( ITEM_SLOT_KEYS[slot] );
+			int stackSize = this.tagCompound.getInteger( ITEM_SLOT_COUNT_KEYS[slot] );
 			this.loadCellItem( compoundTag, stackSize );
 		}
 	}

@@ -52,6 +52,7 @@ import appeng.core.AELog;
 import appeng.core.features.IStackSrc;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.IPriorityHost;
+import appeng.hooks.TickHandler;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
@@ -68,6 +69,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	private EnumFacing forward = null;
 	private EnumFacing up = null;
 	private IBlockState state;
+	private boolean markDirtyQueued = false;
 
 	@Override
 	public boolean shouldRefresh( final World world, final BlockPos pos, final IBlockState oldState, final IBlockState newSate )
@@ -488,7 +490,21 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
 	public void saveChanges()
 	{
-		markDirty();
+		if( this.world != null )
+		{
+			if( !this.markDirtyQueued )
+			{
+				TickHandler.INSTANCE.addCallable( null, this::markDirtyAtEndOfTick );
+				this.markDirtyQueued = true;
+			}
+		}
+	}
+
+	private Object markDirtyAtEndOfTick( final World w )
+	{
+		this.markDirty();
+		this.markDirtyQueued = false;
+		return null;
 	}
 
 	public boolean requiresTESR()

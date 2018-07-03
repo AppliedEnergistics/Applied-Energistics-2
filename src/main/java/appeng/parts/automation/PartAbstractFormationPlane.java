@@ -15,6 +15,7 @@ import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.storage.ICellContainer;
+import appeng.api.storage.ICellInventory;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
@@ -257,7 +258,7 @@ public abstract class PartAbstractFormationPlane<T extends IAEStack<T>> extends 
 	}
 
 	@Override
-	public void saveChanges( final IMEInventory cell )
+	public void saveChanges( final ICellInventory<?> cell )
 	{
 		// nope!
 	}

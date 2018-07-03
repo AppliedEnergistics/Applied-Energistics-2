@@ -163,9 +163,10 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	}
 
 	@Override
-	public void markDirty()
+	public void saveChanges()
 	{
 		this.updatePower();
+		super.saveChanges();
 	}
 
 	@Override

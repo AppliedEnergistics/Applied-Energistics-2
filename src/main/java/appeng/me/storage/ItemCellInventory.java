@@ -28,8 +28,8 @@ import appeng.api.config.Actionable;
 import appeng.api.exceptions.AppEngException;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -40,17 +40,12 @@ import appeng.core.AELog;
 
 public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
 {
-	protected ItemCellInventory( final NBTTagCompound data, final ISaveProvider container )
-	{
-		super( data, container, 8 );
-	}
-
 	private ItemCellInventory( final ItemStack o, final ISaveProvider container ) throws AppEngException
 	{
 		super( o, container, 8 );
 	}
 
-	public static IMEInventoryHandler getCell( final ItemStack o, final ISaveProvider container2 )
+	public static ICellInventoryHandler<IAEItemStack> getCell( final ItemStack o, final ISaveProvider container2 )
 	{
 		try
 		{
@@ -95,7 +90,7 @@ public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
 		final Item type = i.getItem();
 		if( type instanceof IStorageCell )
 		{
-			if ( ( (IStorageCell) type ).getChannel() == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
+			if( ( (IStorageCell) type ).getChannel() == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 			{
 				return ( (IStorageCell) type ).isStorageCell( i );
 			}
@@ -148,7 +143,6 @@ public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
 				if( mode == Actionable.MODULATE )
 				{
 					l.setStackSize( l.getStackSize() + remainingItemCount );
-					this.updateItemCount( remainingItemCount );
 					this.saveChanges();
 				}
 				return r;
@@ -158,7 +152,6 @@ public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
 				if( mode == Actionable.MODULATE )
 				{
 					l.setStackSize( l.getStackSize() + input.getStackSize() );
-					this.updateItemCount( input.getStackSize() );
 					this.saveChanges();
 				}
 				return null;
@@ -180,8 +173,6 @@ public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
 						toWrite.setStackSize( remainingItemCount );
 
 						this.cellItems.add( toWrite );
-						this.updateItemCount( toWrite.getStackSize() );
-
 						this.saveChanges();
 					}
 					return toReturn;
@@ -189,7 +180,6 @@ public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
 
 				if( mode == Actionable.MODULATE )
 				{
-					this.updateItemCount( input.getStackSize() );
 					this.cellItems.add( input );
 					this.saveChanges();
 				}
@@ -223,7 +213,6 @@ public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
 				Results.setStackSize( l.getStackSize() );
 				if( mode == Actionable.MODULATE )
 				{
-					this.updateItemCount( -l.getStackSize() );
 					l.setStackSize( 0 );
 					this.saveChanges();
 				}
@@ -234,7 +223,6 @@ public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
 				if( mode == Actionable.MODULATE )
 				{
 					l.setStackSize( l.getStackSize() - size );
-					this.updateItemCount( -size );
 					this.saveChanges();
 				}
 			}

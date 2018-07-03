@@ -34,7 +34,7 @@ public interface ICellInventoryHandler<T extends IAEStack<T>> extends IMEInvento
 	/**
 	 * @return get access to the Cell Inventory.
 	 */
-	ICellInventory getCellInv();
+	ICellInventory<T> getCellInv();
 
 	boolean isPreformatted();
 

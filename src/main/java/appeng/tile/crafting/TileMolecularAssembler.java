@@ -133,7 +133,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 				}
 
 				this.updateSleepiness();
-				this.markDirty();
+				this.saveChanges();
 				return true;
 			}
 		}
@@ -398,7 +398,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 			// did it eject?
 			if( this.gridInv.getStackInSlot( 9 ).isEmpty() )
 			{
-				this.markDirty();
+				this.saveChanges();
 			}
 
 			this.ejectHeldItems();
@@ -487,7 +487,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 					// ;P
 				}
 
-				this.markDirty();
+				this.saveChanges();
 				this.updateSleepiness();
 				return this.isAwake ? TickRateModulation.IDLE : TickRateModulation.SLEEP;
 			}
@@ -509,7 +509,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 					{
 						this.gridInv.setStackInSlot( 9, is );
 						this.gridInv.setStackInSlot( x, ItemStack.EMPTY );
-						this.markDirty();
+						this.saveChanges();
 						return;
 					}
 				}
@@ -580,7 +580,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 		if( size != newSize )
 		{
-			this.markDirty();
+			this.saveChanges();
 		}
 
 		return output;

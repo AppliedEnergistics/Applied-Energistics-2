@@ -69,6 +69,8 @@ import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.ICellHandler;
+import appeng.api.storage.ICellInventory;
+import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitor;
@@ -121,7 +123,6 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	private boolean wasActive = false;
 	private AEColor paintedColor = AEColor.TRANSPARENT;
 	private boolean isCached = false;
-	private ICellHandler cellHandler;
 	private MEMonitorHandler<IAEItemStack> itemCell;
 	private MEMonitorHandler<IAEFluidStack> fluidCell;
 	private Accessor accessor;
@@ -226,23 +227,23 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 			if( !is.isEmpty() )
 			{
 				this.isCached = true;
-				this.cellHandler = AEApi.instance().registries().cell().getHandler( is );
-				if( this.cellHandler != null )
+				ICellHandler cellHandler = AEApi.instance().registries().cell().getHandler( is );
+				if( cellHandler != null )
 				{
 					double power = 1.0;
 
-					final IMEInventoryHandler<IAEItemStack> itemCell = this.cellHandler.getCellInventory( is, this,
+					final ICellInventoryHandler<IAEItemStack> itemCell = cellHandler.getCellInventory( is, this,
 							AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
-					final IMEInventoryHandler<IAEFluidStack> fluidCell = this.cellHandler.getCellInventory( is, this,
+					final ICellInventoryHandler<IAEFluidStack> fluidCell = cellHandler.getCellInventory( is, this,
 							AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
 
 					if( itemCell != null )
 					{
-						power += this.cellHandler.cellIdleDrain( is, itemCell );
+						power += cellHandler.cellIdleDrain( is, itemCell );
 					}
 					else if( fluidCell != null )
 					{
-						power += this.cellHandler.cellIdleDrain( is, fluidCell );
+						power += cellHandler.cellIdleDrain( is, fluidCell );
 					}
 
 					this.getProxy().setIdlePowerUsage( power );
@@ -766,15 +767,16 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		}
 
 		this.paintedColor = newPaintedColor;
-		this.markDirty();
+		this.saveChanges();
 		this.markForUpdate();
 		return true;
 	}
 
 	@Override
-	public void saveChanges( final IMEInventory cellInventory )
+	public void saveChanges( final ICellInventory<?> cellInventory )
 	{
-		this.markDirty();
+		cellInventory.persist();
+		this.world.markChunkDirty( this.pos, this );
 	}
 
 	private static class ChestNoHandler extends Exception
