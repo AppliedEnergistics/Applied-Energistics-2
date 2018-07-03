@@ -92,6 +92,24 @@ public class ContainerFluidStorageBus extends ContainerFluidConfigurable
 	}
 
 	@Override
+	protected boolean isValidForConfig( int slot, IAEFluidStack fs )
+	{
+		if( this.supportCapacity() )
+		{
+			final int upgrades = this.getUpgradeable().getInstalledUpgrades( Upgrades.CAPACITY );
+
+			final int y = slot / 9;
+
+			if( y >= upgrades + 2 )
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	@Override
 	protected boolean supportCapacity()
 	{
 		return true;
