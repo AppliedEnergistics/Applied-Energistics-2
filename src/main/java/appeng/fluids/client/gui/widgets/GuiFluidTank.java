@@ -39,9 +39,9 @@ public class GuiFluidTank extends GuiButton implements ITooltip
 	private final IAEFluidTank tank;
 	private final int slot;
 
-	public GuiFluidTank( int buttonId, IAEFluidTank tank, int slot, int x, int y, int w, int h )
+	public GuiFluidTank( IAEFluidTank tank, int slot, int id, int x, int y, int w, int h )
 	{
-		super( buttonId, x, y, w, h, "" );
+		super( id, x, y, w, h, "" );
 		this.tank = tank;
 		this.slot = slot;
 	}

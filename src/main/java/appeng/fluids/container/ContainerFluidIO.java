@@ -19,18 +19,10 @@
 package appeng.fluids.container;
 
 
-import java.util.Collections;
-import java.util.Map;
-
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IContainerListener;
 
-import appeng.api.config.SecurityPermissions;
-import appeng.api.storage.data.IAEFluidStack;
-import appeng.container.implementations.ContainerUpgradeable;
-import appeng.fluids.helper.FluidSyncHelper;
 import appeng.fluids.parts.PartSharedFluidBus;
-import appeng.util.Platform;
+import appeng.fluids.util.IAEFluidTank;
 
 
 /**
@@ -38,47 +30,25 @@ import appeng.util.Platform;
  * @version rv5 - 1/05/2018
  * @since rv5 1/05/2018
  */
-public class ContainerFluidIO extends ContainerUpgradeable implements IFluidSyncContainer
+public class ContainerFluidIO extends ContainerFluidConfigurable
 {
 	private final PartSharedFluidBus bus;
-	private final FluidSyncHelper configSync;
 
 	public ContainerFluidIO( InventoryPlayer ip, PartSharedFluidBus te )
 	{
 		super( ip, te );
 		this.bus = te;
-		this.configSync = new FluidSyncHelper( this.bus.getConfig(), 0 );
+	}
+
+	@Override
+	public IAEFluidTank getFluidConfigInventory()
+	{
+		return bus.getConfig();
 	}
 
 	@Override
 	protected void setupConfig()
 	{
 		this.setupUpgrades();
-	}
-
-	@Override
-	public void detectAndSendChanges()
-	{
-		this.verifyPermissions( SecurityPermissions.BUILD, false );
-
-		if( Platform.isServer() )
-		{
-			this.configSync.sendDiff( this.listeners );
-		}
-
-		super.detectAndSendChanges();
-	}
-
-	@Override
-	public void addListener( IContainerListener listener )
-	{
-		super.addListener( listener );
-		this.configSync.sendFull( Collections.singleton( listener ) );
-	}
-
-	@Override
-	public void receiveFluidSlots( Map<Integer, IAEFluidStack> fluids )
-	{
-		this.configSync.readPacket( fluids );
 	}
 }

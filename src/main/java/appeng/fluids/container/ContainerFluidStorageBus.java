@@ -19,12 +19,9 @@
 package appeng.fluids.container;
 
 
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.Map;
 
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IContainerListener;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -39,9 +36,7 @@ import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.guisync.GuiSync;
-import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.fluids.helper.FluidSyncHelper;
 import appeng.fluids.parts.PartFluidStorageBus;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.util.Platform;
@@ -53,11 +48,10 @@ import appeng.util.iterators.NullIterator;
  * @version rv6 - 22/05/2018
  * @since rv6 22/05/2018
  */
-public class ContainerFluidStorageBus extends ContainerUpgradeable implements IFluidSyncContainer
+public class ContainerFluidStorageBus extends ContainerFluidConfigurable
 {
 
 	private final PartFluidStorageBus storageBus;
-	private final FluidSyncHelper configSync;
 
 	@GuiSync( 3 )
 	public AccessRestriction rwMode = AccessRestriction.READ_WRITE;
@@ -69,7 +63,6 @@ public class ContainerFluidStorageBus extends ContainerUpgradeable implements IF
 	{
 		super( ip, te );
 		this.storageBus = te;
-		this.configSync = new FluidSyncHelper( this.storageBus.getConfig(), 0 );
 	}
 
 	@Override
@@ -120,18 +113,9 @@ public class ContainerFluidStorageBus extends ContainerUpgradeable implements IF
 			this.setFuzzyMode( (FuzzyMode) this.getUpgradeable().getConfigManager().getSetting( Settings.FUZZY_MODE ) );
 			this.setReadWriteMode( (AccessRestriction) this.getUpgradeable().getConfigManager().getSetting( Settings.ACCESS ) );
 			this.setStorageFilter( (StorageFilter) this.getUpgradeable().getConfigManager().getSetting( Settings.STORAGE_FILTER ) );
-
-			this.configSync.sendDiff( this.listeners );
 		}
 
 		this.standardDetectAndSendChanges();
-	}
-
-	@Override
-	public void addListener( IContainerListener listener )
-	{
-		super.addListener( listener );
-		this.configSync.sendFull( Collections.singleton( listener ) );
 	}
 
 	@Override
@@ -201,8 +185,8 @@ public class ContainerFluidStorageBus extends ContainerUpgradeable implements IF
 	}
 
 	@Override
-	public void receiveFluidSlots( Map<Integer, IAEFluidStack> fluids )
+	public IAEFluidTank getFluidConfigInventory()
 	{
-		this.configSync.readPacket( fluids );
+		return this.storageBus.getConfig();
 	}
 }

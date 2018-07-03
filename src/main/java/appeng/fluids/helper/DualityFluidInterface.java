@@ -28,9 +28,12 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
+import appeng.api.config.Upgrades;
+import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergySource;
@@ -52,6 +55,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
+import appeng.api.util.IConfigManager;
 import appeng.capabilities.Capabilities;
 import appeng.core.settings.TickRates;
 import appeng.fluids.util.AEFluidInventory;
@@ -64,14 +68,17 @@ import appeng.me.helpers.MachineSource;
 import appeng.me.storage.MEMonitorIFluidHandler;
 import appeng.me.storage.MEMonitorPassThrough;
 import appeng.me.storage.NullInventory;
+import appeng.util.ConfigManager;
+import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
 
-public class DualityFluidInterface implements IGridTickable, IStorageMonitorable, IAEFluidInventory, IPriorityHost
+public class DualityFluidInterface implements IGridTickable, IStorageMonitorable, IAEFluidInventory, IPriorityHost, IUpgradeableHost, IConfigManagerHost
 {
 	public static final int NUMBER_OF_TANKS = 6;
 	public static final int TANK_CAPACITY = Fluid.BUCKET_VOLUME * 4;
 
+	private final ConfigManager cm = new ConfigManager( this );
 	private final AENetworkProxy gridProxy;
 	private final IFluidInterfaceHost iHost;
 	private final IActionSource mySource;
@@ -108,6 +115,19 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		{
 			this.requireWork[i] = null;
 		}
+	}
+
+	public IUpgradeableHost getHost()
+	{
+		if( this.iHost instanceof IUpgradeableHost )
+		{
+			return (IUpgradeableHost) this.iHost;
+		}
+		if( this.iHost instanceof IUpgradeableHost )
+		{
+			return (IUpgradeableHost) this.iHost;
+		}
+		return null;
 	}
 
 	@Override
@@ -563,4 +583,32 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		this.iHost.getTileEntity().markDirty();
 	}
 
+	@Override
+	public IConfigManager getConfigManager()
+	{
+		return this.cm;
+	}
+
+	@Override
+	public IItemHandler getInventoryByName( String name )
+	{
+		return null;
+	}
+
+	@Override
+	public int getInstalledUpgrades( Upgrades u )
+	{
+		return 0;
+	}
+
+	@Override
+	public TileEntity getTile()
+	{
+		return (TileEntity) ( this.iHost instanceof TileEntity ? this.iHost : null );
+	}
+
+	@Override
+	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
+	{
+	}
 }

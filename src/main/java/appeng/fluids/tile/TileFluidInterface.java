@@ -27,7 +27,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -38,6 +40,7 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
+import appeng.api.util.IConfigManager;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.helpers.IPriorityHost;
@@ -150,5 +153,23 @@ public class TileFluidInterface extends AENetworkTile implements IGridTickable, 
 			return result;
 		}
 		return super.getCapability( capability, facing );
+	}
+
+	@Override
+	public int getInstalledUpgrades( Upgrades u )
+	{
+		return this.duality.getInstalledUpgrades( u );
+	}
+
+	@Override
+	public IConfigManager getConfigManager()
+	{
+		return this.duality.getConfigManager();
+	}
+
+	@Override
+	public IItemHandler getInventoryByName( String name )
+	{
+		return this.duality.getInventoryByName( name );
 	}
 }

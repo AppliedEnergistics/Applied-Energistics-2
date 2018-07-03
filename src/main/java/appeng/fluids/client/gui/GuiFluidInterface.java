@@ -24,7 +24,7 @@ import java.io.IOException;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 
-import appeng.client.gui.AEBaseGui;
+import appeng.client.gui.implementations.GuiUpgradeable;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
@@ -38,7 +38,7 @@ import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.fluids.util.IAEFluidTank;
 
 
-public class GuiFluidInterface extends AEBaseGui
+public class GuiFluidInterface extends GuiUpgradeable
 {
 	public final static int ID_BUTTON_TANK = 222;
 
@@ -62,13 +62,19 @@ public class GuiFluidInterface extends AEBaseGui
 
 		for( int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i )
 		{
-			final GuiFluidTank guiTank = new GuiFluidTank( ID_BUTTON_TANK + i, fluidTank, i, this.getGuiLeft() + 35 + 18 * i, this.getGuiTop() + 53, 16, 68 );
+			final GuiFluidTank guiTank = new GuiFluidTank( fluidTank, i, DualityFluidInterface.NUMBER_OF_TANKS + i, this.getGuiLeft() + 35 + 18 * i, this
+					.getGuiTop() + 53, 16, 68 );
 			this.buttonList.add( guiTank );
-			this.guiSlots.add( new GuiFluidSlot( configFluids, i, i + DualityFluidInterface.NUMBER_OF_TANKS, 35 + 18 * i, 35 ) );
+			this.guiSlots.add( new GuiFluidSlot( configFluids, i, i, 35 + 18 * i, 35 ) );
 		}
 
 		this.priority = new GuiTabButton( this.getGuiLeft() + 154, this.getGuiTop(), 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRender );
 		this.buttonList.add( this.priority );
+	}
+
+	@Override
+	protected void addButtons()
+	{
 	}
 
 	@Override
@@ -96,5 +102,11 @@ public class GuiFluidInterface extends AEBaseGui
 		{
 			NetworkHandler.instance().sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
 		}
+	}
+
+	@Override
+	protected boolean drawUpgrades()
+	{
+		return false;
 	}
 }
