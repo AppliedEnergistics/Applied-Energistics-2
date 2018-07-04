@@ -36,6 +36,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.Loader;
 
 import appeng.api.config.Settings;
+import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
@@ -54,7 +55,6 @@ import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.fluids.container.ContainerFluidTerminal;
 import appeng.fluids.container.slots.IMEFluidSlot;
-import appeng.fluids.parts.PartFluidTerminal;
 import appeng.helpers.InventoryAction;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
@@ -75,16 +75,21 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 	private int rows = 6;
 	private int perRow = 9;
 
-	protected PartFluidTerminal terminal;
+	protected ITerminalHost terminal;
 
 	private MEGuiTextField searchField;
 	private GuiImgButton sortByBox;
 	private GuiImgButton sortDirBox;
 
-	public GuiFluidTerminal( InventoryPlayer inventoryPlayer, PartFluidTerminal terminal )
+	public GuiFluidTerminal( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
-		super( new ContainerFluidTerminal( inventoryPlayer, terminal ) );
-		this.terminal = terminal;
+		this( inventoryPlayer, te, new ContainerFluidTerminal( inventoryPlayer, te ) );
+	}
+
+	public GuiFluidTerminal( InventoryPlayer inventoryPlayer, final ITerminalHost te, final ContainerFluidTerminal c )
+	{
+		super( c );
+		this.terminal = te;
 		this.xSize = 185;
 		this.ySize = 222;
 		final GuiScrollbar scrollbar = new GuiScrollbar();
@@ -235,7 +240,7 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 				if( mouseButton == 0 && meSlot.getHasStack() )
 				{
 					this.container.setTargetStack( meSlot.getAEFluidStack() );
-					AELog.info( "mouse0 GUI STACK SIZE %s", meSlot.getAEFluidStack().getStackSize() );
+					AELog.debug( "mouse0 GUI STACK SIZE %s", meSlot.getAEFluidStack().getStackSize() );
 					NetworkHandler.instance().sendToServer( new PacketInventoryAction( InventoryAction.FILL_ITEM, slot.slotNumber, 0 ) );
 				}
 				else
@@ -243,7 +248,7 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 					this.container.setTargetStack( meSlot.getAEFluidStack() );
 					if( meSlot.getAEFluidStack() != null )
 					{
-						AELog.info( "mouse1 GUI STACK SIZE %s", meSlot.getAEFluidStack().getStackSize() );
+						AELog.debug( "mouse1 GUI STACK SIZE %s", meSlot.getAEFluidStack().getStackSize() );
 					}
 					NetworkHandler.instance().sendToServer( new PacketInventoryAction( InventoryAction.EMPTY_ITEM, slot.slotNumber, 0 ) );
 				}

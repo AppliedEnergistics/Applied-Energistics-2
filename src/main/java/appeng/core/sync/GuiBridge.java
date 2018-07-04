@@ -180,7 +180,7 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_PATTERN_TERMINAL( ContainerPatternTerm.class, PartPatternTerminal.class, GuiHostType.WORLD, SecurityPermissions.CRAFT ),
 
-	GUI_FLUID_TERMINAL( ContainerFluidTerminal.class, PartFluidTerminal.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
+	GUI_FLUID_TERMINAL( ContainerFluidTerminal.class, ITerminalHost.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
 	// extends (Container/Gui) + Bus
 	GUI_LEVEL_EMITTER( ContainerLevelEmitter.class, PartLevelEmitter.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),

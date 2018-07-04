@@ -44,12 +44,16 @@ import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.energy.IEnergySource;
+import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
@@ -63,7 +67,6 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEFluidInventoryUpdate;
 import appeng.core.sync.packets.PacketTargetFluidStack;
 import appeng.core.sync.packets.PacketValueConfig;
-import appeng.fluids.parts.PartFluidTerminal;
 import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.ChannelPowerSrc;
@@ -84,14 +87,14 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 	private final IItemList<IAEFluidStack> fluids = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList();
 	@GuiSync( 99 )
 	public boolean hasPower = false;
-	private PartFluidTerminal terminal;
+	private ITerminalHost terminal;
 	private IConfigManager serverCM;
 	private IConfigManagerHost gui;
 	private IGridNode networkNode;
 	// Holds the fluid the client wishes to extract, or null for insert
 	private IAEFluidStack clientRequestedTargetFluid = null;
 
-	public ContainerFluidTerminal( InventoryPlayer ip, PartFluidTerminal terminal )
+	public ContainerFluidTerminal( InventoryPlayer ip, ITerminalHost terminal )
 	{
 		super( ip, terminal );
 		this.terminal = terminal;
@@ -104,19 +107,42 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 		{
 			this.serverCM = terminal.getConfigManager();
 			this.monitor = terminal.getInventory( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
+								
 			if( this.monitor != null )
-			{
+			{				
 				this.monitor.addListener( this, null );
-				final IGridNode node = terminal.getGridNode( AEPartLocation.INTERNAL );
-				if( node != null )
+				
+				
+				if( terminal instanceof IEnergySource )
 				{
-					this.networkNode = node;
-					final IGrid g = node.getGrid();
-					if( g != null )
-					{
-						this.setPowerSource( new ChannelPowerSrc( this.networkNode, g.getCache( IEnergyGrid.class ) ) );
-					}
+					this.setPowerSource( (IEnergySource) terminal );
 				}
+				else if( terminal instanceof IGridHost || terminal instanceof IActionHost )
+				{
+					final IGridNode node;
+					if( terminal instanceof IGridHost )
+					{
+						node = ( (IGridHost) terminal ).getGridNode( AEPartLocation.INTERNAL );
+					}
+					else if( terminal instanceof IActionHost )
+					{
+						node = ( (IActionHost) terminal ).getActionableNode();
+					}
+					else
+					{
+						node = null;
+					}
+
+					if( node != null )
+					{
+						this.networkNode = node;
+						final IGrid g = node.getGrid();
+						if( g != null )
+						{
+							this.setPowerSource( new ChannelPowerSrc( this.networkNode, (IEnergySource) g.getCache( IEnergyGrid.class ) ) );
+						}
+					}
+				}			
 			}
 		}
 		else
@@ -348,7 +374,7 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 		{
 			AEFluidStack stack = (AEFluidStack) this.clientRequestedTargetFluid.copy();
 
-			AELog.info( "Filling %s with %s, %s mb", held.getDisplayName(), this.clientRequestedTargetFluid.getFluidStack().getLocalizedName(),
+			AELog.debug( "Filling %s with %s, %s mb", held.getDisplayName(), this.clientRequestedTargetFluid.getFluidStack().getLocalizedName(),
 					stack.getStackSize() );
 
 			if( isBucket && stack.getStackSize() < 1000 )
@@ -394,7 +420,7 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 		else if( action == InventoryAction.EMPTY_ITEM )
 		{
 			// Empty held item
-			AELog.info( "Emptying %s", held.getDisplayName() );
+			AELog.debug( "Emptying %s", held.getDisplayName() );
 
 			// See how much we can drain from the item
 			FluidStack extract = fh.drain( Integer.MAX_VALUE, false );

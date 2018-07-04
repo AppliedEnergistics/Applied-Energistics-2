@@ -121,8 +121,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	private AEColor paintedColor = AEColor.TRANSPARENT;
 	private boolean isCached = false;
 	private ICellHandler cellHandler;
-	private MEMonitorHandler itemCell;
-	private MEMonitorHandler fluidCell;
+	private MEMonitorHandler<IAEItemStack> itemCell;
+	private MEMonitorHandler<IAEFluidStack> fluidCell;
 	private Accessor accessor;
 	private IFluidHandler fluidHandler;
 
@@ -210,7 +210,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		return 1;
 	}
 
-	private IMEInventoryHandler getHandler( final IStorageChannel channel ) throws ChestNoHandler
+	@SuppressWarnings( "unchecked" )
+	private <T extends IAEStack<T>> IMEInventoryHandler<T> getHandler( final IStorageChannel<T> channel ) throws ChestNoHandler
 	{
 		if( !this.isCached )
 		{
@@ -248,10 +249,6 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 					this.itemCell = this.wrap( itemCell );
 					this.fluidCell = this.wrap( fluidCell );
 
-					if( this.itemCell != null )
-					{
-
-					}
 					this.accessor = new Accessor();
 
 					if( this.fluidCell != null )
@@ -268,15 +265,15 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 			{
 				throw NO_HANDLER;
 			}
-			return this.itemCell;
+			return (IMEInventoryHandler<T>) this.itemCell;
 		}
-		else if( channel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) && this.fluidCell != null )
+		else if( channel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
 		{
 			if( this.fluidCell == null )
 			{
 				throw NO_HANDLER;
 			}
-			return this.fluidCell;
+			return (IMEInventoryHandler<T>) this.fluidCell;
 
 		}
 
@@ -290,11 +287,11 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 			return null;
 		}
 
-		final MEInventoryHandler<T> ih = new MEInventoryHandler( h, h.getChannel() );
+		final MEInventoryHandler<T> ih = new MEInventoryHandler<T>( h, h.getChannel() );
 		ih.setPriority( this.priority );
 
 		final MEMonitorHandler<T> g = new ChestMonitorHandler<T>( ih );
-		g.addListener( new ChestNetNotifier( h.getChannel() ), g );
+		g.addListener( new ChestNetNotifier<T>( h.getChannel() ), g );
 
 		return g;
 	}
@@ -314,10 +311,10 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		{
 			try
 			{
-				final IMEInventoryHandler handler = this.getHandler( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+				final IMEInventoryHandler<IAEItemStack> handler = this.getHandler( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 				if( handler instanceof ChestMonitorHandler )
 				{
-					return ch.getStatusForCell( cell, ( (ChestMonitorHandler) handler ).getInternalHandler() );
+					return ch.getStatusForCell( cell, ( (ChestMonitorHandler<IAEItemStack>) handler ).getInternalHandler() );
 				}
 			}
 			catch( final ChestNoHandler ignored )
@@ -326,10 +323,11 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 
 			try
 			{
-				final IMEInventoryHandler handler = this.getHandler( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
+				final IMEInventoryHandler<IAEFluidStack> handler = this
+						.getHandler( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
 				if( handler instanceof ChestMonitorHandler )
 				{
-					return ch.getStatusForCell( cell, ( (ChestMonitorHandler) handler ).getInternalHandler() );
+					return ch.getStatusForCell( cell, ( (ChestMonitorHandler<IAEFluidStack>) handler ).getInternalHandler() );
 				}
 			}
 			catch( final ChestNoHandler ignored )
@@ -541,16 +539,17 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		this.recalculateDisplay();
 	}
 
+	@SuppressWarnings( "unchecked" )
 	@Override
 	public <T extends IAEStack<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )
 	{
 		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
-			return this.itemCell;
+			return (IMEMonitor<T>) this.itemCell;
 		}
 		else if( channel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
 		{
-			return this.fluidCell;
+			return (IMEMonitor<T>) this.fluidCell;
 		}
 		return null;
 	}
@@ -642,7 +641,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		{
 			try
 			{
-				final IMEInventoryHandler handler = this.getHandler( channel );
+				final IMEInventoryHandler<?> handler = this.getHandler( channel );
 
 				if( handler != null )
 				{
@@ -722,7 +721,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	{
 		try
 		{
-			final IMEInventoryHandler invHandler = this.getHandler( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+			final IMEInventoryHandler<IAEItemStack> invHandler = this.getHandler( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 			if( ch != null && invHandler != null )
 			{
 				ch.openChestGui( p, this, ch, invHandler, cell, AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
@@ -736,7 +735,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 
 		try
 		{
-			final IMEInventoryHandler invHandler = this.getHandler( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
+			final IMEInventoryHandler<IAEFluidStack> invHandler = this.getHandler( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
 			if( ch != null && invHandler != null )
 			{
 				ch.openChestGui( p, this, ch, invHandler, cell, AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
@@ -774,7 +773,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	@Override
 	public void saveChanges( final IMEInventory cellInventory )
 	{
-		this.world.markChunkDirty( this.pos, this );
+		this.markDirty();
 	}
 
 	private static class ChestNoHandler extends Exception
@@ -785,9 +784,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	private class ChestNetNotifier<T extends IAEStack<T>> implements IMEMonitorHandlerReceiver<T>
 	{
 
-		private final IStorageChannel chan;
+		private final IStorageChannel<T> chan;
 
-		public ChestNetNotifier( final IStorageChannel chan )
+		public ChestNetNotifier( final IStorageChannel<T> chan )
 		{
 			this.chan = chan;
 		}
@@ -847,7 +846,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 			final IMEInventoryHandler<T> h = this.getHandler();
 			if( h instanceof MEInventoryHandler )
 			{
-				return (IMEInventoryHandler<T>) ( (MEInventoryHandler) h ).getInternal();
+				return (IMEInventoryHandler<T>) ( (MEInventoryHandler<T>) h ).getInternal();
 			}
 			return this.getHandler();
 		}
@@ -962,11 +961,12 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 			{
 				try
 				{
-					final IMEInventoryHandler h = TileChest.this.getHandler( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
+					final IMEInventoryHandler<IAEFluidStack> h = TileChest.this
+							.getHandler( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
 
 					TileChest.this.extractAEPower( req, Actionable.MODULATE, PowerMultiplier.CONFIG );
 
-					final IAEStack results = h.injectItems( AEFluidStack.fromFluidStack( resource ), doFill ? Actionable.MODULATE : Actionable.SIMULATE,
+					final IAEFluidStack results = h.injectItems( AEFluidStack.fromFluidStack( resource ), doFill ? Actionable.MODULATE : Actionable.SIMULATE,
 							TileChest.this.mySrc );
 
 					if( results == null )
@@ -1000,7 +1000,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		{
 			try
 			{
-				final IMEInventoryHandler h = TileChest.this.getHandler( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
+				final IMEInventoryHandler<IAEFluidStack> h = TileChest.this
+						.getHandler( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
 
 				if( h.getChannel() == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
 				{
@@ -1060,12 +1061,15 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		@Override
 		public boolean allowInsert( IItemHandler inv, int slot, ItemStack stack )
 		{
-			return AEApi.instance().registries().cell().getCellInventory( stack, TileChest.this,
-					AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ) != null || AEApi.instance()
-							.registries()
-							.cell()
-							.getCellInventory( stack, TileChest.this,
-									AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) ) != null;
+			return AEApi.instance()
+					.registries()
+					.cell()
+					.getCellInventory( stack, TileChest.this,
+							AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ) != null || AEApi.instance()
+									.registries()
+									.cell()
+									.getCellInventory( stack, TileChest.this,
+											AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) ) != null;
 		}
 
 	}
