@@ -90,7 +90,7 @@ public class GenericInterestManager<T>
 	{
 		if( this.transactions != null )
 		{
-			this.transactions.add( new SavedTransactions( true, stack, iw ) );
+			this.transactions.add( new SavedTransactions( false, stack, iw ) );
 			return true;
 		}
 		else

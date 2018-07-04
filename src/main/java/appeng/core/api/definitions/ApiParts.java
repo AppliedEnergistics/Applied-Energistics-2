@@ -57,6 +57,7 @@ public final class ApiParts implements IParts
 	private final IItemDefinition iface;
 	private final IItemDefinition fluidIface;
 	private final IItemDefinition levelEmitter;
+	private final IItemDefinition fluidLevelEmitter;
 	private final IItemDefinition annihilationPlane;
 	private final IItemDefinition identityAnnihilationPlane;
 	private final IItemDefinition formationPlane;
@@ -114,6 +115,7 @@ public final class ApiParts implements IParts
 		this.iface = new DamagedItemDefinition( "part.interface", itemPart.createPart( PartType.INTERFACE ) );
 		this.fluidIface = new DamagedItemDefinition( "part.fluid_interface", itemPart.createPart( PartType.FLUID_INTERFACE ) );
 		this.levelEmitter = new DamagedItemDefinition( "part.level_emitter", itemPart.createPart( PartType.LEVEL_EMITTER ) );
+		this.fluidLevelEmitter = new DamagedItemDefinition( "part.fluid_level_emitter", itemPart.createPart( PartType.FLUID_LEVEL_EMITTER ) );
 		this.annihilationPlane = new DamagedItemDefinition( "part.plane.annihilation", itemPart.createPart( PartType.ANNIHILATION_PLANE ) );
 		this.identityAnnihilationPlane = new DamagedItemDefinition( "part.plane.annihiliation.identity", itemPart
 				.createPart( PartType.IDENTITY_ANNIHILATION_PLANE ) );
