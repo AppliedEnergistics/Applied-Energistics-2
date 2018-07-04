@@ -73,7 +73,6 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 	private final ContainerFluidTerminal container;
 	private final int offsetX = 9;
 	private int rows = 6;
-	private int maxRows = Integer.MAX_VALUE;
 	private int perRow = 9;
 
 	protected PartFluidTerminal terminal;
@@ -172,7 +171,7 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 		{
 			final IMEFluidSlot fluidSlot = (IMEFluidSlot) slot;
 
-			if( fluidSlot.getFluidStack() != null && fluidSlot.shouldRenderAsFluid() )
+			if( fluidSlot.getAEFluidStack() != null && fluidSlot.shouldRenderAsFluid() )
 			{
 				final IAEFluidStack fluidStack = fluidSlot.getAEFluidStack();
 				final String formattedAmount = NumberFormat.getNumberInstance( Locale.US ).format( fluidStack.getStackSize() ) + " mB";

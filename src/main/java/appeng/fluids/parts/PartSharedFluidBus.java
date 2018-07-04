@@ -29,7 +29,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.RedstoneMode;
@@ -40,9 +39,10 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.util.AECableType;
 import appeng.core.sync.GuiBridge;
+import appeng.fluids.util.AEFluidInventory;
+import appeng.fluids.util.IAEFluidTank;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.PartUpgradeable;
-import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 
 
@@ -54,7 +54,7 @@ import appeng.util.Platform;
 public abstract class PartSharedFluidBus extends PartUpgradeable implements IGridTickable
 {
 
-	private final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 9 );
+	private final AEFluidInventory config = new AEFluidInventory( null, 9 );
 	private boolean lastRedstone;
 
 	public PartSharedFluidBus( ItemStack is )
@@ -144,17 +144,6 @@ public abstract class PartSharedFluidBus extends PartUpgradeable implements IGri
 		return null;
 	}
 
-	@Override
-	public IItemHandler getInventoryByName( final String name )
-	{
-		if( name.equals( "config" ) )
-		{
-			return this.getConfig();
-		}
-
-		return super.getInventoryByName( name );
-	}
-
 	protected int calculateAmountToSend()
 	{
 		double amount = this.getChannel().transferFactor();
@@ -178,22 +167,23 @@ public abstract class PartSharedFluidBus extends PartUpgradeable implements IGri
 	public void readFromNBT( NBTTagCompound extra )
 	{
 		super.readFromNBT( extra );
-		this.getConfig().readFromNBT( extra, "config" );
+		this.config.readFromNBT( extra, "config" );
 	}
 
 	@Override
 	public void writeToNBT( NBTTagCompound extra )
 	{
 		super.writeToNBT( extra );
-		this.getConfig().writeToNBT( extra, "config" );
+		this.config.writeToNBT( extra, "config" );
 	}
 
-	public AppEngInternalAEInventory getConfig()
+	public IAEFluidTank getConfig()
 	{
 		return this.config;
 	}
 
-	protected IFluidStorageChannel getChannel(){
+	protected IFluidStorageChannel getChannel()
+	{
 		return AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
 	}
 

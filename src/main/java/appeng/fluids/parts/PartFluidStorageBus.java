@@ -33,12 +33,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -64,14 +60,15 @@ import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
 import appeng.capabilities.Capabilities;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.core.sync.GuiBridge;
-import appeng.fluids.util.AEFluidStack;
+import appeng.fluids.util.AEFluidInventory;
+import appeng.fluids.util.IAEFluidInventory;
+import appeng.fluids.util.IAEFluidTank;
 import appeng.helpers.IInterfaceHost;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
@@ -80,9 +77,7 @@ import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.parts.PartModel;
 import appeng.parts.misc.PartSharedStorageBus;
-import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
-import appeng.util.inv.InvOperation;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
@@ -92,7 +87,7 @@ import appeng.util.prioritylist.PrecisePriorityList;
  * @version rv6 - 22/05/2018
  * @since rv6 22/05/2018
  */
-public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMonitorHandlerReceiver<IAEFluidStack>
+public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMonitorHandlerReceiver<IAEFluidStack>, IAEFluidInventory
 {
 	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/fluid_storage_bus_base" );
 	@PartModels
@@ -103,7 +98,7 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/fluid_storage_bus_has_channel" ) );
 
 	private final IActionSource source;
-	private final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 63 );
+	private final AEFluidInventory config = new AEFluidInventory( this, 63 );
 	private boolean cached = false;
 	private ITickingMonitor monitor = null;
 	private MEInventoryHandler<IAEFluidStack> handler = null;
@@ -198,7 +193,9 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 
 	protected void resetCache( final boolean fullReset )
 	{
-		if( this.getHost() == null || this.getHost().getTile() == null || this.getHost().getTile().getWorld() == null || this.getHost().getTile().getWorld().isRemote )
+		if( this.getHost() == null || this.getHost().getTile() == null || this.getHost().getTile().getWorld() == null || this.getHost()
+				.getTile()
+				.getWorld().isRemote )
 		{
 			return;
 		}
@@ -239,25 +236,12 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 	}
 
 	@Override
-	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
+	public void onFluidInventoryChanged( IAEFluidTank inv, int slot )
 	{
-		super.onChangeInventory( inv, slot, mc, removedStack, newStack );
-
 		if( inv == this.config )
 		{
 			this.resetCache( true );
 		}
-	}
-
-	@Override
-	public IItemHandler getInventoryByName( final String name )
-	{
-		if( name.equals( "config" ) )
-		{
-			return this.config;
-		}
-
-		return super.getInventoryByName( name );
 	}
 
 	@Override
@@ -287,7 +271,9 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 		{
 			if( this.getProxy().isActive() )
 			{
-				this.getProxy().getStorage().postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ), change, this.source );
+				this.getProxy()
+						.getStorage()
+						.postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ), change, this.source );
 			}
 		}
 		catch( final GridAccessException e )
@@ -342,23 +328,17 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 				final int slotsToUse = 18 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 9;
 				for( int x = 0; x < this.config.getSlots() && x < slotsToUse; x++ )
 				{
-					final IAEItemStack is = this.config.getAEStackInSlot( x );
+					final IAEFluidStack is = this.config.getFluidInSlot( x );
 					if( is != null )
 					{
-						// Because we store filtered fluid as buckets, we need to grab the fluid from the stack
-						IFluidHandlerItem fh = FluidUtil.getFluidHandler( is.createItemStack() );
-						if( fh == null )
-						{
-							continue;
-						}
-						FluidStack fluid = fh.drain( Integer.MAX_VALUE, false );
-						priorityList.add( AEFluidStack.fromFluidStack( fluid ) );
+						priorityList.add( is );
 					}
 				}
 
 				if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 				{
-					this.handler.setPartitionList( new FuzzyPriorityList<IAEFluidStack>( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
+					this.handler.setPartitionList(
+							new FuzzyPriorityList<IAEFluidStack>( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
 				}
 				else
 				{
@@ -486,6 +466,11 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 	public IStorageChannel getStorageChannel()
 	{
 		return AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
+	}
+
+	public IAEFluidTank getConfig()
+	{
+		return this.config;
 	}
 
 	@SuppressWarnings( "Duplicates" )

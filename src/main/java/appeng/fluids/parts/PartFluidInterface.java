@@ -30,7 +30,9 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -45,6 +47,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
+import appeng.api.util.IConfigManager;
 import appeng.core.AppEng;
 import appeng.core.sync.GuiBridge;
 import appeng.fluids.helper.DualityFluidInterface;
@@ -216,4 +219,21 @@ public class PartFluidInterface extends PartBasicState implements IGridTickable,
 		return this.duality.getCapability( capabilityClass, this.getSide().getFacing() );
 	}
 
+	@Override
+	public int getInstalledUpgrades( Upgrades u )
+	{
+		return this.duality.getInstalledUpgrades( u );
+	}
+
+	@Override
+	public IConfigManager getConfigManager()
+	{
+		return this.duality.getConfigManager();
+	}
+
+	@Override
+	public IItemHandler getInventoryByName( String name )
+	{
+		return this.duality.getInventoryByName( name );
+	}
 }

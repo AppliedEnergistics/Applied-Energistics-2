@@ -24,20 +24,21 @@ import java.io.IOException;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 
-import appeng.client.gui.AEBaseGui;
-import appeng.client.gui.widgets.GuiFluidTank;
+import appeng.client.gui.implementations.GuiUpgradeable;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
+import appeng.fluids.client.gui.widgets.GuiFluidSlot;
+import appeng.fluids.client.gui.widgets.GuiFluidTank;
 import appeng.fluids.container.ContainerFluidInterface;
-import appeng.fluids.helper.AEFluidTank;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IFluidInterfaceHost;
+import appeng.fluids.util.IAEFluidTank;
 
 
-public class GuiFluidInterface extends AEBaseGui
+public class GuiFluidInterface extends GuiUpgradeable
 {
 	public final static int ID_BUTTON_TANK = 222;
 
@@ -56,15 +57,24 @@ public class GuiFluidInterface extends AEBaseGui
 	{
 		super.initGui();
 
+		final IAEFluidTank configFluids = this.host.getDualityFluidInterface().getConfig();
+		final IAEFluidTank fluidTank = this.host.getDualityFluidInterface().getTanks();
+
 		for( int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i )
 		{
-			final AEFluidTank fluidTank = this.host.getDualityFluidInterface().getTank( i );
-			final GuiFluidTank guiTank = new GuiFluidTank( ID_BUTTON_TANK + i, fluidTank, this.getGuiLeft() + 35 + 18 * i, this.getGuiTop() + 53, 16, 68 );
+			final GuiFluidTank guiTank = new GuiFluidTank( fluidTank, i, DualityFluidInterface.NUMBER_OF_TANKS + i, this.getGuiLeft() + 35 + 18 * i, this
+					.getGuiTop() + 53, 16, 68 );
 			this.buttonList.add( guiTank );
+			this.guiSlots.add( new GuiFluidSlot( configFluids, i, i, 35 + 18 * i, 35 ) );
 		}
 
 		this.priority = new GuiTabButton( this.getGuiLeft() + 154, this.getGuiTop(), 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRender );
 		this.buttonList.add( this.priority );
+	}
+
+	@Override
+	protected void addButtons()
+	{
 	}
 
 	@Override
@@ -92,5 +102,11 @@ public class GuiFluidInterface extends AEBaseGui
 		{
 			NetworkHandler.instance().sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
 		}
+	}
+
+	@Override
+	protected boolean drawUpgrades()
+	{
+		return false;
 	}
 }

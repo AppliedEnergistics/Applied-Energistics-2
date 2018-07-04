@@ -24,7 +24,6 @@ import javax.annotation.Nonnull;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.SlotItemHandler;
 
 import appeng.api.storage.data.IAEFluidStack;
@@ -68,12 +67,6 @@ public class SlotFluidME extends SlotItemHandler implements IMEFluidSlot
 	public ItemStack getStack()
 	{
 		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public FluidStack getFluidStack()
-	{
-		return this.slot.getStack();
 	}
 
 	@Override

@@ -19,45 +19,45 @@
 package appeng.fluids.container;
 
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IContainerListener;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.parts.IPart;
-import appeng.container.AEBaseContainer;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketFluidTank;
-import appeng.fluids.container.slots.SlotFakeFluid;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.util.IConfigManager;
 import appeng.fluids.helper.DualityFluidInterface;
+import appeng.fluids.helper.FluidSyncHelper;
 import appeng.fluids.helper.IFluidInterfaceHost;
+import appeng.fluids.util.IAEFluidTank;
 import appeng.util.Platform;
 
 
-public class ContainerFluidInterface extends AEBaseContainer
+public class ContainerFluidInterface extends ContainerFluidConfigurable
 {
 	private final DualityFluidInterface myDuality;
+	private final FluidSyncHelper tankSync;
 
 	public ContainerFluidInterface( final InventoryPlayer ip, final IFluidInterfaceHost te )
 	{
-		super( ip, (TileEntity) ( te instanceof TileEntity ? te : null ), (IPart) ( te instanceof IPart ? te : null ) );
+		super( ip, te.getDualityFluidInterface().getHost() );
 
 		this.myDuality = te.getDualityFluidInterface();
+		this.tankSync = new FluidSyncHelper( this.myDuality.getTanks(), DualityFluidInterface.NUMBER_OF_TANKS );
+	}
 
-		for( int x = 0; x < DualityFluidInterface.NUMBER_OF_TANKS; x++ )
-		{
-			this.addSlotToContainer( new SlotFakeFluid( this.myDuality.getConfig(), x, 35 + 18 * x, 35 ) );
-		}
+	@Override
+	protected int getHeight()
+	{
+		return 231;
+	}
 
-		this.bindPlayerInventory( ip, 0, 231 - /* height of player inventory */82 );
+	@Override
+	public IAEFluidTank getFluidConfigInventory()
+	{
+		return this.myDuality.getConfig();
 	}
 
 	@Override
@@ -67,56 +67,49 @@ public class ContainerFluidInterface extends AEBaseContainer
 
 		if( Platform.isServer() )
 		{
-			this.sendTankUpdate();
+			this.tankSync.sendDiff( this.listeners );
 		}
 
 		super.detectAndSendChanges();
 	}
 
 	@Override
-	public void addListener( IContainerListener listener )
+	protected void setupConfig()
 	{
-		super.addListener( listener );
-		this.sendTankInfo( listener );
-	}
-
-	private void sendTankUpdate( final IContainerListener l, final HashMap<Integer, NBTTagCompound> updateMap )
-	{
-		if( l instanceof EntityPlayerMP )
-		{
-			NetworkHandler.instance().sendTo( new PacketFluidTank( updateMap ), (EntityPlayerMP) l );
-		}
-	}
-
-	private void sendTankUpdate()
-	{
-		final HashMap<Integer, NBTTagCompound> updateMap = new HashMap<>();
-		if( this.myDuality.writeTankInfo( updateMap, false ) )
-		{
-			for( final IContainerListener listener : this.listeners )
-			{
-				this.sendTankUpdate( listener, updateMap );
-			}
-		}
-	}
-
-	private void sendTankInfo( final IContainerListener l )
-	{
-		final HashMap<Integer, NBTTagCompound> updateMap = new HashMap<>();
-		if( this.myDuality.writeTankInfo( updateMap, true ) )
-		{
-			this.sendTankUpdate( l, updateMap );
-		}
-	}
-
-	public void receiveTankInfo( final Map<Integer, NBTTagCompound> tankTags )
-	{
-		this.myDuality.readTankInfo( tankTags );
 	}
 
 	@Override
-	public boolean isValidForSlot( Slot s, ItemStack i )
+	protected void loadSettingsFromHost( final IConfigManager cm )
 	{
-		return s instanceof SlotFakeFluid ? i.hasCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null ) : super.isValidForSlot( s, i );
+	}
+
+	@Override
+	public void addListener( IContainerListener listener )
+	{
+		super.addListener( listener );
+		this.tankSync.sendFull( Collections.singleton( listener ) );
+	}
+
+	@Override
+	public void receiveFluidSlots( Map<Integer, IAEFluidStack> fluids )
+	{
+		super.receiveFluidSlots( fluids );
+		this.tankSync.readPacket( fluids );
+	}
+
+	protected boolean supportCapacity()
+	{
+		return false;
+	}
+
+	public int availableUpgrades()
+	{
+		return 0;
+	}
+
+	@Override
+	public boolean hasToolbox()
+	{
+		return false;
 	}
 }

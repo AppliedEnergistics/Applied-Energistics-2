@@ -57,9 +57,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
 
+import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.client.gui.widgets.GuiCustomSlot;
 import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.ITooltip;
 import appeng.client.me.InternalSlotME;
@@ -84,7 +85,6 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.sync.packets.PacketSwapSlots;
 import appeng.fluids.client.render.FluidStackSizeRenderer;
-import appeng.fluids.container.slots.IFluidSlot;
 import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
 
@@ -101,6 +101,7 @@ public abstract class AEBaseGui extends GuiContainer
 	private Stopwatch dbl_clickTimer = Stopwatch.createStarted();
 	private ItemStack dbl_whichItem = ItemStack.EMPTY;
 	private Slot bl_clicked;
+	protected final List<GuiCustomSlot> guiSlots = new ArrayList<>();
 
 	public AEBaseGui( final Container container )
 	{
@@ -154,35 +155,76 @@ public abstract class AEBaseGui extends GuiContainer
 	}
 
 	@Override
-	public void drawScreen( final int mouseX, final int mouseY, final float btn )
+	public void drawScreen( final int mouseX, final int mouseY, final float partialTicks )
 	{
 		super.drawDefaultBackground();
-		super.drawScreen( mouseX, mouseY, btn );
+		super.drawScreen( mouseX, mouseY, partialTicks );
+
+		GlStateManager.pushMatrix();
+		GlStateManager.translate( (float) this.guiLeft, (float) this.guiTop, 0.0F );
+		GlStateManager.enableDepth();
+		for( final GuiCustomSlot c : this.guiSlots )
+		{
+			drawGuiSlot( c, mouseX, mouseY, partialTicks );
+		}
+		GlStateManager.disableDepth();
+		for( final GuiCustomSlot c : this.guiSlots )
+		{
+			drawTooltip( c, mouseX - this.guiLeft, mouseY - this.guiTop );
+		}
+		GlStateManager.popMatrix();
+
 		this.renderHoveredToolTip( mouseX, mouseY );
 
 		for( final Object c : this.buttonList )
 		{
 			if( c instanceof ITooltip )
 			{
-				final ITooltip tooltip = (ITooltip) c;
-				final int x = tooltip.xPos(); // ((GuiImgButton) c).x;
-				int y = tooltip.yPos(); // ((GuiImgButton) c).y;
+				drawTooltip( (ITooltip) c, mouseX, mouseY );
+			}
+		}
+	}
 
-				if( x < mouseX && x + tooltip.getWidth() > mouseX && tooltip.isVisible() )
+	protected void drawGuiSlot( GuiCustomSlot slot, int mouseX, int mouseY, float partialTicks )
+	{
+		if( slot.isSlotEnabled() )
+		{
+			final int left = slot.xPos();
+			final int top = slot.yPos();
+			final int right = left + slot.getWidth();
+			final int bottom = top + slot.getHeight();
+
+			slot.drawContent( this.mc, mouseX, mouseY, partialTicks );
+
+			if( this.isPointInRegion( left, top, slot.getWidth(), slot.getHeight(), mouseX, mouseY ) && slot.canClick( this.mc.player ) )
+			{
+				GlStateManager.disableLighting();
+				GlStateManager.colorMask( true, true, true, false );
+				this.drawGradientRect( left, top, right, bottom, -2130706433, -2130706433 );
+				GlStateManager.colorMask( true, true, true, true );
+				GlStateManager.enableLighting();
+			}
+		}
+	}
+
+	private void drawTooltip( ITooltip tooltip, int mouseX, int mouseY )
+	{
+		final int x = tooltip.xPos(); // ((GuiImgButton) c).x;
+		int y = tooltip.yPos(); // ((GuiImgButton) c).y;
+
+		if( x < mouseX && x + tooltip.getWidth() > mouseX && tooltip.isVisible() )
+		{
+			if( y < mouseY && y + tooltip.getHeight() > mouseY )
+			{
+				if( y < 15 )
 				{
-					if( y < mouseY && y + tooltip.getHeight() > mouseY )
-					{
-						if( y < 15 )
-						{
-							y = 15;
-						}
+					y = 15;
+				}
 
-						final String msg = tooltip.getMessage();
-						if( msg != null )
-						{
-							this.drawTooltip( x + 11, y + 4, msg );
-						}
-					}
+				final String msg = tooltip.getMessage();
+				if( msg != null )
+				{
+					this.drawTooltip( x + 11, y + 4, msg );
 				}
 			}
 		}
@@ -214,23 +256,6 @@ public abstract class AEBaseGui extends GuiContainer
 		}
 
 		this.drawHoveringText( lines, x, y, this.fontRenderer );
-	}
-
-	@Override
-	protected void renderHoveredToolTip( int mouseX, int mouseY )
-	{
-		Slot slot = this.getSlot( mouseX, mouseY );
-		if( slot != null && slot.isEnabled() && slot instanceof IFluidSlot )
-		{
-			IFluidSlot fluidSlot = (IFluidSlot) slot;
-			if( fluidSlot.getFluidStack() != null && fluidSlot.shouldRenderAsFluid() )
-			{
-				FluidStack fluidStack = fluidSlot.getFluidStack();
-				this.drawHoveringText( fluidStack.getLocalizedName(), mouseX, mouseY );
-				return;
-			}
-		}
-		super.renderHoveredToolTip( mouseX, mouseY );
 	}
 
 	@Override
@@ -285,6 +310,12 @@ public abstract class AEBaseGui extends GuiContainer
 				}
 			}
 		}
+
+		for( final GuiCustomSlot slot : this.guiSlots )
+		{
+			slot.drawBackground( ox, oy );
+		}
+
 	}
 
 	@Override
@@ -302,6 +333,14 @@ public abstract class AEBaseGui extends GuiContainer
 					super.mouseClicked( xCoord, yCoord, 0 );
 					return;
 				}
+			}
+		}
+
+		for( GuiCustomSlot slot : this.guiSlots )
+		{
+			if( this.isPointInRegion( slot.xPos(), slot.yPos(), slot.getWidth(), slot.getHeight(), xCoord, yCoord ) && slot.canClick( this.mc.player ) )
+			{
+				slot.slotClicked( this.mc.player.inventory.getItemStack(), btn );
 			}
 		}
 
@@ -743,18 +782,18 @@ public abstract class AEBaseGui extends GuiContainer
 
 			return;
 		}
-		else if( s instanceof IFluidSlot && ( (IFluidSlot) s ).shouldRenderAsFluid() )
+		else if( s instanceof IMEFluidSlot && ( (IMEFluidSlot) s ).shouldRenderAsFluid() )
 		{
-			final IFluidSlot slot = (IFluidSlot) s;
-			final FluidStack fs = slot.getFluidStack();
+			final IMEFluidSlot slot = (IMEFluidSlot) s;
+			final IAEFluidStack fs = slot.getAEFluidStack();
 
 			if( fs != null && this.isPowered() )
 			{
 				GlStateManager.disableLighting();
 				GlStateManager.disableBlend();
-				Fluid fluid = fs.getFluid();
+				final Fluid fluid = fs.getFluid();
 				Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.LOCATION_BLOCKS_TEXTURE );
-				TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite( fluid.getStill().toString() );
+				final TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite( fluid.getStill().toString() );
 
 				// Set color for dynamic fluids
 				// Convert int color to RGB
@@ -767,11 +806,7 @@ public abstract class AEBaseGui extends GuiContainer
 				GlStateManager.enableLighting();
 				GlStateManager.enableBlend();
 
-				if( s instanceof IMEFluidSlot )
-				{
-					final IMEFluidSlot meFluidSlot = (IMEFluidSlot) s;
-					this.fluidStackSizeRenderer.renderStackSize( this.fontRenderer, meFluidSlot.getAEFluidStack(), s.xPos, s.yPos );
-				}
+				this.fluidStackSizeRenderer.renderStackSize( this.fontRenderer, fs, s.xPos, s.yPos );
 			}
 			else if( !this.isPowered() )
 			{
