@@ -110,7 +110,7 @@ import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
 
 
-public class DualityInterface implements IGridTickable, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory, IConfigManagerHost, ICraftingProvider, IUpgradeableHost, IPriorityHost
+public class DualityInterface implements IGridTickable, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory, IConfigManagerHost, ICraftingProvider, IUpgradeableHost
 {
 
 	public static final int NUMBER_OF_STORAGE_SLOTS = 9;
@@ -1243,13 +1243,11 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		this.updateCraftingList();
 	}
 
-	@Override
 	public int getPriority()
 	{
 		return this.priority;
 	}
 
-	@Override
 	public void setPriority( final int newValue )
 	{
 		this.priority = newValue;

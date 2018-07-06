@@ -25,14 +25,9 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.AEApi;
-import appeng.api.definitions.IBlocks;
-import appeng.api.definitions.IDefinitions;
-import appeng.api.definitions.IParts;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiNumberBox;
 import appeng.client.gui.widgets.GuiTabButton;
-import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerPriority;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -42,12 +37,6 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.helpers.IPriorityHost;
-import appeng.parts.automation.PartFormationPlane;
-import appeng.parts.misc.PartInterface;
-import appeng.parts.misc.PartStorageBus;
-import appeng.tile.misc.TileInterface;
-import appeng.tile.storage.TileChest;
-import appeng.tile.storage.TileDrive;
 
 
 public class GuiPriority extends AEBaseGui
@@ -92,49 +81,11 @@ public class GuiPriority extends AEBaseGui
 		this.buttonList.add( this.minus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 69, 32, 20, "-" + c ) );
 		this.buttonList.add( this.minus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 69, 38, 20, "-" + d ) );
 
-		ItemStack myIcon = null;
-		final Object target = ( (AEBaseContainer) this.inventorySlots ).getTarget();
-		final IDefinitions definitions = AEApi.instance().definitions();
-		final IParts parts = definitions.parts();
-		final IBlocks blocks = definitions.blocks();
+		final ContainerPriority con = ( (ContainerPriority) this.inventorySlots );
+		final ItemStack myIcon = con.getPriorityHost().getItemStackRepresentation();
+		this.OriginalGui = con.getPriorityHost().getGuiBridge();
 
-		if( target instanceof PartStorageBus )
-		{
-			myIcon = parts.storageBus().maybeStack( 1 ).orElse( myIcon );
-			this.OriginalGui = GuiBridge.GUI_STORAGEBUS;
-		}
-
-		if( target instanceof PartFormationPlane )
-		{
-			myIcon = parts.formationPlane().maybeStack( 1 ).orElse( myIcon );
-			this.OriginalGui = GuiBridge.GUI_FORMATION_PLANE;
-		}
-
-		if( target instanceof TileDrive )
-		{
-			myIcon = blocks.drive().maybeStack( 1 ).orElse( myIcon );
-			this.OriginalGui = GuiBridge.GUI_DRIVE;
-		}
-
-		if( target instanceof TileChest )
-		{
-			myIcon = blocks.chest().maybeStack( 1 ).orElse( myIcon );
-			this.OriginalGui = GuiBridge.GUI_CHEST;
-		}
-
-		if( target instanceof TileInterface )
-		{
-			myIcon = blocks.iface().maybeStack( 1 ).orElse( myIcon );
-			this.OriginalGui = GuiBridge.GUI_INTERFACE;
-		}
-
-		if( target instanceof PartInterface )
-		{
-			myIcon = parts.iface().maybeStack( 1 ).orElse( myIcon );
-			this.OriginalGui = GuiBridge.GUI_INTERFACE;
-		}
-
-		if( this.OriginalGui != null && myIcon != null )
+		if( this.OriginalGui != null && !myIcon.isEmpty() )
 		{
 			this.buttonList.add( this.originalGuiBtn = new GuiTabButton( this.guiLeft + 154, this.guiTop, myIcon, myIcon.getDisplayName(), this.itemRender ) );
 		}
