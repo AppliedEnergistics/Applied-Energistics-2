@@ -36,7 +36,7 @@ import appeng.parts.PartModel;
 /**
  * Contains a mapping from a Plane's connections to the models to use for that state.
  */
-class PlaneModels
+public class PlaneModels
 {
 
 	public static final ResourceLocation MODEL_CHASSIS_OFF = new ResourceLocation( AppEng.MOD_ID, "part/transition_plane_off" );

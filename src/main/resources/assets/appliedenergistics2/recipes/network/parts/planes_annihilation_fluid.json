@@ -1,0 +1,29 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "part.fluid_annihilation_plane"
+    },
+    "type": "appliedenergistics2:part_shaped",
+    "pattern": [
+        "aaa",
+        "ddd",
+        "bcb"
+    ],
+    "key": {
+        "b": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "a": {
+            "item": "#appliedenergistics2:fluixCrystal"
+        },
+        "c": {
+            "type": "appliedenergistics2:part",
+            "part": "material.annihilation_core"
+        },
+        "d": {
+  			"type": "forge:ore_dict",
+            "ore": "dyeBlue"
+        }
+    }
+}

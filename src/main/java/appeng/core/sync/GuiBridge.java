@@ -86,15 +86,16 @@ import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.implementations.ContainerVibrationChamber;
 import appeng.container.implementations.ContainerWireless;
 import appeng.container.implementations.ContainerWirelessTerm;
+import appeng.fluids.container.ContainerFluidFormationPlane;
 import appeng.fluids.container.ContainerFluidIO;
 import appeng.fluids.container.ContainerFluidInterface;
 import appeng.fluids.container.ContainerFluidLevelEmitter;
 import appeng.fluids.container.ContainerFluidStorageBus;
 import appeng.fluids.container.ContainerFluidTerminal;
 import appeng.fluids.helper.IFluidInterfaceHost;
+import appeng.fluids.parts.PartFluidFormationPlane;
 import appeng.fluids.parts.PartFluidLevelEmitter;
 import appeng.fluids.parts.PartFluidStorageBus;
-import appeng.fluids.parts.PartFluidTerminal;
 import appeng.fluids.parts.PartSharedFluidBus;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
@@ -173,6 +174,8 @@ public enum GuiBridge implements IGuiHandler
 	GUI_STORAGEBUS_FLUID( ContainerFluidStorageBus.class, PartFluidStorageBus.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
 	GUI_FORMATION_PLANE( ContainerFormationPlane.class, PartFormationPlane.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
+
+	GUI_FLUID_FORMATION_PLANE( ContainerFluidFormationPlane.class, PartFluidFormationPlane.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
 	GUI_PRIORITY( ContainerPriority.class, IPriorityHost.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 

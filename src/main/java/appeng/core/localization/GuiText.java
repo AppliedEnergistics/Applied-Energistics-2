@@ -85,6 +85,7 @@ public enum GuiText
 
 	CraftingTerminal,
 	FormationPlane,
+	FluidFormationPlane,
 	Inscriber,
 	QuartzCuttingKnife,
 

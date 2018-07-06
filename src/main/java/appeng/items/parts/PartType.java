@@ -41,7 +41,9 @@ import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
+import appeng.fluids.parts.PartFluidAnnihilationPlane;
 import appeng.fluids.parts.PartFluidExportBus;
+import appeng.fluids.parts.PartFluidFormationPlane;
 import appeng.fluids.parts.PartFluidImportBus;
 import appeng.fluids.parts.PartFluidInterface;
 import appeng.fluids.parts.PartFluidLevelEmitter;
@@ -218,7 +220,12 @@ public enum PartType
 	IDENTITY_ANNIHILATION_PLANE( 301, "identity_annihilation_plane", EnumSet.of( AEFeature.ANNIHILATION_PLANE, AEFeature.IDENTITY_ANNIHILATION_PLANE ), EnumSet
 			.noneOf( IntegrationType.class ), PartIdentityAnnihilationPlane.class ),
 
+	FLUID_ANNIHILATION_PLANE( 302, "fluid_annihilation_plane", EnumSet.of( AEFeature.FLUID_ANNIHILATION_PLANE ), EnumSet
+			.noneOf( IntegrationType.class ), PartFluidAnnihilationPlane.class ),
+
 	FORMATION_PLANE( 320, "formation_plane", EnumSet.of( AEFeature.FORMATION_PLANE ), EnumSet.noneOf( IntegrationType.class ), PartFormationPlane.class ),
+
+	FLUID_FORMATION_PLANE( 321, "fluid_formation_plane", EnumSet.of( AEFeature.FLUID_FORMATION_PLANE ), EnumSet.noneOf( IntegrationType.class ), PartFluidFormationPlane.class ),
 
 	PATTERN_TERMINAL( 340, "pattern_terminal", EnumSet.of( AEFeature.PATTERNS ), EnumSet.noneOf( IntegrationType.class ), PartPatternTerminal.class ),
 

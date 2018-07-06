@@ -235,7 +235,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		}
 	}
 
-	private void checkToolbox()
+	protected void checkToolbox()
 	{
 		if( this.hasToolbox() )
 		{
