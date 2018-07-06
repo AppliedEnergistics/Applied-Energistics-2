@@ -1084,11 +1084,11 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	@Override
 	public GuiBridge getGuiBridge()
 	{
-		if (this.itemCell != null)
+		if( this.itemCell != null )
 		{
 			return GuiBridge.GUI_ME;
 		}
-		else if (this.fluidCell != null)
+		else if( this.fluidCell != null )
 		{
 			return GuiBridge.GUI_FLUID_TERMINAL;
 		}
