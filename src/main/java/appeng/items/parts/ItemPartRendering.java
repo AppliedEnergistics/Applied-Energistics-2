@@ -71,10 +71,14 @@ public class ItemPartRendering extends ItemRenderingCustomizer
 		// Register the built-in models for annihilation planes
 		ResourceLocation annihilationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "items/part/annihilation_plane" );
 		ResourceLocation annihilationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/annihilation_plane_on" );
+		ResourceLocation fluidAnnihilationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "items/part/fluid_annihilation_plane" );
+		ResourceLocation fluidAnnihilationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/fluid_annihilation_plane_on" );
 		ResourceLocation identityAnnihilationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "items/part/identity_annihilation_plane" );
 		ResourceLocation identityAnnihilationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/identity_annihilation_plane_on" );
 		ResourceLocation formationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "items/part/formation_plane" );
 		ResourceLocation formationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/formation_plane_on" );
+		ResourceLocation fluidFormationPlaneTexture = new ResourceLocation( AppEng.MOD_ID, "items/part/fluid_formation_plane" );
+		ResourceLocation fluidFormationPlaneOnTexture = new ResourceLocation( AppEng.MOD_ID, "parts/fluid_formation_plane_on" );
 		ResourceLocation sidesTexture = new ResourceLocation( AppEng.MOD_ID, "parts/plane_sides" );
 		ResourceLocation backTexture = new ResourceLocation( AppEng.MOD_ID, "parts/transition_plane_back" );
 
@@ -89,6 +93,14 @@ public class ItemPartRendering extends ItemRenderingCustomizer
 			model = new PlaneModel( annihilationPlaneOnTexture, sidesTexture, backTexture, connection );
 			rendering.builtInModel( "models/part/annihilation_plane_on_" + connection.getFilenameSuffix(), model );
 			modelNames.add( "part/annihilation_plane_on_" + connection.getFilenameSuffix() );
+
+			model = new PlaneModel( fluidAnnihilationPlaneTexture, sidesTexture, backTexture, connection );
+			rendering.builtInModel( "models/part/fluid_annihilation_plane_" + connection.getFilenameSuffix(), model );
+			modelNames.add( "part/fluid_annihilation_plane_" + connection.getFilenameSuffix() );
+
+			model = new PlaneModel( fluidAnnihilationPlaneOnTexture, sidesTexture, backTexture, connection );
+			rendering.builtInModel( "models/part/fluid_annihilation_plane_on_" + connection.getFilenameSuffix(), model );
+			modelNames.add( "part/fluid_annihilation_plane_on_" + connection.getFilenameSuffix() );
 
 			model = new PlaneModel( identityAnnihilationPlaneTexture, sidesTexture, backTexture, connection );
 			rendering.builtInModel( "models/part/identity_annihilation_plane_" + connection.getFilenameSuffix(), model );
@@ -105,6 +117,14 @@ public class ItemPartRendering extends ItemRenderingCustomizer
 			model = new PlaneModel( formationPlaneOnTexture, sidesTexture, backTexture, connection );
 			rendering.builtInModel( "models/part/formation_plane_on_" + connection.getFilenameSuffix(), model );
 			modelNames.add( "part/formation_plane_on_" + connection.getFilenameSuffix() );
+
+			model = new PlaneModel( fluidFormationPlaneTexture, sidesTexture, backTexture, connection );
+			rendering.builtInModel( "models/part/fluid_formation_plane_" + connection.getFilenameSuffix(), model );
+			modelNames.add( "part/fluid_formation_plane_" + connection.getFilenameSuffix() );
+
+			model = new PlaneModel( fluidFormationPlaneOnTexture, sidesTexture, backTexture, connection );
+			rendering.builtInModel( "models/part/fluid_formation_plane_on_" + connection.getFilenameSuffix(), model );
+			modelNames.add( "part/fluid_formation_plane_on_" + connection.getFilenameSuffix() );
 
 		}
 

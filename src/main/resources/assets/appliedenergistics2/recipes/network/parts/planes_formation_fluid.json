@@ -1,0 +1,29 @@
+{
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "part.fluid_formation_plane"
+    },
+    "type": "appliedenergistics2:part_shaped",
+    "pattern": [
+        "adb",
+        "cdb",
+        "adb"
+    ],
+    "key": {
+        "c": {
+            "type": "appliedenergistics2:part",
+            "part": "material.formation_core"
+        },
+        "a": {
+            "type": "forge:ore_dict",
+            "ore": "ingotIron"
+        },
+        "b": {
+            "item": "#appliedenergistics2:fluixCrystal"
+        },
+        "d": {
+  			"type": "forge:ore_dict",
+            "ore": "dyeBlue"
+        }
+    }
+}

@@ -60,7 +60,9 @@ public final class ApiParts implements IParts
 	private final IItemDefinition fluidLevelEmitter;
 	private final IItemDefinition annihilationPlane;
 	private final IItemDefinition identityAnnihilationPlane;
+	private final IItemDefinition fluidAnnihilationPlane;
 	private final IItemDefinition formationPlane;
+	private final IItemDefinition fluidFormationPlane;
 	private final IItemDefinition p2PTunnelME;
 	private final IItemDefinition p2PTunnelRedstone;
 	private final IItemDefinition p2PTunnelItems;
@@ -119,7 +121,9 @@ public final class ApiParts implements IParts
 		this.annihilationPlane = new DamagedItemDefinition( "part.plane.annihilation", itemPart.createPart( PartType.ANNIHILATION_PLANE ) );
 		this.identityAnnihilationPlane = new DamagedItemDefinition( "part.plane.annihiliation.identity", itemPart
 				.createPart( PartType.IDENTITY_ANNIHILATION_PLANE ) );
+		this.fluidAnnihilationPlane = new DamagedItemDefinition( "part.plane.fluid_annihilation", itemPart.createPart( PartType.FLUID_ANNIHILATION_PLANE ) );
 		this.formationPlane = new DamagedItemDefinition( "part.plane.formation", itemPart.createPart( PartType.FORMATION_PLANE ) );
+		this.fluidFormationPlane = new DamagedItemDefinition( "part.plane.fluid_formation", itemPart.createPart( PartType.FLUID_FORMATION_PLANE ) );
 		this.p2PTunnelME = new DamagedItemDefinition( "part.tunnel.me", itemPart.createPart( PartType.P2P_TUNNEL_ME ) );
 		this.p2PTunnelRedstone = new DamagedItemDefinition( "part.tunnel.redstone", itemPart.createPart( PartType.P2P_TUNNEL_REDSTONE ) );
 		this.p2PTunnelItems = new DamagedItemDefinition( "part.tunnel.item", itemPart.createPart( PartType.P2P_TUNNEL_ITEMS ) );
@@ -421,5 +425,23 @@ public final class ApiParts implements IParts
 	public IItemDefinition fluidStorageBus()
 	{
 		return this.fluidStorageBus;
+	}
+
+	@Override
+	public IItemDefinition fluidLevelEmitter()
+	{
+		return this.fluidLevelEmitter;
+	}
+
+	@Override
+	public IItemDefinition fluidAnnihilationPlane()
+	{
+		return this.fluidAnnihilationPlane;
+	}
+	
+	@Override
+	public IItemDefinition fluidFormationnPlane()
+	{
+		return this.fluidFormationPlane;
 	}
 }
