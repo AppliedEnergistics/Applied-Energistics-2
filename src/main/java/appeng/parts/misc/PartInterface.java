@@ -36,6 +36,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
@@ -309,5 +310,17 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	public <T> T getCapability( Capability<T> capabilityClass )
 	{
 		return this.duality.getCapability( capabilityClass, this.getSide().getFacing() );
+	}
+	
+	@Override
+	public ItemStack getItemStackRepresentation()
+	{
+		return AEApi.instance().definitions().parts().iface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+	}
+
+	@Override
+	public GuiBridge getGuiBridge()
+	{
+		return GuiBridge.GUI_INTERFACE;
 	}
 }

@@ -32,6 +32,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.IItemHandler;
 
+import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -235,5 +236,17 @@ public class PartFluidInterface extends PartBasicState implements IGridTickable,
 	public IItemHandler getInventoryByName( String name )
 	{
 		return this.duality.getInventoryByName( name );
+	}
+	
+	@Override
+	public ItemStack getItemStackRepresentation()
+	{
+		return AEApi.instance().definitions().parts().fluidIface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+	}
+
+	@Override
+	public GuiBridge getGuiBridge()
+	{
+		return GuiBridge.GUI_FLUID_INTERFACE;
 	}
 }

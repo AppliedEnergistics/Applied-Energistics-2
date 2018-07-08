@@ -61,7 +61,6 @@ import appeng.core.settings.TickRates;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
-import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.MachineSource;
@@ -73,7 +72,7 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
 
-public class DualityFluidInterface implements IGridTickable, IStorageMonitorable, IAEFluidInventory, IPriorityHost, IUpgradeableHost, IConfigManagerHost
+public class DualityFluidInterface implements IGridTickable, IStorageMonitorable, IAEFluidInventory, IUpgradeableHost, IConfigManagerHost
 {
 	public static final int NUMBER_OF_TANKS = 6;
 	public static final int TANK_CAPACITY = Fluid.BUCKET_VOLUME * 4;
@@ -472,13 +471,11 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		}
 	}
 
-	@Override
 	public int getPriority()
 	{
 		return this.priority;
 	}
 
-	@Override
 	public void setPriority( final int newValue )
 	{
 		this.priority = newValue;

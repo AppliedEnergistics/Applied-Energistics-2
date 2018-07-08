@@ -85,6 +85,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
 import appeng.capabilities.Capabilities;
+import appeng.core.sync.GuiBridge;
 import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
@@ -1072,6 +1073,26 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 											AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) ) != null;
 		}
 
+	}
+
+	@Override
+	public ItemStack getItemStackRepresentation()
+	{
+		return AEApi.instance().definitions().blocks().chest().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+	}
+
+	@Override
+	public GuiBridge getGuiBridge()
+	{
+		if( this.itemCell != null )
+		{
+			return GuiBridge.GUI_ME;
+		}
+		else if( this.fluidCell != null )
+		{
+			return GuiBridge.GUI_FLUID_TERMINAL;
+		}
+		return null;
 	}
 
 }

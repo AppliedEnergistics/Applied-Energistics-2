@@ -625,4 +625,16 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 			return MODELS_OFF;
 		}
 	}
+	
+	@Override
+	public ItemStack getItemStackRepresentation()
+	{
+		return AEApi.instance().definitions().parts().storageBus().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+	}
+
+	@Override
+	public GuiBridge getGuiBridge()
+	{
+		return GuiBridge.GUI_STORAGEBUS;
+	}
 }

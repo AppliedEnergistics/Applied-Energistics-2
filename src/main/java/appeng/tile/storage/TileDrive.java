@@ -51,6 +51,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
+import appeng.core.sync.GuiBridge;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
@@ -403,5 +404,17 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 			return !stack.isEmpty() && AEApi.instance().registries().cell().isCellHandled( stack );
 		}
 
+	}
+	
+	@Override
+	public ItemStack getItemStackRepresentation()
+	{
+		return AEApi.instance().definitions().blocks().drive().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+	}
+
+	@Override
+	public GuiBridge getGuiBridge()
+	{
+		return GuiBridge.GUI_DRIVE;
 	}
 }

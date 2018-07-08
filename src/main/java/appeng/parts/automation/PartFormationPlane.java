@@ -613,4 +613,15 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 		return MODELS.getModel( this.getConnections(), this.isPowered(), this.isActive() );
 	}
 
+	@Override
+	public ItemStack getItemStackRepresentation()
+	{
+		return AEApi.instance().definitions().parts().formationPlane().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+	}
+
+	@Override
+	public GuiBridge getGuiBridge()
+	{
+		return GuiBridge.GUI_FORMATION_PLANE;
+	}
 }
