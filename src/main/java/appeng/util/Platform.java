@@ -1174,6 +1174,11 @@ public class Platform
 
 	public static <T extends IAEStack<T>> T poweredExtraction( final IEnergySource energy, final IMEInventory<T> cell, final T request, final IActionSource src )
 	{
+		return poweredExtraction( energy, cell, request, src, Actionable.MODULATE );
+	}
+
+	public static <T extends IAEStack<T>> T poweredExtraction( final IEnergySource energy, final IMEInventory<T> cell, final T request, final IActionSource src, final Actionable mode )
+	{
 		final T possible = cell.extractItems( request.copy(), Actionable.SIMULATE, src );
 
 		long retrieved = 0;
@@ -1182,29 +1187,39 @@ public class Platform
 			retrieved = possible.getStackSize();
 		}
 
-		final double availablePower = energy.extractAEPower( retrieved, Actionable.SIMULATE, PowerMultiplier.CONFIG );
-
-		final long itemToExtract = Math.min( (long) ( availablePower + 0.9 ), retrieved );
+		final double energyFactor = Math.max( 1.0, cell.getChannel().transferFactor() );
+		final double availablePower = energy.extractAEPower( retrieved / energyFactor, Actionable.SIMULATE, PowerMultiplier.CONFIG );
+		final long itemToExtract = Math.min( (long) ( ( availablePower * energyFactor ) + 0.9 ), retrieved );
 
 		if( itemToExtract > 0 )
 		{
-			energy.extractAEPower( retrieved, Actionable.MODULATE, PowerMultiplier.CONFIG );
-
-			possible.setStackSize( itemToExtract );
-			final T ret = cell.extractItems( possible, Actionable.MODULATE, src );
-
-			if( ret != null )
+			if( mode == Actionable.MODULATE )
 			{
-				src.player().ifPresent( player -> Stats.ItemsExtracted.addToPlayer( player, (int) ret.getStackSize() ) );
-			}
+				energy.extractAEPower( retrieved / energyFactor, Actionable.MODULATE, PowerMultiplier.CONFIG );
+				possible.setStackSize( itemToExtract );
+				final T ret = cell.extractItems( possible, Actionable.MODULATE, src );
 
-			return ret;
+				if( ret != null )
+				{
+					src.player().ifPresent( player -> Stats.ItemsExtracted.addToPlayer( player, (int) ret.getStackSize() ) );
+				}
+				return ret;
+			}
+			else
+			{
+				return possible.setStackSize( itemToExtract );
+			}
 		}
 
 		return null;
 	}
 
 	public static <T extends IAEStack<T>> T poweredInsert( final IEnergySource energy, final IMEInventory<T> cell, final T input, final IActionSource src )
+	{
+		return poweredInsert( energy, cell, input, src, Actionable.MODULATE );
+	}
+
+	public static <T extends IAEStack<T>> T poweredInsert( final IEnergySource energy, final IMEInventory<T> cell, final T input, final IActionSource src, final Actionable mode )
 	{
 		final T possible = cell.injectItems( input.copy(), Actionable.SIMULATE, src );
 
@@ -1214,40 +1229,47 @@ public class Platform
 			stored -= possible.getStackSize();
 		}
 
-		final int energyFactor = Math.min( 1, input.getChannel().transferFactor() );
+		final double energyFactor = Math.max( 1.0, cell.getChannel().transferFactor() );
 		final double availablePower = energy.extractAEPower( stored / energyFactor, Actionable.SIMULATE, PowerMultiplier.CONFIG );
-		final long itemToAdd = Math.min( (long) ( availablePower + 0.9 ), stored );
+		final long itemToAdd = Math.min( (long) ( ( availablePower * energyFactor ) + 0.9 ), stored );
 
 		if( itemToAdd > 0 )
 		{
-			energy.extractAEPower( stored / energyFactor, Actionable.MODULATE, PowerMultiplier.CONFIG );
-
-			if( itemToAdd < input.getStackSize() )
+			if( mode == Actionable.MODULATE )
 			{
-				final long original = input.getStackSize();
-				final T split = input.copy();
-				split.decStackSize( itemToAdd );
-				input.setStackSize( itemToAdd );
-				split.add( cell.injectItems( input, Actionable.MODULATE, src ) );
+				energy.extractAEPower( stored / energyFactor, Actionable.MODULATE, PowerMultiplier.CONFIG );
+				if( itemToAdd < input.getStackSize() )
+				{
+					final long original = input.getStackSize();
+					final T split = input.copy();
+					split.decStackSize( itemToAdd );
+					input.setStackSize( itemToAdd );
+					split.add( cell.injectItems( input, Actionable.MODULATE, src ) );
+
+					src.player().ifPresent( player ->
+					{
+						final long diff = original - split.getStackSize();
+						Stats.ItemsInserted.addToPlayer( player, (int) diff );
+					} );
+
+					return split;
+				}
+
+				final T ret = cell.injectItems( input, Actionable.MODULATE, src );
 
 				src.player().ifPresent( player ->
 				{
-					final long diff = original - split.getStackSize();
+					final long diff = ret == null ? input.getStackSize() : input.getStackSize() - ret.getStackSize();
 					Stats.ItemsInserted.addToPlayer( player, (int) diff );
 				} );
 
-				return split;
+				return ret;
 			}
-
-			final T ret = cell.injectItems( input, Actionable.MODULATE, src );
-
-			src.player().ifPresent( player ->
+			else
 			{
-				final long diff = ret == null ? input.getStackSize() : input.getStackSize() - ret.getStackSize();
-				Stats.ItemsInserted.addToPlayer( player, (int) diff );
-			} );
-
-			return ret;
+				final T ret = input.copy().setStackSize( input.getStackSize() - itemToAdd );
+				return ( ret != null && ret.getStackSize() > 0 ) ? ret : null;
+			}
 		}
 
 		return input;

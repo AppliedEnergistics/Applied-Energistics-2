@@ -31,9 +31,9 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeModContainer;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 import appeng.api.AEApi;
@@ -107,12 +107,11 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 		{
 			this.serverCM = terminal.getConfigManager();
 			this.monitor = terminal.getInventory( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
-								
+
 			if( this.monitor != null )
-			{				
+			{
 				this.monitor.addListener( this, null );
-				
-				
+
 				if( terminal instanceof IEnergySource )
 				{
 					this.setPowerSource( (IEnergySource) terminal );
@@ -142,7 +141,7 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 							this.setPowerSource( new ChannelPowerSrc( this.networkNode, (IEnergySource) g.getCache( IEnergyGrid.class ) ) );
 						}
 					}
-				}			
+				}
 			}
 		}
 		else
@@ -355,20 +354,19 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 			return;
 		}
 		ItemStack held = player.inventory.getItemStack();
-		if( !held.hasCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null ) )
-		{ // For now only do simple i/o with held tanks
+		if( held.getCount() != 1 )
+		{
+			// only support stacksize 1 for now
 			return;
 		}
 		IFluidHandlerItem fh = FluidUtil.getFluidHandler( held );
 		if( fh == null )
 		{
-			throw new NullPointerException( held.getDisplayName() + " did not give FLUID_HANDLER_ITEM_CAPABILITY" );
+			// only fluid handlers items
+			return;
 		}
-		boolean isBucket = held.getItem() == Items.BUCKET ||
-				held.getItem() == Items.WATER_BUCKET ||
-				held.getItem() == Items.LAVA_BUCKET ||
-				held.getItem() == Items.MILK_BUCKET ||
-				held.getItem() == ForgeModContainer.getInstance().universalBucket;
+		boolean isBucket = held.getItem() == Items.BUCKET || held.getItem() == Items.WATER_BUCKET || held.getItem() == Items.LAVA_BUCKET || held
+				.getItem() == Items.MILK_BUCKET || held.getItem() == ForgeModContainer.getInstance().universalBucket;
 
 		if( action == InventoryAction.FILL_ITEM && this.clientRequestedTargetFluid != null )
 		{
@@ -377,7 +375,7 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 			AELog.debug( "Filling %s with %s, %s mb", held.getDisplayName(), this.clientRequestedTargetFluid.getFluidStack().getLocalizedName(),
 					stack.getStackSize() );
 
-			if( isBucket && stack.getStackSize() < 1000 )
+			if( isBucket && stack.getStackSize() < Fluid.BUCKET_VOLUME )
 			{ // Although buckets support less than a buckets worth of fluid, it does not display how much it holds
 				return;
 			}
@@ -388,8 +386,8 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 			stack.setStackSize( amountAllowed );
 
 			// Check if we can pull out of the system
-			IAEFluidStack canPull = this.monitor.extractItems( stack, Actionable.SIMULATE, this.getActionSource() );
-			if( canPull == null || canPull.getStackSize() < 1 || ( isBucket && canPull.getStackSize() < 1000 ) )
+			IAEFluidStack canPull = Platform.poweredExtraction( this.getPowerSource(), this.monitor, stack, this.getActionSource(), Actionable.SIMULATE );
+			if( canPull == null || canPull.getStackSize() < 1 || ( isBucket && canPull.getStackSize() != Fluid.BUCKET_VOLUME ) )
 			{
 				// Either we couldn't pull out of the system,
 				// or we are using a bucket and can only pull out less than a buckets worth of fluid
@@ -405,16 +403,10 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 				return;
 			}
 
-			if( isBucket )
-			{
-				// We need to handle buckets separately
-				ItemStack filledBucket = FluidUtil.getFilledBucket( pulled.getFluidStack() );
-				player.inventory.setItemStack( filledBucket );
-			}
-			else
-			{
-				fh.fill( pulled.getFluidStack(), true );
-			}
+			// Actually fill
+			fh.fill( pulled.getFluidStack(), true );
+
+			player.inventory.setItemStack( fh.getContainer() );
 			this.updateHeld( player );
 		}
 		else if( action == InventoryAction.EMPTY_ITEM )
@@ -430,31 +422,26 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 			}
 
 			// Check if we can push into the system
-			IAEFluidStack canPush = this.monitor.injectItems( AEFluidStack.fromFluidStack( extract ), Actionable.SIMULATE, this.getActionSource() );
-			if( isBucket && canPush != null && canPush.getStackSize() > 0 )
+			IAEFluidStack notPushed = Platform.poweredInsert( this.getPowerSource(), this.monitor, AEFluidStack.fromFluidStack( extract ),
+					this.getActionSource(), Actionable.SIMULATE );
+			if( isBucket && notPushed != null && notPushed.getStackSize() > 0 )
 			{
 				// We can't push enough for the bucket
 				return;
 			}
 
-			IAEFluidStack inserted = Platform.poweredInsert( this.getPowerSource(), this.monitor, AEFluidStack.fromFluidStack( extract ),
+			IAEFluidStack notInserted = Platform.poweredInsert( this.getPowerSource(), this.monitor, AEFluidStack.fromFluidStack( extract ),
 					this.getActionSource() );
-			if( inserted != null && inserted.getStackSize() > 0 )
+			if( notInserted != null && notInserted.getStackSize() > 0 )
 			{
 				// Only try to extract the amount we DID insert
-				extract.amount -= Math.toIntExact( inserted.getStackSize() );
+				extract.amount -= Math.toIntExact( notInserted.getStackSize() );
 			}
 
-			if( isBucket )
-			{
-				// Remove bucket and replace with EmptyBucket
-				player.inventory.setItemStack( new ItemStack( Items.BUCKET, 1 ) );
-			}
-			else
-			{
-				// Actually drain
-				fh.drain( extract, true );
-			}
+			// Actually drain
+			fh.drain( extract, true );
+
+			player.inventory.setItemStack( fh.getContainer() );
 			this.updateHeld( player );
 		}
 	}
