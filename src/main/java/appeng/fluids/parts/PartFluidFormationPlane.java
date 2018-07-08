@@ -227,4 +227,16 @@ public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluid
 	{
 		return this.config;
 	}
+
+	@Override
+	public ItemStack getItemStackRepresentation()
+	{
+		return AEApi.instance().definitions().parts().fluidFormationnPlane().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+	}
+
+	@Override
+	public GuiBridge getGuiBridge()
+	{
+		return GuiBridge.GUI_FLUID_FORMATION_PLANE;
+	}
 }
