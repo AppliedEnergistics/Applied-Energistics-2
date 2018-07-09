@@ -26,10 +26,8 @@ import java.util.Random;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.RayTraceResult;
@@ -42,6 +40,7 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import appeng.api.parts.CableRenderMode;
@@ -85,30 +84,14 @@ public class ClientHelper extends ServerHelper
 		{
 			ModelLoaderRegistry.registerLoader( UVLModelLoader.INSTANCE );
 		}
+
+		RenderingRegistry.registerEntityRenderingHandler( EntityTinyTNTPrimed.class, manager -> new RenderTinyTNTPrimed( manager ) );
+		RenderingRegistry.registerEntityRenderingHandler( EntityFloatingItem.class, manager -> new RenderFloatingItem( manager ) );
 	}
 
 	@Override
 	public void init()
 	{
-		// final Block fluixBlock = GameRegistry.findBlock( "appliedenergistics2", "fluix" );
-		// Item fluixItem = Item.getItemFromBlock( fluixBlock );
-		// ModelResourceLocation itemModelResourceLocation = new ModelResourceLocation( "appliedenergistics2:fluix",
-		// "inventory" );
-		// final int DEFAULT_ITEM_SUBTYPE = 0;
-		// final ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
-		// // mesher.register( fluixItem, DEFAULT_ITEM_SUBTYPE, itemModelResourceLocation );
-		//
-		// final ResourceLocation resource = new ResourceLocation( "appliedenergistics2", "stair.fluix" );
-		// final ModelResourceLocation fluixStairModel = new ModelResourceLocation( resource, "inventory" );
-		// AELog.info( "FluixStairModel: " + fluixStairModel );
-		//
-		// final Set<Item> items = AEApi.instance().definitions().blocks().fluixStairs().maybeItem().asSet();
-		// for( Item item : items )
-		// {
-		// AELog.info( "Registering with %s with unlocalized %s", item, item.getUnlocalizedName() );
-		// mesher.register( item, DEFAULT_ITEM_SUBTYPE, fluixStairModel );
-		// }
-
 	}
 
 	@Override
@@ -199,11 +182,6 @@ public class ClientHelper extends ServerHelper
 	@Override
 	public void postInit()
 	{
-		// RenderingRegistry.registerBlockHandler( WorldRender.INSTANCE );
-		final RenderManager inst = Minecraft.getMinecraft().getRenderManager();
-
-		inst.entityRenderMap.put( EntityTinyTNTPrimed.class, new RenderTinyTNTPrimed( inst ) );
-		inst.entityRenderMap.put( EntityFloatingItem.class, new RenderFloatingItem( inst ) );
 	}
 
 	@Override
@@ -330,29 +308,20 @@ public class ClientHelper extends ServerHelper
 		final EntityPlayer player = mc.player;
 		if( player.isSneaking() )
 		{
-			final EnumHand hand;
-			if( !player.getHeldItem( EnumHand.MAIN_HAND ).isEmpty() && player.getHeldItem( EnumHand.MAIN_HAND ).getItem() instanceof IMouseWheelItem )
-			{
-				hand = EnumHand.MAIN_HAND;
-			}
-			else if( !player.getHeldItem( EnumHand.OFF_HAND ).isEmpty() && player.getHeldItem( EnumHand.OFF_HAND ).getItem() instanceof IMouseWheelItem )
-			{
-				hand = EnumHand.OFF_HAND;
-			}
-			else
-			{
-				return;
-			}
+			final boolean mainHand = player.getHeldItem( EnumHand.MAIN_HAND ).getItem() instanceof IMouseWheelItem;
+			final boolean offHand = player.getHeldItem( EnumHand.OFF_HAND ).getItem() instanceof IMouseWheelItem;
 
-			final ItemStack is = player.getHeldItem( hand );
-			try
+			if( mainHand || offHand )
 			{
-				NetworkHandler.instance().sendToServer( new PacketValueConfig( "Item", me.getDwheel() > 0 ? "WheelUp" : "WheelDown" ) );
-				me.setCanceled( true );
-			}
-			catch( final IOException e )
-			{
-				AELog.debug( e );
+				try
+				{
+					NetworkHandler.instance().sendToServer( new PacketValueConfig( "Item", me.getDwheel() > 0 ? "WheelUp" : "WheelDown" ) );
+					me.setCanceled( true );
+				}
+				catch( final IOException e )
+				{
+					AELog.debug( e );
+				}
 			}
 		}
 	}

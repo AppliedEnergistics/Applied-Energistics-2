@@ -29,6 +29,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemSlab;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
@@ -93,6 +94,7 @@ import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.FeatureFactory;
 import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;
+import appeng.bootstrap.components.IEntityRegistrationComponent;
 import appeng.bootstrap.components.IOreDictComponent;
 import appeng.bootstrap.components.IPostInitComponent;
 import appeng.bootstrap.components.IPreInitComponent;
@@ -126,6 +128,8 @@ import appeng.decorative.solid.BlockQuartzPillar;
 import appeng.decorative.solid.BlockSkyStone;
 import appeng.decorative.solid.BlockSkyStone.SkystoneType;
 import appeng.decorative.stair.BlockStairCommon;
+import appeng.entity.EntityIds;
+import appeng.entity.EntityTinyTNTPrimed;
 import appeng.fluids.block.BlockFluidInterface;
 import appeng.fluids.tile.TileFluidInterface;
 import appeng.hooks.DispenserBehaviorTinyTNT;
@@ -345,6 +349,16 @@ public final class ApiBlocks implements IBlocks
 				.features( AEFeature.TINY_TNT )
 				.bootstrap( ( block, item ) -> (IPreInitComponent) side -> BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( item,
 						new DispenserBehaviorTinyTNT() ) )
+				.bootstrap( ( block, item ) -> (IEntityRegistrationComponent) r ->
+				{
+					r.register( EntityEntryBuilder.create()
+							.entity( EntityTinyTNTPrimed.class )
+							.id( new ResourceLocation( "appliedenergistics2", EntityTinyTNTPrimed.class.getName() ),
+									EntityIds.get( EntityTinyTNTPrimed.class ) )
+							.name( "EntityTinyTNTPrimed" )
+							.tracker( 16, 4, true )
+							.build() );
+				} )
 				.build();
 		this.securityStation = registry.block( "security_station", BlockSecurityStation::new )
 				.features( AEFeature.SECURITY )

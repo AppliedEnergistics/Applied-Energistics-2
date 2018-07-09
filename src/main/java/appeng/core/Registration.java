@@ -53,6 +53,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -76,10 +77,10 @@ import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.spatial.ISpatialCache;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.networking.ticking.ITickManager;
-import appeng.api.parts.IPartHelper;
 import appeng.bootstrap.ICriterionTriggerRegistry;
 import appeng.bootstrap.IModelRegistry;
 import appeng.bootstrap.components.IBlockRegistrationComponent;
+import appeng.bootstrap.components.IEntityRegistrationComponent;
 import appeng.bootstrap.components.IInitComponent;
 import appeng.bootstrap.components.IItemRegistrationComponent;
 import appeng.bootstrap.components.IModelRegistrationComponent;
@@ -211,11 +212,9 @@ final class Registration
 		Preconditions.checkArgument( !recipeDirectory.isFile() );
 
 		final Api api = Api.INSTANCE;
-		final IPartHelper partHelper = api.partHelper();
 		final IRegistryContainer registries = api.registries();
 
 		ApiDefinitions definitions = api.definitions();
-		definitions.getRegistry().getBootstrapComponents( IOreDictComponent.class ).forEachRemaining( b -> b.oreRegistration( event.getSide() ) );
 		definitions.getRegistry().getBootstrapComponents( IInitComponent.class ).forEachRemaining( b -> b.initialize( event.getSide() ) );
 
 		MinecraftForge.EVENT_BUS.register( TickHandler.INSTANCE );
@@ -286,6 +285,10 @@ final class Registration
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		final Side side = FMLCommonHandler.instance().getEffectiveSide();
 		definitions.getRegistry().getBootstrapComponents( IItemRegistrationComponent.class ).forEachRemaining( b -> b.itemRegistration( side, registry ) );
+		// register oredicts
+		definitions.getRegistry().getBootstrapComponents( IOreDictComponent.class ).forEachRemaining( b -> b.oreRegistration( side ) );		
+		ItemMaterial.instance.registerOredicts();
+		ItemPart.instance.registerOreDicts();
 	}
 
 	@SubscribeEvent
@@ -296,10 +299,6 @@ final class Registration
 		final Api api = Api.INSTANCE;
 		final ApiDefinitions definitions = api.definitions();
 		final Side side = FMLCommonHandler.instance().getEffectiveSide();
-
-		// Perform ore camouflage!
-		ItemMaterial.instance.makeUnique();
-		ItemPart.instance.registerOreDicts();
 
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_DISASSEMBLY_CRAFTING ) )
 		{
@@ -321,7 +320,15 @@ final class Registration
 		final AERecipeLoader ldr = new AERecipeLoader();
 		ldr.loadProcessingRecipes();
 	}
-
+	
+	@SubscribeEvent
+	public void registerEntities( RegistryEvent.Register<EntityEntry> event)
+	{
+		final IForgeRegistry<EntityEntry> registry = event.getRegistry();
+		final ApiDefinitions definitions = Api.INSTANCE.definitions();
+		definitions.getRegistry().getBootstrapComponents( IEntityRegistrationComponent.class ).forEachRemaining( b -> b.entityRegistration( registry ) );
+	}
+	
 	@SubscribeEvent
 	public void attachSpatialDimensionManager( AttachCapabilitiesEvent<World> event )
 	{

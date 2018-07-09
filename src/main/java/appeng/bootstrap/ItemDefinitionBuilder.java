@@ -144,7 +144,7 @@ class ItemDefinitionBuilder implements IItemBuilder
 		item.setCreativeTab( this.creativeTab );
 
 		// Register all extra handlers
-		this.boostrapComponents.forEach( component -> component.apply( item ) );
+		this.boostrapComponents.forEach( component -> this.factory.addBootstrapComponent( component.apply( item ) ) );
 
 		// Register custom dispenser behavior if requested
 		if( this.dispenserBehaviorSupplier != null )
