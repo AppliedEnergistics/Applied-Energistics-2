@@ -87,7 +87,7 @@ public class ItemSorters
 				return CONFIG_BASED_SORT_BY_NAME.compare( o1, o2 );
 			}
 
-			final int cmp = api.compareItems( o1.asItemStackRepresentation(), o2.asItemStackRepresentation() );
+			final int cmp = api.compareItems( o1.getDefinition(), o2.getDefinition() );
 			return applyDirection( cmp );
 		}
 	};
