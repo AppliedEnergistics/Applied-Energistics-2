@@ -47,26 +47,26 @@ public class P2PHelperTest
 	private static final String HEX_MIN_FREQUENCY = "8000";
 	private static final String HEX_MAX_FREQUENCY = "7FFF";
 
-	private static final String COLOR_STRING_WHITE_FREQUENCY = "§00§00§00§00";
+	private static final String COLOR_STRING_WHITE_FREQUENCY = "§f0§f0§f0§f0";
 	private static final String COLOR_STRING_BLACK_FREQUENCY = "§fF§fF§fF§fF";
-	private static final String COLOR_STRING_MULTI_FREQUENCY = "§eE§88§dD§11";
-	private static final String COLOR_STRING_MIN_FREQUENCY = "§88§00§00§00";
-	private static final String COLOR_STRING_MAX_FREQUENCY = "§77§fF§fF§fF";
+	private static final String COLOR_STRING_MULTI_FREQUENCY = "§1E§78§2D§e1";
+	private static final String COLOR_STRING_MIN_FREQUENCY = "§78§f0§f0§f0";
+	private static final String COLOR_STRING_MAX_FREQUENCY = "§87§fF§fF§fF";
 
 	@Test
 	public void testToColors()
 	{
-		assertArrayEquals( WHITE_COLORS, unitUnderTest.toColors( WHITE_FREQUENCY ) );
-		assertArrayEquals( BLACK_COLORS, unitUnderTest.toColors( BLACK_FREQUENCY ) );
-		assertArrayEquals( MULTI_COLORS, unitUnderTest.toColors( MULTI_FREQUENCY ) );
+		assertArrayEquals( WHITE_COLORS, this.unitUnderTest.toColors( WHITE_FREQUENCY ) );
+		assertArrayEquals( BLACK_COLORS, this.unitUnderTest.toColors( BLACK_FREQUENCY ) );
+		assertArrayEquals( MULTI_COLORS, this.unitUnderTest.toColors( MULTI_FREQUENCY ) );
 	}
 
 	@Test
 	public void testFromColors()
 	{
-		assertEquals( WHITE_FREQUENCY, unitUnderTest.fromColors( WHITE_COLORS ) );
-		assertEquals( BLACK_FREQUENCY, unitUnderTest.fromColors( BLACK_COLORS ) );
-		assertEquals( MULTI_FREQUENCY, unitUnderTest.fromColors( MULTI_COLORS ) );
+		assertEquals( WHITE_FREQUENCY, this.unitUnderTest.fromColors( WHITE_COLORS ) );
+		assertEquals( BLACK_FREQUENCY, this.unitUnderTest.fromColors( BLACK_COLORS ) );
+		assertEquals( MULTI_FREQUENCY, this.unitUnderTest.fromColors( MULTI_COLORS ) );
 	}
 
 	@Test
@@ -74,50 +74,50 @@ public class P2PHelperTest
 	{
 		for( short i = Short.MIN_VALUE; i < Short.MAX_VALUE; i++ )
 		{
-			assertEquals( i, unitUnderTest.fromColors( unitUnderTest.toColors( i ) ) );
+			assertEquals( i, this.unitUnderTest.fromColors( this.unitUnderTest.toColors( i ) ) );
 		}
 	}
 
 	@Test
 	public void testToHexDigit()
 	{
-		assertEquals( "0", unitUnderTest.toHexDigit( AEColor.WHITE ) );
-		assertEquals( "1", unitUnderTest.toHexDigit( AEColor.ORANGE ) );
-		assertEquals( "2", unitUnderTest.toHexDigit( AEColor.MAGENTA ) );
-		assertEquals( "3", unitUnderTest.toHexDigit( AEColor.LIGHT_BLUE ) );
-		assertEquals( "4", unitUnderTest.toHexDigit( AEColor.YELLOW ) );
-		assertEquals( "5", unitUnderTest.toHexDigit( AEColor.LIME ) );
-		assertEquals( "6", unitUnderTest.toHexDigit( AEColor.PINK ) );
-		assertEquals( "7", unitUnderTest.toHexDigit( AEColor.GRAY ) );
-		assertEquals( "8", unitUnderTest.toHexDigit( AEColor.LIGHT_GRAY ) );
-		assertEquals( "9", unitUnderTest.toHexDigit( AEColor.CYAN ) );
-		assertEquals( "A", unitUnderTest.toHexDigit( AEColor.PURPLE ) );
-		assertEquals( "B", unitUnderTest.toHexDigit( AEColor.BLUE ) );
-		assertEquals( "C", unitUnderTest.toHexDigit( AEColor.BROWN ) );
-		assertEquals( "D", unitUnderTest.toHexDigit( AEColor.GREEN ) );
-		assertEquals( "E", unitUnderTest.toHexDigit( AEColor.RED ) );
-		assertEquals( "F", unitUnderTest.toHexDigit( AEColor.BLACK ) );
+		assertEquals( "0", this.unitUnderTest.toHexDigit( AEColor.WHITE ) );
+		assertEquals( "1", this.unitUnderTest.toHexDigit( AEColor.ORANGE ) );
+		assertEquals( "2", this.unitUnderTest.toHexDigit( AEColor.MAGENTA ) );
+		assertEquals( "3", this.unitUnderTest.toHexDigit( AEColor.LIGHT_BLUE ) );
+		assertEquals( "4", this.unitUnderTest.toHexDigit( AEColor.YELLOW ) );
+		assertEquals( "5", this.unitUnderTest.toHexDigit( AEColor.LIME ) );
+		assertEquals( "6", this.unitUnderTest.toHexDigit( AEColor.PINK ) );
+		assertEquals( "7", this.unitUnderTest.toHexDigit( AEColor.GRAY ) );
+		assertEquals( "8", this.unitUnderTest.toHexDigit( AEColor.LIGHT_GRAY ) );
+		assertEquals( "9", this.unitUnderTest.toHexDigit( AEColor.CYAN ) );
+		assertEquals( "A", this.unitUnderTest.toHexDigit( AEColor.PURPLE ) );
+		assertEquals( "B", this.unitUnderTest.toHexDigit( AEColor.BLUE ) );
+		assertEquals( "C", this.unitUnderTest.toHexDigit( AEColor.BROWN ) );
+		assertEquals( "D", this.unitUnderTest.toHexDigit( AEColor.GREEN ) );
+		assertEquals( "E", this.unitUnderTest.toHexDigit( AEColor.RED ) );
+		assertEquals( "F", this.unitUnderTest.toHexDigit( AEColor.BLACK ) );
 	}
 
 	@Test
 	public void testToHexString()
 	{
-		assertEquals( HEX_WHITE_FREQUENCY, unitUnderTest.toHexString( WHITE_FREQUENCY ) );
-		assertEquals( HEX_BLACK_FREQUENCY, unitUnderTest.toHexString( BLACK_FREQUENCY ) );
-		assertEquals( HEX_MULTI_FREQUENCY, unitUnderTest.toHexString( MULTI_FREQUENCY ) );
+		assertEquals( HEX_WHITE_FREQUENCY, this.unitUnderTest.toHexString( WHITE_FREQUENCY ) );
+		assertEquals( HEX_BLACK_FREQUENCY, this.unitUnderTest.toHexString( BLACK_FREQUENCY ) );
+		assertEquals( HEX_MULTI_FREQUENCY, this.unitUnderTest.toHexString( MULTI_FREQUENCY ) );
 
-		assertEquals( HEX_MIN_FREQUENCY, unitUnderTest.toHexString( Short.MIN_VALUE ) );
-		assertEquals( HEX_MAX_FREQUENCY, unitUnderTest.toHexString( Short.MAX_VALUE ) );
+		assertEquals( HEX_MIN_FREQUENCY, this.unitUnderTest.toHexString( Short.MIN_VALUE ) );
+		assertEquals( HEX_MAX_FREQUENCY, this.unitUnderTest.toHexString( Short.MAX_VALUE ) );
 	}
 
 	@Test
 	public void testToColorHexString()
 	{
-		assertEquals( COLOR_STRING_WHITE_FREQUENCY, unitUnderTest.toColorHexString( WHITE_FREQUENCY ) );
-		assertEquals( COLOR_STRING_BLACK_FREQUENCY, unitUnderTest.toColorHexString( BLACK_FREQUENCY ) );
-		assertEquals( COLOR_STRING_MULTI_FREQUENCY, unitUnderTest.toColorHexString( MULTI_FREQUENCY ) );
-		assertEquals( COLOR_STRING_MIN_FREQUENCY, unitUnderTest.toColorHexString( Short.MIN_VALUE ) );
-		assertEquals( COLOR_STRING_MAX_FREQUENCY, unitUnderTest.toColorHexString( Short.MAX_VALUE ) );
+		assertEquals( COLOR_STRING_WHITE_FREQUENCY, this.unitUnderTest.toColorHexString( WHITE_FREQUENCY ) );
+		assertEquals( COLOR_STRING_BLACK_FREQUENCY, this.unitUnderTest.toColorHexString( BLACK_FREQUENCY ) );
+		assertEquals( COLOR_STRING_MULTI_FREQUENCY, this.unitUnderTest.toColorHexString( MULTI_FREQUENCY ) );
+		assertEquals( COLOR_STRING_MIN_FREQUENCY, this.unitUnderTest.toColorHexString( Short.MIN_VALUE ) );
+		assertEquals( COLOR_STRING_MAX_FREQUENCY, this.unitUnderTest.toColorHexString( Short.MAX_VALUE ) );
 	}
 
 }
