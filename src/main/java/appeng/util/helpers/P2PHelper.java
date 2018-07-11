@@ -71,12 +71,16 @@ public class P2PHelper
 
 	public String toColorHexDigit( AEColor color )
 	{
-		return TextFormatting.fromColorIndex( color.ordinal() ) + this.toHexDigit( color );
+		if( color == AEColor.BLACK )
+		{
+			return TextFormatting.WHITE + this.toHexDigit( color );
+		}
+		return TextFormatting.fromColorIndex( color.dye.getDyeDamage() ) + this.toHexDigit( color );
 	}
 
 	public String toColorHexString( short frequency )
 	{
-		final AEColor[] colors = toColors( frequency );
+		final AEColor[] colors = this.toColors( frequency );
 		final StringBuilder builder = new StringBuilder();
 
 		for( AEColor aeColor : colors )

@@ -61,6 +61,14 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 		{
 			lines.add( I18n.translateToLocal( this.getLocalizedName( data.getString( "tooltip" ) + ".name", data.getString( "tooltip" ) ) ) );
 		}
+
+		if( data.hasKey( "freq" ) )
+		{
+			final short freq = data.getShort( "freq" );
+			final String freqTooltip = Platform.p2p().toColorHexString( freq );
+
+			lines.add( I18n.translateToLocalFormatted( "gui.tooltips.appliedenergistics2.P2PFrequency", freqTooltip ) );
+		}
 	}
 
 	/**
@@ -114,7 +122,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 		{
 			o = new NBTTagCompound();
 		}
-		return (NBTTagCompound) o.copy();
+		return o.copy();
 	}
 
 	@Override

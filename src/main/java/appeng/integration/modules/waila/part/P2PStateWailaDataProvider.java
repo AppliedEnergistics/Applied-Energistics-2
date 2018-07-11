@@ -27,6 +27,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -36,6 +37,7 @@ import appeng.api.parts.IPart;
 import appeng.core.localization.WailaText;
 import appeng.me.GridAccessException;
 import appeng.parts.p2p.PartP2PTunnel;
+import appeng.util.Platform;
 
 
 /**
@@ -48,6 +50,7 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider
 	private static final int STATE_OUTPUT = 1;
 	private static final int STATE_INPUT = 2;
 	public static final String TAG_P2P_STATE = "p2p_state";
+	public static final String TAG_P2P_FREQUENCY = "p2p_frequency";
 
 	/**
 	 * Adds state to the tooltip
@@ -86,6 +89,10 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider
 							break;
 					}
 				}
+
+				final short freq = nbtData.getShort( TAG_P2P_FREQUENCY );
+				final String freqTooltip = Platform.p2p().toColorHexString( freq );
+				currentToolTip.add( I18n.translateToLocalFormatted( "gui.tooltips.appliedenergistics2.P2PFrequency", freqTooltip ) );
 			}
 		}
 
@@ -98,6 +105,10 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider
 		if( part instanceof PartP2PTunnel )
 		{
 			PartP2PTunnel tunnel = (PartP2PTunnel) part;
+
+			// Frquency
+			final short frequency = tunnel.getFrequency();
+			tag.setShort( TAG_P2P_FREQUENCY, frequency );
 
 			// The default state
 			int state = STATE_UNLINKED;
@@ -125,6 +136,7 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider
 					state,
 					outputCount
 			} );
+
 		}
 
 		return tag;
