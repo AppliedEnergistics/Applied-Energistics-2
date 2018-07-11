@@ -27,7 +27,7 @@ A Mod about Matter, Energy and using them to conquer the world..
 * [Website](http://ae-mod.info/)
 * [IRC #appliedenergistics on esper.net](http://webchat.esper.net/?channels=appliedenergistics&prompt=1)
 * [GitHub](https://github.com/AppliedEnergistics/Applied-Energistics-2)
-* [Discord](https://discord.gg/DJ9hVAN)
+* [Discord](https://discord.gg/GygKjjm)
 
 ## License
 
