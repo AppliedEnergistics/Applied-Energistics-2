@@ -100,6 +100,27 @@ public class P2PHelperTest
 	}
 
 	@Test
+	public void testToColorHexDigit()
+	{
+		assertEquals( "§f0", this.unitUnderTest.toColorHexDigit( AEColor.WHITE ) );
+		assertEquals( "§e1", this.unitUnderTest.toColorHexDigit( AEColor.ORANGE ) );
+		assertEquals( "§d2", this.unitUnderTest.toColorHexDigit( AEColor.MAGENTA ) );
+		assertEquals( "§c3", this.unitUnderTest.toColorHexDigit( AEColor.LIGHT_BLUE ) );
+		assertEquals( "§b4", this.unitUnderTest.toColorHexDigit( AEColor.YELLOW ) );
+		assertEquals( "§a5", this.unitUnderTest.toColorHexDigit( AEColor.LIME ) );
+		assertEquals( "§96", this.unitUnderTest.toColorHexDigit( AEColor.PINK ) );
+		assertEquals( "§87", this.unitUnderTest.toColorHexDigit( AEColor.GRAY ) );
+		assertEquals( "§78", this.unitUnderTest.toColorHexDigit( AEColor.LIGHT_GRAY ) );
+		assertEquals( "§69", this.unitUnderTest.toColorHexDigit( AEColor.CYAN ) );
+		assertEquals( "§5A", this.unitUnderTest.toColorHexDigit( AEColor.PURPLE ) );
+		assertEquals( "§4B", this.unitUnderTest.toColorHexDigit( AEColor.BLUE ) );
+		assertEquals( "§3C", this.unitUnderTest.toColorHexDigit( AEColor.BROWN ) );
+		assertEquals( "§2D", this.unitUnderTest.toColorHexDigit( AEColor.GREEN ) );
+		assertEquals( "§1E", this.unitUnderTest.toColorHexDigit( AEColor.RED ) );
+		assertEquals( "§fF", this.unitUnderTest.toColorHexDigit( AEColor.BLACK ) );
+	}
+
+	@Test
 	public void testToHexString()
 	{
 		assertEquals( HEX_WHITE_FREQUENCY, this.unitUnderTest.toHexString( WHITE_FREQUENCY ) );
