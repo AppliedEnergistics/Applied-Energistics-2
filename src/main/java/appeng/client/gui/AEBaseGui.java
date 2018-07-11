@@ -555,7 +555,7 @@ public abstract class AEBaseGui extends GuiContainer
 			return;
 		}
 
-		if( !this.disableShiftClick && isShiftKeyDown() && mouseButton == 0)
+		if( !this.disableShiftClick && isShiftKeyDown() && mouseButton == 0 )
 		{
 			this.disableShiftClick = true;
 
