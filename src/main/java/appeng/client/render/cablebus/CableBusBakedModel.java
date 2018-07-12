@@ -119,7 +119,9 @@ public class CableBusBakedModel implements IBakedModel
 						throw new IllegalStateException( "Trying to use an unregistered part model: " + model );
 					}
 
-					List<BakedQuad> partQuads = bakedModel.getQuads( state, null, rand );
+					List<BakedQuad> partQuads = new ArrayList<>();
+					partQuads.addAll( bakedModel.getQuads( state, null, rand ) );
+					partQuads.addAll( bakedModel.getQuads( state, facing, rand ) );
 
 					// Rotate quads accordingly
 					QuadRotator rotator = new QuadRotator();
