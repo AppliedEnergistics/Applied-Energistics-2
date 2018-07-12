@@ -151,9 +151,10 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	@Override
 	public boolean readFromStream( ByteBuf data ) throws IOException
 	{
-		super.readFromStream( data );
+		final boolean c = super.readFromStream( data );
+		final short oldf = this.freq;
 		this.freq = data.readShort();
-		return false;
+		return c || oldf != this.freq;
 	}
 
 	@Override
@@ -389,8 +390,12 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
 	public void setFrequency( final short freq )
 	{
+		final short oldf = this.freq;
 		this.freq = freq;
-		this.getHost().markForUpdate();
+		if( oldf != this.freq )
+		{
+			this.getHost().markForUpdate();
+		}
 	}
 
 	public boolean isOutput()
