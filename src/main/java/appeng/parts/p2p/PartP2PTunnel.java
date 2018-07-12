@@ -411,6 +411,13 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	@Override
 	public Long getRenderFlag()
 	{
-		return (long) this.getFrequency();
+		long ret = Short.toUnsignedLong( this.getFrequency() );
+
+		if( this.isActive() && this.isPowered() )
+		{
+			ret |= 0x10000L;
+		}
+
+		return ret;
 	}
 }

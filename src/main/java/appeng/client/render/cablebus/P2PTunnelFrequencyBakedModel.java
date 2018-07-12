@@ -4,9 +4,7 @@ package appeng.client.render.cablebus;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -26,16 +24,11 @@ public class P2PTunnelFrequencyBakedModel implements IBakedModel, IPartBakedMode
 	private final VertexFormat format;
 	private final TextureAtlasSprite texture;
 
-	private static final EnumMap<AEColor, List<BakedQuad>> color1Cache = new EnumMap<>( AEColor.class );
-	private static final EnumMap<AEColor, List<BakedQuad>> color2Cache = new EnumMap<>( AEColor.class );
-	private static final EnumMap<AEColor, List<BakedQuad>> color3Cache = new EnumMap<>( AEColor.class );
-	private static final EnumMap<AEColor, List<BakedQuad>> color4Cache = new EnumMap<>( AEColor.class );
-
 	private static final int[][] QUAD_OFFSETS = new int[][] {
-			{ 4, 10, 3 },
-			{ 10, 10, 3 },
-			{ 10, 4, 3 },
-			{ 4, 4, 3 }
+			{ 4, 10, 2 },
+			{ 10, 10, 2 },
+			{ 10, 4, 2 },
+			{ 4, 4, 2 }
 	};
 
 	public P2PTunnelFrequencyBakedModel( final VertexFormat format, final TextureAtlasSprite texture )
@@ -48,11 +41,13 @@ public class P2PTunnelFrequencyBakedModel implements IBakedModel, IPartBakedMode
 	public List<BakedQuad> getPartQuads( Long partFlags, long rand )
 	{
 		short frequency = 0;
+		boolean active = false;
 		if( partFlags != null )
 		{
-			frequency = partFlags.shortValue();
+			frequency = (short) ( partFlags.longValue() & 0xffffL );
+			active = ( partFlags.longValue() & 0x10000L ) != 0;
 		}
-		return getQuadsForFrequency( frequency );
+		return getQuadsForFrequency( frequency, active );
 	}
 
 	@Override
@@ -65,42 +60,29 @@ public class P2PTunnelFrequencyBakedModel implements IBakedModel, IPartBakedMode
 		return getPartQuads( null, rand );
 	}
 
-	private static Map<AEColor, List<BakedQuad>> getCache( int pos )
-	{
-		switch( pos )
-		{
-			case 0:
-				return color1Cache;
-			case 1:
-				return color2Cache;
-			case 2:
-				return color3Cache;
-			case 3:
-				return color4Cache;
-			default:
-				throw new RuntimeException( "invalid cache index" );
-		}
-	}
-
-	private List<BakedQuad> getQuadsForFrequency( final short frequency )
+	private List<BakedQuad> getQuadsForFrequency( final short frequency, final boolean active )
 	{
 		final List<BakedQuad> out = new ArrayList<>();
 		final AEColor[] colors = Platform.p2p().toColors( frequency );
 		for( int i = 0; i < 4; ++i )
 		{
 			final int[] offs = QUAD_OFFSETS[i];
-			out.addAll( getCache( i ).computeIfAbsent( colors[i], c ->
+			final CubeBuilder cb = new CubeBuilder( this.format );
+
+			cb.setTexture( this.texture );
+			cb.useStandardUV();
+			if( active )
 			{
-				final CubeBuilder cb = new CubeBuilder( this.format );
-
-				cb.setTexture( this.texture );
 				cb.setRenderFullBright( true );
-				cb.setColorRGB( c.dye.getColorValue() );
-				cb.addCube( offs[0], offs[1], offs[2],
-						offs[0] + 2, offs[1] + 2, offs[2] + 0.1f );
-
-				return cb.getOutput();
-			} ) );
+				cb.setColorRGB( colors[i].dye.getColorValue() );
+			}
+			else
+			{
+				final float cv[] = colors[i].dye.getColorComponentValues();
+				cb.setColorRGB( cv[0] * 0.5f, cv[1] * 0.5f, cv[2] * 0.5f );
+			}
+			cb.addCube( offs[0], offs[1], offs[2], offs[0] + 2, offs[1] + 2, offs[2] + 1 );
+			out.addAll( cb.getOutput() );
 		}
 		return out;
 	}

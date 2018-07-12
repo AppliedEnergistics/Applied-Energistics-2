@@ -18,7 +18,7 @@ import appeng.core.AppEng;
 
 public class P2PTunnelFrequencyModel implements IModel
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation( AppEng.MOD_ID, "parts/p2p_tunnel_sides" );
+	private static final ResourceLocation TEXTURE = new ResourceLocation( AppEng.MOD_ID, "parts/p2p_tunnel_frequency" );
 
 	@Override
 	public Collection<ResourceLocation> getTextures()
