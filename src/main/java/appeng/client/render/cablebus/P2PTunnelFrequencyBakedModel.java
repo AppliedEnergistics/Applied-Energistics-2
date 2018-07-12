@@ -27,8 +27,8 @@ public class P2PTunnelFrequencyBakedModel implements IBakedModel, IPartBakedMode
 	private static final int[][] QUAD_OFFSETS = new int[][] {
 			{ 4, 10, 2 },
 			{ 10, 10, 2 },
-			{ 10, 4, 2 },
-			{ 4, 4, 2 }
+			{ 4, 4, 2 },
+			{ 10, 4, 2 }
 	};
 
 	public P2PTunnelFrequencyBakedModel( final VertexFormat format, final TextureAtlasSprite texture )
