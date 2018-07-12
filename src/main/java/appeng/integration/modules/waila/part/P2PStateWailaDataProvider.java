@@ -91,7 +91,7 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider
 				}
 
 				final short freq = nbtData.getShort( TAG_P2P_FREQUENCY );
-				final String freqTooltip = Platform.p2p().toColorHexString( freq );
+				final String freqTooltip = Platform.p2p().toHexString( freq );
 				currentToolTip.add( I18n.translateToLocalFormatted( "gui.tooltips.appliedenergistics2.P2PFrequency", freqTooltip ) );
 			}
 		}
@@ -104,7 +104,12 @@ public final class P2PStateWailaDataProvider extends BasePartWailaDataProvider
 	{
 		if( part instanceof PartP2PTunnel )
 		{
-			PartP2PTunnel tunnel = (PartP2PTunnel) part;
+			final PartP2PTunnel tunnel = (PartP2PTunnel) part;
+
+			if( !tunnel.isPowered() )
+			{
+				return tag;
+			}
 
 			// Frquency
 			final short frequency = tunnel.getFrequency();

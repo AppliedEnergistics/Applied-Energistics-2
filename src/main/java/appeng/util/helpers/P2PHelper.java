@@ -67,26 +67,4 @@ public class P2PHelper
 		return String.format( "%04X", frequency );
 	}
 
-	public String toColorHexDigit( AEColor color )
-	{
-		if( color == AEColor.BLACK )
-		{
-			return AEColor.WHITE.dye.chatColor + this.toHexDigit( color );
-		}
-		return color.dye.chatColor + this.toHexDigit( color );
-	}
-
-	public String toColorHexString( short frequency )
-	{
-		final AEColor[] colors = this.toColors( frequency );
-		final StringBuilder builder = new StringBuilder();
-
-		for( AEColor aeColor : colors )
-		{
-			builder.append( this.toColorHexDigit( aeColor ) );
-		}
-
-		return builder.toString();
-	}
-
 }

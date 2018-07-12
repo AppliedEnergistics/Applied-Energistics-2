@@ -29,6 +29,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -65,7 +66,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 		if( data.hasKey( "freq" ) )
 		{
 			final short freq = data.getShort( "freq" );
-			final String freqTooltip = Platform.p2p().toColorHexString( freq );
+			final String freqTooltip = TextFormatting.BOLD + Platform.p2p().toHexString( freq );
 
 			lines.add( I18n.translateToLocalFormatted( "gui.tooltips.appliedenergistics2.P2PFrequency", freqTooltip ) );
 		}

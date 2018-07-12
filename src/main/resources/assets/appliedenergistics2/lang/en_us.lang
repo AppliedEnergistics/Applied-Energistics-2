@@ -402,6 +402,7 @@ theoneprobe.appliedenergistics2.p2p_unlinked=Unlinked
 theoneprobe.appliedenergistics2.p2p_input_one_output=Linked (Input Side)
 theoneprobe.appliedenergistics2.p2p_input_many_outputs=Linked (Input Side) - %d Outputs
 theoneprobe.appliedenergistics2.p2p_output=Linked (Output Side)
+theoneprobe.appliedenergistics2.p2p_frequency=Frequency: %1$s
 theoneprobe.appliedenergistics2.stored_energy=%1$d / %2$d
 
 // Items
