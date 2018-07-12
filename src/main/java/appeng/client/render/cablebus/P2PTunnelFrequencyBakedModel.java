@@ -107,7 +107,7 @@ public class P2PTunnelFrequencyBakedModel implements IBakedModel
 				cb.setRenderFullBright( true );
 				cb.setColorRGB( c.dye.getColorValue() );
 				cb.addCube( offs[0], offs[1], offs[2],
-						offs[0] + 2, offs[1] + 2, offs[2] + 0.5f );
+						offs[0] + 2, offs[1] + 2, offs[2] + 0.1f );
 
 				return cb.getOutput();
 			} ) );
