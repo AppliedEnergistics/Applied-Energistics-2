@@ -44,6 +44,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
+import appeng.api.parts.IPartBakedModel;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
@@ -119,9 +120,15 @@ public class CableBusBakedModel implements IBakedModel
 						throw new IllegalStateException( "Trying to use an unregistered part model: " + model );
 					}
 
-					List<BakedQuad> partQuads = new ArrayList<>();
-					partQuads.addAll( bakedModel.getQuads( state, null, rand ) );
-					partQuads.addAll( bakedModel.getQuads( state, facing, rand ) );
+					List<BakedQuad> partQuads;
+					if( bakedModel instanceof IPartBakedModel )
+					{
+						partQuads = ( (IPartBakedModel) bakedModel ).getPartQuads( renderState.getPartFlags().get( facing ), rand );
+					}
+					else
+					{
+						partQuads = bakedModel.getQuads( state, null, rand );
+					}
 
 					// Rotate quads accordingly
 					QuadRotator rotator = new QuadRotator();

@@ -15,14 +15,13 @@ import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.property.IExtendedBlockState;
 
+import appeng.api.parts.IPartBakedModel;
 import appeng.api.util.AEColor;
-import appeng.block.networking.BlockCableBus;
 import appeng.util.Platform;
 
 
-public class P2PTunnelFrequencyBakedModel implements IBakedModel
+public class P2PTunnelFrequencyBakedModel implements IBakedModel, IPartBakedModel
 {
 	private final VertexFormat format;
 	private final TextureAtlasSprite texture;
@@ -46,33 +45,24 @@ public class P2PTunnelFrequencyBakedModel implements IBakedModel
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( IBlockState state, EnumFacing side, long rand )
+	public List<BakedQuad> getPartQuads( Long partFlags, long rand )
 	{
-		if( side == null )
-		{
-			return Collections.emptyList();
-		}
-
-		final CableBusRenderState rs = getRenderingState( state );
 		short frequency = 0;
-
-		if( rs != null && rs.getPartFlags().get( side ) != null )
+		if( partFlags != null )
 		{
-			frequency = rs.getPartFlags().get( side ).shortValue();
+			frequency = partFlags.shortValue();
 		}
-
 		return getQuadsForFrequency( frequency );
 	}
 
-	private static CableBusRenderState getRenderingState( IBlockState state )
+	@Override
+	public List<BakedQuad> getQuads( IBlockState state, EnumFacing side, long rand )
 	{
-		if( state == null || !( state instanceof IExtendedBlockState ) )
+		if( side != null )
 		{
-			return null;
+			return Collections.emptyList();
 		}
-
-		IExtendedBlockState extendedBlockState = (IExtendedBlockState) state;
-		return extendedBlockState.getValue( BlockCableBus.RENDER_STATE_PROPERTY );
+		return getPartQuads( null, rand );
 	}
 
 	private static Map<AEColor, List<BakedQuad>> getCache( int pos )
