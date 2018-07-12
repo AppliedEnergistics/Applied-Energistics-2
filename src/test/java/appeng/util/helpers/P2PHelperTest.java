@@ -49,7 +49,7 @@ public class P2PHelperTest
 
 	private static final String COLOR_STRING_WHITE_FREQUENCY = "§f0§f0§f0§f0";
 	private static final String COLOR_STRING_BLACK_FREQUENCY = "§fF§fF§fF§fF";
-	private static final String COLOR_STRING_MULTI_FREQUENCY = "§1E§78§2D§e1";
+	private static final String COLOR_STRING_MULTI_FREQUENCY = "§4E§78§2D§61";
 	private static final String COLOR_STRING_MIN_FREQUENCY = "§78§f0§f0§f0";
 	private static final String COLOR_STRING_MAX_FREQUENCY = "§87§fF§fF§fF";
 
@@ -103,20 +103,20 @@ public class P2PHelperTest
 	public void testToColorHexDigit()
 	{
 		assertEquals( "§f0", this.unitUnderTest.toColorHexDigit( AEColor.WHITE ) );
-		assertEquals( "§e1", this.unitUnderTest.toColorHexDigit( AEColor.ORANGE ) );
-		assertEquals( "§d2", this.unitUnderTest.toColorHexDigit( AEColor.MAGENTA ) );
-		assertEquals( "§c3", this.unitUnderTest.toColorHexDigit( AEColor.LIGHT_BLUE ) );
-		assertEquals( "§b4", this.unitUnderTest.toColorHexDigit( AEColor.YELLOW ) );
+		assertEquals( "§61", this.unitUnderTest.toColorHexDigit( AEColor.ORANGE ) );
+		assertEquals( "§b2", this.unitUnderTest.toColorHexDigit( AEColor.MAGENTA ) );
+		assertEquals( "§93", this.unitUnderTest.toColorHexDigit( AEColor.LIGHT_BLUE ) );
+		assertEquals( "§e4", this.unitUnderTest.toColorHexDigit( AEColor.YELLOW ) );
 		assertEquals( "§a5", this.unitUnderTest.toColorHexDigit( AEColor.LIME ) );
-		assertEquals( "§96", this.unitUnderTest.toColorHexDigit( AEColor.PINK ) );
+		assertEquals( "§d6", this.unitUnderTest.toColorHexDigit( AEColor.PINK ) );
 		assertEquals( "§87", this.unitUnderTest.toColorHexDigit( AEColor.GRAY ) );
 		assertEquals( "§78", this.unitUnderTest.toColorHexDigit( AEColor.LIGHT_GRAY ) );
-		assertEquals( "§69", this.unitUnderTest.toColorHexDigit( AEColor.CYAN ) );
+		assertEquals( "§39", this.unitUnderTest.toColorHexDigit( AEColor.CYAN ) );
 		assertEquals( "§5A", this.unitUnderTest.toColorHexDigit( AEColor.PURPLE ) );
-		assertEquals( "§4B", this.unitUnderTest.toColorHexDigit( AEColor.BLUE ) );
-		assertEquals( "§3C", this.unitUnderTest.toColorHexDigit( AEColor.BROWN ) );
+		assertEquals( "§1B", this.unitUnderTest.toColorHexDigit( AEColor.BLUE ) );
+		assertEquals( "§6C", this.unitUnderTest.toColorHexDigit( AEColor.BROWN ) );
 		assertEquals( "§2D", this.unitUnderTest.toColorHexDigit( AEColor.GREEN ) );
-		assertEquals( "§1E", this.unitUnderTest.toColorHexDigit( AEColor.RED ) );
+		assertEquals( "§4E", this.unitUnderTest.toColorHexDigit( AEColor.RED ) );
 		assertEquals( "§fF", this.unitUnderTest.toColorHexDigit( AEColor.BLACK ) );
 	}
 

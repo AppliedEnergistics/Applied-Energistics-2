@@ -21,8 +21,6 @@ package appeng.util.helpers;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.util.text.TextFormatting;
-
 import appeng.api.util.AEColor;
 
 
@@ -73,9 +71,9 @@ public class P2PHelper
 	{
 		if( color == AEColor.BLACK )
 		{
-			return TextFormatting.WHITE + this.toHexDigit( color );
+			return AEColor.WHITE.dye.chatColor + this.toHexDigit( color );
 		}
-		return TextFormatting.fromColorIndex( color.dye.getDyeDamage() ) + this.toHexDigit( color );
+		return color.dye.chatColor + this.toHexDigit( color );
 	}
 
 	public String toColorHexString( short frequency )
