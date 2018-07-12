@@ -28,6 +28,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import appeng.api.util.AEColor;
+
 
 /**
  * Memory Card API
@@ -67,6 +69,15 @@ public interface IMemoryCard
 	 * empty NBTCompound
 	 */
 	NBTTagCompound getData( ItemStack is );
+
+	/**
+	 * This represent as 4x2 grid of {@link AEColor} without transparent.
+	 *
+	 * @param is item
+	 *
+	 * @return a hash representation of the memory card content
+	 */
+	long getHash( ItemStack is );
 
 	/**
 	 * notify the user of a outcome related to the memory card.

@@ -50,6 +50,7 @@ import appeng.items.storage.ItemViewCell;
 import appeng.items.tools.ToolBiometricCard;
 import appeng.items.tools.ToolBiometricCardRendering;
 import appeng.items.tools.ToolMemoryCard;
+import appeng.items.tools.ToolMemoryCardRendering;
 import appeng.items.tools.ToolNetworkTool;
 import appeng.items.tools.powered.ToolChargedStaff;
 import appeng.items.tools.powered.ToolColorApplicator;
@@ -199,7 +200,10 @@ public final class ApiItems implements IItems
 				.rendering( new ToolBiometricCardRendering() )
 				.features( AEFeature.SECURITY )
 				.build();
-		this.memoryCard = registry.item( "memory_card", ToolMemoryCard::new ).features( AEFeature.MEMORY_CARD ).build();
+		this.memoryCard = registry.item( "memory_card", ToolMemoryCard::new )
+				.rendering( new ToolMemoryCardRendering() )
+				.features( AEFeature.MEMORY_CARD )
+				.build();
 		this.networkTool = registry.item( "network_tool", ToolNetworkTool::new ).features( AEFeature.NETWORK_TOOL ).build();
 
 		this.cellCreative = registry.item( "creative_storage_cell", ItemCreativeStorageCell::new )

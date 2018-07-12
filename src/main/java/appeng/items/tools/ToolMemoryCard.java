@@ -127,6 +127,21 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
+	public long getHash( ItemStack is )
+	{
+		final NBTTagCompound tag = this.getData( is );
+
+		if( tag.hasKey( "freq" ) )
+		{
+			final short frequency = tag.getShort( "freq" );
+			final long hash = Short.toUnsignedLong( frequency );
+			return hash << 16 | hash;
+		}
+
+		return 0x77777777;
+	}
+
+	@Override
 	public void notifyUser( final EntityPlayer player, final MemoryCardMessages msg )
 	{
 		if( Platform.isClient() )
