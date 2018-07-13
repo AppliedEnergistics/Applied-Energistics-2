@@ -130,8 +130,10 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		try
 		{
 			final InventoryAdaptor destination = this.getHandler();
-			final IMEMonitor<IAEItemStack> inv = this.getProxy().getStorage().getInventory(
-					AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+			final IMEMonitor<IAEItemStack> inv = this.getProxy()
+					.getStorage()
+					.getInventory(
+							AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 			final IEnergyGrid energy = this.getProxy().getEnergy();
 			final ICraftingGrid cg = this.getProxy().getCrafting();
 			final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );
@@ -215,18 +217,11 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	@Override
 	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
-		if( !player.isSneaking() )
+		if( Platform.isServer() )
 		{
-			if( Platform.isClient() )
-			{
-				return true;
-			}
-
 			Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_BUS );
-			return true;
 		}
-
-		return false;
+		return true;
 	}
 
 	@Override

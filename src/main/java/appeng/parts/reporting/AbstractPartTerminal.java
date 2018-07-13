@@ -115,19 +115,12 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 	{
 		if( !super.onPartActivate( player, hand, pos ) )
 		{
-			if( !player.isSneaking() )
+			if( Platform.isServer() )
 			{
-				if( Platform.isClient() )
-				{
-					return true;
-				}
-
 				Platform.openGUI( player, this.getHost().getTile(), this.getSide(), this.getGui( player ) );
-
-				return true;
 			}
 		}
-		return false;
+		return true;
 	}
 
 	public GuiBridge getGui( final EntityPlayer player )

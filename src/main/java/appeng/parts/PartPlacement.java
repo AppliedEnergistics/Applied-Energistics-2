@@ -196,7 +196,7 @@ public class PartPlacement
 			}
 		}
 
-		// if ( held == null )
+		if( held.isEmpty() )
 		{
 			final Block block = world.getBlockState( pos ).getBlock();
 			if( host != null && player.isSneaking() && block != null )
@@ -261,8 +261,9 @@ public class PartPlacement
 			final boolean multiPartPresent = maybeMultiPartBlock.isPresent() && maybeMultiPartStack.isPresent() && maybeMultiPartItemBlock.isPresent();
 			final boolean canMultiPartBePlaced = maybeMultiPartBlock.get().canPlaceBlockAt( world, te_pos );
 
-			if( hostIsNotPresent && multiPartPresent && canMultiPartBePlaced && maybeMultiPartItemBlock.get().placeBlockAt( maybeMultiPartStack.get(), player,
-					world, te_pos, side, 0.5f, 0.5f, 0.5f, maybeMultiPartBlock.get().getDefaultState() ) )
+			if( hostIsNotPresent && multiPartPresent && canMultiPartBePlaced && maybeMultiPartItemBlock.get()
+					.placeBlockAt( maybeMultiPartStack.get(), player,
+							world, te_pos, side, 0.5f, 0.5f, 0.5f, maybeMultiPartBlock.get().getDefaultState() ) )
 			{
 				if( !world.isRemote )
 				{

@@ -256,8 +256,10 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		{
 			if( this.getProxy().isActive() )
 			{
-				this.getProxy().getStorage().postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), change,
-						this.mySrc );
+				this.getProxy()
+						.getStorage()
+						.postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), change,
+								this.mySrc );
 			}
 		}
 		catch( final GridAccessException e )
@@ -298,18 +300,11 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	@Override
 	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
-		if( !player.isSneaking() )
+		if( Platform.isServer() )
 		{
-			if( Platform.isClient() )
-			{
-				return true;
-			}
-
 			Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_STORAGEBUS );
-			return true;
 		}
-
-		return false;
+		return true;
 	}
 
 	@Override
@@ -625,7 +620,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 			return MODELS_OFF;
 		}
 	}
-	
+
 	@Override
 	public ItemStack getItemStackRepresentation()
 	{

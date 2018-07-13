@@ -226,6 +226,23 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 	boolean onShiftActivate( EntityPlayer player, EnumHand hand, Vec3d pos );
 
 	/**
+	 * Called when you left click the part, very similar to Block.onBlockClicked
+	 *
+	 * @param player left clicking player
+	 * @param pos position of block
+	 *
+	 */
+	boolean onClicked( EntityPlayer player, EnumHand hand, Vec3d pos );
+
+	/**
+	 * Called when you shift-left click the part, very similar to Block.onBlockClicked
+	 *
+	 * @param player shift-left clicking player
+	 * @param pos position of block
+	 */
+	boolean onShiftClicked( EntityPlayer player, EnumHand hand, Vec3d pos );
+
+	/**
 	 * Add drops to the items being dropped into the world, if your item stores its contents when wrenched use the
 	 * wrenched boolean to control what data is saved vs dropped when it is broken.
 	 *

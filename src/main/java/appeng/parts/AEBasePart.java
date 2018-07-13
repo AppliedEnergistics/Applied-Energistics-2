@@ -496,6 +496,18 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 		return this.onPartShiftActivate( player, hand, pos );
 	}
 
+	@Override
+	public boolean onClicked( EntityPlayer player, EnumHand hand, Vec3d pos )
+	{
+		return false;
+	}
+
+	@Override
+	public boolean onShiftClicked( EntityPlayer player, EnumHand hand, Vec3d pos )
+	{
+		return false;
+	}
+
 	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
 		return false;

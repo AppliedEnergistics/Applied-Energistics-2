@@ -27,7 +27,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.RayTraceResult;
@@ -163,24 +162,46 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 			return false;
 		}
 
-		final TileEntity te = this.getTile();
-		final ItemStack eq = player.getHeldItem( hand );
-
-		if( Platform.isWrench( player, eq, te.getPos() ) )
+		if( !this.isLocked )
 		{
-			this.isLocked = !this.isLocked;
-			player.sendMessage( ( this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked ).get() );
-			this.getHost().markForUpdate();
-		}
-		else if( !this.isLocked )
-		{
+			final ItemStack eq = player.getHeldItem( hand );
 			this.configuredItem = AEItemStack.fromItemStack( eq );
 			this.configureWatchers();
+			this.getHost().markForSave();
 			this.getHost().markForUpdate();
 		}
 		else
 		{
-			this.extractItem( player );
+			return super.onPartActivate( player, hand, pos );
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean onPartShiftActivate( EntityPlayer player, EnumHand hand, Vec3d pos )
+	{
+		if( Platform.isClient() )
+		{
+			return true;
+		}
+
+		if( !this.getProxy().isActive() )
+		{
+			return false;
+		}
+
+		if( !Platform.hasPermissions( this.getLocation(), player ) )
+		{
+			return false;
+		}
+
+		if( player.getHeldItem( hand ).isEmpty() )
+		{
+			this.isLocked = !this.isLocked;
+			player.sendMessage( ( this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked ).get() );
+			this.getHost().markForSave();
+			this.getHost().markForUpdate();
 		}
 
 		return true;
@@ -211,11 +232,6 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		{
 			// >.>
 		}
-	}
-
-	protected void extractItem( final EntityPlayer player )
-	{
-
 	}
 
 	private void updateReportingValue( final IMEMonitor<IAEItemStack> itemInventory )
@@ -271,7 +287,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	}
 
 	@Override
-	public IAEStack<?> getDisplayed()
+	public IAEItemStack getDisplayed()
 	{
 		return this.configuredItem;
 	}

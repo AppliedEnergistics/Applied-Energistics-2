@@ -818,7 +818,31 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		final SelectedPart p = this.selectPart( pos );
 		if( p != null && p.part != null )
 		{
+			// forge sends activate even when sneaking in some cases (eg emtpy hand)
+			// if sneaking try shift activate first.
+			if( player.isSneaking() && p.part.onShiftActivate( player, hand, pos ) )
+			{
+				return true;
+			}
 			return p.part.onActivate( player, hand, pos );
+		}
+		return false;
+	}
+
+	@Override
+	public boolean clicked( EntityPlayer player, EnumHand hand, Vec3d hitVec )
+	{
+		final SelectedPart p = this.selectPart( hitVec );
+		if( p != null && p.part != null )
+		{
+			if( player.isSneaking() )
+			{
+				return p.part.onShiftClicked( player, hand, hitVec );
+			}
+			else
+			{
+				return p.part.onClicked( player, hand, hitVec );
+			}
 		}
 		return false;
 	}

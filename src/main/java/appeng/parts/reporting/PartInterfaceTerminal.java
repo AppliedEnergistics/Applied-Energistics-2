@@ -55,20 +55,12 @@ public class PartInterfaceTerminal extends AbstractPartDisplay
 	{
 		if( !super.onPartActivate( player, hand, pos ) )
 		{
-			if( !player.isSneaking() )
+			if( Platform.isServer() )
 			{
-				if( Platform.isClient() )
-				{
-					return true;
-				}
-
 				Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_INTERFACE_TERMINAL );
-
-				return true;
 			}
 		}
-
-		return false;
+		return true;
 	}
 
 	@Override

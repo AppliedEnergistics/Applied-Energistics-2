@@ -93,8 +93,10 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 		try
 		{
-			final IMEMonitor<IAEItemStack> inv = this.getProxy().getStorage().getInventory(
-					AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+			final IMEMonitor<IAEItemStack> inv = this.getProxy()
+					.getStorage()
+					.getInventory(
+							AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
 			final IAEItemStack out = inv.injectItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( stack ),
 					Actionable.SIMULATE,
@@ -128,18 +130,11 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	@Override
 	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
-		if( !player.isSneaking() )
+		if( Platform.isServer() )
 		{
-			if( Platform.isClient() )
-			{
-				return true;
-			}
-
 			Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_BUS );
-			return true;
 		}
-
-		return false;
+		return true;
 	}
 
 	@Override
@@ -173,8 +168,10 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 			{
 				this.itemsToSend = this.calculateItemsToSend();
 
-				final IMEMonitor<IAEItemStack> inv = this.getProxy().getStorage().getInventory(
-						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+				final IMEMonitor<IAEItemStack> inv = this.getProxy()
+						.getStorage()
+						.getInventory(
+								AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 				final IEnergyGrid energy = this.getProxy().getEnergy();
 
 				boolean Configured = false;

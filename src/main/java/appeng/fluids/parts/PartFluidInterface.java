@@ -136,11 +136,6 @@ public class PartFluidInterface extends PartBasicState implements IGridTickable,
 	@Override
 	public boolean onPartActivate( final EntityPlayer p, final EnumHand hand, final Vec3d pos )
 	{
-		if( p.isSneaking() )
-		{
-			return false;
-		}
-
 		if( Platform.isServer() )
 		{
 			Platform.openGUI( p, this.getTileEntity(), this.getSide(), GuiBridge.GUI_FLUID_INTERFACE );
@@ -237,7 +232,7 @@ public class PartFluidInterface extends PartBasicState implements IGridTickable,
 	{
 		return this.duality.getInventoryByName( name );
 	}
-	
+
 	@Override
 	public ItemStack getItemStackRepresentation()
 	{
