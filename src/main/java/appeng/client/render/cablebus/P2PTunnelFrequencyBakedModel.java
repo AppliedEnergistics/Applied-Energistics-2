@@ -101,7 +101,7 @@ public class P2PTunnelFrequencyBakedModel implements IBakedModel, IPartBakedMode
 				}
 
 				final int startx = j % 2;
-				final int starty = j / 2;
+				final int starty = 1 - j / 2;
 
 				cb.addCube( offs[0] + startx, offs[1] + starty, offs[2], offs[0] + startx + 1, offs[1] + starty + 1, offs[2] + 1 );
 			}
