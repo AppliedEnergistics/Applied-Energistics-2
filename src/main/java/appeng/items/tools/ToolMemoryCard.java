@@ -50,8 +50,8 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 {
 
 	private static final AEColor[] DEFAULT_COLOR_CODE = new AEColor[] {
-			AEColor.GRAY, AEColor.GRAY, AEColor.GRAY, AEColor.GRAY,
-			AEColor.GRAY, AEColor.GRAY, AEColor.GRAY, AEColor.GRAY,
+			AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT,
+			AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT,
 	};
 
 	public ToolMemoryCard()
