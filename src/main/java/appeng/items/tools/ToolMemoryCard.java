@@ -20,6 +20,7 @@ package appeng.items.tools;
 
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,6 +39,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
+import appeng.api.util.AEColor;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.items.AEBaseItem;
@@ -46,6 +48,12 @@ import appeng.util.Platform;
 
 public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 {
+
+	private static final AEColor[] DEFAULT_COLOR_CODE = new AEColor[] {
+			AEColor.GRAY, AEColor.GRAY, AEColor.GRAY, AEColor.GRAY,
+			AEColor.GRAY, AEColor.GRAY, AEColor.GRAY, AEColor.GRAY,
+	};
+
 	public ToolMemoryCard()
 	{
 		this.setMaxStackSize( 1 );
@@ -127,18 +135,19 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
-	public long getHash( ItemStack is )
+	public AEColor[] getColorCode( ItemStack is )
 	{
 		final NBTTagCompound tag = this.getData( is );
 
 		if( tag.hasKey( "freq" ) )
 		{
 			final short frequency = tag.getShort( "freq" );
-			final long hash = Short.toUnsignedLong( frequency );
-			return hash << 16 | hash;
+			final AEColor[] colors = Platform.p2p().toColors( frequency );
+
+			return Stream.of( colors, colors ).flatMap( Stream::of ).toArray( AEColor[]::new );
 		}
 
-		return 0x77777777;
+		return DEFAULT_COLOR_CODE;
 	}
 
 	@Override

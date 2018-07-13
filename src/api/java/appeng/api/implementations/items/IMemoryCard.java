@@ -71,13 +71,15 @@ public interface IMemoryCard
 	NBTTagCompound getData( ItemStack is );
 
 	/**
-	 * This represent as 4x2 grid of {@link AEColor} without transparent.
+	 * This represent as 4x2 grid of {@link AEColor} without transparent/fluix color.
+	 *
+	 * First 4 colors are used for the top row, second for the bottom one.
 	 *
 	 * @param is item
 	 *
 	 * @return a hash representation of the memory card content
 	 */
-	long getHash( ItemStack is );
+	AEColor[] getColorCode( ItemStack is );
 
 	/**
 	 * notify the user of a outcome related to the memory card.

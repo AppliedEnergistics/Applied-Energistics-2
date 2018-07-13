@@ -37,6 +37,10 @@ import appeng.core.AELog;
 
 class MemoryCardBakedModel implements IBakedModel
 {
+	private static final AEColor[] DEFAULT_COLOR_CODE = new AEColor[] {
+			AEColor.GRAY, AEColor.GRAY, AEColor.GRAY, AEColor.GRAY,
+			AEColor.GRAY, AEColor.GRAY, AEColor.GRAY, AEColor.GRAY,
+	};
 
 	private final VertexFormat format;
 
@@ -44,28 +48,28 @@ class MemoryCardBakedModel implements IBakedModel
 
 	private final TextureAtlasSprite texture;
 
-	private final long hash;
+	private final AEColor[] colorCode;
 
-	private final Cache<Long, MemoryCardBakedModel> modelCache;
+	private final Cache<AEColor[], MemoryCardBakedModel> modelCache;
 
 	private final ImmutableList<BakedQuad> generalQuads;
 
 	MemoryCardBakedModel( VertexFormat format, IBakedModel baseModel, TextureAtlasSprite texture )
 	{
-		this( format, baseModel, texture, 0, createCache() );
+		this( format, baseModel, texture, DEFAULT_COLOR_CODE, createCache() );
 	}
 
-	private MemoryCardBakedModel( VertexFormat format, IBakedModel baseModel, TextureAtlasSprite texture, long hash, Cache<Long, MemoryCardBakedModel> modelCache )
+	private MemoryCardBakedModel( VertexFormat format, IBakedModel baseModel, TextureAtlasSprite texture, AEColor[] hash, Cache<AEColor[], MemoryCardBakedModel> modelCache )
 	{
 		this.format = format;
 		this.baseModel = baseModel;
 		this.texture = texture;
-		this.hash = hash;
+		this.colorCode = hash;
 		this.generalQuads = ImmutableList.copyOf( this.buildGeneralQuads() );
 		this.modelCache = modelCache;
 	}
 
-	private static Cache<Long, MemoryCardBakedModel> createCache()
+	private static Cache<AEColor[], MemoryCardBakedModel> createCache()
 	{
 		return CacheBuilder.newBuilder()
 				.maximumSize( 100 )
@@ -94,16 +98,14 @@ class MemoryCardBakedModel implements IBakedModel
 		CubeBuilder builder = new CubeBuilder( this.format );
 
 		builder.setTexture( this.texture );
-		System.out.println( Long.toHexString( this.hash ) );
 
 		for( int x = 0; x < 4; x++ )
 		{
 			for( int y = 0; y < 2; y++ )
 			{
-				final long color = this.hash >>> ( x + y * 4 ) * 4 & 0xF;
-				final AEColor col = AEColor.values()[(int) color];
+				final AEColor color = this.colorCode[x + y * 4];
 
-				builder.setColorRGB( col.mediumVariant );
+				builder.setColorRGB( color.mediumVariant );
 				builder.addCube( 7 + x, 8 + y, 7.5f, 7 + x + 1, 8 + y + 1, 8.5f );
 			}
 		}
@@ -148,29 +150,26 @@ class MemoryCardBakedModel implements IBakedModel
 			@Override
 			public IBakedModel handleItemState( IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity )
 			{
-				final long hash;
-				if( stack.getItem() instanceof IMemoryCard )
-				{
-					final IMemoryCard memoryCard = (IMemoryCard) stack.getItem();
-					hash = memoryCard.getHash( stack );
-				}
-				else
-				{
-					hash = 0x77777777;
-				}
-
 				try
 				{
-					return MemoryCardBakedModel.this.modelCache.get( hash,
-							() -> new MemoryCardBakedModel( MemoryCardBakedModel.this.format, MemoryCardBakedModel.this.baseModel, MemoryCardBakedModel.this.texture, hash, MemoryCardBakedModel.this.modelCache ) );
+					if( stack.getItem() instanceof IMemoryCard )
+					{
+						final IMemoryCard memoryCard = (IMemoryCard) stack.getItem();
+						final AEColor[] colorCode = memoryCard.getColorCode( stack );
+
+						return MemoryCardBakedModel.this.modelCache.get( colorCode,
+								() -> new MemoryCardBakedModel( MemoryCardBakedModel.this.format, MemoryCardBakedModel.this.baseModel, MemoryCardBakedModel.this.texture, colorCode, MemoryCardBakedModel.this.modelCache ) );
+					}
 				}
 				catch( ExecutionException e )
 				{
 					AELog.error( e );
-					return MemoryCardBakedModel.this;
 				}
+
+				return MemoryCardBakedModel.this;
 			}
 		};
+
 	}
 
 	@Override
