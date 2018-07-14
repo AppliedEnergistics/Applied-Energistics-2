@@ -36,21 +36,21 @@ public enum AEFeature
 	CERTUS_QUARTZ_WORLD_GEN( "CertusQuartzWorldGen", Constants.CATEGORY_WORLD ),
 	METEORITE_WORLD_GEN( "MeteoriteWorldGen", Constants.CATEGORY_WORLD ),
 	DECORATIVE_LIGHTS( "DecorativeLights", Constants.CATEGORY_WORLD ),
-	DECORATIVE_BLOCKS( "DecorativeBlocks", Constants.CATEGORY_WORLD ),
+	DECORATIVE_BLOCKS( "DecorativeBlocks", Constants.CATEGORY_WORLD, "Blocks that are not used in any essential recipes, also slabs and stairs." ),
 	SKY_STONE_CHESTS( "SkyStoneChests", Constants.CATEGORY_WORLD ),
 	SPAWN_PRESSES_IN_METEORITES( "SpawnPressesInMeteorites", Constants.CATEGORY_WORLD ),
-	GRIND_STONE( "GrindStone", Constants.CATEGORY_WORLD ),
 	FLOUR( "Flour", Constants.CATEGORY_WORLD ),
-	INSCRIBER( "Inscriber", Constants.CATEGORY_WORLD ),
-	CHARGER( "Charger", Constants.CATEGORY_WORLD ),
-	CRYSTAL_GROWTH_ACCELERATOR( "CrystalGrowthAccelerator", Constants.CATEGORY_WORLD ),
 	CHEST_LOOT( "ChestLoot", Constants.CATEGORY_WORLD ),
 	VILLAGER_TRADING( "VillagerTrading", Constants.CATEGORY_WORLD ),
 	TINY_TNT( "TinyTNT", Constants.CATEGORY_WORLD ),
 	CERTUS_ORE( "CertusOre", Constants.CATEGORY_WORLD ),
 	CHARGED_CERTUS_ORE( "ChargedCertusOre", Constants.CATEGORY_WORLD ),
-	QUARTZ_GLASS( "QuartzGlass", Constants.CATEGORY_WORLD ),
-	SKY_STONE( "SkyStone", Constants.CATEGORY_WORLD ),
+
+	GRIND_STONE( "GrindStone", Constants.CATEGORY_MACHINES ),
+	INSCRIBER( "Inscriber", Constants.CATEGORY_MACHINES ),
+	CHARGER( "Charger", Constants.CATEGORY_MACHINES ),
+	CRYSTAL_GROWTH_ACCELERATOR( "CrystalGrowthAccelerator", Constants.CATEGORY_MACHINES ),
+	POWER_GEN( "VibrationChamber", Constants.CATEGORY_MACHINES ),
 
 	POWERED_TOOLS( "PoweredTools", Constants.CATEGORY_TOOLS_CLASSIFICATIONS ),
 	CERTUS_QUARTZ_TOOLS( "CertusQuartzTools", Constants.CATEGORY_TOOLS_CLASSIFICATIONS ),
@@ -70,7 +70,6 @@ public enum AEFeature
 	COLOR_APPLICATOR( "ColorApplicator", Constants.CATEGORY_TOOLS ),
 	METEORITE_COMPASS( "MeteoriteCompass", Constants.CATEGORY_TOOLS ),
 
-	POWER_GEN( "PowerGen", Constants.CATEGORY_NETWORK_FEATURES ),
 	SECURITY( "Security", Constants.CATEGORY_NETWORK_FEATURES ),
 	SPATIAL_IO( "SpatialIO", Constants.CATEGORY_NETWORK_FEATURES ),
 	QUANTUM_NETWORK_BRIDGE( "QuantumNetworkBridge", Constants.CATEGORY_NETWORK_FEATURES ),
@@ -171,9 +170,6 @@ public enum AEFeature
 	ADVANCED_CARDS( "AdvancedCards", Constants.CATEGORY_UPGRADES ),
 	VIEW_CELL( "ViewCell", Constants.CATEGORY_UPGRADES ),
 
-	PROCESSORS( "Processors", Constants.CATEGORY_MATERIALS ),
-	PRINTED_CIRCUITS( "PrintedCircuits", Constants.CATEGORY_MATERIALS ),
-	PRESSES( "Presses", Constants.CATEGORY_MATERIALS ),
 	CRYSTAL_SEEDS( "CrystalSeeds", Constants.CATEGORY_MATERIALS ),
 	PURE_CRYSTALS( "PureCrystals", Constants.CATEGORY_MATERIALS ),
 	CERTUS( "Certus", Constants.CATEGORY_MATERIALS ),
@@ -181,8 +177,14 @@ public enum AEFeature
 	SILICON( "Silicon", Constants.CATEGORY_MATERIALS ),
 	DUSTS( "Dusts", Constants.CATEGORY_MATERIALS ),
 	NUGGETS( "Nuggets", Constants.CATEGORY_MATERIALS ),
-	MATTER_BALL( "MatterBall", Constants.CATEGORY_MATERIALS ),
-	CORES( "Cores", Constants.CATEGORY_MATERIALS ),
+	QUARTZ_GLASS( "QuartzGlass", Constants.CATEGORY_MATERIALS ),
+	SKY_STONE( "SkyStone", Constants.CATEGORY_MATERIALS ),
+
+	PROCESSORS( "Processors", Constants.CATEGORY_COMPONENTS ),
+	PRINTED_CIRCUITS( "PrintedCircuits", Constants.CATEGORY_COMPONENTS ),
+	PRESSES( "Presses", Constants.CATEGORY_COMPONENTS ),
+	MATTER_BALL( "MatterBall", Constants.CATEGORY_COMPONENTS ),
+	CORES( "Cores", Constants.CATEGORY_COMPONENTS ),
 
 	CHUNK_LOGGER_TRACE( "ChunkLoggerTrace", Constants.CATEGORY_COMMANDS, false );
 
@@ -251,6 +253,7 @@ public enum AEFeature
 		private static final String CATEGORY_MISC = "Misc";
 		private static final String CATEGORY_CRAFTING = "Crafting";
 		private static final String CATEGORY_WORLD = "World";
+		private static final String CATEGORY_MACHINES = "Machines";
 		private static final String CATEGORY_TOOLS = "Tools";
 		private static final String CATEGORY_TOOLS_CLASSIFICATIONS = "ToolsClassifications";
 		private static final String CATEGORY_NETWORK_BUSES = "NetworkBuses";
@@ -269,5 +272,6 @@ public enum AEFeature
 		private static final String CATEGORY_ENERGY = "Energy";
 		private static final String CATEGORY_UPGRADES = "Upgrades";
 		private static final String CATEGORY_MATERIALS = "Materials";
+		private static final String CATEGORY_COMPONENTS = "CraftingComponents";
 	}
 }
