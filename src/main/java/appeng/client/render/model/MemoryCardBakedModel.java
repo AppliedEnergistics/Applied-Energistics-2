@@ -157,10 +157,10 @@ class MemoryCardBakedModel implements IBakedModel
 					if( stack.getItem() instanceof IMemoryCard )
 					{
 						final IMemoryCard memoryCard = (IMemoryCard) stack.getItem();
-						final AEColor[] colorCode = memoryCard.getColorCode( stack );
+						final AEColor[] colors = memoryCard.getColorCode( stack );
 
-						return MemoryCardBakedModel.this.modelCache.get( new CacheKey( colorCode ),
-								() -> new MemoryCardBakedModel( MemoryCardBakedModel.this.format, MemoryCardBakedModel.this.baseModel, MemoryCardBakedModel.this.texture, colorCode, MemoryCardBakedModel.this.modelCache ) );
+						return MemoryCardBakedModel.this.modelCache.get( new CacheKey( colors ),
+								() -> new MemoryCardBakedModel( MemoryCardBakedModel.this.format, MemoryCardBakedModel.this.baseModel, MemoryCardBakedModel.this.texture, colors, MemoryCardBakedModel.this.modelCache ) );
 					}
 				}
 				catch( ExecutionException e )
@@ -191,7 +191,7 @@ class MemoryCardBakedModel implements IBakedModel
 	{
 		private final AEColor[] key;
 
-		public CacheKey( AEColor[] key )
+		CacheKey( AEColor[] key )
 		{
 			this.key = key;
 		}
@@ -221,11 +221,7 @@ class MemoryCardBakedModel implements IBakedModel
 				return false;
 			}
 			CacheKey other = (CacheKey) obj;
-			if( !Arrays.equals( this.key, other.key ) )
-			{
-				return false;
-			}
-			return true;
+			return Arrays.equals( this.key, other.key );
 		}
 
 	}
