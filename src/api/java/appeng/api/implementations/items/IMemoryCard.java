@@ -51,10 +51,10 @@ public interface IMemoryCard
 	 * The first 4 values represent the top row, left to right. The second 4 the bottom row.
 	 *
 	 * @param is item
-	 * @param SettingsName unlocalized string that represents the tile entity.
+	 * @param settingsName unlocalized string that represents the tile entity.
 	 * @param data the NBT tag, refer to the normal comment for special keys.
 	 */
-	void setMemoryCardContents( ItemStack is, String SettingsName, NBTTagCompound data );
+	void setMemoryCardContents( ItemStack is, String settingsName, NBTTagCompound data );
 
 	/**
 	 * returns the settings name provided by a previous call to
