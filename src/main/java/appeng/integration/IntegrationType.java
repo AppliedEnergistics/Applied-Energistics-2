@@ -21,6 +21,7 @@ package appeng.integration;
 
 import appeng.integration.modules.crafttweaker.CTModule;
 import appeng.integration.modules.ic2.IC2Module;
+import appeng.integration.modules.inventorytweaks.InventoryTweaksModule;
 import appeng.integration.modules.jei.JEIModule;
 import appeng.integration.modules.theoneprobe.TheOneProbeModule;
 import appeng.integration.modules.waila.WailaModule;
@@ -50,7 +51,14 @@ public enum IntegrationType
 		}
 	},
 
-	InvTweaks( IntegrationSide.CLIENT, "Inventory Tweaks", "inventorytweaks" ),
+	InvTweaks( IntegrationSide.CLIENT, "Inventory Tweaks", "inventorytweaks" )
+	{
+		@Override
+		public IIntegrationModule createInstance()
+		{
+			return Integrations.setInvTweaks( new InventoryTweaksModule() );
+		}
+	},
 
 	JEI( IntegrationSide.CLIENT, "Just Enough Items", "jei" )
 	{

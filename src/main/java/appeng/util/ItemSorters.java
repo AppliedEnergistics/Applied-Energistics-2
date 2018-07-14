@@ -87,7 +87,7 @@ public class ItemSorters
 				return CONFIG_BASED_SORT_BY_NAME.compare( o1, o2 );
 			}
 
-			final int cmp = api.compareItems( o1.asItemStackRepresentation(), o2.asItemStackRepresentation() );
+			final int cmp = api.compareItems( o1.createItemStack(), o2.createItemStack() );
 			return applyDirection( cmp );
 		}
 	};
@@ -120,8 +120,8 @@ public class ItemSorters
 	}
 
 	private static int applyDirection( int cmp )
-        {
-		if ( getDirection() == SortDir.ASCENDING )
+	{
+		if( getDirection() == SortDir.ASCENDING )
 		{
 			return cmp;
 		}
