@@ -52,12 +52,12 @@ public interface ICellHandler
 	 *
 	 * @param is a storage cell item.
 	 * @param host anytime the contents of your storage cell changes it should use this to request a save, please
-	 * note, this value can be null.
+	 * note, this value can be null. If provided, the host is responsible for persisting the cell content.
 	 * @param channel the storage channel requested.
 	 *
 	 * @return a new IMEHandler for the provided item
 	 */
-	<T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory( ItemStack is, ISaveProvider host, IStorageChannel<T> channel );
+	<T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory( ItemStack is, ISaveProvider host, IStorageChannel<T> channel );
 
 	/**
 	 * Called when the storage cell is planed in an ME Chest and the user tries to open the terminal side, if your item

@@ -45,6 +45,11 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 		this.cord = cod;
 	}
 
+	public int getStatus()
+	{
+		return this.handler.getStatusForCell( this.is, this.getInternal() );
+	}
+
 	@Override
 	public T injectItems( final T input, final Actionable type, final IActionSource src )
 	{
@@ -54,7 +59,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 
 		if( type == Actionable.MODULATE && ( a == null || a.getStackSize() != size ) )
 		{
-			final int newStatus = this.handler.getStatusForCell( this.is, this.getInternal() );
+			final int newStatus = this.getStatus();
 
 			if( newStatus != this.oldStatus )
 			{
@@ -73,7 +78,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 
 		if( type == Actionable.MODULATE && a != null )
 		{
-			final int newStatus = this.handler.getStatusForCell( this.is, this.getInternal() );
+			final int newStatus = this.getStatus();
 
 			if( newStatus != this.oldStatus )
 			{

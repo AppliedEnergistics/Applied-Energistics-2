@@ -261,7 +261,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 					this.inv.setStackInSlot( 0, is );
 				}
 
-				this.markDirty();
+				this.saveChanges();
 			}
 		}
 

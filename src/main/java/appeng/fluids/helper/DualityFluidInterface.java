@@ -577,7 +577,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 
 	public void saveChanges()
 	{
-		this.iHost.getTileEntity().markDirty();
+		this.iHost.saveChanges();
 	}
 
 	@Override

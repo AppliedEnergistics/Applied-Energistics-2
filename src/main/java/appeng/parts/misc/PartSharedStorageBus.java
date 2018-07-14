@@ -39,7 +39,7 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.ICellContainer;
-import appeng.api.storage.IMEInventory;
+import appeng.api.storage.ICellInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -126,7 +126,7 @@ public abstract class PartSharedStorageBus extends PartUpgradeable implements IG
 	}
 
 	@Override
-	public void saveChanges( IMEInventory<?> cellInventory )
+	public void saveChanges( ICellInventory<?> cellInventory )
 	{
 	}
 

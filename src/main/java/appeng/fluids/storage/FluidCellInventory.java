@@ -29,7 +29,7 @@ import appeng.api.config.Actionable;
 import appeng.api.exceptions.AppEngException;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.IMEInventoryHandler;
+import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IFluidStorageChannel;
@@ -47,17 +47,12 @@ import appeng.me.storage.AbstractCellInventory;
  */
 public class FluidCellInventory extends AbstractCellInventory<IAEFluidStack>
 {
-	protected FluidCellInventory( final NBTTagCompound data, final ISaveProvider container )
-	{
-		super( data, container, 8000 );
-	}
-
 	private FluidCellInventory( final ItemStack o, final ISaveProvider container ) throws AppEngException
 	{
 		super( o, container, 8000 );
 	}
 
-	public static IMEInventoryHandler<IAEFluidStack> getCell( final ItemStack o, final ISaveProvider container2 )
+	public static ICellInventoryHandler<IAEFluidStack> getCell( final ItemStack o, final ISaveProvider container2 )
 	{
 		try
 		{
@@ -123,7 +118,6 @@ public class FluidCellInventory extends AbstractCellInventory<IAEFluidStack>
 				if( mode == Actionable.MODULATE )
 				{
 					l.setStackSize( l.getStackSize() + remainingItemSlots );
-					this.updateItemCount( remainingItemSlots );
 					this.saveChanges();
 				}
 				return r;
@@ -133,7 +127,6 @@ public class FluidCellInventory extends AbstractCellInventory<IAEFluidStack>
 				if( mode == Actionable.MODULATE )
 				{
 					l.setStackSize( l.getStackSize() + input.getStackSize() );
-					this.updateItemCount( input.getStackSize() );
 					this.saveChanges();
 				}
 				return null;
@@ -155,8 +148,6 @@ public class FluidCellInventory extends AbstractCellInventory<IAEFluidStack>
 						toWrite.amount = remainingItemCount;
 
 						this.cellItems.add( AEFluidStack.fromFluidStack( toWrite ) );
-						this.updateItemCount( toWrite.amount );
-
 						this.saveChanges();
 					}
 					return AEFluidStack.fromFluidStack( toReturn );
@@ -164,7 +155,6 @@ public class FluidCellInventory extends AbstractCellInventory<IAEFluidStack>
 
 				if( mode == Actionable.MODULATE )
 				{
-					this.updateItemCount( input.getStackSize() );
 					this.cellItems.add( input );
 					this.saveChanges();
 				}
@@ -198,7 +188,6 @@ public class FluidCellInventory extends AbstractCellInventory<IAEFluidStack>
 				results.setStackSize( l.getStackSize() );
 				if( mode == Actionable.MODULATE )
 				{
-					this.updateItemCount( -l.getStackSize() );
 					l.setStackSize( 0 );
 					this.saveChanges();
 				}
@@ -209,7 +198,6 @@ public class FluidCellInventory extends AbstractCellInventory<IAEFluidStack>
 				if( mode == Actionable.MODULATE )
 				{
 					l.setStackSize( l.getStackSize() - size );
-					this.updateItemCount( -size );
 					this.saveChanges();
 				}
 			}

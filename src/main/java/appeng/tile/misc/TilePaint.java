@@ -191,7 +191,7 @@ public class TilePaint extends AEBaseTile
 		}
 
 		this.markForUpdate();
-		this.markDirty();
+		this.saveChanges();
 	}
 
 	private void updateData()
@@ -265,7 +265,7 @@ public class TilePaint extends AEBaseTile
 
 			this.maxLit();
 			this.markForUpdate();
-			this.markDirty();
+			this.saveChanges();
 		}
 	}
 

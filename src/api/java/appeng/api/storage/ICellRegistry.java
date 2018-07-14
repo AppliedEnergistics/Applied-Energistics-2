@@ -77,11 +77,11 @@ public interface ICellRegistry
 	 * returns an IMEInventoryHandler for the provided item.
 	 *
 	 * @param is item with inventory handler
-	 * @param host can be null, or the hosting tile / part.
+	 * @param host can be null. If provided, the host is responsible for persisting the cell content.
 	 * @param chan the storage channel to request the handler for.
 	 *
 	 * @return new IMEInventoryHandler, or null if there isn't one.
 	 */
 	@Nullable
-	<T extends IAEStack<T>> IMEInventoryHandler<T> getCellInventory( ItemStack is, ISaveProvider host, IStorageChannel<T> chan );
+	<T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory( ItemStack is, ISaveProvider host, IStorageChannel<T> chan );
 }

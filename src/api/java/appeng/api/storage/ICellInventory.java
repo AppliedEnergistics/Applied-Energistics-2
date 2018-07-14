@@ -118,4 +118,9 @@ public interface ICellInventory<T extends IAEStack<T>> extends IMEInventory<T>
 	 * @return the status number for this drive.
 	 */
 	int getStatusForCell();
+
+	/**
+	 * Tells the cell to persist to NBT
+	 */
+	void persist();
 }

@@ -54,11 +54,9 @@ import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
@@ -77,7 +75,6 @@ import appeng.items.contents.CellUpgrades;
 import appeng.items.misc.ItemPaintBall;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
-import appeng.me.storage.ItemCellInventoryHandler;
 import appeng.tile.misc.TilePaint;
 import appeng.util.LookDirection;
 import appeng.util.Platform;
@@ -97,12 +94,15 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 	{
 		super.addCheckedInformation( stack, world, lines, advancedTooltips );
 
-		final IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( stack, null,
-				AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+		final ICellInventoryHandler<IAEItemStack> cdi = AEApi.instance()
+				.registries()
+				.cell()
+				.getCellInventory( stack, null,
+						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
-		if( cdi instanceof ItemCellInventoryHandler )
+		if( cdi != null )
 		{
-			final ICellInventory cd = ( (ICellInventoryHandler) cdi ).getCellInv();
+			final ICellInventory<IAEItemStack> cd = cdi.getCellInv();
 			if( cd != null )
 			{
 				lines.add( cd.getUsedBytes() + " " + GuiText.Of.getLocal() + ' ' + cd.getTotalBytes() + ' ' + GuiText.BytesUsed.getLocal() );
@@ -124,17 +124,22 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 				shots += cu.getInstalledUpgrades( Upgrades.SPEED );
 			}
 
-			final IMEInventory inv = AEApi.instance().registries().cell().getCellInventory( p.getHeldItem( hand ), null,
-					AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+			final ICellInventoryHandler<IAEItemStack> inv = AEApi.instance()
+					.registries()
+					.cell()
+					.getCellInventory( p.getHeldItem( hand ), null,
+							AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 			if( inv != null )
 			{
-				final IItemList itemList = inv.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
-				IAEStack aeAmmo = itemList.getFirstItem();
-				if( aeAmmo instanceof IAEItemStack )
+				final IItemList<IAEItemStack> itemList = inv
+						.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
+				IAEItemStack req = itemList.getFirstItem();
+				if( req instanceof IAEItemStack )
 				{
-					shots = Math.min( shots, (int) aeAmmo.getStackSize() );
+					shots = Math.min( shots, (int) req.getStackSize() );
 					for( int sh = 0; sh < shots; sh++ )
 					{
+						IAEItemStack aeAmmo = req.copy();
 						this.extractAEPower( p.getHeldItem( hand ), 1600, Actionable.MODULATE );
 
 						if( Platform.isClient() )

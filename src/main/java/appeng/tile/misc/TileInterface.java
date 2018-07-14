@@ -130,7 +130,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 
 		this.configureNodeSides();
 		this.markForUpdate();
-		this.markDirty();
+		this.saveChanges();
 	}
 
 	private void configureNodeSides()
@@ -143,12 +143,6 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 		{
 			this.getProxy().setValidSides( EnumSet.complementOf( EnumSet.of( this.getForward() ) ) );
 		}
-	}
-
-	@Override
-	public void markDirty()
-	{
-		this.duality.markDirty();
 	}
 
 	@Override

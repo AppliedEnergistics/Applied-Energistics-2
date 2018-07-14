@@ -363,7 +363,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 		}
 
 		this.paintedColor = newPaintedColor;
-		this.markDirty();
+		this.saveChanges();
 		this.markForUpdate();
 		return true;
 	}

@@ -312,7 +312,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	@Override
 	public void markForSave()
 	{
-		super.markDirty();
+		this.saveChanges();
 	}
 
 	@Override

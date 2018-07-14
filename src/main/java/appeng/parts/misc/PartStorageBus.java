@@ -58,6 +58,7 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.ICellContainer;
+import appeng.api.storage.ICellInventory;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
@@ -599,7 +600,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	 * }
 	 */
 	@Override
-	public void saveChanges( final IMEInventory cellInventory )
+	public void saveChanges( final ICellInventory<?> cellInventory )
 	{
 		// nope!
 	}

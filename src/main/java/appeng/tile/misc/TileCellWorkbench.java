@@ -185,7 +185,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 					this.config.setStackInSlot( x, ItemStack.EMPTY );
 				}
 
-				this.markDirty();
+				this.saveChanges();
 			}
 
 			this.locked = false;

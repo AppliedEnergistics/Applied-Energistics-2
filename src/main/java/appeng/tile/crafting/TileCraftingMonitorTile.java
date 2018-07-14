@@ -159,7 +159,7 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 		}
 
 		this.paintedColor = newPaintedColor;
-		this.markDirty();
+		this.saveChanges();
 		this.markForUpdate();
 		return true;
 	}

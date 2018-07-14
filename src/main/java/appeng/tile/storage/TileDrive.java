@@ -43,7 +43,8 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.ICellHandler;
-import appeng.api.storage.IMEInventory;
+import appeng.api.storage.ICellInventory;
+import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -56,9 +57,8 @@ import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.DriveWatcher;
-import appeng.me.storage.MEInventoryHandler;
 import appeng.tile.grid.AENetworkInvTile;
-import appeng.tile.inventory.AppEngInternalInventory;
+import appeng.tile.inventory.AppEngCellInventory;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -71,7 +71,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	private static final int BIT_BLINK_MASK = 0x24924924;
 	private static final int BIT_STATE_MASK = 0xDB6DB6DB;
 
-	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 10, 1 );
+	private final AppEngCellInventory inv = new AppEngCellInventory( this, 10 );
 	private final ICellHandler[] handlersBySlot = new ICellHandler[10];
 	private final DriveWatcher<IAEItemStack>[] invBySlot = new DriveWatcher[10];
 	private final IActionSource mySrc;
@@ -145,21 +145,13 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 			return ( this.state >> ( slot * 3 ) ) & 3;
 		}
 
-		final ItemStack cell = this.inv.getStackInSlot( 2 );
-		final ICellHandler ch = this.handlersBySlot[slot];
-
-		final MEInventoryHandler handler = this.invBySlot[slot];
+		final DriveWatcher handler = this.invBySlot[slot];
 		if( handler == null )
 		{
 			return 0;
 		}
 
-		if( ch != null )
-		{
-			return ch.getStatusForCell( cell, handler.getInternal() );
-		}
-
-		return 0;
+		return handler.getStatus();
 	}
 
 	@Override
@@ -307,10 +299,11 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 						for( IStorageChannel<? extends IAEStack<?>> channel : storageChannels )
 						{
 
-							IMEInventoryHandler cell = this.handlersBySlot[x].getCellInventory( is, this, channel );
+							ICellInventoryHandler cell = this.handlersBySlot[x].getCellInventory( is, this, channel );
 
 							if( cell != null )
 							{
+								this.inv.setHandler( x, cell );
 								power += this.handlersBySlot[x].cellIdleDrain( is, cell );
 
 								final DriveWatcher<IAEItemStack> ih = new DriveWatcher( cell, is, this.handlersBySlot[x], this );
@@ -360,7 +353,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	public void setPriority( final int newValue )
 	{
 		this.priority = newValue;
-		this.markDirty();
+		this.saveChanges();
 
 		this.isCached = false; // recalculate the storage cell.
 		this.updateState();
@@ -384,7 +377,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	}
 
 	@Override
-	public void saveChanges( final IMEInventory cellInventory )
+	public void saveChanges( final ICellInventory<?> cellInventory )
 	{
 		this.world.markChunkDirty( this.pos, this );
 	}
