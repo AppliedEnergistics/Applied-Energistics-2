@@ -209,6 +209,7 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 	 * Called when you right click the part, very similar to Block.onActivateBlock
 	 *
 	 * @param player right clicking player
+	 * @param hand hand used
 	 * @param pos position of block
 	 *
 	 * @return if your activate method performed something.
@@ -219,6 +220,7 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 	 * Called when you right click the part, very similar to Block.onActivateBlock
 	 *
 	 * @param player shift right clicking player
+	 * @param hand hand used
 	 * @param pos position of block
 	 *
 	 * @return if your activate method performed something, you should use false unless you really need it.
@@ -229,18 +231,29 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 	 * Called when you left click the part, very similar to Block.onBlockClicked
 	 *
 	 * @param player left clicking player
+	 * @param hand hand used
 	 * @param pos position of block
 	 *
+	 * @return if your activate method performed something, you should use false unless you really need it.
 	 */
-	boolean onClicked( EntityPlayer player, EnumHand hand, Vec3d pos );
+	default boolean onClicked( EntityPlayer player, EnumHand hand, Vec3d pos )
+	{
+		return false;
+	}
 
 	/**
 	 * Called when you shift-left click the part, very similar to Block.onBlockClicked
 	 *
 	 * @param player shift-left clicking player
+	 * @param hand hand used
 	 * @param pos position of block
+	 * 
+	 * @return if your activate method performed something, you should use false unless you really need it.
 	 */
-	boolean onShiftClicked( EntityPlayer player, EnumHand hand, Vec3d pos );
+	default boolean onShiftClicked( EntityPlayer player, EnumHand hand, Vec3d pos )
+	{
+		return false;
+	}
 
 	/**
 	 * Add drops to the items being dropped into the world, if your item stores its contents when wrenched use the

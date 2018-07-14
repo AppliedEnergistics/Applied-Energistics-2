@@ -211,18 +211,6 @@ public class PartCableAnchor implements IPart
 	}
 
 	@Override
-	public boolean onClicked( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
-	{
-		return false;
-	}
-
-	@Override
-	public boolean onShiftClicked( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
-	{
-		return false;
-	}
-
-	@Override
 	public void getDrops( final List<ItemStack> drops, final boolean wrenched )
 	{
 
