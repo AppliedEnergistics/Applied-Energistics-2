@@ -25,7 +25,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -33,7 +32,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 
 @SideOnly( Side.CLIENT )
-public class RenderTinyTNTPrimed extends Render
+public class RenderTinyTNTPrimed extends Render<EntityTinyTNTPrimed>
 {
 
 	public RenderTinyTNTPrimed( final RenderManager p_i46134_1_ )
@@ -43,12 +42,7 @@ public class RenderTinyTNTPrimed extends Render
 	}
 
 	@Override
-	public void doRender( final Entity tnt, final double x, final double y, final double z, final float unused, final float life )
-	{
-		this.renderPrimedTNT( (EntityTinyTNTPrimed) tnt, x, y, z, unused, life );
-	}
-
-	private void renderPrimedTNT( final EntityTinyTNTPrimed tnt, final double x, final double y, final double z, final float unused, final float life )
+	public void doRender( final EntityTinyTNTPrimed tnt, final double x, final double y, final double z, final float unused, final float life )
 	{
 		final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
 		GlStateManager.pushMatrix();
@@ -105,7 +99,7 @@ public class RenderTinyTNTPrimed extends Render
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture( final Entity entity )
+	protected ResourceLocation getEntityTexture( final EntityTinyTNTPrimed entity )
 	{
 		return TextureMap.LOCATION_BLOCKS_TEXTURE;
 	}

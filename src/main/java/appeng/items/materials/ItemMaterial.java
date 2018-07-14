@@ -202,54 +202,17 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 		return mat.getStackSrc();
 	}
 
-	public void makeUnique()
+	public void registerOredicts()
 	{
 		for( final MaterialType mt : ImmutableSet.copyOf( this.dmgToMaterial.values() ) )
 		{
 			if( mt.getOreName() != null )
 			{
-				ItemStack replacement = ItemStack.EMPTY;
-
 				final String[] names = mt.getOreName().split( "," );
 
 				for( final String name : names )
 				{
-					if( !replacement.isEmpty() )
-					{
-						break;
-					}
-
-					final List<ItemStack> options = OreDictionary.getOres( name );
-					if( options != OreDictionary.EMPTY_LIST && options.size() > 0 )
-					{
-						for( final ItemStack is : options )
-						{
-							if( !is.isEmpty() )
-							{
-								replacement = is.copy();
-								break;
-							}
-						}
-					}
-				}
-
-				if( replacement.isEmpty() || AEConfig.instance().useAEVersion( mt ) )
-				{
-					// continue using the AE2 item.
-					for( final String name : names )
-					{
-						OreDictionary.registerOre( name, mt.stack( 1 ) );
-					}
-				}
-				else
-				{
-					if( mt.getItemInstance() == this )
-					{
-						this.dmgToMaterial.remove( mt.getDamageValue() );
-					}
-
-					mt.setItemInstance( replacement.getItem() );
-					mt.setDamageValue( replacement.getItemDamage() );
+					OreDictionary.registerOre( name, mt.stack( 1 ) );
 				}
 			}
 		}
@@ -341,8 +304,9 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 
 		try
 		{
-			eqi = droppedEntity.getConstructor( World.class, double.class, double.class, double.class, ItemStack.class ).newInstance( w, location.posX,
-					location.posY, location.posZ, itemstack );
+			eqi = droppedEntity.getConstructor( World.class, double.class, double.class, double.class, ItemStack.class )
+					.newInstance( w, location.posX,
+							location.posY, location.posZ, itemstack );
 		}
 		catch( final Throwable t )
 		{

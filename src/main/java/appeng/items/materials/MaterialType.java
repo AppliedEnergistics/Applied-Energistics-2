@@ -27,13 +27,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.features.MaterialStackSrc;
 import appeng.entity.EntityChargedQuartz;
-import appeng.entity.EntityIds;
 import appeng.entity.EntitySingularity;
 
 
@@ -148,11 +146,6 @@ public enum MaterialType
 	{
 		this( metaValue, modelName, features );
 		this.droppedEntity = c;
-
-		EntityRegistry.registerModEntity( new ResourceLocation( "appliedenergistics2", this.droppedEntity.getName() ), this.droppedEntity,
-				this.droppedEntity.getSimpleName(),
-				EntityIds.get( this.droppedEntity ), AppEng.instance(), 16, 4,
-				true );
 	}
 
 	MaterialType( final int metaValue, String modelName, final Set<AEFeature> features, final String oreDictionary, final Class<? extends Entity> c )
@@ -160,10 +153,6 @@ public enum MaterialType
 		this( metaValue, modelName, features );
 		this.oreName = oreDictionary;
 		this.droppedEntity = c;
-		EntityRegistry.registerModEntity( new ResourceLocation( "appliedenergistics2", this.droppedEntity.getName() ), this.droppedEntity,
-				this.droppedEntity.getSimpleName(),
-				EntityIds.get( this.droppedEntity ), AppEng.instance(), 16, 4,
-				true );
 	}
 
 	MaterialType( final int metaValue, String modelName, final Set<AEFeature> features, final String oreDictionary )

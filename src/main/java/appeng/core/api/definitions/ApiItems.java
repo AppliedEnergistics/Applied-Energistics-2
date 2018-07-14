@@ -19,10 +19,14 @@
 package appeng.core.api.definitions;
 
 
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
+
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IItems;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.bootstrap.FeatureFactory;
+import appeng.bootstrap.components.IEntityRegistrationComponent;
 import appeng.client.render.crafting.ItemEncodedPatternRendering;
 import appeng.core.CreativeTabFacade;
 import appeng.core.features.AEFeature;
@@ -30,6 +34,8 @@ import appeng.debug.ToolDebugCard;
 import appeng.debug.ToolEraser;
 import appeng.debug.ToolMeteoritePlacer;
 import appeng.debug.ToolReplicatorCard;
+import appeng.entity.EntityGrowingCrystal;
+import appeng.entity.EntityIds;
 import appeng.fluids.items.BasicFluidStorageCell;
 import appeng.fluids.items.FluidDummyItem;
 import appeng.fluids.items.FluidDummyItemRendering;
@@ -231,6 +237,16 @@ public final class ApiItems implements IItems
 		this.crystalSeed = registry.item( "crystal_seed", ItemCrystalSeed::new )
 				.features( AEFeature.CRYSTAL_SEEDS )
 				.rendering( new ItemCrystalSeedRendering() )
+				.bootstrap( item -> (IEntityRegistrationComponent) r ->
+				{
+					r.register( EntityEntryBuilder.create()
+							.entity( EntityGrowingCrystal.class )
+							.id( new ResourceLocation( "appliedenergistics2", EntityGrowingCrystal.class.getName() ),
+									EntityIds.get( EntityGrowingCrystal.class ) )
+							.name( EntityGrowingCrystal.class.getSimpleName() )
+							.tracker( 16, 4, true )
+							.build() );
+				} )
 				.build();
 
 		// rv1

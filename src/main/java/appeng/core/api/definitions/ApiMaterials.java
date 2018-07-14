@@ -22,6 +22,8 @@ package appeng.core.api.definitions;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -30,7 +32,11 @@ import appeng.api.definitions.IMaterials;
 import appeng.bootstrap.FeatureFactory;
 import appeng.bootstrap.IItemRendering;
 import appeng.bootstrap.ItemRenderingCustomizer;
+import appeng.bootstrap.components.IEntityRegistrationComponent;
 import appeng.core.features.DamagedItemDefinition;
+import appeng.entity.EntityChargedQuartz;
+import appeng.entity.EntityIds;
+import appeng.entity.EntitySingularity;
 import appeng.items.materials.ItemMaterial;
 import appeng.items.materials.MaterialType;
 
@@ -132,6 +138,22 @@ public final class ApiMaterials implements IMaterials
 								.map( MaterialType::getModel )
 								.collect( Collectors.toList() ) );
 					}
+				} )
+				.bootstrap( item -> (IEntityRegistrationComponent) r ->
+				{
+					r.register( EntityEntryBuilder.create()
+							.entity( EntitySingularity.class )
+							.id( new ResourceLocation( "appliedenergistics2", EntitySingularity.class.getName() ), EntityIds.get( EntitySingularity.class ) )
+							.name( EntitySingularity.class.getSimpleName() )
+							.tracker( 16, 4, true )
+							.build() );
+					r.register( EntityEntryBuilder.create()
+							.entity( EntityChargedQuartz.class )
+							.id( new ResourceLocation( "appliedenergistics2", EntityChargedQuartz.class.getName() ),
+									EntityIds.get( EntityChargedQuartz.class ) )
+							.name( EntityChargedQuartz.class.getSimpleName() )							
+							.tracker( 16, 4, true )
+							.build() );
 				} )
 				.build();
 

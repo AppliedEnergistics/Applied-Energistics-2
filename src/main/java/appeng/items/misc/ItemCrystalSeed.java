@@ -32,9 +32,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -42,10 +40,8 @@ import appeng.api.AEApi;
 import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.api.recipes.ResolverResult;
-import appeng.core.AppEng;
 import appeng.core.localization.ButtonToolTips;
 import appeng.entity.EntityGrowingCrystal;
-import appeng.entity.EntityIds;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
@@ -64,9 +60,6 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	public ItemCrystalSeed()
 	{
 		this.setHasSubtypes( true );
-
-		EntityRegistry.registerModEntity( new ResourceLocation( "appliedenergistics2", EntityGrowingCrystal.class.getName() ), EntityGrowingCrystal.class,
-				EntityGrowingCrystal.class.getSimpleName(), EntityIds.get( EntityGrowingCrystal.class ), AppEng.instance(), 16, 4, true );
 	}
 
 	@Nullable
