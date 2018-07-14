@@ -4,7 +4,6 @@ package appeng.client.render.tesr;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -15,7 +14,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -23,7 +22,6 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.features.IInscriberRecipe;
 import appeng.client.render.FacingToRotation;
-import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.tile.AEBaseTile;
 import appeng.tile.misc.TileInscriber;
@@ -32,7 +30,7 @@ import appeng.tile.misc.TileInscriber;
 /**
  * Renders the dynamic parts of an inscriber (the presses, the animation and the item being smashed)
  */
-public class InscriberTESR extends TileEntitySpecialRenderer<TileInscriber>
+public final class InscriberTESR extends TileEntitySpecialRenderer<TileInscriber>
 {
 
 	private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
@@ -42,7 +40,7 @@ public class InscriberTESR extends TileEntitySpecialRenderer<TileInscriber>
 	private static TextureAtlasSprite textureInside;
 
 	@Override
-	public void render( TileInscriber tile, double x, double y, double z, float partialTicks, int destroyStage, float p_render_10_ )
+	public void render( final TileInscriber tile, final double x, final double y, final double z, final float partialTicks, final int destroyStage, final float p_render_10_ )
 	{
 		// render inscriber
 
@@ -90,7 +88,7 @@ public class InscriberTESR extends TileEntitySpecialRenderer<TileInscriber>
 		float press = 0.2f;
 		press -= progress / 5.0f;
 
-		BufferBuilder buffer = Tessellator.getInstance().getBuffer();
+		final BufferBuilder buffer = Tessellator.getInstance().getBuffer();
 		buffer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX );
 
 		float middle = 0.5f;
@@ -129,8 +127,6 @@ public class InscriberTESR extends TileEntitySpecialRenderer<TileInscriber>
 
 		Tessellator.getInstance().draw();
 
-		GlStateManager.popMatrix();
-
 		// render items.
 		GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
 
@@ -150,8 +146,6 @@ public class InscriberTESR extends TileEntitySpecialRenderer<TileInscriber>
 			items++;
 		}
 
-		// buffer.begin( GL11.GL_QUADS, DefaultVertexFormats.ITEM );
-
 		if( relativeProgress > 1.0f || items == 0 )
 		{
 			ItemStack is = tileInv.getStackInSlot( 3 );
@@ -165,65 +159,40 @@ public class InscriberTESR extends TileEntitySpecialRenderer<TileInscriber>
 				}
 			}
 
-			this.renderItem( is, 0.0f, tile, buffer, x, y, z );
+			this.renderItem( is, 0.0f, tile, x, y, z );
 		}
 		else
 		{
-			this.renderItem( tileInv.getStackInSlot( 0 ), press, tile, buffer, x, y, z );
-			this.renderItem( tileInv.getStackInSlot( 1 ), -press, tile, buffer, x, y, z );
-			this.renderItem( tileInv.getStackInSlot( 2 ), 0.0f, tile, buffer, x, y, z );
+			this.renderItem( tileInv.getStackInSlot( 0 ), press, tile, x, y, z );
+			this.renderItem( tileInv.getStackInSlot( 1 ), -press, tile, x, y, z );
+			this.renderItem( tileInv.getStackInSlot( 2 ), 0.0f, tile, x, y, z );
 		}
 
-		// Tessellator.getInstance().draw();
-
+		GlStateManager.popMatrix();
 		GlStateManager.enableLighting();
 		GlStateManager.enableRescaleNormal();
 	}
 
-	private void renderItem( ItemStack sis, final float o, final AEBaseTile tile, final BufferBuilder tess, final double x, final double y, final double z )
+	private void renderItem( final ItemStack stack, final float o, final AEBaseTile tile, final double x, final double y, final double z )
 	{
-		if( !sis.isEmpty() )
+		if( !stack.isEmpty() )
 		{
-			sis = sis.copy();
+			final ItemStack sis = stack.copy();
 
 			GlStateManager.pushMatrix();
+			// move to center
+			GlStateManager.translate( 0.5f, 0.5f + o, 0.5f );
+			GlStateManager.rotate( 90, 1, 0, 0 );
+			// set scale
+			GlStateManager.scale( ITEM_RENDER_SCALE, ITEM_RENDER_SCALE, ITEM_RENDER_SCALE );
 
-			GlStateManager.translate( x, y, z );
-			GlStateManager.translate( 0.5F, 0.5F, 0.5F );
-			FacingToRotation.get( tile.getForward(), tile.getUp() ).glRotateCurrentMat();
-			GlStateManager.translate( -0.5F, -0.5F, -0.5F );
-
-			try
+			// heuristic to scale items down much further than blocks
+			if( !( sis.getItem() instanceof ItemBlock ) )
 			{
-				// move to center
-				GlStateManager.translate( 0.5f, 0.5f + o, 0.5f );
-
-				GlStateManager.rotate( 90, 1, 0, 0 );
-
-				// set scale
-				GlStateManager.scale( ITEM_RENDER_SCALE, ITEM_RENDER_SCALE, ITEM_RENDER_SCALE );
-
-				// heuristic to scale items down much further than blocks
-				final Block blk = Block.getBlockFromItem( sis.getItem() );
-				if( blk == Blocks.AIR )
-				{
-					GlStateManager.scale( 0.5, 0.5, 0.5 );
-				}
-
-				// << 20 | light << 4;
-				final int br = tile.getWorld().getCombinedLight( tile.getPos(), 0 );
-				final int var11 = br % 65536;
-				final int var12 = br / 65536;
-
-				OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, var11, var12 );
-
-				Minecraft.getMinecraft().getRenderItem().renderItem( sis, ItemCameraTransforms.TransformType.FIXED );
-			}
-			catch( final Exception err )
-			{
-				AELog.debug( err );
+				GlStateManager.scale( 0.5, 0.5, 0.5 );
 			}
 
+			Minecraft.getMinecraft().getRenderItem().renderItem( sis, ItemCameraTransforms.TransformType.FIXED );
 			GlStateManager.popMatrix();
 		}
 	}

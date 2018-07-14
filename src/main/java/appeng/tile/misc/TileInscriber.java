@@ -98,6 +98,8 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	private final IItemHandler bottomItemHandlerExtern;
 	private final IItemHandler sideItemHandlerExtern;
 
+	private IInscriberRecipe cachedTask = null;
+
 	private final IItemHandlerModifiable inv = new WrapperChainedItemHandler( this.topItemHandler, this.bottomItemHandler, this.sideItemHandler );
 
 	public TileInscriber()
@@ -172,6 +174,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				this.inv.setStackInSlot( num, ItemStack.EMPTY );
 			}
 		}
+		this.cachedTask = null;
 
 		return c;
 	}
@@ -251,6 +254,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 				this.markForUpdate();
 			}
 
+			this.cachedTask = null;
 			this.getProxy().getTick().wakeDevice( this.getProxy().getNode() );
 		}
 		catch( final GridAccessException e )
@@ -281,7 +285,12 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	@Nullable
 	public IInscriberRecipe getTask()
 	{
-		return this.getTask( this.sideItemHandler.getStackInSlot( 0 ), this.topItemHandler.getStackInSlot( 0 ), this.bottomItemHandler.getStackInSlot( 0 ) );
+		if( this.cachedTask == null )
+		{
+			this.cachedTask = this.getTask( this.sideItemHandler.getStackInSlot( 0 ), this.topItemHandler.getStackInSlot( 0 ),
+					this.bottomItemHandler.getStackInSlot( 0 ) );
+		}
+		return this.cachedTask;
 	}
 
 	@Nullable
@@ -318,15 +327,19 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
 		{
 
-			final boolean matchA = ( plateA.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateA,
-					recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) ) && // and...
-					( ( plateB.isEmpty() && !recipe.getBottomOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateB,
-							recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) ) );
+			final boolean matchA = ( plateA.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons()
+					.isSameItem( plateA,
+							recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) ) && // and...
+					( ( plateB.isEmpty() && !recipe.getBottomOptional().isPresent() ) || ( Platform.itemComparisons()
+							.isSameItem( plateB,
+									recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) ) );
 
-			final boolean matchB = ( plateB.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateB,
-					recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) ) && // and...
-					( ( plateA.isEmpty() && !recipe.getBottomOptional().isPresent() ) || ( Platform.itemComparisons().isSameItem( plateA,
-							recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) ) );
+			final boolean matchB = ( plateB.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons()
+					.isSameItem( plateB,
+							recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) ) && // and...
+					( ( plateA.isEmpty() && !recipe.getBottomOptional().isPresent() ) || ( Platform.itemComparisons()
+							.isSameItem( plateA,
+									recipe.getBottomOptional().orElse( ItemStack.EMPTY ) ) ) );
 
 			if( matchA || matchB )
 			{
@@ -367,7 +380,6 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 						this.sideItemHandler.setStackInSlot( 0, ItemStack.EMPTY );
 					}
 				}
-
 				this.markDirty();
 			}
 			else if( this.finalStep == 16 )
