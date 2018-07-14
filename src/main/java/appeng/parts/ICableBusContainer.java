@@ -52,6 +52,8 @@ public interface ICableBusContainer
 
 	boolean activate( EntityPlayer player, EnumHand hand, Vec3d vecFromPool );
 
+	boolean clicked( EntityPlayer player, EnumHand hand, Vec3d hitVec );
+
 	void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor );
 
 	boolean isSolidOnSide( EnumFacing side );

@@ -28,6 +28,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 import appeng.api.AEApi;
 import appeng.api.networking.energy.IEnergySource;
@@ -72,7 +74,7 @@ public class PartConversionMonitor extends AbstractPartMonitor
 	}
 
 	@Override
-	public boolean onPartShiftActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean onPartActivate( EntityPlayer player, EnumHand hand, Vec3d pos )
 	{
 		if( Platform.isClient() )
 		{
@@ -89,62 +91,133 @@ public class PartConversionMonitor extends AbstractPartMonitor
 			return false;
 		}
 
-		boolean ModeB = false;
-
-		ItemStack item = player.getHeldItem( hand );
-		if( item.isEmpty() && this.getDisplayed() != null )
+		final ItemStack eq = player.getHeldItem( hand );
+		if( this.isLocked() )
 		{
-			ModeB = true;
-			item = ( (IAEItemStack) this.getDisplayed() ).createItemStack();
-		}
-
-		if( !item.isEmpty() )
-		{
-			try
+			if( eq.isEmpty() )
 			{
-				if( !this.getProxy().isActive() )
-				{
-					return false;
-				}
-
-				final IEnergySource energy = this.getProxy().getEnergy();
-				final IMEMonitor<IAEItemStack> cell = this.getProxy().getStorage().getInventory(
-						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
-				final IAEItemStack input = AEItemStack.fromItemStack( item );
-
-				if( ModeB )
-				{
-					for( int x = 0; x < player.inventory.getSizeInventory(); x++ )
-					{
-						final ItemStack targetStack = player.inventory.getStackInSlot( x );
-						if( input.equals( targetStack ) )
-						{
-							final IAEItemStack insertItem = input.copy();
-							insertItem.setStackSize( targetStack.getCount() );
-							final IAEItemStack failedToInsert = Platform.poweredInsert( energy, cell, insertItem, new PlayerSource( player, this ) );
-							player.inventory.setInventorySlotContents( x, failedToInsert == null ? ItemStack.EMPTY : failedToInsert.createItemStack() );
-						}
-					}
-				}
-				else
-				{
-					final IAEItemStack failedToInsert = Platform.poweredInsert( energy, cell, input, new PlayerSource( player, this ) );
-					player.inventory.setInventorySlotContents( player.inventory.currentItem,
-							failedToInsert == null ? ItemStack.EMPTY : failedToInsert.createItemStack() );
-				}
+				this.insertItem( player, hand, true );
 			}
-			catch( final GridAccessException e )
+			else if( Platform.isWrench( player, eq, this.getLocation().getPos() ) && ( this.getDisplayed() == null || !this.getDisplayed().equals( eq ) ) )
 			{
-				// :P
+				// wrench it
+				return super.onPartActivate( player, hand, pos );
+			}
+			else
+			{
+				this.insertItem( player, hand, false );
 			}
 		}
+		else if( this.getDisplayed() != null && this.getDisplayed().equals( eq ) )
+		{
+			this.insertItem( player, hand, false );
+		}
+		else
+		{
+			return super.onPartActivate( player, hand, pos );
+		}
+
 		return true;
 	}
 
 	@Override
-	protected void extractItem( final EntityPlayer player )
+	public boolean onClicked( EntityPlayer player, EnumHand hand, Vec3d pos )
 	{
-		final IAEItemStack input = (IAEItemStack) this.getDisplayed();
+		if( Platform.isClient() )
+		{
+			return true;
+		}
+
+		if( !this.getProxy().isActive() )
+		{
+			return false;
+		}
+
+		if( !Platform.hasPermissions( this.getLocation(), player ) )
+		{
+			return false;
+		}
+
+		if( this.getDisplayed() != null )
+		{
+			this.extractItem( player, this.getDisplayed().getDefinition().getMaxStackSize() );
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean onShiftClicked( EntityPlayer player, EnumHand hand, Vec3d pos )
+	{
+		if( Platform.isClient() )
+		{
+			return true;
+		}
+
+		if( !this.getProxy().isActive() )
+		{
+			return false;
+		}
+
+		if( !Platform.hasPermissions( this.getLocation(), player ) )
+		{
+			return false;
+		}
+
+		if( this.getDisplayed() != null )
+		{
+			this.extractItem( player, 1 );
+		}
+
+		return true;
+	}
+
+	private void insertItem( final EntityPlayer player, final EnumHand hand, final boolean allItems )
+	{
+		try
+		{
+			final IEnergySource energy = this.getProxy().getEnergy();
+			final IMEMonitor<IAEItemStack> cell = this.getProxy()
+					.getStorage()
+					.getInventory(
+							AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+			if( allItems )
+			{
+				final IAEItemStack input = this.getDisplayed().copy();
+				IItemHandler inv = new PlayerMainInvWrapper( player.inventory );
+
+				for( int x = 0; x < inv.getSlots(); x++ )
+				{
+					final ItemStack targetStack = inv.getStackInSlot( x );
+					if( input.equals( targetStack ) )
+					{
+						final ItemStack canExtract = inv.extractItem( x, targetStack.getCount(), true );
+						if( !canExtract.isEmpty() )
+						{
+							input.setStackSize( canExtract.getCount() );
+							final IAEItemStack failedToInsert = Platform.poweredInsert( energy, cell, input, new PlayerSource( player, this ) );
+							inv.extractItem( x, failedToInsert == null ? canExtract.getCount() : canExtract.getCount() - (int) failedToInsert.getStackSize(),
+									false );
+						}
+					}
+				}
+			}
+			else
+			{
+				final IAEItemStack input = AEItemStack.fromItemStack( player.getHeldItem( hand ) );
+				final IAEItemStack failedToInsert = Platform.poweredInsert( energy, cell, input, new PlayerSource( player, this ) );
+				player.setHeldItem( hand, failedToInsert == null ? ItemStack.EMPTY : failedToInsert.createItemStack() );
+			}
+		}
+		catch( final GridAccessException e )
+		{
+			// :P
+		}
+	}
+
+	private void extractItem( final EntityPlayer player, int count )
+	{
+		final IAEItemStack input = this.getDisplayed();
 		if( input != null )
 		{
 			try
@@ -155,11 +228,12 @@ public class PartConversionMonitor extends AbstractPartMonitor
 				}
 
 				final IEnergySource energy = this.getProxy().getEnergy();
-				final IMEMonitor<IAEItemStack> cell = this.getProxy().getStorage().getInventory(
-						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+				final IMEMonitor<IAEItemStack> cell = this.getProxy()
+						.getStorage()
+						.getInventory(
+								AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
-				final ItemStack is = input.createItemStack();
-				input.setStackSize( is.getMaxStackSize() );
+				input.setStackSize( count );
 
 				final IAEItemStack retrieved = Platform.poweredExtraction( energy, cell, input, new PlayerSource( player, this ) );
 				if( retrieved != null )

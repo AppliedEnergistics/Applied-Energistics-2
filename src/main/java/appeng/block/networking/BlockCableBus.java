@@ -49,6 +49,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -70,6 +71,8 @@ import appeng.client.render.cablebus.CableBusBakedModel;
 import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketClick;
 import appeng.helpers.AEGlassMaterial;
 import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
@@ -351,6 +354,31 @@ public class BlockCableBus extends AEBaseTileBlock
 		}
 
 		return out == null ? NULL_CABLE_BUS : out;
+	}
+
+	@Override
+	public void onBlockClicked( World worldIn, BlockPos pos, EntityPlayer playerIn )
+	{
+		if( Platform.isClient() )
+		{
+			final RayTraceResult rtr = Minecraft.getMinecraft().objectMouseOver;
+			if( rtr != null && rtr.typeOfHit == Type.BLOCK && pos.equals( rtr.getBlockPos() ) )
+			{
+				final Vec3d hitVec = rtr.hitVec.subtract( new Vec3d( pos ) );
+
+				if( this.cb( worldIn, pos ).clicked( playerIn, EnumHand.MAIN_HAND, hitVec ) )
+				{
+					NetworkHandler.instance()
+							.sendToServer(
+									new PacketClick( pos, rtr.sideHit, (float) hitVec.x, (float) hitVec.y, (float) hitVec.z, EnumHand.MAIN_HAND, true ) );
+				}
+			}
+		}
+	}
+
+	public void onBlockClickPacket( World worldIn, BlockPos pos, EntityPlayer playerIn, EnumHand hand, Vec3d hitVec )
+	{
+		this.cb( worldIn, pos ).clicked( playerIn, hand, hitVec );
 	}
 
 	@Override

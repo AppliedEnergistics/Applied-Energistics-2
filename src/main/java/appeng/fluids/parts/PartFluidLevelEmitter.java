@@ -266,18 +266,11 @@ public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatc
 	@Override
 	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
-		if( !player.isSneaking() )
+		if( Platform.isServer() )
 		{
-			if( Platform.isClient() )
-			{
-				return true;
-			}
-
 			Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_FLUID_LEVEL_EMITTER );
-			return true;
 		}
-
-		return false;
+		return true;
 	}
 
 	@Override

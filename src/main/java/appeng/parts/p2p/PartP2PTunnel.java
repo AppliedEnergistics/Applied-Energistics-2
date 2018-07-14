@@ -160,6 +160,11 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	@Override
 	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
+		if( Platform.isClient() )
+		{
+			return true;
+		}
+
 		if( hand == EnumHand.OFF_HAND )
 		{
 			return false;
@@ -305,6 +310,11 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		final ItemStack is = player.inventory.getCurrentItem();
 		if( !is.isEmpty() && is.getItem() instanceof IMemoryCard )
 		{
+			if( Platform.isClient() )
+			{
+				return true;
+			}
+
 			final IMemoryCard mc = (IMemoryCard) is.getItem();
 			final NBTTagCompound data = new NBTTagCompound();
 

@@ -174,16 +174,10 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	@Override
 	public boolean onPartActivate( final EntityPlayer p, final EnumHand hand, final Vec3d pos )
 	{
-		if( p.isSneaking() )
-		{
-			return false;
-		}
-
 		if( Platform.isServer() )
 		{
 			Platform.openGUI( p, this.getTileEntity(), this.getSide(), GuiBridge.GUI_INTERFACE );
 		}
-
 		return true;
 	}
 
@@ -311,7 +305,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	{
 		return this.duality.getCapability( capabilityClass, this.getSide().getFacing() );
 	}
-	
+
 	@Override
 	public ItemStack getItemStackRepresentation()
 	{

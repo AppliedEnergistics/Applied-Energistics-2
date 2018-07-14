@@ -124,4 +124,10 @@ public class NullCableBusContainer implements ICableBusContainer
 		return new CableBusRenderState();
 	}
 
+	@Override
+	public boolean clicked( EntityPlayer player, EnumHand hand, Vec3d hitVec )
+	{
+		return false;
+	}
+
 }
