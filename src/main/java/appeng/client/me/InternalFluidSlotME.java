@@ -19,8 +19,6 @@
 package appeng.client.me;
 
 
-import net.minecraftforge.fluids.FluidStack;
-
 import appeng.api.storage.data.IAEFluidStack;
 
 
@@ -43,11 +41,6 @@ public class InternalFluidSlotME
 		this.offset = offset;
 		this.xPos = displayX;
 		this.yPos = displayY;
-	}
-
-	FluidStack getStack()
-	{
-		return this.getAEStack() == null ? null : this.getAEStack().getFluidStack();
 	}
 
 	IAEFluidStack getAEStack()

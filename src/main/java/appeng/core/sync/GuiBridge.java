@@ -86,13 +86,16 @@ import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.implementations.ContainerVibrationChamber;
 import appeng.container.implementations.ContainerWireless;
 import appeng.container.implementations.ContainerWirelessTerm;
+import appeng.fluids.container.ContainerFluidFormationPlane;
 import appeng.fluids.container.ContainerFluidIO;
 import appeng.fluids.container.ContainerFluidInterface;
+import appeng.fluids.container.ContainerFluidLevelEmitter;
 import appeng.fluids.container.ContainerFluidStorageBus;
 import appeng.fluids.container.ContainerFluidTerminal;
 import appeng.fluids.helper.IFluidInterfaceHost;
+import appeng.fluids.parts.PartFluidFormationPlane;
+import appeng.fluids.parts.PartFluidLevelEmitter;
 import appeng.fluids.parts.PartFluidStorageBus;
-import appeng.fluids.parts.PartFluidTerminal;
 import appeng.fluids.parts.PartSharedFluidBus;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
@@ -172,6 +175,8 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_FORMATION_PLANE( ContainerFormationPlane.class, PartFormationPlane.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
+	GUI_FLUID_FORMATION_PLANE( ContainerFluidFormationPlane.class, PartFluidFormationPlane.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
+
 	GUI_PRIORITY( ContainerPriority.class, IPriorityHost.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
 	GUI_SECURITY( ContainerSecurityStation.class, TileSecurityStation.class, GuiHostType.WORLD, SecurityPermissions.SECURITY ),
@@ -180,10 +185,12 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_PATTERN_TERMINAL( ContainerPatternTerm.class, PartPatternTerminal.class, GuiHostType.WORLD, SecurityPermissions.CRAFT ),
 
-	GUI_FLUID_TERMINAL( ContainerFluidTerminal.class, PartFluidTerminal.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
+	GUI_FLUID_TERMINAL( ContainerFluidTerminal.class, ITerminalHost.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
 	// extends (Container/Gui) + Bus
 	GUI_LEVEL_EMITTER( ContainerLevelEmitter.class, PartLevelEmitter.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
+
+	GUI_FLUID_LEVEL_EMITTER( ContainerFluidLevelEmitter.class, PartFluidLevelEmitter.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 
 	GUI_SPATIAL_IO_PORT( ContainerSpatialIOPort.class, TileSpatialIOPort.class, GuiHostType.WORLD, SecurityPermissions.BUILD ),
 

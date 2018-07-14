@@ -34,13 +34,14 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.core.Api;
+import appeng.fluids.items.FluidDummyItem;
 import appeng.util.Platform;
 import appeng.util.item.AEStack;
 
@@ -271,34 +272,13 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	{
 		if( ia instanceof AEFluidStack )
 		{
-			return ( (AEFluidStack) ia ).fluid == this.fluid && this.tagCompound == ( (AEFluidStack) ia ).tagCompound;
+			final AEFluidStack is = (AEFluidStack) ia;
+			return is.fluid == this.fluid && Platform.itemComparisons().isNbtTagEqual( this.tagCompound, is.tagCompound );
 		}
 		else if( ia instanceof FluidStack )
 		{
 			final FluidStack is = (FluidStack) ia;
-
-			if( is.getFluid() == this.fluid )
-			{
-				final NBTTagCompound ta = this.tagCompound;
-				final NBTTagCompound tb = is.tag;
-				if( ta == tb )
-				{
-					return true;
-				}
-
-				if( ( ta == null && tb == null ) || ( ta != null && ta.hasNoTags() && tb == null ) || ( tb != null && tb
-						.hasNoTags() && ta == null ) || ( ta != null && ta.hasNoTags() && tb != null && tb.hasNoTags() ) )
-				{
-					return true;
-				}
-
-				if( ( ta == null && tb != null ) || ( ta != null && tb == null ) )
-				{
-					return false;
-				}
-
-				return Platform.itemComparisons().isNbtTagEqual( ta, tb );
-			}
+			return is.getFluid() == this.fluid && Platform.itemComparisons().isNbtTagEqual( this.tagCompound, is.tag );
 		}
 		return false;
 	}
@@ -336,8 +316,14 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	@Override
 	public ItemStack asItemStackRepresentation()
 	{
-		// TODO: fluids, how do they even work?
-		return FluidUtil.getFilledBucket( this.getFluidStack() );
+		ItemStack is = Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+		if( !is.isEmpty() )
+		{
+			FluidDummyItem item = (FluidDummyItem) is.getItem();
+			item.setFluidStack( is, this.getFluidStack() );
+			return is;
+		}
+		return ItemStack.EMPTY;
 	}
 
 	@Override

@@ -37,6 +37,7 @@ public enum GuiText
 	VibrationChamber,
 	SpatialIOPort,
 	LevelEmitter,
+	FluidLevelEmitter,
 	Terminal,
 
 	Interface,
@@ -84,6 +85,7 @@ public enum GuiText
 
 	CraftingTerminal,
 	FormationPlane,
+	FluidFormationPlane,
 	Inscriber,
 	QuartzCuttingKnife,
 

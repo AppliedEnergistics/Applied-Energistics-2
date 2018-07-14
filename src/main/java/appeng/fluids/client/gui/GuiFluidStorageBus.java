@@ -41,8 +41,11 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;
+import appeng.fluids.client.gui.widgets.GuiFluidSlot;
+import appeng.fluids.client.gui.widgets.GuiOptionalFluidSlot;
 import appeng.fluids.container.ContainerFluidStorageBus;
 import appeng.fluids.parts.PartFluidStorageBus;
+import appeng.fluids.util.IAEFluidTank;
 
 
 /**
@@ -57,11 +60,41 @@ public class GuiFluidStorageBus extends GuiUpgradeable
 	private GuiTabButton priority;
 	private GuiImgButton partition;
 	private GuiImgButton clear;
+	private final PartFluidStorageBus bus;
 
 	public GuiFluidStorageBus( InventoryPlayer inventoryPlayer, PartFluidStorageBus te )
 	{
 		super( new ContainerFluidStorageBus( inventoryPlayer, te ) );
 		this.ySize = 251;
+		this.bus = te;
+	}
+
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+
+		final int xo = 8;
+		final int yo = 23 + 6;
+
+		final IAEFluidTank config = this.bus.getConfig();
+		final ContainerFluidStorageBus container = (ContainerFluidStorageBus) this.inventorySlots;
+
+		for( int y = 0; y < 7; y++ )
+		{
+			for( int x = 0; x < 9; x++ )
+			{
+				final int idx = y * 9 + x;
+				if( y < 2 )
+				{
+					this.guiSlots.add( new GuiFluidSlot( config, idx, idx, xo + x * 18, yo + y * 18 ) );
+				}
+				else
+				{
+					this.guiSlots.add( new GuiOptionalFluidSlot( config, container, idx, idx, y - 2, xo, yo, x, y ) );
+				}
+			}
+		}
 	}
 
 	@Override

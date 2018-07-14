@@ -115,6 +115,10 @@
             {
                 "type": "forge:ore_dict",
                 "ore": "ingotAluminium"
+            },
+            {
+                "type": "forge:ore_dict",
+                "ore": "ingotAluminum"
             }
         ]
     },

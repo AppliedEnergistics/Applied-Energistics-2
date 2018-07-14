@@ -78,6 +78,6 @@ public class FluidDummyItem extends AEBaseItem
 	@Override
 	protected void getCheckedSubItems( final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
 	{
-		//Don't show this item in CreativeTabs
+		// Don't show this item in CreativeTabs
 	}
 }

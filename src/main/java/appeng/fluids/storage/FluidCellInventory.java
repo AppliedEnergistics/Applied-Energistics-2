@@ -57,7 +57,7 @@ public class FluidCellInventory extends AbstractCellInventory<IAEFluidStack>
 		super( o, container, 8000 );
 	}
 
-	public static IMEInventoryHandler getCell( final ItemStack o, final ISaveProvider container2 )
+	public static IMEInventoryHandler<IAEFluidStack> getCell( final ItemStack o, final ISaveProvider container2 )
 	{
 		try
 		{

@@ -41,9 +41,12 @@ import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
+import appeng.fluids.parts.PartFluidAnnihilationPlane;
 import appeng.fluids.parts.PartFluidExportBus;
+import appeng.fluids.parts.PartFluidFormationPlane;
 import appeng.fluids.parts.PartFluidImportBus;
 import appeng.fluids.parts.PartFluidInterface;
+import appeng.fluids.parts.PartFluidLevelEmitter;
 import appeng.fluids.parts.PartFluidStorageBus;
 import appeng.fluids.parts.PartFluidTerminal;
 import appeng.integration.IntegrationRegistry;
@@ -208,6 +211,8 @@ public enum PartType
 	FLUID_EXPORT_BUS( 261, "fluid_export_bus", EnumSet.of( AEFeature.FLUID_EXPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartFluidExportBus.class ),
 
 	LEVEL_EMITTER( 280, "level_emitter", EnumSet.of( AEFeature.LEVEL_EMITTER ), EnumSet.noneOf( IntegrationType.class ), PartLevelEmitter.class ),
+	FLUID_LEVEL_EMITTER( 281, "fluid_level_emitter", EnumSet.of( AEFeature.FLUID_LEVEL_EMITTER ), EnumSet
+			.noneOf( IntegrationType.class ), PartFluidLevelEmitter.class ),
 
 	ANNIHILATION_PLANE( 300, "annihilation_plane", EnumSet.of( AEFeature.ANNIHILATION_PLANE ), EnumSet
 			.noneOf( IntegrationType.class ), PartAnnihilationPlane.class ),
@@ -215,7 +220,12 @@ public enum PartType
 	IDENTITY_ANNIHILATION_PLANE( 301, "identity_annihilation_plane", EnumSet.of( AEFeature.ANNIHILATION_PLANE, AEFeature.IDENTITY_ANNIHILATION_PLANE ), EnumSet
 			.noneOf( IntegrationType.class ), PartIdentityAnnihilationPlane.class ),
 
+	FLUID_ANNIHILATION_PLANE( 302, "fluid_annihilation_plane", EnumSet.of( AEFeature.FLUID_ANNIHILATION_PLANE ), EnumSet
+			.noneOf( IntegrationType.class ), PartFluidAnnihilationPlane.class ),
+
 	FORMATION_PLANE( 320, "formation_plane", EnumSet.of( AEFeature.FORMATION_PLANE ), EnumSet.noneOf( IntegrationType.class ), PartFormationPlane.class ),
+
+	FLUID_FORMATION_PLANE( 321, "fluid_formation_plane", EnumSet.of( AEFeature.FLUID_FORMATION_PLANE ), EnumSet.noneOf( IntegrationType.class ), PartFluidFormationPlane.class ),
 
 	PATTERN_TERMINAL( 340, "pattern_terminal", EnumSet.of( AEFeature.PATTERNS ), EnumSet.noneOf( IntegrationType.class ), PartPatternTerminal.class ),
 

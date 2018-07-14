@@ -53,6 +53,7 @@ import appeng.container.implementations.ContainerSecurityStation;
 import appeng.container.implementations.ContainerStorageBus;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
+import appeng.fluids.container.ContainerFluidLevelEmitter;
 import appeng.fluids.container.ContainerFluidStorageBus;
 import appeng.helpers.IMouseWheelItem;
 
@@ -158,6 +159,11 @@ public class PacketValueConfig extends AppEngPacket
 		else if( this.Name.equals( "LevelEmitter.Value" ) && c instanceof ContainerLevelEmitter )
 		{
 			final ContainerLevelEmitter lvc = (ContainerLevelEmitter) c;
+			lvc.setLevel( Long.parseLong( this.Value ), player );
+		}
+		else if( this.Name.equals( "FluidLevelEmitter.Value" ) && c instanceof ContainerFluidLevelEmitter )
+		{
+			final ContainerFluidLevelEmitter lvc = (ContainerFluidLevelEmitter) c;
 			lvc.setLevel( Long.parseLong( this.Value ), player );
 		}
 		else if( this.Name.startsWith( "PatternTerminal." ) && c instanceof ContainerPatternTerm )

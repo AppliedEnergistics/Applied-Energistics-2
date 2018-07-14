@@ -53,7 +53,6 @@ import appeng.api.parts.IPart;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.client.me.InternalSlotME;
 import appeng.client.me.SlotME;
 import appeng.container.guisync.GuiSync;
 import appeng.container.guisync.SyncData;
@@ -381,21 +380,6 @@ public abstract class AEBaseContainer extends Container
 			return ItemStack.EMPTY;
 		}
 
-		boolean hasMETiles = false;
-		for( final Object is : this.inventorySlots )
-		{
-			if( is instanceof InternalSlotME )
-			{
-				hasMETiles = true;
-				break;
-			}
-		}
-
-		if( hasMETiles && Platform.isClient() )
-		{
-			return ItemStack.EMPTY;
-		}
-
 		final AppEngSlot clickSlot = (AppEngSlot) this.inventorySlots.get( idx ); // require AE SLots!
 
 		if( clickSlot instanceof SlotDisabled || clickSlot instanceof SlotInaccessible )
@@ -418,18 +402,21 @@ public abstract class AEBaseContainer extends Container
 			 */
 			if( clickSlot.isPlayerSide() )
 			{
-				tis = this.shiftStoreItem( tis );
+				tis = this.transferStackToContainer( tis );
 
-				// target slots in the container...
-				for( final Object inventorySlot : this.inventorySlots )
+				if( !tis.isEmpty() )
 				{
-					final AppEngSlot cs = (AppEngSlot) inventorySlot;
-
-					if( !( cs.isPlayerSide() ) && !( cs instanceof SlotFake ) && !( cs instanceof SlotCraftingMatrix ) )
+					// target slots in the container...
+					for( final Object inventorySlot : this.inventorySlots )
 					{
-						if( cs.isItemValid( tis ) )
+						final AppEngSlot cs = (AppEngSlot) inventorySlot;
+
+						if( !( cs.isPlayerSide() ) && !( cs instanceof SlotFake ) && !( cs instanceof SlotCraftingMatrix ) )
 						{
-							selectedSlots.add( cs );
+							if( cs.isItemValid( tis ) )
+							{
+								selectedSlots.add( cs );
+							}
 						}
 					}
 				}
@@ -1032,15 +1019,21 @@ public abstract class AEBaseContainer extends Container
 		{
 			try
 			{
-				NetworkHandler.instance().sendTo(
-						new PacketInventoryAction( InventoryAction.UPDATE_HAND, 0, AEItemStack.fromItemStack( p.inventory.getItemStack() ) ),
-						p );
+				NetworkHandler.instance()
+						.sendTo(
+								new PacketInventoryAction( InventoryAction.UPDATE_HAND, 0, AEItemStack.fromItemStack( p.inventory.getItemStack() ) ),
+								p );
 			}
 			catch( final IOException e )
 			{
 				AELog.debug( e );
 			}
 		}
+	}
+
+	protected ItemStack transferStackToContainer( final ItemStack input )
+	{
+		return shiftStoreItem( input );
 	}
 
 	private ItemStack shiftStoreItem( final ItemStack input )
@@ -1105,8 +1098,9 @@ public abstract class AEBaseContainer extends Container
 					{
 						try
 						{
-							NetworkHandler.instance().sendTo( new PacketValueConfig( "CustomName", this.getCustomName() ),
-									(EntityPlayerMP) this.getInventoryPlayer().player );
+							NetworkHandler.instance()
+									.sendTo( new PacketValueConfig( "CustomName", this.getCustomName() ),
+											(EntityPlayerMP) this.getInventoryPlayer().player );
 						}
 						catch( final IOException e )
 						{

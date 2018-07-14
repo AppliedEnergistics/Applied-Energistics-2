@@ -20,15 +20,9 @@ package appeng.fluids.container;
 
 
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.implementations.IUpgradeableHost;
-import appeng.container.implementations.ContainerUpgradeable;
-import appeng.fluids.container.slots.OptionalSlotFakeFluid;
-import appeng.fluids.container.slots.SlotFakeFluid;
+import appeng.fluids.parts.PartSharedFluidBus;
+import appeng.fluids.util.IAEFluidTank;
 
 
 /**
@@ -36,40 +30,25 @@ import appeng.fluids.container.slots.SlotFakeFluid;
  * @version rv5 - 1/05/2018
  * @since rv5 1/05/2018
  */
-public class ContainerFluidIO extends ContainerUpgradeable
+public class ContainerFluidIO extends ContainerFluidConfigurable
 {
-	public ContainerFluidIO( InventoryPlayer ip, IUpgradeableHost te )
+	private final PartSharedFluidBus bus;
+
+	public ContainerFluidIO( InventoryPlayer ip, PartSharedFluidBus te )
 	{
 		super( ip, te );
+		this.bus = te;
+	}
+
+	@Override
+	public IAEFluidTank getFluidConfigInventory()
+	{
+		return bus.getConfig();
 	}
 
 	@Override
 	protected void setupConfig()
 	{
 		this.setupUpgrades();
-
-		final IItemHandler inv = this.getUpgradeable().getInventoryByName( "config" );
-		final int y = 40;
-		final int x = 80;
-		this.addSlotToContainer( new SlotFakeFluid( inv, 0, x, y ) );
-
-		if( this.supportCapacity() )
-		{
-			this.addSlotToContainer( new OptionalSlotFakeFluid( inv, this, 1, x, y, -1, 0, 1 ) );
-			this.addSlotToContainer( new OptionalSlotFakeFluid( inv, this, 2, x, y, 1, 0, 1 ) );
-			this.addSlotToContainer( new OptionalSlotFakeFluid( inv, this, 3, x, y, 0, -1, 1 ) );
-			this.addSlotToContainer( new OptionalSlotFakeFluid( inv, this, 4, x, y, 0, 1, 1 ) );
-
-			this.addSlotToContainer( new OptionalSlotFakeFluid( inv, this, 5, x, y, -1, -1, 2 ) );
-			this.addSlotToContainer( new OptionalSlotFakeFluid( inv, this, 6, x, y, 1, -1, 2 ) );
-			this.addSlotToContainer( new OptionalSlotFakeFluid( inv, this, 7, x, y, -1, 1, 2 ) );
-			this.addSlotToContainer( new OptionalSlotFakeFluid( inv, this, 8, x, y, 1, 1, 2 ) );
-		}
-	}
-
-	@Override
-	public boolean isValidForSlot( Slot s, ItemStack i )
-	{
-		return s instanceof SlotFakeFluid ? i.hasCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null ) : super.isValidForSlot( s, i );
 	}
 }

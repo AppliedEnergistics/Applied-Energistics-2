@@ -27,8 +27,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import gnu.trove.map.TObjectByteMap;
-import gnu.trove.map.hash.TObjectByteHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ByteMap;
+import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 
@@ -60,7 +60,7 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	 * <p/>
 	 * The cache will be updated from the server.
 	 */
-	private final TObjectByteMap<IPart> cache = new TObjectByteHashMap<>();
+	private final Object2ByteMap<IPart> cache = new Object2ByteOpenHashMap<>();
 
 	/**
 	 * Adds the used and max channel to the tool tip
@@ -105,7 +105,7 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	 *
 	 * @return used channels on the cable
 	 */
-	private byte getUsedChannels( final IPart part, final NBTTagCompound tag, final TObjectByteMap<IPart> cache )
+	private byte getUsedChannels( final IPart part, final NBTTagCompound tag, final Object2ByteMap<IPart> cache )
 	{
 		final byte usedChannels;
 

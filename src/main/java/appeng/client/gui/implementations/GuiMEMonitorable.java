@@ -95,6 +95,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	private GuiImgButton SortDirBox;
 	private GuiImgButton searchBoxSettings;
 	private GuiImgButton terminalStyleBox;
+	private boolean isAutoFocus = false;
+	private int currentMouseX = 0;
+	private int currentMouseY = 0;
 
 	public GuiMEMonitorable( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
@@ -224,8 +227,10 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		Keyboard.enableRepeatEvents( true );
 
 		this.maxRows = this.getMaxRows();
-		this.perRow = AEConfig.instance().getConfigManager().getSetting(
-				Settings.TERMINAL_STYLE ) != TerminalStyle.FULL ? 9 : 9 + ( ( this.width - this.standardSize ) / 18 );
+		this.perRow = AEConfig.instance()
+				.getConfigManager()
+				.getSetting(
+						Settings.TERMINAL_STYLE ) != TerminalStyle.FULL ? 9 : 9 + ( ( this.width - this.standardSize ) / 18 );
 
 		final int magicNumber = 114 + 1;
 		final int extraSpace = this.height - magicNumber - this.reservedSpace;
@@ -290,8 +295,10 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		offset += 20;
 
 		this.buttonList.add(
-				this.searchBoxSettings = new GuiImgButton( this.guiLeft - 18, offset, Settings.SEARCH_MODE, AEConfig.instance().getConfigManager().getSetting(
-						Settings.SEARCH_MODE ) ) );
+				this.searchBoxSettings = new GuiImgButton( this.guiLeft - 18, offset, Settings.SEARCH_MODE, AEConfig.instance()
+						.getConfigManager()
+						.getSetting(
+								Settings.SEARCH_MODE ) ) );
 
 		offset += 20;
 
@@ -306,7 +313,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		this.searchField.setEnableBackgroundDrawing( false );
 		this.searchField.setMaxStringLength( 25 );
 		this.searchField.setTextColor( 0xFFFFFF );
-		this.searchField.setSelectionColor( 0xFF99FF99 );
+		this.searchField.setSelectionColor( 0xFF008000 );
 		this.searchField.setVisible( true );
 
 		if( this.viewCell || this instanceof GuiWirelessTerm )
@@ -318,13 +325,11 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		final Enum searchModeSetting = AEConfig.instance().getConfigManager().getSetting( Settings.SEARCH_MODE );
 
-		final boolean isAutoFocus = SearchBoxMode.AUTOSEARCH == searchModeSetting || SearchBoxMode.JEI_AUTOSEARCH == searchModeSetting || SearchBoxMode.AUTOSEARCH_KEEP == searchModeSetting || SearchBoxMode.JEI_AUTOSEARCH_KEEP == searchModeSetting;
-		final boolean isManualFocus = SearchBoxMode.MANUAL_SEARCH == searchModeSetting || SearchBoxMode.JEI_MANUAL_SEARCH == searchModeSetting || SearchBoxMode.MANUAL_SEARCH_KEEP == searchModeSetting || SearchBoxMode.JEI_MANUAL_SEARCH_KEEP == searchModeSetting;
+		this.isAutoFocus = SearchBoxMode.AUTOSEARCH == searchModeSetting || SearchBoxMode.JEI_AUTOSEARCH == searchModeSetting || SearchBoxMode.AUTOSEARCH_KEEP == searchModeSetting || SearchBoxMode.JEI_AUTOSEARCH_KEEP == searchModeSetting;
 		final boolean isKeepFilter = SearchBoxMode.AUTOSEARCH_KEEP == searchModeSetting || SearchBoxMode.JEI_AUTOSEARCH_KEEP == searchModeSetting || SearchBoxMode.MANUAL_SEARCH_KEEP == searchModeSetting || SearchBoxMode.JEI_MANUAL_SEARCH_KEEP == searchModeSetting;
 		final boolean isJEIEnabled = SearchBoxMode.JEI_AUTOSEARCH == searchModeSetting || SearchBoxMode.JEI_MANUAL_SEARCH == searchModeSetting;
 
-		this.searchField.setFocused( isAutoFocus );
-		this.searchField.setCanLoseFocus( isManualFocus );
+		this.searchField.setFocused( this.isAutoFocus );
 
 		if( isJEIEnabled )
 		{
@@ -374,6 +379,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	{
 		this.fontRenderer.drawString( this.getGuiDisplayName( this.myName.getLocal() ), 8, 6, 4210752 );
 		this.fontRenderer.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
+
+		this.currentMouseX = mouseX;
+		this.currentMouseY = mouseY;
 	}
 
 	@Override
@@ -470,11 +478,31 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	@Override
 	protected void keyTyped( final char character, final int key ) throws IOException
 	{
+
 		if( !this.checkHotbarKeys( key ) )
 		{
+			if( key == Keyboard.KEY_TAB )
+			{
+				this.searchField.setFocused( !this.searchField.isFocused() );
+				return;
+			}
+
+			if( this.searchField.isFocused() && ( key == Keyboard.KEY_ESCAPE || key == Keyboard.KEY_RETURN ) )
+			{
+				this.searchField.setFocused( false );
+				return;
+			}
+
 			if( character == ' ' && this.searchField.getText().isEmpty() )
 			{
 				return;
+			}
+
+			final boolean mouseInGui = this.isPointInRegion( 0, 0, this.xSize, this.ySize, this.currentMouseX, this.currentMouseY );
+
+			if( this.isAutoFocus && !this.searchField.isFocused() && mouseInGui )
+			{
+				this.searchField.setFocused( true );
 			}
 
 			if( this.searchField.textboxKeyTyped( character, key ) )
@@ -482,6 +510,8 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 				this.repo.setSearchString( this.searchField.getText() );
 				this.repo.updateView();
 				this.setScrollBar();
+				// tell forge the key event is handled and should not be sent out
+				this.keyHandled = mouseInGui;
 			}
 			else
 			{

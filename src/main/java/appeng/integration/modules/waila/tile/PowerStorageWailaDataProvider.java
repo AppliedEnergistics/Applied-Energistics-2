@@ -28,8 +28,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import gnu.trove.map.TObjectLongMap;
-import gnu.trove.map.hash.TObjectLongHashMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import mcp.mobius.waila.api.ITaggedList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -62,7 +62,7 @@ public final class PowerStorageWailaDataProvider extends BaseWailaDataProvider
 	 * <p/>
 	 * The cache will be updated from the server.
 	 */
-	private final TObjectLongMap<TileEntity> cache = new TObjectLongHashMap<>();
+	private final Object2LongMap<TileEntity> cache = new Object2LongOpenHashMap<>();
 
 	/**
 	 * Adds the current and max power to the tool tip
