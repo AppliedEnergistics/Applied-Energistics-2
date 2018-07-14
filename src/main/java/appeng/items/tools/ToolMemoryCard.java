@@ -20,7 +20,6 @@ package appeng.items.tools;
 
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -144,7 +143,10 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 			final short frequency = tag.getShort( "freq" );
 			final AEColor[] colors = Platform.p2p().toColors( frequency );
 
-			return Stream.of( colors, colors ).flatMap( Stream::of ).toArray( AEColor[]::new );
+			return new AEColor[] {
+					colors[2], colors[2], colors[3], colors[3],
+					colors[0], colors[0], colors[1], colors[1],
+			};
 		}
 
 		return DEFAULT_COLOR_CODE;
