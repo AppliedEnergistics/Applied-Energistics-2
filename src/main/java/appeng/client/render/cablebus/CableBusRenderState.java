@@ -74,6 +74,8 @@ public class CableBusRenderState
 	// facades on this cable bus
 	private List<AxisAlignedBB> boundingBoxes = new ArrayList<>();
 
+	private EnumMap<EnumFacing, Long> partFlags = new EnumMap<>( EnumFacing.class );
+
 	public CableCoreType getCoreType()
 	{
 		return this.coreType;
@@ -154,6 +156,11 @@ public class CableBusRenderState
 		return this.boundingBoxes;
 	}
 
+	public EnumMap<EnumFacing, Long> getPartFlags()
+	{
+		return this.partFlags;
+	}
+
 	@Override
 	public int hashCode()
 	{
@@ -166,6 +173,7 @@ public class CableBusRenderState
 		result = prime * result + ( ( this.channelsOnSide == null ) ? 0 : this.channelsOnSide.hashCode() );
 		result = prime * result + ( ( this.connectionTypes == null ) ? 0 : this.connectionTypes.hashCode() );
 		result = prime * result + ( ( this.coreType == null ) ? 0 : this.coreType.hashCode() );
+		result = prime * result + ( ( this.partFlags == null ) ? 0 : this.partFlags.hashCode() );
 		return result;
 	}
 
@@ -190,7 +198,7 @@ public class CableBusRenderState
 		return this.cableColor == other.cableColor && this.cableType == other.cableType && this.coreType == other.coreType && Objects
 				.equals( this.attachmentConnections, other.attachmentConnections ) && Objects.equals( this.cableBusAdjacent,
 						other.cableBusAdjacent ) && Objects.equals( this.channelsOnSide, other.channelsOnSide ) && Objects.equals( this.connectionTypes,
-								other.connectionTypes );
+								other.connectionTypes ) && Objects.equals( this.partFlags, other.partFlags );
 	}
 
 }

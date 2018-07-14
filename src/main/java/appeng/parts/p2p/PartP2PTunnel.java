@@ -19,9 +19,12 @@
 package appeng.parts.p2p;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+
+import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -134,7 +137,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	{
 		super.readFromNBT( data );
 		this.setOutput( data.getBoolean( "output" ) );
-		this.setFrequency( data.getShort( "freq" ) );
+		this.freq = data.getShort( "freq" );
 	}
 
 	@Override
@@ -143,6 +146,22 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		super.writeToNBT( data );
 		data.setBoolean( "output", this.isOutput() );
 		data.setShort( "freq", this.getFrequency() );
+	}
+
+	@Override
+	public boolean readFromStream( ByteBuf data ) throws IOException
+	{
+		final boolean c = super.readFromStream( data );
+		final short oldf = this.freq;
+		this.freq = data.readShort();
+		return c || oldf != this.freq;
+	}
+
+	@Override
+	public void writeToStream( ByteBuf data ) throws IOException
+	{
+		super.writeToStream( data );
+		data.writeShort( getFrequency() );
 	}
 
 	@Override
@@ -381,7 +400,12 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
 	public void setFrequency( final short freq )
 	{
+		final short oldf = this.freq;
 		this.freq = freq;
+		if( oldf != this.freq )
+		{
+			this.getHost().markForUpdate();
+		}
 	}
 
 	public boolean isOutput()
@@ -392,5 +416,18 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	void setOutput( final boolean output )
 	{
 		this.output = output;
+	}
+
+	@Override
+	public Long getRenderFlag()
+	{
+		long ret = Short.toUnsignedLong( this.getFrequency() );
+
+		if( this.isActive() && this.isPowered() )
+		{
+			ret |= 0x10000L;
+		}
+
+		return ret;
 	}
 }

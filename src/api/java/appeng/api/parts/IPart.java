@@ -355,4 +355,14 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 		return null;
 	}
 
+	/**
+	 * Flag to be passed to the renderer.
+	 * 
+	 * @return flag or null
+	 */
+	default Long getRenderFlag()
+	{
+		return null;
+	}
+
 }
