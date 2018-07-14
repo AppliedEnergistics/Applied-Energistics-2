@@ -111,7 +111,7 @@ public class FluidCellInventory extends AbstractCellInventory<IAEFluidStack>
 		if( l != null )
 		{
 			final long remainingItemSlots = this.getRemainingItemCount();
-			if( remainingItemSlots < 0 )
+			if( remainingItemSlots <= 0 )
 			{
 				return input;
 			}

@@ -136,7 +136,7 @@ public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
 		if( l != null )
 		{
 			final long remainingItemCount = this.getRemainingItemCount();
-			if( remainingItemCount < 0 )
+			if( remainingItemCount <= 0 )
 			{
 				return input;
 			}
