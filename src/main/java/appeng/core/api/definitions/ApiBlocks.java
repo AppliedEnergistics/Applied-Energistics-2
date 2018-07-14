@@ -261,7 +261,7 @@ public final class ApiBlocks implements IBlocks
 				.build();
 		this.matrixFrame = registry.block( "matrix_frame", BlockMatrixFrame::new ).features( AEFeature.SPATIAL_IO ).build();
 
-		FeatureFactory deco = registry.features( AEFeature.DECORATIVE_QUARTZ_BLOCKS );
+		FeatureFactory deco = registry.features( AEFeature.DECORATIVE_BLOCKS );
 		this.quartzBlock = deco.block( "quartz_block", BlockQuartz::new ).build();
 		this.quartzPillar = deco.block( "quartz_pillar", BlockQuartzPillar::new ).build();
 		this.chiseledQuartzBlock = deco.block( "chiseled_quartz_block", BlockChiseledQuartz::new ).build();
@@ -568,7 +568,7 @@ public final class ApiBlocks implements IBlocks
 		Block block = blockDef.maybeBlock().get();
 
 		IBlockDefinition slabDef = registry.block( slabId, () -> new BlockSlabCommon.Half( block ) )
-				.features( AEFeature.DECORATIVE_QUARTZ_BLOCKS )
+				.features( AEFeature.DECORATIVE_BLOCKS )
 				.disableItem()
 				.build();
 
@@ -581,7 +581,7 @@ public final class ApiBlocks implements IBlocks
 
 		// Reigster the double slab variant as well
 		IBlockDefinition doubleSlabDef = registry.block( doubleSlabId, () -> new BlockSlabCommon.Double( slabBlock, block ) )
-				.features( AEFeature.DECORATIVE_QUARTZ_BLOCKS )
+				.features( AEFeature.DECORATIVE_BLOCKS )
 				.disableItem()
 				.build();
 
@@ -591,7 +591,7 @@ public final class ApiBlocks implements IBlocks
 
 		// Make the slab item
 		IItemDefinition itemDef = registry.item( slabId, () -> new ItemSlab( slabBlock, slabBlock, doubleSlabBlock ) )
-				.features( AEFeature.DECORATIVE_QUARTZ_BLOCKS )
+				.features( AEFeature.DECORATIVE_BLOCKS )
 				.build();
 
 		Verify.verify( itemDef.maybeItem().isPresent() );
@@ -603,7 +603,7 @@ public final class ApiBlocks implements IBlocks
 	private static IBlockDefinition makeStairs( String registryName, FeatureFactory registry, IBlockDefinition block )
 	{
 		return registry.block( registryName, () -> new BlockStairCommon( block.maybeBlock().get(), block.identifier() ) )
-				.features( AEFeature.DECORATIVE_QUARTZ_BLOCKS )
+				.features( AEFeature.DECORATIVE_BLOCKS )
 				.rendering( new BlockRenderingCustomizer()
 				{
 					@Override

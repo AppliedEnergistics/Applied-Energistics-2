@@ -36,7 +36,7 @@ public enum AEFeature
 	CERTUS_QUARTZ_WORLD_GEN( "CertusQuartzWorldGen", Constants.CATEGORY_WORLD ),
 	METEORITE_WORLD_GEN( "MeteoriteWorldGen", Constants.CATEGORY_WORLD ),
 	DECORATIVE_LIGHTS( "DecorativeLights", Constants.CATEGORY_WORLD ),
-	DECORATIVE_QUARTZ_BLOCKS( "DecorativeQuartzBlocks", Constants.CATEGORY_WORLD ),
+	DECORATIVE_BLOCKS( "DecorativeBlocks", Constants.CATEGORY_WORLD ),
 	SKY_STONE_CHESTS( "SkyStoneChests", Constants.CATEGORY_WORLD ),
 	SPAWN_PRESSES_IN_METEORITES( "SpawnPressesInMeteorites", Constants.CATEGORY_WORLD ),
 	GRIND_STONE( "GrindStone", Constants.CATEGORY_WORLD ),
