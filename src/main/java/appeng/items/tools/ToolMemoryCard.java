@@ -138,14 +138,14 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	{
 		final NBTTagCompound tag = this.getData( is );
 
-		if( tag.hasKey( "freq" ) )
+		if( tag.hasKey( "colorCode" ) )
 		{
-			final short frequency = tag.getShort( "freq" );
-			final AEColor[] colors = Platform.p2p().toColors( frequency );
+			final int[] frequency = tag.getIntArray( "colorCode" );
+			final AEColor[] colorArray = AEColor.values();
 
 			return new AEColor[] {
-					colors[2], colors[2], colors[3], colors[3],
-					colors[0], colors[0], colors[1], colors[1],
+					colorArray[frequency[0]], colorArray[frequency[1]], colorArray[frequency[2]], colorArray[frequency[3]],
+					colorArray[frequency[4]], colorArray[frequency[5]], colorArray[frequency[6]], colorArray[frequency[7]],
 			};
 		}
 
