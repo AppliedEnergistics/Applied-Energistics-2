@@ -555,11 +555,11 @@ public abstract class AEBaseGui extends GuiContainer
 			return;
 		}
 
-		if( !this.disableShiftClick && isShiftKeyDown() )
+		if( !this.disableShiftClick && isShiftKeyDown() && mouseButton == 0 )
 		{
 			this.disableShiftClick = true;
 
-			if( this.dbl_whichItem.isEmpty() || this.bl_clicked != slot || this.dbl_clickTimer.elapsed( TimeUnit.MILLISECONDS ) > 150 )
+			if( this.dbl_whichItem.isEmpty() || this.bl_clicked != slot || this.dbl_clickTimer.elapsed( TimeUnit.MILLISECONDS ) > 250 )
 			{
 				// some simple double click logic.
 				this.bl_clicked = slot;
@@ -581,12 +581,13 @@ public abstract class AEBaseGui extends GuiContainer
 				for( final Slot inventorySlot : slots )
 				{
 					if( inventorySlot != null && inventorySlot.canTakeStack(
-							this.mc.player ) && inventorySlot.getHasStack() && inventorySlot.inventory == slot.inventory && Container.canAddItemToSlot(
+							this.mc.player ) && inventorySlot.getHasStack() && inventorySlot.isSameInventory( slot ) && Container.canAddItemToSlot(
 									inventorySlot, this.dbl_whichItem, true ) )
 					{
-						this.handleMouseClick( inventorySlot, inventorySlot.slotNumber, 1, clickType );
+						this.handleMouseClick( inventorySlot, inventorySlot.slotNumber, 0, ClickType.QUICK_MOVE );
 					}
 				}
+				this.dbl_whichItem = ItemStack.EMPTY;
 			}
 
 			this.disableShiftClick = false;
