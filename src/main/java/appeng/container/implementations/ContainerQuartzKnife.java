@@ -156,15 +156,22 @@ public class ContainerQuartzKnife extends AEBaseContainer
 
 		private void makePlate()
 		{
-			if( !this.getItemHandler().extractItem( 0, 1, false ).isEmpty() )
+			if( Platform.isServer() )
 			{
-				final ItemStack item = ContainerQuartzKnife.this.toolInv.getItemStack();
-				item.damageItem( 1, ContainerQuartzKnife.this.getPlayerInv().player );
-
-				if( item.getCount() == 0 )
+				if( !this.getItemHandler().extractItem( 0, 1, false ).isEmpty() )
 				{
-					ContainerQuartzKnife.this.getPlayerInv().mainInventory.add( ContainerQuartzKnife.this.getPlayerInv().currentItem, ItemStack.EMPTY );
-					MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( ContainerQuartzKnife.this.getPlayerInv().player, item, null ) );
+					final ItemStack item = ContainerQuartzKnife.this.toolInv.getItemStack();
+					final ItemStack before = item.copy();
+					item.damageItem( 1, ContainerQuartzKnife.this.getPlayerInv().player );
+
+					if( item.getCount() == 0 )
+					{
+						ContainerQuartzKnife.this.getPlayerInv()
+								.setInventorySlotContents( ContainerQuartzKnife.this.getPlayerInv().currentItem, ItemStack.EMPTY );
+						MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( ContainerQuartzKnife.this.getPlayerInv().player, before, null ) );
+					}
+
+					ContainerQuartzKnife.this.detectAndSendChanges();
 				}
 			}
 		}
