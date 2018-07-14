@@ -265,7 +265,9 @@ public final class ApiBlocks implements IBlocks
 		this.quartzBlock = deco.block( "quartz_block", BlockQuartz::new ).build();
 		this.quartzPillar = deco.block( "quartz_pillar", BlockQuartzPillar::new ).build();
 		this.chiseledQuartzBlock = deco.block( "chiseled_quartz_block", BlockChiseledQuartz::new ).build();
-		this.quartzGlass = deco.block( "quartz_glass", BlockQuartzGlass::new )
+
+		this.quartzGlass = registry.features( AEFeature.QUARTZ_GLASS )
+				.block( "quartz_glass", BlockQuartzGlass::new )
 				.useCustomItemModel()
 				.rendering( new BlockRenderingCustomizer()
 				{
@@ -278,7 +280,7 @@ public final class ApiBlocks implements IBlocks
 				} )
 				.build();
 		this.quartzVibrantGlass = deco.block( "quartz_vibrant_glass", BlockQuartzLamp::new )
-				.addFeatures( AEFeature.DECORATIVE_LIGHTS )
+				.addFeatures( AEFeature.DECORATIVE_LIGHTS, AEFeature.QUARTZ_GLASS )
 				.useCustomItemModel()
 				.build();
 		this.quartzFixture = registry.block( "quartz_fixture", BlockQuartzFixture::new )
@@ -286,19 +288,28 @@ public final class ApiBlocks implements IBlocks
 				.useCustomItemModel()
 				.build();
 
-		this.fluixBlock = deco.block( "fluix_block", BlockFluix::new ).build();
-		this.skyStoneBlock = deco.block( "sky_stone_block", () -> new BlockSkyStone( SkystoneType.STONE ) ).build();
-		this.smoothSkyStoneBlock = deco.block( "smooth_sky_stone_block", () -> new BlockSkyStone( SkystoneType.BLOCK ) ).build();
-		this.skyStoneBrick = deco.block( "sky_stone_brick", () -> new BlockSkyStone( SkystoneType.BRICK ) ).build();
-		this.skyStoneSmallBrick = deco.block( "sky_stone_small_brick", () -> new BlockSkyStone( SkystoneType.SMALL_BRICK ) ).build();
+		this.fluixBlock = registry.features( AEFeature.FLUIX ).block( "fluix_block", BlockFluix::new ).build();
+
+		this.skyStoneBlock = registry.features( AEFeature.SKY_STONE )
+				.block( "sky_stone_block", () -> new BlockSkyStone( SkystoneType.STONE ) )
+				.build();
+		this.smoothSkyStoneBlock = registry.features( AEFeature.SKY_STONE )
+				.block( "smooth_sky_stone_block", () -> new BlockSkyStone( SkystoneType.BLOCK ) )
+				.build();
+		this.skyStoneBrick = deco.block( "sky_stone_brick", () -> new BlockSkyStone( SkystoneType.BRICK ) )
+				.addFeatures( AEFeature.SKY_STONE )
+				.build();
+		this.skyStoneSmallBrick = deco.block( "sky_stone_small_brick", () -> new BlockSkyStone( SkystoneType.SMALL_BRICK ) )
+				.addFeatures( AEFeature.SKY_STONE )
+				.build();
 
 		this.skyStoneChest = registry.block( "sky_stone_chest", () -> new BlockSkyChest( SkyChestType.STONE ) )
-				.features( AEFeature.SKY_STONE_CHESTS )
+				.features( AEFeature.SKY_STONE, AEFeature.SKY_STONE_CHESTS )
 				.tileEntity( new TileEntityDefinition( TileSkyChest.class, "sky_stone_chest" ) )
 				.rendering( new SkyChestRenderingCustomizer( SkyChestType.STONE ) )
 				.build();
 		this.smoothSkyStoneChest = registry.block( "smooth_sky_stone_chest", () -> new BlockSkyChest( SkyChestType.BLOCK ) )
-				.features( AEFeature.SKY_STONE_CHESTS )
+				.features( AEFeature.SKY_STONE, AEFeature.SKY_STONE_CHESTS )
 				.tileEntity( new TileEntityDefinition( TileSkyChest.class, "sky_stone_chest" ) )
 				.rendering( new SkyChestRenderingCustomizer( SkyChestType.BLOCK ) )
 				.build();

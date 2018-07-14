@@ -49,6 +49,8 @@ public enum AEFeature
 	TINY_TNT( "TinyTNT", Constants.CATEGORY_WORLD ),
 	CERTUS_ORE( "CertusOre", Constants.CATEGORY_WORLD ),
 	CHARGED_CERTUS_ORE( "ChargedCertusOre", Constants.CATEGORY_WORLD ),
+	QUARTZ_GLASS( "QuartzGlass", Constants.CATEGORY_WORLD ),
+	SKY_STONE( "SkyStone", Constants.CATEGORY_WORLD ),
 
 	POWERED_TOOLS( "PoweredTools", Constants.CATEGORY_TOOLS_CLASSIFICATIONS ),
 	CERTUS_QUARTZ_TOOLS( "CertusQuartzTools", Constants.CATEGORY_TOOLS_CLASSIFICATIONS ),
