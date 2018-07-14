@@ -492,6 +492,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	{
 		if( this.world != null )
 		{
+			this.world.markChunkDirty( this.pos, this );
 			if( !this.markDirtyQueued )
 			{
 				TickHandler.INSTANCE.addCallable( null, this::markDirtyAtEndOfTick );
