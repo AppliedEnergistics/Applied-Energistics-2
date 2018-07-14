@@ -115,12 +115,11 @@ public enum AEFeature
 	GLASS_CABLES( "GlassCables", Constants.CATEGORY_CABLES ),
 	COVERED_CABLES( "CoveredCables", Constants.CATEGORY_CABLES ),
 	SMART_CABLES( "SmartCables", Constants.CATEGORY_CABLES ),
+	DENSE_CABLES( "DenseCables", Constants.CATEGORY_CABLES ),
 
 	ENERGY_CELLS( "EnergyCells", Constants.CATEGORY_ENERGY ),
 	ENERGY_ACCEPTOR( "EnergyAcceptor", Constants.CATEGORY_ENERGY ),
-
-	DENSE_ENERGY_CELLS( "DenseEnergyCells", Constants.CATEGORY_HIGHER_CAPACITY ),
-	DENSE_CABLES( "DenseCables", Constants.CATEGORY_HIGHER_CAPACITY ),
+	DENSE_ENERGY_CELLS( "DenseEnergyCells", Constants.CATEGORY_ENERGY ),
 
 	P2P_TUNNEL_ME( "P2PTunnelME", Constants.CATEGORY_P2P_TUNNELS ),
 	P2P_TUNNEL_ITEMS( "P2PTunnelItems", Constants.CATEGORY_P2P_TUNNELS ),
@@ -262,7 +261,6 @@ public enum AEFeature
 		private static final String CATEGORY_CRAFTING_FEATURES = "CraftingFeatures";
 		private static final String CATEGORY_STORAGE = "Storage";
 		private static final String CATEGORY_CABLES = "Cables";
-		private static final String CATEGORY_HIGHER_CAPACITY = "HigherCapacity";
 		private static final String CATEGORY_NETWORK_FEATURES = "NetworkFeatures";
 		private static final String CATEGORY_COMMANDS = "Commands";
 		private static final String CATEGORY_RENDERING = "Rendering";

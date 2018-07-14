@@ -215,6 +215,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 
 		this.clientSync();
 
+		this.addCustomCategoryComment( "features", "Warning: Disabling a feature may disable other features depending on it." );
 		for( final AEFeature feature : AEFeature.values() )
 		{
 			if( feature.isVisible() )
