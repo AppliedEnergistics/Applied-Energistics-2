@@ -487,7 +487,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 				return;
 			}
 
-			if( this.searchField.isFocused() && ( key == Keyboard.KEY_ESCAPE || key == Keyboard.KEY_RETURN ) )
+			if( this.searchField.isFocused() && key == Keyboard.KEY_RETURN )
 			{
 				this.searchField.setFocused( false );
 				return;
