@@ -48,7 +48,7 @@ public interface IMemoryCard
 	 *
 	 * The data can contain an optional intArray using "colorCode" to be displayed on the model itself.
 	 * It needs to have exactly 8 elements representing the ordinal of the matching {@link AEColor}.
-	 * The first 4 values represent the bottom row, left to right. The second 4 the top row.
+	 * The first 4 values represent the top row, left to right. The second 4 the bottom row.
 	 *
 	 * @param is item
 	 * @param SettingsName unlocalized string that represents the tile entity.

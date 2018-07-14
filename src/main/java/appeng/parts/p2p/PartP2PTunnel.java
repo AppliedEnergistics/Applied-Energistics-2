@@ -337,8 +337,8 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
 			final AEColor[] colors = Platform.p2p().toColors( this.getFrequency() );
 			final int[] colorCode = new int[] {
-					colors[2].ordinal(), colors[2].ordinal(), colors[3].ordinal(), colors[3].ordinal(),
 					colors[0].ordinal(), colors[0].ordinal(), colors[1].ordinal(), colors[1].ordinal(),
+					colors[2].ordinal(), colors[2].ordinal(), colors[3].ordinal(), colors[3].ordinal(),
 			};
 
 			data.setIntArray( "colorCode", colorCode );

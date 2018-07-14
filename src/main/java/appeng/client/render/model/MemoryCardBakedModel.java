@@ -107,7 +107,7 @@ class MemoryCardBakedModel implements IBakedModel
 				final AEColor color = this.colorCode[x + y * 4];
 
 				builder.setColorRGB( color.mediumVariant );
-				builder.addCube( 7 + x, 8 + y, 7.5f, 7 + x + 1, 8 + y + 1, 8.5f );
+				builder.addCube( 7 + x, 8 + ( 1 - y ), 7.5f, 7 + x + 1, 8 + ( 1 - y ) + 1, 8.5f );
 			}
 		}
 
