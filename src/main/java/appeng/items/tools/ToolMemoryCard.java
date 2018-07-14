@@ -29,6 +29,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -37,6 +38,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
+import appeng.api.util.AEColor;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.items.AEBaseItem;
@@ -45,6 +47,12 @@ import appeng.util.Platform;
 
 public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 {
+
+	private static final AEColor[] DEFAULT_COLOR_CODE = new AEColor[] {
+			AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT,
+			AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT,
+	};
+
 	public ToolMemoryCard()
 	{
 		this.setMaxStackSize( 1 );
@@ -60,6 +68,14 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 		if( data.hasKey( "tooltip" ) )
 		{
 			lines.add( I18n.translateToLocal( this.getLocalizedName( data.getString( "tooltip" ) + ".name", data.getString( "tooltip" ) ) ) );
+		}
+
+		if( data.hasKey( "freq" ) )
+		{
+			final short freq = data.getShort( "freq" );
+			final String freqTooltip = TextFormatting.BOLD + Platform.p2p().toHexString( freq );
+
+			lines.add( I18n.translateToLocalFormatted( "gui.tooltips.appliedenergistics2.P2PFrequency", freqTooltip ) );
 		}
 	}
 
@@ -114,7 +130,26 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 		{
 			o = new NBTTagCompound();
 		}
-		return (NBTTagCompound) o.copy();
+		return o.copy();
+	}
+
+	@Override
+	public AEColor[] getColorCode( ItemStack is )
+	{
+		final NBTTagCompound tag = this.getData( is );
+
+		if( tag.hasKey( "colorCode" ) )
+		{
+			final int[] frequency = tag.getIntArray( "colorCode" );
+			final AEColor[] colorArray = AEColor.values();
+
+			return new AEColor[] {
+					colorArray[frequency[0]], colorArray[frequency[1]], colorArray[frequency[2]], colorArray[frequency[3]],
+					colorArray[frequency[4]], colorArray[frequency[5]], colorArray[frequency[6]], colorArray[frequency[7]],
+			};
+		}
+
+		return DEFAULT_COLOR_CODE;
 	}
 
 	@Override

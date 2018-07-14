@@ -347,6 +347,7 @@ gui.tooltips.appliedenergistics2.FilterModeKeep=Restore previous search filter.
 gui.tooltips.appliedenergistics2.FilterModeClear=Clear on each opening.
 gui.tooltips.appliedenergistics2.ItemsStored=Items Stored: %s
 gui.tooltips.appliedenergistics2.ItemsRequestable=Items Requestable: %s
+gui.tooltips.appliedenergistics2.P2PFrequency=Frequency: %s
 
 // Units
 gui.appliedenergistics2.units.appliedenergstics=AE
@@ -401,6 +402,7 @@ theoneprobe.appliedenergistics2.p2p_unlinked=Unlinked
 theoneprobe.appliedenergistics2.p2p_input_one_output=Linked (Input Side)
 theoneprobe.appliedenergistics2.p2p_input_many_outputs=Linked (Input Side) - %d Outputs
 theoneprobe.appliedenergistics2.p2p_output=Linked (Output Side)
+theoneprobe.appliedenergistics2.p2p_frequency=Frequency: %1$s
 theoneprobe.appliedenergistics2.stored_energy=%1$d / %2$d
 
 // Items

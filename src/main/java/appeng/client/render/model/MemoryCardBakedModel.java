@@ -3,6 +3,7 @@ package appeng.client.render.model;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -13,7 +14,6 @@ import javax.vecmath.Matrix4f;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
-import com.mojang.authlib.GameProfile;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -30,14 +30,18 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.model.TRSRTransformation;
 
-import appeng.api.implementations.items.IBiometricCard;
+import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.util.AEColor;
 import appeng.client.render.cablebus.CubeBuilder;
 import appeng.core.AELog;
 
 
-class BiometricCardBakedModel implements IBakedModel
+class MemoryCardBakedModel implements IBakedModel
 {
+	private static final AEColor[] DEFAULT_COLOR_CODE = new AEColor[] {
+			AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT,
+			AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT,
+	};
 
 	private final VertexFormat format;
 
@@ -45,28 +49,28 @@ class BiometricCardBakedModel implements IBakedModel
 
 	private final TextureAtlasSprite texture;
 
-	private final int hash;
+	private final AEColor[] colorCode;
 
-	private final Cache<Integer, BiometricCardBakedModel> modelCache;
+	private final Cache<CacheKey, MemoryCardBakedModel> modelCache;
 
 	private final ImmutableList<BakedQuad> generalQuads;
 
-	BiometricCardBakedModel( VertexFormat format, IBakedModel baseModel, TextureAtlasSprite texture )
+	MemoryCardBakedModel( VertexFormat format, IBakedModel baseModel, TextureAtlasSprite texture )
 	{
-		this( format, baseModel, texture, 0, createCache() );
+		this( format, baseModel, texture, DEFAULT_COLOR_CODE, createCache() );
 	}
 
-	private BiometricCardBakedModel( VertexFormat format, IBakedModel baseModel, TextureAtlasSprite texture, int hash, Cache<Integer, BiometricCardBakedModel> modelCache )
+	private MemoryCardBakedModel( VertexFormat format, IBakedModel baseModel, TextureAtlasSprite texture, AEColor[] hash, Cache<CacheKey, MemoryCardBakedModel> modelCache )
 	{
 		this.format = format;
 		this.baseModel = baseModel;
 		this.texture = texture;
-		this.hash = hash;
+		this.colorCode = hash;
 		this.generalQuads = ImmutableList.copyOf( this.buildGeneralQuads() );
 		this.modelCache = modelCache;
 	}
 
-	private static Cache<Integer, BiometricCardBakedModel> createCache()
+	private static Cache<CacheKey, MemoryCardBakedModel> createCache()
 	{
 		return CacheBuilder.newBuilder()
 				.maximumSize( 100 )
@@ -96,42 +100,17 @@ class BiometricCardBakedModel implements IBakedModel
 
 		builder.setTexture( this.texture );
 
-		AEColor col = AEColor.values()[Math.abs( 3 + this.hash ) % AEColor.values().length];
-		if( this.hash == 0 )
+		for( int x = 0; x < 4; x++ )
 		{
-			col = AEColor.BLACK;
-		}
-
-		for( int x = 0; x < 8; x++ )
-		{
-			for( int y = 0; y < 6; y++ )
+			for( int y = 0; y < 2; y++ )
 			{
-				final boolean isLit;
+				final AEColor color = this.colorCode[x + y * 4];
 
-				// This makes the border always use the darker color
-				if( x == 0 || y == 0 || x == 7 || y == 5 )
-				{
-					isLit = false;
-				}
-				else
-				{
-					isLit = ( this.hash & ( 1 << x ) ) != 0 || ( this.hash & ( 1 << y ) ) != 0;
-				}
-
-				if( isLit )
-				{
-					builder.setColorRGB( col.mediumVariant );
-				}
-				else
-				{
-					final float scale = 0.3f / 255.0f;
-					builder.setColorRGB( ( ( col.blackVariant >> 16 ) & 0xff ) * scale, ( ( col.blackVariant >> 8 ) & 0xff ) * scale,
-							( col.blackVariant & 0xff ) * scale );
-				}
-
-				builder.addCube( 4 + x, 6 + y, 7.5f, 4 + x + 1, 6 + y + 1, 8.5f );
+				builder.setColorRGB( color.mediumVariant );
+				builder.addCube( 7 + x, 8 + ( 1 - y ), 7.5f, 7 + x + 1, 8 + ( 1 - y ) + 1, 8.5f );
 			}
 		}
+
 		return builder.getOutput();
 	}
 
@@ -173,42 +152,26 @@ class BiometricCardBakedModel implements IBakedModel
 			@Override
 			public IBakedModel handleItemState( IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity )
 			{
-				String username = "";
-				if( stack.getItem() instanceof IBiometricCard )
-				{
-					final GameProfile gp = ( (IBiometricCard) stack.getItem() ).getProfile( stack );
-					if( gp != null )
-					{
-						if( gp.getId() != null )
-						{
-							username = gp.getId().toString();
-						}
-						else
-						{
-							username = gp.getName();
-						}
-					}
-				}
-				final int hash = !username.isEmpty() ? username.hashCode() : 0;
-
-				// Get hash
-				if( hash == 0 )
-				{
-					return BiometricCardBakedModel.this;
-				}
-
 				try
 				{
-					return BiometricCardBakedModel.this.modelCache.get( hash,
-							() -> new BiometricCardBakedModel( BiometricCardBakedModel.this.format, BiometricCardBakedModel.this.baseModel, BiometricCardBakedModel.this.texture, hash, BiometricCardBakedModel.this.modelCache ) );
+					if( stack.getItem() instanceof IMemoryCard )
+					{
+						final IMemoryCard memoryCard = (IMemoryCard) stack.getItem();
+						final AEColor[] colors = memoryCard.getColorCode( stack );
+
+						return MemoryCardBakedModel.this.modelCache.get( new CacheKey( colors ),
+								() -> new MemoryCardBakedModel( MemoryCardBakedModel.this.format, MemoryCardBakedModel.this.baseModel, MemoryCardBakedModel.this.texture, colors, MemoryCardBakedModel.this.modelCache ) );
+					}
 				}
 				catch( ExecutionException e )
 				{
 					AELog.error( e );
-					return BiometricCardBakedModel.this;
 				}
+
+				return MemoryCardBakedModel.this;
 			}
 		};
+
 	}
 
 	@Override
@@ -222,5 +185,44 @@ class BiometricCardBakedModel implements IBakedModel
 			return Pair.of( this, pair.getValue() );
 		}
 		return Pair.of( this, TRSRTransformation.identity().getMatrix() );
+	}
+
+	private static class CacheKey
+	{
+		private final AEColor[] key;
+
+		CacheKey( AEColor[] key )
+		{
+			this.key = key;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + Arrays.hashCode( this.key );
+			return result;
+		}
+
+		@Override
+		public boolean equals( Object obj )
+		{
+			if( this == obj )
+			{
+				return true;
+			}
+			if( obj == null )
+			{
+				return false;
+			}
+			if( this.getClass() != obj.getClass() )
+			{
+				return false;
+			}
+			CacheKey other = (CacheKey) obj;
+			return Arrays.equals( this.key, other.key );
+		}
+
 	}
 }

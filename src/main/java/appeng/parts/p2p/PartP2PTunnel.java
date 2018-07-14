@@ -45,6 +45,7 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartItemStack;
 import appeng.api.util.AECableType;
+import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AEConfig;
 import appeng.me.GridAccessException;
@@ -362,6 +363,14 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
 			p2pItem.writeToNBT( data );
 			data.setShort( "freq", this.getFrequency() );
+
+			final AEColor[] colors = Platform.p2p().toColors( this.getFrequency() );
+			final int[] colorCode = new int[] {
+					colors[0].ordinal(), colors[0].ordinal(), colors[1].ordinal(), colors[1].ordinal(),
+					colors[2].ordinal(), colors[2].ordinal(), colors[3].ordinal(), colors[3].ordinal(),
+			};
+
+			data.setIntArray( "colorCode", colorCode );
 
 			mc.setMemoryCardContents( is, type + ".name", data );
 			mc.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );

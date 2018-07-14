@@ -33,6 +33,7 @@ import appeng.api.parts.IPart;
 import appeng.integration.modules.theoneprobe.TheOneProbeText;
 import appeng.me.GridAccessException;
 import appeng.parts.p2p.PartP2PTunnel;
+import appeng.util.Platform;
 
 
 public class P2PStateInfoProvider implements IPartProbInfoProvider
@@ -41,7 +42,6 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider
 	private static final int STATE_UNLINKED = 0;
 	private static final int STATE_OUTPUT = 1;
 	private static final int STATE_INPUT = 2;
-	public static final String TAG_P2P_STATE = "p2p_state";
 
 	@Override
 	public void addProbeInfo( IPart part, ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data )
@@ -49,6 +49,11 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider
 		if( part instanceof PartP2PTunnel )
 		{
 			final PartP2PTunnel tunnel = (PartP2PTunnel) part;
+
+			if( !tunnel.isPowered() )
+			{
+				return;
+			}
 
 			// The default state
 			int state = STATE_UNLINKED;
@@ -84,6 +89,11 @@ public class P2PStateInfoProvider implements IPartProbInfoProvider
 					probeInfo.text( getOutputText( outputCount ) );
 					break;
 			}
+
+			final short freq = tunnel.getFrequency();
+			final String freqTooltip = Platform.p2p().toHexString( freq );
+
+			probeInfo.text( freqTooltip );
 		}
 	}
 
