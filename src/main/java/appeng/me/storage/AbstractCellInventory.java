@@ -19,16 +19,13 @@
 package appeng.me.storage;
 
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
-import appeng.api.exceptions.AppEngException;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.ICellInventory;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
@@ -59,7 +56,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 	private short storedItems = 0;
 	private int storedItemCount = 0;
 	protected IItemList<T> cellItems;
-	protected final ItemStack i;
+	private final ItemStack i;
 	protected final IStorageCell<T> cellType;
 	protected final int itemsPerByte;
 	private boolean isPersisted = true;
@@ -73,32 +70,12 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 		}
 	}
 
-	protected AbstractCellInventory( final ItemStack o, final ISaveProvider container, final int itemsPerByte ) throws AppEngException
+	protected AbstractCellInventory( final IStorageCell<T> cellType, final ItemStack o, final ISaveProvider container )
 	{
-		this.itemsPerByte = itemsPerByte;
-
-		if( o == null )
-		{
-			throw new AppEngException( "ItemStack was used as a cell, but was not a cell!" );
-		}
-
 		this.i = o;
-
-		final Item type = this.i.getItem();
-		if( type instanceof IStorageCell )
-		{
-			this.cellType = (IStorageCell<T>) this.i.getItem();
-			this.maxItemTypes = this.cellType.getTotalTypes( this.i );
-		}
-		else
-		{
-			throw new AppEngException( "ItemStack was used as a cell, but was not a cell!" );
-		}
-
-		if( !this.cellType.isStorageCell( this.i ) )
-		{
-			throw new AppEngException( "ItemStack was used as a cell, but was not a cell!" );
-		}
+		this.cellType = cellType;
+		this.itemsPerByte = this.cellType.getChannel().getUnitsPerByte();
+		this.maxItemTypes = this.cellType.getTotalTypes( this.i );
 
 		if( this.maxItemTypes > MAX_ITEM_TYPES )
 		{
@@ -114,11 +91,6 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 		this.storedItems = this.tagCompound.getShort( ITEM_TYPE_TAG );
 		this.storedItemCount = this.tagCompound.getInteger( ITEM_COUNT_TAG );
 		this.cellItems = null;
-	}
-
-	protected boolean isEmpty( final IMEInventory<T> meInventory )
-	{
-		return meInventory.getAvailableItems( getChannel().createList() ).isEmpty();
 	}
 
 	protected IItemList<T> getCellItems()

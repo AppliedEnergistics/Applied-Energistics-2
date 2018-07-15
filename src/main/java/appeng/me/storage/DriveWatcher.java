@@ -25,7 +25,7 @@ import appeng.api.config.Actionable;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ICellHandler;
-import appeng.api.storage.IMEInventory;
+import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
 
 
@@ -37,7 +37,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 	private final ICellHandler handler;
 	private final IChestOrDrive cord;
 
-	public DriveWatcher( final IMEInventory<T> i, final ItemStack is, final ICellHandler han, final IChestOrDrive cod )
+	public DriveWatcher( final ICellInventoryHandler<T> i, final ItemStack is, final ICellHandler han, final IChestOrDrive cod )
 	{
 		super( i, i.getChannel() );
 		this.is = is;
@@ -47,7 +47,7 @@ public class DriveWatcher<T extends IAEStack<T>> extends MEInventoryHandler<T>
 
 	public int getStatus()
 	{
-		return this.handler.getStatusForCell( this.is, this.getInternal() );
+		return this.handler.getStatusForCell( this.is, (ICellInventoryHandler) this.getInternal() );
 	}
 
 	@Override

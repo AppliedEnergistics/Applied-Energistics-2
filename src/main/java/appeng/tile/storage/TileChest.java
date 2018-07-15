@@ -123,8 +123,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	private boolean wasActive = false;
 	private AEColor paintedColor = AEColor.TRANSPARENT;
 	private boolean isCached = false;
-	private MEMonitorHandler<IAEItemStack> itemCell;
-	private MEMonitorHandler<IAEFluidStack> fluidCell;
+	private ChestMonitorHandler<IAEItemStack> itemCell;
+	private ChestMonitorHandler<IAEFluidStack> fluidCell;
 	private Accessor accessor;
 	private IFluidHandler fluidHandler;
 
@@ -282,7 +282,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		return null;
 	}
 
-	private <T extends IAEStack<T>> MEMonitorHandler<T> wrap( final IMEInventoryHandler<T> h )
+	private <T extends IAEStack<T>> ChestMonitorHandler<T> wrap( final IMEInventoryHandler<T> h )
 	{
 		if( h == null )
 		{
@@ -292,7 +292,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		final MEInventoryHandler<T> ih = new MEInventoryHandler<T>( h, h.getChannel() );
 		ih.setPriority( this.priority );
 
-		final MEMonitorHandler<T> g = new ChestMonitorHandler<T>( ih );
+		final ChestMonitorHandler<T> g = new ChestMonitorHandler<T>( ih );
 		g.addListener( new ChestNetNotifier<T>( h.getChannel() ), g );
 
 		return g;
@@ -775,7 +775,10 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	@Override
 	public void saveChanges( final ICellInventory<?> cellInventory )
 	{
-		cellInventory.persist();
+		if( cellInventory != null )
+		{
+			cellInventory.persist();
+		}
 		this.world.markChunkDirty( this.pos, this );
 	}
 
@@ -844,14 +847,14 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 			super( t );
 		}
 
-		private IMEInventoryHandler<T> getInternalHandler()
+		private ICellInventoryHandler<T> getInternalHandler()
 		{
 			final IMEInventoryHandler<T> h = this.getHandler();
 			if( h instanceof MEInventoryHandler )
 			{
-				return (IMEInventoryHandler<T>) ( (MEInventoryHandler<T>) h ).getInternal();
+				return (ICellInventoryHandler<T>) ( (MEInventoryHandler<T>) h ).getInternal();
 			}
-			return this.getHandler();
+			return (ICellInventoryHandler<T>) this.getHandler();
 		}
 
 		@Override

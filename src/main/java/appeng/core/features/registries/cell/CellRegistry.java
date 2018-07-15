@@ -28,11 +28,14 @@ import com.google.common.base.Verify;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.storage.ICellHandler;
+import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.ICellRegistry;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
+import appeng.me.storage.BasicCellInventory;
+import appeng.me.storage.BasicCellInventoryHandler;
 
 
 public class CellRegistry implements ICellRegistry
@@ -106,5 +109,16 @@ public class CellRegistry implements ICellRegistry
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public <T extends IAEStack<T>> ICellInventoryHandler<T> createBasicCellInventoryHandler( ItemStack is, ISaveProvider host, IStorageChannel<T> chan )
+	{
+		final ICellInventory<T> inv = BasicCellInventory.createInventory( is, host );
+		if( inv == null || inv.getChannel() != chan )
+		{
+			return null;
+		}
+		return new BasicCellInventoryHandler<>( inv, chan );
 	}
 }

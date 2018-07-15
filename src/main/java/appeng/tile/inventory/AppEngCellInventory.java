@@ -4,6 +4,7 @@ package appeng.tile.inventory;
 
 import net.minecraft.item.ItemStack;
 
+import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.IInternalItemHandler;
@@ -102,7 +103,11 @@ public class AppEngCellInventory implements IInternalItemHandler
 	{
 		if( this.handlerForSlot[slot] != null )
 		{
-			this.handlerForSlot[slot].getCellInv().persist();
+			final ICellInventory ci = this.handlerForSlot[slot].getCellInv();
+			if( ci != null )
+			{
+				ci.persist();
+			}
 		}
 	}
 
@@ -110,7 +115,9 @@ public class AppEngCellInventory implements IInternalItemHandler
 	{
 		if( this.handlerForSlot[slot] != null )
 		{
-			if( this.handlerForSlot[slot].getCellInv().getItemStack() != this.inv.getStackInSlot( slot ) )
+			final ICellInventory ci = this.handlerForSlot[slot].getCellInv();
+
+			if( ci == null || ci.getItemStack() != this.inv.getStackInSlot( slot ) )
 			{
 				this.handlerForSlot[slot] = null;
 			}

@@ -56,7 +56,7 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 
 	public static ICellInventoryHandler getCell( final ItemStack o )
 	{
-		return new ItemCellInventoryHandler( new CreativeCellInventory( o ) );
+		return new BasicCellInventoryHandler( new CreativeCellInventory( o ), AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 	}
 
 	@Override

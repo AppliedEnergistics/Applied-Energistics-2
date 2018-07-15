@@ -33,12 +33,12 @@ import appeng.util.InventoryAdaptor;
 public final class BasicItemStorageCell extends AbstractStorageCell<IAEItemStack>
 {
 
-
 	protected final int perType;
 	protected final double idleDrain;
+
 	public BasicItemStorageCell( final MaterialType whichCell, final int kilobytes )
 	{
-		super(whichCell, kilobytes);
+		super( whichCell, kilobytes );
 		switch( whichCell )
 		{
 			case CELL1K_PART:
@@ -85,7 +85,8 @@ public final class BasicItemStorageCell extends AbstractStorageCell<IAEItemStack
 	@Override
 	protected void dropEmptyStorageCellCase( final InventoryAdaptor ia, final EntityPlayer player )
 	{
-		AEApi.instance().definitions().materials().emptyStorageCell().maybeStack( 1 ).ifPresent( is -> {
+		AEApi.instance().definitions().materials().emptyStorageCell().maybeStack( 1 ).ifPresent( is ->
+		{
 			final ItemStack extraA = ia.addItems( is );
 			if( !extraA.isEmpty() )
 			{

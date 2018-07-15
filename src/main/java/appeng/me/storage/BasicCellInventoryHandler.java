@@ -43,9 +43,9 @@ import appeng.util.prioritylist.PrecisePriorityList;
  * @version rv6 - 2018-01-23
  * @since rv6 2018-01-23
  */
-public abstract class AbstractCellInventoryHandler<T extends IAEStack<T>> extends MEInventoryHandler<T> implements ICellInventoryHandler<T>
+public class BasicCellInventoryHandler<T extends IAEStack<T>> extends MEInventoryHandler<T> implements ICellInventoryHandler<T>
 {
-	public AbstractCellInventoryHandler( final IMEInventory c, final IStorageChannel<T> channel )
+	public BasicCellInventoryHandler( final IMEInventory c, final IStorageChannel<T> channel )
 	{
 		super( c, channel );
 
@@ -88,7 +88,11 @@ public abstract class AbstractCellInventoryHandler<T extends IAEStack<T>> extend
 				final ItemStack is = config.getStackInSlot( x );
 				if( !is.isEmpty() )
 				{
-					priorityList.add( createConfigStackFromItem( is ) );
+					final T configItem = channel.createStack( is );
+					if( configItem != null )
+					{
+						priorityList.add( configItem );
+					}
 				}
 			}
 
@@ -107,8 +111,6 @@ public abstract class AbstractCellInventoryHandler<T extends IAEStack<T>> extend
 			}
 		}
 	}
-
-	protected abstract T createConfigStackFromItem( ItemStack is );
 
 	@Override
 	public ICellInventory getCellInv()
@@ -144,17 +146,5 @@ public abstract class AbstractCellInventoryHandler<T extends IAEStack<T>> extend
 	NBTTagCompound openNbtData()
 	{
 		return Platform.openNbtData( this.getCellInv().getItemStack() );
-	}
-
-	public int getStatusForCell()
-	{
-		int val = this.getCellInv().getStatusForCell();
-
-		if( val == 1 && this.isPreformatted() )
-		{
-			val = 2;
-		}
-
-		return val;
 	}
 }

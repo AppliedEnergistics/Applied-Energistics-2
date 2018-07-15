@@ -89,5 +89,4 @@ public interface IStorageHelper
 	 * @return crafting link
 	 */
 	ICraftingLink loadCraftingLink( NBTTagCompound data, ICraftingRequester req );
-
 }

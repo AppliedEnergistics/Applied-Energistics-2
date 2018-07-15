@@ -27,7 +27,6 @@ import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.storage.ICellHandler;
 import appeng.api.storage.ICellInventoryHandler;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
@@ -66,13 +65,13 @@ public final class CreativeCellHandler implements ICellHandler
 	}
 
 	@Override
-	public int getStatusForCell( final ItemStack is, final IMEInventory handler )
+	public int getStatusForCell( final ItemStack is, final ICellInventoryHandler handler )
 	{
 		return 2;
 	}
 
 	@Override
-	public double cellIdleDrain( final ItemStack is, final IMEInventory handler )
+	public double cellIdleDrain( final ItemStack is, final ICellInventoryHandler handler )
 	{
 		return 0;
 	}

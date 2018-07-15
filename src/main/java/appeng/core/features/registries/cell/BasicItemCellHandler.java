@@ -26,9 +26,7 @@ import net.minecraft.tileentity.TileEntity;
 import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.storage.ICellHandler;
-import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
@@ -36,8 +34,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEPartLocation;
 import appeng.core.sync.GuiBridge;
-import appeng.me.storage.ItemCellInventory;
-import appeng.me.storage.ItemCellInventoryHandler;
+import appeng.me.storage.BasicCellInventory;
 import appeng.util.Platform;
 
 
@@ -47,18 +44,13 @@ public class BasicItemCellHandler implements ICellHandler
 	@Override
 	public boolean isCell( final ItemStack is )
 	{
-		return ItemCellInventory.isCell( is );
+		return BasicCellInventory.isCellOfType( is, AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 	}
 
 	@Override
 	public <T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory( final ItemStack is, final ISaveProvider container, final IStorageChannel<T> channel )
 	{
-		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
-		{
-			return (ICellInventoryHandler<T>) ItemCellInventory.getCell( is, container );
-		}
-
-		return null;
+		return AEApi.instance().registries().cell().createBasicCellInventoryHandler( is, container, channel );
 	}
 
 	@Override
@@ -68,23 +60,5 @@ public class BasicItemCellHandler implements ICellHandler
 		{
 			Platform.openGUI( player, (TileEntity) chest, AEPartLocation.fromFacing( chest.getUp() ), GuiBridge.GUI_ME );
 		}
-	}
-
-	@Override
-	public int getStatusForCell( final ItemStack is, final IMEInventory handler )
-	{
-		if( handler instanceof ItemCellInventoryHandler )
-		{
-			final ItemCellInventoryHandler ci = (ItemCellInventoryHandler) handler;
-			return ci.getStatusForCell();
-		}
-		return 0;
-	}
-
-	@Override
-	public double cellIdleDrain( final ItemStack is, final IMEInventory handler )
-	{
-		final ICellInventory inv = ( (ICellInventoryHandler) handler ).getCellInv();
-		return inv.getIdleDrain();
 	}
 }

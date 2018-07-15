@@ -32,6 +32,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
@@ -47,6 +48,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.crafting.CraftingLink;
+import appeng.fluids.items.FluidDummyItem;
 import appeng.fluids.util.AEFluidStack;
 import appeng.fluids.util.FluidList;
 import appeng.util.Platform;
@@ -127,6 +129,13 @@ public class ApiStorage implements IStorageHelper
 		}
 
 		@Override
+		public IAEItemStack createFromNBT( NBTTagCompound nbt )
+		{
+			Preconditions.checkNotNull( nbt );
+			return AEItemStack.fromNBT( nbt );
+		}
+
+		@Override
 		public IAEItemStack readFromPacket( ByteBuf input ) throws IOException
 		{
 			Preconditions.checkNotNull( input );
@@ -167,6 +176,12 @@ public class ApiStorage implements IStorageHelper
 		}
 
 		@Override
+		public int getUnitsPerByte()
+		{
+			return 8000;
+		}
+
+		@Override
 		public IItemList<IAEFluidStack> createList()
 		{
 			return new FluidList();
@@ -181,6 +196,18 @@ public class ApiStorage implements IStorageHelper
 			{
 				return AEFluidStack.fromFluidStack( (FluidStack) input );
 			}
+			if( input instanceof ItemStack )
+			{
+				final ItemStack is = (ItemStack) input;
+				if( is.getItem() instanceof FluidDummyItem )
+				{
+					return AEFluidStack.fromFluidStack( ( (FluidDummyItem) is.getItem() ).getFluidStack( is ) );
+				}
+				else
+				{
+					return AEFluidStack.fromFluidStack( FluidUtil.getFluidContained( is ) );
+				}
+			}
 
 			return null;
 		}
@@ -191,6 +218,13 @@ public class ApiStorage implements IStorageHelper
 			Preconditions.checkNotNull( input );
 
 			return AEFluidStack.fromPacket( input );
+		}
+
+		@Override
+		public IAEFluidStack createFromNBT( NBTTagCompound nbt )
+		{
+			Preconditions.checkNotNull( nbt );
+			return AEFluidStack.fromNBT( nbt );
 		}
 
 		@Override
