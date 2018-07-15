@@ -443,11 +443,14 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				.getCellInventory( stack, null,
 						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
-		final ICellInventory<IAEItemStack> cd = cdi.getCellInv();
-		if( cd != null )
+		if( cdi != null )
 		{
-			lines.add( cd.getUsedBytes() + " " + GuiText.Of.getLocal() + ' ' + cd.getTotalBytes() + ' ' + GuiText.BytesUsed.getLocal() );
-			lines.add( cd.getStoredItemTypes() + " " + GuiText.Of.getLocal() + ' ' + cd.getTotalItemTypes() + ' ' + GuiText.Types.getLocal() );
+			final ICellInventory<IAEItemStack> cd = cdi.getCellInv();
+			if( cd != null )
+			{
+				lines.add( cd.getUsedBytes() + " " + GuiText.Of.getLocal() + ' ' + cd.getTotalBytes() + ' ' + GuiText.BytesUsed.getLocal() );
+				lines.add( cd.getStoredItemTypes() + " " + GuiText.Of.getLocal() + ' ' + cd.getTotalItemTypes() + ' ' + GuiText.Types.getLocal() );
+			}
 		}
 	}
 
