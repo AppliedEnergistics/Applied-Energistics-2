@@ -347,6 +347,7 @@ gui.tooltips.appliedenergistics2.FilterModeKeep=重载上一个搜索过滤器.
 gui.tooltips.appliedenergistics2.FilterModeClear=在每次打开时清空.
 gui.tooltips.appliedenergistics2.ItemsStored=存储物品: %s
 gui.tooltips.appliedenergistics2.ItemsRequestable=可请求: %s
+gui.tooltips.appliedenergistics2.P2PFrequency=频率: %s
 
 // 单位
 gui.appliedenergistics2.units.appliedenergstics=AE
@@ -401,6 +402,7 @@ theoneprobe.appliedenergistics2.p2p_unlinked=未连接
 theoneprobe.appliedenergistics2.p2p_input_one_output=已连接(输入端)
 theoneprobe.appliedenergistics2.p2p_input_many_outputs=已连接(输入端)- %d 输出
 theoneprobe.appliedenergistics2.p2p_output=已连接(输出端)
+theoneprobe.appliedenergistics2.p2p_frequency=频率: %1$s
 theoneprobe.appliedenergistics2.stored_energy=%1$d / %2$d
 
 // 物品
