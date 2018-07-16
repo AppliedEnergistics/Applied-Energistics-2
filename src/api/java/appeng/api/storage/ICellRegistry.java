@@ -71,7 +71,7 @@ public interface ICellRegistry
 	boolean isCellHandled( ItemStack is );
 
 	/**
-	 * get the handler, for the requested channel.
+	 * get the handler, for the requested item.
 	 *
 	 * @param is to be checked item
 	 *
@@ -80,6 +80,13 @@ public interface ICellRegistry
 	@Nullable
 	ICellHandler getHandler( ItemStack is );
 
+	/**
+	 * get the handler, for the requested channel.
+	 *
+	 * @param channel requested channel
+	 *
+	 * @return the handler registered for this channel.
+	 */
 	@Nullable
 	<T extends IAEStack<T>> ICellGuiHandler getGuiHandler( IStorageChannel<T> channel );
 
