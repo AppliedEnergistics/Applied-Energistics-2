@@ -34,8 +34,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
-import appeng.api.storage.ICellHandler;
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
 import appeng.core.localization.PlayerMessages;
@@ -108,14 +106,7 @@ public class BlockChest extends AEBaseTileBlock
 			}
 			else
 			{
-				final ItemStack cell = tg.getCell();
-				if( !cell.isEmpty() )
-				{
-					final ICellHandler ch = AEApi.instance().registries().cell().getHandler( cell );
-
-					tg.openGui( p, ch, cell, side );
-				}
-				else
+				if( !tg.openGui( p, side ) )
 				{
 					p.sendMessage( PlayerMessages.ChestCannotReadStorageCell.get() );
 				}

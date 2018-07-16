@@ -68,6 +68,7 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.storage.ICellGuiHandler;
 import appeng.api.storage.ICellHandler;
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
@@ -719,14 +720,20 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 
 	}
 
-	public boolean openGui( final EntityPlayer p, final ICellHandler ch, final ItemStack cell, final EnumFacing side )
+	public boolean openGui( final EntityPlayer p, final EnumFacing side )
 	{
+		final ICellHandler ch = AEApi.instance().registries().cell().getHandler( this.getCell() );
+
 		try
 		{
 			final IMEInventoryHandler<IAEItemStack> invHandler = this.getHandler( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 			if( ch != null && invHandler != null )
 			{
-				ch.openChestGui( p, this, ch, invHandler, cell, AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+				final ICellGuiHandler chg = AEApi.instance()
+						.registries()
+						.cell()
+						.getGuiHandler( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+				chg.openChestGui( p, this, ch, invHandler, this.getCell(), AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 				return true;
 			}
 		}
@@ -740,7 +747,11 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 			final IMEInventoryHandler<IAEFluidStack> invHandler = this.getHandler( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
 			if( ch != null && invHandler != null )
 			{
-				ch.openChestGui( p, this, ch, invHandler, cell, AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
+				final ICellGuiHandler chg = AEApi.instance()
+						.registries()
+						.cell()
+						.getGuiHandler( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
+				chg.openChestGui( p, this, ch, invHandler, this.getCell(), AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
 				return true;
 			}
 		}

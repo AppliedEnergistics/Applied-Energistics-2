@@ -91,7 +91,8 @@ import appeng.bootstrap.components.IRecipeRegistrationComponent;
 import appeng.capabilities.Capabilities;
 import appeng.core.features.AEFeature;
 import appeng.core.features.registries.P2PTunnelRegistry;
-import appeng.core.features.registries.cell.BasicItemCellHandler;
+import appeng.core.features.registries.cell.BasicCellHandler;
+import appeng.core.features.registries.cell.BasicItemCellGuiHandler;
 import appeng.core.features.registries.cell.CreativeCellHandler;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
@@ -99,7 +100,7 @@ import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.PartItemPredicate;
 import appeng.core.stats.Stats;
 import appeng.core.worlddata.SpatialDimensionManager;
-import appeng.fluids.registries.BasicFluidCellHandler;
+import appeng.fluids.registries.BasicFluidCellGuiHandler;
 import appeng.hooks.TickHandler;
 import appeng.items.materials.ItemMaterial;
 import appeng.items.parts.ItemFacade;
@@ -236,9 +237,10 @@ final class Registration
 		gcr.registerGridCache( ISecurityGrid.class, SecurityCache.class );
 		gcr.registerGridCache( ICraftingGrid.class, CraftingGridCache.class );
 
-		registries.cell().addCellHandler( new BasicItemCellHandler() );
+		registries.cell().addCellHandler( new BasicCellHandler() );
 		registries.cell().addCellHandler( new CreativeCellHandler() );
-		registries.cell().addCellHandler( new BasicFluidCellHandler() );
+		registries.cell().addCellGuiHandler( new BasicItemCellGuiHandler() );
+		registries.cell().addCellGuiHandler( new BasicFluidCellGuiHandler() );
 
 		api.definitions().materials().matterBall().maybeStack( 1 ).ifPresent( ammoStack ->
 		{
@@ -286,7 +288,7 @@ final class Registration
 		final Side side = FMLCommonHandler.instance().getEffectiveSide();
 		definitions.getRegistry().getBootstrapComponents( IItemRegistrationComponent.class ).forEachRemaining( b -> b.itemRegistration( side, registry ) );
 		// register oredicts
-		definitions.getRegistry().getBootstrapComponents( IOreDictComponent.class ).forEachRemaining( b -> b.oreRegistration( side ) );		
+		definitions.getRegistry().getBootstrapComponents( IOreDictComponent.class ).forEachRemaining( b -> b.oreRegistration( side ) );
 		ItemMaterial.instance.registerOredicts();
 		ItemPart.instance.registerOreDicts();
 	}
@@ -320,15 +322,15 @@ final class Registration
 		final AERecipeLoader ldr = new AERecipeLoader();
 		ldr.loadProcessingRecipes();
 	}
-	
+
 	@SubscribeEvent
-	public void registerEntities( RegistryEvent.Register<EntityEntry> event)
+	public void registerEntities( RegistryEvent.Register<EntityEntry> event )
 	{
 		final IForgeRegistry<EntityEntry> registry = event.getRegistry();
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		definitions.getRegistry().getBootstrapComponents( IEntityRegistrationComponent.class ).forEachRemaining( b -> b.entityRegistration( registry ) );
 	}
-	
+
 	@SubscribeEvent
 	public void attachSpatialDimensionManager( AttachCapabilitiesEvent<World> event )
 	{

@@ -16,49 +16,39 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.fluids.registries;
+package appeng.core.features.registries.cell;
 
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 
-import appeng.api.AEApi;
-import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.storage.ICellHandler;
+import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
-import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.util.AEPartLocation;
-import appeng.core.sync.GuiBridge;
 import appeng.me.storage.BasicCellInventory;
-import appeng.util.Platform;
+import appeng.me.storage.BasicCellInventoryHandler;
 
 
-public class BasicFluidCellHandler implements ICellHandler
+public class BasicCellHandler implements ICellHandler
 {
 
 	@Override
 	public boolean isCell( final ItemStack is )
 	{
-		return BasicCellInventory.isCellOfType( is, AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
+		return BasicCellInventory.isCell( is );
 	}
 
 	@Override
 	public <T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory( final ItemStack is, final ISaveProvider container, final IStorageChannel<T> channel )
 	{
-		return AEApi.instance().registries().cell().createBasicCellInventoryHandler( is, container, channel );
+		final ICellInventory<T> inv = BasicCellInventory.createInventory( is, container );
+		if( inv == null || inv.getChannel() != channel )
+		{
+			return null;
+		}
+		return new BasicCellInventoryHandler<>( inv, channel );
 	}
 
-	@Override
-	public void openChestGui( final EntityPlayer player, final IChestOrDrive chest, final ICellHandler cellHandler, final IMEInventoryHandler inv, final ItemStack is, final IStorageChannel chan )
-	{
-		if( chan == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
-		{
-			Platform.openGUI( player, (TileEntity) chest, AEPartLocation.fromFacing( chest.getUp() ), GuiBridge.GUI_FLUID_TERMINAL );
-		}
-	}
 }

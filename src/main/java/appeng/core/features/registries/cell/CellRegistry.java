@@ -27,25 +27,25 @@ import com.google.common.base.Verify;
 
 import net.minecraft.item.ItemStack;
 
+import appeng.api.storage.ICellGuiHandler;
 import appeng.api.storage.ICellHandler;
-import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.ICellRegistry;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
-import appeng.me.storage.BasicCellInventory;
-import appeng.me.storage.BasicCellInventoryHandler;
 
 
 public class CellRegistry implements ICellRegistry
 {
 
 	private final List<ICellHandler> handlers;
+	private final List<ICellGuiHandler> guiHandlers;
 
 	public CellRegistry()
 	{
 		this.handlers = new ArrayList<>();
+		this.guiHandlers = new ArrayList<>();
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class CellRegistry implements ICellRegistry
 		this.handlers.add( handler );
 
 		// Verify that the first entry is always our own handler.
-		Verify.verify( this.handlers.get( 0 ) instanceof BasicItemCellHandler );
+		Verify.verify( this.handlers.get( 0 ) instanceof BasicCellHandler );
 	}
 
 	@Override
@@ -112,13 +112,21 @@ public class CellRegistry implements ICellRegistry
 	}
 
 	@Override
-	public <T extends IAEStack<T>> ICellInventoryHandler<T> createBasicCellInventoryHandler( ItemStack is, ISaveProvider host, IStorageChannel<T> chan )
+	public void addCellGuiHandler( ICellGuiHandler handler )
 	{
-		final ICellInventory<T> inv = BasicCellInventory.createInventory( is, host );
-		if( inv == null || inv.getChannel() != chan )
+		this.guiHandlers.add( handler );
+	}
+
+	@Override
+	public <T extends IAEStack<T>> ICellGuiHandler getGuiHandler( IStorageChannel<T> channel )
+	{
+		for( final ICellGuiHandler ch : this.guiHandlers )
 		{
-			return null;
+			if( ch.isHandlerFor( channel ) )
+			{
+				return ch;
+			}
 		}
-		return new BasicCellInventoryHandler<>( inv, chan );
+		return null;
 	}
 }

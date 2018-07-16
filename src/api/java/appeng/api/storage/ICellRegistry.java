@@ -31,7 +31,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 
 import appeng.api.IAppEngApi;
-import appeng.api.implementations.items.IStorageCell;
 import appeng.api.storage.data.IAEStack;
 
 
@@ -55,6 +54,13 @@ public interface ICellRegistry
 	void addCellHandler( @Nonnull ICellHandler handler );
 
 	/**
+	 * Register a new handler
+	 * 
+	 * @param handler cell gui handler
+	 */
+	void addCellGuiHandler( @Nonnull ICellGuiHandler handler );
+
+	/**
 	 * return true, if you can get a InventoryHandler for the item passed.
 	 *
 	 * @param is to be checked item
@@ -65,7 +71,7 @@ public interface ICellRegistry
 	boolean isCellHandled( ItemStack is );
 
 	/**
-	 * get the handler, for the requested type.
+	 * get the handler, for the requested channel.
 	 *
 	 * @param is to be checked item
 	 *
@@ -73,6 +79,9 @@ public interface ICellRegistry
 	 */
 	@Nullable
 	ICellHandler getHandler( ItemStack is );
+
+	@Nullable
+	<T extends IAEStack<T>> ICellGuiHandler getGuiHandler( IStorageChannel<T> channel );
 
 	/**
 	 * returns an ICellInventoryHandler for the provided item by querying all registered handlers.
@@ -85,20 +94,4 @@ public interface ICellRegistry
 	 */
 	@Nullable
 	<T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory( ItemStack is, ISaveProvider host, IStorageChannel<T> chan );
-
-	/**
-	 * Helper method that returns a basic implementation of a {@link ICellInventoryHandler} for the provided item. The
-	 * item has implement
-	 * {@link IStorageCell}.
-	 * You can use this in {@link ICellHandler} implementations.
-	 *
-	 * @param is item with inventory handler
-	 * @param host can be null. If provided, the host is responsible for persisting the cell content.
-	 * @param chan the storage channel to request the handler for.
-	 *
-	 * @return new ICellInventoryHandler, or null if there was an error.
-	 */
-	@Nullable
-	<T extends IAEStack<T>> ICellInventoryHandler<T> createBasicCellInventoryHandler( ItemStack is, ISaveProvider host, IStorageChannel<T> chan );
-
 }

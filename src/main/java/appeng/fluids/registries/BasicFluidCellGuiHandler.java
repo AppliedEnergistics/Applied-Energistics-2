@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.core.features.registries.cell;
+package appeng.fluids.registries;
 
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,40 +25,29 @@ import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
+import appeng.api.storage.ICellGuiHandler;
 import appeng.api.storage.ICellHandler;
-import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEPartLocation;
 import appeng.core.sync.GuiBridge;
-import appeng.me.storage.BasicCellInventory;
 import appeng.util.Platform;
 
 
-public class BasicItemCellHandler implements ICellHandler
+public class BasicFluidCellGuiHandler implements ICellGuiHandler
 {
 
 	@Override
-	public boolean isCell( final ItemStack is )
+	public <T extends IAEStack<T>> boolean isHandlerFor( final IStorageChannel<T> channel )
 	{
-		return BasicCellInventory.isCellOfType( is, AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
-	}
-
-	@Override
-	public <T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory( final ItemStack is, final ISaveProvider container, final IStorageChannel<T> channel )
-	{
-		return AEApi.instance().registries().cell().createBasicCellInventoryHandler( is, container, channel );
+		return channel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
 	}
 
 	@Override
 	public void openChestGui( final EntityPlayer player, final IChestOrDrive chest, final ICellHandler cellHandler, final IMEInventoryHandler inv, final ItemStack is, final IStorageChannel chan )
 	{
-		if( chan == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
-		{
-			Platform.openGUI( player, (TileEntity) chest, AEPartLocation.fromFacing( chest.getUp() ), GuiBridge.GUI_ME );
-		}
+		Platform.openGUI( player, (TileEntity) chest, AEPartLocation.fromFacing( chest.getUp() ), GuiBridge.GUI_FLUID_TERMINAL );
 	}
 }
