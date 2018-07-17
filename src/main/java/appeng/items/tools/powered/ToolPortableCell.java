@@ -40,7 +40,6 @@ import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.implementations.items.IStorageCell;
-import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -89,15 +88,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell<
 				.getCellInventory( stack, null,
 						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
-		if( cdi != null )
-		{
-			final ICellInventory<IAEItemStack> cd = cdi.getCellInv();
-			if( cd != null )
-			{
-				lines.add( cd.getUsedBytes() + " " + GuiText.Of.getLocal() + ' ' + cd.getTotalBytes() + ' ' + GuiText.BytesUsed.getLocal() );
-				lines.add( cd.getStoredItemTypes() + " " + GuiText.Of.getLocal() + ' ' + cd.getTotalItemTypes() + ' ' + GuiText.Types.getLocal() );
-			}
-		}
+		AEApi.instance().registries().cell().addCellInformation( cdi, lines );
 	}
 
 	@Override

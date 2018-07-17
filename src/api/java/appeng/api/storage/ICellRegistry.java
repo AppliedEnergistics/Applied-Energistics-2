@@ -24,6 +24,8 @@
 package appeng.api.storage;
 
 
+import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -101,4 +103,12 @@ public interface ICellRegistry
 	 */
 	@Nullable
 	<T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory( ItemStack is, ISaveProvider host, IStorageChannel<T> chan );
+
+	/**
+	 * Add cell information to the provided list. Used for tooltip content.
+	 * 
+	 * @param handler Cell handler.
+	 * @param lines List of lines to add to.
+	 */
+	<T extends IAEStack<T>> void addCellInformation( ICellInventoryHandler<T> handler, List<String> lines );
 }

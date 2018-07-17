@@ -38,13 +38,10 @@ import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
-import appeng.api.config.IncludeExclude;
 import appeng.api.exceptions.MissingDefinitionException;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.implementations.items.IUpgradeModule;
-import appeng.api.storage.ICellInventory;
-import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -81,34 +78,10 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 	@Override
 	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
-		final IMEInventoryHandler<?> inventory = AEApi.instance().registries().cell().getCellInventory( stack, null, getChannel() );
-
-		if( inventory instanceof ICellInventoryHandler )
-		{
-			final ICellInventoryHandler handler = (ICellInventoryHandler) inventory;
-			final ICellInventory cellInventory = handler.getCellInv();
-
-			if( cellInventory != null )
-			{
-				lines.add( cellInventory.getUsedBytes() + " " + GuiText.Of.getLocal() + ' ' + cellInventory.getTotalBytes() + ' ' + GuiText.BytesUsed.getLocal() );
-
-				lines.add( cellInventory.getStoredItemTypes() + " " + GuiText.Of.getLocal() + ' ' + cellInventory.getTotalItemTypes() + ' ' + GuiText.Types.getLocal() );
-
-				if( handler.isPreformatted() )
-				{
-					final String list = ( handler.getIncludeExcludeMode() == IncludeExclude.WHITELIST ? GuiText.Included : GuiText.Excluded ).getLocal();
-
-					if( handler.isFuzzy() )
-					{
-						lines.add( GuiText.Partitioned.getLocal() + " - " + list + ' ' + GuiText.Fuzzy.getLocal() );
-					}
-					else
-					{
-						lines.add( GuiText.Partitioned.getLocal() + " - " + list + ' ' + GuiText.Precise.getLocal() );
-					}
-				}
-			}
-		}
+		AEApi.instance()
+				.registries()
+				.cell()
+				.addCellInformation( AEApi.instance().registries().cell().getCellInventory( stack, null, this.getChannel() ), lines );
 	}
 
 	@Override
@@ -256,7 +229,12 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 	@Override
 	public ItemStack getContainerItem( final ItemStack itemStack )
 	{
-		return AEApi.instance().definitions().materials().emptyStorageCell().maybeStack( 1 ).orElseThrow( () -> new MissingDefinitionException( "Tried to use empty storage cells while basic storage cells are defined." ) );
+		return AEApi.instance()
+				.definitions()
+				.materials()
+				.emptyStorageCell()
+				.maybeStack( 1 )
+				.orElseThrow( () -> new MissingDefinitionException( "Tried to use empty storage cells while basic storage cells are defined." ) );
 	}
 
 	@Override
