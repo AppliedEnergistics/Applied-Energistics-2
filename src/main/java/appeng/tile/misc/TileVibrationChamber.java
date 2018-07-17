@@ -244,8 +244,8 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 			{
 				this.setBurnTime( this.getBurnTime() + newBurnTime );
 				this.setMaxBurnTime( this.getBurnTime() );
-				is.grow( -1 );
-				if( is.getCount() <= 0 )
+
+				if( is.getCount() == 1 )
 				{
 					ItemStack container = ItemStack.EMPTY;
 
@@ -258,10 +258,8 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 				}
 				else
 				{
-					this.inv.setStackInSlot( 0, is );
+					this.inv.extractItem( 0, 1, false );
 				}
-
-				this.saveChanges();
 			}
 		}
 
