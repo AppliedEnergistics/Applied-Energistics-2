@@ -38,11 +38,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.items.IItemHandler;
 
@@ -61,7 +61,6 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.ICellInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -298,17 +297,8 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 			else
 			{
 				worked = true;
-				final Chunk c = w.getChunkFromBlockCoords( tePos );
 
-				final int sum = 0;
-
-				// TODO: LIMIT OTHER THIGNS!
-				/*
-				 * for( List Z : c.entityLists )
-				 * {
-				 * sum += Z.size();
-				 * }
-				 */
+				final int sum = this.countEntitesAround( w, tePos );
 
 				if( sum < AEConfig.instance().getFormationPlaneEntityLimit() )
 				{
@@ -392,5 +382,13 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 	public GuiBridge getGuiBridge()
 	{
 		return GuiBridge.GUI_FORMATION_PLANE;
+	}
+
+	private int countEntitesAround( World world, BlockPos pos )
+	{
+		final AxisAlignedBB t = new AxisAlignedBB( pos ).grow( 8 );
+		final List<Entity> list = world.getEntitiesWithinAABB( Entity.class, t );
+
+		return list.size();
 	}
 }
