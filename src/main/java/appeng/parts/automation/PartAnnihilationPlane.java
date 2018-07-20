@@ -455,7 +455,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 						if( modulate )
 						{
 							energy.extractAEPower( requiredPower, Actionable.MODULATE, PowerMultiplier.CONFIG );
-							this.breakBlockAndStoreItems( w, pos, items );
+							this.breakBlockAndStoreItems( w, pos );
 							AppEng.proxy.sendToAllNearExcept( null, pos.getX(), pos.getY(), pos.getZ(), 64, w,
 									new PacketTransitionEffect( pos.getX(), pos.getY(), pos.getZ(), this.getSide(), true ) );
 						}
@@ -573,9 +573,9 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		return canStore;
 	}
 
-	private void breakBlockAndStoreItems( final WorldServer w, final BlockPos pos, final List<ItemStack> items )
+	private void breakBlockAndStoreItems( final WorldServer w, final BlockPos pos )
 	{
-		w.setBlockToAir( pos );
+		w.destroyBlock( pos, true );
 
 		final AxisAlignedBB box = new AxisAlignedBB( pos.getX() - 0.2, pos.getY() - 0.2, pos.getZ() - 0.2, pos.getX() + 1.2, pos.getY() + 1.2, pos
 				.getZ() + 1.2 );
@@ -586,12 +586,6 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 				final EntityItem entityItem = (EntityItem) ei;
 				this.storeEntityItem( entityItem );
 			}
-		}
-
-		for( final ItemStack snaggedItem : items )
-		{
-			final IAEItemStack overflow = this.storeItemStack( snaggedItem );
-			this.spawnOverflow( overflow );
 		}
 	}
 
