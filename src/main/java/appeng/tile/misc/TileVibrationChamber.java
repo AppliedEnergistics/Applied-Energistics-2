@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
@@ -236,7 +237,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 
 	private void eatFuel()
 	{
-		final ItemStack is = this.inv.getStackInSlot( 0 );
+		final ItemStack is = this.inv.getStackInSlot( 0 ).copy();
 		if( !is.isEmpty() )
 		{
 			final int newBurnTime = TileEntityFurnace.getItemBurnTime( is );
@@ -245,20 +246,16 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 				this.setBurnTime( this.getBurnTime() + newBurnTime );
 				this.setMaxBurnTime( this.getBurnTime() );
 
-				if( is.getCount() == 1 )
+				final Item fuelItem = is.getItem();
+				is.shrink( 1 );
+
+				if( is.isEmpty() )
 				{
-					ItemStack container = ItemStack.EMPTY;
-
-					if( is.getItem() != Items.AIR && is.getItem().hasContainerItem( is ) )
-					{
-						container = is.getItem().getContainerItem( is );
-					}
-
-					this.inv.setStackInSlot( 0, container );
+					this.inv.setStackInSlot( 0, fuelItem.getContainerItem( is ) );
 				}
 				else
 				{
-					this.inv.extractItem( 0, 1, false );
+					this.inv.setStackInSlot( 0, is );
 				}
 			}
 		}
