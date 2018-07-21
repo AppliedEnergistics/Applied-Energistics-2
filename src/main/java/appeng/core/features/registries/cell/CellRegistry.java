@@ -131,7 +131,7 @@ public class CellRegistry implements ICellRegistry
 					return ch;
 				}
 
-				if( fallBack != null )
+				if( fallBack == null )
 				{
 					fallBack = ch;
 				}

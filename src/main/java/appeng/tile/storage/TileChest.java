@@ -720,7 +720,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 
 	}
 
-	public boolean openGui( final EntityPlayer p, final ItemStack is )
+	public boolean openGui( final EntityPlayer p )
 	{
 		final ICellHandler ch = AEApi.instance().registries().cell().getHandler( this.getCell() );
 
@@ -732,9 +732,12 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 				final ICellGuiHandler chg = AEApi.instance()
 						.registries()
 						.cell()
-						.getGuiHandler( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), is );
-				chg.openChestGui( p, this, ch, invHandler, this.getCell(), AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
-				return true;
+						.getGuiHandler( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), this.getCell() );
+				if( chg != null )
+				{
+					chg.openChestGui( p, this, ch, invHandler, this.getCell(), AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+					return true;
+				}
 			}
 		}
 		catch( final ChestNoHandler e )
@@ -750,9 +753,12 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 				final ICellGuiHandler chg = AEApi.instance()
 						.registries()
 						.cell()
-						.getGuiHandler( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ), is );
-				chg.openChestGui( p, this, ch, invHandler, this.getCell(), AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
-				return true;
+						.getGuiHandler( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ), this.getCell() );
+				if( chg != null )
+				{
+					chg.openChestGui( p, this, ch, invHandler, this.getCell(), AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
+					return true;
+				}
 			}
 		}
 		catch( final ChestNoHandler e )
