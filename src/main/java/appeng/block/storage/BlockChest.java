@@ -106,7 +106,7 @@ public class BlockChest extends AEBaseTileBlock
 			}
 			else
 			{
-				if( !tg.openGui( p, side ) )
+				if( !tg.openGui( p, heldItem ) )
 				{
 					p.sendMessage( PlayerMessages.ChestCannotReadStorageCell.get() );
 				}

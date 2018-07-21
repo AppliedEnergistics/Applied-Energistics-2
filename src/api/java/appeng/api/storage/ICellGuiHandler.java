@@ -12,13 +12,23 @@ import appeng.api.storage.data.IAEStack;
 public interface ICellGuiHandler
 {
 	/**
-	 * return true if the provided storage channel is handled by your cell gui handler.
-	 *
-	 * @param channel the storage channel
-	 *
-	 * @return return true, if this handler provides a GUI for this channel.
+	 * Return true if this handler can show GUI for this channel.
+	 * 
+	 * @param channel Storage channel
+	 * @return True if handled, else false.
 	 */
 	<T extends IAEStack<T>> boolean isHandlerFor( IStorageChannel<T> channel );
+
+	/**
+	 * Return true to prioritize this handler for the provided {@link ItemStack}.
+	 * 
+	 * @param is Cell ItemStack
+	 * @return True, if specialized else false.
+	 */
+	default boolean isSpecializedFor( ItemStack is )
+	{
+		return false;
+	}
 
 	/**
 	 * Called when the storage cell is placed in an ME Chest and the user tries to open the terminal side, if your item

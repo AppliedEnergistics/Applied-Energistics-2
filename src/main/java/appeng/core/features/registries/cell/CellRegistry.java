@@ -118,15 +118,25 @@ public class CellRegistry implements ICellRegistry
 	}
 
 	@Override
-	public <T extends IAEStack<T>> ICellGuiHandler getGuiHandler( IStorageChannel<T> channel )
+	public <T extends IAEStack<T>> ICellGuiHandler getGuiHandler( final IStorageChannel<T> channel, final ItemStack is )
 	{
+		ICellGuiHandler fallBack = null;
+
 		for( final ICellGuiHandler ch : this.guiHandlers )
 		{
 			if( ch.isHandlerFor( channel ) )
 			{
-				return ch;
+				if( ch.isSpecializedFor( is ) )
+				{
+					return ch;
+				}
+
+				if( fallBack != null )
+				{
+					fallBack = ch;
+				}
 			}
 		}
-		return null;
+		return fallBack;
 	}
 }

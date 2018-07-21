@@ -84,11 +84,11 @@ public interface ICellRegistry
 	 * get the handler, for the requested channel.
 	 *
 	 * @param channel requested channel
-	 *
+	 * @param Cell ItemStack
 	 * @return the handler registered for this channel.
 	 */
 	@Nullable
-	<T extends IAEStack<T>> ICellGuiHandler getGuiHandler( IStorageChannel<T> channel );
+	<T extends IAEStack<T>> ICellGuiHandler getGuiHandler( IStorageChannel<T> channel, ItemStack is );
 
 	/**
 	 * returns an ICellInventoryHandler for the provided item by querying all registered handlers.
