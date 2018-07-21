@@ -32,6 +32,7 @@ import java.util.WeakHashMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
@@ -1172,6 +1173,12 @@ public class Platform
 
 	public static <T extends IAEStack<T>> T poweredExtraction( final IEnergySource energy, final IMEInventory<T> cell, final T request, final IActionSource src, final Actionable mode )
 	{
+		Preconditions.checkNotNull( energy );
+		Preconditions.checkNotNull( cell );
+		Preconditions.checkNotNull( request );
+		Preconditions.checkNotNull( src );
+		Preconditions.checkNotNull( mode );
+
 		final T possible = cell.extractItems( request.copy(), Actionable.SIMULATE, src );
 
 		long retrieved = 0;
@@ -1214,6 +1221,12 @@ public class Platform
 
 	public static <T extends IAEStack<T>> T poweredInsert( final IEnergySource energy, final IMEInventory<T> cell, final T input, final IActionSource src, final Actionable mode )
 	{
+		Preconditions.checkNotNull( energy );
+		Preconditions.checkNotNull( cell );
+		Preconditions.checkNotNull( input );
+		Preconditions.checkNotNull( src );
+		Preconditions.checkNotNull( mode );
+
 		final T possible = cell.injectItems( input.copy(), Actionable.SIMULATE, src );
 
 		long stored = input.getStackSize();

@@ -30,7 +30,7 @@ import appeng.api.networking.IGridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IPartHelper;
 import appeng.api.storage.IStorageHelper;
-import appeng.api.util.IUtilApi;
+import appeng.api.util.IClientHelper;
 
 
 @AEInjectable
@@ -62,8 +62,8 @@ public interface IAppEngApi
 	IDefinitions definitions();
 
 	/**
-	 * @return Useful utility methods
+	 * @return Utility methods primarily useful for client side stuff
 	 */
-	IUtilApi util();
+	IClientHelper client();
 
 }

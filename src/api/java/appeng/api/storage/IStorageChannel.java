@@ -35,8 +35,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 
-import appeng.api.networking.energy.IEnergySource;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
@@ -110,31 +108,4 @@ public interface IStorageChannel<T extends IAEStack<T>>
 	 */
 	@Nullable
 	T createFromNBT( @Nonnull NBTTagCompound nbt );
-
-	/**
-	 * use energy from energy, to remove request items from cell, at the request of src.
-	 *
-	 * @param energy to be drained energy source
-	 * @param cell cell of requested items
-	 * @param request requested items
-	 * @param src action source
-	 *
-	 * @return items that successfully extracted.
-	 */
-	@Nullable
-	T poweredExtraction( @Nonnull IEnergySource energy, @Nonnull IMEInventory<T> cell, @Nonnull T request, @Nonnull IActionSource src );
-
-	/**
-	 * use energy from energy, to inject input items into cell, at the request of src
-	 *
-	 * @param energy to be added energy source
-	 * @param cell injected cell
-	 * @param input to be injected items
-	 * @param src action source
-	 *
-	 * @return items that failed to insert.
-	 */
-	@Nullable
-	T poweredInsert( @Nonnull IEnergySource energy, @Nonnull IMEInventory<T> cell, @Nonnull T input, @Nonnull IActionSource src );
-
 }

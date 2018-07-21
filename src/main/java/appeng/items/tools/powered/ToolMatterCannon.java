@@ -98,7 +98,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 				.getCellInventory( stack, null,
 						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
-		AEApi.instance().util().addCellInformation( cdi, lines );
+		AEApi.instance().client().addCellInformation( cdi, lines );
 	}
 
 	@Override

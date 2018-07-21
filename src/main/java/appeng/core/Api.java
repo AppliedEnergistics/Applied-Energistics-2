@@ -23,11 +23,11 @@ import appeng.api.IAppEngApi;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.networking.IGridHelper;
 import appeng.api.storage.IStorageHelper;
-import appeng.api.util.IUtilApi;
+import appeng.api.util.IClientHelper;
+import appeng.core.api.ApiClientHelper;
 import appeng.core.api.ApiGrid;
 import appeng.core.api.ApiPart;
 import appeng.core.api.ApiStorage;
-import appeng.core.api.ApiUtil;
 import appeng.core.features.registries.PartModels;
 import appeng.core.features.registries.RegistryContainer;
 
@@ -43,7 +43,7 @@ public final class Api implements IAppEngApi
 	private final IStorageHelper storageHelper;
 	private final IGridHelper networkHelper;
 	private final ApiDefinitions definitions;
-	private final IUtilApi util;
+	private final IClientHelper client;
 
 	private Api()
 	{
@@ -52,7 +52,7 @@ public final class Api implements IAppEngApi
 		this.registryContainer = new RegistryContainer();
 		this.partHelper = new ApiPart();
 		this.definitions = new ApiDefinitions( (PartModels) this.registryContainer.partModels() );
-		this.util = new ApiUtil();
+		this.client = new ApiClientHelper();
 	}
 
 	public PartModels getPartModels()
@@ -91,8 +91,8 @@ public final class Api implements IAppEngApi
 	}
 
 	@Override
-	public IUtilApi util()
+	public IClientHelper client()
 	{
-		return this.util;
+		return this.client;
 	}
 }

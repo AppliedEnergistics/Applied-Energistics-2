@@ -4,20 +4,15 @@ package appeng.core.api;
 
 import java.util.List;
 
-import appeng.api.config.Actionable;
 import appeng.api.config.IncludeExclude;
-import appeng.api.networking.energy.IEnergySource;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.util.IUtilApi;
+import appeng.api.util.IClientHelper;
 import appeng.core.localization.GuiText;
-import appeng.util.Platform;
 
 
-public class ApiUtil implements IUtilApi
+public class ApiClientHelper implements IClientHelper
 {
 	@Override
 	public <T extends IAEStack<T>> void addCellInformation( ICellInventoryHandler<T> handler, List<String> lines )
@@ -53,15 +48,4 @@ public class ApiUtil implements IUtilApi
 
 	}
 
-	@Override
-	public <T extends IAEStack<T>> T poweredInsert( IEnergySource energy, IMEInventory<T> inv, T input, IActionSource src, Actionable mode )
-	{
-		return Platform.poweredInsert( energy, inv, input, src, mode );
-	}
-
-	@Override
-	public <T extends IAEStack<T>> T poweredExtraction( IEnergySource energy, IMEInventory<T> inv, T request, IActionSource src, Actionable mode )
-	{
-		return Platform.poweredExtraction( energy, inv, request, src, mode );
-	}
 }

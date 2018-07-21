@@ -79,7 +79,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
 		AEApi.instance()
-				.util()
+				.client()
 				.addCellInformation( AEApi.instance().registries().cell().getCellInventory( stack, null, this.getChannel() ), lines );
 	}
 
