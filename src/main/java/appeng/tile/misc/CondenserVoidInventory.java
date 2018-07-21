@@ -19,31 +19,30 @@
 package appeng.tile.misc;
 
 
-import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.channels.IFluidStorageChannel;
-import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.fluids.util.FluidList;
 
 
-class CondenserFluidInventory implements IMEMonitor<IAEFluidStack>
+class CondenserVoidInventory<T extends IAEStack<T>> implements IMEMonitor<T>
 {
 
 	private final TileCondenser target;
+	private final IStorageChannel<T> channel;
 
-	CondenserFluidInventory( final TileCondenser te )
+	CondenserVoidInventory( final TileCondenser te, final IStorageChannel<T> channel )
 	{
 		this.target = te;
+		this.channel = channel;
 	}
 
 	@Override
-	public IAEFluidStack injectItems( final IAEFluidStack input, final Actionable mode, final IActionSource src )
+	public T injectItems( final T input, final Actionable mode, final IActionSource src )
 	{
 		if( mode == Actionable.SIMULATE )
 		{
@@ -52,33 +51,33 @@ class CondenserFluidInventory implements IMEMonitor<IAEFluidStack>
 
 		if( input != null )
 		{
-			this.target.addPower( input.getStackSize() / 1000.0 );
+			this.target.addPower( input.getStackSize() / this.channel.transferFactor() );
 		}
 		return null;
 	}
 
 	@Override
-	public IAEFluidStack extractItems( final IAEFluidStack request, final Actionable mode, final IActionSource src )
+	public T extractItems( final T request, final Actionable mode, final IActionSource src )
 	{
 		return null;
 	}
 
 	@Override
-	public IItemList<IAEFluidStack> getAvailableItems( final IItemList out )
+	public IItemList<T> getAvailableItems( final IItemList<T> out )
 	{
 		return out;
 	}
 
 	@Override
-	public IItemList<IAEFluidStack> getStorageList()
+	public IItemList<T> getStorageList()
 	{
-		return new FluidList();
+		return this.channel.createList();
 	}
 
 	@Override
-	public IStorageChannel<IAEFluidStack> getChannel()
+	public IStorageChannel<T> getChannel()
 	{
-		return AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
+		return this.channel;
 	}
 
 	@Override
@@ -88,13 +87,13 @@ class CondenserFluidInventory implements IMEMonitor<IAEFluidStack>
 	}
 
 	@Override
-	public boolean isPrioritized( final IAEFluidStack input )
+	public boolean isPrioritized( final T input )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canAccept( final IAEFluidStack input )
+	public boolean canAccept( final T input )
 	{
 		return true;
 	}
@@ -118,13 +117,13 @@ class CondenserFluidInventory implements IMEMonitor<IAEFluidStack>
 	}
 
 	@Override
-	public void addListener( IMEMonitorHandlerReceiver<IAEFluidStack> l, Object verificationToken )
+	public void addListener( IMEMonitorHandlerReceiver<T> l, Object verificationToken )
 	{
 		// Not implemented since the Condenser automatically voids everything, and there are no updates
 	}
 
 	@Override
-	public void removeListener( IMEMonitorHandlerReceiver<IAEFluidStack> l )
+	public void removeListener( IMEMonitorHandlerReceiver<T> l )
 	{
 		// Not implemented since we don't remember registered listeners anyway
 	}
