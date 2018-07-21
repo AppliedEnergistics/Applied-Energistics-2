@@ -96,6 +96,6 @@ public interface ICellHandler
 		{
 			return handler.getCellInv().getIdleDrain();
 		}
-		return 0.0;
+		return 1.0;
 	}
 }

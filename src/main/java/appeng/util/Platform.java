@@ -1165,13 +1165,6 @@ public class Platform
 		return pos;
 	}
 
-	public static long nanoTime()
-	{
-		// if ( Configuration.INSTANCE.enableNetworkProfiler )
-		// return System.nanoTime();
-		return 0;
-	}
-
 	public static <T extends IAEStack<T>> T poweredExtraction( final IEnergySource energy, final IMEInventory<T> cell, final T request, final IActionSource src )
 	{
 		return poweredExtraction( energy, cell, request, src, Actionable.MODULATE );
@@ -1562,6 +1555,7 @@ public class Platform
 		return ItemStack.EMPTY;
 	}
 
+	// TODO wtf is this?
 	public static ItemStack getContainerItem( final ItemStack stackInSlot )
 	{
 		if( stackInSlot == null )

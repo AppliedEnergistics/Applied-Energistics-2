@@ -442,7 +442,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				.getCellInventory( stack, null,
 						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
-		AEApi.instance().registries().cell().addCellInformation( cdi, lines );
+		AEApi.instance().util().addCellInformation( cdi, lines );
 	}
 
 	@Override
