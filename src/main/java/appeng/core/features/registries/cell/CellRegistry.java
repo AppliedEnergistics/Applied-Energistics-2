@@ -27,6 +27,7 @@ import com.google.common.base.Verify;
 
 import net.minecraft.item.ItemStack;
 
+import appeng.api.storage.ICellGuiHandler;
 import appeng.api.storage.ICellHandler;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.ICellRegistry;
@@ -39,10 +40,12 @@ public class CellRegistry implements ICellRegistry
 {
 
 	private final List<ICellHandler> handlers;
+	private final List<ICellGuiHandler> guiHandlers;
 
 	public CellRegistry()
 	{
 		this.handlers = new ArrayList<>();
+		this.guiHandlers = new ArrayList<>();
 	}
 
 	@Override
@@ -54,7 +57,7 @@ public class CellRegistry implements ICellRegistry
 		this.handlers.add( handler );
 
 		// Verify that the first entry is always our own handler.
-		Verify.verify( this.handlers.get( 0 ) instanceof BasicItemCellHandler );
+		Verify.verify( this.handlers.get( 0 ) instanceof BasicCellHandler );
 	}
 
 	@Override
@@ -106,5 +109,34 @@ public class CellRegistry implements ICellRegistry
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public void addCellGuiHandler( ICellGuiHandler handler )
+	{
+		this.guiHandlers.add( handler );
+	}
+
+	@Override
+	public <T extends IAEStack<T>> ICellGuiHandler getGuiHandler( final IStorageChannel<T> channel, final ItemStack is )
+	{
+		ICellGuiHandler fallBack = null;
+
+		for( final ICellGuiHandler ch : this.guiHandlers )
+		{
+			if( ch.isHandlerFor( channel ) )
+			{
+				if( ch.isSpecializedFor( is ) )
+				{
+					return ch;
+				}
+
+				if( fallBack == null )
+				{
+					fallBack = ch;
+				}
+			}
+		}
+		return fallBack;
 	}
 }

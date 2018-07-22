@@ -30,8 +30,11 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.nbt.NBTTagCompound;
 
+import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
+import appeng.api.networking.energy.IEnergySource;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -90,4 +93,27 @@ public interface IStorageHelper
 	 */
 	ICraftingLink loadCraftingLink( NBTTagCompound data, ICraftingRequester req );
 
+	/**
+	 * Extracts items from a {@link IMEInventory} respecting power requirements.
+	 * 
+	 * @param energy Energy source.
+	 * @param inv Inventory to extract from.
+	 * @param request Requested item and count.
+	 * @param src Action source.
+	 * @param mode Simulate or modulate
+	 * @return extracted items or {@code null} of nothing was extracted.
+	 */
+	<T extends IAEStack<T>> T poweredExtraction( final IEnergySource energy, final IMEInventory<T> inv, final T request, final IActionSource src, final Actionable mode );
+
+	/**
+	 * Inserts items into a {@link IMEInventory} respecting power requirements.
+	 * 
+	 * @param energy Energy source.
+	 * @param inv Inventory to insert into.
+	 * @param request Items to insert.
+	 * @param src Action source.
+	 * @param mode Simulate or modulate
+	 * @return items not inserted or {@code null} if everything was inserted.
+	 */
+	<T extends IAEStack<T>> T poweredInsert( final IEnergySource energy, final IMEInventory<T> inv, final T input, final IActionSource src, final Actionable mode );
 }

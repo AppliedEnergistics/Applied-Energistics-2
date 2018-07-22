@@ -24,10 +24,8 @@
 package appeng.api.storage;
 
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.storage.data.IAEStack;
 
 
@@ -60,20 +58,6 @@ public interface ICellHandler
 	<T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory( ItemStack is, ISaveProvider host, IStorageChannel<T> channel );
 
 	/**
-	 * Called when the storage cell is planed in an ME Chest and the user tries to open the terminal side, if your item
-	 * is not available via ME Chests simply tell the user they can't use it, or something, other wise you should open
-	 * your gui and display the cell to the user.
-	 *
-	 * @param player player opening chest gui
-	 * @param chest to be opened chest
-	 * @param cellHandler cell handler
-	 * @param inv inventory handler
-	 * @param is item
-	 * @param chan storage channel
-	 */
-	<T extends IAEStack<T>> void openChestGui( EntityPlayer player, IChestOrDrive chest, ICellHandler cellHandler, IMEInventoryHandler<T> inv, ItemStack is, IStorageChannel<T> chan );
-
-	/**
 	 * 0 - cell is missing.
 	 *
 	 * 1 - green, ( usually means available room for types or items. )
@@ -87,10 +71,31 @@ public interface ICellHandler
 	 *
 	 * @return get the status of the cell based on its contents.
 	 */
-	<T extends IAEStack<T>> int getStatusForCell( ItemStack is, IMEInventory<T> handler );
+	default <T extends IAEStack<T>> int getStatusForCell( ItemStack is, ICellInventoryHandler<T> handler )
+	{
+		if( handler.getCellInv() != null )
+		{
+			int val = handler.getCellInv().getStatusForCell();
+
+			if( val == 1 && handler.isPreformatted() )
+			{
+				val = 2;
+			}
+
+			return val;
+		}
+		return 0;
+	}
 
 	/**
 	 * @return the ae/t to drain for this storage cell inside a chest/drive.
 	 */
-	<T extends IAEStack<T>> double cellIdleDrain( ItemStack is, IMEInventory<T> handler );
+	default <T extends IAEStack<T>> double cellIdleDrain( ItemStack is, ICellInventoryHandler<T> handler )
+	{
+		if( handler.getCellInv() != null )
+		{
+			return handler.getCellInv().getIdleDrain();
+		}
+		return 1.0;
+	}
 }

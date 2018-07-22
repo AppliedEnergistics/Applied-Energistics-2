@@ -21,45 +21,34 @@ package appeng.core.features.registries.cell;
 
 import net.minecraft.item.ItemStack;
 
-import appeng.api.AEApi;
 import appeng.api.storage.ICellHandler;
+import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.channels.IItemStorageChannel;
-import appeng.items.storage.ItemCreativeStorageCell;
-import appeng.me.storage.CreativeCellInventory;
+import appeng.api.storage.data.IAEStack;
+import appeng.me.storage.BasicCellInventory;
+import appeng.me.storage.BasicCellInventoryHandler;
 
 
-public final class CreativeCellHandler implements ICellHandler
+public class BasicCellHandler implements ICellHandler
 {
 
 	@Override
 	public boolean isCell( final ItemStack is )
 	{
-		return !is.isEmpty() && is.getItem() instanceof ItemCreativeStorageCell;
+		return BasicCellInventory.isCell( is );
 	}
 
 	@Override
-	public ICellInventoryHandler getCellInventory( final ItemStack is, final ISaveProvider container, final IStorageChannel channel )
+	public <T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory( final ItemStack is, final ISaveProvider container, final IStorageChannel<T> channel )
 	{
-		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) && !is.isEmpty() && is
-				.getItem() instanceof ItemCreativeStorageCell )
+		final ICellInventory<T> inv = BasicCellInventory.createInventory( is, container );
+		if( inv == null || inv.getChannel() != channel )
 		{
-			return CreativeCellInventory.getCell( is );
+			return null;
 		}
-		return null;
+		return new BasicCellInventoryHandler<>( inv, channel );
 	}
 
-	@Override
-	public int getStatusForCell( final ItemStack is, final ICellInventoryHandler handler )
-	{
-		return 2;
-	}
-
-	@Override
-	public double cellIdleDrain( final ItemStack is, final ICellInventoryHandler handler )
-	{
-		return 0;
-	}
 }

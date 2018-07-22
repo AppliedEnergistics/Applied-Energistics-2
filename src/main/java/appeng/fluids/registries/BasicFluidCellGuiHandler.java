@@ -25,66 +25,29 @@ import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
+import appeng.api.storage.ICellGuiHandler;
 import appeng.api.storage.ICellHandler;
-import appeng.api.storage.ICellInventory;
-import appeng.api.storage.ICellInventoryHandler;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IMEInventoryHandler;
-import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEPartLocation;
 import appeng.core.sync.GuiBridge;
-import appeng.fluids.storage.FluidCellInventory;
-import appeng.fluids.storage.FluidCellInventoryHandler;
 import appeng.util.Platform;
 
 
-public class BasicFluidCellHandler implements ICellHandler
+public class BasicFluidCellGuiHandler implements ICellGuiHandler
 {
 
 	@Override
-	public boolean isCell( final ItemStack is )
+	public <T extends IAEStack<T>> boolean isHandlerFor( final IStorageChannel<T> channel )
 	{
-		return FluidCellInventory.isCell( is );
-	}
-
-	@Override
-	public <T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory( final ItemStack is, final ISaveProvider container, final IStorageChannel<T> channel )
-	{
-		if( channel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
-		{
-			return (ICellInventoryHandler<T>) FluidCellInventory.getCell( is, container );
-		}
-
-		return null;
+		return channel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
 	}
 
 	@Override
 	public void openChestGui( final EntityPlayer player, final IChestOrDrive chest, final ICellHandler cellHandler, final IMEInventoryHandler inv, final ItemStack is, final IStorageChannel chan )
 	{
-		if( chan == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
-		{
-			Platform.openGUI( player, (TileEntity) chest, AEPartLocation.fromFacing( chest.getUp() ), GuiBridge.GUI_FLUID_TERMINAL );
-		}
-	}
-
-	@Override
-	public int getStatusForCell( final ItemStack is, final IMEInventory handler )
-	{
-		if( handler instanceof FluidCellInventoryHandler )
-		{
-			final FluidCellInventoryHandler ci = (FluidCellInventoryHandler) handler;
-			return ci.getStatusForCell();
-		}
-		return 0;
-	}
-
-	@Override
-	public double cellIdleDrain( final ItemStack is, final IMEInventory handler )
-	{
-		final ICellInventory inv = ( (ICellInventoryHandler) handler ).getCellInv();
-		return inv.getIdleDrain();
+		Platform.openGUI( player, (TileEntity) chest, AEPartLocation.fromFacing( chest.getUp() ), GuiBridge.GUI_FLUID_TERMINAL );
 	}
 }

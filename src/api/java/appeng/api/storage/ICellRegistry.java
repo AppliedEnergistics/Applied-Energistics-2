@@ -54,6 +54,13 @@ public interface ICellRegistry
 	void addCellHandler( @Nonnull ICellHandler handler );
 
 	/**
+	 * Register a new handler
+	 * 
+	 * @param handler cell gui handler
+	 */
+	void addCellGuiHandler( @Nonnull ICellGuiHandler handler );
+
+	/**
 	 * return true, if you can get a InventoryHandler for the item passed.
 	 *
 	 * @param is to be checked item
@@ -64,7 +71,7 @@ public interface ICellRegistry
 	boolean isCellHandled( ItemStack is );
 
 	/**
-	 * get the handler, for the requested type.
+	 * get the handler, for the requested item.
 	 *
 	 * @param is to be checked item
 	 *
@@ -74,13 +81,23 @@ public interface ICellRegistry
 	ICellHandler getHandler( ItemStack is );
 
 	/**
-	 * returns an IMEInventoryHandler for the provided item.
+	 * get the handler, for the requested channel.
+	 *
+	 * @param channel requested channel
+	 * @param Cell ItemStack
+	 * @return the handler registered for this channel.
+	 */
+	@Nullable
+	<T extends IAEStack<T>> ICellGuiHandler getGuiHandler( IStorageChannel<T> channel, ItemStack is );
+
+	/**
+	 * returns an ICellInventoryHandler for the provided item by querying all registered handlers.
 	 *
 	 * @param is item with inventory handler
 	 * @param host can be null. If provided, the host is responsible for persisting the cell content.
 	 * @param chan the storage channel to request the handler for.
 	 *
-	 * @return new IMEInventoryHandler, or null if there isn't one.
+	 * @return new ICellInventoryHandler, or null if there isn't one.
 	 */
 	@Nullable
 	<T extends IAEStack<T>> ICellInventoryHandler<T> getCellInventory( ItemStack is, ISaveProvider host, IStorageChannel<T> chan );

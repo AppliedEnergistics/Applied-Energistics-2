@@ -66,6 +66,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.InventoryAdaptor;
+import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.AdaptorItemHandler;
 import appeng.util.inv.InvOperation;
@@ -424,7 +425,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 						if( extracted != null )
 						{
 							possible = extracted.getStackSize();
-							final IAEStack failed = chan.poweredInsert( energy, destination, extracted, this.mySrc );
+							final IAEStack failed = Platform.poweredInsert( energy, destination, extracted, this.mySrc );
 
 							if( failed != null )
 							{

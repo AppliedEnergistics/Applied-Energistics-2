@@ -40,7 +40,7 @@ public interface ICellInventory<T extends IAEStack<T>> extends IMEInventory<T>
 	ItemStack getItemStack();
 
 	/**
-	 * @return idle cost for this Storage Cell
+	 * @return the ae/t to drain for this storage cell inside a chest/drive.
 	 */
 	double getIdleDrain();
 
@@ -115,7 +115,15 @@ public interface ICellInventory<T extends IAEStack<T>> extends IMEInventory<T>
 	int getUnusedItemCount();
 
 	/**
-	 * @return the status number for this drive.
+	 * 0 - cell is missing.
+	 *
+	 * 1 - green, ( usually means available room for types or items. )
+	 *
+	 * 2 - orange, ( usually means available room for items, but not types. )
+	 *
+	 * 3 - red, ( usually means the cell is 100% full )
+	 *
+	 * @return get the status of the cell based on its contents.
 	 */
 	int getStatusForCell();
 

@@ -32,7 +32,9 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 
+import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergySource;
@@ -47,6 +49,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.crafting.CraftingLink;
+import appeng.fluids.items.FluidDummyItem;
 import appeng.fluids.util.AEFluidStack;
 import appeng.fluids.util.FluidList;
 import appeng.util.Platform;
@@ -104,6 +107,18 @@ public class ApiStorage implements IStorageHelper
 		return new CraftingLink( data, req );
 	}
 
+	@Override
+	public <T extends IAEStack<T>> T poweredInsert( IEnergySource energy, IMEInventory<T> inv, T input, IActionSource src, Actionable mode )
+	{
+		return Platform.poweredInsert( energy, inv, input, src, mode );
+	}
+
+	@Override
+	public <T extends IAEStack<T>> T poweredExtraction( IEnergySource energy, IMEInventory<T> inv, T request, IActionSource src, Actionable mode )
+	{
+		return Platform.poweredExtraction( energy, inv, request, src, mode );
+	}
+
 	private static final class ItemStorageChannel implements IItemStorageChannel
 	{
 
@@ -127,33 +142,18 @@ public class ApiStorage implements IStorageHelper
 		}
 
 		@Override
+		public IAEItemStack createFromNBT( NBTTagCompound nbt )
+		{
+			Preconditions.checkNotNull( nbt );
+			return AEItemStack.fromNBT( nbt );
+		}
+
+		@Override
 		public IAEItemStack readFromPacket( ByteBuf input ) throws IOException
 		{
 			Preconditions.checkNotNull( input );
 
 			return AEItemStack.fromPacket( input );
-		}
-
-		@Override
-		public IAEItemStack poweredExtraction( IEnergySource energy, IMEInventory<IAEItemStack> cell, IAEItemStack request, IActionSource src )
-		{
-			Preconditions.checkNotNull( energy );
-			Preconditions.checkNotNull( cell );
-			Preconditions.checkNotNull( request );
-			Preconditions.checkNotNull( src );
-
-			return Platform.poweredExtraction( energy, cell, request, src );
-		}
-
-		@Override
-		public IAEItemStack poweredInsert( IEnergySource energy, IMEInventory<IAEItemStack> cell, IAEItemStack input, IActionSource src )
-		{
-			Preconditions.checkNotNull( energy );
-			Preconditions.checkNotNull( cell );
-			Preconditions.checkNotNull( input );
-			Preconditions.checkNotNull( src );
-
-			return Platform.poweredInsert( energy, cell, input, src );
 		}
 	}
 
@@ -164,6 +164,12 @@ public class ApiStorage implements IStorageHelper
 		public int transferFactor()
 		{
 			return 125;
+		}
+
+		@Override
+		public int getUnitsPerByte()
+		{
+			return 8000;
 		}
 
 		@Override
@@ -181,6 +187,18 @@ public class ApiStorage implements IStorageHelper
 			{
 				return AEFluidStack.fromFluidStack( (FluidStack) input );
 			}
+			if( input instanceof ItemStack )
+			{
+				final ItemStack is = (ItemStack) input;
+				if( is.getItem() instanceof FluidDummyItem )
+				{
+					return AEFluidStack.fromFluidStack( ( (FluidDummyItem) is.getItem() ).getFluidStack( is ) );
+				}
+				else
+				{
+					return AEFluidStack.fromFluidStack( FluidUtil.getFluidContained( is ) );
+				}
+			}
 
 			return null;
 		}
@@ -194,25 +212,10 @@ public class ApiStorage implements IStorageHelper
 		}
 
 		@Override
-		public IAEFluidStack poweredExtraction( IEnergySource energy, IMEInventory<IAEFluidStack> cell, IAEFluidStack request, IActionSource src )
+		public IAEFluidStack createFromNBT( NBTTagCompound nbt )
 		{
-			Preconditions.checkNotNull( energy );
-			Preconditions.checkNotNull( cell );
-			Preconditions.checkNotNull( request );
-			Preconditions.checkNotNull( src );
-
-			return Platform.poweredExtraction( energy, cell, request, src );
-		}
-
-		@Override
-		public IAEFluidStack poweredInsert( IEnergySource energy, IMEInventory<IAEFluidStack> cell, IAEFluidStack input, IActionSource src )
-		{
-			Preconditions.checkNotNull( energy );
-			Preconditions.checkNotNull( cell );
-			Preconditions.checkNotNull( input );
-			Preconditions.checkNotNull( src );
-
-			return Platform.poweredInsert( energy, cell, input, src );
+			Preconditions.checkNotNull( nbt );
+			return AEFluidStack.fromNBT( nbt );
 		}
 	}
 

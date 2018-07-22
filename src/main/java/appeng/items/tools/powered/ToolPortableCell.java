@@ -40,9 +40,7 @@ import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.implementations.items.IStorageCell;
-import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
-import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -54,7 +52,6 @@ import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.items.contents.PortableCellViewer;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
-import appeng.me.storage.ItemCellInventoryHandler;
 import appeng.util.Platform;
 
 
@@ -85,18 +82,13 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell<
 	{
 		super.addCheckedInformation( stack, world, lines, advancedTooltips );
 
-		final IMEInventory<IAEItemStack> cdi = AEApi.instance().registries().cell().getCellInventory( stack, null,
-				AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+		final ICellInventoryHandler<IAEItemStack> cdi = AEApi.instance()
+				.registries()
+				.cell()
+				.getCellInventory( stack, null,
+						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
-		if( cdi instanceof ItemCellInventoryHandler )
-		{
-			final ICellInventory cd = ( (ICellInventoryHandler) cdi ).getCellInv();
-			if( cd != null )
-			{
-				lines.add( cd.getUsedBytes() + " " + GuiText.Of.getLocal() + ' ' + cd.getTotalBytes() + ' ' + GuiText.BytesUsed.getLocal() );
-				lines.add( cd.getStoredItemTypes() + " " + GuiText.Of.getLocal() + ' ' + cd.getTotalItemTypes() + ' ' + GuiText.Types.getLocal() );
-			}
-		}
+		AEApi.instance().client().addCellInformation( cdi, lines );
 	}
 
 	@Override

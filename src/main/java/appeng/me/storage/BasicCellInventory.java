@@ -1,20 +1,3 @@
-/*
- * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
- *
- * Applied Energistics 2 is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Applied Energistics 2 is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
- */
 
 package appeng.me.storage;
 
@@ -23,50 +6,90 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.exceptions.AppEngException;
 import appeng.api.implementations.items.IStorageCell;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.storage.ICellInventoryHandler;
-import appeng.api.storage.IMEInventory;
+import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.IStorageChannel;
-import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.api.storage.data.IAEStack;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.util.item.AEStack;
 
 
-public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
+public class BasicCellInventory<T extends IAEStack<T>> extends AbstractCellInventory<T>
 {
-	private ItemCellInventory( final ItemStack o, final ISaveProvider container ) throws AppEngException
+	private final IStorageChannel<T> channel;
+
+	private BasicCellInventory( final IStorageCell<T> cellType, final ItemStack o, final ISaveProvider container )
 	{
-		super( o, container, 8 );
+		super( cellType, o, container );
+		this.channel = cellType.getChannel();
 	}
 
-	public static ICellInventoryHandler<IAEItemStack> getCell( final ItemStack o, final ISaveProvider container2 )
+	public static <T extends IAEStack<T>> ICellInventory<T> createInventory( final ItemStack o, final ISaveProvider container )
 	{
 		try
 		{
-			return new ItemCellInventoryHandler( new ItemCellInventory( o, container2 ) );
+			if( o == null )
+			{
+				throw new AppEngException( "ItemStack was used as a cell, but was not a cell!" );
+			}
+
+			final Item type = o.getItem();
+			final IStorageCell<T> cellType;
+			if( type instanceof IStorageCell )
+			{
+				cellType = (IStorageCell<T>) type;
+			}
+			else
+			{
+				throw new AppEngException( "ItemStack was used as a cell, but was not a cell!" );
+			}
+
+			if( !cellType.isStorageCell( o ) )
+			{
+				throw new AppEngException( "ItemStack was used as a cell, but was not a cell!" );
+			}
+
+			return new BasicCellInventory<T>( cellType, o, container );
 		}
 		catch( final AppEngException e )
 		{
+			AELog.error( e );
 			return null;
 		}
 	}
 
-	private static boolean isStorageCell( final ItemStack i )
+	public static <T extends AEStack<T>> boolean isCellOfType( final ItemStack input, IStorageChannel channel )
 	{
-		if( i == null )
+		if( input == null )
+		{
+			return false;
+		}
+
+		final Item type = input.getItem();
+		if( type instanceof IStorageCell )
+		{
+			return ( (IStorageCell) type ).getChannel() == channel;
+		}
+
+		return false;
+	}
+
+	public static boolean isCell( final ItemStack input )
+	{
+		if( input == null )
 		{
 			return false;
 		}
 
 		try
 		{
-			final Item type = i.getItem();
+			final Item type = input.getItem();
 			if( type instanceof IStorageCell )
 			{
 				return !( (IStorageCell) type ).storableInStorageCell();
@@ -80,27 +103,27 @@ public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
 		return false;
 	}
 
-	public static boolean isCell( final ItemStack i )
+	private boolean isStorageCell( final T input )
 	{
-		if( i == null )
+		if( !input.isItem() )
 		{
 			return false;
 		}
+		return isCell( ( (IAEItemStack) input ).getDefinition() );
+	}
 
-		final Item type = i.getItem();
-		if( type instanceof IStorageCell )
+	@SuppressWarnings( { "rawtypes", "unchecked" } )
+	private static boolean isCellEmpty( ICellInventory inv )
+	{
+		if( inv != null )
 		{
-			if( ( (IStorageCell) type ).getChannel() == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
-			{
-				return ( (IStorageCell) type ).isStorageCell( i );
-			}
+			return inv.getAvailableItems( inv.getChannel().createList() ).isEmpty();
 		}
-
-		return false;
+		return true;
 	}
 
 	@Override
-	public IAEItemStack injectItems( final IAEItemStack input, final Actionable mode, final IActionSource src )
+	public T injectItems( T input, Actionable mode, IActionSource src )
 	{
 		if( input == null )
 		{
@@ -111,23 +134,23 @@ public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
 			return null;
 		}
 
-		if( this.cellType.isBlackListed( this.i, input ) )
+		if( this.cellType.isBlackListed( this.getItemStack(), input ) )
 		{
 			return input;
 		}
 		// This is slightly hacky as it expects a read-only access, but fine for now.
 		// TODO: Guarantee a read-only access. E.g. provide an isEmpty() method and ensure CellInventory does not write
 		// any NBT data for empty cells instead of relying on an empty IItemContainer
-		if( ItemCellInventory.isStorageCell( input.getDefinition() ) )
+		if( this.isStorageCell( input ) )
 		{
-			final IMEInventory meInventory = getCell( input.createItemStack(), null );
-			if( meInventory != null && !this.isEmpty( meInventory ) )
+			final ICellInventory<?> meInventory = createInventory( ( (IAEItemStack) input ).createItemStack(), null );
+			if( !isCellEmpty( meInventory ) )
 			{
 				return input;
 			}
 		}
 
-		final IAEItemStack l = this.getCellItems().findPrecise( input );
+		final T l = this.getCellItems().findPrecise( input );
 		if( l != null )
 		{
 			final long remainingItemCount = this.getRemainingItemCount();
@@ -138,7 +161,7 @@ public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
 
 			if( input.getStackSize() > remainingItemCount )
 			{
-				final IAEItemStack r = input.copy();
+				final T r = input.copy();
 				r.setStackSize( r.getStackSize() - remainingItemCount );
 				if( mode == Actionable.MODULATE )
 				{
@@ -165,11 +188,11 @@ public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
 			{
 				if( input.getStackSize() > remainingItemCount )
 				{
-					final IAEItemStack toReturn = input.copy();
+					final T toReturn = input.copy();
 					toReturn.setStackSize( input.getStackSize() - remainingItemCount );
 					if( mode == Actionable.MODULATE )
 					{
-						final IAEItemStack toWrite = input.copy();
+						final T toWrite = input.copy();
 						toWrite.setStackSize( remainingItemCount );
 
 						this.cellItems.add( toWrite );
@@ -192,7 +215,7 @@ public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
 	}
 
 	@Override
-	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final IActionSource src )
+	public T extractItems( T request, Actionable mode, IActionSource src )
 	{
 		if( request == null )
 		{
@@ -201,9 +224,9 @@ public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
 
 		final long size = Math.min( Integer.MAX_VALUE, request.getStackSize() );
 
-		IAEItemStack Results = null;
+		T Results = null;
 
-		final IAEItemStack l = this.getCellItems().findPrecise( request );
+		final T l = this.getCellItems().findPrecise( request );
 		if( l != null )
 		{
 			Results = l.copy();
@@ -232,20 +255,20 @@ public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
 	}
 
 	@Override
-	public IStorageChannel getChannel()
+	public IStorageChannel<T> getChannel()
 	{
-		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
+		return this.channel;
 	}
 
+	@Override
 	protected void loadCellItem( NBTTagCompound compoundTag, int stackSize )
 	{
-
 		// Now load the item stack
-		final ItemStack t;
+		final T t;
 		try
 		{
-			t = new ItemStack( compoundTag );
-			if( t.isEmpty() )
+			t = getChannel().createFromNBT( compoundTag );
+			if( t == null )
 			{
 				AELog.warn( "Removing item " + compoundTag + " from storage cell because the associated item type couldn't be found." );
 				return;
@@ -261,23 +284,11 @@ public class ItemCellInventory extends AbstractCellInventory<IAEItemStack>
 			throw ex;
 		}
 
-		t.setCount( stackSize );
+		t.setStackSize( stackSize );
 
-		if( t.getCount() > 0 )
+		if( stackSize > 0 )
 		{
-			try
-			{
-				this.cellItems.add( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( t ) );
-			}
-			catch( Throwable ex )
-			{
-				if( AEConfig.instance().isRemoveCrashingItemsOnLoad() )
-				{
-					AELog.warn( ex, "Removing item " + t + " from storage cell because processing the loaded item crashed." );
-					return;
-				}
-				throw ex;
-			}
+			this.cellItems.add( t );
 		}
 	}
 }

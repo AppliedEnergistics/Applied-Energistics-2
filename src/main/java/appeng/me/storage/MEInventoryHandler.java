@@ -129,7 +129,7 @@ public class MEInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHa
 	}
 
 	@Override
-	public IStorageChannel getChannel()
+	public IStorageChannel<T> getChannel()
 	{
 		return this.internal.getChannel();
 	}

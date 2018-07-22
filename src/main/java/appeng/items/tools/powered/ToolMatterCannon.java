@@ -52,7 +52,6 @@ import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IStorageCell;
-import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -64,7 +63,6 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
-import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMatterCannon;
@@ -100,15 +98,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 				.getCellInventory( stack, null,
 						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
 
-		if( cdi != null )
-		{
-			final ICellInventory<IAEItemStack> cd = cdi.getCellInv();
-			if( cd != null )
-			{
-				lines.add( cd.getUsedBytes() + " " + GuiText.Of.getLocal() + ' ' + cd.getTotalBytes() + ' ' + GuiText.BytesUsed.getLocal() );
-				lines.add( cd.getStoredItemTypes() + " " + GuiText.Of.getLocal() + ' ' + cd.getTotalItemTypes() + ' ' + GuiText.Types.getLocal() );
-			}
-		}
+		AEApi.instance().client().addCellInformation( cdi, lines );
 	}
 
 	@Override
