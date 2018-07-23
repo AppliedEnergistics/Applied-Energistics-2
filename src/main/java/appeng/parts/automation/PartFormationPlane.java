@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -61,7 +60,6 @@ import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
-import appeng.api.storage.ICellInventory;
 import appeng.api.storage.IMEInventoryHandler;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -321,30 +319,11 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 
 						final EntityItem ei = new EntityItem( w, x, y, z, is.copy() );
 
-						Entity result = ei;
-
 						ei.motionX = side.xOffset * 0.2;
 						ei.motionY = side.yOffset * 0.2;
 						ei.motionZ = side.zOffset * 0.2;
 
-						if( is.getItem().hasCustomEntity( is ) )
-						{
-							result = is.getItem().createEntity( w, ei, is );
-							if( result != null )
-							{
-								ei.setDead();
-							}
-							else
-							{
-								result = ei;
-							}
-						}
-
-						if( !w.spawnEntity( result ) )
-						{
-							result.setDead();
-							worked = false;
-						}
+						w.spawnEntity( ei );
 					}
 				}
 				else
