@@ -28,6 +28,7 @@ import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import appeng.api.config.Actionable;
@@ -35,6 +36,7 @@ import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
@@ -116,4 +118,15 @@ public interface IStorageHelper
 	 * @return items not inserted or {@code null} if everything was inserted.
 	 */
 	<T extends IAEStack<T>> T poweredInsert( final IEnergySource energy, final IMEInventory<T> inv, final T input, final IActionSource src, final Actionable mode );
+
+	/**
+	 * Posts alteration of stored items to the provided {@link IStorageGrid}.
+	 * This can be used by cell containers to notify the grid of storage cell changes.
+	 * 
+	 * @param gs the storage grid.
+	 * @param removedCell the removed cell itemstack
+	 * @param addedCell the added cell itemstack
+	 * @param src the action source
+	 */
+	void postChanges( @Nonnull final IStorageGrid gs, @Nonnull final ItemStack removedCell, @Nonnull final ItemStack addedCell, @Nonnull final IActionSource src );
 }
