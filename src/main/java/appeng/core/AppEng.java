@@ -198,6 +198,8 @@ public final class AppEng
 		final Stopwatch start = Stopwatch.createStarted();
 		AELog.info( "Initialization ( started )" );
 
+		AppEng.proxy.init();
+
 		if( this.exportConfig.isExportingItemNamesEnabled() )
 		{
 			if( FMLCommonHandler.instance().getSide().isClient() )

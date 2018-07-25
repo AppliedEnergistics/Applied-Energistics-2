@@ -36,6 +36,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.block.AEBaseBlock;
+import appeng.client.ActionKey;
 import appeng.client.EffectType;
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
@@ -182,5 +183,17 @@ public class ServerHelper extends CommonHelper
 		}
 
 		return CableRenderMode.STANDARD;
+	}
+
+	@Override
+	public boolean isKeyPressed( ActionKey key )
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isActionKey( ActionKey key, int pressedKeyCode )
+	{
+		return false;
 	}
 }
