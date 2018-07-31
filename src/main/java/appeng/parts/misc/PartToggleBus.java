@@ -19,9 +19,7 @@
 package appeng.parts.misc;
 
 
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -48,7 +46,6 @@ import appeng.items.parts.PartModels;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.parts.PartBasicState;
 import appeng.parts.PartModel;
-import appeng.util.Platform;
 
 
 public class PartToggleBus extends PartBasicState
@@ -103,19 +100,6 @@ public class PartToggleBus extends PartBasicState
 	public AECableType getCableConnectionType( final AEPartLocation dir )
 	{
 		return AECableType.GLASS;
-	}
-
-	@Override
-	public void securityBreak()
-	{
-		if( this.getItemStack().getCount() > 0 )
-		{
-			final List<ItemStack> items = new ArrayList<>();
-			items.add( this.getItemStack().copy() );
-			this.getHost().removePart( this.getSide(), false );
-			Platform.spawnDrops( this.getTile().getWorld(), this.getTile().getPos(), items );
-			this.getItemStack().setCount( 0 );
-		}
 	}
 
 	@Override
