@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IMachineSet;
 import appeng.api.networking.events.MENetworkEvent;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.core.AELog;
@@ -114,10 +115,19 @@ public class NetworkEventBus
 						target.invoke( cache.getCache(), e );
 					}
 
-					for( final IGridNode obj : g.getMachines( subscriber.getKey() ) )
+					// events may create or remove grid nodes in rare cases
+					final IMachineSet machines = g.getMachines( subscriber.getKey() );
+					final List<IGridNode> work = new ArrayList<>( machines.size() );
+					machines.forEach( work::add );
+
+					for( final IGridNode obj : work )
 					{
-						x++;
-						target.invoke( obj.getMachine(), e );
+						// stil part of grid?
+						if( machines.contains( obj ) )
+						{
+							x++;
+							target.invoke( obj.getMachine(), e );
+						}
 					}
 				}
 			}
