@@ -25,7 +25,6 @@ import javax.annotation.Nonnull;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -56,7 +55,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 {
 	private static final double POWER_PER_TICK = 5;
 	private static final int MAX_BURN_SPEED = 200;
-	private static final double DILATION_SCALING = 100.0;
+	private static final double DILATION_SCALING = 25.0; // x4 ~ 40 AE/t at max
 	private static final int MIN_BURN_SPEED = 20;
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 1 );
 	private final IItemHandler invExt = new WrapperFilteredItemHandler( inv, new FuelSlotFilter() );
@@ -237,7 +236,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 
 	private void eatFuel()
 	{
-		final ItemStack is = this.inv.getStackInSlot( 0 ).copy();
+		final ItemStack is = this.inv.getStackInSlot( 0 );
 		if( !is.isEmpty() )
 		{
 			final int newBurnTime = TileEntityFurnace.getItemBurnTime( is );
@@ -257,6 +256,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 				{
 					this.inv.setStackInSlot( 0, is );
 				}
+				this.saveChanges();
 			}
 		}
 
@@ -320,13 +320,13 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		@Override
 		public boolean allowExtract( IItemHandler inv, int slot, int amount )
 		{
-			return inv.getStackInSlot( slot ).getItem() == Items.BUCKET;
+			return !TileEntityFurnace.isItemFuel( inv.getStackInSlot( slot ) );
 		}
 
 		@Override
 		public boolean allowInsert( IItemHandler inv, int slot, ItemStack stack )
 		{
-			return TileEntityFurnace.getItemBurnTime( stack ) > 0;
+			return TileEntityFurnace.isItemFuel( stack );
 		}
 	}
 }
