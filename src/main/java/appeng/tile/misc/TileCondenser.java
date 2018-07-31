@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
@@ -45,6 +46,7 @@ import appeng.api.storage.IStorageMonitorable;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
+import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
@@ -294,10 +296,10 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		}
 	}
 
-	private static final IFluidTankProperties[] EMPTY = { new FluidTankProperties( null, 10, true, false ) };
+	private static final IFluidTankProperties[] EMPTY = { new FluidTankProperties( null, Fluid.BUCKET_VOLUME, true, false ) };
 
 	/**
-	 * A fluid handler that exposes a 10 bucket tank that can only be filled, and - when filled - will add power
+	 * A fluid handler that exposes a 1 bucket tank that can only be filled, and - when filled - will add power
 	 * to this condenser.
 	 */
 	private class FluidHandler implements IFluidHandler
@@ -314,7 +316,8 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		{
 			if( doFill )
 			{
-				TileCondenser.this.addPower( ( resource == null ? 0.0 : (double) resource.amount ) / 500.0 );
+				final IStorageChannel<IAEFluidStack> chan = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
+				TileCondenser.this.addPower( ( resource == null ? 0.0 : (double) resource.amount ) / chan.transferFactor() );
 			}
 
 			return resource == null ? 0 : resource.amount;
@@ -344,8 +347,6 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	 */
 	private class MEHandler implements IStorageMonitorableAccessor, IStorageMonitorable
 	{
-		private final CondenserFluidInventory fluidInventory = new CondenserFluidInventory( TileCondenser.this );
-
 		private final CondenserItemInventory itemInventory = new CondenserItemInventory( TileCondenser.this );
 
 		void outputChanged( ItemStack added, ItemStack removed )
@@ -367,11 +368,10 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 			{
 				return (IMEMonitor<T>) this.itemInventory;
 			}
-			else if( channel == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
+			else
 			{
-				return (IMEMonitor<T>) this.fluidInventory;
+				return new CondenserVoidInventory<>( TileCondenser.this, channel );
 			}
-			return null;
 		}
 	}
 }
