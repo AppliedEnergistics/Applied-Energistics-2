@@ -25,12 +25,13 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import appeng.util.helpers.ItemHandlerUtil;
 
 
-public class WrapperChainedItemHandler implements IInternalItemHandler
+public class WrapperChainedItemHandler implements IItemHandlerModifiable
 {
 	private IItemHandler[] itemHandler; // the handlers
 	private int[] baseIndex; // index-offsets of the different handlers
@@ -159,20 +160,11 @@ public class WrapperChainedItemHandler implements IInternalItemHandler
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int slot, ItemStack stack )
+	public boolean isItemValid( int slot, ItemStack stack )
 	{
 		int index = this.getIndexForSlot( slot );
 		IItemHandler handler = this.getHandlerFromIndex( index );
 		int targetSlot = this.getSlotFromIndex( slot, index );
-		return ItemHandlerUtil.isItemValidForSlot( handler, targetSlot, stack );
-	}
-
-	@Override
-	public void markDirty( int slot )
-	{
-		int index = this.getIndexForSlot( slot );
-		IItemHandler handler = this.getHandlerFromIndex( index );
-		int targetSlot = this.getSlotFromIndex( slot, index );
-		ItemHandlerUtil.markDirty( handler, targetSlot );
+		return handler.isItemValid( targetSlot, stack );
 	}
 }

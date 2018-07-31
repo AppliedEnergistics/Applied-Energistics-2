@@ -105,7 +105,7 @@ public class WrapperInvItemHandler implements IInventory
 	@Override
 	public void markDirty()
 	{
-		ItemHandlerUtil.markDirty( this.inv, -1 );
+		// NOP
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public class WrapperInvItemHandler implements IInventory
 	@Override
 	public boolean isItemValidForSlot( int index, ItemStack stack )
 	{
-		return ItemHandlerUtil.isItemValidForSlot( this.inv, index, stack );
+		return this.inv.isItemValid( index, stack );
 	}
 
 	@Override

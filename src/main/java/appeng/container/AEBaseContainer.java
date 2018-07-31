@@ -462,7 +462,6 @@ public abstract class AEBaseContainer extends Container
 							else if( destination.isEmpty() )
 							{
 								cs.putStack( tis.copy() );
-								cs.onSlotChanged();
 								this.updateSlot( cs );
 								break;
 							}

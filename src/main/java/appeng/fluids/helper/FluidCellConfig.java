@@ -85,11 +85,11 @@ public class FluidCellConfig extends CellConfig
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int slot, ItemStack stack )
+	public boolean isItemValid( int slot, ItemStack stack )
 	{
 		if( stack.isEmpty() || stack.getItem() instanceof FluidDummyItem )
 		{
-			super.isItemValidForSlot( slot, stack );
+			super.isItemValid( slot, stack );
 		}
 		FluidStack fluid = FluidUtil.getFluidContained( stack );
 		if( fluid == null || !Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).isPresent() )
@@ -100,7 +100,7 @@ public class FluidCellConfig extends CellConfig
 		ItemStack is = Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).get();
 		FluidDummyItem item = (FluidDummyItem) is.getItem();
 		item.setFluidStack( is, fluid );
-		return super.isItemValidForSlot( slot, is );
+		return super.isItemValid( slot, is );
 	}
 
 }

@@ -23,12 +23,13 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.filter.IAEItemFilter;
 
 
-public class WrapperFilteredItemHandler implements IInternalItemHandler
+public class WrapperFilteredItemHandler implements IItemHandlerModifiable
 {
 	private final IItemHandler handler;
 	private final IAEItemFilter filter;
@@ -86,18 +87,12 @@ public class WrapperFilteredItemHandler implements IInternalItemHandler
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int slot, ItemStack stack )
+	public boolean isItemValid( int slot, ItemStack stack )
 	{
 		if( !this.filter.allowInsert( this.handler, slot, stack ) )
 		{
 			return false;
 		}
-		return ItemHandlerUtil.isItemValidForSlot( this.handler, slot, stack );
-	}
-
-	@Override
-	public void markDirty( int slot )
-	{
-		ItemHandlerUtil.markDirty( this.handler, slot );
+		return this.handler.isItemValid( slot, stack );
 	}
 }

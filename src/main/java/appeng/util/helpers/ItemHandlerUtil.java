@@ -24,8 +24,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-import appeng.util.inv.IInternalItemHandler;
-
 
 public class ItemHandlerUtil
 {
@@ -64,37 +62,6 @@ public class ItemHandlerUtil
 			}
 		}
 		return true;
-	}
-
-	public static void markDirty( final IItemHandler inv, final int slot )
-	{
-		if( inv instanceof IInternalItemHandler )
-		{
-			( (IInternalItemHandler) inv ).markDirty( slot );
-		}
-	}
-
-	public static boolean isItemValidForSlot( final IItemHandler inv, int slot, ItemStack stack )
-	{
-		if( stack.isEmpty() )
-		{
-			return false;
-		}
-
-		if( inv instanceof IInternalItemHandler )
-		{
-			return ( (IInternalItemHandler) inv ).isItemValidForSlot( slot, stack );
-		}
-
-		// empty slot
-		ItemStack currentStack = inv.getStackInSlot( slot );
-		setStackInSlot( inv, slot, ItemStack.EMPTY );
-		// test insert
-		ItemStack remainder = inv.insertItem( slot, stack, true );
-		// restore slot
-		setStackInSlot( inv, slot, currentStack );
-
-		return remainder.isEmpty() || remainder.getCount() < stack.getCount();
 	}
 
 	public static void copy( final IItemHandler from, final IItemHandler to, boolean deepCopy )
