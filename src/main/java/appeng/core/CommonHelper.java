@@ -22,6 +22,8 @@ package appeng.core;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.RayTraceResult;
@@ -29,6 +31,7 @@ import net.minecraft.world.World;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.block.AEBaseBlock;
+import appeng.client.ActionKey;
 import appeng.client.EffectType;
 import appeng.core.sync.AppEngPacket;
 
@@ -61,5 +64,9 @@ public abstract class CommonHelper
 	public abstract void triggerUpdates();
 
 	public abstract void updateRenderMode( EntityPlayer player );
+
+	public abstract boolean isKeyPressed( @Nonnull final ActionKey key );
+
+	public abstract boolean isActionKey( @Nonnull final ActionKey key, int pressedKeyCode );
 
 }

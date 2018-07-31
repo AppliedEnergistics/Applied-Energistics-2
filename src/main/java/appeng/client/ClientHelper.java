@@ -21,11 +21,13 @@ package appeng.client;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.tileentity.TileEntity;
@@ -40,6 +42,7 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -74,6 +77,9 @@ import appeng.util.Platform;
 
 public class ClientHelper extends ServerHelper
 {
+	private final static String KEY_CATEGORY = "key.appliedenergistics2.category";
+
+	private final EnumMap<ActionKey, KeyBinding> bindings = new EnumMap<>( ActionKey.class );
 
 	@Override
 	public void preinit()
@@ -92,6 +98,12 @@ public class ClientHelper extends ServerHelper
 	@Override
 	public void init()
 	{
+		for( ActionKey key : ActionKey.values() )
+		{
+			final KeyBinding binding = new KeyBinding( key.getTranslationKey(), key.getDefaultKey(), KEY_CATEGORY );
+			ClientRegistry.registerKeyBinding( binding );
+			this.bindings.put( key, binding );
+		}
 	}
 
 	@Override
@@ -331,5 +343,17 @@ public class ClientHelper extends ServerHelper
 	{
 		ParticleTextures.registerSprite( event );
 		InscriberTESR.registerTexture( event );
+	}
+
+	@Override
+	public boolean isKeyPressed( ActionKey key )
+	{
+		return this.bindings.get( key ).isPressed();
+	}
+
+	@Override
+	public boolean isActionKey( ActionKey key, int pressedKeyCode )
+	{
+		return this.bindings.get( key ).isActiveAndMatches( pressedKeyCode );
 	}
 }

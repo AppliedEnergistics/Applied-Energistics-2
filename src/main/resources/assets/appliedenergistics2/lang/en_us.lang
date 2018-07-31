@@ -620,3 +620,7 @@ achievement.ae2.QNB.desc=Craft a Quantum Link
 stat.ae2.ItemsInserted=Items added to ME Storage
 stat.ae2.ItemsExtracted=Items extracted from ME Storage
 stat.ae2.TurnedCranks=Turned Cranks
+
+//Keys
+key.appliedenergistics2.category=Applied Energistics 2
+key.toggle_focus.desc=Toggle search box focus
