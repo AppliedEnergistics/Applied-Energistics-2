@@ -376,34 +376,6 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		return changed;
 	}
 
-	/**
-	 * Spawns an overflow item as new {@link EntityItem} into the {@link World}
-	 *
-	 * @param overflow the item to spawn
-	 */
-	private void spawnOverflow( final IAEItemStack overflow )
-	{
-		if( overflow == null )
-		{
-			return;
-		}
-
-		final TileEntity te = this.getTile();
-		final WorldServer w = (WorldServer) te.getWorld();
-		final BlockPos offset = te.getPos().offset( this.getSide().getFacing() );
-		final BlockPos add = offset.add( .5, .5, .5 );
-		final double x = add.getX();
-		final double y = add.getY();
-		final double z = add.getZ();
-
-		final EntityItem overflowEntity = new EntityItem( w, x, y, z, overflow.createItemStack() );
-		overflowEntity.motionX = 0;
-		overflowEntity.motionY = 0;
-		overflowEntity.motionZ = 0;
-
-		w.spawnEntity( overflowEntity );
-	}
-
 	protected boolean isAnnihilationPlane( final TileEntity blockTileEntity, final AEPartLocation side )
 	{
 		if( blockTileEntity instanceof IPartHost )
@@ -455,7 +427,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 						if( modulate )
 						{
 							energy.extractAEPower( requiredPower, Actionable.MODULATE, PowerMultiplier.CONFIG );
-							this.breakBlockAndStoreItems( w, pos, items );
+							this.breakBlockAndStoreItems( w, pos );
 							AppEng.proxy.sendToAllNearExcept( null, pos.getX(), pos.getY(), pos.getZ(), 64, w,
 									new PacketTransitionEffect( pos.getX(), pos.getY(), pos.getZ(), this.getSide(), true ) );
 						}
@@ -573,12 +545,11 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 		return canStore;
 	}
 
-	private void breakBlockAndStoreItems( final WorldServer w, final BlockPos pos, final List<ItemStack> items )
+	private void breakBlockAndStoreItems( final WorldServer w, final BlockPos pos )
 	{
-		w.setBlockToAir( pos );
+		w.destroyBlock( pos, true );
 
-		final AxisAlignedBB box = new AxisAlignedBB( pos.getX() - 0.2, pos.getY() - 0.2, pos.getZ() - 0.2, pos.getX() + 1.2, pos.getY() + 1.2, pos
-				.getZ() + 1.2 );
+		final AxisAlignedBB box = new AxisAlignedBB( pos ).grow( 0.2 );
 		for( final Object ei : w.getEntitiesWithinAABB( EntityItem.class, box ) )
 		{
 			if( ei instanceof EntityItem )
@@ -586,12 +557,6 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 				final EntityItem entityItem = (EntityItem) ei;
 				this.storeEntityItem( entityItem );
 			}
-		}
-
-		for( final ItemStack snaggedItem : items )
-		{
-			final IAEItemStack overflow = this.storeItemStack( snaggedItem );
-			this.spawnOverflow( overflow );
 		}
 	}
 
