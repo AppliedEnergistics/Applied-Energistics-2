@@ -25,6 +25,10 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import appeng.api.parts.IFacadeContainer;
+import appeng.api.parts.IFacadePart;
+import appeng.api.util.AEPartLocation;
+import appeng.integration.abstraction.IAEFacade;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
@@ -83,7 +87,7 @@ import appeng.tile.networking.TileCableBusTESR;
 import appeng.util.Platform;
 
 
-public class BlockCableBus extends AEBaseTileBlock
+public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 {
 
 	public static final UnlistedProperty<CableBusRenderState> RENDER_STATE_PROPERTY = new UnlistedProperty<>( "cable_bus_render_state", CableBusRenderState.class );
@@ -122,6 +126,8 @@ public class BlockCableBus extends AEBaseTileBlock
 	public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
 	{
 		CableBusRenderState renderState = this.cb( world, pos ).getRenderState();
+		renderState.setWorld(world);
+		renderState.setPos(pos);
 		return ( (IExtendedBlockState) state ).withProperty( RENDER_STATE_PROPERTY, renderState );
 	}
 
@@ -356,6 +362,20 @@ public class BlockCableBus extends AEBaseTileBlock
 		return out == null ? NULL_CABLE_BUS : out;
 	}
 
+    @Nullable
+    private IFacadeContainer fc(final IBlockAccess w, final BlockPos pos)
+    {
+        final TileEntity te = w.getTileEntity( pos );
+        IFacadeContainer out = null;
+
+        if( te instanceof TileCableBus )
+        {
+            out = ( (TileCableBus) te ).getCableBus().getFacadeContainer();
+        }
+
+        return out;
+    }
+
 	@Override
 	public void onBlockClicked( World worldIn, BlockPos pos, EntityPlayer playerIn )
 	{
@@ -436,17 +456,24 @@ public class BlockCableBus extends AEBaseTileBlock
 	@Override
 	public boolean canRenderInLayer( IBlockState state, BlockRenderLayer layer )
 	{
-		if( AEApi.instance().partHelper().getCableRenderMode().transparentFacades )
-		{
-			return layer == BlockRenderLayer.CUTOUT || layer == BlockRenderLayer.TRANSLUCENT;
-		}
-		else
-		{
-			return layer == BlockRenderLayer.CUTOUT;
-		}
+        return true;
 	}
 
-	public static Class<? extends AEBaseTile> getNoTesrTile()
+    @Override
+    public IBlockState getFacadeState(IBlockAccess world, BlockPos pos, EnumFacing side) {
+        if(side != null) {
+            IFacadeContainer container = fc(world, pos);
+            if(container != null) {
+                IFacadePart facade = container.getFacade(AEPartLocation.fromFacing(side));
+                if (facade != null) {
+                    return facade.getBlockState();
+                }
+            }
+        }
+        return world.getBlockState(pos);
+    }
+
+    public static Class<? extends AEBaseTile> getNoTesrTile()
 	{
 		return noTesrTile;
 	}

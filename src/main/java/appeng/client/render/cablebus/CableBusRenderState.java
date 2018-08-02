@@ -31,7 +31,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
-
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 
 /**
  * This class captures the entire rendering state needed for a cable bus and transports it to the rendering thread
@@ -68,6 +69,9 @@ public class CableBusRenderState
 
 	// Contains the facade to use for each side that has a facade attached
 	private EnumMap<EnumFacing, FacadeRenderState> facades = new EnumMap<>( EnumFacing.class );
+
+	private IBlockAccess world;
+	private BlockPos pos;
 
 	// Contains the bounding boxes of all parts on the cable bus to allow facades to cut out holes for the parts. This
 	// list is only populated if there are
@@ -151,6 +155,26 @@ public class CableBusRenderState
 		return this.facades;
 	}
 
+    public IBlockAccess getWorld()
+    {
+        return world;
+    }
+
+    public void setWorld(IBlockAccess world)
+    {
+        this.world = world;
+    }
+
+    public BlockPos getPos()
+    {
+        return pos;
+    }
+
+    public void setPos(BlockPos pos)
+    {
+        this.pos = pos;
+    }
+
 	public List<AxisAlignedBB> getBoundingBoxes()
 	{
 		return this.boundingBoxes;
@@ -200,5 +224,4 @@ public class CableBusRenderState
 						other.cableBusAdjacent ) && Objects.equals( this.channelsOnSide, other.channelsOnSide ) && Objects.equals( this.connectionTypes,
 								other.connectionTypes ) && Objects.equals( this.partFlags, other.partFlags );
 	}
-
 }
