@@ -87,7 +87,7 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 	@Override
 	public boolean canRenderInLayer( IBlockState state, BlockRenderLayer layer )
 	{
-		return layer == BlockRenderLayer.CUTOUT;
+		return layer == BlockRenderLayer.CUTOUT || layer == BlockRenderLayer.TRANSLUCENT;
 	}
 
 	@Override
