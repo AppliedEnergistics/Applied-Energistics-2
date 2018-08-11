@@ -60,9 +60,9 @@ public class GuiVibrationChamber extends AEBaseGui
 
 		this.pb.setFullMsg( TileVibrationChamber.POWER_PER_TICK * this.cvc.getCurrentProgress() / TileVibrationChamber.DILATION_SCALING + " AE/t" );
 
-		if( this.cvc.getCurrentProgress() > 0 )
+		if( this.cvc.getRemainingBurnTime() > 0 )
 		{
-			final int i1 = this.cvc.getCurrentProgress();
+			final int i1 = this.cvc.getRemainingBurnTime() * 12 / 100;
 			this.bindTexture( "guis/vibchamber.png" );
 			GlStateManager.color( 1, 1, 1 );
 			final int l = -15;

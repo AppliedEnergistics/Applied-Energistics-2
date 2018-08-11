@@ -33,7 +33,9 @@ public class ContainerVibrationChamber extends AEBaseContainer implements IProgr
 {
 	private final TileVibrationChamber vibrationChamber;
 	@GuiSync( 0 )
-	public int burnProgress = 0;
+	public int burnSpeed = 0;
+	@GuiSync( 1 )
+	public int remainingBurnTime = 0;
 
 	public ContainerVibrationChamber( final InventoryPlayer ip, final TileVibrationChamber vibrationChamber )
 	{
@@ -51,17 +53,23 @@ public class ContainerVibrationChamber extends AEBaseContainer implements IProgr
 	{
 		if( Platform.isServer() )
 		{
-			this.burnProgress = ( this.vibrationChamber.getMaxBurnTime() <= 0 || this.vibrationChamber.getBurnTime() <= 0 ) ? 0 : this.vibrationChamber
-					.getBurnSpeed();
-		}
+			this.remainingBurnTime = this.vibrationChamber
+					.getMaxBurnTime() <= 0 ? 0 : (int) ( 100.0 * this.vibrationChamber.getBurnTime() / this.vibrationChamber.getMaxBurnTime() );
+			this.burnSpeed = this.remainingBurnTime <= 0 ? 0 : this.vibrationChamber.getBurnSpeed();
 
+		}
 		super.detectAndSendChanges();
 	}
 
 	@Override
 	public int getCurrentProgress()
 	{
-		return this.burnProgress;
+		return this.burnSpeed;
+	}
+
+	public int getRemainingBurnTime()
+	{
+		return this.remainingBurnTime;
 	}
 
 	@Override
