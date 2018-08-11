@@ -467,7 +467,6 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 		return this.config;
 	}
 
-	@SuppressWarnings( "Duplicates" )
 	@Nonnull
 	@Override
 	public IPartModel getStaticModels()
