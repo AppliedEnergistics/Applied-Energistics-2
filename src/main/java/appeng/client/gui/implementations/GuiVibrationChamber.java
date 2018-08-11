@@ -58,7 +58,7 @@ public class GuiVibrationChamber extends AEBaseGui
 		this.fontRenderer.drawString( this.getGuiDisplayName( GuiText.VibrationChamber.getLocal() ), 8, 6, 4210752 );
 		this.fontRenderer.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
-		this.pb.setFullMsg( this.cvc.getAePerTick() * this.cvc.getCurrentProgress() / 100 + " AE/t" );
+		this.pb.setFullMsg( TileVibrationChamber.POWER_PER_TICK * this.cvc.getCurrentProgress() / TileVibrationChamber.DILATION_SCALING + " AE/t" );
 
 		if( this.cvc.getCurrentProgress() > 0 )
 		{

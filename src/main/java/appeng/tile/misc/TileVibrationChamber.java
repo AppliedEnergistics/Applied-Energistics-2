@@ -53,10 +53,10 @@ import appeng.util.inv.filter.IAEItemFilter;
 
 public class TileVibrationChamber extends AENetworkInvTile implements IGridTickable
 {
-	private static final double POWER_PER_TICK = 5;
-	private static final int MAX_BURN_SPEED = 200;
-	private static final double DILATION_SCALING = 25.0; // x4 ~ 40 AE/t at max
-	private static final int MIN_BURN_SPEED = 20;
+	public static final double POWER_PER_TICK = 5;
+	public static final int MIN_BURN_SPEED = 20;
+	public static final int MAX_BURN_SPEED = 200;
+	public static final double DILATION_SCALING = 25.0; // x4 ~ 40 AE/t at max
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 1 );
 	private final IItemHandler invExt = new WrapperFilteredItemHandler( inv, new FuelSlotFilter() );
 
