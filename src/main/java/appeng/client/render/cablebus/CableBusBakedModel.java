@@ -58,18 +58,15 @@ public class CableBusBakedModel implements IBakedModel
 
 	private final CableBuilder cableBuilder;
 
-	private final FacadeBuilder facadeBuilder;
-
 	private final Map<ResourceLocation, IBakedModel> partModels;
 
 	private final TextureAtlasSprite particleTexture;
 
 	private final TextureMap textureMap = Minecraft.getMinecraft().getTextureMapBlocks();
 
-	CableBusBakedModel( CableBuilder cableBuilder, FacadeBuilder facadeBuilder, Map<ResourceLocation, IBakedModel> partModels, TextureAtlasSprite particleTexture )
+	CableBusBakedModel( CableBuilder cableBuilder, Map<ResourceLocation, IBakedModel> partModels, TextureAtlasSprite particleTexture )
 	{
 		this.cableBuilder = cableBuilder;
-		this.facadeBuilder = facadeBuilder;
 		this.partModels = partModels;
 		this.particleTexture = particleTexture;
 	}

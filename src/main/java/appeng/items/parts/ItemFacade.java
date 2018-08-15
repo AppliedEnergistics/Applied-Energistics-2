@@ -183,10 +183,11 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			return ItemStack.EMPTY;
 		}
 
-		final boolean defaultValue = ( b
-				.isTopSolid( blockState ) && hasSimpleModel( blockState ) && !b.getTickRandomly() && !hasTile && !disableOre ) || enableGlass;
-		if( FacadeConfig.instance().checkEnabled( b, metadata, defaultValue ) )
-		{
+//		final boolean defaultValue = ( b
+//				.isTopSolid( blockState ) && hasSimpleModel( blockState ) && !b.getTickRandomly() && !hasTile && !disableOre ) || enableGlass;
+//		if( FacadeConfig.instance().checkEnabled( b, metadata, defaultValue ) )
+//		{
+        if(blockState.getRenderType() == EnumBlockRenderType.MODEL && !hasTile) {
 			if( returnItem )
 			{
 				return l;

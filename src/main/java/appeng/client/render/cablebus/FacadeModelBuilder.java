@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.color.BlockColors;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -145,6 +146,43 @@ public class FacadeModelBuilder {
                 }
             }
         }
+    }
+
+    /**
+     * This is slow, so should be cached.
+     *
+     * @return The model.
+     */
+    public static List<BakedQuad> buildFacadeItemQuads(ItemStack textureItem, EnumFacing side) {
+        List<BakedQuad> facadeQuads = new ArrayList<>();
+        IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(textureItem, null, null);
+        List<BakedQuad> modelQuads = gatherQuads(model, null, 0);
+
+        BakedPipeline pipeline = pipelines.get();
+        Quad collectorQuad = collectors.get();
+
+        QuadClamper clamper = pipeline.getElement("clamper", QuadClamper.class);
+        QuadTinter tinter = pipeline.getElement("tinter", QuadTinter.class);
+
+        for (BakedQuad quad : modelQuads) {
+            CachedFormat format = CachedFormat.lookup(quad.getFormat());
+            pipeline.reset(format);
+            collectorQuad.reset(format);
+            if (quad.hasTintIndex()) {
+                tinter.setTint(Minecraft.getMinecraft().getItemColors().colorMultiplier(textureItem, quad.getTintIndex()));
+                pipeline.enableElement("tinter");
+            }
+            pipeline.disableElement("face_stripper");
+            pipeline.disableElement("corner_kicker");
+            clamper.setClampBounds(getFacadeBox(side, false));
+            pipeline.prepare(collectorQuad);
+            quad.pipe(pipeline);
+            if (collectorQuad.full) {
+                facadeQuads.add(collectorQuad.bakeUnpacked());
+            }
+
+        }
+        return facadeQuads;
     }
 
     private static List<BakedQuad> gatherQuads(IBakedModel model, IBlockState state, long rand) {

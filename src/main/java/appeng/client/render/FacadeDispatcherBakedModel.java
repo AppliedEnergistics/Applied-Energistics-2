@@ -86,11 +86,9 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel
 
 				ItemFacade itemFacade = (ItemFacade) stack.getItem();
 
-				IBlockState state = itemFacade.getTextureBlockState( stack );
 				ItemStack textureItem = itemFacade.getTextureItem( stack );
 
-				return new FacadeWithBlockBakedModel( FacadeDispatcherBakedModel.this
-						.getBaseModel(), state, textureItem, FacadeDispatcherBakedModel.this.format );
+				return new FacadeBakedItemModel(getBaseModel(), textureItem);
 			}
 		};
 	}

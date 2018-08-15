@@ -23,6 +23,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
     public CachedFormat format;
 
     public int tintIndex = -1;
+    //TODO, sometimes this is null because people don't do models properly.
     public EnumFacing orientation;
     public boolean diffuseLighting = true;
     public TextureAtlasSprite sprite;
@@ -308,6 +309,9 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
          * @return The same Vertex.
          */
         public Vertex clamp(AxisAlignedBB bb) {
+            //TODO, we could potentially change the direction a quad is facing.
+            //TODO, This should be moved up to Quad, and some smarter logic be performed.
+            //TODO, re-calculate normals IF the quad has changed in orientation.
             vec[0] = (float) MathHelper.clamp(vec[0], bb.minX, bb.maxX);
             vec[1] = (float) MathHelper.clamp(vec[1], bb.minY, bb.maxY);
             vec[2] = (float) MathHelper.clamp(vec[2], bb.minZ, bb.maxZ);
