@@ -1299,6 +1299,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return null;
 	}
 
+    @Deprecated
 	private EnumSet<EnumFacing> calculateFaceOpenFaces( EnumFacing side )
 	{
 		final EnumSet<EnumFacing> out = EnumSet.of( side, side.getOpposite() );

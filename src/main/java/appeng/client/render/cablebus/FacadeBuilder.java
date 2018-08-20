@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -30,20 +31,41 @@ import java.util.function.Function;
 /**
  * Created by covers1624 on 22/06/18.
  */
-public class FacadeModelBuilder {
+public class FacadeBuilder {
 
-    private static ThreadLocal<BakedPipeline> pipelines = ThreadLocal.withInitial(() -> BakedPipeline.builder()//
-            .addElement("clamper", QuadClamper.FACTORY)//
-            .addElement("face_stripper", QuadFaceStripper.FACTORY)//
-            .addElement("corner_kicker", QuadCornerKicker.FACTORY)//
-            .addElement("interp", QuadReInterpolator.FACTORY)//
-            .addElement("tinter", QuadTinter.FACTORY, false)//
-            .addElement("transparent", QuadAlphaOverride.FACTORY, false, e -> e.setAlphaOverride(0x4C / 255F))//
+    public static double THICK_THICKNESS = 2D / 16D;
+    public static double THIN_THICKNESS = 1D / 16D;
+
+    public static final AxisAlignedBB[] THICK_FACADE_BOXES = new AxisAlignedBB[] {//
+            new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, THICK_THICKNESS, 1.0),//
+            new AxisAlignedBB(0.0, 1.0 - THICK_THICKNESS, 0.0, 1.0, 1.0, 1.0),//
+            new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.0, THICK_THICKNESS),//
+            new AxisAlignedBB(0.0, 0.0, 1.0 - THICK_THICKNESS, 1.0, 1.0, 1.0),//
+            new AxisAlignedBB(0.0, 0.0, 0.0, THICK_THICKNESS, 1.0, 1.0),//
+            new AxisAlignedBB(1.0 - THICK_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0)//
+    };
+
+    public static final AxisAlignedBB[] THIN_FACADE_BOXES = new AxisAlignedBB[] {//
+            new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, THIN_THICKNESS, 1.0),//
+            new AxisAlignedBB(0.0, 1.0 - THIN_THICKNESS, 0.0, 1.0, 1.0, 1.0),//
+            new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.0, THIN_THICKNESS),//
+            new AxisAlignedBB(0.0, 0.0, 1.0 - THIN_THICKNESS, 1.0, 1.0, 1.0),//
+            new AxisAlignedBB(0.0, 0.0, 0.0, THIN_THICKNESS, 1.0, 1.0),//
+            new AxisAlignedBB(1.0 - THIN_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0)//
+    };
+
+    private ThreadLocal<BakedPipeline> pipelines = ThreadLocal.withInitial(() -> BakedPipeline.builder()//
+            .addElement("clamper", QuadClamper.FACTORY)// Clamper is responsible for clamping the vertex to the bounds specified.
+            .addElement("face_stripper", QuadFaceStripper.FACTORY)//Strips faces if they match a mask.
+            .addElement("corner_kicker", QuadCornerKicker.FACTORY)//Kicks the edge inner corners in, solves Z fighting
+            .addElement("interp", QuadReInterpolator.FACTORY)//Re-Interpolates the UV's for the quad.
+            .addElement("tinter", QuadTinter.FACTORY, false)// Tints the quad if we need it to. Disabled by default.
+            .addElement("transparent", QuadAlphaOverride.FACTORY, false, e -> e.setAlphaOverride(0x4C / 255F))//Overrides the quad's alpha if we are forcing transparent facades.
             .build()//
     );
-    private static ThreadLocal<Quad> collectors = ThreadLocal.withInitial(Quad::new);
+    private ThreadLocal<Quad> collectors = ThreadLocal.withInitial(Quad::new);
 
-    public static void buildFacadeQuads(BlockRenderLayer layer, CableBusRenderState renderState, long rand, List<BakedQuad> quads, Function<ResourceLocation, IBakedModel> modelLookup) {
+    public void buildFacadeQuads(BlockRenderLayer layer, CableBusRenderState renderState, long rand, List<BakedQuad> quads, Function<ResourceLocation, IBakedModel> modelLookup) {
         BakedPipeline pipeline = pipelines.get();
         Quad collectorQuad = collectors.get();
         boolean transparent = AEApi.instance().partHelper().getCableRenderMode().transparentFacades;
@@ -57,6 +79,7 @@ public class FacadeModelBuilder {
 
         for (Entry<EnumFacing, FacadeRenderState> entry : facadeStates.entrySet()) {
             EnumFacing side = entry.getKey();
+            int sideIndex = side.ordinal();
             FacadeRenderState facadeRenderState = entry.getValue();
             boolean renderStilt = !sidesWithParts.contains(side);
             if (layer == BlockRenderLayer.CUTOUT && renderStilt) {
@@ -66,20 +89,22 @@ public class FacadeModelBuilder {
                     quads.addAll(rotator.rotateQuads(gatherQuads(partModel, null, rand), side, EnumFacing.UP));
                 }
             }
+            //If we are forcing transparency and this isn't the Translucent layer.
             if (transparent && layer != BlockRenderLayer.TRANSLUCENT) {
                 continue;
             }
 
             IBlockState blockState = facadeRenderState.getSourceBlock();
+            //If we aren't forcing transparency let the block decide if it should render.
             if (!transparent) {
                 if (!blockState.getBlock().canRenderInLayer(blockState, layer)) {
                     continue;
                 }
             }
 
-            AxisAlignedBB facadeBox = getFacadeBox(side, thinFacades);
+            AxisAlignedBB facadeBox = thinFacades ? THIN_FACADE_BOXES[sideIndex] : THICK_FACADE_BOXES[sideIndex];
             AEAxisAlignedBB cutOutBox = getCutOutBox(facadeBox, partBoxes);
-            List<AxisAlignedBB> holeStrips = getBoxes(facadeBox, cutOutBox, side.ordinal() >> 1);
+            List<AxisAlignedBB> holeStrips = getBoxes(facadeBox, cutOutBox, side.getAxis());
             IBlockAccess facadeAccess = new FacadeBlockAccess(parentWorld, pos, side, blockState);
 
             BlockRendererDispatcher dispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
@@ -95,52 +120,73 @@ public class FacadeModelBuilder {
             }
 
             List<BakedQuad> modelQuads = new ArrayList<>();
+            //If we are forcing transparent facades, fake the render layer, and grab all quads.
             if (transparent) {
                 for (BlockRenderLayer forcedLayer : BlockRenderLayer.values()) {
+                    //Check if the block renders on the layer we want to force.
                     if (blockState.getBlock().canRenderInLayer(blockState, forcedLayer)) {
+                        //Force the layer and gather quads.
                         ForgeHooksClient.setRenderLayer(forcedLayer);
                         modelQuads.addAll(gatherQuads(model, blockState, rand));
                     }
                 }
 
+                //Reset.
                 ForgeHooksClient.setRenderLayer(layer);
             } else {
                 modelQuads.addAll(gatherQuads(model, blockState, rand));
             }
 
+            //No quads.. Cool, next!
             if (modelQuads.isEmpty()) {
                 continue;
             }
 
+            //Grab out pipeline elements.
             QuadClamper clamper = pipeline.getElement("clamper", QuadClamper.class);
             QuadFaceStripper edgeStripper = pipeline.getElement("face_stripper", QuadFaceStripper.class);
             QuadTinter tinter = pipeline.getElement("tinter", QuadTinter.class);
             QuadCornerKicker kicker = pipeline.getElement("corner_kicker", QuadCornerKicker.class);
 
-            int facadeMask = makeMask(facadeStates.keySet(), side);
+            //Set global element states.
+
+            //calculate the side mask.
+            int facadeMask = makeSideMask(facadeStates.keySet(), side);
+            //Setup the edge stripper.
             edgeStripper.setBounds(facadeBox);
             edgeStripper.setMask(facadeMask);
 
-            kicker.setSide(side.ordinal());
+            //Setup the kicker.
+            kicker.setSide(sideIndex);
             kicker.setFacadeMask(facadeMask);
             kicker.setBox(facadeBox);
-            kicker.setThickness((thinFacades ? 1 : 2) / 16.0);
+            kicker.setThickness(thinFacades ? THIN_THICKNESS : THICK_THICKNESS);
 
             for (BakedQuad quad : modelQuads) {
+                //lookup the format in CachedFormat.
                 CachedFormat format = CachedFormat.lookup(quad.getFormat());
+                //If this quad has a tint index, setup the tinter.
                 if (quad.hasTintIndex()) {
                     tinter.setTint(blockColors.colorMultiplier(blockState, facadeAccess, pos, quad.getTintIndex()));
                 }
                 for (AxisAlignedBB box : holeStrips) {
+                    //setup the clamper for this box
                     clamper.setClampBounds(box);
+                    //Reset the pipeline, clears all enabled/disabled states.
                     pipeline.reset(format);
+                    //Reset out collector.
                     collectorQuad.reset(format);
+                    //Enable / disable the optional elements
                     pipeline.setElementState("tinter", quad.hasTintIndex());
                     pipeline.setElementState("transparent", transparent);
+                    //Prepare the pipeline for a quad.
                     pipeline.prepare(collectorQuad);
 
+                    //Pipe our quad into the pipeline.
                     quad.pipe(pipeline);
+                    //Check if the collector got any data.
                     if (collectorQuad.full) {
+                        //Add the result.
                         quads.add(collectorQuad.bake());
                     }
                 }
@@ -153,7 +199,7 @@ public class FacadeModelBuilder {
      *
      * @return The model.
      */
-    public static List<BakedQuad> buildFacadeItemQuads(ItemStack textureItem, EnumFacing side) {
+    public List<BakedQuad> buildFacadeItemQuads(ItemStack textureItem, EnumFacing side) {
         List<BakedQuad> facadeQuads = new ArrayList<>();
         IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(textureItem, null, null);
         List<BakedQuad> modelQuads = gatherQuads(model, null, 0);
@@ -161,22 +207,32 @@ public class FacadeModelBuilder {
         BakedPipeline pipeline = pipelines.get();
         Quad collectorQuad = collectors.get();
 
+        //Grab pipeline elements.
         QuadClamper clamper = pipeline.getElement("clamper", QuadClamper.class);
         QuadTinter tinter = pipeline.getElement("tinter", QuadTinter.class);
 
         for (BakedQuad quad : modelQuads) {
+            //Lookup the CachedFormat for this quads format.
             CachedFormat format = CachedFormat.lookup(quad.getFormat());
+            //Reset the pipeline.
             pipeline.reset(format);
+            //Reset the collector.
             collectorQuad.reset(format);
+            //If we have a tint index, setup the tinter and enable it.
             if (quad.hasTintIndex()) {
                 tinter.setTint(Minecraft.getMinecraft().getItemColors().colorMultiplier(textureItem, quad.getTintIndex()));
                 pipeline.enableElement("tinter");
             }
+            //Disable elements we don't need for items.
             pipeline.disableElement("face_stripper");
             pipeline.disableElement("corner_kicker");
-            clamper.setClampBounds(getFacadeBox(side, false));
+            //Setup the clamper
+            clamper.setClampBounds(THICK_FACADE_BOXES[side.ordinal()]);
+            //Prepare the pipeline.
             pipeline.prepare(collectorQuad);
+            //Pipe our quad into the pipeline.
             quad.pipe(pipeline);
+            //Check the collector for data and add the quad if there was.
             if (collectorQuad.full) {
                 facadeQuads.add(collectorQuad.bakeUnpacked());
             }
@@ -185,6 +241,7 @@ public class FacadeModelBuilder {
         return facadeQuads;
     }
 
+    //Helper to gather all quads from a model into a list.
     private static List<BakedQuad> gatherQuads(IBakedModel model, IBlockState state, long rand) {
         List<BakedQuad> modelQuads = new ArrayList<>();
         for (EnumFacing face : EnumFacing.VALUES) {
@@ -219,40 +276,63 @@ public class FacadeModelBuilder {
         return b;
     }
 
-    private static List<AxisAlignedBB> getBoxes(AxisAlignedBB fb, AEAxisAlignedBB hole, int axis) {
+    /**
+     * Generates the box segments around the specified hole.
+     * If the specified hole is null, a Singleton of the Facade box is returned.
+     *
+     * @param fb   The Facade's box.
+     * @param hole The hole to 'cut'.
+     * @param axis The axis the facade is on.
+     * @return The box segments.
+     */
+    private static List<AxisAlignedBB> getBoxes(AxisAlignedBB fb, AEAxisAlignedBB hole, Axis axis) {
         if (hole == null) {
             return Collections.singletonList(fb);
         }
-        //axis == 0, Up, Down
-        //axis == 1, North, South
-        //axis == 2, West, East
         List<AxisAlignedBB> boxes = new ArrayList<>();
-        if (axis == 0) {//Up, Down, X, Z
-            boxes.add(new AxisAlignedBB(fb.minX, fb.minY, fb.minZ, hole.minX, fb.maxY, fb.maxZ));
-            boxes.add(new AxisAlignedBB(hole.maxX, fb.minY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
+        switch (axis) {
+            case Y:
+                boxes.add(new AxisAlignedBB(fb.minX, fb.minY, fb.minZ, hole.minX, fb.maxY, fb.maxZ));
+                boxes.add(new AxisAlignedBB(hole.maxX, fb.minY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
 
-            boxes.add(new AxisAlignedBB(hole.minX, fb.minY, fb.minZ, hole.maxX, fb.maxY, hole.minZ));
-            boxes.add(new AxisAlignedBB(hole.minX, fb.minY, hole.maxZ, hole.maxX, fb.maxY, fb.maxZ));
+                boxes.add(new AxisAlignedBB(hole.minX, fb.minY, fb.minZ, hole.maxX, fb.maxY, hole.minZ));
+                boxes.add(new AxisAlignedBB(hole.minX, fb.minY, hole.maxZ, hole.maxX, fb.maxY, fb.maxZ));
 
-        } else if (axis == 1) { //North, South, X, Y
-            boxes.add(new AxisAlignedBB(fb.minX, fb.minY, fb.minZ, fb.maxX, hole.minY, fb.maxZ));
-            boxes.add(new AxisAlignedBB(fb.minX, hole.maxY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
+                break;
+            case Z:
+                boxes.add(new AxisAlignedBB(fb.minX, fb.minY, fb.minZ, fb.maxX, hole.minY, fb.maxZ));
+                boxes.add(new AxisAlignedBB(fb.minX, hole.maxY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
 
-            boxes.add(new AxisAlignedBB(fb.minX, hole.minY, fb.minZ, hole.minX, hole.maxY, fb.maxZ));
-            boxes.add(new AxisAlignedBB(hole.maxX, hole.minY, fb.minZ, fb.maxX, hole.maxY, fb.maxZ));
+                boxes.add(new AxisAlignedBB(fb.minX, hole.minY, fb.minZ, hole.minX, hole.maxY, fb.maxZ));
+                boxes.add(new AxisAlignedBB(hole.maxX, hole.minY, fb.minZ, fb.maxX, hole.maxY, fb.maxZ));
 
-        } else { // West, East, Y, Z
-            boxes.add(new AxisAlignedBB(fb.minX, fb.minY, fb.minZ, fb.maxX, hole.minY, fb.maxZ));
-            boxes.add(new AxisAlignedBB(fb.minX, hole.maxY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
+                break;
+            case X:
+                boxes.add(new AxisAlignedBB(fb.minX, fb.minY, fb.minZ, fb.maxX, hole.minY, fb.maxZ));
+                boxes.add(new AxisAlignedBB(fb.minX, hole.maxY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ));
 
-            boxes.add(new AxisAlignedBB(fb.minX, hole.minY, fb.minZ, fb.maxX, hole.maxY, hole.minZ));
-            boxes.add(new AxisAlignedBB(fb.minX, hole.minY, hole.maxZ, fb.maxX, hole.maxY, fb.maxZ));
+                boxes.add(new AxisAlignedBB(fb.minX, hole.minY, fb.minZ, fb.maxX, hole.maxY, hole.minZ));
+                boxes.add(new AxisAlignedBB(fb.minX, hole.minY, hole.maxZ, fb.maxX, hole.maxY, fb.maxZ));
+                break;
+            default:
+                //should never happen.
+                throw new RuntimeException("switch falloff. " + String.valueOf(axis));
         }
 
         return boxes;
     }
 
-    public static int makeMask(Set<EnumFacing> facadeSides, EnumFacing mySide) {
+    /**
+     * Sets bits in a mask int. Iterates over the passed in Set of EnumFacings,
+     * if the facing its currently on doesnt have the same axis as mySide, then its bit
+     * is set in the mask.
+     * The mask is simple: mask = 1 << side
+     *
+     * @param facadeSides The sides to build the mask from.
+     * @param mySide      'Our' side, its axis will be ignored.
+     * @return The mask.
+     */
+    public static int makeSideMask(Set<EnumFacing> facadeSides, EnumFacing mySide) {
         int i = 0;
         for (EnumFacing side : facadeSides) {
             //Build a mask, we only care about directions that are not on our axis.
@@ -285,26 +365,5 @@ public class FacadeModelBuilder {
             }
         }
         return false;
-    }
-
-    private static AxisAlignedBB getFacadeBox(EnumFacing side, boolean thinFacades) {
-        double thickness = (thinFacades ? 1 : 2) / 16.0;
-
-        switch (side) {
-            case DOWN:
-                return new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, thickness, 1.0);
-            case EAST:
-                return new AxisAlignedBB(1.0 - thickness, 0.0, 0.0, 1.0, 1.0, 1.0);
-            case NORTH:
-                return new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 1.0, thickness);
-            case SOUTH:
-                return new AxisAlignedBB(0.0, 0.0, 1.0 - thickness, 1.0, 1.0, 1.0);
-            case UP:
-                return new AxisAlignedBB(0.0, 1.0 - thickness, 0.0, 1.0, 1.0, 1.0);
-            case WEST:
-                return new AxisAlignedBB(0.0, 0.0, 0.0, thickness, 1.0, 1.0);
-            default:
-                throw new IllegalArgumentException("Unsupported face: " + side);
-        }
     }
 }

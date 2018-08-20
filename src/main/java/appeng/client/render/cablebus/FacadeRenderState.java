@@ -20,6 +20,7 @@ public class FacadeRenderState
 	private final IBlockState sourceBlock;
 
 	// Which faces of the cube should be rendered for this particular facade
+    @Deprecated // This can be removed?
 	private final EnumSet<EnumFacing> openFaces;
 
 	// For resolving the tint indices of a facade
@@ -37,6 +38,7 @@ public class FacadeRenderState
 		return this.sourceBlock;
 	}
 
+    @Deprecated
 	public EnumSet<EnumFacing> getOpenFaces()
 	{
 		return this.openFaces;

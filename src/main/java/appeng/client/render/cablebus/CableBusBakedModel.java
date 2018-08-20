@@ -57,6 +57,7 @@ public class CableBusBakedModel implements IBakedModel
 	private static final Map<CableBusRenderState, List<BakedQuad>> CABLE_MODEL_CACHE = new HashMap<>();
 
 	private final CableBuilder cableBuilder;
+	private final FacadeBuilder facadeBuilder;
 
 	private final Map<ResourceLocation, IBakedModel> partModels;
 
@@ -64,10 +65,11 @@ public class CableBusBakedModel implements IBakedModel
 
 	private final TextureMap textureMap = Minecraft.getMinecraft().getTextureMapBlocks();
 
-	CableBusBakedModel( CableBuilder cableBuilder, Map<ResourceLocation, IBakedModel> partModels, TextureAtlasSprite particleTexture )
+	CableBusBakedModel(CableBuilder cableBuilder, FacadeBuilder facadeBuilder, Map<ResourceLocation, IBakedModel> partModels, TextureAtlasSprite particleTexture)
 	{
 		this.cableBuilder = cableBuilder;
-		this.partModels = partModels;
+        this.facadeBuilder = facadeBuilder;
+        this.partModels = partModels;
 		this.particleTexture = particleTexture;
 	}
 
@@ -136,14 +138,7 @@ public class CableBusBakedModel implements IBakedModel
 				}
 			}
 		}
-        FacadeModelBuilder.buildFacadeQuads(layer, renderState, rand, quads, partModels::get);
-//		this.facadeBuilder.addFacades(
-//				layer,
-//				renderState.getFacades(),
-//				renderState.getBoundingBoxes(),
-//				renderState.getAttachments().keySet(),
-//				rand,
-//				quads );
+        facadeBuilder.buildFacadeQuads(layer, renderState, rand, quads, partModels::get);
 
 		return quads;
 	}

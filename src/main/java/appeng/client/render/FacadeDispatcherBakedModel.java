@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import appeng.client.render.cablebus.FacadeBuilder;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -45,12 +46,14 @@ import appeng.items.parts.ItemFacade;
 public class FacadeDispatcherBakedModel extends DelegateBakedModel
 {
 	private final VertexFormat format;
+	private final FacadeBuilder facadeBuilder;
 
-	public FacadeDispatcherBakedModel( IBakedModel baseModel, VertexFormat format )
+	public FacadeDispatcherBakedModel(IBakedModel baseModel, VertexFormat format, FacadeBuilder facadeBuilder)
 	{
 		super( baseModel );
 		this.format = format;
-	}
+        this.facadeBuilder = facadeBuilder;
+    }
 
 	// This is never used. See the item override list below.
 	@Override
@@ -88,7 +91,7 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel
 
 				ItemStack textureItem = itemFacade.getTextureItem( stack );
 
-				return new FacadeBakedItemModel(getBaseModel(), textureItem);
+				return new FacadeBakedItemModel(getBaseModel(), textureItem, facadeBuilder);
 			}
 		};
 	}

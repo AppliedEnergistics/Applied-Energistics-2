@@ -1,6 +1,6 @@
 package appeng.client.render;
 
-import appeng.client.render.cablebus.FacadeModelBuilder;
+import appeng.client.render.cablebus.FacadeBuilder;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -19,10 +19,12 @@ import java.util.List;
 public class FacadeBakedItemModel extends DelegateBakedModel {
 
     private final ItemStack textureStack;
+    private final FacadeBuilder facadeBuilder;
 
-    protected FacadeBakedItemModel(IBakedModel base, ItemStack textureStack) {
+    protected FacadeBakedItemModel(IBakedModel base, ItemStack textureStack, FacadeBuilder facadeBuilder) {
         super(base);
         this.textureStack = textureStack;
+        this.facadeBuilder = facadeBuilder;
     }
 
     @Override
@@ -31,7 +33,7 @@ public class FacadeBakedItemModel extends DelegateBakedModel {
             return Collections.emptyList();
         }
         List<BakedQuad> quads = new ArrayList<>();
-        quads.addAll(FacadeModelBuilder.buildFacadeItemQuads(textureStack, EnumFacing.NORTH));
+        quads.addAll(facadeBuilder.buildFacadeItemQuads(textureStack, EnumFacing.NORTH));
         quads.addAll(getBaseModel().getQuads(state, side, rand));
         return quads;
     }

@@ -19,6 +19,7 @@
 package appeng.client.render.cablebus;
 
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -70,7 +71,8 @@ public class CableBusRenderState
 	// Contains the facade to use for each side that has a facade attached
 	private EnumMap<EnumFacing, FacadeRenderState> facades = new EnumMap<>( EnumFacing.class );
 
-	private IBlockAccess world;
+	//Used for Facades.
+	private WeakReference<IBlockAccess> world;
 	private BlockPos pos;
 
 	// Contains the bounding boxes of all parts on the cable bus to allow facades to cut out holes for the parts. This
@@ -157,12 +159,12 @@ public class CableBusRenderState
 
     public IBlockAccess getWorld()
     {
-        return world;
+        return world.get();
     }
 
     public void setWorld(IBlockAccess world)
     {
-        this.world = world;
+        this.world = new WeakReference<>(world);
     }
 
     public BlockPos getPos()
