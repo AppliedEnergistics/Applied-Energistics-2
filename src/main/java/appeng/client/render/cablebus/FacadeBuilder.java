@@ -102,7 +102,50 @@ public class FacadeBuilder {
                 }
             }
 
-            AxisAlignedBB facadeBox = thinFacades ? THIN_FACADE_BOXES[sideIndex] : THICK_FACADE_BOXES[sideIndex];
+            AxisAlignedBB fullBounds = thinFacades ? THIN_FACADE_BOXES[sideIndex] : THICK_FACADE_BOXES[sideIndex];
+            AxisAlignedBB facadeBox = fullBounds;
+            //If we are a transparent facade, we need to modify out BB.
+            if (facadeRenderState.isTransparent()) {
+                double offset = thinFacades ? THIN_THICKNESS : THICK_THICKNESS;
+                AEAxisAlignedBB tmpBB = null;
+                for (EnumFacing face : EnumFacing.VALUES) {
+                    //Only faces that aren't on our axis
+                    if (face.getAxis() != side.getAxis()) {
+                        FacadeRenderState otherState = facadeStates.get(face);
+                        if (otherState != null && !otherState.isTransparent()) {
+                            if (tmpBB == null) {
+                                tmpBB = AEAxisAlignedBB.fromBounds(facadeBox);
+                            }
+                            switch (face) {
+                                case DOWN:
+                                    tmpBB.minY += offset;
+                                    break;
+                                case UP:
+                                    tmpBB.maxY -= offset;
+                                    break;
+                                case NORTH:
+                                    tmpBB.minZ += offset;
+                                    break;
+                                case SOUTH:
+                                    tmpBB.maxZ -= offset;
+                                    break;
+                                case WEST:
+                                    tmpBB.minX += offset;
+                                    break;
+                                case EAST:
+                                    tmpBB.maxX -= offset;
+                                    break;
+                                default:
+                                    throw new RuntimeException("Switch falloff. " + String.valueOf(face));
+                            }
+                        }
+                    }
+                }
+                if (tmpBB != null) {
+                    facadeBox = tmpBB.getBoundingBox();
+                }
+            }
+
             AEAxisAlignedBB cutOutBox = getCutOutBox(facadeBox, partBoxes);
             List<AxisAlignedBB> holeStrips = getBoxes(facadeBox, cutOutBox, side.getAxis());
             IBlockAccess facadeAccess = new FacadeBlockAccess(parentWorld, pos, side, blockState);
@@ -151,15 +194,24 @@ public class FacadeBuilder {
             //Set global element states.
 
             //calculate the side mask.
-            int facadeMask = makeSideMask(facadeStates.keySet(), side);
+            int facadeMask = 0;
+            for (Entry<EnumFacing, FacadeRenderState> ent : facadeStates.entrySet()) {
+                EnumFacing s = ent.getKey();
+                if (s.getAxis() != side.getAxis()) {
+                    FacadeRenderState otherState = ent.getValue();
+                    if (!otherState.isTransparent()) {
+                        facadeMask |= 1 << s.ordinal();
+                    }
+                }
+            }
             //Setup the edge stripper.
-            edgeStripper.setBounds(facadeBox);
+            edgeStripper.setBounds(fullBounds);
             edgeStripper.setMask(facadeMask);
 
             //Setup the kicker.
             kicker.setSide(sideIndex);
             kicker.setFacadeMask(facadeMask);
-            kicker.setBox(facadeBox);
+            kicker.setBox(fullBounds);
             kicker.setThickness(thinFacades ? THIN_THICKNESS : THICK_THICKNESS);
 
             for (BakedQuad quad : modelQuads) {
@@ -320,27 +372,6 @@ public class FacadeBuilder {
         }
 
         return boxes;
-    }
-
-    /**
-     * Sets bits in a mask int. Iterates over the passed in Set of EnumFacings,
-     * if the facing its currently on doesnt have the same axis as mySide, then its bit
-     * is set in the mask.
-     * The mask is simple: mask = 1 << side
-     *
-     * @param facadeSides The sides to build the mask from.
-     * @param mySide      'Our' side, its axis will be ignored.
-     * @return The mask.
-     */
-    public static int makeSideMask(Set<EnumFacing> facadeSides, EnumFacing mySide) {
-        int i = 0;
-        for (EnumFacing side : facadeSides) {
-            //Build a mask, we only care about directions that are not on our axis.
-            if (side.getAxis() != mySide.getAxis()) {
-                i = i | (1 << side.ordinal());
-            }
-        }
-        return i;
     }
 
     /**

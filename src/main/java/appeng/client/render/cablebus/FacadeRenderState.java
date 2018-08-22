@@ -23,14 +23,17 @@ public class FacadeRenderState
     @Deprecated // This can be removed?
 	private final EnumSet<EnumFacing> openFaces;
 
+    private final boolean transparent;
+
 	// For resolving the tint indices of a facade
 	private final ItemStack textureItem;
 
-	public FacadeRenderState( IBlockState sourceBlock, EnumSet<EnumFacing> openFaces, ItemStack textureItem )
+	public FacadeRenderState(IBlockState sourceBlock, EnumSet<EnumFacing> openFaces, boolean transparent, ItemStack textureItem)
 	{
 		this.sourceBlock = sourceBlock;
 		this.openFaces = openFaces;
-		this.textureItem = textureItem;
+        this.transparent = transparent;
+        this.textureItem = textureItem;
 	}
 
 	public IBlockState getSourceBlock()
@@ -44,9 +47,13 @@ public class FacadeRenderState
 		return this.openFaces;
 	}
 
+	@Deprecated
 	public int resolveTintColor( int tintIndex )
 	{
 		return Minecraft.getMinecraft().getItemColors().colorMultiplier( this.textureItem, tintIndex );
 	}
 
+    public boolean isTransparent() {
+        return transparent;
+    }
 }

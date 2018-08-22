@@ -1292,7 +1292,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			if( blockState != null && textureItem != null )
 			{
 				final EnumSet<EnumFacing> openFaces = this.calculateFaceOpenFaces( side );
-				return new FacadeRenderState( blockState, openFaces, textureItem );
+				return new FacadeRenderState( blockState, openFaces, !facade.getBlockState().isOpaqueCube(), textureItem );
 			}
 		}
 
