@@ -1,5 +1,5 @@
-
 package appeng.client.render.cablebus;
+
 
 import net.minecraft.block.state.IBlockState;
 
@@ -13,12 +13,12 @@ public class FacadeRenderState
 	// The block state to use for rendering this facade
 	private final IBlockState sourceBlock;
 
-    private final boolean transparent;
+	private final boolean transparent;
 
 	public FacadeRenderState( IBlockState sourceBlock, boolean transparent )
 	{
 		this.sourceBlock = sourceBlock;
-        this.transparent = transparent;
+		this.transparent = transparent;
 	}
 
 	public IBlockState getSourceBlock()
@@ -26,8 +26,8 @@ public class FacadeRenderState
 		return this.sourceBlock;
 	}
 
-    public boolean isTransparent()
-    {
-        return transparent;
-    }
+	public boolean isTransparent()
+	{
+		return transparent;
+	}
 }

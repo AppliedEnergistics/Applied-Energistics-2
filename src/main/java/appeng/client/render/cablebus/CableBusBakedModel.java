@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.state.IBlockState;
@@ -57,6 +56,7 @@ public class CableBusBakedModel implements IBakedModel
 	private static final Map<CableBusRenderState, List<BakedQuad>> CABLE_MODEL_CACHE = new HashMap<>();
 
 	private final CableBuilder cableBuilder;
+
 	private final FacadeBuilder facadeBuilder;
 
 	private final Map<ResourceLocation, IBakedModel> partModels;
@@ -65,11 +65,11 @@ public class CableBusBakedModel implements IBakedModel
 
 	private final TextureMap textureMap = Minecraft.getMinecraft().getTextureMapBlocks();
 
-	CableBusBakedModel(CableBuilder cableBuilder, FacadeBuilder facadeBuilder, Map<ResourceLocation, IBakedModel> partModels, TextureAtlasSprite particleTexture)
+	CableBusBakedModel( CableBuilder cableBuilder, FacadeBuilder facadeBuilder, Map<ResourceLocation, IBakedModel> partModels, TextureAtlasSprite particleTexture )
 	{
 		this.cableBuilder = cableBuilder;
-        this.facadeBuilder = facadeBuilder;
-        this.partModels = partModels;
+		this.facadeBuilder = facadeBuilder;
+		this.partModels = partModels;
 		this.particleTexture = particleTexture;
 	}
 
@@ -88,14 +88,13 @@ public class CableBusBakedModel implements IBakedModel
 		List<BakedQuad> quads = new ArrayList<>();
 
 		// The core parts of the cable will only be rendered in the CUTOUT layer.
-        // Facades will add them selves to what ever the block would be rendered with,
-        // except when transparent facades are enabled, they are forced to TRANSPARENT.
+		// Facades will add them selves to what ever the block would be rendered with,
+		// except when transparent facades are enabled, they are forced to TRANSPARENT.
 		if( layer == BlockRenderLayer.CUTOUT )
 		{
 
 			// First, handle the cable at the center of the cable bus
-			final List<BakedQuad> cableModel = CABLE_MODEL_CACHE.computeIfAbsent( renderState, k ->
-			{
+			final List<BakedQuad> cableModel = CABLE_MODEL_CACHE.computeIfAbsent( renderState, k -> {
 				final List<BakedQuad> model = new ArrayList<>();
 				this.addCableQuads( renderState, model );
 				return model;
@@ -138,7 +137,7 @@ public class CableBusBakedModel implements IBakedModel
 				}
 			}
 		}
-        facadeBuilder.buildFacadeQuads(layer, renderState, rand, quads, partModels::get);
+		facadeBuilder.buildFacadeQuads( layer, renderState, rand, quads, partModels::get );
 
 		return quads;
 	}
