@@ -28,15 +28,21 @@ public class InterpHelper {
      * Does not care what order the vertices are in.
      */
     public void reset(float dx0, float dy0, float dx1, float dy1, float dx2, float dy2, float dx3, float dy3) {
-        posCache[0][0] = dx0;
-        posCache[1][0] = dx1;
-        posCache[2][0] = dx2;
-        posCache[3][0] = dx3;
 
-        posCache[0][1] = dy0;
-        posCache[1][1] = dy1;
-        posCache[2][1] = dy2;
-        posCache[3][1] = dy3;
+        float[] vec0 = posCache[0];
+        float[] vec1 = posCache[1];
+        float[] vec2 = posCache[2];
+        float[] vec3 = posCache[3];
+
+        vec0[0] = dx0;
+        vec1[0] = dx1;
+        vec2[0] = dx2;
+        vec3[0] = dx3;
+
+        vec0[1] = dy0;
+        vec1[1] = dy1;
+        vec2[1] = dy2;
+        vec3[1] = dy3;
     }
 
     /**

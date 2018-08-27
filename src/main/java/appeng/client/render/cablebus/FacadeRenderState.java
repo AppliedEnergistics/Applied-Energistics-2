@@ -1,13 +1,7 @@
 
 package appeng.client.render.cablebus;
 
-
-import java.util.EnumSet;
-
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 
 
 /**
@@ -19,21 +13,12 @@ public class FacadeRenderState
 	// The block state to use for rendering this facade
 	private final IBlockState sourceBlock;
 
-	// Which faces of the cube should be rendered for this particular facade
-    @Deprecated // This can be removed?
-	private final EnumSet<EnumFacing> openFaces;
-
     private final boolean transparent;
 
-	// For resolving the tint indices of a facade
-	private final ItemStack textureItem;
-
-	public FacadeRenderState(IBlockState sourceBlock, EnumSet<EnumFacing> openFaces, boolean transparent, ItemStack textureItem)
+	public FacadeRenderState( IBlockState sourceBlock, boolean transparent )
 	{
 		this.sourceBlock = sourceBlock;
-		this.openFaces = openFaces;
         this.transparent = transparent;
-        this.textureItem = textureItem;
 	}
 
 	public IBlockState getSourceBlock()
@@ -41,19 +26,8 @@ public class FacadeRenderState
 		return this.sourceBlock;
 	}
 
-    @Deprecated
-	public EnumSet<EnumFacing> getOpenFaces()
-	{
-		return this.openFaces;
-	}
-
-	@Deprecated
-	public int resolveTintColor( int tintIndex )
-	{
-		return Minecraft.getMinecraft().getItemColors().colorMultiplier( this.textureItem, tintIndex );
-	}
-
-    public boolean isTransparent() {
+    public boolean isTransparent()
+    {
         return transparent;
     }
 }

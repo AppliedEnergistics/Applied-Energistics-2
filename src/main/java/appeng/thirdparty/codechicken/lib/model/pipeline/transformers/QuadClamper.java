@@ -34,12 +34,11 @@ public class QuadClamper extends QuadTransformer {
     @Override
     public boolean transform() {
         int s = quad.orientation.ordinal() >> 1;
-        Vertex[] vertices = quad.vertices;
-        for (Vertex vertex : vertices) {
-            vertex.clamp(clampBounds);
-        }
+
+        quad.clamp(clampBounds);
 
         //Check if the quad would be invisible and cull it.
+        Vertex[] vertices = quad.vertices;
         float x1 = vertices[0].dx(s);
         float x2 = vertices[1].dx(s);
         float x3 = vertices[2].dx(s);

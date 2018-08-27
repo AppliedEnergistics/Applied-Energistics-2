@@ -12,6 +12,7 @@ import net.minecraftforge.client.model.pipeline.IVertexProducer;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 
+import javax.vecmath.Vector3f;
 import java.util.Arrays;
 
 /**
@@ -33,6 +34,11 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
 
     //Not copied.
     private int vertexIndex = 0;
+    //Cache for normal computation.
+    private Vector3f v1 = new Vector3f();
+    private Vector3f v2 = new Vector3f();
+    private Vector3f t = new Vector3f();
+    private Vector3f normal = new Vector3f();
 
     /**
      * Use this if you reset the quad each time you use it.
@@ -117,6 +123,42 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
     }
 
     /**
+     * Clamps the Quad inside the box.
+     *
+     * @param bb The box.
+     */
+    public void clamp(AxisAlignedBB bb) {
+        for (Vertex vertex : vertices) {
+            float[] vec = vertex.vec;
+            vec[0] = (float) MathHelper.clamp(vec[0], bb.minX, bb.maxX);
+            vec[1] = (float) MathHelper.clamp(vec[1], bb.minY, bb.maxY);
+            vec[2] = (float) MathHelper.clamp(vec[2], bb.minZ, bb.maxZ);
+        }
+
+        v1.set(vertices[3].vec);
+        t.set(vertices[1].vec);
+        v1.sub(t);
+
+        v2.set(vertices[2].vec);
+        t.set(vertices[0].vec);
+        v2.sub(t);
+
+        normal.cross(v2, v1);
+        normal.normalize();
+
+        if (format.hasNormal) {
+            for (Vertex vertex : vertices) {
+                vertex.normal[0] = normal.x;
+                vertex.normal[1] = normal.y;
+                vertex.normal[2] = normal.z;
+                vertex.normal[3] = 0;
+
+            }
+        }
+        orientation = EnumFacing.getFacingFromVector(normal.x, normal.y, normal.z);
+    }
+
+    /**
      * Used to create a new quad complete copy of this one.
      *
      * @return The new quad.
@@ -152,9 +194,6 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
         full = quad.full;
         for (int v = 0; v < 4; v++) {
             for (int e = 0; e < format.elementCount; e++) {
-                if (vertices[v] == null) {
-                    vertices[v] = new Vertex(format);
-                }
                 System.arraycopy(quad.vertices[v].raw[e], 0, vertices[v].raw[e], 0, 4);
             }
         }
@@ -172,10 +211,12 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
         orientation = null;
         diffuseLighting = true;
         sprite = null;
-        for (Vertex v : vertices) {
-            if (v != null) {
-                v.reset(format);
+        for (int i = 0; i < vertices.length; i++) {
+            Vertex v = vertices[i];
+            if(v == null) {
+                vertices[i] = v = new Vertex(format);
             }
+            v.reset(format);
         }
         vertexIndex = 0;
         full = false;
@@ -303,22 +344,6 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
         }
 
         /**
-         * Clamps the vertex inside the BoundingBox.
-         *
-         * @param bb The box.
-         * @return The same Vertex.
-         */
-        public Vertex clamp(AxisAlignedBB bb) {
-            //TODO, we could potentially change the direction a quad is facing.
-            //TODO, This should be moved up to Quad, and some smarter logic be performed.
-            //TODO, re-calculate normals IF the quad has changed in orientation.
-            vec[0] = (float) MathHelper.clamp(vec[0], bb.minX, bb.maxX);
-            vec[1] = (float) MathHelper.clamp(vec[1], bb.minY, bb.maxY);
-            vec[2] = (float) MathHelper.clamp(vec[2], bb.minZ, bb.maxZ);
-            return this;
-        }
-
-        /**
          * Interpolates the new color values for this Vertex using the others as a reference.
          *
          * @param interpHelper The InterpHelper to use.
@@ -407,9 +432,9 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer {
             uv = null;
             lightmap = null;
 
-            for (float[] f : raw) {
-                Arrays.fill(f, 0F);
-            }
+//            for (float[] f : raw) {
+//                Arrays.fill(f, 0F);
+//            }
 
             preProcess();
         }

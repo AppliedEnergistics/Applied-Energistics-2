@@ -1291,80 +1291,10 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 			if( blockState != null && textureItem != null )
 			{
-				final EnumSet<EnumFacing> openFaces = this.calculateFaceOpenFaces( side );
-				return new FacadeRenderState( blockState, openFaces, !facade.getBlockState().isOpaqueCube(), textureItem );
+				return new FacadeRenderState( blockState, !facade.getBlockState().isOpaqueCube() );
 			}
 		}
 
 		return null;
 	}
-
-    @Deprecated
-	private EnumSet<EnumFacing> calculateFaceOpenFaces( EnumFacing side )
-	{
-		final EnumSet<EnumFacing> out = EnumSet.of( side, side.getOpposite() );
-		final IFacadePart facade = this.getFacade( side.ordinal() );
-		final IBlockAccess blockAccess = this.getTile().getWorld();
-		final BlockPos pos = this.getTile().getPos();
-
-		for( final EnumFacing it : EnumFacing.values() )
-		{
-			if( !out.contains( it ) && this.hasAlphaDiff( blockAccess.getTileEntity( pos.offset( it ) ), side, facade ) )
-			{
-				out.add( it );
-			}
-		}
-
-		if( out.contains( EnumFacing.UP ) && ( side.getFrontOffsetX() != 0 || side.getFrontOffsetZ() != 0 ) )
-		{
-			final IFacadePart fp = this.getFacade( EnumFacing.UP.ordinal() );
-			if( fp != null && ( fp.isTransparent() == facade.isTransparent() ) )
-			{
-				out.remove( EnumFacing.UP );
-			}
-		}
-
-		if( out.contains( EnumFacing.DOWN ) && ( side.getFrontOffsetX() != 0 || side.getFrontOffsetZ() != 0 ) )
-		{
-			final IFacadePart fp = this.getFacade( EnumFacing.DOWN.ordinal() );
-			if( fp != null && ( fp.isTransparent() == facade.isTransparent() ) )
-			{
-				out.remove( EnumFacing.DOWN );
-			}
-		}
-
-		if( out.contains( EnumFacing.SOUTH ) && ( side.getFrontOffsetX() != 0 ) )
-		{
-			final IFacadePart fp = this.getFacade( EnumFacing.SOUTH.ordinal() );
-			if( fp != null && ( fp.isTransparent() == facade.isTransparent() ) )
-			{
-				out.remove( EnumFacing.SOUTH );
-			}
-		}
-
-		if( out.contains( EnumFacing.NORTH ) && ( side.getFrontOffsetX() != 0 ) )
-		{
-			final IFacadePart fp = this.getFacade( EnumFacing.NORTH.ordinal() );
-			if( fp != null && ( fp.isTransparent() == facade.isTransparent() ) )
-			{
-				out.remove( EnumFacing.NORTH );
-			}
-		}
-
-		return out;
-	}
-
-	private boolean hasAlphaDiff( final TileEntity tileEntity, final EnumFacing side, final IFacadePart facade )
-	{
-		if( tileEntity instanceof IPartHost )
-		{
-			final IPartHost ph = (IPartHost) tileEntity;
-			final IFacadePart fp = ph.getFacadeContainer().getFacade( AEPartLocation.fromFacing( side ) );
-
-			return fp == null || ( fp.isTransparent() != facade.isTransparent() );
-		}
-
-		return true;
-	}
-
 }
