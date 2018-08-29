@@ -22,11 +22,8 @@ package appeng.parts.misc;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
@@ -37,7 +34,6 @@ import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartModel;
 import appeng.api.storage.ICellContainer;
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.IMEInventoryHandler;
@@ -45,11 +41,8 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
-import appeng.core.AppEng;
 import appeng.helpers.IPriorityHost;
-import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
-import appeng.parts.PartModel;
 import appeng.parts.automation.PartUpgradeable;
 
 
@@ -60,14 +53,6 @@ import appeng.parts.automation.PartUpgradeable;
  */
 public abstract class PartSharedStorageBus extends PartUpgradeable implements IGridTickable, ICellContainer, IPriorityHost
 {
-	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_base" );
-	@PartModels
-	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_off" ) );
-	@PartModels
-	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_on" ) );
-	@PartModels
-	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, new ResourceLocation( AppEng.MOD_ID, "part/storage_bus_has_channel" ) );
-
 	private boolean wasActive = false;
 	private int priority = 0;
 
@@ -206,24 +191,5 @@ public abstract class PartSharedStorageBus extends PartUpgradeable implements IG
 	public float getCableConnectionLength( AECableType cable )
 	{
 		return 4;
-	}
-
-	@SuppressWarnings( "Duplicates" )
-	@Nonnull
-	@Override
-	public IPartModel getStaticModels()
-	{
-		if( this.isActive() && this.isPowered() )
-		{
-			return MODELS_HAS_CHANNEL;
-		}
-		else if( this.isPowered() )
-		{
-			return MODELS_ON;
-		}
-		else
-		{
-			return MODELS_OFF;
-		}
 	}
 }
