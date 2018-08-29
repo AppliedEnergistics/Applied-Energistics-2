@@ -11,10 +11,15 @@ before_cache:
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
   - rm -f  $HOME/.gradle/caches/minecraft/deobfedDeps/providedDummy.jar
   - rm -f  $HOME/.gradle/caches/minecraft/deobfedDeps/compileDummy.jar
+
 cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
+addons:
+  sonarcloud:
+    organization: "appliedenergistics"
+
 install: "./gradlew setupCIWorkspace"
-script: "./gradlew build test"
+script: "./gradlew build test sonarqube"
