@@ -30,6 +30,7 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -78,7 +79,9 @@ public final class AppEng
 
 	public static final String ASSETS = "appliedenergistics2:";
 
-	public static final String MOD_DEPENDENCIES = "";
+	private static final String FORGE_CURRENT_VERSION = ForgeVersion.majorVersion + "." + ForgeVersion.minorVersion + "." + ForgeVersion.revisionVersion + "." + ForgeVersion.buildVersion;
+	private static final String FORGE_MAX_VERSION = ( ForgeVersion.majorVersion + 1 ) + ".0.0.0";
+	public static final String MOD_DEPENDENCIES = "required-after:forge@[" + FORGE_CURRENT_VERSION + "," + FORGE_MAX_VERSION + ")";
 
 	@Nonnull
 	private static final AppEng INSTANCE = new AppEng();
