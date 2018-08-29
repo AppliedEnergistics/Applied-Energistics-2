@@ -30,6 +30,11 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
+
+plugins {
+  id "org.sonarqube" version "2.6"
+}
+
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 repositories {
