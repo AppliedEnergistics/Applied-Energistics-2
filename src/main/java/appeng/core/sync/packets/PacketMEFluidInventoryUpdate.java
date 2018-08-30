@@ -84,7 +84,7 @@ public class PacketMEFluidInventoryUpdate extends AppEngPacket
 
 		// int originalBytes = stream.readableBytes();
 
-		final GZIPInputStream gzReader = new GZIPInputStream( new InputStream()
+		try( final GZIPInputStream gzReader = new GZIPInputStream( new InputStream()
 		{
 			@Override
 			public int read() throws IOException
@@ -96,26 +96,26 @@ public class PacketMEFluidInventoryUpdate extends AppEngPacket
 
 				return stream.readByte() & STREAM_MASK;
 			}
-		} );
-
-		final ByteBuf uncompressed = Unpooled.buffer( stream.readableBytes() );
-		final byte[] tmp = new byte[TEMP_BUFFER_SIZE];
-		while( gzReader.available() != 0 )
+		} ) )
 		{
-			final int bytes = gzReader.read( tmp );
-			if( bytes > 0 )
+
+			final ByteBuf uncompressed = Unpooled.buffer( stream.readableBytes() );
+			final byte[] tmp = new byte[TEMP_BUFFER_SIZE];
+
+			while( gzReader.available() != 0 )
 			{
-				uncompressed.writeBytes( tmp, 0, bytes );
+				final int bytes = gzReader.read( tmp );
+
+				if( bytes > 0 )
+				{
+					uncompressed.writeBytes( tmp, 0, bytes );
+				}
 			}
-		}
-		gzReader.close();
 
-		// int uncompressedBytes = uncompressed.readableBytes();
-		// AELog.info( "Receiver: " + originalBytes + " -> " + uncompressedBytes );
-
-		while( uncompressed.readableBytes() > 0 )
-		{
-			this.list.add( AEFluidStack.fromPacket( uncompressed ) );
+			while( uncompressed.readableBytes() > 0 )
+			{
+				this.list.add( AEFluidStack.fromPacket( uncompressed ) );
+			}
 		}
 
 		this.empty = this.list.isEmpty();
