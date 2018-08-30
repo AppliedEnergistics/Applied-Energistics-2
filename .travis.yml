@@ -12,6 +12,7 @@ before_cache:
   - rm -f $HOME/.gradle/caches/minecraft/ForgeVersion.json
   - rm -f $HOME/.gradle/caches/minecraft/ForgeVersion.json.etag
   - rm -fr $HOME/.gradle/caches/minecraft/deobfedDeps
+  - rm -f $HOME/.gradle/caches/4.8/fileHashes/fileHashes.*
 
 cache:
   directories:
