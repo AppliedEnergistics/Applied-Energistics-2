@@ -102,11 +102,9 @@ final class MinecraftItemCSVExporter implements Exporter
 
 		final File file = new File( this.exportDirectory, ITEM_CSV_FILE_NAME );
 
-		try
+		try( final Writer writer = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), Charset.forName( "UTF-8" ) ) ) )
 		{
 			FileUtils.forceMkdir( this.exportDirectory );
-
-			final Writer writer = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), Charset.forName( "UTF-8" ) ) );
 
 			final String header = this.mode == ExportMode.MINIMAL ? MINIMAL_HEADER : VERBOSE_HEADER;
 			writer.write( header );

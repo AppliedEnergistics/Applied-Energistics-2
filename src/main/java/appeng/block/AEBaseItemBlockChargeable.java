@@ -56,15 +56,18 @@ public class AEBaseItemBlockChargeable extends AEBaseItemBlock implements IAEIte
 		double internalCurrentPower = 0;
 		final double internalMaxPower = this.getMaxEnergyCapacity();
 
-		if( tag != null )
+		if( internalMaxPower > 0 )
 		{
-			internalCurrentPower = tag.getDouble( "internalCurrentPower" );
+			if( tag != null )
+			{
+				internalCurrentPower = tag.getDouble( "internalCurrentPower" );
+			}
+
+			final double percent = internalCurrentPower / internalMaxPower;
+
+			lines.add( GuiText.StoredEnergy.getLocal() + ':' + MessageFormat.format( " {0,number,#} ", internalCurrentPower ) + Platform
+					.gui_localize( PowerUnits.AE.unlocalizedName ) + " - " + MessageFormat.format( " {0,number,#.##%} ", percent ) );
 		}
-
-		final double percent = internalCurrentPower / internalMaxPower;
-
-		lines.add( GuiText.StoredEnergy.getLocal() + ':' + MessageFormat.format( " {0,number,#} ", internalCurrentPower ) + Platform
-				.gui_localize( PowerUnits.AE.unlocalizedName ) + " - " + MessageFormat.format( " {0,number,#.##%} ", percent ) );
 	}
 
 	@Override
