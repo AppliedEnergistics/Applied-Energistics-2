@@ -111,7 +111,6 @@ final class MinecraftItemCSVExporter implements Exporter
 			writer.write( "\n" );
 			writer.write( joined );
 			writer.flush();
-			writer.close();
 
 			AELog.info( EXPORT_SUCCESSFUL_MESSAGE, lines.size(), ITEM_CSV_FILE_NAME );
 		}
