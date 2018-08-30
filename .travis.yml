@@ -19,8 +19,6 @@ cache:
     - '$HOME/.sonar/cache'
     - '$HOME/.gradle/wrapper'
     - '$HOME/.gradle/caches'
-    - '$HOME/.gradle/minecraft'
-    - '.gradle'
 
 addons:
   sonarcloud:
