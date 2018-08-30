@@ -5,13 +5,6 @@ language: java
 jdk:
   - oraclejdk8
   - openjdk8
-
-before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-  - rm -f  $HOME/.gradle/caches/minecraft/deobfedDeps/providedDummy.jar
-  - rm -f  $HOME/.gradle/caches/minecraft/deobfedDeps/compileDummy.jar
-
 cache:
   directories:
     - '$HOME/.m2/repository'
