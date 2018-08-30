@@ -40,7 +40,6 @@ import appeng.api.util.IConfigManager;
 import appeng.container.interfaces.IInventorySlotAware;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.util.ConfigManager;
-import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
 
@@ -97,22 +96,17 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 	@Override
 	public IConfigManager getConfigManager()
 	{
-		final ConfigManager out = new ConfigManager( new IConfigManagerHost()
+		final ConfigManager out = new ConfigManager( ( manager, settingName, newValue ) ->
 		{
-
-			@Override
-			public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
-			{
-				final NBTTagCompound data = Platform.openNbtData( PortableCellViewer.this.target );
-				manager.writeToNBT( data );
-			}
+			final NBTTagCompound data = Platform.openNbtData( PortableCellViewer.this.target );
+			manager.writeToNBT( data );
 		} );
 
 		out.registerSetting( Settings.SORT_BY, SortOrder.NAME );
 		out.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
 		out.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 
-		out.readFromNBT( (NBTTagCompound) Platform.openNbtData( this.target ).copy() );
+		out.readFromNBT( Platform.openNbtData( this.target ).copy() );
 		return out;
 	}
 }

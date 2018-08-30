@@ -138,7 +138,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 						}
 
 						aeAmmo.setStackSize( 1 );
-						final ItemStack ammo = ( (IAEItemStack) aeAmmo ).createItemStack();
+						final ItemStack ammo = aeAmmo.createItemStack();
 						if( ammo == null )
 						{
 							return new ActionResult<>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );

@@ -20,7 +20,6 @@ package appeng.items.tools.powered;
 
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -293,15 +292,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 					list.add( i );
 				}
 
-				Collections.sort( list, new Comparator<IAEItemStack>()
-				{
-
-					@Override
-					public int compare( final IAEItemStack a, final IAEItemStack b )
-					{
-						return Integer.compare( a.getItemDamage(), b.getItemDamage() );
-					}
-				} );
+				Collections.sort( list, ( a, b ) -> Integer.compare( a.getItemDamage(), b.getItemDamage() ) );
 
 				if( list.size() <= 0 )
 				{

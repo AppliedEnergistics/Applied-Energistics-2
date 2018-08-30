@@ -32,7 +32,7 @@ public class ContainerFluidFormationPlane extends ContainerFluidConfigurable
 	@Override
 	public IAEFluidTank getFluidConfigInventory()
 	{
-		return plane.getConfig();
+		return this.plane.getConfig();
 	}
 
 	@Override

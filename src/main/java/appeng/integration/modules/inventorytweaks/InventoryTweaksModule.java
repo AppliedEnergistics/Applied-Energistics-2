@@ -18,7 +18,7 @@ public class InventoryTweaksModule implements IInvTweaks
 	{
 		try
 		{
-			api = (InvTweaksAPI) Class.forName( "invtweaks.forge.InvTweaksMod", true, Loader.instance().getModClassLoader() )
+			this.api = (InvTweaksAPI) Class.forName( "invtweaks.forge.InvTweaksMod", true, Loader.instance().getModClassLoader() )
 					.getField( "instance" )
 					.get( null );
 		}
@@ -30,12 +30,12 @@ public class InventoryTweaksModule implements IInvTweaks
 	@Override
 	public boolean isEnabled()
 	{
-		return api != null;
+		return this.api != null;
 	}
 
 	@Override
 	public int compareItems( ItemStack i, ItemStack j )
 	{
-		return api.compareItems( i, j );
+		return this.api.compareItems( i, j );
 	}
 }

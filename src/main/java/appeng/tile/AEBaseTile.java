@@ -222,7 +222,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		{
 			this.renderFragment = 100;
 
-			output = readFromStream( stream );
+			output = this.readFromStream( stream );
 
 			if( ( this.renderFragment & 1 ) == 1 )
 			{

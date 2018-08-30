@@ -351,7 +351,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 
 		void outputChanged( ItemStack added, ItemStack removed )
 		{
-			itemInventory.updateOutput( added, removed );
+			this.itemInventory.updateOutput( added, removed );
 		}
 
 		@Nullable

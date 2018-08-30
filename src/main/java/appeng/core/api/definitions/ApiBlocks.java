@@ -1067,6 +1067,6 @@ public final class ApiBlocks implements IBlocks
 
 	public IBlockDefinition energyGenerator()
 	{
-		return energyGenerator;
+		return this.energyGenerator;
 	}
 }

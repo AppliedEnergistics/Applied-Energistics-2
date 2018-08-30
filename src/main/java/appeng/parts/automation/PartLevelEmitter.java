@@ -266,7 +266,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		{
 			if( this.myEnergyWatcher != null )
 			{
-				this.myEnergyWatcher.add( (double) this.reportingValue );
+				this.myEnergyWatcher.add( this.reportingValue );
 			}
 
 			try

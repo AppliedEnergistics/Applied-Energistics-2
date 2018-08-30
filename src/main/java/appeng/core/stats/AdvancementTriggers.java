@@ -31,10 +31,10 @@ public class AdvancementTriggers
 
 	public AdvancementTriggers( ICriterionTriggerRegistry registry )
 	{
-		registry.register( networkApprentice );
-		registry.register( networkEngineer );
-		registry.register( networkAdmin );
-		registry.register( spatialExplorer );
+		registry.register( this.networkApprentice );
+		registry.register( this.networkEngineer );
+		registry.register( this.networkAdmin );
+		registry.register( this.spatialExplorer );
 	}
 
 	public IAdvancementTrigger getNetworkApprentice()

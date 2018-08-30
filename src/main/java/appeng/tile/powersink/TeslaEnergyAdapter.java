@@ -42,7 +42,7 @@ class TeslaEnergyAdapter implements ITeslaConsumer
 	public long givePower( long power, boolean simulated )
 	{
 		// Cut it down to what we can represent in a double
-		double offeredPower = (double) power;
+		double offeredPower = power;
 
 		final double overflow = this.sink.injectExternalPower( PowerUnits.RF, offeredPower, simulated ? Actionable.SIMULATE : Actionable.MODULATE );
 

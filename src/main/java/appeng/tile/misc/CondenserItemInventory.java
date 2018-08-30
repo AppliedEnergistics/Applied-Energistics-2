@@ -70,11 +70,11 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonito
 	public IAEItemStack extractItems( final IAEItemStack request, final Actionable mode, final IActionSource src )
 	{
 		AEItemStack ret = null;
-		ItemStack slotItem = target.getOutputSlot().getStackInSlot( 0 );
+		ItemStack slotItem = this.target.getOutputSlot().getStackInSlot( 0 );
 		if( !slotItem.isEmpty() && request.isSameType( slotItem ) )
 		{
 			int count = (int) Math.min( request.getStackSize(), Integer.MAX_VALUE );
-			ret = AEItemStack.fromItemStack( target.getOutputSlot().extractItem( 0, count, mode == Actionable.SIMULATE ) );
+			ret = AEItemStack.fromItemStack( this.target.getOutputSlot().extractItem( 0, count, mode == Actionable.SIMULATE ) );
 		}
 		return ret;
 	}
@@ -82,9 +82,9 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonito
 	@Override
 	public IItemList<IAEItemStack> getAvailableItems( final IItemList<IAEItemStack> out )
 	{
-		if( !target.getOutputSlot().getStackInSlot( 0 ).isEmpty() )
+		if( !this.target.getOutputSlot().getStackInSlot( 0 ).isEmpty() )
 		{
-			out.add( AEItemStack.fromItemStack( target.getOutputSlot().getStackInSlot( 0 ) ) );
+			out.add( AEItemStack.fromItemStack( this.target.getOutputSlot().getStackInSlot( 0 ) ) );
 		}
 		return out;
 	}

@@ -80,11 +80,13 @@ public class OptionalSlotFake extends SlotFake implements IOptionalSlot
 		this.renderDisabled = renderDisabled;
 	}
 
+	@Override
 	public int getSourceX()
 	{
 		return this.srcX;
 	}
 
+	@Override
 	public int getSourceY()
 	{
 		return this.srcY;

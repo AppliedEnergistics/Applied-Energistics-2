@@ -120,11 +120,11 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	{
 		if( this.iHost instanceof IUpgradeableHost )
 		{
-			return (IUpgradeableHost) this.iHost;
+			return this.iHost;
 		}
 		if( this.iHost instanceof IUpgradeableHost )
 		{
-			return (IUpgradeableHost) this.iHost;
+			return this.iHost;
 		}
 		return null;
 	}

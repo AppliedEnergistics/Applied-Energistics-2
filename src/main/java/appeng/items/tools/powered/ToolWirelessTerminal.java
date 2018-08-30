@@ -45,7 +45,6 @@ import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.ConfigManager;
-import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
 
@@ -121,22 +120,17 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	@Override
 	public IConfigManager getConfigManager( final ItemStack target )
 	{
-		final ConfigManager out = new ConfigManager( new IConfigManagerHost()
+		final ConfigManager out = new ConfigManager( ( manager, settingName, newValue ) ->
 		{
-
-			@Override
-			public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
-			{
-				final NBTTagCompound data = Platform.openNbtData( target );
-				manager.writeToNBT( data );
-			}
+			final NBTTagCompound data = Platform.openNbtData( target );
+			manager.writeToNBT( data );
 		} );
 
 		out.registerSetting( Settings.SORT_BY, SortOrder.NAME );
 		out.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
 		out.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 
-		out.readFromNBT( (NBTTagCompound) Platform.openNbtData( target ).copy() );
+		out.readFromNBT( Platform.openNbtData( target ).copy() );
 		return out;
 	}
 

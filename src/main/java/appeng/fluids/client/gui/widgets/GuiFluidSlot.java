@@ -85,7 +85,7 @@ public class GuiFluidSlot extends GuiCustomSlot
 	@Override
 	public String getMessage()
 	{
-		final IAEFluidStack fluid = getFluidStack();
+		final IAEFluidStack fluid = this.getFluidStack();
 		if( fluid != null )
 		{
 			return fluid.getFluidStack().getLocalizedName();

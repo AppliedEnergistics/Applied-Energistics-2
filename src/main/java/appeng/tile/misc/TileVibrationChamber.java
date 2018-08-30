@@ -58,7 +58,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	private static final double DILATION_SCALING = 25.0; // x4 ~ 40 AE/t at max
 	private static final int MIN_BURN_SPEED = 20;
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 1 );
-	private final IItemHandler invExt = new WrapperFilteredItemHandler( inv, new FuelSlotFilter() );
+	private final IItemHandler invExt = new WrapperFilteredItemHandler( this.inv, new FuelSlotFilter() );
 
 	private int burnSpeed = 100;
 	private double burnTime = 0;

@@ -150,7 +150,7 @@ public class PacketJEIRecipe extends AppEngPacket
 				if( !currentItem.isEmpty() )
 				{
 					// already the correct item?
-					ItemStack newItem = canUseInSlot( x, currentItem );
+					ItemStack newItem = this.canUseInSlot( x, currentItem );
 
 					// put away old item
 					if( newItem != currentItem && security.hasPermission( player, SecurityPermissions.INJECT ) )

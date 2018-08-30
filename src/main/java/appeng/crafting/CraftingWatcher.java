@@ -64,7 +64,7 @@ public class CraftingWatcher implements ICraftingWatcher
 	@Override
 	public boolean remove( final IAEStack o )
 	{
-		return this.myInterests.remove( o ) && this.gsc.getInterestManager().remove( (IAEStack) o, this );
+		return this.myInterests.remove( o ) && this.gsc.getInterestManager().remove( o, this );
 	}
 
 	@Override

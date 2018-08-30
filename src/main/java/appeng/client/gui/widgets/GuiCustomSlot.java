@@ -23,7 +23,7 @@ public abstract class GuiCustomSlot extends Gui implements ITooltip
 
 	public int getId()
 	{
-		return id;
+		return this.id;
 	}
 
 	public boolean canClick( final EntityPlayer player )

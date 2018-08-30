@@ -188,7 +188,7 @@ public class CableBusRenderState
 		{
 			return false;
 		}
-		if( getClass() != obj.getClass() )
+		if( this.getClass() != obj.getClass() )
 		{
 			return false;
 		}

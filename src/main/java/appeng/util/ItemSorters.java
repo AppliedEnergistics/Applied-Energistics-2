@@ -33,63 +33,43 @@ public class ItemSorters
 
 	private static SortDir Direction = SortDir.ASCENDING;
 
-	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_NAME = new Comparator<IAEItemStack>()
+	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_NAME = ( o1, o2 ) ->
 	{
-
-		@Override
-		public int compare( final IAEItemStack o1, final IAEItemStack o2 )
-		{
-			final int cmp = Platform.getItemDisplayName( o1 ).compareToIgnoreCase( Platform.getItemDisplayName( o2 ) );
-			return applyDirection( cmp );
-		}
+		final int cmp = Platform.getItemDisplayName( o1 ).compareToIgnoreCase( Platform.getItemDisplayName( o2 ) );
+		return applyDirection( cmp );
 	};
 
-	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_MOD = new Comparator<IAEItemStack>()
+	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_MOD = ( o1, o2 ) ->
 	{
+		final AEItemStack op1 = (AEItemStack) o1;
+		final AEItemStack op2 = (AEItemStack) o2;
+		int cmp = op1.getModID().compareToIgnoreCase( op2.getModID() );
 
-		@Override
-		public int compare( final IAEItemStack o1, final IAEItemStack o2 )
+		if( cmp == 0 )
 		{
-			final AEItemStack op1 = (AEItemStack) o1;
-			final AEItemStack op2 = (AEItemStack) o2;
-			int cmp = op1.getModID().compareToIgnoreCase( op2.getModID() );
-
-			if( cmp == 0 )
-			{
-				cmp = Platform.getItemDisplayName( o1 ).compareToIgnoreCase( Platform.getItemDisplayName( o2 ) );
-			}
-
-			return applyDirection( cmp );
+			cmp = Platform.getItemDisplayName( o1 ).compareToIgnoreCase( Platform.getItemDisplayName( o2 ) );
 		}
+
+		return applyDirection( cmp );
 	};
 
-	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_SIZE = new Comparator<IAEItemStack>()
+	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_SIZE = ( o1, o2 ) ->
 	{
-
-		@Override
-		public int compare( final IAEItemStack o1, final IAEItemStack o2 )
-		{
-			final int cmp = Long.compare( o2.getStackSize(), o1.getStackSize() );
-			return applyDirection( cmp );
-		}
+		final int cmp = Long.compare( o2.getStackSize(), o1.getStackSize() );
+		return applyDirection( cmp );
 	};
 
 	private static IInvTweaks api;
 
-	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_INV_TWEAKS = new Comparator<IAEItemStack>()
+	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_INV_TWEAKS = ( o1, o2 ) ->
 	{
-
-		@Override
-		public int compare( final IAEItemStack o1, final IAEItemStack o2 )
+		if( api == null )
 		{
-			if( api == null )
-			{
-				return CONFIG_BASED_SORT_BY_NAME.compare( o1, o2 );
-			}
-
-			final int cmp = api.compareItems( o1.createItemStack(), o2.createItemStack() );
-			return applyDirection( cmp );
+			return CONFIG_BASED_SORT_BY_NAME.compare( o1, o2 );
 		}
+
+		final int cmp = api.compareItems( o1.createItemStack(), o2.createItemStack() );
+		return applyDirection( cmp );
 	};
 
 	public static void init()

@@ -472,7 +472,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 
 		if( this.cellHandler != null && this.cellHandler.getChannel() == channel )
 		{
-			return (IMEMonitor<T>) this.cellHandler;
+			return this.cellHandler;
 		}
 		return null;
 	}
@@ -878,7 +878,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 			if( TileChest.this.cellHandler != null && TileChest.this.cellHandler
 					.getChannel() == AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) )
 			{
-				return TANK_PROPS;
+				return this.TANK_PROPS;
 			}
 			return null;
 		}

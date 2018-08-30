@@ -50,7 +50,7 @@ public class DummyFluidBakedModel implements IBakedModel
 	@Override
 	public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
 	{
-		return quads;
+		return this.quads;
 	}
 
 	@Override

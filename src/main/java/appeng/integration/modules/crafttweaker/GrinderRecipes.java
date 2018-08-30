@@ -89,13 +89,13 @@ public class GrinderRecipes
 		@Override
 		public void apply()
 		{
-			AEApi.instance().registries().grinder().addRecipe( entry );
+			AEApi.instance().registries().grinder().addRecipe( this.entry );
 		}
 
 		@Override
 		public String describe()
 		{
-			return "Adding Grinder Entry for " + entry.getInput().getDisplayName();
+			return "Adding Grinder Entry for " + this.entry.getInput().getDisplayName();
 		}
 	}
 
@@ -111,7 +111,7 @@ public class GrinderRecipes
 		@Override
 		public void apply()
 		{
-			IGrinderRecipe recipe = AEApi.instance().registries().grinder().getRecipeForInput( stack );
+			IGrinderRecipe recipe = AEApi.instance().registries().grinder().getRecipeForInput( this.stack );
 			if( recipe != null )
 			{
 				AEApi.instance().registries().grinder().removeRecipe( recipe );
@@ -121,7 +121,7 @@ public class GrinderRecipes
 		@Override
 		public String describe()
 		{
-			return "Removing Grinder Entry for " + stack.getDisplayName();
+			return "Removing Grinder Entry for " + this.stack.getDisplayName();
 		}
 	}
 }

@@ -57,7 +57,7 @@ public class AppEngCellInventory implements IInternalItemHandler
 	public ItemStack insertItem( int slot, ItemStack stack, boolean simulate )
 	{
 		this.persist( slot );
-		final ItemStack ret = inv.insertItem( slot, stack, simulate );
+		final ItemStack ret = this.inv.insertItem( slot, stack, simulate );
 		this.cleanup( slot );
 		return ret;
 	}
@@ -66,7 +66,7 @@ public class AppEngCellInventory implements IInternalItemHandler
 	public ItemStack extractItem( int slot, int amount, boolean simulate )
 	{
 		this.persist( slot );
-		final ItemStack ret = inv.extractItem( slot, amount, simulate );
+		final ItemStack ret = this.inv.extractItem( slot, amount, simulate );
 		this.cleanup( slot );
 		return ret;
 	}
@@ -74,13 +74,13 @@ public class AppEngCellInventory implements IInternalItemHandler
 	@Override
 	public int getSlotLimit( int slot )
 	{
-		return inv.getSlotLimit( slot );
+		return this.inv.getSlotLimit( slot );
 	}
 
 	@Override
 	public boolean isItemValidForSlot( int slot, ItemStack stack )
 	{
-		return inv.isItemValidForSlot( slot, stack );
+		return this.inv.isItemValidForSlot( slot, stack );
 	}
 
 	@Override

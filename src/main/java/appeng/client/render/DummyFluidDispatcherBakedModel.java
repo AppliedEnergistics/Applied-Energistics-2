@@ -104,13 +104,13 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel
 					fluidStack = new FluidStack( FluidRegistry.WATER, Fluid.BUCKET_VOLUME );
 				}
 
-				TextureAtlasSprite sprite = bakedTextureGetter.apply( fluidStack.getFluid().getStill( fluidStack ) );
+				TextureAtlasSprite sprite = DummyFluidDispatcherBakedModel.this.bakedTextureGetter.apply( fluidStack.getFluid().getStill( fluidStack ) );
 				if( sprite == null )
 				{
 					return new DummyFluidBakedModel( ImmutableList.of() );
 				}
 
-				return new DummyFluidBakedModel( ItemLayerModel.getQuadsForSprite( 0, sprite, format, Optional.empty() ) );
+				return new DummyFluidBakedModel( ItemLayerModel.getQuadsForSprite( 0, sprite, DummyFluidDispatcherBakedModel.this.format, Optional.empty() ) );
 			}
 		};
 	}

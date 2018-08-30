@@ -319,11 +319,11 @@ public class BlockCableBus extends AEBaseTileBlock
 						// Randomly select one of the textures if the cable bus has more than just one possibility here
 						TextureAtlasSprite texture = Platform.pickRandom( textures );
 
-						double d0 = (double) pos.getX() + ( (double) j + 0.5D ) / 4.0D;
-						double d1 = (double) pos.getY() + ( (double) k + 0.5D ) / 4.0D;
-						double d2 = (double) pos.getZ() + ( (double) l + 0.5D ) / 4.0D;
-						ParticleDigging particle = new DestroyFX( world, d0, d1, d2, d0 - (double) pos.getX() - 0.5D, d1 - (double) pos
-								.getY() - 0.5D, d2 - (double) pos.getZ() - 0.5D, this.getDefaultState() ).setBlockPos( pos );
+						double d0 = pos.getX() + ( j + 0.5D ) / 4.0D;
+						double d1 = pos.getY() + ( k + 0.5D ) / 4.0D;
+						double d2 = pos.getZ() + ( l + 0.5D ) / 4.0D;
+						ParticleDigging particle = new DestroyFX( world, d0, d1, d2, d0 - pos.getX() - 0.5D, d1 - pos
+								.getY() - 0.5D, d2 - pos.getZ() - 0.5D, this.getDefaultState() ).setBlockPos( pos );
 						particle.setParticleTexture( texture );
 						effectRenderer.addEffect( particle );
 					}

@@ -46,13 +46,13 @@ public class AppEngAdvancementTrigger implements ICriterionTrigger<AppEngAdvance
 	public AppEngAdvancementTrigger( String parString )
 	{
 		super();
-		ID = new ResourceLocation( AppEng.MOD_ID, parString );
+		this.ID = new ResourceLocation( AppEng.MOD_ID, parString );
 	}
 
 	@Override
 	public ResourceLocation getId()
 	{
-		return ID;
+		return this.ID;
 	}
 
 	@Override
@@ -97,6 +97,7 @@ public class AppEngAdvancementTrigger implements ICriterionTrigger<AppEngAdvance
 		return new AppEngAdvancementTrigger.Instance( this.getId() );
 	}
 
+	@Override
 	public void trigger( EntityPlayerMP parPlayer )
 	{
 		AppEngAdvancementTrigger.Listeners l = this.listeners.get( parPlayer.getAdvancements() );

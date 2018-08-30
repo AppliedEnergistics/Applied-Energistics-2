@@ -97,7 +97,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 	{
 		if( this.cellItems == null )
 		{
-			this.cellItems = getChannel().createList();
+			this.cellItems = this.getChannel().createList();
 			this.loadCellItems();
 		}
 
@@ -186,7 +186,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 	{
 		if( this.cellItems == null )
 		{
-			this.cellItems = getChannel().createList();
+			this.cellItems = this.getChannel().createList();
 		}
 
 		this.cellItems.resetStatus(); // clears totals and stuff.
@@ -299,14 +299,14 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 	@Override
 	public long getUsedBytes()
 	{
-		final long bytesForItemCount = ( this.getStoredItemCount() + this.getUnusedItemCount() ) / itemsPerByte;
+		final long bytesForItemCount = ( this.getStoredItemCount() + this.getUnusedItemCount() ) / this.itemsPerByte;
 		return this.getStoredItemTypes() * this.getBytesPerType() + bytesForItemCount;
 	}
 
 	@Override
 	public long getRemainingItemCount()
 	{
-		final long remaining = this.getFreeBytes() * itemsPerByte + this.getUnusedItemCount();
+		final long remaining = this.getFreeBytes() * this.itemsPerByte + this.getUnusedItemCount();
 		return remaining > 0 ? remaining : 0;
 	}
 
@@ -320,7 +320,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 			return 0;
 		}
 
-		return itemsPerByte - div;
+		return this.itemsPerByte - div;
 	}
 
 	@Override

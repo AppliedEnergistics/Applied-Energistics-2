@@ -136,7 +136,7 @@ public class FeatureFactory
 
 	private <T extends IBootstrapComponent> void addBootstrapComponent( Class<? extends IBootstrapComponent> eventType, T component )
 	{
-		bootstrapComponents.computeIfAbsent( eventType, c -> new ArrayList<IBootstrapComponent>() ).add( component );
+		this.bootstrapComponents.computeIfAbsent( eventType, c -> new ArrayList<IBootstrapComponent>() ).add( component );
 	}
 
 	@SideOnly( Side.CLIENT )

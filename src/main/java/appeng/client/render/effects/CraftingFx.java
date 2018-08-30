@@ -142,7 +142,7 @@ public class CraftingFx extends ParticleBreaking
 			this.setExpired();
 		}
 
-		this.motionY -= 0.04D * (double) this.particleGravity;
+		this.motionY -= 0.04D * this.particleGravity;
 		this.move( this.motionX, this.motionY, this.motionZ );
 		this.motionX *= 0.9800000190734863D;
 		this.motionY *= 0.9800000190734863D;

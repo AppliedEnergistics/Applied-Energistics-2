@@ -43,7 +43,7 @@ public class ContainerFluidIO extends ContainerFluidConfigurable
 	@Override
 	public IAEFluidTank getFluidConfigInventory()
 	{
-		return bus.getConfig();
+		return this.bus.getConfig();
 	}
 
 	@Override

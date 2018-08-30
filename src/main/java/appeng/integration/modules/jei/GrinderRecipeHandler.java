@@ -27,6 +27,7 @@ import appeng.api.features.IGrinderRecipe;
 
 class GrinderRecipeHandler implements IRecipeWrapperFactory<IGrinderRecipe>
 {
+	@Override
 	public IRecipeWrapper getRecipeWrapper( IGrinderRecipe recipe )
 	{
 		return new GrinderRecipeWrapper( recipe );

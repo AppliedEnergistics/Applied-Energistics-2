@@ -178,10 +178,10 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 				for( int x = 0; x < this.availableSlots(); x++ )
 				{
 					final IAEItemStack ais = this.getConfig().getAEStackInSlot( x );
-					if( ais != null && itemsToSend > 0 )
+					if( ais != null && this.itemsToSend > 0 )
 					{
 						Configured = true;
-						while( itemsToSend > 0 )
+						while( this.itemsToSend > 0 )
 						{
 							if( this.importStuff( myAdaptor, ais, inv, energy, fzMode ) )
 							{
@@ -193,7 +193,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 				if( !Configured )
 				{
-					while( itemsToSend > 0 )
+					while( this.itemsToSend > 0 )
 					{
 						if( this.importStuff( myAdaptor, null, inv, energy, fzMode ) )
 						{

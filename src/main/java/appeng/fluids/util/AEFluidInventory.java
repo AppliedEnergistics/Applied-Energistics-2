@@ -83,7 +83,7 @@ public class AEFluidInventory implements IAEFluidTank
 	@Override
 	public int getSlots()
 	{
-		return fluids.length;
+		return this.fluids.length;
 	}
 
 	@Override
@@ -147,7 +147,7 @@ public class AEFluidInventory implements IAEFluidTank
 			fluid.setStackSize( this.capacity );
 		}
 
-		onContentChanged( slot );
+		this.onContentChanged( slot );
 		return (int) filled;
 	}
 
@@ -158,7 +158,7 @@ public class AEFluidInventory implements IAEFluidTank
 		{
 			return null;
 		}
-		return drain( slot, resource.amount, doDrain );
+		return this.drain( slot, resource.amount, doDrain );
 	}
 
 	public FluidStack drain( final int slot, final int maxDrain, boolean doDrain )
@@ -183,7 +183,7 @@ public class AEFluidInventory implements IAEFluidTank
 			{
 				this.fluids[slot] = null;
 			}
-			onContentChanged( slot );
+			this.onContentChanged( slot );
 		}
 		return stack;
 	}
@@ -192,7 +192,9 @@ public class AEFluidInventory implements IAEFluidTank
 	public int fill( final FluidStack fluid, final boolean doFill )
 	{
 		if( fluid == null || fluid.amount <= 0 )
+		{
 			return 0;
+		}
 
 		final FluidStack insert = fluid.copy();
 
@@ -203,7 +205,9 @@ public class AEFluidInventory implements IAEFluidTank
 			totalFillAmount += fillAmount;
 			insert.amount -= fillAmount;
 			if( insert.amount <= 0 )
+			{
 				break;
+			}
 		}
 		return totalFillAmount;
 	}
@@ -212,7 +216,9 @@ public class AEFluidInventory implements IAEFluidTank
 	public FluidStack drain( final FluidStack fluid, final boolean doDrain )
 	{
 		if( fluid == null || fluid.amount <= 0 )
+		{
 			return null;
+		}
 
 		final FluidStack resource = fluid.copy();
 
@@ -223,13 +229,19 @@ public class AEFluidInventory implements IAEFluidTank
 			if( drain != null )
 			{
 				if( totalDrained == null )
+				{
 					totalDrained = drain;
+				}
 				else
+				{
 					totalDrained.amount += drain.amount;
+				}
 
 				resource.amount -= drain.amount;
 				if( resource.amount <= 0 )
+				{
 					break;
+				}
 			}
 		}
 		return totalDrained;
@@ -239,7 +251,9 @@ public class AEFluidInventory implements IAEFluidTank
 	public FluidStack drain( final int maxDrain, final boolean doDrain )
 	{
 		if( maxDrain == 0 )
+		{
 			return null;
+		}
 
 		FluidStack totalDrained = null;
 		int toDrain = maxDrain;
@@ -267,7 +281,9 @@ public class AEFluidInventory implements IAEFluidTank
 			}
 
 			if( toDrain <= 0 )
+			{
 				break;
+			}
 		}
 		return totalDrained;
 	}
@@ -341,7 +357,7 @@ public class AEFluidInventory implements IAEFluidTank
 		@Override
 		public FluidStack getContents()
 		{
-			return AEFluidInventory.this.fluids[slot] == null ? null : AEFluidInventory.this.fluids[slot].getFluidStack();
+			return AEFluidInventory.this.fluids[this.slot] == null ? null : AEFluidInventory.this.fluids[this.slot].getFluidStack();
 		}
 
 		@Override

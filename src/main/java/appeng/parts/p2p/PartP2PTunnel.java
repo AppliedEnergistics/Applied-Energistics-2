@@ -162,7 +162,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	public void writeToStream( ByteBuf data ) throws IOException
 	{
 		super.writeToStream( data );
-		data.writeShort( getFrequency() );
+		data.writeShort( this.getFrequency() );
 	}
 
 	@Override

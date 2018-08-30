@@ -139,7 +139,7 @@ public class ToolReplicatorCard extends AEBaseItem
 												final TileEntity nte = blk.createTileEntity( world, state );
 												final NBTTagCompound data = new NBTTagCompound();
 												ote.writeToNBT( data );
-												nte.readFromNBT( (NBTTagCompound) data.copy() );
+												nte.readFromNBT( data.copy() );
 												world.setTileEntity( d, nte );
 											}
 											world.notifyBlockUpdate( d, prev, state, 3 );

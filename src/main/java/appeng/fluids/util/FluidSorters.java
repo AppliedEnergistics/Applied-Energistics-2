@@ -35,18 +35,13 @@ public class FluidSorters
 {
 	private static SortDir Direction = SortDir.ASCENDING;
 
-	public static final Comparator<IAEFluidStack> CONFIG_BASED_SORT_BY_NAME = new Comparator<IAEFluidStack>()
+	public static final Comparator<IAEFluidStack> CONFIG_BASED_SORT_BY_NAME = ( o1, o2 ) ->
 	{
-
-		@Override
-		public int compare( final IAEFluidStack o1, final IAEFluidStack o2 )
+		if( getDirection() == SortDir.ASCENDING )
 		{
-			if( getDirection() == SortDir.ASCENDING )
-			{
-				return Platform.getFluidDisplayName( o1 ).compareToIgnoreCase( Platform.getFluidDisplayName( o2 ) );
-			}
-			return Platform.getFluidDisplayName( o2 ).compareToIgnoreCase( Platform.getFluidDisplayName( o1 ) );
+			return Platform.getFluidDisplayName( o1 ).compareToIgnoreCase( Platform.getFluidDisplayName( o2 ) );
 		}
+		return Platform.getFluidDisplayName( o2 ).compareToIgnoreCase( Platform.getFluidDisplayName( o1 ) );
 	};
 
 	public static final Comparator<IAEFluidStack> CONFIG_BASED_SORT_BY_MOD = new Comparator<IAEFluidStack>()
@@ -76,18 +71,13 @@ public class FluidSorters
 		}
 	};
 
-	public static final Comparator<IAEFluidStack> CONFIG_BASED_SORT_BY_SIZE = new Comparator<IAEFluidStack>()
+	public static final Comparator<IAEFluidStack> CONFIG_BASED_SORT_BY_SIZE = ( o1, o2 ) ->
 	{
-
-		@Override
-		public int compare( final IAEFluidStack o1, final IAEFluidStack o2 )
+		if( getDirection() == SortDir.ASCENDING )
 		{
-			if( getDirection() == SortDir.ASCENDING )
-			{
-				return Long.compare( o2.getStackSize(), o1.getStackSize() );
-			}
-			return Long.compare( o1.getStackSize(), o2.getStackSize() );
+			return Long.compare( o2.getStackSize(), o1.getStackSize() );
 		}
+		return Long.compare( o1.getStackSize(), o2.getStackSize() );
 	};
 
 	private static SortDir getDirection()

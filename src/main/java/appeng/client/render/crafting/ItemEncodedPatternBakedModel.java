@@ -100,7 +100,7 @@ class ItemEncodedPatternBakedModel implements IBakedModel
 	{
 		if( this.baseModel instanceof IBakedModel )
 		{
-			return ( (IBakedModel) this.baseModel ).handlePerspective( cameraTransformType );
+			return this.baseModel.handlePerspective( cameraTransformType );
 		}
 
 		return PerspectiveMapWrapper.handlePerspective( this, this.transforms, cameraTransformType );
@@ -150,7 +150,7 @@ class ItemEncodedPatternBakedModel implements IBakedModel
 
 			if( selectedModel instanceof IBakedModel )
 			{
-				return ( (IBakedModel) selectedModel ).handlePerspective( cameraTransformType );
+				return selectedModel.handlePerspective( cameraTransformType );
 			}
 
 			return PerspectiveMapWrapper.handlePerspective( this, ItemEncodedPatternBakedModel.this.transforms, cameraTransformType );

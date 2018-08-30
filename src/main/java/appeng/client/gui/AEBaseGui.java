@@ -161,16 +161,16 @@ public abstract class AEBaseGui extends GuiContainer
 		super.drawScreen( mouseX, mouseY, partialTicks );
 
 		GlStateManager.pushMatrix();
-		GlStateManager.translate( (float) this.guiLeft, (float) this.guiTop, 0.0F );
+		GlStateManager.translate( this.guiLeft, this.guiTop, 0.0F );
 		GlStateManager.enableDepth();
 		for( final GuiCustomSlot c : this.guiSlots )
 		{
-			drawGuiSlot( c, mouseX, mouseY, partialTicks );
+			this.drawGuiSlot( c, mouseX, mouseY, partialTicks );
 		}
 		GlStateManager.disableDepth();
 		for( final GuiCustomSlot c : this.guiSlots )
 		{
-			drawTooltip( c, mouseX - this.guiLeft, mouseY - this.guiTop );
+			this.drawTooltip( c, mouseX - this.guiLeft, mouseY - this.guiTop );
 		}
 		GlStateManager.popMatrix();
 
@@ -180,7 +180,7 @@ public abstract class AEBaseGui extends GuiContainer
 		{
 			if( c instanceof ITooltip )
 			{
-				drawTooltip( (ITooltip) c, mouseX, mouseY );
+				this.drawTooltip( (ITooltip) c, mouseX, mouseY );
 			}
 		}
 	}

@@ -73,7 +73,7 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 	@Override
 	public void deleteCellDimension( int cellStorageId )
 	{
-		StorageCellData removed = spatialData.remove( cellStorageId );
+		StorageCellData removed = this.spatialData.remove( cellStorageId );
 		if( removed != null )
 		{
 			this.clearCellArea( cellStorageId, removed );
@@ -102,7 +102,7 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 	{
 		if( this.isCellDimension( cellStorageId ) )
 		{
-			return getBlockPosFromId( cellStorageId );
+			return this.getBlockPosFromId( cellStorageId );
 		}
 		return null;
 	}
@@ -228,18 +228,18 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 		public NBTTagCompound serializeNBT()
 		{
 			NBTTagCompound nbt = new NBTTagCompound();
-			nbt.setInteger( NBT_DIM_X_KEY, contentDimension.getX() );
-			nbt.setInteger( NBT_DIM_Y_KEY, contentDimension.getY() );
-			nbt.setInteger( NBT_DIM_Z_KEY, contentDimension.getZ() );
-			nbt.setInteger( NBT_OWNER_KEY, owner );
+			nbt.setInteger( NBT_DIM_X_KEY, this.contentDimension.getX() );
+			nbt.setInteger( NBT_DIM_Y_KEY, this.contentDimension.getY() );
+			nbt.setInteger( NBT_DIM_Z_KEY, this.contentDimension.getZ() );
+			nbt.setInteger( NBT_OWNER_KEY, this.owner );
 			return nbt;
 		}
 
 		@Override
 		public void deserializeNBT( NBTTagCompound nbt )
 		{
-			contentDimension = new BlockPos( nbt.getInteger( NBT_DIM_X_KEY ), nbt.getInteger( NBT_DIM_Y_KEY ), nbt.getInteger( NBT_DIM_Z_KEY ) );
-			owner = nbt.getInteger( NBT_OWNER_KEY );
+			this.contentDimension = new BlockPos( nbt.getInteger( NBT_DIM_X_KEY ), nbt.getInteger( NBT_DIM_Y_KEY ), nbt.getInteger( NBT_DIM_Z_KEY ) );
+			this.owner = nbt.getInteger( NBT_OWNER_KEY );
 		}
 	}
 }

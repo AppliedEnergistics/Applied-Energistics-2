@@ -95,7 +95,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 		this.opacity = data.readInt();
 
 		this.setOutput( this.lastValue > 0 );
-		return lastValue != oldValue || oldOpacity != this.opacity;
+		return this.lastValue != oldValue || oldOpacity != this.opacity;
 	}
 
 	private boolean doWork()

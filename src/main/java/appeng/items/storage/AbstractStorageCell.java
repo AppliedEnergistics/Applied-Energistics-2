@@ -174,11 +174,11 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 			}
 
 			final InventoryPlayer playerInventory = player.inventory;
-			final IMEInventoryHandler inv = AEApi.instance().registries().cell().getCellInventory( stack, null, getChannel() );
+			final IMEInventoryHandler inv = AEApi.instance().registries().cell().getCellInventory( stack, null, this.getChannel() );
 			if( inv != null && playerInventory.getCurrentItem() == stack )
 			{
 				final InventoryAdaptor ia = InventoryAdaptor.getAdaptor( player );
-				final IItemList<IAEItemStack> list = inv.getAvailableItems( getChannel().createList() );
+				final IItemList<IAEItemStack> list = inv.getAvailableItems( this.getChannel().createList() );
 				if( list.isEmpty() && ia != null )
 				{
 					playerInventory.setInventorySlotContents( playerInventory.currentItem, ItemStack.EMPTY );
@@ -203,7 +203,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 					}
 
 					// drop empty storage cell case
-					dropEmptyStorageCellCase( ia, player );
+					this.dropEmptyStorageCellCase( ia, player );
 
 					if( player.inventoryContainer != null )
 					{

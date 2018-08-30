@@ -71,7 +71,7 @@ class GrinderRecipeWrapper implements IRecipeWrapper
 		{
 			String text = String.format( "%d%%", (int) ( this.recipe.getOptionalChance() * 100 ) );
 			float width = fr.getStringWidth( text ) * scale;
-			int xScaled = (int) Math.round( ( x + ( 18 - width ) / 2 ) * invScale );
+			int xScaled = Math.round( ( x + ( 18 - width ) / 2 ) * invScale );
 			fr.drawString( text, xScaled, (int) ( 65 * invScale ), Color.gray.getRGB() );
 			x += 18;
 		}
@@ -80,7 +80,7 @@ class GrinderRecipeWrapper implements IRecipeWrapper
 		{
 			String text = String.format( "%d%%", (int) ( this.recipe.getSecondOptionalChance() * 100 ) );
 			float width = fr.getStringWidth( text ) * scale;
-			int xScaled = (int) Math.round( ( x + ( 18 - width ) / 2 ) * invScale );
+			int xScaled = Math.round( ( x + ( 18 - width ) / 2 ) * invScale );
 			fr.drawString( text, xScaled, (int) ( 65 * invScale ), Color.gray.getRGB() );
 		}
 

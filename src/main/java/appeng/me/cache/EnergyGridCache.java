@@ -487,7 +487,7 @@ public class EnergyGridCache implements IEnergyGrid
 	{
 		if( machine instanceof IEnergyGridProvider )
 		{
-			this.energyGridProviders.remove( (IEnergyGridProvider) machine );
+			this.energyGridProviders.remove( machine );
 		}
 
 		// idle draw.

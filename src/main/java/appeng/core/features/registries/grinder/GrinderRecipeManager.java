@@ -372,7 +372,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 			{
 				return true;
 			}
-			if( obj == null || getClass() != obj.getClass() )
+			if( obj == null || this.getClass() != obj.getClass() )
 			{
 				return false;
 			}

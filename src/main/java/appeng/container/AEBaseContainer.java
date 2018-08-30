@@ -1033,7 +1033,7 @@ public abstract class AEBaseContainer extends Container
 
 	protected ItemStack transferStackToContainer( final ItemStack input )
 	{
-		return shiftStoreItem( input );
+		return this.shiftStoreItem( input );
 	}
 
 	private ItemStack shiftStoreItem( final ItemStack input )

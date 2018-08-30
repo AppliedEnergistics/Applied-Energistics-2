@@ -131,7 +131,9 @@ public class MEGuiTextField extends GuiTextField
 	public void drawSelectionBox( int startX, int startY, int endX, int endY )
 	{
 		if( !this.isFocused() )
+		{
 			return;
+		}
 
 		if( startX < endX )
 		{
@@ -165,20 +167,20 @@ public class MEGuiTextField extends GuiTextField
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
 
-		float red = (float) ( this.selectionColor >> 16 & 255 ) / 255.0F;
-		float blue = (float) ( this.selectionColor >> 8 & 255 ) / 255.0F;
-		float green = (float) ( this.selectionColor & 255 ) / 255.0F;
-		float alpha = (float) ( this.selectionColor >> 24 & 255 ) / 255.0F;
+		float red = ( this.selectionColor >> 16 & 255 ) / 255.0F;
+		float blue = ( this.selectionColor >> 8 & 255 ) / 255.0F;
+		float green = ( this.selectionColor & 255 ) / 255.0F;
+		float alpha = ( this.selectionColor >> 24 & 255 ) / 255.0F;
 
 		GlStateManager.color( red, green, blue, alpha );
 		GlStateManager.disableTexture2D();
 		GlStateManager.enableColorLogic();
 		GlStateManager.colorLogicOp( GlStateManager.LogicOp.OR_REVERSE );
 		bufferbuilder.begin( 7, DefaultVertexFormats.POSITION );
-		bufferbuilder.pos( (double) startX, (double) endY, 0.0D ).endVertex();
-		bufferbuilder.pos( (double) endX, (double) endY, 0.0D ).endVertex();
-		bufferbuilder.pos( (double) endX, (double) startY, 0.0D ).endVertex();
-		bufferbuilder.pos( (double) startX, (double) startY, 0.0D ).endVertex();
+		bufferbuilder.pos( startX, endY, 0.0D ).endVertex();
+		bufferbuilder.pos( endX, endY, 0.0D ).endVertex();
+		bufferbuilder.pos( endX, startY, 0.0D ).endVertex();
+		bufferbuilder.pos( startX, startY, 0.0D ).endVertex();
 		tessellator.draw();
 		GlStateManager.disableColorLogic();
 		GlStateManager.enableTexture2D();

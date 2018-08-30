@@ -43,7 +43,7 @@ public class FluidDummyItem extends AEBaseItem
 	public String getItemStackDisplayName( ItemStack stack )
 	{
 
-		FluidStack fluidStack = getFluidStack( stack );
+		FluidStack fluidStack = this.getFluidStack( stack );
 		if( fluidStack == null )
 		{
 			fluidStack = new FluidStack( FluidRegistry.WATER, Fluid.BUCKET_VOLUME );

@@ -297,7 +297,7 @@ public class PartFluidAnnihilationPlane extends PartBasicState implements IGridT
 			}
 			else
 			{
-				final float requiredPower = (float) stack.getStackSize() / Math.min( 1.0f, stack.getChannel().transferFactor() );
+				final float requiredPower = stack.getStackSize() / Math.min( 1.0f, stack.getChannel().transferFactor() );
 				final IEnergyGrid energy = this.getProxy().getEnergy();
 
 				if( energy.extractAEPower( requiredPower, Actionable.SIMULATE, PowerMultiplier.CONFIG ) < requiredPower )

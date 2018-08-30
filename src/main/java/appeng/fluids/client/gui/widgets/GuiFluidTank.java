@@ -72,11 +72,11 @@ public class GuiFluidTank extends GuiButton implements ITooltip
 				int iconHeightRemainder = scaledHeight % 16;
 				if( iconHeightRemainder > 0 )
 				{
-					drawTexturedModalRect( this.x, this.y + this.height - iconHeightRemainder, sprite, 16, iconHeightRemainder );
+					this.drawTexturedModalRect( this.x, this.y + this.height - iconHeightRemainder, sprite, 16, iconHeightRemainder );
 				}
 				for( int i = 0; i < scaledHeight / 16; i++ )
 				{
-					drawTexturedModalRect( this.x, this.y + this.height - iconHeightRemainder - ( i + 1 ) * 16, sprite, 16, 16 );
+					this.drawTexturedModalRect( this.x, this.y + this.height - iconHeightRemainder - ( i + 1 ) * 16, sprite, 16, 16 );
 				}
 			}
 

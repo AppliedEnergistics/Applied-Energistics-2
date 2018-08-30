@@ -75,12 +75,12 @@ public enum AECableType
 
 	public AECableSize size()
 	{
-		return size;
+		return this.size;
 	}
 
 	public AECableVariant variant()
 	{
-		return variant;
+		return this.variant;
 	}
 
 	public boolean isValid()

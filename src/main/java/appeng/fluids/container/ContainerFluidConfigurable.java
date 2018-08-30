@@ -36,7 +36,7 @@ public abstract class ContainerFluidConfigurable extends ContainerUpgradeable im
 	{
 		if( this.sync == null )
 		{
-			this.sync = new FluidSyncHelper( getFluidConfigInventory(), 0 );
+			this.sync = new FluidSyncHelper( this.getFluidConfigInventory(), 0 );
 		}
 		return this.sync;
 	}
@@ -47,7 +47,7 @@ public abstract class ContainerFluidConfigurable extends ContainerUpgradeable im
 		FluidStack fs = FluidUtil.getFluidContained( input );
 		if( fs != null )
 		{
-			final IAEFluidTank t = getFluidConfigInventory();
+			final IAEFluidTank t = this.getFluidConfigInventory();
 			final IAEFluidStack stack = AEFluidStack.fromFluidStack( fs );
 			for( int i = 0; i < t.getSlots(); ++i )
 			{
@@ -89,7 +89,7 @@ public abstract class ContainerFluidConfigurable extends ContainerUpgradeable im
 			this.getSynchHelper().sendDiff( this.listeners );
 
 			// clear out config items that are no longer valid (eg capacity upgrade removed)
-			final IAEFluidTank t = getFluidConfigInventory();
+			final IAEFluidTank t = this.getFluidConfigInventory();
 			for( int i = 0; i < t.getSlots(); ++i )
 			{
 				if( t.getFluidInSlot( i ) != null && !this.isValidForConfig( i, t.getFluidInSlot( i ) ) )

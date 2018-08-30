@@ -19,7 +19,6 @@
 package appeng.client.render.model;
 
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -263,7 +262,7 @@ public enum UVLModelLoader implements ICustomModelLoader
 				finally
 				{
 					IOUtils.closeQuietly( reader );
-					IOUtils.closeQuietly( (Closeable) iresource );
+					IOUtils.closeQuietly( iresource );
 				}
 
 				model = lvt_5_1_;

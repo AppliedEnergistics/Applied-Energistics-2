@@ -183,7 +183,7 @@ public class BasicCellInventory<T extends IAEStack<T>> extends AbstractCellInven
 
 		if( this.canHoldNewItem() ) // room for new type, and for at least one item!
 		{
-			final int remainingItemCount = (int) this.getRemainingItemCount() - this.getBytesPerType() * itemsPerByte;
+			final int remainingItemCount = (int) this.getRemainingItemCount() - this.getBytesPerType() * this.itemsPerByte;
 			if( remainingItemCount > 0 )
 			{
 				if( input.getStackSize() > remainingItemCount )
@@ -267,7 +267,7 @@ public class BasicCellInventory<T extends IAEStack<T>> extends AbstractCellInven
 		final T t;
 		try
 		{
-			t = getChannel().createFromNBT( compoundTag );
+			t = this.getChannel().createFromNBT( compoundTag );
 			if( t == null )
 			{
 				AELog.warn( "Removing item " + compoundTag + " from storage cell because the associated item type couldn't be found." );

@@ -43,9 +43,9 @@ public class AEFluidTank extends FluidTank implements IAEFluidTank
 	@Override
 	protected void onContentsChanged()
 	{
-		if( host != null && Platform.isServer() )
+		if( this.host != null && Platform.isServer() )
 		{
-			host.onFluidInventoryChanged( this, 0 );
+			this.host.onFluidInventoryChanged( this, 0 );
 		}
 		super.onContentsChanged();
 	}

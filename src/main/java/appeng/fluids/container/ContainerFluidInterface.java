@@ -97,11 +97,13 @@ public class ContainerFluidInterface extends ContainerFluidConfigurable
 		this.tankSync.readPacket( fluids );
 	}
 
+	@Override
 	protected boolean supportCapacity()
 	{
 		return false;
 	}
 
+	@Override
 	public int availableUpgrades()
 	{
 		return 0;

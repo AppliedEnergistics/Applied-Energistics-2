@@ -260,7 +260,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 			return;
 		}
 
-		final IAEItemStack ais = (IAEItemStack) this.getDisplayed();
+		final IAEItemStack ais = this.getDisplayed();
 
 		if( ais == null )
 		{

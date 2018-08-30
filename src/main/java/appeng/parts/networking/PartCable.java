@@ -390,7 +390,7 @@ public class PartCable extends AEBasePart implements IPartCable
 				// a cable bus
 				if( conOnSide || this.getHost().getPart( d ) != null )
 				{
-					ch = ( (int) data.readByte() ) & 0xFF;
+					ch = ( data.readByte() ) & 0xFF;
 				}
 
 				if( ch != this.getChannelsOnSide( d.ordinal() ) )

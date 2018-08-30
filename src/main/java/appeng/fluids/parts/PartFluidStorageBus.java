@@ -160,6 +160,7 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 		return TickRateModulation.SLEEP;
 	}
 
+	@Override
 	protected void resetCache()
 	{
 		final boolean fullReset = this.resetCacheLogic == 2;
@@ -191,6 +192,7 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 		}
 	}
 
+	@Override
 	protected void resetCache( final boolean fullReset )
 	{
 		if( this.getHost() == null || this.getHost().getTile() == null || this.getHost().getTile().getWorld() == null || this.getHost()

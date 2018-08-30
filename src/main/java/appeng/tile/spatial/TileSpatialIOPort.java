@@ -56,7 +56,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 {
 
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 2 );
-	private final IItemHandler invExt = new WrapperFilteredItemHandler( inv, new SpatialIOFilter() );
+	private final IItemHandler invExt = new WrapperFilteredItemHandler( this.inv, new SpatialIOFilter() );
 	private YesNo lastRedstoneState = YesNo.UNDECIDED;
 
 	public TileSpatialIOPort()
@@ -149,9 +149,9 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 					if( !res.isCanceled() )
 					{
 						int playerId = -1;
-						if( getProxy().getSecurity().isAvailable() )
+						if( this.getProxy().getSecurity().isAvailable() )
 						{
-							playerId = getProxy().getSecurity().getOwner();
+							playerId = this.getProxy().getSecurity().getOwner();
 						}
 
 						final TransitionResult tr = sc.doSpatialTransition( cell, this.world, spc.getMin(), spc.getMax(), playerId );

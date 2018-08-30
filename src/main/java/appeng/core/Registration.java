@@ -349,7 +349,7 @@ final class Registration
 		final IBlocks blocks = definitions.blocks();
 		final IItems items = definitions.items();
 
-		registerSpatialDimension();
+		this.registerSpatialDimension();
 
 		// default settings..
 		( (P2PTunnelRegistry) registries.p2pTunnel() ).configure();
@@ -562,7 +562,7 @@ final class Registration
 		CriterionTrigggerRegistry()
 		{
 			this.method = ReflectionHelper.findMethod( CriteriaTriggers.class, "register", "func_192118_a", ICriterionTrigger.class );
-			method.setAccessible( true );
+			this.method.setAccessible( true );
 		}
 
 		@Override
@@ -570,7 +570,7 @@ final class Registration
 		{
 			try
 			{
-				method.invoke( null, trigger );
+				this.method.invoke( null, trigger );
 			}
 			catch( IllegalAccessException | IllegalArgumentException | InvocationTargetException e )
 			{

@@ -43,10 +43,10 @@ public class AERecipeLoader
 
 	public AERecipeLoader()
 	{
-		mod = Loader.instance().getIndexedModList().get( AppEng.MOD_ID );
-		ctx = new JsonContext( AppEng.MOD_ID );
+		this.mod = Loader.instance().getIndexedModList().get( AppEng.MOD_ID );
+		this.ctx = new JsonContext( AppEng.MOD_ID );
 
-		initFactories();
+		this.initFactories();
 	}
 
 	public boolean loadProcessingRecipes()
@@ -63,7 +63,9 @@ public class AERecipeLoader
 	{
 		String relative = root.relativize( file ).toString();
 		if( !"json".equals( FilenameUtils.getExtension( file.toString() ) ) || relative.startsWith( "_" ) )
+		{
 			return true;
+		}
 
 		String name = FilenameUtils.removeExtension( relative ).replaceAll( "\\\\", "/" );
 		ResourceLocation key = new ResourceLocation( this.ctx.getModId(), name );
@@ -74,9 +76,11 @@ public class AERecipeLoader
 			reader = Files.newBufferedReader( file );
 			JsonObject json = JsonUtils.fromJson( GSON, reader, JsonObject.class );
 			if( json.has( "conditions" ) && !CraftingHelper.processConditions( JsonUtils.getJsonArray( json, "conditions" ), this.ctx ) )
+			{
 				return true;
+			}
 
-			register( json );
+			this.register( json );
 		}
 		catch( JsonParseException e )
 		{
@@ -99,15 +103,21 @@ public class AERecipeLoader
 	private void register( JsonObject json )
 	{
 		if( json == null || json.isJsonNull() )
+		{
 			throw new JsonSyntaxException( "Json cannot be null" );
+		}
 
 		String type = this.ctx.appendModId( JsonUtils.getString( json, "type" ) );
 		if( type.isEmpty() )
+		{
 			throw new JsonSyntaxException( "Recipe type can not be an empty string" );
+		}
 
-		IAERecipeFactory factory = factories.get( new ResourceLocation( type ) );
+		IAERecipeFactory factory = this.factories.get( new ResourceLocation( type ) );
 		if( factory == null )
+		{
 			throw new JsonSyntaxException( "Unknown recipe type: " + type );
+		}
 
 		factory.register( json, this.ctx );
 	}

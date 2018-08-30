@@ -24,7 +24,7 @@ class ForgeEnergyAdapter implements IEnergyStorage
 	@Override
 	public final int receiveEnergy( int maxReceive, boolean simulate )
 	{
-		final double offered = (double) maxReceive;
+		final double offered = maxReceive;
 		final double overflow = this.sink.injectExternalPower( PowerUnits.RF, offered, simulate ? Actionable.SIMULATE : Actionable.MODULATE );
 
 		return (int) ( maxReceive - overflow );

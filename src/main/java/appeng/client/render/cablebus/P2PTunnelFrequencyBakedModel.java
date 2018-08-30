@@ -56,7 +56,7 @@ public class P2PTunnelFrequencyBakedModel implements IBakedModel, IPartBakedMode
 					frequency = (short) ( partFlags.longValue() & 0xffffL );
 					active = ( partFlags.longValue() & 0x10000L ) != 0;
 				}
-				return getQuadsForFrequency( frequency, active );
+				return this.getQuadsForFrequency( frequency, active );
 			} );
 		}
 		catch( ExecutionException e )
@@ -72,7 +72,7 @@ public class P2PTunnelFrequencyBakedModel implements IBakedModel, IPartBakedMode
 		{
 			return Collections.emptyList();
 		}
-		return getPartQuads( null, rand );
+		return this.getPartQuads( null, rand );
 	}
 
 	private List<BakedQuad> getQuadsForFrequency( final short frequency, final boolean active )

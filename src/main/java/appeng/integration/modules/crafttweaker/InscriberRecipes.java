@@ -98,13 +98,13 @@ public class InscriberRecipes
 		@Override
 		public void apply()
 		{
-			AEApi.instance().registries().inscriber().addRecipe( entry );
+			AEApi.instance().registries().inscriber().addRecipe( this.entry );
 		}
 
 		@Override
 		public String describe()
 		{
-			return "Adding Inscriber Entry for " + entry.getOutput().getDisplayName();
+			return "Adding Inscriber Entry for " + this.entry.getOutput().getDisplayName();
 		}
 	}
 
@@ -131,7 +131,7 @@ public class InscriberRecipes
 		@Override
 		public String describe()
 		{
-			return "Removing Inscriber Entry for " + stack.getDisplayName();
+			return "Removing Inscriber Entry for " + this.stack.getDisplayName();
 		}
 	}
 

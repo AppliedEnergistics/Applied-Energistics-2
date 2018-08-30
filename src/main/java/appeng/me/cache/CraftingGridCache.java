@@ -92,26 +92,11 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 {
 
 	private static final ExecutorService CRAFTING_POOL;
-	private static final Comparator<ICraftingPatternDetails> COMPARATOR = new Comparator<ICraftingPatternDetails>()
-	{
-		@Override
-		public int compare( final ICraftingPatternDetails firstDetail, final ICraftingPatternDetails nextDetail )
-		{
-			return nextDetail.getPriority() - firstDetail.getPriority();
-		}
-	};
+	private static final Comparator<ICraftingPatternDetails> COMPARATOR = ( firstDetail, nextDetail ) -> nextDetail.getPriority() - firstDetail.getPriority();
 
 	static
 	{
-		final ThreadFactory factory = new ThreadFactory()
-		{
-
-			@Override
-			public Thread newThread( final Runnable ar )
-			{
-				return new Thread( ar, "AE Crafting Calculator" );
-			}
-		};
+		final ThreadFactory factory = ar -> new Thread( ar, "AE Crafting Calculator" );
 
 		CRAFTING_POOL = Executors.newCachedThreadPool( factory );
 	}
@@ -542,28 +527,24 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 				}
 			}
 
-			Collections.sort( validCpusClusters, new Comparator<CraftingCPUCluster>()
+			Collections.sort( validCpusClusters, ( firstCluster, nextCluster ) ->
 			{
-				@Override
-				public int compare( final CraftingCPUCluster firstCluster, final CraftingCPUCluster nextCluster )
+				if( prioritizePower )
 				{
-					if( prioritizePower )
+					final int comparison1 = Long.compare( nextCluster.getCoProcessors(), firstCluster.getCoProcessors() );
+					if( comparison1 != 0 )
 					{
-						final int comparison = Long.compare( nextCluster.getCoProcessors(), firstCluster.getCoProcessors() );
-						if( comparison != 0 )
-						{
-							return comparison;
-						}
-						return Long.compare( nextCluster.getAvailableStorage(), firstCluster.getAvailableStorage() );
+						return comparison1;
 					}
-
-					final int comparison = Long.compare( firstCluster.getCoProcessors(), nextCluster.getCoProcessors() );
-					if( comparison != 0 )
-					{
-						return comparison;
-					}
-					return Long.compare( firstCluster.getAvailableStorage(), nextCluster.getAvailableStorage() );
+					return Long.compare( nextCluster.getAvailableStorage(), firstCluster.getAvailableStorage() );
 				}
+
+				final int comparison2 = Long.compare( firstCluster.getCoProcessors(), nextCluster.getCoProcessors() );
+				if( comparison2 != 0 )
+				{
+					return comparison2;
+				}
+				return Long.compare( firstCluster.getAvailableStorage(), nextCluster.getAvailableStorage() );
 			} );
 
 			if( !validCpusClusters.isEmpty() )

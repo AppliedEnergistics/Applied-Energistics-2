@@ -51,7 +51,7 @@ public class DummyFluidItemModel implements IModel
 		{
 			try
 			{
-				baseModel = ModelLoaderRegistry.getModel( MODEL_BASE );
+				this.baseModel = ModelLoaderRegistry.getModel( MODEL_BASE );
 			}
 			catch( Exception e )
 			{
@@ -84,6 +84,6 @@ public class DummyFluidItemModel implements IModel
 	@Override
 	public IModelState getDefaultState()
 	{
-		return getBaseModel().getDefaultState();
+		return this.getBaseModel().getDefaultState();
 	}
 }
