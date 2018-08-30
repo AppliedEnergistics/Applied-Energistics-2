@@ -1,3 +1,4 @@
+sudo: required
 dist: trusty
 
 language: java
@@ -17,4 +18,7 @@ addons:
     organization: "appliedenergistics"
 
 install: "./gradlew setupCIWorkspace"
-script: "./gradlew build test sonarqube"
+script: 
+  - "./gradlew build"
+  - "./gradlew test"
+  - "./gradlew sonarqube"
