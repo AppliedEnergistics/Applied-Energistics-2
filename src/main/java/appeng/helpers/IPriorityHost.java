@@ -18,9 +18,11 @@
 
 package appeng.helpers;
 
+
 import net.minecraft.item.ItemStack;
 
 import appeng.core.sync.GuiBridge;
+
 
 public interface IPriorityHost
 {
@@ -34,8 +36,8 @@ public interface IPriorityHost
 	 * set new priority
 	 */
 	void setPriority( int newValue );
-	
+
 	ItemStack getItemStackRepresentation();
-	
+
 	GuiBridge getGuiBridge();
 }

@@ -121,6 +121,6 @@ public interface IParts
 	IItemDefinition fluidLevelEmitter();
 
 	IItemDefinition fluidAnnihilationPlane();
-	
+
 	IItemDefinition fluidFormationnPlane();
 }

@@ -354,7 +354,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 		}
 		return super.getCapability( capability, facing );
 	}
-	
+
 	@Override
 	public ItemStack getItemStackRepresentation()
 	{

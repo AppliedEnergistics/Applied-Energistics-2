@@ -41,6 +41,7 @@ import net.minecraft.util.EnumFacing;
 public class DummyFluidBakedModel implements IBakedModel
 {
 	private final ImmutableList<BakedQuad> quads;
+
 	public DummyFluidBakedModel( ImmutableList<BakedQuad> quads )
 	{
 		this.quads = quads;

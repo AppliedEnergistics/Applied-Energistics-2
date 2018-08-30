@@ -197,7 +197,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 			if( c != null )
 			{
 				ItemHandlerUtil.copy( this.config, c, false );
-				//copy items back. The ConfigInventory may changed the items on insert
+				// copy items back. The ConfigInventory may changed the items on insert
 				ItemHandlerUtil.copy( c, this.config, false );
 			}
 			this.locked = false;

@@ -74,25 +74,30 @@ public enum AEColor
 
 	TRANSPARENT( "gui.appliedenergistics2.Fluix", null, 0x1B2344, 0x895CA8, 0xD7BBEC );
 
-	public static final List<AEColor> VALID_COLORS = Arrays.asList( WHITE, ORANGE, MAGENTA, LIGHT_BLUE, YELLOW, LIME, PINK, GRAY, LIGHT_GRAY, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK );
+	public static final List<AEColor> VALID_COLORS = Arrays.asList( WHITE, ORANGE, MAGENTA, LIGHT_BLUE, YELLOW, LIME, PINK, GRAY, LIGHT_GRAY, CYAN, PURPLE,
+			BLUE, BROWN, GREEN, RED, BLACK );
 
 	/**
-	 * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get the {@link #blackVariant dark variant} of the apprioriate AE color.
+	 * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get the {@link #blackVariant dark
+	 * variant} of the apprioriate AE color.
 	 */
 	public static final int TINTINDEX_DARK = 1;
 
 	/**
-	 * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get the {@link #mediumVariant medium variant} of the apprioriate AE color.
+	 * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get the {@link #mediumVariant medium
+	 * variant} of the apprioriate AE color.
 	 */
 	public static final int TINTINDEX_MEDIUM = 2;
 
 	/**
-	 * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get the {@link #whiteVariant bright variant} of the apprioriate AE color.
+	 * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get the {@link #whiteVariant bright
+	 * variant} of the apprioriate AE color.
 	 */
 	public static final int TINTINDEX_BRIGHT = 3;
 
 	/**
-	 * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get a color between the {@link #mediumVariant medium}
+	 * The {@link BakedQuad#getTintIndex() tint index} that can normally be used to get a color between the
+	 * {@link #mediumVariant medium}
 	 * and {@link #whiteVariant bright variant} of the apprioriate AE color.
 	 */
 	public static final int TINTINDEX_MEDIUM_BRIGHT = 4;
@@ -141,7 +146,8 @@ public enum AEColor
 	{
 		switch( tintIndex )
 		{
-			// Please note that tintindex 0 is hardcoded for the block breaking particles. Returning anything other than -1 for tintindex=0 here
+			// Please note that tintindex 0 is hardcoded for the block breaking particles. Returning anything other than
+			// -1 for tintindex=0 here
 			// will cause issues with those particles
 			case 0:
 				return -1;

@@ -177,8 +177,11 @@ public class AppEngInternalAEInventory implements IInternalItemHandler, Iterable
 		{
 			if( existing.isEmpty() )
 			{
-				this.inv[slot] = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack(
-						reachedLimit ? ItemHandlerHelper.copyStackWithSize( stack, limit ) : stack );
+				this.inv[slot] = AEApi.instance()
+						.storage()
+						.getStorageChannel( IItemStorageChannel.class )
+						.createStack(
+								reachedLimit ? ItemHandlerHelper.copyStackWithSize( stack, limit ) : stack );
 			}
 			else
 			{

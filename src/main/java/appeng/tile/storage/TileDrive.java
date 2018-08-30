@@ -398,7 +398,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 		}
 
 	}
-	
+
 	@Override
 	public ItemStack getItemStackRepresentation()
 	{

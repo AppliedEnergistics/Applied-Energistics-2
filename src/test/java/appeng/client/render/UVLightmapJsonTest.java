@@ -83,13 +83,13 @@ public class UVLightmapJsonTest
 			}
 
 		}.setLightLevel( 0.2f ).setCreativeTab( CreativeTabs.DECORATIONS ).setRegistryName( uvlblockR );
-		
+
 		final Item uvlblockItem = new ItemBlock( uvlblock ).setRegistryName( uvlblockR );
-		
+
 		FeatureFactory fact = Api.INSTANCE.definitions().getRegistry();
 		fact.addBootstrapComponent( (IBlockRegistrationComponent) ( side, registry ) -> registry.register( uvlblock ) );
 		fact.addBootstrapComponent( (IItemRegistrationComponent) ( side, registry ) -> registry.register( uvlblockItem ) );
-		fact.addBootstrapComponent( new ItemVariantsComponent( uvlblockItem, Arrays.asList( uvlblockR ) ));
+		fact.addBootstrapComponent( new ItemVariantsComponent( uvlblockItem, Arrays.asList( uvlblockR ) ) );
 		fact.addBootstrapComponent( new ItemModelComponent( uvlblockItem, ImmutableMap.of( 0, new ModelResourceLocation( uvlblockR, "inventory" ) ) ) );
 	}
 }

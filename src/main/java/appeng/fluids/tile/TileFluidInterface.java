@@ -175,7 +175,7 @@ public class TileFluidInterface extends AENetworkTile implements IGridTickable, 
 	{
 		return this.duality.getInventoryByName( name );
 	}
-	
+
 	@Override
 	public ItemStack getItemStackRepresentation()
 	{

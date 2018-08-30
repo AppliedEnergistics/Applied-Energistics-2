@@ -72,7 +72,7 @@ public interface IPartHost extends ICustomCableConnection
 	 * @return null if the item failed to add, the side it was placed on other wise ( may different for cables,
 	 * {@link AEPartLocation}.UNKNOWN )
 	 */
-	AEPartLocation addPart( ItemStack is, AEPartLocation side, EntityPlayer owner, EnumHand hand  );
+	AEPartLocation addPart( ItemStack is, AEPartLocation side, EntityPlayer owner, EnumHand hand );
 
 	/**
 	 * Get part by side ( center is {@link AEPartLocation}.UNKNOWN )

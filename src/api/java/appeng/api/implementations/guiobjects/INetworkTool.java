@@ -35,6 +35,6 @@ import appeng.api.networking.IGridHost;
 public interface INetworkTool extends IGuiItemObject
 {
 	IGridHost getGridHost(); // null for most purposes.
-	
+
 	IItemHandler getInventory();
 }

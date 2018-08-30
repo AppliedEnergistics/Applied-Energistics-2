@@ -34,7 +34,7 @@ public class AEFluidTank extends FluidTank implements IAEFluidTank
 	{
 		super( capacity );
 		this.host = host;
-		if (host instanceof TileEntity)
+		if( host instanceof TileEntity )
 		{
 			this.setTileEntity( (TileEntity) host );
 		}

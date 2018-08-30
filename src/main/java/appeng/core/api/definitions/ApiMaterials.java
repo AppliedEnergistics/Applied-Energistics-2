@@ -151,7 +151,7 @@ public final class ApiMaterials implements IMaterials
 							.entity( EntityChargedQuartz.class )
 							.id( new ResourceLocation( "appliedenergistics2", EntityChargedQuartz.class.getName() ),
 									EntityIds.get( EntityChargedQuartz.class ) )
-							.name( EntityChargedQuartz.class.getSimpleName() )							
+							.name( EntityChargedQuartz.class.getSimpleName() )
 							.tracker( 16, 4, true )
 							.build() );
 				} )

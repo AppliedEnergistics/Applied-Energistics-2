@@ -222,7 +222,7 @@ public abstract class PartAbstractFormationPlane<T extends IAEStack<T>> extends 
 	{
 		return out;
 	}
-	
+
 	@Override
 	public void readFromNBT( final NBTTagCompound data )
 	{

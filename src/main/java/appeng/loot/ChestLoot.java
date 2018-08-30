@@ -47,20 +47,22 @@ public class ChestLoot
 			final IMaterials materials = AEApi.instance().definitions().materials();
 			materials.certusQuartzCrystal().maybeStack( 1 ).ifPresent( is ->
 			{
-				event.getTable().addPool( new LootPool( new LootEntry[] {
-						new LootEntryItem( is.getItem(), 2, 3, new LootFunction[] {
-								new SetMetadata( null, new RandomValueRange( is.getItemDamage() ) ) }, new LootCondition[] {
-										new RandomChance( 1 ) }, "AE2 Crystal_" + is.getItemDamage() )
-				}, new LootCondition[0], new RandomValueRange( 1, 4 ), new RandomValueRange( 0, 2 ), "AE2 Crystals" ) );
+				event.getTable()
+						.addPool( new LootPool( new LootEntry[] {
+								new LootEntryItem( is.getItem(), 2, 3, new LootFunction[] {
+										new SetMetadata( null, new RandomValueRange( is.getItemDamage() ) ) }, new LootCondition[] {
+												new RandomChance( 1 ) }, "AE2 Crystal_" + is.getItemDamage() )
+						}, new LootCondition[0], new RandomValueRange( 1, 4 ), new RandomValueRange( 0, 2 ), "AE2 Crystals" ) );
 			} );
 
 			materials.certusQuartzDust().maybeStack( 1 ).ifPresent( is ->
 			{
-				event.getTable().addPool( new LootPool( new LootEntryItem[] {
-						new LootEntryItem( is.getItem(), 2, 3, new LootFunction[] {
-								new SetMetadata( null, new RandomValueRange( is.getItemDamage() ) ) }, new LootCondition[] {
-										new RandomChance( 1 ) }, "AE2 Dust_" + is.getItemDamage() )
-				}, new LootCondition[0], new RandomValueRange( 1, 4 ), new RandomValueRange( 0, 2 ), "AE2 DUSTS" ) );
+				event.getTable()
+						.addPool( new LootPool( new LootEntryItem[] {
+								new LootEntryItem( is.getItem(), 2, 3, new LootFunction[] {
+										new SetMetadata( null, new RandomValueRange( is.getItemDamage() ) ) }, new LootCondition[] {
+												new RandomChance( 1 ) }, "AE2 Dust_" + is.getItemDamage() )
+						}, new LootCondition[0], new RandomValueRange( 1, 4 ), new RandomValueRange( 0, 2 ), "AE2 DUSTS" ) );
 			} );
 
 		}

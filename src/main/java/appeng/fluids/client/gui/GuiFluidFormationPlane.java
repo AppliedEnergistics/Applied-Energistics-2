@@ -81,7 +81,7 @@ public class GuiFluidFormationPlane extends GuiUpgradeable
 			NetworkHandler.instance().sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
 		}
 	}
-	
+
 	@Override
 	protected GuiText getName()
 	{

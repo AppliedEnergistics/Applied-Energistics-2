@@ -468,8 +468,9 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 					final ItemStack failed = real.getStackInSlot( x );
 					if( !failed.isEmpty() )
 					{
-						this.getCellInventory().injectItems( AEItemStack.fromItemStack( failed ), Actionable.MODULATE,
-								new MachineSource( this.getPatternTerminal() ) );
+						this.getCellInventory()
+								.injectItems( AEItemStack.fromItemStack( failed ), Actionable.MODULATE,
+										new MachineSource( this.getPatternTerminal() ) );
 					}
 				}
 			}

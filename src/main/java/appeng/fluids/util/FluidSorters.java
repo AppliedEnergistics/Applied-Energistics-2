@@ -90,7 +90,6 @@ public class FluidSorters
 		}
 	};
 
-
 	private static SortDir getDirection()
 	{
 		return Direction;

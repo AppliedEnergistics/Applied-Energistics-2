@@ -157,9 +157,10 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 						BlockPos offset = manager.getCellDimensionOrigin( cellid );
 
 						this.setStorageCell( is, cellid, targetSize );
-						StorageHelper.getInstance().swapRegions( w, min.x + 1, min.y + 1, min.z + 1, manager.getWorld(), offset.getX(), offset.getY(),
-								offset.getZ(), targetX - 1, targetY - 1,
-								targetZ - 1 );
+						StorageHelper.getInstance()
+								.swapRegions( w, min.x + 1, min.y + 1, min.z + 1, manager.getWorld(), offset.getX(), offset.getY(),
+										offset.getZ(), targetX - 1, targetY - 1,
+										targetZ - 1 );
 
 						return new TransitionResult( true, 0 );
 					}

@@ -247,8 +247,10 @@ public enum UVLModelLoader implements ICustomModelLoader
 				{
 					String s = modelLocation.getResourcePath();
 
-					iresource = Minecraft.getMinecraft().getResourceManager().getResource(
-							new ResourceLocation( modelLocation.getResourceDomain(), "models/" + modelPath + ".json" ) );
+					iresource = Minecraft.getMinecraft()
+							.getResourceManager()
+							.getResource(
+									new ResourceLocation( modelLocation.getResourceDomain(), "models/" + modelPath + ".json" ) );
 					reader = new InputStreamReader( iresource.getInputStream(), Charsets.UTF_8 );
 
 					lvt_5_1_ = JsonUtils.gsonDeserialize( this.UVLSERIALIZER, reader, ModelBlock.class, false );

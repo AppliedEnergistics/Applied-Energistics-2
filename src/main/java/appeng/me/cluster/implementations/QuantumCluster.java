@@ -156,8 +156,10 @@ public class QuantumCluster implements ILocatable, IAECluster
 						}
 					}
 
-					sideA.connection = sideB.connection = new ConnectionWrapper( AEApi.instance().grid().createGridConnection( sideA.getNode(),
-							sideB.getNode() ) );
+					sideA.connection = sideB.connection = new ConnectionWrapper( AEApi.instance()
+							.grid()
+							.createGridConnection( sideA.getNode(),
+									sideB.getNode() ) );
 				}
 				catch( final FailedConnectionException e )
 				{

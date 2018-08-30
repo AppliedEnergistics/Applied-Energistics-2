@@ -88,7 +88,7 @@ public class ContainerPriority extends AEBaseContainer
 
 		super.onUpdate( field, oldValue, newValue );
 	}
-	
+
 	public IPriorityHost getPriorityHost()
 	{
 		return this.priHost;

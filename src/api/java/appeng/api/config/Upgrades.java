@@ -37,12 +37,16 @@ public enum Upgrades
 	/**
 	 * Gold Tier Upgrades.
 	 */
-	CAPACITY( 0 ), REDSTONE( 0 ), CRAFTING( 0 ),
+	CAPACITY( 0 ),
+	REDSTONE( 0 ),
+	CRAFTING( 0 ),
 
 	/**
 	 * Diamond Tier Upgrades.
 	 */
-	FUZZY( 1 ), SPEED( 1 ), INVERTER( 1 );
+	FUZZY( 1 ),
+	SPEED( 1 ),
+	INVERTER( 1 );
 
 	private final int tier;
 	private final Map<ItemStack, Integer> supportedMax = new HashMap<>();
