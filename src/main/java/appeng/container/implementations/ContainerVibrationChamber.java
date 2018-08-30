@@ -31,14 +31,11 @@ import appeng.util.Platform;
 
 public class ContainerVibrationChamber extends AEBaseContainer implements IProgressProvider
 {
-
-	private static final int MAX_BURN_TIME = 200;
-	private final int aePerTick = 5;
 	private final TileVibrationChamber vibrationChamber;
 	@GuiSync( 0 )
-	public int burnProgress = 0;
+	public int burnSpeed = 0;
 	@GuiSync( 1 )
-	public int burnSpeed = 100;
+	public int remainingBurnTime = 0;
 
 	public ContainerVibrationChamber( final InventoryPlayer ip, final TileVibrationChamber vibrationChamber )
 	{
@@ -56,28 +53,28 @@ public class ContainerVibrationChamber extends AEBaseContainer implements IProgr
 	{
 		if( Platform.isServer() )
 		{
-			this.burnProgress = (int) ( this.vibrationChamber.getMaxBurnTime() <= 0 ? 0 : 12 * this.vibrationChamber.getBurnTime() / this.vibrationChamber
-					.getMaxBurnTime() );
-			this.burnSpeed = this.vibrationChamber.getBurnSpeed();
-		}
+			this.remainingBurnTime = this.vibrationChamber
+					.getMaxBurnTime() <= 0 ? 0 : (int) ( 100.0 * this.vibrationChamber.getBurnTime() / this.vibrationChamber.getMaxBurnTime() );
+			this.burnSpeed = this.remainingBurnTime <= 0 ? 0 : this.vibrationChamber.getBurnSpeed();
 
+		}
 		super.detectAndSendChanges();
 	}
 
 	@Override
 	public int getCurrentProgress()
 	{
-		return this.burnProgress > 0 ? this.burnSpeed : 0;
+		return this.burnSpeed;
+	}
+
+	public int getRemainingBurnTime()
+	{
+		return this.remainingBurnTime;
 	}
 
 	@Override
 	public int getMaxProgress()
 	{
-		return MAX_BURN_TIME;
-	}
-
-	public int getAePerTick()
-	{
-		return this.aePerTick;
+		return TileVibrationChamber.MAX_BURN_SPEED;
 	}
 }
