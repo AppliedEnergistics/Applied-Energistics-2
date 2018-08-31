@@ -130,11 +130,6 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 					// just absorb..
 				}
 			}
-
-			if( FacadeConfig.instance().hasChanged() )
-			{
-				FacadeConfig.instance().save();
-			}
 		}
 	}
 
@@ -148,47 +143,56 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		return blockState.isFullCube();
 	}
 
-	public ItemStack createFacadeForItem( final ItemStack l, final boolean returnItem )
+	public ItemStack createFacadeForItem( final ItemStack itemStack, final boolean returnItem )
 	{
-		if( l.isEmpty() )
+		if( itemStack.isEmpty() )
 		{
 			return ItemStack.EMPTY;
 		}
 
-		final Block b = Block.getBlockFromItem( l.getItem() );
-		if( b == Blocks.AIR || l.hasTagCompound() )
+		final Block block = Block.getBlockFromItem( itemStack.getItem() );
+		if( block == Blocks.AIR || itemStack.hasTagCompound() )
 		{
 			return ItemStack.EMPTY;
 		}
 
-		final int metadata = l.getItem().getMetadata( l.getItemDamage() );
-
-		final boolean hasTile = b.hasTileEntity( b.getDefaultState() );
+		final int metadata = itemStack.getItem().getMetadata( itemStack.getItemDamage() );
 
 		// Try to get the block state based on the item stack's meta. If this fails, don't consider it for a facade
 		// This for example fails for Pistons because they hardcoded an invalid meta value in vanilla
 		IBlockState blockState;
 		try
 		{
-			blockState = b.getStateFromMeta( metadata );
+			blockState = block.getStateFromMeta( metadata );
 		}
 		catch( Exception e )
 		{
-			AELog.debug( e, "Cannot create a facade for " + b.getRegistryName() );
+			AELog.debug( e, "Cannot create a facade for " + block.getRegistryName() );
 			return ItemStack.EMPTY;
 		}
 
-		if( blockState.getRenderType() == EnumBlockRenderType.MODEL && !hasTile )
+		final boolean areTileEntitiesEnabled = FacadeConfig.instance().allowTileEntityFacades();
+		final boolean isWhiteListed = FacadeConfig.instance().isWhiteListed( block, metadata );
+		final boolean isModel = blockState.getRenderType() == EnumBlockRenderType.MODEL;
+
+		final IBlockState defaultState = block.getDefaultState();
+		final boolean isTileEntity = block.hasTileEntity( defaultState );
+		final boolean isFullCube = block.isFullCube( defaultState );
+
+		final boolean isTileEntityAllowed = !isTileEntity || ( areTileEntitiesEnabled && isWhiteListed );
+		final boolean isBlockAllowed = isFullCube || isWhiteListed;
+
+		if( isModel && isTileEntityAllowed && isBlockAllowed )
 		{
 			if( returnItem )
 			{
-				return l;
+				return itemStack;
 			}
 
 			final ItemStack is = new ItemStack( this );
 			final NBTTagCompound data = new NBTTagCompound();
-			data.setString( TAG_ITEM_ID, l.getItem().getRegistryName().toString() );
-			data.setInteger( TAG_DAMAGE, l.getItemDamage() );
+			data.setString( TAG_ITEM_ID, itemStack.getItem().getRegistryName().toString() );
+			data.setInteger( TAG_DAMAGE, itemStack.getItemDamage() );
 			is.setTagCompound( data );
 			return is;
 		}
