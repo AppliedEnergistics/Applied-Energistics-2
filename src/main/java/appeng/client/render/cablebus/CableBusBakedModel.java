@@ -88,8 +88,9 @@ public class CableBusBakedModel implements IBakedModel
 
 		List<BakedQuad> quads = new ArrayList<>();
 
-		// The core parts of the cable will only be rendered in the CUTOUT layer. TRANSLUCENT is used only for
-		// translucent facades further down below.
+		// The core parts of the cable will only be rendered in the CUTOUT layer.
+		// Facades will add them selves to what ever the block would be rendered with,
+		// except when transparent facades are enabled, they are forced to TRANSPARENT.
 		if( layer == BlockRenderLayer.CUTOUT )
 		{
 
@@ -138,14 +139,7 @@ public class CableBusBakedModel implements IBakedModel
 				}
 			}
 		}
-
-		this.facadeBuilder.addFacades(
-				layer,
-				renderState.getFacades(),
-				renderState.getBoundingBoxes(),
-				renderState.getAttachments().keySet(),
-				rand,
-				quads );
+		this.facadeBuilder.buildFacadeQuads( layer, renderState, rand, quads, this.partModels::get );
 
 		return quads;
 	}

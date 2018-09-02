@@ -19,6 +19,7 @@
 package appeng.client.render.cablebus;
 
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -27,6 +28,8 @@ import java.util.Objects;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
@@ -68,6 +71,10 @@ public class CableBusRenderState
 
 	// Contains the facade to use for each side that has a facade attached
 	private EnumMap<EnumFacing, FacadeRenderState> facades = new EnumMap<>( EnumFacing.class );
+
+	// Used for Facades.
+	private WeakReference<IBlockAccess> world;
+	private BlockPos pos;
 
 	// Contains the bounding boxes of all parts on the cable bus to allow facades to cut out holes for the parts. This
 	// list is only populated if there are
@@ -151,6 +158,26 @@ public class CableBusRenderState
 		return this.facades;
 	}
 
+	public IBlockAccess getWorld()
+	{
+		return this.world.get();
+	}
+
+	public void setWorld( IBlockAccess world )
+	{
+		this.world = new WeakReference<>( world );
+	}
+
+	public BlockPos getPos()
+	{
+		return this.pos;
+	}
+
+	public void setPos( BlockPos pos )
+	{
+		this.pos = pos;
+	}
+
 	public List<AxisAlignedBB> getBoundingBoxes()
 	{
 		return this.boundingBoxes;
@@ -196,9 +223,8 @@ public class CableBusRenderState
 		final CableBusRenderState other = (CableBusRenderState) obj;
 
 		return this.cableColor == other.cableColor && this.cableType == other.cableType && this.coreType == other.coreType && Objects
-				.equals( this.attachmentConnections, other.attachmentConnections ) && Objects.equals( this.cableBusAdjacent,
-						other.cableBusAdjacent ) && Objects.equals( this.channelsOnSide, other.channelsOnSide ) && Objects.equals( this.connectionTypes,
-								other.connectionTypes ) && Objects.equals( this.partFlags, other.partFlags );
+				.equals( this.attachmentConnections, other.attachmentConnections ) && Objects.equals( this.cableBusAdjacent, other.cableBusAdjacent ) && Objects
+						.equals( this.channelsOnSide, other.channelsOnSide ) && Objects.equals( this.connectionTypes, other.connectionTypes ) && Objects
+								.equals( this.partFlags, other.partFlags );
 	}
-
 }

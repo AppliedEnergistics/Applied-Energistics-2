@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockGlass;
-import net.minecraft.block.BlockStainedGlass;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -50,7 +48,6 @@ import appeng.api.parts.IAlphaPassItem;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
 import appeng.core.FacadeConfig;
-import appeng.decorative.solid.BlockQuartzOre;
 import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
 import appeng.items.AEBaseItem;
@@ -167,8 +164,6 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		final int metadata = l.getItem().getMetadata( l.getItemDamage() );
 
 		final boolean hasTile = b.hasTileEntity( b.getDefaultState() );
-		final boolean enableGlass = b instanceof BlockGlass || b instanceof BlockStainedGlass;
-		final boolean disableOre = b instanceof BlockQuartzOre;
 
 		// Try to get the block state based on the item stack's meta. If this fails, don't consider it for a facade
 		// This for example fails for Pistons because they hardcoded an invalid meta value in vanilla
@@ -183,9 +178,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			return ItemStack.EMPTY;
 		}
 
-		final boolean defaultValue = ( b
-				.isTopSolid( blockState ) && hasSimpleModel( blockState ) && !b.getTickRandomly() && !hasTile && !disableOre ) || enableGlass;
-		if( FacadeConfig.instance().checkEnabled( b, metadata, defaultValue ) )
+		if( blockState.getRenderType() == EnumBlockRenderType.MODEL && !hasTile )
 		{
 			if( returnItem )
 			{
@@ -260,7 +253,6 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		}
 
 		return new ItemStack( baseItem, 1, itemDamage );
-
 	}
 
 	@Override
@@ -292,7 +284,6 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			AELog.warn( "Block %s has broken getStateFromMeta method for meta %d", block.getRegistryName().toString(), baseItemStack.getItemDamage() );
 			return Blocks.GLASS.getDefaultState();
 		}
-
 	}
 
 	public List<ItemStack> getFacades()

@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2018, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,370 +19,372 @@
 package appeng.client.render.cablebus;
 
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 
 import javax.annotation.Nullable;
-import javax.vecmath.Vector3f;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.renderer.color.BlockColors;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.MinecraftForgeClient;
 
 import appeng.api.AEApi;
 import appeng.api.util.AEAxisAlignedBB;
-import appeng.core.AELog;
-import appeng.core.AppEng;
+import appeng.parts.misc.PartCableAnchor;
+import appeng.thirdparty.codechicken.lib.model.CachedFormat;
+import appeng.thirdparty.codechicken.lib.model.Quad;
+import appeng.thirdparty.codechicken.lib.model.pipeline.BakedPipeline;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadAlphaOverride;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadClamper;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadCornerKicker;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadFaceStripper;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadReInterpolator;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadTinter;
 
 
 /**
- * Handles creating the quads for facades attached to cable busses.
+ * The FacadeBuilder builds for facades..
+ *
+ * @author covers1624
  */
 public class FacadeBuilder
 {
 
-	private static final ResourceLocation TEXTURE_FACADE = new ResourceLocation( AppEng.MOD_ID, "parts/cable_anchor" );
+	public static double THICK_THICKNESS = 2D / 16D;
+	public static double THIN_THICKNESS = 1D / 16D;
 
-	private final VertexFormat format;
+	public static final AxisAlignedBB[] THICK_FACADE_BOXES = new AxisAlignedBB[] {
+			new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, THICK_THICKNESS, 1.0 ),
+			new AxisAlignedBB( 0.0, 1.0 - THICK_THICKNESS, 0.0, 1.0, 1.0, 1.0 ),
+			new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, 1.0, THICK_THICKNESS ),
+			new AxisAlignedBB( 0.0, 0.0, 1.0 - THICK_THICKNESS, 1.0, 1.0, 1.0 ),
+			new AxisAlignedBB( 0.0, 0.0, 0.0, THICK_THICKNESS, 1.0, 1.0 ),
+			new AxisAlignedBB( 1.0 - THICK_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0 )
+	};
 
-	private final TextureAtlasSprite facadeTexture;
+	public static final AxisAlignedBB[] THIN_FACADE_BOXES = new AxisAlignedBB[] {
+			new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, THIN_THICKNESS, 1.0 ),
+			new AxisAlignedBB( 0.0, 1.0 - THIN_THICKNESS, 0.0, 1.0, 1.0, 1.0 ),
+			new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, 1.0, THIN_THICKNESS ),
+			new AxisAlignedBB( 0.0, 0.0, 1.0 - THIN_THICKNESS, 1.0, 1.0, 1.0 ),
+			new AxisAlignedBB( 0.0, 0.0, 0.0, THIN_THICKNESS, 1.0, 1.0 ),
+			new AxisAlignedBB( 1.0 - THIN_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0 )
+	};
 
-	private static final Set<ResourceLocation> warnedFor = new HashSet<>();
+	private ThreadLocal<BakedPipeline> pipelines = ThreadLocal.withInitial( () -> BakedPipeline.builder()
+			// Clamper is responsible for clamping the vertex to the bounds specified.
+			.addElement( "clamper", QuadClamper.FACTORY )
+			// Strips faces if they match a mask.
+			.addElement( "face_stripper", QuadFaceStripper.FACTORY )
+			// Kicks the edge inner corners in, solves Z fighting
+			.addElement( "corner_kicker", QuadCornerKicker.FACTORY )
+			// Re-Interpolates the UV's for the quad.
+			.addElement( "interp", QuadReInterpolator.FACTORY )
+			// Tints the quad if we need it to. Disabled by default.
+			.addElement( "tinter", QuadTinter.FACTORY, false )
+			// Overrides the quad's alpha if we are forcing transparent facades.
+			.addElement( "transparent", QuadAlphaOverride.FACTORY, false, e -> e.setAlphaOverride( 0x4C / 255F ) )
+			.build()//
+	);
+	private ThreadLocal<Quad> collectors = ThreadLocal.withInitial( Quad::new );
 
-	FacadeBuilder( VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
+	public void buildFacadeQuads( BlockRenderLayer layer, CableBusRenderState renderState, long rand, List<BakedQuad> quads, Function<ResourceLocation, IBakedModel> modelLookup )
 	{
-		this.format = format;
-		this.facadeTexture = bakedTextureGetter.apply( TEXTURE_FACADE );
-	}
-
-	static Collection<ResourceLocation> getTextures()
-	{
-		return Collections.singletonList( TEXTURE_FACADE );
-	}
-
-	void addFacades( BlockRenderLayer layer, Map<EnumFacing, FacadeRenderState> facadesState, List<AxisAlignedBB> partBoxes, Set<EnumFacing> sidesWithParts, long rand, List<BakedQuad> quads )
-	{
+		BakedPipeline pipeline = this.pipelines.get();
+		Quad collectorQuad = this.collectors.get();
+		boolean transparent = AEApi.instance().partHelper().getCableRenderMode().transparentFacades;
+		Map<EnumFacing, FacadeRenderState> facadeStates = renderState.getFacades();
+		List<AxisAlignedBB> partBoxes = renderState.getBoundingBoxes();
+		Set<EnumFacing> sidesWithParts = renderState.getAttachments().keySet();
+		IBlockAccess parentWorld = renderState.getWorld();
+		BlockPos pos = renderState.getPos();
+		BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
 		boolean thinFacades = isUseThinFacades( partBoxes );
 
-		CubeBuilder builder = new CubeBuilder( this.format, quads );
-
-		facadesState.forEach( ( side, state ) ->
+		for( Entry<EnumFacing, FacadeRenderState> entry : facadeStates.entrySet() )
 		{
-			AxisAlignedBB facadeBox = getFacadeBox( side, thinFacades );
-			AEAxisAlignedBB cutOutBox = getCutOutBox( facadeBox, partBoxes );
+			EnumFacing side = entry.getKey();
+			int sideIndex = side.ordinal();
+			FacadeRenderState facadeRenderState = entry.getValue();
 			boolean renderStilt = !sidesWithParts.contains( side );
+			if( layer == BlockRenderLayer.CUTOUT && renderStilt )
+			{
+				for( ResourceLocation part : PartCableAnchor.FACADE_MODELS.getModels() )
+				{
+					IBakedModel partModel = modelLookup.apply( part );
+					QuadRotator rotator = new QuadRotator();
+					quads.addAll( rotator.rotateQuads( gatherQuads( partModel, null, rand ), side, EnumFacing.UP ) );
+				}
+			}
+			// If we are forcing transparency and this isn't the Translucent layer.
+			if( transparent && layer != BlockRenderLayer.TRANSLUCENT )
+			{
+				continue;
+			}
+
+			IBlockState blockState = facadeRenderState.getSourceBlock();
+			// If we aren't forcing transparency let the block decide if it should render.
+			if( !transparent )
+			{
+				if( !blockState.getBlock().canRenderInLayer( blockState, layer ) )
+				{
+					continue;
+				}
+			}
+
+			AxisAlignedBB fullBounds = thinFacades ? THIN_FACADE_BOXES[sideIndex] : THICK_FACADE_BOXES[sideIndex];
+			AxisAlignedBB facadeBox = fullBounds;
+			// If we are a transparent facade, we need to modify out BB.
+			if( facadeRenderState.isTransparent() )
+			{
+				double offset = thinFacades ? THIN_THICKNESS : THICK_THICKNESS;
+				AEAxisAlignedBB tmpBB = null;
+				for( EnumFacing face : EnumFacing.VALUES )
+				{
+					// Only faces that aren't on our axis
+					if( face.getAxis() != side.getAxis() )
+					{
+						FacadeRenderState otherState = facadeStates.get( face );
+						if( otherState != null && !otherState.isTransparent() )
+						{
+							if( tmpBB == null )
+							{
+								tmpBB = AEAxisAlignedBB.fromBounds( facadeBox );
+							}
+							switch( face )
+							{
+								case DOWN:
+									tmpBB.minY += offset;
+									break;
+								case UP:
+									tmpBB.maxY -= offset;
+									break;
+								case NORTH:
+									tmpBB.minZ += offset;
+									break;
+								case SOUTH:
+									tmpBB.maxZ -= offset;
+									break;
+								case WEST:
+									tmpBB.minX += offset;
+									break;
+								case EAST:
+									tmpBB.maxX -= offset;
+									break;
+								default:
+									throw new RuntimeException( "Switch falloff. " + String.valueOf( face ) );
+							}
+						}
+					}
+				}
+				if( tmpBB != null )
+				{
+					facadeBox = tmpBB.getBoundingBox();
+				}
+			}
+
+			AEAxisAlignedBB cutOutBox = getCutOutBox( facadeBox, partBoxes );
+			List<AxisAlignedBB> holeStrips = getBoxes( facadeBox, cutOutBox, side.getAxis() );
+			IBlockAccess facadeAccess = new FacadeBlockAccess( parentWorld, pos, side, blockState );
+
+			BlockRendererDispatcher dispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
 
 			try
 			{
-				this.addFacade( layer, facadesState, side, cutOutBox, thinFacades, renderStilt, rand, builder );
+				blockState = blockState.getActualState( facadeAccess, pos );
 			}
-			catch( Throwable t )
+			catch( Exception ignored )
 			{
-				AELog.debug( t );
 			}
-		} );
-	}
-
-	public static TextureAtlasAndTint getSprite( IBakedModel blockModel, IBlockState state, EnumFacing facing, long rand )
-	{
-
-		TextureAtlasAndTint firstFound = null;
-		BlockRenderLayer orgLayer = MinecraftForgeClient.getRenderLayer();
-
-		try
-		{
-			// Some other mods also distinguish between layers, so we're doing this in a loop from most likely to least
-			// likely
-			for( BlockRenderLayer layer : BlockRenderLayer.values() )
+			IBakedModel model = dispatcher.getModelForState( blockState );
+			try
 			{
+				blockState = blockState.getBlock().getExtendedState( blockState, facadeAccess, pos );
+			}
+			catch( Exception ignored )
+			{
+			}
 
+			List<BakedQuad> modelQuads = new ArrayList<>();
+			// If we are forcing transparent facades, fake the render layer, and grab all quads.
+			if( transparent )
+			{
+				for( BlockRenderLayer forcedLayer : BlockRenderLayer.values() )
+				{
+					// Check if the block renders on the layer we want to force.
+					if( blockState.getBlock().canRenderInLayer( blockState, forcedLayer ) )
+					{
+						// Force the layer and gather quads.
+						ForgeHooksClient.setRenderLayer( forcedLayer );
+						modelQuads.addAll( gatherQuads( model, blockState, rand ) );
+					}
+				}
+
+				// Reset.
 				ForgeHooksClient.setRenderLayer( layer );
-
-				for( BakedQuad bakedQuad : blockModel.getQuads( state, facing, rand ) )
-				{
-					return new TextureAtlasAndTint( bakedQuad );
-				}
-
-				for( BakedQuad bakedQuad : blockModel.getQuads( state, null, rand ) )
-				{
-					if( firstFound == null )
-					{
-						firstFound = new TextureAtlasAndTint( bakedQuad );
-					}
-					if( bakedQuad.getFace() == facing )
-					{
-						return new TextureAtlasAndTint( bakedQuad );
-					}
-				}
-			}
-		}
-		catch( Exception e )
-		{
-			if( warnedFor.add( state.getBlock().getRegistryName() ) )
-			{
-				AELog.warn( "Unable to get facade sprite for blockstate %s. Supressing further warnings for this block.", state );
-				AELog.debug( e );
-			}
-		}
-		finally
-		{
-			ForgeHooksClient.setRenderLayer( orgLayer );
-		}
-
-		// Fall back to the particle texture, if we havent found anything else so far.
-		if( firstFound == null )
-		{
-			try
-			{
-				return new TextureAtlasAndTint( blockModel.getParticleTexture(), -1 );
-			}
-			catch( Exception e )
-			{
-				if( warnedFor.add( state.getBlock().getRegistryName() ) )
-				{
-					AELog.warn( "Unable to get facade sprite particle texture fallback for blockstate %s. Supressing further warnings for this block.", state );
-					AELog.debug( e );
-				}
-			}
-		}
-
-		return firstFound;
-	}
-
-	private void addFacade( BlockRenderLayer layer, Map<EnumFacing, FacadeRenderState> facades, EnumFacing side, AEAxisAlignedBB busBounds, boolean thinFacades, boolean renderStilt, long rand, CubeBuilder builder )
-	{
-
-		FacadeRenderState facadeState = facades.get( side );
-		IBlockState blockState = facadeState.getSourceBlock();
-
-		builder.setDrawFaces( EnumSet.allOf( EnumFacing.class ) );
-
-		// Reset to no color multiplicator
-		builder.setColorRGB( 0xFFFFFF );
-		builder.useStandardUV();
-
-		// We only render the stilt if we don't intersect with any part directly, and if there's no part on our side
-		if( renderStilt && busBounds == null && layer == BlockRenderLayer.CUTOUT )
-		{
-			builder.setTexture( this.facadeTexture );
-			switch( side )
-			{
-				case DOWN:
-					builder.addCube( 7, 1, 7, 9, 6, 9 );
-					break;
-				case UP:
-					builder.addCube( 7, 10, 7, 9, 15, 9 );
-					break;
-				case NORTH:
-					builder.addCube( 7, 7, 1, 9, 9, 6 );
-					break;
-				case SOUTH:
-					builder.addCube( 7, 7, 10, 9, 9, 15 );
-					break;
-				case WEST:
-					builder.addCube( 1, 7, 7, 6, 9, 9 );
-					break;
-				case EAST:
-					builder.addCube( 10, 7, 7, 15, 9, 9 );
-					break;
-			}
-		}
-
-		// Do not add the translucent facade in any other layer than translucent
-		boolean translucent = AEApi.instance().partHelper().getCableRenderMode().transparentFacades;
-		if( translucent && layer != BlockRenderLayer.TRANSLUCENT )
-		{
-			return;
-		}
-
-		final float thickness = thinFacades ? 1 : 2;
-
-		BlockRendererDispatcher blockRendererDispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
-		IBakedModel blockModel = blockRendererDispatcher.getModelForState( blockState );
-
-		final int color;
-		if( translucent )
-		{
-			color = 0x4CFFFFFF;
-		}
-		else
-		{
-			color = 0xFFFFFFFF;
-		}
-
-		// TODO: Cache this
-		for( EnumFacing facing : facadeState.getOpenFaces() )
-		{
-			TextureAtlasAndTint spriteAndTint = getSprite( blockModel, blockState, facing, rand );
-			if( spriteAndTint != null && spriteAndTint.sprite != null )
-			{
-				// Use the tint color from the item stack here, which is based upon the assumption that the
-				// model used for the block will use the same meaning for tint indices as the item model does
-				if( spriteAndTint.tint != -1 )
-				{
-					int tintColor = facadeState.resolveTintColor( spriteAndTint.tint );
-
-					// Still apply the transparency color
-					tintColor &= 0xFFFFFF;
-					tintColor |= color & 0xFF000000;
-					builder.setColor( tintColor );
-				}
-				else
-				{
-					builder.setColor( color );
-				}
-				builder.setTexture( facing, spriteAndTint.sprite );
 			}
 			else
 			{
-				builder.setColor( color );
-				builder.setTexture( facing, this.facadeTexture );
-			}
-		}
-
-		builder.setDrawFaces( facadeState.getOpenFaces() );
-
-		AxisAlignedBB primaryBox = getFacadeBox( side, thinFacades );
-
-		Vector3f min = new Vector3f( (float) primaryBox.minX * 16, (float) primaryBox.minY * 16, (float) primaryBox.minZ * 16 );
-		Vector3f max = new Vector3f( (float) primaryBox.maxX * 16, (float) primaryBox.maxY * 16, (float) primaryBox.maxZ * 16 );
-
-		if( busBounds == null )
-		{
-			// Adjust the facade for neighboring facades so that facade cubes dont overlap with each other
-			if( side == EnumFacing.NORTH || side == EnumFacing.SOUTH )
-			{
-				if( facades.containsKey( EnumFacing.UP ) )
-				{
-					max.y -= thickness;
-				}
-
-				if( facades.containsKey( EnumFacing.DOWN ) )
-				{
-					min.y += thickness;
-				}
-			}
-			else if( side == EnumFacing.EAST || side == EnumFacing.WEST )
-			{
-				if( facades.containsKey( EnumFacing.UP ) )
-				{
-					max.y -= thickness;
-				}
-
-				if( facades.containsKey( EnumFacing.DOWN ) )
-				{
-					min.y += thickness;
-				}
-
-				if( facades.containsKey( EnumFacing.SOUTH ) )
-				{
-					max.z -= thickness;
-				}
-
-				if( facades.containsKey( EnumFacing.NORTH ) )
-				{
-					min.z += thickness;
-				}
+				modelQuads.addAll( gatherQuads( model, blockState, rand ) );
 			}
 
-			builder.addCube( min.x, min.y, min.z, max.x, max.y, max.z );
-		}
-		else
-		{
-			Vector3f busMin = new Vector3f( (float) busBounds.minX * 16, (float) busBounds.minY * 16, (float) busBounds.minZ * 16 );
-			Vector3f busMax = new Vector3f( (float) busBounds.maxX * 16, (float) busBounds.maxY * 16, (float) busBounds.maxZ * 16 );
-
-			if( side == EnumFacing.UP || side == EnumFacing.DOWN )
+			// No quads.. Cool, next!
+			if( modelQuads.isEmpty() )
 			{
-				this.renderSegmentBlockCurrentBounds( builder, min, max, 0.0f, 0.0f, busMax.z, 16.0f, 16.0f, 16.0f );
-				this.renderSegmentBlockCurrentBounds( builder, min, max, 0.0f, 0.0f, 0.0f, 16.0f, 16.0f, busMin.z );
-				this.renderSegmentBlockCurrentBounds( builder, min, max, 0.0f, 0.0f, busMin.z, busMin.x, 16.0f, busMax.z );
-				this.renderSegmentBlockCurrentBounds( builder, min, max, busMax.x, 0.0f, busMin.z, 16.0f, 16.0f, busMax.z );
+				continue;
 			}
-			else if( side == EnumFacing.NORTH || side == EnumFacing.SOUTH )
+
+			// Grab out pipeline elements.
+			QuadClamper clamper = pipeline.getElement( "clamper", QuadClamper.class );
+			QuadFaceStripper edgeStripper = pipeline.getElement( "face_stripper", QuadFaceStripper.class );
+			QuadTinter tinter = pipeline.getElement( "tinter", QuadTinter.class );
+			QuadCornerKicker kicker = pipeline.getElement( "corner_kicker", QuadCornerKicker.class );
+
+			// Set global element states.
+
+			// calculate the side mask.
+			int facadeMask = 0;
+			for( Entry<EnumFacing, FacadeRenderState> ent : facadeStates.entrySet() )
 			{
-				if( facades.get( EnumFacing.UP ) != null )
+				EnumFacing s = ent.getKey();
+				if( s.getAxis() != side.getAxis() )
 				{
-					max.y -= thickness;
+					FacadeRenderState otherState = ent.getValue();
+					if( !otherState.isTransparent() )
+					{
+						facadeMask |= 1 << s.ordinal();
+					}
 				}
-
-				if( facades.get( EnumFacing.DOWN ) != null )
-				{
-					min.y += thickness;
-				}
-
-				this.renderSegmentBlockCurrentBounds( builder, min, max, busMax.x, 0.0f, 0.0f, 16.0f, 16.0f, 16.0f );
-				this.renderSegmentBlockCurrentBounds( builder, min, max, 0.0f, 0.0f, 0.0f, busMin.x, 16.0f, 16.0f );
-				this.renderSegmentBlockCurrentBounds( builder, min, max, busMin.x, 0.0f, 0.0f, busMax.x, busMin.y, 16.0f );
-				this.renderSegmentBlockCurrentBounds( builder, min, max, busMin.x, busMax.y, 0.0f, busMax.x, 16.0f, 16.0f );
 			}
-			else
+			// Setup the edge stripper.
+			edgeStripper.setBounds( fullBounds );
+			edgeStripper.setMask( facadeMask );
+
+			// Setup the kicker.
+			kicker.setSide( sideIndex );
+			kicker.setFacadeMask( facadeMask );
+			kicker.setBox( fullBounds );
+			kicker.setThickness( thinFacades ? THIN_THICKNESS : THICK_THICKNESS );
+
+			for( BakedQuad quad : modelQuads )
 			{
-				if( facades.get( EnumFacing.UP ) != null )
+				// lookup the format in CachedFormat.
+				CachedFormat format = CachedFormat.lookup( quad.getFormat() );
+				// If this quad has a tint index, setup the tinter.
+				if( quad.hasTintIndex() )
 				{
-					max.y -= thickness;
+					tinter.setTint( blockColors.colorMultiplier( blockState, facadeAccess, pos, quad.getTintIndex() ) );
 				}
-
-				if( facades.get( EnumFacing.DOWN ) != null )
+				for( AxisAlignedBB box : holeStrips )
 				{
-					min.y += thickness;
-				}
+					// setup the clamper for this box
+					clamper.setClampBounds( box );
+					// Reset the pipeline, clears all enabled/disabled states.
+					pipeline.reset( format );
+					// Reset out collector.
+					collectorQuad.reset( format );
+					// Enable / disable the optional elements
+					pipeline.setElementState( "tinter", quad.hasTintIndex() );
+					pipeline.setElementState( "transparent", transparent );
+					// Prepare the pipeline for a quad.
+					pipeline.prepare( collectorQuad );
 
-				if( facades.get( EnumFacing.SOUTH ) != null )
-				{
-					max.z -= thickness;
+					// Pipe our quad into the pipeline.
+					quad.pipe( pipeline );
+					// Check if the collector got any data.
+					if( collectorQuad.full )
+					{
+						// Add the result.
+						quads.add( collectorQuad.bake() );
+					}
 				}
-
-				if( facades.get( EnumFacing.NORTH ) != null )
-				{
-					min.z += thickness;
-				}
-
-				this.renderSegmentBlockCurrentBounds( builder, min, max, 0.0f, 0.0f, busMax.z, 16.0f, 16.0f, 16.0f );
-				this.renderSegmentBlockCurrentBounds( builder, min, max, 0.0f, 0.0f, 0.0f, 16.0f, 16.0f, busMin.z );
-				this.renderSegmentBlockCurrentBounds( builder, min, max, 0.0f, 0.0f, busMin.z, 16.0f, busMin.y, busMax.z );
-				this.renderSegmentBlockCurrentBounds( builder, min, max, 0.0f, busMax.y, busMin.z, 16.0f, 16.0f, busMax.z );
 			}
 		}
 	}
 
-	private void renderSegmentBlockCurrentBounds( CubeBuilder builder, Vector3f min, Vector3f max, float minX, float minY, float minZ, float maxX, float maxY, float maxZ )
+	/**
+	 * This is slow, so should be cached.
+	 *
+	 * @return The model.
+	 */
+	public List<BakedQuad> buildFacadeItemQuads( ItemStack textureItem, EnumFacing side )
 	{
-		minX = Math.max( min.x, minX );
-		minY = Math.max( min.y, minY );
-		minZ = Math.max( min.z, minZ );
-		maxX = Math.min( max.x, maxX );
-		maxY = Math.min( max.y, maxY );
-		maxZ = Math.min( max.z, maxZ );
+		List<BakedQuad> facadeQuads = new ArrayList<>();
+		IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides( textureItem, null, null );
+		List<BakedQuad> modelQuads = gatherQuads( model, null, 0 );
 
-		// don't draw it if its not at least a pixel wide...
-		if( maxX - minX >= 1.0 && maxY - minY >= 1.0 && maxZ - minZ >= 1.0 )
+		BakedPipeline pipeline = this.pipelines.get();
+		Quad collectorQuad = this.collectors.get();
+
+		// Grab pipeline elements.
+		QuadClamper clamper = pipeline.getElement( "clamper", QuadClamper.class );
+		QuadTinter tinter = pipeline.getElement( "tinter", QuadTinter.class );
+
+		for( BakedQuad quad : modelQuads )
 		{
-			builder.addCube( minX, minY, minZ, maxX, maxY, maxZ );
+			// Lookup the CachedFormat for this quads format.
+			CachedFormat format = CachedFormat.lookup( quad.getFormat() );
+			// Reset the pipeline.
+			pipeline.reset( format );
+			// Reset the collector.
+			collectorQuad.reset( format );
+			// If we have a tint index, setup the tinter and enable it.
+			if( quad.hasTintIndex() )
+			{
+				tinter.setTint( Minecraft.getMinecraft().getItemColors().colorMultiplier( textureItem, quad.getTintIndex() ) );
+				pipeline.enableElement( "tinter" );
+			}
+			// Disable elements we don't need for items.
+			pipeline.disableElement( "face_stripper" );
+			pipeline.disableElement( "corner_kicker" );
+			// Setup the clamper
+			clamper.setClampBounds( THICK_FACADE_BOXES[side.ordinal()] );
+			// Prepare the pipeline.
+			pipeline.prepare( collectorQuad );
+			// Pipe our quad into the pipeline.
+			quad.pipe( pipeline );
+			// Check the collector for data and add the quad if there was.
+			if( collectorQuad.full )
+			{
+				facadeQuads.add( collectorQuad.bakeUnpacked() );
+			}
 		}
+		return facadeQuads;
+	}
 
+	// Helper to gather all quads from a model into a list.
+	private static List<BakedQuad> gatherQuads( IBakedModel model, IBlockState state, long rand )
+	{
+		List<BakedQuad> modelQuads = new ArrayList<>();
+		for( EnumFacing face : EnumFacing.VALUES )
+		{
+			modelQuads.addAll( model.getQuads( state, face, rand ) );
+		}
+		modelQuads.addAll( model.getQuads( state, null, rand ) );
+		return modelQuads;
 	}
 
 	/**
 	 * Given the actual facade bounding box, and the bounding boxes of all parts, determine the biggest union of AABB
-	 * that intersect with the
-	 * facade's bounding box. This AABB will need to be "cut out" when the facade is rendered.
+	 * that intersect with the facade's bounding
+	 * box. This AABB will need to be "cut out" when the facade is rendered.
 	 */
 	@Nullable
 	private static AEAxisAlignedBB getCutOutBox( AxisAlignedBB facadeBox, List<AxisAlignedBB> partBoxes )
@@ -411,8 +413,58 @@ public class FacadeBuilder
 	}
 
 	/**
-	 * Determines if any of the part's bounding boxes intersects with the outside 2 voxel wide layer.
-	 * If so, we should use thinner facades (1 voxel deep).
+	 * Generates the box segments around the specified hole. If the specified hole is null, a Singleton of the Facade
+	 * box is returned.
+	 *
+	 * @param fb The Facade's box.
+	 * @param hole The hole to 'cut'.
+	 * @param axis The axis the facade is on.
+	 *
+	 * @return The box segments.
+	 */
+	private static List<AxisAlignedBB> getBoxes( AxisAlignedBB fb, AEAxisAlignedBB hole, Axis axis )
+	{
+		if( hole == null )
+		{
+			return Collections.singletonList( fb );
+		}
+		List<AxisAlignedBB> boxes = new ArrayList<>();
+		switch( axis )
+		{
+			case Y:
+				boxes.add( new AxisAlignedBB( fb.minX, fb.minY, fb.minZ, hole.minX, fb.maxY, fb.maxZ ) );
+				boxes.add( new AxisAlignedBB( hole.maxX, fb.minY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ ) );
+
+				boxes.add( new AxisAlignedBB( hole.minX, fb.minY, fb.minZ, hole.maxX, fb.maxY, hole.minZ ) );
+				boxes.add( new AxisAlignedBB( hole.minX, fb.minY, hole.maxZ, hole.maxX, fb.maxY, fb.maxZ ) );
+
+				break;
+			case Z:
+				boxes.add( new AxisAlignedBB( fb.minX, fb.minY, fb.minZ, fb.maxX, hole.minY, fb.maxZ ) );
+				boxes.add( new AxisAlignedBB( fb.minX, hole.maxY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ ) );
+
+				boxes.add( new AxisAlignedBB( fb.minX, hole.minY, fb.minZ, hole.minX, hole.maxY, fb.maxZ ) );
+				boxes.add( new AxisAlignedBB( hole.maxX, hole.minY, fb.minZ, fb.maxX, hole.maxY, fb.maxZ ) );
+
+				break;
+			case X:
+				boxes.add( new AxisAlignedBB( fb.minX, fb.minY, fb.minZ, fb.maxX, hole.minY, fb.maxZ ) );
+				boxes.add( new AxisAlignedBB( fb.minX, hole.maxY, fb.minZ, fb.maxX, fb.maxY, fb.maxZ ) );
+
+				boxes.add( new AxisAlignedBB( fb.minX, hole.minY, fb.minZ, fb.maxX, hole.maxY, hole.minZ ) );
+				boxes.add( new AxisAlignedBB( fb.minX, hole.minY, hole.maxZ, fb.maxX, hole.maxY, fb.maxZ ) );
+				break;
+			default:
+				// should never happen.
+				throw new RuntimeException( "switch falloff. " + String.valueOf( axis ) );
+		}
+
+		return boxes;
+	}
+
+	/**
+	 * Determines if any of the part's bounding boxes intersects with the outside 2 voxel wide layer. If so, we should
+	 * use thinner facades (1 voxel deep).
 	 */
 	private static boolean isUseThinFacades( List<AxisAlignedBB> partBoxes )
 	{
@@ -436,57 +488,4 @@ public class FacadeBuilder
 		}
 		return false;
 	}
-
-	private static AxisAlignedBB getFacadeBox( EnumFacing side, boolean thinFacades )
-	{
-		double thickness = ( thinFacades ? 1 : 2 ) / 16.0;
-
-		switch( side )
-		{
-			case DOWN:
-				return new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, thickness, 1.0 );
-			case EAST:
-				return new AxisAlignedBB( 1.0 - thickness, 0.0, 0.0, 1.0, 1.0, 1.0 );
-			case NORTH:
-				return new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, 1.0, thickness );
-			case SOUTH:
-				return new AxisAlignedBB( 0.0, 0.0, 1.0 - thickness, 1.0, 1.0, 1.0 );
-			case UP:
-				return new AxisAlignedBB( 0.0, 1.0 - thickness, 0.0, 1.0, 1.0, 1.0 );
-			case WEST:
-				return new AxisAlignedBB( 0.0, 0.0, 0.0, thickness, 1.0, 1.0 );
-			default:
-				throw new IllegalArgumentException( "Unsupported face: " + side );
-		}
-	}
-
-	public static class TextureAtlasAndTint
-	{
-		private final TextureAtlasSprite sprite;
-		private final int tint;
-
-		private TextureAtlasAndTint( BakedQuad quad )
-		{
-			this.sprite = quad.getSprite();
-			this.tint = quad.getTintIndex();
-		}
-
-		private TextureAtlasAndTint( TextureAtlasSprite sprite, int tint )
-		{
-			this.sprite = sprite;
-			this.tint = tint;
-		}
-
-		public TextureAtlasSprite getSprite()
-		{
-			return this.sprite;
-		}
-
-		public int getTint()
-		{
-			return this.tint;
-		}
-
-	}
-
 }
