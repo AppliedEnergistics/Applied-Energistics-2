@@ -39,18 +39,19 @@ public class FacadeConfig
 {
 
 	private static final String CONFIG_VERSION = "1";
-	private static final String CONFIG_GENERAL_KEY = "general";
-	private static final String CONFIG_GENERAL_COMMENT = "Settings applying to all facades.\n\n" //
+	private static final String CONFIG_COMMON_KEY = "common";
+	private static final String CONFIG_COMMON_COMMENT = "Settings applied to all facades.\n\n" //
 			+ "By default full blocks with no tile entity and a model do not need whitelisting.\n"//
-			+ "This config will only be read once per ";
-	private static final String CONFIG_GENERAL_ALLOW_TILEENTITIES_KEY = "allowTileEntityFacades";
-	private static final String CONFIG_GENERAL_ALLOW_TILEENTITIES_COMMENT = "Unsupported: Allows whitelisting TileEntity as facades. Could work, have render issues, or corrupt your world. USE AT YOUR OWN RISK.";
-	private static final String CONFIG_WHITELIST_KEY = "whitelist";
-	private static final String CONFIG_WHITELIST_COMMENT = "A whitelist to explicitly enable certain blocks as facades.\n\n" //
+			+ "This will only be read once during client startup.";
+	private static final String CONFIG_COMMON_ALLOW_TILEENTITIES_KEY = "allowTileEntityFacades";
+	private static final String CONFIG_COMMON_ALLOW_TILEENTITIES_COMMENT = "Unsupported: Allows whitelisting TileEntity as facades. Could work, have render issues, or corrupt your world. USE AT YOUR OWN RISK.";
+	private static final String CONFIG_FACADES_KEY = "facades";
+	private static final String CONFIG_FACADES_COMMENT = "A way to explicitly handle certain blocks as facades.\n\n" //
 			+ "Blocks can be added by their resource location under the following rules.\n" //
 			+ " - One category per domain like minecraft or appliedenergistics2\n" //
-			+ " - One integer key per id. E.g. glass in case of minecraft:glass\n" //
-			+ " - An integer value ranging from 0 to 16 representing the metadata or 16 as wildcard";
+			+ " - One key per id. E.g. glass in case of minecraft:glass\n" //
+			+ " - An integer value ranging from 0 to 16 representing the metadata 0-15 and 16 as wildcard for all" //
+			+ " - Multiple entries for the same id but different metadata are possible when needed";
 
 	private static FacadeConfig instance;
 
@@ -74,14 +75,14 @@ public class FacadeConfig
 		final Configuration configurartion = migrate( new Configuration( configFile, CONFIG_VERSION ) );
 
 		final boolean allowTileEntityFacades = configurartion
-				.get( CONFIG_GENERAL_KEY, CONFIG_GENERAL_ALLOW_TILEENTITIES_KEY, false, CONFIG_GENERAL_ALLOW_TILEENTITIES_COMMENT )
+				.get( CONFIG_COMMON_KEY, CONFIG_COMMON_ALLOW_TILEENTITIES_KEY, false, CONFIG_COMMON_ALLOW_TILEENTITIES_COMMENT )
 				.setRequiresMcRestart( true )
 				.setShowInGui( false )
 				.getBoolean();
 
 		final Object2IntMap<ResourceLocation> configWhiteList = new Object2IntArrayMap<>();
 
-		final Set<ConfigCategory> whitelist = configurartion.getCategory( CONFIG_WHITELIST_KEY ).getChildren();
+		final Set<ConfigCategory> whitelist = configurartion.getCategory( CONFIG_FACADES_KEY ).getChildren();
 		for( ConfigCategory configCategory : whitelist )
 		{
 			final String domain = configCategory.getName();
@@ -114,16 +115,16 @@ public class FacadeConfig
 		}
 
 		// Create general category, if missing
-		if( !configurartion.hasCategory( CONFIG_GENERAL_KEY ) )
+		if( !configurartion.hasCategory( CONFIG_COMMON_KEY ) )
 		{
-			configurartion.getCategory( CONFIG_GENERAL_KEY ).setComment( CONFIG_GENERAL_COMMENT );
+			configurartion.getCategory( CONFIG_COMMON_KEY ).setComment( CONFIG_COMMON_COMMENT );
 		}
 
 		// Create whitelist, if missing
-		if( !configurartion.hasCategory( CONFIG_WHITELIST_KEY ) )
+		if( !configurartion.hasCategory( CONFIG_FACADES_KEY ) )
 		{
-			final ConfigCategory category = configurartion.getCategory( CONFIG_WHITELIST_KEY );
-			category.setComment( CONFIG_WHITELIST_COMMENT );
+			final ConfigCategory category = configurartion.getCategory( CONFIG_FACADES_KEY );
+			category.setComment( CONFIG_FACADES_COMMENT );
 
 			// Whitelist some vanilla blocks like glass
 			final ConfigCategory minecraft = new ConfigCategory( "minecraft", category );
