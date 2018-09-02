@@ -678,6 +678,12 @@ public class EnergyGridCache implements IEnergyGrid
 			{
 				EnergyGridCache.this.myGrid.postEvent( new MENetworkPowerStorage( this, PowerEventType.REQUEST_POWER ) );
 			}
+
+			if( this.stored < 0.01 )
+			{
+				EnergyGridCache.this.ticksSinceHasPowerChange = 0;
+				EnergyGridCache.this.publicPowerState( false, EnergyGridCache.this.myGrid );
+			}
 		}
 	}
 }
