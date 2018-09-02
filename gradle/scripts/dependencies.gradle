@@ -68,7 +68,7 @@ repositories {
         name 'modmaven'
         url "https://modmaven.k-4u.nl/"
     }
-    
+
     maven {
 		name = "CurseForge"
 		url = "https://minecraft.curseforge.com/api/maven/"
@@ -94,7 +94,8 @@ dependencies {
     compileOnly "cofh:CoFHCore:${cofhcore_version}:deobf"
     compileOnly "CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}"
 	compileOnly "inventory-tweaks:InventoryTweaks:${inventorytweaks_version}:api"
-	
+    compileOnly "team.chisel.ctm:CTM:MC1.12-${ctm_version}"
+
     // at runtime, use the full JEI jar
     runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"
 

@@ -61,10 +61,12 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.api.AEApi;
+import appeng.api.parts.IFacadeContainer;
+import appeng.api.parts.IFacadePart;
 import appeng.api.parts.PartItemStack;
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
+import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.UnlistedProperty;
 import appeng.client.render.cablebus.CableBusBakedModel;
@@ -74,6 +76,7 @@ import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketClick;
 import appeng.helpers.AEGlassMaterial;
+import appeng.integration.abstraction.IAEFacade;
 import appeng.parts.ICableBusContainer;
 import appeng.parts.NullCableBusContainer;
 import appeng.tile.AEBaseTile;
@@ -83,7 +86,7 @@ import appeng.tile.networking.TileCableBusTESR;
 import appeng.util.Platform;
 
 
-public class BlockCableBus extends AEBaseTileBlock
+public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 {
 
 	public static final UnlistedProperty<CableBusRenderState> RENDER_STATE_PROPERTY = new UnlistedProperty<>( "cable_bus_render_state", CableBusRenderState.class );
@@ -122,6 +125,8 @@ public class BlockCableBus extends AEBaseTileBlock
 	public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
 	{
 		CableBusRenderState renderState = this.cb( world, pos ).getRenderState();
+		renderState.setWorld( world );
+		renderState.setPos( pos );
 		return ( (IExtendedBlockState) state ).withProperty( RENDER_STATE_PROPERTY, renderState );
 	}
 
@@ -317,13 +322,14 @@ public class BlockCableBus extends AEBaseTileBlock
 					for( int l = 0; l < 4; ++l )
 					{
 						// Randomly select one of the textures if the cable bus has more than just one possibility here
-						TextureAtlasSprite texture = Platform.pickRandom( textures );
+						final TextureAtlasSprite texture = Platform.pickRandom( textures );
 
-						double d0 = pos.getX() + ( j + 0.5D ) / 4.0D;
-						double d1 = pos.getY() + ( k + 0.5D ) / 4.0D;
-						double d2 = pos.getZ() + ( l + 0.5D ) / 4.0D;
-						ParticleDigging particle = new DestroyFX( world, d0, d1, d2, d0 - pos.getX() - 0.5D, d1 - pos
+						final double d0 = pos.getX() + ( j + 0.5D ) / 4.0D;
+						final double d1 = pos.getY() + ( k + 0.5D ) / 4.0D;
+						final double d2 = pos.getZ() + ( l + 0.5D ) / 4.0D;
+						final ParticleDigging particle = new DestroyFX( world, d0, d1, d2, d0 - pos.getX() - 0.5D, d1 - pos
 								.getY() - 0.5D, d2 - pos.getZ() - 0.5D, this.getDefaultState() ).setBlockPos( pos );
+
 						particle.setParticleTexture( texture );
 						effectRenderer.addEffect( particle );
 					}
@@ -354,6 +360,20 @@ public class BlockCableBus extends AEBaseTileBlock
 		}
 
 		return out == null ? NULL_CABLE_BUS : out;
+	}
+
+	@Nullable
+	private IFacadeContainer fc( final IBlockAccess w, final BlockPos pos )
+	{
+		final TileEntity te = w.getTileEntity( pos );
+		IFacadeContainer out = null;
+
+		if( te instanceof TileCableBus )
+		{
+			out = ( (TileCableBus) te ).getCableBus().getFacadeContainer();
+		}
+
+		return out;
 	}
 
 	@Override
@@ -436,14 +456,25 @@ public class BlockCableBus extends AEBaseTileBlock
 	@Override
 	public boolean canRenderInLayer( IBlockState state, BlockRenderLayer layer )
 	{
-		if( AEApi.instance().partHelper().getCableRenderMode().transparentFacades )
+		return true;
+	}
+
+	@Override
+	public IBlockState getFacadeState( IBlockAccess world, BlockPos pos, EnumFacing side )
+	{
+		if( side != null )
 		{
-			return layer == BlockRenderLayer.CUTOUT || layer == BlockRenderLayer.TRANSLUCENT;
+			IFacadeContainer container = this.fc( world, pos );
+			if( container != null )
+			{
+				IFacadePart facade = container.getFacade( AEPartLocation.fromFacing( side ) );
+				if( facade != null )
+				{
+					return facade.getBlockState();
+				}
+			}
 		}
-		else
-		{
-			return layer == BlockRenderLayer.CUTOUT;
-		}
+		return world.getBlockState( pos );
 	}
 
 	public static Class<? extends AEBaseTile> getNoTesrTile()

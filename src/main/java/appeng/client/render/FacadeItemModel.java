@@ -31,6 +31,7 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.model.IModelState;
 
+import appeng.client.render.cablebus.FacadeBuilder;
 import appeng.core.AppEng;
 
 
@@ -71,8 +72,9 @@ public class FacadeItemModel implements IModel
 	public IBakedModel bake( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
 	{
 		IBakedModel bakedBaseModel = this.getBaseModel().bake( state, format, bakedTextureGetter );
+		FacadeBuilder facadeBuilder = new FacadeBuilder();
 
-		return new FacadeDispatcherBakedModel( bakedBaseModel, format );
+		return new FacadeDispatcherBakedModel( bakedBaseModel, format, facadeBuilder );
 	}
 
 	@Override

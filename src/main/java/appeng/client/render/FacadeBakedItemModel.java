@@ -1,6 +1,6 @@
 /*
  * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
+ * Copyright (c) 2013 - 2018, AlgorithmX2, All rights reserved.
  *
  * Applied Energistics 2 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,6 +19,7 @@
 package appeng.client.render;
 
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,44 +29,47 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.world.World;
 
 import appeng.client.render.cablebus.FacadeBuilder;
-import appeng.items.parts.ItemFacade;
 
 
 /**
- * This baked model class is used as a dispatcher to redirect the renderer to the *real* model that should be used based
- * on the item stack.
- * A custom Item Override List is used to accomplish this.
+ * This model used the provided FacadeBuilder to "slice" the item quads for the facade provided.
+ *
+ * @author covers1624
  */
-public class FacadeDispatcherBakedModel extends DelegateBakedModel
+public class FacadeBakedItemModel extends DelegateBakedModel
 {
-	private final VertexFormat format;
+
+	private final ItemStack textureStack;
 	private final FacadeBuilder facadeBuilder;
 
-	public FacadeDispatcherBakedModel( IBakedModel baseModel, VertexFormat format, FacadeBuilder facadeBuilder )
+	protected FacadeBakedItemModel( IBakedModel base, ItemStack textureStack, FacadeBuilder facadeBuilder )
 	{
-		super( baseModel );
-		this.format = format;
+		super( base );
+		this.textureStack = textureStack;
 		this.facadeBuilder = facadeBuilder;
 	}
 
-	// This is never used. See the item override list below.
 	@Override
 	public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
 	{
-		return Collections.emptyList();
+		if( side != null )
+		{
+			return Collections.emptyList();
+		}
+		List<BakedQuad> quads = new ArrayList<>();
+		quads.addAll( this.facadeBuilder.buildFacadeItemQuads( this.textureStack, EnumFacing.NORTH ) );
+		quads.addAll( this.getBaseModel().getQuads( state, side, rand ) );
+		return quads;
 	}
 
 	@Override
 	public boolean isGui3d()
 	{
-		return this.getBaseModel().isGui3d();
+		return false;
 	}
 
 	@Override
@@ -77,22 +81,6 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel
 	@Override
 	public ItemOverrideList getOverrides()
 	{
-		return new ItemOverrideList( Collections.emptyList() )
-		{
-			@Override
-			public IBakedModel handleItemState( IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity )
-			{
-				if( !( stack.getItem() instanceof ItemFacade ) )
-				{
-					return originalModel;
-				}
-
-				ItemFacade itemFacade = (ItemFacade) stack.getItem();
-
-				ItemStack textureItem = itemFacade.getTextureItem( stack );
-
-				return new FacadeBakedItemModel( FacadeDispatcherBakedModel.this.getBaseModel(), textureItem, FacadeDispatcherBakedModel.this.facadeBuilder );
-			}
-		};
+		return ItemOverrideList.NONE;
 	}
 }

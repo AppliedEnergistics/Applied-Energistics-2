@@ -65,7 +65,6 @@ public class CableBusModel implements IModel
 	{
 		return ImmutableList.<ResourceLocation>builder()
 				.addAll( CableBuilder.getTextures() )
-				.addAll( FacadeBuilder.getTextures() )
 				.build();
 	}
 
@@ -75,7 +74,7 @@ public class CableBusModel implements IModel
 		Map<ResourceLocation, IBakedModel> partModels = this.loadPartModels( state, format, bakedTextureGetter );
 
 		CableBuilder cableBuilder = new CableBuilder( format, bakedTextureGetter );
-		FacadeBuilder facadeBuilder = new FacadeBuilder( format, bakedTextureGetter );
+		FacadeBuilder facadeBuilder = new FacadeBuilder();
 
 		// This should normally not be used, but we *have* to provide a particle texture or otherwise damage models will
 		// crash
