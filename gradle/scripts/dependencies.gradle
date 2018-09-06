@@ -73,6 +73,11 @@ repositories {
 		name = "CurseForge"
 		url = "https://minecraft.curseforge.com/api/maven/"
 	}
+
+    maven {
+        name 'OpenComputers Maven'
+        url "http://maven.cil.li/"
+    }
 }
 
 configurations {
@@ -84,6 +89,7 @@ dependencies {
     mods "mcp.mobius.waila:Hwyla:${hwyla_version}"
     mods "net.industrial-craft:industrialcraft-2:${ic2_version}:dev"
     mods "mcjty.theoneprobe:TheOneProbe-${minecraft_version}:${top_version}"
+    mods "li.cil.oc:OpenComputers:${opencomputers_version}"
 
     // compile against provided APIs
     compileOnly "mezz.jei:jei_${minecraft_version}:${jei_version}:api"
@@ -95,6 +101,7 @@ dependencies {
     compileOnly "CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}"
 	compileOnly "inventory-tweaks:InventoryTweaks:${inventorytweaks_version}:api"
     compileOnly "team.chisel.ctm:CTM:MC1.12-${ctm_version}"
+    compileOnly "li.cil.oc:OpenComputers:${opencomputers_version}:api"
 
     // at runtime, use the full JEI jar
     runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"

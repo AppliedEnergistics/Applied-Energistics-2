@@ -110,6 +110,18 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		this.addNewAttunement( this.getModItem( "enderio", "itemredstoneconduit", OreDictionary.WILDCARD_VALUE ), TunnelType.REDSTONE );
 
 		/**
+		/* OpenComputers.
+		 */
+
+		this.addNewAttunement( this.getModItem( "opencomputers", "cable", 0 ), TunnelType.COMPUTER_MESSAGE );
+		this.addNewAttunement( this.getModItem( "opencomputers", "adapter", 0 ), TunnelType.COMPUTER_MESSAGE );
+		this.addNewAttunement( this.getModItem( "opencomputers", "relay", 0 ), TunnelType.COMPUTER_MESSAGE );
+		this.addNewAttunement( this.getModItem( "opencomputers", "card", 7 ), TunnelType.COMPUTER_MESSAGE );
+		this.addNewAttunement( this.getModItem( "opencomputers", "card", 9 ), TunnelType.COMPUTER_MESSAGE );
+		this.addNewAttunement( this.getModItem( "opencomputers", "upgrade", 31 ), TunnelType.COMPUTER_MESSAGE );
+		this.addNewAttunement( this.getModItem( "opencomputers", "analyzer", 0 ), TunnelType.COMPUTER_MESSAGE );
+
+		/**
 		 * attune based on lots of random item related stuff
 		 */
 

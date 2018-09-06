@@ -19,176 +19,250 @@
 package appeng.parts.p2p;
 
 
-// import javax.annotation.Nullable;
-//
-// import net.minecraft.item.ItemStack;
-// import net.minecraft.nbt.NBTTagCompound;
-// import net.minecraft.util.IIcon;
-// import net.minecraftforge.common.util.ForgeDirection;
-//
-// import cpw.mods.fml.relauncher.Side;
-// import cpw.mods.fml.relauncher.SideOnly;
-//
-// import li.cil.oc.api.API;
-// import li.cil.oc.api.Items;
-// import li.cil.oc.api.Network;
-// import li.cil.oc.api.network.Environment;
-// import li.cil.oc.api.network.Message;
-// import li.cil.oc.api.network.Node;
-// import li.cil.oc.api.network.SidedEnvironment;
-// import li.cil.oc.api.network.Visibility;
-//
-// import appeng.api.networking.events.MENetworkBootingStatusChange;
-// import appeng.api.networking.events.MENetworkChannelsChanged;
-// import appeng.api.networking.events.MENetworkEventSubscribe;
-// import appeng.api.networking.events.MENetworkPowerStatusChange;
-// import appeng.integration.IntegrationRegistry;
-// import appeng.integration.IntegrationType;
-// import appeng.coremod.annotations.Integration.Interface;
-// import appeng.coremod.annotations.Integration.InterfaceList;
-//
-//
-// @InterfaceList( value = { @Interface( iface = "li.cil.oc.api.network.Environment", iname =
-// IntegrationType.OpenComputers ), @Interface( iface = "li.cil.oc.api.network.SidedEnvironment", iname =
-// IntegrationType.OpenComputers ) } )
-// public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenComputers> implements Environment,
-// SidedEnvironment
-// {
-// @Nullable
-// private final Node node;
-//
-// public PartP2POpenComputers( final ItemStack is )
-// {
-// super( is );
-//
-// if( !IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
-// {
-// throw new RuntimeException( "OpenComputers is not installed!" );
-// }
-//
-// // Avoid NPE when called in pre-init phase (part population).
-// if( API.network != null )
-// {
-// this.node = Network.newNode( this, Visibility.None ).create();
-// }
-// else
-// {
-// this.node = null; // to satisfy final
-// }
-// }
-//
-// @MENetworkEventSubscribe
-// public void changeStateA( final MENetworkBootingStatusChange bs )
-// {
-// this.updateConnections();
-// }
-//
-// @MENetworkEventSubscribe
-// public void changeStateB( final MENetworkChannelsChanged bs )
-// {
-// this.updateConnections();
-// }
-//
-// @MENetworkEventSubscribe
-// public void changeStateC( final MENetworkPowerStatusChange bs )
-// {
-// this.updateConnections();
-// }
-//
-// @Override
-// @SideOnly( Side.CLIENT )
-// public IIcon getTypeTexture()
-// {
-// return Items.get( "adapter" ).block().getBlockTextureFromSide( 2 );
-// }
-//
-// @Override
-// public void removeFromWorld()
-// {
-// super.removeFromWorld();
-// if( this.node != null )
-// {
-// this.node.remove();
-// }
-// }
-//
-// @Override
-// public void onTunnelNetworkChange()
-// {
-// this.updateConnections();
-// }
-//
-// @Override
-// public void readFromNBT( final NBTTagCompound data )
-// {
-// super.readFromNBT( data );
-// if( this.node != null )
-// {
-// this.node.load( data );
-// }
-// }
-//
-// @Override
-// public void writeToNBT( final NBTTagCompound data )
-// {
-// super.writeToNBT( data );
-// if( this.node != null )
-// {
-// this.node.save( data );
-// }
-// }
-//
-// private void updateConnections()
-// {
-// if( this.getProxy().isPowered() && this.getProxy().isActive() )
-// {
-// // Make sure we're connected to existing OC nodes in the world.
-// Network.joinOrCreateNetwork( this.getTile() );
-//
-// if( this.isOutput() && this.getInput() != null && this.node != null )
-// {
-// Network.joinOrCreateNetwork( this.getInput().getTile() );
-// this.node.connect( this.getInput().node() );
-// }
-// }
-// else if( this.node != null )
-// {
-// this.node.remove();
-// }
-// }
-//
-// @Nullable
-// @Override
-// public Node node()
-// {
-// return this.node;
-// }
-//
-// @Override
-// public void onConnect( final Node node )
-// {
-// }
-//
-// @Override
-// public void onDisconnect( final Node node )
-// {
-// }
-//
-// @Override
-// public void onMessage( final Message message )
-// {
-// }
-//
-// @Nullable
-// @Override
-// public Node sidedNode( final ForgeDirection side )
-// {
-// return side == this.getSide() ? this.node : null;
-// }
-//
-// @Override
-// public boolean canConnect( final ForgeDirection side )
-// {
-// return side == this.getSide();
-// }
-// }
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
+
+import li.cil.oc.api.Items;
+import li.cil.oc.api.Network;
+import li.cil.oc.api.network.Environment;
+import li.cil.oc.api.network.Message;
+import li.cil.oc.api.network.Node;
+import li.cil.oc.api.network.SidedEnvironment;
+import li.cil.oc.api.network.Visibility;
+
+import appeng.api.parts.IPartModel;
+import appeng.capabilities.Capabilities;
+import appeng.items.parts.PartModels;
+import appeng.api.networking.events.MENetworkBootingStatusChange;
+import appeng.api.networking.events.MENetworkChannelsChanged;
+import appeng.api.networking.events.MENetworkEventSubscribe;
+import appeng.api.networking.events.MENetworkPowerStatusChange;
+import appeng.integration.IntegrationRegistry;
+import appeng.integration.IntegrationType;
+import appeng.util.Platform;
+
+
+public final class PartP2POpenComputers extends PartP2PTunnel<PartP2POpenComputers>
+{
+	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_open_computers" );
+
+	private OCSidedEnvironment OCEnvironment;
+
+	public PartP2POpenComputers( final ItemStack is )
+	{
+		super( is );
+	}
+
+	@PartModels
+	public static List<IPartModel> getModels()
+	{
+		return MODELS.getModels();
+	}
+
+	@Override
+	public IPartModel getStaticModels()
+	{
+		return MODELS.getModel( this.isPowered(), this.isActive() );
+	}
+
+	@MENetworkEventSubscribe
+	public void changeStateA( final MENetworkBootingStatusChange bs )
+	{
+		this.initEnvironment();
+	}
+
+	@MENetworkEventSubscribe
+	public void changeStateB( final MENetworkChannelsChanged bs )
+	{
+		this.initEnvironment();
+	}
+
+	@MENetworkEventSubscribe
+	public void changeStateC( final MENetworkPowerStatusChange bs )
+	{
+		this.initEnvironment();
+	}
+
+	@Override
+	public void addToWorld()
+	{
+		super.addToWorld();
+		this.initEnvironment();
+	}
+
+	@Override
+	public void removeFromWorld()
+	{
+		super.removeFromWorld();
+		if( this.OCEnvironment != null )
+		{
+			this.OCEnvironment.removeFromWorld();
+		}
+	}
+
+	@Override
+	public void onTunnelNetworkChange()
+	{
+		this.initEnvironment();
+	}
+
+	@Override
+	public void onTunnelConfigChange()
+	{
+		this.initEnvironment();
+	}
+
+	@Override
+	public void readFromNBT( final NBTTagCompound data )
+	{
+		super.readFromNBT( data );
+		this.getNode().load( data );
+	}
+
+	@Override
+	public void writeToNBT( final NBTTagCompound data )
+	{
+		super.writeToNBT( data );
+		this.getNode().save( data );
+	}
+
+	private void initEnvironment()
+	{
+		if( this.OCEnvironment == null )
+		{
+			this.OCEnvironment = new OCSidedEnvironment( this );
+			this.OCEnvironment.updateConnections();
+		}
+	}
+
+	@Nullable
+	public Node getNode()
+	{
+		if( this.OCEnvironment == null )
+		{
+			this.initEnvironment();
+		}
+
+		return this.OCEnvironment.node();
+	}
+
+	@Override
+	public boolean hasCapability( @Nonnull Capability<?> capability )
+	{
+		if( capability == Capabilities.OC_ENVIRONMENT ||
+			capability == Capabilities.OC_SIDED_ENVIRONMENT )
+		{
+			return true;
+		}
+		return super.hasCapability( capability );
+	}
+
+	@Nullable
+	public <T> T getCapability( @Nonnull Capability<T> capability )
+	{
+		if( capability == Capabilities.OC_ENVIRONMENT ||
+				capability == Capabilities.OC_SIDED_ENVIRONMENT )
+		{
+			if( this.OCEnvironment == null )
+			{
+				this.initEnvironment();
+			}
+
+			return (T) this.OCEnvironment;
+		}
+		return super.getCapability( capability );
+	}
+
+
+	private final class OCSidedEnvironment implements Environment, SidedEnvironment
+	{
+		@Nullable
+		private final Node node;
+
+		private PartP2POpenComputers parent;
+
+		OCSidedEnvironment( PartP2POpenComputers par )
+		{
+			this.parent = par;
+
+			if( Platform.isServer() )
+			{
+				this.node = Network.newNode( this, Visibility.None ).create();
+			}
+			else
+			{
+				this.node = null;
+			}
+		}
+
+		public void removeFromWorld()
+		{
+			if( this.node != null )
+			{
+				this.node.remove();
+			}
+		}
+
+		@Nullable
+		@Override
+		public Node node()
+		{
+			return this.node;
+		}
+
+		@Nullable
+		@Override
+		public Node sidedNode( final EnumFacing side )
+		{
+			return side == this.parent.getSide().getFacing() ? this.node : null;
+		}
+
+		@Override
+		public boolean canConnect( final EnumFacing side )
+		{
+			return side == this.parent.getSide().getFacing();
+		}
+
+		@Override
+		public void onConnect( final Node node )
+		{
+		}
+
+		@Override
+		public void onDisconnect( final Node node )
+		{
+		}
+
+		@Override
+		public void onMessage( final Message message )
+		{
+		}
+
+		public void updateConnections()
+		{
+			if( this.parent.getProxy().isPowered() && this.parent.getProxy().isActive() )
+			{
+				// Make sure we're connected to existing OC nodes in the world.
+				Network.joinOrCreateNetwork( this.parent.getTile() );
+
+				if( this.parent.isOutput() && this.parent.getInput() != null &&
+						this.node != null )
+				{
+					Network.joinOrCreateNetwork( this.parent.getInput().getTile() );
+					this.node.connect( this.parent.getInput().getNode() );
+				}
+			}
+			else if( this.node != null )
+			{
+				this.node.remove();
+			}
+		}
+	}
+}

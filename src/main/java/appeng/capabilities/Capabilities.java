@@ -19,6 +19,8 @@
 package appeng.capabilities;
 
 
+import li.cil.oc.api.network.Environment;
+import li.cil.oc.api.network.SidedEnvironment;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.minecraft.nbt.NBTBase;
@@ -53,6 +55,10 @@ public final class Capabilities
 	public static Capability<ITeslaHolder> TESLA_HOLDER;
 
 	public static Capability<IEnergyStorage> FORGE_ENERGY;
+
+	public static Capability<Environment> OC_ENVIRONMENT;
+
+	public static Capability<SidedEnvironment> OC_SIDED_ENVIRONMENT;
 
 	/**
 	 * Register AE2 provided capabilities.
@@ -97,6 +103,24 @@ public final class Capabilities
 	private static void capIEnergyStorageRegistered( Capability<IEnergyStorage> cap )
 	{
 		FORGE_ENERGY = cap;
+	}
+
+	@CapabilityInject( Environment.class )
+	private static void capEnvironmentRegistered( Capability<Environment> cap )
+	{
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
+		{
+			OC_ENVIRONMENT = cap;
+		}
+	}
+
+	@CapabilityInject( SidedEnvironment.class )
+	private static void capSidedEnvironmentRegistered( Capability<SidedEnvironment> cap )
+	{
+		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.OpenComputers ) )
+		{
+			OC_SIDED_ENVIRONMENT = cap;
+		}
 	}
 
 	// Create a storage implementation that does not do anything

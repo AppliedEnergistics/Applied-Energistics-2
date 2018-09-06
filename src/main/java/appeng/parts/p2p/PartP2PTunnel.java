@@ -276,14 +276,10 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 					newType = parts.p2PTunnelRedstone().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 					break;
 
-				/*
-				 * case COMPUTER_MESSAGE:
-				 * for( ItemStack stack : parts.p2PTunnelOpenComputers().maybeStack( 1 ).asSet() )
-				 * {
-				 * newType = stack;
-				 * }
-				 * break;
-				 */
+
+				 case COMPUTER_MESSAGE:
+					newType = parts.p2PTunnelOpenComputers().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+					 break;
 
 				default:
 					newType = ItemStack.EMPTY;

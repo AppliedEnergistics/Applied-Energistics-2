@@ -70,7 +70,7 @@ public final class ApiParts implements IParts
 	private final IItemDefinition p2PTunnelEU;
 	private final IItemDefinition p2PTunnelFE;
 	private final IItemDefinition p2PTunnelLight;
-	// private final IItemDefinition p2PTunnelOpenComputers;
+	private final IItemDefinition p2PTunnelOpenComputers;
 	private final IItemDefinition cableAnchor;
 	private final IItemDefinition monitor;
 	private final IItemDefinition semiDarkMonitor;
@@ -131,8 +131,7 @@ public final class ApiParts implements IParts
 		this.p2PTunnelEU = new DamagedItemDefinition( "part.tunnel.eu", itemPart.createPart( PartType.P2P_TUNNEL_IC2 ) );
 		this.p2PTunnelFE = new DamagedItemDefinition( "part.tunnel.fe", itemPart.createPart( PartType.P2P_TUNNEL_FE ) );
 		this.p2PTunnelLight = new DamagedItemDefinition( "part.tunnel.light", itemPart.createPart( PartType.P2P_TUNNEL_LIGHT ) );
-		// this.p2PTunnelOpenComputers = new DamagedItemDefinition( itemMultiPart.createPart(
-		// PartType.P2PTunnelOpenComputers ) );
+		this.p2PTunnelOpenComputers = new DamagedItemDefinition( "part.tunnel.open_computers", itemPart.createPart( PartType.P2P_TUNNEL_OPEN_COMPUTERS ) );
 		this.cableAnchor = new DamagedItemDefinition( "part.cable_anchor", itemPart.createPart( PartType.CABLE_ANCHOR ) );
 		this.monitor = new DamagedItemDefinition( "part.monitor", itemPart.createPart( PartType.MONITOR ) );
 		this.semiDarkMonitor = new DamagedItemDefinition( "part.monitor.semi_dark", itemPart.createPart( PartType.SEMI_DARK_MONITOR ) );
@@ -335,13 +334,11 @@ public final class ApiParts implements IParts
 		return this.p2PTunnelLight;
 	}
 
-	/*
-	 * @Override
-	 * public IItemDefinition p2PTunnelOpenComputers()
-	 * {
-	 * return this.p2PTunnelOpenComputers;
-	 * }
-	 */
+	 @Override
+	 public IItemDefinition p2PTunnelOpenComputers()
+	 {
+		 return this.p2PTunnelOpenComputers;
+	 }
 
 	@Override
 	public IItemDefinition cableAnchor()
