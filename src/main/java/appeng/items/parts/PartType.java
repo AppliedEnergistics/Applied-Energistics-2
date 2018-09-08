@@ -73,6 +73,7 @@ import appeng.parts.p2p.PartP2PFluids;
 import appeng.parts.p2p.PartP2PIC2Power;
 import appeng.parts.p2p.PartP2PItems;
 import appeng.parts.p2p.PartP2PLight;
+import appeng.parts.p2p.PartP2POpenComputers;
 import appeng.parts.p2p.PartP2PRedstone;
 import appeng.parts.p2p.PartP2PTunnelME;
 import appeng.parts.reporting.PartConversionMonitor;
@@ -313,8 +314,17 @@ public enum PartType
 		}
 	},
 
-	// P2PTunnelOpenComputers( 468, EnumSet.of( AEFeature.P2PTunnel, AEFeature.P2PTunnelOpenComputers ), EnumSet.of(
-	// IntegrationType.OpenComputers ), PartP2POpenComputers.class, GuiText.OCTunnel ),
+
+	P2P_TUNNEL_OPEN_COMPUTERS( 468, "p2p_tunnel_open_computers", EnumSet.of( AEFeature.P2P_TUNNEL,
+			AEFeature.P2P_TUNNEL_OPEN_COMPUTERS ), EnumSet.of( IntegrationType.OpenComputers ),
+			PartP2POpenComputers.class, GuiText.OCTunnel )
+	{
+		@Override
+		String getUnlocalizedName()
+		{
+			return "p2p_tunnel";
+		}
+	},
 
 	INTERFACE_TERMINAL( 480, "interface_terminal", EnumSet.of( AEFeature.INTERFACE_TERMINAL ), EnumSet
 			.noneOf( IntegrationType.class ), PartInterfaceTerminal.class ),

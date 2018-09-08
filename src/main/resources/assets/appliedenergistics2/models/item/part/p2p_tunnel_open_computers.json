@@ -1,0 +1,6 @@
+{
+    "parent": "appliedenergistics2:item/part/p2p_tunnel",
+    "textures": {
+        "type": "opencomputers:blocks/adapter_side"
+    }
+}

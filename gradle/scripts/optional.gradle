@@ -53,3 +53,14 @@ task deinstallTop(type: Delete) {
     delete fileTree(dir: minecraft.runDir + "/mods", include: "*TheOneProbe*.jar")
 }
 
+// OpenComputers
+task installOpenComputers(type: Copy, dependsOn: "deinstallOpenComputers") {
+    from { configurations.mods }
+    include "**/*OpenComputers*.jar"
+    into file(minecraft.runDir + "/mods")
+}
+
+task deinstallOpenComputers(type: Delete) {
+    delete fileTree(dir: minecraft.runDir + "/mods", include: "*OpenComputers*.jar")
+}
+

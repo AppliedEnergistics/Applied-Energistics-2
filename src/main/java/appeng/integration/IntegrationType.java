@@ -23,6 +23,7 @@ import appeng.integration.modules.crafttweaker.CTModule;
 import appeng.integration.modules.ic2.IC2Module;
 import appeng.integration.modules.inventorytweaks.InventoryTweaksModule;
 import appeng.integration.modules.jei.JEIModule;
+import appeng.integration.modules.opencomputers.OpenComputersModule;
 import appeng.integration.modules.theoneprobe.TheOneProbeModule;
 import appeng.integration.modules.waila.WailaModule;
 
@@ -71,7 +72,14 @@ public enum IntegrationType
 
 	Mekanism( IntegrationSide.BOTH, "Mekanism", "mekanism" ),
 
-	OpenComputers( IntegrationSide.BOTH, "OpenComputers", "opencomputers" ),
+	OpenComputers( IntegrationSide.BOTH, "OpenComputers", "opencomputers" )
+	{
+		@Override
+		public IIntegrationModule createInstance()
+		{
+			return new OpenComputersModule();
+		}
+	},
 
 	THE_ONE_PROBE( IntegrationSide.BOTH, "TheOneProbe", "theoneprobe" )
 	{
