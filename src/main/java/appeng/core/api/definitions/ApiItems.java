@@ -163,11 +163,11 @@ public final class ApiItems implements IItems
 				.build();
 		this.certusQuartzWrench = certusTools.item( "certus_quartz_wrench", ToolQuartzWrench::new )
 				.addFeatures( AEFeature.QUARTZ_WRENCH )
-				.bootstrap( ( item ) -> (IOreDictComponent) side -> OreDictionary.registerOre( "itemQuartzWrench", new ItemStack( item ) ) )
+				.bootstrap( item -> (IOreDictComponent) side -> OreDictionary.registerOre( "itemQuartzWrench", new ItemStack( item ) ) )
 				.build();
 		this.certusQuartzKnife = certusTools.item( "certus_quartz_cutting_knife", () -> new ToolQuartzCuttingKnife( AEFeature.CERTUS_QUARTZ_TOOLS ) )
 				.addFeatures( AEFeature.QUARTZ_KNIFE )
-				.bootstrap( ( item ) -> (IOreDictComponent) side -> OreDictionary.registerOre( "itemQuartzKnife", new ItemStack( item ) ) )
+				.bootstrap( item -> (IOreDictComponent) side -> OreDictionary.registerOre( "itemQuartzKnife", new ItemStack( item ) ) )
 				.build();
 
 		FeatureFactory netherTools = registry.features( AEFeature.NETHER_QUARTZ_TOOLS );
@@ -188,11 +188,11 @@ public final class ApiItems implements IItems
 				.build();
 		this.netherQuartzWrench = netherTools.item( "nether_quartz_wrench", ToolQuartzWrench::new )
 				.addFeatures( AEFeature.QUARTZ_WRENCH )
-				.bootstrap( ( item ) -> (IOreDictComponent) side -> OreDictionary.registerOre( "itemQuartzWrench", new ItemStack( item ) ) )
+				.bootstrap( item -> (IOreDictComponent) side -> OreDictionary.registerOre( "itemQuartzWrench", new ItemStack( item ) ) )
 				.build();
 		this.netherQuartzKnife = netherTools.item( "nether_quartz_cutting_knife", () -> new ToolQuartzCuttingKnife( AEFeature.NETHER_QUARTZ_TOOLS ) )
 				.addFeatures( AEFeature.QUARTZ_KNIFE )
-				.bootstrap( ( item ) -> (IOreDictComponent) side -> OreDictionary.registerOre( "itemQuartzKnife", new ItemStack( item ) ) )
+				.bootstrap( item -> (IOreDictComponent) side -> OreDictionary.registerOre( "itemQuartzKnife", new ItemStack( item ) ) )
 				.build();
 
 		FeatureFactory powerTools = registry.features( AEFeature.POWERED_TOOLS );
