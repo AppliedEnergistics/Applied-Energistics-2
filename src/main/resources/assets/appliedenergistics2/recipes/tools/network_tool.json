@@ -13,7 +13,8 @@
             "ore": "chestWood"
         },
         {
-            "item": "#appliedenergistics2:wrench"
+            "type": "forge:ore_dict",
+            "ore": "itemQuartzWrench"
         },
         {
             "type": "appliedenergistics2:part",
