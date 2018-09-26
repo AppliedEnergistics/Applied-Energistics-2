@@ -288,7 +288,18 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	{
 		if( pos.offset( this.getSide().getFacing() ).equals( neighbor ) )
 		{
-			this.resetCache( false );
+			final TileEntity te = w.getTileEntity( neighbor );
+
+			// In case the TE was destroyed, we have to do a full reset immediately.
+			if( te == null )
+			{
+				this.resetCache( true );
+				this.resetCache();
+			}
+			else
+			{
+				this.resetCache( false );
+			}
 		}
 	}
 
