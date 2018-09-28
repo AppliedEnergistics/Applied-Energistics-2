@@ -12,7 +12,7 @@
     "key": {
         "b": {
             "type": "appliedenergistics2:part",
-            "part": "material.engineering_processor"
+            "part": "material.calculation_processor"
         },
         "d": {
             "item": "appliedenergistics2:quartz_glass"

@@ -20,6 +20,26 @@
         ]
     },
     {
+        "name": "appliedenergistics2:fluid_interface",
+        "conditions": [
+            {
+                "type": "appliedenergistics2:features",
+                "features": [
+                    "fluid_interface"
+                ]
+            }
+        ],
+        "ingredient": [
+            {
+                "item": "appliedenergistics2:fluid_interface"
+            },
+            {
+                "type": "appliedenergistics2:part",
+                "part": "part.fluid_interface"
+            }
+        ]
+    },
+    {
         "name": "appliedenergistics2:cable",
         "ingredient": [
             {
