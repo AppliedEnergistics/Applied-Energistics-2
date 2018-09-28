@@ -9,7 +9,7 @@
             "item": "minecraft:sticky_piston"
         },
         {
-            "item": "#appliedenergistics2:interface"
+            "item": "#appliedenergistics2:fluid_interface"
         },
         {
             "item": "minecraft:piston"
