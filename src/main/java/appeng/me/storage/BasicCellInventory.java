@@ -68,7 +68,7 @@ public class BasicCellInventory<T extends IAEStack<T>> extends AbstractCellInven
 	{
 		final IStorageCell<?> type = getStorageCell( input );
 
-		return type.getChannel() == channel;
+		return type != null && type.getChannel() == channel;
 	}
 
 	public static boolean isCell( final ItemStack input )
