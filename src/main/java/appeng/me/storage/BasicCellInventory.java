@@ -64,52 +64,44 @@ public class BasicCellInventory<T extends IAEStack<T>> extends AbstractCellInven
 		}
 	}
 
-	public static <T extends AEStack<T>> boolean isCellOfType( final ItemStack input, IStorageChannel channel )
+	public static <T extends AEStack<T>> boolean isCellOfType( final ItemStack input, IStorageChannel<?> channel )
 	{
-		if( input == null )
-		{
-			return false;
-		}
+		final IStorageCell<?> type = getStorageCell( input );
 
-		final Item type = input.getItem();
-		if( type instanceof IStorageCell )
-		{
-			return ( (IStorageCell) type ).getChannel() == channel;
-		}
-
-		return false;
+		return type.getChannel() == channel;
 	}
 
 	public static boolean isCell( final ItemStack input )
 	{
-		if( input == null )
-		{
-			return false;
-		}
+		return getStorageCell( input ) != null;
+	}
 
-		try
+	private boolean isStorageCell( final T input )
+	{
+		if( input instanceof IAEItemStack )
 		{
-			final Item type = input.getItem();
-			if( type instanceof IStorageCell )
-			{
-				return !( (IStorageCell) type ).storableInStorageCell();
-			}
-		}
-		catch( final Throwable err )
-		{
-			return true;
+			final IAEItemStack stack = (IAEItemStack) input;
+			final IStorageCell<?> type = getStorageCell( stack.getDefinition() );
+
+			return type != null && !type.storableInStorageCell();
 		}
 
 		return false;
 	}
 
-	private boolean isStorageCell( final T input )
+	private static IStorageCell<?> getStorageCell( final ItemStack input )
 	{
-		if( !input.isItem() )
+		if( input != null )
 		{
-			return false;
+			final Item type = input.getItem();
+
+			if( type instanceof IStorageCell )
+			{
+				return (IStorageCell<?>) type;
+			}
 		}
-		return isCell( ( (IAEItemStack) input ).getDefinition() );
+
+		return null;
 	}
 
 	@SuppressWarnings( { "rawtypes", "unchecked" } )
