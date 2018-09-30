@@ -32,6 +32,7 @@ import net.minecraft.item.ItemStack;
 import mezz.jei.api.IJeiRuntime;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
+import mezz.jei.api.ISubtypeRegistry;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 
@@ -54,6 +55,12 @@ import appeng.items.parts.ItemFacade;
 @mezz.jei.api.JEIPlugin
 public class JEIPlugin implements IModPlugin
 {
+	@Override
+	public void registerItemSubtypes( ISubtypeRegistry subtypeRegistry )
+	{
+		final Optional<Item> maybeFacade = AEApi.instance().definitions().items().facade().maybeItem();
+		maybeFacade.ifPresent( subtypeRegistry::useNbtForSubtypes );
+	}
 
 	@Override
 	public void registerCategories( IRecipeCategoryRegistration registry )
