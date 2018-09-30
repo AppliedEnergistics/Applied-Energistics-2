@@ -67,8 +67,8 @@ import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadTinter;
 public class FacadeBuilder
 {
 
-	public static double THICK_THICKNESS = 2D / 16D;
-	public static double THIN_THICKNESS = 1D / 16D;
+	public static final double THICK_THICKNESS = 2D / 16D;
+	public static final double THIN_THICKNESS = 1D / 16D;
 
 	public static final AxisAlignedBB[] THICK_FACADE_BOXES = new AxisAlignedBB[] {
 			new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, THICK_THICKNESS, 1.0 ),
@@ -141,7 +141,7 @@ public class FacadeBuilder
 
 			IBlockState blockState = facadeRenderState.getSourceBlock();
 			// If we aren't forcing transparency let the block decide if it should render.
-			if( !transparent )
+			if( !transparent && layer != null )
 			{
 				if( !blockState.getBlock().canRenderInLayer( blockState, layer ) )
 				{
@@ -224,7 +224,7 @@ public class FacadeBuilder
 
 			List<BakedQuad> modelQuads = new ArrayList<>();
 			// If we are forcing transparent facades, fake the render layer, and grab all quads.
-			if( transparent )
+			if( transparent || layer == null )
 			{
 				for( BlockRenderLayer forcedLayer : BlockRenderLayer.values() )
 				{
