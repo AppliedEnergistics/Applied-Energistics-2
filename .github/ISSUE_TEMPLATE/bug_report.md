@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: You found a bug or encountered a crash? Please report it here.
 
 ---
 
@@ -8,7 +8,6 @@ about: Create a report to help us improve
 
 **Describe the bug**
 <!-- Always use the most recent version from ae-mod.info, it might already be fixed. -->
-<!-- When describing a bug, tell us what was expected and what the actual behaviour is. -->
 
 **To Reproduce**
 <!-- Please provide the steps to reproduce it, otherwise we might not be able to fix it. -->
