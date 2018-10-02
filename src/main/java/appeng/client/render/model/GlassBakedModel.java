@@ -100,15 +100,18 @@ class GlassBakedModel implements IBakedModel
 	@Override
 	public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
 	{
-
 		if( !( state instanceof IExtendedBlockState ) || side == null )
 		{
 			return Collections.emptyList();
 		}
 
-		IExtendedBlockState extState = (IExtendedBlockState) state;
+		final IExtendedBlockState extState = (IExtendedBlockState) state;
+		final GlassState glassState = extState.getValue( BlockQuartzGlass.GLASS_STATE );
 
-		GlassState glassState = extState.getValue( BlockQuartzGlass.GLASS_STATE );
+		if( glassState == null )
+		{
+			return Collections.emptyList();
+		}
 
 		final int cx = Math.abs( glassState.getX() % 10 );
 		final int cy = Math.abs( glassState.getY() % 10 );
@@ -125,12 +128,12 @@ class GlassBakedModel implements IBakedModel
 			v /= 2;
 		}
 
-		TextureAtlasSprite glassTexture = this.glassTextures[texIdx];
+		final TextureAtlasSprite glassTexture = this.glassTextures[texIdx];
 
 		// Render the glass side
-		List<BakedQuad> quads = new ArrayList<>( 5 ); // At most 5
+		final List<BakedQuad> quads = new ArrayList<>( 5 ); // At most 5
 
-		List<Vec3d> corners = RenderHelper.getFaceCorners( side );
+		final List<Vec3d> corners = RenderHelper.getFaceCorners( side );
 		quads.add( this.createQuad( side, corners, glassTexture, u, v ) );
 
 		/*
@@ -143,8 +146,9 @@ class GlassBakedModel implements IBakedModel
 		 * Converted to a number, this bitmask is 5. So the texture at index 5 is used.
 		 * That texture had "0101" in its filename to indicate this.
 		 */
-		int edgeBitmask = makeBitmask( glassState, side );
-		TextureAtlasSprite sideSprite = this.frameTextures[edgeBitmask];
+		final int edgeBitmask = makeBitmask( glassState, side );
+		final TextureAtlasSprite sideSprite = this.frameTextures[edgeBitmask];
+
 		if( sideSprite != null )
 		{
 			quads.add( this.createQuad( side, corners, sideSprite, 0, 0 ) );
