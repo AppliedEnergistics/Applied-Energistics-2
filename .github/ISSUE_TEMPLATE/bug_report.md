@@ -15,7 +15,7 @@ about: You found a bug or encountered a crash? Please report it here.
 **Expected behavior**
 <!-- A clear and concise description of what you expected to happen. -->
 
-**Additional context*
+**Additional context**
 <!-- Screenshots, crashlogs, etc. -->
 <!-- A complete crashlog is required when reporting a crash. No excerpts. -->
 <!-- Please use pastebin or gist for posting the complete crashlog. -->
