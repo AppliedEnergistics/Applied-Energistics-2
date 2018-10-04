@@ -23,11 +23,12 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import appeng.util.helpers.ItemHandlerUtil;
 
 
-public class WrapperRangeItemHandler implements IInternalItemHandler
+public class WrapperRangeItemHandler implements IItemHandlerModifiable
 {
 	private final IItemHandler compose;
 	private final int minSlot;
@@ -108,22 +109,12 @@ public class WrapperRangeItemHandler implements IInternalItemHandler
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int slot, ItemStack stack )
+	public boolean isItemValid( int slot, ItemStack stack )
 	{
 		if( this.checkSlot( slot ) )
 		{
-			return ItemHandlerUtil.isItemValidForSlot( this.compose, slot + this.minSlot, stack );
+			return this.compose.isItemValid( slot + this.minSlot, stack );
 		}
 		return false;
 	}
-
-	@Override
-	public void markDirty( int slot )
-	{
-		if( this.checkSlot( slot ) )
-		{
-			ItemHandlerUtil.markDirty( this.compose, slot + this.minSlot );
-		}
-	}
-
 }

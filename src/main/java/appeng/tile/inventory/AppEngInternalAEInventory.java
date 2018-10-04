@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import appeng.api.AEApi;
@@ -33,14 +34,13 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AELog;
 import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
-import appeng.util.inv.IInternalItemHandler;
 import appeng.util.inv.InvOperation;
 import appeng.util.item.AEItemStack;
 import appeng.util.iterators.AEInvIterator;
 import appeng.util.iterators.InvIterator;
 
 
-public class AppEngInternalAEInventory implements IInternalItemHandler, Iterable<ItemStack>
+public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterable<ItemStack>
 {
 	private final IAEAppEngInventory te;
 	private final IAEItemStack[] inv;
@@ -254,7 +254,7 @@ public class AppEngInternalAEInventory implements IInternalItemHandler, Iterable
 
 	private void fireOnChangeInventory( int slot, InvOperation op, ItemStack removed, ItemStack inserted )
 	{
-		if( this.te != null && Platform.isServer() )
+		if( this.te != null && Platform.isServer() && !this.dirtyFlag )
 		{
 			this.dirtyFlag = true;
 			this.te.onChangeInventory( this, slot, op, removed, inserted );
@@ -281,17 +281,8 @@ public class AppEngInternalAEInventory implements IInternalItemHandler, Iterable
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int slot, ItemStack stack )
+	public boolean isItemValid( int slot, ItemStack stack )
 	{
 		return true;
-	}
-
-	@Override
-	public void markDirty( int slot )
-	{
-		if( !this.dirtyFlag )
-		{
-			this.fireOnChangeInventory( slot, InvOperation.DIRTY, ItemStack.EMPTY, ItemStack.EMPTY );
-		}
 	}
 }

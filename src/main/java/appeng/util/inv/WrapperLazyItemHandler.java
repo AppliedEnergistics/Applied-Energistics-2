@@ -23,12 +23,13 @@ import java.util.function.Supplier;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import appeng.util.Lazy;
 import appeng.util.helpers.ItemHandlerUtil;
 
 
-public class WrapperLazyItemHandler implements IInternalItemHandler
+public class WrapperLazyItemHandler implements IItemHandlerModifiable
 {
 	private final Lazy<IItemHandler> sourceHandler;
 
@@ -74,14 +75,8 @@ public class WrapperLazyItemHandler implements IInternalItemHandler
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int slot, ItemStack stack )
+	public boolean isItemValid( int slot, ItemStack stack )
 	{
-		return ItemHandlerUtil.isItemValidForSlot( this.sourceHandler.get(), slot, stack );
-	}
-
-	@Override
-	public void markDirty( int slot )
-	{
-		ItemHandlerUtil.markDirty( this.sourceHandler.get(), slot );
+		return this.sourceHandler.get().isItemValid( slot, stack );
 	}
 }

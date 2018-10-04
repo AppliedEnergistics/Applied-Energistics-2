@@ -31,12 +31,11 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
-import appeng.util.inv.IInternalItemHandler;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
 
 
-public class AppEngInternalInventory extends ItemStackHandler implements IInternalItemHandler, Iterable<ItemStack>
+public class AppEngInternalInventory extends ItemStackHandler implements Iterable<ItemStack>
 {
 	private boolean enableClientEvents = false;
 	private IAEAppEngInventory te;
@@ -117,7 +116,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 	@Override
 	protected void onContentsChanged( int slot )
 	{
-		if( this.getTileEntity() != null && this.eventsEnabled() )
+		if( this.getTileEntity() != null && this.eventsEnabled() && !this.dirtyFlag )
 		{
 			this.dirtyFlag = true;
 			ItemStack newStack = this.getStackInSlot( slot ).copy();
@@ -159,19 +158,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements IIntern
 	}
 
 	@Override
-	public void markDirty( final int slot )
-	{
-		if( this.getTileEntity() != null && this.eventsEnabled() && !this.dirtyFlag )
-		{
-			this.dirtyFlag = true;
-			this.getTileEntity().onChangeInventory( this, slot, InvOperation.DIRTY, ItemStack.EMPTY, ItemStack.EMPTY );
-			this.getTileEntity().saveChanges();
-			this.dirtyFlag = false;
-		}
-	}
-
-	@Override
-	public boolean isItemValidForSlot( int slot, ItemStack stack )
+	public boolean isItemValid( int slot, ItemStack stack )
 	{
 		if( this.maxStack[slot] == 0 )
 		{

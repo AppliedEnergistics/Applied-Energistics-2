@@ -3,15 +3,15 @@ package appeng.tile.inventory;
 
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ICellInventoryHandler;
 import appeng.util.inv.IAEAppEngInventory;
-import appeng.util.inv.IInternalItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
 
 
-public class AppEngCellInventory implements IInternalItemHandler
+public class AppEngCellInventory implements IItemHandlerModifiable
 {
 	private final AppEngInternalInventory inv;
 	private final ICellInventoryHandler handlerForSlot[];
@@ -78,17 +78,9 @@ public class AppEngCellInventory implements IInternalItemHandler
 	}
 
 	@Override
-	public boolean isItemValidForSlot( int slot, ItemStack stack )
+	public boolean isItemValid( int slot, ItemStack stack )
 	{
-		return this.inv.isItemValidForSlot( slot, stack );
-	}
-
-	@Override
-	public void markDirty( int slot )
-	{
-		this.persist( slot );
-		this.inv.markDirty( slot );
-		this.cleanup( slot );
+		return this.inv.isItemValid( slot, stack );
 	}
 
 	public void persist()
