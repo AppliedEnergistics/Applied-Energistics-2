@@ -40,6 +40,25 @@
         ]
     },
     {
+        "name": "appliedenergistics2:knife",
+        "conditions": [
+            {
+                "type": "appliedenergistics2:features",
+                "features": "quartz_knife"
+            }
+        ],
+        "ingredient": [
+            {
+                "item": "appliedenergistics2:certus_quartz_cutting_knife",
+                "data": 32767
+            },
+            {
+                "item": "appliedenergistics2:nether_quartz_cutting_knife",
+                "data": 32767
+            }
+        ]
+    },
+    {
         "name": "appliedenergistics2:cable",
         "ingredient": [
             {

@@ -9,8 +9,7 @@
             "item": "#appliedenergistics2:metalIngots"
         },
         {
-            "type": "forge:ore_dict",
-            "ore": "itemQuartzKnife"
+            "item": "#appliedenergistics2:knife"
         }
     ]
 }
