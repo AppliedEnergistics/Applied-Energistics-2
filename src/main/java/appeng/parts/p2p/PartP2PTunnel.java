@@ -336,15 +336,18 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			}
 
 			final IMemoryCard mc = (IMemoryCard) is.getItem();
-			final NBTTagCompound data = new NBTTagCompound();
+			final NBTTagCompound data = mc.getData( is );
+			final short storedFrequency = data.getShort( "freq" );
 
 			short newFreq = this.getFrequency();
 			final boolean wasOutput = this.isOutput();
 			this.setOutput( false );
 
+			final boolean needsNewFrequency = wasOutput || this.getFrequency() == 0 || storedFrequency == newFreq;
+
 			try
 			{
-				if( wasOutput || this.getFrequency() == 0 )
+				if( needsNewFrequency )
 				{
 					newFreq = this.getProxy().getP2P().newFrequency();
 				}
@@ -373,7 +376,14 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			data.setIntArray( "colorCode", colorCode );
 
 			mc.setMemoryCardContents( is, type + ".name", data );
-			mc.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );
+			if( needsNewFrequency )
+			{
+				mc.notifyUser( player, MemoryCardMessages.SETTINGS_RESET );
+			}
+			else
+			{
+				mc.notifyUser( player, MemoryCardMessages.SETTINGS_SAVED );
+			}
 			return true;
 		}
 		return false;

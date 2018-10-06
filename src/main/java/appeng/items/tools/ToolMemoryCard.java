@@ -25,6 +25,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -174,6 +175,9 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 			case SETTINGS_SAVED:
 				player.sendMessage( PlayerMessages.SavedSettings.get() );
 				break;
+			case SETTINGS_RESET:
+				player.sendMessage( PlayerMessages.ResetSettings.get() );
+				break;
 			default:
 		}
 	}
@@ -185,9 +189,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 		{
 			if( !w.isRemote )
 			{
-				final IMemoryCard mem = (IMemoryCard) player.getHeldItem( hand ).getItem();
-				mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
-				player.getHeldItem( hand ).setTagCompound( null );
+				this.clearCard( player, w, hand );
 			}
 			return EnumActionResult.SUCCESS;
 		}
@@ -198,8 +200,30 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
+	public ActionResult<ItemStack> onItemRightClick( World w, EntityPlayer player, EnumHand hand )
+	{
+		if( player.isSneaking() )
+		{
+			if( !w.isRemote )
+			{
+				this.clearCard( player, w, hand );
+			}
+		}
+
+		return super.onItemRightClick( w, player, hand );
+
+	}
+
+	@Override
 	public boolean doesSneakBypassUse( final ItemStack itemstack, final IBlockAccess world, final BlockPos pos, final EntityPlayer player )
 	{
 		return true;
+	}
+
+	private void clearCard( final EntityPlayer player, final World w, final EnumHand hand )
+	{
+		final IMemoryCard mem = (IMemoryCard) player.getHeldItem( hand ).getItem();
+		mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
+		player.getHeldItem( hand ).setTagCompound( null );
 	}
 }
