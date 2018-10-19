@@ -49,13 +49,11 @@ import appeng.util.item.AEStack;
 public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFluidStack, Comparable<AEFluidStack>
 {
 
-	private final int myHash;
 	private final Fluid fluid;
 	private NBTTagCompound tagCompound;
 
 	private AEFluidStack( final AEFluidStack is )
 	{
-
 		this.fluid = is.fluid;
 		this.setStackSize( is.getStackSize() );
 
@@ -63,7 +61,10 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		this.setCraftable( is.isCraftable() );
 		this.setCountRequestable( is.getCountRequestable() );
 
-		this.myHash = is.myHash;
+		if( is.hasTagCompound() )
+		{
+			this.tagCompound = is.tagCompound.copy();
+		}
 	}
 
 	private AEFluidStack( @Nonnull final FluidStack is )
@@ -79,7 +80,10 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		this.setCraftable( false );
 		this.setCountRequestable( 0 );
 
-		this.myHash = this.fluid.hashCode() ^ ( this.tagCompound == null ? 0 : System.identityHashCode( this.tagCompound ) );
+		if( is.tag != null )
+		{
+			this.tagCompound = is.tag.copy();
+		}
 	}
 
 	public static AEFluidStack fromFluidStack( final FluidStack input )
@@ -105,6 +109,12 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		fluid.setStackSize( i.getLong( "Cnt" ) );
 		fluid.setCountRequestable( i.getLong( "Req" ) );
 		fluid.setCraftable( i.getBoolean( "Craft" ) );
+
+		if( fluid.hasTagCompound() )
+		{
+			fluid.tagCompound = fluid.tagCompound.copy();
+		}
+
 		return fluid;
 	}
 
@@ -134,7 +144,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 			data.readBytes( bd );
 
 			final DataInputStream di = new DataInputStream( new ByteArrayInputStream( bd ) );
-			d.setTag( "tag", CompressedStreamTools.read( di ) );
+			d.setTag( "Tag", CompressedStreamTools.read( di ) );
 		}
 
 		final long stackSize = getPacketValue( stackType, data );
@@ -170,49 +180,19 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	@Override
 	public void writeToNBT( final NBTTagCompound i )
 	{
-		/*
-		 * Mojang Fucked this over ; GC Optimization - Ugly Yes, but it saves a lot in the memory department.
-		 */
-
-		/*
-		 * NBTBase FluidName = i.getTag( "FluidName" ); NBTBase Count = i.getTag( "Count" ); NBTBase Cnt = i.getTag(
-		 * "Cnt" ); NBTBase Req = i.getTag( "Req" ); NBTBase Craft = i.getTag( "Craft" );
-		 */
-
-		/*
-		 * if ( FluidName != null && FluidName instanceof NBTTagString ) ((NBTTagString) FluidName).data = (String)
-		 * this.fluid.getName(); else
-		 */
 		i.setString( "FluidName", this.fluid.getName() );
-
-		/*
-		 * if ( Count != null && Count instanceof NBTTagByte ) ((NBTTagByte) Count).data = (byte) 0; else
-		 */
 		i.setByte( "Count", (byte) 0 );
-
-		/*
-		 * if ( Cnt != null && Cnt instanceof NBTTagLong ) ((NBTTagLong) Cnt).data = this.stackSize; else
-		 */
 		i.setLong( "Cnt", this.getStackSize() );
-
-		/*
-		 * if ( Req != null && Req instanceof NBTTagLong ) ((NBTTagLong) Req).data = this.stackSize; else
-		 */
 		i.setLong( "Req", this.getCountRequestable() );
-
-		/*
-		 * if ( Craft != null && Craft instanceof NBTTagByte ) ((NBTTagByte) Craft).data = (byte) (this.isCraftable() ?
-		 * 1 : 0); else
-		 */
 		i.setBoolean( "Craft", this.isCraftable() );
 
-		if( this.tagCompound != null )
+		if( this.hasTagCompound() )
 		{
-			i.setTag( "tag", this.tagCompound );
+			i.setTag( "Tag", this.tagCompound );
 		}
 		else
 		{
-			i.removeTag( "tag" );
+			i.removeTag( "Tag" );
 		}
 	}
 
@@ -257,14 +237,28 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	@Override
 	public int compareTo( final AEFluidStack b )
 	{
-		final int diff = this.hashCode() - b.hashCode();
-		return diff > 0 ? 1 : ( diff < 0 ? -1 : 0 );
+		if( this.fluid != b.fluid )
+		{
+			return this.fluid.getName().compareTo( b.fluid.getName() );
+		}
+
+		if( Platform.itemComparisons().isNbtTagEqual( this.tagCompound, b.tagCompound ) )
+		{
+			return 0;
+		}
+
+		return this.tagCompound.hashCode() - b.tagCompound.hashCode();
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return this.myHash;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ( ( this.fluid == null ) ? 0 : this.fluid.hashCode() );
+		result = prime * result + ( ( this.tagCompound == null ) ? 0 : this.tagCompound.hashCode() );
+
+		return result;
 	}
 
 	@Override
@@ -286,7 +280,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	@Override
 	public String toString()
 	{
-		return this.getFluidStack().toString();
+		return this.getStackSize() + "x" + this.getFluidStack().getFluid().getName() + " " + this.tagCompound;
 	}
 
 	@Override
@@ -298,11 +292,8 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	@Override
 	public FluidStack getFluidStack()
 	{
-		final FluidStack is = new FluidStack( this.fluid, (int) Math.min( Integer.MAX_VALUE, this.getStackSize() ) );
-		if( this.tagCompound != null )
-		{
-			is.tag = this.tagCompound.copy();
-		}
+		final int amount = (int) Math.min( Integer.MAX_VALUE, this.getStackSize() );
+		final FluidStack is = new FluidStack( this.fluid, amount, this.tagCompound );
 
 		return is;
 	}
