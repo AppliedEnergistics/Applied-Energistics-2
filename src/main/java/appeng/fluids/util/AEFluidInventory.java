@@ -17,10 +17,10 @@ public class AEFluidInventory implements IAEFluidTank
 {
 	private final IAEFluidStack[] fluids;
 	private final IAEFluidInventory handler;
-	private final long capacity;
+	private final int capacity;
 	private IFluidTankProperties[] props = null;
 
-	public AEFluidInventory( final IAEFluidInventory handler, final int slots, final long capcity )
+	public AEFluidInventory( final IAEFluidInventory handler, final int slots, final int capcity )
 	{
 		this.fluids = new IAEFluidStack[slots];
 		this.handler = handler;
@@ -29,7 +29,7 @@ public class AEFluidInventory implements IAEFluidTank
 
 	public AEFluidInventory( final IAEFluidInventory handler, final int slots )
 	{
-		this( handler, slots, Long.MAX_VALUE );
+		this( handler, slots, Integer.MAX_VALUE );
 	}
 
 	@Override
@@ -110,45 +110,34 @@ public class AEFluidInventory implements IAEFluidTank
 
 		final IAEFluidStack fluid = this.fluids[slot];
 
-		if( !doFill )
-		{
-			if( fluid == null )
-			{
-				return resource.amount;
-			}
-
-			if( !fluid.equals( resource ) )
-			{
-				return 0;
-			}
-
-			return (int) Math.min( Math.min( this.capacity - fluid.getStackSize(), resource.amount ), Integer.MAX_VALUE );
-		}
-
-		if( fluid == null )
-		{
-			this.setFluidInSlot( slot, AEFluidStack.fromFluidStack( resource ) );
-			return resource.amount;
-		}
-
-		if( !fluid.equals( resource ) )
+		if( fluid != null && !fluid.equals( resource ) )
 		{
 			return 0;
 		}
-		long filled = this.capacity - fluid.getStackSize();
 
-		if( resource.amount < filled )
+		int amountToStore = this.capacity;
+
+		if( fluid != null )
 		{
-			fluid.setStackSize( fluid.getStackSize() + resource.amount );
-			filled = resource.amount;
-		}
-		else
-		{
-			fluid.setStackSize( this.capacity );
+			amountToStore -= fluid.getStackSize();
 		}
 
-		this.onContentChanged( slot );
-		return (int) filled;
+		amountToStore = Math.min( amountToStore, resource.amount );
+
+		if( doFill )
+		{
+			if( fluid == null )
+			{
+				this.setFluidInSlot( slot, AEFluidStack.fromFluidStack( resource ) );
+			}
+			else
+			{
+				fluid.setStackSize( fluid.getStackSize() + amountToStore );
+				this.onContentChanged( slot );
+			}
+		}
+
+		return amountToStore;
 	}
 
 	public FluidStack drain( final int slot, final FluidStack resource, final boolean doDrain )
@@ -363,7 +352,7 @@ public class AEFluidInventory implements IAEFluidTank
 		@Override
 		public int getCapacity()
 		{
-			return (int) Math.min( AEFluidInventory.this.capacity, Integer.MAX_VALUE );
+			return Math.min( AEFluidInventory.this.capacity, Integer.MAX_VALUE );
 		}
 
 		@Override
