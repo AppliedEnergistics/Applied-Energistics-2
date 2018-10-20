@@ -52,37 +52,37 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	private final Fluid fluid;
 	private NBTTagCompound tagCompound;
 
-	private AEFluidStack( final AEFluidStack is )
+	private AEFluidStack( final AEFluidStack fluidStack )
 	{
-		this.fluid = is.fluid;
-		this.setStackSize( is.getStackSize() );
+		this.fluid = fluidStack.fluid;
+		this.setStackSize( fluidStack.getStackSize() );
 
 		// priority = is.priority;
-		this.setCraftable( is.isCraftable() );
-		this.setCountRequestable( is.getCountRequestable() );
+		this.setCraftable( fluidStack.isCraftable() );
+		this.setCountRequestable( fluidStack.getCountRequestable() );
 
-		if( is.hasTagCompound() )
+		if( fluidStack.hasTagCompound() )
 		{
-			this.tagCompound = is.tagCompound.copy();
+			this.tagCompound = fluidStack.tagCompound.copy();
 		}
 	}
 
-	private AEFluidStack( @Nonnull final FluidStack is )
+	private AEFluidStack( @Nonnull final FluidStack fluidStack )
 	{
-		this.fluid = is.getFluid();
+		this.fluid = fluidStack.getFluid();
 
 		if( this.fluid == null )
 		{
 			throw new IllegalArgumentException( "Fluid is null." );
 		}
 
-		this.setStackSize( is.amount );
+		this.setStackSize( fluidStack.amount );
 		this.setCraftable( false );
 		this.setCountRequestable( 0 );
 
-		if( is.tag != null )
+		if( fluidStack.tag != null )
 		{
-			this.tagCompound = is.tag.copy();
+			this.tagCompound = fluidStack.tag.copy();
 		}
 	}
 
@@ -96,9 +96,9 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		return new AEFluidStack( input );
 	}
 
-	public static IAEFluidStack fromNBT( final NBTTagCompound i )
+	public static IAEFluidStack fromNBT( final NBTTagCompound data )
 	{
-		final FluidStack fluidStack = FluidStack.loadFluidStackFromNBT( i );
+		final FluidStack fluidStack = FluidStack.loadFluidStackFromNBT( data );
 
 		if( fluidStack == null )
 		{
@@ -106,9 +106,9 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		}
 
 		final AEFluidStack fluid = AEFluidStack.fromFluidStack( fluidStack );
-		fluid.setStackSize( i.getLong( "Cnt" ) );
-		fluid.setCountRequestable( i.getLong( "Req" ) );
-		fluid.setCraftable( i.getBoolean( "Craft" ) );
+		fluid.setStackSize( data.getLong( "Cnt" ) );
+		fluid.setCountRequestable( data.getLong( "Req" ) );
+		fluid.setCraftable( data.getBoolean( "Craft" ) );
 
 		if( fluid.hasTagCompound() )
 		{
@@ -118,9 +118,9 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		return fluid;
 	}
 
-	public static IAEFluidStack fromPacket( final ByteBuf data ) throws IOException
+	public static IAEFluidStack fromPacket( final ByteBuf buffer ) throws IOException
 	{
-		final byte mask = data.readByte();
+		final byte mask = buffer.readByte();
 		final byte stackType = (byte) ( ( mask & 0x0C ) >> 2 );
 		final byte countReqType = (byte) ( ( mask & 0x30 ) >> 4 );
 		final boolean isCraftable = ( mask & 0x40 ) > 0;
@@ -129,26 +129,26 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		// don't send this...
 		final NBTTagCompound d = new NBTTagCompound();
 
-		final byte len2 = data.readByte();
+		final byte len2 = buffer.readByte();
 		final byte[] name = new byte[len2];
-		data.readBytes( name, 0, len2 );
+		buffer.readBytes( name, 0, len2 );
 
 		d.setString( "FluidName", new String( name, "UTF-8" ) );
 		d.setByte( "Count", (byte) 0 );
 
 		if( hasTagCompound )
 		{
-			final int len = data.readInt();
+			final int len = buffer.readInt();
 
 			final byte[] bd = new byte[len];
-			data.readBytes( bd );
+			buffer.readBytes( bd );
 
 			final DataInputStream di = new DataInputStream( new ByteArrayInputStream( bd ) );
 			d.setTag( "Tag", CompressedStreamTools.read( di ) );
 		}
 
-		final long stackSize = getPacketValue( stackType, data );
-		final long countRequestable = getPacketValue( countReqType, data );
+		final long stackSize = getPacketValue( stackType, buffer );
+		final long countRequestable = getPacketValue( countReqType, buffer );
 
 		final FluidStack fluidStack = FluidStack.loadFluidStackFromNBT( d );
 
@@ -178,21 +178,21 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound i )
+	public void writeToNBT( final NBTTagCompound data )
 	{
-		i.setString( "FluidName", this.fluid.getName() );
-		i.setByte( "Count", (byte) 0 );
-		i.setLong( "Cnt", this.getStackSize() );
-		i.setLong( "Req", this.getCountRequestable() );
-		i.setBoolean( "Craft", this.isCraftable() );
+		data.setString( "FluidName", this.fluid.getName() );
+		data.setByte( "Count", (byte) 0 );
+		data.setLong( "Cnt", this.getStackSize() );
+		data.setLong( "Req", this.getCountRequestable() );
+		data.setBoolean( "Craft", this.isCraftable() );
 
 		if( this.hasTagCompound() )
 		{
-			i.setTag( "Tag", this.tagCompound );
+			data.setTag( "Tag", this.tagCompound );
 		}
 		else
 		{
-			i.removeTag( "Tag" );
+			data.removeTag( "Tag" );
 		}
 	}
 
@@ -235,19 +235,19 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	}
 
 	@Override
-	public int compareTo( final AEFluidStack b )
+	public int compareTo( final AEFluidStack other )
 	{
-		if( this.fluid != b.fluid )
+		if( this.fluid != other.fluid )
 		{
-			return this.fluid.getName().compareTo( b.fluid.getName() );
+			return this.fluid.getName().compareTo( other.fluid.getName() );
 		}
 
-		if( Platform.itemComparisons().isNbtTagEqual( this.tagCompound, b.tagCompound ) )
+		if( Platform.itemComparisons().isNbtTagEqual( this.tagCompound, other.tagCompound ) )
 		{
 			return 0;
 		}
 
-		return this.tagCompound.hashCode() - b.tagCompound.hashCode();
+		return this.tagCompound.hashCode() - other.tagCompound.hashCode();
 	}
 
 	@Override
@@ -262,16 +262,16 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	}
 
 	@Override
-	public boolean equals( final Object ia )
+	public boolean equals( final Object other )
 	{
-		if( ia instanceof AEFluidStack )
+		if( other instanceof AEFluidStack )
 		{
-			final AEFluidStack is = (AEFluidStack) ia;
+			final AEFluidStack is = (AEFluidStack) other;
 			return is.fluid == this.fluid && Platform.itemComparisons().isNbtTagEqual( this.tagCompound, is.tagCompound );
 		}
-		else if( ia instanceof FluidStack )
+		else if( other instanceof FluidStack )
 		{
-			final FluidStack is = (FluidStack) ia;
+			final FluidStack is = (FluidStack) other;
 			return is.getFluid() == this.fluid && Platform.itemComparisons().isNbtTagEqual( this.tagCompound, is.tag );
 		}
 		return false;
@@ -318,24 +318,24 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	}
 
 	@Override
-	public void writeToPacket( final ByteBuf i ) throws IOException
+	public void writeToPacket( final ByteBuf buffer ) throws IOException
 	{
 		final byte mask = (byte) ( ( this.getType( this.getStackSize() ) << 2 ) | ( this
 				.getType( this.getCountRequestable() ) << 4 ) | ( (byte) ( this.isCraftable() ? 1 : 0 ) << 6 ) | ( this.hasTagCompound() ? 1 : 0 ) << 7 );
 
-		i.writeByte( mask );
+		buffer.writeByte( mask );
 
-		this.writeToStream( i );
+		this.writeToStream( buffer );
 
-		this.putPacketValue( i, this.getStackSize() );
-		this.putPacketValue( i, this.getCountRequestable() );
+		this.putPacketValue( buffer, this.getStackSize() );
+		this.putPacketValue( buffer, this.getCountRequestable() );
 	}
 
-	private void writeToStream( final ByteBuf i ) throws IOException
+	private void writeToStream( final ByteBuf buffer ) throws IOException
 	{
 		final byte[] name = this.fluid.getName().getBytes( "UTF-8" );
-		i.writeByte( (byte) name.length );
-		i.writeBytes( name );
+		buffer.writeByte( (byte) name.length );
+		buffer.writeBytes( name );
 		if( this.hasTagCompound() )
 		{
 			final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -346,8 +346,8 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 			final byte[] tagBytes = bytes.toByteArray();
 			final int size = tagBytes.length;
 
-			i.writeInt( size );
-			i.writeBytes( tagBytes );
+			buffer.writeInt( size );
+			buffer.writeBytes( tagBytes );
 		}
 	}
 }
