@@ -29,6 +29,7 @@ public enum PlayerMessages
 	InvalidMachine,
 	LoadedSettings,
 	SavedSettings,
+	ResetSettings,
 	MachineNotPowered,
 
 	isNowLocked,
