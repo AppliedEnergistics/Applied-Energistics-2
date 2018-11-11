@@ -42,6 +42,9 @@ public class TileCraftingStorageTile extends TileCraftingTile
 
 		switch( storage )
 		{
+			case 1:
+				is = blocks.craftingStorage1k().maybeStack( 1 );
+				break;
 			case 4:
 				is = blocks.craftingStorage4k().maybeStack( 1 );
 				break;
