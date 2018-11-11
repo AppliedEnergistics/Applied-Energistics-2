@@ -85,6 +85,10 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		{
 			is = AEApi.instance().definitions().blocks().craftingAccelerator().maybeStack( 1 );
 		}
+		else
+		{
+			is = AEApi.instance().definitions().blocks().craftingUnit().maybeStack( 1 );
+		}
 
 		return is.orElseGet( () -> super.getItemFromTile( obj ) );
 	}
