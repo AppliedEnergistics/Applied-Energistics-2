@@ -52,6 +52,12 @@ task apiJar(type: Jar) {
     classifier = 'api'
 }
 
+task sourceJar(type: Jar, overwrite: true) {
+    from sourceSets.api.allSource
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
 artifacts {
     archives apiJar
     archives javadocJar
