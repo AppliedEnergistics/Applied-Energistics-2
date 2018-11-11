@@ -266,7 +266,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	@Override
 	public TickingRequest getTickingRequest( final IGridNode node )
 	{
-		return new TickingRequest( TickRates.IOPort.getMin(), TickRates.IOPort.getMax(), this.hasWork(), false );
+		return new TickingRequest( TickRates.IOPort.getMin(), TickRates.IOPort.getMax(), !this.hasWork(), false );
 	}
 
 	@Override
