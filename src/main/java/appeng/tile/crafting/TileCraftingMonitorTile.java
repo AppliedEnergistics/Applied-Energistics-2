@@ -20,15 +20,18 @@ package appeng.tile.crafting;
 
 
 import java.io.IOException;
+import java.util.Optional;
 
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
@@ -182,5 +185,13 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	public void setUpdateList( final boolean updateList )
 	{
 		this.updateList = updateList;
+	}
+
+	@Override
+	protected ItemStack getItemFromTile( final Object obj )
+	{
+		final Optional<ItemStack> is = AEApi.instance().definitions().blocks().craftingMonitor().maybeStack( 1 );
+
+		return is.orElseGet( () -> super.getItemFromTile( obj ) );
 	}
 }
