@@ -21,9 +21,12 @@ package appeng.client.render;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -47,6 +50,7 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel
 {
 	private final VertexFormat format;
 	private final FacadeBuilder facadeBuilder;
+	private final Int2ObjectMap<FacadeBakedItemModel> cache = new Int2ObjectArrayMap<>();
 
 	public FacadeDispatcherBakedModel( IBakedModel baseModel, VertexFormat format, FacadeBuilder facadeBuilder )
 	{
@@ -91,7 +95,15 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel
 
 				ItemStack textureItem = itemFacade.getTextureItem( stack );
 
-				return new FacadeBakedItemModel( FacadeDispatcherBakedModel.this.getBaseModel(), textureItem, FacadeDispatcherBakedModel.this.facadeBuilder );
+				int hash = Objects.hash( textureItem.getItem().getRegistryName(), textureItem.getMetadata(), textureItem.getTagCompound() );
+				FacadeBakedItemModel model = FacadeDispatcherBakedModel.this.cache.get( hash );
+				if( model == null )
+				{
+				    model = new FacadeBakedItemModel(FacadeDispatcherBakedModel.this.getBaseModel(), textureItem, FacadeDispatcherBakedModel.this.facadeBuilder);
+                    FacadeDispatcherBakedModel.this.cache.put(hash, model);
+                }
+
+				return model;
 			}
 		};
 	}

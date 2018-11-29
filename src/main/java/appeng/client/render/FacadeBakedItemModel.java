@@ -45,6 +45,7 @@ public class FacadeBakedItemModel extends DelegateBakedModel
 
 	private final ItemStack textureStack;
 	private final FacadeBuilder facadeBuilder;
+	private List<BakedQuad> quads = null;
 
 	protected FacadeBakedItemModel( IBakedModel base, ItemStack textureStack, FacadeBuilder facadeBuilder )
 	{
@@ -60,9 +61,13 @@ public class FacadeBakedItemModel extends DelegateBakedModel
 		{
 			return Collections.emptyList();
 		}
-		List<BakedQuad> quads = new ArrayList<>();
-		quads.addAll( this.facadeBuilder.buildFacadeItemQuads( this.textureStack, EnumFacing.NORTH ) );
-		quads.addAll( this.getBaseModel().getQuads( state, side, rand ) );
+		if( quads == null )
+		{
+		    quads = new ArrayList<>();
+            quads.addAll( this.facadeBuilder.buildFacadeItemQuads( this.textureStack, EnumFacing.NORTH ) );
+            quads.addAll( this.getBaseModel().getQuads( state, side, rand ) );
+            quads = Collections.unmodifiableList( quads );
+        }
 		return quads;
 	}
 
