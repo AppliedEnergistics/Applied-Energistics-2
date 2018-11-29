@@ -46,7 +46,6 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer
 	public CachedFormat format;
 
 	public int tintIndex = -1;
-	// TODO, sometimes this is null because people don't do models properly.
 	public EnumFacing orientation;
 	public boolean diffuseLighting = true;
 	public TextureAtlasSprite sprite;
@@ -130,6 +129,10 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer
 			{
 				this.vertexIndex = 0;
 				this.full = true;
+				if(orientation == null)
+				{
+				    calculateOrientation(false);
+                }
 			}
 		}
 	}
@@ -195,30 +198,40 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer
 			vec[1] = (float) MathHelper.clamp( vec[1], bb.minY, bb.maxY );
 			vec[2] = (float) MathHelper.clamp( vec[2], bb.minZ, bb.maxZ );
 		}
-
-		this.v1.set( this.vertices[3].vec );
-		this.t.set( this.vertices[1].vec );
-		this.v1.sub( this.t );
-
-		this.v2.set( this.vertices[2].vec );
-		this.t.set( this.vertices[0].vec );
-		this.v2.sub( this.t );
-
-		this.normal.cross( this.v2, this.v1 );
-		this.normal.normalize();
-
-		if( this.format.hasNormal )
-		{
-			for( Vertex vertex : this.vertices )
-			{
-				vertex.normal[0] = this.normal.x;
-				vertex.normal[1] = this.normal.y;
-				vertex.normal[2] = this.normal.z;
-				vertex.normal[3] = 0;
-			}
-		}
-		this.orientation = EnumFacing.getFacingFromVector( this.normal.x, this.normal.y, this.normal.z );
+		calculateOrientation(true);
 	}
+
+    /**
+     * Re-calculates the Orientation of this quad,
+     * optionally the normal vector.
+     *
+     * @param setNormal If the normal vector should be updated.
+     */
+	public void calculateOrientation( boolean setNormal )
+    {
+        this.v1.set( this.vertices[3].vec );
+        this.t.set( this.vertices[1].vec );
+        this.v1.sub( this.t );
+
+        this.v2.set( this.vertices[2].vec );
+        this.t.set( this.vertices[0].vec );
+        this.v2.sub( this.t );
+
+        this.normal.cross( this.v2, this.v1 );
+        this.normal.normalize();
+
+        if( this.format.hasNormal && setNormal)
+        {
+            for( Vertex vertex : this.vertices )
+            {
+                vertex.normal[0] = this.normal.x;
+                vertex.normal[1] = this.normal.y;
+                vertex.normal[2] = this.normal.z;
+                vertex.normal[3] = 0;
+            }
+        }
+        this.orientation = EnumFacing.getFacingFromVector( this.normal.x, this.normal.y, this.normal.z );
+    }
 
 	/**
 	 * Used to create a new quad complete copy of this one.
