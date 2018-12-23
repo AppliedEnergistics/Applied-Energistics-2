@@ -24,36 +24,44 @@ allprojects {
 }
 
 javadoc {
-    options.encoding = 'UTF-8'
-    options.charSet = 'UTF-8'
+	options.encoding = 'UTF-8'
+	options.charSet = 'UTF-8'
 }
 
 task javadocs(type: Javadoc) {
-    source = sourceSets.api.java
-    include "appeng/api/**"
+	source = sourceSets.api.java
+	include "appeng/api/**"
 
-    // Due to ForgeGradle having to be a special snowflake,
-    // we have to add some custom configurations to the normal compile configuration and hope it does not break.
-    classpath = configurations.compile + configurations.forgeGradleMc + configurations.forgeGradleMcDeps 
+	// Due to ForgeGradle having to be a special snowflake,
+	// we have to add some custom configurations to the normal compile configuration and hope it does not break.
+	classpath = configurations.compile + configurations.forgeGradleMc + configurations.forgeGradleMcDeps 
 }
 
 task javadocJar(type: Jar, dependsOn: javadocs) {
 	from javadoc.destinationDir
-    classifier = 'javadoc'
+
+	classifier = 'javadoc'
 }
 
 task apiJar(type: Jar) {
-    from sourceSets.api.java
-    include "appeng/api/**"
+	from sourceSets.api.java
+	include "appeng/api/**"
 
-    from sourceSets.api.output
-    include "appeng/api/**"
+	from sourceSets.api.output
+	include "appeng/api/**"
 
-    classifier = 'api'
+	classifier = 'api'
+}
+
+task sourceJar(type: Jar, overwrite: true) {
+	from sourceSets.api.allSource
+	from sourceSets.main.allSource
+
+	classifier = 'sources'
 }
 
 artifacts {
-    archives apiJar
-    archives javadocJar
-    archives sourceJar
+	archives apiJar
+	archives javadocJar
+	archives sourceJar
 }
