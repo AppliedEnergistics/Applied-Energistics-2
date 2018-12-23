@@ -68,23 +68,24 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		this.coolDown = new HashMap<>();
 
 		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.STONE.getDefaultState() ),
-				new InWorldToolOperationResult( new ItemStack( Blocks.COBBLESTONE ) ) );
+				new InWorldToolOperationResult( Blocks.COBBLESTONE.getDefaultState() ) );
 		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.STONEBRICK.getDefaultState() ),
-				new InWorldToolOperationResult( new ItemStack( Blocks.STONEBRICK, 1, 2 ) ) );
-		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.LAVA, true ), new InWorldToolOperationResult( new ItemStack( Blocks.OBSIDIAN ) ) );
+				new InWorldToolOperationResult( Blocks.STONEBRICK.getStateFromMeta( 2 ) ) );
+		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.LAVA, true ), new InWorldToolOperationResult( Blocks.OBSIDIAN.getDefaultState() ) );
 		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.FLOWING_LAVA, true ),
-				new InWorldToolOperationResult( new ItemStack( Blocks.OBSIDIAN ) ) );
-		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.GRASS, true ), new InWorldToolOperationResult( new ItemStack( Blocks.DIRT ) ) );
+				new InWorldToolOperationResult( Blocks.OBSIDIAN.getDefaultState() ) );
+		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.GRASS, true ), new InWorldToolOperationResult( Blocks.DIRT.getDefaultState() ) );
 
 		final List<ItemStack> snowBalls = new ArrayList<>();
 		snowBalls.add( new ItemStack( Items.SNOWBALL ) );
-		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.FLOWING_WATER, true ), new InWorldToolOperationResult( ItemStack.EMPTY, snowBalls ) );
-		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.WATER, true ), new InWorldToolOperationResult( new ItemStack( Blocks.ICE ) ) );
+		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.FLOWING_WATER, true ), new InWorldToolOperationResult( null, snowBalls ) );
+		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.WATER, true ), new InWorldToolOperationResult( Blocks.ICE.getDefaultState() ) );
 
-		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.ICE.getDefaultState() ), new InWorldToolOperationResult( new ItemStack( Blocks.WATER ) ) );
+		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.ICE.getDefaultState() ), new InWorldToolOperationResult( Blocks.WATER.getDefaultState() ) );
 		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.FLOWING_WATER, true ), new InWorldToolOperationResult() );
 		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.WATER, true ), new InWorldToolOperationResult() );
-		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.SNOW, true ), new InWorldToolOperationResult( new ItemStack( Blocks.FLOWING_WATER ) ) );
+		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.SNOW, true ),
+				new InWorldToolOperationResult( Blocks.FLOWING_WATER.getStateFromMeta( 7 ) ) );
 	}
 
 	private static class InWorldToolOperationIngredient
@@ -135,10 +136,9 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			r = this.heatUp.get( new InWorldToolOperationIngredient( state.getBlock(), true ) );
 		}
 
-		if( !r.getBlockItem().isEmpty() )
+		if( r.getBlockState() != null )
 		{
-			final Block blk = Block.getBlockFromItem( r.getBlockItem().getItem() );
-			w.setBlockState( pos, blk.getStateFromMeta( r.getBlockItem().getItemDamage() ), 3 );
+			w.setBlockState( pos, r.getBlockState(), 3 );
 		}
 		else
 		{
@@ -172,10 +172,9 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			r = this.coolDown.get( new InWorldToolOperationIngredient( state.getBlock(), true ) );
 		}
 
-		if( !r.getBlockItem().isEmpty() )
+		if( r.getBlockState() != null )
 		{
-			final Block blk = Block.getBlockFromItem( r.getBlockItem().getItem() );
-			w.setBlockState( pos, blk.getStateFromMeta( r.getBlockItem().getItemDamage() ), 3 );
+			w.setBlockState( pos, r.getBlockState(), 3 );
 		}
 		else
 		{
@@ -326,14 +325,13 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 					w.playSound( p, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F,
 							itemRand.nextFloat() * 0.4F + 0.8F );
 
-					if( or.getBlockItem().isEmpty() )
+					if( or.getBlockState() == null )
 					{
 						w.setBlockState( pos, Platform.AIR_BLOCK.getDefaultState(), 3 );
 					}
 					else
 					{
-						final Block blk = Block.getBlockFromItem( or.getBlockItem().getItem() );
-						w.setBlockState( pos, blk.getStateFromMeta( or.getBlockItem().getItemDamage() ), 3 );
+						w.setBlockState( pos, or.getBlockState(), 3 );
 					}
 
 					if( or.getDrops() != null )

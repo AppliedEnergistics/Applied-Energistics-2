@@ -24,47 +24,48 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 
 
 public class InWorldToolOperationResult
 {
 
-	private final ItemStack BlockItem;
-	private final List<ItemStack> Drops;
+	private final IBlockState blockState;
+	private final List<ItemStack> drops;
 
 	public InWorldToolOperationResult()
 	{
-		this.BlockItem = ItemStack.EMPTY;
-		this.Drops = null;
+		this.blockState = null;
+		this.drops = null;
 	}
 
-	public InWorldToolOperationResult( final ItemStack block, final List<ItemStack> drops )
+	public InWorldToolOperationResult( final IBlockState block, final List<ItemStack> drops )
 	{
-		this.BlockItem = block;
-		this.Drops = drops;
+		this.blockState = block;
+		this.drops = drops;
 	}
 
-	public InWorldToolOperationResult( final ItemStack block )
+	public InWorldToolOperationResult( final IBlockState block )
 	{
-		this.BlockItem = block;
-		this.Drops = null;
+		this.blockState = block;
+		this.drops = null;
 	}
 
 	public static InWorldToolOperationResult getBlockOperationResult( final ItemStack[] items )
 	{
 		final List<ItemStack> temp = new ArrayList<>();
-		ItemStack b = ItemStack.EMPTY;
+		IBlockState b = null;
 
 		for( final ItemStack l : items )
 		{
-			if( b.isEmpty() )
+			if( b == null )
 			{
 				final Block bl = Block.getBlockFromItem( l.getItem() );
 
 				if( bl != null && !( bl instanceof BlockAir ) )
 				{
-					b = l;
+					b = bl.getDefaultState();
 					continue;
 				}
 			}
@@ -75,13 +76,13 @@ public class InWorldToolOperationResult
 		return new InWorldToolOperationResult( b, temp );
 	}
 
-	public ItemStack getBlockItem()
+	public IBlockState getBlockState()
 	{
-		return this.BlockItem;
+		return this.blockState;
 	}
 
 	public List<ItemStack> getDrops()
 	{
-		return this.Drops;
+		return this.drops;
 	}
 }
