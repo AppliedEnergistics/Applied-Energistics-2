@@ -576,15 +576,21 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	@Override
 	public boolean isRequesting( final IAEItemStack what )
 	{
+		return this.requesting( what ) > 0;
+	}
+
+	@Override
+	public long requesting( IAEItemStack what )
+	{
+		long requested = 0;
+
 		for( final CraftingCPUCluster cluster : this.craftingCPUClusters )
 		{
-			if( cluster.isMaking( what ) )
-			{
-				return true;
-			}
+			final IAEItemStack stack = cluster.making( what );
+			requested += stack != null ? stack.getStackSize() : 0;
 		}
 
-		return false;
+		return requested;
 	}
 
 	public List<ICraftingMedium> getMediums( final ICraftingPatternDetails key )

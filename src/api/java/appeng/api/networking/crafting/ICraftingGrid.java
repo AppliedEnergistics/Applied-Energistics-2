@@ -99,9 +99,18 @@ public interface ICraftingGrid extends IGridCache
 	/**
 	 * is this item being crafted?
 	 *
-	 * @param aeStackInSlot item being crafted
+	 * @param what item being crafted
 	 *
 	 * @return true if it is being crafting
 	 */
-	boolean isRequesting( IAEItemStack aeStackInSlot );
+	boolean isRequesting( IAEItemStack what );
+
+	/**
+	 * The total amount being requested across all crafting cpus of a grid.
+	 *
+	 * @param what item being requested, ignores stacksize
+	 *
+	 * @return The total amount being requested.
+	 */
+	long requesting( IAEItemStack what );
 }

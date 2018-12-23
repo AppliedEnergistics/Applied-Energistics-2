@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -300,7 +299,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 					this.updateElapsedTime( what );
 					this.markDirty();
-					this.postCraftingStatusChange( is );
+					this.postCraftingStatusChange( what.copy().setStackSize( -what.getStackSize() ) );
 
 					if( this.finalOutput.equals( what ) )
 					{
@@ -332,6 +331,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 				what.decStackSize( is.getStackSize() );
 
 				is.setStackSize( 0 );
+				this.postCraftingStatusChange( insert.copy().setStackSize( -insert.getStackSize() ) );
 
 				if( this.finalOutput.equals( insert ) )
 				{
@@ -556,7 +556,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		this.myLastLink = null;
 		this.tasks.clear();
 
-		final ImmutableSet<IAEItemStack> items = ImmutableSet.copyOf( this.waitingFor );
+		// final ImmutableSet<IAEItemStack> items = ImmutableSet.copyOf( this.waitingFor );
+		final List<IAEItemStack> items = new ArrayList<>( this.waitingFor.size() );
+		this.waitingFor.forEach( stack -> items.add( stack.copy().setStackSize( -stack.getStackSize() ) ) );
 
 		this.waitingFor.resetStatus();
 
@@ -1304,10 +1306,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		return this.getCore().getWorld();
 	}
 
-	public boolean isMaking( final IAEItemStack what )
+	public IAEItemStack making( final IAEItemStack what )
 	{
-		final IAEItemStack wat = this.waitingFor.findPrecise( what );
-		return wat != null && wat.getStackSize() > 0;
+		return this.waitingFor.findPrecise( what );
 	}
 
 	public void breakCluster()
