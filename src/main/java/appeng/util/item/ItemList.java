@@ -31,6 +31,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.util.item.AESharedItemStack.Bounds;
 
 
 public final class ItemList implements IItemList<IAEItemStack>
@@ -99,8 +100,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 
 				return output;
 			}
-		} )
-				.orElse( this.findFuzzyDamage( ais, fuzzy, false ) );
+		} ).orElse( this.findFuzzyDamage( ais, fuzzy, false ) );
 	}
 
 	@Override
@@ -222,9 +222,8 @@ public final class ItemList implements IItemList<IAEItemStack>
 	private Collection<IAEItemStack> findFuzzyDamage( final IAEItemStack filter, final FuzzyMode fuzzy, final boolean ignoreMeta )
 	{
 		final AEItemStack itemStack = (AEItemStack) filter;
-		final AESharedItemStack low = itemStack.getSharedStack().getLowerBound( fuzzy, ignoreMeta );
-		final AESharedItemStack high = itemStack.getSharedStack().getUpperBound( fuzzy, ignoreMeta );
+		final Bounds bounds = itemStack.getSharedStack().getBounds( fuzzy, ignoreMeta );
 
-		return this.records.subMap( low, true, high, true ).descendingMap().values();
+		return this.records.subMap( bounds.lower(), true, bounds.upper(), true ).descendingMap().values();
 	}
 }
