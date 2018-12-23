@@ -304,7 +304,8 @@ public class PartFluidAnnihilationPlane extends PartBasicState implements IGridT
 				{
 					return false;
 				}
-				return inv.injectItems( stack, Actionable.SIMULATE, this.mySrc ) == null;
+				final IAEFluidStack leftOver = inv.injectItems( stack, Actionable.SIMULATE, this.mySrc );
+				return leftOver == null || leftOver.getStackSize() == 0;
 			}
 		}
 		catch( final GridAccessException e )
