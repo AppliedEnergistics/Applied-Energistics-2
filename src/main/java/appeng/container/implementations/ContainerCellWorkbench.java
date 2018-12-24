@@ -47,7 +47,7 @@ import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.misc.TileCellWorkbench;
 import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
-import appeng.util.inv.WrapperLazyItemHandler;
+import appeng.util.inv.WrapperSupplierItemHandler;
 import appeng.util.iterators.NullIterator;
 
 
@@ -97,7 +97,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.WORKBENCH_CELL, cell, 0, 152, 8, this.getPlayerInv() ) );
 
 		final IItemHandler inv = this.getUpgradeable().getInventoryByName( "config" );
-		final WrapperLazyItemHandler upgradeInventory = new WrapperLazyItemHandler( this::getCellUpgradeInventory );
+		final WrapperSupplierItemHandler upgradeInventory = new WrapperSupplierItemHandler( this::getCellUpgradeInventory );
 		// null, 3 * 8 );
 
 		int offset = 0;
