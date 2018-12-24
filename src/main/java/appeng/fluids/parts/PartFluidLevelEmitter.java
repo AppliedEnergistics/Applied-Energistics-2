@@ -22,11 +22,13 @@ import appeng.api.networking.events.MENetworkChannelsChanged;
 import appeng.api.networking.events.MENetworkEventSubscribe;
 import appeng.api.networking.events.MENetworkPowerStatusChange;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherHost;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
@@ -48,7 +50,7 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
 
-public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatcherHost, IConfigManagerHost, IAEFluidInventory
+public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatcherHost, IConfigManagerHost, IAEFluidInventory, IMEMonitorHandlerReceiver<IAEFluidStack>
 {
 	@PartModels
 	public static final ResourceLocation MODEL_BASE_OFF = new ResourceLocation( AppEng.MOD_ID, "part/level_emitter_base_off" );
@@ -153,6 +155,41 @@ public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatc
 		return cf | ( this.prevState ? FLAG_ON : 0 );
 	}
 
+	@Override
+	public boolean isValid( final Object effectiveGrid )
+	{
+		try
+		{
+			return this.getProxy().getGrid() == effectiveGrid;
+		}
+		catch( final GridAccessException e )
+		{
+			return false;
+		}
+	}
+
+	@Override
+	public void postChange( final IBaseMonitor<IAEFluidStack> monitor, final Iterable<IAEFluidStack> change, final IActionSource actionSource )
+	{
+		this.updateReportingValue( (IMEMonitor<IAEFluidStack>) monitor );
+	}
+
+	@Override
+	public void onListUpdate()
+	{
+		try
+		{
+			final IStorageChannel<IAEFluidStack> channel = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
+			final IMEMonitor<IAEFluidStack> inventory = this.getProxy().getStorage().getInventory( channel );
+
+			this.updateReportingValue( inventory );
+		}
+		catch( final GridAccessException e )
+		{
+			// ;P
+		}
+	}
+
 	private void updateState()
 	{
 		final boolean isOn = this.isLevelEmitterOn();
@@ -168,31 +205,53 @@ public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatc
 
 	private void configureWatchers()
 	{
+		final IFluidStorageChannel channel = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
+
 		if( this.stackWatcher != null )
 		{
 			this.stackWatcher.reset();
 
 			final IAEFluidStack myStack = this.config.getFluidInSlot( 0 );
-			if( myStack != null )
+
+			try
 			{
-				this.stackWatcher.add( myStack );
+				if( myStack != null )
+				{
+					this.getProxy().getStorage().getInventory( channel ).removeListener( this );
+					this.stackWatcher.add( myStack );
+				}
+				else
+				{
+					this.getProxy()
+							.getStorage()
+							.getInventory( channel )
+							.addListener( this, this.getProxy().getGrid() );
+				}
+
+				final IMEMonitor<IAEFluidStack> inventory = this.getProxy().getStorage().getInventory( channel );
+
+				this.updateReportingValue( inventory );
 			}
-		}
-		try
-		{
-			this.updateReportingValue(
-					this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) ) );
-		}
-		catch( GridAccessException e )
-		{
-			// x.x
+			catch( GridAccessException e )
+			{
+				// NOP
+			}
 		}
 	}
 
 	private void updateReportingValue( final IMEMonitor<IAEFluidStack> monitor )
 	{
 		final IAEFluidStack myStack = this.config.getFluidInSlot( 0 );
-		if( myStack != null )
+
+		if( myStack == null )
+		{
+			this.lastReportedValue = 0;
+			for( final IAEFluidStack st : monitor.getStorageList() )
+			{
+				this.lastReportedValue += st.getStackSize();
+			}
+		}
+		else
 		{
 			final IAEFluidStack r = monitor.getStorageList().findPrecise( myStack );
 			if( r == null )
