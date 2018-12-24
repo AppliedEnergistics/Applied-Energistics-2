@@ -25,17 +25,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-import appeng.util.Lazy;
 import appeng.util.helpers.ItemHandlerUtil;
 
 
-public class WrapperLazyItemHandler implements IItemHandlerModifiable
+public class WrapperSupplierItemHandler implements IItemHandlerModifiable
 {
-	private final Lazy<IItemHandler> sourceHandler;
+	private final Supplier<IItemHandler> sourceHandler;
 
-	public WrapperLazyItemHandler( Supplier<IItemHandler> source )
+	public WrapperSupplierItemHandler( Supplier<IItemHandler> source )
 	{
-		this.sourceHandler = new Lazy<>( source );
+		this.sourceHandler = source;
 	}
 
 	@Override
