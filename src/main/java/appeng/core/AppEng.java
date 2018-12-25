@@ -47,6 +47,8 @@ import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
+import team.chisel.ctm.CTM;
+
 import appeng.api.AEApi;
 import appeng.core.crash.CrashInfo;
 import appeng.core.crash.IntegrationCrashEnhancement;
@@ -81,7 +83,7 @@ public final class AppEng
 
 	private static final String FORGE_CURRENT_VERSION = ForgeVersion.majorVersion + "." + ForgeVersion.minorVersion + "." + ForgeVersion.revisionVersion + "." + ForgeVersion.buildVersion;
 	private static final String FORGE_MAX_VERSION = ( ForgeVersion.majorVersion + 1 ) + ".0.0.0";
-	public static final String MOD_DEPENDENCIES = "required-after:forge@[" + FORGE_CURRENT_VERSION + "," + FORGE_MAX_VERSION + ")";
+	public static final String MOD_DEPENDENCIES = "required-after:forge@[" + FORGE_CURRENT_VERSION + "," + FORGE_MAX_VERSION + ");after:ctm@[" + CTM.VERSION + ",);";
 
 	@Nonnull
 	private static final AppEng INSTANCE = new AppEng();
