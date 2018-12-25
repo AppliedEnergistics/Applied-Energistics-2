@@ -160,7 +160,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 
 		public Bounds( final ItemStack stack, final FuzzyMode fuzzy, final boolean ignoreMeta )
 		{
-			Preconditions.checkState( stack.isEmpty(), "ItemStack#isEmpty() has to be false" );
+			Preconditions.checkState( !stack.isEmpty(), "ItemStack#isEmpty() has to be false" );
 			Preconditions.checkState( stack.getCount() == 1, "ItemStack#getCount() has to be 1" );
 
 			final NBTTagCompound tag = stack.hasTagCompound() ? stack.getTagCompound() : null;
