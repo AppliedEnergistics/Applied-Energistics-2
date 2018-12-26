@@ -140,7 +140,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 	@Override
 	public TickingRequest getTickingRequest( final IGridNode node )
 	{
-		return new TickingRequest( TickRates.ImportBus.getMin(), TickRates.ImportBus.getMax(), this.getHandler() == null, false );
+		return new TickingRequest( TickRates.ImportBus.getMin(), TickRates.ImportBus.getMax(), this.isSleeping(), false );
 	}
 
 	@Override
