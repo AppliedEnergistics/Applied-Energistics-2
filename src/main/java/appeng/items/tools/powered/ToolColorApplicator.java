@@ -112,6 +112,8 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	@Override
 	public EnumActionResult onItemUse( ItemStack is, EntityPlayer p, World w, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ )
 	{
+		boolean lastDye = false;
+
 		final Block blk = w.getBlockState( pos ).getBlock();
 
 		ItemStack paintBall = this.getColor( is );
@@ -121,14 +123,18 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				.cell()
 				.getCellInventory( is, null,
 						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
-		if( inv != null )
+		if( !paintBall.isEmpty() && inv != null )
 		{
-			final IAEItemStack option = inv.extractItems( AEItemStack.fromItemStack( paintBall ), Actionable.SIMULATE, new BaseActionSource() );
+			final IAEItemStack option = inv.extractItems( AEItemStack.fromItemStack( paintBall ).setStackSize( 2 ), Actionable.SIMULATE, new BaseActionSource() );
 
 			if( option != null )
 			{
 				paintBall = option.createItemStack();
 				paintBall.setCount( 1 );
+				if ( option.getStackSize() == 1 )
+				{
+					lastDye = true;
+				}
 			}
 			else
 			{
@@ -153,6 +159,10 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 						{
 							inv.extractItems( AEItemStack.fromItemStack( paintBall ), Actionable.MODULATE, new BaseActionSource() );
 							this.extractAEPower( is, powerPerUse, Actionable.MODULATE );
+							if ( lastDye )
+							{
+								this.setColor(is, ItemStack.EMPTY);
+							}
 							return EnumActionResult.SUCCESS;
 						}
 					}
@@ -166,6 +176,10 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 					inv.extractItems( AEItemStack.fromItemStack( paintBall ), Actionable.MODULATE, new BaseActionSource() );
 					this.extractAEPower( is, powerPerUse, Actionable.MODULATE );
 					( (TilePaint) painted ).cleanSide( side.getOpposite() );
+					if ( lastDye )
+					{
+						this.setColor(is, ItemStack.EMPTY);
+					}
 					return EnumActionResult.SUCCESS;
 				}
 			}
@@ -179,6 +193,10 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 					{
 						inv.extractItems( AEItemStack.fromItemStack( paintBall ), Actionable.MODULATE, new BaseActionSource() );
 						this.extractAEPower( is, powerPerUse, Actionable.MODULATE );
+						if ( lastDye )
+						{
+							this.setColor(is, ItemStack.EMPTY);
+						}
 						return EnumActionResult.SUCCESS;
 					}
 				}
@@ -259,7 +277,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			}
 		}
 
-		return this.findNextColor( is, ItemStack.EMPTY, 0 );
+		return ItemStack.EMPTY;
 	}
 
 	private ItemStack findNextColor( final ItemStack is, final ItemStack anchor, final int scrollOffset )
@@ -411,14 +429,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 	public void cycleColors( final ItemStack is, final ItemStack paintBall, final int i )
 	{
-		if( paintBall.isEmpty() )
-		{
-			this.setColor( is, this.getColor( is ) );
-		}
-		else
-		{
-			this.setColor( is, this.findNextColor( is, paintBall, i ) );
-		}
+		this.setColor( is, this.findNextColor( is, paintBall, i ) );
 	}
 
 	@Override
