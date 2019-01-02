@@ -29,12 +29,14 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-
+import net.minecraft.util.EnumHand;
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.definitions.IParts;
 import appeng.api.implementations.parts.IPartCable;
+import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridHost;
@@ -48,6 +50,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IReadOnlyCollection;
 import appeng.items.parts.ItemPart;
+import appeng.items.tools.powered.ToolColorApplicator;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
 import appeng.util.Platform;
@@ -70,6 +73,30 @@ public class PartCable extends AEBasePart implements IPartCable
 		this.getProxy().setFlags( GridFlags.PREFERRED );
 		this.getProxy().setIdlePowerUsage( 0.0 );
 		this.getProxy().setColor( AEColor.values()[( (ItemPart) is.getItem() ).variantOf( is.getItemDamage() )] );
+	}
+	
+	@Override
+	public void onPlacement( final EntityPlayer player, final EnumHand hand, final ItemStack held, final AEPartLocation side )
+	{
+		super.onPlacement( player, hand, held, side );
+		TileEntity te = this.getHost().getTile();
+		if( te instanceof IColorableTile )
+		{
+			ItemStack applicator = null;
+			if( player.getHeldItemMainhand().getItem() instanceof ToolColorApplicator )
+			{
+				applicator = player.getHeldItemMainhand();
+			}
+			else if( player.getHeldItemOffhand().getItem() instanceof ToolColorApplicator )
+			{
+				applicator = player.getHeldItemOffhand();
+			}
+			
+			if( applicator != null )
+			{
+				( ( ToolColorApplicator ) applicator.getItem() ).onItemUse( applicator, player, te.getWorld(), te.getPos(), hand, side.getFacing(), 0F, 0F, 0F );
+			}
+		}
 	}
 
 	@Override
