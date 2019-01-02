@@ -39,6 +39,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemSnowball;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
@@ -562,5 +563,57 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	public void onWheel( final ItemStack is, final boolean up )
 	{
 		this.cycleColors( is, this.getColor( is ), up ? 1 : -1 );
+	}
+
+	@Override
+	public void onWheelClick( ItemStack is, boolean state, EntityPlayer player )
+	{
+		if( !state )
+		{
+			return;
+		}
+
+		RayTraceResult trace = rayTrace( player.world, player, false );
+		if( trace == null )
+		{
+			return;
+		}
+
+		TileEntity te = player.world.getTileEntity( trace.getBlockPos() );
+		if( !( te instanceof IColorableTile ) )
+		{
+			return;
+		}
+
+		AEColor newColor = ( ( IColorableTile ) te ).getColor();
+		if( newColor == this.getActiveColor( is ) )
+		{
+			return;
+		}
+
+		final IMEInventory<IAEItemStack> inv = AEApi.instance()
+				.registries()
+				.cell()
+				.getCellInventory( is, null,
+						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+		if( inv != null )
+		{
+			IItemList<IAEItemStack> dyes = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+			inv.getAvailableItems( dyes );
+			if( dyes.isEmpty() )
+			{
+				return;
+			}
+
+			for( IAEItemStack paintBall : dyes )
+			{
+				ItemStack dye = paintBall.createItemStack();
+				if( this.getColorFromItem( dye ) == newColor )
+				{
+					this.setColor( is, dye );
+					return;
+				}
+			}
+		}
 	}
 }
