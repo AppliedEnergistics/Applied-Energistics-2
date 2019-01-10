@@ -27,11 +27,8 @@ import javax.annotation.Nonnull;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeModContainer;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -353,32 +350,24 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 			super.doAction( player, action, slot, id );
 			return;
 		}
-		ItemStack held = player.inventory.getItemStack();
+
+		final ItemStack held = player.inventory.getItemStack();
 		if( held.getCount() != 1 )
 		{
 			// only support stacksize 1 for now
 			return;
 		}
-		IFluidHandlerItem fh = FluidUtil.getFluidHandler( held );
+
+		final IFluidHandlerItem fh = FluidUtil.getFluidHandler( held );
 		if( fh == null )
 		{
 			// only fluid handlers items
 			return;
 		}
-		boolean isBucket = held.getItem() == Items.BUCKET || held.getItem() == Items.WATER_BUCKET || held.getItem() == Items.LAVA_BUCKET || held
-				.getItem() == Items.MILK_BUCKET || held.getItem() == ForgeModContainer.getInstance().universalBucket;
 
 		if( action == InventoryAction.FILL_ITEM && this.clientRequestedTargetFluid != null )
 		{
-			AEFluidStack stack = (AEFluidStack) this.clientRequestedTargetFluid.copy();
-
-			AELog.debug( "Filling %s with %s, %s mb", held.getDisplayName(), this.clientRequestedTargetFluid.getFluidStack().getLocalizedName(),
-					stack.getStackSize() );
-
-			if( isBucket && stack.getStackSize() < Fluid.BUCKET_VOLUME )
-			{ // Although buckets support less than a buckets worth of fluid, it does not display how much it holds
-				return;
-			}
+			final IAEFluidStack stack = this.clientRequestedTargetFluid.copy();
 
 			// Check how much we can store in the item
 			stack.setStackSize( Integer.MAX_VALUE );
@@ -386,16 +375,22 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 			stack.setStackSize( amountAllowed );
 
 			// Check if we can pull out of the system
-			IAEFluidStack canPull = Platform.poweredExtraction( this.getPowerSource(), this.monitor, stack, this.getActionSource(), Actionable.SIMULATE );
-			if( canPull == null || canPull.getStackSize() < 1 || ( isBucket && canPull.getStackSize() != Fluid.BUCKET_VOLUME ) )
+			final IAEFluidStack canPull = Platform.poweredExtraction( this.getPowerSource(), this.monitor, stack, this.getActionSource(), Actionable.SIMULATE );
+			if( canPull == null || canPull.getStackSize() < 1 )
 			{
-				// Either we couldn't pull out of the system,
-				// or we are using a bucket and can only pull out less than a buckets worth of fluid
+				return;
+			}
+
+			// How much could fit into the container
+			final int canFill = fh.fill( canPull.getFluidStack(), false );
+			if( canFill == 0 )
+			{
 				return;
 			}
 
 			// Now actually pull out of the system
-			IAEFluidStack pulled = Platform.poweredExtraction( this.getPowerSource(), this.monitor, stack, this.getActionSource() );
+			stack.setStackSize( canFill );
+			final IAEFluidStack pulled = Platform.poweredExtraction( this.getPowerSource(), this.monitor, stack, this.getActionSource() );
 			if( pulled == null || pulled.getStackSize() < 1 )
 			{
 				// Something went wrong
@@ -404,42 +399,55 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 			}
 
 			// Actually fill
-			fh.fill( pulled.getFluidStack(), true );
+			final int used = fh.fill( pulled.getFluidStack(), true );
+
+			if( used != canFill )
+			{
+				AELog.error( "Fluid item [%s] reported a different possible amount than it actually accepted.", held.getDisplayName() );
+			}
 
 			player.inventory.setItemStack( fh.getContainer() );
 			this.updateHeld( player );
 		}
 		else if( action == InventoryAction.EMPTY_ITEM )
 		{
-			// Empty held item
-			AELog.debug( "Emptying %s", held.getDisplayName() );
-
 			// See how much we can drain from the item
-			FluidStack extract = fh.drain( Integer.MAX_VALUE, false );
+			final FluidStack extract = fh.drain( Integer.MAX_VALUE, false );
 			if( extract == null || extract.amount < 1 )
 			{
 				return;
 			}
 
 			// Check if we can push into the system
-			IAEFluidStack notPushed = Platform.poweredInsert( this.getPowerSource(), this.monitor, AEFluidStack.fromFluidStack( extract ),
+			final IAEFluidStack notStorable = Platform.poweredInsert( this.getPowerSource(), this.monitor, AEFluidStack.fromFluidStack( extract ),
 					this.getActionSource(), Actionable.SIMULATE );
-			if( isBucket && notPushed != null && notPushed.getStackSize() > 0 )
-			{
-				// We can't push enough for the bucket
-				return;
-			}
 
-			IAEFluidStack notInserted = Platform.poweredInsert( this.getPowerSource(), this.monitor, AEFluidStack.fromFluidStack( extract ),
-					this.getActionSource() );
-			if( notInserted != null && notInserted.getStackSize() > 0 )
+			if( notStorable != null && notStorable.getStackSize() > 0 )
 			{
-				// Only try to extract the amount we DID insert
-				extract.amount -= Math.toIntExact( notInserted.getStackSize() );
+				final int toStore = (int) ( extract.amount - notStorable.getStackSize() );
+				final FluidStack storable = fh.drain( toStore, false );
+
+				if( storable == null || storable.amount == 0 )
+				{
+					return;
+				}
+				else
+				{
+					extract.amount = storable.amount;
+				}
 			}
 
 			// Actually drain
-			fh.drain( extract, true );
+			final FluidStack drained = fh.drain( extract, true );
+			extract.amount = drained.amount;
+
+			final IAEFluidStack notInserted = Platform.poweredInsert( this.getPowerSource(), this.monitor, AEFluidStack.fromFluidStack( extract ),
+					this.getActionSource() );
+
+			if( notInserted != null && notInserted.getStackSize() > 0 )
+			{
+				AELog.error( "Fluid item [%s] reported a different possible amount to drain than it actually provided.", held.getDisplayName() );
+			}
 
 			player.inventory.setItemStack( fh.getContainer() );
 			this.updateHeld( player );
