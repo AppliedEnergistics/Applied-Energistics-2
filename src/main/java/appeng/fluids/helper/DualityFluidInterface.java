@@ -255,6 +255,17 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 
 	private void readConfig()
 	{
+		this.hasConfig = false;
+
+		for( int i = 0; i < this.config.getSlots(); i++ )
+		{
+			if( this.config.getFluidInSlot( i ) != null )
+			{
+				this.hasConfig = true;
+				break;
+			}
+		}
+
 		final boolean had = this.hasWorkToDo();
 
 		for( int x = 0; x < NUMBER_OF_TANKS; x++ )
