@@ -110,6 +110,7 @@ public class EnergyGridCache implements IEnergyGrid
 	private double lastStoredPower = -1;
 
 	private final GridPowerStorage localStorage = new GridPowerStorage();
+	private boolean localStorageEmptiedThisTick = false;
 
 	public EnergyGridCache( final IGrid g )
 	{
@@ -193,6 +194,7 @@ public class EnergyGridCache implements IEnergyGrid
 
 		// power information.
 		boolean currentlyHasPower = false;
+		this.localStorageEmptiedThisTick = false;
 
 		if( this.drainPerTick > 0.0001 )
 		{
@@ -222,7 +224,7 @@ public class EnergyGridCache implements IEnergyGrid
 		{
 			this.publicPowerState( true, this.myGrid );
 		}
-		else if( !this.hasPower )
+		else if( !this.hasPower || this.localStorageEmptiedThisTick )
 		{
 			this.publicPowerState( false, this.myGrid );
 		}
@@ -682,7 +684,7 @@ public class EnergyGridCache implements IEnergyGrid
 			if( this.stored < 0.01 )
 			{
 				EnergyGridCache.this.ticksSinceHasPowerChange = 0;
-				EnergyGridCache.this.publicPowerState( false, EnergyGridCache.this.myGrid );
+				EnergyGridCache.this.localStorageEmptiedThisTick = true;
 			}
 		}
 	}
