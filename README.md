@@ -108,7 +108,7 @@ Please note that we might close any issue not matching these requirements.
 Before you want to add major changes, you might want to discuss them with us first, before wasting your time.
 If you are still willing to contribute to this project, you can contribute via [Pull-Request](https://help.github.com/articles/creating-a-pull-request).
 
-The [guidelines for contributing](https://github.com/AppliedEnergistics/Applied-Energistics-2/blob/master/.github/CONTRIBUTING.md) contain more detailed information about topics like the used code style and should also be considered.
+The [guidelines for contributing](https://github.com/AppliedEnergistics/Applied-Energistics-2/blob/rv6-1.12/.github/CONTRIBUTING.md) contain more detailed information about topics like the used code style and should also be considered.
 
 Here are a few things to keep in mind that will help get your PR approved.
 
