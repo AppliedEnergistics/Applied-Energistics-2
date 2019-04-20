@@ -28,7 +28,6 @@ import java.util.EnumSet;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -126,6 +125,6 @@ public interface IGridBlock
 	 *
 	 * @return the render item stack to use to render this node, null is valid, and will not show this node.
 	 */
-	@Nullable
+	@Nonnull
 	ItemStack getMachineRepresentation();
 }
