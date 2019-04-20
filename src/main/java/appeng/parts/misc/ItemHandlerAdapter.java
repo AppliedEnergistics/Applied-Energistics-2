@@ -138,8 +138,8 @@ class ItemHandlerAdapter implements IMEInventory<IAEItemStack>, IBaseMonitor<IAE
 					{
 						// Something broke. It should never return more than we requested...
 						// We're going to silently eat the remainder
-						AELog.warn( "Mod that provided item handler %1 is broken. Returned %2 items, even though we requested %3.",
-								this.itemHandler.getClass().getSimpleName(), extracted.getCount(), remainingCurrentSlot );
+						AELog.warn( "Mod that provided item handler %s is broken. Returned %s items while only requesting %d.",
+								this.itemHandler.getClass().getName(), extracted.toString(), remainingCurrentSlot );
 						extracted.setCount( remainingCurrentSlot );
 					}
 
