@@ -253,7 +253,7 @@ public class BasicCellInventory<T extends IAEStack<T>> extends AbstractCellInven
 	}
 
 	@Override
-	protected void loadCellItem( NBTTagCompound compoundTag, int stackSize )
+	protected boolean loadCellItem( NBTTagCompound compoundTag, int stackSize )
 	{
 		// Now load the item stack
 		final T t;
@@ -263,7 +263,7 @@ public class BasicCellInventory<T extends IAEStack<T>> extends AbstractCellInven
 			if( t == null )
 			{
 				AELog.warn( "Removing item " + compoundTag + " from storage cell because the associated item type couldn't be found." );
-				return;
+				return false;
 			}
 		}
 		catch( Throwable ex )
@@ -271,7 +271,7 @@ public class BasicCellInventory<T extends IAEStack<T>> extends AbstractCellInven
 			if( AEConfig.instance().isRemoveCrashingItemsOnLoad() )
 			{
 				AELog.warn( ex, "Removing item " + compoundTag + " from storage cell because loading the ItemStack crashed." );
-				return;
+				return false;
 			}
 			throw ex;
 		}
@@ -282,5 +282,7 @@ public class BasicCellInventory<T extends IAEStack<T>> extends AbstractCellInven
 		{
 			this.cellItems.add( t );
 		}
+
+		return true;
 	}
 }

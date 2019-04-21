@@ -192,16 +192,29 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 		this.cellItems.resetStatus(); // clears totals and stuff.
 
 		final int types = (int) this.getStoredItemTypes();
+		boolean needsUpdate = false;
 
 		for( int slot = 0; slot < types; slot++ )
 		{
 			NBTTagCompound compoundTag = this.tagCompound.getCompoundTag( ITEM_SLOT_KEYS[slot] );
 			int stackSize = this.tagCompound.getInteger( ITEM_SLOT_COUNT_KEYS[slot] );
-			this.loadCellItem( compoundTag, stackSize );
+			needsUpdate |= !this.loadCellItem( compoundTag, stackSize );
+		}
+
+		if( needsUpdate )
+		{
+			this.saveChanges();
 		}
 	}
 
-	protected abstract void loadCellItem( NBTTagCompound compoundTag, int stackSize );
+	/**
+	 * Load a single item.
+	 *
+	 * @param compoundTag
+	 * @param stackSize
+	 * @return true when successfully loaded
+	 */
+	protected abstract boolean loadCellItem( NBTTagCompound compoundTag, int stackSize );
 
 	@Override
 	public IItemList<T> getAvailableItems( final IItemList<T> out )
