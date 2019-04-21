@@ -64,10 +64,10 @@ repositories {
         url "http://maven.blamejared.com/"
     }
 
-    maven { // modmaven, maven proxy
-        name 'modmaven'
-        url "https://modmaven.k-4u.nl/"
-    }
+    //maven { // modmaven, maven proxy
+    //    name 'modmaven'
+    //    url "https://modmaven.k-4u.nl/"
+    //}
 
     maven {
 		name = "CurseForge"
