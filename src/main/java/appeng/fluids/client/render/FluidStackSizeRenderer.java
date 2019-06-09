@@ -128,7 +128,7 @@ public class FluidStackSizeRenderer
 		format.setDecimalFormatSymbols( symbols );
 		format.setRoundingMode( RoundingMode.DOWN );
 
-		return format.format( originalSize / 1000f );
+		return format.format( originalSize / 1000d );
 	}
 
 }
