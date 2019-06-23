@@ -242,7 +242,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 			boolean capture = false;
 
 			// This is the middle point of the entities BB, which is better suited for comparisons that don't rely on it "touching" the plane
-			double posYMiddle = (entity.getBoundingBox().minY + entity.getBoundingBox().maxY) / 2.0D;
+			double posYMiddle = (entity.boundingBox.minY + entity.boundingBox.maxY) / 2.0D;
 
 			switch( this.getSide() )
 			{
