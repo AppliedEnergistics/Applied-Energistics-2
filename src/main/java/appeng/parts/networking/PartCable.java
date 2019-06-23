@@ -471,27 +471,28 @@ public class PartCable extends AEBasePart implements IPartCable
 		boolean[] writeSide = new boolean[ForgeDirection.VALID_DIRECTIONS.length];
 		int[] channelsPerSide = new int[ForgeDirection.VALID_DIRECTIONS.length];
 
+		for( final ForgeDirection thisSide : ForgeDirection.VALID_DIRECTIONS )
+		{
+			final IPart part = this.getHost().getPart( thisSide );
+			if( part != null )
+			{
+				writeSide[thisSide.ordinal()] = true;
+				int channels = 0;
+				if( part.getGridNode() != null )
+				{
+					final IReadOnlyCollection<IGridConnection> set = part.getGridNode().getConnections();
+					for( final IGridConnection gc : set )
+					{
+						channels = Math.max( channels, gc.getUsedChannels() );
+					}
+				}
+				channelsPerSide[thisSide.ordinal()] = channels;
+			}
+		}
+
 		IGridNode n = this.getGridNode();
 		if( n != null )
 		{
-			for( final ForgeDirection thisSide : ForgeDirection.VALID_DIRECTIONS )
-			{
-				final IPart part = this.getHost().getPart( thisSide );
-				if( part != null )
-				{
-					if( part.getGridNode() != null )
-					{
-						writeSide[thisSide.ordinal()] = true;
-
-						final IReadOnlyCollection<IGridConnection> set = part.getGridNode().getConnections();
-						for( final IGridConnection gc : set )
-						{
-							channelsPerSide[thisSide.ordinal()] = gc.getUsedChannels();
-						}
-					}
-				}
-			}
-
 			for( final IGridConnection gc : n.getConnections() )
 			{
 				final ForgeDirection side = gc.getDirection( n );
