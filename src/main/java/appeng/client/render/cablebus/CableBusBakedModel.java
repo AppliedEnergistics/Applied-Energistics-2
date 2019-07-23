@@ -172,7 +172,7 @@ public class CableBusBakedModel implements IBakedModel
 
 		final AECableType secondType = sides.get( firstSide.getOpposite() );
 
-		return firstType == secondType;
+		return firstType == secondType && cableType == firstType && cableType == secondType;
 	}
 
 	private void addCableQuads( CableBusRenderState renderState, List<BakedQuad> quadsOut )
