@@ -60,30 +60,20 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 	{
 		final ItemStack currentItem = this.slot < 0 ? this.getPlayerInv().getCurrentItem() : this.getPlayerInv().getStackInSlot( this.slot );
 
-		if( this.civ != null )
-		{
-			if( currentItem != this.civ.getItemStack() )
-			{
-				if( !currentItem.isEmpty() )
-				{
-					if( ItemStack.areItemsEqual( this.civ.getItemStack(), currentItem ) )
-					{
-						this.getPlayerInv().setInventorySlotContents( this.getPlayerInv().currentItem, this.civ.getItemStack() );
-					}
-					else
-					{
-						this.setValidContainer( false );
-					}
-				}
-				else
-				{
-					this.setValidContainer( false );
-				}
-			}
-		}
-		else
+		if( this.civ == null || currentItem.isEmpty() )
 		{
 			this.setValidContainer( false );
+		}
+		else if( this.civ != null && !this.civ.getItemStack().isEmpty() && currentItem != this.civ.getItemStack() )
+		{
+			if( ItemStack.areItemsEqual( this.civ.getItemStack(), currentItem ) )
+			{
+				this.getPlayerInv().setInventorySlotContents( this.getPlayerInv().currentItem, this.civ.getItemStack() );
+			}
+			else
+			{
+				this.setValidContainer( false );
+			}
 		}
 
 		// drain 1 ae t
