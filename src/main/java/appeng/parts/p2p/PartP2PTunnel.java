@@ -27,7 +27,12 @@ import appeng.api.config.TunnelType;
 import appeng.api.definitions.IParts;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
-import appeng.api.parts.*;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartCollisionHelper;
+import appeng.api.parts.IPartItem;
+import appeng.api.parts.IPartRenderHelper;
+import appeng.api.parts.PartItemStack;
+import appeng.api.util.AEColor;
 import appeng.client.texture.CableBusTextures;
 import appeng.core.AEConfig;
 import appeng.me.GridAccessException;
@@ -75,7 +80,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		return null;
 	}
 
-	T getInput()
+	public T getInput()
 	{
 		if( this.getFrequency() == 0 )
 		{
@@ -97,7 +102,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		return null;
 	}
 
-	TunnelCollection<T> getOutputs() throws GridAccessException
+	public TunnelCollection<T> getOutputs() throws GridAccessException
 	{
 		if( this.getProxy().isActive() )
 		{
@@ -116,7 +121,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
 	@Override
 	@SideOnly( Side.CLIENT )
-	public void renderInventory( final IPartRenderHelper rh, final RenderBlocks renderer )
+	public void renderInventory(final IPartRenderHelper rh, final RenderBlocks renderer)
 	{
 		rh.setTexture( this.getTypeTexture() );
 
