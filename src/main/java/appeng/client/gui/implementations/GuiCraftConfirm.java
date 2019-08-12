@@ -243,6 +243,24 @@ public class GuiCraftConfirm extends AEBaseGui
 
 		final int offY = 23;
 
+		// Sort the list of items so that missing (and partially-missing) items appear first.
+		this.visual.sort(new Comparator<IAEItemStack>() {
+			@Override
+			public int compare(IAEItemStack lhs, IAEItemStack rhs) {
+				IAEItemStack lhsMissing = GuiCraftConfirm.this.missing.findPrecise(lhs);
+				IAEItemStack rhsMissing = GuiCraftConfirm.this.missing.findPrecise(rhs);
+				boolean isLhsMissing = lhsMissing != null && lhsMissing.getStackSize() > 0;
+				boolean isRhsMissing = rhsMissing != null && rhsMissing.getStackSize() > 0;
+
+				if (isLhsMissing && !isRhsMissing) {
+					return -1;
+				} else if (isRhsMissing && !isLhsMissing) {
+					return 1;
+				} else {
+					return (int) (lhs.getStackSize() - rhs.getStackSize());
+				}
+			}
+		});
 		for( int z = viewStart; z < Math.min( viewEnd, this.visual.size() ); z++ )
 		{
 			final IAEItemStack refStack = this.visual.get( z );// repo.getReferenceItem( z );
