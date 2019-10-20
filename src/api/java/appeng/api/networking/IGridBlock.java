@@ -123,7 +123,7 @@ public interface IGridBlock
 	/**
 	 * Determines what item stack is used to render this node in the GUI.
 	 *
-	 * @return the render item stack to use to render this node, null is valid, and will not show this node.
+	 * @return the render item stack to use to render this node. Returning an empty ItemStack will not show this node.
 	 */
 	@Nonnull
 	ItemStack getMachineRepresentation();
