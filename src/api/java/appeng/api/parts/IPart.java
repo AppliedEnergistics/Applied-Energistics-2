@@ -291,6 +291,9 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 
 	/**
 	 * Used to determine which parts can be placed on what cables.
+	 * 
+	 * Dense cables are not allowed for functional (getGridNode returns a node) parts.
+	 * Doing so will result in crashes.
 	 *
 	 * @param what placed part
 	 *
