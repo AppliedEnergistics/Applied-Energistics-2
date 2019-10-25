@@ -128,7 +128,7 @@ Here are a few things to keep in mind that will help get your PR approved.
   * HTTPS `git clone https://github.com/<your username>/Applied-Energistics-2.git`
 3. Change code base
 4. Add changes to git `git add -A`
-5. Commit changes to your clone `git commit -m "<summery of made changes>"`
+5. Commit changes to your clone `git commit -m "<summary of made changes>"`
 6. Push to your fork `git push`
 7. Create a Pull-Request on GitHub
 8. Wait for review
