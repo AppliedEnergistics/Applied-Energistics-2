@@ -46,6 +46,14 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 		this.itemDamage = itemStack.getItemDamage();
 	}
 
+	public AESharedItemStack( final ItemStack itemStack, final int itemDamage )
+	{
+		this.itemStack = itemStack;
+		this.itemId = Item.getIdFromItem( itemStack.getItem() );
+		this.itemDamage = itemDamage; // setItemDamage may fail, so don't read from itemStack.
+	}
+
+
 	Bounds getBounds( final FuzzyMode fuzzy, final boolean ignoreMeta )
 	{
 		return new Bounds( this.itemStack, fuzzy, ignoreMeta );
@@ -181,12 +189,14 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 
 		private AESharedItemStack makeLowerBound( final ItemStack itemStack, final NBTTagCompound tag, final FuzzyMode fuzzy, final boolean ignoreMeta )
 		{
-			final ItemStack newDef = itemStack.copy();
+			NBTTagCompound newTag = tag;
+			ItemStack newDef = itemStack.copy();
+			int newItemDamage = itemStack.getItemDamage();
 
 			if( ignoreMeta )
 			{
-				newDef.setItemDamage( MIN_DAMAGE_VALUE );
-				newDef.setTagCompound( tag );
+				newTag = tag;
+				newItemDamage = MIN_DAMAGE_VALUE;
 			}
 			else
 			{
@@ -194,40 +204,45 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 				{
 					if( fuzzy == FuzzyMode.IGNORE_ALL )
 					{
-						newDef.setItemDamage( MIN_DAMAGE_VALUE );
+						newItemDamage = MIN_DAMAGE_VALUE;
 					}
 					else if( fuzzy == FuzzyMode.PERCENT_99 )
 					{
 						if( itemStack.getItemDamage() == MIN_DAMAGE_VALUE )
 						{
-							newDef.setItemDamage( MIN_DAMAGE_VALUE );
+							newItemDamage = MIN_DAMAGE_VALUE;
 						}
 						else
 						{
-							newDef.setItemDamage( MIN_DAMAGE_VALUE + 1 );
+							newItemDamage = MIN_DAMAGE_VALUE + 1;
 						}
 					}
 					else
 					{
 						final int breakpoint = fuzzy.calculateBreakPoint( itemStack.getMaxDamage() );
 						final int damage = breakpoint <= itemStack.getItemDamage() ? breakpoint : 0;
-						newDef.setItemDamage( damage );
+						newItemDamage = damage;
 					}
 				}
-				newDef.setTagCompound( LOW_TAG );
+				newTag = LOW_TAG;
 			}
 
-			return new AESharedItemStack( newDef );
+			newDef.setItemDamage( newItemDamage );
+			newDef.setTagCompound( newTag );
+
+			return new AESharedItemStack( newDef, newItemDamage );
 		}
 
 		private AESharedItemStack makeUpperBound( final ItemStack itemStack, final NBTTagCompound tag, final FuzzyMode fuzzy, final boolean ignoreMeta )
 		{
-			final ItemStack newDef = itemStack.copy();
+			NBTTagCompound newTag = tag;
+			ItemStack newDef = itemStack.copy();
+			int newItemDamage = itemStack.getItemDamage();
 
 			if( ignoreMeta )
 			{
-				newDef.setItemDamage( MAX_DAMAGE_VALUE );
-				newDef.setTagCompound( tag );
+				newItemDamage = MAX_DAMAGE_VALUE;
+				newTag = tag;
 			}
 			else
 			{
@@ -235,30 +250,33 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 				{
 					if( fuzzy == FuzzyMode.IGNORE_ALL )
 					{
-						newDef.setItemDamage( itemStack.getMaxDamage() + 1 );
+						newItemDamage = itemStack.getMaxDamage() + 1;
 					}
 					else if( fuzzy == FuzzyMode.PERCENT_99 )
 					{
 						if( itemStack.getItemDamage() == MIN_DAMAGE_VALUE )
 						{
-							newDef.setItemDamage( MIN_DAMAGE_VALUE );
+							newItemDamage = MIN_DAMAGE_VALUE;
 						}
 						else
 						{
-							newDef.setItemDamage( itemStack.getMaxDamage() + 1 );
+							newItemDamage = itemStack.getMaxDamage() + 1;
 						}
 					}
 					else
 					{
 						final int breakpoint = fuzzy.calculateBreakPoint( itemStack.getMaxDamage() );
 						final int damage = itemStack.getItemDamage() < breakpoint ? breakpoint - 1 : itemStack.getMaxDamage() + 1;
-						newDef.setItemDamage( damage );
+						newItemDamage = damage;
 					}
 				}
-				newDef.setTagCompound( HIGH_TAG );
+				newTag = HIGH_TAG;
 			}
 
-			return new AESharedItemStack( newDef );
+			newDef.setItemDamage( newItemDamage );
+			newDef.setTagCompound( newTag );
+
+			return new AESharedItemStack( newDef, newItemDamage );
 		}
 
 	}
