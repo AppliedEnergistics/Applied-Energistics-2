@@ -205,7 +205,7 @@ final class Registration
 		{
 			if(DimensionManager.isDimensionRegistered(this.storageDimensionID))
 			{
-				throw new IllegalStateException("Our Dimension was taken by " + DimensionManager.getById(this.storageDimensionID).getName() ,iaexc);
+				throw new IllegalStateException("Our Dimension was taken by " + DimensionType.getById(this.storageDimensionID).getName() ,iaexc);
 			}
 			throw iaexc;
 		}
