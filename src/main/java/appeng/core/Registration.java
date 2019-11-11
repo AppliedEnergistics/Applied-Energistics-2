@@ -197,8 +197,18 @@ final class Registration
 			config.save();
 		}
 		this.storageDimensionID = config.getStorageDimensionID();
-
-		DimensionManager.registerDimension( this.storageDimensionID, this.storageDimensionType );
+		try
+		{
+			DimensionManager.registerDimension( this.storageDimensionID, this.storageDimensionType );
+		}
+		catch (IllegalArgumentException iaexc)
+		{
+			if(DimensionManager.isDimensionRegistered(this.storageDimensionID))
+			{
+				throw new IllegalStateException("Our Dimension was taken by " + DimensionManager.getById(this.storageDimensionID).getName() ,iaexc);
+			}
+			throw iaexc;
+		}
 	}
 
 	private void registerCraftHandlers( final IRecipeHandlerRegistry registry )
