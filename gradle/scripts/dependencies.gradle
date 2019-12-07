@@ -21,10 +21,11 @@
 
 repositories {
     mavenLocal()
-    maven {
-        name "ChickenBones"
-        url "http://chickenbones.net/maven/"
-    }
+//    ChickenBones' maven repo is unavailable now...
+//    maven {
+//        name "ChickenBones"
+//        url "http://chickenbones.net/maven/"
+//    }
 
     maven {
         name "Mobius"
@@ -109,11 +110,14 @@ dependencies {
 //    mods name: 'ThermalExpansion', version: "[${minecraft_version}]${texpansion_version}-dev", ext: 'jar'
 //    mods name: 'ThermalFoundation', version: "[${minecraft_version}]${tfoundation_version}-dev", ext: 'jar'
 
-    // I will not run minecraft with those mods. I don't know why......
-    compileOnly "codechicken:ForgeMultipart:${minecraft_version}-${fmp_version}:dev"
-    compileOnly "codechicken:CodeChickenLib:${minecraft_version}-${code_chicken_lib_version}:dev"
-    compileOnly "codechicken:CodeChickenCore:${minecraft_version}-${code_chicken_core_version}:dev"
-    compileOnly "codechicken:NotEnoughItems:${minecraft_version}-${nei_version}:dev"
+//    compileOnly "codechicken:ForgeMultipart:${minecraft_version}-${fmp_version}:dev"
+//    compileOnly "codechicken:CodeChickenLib:${minecraft_version}-${code_chicken_lib_version}:dev"
+//    compileOnly "codechicken:CodeChickenCore:${minecraft_version}-${code_chicken_core_version}:dev"
+//    compileOnly "codechicken:NotEnoughItems:${minecraft_version}-${nei_version}:dev"
+    compileOnly files("lib/ForgeMultipart-${minecraft_version}-${fmp_version}-dev.jar")
+    compileOnly files("lib/CodeChickenLib-${minecraft_version}-${code_chicken_lib_version}-dev.jar")
+    compileOnly files("lib/CodeChickenCore-${minecraft_version}-${code_chicken_core_version}-dev.jar")
+    compileOnly files("lib/NotEnoughItems-${minecraft_version}-${nei_version}-dev.jar")
 
     compile files("lib/buildcraft-${bc_version}-dev.jar")
     compile files("lib/PneumaticCraft-${minecraft_version}-${pneumaticcraft_version}-api.jar")
