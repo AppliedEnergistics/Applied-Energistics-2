@@ -48,6 +48,7 @@ import appeng.util.prioitylist.FuzzyPriorityList;
 import appeng.util.prioitylist.PrecisePriorityList;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -61,10 +62,9 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +78,7 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 	private int priority = 0;
 	private boolean wasActive = false;
 	private boolean blocked = false;
+
 	public PartFormationPlane( final ItemStack is )
 	{
 		super( is );
@@ -453,35 +454,45 @@ public class PartFormationPlane extends PartUpgradeable implements ICellContaine
 					{
 						boolean Worked = false;
 
-						if( side.offsetX == 0 && side.offsetZ == 0 )
+						if( ForgeEventFactory.onItemUseStart( player, is, 1 ) >= 0 )
 						{
-							Worked = i.onItemUse( is, player, w, x + side.offsetX, y + side.offsetY, z + side.offsetZ, side.getOpposite().ordinal(), side.offsetX, side.offsetY, side.offsetZ );
-						}
+							if( side.offsetX == 0 && side.offsetZ == 0 )
+							{
+								Worked = i.onItemUse( is, player, w, x + side.offsetX, y + side.offsetY, z + side.offsetZ, side.getOpposite().ordinal(), side.offsetX, side.offsetY, side.offsetZ );
+							}
 
-						if( !Worked && side.offsetX == 0 && side.offsetZ == 0 )
-						{
-							Worked = i.onItemUse( is, player, w, x - side.offsetX, y - side.offsetY, z - side.offsetZ, side.ordinal(), side.offsetX, side.offsetY, side.offsetZ );
-						}
+							if( !Worked && side.offsetX == 0 && side.offsetZ == 0 )
+							{
+								Worked = i.onItemUse( is, player, w, x - side.offsetX, y - side.offsetY, z - side.offsetZ, side.ordinal(), side.offsetX, side.offsetY, side.offsetZ );
+							}
 
-						if( !Worked && side.offsetY == 0 )
-						{
-							Worked = i.onItemUse( is, player, w, x, y - 1, z, ForgeDirection.UP.ordinal(), side.offsetX, side.offsetY, side.offsetZ );
-						}
+							if( !Worked && side.offsetY == 0 )
+							{
+								Worked = i.onItemUse( is, player, w, x, y - 1, z, ForgeDirection.UP.ordinal(), side.offsetX, side.offsetY, side.offsetZ );
+							}
 
-						if( !Worked )
-						{
-							i.onItemUse( is, player, w, x, y, z, side.getOpposite().ordinal(), side.offsetX, side.offsetY, side.offsetZ );
-						}
+							if( !Worked )
+							{
+								i.onItemUse( is, player, w, x, y, z, side.getOpposite().ordinal(), side.offsetX, side.offsetY, side.offsetZ );
+							}
 
-						maxStorage -= is.stackSize;
+							maxStorage -= is.stackSize;
+						}
 					}
 					else
 					{
+						Block block = null;
 						player.setCurrentItemOrArmor( 0, is.copy() );
-						BlockSnapshot blockSnapshot = new BlockSnapshot( w, x, y, z, ( (ItemBlock) i ).field_150939_a, i.getMetadata( is.getItemDamage() ) );
-						BlockEvent.PlaceEvent event = new BlockEvent.PlaceEvent( blockSnapshot, w.getBlock( x, y, z ), owner == null ? player : owner );
-						MinecraftForge.EVENT_BUS.post( event );
-						if( !event.isCanceled() )
+						if( i instanceof ItemBlock )
+							block = ( (ItemBlock) i ).field_150939_a;
+						if( i instanceof IPartItem )
+							block = AEApi.instance().definitions().blocks().multiPart().maybeBlock().orNull();
+						if( block == null ||
+								!ForgeEventFactory.onPlayerBlockPlace(
+										owner == null ? player : owner,
+										new BlockSnapshot( w, x, y, z, block, i.getMetadata( is.getItemDamage() ) ),
+										side.getOpposite()
+								).isCanceled() )
 						{
 							i.onItemUse( is, player, w, x, y, z, side.getOpposite().ordinal(), side.offsetX, side.offsetY, side.offsetZ );
 							maxStorage -= is.stackSize;
