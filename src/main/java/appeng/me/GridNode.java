@@ -55,6 +55,7 @@ import appeng.api.util.IReadOnlyCollection;
 import appeng.core.AELog;
 import appeng.core.worlddata.WorldData;
 import appeng.hooks.TickHandler;
+import appeng.me.cache.CraftingGridCache;
 import appeng.me.pathfinding.IPathItem;
 import appeng.util.IWorldCallable;
 import appeng.util.ReadOnlyCollection;
@@ -164,6 +165,8 @@ public class GridNode implements IGridNode, IPathItem
 	{
 		final Object tracker = new Object();
 
+		CraftingGridCache.pauseRebuilds();
+
 		Deque<GridNode> nextRun = new ArrayDeque<>();
 		nextRun.add( this );
 
@@ -203,6 +206,7 @@ public class GridNode implements IGridNode, IPathItem
 				}
 			}
 		}
+		CraftingGridCache.unpauseRebuilds();
 	}
 
 	@Override

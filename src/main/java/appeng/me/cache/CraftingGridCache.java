@@ -114,7 +114,8 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	private IStorageGrid storageGrid;
 	private IEnergyGrid energyGrid;
 	private boolean updateList = false;
-	private boolean updatePatterns = false;
+	private static int pauseRebuilds = 0;
+	private static Set<CraftingGridCache> rebuildNeeded = new HashSet<>();
 
 	public CraftingGridCache( final IGrid grid )
 	{
@@ -137,12 +138,6 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		{
 			this.updateList = false;
 			this.updateCPUClusters();
-		}
-
-		if( this.updatePatterns )
-		{
-			this.updatePatterns = false;
-			this.updatePatterns();
 		}
 
 		final Iterator<CraftingLinkNexus> craftingLinkIterator = this.craftingLinks.values().iterator();
@@ -192,7 +187,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		if( machine instanceof ICraftingProvider )
 		{
 			this.craftingProviders.remove( machine );
-			this.updatePatterns = true;
+			this.updatePatterns();
 		}
 	}
 
@@ -226,7 +221,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		if( machine instanceof ICraftingProvider )
 		{
 			this.craftingProviders.add( (ICraftingProvider) machine );
-			this.updatePatterns = true;
+			this.updatePatterns();
 		}
 	}
 
@@ -247,8 +242,34 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		// nothing!
 	}
 
+	public static void pauseRebuilds()
+	{
+		pauseRebuilds++;
+	}
+
+	public static void unpauseRebuilds()
+	{
+		pauseRebuilds--;
+		if (pauseRebuilds == 0 && rebuildNeeded.size() > 0)
+		{
+			ImmutableSet<CraftingGridCache> needed = ImmutableSet.copyOf(rebuildNeeded);
+			rebuildNeeded.clear();
+			for ( CraftingGridCache cache: needed )
+			{
+				cache.updatePatterns();
+			}
+		}
+	}
+
 	private void updatePatterns()
 	{
+		// coalesce change events during a grid traversal to a single rebuild
+		if (pauseRebuilds != 0)
+		{
+			rebuildNeeded.add(this);
+			return;
+		}
+
 		final Map<IAEItemStack, ImmutableList<ICraftingPatternDetails>> oldItems = this.craftableItems;
 
 		// erase list.
@@ -344,7 +365,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	@MENetworkEventSubscribe
 	public void updateCPUClusters( final MENetworkCraftingPatternChange c )
 	{
-		this.updatePatterns = true;
+		this.updatePatterns();
 	}
 
 	@Override
