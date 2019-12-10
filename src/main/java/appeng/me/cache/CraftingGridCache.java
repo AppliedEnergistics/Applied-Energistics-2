@@ -114,6 +114,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	private IStorageGrid storageGrid;
 	private IEnergyGrid energyGrid;
 	private boolean updateList = false;
+	private boolean updatePatterns = false;
 
 	public CraftingGridCache( final IGrid grid )
 	{
@@ -136,6 +137,12 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		{
 			this.updateList = false;
 			this.updateCPUClusters();
+		}
+
+		if( this.updatePatterns )
+		{
+			this.updatePatterns = false;
+			this.updatePatterns();
 		}
 
 		final Iterator<CraftingLinkNexus> craftingLinkIterator = this.craftingLinks.values().iterator();
@@ -185,7 +192,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		if( machine instanceof ICraftingProvider )
 		{
 			this.craftingProviders.remove( machine );
-			this.updatePatterns();
+			this.updatePatterns = true;
 		}
 	}
 
@@ -219,7 +226,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		if( machine instanceof ICraftingProvider )
 		{
 			this.craftingProviders.add( (ICraftingProvider) machine );
-			this.updatePatterns();
+			this.updatePatterns = true;
 		}
 	}
 
@@ -337,7 +344,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	@MENetworkEventSubscribe
 	public void updateCPUClusters( final MENetworkCraftingPatternChange c )
 	{
-		this.updatePatterns();
+		this.updatePatterns = true;
 	}
 
 	@Override
