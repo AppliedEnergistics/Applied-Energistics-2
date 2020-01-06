@@ -258,6 +258,7 @@ gui.tooltips.appliedenergistics2.StoredCraftable=Gespeichert / Herstellbar
 gui.tooltips.appliedenergistics2.View=Ansicht
 gui.tooltips.appliedenergistics2.RedstoneMode=Redstone-Modus
 gui.tooltips.appliedenergistics2.OperationMode=Betriebsart
+gui.tooltips.appliedenergistics2.ItemID=Item-ID
 gui.tooltips.appliedenergistics2.NumberOfItems=Nummer der Items
 gui.tooltips.appliedenergistics2.ItemName=Item-Name
 gui.tooltips.appliedenergistics2.PowerUnits=Energieeinheiten

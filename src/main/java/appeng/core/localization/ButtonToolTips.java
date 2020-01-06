@@ -77,6 +77,7 @@ public enum ButtonToolTips
 	SearchMode,
 	ItemName,
 	NumberOfItems,
+	ItemID,
 	PartitionStorageHint,
 
 	ClearSettings,

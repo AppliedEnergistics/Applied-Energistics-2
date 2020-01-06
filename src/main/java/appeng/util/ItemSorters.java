@@ -26,12 +26,28 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.integration.Integrations;
 import appeng.integration.abstraction.IInvTweaks;
 import appeng.util.item.AEItemStack;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 
 
 public class ItemSorters
 {
 
 	private static SortDir Direction = SortDir.ASCENDING;
+
+	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_ID = ( o1, o2 ) -> {
+		int cmp = Integer.compare( Item.getIdFromItem(o1.getItem()), Item.getIdFromItem(o2.getItem()) );
+
+		if( cmp == 0 ) {
+			if( o1.getItem() instanceof ItemBlock ) {
+				cmp = Integer.compare( o1.getDefinition().getMetadata(), o2.getDefinition().getMetadata()) ;
+			} else {
+				cmp = Integer.compare( o1.getDefinition().getItemDamage(), o2.getDefinition().getItemDamage() );
+			}
+		}
+
+		return applyDirection(cmp);
+	};
 
 	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_NAME = ( o1, o2 ) ->
 	{

@@ -222,6 +222,9 @@ public class ItemRepo
 		else if( SortBy == SortOrder.INVTWEAKS )
 		{
 			Collections.sort( this.view, ItemSorters.CONFIG_BASED_SORT_BY_INV_TWEAKS );
+		} else if( SortBy == SortOrder.ID )
+		{
+			Collections.sort( this.view, ItemSorters.CONFIG_BASED_SORT_BY_ID);
 		}
 		else
 		{
