@@ -62,7 +62,7 @@ public class GrinderRecipes
 			final ItemStack s2 = CTModule.toStack( secondary2Output );
 			if( !s2.isEmpty() )
 			{
-				builder.withFirstOptional( s2, secondary2Chance == null ? 1.0f : secondary2Chance );
+				builder.withSecondOptional( s2, secondary2Chance == null ? 1.0f : secondary2Chance );
 			}
 			CTModule.MODIFICATIONS.add( new Add( builder.build() ) );
 		}
