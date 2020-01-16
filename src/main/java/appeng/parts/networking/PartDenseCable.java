@@ -76,6 +76,11 @@ public abstract class PartDenseCable extends PartCable
 
 		for( final AEPartLocation of : this.getConnections() )
 		{
+			if ( of == AEPartLocation.INTERNAL )
+			{
+				continue;
+			}
+
 			if( this.isDense( of ) )
 			{
 				switch( of )
