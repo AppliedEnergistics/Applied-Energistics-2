@@ -38,12 +38,14 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 	private final ItemStack itemStack;
 	private final int itemId;
 	private final int itemDamage;
+	private final int hashCode;
 
 	public AESharedItemStack( final ItemStack itemStack )
 	{
 		this.itemStack = itemStack;
 		this.itemId = Item.getIdFromItem( itemStack.getItem() );
 		this.itemDamage = itemStack.getItemDamage();
+		this.hashCode = this.makeHashCode();
 	}
 
 	Bounds getBounds( final FuzzyMode fuzzy, final boolean ignoreMeta )
@@ -69,7 +71,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash( this.itemId, this.itemDamage, this.itemStack.hasTagCompound() ? this.itemStack.getTagCompound() : 0 );
+		return this.hashCode;
 	}
 
 	@Override
@@ -142,6 +144,11 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 			return 1;
 		}
 		return System.identityHashCode( this.itemStack.getTagCompound() ) - System.identityHashCode( b.getTagCompound() );
+	}
+
+	private int makeHashCode()
+	{
+		return Objects.hash( this.itemId, this.itemDamage, this.itemStack.hasTagCompound() ? this.itemStack.getTagCompound() : 0 );
 	}
 
 	/**
