@@ -179,25 +179,29 @@ public class PartConversionMonitor extends AbstractPartMonitor
 			final IEnergySource energy = this.getProxy().getEnergy();
 			final IMEMonitor<IAEItemStack> cell = this.getProxy()
 					.getStorage()
-					.getInventory(
-							AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+					.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+
 			if( allItems )
 			{
-				final IAEItemStack input = this.getDisplayed().copy();
-				IItemHandler inv = new PlayerMainInvWrapper( player.inventory );
-
-				for( int x = 0; x < inv.getSlots(); x++ )
+				if( this.getDisplayed() != null )
 				{
-					final ItemStack targetStack = inv.getStackInSlot( x );
-					if( input.equals( targetStack ) )
+					final IAEItemStack input = this.getDisplayed().copy();
+					IItemHandler inv = new PlayerMainInvWrapper( player.inventory );
+
+					for( int x = 0; x < inv.getSlots(); x++ )
 					{
-						final ItemStack canExtract = inv.extractItem( x, targetStack.getCount(), true );
-						if( !canExtract.isEmpty() )
+						final ItemStack targetStack = inv.getStackInSlot( x );
+						if( input.equals( targetStack ) )
 						{
-							input.setStackSize( canExtract.getCount() );
-							final IAEItemStack failedToInsert = Platform.poweredInsert( energy, cell, input, new PlayerSource( player, this ) );
-							inv.extractItem( x, failedToInsert == null ? canExtract.getCount() : canExtract.getCount() - (int) failedToInsert.getStackSize(),
-									false );
+							final ItemStack canExtract = inv.extractItem( x, targetStack.getCount(), true );
+							if( !canExtract.isEmpty() )
+							{
+								input.setStackSize( canExtract.getCount() );
+								final IAEItemStack failedToInsert = Platform.poweredInsert( energy, cell, input, new PlayerSource( player, this ) );
+								inv.extractItem( x,
+										failedToInsert == null ? canExtract.getCount() : canExtract.getCount() - (int) failedToInsert.getStackSize(),
+										false );
+							}
 						}
 					}
 				}
