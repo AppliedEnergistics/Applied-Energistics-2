@@ -203,7 +203,7 @@ public class JEIPlugin implements IModPlugin
 	{
 		Optional<Item> itemFacade = definitions.items().facade().maybeItem();
 		Optional<ItemStack> cableAnchor = definitions.parts().cableAnchor().maybeStack( 1 );
-		if( itemFacade.isPresent() && cableAnchor.isPresent() )
+		if( itemFacade.isPresent() && cableAnchor.isPresent() && AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_FACADE_CRAFTING ) )
 		{
 			registry.addRecipeRegistryPlugin( new FacadeRegistryPlugin( (ItemFacade) itemFacade.get(), cableAnchor.get() ) );
 		}
