@@ -114,6 +114,11 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 			return null;
 		}
 
+		// Check if the gathered fluid stack is actually equal
+		if ( !gathered.isFluidEqual(requestedFluidStack) ) {
+			return null;
+		}
+
 		if( mode == Actionable.MODULATE )
 		{
 			try
