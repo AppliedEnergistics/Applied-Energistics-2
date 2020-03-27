@@ -12,4 +12,3 @@ jobs:
         with:
           github-token: ${{ github.token }}
           issue-lock-inactive-days: '365'
-          process-only: 'issues'
