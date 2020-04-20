@@ -175,7 +175,7 @@ public class BasicCellInventory<T extends IAEStack<T>> extends AbstractCellInven
 
 		if( this.canHoldNewItem() ) // room for new type, and for at least one item!
 		{
-			final int remainingItemCount = (int) this.getRemainingItemCount() - this.getBytesPerType() * this.itemsPerByte;
+			final long remainingItemCount = this.getRemainingItemCount() - (long)this.getBytesPerType() * (long)this.itemsPerByte;
 			if( remainingItemCount > 0 )
 			{
 				if( input.getStackSize() > remainingItemCount )
