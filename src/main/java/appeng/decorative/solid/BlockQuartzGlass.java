@@ -105,7 +105,7 @@ public class BlockQuartzGlass extends AEBaseBlock
 			}
 		}
 
-		return w.getBlockState( pos ).shouldSideBeRendered( w, adjacentPos, side );
+		return super.shouldSideBeRendered( state, w, pos, side );
 	}
 
 	@Override
