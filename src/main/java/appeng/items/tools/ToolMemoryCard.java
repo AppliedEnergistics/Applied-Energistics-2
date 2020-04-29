@@ -183,23 +183,6 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	}
 
 	@Override
-	public EnumActionResult onItemUse( final EntityPlayer player, final World w, final BlockPos pos, final EnumHand hand, final EnumFacing side, final float hx, final float hy, final float hz )
-	{
-		if( player.isSneaking() )
-		{
-			if( !w.isRemote )
-			{
-				this.clearCard( player, w, hand );
-			}
-			return EnumActionResult.SUCCESS;
-		}
-		else
-		{
-			return super.onItemUse( player, w, pos, hand, side, hx, hy, hz );
-		}
-	}
-
-	@Override
 	public ActionResult<ItemStack> onItemRightClick( World w, EntityPlayer player, EnumHand hand )
 	{
 		if( player.isSneaking() )
