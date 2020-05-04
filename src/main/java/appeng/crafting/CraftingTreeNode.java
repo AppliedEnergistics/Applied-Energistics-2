@@ -147,7 +147,7 @@ public class CraftingTreeNode
 
 			for( IAEItemStack fuzz : itemList )
 			{
-				if( this.parent.details.isValidItemForSlot( this.getSlot(), fuzz.createItemStack(), this.world ) )
+				if( this.parent.details.isValidItemForSlot( this.getSlot(), fuzz.copy().setStackSize( 1 ).createItemStack(), this.world ) )
 				{
 					fuzz = fuzz.copy();
 					fuzz.setStackSize( l );
