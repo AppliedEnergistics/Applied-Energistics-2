@@ -499,52 +499,44 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			{
 				boolean found = false;
 
-				for( IAEItemStack substStack : details.getSubstitutionsForIngredient(g))
+				// sometimes a precise item search gives the correct result while fuzzy search does not find anything
+				// try precise search first
+				IAEItemStack preciseItem = this.inventory.getItemList().findPrecise(g);
+				if(preciseItem != null)
 				{
-					// sometimes a precise item search gives the correct result while fuzzy search does not find anything
-					// try precise search first
-					IAEItemStack preciseItem = this.inventory.getItemList().findPrecise(substStack);
-					if(preciseItem != null)
-					{
-						preciseItem = preciseItem.copy();
-						preciseItem.setStackSize( g.getStackSize() );
-						final IAEItemStack ais = this.inventory.extractItems( preciseItem, Actionable.SIMULATE, this.machineSrc );
-						final ItemStack is = ais == null ? ItemStack.EMPTY : ais.createItemStack();
+					preciseItem = preciseItem.copy();
+					preciseItem.setStackSize( g.getStackSize() );
+					final IAEItemStack ais = this.inventory.extractItems( preciseItem, Actionable.SIMULATE, this.machineSrc );
+					final ItemStack is = ais == null ? ItemStack.EMPTY : ais.createItemStack();
 
-						if( !is.isEmpty() && is.getCount() == g.getStackSize() )
-						{
-							found = true;
-							break;
-						}
-						else if( !is.isEmpty() )
-						{
-							g = g.copy();
-							g.decStackSize( is.getCount() );
-						}
+					if( !is.isEmpty() && is.getCount() == g.getStackSize() )
+					{
+						return true;
 					}
-
-					// then try fuzzy search
-					for( IAEItemStack fuzz : this.inventory.getItemList().findFuzzy( substStack, FuzzyMode.IGNORE_ALL ) )
+					else if( !is.isEmpty() )
 					{
-						fuzz = fuzz.copy();
-						fuzz.setStackSize( g.getStackSize() );
-						final IAEItemStack ais = this.inventory.extractItems( fuzz, Actionable.SIMULATE, this.machineSrc );
-						final ItemStack is = ais == null ? ItemStack.EMPTY : ais.createItemStack();
-
-						if( !is.isEmpty() && is.getCount() == g.getStackSize() )
-						{
-							found = true;
-							break;
-						}
-						else if( !is.isEmpty() )
-						{
-							g = g.copy();
-							g.decStackSize( is.getCount() );
-						}
+						g = g.copy();
+						g.decStackSize( is.getCount() );
 					}
-					if( found )
+				}
+
+				// then try fuzzy search
+				for( IAEItemStack fuzz : this.inventory.getItemList().findFuzzy( g, FuzzyMode.IGNORE_ALL ) )
+				{
+					fuzz = fuzz.copy();
+					fuzz.setStackSize( g.getStackSize() );
+					final IAEItemStack ais = this.inventory.extractItems( fuzz, Actionable.SIMULATE, this.machineSrc );
+					final ItemStack is = ais == null ? ItemStack.EMPTY : ais.createItemStack();
+
+					if( !is.isEmpty() && is.getCount() == g.getStackSize() )
 					{
+						found = true;
 						break;
+					}
+					else if( !is.isEmpty() )
+					{
+						g = g.copy();
+						g.decStackSize( is.getCount() );
 					}
 				}
 

@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -65,7 +64,6 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	private final boolean canSubstitute;
 	private final Set<TestLookup> failCache = new HashSet<>();
 	private final Set<TestLookup> passCache = new HashSet<>();
-	private final Map<IAEItemStack, Set<IAEItemStack>> ingredientSubstitutionCache = new HashMap<>();
 	private final IAEItemStack pattern;
 	private int priority = 0;
 
@@ -93,7 +91,6 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		{
 			NBTTagCompound ingredient = inTag.getCompoundTagAt( x );
 			final ItemStack gs = new ItemStack( ingredient );
-			IAEItemStack aeItemStack = AEItemStack.fromItemStack(gs);
 
 			if( !ingredient.hasNoTags() && gs.isEmpty() )
 			{
@@ -101,13 +98,6 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			}
 
 			this.crafting.setInventorySlotContents( x, gs );
-
-
-			if(aeItemStack != null && !ingredientSubstitutionCache.containsKey(aeItemStack))
-			{
-				ingredientSubstitutionCache.put(aeItemStack, new HashSet<>(1));
-				ingredientSubstitutionCache.get(aeItemStack).add(aeItemStack.copy());
-			}
 
 			if( !gs.isEmpty() && ( !this.isCrafting || !gs.hasTagCompound() ) )
 			{
@@ -303,19 +293,6 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	}
 
 	@Override
-	public ImmutableList<IAEItemStack> getSubstitutionsForIngredient( final IAEItemStack i)
-	{
-		if(ingredientSubstitutionCache.containsKey(i))
-		{
-			return ImmutableList.copyOf(ingredientSubstitutionCache.get(i));
-		}
-		else
-		{
-			return ImmutableList.of();
-		}
-	}
-
-	@Override
 	public boolean isCraftable()
 	{
 		return this.isCrafting;
@@ -365,7 +342,6 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			{
 				return ItemStack.EMPTY;
 			}
-			this.addToIngredientSubstitutionCache(this.crafting.getStackInSlot( x ) , craftingInv.getStackInSlot( x ));
 		}
 
 		if( this.outputs != null && this.outputs.length > 0 )
@@ -404,17 +380,6 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		}
 
 		return TestStatus.TEST;
-	}
-
-	private void addToIngredientSubstitutionCache(final ItemStack stkInSlt, final ItemStack subst)
-	{
-		IAEItemStack stackInSlot = AEItemStack.fromItemStack(stkInSlt);
-		IAEItemStack substitution = AEItemStack.fromItemStack(subst);
-
-		if(stackInSlot != null && substitution != null)
-		{
-			ingredientSubstitutionCache.get(stackInSlot).add(substitution.copy());
-		}
 	}
 
 	@Override
