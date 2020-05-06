@@ -24,6 +24,7 @@
 package appeng.api.networking.crafting;
 
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -53,6 +54,17 @@ public interface ICraftingPatternDetails
 	 * @return if an item can be used in the specific slot for this pattern.
 	 */
 	boolean isValidItemForSlot( int slotIndex, ItemStack itemStack, World world );
+
+	/**
+ 	 * @param i the ingredient for which to fetch substitutions
+	 * @return returns all previously checked substitutions for i
+	 * with other words: if you previously called isValidItemForSlot
+	 * the item you provided will be added as a substitution if it was valid
+	 * with this method you can query all these valid substitutions
+	 *
+	 * Note: The first item in the substitution list will always be itself
+	 */
+	ImmutableList<IAEItemStack> getSubstitutionsForIngredient(final IAEItemStack i);
 
 	/**
 	 * @return if this pattern is a crafting pattern ( work bench )

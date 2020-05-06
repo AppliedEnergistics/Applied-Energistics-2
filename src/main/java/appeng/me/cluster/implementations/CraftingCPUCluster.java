@@ -499,22 +499,52 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			{
 				boolean found = false;
 
-				for( IAEItemStack fuzz : this.inventory.getItemList().findFuzzy( g, FuzzyMode.IGNORE_ALL ) )
+				for( IAEItemStack substStack : details.getSubstitutionsForIngredient(g))
 				{
-					fuzz = fuzz.copy();
-					fuzz.setStackSize( g.getStackSize() );
-					final IAEItemStack ais = this.inventory.extractItems( fuzz, Actionable.SIMULATE, this.machineSrc );
-					final ItemStack is = ais == null ? ItemStack.EMPTY : ais.createItemStack();
+					// sometimes a precise item search gives the correct result while fuzzy search does not find anything
+					// try precise search first
+					IAEItemStack preciseItem = this.inventory.getItemList().findPrecise(substStack);
+					if(preciseItem != null)
+					{
+						preciseItem = preciseItem.copy();
+						preciseItem.setStackSize( g.getStackSize() );
+						final IAEItemStack ais = this.inventory.extractItems( preciseItem, Actionable.SIMULATE, this.machineSrc );
+						final ItemStack is = ais == null ? ItemStack.EMPTY : ais.createItemStack();
 
-					if( !is.isEmpty() && is.getCount() == g.getStackSize() )
-					{
-						found = true;
-						break;
+						if( !is.isEmpty() && is.getCount() == g.getStackSize() )
+						{
+							found = true;
+							break;
+						}
+						else if( !is.isEmpty() )
+						{
+							g = g.copy();
+							g.decStackSize( is.getCount() );
+						}
 					}
-					else if( !is.isEmpty() )
+
+					// then try fuzzy search
+					for( IAEItemStack fuzz : this.inventory.getItemList().findFuzzy( substStack, FuzzyMode.IGNORE_ALL ) )
 					{
-						g = g.copy();
-						g.decStackSize( is.getCount() );
+						fuzz = fuzz.copy();
+						fuzz.setStackSize( g.getStackSize() );
+						final IAEItemStack ais = this.inventory.extractItems( fuzz, Actionable.SIMULATE, this.machineSrc );
+						final ItemStack is = ais == null ? ItemStack.EMPTY : ais.createItemStack();
+
+						if( !is.isEmpty() && is.getCount() == g.getStackSize() )
+						{
+							found = true;
+							break;
+						}
+						else if( !is.isEmpty() )
+						{
+							g = g.copy();
+							g.decStackSize( is.getCount() );
+						}
+					}
+					if( found )
+					{
+						break;
 					}
 				}
 
@@ -695,13 +725,21 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 										}
 										else
 										{
-											itemList = new ArrayList<>( 1 );
-
 											final IAEItemStack item = this.inventory.getItemList().findPrecise( input[x] );
 
 											if( item != null )
 											{
+												itemList = new ArrayList<>( 1 );
 												itemList.add( item );
+											}
+											else
+											{
+												// try to find it using findFuzzy - since all necessary items are already stored we
+												// shouldn't get any false positives here
+												// and yes this findFuzzy thing is perfectly viable because we were able to create a crafting plan
+												// so we also should be able to execute this crafting plan
+
+												itemList = this.inventory.getItemList().findFuzzy( input[x], FuzzyMode.IGNORE_ALL );
 											}
 										}
 
