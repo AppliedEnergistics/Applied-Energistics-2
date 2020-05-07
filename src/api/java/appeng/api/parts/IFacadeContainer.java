@@ -28,7 +28,7 @@ import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 import appeng.api.util.AEPartLocation;
 
@@ -68,7 +68,7 @@ public interface IFacadeContainer
 	 *
 	 * @param data to be written data
 	 */
-	void writeToNBT( NBTTagCompound data );
+	void writeToNBT( CompoundNBT data );
 
 	/**
 	 * read from stream
@@ -86,7 +86,7 @@ public interface IFacadeContainer
 	 *
 	 * @param data to be read data
 	 */
-	void readFromNBT( NBTTagCompound data );
+	void readFromNBT( CompoundNBT data );
 
 	/**
 	 * write to stream

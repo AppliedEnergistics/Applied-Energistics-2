@@ -24,7 +24,7 @@
 package appeng.api.parts;
 
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -74,6 +74,6 @@ public interface IFacadePart
 	/**
 	 * @return The block state used for rendering.
 	 */
-	IBlockState getBlockState();
+	BlockState getBlockState();
 
 }

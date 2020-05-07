@@ -30,7 +30,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
@@ -107,7 +107,7 @@ public interface IGridBlock
 	 * for {@link IPart} implementations.
 	 */
 	@Nonnull
-	EnumSet<EnumFacing> getConnectableSides();
+	EnumSet<Direction> getConnectableSides();
 
 	/**
 	 * @return the IGridHost for the node, this will be an IGridPart or a TileEntity generally speaking.

@@ -26,8 +26,8 @@ package appeng.api.implementations.parts;
 
 import java.util.EnumSet;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Direction;
 
 import appeng.api.networking.IGridHost;
 import appeng.api.parts.BusSupport;
@@ -67,7 +67,7 @@ public interface IPartCable extends IPart, IGridHost
 	 *
 	 * @return if the color change was successful.
 	 */
-	boolean changeColor( AEColor newColor, EntityPlayer who );
+	boolean changeColor( AEColor newColor, PlayerEntity who );
 
 	/**
 	 * Change sides on the cables node.
@@ -76,7 +76,7 @@ public interface IPartCable extends IPart, IGridHost
 	 *
 	 * @param sides sides of cable
 	 */
-	void setValidSides( EnumSet<EnumFacing> sides );
+	void setValidSides( EnumSet<Direction> sides );
 
 	/**
 	 * used to tests if a cable connects to neighbors visually.
@@ -85,6 +85,6 @@ public interface IPartCable extends IPart, IGridHost
 	 *
 	 * @return true if this side is currently connects to an external block.
 	 */
-	boolean isConnected( EnumFacing side );
+	boolean isConnected( Direction side );
 
 }

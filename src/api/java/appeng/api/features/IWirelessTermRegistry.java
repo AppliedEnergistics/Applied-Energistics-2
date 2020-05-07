@@ -24,9 +24,9 @@
 package appeng.api.features;
 
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.IBlockReader;
 
 
 /**
@@ -51,7 +51,7 @@ public interface IWirelessTermRegistry
 
 	/**
 	 * @param is item with handler
-	 *
+	 * PlayerEntity
 	 * @return a register handler for the item in question, or null if there
 	 * isn't one
 	 */
@@ -61,5 +61,5 @@ public interface IWirelessTermRegistry
 	 * opens the wireless terminal gui, the wireless terminal item, must be in
 	 * the active slot on the tool bar.
 	 */
-	void openWirelessTerminalGui( ItemStack item, World w, EntityPlayer player );
+	void openWirelessTerminalGui( ItemStack item, IBlockReader world, PlayerEntity player );
 }

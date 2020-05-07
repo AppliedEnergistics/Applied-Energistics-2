@@ -24,8 +24,8 @@
 package appeng.api.implementations.tiles;
 
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Direction;
 
 import appeng.api.util.AEColor;
 
@@ -35,5 +35,5 @@ public interface IColorableTile
 
 	AEColor getColor();
 
-	boolean recolourBlock( EnumFacing side, AEColor colour, EntityPlayer who );
+	boolean recolourBlock( Direction side, AEColor colour, PlayerEntity who );
 }

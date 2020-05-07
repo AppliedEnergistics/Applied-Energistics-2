@@ -24,7 +24,7 @@
 package appeng.api.storage.data;
 
 
-import net.minecraftforge.fluids.Fluid;
+import net.minecraft.fluid.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 

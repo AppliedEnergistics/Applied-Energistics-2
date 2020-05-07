@@ -25,7 +25,7 @@ package appeng.api.util;
 
 
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 
 
 /**
@@ -47,5 +47,5 @@ public interface IOrientableBlock
 	 *
 	 * @return a IOrientable if applicable
 	 */
-	IOrientable getOrientable( IBlockAccess world, BlockPos z );
+	IOrientable getOrientable( IBlockReader world, BlockPos z );
 }

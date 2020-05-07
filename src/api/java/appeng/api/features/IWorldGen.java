@@ -25,13 +25,13 @@ package appeng.api.features;
 
 
 import net.minecraft.world.World;
-import net.minecraft.world.WorldProvider;
+import net.minecraft.world.dimension.Dimension;
 
 
 public interface IWorldGen
 {
 
-	void disableWorldGenForProviderID( WorldGenType type, Class<? extends WorldProvider> provider );
+	void disableWorldGenForProviderID( WorldGenType type, Class<? extends Dimension> provider );
 
 	void enableWorldGenForDimension( WorldGenType type, int dimID );
 

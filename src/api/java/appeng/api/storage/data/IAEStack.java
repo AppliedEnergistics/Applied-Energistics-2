@@ -29,7 +29,7 @@ import java.io.IOException;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
@@ -130,7 +130,7 @@ public interface IAEStack<T extends IAEStack<T>>
 	 *
 	 * @param i to be written data
 	 */
-	void writeToNBT( NBTTagCompound i );
+	void writeToNBT( CompoundNBT i );
 
 	/**
 	 * Compare stacks using precise logic.
