@@ -64,10 +64,10 @@ repositories {
         url "http://maven.blamejared.com/"
     }
 
-    //maven { // modmaven, maven proxy
-    //    name 'modmaven'
-    //    url "https://modmaven.k-4u.nl/"
-    //}
+    maven { // modmaven, maven proxy
+        name 'modmaven'
+        url "https://modmaven.k-4u.nl/"
+    }
 
     maven {
 		name = "CurseForge"
@@ -80,25 +80,26 @@ configurations {
 }
 
 dependencies {
-    // installable runtime dependencies
-    mods "mcp.mobius.waila:Hwyla:${hwyla_version}"
-    mods "net.industrial-craft:industrialcraft-2:${ic2_version}:dev"
-    mods "mcjty.theoneprobe:TheOneProbe-${minecraft_version}:${top_version}"
+    minecraft([
+        group  : "net.minecraftforge",
+        name   : "forge",
+        version: "${project.minecraft_version}-${project.forge_version}"
+    ])
 
     // compile against provided APIs
-    compileOnly "mezz.jei:jei_${minecraft_version}:${jei_version}:api"
-    compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}"
-    compileOnly "net.darkhax.tesla:Tesla-1.12.2:${tesla_version}"
-    compileOnly "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
-    compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:${top_version}:api"
-    compileOnly "cofh:CoFHCore:${cofhcore_version}:deobf"
-    compileOnly "CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}"
-	compileOnly "inventory-tweaks:InventoryTweaks:${inventorytweaks_version}:api"
-    compileOnly "team.chisel.ctm:CTM:${ctm_version}"
+    compileOnly "mezz.jei:jei-${minecraft_version}:${jei_version}:api"
+    //compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}"
+    //compileOnly "net.darkhax.tesla:Tesla-1.12.2:${tesla_version}"
+    //compileOnly "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
+    compileOnly "mcjty.theoneprobe:TheOneProbe-${minecraft_release}:${minecraft_release}-${top_version}:api"
+    //compileOnly "cofh:CoFHCore:${cofhcore_version}:deobf"
+    //compileOnly "CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}"
+	//compileOnly "inventory-tweaks:InventoryTweaks:${inventorytweaks_version}:api"
+    //compileOnly "team.chisel.ctm:CTM:${ctm_version}"
 
     // at runtime, use the full JEI jar
-    runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"
+    runtime "mezz.jei:jei-${minecraft_version}:${jei_version}"
 
     // unit test dependencies
-    testCompile "junit:junit:4.12"
+    testCompile "junit:junit:4.13"
 }

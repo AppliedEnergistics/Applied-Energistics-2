@@ -28,40 +28,54 @@ javadoc {
 	options.charSet = 'UTF-8'
 }
 
-task javadocs(type: Javadoc) {
-	source = sourceSets.api.java
-	include "appeng/api/**"
+jar {
+    from sourceSets.main.output.classesDirs
+    from sourceSets.api.output.classesDirs
+    from sourceSets.main.output.resourcesDir
+    from sourceSets.api.output.resourcesDir
 
-	// Due to ForgeGradle having to be a special snowflake,
-	// we have to add some custom configurations to the normal compile configuration and hope it does not break.
-	classpath = configurations.compile + configurations.forgeGradleMc + configurations.forgeGradleMcDeps 
+    manifest {
+        attributes([
+                "Specification-Title": "Applied Energistics 2",
+                "Specification-Vendor": "TeamAppliedEnergistics",
+                "Specification-Version": "${project.version}",
+                "Implementation-Title": "${project.name}",
+                "Implementation-Version": "${project.version}",
+                "Implementation-Vendor" :"TeamAppliedEnergistics",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+        ])
+    }
 }
 
-task javadocJar(type: Jar, dependsOn: javadocs) {
-	from javadoc.destinationDir
+task javadocs(type: Javadoc) {
+    source = sourceSets.api.java
+    include "appeng/api/**"
+}
 
-	classifier = 'javadoc'
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = "javadoc"
+    from javadoc.destinationDir
+}
+
+task sourcesJar(type: Jar) {
+    classifier = "sources"
+    from sourceSets.main.allJava
+    from sourceSets.api.allJava
 }
 
 task apiJar(type: Jar) {
-	from sourceSets.api.java
-	include "appeng/api/**"
+    classifier = "api"
+    from sourceSets.api.output
+    include "appeng/api/**"
 
-	from sourceSets.api.output
-	include "appeng/api/**"
-
-	classifier = 'api'
-}
-
-task sourceJar(type: Jar, overwrite: true) {
-	from sourceSets.api.allSource
-	from sourceSets.main.allSource
-
-	classifier = 'sources'
+    // TODO: when FG bug is fixed, remove allJava from the api jar.
+    // https://github.com/MinecraftForge/ForgeGradle/issues/369
+    // Gradle should be able to pull them from the -sources jar.
+    from sourceSets.api.allJava
 }
 
 artifacts {
-	archives apiJar
-	archives javadocJar
-	archives sourceJar
+    archives javadocJar
+    archives sourcesJar
+    archives apiJar
 }
