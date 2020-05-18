@@ -24,27 +24,27 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Direction;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -86,7 +86,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 		super( AEConfig.instance().getMatterCannonBattery() );
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	@Override
 	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
@@ -102,7 +102,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick( final World w, final EntityPlayer p, final @Nullable EnumHand hand )
+	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity p, final @Nullable Hand hand )
 	{
 		if( this.getAECurrentPower( p.getHeldItem( hand ) ) > 1600 )
 		{
@@ -190,7 +190,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 		return new ActionResult<>( EnumActionResult.FAIL, p.getHeldItem( hand ) );
 	}
 
-	private void shootPaintBalls( final ItemStack type, final World w, final EntityPlayer p, final Vec3d Vec3d, final Vec3d Vec3d1, final Vec3d direction, final double d0, final double d1, final double d2 )
+	private void shootPaintBalls( final ItemStack type, final World w, final PlayerEntity p, final Vec3d Vec3d, final Vec3d Vec3d1, final Vec3d direction, final double d0, final double d1, final double d2 )
 	{
 		final AxisAlignedBB bb = new AxisAlignedBB( Math.min( Vec3d.x, Vec3d1.x ), Math.min( Vec3d.y, Vec3d1.y ), Math.min( Vec3d.z, Vec3d1.z ), Math
 				.max( Vec3d.x, Vec3d1.x ), Math.max( Vec3d.y, Vec3d1.y ), Math.max( Vec3d.z, Vec3d1.z ) ).grow( 16, 16, 16 );
@@ -203,9 +203,9 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 		{
 			final Entity entity1 = (Entity) list.get( l );
 
-			if( !entity1.isDead && entity1 != p && !( entity1 instanceof EntityItem ) )
+			if( !entity1.isAlive() && entity1 != p && !( entity1 instanceof ItemEntity ) )
 			{
-				if( entity1.isEntityAlive() )
+				if( entity1.isAlive() )
 				{
 					// prevent killing / flying of mounts.
 					if( entity1.isRidingOrBeingRiddenBy( p ) )
@@ -279,7 +279,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 			}
 			else if( pos.typeOfHit == RayTraceResult.Type.BLOCK )
 			{
-				final EnumFacing side = pos.sideHit;
+				final Direction side = pos.sideHit;
 				final BlockPos hitPos = pos.getBlockPos().offset( side );
 
 				if( !Platform.hasPermissions( new DimensionalCoord( w, hitPos ), p ) )
@@ -306,7 +306,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 		}
 	}
 
-	private void standardAmmo( float penetration, final World w, final EntityPlayer p, final Vec3d Vec3d, final Vec3d Vec3d1, final Vec3d direction, final double d0, final double d1, final double d2 )
+	private void standardAmmo( float penetration, final World w, final PlayerEntity p, final Vec3d Vec3d, final Vec3d Vec3d1, final Vec3d direction, final double d0, final double d1, final double d2 )
 	{
 		boolean hasDestroyed = true;
 		while( penetration > 0 && hasDestroyed )
@@ -326,7 +326,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 
 				if( !entity1.isDead && entity1 != p && !( entity1 instanceof EntityItem ) )
 				{
-					if( entity1.isEntityAlive() )
+					if( entity1.isAlive() )
 					{
 						// prevent killing / flying of mounts.
 						if( entity1.isRidingOrBeingRiddenBy( p ) )
@@ -383,15 +383,15 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 				if( pos.typeOfHit == RayTraceResult.Type.ENTITY )
 				{
 					final int dmg = (int) Math.ceil( penetration / 20.0f );
-					if( pos.entityHit instanceof EntityLivingBase )
+					if( pos.entityHit instanceof LivingEntity )
 					{
-						final EntityLivingBase el = (EntityLivingBase) pos.entityHit;
+						final LivingEntity el = (LivingEntity) pos.entityHit;
 						penetration -= dmg;
 						el.knockBack( p, 0, -direction.x, -direction.z );
 						// el.knockBack( p, 0, Vec3d.x,
 						// Vec3d.z );
 						el.attackEntityFrom( dmgSrc, dmg );
-						if( !el.isEntityAlive() )
+						if( !el.isAlive() )
 						{
 							hasDestroyed = true;
 						}
@@ -414,7 +414,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 					}
 					else
 					{
-						final IBlockState bs = w.getBlockState( pos.getBlockPos() );
+						final BlockState bs = w.getBlockState( pos.getBlockPos() );
 						// int meta = w.getBlockMetadata(
 						// pos.blockX, pos.blockY, pos.blockZ );
 

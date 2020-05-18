@@ -31,8 +31,8 @@ import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
@@ -104,7 +104,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 	public TileInscriber()
 	{
-		this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
+		this.getProxy().setValidSides( EnumSet.noneOf( Direction.class ) );
 		this.setInternalMaxPower( 1600 );
 		this.getProxy().setIdlePowerUsage( 0 );
 		this.settings = new ConfigManager( this );
@@ -132,7 +132,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT( final NBTTagCompound data )
+	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		this.upgrades.writeToNBT( data, "upgrades" );
@@ -141,7 +141,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.upgrades.readFromNBT( data, "upgrades" );
@@ -205,7 +205,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public void setOrientation( final EnumFacing inForward, final EnumFacing inUp )
+	public void setOrientation( final Direction inForward, final Direction inUp )
 	{
 		super.setOrientation( inForward, inUp );
 		this.getProxy().setValidSides( EnumSet.complementOf( EnumSet.of( this.getForward() ) ) );
@@ -470,7 +470,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	protected IItemHandler getItemHandlerForSide( @Nonnull EnumFacing facing )
+	protected IItemHandler getItemHandlerForSide( @Nonnull Direction facing )
 	{
 		if( facing == this.getUp() )
 		{
@@ -538,21 +538,21 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 		if( !plateA.isEmpty() )
 		{
-			final NBTTagCompound tag = Platform.openNbtData( plateA );
+			final CompoundNBT tag = Platform.openNbtData( plateA );
 			name += tag.getString( "InscribeName" );
 		}
 
 		if( !plateB.isEmpty() )
 		{
-			final NBTTagCompound tag = Platform.openNbtData( plateB );
+			final CompoundNBT tag = Platform.openNbtData( plateB );
 			name += " " + tag.getString( "InscribeName" );
 		}
 
 		final ItemStack startingItem = input.copy();
 		final ItemStack renamedItem = input.copy();
-		final NBTTagCompound tag = Platform.openNbtData( renamedItem );
+		final CompoundNBT tag = Platform.openNbtData( renamedItem );
 
-		final NBTTagCompound display = tag.getCompoundTag( "display" );
+		final CompoundNBT display = tag.getCompoundTag( "display" );
 		tag.setTag( "display", display );
 
 		if( name.length() > 0 )

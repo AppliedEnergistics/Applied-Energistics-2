@@ -25,12 +25,12 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import appeng.client.render.cablebus.FacadeBuilder;
 
@@ -55,7 +55,7 @@ public class FacadeBakedItemModel extends DelegateBakedModel
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
 	{
 		if( side != null )
 		{
@@ -64,7 +64,7 @@ public class FacadeBakedItemModel extends DelegateBakedModel
 		if( quads == null )
 		{
 		    quads = new ArrayList<>();
-            quads.addAll( this.facadeBuilder.buildFacadeItemQuads( this.textureStack, EnumFacing.NORTH ) );
+            quads.addAll( this.facadeBuilder.buildFacadeItemQuads( this.textureStack, Direction.NORTH ) );
             quads.addAll( this.getBaseModel().getQuads( state, side, rand ) );
             quads = Collections.unmodifiableList( quads );
         }

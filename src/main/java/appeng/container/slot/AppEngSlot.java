@@ -21,13 +21,13 @@ package appeng.container.slot;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.container.AEBaseContainer;
@@ -153,7 +153,7 @@ public class AppEngSlot extends Slot
 	}
 
 	@Override
-	public boolean canTakeStack( final EntityPlayer par1EntityPlayer )
+	public boolean canTakeStack( final PlayerEntity par1PlayerEntity )
 	{
 		if( this.isSlotEnabled() )
 		{
@@ -176,7 +176,7 @@ public class AppEngSlot extends Slot
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public boolean isEnabled()
 	{
 		return this.isSlotEnabled();

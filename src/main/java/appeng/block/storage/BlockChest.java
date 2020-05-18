@@ -24,14 +24,14 @@ import javax.annotation.Nullable;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
@@ -66,7 +66,7 @@ public class BlockChest extends AEBaseTileBlock
 	}
 
 	@Override
-	public IBlockState getActualState( IBlockState state, IBlockAccess worldIn, BlockPos pos )
+	public BlockState getActualState( BlockState state, IBlockReader worldIn, BlockPos pos )
 	{
 		DriveSlotState slotState = DriveSlotState.EMPTY;
 
@@ -90,10 +90,10 @@ public class BlockChest extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer p, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
 	{
 		final TileChest tg = this.getTileEntity( w, pos );
-		if( tg != null && !p.isSneaking() )
+		if( tg != null && !p.isShiftKeyDown() )
 		{
 			if( Platform.isClient() )
 			{

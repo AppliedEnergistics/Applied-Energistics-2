@@ -24,18 +24,18 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderEntityItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.ItemBlock;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.item.BlockItem;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 
-@SideOnly( Side.CLIENT )
+@OnlyIn( Dist.CLIENT )
 public class RenderFloatingItem extends RenderEntityItem
 {
 
 	public RenderFloatingItem( final RenderManager manager )
 	{
-		super( manager, Minecraft.getMinecraft().getRenderItem() );
+		super( manager, Minecraft.getInstance().getRenderItem() );
 		this.shadowOpaque = 0.0F;
 	}
 
@@ -49,7 +49,7 @@ public class RenderFloatingItem extends RenderEntityItem
 			{
 				GlStateManager.pushMatrix();
 
-				if( !( efi.getItem().getItem() instanceof ItemBlock ) )
+				if( !( efi.getItem().getItem() instanceof BlockItem ) )
 				{
 					GlStateManager.translate( 0, -0.3f, 0 );
 				}

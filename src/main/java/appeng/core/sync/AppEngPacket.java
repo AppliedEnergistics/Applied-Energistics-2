@@ -24,7 +24,7 @@ import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
@@ -42,7 +42,7 @@ public abstract class AppEngPacket implements Packet
 	private PacketBuffer p;
 	private PacketCallState caller;
 
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player )
 	{
 		throw new UnsupportedOperationException( "This packet ( " + this.getPacketID() + " does not implement a server side handler." );
 	}
@@ -52,7 +52,7 @@ public abstract class AppEngPacket implements Packet
 		return AppEngPacketHandlerBase.PacketTypes.getID( this.getClass() ).ordinal();
 	}
 
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player )
 	{
 		throw new UnsupportedOperationException( "This packet ( " + this.getPacketID() + " does not implement a client side handler." );
 	}

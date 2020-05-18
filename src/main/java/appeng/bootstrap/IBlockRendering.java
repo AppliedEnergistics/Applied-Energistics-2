@@ -21,14 +21,13 @@ package appeng.bootstrap;
 
 import java.util.function.BiFunction;
 
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 
 /**
@@ -37,22 +36,22 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public interface IBlockRendering
 {
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	IBlockRendering modelCustomizer( BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> customizer );
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	IBlockRendering blockColor( IBlockColor blockColor );
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	IBlockRendering stateMapper( IStateMapper mapper );
 
-	@SideOnly( Side.CLIENT )
-	IBlockRendering tesr( TileEntitySpecialRenderer<?> tesr );
+	@OnlyIn( Dist.CLIENT )
+	IBlockRendering tesr( TileEntityRenderer<?> ter );
 
 	/**
 	 * Registers a built-in model under the given resource path.
 	 */
-	@SideOnly( Side.CLIENT )
-	IBlockRendering builtInModel( String name, IModel model );
+	@OnlyIn( Dist.CLIENT )
+	IBlockRendering builtInModel( String name, IUnbakedModel model );
 
 }

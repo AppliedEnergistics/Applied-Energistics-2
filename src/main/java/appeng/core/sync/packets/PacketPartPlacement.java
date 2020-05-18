@@ -22,10 +22,10 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 
 import appeng.core.AppEng;
@@ -42,7 +42,7 @@ public class PacketPartPlacement extends AppEngPacket
 	private int z;
 	private int face;
 	private float eyeHeight;
-	private EnumHand hand;
+	private Hand hand;
 
 	// automatic.
 	public PacketPartPlacement( final ByteBuf stream )
@@ -52,11 +52,11 @@ public class PacketPartPlacement extends AppEngPacket
 		this.z = stream.readInt();
 		this.face = stream.readByte();
 		this.eyeHeight = stream.readFloat();
-		this.hand = EnumHand.values()[stream.readByte()];
+		this.hand = Hand.values()[stream.readByte()];
 	}
 
 	// api
-	public PacketPartPlacement( final BlockPos pos, final EnumFacing face, final float eyeHeight, final EnumHand hand )
+	public PacketPartPlacement( final BlockPos pos, final Direction face, final float eyeHeight, final Hand hand )
 	{
 		final ByteBuf data = Unpooled.buffer();
 
@@ -72,12 +72,12 @@ public class PacketPartPlacement extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player )
 	{
-		final EntityPlayerMP sender = (EntityPlayerMP) player;
+		final PlayerEntityMP sender = (PlayerEntityMP) player;
 		AppEng.proxy.updateRenderMode( sender );
 		PartPlacement.setEyeHeight( this.eyeHeight );
-		PartPlacement.place( sender.getHeldItem( this.hand ), new BlockPos( this.x, this.y, this.z ), EnumFacing.VALUES[this.face], sender, this.hand,
+		PartPlacement.place( sender.getHeldItem( this.hand ), new BlockPos( this.x, this.y, this.z ), Direction.VALUES[this.face], sender, this.hand,
 				sender.world,
 				PartPlacement.PlaceType.INTERACT_FIRST_PASS, 0 );
 		AppEng.proxy.updateRenderMode( null );

@@ -31,7 +31,7 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -1007,9 +1007,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 				Character.MAX_RADIX );
 	}
 
-	private NBTTagCompound generateLinkData( final String craftingID, final boolean standalone, final boolean req )
+	private CompoundNBT generateLinkData( final String craftingID, final boolean standalone, final boolean req )
 	{
-		final NBTTagCompound tag = new NBTTagCompound();
+		final CompoundNBT tag = new CompoundNBT();
 
 		tag.setString( "CraftID", craftingID );
 		tag.setBoolean( "canceled", false );
@@ -1142,7 +1142,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		return is;
 	}
 
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final CompoundNBT data )
 	{
 		data.setTag( "finalOutput", this.writeItem( this.finalOutput ) );
 		data.setTag( "inventory", this.writeList( this.inventory.getItemList() ) );
@@ -1151,7 +1151,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 		if( this.myLastLink != null )
 		{
-			final NBTTagCompound link = new NBTTagCompound();
+			final CompoundNBT link = new CompoundNBT();
 			this.myLastLink.writeToNBT( link );
 			data.setTag( "link", link );
 		}
@@ -1159,7 +1159,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		final NBTTagList list = new NBTTagList();
 		for( final Entry<ICraftingPatternDetails, TaskProgress> e : this.tasks.entrySet() )
 		{
-			final NBTTagCompound item = this.writeItem( AEItemStack.fromItemStack( e.getKey().getPattern() ) );
+			final CompoundNBT item = this.writeItem( AEItemStack.fromItemStack( e.getKey().getPattern() ) );
 			item.setLong( "craftingProgress", e.getValue().value );
 			list.appendTag( item );
 		}
@@ -1172,9 +1172,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		data.setLong( "remainingItemCount", this.getRemainingItemCount() );
 	}
 
-	private NBTTagCompound writeItem( final IAEItemStack finalOutput2 )
+	private CompoundNBT writeItem( final IAEItemStack finalOutput2 )
 	{
-		final NBTTagCompound out = new NBTTagCompound();
+		final CompoundNBT out = new CompoundNBT();
 
 		if( finalOutput2 != null )
 		{
@@ -1212,9 +1212,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		this.updateName();
 	}
 
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
-		this.finalOutput = AEItemStack.fromNBT( (NBTTagCompound) data.getTag( "finalOutput" ) );
+		this.finalOutput = AEItemStack.fromNBT( (CompoundNBT) data.getTag( "finalOutput" ) );
 		for( final IAEItemStack ais : this.readList( (NBTTagList) data.getTag( "inventory" ) ) )
 		{
 			this.inventory.injectItems( ais, Actionable.MODULATE, this.machineSrc );
@@ -1225,7 +1225,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 		if( data.hasKey( "link" ) )
 		{
-			final NBTTagCompound link = data.getCompoundTag( "link" );
+			final CompoundNBT link = data.getCompoundTag( "link" );
 			this.myLastLink = new CraftingLink( link, this );
 			this.submitLink( this.myLastLink );
 		}
@@ -1233,7 +1233,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		final NBTTagList list = data.getTagList( "tasks", 10 );
 		for( int x = 0; x < list.tagCount(); x++ )
 		{
-			final NBTTagCompound item = list.getCompoundTagAt( x );
+			final CompoundNBT item = list.getCompoundTagAt( x );
 			final IAEItemStack pattern = AEItemStack.fromNBT( item );
 			if( pattern != null && pattern.getItem() instanceof ICraftingPatternItem )
 			{

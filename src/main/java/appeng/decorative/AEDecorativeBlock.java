@@ -16,36 +16,18 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.tile.powersink;
+package appeng.decorative;
 
 
-import net.darkhax.tesla.api.ITeslaConsumer;
+import net.minecraft.block.material.Material;
 
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerUnits;
+import appeng.block.AEBaseBlock;
 
 
-/**
- * Adapts an {@link IExternalPowerSink} to Forges {@link net.darkhax.tesla.api.ITeslaConsumer}.
- */
-class TeslaEnergyAdapter implements ITeslaConsumer
+public abstract class AEDecorativeBlock extends AEBaseBlock
 {
-
-	private final IExternalPowerSink sink;
-
-	TeslaEnergyAdapter( IExternalPowerSink sink )
+	public AEDecorativeBlock( final Material mat )
 	{
-		this.sink = sink;
-	}
-
-	@Override
-	public long givePower( long power, boolean simulated )
-	{
-		// Cut it down to what we can represent in a double
-		double offeredPower = power;
-
-		final double overflow = this.sink.injectExternalPower( PowerUnits.RF, offeredPower, simulated ? Actionable.SIMULATE : Actionable.MODULATE );
-
-		return (long) ( power - overflow );
+		super( mat );
 	}
 }

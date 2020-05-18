@@ -24,10 +24,10 @@ import java.util.Optional;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 
 import appeng.api.definitions.IBlockDefinition;
 
@@ -36,7 +36,7 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 {
 	private final Optional<Block> block;
 
-	public BlockDefinition( String registryName, Block block, ItemBlock item )
+	public BlockDefinition( String registryName, Block block, BlockItem item )
 	{
 		super( registryName, item );
 		this.block = Optional.ofNullable( block );
@@ -49,9 +49,9 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	}
 
 	@Override
-	public final Optional<ItemBlock> maybeItemBlock()
+	public Optional<BlockItem> maybeBlockItem()
 	{
-		return this.block.map( ItemBlock::new );
+		return this.block.map( BlockItem::new );
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 	}
 
 	@Override
-	public final boolean isSameAs( final IBlockAccess world, final BlockPos pos )
+	public final boolean isSameAs( final IBlockReader world, final BlockPos pos )
 	{
 		return this.block.isPresent() && world.getBlockState( pos ).getBlock() == this.block.get();
 	}

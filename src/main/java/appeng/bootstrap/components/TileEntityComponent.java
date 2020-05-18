@@ -5,8 +5,8 @@ package appeng.bootstrap.components;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
 
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.core.AppEng;
@@ -32,7 +32,7 @@ public class TileEntityComponent implements IPreInitComponent
 	}
 
 	@Override
-	public void preInitialize( Side side )
+	public void preInitialize( Dist dist )
 	{
 		for( TileEntityDefinition tileEntityDefinition : this.tileEntityDefinitions )
 		{

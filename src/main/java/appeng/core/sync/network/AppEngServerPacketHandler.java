@@ -23,8 +23,8 @@ import java.lang.reflect.InvocationTargetException;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.PacketThreadUtil;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
@@ -39,7 +39,7 @@ public final class AppEngServerPacketHandler extends AppEngPacketHandlerBase imp
 {
 
 	@Override
-	public void onPacketData( final INetworkInfo manager, final INetHandler handler, final FMLProxyPacket packet, final EntityPlayer player )
+	public void onPacketData( final INetworkInfo manager, final INetHandler handler, final FMLProxyPacket packet, final PlayerEntity player )
 	{
 		final ByteBuf stream = packet.payload();
 
@@ -59,7 +59,7 @@ public final class AppEngServerPacketHandler extends AppEngPacketHandlerBase imp
 			};
 
 			pack.setCallParam( callState );
-			PacketThreadUtil.checkThreadAndEnqueue( pack, handler, ( (EntityPlayerMP) player ).getServer() );
+			PacketThreadUtil.checkThreadAndEnqueue( pack, handler, ( (PlayerEntityMP) player ).getServer() );
 			callState.call( pack );
 		}
 		catch( final InstantiationException e )

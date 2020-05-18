@@ -8,37 +8,35 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSlab;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.SlabBlock;
+import net.minecraft.block.BlockStateContainer;
+import net.minecraft.block.BlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.IProperty;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 
-public abstract class BlockSlabCommon extends BlockSlab
+public abstract class CommonSlabBlock extends SlabBlock
 {
 
-	static final PropertyEnum<BlockSlabCommon.Variant> VARIANT = PropertyEnum.create( "variant", Variant.class );
-
-	private BlockSlabCommon( Block block )
+	private CommonSlabBlock( Block block )
 	{
 		super( block.getMaterial( block.getDefaultState() ) );
 		this.setHardness( block.getBlockHardness( block.getDefaultState(), null, null ) );
 		this.setResistance( block.getExplosionResistance( null ) * 5.0F / 3.0F );
 
-		IBlockState iblockstate = this.blockState.getBaseState();
+		BlockState BlockState = this.blockState.getBaseState();
 
 		if( !this.isDouble() )
 		{
-			iblockstate = iblockstate.withProperty( HALF, BlockSlab.EnumBlockHalf.BOTTOM );
+			BlockState = BlockState.withProperty( HALF, BlockSlab.EnumBlockHalf.BOTTOM );
 		}
 
-		this.setDefaultState( iblockstate.withProperty( VARIANT, Variant.DEFAULT ) );
+		this.setDefaultState( BlockState.withProperty( VARIANT, Variant.DEFAULT ) );
 		this.setCreativeTab( CreativeTabs.BUILDING_BLOCKS );
 		this.useNeighborBrightness = true;
 	}
@@ -47,23 +45,23 @@ public abstract class BlockSlabCommon extends BlockSlab
 	 * Convert the given metadata into a BlockState for this Block
 	 */
 	@Override
-	public IBlockState getStateFromMeta( int meta )
+	public BlockState getStateFromMeta( int meta )
 	{
-		IBlockState iblockstate = this.getDefaultState().withProperty( VARIANT, Variant.DEFAULT );
+		BlockState BlockState = this.getDefaultState().withProperty( VARIANT, Variant.DEFAULT );
 
 		if( !this.isDouble() )
 		{
-			iblockstate = iblockstate.withProperty( HALF, ( meta & 8 ) == 0 ? BlockSlab.EnumBlockHalf.BOTTOM : BlockSlab.EnumBlockHalf.TOP );
+			BlockState = BlockState.withProperty( HALF, ( meta & 8 ) == 0 ? BlockSlab.EnumBlockHalf.BOTTOM : BlockSlab.EnumBlockHalf.TOP );
 		}
 
-		return iblockstate;
+		return BlockState;
 	}
 
 	/**
 	 * Convert the BlockState into the correct metadata value
 	 */
 	@Override
-	public int getMetaFromState( IBlockState state )
+	public int getMetaFromState( BlockState state )
 	{
 		int i = 0;
 
@@ -83,21 +81,21 @@ public abstract class BlockSlabCommon extends BlockSlab
 
 	@Override
 	@Nullable
-	public Item getItemDropped( IBlockState state, Random rand, int fortune )
+	public Item getItemDropped( BlockState state, Random rand, int fortune )
 	{
 		return Item.getItemFromBlock( this );
 	}
 
 	@Override
-	public ItemStack getItem( World worldIn, BlockPos pos, IBlockState state )
+	public ItemStack getItem( World worldIn, BlockPos pos, BlockState state )
 	{
 		return new ItemStack( this, 1, 0 );
 	}
 
 	@Override
-	public String getUnlocalizedName( int meta )
+	public String getTranslationKey( int meta )
 	{
-		return this.getUnlocalizedName();
+		return this.getTranslationKey();
 	}
 
 	@Override
@@ -112,7 +110,7 @@ public abstract class BlockSlabCommon extends BlockSlab
 		return Variant.DEFAULT;
 	}
 
-	public static class Double extends BlockSlabCommon
+	public static class Double extends CommonSlabBlock
 	{
 
 		private final Block halfSlabBlock;
@@ -131,20 +129,20 @@ public abstract class BlockSlabCommon extends BlockSlab
 
 		@Override
 		@Nullable
-		public Item getItemDropped( IBlockState state, Random rand, int fortune )
+		public Item getItemDropped( BlockState state, Random rand, int fortune )
 		{
 			return Item.getItemFromBlock( this.halfSlabBlock );
 		}
 
 		@Override
-		public ItemStack getItem( World worldIn, BlockPos pos, IBlockState state )
+		public ItemStack getItem( World worldIn, BlockPos pos, BlockState state )
 		{
 			return new ItemStack( this.halfSlabBlock, 1, 0 );
 		}
 
 	}
 
-	public static class Half extends BlockSlabCommon
+	public static class Half extends CommonSlabBlock
 	{
 
 		public Half( Block block )

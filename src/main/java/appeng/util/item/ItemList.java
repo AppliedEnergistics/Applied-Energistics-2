@@ -19,14 +19,11 @@
 package appeng.util.item;
 
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.NavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
-
-import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
@@ -81,26 +78,7 @@ public final class ItemList implements IItemList<IAEItemStack>
 
 		final AEItemStack ais = (AEItemStack) filter;
 
-		return ais.getOre().map( or ->
-		{
-			if( or.getAEEquivalents().size() == 1 )
-			{
-				final IAEItemStack is = or.getAEEquivalents().get( 0 );
-
-				return this.findFuzzyDamage( is, fuzzy, is.getItemDamage() == OreDictionary.WILDCARD_VALUE );
-			}
-			else
-			{
-				final Collection<IAEItemStack> output = new ArrayList<>();
-
-				for( final IAEItemStack is : or.getAEEquivalents() )
-				{
-					output.addAll( this.findFuzzyDamage( is, fuzzy, is.getItemDamage() == OreDictionary.WILDCARD_VALUE ) );
-				}
-
-				return output;
-			}
-		} ).orElse( this.findFuzzyDamage( ais, fuzzy, false ) );
+		return this.findFuzzyDamage( ais, fuzzy, false );
 	}
 
 	@Override

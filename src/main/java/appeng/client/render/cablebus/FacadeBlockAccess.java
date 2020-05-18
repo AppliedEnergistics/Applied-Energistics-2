@@ -21,30 +21,30 @@ package appeng.client.render.cablebus;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biome;
 
 
 /**
  * This is used to retrieve the ExtendedState of a block for facade rendering.
- * It fakes the block at BlockPos provided as the IBlockState provided.
+ * It fakes the block at BlockPos provided as the BlockState provided.
  *
  * @author covers1624
  */
-public class FacadeBlockAccess implements IBlockAccess
+public class FacadeBlockAccess implements IBlockReader
 {
 
-	private final IBlockAccess world;
+	private final IBlockReader world;
 	private final BlockPos pos;
-	private final EnumFacing side;
-	private final IBlockState state;
+	private final Direction side;
+	private final BlockState state;
 
-	public FacadeBlockAccess( IBlockAccess world, BlockPos pos, EnumFacing side, IBlockState state )
+	public FacadeBlockAccess( IBlockReader world, BlockPos pos, Direction side, BlockState state )
 	{
 		this.world = world;
 		this.pos = pos;
@@ -66,7 +66,7 @@ public class FacadeBlockAccess implements IBlockAccess
 	}
 
 	@Override
-	public IBlockState getBlockState( BlockPos pos )
+	public BlockState getBlockState( BlockPos pos )
 	{
 		if( this.pos == pos )
 		{
@@ -78,7 +78,7 @@ public class FacadeBlockAccess implements IBlockAccess
 	@Override
 	public boolean isAirBlock( BlockPos pos )
 	{
-		IBlockState state = this.getBlockState( pos );
+		BlockState state = this.getBlockState( pos );
 		return state.getBlock().isAir( state, this.world, pos );
 	}
 
@@ -89,7 +89,7 @@ public class FacadeBlockAccess implements IBlockAccess
 	}
 
 	@Override
-	public int getStrongPower( BlockPos pos, EnumFacing direction )
+	public int getStrongPower( BlockPos pos, Direction direction )
 	{
 		return this.world.getStrongPower( pos, direction );
 	}
@@ -101,7 +101,7 @@ public class FacadeBlockAccess implements IBlockAccess
 	}
 
 	@Override
-	public boolean isSideSolid( BlockPos pos, EnumFacing side, boolean _default )
+	public boolean isSideSolid( BlockPos pos, Direction side, boolean _default )
 	{
 		if( pos.getX() < -30000000 || pos.getZ() < -30000000 || pos.getX() >= 30000000 || pos.getZ() >= 30000000 )
 		{

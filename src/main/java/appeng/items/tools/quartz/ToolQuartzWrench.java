@@ -20,19 +20,12 @@ package appeng.items.tools.quartz;
 
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.Optional.Interface;
-
-import cofh.api.item.IToolHammer;
 
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.util.DimensionalCoord;
@@ -40,88 +33,40 @@ import appeng.items.AEBaseItem;
 import appeng.util.Platform;
 
 
-// TODO BC Integration
-//@Interface( iface = "buildcraft.api.tools.IToolWrench", iname = IntegrationType.BuildCraftCore )
-@Interface( iface = "cofh.api.item.IToolHammer", modid = "cofhcore" )
-public class ToolQuartzWrench extends AEBaseItem implements IAEWrench, IToolHammer /* , IToolWrench */
+public class ToolQuartzWrench extends AEBaseItem implements IAEWrench
 {
 
 	public ToolQuartzWrench()
 	{
-		this.setMaxStackSize( 1 );
-		this.setHarvestLevel( "wrench", 0 );
+		super( new Properties().maxStackSize( 1 ) );
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
+	public ActionResultType onItemUse( ItemUseContext context )
 	{
-		final Block b = world.getBlockState( pos ).getBlock();
-		if( b != null && !player.isSneaking() && Platform.hasPermissions( new DimensionalCoord( world, pos ), player ) )
+		final Block b = context.getWorld().getBlockState( context.getPos() ).getBlock();
+		if( b != null && !context.getPlayer().isShiftKeyDown() && Platform.hasPermissions( new DimensionalCoord( context.getWorld(), context.getPos() ),
+				context.getPlayer() ) )
 		{
 			if( Platform.isClient() )
 			{
 				// TODO 1.10-R - if we return FAIL on client, action will not be sent to server. Fix that in all
 				// Block#onItemUseFirst overrides.
-				return !world.isRemote ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
+				return !context.getWorld().isRemote ? ActionResultType.SUCCESS : ActionResultType.PASS;
 			}
 
-			if( b.rotateBlock( world, pos, side ) )
+			if( b.rotate( context.getWorld().getBlockState( context.getPos() ), context.getWorld(), context.getPos(), Rotation.CLOCKWISE_90 ) != null )
 			{
-				player.swingArm( hand );
-				return !world.isRemote ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
+				context.getPlayer().swingArm( context.getHand() );
+				return !context.getWorld().isRemote ? ActionResultType.SUCCESS : ActionResultType.FAIL;
 			}
 		}
-		return EnumActionResult.PASS;
+		return ActionResultType.PASS;
 	}
 
 	@Override
-	public boolean doesSneakBypassUse( final ItemStack itemstack, final IBlockAccess world, final BlockPos pos, final EntityPlayer player )
+	public boolean canWrench( final ItemStack wrench, final PlayerEntity player, final BlockPos pos )
 	{
 		return true;
 	}
-
-	@Override
-	public boolean canWrench( final ItemStack wrench, final EntityPlayer player, final BlockPos pos )
-	{
-		return true;
-	}
-
-	// IToolHammer - start
-	@Override
-	public boolean isUsable( ItemStack item, EntityLivingBase user, BlockPos pos )
-	{
-		return true;
-	}
-
-	@Override
-	public boolean isUsable( ItemStack item, EntityLivingBase user, Entity entity )
-	{
-		return true;
-	}
-
-	@Override
-	public void toolUsed( ItemStack item, EntityLivingBase user, BlockPos pos )
-	{
-	}
-
-	@Override
-	public void toolUsed( ItemStack item, EntityLivingBase user, Entity entity )
-	{
-	}
-
-	// IToolHammer - end
-
-	// TODO: BC Wrench Integration
-	/*
-	 * @Override
-	 * public boolean canWrench( EntityPlayer player, int x, int y, int z )
-	 * {
-	 * return true;
-	 * }
-	 * @Override
-	 * public void wrenchUsed( EntityPlayer player, int x, int y, int z )
-	 * {
-	 * player.swingItem();
-	 * }
-	 */
 }

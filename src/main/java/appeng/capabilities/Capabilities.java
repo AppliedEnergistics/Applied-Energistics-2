@@ -19,10 +19,8 @@
 package appeng.capabilities;
 
 
-import net.darkhax.tesla.api.ITeslaConsumer;
-import net.darkhax.tesla.api.ITeslaHolder;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -30,8 +28,6 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 import appeng.api.storage.ISpatialDimension;
 import appeng.api.storage.IStorageMonitorableAccessor;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
 
 
 /**
@@ -47,10 +43,6 @@ public final class Capabilities
 	public static Capability<IStorageMonitorableAccessor> STORAGE_MONITORABLE_ACCESSOR;
 
 	public static Capability<ISpatialDimension> SPATIAL_DIMENSION;
-
-	public static Capability<ITeslaConsumer> TESLA_CONSUMER;
-
-	public static Capability<ITeslaHolder> TESLA_HOLDER;
 
 	public static Capability<IEnergyStorage> FORGE_ENERGY;
 
@@ -75,24 +67,6 @@ public final class Capabilities
 		SPATIAL_DIMENSION = cap;
 	}
 
-	@CapabilityInject( ITeslaConsumer.class )
-	private static void capITeslaConsumerRegistered( Capability<ITeslaConsumer> cap )
-	{
-		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.TESLA ) )
-		{
-			TESLA_CONSUMER = cap;
-		}
-	}
-
-	@CapabilityInject( ITeslaHolder.class )
-	private static void capITeslaHolderRegistered( Capability<ITeslaHolder> cap )
-	{
-		if( IntegrationRegistry.INSTANCE.isEnabled( IntegrationType.TESLA ) )
-		{
-			TESLA_HOLDER = cap;
-		}
-	}
-
 	@CapabilityInject( IEnergyStorage.class )
 	private static void capIEnergyStorageRegistered( Capability<IEnergyStorage> cap )
 	{
@@ -105,13 +79,13 @@ public final class Capabilities
 		return new Capability.IStorage<T>()
 		{
 			@Override
-			public NBTBase writeNBT( Capability<T> capability, T instance, EnumFacing side )
+			public INBT writeNBT( Capability<T> capability, T instance, Direction side )
 			{
 				return null;
 			}
 
 			@Override
-			public void readNBT( Capability<T> capability, T instance, EnumFacing side, NBTBase nbt )
+			public void readNBT( Capability<T> capability, T instance, Direction side, INBT nbt )
 			{
 
 			}

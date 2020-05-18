@@ -23,17 +23,19 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.item.I
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.item.EntityItem;temEntity;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -113,8 +115,8 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 			final BlockPos pos = te.getPos();
 
-			final EnumFacing e = bch.getWorldX();
-			final EnumFacing u = bch.getWorldY();
+			final Direction e = bch.getWorldX();
+			final Direction u = bch.getWorldY();
 
 			if( this.isAnnihilationPlane( te.getWorld().getTileEntity( pos.offset( e.getOpposite() ) ), this.getSide() ) )
 			{
@@ -148,33 +150,33 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	public PlaneConnections getConnections()
 	{
 
-		final EnumFacing facingRight, facingUp;
+		final Direction facingRight, facingUp;
 		AEPartLocation location = this.getSide();
 		switch( location )
 		{
 			case UP:
-				facingRight = EnumFacing.EAST;
-				facingUp = EnumFacing.NORTH;
+				facingRight = Direction.EAST;
+				facingUp = Direction.NORTH;
 				break;
 			case DOWN:
-				facingRight = EnumFacing.WEST;
-				facingUp = EnumFacing.NORTH;
+				facingRight = Direction.WEST;
+				facingUp = Direction.NORTH;
 				break;
 			case NORTH:
-				facingRight = EnumFacing.WEST;
-				facingUp = EnumFacing.UP;
+				facingRight = Direction.WEST;
+				facingUp = Direction.UP;
 				break;
 			case SOUTH:
-				facingRight = EnumFacing.EAST;
-				facingUp = EnumFacing.UP;
+				facingRight = Direction.EAST;
+				facingUp = Direction.UP;
 				break;
 			case WEST:
-				facingRight = EnumFacing.SOUTH;
-				facingUp = EnumFacing.UP;
+				facingRight = Direction.SOUTH;
+				facingUp = Direction.UP;
 				break;
 			case EAST:
-				facingRight = EnumFacing.NORTH;
-				facingUp = EnumFacing.UP;
+				facingRight = Direction.NORTH;
+				facingUp = Direction.UP;
 				break;
 			default:
 			case INTERNAL:
@@ -215,7 +217,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	}
 
 	@Override
-	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
+	public void onNeighborChanged( IBlockReader w, BlockPos pos, BlockPos neighbor )
 	{
 		if( pos.offset( this.getSide().getFacing() ).equals( neighbor ) )
 		{
@@ -286,7 +288,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 			if( capture )
 			{
-				final boolean changed = this.storeEntityItem( (EntityItem) entity );
+				final boolean changed = this.storeEntityItem( (ItemEntity) entity );
 
 				if( changed )
 				{
@@ -308,7 +310,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	 *
 	 * @param entityItem {@link EntityItem} to store
 	 */
-	private boolean storeEntityItem( final EntityItem entityItem )
+	private boolean storeEntityItem( final ItemEntity entityItem )
 	{
 		if( !entityItem.isDead )
 		{
@@ -473,7 +475,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	 */
 	private boolean canHandleBlock( final WorldServer w, final BlockPos pos )
 	{
-		final IBlockState state = w.getBlockState( pos );
+		final BlockState state = w.getBlockState( pos );
 		final Material material = state.getMaterial();
 		final float hardness = state.getBlockHardness( w, pos );
 		final boolean ignoreMaterials = material == Material.AIR || material == Material.LAVA || material == Material.WATER || material.isLiquid();
@@ -496,7 +498,7 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	 */
 	protected float calculateEnergyUsage( final WorldServer w, final BlockPos pos, final List<ItemStack> items )
 	{
-		final IBlockState state = w.getBlockState( pos );
+		final BlockState state = w.getBlockState( pos );
 		final float hardness = state.getBlockHardness( w, pos );
 
 		float requiredEnergy = 1 + hardness;

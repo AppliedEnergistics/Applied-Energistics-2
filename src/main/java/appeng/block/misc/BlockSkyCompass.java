@@ -24,11 +24,11 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockStateContainer;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -62,7 +62,7 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean isValidOrientation( final World w, final BlockPos pos, final EnumFacing forward, final EnumFacing up )
+	public boolean isValidOrientation( final World w, final BlockPos pos, final Direction forward, final Direction up )
 	{
 		final TileSkyCompass sc = this.getTileEntity( w, pos );
 		if( sc != null )
@@ -72,16 +72,16 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 		return this.canPlaceAt( w, pos, forward.getOpposite() );
 	}
 
-	private boolean canPlaceAt( final World w, final BlockPos pos, final EnumFacing dir )
+	private boolean canPlaceAt( final World w, final BlockPos pos, final Direction dir )
 	{
 		return w.isSideSolid( pos.offset( dir ), dir.getOpposite(), false );
 	}
 
 	@Override
-	public void neighborChanged( IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
+	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
 	{
 		final TileSkyCompass sc = this.getTileEntity( world, pos );
-		final EnumFacing forward = sc.getForward();
+		final Direction forward = sc.getForward();
 		if( !this.canPlaceAt( world, pos, forward.getOpposite() ) )
 		{
 			this.dropTorch( world, pos );
@@ -90,7 +90,7 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 
 	private void dropTorch( final World w, final BlockPos pos )
 	{
-		final IBlockState prev = w.getBlockState( pos );
+		final BlockState prev = w.getBlockState( pos );
 		w.destroyBlock( pos, true );
 		w.notifyBlockUpdate( pos, prev, w.getBlockState( pos ), 3 );
 	}
@@ -98,7 +98,7 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	@Override
 	public boolean canPlaceBlockAt( final World w, final BlockPos pos )
 	{
-		for( final EnumFacing dir : EnumFacing.VALUES )
+		for( final Direction dir : Direction.VALUES )
 		{
 			if( this.canPlaceAt( w, pos, dir ) )
 			{
@@ -114,7 +114,7 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 		final TileSkyCompass tile = this.getTileEntity( w, pos );
 		if( tile != null )
 		{
-			final EnumFacing forward = tile.getForward();
+			final Direction forward = tile.getForward();
 
 			double minX = 0;
 			double minY = 0;
@@ -177,13 +177,13 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public EnumBlockRenderType getRenderType( IBlockState state )
+	public EnumBlockRenderType getRenderType( BlockState state )
 	{
 		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 
 	@Override
-	public boolean isFullBlock( IBlockState state )
+	public boolean isFullBlock( BlockState state )
 	{
 		return false;
 	}

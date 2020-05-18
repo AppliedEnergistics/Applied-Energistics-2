@@ -21,7 +21,7 @@ package appeng.decorative.solid;
 
 import net.minecraft.block.material.Material;
 
-import appeng.block.AEDecorativeBlock;
+import appeng.decorative.AEDecorativeBlock;
 
 
 public final class BlockFluix extends AEDecorativeBlock

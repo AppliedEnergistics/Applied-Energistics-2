@@ -22,7 +22,7 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
 import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
@@ -84,7 +84,7 @@ public class PacketTargetFluidStack extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player )
 	{
 		if( player.openContainer instanceof ContainerFluidTerminal )
 		{

@@ -24,7 +24,7 @@ import java.util.EnumSet;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
@@ -44,7 +44,7 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 
 	public TileQuartzGrowthAccelerator()
 	{
-		this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
+		this.getProxy().setValidSides( EnumSet.noneOf( Direction.class ) );
 		this.getProxy().setFlags();
 		this.getProxy().setIdlePowerUsage( 8 );
 	}
@@ -85,7 +85,7 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 	}
 
 	@Override
-	public void setOrientation( final EnumFacing inForward, final EnumFacing inUp )
+	public void setOrientation( final Direction inForward, final Direction inUp )
 	{
 		super.setOrientation( inForward, inUp );
 		this.getProxy().setValidSides( EnumSet.of( this.getUp(), this.getUp().getOpposite() ) );

@@ -9,13 +9,13 @@ import java.util.concurrent.ExecutionException;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import appeng.api.parts.IPartBakedModel;
 import appeng.api.util.AEColor;
@@ -66,7 +66,7 @@ public class P2PTunnelFrequencyBakedModel implements IBakedModel, IPartBakedMode
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( IBlockState state, EnumFacing side, long rand )
+	public List<BakedQuad> getQuads( BlockState state, Direction side, long rand )
 	{
 		if( side != null )
 		{

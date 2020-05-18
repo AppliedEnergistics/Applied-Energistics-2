@@ -24,7 +24,7 @@ import java.io.IOException;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
@@ -61,9 +61,9 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	private GuiImgButton levelMode;
 	private GuiImgButton craftingMode;
 
-	public GuiLevelEmitter( final InventoryPlayer inventoryPlayer, final PartLevelEmitter te )
+	public GuiLevelEmitter( final PlayerInventory PlayerInventory, final PartLevelEmitter te )
 	{
-		super( new ContainerLevelEmitter( inventoryPlayer, te ) );
+		super( new ContainerLevelEmitter( PlayerInventory, te ) );
 	}
 
 	@Override

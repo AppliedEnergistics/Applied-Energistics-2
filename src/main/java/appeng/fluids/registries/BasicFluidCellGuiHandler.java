@@ -19,7 +19,7 @@
 package appeng.fluids.registries;
 
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
@@ -46,7 +46,7 @@ public class BasicFluidCellGuiHandler implements ICellGuiHandler
 	}
 
 	@Override
-	public void openChestGui( final EntityPlayer player, final IChestOrDrive chest, final ICellHandler cellHandler, final IMEInventoryHandler inv, final ItemStack is, final IStorageChannel chan )
+	public void openChestGui( final PlayerEntity player, final IChestOrDrive chest, final ICellHandler cellHandler, final IMEInventoryHandler inv, final ItemStack is, final IStorageChannel chan )
 	{
 		Platform.openGUI( player, (TileEntity) chest, AEPartLocation.fromFacing( chest.getUp() ), GuiBridge.GUI_FLUID_TERMINAL );
 	}

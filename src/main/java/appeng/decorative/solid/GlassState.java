@@ -21,7 +21,7 @@ package appeng.decorative.solid;
 
 import java.util.EnumSet;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 
 /**
@@ -35,9 +35,9 @@ public final class GlassState
 	private final int y;
 	private final int z;
 
-	private final EnumSet<EnumFacing> flushWith = EnumSet.noneOf( EnumFacing.class );
+	private final EnumSet<Direction> flushWith = EnumSet.noneOf( Direction.class );
 
-	public GlassState( int x, int y, int z, EnumSet<EnumFacing> flushWith )
+	public GlassState( int x, int y, int z, EnumSet<Direction> flushWith )
 	{
 		this.x = x;
 		this.y = y;
@@ -60,7 +60,7 @@ public final class GlassState
 		return this.z;
 	}
 
-	public boolean isFlushWith( EnumFacing side )
+	public boolean isFlushWith( Direction side )
 	{
 		return this.flushWith.contains( side );
 	}

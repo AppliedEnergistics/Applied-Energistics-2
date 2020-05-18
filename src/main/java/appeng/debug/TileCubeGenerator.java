@@ -19,11 +19,11 @@
 package appeng.debug;
 
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
@@ -39,7 +39,7 @@ public class TileCubeGenerator extends AEBaseTile implements ITickable
 	private int size = 3;
 	private ItemStack is = ItemStack.EMPTY;
 	private int countdown = 20 * 10;
-	private EntityPlayer who = null;
+	private PlayerEntity who = null;
 
 	@Override
 	public void update()
@@ -50,7 +50,7 @@ public class TileCubeGenerator extends AEBaseTile implements ITickable
 
 			if( this.countdown % 20 == 0 )
 			{
-				for( final EntityPlayer e : AppEng.proxy.getPlayers() )
+				for( final PlayerEntity e : AppEng.proxy.getPlayers() )
 				{
 					e.sendMessage( new TextComponentString( "Spawning in... " + ( this.countdown / 20 ) ) );
 				}
@@ -68,7 +68,7 @@ public class TileCubeGenerator extends AEBaseTile implements ITickable
 		this.world.setBlockToAir( this.pos );
 
 		final Item i = this.is.getItem();
-		final EnumFacing side = EnumFacing.UP;
+		final Direction side = Direction.UP;
 
 		final int half = (int) Math.floor( this.size / 2 );
 
@@ -79,13 +79,13 @@ public class TileCubeGenerator extends AEBaseTile implements ITickable
 				for( int z = -half; z < half; z++ )
 				{
 					final BlockPos p = this.pos.add( x, y - 1, z );
-					i.onItemUse( this.who, this.world, p, EnumHand.MAIN_HAND, side, 0.5f, 0.0f, 0.5f );
+					i.onItemUse( this.who, this.world, p, Hand.MAIN_HAND, side, 0.5f, 0.0f, 0.5f );
 				}
 			}
 		}
 	}
 
-	void click( final EntityPlayer player )
+	void click( final PlayerEntity player )
 	{
 		if( Platform.isServer() )
 		{
@@ -96,7 +96,7 @@ public class TileCubeGenerator extends AEBaseTile implements ITickable
 			{
 				this.is = ItemStack.EMPTY;
 
-				if( player.isSneaking() )
+				if( player.isShiftKeyDown() )
 				{
 					this.size--;
 				}

@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -31,10 +31,10 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.block.AEBaseBlock;
 import appeng.helpers.ICustomCollision;
@@ -53,7 +53,7 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public void getSubBlocks( final CreativeTabs tabs, final NonNullList<ItemStack> itemStacks )
 	{
 		// do nothing
@@ -85,7 +85,7 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean canEntityDestroy( final IBlockState state, final IBlockAccess world, final BlockPos pos, final Entity entity )
+	public boolean canEntityDestroy( final BlockState state, final IBlockReader world, final BlockPos pos, final Entity entity )
 	{
 		return false;
 	}

@@ -19,12 +19,12 @@
 package appeng.items.tools.quartz;
 
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -50,7 +50,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	}
 
 	@Override
-	public EnumActionResult onItemUse( final EntityPlayer p, final World worldIn, final BlockPos pos, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public EnumActionResult onItemUse( final PlayerEntity p, final World worldIn, final BlockPos pos, final Hand hand, final Direction side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( Platform.isServer() )
 		{
@@ -60,7 +60,7 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick( final World w, final EntityPlayer p, final EnumHand hand )
+	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity p, final Hand hand )
 	{
 		if( Platform.isServer() )
 		{

@@ -19,7 +19,7 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
@@ -37,13 +37,13 @@ public class ContainerVibrationChamber extends AEBaseContainer implements IProgr
 	@GuiSync( 1 )
 	public int remainingBurnTime = 0;
 
-	public ContainerVibrationChamber( final InventoryPlayer ip, final TileVibrationChamber vibrationChamber )
+	public ContainerVibrationChamber( final PlayerInventory ip, final TileVibrationChamber vibrationChamber )
 	{
 		super( ip, vibrationChamber, null );
 		this.vibrationChamber = vibrationChamber;
 
 		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.FUEL, vibrationChamber.getInternalInventory(), 0, 80, 37, this
-				.getInventoryPlayer() ) );
+				.getPlayerInventory() ) );
 
 		this.bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
 	}

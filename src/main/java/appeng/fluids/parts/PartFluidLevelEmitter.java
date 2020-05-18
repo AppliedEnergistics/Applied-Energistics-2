@@ -4,11 +4,11 @@ package appeng.fluids.parts;
 
 import java.util.Random;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -323,7 +323,7 @@ public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatc
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean onPartActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		if( Platform.isServer() )
 		{
@@ -355,7 +355,7 @@ public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatc
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.lastReportedValue = data.getLong( "lastReportedValue" );
@@ -365,7 +365,7 @@ public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatc
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		data.setLong( "lastReportedValue", this.lastReportedValue );

@@ -24,7 +24,7 @@ import java.util.Random;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -47,9 +47,9 @@ public abstract class CommonHelper
 
 	public abstract void bindTileEntitySpecialRenderer( Class<? extends TileEntity> tile, AEBaseBlock blk );
 
-	public abstract List<EntityPlayer> getPlayers();
+	public abstract List<PlayerEntity> getPlayers();
 
-	public abstract void sendToAllNearExcept( EntityPlayer p, double x, double y, double z, double dist, World w, AppEngPacket packet );
+	public abstract void sendToAllNearExcept( PlayerEntity p, double x, double y, double z, double dist, World w, AppEngPacket packet );
 
 	public abstract void spawnEffect( EffectType effect, World world, double posX, double posY, double posZ, Object extra );
 
@@ -63,7 +63,7 @@ public abstract class CommonHelper
 
 	public abstract void triggerUpdates();
 
-	public abstract void updateRenderMode( EntityPlayer player );
+	public abstract void updateRenderMode( PlayerEntity player );
 
 	public abstract boolean isKeyPressed( @Nonnull final ActionKey key );
 

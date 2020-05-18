@@ -30,14 +30,14 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Strings;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -98,7 +98,7 @@ class GlassBakedModel implements IBakedModel
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
 	{
 		if( !( state instanceof IExtendedBlockState ) || side == null )
 		{
@@ -160,28 +160,28 @@ class GlassBakedModel implements IBakedModel
 	/**
 	 * Creates the bitmask that indicates, in which directions (in terms of u,v space) a border should be drawn.
 	 */
-	private static int makeBitmask( GlassState state, EnumFacing side )
+	private static int makeBitmask( GlassState state, Direction side )
 	{
 		switch( side )
 		{
 			case DOWN:
-				return makeBitmask( state, EnumFacing.SOUTH, EnumFacing.EAST, EnumFacing.NORTH, EnumFacing.WEST );
+				return makeBitmask( state, Direction.SOUTH, Direction.EAST, Direction.NORTH, Direction.WEST );
 			case UP:
-				return makeBitmask( state, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.NORTH, EnumFacing.EAST );
+				return makeBitmask( state, Direction.SOUTH, Direction.WEST, Direction.NORTH, Direction.EAST );
 			case NORTH:
-				return makeBitmask( state, EnumFacing.UP, EnumFacing.WEST, EnumFacing.DOWN, EnumFacing.EAST );
+				return makeBitmask( state, Direction.UP, Direction.WEST, Direction.DOWN, Direction.EAST );
 			case SOUTH:
-				return makeBitmask( state, EnumFacing.UP, EnumFacing.EAST, EnumFacing.DOWN, EnumFacing.WEST );
+				return makeBitmask( state, Direction.UP, Direction.EAST, Direction.DOWN, Direction.WEST );
 			case WEST:
-				return makeBitmask( state, EnumFacing.UP, EnumFacing.SOUTH, EnumFacing.DOWN, EnumFacing.NORTH );
+				return makeBitmask( state, Direction.UP, Direction.SOUTH, Direction.DOWN, Direction.NORTH );
 			case EAST:
-				return makeBitmask( state, EnumFacing.UP, EnumFacing.NORTH, EnumFacing.DOWN, EnumFacing.SOUTH );
+				return makeBitmask( state, Direction.UP, Direction.NORTH, Direction.DOWN, Direction.SOUTH );
 			default:
 				throw new IllegalArgumentException( "Unsupported side!" );
 		}
 	}
 
-	private static int makeBitmask( GlassState state, EnumFacing up, EnumFacing right, EnumFacing down, EnumFacing left )
+	private static int makeBitmask( GlassState state, Direction up, Direction right, Direction down, Direction left )
 	{
 
 		int bitmask = 0;
@@ -205,12 +205,12 @@ class GlassBakedModel implements IBakedModel
 		return bitmask;
 	}
 
-	private BakedQuad createQuad( EnumFacing side, List<Vec3d> corners, TextureAtlasSprite sprite, float uOffset, float vOffset )
+	private BakedQuad createQuad( Direction side, List<Vec3d> corners, TextureAtlasSprite sprite, float uOffset, float vOffset )
 	{
 		return this.createQuad( side, corners.get( 0 ), corners.get( 1 ), corners.get( 2 ), corners.get( 3 ), sprite, uOffset, vOffset );
 	}
 
-	private BakedQuad createQuad( EnumFacing side, Vec3d c1, Vec3d c2, Vec3d c3, Vec3d c4, TextureAtlasSprite sprite, float uOffset, float vOffset )
+	private BakedQuad createQuad( Direction side, Vec3d c1, Vec3d c2, Vec3d c3, Vec3d c4, TextureAtlasSprite sprite, float uOffset, float vOffset )
 	{
 		Vec3d normal = new Vec3d( side.getDirectionVec() );
 

@@ -5,8 +5,8 @@ package appeng.items.tools.powered;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEColor;
 import appeng.bootstrap.IItemRendering;
@@ -22,7 +22,7 @@ public class ToolColorApplicatorRendering extends ItemRenderingCustomizer
 	private static final ModelResourceLocation MODEL_UNCOLORED = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, "color_applicator_uncolored" ), "inventory" );
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public void customize( IItemRendering rendering )
 	{
 		rendering.builtInModel( "models/item/builtin/color_applicator_colored", new ColorApplicatorModel() );

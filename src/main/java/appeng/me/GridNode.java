@@ -27,9 +27,9 @@ import java.util.Deque;
 import java.util.EnumSet;
 import java.util.List;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -214,7 +214,7 @@ public class GridNode implements IGridNode, IPathItem
 
 		this.compressedData |= ( this.gridProxy.getGridColor().ordinal() << 3 );
 
-		for( final EnumFacing dir : this.gridProxy.getConnectableSides() )
+		for( final Direction dir : this.gridProxy.getConnectableSides() )
 		{
 			this.compressedData |= ( 1 << ( dir.ordinal() + 8 ) );
 		}
@@ -327,11 +327,11 @@ public class GridNode implements IGridNode, IPathItem
 	}
 
 	@Override
-	public void loadFromNBT( final String name, final NBTTagCompound nodeData )
+	public void loadFromNBT( final String name, final CompoundNBT nodeData )
 	{
 		if( this.myGrid == null )
 		{
-			final NBTTagCompound node = nodeData.getCompoundTag( name );
+			final CompoundNBT node = nodeData.getCompoundTag( name );
 			this.playerID = node.getInteger( "p" );
 			this.setLastSecurityKey( node.getLong( "k" ) );
 
@@ -346,11 +346,11 @@ public class GridNode implements IGridNode, IPathItem
 	}
 
 	@Override
-	public void saveToNBT( final String name, final NBTTagCompound nodeData )
+	public void saveToNBT( final String name, final CompoundNBT nodeData )
 	{
 		if( this.myStorage != null )
 		{
-			final NBTTagCompound node = new NBTTagCompound();
+			final CompoundNBT node = new CompoundNBT();
 
 			node.setInteger( "p", this.playerID );
 			node.setLong( "k", this.getLastSecurityKey() );

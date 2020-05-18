@@ -23,7 +23,7 @@ import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ITickable;
@@ -86,7 +86,7 @@ public class TileSkyChest extends AEBaseInvTile implements ITickable
 		return this.inv;
 	}
 
-	public void openInventory( final EntityPlayer player )
+	public void openInventory( final PlayerEntity player )
 	{
 		if( !player.isSpectator() )
 		{
@@ -105,7 +105,7 @@ public class TileSkyChest extends AEBaseInvTile implements ITickable
 		}
 	}
 
-	public void closeInventory( final EntityPlayer player )
+	public void closeInventory( final PlayerEntity player )
 	{
 		if( !player.isSpectator() )
 		{

@@ -22,8 +22,8 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.config.ActionItems;
@@ -61,9 +61,9 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	private GuiImgButton encodeBtn;
 	private GuiImgButton clearBtn;
 
-	public GuiPatternTerm( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
+	public GuiPatternTerm( final PlayerInventory PlayerInventory, final ITerminalHost te )
 	{
-		super( inventoryPlayer, te, new ContainerPatternTerm( inventoryPlayer, te ) );
+		super( PlayerInventory, te, new ContainerPatternTerm( PlayerInventory, te ) );
 		this.container = (ContainerPatternTerm) this.inventorySlots;
 		this.setReservedSpace( 81 );
 	}

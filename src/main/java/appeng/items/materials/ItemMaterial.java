@@ -31,27 +31,25 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
@@ -85,7 +83,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 		instance = this;
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	@Override
 	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
@@ -99,7 +97,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 
 		if( mt == MaterialType.NAME_PRESS )
 		{
-			final NBTTagCompound c = Platform.openNbtData( stack );
+			final CompoundNBT c = Platform.openNbtData( stack );
 			lines.add( c.getString( "InscribeName" ) );
 		}
 
@@ -202,24 +200,8 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 		return mat.getStackSrc();
 	}
 
-	public void registerOredicts()
-	{
-		for( final MaterialType mt : ImmutableSet.copyOf( this.dmgToMaterial.values() ) )
-		{
-			if( mt.getOreName() != null )
-			{
-				final String[] names = mt.getOreName().split( "," );
-
-				for( final String name : names )
-				{
-					OreDictionary.registerOre( name, mt.stack( 1 ) );
-				}
-			}
-		}
-	}
-
 	@Override
-	public String getUnlocalizedName( final ItemStack is )
+	public String getTranslationKey( final ItemStack is )
 	{
 		return "item.appliedenergistics2.material." + this.nameOf( is ).toLowerCase();
 	}
@@ -240,9 +222,9 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
+	public EnumActionResult onItemUseFirst( final PlayerEntity player, final World world, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
 	{
-		if( player.isSneaking() )
+		if( player.isShiftKeyDown() )
 		{
 			final TileEntity te = world.getTileEntity( pos );
 			IItemHandler upgrades = null;
@@ -309,9 +291,9 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 		eqi.motionY = location.motionY;
 		eqi.motionZ = location.motionZ;
 
-		if( location instanceof EntityItem && eqi instanceof EntityItem )
+		if( location instanceof ItemEntity && eqi instanceof ItemEntity )
 		{
-			( (EntityItem) eqi ).setDefaultPickupDelay();
+			( (ItemEntity) eqi ).setDefaultPickupDelay();
 		}
 
 		return eqi;

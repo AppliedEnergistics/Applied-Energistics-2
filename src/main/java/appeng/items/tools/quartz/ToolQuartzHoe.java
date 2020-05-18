@@ -19,20 +19,23 @@
 package appeng.items.tools.quartz;
 
 
-import net.minecraft.item.ItemHoe;
+import net.minecraft.item.HoeItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTier;
 
 import appeng.core.features.AEFeature;
 import appeng.util.Platform;
 
 
-public class ToolQuartzHoe extends ItemHoe
+public class ToolQuartzHoe extends HoeItem
 {
 	private final AEFeature type;
 
 	public ToolQuartzHoe( final AEFeature type )
 	{
-		super( ToolMaterial.IRON );
+		super( ItemTier.IRON, -1.0F, ( new Item.Properties() ).group( ItemGroup.TOOLS ) );
 		this.type = type;
 	}
 

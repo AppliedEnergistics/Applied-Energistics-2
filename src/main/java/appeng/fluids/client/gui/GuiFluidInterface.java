@@ -22,7 +22,7 @@ package appeng.fluids.client.gui;
 import java.io.IOException;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.client.gui.implementations.GuiUpgradeable;
 import appeng.client.gui.widgets.GuiTabButton;
@@ -45,7 +45,7 @@ public class GuiFluidInterface extends GuiUpgradeable
 	private final IFluidInterfaceHost host;
 	private GuiTabButton priority;
 
-	public GuiFluidInterface( final InventoryPlayer ip, final IFluidInterfaceHost te )
+	public GuiFluidInterface( final PlayerInventory ip, final IFluidInterfaceHost te )
 	{
 		super( new ContainerFluidInterface( ip, te ) );
 		this.ySize = 231;

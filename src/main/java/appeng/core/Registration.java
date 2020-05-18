@@ -34,30 +34,25 @@ import net.minecraft.advancements.ICriterionInstance;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.api.config.Upgrades;
@@ -84,7 +79,6 @@ import appeng.bootstrap.components.IEntityRegistrationComponent;
 import appeng.bootstrap.components.IInitComponent;
 import appeng.bootstrap.components.IItemRegistrationComponent;
 import appeng.bootstrap.components.IModelRegistrationComponent;
-import appeng.bootstrap.components.IOreDictComponent;
 import appeng.bootstrap.components.IPostInitComponent;
 import appeng.bootstrap.components.IPreInitComponent;
 import appeng.bootstrap.components.IRecipeRegistrationComponent;
@@ -102,10 +96,7 @@ import appeng.core.stats.Stats;
 import appeng.core.worlddata.SpatialDimensionManager;
 import appeng.fluids.registries.BasicFluidCellGuiHandler;
 import appeng.hooks.TickHandler;
-import appeng.items.materials.ItemMaterial;
 import appeng.items.parts.ItemFacade;
-import appeng.items.parts.ItemPart;
-import appeng.loot.ChestLoot;
 import appeng.me.cache.CraftingGridCache;
 import appeng.me.cache.EnergyGridCache;
 import appeng.me.cache.GridStorageCache;
@@ -222,11 +213,6 @@ final class Registration
 
 		MinecraftForge.EVENT_BUS.register( new PartPlacement() );
 
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.CHEST_LOOT ) )
-		{
-			MinecraftForge.EVENT_BUS.register( new ChestLoot() );
-		}
-
 		final IGridCacheRegistry gcr = registries.gridCache();
 		gcr.registerGridCache( ITickManager.class, TickManagerCache.class );
 		gcr.registerGridCache( IEnergyGrid.class, EnergyGridCache.class );
@@ -262,13 +248,13 @@ final class Registration
 	}
 
 	@SubscribeEvent
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public void modelRegistryEvent( ModelRegistryEvent event )
 	{
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		final IModelRegistry registry = new ModelLoaderWrapper();
-		final Side side = FMLCommonHandler.instance().getEffectiveSide();
-		definitions.getRegistry().getBootstrapComponents( IModelRegistrationComponent.class ).forEachRemaining( b -> b.modelRegistration( side, registry ) );
+		final Dist dist = FMLEnvironment.dist;
+		definitions.getRegistry().getBootstrapComponents( IModelRegistrationComponent.class ).forEachRemaining( b -> b.modelRegistration( dist, registry ) );
 	}
 
 	@SubscribeEvent
@@ -276,8 +262,8 @@ final class Registration
 	{
 		final IForgeRegistry<Block> registry = event.getRegistry();
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
-		final Side side = FMLCommonHandler.instance().getEffectiveSide();
-		definitions.getRegistry().getBootstrapComponents( IBlockRegistrationComponent.class ).forEachRemaining( b -> b.blockRegistration( side, registry ) );
+		final Dist dist = FMLEnvironment.dist;
+		definitions.getRegistry().getBootstrapComponents( IBlockRegistrationComponent.class ).forEachRemaining( b -> b.blockRegistration( dist, registry ) );
 	}
 
 	@SubscribeEvent
@@ -285,12 +271,8 @@ final class Registration
 	{
 		final IForgeRegistry<Item> registry = event.getRegistry();
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
-		final Side side = FMLCommonHandler.instance().getEffectiveSide();
-		definitions.getRegistry().getBootstrapComponents( IItemRegistrationComponent.class ).forEachRemaining( b -> b.itemRegistration( side, registry ) );
-		// register oredicts
-		definitions.getRegistry().getBootstrapComponents( IOreDictComponent.class ).forEachRemaining( b -> b.oreRegistration( side ) );
-		ItemMaterial.instance.registerOredicts();
-		ItemPart.instance.registerOreDicts();
+		final Dist dist = FMLEnvironment.dist;
+		definitions.getRegistry().getBootstrapComponents( IItemRegistrationComponent.class ).forEachRemaining( b -> b.itemRegistration( dist, registry ) );
 	}
 
 	@SubscribeEvent
@@ -300,7 +282,7 @@ final class Registration
 
 		final Api api = Api.INSTANCE;
 		final ApiDefinitions definitions = api.definitions();
-		final Side side = FMLCommonHandler.instance().getEffectiveSide();
+		final Dist dist = FMLCommonHandler.instance().getEffectiveSide();
 
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_DISASSEMBLY_CRAFTING ) )
 		{
@@ -474,32 +456,30 @@ final class Registration
 		/*
 		 * You can't move bed rock.
 		 */
-		mr.blacklistBlock( net.minecraft.init.Blocks.BEDROCK );
+		mr.blacklistBlock( net.minecraft.block.Blocks.BEDROCK );
 
 		/*
 		 * White List Vanilla...
 		 */
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityBanner.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityBeacon.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityBrewingStand.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityChest.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityCommandBlock.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityComparator.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityDaylightDetector.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityDispenser.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityDropper.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityEnchantmentTable.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityEnderChest.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityEndPortal.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityFlowerPot.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityFurnace.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityHopper.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityMobSpawner.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityNote.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityPiston.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntityShulkerBox.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntitySign.class );
-		mr.whiteListTileEntity( net.minecraft.tileentity.TileEntitySkull.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.BannerTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.BeaconTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.BrewingStandTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.ChestTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.CommandBlockTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.ComparatorTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.DaylightDetectorTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.DispenserTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.DropperTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.EnchantingTableTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.EnderChestTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.EndPortalTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.FurnaceTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.HopperTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.MobSpawnerTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.PistonTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.ShulkerBoxTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.SignTileEntity.class );
+		mr.whiteListTileEntity( net.minecraft.tileentity.SkullTileEntity.class );
 
 		/*
 		 * Whitelist AE2

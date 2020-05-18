@@ -21,11 +21,11 @@ package appeng.client.render;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.util.AEColor;
@@ -40,7 +40,7 @@ public class ColorableTileBlockColor implements IBlockColor
 	public static final ColorableTileBlockColor INSTANCE = new ColorableTileBlockColor();
 
 	@Override
-	public int colorMultiplier( IBlockState state, @Nullable IBlockAccess worldIn, @Nullable BlockPos pos, int tintIndex )
+	public int colorMultiplier( BlockState state, @Nullable IBlockReader worldIn, @Nullable BlockPos pos, int tintIndex )
 	{
 		AEColor color = AEColor.TRANSPARENT; // Default to a neutral color
 

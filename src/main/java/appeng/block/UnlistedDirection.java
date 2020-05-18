@@ -19,11 +19,11 @@
 package appeng.block;
 
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.property.IUnlistedProperty;
 
 
-public class UnlistedDirection implements IUnlistedProperty<EnumFacing>
+public class UnlistedDirection implements IUnlistedProperty<Direction>
 {
 
 	private final String name;
@@ -40,19 +40,19 @@ public class UnlistedDirection implements IUnlistedProperty<EnumFacing>
 	}
 
 	@Override
-	public boolean isValid( EnumFacing value )
+	public boolean isValid( Direction value )
 	{
 		return value != null;
 	}
 
 	@Override
-	public Class<EnumFacing> getType()
+	public Class<Direction> getType()
 	{
-		return EnumFacing.class;
+		return Direction.class;
 	}
 
 	@Override
-	public String valueToString( EnumFacing value )
+	public String valueToString( Direction value )
 	{
 		return value.getName();
 	}

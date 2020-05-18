@@ -27,9 +27,9 @@ import io.netty.buffer.ByteBuf;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
@@ -98,7 +98,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT( final NBTTagCompound data )
+	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		data.setDouble( "burnTime", this.getBurnTime() );
@@ -108,7 +108,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.setBurnTime( data.getDouble( "burnTime" ) );
@@ -117,7 +117,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	}
 
 	@Override
-	protected IItemHandler getItemHandlerForSide( @Nonnull EnumFacing facing )
+	protected IItemHandler getItemHandlerForSide( @Nonnull Direction facing )
 	{
 		return this.invExt;
 	}

@@ -23,7 +23,7 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 
@@ -102,14 +102,14 @@ public enum FacingToRotation
 		GlStateManager.rotate( this.rot.z, 0, 0, 1 );
 	}
 
-	public EnumFacing rotate( EnumFacing facing )
+	public Direction rotate( Direction facing )
 	{
 		return TRSRTransformation.rotate( this.mat, facing );
 	}
 
-	public EnumFacing resultingRotate( EnumFacing facing )
+	public Direction resultingRotate( Direction facing )
 	{
-		for( EnumFacing face : EnumFacing.values() )
+		for( Direction face : Direction.values() )
 		{
 			if( this.rotate( face ) == facing )
 			{
@@ -119,7 +119,7 @@ public enum FacingToRotation
 		return null;
 	}
 
-	public static FacingToRotation get( EnumFacing forward, EnumFacing up )
+	public static FacingToRotation get( Direction forward, Direction up )
 	{
 		return values()[forward.ordinal() * 6 + up.ordinal()];
 	}

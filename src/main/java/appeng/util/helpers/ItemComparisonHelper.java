@@ -23,8 +23,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraft.nbt.CompoundNBT;
 
 import appeng.api.config.FuzzyMode;
 import appeng.util.item.OreHelper;
@@ -50,15 +49,7 @@ public class ItemComparisonHelper
 	 */
 	public boolean isEqualItemType( @Nonnull final ItemStack that, @Nonnull final ItemStack other )
 	{
-		if( !that.isEmpty() && !other.isEmpty() && that.getItem() == other.getItem() )
-		{
-			if( that.isItemStackDamageable() )
-			{
-				return true;
-			}
-			return that.getItemDamage() == other.getItemDamage();
-		}
-		return false;
+		return !that.isEmpty() && !other.isEmpty() && that.getItem() == other.getItem();
 	}
 
 	/**
@@ -71,7 +62,7 @@ public class ItemComparisonHelper
 	 */
 	public boolean isSameItem( @Nonnull final ItemStack is, @Nonnull final ItemStack filter )
 	{
-		return ItemStack.areItemsEqual( is, filter ) && this.isNbtTagEqual( is.getTagCompound(), filter.getTagCompound() );
+		return ItemStack.areItemsEqual( is, filter ) && this.isNbtTagEqual( is.getTag(), filter.getTag() );
 	}
 
 	/**
@@ -103,12 +94,12 @@ public class ItemComparisonHelper
 			}
 			else if( mode == FuzzyMode.PERCENT_99 )
 			{
-				return ( a.getItemDamage() > 1 ) == ( b.getItemDamage() > 1 );
+				return ( a.getDamage() > 1 ) == ( b.getDamage() > 1 );
 			}
 			else
 			{
-				final float percentDamagedOfA = (float) a.getItemDamage() / (float) a.getMaxDamage();
-				final float percentDamagedOfB = (float) b.getItemDamage() / (float) b.getMaxDamage();
+				final float percentDamagedOfA = (float) a.getDamage() / a.getMaxDamage();
+				final float percentDamagedOfB = (float) b.getDamage() / b.getMaxDamage();
 
 				return ( percentDamagedOfA > mode.breakPoint ) == ( percentDamagedOfB > mode.breakPoint );
 			}
@@ -130,15 +121,15 @@ public class ItemComparisonHelper
 	 * then the vanilla version which likes to fail when NBT Compound data changes order, it is pretty expensive
 	 * performance wise, so try an use shared tag compounds as long as the system remains in AE.
 	 */
-	public boolean isNbtTagEqual( final NBTBase left, final NBTBase right )
+	public boolean isNbtTagEqual( final CompoundNBT left, final CompoundNBT right )
 	{
 		if( left == right )
 		{
 			return true;
 		}
 
-		final boolean isLeftEmpty = left == null || left.hasNoTags();
-		final boolean isRightEmpty = right == null || right.hasNoTags();
+		final boolean isLeftEmpty = left == null || left.isEmpty();
+		final boolean isRightEmpty = right == null || right.isEmpty();
 
 		if( isLeftEmpty && isRightEmpty )
 		{

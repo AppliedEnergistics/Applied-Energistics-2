@@ -20,10 +20,10 @@ package appeng.container.implementations;
 
 
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
@@ -44,7 +44,7 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 
 	private final PartLevelEmitter lvlEmitter;
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private GuiTextField textField;
 	@GuiSync( 2 )
 	public LevelType lvType;
@@ -53,20 +53,20 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 	@GuiSync( 4 )
 	public YesNo cmType;
 
-	public ContainerLevelEmitter( final InventoryPlayer ip, final PartLevelEmitter te )
+	public ContainerLevelEmitter( final PlayerInventory ip, final PartLevelEmitter te )
 	{
 		super( ip, te );
 		this.lvlEmitter = te;
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public void setTextField( final GuiTextField level )
 	{
 		this.textField = level;
 		this.textField.setText( String.valueOf( this.EmitterValue ) );
 	}
 
-	public void setLevel( final long l, final EntityPlayer player )
+	public void setLevel( final long l, final PlayerEntity player )
 	{
 		this.lvlEmitter.setReportingValue( l );
 		this.EmitterValue = l;
@@ -79,25 +79,25 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 		if( this.availableUpgrades() > 0 )
 		{
 			this.addSlotToContainer(
-					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getInventoryPlayer() ) )
+					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getPlayerInventory() ) )
 							.setNotDraggable() );
 		}
 		if( this.availableUpgrades() > 1 )
 		{
 			this.addSlotToContainer(
-					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.getInventoryPlayer() ) )
+					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.getPlayerInventory() ) )
 							.setNotDraggable() );
 		}
 		if( this.availableUpgrades() > 2 )
 		{
 			this.addSlotToContainer(
-					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.getInventoryPlayer() ) )
+					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.getPlayerInventory() ) )
 							.setNotDraggable() );
 		}
 		if( this.availableUpgrades() > 3 )
 		{
 			this.addSlotToContainer(
-					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.getInventoryPlayer() ) )
+					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.getPlayerInventory() ) )
 							.setNotDraggable() );
 		}
 

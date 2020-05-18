@@ -21,8 +21,8 @@ package appeng.core;
 
 import java.util.Optional;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 

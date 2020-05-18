@@ -23,13 +23,13 @@ import java.util.EnumSet;
 import java.util.Random;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.parts.SelectedPart;
@@ -41,19 +41,19 @@ public class NullCableBusContainer implements ICableBusContainer
 {
 
 	@Override
-	public int isProvidingStrongPower( final EnumFacing opposite )
+	public int isProvidingStrongPower( final Direction opposite )
 	{
 		return 0;
 	}
 
 	@Override
-	public int isProvidingWeakPower( final EnumFacing opposite )
+	public int isProvidingWeakPower( final Direction opposite )
 	{
 		return 0;
 	}
 
 	@Override
-	public boolean canConnectRedstone( final EnumSet<EnumFacing> of )
+	public boolean canConnectRedstone( final EnumSet<Direction> of )
 	{
 		return false;
 	}
@@ -65,19 +65,19 @@ public class NullCableBusContainer implements ICableBusContainer
 	}
 
 	@Override
-	public boolean activate( final EntityPlayer player, final EnumHand hand, final Vec3d vecFromPool )
+	public boolean activate( final PlayerEntity player, final Hand hand, final Vec3d vecFromPool )
 	{
 		return false;
 	}
 
 	@Override
-	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
+	public void onNeighborChanged( IBlockReader w, BlockPos pos, BlockPos neighbor )
 	{
 
 	}
 
 	@Override
-	public boolean isSolidOnSide( final EnumFacing side )
+	public boolean isSolidOnSide( final Direction side )
 	{
 		return false;
 	}
@@ -95,13 +95,13 @@ public class NullCableBusContainer implements ICableBusContainer
 	}
 
 	@Override
-	public boolean recolourBlock( final EnumFacing side, final AEColor colour, final EntityPlayer who )
+	public boolean recolourBlock( final Direction side, final AEColor colour, final PlayerEntity who )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean isLadder( final EntityLivingBase entity )
+	public boolean isLadder( final LivingEntity entity )
 	{
 		return false;
 	}
@@ -125,7 +125,7 @@ public class NullCableBusContainer implements ICableBusContainer
 	}
 
 	@Override
-	public boolean clicked( EntityPlayer player, EnumHand hand, Vec3d hitVec )
+	public boolean clicked( PlayerEntity player, Hand hand, Vec3d hitVec )
 	{
 		return false;
 	}

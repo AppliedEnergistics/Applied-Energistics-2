@@ -33,18 +33,16 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.AEApi;
 import appeng.api.implementations.items.IItemGroup;
@@ -154,7 +152,7 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 	}
 
 	@Override
-	public EnumActionResult onItemUse( final EntityPlayer player, final World w, final BlockPos pos, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public EnumActionResult onItemUse( final PlayerEntity player, final World w, final BlockPos pos, final Hand hand, final Direction side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( this.getTypeByStack( player.getHeldItem( hand ) ) == PartType.INVALID_TYPE )
 		{
@@ -165,10 +163,10 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 	}
 
 	@Override
-	public String getUnlocalizedName( final ItemStack is )
+	public String getTranslationKey( final ItemStack is )
 	{
 		Preconditions.checkNotNull( is );
-		return "item.appliedenergistics2.multi_part." + this.getTypeByStack( is ).getUnlocalizedName().toLowerCase();
+		return "item.appliedenergistics2.multi_part." + this.getTypeByStack( is ).getTranslationKey().toLowerCase();
 	}
 
 	@Override
@@ -375,22 +373,6 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 			}
 
 			return comparedString;
-		}
-	}
-
-	public void registerOreDicts()
-	{
-		for( final PartTypeWithVariant mt : ImmutableSet.copyOf( this.registered.values() ) )
-		{
-			if( mt.part.getOreName() != null )
-			{
-				final String[] names = mt.part.getOreName().split( "," );
-
-				for( final String name : names )
-				{
-					OreDictionary.registerOre( name, new ItemStack( this, 1, mt.part.getBaseDamage() + mt.variant ) );
-				}
-			}
 		}
 	}
 

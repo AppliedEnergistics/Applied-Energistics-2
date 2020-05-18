@@ -22,16 +22,16 @@ package appeng.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 
 
 public class InWorldToolOperationResult
 {
 
-	private final IBlockState blockState;
+	private final BlockState blockState;
 	private final List<ItemStack> drops;
 
 	public InWorldToolOperationResult()
@@ -40,13 +40,13 @@ public class InWorldToolOperationResult
 		this.drops = null;
 	}
 
-	public InWorldToolOperationResult( final IBlockState block, final List<ItemStack> drops )
+	public InWorldToolOperationResult( final BlockState block, final List<ItemStack> drops )
 	{
 		this.blockState = block;
 		this.drops = drops;
 	}
 
-	public InWorldToolOperationResult( final IBlockState block )
+	public InWorldToolOperationResult( final BlockState block )
 	{
 		this.blockState = block;
 		this.drops = null;
@@ -55,7 +55,7 @@ public class InWorldToolOperationResult
 	public static InWorldToolOperationResult getBlockOperationResult( final ItemStack[] items )
 	{
 		final List<ItemStack> temp = new ArrayList<>();
-		IBlockState b = null;
+		BlockState b = null;
 
 		for( final ItemStack l : items )
 		{
@@ -63,7 +63,7 @@ public class InWorldToolOperationResult
 			{
 				final Block bl = Block.getBlockFromItem( l.getItem() );
 
-				if( bl != null && !( bl instanceof BlockAir ) )
+				if( bl != null && !( bl instanceof AirBlock ) )
 				{
 					b = bl.getDefaultState();
 					continue;
@@ -76,7 +76,7 @@ public class InWorldToolOperationResult
 		return new InWorldToolOperationResult( b, temp );
 	}
 
-	public IBlockState getBlockState()
+	public BlockState getBlockState()
 	{
 		return this.blockState;
 	}

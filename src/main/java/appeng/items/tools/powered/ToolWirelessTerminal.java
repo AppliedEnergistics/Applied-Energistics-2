@@ -22,16 +22,16 @@ package appeng.items.tools.powered;
 import java.util.List;
 
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -57,13 +57,13 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick( final World w, final EntityPlayer player, final EnumHand hand )
+	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity player, final Hand hand )
 	{
 		AEApi.instance().registries().wireless().openWirelessTerminalGui( player.getHeldItem( hand ), w, player );
 		return new ActionResult<>( EnumActionResult.SUCCESS, player.getHeldItem( hand ) );
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	@Override
 	public boolean isFull3D()
 	{
@@ -71,14 +71,14 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
 		super.addCheckedInformation( stack, world, lines, advancedTooltips );
 
 		if( stack.hasTagCompound() )
 		{
-			final NBTTagCompound tag = Platform.openNbtData( stack );
+			final CompoundNBT tag = Platform.openNbtData( stack );
 			if( tag != null )
 			{
 				final String encKey = tag.getString( "encryptionKey" );
@@ -106,13 +106,13 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	}
 
 	@Override
-	public boolean usePower( final EntityPlayer player, final double amount, final ItemStack is )
+	public boolean usePower( final PlayerEntity player, final double amount, final ItemStack is )
 	{
 		return this.extractAEPower( is, amount, Actionable.MODULATE ) >= amount - 0.5;
 	}
 
 	@Override
-	public boolean hasPower( final EntityPlayer player, final double amt, final ItemStack is )
+	public boolean hasPower( final PlayerEntity player, final double amt, final ItemStack is )
 	{
 		return this.getAECurrentPower( is ) >= amt;
 	}
@@ -122,7 +122,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	{
 		final ConfigManager out = new ConfigManager( ( manager, settingName, newValue ) ->
 		{
-			final NBTTagCompound data = Platform.openNbtData( target );
+			final CompoundNBT data = Platform.openNbtData( target );
 			manager.writeToNBT( data );
 		} );
 
@@ -137,14 +137,14 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	@Override
 	public String getEncryptionKey( final ItemStack item )
 	{
-		final NBTTagCompound tag = Platform.openNbtData( item );
+		final CompoundNBT tag = Platform.openNbtData( item );
 		return tag.getString( "encryptionKey" );
 	}
 
 	@Override
 	public void setEncryptionKey( final ItemStack item, final String encKey, final String name )
 	{
-		final NBTTagCompound tag = Platform.openNbtData( item );
+		final CompoundNBT tag = Platform.openNbtData( item );
 		tag.setString( "encryptionKey", encKey );
 		tag.setString( "name", name );
 	}

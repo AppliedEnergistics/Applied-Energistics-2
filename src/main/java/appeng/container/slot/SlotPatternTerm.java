@@ -21,7 +21,7 @@ package appeng.container.slot;
 
 import java.io.IOException;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -41,7 +41,7 @@ public class SlotPatternTerm extends SlotCraftingTerm
 	private final int groupNum;
 	private final IOptionalSlotHost host;
 
-	public SlotPatternTerm( final EntityPlayer player, final IActionSource mySrc, final IEnergySource energySrc, final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix, final IItemHandler output, final int x, final int y, final IOptionalSlotHost h, final int groupNumber, final IContainerCraftingPacket c )
+	public SlotPatternTerm( final PlayerEntity player, final IActionSource mySrc, final IEnergySource energySrc, final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix, final IItemHandler output, final int x, final int y, final IOptionalSlotHost h, final int groupNumber, final IContainerCraftingPacket c )
 	{
 		super( player, mySrc, energySrc, storage, cMatrix, secondMatrix, output, x, y, c );
 

@@ -19,7 +19,7 @@
 package appeng.client.gui.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.client.gui.AEBaseGui;
 import appeng.container.implementations.ContainerQNB;
@@ -30,9 +30,9 @@ import appeng.tile.qnb.TileQuantumBridge;
 public class GuiQNB extends AEBaseGui
 {
 
-	public GuiQNB( final InventoryPlayer inventoryPlayer, final TileQuantumBridge te )
+	public GuiQNB( final PlayerInventory PlayerInventory, final TileQuantumBridge te )
 	{
-		super( new ContainerQNB( inventoryPlayer, te ) );
+		super( new ContainerQNB( PlayerInventory, te ) );
 		this.ySize = 166;
 	}
 

@@ -22,12 +22,12 @@ package appeng.block.misc;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -50,9 +50,9 @@ public class BlockInscriber extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer p, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
 	{
-		if( p.isSneaking() )
+		if( p.isShiftKeyDown() )
 		{
 			return false;
 		}
@@ -70,14 +70,14 @@ public class BlockInscriber extends AEBaseTileBlock
 	}
 
 	@Override
-	public EnumBlockRenderType getRenderType( IBlockState state )
+	public EnumBlockRenderType getRenderType( BlockState state )
 	{
 		return EnumBlockRenderType.MODEL;
 	}
 
 	@Override
-	public String getUnlocalizedName( final ItemStack is )
+	public String getTranslationKey( final ItemStack is )
 	{
-		return super.getUnlocalizedName( is );
+		return super.getTranslationKey( is );
 	}
 }

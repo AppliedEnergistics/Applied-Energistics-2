@@ -20,23 +20,18 @@ package appeng.items.tools;
 
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Direction;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.Optional.Interface;
-
-import cofh.api.item.IToolHammer;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
@@ -57,10 +52,7 @@ import appeng.items.contents.NetworkToolViewer;
 import appeng.util.Platform;
 
 
-// TODO BC Integration
-//@Interface( iface = "buildcraft.api.tools.IToolWrench", iname = IntegrationType.BuildCraftCore )
-@Interface( iface = "cofh.api.item.IToolHammer", modid = "cofhcore" )
-public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, IToolHammer /* , IToolWrench */
+public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench
 {
 
 	public ToolNetworkTool()
@@ -77,7 +69,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick( final World w, final EntityPlayer p, final EnumHand hand )
+	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity p, final Hand hand )
 	{
 		if( Platform.isClient() )
 		{
@@ -93,7 +85,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
+	public EnumActionResult onItemUseFirst( final PlayerEntity player, final World world, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
 	{
 		final RayTraceResult mop = new RayTraceResult( new Vec3d( hitX, hitY, hitZ ), side, pos );
 		final TileEntity te = world.getTileEntity( pos );
@@ -108,7 +100,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 				{
 					return EnumActionResult.FAIL;
 				}
-				else if( player.isSneaking() )
+				else if( player.isShiftKeyDown() )
 				{
 					return EnumActionResult.PASS;
 				}
@@ -128,12 +120,12 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	}
 
 	@Override
-	public boolean doesSneakBypassUse( final ItemStack itemstack, final IBlockAccess world, final BlockPos pos, final EntityPlayer player )
+	public boolean doesSneakBypassUse( final ItemStack itemstack, final IBlockReader world, final BlockPos pos, final PlayerEntity player )
 	{
 		return true;
 	}
 
-	public boolean serverSideToolLogic( final ItemStack is, final EntityPlayer p, final EnumHand hand, final World w, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean serverSideToolLogic( final ItemStack is, final PlayerEntity p, final Hand hand, final World w, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( side != null )
 		{
@@ -143,7 +135,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 			}
 
 			final Block b = w.getBlockState( pos ).getBlock();
-			if( !p.isSneaking() )
+			if( !p.isShiftKeyDown() )
 			{
 				final TileEntity te = w.getTileEntity( pos );
 				if( !( te instanceof IGridHost ) )
@@ -157,7 +149,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 				}
 			}
 
-			if( !p.isSneaking() )
+			if( !p.isShiftKeyDown() )
 			{
 				if( p.openContainer instanceof AEBaseContainer )
 				{
@@ -191,35 +183,8 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 	}
 
 	@Override
-	public boolean canWrench( final ItemStack wrench, final EntityPlayer player, final BlockPos pos )
+	public boolean canWrench( final ItemStack wrench, final PlayerEntity player, final BlockPos pos )
 	{
 		return true;
 	}
-
-	// IToolHammer - start
-	@Override
-	public boolean isUsable( ItemStack item, EntityLivingBase user, BlockPos pos )
-	{
-		return true;
-	}
-
-	@Override
-	public boolean isUsable( ItemStack item, EntityLivingBase user, Entity entity )
-	{
-		return true;
-	}
-
-	@Override
-	public void toolUsed( ItemStack item, EntityLivingBase user, BlockPos pos )
-	{
-	}
-
-	@Override
-	public void toolUsed( ItemStack item, EntityLivingBase user, Entity entity )
-	{
-	}
-	// IToolHammer - end
-
-	// TODO: BC WRENCH INTEGRATION
-
 }

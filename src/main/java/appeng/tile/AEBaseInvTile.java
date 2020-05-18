@@ -25,8 +25,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -46,16 +46,16 @@ public abstract class AEBaseInvTile extends AEBaseTile implements IAEAppEngInven
 {
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		final IItemHandler inv = this.getInternalInventory();
 		if( inv != EmptyHandler.INSTANCE )
 		{
-			final NBTTagCompound opt = data.getCompoundTag( "inv" );
+			final CompoundNBT opt = data.getCompoundTag( "inv" );
 			for( int x = 0; x < inv.getSlots(); x++ )
 			{
-				final NBTTagCompound item = opt.getCompoundTag( "item" + x );
+				final CompoundNBT item = opt.getCompoundTag( "item" + x );
 				ItemHandlerUtil.setStackInSlot( inv, x, new ItemStack( item ) );
 			}
 		}
@@ -64,16 +64,16 @@ public abstract class AEBaseInvTile extends AEBaseTile implements IAEAppEngInven
 	public abstract @Nonnull IItemHandler getInternalInventory();
 
 	@Override
-	public NBTTagCompound writeToNBT( final NBTTagCompound data )
+	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		final IItemHandler inv = this.getInternalInventory();
 		if( inv != EmptyHandler.INSTANCE )
 		{
-			final NBTTagCompound opt = new NBTTagCompound();
+			final CompoundNBT opt = new CompoundNBT();
 			for( int x = 0; x < inv.getSlots(); x++ )
 			{
-				final NBTTagCompound item = new NBTTagCompound();
+				final CompoundNBT item = new CompoundNBT();
 				final ItemStack is = inv.getStackInSlot( x );
 				if( !is.isEmpty() )
 				{
@@ -111,16 +111,16 @@ public abstract class AEBaseInvTile extends AEBaseTile implements IAEAppEngInven
 		{
 			return new TextComponentString( this.getCustomInventoryName() );
 		}
-		return new TextComponentTranslation( this.getBlockType().getUnlocalizedName() );
+		return new TextComponentTranslation( this.getBlockType().getTranslationKey() );
 	}
 
-	protected @Nonnull IItemHandler getItemHandlerForSide( @Nonnull EnumFacing side )
+	protected @Nonnull IItemHandler getItemHandlerForSide( @Nonnull Direction side )
 	{
 		return this.getInternalInventory();
 	}
 
 	@Override
-	public boolean hasCapability( Capability<?> capability, EnumFacing facing )
+	public boolean hasCapability( Capability<?> capability, Direction facing )
 	{
 		if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
 		{
@@ -138,7 +138,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements IAEAppEngInven
 
 	@SuppressWarnings( "unchecked" )
 	@Override
-	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
+	public <T> T getCapability( Capability<T> capability, @Nullable Direction facing )
 	{
 		if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
 		{

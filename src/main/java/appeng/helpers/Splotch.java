@@ -21,7 +21,7 @@ package appeng.helpers;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.Vec3d;
 
 import appeng.api.util.AEColor;
@@ -30,12 +30,12 @@ import appeng.api.util.AEColor;
 public class Splotch
 {
 
-	private final EnumFacing side;
+	private final Direction side;
 	private final boolean lumen;
 	private final AEColor color;
 	private final int pos;
 
-	public Splotch( final AEColor col, final boolean lit, final EnumFacing side, final Vec3d position )
+	public Splotch( final AEColor col, final boolean lit, final Direction side, final Vec3d position )
 	{
 		this.color = col;
 		this.lumen = lit;
@@ -43,13 +43,13 @@ public class Splotch
 		final double x;
 		final double y;
 
-		if( side == EnumFacing.SOUTH || side == EnumFacing.NORTH )
+		if( side == Direction.SOUTH || side == Direction.NORTH )
 		{
 			x = position.x;
 			y = position.y;
 		}
 
-		else if( side == EnumFacing.UP || side == EnumFacing.DOWN )
+		else if( side == Direction.UP || side == Direction.DOWN )
 		{
 			x = position.x;
 			y = position.z;
@@ -74,7 +74,7 @@ public class Splotch
 		this.pos = data.readByte();
 		final int val = data.readByte();
 
-		this.side = EnumFacing.VALUES[val & 0x07];
+		this.side = Direction.VALUES[val & 0x07];
 		this.color = AEColor.values()[( val >> 3 ) & 0x0F];
 		this.lumen = ( ( val >> 7 ) & 0x01 ) > 0;
 	}
@@ -102,7 +102,7 @@ public class Splotch
 		return Math.abs( this.pos + val );
 	}
 
-	public EnumFacing getSide()
+	public Direction getSide()
 	{
 		return this.side;
 	}

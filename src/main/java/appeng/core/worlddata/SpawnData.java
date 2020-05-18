@@ -30,8 +30,8 @@ import javax.annotation.Nonnull;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
 
 import appeng.core.AELog;
 
@@ -57,11 +57,11 @@ final class SpawnData implements IWorldSpawnData
 	}
 
 	@Override
-	public void setGenerated( final int dim, final int chunkX, final int chunkZ )
+	public void setGenerated( final Dimension dim, final int chunkX, final int chunkZ )
 	{
 		synchronized( SpawnData.class )
 		{
-			final NBTTagCompound data = this.loadSpawnData( dim, chunkX, chunkZ );
+			final CompoundNBT data = this.loadSpawnData( dim, chunkX, chunkZ );
 
 			// edit.
 			data.setBoolean( chunkX + "," + chunkZ, true );
@@ -71,21 +71,21 @@ final class SpawnData implements IWorldSpawnData
 	}
 
 	@Override
-	public boolean hasGenerated( final int dim, final int chunkX, final int chunkZ )
+	public boolean hasGenerated( final Dimension dim, final int chunkX, final int chunkZ )
 	{
 		synchronized( SpawnData.class )
 		{
-			final NBTTagCompound data = this.loadSpawnData( dim, chunkX, chunkZ );
+			final CompoundNBT data = this.loadSpawnData( dim, chunkX, chunkZ );
 			return data.getBoolean( chunkX + "," + chunkZ );
 		}
 	}
 
 	@Override
-	public boolean addNearByMeteorites( final int dim, final int chunkX, final int chunkZ, final NBTTagCompound newData )
+	public boolean addNearByMeteorites( final Dimension dim, final int chunkX, final int chunkZ, final CompoundNBT newData )
 	{
 		synchronized( SpawnData.class )
 		{
-			final NBTTagCompound data = this.loadSpawnData( dim, chunkX, chunkZ );
+			final CompoundNBT data = this.loadSpawnData( dim, chunkX, chunkZ );
 
 			// edit.
 			final int size = data.getInteger( "num" );
@@ -99,9 +99,9 @@ final class SpawnData implements IWorldSpawnData
 	}
 
 	@Override
-	public Collection<NBTTagCompound> getNearByMeteorites( final int dim, final int chunkX, final int chunkZ )
+	public Collection<CompoundNBT> getNearByMeteorites( final int Dimension, final int chunkX, final int chunkZ )
 	{
-		final Collection<NBTTagCompound> ll = new ArrayList<>();
+		final Collection<CompoundNBT> ll = new ArrayList<>();
 
 		synchronized( SpawnData.class )
 		{
@@ -112,7 +112,7 @@ final class SpawnData implements IWorldSpawnData
 					final int cx = x + ( chunkX >> 4 );
 					final int cz = z + ( chunkZ >> 4 );
 
-					final NBTTagCompound data = this.loadSpawnData( dim, cx << 4, cz << 4 );
+					final CompoundNBT data = this.loadSpawnData( dim, cx << 4, cz << 4 );
 
 					if( data != null )
 					{
@@ -130,14 +130,14 @@ final class SpawnData implements IWorldSpawnData
 		return ll;
 	}
 
-	private NBTTagCompound loadSpawnData( final int dim, final int chunkX, final int chunkZ )
+	private CompoundNBT loadSpawnData( final int dim, final int chunkX, final int chunkZ )
 	{
 		if( !Thread.holdsLock( SpawnData.class ) )
 		{
 			throw new IllegalStateException( "Invalid Request" );
 		}
 
-		NBTTagCompound data = null;
+		CompoundNBT data = null;
 		final String fileName = this.encoder.encode( dim, chunkX, chunkZ );
 		final File file = new File( this.spawnDirectory, fileName );
 
@@ -152,7 +152,7 @@ final class SpawnData implements IWorldSpawnData
 			}
 			catch( final Throwable e )
 			{
-				data = new NBTTagCompound();
+				data = new CompoundNBT();
 				AELog.debug( e );
 			}
 			finally
@@ -172,13 +172,13 @@ final class SpawnData implements IWorldSpawnData
 		}
 		else
 		{
-			data = new NBTTagCompound();
+			data = new CompoundNBT();
 		}
 
 		return data;
 	}
 
-	private void writeSpawnData( final int dim, final int chunkX, final int chunkZ, final NBTTagCompound data )
+	private void writeSpawnData( final int dim, final int chunkX, final int chunkZ, final CompoundNBT data )
 	{
 		if( !Thread.holdsLock( SpawnData.class ) )
 		{

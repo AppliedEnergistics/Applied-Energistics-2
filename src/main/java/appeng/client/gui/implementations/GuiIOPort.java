@@ -24,7 +24,7 @@ import java.io.IOException;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.AEApi;
 import appeng.api.config.FullnessMode;
@@ -46,9 +46,9 @@ public class GuiIOPort extends GuiUpgradeable
 	private GuiImgButton fullMode;
 	private GuiImgButton operationMode;
 
-	public GuiIOPort( final InventoryPlayer inventoryPlayer, final TileIOPort te )
+	public GuiIOPort( final PlayerInventory PlayerInventory, final TileIOPort te )
 	{
-		super( new ContainerIOPort( inventoryPlayer, te ) );
+		super( new ContainerIOPort( PlayerInventory, te ) );
 		this.ySize = 166;
 	}
 

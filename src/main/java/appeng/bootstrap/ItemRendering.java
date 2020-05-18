@@ -29,17 +29,17 @@ import java.util.Set;
 import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.bootstrap.components.ItemColorComponent;
 import appeng.bootstrap.components.ItemMeshDefinitionComponent;
@@ -50,23 +50,23 @@ import appeng.bootstrap.components.ItemVariantsComponent;
 class ItemRendering implements IItemRendering
 {
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private IItemColor itemColor;
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private ItemMeshDefinition itemMeshDefinition;
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private Map<Integer, ModelResourceLocation> itemModels = new HashMap<>();
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private Set<ResourceLocation> variants = new HashSet<>();
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private Map<String, IModel> builtInModels = new HashMap<>();
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public IItemRendering meshDefinition( ItemMeshDefinition meshDefinition )
 	{
 		this.itemMeshDefinition = meshDefinition;
@@ -74,7 +74,7 @@ class ItemRendering implements IItemRendering
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public IItemRendering model( int meta, ModelResourceLocation model )
 	{
 		this.itemModels.put( meta, model );
@@ -89,7 +89,7 @@ class ItemRendering implements IItemRendering
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public IItemRendering color( IItemColor itemColor )
 	{
 		this.itemColor = itemColor;
@@ -123,9 +123,9 @@ class ItemRendering implements IItemRendering
 			ModelResourceLocation model;
 
 			// For block items, the default will try to use the default state of the associated block
-			if( item instanceof ItemBlock )
+			if( item instanceof BlockItem )
 			{
-				Block block = ( (ItemBlock) item ).getBlock();
+				Block block = ( (BlockItem) item ).getBlock();
 
 				// We can only do this once the blocks are actually registered...
 				StateMapperHelper helper = new StateMapperHelper( item.getRegistryName() );
@@ -169,7 +169,7 @@ class ItemRendering implements IItemRendering
 		}
 
 		@Override
-		protected ModelResourceLocation getModelResourceLocation( IBlockState state )
+		protected ModelResourceLocation getModelResourceLocation( BlockState state )
 		{
 			return new ModelResourceLocation( this.registryName, this.getPropertyString( state.getProperties() ) );
 		}

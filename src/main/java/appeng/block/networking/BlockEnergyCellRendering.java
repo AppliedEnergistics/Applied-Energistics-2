@@ -24,7 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import appeng.api.implementations.items.IAEItemPowerStorage;
-import appeng.block.AEBaseItemBlockChargeable;
+import appeng.block.AEBaseBlockItemChargeable;
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;
@@ -71,7 +71,7 @@ public class BlockEnergyCellRendering extends BlockRenderingCustomizer
 			return 0;
 		}
 
-		AEBaseItemBlockChargeable itemChargeable = (AEBaseItemBlockChargeable) is.getItem();
+		AEBaseBlockItemChargeable itemChargeable = (AEBaseBlockItemChargeable) is.getItem();
 		double curPower = itemChargeable.getAECurrentPower( is );
 		double maxPower = itemChargeable.getAEMaxPower( is );
 

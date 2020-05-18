@@ -21,7 +21,7 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
@@ -43,9 +43,9 @@ public class GuiSecurityStation extends GuiMEMonitorable
 	private GuiToggleButton build;
 	private GuiToggleButton security;
 
-	public GuiSecurityStation( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
+	public GuiSecurityStation( final PlayerInventory PlayerInventory, final ITerminalHost te )
 	{
-		super( inventoryPlayer, te, new ContainerSecurityStation( inventoryPlayer, te ) );
+		super( PlayerInventory, te, new ContainerSecurityStation( PlayerInventory, te ) );
 		this.setCustomSortOrder( false );
 		this.setReservedSpace( 33 );
 
@@ -102,19 +102,19 @@ public class GuiSecurityStation extends GuiMEMonitorable
 
 		final int top = this.guiTop + this.ySize - 116;
 		this.buttonList.add( this.inject = new GuiToggleButton( this.guiLeft + 56, top, 11 * 16, 12 * 16, SecurityPermissions.INJECT
-				.getUnlocalizedName(), SecurityPermissions.INJECT.getUnlocalizedTip() ) );
+				.getTranslationKey(), SecurityPermissions.INJECT.getUnlocalizedTip() ) );
 
 		this.buttonList.add( this.extract = new GuiToggleButton( this.guiLeft + 56 + 18, top, 11 * 16 + 1, 12 * 16 + 1, SecurityPermissions.EXTRACT
-				.getUnlocalizedName(), SecurityPermissions.EXTRACT.getUnlocalizedTip() ) );
+				.getTranslationKey(), SecurityPermissions.EXTRACT.getUnlocalizedTip() ) );
 
 		this.buttonList.add( this.craft = new GuiToggleButton( this.guiLeft + 56 + 18 * 2, top, 11 * 16 + 2, 12 * 16 + 2, SecurityPermissions.CRAFT
-				.getUnlocalizedName(), SecurityPermissions.CRAFT.getUnlocalizedTip() ) );
+				.getTranslationKey(), SecurityPermissions.CRAFT.getUnlocalizedTip() ) );
 
 		this.buttonList.add( this.build = new GuiToggleButton( this.guiLeft + 56 + 18 * 3, top, 11 * 16 + 3, 12 * 16 + 3, SecurityPermissions.BUILD
-				.getUnlocalizedName(), SecurityPermissions.BUILD.getUnlocalizedTip() ) );
+				.getTranslationKey(), SecurityPermissions.BUILD.getUnlocalizedTip() ) );
 
 		this.buttonList.add( this.security = new GuiToggleButton( this.guiLeft + 56 + 18 * 4, top, 11 * 16 + 4, 12 * 16 + 4, SecurityPermissions.SECURITY
-				.getUnlocalizedName(), SecurityPermissions.SECURITY.getUnlocalizedTip() ) );
+				.getTranslationKey(), SecurityPermissions.SECURITY.getUnlocalizedTip() ) );
 	}
 
 	@Override

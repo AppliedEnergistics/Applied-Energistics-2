@@ -25,13 +25,13 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 
-@SideOnly( Side.CLIENT )
+@OnlyIn( Dist.CLIENT )
 public class RenderTinyTNTPrimed extends Render<EntityTinyTNTPrimed>
 {
 
@@ -44,7 +44,7 @@ public class RenderTinyTNTPrimed extends Render<EntityTinyTNTPrimed>
 	@Override
 	public void doRender( final EntityTinyTNTPrimed tnt, final double x, final double y, final double z, final float unused, final float life )
 	{
-		final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+		final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
 		GlStateManager.pushMatrix();
 		GlStateManager.translate( (float) x, (float) y + 0.25F, (float) z );
 		float f2;

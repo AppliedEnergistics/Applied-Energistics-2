@@ -26,14 +26,13 @@ import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.item.Items;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
@@ -99,15 +98,11 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		this.addNewAttunement( new ItemStack( Items.REDSTONE ), TunnelType.REDSTONE );
 		this.addNewAttunement( new ItemStack( Items.REPEATER ), TunnelType.REDSTONE );
 		this.addNewAttunement( new ItemStack( Blocks.REDSTONE_LAMP ), TunnelType.REDSTONE );
-		this.addNewAttunement( new ItemStack( Blocks.UNPOWERED_COMPARATOR ), TunnelType.REDSTONE );
-		this.addNewAttunement( new ItemStack( Blocks.POWERED_COMPARATOR ), TunnelType.REDSTONE );
-		this.addNewAttunement( new ItemStack( Blocks.POWERED_REPEATER ), TunnelType.REDSTONE );
-		this.addNewAttunement( new ItemStack( Blocks.UNPOWERED_REPEATER ), TunnelType.REDSTONE );
+		this.addNewAttunement( new ItemStack( Blocks.COMPARATOR ), TunnelType.REDSTONE );
 		this.addNewAttunement( new ItemStack( Blocks.DAYLIGHT_DETECTOR ), TunnelType.REDSTONE );
 		this.addNewAttunement( new ItemStack( Blocks.REDSTONE_WIRE ), TunnelType.REDSTONE );
 		this.addNewAttunement( new ItemStack( Blocks.REDSTONE_BLOCK ), TunnelType.REDSTONE );
 		this.addNewAttunement( new ItemStack( Blocks.LEVER ), TunnelType.REDSTONE );
-		this.addNewAttunement( this.getModItem( "enderio", "itemredstoneconduit", OreDictionary.WILDCARD_VALUE ), TunnelType.REDSTONE );
 
 		/**
 		 * attune based on lots of random item related stuff
@@ -124,7 +119,6 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		this.addNewAttunement( new ItemStack( Blocks.TRAPPED_CHEST ), TunnelType.ITEM );
 		this.addNewAttunement( this.getModItem( "extrautilities", "extractor_base", 0 ), TunnelType.ITEM );
 		this.addNewAttunement( this.getModItem( "mekanism", "parttransmitter", 9 ), TunnelType.ITEM );
-		this.addNewAttunement( this.getModItem( "enderio", "itemitemconduit", OreDictionary.WILDCARD_VALUE ), TunnelType.ITEM );
 		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 0 ), TunnelType.ITEM ); // itemduct
 		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_32", 1 ), TunnelType.ITEM ); // itemduct
 																										// (opaque)
@@ -144,8 +138,6 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 		this.addNewAttunement( this.getModItem( "mekanism", "machineblock2", 11 ), TunnelType.FLUID );
 		this.addNewAttunement( this.getModItem( "mekanism", "parttransmitter", 4 ), TunnelType.FLUID );
 		this.addNewAttunement( this.getModItem( "extrautilities", "extractor_base", 6 ), TunnelType.FLUID );
-		this.addNewAttunement( this.getModItem( "extrautilities", "drum", OreDictionary.WILDCARD_VALUE ), TunnelType.FLUID );
-		this.addNewAttunement( this.getModItem( "enderio", "itemliquidconduit", OreDictionary.WILDCARD_VALUE ), TunnelType.FLUID );
 		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 0 ), TunnelType.FLUID ); // fluiduct
 		this.addNewAttunement( this.getModItem( "thermaldynamics", "duct_16", 1 ), TunnelType.FLUID ); // fluiduct
 																										// (opaque)
@@ -228,7 +220,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 			{
 				final ItemStack is = entry.getKey();
 
-				if( is.getItem() == trigger.getItem() && is.getItemDamage() == OreDictionary.WILDCARD_VALUE )
+				if( is.getItem() == trigger.getItem() )
 				{
 					return entry.getValue();
 				}
@@ -240,11 +232,11 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 			}
 
 			// Next, check if the Item you're holding supports any registered capability
-			for( EnumFacing face : EnumFacing.VALUES )
+			for( Direction face : Direction.values() )
 			{
 				for( Entry<Capability<?>, TunnelType> entry : this.capTunnels.entrySet() )
 				{
-					if( trigger.hasCapability( entry.getKey(), face ) )
+					if( trigger.getCapability( entry.getKey(), face ).isPresent() )
 					{
 						return entry.getValue();
 					}
@@ -254,7 +246,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 			// Use the mod id as last option.
 			for( final Entry<String, TunnelType> entry : this.modIdTunnels.entrySet() )
 			{
-				if( trigger.getItem().getRegistryName() != null && trigger.getItem().getRegistryName().getResourceDomain().equals( entry.getKey() ) )
+				if( trigger.getItem().getRegistryName() != null && trigger.getItem().getRegistryName().getNamespace().equals( entry.getKey() ) )
 				{
 					return entry.getValue();
 				}
@@ -275,7 +267,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 			return ItemStack.EMPTY;
 		}
 
-		final ItemStack myItemStack = new ItemStack( item, 1, meta );
+		final ItemStack myItemStack = new ItemStack( item, 1 );
 		return myItemStack;
 	}
 

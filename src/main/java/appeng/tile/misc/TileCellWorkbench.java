@@ -22,7 +22,7 @@ package appeng.tile.misc;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
@@ -103,7 +103,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT( final NBTTagCompound data )
+	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		this.cell.writeToNBT( data, "cell" );
@@ -113,7 +113,7 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.cell.readFromNBT( data, "cell" );

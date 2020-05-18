@@ -19,7 +19,7 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -56,7 +56,7 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 	@GuiSync( 33 )
 	public int zSize;
 
-	public ContainerSpatialIOPort( final InventoryPlayer ip, final TileSpatialIOPort spatialIOPort )
+	public ContainerSpatialIOPort( final PlayerInventory ip, final TileSpatialIOPort spatialIOPort )
 	{
 		super( ip, spatialIOPort, null );
 
@@ -66,7 +66,7 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 		}
 
 		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.SPATIAL_STORAGE_CELLS, spatialIOPort
-				.getInternalInventory(), 0, 52, 48, this.getInventoryPlayer() ) );
+				.getInternalInventory(), 0, 52, 48, this.getPlayerInventory() ) );
 		this.addSlotToContainer(
 				new SlotOutput( spatialIOPort.getInternalInventory(), 1, 113, 48, SlotRestrictedInput.PlacableItemType.SPATIAL_STORAGE_CELLS.IIcon ) );
 

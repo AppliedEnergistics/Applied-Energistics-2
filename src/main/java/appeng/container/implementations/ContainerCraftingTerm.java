@@ -19,7 +19,7 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -49,7 +49,7 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 	private final SlotCraftingTerm outputSlot;
 	private IRecipe currentRecipe;
 
-	public ContainerCraftingTerm( final InventoryPlayer ip, final ITerminalHost monitorable )
+	public ContainerCraftingTerm( final PlayerInventory ip, final ITerminalHost monitorable )
 	{
 		super( ip, monitorable, false );
 		this.ct = (PartCraftingTerminal) monitorable;
@@ -121,7 +121,7 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 	{
 		if( name.equals( "player" ) )
 		{
-			return new PlayerInvWrapper( this.getInventoryPlayer() );
+			return new PlayerInvWrapper( this.getPlayerInventory() );
 		}
 		return this.ct.getInventoryByName( name );
 	}

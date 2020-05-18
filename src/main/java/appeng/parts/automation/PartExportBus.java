@@ -22,10 +22,10 @@ package appeng.parts.automation;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumHand;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
@@ -101,7 +101,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound extra )
+	public void readFromNBT( final CompoundNBT extra )
 	{
 		super.readFromNBT( extra );
 		this.craftingTracker.readFromNBT( extra );
@@ -109,7 +109,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound extra )
+	public void writeToNBT( final CompoundNBT extra )
 	{
 		super.writeToNBT( extra );
 		this.craftingTracker.writeToNBT( extra );
@@ -215,7 +215,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean onPartActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		if( Platform.isServer() )
 		{

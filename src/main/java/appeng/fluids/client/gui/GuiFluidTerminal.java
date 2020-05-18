@@ -29,7 +29,7 @@ import java.util.Locale;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.text.TextFormatting;
@@ -81,12 +81,12 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 	private GuiImgButton sortByBox;
 	private GuiImgButton sortDirBox;
 
-	public GuiFluidTerminal( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
+	public GuiFluidTerminal( final PlayerInventory PlayerInventory, final ITerminalHost te )
 	{
-		this( inventoryPlayer, te, new ContainerFluidTerminal( inventoryPlayer, te ) );
+		this( PlayerInventory, te, new ContainerFluidTerminal( PlayerInventory, te ) );
 	}
 
-	public GuiFluidTerminal( InventoryPlayer inventoryPlayer, final ITerminalHost te, final ContainerFluidTerminal c )
+	public GuiFluidTerminal( PlayerInventory PlayerInventory, final ITerminalHost te, final ContainerFluidTerminal c )
 	{
 		super( c );
 		this.terminal = te;

@@ -19,7 +19,7 @@
 package appeng.fluids.items;
 
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -103,7 +103,7 @@ public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidSta
 	}
 
 	@Override
-	protected void dropEmptyStorageCellCase( final InventoryAdaptor ia, final EntityPlayer player )
+	protected void dropEmptyStorageCellCase( final InventoryAdaptor ia, final PlayerEntity player )
 	{
 		AEApi.instance().definitions().materials().emptyStorageCell().maybeStack( 1 ).ifPresent( is ->
 		{

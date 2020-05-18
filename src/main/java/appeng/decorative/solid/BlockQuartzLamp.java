@@ -21,12 +21,12 @@ package appeng.decorative.solid;
 
 import java.util.Random;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.render.effects.VibrantFX;
 import appeng.core.AEConfig;
@@ -42,8 +42,8 @@ public class BlockQuartzLamp extends BlockQuartzGlass
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick( final IBlockState state, final World w, final BlockPos pos, final Random r )
+	@OnlyIn( Dist.CLIENT )
+	public void randomDisplayTick( final BlockState state, final World w, final BlockPos pos, final Random r )
 	{
 		if( !AEConfig.instance().isEnableEffects() )
 		{
@@ -58,7 +58,7 @@ public class BlockQuartzLamp extends BlockQuartzGlass
 
 			final VibrantFX fx = new VibrantFX( w, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1, 0.5 + pos.getZ() + d2, 0.0D, 0.0D, 0.0D );
 
-			Minecraft.getMinecraft().effectRenderer.addEffect( fx );
+			Minecraft.getInstance().effectRenderer.addEffect( fx );
 		}
 	}
 }

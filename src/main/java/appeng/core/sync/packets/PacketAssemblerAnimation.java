@@ -24,10 +24,10 @@ import java.io.IOException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.EffectType;
@@ -74,8 +74,8 @@ public class PacketAssemblerAnimation extends AppEngPacket
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	@OnlyIn( Dist.CLIENT )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player )
 	{
 		final double d0 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);
 		final double d1 = 0.5d;// + ((double) (Platform.getRandomFloat() - 0.5F) * 0.26D);

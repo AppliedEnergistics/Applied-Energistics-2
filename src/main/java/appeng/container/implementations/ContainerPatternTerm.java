@@ -23,9 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.InventoryCrafting;
@@ -35,7 +35,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
@@ -90,7 +90,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	@GuiSync( 96 )
 	public boolean substitute = false;
 
-	public ContainerPatternTerm( final InventoryPlayer ip, final ITerminalHost monitorable )
+	public ContainerPatternTerm( final PlayerInventory ip, final ITerminalHost monitorable )
 	{
 		super( ip, monitorable, false );
 		this.patternTerminal = (PartPatternTerminal) monitorable;
@@ -121,10 +121,10 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 		this.addSlotToContainer(
 				this.patternSlotIN = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.BLANK_PATTERN, patternInv, 0, 147, -72 - 9, this
-						.getInventoryPlayer() ) );
+						.getPlayerInventory() ) );
 		this.addSlotToContainer(
 				this.patternSlotOUT = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ENCODED_PATTERN, patternInv, 1, 147, -72 + 34, this
-						.getInventoryPlayer() ) );
+						.getPlayerInventory() ) );
 
 		this.patternSlotOUT.setStackLimit( 1 );
 
@@ -246,7 +246,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		}
 
 		// encode the slot.
-		final NBTTagCompound encodedValue = new NBTTagCompound();
+		final CompoundNBT encodedValue = new CompoundNBT();
 
 		final NBTTagList tagIn = new NBTTagList();
 		final NBTTagList tagOut = new NBTTagList();
@@ -344,7 +344,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 	private NBTBase createItemTag( final ItemStack i )
 	{
-		final NBTTagCompound c = new NBTTagCompound();
+		final CompoundNBT c = new CompoundNBT();
 
 		if( !i.isEmpty() )
 		{
@@ -390,14 +390,14 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			}
 
 			final IAEItemStack extracted = Platform.poweredExtraction( this.getPowerSource(), this.getCellInventory(), out, this.getActionSource() );
-			final EntityPlayer p = this.getPlayerInv().player;
+			final PlayerEntity p = this.getPlayerInv().player;
 
 			if( extracted != null )
 			{
 				inv.addItems( extracted.createItemStack() );
-				if( p instanceof EntityPlayerMP )
+				if( p instanceof PlayerEntityMP )
 				{
-					this.updateHeld( (EntityPlayerMP) p );
+					this.updateHeld( (PlayerEntityMP) p );
 				}
 				this.detectAndSendChanges();
 				return;
@@ -455,9 +455,9 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 				}
 
 				inv.addItems( is );
-				if( p instanceof EntityPlayerMP )
+				if( p instanceof PlayerEntityMP )
 				{
-					this.updateHeld( (EntityPlayerMP) p );
+					this.updateHeld( (PlayerEntityMP) p );
 				}
 				this.detectAndSendChanges();
 			}
@@ -519,9 +519,9 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 						listener.sendSlotContents( this, slot.slotNumber, slot.getStack() );
 					}
 				}
-				if( listener instanceof EntityPlayerMP )
+				if( listener instanceof PlayerEntityMP )
 				{
-					( (EntityPlayerMP) listener ).isChangingQuantityOnly = false;
+					( (PlayerEntityMP) listener ).isChangingQuantityOnly = false;
 				}
 			}
 			this.detectAndSendChanges();
@@ -554,7 +554,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	{
 		if( name.equals( "player" ) )
 		{
-			return new PlayerInvWrapper( this.getInventoryPlayer() );
+			return new PlayerInvWrapper( this.getPlayerInventory() );
 		}
 		return this.getPatternTerminal().getInventoryByName( name );
 	}

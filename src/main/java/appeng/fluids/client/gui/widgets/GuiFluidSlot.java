@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -59,7 +59,7 @@ public class GuiFluidSlot extends GuiCustomSlot
 	}
 
 	@Override
-	public boolean canClick( final EntityPlayer player )
+	public boolean canClick( final PlayerEntity player )
 	{
 		final ItemStack mouseStack = player.inventory.getItemStack();
 		return mouseStack.isEmpty() || mouseStack.hasCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null );

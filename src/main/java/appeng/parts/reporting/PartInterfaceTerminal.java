@@ -19,9 +19,9 @@
 package appeng.parts.reporting;
 
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
@@ -51,7 +51,7 @@ public class PartInterfaceTerminal extends AbstractPartDisplay
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean onPartActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		if( !super.onPartActivate( player, hand, pos ) )
 		{

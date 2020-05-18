@@ -23,8 +23,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.bootstrap.definitions.TileEntityDefinition;
@@ -54,7 +54,7 @@ public interface IBlockBuilder
 	 */
 	IBlockBuilder useCustomItemModel();
 
-	IBlockBuilder item( Function<Block, ItemBlock> factory );
+	IBlockBuilder item( Function<Block, BlockItem> factory );
 
 	<T extends IBlockDefinition> T build();
 }

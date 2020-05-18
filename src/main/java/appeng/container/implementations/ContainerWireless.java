@@ -19,7 +19,7 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
@@ -38,13 +38,13 @@ public class ContainerWireless extends AEBaseContainer
 	@GuiSync( 2 )
 	public long drain = 0;
 
-	public ContainerWireless( final InventoryPlayer ip, final TileWireless te )
+	public ContainerWireless( final PlayerInventory ip, final TileWireless te )
 	{
 		super( ip, te, null );
 		this.wirelessTerminal = te;
 
 		this.addSlotToContainer( this.boosterSlot = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.RANGE_BOOSTER, this.wirelessTerminal
-				.getInternalInventory(), 0, 80, 47, this.getInventoryPlayer() ) );
+				.getInternalInventory(), 0, 80, 47, this.getPlayerInventory() ) );
 
 		this.bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );
 	}

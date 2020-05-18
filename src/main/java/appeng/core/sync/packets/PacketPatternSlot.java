@@ -24,8 +24,8 @@ import java.io.IOException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -109,9 +109,9 @@ public class PacketPatternSlot extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player )
 	{
-		final EntityPlayerMP sender = (EntityPlayerMP) player;
+		final PlayerEntityMP sender = (PlayerEntityMP) player;
 		if( sender.openContainer instanceof ContainerPatternTerm )
 		{
 			final ContainerPatternTerm patternTerminal = (ContainerPatternTerm) sender.openContainer;

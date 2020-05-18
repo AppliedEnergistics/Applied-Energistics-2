@@ -23,19 +23,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.block.Blocks;
+import net.minecraft.item.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -67,7 +67,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
+	public EnumActionResult onItemUseFirst( final PlayerEntity player, final World world, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
 	{
 		return AEApi.instance().partHelper().placeBus( player.getHeldItem( hand ), pos, side, player, hand, world );
 	}
@@ -133,7 +133,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		}
 	}
 
-	private static boolean hasSimpleModel( IBlockState blockState )
+	private static boolean hasSimpleModel( BlockState blockState )
 	{
 		if( blockState.getRenderType() != EnumBlockRenderType.MODEL || blockState instanceof IExtendedBlockState )
 		{
@@ -160,7 +160,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 		// Try to get the block state based on the item stack's meta. If this fails, don't consider it for a facade
 		// This for example fails for Pistons because they hardcoded an invalid meta value in vanilla
-		IBlockState blockState;
+		BlockState blockState;
 		try
 		{
 			blockState = block.getStateFromMeta( metadata );
@@ -175,7 +175,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		final boolean isWhiteListed = FacadeConfig.instance().isWhiteListed( block, metadata );
 		final boolean isModel = blockState.getRenderType() == EnumBlockRenderType.MODEL;
 
-		final IBlockState defaultState = block.getDefaultState();
+		final BlockState defaultState = block.getDefaultState();
 		final boolean isTileEntity = block.hasTileEntity( defaultState );
 		final boolean isFullCube = block.isFullCube( defaultState );
 
@@ -190,7 +190,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			}
 
 			final ItemStack is = new ItemStack( this );
-			final NBTTagCompound data = new NBTTagCompound();
+			final CompoundNBT data = new CompoundNBT();
 			data.setString( TAG_ITEM_ID, itemStack.getItem().getRegistryName().toString() );
 			data.setInteger( TAG_DAMAGE, itemStack.getItemDamage() );
 			is.setTagCompound( data );
@@ -214,7 +214,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	public ItemStack getTextureItem( ItemStack is )
 	{
 
-		NBTTagCompound nbt = is.getTagCompound();
+		CompoundNBT nbt = is.getTagCompound();
 
 		if( nbt == null )
 		{
@@ -260,7 +260,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	public IBlockState getTextureBlockState( ItemStack is )
+	public BlockState getTextureBlockState( ItemStack is )
 	{
 
 		ItemStack baseItemStack = this.getTextureItem( is );
@@ -322,7 +322,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			return ItemStack.EMPTY;
 		}
 
-		final NBTTagCompound facadeTag = new NBTTagCompound();
+		final CompoundNBT facadeTag = new CompoundNBT();
 		facadeTag.setString( TAG_ITEM_ID, item.getRegistryName().toString() );
 		facadeTag.setInteger( TAG_DAMAGE, ids[1] );
 		facadeStack.setTagCompound( facadeTag );
@@ -333,7 +333,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	@Override
 	public boolean useAlphaPass( final ItemStack is )
 	{
-		IBlockState blockState = this.getTextureBlockState( is );
+		BlockState blockState = this.getTextureBlockState( is );
 
 		if( blockState == null )
 		{

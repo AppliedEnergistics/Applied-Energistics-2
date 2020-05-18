@@ -30,12 +30,12 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.Item;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.util.AEColor;
@@ -57,10 +57,10 @@ public class FeatureFactory
 
 	private final Map<Class<? extends IBootstrapComponent>, List<IBootstrapComponent>> bootstrapComponents;
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private ModelOverrideComponent modelOverrideComponent;
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private BuiltInModelComponent builtInModelComponent;
 
 	public final TileEntityComponent tileEntityComponent;
@@ -115,7 +115,7 @@ public class FeatureFactory
 			{
 				final ActivityState state = ActivityState.from( target.isEnabled() );
 
-				definition.add( color, new ItemStackSrc( targetItem, offset + color.ordinal(), state ) );
+				definition.add( color, new ItemStackSrc( targetItem, state ) );
 			}
 		} );
 
@@ -139,13 +139,13 @@ public class FeatureFactory
 		this.bootstrapComponents.computeIfAbsent( eventType, c -> new ArrayList<IBootstrapComponent>() ).add( component );
 	}
 
-	@SideOnly( Side.CLIENT )
-	void addBuiltInModel( String path, IModel model )
+	@OnlyIn( Dist.CLIENT )
+	void addBuiltInModel( String path, IUnbakedModel model )
 	{
 		this.builtInModelComponent.addModel( path, model );
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	void addModelOverride( String resourcePath, BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> customizer )
 	{
 		this.modelOverrideComponent.addOverride( resourcePath, customizer );

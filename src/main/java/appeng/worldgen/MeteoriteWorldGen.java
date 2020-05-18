@@ -21,7 +21,7 @@ package appeng.worldgen;
 
 import java.util.Random;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
@@ -100,7 +100,7 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 		return false;
 	}
 
-	private Iterable<NBTTagCompound> getNearByMeteorites( final World w, final int chunkX, final int chunkZ )
+	private Iterable<CompoundNBT> getNearByMeteorites( final World w, final int chunkX, final int chunkZ )
 	{
 		return WorldData.instance().spawnData().getNearByMeteorites( w.provider.getDimension(), chunkX, chunkZ );
 	}
@@ -128,7 +128,7 @@ public final class MeteoriteWorldGen implements IWorldGenerator
 			double minSqDist = Double.MAX_VALUE;
 
 			// near by meteorites!
-			for( final NBTTagCompound data : MeteoriteWorldGen.this.getNearByMeteorites( world, chunkX, chunkZ ) )
+			for( final CompoundNBT data : MeteoriteWorldGen.this.getNearByMeteorites( world, chunkX, chunkZ ) )
 			{
 				final MeteoritePlacer mp = new MeteoritePlacer();
 				mp.spawnMeteorite( new ChunkOnly( world, chunkX, chunkZ ), data );

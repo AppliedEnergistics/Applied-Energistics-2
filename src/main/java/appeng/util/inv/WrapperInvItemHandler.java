@@ -19,7 +19,7 @@
 package appeng.util.inv;
 
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -109,19 +109,19 @@ public class WrapperInvItemHandler implements IInventory
 	}
 
 	@Override
-	public boolean isUsableByPlayer( EntityPlayer player )
+	public boolean isUsableByPlayer( PlayerEntity player )
 	{
 		return false;
 	}
 
 	@Override
-	public void openInventory( EntityPlayer player )
+	public void openInventory( PlayerEntity player )
 	{
 		// NOP
 	}
 
 	@Override
-	public void closeInventory( EntityPlayer player )
+	public void closeInventory( PlayerEntity player )
 	{
 		// NOP
 	}

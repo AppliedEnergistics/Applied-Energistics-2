@@ -26,9 +26,9 @@ import java.util.List;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -67,7 +67,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 
 	public TileCharger()
 	{
-		this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
+		this.getProxy().setValidSides( EnumSet.noneOf( Direction.class ) );
 		this.getProxy().setFlags();
 		this.setInternalMaxPower( POWER_MAXIMUM_AMOUNT );
 		this.getProxy().setIdlePowerUsage( 0 );
@@ -108,7 +108,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 	}
 
 	@Override
-	public void setOrientation( final EnumFacing inForward, final EnumFacing inUp )
+	public void setOrientation( final Direction inForward, final Direction inUp )
 	{
 		super.setOrientation( inForward, inUp );
 		this.getProxy().setValidSides( EnumSet.of( this.getUp(), this.getUp().getOpposite() ) );
@@ -147,7 +147,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 	}
 
 	@Override
-	public boolean canCrankAttach( final EnumFacing directionToCrank )
+	public boolean canCrankAttach( final Direction directionToCrank )
 	{
 		return this.getUp() == directionToCrank || this.getUp().getOpposite() == directionToCrank;
 	}
@@ -173,7 +173,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 		this.markForUpdate();
 	}
 
-	public void activate( final EntityPlayer player )
+	public void activate( final PlayerEntity player )
 	{
 		if( !Platform.hasPermissions( new DimensionalCoord( this ), player ) )
 		{

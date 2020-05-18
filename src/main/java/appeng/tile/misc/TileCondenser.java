@@ -22,8 +22,8 @@ package appeng.tile.misc;
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -85,7 +85,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT( final NBTTagCompound data )
+	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		this.cm.writeToNBT( data );
@@ -94,7 +94,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.cm.readFromNBT( data );
@@ -220,7 +220,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	}
 
 	@Override
-	public boolean hasCapability( Capability<?> capability, EnumFacing facing )
+	public boolean hasCapability( Capability<?> capability, Direction facing )
 	{
 		if( capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY )
 		{
@@ -235,7 +235,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 
 	@SuppressWarnings( "unchecked" )
 	@Override
-	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
+	public <T> T getCapability( Capability<T> capability, @Nullable Direction facing )
 	{
 		if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
 		{

@@ -21,9 +21,9 @@ package appeng.container.implementations;
 
 import java.io.IOException;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IContainerListener;
 
 import appeng.api.AEApi;
@@ -61,7 +61,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	@GuiSync( 0 )
 	public long eta = -1;
 
-	public ContainerCraftingCPU( final InventoryPlayer ip, final Object te )
+	public ContainerCraftingCPU( final PlayerInventory ip, final Object te )
 	{
 		super( ip, te );
 		final IActionHost host = (IActionHost) ( te instanceof IActionHost ? te : null );
@@ -96,11 +96,11 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 
 		for( final Object g : this.listeners )
 		{
-			if( g instanceof EntityPlayer )
+			if( g instanceof PlayerEntity )
 			{
 				try
 				{
-					NetworkHandler.instance().sendTo( new PacketValueConfig( "CraftingStatus", "Clear" ), (EntityPlayerMP) g );
+					NetworkHandler.instance().sendTo( new PacketValueConfig( "CraftingStatus", "Clear" ), (PlayerEntityMP) g );
 				}
 				catch( final IOException e )
 				{
@@ -147,7 +147,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	}
 
 	@Override
-	public void onContainerClosed( final EntityPlayer player )
+	public void onContainerClosed( final PlayerEntity player )
 	{
 		super.onContainerClosed( player );
 		if( this.getMonitor() != null )
@@ -187,21 +187,21 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 
 				for( final Object g : this.listeners )
 				{
-					if( g instanceof EntityPlayer )
+					if( g instanceof PlayerEntity )
 					{
 						if( !a.isEmpty() )
 						{
-							NetworkHandler.instance().sendTo( a, (EntityPlayerMP) g );
+							NetworkHandler.instance().sendTo( a, (PlayerEntityMP) g );
 						}
 
 						if( !b.isEmpty() )
 						{
-							NetworkHandler.instance().sendTo( b, (EntityPlayerMP) g );
+							NetworkHandler.instance().sendTo( b, (PlayerEntityMP) g );
 						}
 
 						if( !c.isEmpty() )
 						{
-							NetworkHandler.instance().sendTo( c, (EntityPlayerMP) g );
+							NetworkHandler.instance().sendTo( c, (PlayerEntityMP) g );
 						}
 					}
 				}

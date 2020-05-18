@@ -53,12 +53,6 @@ public class MaterialStackSrc implements IStackSrc
 	}
 
 	@Override
-	public int getDamage()
-	{
-		return this.src.getDamageValue();
-	}
-
-	@Override
 	public boolean isEnabled()
 	{
 		return this.enabled;

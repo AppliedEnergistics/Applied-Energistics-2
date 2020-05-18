@@ -22,7 +22,7 @@ package appeng.tile.networking;
 import java.util.EnumSet;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
@@ -72,9 +72,9 @@ public class TileController extends AENetworkPowerTile
 
 	public void onNeighborChange( final boolean force )
 	{
-		final boolean xx = this.checkController( this.pos.offset( EnumFacing.EAST ) ) && this.checkController( this.pos.offset( EnumFacing.WEST ) );
-		final boolean yy = this.checkController( this.pos.offset( EnumFacing.UP ) ) && this.checkController( this.pos.offset( EnumFacing.DOWN ) );
-		final boolean zz = this.checkController( this.pos.offset( EnumFacing.NORTH ) ) && this.checkController( this.pos.offset( EnumFacing.SOUTH ) );
+		final boolean xx = this.checkController( this.pos.offset( Direction.EAST ) ) && this.checkController( this.pos.offset( Direction.WEST ) );
+		final boolean yy = this.checkController( this.pos.offset( Direction.UP ) ) && this.checkController( this.pos.offset( Direction.DOWN ) );
+		final boolean zz = this.checkController( this.pos.offset( Direction.NORTH ) ) && this.checkController( this.pos.offset( Direction.SOUTH ) );
 
 		// int meta = world.getBlockMetadata( xCoord, yCoord, zCoord );
 		// boolean hasPower = meta > 0;
@@ -88,11 +88,11 @@ public class TileController extends AENetworkPowerTile
 		{
 			if( this.isValid )
 			{
-				this.getProxy().setValidSides( EnumSet.allOf( EnumFacing.class ) );
+				this.getProxy().setValidSides( EnumSet.allOf( Direction.class ) );
 			}
 			else
 			{
-				this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
+				this.getProxy().setValidSides( EnumSet.noneOf( Direction.class ) );
 			}
 
 			this.updateMeta();

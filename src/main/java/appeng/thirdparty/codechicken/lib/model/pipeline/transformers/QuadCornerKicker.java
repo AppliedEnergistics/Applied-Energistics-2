@@ -19,11 +19,11 @@
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
 
-import static net.minecraft.util.EnumFacing.AxisDirection.NEGATIVE;
-import static net.minecraft.util.EnumFacing.AxisDirection.POSITIVE;
+import static net.minecraft.util.Direction.AxisDirection.NEGATIVE;
+import static net.minecraft.util.Direction.AxisDirection.POSITIVE;
 
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.AxisDirection;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3i;
 
@@ -140,7 +140,7 @@ public class QuadCornerKicker extends QuadTransformer
 							float z = vertex.vec[2];
 							if( epsComp( x, corner.pX( this.box ) ) && epsComp( y, corner.pY( this.box ) ) && epsComp( z, corner.pZ( this.box ) ) )
 							{
-								Vec3i vec = EnumFacing.VALUES[hoz].getDirectionVec();
+								Vec3i vec = Direction.values()[hoz].getDirectionVec();
 								x -= vec.getX() * this.thickness;
 								y -= vec.getY() * this.thickness;
 								z -= vec.getZ() * this.thickness;

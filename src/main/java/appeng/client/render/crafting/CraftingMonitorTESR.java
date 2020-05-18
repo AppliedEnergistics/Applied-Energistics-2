@@ -21,9 +21,9 @@ package appeng.client.render.crafting;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.util.Direction;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.render.TesrRenderHelper;
@@ -33,7 +33,7 @@ import appeng.tile.crafting.TileCraftingMonitorTile;
 /**
  * Renders the item currently being crafted
  */
-@SideOnly( Side.CLIENT )
+@OnlyIn( Dist.CLIENT )
 public class CraftingMonitorTESR extends TileEntitySpecialRenderer<TileCraftingMonitorTile>
 {
 
@@ -45,7 +45,7 @@ public class CraftingMonitorTESR extends TileEntitySpecialRenderer<TileCraftingM
 			return;
 		}
 
-		EnumFacing facing = te.getForward();
+		Direction facing = te.getForward();
 
 		IAEItemStack jobProgress = te.getJobProgress();
 		if( jobProgress != null )

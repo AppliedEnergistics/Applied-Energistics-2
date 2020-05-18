@@ -32,8 +32,8 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
@@ -100,7 +100,7 @@ public enum PartType
 		}
 
 		@Override
-		@SideOnly( Side.CLIENT )
+		@OnlyIn( Dist.CLIENT )
 		protected List<ModelResourceLocation> createItemModels( String baseName )
 		{
 			return Arrays.stream( AEColor.values() )
@@ -118,7 +118,7 @@ public enum PartType
 		}
 
 		@Override
-		@SideOnly( Side.CLIENT )
+		@OnlyIn( Dist.CLIENT )
 		protected List<ModelResourceLocation> createItemModels( String baseName )
 		{
 			return Arrays.stream( AEColor.values() )
@@ -136,7 +136,7 @@ public enum PartType
 		}
 
 		@Override
-		@SideOnly( Side.CLIENT )
+		@OnlyIn( Dist.CLIENT )
 		protected List<ModelResourceLocation> createItemModels( String baseName )
 		{
 			return Arrays.stream( AEColor.values() )
@@ -155,7 +155,7 @@ public enum PartType
 		}
 
 		@Override
-		@SideOnly( Side.CLIENT )
+		@OnlyIn( Dist.CLIENT )
 		protected List<ModelResourceLocation> createItemModels( String baseName )
 		{
 			return Arrays.stream( AEColor.values() )
@@ -174,7 +174,7 @@ public enum PartType
 		}
 
 		@Override
-		@SideOnly( Side.CLIENT )
+		@OnlyIn( Dist.CLIENT )
 		protected List<ModelResourceLocation> createItemModels( String baseName )
 		{
 			return Arrays.stream( AEColor.values() )
@@ -247,7 +247,7 @@ public enum PartType
 			.noneOf( IntegrationType.class ), PartP2PTunnelME.class, GuiText.METunnel )
 	{
 		@Override
-		String getUnlocalizedName()
+		String getTranslationKey()
 		{
 			return "p2p_tunnel";
 		}
@@ -257,7 +257,7 @@ public enum PartType
 			.noneOf( IntegrationType.class ), PartP2PRedstone.class, GuiText.RedstoneTunnel )
 	{
 		@Override
-		String getUnlocalizedName()
+		String getTranslationKey()
 		{
 			return "p2p_tunnel";
 		}
@@ -267,7 +267,7 @@ public enum PartType
 			.noneOf( IntegrationType.class ), PartP2PItems.class, GuiText.ItemTunnel )
 	{
 		@Override
-		String getUnlocalizedName()
+		String getTranslationKey()
 		{
 			return "p2p_tunnel";
 		}
@@ -277,7 +277,7 @@ public enum PartType
 			.noneOf( IntegrationType.class ), PartP2PFluids.class, GuiText.FluidTunnel )
 	{
 		@Override
-		String getUnlocalizedName()
+		String getTranslationKey()
 		{
 			return "p2p_tunnel";
 		}
@@ -287,7 +287,7 @@ public enum PartType
 			.of( IntegrationType.IC2 ), PartP2PIC2Power.class, GuiText.EUTunnel )
 	{
 		@Override
-		String getUnlocalizedName()
+		String getTranslationKey()
 		{
 			return "p2p_tunnel";
 		}
@@ -297,7 +297,7 @@ public enum PartType
 			.noneOf( IntegrationType.class ), PartP2PLight.class, GuiText.LightTunnel )
 	{
 		@Override
-		String getUnlocalizedName()
+		String getTranslationKey()
 		{
 			return "p2p_tunnel";
 		}
@@ -307,7 +307,7 @@ public enum PartType
 			.noneOf( IntegrationType.class ), PartP2PFEPower.class, GuiText.FETunnel )
 	{
 		@Override
-		String getUnlocalizedName()
+		String getTranslationKey()
 		{
 			return "p2p_tunnel";
 		}
@@ -326,7 +326,7 @@ public enum PartType
 	private final Set<IntegrationType> integrations;
 	private final Class<? extends IPart> myPart;
 	private final GuiText extraName;
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private List<ModelResourceLocation> itemModels;
 	private final Set<ResourceLocation> models;
 	private final boolean enabled;
@@ -388,13 +388,13 @@ public enum PartType
 		}
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	protected List<ModelResourceLocation> createItemModels( String baseName )
 	{
 		return ImmutableList.of( modelFromBaseName( baseName ) );
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private static ModelResourceLocation modelFromBaseName( String baseName )
 	{
 		return new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, "part/" + baseName ), "inventory" );
@@ -430,7 +430,7 @@ public enum PartType
 		return this.myPart;
 	}
 
-	String getUnlocalizedName()
+	String getTranslationKey()
 	{
 		return this.name().toLowerCase();
 	}
@@ -455,7 +455,7 @@ public enum PartType
 		return this.oreName;
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public List<ModelResourceLocation> getItemModels()
 	{
 		return this.itemModels;

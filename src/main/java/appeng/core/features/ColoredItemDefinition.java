@@ -97,6 +97,6 @@ public final class ColoredItemDefinition implements AEColoredItemDefinition
 			return false;
 		}
 
-		return comparableItem.getItem() == is.getItem() && comparableItem.getItemDamage() == is.getDamage();
+		return comparableItem.getItem() == is.getItem();
 	}
 }

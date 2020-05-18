@@ -25,7 +25,7 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.Vec3d;
 
 
@@ -33,27 +33,27 @@ import net.minecraft.util.math.Vec3d;
 final class RenderHelper
 {
 
-	private static EnumMap<EnumFacing, List<Vec3d>> cornersForFacing = generateCornersForFacings();
+	private static EnumMap<Direction, List<Vec3d>> cornersForFacing = generateCornersForFacings();
 
 	private RenderHelper()
 	{
 
 	}
 
-	static List<Vec3d> getFaceCorners( EnumFacing side )
+	static List<Vec3d> getFaceCorners( Direction side )
 	{
 		return cornersForFacing.get( side );
 	}
 
-	private static EnumMap<EnumFacing, List<Vec3d>> generateCornersForFacings()
+	private static EnumMap<Direction, List<Vec3d>> generateCornersForFacings()
 	{
-		EnumMap<EnumFacing, List<Vec3d>> result = new EnumMap<>( EnumFacing.class );
+		EnumMap<Direction, List<Vec3d>> result = new EnumMap<>( Direction.class );
 
-		for( EnumFacing facing : EnumFacing.values() )
+		for( Direction facing : Direction.values() )
 		{
 			List<Vec3d> corners;
 
-			float offset = ( facing.getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE ) ? 0 : 1;
+			float offset = ( facing.getAxisDirection() == Direction.AxisDirection.NEGATIVE ) ? 0 : 1;
 
 			switch( facing.getAxis() )
 			{
@@ -69,7 +69,7 @@ final class RenderHelper
 					break;
 			}
 
-			if( facing.getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE )
+			if( facing.getAxisDirection() == Direction.AxisDirection.NEGATIVE )
 			{
 				corners = Lists.reverse( corners );
 			}
@@ -80,7 +80,7 @@ final class RenderHelper
 		return result;
 	}
 
-	private static Vec3d adjust( Vec3d vec, EnumFacing.Axis axis, double delta )
+	private static Vec3d adjust( Vec3d vec, Direction.Axis axis, double delta )
 	{
 		switch( axis )
 		{

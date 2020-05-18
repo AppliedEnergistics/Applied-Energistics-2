@@ -25,7 +25,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.IWideReadableNumberConverter;
@@ -44,7 +44,7 @@ public class TesrRenderHelper
 	 * Move the current coordinate system to the center of the given block face, assuming that the origin is currently
 	 * at the center of a block.
 	 */
-	public static void moveToFace( EnumFacing face )
+	public static void moveToFace( Direction face )
 	{
 		GlStateManager.translate( face.getFrontOffsetX() * 0.50, face.getFrontOffsetY() * 0.50, face.getFrontOffsetZ() * 0.50 );
 	}
@@ -54,7 +54,7 @@ public class TesrRenderHelper
 	 * the given face as if it was
 	 * a 2D canvas.
 	 */
-	public static void rotateToFace( EnumFacing face, byte spin )
+	public static void rotateToFace( Direction face, byte spin )
 	{
 		switch( face )
 		{
@@ -112,7 +112,7 @@ public class TesrRenderHelper
 			// Position the item icon at the top middle of the panel
 			GlStateManager.translate( -8, -11, 0 );
 
-			RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
+			RenderItem renderItem = Minecraft.getInstance().getRenderItem();
 			renderItem.renderItemAndEffectIntoGUI( itemStack, 0, 0 );
 
 			GlStateManager.popMatrix();
@@ -134,7 +134,7 @@ public class TesrRenderHelper
 		final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm( stackSize );
 
 		// Render the item count
-		final FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
+		final FontRenderer fr = Minecraft.getInstance().fontRenderer;
 		final int width = fr.getStringWidth( renderedStackSize );
 		GlStateManager.translate( 0.0f, spacing, 0 );
 		GlStateManager.scale( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );

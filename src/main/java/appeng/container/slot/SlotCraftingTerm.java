@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -68,7 +68,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 	private final IStorageMonitorable storage;
 	private final IContainerCraftingPacket container;
 
-	public SlotCraftingTerm( final EntityPlayer player, final IActionSource mySrc, final IEnergySource energySrc, final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix, final IItemHandler output, final int x, final int y, final IContainerCraftingPacket ccp )
+	public SlotCraftingTerm( final PlayerEntity player, final IActionSource mySrc, final IEnergySource energySrc, final IStorageMonitorable storage, final IItemHandler cMatrix, final IItemHandler secondMatrix, final IItemHandler output, final int x, final int y, final IContainerCraftingPacket ccp )
 	{
 		super( player, cMatrix, output, 0, x, y );
 		this.energySrc = energySrc;
@@ -85,18 +85,18 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 	}
 
 	@Override
-	public boolean canTakeStack( final EntityPlayer par1EntityPlayer )
+	public boolean canTakeStack( final PlayerEntity par1PlayerEntity )
 	{
 		return false;
 	}
 
 	@Override
-	public ItemStack onTake( final EntityPlayer p, final ItemStack is )
+	public ItemStack onTake( final PlayerEntity p, final ItemStack is )
 	{
 		return is;
 	}
 
-	public void doClick( final InventoryAction action, final EntityPlayer who )
+	public void doClick( final InventoryAction action, final PlayerEntity who )
 	{
 		if( this.getStack().isEmpty() )
 		{
@@ -199,7 +199,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 		return maxTimesToCraft;
 	}
 
-	private ItemStack craftItem( final EntityPlayer p, final ItemStack request, final IMEMonitor<IAEItemStack> inv, final IItemList all )
+	private ItemStack craftItem( final PlayerEntity p, final ItemStack request, final IMEMonitor<IAEItemStack> inv, final IItemList all )
 	{
 		// update crafting matrix...
 		ItemStack is = this.getStack();
@@ -281,17 +281,17 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 		return ItemStack.EMPTY;
 	}
 
-	private boolean preCraft( final EntityPlayer p, final IMEMonitor<IAEItemStack> inv, final ItemStack[] set, final ItemStack result )
+	private boolean preCraft( final PlayerEntity p, final IMEMonitor<IAEItemStack> inv, final ItemStack[] set, final ItemStack result )
 	{
 		return true;
 	}
 
-	private void makeItem( final EntityPlayer p, final ItemStack is )
+	private void makeItem( final PlayerEntity p, final ItemStack is )
 	{
 		super.onTake( p, is );
 	}
 
-	private void postCraft( final EntityPlayer p, final IMEMonitor<IAEItemStack> inv, final ItemStack[] set, final ItemStack result )
+	private void postCraft( final PlayerEntity p, final IMEMonitor<IAEItemStack> inv, final ItemStack[] set, final ItemStack result )
 	{
 		final List<ItemStack> drops = new ArrayList<>();
 

@@ -26,14 +26,14 @@ import javax.annotation.Nullable;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
@@ -59,7 +59,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 	}
 
 	@Override
-	public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
+	public BlockState getActualState( BlockState state, IBlockReader world, BlockPos pos )
 	{
 		TileVibrationChamber te = this.getTileEntity( world, pos );
 		boolean active = te != null && te.isOn;
@@ -75,9 +75,9 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
 	{
-		if( player.isSneaking() )
+		if( player.isShiftKeyDown() )
 		{
 			return false;
 		}
@@ -85,7 +85,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 		if( Platform.isServer() )
 		{
 			final TileVibrationChamber tc = this.getTileEntity( w, pos );
-			if( tc != null && !player.isSneaking() )
+			if( tc != null && !player.isShiftKeyDown() )
 			{
 				Platform.openGUI( player, tc, AEPartLocation.fromFacing( side ), GuiBridge.GUI_VIBRATION_CHAMBER );
 				return true;
@@ -96,7 +96,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 	}
 
 	@Override
-	public void randomDisplayTick( final IBlockState state, final World w, final BlockPos pos, final Random r )
+	public void randomDisplayTick( final BlockState state, final World w, final BlockPos pos, final Random r )
 	{
 		if( !AEConfig.instance().isEnableEffects() )
 		{
@@ -113,8 +113,8 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 				float f2 = pos.getY() + 0.5F;
 				float f3 = pos.getZ() + 0.5F;
 
-				final EnumFacing forward = tc.getForward();
-				final EnumFacing up = tc.getUp();
+				final Direction forward = tc.getForward();
+				final Direction up = tc.getUp();
 
 				final int west_x = forward.getFrontOffsetY() * up.getFrontOffsetZ() - forward.getFrontOffsetZ() * up.getFrontOffsetY();
 				final int west_y = forward.getFrontOffsetZ() * up.getFrontOffsetX() - forward.getFrontOffsetX() * up.getFrontOffsetZ();

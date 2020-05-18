@@ -25,7 +25,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingGrid;
@@ -45,7 +45,7 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 	@GuiSync( 7 )
 	public String myName = "";
 
-	public ContainerCraftingStatus( final InventoryPlayer ip, final ITerminalHost te )
+	public ContainerCraftingStatus( final PlayerInventory ip, final ITerminalHost te )
 	{
 		super( ip, te );
 	}

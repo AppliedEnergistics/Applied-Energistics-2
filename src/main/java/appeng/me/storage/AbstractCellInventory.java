@@ -20,7 +20,7 @@ package appeng.me.storage;
 
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FuzzyMode;
@@ -50,7 +50,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 	protected static final String ITEM_PRE_FORMATTED_FUZZY = "FP";
 	private static final String[] ITEM_SLOT_KEYS = new String[MAX_ITEM_TYPES];
 	private static final String[] ITEM_SLOT_COUNT_KEYS = new String[MAX_ITEM_TYPES];
-	private final NBTTagCompound tagCompound;
+	private final CompoundNBT tagCompound;
 	protected final ISaveProvider container;
 	private int maxItemTypes = MAX_ITEM_TYPES;
 	private short storedItems = 0;
@@ -120,7 +120,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 		{
 			itemCount += v.getStackSize();
 
-			final NBTTagCompound g = new NBTTagCompound();
+			final CompoundNBT g = new CompoundNBT();
 			v.writeToNBT( g );
 			this.tagCompound.setTag( ITEM_SLOT_KEYS[x], g );
 			this.tagCompound.setInteger( ITEM_SLOT_COUNT_KEYS[x], (int) v.getStackSize() );
@@ -196,7 +196,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 
 		for( int slot = 0; slot < types; slot++ )
 		{
-			NBTTagCompound compoundTag = this.tagCompound.getCompoundTag( ITEM_SLOT_KEYS[slot] );
+			CompoundNBT compoundTag = this.tagCompound.getCompoundTag( ITEM_SLOT_KEYS[slot] );
 			int stackSize = this.tagCompound.getInteger( ITEM_SLOT_COUNT_KEYS[slot] );
 			needsUpdate |= !this.loadCellItem( compoundTag, stackSize );
 		}
@@ -214,7 +214,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 	 * @param stackSize
 	 * @return true when successfully loaded
 	 */
-	protected abstract boolean loadCellItem( NBTTagCompound compoundTag, int stackSize );
+	protected abstract boolean loadCellItem( CompoundNBT compoundTag, int stackSize );
 
 	@Override
 	public IItemList<T> getAvailableItems( final IItemList<T> out )

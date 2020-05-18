@@ -21,12 +21,12 @@ package appeng.fluids.parts;
 
 import java.util.EnumSet;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
@@ -114,14 +114,14 @@ public class PartFluidInterface extends PartBasicState implements IGridTickable,
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.duality.readFromNBT( data );
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		this.duality.writeToNBT( data );
@@ -134,7 +134,7 @@ public class PartFluidInterface extends PartBasicState implements IGridTickable,
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer p, final EnumHand hand, final Vec3d pos )
+	public boolean onPartActivate( final PlayerEntity p, final Hand hand, final Vec3d pos )
 	{
 		if( Platform.isServer() )
 		{
@@ -163,7 +163,7 @@ public class PartFluidInterface extends PartBasicState implements IGridTickable,
 	}
 
 	@Override
-	public EnumSet<EnumFacing> getTargets()
+	public EnumSet<Direction> getTargets()
 	{
 		return EnumSet.of( this.getSide().getFacing() );
 	}

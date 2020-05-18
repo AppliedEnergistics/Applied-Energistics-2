@@ -20,7 +20,7 @@ package appeng.decorative.solid;
 
 
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -59,14 +59,14 @@ public class BlockSkyStone extends AEBaseBlock
 	@SubscribeEvent
 	public void breakFaster( final PlayerEvent.BreakSpeed event )
 	{
-		if( event.getState().getBlock() == this && event.getEntityPlayer() != null )
+		if( event.getState().getBlock() == this && event.getPlayerEntity() != null )
 		{
-			final ItemStack is = event.getEntityPlayer().getItemStackFromSlot( EntityEquipmentSlot.MAINHAND );
+			final ItemStack is = event.getPlayerEntity().getItemStackFromSlot( EntityEquipmentSlot.MAINHAND );
 			int level = -1;
 
 			if( !is.isEmpty() )
 			{
-				level = is.getItem().getHarvestLevel( is, "pickaxe", event.getEntityPlayer(), event.getState() );
+				level = is.getItem().getHarvestLevel( is, "pickaxe", event.getPlayerEntity(), event.getState() );
 			}
 
 			if( this.type != SkystoneType.STONE || level >= 3 || event.getOriginalSpeed() > BREAK_SPEAK_THRESHOLD )
@@ -77,7 +77,7 @@ public class BlockSkyStone extends AEBaseBlock
 	}
 
 	@Override
-	public void onBlockAdded( final World w, final BlockPos pos, final IBlockState state )
+	public void onBlockAdded( final World w, final BlockPos pos, final BlockState state )
 	{
 		super.onBlockAdded( w, pos, state );
 		if( Platform.isServer() )
@@ -87,7 +87,7 @@ public class BlockSkyStone extends AEBaseBlock
 	}
 
 	@Override
-	public void breakBlock( final World w, final BlockPos pos, final IBlockState state )
+	public void breakBlock( final World w, final BlockPos pos, final BlockState state )
 	{
 		super.breakBlock( w, pos, state );
 

@@ -49,7 +49,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -385,7 +385,7 @@ public abstract class AEBaseGui extends GuiContainer
 	@Override
 	protected void handleMouseClick( final Slot slot, final int slotIdx, final int mouseButton, final ClickType clickType )
 	{
-		final EntityPlayer player = Minecraft.getMinecraft().player;
+		final PlayerEntity player = Minecraft.getInstance().player;
 
 		if( slot instanceof SlotFake )
 		{
@@ -793,8 +793,8 @@ public abstract class AEBaseGui extends GuiContainer
 				GlStateManager.disableLighting();
 				GlStateManager.disableBlend();
 				final Fluid fluid = fs.getFluid();
-				Minecraft.getMinecraft().getTextureManager().bindTexture( TextureMap.LOCATION_BLOCKS_TEXTURE );
-				final TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite( fluid.getStill().toString() );
+				Minecraft.getInstance().getTextureManager().bindTexture( TextureMap.LOCATION_BLOCKS_TEXTURE );
+				final TextureAtlasSprite sprite = Minecraft.getInstance().getTextureMapBlocks().getAtlasSprite( fluid.getStill().toString() );
 
 				// Set color for dynamic fluids
 				// Convert int color to RGB

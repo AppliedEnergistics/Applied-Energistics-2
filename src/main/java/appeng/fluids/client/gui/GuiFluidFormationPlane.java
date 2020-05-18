@@ -5,7 +5,7 @@ package appeng.fluids.client.gui;
 import java.io.IOException;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.client.gui.implementations.GuiUpgradeable;
 import appeng.client.gui.widgets.GuiTabButton;
@@ -25,9 +25,9 @@ public class GuiFluidFormationPlane extends GuiUpgradeable
 	private final PartFluidFormationPlane plane;
 	private GuiTabButton priority;
 
-	public GuiFluidFormationPlane( InventoryPlayer inventoryPlayer, PartFluidFormationPlane te )
+	public GuiFluidFormationPlane( PlayerInventory PlayerInventory, PartFluidFormationPlane te )
 	{
-		super( new ContainerFluidFormationPlane( inventoryPlayer, te ) );
+		super( new ContainerFluidFormationPlane( PlayerInventory, te ) );
 		this.ySize = 251;
 		this.plane = te;
 	}

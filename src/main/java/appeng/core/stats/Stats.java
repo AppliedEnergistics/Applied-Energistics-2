@@ -19,7 +19,7 @@
 package appeng.core.stats;
 
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.stats.StatBasic;
 import net.minecraft.util.text.TextComponentTranslation;
 
@@ -42,7 +42,7 @@ public enum Stats
 	{
 	}
 
-	public void addToPlayer( final EntityPlayer player, final int howMany )
+	public void addToPlayer( final PlayerEntity player, final int howMany )
 	{
 		player.addStat( this.stat, howMany );
 	}

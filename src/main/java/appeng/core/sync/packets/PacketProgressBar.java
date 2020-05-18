@@ -22,7 +22,7 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Container;
 
 import appeng.container.AEBaseContainer;
@@ -59,7 +59,7 @@ public class PacketProgressBar extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player )
 	{
 		final Container c = player.openContainer;
 		if( c instanceof AEBaseContainer )
@@ -69,7 +69,7 @@ public class PacketProgressBar extends AppEngPacket
 	}
 
 	@Override
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player )
 	{
 		final Container c = player.openContainer;
 		if( c instanceof AEBaseContainer )

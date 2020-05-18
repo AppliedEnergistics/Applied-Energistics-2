@@ -21,7 +21,7 @@ package appeng.decorative.stair;
 
 import net.minecraft.block.Block;
 
-import appeng.block.AEBaseStairBlock;
+import appeng.decorative.AEBaseStairBlock;
 
 
 public class BlockStairCommon extends AEBaseStairBlock

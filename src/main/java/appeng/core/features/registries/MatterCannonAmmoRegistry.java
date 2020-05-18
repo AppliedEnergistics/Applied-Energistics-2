@@ -21,8 +21,8 @@ package appeng.core.features.registries;
 
 import java.util.HashMap;
 
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 
 import appeng.api.features.IMatterCannonAmmoRegistry;
 import appeng.recipes.ores.IOreListener;

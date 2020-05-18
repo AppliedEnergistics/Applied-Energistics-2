@@ -30,20 +30,20 @@ import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -182,7 +182,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public AEPartLocation addPart( ItemStack is, final AEPartLocation side, final @Nullable EntityPlayer player, final @Nullable EnumHand hand )
+	public AEPartLocation addPart( ItemStack is, final AEPartLocation side, final @Nullable PlayerEntity player, final @Nullable Hand hand )
 	{
 		if( this.canAddPart( is, side ) )
 		{
@@ -328,7 +328,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public IPart getPart( final EnumFacing side )
+	public IPart getPart( final Direction side )
 	{
 		return this.getSide( AEPartLocation.fromFacing( side ) );
 	}
@@ -399,7 +399,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public boolean isBlocked( final EnumFacing side )
+	public boolean isBlocked( final Direction side )
 	{
 		return this.tcb.isBlocked( side );
 	}
@@ -573,9 +573,9 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	{
 		if( this.getCenter() != null )
 		{
-			final EnumSet<EnumFacing> sides = EnumSet.allOf( EnumFacing.class );
+			final EnumSet<Direction> sides = EnumSet.allOf( Direction.class );
 
-			for( final EnumFacing s : EnumFacing.VALUES )
+			for( final Direction s : Direction.VALUES )
 			{
 				if( this.getPart( s ) != null || this.isBlocked( s ) )
 				{
@@ -772,23 +772,23 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public int isProvidingStrongPower( final EnumFacing side )
+	public int isProvidingStrongPower( final Direction side )
 	{
 		final IPart part = this.getPart( side );
 		return part != null ? part.isProvidingStrongPower() : 0;
 	}
 
 	@Override
-	public int isProvidingWeakPower( final EnumFacing side )
+	public int isProvidingWeakPower( final Direction side )
 	{
 		final IPart part = this.getPart( side );
 		return part != null ? part.isProvidingWeakPower() : 0;
 	}
 
 	@Override
-	public boolean canConnectRedstone( final EnumSet<EnumFacing> enumSet )
+	public boolean canConnectRedstone( final EnumSet<Direction> enumSet )
 	{
-		for( final EnumFacing dir : enumSet )
+		for( final Direction dir : enumSet )
 		{
 			final IPart part = this.getPart( dir );
 			if( part != null && part.canConnectRedstone() )
@@ -813,14 +813,14 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public boolean activate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean activate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		final SelectedPart p = this.selectPart( pos );
 		if( p != null && p.part != null )
 		{
 			// forge sends activate even when sneaking in some cases (eg emtpy hand)
 			// if sneaking try shift activate first.
-			if( player.isSneaking() && p.part.onShiftActivate( player, hand, pos ) )
+			if( player.isShiftKeyDown() && p.part.onShiftActivate( player, hand, pos ) )
 			{
 				return true;
 			}
@@ -830,12 +830,12 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public boolean clicked( EntityPlayer player, EnumHand hand, Vec3d hitVec )
+	public boolean clicked( PlayerEntity player, Hand hand, Vec3d hitVec )
 	{
 		final SelectedPart p = this.selectPart( hitVec );
 		if( p != null && p.part != null )
 		{
-			if( player.isSneaking() )
+			if( player.isShiftKeyDown() )
 			{
 				return p.part.onShiftClicked( player, hand, hitVec );
 			}
@@ -848,7 +848,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
+	public void onNeighborChanged( IBlockReader w, BlockPos pos, BlockPos neighbor )
 	{
 		this.hasRedstone = YesNo.UNDECIDED;
 
@@ -863,7 +863,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public boolean isSolidOnSide( final EnumFacing side )
+	public boolean isSolidOnSide( final Direction side )
 	{
 		if( side == null )
 		{
@@ -883,7 +883,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public boolean isLadder( final EntityLivingBase entity )
+	public boolean isLadder( final LivingEntity entity )
 	{
 		for( final AEPartLocation side : AEPartLocation.values() )
 		{
@@ -1016,7 +1016,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return updateBlock;
 	}
 
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final CompoundNBT data )
 	{
 		data.setInteger( "hasRedstone", this.hasRedstone.ordinal() );
 
@@ -1028,10 +1028,10 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			final IPart part = this.getPart( s );
 			if( part != null )
 			{
-				final NBTTagCompound def = new NBTTagCompound();
+				final CompoundNBT def = new CompoundNBT();
 				part.getItemStack( PartItemStack.WORLD ).writeToNBT( def );
 
-				final NBTTagCompound extra = new NBTTagCompound();
+				final CompoundNBT extra = new CompoundNBT();
 				part.writeToNBT( extra );
 
 				data.setTag( "def:" + this.getSide( part ).ordinal(), def );
@@ -1060,7 +1060,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		throw new IllegalStateException( "Uhh Bad Part (" + part + ") on Side." );
 	}
 
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		if( data.hasKey( "hasRedstone" ) )
 		{
@@ -1071,8 +1071,8 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		{
 			AEPartLocation side = AEPartLocation.fromOrdinal( x );
 
-			final NBTTagCompound def = data.getCompoundTag( "def:" + side.ordinal() );
-			final NBTTagCompound extra = data.getCompoundTag( "extra:" + side.ordinal() );
+			final CompoundNBT def = data.getCompoundTag( "def:" + side.ordinal() );
+			final CompoundNBT extra = data.getCompoundTag( "extra:" + side.ordinal() );
 			if( def != null && extra != null )
 			{
 				IPart p = this.getPart( side );
@@ -1151,7 +1151,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public boolean recolourBlock( final EnumFacing side, final AEColor colour, final EntityPlayer who )
+	public boolean recolourBlock( final Direction side, final AEColor colour, final PlayerEntity who )
 	{
 		final IPart cable = this.getPart( AEPartLocation.INTERNAL );
 		if( cable != null )
@@ -1186,7 +1186,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			renderState.setCoreType( CableCoreType.fromCableType( cable.getCableConnectionType() ) );
 
 			// Check each outgoing connection for the desired characteristics
-			for( EnumFacing facing : EnumFacing.values() )
+			for( Direction facing : Direction.values() )
 			{
 				// Is there a connection?
 				if( !cable.isConnected( facing ) )
@@ -1223,7 +1223,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			// Collect the number of channels used per side
 			// We have to do this even for non-smart cables since a glass cable can display a connection as smart if the
 			// adjacent tile requires it
-			for( EnumFacing facing : EnumFacing.values() )
+			for( Direction facing : Direction.values() )
 			{
 				int channels = cable.getCableConnectionType().isSmart() ? cable.getChannelsOnSide( facing ) : 0;
 				renderState.getChannelsOnSide().put( facing, channels );
@@ -1231,7 +1231,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		}
 
 		// Determine attachments and facades
-		for( EnumFacing facing : EnumFacing.values() )
+		for( Direction facing : Direction.values() )
 		{
 			final FacadeRenderState facadeState = this.getFacadeRenderState( facing );
 
@@ -1279,7 +1279,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return renderState;
 	}
 
-	private FacadeRenderState getFacadeRenderState( EnumFacing side )
+	private FacadeRenderState getFacadeRenderState( Direction side )
 	{
 		// Store the "masqueraded" itemstack for the given side, if there is a facade
 		final IFacadePart facade = this.getFacade( side.ordinal() );
@@ -1287,7 +1287,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		if( facade != null )
 		{
 			final ItemStack textureItem = facade.getTextureItem();
-			final IBlockState blockState = facade.getBlockState();
+			final BlockState blockState = facade.getBlockState();
 
 			if( blockState != null && textureItem != null )
 			{

@@ -4,7 +4,7 @@ package appeng.client.gui.widgets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
 
@@ -26,7 +26,7 @@ public abstract class GuiCustomSlot extends Gui implements ITooltip
 		return this.id;
 	}
 
-	public boolean canClick( final EntityPlayer player )
+	public boolean canClick( final PlayerEntity player )
 	{
 		return true;
 	}

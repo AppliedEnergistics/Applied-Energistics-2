@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 import com.google.common.math.IntMath;
 
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -47,9 +47,9 @@ public class TileEnergyGenerator extends AEBaseTile implements ITickable, IEnerg
 	public void update()
 	{
 		int tier = 1;
-		final EnumSet<EnumFacing> validEnergyReceivers = EnumSet.noneOf( EnumFacing.class );
+		final EnumSet<Direction> validEnergyReceivers = EnumSet.noneOf( Direction.class );
 
-		for( EnumFacing facing : EnumFacing.values() )
+		for( Direction facing : Direction.values() )
 		{
 			final TileEntity te = this.getWorld().getTileEntity( this.getPos().offset( facing ) );
 
@@ -67,7 +67,7 @@ public class TileEnergyGenerator extends AEBaseTile implements ITickable, IEnerg
 
 		final int energyToInsert = IntMath.pow( BASE_ENERGY, tier );
 
-		for( EnumFacing facing : validEnergyReceivers )
+		for( Direction facing : validEnergyReceivers )
 		{
 			final TileEntity te = this.getWorld().getTileEntity( this.getPos().offset( facing ) );
 			final IEnergyStorage cap = te.getCapability( CapabilityEnergy.ENERGY, facing.getOpposite() );
@@ -81,7 +81,7 @@ public class TileEnergyGenerator extends AEBaseTile implements ITickable, IEnerg
 	}
 
 	@Override
-	public boolean hasCapability( Capability<?> capability, @Nullable EnumFacing facing )
+	public boolean hasCapability( Capability<?> capability, @Nullable Direction facing )
 	{
 		if( capability == CapabilityEnergy.ENERGY )
 		{
@@ -92,7 +92,7 @@ public class TileEnergyGenerator extends AEBaseTile implements ITickable, IEnerg
 
 	@Override
 	@Nullable
-	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
+	public <T> T getCapability( Capability<T> capability, @Nullable Direction facing )
 	{
 		if( capability == CapabilityEnergy.ENERGY )
 		{

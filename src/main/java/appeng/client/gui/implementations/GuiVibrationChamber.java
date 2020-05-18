@@ -20,7 +20,7 @@ package appeng.client.gui.implementations;
 
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiProgressBar;
@@ -36,9 +36,9 @@ public class GuiVibrationChamber extends AEBaseGui
 	private final ContainerVibrationChamber cvc;
 	private GuiProgressBar pb;
 
-	public GuiVibrationChamber( final InventoryPlayer inventoryPlayer, final TileVibrationChamber te )
+	public GuiVibrationChamber( final PlayerInventory PlayerInventory, final TileVibrationChamber te )
 	{
-		super( new ContainerVibrationChamber( inventoryPlayer, te ) );
+		super( new ContainerVibrationChamber( PlayerInventory, te ) );
 		this.cvc = (ContainerVibrationChamber) this.inventorySlots;
 		this.ySize = 166;
 	}

@@ -84,7 +84,7 @@ public final class DamagedItemDefinition implements IItemDefinition
 			return false;
 		}
 
-		return this.isEnabled() && comparableStack.getItem() == this.source.get().getItem() && comparableStack.getItemDamage() == this.source.get().getDamage();
+		return this.isEnabled() && comparableStack.getItem() == this.source.get().getItem();
 	}
 
 }

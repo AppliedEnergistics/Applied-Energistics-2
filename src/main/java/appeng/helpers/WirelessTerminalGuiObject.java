@@ -19,7 +19,7 @@
 package appeng.helpers;
 
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -56,7 +56,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	private final ItemStack effectiveItem;
 	private final IWirelessTermHandler wth;
 	private final String encryptionKey;
-	private final EntityPlayer myPlayer;
+	private final PlayerEntity myPlayer;
 	private IGrid targetGrid;
 	private IStorageGrid sg;
 	private IMEMonitor<IAEItemStack> itemStorage;
@@ -65,7 +65,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 	private double myRange = Double.MAX_VALUE;
 	private final int inventorySlot;
 
-	public WirelessTerminalGuiObject( final IWirelessTermHandler wh, final ItemStack is, final EntityPlayer ep, final World w, final int x, final int y, final int z )
+	public WirelessTerminalGuiObject( final IWirelessTermHandler wh, final ItemStack is, final PlayerEntity ep, final World w, final int x, final int y, final int z )
 	{
 		this.encryptionKey = wh.getEncryptionKey( is );
 		this.effectiveItem = is;

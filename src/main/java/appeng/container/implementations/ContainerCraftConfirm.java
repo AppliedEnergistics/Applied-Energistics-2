@@ -28,9 +28,9 @@ import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextComponentString;
@@ -89,7 +89,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 	@GuiSync( 7 )
 	public String myName = "";
 
-	public ContainerCraftConfirm( final InventoryPlayer ip, final ITerminalHost te )
+	public ContainerCraftConfirm( final PlayerInventory ip, final ITerminalHost te )
 	{
 		super( ip, te );
 	}
@@ -261,13 +261,13 @@ public class ContainerCraftConfirm extends AEBaseContainer
 
 					for( final Object g : this.listeners )
 					{
-						if( g instanceof EntityPlayer )
+						if( g instanceof PlayerEntity )
 						{
-							NetworkHandler.instance().sendTo( a, (EntityPlayerMP) g );
-							NetworkHandler.instance().sendTo( b, (EntityPlayerMP) g );
+							NetworkHandler.instance().sendTo( a, (PlayerEntityMP) g );
+							NetworkHandler.instance().sendTo( b, (PlayerEntityMP) g );
 							if( c != null )
 							{
-								NetworkHandler.instance().sendTo( c, (EntityPlayerMP) g );
+								NetworkHandler.instance().sendTo( c, (PlayerEntityMP) g );
 							}
 						}
 					}
@@ -354,7 +354,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 			if( g != null && originalGui != null && this.getOpenContext() != null )
 			{
 				final TileEntity te = this.getOpenContext().getTile();
-				Platform.openGUI( this.getInventoryPlayer().player, te, this.getOpenContext().getSide(), originalGui );
+				Platform.openGUI( this.getPlayerInventory().player, te, this.getOpenContext().getSide(), originalGui );
 			}
 		}
 	}
@@ -376,9 +376,9 @@ public class ContainerCraftConfirm extends AEBaseContainer
 	}
 
 	@Override
-	public void onContainerClosed( final EntityPlayer par1EntityPlayer )
+	public void onContainerClosed( final PlayerEntity par1PlayerEntity )
 	{
-		super.onContainerClosed( par1EntityPlayer );
+		super.onContainerClosed( par1PlayerEntity );
 		if( this.getJob() != null )
 		{
 			this.getJob().cancel( true );

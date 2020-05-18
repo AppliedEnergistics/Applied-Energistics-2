@@ -32,11 +32,11 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.gui.implementations.GuiInterfaceTerminal;
 import appeng.core.sync.AppEngPacket;
@@ -47,7 +47,7 @@ public class PacketCompressedNBT extends AppEngPacket
 {
 
 	// input.
-	private final NBTTagCompound in;
+	private final CompoundNBT in;
 	// output...
 	private final ByteBuf data;
 	private final GZIPOutputStream compressFrame;
@@ -79,7 +79,7 @@ public class PacketCompressedNBT extends AppEngPacket
 	}
 
 	// api
-	public PacketCompressedNBT( final NBTTagCompound din ) throws IOException
+	public PacketCompressedNBT( final CompoundNBT din ) throws IOException
 	{
 
 		this.data = Unpooled.buffer( 2048 );
@@ -104,10 +104,10 @@ public class PacketCompressedNBT extends AppEngPacket
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	@OnlyIn( Dist.CLIENT )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player )
 	{
-		final GuiScreen gs = Minecraft.getMinecraft().currentScreen;
+		final GuiScreen gs = Minecraft.getInstance().currentScreen;
 
 		if( gs instanceof GuiInterfaceTerminal )
 		{

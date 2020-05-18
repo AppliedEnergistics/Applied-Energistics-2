@@ -19,7 +19,7 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
@@ -32,7 +32,7 @@ public class ContainerWirelessTerm extends ContainerMEPortableCell
 
 	private final WirelessTerminalGuiObject wirelessTerminalGUIObject;
 
-	public ContainerWirelessTerm( final InventoryPlayer ip, final WirelessTerminalGuiObject gui )
+	public ContainerWirelessTerm( final PlayerInventory ip, final WirelessTerminalGuiObject gui )
 	{
 		super( ip, gui );
 		this.wirelessTerminalGUIObject = gui;

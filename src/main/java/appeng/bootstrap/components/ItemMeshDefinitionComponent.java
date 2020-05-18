@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.item.Item;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.api.distmarker.Dist;
 
 import appeng.bootstrap.IModelRegistry;
 
@@ -46,7 +46,7 @@ public class ItemMeshDefinitionComponent implements IModelRegistrationComponent
 	}
 
 	@Override
-	public void modelRegistration( Side side, IModelRegistry registry )
+	public void modelRegistration( Dist dist, IModelRegistry registry )
 	{
 		registry.setCustomMeshDefinition( this.item, this.meshDefinition );
 	}

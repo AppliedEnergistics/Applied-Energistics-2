@@ -19,7 +19,7 @@
 package appeng.worldgen.meteorite;
 
 
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.util.Platform;

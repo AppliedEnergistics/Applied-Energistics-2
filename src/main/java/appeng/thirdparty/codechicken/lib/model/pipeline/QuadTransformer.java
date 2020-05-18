@@ -23,7 +23,7 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 
 import appeng.thirdparty.codechicken.lib.model.CachedFormat;
@@ -108,7 +108,7 @@ public abstract class QuadTransformer implements IVertexConsumer, ISmartVertexCo
 	}
 
 	@Override
-	public void setQuadOrientation( EnumFacing orientation )
+	public void setQuadOrientation( Direction orientation )
 	{
 		this.quad.setQuadOrientation( orientation );
 	}

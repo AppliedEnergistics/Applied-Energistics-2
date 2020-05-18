@@ -23,12 +23,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockStateContainer;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
@@ -98,7 +98,7 @@ public class BlockController extends AEBaseTileBlock
 	 * get a rudimentary connected texture feel for the controller based on how it is placed.
 	 */
 	@Override
-	public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
+	public BlockState getActualState( BlockState state, IBlockReader world, BlockPos pos )
 	{
 
 		// Only used for columns, really
@@ -148,19 +148,19 @@ public class BlockController extends AEBaseTileBlock
 	}
 
 	@Override
-	public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
+	public BlockState getExtendedState( BlockState state, IBlockReader world, BlockPos pos )
 	{
 		return state;
 	}
 
 	@Override
-	public int getMetaFromState( final IBlockState state )
+	public int getMetaFromState( final BlockState state )
 	{
 		return state.getValue( CONTROLLER_STATE ).ordinal();
 	}
 
 	@Override
-	public IBlockState getStateFromMeta( final int meta )
+	public BlockState getStateFromMeta( final int meta )
 	{
 		ControllerBlockState state = ControllerBlockState.values()[meta];
 		return this.getDefaultState().withProperty( CONTROLLER_STATE, state );
@@ -173,7 +173,7 @@ public class BlockController extends AEBaseTileBlock
 	}
 
 	@Override
-	public void neighborChanged( IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
+	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
 	{
 		final TileController tc = this.getTileEntity( world, pos );
 		if( tc != null )

@@ -58,7 +58,7 @@ public class ItemRenderable<T extends TileEntity> implements Renderable<T>
 				matrix.flip();
 				GlStateManager.multMatrix( matrix );
 			}
-			Minecraft.getMinecraft().getRenderItem().renderItem( pair.getLeft(), TransformType.GROUND );
+			Minecraft.getInstance().getRenderItem().renderItem( pair.getLeft(), TransformType.GROUND );
 			GlStateManager.popMatrix();
 		}
 	}

@@ -23,7 +23,7 @@ import java.util.Collection;
 
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.api.distmarker.Dist;
 
 import appeng.bootstrap.IModelRegistry;
 
@@ -42,7 +42,7 @@ public class ItemVariantsComponent implements IModelRegistrationComponent
 	}
 
 	@Override
-	public void modelRegistration( Side side, IModelRegistry registry )
+	public void modelRegistration( Dist dist, IModelRegistry registry )
 	{
 		ResourceLocation[] resourceArr = this.resources.toArray( new ResourceLocation[0] );
 		registry.registerItemVariants( this.item, resourceArr );

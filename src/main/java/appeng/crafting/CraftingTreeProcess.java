@@ -23,11 +23,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.hooks.BasicEventHooks;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
@@ -70,14 +70,14 @@ public class CraftingTreeProcess
 		{
 			final IAEItemStack[] list = details.getInputs();
 
-			final InventoryCrafting ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
+			final CraftingInventory ic = new CraftingInventory( new ContainerNull(), 3, 3 );
 			final IAEItemStack[] is = details.getInputs();
 			for( int x = 0; x < ic.getSizeInventory(); x++ )
 			{
 				ic.setInventorySlotContents( x, is[x] == null ? ItemStack.EMPTY : is[x].createItemStack() );
 			}
 
-			FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) world ), details.getOutput( ic, world ), ic );
+			BasicEventHooks.firePlayerCraftingEvent( Platform.getPlayer( (ServerWorld) world ), details.getOutput( ic, world ), ic );
 
 			for( int x = 0; x < ic.getSizeInventory(); x++ )
 			{
@@ -191,7 +191,7 @@ public class CraftingTreeProcess
 
 		if( this.fullSimulation )
 		{
-			final InventoryCrafting ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
+			final CraftingInventory ic = new CraftingInventory( new ContainerNull(), 3, 3 );
 
 			for( final Entry<CraftingTreeNode, Long> entry : this.nodes.entrySet() )
 			{
@@ -201,7 +201,7 @@ public class CraftingTreeProcess
 				ic.setInventorySlotContents( entry.getKey().getSlot(), stack.createItemStack() );
 			}
 
-			FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) this.world ), this.details.getOutput( ic, this.world ), ic );
+			BasicEventHooks.firePlayerCraftingEvent( Platform.getPlayer( (ServerWorld) this.world ), this.details.getOutput( ic, this.world ), ic );
 
 			for( int x = 0; x < ic.getSizeInventory(); x++ )
 			{

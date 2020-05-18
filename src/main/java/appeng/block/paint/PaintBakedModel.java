@@ -11,14 +11,14 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
@@ -54,7 +54,7 @@ class PaintBakedModel implements IBakedModel
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
 	{
 		if( side != null )
 		{
@@ -117,34 +117,34 @@ class PaintBakedModel implements IBakedModel
 			{
 				case UP:
 					offset = 1.0f - offset;
-					builder.addQuad( EnumFacing.DOWN, pos_x - buffer, offset, pos_y - buffer,
+					builder.addQuad( Direction.DOWN, pos_x - buffer, offset, pos_y - buffer,
 							pos_x + buffer, offset, pos_y + buffer );
 					break;
 
 				case DOWN:
-					builder.addQuad( EnumFacing.UP, pos_x - buffer, offset, pos_y - buffer,
+					builder.addQuad( Direction.UP, pos_x - buffer, offset, pos_y - buffer,
 							pos_x + buffer, offset, pos_y + buffer );
 					break;
 
 				case EAST:
 					offset = 1.0f - offset;
-					builder.addQuad( EnumFacing.WEST, offset, pos_x - buffer, pos_y - buffer,
+					builder.addQuad( Direction.WEST, offset, pos_x - buffer, pos_y - buffer,
 							offset, pos_x + buffer, pos_y + buffer );
 					break;
 
 				case WEST:
-					builder.addQuad( EnumFacing.EAST, offset, pos_x - buffer, pos_y - buffer,
+					builder.addQuad( Direction.EAST, offset, pos_x - buffer, pos_y - buffer,
 							offset, pos_x + buffer, pos_y + buffer );
 					break;
 
 				case SOUTH:
 					offset = 1.0f - offset;
-					builder.addQuad( EnumFacing.NORTH, pos_x - buffer, pos_y - buffer, offset,
+					builder.addQuad( Direction.NORTH, pos_x - buffer, pos_y - buffer, offset,
 							pos_x + buffer, pos_y + buffer, offset );
 					break;
 
 				case NORTH:
-					builder.addQuad( EnumFacing.SOUTH, pos_x - buffer, pos_y - buffer, offset,
+					builder.addQuad( Direction.SOUTH, pos_x - buffer, pos_y - buffer, offset,
 							pos_x + buffer, pos_y + buffer, offset );
 					break;
 

@@ -19,7 +19,7 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -66,7 +66,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	private int tbSlot;
 	private NetworkToolViewer tbInventory;
 
-	public ContainerUpgradeable( final InventoryPlayer ip, final IUpgradeableHost te )
+	public ContainerUpgradeable( final PlayerInventory ip, final IUpgradeableHost te )
 	{
 		super( ip, (TileEntity) ( te instanceof TileEntity ? te : null ), (IPart) ( te instanceof IPart ? te : null ) );
 		this.upgradeable = te;
@@ -114,7 +114,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 				for( int u = 0; u < 3; u++ )
 				{
 					this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, this.tbInventory
-							.getInternalInventory(), u + v * 3, 186 + u * 18, this.getHeight() - 82 + v * 18, this.getInventoryPlayer() ) ).setPlayerSide() );
+							.getInternalInventory(), u + v * 3, 186 + u * 18, this.getHeight() - 82 + v * 18, this.getPlayerInventory() ) ).setPlayerSide() );
 				}
 			}
 		}
@@ -163,25 +163,25 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		if( this.availableUpgrades() > 0 )
 		{
 			this.addSlotToContainer(
-					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getInventoryPlayer() ) )
+					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getPlayerInventory() ) )
 							.setNotDraggable() );
 		}
 		if( this.availableUpgrades() > 1 )
 		{
 			this.addSlotToContainer(
-					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.getInventoryPlayer() ) )
+					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.getPlayerInventory() ) )
 							.setNotDraggable() );
 		}
 		if( this.availableUpgrades() > 2 )
 		{
 			this.addSlotToContainer(
-					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.getInventoryPlayer() ) )
+					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.getPlayerInventory() ) )
 							.setNotDraggable() );
 		}
 		if( this.availableUpgrades() > 3 )
 		{
 			this.addSlotToContainer(
-					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.getInventoryPlayer() ) )
+					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.getPlayerInventory() ) )
 							.setNotDraggable() );
 		}
 	}

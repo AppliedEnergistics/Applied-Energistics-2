@@ -22,7 +22,7 @@ package appeng.parts;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import appeng.api.parts.IPartCollisionHelper;
@@ -34,14 +34,14 @@ public class BusCollisionHelper implements IPartCollisionHelper
 
 	private final List<AxisAlignedBB> boxes;
 
-	private final EnumFacing x;
-	private final EnumFacing y;
-	private final EnumFacing z;
+	private final Direction x;
+	private final Direction y;
+	private final Direction z;
 
 	private final Entity entity;
 	private final boolean isVisual;
 
-	public BusCollisionHelper( final List<AxisAlignedBB> boxes, final EnumFacing x, final EnumFacing y, final EnumFacing z, final Entity e, final boolean visual )
+	public BusCollisionHelper( final List<AxisAlignedBB> boxes, final Direction x, final Direction y, final Direction z, final Entity e, final boolean visual )
 	{
 		this.boxes = boxes;
 		this.x = x;
@@ -60,40 +60,40 @@ public class BusCollisionHelper implements IPartCollisionHelper
 		switch( s )
 		{
 			case DOWN:
-				this.x = EnumFacing.EAST;
-				this.y = EnumFacing.NORTH;
-				this.z = EnumFacing.DOWN;
+				this.x = Direction.EAST;
+				this.y = Direction.NORTH;
+				this.z = Direction.DOWN;
 				break;
 			case UP:
-				this.x = EnumFacing.EAST;
-				this.y = EnumFacing.SOUTH;
-				this.z = EnumFacing.UP;
+				this.x = Direction.EAST;
+				this.y = Direction.SOUTH;
+				this.z = Direction.UP;
 				break;
 			case EAST:
-				this.x = EnumFacing.SOUTH;
-				this.y = EnumFacing.UP;
-				this.z = EnumFacing.EAST;
+				this.x = Direction.SOUTH;
+				this.y = Direction.UP;
+				this.z = Direction.EAST;
 				break;
 			case WEST:
-				this.x = EnumFacing.NORTH;
-				this.y = EnumFacing.UP;
-				this.z = EnumFacing.WEST;
+				this.x = Direction.NORTH;
+				this.y = Direction.UP;
+				this.z = Direction.WEST;
 				break;
 			case NORTH:
-				this.x = EnumFacing.WEST;
-				this.y = EnumFacing.UP;
-				this.z = EnumFacing.NORTH;
+				this.x = Direction.WEST;
+				this.y = Direction.UP;
+				this.z = Direction.NORTH;
 				break;
 			case SOUTH:
-				this.x = EnumFacing.EAST;
-				this.y = EnumFacing.UP;
-				this.z = EnumFacing.SOUTH;
+				this.x = Direction.EAST;
+				this.y = Direction.UP;
+				this.z = Direction.SOUTH;
 				break;
 			case INTERNAL:
 			default:
-				this.x = EnumFacing.EAST;
-				this.y = EnumFacing.UP;
-				this.z = EnumFacing.SOUTH;
+				this.x = Direction.EAST;
+				this.y = Direction.UP;
+				this.z = Direction.SOUTH;
 				break;
 		}
 	}
@@ -153,19 +153,19 @@ public class BusCollisionHelper implements IPartCollisionHelper
 	}
 
 	@Override
-	public EnumFacing getWorldX()
+	public Direction getWorldX()
 	{
 		return this.x;
 	}
 
 	@Override
-	public EnumFacing getWorldY()
+	public Direction getWorldY()
 	{
 		return this.y;
 	}
 
 	@Override
-	public EnumFacing getWorldZ()
+	public Direction getWorldZ()
 	{
 		return this.z;
 	}

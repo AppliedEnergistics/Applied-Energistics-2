@@ -19,7 +19,7 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
@@ -44,7 +44,7 @@ public class ContainerInterface extends ContainerUpgradeable
 	@GuiSync( 4 )
 	public YesNo iTermMode = YesNo.YES;
 
-	public ContainerInterface( final InventoryPlayer ip, final IInterfaceHost te )
+	public ContainerInterface( final PlayerInventory ip, final IInterfaceHost te )
 	{
 		super( ip, te.getInterfaceDuality().getHost() );
 
@@ -53,7 +53,7 @@ public class ContainerInterface extends ContainerUpgradeable
 		for( int x = 0; x < DualityInterface.NUMBER_OF_PATTERN_SLOTS; x++ )
 		{
 			this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ENCODED_PATTERN, this.myDuality
-					.getPatterns(), x, 8 + 18 * x, 90 + 7, this.getInventoryPlayer() ) );
+					.getPatterns(), x, 8 + 18 * x, 90 + 7, this.getPlayerInventory() ) );
 		}
 
 		for( int x = 0; x < DualityInterface.NUMBER_OF_CONFIG_SLOTS; x++ )

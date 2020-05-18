@@ -21,7 +21,7 @@ package appeng.client.render.crafting;
 
 import java.util.EnumSet;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 
 /**
@@ -31,14 +31,14 @@ public final class CraftingCubeState
 {
 
 	// Contains information on which sides of the block are connected to other parts of a formed crafting cube
-	private final EnumSet<EnumFacing> connections;
+	private final EnumSet<Direction> connections;
 
-	public CraftingCubeState( EnumSet<EnumFacing> connections )
+	public CraftingCubeState( EnumSet<Direction> connections )
 	{
 		this.connections = connections;
 	}
 
-	public EnumSet<EnumFacing> getConnections()
+	public EnumSet<Direction> getConnections()
 	{
 		return this.connections;
 	}

@@ -37,7 +37,7 @@ public class BlockUpdate implements IWorldCallable<Boolean>
 	{
 		if( world.isBlockLoaded( this.pos ) )
 		{
-			world.notifyNeighborsOfStateChange( this.pos, Platform.AIR_BLOCK, true );
+			world.notifyNeighborsOfStateChange( this.pos, Platform.AIR_BLOCK );
 		}
 
 		return true;

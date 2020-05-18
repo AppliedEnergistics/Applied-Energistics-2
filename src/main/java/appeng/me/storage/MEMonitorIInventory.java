@@ -247,7 +247,7 @@ public class MEMonitorIInventory implements IMEMonitor<IAEItemStack>, ITickingMo
 
 	private void postDifference( final Iterable<IAEItemStack> a )
 	{
-		// AELog.info( a.getItemStack().getUnlocalizedName() + " @ " + a.getStackSize() );
+		// AELog.info( a.getItemStack().getTranslationKey() + " @ " + a.getStackSize() );
 		if( a != null )
 		{
 			final Iterator<Entry<IMEMonitorHandlerReceiver<IAEItemStack>, Object>> i = this.listeners.entrySet().iterator();

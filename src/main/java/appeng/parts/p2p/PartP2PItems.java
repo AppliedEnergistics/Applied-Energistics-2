@@ -24,9 +24,9 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -71,7 +71,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IItemHa
 	}
 
 	@Override
-	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
+	public void onNeighborChanged( IBlockReader w, BlockPos pos, BlockPos neighbor )
 	{
 		this.cachedInv = null;
 		final PartP2PItems input = this.getInput();
@@ -129,7 +129,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IItemHa
 			this.partVisited = true;
 			if( this.getProxy().isActive() )
 			{
-				final EnumFacing facing = this.getSide().getFacing();
+				final Direction facing = this.getSide().getFacing();
 				final TileEntity te = this.getTile().getWorld().getTileEntity( this.getTile().getPos().offset( facing ) );
 
 				if( te != null && te.hasCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing.getOpposite() ) )

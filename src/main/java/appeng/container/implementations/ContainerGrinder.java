@@ -19,7 +19,7 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.container.AEBaseContainer;
@@ -32,15 +32,15 @@ import appeng.tile.grindstone.TileGrinder;
 public class ContainerGrinder extends AEBaseContainer
 {
 
-	public ContainerGrinder( final InventoryPlayer ip, final TileGrinder grinder )
+	public ContainerGrinder( final PlayerInventory ip, final TileGrinder grinder )
 	{
 		super( ip, grinder, null );
 
 		IItemHandler inv = grinder.getInternalInventory();
 
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, inv, 0, 12, 17, this.getInventoryPlayer() ) );
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, inv, 1, 12 + 18, 17, this.getInventoryPlayer() ) );
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, inv, 2, 12 + 36, 17, this.getInventoryPlayer() ) );
+		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, inv, 0, 12, 17, this.getPlayerInventory() ) );
+		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, inv, 1, 12 + 18, 17, this.getPlayerInventory() ) );
+		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, inv, 2, 12 + 36, 17, this.getPlayerInventory() ) );
 
 		this.addSlotToContainer( new SlotInaccessible( inv, 6, 80, 40 ) );
 

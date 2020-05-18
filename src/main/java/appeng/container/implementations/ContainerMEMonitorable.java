@@ -24,9 +24,9 @@ import java.nio.BufferOverflowException;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -89,12 +89,12 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	private IConfigManager serverCM;
 	private IGridNode networkNode;
 
-	public ContainerMEMonitorable( final InventoryPlayer ip, final ITerminalHost monitorable )
+	public ContainerMEMonitorable( final PlayerInventory ip, final ITerminalHost monitorable )
 	{
 		this( ip, monitorable, true );
 	}
 
-	protected ContainerMEMonitorable( final InventoryPlayer ip, final ITerminalHost monitorable, final boolean bindInventory )
+	protected ContainerMEMonitorable( final PlayerInventory ip, final ITerminalHost monitorable, final boolean bindInventory )
 	{
 		super( ip, monitorable instanceof TileEntity ? (TileEntity) monitorable : null, monitorable instanceof IPart ? (IPart) monitorable : null );
 
@@ -167,7 +167,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 			for( int y = 0; y < 5; y++ )
 			{
 				this.cellView[y] = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.VIEW_CELL, ( (IViewCellStorage) monitorable )
-						.getViewCellStorage(), y, 206, y * 18 + 8, this.getInventoryPlayer() );
+						.getViewCellStorage(), y, 206, y * 18 + 8, this.getPlayerInventory() );
 				this.cellView[y].setAllowEdit( this.canAccessViewCells );
 				this.addSlotToContainer( this.cellView[y] );
 			}
@@ -204,11 +204,11 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 					this.clientCM.putSetting( set, sideLocal );
 					for( final IContainerListener crafter : this.listeners )
 					{
-						if( crafter instanceof EntityPlayerMP )
+						if( crafter instanceof PlayerEntityMP )
 						{
 							try
 							{
-								NetworkHandler.instance().sendTo( new PacketValueConfig( set.name(), sideLocal.name() ), (EntityPlayerMP) crafter );
+								NetworkHandler.instance().sendTo( new PacketValueConfig( set.name(), sideLocal.name() ), (PlayerEntityMP) crafter );
 							}
 							catch( final IOException e )
 							{
@@ -247,9 +247,9 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 
 						for( final Object c : this.listeners )
 						{
-							if( c instanceof EntityPlayer )
+							if( c instanceof PlayerEntity )
 							{
-								NetworkHandler.instance().sendTo( piu, (EntityPlayerMP) c );
+								NetworkHandler.instance().sendTo( piu, (PlayerEntityMP) c );
 							}
 						}
 					}
@@ -330,7 +330,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 
 	private void queueInventory( final IContainerListener c )
 	{
-		if( Platform.isServer() && c instanceof EntityPlayer && this.monitor != null )
+		if( Platform.isServer() && c instanceof PlayerEntity && this.monitor != null )
 		{
 			try
 			{
@@ -345,14 +345,14 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 					}
 					catch( final BufferOverflowException boe )
 					{
-						NetworkHandler.instance().sendTo( piu, (EntityPlayerMP) c );
+						NetworkHandler.instance().sendTo( piu, (PlayerEntityMP) c );
 
 						piu = new PacketMEInventoryUpdate();
 						piu.appendItem( send );
 					}
 				}
 
-				NetworkHandler.instance().sendTo( piu, (EntityPlayerMP) c );
+				NetworkHandler.instance().sendTo( piu, (PlayerEntityMP) c );
 			}
 			catch( final IOException e )
 			{
@@ -373,7 +373,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
-	public void onContainerClosed( final EntityPlayer player )
+	public void onContainerClosed( final PlayerEntity player )
 	{
 		super.onContainerClosed( player );
 		if( this.monitor != null )

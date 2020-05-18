@@ -37,7 +37,7 @@ public interface IBlockDefinition extends IItemDefinition
 	/**
 	 * @return the {@link ItemBlock} implementation if applicable
 	 */
-	Optional<BlockItem> maybeItemBlock();
+	Optional<BlockItem> maybeBlockItem();
 
 	/**
 	 * Compare Block with world.

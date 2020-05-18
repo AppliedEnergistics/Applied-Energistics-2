@@ -3,11 +3,11 @@ package appeng.parts.automation;
 
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -84,8 +84,8 @@ public abstract class PartAbstractFormationPlane<T extends IAEStack<T>> extends 
 
 			final BlockPos pos = te.getPos();
 
-			final EnumFacing e = bch.getWorldX();
-			final EnumFacing u = bch.getWorldY();
+			final Direction e = bch.getWorldX();
+			final Direction u = bch.getWorldY();
 
 			if( this.isTransitionPlane( te.getWorld().getTileEntity( pos.offset( e.getOpposite() ) ), this.getSide() ) )
 			{
@@ -115,33 +115,33 @@ public abstract class PartAbstractFormationPlane<T extends IAEStack<T>> extends 
 	public PlaneConnections getConnections()
 	{
 
-		final EnumFacing facingRight, facingUp;
+		final Direction facingRight, facingUp;
 		AEPartLocation location = this.getSide();
 		switch( location )
 		{
 			case UP:
-				facingRight = EnumFacing.EAST;
-				facingUp = EnumFacing.NORTH;
+				facingRight = Direction.EAST;
+				facingUp = Direction.NORTH;
 				break;
 			case DOWN:
-				facingRight = EnumFacing.WEST;
-				facingUp = EnumFacing.NORTH;
+				facingRight = Direction.WEST;
+				facingUp = Direction.NORTH;
 				break;
 			case NORTH:
-				facingRight = EnumFacing.WEST;
-				facingUp = EnumFacing.UP;
+				facingRight = Direction.WEST;
+				facingUp = Direction.UP;
 				break;
 			case SOUTH:
-				facingRight = EnumFacing.EAST;
-				facingUp = EnumFacing.UP;
+				facingRight = Direction.EAST;
+				facingUp = Direction.UP;
 				break;
 			case WEST:
-				facingRight = EnumFacing.SOUTH;
-				facingUp = EnumFacing.UP;
+				facingRight = Direction.SOUTH;
+				facingUp = Direction.UP;
 				break;
 			case EAST:
-				facingRight = EnumFacing.NORTH;
-				facingUp = EnumFacing.UP;
+				facingRight = Direction.NORTH;
+				facingUp = Direction.UP;
 				break;
 			default:
 			case INTERNAL:
@@ -182,7 +182,7 @@ public abstract class PartAbstractFormationPlane<T extends IAEStack<T>> extends 
 	}
 
 	@Override
-	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
+	public void onNeighborChanged( IBlockReader w, BlockPos pos, BlockPos neighbor )
 	{
 		if( pos.offset( this.getSide().getFacing() ).equals( neighbor ) )
 		{
@@ -224,14 +224,14 @@ public abstract class PartAbstractFormationPlane<T extends IAEStack<T>> extends 
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.priority = data.getInteger( "priority" );
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		data.setInteger( "priority", this.getPriority() );

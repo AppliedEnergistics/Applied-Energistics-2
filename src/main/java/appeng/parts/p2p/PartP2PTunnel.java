@@ -26,10 +26,10 @@ import java.util.Optional;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumHand;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 
 import appeng.api.AEApi;
@@ -134,7 +134,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.setOutput( data.getBoolean( "output" ) );
@@ -142,11 +142,11 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
-		data.setBoolean( "output", this.isOutput() );
-		data.setShort( "freq", this.getFrequency() );
+		data.putBoolean( "output", this.isOutput() );
+		data.putShort( "freq", this.getFrequency() );
 	}
 
 	@Override
@@ -178,14 +178,14 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean onPartActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		if( Platform.isClient() )
 		{
 			return true;
 		}
 
-		if( hand == EnumHand.OFF_HAND )
+		if( hand == Hand.OFF_HAND )
 		{
 			return false;
 		}
@@ -199,9 +199,9 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		if( !is.isEmpty() && is.getItem() instanceof IMemoryCard )
 		{
 			final IMemoryCard mc = (IMemoryCard) is.getItem();
-			final NBTTagCompound data = mc.getData( is );
+			final CompoundNBT data = mc.getData( is );
 
-			final ItemStack newType = new ItemStack( data );
+			final ItemStack newType = ItemStack.read( data );
 			final short freq = data.getShort( "freq" );
 
 			if( !newType.isEmpty() )
@@ -325,7 +325,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	}
 
 	@Override
-	public boolean onPartShiftActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean onPartShiftActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		final ItemStack is = player.inventory.getCurrentItem();
 		if( !is.isEmpty() && is.getItem() instanceof IMemoryCard )
@@ -336,7 +336,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			}
 
 			final IMemoryCard mc = (IMemoryCard) is.getItem();
-			final NBTTagCompound data = mc.getData( is );
+			final CompoundNBT data = mc.getData( is );
 			final short storedFrequency = data.getShort( "freq" );
 
 			short newFreq = this.getFrequency();
@@ -362,10 +362,10 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			this.onTunnelConfigChange();
 
 			final ItemStack p2pItem = this.getItemStack( PartItemStack.WRENCH );
-			final String type = p2pItem.getUnlocalizedName();
+			final String type = p2pItem.getTranslationKey();
 
-			p2pItem.writeToNBT( data );
-			data.setShort( "freq", this.getFrequency() );
+			p2pItem.write( data );
+			data.putShort( "freq", this.getFrequency() );
 
 			final AEColor[] colors = Platform.p2p().toColors( this.getFrequency() );
 			final int[] colorCode = new int[] {
@@ -373,7 +373,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 					colors[2].ordinal(), colors[2].ordinal(), colors[3].ordinal(), colors[3].ordinal(),
 			};
 
-			data.setIntArray( "colorCode", colorCode );
+			data.putIntArray( "colorCode", colorCode );
 
 			mc.setMemoryCardContents( is, type + ".name", data );
 			if( needsNewFrequency )

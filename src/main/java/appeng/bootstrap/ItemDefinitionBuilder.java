@@ -26,12 +26,12 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import net.minecraft.block.BlockDispenser;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.dispenser.IBehaviorDispenseItem;
+import net.minecraft.block.DispenserBlock;
+import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.item.Item;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.item.ItemGroup;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.bootstrap.components.IItemRegistrationComponent;
 import appeng.bootstrap.components.IPostInitComponent;
@@ -56,12 +56,12 @@ class ItemDefinitionBuilder implements IItemBuilder
 
 	private final List<Function<Item, IBootstrapComponent>> boostrapComponents = new ArrayList<>();
 
-	private Supplier<IBehaviorDispenseItem> dispenserBehaviorSupplier;
+	private Supplier<IDispenseItemBehavior> dispenserBehaviorSupplier;
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private ItemRendering itemRendering;
 
-	private CreativeTabs creativeTab = CreativeTab.instance;
+	private ItemGroup itemGroup = CreativeTab.instance;
 
 	ItemDefinitionBuilder( FeatureFactory factory, String registryName, Supplier<Item> itemSupplier )
 	{
@@ -97,9 +97,9 @@ class ItemDefinitionBuilder implements IItemBuilder
 	}
 
 	@Override
-	public IItemBuilder creativeTab( CreativeTabs tab )
+	public IItemBuilder itemGroup( ItemGroup itemGroup )
 	{
-		this.creativeTab = tab;
+		this.itemGroup = itemGroup;
 		return this;
 	}
 
@@ -115,13 +115,13 @@ class ItemDefinitionBuilder implements IItemBuilder
 	}
 
 	@Override
-	public IItemBuilder dispenserBehavior( Supplier<IBehaviorDispenseItem> behavior )
+	public IItemBuilder dispenserBehavior( Supplier<IDispenseItemBehavior> behavior )
 	{
 		this.dispenserBehaviorSupplier = behavior;
 		return this;
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private void customizeForClient( ItemRenderingCustomizer callback )
 	{
 		callback.customize( this.itemRendering );
@@ -140,9 +140,6 @@ class ItemDefinitionBuilder implements IItemBuilder
 
 		ItemDefinition definition = new ItemDefinition( this.registryName, item );
 
-		item.setUnlocalizedName( "appliedenergistics2." + this.registryName );
-		item.setCreativeTab( this.creativeTab );
-
 		// Register all extra handlers
 		this.boostrapComponents.forEach( component -> this.factory.addBootstrapComponent( component.apply( item ) ) );
 
@@ -151,8 +148,8 @@ class ItemDefinitionBuilder implements IItemBuilder
 		{
 			this.factory.addBootstrapComponent( (IPostInitComponent) side ->
 			{
-				IBehaviorDispenseItem behavior = this.dispenserBehaviorSupplier.get();
-				BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( item, behavior );
+				IDispenseItemBehavior behavior = this.dispenserBehaviorSupplier.get();
+				DispenserBlock.registerDispenseBehavior( item, behavior );
 			} );
 		}
 

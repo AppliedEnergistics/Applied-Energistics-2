@@ -20,7 +20,7 @@ package appeng.tile.networking;
 
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import appeng.api.parts.IPart;
 import appeng.tile.AEBaseTile;
@@ -40,7 +40,7 @@ public class CableBusTESR extends TileEntitySpecialRenderer<AEBaseTile>
 
 		TileCableBusTESR realTe = (TileCableBusTESR) te;
 
-		for( EnumFacing facing : EnumFacing.values() )
+		for( Direction facing : Direction.values() )
 		{
 			IPart part = realTe.getPart( facing );
 			if( part != null && part.requireDynamicRender() )

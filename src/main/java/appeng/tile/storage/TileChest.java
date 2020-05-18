@@ -28,10 +28,10 @@ import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
@@ -431,7 +431,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.config.readFromNBT( data );
@@ -443,7 +443,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT( final NBTTagCompound data )
+	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		this.config.writeToNBT( data );
@@ -516,7 +516,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	}
 
 	@Override
-	protected IItemHandler getItemHandlerForSide( @Nonnull EnumFacing side )
+	protected IItemHandler getItemHandlerForSide( @Nonnull Direction side )
 	{
 		if( side == this.getForward() )
 		{
@@ -616,7 +616,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 
 	}
 
-	public boolean openGui( final EntityPlayer p )
+	public boolean openGui( final PlayerEntity p )
 	{
 		this.updateHandler();
 		if( this.cellHandler != null )
@@ -645,7 +645,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	}
 
 	@Override
-	public boolean recolourBlock( final EnumFacing side, final AEColor newPaintedColor, final EntityPlayer who )
+	public boolean recolourBlock( final Direction side, final AEColor newPaintedColor, final PlayerEntity who )
 	{
 		if( this.paintedColor == newPaintedColor )
 		{
@@ -745,7 +745,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 			return super.injectItems( input, mode, src );
 		}
 
-		private boolean securityCheck( final EntityPlayer player, final SecurityPermissions requiredPermission )
+		private boolean securityCheck( final PlayerEntity player, final SecurityPermissions requiredPermission )
 		{
 			if( TileChest.this.getTile() instanceof IActionHost && requiredPermission != null )
 			{
@@ -791,7 +791,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	}
 
 	@Override
-	public boolean hasCapability( Capability<?> capability, EnumFacing facing )
+	public boolean hasCapability( Capability<?> capability, Direction facing )
 	{
 		this.updateHandler();
 		if( capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && this.fluidHandler != null && facing != this.getForward() )
@@ -807,7 +807,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 
 	@SuppressWarnings( "unchecked" )
 	@Override
-	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
+	public <T> T getCapability( Capability<T> capability, @Nullable Direction facing )
 	{
 		this.updateHandler();
 		if( capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && this.fluidHandler != null && facing != this.getForward() )

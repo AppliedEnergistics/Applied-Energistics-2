@@ -27,12 +27,12 @@ import java.io.IOException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.items.IItemHandler;
 
@@ -70,7 +70,7 @@ public class PacketJEIRecipe extends AppEngPacket
 	{
 		final ByteArrayInputStream bytes = this.getPacketByteArray( stream );
 		bytes.skip( stream.readerIndex() );
-		final NBTTagCompound comp = CompressedStreamTools.readCompressed( bytes );
+		final CompoundNBT comp = CompressedStreamTools.readCompressed( bytes );
 		if( comp != null )
 		{
 			this.recipe = new ItemStack[9][];
@@ -90,7 +90,7 @@ public class PacketJEIRecipe extends AppEngPacket
 	}
 
 	// api
-	public PacketJEIRecipe( final NBTTagCompound recipe ) throws IOException
+	public PacketJEIRecipe( final CompoundNBT recipe ) throws IOException
 	{
 		final ByteBuf data = Unpooled.buffer();
 
@@ -106,9 +106,9 @@ public class PacketJEIRecipe extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player )
 	{
-		final EntityPlayerMP pmp = (EntityPlayerMP) player;
+		final PlayerEntityMP pmp = (PlayerEntityMP) player;
 		final Container con = pmp.openContainer;
 
 		if( !( con instanceof IContainerCraftingPacket ) )

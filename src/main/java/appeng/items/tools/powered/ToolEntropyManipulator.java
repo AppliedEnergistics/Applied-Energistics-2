@@ -25,22 +25,20 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockTNT;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -90,10 +88,10 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 	private static class InWorldToolOperationIngredient
 	{
-		private final IBlockState state;
+		private final BlockState state;
 		private final boolean blockOnly;
 
-		public InWorldToolOperationIngredient( final IBlockState state )
+		public InWorldToolOperationIngredient( final BlockState state )
 		{
 			this.state = state;
 			this.blockOnly = false;
@@ -127,7 +125,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		}
 	}
 
-	private void heat( final IBlockState state, final World w, final BlockPos pos )
+	private void heat( final BlockState state, final World w, final BlockPos pos )
 	{
 		InWorldToolOperationResult r = this.heatUp.get( new InWorldToolOperationIngredient( state ) );
 
@@ -151,7 +149,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		}
 	}
 
-	private boolean canHeat( final IBlockState state )
+	private boolean canHeat( final BlockState state )
 	{
 		InWorldToolOperationResult r = this.heatUp.get( new InWorldToolOperationIngredient( state ) );
 
@@ -163,7 +161,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		return r != null;
 	}
 
-	private void cool( final IBlockState state, final World w, final BlockPos pos )
+	private void cool( final BlockState state, final World w, final BlockPos pos )
 	{
 		InWorldToolOperationResult r = this.coolDown.get( new InWorldToolOperationIngredient( state ) );
 
@@ -187,7 +185,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		}
 	}
 
-	private boolean canCool( final IBlockState state )
+	private boolean canCool( final BlockState state )
 	{
 		InWorldToolOperationResult r = this.coolDown.get( new InWorldToolOperationIngredient( state ) );
 
@@ -200,7 +198,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	}
 
 	@Override
-	public boolean hitEntity( final ItemStack item, final EntityLivingBase target, final EntityLivingBase hitter )
+	public boolean hitEntity( final ItemStack item, final LivingEntity target, final LivingEntity hitter )
 	{
 		if( this.getAECurrentPower( item ) > 1600 )
 		{
@@ -212,7 +210,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick( final World w, final EntityPlayer p, final EnumHand hand )
+	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity p, final Hand hand )
 	{
 		final RayTraceResult target = this.rayTrace( w, p, true );
 
@@ -224,12 +222,12 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		{
 			if( target.typeOfHit == RayTraceResult.Type.BLOCK )
 			{
-				final IBlockState state = w.getBlockState( target.getBlockPos() );
+				final BlockState state = w.getBlockState( target.getBlockPos() );
 				if( state.getMaterial() == Material.LAVA || state.getMaterial() == Material.WATER )
 				{
 					if( Platform.hasPermissions( new DimensionalCoord( w, target.getBlockPos() ), p ) )
 					{
-						this.onItemUse( p, w, target.getBlockPos(), hand, EnumFacing.UP, 0.0F, 0.0F, 0.0F );
+						this.onItemUse( p, w, target.getBlockPos(), hand, Direction.UP, 0.0F, 0.0F, 0.0F );
 					}
 				}
 			}
@@ -239,13 +237,13 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	}
 
 	@Override
-	public EnumActionResult onItemUse( EntityPlayer p, World w, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ )
+	public EnumActionResult onItemUse( PlayerEntity p, World w, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ )
 	{
 		return this.onItemUse( p.getHeldItem( hand ), p, w, pos, hand, side, hitX, hitY, hitZ );
 	}
 
 	@Override
-	public EnumActionResult onItemUse( ItemStack item, EntityPlayer p, World w, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ )
+	public ActionResult onItemUse( ItemStack item, PlayerEntity p, World w, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ )
 	{
 		if( this.getAECurrentPower( item ) > 1600 )
 		{
@@ -254,10 +252,10 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 				return EnumActionResult.FAIL;
 			}
 
-			final IBlockState state = w.getBlockState( pos );
+			final BlockState state = w.getBlockState( pos );
 			final Block blockID = state.getBlock();
 
-			if( p.isSneaking() )
+			if( p.isShiftKeyDown() )
 			{
 				if( this.canCool( state ) )
 				{
@@ -300,7 +298,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 					if( !result.isEmpty() )
 					{
-						if( result.getItem() instanceof ItemBlock )
+						if( result.getItem() instanceof BlockItem )
 						{
 							if( Block.getBlockFromItem( result.getItem() ) == blockID && result.getItem().getDamage( result ) == blockID
 									.getMetaFromState( state ) )

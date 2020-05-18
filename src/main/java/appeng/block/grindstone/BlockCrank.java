@@ -24,16 +24,16 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 
@@ -57,7 +57,7 @@ public class BlockCrank extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( player instanceof FakePlayer || player == null )
 		{
@@ -84,16 +84,16 @@ public class BlockCrank extends AEBaseTileBlock
 	}
 
 	@Override
-	public void onBlockPlacedBy( final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack )
+	public void onBlockPlacedBy( final World world, final BlockPos pos, final BlockState state, final LivingEntity placer, final ItemStack stack )
 	{
 		final AEBaseTile tile = this.getTileEntity( world, pos );
 		if( tile != null )
 		{
-			final EnumFacing mnt = this.findCrankable( world, pos );
-			EnumFacing forward = EnumFacing.UP;
-			if( mnt == EnumFacing.UP || mnt == EnumFacing.DOWN )
+			final Direction mnt = this.findCrankable( world, pos );
+			Direction forward = Direction.UP;
+			if( mnt == Direction.UP || mnt == Direction.DOWN )
 			{
-				forward = EnumFacing.SOUTH;
+				forward = Direction.SOUTH;
 			}
 			tile.setOrientation( forward, mnt.getOpposite() );
 		}
@@ -104,15 +104,15 @@ public class BlockCrank extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean isValidOrientation( final World w, final BlockPos pos, final EnumFacing forward, final EnumFacing up )
+	public boolean isValidOrientation( final World w, final BlockPos pos, final Direction forward, final Direction up )
 	{
 		final TileEntity te = w.getTileEntity( pos );
 		return !( te instanceof TileCrank ) || this.isCrankable( w, pos, up.getOpposite() );
 	}
 
-	private EnumFacing findCrankable( final World world, final BlockPos pos )
+	private Direction findCrankable( final World world, final BlockPos pos )
 	{
-		for( final EnumFacing dir : EnumFacing.VALUES )
+		for( final Direction dir : Direction.VALUES )
 		{
 			if( this.isCrankable( world, pos, dir ) )
 			{
@@ -122,7 +122,7 @@ public class BlockCrank extends AEBaseTileBlock
 		return null;
 	}
 
-	private boolean isCrankable( final World world, final BlockPos pos, final EnumFacing offset )
+	private boolean isCrankable( final World world, final BlockPos pos, final Direction offset )
 	{
 		final BlockPos o = pos.offset( offset );
 		final TileEntity te = world.getTileEntity( o );
@@ -131,13 +131,13 @@ public class BlockCrank extends AEBaseTileBlock
 	}
 
 	@Override
-	public EnumBlockRenderType getRenderType( IBlockState state )
+	public EnumBlockRenderType getRenderType( BlockState state )
 	{
 		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 
 	@Override
-	public void neighborChanged( IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
+	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
 	{
 
 		final AEBaseTile tile = this.getTileEntity( world, pos );
@@ -161,19 +161,19 @@ public class BlockCrank extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean isFullCube( IBlockState state )
+	public boolean isFullCube( BlockState state )
 	{
 		return false;
 	}
 
 	@Override
-	public boolean canPlaceTorchOnTop( IBlockState state, IBlockAccess world, BlockPos pos )
+	public boolean canPlaceTorchOnTop( BlockState state, IBlockReader world, BlockPos pos )
 	{
 		return false;
 	}
 
 	@Override
-	public BlockFaceShape getBlockFaceShape( IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face )
+	public BlockFaceShape getBlockFaceShape( IBlockReader worldIn, BlockState state, BlockPos pos, Direction face )
 	{
 		return BlockFaceShape.UNDEFINED;
 	}

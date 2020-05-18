@@ -22,9 +22,9 @@ package appeng.tile.grindstone;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 
@@ -48,10 +48,10 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	private int points;
 
 	@Override
-	public void setOrientation( final EnumFacing inForward, final EnumFacing inUp )
+	public void setOrientation( final Direction inForward, final Direction inUp )
 	{
 		super.setOrientation( inForward, inUp );
-		final IBlockState state = this.world.getBlockState( this.pos );
+		final BlockState state = this.world.getBlockState( this.pos );
 		this.getBlockType().neighborChanged( state, this.world, this.pos, state.getBlock(), this.pos );
 	}
 
@@ -62,7 +62,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	}
 
 	@Override
-	protected IItemHandler getItemHandlerForSide( EnumFacing side )
+	protected IItemHandler getItemHandlerForSide( Direction side )
 	{
 		return this.invExt;
 	}
@@ -182,7 +182,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	}
 
 	@Override
-	public boolean canCrankAttach( final EnumFacing directionToCrank )
+	public boolean canCrankAttach( final Direction directionToCrank )
 	{
 		return this.getUp() == directionToCrank;
 	}

@@ -29,10 +29,10 @@ import java.util.List;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.EnumSkyBlock;
@@ -58,7 +58,7 @@ public class TilePaint extends AEBaseTile
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT( final NBTTagCompound data )
+	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		final ByteBuf myDat = Unpooled.buffer();
@@ -87,7 +87,7 @@ public class TilePaint extends AEBaseTile
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		if( data.hasKey( "dots" ) )
@@ -160,7 +160,7 @@ public class TilePaint extends AEBaseTile
 			return;
 		}
 
-		for( final EnumFacing side : EnumFacing.VALUES )
+		for( final Direction side : Direction.VALUES )
 		{
 			if( !this.isSideValid( side ) )
 			{
@@ -171,14 +171,14 @@ public class TilePaint extends AEBaseTile
 		this.updateData();
 	}
 
-	public boolean isSideValid( final EnumFacing side )
+	public boolean isSideValid( final Direction side )
 	{
 		final BlockPos p = this.pos.offset( side );
-		final IBlockState blk = this.world.getBlockState( p );
+		final BlockState blk = this.world.getBlockState( p );
 		return blk.getBlock().isSideSolid( this.world.getBlockState( p ), this.world, p, side.getOpposite() );
 	}
 
-	private void removeSide( final EnumFacing side )
+	private void removeSide( final Direction side )
 	{
 		final Iterator<Splotch> i = this.dots.iterator();
 		while( i.hasNext() )
@@ -218,7 +218,7 @@ public class TilePaint extends AEBaseTile
 		}
 	}
 
-	public void cleanSide( final EnumFacing side )
+	public void cleanSide( final Direction side )
 	{
 		if( this.dots == null )
 		{
@@ -235,11 +235,11 @@ public class TilePaint extends AEBaseTile
 		return this.isLit;
 	}
 
-	public void addBlot( final ItemStack type, final EnumFacing side, final Vec3d hitVec )
+	public void addBlot( final ItemStack type, final Direction side, final Vec3d hitVec )
 	{
 		final BlockPos p = this.pos.offset( side );
 
-		final IBlockState blk = this.world.getBlockState( p );
+		final BlockState blk = this.world.getBlockState( p );
 		if( blk.getBlock().isSideSolid( this.world.getBlockState( p ), this.world, p, side.getOpposite() ) )
 		{
 			final ItemPaintBall ipb = (ItemPaintBall) type.getItem();

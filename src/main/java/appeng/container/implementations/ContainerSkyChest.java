@@ -19,8 +19,8 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotNormal;
@@ -32,7 +32,7 @@ public class ContainerSkyChest extends AEBaseContainer
 
 	private final TileSkyChest chest;
 
-	public ContainerSkyChest( final InventoryPlayer ip, final TileSkyChest chest )
+	public ContainerSkyChest( final PlayerInventory ip, final TileSkyChest chest )
 	{
 		super( ip, chest, null );
 		this.chest = chest;
@@ -51,9 +51,9 @@ public class ContainerSkyChest extends AEBaseContainer
 	}
 
 	@Override
-	public void onContainerClosed( final EntityPlayer par1EntityPlayer )
+	public void onContainerClosed( final PlayerEntity par1PlayerEntity )
 	{
-		super.onContainerClosed( par1EntityPlayer );
-		this.chest.closeInventory( par1EntityPlayer );
+		super.onContainerClosed( par1PlayerEntity );
+		this.chest.closeInventory( par1PlayerEntity );
 	}
 }

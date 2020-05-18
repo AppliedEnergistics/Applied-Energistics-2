@@ -29,20 +29,20 @@ import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraftforge.client.ForgeHooksClient;
 
 import appeng.api.AEApi;
@@ -110,17 +110,17 @@ public class FacadeBuilder
 		BakedPipeline pipeline = this.pipelines.get();
 		Quad collectorQuad = this.collectors.get();
 		boolean transparent = AEApi.instance().partHelper().getCableRenderMode().transparentFacades;
-		Map<EnumFacing, FacadeRenderState> facadeStates = renderState.getFacades();
+		Map<Direction, FacadeRenderState> facadeStates = renderState.getFacades();
 		List<AxisAlignedBB> partBoxes = renderState.getBoundingBoxes();
-		Set<EnumFacing> sidesWithParts = renderState.getAttachments().keySet();
-		IBlockAccess parentWorld = renderState.getWorld();
+		Set<Direction> sidesWithParts = renderState.getAttachments().keySet();
+		IBlockReader parentWorld = renderState.getWorld();
 		BlockPos pos = renderState.getPos();
-		BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
+		BlockColors blockColors = Minecraft.getInstance().getBlockColors();
 		boolean thinFacades = isUseThinFacades( partBoxes );
 
-		for( Entry<EnumFacing, FacadeRenderState> entry : facadeStates.entrySet() )
+		for( Entry<Direction, FacadeRenderState> entry : facadeStates.entrySet() )
 		{
-			EnumFacing side = entry.getKey();
+			Direction side = entry.getKey();
 			int sideIndex = side.ordinal();
 			FacadeRenderState facadeRenderState = entry.getValue();
 			boolean renderStilt = !sidesWithParts.contains( side );
@@ -130,7 +130,7 @@ public class FacadeBuilder
 				{
 					IBakedModel partModel = modelLookup.apply( part );
 					QuadRotator rotator = new QuadRotator();
-					quads.addAll( rotator.rotateQuads( gatherQuads( partModel, null, rand ), side, EnumFacing.UP ) );
+					quads.addAll( rotator.rotateQuads( gatherQuads( partModel, null, rand ), side, Direction.UP ) );
 				}
 			}
 			// If we are forcing transparency and this isn't the Translucent layer.
@@ -139,7 +139,7 @@ public class FacadeBuilder
 				continue;
 			}
 
-			IBlockState blockState = facadeRenderState.getSourceBlock();
+			BlockState blockState = facadeRenderState.getSourceBlock();
 			// If we aren't forcing transparency let the block decide if it should render.
 			if( !transparent && layer != null )
 			{
@@ -156,7 +156,7 @@ public class FacadeBuilder
 			{
 				double offset = thinFacades ? THIN_THICKNESS : THICK_THICKNESS;
 				AEAxisAlignedBB tmpBB = null;
-				for( EnumFacing face : EnumFacing.VALUES )
+				for( Direction face : Direction.VALUES )
 				{
 					// Only faces that aren't on our axis
 					if( face.getAxis() != side.getAxis() )
@@ -202,9 +202,9 @@ public class FacadeBuilder
 
 			AEAxisAlignedBB cutOutBox = getCutOutBox( facadeBox, partBoxes );
 			List<AxisAlignedBB> holeStrips = getBoxes( facadeBox, cutOutBox, side.getAxis() );
-			IBlockAccess facadeAccess = new FacadeBlockAccess( parentWorld, pos, side, blockState );
+			IBlockReader facadeAccess = new FacadeBlockAccess( parentWorld, pos, side, blockState );
 
-			BlockRendererDispatcher dispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+			BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
 
 			try
 			{
@@ -261,9 +261,9 @@ public class FacadeBuilder
 
 			// calculate the side mask.
 			int facadeMask = 0;
-			for( Entry<EnumFacing, FacadeRenderState> ent : facadeStates.entrySet() )
+			for( Entry<Direction, FacadeRenderState> ent : facadeStates.entrySet() )
 			{
-				EnumFacing s = ent.getKey();
+				Direction s = ent.getKey();
 				if( s.getAxis() != side.getAxis() )
 				{
 					FacadeRenderState otherState = ent.getValue();
@@ -324,10 +324,10 @@ public class FacadeBuilder
 	 *
 	 * @return The model.
 	 */
-	public List<BakedQuad> buildFacadeItemQuads( ItemStack textureItem, EnumFacing side )
+	public List<BakedQuad> buildFacadeItemQuads( ItemStack textureItem, Direction side )
 	{
 		List<BakedQuad> facadeQuads = new ArrayList<>();
-		IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides( textureItem, null, null );
+		IBakedModel model = Minecraft.getInstance().getRenderItem().getItemModelWithOverrides( textureItem, null, null );
 		List<BakedQuad> modelQuads = gatherQuads( model, null, 0 );
 
 		BakedPipeline pipeline = this.pipelines.get();
@@ -348,7 +348,7 @@ public class FacadeBuilder
 			// If we have a tint index, setup the tinter and enable it.
 			if( quad.hasTintIndex() )
 			{
-				tinter.setTint( Minecraft.getMinecraft().getItemColors().colorMultiplier( textureItem, quad.getTintIndex() ) );
+				tinter.setTint( Minecraft.getInstance().getItemColors().colorMultiplier( textureItem, quad.getTintIndex() ) );
 				pipeline.enableElement( "tinter" );
 			}
 			// Disable elements we don't need for items.
@@ -370,10 +370,10 @@ public class FacadeBuilder
 	}
 
 	// Helper to gather all quads from a model into a list.
-	private static List<BakedQuad> gatherQuads( IBakedModel model, IBlockState state, long rand )
+	private static List<BakedQuad> gatherQuads( IBakedModel model, BlockState state, long rand )
 	{
 		List<BakedQuad> modelQuads = new ArrayList<>();
-		for( EnumFacing face : EnumFacing.VALUES )
+		for( Direction face : Direction.VALUES )
 		{
 			modelQuads.addAll( model.getQuads( state, face, rand ) );
 		}

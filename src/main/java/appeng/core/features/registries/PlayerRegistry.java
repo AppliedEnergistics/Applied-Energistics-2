@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
 import appeng.api.features.IPlayerRegistry;
 import appeng.core.worlddata.WorldData;
@@ -44,14 +44,14 @@ public class PlayerRegistry implements IPlayerRegistry
 	}
 
 	@Override
-	public int getID( final EntityPlayer player )
+	public int getID( final PlayerEntity player )
 	{
 		return this.getID( player.getGameProfile() );
 	}
 
 	@Nullable
 	@Override
-	public EntityPlayer findPlayer( final int playerID )
+	public PlayerEntity findPlayer( final int playerID )
 	{
 		return WorldData.instance().playerData().getPlayerFromID( playerID );
 	}

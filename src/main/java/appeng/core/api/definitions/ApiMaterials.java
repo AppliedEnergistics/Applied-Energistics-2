@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
@@ -129,7 +129,7 @@ public final class ApiMaterials implements IMaterials
 				.rendering( new ItemRenderingCustomizer()
 				{
 					@Override
-					@SideOnly( Side.CLIENT )
+					@OnlyIn( Dist.CLIENT )
 					public void customize( IItemRendering rendering )
 					{
 						rendering.meshDefinition( is -> materials.getTypeByStack( is ).getModel() );

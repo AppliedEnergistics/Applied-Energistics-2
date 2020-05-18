@@ -23,10 +23,10 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -48,11 +48,11 @@ public class PacketClick extends AppEngPacket
 	private final int x;
 	private final int y;
 	private final int z;
-	private EnumFacing side;
+	private Direction side;
 	private final float hitX;
 	private final float hitY;
 	private final float hitZ;
-	private EnumHand hand;
+	private Hand hand;
 	private final boolean leftClick;
 
 	// automatic.
@@ -64,7 +64,7 @@ public class PacketClick extends AppEngPacket
 		byte side = stream.readByte();
 		if( side != -1 )
 		{
-			this.side = EnumFacing.values()[side];
+			this.side = Direction.values()[side];
 		}
 		else
 		{
@@ -73,17 +73,17 @@ public class PacketClick extends AppEngPacket
 		this.hitX = stream.readFloat();
 		this.hitY = stream.readFloat();
 		this.hitZ = stream.readFloat();
-		this.hand = EnumHand.values()[stream.readByte()];
+		this.hand = Hand.values()[stream.readByte()];
 		this.leftClick = stream.readBoolean();
 	}
 
 	// api
-	public PacketClick( final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
+	public PacketClick( final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
 	{
 		this( pos, side, hitX, hitY, hitZ, hand, false );
 	}
 
-	public PacketClick( final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand, boolean leftClick )
+	public PacketClick( final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand, boolean leftClick )
 	{
 
 		final ByteBuf data = Unpooled.buffer();
@@ -110,7 +110,7 @@ public class PacketClick extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player )
 	{
 		final ItemStack is = player.inventory.getCurrentItem();
 		final IItems items = AEApi.instance().definitions().items();

@@ -19,8 +19,8 @@
 package appeng.client.render.model;
 
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.Direction;
 
 
 /**
@@ -28,12 +28,12 @@ import net.minecraft.util.EnumFacing;
  */
 final class AutoRotatingCacheKey
 {
-	private final IBlockState blockState;
-	private final EnumFacing forward;
-	private final EnumFacing up;
-	private final EnumFacing side;
+	private final BlockState blockState;
+	private final Direction forward;
+	private final Direction up;
+	private final Direction side;
 
-	AutoRotatingCacheKey( IBlockState blockState, EnumFacing forward, EnumFacing up, EnumFacing side )
+	AutoRotatingCacheKey( BlockState blockState, Direction forward, Direction up, Direction side )
 	{
 		this.blockState = blockState;
 		this.forward = forward;
@@ -41,22 +41,22 @@ final class AutoRotatingCacheKey
 		this.side = side;
 	}
 
-	public IBlockState getBlockState()
+	public BlockState getBlockState()
 	{
 		return this.blockState;
 	}
 
-	public EnumFacing getForward()
+	public Direction getForward()
 	{
 		return this.forward;
 	}
 
-	public EnumFacing getUp()
+	public Direction getUp()
 	{
 		return this.up;
 	}
 
-	public EnumFacing getSide()
+	public Direction getSide()
 	{
 		return this.side;
 	}

@@ -21,7 +21,7 @@ package appeng.container.slot;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -42,7 +42,7 @@ public class NullSlot extends Slot
 	}
 
 	@Override
-	public ItemStack onTake( final EntityPlayer par1EntityPlayer, final ItemStack par2ItemStack )
+	public ItemStack onTake( final PlayerEntity par1PlayerEntity, final ItemStack par2ItemStack )
 	{
 		return par2ItemStack;
 	}
@@ -91,7 +91,7 @@ public class NullSlot extends Slot
 	}
 
 	@Override
-	public boolean canTakeStack( final EntityPlayer par1EntityPlayer )
+	public boolean canTakeStack( final PlayerEntity par1PlayerEntity )
 	{
 		return false;
 	}

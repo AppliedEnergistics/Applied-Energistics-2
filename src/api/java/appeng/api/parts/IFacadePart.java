@@ -60,8 +60,6 @@ public interface IFacadePart
 
 	Item getItem();
 
-	int getItemDamage();
-
 	boolean notAEFacade();
 
 	boolean isTransparent();

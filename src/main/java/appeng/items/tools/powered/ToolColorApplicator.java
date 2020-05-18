@@ -32,22 +32,22 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockStainedGlass;
 import net.minecraft.block.BlockStainedGlassPane;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemSnowball;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -90,7 +90,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	{
 		for( final AEColor color : AEColor.VALID_COLORS )
 		{
-			final String dyeName = color.dye.getUnlocalizedName();
+			final String dyeName = color.dye.getTranslationKey();
 			final String oreDictName = "dye" + WordUtils.capitalize( dyeName );
 			final int oreDictId = OreDictionary.getOreID( oreDictName );
 
@@ -104,13 +104,13 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	}
 
 	@Override
-	public EnumActionResult onItemUse( EntityPlayer p, World w, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ )
+	public EnumActionResult onItemUse( PlayerEntity p, World w, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ )
 	{
 		return this.onItemUse( p.getHeldItem( hand ), p, w, pos, hand, side, hitX, hitY, hitZ );
 	}
 
 	@Override
-	public EnumActionResult onItemUse( ItemStack is, EntityPlayer p, World w, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ )
+	public EnumActionResult onItemUse( ItemStack is, PlayerEntity p, World w, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ )
 	{
 		final Block blk = w.getBlockState( pos ).getBlock();
 
@@ -185,7 +185,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			}
 		}
 
-		if( p.isSneaking() )
+		if( p.isShiftKeyDown() )
 		{
 			this.cycleColors( is, paintBall, 1 );
 		}
@@ -248,10 +248,10 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 	public ItemStack getColor( final ItemStack is )
 	{
-		final NBTTagCompound c = is.getTagCompound();
+		final CompoundNBT c = is.getTagCompound();
 		if( c != null && c.hasKey( "color" ) )
 		{
-			final NBTTagCompound color = c.getCompoundTag( "color" );
+			final CompoundNBT color = c.getCompoundTag( "color" );
 			final ItemStack oldColor = new ItemStack( color );
 			if( !oldColor.isEmpty() )
 			{
@@ -333,22 +333,22 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 	private void setColor( final ItemStack is, final ItemStack newColor )
 	{
-		final NBTTagCompound data = Platform.openNbtData( is );
+		final CompoundNBT data = Platform.openNbtData( is );
 		if( newColor.isEmpty() )
 		{
 			data.removeTag( "color" );
 		}
 		else
 		{
-			final NBTTagCompound color = new NBTTagCompound();
+			final CompoundNBT color = new CompoundNBT();
 			newColor.writeToNBT( color );
 			data.setTag( "color", color );
 		}
 	}
 
-	private boolean recolourBlock( final Block blk, final EnumFacing side, final World w, final BlockPos pos, final EnumFacing orientation, final AEColor newColor, final EntityPlayer p )
+	private boolean recolourBlock( final Block blk, final Direction side, final World w, final BlockPos pos, final Direction orientation, final AEColor newColor, final PlayerEntity p )
 	{
-		final IBlockState state = w.getBlockState( pos );
+		final BlockState state = w.getBlockState( pos );
 
 		if( blk instanceof BlockColored )
 		{
@@ -422,7 +422,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
 		super.addCheckedInformation( stack, world, lines, advancedTooltips );

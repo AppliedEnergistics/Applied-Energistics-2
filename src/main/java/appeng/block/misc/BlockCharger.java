@@ -27,23 +27,23 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.AEApi;
 import appeng.api.util.AEAxisAlignedBB;
@@ -71,9 +71,9 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
 	{
-		if( player.isSneaking() )
+		if( player.isShiftKeyDown() )
 		{
 			return false;
 		}
@@ -91,8 +91,8 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void randomDisplayTick( final IBlockState state, final World w, final BlockPos pos, final Random r )
+	@OnlyIn( Dist.CLIENT )
+	public void randomDisplayTick( final BlockState state, final World w, final BlockPos pos, final Random r )
 	{
 		if( !AEConfig.instance().isEnableEffects() )
 		{
@@ -121,7 +121,7 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 					{
 						final LightningFX fx = new LightningFX( w, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(), zOff + 0.5 + pos
 								.getZ(), 0.0D, 0.0D, 0.0D );
-						Minecraft.getMinecraft().effectRenderer.addEffect( fx );
+						Minecraft.getInstance().effectRenderer.addEffect( fx );
 					}
 				}
 			}
@@ -135,8 +135,8 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 		if( tile != null )
 		{
 			final double twoPixels = 2.0 / 16.0;
-			final EnumFacing up = tile.getUp();
-			final EnumFacing forward = tile.getForward();
+			final Direction up = tile.getUp();
+			final Direction forward = tile.getForward();
 			final AEAxisAlignedBB bb = new AEAxisAlignedBB( twoPixels, twoPixels, twoPixels, 1.0 - twoPixels, 1.0 - twoPixels, 1.0 - twoPixels );
 
 			if( up.getFrontOffsetX() != 0 )
@@ -190,13 +190,13 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 		out.add( new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
 	}
 
-	@SideOnly( Side.CLIENT )
-	public static TileEntitySpecialRenderer<TileCharger> createTesr()
+	@OnlyIn( Dist.CLIENT )
+	public static TileEntityRenderer<TileCharger> createTesr()
 	{
 		return new ModularTESR<>( new ItemRenderable<>( BlockCharger::getRenderedItem ) );
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	private static Pair<ItemStack, Matrix4f> getRenderedItem( TileCharger tile )
 	{
 		Matrix4f transform = new Matrix4f();

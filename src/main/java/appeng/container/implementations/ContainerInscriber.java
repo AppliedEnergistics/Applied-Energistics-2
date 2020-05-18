@@ -19,7 +19,7 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -56,7 +56,7 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 	@GuiSync( 3 )
 	public int processingTime = -1;
 
-	public ContainerInscriber( final InventoryPlayer ip, final TileInscriber te )
+	public ContainerInscriber( final PlayerInventory ip, final TileInscriber te )
 	{
 		super( ip, te );
 		this.ti = te;
@@ -64,11 +64,11 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 		IItemHandler inv = te.getInternalInventory();
 
 		this.addSlotToContainer(
-				this.top = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, inv, 0, 45, 16, this.getInventoryPlayer() ) );
+				this.top = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, inv, 0, 45, 16, this.getPlayerInventory() ) );
 		this.addSlotToContainer(
-				this.bottom = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, inv, 1, 45, 62, this.getInventoryPlayer() ) );
+				this.bottom = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, inv, 1, 45, 62, this.getPlayerInventory() ) );
 		this.addSlotToContainer(
-				this.middle = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_INPUT, inv, 2, 63, 39, this.getInventoryPlayer() ) );
+				this.middle = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_INPUT, inv, 2, 63, 39, this.getPlayerInventory() ) );
 
 		this.addSlotToContainer( new SlotOutput( inv, 3, 113, 40, -1 ) );
 	}

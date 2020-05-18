@@ -19,9 +19,13 @@
 package appeng.bootstrap.components;
 
 
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import java.util.function.Function;
+
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.relauncher.Side;
 
 import appeng.tile.AEBaseTile;
 
@@ -31,24 +35,23 @@ import appeng.tile.AEBaseTile;
  *
  * @param <T>
  */
-// public class TesrComponent<T extends AEBaseTile> implements ModelRegComponent
 public class TesrComponent<T extends AEBaseTile> implements IPreInitComponent
 {
 
-	private final Class<T> tileEntityClass;
+	private final TileEntityType<T> tileEntityClass;
 
-	private final TileEntitySpecialRenderer<? super T> tesr;
+	private final Function<? super TileEntityRendererDispatcher, ? extends TileEntityRenderer<? super T>> ter;
 
-	public TesrComponent( Class<T> tileEntityClass, TileEntitySpecialRenderer<? super T> tesr )
+	public TesrComponent( TileEntityType<T> tileEntityClass, Function<? super TileEntityRendererDispatcher, ? extends TileEntityRenderer<? super T>> ter )
 	{
 		this.tileEntityClass = tileEntityClass;
-		this.tesr = tesr;
+		this.ter = ter;
 	}
 
 	@Override
-	// public void modelReg( Side side )
-	public void preInitialize( Side side )
+	// public void modelReg( Dist dist )
+	public void preInitialize( Dist dist )
 	{
-		ClientRegistry.bindTileEntitySpecialRenderer( this.tileEntityClass, this.tesr );
+		ClientRegistry.bindTileEntityRenderer( this.tileEntityClass, this.ter );
 	}
 }

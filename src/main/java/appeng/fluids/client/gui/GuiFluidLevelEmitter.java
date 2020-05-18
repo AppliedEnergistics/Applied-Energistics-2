@@ -5,7 +5,7 @@ package appeng.fluids.client.gui;
 import java.io.IOException;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
@@ -36,9 +36,9 @@ public class GuiFluidLevelEmitter extends GuiUpgradeable
 	private GuiButton minus100;
 	private GuiButton minus1000;
 
-	public GuiFluidLevelEmitter( final InventoryPlayer inventoryPlayer, final PartFluidLevelEmitter te )
+	public GuiFluidLevelEmitter( final PlayerInventory PlayerInventory, final PartFluidLevelEmitter te )
 	{
-		super( new ContainerFluidLevelEmitter( inventoryPlayer, te ) );
+		super( new ContainerFluidLevelEmitter( PlayerInventory, te ) );
 		this.levelEmitter = te;
 	}
 

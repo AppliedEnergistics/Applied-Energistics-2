@@ -23,10 +23,10 @@ import net.minecraft.block.Block;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.block.storage.BlockSkyChest;
 import appeng.block.storage.BlockSkyChest.SkyChestType;
@@ -35,7 +35,7 @@ import appeng.core.AppEng;
 import appeng.tile.storage.TileSkyChest;
 
 
-@SideOnly( Side.CLIENT )
+@OnlyIn( Dist.CLIENT )
 public class SkyChestTESR extends TileEntitySpecialRenderer<TileSkyChest>
 {
 
@@ -84,23 +84,23 @@ public class SkyChestTESR extends TileEntitySpecialRenderer<TileSkyChest>
 		{
 			GlStateManager.translate( 0.5F, 0.5F, 0.5F );
 			// In the vanilla chest model, north and south are flipped
-			EnumFacing forward = te.getForward();
-			EnumFacing up = te.getUp();
-			if( forward == EnumFacing.SOUTH )
+			Direction forward = te.getForward();
+			Direction up = te.getUp();
+			if( forward == Direction.SOUTH )
 			{
-				forward = EnumFacing.NORTH;
+				forward = Direction.NORTH;
 			}
-			else if( forward == EnumFacing.NORTH )
+			else if( forward == Direction.NORTH )
 			{
-				forward = EnumFacing.SOUTH;
+				forward = Direction.SOUTH;
 			}
-			if( up == EnumFacing.SOUTH )
+			if( up == Direction.SOUTH )
 			{
-				up = EnumFacing.NORTH;
+				up = Direction.NORTH;
 			}
-			else if( up == EnumFacing.NORTH )
+			else if( up == Direction.NORTH )
 			{
-				up = EnumFacing.SOUTH;
+				up = Direction.SOUTH;
 			}
 			FacingToRotation.get( forward, up ).glRotateCurrentMat();
 			GlStateManager.translate( -0.5F, -0.5F, -0.5F );

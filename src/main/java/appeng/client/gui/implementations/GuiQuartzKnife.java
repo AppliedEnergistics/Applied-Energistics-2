@@ -22,7 +22,7 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.client.gui.AEBaseGui;
 import appeng.container.implementations.ContainerQuartzKnife;
@@ -38,9 +38,9 @@ public class GuiQuartzKnife extends AEBaseGui
 
 	private GuiTextField name;
 
-	public GuiQuartzKnife( final InventoryPlayer inventoryPlayer, final QuartzKnifeObj te )
+	public GuiQuartzKnife( final PlayerInventory PlayerInventory, final QuartzKnifeObj te )
 	{
-		super( new ContainerQuartzKnife( inventoryPlayer, te ) );
+		super( new ContainerQuartzKnife( PlayerInventory, te ) );
 		this.ySize = 184;
 	}
 

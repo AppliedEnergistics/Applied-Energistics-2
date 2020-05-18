@@ -22,7 +22,7 @@ package appeng.core.sync.packets;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -71,7 +71,7 @@ public class PacketCompassResponse extends AppEngPacket
 	}
 
 	@Override
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player )
 	{
 		CompassManager.INSTANCE.postResult( this.attunement, this.cx << 4, this.cdy << 5, this.cz << 4, this.cr );
 	}

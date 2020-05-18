@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -68,14 +68,14 @@ final class PlayerData implements IWorldPlayerData, IOnWorldStartable, IOnWorldS
 
 	@Nullable
 	@Override
-	public EntityPlayer getPlayerFromID( final int playerID )
+	public PlayerEntity getPlayerFromID( final int playerID )
 	{
 		final Optional<UUID> maybe = this.playerMapping.get( playerID );
 
 		if( maybe.isPresent() )
 		{
 			final UUID uuid = maybe.get();
-			for( final EntityPlayer player : AppEng.proxy.getPlayers() )
+			for( final PlayerEntity player : AppEng.proxy.getPlayers() )
 			{
 				if( player.getUniqueID().equals( uuid ) )
 				{

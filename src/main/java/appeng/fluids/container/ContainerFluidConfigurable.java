@@ -5,7 +5,7 @@ package appeng.fluids.container;
 import java.util.Collections;
 import java.util.Map;
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -25,7 +25,7 @@ public abstract class ContainerFluidConfigurable extends ContainerUpgradeable im
 {
 	private FluidSyncHelper sync = null;
 
-	public ContainerFluidConfigurable( InventoryPlayer ip, IUpgradeableHost te )
+	public ContainerFluidConfigurable( PlayerInventory ip, IUpgradeableHost te )
 	{
 		super( ip, te );
 	}

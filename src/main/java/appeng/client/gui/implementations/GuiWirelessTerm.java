@@ -19,7 +19,7 @@
 package appeng.client.gui.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.implementations.guiobjects.IPortableCell;
 
@@ -27,9 +27,9 @@ import appeng.api.implementations.guiobjects.IPortableCell;
 public class GuiWirelessTerm extends GuiMEPortableCell
 {
 
-	public GuiWirelessTerm( final InventoryPlayer inventoryPlayer, final IPortableCell te )
+	public GuiWirelessTerm( final PlayerInventory PlayerInventory, final IPortableCell te )
 	{
-		super( inventoryPlayer, te );
+		super( PlayerInventory, te );
 	}
 
 	@Override

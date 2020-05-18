@@ -22,7 +22,7 @@ package appeng.fluids.container;
 import java.util.Collections;
 import java.util.Map;
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IContainerListener;
 
 import appeng.api.config.SecurityPermissions;
@@ -40,7 +40,7 @@ public class ContainerFluidInterface extends ContainerFluidConfigurable
 	private final DualityFluidInterface myDuality;
 	private final FluidSyncHelper tankSync;
 
-	public ContainerFluidInterface( final InventoryPlayer ip, final IFluidInterfaceHost te )
+	public ContainerFluidInterface( final PlayerInventory ip, final IFluidInterfaceHost te )
 	{
 		super( ip, te.getDualityFluidInterface().getHost() );
 

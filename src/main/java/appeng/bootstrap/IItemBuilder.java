@@ -22,9 +22,9 @@ package appeng.bootstrap;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.dispenser.IBehaviorDispenseItem;
+import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 
 import appeng.core.features.AEFeature;
 import appeng.core.features.ItemDefinition;
@@ -42,14 +42,14 @@ public interface IItemBuilder
 
 	IItemBuilder addFeatures( AEFeature... features );
 
-	IItemBuilder creativeTab( CreativeTabs tab );
+	IItemBuilder itemGroup( ItemGroup tab );
 
 	IItemBuilder rendering( ItemRenderingCustomizer callback );
 
 	/**
 	 * Registers a custom dispenser behavior for this item.
 	 */
-	IItemBuilder dispenserBehavior( Supplier<IBehaviorDispenseItem> behavior );
+	IItemBuilder dispenserBehavior( Supplier<IDispenseItemBehavior> behavior );
 
 	ItemDefinition build();
 }

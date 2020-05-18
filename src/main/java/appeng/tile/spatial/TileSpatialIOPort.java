@@ -22,8 +22,8 @@ package appeng.tile.spatial;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
@@ -65,7 +65,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT( final NBTTagCompound data )
+	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		data.setInteger( "lastRedstoneState", this.lastRedstoneState.ordinal() );
@@ -73,7 +73,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		if( data.hasKey( "lastRedstoneState" ) )
@@ -182,7 +182,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 	}
 
 	@Override
-	protected @Nonnull IItemHandler getItemHandlerForSide( @Nonnull EnumFacing side )
+	protected @Nonnull IItemHandler getItemHandlerForSide( @Nonnull Direction side )
 	{
 		return this.invExt;
 	}

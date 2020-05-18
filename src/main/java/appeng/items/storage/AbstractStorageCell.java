@@ -23,17 +23,17 @@ import java.util.List;
 import java.util.Set;
 
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -74,7 +74,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 		this.component = whichCell;
 	}
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	@Override
 	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
@@ -158,22 +158,22 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick( final World world, final EntityPlayer player, final EnumHand hand )
+	public ActionResult<ItemStack> onItemRightClick( final World world, final PlayerEntity player, final Hand hand )
 	{
 		this.disassembleDrive( player.getHeldItem( hand ), world, player );
 		return new ActionResult<>( EnumActionResult.SUCCESS, player.getHeldItem( hand ) );
 	}
 
-	private boolean disassembleDrive( final ItemStack stack, final World world, final EntityPlayer player )
+	private boolean disassembleDrive( final ItemStack stack, final World world, final PlayerEntity player )
 	{
-		if( player.isSneaking() )
+		if( player.isShiftKeyDown() )
 		{
 			if( Platform.isClient() )
 			{
 				return false;
 			}
 
-			final InventoryPlayer playerInventory = player.inventory;
+			final PlayerInventory playerInventory = player.inventory;
 			final IMEInventoryHandler inv = AEApi.instance().registries().cell().getCellInventory( stack, null, this.getChannel() );
 			if( inv != null && playerInventory.getCurrentItem() == stack )
 			{
@@ -217,10 +217,10 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 		return false;
 	}
 
-	protected abstract void dropEmptyStorageCellCase( final InventoryAdaptor ia, final EntityPlayer player );
+	protected abstract void dropEmptyStorageCellCase( final InventoryAdaptor ia, final PlayerEntity player );
 
 	@Override
-	public EnumActionResult onItemUseFirst( final EntityPlayer player, final World world, final BlockPos pos, final EnumFacing side, final float hitX, final float hitY, final float hitZ, final EnumHand hand )
+	public EnumActionResult onItemUseFirst( final PlayerEntity player, final World world, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
 	{
 		return this.disassembleDrive( player.getHeldItem( hand ), world, player ) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
 	}

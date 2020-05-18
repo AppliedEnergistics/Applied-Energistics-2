@@ -30,11 +30,11 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IMaterials;
@@ -97,7 +97,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 		else
 		{
 			final int progress;
-			final NBTTagCompound comp = Platform.openNbtData( is );
+			final CompoundNBT comp = Platform.openNbtData( is );
 			comp.setInteger( "progress", progress = is.getItemDamage() );
 			is.setItemDamage( ( is.getItemDamage() / SINGLE_OFFSET ) * SINGLE_OFFSET );
 			return progress;
@@ -147,7 +147,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 
 	private void setProgress( final ItemStack is, final int newDamage )
 	{
-		final NBTTagCompound comp = Platform.openNbtData( is );
+		final CompoundNBT comp = Platform.openNbtData( is );
 		comp.setInteger( "progress", newDamage );
 		is.setItemDamage( is.getItemDamage() / LEVEL_OFFSET * LEVEL_OFFSET );
 	}
@@ -159,7 +159,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
 		lines.add( ButtonToolTips.DoesntDespawn.getLocal() );
@@ -176,26 +176,26 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	@Override
-	public String getUnlocalizedName( final ItemStack is )
+	public String getTranslationKey( final ItemStack is )
 	{
 		final int damage = getProgress( is );
 
 		if( damage < CERTUS + SINGLE_OFFSET )
 		{
-			return this.getUnlocalizedName() + ".certus";
+			return this.getTranslationKey() + ".certus";
 		}
 
 		if( damage < NETHER + SINGLE_OFFSET )
 		{
-			return this.getUnlocalizedName() + ".nether";
+			return this.getTranslationKey() + ".nether";
 		}
 
 		if( damage < FLUIX + SINGLE_OFFSET )
 		{
-			return this.getUnlocalizedName() + ".fluix";
+			return this.getTranslationKey() + ".fluix";
 		}
 
-		return this.getUnlocalizedName();
+		return this.getTranslationKey();
 	}
 
 	@Override

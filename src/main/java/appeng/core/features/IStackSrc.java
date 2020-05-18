@@ -30,7 +30,5 @@ public interface IStackSrc
 
 	Item getItem();
 
-	int getDamage();
-
 	boolean isEnabled();
 }

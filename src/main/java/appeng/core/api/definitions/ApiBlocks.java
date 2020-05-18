@@ -23,22 +23,20 @@ import com.google.common.base.Verify;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
-import net.minecraft.block.BlockSlab;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.block.SlabBlock;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemSlab;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.ITileDefinition;
-import appeng.block.AEBaseItemBlockChargeable;
+import appeng.block.AEBaseBlockItemChargeable;
 import appeng.block.crafting.BlockCraftingMonitor;
 import appeng.block.crafting.BlockCraftingStorage;
 import appeng.block.crafting.BlockCraftingUnit;
@@ -95,7 +93,6 @@ import appeng.bootstrap.FeatureFactory;
 import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;
 import appeng.bootstrap.components.IEntityRegistrationComponent;
-import appeng.bootstrap.components.IOreDictComponent;
 import appeng.bootstrap.components.IPostInitComponent;
 import appeng.bootstrap.components.IPreInitComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
@@ -117,6 +114,7 @@ import appeng.debug.TileEnergyGenerator;
 import appeng.debug.TileItemGen;
 import appeng.debug.TilePhantomNode;
 import appeng.decorative.slab.BlockSlabCommon;
+import appeng.decorative.slab.CommonSlabBlock;
 import appeng.decorative.solid.BlockChargedQuartzOre;
 import appeng.decorative.solid.BlockChiseledQuartz;
 import appeng.decorative.solid.BlockFluix;
@@ -252,16 +250,10 @@ public final class ApiBlocks implements IBlocks
 		// this.quartzOre = new BlockDefinition( "ore.quartz", new OreQuartz() );
 		this.quartzOre = registry.block( "quartz_ore", BlockQuartzOre::new )
 				.features( AEFeature.CERTUS_ORE )
-				.bootstrap( ( block, item ) -> (IOreDictComponent) side -> OreDictionary.registerOre( "oreCertusQuartz", new ItemStack( block ) ) )
 				.build();
 		this.quartzOreCharged = registry.block( "charged_quartz_ore", BlockChargedQuartzOre::new )
 				.features( AEFeature.CERTUS_ORE, AEFeature.CHARGED_CERTUS_ORE )
 				.useCustomItemModel()
-				.bootstrap( ( block, item ) -> (IOreDictComponent) side ->
-				{
-					OreDictionary.registerOre( "oreCertusQuartz", new ItemStack( block ) );
-					OreDictionary.registerOre( "oreChargedCertusQuartz", new ItemStack( block ) );
-				} )
 				.build();
 		this.matrixFrame = registry.block( "matrix_frame", BlockMatrixFrame::new ).features( AEFeature.SPATIAL_IO ).build();
 
@@ -276,7 +268,7 @@ public final class ApiBlocks implements IBlocks
 				.rendering( new BlockRenderingCustomizer()
 				{
 					@Override
-					@SideOnly( Side.CLIENT )
+					@OnlyIn( Dist.CLIENT )
 					public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 					{
 						rendering.builtInModel( "models/block/builtin/quartz_glass", new GlassModel() );
@@ -349,7 +341,7 @@ public final class ApiBlocks implements IBlocks
 				.rendering( new BlockRenderingCustomizer()
 				{
 					@Override
-					@SideOnly( Side.CLIENT )
+					@OnlyIn( Dist.CLIENT )
 					public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 					{
 						rendering.tesr( BlockCharger.createTesr() );
@@ -448,13 +440,13 @@ public final class ApiBlocks implements IBlocks
 				.build();
 		this.energyCell = registry.block( "energy_cell", BlockEnergyCell::new )
 				.features( AEFeature.ENERGY_CELLS )
-				.item( AEBaseItemBlockChargeable::new )
+				.item( AEBaseBlockItemChargeable::new )
 				.tileEntity( new TileEntityDefinition( TileEnergyCell.class ) )
 				.rendering( new BlockEnergyCellRendering( new ResourceLocation( AppEng.MOD_ID, "energy_cell" ) ) )
 				.build();
 		this.energyCellDense = registry.block( "dense_energy_cell", BlockDenseEnergyCell::new )
 				.features( AEFeature.ENERGY_CELLS, AEFeature.DENSE_ENERGY_CELLS )
-				.item( AEBaseItemBlockChargeable::new )
+				.item( AEBaseBlockItemChargeable::new )
 				.tileEntity( new TileEntityDefinition( TileDenseEnergyCell.class ) )
 				.rendering( new BlockEnergyCellRendering( new ResourceLocation( AppEng.MOD_ID, "dense_energy_cell" ) ) )
 				.build();
@@ -591,17 +583,17 @@ public final class ApiBlocks implements IBlocks
 			return new BlockDefinition( slabId, null, null );
 		}
 
-		BlockSlab slabBlock = (BlockSlab) slabDef.maybeBlock().get();
+		SlabBlock slabBlock = (SlabBlock) slabDef.maybeBlock().get();
 
 		// Reigster the double slab variant as well
-		IBlockDefinition doubleSlabDef = registry.block( doubleSlabId, () -> new BlockSlabCommon.Double( slabBlock, block ) )
+		IBlockDefinition doubleSlabDef = registry.block( doubleSlabId, () -> new CommonSlabBlock.Double( slabBlock, block ) )
 				.features( AEFeature.DECORATIVE_BLOCKS )
 				.disableItem()
 				.build();
 
 		Verify.verify( doubleSlabDef.maybeBlock().isPresent() );
 
-		BlockSlab doubleSlabBlock = (BlockSlab) doubleSlabDef.maybeBlock().get();
+		SlabBlock doubleSlabBlock = (SlabBlock) doubleSlabDef.maybeBlock().get();
 
 		// Make the slab item
 		IItemDefinition itemDef = registry.item( slabId, () -> new ItemSlab( slabBlock, slabBlock, doubleSlabBlock ) )
@@ -611,7 +603,7 @@ public final class ApiBlocks implements IBlocks
 		Verify.verify( itemDef.maybeItem().isPresent() );
 
 		// Return a new composite block definition that combines the single slab block with the slab item
-		return new BlockDefinition( slabId, slabBlock, (ItemBlock) itemDef.maybeItem().get() );
+		return new BlockDefinition( slabId, slabBlock, (BlockItem) itemDef.maybeItem().get() );
 	}
 
 	private static IBlockDefinition makeStairs( String registryName, FeatureFactory registry, IBlockDefinition block )
@@ -621,7 +613,7 @@ public final class ApiBlocks implements IBlocks
 				.rendering( new BlockRenderingCustomizer()
 				{
 					@Override
-					@SideOnly( Side.CLIENT )
+					@OnlyIn( Dist.CLIENT )
 					public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 					{
 						ModelResourceLocation model = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, registryName ), "facing=east,half=bottom,shape=straight" );

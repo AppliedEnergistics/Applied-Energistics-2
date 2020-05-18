@@ -2,7 +2,8 @@
 package appeng.bootstrap.components;
 
 
-import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.bootstrap.IBootstrapComponent;
@@ -11,5 +12,5 @@ import appeng.bootstrap.IBootstrapComponent;
 @FunctionalInterface
 public interface IEntityRegistrationComponent extends IBootstrapComponent
 {
-	void entityRegistration( IForgeRegistry<EntityEntry> entityRegistry );
+	void entityRegistration( IForgeRegistry<EntityType<? extends Entity>> entityRegistry );
 }

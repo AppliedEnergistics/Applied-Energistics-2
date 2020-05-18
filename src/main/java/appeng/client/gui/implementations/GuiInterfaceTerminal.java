@@ -32,10 +32,10 @@ import java.util.WeakHashMap;
 import com.google.common.collect.HashMultimap;
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 
 import appeng.api.AEApi;
@@ -69,9 +69,9 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	private boolean refreshList = false;
 	private MEGuiTextField searchField;
 
-	public GuiInterfaceTerminal( final InventoryPlayer inventoryPlayer, final PartInterfaceTerminal te )
+	public GuiInterfaceTerminal( final PlayerInventory PlayerInventory, final PartInterfaceTerminal te )
 	{
-		super( new ContainerInterfaceTerminal( inventoryPlayer, te ) );
+		super( new ContainerInterfaceTerminal( PlayerInventory, te ) );
 
 		final GuiScrollbar scrollbar = new GuiScrollbar();
 		this.setScrollBar( scrollbar );
@@ -209,7 +209,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		}
 	}
 
-	public void postUpdate( final NBTTagCompound in )
+	public void postUpdate( final CompoundNBT in )
 	{
 		if( in.getBoolean( "clear" ) )
 		{
@@ -225,7 +225,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 				try
 				{
 					final long id = Long.parseLong( key.substring( 1 ), Character.MAX_RADIX );
-					final NBTTagCompound invData = in.getCompoundTag( key );
+					final CompoundNBT invData = in.getCompoundTag( key );
 					final ClientDCInternalInv current = this.getById( id, invData.getLong( "sortBy" ), invData.getString( "un" ) );
 
 					for( int x = 0; x < current.getInventory().getSlots(); x++ )
@@ -331,7 +331,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			return false;
 		}
 
-		final NBTTagCompound encodedValue = itemStack.getTagCompound();
+		final CompoundNBT encodedValue = itemStack.getTagCompound();
 
 		if( encodedValue == null )
 		{

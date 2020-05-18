@@ -31,7 +31,7 @@ import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
@@ -74,9 +74,9 @@ public class GuiCraftConfirm extends AEBaseGui
 	private GuiButton selectCPU;
 	private int tooltip = -1;
 
-	public GuiCraftConfirm( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
+	public GuiCraftConfirm( final PlayerInventory PlayerInventory, final ITerminalHost te )
 	{
-		super( new ContainerCraftConfirm( inventoryPlayer, te ) );
+		super( new ContainerCraftConfirm( PlayerInventory, te ) );
 		this.xSize = 238;
 		this.ySize = 206;
 

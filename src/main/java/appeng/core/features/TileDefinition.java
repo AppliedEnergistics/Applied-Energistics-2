@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.definitions.ITileDefinition;
@@ -35,7 +35,7 @@ public final class TileDefinition extends BlockDefinition implements ITileDefini
 
 	private final Optional<AEBaseTileBlock> block;
 
-	public TileDefinition( @Nonnull String registryName, AEBaseTileBlock block, ItemBlock item )
+	public TileDefinition( @Nonnull String registryName, AEBaseTileBlock block, BlockItem item )
 	{
 		super( registryName, block, item );
 		this.block = Optional.ofNullable( block );

@@ -21,7 +21,7 @@ package appeng.debug;
 
 import java.util.EnumSet;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.util.AEPartLocation;
@@ -60,7 +60,7 @@ public class TilePhantomNode extends AENetworkTile
 		if( this.proxy != null )
 		{
 			this.crashMode = true;
-			this.proxy.setValidSides( EnumSet.allOf( EnumFacing.class ) );
+			this.proxy.setValidSides( EnumSet.allOf( Direction.class ) );
 		}
 	}
 }

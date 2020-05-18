@@ -32,15 +32,15 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.block.BlockState;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -214,7 +214,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 	}
 
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final CompoundNBT data )
 	{
 		this.config.writeToNBT( data, "config" );
 		this.patterns.writeToNBT( data, "patterns" );
@@ -222,33 +222,33 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		this.upgrades.writeToNBT( data, "upgrades" );
 		this.cm.writeToNBT( data );
 		this.craftingTracker.writeToNBT( data );
-		data.setInteger( "priority", this.priority );
+		data.putInt( "priority", this.priority );
 
-		final NBTTagList waitingToSend = new NBTTagList();
+		final ListNBT waitingToSend = new ListNBT();
 		if( this.waitingToSend != null )
 		{
 			for( final ItemStack is : this.waitingToSend )
 			{
-				final NBTTagCompound item = new NBTTagCompound();
-				is.writeToNBT( item );
-				waitingToSend.appendTag( item );
+				final CompoundNBT item = new CompoundNBT();
+				is.write( item );
+				waitingToSend.add( item );
 			}
 		}
-		data.setTag( "waitingToSend", waitingToSend );
+		data.put( "waitingToSend", waitingToSend );
 	}
 
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		this.waitingToSend = null;
-		final NBTTagList waitingList = data.getTagList( "waitingToSend", 10 );
+		final ListNBT waitingList = data.getList( "waitingToSend", 10 );
 		if( waitingList != null )
 		{
-			for( int x = 0; x < waitingList.tagCount(); x++ )
+			for( int x = 0; x < waitingList.size(); x++ )
 			{
-				final NBTTagCompound c = waitingList.getCompoundTagAt( x );
+				final CompoundNBT c = waitingList.getCompound( x );
 				if( c != null )
 				{
-					final ItemStack is = new ItemStack( c );
+					final ItemStack is = ItemStack.read( c );
 					this.addToSendList( is );
 				}
 			}
@@ -259,7 +259,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		this.config.readFromNBT( data, "config" );
 		this.patterns.readFromNBT( data, "patterns" );
 		this.storage.readFromNBT( data, "storage" );
-		this.priority = data.getInteger( "priority" );
+		this.priority = data.getInt( "priority" );
 		this.cm.readFromNBT( data );
 		this.readConfig();
 		this.updateCraftingList();
@@ -584,7 +584,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		return this.hasWorkToDo() ? ( couldDoWork ? TickRateModulation.URGENT : TickRateModulation.SLOWER ) : TickRateModulation.SLEEP;
 	}
 
-	private void pushItemsOut( final EnumSet<EnumFacing> possibleDirections )
+	private void pushItemsOut( final EnumSet<Direction> possibleDirections )
 	{
 		if( !this.hasItemsToSend() )
 		{
@@ -599,7 +599,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		{
 			ItemStack whatToSend = i.next();
 
-			for( final EnumFacing s : possibleDirections )
+			for( final Direction s : possibleDirections )
 			{
 				final TileEntity te = w.getTileEntity( tile.getPos().offset( s ) );
 				if( te == null )
@@ -894,7 +894,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	}
 
 	@Override
-	public boolean pushPattern( final ICraftingPatternDetails patternDetails, final InventoryCrafting table )
+	public boolean pushPattern( final ICraftingPatternDetails patternDetails, final CraftingInventory table )
 	{
 		if( this.hasItemsToSend() || !this.gridProxy.isActive() || !this.craftingList.contains( patternDetails ) )
 		{
@@ -904,8 +904,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		final TileEntity tile = this.iHost.getTileEntity();
 		final World w = tile.getWorld();
 
-		final EnumSet<EnumFacing> possibleDirections = this.iHost.getTargets();
-		for( final EnumFacing s : possibleDirections )
+		final EnumSet<Direction> possibleDirections = this.iHost.getTargets();
+		for( final Direction s : possibleDirections )
 		{
 			final TileEntity te = w.getTileEntity( tile.getPos().offset( s ) );
 			if( te instanceof IInterfaceHost )
@@ -979,13 +979,13 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 		if( this.isBlocking() )
 		{
-			final EnumSet<EnumFacing> possibleDirections = this.iHost.getTargets();
+			final EnumSet<Direction> possibleDirections = this.iHost.getTargets();
 			final TileEntity tile = this.iHost.getTileEntity();
 			final World w = tile.getWorld();
 
 			boolean allAreBusy = true;
 
-			for( final EnumFacing s : possibleDirections )
+			for( final Direction s : possibleDirections )
 			{
 				final TileEntity te = w.getTileEntity( tile.getPos().offset( s ) );
 
@@ -1016,7 +1016,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		return this.cm.getSetting( Settings.BLOCK ) == YesNo.YES;
 	}
 
-	private boolean acceptsItems( final InventoryAdaptor ad, final InventoryCrafting table )
+	private boolean acceptsItems( final InventoryAdaptor ad, final CraftingInventory table )
 	{
 		for( int x = 0; x < table.getSizeInventory(); x++ )
 		{
@@ -1147,8 +1147,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			return ( (ICustomNameObject) this.iHost ).getCustomInventoryName();
 		}
 
-		final EnumSet<EnumFacing> possibleDirections = this.iHost.getTargets();
-		for( final EnumFacing direction : possibleDirections )
+		final EnumSet<Direction> possibleDirections = this.iHost.getTargets();
+		for( final Direction direction : possibleDirections )
 		{
 			final BlockPos targ = hostTile.getPos().offset( direction );
 			final TileEntity directedTile = hostWorld.getTileEntity( targ );
@@ -1181,15 +1181,15 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					continue;
 				}
 
-				final IBlockState directedBlockState = hostWorld.getBlockState( targ );
+				final BlockState directedBlockState = hostWorld.getBlockState( targ );
 				final Block directedBlock = directedBlockState.getBlock();
-				ItemStack what = new ItemStack( directedBlock, 1, directedBlock.getMetaFromState( directedBlockState ) );
+				ItemStack what = new ItemStack( directedBlock, 1 );
 				try
 				{
 					Vec3d from = new Vec3d( hostTile.getPos().getX() + 0.5, hostTile.getPos().getY() + 0.5, hostTile.getPos().getZ() + 0.5 );
-					from = from.addVector( direction.getFrontOffsetX() * 0.501, direction.getFrontOffsetY() * 0.501, direction.getFrontOffsetZ() * 0.501 );
-					final Vec3d to = from.addVector( direction.getFrontOffsetX(), direction.getFrontOffsetY(), direction.getFrontOffsetZ() );
-					final RayTraceResult mop = hostWorld.rayTraceBlocks( from, to, true );
+					from = from.add( direction.getXOffset() * 0.501, direction.getYOffset() * 0.501, direction.getZOffset() * 0.501 );
+					final Vec3d to = from.add( direction.getXOffset(), direction.getYOffset(), direction.getZOffset() );
+					final RayTraceResult mop = hostWorld.rayTraceBlocks( from, to );
 					if( mop != null && !BAD_BLOCKS.contains( directedBlock ) )
 					{
 						if( mop.getBlockPos().equals( directedTile.getPos() ) )
@@ -1209,13 +1209,13 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 				if( what.getItem() != Items.AIR )
 				{
-					return what.getUnlocalizedName();
+					return what.getTranslationKey();
 				}
 
 				final Item item = Item.getItemFromBlock( directedBlock );
 				if( item == Items.AIR )
 				{
-					return directedBlock.getUnlocalizedName();
+					return directedBlock.getTranslationKey();
 				}
 			}
 		}
@@ -1254,13 +1254,13 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		}
 	}
 
-	public boolean hasCapability( Capability<?> capabilityClass, EnumFacing facing )
+	public boolean hasCapability( Capability<?> capabilityClass, Direction facing )
 	{
 		return capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR;
 	}
 
 	@SuppressWarnings( "unchecked" )
-	public <T> T getCapability( Capability<T> capabilityClass, EnumFacing facing )
+	public <T> T getCapability( Capability<T> capabilityClass, Direction facing )
 	{
 		if( capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
 		{

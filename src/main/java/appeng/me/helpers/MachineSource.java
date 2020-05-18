@@ -21,7 +21,7 @@ package appeng.me.helpers;
 
 import java.util.Optional;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
@@ -38,7 +38,7 @@ public class MachineSource implements IActionSource
 	}
 
 	@Override
-	public Optional<EntityPlayer> player()
+	public Optional<PlayerEntity> player()
 	{
 		return Optional.empty();
 	}

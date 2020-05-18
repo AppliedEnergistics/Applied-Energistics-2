@@ -31,8 +31,8 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
-import net.minecraft.advancements.critereon.AbstractCriterionInstance;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.advancements.criterion.CriterionInstance;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 
 import appeng.core.AppEng;
@@ -98,7 +98,7 @@ public class AppEngAdvancementTrigger implements ICriterionTrigger<AppEngAdvance
 	}
 
 	@Override
-	public void trigger( EntityPlayerMP parPlayer )
+	public void trigger( PlayerEntity parPlayer )
 	{
 		AppEngAdvancementTrigger.Listeners l = this.listeners.get( parPlayer.getAdvancements() );
 
@@ -108,7 +108,7 @@ public class AppEngAdvancementTrigger implements ICriterionTrigger<AppEngAdvance
 		}
 	}
 
-	public static class Instance extends AbstractCriterionInstance
+	public static class Instance extends CriterionInstance
 	{
 		public Instance( ResourceLocation parID )
 		{
@@ -146,7 +146,7 @@ public class AppEngAdvancementTrigger implements ICriterionTrigger<AppEngAdvance
 			this.listeners.remove( listener );
 		}
 
-		public void trigger( EntityPlayerMP player )
+		public void trigger( PlayerEntity player )
 		{
 			List<ICriterionTrigger.Listener<AppEngAdvancementTrigger.Instance>> list = null;
 

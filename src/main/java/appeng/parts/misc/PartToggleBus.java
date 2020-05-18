@@ -21,14 +21,14 @@ package appeng.parts.misc;
 
 import java.util.EnumSet;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 
 import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnectionException;
@@ -109,7 +109,7 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
+	public void onNeighborChanged( IBlockReader w, BlockPos pos, BlockPos neighbor )
 	{
 		final boolean oldHasRedstone = this.hasRedstone;
 		this.hasRedstone = this.getHost().hasRedstone( this.getSide() );
@@ -122,14 +122,14 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound extra )
+	public void readFromNBT( final CompoundNBT extra )
 	{
 		super.readFromNBT( extra );
 		this.getOuterProxy().readFromNBT( extra );
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound extra )
+	public void writeToNBT( final CompoundNBT extra )
 	{
 		super.writeToNBT( extra );
 		this.getOuterProxy().writeToNBT( extra );
@@ -171,7 +171,7 @@ public class PartToggleBus extends PartBasicState
 	}
 
 	@Override
-	public void onPlacement( final EntityPlayer player, final EnumHand hand, final ItemStack held, final AEPartLocation side )
+	public void onPlacement( final PlayerEntity player, final Hand hand, final ItemStack held, final AEPartLocation side )
 	{
 		super.onPlacement( player, hand, held, side );
 		this.getOuterProxy().setOwner( player );

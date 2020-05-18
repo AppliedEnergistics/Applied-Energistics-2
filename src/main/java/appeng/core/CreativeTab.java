@@ -21,8 +21,7 @@ package appeng.core;
 
 import java.util.Optional;
 
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
@@ -33,49 +32,45 @@ import appeng.api.definitions.IItems;
 import appeng.api.definitions.IMaterials;
 
 
-public final class CreativeTab extends CreativeTabs
+public final class CreativeTab
 {
-	public static CreativeTab instance = null;
-
-	public CreativeTab()
-	{
-		super( "appliedenergistics2" );
-	}
+	public static ItemGroup instance = null;
 
 	static void init()
 	{
-		instance = new CreativeTab();
-	}
-
-	@Override
-	public ItemStack getTabIconItem()
-	{
-		return this.getIconItemStack();
-	}
-
-	@Override
-	public ItemStack getIconItemStack()
-	{
-		final IDefinitions definitions = AEApi.instance().definitions();
-		final IBlocks blocks = definitions.blocks();
-		final IItems items = definitions.items();
-		final IMaterials materials = definitions.materials();
-
-		return this.findFirst( blocks.controller(), blocks.chest(), blocks.cellWorkbench(), blocks.fluixBlock(), items.cell1k(), items.networkTool(),
-				materials.fluixCrystal(), materials.certusQuartzCrystal(), materials.skyDust() );
-	}
-
-	private ItemStack findFirst( final IItemDefinition... choices )
-	{
-		for( final IItemDefinition definition : choices )
+		instance = new ItemGroup( 11, "appliedenergistics2" )
 		{
-			Optional<ItemStack> maybeIs = definition.maybeStack( 1 );
-			if( maybeIs.isPresent() )
-			{
-				return maybeIs.get();
-			}
-		}
 
-		return new ItemStack( Blocks.CHEST );
+			@Override
+			public ItemStack createIcon()
+			{
+				return this.getIconItemStack();
+			}
+
+			private ItemStack getIconItemStack()
+			{
+				final IDefinitions definitions = AEApi.instance().definitions();
+				final IBlocks blocks = definitions.blocks();
+				final IItems items = definitions.items();
+				final IMaterials materials = definitions.materials();
+
+				return this.findFirst( blocks.controller(), blocks.chest(), blocks.cellWorkbench(), blocks.fluixBlock(), items.cell1k(), items.networkTool(),
+						materials.fluixCrystal(), materials.certusQuartzCrystal(), materials.skyDust() );
+			}
+
+			private ItemStack findFirst( final IItemDefinition... choices )
+			{
+				for( final IItemDefinition definition : choices )
+				{
+					Optional<ItemStack> maybeIs = definition.maybeStack( 1 );
+					if( maybeIs.isPresent() )
+					{
+						return maybeIs.get();
+					}
+				}
+
+				return new ItemStack( net.minecraft.block.Blocks.CHEST );
+			}
+		};
 	}
 }

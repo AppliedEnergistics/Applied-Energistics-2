@@ -19,7 +19,7 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.config.Actionable;
@@ -37,7 +37,7 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable
 	private int ticks = 0;
 	private final int slot;
 
-	public ContainerMEPortableCell( final InventoryPlayer ip, final IPortableCell monitorable )
+	public ContainerMEPortableCell( final PlayerInventory ip, final IPortableCell monitorable )
 	{
 		super( ip, monitorable, false );
 		if( monitorable instanceof IInventorySlotAware )

@@ -27,8 +27,8 @@ import java.util.stream.Collectors;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEColor;
 import appeng.bootstrap.IItemRendering;
@@ -55,7 +55,7 @@ public class ItemPartRendering extends ItemRenderingCustomizer
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public void customize( IItemRendering rendering )
 	{
 

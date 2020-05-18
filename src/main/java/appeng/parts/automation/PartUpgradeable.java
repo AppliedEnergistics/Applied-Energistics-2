@@ -120,7 +120,7 @@ public abstract class PartUpgradeable extends PartBasicState implements IAEAppEn
 	}
 
 	@Override
-	public void readFromNBT( final net.minecraft.nbt.NBTTagCompound extra )
+	public void readFromNBT( final net.minecraft.nbt.CompoundNBT extra )
 	{
 		super.readFromNBT( extra );
 		this.manager.readFromNBT( extra );
@@ -128,7 +128,7 @@ public abstract class PartUpgradeable extends PartBasicState implements IAEAppEn
 	}
 
 	@Override
-	public void writeToNBT( final net.minecraft.nbt.NBTTagCompound extra )
+	public void writeToNBT( final net.minecraft.nbt.CompoundNBT extra )
 	{
 		super.writeToNBT( extra );
 		this.manager.writeToNBT( extra );

@@ -29,10 +29,10 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
@@ -95,22 +95,22 @@ public class PacketValueConfig extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player )
 	{
 		final Container c = player.openContainer;
 
-		if( this.Name.equals( "Item" ) && ( ( !player.getHeldItem( EnumHand.MAIN_HAND ).isEmpty() && player.getHeldItem( EnumHand.MAIN_HAND )
-				.getItem() instanceof IMouseWheelItem ) || ( !player.getHeldItem( EnumHand.OFF_HAND )
-						.isEmpty() && player.getHeldItem( EnumHand.OFF_HAND ).getItem() instanceof IMouseWheelItem ) ) )
+		if( this.Name.equals( "Item" ) && ( ( !player.getHeldItem( Hand.MAIN_HAND ).isEmpty() && player.getHeldItem( Hand.MAIN_HAND )
+				.getItem() instanceof IMouseWheelItem ) || ( !player.getHeldItem( Hand.OFF_HAND )
+						.isEmpty() && player.getHeldItem( Hand.OFF_HAND ).getItem() instanceof IMouseWheelItem ) ) )
 		{
-			final EnumHand hand;
-			if( !player.getHeldItem( EnumHand.MAIN_HAND ).isEmpty() && player.getHeldItem( EnumHand.MAIN_HAND ).getItem() instanceof IMouseWheelItem )
+			final Hand hand;
+			if( !player.getHeldItem( Hand.MAIN_HAND ).isEmpty() && player.getHeldItem( Hand.MAIN_HAND ).getItem() instanceof IMouseWheelItem )
 			{
-				hand = EnumHand.MAIN_HAND;
+				hand = Hand.MAIN_HAND;
 			}
-			else if( !player.getHeldItem( EnumHand.OFF_HAND ).isEmpty() && player.getHeldItem( EnumHand.OFF_HAND ).getItem() instanceof IMouseWheelItem )
+			else if( !player.getHeldItem( Hand.OFF_HAND ).isEmpty() && player.getHeldItem( Hand.OFF_HAND ).getItem() instanceof IMouseWheelItem )
 			{
-				hand = EnumHand.OFF_HAND;
+				hand = Hand.OFF_HAND;
 			}
 			else
 			{
@@ -270,7 +270,7 @@ public class PacketValueConfig extends AppEngPacket
 	}
 
 	@Override
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player )
 	{
 		final Container c = player.openContainer;
 
@@ -284,7 +284,7 @@ public class PacketValueConfig extends AppEngPacket
 		}
 		else if( this.Name.equals( "CraftingStatus" ) && this.Value.equals( "Clear" ) )
 		{
-			final GuiScreen gs = Minecraft.getMinecraft().currentScreen;
+			final GuiScreen gs = Minecraft.getInstance().currentScreen;
 			if( gs instanceof GuiCraftingCPU )
 			{
 				( (GuiCraftingCPU) gs ).clearItems();

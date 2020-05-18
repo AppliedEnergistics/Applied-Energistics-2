@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -56,7 +56,7 @@ public final class InscriberTESR extends TileEntitySpecialRenderer<TileInscriber
 
 		// render sides of stamps
 
-		Minecraft mc = Minecraft.getMinecraft();
+		Minecraft mc = Minecraft.getInstance();
 		mc.renderEngine.bindTexture( TextureMap.LOCATION_BLOCKS_TEXTURE );
 
 		// << 20 | light << 4;
@@ -187,12 +187,12 @@ public final class InscriberTESR extends TileEntitySpecialRenderer<TileInscriber
 			GlStateManager.scale( ITEM_RENDER_SCALE, ITEM_RENDER_SCALE, ITEM_RENDER_SCALE );
 
 			// heuristic to scale items down much further than blocks
-			if( !( sis.getItem() instanceof ItemBlock ) )
+			if( !( sis.getItem() instanceof BlockItem ) )
 			{
 				GlStateManager.scale( 0.5, 0.5, 0.5 );
 			}
 
-			Minecraft.getMinecraft().getRenderItem().renderItem( sis, ItemCameraTransforms.TransformType.FIXED );
+			Minecraft.getInstance().getRenderItem().renderItem( sis, ItemCameraTransforms.TransformType.FIXED );
 			GlStateManager.popMatrix();
 		}
 	}

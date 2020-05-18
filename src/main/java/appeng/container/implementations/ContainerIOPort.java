@@ -19,7 +19,7 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FullnessMode;
@@ -42,7 +42,7 @@ public class ContainerIOPort extends ContainerUpgradeable
 	@GuiSync( 3 )
 	public OperationMode opMode = OperationMode.EMPTY;
 
-	public ContainerIOPort( final InventoryPlayer ip, final TileIOPort te )
+	public ContainerIOPort( final PlayerInventory ip, final TileIOPort te )
 	{
 		super( ip, te );
 	}
@@ -67,7 +67,7 @@ public class ContainerIOPort extends ContainerUpgradeable
 			{
 				this.addSlotToContainer(
 						new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_CELLS, cells, x + y * 2, offX + x * 18, offY + y * 18, this
-								.getInventoryPlayer() ) );
+								.getPlayerInventory() ) );
 			}
 		}
 
@@ -83,13 +83,13 @@ public class ContainerIOPort extends ContainerUpgradeable
 		}
 
 		final IItemHandler upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
-		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getInventoryPlayer() ) )
+		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getPlayerInventory() ) )
 				.setNotDraggable() );
 		this.addSlotToContainer(
-				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.getInventoryPlayer() ) )
+				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.getPlayerInventory() ) )
 						.setNotDraggable() );
 		this.addSlotToContainer(
-				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.getInventoryPlayer() ) )
+				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.getPlayerInventory() ) )
 						.setNotDraggable() );
 	}
 

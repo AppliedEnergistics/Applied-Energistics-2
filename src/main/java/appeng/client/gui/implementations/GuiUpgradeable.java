@@ -24,7 +24,7 @@ import java.io.IOException;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.RedstoneMode;
@@ -54,9 +54,9 @@ public class GuiUpgradeable extends AEBaseGui
 	protected GuiImgButton craftMode;
 	protected GuiImgButton schedulingMode;
 
-	public GuiUpgradeable( final InventoryPlayer inventoryPlayer, final IUpgradeableHost te )
+	public GuiUpgradeable( final PlayerInventory PlayerInventory, final IUpgradeableHost te )
 	{
-		this( new ContainerUpgradeable( inventoryPlayer, te ) );
+		this( new ContainerUpgradeable( PlayerInventory, te ) );
 	}
 
 	public GuiUpgradeable( final ContainerUpgradeable te )

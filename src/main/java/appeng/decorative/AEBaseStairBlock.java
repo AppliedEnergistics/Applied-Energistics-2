@@ -16,10 +16,35 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration;
+package appeng.decorative;
 
 
-enum IntegrationSide
+import com.google.common.base.Preconditions;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.StairsBlock;
+
+
+public abstract class AEBaseStairBlock extends StairsBlock
 {
-	CLIENT, SERVER, BOTH
+
+	protected AEBaseStairBlock( final Block block, final String type )
+	{
+		super( block.getDefaultState() );
+
+		Preconditions.checkNotNull( block );
+		Preconditions.checkNotNull( block.getTranslationKey() );
+		Preconditions.checkArgument( block.getTranslationKey().length() > 0 );
+
+		this.setUnlocalizedName( "stair." + type );
+		this.setLightOpacity( 0 );
+	}
+
+	@Override
+	public String toString()
+	{
+		String regName = this.getRegistryName() != null ? this.getRegistryName().getResourcePath() : "unregistered";
+		return this.getClass().getSimpleName() + "[" + regName + "]";
+	}
+
 }

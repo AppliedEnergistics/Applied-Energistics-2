@@ -25,19 +25,19 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemBlockSpecial;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.BlockItemSpecial;
 import net.minecraft.item.ItemFirework;
 import net.minecraft.item.ItemSkull;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -155,7 +155,7 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.Config.readFromNBT( data, "config" );
@@ -163,7 +163,7 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		this.Config.writeToNBT( data, "config" );
@@ -194,7 +194,7 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean onPartActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		if( Platform.isServer() )
 		{
@@ -239,12 +239,12 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 
 		if( w.getBlockState( tePos ).getBlock().isReplaceable( w, tePos ) )
 		{
-			if( placeBlock == YesNo.YES && ( i instanceof ItemBlock || i instanceof ItemBlockSpecial || i instanceof IPlantable || i instanceof ItemSkull || i instanceof ItemFirework || i instanceof IPartItem || i == Item
+			if( placeBlock == YesNo.YES && ( i instanceof BlockItem || i instanceof BlockItemSpecial || i instanceof IPlantable || i instanceof ItemSkull || i instanceof ItemFirework || i instanceof IPartItem || i == Item
 					.getItemFromBlock( Blocks.REEDS ) ) )
 			{
-				final EntityPlayer player = Platform.getPlayer( (WorldServer) w );
+				final PlayerEntity player = Platform.getPlayer( (WorldServer) w );
 				Platform.configurePlayer( player, side, this.getTile() );
-				EnumHand hand = player.getActiveHand();
+				Hand hand = player.getActiveHand();
 				player.setHeldItem( hand, is );
 
 				maxStorage = is.getCount();
@@ -269,7 +269,7 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 
 						if( !Worked && side.yOffset == 0 )
 						{
-							Worked = i.onItemUse( player, w, tePos.offset( EnumFacing.DOWN ), hand, EnumFacing.UP, side.xOffset, side.yOffset,
+							Worked = i.onItemUse( player, w, tePos.offset( Direction.DOWN ), hand, Direction.UP, side.xOffset, side.yOffset,
 									side.zOffset ) == EnumActionResult.SUCCESS;
 						}
 

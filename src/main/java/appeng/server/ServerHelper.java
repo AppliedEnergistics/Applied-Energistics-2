@@ -23,11 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.RayTraceResult;
@@ -48,7 +48,7 @@ import appeng.util.Platform;
 public class ServerHelper extends CommonHelper
 {
 
-	private EntityPlayer renderModeBased;
+	private PlayerEntity renderModeBased;
 
 	@Override
 	public void preinit()
@@ -75,7 +75,7 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public List<EntityPlayer> getPlayers()
+	public List<PlayerEntity> getPlayers()
 	{
 		if( !Platform.isClient() )
 		{
@@ -91,26 +91,26 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public void sendToAllNearExcept( final EntityPlayer p, final double x, final double y, final double z, final double dist, final World w, final AppEngPacket packet )
+	public void sendToAllNearExcept( final PlayerEntity p, final double x, final double y, final double z, final double dist, final World w, final AppEngPacket packet )
 	{
 		if( Platform.isClient() )
 		{
 			return;
 		}
 
-		for( final EntityPlayer o : this.getPlayers() )
+		for( final PlayerEntity o : this.getPlayers() )
 		{
-			final EntityPlayerMP entityplayermp = (EntityPlayerMP) o;
+			final PlayerEntityMP PlayerEntitymp = (PlayerEntityMP) o;
 
-			if( entityplayermp != p && entityplayermp.world == w )
+			if( PlayerEntitymp != p && PlayerEntitymp.world == w )
 			{
-				final double dX = x - entityplayermp.posX;
-				final double dY = y - entityplayermp.posY;
-				final double dZ = z - entityplayermp.posZ;
+				final double dX = x - PlayerEntitymp.posX;
+				final double dY = y - PlayerEntitymp.posY;
+				final double dZ = z - PlayerEntitymp.posZ;
 
 				if( dX * dX + dY * dY + dZ * dZ < dist * dist )
 				{
-					NetworkHandler.instance().sendTo( packet, entityplayermp );
+					NetworkHandler.instance().sendTo( packet, PlayerEntitymp );
 				}
 			}
 		}
@@ -158,22 +158,22 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public void updateRenderMode( final EntityPlayer player )
+	public void updateRenderMode( final PlayerEntity player )
 	{
 		this.renderModeBased = player;
 	}
 
-	protected CableRenderMode renderModeForPlayer( final EntityPlayer player )
+	protected CableRenderMode renderModeForPlayer( final PlayerEntity player )
 	{
 		if( player != null )
 		{
-			for( int x = 0; x < InventoryPlayer.getHotbarSize(); x++ )
+			for( int x = 0; x < PlayerInventory.getHotbarSize(); x++ )
 			{
 				final ItemStack is = player.inventory.getStackInSlot( x );
 
 				if( !is.isEmpty() && is.getItem() instanceof ToolNetworkTool )
 				{
-					final NBTTagCompound c = is.getTagCompound();
+					final CompoundNBT c = is.getTagCompound();
 					if( c != null && c.getBoolean( "hideFacades" ) )
 					{
 						return CableRenderMode.CABLE_VIEW;

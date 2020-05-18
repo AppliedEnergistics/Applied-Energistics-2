@@ -23,16 +23,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -190,7 +190,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.Config.readFromNBT( data, "config" );
@@ -198,7 +198,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		this.Config.writeToNBT( data, "config" );
@@ -284,7 +284,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
+	public void onNeighborChanged( IBlockReader w, BlockPos pos, BlockPos neighbor )
 	{
 		if( pos.offset( this.getSide().getFacing() ).equals( neighbor ) )
 		{
@@ -310,7 +310,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean onPartActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		if( Platform.isServer() )
 		{
@@ -375,7 +375,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	private IMEInventory<IAEItemStack> getInventoryWrapper( TileEntity target )
 	{
 
-		EnumFacing targetSide = this.getSide().getFacing().getOpposite();
+		Direction targetSide = this.getSide().getFacing().getOpposite();
 
 		// Prioritize a handler to directly link to another ME network
 		IStorageMonitorableAccessor accessor = target.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide );
@@ -413,7 +413,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 			return 0;
 		}
 
-		final EnumFacing targetSide = this.getSide().getFacing().getOpposite();
+		final Direction targetSide = this.getSide().getFacing().getOpposite();
 
 		if( target.hasCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide ) )
 		{

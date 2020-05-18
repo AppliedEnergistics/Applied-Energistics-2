@@ -19,7 +19,7 @@
 package appeng.client.gui.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Settings;
@@ -37,9 +37,9 @@ public class GuiMAC extends GuiUpgradeable
 	private final ContainerMAC container;
 	private GuiProgressBar pb;
 
-	public GuiMAC( final InventoryPlayer inventoryPlayer, final TileMolecularAssembler te )
+	public GuiMAC( final PlayerInventory PlayerInventory, final TileMolecularAssembler te )
 	{
-		super( new ContainerMAC( inventoryPlayer, te ) );
+		super( new ContainerMAC( PlayerInventory, te ) );
 		this.ySize = 197;
 		this.container = (ContainerMAC) this.inventorySlots;
 	}

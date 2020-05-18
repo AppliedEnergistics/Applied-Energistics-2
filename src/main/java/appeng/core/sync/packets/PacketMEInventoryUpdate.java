@@ -35,10 +35,10 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.implementations.GuiCraftConfirm;
@@ -146,10 +146,10 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
+	@OnlyIn( Dist.CLIENT )
+	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player )
 	{
-		final GuiScreen gs = Minecraft.getMinecraft().currentScreen;
+		final GuiScreen gs = Minecraft.getInstance().currentScreen;
 
 		if( gs instanceof GuiCraftConfirm )
 		{

@@ -25,13 +25,13 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -69,13 +69,13 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public EnumBlockRenderType getRenderType( IBlockState state )
+	public EnumBlockRenderType getRenderType( BlockState state )
 	{
 		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
 	{
 		if( Platform.isServer() )
 		{
@@ -104,7 +104,7 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 	private AxisAlignedBB computeAABB( final World w, final BlockPos pos )
 	{
 		final TileSkyChest sk = this.getTileEntity( w, pos );
-		EnumFacing o = EnumFacing.UP;
+		Direction o = Direction.UP;
 
 		if( sk != null )
 		{

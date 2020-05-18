@@ -20,7 +20,7 @@ package appeng.worldgen.meteorite;
 
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -47,9 +47,9 @@ public interface IMeteoriteWorld
 
 	void setBlock( int i, int j, int k, Block blk );
 
-	void setBlock( int i, int j, int k, IBlockState state, int l );
+	void setBlock( int i, int j, int k, BlockState state, int l );
 
 	void done();
 
-	IBlockState getBlockState( int x, int y, int z );
+	BlockState getBlockState( int x, int y, int z );
 }

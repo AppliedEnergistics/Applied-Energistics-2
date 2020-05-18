@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.TextFormatting;
 
 import appeng.util.Platform;
@@ -40,30 +40,30 @@ public class InvalidPatternHelper
 
 	public InvalidPatternHelper( final ItemStack is )
 	{
-		final NBTTagCompound encodedValue = is.getTagCompound();
+		final CompoundNBT encodedValue = is.getTag();
 
 		if( encodedValue == null )
 		{
 			throw new IllegalArgumentException( "No pattern here!" );
 		}
 
-		final NBTTagList inTag = encodedValue.getTagList( "in", 10 );
-		final NBTTagList outTag = encodedValue.getTagList( "out", 10 );
+		final ListNBT inTag = encodedValue.getList( "in", 10 );
+		final ListNBT outTag = encodedValue.getList( "out", 10 );
 		this.isCrafting = encodedValue.getBoolean( "crafting" );
 
 		this.canSubstitute = this.isCrafting && encodedValue.getBoolean( "substitute" );
 
-		for( int i = 0; i < outTag.tagCount(); i++ )
+		for( int i = 0; i < outTag.size(); i++ )
 		{
-			this.outputs.add( new PatternIngredient( outTag.getCompoundTagAt( i ) ) );
+			this.outputs.add( new PatternIngredient( outTag.getCompound( i ) ) );
 		}
 
-		for( int i = 0; i < inTag.tagCount(); i++ )
+		for( int i = 0; i < inTag.size(); i++ )
 		{
-			NBTTagCompound in = inTag.getCompoundTagAt( i );
+			CompoundNBT in = inTag.getCompound( i );
 
 			// skip empty slots in the crafting grid
-			if( in.hasNoTags() )
+			if( in.isEmpty() )
 			{
 				continue;
 			}
@@ -100,9 +100,9 @@ public class InvalidPatternHelper
 
 		private ItemStack stack;
 
-		public PatternIngredient( NBTTagCompound tag )
+		public PatternIngredient( CompoundNBT tag )
 		{
-			this.stack = new ItemStack( tag );
+			this.stack = ItemStack.read( tag );
 
 			if( this.stack.isEmpty() )
 			{
@@ -124,7 +124,7 @@ public class InvalidPatternHelper
 
 		public int getDamage()
 		{
-			return this.isValid() ? this.stack.getItemDamage() : this.damage;
+			return this.isValid() ? this.stack.getDamage() : this.damage;
 		}
 
 		public int getCount()

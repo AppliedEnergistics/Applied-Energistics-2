@@ -26,15 +26,15 @@ import java.util.function.BiFunction;
 
 import com.google.common.collect.Sets;
 
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.util.registry.IRegistry;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import appeng.core.AppEng;
 
@@ -53,7 +53,7 @@ public class ModelOverrideComponent implements IPreInitComponent
 	}
 
 	@Override
-	public void preInitialize( Side side )
+	public void preInitialize( Dist dist )
 	{
 		MinecraftForge.EVENT_BUS.register( this );
 	}

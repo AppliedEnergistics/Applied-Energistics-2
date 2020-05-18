@@ -26,7 +26,7 @@ import io.netty.buffer.ByteBuf;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 import appeng.api.AEApi;
 import appeng.api.parts.IFacadeContainer;
@@ -102,15 +102,15 @@ public class FacadeContainer implements IFacadeContainer
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound c )
+	public void writeToNBT( final CompoundNBT c )
 	{
 		for( int x = 0; x < this.facades; x++ )
 		{
 			if( this.storage.getFacade( x ) != null )
 			{
-				final NBTTagCompound data = new NBTTagCompound();
-				this.storage.getFacade( x ).getItemStack().writeToNBT( data );
-				c.setTag( "facade:" + x, data );
+				final CompoundNBT data = new CompoundNBT();
+				this.storage.getFacade( x ).getItemStack().write( data );
+				c.put( "facade:" + x, data );
 			}
 		}
 	}
@@ -156,16 +156,16 @@ public class FacadeContainer implements IFacadeContainer
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound c )
+	public void readFromNBT( final CompoundNBT c )
 	{
 		for( int x = 0; x < this.facades; x++ )
 		{
 			this.storage.setFacade( x, null );
 
-			final NBTTagCompound t = c.getCompoundTag( "facade:" + x );
+			final CompoundNBT t = c.getCompound( "facade:" + x );
 			if( t != null )
 			{
-				final ItemStack is = new ItemStack( t );
+				final ItemStack is = ItemStack.read( t );
 				if( !is.isEmpty() )
 				{
 					final Item i = is.getItem();

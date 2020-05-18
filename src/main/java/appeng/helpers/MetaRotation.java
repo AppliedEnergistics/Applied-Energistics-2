@@ -19,12 +19,12 @@
 package appeng.helpers;
 
 
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.block.BlockState;
+import net.minecraft.state.Property;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.util.IOrientable;
@@ -34,11 +34,11 @@ import appeng.decorative.solid.BlockQuartzPillar;
 public class MetaRotation implements IOrientable
 {
 
-	private final IProperty<EnumFacing> facingProp;
-	private final IBlockAccess w;
+	private final Property<Direction> facingProp;
+	private final IBlockReader w;
 	private final BlockPos pos;
 
-	public MetaRotation( final IBlockAccess world, final BlockPos pos, final IProperty<EnumFacing> facingProp )
+	public MetaRotation( final IBlockReader world, final BlockPos pos, final Property<Direction> facingProp )
 	{
 		this.w = world;
 		this.pos = pos;
@@ -52,27 +52,27 @@ public class MetaRotation implements IOrientable
 	}
 
 	@Override
-	public EnumFacing getForward()
+	public Direction getForward()
 	{
-		if( this.getUp().getFrontOffsetY() == 0 )
+		if( this.getUp().getYOffset() == 0 )
 		{
-			return EnumFacing.UP;
+			return Direction.UP;
 		}
-		return EnumFacing.SOUTH;
+		return Direction.SOUTH;
 	}
 
 	@Override
-	public EnumFacing getUp()
+	public Direction getUp()
 	{
-		final IBlockState state = this.w.getBlockState( this.pos );
+		final BlockState state = this.w.getBlockState( this.pos );
 
 		if( this.facingProp != null )
 		{
-			return state.getValue( this.facingProp );
+			return state.get( this.facingProp );
 		}
 
 		// TODO 1.10.2-R - Temp
-		Axis a = state.getValue( BlockQuartzPillar.AXIS_ORIENTATION );
+		Axis a = state.get( BlockQuartzPillar.AXIS );
 
 		if( a == null )
 		{
@@ -82,28 +82,28 @@ public class MetaRotation implements IOrientable
 		switch( a )
 		{
 			case X:
-				return EnumFacing.EAST;
+				return Direction.EAST;
 			case Z:
-				return EnumFacing.SOUTH;
+				return Direction.SOUTH;
 			default:
 			case Y:
-				return EnumFacing.UP;
+				return Direction.UP;
 		}
 	}
 
 	@Override
-	public void setOrientation( final EnumFacing forward, final EnumFacing up )
+	public void setOrientation( final Direction forward, final Direction up )
 	{
 		if( this.w instanceof World )
 		{
 			if( this.facingProp != null )
 			{
-				( (World) this.w ).setBlockState( this.pos, this.w.getBlockState( this.pos ).withProperty( this.facingProp, up ) );
+				( (World) this.w ).setBlockState( this.pos, this.w.getBlockState( this.pos ).with( this.facingProp, up ) );
 			}
 			else
 			{
 				// TODO 1.10.2-R - Temp
-				( (World) this.w ).setBlockState( this.pos, this.w.getBlockState( this.pos ).withProperty( BlockQuartzPillar.AXIS_ORIENTATION, up.getAxis() ) );
+				( (World) this.w ).setBlockState( this.pos, this.w.getBlockState( this.pos ).with( BlockQuartzPillar.AXIS, up.getAxis() ) );
 			}
 		}
 		else

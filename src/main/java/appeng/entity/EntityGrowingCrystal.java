@@ -19,9 +19,9 @@
 package appeng.entity;
 
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -38,15 +38,10 @@ import appeng.core.features.AEFeature;
 import appeng.util.Platform;
 
 
-public final class EntityGrowingCrystal extends EntityItem
+public final class EntityGrowingCrystal extends ItemEntity
 {
 
 	private int progress_1000 = 0;
-
-	public EntityGrowingCrystal( final World w )
-	{
-		super( w );
-	}
 
 	public EntityGrowingCrystal( final World w, final double x, final double y, final double z, final ItemStack is )
 	{
@@ -55,9 +50,9 @@ public final class EntityGrowingCrystal extends EntityItem
 	}
 
 	@Override
-	public void onUpdate()
+	public void tick()
 	{
-		super.onUpdate();
+		super.tick();
 
 		if( !AEConfig.instance().isFeatureEnabled( AEFeature.IN_WORLD_PURIFICATION ) )
 		{
@@ -69,11 +64,11 @@ public final class EntityGrowingCrystal extends EntityItem
 
 		if( gc instanceof IGrowableCrystal ) // if it changes this just stops being an issue...
 		{
-			final int j = MathHelper.floor( this.posX );
-			final int i = MathHelper.floor( ( this.getEntityBoundingBox().minY + this.getEntityBoundingBox().maxY ) / 2.0D );
-			final int k = MathHelper.floor( this.posZ );
+			final int j = MathHelper.floor( this.getPosX() );
+			final int i = MathHelper.floor( ( this.getBoundingBox().minY + this.getBoundingBox().maxY ) / 2.0D );
+			final int k = MathHelper.floor( this.getPosZ() );
 
-			final IBlockState state = this.world.getBlockState( new BlockPos( j, i, k ) );
+			final BlockState state = this.world.getBlockState( new BlockPos( j, i, k ) );
 			final Material mat = state.getMaterial();
 			final IGrowableCrystal cry = (IGrowableCrystal) is.getItem();
 
@@ -135,7 +130,7 @@ public final class EntityGrowingCrystal extends EntityItem
 				if( this.progress_1000 >= len )
 				{
 					this.progress_1000 = 0;
-					AppEng.proxy.spawnEffect( EffectType.Vibrant, this.world, this.posX, this.posY + 0.2, this.posZ, null );
+					AppEng.proxy.spawnEffect( EffectType.Vibrant, this.world, this.getPosX(), this.getPosY() + 0.2, this.getPosZ(), null );
 				}
 			}
 			else

@@ -22,7 +22,7 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiTabButton;
@@ -39,9 +39,9 @@ public class GuiDrive extends AEBaseGui
 
 	private GuiTabButton priority;
 
-	public GuiDrive( final InventoryPlayer inventoryPlayer, final TileDrive te )
+	public GuiDrive( final PlayerInventory PlayerInventory, final TileDrive te )
 	{
-		super( new ContainerDrive( inventoryPlayer, te ) );
+		super( new ContainerDrive( PlayerInventory, te ) );
 		this.ySize = 199;
 	}
 

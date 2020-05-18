@@ -24,7 +24,7 @@ import java.util.concurrent.Future;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.networking.IGrid;
@@ -70,7 +70,7 @@ public class PacketCraftRequest extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player )
 	{
 		if( player.openContainer instanceof ContainerCraftAmount )
 		{

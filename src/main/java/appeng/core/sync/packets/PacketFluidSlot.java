@@ -25,9 +25,9 @@ import java.util.Map;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Container;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import appeng.api.storage.data.IAEFluidStack;
@@ -44,7 +44,7 @@ public class PacketFluidSlot extends AppEngPacket
 	public PacketFluidSlot( final ByteBuf stream )
 	{
 		this.list = new HashMap<>();
-		NBTTagCompound tag = ByteBufUtils.readTag( stream );
+		CompoundNBT tag = ByteBufUtils.readTag( stream );
 
 		for( final String key : tag.getKeySet() )
 		{
@@ -56,10 +56,10 @@ public class PacketFluidSlot extends AppEngPacket
 	public PacketFluidSlot( final Map<Integer, IAEFluidStack> list )
 	{
 		this.list = list;
-		final NBTTagCompound sendTag = new NBTTagCompound();
+		final CompoundNBT sendTag = new CompoundNBT();
 		for( Map.Entry<Integer, IAEFluidStack> fs : list.entrySet() )
 		{
-			final NBTTagCompound tag = new NBTTagCompound();
+			final CompoundNBT tag = new CompoundNBT();
 			if( fs.getValue() != null )
 			{
 				fs.getValue().writeToNBT( tag );
@@ -74,7 +74,7 @@ public class PacketFluidSlot extends AppEngPacket
 	}
 
 	@Override
-	public void clientPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
+	public void clientPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player )
 	{
 		final Container c = player.openContainer;
 		if( c instanceof IFluidSyncContainer )
@@ -84,7 +84,7 @@ public class PacketFluidSlot extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
+	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, PlayerEntity player )
 	{
 		final Container c = player.openContainer;
 		if( c instanceof IFluidSyncContainer )

@@ -19,7 +19,7 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotRestrictedInput;
@@ -29,7 +29,7 @@ import appeng.tile.storage.TileDrive;
 public class ContainerDrive extends AEBaseContainer
 {
 
-	public ContainerDrive( final InventoryPlayer ip, final TileDrive drive )
+	public ContainerDrive( final PlayerInventory ip, final TileDrive drive )
 	{
 		super( ip, drive, null );
 
@@ -38,7 +38,7 @@ public class ContainerDrive extends AEBaseContainer
 			for( int x = 0; x < 2; x++ )
 			{
 				this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_CELLS, drive
-						.getInternalInventory(), x + y * 2, 71 + x * 18, 14 + y * 18, this.getInventoryPlayer() ) );
+						.getInternalInventory(), x + y * 2, 71 + x * 18, 14 + y * 18, this.getPlayerInventory() ) );
 			}
 		}
 

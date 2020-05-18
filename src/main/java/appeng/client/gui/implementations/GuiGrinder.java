@@ -19,7 +19,7 @@
 package appeng.client.gui.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.client.gui.AEBaseGui;
 import appeng.container.implementations.ContainerGrinder;
@@ -30,9 +30,9 @@ import appeng.tile.grindstone.TileGrinder;
 public class GuiGrinder extends AEBaseGui
 {
 
-	public GuiGrinder( final InventoryPlayer inventoryPlayer, final TileGrinder te )
+	public GuiGrinder( final PlayerInventory PlayerInventory, final TileGrinder te )
 	{
-		super( new ContainerGrinder( inventoryPlayer, te ) );
+		super( new ContainerGrinder( PlayerInventory, te ) );
 		this.ySize = 176;
 	}
 

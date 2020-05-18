@@ -24,13 +24,13 @@ import javax.annotation.Nullable;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
@@ -58,7 +58,7 @@ public class BlockInterface extends AEBaseTileBlock
 	}
 
 	@Override
-	public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
+	public BlockState getActualState( BlockState state, IBlockReader world, BlockPos pos )
 	{
 		// Determine whether the interface is omni-directional or not
 		TileInterface te = this.getTileEntity( world, pos );
@@ -73,9 +73,9 @@ public class BlockInterface extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer p, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onActivated( final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
 	{
-		if( p.isSneaking() )
+		if( p.isShiftKeyDown() )
 		{
 			return false;
 		}
@@ -99,7 +99,7 @@ public class BlockInterface extends AEBaseTileBlock
 	}
 
 	@Override
-	protected void customRotateBlock( final IOrientable rotatable, final EnumFacing axis )
+	protected void customRotateBlock( final IOrientable rotatable, final Direction axis )
 	{
 		if( rotatable instanceof TileInterface )
 		{

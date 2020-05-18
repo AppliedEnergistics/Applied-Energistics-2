@@ -23,15 +23,15 @@ import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.parts.IPartMonitor;
@@ -115,7 +115,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	}
 
 	@Override
-	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
+	public void onNeighborChanged( IBlockReader w, BlockPos pos, BlockPos neighbor )
 	{
 		if( pos.offset( this.getSide().getFacing() ).equals( neighbor ) )
 		{
@@ -125,14 +125,14 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.spin = data.getByte( "spin" );
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		data.setByte( "spin", this.getSpin() );
@@ -195,7 +195,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean onPartActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		final TileEntity te = this.getTile();
 
@@ -236,7 +236,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	}
 
 	@Override
-	public final void onPlacement( final EntityPlayer player, final EnumHand hand, final ItemStack held, final AEPartLocation side )
+	public final void onPlacement( final PlayerEntity player, final Hand hand, final ItemStack held, final AEPartLocation side )
 	{
 		super.onPlacement( player, hand, held, side );
 

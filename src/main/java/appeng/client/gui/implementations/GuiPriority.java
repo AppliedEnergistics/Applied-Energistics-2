@@ -22,7 +22,7 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 
 import appeng.client.gui.AEBaseGui;
@@ -56,9 +56,9 @@ public class GuiPriority extends AEBaseGui
 
 	private GuiBridge OriginalGui;
 
-	public GuiPriority( final InventoryPlayer inventoryPlayer, final IPriorityHost te )
+	public GuiPriority( final PlayerInventory PlayerInventory, final IPriorityHost te )
 	{
-		super( new ContainerPriority( inventoryPlayer, te ) );
+		super( new ContainerPriority( PlayerInventory, te ) );
 	}
 
 	@Override

@@ -31,7 +31,7 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
@@ -92,9 +92,9 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	private GuiButton cancel;
 	private int tooltip = -1;
 
-	public GuiCraftingCPU( final InventoryPlayer inventoryPlayer, final Object te )
+	public GuiCraftingCPU( final PlayerInventory PlayerInventory, final Object te )
 	{
-		this( new ContainerCraftingCPU( inventoryPlayer, te ) );
+		this( new ContainerCraftingCPU( PlayerInventory, te ) );
 	}
 
 	protected GuiCraftingCPU( final ContainerCraftingCPU container )

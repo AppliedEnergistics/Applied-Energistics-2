@@ -24,7 +24,7 @@ import java.io.IOException;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.config.Settings;
 import appeng.client.gui.AEBaseGui;
@@ -45,9 +45,9 @@ public class GuiCondenser extends AEBaseGui
 	private GuiProgressBar pb;
 	private GuiImgButton mode;
 
-	public GuiCondenser( final InventoryPlayer inventoryPlayer, final TileCondenser te )
+	public GuiCondenser( final PlayerInventory PlayerInventory, final TileCondenser te )
 	{
-		super( new ContainerCondenser( inventoryPlayer, te ) );
+		super( new ContainerCondenser( PlayerInventory, te ) );
 		this.cvc = (ContainerCondenser) this.inventorySlots;
 		this.ySize = 197;
 	}

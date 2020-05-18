@@ -19,18 +19,16 @@
 package appeng.thirdparty.codechicken.lib.model;
 
 
-import javax.vecmath.Vector3f;
-
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.IVertexProducer;
 import net.minecraftforge.client.model.pipeline.LightUtil;
-import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 
 import appeng.thirdparty.codechicken.lib.math.InterpHelper;
 
@@ -46,7 +44,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer
 	public CachedFormat format;
 
 	public int tintIndex = -1;
-	public EnumFacing orientation;
+	public Direction orientation;
 	public boolean diffuseLighting = true;
 	public TextureAtlasSprite sprite;
 
@@ -91,7 +89,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer
 	}
 
 	@Override
-	public void setQuadOrientation( EnumFacing orientation )
+	public void setQuadOrientation( Direction orientation )
 	{
 		this.orientation = orientation;
 	}
@@ -129,10 +127,10 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer
 			{
 				this.vertexIndex = 0;
 				this.full = true;
-				if(orientation == null)
+				if( this.orientation == null )
 				{
-				    calculateOrientation(false);
-                }
+					this.calculateOrientation( false );
+				}
 			}
 		}
 	}
@@ -198,40 +196,41 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer
 			vec[1] = (float) MathHelper.clamp( vec[1], bb.minY, bb.maxY );
 			vec[2] = (float) MathHelper.clamp( vec[2], bb.minZ, bb.maxZ );
 		}
-		calculateOrientation(true);
+		this.calculateOrientation( true );
 	}
 
-    /**
-     * Re-calculates the Orientation of this quad,
-     * optionally the normal vector.
-     *
-     * @param setNormal If the normal vector should be updated.
-     */
+	/**
+	 * Re-calculates the Orientation of this quad,
+	 * optionally the normal vector.
+	 *
+	 * @param setNormal If the normal vector should be updated.
+	 */
 	public void calculateOrientation( boolean setNormal )
-    {
-        this.v1.set( this.vertices[3].vec );
-        this.t.set( this.vertices[1].vec );
-        this.v1.sub( this.t );
+	{
+		this.v1.set( this.vertices[3].vec );
+		this.t.set( this.vertices[1].vec );
+		this.v1.sub( this.t );
 
-        this.v2.set( this.vertices[2].vec );
-        this.t.set( this.vertices[0].vec );
-        this.v2.sub( this.t );
+		this.v2.set( this.vertices[2].vec );
+		this.t.set( this.vertices[0].vec );
+		this.v2.sub( this.t );
 
-        this.normal.cross( this.v2, this.v1 );
-        this.normal.normalize();
+		this.normal.set( this.v2.getX(), this.v2.getY(), this.v2.getZ() );
+		this.normal.cross( this.v1 );
+		this.normal.normalize();
 
-        if( this.format.hasNormal && setNormal)
-        {
-            for( Vertex vertex : this.vertices )
-            {
-                vertex.normal[0] = this.normal.x;
-                vertex.normal[1] = this.normal.y;
-                vertex.normal[2] = this.normal.z;
-                vertex.normal[3] = 0;
-            }
-        }
-        this.orientation = EnumFacing.getFacingFromVector( this.normal.x, this.normal.y, this.normal.z );
-    }
+		if( this.format.hasNormal && setNormal )
+		{
+			for( Vertex vertex : this.vertices )
+			{
+				vertex.normal[0] = this.normal.getX();
+				vertex.normal[1] = this.normal.getY();
+				vertex.normal[2] = this.normal.getZ();
+				vertex.normal[3] = 0;
+			}
+		}
+		this.orientation = Direction.getFacingFromVector( this.normal.getX(), this.normal.getY(), this.normal.getZ() );
+	}
 
 	/**
 	 * Used to create a new quad complete copy of this one.

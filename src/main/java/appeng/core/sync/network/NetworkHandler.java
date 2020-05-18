@@ -19,7 +19,7 @@
 package appeng.core.sync.network;
 
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.ThreadQuickExitException;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -129,7 +129,7 @@ public class NetworkHandler
 		this.ec.sendToAll( message.getProxy() );
 	}
 
-	public void sendTo( final AppEngPacket message, final EntityPlayerMP player )
+	public void sendTo( final AppEngPacket message, final PlayerEntityMP player )
 	{
 		this.ec.sendTo( message.getProxy(), player );
 	}

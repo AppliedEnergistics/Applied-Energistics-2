@@ -26,10 +26,10 @@ import com.google.common.collect.ImmutableSet;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
@@ -108,7 +108,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public boolean changeColor( final AEColor newColor, final EntityPlayer who )
+	public boolean changeColor( final AEColor newColor, final PlayerEntity who )
 	{
 		if( this.getCableColor() != newColor )
 		{
@@ -164,13 +164,13 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public void setValidSides( final EnumSet<EnumFacing> sides )
+	public void setValidSides( final EnumSet<Direction> sides )
 	{
 		this.getProxy().setValidSides( sides );
 	}
 
 	@Override
-	public boolean isConnected( final EnumFacing side )
+	public boolean isConnected( final Direction side )
 	{
 		return this.getConnections().contains( AEPartLocation.fromFacing( side ) );
 	}
@@ -267,7 +267,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 
@@ -292,10 +292,10 @@ public class PartCable extends AEBasePart implements IPartCable
 	public void writeToStream( final ByteBuf data ) throws IOException
 	{
 		int flags = 0;
-		boolean[] writeSide = new boolean[EnumFacing.values().length];
-		int[] channelsPerSide = new int[EnumFacing.values().length];
+		boolean[] writeSide = new boolean[Direction.values().length];
+		int[] channelsPerSide = new int[Direction.values().length];
 
-		for( EnumFacing thisSide : EnumFacing.values() )
+		for( Direction thisSide : Direction.values() )
 		{
 			final IPart part = this.getHost().getPart( thisSide );
 			if( part != null )
@@ -409,7 +409,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		return this.channelsOnSide[i];
 	}
 
-	public int getChannelsOnSide( EnumFacing side )
+	public int getChannelsOnSide( Direction side )
 	{
 		if( !this.powered )
 		{

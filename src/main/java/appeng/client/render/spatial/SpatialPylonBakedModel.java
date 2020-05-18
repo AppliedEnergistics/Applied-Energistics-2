@@ -26,14 +26,14 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
 import appeng.block.spatial.BlockSpatialPylon;
@@ -58,7 +58,7 @@ class SpatialPylonBakedModel implements IBakedModel
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
 	{
 		int flags = this.getFlags( state );
 
@@ -66,75 +66,75 @@ class SpatialPylonBakedModel implements IBakedModel
 
 		if( flags != 0 )
 		{
-			EnumFacing ori = null;
+			Direction ori = null;
 			int displayAxis = flags & TileSpatialPylon.DISPLAY_Z;
 			if( displayAxis == TileSpatialPylon.DISPLAY_X )
 			{
-				ori = EnumFacing.EAST;
+				ori = Direction.EAST;
 
 				if( ( flags & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MAX )
 				{
-					builder.setUvRotation( EnumFacing.SOUTH, 1 );
-					builder.setUvRotation( EnumFacing.NORTH, 1 );
-					builder.setUvRotation( EnumFacing.UP, 2 );
-					builder.setUvRotation( EnumFacing.DOWN, 2 );
+					builder.setUvRotation( Direction.SOUTH, 1 );
+					builder.setUvRotation( Direction.NORTH, 1 );
+					builder.setUvRotation( Direction.UP, 2 );
+					builder.setUvRotation( Direction.DOWN, 2 );
 				}
 				else if( ( flags & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MIN )
 				{
-					builder.setUvRotation( EnumFacing.SOUTH, 2 );
-					builder.setUvRotation( EnumFacing.NORTH, 2 );
-					builder.setUvRotation( EnumFacing.UP, 1 );
-					builder.setUvRotation( EnumFacing.DOWN, 1 );
+					builder.setUvRotation( Direction.SOUTH, 2 );
+					builder.setUvRotation( Direction.NORTH, 2 );
+					builder.setUvRotation( Direction.UP, 1 );
+					builder.setUvRotation( Direction.DOWN, 1 );
 				}
 				else
 				{
-					builder.setUvRotation( EnumFacing.SOUTH, 1 );
-					builder.setUvRotation( EnumFacing.NORTH, 1 );
-					builder.setUvRotation( EnumFacing.UP, 1 );
-					builder.setUvRotation( EnumFacing.DOWN, 1 );
+					builder.setUvRotation( Direction.SOUTH, 1 );
+					builder.setUvRotation( Direction.NORTH, 1 );
+					builder.setUvRotation( Direction.UP, 1 );
+					builder.setUvRotation( Direction.DOWN, 1 );
 				}
 			}
 
 			else if( displayAxis == TileSpatialPylon.DISPLAY_Y )
 			{
-				ori = EnumFacing.UP;
+				ori = Direction.UP;
 				if( ( flags & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MAX )
 				{
-					builder.setUvRotation( EnumFacing.NORTH, 3 );
-					builder.setUvRotation( EnumFacing.SOUTH, 3 );
-					builder.setUvRotation( EnumFacing.EAST, 3 );
-					builder.setUvRotation( EnumFacing.WEST, 3 );
+					builder.setUvRotation( Direction.NORTH, 3 );
+					builder.setUvRotation( Direction.SOUTH, 3 );
+					builder.setUvRotation( Direction.EAST, 3 );
+					builder.setUvRotation( Direction.WEST, 3 );
 				}
 			}
 
 			else if( displayAxis == TileSpatialPylon.DISPLAY_Z )
 			{
-				ori = EnumFacing.NORTH;
+				ori = Direction.NORTH;
 				if( ( flags & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MAX )
 				{
-					builder.setUvRotation( EnumFacing.EAST, 2 );
-					builder.setUvRotation( EnumFacing.WEST, 1 );
+					builder.setUvRotation( Direction.EAST, 2 );
+					builder.setUvRotation( Direction.WEST, 1 );
 				}
 				else if( ( flags & TileSpatialPylon.DISPLAY_MIDDLE ) == TileSpatialPylon.DISPLAY_END_MIN )
 				{
-					builder.setUvRotation( EnumFacing.EAST, 1 );
-					builder.setUvRotation( EnumFacing.WEST, 2 );
-					builder.setUvRotation( EnumFacing.UP, 3 );
-					builder.setUvRotation( EnumFacing.DOWN, 3 );
+					builder.setUvRotation( Direction.EAST, 1 );
+					builder.setUvRotation( Direction.WEST, 2 );
+					builder.setUvRotation( Direction.UP, 3 );
+					builder.setUvRotation( Direction.DOWN, 3 );
 				}
 				else
 				{
-					builder.setUvRotation( EnumFacing.EAST, 1 );
-					builder.setUvRotation( EnumFacing.WEST, 2 );
+					builder.setUvRotation( Direction.EAST, 1 );
+					builder.setUvRotation( Direction.WEST, 2 );
 				}
 			}
 
-			builder.setTextures( this.textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.UP ) ),
-					this.textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.DOWN ) ),
-					this.textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.NORTH ) ),
-					this.textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.SOUTH ) ),
-					this.textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.EAST ) ),
-					this.textures.get( getTextureTypeFromSideOutside( flags, ori, EnumFacing.WEST ) ) );
+			builder.setTextures( this.textures.get( getTextureTypeFromSideOutside( flags, ori, Direction.UP ) ),
+					this.textures.get( getTextureTypeFromSideOutside( flags, ori, Direction.DOWN ) ),
+					this.textures.get( getTextureTypeFromSideOutside( flags, ori, Direction.NORTH ) ),
+					this.textures.get( getTextureTypeFromSideOutside( flags, ori, Direction.SOUTH ) ),
+					this.textures.get( getTextureTypeFromSideOutside( flags, ori, Direction.EAST ) ),
+					this.textures.get( getTextureTypeFromSideOutside( flags, ori, Direction.WEST ) ) );
 			builder.addCube( 0, 0, 0, 16, 16, 16 );
 
 			if( ( flags & TileSpatialPylon.DISPLAY_POWERED_ENABLED ) == TileSpatialPylon.DISPLAY_POWERED_ENABLED )
@@ -142,12 +142,12 @@ class SpatialPylonBakedModel implements IBakedModel
 				builder.setRenderFullBright( true );
 			}
 
-			builder.setTextures( this.textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.UP ) ),
-					this.textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.DOWN ) ),
-					this.textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.NORTH ) ),
-					this.textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.SOUTH ) ),
-					this.textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.EAST ) ),
-					this.textures.get( getTextureTypeFromSideInside( flags, ori, EnumFacing.WEST ) ) );
+			builder.setTextures( this.textures.get( getTextureTypeFromSideInside( flags, ori, Direction.UP ) ),
+					this.textures.get( getTextureTypeFromSideInside( flags, ori, Direction.DOWN ) ),
+					this.textures.get( getTextureTypeFromSideInside( flags, ori, Direction.NORTH ) ),
+					this.textures.get( getTextureTypeFromSideInside( flags, ori, Direction.SOUTH ) ),
+					this.textures.get( getTextureTypeFromSideInside( flags, ori, Direction.EAST ) ),
+					this.textures.get( getTextureTypeFromSideInside( flags, ori, Direction.WEST ) ) );
 			builder.addCube( 0, 0, 0, 16, 16, 16 );
 		}
 		else
@@ -162,7 +162,7 @@ class SpatialPylonBakedModel implements IBakedModel
 		return builder.getOutput();
 	}
 
-	private int getFlags( IBlockState state )
+	private int getFlags( BlockState state )
 	{
 		if( !( state instanceof IExtendedBlockState ) )
 		{
@@ -174,7 +174,7 @@ class SpatialPylonBakedModel implements IBakedModel
 		return extState.getValue( BlockSpatialPylon.STATE );
 	}
 
-	private static SpatialPylonTextureType getTextureTypeFromSideOutside( int flags, EnumFacing ori, EnumFacing dir )
+	private static SpatialPylonTextureType getTextureTypeFromSideOutside( int flags, Direction ori, Direction dir )
 	{
 		if( ori == dir || ori.getOpposite() == dir )
 		{
@@ -197,7 +197,7 @@ class SpatialPylonBakedModel implements IBakedModel
 		return SpatialPylonTextureType.BASE;
 	}
 
-	private static SpatialPylonTextureType getTextureTypeFromSideInside( int flags, EnumFacing ori, EnumFacing dir )
+	private static SpatialPylonTextureType getTextureTypeFromSideInside( int flags, Direction ori, Direction dir )
 	{
 		final boolean good = ( flags & TileSpatialPylon.DISPLAY_ENABLED ) == TileSpatialPylon.DISPLAY_ENABLED;
 

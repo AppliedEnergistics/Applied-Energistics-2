@@ -19,7 +19,7 @@
 package appeng.bootstrap.components;
 
 
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.api.distmarker.Dist;
 
 import appeng.bootstrap.IBootstrapComponent;
 
@@ -27,5 +27,5 @@ import appeng.bootstrap.IBootstrapComponent;
 @FunctionalInterface
 public interface IInitComponent extends IBootstrapComponent
 {
-	void initialize( Side side );
+	void initialize( Dist dist );
 }

@@ -73,10 +73,10 @@ public class CachedFormat
 	public CachedFormat( VertexFormat format )
 	{
 		this.format = format;
-		this.elementCount = format.getElementCount();
+		this.elementCount = format.getElements().size();
 		for( int i = 0; i < this.elementCount; i++ )
 		{
-			VertexFormatElement element = format.getElement( i );
+			VertexFormatElement element = format.getElements().get( i );
 			switch( element.getUsage() )
 			{
 				case POSITION:

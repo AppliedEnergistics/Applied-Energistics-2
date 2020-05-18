@@ -19,20 +19,23 @@
 package appeng.items.tools.quartz;
 
 
-import net.minecraft.item.ItemSpade;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTier;
+import net.minecraft.item.ShovelItem;
 
 import appeng.core.features.AEFeature;
 import appeng.util.Platform;
 
 
-public class ToolQuartzSpade extends ItemSpade
+public class ToolQuartzSpade extends ShovelItem
 {
 	private final AEFeature type;
 
 	public ToolQuartzSpade( final AEFeature type )
 	{
-		super( ToolMaterial.IRON );
+		super( ItemTier.IRON, 1.5F, -3.0F, ( new Item.Properties() ).group( ItemGroup.TOOLS ) );
 		this.type = type;
 	}
 

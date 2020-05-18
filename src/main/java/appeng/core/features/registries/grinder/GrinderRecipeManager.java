@@ -29,10 +29,10 @@ import javax.annotation.Nonnull;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 
 import appeng.api.features.IGrinderRecipe;
 import appeng.api.features.IGrinderRecipeBuilder;
@@ -67,9 +67,9 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		this.addDustRatio( "Coal", 1 );
 
 		this.addOre( "Coal", new ItemStack( Items.COAL ) );
-		this.addOre( "Charcoal", new ItemStack( Items.COAL, 1, 1 ) );
+		this.addOre( "Charcoal", new ItemStack( Items.COAL, 1 ) );
 
-		this.addOre( "NetherQuartz", new ItemStack( Blocks.QUARTZ_ORE ) );
+		this.addOre( "NetherQuartz", new ItemStack( Blocks.NETHER_QUARTZ_ORE ) );
 		this.addIngot( "NetherQuartz", new ItemStack( Items.QUARTZ ) );
 
 		this.addOre( "Gold", new ItemStack( Blocks.GOLD_ORE ) );
@@ -138,7 +138,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 			return null;
 		}
 
-		this.log( "Recipe for '%1$s' found '%2$s'", input.getUnlocalizedName(), Platform.getItemDisplayName( recipe.getOutput() ) );
+		this.log( "Recipe for '%1$s' found '%2$s'", input.getTranslationKey(), Platform.getItemDisplayName( recipe.getOutput() ) );
 		return recipe;
 	}
 
@@ -344,7 +344,6 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 	private static class CacheKey
 	{
 		private final Item item;
-		private final int damage;
 
 		CacheKey( ItemStack input )
 		{
@@ -352,7 +351,6 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 			Preconditions.checkNotNull( input.getItem() );
 
 			this.item = input.getItem();
-			this.damage = input.getItemDamage();
 		}
 
 		@Override
@@ -360,7 +358,6 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		{
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + this.damage;
 			result = prime * result + ( ( this.item == null ) ? 0 : this.item.hashCode() );
 			return result;
 		}
@@ -378,11 +375,6 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 			}
 
 			CacheKey other = (CacheKey) obj;
-
-			if( this.damage != other.damage )
-			{
-				return false;
-			}
 
 			if( this.item == null )
 			{

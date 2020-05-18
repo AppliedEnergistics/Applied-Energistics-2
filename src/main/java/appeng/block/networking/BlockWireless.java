@@ -24,16 +24,16 @@ import java.util.List;
 
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
@@ -79,7 +79,7 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public IBlockState getActualState( IBlockState state, IBlockAccess worldIn, BlockPos pos )
+	public BlockState getActualState( BlockState state, IBlockReader worldIn, BlockPos pos )
 	{
 		State teState = State.OFF;
 
@@ -107,11 +107,11 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean onBlockActivated( final World w, final BlockPos pos, final IBlockState state, final EntityPlayer player, final EnumHand hand, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
+	public boolean onBlockActivated( final World w, final BlockPos pos, final BlockState state, final PlayerEntity player, final Hand hand, final Direction side, final float hitX, final float hitY, final float hitZ )
 	{
 		final TileWireless tg = this.getTileEntity( w, pos );
 
-		if( tg != null && !player.isSneaking() )
+		if( tg != null && !player.isShiftKeyDown() )
 		{
 			if( Platform.isServer() )
 			{
@@ -129,7 +129,7 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 		final TileWireless tile = this.getTileEntity( w, pos );
 		if( tile != null )
 		{
-			final EnumFacing forward = tile.getForward();
+			final Direction forward = tile.getForward();
 
 			double minX = 0;
 			double minY = 0;
@@ -191,7 +191,7 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 		final TileWireless tile = this.getTileEntity( w, pos );
 		if( tile != null )
 		{
-			final EnumFacing forward = tile.getForward();
+			final Direction forward = tile.getForward();
 
 			double minX = 0;
 			double minY = 0;
@@ -251,7 +251,7 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean isFullCube( IBlockState state )
+	public boolean isFullCube( BlockState state )
 	{
 		return false;
 	}

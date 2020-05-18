@@ -23,16 +23,16 @@ import java.util.EnumSet;
 import java.util.Random;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
@@ -42,31 +42,31 @@ import appeng.client.render.cablebus.CableBusRenderState;
 public interface ICableBusContainer
 {
 
-	int isProvidingStrongPower( EnumFacing opposite );
+	int isProvidingStrongPower( Direction opposite );
 
-	int isProvidingWeakPower( EnumFacing opposite );
+	int isProvidingWeakPower( Direction opposite );
 
-	boolean canConnectRedstone( EnumSet<EnumFacing> of );
+	boolean canConnectRedstone( EnumSet<Direction> of );
 
 	void onEntityCollision( Entity e );
 
-	boolean activate( EntityPlayer player, EnumHand hand, Vec3d vecFromPool );
+	boolean activate( PlayerEntity player, Hand hand, Vec3d vecFromPool );
 
-	boolean clicked( EntityPlayer player, EnumHand hand, Vec3d hitVec );
+	boolean clicked( PlayerEntity player, Hand hand, Vec3d hitVec );
 
-	void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor );
+	void onNeighborChanged( IBlockReader w, BlockPos pos, BlockPos neighbor );
 
-	boolean isSolidOnSide( EnumFacing side );
+	boolean isSolidOnSide( Direction side );
 
 	boolean isEmpty();
 
 	SelectedPart selectPart( Vec3d v3 );
 
-	boolean recolourBlock( EnumFacing side, AEColor colour, EntityPlayer who );
+	boolean recolourBlock( Direction side, AEColor colour, PlayerEntity who );
 
-	boolean isLadder( EntityLivingBase entity );
+	boolean isLadder( LivingEntity entity );
 
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	void randomDisplayTick( World world, BlockPos pos, Random r );
 
 	int getLightValue();

@@ -26,8 +26,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerEntityMP;
 
 import appeng.api.AEApi;
 import appeng.api.networking.GridFlags;
@@ -351,10 +351,10 @@ public class PathGridCache implements IPathingGrid
 			{
 				for( final IGridNode n : this.requireChannels )
 				{
-					EntityPlayer player = AEApi.instance().registries().players().findPlayer( n.getPlayerID() );
-					if( player instanceof EntityPlayerMP )
+					PlayerEntity player = AEApi.instance().registries().players().findPlayer( n.getPlayerID() );
+					if( player instanceof PlayerEntityMP )
 					{
-						currentBracket.trigger( (EntityPlayerMP) player );
+						currentBracket.trigger( (PlayerEntityMP) player );
 					}
 				}
 			}

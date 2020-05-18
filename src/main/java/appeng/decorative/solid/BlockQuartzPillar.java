@@ -20,12 +20,12 @@ package appeng.decorative.solid;
 
 
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.state.EnumProperty;
+import net.minecraft.state.IProperty;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
@@ -35,33 +35,20 @@ import appeng.helpers.MetaRotation;
 
 public class BlockQuartzPillar extends AEBaseBlock implements IOrientableBlock
 {
-	public static final PropertyEnum<EnumFacing.Axis> AXIS_ORIENTATION = PropertyEnum.create( "axis", EnumFacing.Axis.class );
+	public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
 
 	public BlockQuartzPillar()
 	{
 		super( Material.ROCK );
+
 		// The upwards facing pillar is the default (i.e. for the item model)
-		this.setDefaultState( this.getDefaultState().withProperty( AXIS_ORIENTATION, EnumFacing.Axis.Y ) );
-	}
-
-	@Override
-	public int getMetaFromState( final IBlockState state )
-	{
-		return state.getValue( AXIS_ORIENTATION ).ordinal();
-	}
-
-	@Override
-	public IBlockState getStateFromMeta( final int meta )
-	{
-		// Simply use the ordinal here
-		EnumFacing.Axis axis = EnumFacing.Axis.values()[meta];
-		return this.getDefaultState().withProperty( AXIS_ORIENTATION, axis );
+		this.setDefaultState( this.getDefaultState().with( AXIS, Direction.Axis.Y ) );
 	}
 
 	@Override
 	protected IProperty[] getAEStates()
 	{
-		return new IProperty[] { AXIS_ORIENTATION };
+		return new IProperty[] { AXIS };
 	}
 
 	@Override
@@ -71,7 +58,7 @@ public class BlockQuartzPillar extends AEBaseBlock implements IOrientableBlock
 	}
 
 	@Override
-	public IOrientable getOrientable( final IBlockAccess w, final BlockPos pos )
+	public IOrientable getOrientable( final IBlockReader w, final BlockPos pos )
 	{
 		return new MetaRotation( w, pos, null );
 	}

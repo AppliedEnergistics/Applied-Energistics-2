@@ -19,7 +19,7 @@
 package appeng.client.me;
 
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
@@ -52,7 +52,7 @@ public class SlotDisconnected extends AppEngSlot
 	}
 
 	@Override
-	public boolean canTakeStack( final EntityPlayer par1EntityPlayer )
+	public boolean canTakeStack( final PlayerEntity par1PlayerEntity )
 	{
 		return false;
 	}

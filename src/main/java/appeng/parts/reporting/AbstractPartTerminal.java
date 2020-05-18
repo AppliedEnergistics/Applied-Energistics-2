@@ -21,10 +21,10 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumHand;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.items.IItemHandler;
 
@@ -95,7 +95,7 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.cm.readFromNBT( data );
@@ -103,7 +103,7 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		this.cm.writeToNBT( data );
@@ -111,7 +111,7 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean onPartActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		if( !super.onPartActivate( player, hand, pos ) )
 		{
@@ -123,7 +123,7 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 		return true;
 	}
 
-	public GuiBridge getGui( final EntityPlayer player )
+	public GuiBridge getGui( final PlayerEntity player )
 	{
 		return GuiBridge.GUI_ME;
 	}

@@ -19,7 +19,7 @@
 package appeng.util.inv;
 
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
@@ -28,7 +28,7 @@ import appeng.util.Platform;
 
 public class AdaptorItemHandlerPlayerInv extends AdaptorItemHandler
 {
-	public AdaptorItemHandlerPlayerInv( final EntityPlayer playerInv )
+	public AdaptorItemHandlerPlayerInv( final PlayerEntity playerInv )
 	{
 		super( new PlayerMainInvWrapper( playerInv.inventory ) );
 	}

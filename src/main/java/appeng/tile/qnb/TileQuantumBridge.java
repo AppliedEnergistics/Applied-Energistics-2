@@ -27,9 +27,9 @@ import io.netty.buffer.ByteBuf;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
@@ -67,7 +67,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	public TileQuantumBridge()
 	{
-		this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
+		this.getProxy().setValidSides( EnumSet.noneOf( Direction.class ) );
 		this.getProxy().setFlags( GridFlags.DENSE_CAPACITY );
 		this.getProxy().setIdlePowerUsage( 22 );
 	}
@@ -130,7 +130,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	}
 
 	@Override
-	protected IItemHandler getItemHandlerForSide( EnumFacing side )
+	protected IItemHandler getItemHandlerForSide( Direction side )
 	{
 		if( this.isCenter() )
 		{
@@ -206,7 +206,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 		if( affectWorld )
 		{
-			this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
+			this.getProxy().setValidSides( EnumSet.noneOf( Direction.class ) );
 		}
 	}
 
@@ -236,8 +236,8 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 			if( this.isCorner() || this.isCenter() )
 			{
-				final EnumSet<EnumFacing> sides = EnumSet.noneOf( EnumFacing.class );
-				for( final EnumFacing dir : this.getAdjacentQuantumBridges() )
+				final EnumSet<Direction> sides = EnumSet.noneOf( Direction.class );
+				for( final Direction dir : this.getAdjacentQuantumBridges() )
 				{
 					sides.add( dir );
 				}
@@ -246,7 +246,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 			}
 			else
 			{
-				this.getProxy().setValidSides( EnumSet.allOf( EnumFacing.class ) );
+				this.getProxy().setValidSides( EnumSet.allOf( Direction.class ) );
 			}
 		}
 	}
@@ -256,11 +256,11 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		return ( this.constructed & this.getCorner() ) == this.getCorner() && this.constructed != -1;
 	}
 
-	public EnumSet<EnumFacing> getAdjacentQuantumBridges()
+	public EnumSet<Direction> getAdjacentQuantumBridges()
 	{
-		final EnumSet<EnumFacing> set = EnumSet.noneOf( EnumFacing.class );
+		final EnumSet<Direction> set = EnumSet.noneOf( Direction.class );
 
-		for( final EnumFacing d : EnumFacing.values() )
+		for( final Direction d : Direction.values() )
 		{
 			final TileEntity te = this.world.getTileEntity( this.pos.offset( d ) );
 			if( te instanceof TileQuantumBridge )
@@ -277,7 +277,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		final ItemStack is = this.internalInventory.getStackInSlot( 0 );
 		if( !is.isEmpty() )
 		{
-			final NBTTagCompound c = is.getTagCompound();
+			final CompoundNBT c = is.getTagCompound();
 			if( c != null )
 			{
 				return c.getLong( "freq" );

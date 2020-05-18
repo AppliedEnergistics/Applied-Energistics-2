@@ -24,7 +24,7 @@ import java.util.concurrent.Future;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -53,20 +53,20 @@ public class MultiCraftingTracker
 		this.size = size;
 	}
 
-	public void readFromNBT( final NBTTagCompound extra )
+	public void readFromNBT( final CompoundNBT extra )
 	{
 		for( int x = 0; x < this.size; x++ )
 		{
-			final NBTTagCompound link = extra.getCompoundTag( "links-" + x );
+			final CompoundNBT link = extra.getCompound( "links-" + x );
 
-			if( link != null && !link.hasNoTags() )
+			if( link != null && !link.isEmpty() )
 			{
 				this.setLink( x, AEApi.instance().storage().loadCraftingLink( link, this.owner ) );
 			}
 		}
 	}
 
-	public void writeToNBT( final NBTTagCompound extra )
+	public void writeToNBT( final CompoundNBT extra )
 	{
 		for( int x = 0; x < this.size; x++ )
 		{
@@ -74,9 +74,9 @@ public class MultiCraftingTracker
 
 			if( link != null )
 			{
-				final NBTTagCompound ln = new NBTTagCompound();
+				final CompoundNBT ln = new CompoundNBT();
 				link.writeToNBT( ln );
-				extra.setTag( "links-" + x, ln );
+				extra.put( "links-" + x, ln );
 			}
 		}
 	}

@@ -23,11 +23,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.block.crafting.BlockCraftingUnit;
 import appeng.bootstrap.BlockRenderingCustomizer;
@@ -53,7 +53,7 @@ public class CraftingCubeRendering extends BlockRenderingCustomizer
 	}
 
 	@Override
-	@SideOnly( Side.CLIENT )
+	@OnlyIn( Dist.CLIENT )
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{
 		ResourceLocation baseName = new ResourceLocation( AppEng.MOD_ID, this.registryName );
@@ -82,10 +82,10 @@ public class CraftingCubeRendering extends BlockRenderingCustomizer
 
 	}
 
-	private Map<IBlockState, ModelResourceLocation> mapState( Block block, ModelResourceLocation defaultModel, ModelResourceLocation formedModel )
+	private Map<BlockState, ModelResourceLocation> mapState( Block block, ModelResourceLocation defaultModel, ModelResourceLocation formedModel )
 	{
-		Map<IBlockState, ModelResourceLocation> result = new HashMap<>();
-		for( IBlockState state : block.getBlockState().getValidStates() )
+		Map<BlockState, ModelResourceLocation> result = new HashMap<>();
+		for( BlockState state : block.getBlockState().getValidStates() )
 		{
 			if( state.getValue( BlockCraftingUnit.FORMED ) )
 			{

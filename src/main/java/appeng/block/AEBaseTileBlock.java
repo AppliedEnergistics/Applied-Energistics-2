@@ -28,20 +28,23 @@ import javax.annotation.Nullable;
 import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockStateContainer;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -78,7 +81,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	public static final UnlistedDirection UP = new UnlistedDirection( "up" );
 
 	@Override
-	public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
+	public BlockState getExtendedState( BlockState state, IBlockReader world, BlockPos pos )
 	{
 		// A subclass may decide it doesn't want extended block state for whatever reason
 		if( !( state instanceof IExtendedBlockState ) )
@@ -106,7 +109,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	}
 
 	@Override
-	public int getMetaFromState( IBlockState state )
+	public int getMetaFromState( BlockState state )
 	{
 		return 0;
 	}
@@ -119,7 +122,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	}
 
 	@Override
-	public boolean hasTileEntity( IBlockState state )
+	public boolean hasTileEntity( BlockState state )
 	{
 		return this.hasBlockTileEntity();
 	}
@@ -135,13 +138,13 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	}
 
 	@Nullable
-	public <T extends AEBaseTile> T getTileEntity( final IBlockAccess w, final int x, final int y, final int z )
+	public <T extends AEBaseTile> T getTileEntity( final IBlockReader w, final int x, final int y, final int z )
 	{
 		return this.getTileEntity( w, new BlockPos( x, y, z ) );
 	}
 
 	@Nullable
-	public <T extends AEBaseTile> T getTileEntity( final IBlockAccess w, final BlockPos pos )
+	public <T extends AEBaseTile> T getTileEntity( final IBlockReader w, final BlockPos pos )
 	{
 		if( !this.hasBlockTileEntity() )
 		{
@@ -158,7 +161,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	}
 
 	@Override
-	public final TileEntity createNewTileEntity( final World var1, final int var2 )
+	public final TileEntity createTileEntity( BlockState state, IBlockReader world )
 	{
 		if( this.hasBlockTileEntity() )
 		{
@@ -180,7 +183,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	}
 
 	@Override
-	public void breakBlock( final World w, final BlockPos pos, final IBlockState state )
+	public void breakBlock( final World w, final BlockPos pos, final BlockState state )
 	{
 		final AEBaseTile te = this.getTileEntity( w, pos );
 		if( te != null )
@@ -204,19 +207,19 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	}
 
 	@Override
-	public final EnumFacing[] getValidRotations( final World w, final BlockPos pos )
+	public final Direction[] getValidRotations( final World w, final BlockPos pos )
 	{
 		final AEBaseTile obj = this.getTileEntity( w, pos );
 		if( obj != null && obj.canBeRotated() )
 		{
-			return EnumFacing.VALUES;
+			return Direction.values();
 		}
 
 		return super.getValidRotations( w, pos );
 	}
 
 	@Override
-	public boolean recolorBlock( final World world, final BlockPos pos, final EnumFacing side, final EnumDyeColor color )
+	public boolean recolorBlock( BlockState state, final IWorld world, final BlockPos pos, final Direction side, final DyeColor color )
 	{
 		final TileEntity te = this.getTileEntity( world, pos );
 
@@ -224,7 +227,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 		{
 			final IColorableTile ct = (IColorableTile) te;
 			final AEColor c = ct.getColor();
-			final AEColor newColor = AEColor.values()[color.getMetadata()];
+			final AEColor newColor = AEColor.values()[color.ordinal()];
 
 			if( c != newColor )
 			{
@@ -234,11 +237,11 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 			return false;
 		}
 
-		return super.recolorBlock( world, pos, side, color );
+		return super.recolorBlock( state, world, pos, side, color );
 	}
 
 	@Override
-	public int getComparatorInputOverride( IBlockState state, final World w, final BlockPos pos )
+	public int getComparatorInputOverride( BlockState state, final World w, final BlockPos pos )
 	{
 		final TileEntity te = this.getTileEntity( w, pos );
 		if( te instanceof AEBaseInvTile )
@@ -253,7 +256,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	}
 
 	@Override
-	public boolean eventReceived( final IBlockState state, final World worldIn, final BlockPos pos, final int eventID, final int eventParam )
+	public boolean eventReceived( final BlockState state, final World worldIn, final BlockPos pos, final int eventID, final int eventParam )
 	{
 		super.eventReceived( state, worldIn, pos, eventID, eventParam );
 		final TileEntity tileentity = worldIn.getTileEntity( pos );
@@ -261,7 +264,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	}
 
 	@Override
-	public void onBlockPlacedBy( final World w, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack is )
+	public void onBlockPlacedBy( final World w, final BlockPos pos, final BlockState state, final LivingEntity placer, final ItemStack is )
 	{
 		if( is.hasDisplayName() )
 		{
@@ -274,16 +277,16 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	}
 
 	@Override
-	public boolean onBlockActivated( World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ )
+	public ActionResultType onBlockActivated( BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit )
 	{
 		ItemStack heldItem;
 		if( player != null && !player.getHeldItem( hand ).isEmpty() )
 		{
 			heldItem = player.getHeldItem( hand );
 
-			if( Platform.isWrench( player, heldItem, pos ) && player.isSneaking() )
+			if( Platform.isWrench( player, heldItem, pos ) && player.isShiftKeyDown() )
 			{
-				final IBlockState blockState = world.getBlockState( pos );
+				final BlockState blockState = world.getBlockState( pos );
 				final Block block = blockState.getBlock();
 
 				if( block == null )
@@ -310,10 +313,10 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 				{
 					if( Platform.itemComparisons().isEqualItemType( ol, op ) )
 					{
-						final NBTTagCompound tag = tile.downloadSettings( SettingsFrom.DISMANTLE_ITEM );
+						final CompoundNBT tag = tile.downloadSettings( SettingsFrom.DISMANTLE_ITEM );
 						if( tag != null )
 						{
-							ol.setTagCompound( tag );
+							ol.setTag( tag );
 						}
 					}
 				}
@@ -338,11 +341,11 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 					return false;
 				}
 
-				final String name = this.getUnlocalizedName();
+				final String name = this.getTranslationKey();
 
-				if( player.isSneaking() )
+				if( player.isShiftKeyDown() )
 				{
-					final NBTTagCompound data = tileEntity.downloadSettings( SettingsFrom.MEMORY_CARD );
+					final CompoundNBT data = tileEntity.downloadSettings( SettingsFrom.MEMORY_CARD );
 					if( data != null )
 					{
 						memoryCard.setMemoryCardContents( heldItem, name, data );
@@ -352,9 +355,9 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 				else
 				{
 					final String savedName = memoryCard.getSettingsName( heldItem );
-					final NBTTagCompound data = memoryCard.getData( heldItem );
+					final CompoundNBT data = memoryCard.getData( heldItem );
 
-					if( this.getUnlocalizedName().equals( savedName ) )
+					if( this.getTranslationKey().equals( savedName ) )
 					{
 						tileEntity.uploadSettings( SettingsFrom.MEMORY_CARD, data );
 						memoryCard.notifyUser( player, MemoryCardMessages.SETTINGS_LOADED );
@@ -373,7 +376,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	}
 
 	@Override
-	public IOrientable getOrientable( final IBlockAccess w, final BlockPos pos )
+	public IOrientable getOrientable( final IBlockReader w, final BlockPos pos )
 	{
 		return this.getTileEntity( w, pos );
 	}

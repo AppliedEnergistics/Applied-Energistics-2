@@ -24,30 +24,30 @@ import java.util.Map;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraftforge.client.model.IModel;
+import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import appeng.client.render.model.BuiltInModelLoader;
 
 
-@SideOnly( Side.CLIENT )
+@OnlyIn( Dist.CLIENT )
 public class BuiltInModelComponent implements IPreInitComponent
 {
 
-	private final Map<String, IModel> builtInModels = new HashMap<>();
+	private final Map<String, IUnbakedModel> builtInModels = new HashMap<>();
 
 	private boolean hasInitialized = false;
 
-	public void addModel( String path, IModel model )
+	public void addModel( String path, IUnbakedModel model )
 	{
 		Preconditions.checkState( !this.hasInitialized );
 		this.builtInModels.put( path, model );
 	}
 
 	@Override
-	public void preInitialize( Side side )
+	public void preInitialize( Dist dist )
 	{
 		this.hasInitialized = true;
 

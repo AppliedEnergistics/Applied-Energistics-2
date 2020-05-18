@@ -8,12 +8,12 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -117,7 +117,7 @@ public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluid
 		final World w = te.getWorld();
 		final AEPartLocation side = this.getSide();
 		final BlockPos pos = te.getPos().offset( side.getFacing() );
-		final IBlockState state = w.getBlockState( pos );
+		final BlockState state = w.getBlockState( pos );
 
 		if( this.canReplace( w, state, state.getBlock(), pos ) )
 		{
@@ -140,7 +140,7 @@ public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluid
 		return input;
 	}
 
-	private boolean canReplace( World w, IBlockState state, Block block, BlockPos pos )
+	private boolean canReplace( World w, BlockState state, Block block, BlockPos pos )
 	{
 		return block.isReplaceable( w, pos ) && !( block instanceof IFluidBlock ) && !( block instanceof BlockLiquid ) && !state.getMaterial().isLiquid();
 	}
@@ -155,7 +155,7 @@ public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluid
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.config.readFromNBT( data, "config" );
@@ -163,7 +163,7 @@ public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluid
 	}
 
 	@Override
-	public void writeToNBT( final NBTTagCompound data )
+	public void writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		this.config.writeToNBT( data, "config" );
@@ -183,7 +183,7 @@ public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluid
 	}
 
 	@Override
-	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
+	public boolean onPartActivate( final PlayerEntity player, final Hand hand, final Vec3d pos )
 	{
 		if( Platform.isServer() )
 		{

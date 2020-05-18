@@ -26,12 +26,12 @@ import java.util.Map;
 
 import io.netty.buffer.ByteBuf;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -158,7 +158,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT( final NBTTagCompound data )
+	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		this.cm.writeToNBT( data );
@@ -167,12 +167,12 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 		data.setLong( "securityKey", this.securityKey );
 		this.getConfigSlot().writeToNBT( data, "config" );
 
-		final NBTTagCompound storedItems = new NBTTagCompound();
+		final CompoundNBT storedItems = new CompoundNBT();
 
 		int offset = 0;
 		for( final IAEItemStack ais : this.inventory.getStoredItems() )
 		{
-			final NBTTagCompound it = new NBTTagCompound();
+			final CompoundNBT it = new CompoundNBT();
 			ais.createItemStack().writeToNBT( it );
 			storedItems.setTag( String.valueOf( offset ), it );
 			offset++;
@@ -183,7 +183,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.cm.readFromNBT( data );
@@ -195,13 +195,13 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 		this.securityKey = data.getLong( "securityKey" );
 		this.getConfigSlot().readFromNBT( data, "config" );
 
-		final NBTTagCompound storedItems = data.getCompoundTag( "storedItems" );
+		final CompoundNBT storedItems = data.getCompoundTag( "storedItems" );
 		for( final Object key : storedItems.getKeySet() )
 		{
 			final NBTBase obj = storedItems.getTag( (String) key );
-			if( obj instanceof NBTTagCompound )
+			if( obj instanceof CompoundNBT )
 			{
-				this.inventory.getStoredItems().add( AEItemStack.fromItemStack( new ItemStack( (NBTTagCompound) obj ) ) );
+				this.inventory.getStoredItems().add( AEItemStack.fromItemStack( new ItemStack( (CompoundNBT) obj ) ) );
 			}
 		}
 	}
@@ -355,7 +355,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 	}
 
 	@Override
-	public boolean recolourBlock( final EnumFacing side, final AEColor newPaintedColor, final EntityPlayer who )
+	public boolean recolourBlock( final Direction side, final AEColor newPaintedColor, final PlayerEntity who )
 	{
 		if( this.paintedColor == newPaintedColor )
 		{

@@ -27,13 +27,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
 
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.world.World;
 
 import appeng.api.AEApi;
@@ -52,8 +52,8 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 {
 
 	private final ItemStack patternItem;
-	private final InventoryCrafting crafting = new InventoryCrafting( new ContainerNull(), 3, 3 );
-	private final InventoryCrafting testFrame = new InventoryCrafting( new ContainerNull(), 3, 3 );
+	private final CraftingInventory crafting = new CraftingInventory( new ContainerNull(), 3, 3 );
+	private final CraftingInventory testFrame = new CraftingInventory( new ContainerNull(), 3, 3 );
 	private final ItemStack correctOutput;
 	private final IRecipe standardRecipe;
 	private final IAEItemStack[] condensedInputs;
@@ -69,15 +69,15 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 	public PatternHelper( final ItemStack is, final World w )
 	{
-		final NBTTagCompound encodedValue = is.getTagCompound();
+		final CompoundNBT encodedValue = is.getTag();
 
 		if( encodedValue == null )
 		{
 			throw new IllegalArgumentException( "No pattern here!" );
 		}
 
-		final NBTTagList inTag = encodedValue.getTagList( "in", 10 );
-		final NBTTagList outTag = encodedValue.getTagList( "out", 10 );
+		final ListNBT inTag = encodedValue.getList( "in", 10 );
+		final ListNBT outTag = encodedValue.getList( "out", 10 );
 		this.isCrafting = encodedValue.getBoolean( "crafting" );
 
 		this.canSubstitute = this.isCrafting && encodedValue.getBoolean( "substitute" );
@@ -87,19 +87,19 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		final List<IAEItemStack> in = new ArrayList<>();
 		final List<IAEItemStack> out = new ArrayList<>();
 
-		for( int x = 0; x < inTag.tagCount(); x++ )
+		for( int x = 0; x < inTag.size(); x++ )
 		{
-			NBTTagCompound ingredient = inTag.getCompoundTagAt( x );
-			final ItemStack gs = new ItemStack( ingredient );
+			CompoundNBT ingredient = inTag.getCompound( x );
+			final ItemStack gs = ItemStack.read( ingredient );
 
-			if( !ingredient.hasNoTags() && gs.isEmpty() )
+			if( !ingredient.isEmpty() && gs.isEmpty() )
 			{
 				throw new IllegalArgumentException( "No pattern here!" );
 			}
 
 			this.crafting.setInventorySlotContents( x, gs );
 
-			if( !gs.isEmpty() && ( !this.isCrafting || !gs.hasTagCompound() ) )
+			if( !gs.isEmpty() && ( !this.isCrafting || !gs.hasTag() ) )
 			{
 				this.markItemAs( x, gs, TestStatus.ACCEPT );
 			}
@@ -110,7 +110,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 		if( this.isCrafting )
 		{
-			this.standardRecipe = CraftingManager.findMatchingRecipe( this.crafting, w );
+			this.standardRecipe = w.getServer().getRecipeManager().getRecipe( IRecipeType.CRAFTING, this.crafting, w ).orElse( null );
 
 			if( this.standardRecipe != null )
 			{
@@ -127,12 +127,12 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			this.standardRecipe = null;
 			this.correctOutput = ItemStack.EMPTY;
 
-			for( int x = 0; x < outTag.tagCount(); x++ )
+			for( int x = 0; x < outTag.size(); x++ )
 			{
-				NBTTagCompound resultItemTag = outTag.getCompoundTagAt( x );
-				final ItemStack gs = new ItemStack( resultItemTag );
+				CompoundNBT resultItemTag = outTag.getCompound( x );
+				final ItemStack gs = ItemStack.read( resultItemTag );
 
-				if( !resultItemTag.hasNoTags() && gs.isEmpty() )
+				if( !resultItemTag.isEmpty() && gs.isEmpty() )
 				{
 					throw new IllegalArgumentException( "No pattern here!" );
 				}
@@ -215,7 +215,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 	private void markItemAs( final int slotIndex, final ItemStack i, final TestStatus b )
 	{
-		if( b == TestStatus.TEST || i.hasTagCompound() )
+		if( b == TestStatus.TEST || i.hasTag() )
 		{
 			return;
 		}
@@ -270,22 +270,25 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		}
 		else if( AEConfig.instance().isFeatureEnabled( AEFeature.CRAFTING_MANAGER_FALLBACK ) )
 		{
-			final ItemStack testOutput = CraftingManager.findMatchingResult( this.testFrame, w );
 
-			if( Platform.itemComparisons().isSameItem( this.correctOutput, testOutput ) )
-			{
-				this.testFrame.setInventorySlotContents( slotIndex, this.crafting.getStackInSlot( slotIndex ) );
-				this.markItemAs( slotIndex, i, TestStatus.ACCEPT );
+			// TODO: REMOVE
 
-				if( AELog.isCraftingDebugLogEnabled() )
-				{
-					this.warnAboutCraftingManager( true );
-				}
-
-				return true;
-			}
-
-			this.warnAboutCraftingManager( false );
+			// final ItemStack testOutput = CraftingManager.findMatchingResult( this.testFrame, w );
+			//
+			// if( Platform.itemComparisons().isSameItem( this.correctOutput, testOutput ) )
+			// {
+			// this.testFrame.setInventorySlotContents( slotIndex, this.crafting.getStackInSlot( slotIndex ) );
+			// this.markItemAs( slotIndex, i, TestStatus.ACCEPT );
+			//
+			// if( AELog.isCraftingDebugLogEnabled() )
+			// {
+			// this.warnAboutCraftingManager( true );
+			// }
+			//
+			// return true;
+			// }
+			//
+			// this.warnAboutCraftingManager( false );
 		}
 
 		this.markItemAs( slotIndex, i, TestStatus.DECLINE );
@@ -329,7 +332,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 	}
 
 	@Override
-	public ItemStack getOutput( final InventoryCrafting craftingInv, final World w )
+	public ItemStack getOutput( final CraftingInventory craftingInv, final World w )
 	{
 		if( !this.isCrafting )
 		{
@@ -364,7 +367,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			return TestStatus.DECLINE;
 		}
 
-		if( i.hasTagCompound() )
+		if( i.hasTag() )
 		{
 			return TestStatus.TEST;
 		}
@@ -421,7 +424,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 		}
 
 		AELog.warn( "Using CraftingManager fallback: Recipe <%s> for output <%s> rejected inputs [%s]. %s",
-				this.standardRecipe.getRegistryName(), this.standardRecipe.getRecipeOutput(), joinActualInputs, foundAlternativeRecipe );
+				this.standardRecipe.getId(), this.standardRecipe.getRecipeOutput(), joinActualInputs, foundAlternativeRecipe );
 	}
 
 	@Override
@@ -459,7 +462,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 		public TestLookup( final int slot, final ItemStack i )
 		{
-			this( slot, i.getItem(), i.getItemDamage() );
+			this( slot, i.getItem(), i.getDamage() );
 		}
 
 		public TestLookup( final int slot, final Item item, final int dmg )

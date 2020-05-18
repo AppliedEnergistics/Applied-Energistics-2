@@ -19,20 +19,23 @@
 package appeng.items.tools.quartz;
 
 
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
+import net.minecraft.item.ItemTier;
+import net.minecraft.item.SwordItem;
 
 import appeng.core.features.AEFeature;
 import appeng.util.Platform;
 
 
-public class ToolQuartzSword extends ItemSword
+public class ToolQuartzSword extends SwordItem
 {
 	private final AEFeature type;
 
 	public ToolQuartzSword( AEFeature type )
 	{
-		super( ToolMaterial.IRON );
+		super( ItemTier.IRON, 3, -2.4F, ( new Item.Properties() ).group( ItemGroup.COMBAT ) );
 		this.type = type;
 	}
 

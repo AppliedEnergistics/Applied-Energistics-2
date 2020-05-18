@@ -25,15 +25,15 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 import appeng.api.config.FuzzyMode;
 
 
 final class AESharedItemStack implements Comparable<AESharedItemStack>
 {
-	private static final NBTTagCompound LOW_TAG = new NBTTagCompound();
-	private static final NBTTagCompound HIGH_TAG = new NBTTagCompound();
+	private static final CompoundNBT LOW_TAG = new CompoundNBT();
+	private static final CompoundNBT HIGH_TAG = new CompoundNBT();
 
 	private final ItemStack itemStack;
 	private final int itemId;
@@ -44,7 +44,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 	{
 		this.itemStack = itemStack;
 		this.itemId = Item.getIdFromItem( itemStack.getItem() );
-		this.itemDamage = itemStack.getItemDamage();
+		this.itemDamage = itemStack.getDamage();
 		this.hashCode = this.makeHashCode();
 	}
 
@@ -131,24 +131,24 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 
 	private int compareNBT( final ItemStack b )
 	{
-		if( this.itemStack.getTagCompound() == b.getTagCompound() )
+		if( this.itemStack.getTag() == b.getTag() )
 		{
 			return 0;
 		}
-		if( this.itemStack.getTagCompound() == LOW_TAG || b.getTagCompound() == HIGH_TAG )
+		if( this.itemStack.getTag() == LOW_TAG || b.getTag() == HIGH_TAG )
 		{
 			return -1;
 		}
-		if( this.itemStack.getTagCompound() == HIGH_TAG || b.getTagCompound() == LOW_TAG )
+		if( this.itemStack.getTag() == HIGH_TAG || b.getTag() == LOW_TAG )
 		{
 			return 1;
 		}
-		return System.identityHashCode( this.itemStack.getTagCompound() ) - System.identityHashCode( b.getTagCompound() );
+		return System.identityHashCode( this.itemStack.getTag() ) - System.identityHashCode( b.getTag() );
 	}
 
 	private int makeHashCode()
 	{
-		return Objects.hash( this.itemId, this.itemDamage, this.itemStack.hasTagCompound() ? this.itemStack.getTagCompound() : 0 );
+		return Objects.hash( this.itemId, this.itemDamage, this.itemStack.hasTag() ? this.itemStack.getTag() : 0 );
 	}
 
 	/**
@@ -170,7 +170,7 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 			Preconditions.checkState( !stack.isEmpty(), "ItemStack#isEmpty() has to be false" );
 			Preconditions.checkState( stack.getCount() == 1, "ItemStack#getCount() has to be 1" );
 
-			final NBTTagCompound tag = stack.hasTagCompound() ? stack.getTagCompound() : null;
+			final CompoundNBT tag = stack.hasTag() ? stack.getTag() : null;
 
 			this.lower = this.makeLowerBound( stack, tag, fuzzy, ignoreMeta );
 			this.upper = this.makeUpperBound( stack, tag, fuzzy, ignoreMeta );
@@ -186,14 +186,14 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 			return this.upper;
 		}
 
-		private AESharedItemStack makeLowerBound( final ItemStack itemStack, final NBTTagCompound tag, final FuzzyMode fuzzy, final boolean ignoreMeta )
+		private AESharedItemStack makeLowerBound( final ItemStack itemStack, final CompoundNBT tag, final FuzzyMode fuzzy, final boolean ignoreMeta )
 		{
 			final ItemStack newDef = itemStack.copy();
 
 			if( ignoreMeta )
 			{
-				newDef.setItemDamage( MIN_DAMAGE_VALUE );
-				newDef.setTagCompound( tag );
+				newDef.setDamage( MIN_DAMAGE_VALUE );
+				newDef.setTag( tag );
 			}
 			else
 			{
@@ -201,40 +201,40 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 				{
 					if( fuzzy == FuzzyMode.IGNORE_ALL )
 					{
-						newDef.setItemDamage( MIN_DAMAGE_VALUE );
+						newDef.setDamage( MIN_DAMAGE_VALUE );
 					}
 					else if( fuzzy == FuzzyMode.PERCENT_99 )
 					{
-						if( itemStack.getItemDamage() == MIN_DAMAGE_VALUE )
+						if( itemStack.getDamage() == MIN_DAMAGE_VALUE )
 						{
-							newDef.setItemDamage( MIN_DAMAGE_VALUE );
+							newDef.setDamage( MIN_DAMAGE_VALUE );
 						}
 						else
 						{
-							newDef.setItemDamage( MIN_DAMAGE_VALUE + 1 );
+							newDef.setDamage( MIN_DAMAGE_VALUE + 1 );
 						}
 					}
 					else
 					{
 						final int breakpoint = fuzzy.calculateBreakPoint( itemStack.getMaxDamage() );
-						final int damage = breakpoint <= itemStack.getItemDamage() ? breakpoint : 0;
-						newDef.setItemDamage( damage );
+						final int damage = breakpoint <= itemStack.getDamage() ? breakpoint : 0;
+						newDef.setDamage( damage );
 					}
 				}
-				newDef.setTagCompound( LOW_TAG );
+				newDef.setTag( LOW_TAG );
 			}
 
 			return new AESharedItemStack( newDef );
 		}
 
-		private AESharedItemStack makeUpperBound( final ItemStack itemStack, final NBTTagCompound tag, final FuzzyMode fuzzy, final boolean ignoreMeta )
+		private AESharedItemStack makeUpperBound( final ItemStack itemStack, final CompoundNBT tag, final FuzzyMode fuzzy, final boolean ignoreMeta )
 		{
 			final ItemStack newDef = itemStack.copy();
 
 			if( ignoreMeta )
 			{
-				newDef.setItemDamage( MAX_DAMAGE_VALUE );
-				newDef.setTagCompound( tag );
+				newDef.setDamage( MAX_DAMAGE_VALUE );
+				newDef.setTag( tag );
 			}
 			else
 			{
@@ -242,27 +242,27 @@ final class AESharedItemStack implements Comparable<AESharedItemStack>
 				{
 					if( fuzzy == FuzzyMode.IGNORE_ALL )
 					{
-						newDef.setItemDamage( itemStack.getMaxDamage() + 1 );
+						newDef.setDamage( itemStack.getMaxDamage() + 1 );
 					}
 					else if( fuzzy == FuzzyMode.PERCENT_99 )
 					{
-						if( itemStack.getItemDamage() == MIN_DAMAGE_VALUE )
+						if( itemStack.getDamage() == MIN_DAMAGE_VALUE )
 						{
-							newDef.setItemDamage( MIN_DAMAGE_VALUE );
+							newDef.setDamage( MIN_DAMAGE_VALUE );
 						}
 						else
 						{
-							newDef.setItemDamage( itemStack.getMaxDamage() + 1 );
+							newDef.setDamage( itemStack.getMaxDamage() + 1 );
 						}
 					}
 					else
 					{
 						final int breakpoint = fuzzy.calculateBreakPoint( itemStack.getMaxDamage() );
-						final int damage = itemStack.getItemDamage() < breakpoint ? breakpoint - 1 : itemStack.getMaxDamage() + 1;
-						newDef.setItemDamage( damage );
+						final int damage = itemStack.getDamage() < breakpoint ? breakpoint - 1 : itemStack.getMaxDamage() + 1;
+						newDef.setDamage( damage );
 					}
 				}
-				newDef.setTagCompound( HIGH_TAG );
+				newDef.setTag( HIGH_TAG );
 			}
 
 			return new AESharedItemStack( newDef );

@@ -26,10 +26,9 @@ package appeng.api.storage.data;
 
 import java.io.IOException;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
@@ -165,7 +164,7 @@ public interface IAEStack<T extends IAEStack<T>>
 	 *
 	 * @throws IOException
 	 */
-	void writeToPacket( ByteBuf data ) throws IOException;
+	void writeToPacket( PacketBuffer data ) throws IOException;
 
 	/**
 	 * Clone the Item / Fluid Stack

@@ -23,8 +23,8 @@ import java.util.EnumSet;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -50,7 +50,7 @@ public abstract class AEBasePoweredTile extends AEBaseInvTile implements IAEPowe
 	private AccessRestriction internalPowerFlow = AccessRestriction.READ_WRITE;
 	// the current power buffer.
 	private double internalCurrentPower = 0;
-	private EnumSet<EnumFacing> internalPowerSides = EnumSet.allOf( EnumFacing.class );
+	private EnumSet<Direction> internalPowerSides = EnumSet.allOf( Direction.class );
 	private final IEnergyStorage forgeEnergyAdapter;
 	private Object teslaEnergyAdapter;
 
@@ -67,12 +67,12 @@ public abstract class AEBasePoweredTile extends AEBaseInvTile implements IAEPowe
 		this.ic2Sink.setValidFaces( this.internalPowerSides );
 	}
 
-	protected EnumSet<EnumFacing> getPowerSides()
+	protected EnumSet<Direction> getPowerSides()
 	{
 		return this.internalPowerSides.clone();
 	}
 
-	protected void setPowerSides( final EnumSet<EnumFacing> sides )
+	protected void setPowerSides( final EnumSet<Direction> sides )
 	{
 		this.internalPowerSides = sides;
 		this.ic2Sink.setValidFaces( sides );
@@ -80,7 +80,7 @@ public abstract class AEBasePoweredTile extends AEBaseInvTile implements IAEPowe
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT( final NBTTagCompound data )
+	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
 		data.setDouble( "internalCurrentPower", this.getInternalCurrentPower() );
@@ -88,7 +88,7 @@ public abstract class AEBasePoweredTile extends AEBaseInvTile implements IAEPowe
 	}
 
 	@Override
-	public void readFromNBT( final NBTTagCompound data )
+	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
 		this.setInternalCurrentPower( data.getDouble( "internalCurrentPower" ) );
@@ -268,7 +268,7 @@ public abstract class AEBasePoweredTile extends AEBaseInvTile implements IAEPowe
 	}
 
 	@Override
-	public boolean hasCapability( Capability<?> capability, EnumFacing facing )
+	public boolean hasCapability( Capability<?> capability, Direction facing )
 	{
 		if( capability == Capabilities.FORGE_ENERGY )
 		{
@@ -290,7 +290,7 @@ public abstract class AEBasePoweredTile extends AEBaseInvTile implements IAEPowe
 
 	@SuppressWarnings( "unchecked" )
 	@Override
-	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
+	public <T> T getCapability( Capability<T> capability, @Nullable Direction facing )
 	{
 		if( capability == Capabilities.FORGE_ENERGY )
 		{

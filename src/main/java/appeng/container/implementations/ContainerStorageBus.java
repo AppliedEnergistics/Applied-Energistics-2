@@ -21,7 +21,7 @@ package appeng.container.implementations;
 
 import java.util.Iterator;
 
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -57,7 +57,7 @@ public class ContainerStorageBus extends ContainerUpgradeable
 	@GuiSync( 4 )
 	public StorageFilter storageFilter = StorageFilter.EXTRACTABLE_ONLY;
 
-	public ContainerStorageBus( final InventoryPlayer ip, final PartStorageBus te )
+	public ContainerStorageBus( final PlayerInventory ip, final PartStorageBus te )
 	{
 		super( ip, te );
 		this.storageBus = te;
@@ -92,19 +92,19 @@ public class ContainerStorageBus extends ContainerUpgradeable
 		}
 
 		final IItemHandler upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
-		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getInventoryPlayer() ) )
+		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getPlayerInventory() ) )
 				.setNotDraggable() );
 		this.addSlotToContainer(
-				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.getInventoryPlayer() ) )
+				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.getPlayerInventory() ) )
 						.setNotDraggable() );
 		this.addSlotToContainer(
-				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.getInventoryPlayer() ) )
+				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.getPlayerInventory() ) )
 						.setNotDraggable() );
 		this.addSlotToContainer(
-				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.getInventoryPlayer() ) )
+				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.getPlayerInventory() ) )
 						.setNotDraggable() );
 		this.addSlotToContainer(
-				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 4, 187, 8 + 18 * 4, this.getInventoryPlayer() ) )
+				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 4, 187, 8 + 18 * 4, this.getPlayerInventory() ) )
 						.setNotDraggable() );
 	}
 

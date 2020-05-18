@@ -24,7 +24,7 @@ import java.io.IOException;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.config.Settings;
 import appeng.client.gui.AEBaseGui;
@@ -41,9 +41,9 @@ public class GuiWireless extends AEBaseGui
 
 	private GuiImgButton units;
 
-	public GuiWireless( final InventoryPlayer inventoryPlayer, final TileWireless te )
+	public GuiWireless( final PlayerInventory PlayerInventory, final TileWireless te )
 	{
-		super( new ContainerWireless( inventoryPlayer, te ) );
+		super( new ContainerWireless( PlayerInventory, te ) );
 		this.ySize = 166;
 	}
 

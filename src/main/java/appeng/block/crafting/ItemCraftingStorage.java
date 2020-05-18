@@ -23,12 +23,12 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
-import appeng.block.AEBaseItemBlock;
+import appeng.block.AEBaseBlockItem;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 
 
-public class ItemCraftingStorage extends AEBaseItemBlock
+public class ItemCraftingStorage extends AEBaseBlockItem
 {
 
 	public ItemCraftingStorage( final Block id )
