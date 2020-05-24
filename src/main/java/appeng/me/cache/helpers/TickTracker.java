@@ -37,7 +37,6 @@ public class TickTracker implements Comparable<TickTracker>
 	private final TickingRequest request;
 	private final IGridTickable gt;
 	private final IGridNode node;
-	private final TickManagerCache host;
 
 	private final long LastFiveTicksTime = 0;
 
@@ -51,7 +50,6 @@ public class TickTracker implements Comparable<TickTracker>
 		this.node = node;
 		this.setCurrentRate( ( req.minTickRate + req.maxTickRate ) / 2 );
 		this.setLastTick( currentTick );
-		this.host = tickManagerCache;
 	}
 
 	public long getAvgNanos()
@@ -59,27 +57,25 @@ public class TickTracker implements Comparable<TickTracker>
 		return( this.LastFiveTicksTime / 5 );
 	}
 
-	public void setRate( final int rate )
-	{
-		this.setCurrentRate( rate );
-
-		if( this.getCurrentRate() < this.getRequest().minTickRate )
-		{
-			this.setCurrentRate( this.getRequest().minTickRate );
-		}
-
-		if( this.getCurrentRate() > this.getRequest().maxTickRate )
-		{
-			this.setCurrentRate( this.getRequest().maxTickRate );
-		}
-	}
-
 	@Override
 	public int compareTo( @Nonnull final TickTracker t )
 	{
-		final int nextTick = (int) ( ( this.getLastTick() - this.host.getCurrentTick() ) + this.getCurrentRate() );
-		final int ts_nextTick = (int) ( ( t.getLastTick() - this.host.getCurrentTick() ) + t.getCurrentRate() );
-		return nextTick - ts_nextTick;
+		int next = Long.compare( this.getNextTick(), t.getNextTick() );
+
+		if( next != 0 )
+		{
+			return next;
+		}
+
+		int last = Long.compare( this.getLastTick(), t.getLastTick() );
+
+		if( last != 0 )
+		{
+			return last;
+		}
+
+		return Integer.compare( this.getCurrentRate(), t.getCurrentRate() );
+
 	}
 
 	public void addEntityCrashInfo( final CrashReportCategory crashreportcategory )
@@ -111,7 +107,12 @@ public class TickTracker implements Comparable<TickTracker>
 
 	public void setCurrentRate( final int currentRate )
 	{
-		this.currentRate = currentRate;
+		this.currentRate = Math.min( this.getRequest().maxTickRate, Math.max( this.getRequest().minTickRate, currentRate ) );
+	}
+
+	public long getNextTick()
+	{
+		return this.lastTick + this.currentRate;
 	}
 
 	public long getLastTick()
