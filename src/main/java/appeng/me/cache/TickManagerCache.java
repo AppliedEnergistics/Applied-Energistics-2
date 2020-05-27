@@ -47,6 +47,7 @@ public class TickManagerCache implements ITickManager
 	private final HashMap<IGridNode, TickTracker> sleeping = new HashMap<>();
 	private final HashMap<IGridNode, TickTracker> awake = new HashMap<>();
 	private final PriorityQueue<TickTracker> upcomingTicks = new PriorityQueue<>();
+
 	private long currentTick = 0;
 
 	public TickManagerCache( final IGrid g )
@@ -80,50 +81,52 @@ public class TickManagerCache implements ITickManager
 	public void onUpdateTick()
 	{
 		TickTracker tt = null;
+
 		try
 		{
 			this.currentTick++;
+
 			while( !this.upcomingTicks.isEmpty() )
 			{
 				tt = this.upcomingTicks.peek();
-				final int diff = (int) ( this.currentTick - tt.getLastTick() );
-				if( diff >= tt.getCurrentRate() )
+
+				// Stop once it reaches a TickTracker running at a later tick
+				if( tt.getNextTick() > this.currentTick )
 				{
-					// remove tt..
-					this.upcomingTicks.poll();
-					final TickRateModulation mod = tt.getGridTickable().tickingRequest( tt.getNode(), diff );
-
-					switch( mod )
-					{
-						case FASTER:
-							tt.setRate( tt.getCurrentRate() - 2 );
-							break;
-						case IDLE:
-							tt.setRate( tt.getRequest().maxTickRate );
-							break;
-						case SAME:
-							break;
-						case SLEEP:
-							this.sleepDevice( tt.getNode() );
-							break;
-						case SLOWER:
-							tt.setRate( tt.getCurrentRate() + 1 );
-							break;
-						case URGENT:
-							tt.setRate( 0 );
-							break;
-						default:
-							break;
-					}
-
-					if( this.awake.containsKey( tt.getNode() ) )
-					{
-						this.addToQueue( tt );
-					}
+					break;
 				}
-				else
+
+				this.upcomingTicks.poll();
+
+				final int diff = (int) ( this.currentTick - tt.getLastTick() );
+				final TickRateModulation mod = tt.getGridTickable().tickingRequest( tt.getNode(), diff );
+
+				switch( mod )
 				{
-					return; // done!
+					case FASTER:
+						tt.setCurrentRate( tt.getCurrentRate() - 2 );
+						break;
+					case IDLE:
+						tt.setCurrentRate( tt.getRequest().maxTickRate );
+						break;
+					case SAME:
+						break;
+					case SLEEP:
+						this.sleepDevice( tt.getNode() );
+						break;
+					case SLOWER:
+						tt.setCurrentRate( tt.getCurrentRate() + 1 );
+						break;
+					case URGENT:
+						tt.setCurrentRate( 0 );
+						break;
+					default:
+						break;
+				}
+
+				if( this.awake.containsKey( tt.getNode() ) )
+				{
+					this.addToQueue( tt );
 				}
 			}
 		}
@@ -255,6 +258,7 @@ public class TickManagerCache implements ITickManager
 			final TickTracker gt = this.sleeping.get( node );
 			this.sleeping.remove( node );
 			this.awake.put( node, gt );
+			this.upcomingTicks.remove( gt );
 			this.addToQueue( gt );
 
 			return true;
