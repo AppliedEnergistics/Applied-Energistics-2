@@ -311,7 +311,7 @@ public class ClientHelper extends ServerHelper
 	@SubscribeEvent
 	public void wheelEvent( final MouseEvent me )
 	{
-		if( me.getDwheel() == 0 )
+		if( me.getDwheel() == 0 && me.getButton() != 2 )
 		{
 			return;
 		}
@@ -327,7 +327,12 @@ public class ClientHelper extends ServerHelper
 			{
 				try
 				{
-					NetworkHandler.instance().sendToServer( new PacketValueConfig( "Item", me.getDwheel() > 0 ? "WheelUp" : "WheelDown" ) );
+					if( me.getDwheel() != 0 )
+					{
+						NetworkHandler.instance().sendToServer( new PacketValueConfig( "MouseWheel", me.getDwheel() > 0 ? "WheelUp" : "WheelDown" ) );
+					} else {
+						NetworkHandler.instance().sendToServer( new PacketValueConfig( "MiddleClick", me.isButtonstate() ? "WheelDown" : "WheelUp" ) );
+					}
 					me.setCanceled( true );
 				}
 				catch( final IOException e )

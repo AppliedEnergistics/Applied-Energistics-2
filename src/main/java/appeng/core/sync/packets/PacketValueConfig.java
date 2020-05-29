@@ -99,7 +99,7 @@ public class PacketValueConfig extends AppEngPacket
 	{
 		final Container c = player.openContainer;
 
-		if( this.Name.equals( "Item" ) && ( ( !player.getHeldItem( EnumHand.MAIN_HAND ).isEmpty() && player.getHeldItem( EnumHand.MAIN_HAND )
+		if( ( this.Name.equals( "MouseWheel" ) || this.Name.equals( "MiddleClick" ) ) && ( ( !player.getHeldItem( EnumHand.MAIN_HAND ).isEmpty() && player.getHeldItem( EnumHand.MAIN_HAND )
 				.getItem() instanceof IMouseWheelItem ) || ( !player.getHeldItem( EnumHand.OFF_HAND )
 						.isEmpty() && player.getHeldItem( EnumHand.OFF_HAND ).getItem() instanceof IMouseWheelItem ) ) )
 		{
@@ -119,7 +119,14 @@ public class PacketValueConfig extends AppEngPacket
 
 			final ItemStack is = player.getHeldItem( hand );
 			final IMouseWheelItem si = (IMouseWheelItem) is.getItem();
-			si.onWheel( is, this.Value.equals( "WheelUp" ) );
+			if ( this.Name.equals( "MouseWheel" ) )
+			{
+				si.onWheel( is, this.Value.equals( "WheelUp" ) );
+			}
+			else
+			{
+				si.onWheelClick( is, this.Value.equals( "WheelDown" ), player );
+			}
 		}
 		else if( this.Name.equals( "Terminal.Cpu" ) && c instanceof ContainerCraftingStatus )
 		{

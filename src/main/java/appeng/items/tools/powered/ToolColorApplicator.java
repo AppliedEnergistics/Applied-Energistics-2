@@ -39,6 +39,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemSnowball;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumActionResult;
@@ -112,6 +113,8 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	@Override
 	public EnumActionResult onItemUse( ItemStack is, EntityPlayer p, World w, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ )
 	{
+		boolean lastDye = false;
+
 		final Block blk = w.getBlockState( pos ).getBlock();
 
 		ItemStack paintBall = this.getColor( is );
@@ -121,14 +124,18 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				.cell()
 				.getCellInventory( is, null,
 						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
-		if( inv != null )
+		if( !paintBall.isEmpty() && inv != null )
 		{
-			final IAEItemStack option = inv.extractItems( AEItemStack.fromItemStack( paintBall ), Actionable.SIMULATE, new BaseActionSource() );
+			final IAEItemStack option = inv.extractItems( AEItemStack.fromItemStack( paintBall ).setStackSize( 2 ), Actionable.SIMULATE, new BaseActionSource() );
 
 			if( option != null )
 			{
 				paintBall = option.createItemStack();
 				paintBall.setCount( 1 );
+				if ( option.getStackSize() == 1 )
+				{
+					lastDye = true;
+				}
 			}
 			else
 			{
@@ -153,6 +160,10 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 						{
 							inv.extractItems( AEItemStack.fromItemStack( paintBall ), Actionable.MODULATE, new BaseActionSource() );
 							this.extractAEPower( is, powerPerUse, Actionable.MODULATE );
+							if ( lastDye )
+							{
+								this.setColor(is, ItemStack.EMPTY);
+							}
 							return EnumActionResult.SUCCESS;
 						}
 					}
@@ -166,6 +177,10 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 					inv.extractItems( AEItemStack.fromItemStack( paintBall ), Actionable.MODULATE, new BaseActionSource() );
 					this.extractAEPower( is, powerPerUse, Actionable.MODULATE );
 					( (TilePaint) painted ).cleanSide( side.getOpposite() );
+					if ( lastDye )
+					{
+						this.setColor(is, ItemStack.EMPTY);
+					}
 					return EnumActionResult.SUCCESS;
 				}
 			}
@@ -179,6 +194,10 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 					{
 						inv.extractItems( AEItemStack.fromItemStack( paintBall ), Actionable.MODULATE, new BaseActionSource() );
 						this.extractAEPower( is, powerPerUse, Actionable.MODULATE );
+						if ( lastDye )
+						{
+							this.setColor(is, ItemStack.EMPTY);
+						}
 						return EnumActionResult.SUCCESS;
 					}
 				}
@@ -259,7 +278,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			}
 		}
 
-		return this.findNextColor( is, ItemStack.EMPTY, 0 );
+		return ItemStack.EMPTY;
 	}
 
 	private ItemStack findNextColor( final ItemStack is, final ItemStack anchor, final int scrollOffset )
@@ -411,14 +430,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 	public void cycleColors( final ItemStack is, final ItemStack paintBall, final int i )
 	{
-		if( paintBall.isEmpty() )
-		{
-			this.setColor( is, this.getColor( is ) );
-		}
-		else
-		{
-			this.setColor( is, this.findNextColor( is, paintBall, i ) );
-		}
+		this.setColor( is, this.findNextColor( is, paintBall, i ) );
 	}
 
 	@Override
@@ -551,5 +563,57 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	public void onWheel( final ItemStack is, final boolean up )
 	{
 		this.cycleColors( is, this.getColor( is ), up ? 1 : -1 );
+	}
+
+	@Override
+	public void onWheelClick( ItemStack is, boolean state, EntityPlayer player )
+	{
+		if( !state )
+		{
+			return;
+		}
+
+		RayTraceResult trace = rayTrace( player.world, player, false );
+		if( trace == null )
+		{
+			return;
+		}
+
+		TileEntity te = player.world.getTileEntity( trace.getBlockPos() );
+		if( !( te instanceof IColorableTile ) )
+		{
+			return;
+		}
+
+		AEColor newColor = ( ( IColorableTile ) te ).getColor();
+		if( newColor == this.getActiveColor( is ) )
+		{
+			return;
+		}
+
+		final IMEInventory<IAEItemStack> inv = AEApi.instance()
+				.registries()
+				.cell()
+				.getCellInventory( is, null,
+						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+		if( inv != null )
+		{
+			IItemList<IAEItemStack> dyes = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+			inv.getAvailableItems( dyes );
+			if( dyes.isEmpty() )
+			{
+				return;
+			}
+
+			for( IAEItemStack paintBall : dyes )
+			{
+				ItemStack dye = paintBall.createItemStack();
+				if( this.getColorFromItem( dye ) == newColor )
+				{
+					this.setColor( is, dye );
+					return;
+				}
+			}
+		}
 	}
 }
