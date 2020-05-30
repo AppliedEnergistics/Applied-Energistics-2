@@ -90,7 +90,7 @@ public class TilePaint extends AEBaseTile
 	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
-		if( data.hasKey( "dots" ) )
+		if( data.contains("dots") )
 		{
 			this.readBuffer( Unpooled.copiedBuffer( data.getByteArray( "dots" ) ) );
 		}

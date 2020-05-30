@@ -19,69 +19,8 @@
 package appeng.util;
 
 
-import java.security.InvalidParameterException;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Random;
-import java.util.WeakHashMap;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerEntityMP;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.play.server.SPacketChunkData;
-import net.minecraft.server.management.PlayerChunkMap;
-import net.minecraft.server.management.PlayerChunkMapEntry;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.RegistryNamespaced;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.oredict.OreDictionary;
-
 import appeng.api.AEApi;
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.PowerUnits;
-import appeng.api.config.SearchBoxMode;
-import appeng.api.config.SecurityPermissions;
-import appeng.api.config.SortOrder;
+import appeng.api.config.*;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
 import appeng.api.definitions.IParts;
@@ -108,7 +47,6 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.stats.Stats;
 import appeng.core.sync.GuiBridge;
@@ -123,6 +61,44 @@ import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.helpers.P2PHelper;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.IPartitionList;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.FakePlayerFactory;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.common.thread.SidedThreadGroups;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.security.InvalidParameterException;
+import java.text.DecimalFormat;
+import java.util.*;
 
 
 /**
@@ -133,9 +109,12 @@ import appeng.util.prioritylist.IPartitionList;
  */
 public class Platform
 {
+
+	public static final Block AIR_BLOCK = Blocks.AIR;
+
 	public static final int DEF_OFFSET = 16;
 
-	private static final boolean CLIENT_INSTALL = FMLCommonHandler.instance().getSide().isClient();
+	private static final boolean CLIENT_INSTALL = FMLEnvironment.dist.isClient();
 
 	/*
 	 * random source, use it for item drop locations...
@@ -225,11 +204,11 @@ public class Platform
 		return AEPartLocation.INTERNAL;
 	}
 
-	public static Direction crossProduct( final Direction forward, final Direction up )
+	public static Direction crossProduct(final Direction forward, final Direction up )
 	{
-		final int west_x = forward.getFrontOffsetY() * up.getFrontOffsetZ() - forward.getFrontOffsetZ() * up.getFrontOffsetY();
-		final int west_y = forward.getFrontOffsetZ() * up.getFrontOffsetX() - forward.getFrontOffsetX() * up.getFrontOffsetZ();
-		final int west_z = forward.getFrontOffsetX() * up.getFrontOffsetY() - forward.getFrontOffsetY() * up.getFrontOffsetX();
+		final int west_x = forward.getYOffset() * up.getZOffset() - forward.getZOffset() * up.getYOffset();
+		final int west_y = forward.getZOffset() * up.getXOffset() - forward.getXOffset() * up.getZOffset();
+		final int west_z = forward.getXOffset() * up.getYOffset() - forward.getYOffset() * up.getXOffset();
 
 		switch( west_x + west_y * 2 + west_z * 3 )
 		{
@@ -349,16 +328,16 @@ public class Platform
 		return false;
 	}
 
-	public static void openGUI( @Nonnull final PlayerEntity p, @Nullable final TileEntity tile, @Nullable final AEPartLocation side, @Nonnull final GuiBridge type )
+	public static void openGUI(@Nonnull final PlayerEntity p, @Nullable final TileEntity tile, @Nullable final AEPartLocation side, @Nonnull final GuiBridge type )
 	{
 		if( isClient() )
 		{
 			return;
 		}
 
-		int x = (int) p.posX;
-		int y = (int) p.posY;
-		int z = (int) p.posZ;
+		int x = (int) p.getPosX();
+		int y = (int) p.getPosY();
+		int z = (int) p.getPosZ();
 		if( tile != null )
 		{
 			x = tile.getPos().getX();
@@ -370,15 +349,18 @@ public class Platform
 		{
 			if( tile == null && type.getType() == GuiHostType.ITEM )
 			{
-				p.openGui( AppEng.instance(), type.ordinal() << 4, p.getEntityWorld(), p.inventory.currentItem, 0, 0 );
+				// FIXME NetworkHooks.openGui
+				// p.openGui( AppEng.instance(), type.ordinal() << 4, p.getEntityWorld(), p.inventory.currentItem, 0, 0 );
 			}
 			else if( tile == null || type.getType() == GuiHostType.ITEM )
 			{
-				p.openGui( AppEng.instance(), type.ordinal() << 4 | ( 1 << 3 ), p.getEntityWorld(), x, y, z );
+				// FIXME NetworkHooks.openGui
+				// p.openGui( AppEng.instance(), type.ordinal() << 4 | ( 1 << 3 ), p.getEntityWorld(), x, y, z );
 			}
 			else
 			{
-				p.openGui( AppEng.instance(), type.ordinal() << 4 | ( side.ordinal() ), tile.getWorld(), x, y, z );
+				// FIXME NetworkHooks.openGui
+				// p.openGui( AppEng.instance(), type.ordinal() << 4 | ( side.ordinal() ), tile.getWorld(), x, y, z );
 			}
 		}
 	}
@@ -388,7 +370,8 @@ public class Platform
 	 */
 	public static boolean isClient()
 	{
-		return FMLCommonHandler.instance().getEffectiveSide().isClient();
+		// FIXME fishy
+		return Thread.currentThread().getThreadGroup() == SidedThreadGroups.CLIENT;
 	}
 
 	/*
@@ -419,14 +402,15 @@ public class Platform
 		}
 	}
 
-	public static ItemStack[] getBlockDrops( final World w, final BlockPos pos )
+	public static ItemStack[] getBlockDrops(final ServerWorld w, final BlockPos pos )
 	{
 		List<ItemStack> out = new ArrayList<>();
 		final BlockState state = w.getBlockState( pos );
+		final TileEntity tileEntity = w.getTileEntity(pos);
 
 		if( state != null )
 		{
-			out = state.getBlock().getDrops( w, pos, state, 0 );
+			out = Block.getDrops(state, w, pos, tileEntity);
 		}
 
 		if( out == null )
@@ -483,21 +467,6 @@ public class Platform
 	}
 
 	/*
-	 * Creates / or loads previous NBT Data on items, used for editing items owned by AE.
-	 */
-	public static CompoundNBT openNbtData( final ItemStack i )
-	{
-		CompoundNBT compound = i.getTagCompound();
-
-		if( compound == null )
-		{
-			i.setTagCompound( compound = new CompoundNBT() );
-		}
-
-		return compound;
-	}
-
-	/*
 	 * Generates Item entities in the world similar to how items are generally dropped.
 	 */
 	public static void spawnDrops( final World w, final BlockPos pos, final List<ItemStack> drops )
@@ -513,9 +482,9 @@ public class Platform
 						final double offset_x = ( getRandomInt() % 32 - 16 ) / 82;
 						final double offset_y = ( getRandomInt() % 32 - 16 ) / 82;
 						final double offset_z = ( getRandomInt() % 32 - 16 ) / 82;
-						final EntityItem ei = new EntityItem( w, 0.5 + offset_x + pos.getX(), 0.5 + offset_y + pos.getY(), 0.2 + offset_z + pos.getZ(), i
+						final ItemEntity ei = new ItemEntity( w, 0.5 + offset_x + pos.getX(), 0.5 + offset_y + pos.getY(), 0.2 + offset_z + pos.getZ(), i
 								.copy() );
-						w.spawnEntity( ei );
+						w.addEntity( ei );
 					}
 				}
 			}
@@ -527,7 +496,7 @@ public class Platform
 	 */
 	public static boolean isServer()
 	{
-		return FMLCommonHandler.instance().getEffectiveSide().isServer();
+		return Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER;
 	}
 
 	public static int getRandomInt()
@@ -535,38 +504,12 @@ public class Platform
 		return Math.abs( RANDOM_GENERATOR.nextInt() );
 	}
 
-	public static boolean isModLoaded( final String modid )
-	{
-		try
-		{
-			// if this fails for some reason, try the other method.
-			return Loader.isModLoaded( modid );
-		}
-		catch( final Throwable ignored )
-		{
-		}
-
-		for( final ModContainer f : Loader.instance().getActiveModList() )
-		{
-			if( f.getModId().equals( modid ) )
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public static ItemStack findMatchingRecipeOutput( final InventoryCrafting ic, final World world )
-	{
-		return CraftingManager.findMatchingResult( ic, world );
-	}
-
 	@OnlyIn( Dist.CLIENT )
-	public static List<String> getTooltip( final Object o )
+	public static List<ITextComponent> getTooltip( final Object o )
 	{
 		if( o == null )
 		{
-			return new ArrayList<>();
+			return Collections.emptyList();
 		}
 
 		ItemStack itemStack = ItemStack.EMPTY;
@@ -581,18 +524,18 @@ public class Platform
 		}
 		else
 		{
-			return new ArrayList<>();
+			return Collections.emptyList();
 		}
 
 		try
 		{
 			ITooltipFlag.TooltipFlags tooltipFlag = Minecraft
-					.getMinecraft().gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL;
-			return itemStack.getTooltip( Minecraft.getInstance().player, tooltipFlag );
+					.getInstance().gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL;
+			return itemStack.getTooltip(Minecraft.getInstance().player, tooltipFlag);
 		}
 		catch( final Exception errB )
 		{
-			return new ArrayList<>();
+			return Collections.emptyList();
 		}
 	}
 
@@ -614,8 +557,8 @@ public class Platform
 			return "** Null";
 		}
 
-		final String n = FluidRegistry.getModId( fs.getFluidStack() );
-		return n == null ? "** Null" : n;
+		final ResourceLocation n = ForgeRegistries.FLUIDS.getKey( fs.getFluidStack().getFluid() );
+		return n == null ? "** Null" : n.getNamespace(); // FIXME: Check if namespace == mod
 	}
 
 	public static String getItemDisplayName( final Object o )
@@ -642,19 +585,14 @@ public class Platform
 
 		try
 		{
-			String name = itemStack.getDisplayName();
-			if( name == null || name.isEmpty() )
-			{
-				name = itemStack.getItem().getTranslationKey( itemStack );
-			}
-			return name == null ? "** Null" : name;
+			// FIXME: Double-check that this is TRULY translated
+			return itemStack.getDisplayName().getString();
 		}
 		catch( final Exception errA )
 		{
 			try
 			{
-				final String n = itemStack.getTranslationKey();
-				return n == null ? "** Null" : n;
+				return itemStack.getTranslationKey();
 			}
 			catch( final Exception errB )
 			{
@@ -682,7 +620,8 @@ public class Platform
 		{
 			return "**Invalid Object";
 		}
-		String n = fluidStack.getLocalizedName();
+		// FIXME: Check that this is truly translated
+		String n = fluidStack.getDisplayName().getString();
 		if( n == null || "".equalsIgnoreCase( n ) )
 		{
 			n = fluidStack.getTranslationKey();
@@ -690,7 +629,7 @@ public class Platform
 		return n == null ? "** Null" : n;
 	}
 
-	public static boolean isWrench( final PlayerEntity player, final ItemStack eq, final BlockPos pos )
+	public static boolean isWrench(final PlayerEntity player, final ItemStack eq, final BlockPos pos )
 	{
 		if( !eq.isEmpty() )
 		{
@@ -705,10 +644,10 @@ public class Platform
 				 * }
 				 */
 
-				if( eq.getItem() instanceof cofh.api.item.IToolHammer )
-				{
-					return ( (cofh.api.item.IToolHammer) eq.getItem() ).isUsable( eq, player, pos );
-				}
+				// FIXME if( eq.getItem() instanceof cofh.api.item.IToolHammer )
+				// FIXME {
+				// FIXME 	return ( (cofh.api.item.IToolHammer) eq.getItem() ).isUsable( eq, player, pos );
+				// FIXME }
 			}
 			catch( final Throwable ignore )
 			{ // explodes without BC
@@ -738,7 +677,7 @@ public class Platform
 		return false;
 	}
 
-	public static PlayerEntity getPlayer( final ServerWorld w )
+	public static PlayerEntity getPlayer(final ServerWorld w )
 	{
 		if( w == null )
 		{
@@ -784,30 +723,6 @@ public class Platform
 			case 12: // "lightBlue"
 			case 13: // "magenta"
 			case 14: // "orange"
-		}
-		return -1;
-	}
-
-	public static int findEmpty( final RegistryNamespaced registry, final int minId, final int maxId )
-	{
-		for( int x = minId; x < maxId; x++ )
-		{
-			if( registry.getObjectById( x ) == null )
-			{
-				return x;
-			}
-		}
-		return -1;
-	}
-
-	public static int findEmpty( final Object[] l )
-	{
-		for( int x = 0; x < l.length; x++ )
-		{
-			if( l[x] == null )
-			{
-				return x;
-			}
 		}
 		return -1;
 	}
@@ -936,7 +851,7 @@ public class Platform
 		return forward;
 	}
 
-	public static Direction rotateAround( final Direction forward, final Direction axis )
+	public static Direction rotateAround(final Direction forward, final Direction axis )
 	{
 		switch( forward )
 		{
@@ -1041,16 +956,14 @@ public class Platform
 	@OnlyIn( Dist.CLIENT )
 	public static String gui_localize( final String string )
 	{
-		return I18n.translateToLocal( string );
+		return I18n.format( string );
 	}
 
-	public static LookDirection getPlayerRay( final PlayerEntity playerIn, final float eyeOffset )
+	public static LookDirection getPlayerRay(final PlayerEntity playerIn, final float eyeOffset )
 	{
-		double reachDistance = 5.0d;
-
-		final double x = playerIn.prevPosX + ( playerIn.posX - playerIn.prevPosX );
-		final double y = playerIn.prevPosY + ( playerIn.posY - playerIn.prevPosY ) + playerIn.getEyeHeight();
-		final double z = playerIn.prevPosZ + ( playerIn.posZ - playerIn.prevPosZ );
+		final double x = playerIn.prevPosX + ( playerIn.getPosX() - playerIn.prevPosX );
+		final double y = playerIn.prevPosY + ( playerIn.getPosY() - playerIn.prevPosY ) + playerIn.getEyeHeight();
+		final double z = playerIn.prevPosZ + ( playerIn.getPosZ() - playerIn.prevPosZ );
 
 		final float playerPitch = playerIn.prevRotationPitch + ( playerIn.rotationPitch - playerIn.prevRotationPitch );
 		final float playerYaw = playerIn.prevRotationYaw + ( playerIn.rotationYaw - playerIn.prevRotationYaw );
@@ -1063,27 +976,24 @@ public class Platform
 		final float eyeRayX = yawRayX * pitchMultiplier;
 		final float eyeRayZ = yawRayZ * pitchMultiplier;
 
-		if( playerIn instanceof PlayerEntityMP )
-		{
-			reachDistance = ( (PlayerEntityMP) playerIn ).interactionManager.getBlockReachDistance();
-		}
+		double reachDistance = playerIn.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
 
 		final Vec3d from = new Vec3d( x, y, z );
-		final Vec3d to = from.addVector( eyeRayX * reachDistance, eyeRayY * reachDistance, eyeRayZ * reachDistance );
+		final Vec3d to = from.add( eyeRayX * reachDistance, eyeRayY * reachDistance, eyeRayZ * reachDistance );
 
 		return new LookDirection( from, to );
 	}
 
-	public static RayTraceResult rayTrace( final PlayerEntity p, final boolean hitBlocks, final boolean hitEntities )
+	public static RayTraceResult rayTrace(final PlayerEntity p, final boolean hitBlocks, final boolean hitEntities )
 	{
 		final World w = p.getEntityWorld();
 
 		final float f = 1.0F;
 		float f1 = p.prevRotationPitch + ( p.rotationPitch - p.prevRotationPitch ) * f;
 		final float f2 = p.prevRotationYaw + ( p.rotationYaw - p.prevRotationYaw ) * f;
-		final double d0 = p.prevPosX + ( p.posX - p.prevPosX ) * f;
-		final double d1 = p.prevPosY + ( p.posY - p.prevPosY ) * f + 1.62D - p.getYOffset();
-		final double d2 = p.prevPosZ + ( p.posZ - p.prevPosZ ) * f;
+		final double d0 = p.prevPosX + ( p.getPosX() - p.prevPosX ) * f;
+		final double d1 = p.prevPosY + ( p.getPosY() - p.prevPosY ) * f + 1.62D - p.getYOffset();
+		final double d2 = p.prevPosZ + ( p.getPosZ() - p.prevPosZ ) * f;
 		final Vec3d vec3 = new Vec3d( d0, d1, d2 );
 		final float f3 = MathHelper.cos( -f2 * 0.017453292F - (float) Math.PI );
 		final float f4 = MathHelper.sin( -f2 * 0.017453292F - (float) Math.PI );
@@ -1093,7 +1003,7 @@ public class Platform
 		final float f8 = f3 * f5;
 		final double d3 = 32.0D;
 
-		final Vec3d vec31 = vec3.addVector( f7 * d3, f6 * d3, f8 * d3 );
+		final Vec3d vec31 = vec3.add( f7 * d3, f6 * d3, f8 * d3 );
 
 		final AxisAlignedBB bb = new AxisAlignedBB( Math.min( vec3.x, vec31.x ), Math.min( vec3.y, vec31.y ), Math.min( vec3.z,
 				vec31.z ), Math.max( vec3.x, vec31.x ), Math.max( vec3.y, vec31.y ), Math.max( vec3.z, vec31.z ) ).grow(
@@ -1109,29 +1019,27 @@ public class Platform
 			{
 				final Entity entity1 = (Entity) list.get( l );
 
-				if( !entity1.isDead && entity1 != p && !( entity1 instanceof EntityItem ) )
+				if( entity1.isAlive() && entity1 != p && !( entity1 instanceof ItemEntity) )
 				{
-					if( entity1.isEntityAlive() )
+					// prevent killing / flying of mounts.
+					if( entity1.isRidingOrBeingRiddenBy( p ) )
 					{
-						// prevent killing / flying of mounts.
-						if( entity1.isRidingOrBeingRiddenBy( p ) )
+						continue;
+					}
+
+					f1 = 0.3F;
+					// FIXME: Three different bounding boxes available, should double-check
+					final AxisAlignedBB boundingBox = entity1.getBoundingBox().grow( f1, f1, f1 );
+					final Vec3d rtResult = boundingBox.rayTrace( vec3, vec31 ).orElse(null);
+
+					if( rtResult != null )
+					{
+						final double nd = vec3.squareDistanceTo( rtResult );
+
+						if( nd < closest )
 						{
-							continue;
-						}
-
-						f1 = 0.3F;
-						final AxisAlignedBB boundingBox = entity1.getEntityBoundingBox().grow( f1, f1, f1 );
-						final RayTraceResult RayTraceResult = boundingBox.calculateIntercept( vec3, vec31 );
-
-						if( RayTraceResult != null )
-						{
-							final double nd = vec3.squareDistanceTo( RayTraceResult.hitVec );
-
-							if( nd < closest )
-							{
-								entity = entity1;
-								closest = nd;
-							}
+							entity = entity1;
+							closest = nd;
 						}
 					}
 				}
@@ -1144,16 +1052,17 @@ public class Platform
 		if( hitBlocks )
 		{
 			vec = new Vec3d( d0, d1, d2 );
-			pos = w.rayTraceBlocks( vec3, vec31, true );
+			// FIXME: passing p as entity here might be incorrect
+			pos = w.rayTraceBlocks( new RayTraceContext(vec3, vec31, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.ANY, p) );
 		}
 
-		if( entity != null && pos != null && pos.hitVec.squareDistanceTo( vec ) > closest )
+		if( entity != null && pos != null && pos.getHitVec().squareDistanceTo( vec ) > closest )
 		{
-			pos = new RayTraceResult( entity );
+			pos = new EntityRayTraceResult( entity );
 		}
 		else if( entity != null && pos == null )
 		{
-			pos = new RayTraceResult( entity );
+			pos = new EntityRayTraceResult( entity );
 		}
 
 		return pos;
@@ -1409,7 +1318,7 @@ public class Platform
 		return gs.hasPermission( playerID, SecurityPermissions.BUILD );
 	}
 
-	public static void configurePlayer( final PlayerEntity player, final AEPartLocation side, final TileEntity tile )
+	public static void configurePlayer(final PlayerEntity player, final AEPartLocation side, final TileEntity tile )
 	{
 		float pitch = 0.0f;
 		float yaw = 0.0f;
@@ -1440,12 +1349,13 @@ public class Platform
 				break;
 		}
 
-		player.posX = tile.getPos().getX() + 0.5;
-		player.posY = tile.getPos().getY() + 0.5;
-		player.posZ = tile.getPos().getZ() + 0.5;
-
-		player.rotationPitch = player.prevCameraPitch = player.cameraPitch = pitch;
-		player.rotationYaw = player.prevCameraYaw = player.cameraYaw = yaw;
+		player.setLocationAndAngles(
+				tile.getPos().getX() + 0.5,
+				tile.getPos().getY() + 0.5,
+				tile.getPos().getZ() + 0.5,
+				yaw,
+				pitch
+		);
 	}
 
 	public static boolean canAccess( final AENetworkProxy gridProxy, final IActionSource src )
@@ -1479,7 +1389,7 @@ public class Platform
 		}
 	}
 
-	public static ItemStack extractItemsByRecipe( final IEnergySource energySrc, final IActionSource mySrc, final IMEMonitor<IAEItemStack> src, final World w, final IRecipe r, final ItemStack output, final InventoryCrafting ci, final ItemStack providedTemplate, final int slot, final IItemList<IAEItemStack> items, final Actionable realForFake, final IPartitionList<IAEItemStack> filter )
+	public static ItemStack extractItemsByRecipe(final IEnergySource energySrc, final IActionSource mySrc, final IMEMonitor<IAEItemStack> src, final World w, final IRecipe r, final ItemStack output, final CraftingInventory ci, final ItemStack providedTemplate, final int slot, final IItemList<IAEItemStack> items, final Actionable realForFake, final IPartitionList<IAEItemStack> filter )
 	{
 		if( energySrc.extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.9 )
 		{
@@ -1505,8 +1415,8 @@ public class Platform
 				}
 			}
 
-			final boolean checkFuzzy = ae_req.getOre().isPresent() || providedTemplate.getItemDamage() == OreDictionary.WILDCARD_VALUE || providedTemplate
-					.hasTagCompound() || providedTemplate.isItemStackDamageable();
+			final boolean checkFuzzy = ae_req.getOre().isPresent() || /* FIXME providedTemplate.getDamage() == OreDictionary.WILDCARD_VALUE || */ providedTemplate.hasTag()
+					|| providedTemplate.isDamageable();
 
 			if( items != null && checkFuzzy )
 			{
@@ -1561,7 +1471,7 @@ public class Platform
 		}
 
 		ItemStack ci = i.getContainerItem( stackInSlot.copy() );
-		if( !ci.isEmpty() && ci.isItemStackDamageable() && ci.getItemDamage() == ci.getMaxDamage() )
+		if( !ci.isEmpty() && ci.isDamageable() && ci.getDamage() == ci.getMaxDamage() )
 		{
 			ci = ItemStack.EMPTY;
 		}
@@ -1633,14 +1543,14 @@ public class Platform
 	{
 		try
 		{
-			final WorldServer ws = (WorldServer) c.getWorld();
-			final PlayerChunkMap pm = ws.getPlayerChunkMap();
-			final PlayerChunkMapEntry playerInstance = pm.getEntry( c.x, c.z );
-
-			if( playerInstance != null )
-			{
-				playerInstance.sendPacket( new SPacketChunkData( c, verticalBits ) );
-			}
+			// FIXME final ServerWorld ws = (ServerWorld) c.getWorld();
+			// FIXME final PlayerChunkMap pm = ws.getPlayerChunkMap();
+			// FIXME final PlayerChunkMapEntry playerInstance = pm.getEntry( c.x, c.z );
+// FIXME
+			// FIXME if( playerInstance != null )
+			// FIXME {
+			// FIXME 	playerInstance.sendPacket( new SChunkDataPacket( c, verticalBits ) );
+			// FIXME }
 		}
 		catch( final Throwable t )
 		{
@@ -1651,12 +1561,13 @@ public class Platform
 	public static float getEyeOffset( final PlayerEntity player )
 	{
 		assert player.world.isRemote : "Valid only on client";
-		return (float) ( player.posY + player.getEyeHeight() - player.getDefaultEyeHeight() );
+		// FIXME: The entire premise of this seems broken
+		return (float) ( player.getPosY() + player.getEyeHeight() - /* FIXME player.getDefaultEyeHeight()*/ 1.62F );
 	}
 
 	// public static void addStat( final int playerID, final Achievement achievement )
 	// {
-	// final PlayerEntity p = AEApi.instance().registries().players().findPlayer( playerID );
+	// final EntityPlayer p = AEApi.instance().registries().players().findPlayer( playerID );
 	// if( p != null )
 	// {
 	// p.addStat( achievement, 1 );

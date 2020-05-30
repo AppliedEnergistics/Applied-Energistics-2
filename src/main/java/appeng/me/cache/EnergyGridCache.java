@@ -581,7 +581,7 @@ public class EnergyGridCache implements IEnergyGrid
 	{
 		final double newBuffer = this.localStorage.getAECurrentPower() / 2;
 		this.localStorage.removeCurrentAEPower( newBuffer );
-		storageB.dataObject().setDouble( "buffer", newBuffer );
+		storageB.dataObject().putDouble("buffer", newBuffer);
 	}
 
 	@Override
@@ -593,7 +593,7 @@ public class EnergyGridCache implements IEnergyGrid
 	@Override
 	public void populateGridStorage( final IGridStorage storage )
 	{
-		storage.dataObject().setDouble( "buffer", this.localStorage.getAECurrentPower() );
+		storage.dataObject().putDouble("buffer", this.localStorage.getAECurrentPower());
 	}
 
 	public boolean registerEnergyInterest( final EnergyThreshold threshold )

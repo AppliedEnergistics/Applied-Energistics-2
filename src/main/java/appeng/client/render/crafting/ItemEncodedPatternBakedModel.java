@@ -222,7 +222,7 @@ class ItemEncodedPatternBakedModel implements IBakedModel
 		@Override
 		public IBakedModel handleItemState( IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity )
 		{
-			boolean shiftHeld = Keyboard.isKeyDown( Keyboard.KEY_LSHIFT ) || Keyboard.isKeyDown( Keyboard.KEY_RSHIFT );
+			boolean shiftHeld = Keyboard.isKeyDown( GLFW.GLFW_KEY_LSHIFT ) || Keyboard.isKeyDown( GLFW.GLFW_KEY_RSHIFT );
 			if( shiftHeld )
 			{
 				ItemEncodedPattern iep = (ItemEncodedPattern) stack.getItem();

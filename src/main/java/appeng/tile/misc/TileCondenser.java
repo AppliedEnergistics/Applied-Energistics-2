@@ -25,7 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraft.fluid.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
@@ -89,7 +89,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	{
 		super.writeToNBT( data );
 		this.cm.writeToNBT( data );
-		data.setDouble( "storedPower", this.getStoredPower() );
+		data.putDouble("storedPower", this.getStoredPower());
 		return data;
 	}
 

@@ -54,7 +54,7 @@ public class GuiQuartzKnife extends AEBaseGui
 		this.name.setMaxStringLength( 32 );
 		this.name.setTextColor( 0xFFFFFF );
 		this.name.setVisible( true );
-		this.name.setFocused( true );
+		this.name.setFocused2( true );
 	}
 
 	@Override

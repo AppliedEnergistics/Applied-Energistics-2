@@ -104,9 +104,9 @@ public class ToolReplicatorCard extends AEBaseItem
 								final DimensionalCoord min = sc.getMin();
 								final DimensionalCoord max = sc.getMax();
 
-								x += currentSideOff.getFrontOffsetX();
-								y += currentSideOff.getFrontOffsetY();
-								z += currentSideOff.getFrontOffsetZ();
+								x += currentSideOff.getXOffset();
+								y += currentSideOff.getYOffset();
+								z += currentSideOff.getZOffset();
 
 								final int min_x = min.x;
 								final int min_y = min.y;

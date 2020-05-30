@@ -1,0 +1,28 @@
+modLoader="javafml"
+loaderVersion="[31,)"
+issueTrackerURL="https://github.com/AppliedEnergistics/Applied-Energistics-2/issues"
+showAsResourcePack=false
+
+[[mods]]
+  modId="appliedenergistics2"
+  version="rev7"
+  displayName="Example ModApplied Energistics 2"
+  displayURL="https://ae-mod.info/"
+  logoFile="assets/appliedenergistics2/meta/logo.png"
+  description='''
+  A Mod about Matter, Energy and using them to conquer the world..
+  '''
+
+#  [[dependencies.examplemod]]
+#    modId="forge"
+#    mandatory=true
+#    versionRange="[28,)"
+#    ordering="NONE"
+#    side="BOTH"
+#
+#  [[dependencies.examplemod]]
+#    modId="minecraft"
+#    mandatory=true
+#    versionRange="[1.14.4]"
+#    ordering="NONE"
+#    side="BOTH"

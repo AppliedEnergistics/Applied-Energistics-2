@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import net.minecraft.util.JsonUtils;
+import net.minecraft.util.JSONUtils;
 import net.minecraftforge.common.crafting.IConditionFactory;
 import net.minecraftforge.common.crafting.JsonContext;
 
@@ -43,16 +43,16 @@ public class Features implements IConditionFactory
 	{
 		final boolean result;
 
-		if( JsonUtils.isJsonArray( jsonObject, JSON_FEATURES_KEY ) )
+		if( JSONUtils.isJsonArray( jsonObject, JSON_FEATURES_KEY ) )
 		{
-			final JsonArray features = JsonUtils.getJsonArray( jsonObject, JSON_FEATURES_KEY );
+			final JsonArray features = JSONUtils.getJsonArray( jsonObject, JSON_FEATURES_KEY );
 
 			result = Stream.of( features )
 					.allMatch( p -> AEConfig.instance().isFeatureEnabled( AEFeature.valueOf( p.getAsString().toUpperCase( Locale.ENGLISH ) ) ) );
 		}
-		else if( JsonUtils.isString( jsonObject, JSON_FEATURES_KEY ) )
+		else if( JSONUtils.isString( jsonObject, JSON_FEATURES_KEY ) )
 		{
-			final String featureName = JsonUtils.getString( jsonObject, JSON_FEATURES_KEY ).toUpperCase( Locale.ENGLISH );
+			final String featureName = JSONUtils.getString( jsonObject, JSON_FEATURES_KEY ).toUpperCase( Locale.ENGLISH );
 			final AEFeature feature = AEFeature.valueOf( featureName );
 
 			result = AEConfig.instance().isFeatureEnabled( feature );

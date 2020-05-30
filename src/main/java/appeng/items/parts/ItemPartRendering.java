@@ -141,7 +141,7 @@ public class ItemPartRendering extends ItemRenderingCustomizer
 	private ModelResourceLocation getItemMeshDefinition( ItemStack is )
 	{
 		PartType partType = this.item.getTypeByStack( is );
-		int variant = this.item.variantOf( is.getItemDamage() );
+		int variant = this.item.variantOf( is.getDamage() );
 		return partType.getItemModels().get( variant );
 	}
 }

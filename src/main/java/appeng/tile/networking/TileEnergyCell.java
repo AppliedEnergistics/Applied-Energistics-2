@@ -102,7 +102,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
-		data.setDouble( "internalCurrentPower", this.internalCurrentPower );
+		data.putDouble("internalCurrentPower", this.internalCurrentPower);
 		return data;
 	}
 
@@ -134,8 +134,8 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 		if( from == SettingsFrom.DISMANTLE_ITEM )
 		{
 			final CompoundNBT tag = new CompoundNBT();
-			tag.setDouble( "internalCurrentPower", this.internalCurrentPower );
-			tag.setDouble( "internalMaxPower", this.getInternalMaxPower() ); // used for tool tip.
+			tag.putDouble("internalCurrentPower", this.internalCurrentPower);
+			tag.putDouble("internalMaxPower", this.getInternalMaxPower()); // used for tool tip.
 			return tag;
 		}
 		return null;

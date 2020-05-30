@@ -39,7 +39,7 @@ public class ChunkOnly extends StandardWorld
 	public ChunkOnly( final World w, final int cx, final int cz )
 	{
 		super( w );
-		this.target = w.getChunkFromChunkCoords( cx, cz );
+		this.target = w.getChunk( cx, cz );
 		this.cx = cx;
 		this.cz = cz;
 	}
@@ -73,7 +73,7 @@ public class ChunkOnly extends StandardWorld
 	{
 		if( this.range( x, y, z ) )
 		{
-			return this.target.getBlockState( x, y, z ).getBlock();
+			return this.target.getBlockState( new BlockPos(x, y, z) ).getBlock();
 		}
 		return Platform.AIR_BLOCK;
 	}

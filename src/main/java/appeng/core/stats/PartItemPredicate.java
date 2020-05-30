@@ -23,7 +23,7 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.advancements.critereon.ItemPredicates;
 
@@ -55,7 +55,7 @@ public class PartItemPredicate extends ItemPredicate
 	{
 		if( jsonobject.has( "part" ) )
 		{
-			return new PartItemPredicate( JsonUtils.getString( jsonobject, "part" ) );
+			return new PartItemPredicate( JSONUtils.getString( jsonobject, "part" ) );
 		}
 		else
 		{

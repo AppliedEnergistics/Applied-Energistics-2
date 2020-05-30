@@ -123,8 +123,8 @@ public class ContainerQuartzKnife extends AEBaseContainer
 				{
 					return AEApi.instance().definitions().materials().namePress().maybeStack( 1 ).map( namePressStack ->
 					{
-						final CompoundNBT compound = Platform.openNbtData( namePressStack );
-						compound.setString( "InscribeName", ContainerQuartzKnife.this.myName );
+                        final CompoundNBT compound = namePressStack.getOrCreateTag();
+						compound.putString("InscribeName", ContainerQuartzKnife.this.myName);
 
 						return namePressStack;
 					} ).orElse( ItemStack.EMPTY );

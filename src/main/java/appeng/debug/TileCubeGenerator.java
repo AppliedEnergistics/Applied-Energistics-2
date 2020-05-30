@@ -26,7 +26,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 
 import appeng.core.AppEng;
 import appeng.tile.AEBaseTile;
@@ -52,7 +52,7 @@ public class TileCubeGenerator extends AEBaseTile implements ITickable
 			{
 				for( final PlayerEntity e : AppEng.proxy.getPlayers() )
 				{
-					e.sendMessage( new TextComponentString( "Spawning in... " + ( this.countdown / 20 ) ) );
+					e.sendMessage( new StringTextComponent( "Spawning in... " + ( this.countdown / 20 ) ) );
 				}
 			}
 
@@ -114,7 +114,7 @@ public class TileCubeGenerator extends AEBaseTile implements ITickable
 					this.size = 64;
 				}
 
-				player.sendMessage( new TextComponentString( "Size: " + this.size ) );
+				player.sendMessage( new StringTextComponent( "Size: " + this.size ) );
 			}
 			else
 			{

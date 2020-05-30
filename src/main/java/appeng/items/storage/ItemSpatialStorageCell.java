@@ -39,7 +39,6 @@ import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import appeng.spatial.StorageHelper;
-import appeng.util.Platform;
 
 
 public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorageCell
@@ -107,7 +106,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	@Override
 	public WorldCoord getStoredSize( final ItemStack is )
 	{
-		if( is.hasTagCompound() )
+		if( is.hasTag() )
 		{
 			final CompoundNBT c = is.getTagCompound();
 			return new WorldCoord( c.getInteger( NBT_SIZE_X_KEY ), c.getInteger( NBT_SIZE_Y_KEY ), c.getInteger( NBT_SIZE_Z_KEY ) );
@@ -118,7 +117,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	@Override
 	public int getStoredDimensionID( final ItemStack is )
 	{
-		if( is.hasTagCompound() )
+		if( is.hasTag() )
 		{
 			final CompoundNBT c = is.getTagCompound();
 			return c.getInteger( NBT_CELL_ID_KEY );
@@ -180,7 +179,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 
 	private void setStorageCell( final ItemStack is, int id, BlockPos size )
 	{
-		final CompoundNBT c = Platform.openNbtData( is );
+        final CompoundNBT c = is.getOrCreateTag();
 
 		c.setInteger( NBT_CELL_ID_KEY, id );
 		c.setInteger( NBT_SIZE_X_KEY, size.getX() );

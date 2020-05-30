@@ -34,7 +34,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraft.fluid.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
@@ -436,7 +436,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		super.readFromNBT( data );
 		this.config.readFromNBT( data );
 		this.priority = data.getInteger( "priority" );
-		if( data.hasKey( "paintedColor" ) )
+		if( data.contains("paintedColor") )
 		{
 			this.paintedColor = AEColor.values()[data.getByte( "paintedColor" )];
 		}

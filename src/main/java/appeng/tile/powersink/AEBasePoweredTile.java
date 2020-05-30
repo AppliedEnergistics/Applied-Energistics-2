@@ -83,7 +83,7 @@ public abstract class AEBasePoweredTile extends AEBaseInvTile implements IAEPowe
 	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
-		data.setDouble( "internalCurrentPower", this.getInternalCurrentPower() );
+		data.putDouble("internalCurrentPower", this.getInternalCurrentPower());
 		return data;
 	}
 

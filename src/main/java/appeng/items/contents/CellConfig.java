@@ -22,7 +22,6 @@ package appeng.items.contents;
 import net.minecraft.item.ItemStack;
 
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.util.Platform;
 
 
 public class CellConfig extends AppEngInternalInventory
@@ -34,12 +33,12 @@ public class CellConfig extends AppEngInternalInventory
 	{
 		super( null, 63 );
 		this.is = is;
-		this.readFromNBT( Platform.openNbtData( is ), "list" );
+        this.readFromNBT(is.getOrCreateTag(), "list" );
 	}
 
 	@Override
 	protected void onContentsChanged( int slot )
 	{
-		this.writeToNBT( Platform.openNbtData( this.is ), "list" );
+        this.writeToNBT(this.is.getOrCreateTag(), "list" );
 	}
 }

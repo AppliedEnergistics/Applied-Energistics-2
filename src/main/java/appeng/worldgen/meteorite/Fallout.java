@@ -75,7 +75,7 @@ public class Fallout
 		}
 		else if( a > 0.7 )
 		{
-			this.putter.put( w, x, y, z, Blocks.GRASS );
+			this.putter.put( w, x, y, z, Blocks.GRASS_BLOCK );
 		}
 		else if( a > 0.6 )
 		{

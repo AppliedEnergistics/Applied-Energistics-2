@@ -109,7 +109,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 
 		if( details == null )
 		{
-			if( !stack.hasTagCompound() )
+			if( !stack.hasTag() )
 			{
 				return;
 			}

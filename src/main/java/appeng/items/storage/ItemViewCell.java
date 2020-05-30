@@ -33,7 +33,6 @@ import appeng.api.storage.data.IItemList;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
-import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.IPartitionList;
@@ -144,7 +143,7 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 	@Override
 	public FuzzyMode getFuzzyMode( final ItemStack is )
 	{
-		final String fz = Platform.openNbtData( is ).getString( "FuzzyMode" );
+        final String fz = is.getOrCreateTag().getString( "FuzzyMode" );
 		try
 		{
 			return FuzzyMode.valueOf( fz );
@@ -158,6 +157,6 @@ public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 	@Override
 	public void setFuzzyMode( final ItemStack is, final FuzzyMode fzMode )
 	{
-		Platform.openNbtData( is ).setString( "FuzzyMode", fzMode.name() );
+        is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
 	}
 }

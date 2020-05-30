@@ -19,7 +19,7 @@
 package appeng.block.networking;
 
 
-import net.minecraft.block.properties.IProperty;
+import net.minecraft.state.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.BlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -31,7 +31,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.AEGlassMaterial;
-import appeng.util.Platform;
 
 
 public class BlockEnergyCell extends AEBaseTileBlock
@@ -63,9 +62,9 @@ public class BlockEnergyCell extends AEBaseTileBlock
 		super.getSubBlocks( tabs, itemStacks );
 
 		final ItemStack charged = new ItemStack( this, 1 );
-		final CompoundNBT tag = Platform.openNbtData( charged );
-		tag.setDouble( "internalCurrentPower", this.getMaxPower() );
-		tag.setDouble( "internalMaxPower", this.getMaxPower() );
+        final CompoundNBT tag = charged.getOrCreateTag();
+		tag.putDouble("internalCurrentPower", this.getMaxPower());
+		tag.putDouble("internalMaxPower", this.getMaxPower());
 
 		itemStacks.add( charged );
 	}

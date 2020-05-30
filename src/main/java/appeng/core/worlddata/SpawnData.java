@@ -64,7 +64,7 @@ final class SpawnData implements IWorldSpawnData
 			final CompoundNBT data = this.loadSpawnData( dim, chunkX, chunkZ );
 
 			// edit.
-			data.setBoolean( chunkX + "," + chunkZ, true );
+			data.putBoolean(chunkX + "," + chunkZ, true);
 
 			this.writeSpawnData( dim, chunkX, chunkZ, data );
 		}

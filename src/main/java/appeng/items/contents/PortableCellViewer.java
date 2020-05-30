@@ -40,7 +40,6 @@ import appeng.api.util.IConfigManager;
 import appeng.container.interfaces.IInventorySlotAware;
 import appeng.me.helpers.MEMonitorHandler;
 import appeng.util.ConfigManager;
-import appeng.util.Platform;
 
 
 public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implements IPortableCell, IInventorySlotAware
@@ -98,7 +97,7 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 	{
 		final ConfigManager out = new ConfigManager( ( manager, settingName, newValue ) ->
 		{
-			final CompoundNBT data = Platform.openNbtData( PortableCellViewer.this.target );
+            final CompoundNBT data = this.target.getOrCreateTag();
 			manager.writeToNBT( data );
 		} );
 
@@ -106,7 +105,7 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 		out.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
 		out.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 
-		out.readFromNBT( Platform.openNbtData( this.target ).copy() );
+        out.readFromNBT( this.target.getOrCreateTag().copy() );
 		return out;
 	}
 }

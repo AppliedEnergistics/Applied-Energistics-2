@@ -15,10 +15,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 
+import net.minecraft.util.JSONUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
-import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.JsonContext;
@@ -74,8 +74,8 @@ public class AERecipeLoader
 		try
 		{
 			reader = Files.newBufferedReader( file );
-			JsonObject json = JsonUtils.fromJson( GSON, reader, JsonObject.class );
-			if( json.has( "conditions" ) && !CraftingHelper.processConditions( JsonUtils.getJsonArray( json, "conditions" ), this.ctx ) )
+			JsonObject json = JSONUtils.fromJson( GSON, reader, JsonObject.class );
+			if( json.has( "conditions" ) && !CraftingHelper.processConditions( JSONUtils.getJsonArray( json, "conditions" ), this.ctx ) )
 			{
 				return true;
 			}
@@ -107,7 +107,7 @@ public class AERecipeLoader
 			throw new JsonSyntaxException( "Json cannot be null" );
 		}
 
-		String type = this.ctx.appendModId( JsonUtils.getString( json, "type" ) );
+		String type = this.ctx.appendModId( JSONUtils.getString( json, "type" ) );
 		if( type.isEmpty() )
 		{
 			throw new JsonSyntaxException( "Recipe type can not be an empty string" );

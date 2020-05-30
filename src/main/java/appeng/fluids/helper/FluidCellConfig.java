@@ -22,7 +22,7 @@ package appeng.fluids.helper;
 import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraft.fluid.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 

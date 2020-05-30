@@ -538,26 +538,26 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 		if( !plateA.isEmpty() )
 		{
-			final CompoundNBT tag = Platform.openNbtData( plateA );
+            final CompoundNBT tag = plateA.getOrCreateTag();
 			name += tag.getString( "InscribeName" );
 		}
 
 		if( !plateB.isEmpty() )
 		{
-			final CompoundNBT tag = Platform.openNbtData( plateB );
+            final CompoundNBT tag = plateB.getOrCreateTag();
 			name += " " + tag.getString( "InscribeName" );
 		}
 
 		final ItemStack startingItem = input.copy();
 		final ItemStack renamedItem = input.copy();
-		final CompoundNBT tag = Platform.openNbtData( renamedItem );
+        final CompoundNBT tag = renamedItem.getOrCreateTag();
 
 		final CompoundNBT display = tag.getCompoundTag( "display" );
 		tag.setTag( "display", display );
 
 		if( name.length() > 0 )
 		{
-			display.setString( "Name", name );
+			display.putString("Name", name);
 		}
 		else
 		{

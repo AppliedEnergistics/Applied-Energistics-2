@@ -95,7 +95,7 @@ public class GuiPriority extends AEBaseGui
 		this.priority.setMaxStringLength( 16 );
 		this.priority.setTextColor( 0xFFFFFF );
 		this.priority.setVisible( true );
-		this.priority.setFocused( true );
+		this.priority.setFocused2( true );
 		( (ContainerPriority) this.inventorySlots ).setTextField( this.priority );
 	}
 

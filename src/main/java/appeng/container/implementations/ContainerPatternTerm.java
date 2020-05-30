@@ -263,8 +263,8 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 		encodedValue.setTag( "in", tagIn );
 		encodedValue.setTag( "out", tagOut );
-		encodedValue.setBoolean( "crafting", this.isCraftingMode() );
-		encodedValue.setBoolean( "substitute", this.isSubstitute() );
+		encodedValue.putBoolean("crafting", this.isCraftingMode());
+		encodedValue.putBoolean("substitute", this.isSubstitute());
 
 		output.setTagCompound( encodedValue );
 	}
@@ -348,7 +348,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 		if( !i.isEmpty() )
 		{
-			i.writeToNBT( c );
+			i.write(c);
 		}
 
 		return c;

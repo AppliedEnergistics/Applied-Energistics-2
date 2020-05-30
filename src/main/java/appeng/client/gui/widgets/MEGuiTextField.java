@@ -20,7 +20,7 @@ package appeng.client.gui.widgets;
 
 
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -35,7 +35,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
  *
  * The rendering does pay attention to the size of the '_' caret.
  */
-public class MEGuiTextField extends GuiTextField
+public class MEGuiTextField extends TextFieldWidget
 {
 	private static final int PADDING = 2;
 
@@ -75,7 +75,7 @@ public class MEGuiTextField extends GuiTextField
 		final boolean requiresFocus = this.isMouseIn( xPos, yPos );
 		if( !this.isFocused() )
 		{
-			this.setFocused( requiresFocus );
+			this.setFocused2( requiresFocus );
 		}
 
 		return true;

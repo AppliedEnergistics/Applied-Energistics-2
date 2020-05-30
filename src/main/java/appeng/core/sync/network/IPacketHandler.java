@@ -20,13 +20,13 @@ package appeng.core.sync.network;
 
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.INetHandler;
-import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.PacketDispatcher;
 
 
 public interface IPacketHandler
 {
 
-	void onPacketData( INetworkInfo manager, INetHandler handler, FMLProxyPacket packet, PlayerEntity player );
+	void onPacketData(INetworkInfo manager, PacketDispatcher dispatcher, PacketBuffer packet, PlayerEntity player );
 
 }

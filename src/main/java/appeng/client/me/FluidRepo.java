@@ -40,6 +40,7 @@ import appeng.core.AEConfig;
 import appeng.fluids.util.FluidSorters;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
+import net.minecraft.util.text.ITextComponent;
 
 
 /**
@@ -132,11 +133,11 @@ public class FluidRepo
 
 			if( terminalSearchToolTips && notDone && !searchMod )
 			{
-				final List<String> tooltip = Platform.getTooltip( fs );
+				final List<ITextComponent> tooltip = Platform.getTooltip( fs );
 
-				for( final String line : tooltip )
+				for( final ITextComponent line : tooltip )
 				{
-					if( m.matcher( line ).find() )
+					if( m.matcher( line.getString() ).find() )
 					{
 						foundMatchingFluidStack = true;
 						break;

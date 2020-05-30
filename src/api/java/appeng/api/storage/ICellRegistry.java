@@ -45,7 +45,7 @@ public interface ICellRegistry
 	/**
 	 * Register a new handler.
 	 *
-	 * Never be call before {@link FMLInitializationEvent} was handled by AE2.
+	 * Never be call before {@link net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent} was handled by AE2.
 	 * Will throw an exception otherwise.
 	 *
 	 * @param handler cell handler

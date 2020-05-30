@@ -76,7 +76,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		this.level.setMaxStringLength( 16 );
 		this.level.setTextColor( 0xFFFFFF );
 		this.level.setVisible( true );
-		this.level.setFocused( true );
+		this.level.setFocused2( true );
 		( (ContainerLevelEmitter) this.inventorySlots ).setTextField( this.level );
 	}
 

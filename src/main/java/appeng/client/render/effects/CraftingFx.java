@@ -19,7 +19,8 @@
 package appeng.client.render.effects;
 
 
-import net.minecraft.client.particle.ParticleBreaking;
+import net.minecraft.client.particle.BreakingParticle;
+import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
@@ -34,7 +35,7 @@ import appeng.client.render.textures.ParticleTextures;
 
 
 @OnlyIn( Dist.CLIENT )
-public class CraftingFx extends ParticleBreaking
+public class CraftingFx extends BreakingParticle
 {
 
 	private final TextureAtlasSprite particleTextureIndex;
@@ -53,17 +54,23 @@ public class CraftingFx extends ParticleBreaking
 		this.particleAlpha = 1.3f;
 		this.particleScale = 1.5f;
 		this.particleTextureIndex = ParticleTextures.BlockEnergyParticle;
-		this.particleMaxAge /= 1.2;
+		this.maxAge /= 1.2;
 
-		this.startBlkX = MathHelper.floor( this.posX );
-		this.startBlkY = MathHelper.floor( this.posY );
-		this.startBlkZ = MathHelper.floor( this.posZ );
+		this.startBlkX = MathHelper.floor( this.getPosX() );
+		this.startBlkY = MathHelper.floor( this.getPosY() );
+		this.startBlkZ = MathHelper.floor( this.getPosZ() );
 	}
 
 	@Override
 	public int getFXLayer()
 	{
 		return 1;
+	}
+
+	@Override
+	public IParticleRenderType getRenderType() {
+		// TODO: FIXME
+		return IParticleRenderType.NO_RENDER;
 	}
 
 	@Override
@@ -80,9 +87,9 @@ public class CraftingFx extends ParticleBreaking
 		final float f9 = this.particleTextureIndex.getMaxV();
 		final float scale = 0.1F * this.particleScale;
 
-		float offX = (float) ( this.prevPosX + ( this.posX - this.prevPosX ) * partialTick );
-		float offY = (float) ( this.prevPosY + ( this.posY - this.prevPosY ) * partialTick );
-		float offZ = (float) ( this.prevPosZ + ( this.posZ - this.prevPosZ ) * partialTick );
+		float offX = (float) ( this.prevPosX + ( this.getPosX() - this.prevPosX ) * partialTick );
+		float offY = (float) ( this.prevPosY + ( this.getPosY() - this.prevPosY ) * partialTick );
+		float offZ = (float) ( this.prevPosZ + ( this.getPosZ() - this.prevPosZ ) * partialTick );
 
 		final int blkX = MathHelper.floor( offX );
 		final int blkY = MathHelper.floor( offY );
@@ -124,20 +131,20 @@ public class CraftingFx extends ParticleBreaking
 
 	public void fromItem( final AEPartLocation d )
 	{
-		this.posX += 0.2 * d.xOffset;
-		this.posY += 0.2 * d.yOffset;
-		this.posZ += 0.2 * d.zOffset;
+		this.getPosX() += 0.2 * d.xOffset;
+		this.getPosY() += 0.2 * d.yOffset;
+		this.getPosZ() += 0.2 * d.zOffset;
 		this.particleScale *= 0.8f;
 	}
 
 	@Override
-	public void onUpdate()
+	public void tick()
 	{
-		this.prevPosX = this.posX;
-		this.prevPosY = this.posY;
-		this.prevPosZ = this.posZ;
+		this.prevPosX = this.getPosX();
+		this.prevPosY = this.getPosY();
+		this.prevPosZ = this.getPosZ();
 
-		if( this.particleAge++ >= this.particleMaxAge )
+		if( this.age++ >= this.maxAge )
 		{
 			this.setExpired();
 		}

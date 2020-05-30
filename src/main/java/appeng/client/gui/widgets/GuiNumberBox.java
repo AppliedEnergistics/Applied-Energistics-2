@@ -20,10 +20,10 @@ package appeng.client.gui.widgets;
 
 
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 
 
-public class GuiNumberBox extends GuiTextField
+public class GuiNumberBox extends TextFieldWidget
 {
 
 	private final Class type;

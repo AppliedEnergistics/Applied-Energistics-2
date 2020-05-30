@@ -23,11 +23,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DimensionType;
-import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeProviderSingle;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.IChunkGenerator;
+import net.minecraft.world.dimension.Dimension;
+import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,8 +35,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import appeng.client.render.SpatialSkyRender;
 import appeng.core.AppEng;
 
-
-public class StorageWorldProvider extends WorldProvider
+// FIXME: Rename suffix to Dimension
+public class StorageWorldProvider extends Dimension
 {
 
 	private final Biome biome;
@@ -49,7 +49,7 @@ public class StorageWorldProvider extends WorldProvider
 	}
 
 	@Override
-	public IChunkGenerator createChunkGenerator()
+	public ChunkGenerator createChunkGenerator()
 	{
 		return new StorageChunkProvider( this.world, 0 );
 	}

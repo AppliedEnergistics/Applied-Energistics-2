@@ -93,7 +93,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		this.searchField.setMaxStringLength( 25 );
 		this.searchField.setTextColor( 0xFFFFFF );
 		this.searchField.setVisible( true );
-		this.searchField.setFocused( true );
+		this.searchField.setFocused2( true );
 	}
 
 	@Override
@@ -231,7 +231,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 					for( int x = 0; x < current.getInventory().getSlots(); x++ )
 					{
 						final String which = Integer.toString( x );
-						if( invData.hasKey( which ) )
+						if( invData.contains(which) )
 						{
 							current.getInventory().setStackInSlot( x, new ItemStack( invData.getCompoundTag( which ) ) );
 						}

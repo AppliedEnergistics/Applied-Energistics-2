@@ -56,7 +56,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements IAEAppEngInven
 			for( int x = 0; x < inv.getSlots(); x++ )
 			{
 				final CompoundNBT item = opt.getCompoundTag( "item" + x );
-				ItemHandlerUtil.setStackInSlot( inv, x, new ItemStack( item ) );
+				ItemHandlerUtil.setStackInSlot( inv, x, ItemStack.read(item) );
 			}
 		}
 	}
@@ -77,7 +77,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements IAEAppEngInven
 				final ItemStack is = inv.getStackInSlot( x );
 				if( !is.isEmpty() )
 				{
-					is.writeToNBT( item );
+					is.write(item);
 				}
 				opt.setTag( "item" + x, item );
 			}

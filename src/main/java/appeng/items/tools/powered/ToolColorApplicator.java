@@ -249,10 +249,10 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	public ItemStack getColor( final ItemStack is )
 	{
 		final CompoundNBT c = is.getTagCompound();
-		if( c != null && c.hasKey( "color" ) )
+		if( c != null && c.contains("color") )
 		{
 			final CompoundNBT color = c.getCompoundTag( "color" );
-			final ItemStack oldColor = new ItemStack( color );
+			final ItemStack oldColor = ItemStack.read(color);
 			if( !oldColor.isEmpty() )
 			{
 				return oldColor;
@@ -333,7 +333,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 	private void setColor( final ItemStack is, final ItemStack newColor )
 	{
-		final CompoundNBT data = Platform.openNbtData( is );
+        final CompoundNBT data = is.getOrCreateTag();
 		if( newColor.isEmpty() )
 		{
 			data.removeTag( "color" );
@@ -341,7 +341,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		else
 		{
 			final CompoundNBT color = new CompoundNBT();
-			newColor.writeToNBT( color );
+			newColor.write(color);
 			data.setTag( "color", color );
 		}
 	}
@@ -530,7 +530,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	@Override
 	public FuzzyMode getFuzzyMode( final ItemStack is )
 	{
-		final String fz = Platform.openNbtData( is ).getString( "FuzzyMode" );
+        final String fz = is.getOrCreateTag().getString( "FuzzyMode" );
 		try
 		{
 			return FuzzyMode.valueOf( fz );
@@ -544,7 +544,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	@Override
 	public void setFuzzyMode( final ItemStack is, final FuzzyMode fzMode )
 	{
-		Platform.openNbtData( is ).setString( "FuzzyMode", fzMode.name() );
+        is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
 	}
 
 	@Override

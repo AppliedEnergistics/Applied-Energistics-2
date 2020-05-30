@@ -83,7 +83,7 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
 
 				if( this.inv[x] != null )
 				{
-					this.inv[x].writeToNBT( c );
+					this.inv[x].write(c);
 				}
 
 				target.put( "#" + x, c );

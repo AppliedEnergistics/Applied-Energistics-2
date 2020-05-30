@@ -59,6 +59,13 @@ archivesBaseName = artifact_basename
 sourceSets {
     api
     main {
+        java {
+            include 'appeng/core/AppEng.java'
+            include 'appeng/client/ClientHelper.java'
+            include 'appeng/server/ServerHelper.java'
+            include 'appeng/block/AEBaseBlock.java'
+            include 'appeng/helpers/ICustomCollision.java'
+        }
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
     }

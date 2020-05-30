@@ -97,7 +97,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 
 		if( mt == MaterialType.NAME_PRESS )
 		{
-			final CompoundNBT c = Platform.openNbtData( stack );
+            final CompoundNBT c = stack.getOrCreateTag();
 			lines.add( c.getString( "InscribeName" ) );
 		}
 
@@ -141,7 +141,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 
 	public MaterialType getTypeByStack( final ItemStack is )
 	{
-		MaterialType type = this.dmgToMaterial.get( is.getItemDamage() );
+		MaterialType type = this.dmgToMaterial.get( is.getDamage() );
 		return ( type != null ) ? type : MaterialType.INVALID_TYPE;
 	}
 
@@ -279,8 +279,8 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 		try
 		{
 			eqi = droppedEntity.getConstructor( World.class, double.class, double.class, double.class, ItemStack.class )
-					.newInstance( w, location.posX,
-							location.posY, location.posZ, itemstack );
+					.newInstance( w, location.getPosX(),
+							location.getPosY(), location.getPosZ(), itemstack );
 		}
 		catch( final Throwable t )
 		{

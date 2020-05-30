@@ -19,7 +19,10 @@
 package appeng.client.render.effects;
 
 
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -48,8 +51,8 @@ public class AssemblerFX extends Particle implements ICanDie
 		this.speed = speed;
 		final ItemStack displayItem = is.asItemStackRepresentation();
 		this.fi = new EntityFloatingItem( this, w, x, y, z, displayItem );
-		w.spawnEntity( this.fi );
-		this.particleMaxAge = (int) Math.ceil( Math.max( 1, 100.0f / speed ) ) + 2;
+		w.addEntity( this.fi );
+		this.maxAge = (int) Math.ceil( Math.max( 1, 100.0f / speed ) ) + 2;
 	}
 
 	@Override
@@ -66,13 +69,13 @@ public class AssemblerFX extends Particle implements ICanDie
 	}
 
 	@Override
-	public void onUpdate()
+	public void tick()
 	{
 		this.prevPosX = this.posX;
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
 
-		if( this.particleAge++ >= this.particleMaxAge )
+		if( this.age++ >= this.maxAge )
 		{
 			this.setExpired();
 		}
@@ -85,19 +88,25 @@ public class AssemblerFX extends Particle implements ICanDie
 
 		if( this.isExpired )
 		{
-			this.fi.setDead();
+			this.fi.remove();
 		}
 		else
 		{
-			final float lifeSpan = (float) this.particleAge / (float) this.particleMaxAge;
+			final float lifeSpan = (float) this.age / (float) this.maxAge;
 			this.fi.setProgress( lifeSpan );
 		}
 	}
 
 	@Override
-	public void renderParticle( final BufferBuilder par1Tessellator, final Entity p_180434_2_, final float l, final float rX, final float rY, final float rZ, final float rYZ, final float rXY )
+	public IParticleRenderType getRenderType() {
+		// TODO: FIXME
+		return IParticleRenderType.NO_RENDER;
+	}
+
+	@Override
+	public void renderParticle( IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks )
 	{
-		this.time += l;
+		this.time += partialTicks;
 		if( this.time > 4.0 )
 		{
 			this.time -= 4.0;

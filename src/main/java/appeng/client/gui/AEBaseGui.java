@@ -35,6 +35,10 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Slot;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -194,7 +198,7 @@ public abstract class AEBaseGui extends GuiContainer
 			final int right = left + slot.getWidth();
 			final int bottom = top + slot.getHeight();
 
-			slot.drawContent( this.mc, mouseX, mouseY, partialTicks );
+			slot.drawContent( this.minecraft, mouseX, mouseY, partialTicks );
 
 			if( this.isPointInRegion( left, top, slot.getWidth(), slot.getHeight(), mouseX, mouseY ) && slot.canClick( this.mc.player ) )
 			{

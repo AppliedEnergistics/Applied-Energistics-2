@@ -352,9 +352,9 @@ public class GridNode implements IGridNode, IPathItem
 		{
 			final CompoundNBT node = new CompoundNBT();
 
-			node.setInteger( "p", this.playerID );
-			node.setLong( "k", this.getLastSecurityKey() );
-			node.setLong( "g", this.myStorage.getID() );
+			node.putInt( "p", this.playerID );
+			node.putLong( "k", this.getLastSecurityKey() );
+			node.putLong( "g", this.myStorage.getID() );
 
 			nodeData.setTag( name, node );
 		}

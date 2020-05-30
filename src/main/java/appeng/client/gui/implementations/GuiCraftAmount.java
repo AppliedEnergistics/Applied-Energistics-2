@@ -133,7 +133,7 @@ public class GuiCraftAmount extends AEBaseGui
 		this.amountToCraft.setMaxStringLength( 16 );
 		this.amountToCraft.setTextColor( 0xFFFFFF );
 		this.amountToCraft.setVisible( true );
-		this.amountToCraft.setFocused( true );
+		this.amountToCraft.setFocused2( true );
 		this.amountToCraft.setText( "1" );
 	}
 

@@ -24,12 +24,14 @@ import java.util.List;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 
 public interface ICustomCollision
 {
-	Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( World w, BlockPos pos, Entity thePlayer, boolean b );
+	Iterable<VoxelShape> getSelectedBoundingBoxesFromPool(IBlockReader w, BlockPos pos, Entity thePlayer, boolean b );
 
 	void addCollidingBlockToList( World w, BlockPos pos, AxisAlignedBB bb, List<AxisAlignedBB> out, Entity e );
 }

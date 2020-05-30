@@ -19,42 +19,40 @@
 package appeng.core;
 
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Stream;
-
-import com.google.common.collect.Sets;
-
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-import appeng.api.config.CondenserOutput;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.PowerUnits;
-import appeng.api.config.SearchBoxMode;
-import appeng.api.config.Settings;
-import appeng.api.config.TerminalStyle;
-import appeng.api.config.YesNo;
+import appeng.api.config.*;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.features.AEFeature;
 import appeng.core.settings.TickRates;
-import appeng.items.materials.MaterialType;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.File;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public final class AEConfig extends Configuration implements IConfigurableObject, IConfigManagerHost
+import static net.minecraftforge.common.ForgeConfigSpec.*;
+
+@Mod.EventBusSubscriber(modid = AppEng.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+public final class AEConfig implements IConfigurableObject, IConfigManagerHost
 {
+
+	public static final ClientConfig CLIENT;
+	public static final ForgeConfigSpec CLIENT_SPEC;
+
+	static {
+		final Pair<ClientConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ClientConfig::new);
+		CLIENT_SPEC = specPair.getRight();
+		CLIENT = specPair.getLeft();
+	}
 
 	public static final String VERSION = "@version@";
 	public static final String CHANNEL = "@aechannel@";
@@ -76,211 +74,160 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	private final IConfigManager settings = new ConfigManager( this );
 
 	private final EnumSet<AEFeature> featureFlags = EnumSet.noneOf( AEFeature.class );
-	private final File configFile;
 	private boolean updatable = false;
 
 	// Misc
-	private boolean removeCrashingItemsOnLoad = false;
-	private int formationPlaneEntityLimit = 128;
-	private boolean enableEffects = true;
-	private boolean useLargeFonts = false;
+	private boolean removeCrashingItemsOnLoad;
+	private int formationPlaneEntityLimit;
+	private boolean enableEffects;
+	private boolean useLargeFonts;
 	private boolean useColoredCraftingStatus;
-	private boolean disableColoredCableRecipesInJEI = true;
-	private int craftingCalculationTimePerTick = 5;
-	private PowerUnits selectedPowerUnit = PowerUnits.AE;
+	private boolean disableColoredCableRecipesInJEI;
+	private int craftingCalculationTimePerTick;
+	private PowerUnits selectedPowerUnit;
 
 	// GUI Buttons
-	private final int[] craftByStacks = { 1, 10, 100, 1000 };
-	private final int[] priorityByStacks = { 1, 10, 100, 1000 };
-	private final int[] levelByStacks = { 1, 10, 100, 1000 };
+	private int[] craftByStacks = new int[4];
+	private int[] priorityByStacks = new int[4];
+	private int[] levelByStacks = new int[4];
 	private final int[] levelByMillibuckets = { 10, 100, 1000, 10000 };
 
 	// Spatial IO/Dimension
-	private int storageProviderID = -1;
-	private int storageDimensionID = -1;
-	private double spatialPowerExponent = 1.35;
-	private double spatialPowerMultiplier = 1250.0;
+	private String storageProviderID;
+	private String storageDimensionID;
+	private double spatialPowerExponent;
+	private double spatialPowerMultiplier;
 
 	// Grindstone
-	private String[] grinderOres = Stream.of( ORES_VANILLA, ORES_AE, ORES_COMMON, ORES_MISC ).flatMap( Stream::of ).toArray( String[]::new );
+	private List<String> grinderOres;
 	private Set<String> grinderBlackList;
-	private double oreDoublePercentage = 90.0;
+	private double oreDoublePercentage;
 
 	// Batteries
-	private int wirelessTerminalBattery = 1600000;
-	private int entropyManipulatorBattery = 200000;
-	private int matterCannonBattery = 200000;
-	private int portableCellBattery = 20000;
-	private int colorApplicatorBattery = 20000;
-	private int chargedStaffBattery = 8000;
+	private int wirelessTerminalBattery;
+	private int entropyManipulatorBattery;
+	private int matterCannonBattery;
+	private int portableCellBattery;
+	private int colorApplicatorBattery;
+	private int chargedStaffBattery;
 
 	// Certus quartz
-	private float spawnChargedChance = 0.92f;
-	private int quartzOresPerCluster = 4;
-	private int quartzOresClusterAmount = 15;
-	private int chargedChange = 4;
+	private float spawnChargedChance;
+	private int quartzOresPerCluster;
+	private int quartzOresClusterAmount;
 
 	// Meteors
-	private int minMeteoriteDistance = 707;
-	private int minMeteoriteDistanceSq = this.minMeteoriteDistance * this.minMeteoriteDistance;
-	private double meteoriteClusterChance = 0.1;
-	private int meteoriteMaximumSpawnHeight = 180;
-	private int[] meteoriteDimensionWhitelist = { 0 };
+	private int minMeteoriteDistance;
+	private int minMeteoriteDistanceSq;
+	private double meteoriteClusterChance;
+	private int meteoriteMaximumSpawnHeight;
+	private Set<String> meteoriteDimensionWhitelist;
 
 	// Wireless
-	private double wirelessBaseCost = 8;
-	private double wirelessCostMultiplier = 1;
-	private double wirelessTerminalDrainMultiplier = 1;
-	private double wirelessBaseRange = 16;
-	private double wirelessBoosterRangeMultiplier = 1;
-	private double wirelessBoosterExp = 1.5;
-	private double wirelessHighWirelessCount = 64;
+	private double wirelessBaseCost;
+	private double wirelessCostMultiplier;
+	private double wirelessTerminalDrainMultiplier;
+	private double wirelessBaseRange;
+	private double wirelessBoosterRangeMultiplier;
+	private double wirelessBoosterExp;
+	private double wirelessHighWirelessCount;
 
 	// Tunnels
 	public static final double TUNNEL_POWER_LOSS = 0.05;
 
-	private AEConfig( final File configFile )
-	{
-		super( configFile );
-		this.configFile = configFile;
+	// FIXME: this is shit, move this concern out of the config class
+	@SubscribeEvent
+	public static void onModConfigEvent(final ModConfig.ModConfigEvent configEvent) {
+		if (configEvent.getConfig().getSpec() == CLIENT_SPEC) {
+			AEConfig.instance().syncConfig(CLIENT);
+		}
+	}
 
-		MinecraftForge.EVENT_BUS.register( this );
+	private void syncConfig(ClientConfig config) {
 
-		PowerUnits.EU.conversionRatio = this.get( "PowerRatios", "IC2", DEFAULT_IC2_EXCHANGE ).getDouble( DEFAULT_IC2_EXCHANGE );
-		PowerUnits.RF.conversionRatio = this.get( "PowerRatios", "ForgeEnergy", DEFAULT_RF_EXCHANGE ).getDouble( DEFAULT_RF_EXCHANGE );
+			PowerUnits.EU.conversionRatio = config.powerRatioIc2.get();
+			PowerUnits.RF.conversionRatio = config.powerRatioForgeEnergy.get();
+			PowerMultiplier.CONFIG.multiplier = config.powerUsageMultiplier.get();
 
-		final double usageEffective = this.get( "PowerRatios", "UsageMultiplier", 1.0 ).getDouble( 1.0 );
-		PowerMultiplier.CONFIG.multiplier = Math.max( 0.01, usageEffective );
+			CondenserOutput.MATTER_BALLS.requiredPower = config.condenserMatterBallsPower.get();
+			CondenserOutput.SINGULARITY.requiredPower = config.condenserSingularityPower.get();
 
-		CondenserOutput.MATTER_BALLS.requiredPower = this.get( "Condenser", "MatterBalls", 256 ).getInt( 256 );
-		CondenserOutput.SINGULARITY.requiredPower = this.get( "Condenser", "Singularity", 256000 ).getInt( 256000 );
+			this.grinderOres = new ArrayList<>(config.grinderOres.get());
+			this.grinderBlackList = new HashSet<>(config.grinderBlackList.get());
+			this.oreDoublePercentage = config.oreDoublePercentage.get();
 
-		this.removeCrashingItemsOnLoad = this.get( "general", "removeCrashingItemsOnLoad", false,
-				"Will auto-remove items that crash when being loaded from storage. This will destroy those items instead of crashing the game!" ).getBoolean();
+			// FIXME: why is this here exactly???
+			this.settings.registerSetting( Settings.SEARCH_TOOLTIPS, YesNo.YES );
+			this.settings.registerSetting( Settings.TERMINAL_STYLE, TerminalStyle.TALL );
+			this.settings.registerSetting( Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH );
 
-		this.setCategoryComment( "GrindStone",
-				"Creates recipe of the following pattern automatically: '1 oreTYPE => 2 dustTYPE' and '(1 ingotTYPE or 1 crystalTYPE or 1 gemTYPE) => 1 dustTYPE'" );
-		this.grinderOres = this.get( "GrindStone", "grinderOres", this.grinderOres, "The list of types to handle. Specify without a prefix like ore or dust." )
-				.getStringList();
-		this.grinderBlackList = Sets.newHashSet(
-				this.get( "GrindStone", "blacklist", new String[] {}, "Blacklists the exact oredict name from being handled by any recipe." )
-						.getStringList() );
-		this.oreDoublePercentage = this
-				.get( "GrindStone", "oreDoublePercentage", this.oreDoublePercentage, "Chance to actually get an output with stacksize > 1." )
-				.getDouble( this.oreDoublePercentage );
+			this.spawnChargedChance = (float) (1.0 - config.spawnChargedChance.get());
+			this.minMeteoriteDistance = config.minMeteoriteDistance.get();
+			this.minMeteoriteDistanceSq = this.minMeteoriteDistance * this.minMeteoriteDistance;
+			this.meteoriteClusterChance = config.meteoriteClusterChance.get();
+			this.meteoriteMaximumSpawnHeight = config.meteoriteMaximumSpawnHeight.get();
+			this.meteoriteDimensionWhitelist = new HashSet<>(config.meteoriteDimensionWhitelist.get());
 
-		this.settings.registerSetting( Settings.SEARCH_TOOLTIPS, YesNo.YES );
-		this.settings.registerSetting( Settings.TERMINAL_STYLE, TerminalStyle.TALL );
-		this.settings.registerSetting( Settings.SEARCH_MODE, SearchBoxMode.AUTOSEARCH );
+			this.quartzOresPerCluster = config.quartzOresPerCluster.get();
+			this.quartzOresClusterAmount = config.quartzOresPerCluster.get();
 
-		this.spawnChargedChance = (float) ( 1.0 - this.get( "worldGen", "spawnChargedChance", 1.0 - this.spawnChargedChance )
-				.getDouble(
-						1.0 - this.spawnChargedChance ) );
-		this.minMeteoriteDistance = this.get( "worldGen", "minMeteoriteDistance", this.minMeteoriteDistance ).getInt( this.minMeteoriteDistance );
-		this.meteoriteClusterChance = this.get( "worldGen", "meteoriteClusterChance", this.meteoriteClusterChance ).getDouble( this.meteoriteClusterChance );
-		this.meteoriteMaximumSpawnHeight = this.get( "worldGen", "meteoriteMaximumSpawnHeight", this.meteoriteMaximumSpawnHeight )
-				.getInt(
-						this.meteoriteMaximumSpawnHeight );
-		this.meteoriteDimensionWhitelist = this.get( "worldGen", "meteoriteDimensionWhitelist", this.meteoriteDimensionWhitelist ).getIntList();
+			this.wirelessBaseCost = config.wirelessBaseCost.get();
+			this.wirelessCostMultiplier = config.wirelessCostMultiplier.get();
+			this.wirelessBaseRange = config.wirelessBaseRange.get();
+			this.wirelessBoosterRangeMultiplier = config.wirelessBoosterRangeMultiplier.get();
+			this.wirelessBoosterExp = config.wirelessBoosterExp.get();
+			this.wirelessTerminalDrainMultiplier = config.wirelessTerminalDrainMultiplier.get();
 
-		this.quartzOresPerCluster = this.get( "worldGen", "quartzOresPerCluster", this.quartzOresPerCluster ).getInt( this.quartzOresPerCluster );
-		this.quartzOresClusterAmount = this.get( "worldGen", "quartzOresClusterAmount", this.quartzOresClusterAmount ).getInt( this.quartzOresClusterAmount );
+			this.formationPlaneEntityLimit = config.formationPlaneEntityLimit.get();
 
-		this.minMeteoriteDistanceSq = this.minMeteoriteDistance * this.minMeteoriteDistance;
+			this.wirelessTerminalBattery = config.wirelessTerminalBattery.get();
+			this.chargedStaffBattery = config.chargedStaffBattery.get();
+			this.entropyManipulatorBattery = config.entropyManipulatorBattery.get();
+			this.portableCellBattery = config.portableCellBattery.get();
+			this.colorApplicatorBattery = config.colorApplicatorBattery.get();
+			this.matterCannonBattery = config.matterCannonBattery.get();
 
-		this.addCustomCategoryComment( "wireless",
-				"Range= wirelessBaseRange + wirelessBoosterRangeMultiplier * Math.pow( boosters, wirelessBoosterExp )\nPowerDrain= wirelessBaseCost + wirelessCostMultiplier * Math.pow( boosters, 1 + boosters / wirelessHighWirelessCount )" );
+			this.clientSync(config);
 
-		this.wirelessBaseCost = this.get( "wireless", "wirelessBaseCost", this.wirelessBaseCost ).getDouble( this.wirelessBaseCost );
-		this.wirelessCostMultiplier = this.get( "wireless", "wirelessCostMultiplier", this.wirelessCostMultiplier ).getDouble( this.wirelessCostMultiplier );
-		this.wirelessBaseRange = this.get( "wireless", "wirelessBaseRange", this.wirelessBaseRange ).getDouble( this.wirelessBaseRange );
-		this.wirelessBoosterRangeMultiplier = this.get( "wireless", "wirelessBoosterRangeMultiplier", this.wirelessBoosterRangeMultiplier )
-				.getDouble(
-						this.wirelessBoosterRangeMultiplier );
-		this.wirelessBoosterExp = this.get( "wireless", "wirelessBoosterExp", this.wirelessBoosterExp ).getDouble( this.wirelessBoosterExp );
-		this.wirelessTerminalDrainMultiplier = this.get( "wireless", "wirelessTerminalDrainMultiplier", this.wirelessTerminalDrainMultiplier )
-				.getDouble(
-						this.wirelessTerminalDrainMultiplier );
-
-		this.formationPlaneEntityLimit = this.get( "automation", "formationPlaneEntityLimit", this.formationPlaneEntityLimit )
-				.getInt(
-						this.formationPlaneEntityLimit );
-
-		this.wirelessTerminalBattery = this.get( "battery", "wirelessTerminal", this.wirelessTerminalBattery ).getInt( this.wirelessTerminalBattery );
-		this.chargedStaffBattery = this.get( "battery", "chargedStaff", this.chargedStaffBattery ).getInt( this.chargedStaffBattery );
-		this.entropyManipulatorBattery = this.get( "battery", "entropyManipulator", this.entropyManipulatorBattery ).getInt( this.entropyManipulatorBattery );
-		this.portableCellBattery = this.get( "battery", "portableCell", this.portableCellBattery ).getInt( this.portableCellBattery );
-		this.colorApplicatorBattery = this.get( "battery", "colorApplicator", this.colorApplicatorBattery ).getInt( this.colorApplicatorBattery );
-		this.matterCannonBattery = this.get( "battery", "matterCannon", this.matterCannonBattery ).getInt( this.matterCannonBattery );
-
-		this.clientSync();
-
-		this.addCustomCategoryComment( "features", "Warning: Disabling a feature may disable other features depending on it." );
-		for( final AEFeature feature : AEFeature.values() )
-		{
-			if( feature.isVisible() )
+			this.featureFlags.clear();
+			for( final AEFeature feature : AEFeature.values() )
 			{
-				final Property option = this.get( "Features." + feature.category(), feature.key(), feature.isEnabled(), feature.comment() );
-
-				if( option.getBoolean( feature.isEnabled() ) )
+				if( feature.isVisible() )
+				{
+					if (config.enabledFeatures.get(feature).get()) {
+						this.featureFlags.add(feature);
+					}
+				}
+				else
 				{
 					this.featureFlags.add( feature );
 				}
 			}
-			else
+
+
+// FIXME			final ModContainer imb = net.minecraftforge.fml.common.Loader.instance().getIndexedModList().get( "ImmibisCore" );
+// FIXME			if( imb != null )
+// FIXME			{
+// FIXME				final List<String> version = Arrays.asList( "59.0.0", "59.0.1", "59.0.2" );
+// FIXME				if( version.contains( imb.getVersion() ) )
+// FIXME				{
+// FIXME					this.featureFlags.remove( AEFeature.ALPHA_PASS );
+// FIXME				}
+// FIXME			}
+
+			for( final TickRates tr : TickRates.values() )
 			{
-				this.featureFlags.add( feature );
+				tr.Load( this );
 			}
-		}
 
-		final ModContainer imb = net.minecraftforge.fml.common.Loader.instance().getIndexedModList().get( "ImmibisCore" );
-		if( imb != null )
-		{
-			final List<String> version = Arrays.asList( "59.0.0", "59.0.1", "59.0.2" );
-			if( version.contains( imb.getVersion() ) )
-			{
-				this.featureFlags.remove( AEFeature.ALPHA_PASS );
-			}
-		}
+		this.storageProviderID = config.storageProviderID.get();
+		this.storageDimensionID = config.storageDimensionID.get();
+		this.spatialPowerMultiplier = config.spatialPowerMultiplier.get();
+		this.spatialPowerExponent = config.spatialPowerExponent.get();
 
-		try
-		{
-			this.selectedPowerUnit = PowerUnits.valueOf(
-					this.get( "Client", "PowerUnit", this.selectedPowerUnit.name(), this.getListComment( this.selectedPowerUnit ) ).getString() );
-		}
-		catch( final Throwable t )
-		{
-			this.selectedPowerUnit = PowerUnits.AE;
-		}
-
-		for( final TickRates tr : TickRates.values() )
-		{
-			tr.Load( this );
-		}
-
-		if( this.isFeatureEnabled( AEFeature.SPATIAL_IO ) )
-		{
-			this.storageProviderID = this.get( "spatialio", "storageProviderID", this.storageProviderID ).getInt( this.storageProviderID );
-			this.storageDimensionID = this.get( "spatialio", "storageDimensionID", this.storageDimensionID ).getInt( this.storageDimensionID );
-			this.spatialPowerMultiplier = this.get( "spatialio", "spatialPowerMultiplier", this.spatialPowerMultiplier )
-					.getDouble(
-							this.spatialPowerMultiplier );
-			this.spatialPowerExponent = this.get( "spatialio", "spatialPowerExponent", this.spatialPowerExponent ).getDouble( this.spatialPowerExponent );
-		}
-
-		if( this.isFeatureEnabled( AEFeature.CRAFTING_CPU ) )
-		{
-			this.craftingCalculationTimePerTick = this.get( "craftingCPU", "craftingCalculationTimePerTick", this.craftingCalculationTimePerTick )
-					.getInt(
-							this.craftingCalculationTimePerTick );
-		}
+		this.craftingCalculationTimePerTick = config.craftingCalculationTimePerTick.get();
 
 		this.updatable = true;
-	}
-
-	public static void init( final File configFile )
-	{
-		instance = new AEConfig( configFile );
 	}
 
 	public static AEConfig instance()
@@ -288,53 +235,40 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		return instance;
 	}
 
-	private void clientSync()
+	private void clientSync(ClientConfig config)
 	{
-		this.disableColoredCableRecipesInJEI = this.get( "Client", "disableColoredCableRecipesInJEI", true ).getBoolean( true );
-		this.enableEffects = this.get( "Client", "enableEffects", true ).getBoolean( true );
-		this.useLargeFonts = this.get( "Client", "useTerminalUseLargeFont", false ).getBoolean( false );
-		this.useColoredCraftingStatus = this.get( "Client", "useColoredCraftingStatus", true ).getBoolean( true );
+		this.disableColoredCableRecipesInJEI = config.disableColoredCableRecipesInJEI.get();
+		this.enableEffects = config.enableEffects.get();
+		this.useLargeFonts = config.useLargeFonts.get();
+		this.useColoredCraftingStatus = config.useColoredCraftingStatus.get();
+		this.selectedPowerUnit = config.selectedPowerUnit.get();
 
 		// load buttons..
 		for( int btnNum = 0; btnNum < 4; btnNum++ )
 		{
-			final Property cmb = this.get( "Client", "craftAmtButton" + ( btnNum + 1 ), this.craftByStacks[btnNum] );
-			final Property pmb = this.get( "Client", "priorityAmtButton" + ( btnNum + 1 ), this.priorityByStacks[btnNum] );
-			final Property lmb = this.get( "Client", "levelAmtButton" + ( btnNum + 1 ), this.levelByStacks[btnNum] );
-
-			final int buttonCap = (int) ( Math.pow( 10, btnNum + 1 ) - 1 );
-
-			this.craftByStacks[btnNum] = Math.abs( cmb.getInt( this.craftByStacks[btnNum] ) );
-			this.priorityByStacks[btnNum] = Math.abs( pmb.getInt( this.priorityByStacks[btnNum] ) );
-			this.levelByStacks[btnNum] = Math.abs( pmb.getInt( this.levelByStacks[btnNum] ) );
-
-			cmb.setComment( "Controls buttons on Crafting Screen : Capped at " + buttonCap );
-			pmb.setComment( "Controls buttons on Priority Screen : Capped at " + buttonCap );
-			lmb.setComment( "Controls buttons on Level Emitter Screen : Capped at " + buttonCap );
-
-			this.craftByStacks[btnNum] = Math.min( this.craftByStacks[btnNum], buttonCap );
-			this.priorityByStacks[btnNum] = Math.min( this.priorityByStacks[btnNum], buttonCap );
-			this.levelByStacks[btnNum] = Math.min( this.levelByStacks[btnNum], buttonCap );
+			this.craftByStacks[btnNum] = config.craftByStacks.get(btnNum).get();
+			this.priorityByStacks[btnNum] = config.priorityByStacks.get(btnNum).get();
+			this.levelByStacks[btnNum] = config.levelByStacks.get(btnNum).get();
 		}
 
-		for( final Settings e : this.settings.getSettings() )
-		{
-			final String Category = "Client"; // e.getClass().getSimpleName();
-			Enum<?> value = this.settings.getSetting( e );
-
-			final Property p = this.get( Category, e.name(), value.name(), this.getListComment( value ) );
-
-			try
-			{
-				value = Enum.valueOf( value.getClass(), p.getString() );
-			}
-			catch( final IllegalArgumentException er )
-			{
-				AELog.info( "Invalid value '" + p.getString() + "' for " + e.name() + " using '" + value.name() + "' instead" );
-			}
-
-			this.settings.putSetting( e, value );
-		}
+		// FIXME for( final Settings e : this.settings.getSettings() )
+		// FIXME {
+		// FIXME 	final String Category = "Client"; // e.getClass().getSimpleName();
+		// FIXME 	Enum<?> value = this.settings.getSetting( e );
+// FIXME
+		// FIXME 	final Property p = this.get( Category, e.name(), value.name(), this.getListComment( value ) );
+// FIXME
+		// FIXME 	try
+		// FIXME 	{
+		// FIXME 		value = Enum.valueOf( value.getClass(), p.getString() );
+		// FIXME 	}
+		// FIXME 	catch( final IllegalArgumentException er )
+		// FIXME 	{
+		// FIXME 		AELog.info( "Invalid value '" + p.getString() + "' for " + e.name() + " using '" + value.name() + "' instead" );
+		// FIXME 	}
+// FIXME
+		// FIXME 	this.settings.putSetting( e, value );
+		// FIXME }
 	}
 
 	private String getListComment( final Enum value )
@@ -387,130 +321,52 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		return this.wirelessBaseCost + this.wirelessCostMultiplier * Math.pow( boosters, 1 + boosters / this.wirelessHighWirelessCount );
 	}
 
-	@Override
-	public Property get( final String category, final String key, final String defaultValue, final String comment, final Property.Type type )
-	{
-		final Property prop = super.get( category, key, defaultValue, comment, type );
+// FIXME	@Override
+// FIXME	public Property get( final String category, final String key, final String defaultValue, final String comment, final Property.Type type )
+// FIXME	{
+// FIXME		final Property prop = super.get( category, key, defaultValue, comment, type );
+// FIXME
+// FIXME		if( prop != null )
+// FIXME		{
+// FIXME			if( !category.equals( "Client" ) )
+// FIXME			{
+// FIXME				prop.setRequiresMcRestart( true );
+// FIXME			}
+// FIXME		}
+// FIXME
+// FIXME		return prop;
+// FIXME	}
 
-		if( prop != null )
-		{
-			if( !category.equals( "Client" ) )
-			{
-				prop.setRequiresMcRestart( true );
-			}
-		}
-
-		return prop;
-	}
-
-	@Override
 	public void save()
 	{
 		if( this.isFeatureEnabled( AEFeature.SPATIAL_IO ) )
 		{
-			this.get( "spatialio", "storageProviderID", this.storageProviderID ).set( this.storageProviderID );
-			this.get( "spatialio", "storageDimensionID", this.storageDimensionID ).set( this.storageDimensionID );
+			CLIENT.storageProviderID.set(this.storageProviderID);
+			CLIENT.storageDimensionID.set(this.storageDimensionID);
 		}
 
-		this.get( "Client", "PowerUnit", this.selectedPowerUnit.name(), this.getListComment( this.selectedPowerUnit ) ).set( this.selectedPowerUnit.name() );
+		CLIENT.selectedPowerUnit.set(this.selectedPowerUnit);
 
-		if( this.hasChanged() )
-		{
-			super.save();
-		}
-	}
-
-	@SubscribeEvent
-	public void onConfigChanged( final ConfigChangedEvent.OnConfigChangedEvent eventArgs )
-	{
-		if( eventArgs.getModID().equals( AppEng.MOD_ID ) )
-		{
-			this.clientSync();
-		}
-	}
-
-	public boolean disableColoredCableRecipesInJEI()
-	{
-		return this.disableColoredCableRecipesInJEI;
-	}
-
-	public String getFilePath()
-	{
-		return this.configFile.toString();
-	}
-
-	public boolean useAEVersion( final MaterialType mt )
-	{
-		if( this.isFeatureEnabled( AEFeature.WEBSITE_RECIPES ) )
-		{
-			return true;
-		}
-
-		this.setCategoryComment( "OreCamouflage",
-				"AE2 Automatically uses alternative ores present in your instance of MC to blend better with its surroundings, if you prefer you can disable this selectively using these flags; Its important to note, that some if these items even if enabled may not be craftable in game because other items are overriding their recipes." );
-		final Property p = this.get( "OreCamouflage", mt.name(), true );
-		p.setComment( "OreDictionary Names: " + mt.getOreName() );
-
-		return !p.getBoolean( true );
+		CLIENT_SPEC.save();
 	}
 
 	@Override
 	public void updateSetting( final IConfigManager manager, final Enum setting, final Enum newValue )
 	{
-		for( final Settings e : this.settings.getSettings() )
-		{
-			if( e == setting )
-			{
-				final String Category = "Client";
-				final Property p = this.get( Category, e.name(), this.settings.getSetting( e ).name(), this.getListComment( newValue ) );
-				p.set( newValue.name() );
-			}
-		}
-
-		if( this.updatable )
-		{
-			this.save();
-		}
-	}
-
-	public int getFreeMaterial( final int varID )
-	{
-		return this.getFreeIDSLot( varID, "materials" );
-	}
-
-	public int getFreeIDSLot( final int varID, final String category )
-	{
-		boolean alreadyUsed = false;
-		int min = 0;
-
-		for( final Property p : this.getCategory( category ).getValues().values() )
-		{
-			final int thisInt = p.getInt();
-
-			if( varID == thisInt )
-			{
-				alreadyUsed = true;
-			}
-
-			min = Math.max( min, thisInt + 1 );
-		}
-
-		if( alreadyUsed )
-		{
-			if( min < 16383 )
-			{
-				min = 16383;
-			}
-
-			return min;
-		}
-
-		return varID;
-	}
-
-	public int getFreePart( final int varID )
-	{
-		return this.getFreeIDSLot( varID, "parts" );
+		// FIXME for( final Settings e : this.settings.getSettings() )
+		// FIXME {
+		// FIXME 	if( e == setting )
+		// FIXME 	{
+		// FIXME 		final String Category = "Client";
+		// FIXME 		final Property p = this.get( Category, e.name(), this.settings.getSetting( e ).name(), this.getListComment( newValue ) );
+		// FIXME 		p.set( newValue.name() );
+		// FIXME 	}
+		// FIXME }
+// FIXME
+		// FIXME if( this.updatable )
+		// FIXME {
+		// FIXME 	this.save();
+		// FIXME }
 	}
 
 	@Override
@@ -544,29 +400,29 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		return this.levelByMillibuckets[i];
 	}
 
-	public Enum getSetting( final String category, final Class<? extends Enum> class1, final Enum myDefault )
-	{
-		final String name = class1.getSimpleName();
-		final Property p = this.get( category, name, myDefault.name() );
+// FIXME	public Enum getSetting( final String category, final Class<? extends Enum> class1, final Enum myDefault )
+// FIXME	{
+// FIXME		final String name = class1.getSimpleName();
+// FIXME		final Property p = this.get( category, name, myDefault.name() );
+// FIXME
+// FIXME		try
+// FIXME		{
+// FIXME			return (Enum) class1.getField( p.toString() ).get( class1 );
+// FIXME		}
+// FIXME		catch( final Throwable t )
+// FIXME		{
+// FIXME			// :{
+// FIXME		}
+// FIXME
+// FIXME		return myDefault;
+// FIXME	}
 
-		try
-		{
-			return (Enum) class1.getField( p.toString() ).get( class1 );
-		}
-		catch( final Throwable t )
-		{
-			// :{
-		}
-
-		return myDefault;
-	}
-
-	public void setSetting( final String category, final Enum s )
-	{
-		final String name = s.getClass().getSimpleName();
-		this.get( category, name, s.name() ).set( s.name() );
-		this.save();
-	}
+// FIXME	public void setSetting( final String category, final Enum s )
+// FIXME	{
+// FIXME		final String name = s.getClass().getSimpleName();
+// FIXME		this.get( category, name, s.name() ).set( s.name() );
+// FIXME		this.save();
+// FIXME	}
 
 	public PowerUnits selectedPowerUnit()
 	{
@@ -635,12 +491,12 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		return this.levelByStacks;
 	}
 
-	public int getStorageProviderID()
+	public String getStorageProviderID()
 	{
 		return this.storageProviderID;
 	}
 
-	public int getStorageDimensionID()
+	public String getStorageDimensionID()
 	{
 		return this.storageDimensionID;
 	}
@@ -655,7 +511,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		return this.spatialPowerMultiplier;
 	}
 
-	public String[] getGrinderOres()
+	public List<String> getGrinderOres()
 	{
 		return this.grinderOres;
 	}
@@ -715,11 +571,6 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		return this.quartzOresClusterAmount;
 	}
 
-	public int getChargedChange()
-	{
-		return this.chargedChange;
-	}
-
 	public int getMinMeteoriteDistance()
 	{
 		return this.minMeteoriteDistance;
@@ -740,7 +591,7 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		return this.meteoriteMaximumSpawnHeight;
 	}
 
-	public int[] getMeteoriteDimensionWhitelist()
+	public Set<String> getMeteoriteDimensionWhitelist()
 	{
 		return this.meteoriteDimensionWhitelist;
 	}
@@ -782,13 +633,224 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 
 	// Setters keep visibility as low as possible.
 
-	void setStorageProviderID( int id )
+	void setStorageProviderID( String id )
 	{
 		this.storageProviderID = id;
 	}
 
-	void setStorageDimensionID( int id )
+	void setStorageDimensionID( String id )
 	{
 		this.storageDimensionID = id;
 	}
+
+	private static class ClientConfig {
+
+		// Feature toggles
+		public final Map<AEFeature, BooleanValue> enabledFeatures = new EnumMap<>(AEFeature.class);
+
+		// Misc
+		public final BooleanValue removeCrashingItemsOnLoad;
+		public final ConfigValue<Integer> formationPlaneEntityLimit;
+		public final BooleanValue enableEffects;
+		public final BooleanValue useLargeFonts;
+		public final BooleanValue useColoredCraftingStatus;
+		public final BooleanValue disableColoredCableRecipesInJEI;
+		public final ConfigValue<Integer> craftingCalculationTimePerTick;
+		public final EnumValue<PowerUnits> selectedPowerUnit;
+
+		// GUI Buttons
+		private static final int[] BTN_BY_STACK_DEFAULTS = { 1, 10, 100, 1000 };
+		public final List<ConfigValue<Integer>> craftByStacks;
+		public final List<ConfigValue<Integer>> priorityByStacks;
+		public final List<ConfigValue<Integer>> levelByStacks;
+
+		// Spatial IO/Dimension
+		public final ConfigValue<String> storageProviderID;
+		public final ConfigValue<String> storageDimensionID;
+		public final ConfigValue<Double> spatialPowerExponent;
+		public final ConfigValue<Double> spatialPowerMultiplier;
+
+		// Grindstone
+		public final ConfigValue<List<? extends String>> grinderOres;
+		public final ConfigValue<List<? extends String>> grinderBlackList;
+		public final DoubleValue oreDoublePercentage;
+
+		// Batteries
+		public final ConfigValue<Integer> wirelessTerminalBattery;
+		public final ConfigValue<Integer> entropyManipulatorBattery;
+		public final ConfigValue<Integer> matterCannonBattery;
+		public final ConfigValue<Integer> portableCellBattery;
+		public final ConfigValue<Integer> colorApplicatorBattery;
+		public final ConfigValue<Integer> chargedStaffBattery;
+
+		// Certus quartz
+		public final DoubleValue spawnChargedChance;
+		public final ConfigValue<Integer> quartzOresPerCluster;
+		public final ConfigValue<Integer> quartzOresClusterAmount;
+
+		// Meteors
+		public final ConfigValue<Integer> minMeteoriteDistance;
+		public final ConfigValue<Double> meteoriteClusterChance;
+		public final ConfigValue<Integer> meteoriteMaximumSpawnHeight;
+		public final ConfigValue<List<? extends String>> meteoriteDimensionWhitelist;
+
+		// Wireless
+		public final ConfigValue<Double> wirelessBaseCost;
+		public final ConfigValue<Double> wirelessCostMultiplier;
+		public final ConfigValue<Double> wirelessTerminalDrainMultiplier;
+		public final ConfigValue<Double> wirelessBaseRange;
+		public final ConfigValue<Double> wirelessBoosterRangeMultiplier;
+		public final ConfigValue<Double> wirelessBoosterExp;
+
+		// Power Ratios
+		public final ConfigValue<Double> powerRatioIc2;
+		public final ConfigValue<Double> powerRatioForgeEnergy;
+		public final DoubleValue powerUsageMultiplier;
+
+		// Condenser Power Requirement
+		public final ConfigValue<Integer> condenserMatterBallsPower;
+		public final ConfigValue<Integer> condenserSingularityPower;
+
+		public ClientConfig(ForgeConfigSpec.Builder builder) {
+
+			// Feature switches
+			builder
+					.comment("Warning: Disabling a feature may disable other features depending on it.")
+					.push("features");
+
+			// We need to group by feature category
+			Map<String, List<AEFeature>> groupedFeatures = Arrays.stream(AEFeature.values())
+					.filter(AEFeature::isVisible) // Only provide config settings for visible features
+					.collect(Collectors.groupingBy(AEFeature::category));
+
+			for( final String category : groupedFeatures.keySet() )
+			{
+				List<AEFeature> featuresInGroup = groupedFeatures.get(category);
+
+				builder.push(category);
+				for (AEFeature feature : featuresInGroup)
+				{
+					enabledFeatures.put(feature, builder
+							.comment(feature.comment())
+							.define(feature.key(), feature.isEnabled()));
+				}
+				builder.pop();
+			}
+
+			builder.pop();
+
+			builder.push("general");
+			removeCrashingItemsOnLoad = builder.comment("Will auto-remove items that crash when being loaded from storage. This will destroy those items instead of crashing the game!")
+					.define("removeCrashingItemsOnLoad", false);
+			builder.pop();
+
+			builder.push("automation");
+			formationPlaneEntityLimit = builder.comment("TODO")
+					.define("formationPlaneEntityLimit", 128 );
+			builder.pop();
+
+			builder.push("client");
+			this.disableColoredCableRecipesInJEI = builder.comment("TODO").define("disableColoredCableRecipesInJEI", true );
+			this.enableEffects = builder.comment("TODO").define("enableEffects", true );
+			this.useLargeFonts = builder.comment("TODO").define("useTerminalUseLargeFont", false );
+			this.useColoredCraftingStatus = builder.comment("TODO").define("useColoredCraftingStatus", true );
+			this.selectedPowerUnit = builder.comment("Power unit shown in AE UIs")
+					.defineEnum("PowerUnit", PowerUnits.AE, PowerUnits.values());
+
+			this.craftByStacks = new ArrayList<>(4);
+			this.priorityByStacks = new ArrayList<>(4);
+			this.levelByStacks = new ArrayList<>(4);
+			// load buttons..
+			for( int btnNum = 0; btnNum < 4; btnNum++ )
+			{
+				int defaultValue = BTN_BY_STACK_DEFAULTS[btnNum];
+				final int buttonCap = (int) ( Math.pow( 10, btnNum + 1 ) - 1 );
+
+				this.craftByStacks.add(builder.comment("Controls buttons on Crafting Screen")
+						.defineInRange("craftByStacks" + btnNum, defaultValue, 1, buttonCap));
+				this.priorityByStacks.add(builder.comment("Controls buttons on Priority Screen")
+						.defineInRange("priorityByStacks" + btnNum, defaultValue, 1, buttonCap));
+				this.levelByStacks.add(builder.comment("Controls buttons on Level Emitter Screen")
+						.defineInRange("levelByStacks" + btnNum, defaultValue, 1, buttonCap));
+			}
+
+			builder.pop();
+
+			builder.push("craftingCPU");
+
+			this.craftingCalculationTimePerTick = builder.define("craftingCalculationTimePerTick", 5 );
+
+			builder.pop();
+
+			builder.push("spatialio");
+			this.storageProviderID = builder.define("storageProviderID", (String) null);
+			this.storageDimensionID = builder.define("storageDimensionID", (String) null);
+			this.spatialPowerMultiplier = builder.define("spatialPowerMultiplier", 1250.0);
+			this.spatialPowerExponent = builder.define("spatialPowerExponent", 1.35);
+			builder.pop();
+
+			builder
+					.comment("Creates recipe of the following pattern automatically: '1 oreTYPE => 2 dustTYPE' and '(1 ingotTYPE or 1 crystalTYPE or 1 gemTYPE) => 1 dustTYPE'")
+					.push("GrindStone");
+
+			List<String> defaultGrinderOres = Stream.of( ORES_VANILLA, ORES_AE, ORES_COMMON, ORES_MISC ).flatMap( Stream::of ).collect(Collectors.toList());
+			this.grinderOres = builder
+					.comment("The list of types to handle. Specify without a prefix like ore or dust.")
+					.defineList("grinderOres", defaultGrinderOres, obj -> true); // FIXME: tag validation, is that even possible???
+			this.grinderBlackList = builder
+					.comment("Blacklists the exact oredict name from being handled by any recipe.")
+					.defineList("blacklist", Collections.emptyList(), obj -> true); // FIXME: tag validation, is that even possible???
+			this.oreDoublePercentage = builder
+					.comment("Chance to actually get an output with stacksize > 1.")
+					.defineInRange("oreDoublePercentage", 90.0, 0.0, 100.0);
+			builder.pop();
+
+			builder.push("battery");
+			this.wirelessTerminalBattery = builder.define("wirelessTerminal", 1600000);
+			this.chargedStaffBattery = builder.define("chargedStaff", 200000);
+			this.entropyManipulatorBattery = builder.define("entropyManipulator", 200000);
+			this.portableCellBattery = builder.define("portableCell", 20000);
+			this.colorApplicatorBattery = builder.define("colorApplicator", 20000);
+			this.matterCannonBattery = builder.define("matterCannon", 8000);
+			builder.pop();
+
+			builder.push("worldGen");
+
+			this.spawnChargedChance = builder.defineInRange("spawnChargedChance", 0.08, 0.0, 1.0);
+			this.minMeteoriteDistance = builder.define("minMeteoriteDistance", 707 );
+			this.meteoriteClusterChance = builder.define("meteoriteClusterChance", 0.1 );
+			this.meteoriteMaximumSpawnHeight = builder.define("meteoriteMaximumSpawnHeight", 180 );
+			List<String> defaultDimensionWhitelist = new ArrayList<>();
+			defaultDimensionWhitelist.add(DimensionType.getKey(DimensionType.OVERWORLD).toString());
+			this.meteoriteDimensionWhitelist = builder.defineList("meteoriteDimensionWhitelist", defaultDimensionWhitelist, obj -> true );
+
+			this.quartzOresPerCluster = builder.define("quartzOresPerCluster", 4 );
+			this.quartzOresClusterAmount = builder.define("quartzOresClusterAmount", 15 );
+
+			builder.pop();
+
+			builder.push("wireless");
+			this.wirelessBaseCost = builder.define("wirelessBaseCost", 8.0);
+			this.wirelessCostMultiplier = builder.define("wirelessCostMultiplier", 1.0);
+			this.wirelessBaseRange = builder.define("wirelessBaseRange", 1.0);
+			this.wirelessBoosterRangeMultiplier = builder.define("wirelessBoosterRangeMultiplier", 16.0);
+			this.wirelessBoosterExp = builder.define("wirelessBoosterExp", 1.0);
+			this.wirelessTerminalDrainMultiplier = builder.define("wirelessTerminalDrainMultiplier", 1.5);
+			builder.pop();
+
+			builder.push("PowerRatios");
+			powerRatioIc2 = builder.define("IC2", DEFAULT_IC2_EXCHANGE);
+			powerRatioForgeEnergy = builder.define("ForgeEnergy", DEFAULT_RF_EXCHANGE);
+			powerUsageMultiplier = builder.defineInRange("UsageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
+			builder.pop();
+
+			builder.push("Condenser");
+			condenserMatterBallsPower = builder.define("MatterBalls", 256);
+			condenserSingularityPower = builder.define("Singularity", 256000);
+			builder.pop();
+
+		}
+
+	}
+
 }

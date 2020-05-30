@@ -344,7 +344,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 			}
 		}
 
-		data.setBoolean( "clear", true );
+		data.putBoolean("clear", true);
 
 		for( final Entry<IInterfaceHost, InvTracker> en : this.diList.entrySet() )
 		{
@@ -376,8 +376,8 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 
 		if( tag.hasNoTags() )
 		{
-			tag.setLong( "sortBy", inv.sortBy );
-			tag.setString( "un", inv.unlocalizedName );
+			tag.putLong( "sortBy", inv.sortBy );
+			tag.putString("un", inv.unlocalizedName);
 		}
 
 		for( int x = 0; x < length; x++ )
@@ -391,7 +391,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 
 			if( !is.isEmpty() )
 			{
-				is.writeToNBT( itemNBT );
+				is.write(itemNBT);
 			}
 
 			tag.setTag( Integer.toString( x + offset ), itemNBT );

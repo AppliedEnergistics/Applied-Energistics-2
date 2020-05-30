@@ -164,7 +164,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 		this.cm.writeToNBT( data );
 		data.setByte( "paintedColor", (byte) this.paintedColor.ordinal() );
 
-		data.setLong( "securityKey", this.securityKey );
+		data.putLong( "securityKey", this.securityKey );
 		this.getConfigSlot().writeToNBT( data, "config" );
 
 		final CompoundNBT storedItems = new CompoundNBT();
@@ -173,7 +173,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 		for( final IAEItemStack ais : this.inventory.getStoredItems() )
 		{
 			final CompoundNBT it = new CompoundNBT();
-			ais.createItemStack().writeToNBT( it );
+			ais.createItemStack().write(it);
 			storedItems.setTag( String.valueOf( offset ), it );
 			offset++;
 		}
@@ -187,7 +187,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 	{
 		super.readFromNBT( data );
 		this.cm.readFromNBT( data );
-		if( data.hasKey( "paintedColor" ) )
+		if( data.contains("paintedColor") )
 		{
 			this.paintedColor = AEColor.values()[data.getByte( "paintedColor" )];
 		}
@@ -201,7 +201,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 			final NBTBase obj = storedItems.getTag( (String) key );
 			if( obj instanceof CompoundNBT )
 			{
-				this.inventory.getStoredItems().add( AEItemStack.fromItemStack( new ItemStack( (CompoundNBT) obj ) ) );
+				this.inventory.getStoredItems().add( AEItemStack.fromItemStack( ItemStack.read((CompoundNBT) obj) ) );
 			}
 		}
 	}

@@ -164,7 +164,7 @@ public class AEBaseBlockItem extends BlockItem
 			ori = ( (IOrientableBlock) this.blockType ).getOrientable( w, pos );
 			up = side;
 			forward = Direction.SOUTH;
-			if( up.getFrontOffsetY() == 0 )
+			if( up.getYOffset() == 0 )
 			{
 				forward = Direction.UP;
 			}

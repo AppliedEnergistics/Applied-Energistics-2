@@ -87,9 +87,9 @@ public class PartCraftingTerminal extends AbstractPartTerminal
 	@Override
 	public GuiBridge getGui( final PlayerEntity p )
 	{
-		int x = (int) p.posX;
-		int y = (int) p.posY;
-		int z = (int) p.posZ;
+		int x = (int) p.getPosX();
+		int y = (int) p.getPosY();
+		int z = (int) p.getPosZ();
 		if( this.getHost().getTile() != null )
 		{
 			x = this.getTile().getPos().getX();

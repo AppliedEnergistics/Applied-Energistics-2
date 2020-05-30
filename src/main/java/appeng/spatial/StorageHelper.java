@@ -184,12 +184,12 @@ public class StorageHelper
 
 		for( final Entity e : dstE )
 		{
-			this.teleportEntity( e, new TelDestination( srcWorld, srcBox, e.posX, e.posY, e.posZ, -dstX + srcX, -dstY + srcY, -dstZ + srcZ ) );
+			this.teleportEntity( e, new TelDestination( srcWorld, srcBox, e.getPosX(), e.getPosY(), e.getPosZ(), -dstX + srcX, -dstY + srcY, -dstZ + srcZ ) );
 		}
 
 		for( final Entity e : srcE )
 		{
-			this.teleportEntity( e, new TelDestination( dstWorld, dstBox, e.posX, e.posY, e.posZ, -srcX + dstX, -srcY + dstY, -srcZ + dstZ ) );
+			this.teleportEntity( e, new TelDestination( dstWorld, dstBox, e.getPosX(), e.getPosY(), e.getPosZ(), -srcX + dstX, -srcY + dstY, -srcZ + dstZ ) );
 		}
 
 		for( final WorldCoord wc : cDst.getUpdates() )

@@ -151,12 +151,12 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		}
 
 		final Block block = Block.getBlockFromItem( itemStack.getItem() );
-		if( block == Blocks.AIR || itemStack.hasTagCompound() )
+		if( block == Blocks.AIR || itemStack.hasTag() )
 		{
 			return ItemStack.EMPTY;
 		}
 
-		final int metadata = itemStack.getItem().getMetadata( itemStack.getItemDamage() );
+		final int metadata = itemStack.getItem().getMetadata( itemStack.getDamage() );
 
 		// Try to get the block state based on the item stack's meta. If this fails, don't consider it for a facade
 		// This for example fails for Pistons because they hardcoded an invalid meta value in vanilla
@@ -191,8 +191,8 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 			final ItemStack is = new ItemStack( this );
 			final CompoundNBT data = new CompoundNBT();
-			data.setString( TAG_ITEM_ID, itemStack.getItem().getRegistryName().toString() );
-			data.setInteger( TAG_DAMAGE, itemStack.getItemDamage() );
+			data.putString(TAG_ITEM_ID, itemStack.getItem().getRegistryName().toString());
+			data.setInteger( TAG_DAMAGE, itemStack.getDamage() );
 			is.setTagCompound( data );
 			return is;
 		}
@@ -225,7 +225,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		int itemDamage;
 
 		// Handle legacy facades
-		if( nbt.hasKey( "x" ) )
+		if( nbt.contains("x") )
 		{
 			int[] data = nbt.getIntArray( "x" );
 			if( data.length != 2 )
@@ -285,7 +285,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		}
 		catch( Exception e )
 		{
-			AELog.warn( "Block %s has broken getStateFromMeta method for meta %d", block.getRegistryName().toString(), baseItemStack.getItemDamage() );
+			AELog.warn( "Block %s has broken getStateFromMeta method for meta %d", block.getRegistryName().toString(), baseItemStack.getDamage() );
 			return Blocks.GLASS.getDefaultState();
 		}
 	}
@@ -323,7 +323,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		}
 
 		final CompoundNBT facadeTag = new CompoundNBT();
-		facadeTag.setString( TAG_ITEM_ID, item.getRegistryName().toString() );
+		facadeTag.putString(TAG_ITEM_ID, item.getRegistryName().toString());
 		facadeTag.setInteger( TAG_DAMAGE, ids[1] );
 		facadeStack.setTagCompound( facadeTag );
 

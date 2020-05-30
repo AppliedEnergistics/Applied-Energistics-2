@@ -515,9 +515,9 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	public void writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
-		data.setLong( "lastReportedValue", this.lastReportedValue );
-		data.setLong( "reportingValue", this.reportingValue );
-		data.setBoolean( "prevState", this.prevState );
+		data.putLong( "lastReportedValue", this.lastReportedValue );
+		data.putLong( "reportingValue", this.reportingValue );
+		data.putBoolean("prevState", this.prevState);
 		this.config.writeToNBT( data, "config" );
 	}
 

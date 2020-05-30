@@ -201,7 +201,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
-		data.setBoolean( "core", this.isCoreBlock() );
+		data.putBoolean("core", this.isCoreBlock());
 		if( this.isCoreBlock() && this.cluster != null )
 		{
 			this.cluster.writeToNBT( data );

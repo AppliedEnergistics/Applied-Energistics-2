@@ -222,7 +222,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 			if( !pattern.isEmpty() )
 			{
 				final CompoundNBT compound = new CompoundNBT();
-				pattern.writeToNBT( compound );
+				pattern.write(compound);
 				data.setTag( "myPlan", compound );
 				data.setInteger( "pushDirection", this.pushDirection.ordinal() );
 			}
@@ -237,7 +237,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
-		if( data.hasKey( "myPlan" ) )
+		if( data.contains("myPlan") )
 		{
 			final ItemStack myPat = new ItemStack( data.getCompoundTag( "myPlan" ) );
 

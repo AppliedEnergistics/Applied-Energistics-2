@@ -111,18 +111,18 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 			o = sk.getUp();
 		}
 
-		final double offsetX = o.getFrontOffsetX() == 0 ? AABB_OFFSET_SIDES : 0.0;
-		final double offsetY = o.getFrontOffsetY() == 0 ? AABB_OFFSET_SIDES : 0.0;
-		final double offsetZ = o.getFrontOffsetZ() == 0 ? AABB_OFFSET_SIDES : 0.0;
+		final double offsetX = o.getXOffset() == 0 ? AABB_OFFSET_SIDES : 0.0;
+		final double offsetY = o.getYOffset() == 0 ? AABB_OFFSET_SIDES : 0.0;
+		final double offsetZ = o.getZOffset() == 0 ? AABB_OFFSET_SIDES : 0.0;
 
 		// for x/z top and bottom is swapped
-		final double minX = Math.max( 0.0, offsetX + ( o.getFrontOffsetX() < 0 ? AABB_OFFSET_BOTTOM : ( o.getFrontOffsetX() * AABB_OFFSET_TOP ) ) );
-		final double minY = Math.max( 0.0, offsetY + ( o.getFrontOffsetY() < 0 ? AABB_OFFSET_TOP : ( o.getFrontOffsetY() * AABB_OFFSET_BOTTOM ) ) );
-		final double minZ = Math.max( 0.0, offsetZ + ( o.getFrontOffsetZ() < 0 ? AABB_OFFSET_BOTTOM : ( o.getFrontOffsetZ() * AABB_OFFSET_TOP ) ) );
+		final double minX = Math.max( 0.0, offsetX + ( o.getXOffset() < 0 ? AABB_OFFSET_BOTTOM : ( o.getXOffset() * AABB_OFFSET_TOP ) ) );
+		final double minY = Math.max( 0.0, offsetY + ( o.getYOffset() < 0 ? AABB_OFFSET_TOP : ( o.getYOffset() * AABB_OFFSET_BOTTOM ) ) );
+		final double minZ = Math.max( 0.0, offsetZ + ( o.getZOffset() < 0 ? AABB_OFFSET_BOTTOM : ( o.getZOffset() * AABB_OFFSET_TOP ) ) );
 
-		final double maxX = Math.min( 1.0, 1.0 - offsetX - ( o.getFrontOffsetX() < 0 ? AABB_OFFSET_TOP : ( o.getFrontOffsetX() * AABB_OFFSET_BOTTOM ) ) );
-		final double maxY = Math.min( 1.0, 1.0 - offsetY - ( o.getFrontOffsetY() < 0 ? AABB_OFFSET_BOTTOM : ( o.getFrontOffsetY() * AABB_OFFSET_TOP ) ) );
-		final double maxZ = Math.min( 1.0, 1.0 - offsetZ - ( o.getFrontOffsetZ() < 0 ? AABB_OFFSET_TOP : ( o.getFrontOffsetZ() * AABB_OFFSET_BOTTOM ) ) );
+		final double maxX = Math.min( 1.0, 1.0 - offsetX - ( o.getXOffset() < 0 ? AABB_OFFSET_TOP : ( o.getXOffset() * AABB_OFFSET_BOTTOM ) ) );
+		final double maxY = Math.min( 1.0, 1.0 - offsetY - ( o.getYOffset() < 0 ? AABB_OFFSET_BOTTOM : ( o.getYOffset() * AABB_OFFSET_TOP ) ) );
+		final double maxZ = Math.min( 1.0, 1.0 - offsetZ - ( o.getZOffset() < 0 ? AABB_OFFSET_TOP : ( o.getZOffset() * AABB_OFFSET_BOTTOM ) ) );
 
 		return new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ );
 	}

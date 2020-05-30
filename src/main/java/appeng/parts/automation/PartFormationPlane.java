@@ -322,7 +322,7 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 							result = is.getItem().createEntity( w, ei, is );
 							if( result != null )
 							{
-								ei.setDead();
+								ei.remove();
 							}
 							else
 							{
@@ -330,9 +330,9 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 							}
 						}
 
-						if( !w.spawnEntity( result ) )
+						if( !w.addEntity( result ) )
 						{
-							result.setDead();
+							result.remove();
 							worked = false;
 						}
 					}

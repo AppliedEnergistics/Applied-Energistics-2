@@ -42,10 +42,10 @@ public class VibrantFX extends Particle
 		this.motionX = 0.0D;
 		this.motionY = 0.0D;
 		this.motionZ = 0.0D;
-		this.prevPosX = this.posX;
-		this.prevPosY = this.posY;
-		this.prevPosZ = this.posZ;
-		this.particleMaxAge = (int) ( 20.0D / ( Math.random() * 0.8D + 0.1D ) );
+		this.prevPosX = this.getPosX();
+		this.prevPosY = this.getPosY();
+		this.prevPosZ = this.getPosZ();
+		this.maxAge = (int) ( 20.0D / ( Math.random() * 0.8D + 0.1D ) );
 	}
 
 	@Override
@@ -59,18 +59,18 @@ public class VibrantFX extends Particle
 	 * Called to update the entity's position/logic.
 	 */
 	@Override
-	public void onUpdate()
+	public void tick()
 	{
-		this.prevPosX = this.posX;
-		this.prevPosY = this.posY;
-		this.prevPosZ = this.posZ;
+		this.prevPosX = this.getPosX();
+		this.prevPosY = this.getPosY();
+		this.prevPosZ = this.getPosZ();
 		// this.moveEntity(this.motionX, this.motionY, this.motionZ);
 		this.particleScale *= 0.95;
 
-		if( this.particleMaxAge <= 0 || this.particleScale < 0.1 )
+		if( this.maxAge <= 0 || this.particleScale < 0.1 )
 		{
 			this.setExpired();
 		}
-		this.particleMaxAge--;
+		this.maxAge--;
 	}
 }

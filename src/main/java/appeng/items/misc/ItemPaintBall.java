@@ -46,12 +46,12 @@ public class ItemPaintBall extends AEBaseItem
 
 	private String getExtraName( final ItemStack is )
 	{
-		return ( is.getItemDamage() >= DAMAGE_THRESHOLD ? GuiText.Lumen.getLocal() + ' ' : "" ) + this.getColor( is );
+		return ( is.getDamage() >= DAMAGE_THRESHOLD ? GuiText.Lumen.getLocal() + ' ' : "" ) + this.getColor( is );
 	}
 
 	public AEColor getColor( final ItemStack is )
 	{
-		int dmg = is.getItemDamage();
+		int dmg = is.getDamage();
 		if( dmg >= DAMAGE_THRESHOLD )
 		{
 			dmg -= DAMAGE_THRESHOLD;
@@ -87,7 +87,7 @@ public class ItemPaintBall extends AEBaseItem
 
 	public static boolean isLumen( final ItemStack is )
 	{
-		final int dmg = is.getItemDamage();
+		final int dmg = is.getDamage();
 		return dmg >= DAMAGE_THRESHOLD;
 	}
 

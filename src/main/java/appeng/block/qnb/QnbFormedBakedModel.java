@@ -120,9 +120,9 @@ class QnbFormedBakedModel implements IBakedModel
 					{
 						// Offset the face by a slight amount so that it is drawn over the already drawn ring texture
 						// (avoids z-fighting)
-						float xOffset = Math.abs( facing.getFrontOffsetX() * 0.01f );
-						float yOffset = Math.abs( facing.getFrontOffsetY() * 0.01f );
-						float zOffset = Math.abs( facing.getFrontOffsetZ() * 0.01f );
+						float xOffset = Math.abs( facing.getXOffset() * 0.01f );
+						float yOffset = Math.abs( facing.getYOffset() * 0.01f );
+						float zOffset = Math.abs( facing.getZOffset() * 0.01f );
 
 						builder.setDrawFaces( EnumSet.of( facing ) );
 						builder.addCube(
@@ -149,9 +149,9 @@ class QnbFormedBakedModel implements IBakedModel
 					{
 						// Offset the face by a slight amount so that it is drawn over the already drawn ring texture
 						// (avoids z-fighting)
-						float xOffset = Math.abs( facing.getFrontOffsetX() * 0.01f );
-						float yOffset = Math.abs( facing.getFrontOffsetY() * 0.01f );
-						float zOffset = Math.abs( facing.getFrontOffsetZ() * 0.01f );
+						float xOffset = Math.abs( facing.getXOffset() * 0.01f );
+						float yOffset = Math.abs( facing.getYOffset() * 0.01f );
+						float zOffset = Math.abs( facing.getZOffset() * 0.01f );
 
 						builder.setDrawFaces( EnumSet.of( facing ) );
 						builder.addCube(

@@ -26,7 +26,7 @@ import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.INetHandler;
-import net.minecraft.network.Packet;
+import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 
@@ -37,7 +37,7 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.core.sync.network.NetworkHandler;
 
 
-public abstract class AppEngPacket implements Packet
+public abstract class AppEngPacket implements IPacket
 {
 	private PacketBuffer p;
 	private PacketCallState caller;

@@ -1011,11 +1011,11 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	{
 		final CompoundNBT tag = new CompoundNBT();
 
-		tag.setString( "CraftID", craftingID );
-		tag.setBoolean( "canceled", false );
-		tag.setBoolean( "done", false );
-		tag.setBoolean( "standalone", standalone );
-		tag.setBoolean( "req", req );
+		tag.putString("CraftID", craftingID);
+		tag.putBoolean("canceled", false);
+		tag.putBoolean("done", false);
+		tag.putBoolean("standalone", standalone);
+		tag.putBoolean("req", req);
 
 		return tag;
 	}
@@ -1146,8 +1146,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	{
 		data.setTag( "finalOutput", this.writeItem( this.finalOutput ) );
 		data.setTag( "inventory", this.writeList( this.inventory.getItemList() ) );
-		data.setBoolean( "waiting", this.waiting );
-		data.setBoolean( "isComplete", this.isComplete );
+		data.putBoolean("waiting", this.waiting);
+		data.putBoolean("isComplete", this.isComplete);
 
 		if( this.myLastLink != null )
 		{
@@ -1160,16 +1160,16 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		for( final Entry<ICraftingPatternDetails, TaskProgress> e : this.tasks.entrySet() )
 		{
 			final CompoundNBT item = this.writeItem( AEItemStack.fromItemStack( e.getKey().getPattern() ) );
-			item.setLong( "craftingProgress", e.getValue().value );
+			item.putLong( "craftingProgress", e.getValue().value );
 			list.appendTag( item );
 		}
 		data.setTag( "tasks", list );
 
 		data.setTag( "waitingFor", this.writeList( this.waitingFor ) );
 
-		data.setLong( "elapsedTime", this.getElapsedTime() );
-		data.setLong( "startItemCount", this.getStartItemCount() );
-		data.setLong( "remainingItemCount", this.getRemainingItemCount() );
+		data.putLong( "elapsedTime", this.getElapsedTime() );
+		data.putLong( "startItemCount", this.getStartItemCount() );
+		data.putLong( "remainingItemCount", this.getRemainingItemCount() );
 	}
 
 	private CompoundNBT writeItem( final IAEItemStack finalOutput2 )
@@ -1178,7 +1178,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 		if( finalOutput2 != null )
 		{
-			finalOutput2.writeToNBT( out );
+			finalOutput2.write(out);
 		}
 
 		return out;
@@ -1223,7 +1223,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		this.waiting = data.getBoolean( "waiting" );
 		this.isComplete = data.getBoolean( "isComplete" );
 
-		if( data.hasKey( "link" ) )
+		if( data.contains("link") )
 		{
 			final CompoundNBT link = data.getCompoundTag( "link" );
 			this.myLastLink = new CraftingLink( link, this );

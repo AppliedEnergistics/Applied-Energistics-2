@@ -28,7 +28,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -45,7 +45,6 @@ import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.ConfigManager;
-import appeng.util.Platform;
 
 
 public class ToolWirelessTerminal extends AEBasePoweredItem implements IWirelessTermHandler
@@ -76,9 +75,9 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	{
 		super.addCheckedInformation( stack, world, lines, advancedTooltips );
 
-		if( stack.hasTagCompound() )
+		if( stack.hasTag() )
 		{
-			final CompoundNBT tag = Platform.openNbtData( stack );
+            final CompoundNBT tag = stack.getOrCreateTag();
 			if( tag != null )
 			{
 				final String encKey = tag.getString( "encryptionKey" );
@@ -95,7 +94,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 		}
 		else
 		{
-			lines.add( I18n.translateToLocal( "AppEng.GuiITooltip.Unlinked" ) );
+			lines.add( I18n.format( "AppEng.GuiITooltip.Unlinked" ) );
 		}
 	}
 
@@ -122,7 +121,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	{
 		final ConfigManager out = new ConfigManager( ( manager, settingName, newValue ) ->
 		{
-			final CompoundNBT data = Platform.openNbtData( target );
+            final CompoundNBT data = target.getOrCreateTag();
 			manager.writeToNBT( data );
 		} );
 
@@ -130,23 +129,23 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 		out.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
 		out.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 
-		out.readFromNBT( Platform.openNbtData( target ).copy() );
+        out.readFromNBT( target.getOrCreateTag().copy() );
 		return out;
 	}
 
 	@Override
 	public String getEncryptionKey( final ItemStack item )
 	{
-		final CompoundNBT tag = Platform.openNbtData( item );
+        final CompoundNBT tag = item.getOrCreateTag();
 		return tag.getString( "encryptionKey" );
 	}
 
 	@Override
 	public void setEncryptionKey( final ItemStack item, final String encKey, final String name )
 	{
-		final CompoundNBT tag = Platform.openNbtData( item );
-		tag.setString( "encryptionKey", encKey );
-		tag.setString( "name", name );
+        final CompoundNBT tag = item.getOrCreateTag();
+		tag.putString("encryptionKey", encKey);
+		tag.putString("name", name);
 	}
 
 	@Override

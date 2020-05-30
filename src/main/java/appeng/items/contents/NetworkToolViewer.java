@@ -26,7 +26,6 @@ import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.networking.IGridHost;
 import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -45,16 +44,16 @@ public class NetworkToolViewer implements INetworkTool, IAEAppEngInventory
 		this.gh = gHost;
 		this.inv = new AppEngInternalInventory( this, 9 );
 		this.inv.setFilter( new NetworkToolInventoryFilter() );
-		if( is.hasTagCompound() ) // prevent crash when opening network status screen.
+		if( is.hasTag() ) // prevent crash when opening network status screen.
 		{
-			this.inv.readFromNBT( Platform.openNbtData( is ), "inv" );
+            this.inv.readFromNBT(is.getOrCreateTag(), "inv" );
 		}
 	}
 
 	@Override
 	public void saveChanges()
 	{
-		this.inv.writeToNBT( Platform.openNbtData( this.is ), "inv" );
+        this.inv.writeToNBT(this.is.getOrCreateTag(), "inv" );
 	}
 
 	@Override

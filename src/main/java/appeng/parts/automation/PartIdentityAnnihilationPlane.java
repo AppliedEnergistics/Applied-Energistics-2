@@ -28,7 +28,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.ServerWorld;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 
@@ -69,7 +69,7 @@ public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 	}
 
 	@Override
-	protected float calculateEnergyUsage( final WorldServer w, final BlockPos pos, final List<ItemStack> items )
+	protected float calculateEnergyUsage(final ServerWorld w, final BlockPos pos, final List<ItemStack> items )
 	{
 		final float requiredEnergy = super.calculateEnergyUsage( w, pos, items );
 
@@ -77,7 +77,7 @@ public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 	}
 
 	@Override
-	protected List<ItemStack> obtainBlockDrops( final WorldServer w, final BlockPos pos )
+	protected List<ItemStack> obtainBlockDrops(final ServerWorld w, final BlockPos pos )
 	{
 		final FakePlayer fakePlayer = FakePlayerFactory.getMinecraft( w );
 		final BlockState state = w.getBlockState( pos );

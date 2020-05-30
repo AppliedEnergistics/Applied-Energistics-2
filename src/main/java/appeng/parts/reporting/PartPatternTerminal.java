@@ -92,8 +92,8 @@ public class PartPatternTerminal extends AbstractPartTerminal
 	public void writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
-		data.setBoolean( "craftingMode", this.craftingMode );
-		data.setBoolean( "substitute", this.substitute );
+		data.putBoolean("craftingMode", this.craftingMode);
+		data.putBoolean("substitute", this.substitute);
 		this.pattern.writeToNBT( data, "pattern" );
 		this.output.writeToNBT( data, "outputList" );
 		this.crafting.writeToNBT( data, "craftingGrid" );
@@ -102,9 +102,9 @@ public class PartPatternTerminal extends AbstractPartTerminal
 	@Override
 	public GuiBridge getGui( final PlayerEntity p )
 	{
-		int x = (int) p.posX;
-		int y = (int) p.posY;
-		int z = (int) p.posZ;
+		int x = (int) p.getPosX();
+		int y = (int) p.getPosY();
+		int z = (int) p.getPosZ();
 		if( this.getHost().getTile() != null )
 		{
 			x = this.getTile().getPos().getX();

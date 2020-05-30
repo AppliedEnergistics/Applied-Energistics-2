@@ -33,7 +33,6 @@ import appeng.api.storage.IMEInventory;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.util.Platform;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
 
@@ -145,6 +144,6 @@ public class BasicCellInventoryHandler<T extends IAEStack<T>> extends MEInventor
 
 	CompoundNBT openNbtData()
 	{
-		return Platform.openNbtData( this.getCellInv().getItemStack() );
-	}
+        return this.getCellInv().getItemStack().getOrCreateTag();
+    }
 }

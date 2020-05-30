@@ -22,13 +22,13 @@ package appeng.client.gui.widgets;
 import java.util.regex.Pattern;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resources.I18n;
 
 
-public class GuiToggleButton extends GuiButton implements ITooltip
+public class GuiToggleButton extends Button implements ITooltip
 {
 	private static final Pattern PATTERN_NEW_LINE = Pattern.compile( "\\n", Pattern.LITERAL );
 	private final int iconIdxOn;
@@ -87,8 +87,8 @@ public class GuiToggleButton extends GuiButton implements ITooltip
 	{
 		if( this.displayName != null )
 		{
-			String name = I18n.translateToLocal( this.displayName );
-			String value = I18n.translateToLocal( this.displayHint );
+			String name = I18n.format( this.displayName );
+			String value = I18n.format( this.displayHint );
 
 			if( name == null || name.isEmpty() )
 			{

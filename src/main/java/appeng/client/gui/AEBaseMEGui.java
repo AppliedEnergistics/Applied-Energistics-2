@@ -23,8 +23,8 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 

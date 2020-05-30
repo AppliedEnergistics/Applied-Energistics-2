@@ -153,7 +153,7 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 	@Override
 	public void deserializeNBT( CompoundNBT nbt )
 	{
-		if( nbt.hasKey( NBT_SPATIAL_DATA_KEY ) )
+		if( nbt.contains(NBT_SPATIAL_DATA_KEY) )
 		{
 			final NBTTagList list = (NBTTagList) nbt.getTag( NBT_SPATIAL_DATA_KEY );
 

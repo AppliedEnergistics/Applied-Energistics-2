@@ -26,32 +26,29 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.BlockStateContainer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
+import net.minecraft.state.IProperty;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapePart;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
-import appeng.helpers.AEGlassMaterial;
 import appeng.helpers.ICustomCollision;
-import appeng.util.LookDirection;
-import appeng.util.Platform;
 
 
 public abstract class AEBaseBlock extends Block
@@ -62,222 +59,210 @@ public abstract class AEBaseBlock extends Block
 	private boolean hasSubtypes = false;
 	private boolean isInventory = false;
 
-	protected AxisAlignedBB boundingBox = FULL_BLOCK_AABB;
+	protected VoxelShape boundingBox = VoxelShapes.fullCube();
 
-	protected AEBaseBlock( final Material mat )
+	protected AEBaseBlock( final Block.Properties props )
 	{
-		super( mat );
+		super( props );
 
-		if( mat == AEGlassMaterial.INSTANCE || mat == Material.GLASS )
-		{
-			this.setSoundType( SoundType.GLASS );
-		}
-		else if( mat == Material.ROCK )
-		{
-			this.setSoundType( SoundType.STONE );
-		}
-		else if( mat == Material.WOOD )
-		{
-			this.setSoundType( SoundType.WOOD );
-		}
-		else
-		{
-			this.setSoundType( SoundType.METAL );
-		}
+		// FIXME: Move to block registration
+		// FIXME if( mat == AEGlassMaterial.INSTANCE || mat == Material.GLASS )
+		// FIXME {
+		// FIXME 	this.setSoundType( SoundType.GLASS );
+		// FIXME }
+		// FIXME else if( mat == Material.ROCK )
+		// FIXME {
+		// FIXME 	this.setSoundType( SoundType.STONE );
+		// FIXME }
+		// FIXME else if( mat == Material.WOOD )
+		// FIXME {
+		// FIXME 	this.setSoundType( SoundType.WOOD );
+		// FIXME }
+		// FIXME else
+		// FIXME {
+		// FIXME 	this.setSoundType( SoundType.METAL );
+		// FIXME }
 
-		this.setLightOpacity( 255 );
-		this.setLightLevel( 0 );
-		this.setHardness( 2.2F );
-		this.setHarvestLevel( "pickaxe", 0 );
-
-		// Workaround as vanilla sets it way too early.
-		this.fullBlock = this.isFullSize();
+		// FIXME this.setLightOpacity( 255 );
+		// FIXME this.setLightLevel( 0 );
+		// FIXME this.setHardness( 2.2F );
+		// FIXME this.setHarvestLevel( "pickaxe", 0 );
 	}
 
 	@Override
-	protected BlockStateContainer createBlockState()
-	{
-		return new BlockStateContainer( this, this.getAEStates() );
+	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+		super.fillStateContainer(builder);
+		builder.add(getAEStates());
 	}
 
 	@Override
-	public final boolean isNormalCube( BlockState state )
-	{
+	public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos) {
 		return this.isFullSize() && this.isOpaque();
 	}
 
 	@Override
-	public AxisAlignedBB getBoundingBox( BlockState state, IBlockReader source, BlockPos pos )
-	{
+	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
 		return this.boundingBox;
 	}
 
-	@SuppressWarnings( "deprecation" )
-	@Override
-	public void addCollisionBoxToList( final BlockState state, final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, @Nullable final Entity e, boolean p_185477_7_ )
-	{
-		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
+// FIXME	@SuppressWarnings( "deprecation" )
+// FIXME	@Override
+// FIXME	public void addCollisionBoxToList(final BlockState state, final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, @Nullable final Entity e, boolean p_185477_7_ )
+// FIXME	{
+// FIXME		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
+// FIXME
+// FIXME		if( collisionHandler != null && bb != null )
+// FIXME		{
+// FIXME			final List<AxisAlignedBB> tmp = new ArrayList<>();
+// FIXME			collisionHandler.addCollidingBlockToList( w, pos, bb, tmp, e );
+// FIXME			for( final AxisAlignedBB b : tmp )
+// FIXME			{
+// FIXME				final AxisAlignedBB offset = b.offset( pos.getX(), pos.getY(), pos.getZ() );
+// FIXME				if( bb.intersects( offset ) )
+// FIXME				{
+// FIXME					out.add( offset );
+// FIXME				}
+// FIXME			}
+// FIXME		}
+// FIXME		else
+// FIXME		{
+// FIXME			super.addCollisionBoxToList( state, w, pos, bb, out, e, p_185477_7_ );
+// FIXME		}
+// FIXME	}
+// FIXME
 
-		if( collisionHandler != null && bb != null )
-		{
-			final List<AxisAlignedBB> tmp = new ArrayList<>();
-			collisionHandler.addCollidingBlockToList( w, pos, bb, tmp, e );
-			for( final AxisAlignedBB b : tmp )
-			{
-				final AxisAlignedBB offset = b.offset( pos.getX(), pos.getY(), pos.getZ() );
-				if( bb.intersects( offset ) )
-				{
-					out.add( offset );
-				}
-			}
-		}
-		else
-		{
-			super.addCollisionBoxToList( state, w, pos, bb, out, e, p_185477_7_ );
-		}
-	}
+// FIXME	@SuppressWarnings( "deprecation" )
+// FIXME	@Override
+// FIXME	@OnlyIn( Dist.CLIENT )
+// FIXME	public VoxelShape getRaytraceShape(BlockState state, IBlockReader w, BlockPos pos)
+// FIXME	{
+// FIXME		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
+// FIXME
+// FIXME		if( collisionHandler != null )
+// FIXME		{
+// FIXME			if( Platform.isClient() )
+// FIXME			{
+// FIXME				final PlayerEntity player = Minecraft.getInstance().player;
+// FIXME				final LookDirection ld = Platform.getPlayerRay( player, Platform.getEyeOffset( player ) );
+// FIXME
+// FIXME				final Iterable<VoxelShape> bbs = collisionHandler.getSelectedBoundingBoxesFromPool( w, pos, Minecraft.getInstance().player, true );
+// FIXME				VoxelShape br = null;
+// FIXME
+// FIXME				double lastDist = 0;
+// FIXME
+// FIXME				for( final VoxelShape bb : bbs )
+// FIXME				{
+// FIXME					final RayTraceResult r = bb.rayTrace(ld.getA(), ld.getB(), pos);
+// FIXME
+// FIXME					if( r != null )
+// FIXME					{
+// FIXME						final double xLen = ( ld.getA().x - r.getHitVec().x );
+// FIXME						final double yLen = ( ld.getA().y - r.getHitVec().y );
+// FIXME						final double zLen = ( ld.getA().z - r.getHitVec().z );
+// FIXME
+// FIXME						final double thisDist = xLen * xLen + yLen * yLen + zLen * zLen;
+// FIXME
+// FIXME						if( br == null || lastDist > thisDist )
+// FIXME						{
+// FIXME							lastDist = thisDist;
+// FIXME							br = bb;
+// FIXME						}
+// FIXME					}
+// FIXME				}
+// FIXME
+// FIXME				if( br != null )
+// FIXME				{
+// FIXME					return br;
+// FIXME				}
+// FIXME			}
+// FIXME
+// FIXME			VoxelShape b = null; // new AxisAlignedBB( 16d, 16d, 16d, 0d, 0d, 0d );
+// FIXME
+// FIXME			for( final VoxelShape bx : collisionHandler.getSelectedBoundingBoxesFromPool( w, pos, null, false ) )
+// FIXME			{
+// FIXME				if( b == null )
+// FIXME				{
+// FIXME					b = bx;
+// FIXME					continue;
+// FIXME				}
+// FIXME
+// FIXME				final double minX = Math.min( b.minX, bx.minX );
+// FIXME				final double minY = Math.min( b.minY, bx.minY );
+// FIXME				final double minZ = Math.min( b.minZ, bx.minZ );
+// FIXME				final double maxX = Math.max( b.maxX, bx.maxX );
+// FIXME				final double maxY = Math.max( b.maxY, bx.maxY );
+// FIXME				final double maxZ = Math.max( b.maxZ, bx.maxZ );
+// FIXME
+// FIXME				b = new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ );
+// FIXME			}
+// FIXME
+// FIXME			if( b == null )
+// FIXME			{
+// FIXME				b = new AxisAlignedBB( 16d, 16d, 16d, 0d, 0d, 0d );
+// FIXME			}
+// FIXME			else
+// FIXME			{
+// FIXME				b = new AxisAlignedBB( b.minX + pos.getX(), b.minY + pos.getY(), b.minZ + pos.getZ(), b.maxX + pos.getX(), b.maxY + pos.getY(), b.maxZ + pos
+// FIXME						.getZ() );
+// FIXME			}
+// FIXME
+// FIXME			return b;
+// FIXME		}
+// FIXME
+// FIXME		return super.getSelectedBoundingBox( state, w, pos );
+// FIXME	}
 
-	@SuppressWarnings( "deprecation" )
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public AxisAlignedBB getSelectedBoundingBox( BlockState state, final World w, final BlockPos pos )
-	{
-		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
+	// FIXME: Move to state
+// FIXME	@Override
+// FIXME	public final boolean isOpaqueCube( BlockState state )
+//	{
+//		return this.isOpaque();
+//	}
 
-		if( collisionHandler != null )
-		{
-			if( Platform.isClient() )
-			{
-				final PlayerEntity player = Minecraft.getInstance().player;
-				final LookDirection ld = Platform.getPlayerRay( player, Platform.getEyeOffset( player ) );
-
-				final Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxesFromPool( w, pos, Minecraft.getInstance().player, true );
-				AxisAlignedBB br = null;
-
-				double lastDist = 0;
-
-				for( final AxisAlignedBB bb : bbs )
-				{
-					this.boundingBox = bb;
-
-					final RayTraceResult r = super.collisionRayTrace( state, w, pos, ld.getA(), ld.getB() );
-
-					this.boundingBox = FULL_BLOCK_AABB;
-
-					if( r != null )
-					{
-						final double xLen = ( ld.getA().x - r.hitVec.x );
-						final double yLen = ( ld.getA().y - r.hitVec.y );
-						final double zLen = ( ld.getA().z - r.hitVec.z );
-
-						final double thisDist = xLen * xLen + yLen * yLen + zLen * zLen;
-
-						if( br == null || lastDist > thisDist )
-						{
-							lastDist = thisDist;
-							br = bb;
-						}
-					}
-				}
-
-				if( br != null )
-				{
-					br = new AxisAlignedBB( br.minX + pos.getX(), br.minY + pos.getY(), br.minZ + pos.getZ(), br.maxX + pos.getX(), br.maxY + pos
-							.getY(), br.maxZ + pos.getZ() );
-					return br;
-				}
-			}
-
-			AxisAlignedBB b = null; // new AxisAlignedBB( 16d, 16d, 16d, 0d, 0d, 0d );
-
-			for( final AxisAlignedBB bx : collisionHandler.getSelectedBoundingBoxesFromPool( w, pos, null, false ) )
-			{
-				if( b == null )
-				{
-					b = bx;
-					continue;
-				}
-
-				final double minX = Math.min( b.minX, bx.minX );
-				final double minY = Math.min( b.minY, bx.minY );
-				final double minZ = Math.min( b.minZ, bx.minZ );
-				final double maxX = Math.max( b.maxX, bx.maxX );
-				final double maxY = Math.max( b.maxY, bx.maxY );
-				final double maxZ = Math.max( b.maxZ, bx.maxZ );
-
-				b = new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ );
-			}
-
-			if( b == null )
-			{
-				b = new AxisAlignedBB( 16d, 16d, 16d, 0d, 0d, 0d );
-			}
-			else
-			{
-				b = new AxisAlignedBB( b.minX + pos.getX(), b.minY + pos.getY(), b.minZ + pos.getZ(), b.maxX + pos.getX(), b.maxY + pos.getY(), b.maxZ + pos
-						.getZ() );
-			}
-
-			return b;
-		}
-
-		return super.getSelectedBoundingBox( state, w, pos );
-	}
-
-	@Override
-	public final boolean isOpaqueCube( BlockState state )
-	{
-		return this.isOpaque();
-	}
-
-	@SuppressWarnings( "deprecation" )
-	@Override
-	public RayTraceResult collisionRayTrace( final BlockState state, final World w, final BlockPos pos, final Vec3d a, final Vec3d b )
-	{
-		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
-
-		if( collisionHandler != null )
-		{
-			final Iterable<AxisAlignedBB> bbs = collisionHandler.getSelectedBoundingBoxesFromPool( w, pos, null, true );
-			RayTraceResult br = null;
-
-			double lastDist = 0;
-
-			for( final AxisAlignedBB bb : bbs )
-			{
-				this.boundingBox = bb;
-
-				final RayTraceResult r = super.collisionRayTrace( state, w, pos, a, b );
-
-				this.boundingBox = FULL_BLOCK_AABB;
-
-				if( r != null )
-				{
-					final double xLen = ( a.x - r.hitVec.x );
-					final double yLen = ( a.y - r.hitVec.y );
-					final double zLen = ( a.z - r.hitVec.z );
-
-					final double thisDist = xLen * xLen + yLen * yLen + zLen * zLen;
-					if( br == null || lastDist > thisDist )
-					{
-						lastDist = thisDist;
-						br = r;
-					}
-				}
-			}
-
-			if( br != null )
-			{
-				return br;
-			}
-
-			return null;
-		}
-
-		this.boundingBox = FULL_BLOCK_AABB;
-		return super.collisionRayTrace( state, w, pos, a, b );
-	}
-
+//FIXME	@SuppressWarnings( "deprecation" )
+//FIXME	@Override
+//FIXME	public RayTraceResult collisionRayTrace(final BlockState state, final World w, final BlockPos pos, final Vec3d a, final Vec3d b )
+//FIXME	{
+//FIXME		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
+//FIXME
+//FIXME		if( collisionHandler != null )
+//FIXME		{
+//FIXME			final Iterable<VoxelShape> bbs = collisionHandler.getSelectedBoundingBoxesFromPool( w, pos, null, true );
+//FIXME			RayTraceResult br = null;
+//FIXME
+//FIXME			double lastDist = 0;
+//FIXME
+//FIXME			for( final VoxelShape bb : bbs )
+//FIXME			{
+//FIXME				final RayTraceResult r = bb.rayTrace( state, w, pos, a, b );
+//FIXME
+//FIXME				if( r != null )
+//FIXME				{
+//FIXME					final double xLen = ( a.x - r.hitVec.x );
+//FIXME					final double yLen = ( a.y - r.hitVec.y );
+//FIXME					final double zLen = ( a.z - r.hitVec.z );
+//FIXME
+//FIXME					final double thisDist = xLen * xLen + yLen * yLen + zLen * zLen;
+//FIXME					if( br == null || lastDist > thisDist )
+//FIXME					{
+//FIXME						lastDist = thisDist;
+//FIXME						br = r;
+//FIXME					}
+//FIXME				}
+//FIXME			}
+//FIXME
+//FIXME			if( br != null )
+//FIXME			{
+//FIXME				return br;
+//FIXME			}
+//FIXME
+//FIXME			return null;
+//FIXME		}
+//FIXME
+//FIXME		this.boundingBox = FULL_BLOCK_AABB;
+//FIXME		return super.collisionRayTrace( state, w, pos, a, b );
+//FIXME	}
+//FIXME
 	@Override
 	public boolean hasComparatorInputOverride( BlockState state )
 	{
@@ -285,28 +270,22 @@ public abstract class AEBaseBlock extends Block
 	}
 
 	@Override
-	public int getComparatorInputOverride( BlockState state, final World worldIn, final BlockPos pos )
+	public int getComparatorInputOverride(BlockState state, final World worldIn, final BlockPos pos )
 	{
 		return 0;
 	}
 
 	@Override
-	public final boolean isNormalCube( BlockState state, final IBlockReader world, final BlockPos pos )
-	{
-		return this.isFullSize();
-	}
-
-	@Override
-	public boolean rotateBlock( final World w, final BlockPos pos, final Direction axis )
-	{
+	public BlockState rotate(BlockState state, IWorld w, BlockPos pos, Rotation direction) {
 		final IOrientable rotatable = this.getOrientable( w, pos );
 
 		if( rotatable != null && rotatable.canBeRotated() )
 		{
 			if( this.hasCustomRotation() )
 			{
-				this.customRotateBlock( rotatable, axis );
-				return true;
+				// FIXME this.customRotateBlock( rotatable, axis );
+				// FIXME return true;
+				throw new IllegalStateException();
 			}
 			else
 			{
@@ -315,40 +294,34 @@ public abstract class AEBaseBlock extends Block
 
 				for( int rs = 0; rs < 4; rs++ )
 				{
-					forward = Platform.rotateAround( forward, axis );
-					up = Platform.rotateAround( up, axis );
+					// FIXME forward = Platform.rotateAround( forward, axis );
+					// FIXME up = Platform.rotateAround( up, axis );
 
 					if( this.isValidOrientation( w, pos, forward, up ) )
 					{
 						rotatable.setOrientation( forward, up );
-						return true;
+						// FIXME
+						throw new IllegalStateException();
 					}
 				}
 			}
 		}
 
-		return super.rotateBlock( w, pos, axis );
+		return state;
 	}
 
 	@Override
-	public Direction[] getValidRotations( final World w, final BlockPos pos )
+	public Direction[] getValidRotations(BlockState state, IBlockReader world, BlockPos pos)
 	{
 		return new Direction[0];
 	}
 
-	@OnlyIn( Dist.CLIENT )
-	@Override
-	public void addInformation( final ItemStack is, final World world, final List<String> lines, final ITooltipFlag advancedItemTooltips )
-	{
-
-	}
-
-	public boolean onActivated( final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
+	public boolean onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
 	{
 		return false;
 	}
 
-	public final Direction mapRotation( final IOrientable ori, final Direction dir )
+	public final Direction mapRotation(final IOrientable ori, final Direction dir )
 	{
 		// case DOWN: return bottomIcon;
 		// case UP: return blockIcon;
@@ -365,14 +338,14 @@ public abstract class AEBaseBlock extends Block
 			return dir;
 		}
 
-		final int west_x = forward.getFrontOffsetY() * up.getFrontOffsetZ() - forward.getFrontOffsetZ() * up.getFrontOffsetY();
-		final int west_y = forward.getFrontOffsetZ() * up.getFrontOffsetX() - forward.getFrontOffsetX() * up.getFrontOffsetZ();
-		final int west_z = forward.getFrontOffsetX() * up.getFrontOffsetY() - forward.getFrontOffsetY() * up.getFrontOffsetX();
+		final int west_x = forward.getYOffset() * up.getZOffset() - forward.getZOffset() * up.getYOffset();
+		final int west_y = forward.getZOffset() * up.getXOffset() - forward.getXOffset() * up.getZOffset();
+		final int west_z = forward.getXOffset() * up.getYOffset() - forward.getYOffset() * up.getXOffset();
 
 		Direction west = null;
-		for( final Direction dx : Direction.VALUES )
+		for( final Direction dx : Direction.values() )
 		{
-			if( dx.getFrontOffsetX() == west_x && dx.getFrontOffsetY() == west_y && dx.getFrontOffsetZ() == west_z )
+			if( dx.getXOffset() == west_x && dx.getYOffset() == west_y && dx.getZOffset() == west_z )
 			{
 				west = dx;
 			}
@@ -416,11 +389,11 @@ public abstract class AEBaseBlock extends Block
 	@Override
 	public String toString()
 	{
-		String regName = this.getRegistryName() != null ? this.getRegistryName().getResourcePath() : "unregistered";
+		String regName = this.getRegistryName() != null ? this.getRegistryName().getPath() : "unregistered";
 		return this.getClass().getSimpleName() + "[" + regName + "]";
 	}
 
-	protected String getTranslationKey( final ItemStack is )
+	protected String getUnlocalizedName( final ItemStack is )
 	{
 		return this.getTranslationKey();
 	}
@@ -435,7 +408,7 @@ public abstract class AEBaseBlock extends Block
 
 	}
 
-	protected IOrientable getOrientable( final IBlockReader w, final BlockPos pos )
+	protected IOrientable getOrientable( final IWorldReader w, final BlockPos pos )
 	{
 		if( this instanceof IOrientableBlock )
 		{
@@ -445,12 +418,12 @@ public abstract class AEBaseBlock extends Block
 		return null;
 	}
 
-	protected boolean isValidOrientation( final World w, final BlockPos pos, final Direction forward, final Direction up )
+	protected boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward, final Direction up )
 	{
 		return true;
 	}
 
-	protected ICustomCollision getCustomCollision( final World w, final BlockPos pos )
+	protected ICustomCollision getCustomCollision( final IBlockReader w, final BlockPos pos )
 	{
 		if( this instanceof ICustomCollision )
 		{

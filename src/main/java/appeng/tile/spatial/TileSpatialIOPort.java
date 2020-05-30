@@ -76,7 +76,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
-		if( data.hasKey( "lastRedstoneState" ) )
+		if( data.contains("lastRedstoneState") )
 		{
 			this.lastRedstoneState = YesNo.values()[data.getInteger( "lastRedstoneState" )];
 		}

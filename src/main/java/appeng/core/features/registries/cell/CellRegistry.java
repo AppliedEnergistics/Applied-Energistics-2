@@ -51,7 +51,7 @@ public class CellRegistry implements ICellRegistry
 	@Override
 	public void addCellHandler( final ICellHandler handler )
 	{
-		Preconditions.checkNotNull( handler, "Called before FMLInitializationEvent." );
+		Preconditions.checkNotNull( handler, "Called before FMLCommonSetupEvent." );
 		Preconditions.checkArgument( !this.handlers.contains( handler ), "Tried to register the same handler instance twice." );
 
 		this.handlers.add( handler );

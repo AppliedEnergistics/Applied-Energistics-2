@@ -52,12 +52,12 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
 	@OnlyIn( Dist.CLIENT )
 	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
 	{
-		final CompoundNBT tag = stack.getTagCompound();
 		double internalCurrentPower = 0;
 		final double internalMaxPower = this.getMaxEnergyCapacity();
 
 		if( internalMaxPower > 0 )
 		{
+			final CompoundNBT tag = stack.getTag();
 			if( tag != null )
 			{
 				internalCurrentPower = tag.getDouble( "internalCurrentPower" );
@@ -143,13 +143,13 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
 
 	private double getInternal( final ItemStack is )
 	{
-		final CompoundNBT nbt = Platform.openNbtData( is );
+		final CompoundNBT nbt = is.getOrCreateTag();
 		return nbt.getDouble( "internalCurrentPower" );
 	}
 
 	private void setInternal( final ItemStack is, final double amt )
 	{
-		final CompoundNBT nbt = Platform.openNbtData( is );
-		nbt.setDouble( "internalCurrentPower", amt );
+		final CompoundNBT nbt = is.getOrCreateTag();
+		nbt.putDouble("internalCurrentPower", amt);
 	}
 }

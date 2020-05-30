@@ -34,7 +34,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -57,7 +57,7 @@ public class PartRecipeFactory implements IRecipeFactory
 	@Override
 	public IRecipe parse( JsonContext context, JsonObject json )
 	{
-		String type = JsonUtils.getString( json, "type" );
+		String type = JSONUtils.getString( json, "type" );
 		if( type.contains( "shaped" ) )
 		{
 			return shapedFactory( context, json );
@@ -79,7 +79,7 @@ public class PartRecipeFactory implements IRecipeFactory
 
 	public static ItemStack getResult( JsonObject json, JsonContext context, String name )
 	{
-		JsonObject resultObject = JsonUtils.getJsonObject( json, name );
+		JsonObject resultObject = JSONUtils.getJsonObject( json, name );
 
 		if( resultObject.has( "part" ) )
 		{
@@ -97,7 +97,7 @@ public class PartRecipeFactory implements IRecipeFactory
 
 	private static ItemStack getPart( JsonObject resultObject )
 	{
-		String ingredient = JsonUtils.getString( resultObject, "part" );
+		String ingredient = JSONUtils.getString( resultObject, "part" );
 		Object result = AEApi.instance().registries().recipes().resolveItem( AppEng.MOD_ID, ingredient );
 		if( result instanceof ResolverResult )
 		{
@@ -111,7 +111,7 @@ public class PartRecipeFactory implements IRecipeFactory
 				throw new JsonSyntaxException( "Got a null item for " + resolverResult.itemName + " ( " + ingredient + " ). This should never happen!" );
 			}
 
-			return new ItemStack( item, JsonUtils.getInt( resultObject, "count", 1 ), resolverResult.damageValue, resolverResult.compound );
+			return new ItemStack( item, JSONUtils.getInt( resultObject, "count", 1 ), resolverResult.damageValue, resolverResult.compound );
 		}
 		else
 		{
@@ -122,10 +122,10 @@ public class PartRecipeFactory implements IRecipeFactory
 	// Copied from ShapedOreRecipe.java, modified a bit.
 	private static ShapedOreRecipe shapedFactory( JsonContext context, JsonObject json )
 	{
-		String group = JsonUtils.getString( json, "group", "" );
+		String group = JSONUtils.getString( json, "group", "" );
 
 		Map<Character, Ingredient> ingMap = Maps.newHashMap();
-		for( Map.Entry<String, JsonElement> entry : JsonUtils.getJsonObject( json, "key" ).entrySet() )
+		for( Map.Entry<String, JsonElement> entry : JSONUtils.getJsonObject( json, "key" ).entrySet() )
 		{
 			if( entry.getKey().length() != 1 )
 			{
@@ -141,7 +141,7 @@ public class PartRecipeFactory implements IRecipeFactory
 
 		ingMap.put( ' ', net.minecraft.item.crafting.Ingredient.EMPTY );
 
-		JsonArray patternJ = JsonUtils.getJsonArray( json, "pattern" );
+		JsonArray patternJ = JSONUtils.getJsonArray( json, "pattern" );
 
 		if( patternJ.size() == 0 )
 		{
@@ -151,7 +151,7 @@ public class PartRecipeFactory implements IRecipeFactory
 		String[] pattern = new String[patternJ.size()];
 		for( int x = 0; x < pattern.length; ++x )
 		{
-			String line = JsonUtils.getString( patternJ.get( x ), "pattern[" + x + "]" );
+			String line = JSONUtils.getString( patternJ.get( x ), "pattern[" + x + "]" );
 			if( x > 0 && pattern[0].length() != line.length() )
 			{
 				throw new JsonSyntaxException( "Invalid pattern: each row must  be the same width" );
@@ -162,7 +162,7 @@ public class PartRecipeFactory implements IRecipeFactory
 		CraftingHelper.ShapedPrimer primer = new CraftingHelper.ShapedPrimer();
 		primer.width = pattern[0].length();
 		primer.height = pattern.length;
-		primer.mirrored = JsonUtils.getBoolean( json, "mirrored", true );
+		primer.mirrored = JSONUtils.getBoolean( json, "mirrored", true );
 		primer.input = NonNullList.withSize( primer.width * primer.height, net.minecraft.item.crafting.Ingredient.EMPTY );
 
 		Set<Character> keys = Sets.newHashSet( ingMap.keySet() );
@@ -194,10 +194,10 @@ public class PartRecipeFactory implements IRecipeFactory
 	// Copied from ShapelessOreRecipe.java, modified a bit.
 	private static ShapelessOreRecipe shapelessFactory( JsonContext context, JsonObject json )
 	{
-		String group = JsonUtils.getString( json, "group", "" );
+		String group = JSONUtils.getString( json, "group", "" );
 
 		NonNullList<Ingredient> ings = NonNullList.create();
-		for( JsonElement ele : JsonUtils.getJsonArray( json, "ingredients" ) )
+		for( JsonElement ele : JSONUtils.getJsonArray( json, "ingredients" ) )
 		{
 			ings.add( CraftingHelper.getIngredient( ele, context ) );
 		}

@@ -52,7 +52,7 @@ public class GuiFluidLevelEmitter extends GuiUpgradeable
 		this.level.setMaxStringLength( 16 );
 		this.level.setTextColor( 0xFFFFFF );
 		this.level.setVisible( true );
-		this.level.setFocused( true );
+		this.level.changeFocus( true );
 		( (ContainerFluidLevelEmitter) this.inventorySlots ).setTextField( this.level );
 
 		final int y = 40;

@@ -101,8 +101,8 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	public CompoundNBT writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
-		data.setDouble( "burnTime", this.getBurnTime() );
-		data.setDouble( "maxBurnTime", this.getMaxBurnTime() );
+		data.putDouble("burnTime", this.getBurnTime());
+		data.putDouble("maxBurnTime", this.getMaxBurnTime());
 		data.setInteger( "burnSpeed", this.getBurnSpeed() );
 		return data;
 	}

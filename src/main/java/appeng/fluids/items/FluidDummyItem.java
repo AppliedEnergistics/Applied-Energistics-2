@@ -23,7 +23,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fluids.Fluid;
+import net.minecraft.fluid.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -53,7 +53,7 @@ public class FluidDummyItem extends AEBaseItem
 
 	public FluidStack getFluidStack( ItemStack is )
 	{
-		if( is.hasTagCompound() )
+		if( is.hasTag() )
 		{
 			CompoundNBT tag = is.getTagCompound();
 			return FluidStack.loadFluidStackFromNBT( tag );

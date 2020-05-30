@@ -45,12 +45,12 @@ public class ItemPaintBallRendering extends ItemRenderingCustomizer
 	{
 		final AEColor col = ( (ItemPaintBall) stack.getItem() ).getColor( stack );
 
-		final int colorValue = stack.getItemDamage() >= 20 ? col.mediumVariant : col.mediumVariant;
+		final int colorValue = stack.getDamage() >= 20 ? col.mediumVariant : col.mediumVariant;
 		final int r = ( colorValue >> 16 ) & 0xff;
 		final int g = ( colorValue >> 8 ) & 0xff;
 		final int b = ( colorValue ) & 0xff;
 
-		if( stack.getItemDamage() >= 20 )
+		if( stack.getDamage() >= 20 )
 		{
 			final float fail = 0.7f;
 			final int full = (int) ( 255 * 0.3 );

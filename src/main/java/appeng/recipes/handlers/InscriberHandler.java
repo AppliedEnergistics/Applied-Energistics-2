@@ -8,7 +8,7 @@ import java.util.List;
 import com.google.gson.JsonObject;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.util.JSONUtils;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.JsonContext;
 
@@ -27,21 +27,21 @@ public class InscriberHandler implements IAERecipeFactory
 	public void register( JsonObject json, JsonContext ctx )
 	{
 		ItemStack result = PartRecipeFactory.getResult( json, ctx );
-		String mode = JsonUtils.getString( json, "mode" );
+		String mode = JSONUtils.getString( json, "mode" );
 
-		JsonObject ingredients = JsonUtils.getJsonObject( json, "ingredients" );
+		JsonObject ingredients = JSONUtils.getJsonObject( json, "ingredients" );
 
 		List<ItemStack> middle = Arrays.asList( CraftingHelper.getIngredient( ingredients.get( "middle" ), ctx ).getMatchingStacks() );
 		ItemStack[] top = new ItemStack[] { null };
 		if( ingredients.has( "top" ) )
 		{
-			top = CraftingHelper.getIngredient( JsonUtils.getJsonObject( ingredients, "top" ), ctx ).getMatchingStacks();
+			top = CraftingHelper.getIngredient( JSONUtils.getJsonObject( ingredients, "top" ), ctx ).getMatchingStacks();
 		}
 
 		ItemStack[] bottom = new ItemStack[] { null };
 		if( ingredients.has( "bottom" ) )
 		{
-			bottom = CraftingHelper.getIngredient( JsonUtils.getJsonObject( ingredients, "bottom" ), ctx ).getMatchingStacks();
+			bottom = CraftingHelper.getIngredient( JSONUtils.getJsonObject( ingredients, "bottom" ), ctx ).getMatchingStacks();
 		}
 
 		final IInscriberRegistry reg = AEApi.instance().registries().inscriber();

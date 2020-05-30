@@ -24,7 +24,7 @@ import java.util.Random;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
@@ -55,7 +55,7 @@ public class SpatialSkyRender extends IRenderHandler
 	}
 
 	@Override
-	public void render( final float partialTicks, final WorldClient world, final Minecraft mc )
+	public void render(final float partialTicks, final ClientWorld world, final Minecraft mc )
 	{
 
 		final long now = System.currentTimeMillis();

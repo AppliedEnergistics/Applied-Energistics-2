@@ -22,6 +22,7 @@ package appeng.client.render.effects;
 import java.util.Random;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
@@ -55,7 +56,7 @@ public class LightningFX extends Particle
 		this.motionX = 0;
 		this.motionY = 0;
 		this.motionZ = 0;
-		this.particleMaxAge = maxAge;
+		this.maxAge = maxAge;
 	}
 
 	protected void regen()
@@ -77,13 +78,19 @@ public class LightningFX extends Particle
 	}
 
 	@Override
-	public void onUpdate()
+	public IParticleRenderType getRenderType() {
+		// TODO: FIXME
+		return IParticleRenderType.NO_RENDER;
+	}
+
+	@Override
+	public void tick()
 	{
 		this.prevPosX = this.posX;
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
 
-		if( this.particleAge++ >= this.particleMaxAge )
+		if( this.age++ >= this.maxAge )
 		{
 			this.setExpired();
 		}
@@ -104,7 +111,7 @@ public class LightningFX extends Particle
 		float blue = this.particleBlue * j;
 		final float alpha = this.particleAlpha;
 
-		if( this.particleAge == 3 )
+		if( this.age == 3 )
 		{
 			this.regen();
 		}
@@ -157,9 +164,9 @@ public class LightningFX extends Particle
 			{
 				this.clear();
 
-				double x = ( this.prevPosX + ( this.posX - this.prevPosX ) * l - interpPosX ) - offX;
-				double y = ( this.prevPosY + ( this.posY - this.prevPosY ) * l - interpPosY ) - offY;
-				double z = ( this.prevPosZ + ( this.posZ - this.prevPosZ ) * l - interpPosZ ) - offZ;
+				double x = ( this.prevPosX + ( this.getPosX() - this.prevPosX ) * l - interpPosX ) - offX;
+				double y = ( this.prevPosY + ( this.getPosY() - this.prevPosY ) * l - interpPosY ) - offY;
+				double z = ( this.prevPosZ + ( this.getPosZ() - this.prevPosZ ) * l - interpPosZ ) - offZ;
 
 				for( int s = 0; s < LightningFX.STEPS; s++ )
 				{

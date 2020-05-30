@@ -22,7 +22,7 @@ package appeng.client.gui.config;
 import java.util.Set;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.fml.client.IModGuiFactory;
 
 
@@ -47,7 +47,7 @@ public class AEConfigGuiFactory implements IModGuiFactory
 	}
 
 	/**
-	 * Return an initialized {@link GuiScreen}. This screen will be displayed
+	 * Return an initialized {@link Screen}. This screen will be displayed
 	 * when the "config" button is pressed in the mod list. It will
 	 * have a single argument constructor - the "parent" screen, the same as all
 	 * Minecraft GUIs. The expected behaviour is that this screen will replace the
@@ -67,7 +67,7 @@ public class AEConfigGuiFactory implements IModGuiFactory
 	 * or null if no GUI is desired.
 	 */
 	@Override
-	public GuiScreen createConfigGui( GuiScreen parentScreen )
+	public Screen createConfigGui(Screen parentScreen )
 	{
 		return new AEConfigGui( parentScreen );
 	}

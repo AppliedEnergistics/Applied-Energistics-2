@@ -88,9 +88,9 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 		super.getCheckedSubItems( creativeTab, itemStacks );
 
 		final ItemStack charged = new ItemStack( this, 1 );
-		final CompoundNBT tag = Platform.openNbtData( charged );
-		tag.setDouble( CURRENT_POWER_NBT_KEY, this.getAEMaxPower( charged ) );
-		tag.setDouble( MAX_POWER_NBT_KEY, this.getAEMaxPower( charged ) );
+        final CompoundNBT tag = charged.getOrCreateTag();
+		tag.putDouble(CURRENT_POWER_NBT_KEY, this.getAEMaxPower( charged ));
+		tag.putDouble(MAX_POWER_NBT_KEY, this.getAEMaxPower( charged ));
 
 		itemStacks.add( charged );
 	}
@@ -129,10 +129,10 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
 		if( mode == Actionable.MODULATE )
 		{
-			final CompoundNBT data = Platform.openNbtData( is );
+            final CompoundNBT data = is.getOrCreateTag();
 			final double toAdd = Math.min( amount, required );
 
-			data.setDouble( CURRENT_POWER_NBT_KEY, currentStorage + toAdd );
+			data.putDouble(CURRENT_POWER_NBT_KEY, currentStorage + toAdd);
 		}
 
 		return Math.max( 0, overflow );
@@ -146,9 +146,9 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
 		if( mode == Actionable.MODULATE )
 		{
-			final CompoundNBT data = Platform.openNbtData( is );
+            final CompoundNBT data = is.getOrCreateTag();
 
-			data.setDouble( CURRENT_POWER_NBT_KEY, currentStorage - fulfillable );
+			data.putDouble(CURRENT_POWER_NBT_KEY, currentStorage - fulfillable);
 		}
 
 		return fulfillable;
@@ -163,7 +163,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 	@Override
 	public double getAECurrentPower( final ItemStack is )
 	{
-		final CompoundNBT data = Platform.openNbtData( is );
+        final CompoundNBT data = is.getOrCreateTag();
 
 		return data.getDouble( CURRENT_POWER_NBT_KEY );
 	}

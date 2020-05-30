@@ -23,7 +23,7 @@ import java.util.function.BooleanSupplier;
 
 import com.google.gson.JsonObject;
 
-import net.minecraft.util.JsonUtils;
+import net.minecraft.util.JSONUtils;
 import net.minecraftforge.common.crafting.IConditionFactory;
 import net.minecraftforge.common.crafting.JsonContext;
 
@@ -40,9 +40,9 @@ public class MaterialExists implements IConditionFactory
 	{
 		final boolean result;
 
-		if( JsonUtils.isString( jsonObject, JSON_MATERIAL_KEY ) )
+		if( JSONUtils.isString( jsonObject, JSON_MATERIAL_KEY ) )
 		{
-			final String material = JsonUtils.getString( jsonObject, JSON_MATERIAL_KEY );
+			final String material = JSONUtils.getString( jsonObject, JSON_MATERIAL_KEY );
 			final Object item = Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, material );
 
 			result = item != null;

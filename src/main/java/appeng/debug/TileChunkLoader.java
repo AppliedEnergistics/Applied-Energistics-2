@@ -64,7 +64,7 @@ public class TileChunkLoader extends AEBaseTile implements ITickable
 
 		if( this.ct == null )
 		{
-			final MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+			final MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 			if( server != null )
 			{
 				final List<PlayerEntityMP> pl = server.getPlayerList().getPlayers();

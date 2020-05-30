@@ -140,7 +140,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 	@Override
 	public FuzzyMode getFuzzyMode( final ItemStack is )
 	{
-		final String fz = Platform.openNbtData( is ).getString( "FuzzyMode" );
+        final String fz = is.getOrCreateTag().getString( "FuzzyMode" );
 		try
 		{
 			return FuzzyMode.valueOf( fz );
@@ -154,7 +154,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 	@Override
 	public void setFuzzyMode( final ItemStack is, final FuzzyMode fzMode )
 	{
-		Platform.openNbtData( is ).setString( "FuzzyMode", fzMode.name() );
+        is.getOrCreateTag().putString("FuzzyMode", fzMode.name());
 	}
 
 	@Override

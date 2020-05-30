@@ -19,23 +19,24 @@
 package appeng.client.render.effects;
 
 
-import net.minecraft.client.particle.ParticleBreaking;
+import net.minecraft.client.particle.BreakingParticle;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
 import appeng.client.render.textures.ParticleTextures;
 
 
-public class MatterCannonFX extends ParticleBreaking
+public class MatterCannonFX extends BreakingParticle
 {
 
 	private final TextureAtlasSprite particleTextureIndex;
 
-	public MatterCannonFX( final World par1World, final double par2, final double par4, final double par6, final Item par8Item )
+	public MatterCannonFX( final World par1World, final double par2, final double par4, final double par6, final ItemStack par8Item )
 	{
 		super( par1World, par2, par4, par6, par8Item );
 		this.particleGravity = 0;
@@ -56,13 +57,13 @@ public class MatterCannonFX extends ParticleBreaking
 	}
 
 	@Override
-	public void onUpdate()
+	public void tick()
 	{
 		this.prevPosX = this.posX;
 		this.prevPosY = this.posY;
 		this.prevPosZ = this.posZ;
 
-		if( this.particleAge++ >= this.particleMaxAge )
+		if( this.age++ >= this.maxAge )
 		{
 			this.setExpired();
 		}

@@ -92,8 +92,8 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 		if( !w.isRemote )
 		{
 			final EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, igniter );
-			w.spawnEntity( primedTinyTNTEntity );
-			w.playSound( null, primedTinyTNTEntity.posX, primedTinyTNTEntity.posY, primedTinyTNTEntity.posZ, SoundEvents.ENTITY_TNT_PRIMED,
+			w.addEntity( primedTinyTNTEntity );
+			w.playSound( null, primedTinyTNTEntity.getPosX(), primedTinyTNTEntity.getPosY(), primedTinyTNTEntity.getPosZ(), SoundEvents.ENTITY_TNT_PRIMED,
 					SoundCategory.BLOCKS, 1, 1 );
 		}
 	}
@@ -150,7 +150,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 			final EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, exp
 					.getExplosivePlacedBy() );
 			primedTinyTNTEntity.setFuse( w.rand.nextInt( primedTinyTNTEntity.getFuse() / 4 ) + primedTinyTNTEntity.getFuse() / 8 );
-			w.spawnEntity( primedTinyTNTEntity );
+			w.addEntity( primedTinyTNTEntity );
 		}
 	}
 

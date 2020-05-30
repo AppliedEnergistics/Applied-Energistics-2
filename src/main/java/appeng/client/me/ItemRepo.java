@@ -45,6 +45,7 @@ import appeng.items.storage.ItemViewCell;
 import appeng.util.ItemSorters;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
+import net.minecraft.util.text.ITextComponent;
 
 
 public class ItemRepo
@@ -180,11 +181,11 @@ public class ItemRepo
 
 			if( terminalSearchToolTips && notDone && !searchMod )
 			{
-				final List<String> tooltip = Platform.getTooltip( is );
+				final List<ITextComponent> tooltip = Platform.getTooltip( is );
 
-				for( final String line : tooltip )
+				for( final ITextComponent line : tooltip )
 				{
-					if( m.matcher( line ).find() )
+					if( m.matcher( line.getString() ).find() )
 					{
 						foundMatchingItemStack = true;
 						notDone = false;

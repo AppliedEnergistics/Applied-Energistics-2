@@ -178,7 +178,7 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 		{
 			final AEColor[] variants = AEColor.values();
 
-			final int itemDamage = is.getItemDamage();
+			final int itemDamage = is.getDamage();
 			final PartTypeWithVariant registeredPartType = this.registered.get( itemDamage );
 			if( registeredPartType != null )
 			{
@@ -211,7 +211,7 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 	{
 		Preconditions.checkNotNull( is );
 
-		final PartTypeWithVariant pt = this.registered.get( is.getItemDamage() );
+		final PartTypeWithVariant pt = this.registered.get( is.getDamage() );
 		if( pt != null )
 		{
 			return pt.part;

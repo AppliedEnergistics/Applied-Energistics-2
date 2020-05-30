@@ -93,7 +93,7 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
-		if( data.hasKey( "paintedColor" ) )
+		if( data.contains("paintedColor") )
 		{
 			this.paintedColor = AEColor.values()[data.getByte( "paintedColor" )];
 		}

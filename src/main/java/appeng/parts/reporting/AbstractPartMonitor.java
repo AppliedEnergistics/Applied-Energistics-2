@@ -97,12 +97,12 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	{
 		super.writeToNBT( data );
 
-		data.setBoolean( "isLocked", this.isLocked );
+		data.putBoolean("isLocked", this.isLocked);
 
 		final CompoundNBT myItem = new CompoundNBT();
 		if( this.configuredItem != null )
 		{
-			this.configuredItem.writeToNBT( myItem );
+			this.configuredItem.write(myItem);
 		}
 
 		data.setTag( "configuredItem", myItem );

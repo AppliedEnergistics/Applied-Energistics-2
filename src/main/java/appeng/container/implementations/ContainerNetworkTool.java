@@ -27,7 +27,6 @@ import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.util.Platform;
 
 
 public class ContainerNetworkTool extends AEBaseContainer
@@ -59,8 +58,8 @@ public class ContainerNetworkTool extends AEBaseContainer
 
 	public void toggleFacadeMode()
 	{
-		final CompoundNBT data = Platform.openNbtData( this.toolInv.getItemStack() );
-		data.setBoolean( "hideFacades", !data.getBoolean( "hideFacades" ) );
+        final CompoundNBT data = this.toolInv.getItemStack().getOrCreateTag();
+		data.putBoolean("hideFacades", !data.getBoolean( "hideFacades" ));
 		this.detectAndSendChanges();
 	}
 
@@ -90,7 +89,7 @@ public class ContainerNetworkTool extends AEBaseContainer
 
 		if( this.isValidContainer() )
 		{
-			final CompoundNBT data = Platform.openNbtData( currentItem );
+            final CompoundNBT data = currentItem.getOrCreateTag();
 			this.setFacadeMode( data.getBoolean( "hideFacades" ) );
 		}
 

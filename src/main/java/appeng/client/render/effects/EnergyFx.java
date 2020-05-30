@@ -19,7 +19,8 @@
 package appeng.client.render.effects;
 
 
-import net.minecraft.client.particle.ParticleBreaking;
+import net.minecraft.client.particle.BreakingParticle;
+import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
@@ -34,7 +35,7 @@ import appeng.client.render.textures.ParticleTextures;
 
 
 @OnlyIn( Dist.CLIENT )
-public class EnergyFx extends ParticleBreaking
+public class EnergyFx extends BreakingParticle
 {
 
 	private final TextureAtlasSprite particleTextureIndex;
@@ -54,15 +55,21 @@ public class EnergyFx extends ParticleBreaking
 		this.particleScale = 3.5f;
 		this.particleTextureIndex = ParticleTextures.BlockEnergyParticle;
 
-		this.startBlkX = MathHelper.floor( this.posX );
-		this.startBlkY = MathHelper.floor( this.posY );
-		this.startBlkZ = MathHelper.floor( this.posZ );
+		this.startBlkX = MathHelper.floor( this.getPosX() );
+		this.startBlkY = MathHelper.floor( this.getPosY() );
+		this.startBlkZ = MathHelper.floor( this.getPosZ() );
 	}
 
 	@Override
 	public int getFXLayer()
 	{
 		return 1;
+	}
+
+	@Override
+	public IParticleRenderType getRenderType() {
+		// TODO: FIXME
+		return IParticleRenderType.NO_RENDER;
 	}
 
 	@Override
@@ -74,13 +81,13 @@ public class EnergyFx extends ParticleBreaking
 		final float f9 = this.particleTextureIndex.getMaxV();
 		final float f10 = 0.1F * this.particleScale;
 
-		final float f11 = (float) ( this.prevPosX + ( this.posX - this.prevPosX ) * partialTicks - interpPosX );
-		final float f12 = (float) ( this.prevPosY + ( this.posY - this.prevPosY ) * partialTicks - interpPosY );
-		final float f13 = (float) ( this.prevPosZ + ( this.posZ - this.prevPosZ ) * partialTicks - interpPosZ );
+		final float f11 = (float) ( this.prevPosX + ( this.getPosX() - this.prevPosX ) * partialTicks - interpPosX );
+		final float f12 = (float) ( this.prevPosY + ( this.getPosY() - this.prevPosY ) * partialTicks - interpPosY );
+		final float f13 = (float) ( this.prevPosZ + ( this.getPosZ() - this.prevPosZ ) * partialTicks - interpPosZ );
 
-		final int blkX = MathHelper.floor( this.posX );
-		final int blkY = MathHelper.floor( this.posY );
-		final int blkZ = MathHelper.floor( this.posZ );
+		final int blkX = MathHelper.floor( this.getPosX() );
+		final int blkY = MathHelper.floor( this.getPosY() );
+		final int blkZ = MathHelper.floor( this.getPosZ() );
 
 		if( blkX == this.startBlkX && blkY == this.startBlkY && blkZ == this.startBlkZ )
 		{
@@ -114,20 +121,20 @@ public class EnergyFx extends ParticleBreaking
 
 	public void fromItem( final AEPartLocation d )
 	{
-		this.posX += 0.2 * d.xOffset;
-		this.posY += 0.2 * d.yOffset;
-		this.posZ += 0.2 * d.zOffset;
+		this.getPosX() += 0.2 * d.xOffset;
+		this.getPosY() += 0.2 * d.yOffset;
+		this.getPosZ() += 0.2 * d.zOffset;
 		this.particleScale *= 0.8f;
 	}
 
 	@Override
-	public void onUpdate()
+	public void tick()
 	{
-		this.prevPosX = this.posX;
-		this.prevPosY = this.posY;
-		this.prevPosZ = this.posZ;
+		this.prevPosX = this.getPosX();
+		this.prevPosY = this.getPosY();
+		this.prevPosZ = this.getPosZ();
 
-		if( this.particleAge++ >= this.particleMaxAge )
+		if( this.age++ >= this.maxAge )
 		{
 			this.setExpired();
 		}

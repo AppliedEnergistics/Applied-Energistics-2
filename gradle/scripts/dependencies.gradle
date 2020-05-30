@@ -80,14 +80,15 @@ configurations {
 }
 
 dependencies {
-    minecraft([
-        group  : "net.minecraftforge",
-        name   : "forge",
-        version: "${project.minecraft_version}-${project.forge_version}"
-    ])
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    // installable runtime dependencies
+    mods "mcp.mobius.waila:Hwyla:${hwyla_version}"
+    mods "net.industrial-craft:industrialcraft-2:${ic2_version}:dev"
+    mods "mcjty.theoneprobe:TheOneProbe-${minecraft_version}:${top_version}"
 
     // compile against provided APIs
-    compileOnly "mezz.jei:jei-${minecraft_version}:${jei_version}:api"
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
     //compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}"
     //compileOnly "net.darkhax.tesla:Tesla-1.12.2:${tesla_version}"
     //compileOnly "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
@@ -97,8 +98,8 @@ dependencies {
 	//compileOnly "inventory-tweaks:InventoryTweaks:${inventorytweaks_version}:api"
     //compileOnly "team.chisel.ctm:CTM:${ctm_version}"
 
-    // at runtime, use the full JEI jar
-    runtime "mezz.jei:jei-${minecraft_version}:${jei_version}"
+    // Runtime, Mods
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
 
     // unit test dependencies
     testCompile "junit:junit:4.13"

@@ -43,7 +43,6 @@ import appeng.api.recipes.ResolverResult;
 import appeng.core.localization.ButtonToolTips;
 import appeng.entity.EntityGrowingCrystal;
 import appeng.items.AEBaseItem;
-import appeng.util.Platform;
 
 
 public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
@@ -76,7 +75,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 					crystalSeedStack.setItemDamage( certus2 );
 					crystalSeedStack = newStyle( crystalSeedStack );
 					String itemName = crystalSeedStack.getItem().getRegistryName().getResourcePath();
-					return new ResolverResult( itemName, crystalSeedStack.getItemDamage(), crystalSeedStack.getTagCompound() );
+					return new ResolverResult( itemName, crystalSeedStack.getDamage(), crystalSeedStack.getTagCompound() );
 				} )
 				.orElse( null );
 
@@ -90,16 +89,16 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 
 	static int getProgress( final ItemStack is )
 	{
-		if( is.hasTagCompound() )
+		if( is.hasTag() )
 		{
 			return is.getTagCompound().getInteger( "progress" );
 		}
 		else
 		{
 			final int progress;
-			final CompoundNBT comp = Platform.openNbtData( is );
-			comp.setInteger( "progress", progress = is.getItemDamage() );
-			is.setItemDamage( ( is.getItemDamage() / SINGLE_OFFSET ) * SINGLE_OFFSET );
+            final CompoundNBT comp = is.getOrCreateTag();
+			comp.setInteger( "progress", progress = is.getDamage() );
+			is.setItemDamage( ( is.getDamage() / SINGLE_OFFSET ) * SINGLE_OFFSET );
 			return progress;
 		}
 	}
@@ -147,9 +146,9 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 
 	private void setProgress( final ItemStack is, final int newDamage )
 	{
-		final CompoundNBT comp = Platform.openNbtData( is );
+        final CompoundNBT comp = is.getOrCreateTag();
 		comp.setInteger( "progress", newDamage );
-		is.setItemDamage( is.getItemDamage() / LEVEL_OFFSET * LEVEL_OFFSET );
+		is.setItemDamage( is.getDamage() / LEVEL_OFFSET * LEVEL_OFFSET );
 	}
 
 	@Override
@@ -225,7 +224,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	@Override
 	public Entity createEntity( final World world, final Entity location, final ItemStack itemstack )
 	{
-		final EntityGrowingCrystal egc = new EntityGrowingCrystal( world, location.posX, location.posY, location.posZ, itemstack );
+		final EntityGrowingCrystal egc = new EntityGrowingCrystal( world, location.getPosX(), location.getPosY(), location.getPosZ(), itemstack );
 
 		egc.motionX = location.motionX;
 		egc.motionY = location.motionY;

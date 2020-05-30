@@ -180,18 +180,18 @@ public final class VersionChecker implements Runnable
 		if( Loader.isModLoaded( "VersionChecker" ) )
 		{
 			final CompoundNBT versionInf = new CompoundNBT();
-			versionInf.setString( "modDisplayName", AppEng.MOD_NAME );
-			versionInf.setString( "oldVersion", modFormatted );
-			versionInf.setString( "newVersion", ghFormatted );
-			versionInf.setString( "updateUrl", "http://ae-mod.info/builds/appliedenergistics2-" + ghFormatted + ".jar" );
-			versionInf.setBoolean( "isDirectLink", true );
+			versionInf.putString("modDisplayName", AppEng.MOD_NAME);
+			versionInf.putString("oldVersion", modFormatted);
+			versionInf.putString("newVersion", ghFormatted);
+			versionInf.putString("updateUrl", "http://ae-mod.info/builds/appliedenergistics2-" + ghFormatted + ".jar");
+			versionInf.putBoolean("isDirectLink", true);
 
 			if( !changelog.isEmpty() )
 			{
-				versionInf.setString( "changeLog", changelog );
+				versionInf.putString("changeLog", changelog);
 			}
 
-			versionInf.setString( "newFileName", "appliedenergistics2-" + ghFormatted + ".jar" );
+			versionInf.putString("newFileName", "appliedenergistics2-" + ghFormatted + ".jar");
 			FMLInterModComms.sendRuntimeMessage( AppEng.instance(), "VersionChecker", "addUpdate", versionInf );
 
 			AELog.info( "Reported new version to VersionChecker mod." );

@@ -19,11 +19,11 @@
 package appeng.client.render.effects;
 
 
-import net.minecraft.client.particle.ParticleRedstone;
+import net.minecraft.client.particle.RedstoneParticle;
 import net.minecraft.world.World;
 
 
-public class ChargedOreFX extends ParticleRedstone
+public class ChargedOreFX extends RedstoneParticle
 {
 
 	public ChargedOreFX( final World w, final double x, final double y, final double z, final float r, final float g, final float b )

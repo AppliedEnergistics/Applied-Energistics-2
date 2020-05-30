@@ -29,7 +29,6 @@ import appeng.api.storage.ICellInventory;
 import appeng.api.storage.ISaveProvider;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
-import appeng.util.Platform;
 
 
 /**
@@ -87,7 +86,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 		}
 
 		this.container = container;
-		this.tagCompound = Platform.openNbtData( o );
+		this.tagCompound = o.getOrCreateTag();
 		this.storedItems = this.tagCompound.getShort( ITEM_TYPE_TAG );
 		this.storedItemCount = this.tagCompound.getInteger( ITEM_COUNT_TAG );
 		this.cellItems = null;

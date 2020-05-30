@@ -152,7 +152,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 				{
 					final List<ItemStack> drops = new ArrayList<>();
 					drops.add( extra );
-					Platform.spawnDrops( who.world, new BlockPos( (int) who.posX, (int) who.posY, (int) who.posZ ), drops );
+					Platform.spawnDrops( who.world, new BlockPos( (int) who.getPosX(), (int) who.getPosY(), (int) who.getPosZ() ), drops );
 					return;
 				}
 			}
@@ -319,7 +319,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 
 		if( drops.size() > 0 )
 		{
-			Platform.spawnDrops( p.world, new BlockPos( (int) p.posX, (int) p.posY, (int) p.posZ ), drops );
+			Platform.spawnDrops( p.world, new BlockPos( (int) p.getPosX(), (int) p.getPosY(), (int) p.getPosZ() ), drops );
 		}
 	}
 

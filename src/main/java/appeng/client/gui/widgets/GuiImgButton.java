@@ -24,10 +24,10 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resources.I18n;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.ActionItems;
@@ -52,7 +52,7 @@ import appeng.api.config.YesNo;
 import appeng.core.localization.ButtonToolTips;
 
 
-public class GuiImgButton extends GuiButton implements ITooltip
+public class GuiImgButton extends Button implements ITooltip
 {
 	private static final Pattern COMPILE = Pattern.compile( "%s" );
 	private static final Pattern PATTERN_NEW_LINE = Pattern.compile( "\\n", Pattern.LITERAL );
@@ -298,8 +298,8 @@ public class GuiImgButton extends GuiButton implements ITooltip
 
 		if( displayName != null )
 		{
-			String name = I18n.translateToLocal( displayName );
-			String value = I18n.translateToLocal( displayValue );
+			String name = I18n.format( displayName );
+			String value = I18n.format( displayValue );
 
 			if( name == null || name.isEmpty() )
 			{
