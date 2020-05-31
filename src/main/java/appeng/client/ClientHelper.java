@@ -20,59 +20,42 @@ package appeng.client;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
+import appeng.client.render.tesr.InscriberTESR;
+import appeng.client.render.textures.ParticleTextures;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.MouseEvent;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlock;
-import appeng.client.render.effects.AssemblerFX;
-import appeng.client.render.effects.CraftingFx;
-import appeng.client.render.effects.EnergyFx;
-import appeng.client.render.effects.LightningArcFX;
-import appeng.client.render.effects.LightningFX;
-import appeng.client.render.effects.VibrantFX;
-import appeng.client.render.model.UVLModelLoader;
-import appeng.client.render.tesr.InscriberTESR;
-import appeng.client.render.textures.ParticleTextures;
-import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketAssemblerAnimation;
 import appeng.core.sync.packets.PacketValueConfig;
-import appeng.entity.EntityFloatingItem;
-import appeng.entity.EntityTinyTNTPrimed;
-import appeng.entity.RenderFloatingItem;
-import appeng.entity.RenderTinyTNTPrimed;
 import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.TickHandler;
 import appeng.hooks.TickHandler.PlayerColor;
 import appeng.server.ServerHelper;
 import appeng.util.Platform;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 
 public class ClientHelper extends ServerHelper
@@ -84,19 +67,20 @@ public class ClientHelper extends ServerHelper
 	@Override
 	public void preinit()
 	{
-		MinecraftForge.EVENT_BUS.register( this );
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientInit);
+		MinecraftForge.EVENT_BUS.addListener(this::postPlayerRender);
+		MinecraftForge.EVENT_BUS.addListener(this::wheelEvent);
 		// Do not register the Fullbright hacks if Optifine is present or if the Forge lighting is disabled
-		if( !FMLClientHandler.instance().hasOptifine() && ForgeModContainer.forgeLightPipelineEnabled )
-		{
-			ModelLoaderRegistry.registerLoader( UVLModelLoader.INSTANCE );
-		}
+		// FIXME if( !FMLClientHandler.instance().hasOptifine() && ForgeModContainer.forgeLightPipelineEnabled )
+		// FIXME {
+		// FIXME 	ModelLoaderRegistry.registerLoader( UVLModelLoader.INSTANCE );
+		// FIXME }
 
-		RenderingRegistry.registerEntityRenderingHandler( EntityTinyTNTPrimed.class, manager -> new RenderTinyTNTPrimed( manager ) );
-		RenderingRegistry.registerEntityRenderingHandler( EntityFloatingItem.class, manager -> new RenderFloatingItem( manager ) );
+		// FIXME RenderingRegistry.registerEntityRenderingHandler( EntityTinyTNTPrimed.class, manager -> new RenderTinyTNTPrimed( manager ) );
+		// FIXME RenderingRegistry.registerEntityRenderingHandler( EntityFloatingItem.class, manager -> new RenderFloatingItem( manager ) );
 	}
 
-	@Override
-	public void init()
+	private void clientInit(FMLClientSetupEvent event)
 	{
 		for( ActionKey key : ActionKey.values() )
 		{
@@ -126,13 +110,11 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@Override
-	public List<PlayerEntity> getPlayers()
+	public List<? extends PlayerEntity> getPlayers()
 	{
 		if( Platform.isClient() )
 		{
-			final List<PlayerEntity> o = new ArrayList<>();
-			o.add( Minecraft.getInstance().player );
-			return o;
+			return Collections.singletonList(Minecraft.getInstance().player);
 		}
 		else
 		{
@@ -143,46 +125,45 @@ public class ClientHelper extends ServerHelper
 	@Override
 	public void spawnEffect( final EffectType effect, final World world, final double posX, final double posY, final double posZ, final Object o )
 	{
-		if( AEConfig.instance().isEnableEffects() )
-		{
-			switch( effect )
-			{
-				case Assembler:
-					this.spawnAssembler( world, posX, posY, posZ, o );
-					return;
-				case Vibrant:
-					this.spawnVibrant( world, posX, posY, posZ );
-					return;
-				case Crafting:
-					this.spawnCrafting( world, posX, posY, posZ );
-					return;
-				case Energy:
-					this.spawnEnergy( world, posX, posY, posZ );
-					return;
-				case Lightning:
-					this.spawnLightning( world, posX, posY, posZ );
-					return;
-				case LightningArc:
-					this.spawnLightningArc( world, posX, posY, posZ, (Vec3d) o );
-					return;
-				default:
-			}
-		}
+		// FIXME if( AEConfig.instance().isEnableEffects() )
+		// FIXME {
+		// FIXME 	switch( effect )
+		// FIXME 	{
+		// FIXME 		case Assembler:
+		// FIXME 			this.spawnAssembler( world, posX, posY, posZ, o );
+		// FIXME 			return;
+		// FIXME 		case Vibrant:
+		// FIXME 			this.spawnVibrant( world, posX, posY, posZ );
+		// FIXME 			return;
+		// FIXME 		case Crafting:
+		// FIXME 			this.spawnCrafting( world, posX, posY, posZ );
+		// FIXME 			return;
+		// FIXME 		case Energy:
+		// FIXME 			this.spawnEnergy( world, posX, posY, posZ );
+		// FIXME 			return;
+		// FIXME 		case Lightning:
+		// FIXME 			this.spawnLightning( world, posX, posY, posZ );
+		// FIXME 			return;
+		// FIXME 		case LightningArc:
+		// FIXME 			this.spawnLightningArc( world, posX, posY, posZ, (Vec3d) o );
+		// FIXME 			return;
+		// FIXME 		default:
+		// FIXME 	}
+		// FIXME }
 	}
 
 	@Override
 	public boolean shouldAddParticles( final Random r )
 	{
-		final int setting = Minecraft.getInstance().gameSettings.particleSetting;
-		if( setting == 2 )
-		{
-			return false;
+		switch (Minecraft.getInstance().gameSettings.particles) {
+			default:
+			case ALL:
+				return true;
+			case DECREASED:
+				return r.nextBoolean();
+			case MINIMAL:
+				return false;
 		}
-		if( setting == 0 )
-		{
-			return true;
-		}
-		return r.nextInt( 2 * ( setting + 1 ) ) == 0;
 	}
 
 	@Override
@@ -214,24 +195,23 @@ public class ClientHelper extends ServerHelper
 	public void triggerUpdates()
 	{
 		final Minecraft mc = Minecraft.getInstance();
-		if( mc == null || mc.player == null || mc.world == null )
+		if( mc.player == null || mc.world == null )
 		{
 			return;
 		}
 
 		final PlayerEntity player = mc.player;
 
-		final int x = (int) player.posX;
-		final int y = (int) player.posY;
-		final int z = (int) player.posZ;
+		final int x = (int) player.getPosX();
+		final int y = (int) player.getPosY();
+		final int z = (int) player.getPosZ();
 
 		final int range = 16 * 16;
 
-		mc.world.markBlockRangeForRenderUpdate( x - range, y - range, z - range, x + range, y + range, z + range );
+		mc.worldRenderer.markBlockRangeForRenderUpdate( x - range, y - range, z - range, x + range, y + range, z + range );
 	}
 
-	@SubscribeEvent
-	public void postPlayerRender( final RenderLivingEvent.Pre p )
+	private void postPlayerRender( final RenderLivingEvent.Pre p )
 	{
 		final PlayerColor player = TickHandler.INSTANCE.getPlayerColors().get( p.getEntity().getEntityId() );
 		if( player != null )
@@ -241,7 +221,8 @@ public class ClientHelper extends ServerHelper
 			final float r = 0xff & ( col.mediumVariant >> 16 );
 			final float g = 0xff & ( col.mediumVariant >> 8 );
 			final float b = 0xff & ( col.mediumVariant );
-			GlStateManager.color( r / 255.0f, g / 255.0f, b / 255.0f );
+			// FIXME: This is most certainly not going to work!
+			GlStateManager.color4f( r / 255.0f, g / 255.0f, b / 255.0f, 1.0f );
 		}
 	}
 
@@ -249,8 +230,8 @@ public class ClientHelper extends ServerHelper
 	{
 		final PacketAssemblerAnimation paa = (PacketAssemblerAnimation) o;
 
-		final AssemblerFX fx = new AssemblerFX( world, posX, posY, posZ, 0.0D, 0.0D, 0.0D, paa.rate, paa.is );
-		Minecraft.getInstance().effectRenderer.addEffect( fx );
+		// FIXME final AssemblerFX fx = new AssemblerFX( world, posX, posY, posZ, 0.0D, 0.0D, 0.0D, paa.rate, paa.is );
+		// FIXME Minecraft.getInstance().particles.addEffect( fx );
 	}
 
 	private void spawnVibrant( final World w, final double x, final double y, final double z )
@@ -261,8 +242,8 @@ public class ClientHelper extends ServerHelper
 			final double d1 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
 			final double d2 = ( Platform.getRandomFloat() - 0.5F ) * 0.26D;
 
-			final VibrantFX fx = new VibrantFX( w, x + d0, y + d1, z + d2, 0.0D, 0.0D, 0.0D );
-			Minecraft.getInstance().effectRenderer.addEffect( fx );
+			// FIXME final VibrantFX fx = new VibrantFX( w, x + d0, y + d1, z + d2, 0.0D, 0.0D, 0.0D );
+			// FIXME Minecraft.getInstance().particles.addEffect( fx );
 		}
 	}
 
@@ -272,13 +253,13 @@ public class ClientHelper extends ServerHelper
 		final float y = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
 		final float z = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
 
-		final CraftingFx fx = new CraftingFx( w, posX + x, posY + y, posZ + z, Items.DIAMOND );
+		// FIXME final CraftingFx fx = new CraftingFx( w, posX + x, posY + y, posZ + z, Items.DIAMOND );
 
-		fx.setMotionX( -x * 0.2f );
-		fx.setMotionY( -y * 0.2f );
-		fx.setMotionZ( -z * 0.2f );
+		// FIXME fx.setMotionX( -x * 0.2f );
+		// FIXME fx.setMotionY( -y * 0.2f );
+		// FIXME fx.setMotionZ( -z * 0.2f );
 
-		Minecraft.getInstance().effectRenderer.addEffect( fx );
+		// FIXME Minecraft.getInstance().particles.addEffect( fx );
 	}
 
 	private void spawnEnergy( final World w, final double posX, final double posY, final double posZ )
@@ -287,38 +268,37 @@ public class ClientHelper extends ServerHelper
 		final float y = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
 		final float z = (float) ( ( ( Platform.getRandomInt() % 100 ) * 0.01 ) - 0.5 ) * 0.7f;
 
-		final EnergyFx fx = new EnergyFx( w, posX + x, posY + y, posZ + z, Items.DIAMOND );
+		// FIXME final EnergyFx fx = new EnergyFx( w, posX + x, posY + y, posZ + z, Items.DIAMOND );
 
-		fx.setMotionX( -x * 0.1f );
-		fx.setMotionY( -y * 0.1f );
-		fx.setMotionZ( -z * 0.1f );
+		// FIXME fx.setMotionX( -x * 0.1f );
+		// FIXME fx.setMotionY( -y * 0.1f );
+		// FIXME fx.setMotionZ( -z * 0.1f );
 
-		Minecraft.getInstance().effectRenderer.addEffect( fx );
+		// FIXME Minecraft.getInstance().particles.addEffect( fx );
 	}
 
 	private void spawnLightning( final World world, final double posX, final double posY, final double posZ )
 	{
-		final LightningFX fx = new LightningFX( world, posX, posY + 0.3f, posZ, 0.0f, 0.0f, 0.0f );
-		Minecraft.getInstance().effectRenderer.addEffect( fx );
+		// FIXME final LightningFX fx = new LightningFX( world, posX, posY + 0.3f, posZ, 0.0f, 0.0f, 0.0f );
+		// FIXME Minecraft.getInstance().particles.addEffect( fx );
 	}
 
 	private void spawnLightningArc( final World world, final double posX, final double posY, final double posZ, final Vec3d second )
 	{
-		final LightningFX fx = new LightningArcFX( world, posX, posY, posZ, second.x, second.y, second.z, 0.0f, 0.0f, 0.0f );
-		Minecraft.getInstance().effectRenderer.addEffect( fx );
+		// FIXME final LightningFX fx = new LightningArcFX( world, posX, posY, posZ, second.x, second.y, second.z, 0.0f, 0.0f, 0.0f );
+		// FIXME Minecraft.getInstance().particles.addEffect( fx );
 	}
 
-	@SubscribeEvent
-	public void wheelEvent( final MouseEvent me )
+	private void wheelEvent( final InputEvent.MouseScrollEvent me )
 	{
-		if( me.getDwheel() == 0 )
+		if( me.getScrollDelta() == 0 )
 		{
 			return;
 		}
 
 		final Minecraft mc = Minecraft.getInstance();
 		final PlayerEntity player = mc.player;
-		if( player.isShiftKeyDown() )
+		if( player.isCrouching() )
 		{
 			final boolean mainHand = player.getHeldItem( Hand.MAIN_HAND ).getItem() instanceof IMouseWheelItem;
 			final boolean offHand = player.getHeldItem( Hand.OFF_HAND ).getItem() instanceof IMouseWheelItem;
@@ -327,7 +307,7 @@ public class ClientHelper extends ServerHelper
 			{
 				try
 				{
-					NetworkHandler.instance().sendToServer( new PacketValueConfig( "Item", me.getDwheel() > 0 ? "WheelUp" : "WheelDown" ) );
+					NetworkHandler.instance().sendToServer( new PacketValueConfig( "Item", me.getScrollDelta() > 0 ? "WheelUp" : "WheelDown" ) );
 					me.setCanceled( true );
 				}
 				catch( final IOException e )
@@ -346,14 +326,8 @@ public class ClientHelper extends ServerHelper
 	}
 
 	@Override
-	public boolean isKeyPressed( ActionKey key )
+	public boolean isActionKey( ActionKey key, InputMappings.Input pressedKey )
 	{
-		return this.bindings.get( key ).isPressed();
-	}
-
-	@Override
-	public boolean isActionKey( ActionKey key, int pressedKeyCode )
-	{
-		return this.bindings.get( key ).isActiveAndMatches( pressedKeyCode );
+		return this.bindings.get( key ).isActiveAndMatches( pressedKey );
 	}
 }

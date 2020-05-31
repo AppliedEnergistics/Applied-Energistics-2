@@ -20,18 +20,9 @@ package appeng.core;
 
 
 import java.io.File;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.Nonnull;
 
 import appeng.client.ClientHelper;
 import appeng.server.ServerHelper;
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.Lists;
-
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.CrashReportExtender;
 import net.minecraftforge.fml.DistExecutor;
@@ -39,29 +30,10 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.versions.forge.ForgeVersion;
-import team.chisel.ctm.CTM;
 
-import appeng.api.AEApi;
 import appeng.core.crash.CrashInfo;
-import appeng.core.crash.IntegrationCrashEnhancement;
 import appeng.core.crash.ModCrashEnhancement;
-import appeng.core.features.AEFeature;
-import appeng.core.stats.AdvancementTriggers;
-import appeng.core.sync.GuiBridge;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.worlddata.WorldData;
-import appeng.hooks.TickHandler;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
-import appeng.server.AECommand;
-import appeng.services.VersionChecker;
 import appeng.services.export.ExportConfig;
-import appeng.services.export.ExportProcess;
-import appeng.services.export.ForgeExportConfig;
-import appeng.services.version.VersionCheckerConfig;
-import appeng.util.Platform;
 
 @Mod(AppEng.MOD_ID)
 public final class AppEng

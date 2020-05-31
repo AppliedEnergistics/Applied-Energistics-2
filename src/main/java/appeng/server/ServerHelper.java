@@ -23,8 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -32,7 +33,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.block.AEBaseBlock;
@@ -43,6 +43,7 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.items.tools.ToolNetworkTool;
 import appeng.util.Platform;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 
 public class ServerHelper extends CommonHelper
@@ -52,12 +53,6 @@ public class ServerHelper extends CommonHelper
 
 	@Override
 	public void preinit()
-	{
-
-	}
-
-	@Override
-	public void init()
 	{
 
 	}
@@ -75,15 +70,15 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public List<PlayerEntity> getPlayers()
+	public List<? extends PlayerEntity> getPlayers()
 	{
 		if( !Platform.isClient() )
 		{
-			final MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+			final MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 
 			if( server != null )
 			{
-				return (List) server.getPlayerList().getPlayers();
+				return server.getPlayerList().getPlayers();
 			}
 		}
 
@@ -91,7 +86,7 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public void sendToAllNearExcept( final PlayerEntity p, final double x, final double y, final double z, final double dist, final World w, final AppEngPacket packet )
+	public void sendToAllNearExcept(final PlayerEntity p, final double x, final double y, final double z, final double dist, final World w, final AppEngPacket packet )
 	{
 		if( Platform.isClient() )
 		{
@@ -100,17 +95,17 @@ public class ServerHelper extends CommonHelper
 
 		for( final PlayerEntity o : this.getPlayers() )
 		{
-			final PlayerEntityMP PlayerEntitymp = (PlayerEntityMP) o;
+			final ServerPlayerEntity entityplayermp = (ServerPlayerEntity) o;
 
-			if( PlayerEntitymp != p && PlayerEntitymp.world == w )
+			if( entityplayermp != p && entityplayermp.world == w )
 			{
-				final double dX = x - PlayerEntitymp.posX;
-				final double dY = y - PlayerEntitymp.posY;
-				final double dZ = z - PlayerEntitymp.posZ;
+				final double dX = x - entityplayermp.getPosX();
+				final double dY = y - entityplayermp.getPosY();
+				final double dZ = z - entityplayermp.getPosZ();
 
 				if( dX * dX + dY * dY + dZ * dZ < dist * dist )
 				{
-					NetworkHandler.instance().sendTo( packet, PlayerEntitymp );
+					NetworkHandler.instance().sendTo( packet, entityplayermp );
 				}
 			}
 		}
@@ -167,13 +162,13 @@ public class ServerHelper extends CommonHelper
 	{
 		if( player != null )
 		{
-			for( int x = 0; x < PlayerInventory.getHotbarSize(); x++ )
+			for(int x = 0; x < PlayerInventory.getHotbarSize(); x++ )
 			{
 				final ItemStack is = player.inventory.getStackInSlot( x );
 
 				if( !is.isEmpty() && is.getItem() instanceof ToolNetworkTool )
 				{
-					final CompoundNBT c = is.getTagCompound();
+					final CompoundNBT c = is.getTag();
 					if( c != null && c.getBoolean( "hideFacades" ) )
 					{
 						return CableRenderMode.CABLE_VIEW;
@@ -186,13 +181,7 @@ public class ServerHelper extends CommonHelper
 	}
 
 	@Override
-	public boolean isKeyPressed( ActionKey key )
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isActionKey( ActionKey key, int pressedKeyCode )
+	public boolean isActionKey( ActionKey key, InputMappings.Input input )
 	{
 		return false;
 	}
