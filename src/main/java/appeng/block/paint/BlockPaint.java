@@ -139,7 +139,7 @@ public class BlockPaint extends AEBaseTileBlock
 	{
 		if( Platform.isServer() )
 		{
-			w.setBlockToAir( pos );
+			w.removeBlock(pos, false);
 		}
 	}
 

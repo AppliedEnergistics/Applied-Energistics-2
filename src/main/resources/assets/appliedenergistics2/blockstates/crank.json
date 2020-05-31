@@ -1,11 +1,11 @@
 {
     "forge_marker": 1,
     "variants": {
-        "normal": {
-            "model": "appliedenergistics2:crank"
+        "": {
+            "model": "appliedenergistics2:block/crank"
         },
         "inventory": {
-            "model": "appliedenergistics2:crank_inventory"
+            "model": "appliedenergistics2:block/crank_inventory"
         }
     }
 }

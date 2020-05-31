@@ -40,9 +40,7 @@ version="${file.jarVersion}" #mandatory
 displayName="Applied Energistics 2" #mandatory
 
 # The description text for the mod (multi line!) (#mandatory)
-description='''
-A Mod about Matter, Energy and using them to conquer the world..
-'''
+description="A Mod about Matter, Energy and using them to conquer the world.."
 
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.jei]]

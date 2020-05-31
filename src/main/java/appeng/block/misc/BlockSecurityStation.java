@@ -27,10 +27,11 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
@@ -80,7 +81,7 @@ public class BlockSecurityStation extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
+	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
 	{
 		if( p.isShiftKeyDown() )
 		{
@@ -95,7 +96,7 @@ public class BlockSecurityStation extends AEBaseTileBlock
 				return true;
 			}
 
-			Platform.openGUI( p, tg, AEPartLocation.fromFacing( side ), GuiBridge.GUI_SECURITY );
+			Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_SECURITY );
 			return true;
 		}
 		return false;

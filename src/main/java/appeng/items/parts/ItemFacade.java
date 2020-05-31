@@ -214,7 +214,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	public ItemStack getTextureItem( ItemStack is )
 	{
 
-		CompoundNBT nbt = is.getTagCompound();
+		CompoundNBT nbt = is.getTag();
 
 		if( nbt == null )
 		{

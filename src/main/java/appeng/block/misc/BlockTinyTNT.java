@@ -31,21 +31,23 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.item.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseBlock;
 import appeng.entity.EntityTinyTNTPrimed;
 import appeng.helpers.ICustomCollision;
+import net.minecraft.world.server.ServerWorld;
 
 
 public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
@@ -72,18 +74,18 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
+	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
 	{
 		if( heldItem != null && heldItem.getItem() == Items.FLINT_AND_STEEL )
 		{
 			this.startFuse( w, pos, player );
-			w.setBlockToAir( pos );
+			w.removeBlock(pos, false);
 			heldItem.damageItem( 1, player );
 			return true;
 		}
 		else
 		{
-			return super.onActivated( w, pos, player, hand, heldItem, side, hitX, hitY, hitZ );
+			return super.onActivated( w, pos, player, hand, heldItem, hit);
 		}
 	}
 
@@ -104,7 +106,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 		if( world.isBlockIndirectlyGettingPowered( pos ) > 0 )
 		{
 			this.startFuse( world, pos, null );
-			world.setBlockToAir( pos );
+			world.removeBlock(pos, false);
 		}
 	}
 
@@ -116,21 +118,31 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 		if( w.isBlockIndirectlyGettingPowered( pos ) > 0 )
 		{
 			this.startFuse( w, pos, null );
-			w.setBlockToAir( pos );
+			w.removeBlock(pos, false);
 		}
 	}
 
 	@Override
 	public void onEntityWalk( final World w, final BlockPos pos, final Entity entity )
 	{
-		if( entity instanceof EntityArrow && !w.isRemote )
+		if( entity instanceof AbstractArrowEntity && !w.isRemote )
 		{
-			final EntityArrow entityarrow = (EntityArrow) entity;
+			final AbstractArrowEntity entityarrow = (AbstractArrowEntity) entity;
 
 			if( entityarrow.isBurning() )
 			{
-				this.startFuse( w, pos, entityarrow.shootingEntity instanceof LivingEntity ? (LivingEntity) entityarrow.shootingEntity : null );
-				w.setBlockToAir( pos );
+				LivingEntity igniter = null;
+				// Check if the shooter still exists
+				if (w instanceof ServerWorld) {
+					ServerWorld serverWorld = (ServerWorld) w;
+					Entity shooter = serverWorld.getEntityByUuid(entityarrow.shootingEntity);
+					if (shooter instanceof LivingEntity) {
+						igniter = (LivingEntity) shooter;
+					}
+
+				}
+				this.startFuse( w, pos, igniter );
+				w.removeBlock(pos, false);
 			}
 		}
 	}

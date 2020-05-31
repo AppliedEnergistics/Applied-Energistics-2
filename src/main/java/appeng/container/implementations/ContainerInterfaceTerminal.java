@@ -184,7 +184,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 			}
 		}
 
-		if( !this.data.hasNoTags() )
+		if( !this.data.isEmpty() )
 		{
 			try
 			{
@@ -374,7 +374,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 		final String name = '=' + Long.toString( inv.which, Character.MAX_RADIX );
 		final CompoundNBT tag = data.getCompoundTag( name );
 
-		if( tag.hasNoTags() )
+		if( tag.isEmpty() )
 		{
 			tag.putLong( "sortBy", inv.sortBy );
 			tag.putString("un", inv.unlocalizedName);

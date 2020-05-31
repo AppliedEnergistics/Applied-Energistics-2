@@ -22,13 +22,12 @@ package appeng.bootstrap;
 import java.util.Arrays;
 import java.util.Collection;
 
-import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.IModel;
 
 
 /**
@@ -42,8 +41,8 @@ public interface IItemRendering
 	 * item model to be used for rendering by inspecting the item stack (i.e. for NBT data).
 	 * Please
 	 */
-	@OnlyIn( Dist.CLIENT )
-	IItemRendering meshDefinition( ItemMeshDefinition meshDefinition );
+//FIXME	@OnlyIn( Dist.CLIENT )
+//FIXME	IItemRendering meshDefinition( ItemMeshDefinition meshDefinition );
 
 	/**
 	 * Registers an item model for meta=0, see {@link #model(int, ModelResourceLocation)}.
@@ -90,6 +89,6 @@ public interface IItemRendering
 	 * Registers a built-in model under the given resource path.
 	 */
 	@OnlyIn( Dist.CLIENT )
-	IItemRendering builtInModel( String name, IModel model );
+	IItemRendering builtInModel( String name, IUnbakedModel model );
 
 }

@@ -19,12 +19,11 @@
 package appeng.api.definitions;
 
 
-import java.util.Optional;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraftforge.fml.RegistryObject;
 
 
 public interface IBlockDefinition extends IItemDefinition
@@ -32,12 +31,12 @@ public interface IBlockDefinition extends IItemDefinition
 	/**
 	 * @return the {@link Block} implementation if applicable
 	 */
-	Optional<Block> maybeBlock();
+	RegistryObject<Block> maybeBlock();
 
 	/**
-	 * @return the {@link ItemBlock} implementation if applicable
+	 * @return the {@link BlockItem} implementation if applicable
 	 */
-	Optional<BlockItem> maybeBlockItem();
+	RegistryObject<BlockItem> maybeBlockItem();
 
 	/**
 	 * Compare Block with world.

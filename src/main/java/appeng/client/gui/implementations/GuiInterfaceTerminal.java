@@ -331,7 +331,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			return false;
 		}
 
-		final CompoundNBT encodedValue = itemStack.getTagCompound();
+		final CompoundNBT encodedValue = itemStack.getTag();
 
 		if( encodedValue == null )
 		{

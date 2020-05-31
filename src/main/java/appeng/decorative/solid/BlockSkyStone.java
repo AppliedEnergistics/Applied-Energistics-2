@@ -87,9 +87,8 @@ public class BlockSkyStone extends AEBaseBlock
 	}
 
 	@Override
-	public void breakBlock( final World w, final BlockPos pos, final BlockState state )
-	{
-		super.breakBlock( w, pos, state );
+	public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+		super.onReplaced(state, w, pos, newState, isMoving);
 
 		if( Platform.isServer() )
 		{

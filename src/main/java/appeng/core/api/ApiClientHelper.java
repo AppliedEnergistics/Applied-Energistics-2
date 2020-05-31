@@ -10,12 +10,13 @@ import appeng.api.storage.ICellInventoryHandler;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IClientHelper;
 import appeng.core.localization.GuiText;
+import net.minecraft.util.text.ITextComponent;
 
 
 public class ApiClientHelper implements IClientHelper
 {
 	@Override
-	public <T extends IAEStack<T>> void addCellInformation( ICellInventoryHandler<T> handler, List<String> lines )
+	public <T extends IAEStack<T>> void addCellInformation( ICellInventoryHandler<T> handler, List<ITextComponent> lines )
 	{
 		if( handler == null )
 		{

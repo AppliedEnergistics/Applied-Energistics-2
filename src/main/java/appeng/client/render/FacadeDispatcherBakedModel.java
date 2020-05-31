@@ -95,7 +95,7 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel
 
 				ItemStack textureItem = itemFacade.getTextureItem( stack );
 
-				int hash = Objects.hash( textureItem.getItem().getRegistryName(), textureItem.getMetadata(), textureItem.getTagCompound() );
+				int hash = Objects.hash( textureItem.getItem().getRegistryName(), textureItem.getMetadata(), textureItem.getTag() );
 				FacadeBakedItemModel model = FacadeDispatcherBakedModel.this.cache.get( hash );
 				if( model == null )
 				{

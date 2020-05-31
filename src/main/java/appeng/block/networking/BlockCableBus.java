@@ -43,11 +43,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
@@ -130,9 +132,9 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 	}
 
 	@Override
-	public void randomDisplayTick( final BlockState state, final World worldIn, final BlockPos pos, final Random rand )
+	public void animateTick( final BlockState state, final World worldIn, final BlockPos pos, final Random rand )
 	{
-		this.cb( worldIn, pos ).randomDisplayTick( worldIn, pos, rand );
+		this.cb( worldIn, pos ).animateTick( worldIn, pos, rand );
 	}
 
 	@Override
@@ -401,7 +403,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
+	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
 	{
 		return this.cb( w, pos ).activate( player, hand, new Vec3d( hitX, hitY, hitZ ) );
 	}

@@ -26,8 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
 import appeng.api.config.FuzzyMode;
-import appeng.util.item.OreHelper;
-import appeng.util.item.OreReference;
 
 
 /**
@@ -104,14 +102,14 @@ public class ItemComparisonHelper
 				return ( percentDamagedOfA > mode.breakPoint ) == ( percentDamagedOfB > mode.breakPoint );
 			}
 		}
-
-		final OreReference aOR = OreHelper.INSTANCE.getOre( a ).orElse( null );
-		final OreReference bOR = OreHelper.INSTANCE.getOre( b ).orElse( null );
-
-		if( OreHelper.INSTANCE.sameOre( aOR, bOR ) )
-		{
-			return true;
-		}
+// FIXME
+//		final OreReference aOR = OreHelper.INSTANCE.getOre( a ).orElse( null );
+//		final OreReference bOR = OreHelper.INSTANCE.getOre( b ).orElse( null );
+//
+//		if( OreHelper.INSTANCE.sameOre( aOR, bOR ) )
+//		{
+//			return true;
+//		}
 
 		return a.isItemEqual( b );
 	}

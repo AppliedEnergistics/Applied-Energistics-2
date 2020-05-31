@@ -38,7 +38,7 @@ public class TileEntityComponent implements IPreInitComponent
 		{
 			if( !tileEntityDefinition.isRegistered() )
 			{
-				GameRegistry.registerTileEntity( tileEntityDefinition.getTileEntityClass(), AppEng.MOD_ID + ":" + tileEntityDefinition.getName() );
+				// FIXME GameRegistry.registerTileEntity( tileEntityDefinition.getTileEntityClass(), AppEng.MOD_ID + ":" + tileEntityDefinition.getName() );
 				tileEntityDefinition.setRegistered( true );
 			}
 		}

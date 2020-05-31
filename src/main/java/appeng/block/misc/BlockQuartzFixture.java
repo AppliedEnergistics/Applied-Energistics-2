@@ -135,7 +135,7 @@ public class BlockQuartzFixture extends AEBaseBlock implements IOrientableBlock,
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
-	public void randomDisplayTick( final BlockState state, final World w, final BlockPos pos, final Random r )
+	public void animateTick( final BlockState state, final World w, final BlockPos pos, final Random r )
 	{
 		if( !AEConfig.instance().isEnableEffects() )
 		{

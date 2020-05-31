@@ -46,6 +46,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -85,9 +86,9 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 
 	@OnlyIn( Dist.CLIENT )
 	@Override
-	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
+	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
-		super.addCheckedInformation( stack, world, lines, advancedTooltips );
+		super.addInformation( stack, world, lines, advancedTooltips );
 
 		final MaterialType mt = this.getTypeByStack( stack );
 		if( mt == null )

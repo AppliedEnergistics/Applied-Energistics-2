@@ -1,11 +1,11 @@
 {
     "parent": "block/block",
     "textures": {
-        "side": "appliedenergistics2:blocks/drive_side",
-        "bottom": "appliedenergistics2:blocks/drive_bottom",
-        "top": "appliedenergistics2:blocks/drive_top",
-        "front": "appliedenergistics2:blocks/drive_front",
-        "inner": "appliedenergistics2:blocks/drive_bottom"
+        "side": "appliedenergistics2:block/drive_side",
+        "bottom": "appliedenergistics2:block/drive_bottom",
+        "top": "appliedenergistics2:block/drive_top",
+        "front": "appliedenergistics2:block/drive_front",
+        "inner": "appliedenergistics2:block/drive_bottom"
     },
     "elements": [
         {

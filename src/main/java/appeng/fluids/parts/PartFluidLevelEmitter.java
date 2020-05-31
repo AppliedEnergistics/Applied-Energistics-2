@@ -307,7 +307,7 @@ public class PartFluidLevelEmitter extends PartUpgradeable implements IStackWatc
 	}
 
 	@Override
-	public void randomDisplayTick( final World world, final BlockPos pos, final Random r )
+	public void animateTick( final World world, final BlockPos pos, final Random r )
 	{
 		if( this.isLevelEmitterOn() )
 		{

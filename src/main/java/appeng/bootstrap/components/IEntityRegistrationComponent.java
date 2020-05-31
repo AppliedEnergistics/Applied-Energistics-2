@@ -12,5 +12,5 @@ import appeng.bootstrap.IBootstrapComponent;
 @FunctionalInterface
 public interface IEntityRegistrationComponent extends IBootstrapComponent
 {
-	void entityRegistration( IForgeRegistry<EntityType<? extends Entity>> entityRegistry );
+	void entityRegistration( IForgeRegistry<EntityType<?>> entityRegistry );
 }

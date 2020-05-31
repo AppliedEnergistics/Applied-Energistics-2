@@ -32,6 +32,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -103,7 +104,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
-	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
+	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
 		final ICraftingPatternDetails details = this.getPatternForItem( stack, world );
 

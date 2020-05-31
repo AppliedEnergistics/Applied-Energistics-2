@@ -58,9 +58,10 @@ class ItemDefinitionBuilder implements IItemBuilder
 
 	private Supplier<IDispenseItemBehavior> dispenserBehaviorSupplier;
 
-	@OnlyIn( Dist.CLIENT )
-	private ItemRendering itemRendering;
-
+// FIXME
+//	@OnlyIn( Dist.CLIENT )
+//	private ItemRendering itemRendering;
+//
 	private ItemGroup itemGroup = CreativeTab.instance;
 
 	ItemDefinitionBuilder( FeatureFactory factory, String registryName, Supplier<Item> itemSupplier )
@@ -70,7 +71,7 @@ class ItemDefinitionBuilder implements IItemBuilder
 		this.itemSupplier = itemSupplier;
 		if( Platform.isClient() )
 		{
-			this.itemRendering = new ItemRendering();
+			// FIXME this.itemRendering = new ItemRendering();
 		}
 	}
 
@@ -103,16 +104,16 @@ class ItemDefinitionBuilder implements IItemBuilder
 		return this;
 	}
 
-	@Override
-	public IItemBuilder rendering( ItemRenderingCustomizer callback )
-	{
-		if( Platform.isClient() )
-		{
-			this.customizeForClient( callback );
-		}
-
-		return this;
-	}
+// FIXME	@Override
+// FIXME	public IItemBuilder rendering( ItemRenderingCustomizer callback )
+// FIXME	{
+// FIXME		if( Platform.isClient() )
+// FIXME		{
+// FIXME			this.customizeForClient( callback );
+// FIXME		}
+// FIXME
+// FIXME		return this;
+// FIXME	}
 
 	@Override
 	public IItemBuilder dispenserBehavior( Supplier<IDispenseItemBehavior> behavior )
@@ -121,11 +122,11 @@ class ItemDefinitionBuilder implements IItemBuilder
 		return this;
 	}
 
-	@OnlyIn( Dist.CLIENT )
-	private void customizeForClient( ItemRenderingCustomizer callback )
-	{
-		callback.customize( this.itemRendering );
-	}
+// FIXME	@OnlyIn( Dist.CLIENT )
+// FIXME	private void customizeForClient( ItemRenderingCustomizer callback )
+// FIXME	{
+// FIXME		callback.customize( this.itemRendering );
+// FIXME	}
 
 	@Override
 	public ItemDefinition build()
@@ -157,7 +158,7 @@ class ItemDefinitionBuilder implements IItemBuilder
 
 		if( Platform.isClient() )
 		{
-			this.itemRendering.apply( this.factory, item );
+// FIXME			this.itemRendering.apply( this.factory, item );
 		}
 
 		return definition;

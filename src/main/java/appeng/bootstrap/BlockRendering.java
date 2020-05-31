@@ -19,25 +19,20 @@
 package appeng.bootstrap;
 
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.BiFunction;
-
+import appeng.block.AEBaseTileBlock;
+import appeng.bootstrap.components.BlockColorComponent;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraftforge.client.model.IModel;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.bootstrap.components.BlockColorComponent;
-import appeng.bootstrap.components.StateMapperComponent;
-import appeng.bootstrap.components.TesrComponent;
-import appeng.client.render.model.AutoRotatingModel;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiFunction;
 
 
 class BlockRendering implements IBlockRendering
@@ -50,13 +45,13 @@ class BlockRendering implements IBlockRendering
 	private IBlockColor blockColor;
 
 	@OnlyIn( Dist.CLIENT )
-	private TileEntitySpecialRenderer<?> tesr;
+	private TileEntityRenderer<?> tesr;
+
+//	FIXME @OnlyIn( Dist.CLIENT )
+//	FIXME private IStateMapper stateMapper;
 
 	@OnlyIn( Dist.CLIENT )
-	private IStateMapper stateMapper;
-
-	@OnlyIn( Dist.CLIENT )
-	private Map<String, IModel> builtInModels = new HashMap<>();
+	private Map<String, IUnbakedModel> builtInModels = new HashMap<>();
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
@@ -76,47 +71,47 @@ class BlockRendering implements IBlockRendering
 
 	@OnlyIn( Dist.CLIENT )
 	@Override
-	public IBlockRendering tesr( TileEntitySpecialRenderer<?> tesr )
+	public IBlockRendering tesr( TileEntityRenderer<?> tesr )
 	{
 		this.tesr = tesr;
 		return this;
 	}
 
 	@Override
-	public IBlockRendering builtInModel( String name, IModel model )
+	public IBlockRendering builtInModel( String name, IUnbakedModel model )
 	{
 		this.builtInModels.put( name, model );
 		return this;
 	}
 
-	@OnlyIn( Dist.CLIENT )
-	@Override
-	public IBlockRendering stateMapper( IStateMapper mapper )
-	{
-		this.stateMapper = mapper;
-		return this;
-	}
+// FIXME	@OnlyIn( Dist.CLIENT )
+// FIXME	@Override
+// FIXME	public IBlockRendering stateMapper( IStateMapper mapper )
+// FIXME	{
+// FIXME		this.stateMapper = mapper;
+// FIXME		return this;
+// FIXME	}
 
 	void apply( FeatureFactory factory, Block block, Class<?> tileEntityClass )
 	{
-		if( this.tesr != null )
-		{
-			if( tileEntityClass == null )
-			{
-				throw new IllegalStateException( "Tried to register a TESR for " + block + " even though no tile entity has been specified." );
-			}
-			factory.addBootstrapComponent( new TesrComponent( tileEntityClass, this.tesr ) );
-		}
+// FIXME		if( this.tesr != null )
+// FIXME		{
+// FIXME			if( tileEntityClass == null )
+// FIXME			{
+// FIXME				throw new IllegalStateException( "Tried to register a TESR for " + block + " even though no tile entity has been specified." );
+// FIXME			}
+// FIXME			factory.addBootstrapComponent( new TesrComponent( tileEntityClass, this.tesr ) );
+// FIXME		}
 
 		if( this.modelCustomizer != null )
 		{
-			factory.addModelOverride( block.getRegistryName().getResourcePath(), this.modelCustomizer );
+			factory.addModelOverride( block.getRegistryName().getPath(), this.modelCustomizer );
 		}
 		else if( block instanceof AEBaseTileBlock )
 		{
 			// This is a default rotating model if the base-block uses an AE tile entity which exposes UP/FRONT as
 			// extended props
-			factory.addModelOverride( block.getRegistryName().getResourcePath(), ( l, m ) -> new AutoRotatingModel( m ) );
+			// FIXME factory.addModelOverride( block.getRegistryName().getPath(), ( l, m ) -> new AutoRotatingModel( m ) );
 		}
 
 		// TODO : 1.12
@@ -127,9 +122,9 @@ class BlockRendering implements IBlockRendering
 			factory.addBootstrapComponent( new BlockColorComponent( block, this.blockColor ) );
 		}
 
-		if( this.stateMapper != null )
-		{
-			factory.addBootstrapComponent( new StateMapperComponent( block, this.stateMapper ) );
-		}
+	// FIXME	if( this.stateMapper != null )
+	// FIXME	{
+	// FIXME		factory.addBootstrapComponent( new StateMapperComponent( block, this.stateMapper ) );
+	// FIXME	}
 	}
 }

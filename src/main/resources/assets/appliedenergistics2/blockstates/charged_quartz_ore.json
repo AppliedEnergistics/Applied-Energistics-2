@@ -6,9 +6,9 @@
         }
     },
     "variants": {
-        "normal": [
+        "": [
             {
-                "model": "appliedenergistics2:charged_quartz_ore"
+                "model": "appliedenergistics2:block/charged_quartz_ore"
             }
         ],
         "inventory": [

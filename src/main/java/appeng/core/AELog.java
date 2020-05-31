@@ -21,6 +21,7 @@ package appeng.core;
 
 import javax.annotation.Nonnull;
 
+import appeng.tile.AEBaseTile;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -319,13 +320,13 @@ public final class AELog
 	 * @param pos
 	 * @param aeBaseTile
 	 */
-// FIXME	public static void blockUpdate( @Nonnull final BlockPos pos, @Nonnull final AEBaseTile aeBaseTile )
-// FIXME	{
-// FIXME		if( AEConfig.instance().isFeatureEnabled( AEFeature.UPDATE_LOGGING ) )
-// FIXME		{
-// FIXME			info( BLOCK_UPDATE, aeBaseTile.getClass().getName(), pos );
-// FIXME		}
-// FIXME	}
+	public static void blockUpdate( @Nonnull final BlockPos pos, @Nonnull final AEBaseTile aeBaseTile )
+	{
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.UPDATE_LOGGING ) )
+		{
+			info( BLOCK_UPDATE, aeBaseTile.getClass().getName(), pos );
+		}
+	}
 
 	/**
 	 * Use to check for an enabled crafting log.

@@ -25,6 +25,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.api.distmarker.Dist;
@@ -58,7 +59,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 
 	@OnlyIn( Dist.CLIENT )
 	@Override
-	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
+	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
 		final int id = this.getStoredDimensionID( stack );
 		if( id >= 0 )
@@ -108,7 +109,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	{
 		if( is.hasTag() )
 		{
-			final CompoundNBT c = is.getTagCompound();
+			final CompoundNBT c = is.getTag();
 			return new WorldCoord( c.getInteger( NBT_SIZE_X_KEY ), c.getInteger( NBT_SIZE_Y_KEY ), c.getInteger( NBT_SIZE_Z_KEY ) );
 		}
 		return new WorldCoord( 0, 0, 0 );
@@ -119,7 +120,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	{
 		if( is.hasTag() )
 		{
-			final CompoundNBT c = is.getTagCompound();
+			final CompoundNBT c = is.getTag();
 			return c.getInteger( NBT_CELL_ID_KEY );
 		}
 		return -1;

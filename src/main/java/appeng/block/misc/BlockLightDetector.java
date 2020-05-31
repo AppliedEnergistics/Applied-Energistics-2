@@ -109,7 +109,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	}
 
 	@Override
-	public void randomDisplayTick( final BlockState state, final World worldIn, final BlockPos pos, final Random rand )
+	public void animateTick( final BlockState state, final World worldIn, final BlockPos pos, final Random rand )
 	{
 		// cancel out lightning
 	}

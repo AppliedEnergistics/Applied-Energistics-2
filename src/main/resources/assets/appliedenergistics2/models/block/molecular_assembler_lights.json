@@ -2,7 +2,7 @@
     "ae2_uvl_marker": true,
     "parent": "block/block",
     "textures": {
-        "all": "appliedenergistics2:blocks/molecular_assembler_lights"
+        "all": "appliedenergistics2:block/molecular_assembler_lights"
     },
     "elements": [
         {

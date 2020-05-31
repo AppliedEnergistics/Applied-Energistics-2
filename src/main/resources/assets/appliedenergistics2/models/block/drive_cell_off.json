@@ -1,6 +1,6 @@
 {
     "textures": {
-        "front": "appliedenergistics2:blocks/drive_cell_states"
+        "front": "appliedenergistics2:block/drive_cell_states"
     },
     "elements": [
         {

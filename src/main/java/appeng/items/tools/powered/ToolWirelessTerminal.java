@@ -71,9 +71,9 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
-	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
+	public void addInformation( final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
-		super.addCheckedInformation( stack, world, lines, advancedTooltips );
+		super.addInformation( stack, world, lines, advancedTooltips );
 
 		if( stack.hasTag() )
 		{

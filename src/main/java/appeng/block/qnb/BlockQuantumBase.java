@@ -111,15 +111,14 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 	}
 
 	@Override
-	public void breakBlock( final World w, final BlockPos pos, final BlockState state )
-	{
+	public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
 		final TileQuantumBridge bridge = this.getTileEntity( w, pos );
 		if( bridge != null )
 		{
 			bridge.breakCluster();
 		}
 
-		super.breakBlock( w, pos, state );
+		super.onReplaced( state, w, pos, newState, isMoving );
 	}
 
 	@Override

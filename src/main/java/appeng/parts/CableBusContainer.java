@@ -901,14 +901,14 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	}
 
 	@Override
-	public void randomDisplayTick( final World world, final BlockPos pos, final Random r )
+	public void animateTick( final World world, final BlockPos pos, final Random r )
 	{
 		for( final AEPartLocation side : AEPartLocation.values() )
 		{
 			final IPart p = this.getPart( side );
 			if( p != null )
 			{
-				p.randomDisplayTick( world, pos, r );
+				p.animateTick( world, pos, r );
 			}
 		}
 	}

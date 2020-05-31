@@ -277,7 +277,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 		final ItemStack is = this.internalInventory.getStackInSlot( 0 );
 		if( !is.isEmpty() )
 		{
-			final CompoundNBT c = is.getTagCompound();
+			final CompoundNBT c = is.getTag();
 			if( c != null )
 			{
 				return c.getLong( "freq" );

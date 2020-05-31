@@ -140,7 +140,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		}
 		else
 		{
-			w.setBlockToAir( pos );
+			w.removeBlock(pos, false);
 		}
 
 		if( r.getDrops() != null )
@@ -176,7 +176,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 		}
 		else
 		{
-			w.setBlockToAir( pos );
+			w.removeBlock(pos, false);
 		}
 
 		if( r.getDrops() != null )
@@ -268,14 +268,14 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			{
 				if( blockID instanceof BlockTNT )
 				{
-					w.setBlockToAir( pos );
+					w.removeBlock(pos, false);
 					( (BlockTNT) blockID ).explode( w, pos, state, p );
 					return EnumActionResult.SUCCESS;
 				}
 
 				if( blockID instanceof BlockTinyTNT )
 				{
-					w.setBlockToAir( pos );
+					w.removeBlock(pos, false);
 					( (BlockTinyTNT) blockID ).startFuse( w, pos, p );
 					return EnumActionResult.SUCCESS;
 				}

@@ -1,7 +1,7 @@
 {
     "variants": {
-        "normal": {
-            "model": "appliedenergistics2:builtin/quartz_glass"
+        "": {
+            "model": "appliedenergistics2:block/builtin/quartz_glass"
         }
     }
 }

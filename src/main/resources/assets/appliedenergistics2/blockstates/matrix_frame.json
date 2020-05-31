@@ -1,7 +1,7 @@
 {
     "variants": {
-        "normal": {
-            "model": "appliedenergistics2:matrix_frame"
+        "": {
+            "model": "appliedenergistics2:block/matrix_frame"
         }
     }
 }

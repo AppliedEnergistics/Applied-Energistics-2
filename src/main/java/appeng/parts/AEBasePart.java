@@ -309,7 +309,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
-	public void randomDisplayTick( final World world, final BlockPos pos, final Random r )
+	public void animateTick( final World world, final BlockPos pos, final Random r )
 	{
 
 	}
@@ -415,7 +415,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 			( (AppEngInternalAEInventory) inv ).writeToNBT( output, "config" );
 		}
 
-		return output.hasNoTags() ? null : output;
+		return output.isEmpty() ? null : output;
 	}
 
 	public boolean useStandardMemoryCard()

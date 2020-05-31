@@ -20,11 +20,11 @@ package appeng.core;
 
 
 import appeng.api.definitions.IDefinitions;
+import appeng.api.definitions.IItems;
+import appeng.api.definitions.IMaterials;
+import appeng.api.definitions.IParts;
 import appeng.bootstrap.FeatureFactory;
 import appeng.core.api.definitions.ApiBlocks;
-import appeng.core.api.definitions.ApiItems;
-import appeng.core.api.definitions.ApiMaterials;
-import appeng.core.api.definitions.ApiParts;
 import appeng.core.features.registries.PartModels;
 
 
@@ -35,18 +35,18 @@ public final class ApiDefinitions implements IDefinitions
 {
 	// TODO : Check if this can be final again after the Register part.
 	private ApiBlocks blocks;
-	private ApiItems items;
-	private final ApiMaterials materials;
-	private final ApiParts parts;
+//	private ApiItems items;
+	//private final ApiMaterials materials;
+	//private final ApiParts parts;
 
 	private final FeatureFactory registry = new FeatureFactory();
 
 	public ApiDefinitions( final PartModels partModels )
 	{
 		this.blocks = new ApiBlocks( this.registry, partModels );
-		this.items = new ApiItems( this.registry );
-		this.materials = new ApiMaterials( this.registry );
-		this.parts = new ApiParts( this.registry, partModels );
+//		this.items = new ApiItems( this.registry );
+		//this.materials = new ApiMaterials( this.registry );
+		//this.parts = new ApiParts( this.registry, partModels );
 	}
 	//
 	// public void addBlocks( final PartModels partModels )
@@ -61,7 +61,7 @@ public final class ApiDefinitions implements IDefinitions
 
 	public FeatureFactory getRegistry()
 	{
-		return this.registry;
+		return registry;
 	}
 
 	@Override
@@ -71,20 +71,20 @@ public final class ApiDefinitions implements IDefinitions
 	}
 
 	@Override
-	public ApiItems items()
+	public IItems items()
 	{
-		return this.items;
+		return null /* FIXME */;
 	}
 
 	@Override
-	public ApiMaterials materials()
+	public IMaterials materials()
 	{
-		return this.materials;
+		return null /* FIXME */;
 	}
 
 	@Override
-	public ApiParts parts()
+	public IParts parts()
 	{
-		return this.parts;
+		return null /* FIXME */;
 	}
 }

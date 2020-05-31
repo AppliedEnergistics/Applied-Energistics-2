@@ -1,6 +1,6 @@
 {
     "parent": "appliedenergistics2:block/drive_base",
     "textures": {
-        "front": "appliedenergistics2:blocks/drive_front_flat"
+        "front": "appliedenergistics2:block/drive_front_flat"
     }
 }

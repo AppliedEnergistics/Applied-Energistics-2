@@ -1,7 +1,7 @@
 {
     "variants": {
-        "normal": {
-            "model": "appliedenergistics2:crafting/storage_4k"
+        "": {
+            "model": "appliedenergistics2:block/crafting/storage_4k"
         }
     }
 }

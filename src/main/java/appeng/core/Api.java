@@ -22,67 +22,64 @@ package appeng.core;
 import appeng.api.IAppEngApi;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.networking.IGridHelper;
+import appeng.api.parts.IPartHelper;
 import appeng.api.storage.IStorageHelper;
 import appeng.api.util.IClientHelper;
-import appeng.core.api.ApiClientHelper;
-import appeng.core.api.ApiGrid;
-import appeng.core.api.ApiPart;
-import appeng.core.api.ApiStorage;
 import appeng.core.features.registries.PartModels;
-import appeng.core.features.registries.RegistryContainer;
 
 
 public final class Api implements IAppEngApi
 {
 	public static final Api INSTANCE = new Api();
 
-	private final ApiPart partHelper;
+// FIXME	private final ApiPart partHelper;
 
 	// private MovableTileRegistry MovableRegistry = new MovableTileRegistry();
-	private final IRegistryContainer registryContainer;
-	private final IStorageHelper storageHelper;
-	private final IGridHelper networkHelper;
+// FIXME	private final IRegistryContainer registryContainer;
+// FIXME	private final IStorageHelper storageHelper;
+// FIXME	private final IGridHelper networkHelper;
 	private final ApiDefinitions definitions;
-	private final IClientHelper client;
+// FIXME	private final IClientHelper client;
 
 	private Api()
 	{
-		this.storageHelper = new ApiStorage();
-		this.networkHelper = new ApiGrid();
-		this.registryContainer = new RegistryContainer();
-		this.partHelper = new ApiPart();
-		this.definitions = new ApiDefinitions( (PartModels) this.registryContainer.partModels() );
-		this.client = new ApiClientHelper();
+// FIXME		this.storageHelper = new ApiStorage();
+// FIXME		this.networkHelper = new ApiGrid();
+// FIXME		this.registryContainer = new RegistryContainer();
+// FIXME		this.partHelper = new ApiPart();
+		PartModels partModels = new PartModels();
+		this.definitions = new ApiDefinitions( partModels /* FIXME (PartModels) this.registryContainer.partModels() */ );
+// FIXME		this.client = new ApiClientHelper();
 	}
 
-	public PartModels getPartModels()
-	{
-		return (PartModels) this.registryContainer.partModels();
-	}
-
-	@Override
-	public IRegistryContainer registries()
-	{
-		return this.registryContainer;
-	}
-
-	@Override
-	public IStorageHelper storage()
-	{
-		return this.storageHelper;
-	}
-
-	@Override
-	public IGridHelper grid()
-	{
-		return this.networkHelper;
-	}
-
-	@Override
-	public ApiPart partHelper()
-	{
-		return this.partHelper;
-	}
+// FIXME	public PartModels getPartModels()
+// FIXME	{
+// FIXME		return (PartModels) this.registryContainer.partModels();
+// FIXME	}
+// FIXME
+// FIXME	@Override
+// FIXME	public IRegistryContainer registries()
+// FIXME	{
+// FIXME		return this.registryContainer;
+// FIXME	}
+// FIXME
+// FIXME	@Override
+// FIXME	public IStorageHelper storage()
+// FIXME	{
+// FIXME		return this.storageHelper;
+// FIXME	}
+// FIXME
+// FIXME	@Override
+// FIXME	public IGridHelper grid()
+// FIXME	{
+// FIXME		return this.networkHelper;
+// FIXME	}
+// FIXME
+// FIXME	@Override
+// FIXME	public ApiPart partHelper()
+// FIXME	{
+// FIXME		return this.partHelper;
+// FIXME	}
 
 	@Override
 	public ApiDefinitions definitions()
@@ -90,9 +87,35 @@ public final class Api implements IAppEngApi
 		return this.definitions;
 	}
 
+// FIXME	@Override
+// FIXME	public IClientHelper client()
+// FIXME	{
+// FIXME		return this.client;
+// FIXME	}
+
+	// FIXME
 	@Override
-	public IClientHelper client()
-	{
-		return this.client;
+	public IRegistryContainer registries() {
+		return null;
+	}
+	// FIXME
+	@Override
+	public IStorageHelper storage() {
+		return null;
+	}
+	// FIXME
+	@Override
+	public IGridHelper grid() {
+		return null;
+	}
+	// FIXME
+	@Override
+	public IPartHelper partHelper() {
+		return null;
+	}
+	// FIXME
+	@Override
+	public IClientHelper client() {
+		return null;
 	}
 }

@@ -66,7 +66,7 @@ public class ToolEraser extends AEBaseItem
 				if( state == c_state )
 				{
 					blocks++;
-					world.setBlockToAir( wc );
+					world.removeBlock(wc, false);
 
 					next.add( wc.add( 1, 0, 0 ) );
 					next.add( wc.add( -1, 0, 0 ) );

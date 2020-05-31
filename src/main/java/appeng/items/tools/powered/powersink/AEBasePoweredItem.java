@@ -27,6 +27,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
@@ -59,9 +60,9 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
 	@OnlyIn( Dist.CLIENT )
 	@Override
-	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
+	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
-		final CompoundNBT tag = stack.getTagCompound();
+		final CompoundNBT tag = stack.getTag();
 		double internalCurrentPower = 0;
 		final double internalMaxPower = this.getAEMaxPower( stack );
 

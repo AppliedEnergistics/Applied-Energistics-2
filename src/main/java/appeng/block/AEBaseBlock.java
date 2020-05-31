@@ -19,9 +19,6 @@
 package appeng.block;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
@@ -30,16 +27,13 @@ import net.minecraft.state.IProperty;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateContainer;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapePart;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
@@ -56,7 +50,6 @@ public abstract class AEBaseBlock extends Block
 
 	private boolean isOpaque = true;
 	private boolean isFullSize = true;
-	private boolean hasSubtypes = false;
 	private boolean isInventory = false;
 
 	protected VoxelShape boundingBox = VoxelShapes.fullCube();
@@ -316,9 +309,9 @@ public abstract class AEBaseBlock extends Block
 		return new Direction[0];
 	}
 
-	public boolean onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
+	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
 	{
-		return false;
+		return ActionResultType.PASS;
 	}
 
 	public final Direction mapRotation(final IOrientable ori, final Direction dir )
@@ -408,7 +401,7 @@ public abstract class AEBaseBlock extends Block
 
 	}
 
-	protected IOrientable getOrientable( final IWorldReader w, final BlockPos pos )
+	protected IOrientable getOrientable( final IBlockReader w, final BlockPos pos )
 	{
 		if( this instanceof IOrientableBlock )
 		{
@@ -446,16 +439,6 @@ public abstract class AEBaseBlock extends Block
 	{
 		this.isOpaque = isOpaque;
 		return isOpaque;
-	}
-
-	protected boolean hasSubtypes()
-	{
-		return this.hasSubtypes;
-	}
-
-	protected void setHasSubtypes( final boolean hasSubtypes )
-	{
-		this.hasSubtypes = hasSubtypes;
 	}
 
 	protected boolean isFullSize()

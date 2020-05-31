@@ -29,10 +29,12 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
@@ -75,7 +77,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
+	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
 	{
 		if( player.isShiftKeyDown() )
 		{
@@ -87,7 +89,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 			final TileVibrationChamber tc = this.getTileEntity( w, pos );
 			if( tc != null && !player.isShiftKeyDown() )
 			{
-				Platform.openGUI( player, tc, AEPartLocation.fromFacing( side ), GuiBridge.GUI_VIBRATION_CHAMBER );
+				Platform.openGUI( player, tc, AEPartLocation.fromFacing(hit), GuiBridge.GUI_VIBRATION_CHAMBER );
 				return true;
 			}
 		}
@@ -96,7 +98,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 	}
 
 	@Override
-	public void randomDisplayTick( final BlockState state, final World w, final BlockPos pos, final Random r )
+	public void animateTick( final BlockState state, final World w, final BlockPos pos, final Random r )
 	{
 		if( !AEConfig.instance().isEnableEffects() )
 		{

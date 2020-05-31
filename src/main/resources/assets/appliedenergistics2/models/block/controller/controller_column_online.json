@@ -2,9 +2,9 @@
     "ae2_uvl_marker": true,
     "parent": "block/block",
     "textures": {
-        "block": "appliedenergistics2:blocks/controller_column_powered",
-        "lights": "appliedenergistics2:blocks/controller_column_lights",
-        "particle": "appliedenergistics2:blocks/controller"
+        "block": "appliedenergistics2:block/controller_column_powered",
+        "lights": "appliedenergistics2:block/controller_column_lights",
+        "particle": "appliedenergistics2:block/controller"
     },
     "elements": [
         {

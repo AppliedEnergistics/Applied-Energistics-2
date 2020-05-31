@@ -110,9 +110,9 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	}
 
 	@Override
-	public CompoundNBT writeToNBT( final CompoundNBT data )
+	public CompoundNBT write(final CompoundNBT data )
 	{
-		super.writeToNBT( data );
+		super.write( data );
 		this.manager.writeToNBT( data );
 		this.upgrades.writeToNBT( data, "upgrades" );
 		data.setInteger( "lastRedstoneState", this.lastRedstoneState.ordinal() );
@@ -120,9 +120,9 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	}
 
 	@Override
-	public void readFromNBT( final CompoundNBT data )
+	public void read(final CompoundNBT data )
 	{
-		super.readFromNBT( data );
+		super.read( data );
 		this.manager.readFromNBT( data );
 		this.upgrades.readFromNBT( data, "upgrades" );
 		if( data.contains("lastRedstoneState") )

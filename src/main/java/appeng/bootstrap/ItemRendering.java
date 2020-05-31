@@ -30,16 +30,15 @@ import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.renderer.block.statemap.StateMapperBase;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.IModel;
 
 import appeng.bootstrap.components.ItemColorComponent;
 import appeng.bootstrap.components.ItemMeshDefinitionComponent;
@@ -53,8 +52,9 @@ class ItemRendering implements IItemRendering
 	@OnlyIn( Dist.CLIENT )
 	private IItemColor itemColor;
 
-	@OnlyIn( Dist.CLIENT )
-	private ItemMeshDefinition itemMeshDefinition;
+//  FIXME
+//	@OnlyIn( Dist.CLIENT )
+//	private ItemMeshDefinition itemMeshDefinition;
 
 	@OnlyIn( Dist.CLIENT )
 	private Map<Integer, ModelResourceLocation> itemModels = new HashMap<>();
@@ -63,15 +63,16 @@ class ItemRendering implements IItemRendering
 	private Set<ResourceLocation> variants = new HashSet<>();
 
 	@OnlyIn( Dist.CLIENT )
-	private Map<String, IModel> builtInModels = new HashMap<>();
+	private Map<String, IUnbakedModel> builtInModels = new HashMap<>();
 
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public IItemRendering meshDefinition( ItemMeshDefinition meshDefinition )
-	{
-		this.itemMeshDefinition = meshDefinition;
-		return this;
-	}
+// FIXME
+//	@Override
+//	@OnlyIn( Dist.CLIENT )
+//	public IItemRendering meshDefinition( ItemMeshDefinition meshDefinition )
+//	{
+//		this.itemMeshDefinition = meshDefinition;
+//		return this;
+//	}
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
@@ -97,7 +98,7 @@ class ItemRendering implements IItemRendering
 	}
 
 	@Override
-	public IItemRendering builtInModel( String name, IModel model )
+	public IItemRendering builtInModel( String name, IUnbakedModel model )
 	{
 		this.builtInModels.put( name, model );
 		return this;
@@ -105,10 +106,10 @@ class ItemRendering implements IItemRendering
 
 	void apply( FeatureFactory factory, Item item )
 	{
-		if( this.itemMeshDefinition != null )
-		{
-			factory.addBootstrapComponent( new ItemMeshDefinitionComponent( item, this.itemMeshDefinition ) );
-		}
+//FIXME		if( this.itemMeshDefinition != null )
+//FIXME		{
+//FIXME			factory.addBootstrapComponent( new ItemMeshDefinitionComponent( item, this.itemMeshDefinition ) );
+//FIXME		}
 
 		if( !this.itemModels.isEmpty() )
 		{
@@ -118,24 +119,28 @@ class ItemRendering implements IItemRendering
 		Set<ResourceLocation> resources = new HashSet<>( this.variants );
 
 		// Register a default item model if neither items by meta nor an item mesh definition exist
-		if( this.itemMeshDefinition == null && this.itemModels.isEmpty() )
+		if( /* FIXME this.itemMeshDefinition == null  && */ this.itemModels.isEmpty() )
 		{
-			ModelResourceLocation model;
-
-			// For block items, the default will try to use the default state of the associated block
-			if( item instanceof BlockItem )
-			{
-				Block block = ( (BlockItem) item ).getBlock();
-
-				// We can only do this once the blocks are actually registered...
-				StateMapperHelper helper = new StateMapperHelper( item.getRegistryName() );
-				model = helper.getModelResourceLocation( block.getDefaultState() );
-			}
-			else
-			{
-				model = new ModelResourceLocation( item.getRegistryName(), "inventory" );
-			}
-			factory.addBootstrapComponent( new ItemModelComponent( item, ImmutableMap.of( 0, model ) ) );
+//			ModelResourceLocation model;
+//
+//			// For block items, the default will try to use the default state of the associated block
+//			if( item instanceof BlockItem )
+//			{
+//				Block block = ( (BlockItem) item ).getBlock();
+//
+//				// We can only do this once the blocks are actually registered...
+//				model = new ModelResourceLocation(
+//						new ResourceLocation(
+//								block.getRegistryName().getNamespace(),
+//								"block/" + block.getRegistryName().getPath()
+//						)
+//						, "inventory" );
+//			}
+//			else
+//			{
+//				model = new ModelResourceLocation( item.getRegistryName(), "inventory" );
+//			}
+//			factory.addBootstrapComponent( new ItemModelComponent( item, ImmutableMap.of( 0, model ) ) );
 		}
 
 		// TODO : 1.12
@@ -145,12 +150,12 @@ class ItemRendering implements IItemRendering
 		{
 			factory.addBootstrapComponent( new ItemVariantsComponent( item, resources ) );
 		}
-		else if( this.itemMeshDefinition != null )
-		{
-			// Adding an empty variant list here will prevent Vanilla from trying to load the default item model in this
-			// case
-			factory.addBootstrapComponent( new ItemVariantsComponent( item, Collections.emptyList() ) );
-		}
+		// FIXME else if( this.itemMeshDefinition != null )
+		// FIXME {
+		// FIXME 	// Adding an empty variant list here will prevent Vanilla from trying to load the default item model in this
+		// FIXME 	// case
+		// FIXME 	factory.addBootstrapComponent( new ItemVariantsComponent( item, Collections.emptyList() ) );
+		// FIXME }
 
 		if( this.itemColor != null )
 		{
@@ -158,20 +163,4 @@ class ItemRendering implements IItemRendering
 		}
 	}
 
-	private static class StateMapperHelper extends StateMapperBase
-	{
-
-		private final ResourceLocation registryName;
-
-		public StateMapperHelper( ResourceLocation registryName )
-		{
-			this.registryName = registryName;
-		}
-
-		@Override
-		protected ModelResourceLocation getModelResourceLocation( BlockState state )
-		{
-			return new ModelResourceLocation( this.registryName, this.getPropertyString( state.getProperties() ) );
-		}
-	}
 }

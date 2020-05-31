@@ -23,24 +23,24 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
+import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ICustomModelLoader;
-import net.minecraftforge.client.model.IModel;
 
 import appeng.core.AppEng;
+import net.minecraftforge.client.model.IModelLoader;
 
 
 /**
  * Manages built-in models.
  */
-public class BuiltInModelLoader implements ICustomModelLoader
+public class BuiltInModelLoader implements IModelLoader
 {
 
-	private final Map<String, IModel> builtInModels;
+	private final Map<String, IUnbakedModel> builtInModels;
 
-	public BuiltInModelLoader( Map<String, IModel> builtInModels )
+	public BuiltInModelLoader( Map<String, IUnbakedModel> builtInModels )
 	{
 		this.builtInModels = ImmutableMap.copyOf( builtInModels );
 	}
@@ -48,7 +48,7 @@ public class BuiltInModelLoader implements ICustomModelLoader
 	@Override
 	public boolean accepts( ResourceLocation modelLocation )
 	{
-		if( !modelLocation.getResourceDomain().equals( AppEng.MOD_ID ) )
+		if( !modelLocation.getNamespace().equals( AppEng.MOD_ID ) )
 		{
 			return false;
 		}

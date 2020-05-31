@@ -27,10 +27,11 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
@@ -90,7 +91,7 @@ public class BlockChest extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
+	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
 	{
 		final TileChest tg = this.getTileEntity( w, pos );
 		if( tg != null && !p.isShiftKeyDown() )
@@ -100,9 +101,9 @@ public class BlockChest extends AEBaseTileBlock
 				return true;
 			}
 
-			if( side != tg.getUp() )
+			if( hit != tg.getUp() )
 			{
-				Platform.openGUI( p, tg, AEPartLocation.fromFacing( side ), GuiBridge.GUI_CHEST );
+				Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_CHEST );
 			}
 			else
 			{

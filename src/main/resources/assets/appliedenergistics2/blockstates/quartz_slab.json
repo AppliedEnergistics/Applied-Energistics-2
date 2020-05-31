@@ -1,10 +1,10 @@
 {
     "variants": {
         "half=bottom,variant=default": {
-            "model": "appliedenergistics2:slabs/quartz_half"
+            "model": "appliedenergistics2:block/slabs/quartz_half"
         },
         "half=top,variant=default": {
-            "model": "appliedenergistics2:slabs/quartz_upper"
+            "model": "appliedenergistics2:block/slabs/quartz_upper"
         }
     }
 }

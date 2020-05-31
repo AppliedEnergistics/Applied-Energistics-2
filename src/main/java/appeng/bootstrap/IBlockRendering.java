@@ -42,8 +42,8 @@ public interface IBlockRendering
 	@OnlyIn( Dist.CLIENT )
 	IBlockRendering blockColor( IBlockColor blockColor );
 
-	@OnlyIn( Dist.CLIENT )
-	IBlockRendering stateMapper( IStateMapper mapper );
+//FIXME	@OnlyIn( Dist.CLIENT )
+//	IBlockRendering stateMapper( IStateMapper mapper );
 
 	@OnlyIn( Dist.CLIENT )
 	IBlockRendering tesr( TileEntityRenderer<?> ter );

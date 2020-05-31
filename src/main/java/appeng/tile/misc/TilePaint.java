@@ -214,7 +214,7 @@ public class TilePaint extends AEBaseTile
 
 		if( this.dots == null )
 		{
-			this.world.setBlockToAir( this.pos );
+			this.world.removeBlock(this.pos, false);
 		}
 	}
 

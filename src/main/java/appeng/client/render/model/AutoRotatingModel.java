@@ -21,9 +21,7 @@ package appeng.client.render.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.vecmath.Vector3f;
-import javax.vecmath.Vector4f;
+import java.util.Random;
 
 import com.google.common.base.Objects;
 import com.google.common.cache.CacheBuilder;
@@ -32,9 +30,7 @@ import com.google.common.cache.LoadingCache;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
@@ -42,8 +38,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.QuadGatheringTransformer;
-import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
-import net.minecraftforge.common.property.IExtendedBlockState;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.client.render.FacingToRotation;
@@ -143,7 +137,7 @@ public class AutoRotatingModel implements IBakedModel
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( BlockState state, Direction side, long rand )
+	public List<BakedQuad> getQuads( BlockState state, Direction side, Random rand )
 	{
 		if( !( state instanceof IExtendedBlockState ) )
 		{

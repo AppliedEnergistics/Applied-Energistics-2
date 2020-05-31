@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.util.text.ITextComponent;
 import org.apache.commons.lang3.text.WordUtils;
 
 import net.minecraft.block.Block;
@@ -248,7 +249,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 	public ItemStack getColor( final ItemStack is )
 	{
-		final CompoundNBT c = is.getTagCompound();
+		final CompoundNBT c = is.getTag();
 		if( c != null && c.contains("color") )
 		{
 			final CompoundNBT color = c.getCompoundTag( "color" );
@@ -423,9 +424,9 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
-	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
+	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
-		super.addCheckedInformation( stack, world, lines, advancedTooltips );
+		super.addInformation( stack, world, lines, advancedTooltips );
 
 		final ICellInventoryHandler<IAEItemStack> cdi = AEApi.instance()
 				.registries()

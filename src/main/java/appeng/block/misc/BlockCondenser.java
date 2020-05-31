@@ -24,9 +24,10 @@ import javax.annotation.Nullable;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
@@ -45,7 +46,7 @@ public class BlockCondenser extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
+	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
 	{
 		if( player.isShiftKeyDown() )
 		{
@@ -57,7 +58,7 @@ public class BlockCondenser extends AEBaseTileBlock
 			final TileCondenser tc = this.getTileEntity( w, pos );
 			if( tc != null && !player.isShiftKeyDown() )
 			{
-				Platform.openGUI( player, tc, AEPartLocation.fromFacing( side ), GuiBridge.GUI_CONDENSER );
+				Platform.openGUI( player, tc, AEPartLocation.fromFacing(hit), GuiBridge.GUI_CONDENSER );
 				return true;
 			}
 		}

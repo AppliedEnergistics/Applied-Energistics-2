@@ -26,6 +26,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -43,14 +44,13 @@ import appeng.util.Platform;
 public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEItemPowerStorage
 {
 
-	public AEBaseBlockItemChargeable( final Block id )
-	{
-		super( id );
+	public AEBaseBlockItemChargeable(Block id, Properties props) {
+		super(id, props);
 	}
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
-	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
+	public void addCheckedInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
 		double internalCurrentPower = 0;
 		final double internalMaxPower = this.getMaxEnergyCapacity();

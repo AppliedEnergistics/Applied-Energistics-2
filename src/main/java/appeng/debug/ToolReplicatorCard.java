@@ -76,7 +76,7 @@ public class ToolReplicatorCard extends AEBaseItem
 		}
 		else
 		{
-			final CompoundNBT ish = player.getHeldItem( hand ).getTagCompound();
+			final CompoundNBT ish = player.getHeldItem( hand ).getTag();
 			if( ish != null )
 			{
 				final int src_x = ish.getInteger( "x" );

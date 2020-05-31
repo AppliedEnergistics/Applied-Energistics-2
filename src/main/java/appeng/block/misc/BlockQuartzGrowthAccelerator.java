@@ -73,7 +73,7 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOr
 
 	@OnlyIn( Dist.CLIENT )
 	@Override
-	public void randomDisplayTick( final BlockState state, final World w, final BlockPos pos, final Random r )
+	public void animateTick( final BlockState state, final World w, final BlockPos pos, final Random r )
 	{
 		if( !AEConfig.instance().isEnableEffects() )
 		{

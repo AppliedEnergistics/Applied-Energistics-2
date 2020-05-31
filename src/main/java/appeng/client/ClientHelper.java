@@ -22,8 +22,6 @@ package appeng.client;
 import java.io.IOException;
 import java.util.*;
 
-import appeng.client.render.tesr.InscriberTESR;
-import appeng.client.render.textures.ParticleTextures;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -46,12 +44,7 @@ import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlock;
 import appeng.core.AELog;
 import appeng.core.AppEng;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketAssemblerAnimation;
-import appeng.core.sync.packets.PacketValueConfig;
 import appeng.helpers.IMouseWheelItem;
-import appeng.hooks.TickHandler;
-import appeng.hooks.TickHandler.PlayerColor;
 import appeng.server.ServerHelper;
 import appeng.util.Platform;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -213,22 +206,21 @@ public class ClientHelper extends ServerHelper
 
 	private void postPlayerRender( final RenderLivingEvent.Pre p )
 	{
-		final PlayerColor player = TickHandler.INSTANCE.getPlayerColors().get( p.getEntity().getEntityId() );
-		if( player != null )
-		{
-			final AEColor col = player.myColor;
-
-			final float r = 0xff & ( col.mediumVariant >> 16 );
-			final float g = 0xff & ( col.mediumVariant >> 8 );
-			final float b = 0xff & ( col.mediumVariant );
-			// FIXME: This is most certainly not going to work!
-			GlStateManager.color4f( r / 255.0f, g / 255.0f, b / 255.0f, 1.0f );
-		}
+//	FIXME	final PlayerColor player = TickHandler.INSTANCE.getPlayerColors().get( p.getEntity().getEntityId() );
+//	FIXME	if( player != null )
+//	FIXME	{
+//	FIXME		final AEColor col = player.myColor;
+//	FIXME		final float r = 0xff & ( col.mediumVariant >> 16 );
+//	FIXME		final float g = 0xff & ( col.mediumVariant >> 8 );
+//	FIXME		final float b = 0xff & ( col.mediumVariant );
+//	FIXME		// FIXME: This is most certainly not going to work!
+//	FIXME		GlStateManager.color4f( r / 255.0f, g / 255.0f, b / 255.0f, 1.0f );
+//	FIXME	}
 	}
 
 	private void spawnAssembler( final World world, final double posX, final double posY, final double posZ, final Object o )
 	{
-		final PacketAssemblerAnimation paa = (PacketAssemblerAnimation) o;
+		// FIXME final PacketAssemblerAnimation paa = (PacketAssemblerAnimation) o;
 
 		// FIXME final AssemblerFX fx = new AssemblerFX( world, posX, posY, posZ, 0.0D, 0.0D, 0.0D, paa.rate, paa.is );
 		// FIXME Minecraft.getInstance().particles.addEffect( fx );
@@ -305,15 +297,15 @@ public class ClientHelper extends ServerHelper
 
 			if( mainHand || offHand )
 			{
-				try
-				{
-					NetworkHandler.instance().sendToServer( new PacketValueConfig( "Item", me.getScrollDelta() > 0 ? "WheelUp" : "WheelDown" ) );
-					me.setCanceled( true );
-				}
-				catch( final IOException e )
-				{
-					AELog.debug( e );
-				}
+//	FIXME			try
+//	FIXME			{
+//	FIXME				NetworkHandler.instance().sendToServer( new PacketValueConfig( "Item", me.getScrollDelta() > 0 ? "WheelUp" : "WheelDown" ) );
+//	FIXME				me.setCanceled( true );
+//	FIXME			}
+//	FIXME			catch( final IOException e )
+//	FIXME			{
+//	FIXME				AELog.debug( e );
+//	FIXME			}
 			}
 		}
 	}
@@ -321,8 +313,8 @@ public class ClientHelper extends ServerHelper
 	@SubscribeEvent
 	public void onTextureStitch( final TextureStitchEvent.Pre event )
 	{
-		ParticleTextures.registerSprite( event );
-		InscriberTESR.registerTexture( event );
+//		 FIXME ParticleTextures.registerSprite( event );
+//		 FIXME InscriberTESR.registerTexture( event );
 	}
 
 	@Override

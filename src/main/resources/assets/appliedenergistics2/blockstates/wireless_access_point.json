@@ -1,7 +1,7 @@
 {
     "forge_marker": 1,
     "defaults": {
-        "model": "appliedenergistics2:wireless_access_point_chassis",
+        "model": "appliedenergistics2:block/wireless_access_point_chassis",
         "y": 180
     },
     "variants": {
@@ -9,30 +9,30 @@
             "off": {
                 "submodel": {
                     "state": {
-                        "model": "appliedenergistics2:wireless_access_point_status_off"
+                        "model": "appliedenergistics2:block/wireless_access_point_status_off"
                     },
                     "torch": {
-                        "model": "appliedenergistics2:wireless_access_point_off"
+                        "model": "appliedenergistics2:block/wireless_access_point_off"
                     }
                 }
             },
             "on": {
                 "submodel": {
                     "state": {
-                        "model": "appliedenergistics2:wireless_access_point_status_on"
+                        "model": "appliedenergistics2:block/wireless_access_point_status_on"
                     },
                     "torch": {
-                        "model": "appliedenergistics2:wireless_access_point_off"
+                        "model": "appliedenergistics2:block/wireless_access_point_off"
                     }
                 }
             },
             "has_channel": {
                 "submodel": {
                     "state": {
-                        "model": "appliedenergistics2:wireless_access_point_status_has_channel"
+                        "model": "appliedenergistics2:block/wireless_access_point_status_has_channel"
                     },
                     "torch": {
-                        "model": "appliedenergistics2:wireless_access_point_on"
+                        "model": "appliedenergistics2:block/wireless_access_point_on"
                     }
                 }
             }

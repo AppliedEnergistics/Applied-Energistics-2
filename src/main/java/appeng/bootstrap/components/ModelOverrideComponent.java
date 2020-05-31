@@ -27,12 +27,10 @@ import java.util.function.BiFunction;
 import com.google.common.collect.Sets;
 
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.util.registry.IRegistry;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -42,12 +40,10 @@ import appeng.core.AppEng;
 public class ModelOverrideComponent implements IPreInitComponent
 {
 
-	private static final ModelResourceLocation MODEL_MISSING = new ModelResourceLocation( "builtin/missing", "missing" );
-
 	// Maps from resource path to customizer
-	private final Map<String, BiFunction<ModelResourceLocation, IBakedModel, IBakedModel>> customizer = new HashMap<>();
+	private final Map<String, BiFunction<ResourceLocation, IBakedModel, IBakedModel>> customizer = new HashMap<>();
 
-	public void addOverride( String resourcePath, BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> customizer )
+	public void addOverride( String resourcePath, BiFunction<ResourceLocation, IBakedModel, IBakedModel> customizer )
 	{
 		this.customizer.put( resourcePath, customizer );
 	}
@@ -61,19 +57,18 @@ public class ModelOverrideComponent implements IPreInitComponent
 	@SubscribeEvent
 	public void onModelBakeEvent( final ModelBakeEvent event )
 	{
-		IRegistry<ModelResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
-		Set<ModelResourceLocation> keys = Sets.newHashSet( modelRegistry.getKeys() );
-		// IBakedModel missingModel = modelRegistry.getObject( MODEL_MISSING );
-		IModel missingModel = ModelLoaderRegistry.getMissingModel();
+		Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
+		Set<ResourceLocation> keys = Sets.newHashSet( modelRegistry.keySet() );
+		IBakedModel missingModel = modelRegistry.get(ModelBakery.MODEL_MISSING);
 
-		for( ModelResourceLocation location : keys )
+		for( ResourceLocation location : keys )
 		{
-			if( !location.getResourceDomain().equals( AppEng.MOD_ID ) )
+			if( !location.getNamespace().equals( AppEng.MOD_ID ) )
 			{
 				continue;
 			}
 
-			IBakedModel orgModel = modelRegistry.getObject( location );
+			IBakedModel orgModel = modelRegistry.get( location );
 
 			// Don't customize the missing model. This causes Forge to swallow exceptions
 			if( orgModel == missingModel )
@@ -81,14 +76,14 @@ public class ModelOverrideComponent implements IPreInitComponent
 				continue;
 			}
 
-			BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> customizer = this.customizer.get( location.getResourcePath() );
+			BiFunction<ResourceLocation, IBakedModel, IBakedModel> customizer = this.customizer.get( location.getPath() );
 			if( customizer != null )
 			{
 				IBakedModel newModel = customizer.apply( location, orgModel );
 
 				if( newModel != orgModel )
 				{
-					modelRegistry.putObject( location, newModel );
+					modelRegistry.put( location, newModel );
 				}
 			}
 		}

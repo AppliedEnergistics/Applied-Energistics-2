@@ -65,7 +65,7 @@ public class TileCubeGenerator extends AEBaseTile implements ITickable
 
 	private void spawn()
 	{
-		this.world.setBlockToAir( this.pos );
+		this.world.removeBlock(this.pos, false);
 
 		final Item i = this.is.getItem();
 		final Direction side = Direction.UP;

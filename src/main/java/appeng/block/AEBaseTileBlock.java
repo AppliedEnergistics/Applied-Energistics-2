@@ -29,14 +29,13 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockStateContainer;
 import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -46,9 +45,6 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import appeng.api.implementations.items.IMemoryCard;
@@ -56,12 +52,9 @@ import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.util.AEColor;
 import appeng.api.util.IOrientable;
-import appeng.block.networking.BlockCableBus;
 import appeng.helpers.ICustomCollision;
 import appeng.tile.AEBaseInvTile;
 import appeng.tile.AEBaseTile;
-import appeng.tile.networking.TileCableBus;
-import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
@@ -72,46 +65,45 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	@Nonnull
 	private Class<? extends AEBaseTile> tileEntityType;
 
-	public AEBaseTileBlock( final Material mat )
+	public AEBaseTileBlock( final Block.Properties props )
 	{
-		super( mat );
+		super( props );
 	}
-
-	public static final UnlistedDirection FORWARD = new UnlistedDirection( "forward" );
-	public static final UnlistedDirection UP = new UnlistedDirection( "up" );
+// FIXME
+//	public static final UnlistedDirection FORWARD = new UnlistedDirection( "forward" );
+//	public static final UnlistedDirection UP = new UnlistedDirection( "up" );
 
 	@Override
 	public BlockState getExtendedState( BlockState state, IBlockReader world, BlockPos pos )
 	{
-		// A subclass may decide it doesn't want extended block state for whatever reason
-		if( !( state instanceof IExtendedBlockState ) )
-		{
-			return state;
-		}
-
-		AEBaseTile tile = this.getTileEntity( world, pos );
-		if( tile == null )
-		{
-			return state; // No info available
-		}
-
-		IExtendedBlockState extState = (IExtendedBlockState) state;
-		return extState.withProperty( FORWARD, tile.getForward() ).withProperty( UP, tile.getUp() );
+// FIXME
+//		// A subclass may decide it doesn't want extended block state for whatever reason
+//		if( !( state instanceof IExtendedBlockState ) )
+//		{
+//			return state;
+//		}
+//
+//		AEBaseTile tile = this.getTileEntity( world, pos );
+//		if( tile == null )
+//		{
+//			return state; // No info available
+//		}
+//
+//		IExtendedBlockState extState = (IExtendedBlockState) state;
+//		return extState.withProperty( FORWARD, tile.getForward() ).withProperty( UP, tile.getUp() );
+		throw new IllegalStateException();
 	}
 
 	@Override
-	protected BlockStateContainer createBlockState()
-	{
-		return new ExtendedBlockState( this, this.getAEStates(), new IUnlistedProperty[] {
-				FORWARD,
-				UP
-		} );
-	}
+	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+		super.fillStateContainer(builder);
 
-	@Override
-	public int getMetaFromState( BlockState state )
-	{
-		return 0;
+		// TODO: Rendering stuff
+
+//		return new ExtendedBlockState( this, this.getAEStates(), new IUnlistedProperty[] {
+//				FORWARD,
+//				UP
+//		} );
 	}
 
 	// TODO : Was this change needed?
@@ -183,8 +175,8 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	}
 
 	@Override
-	public void breakBlock( final World w, final BlockPos pos, final BlockState state )
-	{
+	public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+
 		final AEBaseTile te = this.getTileEntity( w, pos );
 		if( te != null )
 		{
@@ -203,19 +195,19 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 		}
 
 		// super will remove the TE, as it is not an instance of BlockContainer
-		super.breakBlock( w, pos, state );
+		super.onReplaced( state, w, pos, newState, isMoving );
 	}
 
 	@Override
-	public final Direction[] getValidRotations( final World w, final BlockPos pos )
+	public Direction[] getValidRotations(BlockState state, IBlockReader world, BlockPos pos)
 	{
-		final AEBaseTile obj = this.getTileEntity( w, pos );
+		final AEBaseTile obj = this.getTileEntity( world, pos );
 		if( obj != null && obj.canBeRotated() )
 		{
 			return Direction.values();
 		}
 
-		return super.getValidRotations( w, pos );
+		return super.getValidRotations( state, world, pos );
 	}
 
 	@Override
@@ -271,7 +263,8 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 			final TileEntity te = this.getTileEntity( w, pos );
 			if( te instanceof AEBaseTile )
 			{
-				( (AEBaseTile) w.getTileEntity( pos ) ).setName( is.getDisplayName() );
+				// FIXME: Check if this will make it translated
+				( (AEBaseTile) w.getTileEntity( pos ) ).setName( is.getDisplayName().getString() );
 			}
 		}
 	}
@@ -284,27 +277,22 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 		{
 			heldItem = player.getHeldItem( hand );
 
-			if( Platform.isWrench( player, heldItem, pos ) && player.isShiftKeyDown() )
+			if( Platform.isWrench( player, heldItem, pos ) && player.isCrouching() )
 			{
 				final BlockState blockState = world.getBlockState( pos );
 				final Block block = blockState.getBlock();
-
-				if( block == null )
-				{
-					return false;
-				}
 
 				final AEBaseTile tile = this.getTileEntity( world, pos );
 
 				if( tile == null )
 				{
-					return false;
+					return ActionResultType.FAIL;
 				}
 
-				if( tile instanceof TileCableBus || tile instanceof TileSkyChest )
-				{
-					return false;
-				}
+				// FIXME if( tile instanceof TileCableBus || tile instanceof TileSkyChest )
+				// {
+				// 	return ActionResultType.FAIL;
+				// }
 
 				final ItemStack[] itemDropCandidates = Platform.getBlockDrops( world, pos );
 				final ItemStack op = new ItemStack( this );
@@ -321,29 +309,29 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 					}
 				}
 
-				if( block.removedByPlayer( blockState, world, pos, player, false ) )
+				if( block.removedByPlayer( blockState, world, pos, player, false, world.getFluidState(pos) ) )
 				{
 					final List<ItemStack> itemsToDrop = Lists.newArrayList( itemDropCandidates );
 					Platform.spawnDrops( world, pos, itemsToDrop );
-					world.setBlockToAir( pos );
+					world.removeBlock(pos, false);
 				}
 
-				return false;
+				return ActionResultType.FAIL;
 			}
 
-			if( heldItem.getItem() instanceof IMemoryCard && !( this instanceof BlockCableBus ) )
+			if( heldItem.getItem() instanceof IMemoryCard /* FIXME && !( this instanceof BlockCableBus ) */ )
 			{
 				final IMemoryCard memoryCard = (IMemoryCard) heldItem.getItem();
 				final AEBaseTile tileEntity = this.getTileEntity( world, pos );
 
 				if( tileEntity == null )
 				{
-					return false;
+					return ActionResultType.FAIL;
 				}
 
 				final String name = this.getTranslationKey();
 
-				if( player.isShiftKeyDown() )
+				if( player.isCrouching() )
 				{
 					final CompoundNBT data = tileEntity.downloadSettings( SettingsFrom.MEMORY_CARD );
 					if( data != null )
@@ -368,21 +356,21 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 					}
 				}
 
-				return true;
+				return ActionResultType.SUCCESS;
 			}
 		}
 
-		return this.onActivated( world, pos, player, hand, player.getHeldItem( hand ), facing, hitX, hitY, hitZ );
+		return this.onActivated( world, pos, player, hand, player.getHeldItem( hand ), hit );
 	}
 
 	@Override
-	public IOrientable getOrientable( final IBlockReader w, final BlockPos pos )
+	public IOrientable getOrientable(final IBlockReader w, final BlockPos pos )
 	{
 		return this.getTileEntity( w, pos );
 	}
 
 	@Override
-	public ICustomCollision getCustomCollision( final World w, final BlockPos pos )
+	public ICustomCollision getCustomCollision( final IBlockReader w, final BlockPos pos )
 	{
 		final AEBaseTile te = this.getTileEntity( w, pos );
 		if( te instanceof ICustomCollision )

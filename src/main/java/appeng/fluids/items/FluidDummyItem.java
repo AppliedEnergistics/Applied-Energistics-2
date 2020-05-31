@@ -55,7 +55,7 @@ public class FluidDummyItem extends AEBaseItem
 	{
 		if( is.hasTag() )
 		{
-			CompoundNBT tag = is.getTagCompound();
+			CompoundNBT tag = is.getTag();
 			return FluidStack.loadFluidStackFromNBT( tag );
 		}
 		return null;

@@ -1,7 +1,7 @@
 {
     "parent": "appliedenergistics2:item/part/part",
     "textures": {
-        "emitter": "appliedenergistics2:items/part/level_emitter_off"
+        "emitter": "appliedenergistics2:item/part/level_emitter_off"
     },
     "elements": [
         {

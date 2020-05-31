@@ -30,6 +30,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -93,8 +94,8 @@ class BlockDefinitionBuilder implements IBlockBuilder
 
 		if( Platform.isClient() )
 		{
-			this.blockRendering = new BlockRendering();
-			this.itemRendering = new ItemRendering();
+			 this.blockRendering = new BlockRendering();
+			 this.itemRendering = new ItemRendering();
 		}
 	}
 
@@ -120,7 +121,7 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		return this;
 	}
 
-	@Override
+    @Override
 	public BlockDefinitionBuilder rendering( BlockRenderingCustomizer callback )
 	{
 		if( Platform.isClient() )
@@ -179,11 +180,6 @@ class BlockDefinitionBuilder implements IBlockBuilder
 	@Override
 	public <T extends IBlockDefinition> T build()
 	{
-		if( !AEConfig.instance().areFeaturesEnabled( this.features ) )
-		{
-			return (T) new TileDefinition( this.registryName, null, null );
-		}
-
 		// Create block and matching item, and set factory name of both
 		Block block = this.blockSupplier.get();
 		block.setRegistryName( AppEng.MOD_ID, this.registryName );
@@ -268,7 +264,7 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		}
 		else if( block instanceof AEBaseBlock )
 		{
-			return new AEBaseBlockItem( block );
+			return new AEBaseBlockItem( block, new Item.Properties() /* FIXME THIS IS THE IMPORTANT BIT */ );
 		}
 		else
 		{

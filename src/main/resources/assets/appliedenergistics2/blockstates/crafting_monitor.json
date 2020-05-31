@@ -1,7 +1,7 @@
 {
     "variants": {
-        "normal": {
-            "model": "appliedenergistics2:crafting/monitor"
+        "": {
+            "model": "appliedenergistics2:block/crafting/monitor"
         }
     }
 }

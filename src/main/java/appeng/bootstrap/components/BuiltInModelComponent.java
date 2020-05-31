@@ -28,9 +28,7 @@ import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
-
-import appeng.client.render.model.BuiltInModelLoader;
-
+import net.minecraftforge.registries.ForgeRegistries;
 
 @OnlyIn( Dist.CLIENT )
 public class BuiltInModelComponent implements IPreInitComponent
@@ -51,7 +49,7 @@ public class BuiltInModelComponent implements IPreInitComponent
 	{
 		this.hasInitialized = true;
 
-		BuiltInModelLoader loader = new BuiltInModelLoader( this.builtInModels );
-		ModelLoaderRegistry.registerLoader( loader );
+//		 FIXME BuiltInModelLoader loader = new BuiltInModelLoader( this.builtInModels );
+//		 FIXME ModelLoaderRegistry.registerLoader( loader );
 	}
 }

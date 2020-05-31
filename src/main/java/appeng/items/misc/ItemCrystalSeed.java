@@ -32,6 +32,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -75,7 +76,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 					crystalSeedStack.setItemDamage( certus2 );
 					crystalSeedStack = newStyle( crystalSeedStack );
 					String itemName = crystalSeedStack.getItem().getRegistryName().getResourcePath();
-					return new ResolverResult( itemName, crystalSeedStack.getDamage(), crystalSeedStack.getTagCompound() );
+					return new ResolverResult( itemName, crystalSeedStack.getDamage(), crystalSeedStack.getTag() );
 				} )
 				.orElse( null );
 
@@ -91,7 +92,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	{
 		if( is.hasTag() )
 		{
-			return is.getTagCompound().getInteger( "progress" );
+			return is.getTag().getInteger( "progress" );
 		}
 		else
 		{
@@ -159,13 +160,13 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
-	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
+	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
 		lines.add( ButtonToolTips.DoesntDespawn.getLocal() );
 		final int progress = getProgress( stack ) % SINGLE_OFFSET;
 		lines.add( Math.floor( (float) progress / (float) ( SINGLE_OFFSET / 100 ) ) + "%" );
 
-		super.addCheckedInformation( stack, world, lines, advancedTooltips );
+		super.addInformation( stack, world, lines, advancedTooltips );
 	}
 
 	@Override

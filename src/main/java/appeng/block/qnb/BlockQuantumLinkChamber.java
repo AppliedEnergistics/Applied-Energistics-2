@@ -29,10 +29,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
@@ -53,7 +54,7 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 	}
 
 	@Override
-	public void randomDisplayTick( final BlockState state, final World w, final BlockPos pos, final Random rand )
+	public void animateTick( final BlockState state, final World w, final BlockPos pos, final Random rand )
 	{
 		final TileQuantumBridge bridge = this.getTileEntity( w, pos );
 		if( bridge != null )
@@ -69,7 +70,7 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
+	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
 	{
 		if( p.isShiftKeyDown() )
 		{
@@ -81,7 +82,7 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 		{
 			if( Platform.isServer() )
 			{
-				Platform.openGUI( p, tg, AEPartLocation.fromFacing( side ), GuiBridge.GUI_QNB );
+				Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_QNB );
 			}
 			return true;
 		}

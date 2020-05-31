@@ -85,18 +85,18 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	}
 
 	@Override
-	public CompoundNBT writeToNBT( final CompoundNBT data )
+	public CompoundNBT write(final CompoundNBT data )
 	{
-		super.writeToNBT( data );
+		super.write( data );
 		this.cm.writeToNBT( data );
 		data.putDouble("storedPower", this.getStoredPower());
 		return data;
 	}
 
 	@Override
-	public void readFromNBT( final CompoundNBT data )
+	public void read(final CompoundNBT data )
 	{
-		super.readFromNBT( data );
+		super.read( data );
 		this.cm.readFromNBT( data );
 		this.setStoredPower( data.getDouble( "storedPower" ) );
 	}

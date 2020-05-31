@@ -25,6 +25,8 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.math.BlockRayTraceResult;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -71,7 +73,7 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final Direction side, final float hitX, final float hitY, final float hitZ )
+	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
 	{
 		if( player.isShiftKeyDown() )
 		{
@@ -92,7 +94,7 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
-	public void randomDisplayTick( final BlockState state, final World w, final BlockPos pos, final Random r )
+	public void animateTick( final BlockState state, final World w, final BlockPos pos, final Random r )
 	{
 		if( !AEConfig.instance().isEnableEffects() )
 		{

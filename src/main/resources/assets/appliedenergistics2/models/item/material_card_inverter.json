@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "appliedenergistics2:items/material_card_inverter"
+        "layer0": "appliedenergistics2:item/material_card_inverter"
     }
 }

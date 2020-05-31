@@ -19,95 +19,79 @@
 package appeng.decorative.solid;
 
 
-import java.util.Random;
-
-import net.minecraft.block.material.Material;
+import appeng.block.AEBaseBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.item.Item;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-
-import appeng.api.AEApi;
-import appeng.api.exceptions.MissingDefinitionException;
-import appeng.block.AEBaseBlock;
 
 
 public class BlockQuartzOre extends AEBaseBlock
 {
-	public BlockQuartzOre()
-	{
-		super( Material.ROCK );
-		this.setHardness( 3.0F );
-		this.setResistance( 5.0F );
+	public BlockQuartzOre(Properties props) {
+		super(props);
 	}
+
+// FIXME	@Override
+//	public BlockRenderLayer getBlockLayer()
+//	{
+//		return BlockRenderLayer.CUTOUT;
+//	}
+
+	// FIXME: Loot Tables
+//	@Override
+//	public int quantityDropped( BlockState state, int fortune, Random rand )
+//	{
+//		if( fortune > 0 && Item.getItemFromBlock( this ) != this.getItemDropped( null, rand, fortune ) )
+//		{
+//			int j = rand.nextInt( fortune + 2 ) - 1;
+//
+//			if( j < 0 )
+//			{
+//				j = 0;
+//			}
+//
+//			return this.quantityDropped( rand ) * ( j + 1 );
+//		}
+//		else
+//		{
+//			return this.quantityDropped( rand );
+//		}
+//	}
+
+//	@Override
+//	public int quantityDropped( final Random rand )
+//	{
+//		return 1 + rand.nextInt( 2 );
+//	}
+//
 
 	@Override
-	public BlockRenderLayer getBlockLayer()
-	{
-		return BlockRenderLayer.CUTOUT;
+	public int getExpDrop(BlockState state, net.minecraft.world.IWorldReader reader, BlockPos pos, int fortune, int silktouch) {
+		return silktouch == 0 ? MathHelper.nextInt(RANDOM, 2, 5) : 0;
 	}
 
-	@Override
-	public int quantityDropped( BlockState state, int fortune, Random rand )
-	{
-		if( fortune > 0 && Item.getItemFromBlock( this ) != this.getItemDropped( null, rand, fortune ) )
-		{
-			int j = rand.nextInt( fortune + 2 ) - 1;
+	// FIXME: loot tables
+//	@Override
+//	public Item getItemDropped( final BlockState state, final Random rand, final int fortune )
+//	{
+//		return AEApi.instance()
+//				.definitions()
+//				.materials()
+//				.certusQuartzCrystal()
+//				.maybeItem()
+//				.orElseThrow( () -> new MissingDefinitionException( "Tried to access certus quartz crystal, even though they are disabled" ) );
+//	}
 
-			if( j < 0 )
-			{
-				j = 0;
-			}
-
-			return this.quantityDropped( rand ) * ( j + 1 );
-		}
-		else
-		{
-			return this.quantityDropped( rand );
-		}
-	}
-
-	@Override
-	public int quantityDropped( final Random rand )
-	{
-		return 1 + rand.nextInt( 2 );
-	}
-
-	@Override
-	public int getExpDrop( BlockState state, IBlockReader world, BlockPos pos, int fortune )
-	{
-		Random rand = world instanceof World ? ( (World) world ).rand : new Random();
-
-		if( this.getItemDropped( state, rand, fortune ) != Item.getItemFromBlock( this ) )
-		{
-			return MathHelper.getInt( rand, 2, 5 );
-		}
-		return super.getExpDrop( state, world, pos, fortune );
-	}
-
-	@Override
-	public Item getItemDropped( final BlockState state, final Random rand, final int fortune )
-	{
-		return AEApi.instance()
-				.definitions()
-				.materials()
-				.certusQuartzCrystal()
-				.maybeItem()
-				.orElseThrow( () -> new MissingDefinitionException( "Tried to access certus quartz crystal, even though they are disabled" ) );
-	}
-
-	@Override
-	public int damageDropped( final BlockState state )
-	{
-		return AEApi.instance()
-				.definitions()
-				.materials()
-				.certusQuartzCrystal()
-				.maybeStack( 1 )
-				.orElseThrow( () -> new MissingDefinitionException( "Tried to access certus quartz crystal, even though they are disabled" ) )
-				.getItemDamage();
-	}
+	// FIXME: loot tables
+//	@Override
+//	public int damageDropped( final BlockState state )
+//	{
+//		return AEApi.instance()
+//				.definitions()
+//				.materials()
+//				.certusQuartzCrystal()
+//				.maybeStack( 1 )
+//				.orElseThrow( () -> new MissingDefinitionException( "Tried to access certus quartz crystal, even though they are disabled" ) )
+//				.getItemDamage();
+//	}
 }

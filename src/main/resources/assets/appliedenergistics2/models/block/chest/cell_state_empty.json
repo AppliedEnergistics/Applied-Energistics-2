@@ -1,6 +1,6 @@
 {
     "textures": {
-        "state": "appliedenergistics2:blocks/chest/cell_state_empty"
+        "state": "appliedenergistics2:block/chest/cell_state_empty"
     },
     "elements": [
         {

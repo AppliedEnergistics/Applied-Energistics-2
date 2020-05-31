@@ -21,6 +21,7 @@ package appeng.items.tools;
 
 import java.util.List;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -30,6 +31,9 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TextComponentUtils;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.IBlockReader;
@@ -61,17 +65,17 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
-	public void addCheckedInformation( final ItemStack stack, final World world, final List<String> lines, final ITooltipFlag advancedTooltips )
+	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
 		lines.add( this.getLocalizedName( this.getSettingsName( stack ) + ".name", this.getSettingsName( stack ) ) );
 
 		final CompoundNBT data = this.getData( stack );
-		if( data.hasKey( "tooltip" ) )
+		if( data.contains( "tooltip" ) )
 		{
 			lines.add( I18n.translateToLocal( this.getLocalizedName( data.getString( "tooltip" ) + ".name", data.getString( "tooltip" ) ) ) );
 		}
 
-		if( data.hasKey( "freq" ) )
+		if( data.contains( "freq" ) )
 		{
 			final short freq = data.getShort( "freq" );
 			final String freqTooltip = TextFormatting.BOLD + Platform.p2p().toHexString( freq );

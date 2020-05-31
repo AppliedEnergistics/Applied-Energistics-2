@@ -130,7 +130,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public void breakBlock( final World w, final BlockPos pos, final BlockState state )
+	public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
 	{
 		final TileCraftingTile cp = this.getTileEntity( w, pos );
 		if( cp != null )
@@ -138,7 +138,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 			cp.breakCluster();
 		}
 
-		super.breakBlock( w, pos, state );
+		super.onReplaced( state, w, pos, newState, isMoving );
 	}
 
 	@Override

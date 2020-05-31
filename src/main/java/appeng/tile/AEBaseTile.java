@@ -28,6 +28,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.core.AELog;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -36,8 +37,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -48,12 +50,8 @@ import appeng.api.util.ICommonTile;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.api.util.IOrientable;
-import appeng.core.AELog;
 import appeng.core.features.IStackSrc;
 import appeng.helpers.ICustomNameObject;
-import appeng.helpers.IPriorityHost;
-import appeng.hooks.TickHandler;
-import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
@@ -71,10 +69,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	private BlockState state;
 	private boolean markDirtyQueued = false;
 
-	@Override
-	public boolean shouldRefresh( final World world, final BlockPos pos, final BlockState oldState, final BlockState newSate )
-	{
-		return newSate.getBlock() != oldState.getBlock(); // state doesn't change tile entities in AE2.
+	public AEBaseTile(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
 	}
 
 	public static void registerTileItem( final Class<? extends TileEntity> c, final IStackSrc wat )
@@ -157,13 +153,13 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	}
 
 	@Override
-	public SPacketUpdateTileEntity getUpdatePacket()
+	public SUpdateTileEntityPacket getUpdatePacket()
 	{
-		return new SPacketUpdateTileEntity( this.pos, 64, this.getUpdateTag() );
+		return new SUpdateTileEntityPacket( this.pos, 64, this.getUpdateTag() );
 	}
 
 	@Override
-	public void onDataPacket( final NetworkManager net, final SPacketUpdateTileEntity pkt )
+	public void onDataPacket( final NetworkManager net, final SUpdateTileEntityPacket pkt )
 	{
 		// / pkt.actionType
 		if( pkt.getTileEntityType() == 64 )
@@ -359,7 +355,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	 */
 	public void uploadSettings( final SettingsFrom from, final CompoundNBT compound )
 	{
-		if( compound != null && this instanceof IConfigurableObject )
+		if( this instanceof IConfigurableObject )
 		{
 			final IConfigManager cm = ( (IConfigurableObject) this ).getConfigManager();
 			if( cm != null )
@@ -367,36 +363,34 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 				cm.readFromNBT( compound );
 			}
 		}
-
-		if( this instanceof IPriorityHost )
-		{
-			final IPriorityHost pHost = (IPriorityHost) this;
-			pHost.setPriority( compound.getInt( "priority" ) );
-		}
-
-		if( this instanceof ISegmentedInventory )
-		{
-			final IItemHandler inv = ( (ISegmentedInventory) this ).getInventoryByName( "config" );
-			if( inv instanceof AppEngInternalAEInventory )
-			{
-				final AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
-				final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSlots() );
-				tmp.read( compound, "config" );
-				for( int x = 0; x < tmp.getSlots(); x++ )
-				{
-					target.setStackInSlot( x, tmp.getStackInSlot( x ) );
-				}
-			}
-		}
+// FIXME
+//		if( this instanceof IPriorityHost )
+//		{
+//			final IPriorityHost pHost = (IPriorityHost) this;
+//			pHost.setPriority( compound.getInt( "priority" ) );
+//		}
+//
+//		if( this instanceof ISegmentedInventory )
+//		{
+//			final IItemHandler inv = ( (ISegmentedInventory) this ).getInventoryByName( "config" );
+//			if( inv instanceof AppEngInternalAEInventory )
+//			{
+//				final AppEngInternalAEInventory target = (AppEngInternalAEInventory) inv;
+//				final AppEngInternalAEInventory tmp = new AppEngInternalAEInventory( null, target.getSlots() );
+//				tmp.readFromNBT( compound, "config" );
+//				for( int x = 0; x < tmp.getSlots(); x++ )
+//				{
+//					target.setStackInSlot( x, tmp.getStackInSlot( x ) );
+//				}
+//			}
+//		}
 	}
 
 	/**
 	 * returns the contents of the tile entity, into the world, defaults to dropping everything in the inventory.
 	 *
 	 * @param w world
-	 * @param x x pos of tile entity
-	 * @param y y pos of tile entity
-	 * @param z z pos of tile entity
+	 * @param pos block position
 	 * @param drops drops of tile entity
 	 */
 	@Override
@@ -424,8 +418,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		if( this.hasCustomInventoryName() )
 		{
 			final CompoundNBT dsp = new CompoundNBT();
-			dsp.setString( "Name", this.getCustomInventoryName() );
-			output.setTag( "display", dsp );
+			dsp.putString( "Name", this.getCustomInventoryName() );
+			output.put( "display", dsp );
 		}
 
 		if( this instanceof IConfigurableObject )
@@ -437,22 +431,23 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			}
 		}
 
-		if( this instanceof IPriorityHost )
-		{
-			final IPriorityHost pHost = (IPriorityHost) this;
-			output.setInteger( "priority", pHost.getPriority() );
-		}
+// FIXME
+//		if( this instanceof IPriorityHost )
+//		{
+//			final IPriorityHost pHost = (IPriorityHost) this;
+//			output.putInt( "priority", pHost.getPriority() );
+//		}
+//
+//		if( this instanceof ISegmentedInventory )
+//		{
+//			final IItemHandler inv = ( (ISegmentedInventory) this ).getInventoryByName( "config" );
+//			if( inv instanceof AppEngInternalAEInventory )
+//			{
+//				( (AppEngInternalAEInventory) inv ).writeToNBT( output, "config" );
+//			}
+//		}
 
-		if( this instanceof ISegmentedInventory )
-		{
-			final IItemHandler inv = ( (ISegmentedInventory) this ).getInventoryByName( "config" );
-			if( inv instanceof AppEngInternalAEInventory )
-			{
-				( (AppEngInternalAEInventory) inv ).writeToNBT( output, "config" );
-			}
-		}
-
-		return output.hasNoTags() ? null : output;
+		return output.isEmpty() ? null : output;
 	}
 
 	@Override
@@ -485,7 +480,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			this.world.markChunkDirty( this.pos, this );
 			if( !this.markDirtyQueued )
 			{
-				TickHandler.INSTANCE.addCallable( null, this::markDirtyAtEndOfTick );
+				// FIXME TickHandler.INSTANCE.addCallable( null, this::markDirtyAtEndOfTick );
 				this.markDirtyQueued = true;
 			}
 		}

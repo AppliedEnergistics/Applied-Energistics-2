@@ -1,57 +1,57 @@
 {
     "forge_marker": 1,
     "defaults": {
-        "model": "appliedenergistics2:chest/base"
+        "model": "appliedenergistics2:block/chest/base"
     },
     "variants": {
         "slot_state": {
             "empty": {
                 "submodel": {
                     "lights": {
-                        "model": "appliedenergistics2:chest/lights_off"
+                        "model": "appliedenergistics2:block/chest/lights_off"
                     },
                     "state": {
-                        "model": "appliedenergistics2:chest/cell_state_empty"
+                        "model": "appliedenergistics2:block/chest/cell_state_empty"
                     }
                 }
             },
             "offline": {
                 "submodel": {
                     "lights": {
-                        "model": "appliedenergistics2:chest/lights_off"
+                        "model": "appliedenergistics2:block/chest/lights_off"
                     },
                     "state": {
-                        "model": "appliedenergistics2:chest/cell_state_offline"
+                        "model": "appliedenergistics2:block/chest/cell_state_offline"
                     }
                 }
             },
             "online": {
                 "submodel": {
                     "lights": {
-                        "model": "appliedenergistics2:chest/lights_on"
+                        "model": "appliedenergistics2:block/chest/lights_on"
                     },
                     "state": {
-                        "model": "appliedenergistics2:chest/cell_state_online"
+                        "model": "appliedenergistics2:block/chest/cell_state_online"
                     }
                 }
             },
             "types_full": {
                 "submodel": {
                     "lights": {
-                        "model": "appliedenergistics2:chest/lights_on"
+                        "model": "appliedenergistics2:block/chest/lights_on"
                     },
                     "state": {
-                        "model": "appliedenergistics2:chest/cell_state_types_full"
+                        "model": "appliedenergistics2:block/chest/cell_state_types_full"
                     }
                 }
             },
             "full": {
                 "submodel": {
                     "lights": {
-                        "model": "appliedenergistics2:chest/lights_on"
+                        "model": "appliedenergistics2:block/chest/lights_on"
                     },
                     "state": {
-                        "model": "appliedenergistics2:chest/cell_state_full"
+                        "model": "appliedenergistics2:block/chest/cell_state_full"
                     }
                 }
             }

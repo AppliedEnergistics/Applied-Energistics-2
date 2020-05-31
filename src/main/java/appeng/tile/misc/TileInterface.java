@@ -167,18 +167,18 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 	}
 
 	@Override
-	public CompoundNBT writeToNBT( final CompoundNBT data )
+	public CompoundNBT write(final CompoundNBT data )
 	{
-		super.writeToNBT( data );
+		super.write( data );
 		data.putBoolean("omniDirectional", this.omniDirectional);
 		this.duality.writeToNBT( data );
 		return data;
 	}
 
 	@Override
-	public void readFromNBT( final CompoundNBT data )
+	public void read(final CompoundNBT data )
 	{
-		super.readFromNBT( data );
+		super.read( data );
 		this.omniDirectional = data.getBoolean( "omniDirectional" );
 
 		this.duality.readFromNBT( data );

@@ -2,7 +2,7 @@
     "ae2_uvl_marker": true,
     "ambientocclusion": false,
     "textures": {
-        "torch": "appliedenergistics2:blocks/wireless_access_point_on"
+        "torch": "appliedenergistics2:block/wireless_access_point_on"
     },
     "elements": [
         {

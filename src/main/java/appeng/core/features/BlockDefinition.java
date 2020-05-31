@@ -30,28 +30,31 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
 import appeng.api.definitions.IBlockDefinition;
+import net.minecraftforge.fml.RegistryObject;
 
 
 public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 {
-	private final Optional<Block> block;
+	private final RegistryObject<Block> block;
 
 	public BlockDefinition( String registryName, Block block, BlockItem item )
 	{
 		super( registryName, item );
-		this.block = Optional.ofNullable( block );
+		this.block = null; // FIXME // Optional.ofNullable( block );
 	}
 
 	@Override
-	public final Optional<Block> maybeBlock()
+	public final RegistryObject<Block> maybeBlock()
 	{
 		return this.block;
 	}
 
 	@Override
-	public Optional<BlockItem> maybeBlockItem()
+	public RegistryObject<BlockItem> maybeBlockItem()
 	{
-		return this.block.map( BlockItem::new );
+		// FIXME
+		return null;
+//		return this.block.map( BlockItem::new );
 	}
 
 	@Override

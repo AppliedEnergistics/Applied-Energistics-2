@@ -271,13 +271,13 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 	public float getCableConnectionLength( AECableType cable );
 
 	/**
-	 * same as Block.randomDisplayTick, for but parts.
+	 * same as Block.animateTick, for but parts.
 	 *
 	 * @param world world of block
 	 * @param pos location of block
 	 * @param r random
 	 */
-	void randomDisplayTick( World world, BlockPos pos, Random r );
+	void animateTick( World world, BlockPos pos, Random r );
 
 	/**
 	 * Called when placed in the world by a player, this happens before addWorld.

@@ -3,7 +3,7 @@
     "textures": {
         "sides": "appliedenergistics2:parts/monitor_sides",
         "back": "appliedenergistics2:parts/monitor_back",
-        "front": "appliedenergistics2:items/part/fluid_interface"
+        "front": "appliedenergistics2:item/part/fluid_interface"
     },
     "elements": [
         {

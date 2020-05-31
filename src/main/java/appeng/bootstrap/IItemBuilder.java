@@ -44,7 +44,7 @@ public interface IItemBuilder
 
 	IItemBuilder itemGroup( ItemGroup tab );
 
-	IItemBuilder rendering( ItemRenderingCustomizer callback );
+//FIXME	IItemBuilder rendering( ItemRenderingCustomizer callback );
 
 	/**
 	 * Registers a custom dispenser behavior for this item.

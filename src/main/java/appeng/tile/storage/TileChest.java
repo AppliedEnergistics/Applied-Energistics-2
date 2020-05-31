@@ -431,9 +431,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	}
 
 	@Override
-	public void readFromNBT( final CompoundNBT data )
+	public void read(final CompoundNBT data )
 	{
-		super.readFromNBT( data );
+		super.read( data );
 		this.config.readFromNBT( data );
 		this.priority = data.getInteger( "priority" );
 		if( data.contains("paintedColor") )
@@ -443,9 +443,9 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	}
 
 	@Override
-	public CompoundNBT writeToNBT( final CompoundNBT data )
+	public CompoundNBT write(final CompoundNBT data )
 	{
-		super.writeToNBT( data );
+		super.write( data );
 		this.config.writeToNBT( data );
 		data.setInteger( "priority", this.priority );
 		data.setByte( "paintedColor", (byte) this.paintedColor.ordinal() );

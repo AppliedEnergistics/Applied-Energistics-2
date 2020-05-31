@@ -21,8 +21,18 @@ package appeng.core;
 
 import java.io.File;
 
+import appeng.client.ClientHelper;
+import appeng.server.ServerHelper;
+import net.minecraft.block.Block;
+import net.minecraft.entity.EntityType;
+import net.minecraft.item.Item;
+import net.minecraft.particles.ParticleType;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.CrashReportExtender;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 
@@ -30,6 +40,7 @@ import net.minecraftforge.fml.config.ModConfig;
 
 import appeng.core.crash.ModCrashEnhancement;
 import appeng.services.export.ExportConfig;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(AppEng.MOD_ID)
 public final class AppEng
@@ -65,12 +76,22 @@ public final class AppEng
 
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, AEConfig.CLIENT_SPEC);
 
-		// proxy = DistExecutor.runForDist(() -> ClientHelper::new, () -> ServerHelper::new);
+		proxy = DistExecutor.runForDist(() -> ClientHelper::new, () -> ServerHelper::new);
 
 		CrashReportExtender.registerCrashCallable( new ModCrashEnhancement() );
 
 		//FIXMEthis.registration = new Registration();
 		//FIXMEMinecraftForge.EVENT_BUS.register( this.registration );
+
+		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		Registration registration = new Registration();
+		modEventBus.addGenericListener(Block.class, registration::registerBlocks);
+		modEventBus.addGenericListener(Item.class, registration::registerItems);
+		modEventBus.addGenericListener(EntityType.class, registration::registerEntities);
+		modEventBus.addGenericListener(ParticleType.class, registration::registerParticleTypes);
+		modEventBus.addListener(registration::registerParticleFactories);
+
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(registration::modelRegistryEvent));
 	}
 
 //	@Nonnull

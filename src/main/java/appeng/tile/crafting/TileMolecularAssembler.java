@@ -213,9 +213,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	}
 
 	@Override
-	public CompoundNBT writeToNBT( final CompoundNBT data )
+	public CompoundNBT write(final CompoundNBT data )
 	{
-		super.writeToNBT( data );
+		super.write( data );
 		if( this.forcePlan && this.myPlan != null )
 		{
 			final ItemStack pattern = this.myPlan.getPattern();
@@ -234,9 +234,9 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	}
 
 	@Override
-	public void readFromNBT( final CompoundNBT data )
+	public void read(final CompoundNBT data )
 	{
-		super.readFromNBT( data );
+		super.read( data );
 		if( data.contains("myPlan") )
 		{
 			final ItemStack myPat = new ItemStack( data.getCompoundTag( "myPlan" ) );

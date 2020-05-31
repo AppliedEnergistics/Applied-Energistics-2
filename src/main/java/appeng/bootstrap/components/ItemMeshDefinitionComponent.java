@@ -19,10 +19,7 @@
 package appeng.bootstrap.components;
 
 
-import javax.annotation.Nonnull;
 
-import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 
 import appeng.bootstrap.IModelRegistry;
@@ -35,19 +32,19 @@ import appeng.bootstrap.IModelRegistry;
 public class ItemMeshDefinitionComponent implements IModelRegistrationComponent
 {
 
-	private final Item item;
+// FIXME	private final Item item;
+// FIXME
+// FIXME	private final ItemMeshDefinition meshDefinition;
 
-	private final ItemMeshDefinition meshDefinition;
-
-	public ItemMeshDefinitionComponent( @Nonnull Item item, @Nonnull ItemMeshDefinition meshDefinition )
-	{
-		this.item = item;
-		this.meshDefinition = meshDefinition;
-	}
+// FIXME	public ItemMeshDefinitionComponent( @Nonnull Item item, @Nonnull ItemMeshDefinition meshDefinition )
+// FIXME	{
+// FIXME		this.item = item;
+// FIXME		this.meshDefinition = meshDefinition;
+// FIXME	}
 
 	@Override
 	public void modelRegistration( Dist dist, IModelRegistry registry )
 	{
-		registry.setCustomMeshDefinition( this.item, this.meshDefinition );
+	// FIXME	registry.setCustomMeshDefinition( this.item, this.meshDefinition );
 	}
 }

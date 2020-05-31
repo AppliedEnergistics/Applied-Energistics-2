@@ -21,9 +21,6 @@ package appeng.bootstrap.components;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.statemap.IStateMapper;
-import net.minecraft.client.resources.IReloadableResourceManager;
-import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraftforge.api.distmarker.Dist;
 
 import appeng.bootstrap.IModelRegistry;
@@ -35,24 +32,24 @@ import appeng.bootstrap.IModelRegistry;
 public class StateMapperComponent implements IModelRegistrationComponent
 {
 
-	private final Block block;
+// FIXME	private final Block block;
 
-	private final IStateMapper stateMapper;
-
-	public StateMapperComponent( Block block, IStateMapper stateMapper )
-	{
-		this.block = block;
-		this.stateMapper = stateMapper;
-	}
+// FIXME	private final IStateMapper stateMapper;
+// FIXME
+// FIXME	public StateMapperComponent( Block block, IStateMapper stateMapper )
+// FIXME	{
+// FIXME		this.block = block;
+// FIXME		this.stateMapper = stateMapper;
+// FIXME	}
 
 	@Override
 	public void modelRegistration( Dist dist, IModelRegistry registry )
 	{
-		registry.setCustomStateMapper( this.block, this.stateMapper );
-		if( this.stateMapper instanceof IResourceManagerReloadListener )
-		{
-			( (IReloadableResourceManager) Minecraft.getInstance().getResourceManager() )
-					.registerReloadListener( (IResourceManagerReloadListener) this.stateMapper );
-		}
+	// FIXME	registry.setCustomStateMapper( this.block, this.stateMapper );
+	// FIXME	if( this.stateMapper instanceof IResourceManagerReloadListener )
+	// FIXME	{
+	// FIXME		( (IReloadableResourceManager) Minecraft.getInstance().getResourceManager() )
+	// FIXME				.registerReloadListener( (IResourceManagerReloadListener) this.stateMapper );
+	// FIXME	}
 	}
 }

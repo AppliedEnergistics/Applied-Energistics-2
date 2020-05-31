@@ -40,8 +40,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
-import appeng.bootstrap.components.BuiltInModelComponent;
-import appeng.bootstrap.components.ModelOverrideComponent;
 import appeng.bootstrap.components.TileEntityComponent;
 import appeng.core.features.AEFeature;
 import appeng.core.features.ActivityState;
@@ -57,11 +55,11 @@ public class FeatureFactory
 
 	private final Map<Class<? extends IBootstrapComponent>, List<IBootstrapComponent>> bootstrapComponents;
 
-	@OnlyIn( Dist.CLIENT )
-	private ModelOverrideComponent modelOverrideComponent;
+//FIXME @OnlyIn( Dist.CLIENT )
+//FIXME private ModelOverrideComponent modelOverrideComponent;
 
-	@OnlyIn( Dist.CLIENT )
-	private BuiltInModelComponent builtInModelComponent;
+//FIXME @OnlyIn( Dist.CLIENT )
+//FIXME private BuiltInModelComponent builtInModelComponent;
 
 	public final TileEntityComponent tileEntityComponent;
 
@@ -75,11 +73,10 @@ public class FeatureFactory
 
 		if( Platform.isClient() )
 		{
-			this.modelOverrideComponent = new ModelOverrideComponent();
-			this.addBootstrapComponent( this.modelOverrideComponent );
-
-			this.builtInModelComponent = new BuiltInModelComponent();
-			this.addBootstrapComponent( this.builtInModelComponent );
+			// FIXME this.modelOverrideComponent = new ModelOverrideComponent();
+			// FIXME this.addBootstrapComponent( this.modelOverrideComponent );
+			// FIXME this.builtInModelComponent = new BuiltInModelComponent();
+			// FIXME this.addBootstrapComponent( this.builtInModelComponent );
 		}
 	}
 
@@ -90,8 +87,8 @@ public class FeatureFactory
 		this.tileEntityComponent = parent.tileEntityComponent;
 		if( Platform.isClient() )
 		{
-			this.modelOverrideComponent = parent.modelOverrideComponent;
-			this.builtInModelComponent = parent.builtInModelComponent;
+			// FIXME this.modelOverrideComponent = parent.modelOverrideComponent;
+			// FIXME this.builtInModelComponent = parent.builtInModelComponent;
 		}
 	}
 
@@ -142,13 +139,13 @@ public class FeatureFactory
 	@OnlyIn( Dist.CLIENT )
 	void addBuiltInModel( String path, IUnbakedModel model )
 	{
-		this.builtInModelComponent.addModel( path, model );
+		// FIXME this.builtInModelComponent.addModel( path, model );
 	}
 
 	@OnlyIn( Dist.CLIENT )
 	void addModelOverride( String resourcePath, BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> customizer )
 	{
-		this.modelOverrideComponent.addOverride( resourcePath, customizer );
+		// FIXME this.modelOverrideComponent.addOverride( resourcePath, customizer );
 	}
 
 	public <T extends IBootstrapComponent> Iterator<T> getBootstrapComponents( Class<T> eventType )
