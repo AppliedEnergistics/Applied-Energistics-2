@@ -61,8 +61,21 @@ sourceSets {
     main {
         java {
             include 'appeng/core/AppEng.java'
-            include 'appeng/client/ClientHelper.java'
-            include 'appeng/server/ServerHelper.java'
+            include 'appeng/core/crash/CrashInfo.java'
+            include 'appeng/core/CommonHelper.java'
+            include 'appeng/core/crash/**'
+            include 'appeng/core/AEConfig.java'
+            include 'appeng/core/features/AEFeature.java'
+            include 'appeng/core/settings/**'
+            include 'appeng/util/ConfigManager.java'
+            include 'appeng/core/settings/TickRates.java'
+            include 'appeng/util/IConfigManagerHost.java'
+            include 'appeng/services/export/ExportConfig.java'
+            include 'appeng/client/ActionKey.java'
+            include 'appeng/client/EffectType.java'
+            include 'appeng/core/AELog.java'
+//            include 'appeng/client/ClientHelper.java'
+//            include 'appeng/server/ServerHelper.java'
             include 'appeng/block/AEBaseBlock.java'
             include 'appeng/helpers/ICustomCollision.java'
         }

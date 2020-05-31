@@ -20,18 +20,21 @@ package appeng.core.crash;
 
 
 import appeng.core.AEConfig;
+import net.minecraftforge.fml.common.ICrashCallable;
+import net.minecraftforge.versions.forge.ForgeVersion;
 
 
-public class ModCrashEnhancement extends BaseCrashEnhancement
-{
-	private static final String MOD_VERSION = AEConfig.CHANNEL + ' ' + AEConfig.VERSION + " for Forge " + // WHAT?
-			net.minecraftforge.common.ForgeVersion.majorVersion + '.' // majorVersion
-			+ net.minecraftforge.common.ForgeVersion.minorVersion + '.' // minorVersion
-			+ net.minecraftforge.common.ForgeVersion.revisionVersion + '.' // revisionVersion
-			+ net.minecraftforge.common.ForgeVersion.buildVersion;
+public class ModCrashEnhancement implements ICrashCallable {
 
-	public ModCrashEnhancement( final CrashInfo output )
-	{
-		super( "AE2 Version", MOD_VERSION );
-	}
+    @Override
+    public String getLabel() {
+        return "AE2 Version";
+    }
+
+    @Override
+    public String call() throws Exception {
+        return AEConfig.CHANNEL + ' ' + AEConfig.VERSION + " for Forge " +
+                ForgeVersion.getVersion();
+    }
+
 }

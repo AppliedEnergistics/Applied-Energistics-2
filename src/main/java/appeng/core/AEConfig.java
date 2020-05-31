@@ -26,7 +26,7 @@ import appeng.core.features.AEFeature;
 import appeng.core.settings.TickRates;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
-import appeng.util.Platform;
+import com.google.common.base.Strings;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -34,7 +34,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -48,6 +47,16 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost
 	public static final ClientConfig CLIENT;
 	public static final ForgeConfigSpec CLIENT_SPEC;
 
+	// Default Grindstone ores
+	private static final String[] ORES_VANILLA = { "Obsidian", "Ender", "EnderPearl", "Coal", "Iron", "Gold", "Charcoal", "NetherQuartz" };
+	private static final String[] ORES_AE = { "CertusQuartz", "Wheat", "Fluix" };
+	private static final String[] ORES_COMMON = { "Copper", "Tin", "Silver", "Lead", "Bronze" };
+	private static final String[] ORES_MISC = { "Brass", "Platinum", "Nickel", "Invar", "Aluminium", "Electrum", "Osmium", "Zinc" };
+
+	// Default Energy Conversion Rates
+	private static final double DEFAULT_IC2_EXCHANGE = 2.0;
+	private static final double DEFAULT_RF_EXCHANGE = 0.5;
+
 	static {
 		final Pair<ClientConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ClientConfig::new);
 		CLIENT_SPEC = specPair.getRight();
@@ -60,16 +69,6 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost
 
 	// Config instance
 	private static AEConfig instance;
-
-	// Default Grindstone ores
-	private static final String[] ORES_VANILLA = { "Obsidian", "Ender", "EnderPearl", "Coal", "Iron", "Gold", "Charcoal", "NetherQuartz" };
-	private static final String[] ORES_AE = { "CertusQuartz", "Wheat", "Fluix" };
-	private static final String[] ORES_COMMON = { "Copper", "Tin", "Silver", "Lead", "Bronze" };
-	private static final String[] ORES_MISC = { "Brass", "Platinum", "Nickel", "Invar", "Aluminium", "Electrum", "Osmium", "Zinc" };
-
-	// Default Energy Conversion Rates
-	private static final double DEFAULT_IC2_EXCHANGE = 2.0;
-	private static final double DEFAULT_RF_EXCHANGE = 0.5;
 
 	private final IConfigManager settings = new ConfigManager( this );
 
@@ -139,7 +138,10 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost
 	@SubscribeEvent
 	public static void onModConfigEvent(final ModConfig.ModConfigEvent configEvent) {
 		if (configEvent.getConfig().getSpec() == CLIENT_SPEC) {
-			AEConfig.instance().syncConfig(CLIENT);
+			if (instance == null) {
+				instance = new AEConfig();
+			}
+			instance.syncConfig(CLIENT);
 		}
 	}
 
@@ -217,11 +219,12 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost
 
 			for( final TickRates tr : TickRates.values() )
 			{
-				tr.Load( this );
+				tr.setMin(config.tickRateMin.get(tr).get());
+				tr.setMax(config.tickRateMin.get(tr).get());
 			}
 
-		this.storageProviderID = config.storageProviderID.get();
-		this.storageDimensionID = config.storageDimensionID.get();
+		this.storageProviderID = Strings.emptyToNull(config.storageProviderID.get());
+		this.storageDimensionID = Strings.emptyToNull(config.storageDimensionID.get());
 		this.spatialPowerMultiplier = config.spatialPowerMultiplier.get();
 		this.spatialPowerExponent = config.spatialPowerExponent.get();
 
@@ -341,8 +344,8 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost
 	{
 		if( this.isFeatureEnabled( AEFeature.SPATIAL_IO ) )
 		{
-			CLIENT.storageProviderID.set(this.storageProviderID);
-			CLIENT.storageDimensionID.set(this.storageDimensionID);
+			CLIENT.storageProviderID.set(Strings.nullToEmpty(this.storageProviderID));
+			CLIENT.storageDimensionID.set(Strings.nullToEmpty(this.storageDimensionID));
 		}
 
 		CLIENT.selectedPowerUnit.set(this.selectedPowerUnit);
@@ -431,7 +434,7 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost
 
 	public void nextPowerUnit( final boolean backwards )
 	{
-		this.selectedPowerUnit = Platform.rotateEnum( this.selectedPowerUnit, backwards, Settings.POWER_UNITS.getPossibleValues() );
+		// FIXME this.selectedPowerUnit = Platform.rotateEnum( this.selectedPowerUnit, backwards, Settings.POWER_UNITS.getPossibleValues() );
 		this.save();
 	}
 
@@ -711,6 +714,9 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost
 		public final ConfigValue<Integer> condenserMatterBallsPower;
 		public final ConfigValue<Integer> condenserSingularityPower;
 
+		public final Map<TickRates, ConfigValue<Integer>> tickRateMin = new HashMap<>();
+		public final Map<TickRates, ConfigValue<Integer>> tickRateMax = new HashMap<>();
+
 		public ClientConfig(ForgeConfigSpec.Builder builder) {
 
 			// Feature switches
@@ -731,7 +737,7 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost
 				for (AEFeature feature : featuresInGroup)
 				{
 					enabledFeatures.put(feature, builder
-							.comment(feature.comment())
+							.comment(Strings.nullToEmpty(feature.comment()))
 							.define(feature.key(), feature.isEnabled()));
 				}
 				builder.pop();
@@ -783,8 +789,8 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost
 			builder.pop();
 
 			builder.push("spatialio");
-			this.storageProviderID = builder.define("storageProviderID", (String) null);
-			this.storageDimensionID = builder.define("storageDimensionID", (String) null);
+			this.storageProviderID = builder.define("storageProviderID", "");
+			this.storageDimensionID = builder.define("storageDimensionID", "");
 			this.spatialPowerMultiplier = builder.define("spatialPowerMultiplier", 1250.0);
 			this.spatialPowerExponent = builder.define("spatialPowerExponent", 1.35);
 			builder.pop();
@@ -793,7 +799,7 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost
 					.comment("Creates recipe of the following pattern automatically: '1 oreTYPE => 2 dustTYPE' and '(1 ingotTYPE or 1 crystalTYPE or 1 gemTYPE) => 1 dustTYPE'")
 					.push("GrindStone");
 
-			List<String> defaultGrinderOres = Stream.of( ORES_VANILLA, ORES_AE, ORES_COMMON, ORES_MISC ).flatMap( Stream::of ).collect(Collectors.toList());
+			List<String> defaultGrinderOres = Stream.of( ORES_VANILLA, ORES_AE, ORES_COMMON, ORES_MISC ).flatMap( Arrays::stream ).collect(Collectors.toList());
 			this.grinderOres = builder
 					.comment("The list of types to handle. Specify without a prefix like ore or dust.")
 					.defineList("grinderOres", defaultGrinderOres, obj -> true); // FIXME: tag validation, is that even possible???
@@ -849,6 +855,14 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost
 			condenserSingularityPower = builder.define("Singularity", 256000);
 			builder.pop();
 
+			builder
+					.comment(" Min / Max Tickrates for dynamic ticking, most of these components also use sleeping, to prevent constant ticking, adjust with care, non standard rates are not supported or tested.")
+					.push("tickRates");
+			for (TickRates tickRate : TickRates.values()) {
+				tickRateMin.put(tickRate, builder.define(tickRate.name() + "Min", tickRate.getDefaultMin()));
+				tickRateMax.put(tickRate, builder.define(tickRate.name() + "Max", tickRate.getDefaultMax()));
+			}
+			builder.pop();
 		}
 
 	}

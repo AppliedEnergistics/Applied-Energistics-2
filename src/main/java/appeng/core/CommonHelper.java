@@ -34,7 +34,6 @@ import appeng.api.parts.CableRenderMode;
 import appeng.block.AEBaseBlock;
 import appeng.client.ActionKey;
 import appeng.client.EffectType;
-import appeng.core.sync.AppEngPacket;
 
 
 public abstract class CommonHelper
@@ -48,7 +47,7 @@ public abstract class CommonHelper
 
 	public abstract List<? extends PlayerEntity> getPlayers();
 
-	public abstract void sendToAllNearExcept( PlayerEntity p, double x, double y, double z, double dist, World w, AppEngPacket packet );
+	// FIXME public abstract void sendToAllNearExcept( PlayerEntity p, double x, double y, double z, double dist, World w, AppEngPacket packet );
 
 	public abstract void spawnEffect( EffectType effect, World world, double posX, double posY, double posZ, Object extra );
 

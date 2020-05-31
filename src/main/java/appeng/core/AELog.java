@@ -29,8 +29,6 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import net.minecraft.util.math.BlockPos;
 
 import appeng.core.features.AEFeature;
-import appeng.tile.AEBaseTile;
-import appeng.util.Platform;
 
 
 public final class AELog
@@ -57,7 +55,8 @@ public final class AELog
 	 */
 	private static Logger getLogger()
 	{
-		return Platform.isServer() ? SERVER : CLIENT;
+// FIXME		return Platform.isServer() ? SERVER : CLIENT;
+		throw new IllegalStateException();
 	}
 
 	/**
@@ -320,13 +319,13 @@ public final class AELog
 	 * @param pos
 	 * @param aeBaseTile
 	 */
-	public static void blockUpdate( @Nonnull final BlockPos pos, @Nonnull final AEBaseTile aeBaseTile )
-	{
-		if( AEConfig.instance().isFeatureEnabled( AEFeature.UPDATE_LOGGING ) )
-		{
-			info( BLOCK_UPDATE, aeBaseTile.getClass().getName(), pos );
-		}
-	}
+// FIXME	public static void blockUpdate( @Nonnull final BlockPos pos, @Nonnull final AEBaseTile aeBaseTile )
+// FIXME	{
+// FIXME		if( AEConfig.instance().isFeatureEnabled( AEFeature.UPDATE_LOGGING ) )
+// FIXME		{
+// FIXME			info( BLOCK_UPDATE, aeBaseTile.getClass().getName(), pos );
+// FIXME		}
+// FIXME	}
 
 	/**
 	 * Use to check for an enabled crafting log.

@@ -21,17 +21,13 @@ package appeng.core;
 
 import java.io.File;
 
-import appeng.client.ClientHelper;
-import appeng.server.ServerHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.CrashReportExtender;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 
 import net.minecraftforge.fml.config.ModConfig;
 
-import appeng.core.crash.CrashInfo;
 import appeng.core.crash.ModCrashEnhancement;
 import appeng.services.export.ExportConfig;
 
@@ -52,7 +48,7 @@ public final class AppEng
 
 	private static AppEng INSTANCE;
 
-	private final Registration registration;
+//FIXME	private final Registration registration;
 
 	private File configDirectory;
 
@@ -69,12 +65,12 @@ public final class AppEng
 
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, AEConfig.CLIENT_SPEC);
 
-		proxy = DistExecutor.runForDist(() -> ClientHelper::new, () -> ServerHelper::new);
+		// proxy = DistExecutor.runForDist(() -> ClientHelper::new, () -> ServerHelper::new);
 
-		CrashReportExtender.registerCrashCallable( new ModCrashEnhancement( CrashInfo.MOD_VERSION ) );
+		CrashReportExtender.registerCrashCallable( new ModCrashEnhancement() );
 
-		this.registration = new Registration();
-		MinecraftForge.EVENT_BUS.register( this.registration );
+		//FIXMEthis.registration = new Registration();
+		//FIXMEMinecraftForge.EVENT_BUS.register( this.registration );
 	}
 
 //	@Nonnull
