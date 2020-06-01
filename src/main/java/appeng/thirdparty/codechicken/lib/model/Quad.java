@@ -22,6 +22,7 @@ package appeng.thirdparty.codechicken.lib.model;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -313,7 +314,11 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer
 	 */
 	public BakedQuad bake()
 	{
-		int[] packedData = new int[this.format.format.getNextOffset()];
+		if( format.format != DefaultVertexFormats.BLOCK )
+		{
+			throw new IllegalStateException( "Unable to bake this quad to the specified format. " + format.format );
+		}
+		int[] packedData = new int[this.format.format.getSize()];
 		for( int v = 0; v < 4; v++ )
 		{
 			for( int e = 0; e < this.format.elementCount; e++ )
@@ -321,19 +326,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer
 				LightUtil.pack( this.vertices[v].raw[e], packedData, this.format.format, v, e );
 			}
 		}
-		return new BakedQuad( packedData, this.tintIndex, this.orientation, this.sprite, this.diffuseLighting, this.format.format );
-	}
-
-	/**
-	 * Bakes this quad to an UnpackedBakedQuad.
-	 *
-	 * @return The UnpackedBakedQuad.
-	 */
-	public UnpackedBakedQuad bakeUnpacked()
-	{
-		UnpackedBakedQuad.Builder quad = new UnpackedBakedQuad.Builder( this.format.format );
-		this.pipe( quad );
-		return quad.build();
+		return new BakedQuad( packedData, this.tintIndex, this.orientation, this.sprite, this.diffuseLighting );
 	}
 
 	/**
@@ -354,6 +347,7 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer
 		public float[] normal;
 		public float[] color;
 		public float[] uv;
+		public float[] overlay;
 		public float[] lightmap;
 
 		/**
@@ -405,6 +399,10 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer
 			if( this.format.hasUV )
 			{
 				this.uv = this.raw[this.format.uvIndex];
+			}
+			if( format.hasOverlay )
+			{
+				overlay = raw[format.overlayIndex];
 			}
 			if( this.format.hasLightMap )
 			{

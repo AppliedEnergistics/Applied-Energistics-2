@@ -55,12 +55,14 @@ public class CachedFormat
 	public boolean hasNormal;
 	public boolean hasColor;
 	public boolean hasUV;
+	public boolean hasOverlay;
 	public boolean hasLightMap;
 
 	public int positionIndex = -1;
 	public int normalIndex = -1;
 	public int colorIndex = -1;
 	public int uvIndex = -1;
+	public int overlayIndex = -1;
 	public int lightMapIndex = -1;
 
 	public int elementCount;
@@ -104,25 +106,32 @@ public class CachedFormat
 					this.colorIndex = i;
 					break;
 				case UV:
-					if( element.getIndex() == 0 )
+					switch( element.getIndex() )
 					{
-						if( this.hasUV )
-						{
-							throw new IllegalStateException( "Found 2 UV elements.." );
-						}
-						this.hasUV = true;
-						this.uvIndex = i;
-						break;
-					}
-					else if( element.getIndex() == 1 )
-					{
-						if( this.hasLightMap )
-						{
-							throw new IllegalStateException( "Found 2 LightMap elements.." );
-						}
-						this.hasLightMap = true;
-						this.lightMapIndex = i;
-						break;
+						case 0:
+							if( hasUV )
+							{
+								throw new IllegalStateException( "Found 2 UV elements.." );
+							}
+							hasUV = true;
+							uvIndex = i;
+							break;
+						case 1:
+							if( hasOverlay )
+							{
+								throw new IllegalStateException( "Found 2 Overlay elements.." );
+							}
+							hasOverlay = true;
+							overlayIndex = i;
+							break;
+						case 2:
+							if( hasLightMap )
+							{
+								throw new IllegalStateException( "Found 2 LightMap elements.." );
+							}
+							hasLightMap = true;
+							lightMapIndex = i;
+							break;
 					}
 					break;
 			}
