@@ -124,6 +124,8 @@ sourceSets {
             include 'appeng/helpers/AEGlassMaterial.java'
             include 'appeng/block/spatial/BlockMatrixFrame.java'
             include 'appeng/util/LookDirection.java'
+            include 'appeng/decorative/solid/BlockQuartzLamp.java'
+            include 'appeng/client/render/effects/VibrantFX.java'
 
             include 'appeng/core/sync/AppEngPacket.java'
             include 'appeng/core/sync/network/INetworkInfo.java'

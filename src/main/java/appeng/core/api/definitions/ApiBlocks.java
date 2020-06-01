@@ -30,11 +30,9 @@ import appeng.bootstrap.IItemRendering;
 import appeng.core.features.AEFeature;
 import appeng.core.features.registries.PartModels;
 import appeng.decorative.AEDecorativeBlock;
-import appeng.decorative.solid.BlockChargedQuartzOre;
-import appeng.decorative.solid.BlockQuartzGlass;
-import appeng.decorative.solid.BlockQuartzOre;
-import appeng.decorative.solid.BlockQuartzPillar;
+import appeng.decorative.solid.*;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -145,7 +143,7 @@ public final class ApiBlocks implements IBlocks
 		this.chiseledQuartzBlock = deco.block( "chiseled_quartz_block", () -> new AEDecorativeBlock(QUARTZ_PROPERTIES) ).build();
 
 		this.quartzGlass = registry.features( AEFeature.QUARTZ_GLASS )
-				.block( "quartz_glass", BlockQuartzGlass::new )
+				.block( "quartz_glass", () -> new BlockQuartzGlass(Block.Properties.create(Material.GLASS).hardnessAndResistance(2.2F).sound(SoundType.GLASS).notSolid()) )
 				.rendering(new BlockRenderingCustomizer() {
 					@Override
 					@OnlyIn(Dist.CLIENT)
@@ -154,15 +152,22 @@ public final class ApiBlocks implements IBlocks
 					}
 				})
 				.build();
-//		this.quartzVibrantGlass = deco.block( "quartz_vibrant_glass", BlockQuartzLamp::new )
-//				.addFeatures( AEFeature.DECORATIVE_LIGHTS, AEFeature.QUARTZ_GLASS )
-//				.useCustomItemModel()
-//				.build();
+		this.quartzVibrantGlass = deco.block( "quartz_vibrant_glass", () -> new BlockQuartzLamp(Block.Properties.create(Material.GLASS).hardnessAndResistance(2.2F).sound(SoundType.GLASS).lightValue(15).notSolid()) )
+				.addFeatures( AEFeature.DECORATIVE_LIGHTS, AEFeature.QUARTZ_GLASS )
+				.rendering(new BlockRenderingCustomizer() {
+					@Override
+					@OnlyIn(Dist.CLIENT)
+					public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
+						rendering.renderType(RenderType.getCutout());
+					}
+				})
+				.build();
+
 //		this.quartzFixture = registry.block( "quartz_fixture", BlockQuartzFixture::new )
 //				.features( AEFeature.DECORATIVE_LIGHTS )
 //				.useCustomItemModel()
 //				.build();
-//
+
 //		this.fluixBlock = registry.features( AEFeature.FLUIX ).block( "fluix_block", BlockFluix::new ).build();
 //
 //		this.skyStoneBlock = registry.features( AEFeature.SKY_STONE )

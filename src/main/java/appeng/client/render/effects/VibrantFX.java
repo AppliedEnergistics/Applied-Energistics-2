@@ -19,33 +19,47 @@
 package appeng.client.render.effects;
 
 
-import net.minecraft.client.particle.Particle;
+import appeng.core.AppEng;
+import net.minecraft.client.particle.*;
+import net.minecraft.particles.BasicParticleType;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 
 @OnlyIn( Dist.CLIENT )
-public class VibrantFX extends Particle
+public class VibrantFX extends SpriteTexturedParticle
 {
 
-	public VibrantFX( final World par1World, final double x, final double y, final double z, final double par8, final double par10, final double par12 )
+	public static final BasicParticleType TYPE = new BasicParticleType(false);
+
+	static {
+		TYPE.setRegistryName(AppEng.MOD_ID, "vibrant_fx");
+	}
+
+	public VibrantFX( final World par1World, final double x, final double y, final double z, final double par8, final double par10, final double par12, IAnimatedSprite sprite)
 	{
 		super( par1World, x, y, z, par8, par10, par12 );
 		final float f = this.rand.nextFloat() * 0.1F + 0.8F;
 		this.particleRed = f * 0.7f;
 		this.particleGreen = f * 0.89f;
 		this.particleBlue = f * 0.9f;
-		this.setParticleTextureIndex( 0 );
+		this.selectSpriteRandomly(sprite);
 		this.setSize( 0.04F, 0.04F );
 		this.particleScale *= this.rand.nextFloat() * 0.6F + 1.9F;
 		this.motionX = 0.0D;
 		this.motionY = 0.0D;
 		this.motionZ = 0.0D;
-		this.prevPosX = this.getPosX();
-		this.prevPosY = this.getPosY();
-		this.prevPosZ = this.getPosZ();
+		this.prevPosX = this.posX;
+		this.prevPosY = this.posY;
+		this.prevPosZ = this.posZ;
 		this.maxAge = (int) ( 20.0D / ( Math.random() * 0.8D + 0.1D ) );
+	}
+
+	@Override
+	public IParticleRenderType getRenderType() {
+		// FIXME Might be PARTICLE_SHEET_LIT
+		return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
 	}
 
 	@Override
@@ -61,9 +75,9 @@ public class VibrantFX extends Particle
 	@Override
 	public void tick()
 	{
-		this.prevPosX = this.getPosX();
-		this.prevPosY = this.getPosY();
-		this.prevPosZ = this.getPosZ();
+		this.prevPosX = this.posX;
+		this.prevPosY = this.posY;
+		this.prevPosZ = this.posZ;
 		// this.moveEntity(this.motionX, this.motionY, this.motionZ);
 		this.particleScale *= 0.95;
 
@@ -73,4 +87,18 @@ public class VibrantFX extends Particle
 		}
 		this.maxAge--;
 	}
+
+	@OnlyIn(Dist.CLIENT)
+	public static class Factory implements IParticleFactory<BasicParticleType> {
+		private final IAnimatedSprite spriteSet;
+
+		public Factory(IAnimatedSprite spriteSet) {
+			this.spriteSet = spriteSet;
+		}
+
+		public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+			return new VibrantFX(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
+		}
+	}
+
 }

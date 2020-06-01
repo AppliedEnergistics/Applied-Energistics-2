@@ -29,8 +29,8 @@ import net.minecraft.util.Direction;
 
 public class BlockQuartzGlass extends AbstractGlassBlock {
 
-	public BlockQuartzGlass() {
-		super(Block.Properties.create(Material.GLASS).hardnessAndResistance(2.2F).sound(SoundType.GLASS).notSolid());
+	public BlockQuartzGlass(Properties props) {
+		super(props);
 	}
 
 	@Override
