@@ -38,7 +38,7 @@ import appeng.util.item.AEItemStack;
 public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 {
 
-	private final IItemList<IAEItemStack> itemListCache = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+	private final IItemList<IAEItemStack> itemListCache = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 
 	protected CreativeCellInventory( final ItemStack o )
 	{
@@ -56,7 +56,7 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 
 	public static ICellInventoryHandler getCell( final ItemStack o )
 	{
-		return new BasicCellInventoryHandler( new CreativeCellInventory( o ), AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+		return new BasicCellInventoryHandler( new CreativeCellInventory( o ), Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class CreativeCellInventory implements IMEInventoryHandler<IAEItemStack>
 	@Override
 	public IStorageChannel getChannel()
 	{
-		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
+		return Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override

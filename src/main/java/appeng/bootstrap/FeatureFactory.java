@@ -29,11 +29,14 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
+import appeng.bootstrap.components.BuiltInModelComponent;
+import appeng.bootstrap.components.ModelOverrideComponent;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -55,11 +58,11 @@ public class FeatureFactory
 
 	private final Map<Class<? extends IBootstrapComponent>, List<IBootstrapComponent>> bootstrapComponents;
 
-//FIXME @OnlyIn( Dist.CLIENT )
-//FIXME private ModelOverrideComponent modelOverrideComponent;
+	@OnlyIn( Dist.CLIENT )
+	private ModelOverrideComponent modelOverrideComponent;
 
-//FIXME @OnlyIn( Dist.CLIENT )
-//FIXME private BuiltInModelComponent builtInModelComponent;
+	@OnlyIn( Dist.CLIENT )
+	private BuiltInModelComponent builtInModelComponent;
 
 	public final TileEntityComponent tileEntityComponent;
 
@@ -73,10 +76,10 @@ public class FeatureFactory
 
 		if( Platform.isClient() )
 		{
-			// FIXME this.modelOverrideComponent = new ModelOverrideComponent();
-			// FIXME this.addBootstrapComponent( this.modelOverrideComponent );
-			// FIXME this.builtInModelComponent = new BuiltInModelComponent();
-			// FIXME this.addBootstrapComponent( this.builtInModelComponent );
+			this.modelOverrideComponent = new ModelOverrideComponent();
+			this.addBootstrapComponent( this.modelOverrideComponent );
+			this.builtInModelComponent = new BuiltInModelComponent();
+			this.addBootstrapComponent( this.builtInModelComponent );
 		}
 	}
 
@@ -87,8 +90,8 @@ public class FeatureFactory
 		this.tileEntityComponent = parent.tileEntityComponent;
 		if( Platform.isClient() )
 		{
-			// FIXME this.modelOverrideComponent = parent.modelOverrideComponent;
-			// FIXME this.builtInModelComponent = parent.builtInModelComponent;
+			this.modelOverrideComponent = parent.modelOverrideComponent;
+			this.builtInModelComponent = parent.builtInModelComponent;
 		}
 	}
 
@@ -139,13 +142,13 @@ public class FeatureFactory
 	@OnlyIn( Dist.CLIENT )
 	void addBuiltInModel( String path, IUnbakedModel model )
 	{
-		// FIXME this.builtInModelComponent.addModel( path, model );
+		this.builtInModelComponent.addModel( path, model );
 	}
 
 	@OnlyIn( Dist.CLIENT )
-	void addModelOverride( String resourcePath, BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> customizer )
+	void addModelOverride( String resourcePath, BiFunction<ResourceLocation, IBakedModel, IBakedModel> customizer )
 	{
-		// FIXME this.modelOverrideComponent.addOverride( resourcePath, customizer );
+		this.modelOverrideComponent.addOverride( resourcePath, customizer );
 	}
 
 	public <T extends IBootstrapComponent> Iterator<T> getBootstrapComponents( Class<T> eventType )

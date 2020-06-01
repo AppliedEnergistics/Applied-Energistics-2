@@ -364,6 +364,6 @@ public class CableBusBakedModel implements IBakedModel
 	@Override
 	public ItemOverrideList getOverrides()
 	{
-		return ItemOverrideList.NONE;
+		return ItemOverrideList.EMPTY;
 	}
 }

@@ -60,7 +60,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 
 	public TileWireless()
 	{
-		this.inv.setFilter( new AEItemDefinitionFilter( AEApi.instance().definitions().materials().wirelessBooster() ) );
+		this.inv.setFilter( new AEItemDefinitionFilter( Api.INSTANCE.definitions().materials().wirelessBooster() ) );
 		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
 		this.getProxy().setValidSides( EnumSet.noneOf( Direction.class ) );
 	}

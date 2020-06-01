@@ -75,7 +75,7 @@ public class GridStorageCache implements IStorageGrid
 		this.storageNetworks = new IdentityHashMap<>();
 		this.storageMonitors = new IdentityHashMap<>();
 
-		AEApi.instance().storage().storageChannels().forEach( channel -> this.storageMonitors.put( channel, new NetworkMonitor<>( this, channel ) ) );
+		Api.INSTANCE.storage().storageChannels().forEach( channel -> this.storageMonitors.put( channel, new NetworkMonitor<>( this, channel ) ) );
 	}
 
 	@Override

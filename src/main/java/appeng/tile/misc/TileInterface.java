@@ -358,7 +358,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 	@Override
 	public ItemStack getItemStackRepresentation()
 	{
-		return AEApi.instance().definitions().blocks().iface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+		return Api.INSTANCE.definitions().blocks().iface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
 	@Override

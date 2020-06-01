@@ -427,7 +427,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			}
 		}
 
-		if( AEApi.instance().partHelper().getCableRenderMode().opaqueFacades )
+		if( Api.INSTANCE.partHelper().getCableRenderMode().opaqueFacades )
 		{
 			final IFacadeContainer fc = this.getFacadeContainer();
 			for( final AEPartLocation side : AEPartLocation.SIDE_LOCATIONS )
@@ -632,7 +632,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 							{
 								try
 								{
-									AEApi.instance().grid().createGridConnection( cn, sn );
+									Api.INSTANCE.grid().createGridConnection( cn, sn );
 								}
 								catch( final FailedConnectionException e )
 								{
@@ -755,7 +755,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				}
 			}
 
-			if( AEApi.instance().partHelper().getCableRenderMode().opaqueFacades || !visual )
+			if( Api.INSTANCE.partHelper().getCableRenderMode().opaqueFacades || !visual )
 			{
 				if( includeFacades && s != null && s != AEPartLocation.INTERNAL )
 				{

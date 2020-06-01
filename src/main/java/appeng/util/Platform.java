@@ -19,7 +19,11 @@
 package appeng.util;
 
 
+import appeng.api.definitions.IItemDefinition;
 import appeng.api.implementations.items.IAEWrench;
+import appeng.api.util.DimensionalCoord;
+import appeng.core.Api;
+import appeng.core.features.AEFeature;
 import appeng.util.helpers.ItemComparisonHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -27,8 +31,10 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;
@@ -322,11 +328,14 @@ public class Platform
 	{
 		return CLIENT_INSTALL;
 	}
-//
-//	public static boolean hasPermissions( final DimensionalCoord dc, final PlayerEntity player )
-//	{
-//		return dc.getWorld().canMineBlockBody( player, dc.getPos() );
-//	}
+
+	public static boolean hasPermissions(final DimensionalCoord dc, final PlayerEntity player )
+	{
+		if (!dc.isInWorld(player.world)) {
+			return false;
+		}
+		return player.world.canMineBlockBody( player, dc.getPos() );
+	}
 //
 //	/*
 //	 * Checks to see if a block is air?
@@ -1134,13 +1143,13 @@ public class Platform
 //	@SuppressWarnings( { "rawtypes", "unchecked" } )
 //	public static void postChanges( final IStorageGrid gs, final ItemStack removed, final ItemStack added, final IActionSource src )
 //	{
-//		for( final IStorageChannel<?> chan : AEApi.instance().storage().storageChannels() )
+//		for( final IStorageChannel<?> chan : Api.INSTANCE.storage().storageChannels() )
 //		{
 //			final IItemList<?> myChanges = chan.createList();
 //
 //			if( !removed.isEmpty() )
 //			{
-//				final IMEInventory myInv = AEApi.instance().registries().cell().getCellInventory( removed, null, chan );
+//				final IMEInventory myInv = Api.INSTANCE.registries().cell().getCellInventory( removed, null, chan );
 //				if( myInv != null )
 //				{
 //					myInv.getAvailableItems( myChanges );
@@ -1152,7 +1161,7 @@ public class Platform
 //			}
 //			if( !added.isEmpty() )
 //			{
-//				final IMEInventory myInv = AEApi.instance().registries().cell().getCellInventory( added, null, chan );
+//				final IMEInventory myInv = Api.INSTANCE.registries().cell().getCellInventory( added, null, chan );
 //				if( myInv != null )
 //				{
 //					myInv.getAvailableItems( myChanges );
@@ -1435,31 +1444,31 @@ public class Platform
 		}
 	}
 
-//	public static boolean canRepair( final AEFeature type, final ItemStack a, final ItemStack b )
-//	{
-//		if( b.isEmpty() || a.isEmpty() )
-//		{
-//			return false;
-//		}
-//
-//		if( type == AEFeature.CERTUS_QUARTZ_TOOLS )
-//		{
-//			final IItemDefinition certusQuartzCrystal = AEApi.instance().definitions().materials().certusQuartzCrystal();
-//
-//			return certusQuartzCrystal.isSameAs( b );
-//		}
-//
-//		if( type == AEFeature.NETHER_QUARTZ_TOOLS )
-//		{
-//			return Items.QUARTZ == b.getItem();
-//		}
-//
-//		return false;
-//	}
-//
+	public static boolean canRepair(final AEFeature type, final ItemStack a, final ItemStack b )
+	{
+		if( b.isEmpty() || a.isEmpty() )
+		{
+			return false;
+		}
+
+		if( type == AEFeature.CERTUS_QUARTZ_TOOLS )
+		{
+			final IItemDefinition certusQuartzCrystal = Api.INSTANCE.definitions().materials().certusQuartzCrystal();
+
+			return certusQuartzCrystal.isSameAs( b );
+		}
+
+		if( type == AEFeature.NETHER_QUARTZ_TOOLS )
+		{
+			return Items.QUARTZ == b.getItem();
+		}
+
+		return false;
+	}
+
 //	public static List<ItemStack> findPreferred( final ItemStack[] is )
 //	{
-//		final IParts parts = AEApi.instance().definitions().parts();
+//		final IParts parts = Api.INSTANCE.definitions().parts();
 //
 //		for( final ItemStack stack : is )
 //		{
@@ -1515,7 +1524,7 @@ public class Platform
 //
 //	// public static void addStat( final int playerID, final Achievement achievement )
 //	// {
-//	// final EntityPlayer p = AEApi.instance().registries().players().findPlayer( playerID );
+//	// final EntityPlayer p = Api.INSTANCE.registries().players().findPlayer( playerID );
 //	// if( p != null )
 //	// {
 //	// p.addStat( achievement, 1 );
@@ -1524,7 +1533,7 @@ public class Platform
 //
 //	public static boolean isRecipePrioritized( final ItemStack what )
 //	{
-//		final IMaterials materials = AEApi.instance().definitions().materials();
+//		final IMaterials materials = Api.INSTANCE.definitions().materials();
 //
 //		boolean isPurified = materials.purifiedCertusQuartzCrystal().isSameAs( what );
 //		isPurified |= materials.purifiedFluixCrystal().isSameAs( what );

@@ -177,7 +177,7 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
 		{
 			if( existing.isEmpty() )
 			{
-				this.inv[slot] = AEApi.instance()
+				this.inv[slot] = Api.INSTANCE
 						.storage()
 						.getStorageChannel( IItemStorageChannel.class )
 						.createStack(
@@ -226,7 +226,7 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
 	public void setStackInSlot( final int slot, final ItemStack newItemStack )
 	{
 		ItemStack oldStack = this.getStackInSlot( slot ).copy();
-		this.inv[slot] = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( newItemStack );
+		this.inv[slot] = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( newItemStack );
 
 		if( this.te != null && Platform.isServer() )
 		{

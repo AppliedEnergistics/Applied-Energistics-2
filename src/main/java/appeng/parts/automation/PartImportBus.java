@@ -96,9 +96,9 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 			final IMEMonitor<IAEItemStack> inv = this.getProxy()
 					.getStorage()
 					.getInventory(
-							AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+							Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 
-			final IAEItemStack out = inv.injectItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( stack ),
+			final IAEItemStack out = inv.injectItems( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( stack ),
 					Actionable.SIMULATE,
 					this.source );
 			if( out == null )
@@ -171,7 +171,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 				final IMEMonitor<IAEItemStack> inv = this.getProxy()
 						.getStorage()
 						.getInventory(
-								AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+								Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 				final IEnergyGrid energy = this.getProxy().getEnergy();
 
 				boolean Configured = false;
@@ -231,7 +231,7 @@ public class PartImportBus extends PartSharedItemBus implements IInventoryDestin
 
 		if( !newItems.isEmpty() )
 		{
-			final IAEItemStack aeStack = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( newItems );
+			final IAEItemStack aeStack = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( newItems );
 			final IAEItemStack failed = Platform.poweredInsert( energy, inv, aeStack, this.source );
 
 			if( failed != null )

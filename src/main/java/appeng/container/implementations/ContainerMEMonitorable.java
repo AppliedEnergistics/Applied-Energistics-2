@@ -78,7 +78,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 
 	private final SlotRestrictedInput[] cellView = new SlotRestrictedInput[5];
 	private final IMEMonitor<IAEItemStack> monitor;
-	private final IItemList<IAEItemStack> items = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+	private final IItemList<IAEItemStack> items = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private final IConfigManager clientCM;
 	private final ITerminalHost host;
 	@GuiSync( 99 )
@@ -109,7 +109,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 		{
 			this.serverCM = monitorable.getConfigManager();
 
-			this.monitor = monitorable.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+			this.monitor = monitorable.getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 			if( this.monitor != null )
 			{
 				this.monitor.addListener( this, null );
@@ -189,7 +189,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	{
 		if( Platform.isServer() )
 		{
-			if( this.monitor != this.host.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ) )
+			if( this.monitor != this.host.getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) ) )
 			{
 				this.setValidContainer( false );
 			}

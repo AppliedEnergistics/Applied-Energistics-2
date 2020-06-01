@@ -109,7 +109,7 @@ public class FacadeBuilder
 	{
 		BakedPipeline pipeline = this.pipelines.get();
 		Quad collectorQuad = this.collectors.get();
-		boolean transparent = AEApi.instance().partHelper().getCableRenderMode().transparentFacades;
+		boolean transparent = Api.INSTANCE.partHelper().getCableRenderMode().transparentFacades;
 		Map<Direction, FacadeRenderState> facadeStates = renderState.getFacades();
 		List<AxisAlignedBB> partBoxes = renderState.getBoundingBoxes();
 		Set<Direction> sidesWithParts = renderState.getAttachments().keySet();

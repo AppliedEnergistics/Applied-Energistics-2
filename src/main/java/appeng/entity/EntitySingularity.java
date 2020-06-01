@@ -80,7 +80,7 @@ public final class EntitySingularity extends AEBaseEntityItem
 
 		final ItemStack item = this.getItem();
 
-		final IMaterials materials = AEApi.instance().definitions().materials();
+		final IMaterials materials = Api.INSTANCE.definitions().materials();
 
 		if( materials.singularity().isSameAs( item ) )
 		{

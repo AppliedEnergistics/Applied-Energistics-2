@@ -56,7 +56,7 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 	public void configure()
 	{
 
-		final IDefinitions definitions = AEApi.instance().definitions();
+		final IDefinitions definitions = Api.INSTANCE.definitions();
 		final IBlocks blocks = definitions.blocks();
 		final IParts parts = definitions.parts();
 

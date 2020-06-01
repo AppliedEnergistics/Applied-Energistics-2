@@ -120,14 +120,14 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 
 		if( s == this.middle )
 		{
-			IItemDefinition press = AEApi.instance().definitions().materials().namePress();
+			IItemDefinition press = Api.INSTANCE.definitions().materials().namePress();
 			if( press.isSameAs( top ) || press.isSameAs( bot ) )
 			{
 				return !press.isSameAs( is );
 			}
 
 			boolean matches = false;
-			for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
+			for( final IInscriberRecipe recipe : Api.INSTANCE.registries().inscriber().getRecipes() )
 			{
 				final boolean matchA = !top
 						.isEmpty() && ( Platform.itemComparisons().isSameItem( top, recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) || Platform
@@ -168,14 +168,14 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 			}
 
 			// name presses
-			final IItemDefinition namePress = AEApi.instance().definitions().materials().namePress();
+			final IItemDefinition namePress = Api.INSTANCE.definitions().materials().namePress();
 			if( namePress.isSameAs( otherSlot ) )
 			{
 				return namePress.isSameAs( is );
 			}
 
 			// everything else
-			for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
+			for( final IInscriberRecipe recipe : Api.INSTANCE.registries().inscriber().getRecipes() )
 			{
 				boolean isValid = false;
 				if( Platform.itemComparisons().isSameItem( otherSlot, recipe.getTopOptional().orElse( ItemStack.EMPTY ) ) )

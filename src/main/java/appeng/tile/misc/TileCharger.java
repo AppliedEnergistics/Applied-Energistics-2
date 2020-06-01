@@ -135,7 +135,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 		final ItemStack myItem = this.inv.getStackInSlot( 0 );
 		if( this.getInternalCurrentPower() > POWER_THRESHOLD )
 		{
-			final IMaterials materials = AEApi.instance().definitions().materials();
+			final IMaterials materials = Api.INSTANCE.definitions().materials();
 
 			if( materials.certusQuartzCrystal().isSameAs( myItem ) )
 			{
@@ -185,7 +185,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 		{
 			ItemStack held = player.inventory.getCurrentItem();
 
-			if( AEApi.instance().definitions().materials().certusQuartzCrystal().isSameAs( held ) || Platform.isChargeable( held ) )
+			if( Api.INSTANCE.definitions().materials().certusQuartzCrystal().isSameAs( held ) || Platform.isChargeable( held ) )
 			{
 				held = player.inventory.decrStackSize( player.inventory.currentItem, 1 );
 				this.inv.setStackInSlot( 0, held );
@@ -219,7 +219,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 
 		if( !myItem.isEmpty() )
 		{
-			final IMaterials materials = AEApi.instance().definitions().materials();
+			final IMaterials materials = Api.INSTANCE.definitions().materials();
 
 			if( Platform.isChargeable( myItem ) )
 			{
@@ -227,7 +227,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 
 				if( ps.getAEMaxPower( myItem ) > ps.getAECurrentPower( myItem ) )
 				{
-					final double chargeRate = AEApi.instance().registries().charger().getChargeRate( myItem.getItem() );
+					final double chargeRate = Api.INSTANCE.registries().charger().getChargeRate( myItem.getItem() );
 
 					double extractedAmount = this.extractAEPower( chargeRate, Actionable.MODULATE, PowerMultiplier.CONFIG );
 
@@ -298,7 +298,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 		@Override
 		public boolean allowInsert( IItemHandler inv, final int i, final ItemStack itemstack )
 		{
-			final IItemDefinition cert = AEApi.instance().definitions().materials().certusQuartzCrystal();
+			final IItemDefinition cert = Api.INSTANCE.definitions().materials().certusQuartzCrystal();
 
 			return Platform.isChargeable( itemstack ) || cert.isSameAs( itemstack );
 		}
@@ -317,7 +317,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 				}
 			}
 
-			return AEApi.instance().definitions().materials().certusQuartzCrystalCharged().isSameAs( extractedItem );
+			return Api.INSTANCE.definitions().materials().certusQuartzCrystalCharged().isSameAs( extractedItem );
 		}
 	}
 }

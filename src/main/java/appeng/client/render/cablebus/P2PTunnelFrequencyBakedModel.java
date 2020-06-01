@@ -137,6 +137,6 @@ public class P2PTunnelFrequencyBakedModel implements IBakedModel, IPartBakedMode
 	@Override
 	public ItemOverrideList getOverrides()
 	{
-		return ItemOverrideList.NONE;
+		return ItemOverrideList.EMPTY;
 	}
 }

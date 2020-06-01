@@ -351,7 +351,7 @@ public class PathGridCache implements IPathingGrid
 			{
 				for( final IGridNode n : this.requireChannels )
 				{
-					PlayerEntity player = AEApi.instance().registries().players().findPlayer( n.getPlayerID() );
+					PlayerEntity player = Api.INSTANCE.registries().players().findPlayer( n.getPlayerID() );
 					if( player instanceof PlayerEntityMP )
 					{
 						currentBracket.trigger( (PlayerEntityMP) player );

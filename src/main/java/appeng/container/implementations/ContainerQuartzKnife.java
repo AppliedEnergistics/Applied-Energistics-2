@@ -121,7 +121,7 @@ public class ContainerQuartzKnife extends AEBaseContainer
 			{
 				if( ContainerQuartzKnife.this.myName.length() > 0 )
 				{
-					return AEApi.instance().definitions().materials().namePress().maybeStack( 1 ).map( namePressStack ->
+					return Api.INSTANCE.definitions().materials().namePress().maybeStack( 1 ).map( namePressStack ->
 					{
                         final CompoundNBT compound = namePressStack.getOrCreateTag();
 						compound.putString("InscribeName", ContainerQuartzKnife.this.myName);

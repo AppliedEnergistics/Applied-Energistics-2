@@ -152,7 +152,7 @@ public class FluidHandlerAdapter implements IMEInventory<IAEFluidStack>, IBaseMo
 	@Override
 	public IStorageChannel<IAEFluidStack> getChannel()
 	{
-		return AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
+		return Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class );
 	}
 
 	@Override

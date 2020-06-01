@@ -43,7 +43,7 @@ public final class FacadeRecipe extends net.minecraftforge.registries.IForgeRegi
 	public FacadeRecipe( ItemFacade facade )
 	{
 		this.facade = facade;
-		final IDefinitions definitions = AEApi.instance().definitions();
+		final IDefinitions definitions = Api.INSTANCE.definitions();
 
 		this.anchor = definitions.parts().cableAnchor();
 	}

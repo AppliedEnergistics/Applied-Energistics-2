@@ -61,7 +61,7 @@ public class MultiCraftingTracker
 
 			if( link != null && !link.isEmpty() )
 			{
-				this.setLink( x, AEApi.instance().storage().loadCraftingLink( link, this.owner ) );
+				this.setLink( x, Api.INSTANCE.storage().loadCraftingLink( link, this.owner ) );
 			}
 		}
 	}

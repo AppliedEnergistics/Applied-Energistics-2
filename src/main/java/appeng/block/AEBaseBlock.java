@@ -425,6 +425,7 @@ public abstract class AEBaseBlock extends Block
 		return null;
 	}
 
+	@Deprecated
 	protected IProperty[] getAEStates()
 	{
 		return new IProperty[0];

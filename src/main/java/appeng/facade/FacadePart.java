@@ -103,7 +103,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 	@Override
 	public boolean isTransparent()
 	{
-		if( AEApi.instance().partHelper().getCableRenderMode().transparentFacades )
+		if( Api.INSTANCE.partHelper().getCableRenderMode().transparentFacades )
 		{
 			return true;
 		}

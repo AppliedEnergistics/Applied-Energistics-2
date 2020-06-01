@@ -141,7 +141,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 	private boolean isCenter()
 	{
-		return AEApi.instance()
+		return Api.INSTANCE
 				.definitions()
 				.blocks()
 				.quantumLink()
@@ -168,7 +168,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	{
 		super.onReady();
 
-		final IBlockDefinition quantumRing = AEApi.instance().definitions().blocks().quantumRing();
+		final IBlockDefinition quantumRing = Api.INSTANCE.definitions().blocks().quantumRing();
 		final Optional<Block> maybeLinkBlock = quantumRing.maybeBlock();
 		final Optional<ItemStack> maybeLinkStack = quantumRing.maybeStack( 1 );
 

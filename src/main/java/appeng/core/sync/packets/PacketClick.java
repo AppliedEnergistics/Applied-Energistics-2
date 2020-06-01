@@ -113,7 +113,7 @@ public class PacketClick extends AppEngPacket
 	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player )
 	{
 		final ItemStack is = player.inventory.getCurrentItem();
-		final IItems items = AEApi.instance().definitions().items();
+		final IItems items = Api.INSTANCE.definitions().items();
 		final IComparableDefinition maybeMemoryCard = items.memoryCard();
 		final IComparableDefinition maybeColorApplicator = items.colorApplicator();
 		final BlockPos pos = new BlockPos( this.x, this.y, this.z );

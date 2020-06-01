@@ -23,7 +23,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
-import net.minecraftforge.fml.RegistryObject;
+
+import java.util.Optional;
 
 
 public interface IBlockDefinition extends IItemDefinition
@@ -31,12 +32,20 @@ public interface IBlockDefinition extends IItemDefinition
 	/**
 	 * @return the {@link Block} implementation if applicable
 	 */
-	RegistryObject<Block> maybeBlock();
+	default Optional<Block> maybeBlock() {
+		return Optional.of(block());
+	}
+
+	Block block();
 
 	/**
 	 * @return the {@link BlockItem} implementation if applicable
 	 */
-	RegistryObject<BlockItem> maybeBlockItem();
+	default Optional<BlockItem> maybeBlockItem() {
+		return Optional.of(blockItem());
+	}
+
+	BlockItem blockItem();
 
 	/**
 	 * Compare Block with world.

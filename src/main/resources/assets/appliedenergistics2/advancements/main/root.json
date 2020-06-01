@@ -10,7 +10,7 @@
         "description": {
             "translate": "achievement.ae2.Root.desc"
         },
-        "background": "appliedenergistics2:textures/blocks/sky_stone_brick.png",
+        "background": "appliedenergistics2:textures/block/sky_stone_brick.png",
         "show_toast": false,
         "announce_to_chat": false
     },

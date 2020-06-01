@@ -208,7 +208,7 @@ public class CraftingTreeProcess
 				ItemStack is = ic.getStackInSlot( x );
 				is = Platform.getContainerItem( is );
 
-				final IAEItemStack o = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( is );
+				final IAEItemStack o = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( is );
 				if( o != null )
 				{
 					this.bytes++;
@@ -227,7 +227,7 @@ public class CraftingTreeProcess
 				if( this.containerItems )
 				{
 					final ItemStack is = Platform.getContainerItem( stack.createItemStack() );
-					final IAEItemStack o = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( is );
+					final IAEItemStack o = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( is );
 					if( o != null )
 					{
 						this.bytes++;

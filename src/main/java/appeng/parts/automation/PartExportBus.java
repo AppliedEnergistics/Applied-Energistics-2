@@ -133,7 +133,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 			final IMEMonitor<IAEItemStack> inv = this.getProxy()
 					.getStorage()
 					.getInventory(
-							AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+							Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 			final IEnergyGrid energy = this.getProxy().getEnergy();
 			final ICraftingGrid cg = this.getProxy().getCrafting();
 			final FuzzyMode fzMode = (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE );

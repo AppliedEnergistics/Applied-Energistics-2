@@ -71,9 +71,9 @@
         }
     ],
     "textures": {
-        "particle": "blocks/tnt_side",
-        "side": "blocks/tnt_side",
-        "top": "blocks/tnt_top",
-        "bottom": "blocks/tnt_bottom"
+        "particle": "block/tnt_side",
+        "side": "block/tnt_side",
+        "top": "block/tnt_top",
+        "bottom": "block/tnt_bottom"
     }
 }

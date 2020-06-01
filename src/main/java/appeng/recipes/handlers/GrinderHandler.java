@@ -34,7 +34,7 @@ public class GrinderHandler implements IAERecipeFactory
 			turns = JSONUtils.getInt( json, "turns" );
 		}
 
-		final IGrinderRegistry reg = AEApi.instance().registries().grinder();
+		final IGrinderRegistry reg = Api.INSTANCE.registries().grinder();
 		for( int i = 0; i < input.length; ++i )
 		{
 			final IGrinderRecipeBuilder builder = reg.builder();

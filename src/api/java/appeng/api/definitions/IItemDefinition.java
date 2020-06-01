@@ -44,12 +44,20 @@ public interface IItemDefinition extends IComparableDefinition
 	/**
 	 * @return the {@link Item} Implementation if applicable
 	 */
-	Optional<Item> maybeItem();
+	default Optional<Item> maybeItem() {
+		return Optional.of(item());
+	}
+
+	Item item();
 
 	/**
 	 * @return an {@link ItemStack} with specified quantity of this item.
 	 */
-	Optional<ItemStack> maybeStack( int stackSize );
+	default Optional<ItemStack> maybeStack( int stackSize ) {
+		return Optional.of(stack(stackSize));
+	}
+
+	ItemStack stack( int stackSize );
 
 	/**
 	 * @return <tt>true</tt> if definition is enabled

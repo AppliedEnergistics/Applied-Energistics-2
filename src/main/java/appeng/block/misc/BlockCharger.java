@@ -111,7 +111,7 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 		{
 			final TileCharger tc = (TileCharger) tile;
 
-			if( AEApi.instance().definitions().materials().certusQuartzCrystalCharged().isSameAs( tc.getInternalInventory().getStackInSlot( 0 ) ) )
+			if( Api.INSTANCE.definitions().materials().certusQuartzCrystalCharged().isSameAs( tc.getInternalInventory().getStackInSlot( 0 ) ) )
 			{
 				final double xOff = 0.0;
 				final double yOff = 0.0;

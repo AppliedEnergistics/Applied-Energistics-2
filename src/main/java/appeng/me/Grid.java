@@ -54,7 +54,7 @@ public class Grid implements IGrid
 	{
 		this.pivot = center;
 
-		final Map<Class<? extends IGridCache>, IGridCache> myCaches = AEApi.instance().registries().gridCache().createCacheInstance( this );
+		final Map<Class<? extends IGridCache>, IGridCache> myCaches = Api.INSTANCE.registries().gridCache().createCacheInstance( this );
 		for( final Entry<Class<? extends IGridCache>, IGridCache> c : myCaches.entrySet() )
 		{
 			final Class<? extends IGridCache> key = c.getKey();

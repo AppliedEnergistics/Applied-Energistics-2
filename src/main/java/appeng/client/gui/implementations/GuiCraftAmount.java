@@ -95,7 +95,7 @@ public class GuiCraftAmount extends AEBaseGui
 
 		ItemStack myIcon = null;
 		final Object target = ( (AEBaseContainer) this.inventorySlots ).getTarget();
-		final IDefinitions definitions = AEApi.instance().definitions();
+		final IDefinitions definitions = Api.INSTANCE.definitions();
 		final IParts parts = definitions.parts();
 
 		if( target instanceof WirelessTerminalGuiObject )

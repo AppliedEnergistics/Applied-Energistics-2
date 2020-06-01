@@ -50,7 +50,7 @@ import net.minecraft.util.text.ITextComponent;
  */
 public class FluidRepo
 {
-	private final IItemList<IAEFluidStack> list = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList();
+	private final IItemList<IAEFluidStack> list = Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ).createList();
 	private final ArrayList<IAEFluidStack> view = new ArrayList<>();
 	private final IScrollSource src;
 	private final ISortSource sortSrc;

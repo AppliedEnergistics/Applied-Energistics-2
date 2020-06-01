@@ -22,94 +22,80 @@ package appeng.decorative.solid;
 import java.util.EnumSet;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.BlockStateContainer;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.ModelProperty;
 
 import appeng.block.AEBaseBlock;
-import appeng.helpers.AEGlassMaterial;
-
 
 public class BlockQuartzGlass extends AEBaseBlock
 {
 
-	// This unlisted property is used to determine the actual block that should be rendered
-	public static final UnlistedGlassStateProperty GLASS_STATE = new UnlistedGlassStateProperty();
-
 	public BlockQuartzGlass()
 	{
-		super( Material.GLASS );
-		this.setLightOpacity( 0 );
+		super( Properties.create(Material.GLASS) );
+		// FIXME this.setLightOpacity( 0 );
 		this.setOpaque( false );
 	}
 
-	@Override
-	protected BlockStateContainer createBlockState()
-	{
-		IProperty[] listedProperties = new IProperty[0];
-		IUnlistedProperty[] unlistedProperties = new IUnlistedProperty[] { GLASS_STATE };
-		return new ExtendedBlockState( this, listedProperties, unlistedProperties );
+//	@Override
+//	protected BlockStateContainer createBlockState()
+//	{
+//		IProperty[] listedProperties = new IProperty[0];
+//		IUnlistedProperty[] unlistedProperties = new IUnlistedProperty[] { GLASS_STATE };
+//		return new ExtendedBlockState( this, listedProperties, unlistedProperties );
+//	}
+
+// FIXME	@Override
+// FIXME	public BlockRenderLayer getBlockLayer()
+// FIXME	{
+// FIXME		return BlockRenderLayer.CUTOUT;
+// FIXME	}
+
+// FIXME	@Override
+// FIXME	public boolean shouldSideBeRendered( final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side )
+// FIXME	{
+// FIXME		BlockPos adjacentPos = pos.offset( side );
+// FIXME
+// FIXME		final Material mat = w.getBlockState( adjacentPos ).getMaterial();
+// FIXME
+// FIXME		if( mat == Material.GLASS || mat == AEGlassMaterial.INSTANCE )
+// FIXME		{
+// FIXME			if( w.getBlockState( adjacentPos ).getRenderType() == this.getRenderType( state ) )
+// FIXME			{
+// FIXME				return false;
+// FIXME			}
+// FIXME		}
+// FIXME
+// FIXME		return super.shouldSideBeRendered( state, w, pos, side );
+// FIXME	}
+
+	// BEGIN: Copied from AbstractGlassBlock
+	@OnlyIn(Dist.CLIENT)
+	public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
+		return 1.0F;
 	}
 
-	@Override
-	public BlockState getExtendedState( BlockState state, IBlockReader world, BlockPos pos )
-	{
-
-		EnumSet<Direction> flushWith = EnumSet.noneOf( Direction.class );
-		// Test every direction for another glass block
-		for( Direction facing : Direction.values() )
-		{
-			if( isGlassBlock( world, pos, facing ) )
-			{
-				flushWith.add( facing );
-			}
-		}
-
-		GlassState glassState = new GlassState( pos.getX(), pos.getY(), pos.getZ(), flushWith );
-
-		IExtendedBlockState extState = (IExtendedBlockState) state;
-
-		return extState.withProperty( GLASS_STATE, glassState );
+	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+		return true;
 	}
 
-	private static boolean isGlassBlock( IBlockReader world, BlockPos pos, Direction facing )
-	{
-		return world.getBlockState( pos.offset( facing ) ).getBlock() instanceof BlockQuartzGlass;
-	}
-
-	@Override
-	public BlockRenderLayer getBlockLayer()
-	{
-		return BlockRenderLayer.CUTOUT;
-	}
-
-	@Override
-	public boolean shouldSideBeRendered( final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side )
-	{
-		BlockPos adjacentPos = pos.offset( side );
-
-		final Material mat = w.getBlockState( adjacentPos ).getMaterial();
-
-		if( mat == Material.GLASS || mat == AEGlassMaterial.INSTANCE )
-		{
-			if( w.getBlockState( adjacentPos ).getRenderType() == this.getRenderType( state ) )
-			{
-				return false;
-			}
-		}
-
-		return super.shouldSideBeRendered( state, w, pos, side );
-	}
-
-	@Override
-	public boolean isFullCube( BlockState state )
-	{
+	public boolean causesSuffocation(BlockState state, IBlockReader worldIn, BlockPos pos) {
 		return false;
 	}
+
+	public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos) {
+		return false;
+	}
+
+	public boolean canEntitySpawn(BlockState state, IBlockReader worldIn, BlockPos pos, EntityType<?> type) {
+		return false;
+	}
+	// END: Copied from AbstractGlassBlock
+
 }

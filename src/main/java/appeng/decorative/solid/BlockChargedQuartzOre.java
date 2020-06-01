@@ -42,7 +42,7 @@ public class BlockChargedQuartzOre extends BlockQuartzOre
 //	@Override
 //	public Item getItemDropped( final BlockState state, final Random rand, final int fortune )
 //	{
-//		return AEApi.instance()
+//		return Api.INSTANCE
 //				.definitions()
 //				.materials()
 //				.certusQuartzCrystalCharged()
@@ -53,7 +53,7 @@ public class BlockChargedQuartzOre extends BlockQuartzOre
 //	@Override
 //	public int damageDropped( final BlockState state )
 //	{
-//		return AEApi.instance()
+//		return Api.INSTANCE
 //				.definitions()
 //				.materials()
 //				.certusQuartzCrystalCharged()
@@ -65,7 +65,7 @@ public class BlockChargedQuartzOre extends BlockQuartzOre
 //	@Override
 //	public ItemStack getPickBlock( BlockState state, RayTraceResult target, World world, BlockPos pos, PlayerEntity player )
 //	{
-//		return AEApi.instance()
+//		return Api.INSTANCE
 //				.definitions()
 //				.blocks()
 //				.quartzOreCharged()

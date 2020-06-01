@@ -66,7 +66,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	public static ResolverResult getResolver( final int certus2 )
 	{
 
-		return AEApi.instance()
+		return Api.INSTANCE
 				.definitions()
 				.items()
 				.crystalSeed()
@@ -109,7 +109,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	public ItemStack triggerGrowth( final ItemStack is )
 	{
 		final int newDamage = getProgress( is ) + 1;
-		final IMaterials materials = AEApi.instance().definitions().materials();
+		final IMaterials materials = Api.INSTANCE.definitions().materials();
 		final int size = is.getCount();
 
 		if( newDamage == CERTUS + SINGLE_OFFSET )

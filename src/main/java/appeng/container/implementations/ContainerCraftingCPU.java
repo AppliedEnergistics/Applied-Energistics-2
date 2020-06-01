@@ -53,7 +53,7 @@ import appeng.util.Platform;
 public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorHandlerReceiver<IAEItemStack>, ICustomNameObject
 {
 
-	private final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+	private final IItemList<IAEItemStack> list = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private IGrid network;
 	private CraftingCPUCluster monitor = null;
 	private String cpuName = null;

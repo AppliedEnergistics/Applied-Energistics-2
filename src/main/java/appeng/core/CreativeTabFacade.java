@@ -22,44 +22,34 @@ package appeng.core;
 import java.util.Optional;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
-import appeng.items.parts.ItemFacade;
 
 
-public final class CreativeTabFacade extends CreativeTabs
+public final class CreativeTabFacade
 {
-
-	public static CreativeTabFacade instance = null;
-
-	public CreativeTabFacade()
-	{
-		super( "appliedenergistics2.facades" );
-	}
+	public static ItemGroup instance = null;
 
 	static void init()
 	{
-		instance = new CreativeTabFacade();
+		instance = new ItemGroup("appliedenergistics2.facades") {
+
+			@Override
+			public ItemStack createIcon()
+			{
+
+				// FIXME final Optional<Item> maybeFacade = Api.INSTANCE.definitions().items().facade().maybeItem();
+				// FIXME if( maybeFacade.isPresent() )
+				{
+					// FIXME return ( (ItemFacade) maybeFacade.get() ).getCreativeTabIcon();
+				}
+
+				return new ItemStack( Blocks.OAK_PLANKS );
+			}
+		};
 	}
 
-	@Override
-	public ItemStack getTabIconItem()
-	{
-		return this.getIconItemStack();
-	}
-
-	@Override
-	public ItemStack getIconItemStack()
-	{
-		final Optional<Item> maybeFacade = AEApi.instance().definitions().items().facade().maybeItem();
-		if( maybeFacade.isPresent() )
-		{
-			return ( (ItemFacade) maybeFacade.get() ).getCreativeTabIcon();
-		}
-
-		return new ItemStack( Blocks.PLANKS );
-	}
 }

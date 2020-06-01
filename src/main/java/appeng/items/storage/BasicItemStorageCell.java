@@ -79,13 +79,13 @@ public final class BasicItemStorageCell extends AbstractStorageCell<IAEItemStack
 	@Override
 	public IStorageChannel<IAEItemStack> getChannel()
 	{
-		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
+		return Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override
 	protected void dropEmptyStorageCellCase( final InventoryAdaptor ia, final PlayerEntity player )
 	{
-		AEApi.instance().definitions().materials().emptyStorageCell().maybeStack( 1 ).ifPresent( is ->
+		Api.INSTANCE.definitions().materials().emptyStorageCell().maybeStack( 1 ).ifPresent( is ->
 		{
 			final ItemStack extraA = ia.addItems( is );
 			if( !extraA.isEmpty() )

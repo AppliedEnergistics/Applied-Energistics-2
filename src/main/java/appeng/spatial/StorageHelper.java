@@ -161,7 +161,7 @@ public class StorageHelper
 
 	public void swapRegions( final World srcWorld, final int srcX, final int srcY, final int srcZ, final World dstWorld, final int dstX, final int dstY, final int dstZ, final int scaleX, final int scaleY, final int scaleZ )
 	{
-		AEApi.instance()
+		Api.INSTANCE
 				.definitions()
 				.blocks()
 				.matrixFrame()

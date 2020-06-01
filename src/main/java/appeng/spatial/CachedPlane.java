@@ -59,7 +59,7 @@ public class CachedPlane
 	private final List<TileEntity> tiles = new ArrayList<>();
 	private final List<NextTickListEntry> ticks = new ArrayList<>();
 	private final World world;
-	private final IMovableRegistry reg = AEApi.instance().registries().movable();
+	private final IMovableRegistry reg = Api.INSTANCE.registries().movable();
 	private final List<WorldCoord> updates = new ArrayList<>();
 	private int verticalBits;
 	private final BlockState matrixBlockState;
@@ -67,7 +67,7 @@ public class CachedPlane
 	public CachedPlane( final World w, final int minX, final int minY, final int minZ, final int maxX, final int maxY, final int maxZ )
 	{
 
-		Block matrixFrameBlock = AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().orElse( null );
+		Block matrixFrameBlock = Api.INSTANCE.definitions().blocks().matrixFrame().maybeBlock().orElse( null );
 		if( matrixFrameBlock != null )
 		{
 			this.matrixBlockState = matrixFrameBlock.getDefaultState();
@@ -115,7 +115,7 @@ public class CachedPlane
 			}
 		}
 
-		final IMovableRegistry mr = AEApi.instance().registries().movable();
+		final IMovableRegistry mr = Api.INSTANCE.registries().movable();
 
 		for( int cx = 0; cx < this.cx_size; cx++ )
 		{
@@ -203,13 +203,13 @@ public class CachedPlane
 
 	private IMovableHandler getHandler( final TileEntity te )
 	{
-		final IMovableRegistry mr = AEApi.instance().registries().movable();
+		final IMovableRegistry mr = Api.INSTANCE.registries().movable();
 		return mr.getHandler( te );
 	}
 
 	void swap( final CachedPlane dst )
 	{
-		final IMovableRegistry mr = AEApi.instance().registries().movable();
+		final IMovableRegistry mr = Api.INSTANCE.registries().movable();
 
 		if( dst.x_size == this.x_size && dst.y_size == this.y_size && dst.z_size == this.z_size )
 		{

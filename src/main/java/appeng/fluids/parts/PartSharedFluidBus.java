@@ -178,7 +178,7 @@ public abstract class PartSharedFluidBus extends PartUpgradeable implements IGri
 
 	protected IFluidStorageChannel getChannel()
 	{
-		return AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
+		return Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class );
 	}
 
 	@Override

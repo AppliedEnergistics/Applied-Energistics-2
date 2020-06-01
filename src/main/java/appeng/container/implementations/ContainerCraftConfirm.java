@@ -209,7 +209,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 					final PacketMEInventoryUpdate b = new PacketMEInventoryUpdate( (byte) 1 );
 					final PacketMEInventoryUpdate c = this.result.isSimulation() ? new PacketMEInventoryUpdate( (byte) 2 ) : null;
 
-					final IItemList<IAEItemStack> plan = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+					final IItemList<IAEItemStack> plan = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 					this.result.populatePlan( plan );
 
 					this.setUsedBytes( this.result.getByteTotal() );
@@ -226,7 +226,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 						p.setStackSize( out.getCountRequestable() );
 
 						final IStorageGrid sg = this.getGrid().getCache( IStorageGrid.class );
-						final IMEInventory<IAEItemStack> items = sg.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+						final IMEInventory<IAEItemStack> items = sg.getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 
 						IAEItemStack m = null;
 						if( c != null && this.result.isSimulation() )

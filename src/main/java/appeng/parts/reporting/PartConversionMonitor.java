@@ -179,7 +179,7 @@ public class PartConversionMonitor extends AbstractPartMonitor
 			final IEnergySource energy = this.getProxy().getEnergy();
 			final IMEMonitor<IAEItemStack> cell = this.getProxy()
 					.getStorage()
-					.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+					.getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 
 			if( allItems )
 			{
@@ -235,7 +235,7 @@ public class PartConversionMonitor extends AbstractPartMonitor
 				final IMEMonitor<IAEItemStack> cell = this.getProxy()
 						.getStorage()
 						.getInventory(
-								AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+								Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 
 				input.setStackSize( count );
 

@@ -176,7 +176,7 @@ public class TickHandler
 		if( ev.type == Type.CLIENT && ev.phase == Phase.START )
 		{
 			this.tickColors( this.cliPlayerColors );
-			final CableRenderMode currentMode = AEApi.instance().partHelper().getCableRenderMode();
+			final CableRenderMode currentMode = Api.INSTANCE.partHelper().getCableRenderMode();
 			if( currentMode != this.crm )
 			{
 				this.crm = currentMode;

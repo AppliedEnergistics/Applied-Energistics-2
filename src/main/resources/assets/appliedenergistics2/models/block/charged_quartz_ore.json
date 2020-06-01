@@ -2,7 +2,7 @@
     "ae2_uvl_marker": true,
     "parent": "block/block",
     "textures": {
-        "block": "blocks/stone",
+        "block": "block/stone",
         "quartz": "appliedenergistics2:block/charged_quartz_ore_light",
         "particle": "appliedenergistics2:block/charged_quartz_ore"
     },

@@ -83,13 +83,13 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell<
 	{
 		super.addInformation( stack, world, lines, advancedTooltips );
 
-		final ICellInventoryHandler<IAEItemStack> cdi = AEApi.instance()
+		final ICellInventoryHandler<IAEItemStack> cdi = Api.INSTANCE
 				.registries()
 				.cell()
 				.getCellInventory( stack, null,
-						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+						Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 
-		AEApi.instance().client().addCellInformation( cdi, lines );
+		Api.INSTANCE.client().addCellInformation( cdi, lines );
 	}
 
 	@Override
@@ -137,7 +137,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell<
 	@Override
 	public IStorageChannel<IAEItemStack> getChannel()
 	{
-		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
+		return Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override

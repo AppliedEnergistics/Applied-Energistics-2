@@ -35,39 +35,40 @@ import net.minecraftforge.fml.RegistryObject;
 
 public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 {
-	private final RegistryObject<Block> block;
+	private final Block block;
+
+	private final BlockItem blockItem;
 
 	public BlockDefinition( String registryName, Block block, BlockItem item )
 	{
 		super( registryName, item );
-		this.block = null; // FIXME // Optional.ofNullable( block );
+		this.block = block;
+		this.blockItem = item;
 	}
 
 	@Override
-	public final RegistryObject<Block> maybeBlock()
+	public final Block block()
 	{
 		return this.block;
 	}
 
 	@Override
-	public RegistryObject<BlockItem> maybeBlockItem()
+	public BlockItem blockItem()
 	{
-		// FIXME
-		return null;
-//		return this.block.map( BlockItem::new );
+		return blockItem;
 	}
 
 	@Override
-	public final Optional<ItemStack> maybeStack( int stackSize )
+	public final ItemStack stack( int stackSize )
 	{
 		Preconditions.checkArgument( stackSize > 0 );
 
-		return this.block.map( b -> new ItemStack( b, stackSize ) );
+		return new ItemStack(block, stackSize);
 	}
 
 	@Override
 	public final boolean isSameAs( final IBlockReader world, final BlockPos pos )
 	{
-		return this.block.isPresent() && world.getBlockState( pos ).getBlock() == this.block.get();
+		return world.getBlockState( pos ).getBlock() == this.block;
 	}
 }

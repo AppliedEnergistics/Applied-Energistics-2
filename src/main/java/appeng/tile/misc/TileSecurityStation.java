@@ -278,7 +278,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 	@Override
 	public <T extends IAEStack<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )
 	{
-		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
+		if( channel == Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
 			return (IMEMonitor<T>) this.securityMonitor;
 		}
@@ -318,7 +318,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 	@Override
 	public void readPermissions( final Map<Integer, EnumSet<SecurityPermissions>> playerPerms )
 	{
-		final IPlayerRegistry pr = AEApi.instance().registries().players();
+		final IPlayerRegistry pr = Api.INSTANCE.registries().players();
 
 		// read permissions
 		for( final IAEItemStack ais : this.inventory.getStoredItems() )

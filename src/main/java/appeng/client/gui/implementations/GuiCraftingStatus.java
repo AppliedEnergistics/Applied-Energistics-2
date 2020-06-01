@@ -65,7 +65,7 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 
 		this.status = (ContainerCraftingStatus) this.inventorySlots;
 		final Object target = this.status.getTarget();
-		final IDefinitions definitions = AEApi.instance().definitions();
+		final IDefinitions definitions = Api.INSTANCE.definitions();
 		final IParts parts = definitions.parts();
 
 		if( target instanceof WirelessTerminalGuiObject )

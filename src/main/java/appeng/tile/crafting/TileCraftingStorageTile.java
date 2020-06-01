@@ -35,7 +35,7 @@ public class TileCraftingStorageTile extends TileCraftingTile
 	@Override
 	protected ItemStack getItemFromTile( final Object obj )
 	{
-		final IBlocks blocks = AEApi.instance().definitions().blocks();
+		final IBlocks blocks = Api.INSTANCE.definitions().blocks();
 		final int storage = ( (TileCraftingTile) obj ).getStorageBytes() / KILO_SCALAR;
 
 		Optional<ItemStack> is;

@@ -104,7 +104,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 				this.markItemAs( x, gs, TestStatus.ACCEPT );
 			}
 
-			in.add( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( gs ) );
+			in.add( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( gs ) );
 			this.testFrame.setInventorySlotContents( x, gs );
 		}
 
@@ -115,7 +115,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 			if( this.standardRecipe != null )
 			{
 				this.correctOutput = this.standardRecipe.getCraftingResult( this.crafting );
-				out.add( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( this.correctOutput ) );
+				out.add( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( this.correctOutput ) );
 			}
 			else
 			{
@@ -139,7 +139,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
 				if( !gs.isEmpty() )
 				{
-					out.add( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( gs ) );
+					out.add( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( gs ) );
 				}
 			}
 		}

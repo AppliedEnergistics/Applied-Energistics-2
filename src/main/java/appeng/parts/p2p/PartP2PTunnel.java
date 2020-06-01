@@ -124,7 +124,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 			return super.getItemStack( type );
 		}
 
-		final Optional<ItemStack> maybeMEStack = AEApi.instance().definitions().parts().p2PTunnelME().maybeStack( 1 );
+		final Optional<ItemStack> maybeMEStack = Api.INSTANCE.definitions().parts().p2PTunnelME().maybeStack( 1 );
 		if( maybeMEStack.isPresent() )
 		{
 			return maybeMEStack.get();
@@ -195,7 +195,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		// UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor( is.getItem() );
 		// AELog.info( "ID:" + id.toString() + " : " + is.getItemDamage() );
 
-		final TunnelType tt = AEApi.instance().registries().p2pTunnel().getTunnelTypeByItem( is );
+		final TunnelType tt = Api.INSTANCE.registries().p2pTunnel().getTunnelTypeByItem( is );
 		if( !is.isEmpty() && is.getItem() instanceof IMemoryCard )
 		{
 			final IMemoryCard mc = (IMemoryCard) is.getItem();
@@ -244,7 +244,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 		{
 			final ItemStack newType;
 
-			final IParts parts = AEApi.instance().definitions().parts();
+			final IParts parts = Api.INSTANCE.definitions().parts();
 
 			switch( tt )
 			{

@@ -236,7 +236,7 @@ public class PartFluidInterface extends PartBasicState implements IGridTickable,
 	@Override
 	public ItemStack getItemStackRepresentation()
 	{
-		return AEApi.instance().definitions().parts().fluidIface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+		return Api.INSTANCE.definitions().parts().fluidIface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
 	@Override

@@ -78,7 +78,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 		try
 		{
 			final long encKey = Long.parseLong( this.encryptionKey );
-			obj = AEApi.instance().registries().locatable().getLocatableBy( encKey );
+			obj = Api.INSTANCE.registries().locatable().getLocatableBy( encKey );
 		}
 		catch( final NumberFormatException err )
 		{
@@ -96,7 +96,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 					this.sg = this.targetGrid.getCache( IStorageGrid.class );
 					if( this.sg != null )
 					{
-						this.itemStorage = this.sg.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+						this.itemStorage = this.sg.getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 					}
 				}
 			}
@@ -235,7 +235,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 		{
 			return this.itemStorage.getChannel();
 		}
-		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
+		return Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override

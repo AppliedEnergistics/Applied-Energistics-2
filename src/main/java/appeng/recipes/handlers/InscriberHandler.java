@@ -44,7 +44,7 @@ public class InscriberHandler implements IAERecipeFactory
 			bottom = CraftingHelper.getIngredient( JSONUtils.getJsonObject( ingredients, "bottom" ), ctx ).getMatchingStacks();
 		}
 
-		final IInscriberRegistry reg = AEApi.instance().registries().inscriber();
+		final IInscriberRegistry reg = Api.INSTANCE.registries().inscriber();
 		for( int i = 0; i < top.length; ++i )
 		{
 			for( int j = 0; j < bottom.length; ++j )

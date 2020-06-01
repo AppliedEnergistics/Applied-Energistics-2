@@ -19,49 +19,39 @@
 package appeng.core;
 
 
-import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
 import appeng.bootstrap.IModelRegistry;
+import appeng.bootstrap.components.IBlockRegistrationComponent;
 import appeng.bootstrap.components.IEntityRegistrationComponent;
+import appeng.bootstrap.components.IItemRegistrationComponent;
 import appeng.bootstrap.components.IModelRegistrationComponent;
 import appeng.client.render.effects.ChargedOreFX;
-import com.google.common.base.Preconditions;
-
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.ICriterionInstance;
-import net.minecraft.advancements.ICriterionTrigger;
+import appeng.client.render.model.GlassModelLoader;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
-import net.minecraft.particles.BasicParticleType;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.GenericEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.IForgeRegistry;
-import appeng.bootstrap.components.IBlockRegistrationComponent;
-import appeng.bootstrap.components.IItemRegistrationComponent;
 
 
 final class Registration
 {
-//	DimensionType storageDimensionType;
+
+	public Registration() {
+		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "glass"), GlassModelLoader.INSTANCE);
+	}
+
+	//	DimensionType storageDimensionType;
 //	int storageDimensionID;
 //	Biome storageBiome;
 //	AdvancementTriggers advancementTriggers;
@@ -191,6 +181,7 @@ final class Registration
 	@OnlyIn( Dist.CLIENT )
 	public void modelRegistryEvent( ModelRegistryEvent event )
 	{
+
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		final IModelRegistry registry = new IModelRegistry() {
 			@Override
@@ -200,7 +191,7 @@ final class Registration
 
 			@Override
 			public void setCustomModelResourceLocation(Item item, int metadata, ModelResourceLocation model) {
-				// TODO: this does not actually work
+				// FIXME: this does not actually work
 				ItemModelMesher mesher = Minecraft.getInstance().getItemRenderer().getItemModelMesher();
 				mesher.register(item, model);
 			}

@@ -99,7 +99,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 	public TileMolecularAssembler()
 	{
-		final ITileDefinition assembler = AEApi.instance().definitions().blocks().molecularAssembler();
+		final ITileDefinition assembler = Api.INSTANCE.definitions().blocks().molecularAssembler();
 
 		this.settings = new ConfigManager( this );
 		this.settings.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );

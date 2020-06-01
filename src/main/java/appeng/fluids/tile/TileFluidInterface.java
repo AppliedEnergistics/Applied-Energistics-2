@@ -179,7 +179,7 @@ public class TileFluidInterface extends AENetworkTile implements IGridTickable, 
 	@Override
 	public ItemStack getItemStackRepresentation()
 	{
-		return AEApi.instance().definitions().blocks().fluidIface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+		return Api.INSTANCE.definitions().blocks().fluidIface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
 	@Override

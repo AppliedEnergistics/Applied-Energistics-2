@@ -19,10 +19,10 @@
 package appeng.items.contents;
 
 
+import appeng.core.Api;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.Settings;
@@ -51,7 +51,7 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 
 	public PortableCellViewer( final ItemStack is, final int slot )
 	{
-		super( AEApi.instance().registries().cell().getCellInventory( is, null, AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ) );
+		super( Api.INSTANCE.registries().cell().getCellInventory( is, null, Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) ) );
 		this.ips = (IAEItemPowerStorage) is.getItem();
 		this.target = is;
 		this.inventorySlot = slot;
@@ -85,7 +85,7 @@ public class PortableCellViewer extends MEMonitorHandler<IAEItemStack> implement
 	@Override
 	public <T extends IAEStack<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )
 	{
-		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
+		if( channel == Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
 			return (IMEMonitor<T>) this;
 		}

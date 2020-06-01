@@ -81,11 +81,11 @@ public class ItemCreativeStorageCell extends AEBaseItem implements ICellWorkbenc
 	@Override
 	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
-		final IMEInventoryHandler<?> inventory = AEApi.instance()
+		final IMEInventoryHandler<?> inventory = Api.INSTANCE
 				.registries()
 				.cell()
 				.getCellInventory( stack, null,
-						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+						Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 
 		if( inventory instanceof ICellInventoryHandler )
 		{

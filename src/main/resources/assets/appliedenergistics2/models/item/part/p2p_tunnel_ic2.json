@@ -1,6 +1,6 @@
 {
     "parent": "appliedenergistics2:item/part/p2p_tunnel",
     "textures": {
-        "type": "minecraft:blocks/diamond_block"
+        "type": "block/diamond_block"
     }
 }

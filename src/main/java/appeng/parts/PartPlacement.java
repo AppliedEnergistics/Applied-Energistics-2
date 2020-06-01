@@ -230,7 +230,7 @@ public class PartPlacement
 
 		BlockPos te_pos = pos;
 
-		final IBlockDefinition multiPart = AEApi.instance().definitions().blocks().multiPart();
+		final IBlockDefinition multiPart = Api.INSTANCE.definitions().blocks().multiPart();
 		if( host == null && pass == PlaceType.PLACE_ITEM )
 		{
 			Direction offset = null;
@@ -431,7 +431,7 @@ public class PartPlacement
 			else
 			{
 				final ItemStack held = event.getPlayer().getHeldItem( event.getHand() );
-				final IItems items = AEApi.instance().definitions().items();
+				final IItems items = Api.INSTANCE.definitions().items();
 
 				boolean supportedItem = items.memoryCard().isSameAs( held );
 				supportedItem |= items.colorApplicator().isSameAs( held );

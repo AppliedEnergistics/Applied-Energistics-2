@@ -92,7 +92,7 @@ public abstract class PartSharedStorageBus extends PartUpgradeable implements IG
 	 */
 	public IStorageChannel getStorageChannel()
 	{
-		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
+		return Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	protected abstract void resetCache();

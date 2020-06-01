@@ -109,7 +109,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		this.getProxy().setIdlePowerUsage( 0 );
 		this.settings = new ConfigManager( this );
 
-		final ITileDefinition inscriberDefinition = AEApi.instance().definitions().blocks().inscriber();
+		final ITileDefinition inscriberDefinition = Api.INSTANCE.definitions().blocks().inscriber();
 		this.upgrades = new DefinitionUpgradeInventory( inscriberDefinition, this, this.getUpgradeSlots() );
 
 		this.sideItemHandler.setMaxStackSize( 1, 64 );
@@ -311,7 +311,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			return null;
 		}
 
-		final IComparableDefinition namePress = AEApi.instance().definitions().materials().namePress();
+		final IComparableDefinition namePress = Api.INSTANCE.definitions().materials().namePress();
 		final boolean isNameA = namePress.isSameAs( plateA );
 		final boolean isNameB = namePress.isSameAs( plateB );
 
@@ -324,7 +324,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 			return this.makeNamePressRecipe( input, plateB, plateA );
 		}
 
-		for( final IInscriberRecipe recipe : AEApi.instance().registries().inscriber().getRecipes() )
+		for( final IInscriberRecipe recipe : Api.INSTANCE.registries().inscriber().getRecipes() )
 		{
 
 			final boolean matchA = ( plateA.isEmpty() && !recipe.getTopOptional().isPresent() ) || ( Platform.itemComparisons()
@@ -567,7 +567,7 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 		final List<ItemStack> inputs = Lists.newArrayList( startingItem );
 		final InscriberProcessType type = InscriberProcessType.INSCRIBE;
 
-		final IInscriberRecipeBuilder builder = AEApi.instance().registries().inscriber().builder();
+		final IInscriberRecipeBuilder builder = Api.INSTANCE.registries().inscriber().builder();
 		builder.withInputs( inputs ).withOutput( renamedItem ).withProcessType( type );
 
 		if( !plateA.isEmpty() )
@@ -617,11 +617,11 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 			if( inv == TileInscriber.this.topItemHandler || inv == TileInscriber.this.bottomItemHandler )
 			{
-				if( AEApi.instance().definitions().materials().namePress().isSameAs( stack ) )
+				if( Api.INSTANCE.definitions().materials().namePress().isSameAs( stack ) )
 				{
 					return true;
 				}
-				for( final ItemStack optionals : AEApi.instance().registries().inscriber().getOptionals() )
+				for( final ItemStack optionals : Api.INSTANCE.registries().inscriber().getOptionals() )
 				{
 					if( Platform.itemComparisons().isSameItem( stack, optionals ) )
 					{

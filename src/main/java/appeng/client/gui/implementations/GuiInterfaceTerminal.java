@@ -349,7 +349,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			if( !parsedItemStack.isEmpty() )
 			{
 				final String displayName = Platform
-						.getItemDisplayName( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( parsedItemStack ) )
+						.getItemDisplayName( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( parsedItemStack ) )
 						.toLowerCase();
 				if( displayName.contains( searchTerm ) )
 				{

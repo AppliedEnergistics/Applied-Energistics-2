@@ -32,7 +32,7 @@ public class ItemModList implements IItemContainer<IAEItemStack>
 {
 
 	private final IItemContainer<IAEItemStack> backingStore;
-	private final IItemContainer<IAEItemStack> overrides = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+	private final IItemContainer<IAEItemStack> overrides = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 
 	public ItemModList( final IItemContainer<IAEItemStack> backend )
 	{

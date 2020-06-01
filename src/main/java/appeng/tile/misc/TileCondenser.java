@@ -161,7 +161,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 
 	private ItemStack getOutput()
 	{
-		final IMaterials materials = AEApi.instance().definitions().materials();
+		final IMaterials materials = Api.INSTANCE.definitions().materials();
 
 		switch( (CondenserOutput) this.cm.getSetting( Settings.CONDENSER_OUTPUT ) )
 		{
@@ -316,7 +316,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		{
 			if( doFill )
 			{
-				final IStorageChannel<IAEFluidStack> chan = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
+				final IStorageChannel<IAEFluidStack> chan = Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class );
 				TileCondenser.this.addPower( ( resource == null ? 0.0 : (double) resource.amount ) / chan.transferFactor() );
 			}
 
@@ -364,7 +364,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		@Override
 		public <T extends IAEStack<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )
 		{
-			if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
+			if( channel == Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) )
 			{
 				return (IMEMonitor<T>) this.itemInventory;
 			}

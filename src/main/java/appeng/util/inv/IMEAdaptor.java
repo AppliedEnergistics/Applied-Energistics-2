@@ -64,7 +64,7 @@ public class IMEAdaptor extends InventoryAdaptor
 
 	private IItemList<IAEItemStack> getList()
 	{
-		return this.target.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
+		return this.target.getAvailableItems( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList() );
 	}
 
 	@Override

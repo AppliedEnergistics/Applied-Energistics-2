@@ -225,7 +225,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 				}
 
 				this.updateReportingValue(
-						this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ) );
+						this.getProxy().getStorage().getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) ) );
 			}
 		}
 		catch( final GridAccessException e )

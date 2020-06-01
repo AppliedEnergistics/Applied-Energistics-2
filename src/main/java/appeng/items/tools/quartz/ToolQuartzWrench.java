@@ -19,8 +19,10 @@
 package appeng.items.tools.quartz;
 
 
+import appeng.core.CreativeTab;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
@@ -38,20 +40,21 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench
 
 	public ToolQuartzWrench()
 	{
-		super( new Properties().maxStackSize( 1 ) );
+		super( new Properties()
+				.group(ItemGroup.TOOLS)
+				.maxStackSize( 1 ) );
 	}
 
 	@Override
 	public ActionResultType onItemUse( ItemUseContext context )
 	{
 		final Block b = context.getWorld().getBlockState( context.getPos() ).getBlock();
-		if( b != null && !context.getPlayer().isShiftKeyDown() && Platform.hasPermissions( new DimensionalCoord( context.getWorld(), context.getPos() ),
+		if( !context.getPlayer().isCrouching() && Platform.hasPermissions( new DimensionalCoord( context.getWorld(), context.getPos() ),
 				context.getPlayer() ) )
 		{
 			if( Platform.isClient() )
 			{
-				// TODO 1.10-R - if we return FAIL on client, action will not be sent to server. Fix that in all
-				// Block#onItemUseFirst overrides.
+				// TODO 1.10-R - if we return FAIL on client, action will not be sent to server. Fix that in all Block#onItemUseFirst overrides.
 				return !context.getWorld().isRemote ? ActionResultType.SUCCESS : ActionResultType.PASS;
 			}
 

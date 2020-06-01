@@ -113,7 +113,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 			}
 		}
 
-		final ILocatable myOtherSide = this.otherSide == 0 ? null : AEApi.instance().registries().locatable().getLocatableBy( this.otherSide );
+		final ILocatable myOtherSide = this.otherSide == 0 ? null : Api.INSTANCE.registries().locatable().getLocatableBy( this.otherSide );
 
 		boolean shutdown = false;
 
@@ -156,7 +156,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 						}
 					}
 
-					sideA.connection = sideB.connection = new ConnectionWrapper( AEApi.instance()
+					sideA.connection = sideB.connection = new ConnectionWrapper( Api.INSTANCE
 							.grid()
 							.createGridConnection( sideA.getNode(),
 									sideB.getNode() ) );
@@ -190,7 +190,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 
 	private boolean canUseNode( final long qe )
 	{
-		final QuantumCluster qc = (QuantumCluster) AEApi.instance().registries().locatable().getLocatableBy( qe );
+		final QuantumCluster qc = (QuantumCluster) Api.INSTANCE.registries().locatable().getLocatableBy( qe );
 		if( qc != null )
 		{
 			final World theWorld = qc.center.getWorld();

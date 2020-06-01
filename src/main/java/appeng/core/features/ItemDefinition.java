@@ -36,13 +36,13 @@ import appeng.util.Platform;
 public class ItemDefinition implements IItemDefinition
 {
 	private final String identifier;
-	private final Optional<Item> item;
+	private final Item item;
 
 	public ItemDefinition( String registryName, Item item )
 	{
 		Preconditions.checkArgument( !Strings.isNullOrEmpty( registryName ), "registryName" );
 		this.identifier = registryName;
-		this.item = Optional.ofNullable( item );
+		this.item = item;
 	}
 
 	@Nonnull
@@ -53,27 +53,28 @@ public class ItemDefinition implements IItemDefinition
 	}
 
 	@Override
-	public final Optional<Item> maybeItem()
+	public final Item item()
 	{
 		return this.item;
 	}
 
 	@Override
-	public Optional<ItemStack> maybeStack( final int stackSize )
+	public ItemStack stack( final int stackSize )
 	{
-		return this.item.map( item -> new ItemStack( item, stackSize ) );
+		return new ItemStack( item, stackSize );
 	}
 
 	@Override
 	public boolean isEnabled()
 	{
-		return this.item.isPresent();
+		// FIXME sadly we can only set this after registration
+		return true;
 	}
 
 	@Override
 	public final boolean isSameAs( final ItemStack comparableStack )
 	{
-		return this.isEnabled() && Platform.itemComparisons().isEqualItemType( comparableStack, this.maybeStack( 1 ).get() );
+		return Platform.itemComparisons().isEqualItemType( comparableStack, this.stack( 1 ) );
 	}
 
 }

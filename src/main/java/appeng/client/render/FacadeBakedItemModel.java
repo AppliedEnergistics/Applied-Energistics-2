@@ -86,6 +86,6 @@ public class FacadeBakedItemModel extends DelegateBakedModel
 	@Override
 	public ItemOverrideList getOverrides()
 	{
-		return ItemOverrideList.NONE;
+		return ItemOverrideList.EMPTY;
 	}
 }

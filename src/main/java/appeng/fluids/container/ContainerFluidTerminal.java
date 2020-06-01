@@ -81,7 +81,7 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 {
 	private final IConfigManager clientCM;
 	private final IMEMonitor<IAEFluidStack> monitor;
-	private final IItemList<IAEFluidStack> fluids = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList();
+	private final IItemList<IAEFluidStack> fluids = Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ).createList();
 	@GuiSync( 99 )
 	public boolean hasPower = false;
 	private ITerminalHost terminal;
@@ -103,7 +103,7 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 		if( Platform.isServer() )
 		{
 			this.serverCM = terminal.getConfigManager();
-			this.monitor = terminal.getInventory( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
+			this.monitor = terminal.getInventory( Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ) );
 
 			if( this.monitor != null )
 			{
@@ -266,7 +266,7 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 	{
 		if( Platform.isServer() )
 		{
-			if( this.monitor != this.terminal.getInventory( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) ) )
+			if( this.monitor != this.terminal.getInventory( Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ) ) )
 			{
 				this.setValidContainer( false );
 			}

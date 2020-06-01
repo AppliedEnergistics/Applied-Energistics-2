@@ -318,7 +318,7 @@ public enum GuiBridge implements IGuiHandler
 				return ( (IGuiItem) it.getItem() ).getGuiObject( it, w, new BlockPos( x, y, z ) );
 			}
 
-			final IWirelessTermHandler wh = AEApi.instance().registries().wireless().getWirelessTerminalHandler( it );
+			final IWirelessTermHandler wh = Api.INSTANCE.registries().wireless().getWirelessTerminalHandler( it );
 			if( wh != null )
 			{
 				return new WirelessTerminalGuiObject( wh, it, player, w, x, y, z );

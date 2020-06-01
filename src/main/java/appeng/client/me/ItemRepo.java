@@ -51,7 +51,7 @@ import net.minecraft.util.text.ITextComponent;
 public class ItemRepo
 {
 
-	private final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+	private final IItemList<IAEItemStack> list = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private final ArrayList<IAEItemStack> view = new ArrayList<>();
 	private final IScrollSource src;
 	private final ISortSource sortSrc;

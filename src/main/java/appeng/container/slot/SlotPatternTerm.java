@@ -52,7 +52,7 @@ public class SlotPatternTerm extends SlotCraftingTerm
 	public AppEngPacket getRequest( final boolean shift ) throws IOException
 	{
 		return new PacketPatternSlot( this
-				.getPattern(), AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( this.getStack() ), shift );
+				.getPattern(), Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( this.getStack() ), shift );
 	}
 
 	@Override

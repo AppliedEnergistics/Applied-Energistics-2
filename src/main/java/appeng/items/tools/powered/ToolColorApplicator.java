@@ -117,11 +117,11 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 		ItemStack paintBall = this.getColor( is );
 
-		final IMEInventory<IAEItemStack> inv = AEApi.instance()
+		final IMEInventory<IAEItemStack> inv = Api.INSTANCE
 				.registries()
 				.cell()
 				.getCellInventory( is, null,
-						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+						Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 		if( inv != null )
 		{
 			final IAEItemStack option = inv.extractItems( AEItemStack.fromItemStack( paintBall ), Actionable.SIMULATE, new BaseActionSource() );
@@ -267,15 +267,15 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	{
 		ItemStack newColor = ItemStack.EMPTY;
 
-		final IMEInventory<IAEItemStack> inv = AEApi.instance()
+		final IMEInventory<IAEItemStack> inv = Api.INSTANCE
 				.registries()
 				.cell()
 				.getCellInventory( is, null,
-						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+						Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 		if( inv != null )
 		{
 			final IItemList<IAEItemStack> itemList = inv
-					.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
+					.getAvailableItems( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList() );
 			if( anchor.isEmpty() )
 			{
 				final IAEItemStack firstItem = itemList.getFirstItem();
@@ -428,13 +428,13 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	{
 		super.addInformation( stack, world, lines, advancedTooltips );
 
-		final ICellInventoryHandler<IAEItemStack> cdi = AEApi.instance()
+		final ICellInventoryHandler<IAEItemStack> cdi = Api.INSTANCE
 				.registries()
 				.cell()
 				.getCellInventory( stack, null,
-						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+						Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 
-		AEApi.instance().client().addCellInformation( cdi, lines );
+		Api.INSTANCE.client().addCellInformation( cdi, lines );
 	}
 
 	@Override
@@ -501,7 +501,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	@Override
 	public IStorageChannel<IAEItemStack> getChannel()
 	{
-		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
+		return Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override

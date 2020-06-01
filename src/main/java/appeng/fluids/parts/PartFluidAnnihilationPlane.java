@@ -288,7 +288,7 @@ public class PartFluidAnnihilationPlane extends PartBasicState implements IGridT
 		try
 		{
 			final IStorageGrid storage = this.getProxy().getStorage();
-			final IMEInventory<IAEFluidStack> inv = storage.getInventory( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ) );
+			final IMEInventory<IAEFluidStack> inv = storage.getInventory( Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ) );
 
 			if( modulate )
 			{

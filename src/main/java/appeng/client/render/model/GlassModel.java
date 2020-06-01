@@ -19,52 +19,40 @@
 package appeng.client.render.model;
 
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 import java.util.function.Function;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.common.model.IModelState;
-import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
 
+import javax.annotation.Nullable;
 
 /**
  * Model class for the connected texture glass model.
  */
-public class GlassModel implements IModel
+public class GlassModel implements IModelGeometry<GlassModel>
 {
 
 	@Override
-	public Collection<ResourceLocation> getDependencies()
-	{
-		return Collections.emptySet();
+	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
+		return new GlassBakedModel( spriteGetter );
 	}
 
 	@Override
-	public Collection<ResourceLocation> getTextures()
-	{
-		return ImmutableSet.<ResourceLocation>builder()
-				.add( GlassBakedModel.TEXTURE_A, GlassBakedModel.TEXTURE_B, GlassBakedModel.TEXTURE_C, GlassBakedModel.TEXTURE_D )
-				.add( GlassBakedModel.TEXTURES_FRAME )
+	public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+		return ImmutableSet.<Material>builder()
+				.add(GlassBakedModel.TEXTURE_A, GlassBakedModel.TEXTURE_B, GlassBakedModel.TEXTURE_C, GlassBakedModel.TEXTURE_D)
+				.add(GlassBakedModel.TEXTURES_FRAME)
 				.build();
-	}
-
-	@Override
-	public IBakedModel bake( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
-	{
-		return new GlassBakedModel( format, bakedTextureGetter );
-	}
-
-	@Override
-	public IModelState getDefaultState()
-	{
-		return TRSRTransformation.identity();
 	}
 
 }

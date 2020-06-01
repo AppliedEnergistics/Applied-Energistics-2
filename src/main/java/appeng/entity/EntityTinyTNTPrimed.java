@@ -88,7 +88,7 @@ public final class EntityTinyTNTPrimed extends TNTEntity implements IEntityAddit
 
 		if( this.isInWater() && Platform.isServer() ) // put out the fuse.
 		{
-			AEApi.instance().definitions().blocks().tinyTNT().maybeStack( 1 ).ifPresent( tntStack ->
+			Api.INSTANCE.definitions().blocks().tinyTNT().maybeStack( 1 ).ifPresent( tntStack ->
 			{
 				final ItemEntity item = new ItemEntity( this.world, this.getPosX(), this.getPosY(), this.getPosZ(), tntStack );
 

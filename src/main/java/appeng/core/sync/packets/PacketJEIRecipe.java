@@ -139,7 +139,7 @@ public class PacketJEIRecipe extends AppEngPacket
 
 		if( inv != null && this.recipe != null && security != null )
 		{
-			final IMEMonitor<IAEItemStack> storage = inv.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+			final IMEMonitor<IAEItemStack> storage = inv.getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 			final IPartitionList<IAEItemStack> filter = ItemViewCell.createFilter( cct.getViewCells() );
 
 			for( int x = 0; x < craftMatrix.getSlots(); x++ )

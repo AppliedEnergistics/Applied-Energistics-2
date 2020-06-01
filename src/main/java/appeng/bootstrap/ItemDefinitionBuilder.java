@@ -131,11 +131,6 @@ class ItemDefinitionBuilder implements IItemBuilder
 	@Override
 	public ItemDefinition build()
 	{
-		if( !AEConfig.instance().areFeaturesEnabled( this.features ) )
-		{
-			return new ItemDefinition( this.registryName, null );
-		}
-
 		Item item = this.itemSupplier.get();
 		item.setRegistryName( AppEng.MOD_ID, this.registryName );
 

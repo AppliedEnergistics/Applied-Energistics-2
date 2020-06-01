@@ -69,7 +69,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	@Override
 	public EnumActionResult onItemUseFirst( final PlayerEntity player, final World world, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
 	{
-		return AEApi.instance().partHelper().placeBus( player.getHeldItem( hand ), pos, side, player, hand, world );
+		return Api.INSTANCE.partHelper().placeBus( player.getHeldItem( hand ), pos, side, player, hand, world );
 	}
 
 	@Override
@@ -308,7 +308,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 	public ItemStack createFromIDs( final int[] ids )
 	{
-		ItemStack facadeStack = AEApi.instance()
+		ItemStack facadeStack = Api.INSTANCE
 				.definitions()
 				.items()
 				.facade()

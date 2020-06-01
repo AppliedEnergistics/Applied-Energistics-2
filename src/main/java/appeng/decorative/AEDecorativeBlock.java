@@ -19,15 +19,12 @@
 package appeng.decorative;
 
 
-import net.minecraft.block.material.Material;
-
 import appeng.block.AEBaseBlock;
 
 
-public abstract class AEDecorativeBlock extends AEBaseBlock
+public class AEDecorativeBlock extends AEBaseBlock
 {
-	public AEDecorativeBlock( final Material mat )
-	{
-		super( mat );
+	public AEDecorativeBlock(Properties props) {
+		super(props);
 	}
 }

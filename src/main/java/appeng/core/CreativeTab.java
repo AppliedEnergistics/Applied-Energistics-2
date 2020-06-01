@@ -38,7 +38,7 @@ public final class CreativeTab
 
 	static void init()
 	{
-		instance = new ItemGroup( 11, "appliedenergistics2" )
+		instance = new ItemGroup( "appliedenergistics2" )
 		{
 
 			@Override
@@ -49,13 +49,15 @@ public final class CreativeTab
 
 			private ItemStack getIconItemStack()
 			{
-				final IDefinitions definitions = AEApi.instance().definitions();
+				final IDefinitions definitions = Api.INSTANCE.definitions();
 				final IBlocks blocks = definitions.blocks();
 				final IItems items = definitions.items();
 				final IMaterials materials = definitions.materials();
 
-				return this.findFirst( blocks.controller(), blocks.chest(), blocks.cellWorkbench(), blocks.fluixBlock(), items.cell1k(), items.networkTool(),
-						materials.fluixCrystal(), materials.certusQuartzCrystal(), materials.skyDust() );
+				return findFirst(blocks.quartzOre());
+
+				// FIXME return this.findFirst( blocks.controller(), blocks.chest(), blocks.cellWorkbench(), blocks.fluixBlock(), items.cell1k(), items.networkTool(),
+				// FIXME 		materials.fluixCrystal(), materials.certusQuartzCrystal(), materials.skyDust() );
 			}
 
 			private ItemStack findFirst( final IItemDefinition... choices )

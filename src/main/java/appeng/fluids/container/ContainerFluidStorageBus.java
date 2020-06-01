@@ -164,7 +164,7 @@ public class ContainerFluidStorageBus extends ContainerFluidConfigurable
 		if( cellInv != null )
 		{
 			final IItemList<IAEFluidStack> list = cellInv
-					.getAvailableItems( AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList() );
+					.getAvailableItems( Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ).createList() );
 			i = list.iterator();
 		}
 

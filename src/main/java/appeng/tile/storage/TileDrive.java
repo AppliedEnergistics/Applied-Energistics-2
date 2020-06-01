@@ -279,7 +279,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	{
 		if( !this.isCached )
 		{
-			final Collection<IStorageChannel<? extends IAEStack<?>>> storageChannels = AEApi.instance().storage().storageChannels();
+			final Collection<IStorageChannel<? extends IAEStack<?>>> storageChannels = Api.INSTANCE.storage().storageChannels();
 			storageChannels.forEach( channel -> this.inventoryHandlers.put( channel, new ArrayList<>( 10 ) ) );
 
 			double power = 2.0;
@@ -292,7 +292,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 
 				if( !is.isEmpty() )
 				{
-					this.handlersBySlot[x] = AEApi.instance().registries().cell().getHandler( is );
+					this.handlersBySlot[x] = Api.INSTANCE.registries().cell().getHandler( is );
 
 					if( this.handlersBySlot[x] != null )
 					{
@@ -394,7 +394,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 		@Override
 		public boolean allowInsert( IItemHandler inv, int slot, ItemStack stack )
 		{
-			return !stack.isEmpty() && AEApi.instance().registries().cell().isCellHandled( stack );
+			return !stack.isEmpty() && Api.INSTANCE.registries().cell().isCellHandled( stack );
 		}
 
 	}
@@ -402,7 +402,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	@Override
 	public ItemStack getItemStackRepresentation()
 	{
-		return AEApi.instance().definitions().blocks().drive().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+		return Api.INSTANCE.definitions().blocks().drive().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
 	@Override

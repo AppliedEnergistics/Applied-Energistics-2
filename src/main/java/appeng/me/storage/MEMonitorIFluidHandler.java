@@ -48,7 +48,7 @@ import appeng.api.storage.data.IItemList;
 public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITickingMonitor
 {
 	private final IFluidHandler handler;
-	private final IItemList<IAEFluidStack> list = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList();
+	private final IItemList<IAEFluidStack> list = Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ).createList();
 	private final HashMap<IMEMonitorHandlerReceiver<IAEFluidStack>, Object> listeners = new HashMap<>();
 	private final NavigableMap<Integer, CachedFluidStack> memory;
 	private IActionSource mySource;
@@ -120,7 +120,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 	@Override
 	public IStorageChannel getChannel()
 	{
-		return AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class );
+		return Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class );
 	}
 
 	@Override
@@ -169,7 +169,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 
 				if( newIS != null )
 				{
-					stack = ( old == null || old.aeStack == null ? AEApi.instance()
+					stack = ( old == null || old.aeStack == null ? Api.INSTANCE
 							.storage()
 							.getStorageChannel( IFluidStorageChannel.class )
 							.createStack( newIS ) : old.aeStack.copy() );
@@ -342,7 +342,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 			else
 			{
 				this.fluidStack = is.copy();
-				this.aeStack = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createStack( is );
+				this.aeStack = Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ).createStack( is );
 			}
 		}
 	}

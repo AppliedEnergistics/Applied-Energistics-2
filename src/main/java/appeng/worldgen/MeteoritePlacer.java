@@ -71,7 +71,7 @@ public final class MeteoritePlacer
 
 	public MeteoritePlacer()
 	{
-		final IBlocks blocks = AEApi.instance().definitions().blocks();
+		final IBlocks blocks = Api.INSTANCE.definitions().blocks();
 
 		this.skyChestDefinition = blocks.skyStoneChest();
 		this.skyStoneDefinition = blocks.skyStoneBlock();
@@ -246,7 +246,7 @@ public final class MeteoritePlacer
 						}
 
 						ItemStack toAdd = ItemStack.EMPTY;
-						final IMaterials materials = AEApi.instance().definitions().materials();
+						final IMaterials materials = Api.INSTANCE.definitions().materials();
 
 						switch( r % 4 )
 						{

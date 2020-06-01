@@ -188,7 +188,7 @@ public class PartToggleBus extends PartBasicState
 				{
 					try
 					{
-						this.connection = AEApi.instance().grid().createGridConnection( this.getProxy().getNode(), this.getOuterProxy().getNode() );
+						this.connection = Api.INSTANCE.grid().createGridConnection( this.getProxy().getNode(), this.getOuterProxy().getNode() );
 					}
 					catch( final FailedConnectionException e )
 					{

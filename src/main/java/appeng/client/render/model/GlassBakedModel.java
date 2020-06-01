@@ -19,13 +19,11 @@
 package appeng.client.render.model;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Strings;
@@ -33,48 +31,63 @@ import com.google.common.base.Strings;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 import appeng.decorative.solid.BlockQuartzGlass;
 import appeng.decorative.solid.GlassState;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.ILightReader;
+import net.minecraftforge.client.model.ModelDataManager;
+import net.minecraftforge.client.model.data.IDynamicBakedModel;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelProperty;
+import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 
 
-class GlassBakedModel implements IBakedModel
+class GlassBakedModel implements IDynamicBakedModel
 {
+
+	// This unlisted property is used to determine the actual block that should be rendered
+	public static final ModelProperty<GlassState> GLASS_STATE = new ModelProperty<>();
 
 	private static final byte[][][] OFFSETS = generateOffsets();
 
 	// Alternating textures based on position
-	static final ResourceLocation TEXTURE_A = new ResourceLocation( "appliedenergistics2:blocks/glass/quartz_glass_a" );
-	static final ResourceLocation TEXTURE_B = new ResourceLocation( "appliedenergistics2:blocks/glass/quartz_glass_b" );
-	static final ResourceLocation TEXTURE_C = new ResourceLocation( "appliedenergistics2:blocks/glass/quartz_glass_c" );
-	static final ResourceLocation TEXTURE_D = new ResourceLocation( "appliedenergistics2:blocks/glass/quartz_glass_d" );
+	static final Material TEXTURE_A = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( "appliedenergistics2:block/glass/quartz_glass_a" ));
+	static final Material TEXTURE_B = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( "appliedenergistics2:block/glass/quartz_glass_b" ));
+	static final Material TEXTURE_C = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( "appliedenergistics2:block/glass/quartz_glass_c" ));
+	static final Material TEXTURE_D = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( "appliedenergistics2:block/glass/quartz_glass_d" ));
 
 	// Frame texture
-	static final ResourceLocation[] TEXTURES_FRAME = generateTexturesFrame();
+	static final Material[] TEXTURES_FRAME = generateTexturesFrame();
 
 	// Generates the required textures for the frame
-	private static ResourceLocation[] generateTexturesFrame()
+	private static Material[] generateTexturesFrame()
 	{
 		return IntStream.range( 1, 16 )
 				.mapToObj( Integer::toBinaryString )
 				.map( s -> Strings.padStart( s, 4, '0' ) )
-				.map( s -> new ResourceLocation( "appliedenergistics2:blocks/glass/quartz_glass_frame" + s ) )
-				.toArray( ResourceLocation[]::new );
+				.map( s -> new ResourceLocation( "appliedenergistics2:block/glass/quartz_glass_frame" + s ) )
+				.map( rl -> new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE, rl) )
+				.toArray( Material[]::new );
 	}
 
 	private final TextureAtlasSprite[] glassTextures;
 
 	private final TextureAtlasSprite[] frameTextures;
 
-	private final VertexFormat vertexFormat;
-
-	public GlassBakedModel( VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
+	public GlassBakedModel( Function<Material, TextureAtlasSprite> bakedTextureGetter )
 	{
 		this.glassTextures = new TextureAtlasSprite[] {
 				bakedTextureGetter.apply( TEXTURE_A ),
@@ -82,8 +95,6 @@ class GlassBakedModel implements IBakedModel
 				bakedTextureGetter.apply( TEXTURE_C ),
 				bakedTextureGetter.apply( TEXTURE_D )
 		};
-
-		this.vertexFormat = format;
 
 		// The first frame texture would be empty, so we simply leave it set to null here
 		this.frameTextures = new TextureAtlasSprite[16];
@@ -94,15 +105,14 @@ class GlassBakedModel implements IBakedModel
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, Random rand, IModelData extraData )
 	{
-		if( !( state instanceof IExtendedBlockState ) || side == null )
+		if( side == null )
 		{
 			return Collections.emptyList();
 		}
 
-		final IExtendedBlockState extState = (IExtendedBlockState) state;
-		final GlassState glassState = extState.getValue( BlockQuartzGlass.GLASS_STATE );
+		final GlassState glassState = extraData.getData( GLASS_STATE );
 
 		if( glassState == null )
 		{
@@ -151,6 +161,13 @@ class GlassBakedModel implements IBakedModel
 		}
 
 		return quads;
+	}
+
+	@Override
+	public boolean func_230044_c_()
+	{
+		// TODO: Forge: Auto-generated method stub
+		return false;
 	}
 
 	/**
@@ -217,8 +234,9 @@ class GlassBakedModel implements IBakedModel
 		float v1 = MathHelper.clamp( 0 - vOffset, 0, 16 );
 		float v2 = MathHelper.clamp( 16 - vOffset, 0, 16 );
 
-		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder( this.vertexFormat );
-		builder.setTexture( sprite );
+
+		BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
+		builder.setQuadOrientation(side);
 		this.putVertex( builder, normal, c1.x, c1.y, c1.z, sprite, u1, v1 );
 		this.putVertex( builder, normal, c2.x, c2.y, c2.z, sprite, u1, v2 );
 		this.putVertex( builder, normal, c3.x, c3.y, c3.z, sprite, u2, v2 );
@@ -231,11 +249,13 @@ class GlassBakedModel implements IBakedModel
 	 * has to be precisely the order
 	 * in which the vertex elements had been declared in the vertex format.
 	 */
-	private void putVertex( UnpackedBakedQuad.Builder builder, Vec3d normal, double x, double y, double z, TextureAtlasSprite sprite, float u, float v )
+	private void putVertex( BakedQuadBuilder builder, Vec3d normal, double x, double y, double z, TextureAtlasSprite sprite, float u, float v )
 	{
-		for( int e = 0; e < this.vertexFormat.getElementCount(); e++ )
+		VertexFormat vertexFormat = builder.getVertexFormat();
+		for( int e = 0; e < vertexFormat.getElements().size(); e++ )
 		{
-			switch( this.vertexFormat.getElement( e ).getUsage() )
+			VertexFormatElement el = vertexFormat.getElements().get(e);
+			switch( el.getUsage() )
 			{
 				case POSITION:
 					builder.put( e, (float) x, (float) y, (float) z, 1.0f );
@@ -244,7 +264,7 @@ class GlassBakedModel implements IBakedModel
 					builder.put( e, 1.0f, 1.0f, 1.0f, 1.0f );
 					break;
 				case UV:
-					if( this.vertexFormat.getElement( e ).getIndex() == 0 )
+					if( el.getIndex() == 0 )
 					{
 						u = sprite.getInterpolatedU( u );
 						v = sprite.getInterpolatedV( v );
@@ -264,7 +284,7 @@ class GlassBakedModel implements IBakedModel
 	@Override
 	public ItemOverrideList getOverrides()
 	{
-		return ItemOverrideList.NONE;
+		return ItemOverrideList.EMPTY;
 	}
 
 	@Override
@@ -291,12 +311,6 @@ class GlassBakedModel implements IBakedModel
 		return this.frameTextures[this.frameTextures.length - 1];
 	}
 
-	@Override
-	public ItemCameraTransforms getItemCameraTransforms()
-	{
-		return ItemCameraTransforms.DEFAULT;
-	}
-
 	private static byte[][][] generateOffsets()
 	{
 		final Random r = new Random( 924 );
@@ -312,4 +326,31 @@ class GlassBakedModel implements IBakedModel
 
 		return offset;
 	}
+
+	@Nonnull
+	@Override
+	public IModelData getModelData(@Nonnull ILightReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData) {
+
+		EnumSet<Direction> flushWith = EnumSet.noneOf( Direction.class );
+		// Test every direction for another glass block
+		for( Direction facing : Direction.values() )
+		{
+			if( isGlassBlock( world, pos, facing ) )
+			{
+				flushWith.add( facing );
+			}
+		}
+
+		GlassState glassState = new GlassState( pos.getX(), pos.getY(), pos.getZ(), flushWith );
+		return new ModelDataMap.Builder()
+				.withInitial(GLASS_STATE, glassState)
+				.build();
+
+	}
+
+	private static boolean isGlassBlock(IBlockReader world, BlockPos pos, Direction facing )
+	{
+		return world.getBlockState( pos.offset( facing ) ).getBlock() instanceof BlockQuartzGlass;
+	}
+
 }

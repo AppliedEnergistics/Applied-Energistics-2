@@ -107,7 +107,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 			return;
 		}
 
-		final IMEMonitor<IAEItemStack> inv = this.storage.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+		final IMEMonitor<IAEItemStack> inv = this.storage.getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 		final int howManyPerCraft = this.getStack().getCount();
 		int maxTimesToCraft = 0;
 

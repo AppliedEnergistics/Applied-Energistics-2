@@ -27,6 +27,7 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -39,7 +40,7 @@ class BlockRendering implements IBlockRendering
 {
 
 	@OnlyIn( Dist.CLIENT )
-	private BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> modelCustomizer;
+	private BiFunction<ResourceLocation, IBakedModel, IBakedModel> modelCustomizer;
 
 	@OnlyIn( Dist.CLIENT )
 	private IBlockColor blockColor;
@@ -55,7 +56,7 @@ class BlockRendering implements IBlockRendering
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
-	public IBlockRendering modelCustomizer( BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> customizer )
+	public IBlockRendering modelCustomizer( BiFunction<ResourceLocation, IBakedModel, IBakedModel> customizer )
 	{
 		this.modelCustomizer = customizer;
 		return this;

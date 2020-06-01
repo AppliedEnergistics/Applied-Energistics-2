@@ -156,7 +156,7 @@ public class ContainerSecurityStation extends ContainerMEMonitorable implements 
 					networkEncodable = (INetworkEncodable) term.getItem();
 				}
 
-				final IWirelessTermHandler wTermHandler = AEApi.instance().registries().wireless().getWirelessTerminalHandler( term );
+				final IWirelessTermHandler wTermHandler = Api.INSTANCE.registries().wireless().getWirelessTerminalHandler( term );
 				if( wTermHandler != null )
 				{
 					networkEncodable = wTermHandler;

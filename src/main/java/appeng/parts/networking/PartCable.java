@@ -114,7 +114,7 @@ public class PartCable extends AEBasePart implements IPartCable
 		{
 			ItemStack newPart = null;
 
-			final IParts parts = AEApi.instance().definitions().parts();
+			final IParts parts = Api.INSTANCE.definitions().parts();
 
 			if( this.getCableConnectionType() == AECableType.GLASS )
 			{

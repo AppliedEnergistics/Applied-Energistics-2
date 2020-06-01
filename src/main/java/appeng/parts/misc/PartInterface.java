@@ -309,7 +309,7 @@ public class PartInterface extends PartBasicState implements IGridTickable, ISto
 	@Override
 	public ItemStack getItemStackRepresentation()
 	{
-		return AEApi.instance().definitions().parts().iface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+		return Api.INSTANCE.definitions().parts().iface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
 	@Override

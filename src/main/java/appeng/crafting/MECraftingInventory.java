@@ -50,7 +50,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 
 	public MECraftingInventory()
 	{
-		this.localCache = new ItemListIgnoreCrafting<>( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
+		this.localCache = new ItemListIgnoreCrafting<>( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList() );
 		this.extractedCache = null;
 		this.injectedCache = null;
 		this.missingCache = null;
@@ -70,7 +70,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 
 		if( this.logMissing )
 		{
-			this.missingCache = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+			this.missingCache = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 		}
 		else
 		{
@@ -79,7 +79,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 
 		if( this.logExtracted )
 		{
-			this.extractedCache = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+			this.extractedCache = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 		}
 		else
 		{
@@ -88,7 +88,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 
 		if( this.logInjections )
 		{
-			this.injectedCache = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+			this.injectedCache = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 		}
 		else
 		{
@@ -96,7 +96,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		}
 
 		this.localCache = this.target
-				.getAvailableItems( new ItemListIgnoreCrafting<>( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() ) );
+				.getAvailableItems( new ItemListIgnoreCrafting<>( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList() ) );
 
 		this.par = parent;
 	}
@@ -110,7 +110,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 
 		if( logMissing )
 		{
-			this.missingCache = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+			this.missingCache = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 		}
 		else
 		{
@@ -119,7 +119,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 
 		if( logExtracted )
 		{
-			this.extractedCache = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+			this.extractedCache = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 		}
 		else
 		{
@@ -128,14 +128,14 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 
 		if( logInjections )
 		{
-			this.injectedCache = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+			this.injectedCache = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 		}
 		else
 		{
 			this.injectedCache = null;
 		}
 
-		this.localCache = new ItemListIgnoreCrafting<>( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
+		this.localCache = new ItemListIgnoreCrafting<>( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList() );
 		for( final IAEItemStack is : target.getStorageList() )
 		{
 			this.localCache.add( target.extractItems( is, Actionable.SIMULATE, src ) );
@@ -153,7 +153,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 
 		if( logMissing )
 		{
-			this.missingCache = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+			this.missingCache = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 		}
 		else
 		{
@@ -162,7 +162,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 
 		if( logExtracted )
 		{
-			this.extractedCache = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+			this.extractedCache = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 		}
 		else
 		{
@@ -171,14 +171,14 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 
 		if( logInjections )
 		{
-			this.injectedCache = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+			this.injectedCache = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 		}
 		else
 		{
 			this.injectedCache = null;
 		}
 
-		this.localCache = target.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
+		this.localCache = target.getAvailableItems( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList() );
 		this.par = null;
 	}
 
@@ -259,7 +259,7 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 	@Override
 	public IStorageChannel getChannel()
 	{
-		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
+		return Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	public IItemList<IAEItemStack> getItemList()
@@ -269,8 +269,8 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 
 	public boolean commit( final IActionSource src )
 	{
-		final IItemList<IAEItemStack> added = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
-		final IItemList<IAEItemStack> pulled = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+		final IItemList<IAEItemStack> added = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
+		final IItemList<IAEItemStack> pulled = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 		boolean failed = false;
 
 		if( this.logInjections )

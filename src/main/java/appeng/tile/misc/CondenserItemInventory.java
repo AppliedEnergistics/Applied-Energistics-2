@@ -104,7 +104,7 @@ class CondenserItemInventory implements IMEMonitor<IAEItemStack>, ITickingMonito
 	@Override
 	public IStorageChannel<IAEItemStack> getChannel()
 	{
-		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
+		return Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override

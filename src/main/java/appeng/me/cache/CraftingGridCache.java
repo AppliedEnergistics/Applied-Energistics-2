@@ -250,7 +250,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 		this.emitableItems.clear();
 
 		// update the stuff that was in the list...
-		this.storageGrid.postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), oldItems.keySet(),
+		this.storageGrid.postAlterationOfStoredItems( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ), oldItems.keySet(),
 				new BaseActionSource() );
 
 		// re-create list..
@@ -287,7 +287,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			this.craftableItems.put( e.getKey(), ImmutableList.copyOf( e.getValue() ) );
 		}
 
-		this.storageGrid.postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), this.craftableItems.keySet(),
+		this.storageGrid.postAlterationOfStoredItems( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ), this.craftableItems.keySet(),
 				new BaseActionSource() );
 	}
 
@@ -367,7 +367,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	{
 		final List<IMEInventoryHandler> list = new ArrayList<>( 1 );
 
-		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
+		if( channel == Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
 			list.add( this );
 		}
@@ -456,7 +456,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 	@Override
 	public IStorageChannel<IAEItemStack> getChannel()
 	{
-		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
+		return Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override

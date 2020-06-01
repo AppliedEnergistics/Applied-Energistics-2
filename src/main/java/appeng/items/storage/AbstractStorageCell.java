@@ -79,9 +79,9 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 	@Override
 	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
-		AEApi.instance()
+		Api.INSTANCE
 				.client()
-				.addCellInformation( AEApi.instance().registries().cell().getCellInventory( stack, null, this.getChannel() ), lines );
+				.addCellInformation( Api.INSTANCE.registries().cell().getCellInventory( stack, null, this.getChannel() ), lines );
 	}
 
 	@Override
@@ -175,7 +175,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 			}
 
 			final PlayerInventory playerInventory = player.inventory;
-			final IMEInventoryHandler inv = AEApi.instance().registries().cell().getCellInventory( stack, null, this.getChannel() );
+			final IMEInventoryHandler inv = Api.INSTANCE.registries().cell().getCellInventory( stack, null, this.getChannel() );
 			if( inv != null && playerInventory.getCurrentItem() == stack )
 			{
 				final InventoryAdaptor ia = InventoryAdaptor.getAdaptor( player );
@@ -229,7 +229,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 	@Override
 	public ItemStack getContainerItem( final ItemStack itemStack )
 	{
-		return AEApi.instance()
+		return Api.INSTANCE
 				.definitions()
 				.materials()
 				.emptyStorageCell()

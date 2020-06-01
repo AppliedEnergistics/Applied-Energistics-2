@@ -88,7 +88,7 @@ public class PacketPatternSlot extends AppEngPacket
 		this.writeItem( slotItem, data );
 		for( int x = 0; x < 9; x++ )
 		{
-			this.pattern[x] = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( pat.getStackInSlot( x ) );
+			this.pattern[x] = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( pat.getStackInSlot( x ) );
 			this.writeItem( this.pattern[x], data );
 		}
 

@@ -102,7 +102,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry
 		}
 
 		final long parsedKey = Long.parseLong( unparsedKey );
-		final ILocatable securityStation = AEApi.instance().registries().locatable().getLocatableBy( parsedKey );
+		final ILocatable securityStation = Api.INSTANCE.registries().locatable().getLocatableBy( parsedKey );
 		if( securityStation == null )
 		{
 			player.sendMessage( PlayerMessages.StationCanNotBeLocated.get() );

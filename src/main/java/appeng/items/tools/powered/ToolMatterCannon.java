@@ -93,13 +93,13 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 	{
 		super.addInformation( stack, world, lines, advancedTooltips );
 
-		final ICellInventoryHandler<IAEItemStack> cdi = AEApi.instance()
+		final ICellInventoryHandler<IAEItemStack> cdi = Api.INSTANCE
 				.registries()
 				.cell()
 				.getCellInventory( stack, null,
-						AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+						Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 
-		AEApi.instance().client().addCellInformation( cdi, lines );
+		Api.INSTANCE.client().addCellInformation( cdi, lines );
 	}
 
 	@Override
@@ -115,15 +115,15 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 				shots += cu.getInstalledUpgrades( Upgrades.SPEED );
 			}
 
-			final ICellInventoryHandler<IAEItemStack> inv = AEApi.instance()
+			final ICellInventoryHandler<IAEItemStack> inv = Api.INSTANCE
 					.registries()
 					.cell()
 					.getCellInventory( p.getHeldItem( hand ), null,
-							AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+							Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 			if( inv != null )
 			{
 				final IItemList<IAEItemStack> itemList = inv
-						.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
+						.getAvailableItems( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList() );
 				IAEItemStack req = itemList.getFirstItem();
 				if( req instanceof IAEItemStack )
 				{
@@ -162,7 +162,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 						final double d1 = Vec3d.y;
 						final double d2 = Vec3d.z;
 
-						final float penetration = AEApi.instance().registries().matterCannon().getPenetration( ammo ); // 196.96655f;
+						final float penetration = Api.INSTANCE.registries().matterCannon().getPenetration( ammo ); // 196.96655f;
 						if( penetration <= 0 )
 						{
 							final ItemStack type = aeAmmo.asItemStackRepresentation();
@@ -291,7 +291,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 				final Block whatsThere = w.getBlockState( hitPos ).getBlock();
 				if( whatsThere.isReplaceable( w, hitPos ) && w.isAirBlock( hitPos ) )
 				{
-					AEApi.instance().definitions().blocks().paint().maybeBlock().ifPresent( paintBlock ->
+					Api.INSTANCE.definitions().blocks().paint().maybeBlock().ifPresent( paintBlock ->
 					{
 						w.setBlockState( hitPos, paintBlock.getDefaultState(), 3 );
 					} );
@@ -495,7 +495,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 	@Override
 	public boolean isBlackListed( final ItemStack cellItem, final IAEItemStack requestedAddition )
 	{
-		final float pen = AEApi.instance().registries().matterCannon().getPenetration( requestedAddition.createItemStack() );
+		final float pen = Api.INSTANCE.registries().matterCannon().getPenetration( requestedAddition.createItemStack() );
 		if( pen > 0 )
 		{
 			return false;
@@ -530,6 +530,6 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 	@Override
 	public IStorageChannel<IAEItemStack> getChannel()
 	{
-		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
+		return Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
 	}
 }

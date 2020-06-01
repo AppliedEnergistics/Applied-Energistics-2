@@ -1,6 +1,6 @@
 {
     "parent": "appliedenergistics2:item/part/p2p_tunnel",
     "textures": {
-        "type": "blocks/quartz_block_top"
+        "type": "block/quartz_block_top"
     }
 }

@@ -70,7 +70,7 @@ class QnbFormedBakedModel implements IBakedModel
 		this.coveredCableTexture = bakedTextureGetter.apply( TEXTURE_COVERED_CABLE );
 		this.lightTexture = bakedTextureGetter.apply( TEXTURE_RING_LIGHT );
 		this.lightCornerTexture = bakedTextureGetter.apply( TEXTURE_RING_LIGHT_CORNER );
-		this.linkBlock = AEApi.instance().definitions().blocks().quantumLink().maybeBlock().orElse( null );
+		this.linkBlock = Api.INSTANCE.definitions().blocks().quantumLink().maybeBlock().orElse( null );
 	}
 
 	@Override

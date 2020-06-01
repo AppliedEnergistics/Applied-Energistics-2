@@ -54,7 +54,7 @@ public class NullInventory<T extends IAEStack<T>> implements IMEInventoryHandler
 	@Override
 	public IStorageChannel getChannel()
 	{
-		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
+		return Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override

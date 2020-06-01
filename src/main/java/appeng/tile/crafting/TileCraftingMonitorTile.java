@@ -190,7 +190,7 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	@Override
 	protected ItemStack getItemFromTile( final Object obj )
 	{
-		final Optional<ItemStack> is = AEApi.instance().definitions().blocks().craftingMonitor().maybeStack( 1 );
+		final Optional<ItemStack> is = Api.INSTANCE.definitions().blocks().craftingMonitor().maybeStack( 1 );
 
 		return is.orElseGet( () -> super.getItemFromTile( obj ) );
 	}

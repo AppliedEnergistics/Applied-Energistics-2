@@ -105,7 +105,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		this.mySrc = new MachineSource( this );
 		this.lastRedstoneState = YesNo.UNDECIDED;
 
-		final Block ioPortBlock = AEApi.instance().definitions().blocks().iOPort().maybeBlock().get();
+		final Block ioPortBlock = Api.INSTANCE.definitions().blocks().iOPort().maybeBlock().get();
 		this.upgrades = new BlockUpgradeInventory( ioPortBlock, this, NUMBER_OF_UPGRADE_SLOTS );
 	}
 
@@ -303,7 +303,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 				{
 					boolean shouldMove = true;
 
-					for( IStorageChannel<? extends IAEStack<?>> c : AEApi.instance().storage().storageChannels() )
+					for( IStorageChannel<? extends IAEStack<?>> c : Api.INSTANCE.storage().storageChannels() )
 					{
 						if( itemsToMove > 0 )
 						{
@@ -370,9 +370,9 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 			this.currentCell = is;
 			this.cachedInventories = new IdentityHashMap<>();
 
-			for( IStorageChannel<? extends IAEStack<?>> c : AEApi.instance().storage().storageChannels() )
+			for( IStorageChannel<? extends IAEStack<?>> c : Api.INSTANCE.storage().storageChannels() )
 			{
-				this.cachedInventories.put( c, AEApi.instance().registries().cell().getCellInventory( is, null, c ) );
+				this.cachedInventories.put( c, Api.INSTANCE.registries().cell().getCellInventory( is, null, c ) );
 			}
 		}
 

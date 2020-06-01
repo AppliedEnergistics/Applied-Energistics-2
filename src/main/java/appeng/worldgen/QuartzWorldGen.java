@@ -43,7 +43,7 @@ public final class QuartzWorldGen implements IWorldGenerator
 
 	public QuartzWorldGen()
 	{
-		final IBlocks blocks = AEApi.instance().definitions().blocks();
+		final IBlocks blocks = Api.INSTANCE.definitions().blocks();
 		final IBlockDefinition oreDefinition = blocks.quartzOre();
 		final IBlockDefinition chargedDefinition = blocks.quartzOreCharged();
 

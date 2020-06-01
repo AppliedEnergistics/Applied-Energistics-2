@@ -58,7 +58,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	@Override
 	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity player, final Hand hand )
 	{
-		AEApi.instance().registries().wireless().openWirelessTerminalGui( player.getHeldItem( hand ), w, player );
+		Api.INSTANCE.registries().wireless().openWirelessTerminalGui( player.getHeldItem( hand ), w, player );
 		return new ActionResult<>( EnumActionResult.SUCCESS, player.getHeldItem( hand ) );
 	}
 
@@ -101,7 +101,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	@Override
 	public boolean canHandle( final ItemStack is )
 	{
-		return AEApi.instance().definitions().items().wirelessTerminal().isSameAs( is );
+		return Api.INSTANCE.definitions().items().wirelessTerminal().isSameAs( is );
 	}
 
 	@Override

@@ -803,7 +803,7 @@ public abstract class AEBaseContainer extends Container
 
 				if( !isg.isEmpty() && releaseQty > 0 )
 				{
-					IAEItemStack ais = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( isg );
+					IAEItemStack ais = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( isg );
 					ais.setStackSize( 1 );
 					final IAEItemStack extracted = ais.copy();
 
@@ -893,7 +893,7 @@ public abstract class AEBaseContainer extends Container
 				}
 				else
 				{
-					IAEItemStack ais = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( player.inventory.getItemStack() );
+					IAEItemStack ais = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( player.inventory.getItemStack() );
 					ais = Platform.poweredInsert( this.getPowerSource(), this.getCellInventory(), ais, this.getActionSource() );
 					if( ais != null )
 					{
@@ -942,7 +942,7 @@ public abstract class AEBaseContainer extends Container
 				}
 				else
 				{
-					IAEItemStack ais = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( player.inventory.getItemStack() );
+					IAEItemStack ais = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( player.inventory.getItemStack() );
 					ais.setStackSize( 1 );
 					ais = Platform.poweredInsert( this.getPowerSource(), this.getCellInventory(), ais, this.getActionSource() );
 					if( ais == null )
@@ -1041,7 +1041,7 @@ public abstract class AEBaseContainer extends Container
 			return input;
 		}
 		final IAEItemStack ais = Platform.poweredInsert( this.getPowerSource(), this.getCellInventory(),
-				AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( input ),
+				Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createStack( input ),
 				this.getActionSource() );
 		if( ais == null )
 		{

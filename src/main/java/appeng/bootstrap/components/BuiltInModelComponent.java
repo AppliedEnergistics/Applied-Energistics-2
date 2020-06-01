@@ -19,16 +19,13 @@
 package appeng.bootstrap.components;
 
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.common.base.Preconditions;
-
 import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @OnlyIn( Dist.CLIENT )
 public class BuiltInModelComponent implements IPreInitComponent
@@ -48,8 +45,8 @@ public class BuiltInModelComponent implements IPreInitComponent
 	public void preInitialize( Dist dist )
 	{
 		this.hasInitialized = true;
-
-//		 FIXME BuiltInModelLoader loader = new BuiltInModelLoader( this.builtInModels );
-//		 FIXME ModelLoaderRegistry.registerLoader( loader );
+//
+//		BuiltInModelLoader loader = new BuiltInModelLoader( this.builtInModels );
+//		ModelLoaderRegistry.registerLoader( loader );
 	}
 }

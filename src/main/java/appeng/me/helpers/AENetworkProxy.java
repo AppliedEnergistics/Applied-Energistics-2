@@ -29,7 +29,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 
-import appeng.api.AEApi;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridNotification;
 import appeng.api.networking.IGrid;
@@ -147,7 +146,7 @@ public class AENetworkProxy implements IGridBlock
 	{
 		if( this.node == null && Platform.isServer() && this.isReady )
 		{
-			this.node = AEApi.instance().grid().createGridNode( this );
+			this.node = Api.INSTANCE.grid().createGridNode( this );
 			this.readFromNBT( this.data );
 			this.node.updateState();
 		}

@@ -83,11 +83,11 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 
 		if( ( (TileCraftingTile) obj ).isAccelerator() )
 		{
-			is = AEApi.instance().definitions().blocks().craftingAccelerator().maybeStack( 1 );
+			is = Api.INSTANCE.definitions().blocks().craftingAccelerator().maybeStack( 1 );
 		}
 		else
 		{
-			is = AEApi.instance().definitions().blocks().craftingUnit().maybeStack( 1 );
+			is = Api.INSTANCE.definitions().blocks().craftingUnit().maybeStack( 1 );
 		}
 
 		return is.orElseGet( () -> super.getItemFromTile( obj ) );
@@ -319,7 +319,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 				throw new IllegalStateException( this.cluster + " does not contain any kind of blocks, which were destroyed." );
 			}
 
-			for( IAEItemStack ais : inv.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() ) )
+			for( IAEItemStack ais : inv.getAvailableItems( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList() ) )
 			{
 				ais = ais.copy();
 				ais.setStackSize( ais.getDefinition().getMaxStackSize() );

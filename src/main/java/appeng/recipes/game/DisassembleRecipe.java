@@ -55,7 +55,7 @@ public final class DisassembleRecipe extends net.minecraftforge.registries.IForg
 
 	public DisassembleRecipe()
 	{
-		final IDefinitions definitions = AEApi.instance().definitions();
+		final IDefinitions definitions = Api.INSTANCE.definitions();
 		final IBlocks blocks = definitions.blocks();
 		final IItems items = definitions.items();
 		final IMaterials mats = definitions.materials();
@@ -105,15 +105,15 @@ public final class DisassembleRecipe extends net.minecraftforge.registries.IForg
 				{
 					ItemStack storageCellStack = maybeCellOutput.get();
 					// make sure the storage cell stackInSlot empty...
-					final IMEInventory<IAEItemStack> cellInv = AEApi.instance()
+					final IMEInventory<IAEItemStack> cellInv = Api.INSTANCE
 							.registries()
 							.cell()
 							.getCellInventory( stackInSlot, null,
-									AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+									Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 					if( cellInv != null )
 					{
 						final IItemList<IAEItemStack> list = cellInv
-								.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
+								.getAvailableItems( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList() );
 						if( !list.isEmpty() )
 						{
 							return ItemStack.EMPTY;

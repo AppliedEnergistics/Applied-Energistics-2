@@ -22,13 +22,19 @@ package appeng.core.api.definitions;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.ITileDefinition;
+import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.FeatureFactory;
+import appeng.bootstrap.IBlockRendering;
+import appeng.bootstrap.IItemRendering;
+import appeng.client.render.model.GlassModel;
 import appeng.core.features.AEFeature;
 import appeng.core.features.registries.PartModels;
-import appeng.decorative.solid.BlockChargedQuartzOre;
-import appeng.decorative.solid.BlockQuartzOre;
+import appeng.decorative.AEDecorativeBlock;
+import appeng.decorative.solid.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 
 /**
@@ -114,34 +120,37 @@ public final class ApiBlocks implements IBlocks
 	private  IBlockDefinition cubeGenerator;
 	private  IBlockDefinition energyGenerator;
 
+	private static final Block.Properties QUARTZ_PROPERTIES = Block.Properties.create(Material.ROCK)
+			.hardnessAndResistance(3, 5);
+
 	public ApiBlocks( FeatureFactory registry, PartModels partModels )
 	{
-		this.quartzOre = registry.block( "quartz_ore", () -> new BlockQuartzOre(Block.Properties.create(Material.ROCK).hardnessAndResistance(3, 5)))
+		this.quartzOre = registry.block( "quartz_ore", () -> new BlockQuartzOre(QUARTZ_PROPERTIES))
 				.features( AEFeature.CERTUS_ORE )
 				.build();
-		this.quartzOreCharged = registry.block( "charged_quartz_ore", () -> new BlockChargedQuartzOre(Block.Properties.create(Material.ROCK).hardnessAndResistance(3, 5)) )
+		this.quartzOreCharged = registry.block( "charged_quartz_ore", () -> new BlockChargedQuartzOre(QUARTZ_PROPERTIES) )
 				.features( AEFeature.CERTUS_ORE, AEFeature.CHARGED_CERTUS_ORE )
 				.build();
 //		this.matrixFrame = registry.block( "matrix_frame", BlockMatrixFrame::new ).features( AEFeature.SPATIAL_IO ).build();
 //
-//		FeatureFactory deco = registry.features( AEFeature.DECORATIVE_BLOCKS );
-//		this.quartzBlock = deco.block( "quartz_block", BlockQuartz::new ).build();
-//		this.quartzPillar = deco.block( "quartz_pillar", BlockQuartzPillar::new ).build();
-//		this.chiseledQuartzBlock = deco.block( "chiseled_quartz_block", BlockChiseledQuartz::new ).build();
-//
-//		this.quartzGlass = registry.features( AEFeature.QUARTZ_GLASS )
-//				.block( "quartz_glass", BlockQuartzGlass::new )
+		FeatureFactory deco = registry.features( AEFeature.DECORATIVE_BLOCKS );
+		this.quartzBlock = deco.block( "quartz_block", () -> new AEDecorativeBlock(QUARTZ_PROPERTIES) ).build();
+		this.quartzPillar = deco.block( "quartz_pillar", () -> new BlockQuartzPillar(QUARTZ_PROPERTIES) ).build();
+		this.chiseledQuartzBlock = deco.block( "chiseled_quartz_block", () -> new AEDecorativeBlock(QUARTZ_PROPERTIES) ).build();
+
+		this.quartzGlass = registry.features( AEFeature.QUARTZ_GLASS )
+				.block( "quartz_glass", BlockQuartzGlass::new )
 //				.useCustomItemModel()
-//				 FIXME .rendering( new BlockRenderingCustomizer()
-//				 FIXME {
-//				 FIXME 	@Override
-//				 FIXME 	@OnlyIn( Dist.CLIENT )
-//				 FIXME 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
-//				 FIXME 	{
-//				 FIXME 		rendering.builtInModel( "models/block/builtin/quartz_glass", new GlassModel() );
-//				 FIXME 	}
-//				 FIXME } )
-//				.build();
+//				  .rendering( new BlockRenderingCustomizer()
+//				  {
+//				  	@Override
+//				  	@OnlyIn( Dist.CLIENT)
+//				  	public void customize(IBlockRendering rendering, IItemRendering itemRendering )
+//				  	{
+//				  		rendering.builtInModel( "models/block/builtin/quartz_glass", new GlassModel() );
+//				  	}
+//				  } )
+				.build();
 //		this.quartzVibrantGlass = deco.block( "quartz_vibrant_glass", BlockQuartzLamp::new )
 //				.addFeatures( AEFeature.DECORATIVE_LIGHTS, AEFeature.QUARTZ_GLASS )
 //				.useCustomItemModel()

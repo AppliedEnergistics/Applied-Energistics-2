@@ -35,11 +35,6 @@ public interface IOrientableBlock
 {
 
 	/**
-	 * @return if this block uses metadata to store its rotation.
-	 */
-	boolean usesMetadata();
-
-	/**
 	 * @param world world of block
 	 * @param pos The position of the block.
 	 *

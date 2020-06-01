@@ -122,7 +122,7 @@ public class SlotRestrictedInput extends AppEngSlot
 			return false;
 		}
 
-		final IDefinitions definitions = AEApi.instance().definitions();
+		final IDefinitions definitions = Api.INSTANCE.definitions();
 		final IMaterials materials = definitions.materials();
 		final IItems items = definitions.items();
 
@@ -170,7 +170,7 @@ public class SlotRestrictedInput extends AppEngSlot
 					return true;
 				}
 
-				for( final ItemStack optional : AEApi.instance().registries().inscriber().getOptionals() )
+				for( final ItemStack optional : Api.INSTANCE.registries().inscriber().getOptionals() )
 				{
 					if( Platform.itemComparisons().isSameItem( i, optional ) )
 					{
@@ -194,7 +194,7 @@ public class SlotRestrictedInput extends AppEngSlot
 			case VIEW_CELL:
 				return items.viewCell().isSameAs( i );
 			case ORE:
-				return appeng.api.AEApi.instance().registries().grinder().getRecipeForInput( i ) != null;
+				return appeng.api.Api.INSTANCE.registries().grinder().getRecipeForInput( i ) != null;
 			case FUEL:
 				return TileEntityFurnace.getItemBurnTime( i ) > 0;
 			case POWERED_TOOL:
@@ -208,20 +208,20 @@ public class SlotRestrictedInput extends AppEngSlot
 			case SPATIAL_STORAGE_CELLS:
 				return i.getItem() instanceof ISpatialStorageCell && ( (ISpatialStorageCell) i.getItem() ).isSpatialStorage( i );
 			case STORAGE_CELLS:
-				return AEApi.instance().registries().cell().isCellHandled( i );
+				return Api.INSTANCE.registries().cell().isCellHandled( i );
 			case WORKBENCH_CELL:
 				return i.getItem() instanceof ICellWorkbenchItem && ( (ICellWorkbenchItem) i.getItem() ).isEditable( i );
 			case STORAGE_COMPONENT:
 				return i.getItem() instanceof IStorageComponent && ( (IStorageComponent) i.getItem() ).isStorageComponent( i );
 			case TRASH:
-				if( AEApi.instance().registries().cell().isCellHandled( i ) )
+				if( Api.INSTANCE.registries().cell().isCellHandled( i ) )
 				{
 					return false;
 				}
 
 				return !( i.getItem() instanceof IStorageComponent && ( (IStorageComponent) i.getItem() ).isStorageComponent( i ) );
 			case ENCODABLE_ITEM:
-				return i.getItem() instanceof INetworkEncodable || AEApi.instance().registries().wireless().isWirelessTerminal( i );
+				return i.getItem() instanceof INetworkEncodable || Api.INSTANCE.registries().wireless().isWirelessTerminal( i );
 			case BIOMETRIC_CARD:
 				return i.getItem() instanceof IBiometricCard;
 			case UPGRADES:

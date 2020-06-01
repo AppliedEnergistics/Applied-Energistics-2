@@ -78,7 +78,7 @@ class BlockDefinitionBuilder implements IBlockBuilder
 
 	private boolean disableItem = false;
 
-	private Function<Block, BlockItem> itemFactory;
+	private BiFunction<Block, Item.Properties, BlockItem> itemFactory;
 
 	@OnlyIn( Dist.CLIENT )
 	private BlockRendering blockRendering;
@@ -157,7 +157,7 @@ class BlockDefinitionBuilder implements IBlockBuilder
 	}
 
 	@Override
-	public IBlockBuilder item( Function<Block, BlockItem> factory )
+	public IBlockBuilder item( BiFunction<Block, Item.Properties, BlockItem> factory )
 	{
 		this.itemFactory = factory;
 		return this;
@@ -258,17 +258,24 @@ class BlockDefinitionBuilder implements IBlockBuilder
 			return null;
 		}
 
+		Item.Properties itemProperties = new Item.Properties();
+
+		if (itemGroup != null) {
+			itemProperties.group(itemGroup);
+		}
+		// FIXME: Allow more/all item properties
+
 		if( this.itemFactory != null )
 		{
-			return this.itemFactory.apply( block );
+			return this.itemFactory.apply( block, itemProperties );
 		}
 		else if( block instanceof AEBaseBlock )
 		{
-			return new AEBaseBlockItem( block, new Item.Properties() /* FIXME THIS IS THE IMPORTANT BIT */ );
+			return new AEBaseBlockItem( block, itemProperties );
 		}
 		else
 		{
-			return new BlockItem( block, null );
+			return new BlockItem( block, itemProperties );
 		}
 	}
 }

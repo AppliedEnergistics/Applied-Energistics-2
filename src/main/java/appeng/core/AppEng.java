@@ -22,6 +22,7 @@ package appeng.core;
 import java.io.File;
 
 import appeng.client.ClientHelper;
+import appeng.core.features.AEFeature;
 import appeng.server.ServerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
@@ -83,6 +84,9 @@ public final class AppEng
 		//FIXMEthis.registration = new Registration();
 		//FIXMEMinecraftForge.EVENT_BUS.register( this.registration );
 
+		CreativeTab.init();
+		CreativeTabFacade.init();
+
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		Registration registration = new Registration();
 		modEventBus.addGenericListener(Block.class, registration::registerBlocks);
@@ -140,11 +144,6 @@ public final class AppEng
 //
 //		AELog.info( "Pre Initialization ( started )" );
 //
-//		CreativeTab.init();
-//		if( AEConfig.instance().isFeatureEnabled( AEFeature.FACADES ) )
-//		{
-//			CreativeTabFacade.init();
-//		}
 //
 //		for( final IntegrationType type : IntegrationType.values() )
 //		{
@@ -172,7 +171,7 @@ public final class AppEng
 //
 //		// Instantiate all Plugins
 //		List<Object> injectables = Lists.newArrayList(
-//				AEApi.instance() );
+//				Api.INSTANCE );
 //		new PluginLoader().loadPlugins( injectables, event.getAsmData() );
 //	}
 //

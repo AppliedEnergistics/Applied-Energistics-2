@@ -39,7 +39,7 @@ import appeng.tile.misc.TileSecurityStation;
 public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStack>
 {
 
-	private final IItemList<IAEItemStack> storedItems = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+	private final IItemList<IAEItemStack> storedItems = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private final TileSecurityStation securityTile;
 
 	public SecurityStationInventory( final TileSecurityStation ts )
@@ -52,7 +52,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 	{
 		if( this.hasPermission( src ) )
 		{
-			if( AEApi.instance().definitions().items().biometricCard().isSameAs( input.createItemStack() ) )
+			if( Api.INSTANCE.definitions().items().biometricCard().isSameAs( input.createItemStack() ) )
 			{
 				if( this.canAccept( input ) )
 				{
@@ -123,7 +123,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 	@Override
 	public IStorageChannel getChannel()
 	{
-		return AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class );
+		return Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class );
 	}
 
 	@Override
@@ -146,7 +146,7 @@ public class SecurityStationInventory implements IMEInventoryHandler<IAEItemStac
 			final IBiometricCard tbc = (IBiometricCard) input.getItem();
 			final GameProfile newUser = tbc.getProfile( input.createItemStack() );
 
-			final int PlayerID = AEApi.instance().registries().players().getID( newUser );
+			final int PlayerID = Api.INSTANCE.registries().players().getID( newUser );
 			if( this.securityTile.getOwner() == PlayerID )
 			{
 				return false;

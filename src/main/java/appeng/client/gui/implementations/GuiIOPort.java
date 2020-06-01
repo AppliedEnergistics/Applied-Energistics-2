@@ -91,7 +91,7 @@ public class GuiIOPort extends GuiUpgradeable
 	{
 		super.drawBG( offsetX, offsetY, mouseX, mouseY );
 
-		final IDefinitions definitions = AEApi.instance().definitions();
+		final IDefinitions definitions = Api.INSTANCE.definitions();
 
 		definitions.items().cell1k().maybeStack( 1 ).ifPresent( cell1kStack -> this.drawItem( offsetX + 66 - 8, offsetY + 17, cell1kStack ) );
 

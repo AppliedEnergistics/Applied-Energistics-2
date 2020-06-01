@@ -43,7 +43,7 @@ public final class CreativeCellHandler implements ICellHandler
 	@Override
 	public ICellInventoryHandler getCellInventory( final ItemStack is, final ISaveProvider container, final IStorageChannel channel )
 	{
-		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) && !is.isEmpty() && is
+		if( channel == Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) && !is.isEmpty() && is
 				.getItem() instanceof ItemCreativeStorageCell )
 		{
 			return CreativeCellInventory.getCell( is );

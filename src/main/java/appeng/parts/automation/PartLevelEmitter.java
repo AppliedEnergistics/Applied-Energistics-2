@@ -276,7 +276,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 				this.updateState();
 
 				// no more item stuff..
-				this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).removeListener( this );
+				this.getProxy().getStorage().getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) ).removeListener( this );
 			}
 			catch( final GridAccessException e )
 			{
@@ -292,13 +292,13 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 			{
 				this.getProxy()
 						.getStorage()
-						.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
+						.getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) )
 						.addListener( this,
 								this.getProxy().getGrid() );
 			}
 			else
 			{
-				this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).removeListener( this );
+				this.getProxy().getStorage().getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) ).removeListener( this );
 
 				if( this.myWatcher != null )
 				{
@@ -306,7 +306,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 				}
 			}
 
-			this.updateReportingValue( this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ) );
+			this.updateReportingValue( this.getProxy().getStorage().getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) ) );
 		}
 		catch( final GridAccessException e )
 		{
@@ -362,7 +362,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	@Override
 	public void onStackChange( final IItemList o, final IAEStack fullStack, final IAEStack diffStack, final IActionSource src, final IStorageChannel chan )
 	{
-		if( chan == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) && fullStack.equals( this.config.getAEStackInSlot( 0 ) ) && this
+		if( chan == Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) && fullStack.equals( this.config.getAEStackInSlot( 0 ) ) && this
 				.getInstalledUpgrades( Upgrades.FUZZY ) == 0 )
 		{
 			this.lastReportedValue = fullStack.getStackSize();
@@ -408,7 +408,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	{
 		try
 		{
-			this.updateReportingValue( this.getProxy().getStorage().getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ) );
+			this.updateReportingValue( this.getProxy().getStorage().getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) ) );
 		}
 		catch( final GridAccessException e )
 		{

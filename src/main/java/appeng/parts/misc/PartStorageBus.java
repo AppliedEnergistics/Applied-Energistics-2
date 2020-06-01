@@ -259,7 +259,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 			{
 				this.getProxy()
 						.getStorage()
-						.postAlterationOfStoredItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ), change,
+						.postAlterationOfStoredItems( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ), change,
 								this.mySrc );
 			}
 		}
@@ -347,7 +347,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		this.resetCacheLogic = 0;
 
 		final IMEInventory<IAEItemStack> in = this.getInternalHandler();
-		IItemList<IAEItemStack> before = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+		IItemList<IAEItemStack> before = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 		if( in != null )
 		{
 			before = in.getAvailableItems( before );
@@ -363,7 +363,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 		if( in != out )
 		{
-			IItemList<IAEItemStack> after = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+			IItemList<IAEItemStack> after = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 			if( out != null )
 			{
 				after = out.getAvailableItems( after );
@@ -385,7 +385,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 			IStorageMonitorable inventory = accessor.getInventory( this.mySrc );
 			if( inventory != null )
 			{
-				return inventory.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+				return inventory.getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 			}
 
 			// So this could / can be a design decision. If the tile does support our custom capability,
@@ -472,13 +472,13 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 			{
 				this.checkInterfaceVsStorageBus( target, this.getSide().getOpposite() );
 
-				this.handler = new MEInventoryHandler<IAEItemStack>( inv, AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+				this.handler = new MEInventoryHandler<IAEItemStack>( inv, Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 
 				this.handler.setBaseAccess( (AccessRestriction) this.getConfigManager().getSetting( Settings.ACCESS ) );
 				this.handler.setWhitelist( this.getInstalledUpgrades( Upgrades.INVERTER ) > 0 ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );
 				this.handler.setPriority( this.priority );
 
-				final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+				final IItemList<IAEItemStack> priorityList = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 
 				final int slotsToUse = 18 + this.getInstalledUpgrades( Upgrades.CAPACITY ) * 9;
 				for( int x = 0; x < this.Config.getSlots() && x < slotsToUse; x++ )
@@ -571,7 +571,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	@Override
 	public List<IMEInventoryHandler> getCellArray( final IStorageChannel channel )
 	{
-		if( channel == AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) )
+		if( channel == Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) )
 		{
 			final IMEInventoryHandler<IAEItemStack> out = this.getProxy().isActive() ? this.getInternalHandler() : null;
 			if( out != null )
@@ -636,7 +636,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	@Override
 	public ItemStack getItemStackRepresentation()
 	{
-		return AEApi.instance().definitions().parts().storageBus().maybeStack( 1 ).orElse( ItemStack.EMPTY );
+		return Api.INSTANCE.definitions().parts().storageBus().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
 	@Override

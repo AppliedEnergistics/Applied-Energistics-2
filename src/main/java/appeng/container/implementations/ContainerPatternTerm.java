@@ -237,7 +237,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			}
 
 			// add a new encoded pattern.
-			Optional<ItemStack> maybePattern = AEApi.instance().definitions().items().encodedPattern().maybeStack( 1 );
+			Optional<ItemStack> maybePattern = Api.INSTANCE.definitions().items().encodedPattern().maybeStack( 1 );
 			if( maybePattern.isPresent() )
 			{
 				output = maybePattern.get();
@@ -334,7 +334,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			return false;
 		}
 
-		final IDefinitions definitions = AEApi.instance().definitions();
+		final IDefinitions definitions = Api.INSTANCE.definitions();
 
 		boolean isPattern = definitions.items().encodedPattern().isSameAs( output );
 		isPattern |= definitions.materials().blankPattern().isSameAs( output );
@@ -419,7 +419,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			}
 
 			final IMEMonitor<IAEItemStack> storage = this.getPatternTerminal()
-					.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+					.getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 			final IItemList<IAEItemStack> all = storage.getStorageList();
 
 			final ItemStack is = r.getCraftingResult( ic );

@@ -159,7 +159,7 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 			return EnumActionResult.FAIL;
 		}
 
-		return AEApi.instance().partHelper().placeBus( player.getHeldItem( hand ), pos, side, player, hand, w );
+		return Api.INSTANCE.partHelper().placeBus( player.getHeldItem( hand ), pos, side, player, hand, w );
 	}
 
 	@Override

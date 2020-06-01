@@ -87,7 +87,7 @@ public class QuantumCalculator extends MBCalculator
 					}
 
 					num++;
-					final IBlocks blocks = AEApi.instance().definitions().blocks();
+					final IBlocks blocks = Api.INSTANCE.definitions().blocks();
 					if( num == 5 )
 					{
 						if( !this.isBlockAtLocation( w, p, blocks.quantumLink() ) )

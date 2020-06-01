@@ -54,7 +54,7 @@ public interface IBlockBuilder
 	 */
 	IBlockBuilder useCustomItemModel();
 
-	IBlockBuilder item( Function<Block, BlockItem> factory );
+	IBlockBuilder item( BiFunction<Block, Item.Properties, BlockItem> factory );
 
 	<T extends IBlockDefinition> T build();
 }

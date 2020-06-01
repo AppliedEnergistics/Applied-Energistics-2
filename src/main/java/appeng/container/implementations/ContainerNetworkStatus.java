@@ -114,7 +114,7 @@ public class ContainerNetworkStatus extends AEBaseContainer
 
 				for( final Class<? extends IGridHost> machineClass : this.network.getMachinesClasses() )
 				{
-					final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+					final IItemList<IAEItemStack> list = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 					for( final IGridNode machine : this.network.getMachines( machineClass ) )
 					{
 						final IGridBlock blk = machine.getGridBlock();

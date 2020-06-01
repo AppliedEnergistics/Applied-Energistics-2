@@ -159,7 +159,7 @@ public class ContainerStorageBus extends ContainerUpgradeable
 		if( cellInv != null )
 		{
 			final IItemList<IAEItemStack> list = cellInv
-					.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
+					.getAvailableItems( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList() );
 			i = list.iterator();
 		}
 
