@@ -23,6 +23,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -40,8 +41,7 @@ public class PacketCompassResponse extends AppEngPacket
 
 	private CompassResult cr;
 
-	// automatic.
-	public PacketCompassResponse( final ByteBuf stream )
+	public PacketCompassResponse( final PacketBuffer stream )
 	{
 		this.attunement = stream.readLong();
 		this.cx = stream.readInt();

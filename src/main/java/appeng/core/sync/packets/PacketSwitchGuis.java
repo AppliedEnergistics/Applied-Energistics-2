@@ -24,6 +24,7 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Container;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 
 import appeng.container.AEBaseContainer;
@@ -39,8 +40,7 @@ public class PacketSwitchGuis extends AppEngPacket
 
 	private final GuiBridge newGui;
 
-	// automatic.
-	public PacketSwitchGuis( final ByteBuf stream )
+	public PacketSwitchGuis( final PacketBuffer stream )
 	{
 		this.newGui = GuiBridge.values()[stream.readInt()];
 	}

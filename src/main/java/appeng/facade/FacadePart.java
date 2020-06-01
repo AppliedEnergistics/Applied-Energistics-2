@@ -32,6 +32,7 @@ import appeng.api.parts.IBoxProvider;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.util.AEPartLocation;
+import appeng.core.Api;
 
 
 public class FacadePart implements IFacadePart, IBoxProvider

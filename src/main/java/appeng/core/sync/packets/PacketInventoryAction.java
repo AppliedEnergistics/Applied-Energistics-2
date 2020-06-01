@@ -27,6 +27,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.storage.data.IAEItemStack;
@@ -50,8 +51,7 @@ public class PacketInventoryAction extends AppEngPacket
 	private final long id;
 	private final IAEItemStack slotItem;
 
-	// automatic.
-	public PacketInventoryAction( final ByteBuf stream ) throws IOException
+	public PacketInventoryAction( final PacketBuffer stream )
 	{
 		this.action = InventoryAction.values()[stream.readInt()];
 		this.slot = stream.readInt();

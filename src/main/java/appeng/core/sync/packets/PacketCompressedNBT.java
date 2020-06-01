@@ -31,10 +31,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -43,6 +44,7 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 
 
+//TODO, this is pointless, NBT is already compressed when written to a PacketBuffer.
 public class PacketCompressedNBT extends AppEngPacket
 {
 
@@ -52,13 +54,12 @@ public class PacketCompressedNBT extends AppEngPacket
 	private final ByteBuf data;
 	private final GZIPOutputStream compressFrame;
 
-	// automatic.
-	public PacketCompressedNBT( final ByteBuf stream ) throws IOException
+	public PacketCompressedNBT( final PacketBuffer stream )
 	{
 		this.data = null;
 		this.compressFrame = null;
 
-		final GZIPInputStream gzReader = new GZIPInputStream( new InputStream()
+		try( DataInputStream inStream = new DataInputStream( new GZIPInputStream( new InputStream()
 		{
 
 			@Override
@@ -71,11 +72,14 @@ public class PacketCompressedNBT extends AppEngPacket
 
 				return stream.readByte() & 0xff;
 			}
-		} );
-
-		final DataInputStream inStream = new DataInputStream( gzReader );
-		this.in = CompressedStreamTools.read( inStream );
-		inStream.close();
+		} ) ) )
+		{
+			this.in = CompressedStreamTools.read( inStream );
+		}
+		catch( IOException e )
+		{
+			throw new RuntimeException( "Failed to decompress packet.", e );
+		}
 	}
 
 	// api
@@ -107,7 +111,7 @@ public class PacketCompressedNBT extends AppEngPacket
 	@OnlyIn( Dist.CLIENT )
 	public void clientPacketData( final INetworkInfo network, final PlayerEntity player )
 	{
-		final GuiScreen gs = Minecraft.getInstance().currentScreen;
+		final Screen gs = Minecraft.getInstance().currentScreen;
 
 		if( gs instanceof GuiInterfaceTerminal )
 		{

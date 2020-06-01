@@ -25,6 +25,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 
 import appeng.api.networking.IGrid;
@@ -48,8 +49,7 @@ public class PacketCraftRequest extends AppEngPacket
 	private final long amount;
 	private final boolean heldShift;
 
-	// automatic.
-	public PacketCraftRequest( final ByteBuf stream )
+	public PacketCraftRequest( final PacketBuffer stream )
 	{
 		this.heldShift = stream.readBoolean();
 		this.amount = stream.readLong();

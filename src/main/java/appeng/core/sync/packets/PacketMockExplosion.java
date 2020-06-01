@@ -23,6 +23,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -40,8 +41,7 @@ public class PacketMockExplosion extends AppEngPacket
 	private final double y;
 	private final double z;
 
-	// automatic.
-	public PacketMockExplosion( final ByteBuf stream )
+	public PacketMockExplosion( final PacketBuffer stream )
 	{
 		this.x = stream.readDouble();
 		this.y = stream.readDouble();

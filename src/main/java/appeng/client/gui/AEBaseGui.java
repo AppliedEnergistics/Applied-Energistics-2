@@ -35,6 +35,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.inventory.container.ClickType;
@@ -93,7 +94,7 @@ import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
 
 
-public abstract class AEBaseGui extends GuiContainer
+public abstract class AEBaseGui extends ContainerScreen<AEBaseContainer>
 {
 	private final List<InternalSlotME> meSlots = new ArrayList<>();
 	// drag y

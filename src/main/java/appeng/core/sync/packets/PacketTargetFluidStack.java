@@ -23,6 +23,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
@@ -40,8 +41,7 @@ public class PacketTargetFluidStack extends AppEngPacket
 {
 	private AEFluidStack stack;
 
-	// automatic.
-	public PacketTargetFluidStack( final ByteBuf stream )
+	public PacketTargetFluidStack( final PacketBuffer stream )
 	{
 		try
 		{

@@ -34,6 +34,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
@@ -64,12 +65,9 @@ public class PacketJEIRecipe extends AppEngPacket
 
 	private ItemStack[][] recipe;
 
-	// automatic.
-	public PacketJEIRecipe( final ByteBuf stream ) throws IOException
+	public PacketJEIRecipe( final PacketBuffer stream )
 	{
-		final ByteArrayInputStream bytes = this.getPacketByteArray( stream );
-		bytes.skip( stream.readerIndex() );
-		final CompoundNBT comp = CompressedStreamTools.readCompressed( bytes );
+		final CompoundNBT comp = stream.readCompoundTag();
 		if( comp != null )
 		{
 			this.recipe = new ItemStack[9][];
@@ -91,15 +89,11 @@ public class PacketJEIRecipe extends AppEngPacket
 	// api
 	public PacketJEIRecipe( final CompoundNBT recipe ) throws IOException
 	{
-		final ByteBuf data = Unpooled.buffer();
-
-		final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		final DataOutputStream outputStream = new DataOutputStream( bytes );
+		final PacketBuffer data = new PacketBuffer(Unpooled.buffer());
 
 		data.writeInt( this.getPacketID() );
 
-		CompressedStreamTools.writeCompressed( recipe, outputStream );
-		data.writeBytes( bytes.toByteArray() );
+		data.writeCompoundTag( recipe );
 
 		this.configureWrite( data );
 	}

@@ -19,12 +19,8 @@
 package appeng.core.sync.packets;
 
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
@@ -32,6 +28,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 
 import appeng.api.config.FuzzyMode;
@@ -64,12 +61,10 @@ public class PacketValueConfig extends AppEngPacket
 	private final String Name;
 	private final String Value;
 
-	// automatic.
-	public PacketValueConfig( final ByteBuf stream ) throws IOException
+	public PacketValueConfig( final PacketBuffer stream )
 	{
-		final DataInputStream dis = new DataInputStream( this.getPacketByteArray( stream, stream.readerIndex(), stream.readableBytes() ) );
-		this.Name = dis.readUTF();
-		this.Value = dis.readUTF();
+		this.Name = stream.readString();
+		this.Value = stream.readString();
 		// dis.close();
 	}
 
@@ -79,17 +74,12 @@ public class PacketValueConfig extends AppEngPacket
 		this.Name = name;
 		this.Value = value;
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
 
 		data.writeInt( this.getPacketID() );
 
-		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		final DataOutputStream dos = new DataOutputStream( bos );
-		dos.writeUTF( name );
-		dos.writeUTF( value );
-		// dos.close();
-
-		data.writeBytes( bos.toByteArray() );
+		data.writeString( name );
+		data.writeString( value );
 
 		this.configureWrite( data );
 	}
@@ -99,9 +89,7 @@ public class PacketValueConfig extends AppEngPacket
 	{
 		final Container c = player.openContainer;
 
-		if( this.Name.equals( "Item" ) && ( ( !player.getHeldItem( Hand.MAIN_HAND ).isEmpty() && player.getHeldItem( Hand.MAIN_HAND )
-				.getItem() instanceof IMouseWheelItem ) || ( !player.getHeldItem( Hand.OFF_HAND )
-						.isEmpty() && player.getHeldItem( Hand.OFF_HAND ).getItem() instanceof IMouseWheelItem ) ) )
+		if( this.Name.equals( "Item" ) && ( ( !player.getHeldItem( Hand.MAIN_HAND ).isEmpty() && player.getHeldItem( Hand.MAIN_HAND ).getItem() instanceof IMouseWheelItem ) || ( !player.getHeldItem( Hand.OFF_HAND ).isEmpty() && player.getHeldItem( Hand.OFF_HAND ).getItem() instanceof IMouseWheelItem ) ) )
 		{
 			final Hand hand;
 			if( !player.getHeldItem( Hand.MAIN_HAND ).isEmpty() && player.getHeldItem( Hand.MAIN_HAND ).getItem() instanceof IMouseWheelItem )

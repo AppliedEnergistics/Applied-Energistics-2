@@ -24,6 +24,7 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -44,8 +45,7 @@ public class PacketPartPlacement extends AppEngPacket
 	private float eyeHeight;
 	private Hand hand;
 
-	// automatic.
-	public PacketPartPlacement( final ByteBuf stream )
+	public PacketPartPlacement( final PacketBuffer stream )
 	{
 		this.x = stream.readInt();
 		this.y = stream.readInt();

@@ -33,6 +33,7 @@ import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
 import appeng.api.util.AEPartLocation;
+import appeng.core.Api;
 import appeng.items.parts.ItemFacade;
 import appeng.parts.CableBusStorage;
 
@@ -130,7 +131,7 @@ public class FacadeContainer implements IFacadeContainer
 			if( ( facadeSides & ix ) == ix )
 			{
 				ids[0] = out.readInt();
-				ids[1] = out.readInt();
+				//ids[1] = out.readInt();
 				ids[0] = Math.abs( ids[0] );
 
 				Optional<Item> maybeFacadeItem = Api.INSTANCE.definitions().items().facade().maybeItem();
@@ -197,9 +198,9 @@ public class FacadeContainer implements IFacadeContainer
 			if( part != null )
 			{
 				final int itemID = Item.getIdFromItem( part.getItem() );
-				final int dmgValue = part.getItemDamage();
+				//final int dmgValue = part.getItemDamage();
 				out.writeInt( itemID * ( part.notAEFacade() ? -1 : 1 ) );
-				out.writeInt( dmgValue );
+				//out.writeInt( dmgValue );
 			}
 		}
 	}

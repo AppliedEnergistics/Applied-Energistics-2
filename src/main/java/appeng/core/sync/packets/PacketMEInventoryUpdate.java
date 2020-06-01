@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-
 import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
@@ -37,7 +36,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.IPacket;
-import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -74,8 +73,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	private int writtenBytes = 0;
 	private boolean empty = true;
 
-	// automatic.
-	public PacketMEInventoryUpdate( final ByteBuf stream ) throws IOException
+	public PacketMEInventoryUpdate( final PacketBuffer stream )
 	{
 		this.data = null;
 		this.compressFrame = null;
@@ -116,9 +114,12 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 				this.list.add( AEItemStack.fromPacket( uncompressed ) );
 			}
 		}
+		catch( IOException e )
+		{
+			throw new RuntimeException( "Failed to decompress packet.", e );
+		}
 
 		this.empty = this.list.isEmpty();
-
 	}
 
 	// api

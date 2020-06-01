@@ -24,6 +24,7 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Container;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
@@ -36,8 +37,7 @@ public class PacketProgressBar extends AppEngPacket
 	private final short id;
 	private final long value;
 
-	// automatic.
-	public PacketProgressBar( final ByteBuf stream )
+	public PacketProgressBar( final PacketBuffer stream )
 	{
 		this.id = stream.readShort();
 		this.value = stream.readLong();

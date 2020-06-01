@@ -27,6 +27,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -50,8 +51,7 @@ public class PacketTransitionEffect extends AppEngPacket
 	private final double z;
 	private final AEPartLocation d;
 
-	// automatic.
-	public PacketTransitionEffect( final ByteBuf stream )
+	public PacketTransitionEffect( final PacketBuffer stream )
 	{
 		this.x = stream.readFloat();
 		this.y = stream.readFloat();

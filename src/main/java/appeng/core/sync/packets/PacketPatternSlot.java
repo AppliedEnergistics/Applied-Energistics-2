@@ -26,6 +26,7 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -45,8 +46,7 @@ public class PacketPatternSlot extends AppEngPacket
 
 	public final boolean shift;
 
-	// automatic.
-	public PacketPatternSlot( final ByteBuf stream ) throws IOException
+	public PacketPatternSlot( final PacketBuffer stream )
 	{
 
 		this.shift = stream.readBoolean();
@@ -59,7 +59,7 @@ public class PacketPatternSlot extends AppEngPacket
 		}
 	}
 
-	private IAEItemStack readItem( final ByteBuf stream ) throws IOException
+	private IAEItemStack readItem( final ByteBuf stream )
 	{
 		final boolean hasItem = stream.readBoolean();
 

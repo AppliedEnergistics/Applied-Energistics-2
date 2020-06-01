@@ -27,18 +27,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-
 import javax.annotation.Nullable;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.IPacket;
-import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -77,8 +75,7 @@ public class PacketMEFluidInventoryUpdate extends AppEngPacket
 	private int writtenBytes = 0;
 	private boolean empty = true;
 
-	// automatic.
-	public PacketMEFluidInventoryUpdate( final ByteBuf stream ) throws IOException
+	public PacketMEFluidInventoryUpdate( final PacketBuffer stream )
 	{
 		this.data = null;
 		this.compressFrame = null;
@@ -119,6 +116,10 @@ public class PacketMEFluidInventoryUpdate extends AppEngPacket
 			{
 				this.list.add( AEFluidStack.fromPacket( uncompressed ) );
 			}
+		}
+		catch( IOException e )
+		{
+			throw new RuntimeException( "Failed to decompress packet.", e );
 		}
 
 		this.empty = this.list.isEmpty();
@@ -183,7 +184,7 @@ public class PacketMEFluidInventoryUpdate extends AppEngPacket
 
 	public void appendFluid( final IAEFluidStack fs ) throws IOException, BufferOverflowException
 	{
-		final ByteBuf tmp = Unpooled.buffer( OPERATION_BYTE_LIMIT );
+		final PacketBuffer tmp = new PacketBuffer( Unpooled.buffer( OPERATION_BYTE_LIMIT ) );
 		fs.writeToPacket( tmp );
 
 		this.compressFrame.flush();

@@ -24,6 +24,7 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -42,8 +43,7 @@ public class PacketLightning extends AppEngPacket
 	private final double y;
 	private final double z;
 
-	// automatic.
-	public PacketLightning( final ByteBuf stream )
+	public PacketLightning( final PacketBuffer stream )
 	{
 		this.x = stream.readFloat();
 		this.y = stream.readFloat();

@@ -23,7 +23,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.api.util.DimensionalCoord;
 import appeng.core.sync.AppEngPacket;
@@ -43,8 +44,7 @@ public class PacketCompassRequest extends AppEngPacket implements ICompassCallba
 
 	private PlayerEntity talkBackTo;
 
-	// automatic.
-	public PacketCompassRequest( final ByteBuf stream )
+	public PacketCompassRequest( final PacketBuffer stream )
 	{
 		this.attunement = stream.readLong();
 		this.cx = stream.readInt();
@@ -70,7 +70,7 @@ public class PacketCompassRequest extends AppEngPacket implements ICompassCallba
 	@Override
 	public void calculatedDirection( final boolean hasResult, final boolean spin, final double radians, final double dist )
 	{
-		NetworkHandler.instance().sendTo( new PacketCompassResponse( this, hasResult, spin, radians ), (PlayerEntityMP) this.talkBackTo );
+		NetworkHandler.instance().sendTo( new PacketCompassResponse( this, hasResult, spin, radians ), (ServerPlayerEntity) this.talkBackTo );
 	}
 
 	@Override

@@ -39,6 +39,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
@@ -47,6 +48,7 @@ import appeng.api.exceptions.MissingDefinitionException;
 import appeng.api.parts.IAlphaPassItem;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.core.FacadeConfig;
 import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
@@ -316,7 +318,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 				.orElseThrow( () -> new MissingDefinitionException( "Tried to create a facade, while facades are being deactivated." ) );
 
 		// Convert back to a registry name...
-		Item item = Item.REGISTRY.getObjectById( ids[0] );
+		Item item = Registry.ITEM.getByValue( ids[0] );
 		if( item == null )
 		{
 			return ItemStack.EMPTY;
@@ -324,8 +326,8 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 		final CompoundNBT facadeTag = new CompoundNBT();
 		facadeTag.putString(TAG_ITEM_ID, item.getRegistryName().toString());
-		facadeTag.setInteger( TAG_DAMAGE, ids[1] );
-		facadeStack.setTagCompound( facadeTag );
+		//facadeTag.setInteger( TAG_DAMAGE, ids[1] );
+		facadeStack.setTag( facadeTag );
 
 		return facadeStack;
 	}

@@ -29,6 +29,7 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import appeng.core.Api;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.Block;
@@ -42,6 +43,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -1189,12 +1191,12 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					Vec3d from = new Vec3d( hostTile.getPos().getX() + 0.5, hostTile.getPos().getY() + 0.5, hostTile.getPos().getZ() + 0.5 );
 					from = from.add( direction.getXOffset() * 0.501, direction.getYOffset() * 0.501, direction.getZOffset() * 0.501 );
 					final Vec3d to = from.add( direction.getXOffset(), direction.getYOffset(), direction.getZOffset() );
-					final RayTraceResult mop = hostWorld.rayTraceBlocks( from, to );
-					if( mop != null && !BAD_BLOCKS.contains( directedBlock ) )
+					final BlockRayTraceResult hit = null;//hostWorld.rayTraceBlocks( from, to ); //FIXME: https://github.com/MinecraftForge/MinecraftForge/pull/6708
+					if( hit != null && !BAD_BLOCKS.contains( directedBlock ) )
 					{
-						if( mop.getBlockPos().equals( directedTile.getPos() ) )
+						if( hit.getPos().equals( directedTile.getPos() ) )
 						{
-							final ItemStack g = directedBlock.getPickBlock( directedBlockState, mop, hostWorld, directedTile.getPos(), null );
+							final ItemStack g = directedBlock.getPickBlock( directedBlockState, hit, hostWorld, directedTile.getPos(), null );
 							if( !g.isEmpty() )
 							{
 								what = g;

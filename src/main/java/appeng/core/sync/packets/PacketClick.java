@@ -25,6 +25,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -55,8 +56,7 @@ public class PacketClick extends AppEngPacket
 	private Hand hand;
 	private final boolean leftClick;
 
-	// automatic.
-	public PacketClick( final ByteBuf stream )
+	public PacketClick( final PacketBuffer stream )
 	{
 		this.x = stream.readInt();
 		this.y = stream.readInt();

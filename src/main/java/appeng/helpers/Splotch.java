@@ -74,7 +74,7 @@ public class Splotch
 		this.pos = data.readByte();
 		final int val = data.readByte();
 
-		this.side = Direction.VALUES[val & 0x07];
+		this.side = Direction.values()[val & 0x07];
 		this.color = AEColor.values()[( val >> 3 ) & 0x0F];
 		this.lumen = ( ( val >> 7 ) & 0x01 ) > 0;
 	}

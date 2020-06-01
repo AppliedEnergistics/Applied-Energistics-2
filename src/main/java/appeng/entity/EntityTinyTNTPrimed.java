@@ -44,6 +44,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 import appeng.api.AEApi;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.packets.PacketMockExplosion;

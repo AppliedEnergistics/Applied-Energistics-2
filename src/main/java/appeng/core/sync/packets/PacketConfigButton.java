@@ -23,7 +23,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
@@ -31,7 +32,6 @@ import appeng.api.util.IConfigurableObject;
 import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.helpers.Reflected;
 import appeng.util.Platform;
 
 
@@ -40,9 +40,7 @@ public final class PacketConfigButton extends AppEngPacket
 	private final Settings option;
 	private final boolean rotationDirection;
 
-	// automatic.
-	@Reflected
-	public PacketConfigButton( final ByteBuf stream )
+	public PacketConfigButton( final PacketBuffer stream )
 	{
 		this.option = Settings.values()[stream.readInt()];
 		this.rotationDirection = stream.readBoolean();
@@ -66,7 +64,7 @@ public final class PacketConfigButton extends AppEngPacket
 	@Override
 	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
 	{
-		final PlayerEntityMP sender = (PlayerEntityMP) player;
+		final ServerPlayerEntity sender = (ServerPlayerEntity) player;
 		if( sender.openContainer instanceof AEBaseContainer )
 		{
 			final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;

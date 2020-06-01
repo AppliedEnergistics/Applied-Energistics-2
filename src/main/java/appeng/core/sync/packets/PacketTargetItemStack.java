@@ -23,6 +23,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
@@ -35,8 +36,7 @@ public class PacketTargetItemStack extends AppEngPacket
 {
 	private AEItemStack stack;
 
-	// automatic.
-	public PacketTargetItemStack( final ByteBuf stream )
+	public PacketTargetItemStack( final PacketBuffer stream )
 	{
 		try
 		{

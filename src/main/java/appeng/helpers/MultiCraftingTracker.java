@@ -22,6 +22,7 @@ package appeng.helpers;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import appeng.core.Api;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.nbt.CompoundNBT;

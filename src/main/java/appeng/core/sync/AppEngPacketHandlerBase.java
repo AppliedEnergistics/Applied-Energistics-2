@@ -19,12 +19,13 @@
 package appeng.core.sync;
 
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
-import io.netty.buffer.ByteBuf;
+import net.jodah.typetools.TypeResolver;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.core.sync.packets.PacketAssemblerAnimation;
 import appeng.core.sync.packets.PacketClick;
@@ -57,84 +58,73 @@ public class AppEngPacketHandlerBase
 {
 	private static final Map<Class<? extends AppEngPacket>, PacketTypes> REVERSE_LOOKUP = new HashMap<>();
 
+
 	public enum PacketTypes
 	{
-		PACKET_COMPASS_REQUEST( PacketCompassRequest.class ),
+		PACKET_COMPASS_REQUEST( PacketCompassRequest::new ),
 
-		PACKET_COMPASS_RESPONSE( PacketCompassResponse.class ),
+		PACKET_COMPASS_RESPONSE( PacketCompassResponse::new ),
 
-		PACKET_INVENTORY_ACTION( PacketInventoryAction.class ),
+		PACKET_INVENTORY_ACTION( PacketInventoryAction::new ),
 
-		PACKET_ME_INVENTORY_UPDATE( PacketMEInventoryUpdate.class ),
+		PACKET_ME_INVENTORY_UPDATE( PacketMEInventoryUpdate::new ),
 
-		PACKET_ME_FLUID_INVENTORY_UPDATE( PacketMEFluidInventoryUpdate.class ),
+		PACKET_ME_FLUID_INVENTORY_UPDATE( PacketMEFluidInventoryUpdate::new ),
 
-		PACKET_CONFIG_BUTTON( PacketConfigButton.class ),
+		PACKET_CONFIG_BUTTON( PacketConfigButton::new ),
 
-		PACKET_PART_PLACEMENT( PacketPartPlacement.class ),
+		PACKET_PART_PLACEMENT( PacketPartPlacement::new ),
 
-		PACKET_LIGHTNING( PacketLightning.class ),
+		PACKET_LIGHTNING( PacketLightning::new ),
 
-		PACKET_MATTER_CANNON( PacketMatterCannon.class ),
+		PACKET_MATTER_CANNON( PacketMatterCannon::new ),
 
-		PACKET_MOCK_EXPLOSION( PacketMockExplosion.class ),
+		PACKET_MOCK_EXPLOSION( PacketMockExplosion::new ),
 
-		PACKET_VALUE_CONFIG( PacketValueConfig.class ),
+		PACKET_VALUE_CONFIG( PacketValueConfig::new ),
 
-		PACKET_TRANSITION_EFFECT( PacketTransitionEffect.class ),
+		PACKET_TRANSITION_EFFECT( PacketTransitionEffect::new ),
 
-		PACKET_PROGRESS_VALUE( PacketProgressBar.class ),
+		PACKET_PROGRESS_VALUE( PacketProgressBar::new ),
 
-		PACKET_CLICK( PacketClick.class ),
+		PACKET_CLICK( PacketClick::new ),
 
-		PACKET_SWITCH_GUIS( PacketSwitchGuis.class ),
+		PACKET_SWITCH_GUIS( PacketSwitchGuis::new ),
 
-		PACKET_SWAP_SLOTS( PacketSwapSlots.class ),
+		PACKET_SWAP_SLOTS( PacketSwapSlots::new ),
 
-		PACKET_PATTERN_SLOT( PacketPatternSlot.class ),
+		PACKET_PATTERN_SLOT( PacketPatternSlot::new ),
 
-		PACKET_RECIPE_JEI( PacketJEIRecipe.class ),
+		PACKET_RECIPE_JEI( PacketJEIRecipe::new ),
 
-		PACKET_TARGET_ITEM( PacketTargetItemStack.class ),
+		PACKET_TARGET_ITEM( PacketTargetItemStack::new ),
 
-		PACKET_TARGET_FLUID( PacketTargetFluidStack.class ),
+		PACKET_TARGET_FLUID( PacketTargetFluidStack::new ),
 
-		PACKET_CRAFTING_REQUEST( PacketCraftRequest.class ),
+		PACKET_CRAFTING_REQUEST( PacketCraftRequest::new ),
 
-		PACKET_ASSEMBLER_ANIMATION( PacketAssemblerAnimation.class ),
+		PACKET_ASSEMBLER_ANIMATION( PacketAssemblerAnimation::new ),
 
-		PACKET_COMPRESSED_NBT( PacketCompressedNBT.class ),
+		PACKET_COMPRESSED_NBT( PacketCompressedNBT::new ),
 
-		PACKET_PAINTED_ENTITY( PacketPaintedEntity.class ),
+		PACKET_PAINTED_ENTITY( PacketPaintedEntity::new ),
 
-		PACKET_FLUID_TANK( PacketFluidSlot.class );
+		PACKET_FLUID_TANK( PacketFluidSlot::new );
 
 		private final Class<? extends AppEngPacket> packetClass;
-		private final Constructor<? extends AppEngPacket> packetConstructor;
+		private final Function<PacketBuffer, AppEngPacket> factory;
 
-		PacketTypes( final Class<? extends AppEngPacket> c )
+		PacketTypes( Function<PacketBuffer, AppEngPacket> factory )
 		{
-			this.packetClass = c;
+			Type c = TypeResolver.resolveGenericType( Function.class, factory.getClass() );
+			if( c == TypeResolver.Unknown.class )
+			{
+				throw new IllegalStateException("Failed to resolve type for AE packet type: " + factory.toString());
+			}
+			this.packetClass = (Class<? extends AppEngPacket>) c;
+			this.factory = factory;
 
-			Constructor<? extends AppEngPacket> x = null;
-			try
-			{
-				x = this.packetClass.getConstructor( ByteBuf.class );
-			}
-			catch( final NoSuchMethodException ignored )
-			{
-			}
-			catch( final SecurityException ignored )
-			{
-			}
-
-			this.packetConstructor = x;
 			REVERSE_LOOKUP.put( this.packetClass, this );
-
-			if( this.packetConstructor == null )
-			{
-				throw new IllegalStateException( "Invalid Packet Class " + c + ", must be constructable on DataInputStream" );
-			}
 		}
 
 		public static PacketTypes getPacket( final int id )
@@ -147,9 +137,9 @@ public class AppEngPacketHandlerBase
 			return REVERSE_LOOKUP.get( c );
 		}
 
-		public AppEngPacket parsePacket( final ByteBuf in ) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+		public AppEngPacket parsePacket( final PacketBuffer in ) throws IllegalArgumentException
 		{
-			return this.packetConstructor.newInstance( in );
+			return this.factory.apply( in );
 		}
 	}
 }

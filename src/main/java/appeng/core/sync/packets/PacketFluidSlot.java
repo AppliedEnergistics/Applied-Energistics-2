@@ -28,6 +28,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Container;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import appeng.api.storage.data.IAEFluidStack;
@@ -41,7 +42,7 @@ public class PacketFluidSlot extends AppEngPacket
 {
 	private final Map<Integer, IAEFluidStack> list;
 
-	public PacketFluidSlot( final ByteBuf stream )
+	public PacketFluidSlot( final PacketBuffer stream )
 	{
 		this.list = new HashMap<>();
 		CompoundNBT tag = ByteBufUtils.readTag( stream );

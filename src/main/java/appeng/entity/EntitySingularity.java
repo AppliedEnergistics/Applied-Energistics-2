@@ -33,6 +33,7 @@ import net.minecraft.world.World;
 import appeng.api.AEApi;
 import appeng.api.definitions.IMaterials;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.core.features.AEFeature;
 import appeng.helpers.Reflected;
 import appeng.util.Platform;
@@ -110,7 +111,7 @@ public final class EntitySingularity extends AEBaseEntityItem
 
 								materials.qESingularity().maybeStack( 2 ).ifPresent( singularityStack ->
 								{
-									final CompoundNBT cmp = Platform.openNbtData( singularityStack );
+									final CompoundNBT cmp = singularityStack.getOrCreateTag();
 									cmp.putLong( "freq", ( new Date() ).getTime() * 100 + ( randTickSeed ) % 100 );
 									randTickSeed++;
 									item.grow( -1 );

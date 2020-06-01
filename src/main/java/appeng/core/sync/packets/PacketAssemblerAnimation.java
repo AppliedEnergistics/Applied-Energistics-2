@@ -25,6 +25,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -46,8 +47,7 @@ public class PacketAssemblerAnimation extends AppEngPacket
 	public final byte rate;
 	public final IAEItemStack is;
 
-	// automatic.
-	public PacketAssemblerAnimation( final ByteBuf stream ) throws IOException
+	public PacketAssemblerAnimation( final ByteBuf stream )
 	{
 		this.x = stream.readInt();
 		this.y = stream.readInt();
@@ -60,7 +60,7 @@ public class PacketAssemblerAnimation extends AppEngPacket
 	public PacketAssemblerAnimation( final BlockPos pos, final byte rate, final IAEItemStack is ) throws IOException
 	{
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
 
 		data.writeInt( this.getPacketID() );
 		data.writeInt( this.x = pos.getX() );

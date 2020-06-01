@@ -25,6 +25,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.api.distmarker.Dist;
@@ -46,8 +47,7 @@ public class PacketMatterCannon extends AppEngPacket
 	private final double dz;
 	private final byte len;
 
-	// automatic.
-	public PacketMatterCannon( final ByteBuf stream )
+	public PacketMatterCannon( final PacketBuffer stream )
 	{
 		this.x = stream.readFloat();
 		this.y = stream.readFloat();

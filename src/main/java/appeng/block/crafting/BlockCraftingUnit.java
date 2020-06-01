@@ -130,7 +130,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	}
 
 	@Override
-	public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving) {
+	public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving)
 	{
 		final TileCraftingTile cp = this.getTileEntity( w, pos );
 		if( cp != null )

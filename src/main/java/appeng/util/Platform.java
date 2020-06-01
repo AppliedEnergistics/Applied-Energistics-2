@@ -19,12 +19,28 @@
 package appeng.util;
 
 
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.config.SearchBoxMode;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.config.SortOrder;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.implementations.items.IAEWrench;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergySource;
+import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.storage.IMEInventory;
+import appeng.api.storage.data.IAEStack;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.Api;
 import appeng.core.features.AEFeature;
+import appeng.core.stats.Stats;
+import appeng.me.GridAccessException;
+import appeng.me.helpers.AENetworkProxy;
 import appeng.util.helpers.ItemComparisonHelper;
+import appeng.util.item.AEItemStack;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -41,9 +57,12 @@ import net.minecraftforge.fml.common.thread.SidedThreadGroups;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 import java.util.WeakHashMap;
+
+import com.google.common.base.Preconditions;
 
 
 /**
@@ -179,101 +198,102 @@ public class Platform
 //		return Direction.NORTH;
 //	}
 //
-//	public static <T extends Enum> T rotateEnum( T ce, final boolean backwards, final EnumSet validOptions )
-//	{
-//		do
-//		{
-//			if( backwards )
-//			{
-//				ce = prevEnum( ce );
-//			}
-//			else
-//			{
-//				ce = nextEnum( ce );
-//			}
-//		}
-//		while( !validOptions.contains( ce ) || isNotValidSetting( ce ) );
-//
-//		return ce;
-//	}
-//
-//	/*
-//	 * Simple way to cycle an enum...
-//	 */
-//	private static <T extends Enum> T prevEnum( final T ce )
-//	{
-//		final EnumSet valList = EnumSet.allOf( ce.getClass() );
-//
-//		int pLoc = ce.ordinal() - 1;
-//		if( pLoc < 0 )
-//		{
-//			pLoc = valList.size() - 1;
-//		}
-//
-//		if( pLoc < 0 || pLoc >= valList.size() )
-//		{
-//			pLoc = 0;
-//		}
-//
-//		int pos = 0;
-//		for( final Object g : valList )
-//		{
-//			if( pos == pLoc )
-//			{
-//				return (T) g;
-//			}
-//			pos++;
-//		}
-//
-//		return null;
-//	}
-//
-//	/*
-//	 * Simple way to cycle an enum...
-//	 */
-//	public static <T extends Enum> T nextEnum( final T ce )
-//	{
-//		final EnumSet valList = EnumSet.allOf( ce.getClass() );
-//
-//		int pLoc = ce.ordinal() + 1;
-//		if( pLoc >= valList.size() )
-//		{
-//			pLoc = 0;
-//		}
-//
-//		if( pLoc < 0 || pLoc >= valList.size() )
-//		{
-//			pLoc = 0;
-//		}
-//
-//		int pos = 0;
-//		for( final Object g : valList )
-//		{
-//			if( pos == pLoc )
-//			{
-//				return (T) g;
-//			}
-//			pos++;
-//		}
-//
-//		return null;
-//	}
-//
-//	private static boolean isNotValidSetting( final Enum e )
-//	{
+	public static <T extends Enum> T rotateEnum( T ce, final boolean backwards, final EnumSet validOptions )
+	{
+		do
+		{
+			if( backwards )
+			{
+				ce = prevEnum( ce );
+			}
+			else
+			{
+				ce = nextEnum( ce );
+			}
+		}
+		while( !validOptions.contains( ce ) || isNotValidSetting( ce ) );
+
+		return ce;
+	}
+
+	/*
+	 * Simple way to cycle an enum...
+	 */
+	private static <T extends Enum> T prevEnum( final T ce )
+	{
+		final EnumSet valList = EnumSet.allOf( ce.getClass() );
+
+		int pLoc = ce.ordinal() - 1;
+		if( pLoc < 0 )
+		{
+			pLoc = valList.size() - 1;
+		}
+
+		if( pLoc < 0 || pLoc >= valList.size() )
+		{
+			pLoc = 0;
+		}
+
+		int pos = 0;
+		for( final Object g : valList )
+		{
+			if( pos == pLoc )
+			{
+				return (T) g;
+			}
+			pos++;
+		}
+
+		return null;
+	}
+
+	/*
+	 * Simple way to cycle an enum...
+	 */
+	public static <T extends Enum<?>> T nextEnum( final T ce )
+	{
+		final EnumSet valList = EnumSet.allOf( ce.getClass() );
+
+		int pLoc = ce.ordinal() + 1;
+		if( pLoc >= valList.size() )
+		{
+			pLoc = 0;
+		}
+
+		if( pLoc < 0 || pLoc >= valList.size() )
+		{
+			pLoc = 0;
+		}
+
+		int pos = 0;
+		for( final Object g : valList )
+		{
+			if( pos == pLoc )
+			{
+				return (T) g;
+			}
+			pos++;
+		}
+
+		return null;
+	}
+
+	private static boolean isNotValidSetting( final Enum<?> e )
+	{
+		//FIXME, INVENTORY TWEAKS
 //		if( e == SortOrder.INVTWEAKS && !Integrations.invTweaks().isEnabled() )
 //		{
 //			return true;
 //		}
-//
+		//FIXME, JEI
 //		final boolean isJEI = e == SearchBoxMode.JEI_AUTOSEARCH || e == SearchBoxMode.JEI_AUTOSEARCH_KEEP || e == SearchBoxMode.JEI_MANUAL_SEARCH || e == SearchBoxMode.JEI_MANUAL_SEARCH_KEEP;
 //		if( isJEI && !Integrations.jei().isEnabled() )
 //		{
 //			return true;
 //		}
-//
-//		return false;
-//	}
+
+		return false;
+	}
 //
 //	public static void openGUI(@Nonnull final PlayerEntity p, @Nullable final TileEntity tile, @Nullable final AEPartLocation side, @Nonnull final GuiBridge type )
 //	{
@@ -518,45 +538,45 @@ public class Platform
 //		return n == null ? "** Null" : n.getNamespace(); // FIXME: Check if namespace == mod
 //	}
 //
-//	public static String getItemDisplayName( final Object o )
-//	{
-//		if( o == null )
-//		{
-//			return "** Null";
-//		}
-//
-//		ItemStack itemStack = ItemStack.EMPTY;
-//		if( o instanceof AEItemStack )
-//		{
-//			final String n = ( (AEItemStack) o ).getDisplayName();
-//			return n == null ? "** Null" : n;
-//		}
-//		else if( o instanceof ItemStack )
-//		{
-//			itemStack = (ItemStack) o;
-//		}
-//		else
-//		{
-//			return "**Invalid Object";
-//		}
-//
-//		try
-//		{
-//			// FIXME: Double-check that this is TRULY translated
-//			return itemStack.getDisplayName().getString();
-//		}
-//		catch( final Exception errA )
-//		{
-//			try
-//			{
-//				return itemStack.getTranslationKey();
-//			}
-//			catch( final Exception errB )
-//			{
-//				return "** Exception";
-//			}
-//		}
-//	}
+	public static String getItemDisplayName( final Object o )
+	{
+		if( o == null )
+		{
+			return "** Null";
+		}
+
+		ItemStack itemStack = ItemStack.EMPTY;
+		if( o instanceof AEItemStack )
+		{
+			final String n = ( (AEItemStack) o ).getDisplayName();
+			return n == null ? "** Null" : n;
+		}
+		else if( o instanceof ItemStack )
+		{
+			itemStack = (ItemStack) o;
+		}
+		else
+		{
+			return "**Invalid Object";
+		}
+
+		try
+		{
+			// FIXME: Double-check that this is TRULY translated
+			return itemStack.getDisplayName().getString();
+		}
+		catch( final Exception errA )
+		{
+			try
+			{
+				return itemStack.getTranslationKey();
+			}
+			catch( final Exception errB )
+			{
+				return "** Exception";
+			}
+		}
+	}
 //
 //	public static String getFluidDisplayName( Object o )
 //	{
@@ -1025,120 +1045,120 @@ public class Platform
 //		return pos;
 //	}
 //
-//	public static <T extends IAEStack<T>> T poweredExtraction( final IEnergySource energy, final IMEInventory<T> cell, final T request, final IActionSource src )
-//	{
-//		return poweredExtraction( energy, cell, request, src, Actionable.MODULATE );
-//	}
-//
-//	public static <T extends IAEStack<T>> T poweredExtraction( final IEnergySource energy, final IMEInventory<T> cell, final T request, final IActionSource src, final Actionable mode )
-//	{
-//		Preconditions.checkNotNull( energy );
-//		Preconditions.checkNotNull( cell );
-//		Preconditions.checkNotNull( request );
-//		Preconditions.checkNotNull( src );
-//		Preconditions.checkNotNull( mode );
-//
-//		final T possible = cell.extractItems( request.copy(), Actionable.SIMULATE, src );
-//
-//		long retrieved = 0;
-//		if( possible != null )
-//		{
-//			retrieved = possible.getStackSize();
-//		}
-//
-//		final double energyFactor = Math.max( 1.0, cell.getChannel().transferFactor() );
-//		final double availablePower = energy.extractAEPower( retrieved / energyFactor, Actionable.SIMULATE, PowerMultiplier.CONFIG );
-//		final long itemToExtract = Math.min( (long) ( ( availablePower * energyFactor ) + 0.9 ), retrieved );
-//
-//		if( itemToExtract > 0 )
-//		{
-//			if( mode == Actionable.MODULATE )
-//			{
-//				energy.extractAEPower( retrieved / energyFactor, Actionable.MODULATE, PowerMultiplier.CONFIG );
-//				possible.setStackSize( itemToExtract );
-//				final T ret = cell.extractItems( possible, Actionable.MODULATE, src );
-//
-//				if( ret != null )
-//				{
-//					src.player().ifPresent( player -> Stats.ItemsExtracted.addToPlayer( player, (int) ret.getStackSize() ) );
-//				}
-//				return ret;
-//			}
-//			else
-//			{
-//				return possible.setStackSize( itemToExtract );
-//			}
-//		}
-//
-//		return null;
-//	}
-//
-//	public static <T extends IAEStack<T>> T poweredInsert( final IEnergySource energy, final IMEInventory<T> cell, final T input, final IActionSource src )
-//	{
-//		return poweredInsert( energy, cell, input, src, Actionable.MODULATE );
-//	}
-//
-//	public static <T extends IAEStack<T>> T poweredInsert( final IEnergySource energy, final IMEInventory<T> cell, final T input, final IActionSource src, final Actionable mode )
-//	{
-//		Preconditions.checkNotNull( energy );
-//		Preconditions.checkNotNull( cell );
-//		Preconditions.checkNotNull( input );
-//		Preconditions.checkNotNull( src );
-//		Preconditions.checkNotNull( mode );
-//
-//		final T possible = cell.injectItems( input.copy(), Actionable.SIMULATE, src );
-//
-//		long stored = input.getStackSize();
-//		if( possible != null )
-//		{
-//			stored -= possible.getStackSize();
-//		}
-//
-//		final double energyFactor = Math.max( 1.0, cell.getChannel().transferFactor() );
-//		final double availablePower = energy.extractAEPower( stored / energyFactor, Actionable.SIMULATE, PowerMultiplier.CONFIG );
-//		final long itemToAdd = Math.min( (long) ( ( availablePower * energyFactor ) + 0.9 ), stored );
-//
-//		if( itemToAdd > 0 )
-//		{
-//			if( mode == Actionable.MODULATE )
-//			{
-//				energy.extractAEPower( stored / energyFactor, Actionable.MODULATE, PowerMultiplier.CONFIG );
-//				if( itemToAdd < input.getStackSize() )
-//				{
-//					final long original = input.getStackSize();
-//					final T split = input.copy();
-//					split.decStackSize( itemToAdd );
-//					input.setStackSize( itemToAdd );
-//					split.add( cell.injectItems( input, Actionable.MODULATE, src ) );
-//
-//					src.player().ifPresent( player ->
-//					{
-//						final long diff = original - split.getStackSize();
-//						Stats.ItemsInserted.addToPlayer( player, (int) diff );
-//					} );
-//
-//					return split;
-//				}
-//
-//				final T ret = cell.injectItems( input, Actionable.MODULATE, src );
-//
-//				src.player().ifPresent( player ->
-//				{
-//					final long diff = ret == null ? input.getStackSize() : input.getStackSize() - ret.getStackSize();
-//					Stats.ItemsInserted.addToPlayer( player, (int) diff );
-//				} );
-//
-//				return ret;
-//			}
-//			else
-//			{
-//				final T ret = input.copy().setStackSize( input.getStackSize() - itemToAdd );
-//				return ( ret != null && ret.getStackSize() > 0 ) ? ret : null;
-//			}
-//		}
-//
-//		return input;
-//	}
+	public static <T extends IAEStack<T>> T poweredExtraction( final IEnergySource energy, final IMEInventory<T> cell, final T request, final IActionSource src )
+	{
+		return poweredExtraction( energy, cell, request, src, Actionable.MODULATE );
+	}
+
+	public static <T extends IAEStack<T>> T poweredExtraction( final IEnergySource energy, final IMEInventory<T> cell, final T request, final IActionSource src, final Actionable mode )
+	{
+		Preconditions.checkNotNull( energy );
+		Preconditions.checkNotNull( cell );
+		Preconditions.checkNotNull( request );
+		Preconditions.checkNotNull( src );
+		Preconditions.checkNotNull( mode );
+
+		final T possible = cell.extractItems( request.copy(), Actionable.SIMULATE, src );
+
+		long retrieved = 0;
+		if( possible != null )
+		{
+			retrieved = possible.getStackSize();
+		}
+
+		final double energyFactor = Math.max( 1.0, cell.getChannel().transferFactor() );
+		final double availablePower = energy.extractAEPower( retrieved / energyFactor, Actionable.SIMULATE, PowerMultiplier.CONFIG );
+		final long itemToExtract = Math.min( (long) ( ( availablePower * energyFactor ) + 0.9 ), retrieved );
+
+		if( itemToExtract > 0 )
+		{
+			if( mode == Actionable.MODULATE )
+			{
+				energy.extractAEPower( retrieved / energyFactor, Actionable.MODULATE, PowerMultiplier.CONFIG );
+				possible.setStackSize( itemToExtract );
+				final T ret = cell.extractItems( possible, Actionable.MODULATE, src );
+
+				if( ret != null )
+				{
+					src.player().ifPresent( player -> Stats.ItemsExtracted.addToPlayer( player, (int) ret.getStackSize() ) );
+				}
+				return ret;
+			}
+			else
+			{
+				return possible.setStackSize( itemToExtract );
+			}
+		}
+
+		return null;
+	}
+
+	public static <T extends IAEStack<T>> T poweredInsert( final IEnergySource energy, final IMEInventory<T> cell, final T input, final IActionSource src )
+	{
+		return poweredInsert( energy, cell, input, src, Actionable.MODULATE );
+	}
+
+	public static <T extends IAEStack<T>> T poweredInsert( final IEnergySource energy, final IMEInventory<T> cell, final T input, final IActionSource src, final Actionable mode )
+	{
+		Preconditions.checkNotNull( energy );
+		Preconditions.checkNotNull( cell );
+		Preconditions.checkNotNull( input );
+		Preconditions.checkNotNull( src );
+		Preconditions.checkNotNull( mode );
+
+		final T possible = cell.injectItems( input.copy(), Actionable.SIMULATE, src );
+
+		long stored = input.getStackSize();
+		if( possible != null )
+		{
+			stored -= possible.getStackSize();
+		}
+
+		final double energyFactor = Math.max( 1.0, cell.getChannel().transferFactor() );
+		final double availablePower = energy.extractAEPower( stored / energyFactor, Actionable.SIMULATE, PowerMultiplier.CONFIG );
+		final long itemToAdd = Math.min( (long) ( ( availablePower * energyFactor ) + 0.9 ), stored );
+
+		if( itemToAdd > 0 )
+		{
+			if( mode == Actionable.MODULATE )
+			{
+				energy.extractAEPower( stored / energyFactor, Actionable.MODULATE, PowerMultiplier.CONFIG );
+				if( itemToAdd < input.getStackSize() )
+				{
+					final long original = input.getStackSize();
+					final T split = input.copy();
+					split.decStackSize( itemToAdd );
+					input.setStackSize( itemToAdd );
+					split.add( cell.injectItems( input, Actionable.MODULATE, src ) );
+
+					src.player().ifPresent( player ->
+					{
+						final long diff = original - split.getStackSize();
+						Stats.ItemsInserted.addToPlayer( player, (int) diff );
+					} );
+
+					return split;
+				}
+
+				final T ret = cell.injectItems( input, Actionable.MODULATE, src );
+
+				src.player().ifPresent( player ->
+				{
+					final long diff = ret == null ? input.getStackSize() : input.getStackSize() - ret.getStackSize();
+					Stats.ItemsInserted.addToPlayer( player, (int) diff );
+				} );
+
+				return ret;
+			}
+			else
+			{
+				final T ret = input.copy().setStackSize( input.getStackSize() - itemToAdd );
+				return ( ret != null && ret.getStackSize() > 0 ) ? ret : null;
+			}
+		}
+
+		return input;
+	}
 //
 //	@SuppressWarnings( { "rawtypes", "unchecked" } )
 //	public static void postChanges( final IStorageGrid gs, final ItemStack removed, final ItemStack added, final IActionSource src )
@@ -1315,36 +1335,36 @@ public class Platform
 //		);
 //	}
 //
-//	public static boolean canAccess( final AENetworkProxy gridProxy, final IActionSource src )
-//	{
-//		try
-//		{
-//			if( src.player().isPresent() )
-//			{
-//				return gridProxy.getSecurity().hasPermission( src.player().get(), SecurityPermissions.BUILD );
-//			}
-//			else if( src.machine().isPresent() )
-//			{
-//				final IActionHost te = src.machine().get();
-//				final IGridNode n = te.getActionableNode();
-//				if( n == null )
-//				{
-//					return false;
-//				}
-//
-//				final int playerID = n.getPlayerID();
-//				return gridProxy.getSecurity().hasPermission( playerID, SecurityPermissions.BUILD );
-//			}
-//			else
-//			{
-//				return false;
-//			}
-//		}
-//		catch( final GridAccessException gae )
-//		{
-//			return false;
-//		}
-//	}
+	public static boolean canAccess( final AENetworkProxy gridProxy, final IActionSource src )
+	{
+		try
+		{
+			if( src.player().isPresent() )
+			{
+				return gridProxy.getSecurity().hasPermission( src.player().get(), SecurityPermissions.BUILD );
+			}
+			else if( src.machine().isPresent() )
+			{
+				final IActionHost te = src.machine().get();
+				final IGridNode n = te.getActionableNode();
+				if( n == null )
+				{
+					return false;
+				}
+
+				final int playerID = n.getPlayerID();
+				return gridProxy.getSecurity().hasPermission( playerID, SecurityPermissions.BUILD );
+			}
+			else
+			{
+				return false;
+			}
+		}
+		catch( final GridAccessException gae )
+		{
+			return false;
+		}
+	}
 //
 //	public static ItemStack extractItemsByRecipe(final IEnergySource energySrc, final IActionSource mySrc, final IMEMonitor<IAEItemStack> src, final World w, final IRecipe r, final ItemStack output, final CraftingInventory ci, final ItemStack providedTemplate, final int slot, final IItemList<IAEItemStack> items, final Actionable realForFake, final IPartitionList<IAEItemStack> filter )
 //	{
