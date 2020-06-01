@@ -77,7 +77,7 @@ public class CraftingCubeRendering extends BlockRenderingCustomizer
 
 		if( this.type == BlockCraftingUnit.CraftingUnitType.MONITOR )
 		{
-			rendering.tesr( new CraftingMonitorTESR() );
+			rendering.tileEntityRenderer( new CraftingMonitorTESR() );
 		}
 
 	}

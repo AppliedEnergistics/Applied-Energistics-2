@@ -27,15 +27,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import appeng.bootstrap.components.BuiltInModelComponent;
 import appeng.bootstrap.components.ModelOverrideComponent;
+import appeng.tile.AEBaseTile;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -43,7 +45,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
-import appeng.bootstrap.components.TileEntityComponent;
 import appeng.core.features.AEFeature;
 import appeng.core.features.ActivityState;
 import appeng.core.features.ColoredItemDefinition;
@@ -64,15 +65,10 @@ public class FeatureFactory
 	@OnlyIn( Dist.CLIENT )
 	private BuiltInModelComponent builtInModelComponent;
 
-	public final TileEntityComponent tileEntityComponent;
-
 	public FeatureFactory()
 	{
 		this.defaultFeatures = new AEFeature[] { AEFeature.CORE };
 		this.bootstrapComponents = new HashMap<>();
-
-		this.tileEntityComponent = new TileEntityComponent();
-		this.addBootstrapComponent( this.tileEntityComponent );
 
 		if( Platform.isClient() )
 		{
@@ -87,7 +83,6 @@ public class FeatureFactory
 	{
 		this.defaultFeatures = defaultFeatures.clone();
 		this.bootstrapComponents = parent.bootstrapComponents;
-		this.tileEntityComponent = parent.tileEntityComponent;
 		if( Platform.isClient() )
 		{
 			this.modelOverrideComponent = parent.modelOverrideComponent;
@@ -103,6 +98,11 @@ public class FeatureFactory
 	public IItemBuilder item( String id, Supplier<Item> item )
 	{
 		return new ItemDefinitionBuilder( this, id, item ).features( this.defaultFeatures );
+	}
+
+	public <T extends AEBaseTile> TileEntityBuilder<T> tileEntity(String id, Class<T> teClass, Function<TileEntityType<T>, T> factory)
+	{
+		return new TileEntityBuilder<>( this, id, teClass, factory ).features( this.defaultFeatures );
 	}
 
 	public AEColoredItemDefinition colored( IItemDefinition target, int offset )

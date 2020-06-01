@@ -31,6 +31,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.stats.StatType;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -102,7 +103,9 @@ public final class AppEng
 		modEventBus.addGenericListener(Item.class, registration::registerItems);
 		modEventBus.addGenericListener(EntityType.class, registration::registerEntities);
 		modEventBus.addGenericListener(ParticleType.class, registration::registerParticleTypes);
+		modEventBus.addGenericListener(TileEntityType.class, registration::registerTileEntities);
 		modEventBus.addListener(registration::registerParticleFactories);
+		modEventBus.addListener(registration::registerTextures);
 
 		modEventBus.addListener(this::commonSetup);
 

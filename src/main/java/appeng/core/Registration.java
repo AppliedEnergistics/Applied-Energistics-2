@@ -20,14 +20,12 @@ package appeng.core;
 
 
 import appeng.bootstrap.IModelRegistry;
-import appeng.bootstrap.components.IBlockRegistrationComponent;
-import appeng.bootstrap.components.IEntityRegistrationComponent;
-import appeng.bootstrap.components.IItemRegistrationComponent;
-import appeng.bootstrap.components.IModelRegistrationComponent;
+import appeng.bootstrap.components.*;
 import appeng.client.render.effects.ChargedOreFX;
 import appeng.client.render.effects.LightningFX;
 import appeng.client.render.effects.VibrantFX;
 import appeng.client.render.model.GlassModelLoader;
+import appeng.client.render.tesr.SkyChestTESR;
 import appeng.core.stats.AeStats;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -36,15 +34,13 @@ import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.stats.IStatFormatter;
-import net.minecraft.stats.StatType;
-import net.minecraft.stats.Stats;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -223,6 +219,13 @@ final class Registration
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		final Dist dist = FMLEnvironment.dist;
 		definitions.getRegistry().getBootstrapComponents( IItemRegistrationComponent.class ).forEachRemaining( b -> b.itemRegistration( dist, registry ) );
+	}
+
+	public void registerTileEntities( RegistryEvent.Register<TileEntityType<?>> event )
+	{
+		final IForgeRegistry<TileEntityType<?>> registry = event.getRegistry();
+		final ApiDefinitions definitions = Api.INSTANCE.definitions();
+		definitions.getRegistry().getBootstrapComponents( ITileEntityRegistrationComponent.class ).forEachRemaining(b -> b.register( registry ) );
 	}
 
 //	@SubscribeEvent
@@ -524,5 +527,9 @@ final class Registration
 //		}
 //
 //	}
+
+	public void registerTextures(TextureStitchEvent.Pre event) {
+		SkyChestTESR.registerTextures(event);
+	}
 
 }

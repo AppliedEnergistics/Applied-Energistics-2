@@ -147,6 +147,13 @@ sourceSets {
             include 'appeng/container/ContainerOpenContext.java'
             include 'appeng/decorative/solid/BlockSkyStone.java'
 
+            include 'appeng/block/storage/BlockSkyChest.java'
+            include 'appeng/tile/storage/TileSkyChest.java'
+            include 'appeng/block/storage/SkyChestRenderingCustomizer.java'
+            include 'appeng/client/render/tesr/SkyChestTESR.java'
+            include 'appeng/tile/inventory/AppEngInternalInventory.java'
+            include 'appeng/util/inv/filter/**'
+
 //            include 'appeng/client/ClientHelper.java'
 //            include 'appeng/server/ServerHelper.java'
             include 'appeng/block/AEBaseBlock.java'

@@ -35,23 +35,24 @@ import appeng.tile.AEBaseTile;
  *
  * @param <T>
  */
-public class TesrComponent<T extends AEBaseTile> implements IPreInitComponent
+public class TileEntityRendererComponent<T extends AEBaseTile> implements IPreInitComponent
 {
 
-	private final TileEntityType<T> tileEntityClass;
+	private final TileEntityType<T> tileEntityType;
 
-	private final Function<? super TileEntityRendererDispatcher, ? extends TileEntityRenderer<? super T>> ter;
+	private final Function<? super TileEntityRendererDispatcher, ? extends TileEntityRenderer<? super T>> tileEntityRenderer;
 
-	public TesrComponent( TileEntityType<T> tileEntityClass, Function<? super TileEntityRendererDispatcher, ? extends TileEntityRenderer<? super T>> ter )
+	public TileEntityRendererComponent(TileEntityType<T> tileEntityType,
+									   Function<? super TileEntityRendererDispatcher, ? extends TileEntityRenderer<? super T>> tileEntityRenderer)
 	{
-		this.tileEntityClass = tileEntityClass;
-		this.ter = ter;
+		this.tileEntityType = tileEntityType;
+		this.tileEntityRenderer = tileEntityRenderer;
 	}
 
 	@Override
 	// public void modelReg( Dist dist )
 	public void preInitialize( Dist dist )
 	{
-		ClientRegistry.bindTileEntityRenderer( this.tileEntityClass, this.ter );
+		ClientRegistry.bindTileEntityRenderer( tileEntityType, tileEntityRenderer);
 	}
 }

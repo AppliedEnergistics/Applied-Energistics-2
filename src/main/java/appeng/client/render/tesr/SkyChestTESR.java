@@ -19,124 +19,100 @@
 package appeng.client.render.tesr;
 
 
+import appeng.block.storage.BlockSkyChest;
+import appeng.block.storage.BlockSkyChest.SkyChestType;
+import appeng.core.AppEng;
+import appeng.tile.storage.TileSkyChest;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.Block;
-import net.minecraft.client.model.ModelChest;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.util.Direction;
+import net.minecraft.client.renderer.Atlases;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.TextureStitchEvent;
 
-import appeng.block.storage.BlockSkyChest;
-import appeng.block.storage.BlockSkyChest.SkyChestType;
-import appeng.client.render.FacingToRotation;
-import appeng.core.AppEng;
-import appeng.tile.storage.TileSkyChest;
+// This is mostly a copy&paste job of the vanilla chest TESR
+@OnlyIn(Dist.CLIENT)
+public class SkyChestTESR extends TileEntityRenderer<TileSkyChest> {
 
+    public static final Material TEXTURE_STONE = new Material(Atlases.CHEST_ATLAS, new ResourceLocation(AppEng.MOD_ID, "models/skychest"));
+    public static final Material TEXTURE_BLOCK = new Material(Atlases.CHEST_ATLAS, new ResourceLocation(AppEng.MOD_ID, "models/skyblockchest"));
 
-@OnlyIn( Dist.CLIENT )
-public class SkyChestTESR extends TileEntitySpecialRenderer<TileSkyChest>
-{
+    private final ModelRenderer singleLid;
+    private final ModelRenderer singleBottom;
+    private final ModelRenderer singleLatch;
 
-	private static final ResourceLocation TEXTURE_STONE = new ResourceLocation( AppEng.MOD_ID, "textures/models/skychest.png" );
-	private static final ResourceLocation TEXTURE_BLOCK = new ResourceLocation( AppEng.MOD_ID, "textures/models/skyblockchest.png" );
+    public SkyChestTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
+        super(rendererDispatcherIn);
 
-	private final ModelChest simpleChest = new ModelChest();
+        this.singleBottom = new ModelRenderer(64, 64, 0, 19);
+        this.singleBottom.addBox(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F, 0.0F);
+        this.singleLid = new ModelRenderer(64, 64, 0, 0);
+        this.singleLid.addBox(1.0F, 0.0F, 0.0F, 14.0F, 5.0F, 14.0F, 0.0F);
+        this.singleLid.rotationPointY = 9.0F;
+        this.singleLid.rotationPointZ = 1.0F;
+        this.singleLatch = new ModelRenderer(64, 64, 0, 0);
+        this.singleLatch.addBox(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F, 0.0F);
+        this.singleLatch.rotationPointY = 8.0F;
+    }
 
-	public SkyChestTESR()
-	{
+    public void render(TileSkyChest tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+        matrixStackIn.push();
+        float f = tileEntityIn.getForward().getHorizontalAngle();
+        matrixStackIn.translate(0.5D, 0.5D, 0.5D);
+        matrixStackIn.rotate(Vector3f.YP.rotationDegrees(-f));
+        matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
 
-	}
+        float f1 = tileEntityIn.getLidAngle(partialTicks);
+        f1 = 1.0F - f1;
+        f1 = 1.0F - f1 * f1 * f1;
+        Material material = this.getMaterial(tileEntityIn);
+        IVertexBuilder ivertexbuilder = material.getBuffer(bufferIn, RenderType::getEntityCutout);
+        this.renderModels(matrixStackIn, ivertexbuilder, this.singleLid, this.singleLatch, this.singleBottom, f1, combinedLightIn, combinedOverlayIn);
 
-	@Override
-	public void render( TileSkyChest te, double x, double y, double z, float partialTicks, int destroyStage, float p_render_10_ )
-	{
-		GlStateManager.enableDepth();
-		GlStateManager.depthFunc( 515 );
-		GlStateManager.depthMask( true );
+        matrixStackIn.pop();
+    }
 
-		ModelChest modelchest;
+    private void renderModels(MatrixStack matrixStackIn, IVertexBuilder bufferIn, ModelRenderer chestLid, ModelRenderer chestLatch, ModelRenderer chestBottom, float lidAngle, int combinedLightIn, int combinedOverlayIn) {
+        chestLid.rotateAngleX = -(lidAngle * 1.5707964F);
+        chestLatch.rotateAngleX = chestLid.rotateAngleX;
+        chestLid.render(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
+        chestLatch.render(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
+        chestBottom.render(matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
+    }
 
-		modelchest = this.simpleChest;
+    protected Material getMaterial(TileSkyChest tileEntity) {
+        SkyChestType type = SkyChestType.BLOCK;
+        if (tileEntity.getWorld() != null) {
+            Block blockType = tileEntity.getBlockState().getBlock();
 
-		if( destroyStage >= 0 )
-		{
-			this.bindTexture( DESTROY_STAGES[destroyStage] );
-			GlStateManager.matrixMode( 5890 );
-			GlStateManager.pushMatrix();
-			GlStateManager.scale( 4.0F, 4.0F, 1.0F );
-			GlStateManager.translate( 0.0625F, 0.0625F, 0.0625F );
-			GlStateManager.matrixMode( 5888 );
-		}
-		else
-		{
-			SkyChestType chestType = getChestType( te );
-			this.bindTexture( chestType == SkyChestType.STONE ? TEXTURE_STONE : TEXTURE_BLOCK );
-		}
+            if (blockType instanceof BlockSkyChest) {
+                type = ((BlockSkyChest) blockType).type;
+            }
+        }
 
-		GlStateManager.pushMatrix();
-		GlStateManager.enableRescaleNormal();
-		GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
-		GlStateManager.translate( (float) x, (float) y + 1.0F, (float) z + 1.0F );
-		GlStateManager.scale( 1.0F, -1.0F, -1.0F );
-		if( te != null )
-		{
-			GlStateManager.translate( 0.5F, 0.5F, 0.5F );
-			// In the vanilla chest model, north and south are flipped
-			Direction forward = te.getForward();
-			Direction up = te.getUp();
-			if( forward == Direction.SOUTH )
-			{
-				forward = Direction.NORTH;
-			}
-			else if( forward == Direction.NORTH )
-			{
-				forward = Direction.SOUTH;
-			}
-			if( up == Direction.SOUTH )
-			{
-				up = Direction.NORTH;
-			}
-			else if( up == Direction.NORTH )
-			{
-				up = Direction.SOUTH;
-			}
-			FacingToRotation.get( forward, up ).glRotateCurrentMat();
-			GlStateManager.translate( -0.5F, -0.5F, -0.5F );
-		}
-		float f = te != null ? te.getPrevLidAngle() + ( te.getLidAngle() - te.getPrevLidAngle() ) * partialTicks : 0;
+        switch (type) {
+            case STONE:
+                return TEXTURE_STONE;
+            default:
+            case BLOCK:
+                return TEXTURE_BLOCK;
+        }
+    }
 
-		f = 1.0F - f;
-		f = 1.0F - f * f * f;
-		modelchest.chestLid.rotateAngleX = -( f * ( (float) Math.PI / 2F ) );
-		modelchest.renderAll();
-		GlStateManager.disableRescaleNormal();
-		GlStateManager.popMatrix();
-		GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
-
-		if( destroyStage >= 0 )
-		{
-			GlStateManager.matrixMode( 5890 );
-			GlStateManager.popMatrix();
-			GlStateManager.matrixMode( 5888 );
-		}
-	}
-
-	// Defensively determine the sky chest type
-	private static SkyChestType getChestType( TileSkyChest te )
-	{
-		if( te == null )
-		{
-			return SkyChestType.BLOCK;
-		}
-
-		Block blockType = te.getBlockType();
-		if( blockType instanceof BlockSkyChest )
-		{
-			return ( (BlockSkyChest) blockType ).type;
-		}
-		return SkyChestType.BLOCK;
-	}
+    public static void registerTextures(TextureStitchEvent.Pre evt) {
+        if (evt.getMap().getTextureLocation().equals(Atlases.CHEST_ATLAS)) {
+            evt.addSprite(TEXTURE_STONE.getTextureLocation());
+            evt.addSprite(TEXTURE_BLOCK.getTextureLocation());
+        }
+    }
 
 }

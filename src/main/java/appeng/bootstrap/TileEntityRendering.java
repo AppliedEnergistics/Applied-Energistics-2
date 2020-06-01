@@ -16,32 +16,26 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.block.misc;
+package appeng.bootstrap;
 
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import appeng.tile.AEBaseTile;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.bootstrap.BlockRenderingCustomizer;
-import appeng.bootstrap.IBlockRendering;
-import appeng.bootstrap.IItemRendering;
-import appeng.client.render.model.SkyCompassModel;
-import appeng.client.render.tesr.SkyCompassTESR;
+import java.util.function.Function;
 
+public class TileEntityRendering<T extends AEBaseTile> {
 
-public class SkyCompassRendering extends BlockRenderingCustomizer
-{
+    @OnlyIn(Dist.CLIENT)
+    Function<TileEntityRendererDispatcher, TileEntityRenderer<T>> tileEntityRenderer;
 
-	private static final ModelResourceLocation ITEM_MODEL = new ModelResourceLocation( "appliedenergistics2:sky_compass", "normal" );
-
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
-	{
-		rendering.tileEntityRenderer( new SkyCompassTESR() );
-		itemRendering.model( ITEM_MODEL );
-		itemRendering.builtInModel( "models/block/builtin/sky_compass", new SkyCompassModel() );
-	}
+    @OnlyIn(Dist.CLIENT)
+    public TileEntityRendering<T> tileEntityRenderer(Function<TileEntityRendererDispatcher, TileEntityRenderer<T>> tileEntityRenderer) {
+        this.tileEntityRenderer = tileEntityRenderer;
+        return this;
+    }
 
 }

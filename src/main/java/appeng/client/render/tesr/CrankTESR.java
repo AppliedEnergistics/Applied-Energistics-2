@@ -30,7 +30,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -44,7 +44,7 @@ import appeng.tile.grindstone.TileCrank;
  * normal model.
  */
 @OnlyIn( Dist.CLIENT )
-public class CrankTESR extends TileEntitySpecialRenderer<TileCrank>
+public class CrankTESR extends TileEntityRenderer<TileCrank>
 {
 
 	@Override

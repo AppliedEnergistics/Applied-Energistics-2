@@ -25,9 +25,9 @@ import javax.annotation.Nullable;
 
 import com.google.common.math.IntMath;
 
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -35,7 +35,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 import appeng.tile.AEBaseTile;
 
 
-public class TileEnergyGenerator extends AEBaseTile implements ITickable, IEnergyStorage
+public class TileEnergyGenerator extends AEBaseTile implements ITickableTileEntity, IEnergyStorage
 {
 	/**
 	 * The base energy injected each tick.
@@ -44,7 +44,7 @@ public class TileEnergyGenerator extends AEBaseTile implements ITickable, IEnerg
 	private static final int BASE_ENERGY = 8;
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		int tier = 1;
 		final EnumSet<Direction> validEnergyReceivers = EnumSet.noneOf( Direction.class );

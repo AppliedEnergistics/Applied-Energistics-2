@@ -28,9 +28,9 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -41,7 +41,7 @@ import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
 
 
-public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
+public class TileCrank extends AEBaseTile implements ICustomCollision, ITickableTileEntity
 {
 
 	private final int ticksPerRotation = 18;
@@ -54,7 +54,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 	private int rotation = 0;
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		if( this.rotation > 0 )
 		{

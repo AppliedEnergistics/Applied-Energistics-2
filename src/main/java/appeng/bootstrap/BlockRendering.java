@@ -22,13 +22,15 @@ package appeng.bootstrap;
 import appeng.block.AEBaseTileBlock;
 import appeng.bootstrap.components.BlockColorComponent;
 import appeng.bootstrap.components.RenderTypeComponent;
+import appeng.bootstrap.components.TileEntityRendererComponent;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -36,6 +38,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 
 class BlockRendering implements IBlockRendering
@@ -46,12 +49,6 @@ class BlockRendering implements IBlockRendering
 
 	@OnlyIn( Dist.CLIENT )
 	private IBlockColor blockColor;
-
-	@OnlyIn( Dist.CLIENT )
-	private TileEntityRenderer<?> tesr;
-
-//	FIXME @OnlyIn( Dist.CLIENT )
-//	FIXME private IStateMapper stateMapper;
 
 	@OnlyIn( Dist.CLIENT )
 	private Map<String, IUnbakedModel> builtInModels = new HashMap<>();
@@ -72,14 +69,6 @@ class BlockRendering implements IBlockRendering
 	public IBlockRendering blockColor( IBlockColor blockColor )
 	{
 		this.blockColor = blockColor;
-		return this;
-	}
-
-	@OnlyIn( Dist.CLIENT )
-	@Override
-	public IBlockRendering tesr( TileEntityRenderer<?> tesr )
-	{
-		this.tesr = tesr;
 		return this;
 	}
 
@@ -104,17 +93,8 @@ class BlockRendering implements IBlockRendering
 // FIXME		return this;
 // FIXME	}
 
-	void apply( FeatureFactory factory, Block block, Class<?> tileEntityClass )
+	void apply( FeatureFactory factory, Block block )
 	{
-// FIXME		if( this.tesr != null )
-// FIXME		{
-// FIXME			if( tileEntityClass == null )
-// FIXME			{
-// FIXME				throw new IllegalStateException( "Tried to register a TESR for " + block + " even though no tile entity has been specified." );
-// FIXME			}
-// FIXME			factory.addBootstrapComponent( new TesrComponent( tileEntityClass, this.tesr ) );
-// FIXME		}
-
 		if( this.modelCustomizer != null )
 		{
 			factory.addModelOverride( block.getRegistryName().getPath(), this.modelCustomizer );

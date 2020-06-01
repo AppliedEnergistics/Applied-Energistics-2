@@ -24,18 +24,17 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
+import appeng.bootstrap.components.ITileEntityRegistrationComponent;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -48,7 +47,6 @@ import appeng.bootstrap.components.IBlockRegistrationComponent;
 import appeng.bootstrap.components.IItemRegistrationComponent;
 import appeng.bootstrap.components.IPreInitComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
-import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
 import appeng.core.features.AEFeature;
@@ -201,27 +199,15 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		// Register all extra handlers
 		this.bootstrapComponents.forEach( component -> this.factory.addBootstrapComponent( component.apply( block, item ) ) );
 
-		if( this.tileEntityDefinition != null && block instanceof AEBaseTileBlock )
+		if (this.tileEntityDefinition != null)
 		{
-			( (AEBaseTileBlock) block ).setTileEntity( this.tileEntityDefinition.getTileEntityClass() );
-			if( this.tileEntityDefinition.getName() == null )
-			{
-				this.tileEntityDefinition.setName( this.registryName );
-			}
-
+			// Tell the tile entity definition about the block we've registered
+			this.tileEntityDefinition.addBlock(block);
 		}
 
 		if( Platform.isClient() )
 		{
-			if( block instanceof AEBaseTileBlock )
-			{
-				AEBaseTileBlock tileBlock = (AEBaseTileBlock) block;
-				this.blockRendering.apply( this.factory, block, tileBlock.getTileEntityClass() );
-			}
-			else
-			{
-				this.blockRendering.apply( this.factory, block, null );
-			}
+			this.blockRendering.apply( this.factory, block );
 
 			if( item != null )
 			{
@@ -231,18 +217,6 @@ class BlockDefinitionBuilder implements IBlockBuilder
 
 		if( block instanceof AEBaseTileBlock )
 		{
-			this.factory.addBootstrapComponent( (IPreInitComponent) side ->
-			{
-				AEBaseTile.registerTileItem(
-						this.tileEntityDefinition == null ? ( (AEBaseTileBlock) block ).getTileEntityClass() : this.tileEntityDefinition.getTileEntityClass(),
-						new BlockStackSrc( block, ActivityState.Enabled ) );
-			} );
-
-			if( this.tileEntityDefinition != null )
-			{
-				this.factory.tileEntityComponent.addTileEntity( this.tileEntityDefinition );
-			}
-
 			return (T) new TileDefinition( this.registryName, (AEBaseTileBlock) block, item );
 		}
 		else

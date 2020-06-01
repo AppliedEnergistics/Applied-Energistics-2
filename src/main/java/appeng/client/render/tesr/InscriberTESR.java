@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -30,7 +30,7 @@ import appeng.tile.misc.TileInscriber;
 /**
  * Renders the dynamic parts of an inscriber (the presses, the animation and the item being smashed)
  */
-public final class InscriberTESR extends TileEntitySpecialRenderer<TileInscriber>
+public final class InscriberTESR extends TileEntityRenderer<TileInscriber>
 {
 
 	private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;

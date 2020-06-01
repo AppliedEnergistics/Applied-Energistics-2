@@ -18,7 +18,7 @@ public class InscriberRendering extends BlockRenderingCustomizer
 	@Override
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{
-		rendering.tesr( new InscriberTESR() );
+		rendering.tileEntityRenderer( new InscriberTESR() );
 	}
 
 }

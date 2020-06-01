@@ -29,9 +29,9 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ITickable;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
@@ -53,7 +53,7 @@ import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 
 
-public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock, ITickable
+public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock, ITickableTileEntity
 {
 	private final byte corner = 16;
 	private final AppEngInternalInventory internalInventory = new AppEngInternalInventory( this, 1, 1 );
@@ -73,7 +73,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		if( this.updateStatus )
 		{

@@ -23,7 +23,7 @@ import java.util.List;
 
 import net.minecraft.entity.player.PlayerEntityMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ITickable;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.ForgeChunkManager;
@@ -37,14 +37,14 @@ import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
 
 
-public class TileChunkLoader extends AEBaseTile implements ITickable
+public class TileChunkLoader extends AEBaseTile implements ITickableTileEntity
 {
 
 	private boolean requestTicket = true;
 	private Ticket ct = null;
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		if( this.requestTicket )
 		{

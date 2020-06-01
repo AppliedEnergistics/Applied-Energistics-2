@@ -35,6 +35,6 @@ public class CrankRendering extends BlockRenderingCustomizer
 	@OnlyIn( Dist.CLIENT )
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{
-		rendering.tesr( new CrankTESR() );
+		rendering.tileEntityRenderer( new CrankTESR() );
 	}
 }

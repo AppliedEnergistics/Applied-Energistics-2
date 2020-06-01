@@ -20,6 +20,7 @@ package appeng.bootstrap;
 
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.color.IBlockColor;
@@ -27,6 +28,7 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -43,12 +45,6 @@ public interface IBlockRendering
 
 	@OnlyIn( Dist.CLIENT )
 	IBlockRendering blockColor( IBlockColor blockColor );
-
-//FIXME	@OnlyIn( Dist.CLIENT )
-//	IBlockRendering stateMapper( IStateMapper mapper );
-
-	@OnlyIn( Dist.CLIENT )
-	IBlockRendering tesr( TileEntityRenderer<?> ter );
 
 	/**
 	 * Registers a built-in model under the given resource path.

@@ -21,22 +21,25 @@ package appeng.tile.storage;
 
 import java.io.IOException;
 
+import appeng.block.storage.BlockSkyChest;
 import io.netty.buffer.ByteBuf;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ITickable;
+import net.minecraft.tileentity.IChestLid;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.tile.AEBaseInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.inv.InvOperation;
 
-
-public class TileSkyChest extends AEBaseInvTile implements ITickable
+public class TileSkyChest extends AEBaseInvTile implements ITickableTileEntity, IChestLid
 {
 
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 9 * 4 );
@@ -46,6 +49,10 @@ public class TileSkyChest extends AEBaseInvTile implements ITickable
 	private long lastEvent;
 	private float lidAngle;
 	private float prevLidAngle;
+
+	public TileSkyChest(TileEntityType<? extends TileSkyChest> type) {
+		super(type);
+	}
 
 	@Override
 	protected void writeToStream( final PacketBuffer data ) throws IOException
@@ -92,9 +99,7 @@ public class TileSkyChest extends AEBaseInvTile implements ITickable
 		if( !player.isSpectator() )
 		{
 			this.setPlayerOpen( this.getPlayerOpen() + 1 );
-			this.world.addBlockEvent( this.pos, this.getBlockType(), 1, this.numPlayersUsing );
-			this.world.notifyNeighborsOfStateChange( this.pos, this.getBlockType(), true );
-			this.world.notifyNeighborsOfStateChange( this.pos.down(), this.getBlockType(), true );
+			onOpenOrClose();
 
 			if( this.getPlayerOpen() == 1 )
 			{
@@ -111,9 +116,7 @@ public class TileSkyChest extends AEBaseInvTile implements ITickable
 		if( !player.isSpectator() )
 		{
 			this.setPlayerOpen( this.getPlayerOpen() - 1 );
-			this.world.addBlockEvent( this.pos, this.getBlockType(), 1, this.numPlayersUsing );
-			this.world.notifyNeighborsOfStateChange( this.pos, this.getBlockType(), true );
-			this.world.notifyNeighborsOfStateChange( this.pos.down(), this.getBlockType(), true );
+			onOpenOrClose();
 
 			if( this.getPlayerOpen() < 0 )
 			{
@@ -130,8 +133,19 @@ public class TileSkyChest extends AEBaseInvTile implements ITickable
 		}
 	}
 
+	// See ChestTileEntity
+	private void onOpenOrClose() {
+		Block block = this.getBlockState().getBlock();
+		if (block instanceof BlockSkyChest) {
+			this.world.addBlockEvent(this.pos, block, 1, this.numPlayersUsing);
+			this.world.notifyNeighborsOfStateChange(this.pos, block);
+			// FIXME: Uhm, we are we doing this?
+			this.world.notifyNeighborsOfStateChange(this.pos.down(), block);
+		}
+	}
+
 	@Override
-	public void update()
+	public void tick()
 	{
 		int i = this.pos.getX();
 		int j = this.pos.getY();
@@ -212,4 +226,11 @@ public class TileSkyChest extends AEBaseInvTile implements ITickable
 	{
 		this.lastEvent = lastEvent;
 	}
+
+	@Override
+	public float getLidAngle(float v) {
+		// FIXME: Do it nicely as the chest does it (interpolation, baby!)
+		return lidAngle;
+	}
+
 }

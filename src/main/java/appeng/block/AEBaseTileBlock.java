@@ -21,10 +21,13 @@ package appeng.block;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.bootstrap.definitions.TileEntityDefinition;
+import appeng.core.features.TileDefinition;
 import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
@@ -37,6 +40,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -59,11 +63,13 @@ import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 
-public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntityProvider
+public abstract class AEBaseTileBlock<T extends AEBaseTile> extends AEBaseBlock
 {
 
 	@Nonnull
-	private Class<? extends AEBaseTile> tileEntityType;
+	private Class<T> tileEntityClass;
+	@Nonnull
+	private Supplier<T> tileEntityFactory;
 
 	public AEBaseTileBlock( final Block.Properties props )
 	{
@@ -107,10 +113,11 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	}
 
 	// TODO : Was this change needed?
-	public void setTileEntity( final Class<? extends AEBaseTile> c )
+	public void setTileEntity( final Class<T> tileEntityClass, Supplier<T> factory )
 	{
-		this.tileEntityType = c;
-		this.setInventory( AEBaseInvTile.class.isAssignableFrom( c ) );
+		this.tileEntityClass = tileEntityClass;
+		this.tileEntityFactory = factory;
+		this.setInventory( AEBaseInvTile.class.isAssignableFrom( tileEntityClass ) );
 	}
 
 	@Override
@@ -121,22 +128,22 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 
 	private boolean hasBlockTileEntity()
 	{
-		return this.tileEntityType != null;
+		return true;
 	}
 
-	public Class<? extends AEBaseTile> getTileEntityClass()
+	public Class<T> getTileEntityClass()
 	{
-		return this.tileEntityType;
+		return this.tileEntityClass;
 	}
 
 	@Nullable
-	public <T extends AEBaseTile> T getTileEntity( final IBlockReader w, final int x, final int y, final int z )
+	public T getTileEntity( final IBlockReader w, final int x, final int y, final int z )
 	{
 		return this.getTileEntity( w, new BlockPos( x, y, z ) );
 	}
 
 	@Nullable
-	public <T extends AEBaseTile> T getTileEntity( final IBlockReader w, final BlockPos pos )
+	public T getTileEntity( final IBlockReader w, final BlockPos pos )
 	{
 		if( !this.hasBlockTileEntity() )
 		{
@@ -144,9 +151,9 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 		}
 
 		final TileEntity te = w.getTileEntity( pos );
-		if( this.tileEntityType.isInstance( te ) )
+		if( this.tileEntityClass.isInstance( te ) )
 		{
-			return (T) te;
+			return this.tileEntityClass.cast(te);
 		}
 
 		return null;
@@ -155,23 +162,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 	@Override
 	public final TileEntity createTileEntity( BlockState state, IBlockReader world )
 	{
-		if( this.hasBlockTileEntity() )
-		{
-			try
-			{
-				return this.tileEntityType.newInstance();
-			}
-			catch( final InstantiationException e )
-			{
-				throw new IllegalStateException( "Failed to create a new instance of an illegal class " + this.tileEntityType, e );
-			}
-			catch( final IllegalAccessException e )
-			{
-				throw new IllegalStateException( "Failed to create a new instance of " + this.tileEntityType + ", because lack of permissions", e );
-			}
-		}
-
-		return null;
+		return this.tileEntityFactory.get();
 	}
 
 	@Override

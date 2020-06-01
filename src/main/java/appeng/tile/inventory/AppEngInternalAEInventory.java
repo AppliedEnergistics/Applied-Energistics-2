@@ -23,6 +23,7 @@ import java.util.Iterator;
 
 import javax.annotation.Nonnull;
 
+import appeng.core.Api;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -83,7 +84,7 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
 
 				if( this.inv[x] != null )
 				{
-					this.inv[x].write(c);
+					this.inv[x].writeToNBT(c);
 				}
 
 				target.put( "#" + x, c );

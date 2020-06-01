@@ -20,53 +20,25 @@ package appeng.bootstrap.definitions;
 
 
 import appeng.tile.AEBaseTile;
+import net.minecraft.block.Block;
+
+import java.util.function.Consumer;
 
 
 /**
  * @author GuntherDW
  */
-public class TileEntityDefinition
-{
+public class TileEntityDefinition {
 
-	private final Class<? extends AEBaseTile> tileEntityClass;
-	private String name;
-	private boolean isRegistered = false;
+    // To be notified when a Block declares that it uses this tile entity
+    private final Consumer<Block> addBlockListener;
 
-	// This signals the BlockDefinitionBuilder to set the name of the TE to the blockname.
-	public TileEntityDefinition( Class<? extends AEBaseTile> tileEntityClass )
-	{
-		this.tileEntityClass = tileEntityClass;
-		this.name = null;
-	}
+    public TileEntityDefinition(Consumer<Block> addBlockListener) {
+    	this.addBlockListener = addBlockListener;
+    }
 
-	public TileEntityDefinition( Class<? extends AEBaseTile> tileEntityClass, String optionalName )
-	{
-		this.tileEntityClass = tileEntityClass;
-		this.name = optionalName;
-	}
+    public void addBlock(Block block) {
+        this.addBlockListener.accept(block);
+    }
 
-	public Class<? extends AEBaseTile> getTileEntityClass()
-	{
-		return this.tileEntityClass;
-	}
-
-	public void setName( String name )
-	{
-		this.name = name;
-	}
-
-	public String getName()
-	{
-		return this.name;
-	}
-
-	public boolean isRegistered()
-	{
-		return this.isRegistered;
-	}
-
-	public void setRegistered( boolean registered )
-	{
-		this.isRegistered = registered;
-	}
 }

@@ -19,7 +19,6 @@
 package appeng.block.storage;
 
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -31,7 +30,6 @@ import appeng.client.render.tesr.SkyChestTESR;
 
 public class SkyChestRenderingCustomizer extends BlockRenderingCustomizer
 {
-
 	private final BlockSkyChest.SkyChestType type;
 
 	public SkyChestRenderingCustomizer( BlockSkyChest.SkyChestType type )
@@ -43,12 +41,11 @@ public class SkyChestRenderingCustomizer extends BlockRenderingCustomizer
 	@Override
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{
-		rendering.tesr( new SkyChestTESR() );
-
 		// Register a custom non-tesr item model
-		String modelName = this.getModelFromType();
-		ModelResourceLocation model = new ModelResourceLocation( "appliedenergistics2:" + modelName, "inventory" );
-		itemRendering.model( model ).variants( model );
+		// FIXME: This should not be required anymore!
+		// FIXME String modelName = this.getModelFromType();
+		// FIXME ModelResourceLocation model = new ModelResourceLocation( "appliedenergistics2:" + modelName, "inventory" );
+		// FIXME itemRendering.model( model ).variants( model );
 	}
 
 	private String getModelFromType()

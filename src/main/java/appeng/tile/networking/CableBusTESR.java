@@ -19,14 +19,14 @@
 package appeng.tile.networking;
 
 
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.util.Direction;
 
 import appeng.api.parts.IPart;
 import appeng.tile.AEBaseTile;
 
 
-public class CableBusTESR extends TileEntitySpecialRenderer<AEBaseTile>
+public class CableBusTESR extends TileEntityRenderer<AEBaseTile>
 {
 
 	@Override

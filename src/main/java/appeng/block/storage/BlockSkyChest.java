@@ -24,29 +24,28 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.block.material.Material;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
-import appeng.core.sync.GuiBridge;
-import appeng.helpers.ICustomCollision;
 import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
 
 
-public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
+public class BlockSkyChest extends AEBaseTileBlock<TileSkyChest>
 {
 
 	private static final double AABB_OFFSET_BOTTOM = 0.00;
@@ -60,20 +59,20 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 
 	public final SkyChestType type;
 
-	public BlockSkyChest( final SkyChestType type )
+	public BlockSkyChest( final SkyChestType type, Properties props )
 	{
-		super( Material.ROCK );
-		this.setOpaque( this.setFullSize( false ) );
-		this.lightOpacity = 0;
-		this.setHardness( 50 );
-		this.blockResistance = 150.0f;
+		super( props );
 		this.type = type;
 	}
 
 	@Override
-	public EnumBlockRenderType getRenderType( BlockState state )
-	{
-		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+	public BlockRenderType getRenderType(BlockState state) {
+		return BlockRenderType.ENTITYBLOCK_ANIMATED;
+	}
+
+	@Override
+	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+		return true;
 	}
 
 	@Override
@@ -81,29 +80,20 @@ public class BlockSkyChest extends AEBaseTileBlock implements ICustomCollision
 	{
 		if( Platform.isServer() )
 		{
-			Platform.openGUI( player, this.getTileEntity( w, pos ), AEPartLocation.fromFacing(hit), GuiBridge.GUI_SKYCHEST );
+			// FIXME Platform.openGUI( player, this.getTileEntity( w, pos ), AEPartLocation.fromFacing(hit.getFace()), GuiBridge.GUI_SKYCHEST );
 		}
 
-		return true;
+		return ActionResultType.SUCCESS;
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final BlockPos pos, final Entity thePlayer, final boolean b )
-	{
-		final AxisAlignedBB aabb = this.computeAABB( w, pos );
-
-		return Collections.singletonList( aabb );
+	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+		// TODO Cache this! It can't be that hard!
+		AxisAlignedBB aabb = computeAABB(worldIn, pos);
+		return VoxelShapes.create(aabb);
 	}
 
-	@Override
-	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
-	{
-		final AxisAlignedBB aabb = this.computeAABB( w, pos );
-
-		out.add( aabb );
-	}
-
-	private AxisAlignedBB computeAABB( final World w, final BlockPos pos )
+	private AxisAlignedBB computeAABB(final IBlockReader w, final BlockPos pos )
 	{
 		final TileSkyChest sk = this.getTileEntity( w, pos );
 		Direction o = Direction.UP;

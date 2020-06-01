@@ -20,7 +20,7 @@ package appeng.client.render.crafting;
 
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -34,7 +34,7 @@ import appeng.tile.crafting.TileCraftingMonitorTile;
  * Renders the item currently being crafted
  */
 @OnlyIn( Dist.CLIENT )
-public class CraftingMonitorTESR extends TileEntitySpecialRenderer<TileCraftingMonitorTile>
+public class CraftingMonitorTESR extends TileEntityRenderer<TileCraftingMonitorTile>
 {
 
 	@Override

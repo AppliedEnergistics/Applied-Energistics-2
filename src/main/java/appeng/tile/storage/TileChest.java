@@ -32,8 +32,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraft.fluid.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -106,7 +106,7 @@ import appeng.util.inv.filter.IAEItemFilter;
 import appeng.util.item.AEItemStack;
 
 
-public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, ITickable
+public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminalHost, IPriorityHost, IConfigManagerHost, IColorableTile, ITickableTileEntity
 {
 	private final AppEngInternalInventory inputInventory = new AppEngInternalInventory( this, 1 );
 	private final AppEngInternalInventory cellInventory = new AppEngInternalInventory( this, 1 );
@@ -347,7 +347,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		if( this.world.isRemote )
 		{

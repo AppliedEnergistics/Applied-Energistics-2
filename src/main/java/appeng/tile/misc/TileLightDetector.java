@@ -19,13 +19,13 @@
 package appeng.tile.misc;
 
 
-import net.minecraft.util.ITickable;
 
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
+import net.minecraft.tileentity.ITickableTileEntity;
 
 
-public class TileLightDetector extends AEBaseTile implements ITickable
+public class TileLightDetector extends AEBaseTile implements ITickableTileEntity
 {
 
 	private int lastCheck = 30;
@@ -37,7 +37,7 @@ public class TileLightDetector extends AEBaseTile implements ITickable
 	}
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		this.lastCheck++;
 		if( this.lastCheck > 30 )

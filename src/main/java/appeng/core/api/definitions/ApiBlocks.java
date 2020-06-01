@@ -24,14 +24,16 @@ import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.ITileDefinition;
 import appeng.block.misc.BlockQuartzFixture;
 import appeng.block.spatial.BlockMatrixFrame;
-import appeng.bootstrap.BlockRenderingCustomizer;
-import appeng.bootstrap.FeatureFactory;
-import appeng.bootstrap.IBlockRendering;
-import appeng.bootstrap.IItemRendering;
+import appeng.block.storage.BlockSkyChest;
+import appeng.block.storage.SkyChestRenderingCustomizer;
+import appeng.bootstrap.*;
+import appeng.bootstrap.definitions.TileEntityDefinition;
+import appeng.client.render.tesr.SkyChestTESR;
 import appeng.core.features.AEFeature;
 import appeng.core.features.registries.PartModels;
 import appeng.decorative.AEDecorativeBlock;
 import appeng.decorative.solid.*;
+import appeng.tile.storage.TileSkyChest;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -197,17 +199,30 @@ public final class ApiBlocks implements IBlocks
 				.addFeatures( AEFeature.SKY_STONE )
 				.build();
 
-//		this.skyStoneChest = registry.block( "sky_stone_chest", () -> new BlockSkyChest( SkyChestType.STONE ) )
-//				.features( AEFeature.SKY_STONE, AEFeature.SKY_STONE_CHESTS )
-//				.tileEntity( new TileEntityDefinition( TileSkyChest.class, "sky_stone_chest" ) )
-//				.rendering( new SkyChestRenderingCustomizer( SkyChestType.STONE ) )
-//				.build();
-//		this.smoothSkyStoneChest = registry.block( "smooth_sky_stone_chest", () -> new BlockSkyChest( SkyChestType.BLOCK ) )
-//				.features( AEFeature.SKY_STONE, AEFeature.SKY_STONE_CHESTS )
-//				.tileEntity( new TileEntityDefinition( TileSkyChest.class, "sky_stone_chest" ) )
-//				.rendering( new SkyChestRenderingCustomizer( SkyChestType.BLOCK ) )
-//				.build();
-//
+		Block.Properties skyStoneChestProps = Block.Properties.create(Material.ROCK)
+				.hardnessAndResistance(50, 150)
+				.notSolid();
+
+		TileEntityDefinition skyChestTile = registry.tileEntity("sky_chest", TileSkyChest.class, TileSkyChest::new)
+				.rendering(new TileEntityRenderingCustomizer<TileSkyChest>() {
+					@Override
+					@OnlyIn(Dist.CLIENT)
+					public void customize(TileEntityRendering<TileSkyChest> rendering) {
+						rendering.tileEntityRenderer(SkyChestTESR::new);
+					}
+				})
+				.build();
+		this.skyStoneChest = registry.block( "sky_stone_chest", () -> new BlockSkyChest( BlockSkyChest.SkyChestType.STONE, skyStoneChestProps ) )
+				.features( AEFeature.SKY_STONE, AEFeature.SKY_STONE_CHESTS )
+				.tileEntity( skyChestTile )
+				// .rendering( new SkyChestRenderingCustomizer( BlockSkyChest.SkyChestType.STONE ) )
+				.build();
+		this.smoothSkyStoneChest = registry.block( "smooth_sky_stone_chest", () -> new BlockSkyChest( BlockSkyChest.SkyChestType.BLOCK, skyStoneChestProps ) )
+				.features( AEFeature.SKY_STONE, AEFeature.SKY_STONE_CHESTS )
+				.tileEntity( skyChestTile )
+				// .rendering( new SkyChestRenderingCustomizer( BlockSkyChest.SkyChestType.BLOCK ) )
+				.build();
+
 //		this.skyCompass = registry.block( "sky_compass", BlockSkyCompass::new )
 //				.features( AEFeature.METEORITE_COMPASS )
 //				.tileEntity( new TileEntityDefinition( TileSkyCompass.class ) )

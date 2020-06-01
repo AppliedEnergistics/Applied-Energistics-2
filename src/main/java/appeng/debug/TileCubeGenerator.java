@@ -22,9 +22,9 @@ package appeng.debug;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -33,7 +33,7 @@ import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
 
 
-public class TileCubeGenerator extends AEBaseTile implements ITickable
+public class TileCubeGenerator extends AEBaseTile implements ITickableTileEntity
 {
 
 	private int size = 3;
@@ -42,7 +42,7 @@ public class TileCubeGenerator extends AEBaseTile implements ITickable
 	private PlayerEntity who = null;
 
 	@Override
-	public void update()
+	public void tick()
 	{
 		if( !this.is.isEmpty() && Platform.isServer() )
 		{
