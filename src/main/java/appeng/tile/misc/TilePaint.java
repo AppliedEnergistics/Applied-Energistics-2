@@ -32,6 +32,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -139,7 +140,7 @@ public class TilePaint extends AEBaseTile
 	}
 
 	@Override
-	protected void writeToStream( final ByteBuf data ) throws IOException
+	protected void writeToStream( final PacketBuffer data ) throws IOException
 	{
 		super.writeToStream( data );
 		this.writeBuffer( data );

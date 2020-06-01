@@ -22,6 +22,7 @@ package appeng.parts.automation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
@@ -103,7 +104,7 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	{
 		final World w = self.getWorld();
 
-		if( w.getChunkProvider().getLoadedChunk( pos.getX() >> 4, pos.getZ() >> 4 ) != null )
+		if( w.getChunkProvider().isChunkLoaded( new ChunkPos( pos ) ) )
 		{
 			return w.getTileEntity( pos );
 		}
@@ -145,11 +146,9 @@ public abstract class PartSharedItemBus extends PartUpgradeable implements IGrid
 	{
 		final TileEntity self = this.getHost().getTile();
 		final BlockPos selfPos = self.getPos().offset( this.getSide().getFacing() );
-		final int xCoordinate = selfPos.getX();
-		final int zCoordinate = selfPos.getZ();
 		final World world = self.getWorld();
 
-		return world != null && world.getChunkProvider().getLoadedChunk( xCoordinate >> 4, zCoordinate >> 4 ) != null;
+		return world != null && world.getChunkProvider().isChunkLoaded( new ChunkPos( selfPos ) );
 	}
 
 	private void updateState()

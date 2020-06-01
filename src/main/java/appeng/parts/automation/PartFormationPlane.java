@@ -68,6 +68,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.core.sync.GuiBridge;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;

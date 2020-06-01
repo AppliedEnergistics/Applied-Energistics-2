@@ -31,9 +31,9 @@ import io.netty.buffer.ByteBuf;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.implementations.tiles.IChestOrDrive;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.events.MENetworkCellArrayUpdate;
@@ -104,7 +104,7 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	}
 
 	@Override
-	protected void writeToStream( final ByteBuf data ) throws IOException
+	protected void writeToStream( final PacketBuffer data ) throws IOException
 	{
 		super.writeToStream( data );
 		int newState = 0;

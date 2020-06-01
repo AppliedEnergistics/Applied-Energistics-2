@@ -42,6 +42,7 @@ import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.core.settings.TickRates;
 import appeng.hooks.TickHandler;
 import appeng.items.parts.PartModels;

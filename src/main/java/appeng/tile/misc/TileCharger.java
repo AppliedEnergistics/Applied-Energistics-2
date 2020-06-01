@@ -28,10 +28,10 @@ import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
@@ -97,7 +97,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 	}
 
 	@Override
-	protected void writeToStream( final ByteBuf data ) throws IOException
+	protected void writeToStream( final PacketBuffer data ) throws IOException
 	{
 		super.writeToStream( data );
 		final AEItemStack is = AEItemStack.fromItemStack( this.inv.getStackInSlot( 0 ) );

@@ -37,15 +37,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.util.ICommonTile;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
@@ -180,7 +179,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	{
 		final CompoundNBT data = new CompoundNBT();
 
-		final ByteBuf stream = Unpooled.buffer();
+		final PacketBuffer stream = new PacketBuffer( Unpooled.buffer() );
 
 		try
 		{
@@ -273,7 +272,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		return false;
 	}
 
-	protected void writeToStream( final ByteBuf data ) throws IOException
+	protected void writeToStream( final PacketBuffer data ) throws IOException
 	{
 		if( this.canBeRotated() )
 		{

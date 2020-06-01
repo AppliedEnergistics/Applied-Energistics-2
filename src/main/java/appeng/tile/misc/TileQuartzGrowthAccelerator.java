@@ -24,6 +24,7 @@ import java.util.EnumSet;
 
 import io.netty.buffer.ByteBuf;
 
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 
 import appeng.api.implementations.IPowerChannelState;
@@ -71,7 +72,7 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 	}
 
 	@Override
-	public void writeToStream( final ByteBuf data ) throws IOException
+	public void writeToStream( final PacketBuffer data ) throws IOException
 	{
 		super.writeToStream( data );
 		try

@@ -25,10 +25,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-
 import javax.annotation.Nullable;
-
-import io.netty.buffer.ByteBuf;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -37,6 +34,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -46,7 +44,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.config.YesNo;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.implementations.parts.IPartCable;
@@ -69,6 +66,7 @@ import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.client.render.cablebus.CableCoreType;
 import appeng.client.render.cablebus.FacadeRenderState;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiTile;
 import appeng.me.GridConnection;
@@ -550,7 +548,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 	private void updateRedstone()
 	{
 		final TileEntity te = this.getTile();
-		this.hasRedstone = te.getWorld().isBlockIndirectlyGettingPowered( te.getPos() ) != 0 ? YesNo.YES : YesNo.NO;
+		this.hasRedstone = te.getWorld().getRedstonePowerFromNeighbors( te.getPos() ) != 0 ? YesNo.YES : YesNo.NO;
 	}
 
 	private void updateDynamicRender()
@@ -575,7 +573,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		{
 			final EnumSet<Direction> sides = EnumSet.allOf( Direction.class );
 
-			for( final Direction s : Direction.VALUES )
+			for( final Direction s : Direction.values() )
 			{
 				if( this.getPart( s ) != null || this.isBlocked( s ) )
 				{
@@ -930,7 +928,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		return light;
 	}
 
-	public void writeToStream( final ByteBuf data ) throws IOException
+	public void writeToStream( final PacketBuffer data ) throws IOException
 	{
 		int sides = 0;
 		for( int x = 0; x < 7; x++ )
@@ -951,8 +949,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			{
 				final ItemStack is = p.getItemStack( PartItemStack.NETWORK );
 
-				data.writeShort( Item.getIdFromItem( is.getItem() ) );
-				data.writeShort( is.getItemDamage() );
+				data.writeVarInt( Item.getIdFromItem( is.getItem() ) );
 
 				p.writeToStream( data );
 			}
@@ -961,7 +958,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		this.getFacadeContainer().writeToStream( data );
 	}
 
-	public boolean readFromStream( final ByteBuf data ) throws IOException
+	public boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
 		final byte sides = data.readByte();
 
@@ -974,13 +971,12 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			{
 				IPart p = this.getPart( side );
 
-				final short itemID = data.readShort();
-				final short dmgValue = data.readShort();
+				final int itemID = data.readVarInt();
 
 				final Item myItem = Item.getItemById( itemID );
 
 				final ItemStack current = p != null ? p.getItemStack( PartItemStack.NETWORK ) : null;
-				if( current != null && current.getItem() == myItem && current.getItemDamage() == dmgValue )
+				if( current != null && current.getItem() == myItem )
 				{
 					if( p.readFromStream( data ) )
 					{
@@ -990,7 +986,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 				else
 				{
 					this.removePart( side, false );
-					side = this.addPart( new ItemStack( myItem, 1, dmgValue ), side, null, null );
+					side = this.addPart( new ItemStack( myItem, 1 ), side, null, null );
 					if( side != null )
 					{
 						p = this.getPart( side );
@@ -1018,7 +1014,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 	public void writeToNBT( final CompoundNBT data )
 	{
-		data.setInteger( "hasRedstone", this.hasRedstone.ordinal() );
+		data.putInt( "hasRedstone", this.hasRedstone.ordinal() );
 
 		final IFacadeContainer fc = this.getFacadeContainer();
 		for( final AEPartLocation s : AEPartLocation.values() )
@@ -1029,13 +1025,13 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			if( part != null )
 			{
 				final CompoundNBT def = new CompoundNBT();
-				part.getItemStack( PartItemStack.WORLD ).writeToNBT( def );
+				part.getItemStack( PartItemStack.WORLD ).write( def );
 
 				final CompoundNBT extra = new CompoundNBT();
 				part.writeToNBT( extra );
 
-				data.setTag( "def:" + this.getSide( part ).ordinal(), def );
-				data.setTag( "extra:" + this.getSide( part ).ordinal(), extra );
+				data.put( "def:" + this.getSide( part ).ordinal(), def );
+				data.put( "extra:" + this.getSide( part ).ordinal(), extra );
 			}
 		}
 	}
@@ -1062,21 +1058,21 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 
 	public void readFromNBT( final CompoundNBT data )
 	{
-		if( data.hasKey( "hasRedstone" ) )
+		if( data.contains( "hasRedstone" ) )
 		{
-			this.hasRedstone = YesNo.values()[data.getInteger( "hasRedstone" )];
+			this.hasRedstone = YesNo.values()[data.getInt( "hasRedstone" )];
 		}
 
 		for( int x = 0; x < 7; x++ )
 		{
 			AEPartLocation side = AEPartLocation.fromOrdinal( x );
 
-			final CompoundNBT def = data.getCompoundTag( "def:" + side.ordinal() );
-			final CompoundNBT extra = data.getCompoundTag( "extra:" + side.ordinal() );
+			final CompoundNBT def = data.getCompound( "def:" + side.ordinal() );
+			final CompoundNBT extra = data.getCompound( "extra:" + side.ordinal() );
 			if( def != null && extra != null )
 			{
 				IPart p = this.getPart( side );
-				final ItemStack iss = new ItemStack( def );
+				final ItemStack iss = ItemStack.read( def );
 				if( iss.isEmpty() )
 				{
 					continue;

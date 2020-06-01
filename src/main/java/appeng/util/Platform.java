@@ -56,9 +56,11 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
+import java.security.InvalidParameterException;
 import java.util.*;
 
 import com.google.common.base.Preconditions;
@@ -653,23 +655,20 @@ public class Platform
 //		return false;
 //	}
 //
-//	public static PlayerEntity getPlayer(final ServerWorld w )
-//	{
-//		if( w == null )
-//		{
-//			throw new InvalidParameterException( "World is null." );
-//		}
-//
-//		final PlayerEntity wrp = FAKE_PLAYERS.get( w );
-//		if( wrp != null )
-//		{
-//			return wrp;
-//		}
-//
-//		final PlayerEntity p = FakePlayerFactory.getMinecraft( w );
-//		FAKE_PLAYERS.put( w, p );
-//		return p;
-//	}
+	public static PlayerEntity getPlayer(final ServerWorld w )
+	{
+		Objects.requireNonNull( w );
+
+		final PlayerEntity wrp = FAKE_PLAYERS.get( w );
+		if( wrp != null )
+		{
+			return wrp;
+		}
+
+		final PlayerEntity p = FakePlayerFactory.getMinecraft( w );
+		FAKE_PLAYERS.put( w, p );
+		return p;
+	}
 //
 //	public static int MC2MEColor( final int color )
 //	{

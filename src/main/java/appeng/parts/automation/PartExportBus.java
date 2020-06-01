@@ -54,6 +54,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.core.sync.GuiBridge;
@@ -105,7 +106,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	{
 		super.readFromNBT( extra );
 		this.craftingTracker.readFromNBT( extra );
-		this.nextSlot = extra.getInteger( "nextSlot" );
+		this.nextSlot = extra.getInt( "nextSlot" );
 	}
 
 	@Override
@@ -113,7 +114,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	{
 		super.writeToNBT( extra );
 		this.craftingTracker.writeToNBT( extra );
-		extra.setInteger( "nextSlot", this.nextSlot );
+		extra.putInt( "nextSlot", this.nextSlot );
 	}
 
 	@Override

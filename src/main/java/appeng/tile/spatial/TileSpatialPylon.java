@@ -24,6 +24,7 @@ import java.util.EnumSet;
 
 import io.netty.buffer.ByteBuf;
 
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 
 import appeng.api.networking.GridFlags;
@@ -226,7 +227,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	}
 
 	@Override
-	protected void writeToStream( final ByteBuf data ) throws IOException
+	protected void writeToStream( final PacketBuffer data ) throws IOException
 	{
 		super.writeToStream( data );
 		data.writeByte( this.displayBits );

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.PlayerEntity;
@@ -42,6 +43,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinitionException;
@@ -59,7 +61,6 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 {
 
 	private static final String TAG_ITEM_ID = "item";
-	private static final String TAG_DAMAGE = "damage";
 
 	private List<ItemStack> subTypes = null;
 
@@ -105,9 +106,8 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		if( this.subTypes == null )
 		{
 			this.subTypes = new ArrayList<>( 1000 );
-			for( final Object blk : Block.REGISTRY )
+			for( final Block b : ForgeRegistries.BLOCKS )
 			{
-				final Block b = (Block) blk;
 				try
 				{
 					final Item item = Item.getItemFromBlock( b );
@@ -133,16 +133,6 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 				}
 			}
 		}
-	}
-
-	private static boolean hasSimpleModel( BlockState blockState )
-	{
-		if( blockState.getRenderType() != EnumBlockRenderType.MODEL || blockState instanceof IExtendedBlockState )
-		{
-			return false;
-		}
-
-		return blockState.isFullCube();
 	}
 
 	public ItemStack createFacadeForItem( final ItemStack itemStack, final boolean returnItem )
@@ -175,7 +165,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 		final boolean areTileEntitiesEnabled = FacadeConfig.instance().allowTileEntityFacades();
 		final boolean isWhiteListed = FacadeConfig.instance().isWhiteListed( block, metadata );
-		final boolean isModel = blockState.getRenderType() == EnumBlockRenderType.MODEL;
+		final boolean isModel = blockState.getRenderType() == BlockRenderType.MODEL;
 
 		final BlockState defaultState = block.getDefaultState();
 		final boolean isTileEntity = block.hasTileEntity( defaultState );
@@ -194,8 +184,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			final ItemStack is = new ItemStack( this );
 			final CompoundNBT data = new CompoundNBT();
 			data.putString(TAG_ITEM_ID, itemStack.getItem().getRegistryName().toString());
-			data.setInteger( TAG_DAMAGE, itemStack.getDamage() );
-			is.setTagCompound( data );
+			is.setTag( data );
 			return is;
 		}
 		return ItemStack.EMPTY;
@@ -224,7 +213,6 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		}
 
 		ResourceLocation itemId;
-		int itemDamage;
 
 		// Handle legacy facades
 		if( nbt.contains("x") )
@@ -235,30 +223,28 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 				return ItemStack.EMPTY;
 			}
 
-			Item item = Item.REGISTRY.getObjectById( data[0] );
+			Item item = Registry.ITEM.getByValue( data[0] );
 			if( item == null )
 			{
 				return ItemStack.EMPTY;
 			}
 
 			itemId = item.getRegistryName();
-			itemDamage = data[1];
 		}
 		else
 		{
-			// First item is numeric item id, second is damage
+			// First item is numeric item id
 			itemId = new ResourceLocation( nbt.getString( TAG_ITEM_ID ) );
-			itemDamage = nbt.getInteger( TAG_DAMAGE );
 		}
 
-		Item baseItem = Item.REGISTRY.getObject( itemId );
+		Item baseItem = ForgeRegistries.ITEMS.getValue( itemId );
 
 		if( baseItem == null )
 		{
 			return ItemStack.EMPTY;
 		}
 
-		return new ItemStack( baseItem, 1, itemDamage );
+		return new ItemStack( baseItem, 1 );
 	}
 
 	@Override
@@ -308,7 +294,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 		return this.subTypes.get( 0 );
 	}
 
-	public ItemStack createFromIDs( final int[] ids )
+	public ItemStack createFromID( final int id )
 	{
 		ItemStack facadeStack = Api.INSTANCE
 				.definitions()
@@ -318,7 +304,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 				.orElseThrow( () -> new MissingDefinitionException( "Tried to create a facade, while facades are being deactivated." ) );
 
 		// Convert back to a registry name...
-		Item item = Registry.ITEM.getByValue( ids[0] );
+		Item item = Registry.ITEM.getByValue( id );
 		if( item == null )
 		{
 			return ItemStack.EMPTY;
@@ -326,7 +312,6 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 		final CompoundNBT facadeTag = new CompoundNBT();
 		facadeTag.putString(TAG_ITEM_ID, item.getRegistryName().toString());
-		//facadeTag.setInteger( TAG_DAMAGE, ids[1] );
 		facadeStack.setTag( facadeTag );
 
 		return facadeStack;

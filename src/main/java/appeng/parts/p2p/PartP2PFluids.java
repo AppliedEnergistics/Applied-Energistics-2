@@ -25,12 +25,12 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
@@ -194,10 +194,10 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 				throw new IllegalStateException( "Invalid Recursion detected." );
 			}
 
-			return Math.min( resource.amount, requestTotal );
+			return Math.min( resource.getAmount(), requestTotal );
 		}
 
-		int available = resource.amount;
+		int available = resource.getAmount();
 
 		i = list.iterator();
 		int used = 0;
@@ -207,10 +207,10 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 			final PartP2PFluids l = i.next();
 
 			final FluidStack insert = resource.copy();
-			insert.amount = (int) Math.ceil( insert.amount * ( (double) l.tmpUsed / (double) requestTotal ) );
-			if( insert.amount > available )
+			insert.setAmount( (int) Math.ceil( insert.getAmount() * ( (double) l.tmpUsed / (double) requestTotal ) ) );
+			if( insert.getAmount() > available )
 			{
-				insert.amount = available;
+				insert.setAmount( available );
 			}
 
 			final IFluidHandler tank = l.getTarget();
@@ -223,7 +223,7 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 				l.tmpUsed = 0;
 			}
 
-			available -= insert.amount;
+			available -= insert.getAmount();
 			used += l.tmpUsed;
 		}
 

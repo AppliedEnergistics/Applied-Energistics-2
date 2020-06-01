@@ -227,14 +227,14 @@ public abstract class PartAbstractFormationPlane<T extends IAEStack<T>> extends 
 	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
-		this.priority = data.getInteger( "priority" );
+		this.priority = data.getInt( "priority" );
 	}
 
 	@Override
 	public void writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
-		data.setInteger( "priority", this.getPriority() );
+		data.putInt( "priority", this.getPriority() );
 	}
 
 	@Override

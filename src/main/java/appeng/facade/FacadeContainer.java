@@ -22,13 +22,11 @@ package appeng.facade;
 import java.io.IOException;
 import java.util.Optional;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 
-import appeng.api.AEApi;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
@@ -117,28 +115,25 @@ public class FacadeContainer implements IFacadeContainer
 	}
 
 	@Override
-	public boolean readFromStream( final ByteBuf out ) throws IOException
+	public boolean readFromStream( final PacketBuffer out ) throws IOException
 	{
 		final int facadeSides = out.readByte();
 
 		boolean changed = false;
 
-		final int[] ids = new int[2];
 		for( int x = 0; x < this.facades; x++ )
 		{
 			final AEPartLocation side = AEPartLocation.fromOrdinal( x );
 			final int ix = ( 1 << x );
 			if( ( facadeSides & ix ) == ix )
 			{
-				ids[0] = out.readInt();
-				//ids[1] = out.readInt();
-				ids[0] = Math.abs( ids[0] );
+				final int id = Math.abs( out.readInt() );
 
 				Optional<Item> maybeFacadeItem = Api.INSTANCE.definitions().items().facade().maybeItem();
 				if( maybeFacadeItem.isPresent() )
 				{
 					final ItemFacade ifa = (ItemFacade) maybeFacadeItem.get();
-					final ItemStack facade = ifa.createFromIDs( ids );
+					final ItemStack facade = ifa.createFromID( id );
 					if( facade != null )
 					{
 						changed = changed || this.storage.getFacade( x ) == null;
@@ -180,7 +175,7 @@ public class FacadeContainer implements IFacadeContainer
 	}
 
 	@Override
-	public void writeToStream( final ByteBuf out ) throws IOException
+	public void writeToStream( final PacketBuffer out ) throws IOException
 	{
 		int facadeSides = 0;
 		for( int x = 0; x < this.facades; x++ )
@@ -198,9 +193,7 @@ public class FacadeContainer implements IFacadeContainer
 			if( part != null )
 			{
 				final int itemID = Item.getIdFromItem( part.getItem() );
-				//final int dmgValue = part.getItemDamage();
 				out.writeInt( itemID * ( part.notAEFacade() ? -1 : 1 ) );
-				//out.writeInt( dmgValue );
 			}
 		}
 	}

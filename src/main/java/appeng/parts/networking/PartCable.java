@@ -47,6 +47,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IReadOnlyCollection;
+import appeng.core.Api;
 import appeng.items.parts.ItemPart;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
@@ -283,7 +284,7 @@ public class PartCable extends AEBasePart implements IPartCable
 					howMany = Math.max( gc.getUsedChannels(), howMany );
 				}
 
-				data.setByte( "usedChannels", (byte) howMany );
+				data.putByte( "usedChannels", (byte) howMany );
 			}
 		}
 	}

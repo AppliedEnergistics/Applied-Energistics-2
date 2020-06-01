@@ -25,10 +25,10 @@ import java.util.EnumSet;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
 import appeng.api.networking.GridFlags;
@@ -95,7 +95,7 @@ public class TileWireless extends AENetworkInvTile implements IWirelessAccessPoi
 	}
 
 	@Override
-	protected void writeToStream( final ByteBuf data ) throws IOException
+	protected void writeToStream( final PacketBuffer data ) throws IOException
 	{
 		super.writeToStream( data );
 		this.setClientFlags( 0 );

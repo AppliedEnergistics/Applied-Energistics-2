@@ -41,6 +41,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
+import appeng.core.Api;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.parts.automation.PartUpgradeable;
@@ -163,14 +164,14 @@ public abstract class PartSharedStorageBus extends PartUpgradeable implements IG
 	public void readFromNBT( final CompoundNBT data )
 	{
 		super.readFromNBT( data );
-		this.priority = data.getInteger( "priority" );
+		this.priority = data.getInt( "priority" );
 	}
 
 	@Override
 	public void writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
-		data.setInteger( "priority", this.priority );
+		data.putInt( "priority", this.priority );
 	}
 
 	@Override

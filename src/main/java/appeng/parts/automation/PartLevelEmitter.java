@@ -23,19 +23,18 @@ import java.util.Collection;
 import java.util.Random;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LevelType;
 import appeng.api.config.RedstoneMode;
@@ -71,6 +70,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.sync.GuiBridge;
 import appeng.helpers.Reflected;
@@ -290,11 +290,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		{
 			if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 || myStack == null )
 			{
-				this.getProxy()
-						.getStorage()
-						.getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) )
-						.addListener( this,
-								this.getProxy().getGrid() );
+				this.getProxy().getStorage().getInventory( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) ).addListener( this, this.getProxy().getGrid() );
 			}
 			else
 			{
@@ -362,8 +358,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	@Override
 	public void onStackChange( final IItemList o, final IAEStack fullStack, final IAEStack diffStack, final IActionSource src, final IStorageChannel chan )
 	{
-		if( chan == Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) && fullStack.equals( this.config.getAEStackInSlot( 0 ) ) && this
-				.getInstalledUpgrades( Upgrades.FUZZY ) == 0 )
+		if( chan == Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) && fullStack.equals( this.config.getAEStackInSlot( 0 ) ) && this.getInstalledUpgrades( Upgrades.FUZZY ) == 0 )
 		{
 			this.lastReportedValue = fullStack.getStackSize();
 			this.updateState();
@@ -451,8 +446,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 			final double d1 = d.yOffset * 0.45F + ( r.nextFloat() - 0.5F ) * 0.2D;
 			final double d2 = d.zOffset * 0.45F + ( r.nextFloat() - 0.5F ) * 0.2D;
 
-			world.spawnParticle( EnumParticleTypes.REDSTONE, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1, 0.5 + pos.getZ() + d2, 0.0D, 0.0D, 0.0D,
-					new int[0] );
+			world.addParticle( RedstoneParticleData.REDSTONE_DUST, 0.5 + pos.getX() + d0, 0.5 + pos.getY() + d1, 0.5 + pos.getZ() + d2, 0.0D, 0.0D, 0.0D );
 		}
 	}
 
@@ -517,7 +511,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 		super.writeToNBT( data );
 		data.putLong( "lastReportedValue", this.lastReportedValue );
 		data.putLong( "reportingValue", this.reportingValue );
-		data.putBoolean("prevState", this.prevState);
+		data.putBoolean( "prevState", this.prevState );
 		this.config.writeToNBT( data, "config" );
 	}
 
@@ -533,7 +527,7 @@ public class PartLevelEmitter extends PartUpgradeable implements IEnergyWatcherH
 	}
 
 	@Override
-	public boolean pushPattern( final ICraftingPatternDetails patternDetails, final InventoryCrafting table )
+	public boolean pushPattern( final ICraftingPatternDetails patternDetails, final CraftingInventory table )
 	{
 		return false;
 	}

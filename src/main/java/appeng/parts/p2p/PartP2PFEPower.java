@@ -20,13 +20,13 @@ package appeng.parts.p2p;
 
 
 import java.util.List;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import appeng.api.config.PowerUnits;
@@ -68,17 +68,18 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 
 	private IEnergyStorage getAttachedEnergyStorage()
 	{
+		LazyOptional<IEnergyStorage> energyStorageOpt = LazyOptional.empty();
 		if( this.isActive() )
 		{
 			final TileEntity self = this.getTile();
 			final TileEntity te = self.getWorld().getTileEntity( self.getPos().offset( this.getSide().getFacing() ) );
 
-			if( te != null && te.hasCapability( Capabilities.FORGE_ENERGY, this.getSide().getOpposite().getFacing() ) )
+			if( te != null )
 			{
-				return te.getCapability( Capabilities.FORGE_ENERGY, this.getSide().getOpposite().getFacing() );
+				energyStorageOpt = te.getCapability( Capabilities.FORGE_ENERGY, this.getSide().getOpposite().getFacing() );
 			}
 		}
-		return NULL_ENERGY_STORAGE;
+		return energyStorageOpt.orElse( NULL_ENERGY_STORAGE );
 	}
 
 	@Override
@@ -206,6 +207,7 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 		}
 	}
 
+
 	private class OutputEnergyStorage implements IEnergyStorage
 	{
 		@Override
@@ -252,6 +254,7 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 		}
 	}
 
+
 	private static class NullEnergyStorage implements IEnergyStorage
 	{
 
@@ -290,6 +293,5 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 		{
 			return false;
 		}
-
 	}
 }

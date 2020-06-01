@@ -33,6 +33,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -72,6 +73,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.capabilities.Capabilities;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.core.sync.GuiBridge;
@@ -194,7 +196,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	{
 		super.readFromNBT( data );
 		this.Config.readFromNBT( data, "config" );
-		this.priority = data.getInteger( "priority" );
+		this.priority = data.getInt( "priority" );
 	}
 
 	@Override
@@ -202,7 +204,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	{
 		super.writeToNBT( data );
 		this.Config.writeToNBT( data, "config" );
-		data.setInteger( "priority", this.priority );
+		data.putInt( "priority", this.priority );
 	}
 
 	@Override
@@ -378,10 +380,11 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		Direction targetSide = this.getSide().getFacing().getOpposite();
 
 		// Prioritize a handler to directly link to another ME network
-		IStorageMonitorableAccessor accessor = target.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide );
+		final LazyOptional<IStorageMonitorableAccessor> accessorOpt = target.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide );
 
-		if( accessor != null )
+		if( accessorOpt.isPresent() )
 		{
+			IStorageMonitorableAccessor accessor = accessorOpt.orElse( null );
 			IStorageMonitorable inventory = accessor.getInventory( this.mySrc );
 			if( inventory != null )
 			{
@@ -396,16 +399,17 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		}
 
 		// Check via cap for IItemHandler
-		IItemHandler handlerExt = target.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide );
-		if( handlerExt != null )
+		final LazyOptional<IItemHandler> handlerExtOpt = target.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide );
+		if( handlerExtOpt.isPresent() )
 		{
-			return new ItemHandlerAdapter( handlerExt, this );
+			return new ItemHandlerAdapter( handlerExtOpt.orElse( null ), this );
 		}
 
 		return null;
 
 	}
 
+	//TODO, LazyOptionals are cacheable this might need changing?
 	private int createHandlerHash( TileEntity target )
 	{
 		if( target == null )
@@ -415,15 +419,18 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 
 		final Direction targetSide = this.getSide().getFacing().getOpposite();
 
-		if( target.hasCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide ) )
+		final LazyOptional<IStorageMonitorableAccessor> accessorOpt = target.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide );
+
+		if( accessorOpt.isPresent() )
 		{
-			return Objects.hash( target, target.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide ) );
+			return Objects.hash( target, accessorOpt.orElse( null ) );
 		}
 
-		final IItemHandler itemHandler = target.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide );
+		final LazyOptional<IItemHandler> itemHandlerOpt = target.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, targetSide );
 
-		if( itemHandler != null )
+		if( itemHandlerOpt.isPresent() )
 		{
+			IItemHandler itemHandler = itemHandlerOpt.orElse( null );
 			return Objects.hash( target, itemHandler, itemHandler.getSlots() );
 		}
 
