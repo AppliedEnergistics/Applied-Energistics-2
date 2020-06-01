@@ -19,39 +19,43 @@
 package appeng.entity;
 
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.block.Blocks;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.TNTMinecartRenderer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 
 @OnlyIn( Dist.CLIENT )
-public class RenderTinyTNTPrimed extends Render<EntityTinyTNTPrimed>
+public class RenderTinyTNTPrimed extends EntityRenderer<EntityTinyTNTPrimed>
 {
 
-	public RenderTinyTNTPrimed( final RenderManager p_i46134_1_ )
+	public RenderTinyTNTPrimed( final EntityRendererManager manager )
 	{
-		super( p_i46134_1_ );
+		super( manager );
 		this.shadowSize = 0.5F;
 	}
 
 	@Override
-	public void doRender( final EntityTinyTNTPrimed tnt, final double x, final double y, final double z, final float unused, final float life )
+	public void render( EntityTinyTNTPrimed tnt, float entityYaw, float partialTicks, MatrixStack mStack, IRenderTypeBuffer buffers, int packedLight )
 	{
 		final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
-		GlStateManager.pushMatrix();
-		GlStateManager.translate( (float) x, (float) y + 0.25F, (float) z );
+		mStack.push();
+		mStack.translate( 0, 0.25F, 0 );
 		float f2;
 
-		if( tnt.getFuse() - life + 1.0F < 10.0F )
+		if( tnt.getFuse() - partialTicks + 1.0F < 10.0F )
 		{
-			f2 = 1.0F - ( tnt.getFuse() - life + 1.0F ) / 10.0F;
+			f2 = 1.0F - ( tnt.getFuse() - partialTicks + 1.0F ) / 10.0F;
 
 			if( f2 < 0.0F )
 			{
@@ -66,41 +70,22 @@ public class RenderTinyTNTPrimed extends Render<EntityTinyTNTPrimed>
 			f2 *= f2;
 			f2 *= f2;
 			final float f3 = 1.0F + f2 * 0.3F;
-			GlStateManager.scale( f3, f3, f3 );
+			mStack.scale( f3, f3, f3 );
 		}
 
-		GlStateManager.scale( 0.5f, 0.5f, 0.5f );
-		f2 = ( 1.0F - ( tnt.getFuse() - life + 1.0F ) / 100.0F ) * 0.8F;
-		this.bindEntityTexture( tnt );
-		GlStateManager.translate( -0.5F, -0.5F, 0.5F );
-		blockrendererdispatcher.renderBlockBrightness( Blocks.TNT.getDefaultState(), tnt.getBrightness() );
-		GlStateManager.translate( 0.0F, 0.0F, 1.0F );
-
-		if( tnt.getFuse() / 5 % 2 == 0 )
-		{
-			GlStateManager.disableTexture2D();
-			GlStateManager.disableLighting();
-			GlStateManager.enableBlend();
-			GlStateManager.blendFunc( 770, 772 );
-			GlStateManager.color( 1.0F, 1.0F, 1.0F, f2 );
-			GlStateManager.doPolygonOffset( -3.0F, -3.0F );
-			GlStateManager.enablePolygonOffset();
-			blockrendererdispatcher.renderBlockBrightness( Blocks.TNT.getDefaultState(), 1.0F );
-			GlStateManager.doPolygonOffset( 0.0F, 0.0F );
-			GlStateManager.disablePolygonOffset();
-			GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
-			GlStateManager.disableBlend();
-			GlStateManager.enableLighting();
-			GlStateManager.enableTexture2D();
-		}
-
-		GlStateManager.popMatrix();
-		super.doRender( tnt, x, y, z, unused, life );
+		mStack.scale( 0.5f, 0.5f, 0.5f );
+		f2 = ( 1.0F - ( tnt.getFuse() - partialTicks + 1.0F ) / 100.0F ) * 0.8F;
+		mStack.rotate( Vector3f.YP.rotationDegrees( -90.0F ) );
+		mStack.translate( -0.5D, -0.5D, 0.5D );
+		mStack.rotate( Vector3f.YP.rotationDegrees( 90.0F ) );
+		TNTMinecartRenderer.renderTntFlash( Blocks.TNT.getDefaultState(), mStack, buffers, packedLight, tnt.getFuse() / 5 % 2 == 0 );
+		mStack.pop();
+		super.render( tnt, entityYaw, partialTicks, mStack, buffers, packedLight );
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture( final EntityTinyTNTPrimed entity )
+	public ResourceLocation getEntityTexture( final EntityTinyTNTPrimed entity )
 	{
-		return TextureMap.LOCATION_BLOCKS_TEXTURE;
+		return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
 	}
 }

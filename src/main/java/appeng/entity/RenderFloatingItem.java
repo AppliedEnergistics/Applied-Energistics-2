@@ -19,47 +19,49 @@
 package appeng.entity;
 
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderEntityItem;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 
 @OnlyIn( Dist.CLIENT )
-public class RenderFloatingItem extends RenderEntityItem
+public class RenderFloatingItem extends ItemRenderer
 {
 
-	public RenderFloatingItem( final RenderManager manager )
+	public RenderFloatingItem( final EntityRendererManager manager )
 	{
-		super( manager, Minecraft.getInstance().getRenderItem() );
+		super( manager, Minecraft.getInstance().getItemRenderer() );
 		this.shadowOpaque = 0.0F;
 	}
 
 	@Override
-	public void doRender( final EntityItem entityItem, final double x, final double y, final double z, final float yaw, final float partialTick )
+	public void render( ItemEntity entityIn, float entityYaw, float partialTicks, MatrixStack mStack, IRenderTypeBuffer buffers, int packedLightIn )
 	{
-		if( entityItem instanceof EntityFloatingItem )
+		if( entityIn instanceof EntityFloatingItem )
 		{
-			final EntityFloatingItem efi = (EntityFloatingItem) entityItem;
+			final EntityFloatingItem efi = (EntityFloatingItem) entityIn;
 			if( efi.getProgress() > 0.0 )
 			{
-				GlStateManager.pushMatrix();
+				mStack.push();
 
 				if( !( efi.getItem().getItem() instanceof BlockItem ) )
 				{
-					GlStateManager.translate( 0, -0.3f, 0 );
+					mStack.translate( 0, -0.3f, 0 );
 				}
 				else
 				{
-					GlStateManager.translate( 0, -0.2f, 0 );
+					mStack.translate( 0, -0.2f, 0 );
 				}
 
-				super.doRender( efi, x, y, z, yaw, 0 );
-				GlStateManager.popMatrix();
+				super.render( entityIn, entityYaw, 0, mStack, buffers, packedLightIn );
+				mStack.pop();
 			}
 		}
 	}
