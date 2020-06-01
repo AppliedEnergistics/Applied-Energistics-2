@@ -25,6 +25,8 @@ import java.util.List;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.material.MaterialColor;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -42,15 +44,15 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.block.AEBaseBlock;
-import appeng.helpers.ICustomCollision;
 
-
-public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
+public class BlockMatrixFrame extends AEBaseBlock
 {
+
+	private static final Material MATERIAL = new Material(MaterialColor.AIR, false, true, true, false, false, false, false, PushReaction.PUSH_ONLY);
 
 	public BlockMatrixFrame()
 	{
-		super( Properties.create(Material.ANVIL).hardnessAndResistance(-1.0F, 6000000.0F).noDrops().notSolid() );
+		super( Properties.create(MATERIAL).hardnessAndResistance(-1.0F, 6000000.0F).noDrops().notSolid() );
 //	FIXME	this.setLightOpacity( 0 );
 //	FIXME	this.setOpaque( false );
 	}
@@ -68,20 +70,13 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public VoxelShape getRaytraceShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
+	public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+		return VoxelShapes.fullCube();
+	}
+
+	@Override
+	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
 		return VoxelShapes.empty();
-	}
-
-	@Override
-	public Iterable<VoxelShape> getSelectedBoundingBoxesFromPool(IBlockReader w, BlockPos pos, Entity thePlayer, boolean b ) {
-		return Collections.emptyList();// AxisAlignedBB.getBoundingBox( 0.25, 0, 0.25, 0.75, 0.5, 0.75 )
-		// } );
-	}
-
-	@Override
-	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
-	{
-		out.add( new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
 	}
 
 	@Override
@@ -95,7 +90,15 @@ public class BlockMatrixFrame extends AEBaseBlock implements ICustomCollision
 		// Don't explode.
 	}
 
+	@Override
+	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+		return true;
+	}
 
+	@Override
+	public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
+		return 1.0f;
+	}
 
 	@Override
 	public boolean canEntityDestroy( final BlockState state, final IBlockReader world, final BlockPos pos, final Entity entity )

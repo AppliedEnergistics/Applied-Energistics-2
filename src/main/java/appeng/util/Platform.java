@@ -49,6 +49,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -932,32 +934,32 @@ public class Platform
 //	{
 //		return I18n.format( string );
 //	}
-//
-//	public static LookDirection getPlayerRay(final PlayerEntity playerIn, final float eyeOffset )
-//	{
-//		final double x = playerIn.prevPosX + ( playerIn.getPosX() - playerIn.prevPosX );
-//		final double y = playerIn.prevPosY + ( playerIn.getPosY() - playerIn.prevPosY ) + playerIn.getEyeHeight();
-//		final double z = playerIn.prevPosZ + ( playerIn.getPosZ() - playerIn.prevPosZ );
-//
-//		final float playerPitch = playerIn.prevRotationPitch + ( playerIn.rotationPitch - playerIn.prevRotationPitch );
-//		final float playerYaw = playerIn.prevRotationYaw + ( playerIn.rotationYaw - playerIn.prevRotationYaw );
-//
-//		final float yawRayX = MathHelper.sin( -playerYaw * 0.017453292f - (float) Math.PI );
-//		final float yawRayZ = MathHelper.cos( -playerYaw * 0.017453292f - (float) Math.PI );
-//
-//		final float pitchMultiplier = -MathHelper.cos( -playerPitch * 0.017453292F );
-//		final float eyeRayY = MathHelper.sin( -playerPitch * 0.017453292F );
-//		final float eyeRayX = yawRayX * pitchMultiplier;
-//		final float eyeRayZ = yawRayZ * pitchMultiplier;
-//
-//		double reachDistance = playerIn.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
-//
-//		final Vec3d from = new Vec3d( x, y, z );
-//		final Vec3d to = from.add( eyeRayX * reachDistance, eyeRayY * reachDistance, eyeRayZ * reachDistance );
-//
-//		return new LookDirection( from, to );
-//	}
-//
+
+	public static LookDirection getPlayerRay(final PlayerEntity playerIn )
+	{
+		final double x = playerIn.prevPosX + ( playerIn.getPosX() - playerIn.prevPosX );
+		final double y = playerIn.prevPosY + ( playerIn.getPosY() - playerIn.prevPosY ) + playerIn.getEyeHeight();
+		final double z = playerIn.prevPosZ + ( playerIn.getPosZ() - playerIn.prevPosZ );
+
+		final float playerPitch = playerIn.prevRotationPitch + ( playerIn.rotationPitch - playerIn.prevRotationPitch );
+		final float playerYaw = playerIn.prevRotationYaw + ( playerIn.rotationYaw - playerIn.prevRotationYaw );
+
+		final float yawRayX = MathHelper.sin( -playerYaw * 0.017453292f - (float) Math.PI );
+		final float yawRayZ = MathHelper.cos( -playerYaw * 0.017453292f - (float) Math.PI );
+
+		final float pitchMultiplier = -MathHelper.cos( -playerPitch * 0.017453292F );
+		final float eyeRayY = MathHelper.sin( -playerPitch * 0.017453292F );
+		final float eyeRayX = yawRayX * pitchMultiplier;
+		final float eyeRayZ = yawRayZ * pitchMultiplier;
+
+		double reachDistance = playerIn.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
+
+		final Vec3d from = new Vec3d( x, y, z );
+		final Vec3d to = from.add( eyeRayX * reachDistance, eyeRayY * reachDistance, eyeRayZ * reachDistance );
+
+		return new LookDirection( from, to );
+	}
+
 //	public static RayTraceResult rayTrace(final PlayerEntity p, final boolean hitBlocks, final boolean hitEntities )
 //	{
 //		final World w = p.getEntityWorld();

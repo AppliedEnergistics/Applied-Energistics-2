@@ -21,8 +21,11 @@ package appeng.block;
 
 import javax.annotation.Nullable;
 
+import appeng.util.LookDirection;
+import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.state.IProperty;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -32,12 +35,12 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.shapes.EntitySelectionContext;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 import appeng.api.util.IOrientable;
@@ -93,11 +96,6 @@ public abstract class AEBaseBlock extends Block
 		return this.isFullSize() && this.isOpaque();
 	}
 
-	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-		return this.boundingBox;
-	}
-
 // FIXME	@SuppressWarnings( "deprecation" )
 // FIXME	@Override
 // FIXME	public void addCollisionBoxToList(final BlockState state, final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, @Nullable final Entity e, boolean p_185477_7_ )
@@ -124,86 +122,68 @@ public abstract class AEBaseBlock extends Block
 // FIXME	}
 // FIXME
 
-// FIXME	@SuppressWarnings( "deprecation" )
-// FIXME	@Override
-// FIXME	@OnlyIn( Dist.CLIENT )
-// FIXME	public VoxelShape getRaytraceShape(BlockState state, IBlockReader w, BlockPos pos)
-// FIXME	{
-// FIXME		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
-// FIXME
-// FIXME		if( collisionHandler != null )
-// FIXME		{
-// FIXME			if( Platform.isClient() )
-// FIXME			{
-// FIXME				final PlayerEntity player = Minecraft.getInstance().player;
-// FIXME				final LookDirection ld = Platform.getPlayerRay( player, Platform.getEyeOffset( player ) );
-// FIXME
-// FIXME				final Iterable<VoxelShape> bbs = collisionHandler.getSelectedBoundingBoxesFromPool( w, pos, Minecraft.getInstance().player, true );
-// FIXME				VoxelShape br = null;
-// FIXME
-// FIXME				double lastDist = 0;
-// FIXME
-// FIXME				for( final VoxelShape bb : bbs )
-// FIXME				{
-// FIXME					final RayTraceResult r = bb.rayTrace(ld.getA(), ld.getB(), pos);
-// FIXME
-// FIXME					if( r != null )
-// FIXME					{
-// FIXME						final double xLen = ( ld.getA().x - r.getHitVec().x );
-// FIXME						final double yLen = ( ld.getA().y - r.getHitVec().y );
-// FIXME						final double zLen = ( ld.getA().z - r.getHitVec().z );
-// FIXME
-// FIXME						final double thisDist = xLen * xLen + yLen * yLen + zLen * zLen;
-// FIXME
-// FIXME						if( br == null || lastDist > thisDist )
-// FIXME						{
-// FIXME							lastDist = thisDist;
-// FIXME							br = bb;
-// FIXME						}
-// FIXME					}
-// FIXME				}
-// FIXME
-// FIXME				if( br != null )
-// FIXME				{
-// FIXME					return br;
-// FIXME				}
-// FIXME			}
-// FIXME
-// FIXME			VoxelShape b = null; // new AxisAlignedBB( 16d, 16d, 16d, 0d, 0d, 0d );
-// FIXME
-// FIXME			for( final VoxelShape bx : collisionHandler.getSelectedBoundingBoxesFromPool( w, pos, null, false ) )
-// FIXME			{
-// FIXME				if( b == null )
-// FIXME				{
-// FIXME					b = bx;
-// FIXME					continue;
-// FIXME				}
-// FIXME
-// FIXME				final double minX = Math.min( b.minX, bx.minX );
-// FIXME				final double minY = Math.min( b.minY, bx.minY );
-// FIXME				final double minZ = Math.min( b.minZ, bx.minZ );
-// FIXME				final double maxX = Math.max( b.maxX, bx.maxX );
-// FIXME				final double maxY = Math.max( b.maxY, bx.maxY );
-// FIXME				final double maxZ = Math.max( b.maxZ, bx.maxZ );
-// FIXME
-// FIXME				b = new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ );
-// FIXME			}
-// FIXME
-// FIXME			if( b == null )
-// FIXME			{
-// FIXME				b = new AxisAlignedBB( 16d, 16d, 16d, 0d, 0d, 0d );
-// FIXME			}
-// FIXME			else
-// FIXME			{
-// FIXME				b = new AxisAlignedBB( b.minX + pos.getX(), b.minY + pos.getY(), b.minZ + pos.getZ(), b.maxX + pos.getX(), b.maxY + pos.getY(), b.maxZ + pos
-// FIXME						.getZ() );
-// FIXME			}
-// FIXME
-// FIXME			return b;
-// FIXME		}
-// FIXME
-// FIXME		return super.getSelectedBoundingBox( state, w, pos );
-// FIXME	}
+
+//	@Override
+//	public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+//		final ICustomCollision collisionHandler = this.getCustomCollision( w, pos );
+//
+//		if( context instanceof EntitySelectionContext && collisionHandler != null )
+//		{
+//			EntitySelectionContext entitySelectionContext = (EntitySelectionContext) context;
+//
+//			if( Platform.isClient() )
+//			{
+//				final PlayerEntity player = Minecraft.getInstance().player;
+//				if (player != null && player == entitySelectionContext.getEntity()) {
+//					final LookDirection ld = Platform.getPlayerRay(player);
+//
+//					final Iterable<VoxelShape> bbs = collisionHandler.getSelectedBoundingBoxesFromPool(w, pos, Minecraft.getInstance().player, true);
+//					VoxelShape br = null;
+//
+//					double lastDist = 0;
+//
+//					for (final VoxelShape bb : bbs) {
+//						final RayTraceResult r = bb.rayTrace(ld.getA(), ld.getB(), pos);
+//
+//						if (r != null) {
+//							final double xLen = (ld.getA().x - r.getHitVec().x);
+//							final double yLen = (ld.getA().y - r.getHitVec().y);
+//							final double zLen = (ld.getA().z - r.getHitVec().z);
+//
+//							final double thisDist = xLen * xLen + yLen * yLen + zLen * zLen;
+//
+//							if (br == null || lastDist > thisDist) {
+//								lastDist = thisDist;
+//								br = bb;
+//							}
+//						}
+//					}
+//
+//					if (br != null) {
+//						return br;
+//					}
+//				}
+//			}
+//
+//			// FIXME: This seems fishy because it is NOT solely related to selection
+////			VoxelShape b = VoxelShapes.empty();
+////
+////			for( final VoxelShape bx : collisionHandler.getSelectedBoundingBoxesFromPool( w, pos, null, false ) )
+////			{
+////				if( b.isEmpty() )
+////				{
+////					b = bx;
+////					continue;
+////				}
+////
+////				b = VoxelShapes.or(b, bx);
+////			}
+////
+////			return b;
+//		}
+//
+//		return super.getShape( state, w, pos, context );
+//	}
 
 	// FIXME: Move to state
 // FIXME	@Override
