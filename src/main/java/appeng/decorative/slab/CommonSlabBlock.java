@@ -33,10 +33,10 @@ public abstract class CommonSlabBlock extends SlabBlock
 
 		if( !this.isDouble() )
 		{
-			BlockState = BlockState.withProperty( HALF, BlockSlab.EnumBlockHalf.BOTTOM );
+			BlockState = BlockState.with( HALF, BlockSlab.EnumBlockHalf.BOTTOM );
 		}
 
-		this.setDefaultState( BlockState.withProperty( VARIANT, Variant.DEFAULT ) );
+		this.setDefaultState( BlockState.with( VARIANT, Variant.DEFAULT ) );
 		this.setCreativeTab( CreativeTabs.BUILDING_BLOCKS );
 		this.useNeighborBrightness = true;
 	}
@@ -47,11 +47,11 @@ public abstract class CommonSlabBlock extends SlabBlock
 	@Override
 	public BlockState getStateFromMeta( int meta )
 	{
-		BlockState BlockState = this.getDefaultState().withProperty( VARIANT, Variant.DEFAULT );
+		BlockState BlockState = this.getDefaultState().with( VARIANT, Variant.DEFAULT );
 
 		if( !this.isDouble() )
 		{
-			BlockState = BlockState.withProperty( HALF, ( meta & 8 ) == 0 ? BlockSlab.EnumBlockHalf.BOTTOM : BlockSlab.EnumBlockHalf.TOP );
+			BlockState = BlockState.with( HALF, ( meta & 8 ) == 0 ? BlockSlab.EnumBlockHalf.BOTTOM : BlockSlab.EnumBlockHalf.TOP );
 		}
 
 		return BlockState;

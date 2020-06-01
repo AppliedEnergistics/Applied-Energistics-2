@@ -24,7 +24,7 @@ import java.util.Random;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.BooleanProperty;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Direction;
@@ -46,13 +46,13 @@ import appeng.util.Platform;
 public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOrientableBlock
 {
 
-	private static final PropertyBool POWERED = PropertyBool.create( "powered" );
+	private static final BooleanProperty POWERED = BooleanProperty.create( "powered" );
 
 	public BlockQuartzGrowthAccelerator()
 	{
 		super( Material.ROCK );
 		this.setSoundType( SoundType.METAL );
-		this.setDefaultState( this.getDefaultState().withProperty( POWERED, false ) );
+		this.setDefaultState( this.getDefaultState().with( POWERED, false ) );
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOr
 		boolean powered = te != null && te.isPowered();
 
 		return super.getActualState( state, world, pos )
-				.withProperty( POWERED, powered );
+				.with( POWERED, powered );
 	}
 
 	@Override

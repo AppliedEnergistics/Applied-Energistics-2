@@ -26,8 +26,8 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.properties.BooleanProperty;
+import net.minecraft.block.properties.DirectionProperty;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.BlockRenderLayer;
@@ -52,16 +52,16 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 {
 
 	// Cannot use the vanilla FACING property here because it excludes facing DOWN
-	public static final PropertyDirection FACING = PropertyDirection.create( "facing" );
+	public static final DirectionProperty FACING = DirectionProperty.create( "facing" );
 
 	// Used to alternate between two variants of the fixture on adjacent blocks
-	public static final PropertyBool ODD = PropertyBool.create( "odd" );
+	public static final BooleanProperty ODD = BooleanProperty.create( "odd" );
 
 	public BlockLightDetector()
 	{
-		super( Material.CIRCUITS );
+		super( Material.MISCELLANEOUS );
 
-		this.setDefaultState( this.blockState.getBaseState().withProperty( FACING, Direction.UP ).withProperty( ODD, false ) );
+		this.setDefaultState( this.blockState.getBaseState().with( FACING, Direction.UP ).with( ODD, false ) );
 		this.setLightOpacity( 0 );
 		this.setFullSize( false );
 		this.setOpaque( false );
@@ -77,7 +77,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	public BlockState getStateFromMeta( final int meta )
 	{
 		Direction facing = Direction.values()[meta];
-		return this.getDefaultState().withProperty( FACING, facing );
+		return this.getDefaultState().with( FACING, facing );
 	}
 
 	@Override
@@ -167,7 +167,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	@Override
 	public boolean isValidPosition(BlockState state, IWorldReader w, BlockPos pos)
 	{
-		for( final Direction dir : Direction.VALUES )
+		for( final Direction dir : Direction.values() )
 		{
 			if( this.canPlaceAt( w, pos, dir ) )
 			{

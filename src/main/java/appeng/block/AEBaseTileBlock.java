@@ -90,7 +90,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 //		}
 //
 //		IExtendedBlockState extState = (IExtendedBlockState) state;
-//		return extState.withProperty( FORWARD, tile.getForward() ).withProperty( UP, tile.getUp() );
+//		return extState.with( FORWARD, tile.getForward() ).with( UP, tile.getUp() );
 		throw new IllegalStateException();
 	}
 

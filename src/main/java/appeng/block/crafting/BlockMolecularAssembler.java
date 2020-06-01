@@ -21,7 +21,7 @@ package appeng.block.crafting;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.BooleanProperty;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -43,7 +43,7 @@ import appeng.util.Platform;
 public class BlockMolecularAssembler extends AEBaseTileBlock
 {
 
-	public static final PropertyBool POWERED = PropertyBool.create( "powered" );
+	public static final BooleanProperty POWERED = BooleanProperty.create( "powered" );
 
 	public BlockMolecularAssembler()
 	{
@@ -69,7 +69,7 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 			powered = te.isPowered();
 		}
 
-		return super.getActualState( state, worldIn, pos ).withProperty( POWERED, powered );
+		return super.getActualState( state, worldIn, pos ).with( POWERED, powered );
 	}
 
 	/**

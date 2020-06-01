@@ -360,12 +360,12 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				return false;
 			}
 
-			return w.setBlockState( pos, state.withProperty( BlockColored.COLOR, newColor.dye ) );
+			return w.setBlockState( pos, state.with( BlockColored.COLOR, newColor.dye ) );
 		}
 
 		if( blk == Blocks.GLASS )
 		{
-			return w.setBlockState( pos, Blocks.STAINED_GLASS.getDefaultState().withProperty( BlockStainedGlass.COLOR, newColor.dye ) );
+			return w.setBlockState( pos, Blocks.STAINED_GLASS.getDefaultState().with( BlockStainedGlass.COLOR, newColor.dye ) );
 		}
 
 		if( blk == Blocks.STAINED_GLASS )
@@ -377,12 +377,12 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				return false;
 			}
 
-			return w.setBlockState( pos, state.withProperty( BlockStainedGlass.COLOR, newColor.dye ) );
+			return w.setBlockState( pos, state.with( BlockStainedGlass.COLOR, newColor.dye ) );
 		}
 
 		if( blk == Blocks.GLASS_PANE )
 		{
-			return w.setBlockState( pos, Blocks.STAINED_GLASS_PANE.getDefaultState().withProperty( BlockStainedGlassPane.COLOR, newColor.dye ) );
+			return w.setBlockState( pos, Blocks.STAINED_GLASS_PANE.getDefaultState().with( BlockStainedGlassPane.COLOR, newColor.dye ) );
 		}
 
 		if( blk == Blocks.STAINED_GLASS_PANE )
@@ -394,12 +394,12 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				return false;
 			}
 
-			return w.setBlockState( pos, state.withProperty( BlockStainedGlassPane.COLOR, newColor.dye ) );
+			return w.setBlockState( pos, state.with( BlockStainedGlassPane.COLOR, newColor.dye ) );
 		}
 
 		if( blk == Blocks.HARDENED_CLAY )
 		{
-			return w.setBlockState( pos, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty( BlockColored.COLOR, newColor.dye ) );
+			return w.setBlockState( pos, Blocks.STAINED_HARDENED_CLAY.getDefaultState().with( BlockColored.COLOR, newColor.dye ) );
 		}
 
 		if( blk instanceof BlockCableBus )

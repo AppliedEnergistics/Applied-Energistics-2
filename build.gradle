@@ -126,6 +126,8 @@ sourceSets {
             include 'appeng/util/LookDirection.java'
             include 'appeng/decorative/solid/BlockQuartzLamp.java'
             include 'appeng/client/render/effects/VibrantFX.java'
+            include 'appeng/client/render/effects/LightningFX.java'
+            include 'appeng/block/misc/BlockQuartzFixture.java'
 
             include 'appeng/core/sync/AppEngPacket.java'
             include 'appeng/core/sync/network/INetworkInfo.java'
@@ -159,6 +161,9 @@ sourceSets {
     test {
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
+        java {
+            exclude '**/*'
+        }
     }
 }
 

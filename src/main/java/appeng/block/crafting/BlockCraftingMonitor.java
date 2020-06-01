@@ -76,9 +76,9 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 		}
 
 		return super.getExtendedState( state, world, pos )
-				.withProperty( COLOR, color )
-				.withProperty( FORWARD, forward )
-				.withProperty( UP, up );
+				.with( COLOR, color )
+				.with( FORWARD, forward )
+				.with( UP, up );
 	}
 
 	@Override

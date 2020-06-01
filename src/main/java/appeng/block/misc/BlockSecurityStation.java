@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.BooleanProperty;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -45,13 +45,13 @@ import appeng.util.Platform;
 public class BlockSecurityStation extends AEBaseTileBlock
 {
 
-	private static final PropertyBool POWERED = PropertyBool.create( "powered" );
+	private static final BooleanProperty POWERED = BooleanProperty.create( "powered" );
 
 	public BlockSecurityStation()
 	{
 		super( Material.IRON );
 
-		this.setDefaultState( this.getDefaultState().withProperty( POWERED, false ) );
+		this.setDefaultState( this.getDefaultState().with( POWERED, false ) );
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class BlockSecurityStation extends AEBaseTileBlock
 		}
 
 		return super.getActualState( state, world, pos )
-				.withProperty( POWERED, powered );
+				.with( POWERED, powered );
 	}
 
 	@Override

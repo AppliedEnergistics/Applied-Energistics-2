@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.BooleanProperty;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -46,7 +46,7 @@ import appeng.util.Platform;
 public class BlockInterface extends AEBaseTileBlock
 {
 
-	private static final PropertyBool OMNIDIRECTIONAL = PropertyBool.create( "omnidirectional" );
+	private static final BooleanProperty OMNIDIRECTIONAL = BooleanProperty.create( "omnidirectional" );
 
 	public BlockInterface()
 	{
@@ -71,7 +71,7 @@ public class BlockInterface extends AEBaseTileBlock
 		}
 
 		return super.getActualState( state, world, pos )
-				.withProperty( OMNIDIRECTIONAL, omniDirectional );
+				.with( OMNIDIRECTIONAL, omniDirectional );
 	}
 
 	@Override

@@ -69,7 +69,7 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 		this.setLightOpacity( 0 );
 		this.setFullSize( false );
 		this.setOpaque( false );
-		this.setDefaultState( this.getDefaultState().withProperty( STATE, State.OFF ) );
+		this.setDefaultState( this.getDefaultState().with( STATE, State.OFF ) );
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 		}
 
 		return super.getActualState( state, worldIn, pos )
-				.withProperty( STATE, teState );
+				.with( STATE, teState );
 	}
 
 	@Override

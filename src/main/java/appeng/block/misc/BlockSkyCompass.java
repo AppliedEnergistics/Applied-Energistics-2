@@ -50,7 +50,7 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 
 	public BlockSkyCompass()
 	{
-		super( Material.CIRCUITS );
+		super( Material.MISCELLANEOUS );
 		this.setLightOpacity( 0 );
 		this.setFullSize( false );
 		this.setOpaque( false );
@@ -99,7 +99,7 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	@Override
 	public boolean isValidPosition(BlockState state, IWorldReader w, BlockPos pos)
 	{
-		for( final Direction dir : Direction.VALUES )
+		for( final Direction dir : Direction.values() )
 		{
 			if( this.canPlaceAt( w, pos, dir ) )
 			{

@@ -65,7 +65,7 @@ public class SkyCompassTESR extends FastTESR<TileSkyCompass>
 		BlockState state = world.getBlockState( pos );
 		if( state.getPropertyKeys().contains( Properties.StaticProperty ) )
 		{
-			state = state.withProperty( Properties.StaticProperty, false );
+			state = state.with( Properties.StaticProperty, false );
 		}
 
 		if( state instanceof IExtendedBlockState )
@@ -73,7 +73,7 @@ public class SkyCompassTESR extends FastTESR<TileSkyCompass>
 			IExtendedBlockState exState = (IExtendedBlockState) state.getBlock().getExtendedState( state, world, pos );
 
 			IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState( exState.getClean() );
-			exState = exState.withProperty( BlockSkyCompass.ROTATION, getRotation( te ) );
+			exState = exState.with( BlockSkyCompass.ROTATION, getRotation( te ) );
 
 			// Flip forward/up for rendering, the base model is facing up without any rotation
 			Direction forward = exState.getValue( AEBaseTileBlock.FORWARD );
@@ -84,8 +84,8 @@ public class SkyCompassTESR extends FastTESR<TileSkyCompass>
 			{
 				up = Direction.NORTH;
 			}
-			exState = exState.withProperty( AEBaseTileBlock.FORWARD, up )
-					.withProperty( AEBaseTileBlock.UP, forward );
+			exState = exState.with( AEBaseTileBlock.FORWARD, up )
+					.with( AEBaseTileBlock.UP, forward );
 
 			buffer.setTranslation( x - pos.getX(), y - pos.getY(), z - pos.getZ() );
 

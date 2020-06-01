@@ -90,7 +90,7 @@ public class ToolReplicatorCard extends AEBaseItem
 				if( te instanceof IGridHost )
 				{
 					final IGridHost gh = (IGridHost) te;
-					final Direction sideOff = Direction.VALUES[src_side];
+					final Direction sideOff = Direction.values()[src_side];
 					final Direction currentSideOff = side;
 					final IGridNode n = gh.getGridNode( AEPartLocation.fromFacing( sideOff ) );
 					if( n != null )

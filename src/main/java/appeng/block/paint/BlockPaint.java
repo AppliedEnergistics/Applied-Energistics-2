@@ -83,7 +83,7 @@ public class BlockPaint extends AEBaseTileBlock
 			splotches = te.getDots();
 		}
 
-		return extState.withProperty( SPLOTCHES, new PaintSplotches( splotches ) );
+		return extState.with( SPLOTCHES, new PaintSplotches( splotches ) );
 	}
 
 	@Override

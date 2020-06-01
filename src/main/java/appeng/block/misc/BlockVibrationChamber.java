@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.BooleanProperty;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -51,13 +51,13 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 {
 
 	// Indicates that the vibration chamber is currently working
-	private static final PropertyBool ACTIVE = PropertyBool.create( "active" );
+	private static final BooleanProperty ACTIVE = BooleanProperty.create( "active" );
 
 	public BlockVibrationChamber()
 	{
 		super( Material.IRON );
 		this.setHardness( 4.2F );
-		this.setDefaultState( this.getDefaultState().withProperty( ACTIVE, false ) );
+		this.setDefaultState( this.getDefaultState().with( ACTIVE, false ) );
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 		boolean active = te != null && te.isOn;
 
 		return super.getActualState( state, world, pos )
-				.withProperty( ACTIVE, active );
+				.with( ACTIVE, active );
 	}
 
 	@Override

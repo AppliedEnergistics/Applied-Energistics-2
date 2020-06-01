@@ -156,7 +156,7 @@ public class FacadeBuilder
 			{
 				double offset = thinFacades ? THIN_THICKNESS : THICK_THICKNESS;
 				AEAxisAlignedBB tmpBB = null;
-				for( Direction face : Direction.VALUES )
+				for( Direction face : Direction.values() )
 				{
 					// Only faces that aren't on our axis
 					if( face.getAxis() != side.getAxis() )
@@ -373,7 +373,7 @@ public class FacadeBuilder
 	private static List<BakedQuad> gatherQuads( IBakedModel model, BlockState state, long rand )
 	{
 		List<BakedQuad> modelQuads = new ArrayList<>();
-		for( Direction face : Direction.VALUES )
+		for( Direction face : Direction.values() )
 		{
 			modelQuads.addAll( model.getQuads( state, face, rand ) );
 		}

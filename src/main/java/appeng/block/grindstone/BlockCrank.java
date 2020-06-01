@@ -115,7 +115,7 @@ public class BlockCrank extends AEBaseTileBlock
 
 	private Direction findCrankable( final World world, final BlockPos pos )
 	{
-		for( final Direction dir : Direction.VALUES )
+		for( final Direction dir : Direction.values() )
 		{
 			if( this.isCrankable( world, pos, dir ) )
 			{

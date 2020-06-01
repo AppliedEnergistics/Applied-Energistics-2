@@ -25,6 +25,7 @@ import appeng.bootstrap.components.IEntityRegistrationComponent;
 import appeng.bootstrap.components.IItemRegistrationComponent;
 import appeng.bootstrap.components.IModelRegistrationComponent;
 import appeng.client.render.effects.ChargedOreFX;
+import appeng.client.render.effects.LightningFX;
 import appeng.client.render.effects.VibrantFX;
 import appeng.client.render.model.GlassModelLoader;
 import appeng.core.stats.AeStats;
@@ -267,11 +268,13 @@ final class Registration
 		final IForgeRegistry<ParticleType<?>> registry = event.getRegistry();
 		registry.register(ChargedOreFX.TYPE);
 		registry.register(VibrantFX.TYPE);
+		registry.register(LightningFX.TYPE);
 	}
 
 	public void registerParticleFactories(ParticleFactoryRegisterEvent event) {
 		Minecraft.getInstance().particles.registerFactory(ChargedOreFX.TYPE, ChargedOreFX.Factory::new);
 		Minecraft.getInstance().particles.registerFactory(VibrantFX.TYPE, VibrantFX.Factory::new);
+		Minecraft.getInstance().particles.registerFactory(LightningFX.TYPE, LightningFX.Factory::new);
 	}
 
 //

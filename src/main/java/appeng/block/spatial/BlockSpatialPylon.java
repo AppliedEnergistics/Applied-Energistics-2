@@ -57,7 +57,7 @@ public class BlockSpatialPylon extends AEBaseTileBlock
 	{
 		IExtendedBlockState extState = (IExtendedBlockState) state;
 
-		return extState.withProperty( STATE, this.getDisplayState( world, pos ) );
+		return extState.with( STATE, this.getDisplayState( world, pos ) );
 	}
 
 	@Override

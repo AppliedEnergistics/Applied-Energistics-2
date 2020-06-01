@@ -128,7 +128,7 @@ public class TileController extends AENetworkPowerTile
 
 		if( this.checkController( this.pos ) && this.world.getBlockState( this.pos ).getValue( BlockController.CONTROLLER_STATE ) != metaState )
 		{
-			this.world.setBlockState( this.pos, this.world.getBlockState( this.pos ).withProperty( BlockController.CONTROLLER_STATE, metaState ) );
+			this.world.setBlockState( this.pos, this.world.getBlockState( this.pos ).with( BlockController.CONTROLLER_STATE, metaState ) );
 		}
 
 	}

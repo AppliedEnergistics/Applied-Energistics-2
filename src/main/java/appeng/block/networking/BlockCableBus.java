@@ -128,7 +128,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 		CableBusRenderState renderState = this.cb( world, pos ).getRenderState();
 		renderState.setWorld( world );
 		renderState.setPos( pos );
-		return ( (IExtendedBlockState) state ).withProperty( RENDER_STATE_PROPERTY, renderState );
+		return ( (IExtendedBlockState) state ).with( RENDER_STATE_PROPERTY, renderState );
 	}
 
 	@Override

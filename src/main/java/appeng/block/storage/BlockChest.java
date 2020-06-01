@@ -51,7 +51,7 @@ public class BlockChest extends AEBaseTileBlock
 	public BlockChest()
 	{
 		super( Material.IRON );
-		this.setDefaultState( this.getDefaultState().withProperty( SLOT_STATE, DriveSlotState.EMPTY ) );
+		this.setDefaultState( this.getDefaultState().with( SLOT_STATE, DriveSlotState.EMPTY ) );
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class BlockChest extends AEBaseTileBlock
 		}
 
 		return super.getActualState( state, worldIn, pos )
-				.withProperty( SLOT_STATE, slotState );
+				.with( SLOT_STATE, slotState );
 	}
 
 	@Override

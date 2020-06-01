@@ -76,8 +76,8 @@ public class BlockController extends AEBaseTileBlock
 		super( Material.IRON );
 		this.setHardness( 6 );
 		this.setDefaultState( this.getDefaultState()
-				.withProperty( CONTROLLER_STATE, ControllerBlockState.offline )
-				.withProperty( CONTROLLER_TYPE, ControllerRenderType.block ) );
+				.with( CONTROLLER_STATE, ControllerBlockState.offline )
+				.with( CONTROLLER_TYPE, ControllerRenderType.block ) );
 	}
 
 	@Override
@@ -144,7 +144,7 @@ public class BlockController extends AEBaseTileBlock
 			}
 		}
 
-		return state.withProperty( CONTROLLER_TYPE, type );
+		return state.with( CONTROLLER_TYPE, type );
 	}
 
 	@Override
@@ -163,7 +163,7 @@ public class BlockController extends AEBaseTileBlock
 	public BlockState getStateFromMeta( final int meta )
 	{
 		ControllerBlockState state = ControllerBlockState.values()[meta];
-		return this.getDefaultState().withProperty( CONTROLLER_STATE, state );
+		return this.getDefaultState().with( CONTROLLER_STATE, state );
 	}
 
 	@Override

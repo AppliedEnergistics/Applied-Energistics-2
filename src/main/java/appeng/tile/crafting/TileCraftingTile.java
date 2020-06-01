@@ -165,7 +165,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		// The tile might try to update while being destroyed
 		if( current.getBlock() instanceof BlockCraftingUnit )
 		{
-			final BlockState newState = current.withProperty( BlockCraftingUnit.POWERED, power ).withProperty( BlockCraftingUnit.FORMED, formed );
+			final BlockState newState = current.with( BlockCraftingUnit.POWERED, power ).with( BlockCraftingUnit.FORMED, formed );
 
 			if( current != newState )
 			{

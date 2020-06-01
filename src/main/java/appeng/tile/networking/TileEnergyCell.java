@@ -94,7 +94,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 		if( this.currentMeta != storageLevel )
 		{
 			this.currentMeta = (byte) storageLevel;
-			this.world.setBlockState( this.pos, this.world.getBlockState( this.pos ).withProperty( BlockEnergyCell.ENERGY_STORAGE, storageLevel ) );
+			this.world.setBlockState( this.pos, this.world.getBlockState( this.pos ).with( BlockEnergyCell.ENERGY_STORAGE, storageLevel ) );
 		}
 	}
 

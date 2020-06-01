@@ -22,7 +22,7 @@ package appeng.block.qnb;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.BooleanProperty;
 import net.minecraft.block.BlockStateContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.BlockRenderLayer;
@@ -42,7 +42,7 @@ import appeng.tile.qnb.TileQuantumBridge;
 public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICustomCollision
 {
 
-	public static final PropertyBool FORMED = PropertyBool.create( "formed" );
+	public static final BooleanProperty FORMED = BooleanProperty.create( "formed" );
 
 	public static final QnbFormedStateProperty FORMED_STATE = new QnbFormedStateProperty();
 
@@ -53,7 +53,7 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 		this.boundingBox = new AxisAlignedBB( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );
 		this.setLightOpacity( 0 );
 		this.setFullSize( this.setOpaque( false ) );
-		this.setDefaultState( this.getDefaultState().withProperty( FORMED, false ) );
+		this.setDefaultState( this.getDefaultState().with( FORMED, false ) );
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 		if( bridge != null )
 		{
 			QnbFormedState formedState = new QnbFormedState( bridge.getAdjacentQuantumBridges(), bridge.isCorner(), bridge.isPowered() );
-			extState = extState.withProperty( FORMED_STATE, formedState );
+			extState = extState.with( FORMED_STATE, formedState );
 		}
 
 		return extState;
@@ -89,7 +89,7 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 		TileQuantumBridge bridge = this.getTileEntity( worldIn, pos );
 		if( bridge != null )
 		{
-			state = state.withProperty( FORMED, bridge.isFormed() );
+			state = state.with( FORMED, bridge.isFormed() );
 		}
 		return state;
 	}

@@ -161,7 +161,7 @@ public class TilePaint extends AEBaseTile
 			return;
 		}
 
-		for( final Direction side : Direction.VALUES )
+		for( final Direction side : Direction.values() )
 		{
 			if( !this.isSideValid( side ) )
 			{

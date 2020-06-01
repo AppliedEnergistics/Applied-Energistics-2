@@ -19,119 +19,129 @@
 package appeng.block.misc;
 
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import appeng.helpers.ICustomCollision;
 import appeng.helpers.MetaRotation;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.IWorldReader;
+import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import javax.annotation.Nullable;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Random;
 
 
-public class BlockQuartzFixture extends AEBaseBlock implements IOrientableBlock, ICustomCollision
+public class BlockQuartzFixture extends AEBaseBlock implements IOrientableBlock
 {
 
+	// Cache VoxelShapes for each facing
+	private static final Map<Direction, VoxelShape> SHAPES;
+
+	static {
+		SHAPES = new EnumMap<>(Direction.class);
+
+		for (Direction facing : Direction.values()) {
+			final double xOff = -0.3 * facing.getXOffset();
+			final double yOff = -0.3 * facing.getYOffset();
+			final double zOff = -0.3 * facing.getZOffset();
+			VoxelShape shape = VoxelShapes.create(new AxisAlignedBB(xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7));
+			SHAPES.put(facing, shape);
+		}
+	}
+
 	// Cannot use the vanilla FACING property here because it excludes facing DOWN
-	public static final PropertyDirection FACING = PropertyDirection.create( "facing" );
+	public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
 	// Used to alternate between two variants of the fixture on adjacent blocks
-	public static final PropertyBool ODD = PropertyBool.create( "odd" );
+	public static final BooleanProperty ODD = BooleanProperty.create( "odd" );
 
 	public BlockQuartzFixture()
 	{
-		super( Material.CIRCUITS );
+		super(Block.Properties.create(Material.MISCELLANEOUS).doesNotBlockMovement().hardnessAndResistance(0, 0).lightValue(14).sound(SoundType.GLASS));
 
-		this.setDefaultState( this.blockState.getBaseState().withProperty( FACING, Direction.UP ).withProperty( ODD, false ) );
-		this.setLightLevel( 0.9375F );
-		this.setLightOpacity( 0 );
+		this.setDefaultState( getDefaultState().with( FACING, Direction.UP ).with( ODD, false ) );
 		this.setFullSize( false );
 		this.setOpaque( false );
 	}
 
-	/**
-	 * Sets the "ODD" property of the block state according to the placement of the block.
-	 */
 	@Override
-	public BlockState getActualState( BlockState state, IBlockReader worldIn, BlockPos pos )
-	{
+	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+		builder.add(FACING, ODD);
+	}
+
+	// For reference, see WallTorchBlock
+	@Nullable
+	public BlockState getStateForPlacement(BlockItemUseContext context) {
+		BlockState blockstate = super.getStateForPlacement(context);
+		BlockPos pos = context.getPos();
+
+		// Set the even/odd property
 		boolean oddPlacement = ( ( pos.getX() + pos.getY() + pos.getZ() ) % 2 ) != 0;
+		blockstate = blockstate.with( ODD, oddPlacement );
 
-		return super.getActualState( state, worldIn, pos )
-				.withProperty( ODD, oddPlacement );
+		IWorldReader iworldreader = context.getWorld();
+		Direction[] adirection = context.getNearestLookingDirections();
+
+		for(Direction direction : adirection) {
+			if (canPlaceAt(iworldreader, pos, direction)) {
+				return blockstate.with(FACING, direction.getOpposite());
+			}
+		}
+
+		return null;
 	}
 
+	// Break the fixture if the block it is attached to is changed so that it could no longer be placed
 	@Override
-	public int getMetaFromState( final BlockState state )
-	{
-		return state.getValue( FACING ).ordinal();
+	public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld worldIn, BlockPos pos, BlockPos facingPos) {
+		Direction fixtureFacing = state.get(FACING);
+		if (facing.getOpposite() == fixtureFacing && !canPlaceAt(worldIn, pos, facing)) {
+			return Blocks.AIR.getDefaultState();
+		}
+		return state;
 	}
 
-	@Override
-	public BlockState getStateFromMeta( final int meta )
-	{
-		Direction facing = Direction.values()[meta];
-		return this.getDefaultState().withProperty( FACING, facing );
-	}
+// FIXME	@Override
+// FIXME	public boolean isValidOrientation( final World w, final BlockPos pos, final Direction forward, final Direction up )
+// FIXME	{
+// FIXME		return this.canPlaceAt( w, pos, up.getOpposite() );
+// FIXME	}
 
-	@Override
-	protected IProperty[] getAEStates()
-	{
-		return new IProperty[] { FACING, ODD };
-	}
-
-	@Override
-	public boolean isValidOrientation( final World w, final BlockPos pos, final Direction forward, final Direction up )
-	{
-		return this.canPlaceAt( w, pos, up.getOpposite() );
-	}
-
-	private boolean canPlaceAt( final World w, final BlockPos pos, final Direction dir )
+	private boolean canPlaceAt( final IWorldReader w, final BlockPos pos, final Direction dir )
 	{
 		final BlockPos test = pos.offset( dir );
-		return w.isSideSolid( test, dir.getOpposite(), false );
+		BlockState blockstate = w.getBlockState(test);
+		return blockstate.isSolidSide(w, test, dir.getOpposite());
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final BlockPos pos, final Entity e, final boolean isVisual )
-	{
-		final Direction up = this.getOrientable( w, pos ).getUp();
-		final double xOff = -0.3 * up.getFrontOffsetX();
-		final double yOff = -0.3 * up.getFrontOffsetY();
-		final double zOff = -0.3 * up.getFrontOffsetZ();
-		return Collections.singletonList( new AxisAlignedBB( xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7 ) );
-	}
-
-	@Override
-	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List out, final Entity e )
-	{/*
-		 * double xOff = -0.15 * getUp().offsetX; double yOff = -0.15 * getUp().offsetY; double zOff = -0.15 *
-		 * getUp().offsetZ; out.add( AxisAlignedBB.getBoundingBox( xOff + (double) x + 0.15, yOff + (double) y + 0.15,
-		 * zOff
-		 * + (double) z + 0.15,// ahh xOff + (double) x + 0.85, yOff + (double) y + 0.85, zOff + (double) z + 0.85 ) );
-		 */
+	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+		Direction facing = state.get(FACING);
+		return SHAPES.get(facing);
 	}
 
 	@Override
@@ -149,30 +159,29 @@ public class BlockQuartzFixture extends AEBaseBlock implements IOrientableBlock,
 		}
 
 		final Direction up = this.getOrientable( w, pos ).getUp();
-		final double xOff = -0.3 * up.getFrontOffsetX();
-		final double yOff = -0.3 * up.getFrontOffsetY();
-		final double zOff = -0.3 * up.getFrontOffsetZ();
+		final double xOff = -0.3 * up.getXOffset();
+		final double yOff = -0.3 * up.getYOffset();
+		final double zOff = -0.3 * up.getZOffset();
 		for( int bolts = 0; bolts < 3; bolts++ )
 		{
 			if( AppEng.proxy.shouldAddParticles( r ) )
 			{
-				final LightningFX fx = new LightningFX( w, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(), zOff + 0.5 + pos.getZ(), 0.0D, 0.0D, 0.0D );
-
-				Minecraft.getInstance().effectRenderer.addEffect( fx );
+				w.addParticle(LightningFX.TYPE, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(), zOff + 0.5 + pos.getZ(), 0, 0, 0);
 			}
 		}
 	}
 
-	@Override
-	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
-	{
-		final Direction up = this.getOrientable( world, pos ).getUp();
-		if( !this.canPlaceAt( world, pos, up.getOpposite() ) )
-		{
-			this.dropTorch( world, pos );
-		}
-	}
-
+	// FIXME: Replaced by the postPlaceupdate stuff above
+//	@Override
+//	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
+//	{
+//		final Direction up = this.getOrientable( world, pos ).getUp();
+//		if( !this.canPlaceAt( world, pos, up.getOpposite() ) )
+//		{
+//			this.dropTorch( world, pos );
+//		}
+//	}
+//
 	private void dropTorch( final World w, final BlockPos pos )
 	{
 		final BlockState prev = w.getBlockState( pos );
@@ -183,7 +192,7 @@ public class BlockQuartzFixture extends AEBaseBlock implements IOrientableBlock,
 	@Override
 	public boolean isValidPosition(BlockState state, IWorldReader w, BlockPos pos)
 	{
-		for( final Direction dir : Direction.VALUES )
+		for( final Direction dir : Direction.values() )
 		{
 			if( this.canPlaceAt( w, pos, dir ) )
 			{
@@ -191,12 +200,6 @@ public class BlockQuartzFixture extends AEBaseBlock implements IOrientableBlock,
 			}
 		}
 		return false;
-	}
-
-	@Override
-	public boolean usesMetadata()
-	{
-		return true;
 	}
 
 	@Override
@@ -209,19 +212,6 @@ public class BlockQuartzFixture extends AEBaseBlock implements IOrientableBlock,
 	public boolean isOpaque()
 	{
 		return false;
-	}
-
-	@Override
-	public boolean isFullCube( BlockState state )
-	{
-		return false;
-	}
-
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public BlockRenderLayer getBlockLayer()
-	{
-		return BlockRenderLayer.CUTOUT;
 	}
 
 }

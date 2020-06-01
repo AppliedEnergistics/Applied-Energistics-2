@@ -22,6 +22,7 @@ package appeng.core.api.definitions;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.ITileDefinition;
+import appeng.block.misc.BlockQuartzFixture;
 import appeng.block.spatial.BlockMatrixFrame;
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.FeatureFactory;
@@ -163,10 +164,16 @@ public final class ApiBlocks implements IBlocks
 				})
 				.build();
 
-//		this.quartzFixture = registry.block( "quartz_fixture", BlockQuartzFixture::new )
-//				.features( AEFeature.DECORATIVE_LIGHTS )
-//				.useCustomItemModel()
-//				.build();
+		this.quartzFixture = registry.block( "quartz_fixture", BlockQuartzFixture::new )
+				.features( AEFeature.DECORATIVE_LIGHTS )
+				.rendering(new BlockRenderingCustomizer() {
+					@Override
+					@OnlyIn(Dist.CLIENT)
+					public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
+						rendering.renderType(RenderType.getCutout());
+					}
+				})
+				.build();
 
 //		this.fluixBlock = registry.features( AEFeature.FLUIX ).block( "fluix_block", BlockFluix::new ).build();
 //

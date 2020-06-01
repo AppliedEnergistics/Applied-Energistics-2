@@ -25,7 +25,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockStateContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.BooleanProperty;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.IProperty;
 import net.minecraft.util.BlockRenderLayer;
@@ -49,8 +49,8 @@ import appeng.util.Platform;
 
 public class BlockCraftingUnit extends AEBaseTileBlock
 {
-	public static final PropertyBool FORMED = PropertyBool.create( "formed" );
-	public static final PropertyBool POWERED = PropertyBool.create( "powered" );
+	public static final BooleanProperty FORMED = BooleanProperty.create( "formed" );
+	public static final BooleanProperty POWERED = BooleanProperty.create( "powered" );
 	public static final UnlistedProperty<CraftingCubeState> STATE = new UnlistedProperty<>( "state", CraftingCubeState.class );
 
 	public final CraftingUnitType type;
@@ -84,7 +84,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 
 		IExtendedBlockState extState = (IExtendedBlockState) state;
 
-		return extState.withProperty( STATE, new CraftingCubeState( connections ) );
+		return extState.with( STATE, new CraftingCubeState( connections ) );
 	}
 
 	private boolean isConnected( IBlockReader world, BlockPos pos, Direction side )
@@ -102,7 +102,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	@Override
 	public BlockState getStateFromMeta( final int meta )
 	{
-		return this.getDefaultState().withProperty( POWERED, ( meta & 1 ) == 1 ).withProperty( FORMED, ( meta & 2 ) == 2 );
+		return this.getDefaultState().with( POWERED, ( meta & 1 ) == 1 ).with( FORMED, ( meta & 2 ) == 2 );
 	}
 
 	@Override

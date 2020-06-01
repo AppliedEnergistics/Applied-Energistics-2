@@ -536,7 +536,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	{
 		if( this.pushDirection == AEPartLocation.INTERNAL )
 		{
-			for( final Direction d : Direction.VALUES )
+			for( final Direction d : Direction.values() )
 			{
 				output = this.pushTo( output, d );
 			}
