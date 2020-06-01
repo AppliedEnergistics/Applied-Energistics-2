@@ -23,8 +23,8 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -36,7 +36,7 @@ import appeng.util.helpers.ItemHandlerUtil;
 
 public class AppEngSlot extends Slot
 {
-	private static IInventory emptyInventory = new InventoryBasic( "[Null]", true, 0 );
+	private static IInventory emptyInventory = new Inventory(0);
 	private final IItemHandler itemHandler;
 	private final int index;
 

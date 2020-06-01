@@ -21,9 +21,7 @@ package appeng.util;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.config.SearchBoxMode;
 import appeng.api.config.SecurityPermissions;
-import appeng.api.config.SortOrder;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.networking.IGridNode;
@@ -35,32 +33,31 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.Api;
 import appeng.core.features.AEFeature;
-import appeng.core.stats.Stats;
+import appeng.core.stats.AeStats;
 import appeng.me.GridAccessException;
-import appeng.me.helpers.AENetworkProxy;
 import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.item.AEItemStack;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Random;
-import java.util.WeakHashMap;
+import java.util.*;
 
 import com.google.common.base.Preconditions;
 
@@ -481,40 +478,40 @@ public class Platform
 		return Math.abs( RANDOM_GENERATOR.nextInt() );
 	}
 
-//	@OnlyIn( Dist.CLIENT )
-//	public static List<ITextComponent> getTooltip( final Object o )
-//	{
-//		if( o == null )
-//		{
-//			return Collections.emptyList();
-//		}
-//
-//		ItemStack itemStack = ItemStack.EMPTY;
-//		if( o instanceof AEItemStack )
-//		{
-//			final AEItemStack ais = (AEItemStack) o;
-//			return ais.getToolTip();
-//		}
-//		else if( o instanceof ItemStack )
-//		{
-//			itemStack = (ItemStack) o;
-//		}
-//		else
-//		{
-//			return Collections.emptyList();
-//		}
-//
-//		try
-//		{
-//			ITooltipFlag.TooltipFlags tooltipFlag = Minecraft
-//					.getInstance().gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL;
-//			return itemStack.getTooltip(Minecraft.getInstance().player, tooltipFlag);
-//		}
-//		catch( final Exception errB )
-//		{
-//			return Collections.emptyList();
-//		}
-//	}
+	@OnlyIn( Dist.CLIENT )
+	public static List<ITextComponent> getTooltip(final Object o )
+	{
+		if( o == null )
+		{
+			return Collections.emptyList();
+		}
+
+		ItemStack itemStack = ItemStack.EMPTY;
+		if( o instanceof AEItemStack )
+		{
+			final AEItemStack ais = (AEItemStack) o;
+			return ais.getToolTip();
+		}
+		else if( o instanceof ItemStack )
+		{
+			itemStack = (ItemStack) o;
+		}
+		else
+		{
+			return Collections.emptyList();
+		}
+
+		try
+		{
+			ITooltipFlag.TooltipFlags tooltipFlag = Minecraft
+					.getInstance().gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL;
+			return itemStack.getTooltip(Minecraft.getInstance().player, tooltipFlag);
+		}
+		catch( final Exception errB )
+		{
+			return Collections.emptyList();
+		}
+	}
 //
 //	public static String getModId( final IAEItemStack is )
 //	{
@@ -1080,7 +1077,7 @@ public class Platform
 
 				if( ret != null )
 				{
-					src.player().ifPresent( player -> Stats.ItemsExtracted.addToPlayer( player, (int) ret.getStackSize() ) );
+					src.player().ifPresent( player -> AeStats.ItemsExtracted.addToPlayer( player, (int) ret.getStackSize() ) );
 				}
 				return ret;
 			}
@@ -1134,7 +1131,7 @@ public class Platform
 					src.player().ifPresent( player ->
 					{
 						final long diff = original - split.getStackSize();
-						Stats.ItemsInserted.addToPlayer( player, (int) diff );
+						AeStats.ItemsInserted.addToPlayer( player, (int) diff );
 					} );
 
 					return split;
@@ -1145,7 +1142,7 @@ public class Platform
 				src.player().ifPresent( player ->
 				{
 					final long diff = ret == null ? input.getStackSize() : input.getStackSize() - ret.getStackSize();
-					Stats.ItemsInserted.addToPlayer( player, (int) diff );
+					AeStats.ItemsInserted.addToPlayer( player, (int) diff );
 				} );
 
 				return ret;
@@ -1335,36 +1332,36 @@ public class Platform
 //		);
 //	}
 //
-	public static boolean canAccess( final AENetworkProxy gridProxy, final IActionSource src )
-	{
-		try
-		{
-			if( src.player().isPresent() )
-			{
-				return gridProxy.getSecurity().hasPermission( src.player().get(), SecurityPermissions.BUILD );
-			}
-			else if( src.machine().isPresent() )
-			{
-				final IActionHost te = src.machine().get();
-				final IGridNode n = te.getActionableNode();
-				if( n == null )
-				{
-					return false;
-				}
-
-				final int playerID = n.getPlayerID();
-				return gridProxy.getSecurity().hasPermission( playerID, SecurityPermissions.BUILD );
-			}
-			else
-			{
-				return false;
-			}
-		}
-		catch( final GridAccessException gae )
-		{
-			return false;
-		}
-	}
+//	public static boolean canAccess( final AENetworkProxy gridProxy, final IActionSource src )
+//	{
+//		try
+//		{
+//			if( src.player().isPresent() )
+//			{
+//				return gridProxy.getSecurity().hasPermission( src.player().get(), SecurityPermissions.BUILD );
+//			}
+//			else if( src.machine().isPresent() )
+//			{
+//				final IActionHost te = src.machine().get();
+//				final IGridNode n = te.getActionableNode();
+//				if( n == null )
+//				{
+//					return false;
+//				}
+//
+//				final int playerID = n.getPlayerID();
+//				return gridProxy.getSecurity().hasPermission( playerID, SecurityPermissions.BUILD );
+//			}
+//			else
+//			{
+//				return false;
+//			}
+//		}
+//		catch( final GridAccessException gae )
+//		{
+//			return false;
+//		}
+//	}
 //
 //	public static ItemStack extractItemsByRecipe(final IEnergySource energySrc, final IActionSource mySrc, final IMEMonitor<IAEItemStack> src, final World w, final IRecipe r, final ItemStack output, final CraftingInventory ci, final ItemStack providedTemplate, final int slot, final IItemList<IAEItemStack> items, final Actionable realForFake, final IPartitionList<IAEItemStack> filter )
 //	{

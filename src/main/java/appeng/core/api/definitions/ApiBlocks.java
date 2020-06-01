@@ -26,13 +26,16 @@ import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.FeatureFactory;
 import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;
-import appeng.client.render.model.GlassModel;
 import appeng.core.features.AEFeature;
 import appeng.core.features.registries.PartModels;
 import appeng.decorative.AEDecorativeBlock;
-import appeng.decorative.solid.*;
+import appeng.decorative.solid.BlockChargedQuartzOre;
+import appeng.decorative.solid.BlockQuartzGlass;
+import appeng.decorative.solid.BlockQuartzOre;
+import appeng.decorative.solid.BlockQuartzPillar;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -140,16 +143,13 @@ public final class ApiBlocks implements IBlocks
 
 		this.quartzGlass = registry.features( AEFeature.QUARTZ_GLASS )
 				.block( "quartz_glass", BlockQuartzGlass::new )
-//				.useCustomItemModel()
-//				  .rendering( new BlockRenderingCustomizer()
-//				  {
-//				  	@Override
-//				  	@OnlyIn( Dist.CLIENT)
-//				  	public void customize(IBlockRendering rendering, IItemRendering itemRendering )
-//				  	{
-//				  		rendering.builtInModel( "models/block/builtin/quartz_glass", new GlassModel() );
-//				  	}
-//				  } )
+				.rendering(new BlockRenderingCustomizer() {
+					@Override
+					@OnlyIn(Dist.CLIENT)
+					public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
+						rendering.renderType(RenderType.getCutout());
+					}
+				})
 				.build();
 //		this.quartzVibrantGlass = deco.block( "quartz_vibrant_glass", BlockQuartzLamp::new )
 //				.addFeatures( AEFeature.DECORATIVE_LIGHTS, AEFeature.QUARTZ_GLASS )

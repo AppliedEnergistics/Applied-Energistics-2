@@ -22,7 +22,6 @@ package appeng.core.sync.network;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.PacketDispatcher;
 
 
 public interface IPacketHandler

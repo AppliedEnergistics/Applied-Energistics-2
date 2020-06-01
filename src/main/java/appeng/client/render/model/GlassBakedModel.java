@@ -119,6 +119,7 @@ class GlassBakedModel implements IDynamicBakedModel
 			return Collections.emptyList();
 		}
 
+		// TODO: This could just use the Random instance we're given...
 		final int cx = Math.abs( glassState.getX() % 10 );
 		final int cy = Math.abs( glassState.getY() % 10 );
 		final int cz = Math.abs( glassState.getZ() % 10 );
@@ -229,11 +230,10 @@ class GlassBakedModel implements IDynamicBakedModel
 
 		// Apply the u,v shift.
 		// This mirrors the logic from OffsetIcon from 1.7
-		float u1 = MathHelper.clamp( 0 - uOffset, 0, 16 );
-		float u2 = MathHelper.clamp( 16 - uOffset, 0, 16 );
-		float v1 = MathHelper.clamp( 0 - vOffset, 0, 16 );
-		float v2 = MathHelper.clamp( 16 - vOffset, 0, 16 );
-
+		float u1 = MathHelper.clamp( 0 /*- uOffset*/, 0, 16 );
+		float u2 = MathHelper.clamp( 16 /*- uOffset*/, 0, 16 );
+		float v1 = MathHelper.clamp( 0 /*- vOffset*/, 0, 16 );
+		float v2 = MathHelper.clamp( 16 /*- vOffset*/, 0, 16 );
 
 		BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
 		builder.setQuadOrientation(side);
@@ -263,6 +263,9 @@ class GlassBakedModel implements IDynamicBakedModel
 				case COLOR:
 					builder.put( e, 1.0f, 1.0f, 1.0f, 1.0f );
 					break;
+				case NORMAL:
+					builder.put( e, (float) normal.x, (float) normal.y, (float) normal.z, 0f );
+					break;
 				case UV:
 					if( el.getIndex() == 0 )
 					{
@@ -271,9 +274,6 @@ class GlassBakedModel implements IDynamicBakedModel
 						builder.put( e, u, v, 0f, 1f );
 						break;
 					}
-				case NORMAL:
-					builder.put( e, (float) normal.x, (float) normal.y, (float) normal.z, 0f );
-					break;
 				default:
 					builder.put( e );
 					break;

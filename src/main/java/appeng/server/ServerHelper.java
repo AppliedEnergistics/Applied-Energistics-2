@@ -40,7 +40,6 @@ import appeng.client.ActionKey;
 import appeng.client.EffectType;
 import appeng.core.CommonHelper;
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.NetworkHandler;
 import appeng.util.Platform;
 
 
@@ -100,7 +99,7 @@ public class ServerHelper extends CommonHelper
 				final double dZ = z - entityplayermp.getPosZ();
 				if( dX * dX + dY * dY + dZ * dZ < dist * dist )
 				{
-					NetworkHandler.instance().sendTo( packet, entityplayermp );
+					// FIXME NetworkHandler.instance().sendTo( packet, entityplayermp );
 				}
 			}
 		}

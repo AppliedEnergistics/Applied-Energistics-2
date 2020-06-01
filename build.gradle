@@ -121,6 +121,25 @@ sourceSets {
             include 'appeng/client/render/model/GlassModel.java'
             include 'appeng/client/render/model/RenderHelper.java'
             include 'appeng/client/render/model/GlassModelLoader.java'
+            include 'appeng/helpers/AEGlassMaterial.java'
+
+            include 'appeng/core/sync/AppEngPacket.java'
+            include 'appeng/core/sync/network/INetworkInfo.java'
+//            include 'appeng/core/sync/network/NetworkHandler.java'
+            include 'appeng/core/sync/network/IPacketHandler.java'
+            include 'appeng/core/sync/network/TargetPoint.java'
+
+            include 'appeng/core/stats/AeStats.java'
+            include 'appeng/me/GridAccessException.java'
+
+            include 'appeng/util/item/AEItemStack.java'
+            include 'appeng/util/item/AEStack.java'
+            include 'appeng/util/item/AESharedItemStack.java'
+            include 'appeng/util/item/AEItemStackRegistry.java'
+            include 'appeng/services/compass/ICompassCallback.java'
+            include 'appeng/hooks/CompassResult.java'
+            include 'appeng/container/ContainerOpenContext.java'
+
 //            include 'appeng/client/ClientHelper.java'
 //            include 'appeng/server/ServerHelper.java'
             include 'appeng/block/AEBaseBlock.java'

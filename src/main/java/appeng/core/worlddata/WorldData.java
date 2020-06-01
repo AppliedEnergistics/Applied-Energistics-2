@@ -71,7 +71,7 @@ public final class WorldData implements IWorldData
 	private final File spawnDirectory;
 	private final File compassDirectory;
 
-	private final Configuration sharedConfig;
+	// FIXME private final Configuration sharedConfig;
 
 	private WorldData( @Nonnull final File worldDirectory )
 	{

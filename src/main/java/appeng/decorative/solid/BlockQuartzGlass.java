@@ -19,83 +19,30 @@
 package appeng.decorative.solid;
 
 
-import java.util.EnumSet;
-
-import net.minecraft.block.material.Material;
+import appeng.helpers.AEGlassMaterial;
+import net.minecraft.block.AbstractGlassBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.data.ModelProperty;
 
-import appeng.block.AEBaseBlock;
+public class BlockQuartzGlass extends AbstractGlassBlock {
 
-public class BlockQuartzGlass extends AEBaseBlock
-{
-
-	public BlockQuartzGlass()
-	{
-		super( Properties.create(Material.GLASS) );
-		// FIXME this.setLightOpacity( 0 );
-		this.setOpaque( false );
+	public BlockQuartzGlass() {
+		super(Block.Properties.create(Material.GLASS).hardnessAndResistance(2.2F).sound(SoundType.GLASS).notSolid());
 	}
 
-//	@Override
-//	protected BlockStateContainer createBlockState()
-//	{
-//		IProperty[] listedProperties = new IProperty[0];
-//		IUnlistedProperty[] unlistedProperties = new IUnlistedProperty[] { GLASS_STATE };
-//		return new ExtendedBlockState( this, listedProperties, unlistedProperties );
-//	}
+	@Override
+	public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
+		final Material mat = adjacentBlockState.getMaterial();
+		if (mat == Material.GLASS || mat == AEGlassMaterial.INSTANCE) {
+			if (adjacentBlockState.getRenderType() == state.getRenderType()) {
+				return true;
+			}
+		}
 
-// FIXME	@Override
-// FIXME	public BlockRenderLayer getBlockLayer()
-// FIXME	{
-// FIXME		return BlockRenderLayer.CUTOUT;
-// FIXME	}
-
-// FIXME	@Override
-// FIXME	public boolean shouldSideBeRendered( final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side )
-// FIXME	{
-// FIXME		BlockPos adjacentPos = pos.offset( side );
-// FIXME
-// FIXME		final Material mat = w.getBlockState( adjacentPos ).getMaterial();
-// FIXME
-// FIXME		if( mat == Material.GLASS || mat == AEGlassMaterial.INSTANCE )
-// FIXME		{
-// FIXME			if( w.getBlockState( adjacentPos ).getRenderType() == this.getRenderType( state ) )
-// FIXME			{
-// FIXME				return false;
-// FIXME			}
-// FIXME		}
-// FIXME
-// FIXME		return super.shouldSideBeRendered( state, w, pos, side );
-// FIXME	}
-
-	// BEGIN: Copied from AbstractGlassBlock
-	@OnlyIn(Dist.CLIENT)
-	public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
-		return 1.0F;
+		return super.isSideInvisible(state, adjacentBlockState, side);
 	}
-
-	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
-		return true;
-	}
-
-	public boolean causesSuffocation(BlockState state, IBlockReader worldIn, BlockPos pos) {
-		return false;
-	}
-
-	public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos) {
-		return false;
-	}
-
-	public boolean canEntitySpawn(BlockState state, IBlockReader worldIn, BlockPos pos, EntityType<?> type) {
-		return false;
-	}
-	// END: Copied from AbstractGlassBlock
 
 }

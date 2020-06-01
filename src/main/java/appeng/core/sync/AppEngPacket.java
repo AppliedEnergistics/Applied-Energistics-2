@@ -34,7 +34,6 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.features.AEFeature;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.core.sync.network.NetworkHandler;
 
 
 public abstract class AppEngPacket
@@ -48,7 +47,8 @@ public abstract class AppEngPacket
 
 	public final int getPacketID()
 	{
-		return AppEngPacketHandlerBase.PacketTypes.getID( this.getClass() ).ordinal();
+		throw new IllegalStateException();
+		// FIXME return AppEngPacketHandlerBase.PacketTypes.getID( this.getClass() ).ordinal();
 	}
 
 	public void clientPacketData( final INetworkInfo network, final PlayerEntity player )
@@ -74,7 +74,8 @@ public abstract class AppEngPacket
 			AELog.info( this.getClass().getName() + " : " + p.readableBytes() );
 		}
 
-		return direction.buildPacket( Pair.of( p, 0 ), NetworkHandler.instance().getChannel() ).getThis();
+		// FIXME  return direction.buildPacket( Pair.of( p, 0 ), NetworkHandler.instance().getChannel() ).getThis();
+		return null;
 	}
 
 	// TODO: Figure out why Forge/Minecraft on the server sets the stream data buffer to PooledUnsafeDirectByteBuf

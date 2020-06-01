@@ -21,6 +21,8 @@ package appeng.core;
 
 import java.io.File;
 
+import appeng.bootstrap.components.IBlockRegistrationComponent;
+import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.client.ClientHelper;
 import appeng.core.features.AEFeature;
 import appeng.server.ServerHelper;
@@ -28,9 +30,12 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.particles.ParticleType;
+import net.minecraft.stats.StatType;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.CrashReportExtender;
 import net.minecraftforge.fml.DistExecutor;
@@ -41,7 +46,11 @@ import net.minecraftforge.fml.config.ModConfig;
 
 import appeng.core.crash.ModCrashEnhancement;
 import appeng.services.export.ExportConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.registries.IForgeRegistry;
 
 @Mod(AppEng.MOD_ID)
 public final class AppEng
@@ -95,7 +104,20 @@ public final class AppEng
 		modEventBus.addGenericListener(ParticleType.class, registration::registerParticleTypes);
 		modEventBus.addListener(registration::registerParticleFactories);
 
+		modEventBus.addListener(this::commonSetup);
+
+		// Register client-only events
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(this::clientSetup));
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(registration::modelRegistryEvent));
+	}
+
+	private void commonSetup(FMLCommonSetupEvent event) {
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	private void clientSetup(FMLClientSetupEvent event) {
+		final ApiDefinitions definitions = Api.INSTANCE.definitions();
+		definitions.getRegistry().getBootstrapComponents( IClientSetupComponent.class ).forEachRemaining(IClientSetupComponent::setup);
 	}
 
 //	@Nonnull

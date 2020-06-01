@@ -39,7 +39,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.client.gui.implementations.GuiInterfaceTerminal;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 
@@ -113,9 +112,9 @@ public class PacketCompressedNBT extends AppEngPacket
 	{
 		final Screen gs = Minecraft.getInstance().currentScreen;
 
-		if( gs instanceof GuiInterfaceTerminal )
-		{
-			( (GuiInterfaceTerminal) gs ).postUpdate( this.in );
-		}
+		// FIXME if( gs instanceof GuiInterfaceTerminal )
+		// FIXME {
+		// FIXME 	( (GuiInterfaceTerminal) gs ).postUpdate( this.in );
+		// FIXME }
 	}
 }

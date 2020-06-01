@@ -29,18 +29,14 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.IItems;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
-import appeng.block.networking.BlockCableBus;
 import appeng.core.Api;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.items.tools.ToolNetworkTool;
-import appeng.items.tools.powered.ToolColorApplicator;
 
 
 public class PacketClick extends AppEngPacket
@@ -120,34 +116,34 @@ public class PacketClick extends AppEngPacket
 		if( this.leftClick )
 		{
 			final Block block = player.world.getBlockState( pos ).getBlock();
-			if( block instanceof BlockCableBus )
-			{
-				( (BlockCableBus) block ).onBlockClickPacket( player.world, pos, player, this.hand, new Vec3d( this.hitX, this.hitY, this.hitZ ) );
-			}
+//	FIXME		 if( block instanceof BlockCableBus )
+//	FIXME		 {
+//	FIXME		 	( (BlockCableBus) block ).onBlockClickPacket( player.world, pos, player, this.hand, new Vec3d( this.hitX, this.hitY, this.hitZ ) );
+//	FIXME		 }
 		}
 		else
 		{
 			if( !is.isEmpty() )
 			{
-				if( is.getItem() instanceof ToolNetworkTool )
-				{
-					final ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
-					tnt.serverSideToolLogic( is, player, this.hand, player.world, pos, this.side, this.hitX, this.hitY,
-							this.hitZ );
-				}
+				// FIXME if( is.getItem() instanceof ToolNetworkTool )
+				// FIXME {
+				// FIXME 	final ToolNetworkTool tnt = (ToolNetworkTool) is.getItem();
+				// FIXME 	tnt.serverSideToolLogic( is, player, this.hand, player.world, pos, this.side, this.hitX, this.hitY,
+				// FIXME 			this.hitZ );
+				// FIXME }
 
-				else if( maybeMemoryCard.isSameAs( is ) )
+				/* FIXME else */ if( maybeMemoryCard.isSameAs( is ) )
 				{
 					final IMemoryCard mem = (IMemoryCard) is.getItem();
 					mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
 					is.setTag( null );
 				}
 
-				else if( maybeColorApplicator.isSameAs( is ) )
-				{
-					final ToolColorApplicator mem = (ToolColorApplicator) is.getItem();
-					mem.cycleColors( is, mem.getColor( is ), 1 );
-				}
+				// FIXME else if( maybeColorApplicator.isSameAs( is ) )
+				// FIXME {
+				// FIXME 	final ToolColorApplicator mem = (ToolColorApplicator) is.getItem();
+				// FIXME 	mem.cycleColors( is, mem.getColor( is ), 1 );
+				// FIXME }
 			}
 		}
 	}

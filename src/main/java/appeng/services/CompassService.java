@@ -31,26 +31,29 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
+import appeng.core.Api;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.block.Block;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import appeng.api.AEApi;
 import appeng.api.util.DimensionalCoord;
 import appeng.services.compass.CompassReader;
 import appeng.services.compass.ICompassCallback;
 import appeng.util.Platform;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 
 public final class CompassService
 {
 	private static final int CHUNK_SIZE = 16;
 
-	private final Map<World, CompassReader> worldSet = new HashMap<>( 10 );
+	private final Map<IWorld, CompassReader> worldSet = new HashMap<>( 10 );
 	private final ExecutorService executor;
 
 	/**
@@ -132,7 +135,7 @@ public final class CompassService
 		final int hi_y = low_y + 32;
 
 		// lower level...
-		final Chunk c = w.getChunkFromChunkCoords( cx, cz );
+		final Chunk c = w.getChunk( cx, cz );
 
 		Optional<Block> maybeBlock = Api.INSTANCE.definitions().blocks().skyStoneBlock().maybeBlock();
 		if( maybeBlock.isPresent() )
@@ -144,7 +147,7 @@ public final class CompassService
 				{
 					for( int k = low_y; k < hi_y; k++ )
 					{
-						final Block blk = c.getBlockState( i, k, j ).getBlock();
+						final Block blk = c.getBlockState( new BlockPos(i, k, j) ).getBlock();
 						if( blk == skyStoneBlock )
 						{
 							return this.executor.submit( new CMUpdatePost( w, cx, cz, cdy, true ) );
@@ -179,7 +182,7 @@ public final class CompassService
 		}
 	}
 
-	private CompassReader getReader( final World w )
+	private CompassReader getReader( final IWorld w )
 	{
 		CompassReader cr = this.worldSet.get( w );
 

@@ -34,8 +34,6 @@ import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.security.IActionHost;
 import appeng.container.ContainerOpenContext;
-import appeng.container.implementations.ContainerCraftAmount;
-import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.GuiBridge;

@@ -41,7 +41,7 @@ import net.minecraftforge.common.util.FakePlayer;
 
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.block.AEBaseTileBlock;
-import appeng.core.stats.Stats;
+import appeng.core.stats.AeStats;
 import appeng.tile.AEBaseTile;
 import appeng.tile.grindstone.TileCrank;
 
@@ -72,7 +72,7 @@ public class BlockCrank extends AEBaseTileBlock
 		{
 			if( ( (TileCrank) tile ).power() )
 			{
-				Stats.TurnedCranks.addToPlayer( player, 1 );
+				AeStats.TurnedCranks.addToPlayer( player, 1 );
 			}
 		}
 

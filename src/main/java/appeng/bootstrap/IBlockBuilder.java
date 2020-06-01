@@ -23,6 +23,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 

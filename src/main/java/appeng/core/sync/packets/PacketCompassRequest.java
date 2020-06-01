@@ -30,7 +30,6 @@ import appeng.api.util.DimensionalCoord;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.worlddata.WorldData;
 import appeng.services.compass.ICompassCallback;
 
 
@@ -79,6 +78,6 @@ public class PacketCompassRequest extends AppEngPacket implements ICompassCallba
 		this.talkBackTo = player;
 
 		final DimensionalCoord loc = new DimensionalCoord( player.world, this.cx << 4, this.cdy << 5, this.cz << 4 );
-		WorldData.instance().compassData().service().getCompassDirection( loc, 174, this );
+		// FIXME WorldData.instance().compassData().service().getCompassDirection( loc, 174, this );
 	}
 }

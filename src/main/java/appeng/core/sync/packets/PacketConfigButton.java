@@ -29,7 +29,6 @@ import net.minecraft.network.PacketBuffer;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.container.AEBaseContainer;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
@@ -65,15 +64,15 @@ public final class PacketConfigButton extends AppEngPacket
 	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
 	{
 		final ServerPlayerEntity sender = (ServerPlayerEntity) player;
-		if( sender.openContainer instanceof AEBaseContainer )
-		{
-			final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
-			if( baseContainer.getTarget() instanceof IConfigurableObject )
-			{
-				final IConfigManager cm = ( (IConfigurableObject) baseContainer.getTarget() ).getConfigManager();
-				final Enum<?> newState = Platform.rotateEnum( cm.getSetting( this.option ), this.rotationDirection, this.option.getPossibleValues() );
-				cm.putSetting( this.option, newState );
-			}
-		}
+		// FIXME if( sender.openContainer instanceof AEBaseContainer )
+		// FIXME {
+		// FIXME 	final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
+		// FIXME 	if( baseContainer.getTarget() instanceof IConfigurableObject )
+		// FIXME 	{
+		// FIXME 		final IConfigManager cm = ( (IConfigurableObject) baseContainer.getTarget() ).getConfigManager();
+		// FIXME 		final Enum<?> newState = Platform.rotateEnum( cm.getSetting( this.option ), this.rotationDirection, this.option.getPossibleValues() );
+		// FIXME 		cm.putSetting( this.option, newState );
+		// FIXME 	}
+		// FIXME }
 	}
 }

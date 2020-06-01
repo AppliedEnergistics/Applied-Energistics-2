@@ -21,7 +21,9 @@ package appeng.bootstrap;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.bootstrap.components.BlockColorComponent;
+import appeng.bootstrap.components.RenderTypeComponent;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IUnbakedModel;
@@ -54,6 +56,9 @@ class BlockRendering implements IBlockRendering
 	@OnlyIn( Dist.CLIENT )
 	private Map<String, IUnbakedModel> builtInModels = new HashMap<>();
 
+	@OnlyIn( Dist.CLIENT )
+	private RenderType renderType;
+
 	@Override
 	@OnlyIn( Dist.CLIENT )
 	public IBlockRendering modelCustomizer( BiFunction<ResourceLocation, IBakedModel, IBakedModel> customizer )
@@ -85,7 +90,13 @@ class BlockRendering implements IBlockRendering
 		return this;
 	}
 
-// FIXME	@OnlyIn( Dist.CLIENT )
+	@Override
+	public IBlockRendering renderType(RenderType type) {
+		this.renderType = type;
+		return this;
+	}
+
+	// FIXME	@OnlyIn( Dist.CLIENT )
 // FIXME	@Override
 // FIXME	public IBlockRendering stateMapper( IStateMapper mapper )
 // FIXME	{
@@ -121,6 +132,10 @@ class BlockRendering implements IBlockRendering
 		if( this.blockColor != null )
 		{
 			factory.addBootstrapComponent( new BlockColorComponent( block, this.blockColor ) );
+		}
+
+		if (this.renderType != null) {
+			factory.addBootstrapComponent( new RenderTypeComponent( block, this.renderType));
 		}
 
 	// FIXME	if( this.stateMapper != null )

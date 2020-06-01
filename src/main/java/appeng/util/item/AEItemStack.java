@@ -25,6 +25,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.core.Api;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.item.Item;
@@ -32,6 +33,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -51,7 +53,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	@OnlyIn( Dist.CLIENT )
 	private String displayName;
 	@OnlyIn( Dist.CLIENT )
-	private List<String> tooltip;
+	private List<ITextComponent> tooltip;
 	@OnlyIn( Dist.CLIENT )
 	private ResourceLocation uniqueID;
 
@@ -264,7 +266,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	}
 
 	@OnlyIn( Dist.CLIENT )
-	public List<String> getToolTip()
+	public List<ITextComponent> getToolTip()
 	{
 		if( this.tooltip == null )
 		{
