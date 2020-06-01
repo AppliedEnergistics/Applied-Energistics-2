@@ -230,10 +230,10 @@ class GlassBakedModel implements IDynamicBakedModel
 
 		// Apply the u,v shift.
 		// This mirrors the logic from OffsetIcon from 1.7
-		float u1 = MathHelper.clamp( 0 /*- uOffset*/, 0, 16 );
-		float u2 = MathHelper.clamp( 16 /*- uOffset*/, 0, 16 );
-		float v1 = MathHelper.clamp( 0 /*- vOffset*/, 0, 16 );
-		float v2 = MathHelper.clamp( 16 /*- vOffset*/, 0, 16 );
+		float u1 = MathHelper.clamp( 0 - uOffset, 0, 16 );
+		float u2 = MathHelper.clamp( 16 - uOffset, 0, 16 );
+		float v1 = MathHelper.clamp( 0 - vOffset, 0, 16 );
+		float v2 = MathHelper.clamp( 16 - vOffset, 0, 16 );
 
 		BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
 		builder.setQuadOrientation(side);
@@ -274,6 +274,7 @@ class GlassBakedModel implements IDynamicBakedModel
 						builder.put( e, u, v, 0f, 1f );
 						break;
 					}
+					// Important: Fall through for getIndex() != 0
 				default:
 					builder.put( e );
 					break;
