@@ -121,7 +121,7 @@ public class PacketInventoryAction extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player )
+	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
 	{
 		final PlayerEntityMP sender = (PlayerEntityMP) player;
 		if( sender.openContainer instanceof AEBaseContainer )
@@ -158,7 +158,7 @@ public class PacketInventoryAction extends AppEngPacket
 	}
 
 	@Override
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player )
+	public void clientPacketData( final INetworkInfo network, final PlayerEntity player )
 	{
 		if( this.action == InventoryAction.UPDATE_HAND )
 		{

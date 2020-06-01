@@ -35,10 +35,13 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.IPacket;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.NetworkDirection;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AELog;
@@ -149,9 +152,9 @@ public class PacketMEFluidInventoryUpdate extends AppEngPacket
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player )
+	public void clientPacketData( final INetworkInfo network, final PlayerEntity player )
 	{
-		final GuiScreen gs = Minecraft.getInstance().currentScreen;
+		final Screen gs = Minecraft.getInstance().currentScreen;
 
 		if( gs instanceof GuiFluidTerminal )
 		{
@@ -161,14 +164,14 @@ public class PacketMEFluidInventoryUpdate extends AppEngPacket
 
 	@Nullable
 	@Override
-	public FMLProxyPacket getProxy()
+	public IPacket<?> toPacket( NetworkDirection direction )
 	{
 		try
 		{
 			this.compressFrame.close();
 
 			this.configureWrite( this.data );
-			return super.getProxy();
+			return super.toPacket( direction );
 		}
 		catch( final IOException e )
 		{

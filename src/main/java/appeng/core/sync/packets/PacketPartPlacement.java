@@ -72,7 +72,7 @@ public class PacketPartPlacement extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player )
+	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
 	{
 		final PlayerEntityMP sender = (PlayerEntityMP) player;
 		AppEng.proxy.updateRenderMode( sender );

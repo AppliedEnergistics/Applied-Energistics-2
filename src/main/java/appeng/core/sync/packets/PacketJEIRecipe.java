@@ -36,7 +36,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -106,7 +105,7 @@ public class PacketJEIRecipe extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player )
+	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
 	{
 		final PlayerEntityMP pmp = (PlayerEntityMP) player;
 		final Container con = pmp.openContainer;

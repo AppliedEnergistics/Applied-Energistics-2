@@ -95,7 +95,7 @@ public class PacketValueConfig extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player )
+	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
 	{
 		final Container c = player.openContainer;
 
@@ -270,7 +270,7 @@ public class PacketValueConfig extends AppEngPacket
 	}
 
 	@Override
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player )
+	public void clientPacketData( final INetworkInfo network, final PlayerEntity player )
 	{
 		final Container c = player.openContainer;
 

@@ -20,14 +20,15 @@ package appeng.core.sync;
 
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.INetHandler;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkDirection;
 
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -36,12 +37,11 @@ import appeng.core.sync.network.INetworkInfo;
 import appeng.core.sync.network.NetworkHandler;
 
 
-public abstract class AppEngPacket implements IPacket
+public abstract class AppEngPacket
 {
 	private PacketBuffer p;
-	private PacketCallState caller;
 
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player )
+	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
 	{
 		throw new UnsupportedOperationException( "This packet ( " + this.getPacketID() + " does not implement a server side handler." );
 	}
@@ -51,7 +51,7 @@ public abstract class AppEngPacket implements IPacket
 		return AppEngPacketHandlerBase.PacketTypes.getID( this.getClass() ).ordinal();
 	}
 
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player )
+	public void clientPacketData( final INetworkInfo network, final PlayerEntity player )
 	{
 		throw new UnsupportedOperationException( "This packet ( " + this.getPacketID() + " does not implement a client side handler." );
 	}
@@ -62,33 +62,19 @@ public abstract class AppEngPacket implements IPacket
 		this.p = new PacketBuffer( data );
 	}
 
-	public FMLProxyPacket getProxy()
+	public IPacket<?> toPacket( NetworkDirection direction )
 	{
 		if( this.p.array().length > 2 * 1024 * 1024 ) // 2k walking room :)
 		{
 			throw new IllegalArgumentException( "Sorry AE2 made a " + this.p.array().length + " byte packet by accident!" );
 		}
 
-		final FMLProxyPacket pp = new FMLProxyPacket( this.p, NetworkHandler.instance().getChannel() );
-
 		if( AEConfig.instance().isFeatureEnabled( AEFeature.PACKET_LOGGING ) )
 		{
-			AELog.info( this.getClass().getName() + " : " + pp.payload().readableBytes() );
+			AELog.info( this.getClass().getName() + " : " + p.readableBytes() );
 		}
 
-		return pp;
-	}
-
-	@Override
-	public void readPacketData( final PacketBuffer buf ) throws IOException
-	{
-		throw new RuntimeException( "Not Implemented" );
-	}
-
-	@Override
-	public void writePacketData( final PacketBuffer buf ) throws IOException
-	{
-		throw new RuntimeException( "Not Implemented" );
+		return direction.buildPacket( Pair.of( p, 0 ), NetworkHandler.instance().getChannel() ).getThis();
 	}
 
 	// TODO: Figure out why Forge/Minecraft on the server sets the stream data buffer to PooledUnsafeDirectByteBuf
@@ -113,16 +99,4 @@ public abstract class AppEngPacket implements IPacket
 	{
 		return this.getPacketByteArray( stream, 0, stream.readableBytes() );
 	}
-
-	public void setCallParam( final PacketCallState call )
-	{
-		this.caller = call;
-	}
-
-	@Override
-	public void processPacket( final INetHandler handler )
-	{
-		this.caller.call( this );
-	}
-
 }

@@ -19,15 +19,22 @@
 package appeng.core.sync.network;
 
 
-import net.minecraft.entity.player.PlayerEntityMP;
-import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.INetHandler;
+import net.minecraft.network.IPacket;
 import net.minecraft.network.ThreadQuickExitException;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.FMLEventChannel;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientCustomPacketEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent.ServerCustomPacketEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraft.network.play.ServerPlayNetHandler;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.LogicalSidedProvider;
+import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.event.EventNetworkChannel;
 
 import appeng.core.sync.AppEngPacket;
 
@@ -36,23 +43,22 @@ public class NetworkHandler
 {
 	private static NetworkHandler instance;
 
-	private final FMLEventChannel ec;
-	private final String myChannelName;
+	private final EventNetworkChannel ec;
+	private final ResourceLocation myChannelName;
 
 	private final IPacketHandler clientHandler;
 	private final IPacketHandler serveHandler;
 
-	public NetworkHandler( final String channelName )
+	public NetworkHandler( final ResourceLocation channelName )
 	{
-		FMLCommonHandler.instance().bus().register( this );
-		this.ec = NetworkRegistry.INSTANCE.newEventDrivenChannel( this.myChannelName = channelName );
-		this.ec.register( this );
+		ec = NetworkRegistry.ChannelBuilder.named( myChannelName = channelName ).networkProtocolVersion( () -> "1" ).clientAcceptedVersions( s -> true ).serverAcceptedVersions( s -> true ).eventNetworkChannel();
+		ec.registerObject( this );
 
 		this.clientHandler = this.createClientSide();
 		this.serveHandler = this.createServerSide();
 	}
 
-	public static void init( final String channelName )
+	public static void init( final ResourceLocation channelName )
 	{
 		instance = new NetworkHandler( channelName );
 	}
@@ -87,14 +93,17 @@ public class NetworkHandler
 	}
 
 	@SubscribeEvent
-	public void serverPacket( final ServerCustomPacketEvent ev )
+	public void serverPacket( final NetworkEvent.ClientCustomPayloadEvent ev )
 	{
-		final NetHandlerPlayServer srv = (NetHandlerPlayServer) ev.getPacket().handler();
 		if( this.serveHandler != null )
 		{
 			try
 			{
-				this.serveHandler.onPacketData( null, ev.getHandler(), ev.getPacket(), srv.player );
+				NetworkEvent.Context ctx = ev.getSource().get();
+				ServerPlayNetHandler netHandler = (ServerPlayNetHandler) ctx.getNetworkManager().getNetHandler();
+				ctx.setPacketHandled( true );
+				ctx.enqueueWork( () -> this.serveHandler.onPacketData( null, netHandler, ev.getPayload(), netHandler.player ) );
+
 			}
 			catch( final ThreadQuickExitException ignored )
 			{
@@ -104,13 +113,20 @@ public class NetworkHandler
 	}
 
 	@SubscribeEvent
-	public void clientPacket( final ClientCustomPacketEvent ev )
+	public void clientPacket( final NetworkEvent.ServerCustomPayloadEvent ev )
 	{
+		if( ev instanceof NetworkEvent.ServerCustomPayloadLoginEvent )
+		{
+			return;
+		}
 		if( this.clientHandler != null )
 		{
 			try
 			{
-				this.clientHandler.onPacketData( null, ev.getHandler(), ev.getPacket(), null );
+				NetworkEvent.Context ctx = ev.getSource().get();
+				INetHandler netHandler = ctx.getNetworkManager().getNetHandler();
+				ctx.setPacketHandled( true );
+				ctx.enqueueWork( () -> this.clientHandler.onPacketData( null, netHandler, ev.getPayload(), null ) );
 			}
 			catch( final ThreadQuickExitException ignored )
 			{
@@ -119,33 +135,39 @@ public class NetworkHandler
 		}
 	}
 
-	public String getChannel()
+	public ResourceLocation getChannel()
 	{
 		return this.myChannelName;
 	}
 
 	public void sendToAll( final AppEngPacket message )
 	{
-		this.ec.sendToAll( message.getProxy() );
+		getServer().getPlayerList().sendPacketToAllPlayers( message.toPacket( NetworkDirection.PLAY_TO_CLIENT ) );
 	}
 
-	public void sendTo( final AppEngPacket message, final PlayerEntityMP player )
+	public void sendTo( final AppEngPacket message, final ServerPlayerEntity player )
 	{
-		this.ec.sendTo( message.getProxy(), player );
+		player.connection.sendPacket( message.toPacket( NetworkDirection.PLAY_TO_CLIENT ) );
 	}
 
-	public void sendToAllAround( final AppEngPacket message, final NetworkRegistry.TargetPoint point )
+	public void sendToAllAround( final AppEngPacket message, final TargetPoint point )
 	{
-		this.ec.sendToAllAround( message.getProxy(), point );
+		IPacket<?> pkt = message.toPacket( NetworkDirection.PLAY_TO_CLIENT );
+		getServer().getPlayerList().sendToAllNearExcept( point.excluded, point.x, point.y, point.z, point.r2, point.dim, pkt);
 	}
 
-	public void sendToDimension( final AppEngPacket message, final int dimensionId )
+	public void sendToDimension( final AppEngPacket message, final DimensionType dim )
 	{
-		this.ec.sendToDimension( message.getProxy(), dimensionId );
+		getServer().getPlayerList().sendPacketToAllPlayersInDimension( message.toPacket( NetworkDirection.PLAY_TO_CLIENT ), dim );
 	}
 
 	public void sendToServer( final AppEngPacket message )
 	{
-		this.ec.sendToServer( message.getProxy() );
+		Minecraft.getInstance().getConnection().sendPacket( message.toPacket( NetworkDirection.PLAY_TO_SERVER ) );
+	}
+
+	private MinecraftServer getServer()
+	{
+		return LogicalSidedProvider.INSTANCE.get( LogicalSide.SERVER );
 	}
 }

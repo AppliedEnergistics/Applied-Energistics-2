@@ -74,7 +74,7 @@ public class PacketFluidSlot extends AppEngPacket
 	}
 
 	@Override
-	public void clientPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player )
+	public void clientPacketData( final INetworkInfo manager, final PlayerEntity player )
 	{
 		final Container c = player.openContainer;
 		if( c instanceof IFluidSyncContainer )
@@ -84,7 +84,7 @@ public class PacketFluidSlot extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, PlayerEntity player )
+	public void serverPacketData( INetworkInfo manager, PlayerEntity player )
 	{
 		final Container c = player.openContainer;
 		if( c instanceof IFluidSyncContainer )

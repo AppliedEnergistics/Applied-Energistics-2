@@ -67,7 +67,7 @@ public class PacketMockExplosion extends AppEngPacket
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player )
+	public void clientPacketData( final INetworkInfo network, final PlayerEntity player )
 	{
 		final World world = AppEng.proxy.getWorld();
 		world.spawnParticle( EnumParticleTypes.EXPLOSION_LARGE, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D, new int[0] );

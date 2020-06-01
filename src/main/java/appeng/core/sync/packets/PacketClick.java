@@ -30,12 +30,12 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-import appeng.api.AEApi;
 import appeng.api.definitions.IComparableDefinition;
 import appeng.api.definitions.IItems;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.block.networking.BlockCableBus;
+import appeng.core.Api;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.items.tools.ToolNetworkTool;
@@ -110,7 +110,7 @@ public class PacketClick extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player )
+	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
 	{
 		final ItemStack is = player.inventory.getCurrentItem();
 		final IItems items = Api.INSTANCE.definitions().items();
@@ -140,7 +140,7 @@ public class PacketClick extends AppEngPacket
 				{
 					final IMemoryCard mem = (IMemoryCard) is.getItem();
 					mem.notifyUser( player, MemoryCardMessages.SETTINGS_CLEARED );
-					is.setTagCompound( null );
+					is.setTag( null );
 				}
 
 				else if( maybeColorApplicator.isSameAs( is ) )

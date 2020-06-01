@@ -64,7 +64,7 @@ public final class PacketConfigButton extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player )
+	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
 	{
 		final PlayerEntityMP sender = (PlayerEntityMP) player;
 		if( sender.openContainer instanceof AEBaseContainer )

@@ -88,7 +88,7 @@ public class PacketMatterCannon extends AppEngPacket
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player )
+	public void clientPacketData( final INetworkInfo network, final PlayerEntity player )
 	{
 		try
 		{

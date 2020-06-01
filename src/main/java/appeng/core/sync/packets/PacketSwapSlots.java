@@ -55,7 +55,7 @@ public class PacketSwapSlots extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player )
+	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
 	{
 		if( player != null && player.openContainer instanceof AEBaseContainer )
 		{

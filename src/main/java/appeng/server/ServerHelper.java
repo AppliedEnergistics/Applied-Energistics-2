@@ -25,22 +25,23 @@ import java.util.Random;
 
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.block.AEBaseBlock;
 import appeng.client.ActionKey;
 import appeng.client.EffectType;
 import appeng.core.CommonHelper;
+import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.network.NetworkHandler;
 import appeng.util.Platform;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 
 public class ServerHelper extends CommonHelper
@@ -82,31 +83,28 @@ public class ServerHelper extends CommonHelper
 		return new ArrayList<>();
 	}
 
- // FIXME	@Override
- // FIXME	public void sendToAllNearExcept(final PlayerEntity p, final double x, final double y, final double z, final double dist, final World w, final AppEngPacket packet )
- // FIXME	{
- // FIXME		if( Platform.isClient() )
- // FIXME		{
- // FIXME			return;
- // FIXME		}
- // FIXME
- // FIXME		for( final PlayerEntity o : this.getPlayers() )
- // FIXME		{
- // FIXME			final ServerPlayerEntity entityplayermp = (ServerPlayerEntity) o;
- // FIXME
- // FIXME			if( entityplayermp != p && entityplayermp.world == w )
- // FIXME			{
- // FIXME				final double dX = x - entityplayermp.getPosX();
- // FIXME				final double dY = y - entityplayermp.getPosY();
- // FIXME				final double dZ = z - entityplayermp.getPosZ();
- // FIXME
- // FIXME				if( dX * dX + dY * dY + dZ * dZ < dist * dist )
- // FIXME				{
- // FIXME					NetworkHandler.instance().sendTo( packet, entityplayermp );
- // FIXME				}
- // FIXME			}
- // FIXME		}
- // FIXME	}
+	@Override
+	public void sendToAllNearExcept( final PlayerEntity p, final double x, final double y, final double z, final double dist, final World w, final AppEngPacket packet )
+	{
+		if( Platform.isClient() )
+		{
+			return;
+		}
+		for( final PlayerEntity o : this.getPlayers() )
+		{
+			final ServerPlayerEntity entityplayermp = (ServerPlayerEntity) o;
+			if( entityplayermp != p && entityplayermp.world == w )
+			{
+				final double dX = x - entityplayermp.getPosX();
+				final double dY = y - entityplayermp.getPosY();
+				final double dZ = z - entityplayermp.getPosZ();
+				if( dX * dX + dY * dY + dZ * dZ < dist * dist )
+				{
+					NetworkHandler.instance().sendTo( packet, entityplayermp );
+				}
+			}
+		}
+	}
 
 	@Override
 	public void spawnEffect( final EffectType type, final World world, final double posX, final double posY, final double posZ, final Object o )

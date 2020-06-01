@@ -59,7 +59,7 @@ public class PacketProgressBar extends AppEngPacket
 	}
 
 	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final PlayerEntity player )
+	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
 	{
 		final Container c = player.openContainer;
 		if( c instanceof AEBaseContainer )
@@ -69,7 +69,7 @@ public class PacketProgressBar extends AppEngPacket
 	}
 
 	@Override
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final PlayerEntity player )
+	public void clientPacketData( final INetworkInfo network, final PlayerEntity player )
 	{
 		final Container c = player.openContainer;
 		if( c instanceof AEBaseContainer )
