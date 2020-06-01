@@ -39,6 +39,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.event.world.WorldEvent;
 
 import appeng.api.AEApi;
@@ -123,7 +124,7 @@ public final class CompassService
 		this.updateArea( w, x, CHUNK_SIZE + 224, z );
 	}
 
-	public Future<?> updateArea( final World w, final int x, final int y, final int z )
+	public Future<?> updateArea( final IWorld w, final int x, final int y, final int z )
 	{
 		this.jobSize++;
 
@@ -135,7 +136,7 @@ public final class CompassService
 		final int hi_y = low_y + 32;
 
 		// lower level...
-		final Chunk c = w.getChunk( cx, cz );
+		final IChunk c = w.getChunk( cx, cz );
 
 		Optional<Block> maybeBlock = Api.INSTANCE.definitions().blocks().skyStoneBlock().maybeBlock();
 		if( maybeBlock.isPresent() )
@@ -214,14 +215,14 @@ public final class CompassService
 	private class CMUpdatePost implements Runnable
 	{
 
-		public final World world;
+		public final IWorld world;
 
 		public final int chunkX;
 		public final int chunkZ;
 		public final int doubleChunkY; // 32 blocks instead of 16.
 		public final boolean value;
 
-		public CMUpdatePost( final World w, final int cx, final int cz, final int dcy, final boolean val )
+		public CMUpdatePost( final IWorld w, final int cx, final int cz, final int dcy, final boolean val )
 		{
 			this.world = w;
 			this.chunkX = cx;

@@ -145,6 +145,7 @@ sourceSets {
             include 'appeng/services/compass/ICompassCallback.java'
             include 'appeng/hooks/CompassResult.java'
             include 'appeng/container/ContainerOpenContext.java'
+            include 'appeng/decorative/solid/BlockSkyStone.java'
 
 //            include 'appeng/client/ClientHelper.java'
 //            include 'appeng/server/ServerHelper.java'

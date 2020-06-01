@@ -19,38 +19,30 @@
 package appeng.decorative.solid;
 
 
-import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import appeng.block.AEBaseBlock;
-import appeng.core.worlddata.WorldData;
 import appeng.util.Platform;
 
 
 public class BlockSkyStone extends AEBaseBlock
 {
-	private static final float BLOCK_RESISTANCE = 150.0f;
 	private static final float BREAK_SPEAK_SCALAR = 0.1f;
 	private static final double BREAK_SPEAK_THRESHOLD = 7.0;
 	private final SkystoneType type;
 
-	public BlockSkyStone( final SkystoneType type )
-	{
-		super( Material.ROCK );
-		this.setHardness( 50 );
-		this.blockResistance = BLOCK_RESISTANCE;
-		if( type == SkystoneType.STONE )
-		{
-			this.setHarvestLevel( "pickaxe", 3 );
-		}
-
+	public BlockSkyStone(SkystoneType type, Properties props) {
+		super(props);
 		this.type = type;
 
 		MinecraftForge.EVENT_BUS.register( this );
@@ -59,14 +51,14 @@ public class BlockSkyStone extends AEBaseBlock
 	@SubscribeEvent
 	public void breakFaster( final PlayerEvent.BreakSpeed event )
 	{
-		if( event.getState().getBlock() == this && event.getPlayerEntity() != null )
+		if( event.getState().getBlock() == this && event.getPlayer() != null )
 		{
-			final ItemStack is = event.getPlayerEntity().getItemStackFromSlot( EntityEquipmentSlot.MAINHAND );
+			final ItemStack is = event.getPlayer().getItemStackFromSlot( EquipmentSlotType.MAINHAND );
 			int level = -1;
 
 			if( !is.isEmpty() )
 			{
-				level = is.getItem().getHarvestLevel( is, "pickaxe", event.getPlayerEntity(), event.getState() );
+				level = is.getItem().getHarvestLevel( is, ToolType.PICKAXE, event.getPlayer(), event.getState() );
 			}
 
 			if( this.type != SkystoneType.STONE || level >= 3 || event.getOriginalSpeed() > BREAK_SPEAK_THRESHOLD )
@@ -77,13 +69,13 @@ public class BlockSkyStone extends AEBaseBlock
 	}
 
 	@Override
-	public void onBlockAdded( final World w, final BlockPos pos, final BlockState state )
-	{
-		super.onBlockAdded( w, pos, state );
+	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
 		if( Platform.isServer() )
 		{
-			WorldData.instance().compassData().service().updateArea( w, pos.getX(), pos.getY(), pos.getZ() );
+			// FIXME WorldData.instance().compassData().service().updateArea( worldIn, currentPos.getX(), currentPos.getY(), currentPos.getZ() );
 		}
+
+		return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
 	}
 
 	@Override
@@ -92,7 +84,7 @@ public class BlockSkyStone extends AEBaseBlock
 
 		if( Platform.isServer() )
 		{
-			WorldData.instance().compassData().service().updateArea( w, pos.getX(), pos.getY(), pos.getZ() );
+			// FIXME WorldData.instance().compassData().service().updateArea( w, pos.getX(), pos.getY(), pos.getZ() );
 		}
 	}
 

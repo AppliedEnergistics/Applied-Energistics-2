@@ -38,6 +38,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import static appeng.decorative.solid.BlockSkyStone.SkystoneType;
 
 
 /**
@@ -175,21 +176,27 @@ public final class ApiBlocks implements IBlocks
 				})
 				.build();
 
-//		this.fluixBlock = registry.features( AEFeature.FLUIX ).block( "fluix_block", BlockFluix::new ).build();
-//
-//		this.skyStoneBlock = registry.features( AEFeature.SKY_STONE )
-//				.block( "sky_stone_block", () -> new BlockSkyStone( SkystoneType.STONE ) )
-//				.build();
-//		this.smoothSkyStoneBlock = registry.features( AEFeature.SKY_STONE )
-//				.block( "smooth_sky_stone_block", () -> new BlockSkyStone( SkystoneType.BLOCK ) )
-//				.build();
-//		this.skyStoneBrick = deco.block( "sky_stone_brick", () -> new BlockSkyStone( SkystoneType.BRICK ) )
-//				.addFeatures( AEFeature.SKY_STONE )
-//				.build();
-//		this.skyStoneSmallBrick = deco.block( "sky_stone_small_brick", () -> new BlockSkyStone( SkystoneType.SMALL_BRICK ) )
-//				.addFeatures( AEFeature.SKY_STONE )
-//				.build();
-//
+		this.fluixBlock = registry.features( AEFeature.FLUIX ).block( "fluix_block", () -> new AEDecorativeBlock(QUARTZ_PROPERTIES) ).build();
+
+		this.skyStoneBlock = registry.features( AEFeature.SKY_STONE )
+				.block( "sky_stone_block", () -> new BlockSkyStone( SkystoneType.STONE, Block.Properties.create(Material.ROCK)
+						.hardnessAndResistance(50, 150)
+						.harvestLevel(3) ) )
+				.build();
+
+		this.smoothSkyStoneBlock = registry.features( AEFeature.SKY_STONE )
+				.block( "smooth_sky_stone_block", () -> new BlockSkyStone( SkystoneType.BLOCK, Block.Properties.create(Material.ROCK)
+						.hardnessAndResistance(50, 150) ) )
+				.build();
+		this.skyStoneBrick = deco.block( "sky_stone_brick", () -> new BlockSkyStone( SkystoneType.BRICK, Block.Properties.create(Material.ROCK)
+				.hardnessAndResistance(50, 150)  ) )
+				.addFeatures( AEFeature.SKY_STONE )
+				.build();
+		this.skyStoneSmallBrick = deco.block( "sky_stone_small_brick", () -> new BlockSkyStone( SkystoneType.SMALL_BRICK, Block.Properties.create(Material.ROCK)
+				.hardnessAndResistance(50, 150)  ) )
+				.addFeatures( AEFeature.SKY_STONE )
+				.build();
+
 //		this.skyStoneChest = registry.block( "sky_stone_chest", () -> new BlockSkyChest( SkyChestType.STONE ) )
 //				.features( AEFeature.SKY_STONE, AEFeature.SKY_STONE_CHESTS )
 //				.tileEntity( new TileEntityDefinition( TileSkyChest.class, "sky_stone_chest" ) )

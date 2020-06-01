@@ -171,7 +171,7 @@ public class BlockQuartzFixture extends AEBaseBlock implements IOrientableBlock
 		}
 	}
 
-	// FIXME: Replaced by the postPlaceupdate stuff above
+	// FIXME: Replaced by the postPlaceupdate stuff above, but check item drops!
 //	@Override
 //	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
 //	{
