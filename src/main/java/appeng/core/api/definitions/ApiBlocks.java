@@ -22,6 +22,7 @@ package appeng.core.api.definitions;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.ITileDefinition;
+import appeng.block.spatial.BlockMatrixFrame;
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.FeatureFactory;
 import appeng.bootstrap.IBlockRendering;
@@ -134,8 +135,10 @@ public final class ApiBlocks implements IBlocks
 		this.quartzOreCharged = registry.block( "charged_quartz_ore", () -> new BlockChargedQuartzOre(QUARTZ_PROPERTIES) )
 				.features( AEFeature.CERTUS_ORE, AEFeature.CHARGED_CERTUS_ORE )
 				.build();
-//		this.matrixFrame = registry.block( "matrix_frame", BlockMatrixFrame::new ).features( AEFeature.SPATIAL_IO ).build();
-//
+		this.matrixFrame = registry.block( "matrix_frame", BlockMatrixFrame::new )
+				.features( AEFeature.SPATIAL_IO )
+				.build();
+
 		FeatureFactory deco = registry.features( AEFeature.DECORATIVE_BLOCKS );
 		this.quartzBlock = deco.block( "quartz_block", () -> new AEDecorativeBlock(QUARTZ_PROPERTIES) ).build();
 		this.quartzPillar = deco.block( "quartz_pillar", () -> new BlockQuartzPillar(QUARTZ_PROPERTIES) ).build();

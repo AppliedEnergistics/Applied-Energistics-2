@@ -36,6 +36,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 
@@ -157,9 +158,9 @@ public class BlockCrank extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean canPlaceBlockAt( final World world, final BlockPos pos )
+	public boolean isValidPosition(BlockState state, IWorldReader w, BlockPos pos)
 	{
-		return this.findCrankable( world, pos ) != null;
+		return this.findCrankable( w, pos ) != null;
 	}
 
 	@Override

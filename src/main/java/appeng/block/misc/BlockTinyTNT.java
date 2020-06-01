@@ -154,9 +154,9 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void onBlockExploded( final World w, final BlockPos pos, final Explosion exp )
+	public void onExplosionDestroy( final World w, final BlockPos pos, final Explosion exp )
 	{
-		super.onBlockExploded( w, pos, exp );
+		super.onExplosionDestroy( w, pos, exp );
 		if( !w.isRemote )
 		{
 			final EntityTinyTNTPrimed primedTinyTNTEntity = new EntityTinyTNTPrimed( w, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, exp

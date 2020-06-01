@@ -94,7 +94,7 @@ public class BlockPaint extends AEBaseTileBlock
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
-	public void getSubBlocks( final CreativeTabs tabs, final NonNullList<ItemStack> itemStacks )
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks)
 	{
 		// do nothing
 	}

@@ -22,6 +22,7 @@ package appeng.block.crafting;
 import net.minecraft.block.BlockStateContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
@@ -82,7 +83,7 @@ public class BlockCraftingMonitor extends BlockCraftingUnit
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
-	public void getSubBlocks( final CreativeTabs tabs, final NonNullList<ItemStack> itemStacks )
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks)
 	{
 		itemStacks.add( new ItemStack( this, 1, 0 ) );
 	}

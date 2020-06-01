@@ -122,6 +122,7 @@ sourceSets {
             include 'appeng/client/render/model/RenderHelper.java'
             include 'appeng/client/render/model/GlassModelLoader.java'
             include 'appeng/helpers/AEGlassMaterial.java'
+            include 'appeng/block/spatial/BlockMatrixFrame.java'
 
             include 'appeng/core/sync/AppEngPacket.java'
             include 'appeng/core/sync/network/INetworkInfo.java'

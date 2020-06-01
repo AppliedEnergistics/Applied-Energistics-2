@@ -31,6 +31,7 @@ import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -96,7 +97,7 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean canPlaceBlockAt( final World w, final BlockPos pos )
+	public boolean isValidPosition(BlockState state, IWorldReader w, BlockPos pos)
 	{
 		for( final Direction dir : Direction.VALUES )
 		{

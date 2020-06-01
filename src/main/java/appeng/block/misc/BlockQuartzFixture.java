@@ -36,6 +36,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -180,7 +181,7 @@ public class BlockQuartzFixture extends AEBaseBlock implements IOrientableBlock,
 	}
 
 	@Override
-	public boolean canPlaceBlockAt( final World w, final BlockPos pos )
+	public boolean isValidPosition(BlockState state, IWorldReader w, BlockPos pos)
 	{
 		for( final Direction dir : Direction.VALUES )
 		{
