@@ -1,8 +1,8 @@
-package appeng.data.providers.loot;
+package appeng.forge.data.providers.loot;
 
 
 import appeng.core.AppEng;
-import appeng.data.providers.IAE2DataProvider;
+import appeng.forge.data.providers.IAE2DataProvider;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

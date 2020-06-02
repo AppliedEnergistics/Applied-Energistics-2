@@ -1,8 +1,8 @@
-package appeng.data.providers.recipes;
+package appeng.forge.data.providers.recipes;
 
 
 import appeng.core.AppEng;
-import appeng.data.providers.IAE2DataProvider;
+import appeng.forge.data.providers.IAE2DataProvider;
 import net.minecraft.block.Block;
 import net.minecraft.data.*;
 import net.minecraft.item.crafting.Ingredient;
