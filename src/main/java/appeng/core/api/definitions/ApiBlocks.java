@@ -33,10 +33,7 @@ import appeng.core.features.registries.PartModels;
 import appeng.decorative.AEDecorativeBlock;
 import appeng.decorative.solid.*;
 import appeng.tile.storage.TileSkyChest;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SlabBlock;
-import net.minecraft.block.SoundType;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -131,6 +128,9 @@ public final class ApiBlocks implements IBlocks
 	private static final Block.Properties QUARTZ_PROPERTIES = Block.Properties.create(Material.ROCK)
 			.hardnessAndResistance(3, 5);
 
+	private static final Block.Properties SKYSTONE_PROPERTIES = Block.Properties.create( Material.ROCK )
+			.hardnessAndResistance( 50, 150 );
+
 	public ApiBlocks( FeatureFactory registry, PartModels partModels )
 	{
 		this.quartzOre = registry.block( "quartz_ore", () -> new BlockQuartzOre(QUARTZ_PROPERTIES))
@@ -189,15 +189,12 @@ public final class ApiBlocks implements IBlocks
 				.build();
 
 		this.smoothSkyStoneBlock = registry.features( AEFeature.SKY_STONE )
-				.block( "smooth_sky_stone_block", () -> new BlockSkyStone( SkystoneType.BLOCK, Block.Properties.create(Material.ROCK)
-						.hardnessAndResistance(50, 150) ) )
+				.block( "smooth_sky_stone_block", () -> new BlockSkyStone( SkystoneType.BLOCK, SKYSTONE_PROPERTIES ) )
 				.build();
-		this.skyStoneBrick = deco.block( "sky_stone_brick", () -> new BlockSkyStone( SkystoneType.BRICK, Block.Properties.create(Material.ROCK)
-				.hardnessAndResistance(50, 150)  ) )
+		this.skyStoneBrick = deco.block( "sky_stone_brick", () -> new BlockSkyStone( SkystoneType.BRICK, SKYSTONE_PROPERTIES ) )
 				.addFeatures( AEFeature.SKY_STONE )
 				.build();
-		this.skyStoneSmallBrick = deco.block( "sky_stone_small_brick", () -> new BlockSkyStone( SkystoneType.SMALL_BRICK, Block.Properties.create(Material.ROCK)
-				.hardnessAndResistance(50, 150)  ) )
+		this.skyStoneSmallBrick = deco.block( "sky_stone_small_brick", () -> new BlockSkyStone( SkystoneType.SMALL_BRICK, SKYSTONE_PROPERTIES ) )
 				.addFeatures( AEFeature.SKY_STONE )
 				.build();
 
@@ -424,14 +421,31 @@ public final class ApiBlocks implements IBlocks
 //				.rendering( new PaintRendering() )
 //				.build();
 //
-//		this.skyStoneStairs = makeStairs( "sky_stone_stairs", registry, this.skyStoneBlock() );
-//		this.smoothSkyStoneStairs = makeStairs( "smooth_sky_stone_stairs", registry, this.smoothSkyStoneBlock() );
-//		this.skyStoneBrickStairs = makeStairs( "sky_stone_brick_stairs", registry, this.skyStoneBrick() );
-//		this.skyStoneSmallBrickStairs = makeStairs( "sky_stone_small_brick_stairs", registry, this.skyStoneSmallBrick() );
-//		this.fluixStairs = makeStairs( "fluix_stairs", registry, this.fluixBlock() );
-//		this.quartzStairs = makeStairs( "quartz_stairs", registry, this.quartzBlock() );
-//		this.chiseledQuartzStairs = makeStairs( "chiseled_quartz_stairs", registry, this.chiseledQuartzBlock() );
-//		this.quartzPillarStairs = makeStairs( "quartz_pillar_stairs", registry, this.quartzPillar() );
+  		this.skyStoneStairs = deco.block( "sky_stone_stairs", () -> new StairsBlock(this.skyStoneBlock().block()::getDefaultState, SKYSTONE_PROPERTIES ) )
+				.addFeatures( AEFeature.SKY_STONE )
+				.build();
+  		this.smoothSkyStoneStairs = deco.block( "smooth_sky_stone_stairs", () -> new StairsBlock(this.smoothSkyStoneBlock().block()::getDefaultState, SKYSTONE_PROPERTIES ) )
+				.addFeatures( AEFeature.SKY_STONE )
+				.build();
+  		this.skyStoneBrickStairs = deco.block( "sky_stone_brick_stairs", () -> new StairsBlock(this.skyStoneBrick().block()::getDefaultState, SKYSTONE_PROPERTIES) )
+				.addFeatures( AEFeature.SKY_STONE )
+				.build();
+  		this.skyStoneSmallBrickStairs = deco.block( "sky_stone_small_brick_stairs", () -> new StairsBlock(this.skyStoneSmallBrick().block()::getDefaultState, SKYSTONE_PROPERTIES) )
+				.addFeatures( AEFeature.SKY_STONE )
+				.build();
+
+  		this.fluixStairs = deco.block( "fluix_stairs", () -> new StairsBlock(this.fluixBlock().block()::getDefaultState, QUARTZ_PROPERTIES) )
+				.addFeatures( AEFeature.FLUIX )
+				.build();
+  		this.quartzStairs = deco.block( "quartz_stairs", () -> new StairsBlock(this.quartzBlock().block()::getDefaultState, QUARTZ_PROPERTIES) )
+				.addFeatures( AEFeature.CERTUS )
+				.build();
+  		this.chiseledQuartzStairs = deco.block( "chiseled_quartz_stairs", () -> new StairsBlock(this.chiseledQuartzBlock().block()::getDefaultState, QUARTZ_PROPERTIES) )
+				.addFeatures( AEFeature.CERTUS )
+				.build();
+  		this.quartzPillarStairs = deco.block( "quartz_pillar_stairs", () -> new StairsBlock(this.quartzPillar().block()::getDefaultState, QUARTZ_PROPERTIES) )
+				.addFeatures( AEFeature.CERTUS )
+				.build();
 //
 //		this.multiPart = registry.block( "cable_bus", BlockCableBus::new )
 //				.rendering( new CableBusRendering( partModels ) )
@@ -441,35 +455,29 @@ public final class ApiBlocks implements IBlocks
 //				.bootstrap( ( block, item ) -> (IPostInitComponent) side -> ( (BlockCableBus) block ).setupTile() )
 //				.build();
 
-		Block.Properties skystoneSlabProperties = Block.Properties.create( Material.ROCK )
-				.hardnessAndResistance( 50, 150 );
-
-		this.skyStoneSlab = deco.block( "sky_stone_slab", () -> new SlabBlock( skystoneSlabProperties ) )
+		this.skyStoneSlab = deco.block( "sky_stone_slab", () -> new SlabBlock( SKYSTONE_PROPERTIES ) )
 				.addFeatures( AEFeature.SKY_STONE )
 				.build();
-  		this.smoothSkyStoneSlab = deco.block( "smooth_sky_stone_slab", () -> new SlabBlock( skystoneSlabProperties ) )
+  		this.smoothSkyStoneSlab = deco.block( "smooth_sky_stone_slab", () -> new SlabBlock( SKYSTONE_PROPERTIES ) )
 				.addFeatures( AEFeature.SKY_STONE )
 				.build();
-  		this.skyStoneBrickSlab = deco.block( "sky_stone_brick_slab", () -> new SlabBlock( skystoneSlabProperties ) )
+  		this.skyStoneBrickSlab = deco.block( "sky_stone_brick_slab", () -> new SlabBlock( SKYSTONE_PROPERTIES ) )
 				.addFeatures( AEFeature.SKY_STONE )
 				.build();
-  		this.skyStoneSmallBrickSlab = deco.block( "sky_stone_small_brick_slab", () -> new SlabBlock( skystoneSlabProperties ) )
+  		this.skyStoneSmallBrickSlab = deco.block( "sky_stone_small_brick_slab", () -> new SlabBlock( SKYSTONE_PROPERTIES ) )
 				.addFeatures( AEFeature.SKY_STONE )
 				.build();
 
-		Block.Properties quartzSlabProperties = Block.Properties.create( Material.ROCK )
-				.hardnessAndResistance( 2.0F, 6.0F );
-
-		this.fluixSlab = deco.block( "fluix_slab", () -> new SlabBlock( quartzSlabProperties ) )
+		this.fluixSlab = deco.block( "fluix_slab", () -> new SlabBlock( QUARTZ_PROPERTIES ) )
 				.addFeatures( AEFeature.FLUIX )
 				.build();
-  		this.quartzSlab = deco.block( "quartz_slab", () -> new SlabBlock( quartzSlabProperties ) )
+  		this.quartzSlab = deco.block( "quartz_slab", () -> new SlabBlock( QUARTZ_PROPERTIES ) )
 				.addFeatures( AEFeature.CERTUS )
 				.build();
-  		this.chiseledQuartzSlab = deco.block( "chiseled_quartz_slab", () -> new SlabBlock( quartzSlabProperties ) )
+  		this.chiseledQuartzSlab = deco.block( "chiseled_quartz_slab", () -> new SlabBlock( QUARTZ_PROPERTIES ) )
 				.addFeatures( AEFeature.CERTUS )
 				.build();
-  		this.quartzPillarSlab = deco.block( "quartz_pillar_slab", () -> new SlabBlock( quartzSlabProperties ) )
+  		this.quartzPillarSlab = deco.block( "quartz_pillar_slab", () -> new SlabBlock( QUARTZ_PROPERTIES ) )
 				.addFeatures( AEFeature.CERTUS )
 				.build();
 
@@ -503,23 +511,6 @@ public final class ApiBlocks implements IBlocks
 	private Block createQuartzOreBlock() {
 		return new BlockQuartzOre(Block.Properties.create(Material.ROCK).hardnessAndResistance(3, 5));
 	}
-
-//	private static IBlockDefinition makeStairs( String registryName, FeatureFactory registry, IBlockDefinition block )
-//	{
-//		return registry.block( registryName, () -> new BlockStairCommon( block.maybeBlock().get(), block.identifier() ) )
-//				.features( AEFeature.DECORATIVE_BLOCKS )
-//				.rendering( new BlockRenderingCustomizer()
-//				{
-//					@Override
-//					@OnlyIn( Dist.CLIENT )
-//					public void customize( IBlockRendering rendering, IItemRendering itemRendering )
-//					{
-//						ModelResourceLocation model = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, registryName ), "facing=east,half=bottom,shape=straight" );
-//						itemRendering.model( model );
-//					}
-//				} )
-//				.build();
-//	}
 
 	@Override
 	public IBlockDefinition quartzOre()
