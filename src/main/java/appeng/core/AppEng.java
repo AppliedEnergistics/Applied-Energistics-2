@@ -24,6 +24,7 @@ import java.io.File;
 import appeng.bootstrap.components.IBlockRegistrationComponent;
 import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.client.ClientHelper;
+import appeng.client.render.model.GlassModelLoader;
 import appeng.core.features.AEFeature;
 import appeng.server.ServerHelper;
 import net.minecraft.block.Block;
@@ -33,8 +34,10 @@ import net.minecraft.item.Item;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.stats.StatType;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -122,7 +125,7 @@ public final class AppEng
 	private void clientSetup(FMLClientSetupEvent event) {
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		definitions.getRegistry().getBootstrapComponents( IClientSetupComponent.class ).forEachRemaining(IClientSetupComponent::setup);
-
+		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "glass"), GlassModelLoader.INSTANCE);
 
 
 	}
