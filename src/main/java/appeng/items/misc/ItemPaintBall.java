@@ -19,17 +19,22 @@
 package appeng.items.misc;
 
 
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
 import appeng.api.util.AEColor;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 
 public class ItemPaintBall extends AEBaseItem
 {
+
+	private static final ITextComponent LUMEN_PREFIX = new TranslationTextComponent(GuiText.Lumen.getTranslationKey())
+			.appendText(" ");
 
 	private static final int DAMAGE_THRESHOLD = 20;
 
@@ -39,14 +44,21 @@ public class ItemPaintBall extends AEBaseItem
 	}
 
 	@Override
-	public String getItemStackDisplayName( final ItemStack is )
+	public ITextComponent getDisplayName(final ItemStack is )
 	{
-		return super.getItemStackDisplayName( is ) + " - " + this.getExtraName( is );
+		// FIXME: in the new system, we should have different items for the colors,
+		// FIXME: Making this function fully redundant
+		return super.getDisplayName( is ).shallowCopy().appendText(" - ").appendSibling(this.getExtraName( is ));
 	}
 
-	private String getExtraName( final ItemStack is )
+	private ITextComponent getExtraName( final ItemStack is )
 	{
-		return ( is.getDamage() >= DAMAGE_THRESHOLD ? GuiText.Lumen.getLocal() + ' ' : "" ) + this.getColor( is );
+		ITextComponent colorText = new TranslationTextComponent(this.getColor(is).translationKey);
+		if (is.getDamage() >= DAMAGE_THRESHOLD) {
+			return LUMEN_PREFIX.shallowCopy().appendSibling(colorText);
+		} else {
+			return colorText;
+		}
 	}
 
 	public AEColor getColor( final ItemStack is )
@@ -66,8 +78,8 @@ public class ItemPaintBall extends AEBaseItem
 	}
 
 	@Override
-	protected void getCheckedSubItems( final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
-	{
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks) {
+
 		for( final AEColor c : AEColor.values() )
 		{
 			if( c != AEColor.TRANSPARENT )

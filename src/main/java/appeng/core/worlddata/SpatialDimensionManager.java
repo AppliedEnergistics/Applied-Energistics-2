@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -33,6 +33,10 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import appeng.api.storage.ISpatialDimension;
 import appeng.capabilities.Capabilities;
+import net.minecraftforge.common.util.LazyOptional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 
 public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySerializable<CompoundNBT>
@@ -118,35 +122,36 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Nonnull
 	@Override
-	public boolean hasCapability( Capability<?> capability, Direction facing )
-	{
-		return capability == Capabilities.SPATIAL_DIMENSION;
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap) {
+		if( cap == Capabilities.SPATIAL_DIMENSION )
+		{
+			return LazyOptional.of(() -> (T) this);
+		}
+		return LazyOptional.empty();
 	}
 
+	@Nonnull
 	@Override
-	public <T> T getCapability( Capability<T> capability, Direction facing )
-	{
-		if( capability == Capabilities.SPATIAL_DIMENSION )
-		{
-			return (T) this;
-		}
-		return null;
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+		return getCapability(cap);
 	}
 
 	@Override
 	public CompoundNBT serializeNBT()
 	{
 		final CompoundNBT ret = new CompoundNBT();
-		final NBTTagList list = new NBTTagList();
+		final ListNBT list = new ListNBT();
 
 		for( Map.Entry<Integer, StorageCellData> entry : this.spatialData.entrySet() )
 		{
 			final CompoundNBT nbt = entry.getValue().serializeNBT();
-			nbt.setInteger( NBT_SPATIAL_ID_KEY, entry.getKey() );
-			list.appendTag( nbt );
+			nbt.putInt( NBT_SPATIAL_ID_KEY, entry.getKey() );
+			list.add( nbt );
 		}
-		ret.setTag( NBT_SPATIAL_DATA_KEY, list );
+		ret.put( NBT_SPATIAL_DATA_KEY, list );
 		return ret;
 	}
 
@@ -155,14 +160,14 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 	{
 		if( nbt.contains(NBT_SPATIAL_DATA_KEY) )
 		{
-			final NBTTagList list = (NBTTagList) nbt.getTag( NBT_SPATIAL_DATA_KEY );
+			final ListNBT list = (ListNBT) nbt.get( NBT_SPATIAL_DATA_KEY );
 
 			this.spatialData.clear();
-			for( int i = 0; i < list.tagCount(); ++i )
+			for( int i = 0; i < list.size(); ++i )
 			{
-				final CompoundNBT entry = list.getCompoundTagAt( i );
+				final CompoundNBT entry = list.getCompound( i );
 				final StorageCellData data = new StorageCellData();
-				final int id = entry.getInteger( NBT_SPATIAL_ID_KEY );
+				final int id = entry.getInt( NBT_SPATIAL_ID_KEY );
 				data.deserializeNBT( entry );
 				this.spatialData.put( id, data );
 			}
@@ -228,18 +233,18 @@ public class SpatialDimensionManager implements ISpatialDimension, ICapabilitySe
 		public CompoundNBT serializeNBT()
 		{
 			CompoundNBT nbt = new CompoundNBT();
-			nbt.setInteger( NBT_DIM_X_KEY, this.contentDimension.getX() );
-			nbt.setInteger( NBT_DIM_Y_KEY, this.contentDimension.getY() );
-			nbt.setInteger( NBT_DIM_Z_KEY, this.contentDimension.getZ() );
-			nbt.setInteger( NBT_OWNER_KEY, this.owner );
+			nbt.putInt( NBT_DIM_X_KEY, this.contentDimension.getX() );
+			nbt.putInt( NBT_DIM_Y_KEY, this.contentDimension.getY() );
+			nbt.putInt( NBT_DIM_Z_KEY, this.contentDimension.getZ() );
+			nbt.putInt( NBT_OWNER_KEY, this.owner );
 			return nbt;
 		}
 
 		@Override
 		public void deserializeNBT( CompoundNBT nbt )
 		{
-			this.contentDimension = new BlockPos( nbt.getInteger( NBT_DIM_X_KEY ), nbt.getInteger( NBT_DIM_Y_KEY ), nbt.getInteger( NBT_DIM_Z_KEY ) );
-			this.owner = nbt.getInteger( NBT_OWNER_KEY );
+			this.contentDimension = new BlockPos( nbt.getInt( NBT_DIM_X_KEY ), nbt.getInt( NBT_DIM_Y_KEY ), nbt.getInt( NBT_DIM_Z_KEY ) );
+			this.owner = nbt.getInt( NBT_OWNER_KEY );
 		}
 	}
 }

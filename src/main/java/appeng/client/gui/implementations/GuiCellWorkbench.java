@@ -69,10 +69,10 @@ public class GuiCellWorkbench extends GuiUpgradeable
 				.getLocal() );
 		this.fuzzyMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 68, Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL );
 
-		this.buttonList.add( this.fuzzyMode );
-		this.buttonList.add( this.partition );
-		this.buttonList.add( this.clear );
-		this.buttonList.add( this.copyMode );
+		this.addButton( this.fuzzyMode );
+		this.addButton( this.partition );
+		this.addButton( this.clear );
+		this.addButton( this.copyMode );
 	}
 
 	@Override

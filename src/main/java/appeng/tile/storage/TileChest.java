@@ -837,7 +837,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 
 	private class FluidHandler implements IFluidHandler
 	{
-		private final IFluidTankProperties[] TANK_PROPS = new IFluidTankProperties[] { new FluidTankProperties( null, Fluid.BUCKET_VOLUME ) };
+		private final IFluidTankProperties[] TANK_PROPS = new IFluidTankProperties[] { new FluidTankProperties( null, FluidAttributes.BUCKET_VOLUME ) };
 
 		@Override
 		public int fill( final FluidStack resource, final boolean doFill )

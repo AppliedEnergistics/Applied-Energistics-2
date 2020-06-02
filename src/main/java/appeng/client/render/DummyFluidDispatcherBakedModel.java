@@ -35,6 +35,7 @@ import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -101,7 +102,7 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel
 				FluidStack fluidStack = itemFacade.getFluidStack( stack );
 				if( fluidStack == null )
 				{
-					fluidStack = new FluidStack( FluidRegistry.WATER, Fluid.BUCKET_VOLUME );
+					fluidStack = new FluidStack( Fluids.WATER, FluidAttributes.BUCKET_VOLUME );
 				}
 
 				TextureAtlasSprite sprite = DummyFluidDispatcherBakedModel.this.bakedTextureGetter.apply( fluidStack.getFluid().getStill( fluidStack ) );

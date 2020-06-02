@@ -36,7 +36,7 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
@@ -248,8 +248,8 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		// encode the slot.
 		final CompoundNBT encodedValue = new CompoundNBT();
 
-		final NBTTagList tagIn = new NBTTagList();
-		final NBTTagList tagOut = new NBTTagList();
+		final ListNBT tagIn = new ListNBT();
+		final ListNBT tagOut = new ListNBT();
 
 		for( final ItemStack i : in )
 		{

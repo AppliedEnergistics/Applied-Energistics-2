@@ -208,7 +208,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 	@Override
 	public boolean removedByPlayer( final BlockState state, final World world, final BlockPos pos, final PlayerEntity player, final boolean willHarvest )
 	{
-		if( player.capabilities.isCreativeMode )
+		if( player.abilities.isCreativeMode )
 		{
 			final AEBaseTile tile = this.getTileEntity( world, pos );
 			if( tile != null )

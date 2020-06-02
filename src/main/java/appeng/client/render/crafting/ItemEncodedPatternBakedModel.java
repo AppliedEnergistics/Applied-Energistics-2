@@ -145,7 +145,7 @@ class ItemEncodedPatternBakedModel implements IBakedModel
 			// Now retroactively handle the isGui3d call, for which we always return false below
 			if( selectedModel.isGui3d() != ItemEncodedPatternBakedModel.this.baseModel.isGui3d() )
 			{
-				GlStateManager.enableLighting();
+				RenderSystem.enableLighting();
 			}
 
 			if( selectedModel instanceof IBakedModel )

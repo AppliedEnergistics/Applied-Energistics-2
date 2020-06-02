@@ -29,11 +29,14 @@ import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.IMEInventory;
+import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.Api;
 import appeng.core.features.AEFeature;
 import appeng.core.stats.AeStats;
+import appeng.fluids.util.AEFluidStack;
 import appeng.me.GridAccessException;
 import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.item.AEItemStack;
@@ -48,6 +51,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -57,6 +61,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.FakePlayerFactory;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
@@ -64,6 +69,7 @@ import java.security.InvalidParameterException;
 import java.util.*;
 
 import com.google.common.base.Preconditions;
+import net.minecraftforge.registries.ForgeRegistries;
 
 
 /**
@@ -516,29 +522,29 @@ public class Platform
 			return Collections.emptyList();
 		}
 	}
-//
-//	public static String getModId( final IAEItemStack is )
-//	{
-//		if( is == null )
-//		{
-//			return "** Null";
-//		}
-//
-//		final String n = ( (AEItemStack) is ).getModID();
-//		return n == null ? "** Null" : n;
-//	}
-//
-//	public static String getModId( final IAEFluidStack fs )
-//	{
-//		if( fs == null || fs.getFluidStack() == null )
-//		{
-//			return "** Null";
-//		}
-//
-//		final ResourceLocation n = ForgeRegistries.FLUIDS.getKey( fs.getFluidStack().getFluid() );
-//		return n == null ? "** Null" : n.getNamespace(); // FIXME: Check if namespace == mod
-//	}
-//
+
+	public static String getModId( final IAEItemStack is )
+	{
+		if( is == null )
+		{
+			return "** Null";
+		}
+
+		final String n = ( (AEItemStack) is ).getModID();
+		return n == null ? "** Null" : n;
+	}
+
+	public static String getModId( final IAEFluidStack fs )
+	{
+		if( fs == null || fs.getFluidStack() == null )
+		{
+			return "** Null";
+		}
+
+		final ResourceLocation n = ForgeRegistries.FLUIDS.getKey( fs.getFluidStack().getFluid() );
+		return n == null ? "** Null" : n.getNamespace(); // FIXME: Check if namespace == mod
+	}
+
 	public static String getItemDisplayName( final Object o )
 	{
 		if( o == null )
@@ -578,34 +584,34 @@ public class Platform
 			}
 		}
 	}
-//
-//	public static String getFluidDisplayName( Object o )
-//	{
-//		if( o == null )
-//		{
-//			return "** Null";
-//		}
-//		FluidStack fluidStack = null;
-//		if( o instanceof AEFluidStack )
-//		{
-//			fluidStack = ( (AEFluidStack) o ).getFluidStack();
-//		}
-//		else if( o instanceof FluidStack )
-//		{
-//			fluidStack = (FluidStack) o;
-//		}
-//		else
-//		{
-//			return "**Invalid Object";
-//		}
-//		// FIXME: Check that this is truly translated
-//		String n = fluidStack.getDisplayName().getString();
-//		if( n == null || "".equalsIgnoreCase( n ) )
-//		{
-//			n = fluidStack.getTranslationKey();
-//		}
-//		return n == null ? "** Null" : n;
-//	}
+
+	public static String getFluidDisplayName( Object o )
+	{
+		if( o == null )
+		{
+			return "** Null";
+		}
+		FluidStack fluidStack = null;
+		if( o instanceof AEFluidStack)
+		{
+			fluidStack = ( (AEFluidStack) o ).getFluidStack();
+		}
+		else if( o instanceof FluidStack )
+		{
+			fluidStack = (FluidStack) o;
+		}
+		else
+		{
+			return "**Invalid Object";
+		}
+		// FIXME: Check that this is truly translated
+		String n = fluidStack.getDisplayName().getString();
+		if( n == null || "".equalsIgnoreCase( n ) )
+		{
+			n = fluidStack.getTranslationKey();
+		}
+		return n == null ? "** Null" : n;
+	}
 
 	public static boolean isWrench(final PlayerEntity player, final ItemStack eq, final BlockPos pos )
 	{

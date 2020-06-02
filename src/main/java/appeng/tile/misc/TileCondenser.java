@@ -296,7 +296,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		}
 	}
 
-	private static final IFluidTankProperties[] EMPTY = { new FluidTankProperties( null, Fluid.BUCKET_VOLUME, true, false ) };
+	private static final IFluidTankProperties[] EMPTY = { new FluidTankProperties( null, FluidAttributes.BUCKET_VOLUME, true, false ) };
 
 	/**
 	 * A fluid handler that exposes a 1 bucket tank that can only be filled, and - when filled - will add power

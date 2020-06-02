@@ -43,15 +43,15 @@ public abstract class InventoryAdaptor implements Iterable<ItemSlot>
 {
 	public static InventoryAdaptor getAdaptor( final TileEntity te, final Direction d )
 	{
-		if( te != null && te.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d ) )
-		{
-			// Attempt getting an IItemHandler for the given side via caps
-			IItemHandler itemHandler = te.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d );
-			if( itemHandler != null )
-			{
-				return new AdaptorItemHandler( itemHandler );
-			}
-		}
+	// FIXME	if( te != null && te.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d ) )
+	// FIXME	{
+	// FIXME		// Attempt getting an IItemHandler for the given side via caps
+	// FIXME		IItemHandler itemHandler = te.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d );
+	// FIXME		if( itemHandler != null )
+	// FIXME		{
+	// FIXME			return new AdaptorItemHandler( itemHandler );
+	// FIXME		}
+	// FIXME	}
 		return null;
 	}
 

@@ -960,7 +960,7 @@ public abstract class AEBaseContainer extends Container
 
 				break;
 			case CREATIVE_DUPLICATE:
-				if( player.capabilities.isCreativeMode && slotItem != null )
+				if( player.abilities.isCreativeMode && slotItem != null )
 				{
 					final ItemStack is = slotItem.createItemStack();
 					is.setCount( is.getMaxStackSize() );

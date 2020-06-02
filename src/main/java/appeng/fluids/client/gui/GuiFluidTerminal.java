@@ -100,13 +100,13 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 	}
 
 	@Override
-	public void initGui()
+	public void init()
 	{
-		this.mc.player.openContainer = this.inventorySlots;
+		this.minecraft.player.openContainer = this.inventorySlots;
 		this.guiLeft = ( this.width - this.xSize ) / 2;
 		this.guiTop = ( this.height - this.ySize ) / 2;
 
-		this.searchField = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 80, this.offsetX ), this.guiTop + 4, 90, 12 );
+		this.searchField = new MEGuiTextField( this.font, this.guiLeft + Math.max( 80, this.offsetX ), this.guiTop + 4, 90, 12 );
 		this.searchField.setEnableBackgroundDrawing( false );
 		this.searchField.setMaxStringLength( 25 );
 		this.searchField.setTextColor( 0xFFFFFF );
@@ -115,10 +115,10 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 
 		int offset = this.guiTop;
 
-		this.buttonList.add( this.sortByBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_BY, this.configSrc.getSetting( Settings.SORT_BY ) ) );
+		this.addButton( this.sortByBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_BY, this.configSrc.getSetting( Settings.SORT_BY ) ) );
 		offset += 20;
 
-		this.buttonList.add( this.sortDirBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, this.configSrc
+		this.addButton( this.sortDirBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, this.configSrc
 				.getSetting( Settings.SORT_DIRECTION ) ) );
 
 		for( int y = 0; y < this.rows; y++ )
@@ -136,8 +136,8 @@ public class GuiFluidTerminal extends AEBaseMEGui implements ISortSource, IConfi
 	@Override
 	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
-		this.fontRenderer.drawString( this.getGuiDisplayName( "Fluid Terminal" ), 8, 6, 4210752 );
-		this.fontRenderer.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
+		this.font.drawString( this.getGuiDisplayName( "Fluid Terminal" ), 8, 6, 4210752 );
+		this.font.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 	}
 
 	@Override

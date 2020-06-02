@@ -210,11 +210,11 @@ public class GuiImgButton extends Button implements ITooltip
 
 				if( this.enabled )
 				{
-					GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
+					RenderSystem.color4f( 1.0f, 1.0f, 1.0f, 1.0f );
 				}
 				else
 				{
-					GlStateManager.color( 0.5f, 0.5f, 0.5f, 1.0f );
+					RenderSystem.color4f( 0.5f, 0.5f, 0.5f, 1.0f );
 				}
 
 				par1Minecraft.renderEngine.bindTexture( new ResourceLocation( "appliedenergistics2", "textures/guis/states.png" ) );
@@ -233,11 +233,11 @@ public class GuiImgButton extends Button implements ITooltip
 			{
 				if( this.enabled )
 				{
-					GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
+					RenderSystem.color4f( 1.0f, 1.0f, 1.0f, 1.0f );
 				}
 				else
 				{
-					GlStateManager.color( 0.5f, 0.5f, 0.5f, 1.0f );
+					RenderSystem.color4f( 0.5f, 0.5f, 0.5f, 1.0f );
 				}
 
 				par1Minecraft.renderEngine.bindTexture( new ResourceLocation( "appliedenergistics2", "textures/guis/states.png" ) );
@@ -251,7 +251,7 @@ public class GuiImgButton extends Button implements ITooltip
 				this.mouseDragged( par1Minecraft, par2, par3 );
 			}
 		}
-		GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
+		RenderSystem.color4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	}
 
 	private int getIconIndex()

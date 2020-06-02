@@ -232,12 +232,6 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public boolean requiresTESR()
-	{
-		return this.getCableBus().isRequiresDynamicRender();
-	}
-
-	@Override
 	public IFacadeContainer getFacadeContainer()
 	{
 		return this.getCableBus().getFacadeContainer();

@@ -34,6 +34,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
 
 import appeng.core.AELog;
+import net.minecraft.world.dimension.Dimension;
 
 
 /**
@@ -57,25 +58,29 @@ final class SpawnData implements IWorldSpawnData
 	}
 
 	@Override
-	public void setGenerated( final Dimension dim, final int chunkX, final int chunkZ )
+	public void setGenerated(final Dimension dim, final int chunkX, final int chunkZ )
 	{
+		int dimId = dim.getType().getId(); // FIXME This is most likely borked, see new string ids
+
 		synchronized( SpawnData.class )
 		{
-			final CompoundNBT data = this.loadSpawnData( dim, chunkX, chunkZ );
+			final CompoundNBT data = this.loadSpawnData( dimId, chunkX, chunkZ );
 
 			// edit.
 			data.putBoolean(chunkX + "," + chunkZ, true);
 
-			this.writeSpawnData( dim, chunkX, chunkZ, data );
+			this.writeSpawnData( dimId, chunkX, chunkZ, data );
 		}
 	}
 
 	@Override
 	public boolean hasGenerated( final Dimension dim, final int chunkX, final int chunkZ )
 	{
+		int dimId = dim.getType().getId(); // FIXME This is most likely borked, see new string ids
+
 		synchronized( SpawnData.class )
 		{
-			final CompoundNBT data = this.loadSpawnData( dim, chunkX, chunkZ );
+			final CompoundNBT data = this.loadSpawnData( dimId, chunkX, chunkZ );
 			return data.getBoolean( chunkX + "," + chunkZ );
 		}
 	}
@@ -83,23 +88,25 @@ final class SpawnData implements IWorldSpawnData
 	@Override
 	public boolean addNearByMeteorites( final Dimension dim, final int chunkX, final int chunkZ, final CompoundNBT newData )
 	{
+		int dimId = dim.getType().getId(); // FIXME This is most likely borked, see new string ids
+
 		synchronized( SpawnData.class )
 		{
-			final CompoundNBT data = this.loadSpawnData( dim, chunkX, chunkZ );
+			final CompoundNBT data = this.loadSpawnData( dimId, chunkX, chunkZ );
 
 			// edit.
-			final int size = data.getInteger( "num" );
-			data.setTag( String.valueOf( size ), newData );
-			data.setInteger( "num", size + 1 );
+			final int size = data.getInt( "num" );
+			data.put( String.valueOf( size ), newData );
+			data.putInt( "num", size + 1 );
 
-			this.writeSpawnData( dim, chunkX, chunkZ, data );
+			this.writeSpawnData( dimId, chunkX, chunkZ, data );
 
 			return true;
 		}
 	}
 
 	@Override
-	public Collection<CompoundNBT> getNearByMeteorites( final int Dimension, final int chunkX, final int chunkZ )
+	public Collection<CompoundNBT> getNearByMeteorites( final Dimension dim, final int chunkX, final int chunkZ )
 	{
 		final Collection<CompoundNBT> ll = new ArrayList<>();
 
@@ -112,15 +119,16 @@ final class SpawnData implements IWorldSpawnData
 					final int cx = x + ( chunkX >> 4 );
 					final int cz = z + ( chunkZ >> 4 );
 
-					final CompoundNBT data = this.loadSpawnData( dim, cx << 4, cz << 4 );
+					// FIXME Using the numerical dimension id here is fishy
+					final CompoundNBT data = this.loadSpawnData( dim.getType().getId(), cx << 4, cz << 4 );
 
 					if( data != null )
 					{
 						// edit.
-						final int size = data.getInteger( "num" );
+						final int size = data.getInt( "num" );
 						for( int s = 0; s < size; s++ )
 						{
-							ll.add( data.getCompoundTag( String.valueOf( s ) ) );
+							ll.add( data.getCompound( String.valueOf( s ) ) );
 						}
 					}
 				}

@@ -57,14 +57,14 @@ public class GuiInterface extends GuiUpgradeable
 	protected void addButtons()
 	{
 		this.priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRender );
-		this.buttonList.add( this.priority );
+		this.addButton( this.priority );
 
 		this.BlockMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.BLOCK, YesNo.NO );
-		this.buttonList.add( this.BlockMode );
+		this.addButton( this.BlockMode );
 
 		this.interfaceMode = new GuiToggleButton( this.guiLeft - 18, this.guiTop + 26, 84, 85, GuiText.InterfaceTerminal
 				.getLocal(), GuiText.InterfaceTerminalHint.getLocal() );
-		this.buttonList.add( this.interfaceMode );
+		this.addButton( this.interfaceMode );
 	}
 
 	@Override
@@ -80,13 +80,13 @@ public class GuiInterface extends GuiUpgradeable
 			this.interfaceMode.setState( ( (ContainerInterface) this.cvb ).getInterfaceTerminalMode() == YesNo.YES );
 		}
 
-		this.fontRenderer.drawString( this.getGuiDisplayName( GuiText.Interface.getLocal() ), 8, 6, 4210752 );
+		this.font.drawString( this.getGuiDisplayName( GuiText.Interface.getLocal() ), 8, 6, 4210752 );
 
-		this.fontRenderer.drawString( GuiText.Config.getLocal(), 8, 6 + 11 + 7, 4210752 );
-		this.fontRenderer.drawString( GuiText.StoredItems.getLocal(), 8, 6 + 60 + 7, 4210752 );
-		this.fontRenderer.drawString( GuiText.Patterns.getLocal(), 8, 6 + 73 + 7, 4210752 );
+		this.font.drawString( GuiText.Config.getLocal(), 8, 6 + 11 + 7, 4210752 );
+		this.font.drawString( GuiText.StoredItems.getLocal(), 8, 6 + 60 + 7, 4210752 );
+		this.font.drawString( GuiText.Patterns.getLocal(), 8, 6 + 73 + 7, 4210752 );
 
-		this.fontRenderer.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
+		this.font.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 	}
 
 	@Override

@@ -113,12 +113,6 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 		this.getBlockType().neighborChanged( state, this.world, this.pos, state.getBlock(), this.pos );
 	}
 
-	@Override
-	public boolean requiresTESR()
-	{
-		return true;
-	}
-
 	/**
 	 * return true if this should count towards stats.
 	 */

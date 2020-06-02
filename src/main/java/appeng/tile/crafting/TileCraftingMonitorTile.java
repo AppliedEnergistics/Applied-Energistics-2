@@ -142,12 +142,6 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	}
 
 	@Override
-	public boolean requiresTESR()
-	{
-		return this.dspPlay != null;
-	}
-
-	@Override
 	public AEColor getColor()
 	{
 		return this.paintedColor;

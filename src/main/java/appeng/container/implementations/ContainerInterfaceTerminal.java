@@ -297,7 +297,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 					break;
 				case CREATIVE_DUPLICATE:
 
-					if( player.capabilities.isCreativeMode && !hasItemInHand )
+					if( player.abilities.isCreativeMode && !hasItemInHand )
 					{
 						player.inventory.setItemStack( is.isEmpty() ? ItemStack.EMPTY : is.copy() );
 					}

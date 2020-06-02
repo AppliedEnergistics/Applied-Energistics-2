@@ -51,10 +51,10 @@ public class GuiFluidTank extends GuiButton implements ITooltip
 	{
 		if( this.visible )
 		{
-			GlStateManager.disableBlend();
-			GlStateManager.disableLighting();
+			RenderSystem.disableBlend();
+			RenderSystem.disableLighting();
 
-			drawRect( this.x, this.y, this.x + this.width, this.y + this.height, AEColor.GRAY.blackVariant | 0xFF000000 );
+			fill( this.x, this.y, this.x + this.width, this.y + this.height, AEColor.GRAY.blackVariant | 0xFF000000 );
 
 			final IAEFluidStack fluid = this.tank.getFluidInSlot( this.slot );
 			if( fluid != null && fluid.getStackSize() > 0 )
@@ -64,7 +64,7 @@ public class GuiFluidTank extends GuiButton implements ITooltip
 				float red = ( fluid.getFluid().getColor() >> 16 & 255 ) / 255.0F;
 				float green = ( fluid.getFluid().getColor() >> 8 & 255 ) / 255.0F;
 				float blue = ( fluid.getFluid().getColor() & 255 ) / 255.0F;
-				GlStateManager.color( red, green, blue );
+				RenderSystem.color4f( red, green, blue );
 
 				TextureAtlasSprite sprite = mc.getTextureMapBlocks().getAtlasSprite( fluid.getFluid().getStill().toString() );
 				final int scaledHeight = (int) ( this.height * ( (float) fluid.getStackSize() / this.tank.getTankProperties()[this.slot].getCapacity() ) );

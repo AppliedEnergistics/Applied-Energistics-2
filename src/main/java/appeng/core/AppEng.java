@@ -28,6 +28,7 @@ import appeng.core.features.AEFeature;
 import appeng.server.ServerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.stats.StatType;
@@ -121,6 +122,9 @@ public final class AppEng
 	private void clientSetup(FMLClientSetupEvent event) {
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		definitions.getRegistry().getBootstrapComponents( IClientSetupComponent.class ).forEachRemaining(IClientSetupComponent::setup);
+
+
+
 	}
 
 //	@Nonnull

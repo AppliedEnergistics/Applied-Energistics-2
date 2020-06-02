@@ -23,8 +23,6 @@ import java.util.Comparator;
 
 import appeng.api.config.SortDir;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.integration.Integrations;
-import appeng.integration.abstraction.IInvTweaks;
 import appeng.util.item.AEItemStack;
 
 
@@ -59,34 +57,34 @@ public class ItemSorters
 		return applyDirection( cmp );
 	};
 
-	private static IInvTweaks api;
+	// FIXME private static IInvTweaks api;
 
 	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_INV_TWEAKS = ( o1, o2 ) ->
 	{
-		if( api == null )
-		{
+		// FIXME if( api == null )
+		// FIXME {
 			return CONFIG_BASED_SORT_BY_NAME.compare( o1, o2 );
-		}
+		// FIXME }
 
-		final int cmp = api.compareItems( o1.createItemStack(), o2.createItemStack() );
-		return applyDirection( cmp );
+		// FIXME final int cmp = api.compareItems( o1.createItemStack(), o2.createItemStack() );
+		// FIXME return applyDirection( cmp );
 	};
 
 	public static void init()
 	{
-		if( api != null )
-		{
-			return;
-		}
+		// FIXME if( api != null )
+		// FIXME {
+		// FIXME 	return;
+		// FIXME }
 
-		if( Integrations.invTweaks().isEnabled() )
-		{
-			api = Integrations.invTweaks();
-		}
-		else
-		{
-			api = null;
-		}
+		// FIXME if( Integrations.invTweaks().isEnabled() )
+		// FIXME {
+		// FIXME 	api = Integrations.invTweaks();
+		// FIXME }
+		// FIXME else
+		// FIXME {
+		// FIXME 	api = null;
+		// FIXME }
 	}
 
 	private static SortDir getDirection()

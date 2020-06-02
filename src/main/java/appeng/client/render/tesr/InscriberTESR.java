@@ -50,8 +50,8 @@ public final class InscriberTESR extends TileEntityRenderer<TileInscriber>
 		FacingToRotation.get( tile.getForward(), tile.getUp() ).glRotateCurrentMat();
 		GlStateManager.translate( -0.5F, -0.5F, -0.5F );
 
-		GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
-		GlStateManager.disableLighting();
+		RenderSystem.color4f( 1.0F, 1.0F, 1.0F, 1.0F );
+		RenderSystem.disableLighting();
 		GlStateManager.disableRescaleNormal();
 
 		// render sides of stamps
@@ -128,7 +128,7 @@ public final class InscriberTESR extends TileEntityRenderer<TileInscriber>
 		Tessellator.getInstance().draw();
 
 		// render items.
-		GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
+		RenderSystem.color4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
 		IItemHandler tileInv = tile.getInternalInventory();
 
@@ -169,7 +169,7 @@ public final class InscriberTESR extends TileEntityRenderer<TileInscriber>
 		}
 
 		GlStateManager.popMatrix();
-		GlStateManager.enableLighting();
+		RenderSystem.enableLighting();
 		GlStateManager.enableRescaleNormal();
 	}
 

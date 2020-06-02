@@ -41,6 +41,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -76,14 +77,13 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	public String getItemStackDisplayName( final ItemStack is )
-	{
+	public ITextComponent getDisplayName(ItemStack is) {
 		try
 		{
 			final ItemStack in = this.getTextureItem( is );
 			if( !in.isEmpty() )
 			{
-				return super.getItemStackDisplayName( is ) + " - " + in.getDisplayName();
+				return super.getDisplayName( is ).shallowCopy().appendText(" - ").appendSibling(in.getDisplayName());
 			}
 		}
 		catch( final Throwable ignored )
@@ -91,7 +91,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 		}
 
-		return super.getItemStackDisplayName( is );
+		return super.getDisplayName( is );
 	}
 
 	@Override

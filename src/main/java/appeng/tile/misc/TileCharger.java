@@ -116,12 +116,6 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 	}
 
 	@Override
-	public boolean requiresTESR()
-	{
-		return true;
-	}
-
-	@Override
 	public boolean canTurn()
 	{
 		return this.getInternalCurrentPower() < this.getInternalMaxPower();

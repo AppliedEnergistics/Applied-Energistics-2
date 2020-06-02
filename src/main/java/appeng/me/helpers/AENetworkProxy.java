@@ -22,6 +22,8 @@ package appeng.me.helpers;
 import java.util.Collections;
 import java.util.EnumSet;
 
+import appeng.core.Api;
+import appeng.core.worlddata.WorldData;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -45,11 +47,7 @@ import appeng.api.networking.ticking.ITickManager;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IOrientable;
-import appeng.core.worlddata.WorldData;
-import appeng.hooks.TickHandler;
 import appeng.me.GridAccessException;
-import appeng.me.cache.P2PCache;
-import appeng.parts.networking.PartCable;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
 
@@ -105,7 +103,8 @@ public class AENetworkProxy implements IGridBlock
 	{
 		if( this.gp instanceof AEBaseTile )
 		{
-			TickHandler.INSTANCE.addInit( (AEBaseTile) this.gp );
+			throw new IllegalStateException(); // FIXME just here to remember for sure
+			// FIXME TickHandler.INSTANCE.addInit( (AEBaseTile) this.gp );
 		}
 	}
 
@@ -241,23 +240,23 @@ public class AENetworkProxy implements IGridBlock
 		return pg;
 	}
 
-	public P2PCache getP2P() throws GridAccessException
-	{
-		final IGrid grid = this.getGrid();
-		if( grid == null )
-		{
-			throw new GridAccessException();
-		}
-
-		final P2PCache pg = grid.getCache( P2PCache.class );
-
-		if( pg == null )
-		{
-			throw new GridAccessException();
-		}
-
-		return pg;
-	}
+// FIXME	public P2PCache getP2P() throws GridAccessException
+// FIXME	{
+// FIXME		final IGrid grid = this.getGrid();
+// FIXME		if( grid == null )
+// FIXME		{
+// FIXME			throw new GridAccessException();
+// FIXME		}
+// FIXME
+// FIXME		final P2PCache pg = grid.getCache( P2PCache.class );
+// FIXME
+// FIXME		if( pg == null )
+// FIXME		{
+// FIXME			throw new GridAccessException();
+// FIXME		}
+// FIXME
+// FIXME		return pg;
+// FIXME	}
 
 	public ISecurityGrid getSecurity() throws GridAccessException
 	{
@@ -328,10 +327,10 @@ public class AENetworkProxy implements IGridBlock
 	@Override
 	public void onGridNotification( final GridNotification notification )
 	{
-		if( this.gp instanceof PartCable )
-		{
-			( (PartCable) this.gp ).markForUpdate();
-		}
+		// FIXME if( this.gp instanceof PartCable )
+		// FIXME {
+		// FIXME 	( (PartCable) this.gp ).markForUpdate();
+		// FIXME }
 	}
 
 	@Override

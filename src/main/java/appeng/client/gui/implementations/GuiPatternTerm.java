@@ -107,32 +107,32 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	}
 
 	@Override
-	public void initGui()
+	public void init()
 	{
-		super.initGui();
+		super.init();
 
 		this.tabCraftButton = new GuiTabButton( this.guiLeft + 173, this.guiTop + this.ySize - 177, new ItemStack( Blocks.CRAFTING_TABLE ), GuiText.CraftingPattern
 				.getLocal(), this.itemRender );
-		this.buttonList.add( this.tabCraftButton );
+		this.addButton( this.tabCraftButton );
 
 		this.tabProcessButton = new GuiTabButton( this.guiLeft + 173, this.guiTop + this.ySize - 177, new ItemStack( Blocks.FURNACE ), GuiText.ProcessingPattern
 				.getLocal(), this.itemRender );
-		this.buttonList.add( this.tabProcessButton );
+		this.addButton( this.tabProcessButton );
 
 		this.substitutionsEnabledBtn = new GuiImgButton( this.guiLeft + 84, this.guiTop + this.ySize - 163, Settings.ACTIONS, ItemSubstitution.ENABLED );
 		this.substitutionsEnabledBtn.setHalfSize( true );
-		this.buttonList.add( this.substitutionsEnabledBtn );
+		this.addButton( this.substitutionsEnabledBtn );
 
 		this.substitutionsDisabledBtn = new GuiImgButton( this.guiLeft + 84, this.guiTop + this.ySize - 163, Settings.ACTIONS, ItemSubstitution.DISABLED );
 		this.substitutionsDisabledBtn.setHalfSize( true );
-		this.buttonList.add( this.substitutionsDisabledBtn );
+		this.addButton( this.substitutionsDisabledBtn );
 
 		this.clearBtn = new GuiImgButton( this.guiLeft + 74, this.guiTop + this.ySize - 163, Settings.ACTIONS, ActionItems.CLOSE );
 		this.clearBtn.setHalfSize( true );
-		this.buttonList.add( this.clearBtn );
+		this.addButton( this.clearBtn );
 
 		this.encodeBtn = new GuiImgButton( this.guiLeft + 147, this.guiTop + this.ySize - 142, Settings.ACTIONS, ActionItems.ENCODE );
-		this.buttonList.add( this.encodeBtn );
+		this.addButton( this.encodeBtn );
 	}
 
 	@Override
@@ -163,7 +163,7 @@ public class GuiPatternTerm extends GuiMEMonitorable
 		}
 
 		super.drawFG( offsetX, offsetY, mouseX, mouseY );
-		this.fontRenderer.drawString( GuiText.PatternTerminal.getLocal(), 8, this.ySize - 96 + 2 - this.getReservedSpace(), 4210752 );
+		this.font.drawString( GuiText.PatternTerminal.getLocal(), 8, this.ySize - 96 + 2 - this.getReservedSpace(), 4210752 );
 	}
 
 	@Override

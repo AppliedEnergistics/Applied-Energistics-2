@@ -53,9 +53,9 @@ public class GuiFluidInterface extends GuiUpgradeable
 	}
 
 	@Override
-	public void initGui()
+	public void init()
 	{
-		super.initGui();
+		super.init();
 
 		final IAEFluidTank configFluids = this.host.getDualityFluidInterface().getConfig();
 		final IAEFluidTank fluidTank = this.host.getDualityFluidInterface().getTanks();
@@ -64,12 +64,12 @@ public class GuiFluidInterface extends GuiUpgradeable
 		{
 			final GuiFluidTank guiTank = new GuiFluidTank( fluidTank, i, DualityFluidInterface.NUMBER_OF_TANKS + i, this.getGuiLeft() + 35 + 18 * i, this
 					.getGuiTop() + 53, 16, 68 );
-			this.buttonList.add( guiTank );
+			this.addButton( guiTank );
 			this.guiSlots.add( new GuiFluidSlot( configFluids, i, i, 35 + 18 * i, 35 ) );
 		}
 
 		this.priority = new GuiTabButton( this.getGuiLeft() + 154, this.getGuiTop(), 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRender );
-		this.buttonList.add( this.priority );
+		this.addButton( this.priority );
 	}
 
 	@Override
@@ -80,10 +80,10 @@ public class GuiFluidInterface extends GuiUpgradeable
 	@Override
 	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
-		this.fontRenderer.drawString( this.getGuiDisplayName( GuiText.FluidInterface.getLocal() ), 8, 6, 4210752 );
-		this.fontRenderer.drawString( GuiText.Config.getLocal(), 35, 6 + 11 + 7, 4210752 );
-		this.fontRenderer.drawString( GuiText.StoredFluids.getLocal(), 35, 6 + 112 + 7, 4210752 );
-		this.fontRenderer.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
+		this.font.drawString( this.getGuiDisplayName( GuiText.FluidInterface.getLocal() ), 8, 6, 4210752 );
+		this.font.drawString( GuiText.Config.getLocal(), 35, 6 + 11 + 7, 4210752 );
+		this.font.drawString( GuiText.StoredFluids.getLocal(), 35, 6 + 112 + 7, 4210752 );
+		this.font.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 	}
 
 	@Override

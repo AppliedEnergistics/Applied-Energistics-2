@@ -73,9 +73,9 @@ public class SpatialSkyRender extends IRenderHandler
 
 		GlStateManager.disableFog();
 		GlStateManager.disableAlpha();
-		GlStateManager.disableBlend();
+		RenderSystem.disableBlend();
 		GlStateManager.depthMask( false );
-		GlStateManager.color( 0.0f, 0.0f, 0.0f, 1.0f );
+		RenderSystem.color4f( 0.0f, 0.0f, 0.0f, 1.0f );
 		final Tessellator tessellator = Tessellator.getInstance();
 		final BufferBuilder VertexBuffer = tessellator.getBuffer();
 
@@ -117,7 +117,7 @@ public class SpatialSkyRender extends IRenderHandler
 			VertexBuffer.pos( 100.0D, -100.0D, 100.0D ).endVertex();
 			VertexBuffer.pos( 100.0D, -100.0D, -100.0D ).endVertex();
 			tessellator.draw();
-			GlStateManager.enableTexture2D();
+			RenderSystem.enableTexture();
 			GlStateManager.popMatrix();
 		}
 
@@ -127,24 +127,24 @@ public class SpatialSkyRender extends IRenderHandler
 		{
 			GlStateManager.disableFog();
 			GlStateManager.disableAlpha();
-			GlStateManager.enableBlend();
+			RenderSystem.enableBlend();
 			GlStateManager.disableTexture2D();
 			GlStateManager.depthMask( false );
 			OpenGlHelper.glBlendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0 );
 
 			RenderHelper.disableStandardItemLighting();
 
-			GlStateManager.color( fade, fade, fade, 1.0f );
+			RenderSystem.color4f( fade, fade, fade, 1.0f );
 			GlStateManager.callList( this.dspList );
 		}
 
 		GlStateManager.depthMask( true );
-		GlStateManager.enableBlend();
+		RenderSystem.enableBlend();
 		GlStateManager.enableAlpha();
-		GlStateManager.enableTexture2D();
+		RenderSystem.enableTexture();
 		GlStateManager.enableFog();
 
-		GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
+		RenderSystem.color4f( 1.0f, 1.0f, 1.0f, 1.0f );
 	}
 
 	private void renderTwinkles()

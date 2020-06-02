@@ -115,12 +115,12 @@ public class MEGuiTextField extends TextFieldWidget
 		{
 			if( this.isFocused() )
 			{
-				drawRect( this.x - PADDING + 1, this.y - PADDING + 1, this.x + this.width + this._fontPad + PADDING - 1, this.y + this.height + PADDING - 1,
+				fill( this.x - PADDING + 1, this.y - PADDING + 1, this.x + this.width + this._fontPad + PADDING - 1, this.y + this.height + PADDING - 1,
 						0xFF606060 );
 			}
 			else
 			{
-				drawRect( this.x - PADDING + 1, this.y - PADDING + 1, this.x + this.width + this._fontPad + PADDING - 1, this.y + this.height + PADDING - 1,
+				fill( this.x - PADDING + 1, this.y - PADDING + 1, this.x + this.width + this._fontPad + PADDING - 1, this.y + this.height + PADDING - 1,
 						0xFFA8A8A8 );
 			}
 			super.drawTextBox();
@@ -172,7 +172,7 @@ public class MEGuiTextField extends TextFieldWidget
 		float green = ( this.selectionColor & 255 ) / 255.0F;
 		float alpha = ( this.selectionColor >> 24 & 255 ) / 255.0F;
 
-		GlStateManager.color( red, green, blue, alpha );
+		RenderSystem.color4f( red, green, blue, alpha );
 		GlStateManager.disableTexture2D();
 		GlStateManager.enableColorLogic();
 		GlStateManager.colorLogicOp( GlStateManager.LogicOp.OR_REVERSE );
@@ -183,7 +183,7 @@ public class MEGuiTextField extends TextFieldWidget
 		bufferbuilder.pos( startX, startY, 0.0D ).endVertex();
 		tessellator.draw();
 		GlStateManager.disableColorLogic();
-		GlStateManager.enableTexture2D();
+		RenderSystem.enableTexture();
 	}
 
 }

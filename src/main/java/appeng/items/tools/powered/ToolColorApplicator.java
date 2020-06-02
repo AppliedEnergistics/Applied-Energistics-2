@@ -52,7 +52,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.IItemGroup;
@@ -203,7 +202,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 		if( selected != null && Platform.isClient() )
 		{
-			extra = Platform.gui_localize( selected.unlocalizedName );
+			extra = Platform.gui_localize( selected.translationKey);
 		}
 
 		return super.getItemStackDisplayName( par1ItemStack ) + " - " + extra;

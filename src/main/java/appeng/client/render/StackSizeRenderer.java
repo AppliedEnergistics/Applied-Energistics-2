@@ -56,36 +56,36 @@ public class StackSizeRenderer
 			{
 				final String craftLabelText = AEConfig.instance().useTerminalUseLargeFont() ? GuiText.LargeFontCraft.getLocal() : GuiText.SmallFontCraft
 						.getLocal();
-				GlStateManager.disableLighting();
-				GlStateManager.disableDepth();
-				GlStateManager.disableBlend();
+				RenderSystem.disableLighting();
+				RenderSystem.disableDepthTest();
+				RenderSystem.disableBlend();
 				GlStateManager.pushMatrix();
 				GlStateManager.scale( scaleFactor, scaleFactor, scaleFactor );
 				final int X = (int) ( ( (float) xPos + offset + 16.0f - fontRenderer.getStringWidth( craftLabelText ) * scaleFactor ) * inverseScaleFactor );
 				final int Y = (int) ( ( (float) yPos + offset + 16.0f - 7.0f * scaleFactor ) * inverseScaleFactor );
 				fontRenderer.drawStringWithShadow( craftLabelText, X, Y, 16777215 );
 				GlStateManager.popMatrix();
-				GlStateManager.enableLighting();
-				GlStateManager.enableDepth();
-				GlStateManager.enableBlend();
+				RenderSystem.enableLighting();
+				RenderSystem.enableDepthTest();
+				RenderSystem.enableBlend();
 			}
 
 			if( aeStack.getStackSize() > 0 )
 			{
 				final String stackSize = this.getToBeRenderedStackSize( aeStack.getStackSize() );
 
-				GlStateManager.disableLighting();
-				GlStateManager.disableDepth();
-				GlStateManager.disableBlend();
+				RenderSystem.disableLighting();
+				RenderSystem.disableDepthTest();
+				RenderSystem.disableBlend();
 				GlStateManager.pushMatrix();
 				GlStateManager.scale( scaleFactor, scaleFactor, scaleFactor );
 				final int X = (int) ( ( (float) xPos + offset + 16.0f - fontRenderer.getStringWidth( stackSize ) * scaleFactor ) * inverseScaleFactor );
 				final int Y = (int) ( ( (float) yPos + offset + 16.0f - 7.0f * scaleFactor ) * inverseScaleFactor );
 				fontRenderer.drawStringWithShadow( stackSize, X, Y, 16777215 );
 				GlStateManager.popMatrix();
-				GlStateManager.enableLighting();
-				GlStateManager.enableDepth();
-				GlStateManager.enableBlend();
+				RenderSystem.enableLighting();
+				RenderSystem.enableDepthTest();
+				RenderSystem.enableBlend();
 			}
 
 			fontRenderer.setUnicodeFlag( unicodeFlag );

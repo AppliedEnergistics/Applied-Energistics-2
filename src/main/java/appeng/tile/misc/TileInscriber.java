@@ -228,12 +228,6 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 	}
 
 	@Override
-	public boolean requiresTESR()
-	{
-		return true;
-	}
-
-	@Override
 	public IItemHandler getInternalInventory()
 	{
 		return this.inv;

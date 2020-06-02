@@ -25,9 +25,8 @@ import java.util.UUID;
 
 import javax.annotation.Nonnull;
 
+import com.electronwill.nightconfig.core.Config;
 import com.google.common.base.Preconditions;
-
-import net.minecraftforge.common.config.ConfigCategory;
 
 
 /**
@@ -44,9 +43,9 @@ final class PlayerMapping implements IWorldPlayerMapping
 	 */
 	private final Map<Integer, UUID> mappings;
 
-	public PlayerMapping( final ConfigCategory category )
+	public PlayerMapping( final Config config, String path )
 	{
-		final PlayerMappingsInitializer init = new PlayerMappingsInitializer( category );
+		final PlayerMappingsInitializer init = new PlayerMappingsInitializer( config, path );
 
 		this.mappings = init.getPlayerMappings();
 	}

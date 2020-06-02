@@ -492,11 +492,6 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		return null;
 	}
 
-	public boolean requiresTESR()
-	{
-		return false;
-	}
-
 	public void setName( final String name )
 	{
 		this.customName = name;

@@ -21,6 +21,7 @@ package appeng.util.inv;
 
 import java.util.Iterator;
 
+import appeng.core.Api;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.item.ItemStack;

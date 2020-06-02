@@ -104,7 +104,7 @@ public enum AEColor
 	/**
 	 * Unlocalized name for color.
 	 */
-	public final String unlocalizedName;
+	public final String translationKey;
 
 	/**
 	 * Darkest Variant of the color, nearly black; as a RGB HEX Integer
@@ -126,9 +126,9 @@ public enum AEColor
 	 */
 	public final DyeColor dye;
 
-	AEColor( final String unlocalizedName, final DyeColor dye, final int blackHex, final int medHex, final int whiteHex )
+	AEColor(final String translationKey, final DyeColor dye, final int blackHex, final int medHex, final int whiteHex )
 	{
-		this.unlocalizedName = unlocalizedName;
+		this.translationKey = translationKey;
 		this.blackVariant = blackHex;
 		this.mediumVariant = medHex;
 		this.whiteVariant = whiteHex;
@@ -176,7 +176,7 @@ public enum AEColor
 	@Override
 	public String toString()
 	{
-		return this.unlocalizedName;
+		return this.translationKey;
 	}
 
 }

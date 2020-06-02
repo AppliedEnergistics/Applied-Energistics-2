@@ -39,8 +39,8 @@ public class GuiQNB extends AEBaseGui
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		this.fontRenderer.drawString( this.getGuiDisplayName( GuiText.QuantumLinkChamber.getLocal() ), 8, 6, 4210752 );
-		this.fontRenderer.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
+		this.font.drawString( this.getGuiDisplayName( GuiText.QuantumLinkChamber.getLocal() ), 8, 6, 4210752 );
+		this.font.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 	}
 
 	@Override

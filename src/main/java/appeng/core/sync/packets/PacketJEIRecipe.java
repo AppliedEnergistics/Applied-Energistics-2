@@ -33,7 +33,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
@@ -73,7 +73,7 @@ public class PacketJEIRecipe extends AppEngPacket
 			this.recipe = new ItemStack[9][];
 			for( int x = 0; x < this.recipe.length; x++ )
 			{
-				final NBTTagList list = comp.getTagList( "#" + x, 10 );
+				final ListNBT list = comp.getTagList( "#" + x, 10 );
 				if( list.tagCount() > 0 )
 				{
 					this.recipe[x] = new ItemStack[list.tagCount()];

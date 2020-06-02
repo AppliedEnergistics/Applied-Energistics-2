@@ -25,7 +25,6 @@ import appeng.api.definitions.ITileDefinition;
 import appeng.block.misc.BlockQuartzFixture;
 import appeng.block.spatial.BlockMatrixFrame;
 import appeng.block.storage.BlockSkyChest;
-import appeng.block.storage.SkyChestRenderingCustomizer;
 import appeng.bootstrap.*;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.client.render.tesr.SkyChestTESR;
@@ -215,12 +214,10 @@ public final class ApiBlocks implements IBlocks
 		this.skyStoneChest = registry.block( "sky_stone_chest", () -> new BlockSkyChest( BlockSkyChest.SkyChestType.STONE, skyStoneChestProps ) )
 				.features( AEFeature.SKY_STONE, AEFeature.SKY_STONE_CHESTS )
 				.tileEntity( skyChestTile )
-				// .rendering( new SkyChestRenderingCustomizer( BlockSkyChest.SkyChestType.STONE ) )
 				.build();
 		this.smoothSkyStoneChest = registry.block( "smooth_sky_stone_chest", () -> new BlockSkyChest( BlockSkyChest.SkyChestType.BLOCK, skyStoneChestProps ) )
 				.features( AEFeature.SKY_STONE, AEFeature.SKY_STONE_CHESTS )
 				.tileEntity( skyChestTile )
-				// .rendering( new SkyChestRenderingCustomizer( BlockSkyChest.SkyChestType.BLOCK ) )
 				.build();
 
 //		this.skyCompass = registry.block( "sky_compass", BlockSkyCompass::new )
