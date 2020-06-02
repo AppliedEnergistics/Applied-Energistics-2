@@ -19,10 +19,12 @@
 package appeng.util;
 
 
+import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.definitions.IItemDefinition;
+import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -656,20 +658,20 @@ public class Platform
 		return false;
 	}
 
-//	public static boolean isChargeable( final ItemStack i )
-//	{
-//		if( i.isEmpty() )
-//		{
-//			return false;
-//		}
-//		final Item it = i.getItem();
-//		if( it instanceof IAEItemPowerStorage )
-//		{
-//			return ( (IAEItemPowerStorage) it ).getPowerFlow( i ) != AccessRestriction.READ;
-//		}
-//		return false;
-//	}
-//
+	public static boolean isChargeable( final ItemStack i )
+	{
+		if( i.isEmpty() )
+		{
+			return false;
+		}
+		final Item it = i.getItem();
+		if( it instanceof IAEItemPowerStorage)
+		{
+			return ( (IAEItemPowerStorage) it ).getPowerFlow( i ) != AccessRestriction.READ;
+		}
+		return false;
+	}
+
 	public static PlayerEntity getPlayer(final ServerWorld w )
 	{
 		Objects.requireNonNull( w );

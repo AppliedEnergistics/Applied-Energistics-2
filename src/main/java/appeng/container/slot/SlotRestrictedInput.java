@@ -19,17 +19,16 @@
 package appeng.container.slot;
 
 
+import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.Items;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.oredict.OreDictionary;
 
-import appeng.api.AEApi;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItems;
 import appeng.api.definitions.IMaterials;
@@ -41,7 +40,6 @@ import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.ICellWorkbenchItem;
-import appeng.items.misc.ItemEncodedPattern;
 import appeng.util.Platform;
 
 
@@ -88,7 +86,7 @@ public class SlotRestrictedInput extends AppEngSlot
 		return true;
 	}
 
-	public Slot setStackLimit( final int i )
+	public Slot setStackLimit(final int i )
 	{
 		this.stackLimit = i;
 		return this;
@@ -194,9 +192,9 @@ public class SlotRestrictedInput extends AppEngSlot
 			case VIEW_CELL:
 				return items.viewCell().isSameAs( i );
 			case ORE:
-				return appeng.api.Api.INSTANCE.registries().grinder().getRecipeForInput( i ) != null;
+				return Api.INSTANCE.registries().grinder().getRecipeForInput( i ) != null;
 			case FUEL:
-				return TileEntityFurnace.getItemBurnTime( i ) > 0;
+				return ForgeHooks.getBurnTime( i ) > 0;
 			case POWERED_TOOL:
 				return Platform.isChargeable( i );
 			case QE_SINGULARITY:
@@ -245,15 +243,15 @@ public class SlotRestrictedInput extends AppEngSlot
 		if( Platform.isClient() && ( this.which == PlacableItemType.ENCODED_PATTERN ) )
 		{
 			final ItemStack is = super.getStack();
-			if( !is.isEmpty() && is.getItem() instanceof ItemEncodedPattern )
-			{
-				final ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
-				final ItemStack out = iep.getOutput( is );
-				if( !out.isEmpty() )
-				{
-					return out;
-				}
-			}
+			// FIXME if( !is.isEmpty() && is.getItem() instanceof ItemEncodedPattern )
+			// FIXME {
+			// FIXME 	final ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
+			// FIXME 	final ItemStack out = iep.getOutput( is );
+			// FIXME 	if( !out.isEmpty() )
+			// FIXME 	{
+			// FIXME 		return out;
+			// FIXME 	}
+			// FIXME }
 		}
 		return super.getStack();
 	}
@@ -267,13 +265,13 @@ public class SlotRestrictedInput extends AppEngSlot
 
 		for( final String name : new String[] { "Copper", "Tin", "Obsidian", "Iron", "Lead", "Bronze", "Brass", "Nickel", "Aluminium" } )
 		{
-			for( final ItemStack ingot : OreDictionary.getOres( "ingot" + name ) )
-			{
-				if( Platform.itemComparisons().isSameItem( i, ingot ) )
-				{
-					return true;
-				}
-			}
+			// FIXME for( final ItemStack ingot : OreDictionary.getOres( "ingot" + name ) )
+			// FIXME {
+			// FIXME 	if( Platform.itemComparisons().isSameItem( i, ingot ) )
+			// FIXME 	{
+			// FIXME 		return true;
+			// FIXME 	}
+			// FIXME }
 		}
 
 		return false;

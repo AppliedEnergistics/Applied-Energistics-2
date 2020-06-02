@@ -21,7 +21,6 @@ package appeng.block.storage;
 
 import javax.annotation.Nullable;
 
-import appeng.api.util.AEPartLocation;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -78,7 +77,7 @@ public class BlockSkyChest extends AEBaseTileBlock<TileSkyChest>
 	{
 		if( Platform.isServer() )
 		{
-			Platform.openGUI( player, this.getTileEntity( w, pos ), AEPartLocation.fromFacing(hit.getFace()), GuiBridge.GUI_SKYCHEST );
+			// FIXME Platform.openGUI( player, this.getTileEntity( w, pos ), AEPartLocation.fromFacing(hit.getFace()), GuiBridge.GUI_SKYCHEST );
 		}
 
 		return ActionResultType.SUCCESS;

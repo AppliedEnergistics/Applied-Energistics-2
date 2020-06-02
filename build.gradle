@@ -213,6 +213,10 @@ sourceSets {
             include 'appeng/util/IWideReadableNumberConverter.java'
             include 'appeng/util/ReadableNumberConverter.java'
             include 'appeng/container/slot/IOptionalSlot.java'
+            include 'appeng/client/gui/Size1Slot.java'
+            include 'appeng/container/slot/SlotOutput.java'
+            include 'appeng/container/slot/AppEngCraftingSlot.java'
+            include 'appeng/container/slot/SlotRestrictedInput.java'
         }
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output

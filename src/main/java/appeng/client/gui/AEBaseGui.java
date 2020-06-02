@@ -392,45 +392,45 @@ public abstract class AEBaseGui extends ContainerScreen<AEBaseContainer>
 			return;
 		}
 
-		if( slot instanceof SlotPatternTerm )
-		{
-			if( mouseButton == 6 )
-			{
-				return; // prevent weird double clicks..
-			}
-
-			try
-			{
-				NetworkHandler.instance().sendToServer( ( (SlotPatternTerm) slot ).getRequest( hasShiftDown() ) );
-			}
-			catch( final IOException e )
-			{
-				AELog.debug( e );
-			}
-		}
-		else if( slot instanceof SlotCraftingTerm )
-		{
-			if( mouseButton == 6 )
-			{
-				return; // prevent weird double clicks..
-			}
-
-			InventoryAction action = null;
-			if( hasShiftDown() )
-			{
-				action = InventoryAction.CRAFT_SHIFT;
-			}
-			else
-			{
-				// Craft stack on right-click, craft single on left-click
-				action = ( mouseButton == 1 ) ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
-			}
-
-			final PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
-			NetworkHandler.instance().sendToServer( p );
-
-			return;
-		}
+// FIXME		if( slot instanceof SlotPatternTerm )
+// FIXME		{
+// FIXME			if( mouseButton == 6 )
+// FIXME			{
+// FIXME				return; // prevent weird double clicks..
+// FIXME			}
+// FIXME
+// FIXME			try
+// FIXME			{
+// FIXME				NetworkHandler.instance().sendToServer( ( (SlotPatternTerm) slot ).getRequest( hasShiftDown() ) );
+// FIXME			}
+// FIXME			catch( final IOException e )
+// FIXME			{
+// FIXME				AELog.debug( e );
+// FIXME			}
+// FIXME		}
+// FIXME		else if( slot instanceof SlotCraftingTerm )
+// FIXME		{
+// FIXME			if( mouseButton == 6 )
+// FIXME			{
+// FIXME				return; // prevent weird double clicks..
+// FIXME			}
+// FIXME
+// FIXME			InventoryAction action = null;
+// FIXME			if( hasShiftDown() )
+// FIXME			{
+// FIXME				action = InventoryAction.CRAFT_SHIFT;
+// FIXME			}
+// FIXME			else
+// FIXME			{
+// FIXME				// Craft stack on right-click, craft single on left-click
+// FIXME				action = ( mouseButton == 1 ) ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
+// FIXME			}
+// FIXME
+// FIXME			final PacketInventoryAction p = new PacketInventoryAction( action, slotIdx, 0 );
+// FIXME			NetworkHandler.instance().sendToServer( p );
+// FIXME
+// FIXME			return;
+// FIXME		}
 
 		if( InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_SPACE) )
 		{

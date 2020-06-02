@@ -26,6 +26,7 @@ import java.util.WeakHashMap;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResult;
@@ -56,7 +57,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 
 	public ItemEncodedPattern()
 	{
-		this.setMaxStackSize( 1 );
+		super(new Item.Properties().maxStackSize(1));
 	}
 
 	@Override

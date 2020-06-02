@@ -3,14 +3,10 @@ package appeng.client.gui;
 
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.SlotItemHandler;
@@ -53,12 +49,6 @@ class Size1Slot extends SlotItemHandler
 	}
 
 	@Override
-	public boolean isHere( IInventory inv, int slotIn )
-	{
-		return this.delegate.isHere( inv, slotIn );
-	}
-
-	@Override
 	public int getSlotStackLimit()
 	{
 		return this.delegate.getSlotStackLimit();
@@ -68,14 +58,6 @@ class Size1Slot extends SlotItemHandler
 	public int getItemStackLimit( ItemStack stack )
 	{
 		return this.delegate.getItemStackLimit( stack );
-	}
-
-	@Override
-	@Nullable
-	@OnlyIn( Dist.CLIENT )
-	public String getSlotTexture()
-	{
-		return this.delegate.getSlotTexture();
 	}
 
 	@Override
@@ -89,20 +71,6 @@ class Size1Slot extends SlotItemHandler
 	public boolean isEnabled()
 	{
 		return this.delegate.isEnabled();
-	}
-
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public ResourceLocation getBackgroundLocation()
-	{
-		return this.delegate.getBackgroundLocation();
-	}
-
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public TextureAtlasSprite getBackgroundSprite()
-	{
-		return this.delegate.getBackgroundSprite();
 	}
 
 	@Override
