@@ -21,6 +21,7 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -40,15 +41,14 @@ import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.parts.automation.PartFormationPlane;
 
 
-public class GuiFormationPlane extends GuiUpgradeable
+public class GuiFormationPlane extends GuiUpgradeable<ContainerFormationPlane>
 {
 
 	private GuiTabButton priority;
 	private GuiImgButton placeMode;
 
-	public GuiFormationPlane( final PlayerInventory PlayerInventory, final PartFormationPlane te )
-	{
-		super( new ContainerFormationPlane( PlayerInventory, te ) );
+	public GuiFormationPlane(ContainerFormationPlane container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.ySize = 251;
 	}
 

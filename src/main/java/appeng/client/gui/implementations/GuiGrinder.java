@@ -25,14 +25,15 @@ import appeng.client.gui.AEBaseGui;
 import appeng.container.implementations.ContainerGrinder;
 import appeng.core.localization.GuiText;
 import appeng.tile.grindstone.TileGrinder;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 
-public class GuiGrinder extends AEBaseGui
+public class GuiGrinder extends AEBaseGui<ContainerGrinder>
 {
 
-	public GuiGrinder( final PlayerInventory PlayerInventory, final TileGrinder te )
-	{
-		super( new ContainerGrinder( PlayerInventory, te ) );
+	public GuiGrinder(ContainerGrinder container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.ySize = 176;
 	}
 
@@ -47,6 +48,6 @@ public class GuiGrinder extends AEBaseGui
 	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/grinder.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
 	}
 }

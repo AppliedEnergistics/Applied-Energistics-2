@@ -19,34 +19,25 @@
 package appeng.tile.grindstone;
 
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-
+import appeng.api.implementations.tiles.ICrankable;
+import appeng.tile.AEBaseTile;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
-import appeng.api.implementations.tiles.ICrankable;
-import appeng.helpers.ICustomCollision;
-import appeng.tile.AEBaseTile;
-import appeng.util.Platform;
+import java.io.IOException;
 
 
-public class TileCrank extends AEBaseTile implements ICustomCollision, ITickableTileEntity
+public class TileCrank extends AEBaseTile implements ITickableTileEntity
 {
 
 	private final int ticksPerRotation = 18;
 
 	// sided values..
-	private float visibleRotation = 0;
+	private float visibleRotation = 0; // This is in degrees
 	private int charge = 0;
 
 	private int hits = 0;
@@ -61,7 +52,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 	{
 		if( this.rotation > 0 )
 		{
-			this.setVisibleRotation( this.getVisibleRotation() - 360 / ( this.ticksPerRotation ) );
+			this.setVisibleRotation( this.getVisibleRotation() - 360.0f / ( this.ticksPerRotation ) );
 			this.charge++;
 			if( this.charge >= this.ticksPerRotation )
 			{
@@ -79,7 +70,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 
 	private ICrankable getGrinder()
 	{
-		if( Platform.isClient() )
+		if( isRemote() )
 		{
 			return null;
 		}
@@ -113,7 +104,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 	{
 		super.setOrientation( inForward, inUp );
 		final BlockState state = this.world.getBlockState( this.pos );
-		this.getBlockType().neighborChanged( state, this.world, this.pos, state.getBlock(), this.pos );
+		state.getBlock().neighborChanged( state, this.world, this.pos, state.getBlock(), this.pos, false );
 	}
 
 	/**
@@ -121,7 +112,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 	 */
 	public boolean power()
 	{
-		if( Platform.isClient() )
+		if( isRemote() )
 		{
 			return false;
 		}
@@ -152,24 +143,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 		return false;
 	}
 
-	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final BlockPos pos, final Entity thePlayer, final boolean b )
-	{
-		final double xOff = -0.15 * this.getUp().getXOffset();
-		final double yOff = -0.15 * this.getUp().getYOffset();
-		final double zOff = -0.15 * this.getUp().getZOffset();
-		return Collections.singletonList( new AxisAlignedBB( xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85 ) );
-	}
 
-	@Override
-	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
-	{
-		final double xOff = -0.15 * this.getUp().getXOffset();
-		final double yOff = -0.15 * this.getUp().getYOffset();
-		final double zOff = -0.15 * this.getUp().getZOffset();
-		out.add( new AxisAlignedBB( xOff + 0.15, yOff + 0.15, zOff + 0.15, // ahh
-				xOff + 0.85, yOff + 0.85, zOff + 0.85 ) );
-	}
 
 	public float getVisibleRotation()
 	{

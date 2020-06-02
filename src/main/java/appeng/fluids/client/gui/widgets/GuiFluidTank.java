@@ -59,7 +59,7 @@ public class GuiFluidTank extends GuiButton implements ITooltip
 			final IAEFluidStack fluid = this.tank.getFluidInSlot( this.slot );
 			if( fluid != null && fluid.getStackSize() > 0 )
 			{
-				mc.getTextureManager().bindTexture( TextureMap.LOCATION_BLOCKS_TEXTURE );
+				mc.getTextureManager().bindTexture( AtlasTexture.LOCATION_BLOCKS_TEXTURE );
 
 				float red = ( fluid.getFluid().getColor() >> 16 & 255 ) / 255.0F;
 				float green = ( fluid.getFluid().getColor() >> 8 & 255 ) / 255.0F;

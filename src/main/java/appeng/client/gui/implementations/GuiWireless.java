@@ -21,6 +21,8 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -36,14 +38,13 @@ import appeng.tile.networking.TileWireless;
 import appeng.util.Platform;
 
 
-public class GuiWireless extends AEBaseGui
+public class GuiWireless extends AEBaseGui<ContainerWireless>
 {
 
 	private GuiImgButton units;
 
-	public GuiWireless( final PlayerInventory PlayerInventory, final TileWireless te )
-	{
-		super( new ContainerWireless( PlayerInventory, te ) );
+	public GuiWireless(ContainerWireless container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.ySize = 166;
 	}
 
@@ -76,12 +77,10 @@ public class GuiWireless extends AEBaseGui
 		this.font.drawString( this.getGuiDisplayName( GuiText.Wireless.getLocal() ), 8, 6, 4210752 );
 		this.font.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
-		final ContainerWireless cw = (ContainerWireless) this.inventorySlots;
-
-		if( cw.getRange() > 0 )
+		if( container.getRange() > 0 )
 		{
-			final String firstMessage = GuiText.Range.getLocal() + ": " + ( cw.getRange() / 10.0 ) + " m";
-			final String secondMessage = GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong( cw.getDrain(), true );
+			final String firstMessage = GuiText.Range.getLocal() + ": " + ( container.getRange() / 10.0 ) + " m";
+			final String secondMessage = GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong( container.getDrain(), true );
 
 			final int strWidth = Math.max( this.font.getStringWidth( firstMessage ), this.font.getStringWidth( secondMessage ) );
 			final int cOffset = ( this.xSize / 2 ) - ( strWidth / 2 );
@@ -94,6 +93,6 @@ public class GuiWireless extends AEBaseGui
 	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/wireless.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
 	}
 }

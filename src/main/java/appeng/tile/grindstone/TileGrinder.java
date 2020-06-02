@@ -22,6 +22,7 @@ package appeng.tile.grindstone;
 import java.util.ArrayList;
 import java.util.List;
 
+import appeng.core.Api;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
@@ -57,7 +58,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	{
 		super.setOrientation( inForward, inUp );
 		final BlockState state = this.world.getBlockState( this.pos );
-		this.getBlockType().neighborChanged( state, this.world, this.pos, state.getBlock(), this.pos );
+		state.getBlock().neighborChanged( state, this.world, this.pos, state.getBlock(), this.pos, false );
 	}
 
 	@Override
@@ -81,7 +82,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	@Override
 	public boolean canTurn()
 	{
-		if( Platform.isClient() )
+		if( isRemote() )
 		{
 			return false;
 		}
@@ -124,7 +125,7 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	@Override
 	public void applyTurn()
 	{
-		if( Platform.isClient() )
+		if( isRemote() )
 		{
 			return;
 		}

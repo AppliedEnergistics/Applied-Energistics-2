@@ -75,7 +75,6 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
-//TODO, pass generic up here for Container
 public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScreen<T>
 {
 	private final List<InternalSlotME> meSlots = new ArrayList<>();

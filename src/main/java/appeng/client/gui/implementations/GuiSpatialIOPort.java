@@ -21,6 +21,8 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -36,17 +38,14 @@ import appeng.tile.spatial.TileSpatialIOPort;
 import appeng.util.Platform;
 
 
-public class GuiSpatialIOPort extends AEBaseGui
+public class GuiSpatialIOPort extends AEBaseGui<ContainerSpatialIOPort>
 {
 
-	private final ContainerSpatialIOPort container;
 	private GuiImgButton units;
 
-	public GuiSpatialIOPort( final PlayerInventory PlayerInventory, final TileSpatialIOPort te )
-	{
-		super( new ContainerSpatialIOPort( PlayerInventory, te ) );
+	public GuiSpatialIOPort(ContainerSpatialIOPort container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.ySize = 199;
-		this.container = (ContainerSpatialIOPort) this.inventorySlots;
 	}
 
 	@Override
@@ -101,6 +100,6 @@ public class GuiSpatialIOPort extends AEBaseGui
 	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/spatialio.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
 	}
 }

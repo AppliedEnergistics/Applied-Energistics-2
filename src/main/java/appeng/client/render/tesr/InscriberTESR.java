@@ -47,7 +47,7 @@ public final class InscriberTESR extends TileEntityRenderer<TileInscriber>
 		GlStateManager.pushMatrix();
 		GlStateManager.translate( x, y, z );
 		GlStateManager.translate( 0.5F, 0.5F, 0.5F );
-		FacingToRotation.get( tile.getForward(), tile.getUp() ).glRotateCurrentMat();
+		FacingToRotation.get( tile.getForward(), tile.getUp() ).push(matrixStack);
 		GlStateManager.translate( -0.5F, -0.5F, -0.5F );
 
 		RenderSystem.color4f( 1.0F, 1.0F, 1.0F, 1.0F );
@@ -57,7 +57,7 @@ public final class InscriberTESR extends TileEntityRenderer<TileInscriber>
 		// render sides of stamps
 
 		Minecraft mc = Minecraft.getInstance();
-		mc.renderEngine.bindTexture( TextureMap.LOCATION_BLOCKS_TEXTURE );
+		mc.renderEngine.bindTexture( AtlasTexture.LOCATION_BLOCKS_TEXTURE );
 
 		// << 20 | light << 4;
 		final int br = tile.getWorld().getCombinedLight( tile.getPos(), 0 );

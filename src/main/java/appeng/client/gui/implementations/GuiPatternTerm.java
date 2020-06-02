@@ -38,9 +38,10 @@ import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
+import net.minecraft.util.text.ITextComponent;
 
 
-public class GuiPatternTerm extends GuiMEMonitorable
+public class GuiPatternTerm extends GuiMEMonitorable<ContainerPatternTerm>
 {
 
 	private static final String BACKGROUND_CRAFTING_MODE = "guis/pattern.png";
@@ -52,8 +53,6 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	private static final String CRAFTMODE_CRFTING = "1";
 	private static final String CRAFTMODE_PROCESSING = "0";
 
-	private final ContainerPatternTerm container;
-
 	private GuiTabButton tabCraftButton;
 	private GuiTabButton tabProcessButton;
 	private GuiImgButton substitutionsEnabledBtn;
@@ -61,10 +60,8 @@ public class GuiPatternTerm extends GuiMEMonitorable
 	private GuiImgButton encodeBtn;
 	private GuiImgButton clearBtn;
 
-	public GuiPatternTerm( final PlayerInventory PlayerInventory, final ITerminalHost te )
-	{
-		super( PlayerInventory, te, new ContainerPatternTerm( PlayerInventory, te ) );
-		this.container = (ContainerPatternTerm) this.inventorySlots;
+	public GuiPatternTerm(ContainerPatternTerm container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.setReservedSpace( 81 );
 	}
 

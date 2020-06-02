@@ -227,6 +227,9 @@ sourceSets {
             include 'appeng/recipes/game/DisassembleRecipe.java'
             include 'appeng/recipes/ingredients/**'
             include 'appeng/forge/data/**'
+            include 'appeng/client/render/tesr/CrankTESR.java'
+            include 'appeng/client/render/FacingToRotation.java'
+            include 'appeng/client/gui/implementations/GuiGrinder.java'
         }
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output

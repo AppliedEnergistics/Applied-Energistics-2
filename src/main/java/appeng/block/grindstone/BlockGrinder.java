@@ -20,8 +20,10 @@ package appeng.block.grindstone;
 
 
 import appeng.block.AEBaseTileBlock;
+import appeng.container.implementations.ContainerGrinder;
 import appeng.tile.grindstone.TileGrinder;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -45,7 +47,9 @@ public class BlockGrinder extends AEBaseTileBlock<TileGrinder>
 		final TileGrinder tg = this.getTileEntity( w, pos );
 		if( tg != null && !p.isCrouching() )
 		{
-			// FIXME Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit.getFace()), GuiBridge.GUI_GRINDER );
+			if (p instanceof ServerPlayerEntity) {
+				ContainerGrinder.open((ServerPlayerEntity) p, tg, getNameTextComponent());
+			}
 			return ActionResultType.SUCCESS;
 		}
 		return ActionResultType.PASS;

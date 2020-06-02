@@ -25,8 +25,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import appeng.core.Api;
 import com.google.common.base.Joiner;
 
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import net.minecraft.client.gui.GuiButton;
@@ -54,7 +57,7 @@ import appeng.util.Platform;
 import appeng.util.ReadableNumberConverter;
 
 
-public class GuiCraftingCPU extends AEBaseGui implements ISortSource
+public class GuiCraftingCPU extends AEBaseGui<ContainerCraftingCPU> implements ISortSource
 {
 	private static final int GUI_HEIGHT = 184;
 	private static final int GUI_WIDTH = 238;
@@ -81,8 +84,6 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	private static final int ITEMSTACK_LEFT_OFFSET = 9;
 	private static final int ITEMSTACK_TOP_OFFSET = 22;
 
-	private final ContainerCraftingCPU craftingCpu;
-
 	private IItemList<IAEItemStack> storage = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private IItemList<IAEItemStack> active = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private IItemList<IAEItemStack> pending = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
@@ -91,15 +92,8 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	private GuiButton cancel;
 	private int tooltip = -1;
 
-	public GuiCraftingCPU( final PlayerInventory PlayerInventory, final Object te )
-	{
-		this( new ContainerCraftingCPU( PlayerInventory, te ) );
-	}
-
-	protected GuiCraftingCPU( final ContainerCraftingCPU container )
-	{
-		super( container );
-		this.craftingCpu = container;
+	public GuiCraftingCPU(ContainerCraftingCPU container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.ySize = GUI_HEIGHT;
 		this.xSize = GUI_WIDTH;
 
@@ -195,9 +189,9 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	{
 		String title = this.getGuiDisplayName( GuiText.CraftingStatus.getLocal() );
 
-		if( this.craftingCpu.getEstimatedTime() > 0 && !this.visual.isEmpty() )
+		if( this.container.getEstimatedTime() > 0 && !this.visual.isEmpty() )
 		{
-			final long etaInMilliseconds = TimeUnit.MILLISECONDS.convert( this.craftingCpu.getEstimatedTime(), TimeUnit.NANOSECONDS );
+			final long etaInMilliseconds = TimeUnit.MILLISECONDS.convert( this.container.getEstimatedTime(), TimeUnit.NANOSECONDS );
 			final String etaTimeText = DurationFormatUtils.formatDuration( etaInMilliseconds, GuiText.ETAFormat.getLocal() );
 			title += " - " + etaTimeText;
 		}
@@ -345,7 +339,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/craftingcpu.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
 	}
 
 	public void postUpdate( final List<IAEItemStack> list, final byte ref )

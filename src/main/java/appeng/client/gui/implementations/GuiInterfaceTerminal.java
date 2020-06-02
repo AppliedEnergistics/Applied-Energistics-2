@@ -31,9 +31,11 @@ import java.util.WeakHashMap;
 
 import com.google.common.collect.HashMultimap;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -48,9 +50,11 @@ import appeng.container.implementations.ContainerInterfaceTerminal;
 import appeng.core.localization.GuiText;
 import appeng.parts.reporting.PartInterfaceTerminal;
 import appeng.util.Platform;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 
-public class GuiInterfaceTerminal extends AEBaseGui
+public class GuiInterfaceTerminal extends AEBaseGui<ContainerInterfaceTerminal>
 {
 
 	private static final int LINES_ON_PAGE = 6;
@@ -68,10 +72,8 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	private boolean refreshList = false;
 	private MEGuiTextField searchField;
 
-	public GuiInterfaceTerminal( final PlayerInventory PlayerInventory, final PartInterfaceTerminal te )
-	{
-		super( new ContainerInterfaceTerminal( PlayerInventory, te ) );
-
+	public GuiInterfaceTerminal(ContainerInterfaceTerminal container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		final GuiScrollbar scrollbar = new GuiScrollbar();
 		this.setScrollBar( scrollbar );
 		this.xSize = 195;
@@ -103,7 +105,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 		final int ex = this.getScrollBar().getCurrentScroll();
 
-		final Iterator<Slot> o = this.inventorySlots.inventorySlots.iterator();
+		final Iterator<Slot> o = this.container.inventorySlots.iterator();
 		while( o.hasNext() )
 		{
 			if( o.next() instanceof SlotDisconnected )
@@ -121,7 +123,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 				final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
 				for( int z = 0; z < inv.getInventory().getSlots(); z++ )
 				{
-					this.inventorySlots.inventorySlots.add( new SlotDisconnected( inv, z, z * 18 + 8, 1 + offset ) );
+					this.container.inventorySlots.add( new SlotDisconnected( inv, z, z * 18 + 8, 1 + offset ) );
 				}
 			}
 			else if( lineObj instanceof String )
@@ -162,7 +164,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/interfaceterminal.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
 
 		int offset = 17;
 		final int ex = this.getScrollBar().getCurrentScroll();
@@ -176,7 +178,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 				RenderSystem.color4f( 1, 1, 1, 1 );
 				final int width = inv.getInventory().getSlots() * 18;
-				this.drawTexturedModalRect( offsetX + 7, offsetY + offset, 7, 139, width, 18 );
+				GuiUtils.drawTexturedModalRect( offsetX + 7, offsetY + offset, 7, 139, width, 18, 0 /* FIXME this.zlevel was used */ );
 			}
 			offset += 18;
 		}

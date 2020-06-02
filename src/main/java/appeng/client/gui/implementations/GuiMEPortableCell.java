@@ -23,19 +23,14 @@ import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.container.implementations.ContainerMEPortableCell;
+import net.minecraft.util.text.ITextComponent;
 
 
-public class GuiMEPortableCell extends GuiMEMonitorable
+public class GuiMEPortableCell extends GuiMEMonitorable<ContainerMEPortableCell>
 {
 
-	public GuiMEPortableCell( final PlayerInventory PlayerInventory, final IPortableCell te )
-	{
-		super( PlayerInventory, te, new ContainerMEPortableCell( PlayerInventory, te ) );
-	}
-
-	int defaultGetMaxRows()
-	{
-		return super.getMaxRows();
+	public GuiMEPortableCell(ContainerMEPortableCell container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 	}
 
 	@Override

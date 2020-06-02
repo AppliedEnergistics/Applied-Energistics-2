@@ -19,32 +19,35 @@
 package appeng.block.grindstone;
 
 
-import javax.annotation.Nullable;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.FakePlayer;
-
 import appeng.api.implementations.tiles.ICrankable;
 import appeng.block.AEBaseTileBlock;
 import appeng.core.stats.AeStats;
 import appeng.tile.AEBaseTile;
 import appeng.tile.grindstone.TileCrank;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.IWorldReader;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.FakePlayer;
+
+import javax.annotation.Nullable;
 
 
 public class BlockCrank extends AEBaseTileBlock<TileCrank>
@@ -63,21 +66,22 @@ public class BlockCrank extends AEBaseTileBlock<TileCrank>
 			return ActionResultType.SUCCESS;
 		}
 
-		final AEBaseTile tile = this.getTileEntity( w, pos );
-		if( tile instanceof TileCrank )
+		final TileCrank tile = this.getTileEntity( w, pos );
+		if( tile != null )
 		{
-			if( ( (TileCrank) tile ).power() )
+			if( tile.power() )
 			{
 				AeStats.TurnedCranks.addToPlayer( player, 1 );
 			}
+			return ActionResultType.SUCCESS;
 		}
 
-		return ActionResultType.SUCCESS;
+		return ActionResultType.PASS;
 	}
 
 	private void dropCrank( final World world, final BlockPos pos )
 	{
-		world.destroyBlock( pos, true ); // w.destroyBlock( x, y, z, true );
+		world.destroyBlock( pos, true );
 		world.notifyBlockUpdate( pos, this.getDefaultState(), world.getBlockState( pos ), 3 );
 	}
 
@@ -102,13 +106,13 @@ public class BlockCrank extends AEBaseTileBlock<TileCrank>
 	}
 
 	@Override
-	public boolean isValidOrientation( final World w, final BlockPos pos, final Direction forward, final Direction up )
+	public boolean isValidOrientation( final IWorld w, final BlockPos pos, final Direction forward, final Direction up )
 	{
 		final TileEntity te = w.getTileEntity( pos );
 		return !( te instanceof TileCrank ) || this.isCrankable( w, pos, up.getOpposite() );
 	}
 
-	private Direction findCrankable( final World world, final BlockPos pos )
+	private Direction findCrankable( final IBlockReader world, final BlockPos pos )
 	{
 		for( final Direction dir : Direction.values() )
 		{
@@ -120,7 +124,7 @@ public class BlockCrank extends AEBaseTileBlock<TileCrank>
 		return null;
 	}
 
-	private boolean isCrankable( final World world, final BlockPos pos, final Direction offset )
+	private boolean isCrankable( final IBlockReader world, final BlockPos pos, final Direction offset )
 	{
 		final BlockPos o = pos.offset( offset );
 		final TileEntity te = world.getTileEntity( o );
@@ -129,15 +133,13 @@ public class BlockCrank extends AEBaseTileBlock<TileCrank>
 	}
 
 	@Override
-	public EnumBlockRenderType getRenderType( BlockState state )
+	public BlockRenderType getRenderType(BlockState state )
 	{
-		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+		return BlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 
 	@Override
-	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
-	{
-
+	public void neighborChanged(BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving) {
 		final AEBaseTile tile = this.getTileEntity( world, pos );
 		if( tile != null )
 		{
@@ -158,22 +160,24 @@ public class BlockCrank extends AEBaseTileBlock<TileCrank>
 		return this.findCrankable( w, pos ) != null;
 	}
 
-	@Override
-	public boolean isFullCube( BlockState state )
-	{
-		return false;
+	private Direction getUp(IBlockReader world, BlockPos pos) {
+		TileCrank crank = getTileEntity(world, pos);
+		return crank != null ? crank.getUp() : null;
 	}
 
 	@Override
-	public boolean canPlaceTorchOnTop( BlockState state, IBlockReader world, BlockPos pos )
-	{
-		return false;
-	}
+	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+		Direction up = getUp(world, pos);
 
-	@Override
-	public BlockFaceShape getBlockFaceShape( IBlockReader worldIn, BlockState state, BlockPos pos, Direction face )
-	{
-		return BlockFaceShape.UNDEFINED;
-	}
+		if (up == null) {
+			return VoxelShapes.empty();
+		} else {
+			// FIXME: Cache per direction, and build it 'precise', not just from AABB
+			final double xOff = -0.15 * up.getXOffset();
+			final double yOff = -0.15 * up.getYOffset();
+			final double zOff = -0.15 * up.getZOffset();
+			return VoxelShapes.create(new AxisAlignedBB(xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85));
+		}
 
+	}
 }

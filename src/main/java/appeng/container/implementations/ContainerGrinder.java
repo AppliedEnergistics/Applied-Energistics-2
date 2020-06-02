@@ -20,6 +20,15 @@ package appeng.container.implementations;
 
 
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.inventory.container.SimpleNamedContainerProvider;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.container.AEBaseContainer;
@@ -28,13 +37,14 @@ import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.grindstone.TileGrinder;
 
-
 public class ContainerGrinder extends AEBaseContainer
 {
 
-	public ContainerGrinder( final PlayerInventory ip, final TileGrinder grinder )
+	public static ContainerType<ContainerGrinder> TYPE;
+
+	public ContainerGrinder(int id, final PlayerInventory ip, final TileGrinder grinder )
 	{
-		super( ip, grinder, null );
+		super( TYPE, id, ip, grinder, null );
 
 		IItemHandler inv = grinder.getInternalInventory();
 
@@ -50,4 +60,22 @@ public class ContainerGrinder extends AEBaseContainer
 
 		this.bindPlayerInventory( ip, 0, 176 - /* height of player inventory */82 );
 	}
+
+	public static ContainerGrinder fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		BlockPos pos = buf.readBlockPos();
+		TileEntity te = inv.player.world.getTileEntity(pos);
+		if (te instanceof TileGrinder) {
+			return new ContainerGrinder(windowId, inv, (TileGrinder) te);
+		}
+		return null;
+	}
+
+	public static void open(ServerPlayerEntity player, TileGrinder tile, ITextComponent title) {
+		BlockPos pos = tile.getPos();
+		INamedContainerProvider container = new SimpleNamedContainerProvider(
+				(wnd, p, pl) -> new ContainerGrinder(wnd, p, tile), title
+		);
+		NetworkHooks.openGui(player, container, pos);
+	}
+
 }

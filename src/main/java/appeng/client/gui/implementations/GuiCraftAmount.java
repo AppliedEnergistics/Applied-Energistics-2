@@ -21,6 +21,7 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import appeng.core.Api;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -44,9 +45,11 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.parts.reporting.PartTerminal;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 
-public class GuiCraftAmount extends AEBaseGui
+public class GuiCraftAmount extends AEBaseGui<ContainerCraftAmount>
 {
 	private GuiNumberBox amountToCraft;
 	private GuiTabButton originalGuiBtn;
@@ -64,10 +67,8 @@ public class GuiCraftAmount extends AEBaseGui
 
 	private GuiBridge originalGui;
 
-	@Reflected
-	public GuiCraftAmount( final PlayerInventory PlayerInventory, final ITerminalHost te )
-	{
-		super( new ContainerCraftAmount( PlayerInventory, te ) );
+	public GuiCraftAmount(ContainerCraftAmount container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 	}
 
 	@Override
@@ -93,7 +94,7 @@ public class GuiCraftAmount extends AEBaseGui
 		this.addButton( this.next = new GuiButton( 0, this.guiLeft + 128, this.guiTop + 51, 38, 20, GuiText.Next.getLocal() ) );
 
 		ItemStack myIcon = null;
-		final Object target = ( (AEBaseContainer) this.inventorySlots ).getTarget();
+		final Object target = this.container.getTarget();
 		final IDefinitions definitions = Api.INSTANCE.definitions();
 		final IParts parts = definitions.parts();
 
@@ -148,7 +149,7 @@ public class GuiCraftAmount extends AEBaseGui
 		this.next.displayString = hasShiftDown() ? GuiText.Start.getLocal() : GuiText.Next.getLocal();
 
 		this.bindTexture( "guis/craft_amt.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
 
 		try
 		{

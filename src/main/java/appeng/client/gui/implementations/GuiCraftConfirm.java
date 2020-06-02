@@ -25,8 +25,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import appeng.core.Api;
 import com.google.common.base.Joiner;
 
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -54,10 +58,8 @@ import appeng.parts.reporting.PartTerminal;
 import appeng.util.Platform;
 
 
-public class GuiCraftConfirm extends AEBaseGui
+public class GuiCraftConfirm extends AEBaseGui<ContainerCraftConfirm>
 {
-
-	private final ContainerCraftConfirm ccc;
 
 	private final int rows = 5;
 
@@ -73,17 +75,15 @@ public class GuiCraftConfirm extends AEBaseGui
 	private GuiButton selectCPU;
 	private int tooltip = -1;
 
-	public GuiCraftConfirm( final PlayerInventory PlayerInventory, final ITerminalHost te )
-	{
-		super( new ContainerCraftConfirm( PlayerInventory, te ) );
+	public GuiCraftConfirm(ContainerCraftConfirm container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.xSize = 238;
 		this.ySize = 206;
 
 		final GuiScrollbar scrollbar = new GuiScrollbar();
 		this.setScrollBar( scrollbar );
 
-		this.ccc = (ContainerCraftConfirm) this.inventorySlots;
-
+		Object te = container.getTarget();
 		if( te instanceof WirelessTerminalGuiObject )
 		{
 			this.OriginalGui = GuiBridge.GUI_WIRELESS_TERM;
@@ -107,7 +107,7 @@ public class GuiCraftConfirm extends AEBaseGui
 
 	boolean isAutoStart()
 	{
-		return ( (ContainerCraftConfirm) this.inventorySlots ).isAutoStart();
+		return ( (ContainerCraftConfirm) this.container ).isAutoStart();
 	}
 
 	@Override
@@ -137,7 +137,7 @@ public class GuiCraftConfirm extends AEBaseGui
 	{
 		this.updateCPUButtonText();
 
-		this.start.enabled = !( this.ccc.hasNoCPU() || this.isSimulation() );
+		this.start.enabled = !( this.container.hasNoCPU() || this.isSimulation() );
 		this.selectCPU.enabled = !this.isSimulation();
 
 		final int gx = ( this.width - this.xSize ) / 2;
@@ -177,20 +177,20 @@ public class GuiCraftConfirm extends AEBaseGui
 	private void updateCPUButtonText()
 	{
 		String btnTextText = GuiText.CraftingCPU.getLocal() + ": " + GuiText.Automatic.getLocal();
-		if( this.ccc.getSelectedCpu() >= 0 )// && status.selectedCpu < status.cpus.size() )
+		if( this.container.getSelectedCpu() >= 0 )// && status.selectedCpu < status.cpus.size() )
 		{
-			if( this.ccc.getName().length() > 0 )
+			if( this.container.getName().length() > 0 )
 			{
-				final String name = this.ccc.getName().substring( 0, Math.min( 20, this.ccc.getName().length() ) );
+				final String name = this.container.getName().substring( 0, Math.min( 20, this.container.getName().length() ) );
 				btnTextText = GuiText.CraftingCPU.getLocal() + ": " + name;
 			}
 			else
 			{
-				btnTextText = GuiText.CraftingCPU.getLocal() + ": #" + this.ccc.getSelectedCpu();
+				btnTextText = GuiText.CraftingCPU.getLocal() + ": #" + this.container.getSelectedCpu();
 			}
 		}
 
-		if( this.ccc.hasNoCPU() )
+		if( this.container.hasNoCPU() )
 		{
 			btnTextText = GuiText.NoCraftingCPUs.getLocal();
 		}
@@ -200,13 +200,13 @@ public class GuiCraftConfirm extends AEBaseGui
 
 	private boolean isSimulation()
 	{
-		return ( (ContainerCraftConfirm) this.inventorySlots ).isSimulation();
+		return ( (ContainerCraftConfirm) this.container ).isSimulation();
 	}
 
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		final long BytesUsed = this.ccc.getUsedBytes();
+		final long BytesUsed = this.container.getUsedBytes();
 		final String byteUsed = NumberFormat.getInstance().format( BytesUsed );
 		final String Add = BytesUsed > 0 ? ( byteUsed + ' ' + GuiText.BytesUsed.getLocal() ) : GuiText.CalculatingWait.getLocal();
 		this.font.drawString( GuiText.CraftingPlan.getLocal() + " - " + Add, 8, 7, 4210752 );
@@ -219,8 +219,8 @@ public class GuiCraftConfirm extends AEBaseGui
 		}
 		else
 		{
-			dsp = this.ccc.getCpuAvailableBytes() > 0 ? ( GuiText.Bytes.getLocal() + ": " + this.ccc.getCpuAvailableBytes() + " : " + GuiText.CoProcessors
-					.getLocal() + ": " + this.ccc.getCpuCoProcessors() ) : GuiText.Bytes.getLocal() + ": N/A : " + GuiText.CoProcessors.getLocal() + ": N/A";
+			dsp = this.container.getCpuAvailableBytes() > 0 ? ( GuiText.Bytes.getLocal() + ": " + this.container.getCpuAvailableBytes() + " : " + GuiText.CoProcessors
+					.getLocal() + ": " + this.container.getCpuCoProcessors() ) : GuiText.Bytes.getLocal() + ": N/A : " + GuiText.CoProcessors.getLocal() + ": N/A";
 		}
 
 		final int offset = ( 219 - this.font.getStringWidth( dsp ) ) / 2;
@@ -396,7 +396,7 @@ public class GuiCraftConfirm extends AEBaseGui
 	{
 		this.setScrollBar();
 		this.bindTexture( "guis/craftingreport.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
 	}
 
 	private void setScrollBar()

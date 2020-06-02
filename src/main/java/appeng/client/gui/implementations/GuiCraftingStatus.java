@@ -25,6 +25,9 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import appeng.container.implementations.ContainerCraftingCPU;
+import appeng.core.Api;
+import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -51,19 +54,16 @@ import appeng.parts.reporting.PartTerminal;
 public class GuiCraftingStatus extends GuiCraftingCPU
 {
 
-	private final ContainerCraftingStatus status;
 	private GuiButton selectCPU;
 
 	private GuiTabButton originalGuiBtn;
 	private GuiBridge originalGui;
 	private ItemStack myIcon = ItemStack.EMPTY;
 
-	public GuiCraftingStatus( final PlayerInventory PlayerInventory, final ITerminalHost te )
-	{
-		super( new ContainerCraftingStatus( PlayerInventory, te ) );
+	public GuiCraftingStatus(ContainerCraftingCPU container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 
-		this.status = (ContainerCraftingStatus) this.inventorySlots;
-		final Object target = this.status.getTarget();
+		final Object target = this.container.getTarget();
 		final IDefinitions definitions = Api.INSTANCE.definitions();
 		final IParts parts = definitions.parts();
 
@@ -150,20 +150,20 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	{
 		String btnTextText = GuiText.NoCraftingJobs.getLocal();
 
-		if( this.status.selectedCpu >= 0 )// && status.selectedCpu < status.cpus.size() )
+		if( this.container.selectedCpu >= 0 )// && status.selectedCpu < status.cpus.size() )
 		{
-			if( this.status.myName.length() > 0 )
+			if( this.container.myName.length() > 0 )
 			{
-				final String name = this.status.myName.substring( 0, Math.min( 20, this.status.myName.length() ) );
+				final String name = this.container.myName.substring( 0, Math.min( 20, this.container.myName.length() ) );
 				btnTextText = GuiText.CPUs.getLocal() + ": " + name;
 			}
 			else
 			{
-				btnTextText = GuiText.CPUs.getLocal() + ": #" + this.status.selectedCpu;
+				btnTextText = GuiText.CPUs.getLocal() + ": #" + this.container.selectedCpu;
 			}
 		}
 
-		if( this.status.noCPU )
+		if( this.container.noCPU )
 		{
 			btnTextText = GuiText.NoCraftingJobs.getLocal();
 		}

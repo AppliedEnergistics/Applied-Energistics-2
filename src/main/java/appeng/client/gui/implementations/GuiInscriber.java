@@ -28,25 +28,24 @@ import appeng.container.implementations.ContainerInscriber;
 import appeng.container.implementations.ContainerUpgradeable;
 import appeng.core.localization.GuiText;
 import appeng.tile.misc.TileInscriber;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 
-public class GuiInscriber extends AEBaseGui
+public class GuiInscriber extends AEBaseGui<ContainerInscriber>
 {
 
-	private final ContainerInscriber cvc;
 	private GuiProgressBar pb;
 
-	public GuiInscriber( final PlayerInventory PlayerInventory, final TileInscriber te )
-	{
-		super( new ContainerInscriber( PlayerInventory, te ) );
-		this.cvc = (ContainerInscriber) this.inventorySlots;
+	public GuiInscriber(ContainerInscriber container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.ySize = 176;
 		this.xSize = this.hasToolbox() ? 246 : 211;
 	}
 
 	private boolean hasToolbox()
 	{
-		return ( (ContainerUpgradeable) this.inventorySlots ).hasToolbox();
+		return this.container.hasToolbox();
 	}
 
 	@Override
@@ -54,14 +53,14 @@ public class GuiInscriber extends AEBaseGui
 	{
 		super.init();
 
-		this.pb = new GuiProgressBar( this.cvc, "guis/inscriber.png", 135, 39, 135, 177, 6, 18, Direction.VERTICAL );
+		this.pb = new GuiProgressBar( this.container, "guis/inscriber.png", 135, 39, 135, 177, 6, 18, Direction.VERTICAL );
 		this.addButton( this.pb );
 	}
 
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		this.pb.setFullMsg( this.cvc.getCurrentProgress() * 100 / this.cvc.getMaxProgress() + "%" );
+		this.pb.setFullMsg( this.container.getCurrentProgress() * 100 / this.container.getMaxProgress() + "%" );
 
 		this.font.drawString( this.getGuiDisplayName( GuiText.Inscriber.getLocal() ), 8, 6, 4210752 );
 		this.font.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
@@ -74,15 +73,15 @@ public class GuiInscriber extends AEBaseGui
 		this.pb.x = 135 + this.guiLeft;
 		this.pb.y = 39 + this.guiTop;
 
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, this.ySize );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, this.ySize, 0 /* FIXME this.zlevel was used */ );
 
 		if( this.drawUpgrades() )
 		{
-			this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 14 + this.cvc.availableUpgrades() * 18 );
+			GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 14 + this.container.availableUpgrades() * 18, 0 /* FIXME this.zlevel was used */ );
 		}
 		if( this.hasToolbox() )
 		{
-			this.drawTexturedModalRect( offsetX + 178, offsetY + this.ySize - 90, 178, this.ySize - 90, 68, 68 );
+			GuiUtils.drawTexturedModalRect( offsetX + 178, offsetY + this.ySize - 90, 178, this.ySize - 90, 68, 68, 0 /* FIXME this.zlevel was used */ );
 		}
 	}
 

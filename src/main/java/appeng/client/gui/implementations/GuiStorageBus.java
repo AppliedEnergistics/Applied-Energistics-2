@@ -21,6 +21,7 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -44,7 +45,7 @@ import appeng.core.sync.packets.PacketValueConfig;
 import appeng.parts.misc.PartStorageBus;
 
 
-public class GuiStorageBus extends GuiUpgradeable
+public class GuiStorageBus extends GuiUpgradeable<ContainerStorageBus>
 {
 
 	private GuiImgButton rwMode;
@@ -53,9 +54,8 @@ public class GuiStorageBus extends GuiUpgradeable
 	private GuiImgButton partition;
 	private GuiImgButton clear;
 
-	public GuiStorageBus( final PlayerInventory PlayerInventory, final PartStorageBus te )
-	{
-		super( new ContainerStorageBus( PlayerInventory, te ) );
+	public GuiStorageBus(ContainerStorageBus container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.ySize = 251;
 	}
 
