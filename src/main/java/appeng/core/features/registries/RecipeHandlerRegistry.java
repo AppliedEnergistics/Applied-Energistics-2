@@ -32,7 +32,6 @@ import appeng.api.recipes.ICraftHandler;
 import appeng.api.recipes.IRecipeHandler;
 import appeng.api.recipes.ISubItemResolver;
 import appeng.core.AELog;
-import appeng.recipes.RecipeHandler;
 
 
 /**
@@ -43,49 +42,12 @@ import appeng.recipes.RecipeHandler;
  */
 public class RecipeHandlerRegistry implements IRecipeHandlerRegistry
 {
-	private final Map<String, Class<? extends ICraftHandler>> handlers = new HashMap<>( 20 );
 	private final Collection<ISubItemResolver> resolvers = new ArrayList<>();
-
-	@Override
-	public void addNewCraftHandler( final String name, final Class<? extends ICraftHandler> handler )
-	{
-		this.handlers.put( name.toLowerCase( Locale.ENGLISH ), handler );
-	}
 
 	@Override
 	public void addNewSubItemResolver( final ISubItemResolver sir )
 	{
 		this.resolvers.add( sir );
-	}
-
-	@Nullable
-	@Override
-	public ICraftHandler getCraftHandlerFor( final String name )
-	{
-		final Class<? extends ICraftHandler> clz = this.handlers.get( name );
-		if( clz == null )
-		{
-			return null;
-		}
-		try
-		{
-			return clz.newInstance();
-		}
-		catch( final Throwable e )
-		{
-			AELog.error( "Error Caused when trying to construct " + clz.getName() );
-			AELog.debug( e );
-
-			this.handlers.put( name, null ); // clear it..
-
-			return null;
-		}
-	}
-
-	@Override
-	public IRecipeHandler createNewRecipehandler()
-	{
-		return new RecipeHandler();
 	}
 
 	@Nullable

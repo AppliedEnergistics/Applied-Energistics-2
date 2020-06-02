@@ -29,7 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import appeng.core.AppEng;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.core.features.MaterialStackSrc;
 import appeng.entity.EntityChargedQuartz;
 import appeng.entity.EntitySingularity;

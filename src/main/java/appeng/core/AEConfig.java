@@ -22,7 +22,7 @@ package appeng.core;
 import appeng.api.config.*;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.core.settings.TickRates;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;

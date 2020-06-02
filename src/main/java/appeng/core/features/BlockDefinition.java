@@ -19,8 +19,9 @@
 package appeng.core.features;
 
 
-import java.util.Optional;
+import java.util.Set;
 
+import appeng.api.features.AEFeature;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.block.Block;
@@ -30,7 +31,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
 import appeng.api.definitions.IBlockDefinition;
-import net.minecraftforge.fml.RegistryObject;
 
 
 public class BlockDefinition extends ItemDefinition implements IBlockDefinition
@@ -39,9 +39,9 @@ public class BlockDefinition extends ItemDefinition implements IBlockDefinition
 
 	private final BlockItem blockItem;
 
-	public BlockDefinition( String registryName, Block block, BlockItem item )
+	public BlockDefinition( String registryName, Block block, BlockItem item, Set<AEFeature> features )
 	{
-		super( registryName, item );
+		super( registryName, item, features );
 		this.block = block;
 		this.blockItem = item;
 	}

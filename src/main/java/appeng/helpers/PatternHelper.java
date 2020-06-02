@@ -43,7 +43,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.container.ContainerNull;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 

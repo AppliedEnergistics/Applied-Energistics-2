@@ -29,7 +29,7 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 
 import net.minecraft.util.math.BlockPos;
 
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 
 
 public final class AELog

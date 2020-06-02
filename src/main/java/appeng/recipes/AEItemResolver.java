@@ -19,6 +19,7 @@
 package appeng.recipes;
 
 
+import appeng.core.Api;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;

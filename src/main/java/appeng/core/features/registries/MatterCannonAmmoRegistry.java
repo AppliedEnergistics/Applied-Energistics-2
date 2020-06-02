@@ -26,7 +26,6 @@ import net.minecraft.item.Items;
 
 import appeng.api.features.IMatterCannonAmmoRegistry;
 import appeng.recipes.ores.IOreListener;
-import appeng.recipes.ores.OreDictionaryHandler;
 
 
 public class MatterCannonAmmoRegistry implements IOreListener, IMatterCannonAmmoRegistry

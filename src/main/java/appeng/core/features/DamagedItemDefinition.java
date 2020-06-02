@@ -19,10 +19,13 @@
 package appeng.core.features;
 
 
+import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.features.AEFeature;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.item.Item;
@@ -71,9 +74,9 @@ public final class DamagedItemDefinition implements IItemDefinition
 	}
 
 	@Override
-	public boolean isEnabled()
+	public Set<AEFeature> features()
 	{
-		return this.source.isPresent();
+		return Collections.emptySet();
 	}
 
 	@Override
@@ -84,7 +87,7 @@ public final class DamagedItemDefinition implements IItemDefinition
 			return false;
 		}
 
-		return this.isEnabled() && comparableStack.getItem() == this.source.get().getItem();
+		return comparableStack.getItem() == this.source.get().getItem();
 	}
 
 }

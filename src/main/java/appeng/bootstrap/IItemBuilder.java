@@ -26,7 +26,7 @@ import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.core.features.ItemDefinition;
 
 

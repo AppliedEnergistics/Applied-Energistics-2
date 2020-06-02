@@ -32,7 +32,7 @@ import net.minecraft.world.World;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.QuartzKnifeObj;
 import appeng.util.Platform;

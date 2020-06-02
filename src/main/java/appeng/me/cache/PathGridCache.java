@@ -29,7 +29,6 @@ import java.util.Set;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 
-import appeng.api.AEApi;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridBlock;
@@ -49,7 +48,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.core.stats.IAdvancementTrigger;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;

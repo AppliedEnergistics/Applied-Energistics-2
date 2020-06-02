@@ -30,11 +30,10 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.definitions.IMaterials;
 import appeng.core.AEConfig;
 import appeng.core.Api;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.helpers.Reflected;
 import appeng.util.Platform;
 

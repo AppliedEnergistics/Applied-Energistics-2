@@ -39,7 +39,7 @@ import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.fluids.parts.PartFluidAnnihilationPlane;
 import appeng.fluids.parts.PartFluidExportBus;
