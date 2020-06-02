@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.block.BlockState;
@@ -36,7 +35,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.EnumSkyBlock;
+import net.minecraft.world.LightType;
 
 import appeng.api.util.AEColor;
 import appeng.helpers.Splotch;
@@ -59,19 +58,19 @@ public class TilePaint extends AEBaseTile
 	}
 
 	@Override
-	public CompoundNBT writeToNBT( final CompoundNBT data )
+	public CompoundNBT write( final CompoundNBT data )
 	{
-		super.writeToNBT( data );
-		final ByteBuf myDat = Unpooled.buffer();
+		super.write( data );
+		final PacketBuffer myDat = new PacketBuffer( Unpooled.buffer() );
 		this.writeBuffer( myDat );
 		if( myDat.hasArray() )
 		{
-			data.setByteArray( "dots", myDat.array() );
+			data.putByteArray( "dots", myDat.array() );
 		}
 		return data;
 	}
 
-	private void writeBuffer( final ByteBuf out )
+	private void writeBuffer( final PacketBuffer out )
 	{
 		if( this.dots == null )
 		{
@@ -88,16 +87,16 @@ public class TilePaint extends AEBaseTile
 	}
 
 	@Override
-	public void readFromNBT( final CompoundNBT data )
+	public void read( final CompoundNBT data )
 	{
-		super.readFromNBT( data );
-		if( data.contains("dots") )
+		super.read( data );
+		if( data.contains( "dots" ) )
 		{
-			this.readBuffer( Unpooled.copiedBuffer( data.getByteArray( "dots" ) ) );
+			this.readBuffer( new PacketBuffer( Unpooled.copiedBuffer( data.getByteArray( "dots" ) ) ) );
 		}
 	}
 
-	private void readBuffer( final ByteBuf in )
+	private void readBuffer( final PacketBuffer in )
 	{
 		final byte howMany = in.readByte();
 
@@ -135,7 +134,7 @@ public class TilePaint extends AEBaseTile
 
 		if( this.world != null )
 		{
-			this.world.getLightFor( EnumSkyBlock.BLOCK, this.pos );
+			this.world.getLightFor( LightType.BLOCK, this.pos );
 		}
 	}
 
@@ -147,7 +146,7 @@ public class TilePaint extends AEBaseTile
 	}
 
 	@Override
-	protected boolean readFromStream( final ByteBuf data ) throws IOException
+	protected boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
 		super.readFromStream( data );
 		this.readBuffer( data );
@@ -176,7 +175,7 @@ public class TilePaint extends AEBaseTile
 	{
 		final BlockPos p = this.pos.offset( side );
 		final BlockState blk = this.world.getBlockState( p );
-		return blk.getBlock().isSideSolid( this.world.getBlockState( p ), this.world, p, side.getOpposite() );
+		return blk.isSolidSide( world, p, side.getOpposite() );
 	}
 
 	private void removeSide( final Direction side )
@@ -215,7 +214,7 @@ public class TilePaint extends AEBaseTile
 
 		if( this.dots == null )
 		{
-			this.world.removeBlock(this.pos, false);
+			this.world.removeBlock( this.pos, false );
 		}
 	}
 
@@ -241,7 +240,7 @@ public class TilePaint extends AEBaseTile
 		final BlockPos p = this.pos.offset( side );
 
 		final BlockState blk = this.world.getBlockState( p );
-		if( blk.getBlock().isSideSolid( this.world.getBlockState( p ), this.world, p, side.getOpposite() ) )
+		if( blk.isSolidSide( this.world, p, side.getOpposite() ) )
 		{
 			final ItemPaintBall ipb = (ItemPaintBall) type.getItem();
 

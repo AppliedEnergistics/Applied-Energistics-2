@@ -24,15 +24,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
@@ -151,7 +149,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	}
 
 	@Override
-	public boolean readFromStream( ByteBuf data ) throws IOException
+	public boolean readFromStream( PacketBuffer data ) throws IOException
 	{
 		final boolean c = super.readFromStream( data );
 		final short oldf = this.freq;
@@ -160,7 +158,7 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 	}
 
 	@Override
-	public void writeToStream( ByteBuf data ) throws IOException
+	public void writeToStream( PacketBuffer data ) throws IOException
 	{
 		super.writeToStream( data );
 		data.writeShort( this.getFrequency() );

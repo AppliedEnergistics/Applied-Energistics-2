@@ -19,7 +19,6 @@
 package appeng.core.sync.packets;
 
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -55,7 +54,7 @@ public class PacketCompassRequest extends AppEngPacket implements ICompassCallba
 	public PacketCompassRequest( final long attunement, final int cx, final int cz, final int cdy )
 	{
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
 
 		data.writeInt( this.getPacketID() );
 		data.writeLong( this.attunement = attunement );

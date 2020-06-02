@@ -19,7 +19,6 @@
 package appeng.core.sync.packets;
 
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -58,7 +57,7 @@ public class PacketPartPlacement extends AppEngPacket
 	// api
 	public PacketPartPlacement( final BlockPos pos, final Direction face, final float eyeHeight, final Hand hand )
 	{
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
 
 		data.writeInt( this.getPacketID() );
 		data.writeInt( pos.getX() );

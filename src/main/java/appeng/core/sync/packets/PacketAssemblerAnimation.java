@@ -21,7 +21,6 @@ package appeng.core.sync.packets;
 
 import java.io.IOException;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -47,7 +46,7 @@ public class PacketAssemblerAnimation extends AppEngPacket
 	public final byte rate;
 	public final IAEItemStack is;
 
-	public PacketAssemblerAnimation( final ByteBuf stream )
+	public PacketAssemblerAnimation( final PacketBuffer stream )
 	{
 		this.x = stream.readInt();
 		this.y = stream.readInt();

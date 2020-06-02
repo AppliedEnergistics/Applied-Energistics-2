@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Optional;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -106,7 +104,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	}
 
 	@Override
-	protected boolean readFromStream( final ByteBuf data ) throws IOException
+	protected boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
 		final boolean c = super.readFromStream( data );
 		final int oldValue = this.constructed;

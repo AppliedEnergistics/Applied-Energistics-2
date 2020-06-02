@@ -24,14 +24,12 @@ import java.util.EnumSet;
 
 import com.google.common.collect.ImmutableSet;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 
-import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.definitions.IParts;
 import appeng.api.implementations.parts.IPartCable;
@@ -290,7 +288,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public void writeToStream( final ByteBuf data ) throws IOException
+	public void writeToStream( final PacketBuffer data ) throws IOException
 	{
 		int flags = 0;
 		boolean[] writeSide = new boolean[Direction.values().length];
@@ -354,7 +352,7 @@ public class PartCable extends AEBasePart implements IPartCable
 	}
 
 	@Override
-	public boolean readFromStream( final ByteBuf data ) throws IOException
+	public boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
 		int cs = data.readByte();
 		final EnumSet<AEPartLocation> myC = this.getConnections().clone();

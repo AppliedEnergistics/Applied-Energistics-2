@@ -25,8 +25,6 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -81,7 +79,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	protected boolean readFromStream( final ByteBuf data ) throws IOException
+	protected boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
 		final boolean c = super.readFromStream( data );
 		boolean ret = this.getCableBus().readFromStream( data );

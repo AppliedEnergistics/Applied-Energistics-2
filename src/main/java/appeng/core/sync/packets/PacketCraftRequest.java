@@ -21,7 +21,6 @@ package appeng.core.sync.packets;
 
 import java.util.concurrent.Future;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,6 +33,8 @@ import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingJob;
 import appeng.api.networking.security.IActionHost;
 import appeng.container.ContainerOpenContext;
+import appeng.container.implementations.ContainerCraftAmount;
+import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.GuiBridge;
@@ -58,7 +59,7 @@ public class PacketCraftRequest extends AppEngPacket
 		this.amount = craftAmt;
 		this.heldShift = shift;
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
 
 		data.writeInt( this.getPacketID() );
 		data.writeBoolean( shift );

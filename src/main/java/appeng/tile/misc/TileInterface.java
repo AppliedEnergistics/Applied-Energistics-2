@@ -27,8 +27,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -185,7 +183,7 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 	}
 
 	@Override
-	protected boolean readFromStream( final ByteBuf data ) throws IOException
+	protected boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
 		final boolean c = super.readFromStream( data );
 		boolean oldOmniDirectional = this.omniDirectional;

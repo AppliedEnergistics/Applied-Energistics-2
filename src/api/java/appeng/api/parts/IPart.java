@@ -30,13 +30,12 @@ import java.util.Random;
 
 import javax.annotation.Nonnull;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -148,7 +147,7 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 	 *
 	 * @throws IOException
 	 */
-	void writeToStream( ByteBuf data ) throws IOException;
+	void writeToStream( PacketBuffer data ) throws IOException;
 
 	/**
 	 * read data from bus packet.
@@ -159,7 +158,7 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 	 *
 	 * @throws IOException
 	 */
-	boolean readFromStream( ByteBuf data ) throws IOException;
+	boolean readFromStream( PacketBuffer data ) throws IOException;
 
 	/**
 	 * get the Grid Node for the Bus, be sure your IGridBlock is NOT isWorldAccessible, if it is your going to cause

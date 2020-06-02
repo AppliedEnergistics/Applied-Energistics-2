@@ -24,8 +24,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -137,7 +135,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 	}
 
 	@Override
-	protected boolean readFromStream( final ByteBuf data ) throws IOException
+	protected boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
 		final boolean c = super.readFromStream( data );
 		final boolean wasActive = this.isActive;

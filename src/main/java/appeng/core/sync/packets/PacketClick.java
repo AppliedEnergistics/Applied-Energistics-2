@@ -19,7 +19,6 @@
 package appeng.core.sync.packets;
 
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.block.Block;
@@ -82,7 +81,7 @@ public class PacketClick extends AppEngPacket
 	public PacketClick( final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand, boolean leftClick )
 	{
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
 
 		data.writeInt( this.getPacketID() );
 		data.writeInt( this.x = pos.getX() );

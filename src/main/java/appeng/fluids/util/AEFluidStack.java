@@ -19,21 +19,12 @@
 package appeng.fluids.util;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
 import javax.annotation.Nonnull;
-
-import io.netty.buffer.ByteBuf;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -119,7 +110,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		return fluid;
 	}
 
-	public static IAEFluidStack fromPacket( final ByteBuf buffer ) throws IOException
+	public static IAEFluidStack fromPacket( final PacketBuffer buffer ) throws IOException
 	{
 		final byte mask = buffer.readByte();
 		final byte stackType = (byte) ( ( mask & 0x0C ) >> 2 );
@@ -130,22 +121,12 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		// don't send this...
 		final CompoundNBT d = new CompoundNBT();
 
-		final byte len2 = buffer.readByte();
-		final byte[] name = new byte[len2];
-		buffer.readBytes( name, 0, len2 );
-
-		d.putString( "FluidName", new String( name, "UTF-8" ) );
-		d.putByte( "Count", (byte) 0 );
+		d.putString( "FluidName", buffer.readString() );
+		d.putByte( "Amount", (byte) 0 );
 
 		if( hasTagCompound )
 		{
-			final int len = buffer.readInt();
-
-			final byte[] bd = new byte[len];
-			buffer.readBytes( bd );
-
-			final DataInputStream di = new DataInputStream( new ByteArrayInputStream( bd ) );
-			d.put( "Tag", CompressedStreamTools.read( di ) );
+			d.put( "Tag", buffer.readCompoundTag() );
 		}
 
 		final long stackSize = getPacketValue( stackType, buffer );
@@ -334,21 +315,10 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 
 	private void writeToStream( final PacketBuffer buffer ) throws IOException
 	{
-		final byte[] name = this.fluid.getRegistryName().toString().getBytes(StandardCharsets.UTF_8);
-		buffer.writeByte( (byte) name.length );
-		buffer.writeBytes( name );
+		buffer.writeString( fluid.getRegistryName().toString() );
 		if( this.hasTagCompound() )
 		{
-			final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-			final DataOutputStream data = new DataOutputStream( bytes );
-
-			CompressedStreamTools.write( this.tagCompound, data );
-
-			final byte[] tagBytes = bytes.toByteArray();
-			final int size = tagBytes.length;
-
-			buffer.writeInt( size );
-			buffer.writeBytes( tagBytes );
+			buffer.writeCompoundTag( tagCompound );
 		}
 	}
 }

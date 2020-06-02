@@ -22,8 +22,6 @@ package appeng.tile.spatial;
 import java.io.IOException;
 import java.util.EnumSet;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 
@@ -218,7 +216,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	}
 
 	@Override
-	protected boolean readFromStream( final ByteBuf data ) throws IOException
+	protected boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
 		final boolean c = super.readFromStream( data );
 		final int old = this.displayBits;

@@ -23,8 +23,6 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -81,7 +79,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	}
 
 	@Override
-	protected boolean readFromStream( final ByteBuf data ) throws IOException
+	protected boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
 		final boolean c = super.readFromStream( data );
 		final boolean wasOn = this.isOn;

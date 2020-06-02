@@ -22,10 +22,9 @@ package appeng.parts.p2p;
 import java.io.IOException;
 import java.util.List;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
@@ -77,7 +76,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	}
 
 	@Override
-	public void writeToStream( final ByteBuf data ) throws IOException
+	public void writeToStream( final PacketBuffer data ) throws IOException
 	{
 		super.writeToStream( data );
 		data.writeInt( this.isOutput() ? this.lastValue : 0 );
@@ -85,7 +84,7 @@ public class PartP2PLight extends PartP2PTunnel<PartP2PLight> implements IGridTi
 	}
 
 	@Override
-	public boolean readFromStream( final ByteBuf data ) throws IOException
+	public boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
 		super.readFromStream( data );
 		final int oldValue = this.lastValue;

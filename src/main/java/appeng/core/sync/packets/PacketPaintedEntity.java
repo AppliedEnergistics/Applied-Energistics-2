@@ -19,7 +19,6 @@
 package appeng.core.sync.packets;
 
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -50,7 +49,7 @@ public class PacketPaintedEntity extends AppEngPacket
 	public PacketPaintedEntity( final int myEntity, final AEColor myColor, final int ticksLeft )
 	{
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
 
 		data.writeInt( this.getPacketID() );
 		data.writeInt( this.entityId = myEntity );

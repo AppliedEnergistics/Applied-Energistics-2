@@ -19,12 +19,11 @@
 package appeng.core.sync.packets;
 
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -55,7 +54,7 @@ public class PacketMockExplosion extends AppEngPacket
 		this.y = y;
 		this.z = z;
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
 
 		data.writeInt( this.getPacketID() );
 		data.writeDouble( x );
@@ -70,6 +69,6 @@ public class PacketMockExplosion extends AppEngPacket
 	public void clientPacketData( final INetworkInfo network, final PlayerEntity player )
 	{
 		final World world = AppEng.proxy.getWorld();
-		world.spawnParticle( EnumParticleTypes.EXPLOSION_LARGE, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D, new int[0] );
+		world.addParticle( ParticleTypes.EXPLOSION, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D );
 	}
 }

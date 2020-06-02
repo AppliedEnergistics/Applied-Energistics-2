@@ -22,8 +22,6 @@ package appeng.tile.crafting;
 import java.io.IOException;
 import java.util.List;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -197,7 +195,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	}
 
 	@Override
-	protected boolean readFromStream( final ByteBuf data ) throws IOException
+	protected boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
 		final boolean c = super.readFromStream( data );
 		final boolean oldPower = this.isPowered;

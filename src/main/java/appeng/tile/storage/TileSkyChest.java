@@ -22,7 +22,6 @@ package appeng.tile.storage;
 import java.io.IOException;
 
 import appeng.block.storage.BlockSkyChest;
-import io.netty.buffer.ByteBuf;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
@@ -64,7 +63,7 @@ public class TileSkyChest extends AEBaseInvTile implements ITickableTileEntity, 
 	}
 
 	@Override
-	protected boolean readFromStream( final ByteBuf data ) throws IOException
+	protected boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
 		final boolean c = super.readFromStream( data );
 		final int wasOpen = this.getPlayerOpen();

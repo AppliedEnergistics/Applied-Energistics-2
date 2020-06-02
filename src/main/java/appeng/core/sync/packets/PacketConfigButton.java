@@ -19,7 +19,6 @@
 package appeng.core.sync.packets;
 
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -51,7 +50,7 @@ public final class PacketConfigButton extends AppEngPacket
 		this.option = option;
 		this.rotationDirection = rotationDirection;
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
 
 		data.writeInt( this.getPacketID() );
 		data.writeInt( option.ordinal() );

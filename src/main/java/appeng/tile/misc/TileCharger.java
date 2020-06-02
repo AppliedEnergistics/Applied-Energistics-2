@@ -24,8 +24,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -80,7 +78,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 	}
 
 	@Override
-	protected boolean readFromStream( final ByteBuf data ) throws IOException
+	protected boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
 		final boolean c = super.readFromStream( data );
 		try

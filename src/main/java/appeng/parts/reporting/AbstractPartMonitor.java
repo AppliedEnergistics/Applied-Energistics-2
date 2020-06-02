@@ -21,12 +21,10 @@ package appeng.parts.reporting;
 
 import java.io.IOException;
 
-import io.netty.buffer.ByteBuf;
-
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.RayTraceResult;
@@ -34,7 +32,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.AEApi;
 import appeng.api.implementations.parts.IPartStorageMonitor;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStackWatcher;
@@ -47,6 +44,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.client.render.TesrRenderHelper;
+import appeng.core.Api;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.Reflected;
 import appeng.me.GridAccessException;
@@ -88,7 +86,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 
 		this.isLocked = data.getBoolean( "isLocked" );
 
-		final CompoundNBT myItem = data.getCompoundTag( "configuredItem" );
+		final CompoundNBT myItem = data.getCompound( "configuredItem" );
 		this.configuredItem = AEItemStack.fromNBT( myItem );
 	}
 
@@ -102,14 +100,14 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 		final CompoundNBT myItem = new CompoundNBT();
 		if( this.configuredItem != null )
 		{
-			this.configuredItem.write(myItem);
+			this.configuredItem.writeToNBT(myItem);
 		}
 
-		data.setTag( "configuredItem", myItem );
+		data.put( "configuredItem", myItem );
 	}
 
 	@Override
-	public void writeToStream( final ByteBuf data ) throws IOException
+	public void writeToStream( final PacketBuffer data ) throws IOException
 	{
 		super.writeToStream( data );
 
@@ -122,7 +120,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 	}
 
 	@Override
-	public boolean readFromStream( final ByteBuf data ) throws IOException
+	public boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
 		boolean needRedraw = super.readFromStream( data );
 

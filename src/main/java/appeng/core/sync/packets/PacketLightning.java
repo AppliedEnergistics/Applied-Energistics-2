@@ -19,7 +19,6 @@
 package appeng.core.sync.packets;
 
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
@@ -30,7 +29,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
-import appeng.core.AppEng;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
@@ -57,7 +55,7 @@ public class PacketLightning extends AppEngPacket
 		this.y = y;
 		this.z = z;
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
 
 		data.writeInt( this.getPacketID() );
 		data.writeFloat( (float) x );
@@ -75,8 +73,7 @@ public class PacketLightning extends AppEngPacket
 		{
 			if( Platform.isClient() && AEConfig.instance().isEnableEffects() )
 			{
-				final LightningFX fx = new LightningFX( AppEng.proxy.getWorld(), this.x, this.y, this.z, 0.0f, 0.0f, 0.0f );
-				Minecraft.getInstance().effectRenderer.addEffect( fx );
+				Minecraft.getInstance().world.addParticle( LightningFX.TYPE, this.x, this.y, this.z, 0.0f, 0.0f, 0.0f );
 			}
 		}
 		catch( final Exception ignored )
