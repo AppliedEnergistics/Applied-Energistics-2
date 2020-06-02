@@ -3,6 +3,7 @@ package appeng.data;
 
 import appeng.core.AppEng;
 import appeng.data.providers.loot.BlockDropProvider;
+import appeng.data.providers.recipes.QuartzToolRecipes;
 import appeng.data.providers.recipes.SlabStairRecipes;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -22,6 +23,7 @@ public class AE2DataGenerators
 		{
 			generator.addProvider( new BlockDropProvider( dataEvent ) );
 			generator.addProvider( new SlabStairRecipes( generator ) );
+			generator.addProvider( new QuartzToolRecipes( generator ) );
 		}
 	}
 
