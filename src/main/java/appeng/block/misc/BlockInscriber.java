@@ -26,7 +26,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.BlockRenderType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -71,9 +71,9 @@ public class BlockInscriber extends AEBaseTileBlock
 	}
 
 	@Override
-	public EnumBlockRenderType getRenderType( BlockState state )
+	public BlockRenderType getRenderType( BlockState state )
 	{
-		return EnumBlockRenderType.MODEL;
+		return BlockRenderType.MODEL;
 	}
 
 	@Override

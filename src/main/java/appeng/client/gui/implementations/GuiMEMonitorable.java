@@ -22,6 +22,8 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 import java.util.List;
 
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -69,7 +71,7 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 
 
-public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfigManagerHost
+public class GuiMEMonitorable<T extends ContainerMEMonitorable> extends AEBaseMEGui<T> implements ISortSource, IConfigManagerHost
 {
 
 	private static int craftingGridOffsetX;
@@ -82,7 +84,6 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	private final IConfigManager configSrc;
 	private final boolean viewCell;
 	private final ItemStack[] myCurrentViewCells = new ItemStack[5];
-	private final ContainerMEMonitorable monitorableContainer;
 	private GuiTabButton craftingStatusBtn;
 	private MEGuiTextField searchField;
 	private GuiText myName;
@@ -101,15 +102,8 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	private int currentMouseX = 0;
 	private int currentMouseY = 0;
 
-	public GuiMEMonitorable( final PlayerInventory PlayerInventory, final ITerminalHost te )
-	{
-		this( PlayerInventory, te, new ContainerMEMonitorable( PlayerInventory, te ) );
-	}
-
-	public GuiMEMonitorable( final PlayerInventory PlayerInventory, final ITerminalHost te, final ContainerMEMonitorable c )
-	{
-
-		super( c );
+	public GuiMEMonitorable(T container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 
 		final GuiScrollbar scrollbar = new GuiScrollbar();
 		this.setScrollBar( scrollbar );
@@ -118,6 +112,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		this.xSize = 185;
 		this.ySize = 204;
 
+		Object te = container.getTarget();
 		if( te instanceof IViewCellStorage )
 		{
 			this.xSize += 33;
@@ -125,8 +120,8 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		this.standardSize = this.xSize;
 
-		this.configSrc = ( (IConfigurableObject) this.inventorySlots ).getConfigManager();
-		( this.monitorableContainer = (ContainerMEMonitorable) this.inventorySlots ).setGui( this );
+		this.configSrc = ( (IConfigurableObject) this.container ).getConfigManager();
+		this.container.setGui( this );
 
 		this.viewCell = te instanceof IViewCellStorage;
 
@@ -350,7 +345,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		craftingGridOffsetX = Integer.MAX_VALUE;
 		craftingGridOffsetY = Integer.MAX_VALUE;
 
-		for( final Object s : this.inventorySlots.inventorySlots )
+		for( final Object s : this.container.inventorySlots )
 		{
 			if( s instanceof AppEngSlot )
 			{
@@ -416,20 +411,20 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		this.bindTexture( this.getBackground() );
 		final int x_width = 197;
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, x_width, 18 );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, x_width, 18, 0 /* FIXME this.zlevel was used */ );
 
 		if( this.viewCell || ( this instanceof GuiSecurityStation ) )
 		{
-			this.drawTexturedModalRect( offsetX + x_width, offsetY, x_width, 0, 46, 128 );
+			GuiUtils.drawTexturedModalRect( offsetX + x_width, offsetY, x_width, 0, 46, 128, 0 /* FIXME this.zlevel was used */ );
 		}
 
 		for( int x = 0; x < this.rows; x++ )
 		{
-			this.drawTexturedModalRect( offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18 );
+			GuiUtils.drawTexturedModalRect( offsetX, offsetY + 18 + x * 18, 0, 18, x_width, 18, 0 /* FIXME this.zlevel was used */ );
 		}
 
-		this.drawTexturedModalRect( offsetX, offsetY + 16 + this.rows * 18 + this.lowerTextureOffset, 0, 106 - 18 - 18, x_width,
-				99 + this.reservedSpace - this.lowerTextureOffset );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY + 16 + this.rows * 18 + this.lowerTextureOffset, 0, 106 - 18 - 18, x_width,
+				99 + this.reservedSpace - this.lowerTextureOffset, 0 /* FIXME this.zlevel was used */ );
 
 		if( this.viewCell )
 		{
@@ -437,10 +432,10 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 			for( int i = 0; i < 5; i++ )
 			{
-				if( this.myCurrentViewCells[i] != this.monitorableContainer.getCellViewSlot( i ).getStack() )
+				if( this.myCurrentViewCells[i] != this.container.getCellViewSlot( i ).getStack() )
 				{
 					update = true;
-					this.myCurrentViewCells[i] = this.monitorableContainer.getCellViewSlot( i ).getStack();
+					this.myCurrentViewCells[i] = this.container.getCellViewSlot( i ).getStack();
 				}
 			}
 
@@ -525,7 +520,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	@Override
 	public void updateScreen()
 	{
-		this.repo.setPower( this.monitorableContainer.isPowered() );
+		this.repo.setPower( this.container.isPowered() );
 		super.updateScreen();
 	}
 

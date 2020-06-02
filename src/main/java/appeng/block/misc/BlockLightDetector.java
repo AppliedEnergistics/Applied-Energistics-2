@@ -35,6 +35,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -116,7 +117,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	}
 
 	@Override
-	public boolean isValidOrientation( final World w, final BlockPos pos, final Direction forward, final Direction up )
+	public boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward, final Direction up )
 	{
 		return this.canPlaceAt( w, pos, up.getOpposite() );
 	}
@@ -148,7 +149,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	}
 
 	@Override
-	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
+	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving )
 	{
 		final Direction up = this.getOrientable( world, pos ).getUp();
 		if( !this.canPlaceAt( world, pos, up.getOpposite() ) )

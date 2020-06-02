@@ -23,9 +23,12 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
+import appeng.container.AEBaseContainer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 import appeng.api.storage.data.IAEItemStack;
@@ -34,12 +37,11 @@ import appeng.core.AEConfig;
 import appeng.core.localization.ButtonToolTips;
 
 
-public abstract class AEBaseMEGui extends AEBaseGui
+public abstract class AEBaseMEGui<T extends AEBaseContainer> extends AEBaseGui<T>
 {
 
-	public AEBaseMEGui( final Container container )
-	{
-		super( container );
+	public AEBaseMEGui(T container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 	}
 
 	@Override

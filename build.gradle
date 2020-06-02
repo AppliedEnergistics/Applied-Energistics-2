@@ -223,6 +223,9 @@ sourceSets {
             include 'appeng/block/grindstone/**'
             include 'appeng/tile/grindstone/**'
             include 'appeng/container/implementations/ContainerGrinder.java'
+            include 'appeng/client/render/tesr/CrankTESR.java'
+            include 'appeng/client/render/FacingToRotation.java'
+            include 'appeng/client/gui/implementations/GuiGrinder.java'
         }
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output

@@ -125,11 +125,12 @@ public class BlockQuartzFixture extends AEBaseBlock implements IOrientableBlock
 		return state;
 	}
 
-// FIXME	@Override
-// FIXME	public boolean isValidOrientation( final World w, final BlockPos pos, final Direction forward, final Direction up )
-// FIXME	{
-// FIXME		return this.canPlaceAt( w, pos, up.getOpposite() );
-// FIXME	}
+	@Override
+	public boolean isValidOrientation( final IWorld w, final BlockPos pos, final Direction forward, final Direction up )
+	{
+		// FIXME: I think this entire method -> not required, but not sure... are quartz fixtures rotateable???
+		return this.canPlaceAt( w, pos, up.getOpposite() );
+	}
 
 	private boolean canPlaceAt( final IWorldReader w, final BlockPos pos, final Direction dir )
 	{
@@ -172,16 +173,16 @@ public class BlockQuartzFixture extends AEBaseBlock implements IOrientableBlock
 	}
 
 	// FIXME: Replaced by the postPlaceupdate stuff above, but check item drops!
-//	@Override
-//	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
-//	{
-//		final Direction up = this.getOrientable( world, pos ).getUp();
-//		if( !this.canPlaceAt( world, pos, up.getOpposite() ) )
-//		{
-//			this.dropTorch( world, pos );
-//		}
-//	}
-//
+	@Override
+	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving )
+	{
+		final Direction up = this.getOrientable( world, pos ).getUp();
+		if( !this.canPlaceAt( world, pos, up.getOpposite() ) )
+		{
+			this.dropTorch( world, pos );
+		}
+	}
+
 	private void dropTorch( final World w, final BlockPos pos )
 	{
 		final BlockState prev = w.getBlockState( pos );

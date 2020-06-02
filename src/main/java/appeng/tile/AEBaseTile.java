@@ -467,6 +467,14 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		this.disableDrops();
 	}
 
+	/**
+	 * Checks if this tile entity is remote (we are running on the logical client side).
+	 */
+	protected boolean isRemote() {
+		World world = getWorld();
+		return world == null || world.isRemote();
+	}
+
 	public void disableDrops()
 	{
 		DROP_NO_ITEMS.set( new WeakReference<>( this ) );

@@ -22,6 +22,8 @@ package appeng.client.gui.implementations;
 import java.io.IOException;
 import java.util.List;
 
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -49,7 +51,7 @@ import appeng.core.localization.GuiText;
 import appeng.util.Platform;
 
 
-public class GuiNetworkStatus extends AEBaseGui implements ISortSource
+public class GuiNetworkStatus extends AEBaseGui<ContainerNetworkStatus> implements ISortSource
 {
 
 	private final ItemRepo repo;
@@ -57,9 +59,8 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	private GuiImgButton units;
 	private int tooltip = -1;
 
-	public GuiNetworkStatus( final PlayerInventory PlayerInventory, final INetworkTool te )
-	{
-		super( new ContainerNetworkStatus( PlayerInventory, te ) );
+	public GuiNetworkStatus(ContainerNetworkStatus container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		final GuiScrollbar scrollbar = new GuiScrollbar();
 
 		this.setScrollBar( scrollbar );
@@ -132,16 +133,14 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		final ContainerNetworkStatus ns = (ContainerNetworkStatus) this.inventorySlots;
-
 		this.font.drawString( GuiText.NetworkDetails.getLocal(), 8, 6, 4210752 );
 
-		this.font.drawString( GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong( ns.getCurrentPower(), false ), 13, 16, 4210752 );
-		this.font.drawString( GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong( ns.getMaxPower(), false ), 13, 26, 4210752 );
+		this.font.drawString( GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong( container.getCurrentPower(), false ), 13, 16, 4210752 );
+		this.font.drawString( GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong( container.getMaxPower(), false ), 13, 26, 4210752 );
 
-		this.font.drawString( GuiText.PowerInputRate.getLocal() + ": " + Platform.formatPowerLong( ns.getAverageAddition(), true ), 13, 143 - 10,
+		this.font.drawString( GuiText.PowerInputRate.getLocal() + ": " + Platform.formatPowerLong( container.getAverageAddition(), true ), 13, 143 - 10,
 				4210752 );
-		this.font.drawString( GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong( ns.getPowerUsage(), true ), 13, 143 - 20, 4210752 );
+		this.font.drawString( GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong( container.getPowerUsage(), true ), 13, 143 - 20, 4210752 );
 
 		final int sectionLength = 30;
 
@@ -214,7 +213,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/networkstatus.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
 	}
 
 	public void postUpdate( final List<IAEItemStack> list )

@@ -21,6 +21,7 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -44,7 +45,7 @@ import appeng.core.sync.packets.PacketValueConfig;
 import appeng.parts.automation.PartLevelEmitter;
 
 
-public class GuiLevelEmitter extends GuiUpgradeable
+public class GuiLevelEmitter extends GuiUpgradeable<ContainerLevelEmitter>
 {
 
 	private GuiNumberBox level;
@@ -61,9 +62,8 @@ public class GuiLevelEmitter extends GuiUpgradeable
 	private GuiImgButton levelMode;
 	private GuiImgButton craftingMode;
 
-	public GuiLevelEmitter( final PlayerInventory PlayerInventory, final PartLevelEmitter te )
-	{
-		super( new ContainerLevelEmitter( PlayerInventory, te ) );
+	public GuiLevelEmitter(ContainerLevelEmitter container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class GuiLevelEmitter extends GuiUpgradeable
 		this.level.setTextColor( 0xFFFFFF );
 		this.level.setVisible( true );
 		this.level.setFocused2( true );
-		( (ContainerLevelEmitter) this.inventorySlots ).setTextField( this.level );
+		container.setTextField( this.level );
 	}
 
 	@Override

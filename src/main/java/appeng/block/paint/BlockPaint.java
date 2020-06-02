@@ -112,7 +112,7 @@ public class BlockPaint extends AEBaseTileBlock
 	}
 
 	@Override
-	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
+	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving )
 	{
 		final TilePaint tp = this.getTileEntity( world, pos );
 

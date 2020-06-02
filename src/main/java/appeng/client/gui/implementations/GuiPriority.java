@@ -37,9 +37,11 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.helpers.IPriorityHost;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 
-public class GuiPriority extends AEBaseGui
+public class GuiPriority extends AEBaseGui<ContainerPriority>
 {
 
 	private GuiNumberBox priority;
@@ -56,9 +58,8 @@ public class GuiPriority extends AEBaseGui
 
 	private GuiBridge OriginalGui;
 
-	public GuiPriority( final PlayerInventory PlayerInventory, final IPriorityHost te )
-	{
-		super( new ContainerPriority( PlayerInventory, te ) );
+	public GuiPriority(ContainerPriority container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 	}
 
 	@Override
@@ -81,9 +82,8 @@ public class GuiPriority extends AEBaseGui
 		this.addButton( this.minus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 69, 32, 20, "-" + c ) );
 		this.addButton( this.minus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 69, 38, 20, "-" + d ) );
 
-		final ContainerPriority con = ( (ContainerPriority) this.inventorySlots );
-		final ItemStack myIcon = con.getPriorityHost().getItemStackRepresentation();
-		this.OriginalGui = con.getPriorityHost().getGuiBridge();
+		final ItemStack myIcon = container.getPriorityHost().getItemStackRepresentation();
+		this.OriginalGui = container.getPriorityHost().getGuiBridge();
 
 		if( this.OriginalGui != null && !myIcon.isEmpty() )
 		{
@@ -96,7 +96,7 @@ public class GuiPriority extends AEBaseGui
 		this.priority.setTextColor( 0xFFFFFF );
 		this.priority.setVisible( true );
 		this.priority.setFocused2( true );
-		( (ContainerPriority) this.inventorySlots ).setTextField( this.priority );
+		container.setTextField( this.priority );
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class GuiPriority extends AEBaseGui
 	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/priority.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
 
 		this.priority.drawTextBox();
 	}

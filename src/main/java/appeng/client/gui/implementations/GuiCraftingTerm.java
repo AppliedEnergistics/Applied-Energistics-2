@@ -34,16 +34,17 @@ import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.helpers.InventoryAction;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.util.text.ITextComponent;
 
 
-public class GuiCraftingTerm extends GuiMEMonitorable
+public class GuiCraftingTerm extends GuiMEMonitorable<ContainerCraftingTerm>
 {
 
 	private GuiImgButton clearBtn;
 
-	public GuiCraftingTerm( final PlayerInventory PlayerInventory, final ITerminalHost te )
-	{
-		super( PlayerInventory, te, new ContainerCraftingTerm( PlayerInventory, te ) );
+	public GuiCraftingTerm(ContainerCraftingTerm container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.setReservedSpace( 73 );
 	}
 
@@ -55,8 +56,7 @@ public class GuiCraftingTerm extends GuiMEMonitorable
 		if( this.clearBtn == btn )
 		{
 			Slot s = null;
-			final Container c = this.inventorySlots;
-			for( final Object j : c.inventorySlots )
+			for( final Object j : this.container.inventorySlots )
 			{
 				if( j instanceof SlotCraftingMatrix )
 				{

@@ -232,7 +232,7 @@ public class StorageHelper
 		{
 			final BlockState state = this.dst.getBlockState( pos );
 			final Block blk = state.getBlock();
-			blk.neighborChanged( state, this.dst, pos, blk, pos );
+			blk.neighborChanged( state, this.dst, pos, blk, pos, false );
 		}
 	}
 

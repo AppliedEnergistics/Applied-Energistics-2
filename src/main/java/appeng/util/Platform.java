@@ -360,8 +360,7 @@ public class Platform
 	 */
 	public static boolean isClient()
 	{
-		// FIXME fishy
-		return CLIENT_INSTALL;
+		return Thread.currentThread().getThreadGroup() == SidedThreadGroups.CLIENT;
 	}
 
 	/*

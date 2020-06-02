@@ -29,19 +29,17 @@ import appeng.client.gui.widgets.GuiProgressBar.Direction;
 import appeng.container.implementations.ContainerMAC;
 import appeng.core.localization.GuiText;
 import appeng.tile.crafting.TileMolecularAssembler;
+import net.minecraft.util.text.ITextComponent;
 
 
-public class GuiMAC extends GuiUpgradeable
+public class GuiMAC extends GuiUpgradeable<ContainerMAC>
 {
 
-	private final ContainerMAC container;
 	private GuiProgressBar pb;
 
-	public GuiMAC( final PlayerInventory PlayerInventory, final TileMolecularAssembler te )
-	{
-		super( new ContainerMAC( PlayerInventory, te ) );
+	public GuiMAC(ContainerMAC container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.ySize = 197;
-		this.container = (ContainerMAC) this.inventorySlots;
 	}
 
 	@Override

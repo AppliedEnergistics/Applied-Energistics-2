@@ -342,7 +342,7 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 	}
 
 	@Override
-	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
+	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving )
 	{
 		if( Platform.isServer() )
 		{

@@ -21,6 +21,9 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import appeng.api.implementations.IUpgradeableHost;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -44,19 +47,15 @@ import appeng.tile.misc.TileCellWorkbench;
 import appeng.util.Platform;
 
 
-public class GuiCellWorkbench extends GuiUpgradeable
+public class GuiCellWorkbench extends GuiUpgradeable<ContainerCellWorkbench>
 {
-
-	private final ContainerCellWorkbench workbench;
 
 	private GuiImgButton clear;
 	private GuiImgButton partition;
 	private GuiToggleButton copyMode;
 
-	public GuiCellWorkbench( final PlayerInventory PlayerInventory, final TileCellWorkbench te )
-	{
-		super( new ContainerCellWorkbench( PlayerInventory, te ) );
-		this.workbench = (ContainerCellWorkbench) this.inventorySlots;
+	public GuiCellWorkbench(ContainerCellWorkbench container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.ySize = 251;
 	}
 
@@ -81,63 +80,63 @@ public class GuiCellWorkbench extends GuiUpgradeable
 		this.handleButtonVisibility();
 
 		this.bindTexture( this.getBackground() );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, this.ySize );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, this.ySize, 0 /* FIXME this.zlevel was used */ );
 		if( this.drawUpgrades() )
 		{
-			if( this.workbench.availableUpgrades() <= 8 )
+			if( this.container.availableUpgrades() <= 8 )
 			{
-				this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 7 + this.workbench.availableUpgrades() * 18 );
-				this.drawTexturedModalRect( offsetX + 177, offsetY + ( 7 + ( this.workbench.availableUpgrades() ) * 18 ), 177, 151, 35, 7 );
+				GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 7 + this.container.availableUpgrades() * 18, 0 /* FIXME this.zlevel was used */ );
+				GuiUtilsGuiUtils.drawTexturedModalRect( offsetX + 177, offsetY + ( 7 + ( this.container.availableUpgrades() ) * 18 ), 177, 151, 35, 7, 0 /* FIXME this.zlevel was used */ );
 			}
-			else if( this.workbench.availableUpgrades() <= 16 )
+			else if( this.container.availableUpgrades() <= 16 )
 			{
-				this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 7 + 8 * 18 );
-				this.drawTexturedModalRect( offsetX + 177, offsetY + ( 7 + ( 8 ) * 18 ), 177, 151, 35, 7 );
+				GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 7 + 8 * 18, 0 /* FIXME this.zlevel was used */ );
+				GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY + ( 7 + ( 8 ) * 18 ), 177, 151, 35, 7, 0 /* FIXME this.zlevel was used */ );
 
-				final int dx = this.workbench.availableUpgrades() - 8;
-				this.drawTexturedModalRect( offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + dx * 18 );
+				final int dx = this.container.availableUpgrades() - 8;
+				GuiUtils.drawTexturedModalRect( offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + dx * 18, 0 /* FIXME this.zlevel was used */ );
 				if( dx == 8 )
 				{
-					this.drawTexturedModalRect( offsetX + 177 + 27, offsetY + ( 7 + ( dx ) * 18 ), 186, 151, 35 - 8, 7 );
+					GuiUtils.drawTexturedModalRect( offsetX + 177 + 27, offsetY + ( 7 + ( dx ) * 18 ), 186, 151, 35 - 8, 7, 0 /* FIXME this.zlevel was used */ );
 				}
 				else
 				{
-					this.drawTexturedModalRect( offsetX + 177 + 27 + 4, offsetY + ( 7 + ( dx ) * 18 ), 186 + 4, 151, 35 - 8, 7 );
+					GuiUtils.drawTexturedModalRect( offsetX + 177 + 27 + 4, offsetY + ( 7 + ( dx ) * 18 ), 186 + 4, 151, 35 - 8, 7, 0 /* FIXME this.zlevel was used */ );
 				}
 			}
 			else
 			{
-				this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 7 + 8 * 18 );
-				this.drawTexturedModalRect( offsetX + 177, offsetY + ( 7 + ( 8 ) * 18 ), 177, 151, 35, 7 );
+				GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 7 + 8 * 18, 0 /* FIXME this.zlevel was used */ );
+				GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY + ( 7 + ( 8 ) * 18 ), 177, 151, 35, 7, 0 /* FIXME this.zlevel was used */ );
 
-				this.drawTexturedModalRect( offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + 8 * 18 );
-				this.drawTexturedModalRect( offsetX + 177 + 27, offsetY + ( 7 + ( 8 ) * 18 ), 186, 151, 35 - 8, 7 );
+				GuiUtils.drawTexturedModalRect( offsetX + 177 + 27, offsetY, 186, 0, 35 - 8, 7 + 8 * 18, 0 /* FIXME this.zlevel was used */ );
+				GuiUtils.drawTexturedModalRect( offsetX + 177 + 27, offsetY + ( 7 + ( 8 ) * 18 ), 186, 151, 35 - 8, 7, 0 /* FIXME this.zlevel was used */ );
 
-				final int dx = this.workbench.availableUpgrades() - 16;
-				this.drawTexturedModalRect( offsetX + 177 + 27 + 18, offsetY, 186, 0, 35 - 8, 7 + dx * 18 );
+				final int dx = this.container.availableUpgrades() - 16;
+				GuiUtils.drawTexturedModalRect( offsetX + 177 + 27 + 18, offsetY, 186, 0, 35 - 8, 7 + dx * 18, 0 /* FIXME this.zlevel was used */ );
 				if( dx == 8 )
 				{
-					this.drawTexturedModalRect( offsetX + 177 + 27 + 18, offsetY + ( 7 + ( dx ) * 18 ), 186, 151, 35 - 8, 7 );
+					GuiUtils.drawTexturedModalRect( offsetX + 177 + 27 + 18, offsetY + ( 7 + ( dx ) * 18 ), 186, 151, 35 - 8, 7, 0 /* FIXME this.zlevel was used */ );
 				}
 				else
 				{
-					this.drawTexturedModalRect( offsetX + 177 + 27 + 18 + 4, offsetY + ( 7 + ( dx ) * 18 ), 186 + 4, 151, 35 - 8, 7 );
+					GuiUtils.drawTexturedModalRect( offsetX + 177 + 27 + 18 + 4, offsetY + ( 7 + ( dx ) * 18 ), 186 + 4, 151, 35 - 8, 7, 0 /* FIXME this.zlevel was used */ );
 				}
 			}
 		}
 		if( this.hasToolbox() )
 		{
-			this.drawTexturedModalRect( offsetX + 178, offsetY + this.ySize - 90, 178, 161, 68, 68 );
+			GuiUtils.drawTexturedModalRect( offsetX + 178, offsetY + this.ySize - 90, 178, 161, 68, 68, 0 /* FIXME this.zlevel was used */ );
 		}
 	}
 
 	@Override
 	protected void handleButtonVisibility()
 	{
-		this.copyMode.setState( this.workbench.getCopyMode() == CopyMode.CLEAR_ON_REMOVE );
+		this.copyMode.setState( this.container.getCopyMode() == CopyMode.CLEAR_ON_REMOVE );
 
 		boolean hasFuzzy = false;
-		final IItemHandler inv = this.workbench.getCellUpgradeInventory();
+		final IItemHandler inv = this.container.getCellUpgradeInventory();
 		for( int x = 0; x < inv.getSlots(); x++ )
 		{
 			final ItemStack is = inv.getStackInSlot( x );
@@ -161,7 +160,7 @@ public class GuiCellWorkbench extends GuiUpgradeable
 	@Override
 	protected boolean drawUpgrades()
 	{
-		return this.workbench.availableUpgrades() > 0;
+		return this.container.availableUpgrades() > 0;
 	}
 
 	@Override

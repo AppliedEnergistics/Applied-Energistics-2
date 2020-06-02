@@ -21,6 +21,8 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -38,17 +40,14 @@ import appeng.core.sync.packets.PacketConfigButton;
 import appeng.tile.misc.TileCondenser;
 
 
-public class GuiCondenser extends AEBaseGui
+public class GuiCondenser extends AEBaseGui<ContainerCondenser>
 {
 
-	private final ContainerCondenser cvc;
 	private GuiProgressBar pb;
 	private GuiImgButton mode;
 
-	public GuiCondenser( final PlayerInventory PlayerInventory, final TileCondenser te )
-	{
-		super( new ContainerCondenser( PlayerInventory, te ) );
-		this.cvc = (ContainerCondenser) this.inventorySlots;
+	public GuiCondenser(ContainerCondenser container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.ySize = 197;
 	}
 
@@ -70,10 +69,10 @@ public class GuiCondenser extends AEBaseGui
 	{
 		super.init();
 
-		this.pb = new GuiProgressBar( this.cvc, "guis/condenser.png", 120 + this.guiLeft, 25 + this.guiTop, 178, 25, 6, 18, Direction.VERTICAL, GuiText.StoredEnergy
+		this.pb = new GuiProgressBar( this.container, "guis/condenser.png", 120 + this.guiLeft, 25 + this.guiTop, 178, 25, 6, 18, Direction.VERTICAL, GuiText.StoredEnergy
 				.getLocal() );
 
-		this.mode = new GuiImgButton( 128 + this.guiLeft, 52 + this.guiTop, Settings.CONDENSER_OUTPUT, this.cvc.getOutput() );
+		this.mode = new GuiImgButton( 128 + this.guiLeft, 52 + this.guiTop, Settings.CONDENSER_OUTPUT, this.container.getOutput() );
 
 		this.addButton( this.pb );
 		this.addButton( this.mode );
@@ -85,8 +84,8 @@ public class GuiCondenser extends AEBaseGui
 		this.font.drawString( this.getGuiDisplayName( GuiText.Condenser.getLocal() ), 8, 6, 4210752 );
 		this.font.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
-		this.mode.set( this.cvc.getOutput() );
-		this.mode.setFillVar( String.valueOf( this.cvc.getOutput().requiredPower ) );
+		this.mode.set( this.container.getOutput() );
+		this.mode.setFillVar( String.valueOf( this.container.getOutput().requiredPower ) );
 	}
 
 	@Override
@@ -94,6 +93,6 @@ public class GuiCondenser extends AEBaseGui
 	{
 		this.bindTexture( "guis/condenser.png" );
 
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
 	}
 }

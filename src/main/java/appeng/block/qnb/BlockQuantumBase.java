@@ -101,7 +101,7 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 	}
 
 	@Override
-	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
+	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving )
 	{
 		final TileQuantumBridge bridge = this.getTileEntity( world, pos );
 		if( bridge != null )

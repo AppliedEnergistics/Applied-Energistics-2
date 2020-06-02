@@ -32,9 +32,10 @@ import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
+import net.minecraft.util.text.ITextComponent;
 
 
-public class GuiSecurityStation extends GuiMEMonitorable
+public class GuiSecurityStation extends GuiMEMonitorable<ContainerSecurityStation>
 {
 
 	private GuiToggleButton inject;
@@ -43,9 +44,8 @@ public class GuiSecurityStation extends GuiMEMonitorable
 	private GuiToggleButton build;
 	private GuiToggleButton security;
 
-	public GuiSecurityStation( final PlayerInventory PlayerInventory, final ITerminalHost te )
-	{
-		super( PlayerInventory, te, new ContainerSecurityStation( PlayerInventory, te ) );
+	public GuiSecurityStation(ContainerSecurityStation container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.setCustomSortOrder( false );
 		this.setReservedSpace( 33 );
 
@@ -127,13 +127,11 @@ public class GuiSecurityStation extends GuiMEMonitorable
 	@Override
 	protected String getBackground()
 	{
-		final ContainerSecurityStation cs = (ContainerSecurityStation) this.inventorySlots;
-
-		this.inject.setState( ( cs.getPermissionMode() & ( 1 << SecurityPermissions.INJECT.ordinal() ) ) > 0 );
-		this.extract.setState( ( cs.getPermissionMode() & ( 1 << SecurityPermissions.EXTRACT.ordinal() ) ) > 0 );
-		this.craft.setState( ( cs.getPermissionMode() & ( 1 << SecurityPermissions.CRAFT.ordinal() ) ) > 0 );
-		this.build.setState( ( cs.getPermissionMode() & ( 1 << SecurityPermissions.BUILD.ordinal() ) ) > 0 );
-		this.security.setState( ( cs.getPermissionMode() & ( 1 << SecurityPermissions.SECURITY.ordinal() ) ) > 0 );
+		this.inject.setState( ( container.getPermissionMode() & ( 1 << SecurityPermissions.INJECT.ordinal() ) ) > 0 );
+		this.extract.setState( ( container.getPermissionMode() & ( 1 << SecurityPermissions.EXTRACT.ordinal() ) ) > 0 );
+		this.craft.setState( ( container.getPermissionMode() & ( 1 << SecurityPermissions.CRAFT.ordinal() ) ) > 0 );
+		this.build.setState( ( container.getPermissionMode() & ( 1 << SecurityPermissions.BUILD.ordinal() ) ) > 0 );
+		this.security.setState( ( container.getPermissionMode() & ( 1 << SecurityPermissions.SECURITY.ordinal() ) ) > 0 );
 
 		return "guis/security_station.png";
 	}

@@ -51,7 +51,7 @@ public class ModularTESR<T extends AEBaseTile> extends TileEntityRenderer<T>
 		GlStateManager.pushMatrix();
 		GlStateManager.translate( x, y, z );
 		GlStateManager.translate( 0.5, 0.5, 0.5 );
-		FacingToRotation.get( te.getForward(), te.getUp() ).glRotateCurrentMat();
+		FacingToRotation.get( te.getForward(), te.getUp() ).push(matrixStackIn);
 		GlStateManager.translate( -0.5, -0.5, -0.5 );
 		for( Renderable renderable : this.renderables )
 		{

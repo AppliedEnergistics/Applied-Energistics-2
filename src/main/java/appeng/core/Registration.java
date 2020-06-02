@@ -21,12 +21,14 @@ package appeng.core;
 
 import appeng.bootstrap.IModelRegistry;
 import appeng.bootstrap.components.*;
+import appeng.client.gui.implementations.GuiGrinder;
 import appeng.client.gui.implementations.GuiSkyChest;
 import appeng.client.render.effects.ChargedOreFX;
 import appeng.client.render.effects.LightningFX;
 import appeng.client.render.effects.VibrantFX;
 import appeng.client.render.model.GlassModelLoader;
 import appeng.client.render.tesr.SkyChestTESR;
+import appeng.container.implementations.ContainerGrinder;
 import appeng.container.implementations.ContainerSkyChest;
 import appeng.core.stats.AeStats;
 import net.minecraft.block.Block;
@@ -241,8 +243,12 @@ final class Registration
 		ContainerSkyChest.TYPE = IForgeContainerType.create(ContainerSkyChest::fromNetwork);
 		registry.register(ContainerSkyChest.TYPE.setRegistryName(AppEng.MOD_ID, "sky_chest"));
 
+		ContainerGrinder.TYPE = IForgeContainerType.create(ContainerGrinder::fromNetwork);
+		registry.register(ContainerGrinder.TYPE.setRegistryName(AppEng.MOD_ID, "grinder"));
+
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			ScreenManager.registerFactory(ContainerSkyChest.TYPE, GuiSkyChest::new);
+			ScreenManager.registerFactory(ContainerGrinder.TYPE, GuiGrinder::new);
 		});
 	}
 

@@ -32,16 +32,17 @@ import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.tile.storage.TileDrive;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 
-public class GuiDrive extends AEBaseGui
+public class GuiDrive extends AEBaseGui<ContainerDrive>
 {
 
 	private GuiTabButton priority;
 
-	public GuiDrive( final PlayerInventory PlayerInventory, final TileDrive te )
-	{
-		super( new ContainerDrive( PlayerInventory, te ) );
+	public GuiDrive(ContainerDrive container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.ySize = 199;
 	}
 
@@ -75,6 +76,6 @@ public class GuiDrive extends AEBaseGui
 	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/drive.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
 	}
 }

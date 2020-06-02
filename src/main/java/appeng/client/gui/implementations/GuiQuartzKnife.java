@@ -31,16 +31,17 @@ import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.items.contents.QuartzKnifeObj;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 
-public class GuiQuartzKnife extends AEBaseGui
+public class GuiQuartzKnife extends AEBaseGui<ContainerQuartzKnife>
 {
 
 	private GuiTextField name;
 
-	public GuiQuartzKnife( final PlayerInventory PlayerInventory, final QuartzKnifeObj te )
-	{
-		super( new ContainerQuartzKnife( PlayerInventory, te ) );
+	public GuiQuartzKnife(ContainerQuartzKnife container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.ySize = 184;
 	}
 
@@ -68,7 +69,7 @@ public class GuiQuartzKnife extends AEBaseGui
 	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/quartzknife.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
 		this.name.drawTextBox();
 	}
 
@@ -80,7 +81,7 @@ public class GuiQuartzKnife extends AEBaseGui
 			try
 			{
 				final String Out = this.name.getText();
-				( (ContainerQuartzKnife) this.inventorySlots ).setName( Out );
+				container.setName( Out );
 				NetworkHandler.instance().sendToServer( new PacketValueConfig( "QuartzKnife.Name", Out ) );
 			}
 			catch( final IOException e )

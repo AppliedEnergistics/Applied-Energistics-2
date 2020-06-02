@@ -27,10 +27,11 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockStateContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.BlockRenderType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
@@ -63,7 +64,7 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public boolean isValidOrientation( final World w, final BlockPos pos, final Direction forward, final Direction up )
+	public boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward, final Direction up )
 	{
 		final TileSkyCompass sc = this.getTileEntity( w, pos );
 		if( sc != null )
@@ -79,7 +80,7 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
+	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving )
 	{
 		final TileSkyCompass sc = this.getTileEntity( world, pos );
 		final Direction forward = sc.getForward();
@@ -178,9 +179,9 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public EnumBlockRenderType getRenderType( BlockState state )
+	public BlockRenderType getRenderType( BlockState state )
 	{
-		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+		return BlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
 
 	@Override

@@ -19,7 +19,7 @@
 package appeng.client.gui.implementations;
 
 
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.client.gui.AEBaseGui;
@@ -28,18 +28,17 @@ import appeng.client.gui.widgets.GuiProgressBar.Direction;
 import appeng.container.implementations.ContainerVibrationChamber;
 import appeng.core.localization.GuiText;
 import appeng.tile.misc.TileVibrationChamber;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 
-public class GuiVibrationChamber extends AEBaseGui
+public class GuiVibrationChamber extends AEBaseGui<ContainerVibrationChamber>
 {
 
-	private final ContainerVibrationChamber cvc;
 	private GuiProgressBar pb;
 
-	public GuiVibrationChamber( final PlayerInventory PlayerInventory, final TileVibrationChamber te )
-	{
-		super( new ContainerVibrationChamber( PlayerInventory, te ) );
-		this.cvc = (ContainerVibrationChamber) this.inventorySlots;
+	public GuiVibrationChamber(ContainerVibrationChamber container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.ySize = 166;
 	}
 
@@ -48,7 +47,7 @@ public class GuiVibrationChamber extends AEBaseGui
 	{
 		super.init();
 
-		this.pb = new GuiProgressBar( this.cvc, "guis/vibchamber.png", 99, 36, 176, 14, 6, 18, Direction.VERTICAL );
+		this.pb = new GuiProgressBar( this.container, "guis/vibchamber.png", 99, 36, 176, 14, 6, 18, Direction.VERTICAL );
 		this.addButton( this.pb );
 	}
 
@@ -58,16 +57,16 @@ public class GuiVibrationChamber extends AEBaseGui
 		this.font.drawString( this.getGuiDisplayName( GuiText.VibrationChamber.getLocal() ), 8, 6, 4210752 );
 		this.font.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
-		this.pb.setFullMsg( TileVibrationChamber.POWER_PER_TICK * this.cvc.getCurrentProgress() / TileVibrationChamber.DILATION_SCALING + " AE/t" );
+		this.pb.setFullMsg( TileVibrationChamber.POWER_PER_TICK * this.container.getCurrentProgress() / TileVibrationChamber.DILATION_SCALING + " AE/t" );
 
-		if( this.cvc.getRemainingBurnTime() > 0 )
+		if( this.container.getRemainingBurnTime() > 0 )
 		{
-			final int i1 = this.cvc.getRemainingBurnTime() * 12 / 100;
+			final int i1 = this.container.getRemainingBurnTime() * 12 / 100;
 			this.bindTexture( "guis/vibchamber.png" );
-			RenderSystem.color4f( 1, 1, 1 );
+			RenderSystem.color3f( 1, 1, 1 );
 			final int l = -15;
 			final int k = 25;
-			this.drawTexturedModalRect( k + 56, l + 36 + 12 - i1, 176, 12 - i1, 14, i1 + 2 );
+			GuiUtils.drawTexturedModalRect( k + 56, l + 36 + 12 - i1, 176, 12 - i1, 14, i1 + 2, 0 /* FIXME this.zlevel was used */ );
 		}
 	}
 
@@ -77,6 +76,6 @@ public class GuiVibrationChamber extends AEBaseGui
 		this.bindTexture( "guis/vibchamber.png" );
 		this.pb.x = 99 + this.guiLeft;
 		this.pb.y = 36 + this.guiTop;
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
 	}
 }

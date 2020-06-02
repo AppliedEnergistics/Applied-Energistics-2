@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Optional;
 
+import appeng.core.Api;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;

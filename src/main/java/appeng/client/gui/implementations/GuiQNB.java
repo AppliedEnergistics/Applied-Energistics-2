@@ -25,14 +25,15 @@ import appeng.client.gui.AEBaseGui;
 import appeng.container.implementations.ContainerQNB;
 import appeng.core.localization.GuiText;
 import appeng.tile.qnb.TileQuantumBridge;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 
-public class GuiQNB extends AEBaseGui
+public class GuiQNB extends AEBaseGui<ContainerQNB>
 {
 
-	public GuiQNB( final PlayerInventory PlayerInventory, final TileQuantumBridge te )
-	{
-		super( new ContainerQNB( PlayerInventory, te ) );
+	public GuiQNB(ContainerQNB container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.ySize = 166;
 	}
 
@@ -47,6 +48,6 @@ public class GuiQNB extends AEBaseGui
 	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/chest.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
 	}
 }

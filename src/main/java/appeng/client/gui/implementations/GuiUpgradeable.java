@@ -21,9 +21,6 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
-import org.lwjgl.input.Mouse;
-
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.api.config.FuzzyMode;
@@ -41,9 +38,11 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketConfigButton;
 import appeng.parts.automation.PartExportBus;
 import appeng.parts.automation.PartImportBus;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 
-public class GuiUpgradeable extends AEBaseGui
+public class GuiUpgradeable<T extends ContainerUpgradeable> extends AEBaseGui<T>
 {
 
 	protected final ContainerUpgradeable cvb;
@@ -54,17 +53,11 @@ public class GuiUpgradeable extends AEBaseGui
 	protected GuiImgButton craftMode;
 	protected GuiImgButton schedulingMode;
 
-	public GuiUpgradeable( final PlayerInventory PlayerInventory, final IUpgradeableHost te )
-	{
-		this( new ContainerUpgradeable( PlayerInventory, te ) );
-	}
+	public GuiUpgradeable(T container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
+		this.cvb = container;
 
-	public GuiUpgradeable( final ContainerUpgradeable te )
-	{
-		super( te );
-		this.cvb = te;
-
-		this.bc = (IUpgradeableHost) te.getTarget();
+		this.bc = (IUpgradeableHost) container.getTarget();
 		this.xSize = this.hasToolbox() ? 246 : 211;
 		this.ySize = 184;
 	}
@@ -127,14 +120,14 @@ public class GuiUpgradeable extends AEBaseGui
 		this.handleButtonVisibility();
 
 		this.bindTexture( this.getBackground() );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, this.ySize );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, 211 - 34, this.ySize, 0 /* FIXME this.zlevel was used */ );
 		if( this.drawUpgrades() )
 		{
-			this.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 14 + this.cvb.availableUpgrades() * 18 );
+			GuiUtils.drawTexturedModalRect( offsetX + 177, offsetY, 177, 0, 35, 14 + this.cvb.availableUpgrades() * 18, 0 /* FIXME this.zlevel was used */ );
 		}
 		if( this.hasToolbox() )
 		{
-			this.drawTexturedModalRect( offsetX + 178, offsetY + this.ySize - 90, 178, this.ySize - 90, 68, 68 );
+			GuiUtils.drawTexturedModalRect( offsetX + 178, offsetY + this.ySize - 90, 178, this.ySize - 90, 68, 68, 0 /* FIXME this.zlevel was used */ );
 		}
 	}
 

@@ -21,6 +21,7 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -40,16 +41,15 @@ import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.helpers.IInterfaceHost;
 
 
-public class GuiInterface extends GuiUpgradeable
+public class GuiInterface extends GuiUpgradeable<ContainerInterface>
 {
 
 	private GuiTabButton priority;
 	private GuiImgButton BlockMode;
 	private GuiToggleButton interfaceMode;
 
-	public GuiInterface( final PlayerInventory PlayerInventory, final IInterfaceHost te )
-	{
-		super( new ContainerInterface( PlayerInventory, te ) );
+	public GuiInterface(ContainerInterface container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.ySize = 211;
 	}
 

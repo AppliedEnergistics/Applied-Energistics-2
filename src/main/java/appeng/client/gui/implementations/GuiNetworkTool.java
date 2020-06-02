@@ -32,16 +32,17 @@ import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 
-public class GuiNetworkTool extends AEBaseGui
+public class GuiNetworkTool extends AEBaseGui<ContainerNetworkTool>
 {
 
 	private GuiToggleButton tFacades;
 
-	public GuiNetworkTool( final PlayerInventory PlayerInventory, final INetworkTool te )
-	{
-		super( new ContainerNetworkTool( PlayerInventory, te ) );
+	public GuiNetworkTool(ContainerNetworkTool container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.ySize = 166;
 	}
 
@@ -79,7 +80,7 @@ public class GuiNetworkTool extends AEBaseGui
 	{
 		if( this.tFacades != null )
 		{
-			this.tFacades.setState( ( (ContainerNetworkTool) this.inventorySlots ).isFacadeMode() );
+			this.tFacades.setState( container.isFacadeMode() );
 		}
 
 		this.font.drawString( this.getGuiDisplayName( GuiText.NetworkTool.getLocal() ), 8, 6, 4210752 );
@@ -90,6 +91,6 @@ public class GuiNetworkTool extends AEBaseGui
 	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/toolbox.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
 	}
 }

@@ -21,6 +21,8 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import appeng.core.Api;
+import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -40,15 +42,14 @@ import appeng.core.sync.packets.PacketConfigButton;
 import appeng.tile.storage.TileIOPort;
 
 
-public class GuiIOPort extends GuiUpgradeable
+public class GuiIOPort extends GuiUpgradeable<ContainerIOPort>
 {
 
 	private GuiImgButton fullMode;
 	private GuiImgButton operationMode;
 
-	public GuiIOPort( final PlayerInventory PlayerInventory, final TileIOPort te )
-	{
-		super( new ContainerIOPort( PlayerInventory, te ) );
+	public GuiIOPort(ContainerIOPort container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.ySize = 166;
 	}
 

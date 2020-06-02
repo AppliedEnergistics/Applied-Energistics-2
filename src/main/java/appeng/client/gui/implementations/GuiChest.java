@@ -32,16 +32,17 @@ import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.tile.storage.TileChest;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 
-public class GuiChest extends AEBaseGui
+public class GuiChest extends AEBaseGui<ContainerChest>
 {
 
 	private GuiTabButton priority;
 
-	public GuiChest( final PlayerInventory PlayerInventory, final TileChest te )
-	{
-		super( new ContainerChest( PlayerInventory, te ) );
+	public GuiChest(ContainerChest container, PlayerInventory playerInventory, ITextComponent title) {
+		super(container, playerInventory, title);
 		this.ySize = 166;
 	}
 
@@ -75,6 +76,6 @@ public class GuiChest extends AEBaseGui
 	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
 		this.bindTexture( "guis/chest.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 /* FIXME this.zlevel was used */ );
 	}
 }

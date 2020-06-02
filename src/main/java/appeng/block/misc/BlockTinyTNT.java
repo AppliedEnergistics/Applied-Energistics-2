@@ -101,7 +101,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
+	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving )
 	{
 		if( world.isBlockIndirectlyGettingPowered( pos ) > 0 )
 		{
