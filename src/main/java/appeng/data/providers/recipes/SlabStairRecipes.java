@@ -20,7 +20,7 @@ public class SlabStairRecipes extends RecipeProvider implements IAE2DataProvider
 			{ BLOCKS.skyStoneBlock().block(), BLOCKS.skyStoneSlab().block(), BLOCKS.skyStoneStairs().block() },
 			{ BLOCKS.smoothSkyStoneBlock().block(), BLOCKS.smoothSkyStoneSlab().block(), BLOCKS.smoothSkyStoneStairs().block() },
 			{ BLOCKS.skyStoneBrick().block(), BLOCKS.skyStoneBrickSlab().block(), BLOCKS.skyStoneBrickStairs().block() },
-			{ BLOCKS.smoothSkyStoneBlock().block(), BLOCKS.skyStoneSmallBrickSlab().block(), BLOCKS.smoothSkyStoneStairs().block() },
+			{ BLOCKS.skyStoneSmallBrick().block(), BLOCKS.skyStoneSmallBrickSlab().block(), BLOCKS.skyStoneSmallBrickStairs().block() },
 			{ BLOCKS.fluixBlock().block(), BLOCKS.fluixSlab().block(), BLOCKS.fluixStairs().block() },
 			{ BLOCKS.quartzBlock().block(), BLOCKS.quartzSlab().block(), BLOCKS.quartzStairs().block() },
 			{ BLOCKS.chiseledQuartzBlock().block(), BLOCKS.chiseledQuartzSlab().block(), BLOCKS.chiseledQuartzStairs().block() },
@@ -38,7 +38,7 @@ public class SlabStairRecipes extends RecipeProvider implements IAE2DataProvider
 		for( Block[] block : blocks )
 		{
 			slabRecipe( consumer, block[0], block[1] );
-			stairRecipe( consumer, block[0], block[1] );
+			stairRecipe( consumer, block[0], block[2] );
 		}
 	}
 

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "appliedenergistics2:sky_stone_stairs"
+    ]
+  },
+  "criteria": {
+    "has_sky_stone_block": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "appliedenergistics2:sky_stone_block"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "appliedenergistics2:sky_stone_stairs"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_sky_stone_block",
+      "has_the_recipe"
+    ]
+  ]
+}
