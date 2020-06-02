@@ -30,6 +30,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.ILightReader;
+import net.minecraftforge.client.model.data.ModelProperty;
 
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
@@ -42,6 +44,8 @@ import appeng.api.util.AEColor;
  */
 public class CableBusRenderState
 {
+
+	public static final ModelProperty<CableBusRenderState> PROPERTY = new ModelProperty<>();
 
 	// The cable type used for rendering the outgoing connections to other blocks and attached parts
 	private AECableType cableType = AECableType.NONE;
@@ -73,7 +77,7 @@ public class CableBusRenderState
 	private EnumMap<Direction, FacadeRenderState> facades = new EnumMap<>( Direction.class );
 
 	// Used for Facades.
-	private WeakReference<IBlockReader> world;
+	private WeakReference<ILightReader> world;
 	private BlockPos pos;
 
 	// Contains the bounding boxes of all parts on the cable bus to allow facades to cut out holes for the parts. This
@@ -158,12 +162,12 @@ public class CableBusRenderState
 		return this.facades;
 	}
 
-	public IBlockReader getWorld()
+	public ILightReader getWorld()
 	{
 		return this.world.get();
 	}
 
-	public void setWorld( IBlockReader world )
+	public void setWorld( ILightReader world )
 	{
 		this.world = new WeakReference<>( world );
 	}

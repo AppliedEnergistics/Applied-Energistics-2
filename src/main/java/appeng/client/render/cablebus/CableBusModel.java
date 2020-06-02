@@ -20,30 +20,31 @@ package appeng.client.render.cablebus;
 
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
+import javax.annotation.Nullable;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IModelTransform;
+import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.common.model.IModelState;
-import net.minecraftforge.common.model.TRSRTransformation;
 
 import appeng.api.util.AEColor;
-import appeng.core.AELog;
 import appeng.core.features.registries.PartModels;
 
 
 /**
  * The built-in model for the cable bus block.
  */
-public class CableBusModel implements IModel
+public class CableBusModel implements IUnbakedModel
 {
 
 	private final PartModels partModels;
@@ -61,19 +62,18 @@ public class CableBusModel implements IModel
 	}
 
 	@Override
-	public Collection<ResourceLocation> getTextures()
+	public Collection<Material> getTextures( Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors )
 	{
-		return ImmutableList.<ResourceLocation>builder()
-				.addAll( CableBuilder.getTextures() )
-				.build();
+		return Collections.unmodifiableList( CableBuilder.getTextures() );
 	}
 
+	@Nullable
 	@Override
-	public IBakedModel bake( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
+	public IBakedModel bakeModel( ModelBakery modelBakeryIn, Function<Material, TextureAtlasSprite> spriteGetterIn, IModelTransform transformIn, ResourceLocation locationIn )
 	{
-		Map<ResourceLocation, IBakedModel> partModels = this.loadPartModels( state, format, bakedTextureGetter );
+		Map<ResourceLocation, IBakedModel> partModels = this.loadPartModels( modelBakeryIn, spriteGetterIn, transformIn );
 
-		CableBuilder cableBuilder = new CableBuilder( format, bakedTextureGetter );
+		CableBuilder cableBuilder = new CableBuilder( spriteGetterIn );
 		FacadeBuilder facadeBuilder = new FacadeBuilder();
 
 		// This should normally not be used, but we *have* to provide a particle texture or otherwise damage models will
@@ -83,36 +83,15 @@ public class CableBusModel implements IModel
 		return new CableBusBakedModel( cableBuilder, facadeBuilder, partModels, particleTexture );
 	}
 
-	private Map<ResourceLocation, IBakedModel> loadPartModels( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
+	private Map<ResourceLocation, IBakedModel> loadPartModels( ModelBakery modelBakeryIn, Function<Material, TextureAtlasSprite> spriteGetterIn, IModelTransform transformIn )
 	{
 		ImmutableMap.Builder<ResourceLocation, IBakedModel> result = ImmutableMap.builder();
 
 		for( ResourceLocation location : this.partModels.getModels() )
 		{
-			IModel model = this.tryLoadPartModel( location );
-			IBakedModel bakedModel = model.bake( state, format, bakedTextureGetter );
-			result.put( location, bakedModel );
+			result.put( location, modelBakeryIn.getBakedModel( location, transformIn, spriteGetterIn ) );
 		}
 
 		return result.build();
-	}
-
-	private IModel tryLoadPartModel( ResourceLocation location )
-	{
-		try
-		{
-			return ModelLoaderRegistry.getModel( location );
-		}
-		catch( Exception e )
-		{
-			AELog.error( e, "Unable to load part model " + location );
-			return ModelLoaderRegistry.getMissingModel();
-		}
-	}
-
-	@Override
-	public IModelState getDefaultState()
-	{
-		return TRSRTransformation.identity();
 	}
 }

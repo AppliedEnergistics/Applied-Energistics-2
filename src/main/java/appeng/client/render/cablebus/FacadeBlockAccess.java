@@ -22,12 +22,13 @@ package appeng.client.render.cablebus;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.WorldType;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.world.ILightReader;
+import net.minecraft.world.level.ColorResolver;
+import net.minecraft.world.lighting.WorldLightManager;
 
 
 /**
@@ -36,15 +37,15 @@ import net.minecraft.world.biome.Biome;
  *
  * @author covers1624
  */
-public class FacadeBlockAccess implements IBlockReader
+public class FacadeBlockAccess implements ILightReader
 {
 
-	private final IBlockReader world;
+	private final ILightReader world;
 	private final BlockPos pos;
 	private final Direction side;
 	private final BlockState state;
 
-	public FacadeBlockAccess( IBlockReader world, BlockPos pos, Direction side, BlockState state )
+	public FacadeBlockAccess( ILightReader world, BlockPos pos, Direction side, BlockState state )
 	{
 		this.world = world;
 		this.pos = pos;
@@ -60,12 +61,6 @@ public class FacadeBlockAccess implements IBlockReader
 	}
 
 	@Override
-	public int getCombinedLight( BlockPos pos, int lightValue )
-	{
-		return this.world.getCombinedLight( pos, lightValue );
-	}
-
-	@Override
 	public BlockState getBlockState( BlockPos pos )
 	{
 		if( this.pos == pos )
@@ -76,40 +71,20 @@ public class FacadeBlockAccess implements IBlockReader
 	}
 
 	@Override
-	public boolean isAirBlock( BlockPos pos )
+	public IFluidState getFluidState( BlockPos pos )
 	{
-		BlockState state = this.getBlockState( pos );
-		return state.getBlock().isAir( state, this.world, pos );
+		return world.getFluidState( pos );
 	}
 
 	@Override
-	public Biome getBiome( BlockPos pos )
+	public WorldLightManager getLightManager()
 	{
-		return this.world.getBiome( pos );
+		return world.getLightManager();
 	}
 
 	@Override
-	public int getStrongPower( BlockPos pos, Direction direction )
+	public int getBlockColor( BlockPos blockPosIn, ColorResolver colorResolverIn )
 	{
-		return this.world.getStrongPower( pos, direction );
-	}
-
-	@Override
-	public WorldType getWorldType()
-	{
-		return this.world.getWorldType();
-	}
-
-	@Override
-	public boolean isSideSolid( BlockPos pos, Direction side, boolean _default )
-	{
-		if( pos.getX() < -30000000 || pos.getZ() < -30000000 || pos.getX() >= 30000000 || pos.getZ() >= 30000000 )
-		{
-			return _default;
-		}
-		else
-		{
-			return this.getBlockState( pos ).isSideSolid( this, pos, side );
-		}
+		return world.getBlockColor( blockPosIn, colorResolverIn );
 	}
 }

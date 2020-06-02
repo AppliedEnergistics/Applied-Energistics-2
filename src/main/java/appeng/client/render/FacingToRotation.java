@@ -91,6 +91,11 @@ public enum FacingToRotation
 		this.mat.mul( zRot = Vector3f.ZP.rotationDegrees( rot.getZ() ) );
 	}
 
+	public boolean isRedundant()
+	{
+		return rot.getX() == 0 && rot.getY() == 0 && rot.getZ() == 0;
+	}
+
 	public Vector3f getRot()
 	{
 		return this.rot;

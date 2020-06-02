@@ -22,17 +22,15 @@ package appeng.client.render.cablebus;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Point3f;
-import javax.vecmath.Vector3f;
-
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
 
 import appeng.client.render.FacingToRotation;
-import appeng.core.AELog;
+import appeng.thirdparty.codechicken.lib.model.CachedFormat;
+import appeng.thirdparty.codechicken.lib.model.Quad;
+import appeng.thirdparty.codechicken.lib.model.pipeline.BakedPipeline;
+import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadMatrixTransformer;
 
 
 /**
@@ -41,6 +39,11 @@ import appeng.core.AELog;
  */
 public class QuadRotator
 {
+	private static final ThreadLocal<BakedPipeline> pipelines = ThreadLocal.withInitial( () -> //
+			BakedPipeline.builder()//
+					.addElement( "transformer", QuadMatrixTransformer.FACTORY )//
+					.build() );
+	private static final ThreadLocal<Quad> collectors = ThreadLocal.withInitial( Quad::new );
 
 	public List<BakedQuad> rotateQuads( List<BakedQuad> quads, Direction newForward, Direction newUp )
 	{
@@ -51,15 +54,33 @@ public class QuadRotator
 
 		List<BakedQuad> result = new ArrayList<>( quads.size() );
 
+		CachedFormat format = CachedFormat.lookup( DefaultVertexFormats.BLOCK );
+		BakedPipeline pipeline = pipelines.get();
+		Quad collector = collectors.get();
+		pipeline.reset( format );
+		collector.reset( format );
+		QuadMatrixTransformer transformer = pipeline.getElement( "transformer", QuadMatrixTransformer.class );
+
 		for( BakedQuad quad : quads )
 		{
-			result.add( this.rotateQuad( quad, newForward, newUp ) );
+			FacingToRotation rotation = getRotation( newForward, newUp );
+			if( rotation.isRedundant() )
+			{
+				result.add( quad );//Redundant rotation, just don't do anything.
+			}
+			else
+			{
+				transformer.setMatrix( rotation.getMat() );
+				pipeline.prepare( collector );
+				quad.pipe( pipeline );
+				result.add( collector.bake() );
+			}
 		}
 
 		return result;
 	}
 
-	private BakedQuad rotateQuad( BakedQuad quad, Direction forward, Direction up )
+	private FacingToRotation getRotation( Direction forward, Direction up )
 	{
 		// Sanitize forward/up
 		if( forward.getAxis() == up.getAxis() )
@@ -74,116 +95,6 @@ public class QuadRotator
 			}
 		}
 
-		FacingToRotation rotation = FacingToRotation.get( forward, up );
-		Matrix4f mat = rotation.getMat();
-
-		// Clone the vertex data used by the quad
-		int[] newData = quad.getVertexData().clone();
-
-		// Figure out where the position is in the array
-		VertexFormat format = quad.getFormat();
-		int posIdx = this.findPositionOffset( format ) / 4;
-		int stride = format.getNextOffset() / 4;
-		int normalIdx = format.getNormalOffset();
-		VertexFormatElement.EnumType normalType = null;
-		// Figure out the type of the normals
-		if( normalIdx != -1 )
-		{
-			for( int i = 0; i < format.getElements().size(); i++ )
-			{
-				VertexFormatElement element = format.getElement( i );
-				if( element.getUsage() == VertexFormatElement.EnumUsage.NORMAL )
-				{
-					normalType = element.getType();
-				}
-			}
-		}
-
-		for( int i = 0; i < 4; i++ )
-		{
-			Point3f pos = new Point3f( Float.intBitsToFloat( newData[i * stride + posIdx] ) - 0.5f, Float
-					.intBitsToFloat( newData[i * stride + posIdx + 1] ) - 0.5f, Float.intBitsToFloat( newData[i * stride + posIdx + 2] ) - 0.5f );
-
-			// Rotate stuff around
-			mat.transform( pos );
-
-			// Write back
-			newData[i * stride + posIdx] = Float.floatToIntBits( pos.getX() + 0.5f );
-			newData[i * stride + posIdx + 1] = Float.floatToIntBits( pos.getY() + 0.5f );
-			newData[i * stride + posIdx + 2] = Float.floatToIntBits( pos.getZ() + 0.5f );
-
-			// Transform the normal if one is present
-			if( normalIdx != -1 )
-			{
-				if( normalType == VertexFormatElement.EnumType.FLOAT )
-				{
-					Vector3f normal = new Vector3f( Float.intBitsToFloat( newData[i * stride + normalIdx] ), Float
-							.intBitsToFloat( newData[i * stride + normalIdx + 1] ), Float.intBitsToFloat( newData[i * stride + normalIdx + 2] ) );
-
-					// Rotate stuff around
-					mat.transform( normal );
-
-					// Write back
-					newData[i * stride + normalIdx] = Float.floatToIntBits( normal.getX() );
-					newData[i * stride + normalIdx + 1] = Float.floatToIntBits( normal.getY() );
-					newData[i * stride + normalIdx + 2] = Float.floatToIntBits( normal.getZ() );
-				}
-				else if( normalType == VertexFormatElement.EnumType.BYTE )
-				{
-					int idx = i * stride * 4 + normalIdx;
-					Vector3f normal = new Vector3f( getByte( newData, idx ) / 127.0f, getByte( newData, idx + 1 ) / 127.0f, getByte( newData,
-							idx + 2 ) / 127.0f );
-
-					// Rotate stuff around
-					mat.transform( normal );
-
-					// Write back
-					setByte( newData, idx, (int) ( normal.getX() * 127 ) );
-					setByte( newData, idx + 1, (int) ( normal.getY() * 127 ) );
-					setByte( newData, idx + 2, (int) ( normal.getZ() * 127 ) );
-				}
-				else
-				{
-					AELog.warn( "Unsupported normal format: {}", normalType );
-				}
-			}
-		}
-
-		Direction newFace = rotation.rotate( quad.getFace() );
-		return new BakedQuad( newData, quad.getTintIndex(), newFace, quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat() );
-	}
-
-	private static int getByte( int[] data, int offset )
-	{
-		int idx = offset / 4;
-		int subOffset = offset % 4;
-		return (byte) ( data[idx] >> ( subOffset * 8 ) );
-	}
-
-	private static void setByte( int[] data, int offset, int value )
-	{
-		int idx = offset / 4;
-		int subOffset = offset % 4;
-		int mask = 0xFF << ( subOffset * 8 );
-		data[idx] = data[idx] & ( ~mask ) | ( ( value & 0xFF ) << ( subOffset * 8 ) );
-	}
-
-	private int findPositionOffset( VertexFormat format )
-	{
-		List<VertexFormatElement> elements = format.getElements();
-		for( int i = 0; i < elements.size(); i++ )
-		{
-			VertexFormatElement e = elements.get( i );
-			if( e.isPositionElement() )
-			{
-				if( e.getType() != VertexFormatElement.EnumType.FLOAT )
-				{
-					throw new IllegalArgumentException( "Only floating point positions are supported" );
-				}
-				return i;
-			}
-		}
-
-		throw new IllegalArgumentException( "Vertex format " + format + " has no position attribute!" );
+		return FacingToRotation.get( forward, up );
 	}
 }

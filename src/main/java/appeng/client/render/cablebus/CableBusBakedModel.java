@@ -27,28 +27,29 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
+import java.util.Random;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.parts.IPartBakedModel;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
-import appeng.block.networking.BlockCableBus;
 
 
 public class CableBusBakedModel implements IBakedModel
@@ -64,7 +65,8 @@ public class CableBusBakedModel implements IBakedModel
 
 	private final TextureAtlasSprite particleTexture;
 
-	private final TextureMap textureMap = Minecraft.getInstance().getTextureMapBlocks();
+	private final AtlasTexture textureMap = Minecraft.getInstance().getModelManager().getAtlasTexture( AtlasTexture.LOCATION_BLOCKS_TEXTURE );
+	private final TextureAtlasSprite missingTexture = textureMap.getSprite( MissingTextureSprite.getLocation() );
 
 	CableBusBakedModel( CableBuilder cableBuilder, FacadeBuilder facadeBuilder, Map<ResourceLocation, IBakedModel> partModels, TextureAtlasSprite particleTexture )
 	{
@@ -75,28 +77,33 @@ public class CableBusBakedModel implements IBakedModel
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, Random rand )
 	{
-		CableBusRenderState renderState = getRenderingState( state );
+		return getQuads( state, side, rand, EmptyModelData.INSTANCE );
+	}
+
+	@Override
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, Random rand, IModelData data )
+	{
+		CableBusRenderState renderState = data.getData( CableBusRenderState.PROPERTY );
 
 		if( renderState == null || side != null )
 		{
 			return Collections.emptyList();
 		}
 
-		BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
+		RenderType layer = MinecraftForgeClient.getRenderLayer();
 
 		List<BakedQuad> quads = new ArrayList<>();
 
 		// The core parts of the cable will only be rendered in the CUTOUT layer.
 		// Facades will add them selves to what ever the block would be rendered with,
 		// except when transparent facades are enabled, they are forced to TRANSPARENT.
-		if( layer == BlockRenderLayer.CUTOUT )
+		if( layer == RenderType.getCutout() )
 		{
 
 			// First, handle the cable at the center of the cable bus
-			final List<BakedQuad> cableModel = CABLE_MODEL_CACHE.computeIfAbsent( renderState, k ->
-			{
+			final List<BakedQuad> cableModel = CABLE_MODEL_CACHE.computeIfAbsent( renderState, k -> {
 				final List<BakedQuad> model = new ArrayList<>();
 				this.addCableQuads( renderState, model );
 				return model;
@@ -310,7 +317,7 @@ public class CableBusBakedModel implements IBakedModel
 
 				// If a part sub-model has no particle texture (indicated by it being the missing texture),
 				// don't add it, so we don't get ugly missing texture break particles.
-				if( this.textureMap.getMissingSprite() != particleTexture )
+				if( this.missingTexture != particleTexture )
 				{
 					result.add( particleTexture );
 				}
@@ -318,17 +325,6 @@ public class CableBusBakedModel implements IBakedModel
 		}
 
 		return result;
-	}
-
-	private static CableBusRenderState getRenderingState( BlockState state )
-	{
-		if( state == null || !( state instanceof IExtendedBlockState ) )
-		{
-			return null;
-		}
-
-		IExtendedBlockState extendedBlockState = (IExtendedBlockState) state;
-		return extendedBlockState.getValue( BlockCableBus.RENDER_STATE_PROPERTY );
 	}
 
 	@Override
@@ -341,6 +337,12 @@ public class CableBusBakedModel implements IBakedModel
 	public boolean isGui3d()
 	{
 		return false;
+	}
+
+	@Override
+	public boolean func_230044_c_()
+	{
+		return false;//TODO
 	}
 
 	@Override

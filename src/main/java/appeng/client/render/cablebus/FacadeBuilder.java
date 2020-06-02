@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -32,21 +33,27 @@ import javax.annotation.Nullable;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.color.BlockColors;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.ILightReader;
 import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.AEApi;
 import appeng.api.util.AEAxisAlignedBB;
+import appeng.core.Api;
 import appeng.parts.misc.PartCableAnchor;
 import appeng.thirdparty.codechicken.lib.model.CachedFormat;
 import appeng.thirdparty.codechicken.lib.model.Quad;
@@ -88,7 +95,7 @@ public class FacadeBuilder
 			new AxisAlignedBB( 1.0 - THIN_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0 )
 	};
 
-	private ThreadLocal<BakedPipeline> pipelines = ThreadLocal.withInitial( () -> BakedPipeline.builder()
+	private final ThreadLocal<BakedPipeline> pipelines = ThreadLocal.withInitial( () -> BakedPipeline.builder()
 			// Clamper is responsible for clamping the vertex to the bounds specified.
 			.addElement( "clamper", QuadClamper.FACTORY )
 			// Strips faces if they match a mask.
@@ -103,9 +110,9 @@ public class FacadeBuilder
 			.addElement( "transparent", QuadAlphaOverride.FACTORY, false, e -> e.setAlphaOverride( 0x4C / 255F ) )
 			.build()//
 	);
-	private ThreadLocal<Quad> collectors = ThreadLocal.withInitial( Quad::new );
+	private final ThreadLocal<Quad> collectors = ThreadLocal.withInitial( Quad::new );
 
-	public void buildFacadeQuads( BlockRenderLayer layer, CableBusRenderState renderState, long rand, List<BakedQuad> quads, Function<ResourceLocation, IBakedModel> modelLookup )
+	public void buildFacadeQuads( RenderType layer, CableBusRenderState renderState, Random rand, List<BakedQuad> quads, Function<ResourceLocation, IBakedModel> modelLookup )
 	{
 		BakedPipeline pipeline = this.pipelines.get();
 		Quad collectorQuad = this.collectors.get();
@@ -113,7 +120,7 @@ public class FacadeBuilder
 		Map<Direction, FacadeRenderState> facadeStates = renderState.getFacades();
 		List<AxisAlignedBB> partBoxes = renderState.getBoundingBoxes();
 		Set<Direction> sidesWithParts = renderState.getAttachments().keySet();
-		IBlockReader parentWorld = renderState.getWorld();
+		ILightReader parentWorld = renderState.getWorld();
 		BlockPos pos = renderState.getPos();
 		BlockColors blockColors = Minecraft.getInstance().getBlockColors();
 		boolean thinFacades = isUseThinFacades( partBoxes );
@@ -124,17 +131,17 @@ public class FacadeBuilder
 			int sideIndex = side.ordinal();
 			FacadeRenderState facadeRenderState = entry.getValue();
 			boolean renderStilt = !sidesWithParts.contains( side );
-			if( layer == BlockRenderLayer.CUTOUT && renderStilt )
+			if( layer == RenderType.getCutout() && renderStilt )
 			{
 				for( ResourceLocation part : PartCableAnchor.FACADE_MODELS.getModels() )
 				{
 					IBakedModel partModel = modelLookup.apply( part );
 					QuadRotator rotator = new QuadRotator();
-					quads.addAll( rotator.rotateQuads( gatherQuads( partModel, null, rand ), side, Direction.UP ) );
+					quads.addAll( rotator.rotateQuads( gatherQuads( partModel, null, rand, EmptyModelData.INSTANCE ), side, Direction.UP ) );
 				}
 			}
 			// If we are forcing transparency and this isn't the Translucent layer.
-			if( transparent && layer != BlockRenderLayer.TRANSLUCENT )
+			if( transparent && layer != RenderType.getTranslucent() )
 			{
 				continue;
 			}
@@ -143,7 +150,7 @@ public class FacadeBuilder
 			// If we aren't forcing transparency let the block decide if it should render.
 			if( !transparent && layer != null )
 			{
-				if( !blockState.getBlock().canRenderInLayer( blockState, layer ) )
+				if( !RenderTypeLookup.canRenderInLayer( blockState, layer ) )
 				{
 					continue;
 				}
@@ -202,38 +209,24 @@ public class FacadeBuilder
 
 			AEAxisAlignedBB cutOutBox = getCutOutBox( facadeBox, partBoxes );
 			List<AxisAlignedBB> holeStrips = getBoxes( facadeBox, cutOutBox, side.getAxis() );
-			IBlockReader facadeAccess = new FacadeBlockAccess( parentWorld, pos, side, blockState );
+			ILightReader facadeAccess = new FacadeBlockAccess( parentWorld, pos, side, blockState );
 
 			BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
-
-			try
-			{
-				blockState = blockState.getActualState( facadeAccess, pos );
-			}
-			catch( Exception ignored )
-			{
-			}
 			IBakedModel model = dispatcher.getModelForState( blockState );
-			try
-			{
-				blockState = blockState.getBlock().getExtendedState( blockState, facadeAccess, pos );
-			}
-			catch( Exception ignored )
-			{
-			}
+			IModelData modelData = model.getModelData( facadeAccess, pos, blockState, EmptyModelData.INSTANCE );
 
 			List<BakedQuad> modelQuads = new ArrayList<>();
 			// If we are forcing transparent facades, fake the render layer, and grab all quads.
 			if( transparent || layer == null )
 			{
-				for( BlockRenderLayer forcedLayer : BlockRenderLayer.values() )
+				for( RenderType forcedLayer : RenderType.getBlockRenderTypes() )
 				{
 					// Check if the block renders on the layer we want to force.
-					if( blockState.getBlock().canRenderInLayer( blockState, forcedLayer ) )
+					if( RenderTypeLookup.canRenderInLayer( blockState, forcedLayer ) )
 					{
 						// Force the layer and gather quads.
 						ForgeHooksClient.setRenderLayer( forcedLayer );
-						modelQuads.addAll( gatherQuads( model, blockState, rand ) );
+						modelQuads.addAll( gatherQuads( model, blockState, rand, modelData) );
 					}
 				}
 
@@ -242,7 +235,7 @@ public class FacadeBuilder
 			}
 			else
 			{
-				modelQuads.addAll( gatherQuads( model, blockState, rand ) );
+				modelQuads.addAll( gatherQuads( model, blockState, rand, modelData ) );
 			}
 
 			// No quads.. Cool, next!
@@ -286,11 +279,11 @@ public class FacadeBuilder
 			for( BakedQuad quad : modelQuads )
 			{
 				// lookup the format in CachedFormat.
-				CachedFormat format = CachedFormat.lookup( quad.getFormat() );
+				CachedFormat format = CachedFormat.lookup( DefaultVertexFormats.BLOCK );
 				// If this quad has a tint index, setup the tinter.
 				if( quad.hasTintIndex() )
 				{
-					tinter.setTint( blockColors.colorMultiplier( blockState, facadeAccess, pos, quad.getTintIndex() ) );
+					tinter.setTint( blockColors.getColor( blockState, facadeAccess, pos, quad.getTintIndex() ) );
 				}
 				for( AxisAlignedBB box : holeStrips )
 				{
@@ -327,8 +320,8 @@ public class FacadeBuilder
 	public List<BakedQuad> buildFacadeItemQuads( ItemStack textureItem, Direction side )
 	{
 		List<BakedQuad> facadeQuads = new ArrayList<>();
-		IBakedModel model = Minecraft.getInstance().getRenderItem().getItemModelWithOverrides( textureItem, null, null );
-		List<BakedQuad> modelQuads = gatherQuads( model, null, 0 );
+		IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides( textureItem, null, null );
+		List<BakedQuad> modelQuads = gatherQuads( model, null, new Random(), EmptyModelData.INSTANCE );
 
 		BakedPipeline pipeline = this.pipelines.get();
 		Quad collectorQuad = this.collectors.get();
@@ -340,7 +333,7 @@ public class FacadeBuilder
 		for( BakedQuad quad : modelQuads )
 		{
 			// Lookup the CachedFormat for this quads format.
-			CachedFormat format = CachedFormat.lookup( quad.getFormat() );
+			CachedFormat format = CachedFormat.lookup( DefaultVertexFormats.BLOCK );
 			// Reset the pipeline.
 			pipeline.reset( format );
 			// Reset the collector.
@@ -348,7 +341,7 @@ public class FacadeBuilder
 			// If we have a tint index, setup the tinter and enable it.
 			if( quad.hasTintIndex() )
 			{
-				tinter.setTint( Minecraft.getInstance().getItemColors().colorMultiplier( textureItem, quad.getTintIndex() ) );
+				tinter.setTint( Minecraft.getInstance().getItemColors().getColor( textureItem, quad.getTintIndex() ) );
 				pipeline.enableElement( "tinter" );
 			}
 			// Disable elements we don't need for items.
@@ -363,21 +356,21 @@ public class FacadeBuilder
 			// Check the collector for data and add the quad if there was.
 			if( collectorQuad.full )
 			{
-				facadeQuads.add( collectorQuad.bakeUnpacked() );
+				facadeQuads.add( collectorQuad.bake() );
 			}
 		}
 		return facadeQuads;
 	}
 
 	// Helper to gather all quads from a model into a list.
-	private static List<BakedQuad> gatherQuads( IBakedModel model, BlockState state, long rand )
+	private static List<BakedQuad> gatherQuads( IBakedModel model, BlockState state, Random rand, IModelData data )
 	{
 		List<BakedQuad> modelQuads = new ArrayList<>();
 		for( Direction face : Direction.values() )
 		{
-			modelQuads.addAll( model.getQuads( state, face, rand ) );
+			modelQuads.addAll( model.getQuads( state, face, rand, data) );
 		}
-		modelQuads.addAll( model.getQuads( state, null, rand ) );
+		modelQuads.addAll( model.getQuads( state, null, rand, data ) );
 		return modelQuads;
 	}
 
