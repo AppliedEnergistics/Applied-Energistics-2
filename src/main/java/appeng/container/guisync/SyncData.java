@@ -27,7 +27,6 @@ import appeng.container.AEBaseContainer;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketProgressBar;
-import appeng.core.sync.packets.PacketValueConfig;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.IContainerListener;
 
@@ -87,7 +86,7 @@ public class SyncData
 		{
 			if( o instanceof ServerPlayerEntity)
 			{
-				NetworkHandler.instance().sendTo( new PacketValueConfig( "SyncDat." + this.channel, (String) val ), (ServerPlayerEntity) o );
+				// FIXME NetworkHandler.instance().sendTo( new PacketValueConfig( "SyncDat." + this.channel, (String) val ), (ServerPlayerEntity) o );
 			}
 		}
 		else if( this.field.getType().isEnum() )

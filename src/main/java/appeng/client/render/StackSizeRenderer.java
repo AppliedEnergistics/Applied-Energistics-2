@@ -19,8 +19,8 @@
 package appeng.client.render;
 
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AEConfig;
@@ -49,9 +49,6 @@ public class StackSizeRenderer
 			final float inverseScaleFactor = 1.0f / scaleFactor;
 			final int offset = AEConfig.instance().useTerminalUseLargeFont() ? 0 : -1;
 
-			final boolean unicodeFlag = fontRenderer.getUnicodeFlag();
-			fontRenderer.setUnicodeFlag( false );
-
 			if( aeStack.getStackSize() == 0 && aeStack.isCraftable() )
 			{
 				final String craftLabelText = AEConfig.instance().useTerminalUseLargeFont() ? GuiText.LargeFontCraft.getLocal() : GuiText.SmallFontCraft
@@ -59,12 +56,12 @@ public class StackSizeRenderer
 				RenderSystem.disableLighting();
 				RenderSystem.disableDepthTest();
 				RenderSystem.disableBlend();
-				GlStateManager.pushMatrix();
-				GlStateManager.scale( scaleFactor, scaleFactor, scaleFactor );
+				RenderSystem.pushMatrix();
+				RenderSystem.scalef( scaleFactor, scaleFactor, scaleFactor );
 				final int X = (int) ( ( (float) xPos + offset + 16.0f - fontRenderer.getStringWidth( craftLabelText ) * scaleFactor ) * inverseScaleFactor );
 				final int Y = (int) ( ( (float) yPos + offset + 16.0f - 7.0f * scaleFactor ) * inverseScaleFactor );
 				fontRenderer.drawStringWithShadow( craftLabelText, X, Y, 16777215 );
-				GlStateManager.popMatrix();
+				RenderSystem.popMatrix();
 				RenderSystem.enableLighting();
 				RenderSystem.enableDepthTest();
 				RenderSystem.enableBlend();
@@ -77,18 +74,17 @@ public class StackSizeRenderer
 				RenderSystem.disableLighting();
 				RenderSystem.disableDepthTest();
 				RenderSystem.disableBlend();
-				GlStateManager.pushMatrix();
-				GlStateManager.scale( scaleFactor, scaleFactor, scaleFactor );
+				RenderSystem.pushMatrix();
+				RenderSystem.scalef( scaleFactor, scaleFactor, scaleFactor );
 				final int X = (int) ( ( (float) xPos + offset + 16.0f - fontRenderer.getStringWidth( stackSize ) * scaleFactor ) * inverseScaleFactor );
 				final int Y = (int) ( ( (float) yPos + offset + 16.0f - 7.0f * scaleFactor ) * inverseScaleFactor );
 				fontRenderer.drawStringWithShadow( stackSize, X, Y, 16777215 );
-				GlStateManager.popMatrix();
+				RenderSystem.popMatrix();
 				RenderSystem.enableLighting();
 				RenderSystem.enableDepthTest();
 				RenderSystem.enableBlend();
 			}
 
-			fontRenderer.setUnicodeFlag( unicodeFlag );
 		}
 	}
 

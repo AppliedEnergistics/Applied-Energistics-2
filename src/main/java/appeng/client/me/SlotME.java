@@ -92,12 +92,6 @@ public class SlotME extends SlotItemHandler
 	}
 
 	@Override
-	public boolean isHere( final IInventory inv, final int slotIn )
-	{
-		return false;
-	}
-
-	@Override
 	public boolean canTakeStack( final PlayerEntity par1PlayerEntity )
 	{
 		return false;

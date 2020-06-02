@@ -22,6 +22,7 @@ package appeng.container.implementations;
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.world.World;
 
@@ -43,9 +44,8 @@ public class ContainerCraftAmount extends AEBaseContainer
 	private final Slot craftingItem;
 	private IAEItemStack itemToCreate;
 
-	public ContainerCraftAmount( final PlayerInventory ip, final ITerminalHost te )
-	{
-		super( ip, te );
+	public ContainerCraftAmount(ContainerType<?> containerType, int id, PlayerInventory ip, final ITerminalHost te) {
+		super(containerType, id, ip, te);
 
 		this.craftingItem = new SlotInaccessible( new AppEngInternalInventory( null, 1 ), 0, 34, 53 );
 		this.addSlot( this.getCraftingItem() );

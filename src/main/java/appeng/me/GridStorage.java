@@ -96,11 +96,11 @@ public class GridStorage implements IGridStorage
 
 	public String getValue()
 	{
-		final Grid currentGrid = (Grid) this.getGrid();
-		if( currentGrid != null )
-		{
-			currentGrid.saveState();
-		}
+	// FIXME	final Grid currentGrid = (Grid) this.getGrid();
+	// FIXME	if( currentGrid != null )
+	// FIXME	{
+	// FIXME		currentGrid.saveState();
+	// FIXME	}
 
 		try
 		{

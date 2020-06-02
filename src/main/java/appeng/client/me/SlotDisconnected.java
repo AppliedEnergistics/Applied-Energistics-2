@@ -93,12 +93,6 @@ public class SlotDisconnected extends AppEngSlot
 		return ItemStack.EMPTY;
 	}
 
-	@Override
-	public boolean isHere( final IInventory inv, final int slotIn )
-	{
-		return false;
-	}
-
 	public ClientDCInternalInv getSlot()
 	{
 		return this.mySlot;

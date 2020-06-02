@@ -27,6 +27,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import appeng.core.Api;
+import appeng.core.sync.packets.PacketInventoryAction;
+import appeng.core.sync.packets.PacketValueConfig;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -58,8 +60,6 @@ import appeng.client.me.SlotME;
 import appeng.container.guisync.GuiSync;
 import appeng.container.guisync.SyncData;
 import appeng.container.slot.AppEngSlot;
-import appeng.container.slot.SlotCraftingMatrix;
-import appeng.container.slot.SlotCraftingTerm;
 import appeng.container.slot.SlotDisabled;
 import appeng.container.slot.SlotFake;
 import appeng.container.slot.SlotInaccessible;
@@ -67,9 +67,7 @@ import appeng.container.slot.SlotPlayerHotBar;
 import appeng.container.slot.SlotPlayerInv;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.sync.packets.PacketTargetItemStack;
-import appeng.core.sync.packets.PacketValueConfig;
 import appeng.helpers.ICustomNameObject;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.PlayerSource;
@@ -414,7 +412,7 @@ public abstract class AEBaseContainer extends Container
 					{
 						final AppEngSlot cs = (AppEngSlot) inventorySlot;
 
-						if( !( cs.isPlayerSide() ) && !( cs instanceof SlotFake ) && !( cs instanceof SlotCraftingMatrix ) )
+						if( !( cs.isPlayerSide() ) && !( cs instanceof SlotFake ) /* FIXME && !( cs instanceof SlotCraftingMatrix ) */ )
 						{
 							if( cs.isItemValid( tis ) )
 							{
@@ -433,7 +431,7 @@ public abstract class AEBaseContainer extends Container
 				{
 					final AppEngSlot cs = (AppEngSlot) inventorySlot;
 
-					if( ( cs.isPlayerSide() ) && !( cs instanceof SlotFake ) && !( cs instanceof SlotCraftingMatrix ) )
+					if( ( cs.isPlayerSide() ) && !( cs instanceof SlotFake ) /* FIXME && !( cs instanceof SlotCraftingMatrix ) */ )
 					{
 						if( cs.isItemValid( tis ) )
 						{
@@ -663,18 +661,18 @@ public abstract class AEBaseContainer extends Container
 		{
 			final Slot s = this.getSlot( slot );
 
-			if( s instanceof SlotCraftingTerm )
-			{
-				switch( action )
-				{
-					case CRAFT_SHIFT:
-					case CRAFT_ITEM:
-					case CRAFT_STACK:
-						( (SlotCraftingTerm) s ).doClick( action, player );
-						this.updateHeld( player );
-					default:
-				}
-			}
+// FIXME			if( s instanceof SlotCraftingTerm )
+// FIXME			{
+// FIXME				switch( action )
+// FIXME				{
+// FIXME					case CRAFT_SHIFT:
+// FIXME					case CRAFT_ITEM:
+// FIXME					case CRAFT_STACK:
+// FIXME						( (SlotCraftingTerm) s ).doClick( action, player );
+// FIXME						this.updateHeld( player );
+// FIXME					default:
+// FIXME				}
+// FIXME			}
 
 			if( s instanceof SlotFake )
 			{
@@ -747,7 +745,7 @@ public abstract class AEBaseContainer extends Container
 
 				for( final Object j : this.inventorySlots )
 				{
-					if( j instanceof Slot && j.getClass() == s.getClass() && !( j instanceof SlotCraftingTerm ) )
+					if( j instanceof Slot && j.getClass() == s.getClass() /* FIXME && !( j instanceof SlotCraftingTerm ) */ )
 					{
 						from.add( (Slot) j );
 					}

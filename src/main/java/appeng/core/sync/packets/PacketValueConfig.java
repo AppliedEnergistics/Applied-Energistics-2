@@ -19,40 +19,14 @@
 package appeng.core.sync.packets;
 
 
-import java.io.IOException;
-
-import io.netty.buffer.Unpooled;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
-
-import appeng.api.config.FuzzyMode;
-import appeng.api.config.Settings;
-import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigurableObject;
-import appeng.client.gui.implementations.GuiCraftingCPU;
-import appeng.container.AEBaseContainer;
-import appeng.container.implementations.ContainerCellWorkbench;
-import appeng.container.implementations.ContainerCraftConfirm;
-import appeng.container.implementations.ContainerCraftingCPU;
-import appeng.container.implementations.ContainerCraftingStatus;
-import appeng.container.implementations.ContainerLevelEmitter;
-import appeng.container.implementations.ContainerNetworkTool;
-import appeng.container.implementations.ContainerPatternTerm;
-import appeng.container.implementations.ContainerPriority;
-import appeng.container.implementations.ContainerQuartzKnife;
-import appeng.container.implementations.ContainerSecurityStation;
-import appeng.container.implementations.ContainerStorageBus;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.fluids.container.ContainerFluidLevelEmitter;
-import appeng.fluids.container.ContainerFluidStorageBus;
-import appeng.helpers.IMouseWheelItem;
+import io.netty.buffer.Unpooled;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.network.PacketBuffer;
+
+import java.io.IOException;
 
 
 public class PacketValueConfig extends AppEngPacket
@@ -89,172 +63,172 @@ public class PacketValueConfig extends AppEngPacket
 	{
 		final Container c = player.openContainer;
 
-		if( this.Name.equals( "Item" ) && ( ( !player.getHeldItem( Hand.MAIN_HAND ).isEmpty() && player.getHeldItem( Hand.MAIN_HAND ).getItem() instanceof IMouseWheelItem ) || ( !player.getHeldItem( Hand.OFF_HAND ).isEmpty() && player.getHeldItem( Hand.OFF_HAND ).getItem() instanceof IMouseWheelItem ) ) )
-		{
-			final Hand hand;
-			if( !player.getHeldItem( Hand.MAIN_HAND ).isEmpty() && player.getHeldItem( Hand.MAIN_HAND ).getItem() instanceof IMouseWheelItem )
-			{
-				hand = Hand.MAIN_HAND;
-			}
-			else if( !player.getHeldItem( Hand.OFF_HAND ).isEmpty() && player.getHeldItem( Hand.OFF_HAND ).getItem() instanceof IMouseWheelItem )
-			{
-				hand = Hand.OFF_HAND;
-			}
-			else
-			{
-				return;
-			}
-
-			final ItemStack is = player.getHeldItem( hand );
-			final IMouseWheelItem si = (IMouseWheelItem) is.getItem();
-			si.onWheel( is, this.Value.equals( "WheelUp" ) );
-		}
-		else if( this.Name.equals( "Terminal.Cpu" ) && c instanceof ContainerCraftingStatus )
-		{
-			final ContainerCraftingStatus qk = (ContainerCraftingStatus) c;
-			qk.cycleCpu( this.Value.equals( "Next" ) );
-		}
-		else if( this.Name.equals( "Terminal.Cpu" ) && c instanceof ContainerCraftConfirm )
-		{
-			final ContainerCraftConfirm qk = (ContainerCraftConfirm) c;
-			qk.cycleCpu( this.Value.equals( "Next" ) );
-		}
-		else if( this.Name.equals( "Terminal.Start" ) && c instanceof ContainerCraftConfirm )
-		{
-			final ContainerCraftConfirm qk = (ContainerCraftConfirm) c;
-			qk.startJob();
-		}
-		else if( this.Name.equals( "TileCrafting.Cancel" ) && c instanceof ContainerCraftingCPU )
-		{
-			final ContainerCraftingCPU qk = (ContainerCraftingCPU) c;
-			qk.cancelCrafting();
-		}
-		else if( this.Name.equals( "QuartzKnife.Name" ) && c instanceof ContainerQuartzKnife )
-		{
-			final ContainerQuartzKnife qk = (ContainerQuartzKnife) c;
-			qk.setName( this.Value );
-		}
-		else if( this.Name.equals( "TileSecurityStation.ToggleOption" ) && c instanceof ContainerSecurityStation )
-		{
-			final ContainerSecurityStation sc = (ContainerSecurityStation) c;
-			sc.toggleSetting( this.Value, player );
-		}
-		else if( this.Name.equals( "PriorityHost.Priority" ) && c instanceof ContainerPriority )
-		{
-			final ContainerPriority pc = (ContainerPriority) c;
-			pc.setPriority( Integer.parseInt( this.Value ), player );
-		}
-		else if( this.Name.equals( "LevelEmitter.Value" ) && c instanceof ContainerLevelEmitter )
-		{
-			final ContainerLevelEmitter lvc = (ContainerLevelEmitter) c;
-			lvc.setLevel( Long.parseLong( this.Value ), player );
-		}
-		else if( this.Name.equals( "FluidLevelEmitter.Value" ) && c instanceof ContainerFluidLevelEmitter )
-		{
-			final ContainerFluidLevelEmitter lvc = (ContainerFluidLevelEmitter) c;
-			lvc.setLevel( Long.parseLong( this.Value ), player );
-		}
-		else if( this.Name.startsWith( "PatternTerminal." ) && c instanceof ContainerPatternTerm )
-		{
-			final ContainerPatternTerm cpt = (ContainerPatternTerm) c;
-			if( this.Name.equals( "PatternTerminal.CraftMode" ) )
-			{
-				cpt.getPatternTerminal().setCraftingRecipe( this.Value.equals( "1" ) );
-			}
-			else if( this.Name.equals( "PatternTerminal.Encode" ) )
-			{
-				cpt.encode();
-			}
-			else if( this.Name.equals( "PatternTerminal.Clear" ) )
-			{
-				cpt.clear();
-			}
-			else if( this.Name.equals( "PatternTerminal.Substitute" ) )
-			{
-				cpt.getPatternTerminal().setSubstitution( this.Value.equals( "1" ) );
-			}
-		}
-		else if( this.Name.startsWith( "StorageBus." ) )
-		{
-			if( this.Name.equals( "StorageBus.Action" ) )
-			{
-				if( this.Value.equals( "Partition" ) )
-				{
-					if( c instanceof ContainerStorageBus )
-					{
-						( (ContainerStorageBus) c ).partition();
-					}
-					else if( c instanceof ContainerFluidStorageBus )
-					{
-						( (ContainerFluidStorageBus) c ).partition();
-					}
-				}
-				else if( this.Value.equals( "Clear" ) )
-				{
-					if( c instanceof ContainerStorageBus )
-					{
-						( (ContainerStorageBus) c ).clear();
-					}
-					else if( c instanceof ContainerFluidStorageBus )
-					{
-						( (ContainerFluidStorageBus) c ).clear();
-					}
-				}
-			}
-		}
-		else if( this.Name.startsWith( "CellWorkbench." ) && c instanceof ContainerCellWorkbench )
-		{
-			final ContainerCellWorkbench ccw = (ContainerCellWorkbench) c;
-			if( this.Name.equals( "CellWorkbench.Action" ) )
-			{
-				if( this.Value.equals( "CopyMode" ) )
-				{
-					ccw.nextWorkBenchCopyMode();
-				}
-				else if( this.Value.equals( "Partition" ) )
-				{
-					ccw.partition();
-				}
-				else if( this.Value.equals( "Clear" ) )
-				{
-					ccw.clear();
-				}
-			}
-			else if( this.Name.equals( "CellWorkbench.Fuzzy" ) )
-			{
-				ccw.setFuzzy( FuzzyMode.valueOf( this.Value ) );
-			}
-		}
-		else if( c instanceof ContainerNetworkTool )
-		{
-			if( this.Name.equals( "NetworkTool" ) && this.Value.equals( "Toggle" ) )
-			{
-				( (ContainerNetworkTool) c ).toggleFacadeMode();
-			}
-		}
-		else if( c instanceof IConfigurableObject )
-		{
-			final IConfigManager cm = ( (IConfigurableObject) c ).getConfigManager();
-
-			for( final Settings e : cm.getSettings() )
-			{
-				if( e.name().equals( this.Name ) )
-				{
-					final Enum<?> def = cm.getSetting( e );
-
-					try
-					{
-						cm.putSetting( e, Enum.valueOf( def.getClass(), this.Value ) );
-					}
-					catch( final IllegalArgumentException err )
-					{
-						// :P
-					}
-
-					break;
-				}
-			}
-		}
+// FIXME		if( this.Name.equals( "Item" ) && ( ( !player.getHeldItem( Hand.MAIN_HAND ).isEmpty() && player.getHeldItem( Hand.MAIN_HAND ).getItem() instanceof IMouseWheelItem ) || ( !player.getHeldItem( Hand.OFF_HAND ).isEmpty() && player.getHeldItem( Hand.OFF_HAND ).getItem() instanceof IMouseWheelItem ) ) )
+// FIXME		{
+// FIXME			final Hand hand;
+// FIXME			if( !player.getHeldItem( Hand.MAIN_HAND ).isEmpty() && player.getHeldItem( Hand.MAIN_HAND ).getItem() instanceof IMouseWheelItem )
+// FIXME			{
+// FIXME				hand = Hand.MAIN_HAND;
+// FIXME			}
+// FIXME			else if( !player.getHeldItem( Hand.OFF_HAND ).isEmpty() && player.getHeldItem( Hand.OFF_HAND ).getItem() instanceof IMouseWheelItem )
+// FIXME			{
+// FIXME				hand = Hand.OFF_HAND;
+// FIXME			}
+// FIXME			else
+// FIXME			{
+// FIXME				return;
+// FIXME			}
+// FIXME
+// FIXME			final ItemStack is = player.getHeldItem( hand );
+// FIXME			final IMouseWheelItem si = (IMouseWheelItem) is.getItem();
+// FIXME			si.onWheel( is, this.Value.equals( "WheelUp" ) );
+// FIXME		}
+// FIXME		else if( this.Name.equals( "Terminal.Cpu" ) && c instanceof ContainerCraftingStatus )
+// FIXME		{
+// FIXME			final ContainerCraftingStatus qk = (ContainerCraftingStatus) c;
+// FIXME			qk.cycleCpu( this.Value.equals( "Next" ) );
+// FIXME		}
+// FIXME		else if( this.Name.equals( "Terminal.Cpu" ) && c instanceof ContainerCraftConfirm )
+// FIXME		{
+// FIXME			final ContainerCraftConfirm qk = (ContainerCraftConfirm) c;
+// FIXME			qk.cycleCpu( this.Value.equals( "Next" ) );
+// FIXME		}
+// FIXME		else if( this.Name.equals( "Terminal.Start" ) && c instanceof ContainerCraftConfirm )
+// FIXME		{
+// FIXME			final ContainerCraftConfirm qk = (ContainerCraftConfirm) c;
+// FIXME			qk.startJob();
+// FIXME		}
+// FIXME		else if( this.Name.equals( "TileCrafting.Cancel" ) && c instanceof ContainerCraftingCPU )
+// FIXME		{
+// FIXME			final ContainerCraftingCPU qk = (ContainerCraftingCPU) c;
+// FIXME			qk.cancelCrafting();
+// FIXME		}
+// FIXME		else if( this.Name.equals( "QuartzKnife.Name" ) && c instanceof ContainerQuartzKnife )
+// FIXME		{
+// FIXME			final ContainerQuartzKnife qk = (ContainerQuartzKnife) c;
+// FIXME			qk.setName( this.Value );
+// FIXME		}
+// FIXME		else if( this.Name.equals( "TileSecurityStation.ToggleOption" ) && c instanceof ContainerSecurityStation )
+// FIXME		{
+// FIXME			final ContainerSecurityStation sc = (ContainerSecurityStation) c;
+// FIXME			sc.toggleSetting( this.Value, player );
+// FIXME		}
+// FIXME		else if( this.Name.equals( "PriorityHost.Priority" ) && c instanceof ContainerPriority )
+// FIXME		{
+// FIXME			final ContainerPriority pc = (ContainerPriority) c;
+// FIXME			pc.setPriority( Integer.parseInt( this.Value ), player );
+// FIXME		}
+// FIXME		else if( this.Name.equals( "LevelEmitter.Value" ) && c instanceof ContainerLevelEmitter )
+// FIXME		{
+// FIXME			final ContainerLevelEmitter lvc = (ContainerLevelEmitter) c;
+// FIXME			lvc.setLevel( Long.parseLong( this.Value ), player );
+// FIXME		}
+// FIXME		else if( this.Name.equals( "FluidLevelEmitter.Value" ) && c instanceof ContainerFluidLevelEmitter )
+// FIXME		{
+// FIXME			final ContainerFluidLevelEmitter lvc = (ContainerFluidLevelEmitter) c;
+// FIXME			lvc.setLevel( Long.parseLong( this.Value ), player );
+// FIXME		}
+// FIXME		else if( this.Name.startsWith( "PatternTerminal." ) && c instanceof ContainerPatternTerm )
+// FIXME		{
+// FIXME			final ContainerPatternTerm cpt = (ContainerPatternTerm) c;
+// FIXME			if( this.Name.equals( "PatternTerminal.CraftMode" ) )
+// FIXME			{
+// FIXME				cpt.getPatternTerminal().setCraftingRecipe( this.Value.equals( "1" ) );
+// FIXME			}
+// FIXME			else if( this.Name.equals( "PatternTerminal.Encode" ) )
+// FIXME			{
+// FIXME				cpt.encode();
+// FIXME			}
+// FIXME			else if( this.Name.equals( "PatternTerminal.Clear" ) )
+// FIXME			{
+// FIXME				cpt.clear();
+// FIXME			}
+// FIXME			else if( this.Name.equals( "PatternTerminal.Substitute" ) )
+// FIXME			{
+// FIXME				cpt.getPatternTerminal().setSubstitution( this.Value.equals( "1" ) );
+// FIXME			}
+// FIXME		}
+// FIXME		else if( this.Name.startsWith( "StorageBus." ) )
+// FIXME		{
+// FIXME			if( this.Name.equals( "StorageBus.Action" ) )
+// FIXME			{
+// FIXME				if( this.Value.equals( "Partition" ) )
+// FIXME				{
+// FIXME					if( c instanceof ContainerStorageBus )
+// FIXME					{
+// FIXME						( (ContainerStorageBus) c ).partition();
+// FIXME					}
+// FIXME					else if( c instanceof ContainerFluidStorageBus )
+// FIXME					{
+// FIXME						( (ContainerFluidStorageBus) c ).partition();
+// FIXME					}
+// FIXME				}
+// FIXME				else if( this.Value.equals( "Clear" ) )
+// FIXME				{
+// FIXME					if( c instanceof ContainerStorageBus )
+// FIXME					{
+// FIXME						( (ContainerStorageBus) c ).clear();
+// FIXME					}
+// FIXME					else if( c instanceof ContainerFluidStorageBus )
+// FIXME					{
+// FIXME						( (ContainerFluidStorageBus) c ).clear();
+// FIXME					}
+// FIXME				}
+// FIXME			}
+// FIXME		}
+// FIXME		else if( this.Name.startsWith( "CellWorkbench." ) && c instanceof ContainerCellWorkbench )
+// FIXME		{
+// FIXME			final ContainerCellWorkbench ccw = (ContainerCellWorkbench) c;
+// FIXME			if( this.Name.equals( "CellWorkbench.Action" ) )
+// FIXME			{
+// FIXME				if( this.Value.equals( "CopyMode" ) )
+// FIXME				{
+// FIXME					ccw.nextWorkBenchCopyMode();
+// FIXME				}
+// FIXME				else if( this.Value.equals( "Partition" ) )
+// FIXME				{
+// FIXME					ccw.partition();
+// FIXME				}
+// FIXME				else if( this.Value.equals( "Clear" ) )
+// FIXME				{
+// FIXME					ccw.clear();
+// FIXME				}
+// FIXME			}
+// FIXME			else if( this.Name.equals( "CellWorkbench.Fuzzy" ) )
+// FIXME			{
+// FIXME				ccw.setFuzzy( FuzzyMode.valueOf( this.Value ) );
+// FIXME			}
+// FIXME		}
+// FIXME		else if( c instanceof ContainerNetworkTool )
+// FIXME		{
+// FIXME			if( this.Name.equals( "NetworkTool" ) && this.Value.equals( "Toggle" ) )
+// FIXME			{
+// FIXME				( (ContainerNetworkTool) c ).toggleFacadeMode();
+// FIXME			}
+// FIXME		}
+// FIXME		else if( c instanceof IConfigurableObject )
+// FIXME		{
+// FIXME			final IConfigManager cm = ( (IConfigurableObject) c ).getConfigManager();
+// FIXME
+// FIXME			for( final Settings e : cm.getSettings() )
+// FIXME			{
+// FIXME				if( e.name().equals( this.Name ) )
+// FIXME				{
+// FIXME					final Enum<?> def = cm.getSetting( e );
+// FIXME
+// FIXME					try
+// FIXME					{
+// FIXME						cm.putSetting( e, Enum.valueOf( def.getClass(), this.Value ) );
+// FIXME					}
+// FIXME					catch( final IllegalArgumentException err )
+// FIXME					{
+// FIXME						// :P
+// FIXME					}
+// FIXME
+// FIXME					break;
+// FIXME				}
+// FIXME			}
+// FIXME		}
 	}
 
 	@Override
@@ -262,44 +236,44 @@ public class PacketValueConfig extends AppEngPacket
 	{
 		final Container c = player.openContainer;
 
-		if( this.Name.equals( "CustomName" ) && c instanceof AEBaseContainer )
-		{
-			( (AEBaseContainer) c ).setCustomName( this.Value );
-		}
-		else if( this.Name.startsWith( "SyncDat." ) )
-		{
-			( (AEBaseContainer) c ).stringSync( Integer.parseInt( this.Name.substring( 8 ) ), this.Value );
-		}
-		else if( this.Name.equals( "CraftingStatus" ) && this.Value.equals( "Clear" ) )
-		{
-			final Screen gs = Minecraft.getInstance().currentScreen;
-			if( gs instanceof GuiCraftingCPU )
-			{
-				( (GuiCraftingCPU) gs ).clearItems();
-			}
-		}
-		else if( c instanceof IConfigurableObject )
-		{
-			final IConfigManager cm = ( (IConfigurableObject) c ).getConfigManager();
-
-			for( final Settings e : cm.getSettings() )
-			{
-				if( e.name().equals( this.Name ) )
-				{
-					final Enum<?> def = cm.getSetting( e );
-
-					try
-					{
-						cm.putSetting( e, Enum.valueOf( def.getClass(), this.Value ) );
-					}
-					catch( final IllegalArgumentException err )
-					{
-						// :P
-					}
-
-					break;
-				}
-			}
-		}
+// FIXME		if( this.Name.equals( "CustomName" ) && c instanceof AEBaseContainer )
+// FIXME		{
+// FIXME			( (AEBaseContainer) c ).setCustomName( this.Value );
+// FIXME		}
+// FIXME		else if( this.Name.startsWith( "SyncDat." ) )
+// FIXME		{
+// FIXME			( (AEBaseContainer) c ).stringSync( Integer.parseInt( this.Name.substring( 8 ) ), this.Value );
+// FIXME		}
+// FIXME		else if( this.Name.equals( "CraftingStatus" ) && this.Value.equals( "Clear" ) )
+// FIXME		{
+// FIXME			final Screen gs = Minecraft.getInstance().currentScreen;
+// FIXME			if( gs instanceof GuiCraftingCPU )
+// FIXME			{
+// FIXME				( (GuiCraftingCPU) gs ).clearItems();
+// FIXME			}
+// FIXME		}
+// FIXME		else if( c instanceof IConfigurableObject )
+// FIXME		{
+// FIXME			final IConfigManager cm = ( (IConfigurableObject) c ).getConfigManager();
+// FIXME
+// FIXME			for( final Settings e : cm.getSettings() )
+// FIXME			{
+// FIXME				if( e.name().equals( this.Name ) )
+// FIXME				{
+// FIXME					final Enum<?> def = cm.getSetting( e );
+// FIXME
+// FIXME					try
+// FIXME					{
+// FIXME						cm.putSetting( e, Enum.valueOf( def.getClass(), this.Value ) );
+// FIXME					}
+// FIXME					catch( final IllegalArgumentException err )
+// FIXME					{
+// FIXME						// :P
+// FIXME					}
+// FIXME
+// FIXME					break;
+// FIXME				}
+// FIXME			}
+// FIXME		}
 	}
 }

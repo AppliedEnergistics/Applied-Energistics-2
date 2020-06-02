@@ -23,8 +23,8 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AEConfig;
@@ -56,9 +56,6 @@ public class FluidStackSizeRenderer
 			final float inverseScaleFactor = 1.0f / scaleFactor;
 			final int offset = AEConfig.instance().useTerminalUseLargeFont() ? 0 : -1;
 
-			final boolean unicodeFlag = fontRenderer.getUnicodeFlag();
-			fontRenderer.setUnicodeFlag( false );
-
 			if( aeStack.getStackSize() > 0 )
 			{
 				final String stackSize = this.getToBeRenderedStackSize( aeStack.getStackSize() );
@@ -66,18 +63,16 @@ public class FluidStackSizeRenderer
 				RenderSystem.disableLighting();
 				RenderSystem.disableDepthTest();
 				RenderSystem.disableBlend();
-				GlStateManager.pushMatrix();
-				GlStateManager.scale( scaleFactor, scaleFactor, scaleFactor );
+				RenderSystem.pushMatrix();
+				RenderSystem.scalef( scaleFactor, scaleFactor, scaleFactor );
 				final int X = (int) ( ( (float) xPos + offset + 16.0f - fontRenderer.getStringWidth( stackSize ) * scaleFactor ) * inverseScaleFactor );
 				final int Y = (int) ( ( (float) yPos + offset + 16.0f - 7.0f * scaleFactor ) * inverseScaleFactor );
 				fontRenderer.drawStringWithShadow( stackSize, X, Y, 16777215 );
-				GlStateManager.popMatrix();
+				RenderSystem.popMatrix();
 				RenderSystem.enableLighting();
 				RenderSystem.enableDepthTest();
 				RenderSystem.enableBlend();
 			}
-
-			fontRenderer.setUnicodeFlag( unicodeFlag );
 		}
 	}
 

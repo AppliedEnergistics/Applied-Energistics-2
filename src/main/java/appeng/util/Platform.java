@@ -46,8 +46,6 @@ import appeng.core.Api;
 import appeng.core.features.AEFeature;
 import appeng.core.stats.AeStats;
 import appeng.fluids.util.AEFluidStack;
-import appeng.me.GridAccessException;
-import appeng.me.GridNode;
 import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.item.AEItemStack;
 

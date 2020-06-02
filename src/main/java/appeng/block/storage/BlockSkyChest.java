@@ -22,7 +22,6 @@ package appeng.block.storage;
 import javax.annotation.Nullable;
 
 import appeng.api.util.AEPartLocation;
-import appeng.core.sync.GuiBridge;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;

@@ -35,7 +35,6 @@ import appeng.container.ContainerOpenContext;
 import appeng.container.implementations.ContainerCraftAmount;
 import appeng.core.AppEng;
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
@@ -132,7 +131,7 @@ public class PacketInventoryAction extends AppEngPacket
 				if( context != null )
 				{
 					final TileEntity te = context.getTile();
-					Platform.openGUI( sender, te, baseContainer.getOpenContext().getSide(), GuiBridge.GUI_CRAFTING_AMOUNT );
+					// FIXME Platform.openGUI( sender, te, baseContainer.getOpenContext().getSide(), GuiBridge.GUI_CRAFTING_AMOUNT );
 
 					if( sender.openContainer instanceof ContainerCraftAmount )
 					{
