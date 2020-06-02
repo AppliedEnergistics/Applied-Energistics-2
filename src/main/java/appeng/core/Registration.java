@@ -51,8 +51,6 @@ final class Registration
 {
 
 	public Registration() {
-		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "glass"), GlassModelLoader.INSTANCE);
-
 		AeStats.register();
 	}
 

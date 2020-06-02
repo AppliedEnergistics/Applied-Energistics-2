@@ -1,6 +1,7 @@
 package appeng.bootstrap;
 
 import appeng.block.AEBaseTileBlock;
+import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.ITileEntityRegistrationComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.core.AppEng;
@@ -8,10 +9,9 @@ import appeng.core.features.AEFeature;
 import appeng.core.features.ActivityState;
 import appeng.core.features.BlockStackSrc;
 import appeng.tile.AEBaseTile;
-import appeng.util.Platform;
+
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -90,8 +89,6 @@ public class TileEntityBuilder<T extends AEBaseTile> {
             type.setRegistryName(AppEng.MOD_ID, registryName);
             registry.register(type);
 
-            DistExecutor.runWhenOn(Dist.CLIENT, () -> this::registerClient);
-
             AEBaseTile.registerTileItem(
                     tileClass,
                     new BlockStackSrc(blocks.get(0), ActivityState.Enabled));
@@ -104,18 +101,19 @@ public class TileEntityBuilder<T extends AEBaseTile> {
             }
 
         });
+        DistExecutor.runWhenOn( Dist.CLIENT, () ->  this::buildClient );
 
         return new TileEntityDefinition(this::addBlock);
 
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void registerClient() {
-
-        if (tileEntityRendering.tileEntityRenderer != null) {
-            ClientRegistry.bindTileEntityRenderer(type, tileEntityRendering.tileEntityRenderer);
-        }
-
+    private void buildClient() {
+        this.factory.addBootstrapComponent( (IClientSetupComponent) ()-> {
+            if (tileEntityRendering.tileEntityRenderer != null) {
+                ClientRegistry.bindTileEntityRenderer(type, tileEntityRendering.tileEntityRenderer);
+            }
+        });
     }
 
     private void addBlock(Block block) {
