@@ -45,19 +45,19 @@ public class GuiMAC extends GuiUpgradeable
 	}
 
 	@Override
-	public void initGui()
+	public void init()
 	{
-		super.initGui();
+		super.init();
 
 		this.pb = new GuiProgressBar( this.container, "guis/mac.png", 139, 36, 148, 201, 6, 18, Direction.VERTICAL );
-		this.buttonList.add( this.pb );
+		this.addButton( this.pb );
 	}
 
 	@Override
 	protected void addButtons()
 	{
 		this.redstoneMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
-		this.buttonList.add( this.redstoneMode );
+		this.addButton( this.redstoneMode );
 	}
 
 	@Override

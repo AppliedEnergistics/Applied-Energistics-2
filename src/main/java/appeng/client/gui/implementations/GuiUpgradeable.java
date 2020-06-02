@@ -75,9 +75,9 @@ public class GuiUpgradeable extends AEBaseGui
 	}
 
 	@Override
-	public void initGui()
+	public void init()
 	{
-		super.initGui();
+		super.init();
 		this.addButtons();
 	}
 
@@ -88,17 +88,17 @@ public class GuiUpgradeable extends AEBaseGui
 		this.craftMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 48, Settings.CRAFT_ONLY, YesNo.NO );
 		this.schedulingMode = new GuiImgButton( this.guiLeft - 18, this.guiTop + 68, Settings.SCHEDULING_MODE, SchedulingMode.DEFAULT );
 
-		this.buttonList.add( this.craftMode );
-		this.buttonList.add( this.redstoneMode );
-		this.buttonList.add( this.fuzzyMode );
-		this.buttonList.add( this.schedulingMode );
+		this.addButton( this.craftMode );
+		this.addButton( this.redstoneMode );
+		this.addButton( this.fuzzyMode );
+		this.addButton( this.schedulingMode );
 	}
 
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		this.fontRenderer.drawString( this.getGuiDisplayName( this.getName().getLocal() ), 8, 6, 4210752 );
-		this.fontRenderer.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
+		this.font.drawString( this.getGuiDisplayName( this.getName().getLocal() ), 8, 6, 4210752 );
+		this.font.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
 		if( this.redstoneMode != null )
 		{

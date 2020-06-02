@@ -219,12 +219,12 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 	private void reinitalize()
 	{
-		this.buttonList.clear();
-		this.initGui();
+		this.buttons.clear();
+		this.init();
 	}
 
 	@Override
-	public void initGui()
+	public void init()
 	{
 		Keyboard.enableRepeatEvents( true );
 
@@ -266,7 +266,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 			this.xSize = this.standardSize;
 		}
 
-		super.initGui();
+		super.init();
 		// full size : 204
 		// extra slots : 72
 		// slot 18
@@ -292,11 +292,11 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 			offset += 20;
 		}
 
-		this.buttonList.add( this.SortDirBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, this.configSrc
+		this.addButton( this.SortDirBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, this.configSrc
 				.getSetting( Settings.SORT_DIRECTION ) ) );
 		offset += 20;
 
-		this.buttonList.add(
+		this.addButton(
 				this.searchBoxSettings = new GuiImgButton( this.guiLeft - 18, offset, Settings.SEARCH_MODE, AEConfig.instance()
 						.getConfigManager()
 						.getSetting(
@@ -306,12 +306,12 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		if( !( this instanceof GuiMEPortableCell ) || this instanceof GuiWirelessTerm )
 		{
-			this.buttonList.add( this.terminalStyleBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, AEConfig.instance()
+			this.addButton( this.terminalStyleBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, AEConfig.instance()
 					.getConfigManager()
 					.getSetting( Settings.TERMINAL_STYLE ) ) );
 		}
 
-		this.searchField = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 80, this.offsetX ), this.guiTop + 4, 90, 12 );
+		this.searchField = new MEGuiTextField( this.font, this.guiLeft + Math.max( 80, this.offsetX ), this.guiTop + 4, 90, 12 );
 		this.searchField.setEnableBackgroundDrawing( false );
 		this.searchField.setMaxStringLength( 25 );
 		this.searchField.setTextColor( 0xFFFFFF );
@@ -320,7 +320,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		if( this.viewCell || this instanceof GuiWirelessTerm )
 		{
-			this.buttonList.add( this.craftingStatusBtn = new GuiTabButton( this.guiLeft + 170, this.guiTop - 4, 2 + 11 * 16, GuiText.CraftingStatus
+			this.addButton( this.craftingStatusBtn = new GuiTabButton( this.guiLeft + 170, this.guiTop - 4, 2 + 11 * 16, GuiText.CraftingStatus
 					.getLocal(), this.itemRender ) );
 			this.craftingStatusBtn.setHideEdge( 13 );
 		}
@@ -379,8 +379,8 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		this.fontRenderer.drawString( this.getGuiDisplayName( this.myName.getLocal() ), 8, 6, 4210752 );
-		this.fontRenderer.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
+		this.font.drawString( this.getGuiDisplayName( this.myName.getLocal() ), 8, 6, 4210752 );
+		this.font.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
 		this.currentMouseX = mouseX;
 		this.currentMouseY = mouseY;
@@ -403,9 +403,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	}
 
 	@Override
-	public void onGuiClosed()
+	public void removed()
 	{
-		super.onGuiClosed();
+		super.removed();
 		Keyboard.enableRepeatEvents( false );
 		memoryText = this.searchField.getText();
 	}

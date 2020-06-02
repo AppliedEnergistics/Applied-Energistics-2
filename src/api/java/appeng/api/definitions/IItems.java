@@ -106,6 +106,8 @@ public interface IItems
 
 	IItemDefinition crystalSeed();
 
+	IItemDefinition dummyFluidItem();
+
 	// rv1
 	IItemDefinition encodedPattern();
 

@@ -57,7 +57,7 @@ public class FluidCellConfig extends CellConfig
 			return stack;
 		}
 
-		fluid.amount = Fluid.BUCKET_VOLUME;
+		fluid.amount = FluidAttributes.BUCKET_VOLUME;
 		ItemStack is = Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).get();
 		FluidDummyItem item = (FluidDummyItem) is.getItem();
 		item.setFluidStack( is, fluid );
@@ -77,7 +77,7 @@ public class FluidCellConfig extends CellConfig
 			return;
 		}
 
-		fluid.amount = Fluid.BUCKET_VOLUME;
+		fluid.amount = FluidAttributes.BUCKET_VOLUME;
 		ItemStack is = Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).get();
 		FluidDummyItem item = (FluidDummyItem) is.getItem();
 		item.setFluidStack( is, fluid );
@@ -96,7 +96,7 @@ public class FluidCellConfig extends CellConfig
 		{
 			return false;
 		}
-		fluid.amount = Fluid.BUCKET_VOLUME;
+		fluid.amount = FluidAttributes.BUCKET_VOLUME;
 		ItemStack is = Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).get();
 		FluidDummyItem item = (FluidDummyItem) is.getItem();
 		item.setFluidStack( is, fluid );

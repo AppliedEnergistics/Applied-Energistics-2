@@ -27,8 +27,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.IGuiHandler;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import appeng.api.AEApi;
 import appeng.api.config.SecurityPermissions;
@@ -125,7 +123,7 @@ import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
 
 
-public enum GuiBridge implements IGuiHandler
+public enum GuiBridge
 {
 	GUI_Handler(),
 

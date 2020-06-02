@@ -113,7 +113,7 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 			{
 				for( int u = 0; u < 3; u++ )
 				{
-					this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, this.tbInventory
+					this.addSlot( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, this.tbInventory
 							.getInternalInventory(), u + v * 3, 186 + u * 18, this.getHeight() - 82 + v * 18, this.getPlayerInventory() ) ).setPlayerSide() );
 				}
 			}
@@ -141,19 +141,19 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		final IItemHandler inv = this.getUpgradeable().getInventoryByName( "config" );
 		final int y = 40;
 		final int x = 80;
-		this.addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
+		this.addSlot( new SlotFakeTypeOnly( inv, 0, x, y ) );
 
 		if( this.supportCapacity() )
 		{
-			this.addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 1, x, y, -1, 0, 1 ) );
-			this.addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 2, x, y, 1, 0, 1 ) );
-			this.addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 3, x, y, 0, -1, 1 ) );
-			this.addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 4, x, y, 0, 1, 1 ) );
+			this.addSlot( new OptionalSlotFakeTypeOnly( inv, this, 1, x, y, -1, 0, 1 ) );
+			this.addSlot( new OptionalSlotFakeTypeOnly( inv, this, 2, x, y, 1, 0, 1 ) );
+			this.addSlot( new OptionalSlotFakeTypeOnly( inv, this, 3, x, y, 0, -1, 1 ) );
+			this.addSlot( new OptionalSlotFakeTypeOnly( inv, this, 4, x, y, 0, 1, 1 ) );
 
-			this.addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 5, x, y, -1, -1, 2 ) );
-			this.addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 6, x, y, 1, -1, 2 ) );
-			this.addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 7, x, y, -1, 1, 2 ) );
-			this.addSlotToContainer( new OptionalSlotFakeTypeOnly( inv, this, 8, x, y, 1, 1, 2 ) );
+			this.addSlot( new OptionalSlotFakeTypeOnly( inv, this, 5, x, y, -1, -1, 2 ) );
+			this.addSlot( new OptionalSlotFakeTypeOnly( inv, this, 6, x, y, 1, -1, 2 ) );
+			this.addSlot( new OptionalSlotFakeTypeOnly( inv, this, 7, x, y, -1, 1, 2 ) );
+			this.addSlot( new OptionalSlotFakeTypeOnly( inv, this, 8, x, y, 1, 1, 2 ) );
 		}
 	}
 
@@ -162,25 +162,25 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 		final IItemHandler upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
 		if( this.availableUpgrades() > 0 )
 		{
-			this.addSlotToContainer(
+			this.addSlot(
 					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getPlayerInventory() ) )
 							.setNotDraggable() );
 		}
 		if( this.availableUpgrades() > 1 )
 		{
-			this.addSlotToContainer(
+			this.addSlot(
 					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.getPlayerInventory() ) )
 							.setNotDraggable() );
 		}
 		if( this.availableUpgrades() > 2 )
 		{
-			this.addSlotToContainer(
+			this.addSlot(
 					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.getPlayerInventory() ) )
 							.setNotDraggable() );
 		}
 		if( this.availableUpgrades() > 3 )
 		{
-			this.addSlotToContainer(
+			this.addSlot(
 					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.getPlayerInventory() ) )
 							.setNotDraggable() );
 		}

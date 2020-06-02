@@ -19,15 +19,14 @@
 package appeng.core.sync.packets;
 
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -72,7 +71,7 @@ public class PacketMatterCannon extends AppEngPacket
 		this.dz = dz / dlz;
 		this.len = len;
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
 
 		data.writeInt( this.getPacketID() );
 		data.writeFloat( (float) x );
@@ -93,12 +92,12 @@ public class PacketMatterCannon extends AppEngPacket
 		try
 		{
 
-			final World world = FMLClientHandler.instance().getClient().world;
+			final World world = Minecraft.getInstance().world;
 			for( int a = 1; a < this.len; a++ )
 			{
-				final MatterCannonFX fx = new MatterCannonFX( world, this.x + this.dx * a, this.y + this.dy * a, this.z + this.dz * a, Items.DIAMOND );
+				final MatterCannonFX fx = new MatterCannonFX( world, this.x + this.dx * a, this.y + this.dy * a, this.z + this.dz * a, new ItemStack( Items.DIAMOND ) );
 
-				Minecraft.getInstance().effectRenderer.addEffect( fx );
+				Minecraft.getInstance().particles.addEffect( fx );
 			}
 		}
 		catch( final Exception ignored )

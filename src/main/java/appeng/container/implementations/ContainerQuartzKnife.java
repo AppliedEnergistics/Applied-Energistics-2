@@ -29,7 +29,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
@@ -51,8 +50,8 @@ public class ContainerQuartzKnife extends AEBaseContainer
 		super( ip, null, null );
 		this.toolInv = te;
 
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.METAL_INGOTS, this.inSlot, 0, 94, 44, ip ) );
-		this.addSlotToContainer( new QuartzKniveSlot( this.inSlot, 0, 134, 44, -1 ) );
+		this.addSlot( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.METAL_INGOTS, this.inSlot, 0, 94, 44, ip ) );
+		this.addSlot( new QuartzKniveSlot( this.inSlot, 0, 134, 44, -1 ) );
 
 		this.lockPlayerInventorySlot( ip.currentItem );
 

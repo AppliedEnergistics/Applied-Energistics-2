@@ -19,11 +19,10 @@
 package appeng.core.sync.packets;
 
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Container;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
 
 import appeng.container.AEBaseContainer;
@@ -49,7 +48,7 @@ public class PacketProgressBar extends AppEngPacket
 		this.id = (short) shortID;
 		this.value = value;
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
 
 		data.writeInt( this.getPacketID() );
 		data.writeShort( shortID );

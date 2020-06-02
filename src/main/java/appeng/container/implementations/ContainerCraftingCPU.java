@@ -22,7 +22,7 @@ package appeng.container.implementations;
 import java.io.IOException;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IContainerListener;
 
@@ -100,7 +100,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 			{
 				try
 				{
-					NetworkHandler.instance().sendTo( new PacketValueConfig( "CraftingStatus", "Clear" ), (PlayerEntityMP) g );
+					NetworkHandler.instance().sendTo( new PacketValueConfig( "CraftingStatus", "Clear" ), (ServerPlayerEntity) g );
 				}
 				catch( final IOException e )
 				{
@@ -191,17 +191,17 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 					{
 						if( !a.isEmpty() )
 						{
-							NetworkHandler.instance().sendTo( a, (PlayerEntityMP) g );
+							NetworkHandler.instance().sendTo( a, (ServerPlayerEntity) g );
 						}
 
 						if( !b.isEmpty() )
 						{
-							NetworkHandler.instance().sendTo( b, (PlayerEntityMP) g );
+							NetworkHandler.instance().sendTo( b, (ServerPlayerEntity) g );
 						}
 
 						if( !c.isEmpty() )
 						{
-							NetworkHandler.instance().sendTo( c, (PlayerEntityMP) g );
+							NetworkHandler.instance().sendTo( c, (ServerPlayerEntity) g );
 						}
 					}
 				}

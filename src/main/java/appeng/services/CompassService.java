@@ -38,8 +38,8 @@ import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.world.WorldEvent;
 
 import appeng.api.AEApi;
@@ -189,7 +189,9 @@ public final class CompassService
 
 		if( cr == null )
 		{
-			cr = new CompassReader( w.provider.getDimension(), this.worldCompassFolder );
+			ServerWorld sw = (ServerWorld) w;
+			// FIXME: using the numeric dimension ID here seems to be a bad idea!
+			cr = new CompassReader( sw.dimension.getType().getId(), this.worldCompassFolder );
 			this.worldSet.put( w, cr );
 		}
 

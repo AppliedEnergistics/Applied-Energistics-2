@@ -25,13 +25,11 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraftforge.common.config.ConfigCategory;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 
 import appeng.core.AppEng;
 
@@ -51,38 +49,37 @@ final class PlayerData implements IWorldPlayerData, IOnWorldStartable, IOnWorldS
 	private static final String LAST_PLAYER_KEY = "lastPlayer";
 	private static final int LAST_PLAYER_DEFAULT = 0;
 
-	private final Configuration config;
-	private final IWorldPlayerMapping playerMapping;
+	private final CommentedFileConfig config;
+	// FIXME  private final IWorldPlayerMapping playerMapping;
 
 	private int lastPlayerID;
 
-	public PlayerData( @Nonnull final Configuration configFile )
+	public PlayerData( @Nonnull final CommentedFileConfig configFile )
 	{
 		Preconditions.checkNotNull( configFile );
 
 		this.config = configFile;
 
-		final ConfigCategory playerList = this.config.getCategory( "players" );
-		this.playerMapping = new PlayerMapping( playerList );
+		// FIXME  this.playerMapping = new PlayerMapping( config, "players." );
 	}
 
 	@Nullable
 	@Override
 	public PlayerEntity getPlayerFromID( final int playerID )
 	{
-		final Optional<UUID> maybe = this.playerMapping.get( playerID );
-
-		if( maybe.isPresent() )
-		{
-			final UUID uuid = maybe.get();
-			for( final PlayerEntity player : AppEng.proxy.getPlayers() )
-			{
-				if( player.getUniqueID().equals( uuid ) )
-				{
-					return player;
-				}
-			}
-		}
+// FIXME  		final Optional<UUID> maybe = this.playerMapping.get( playerID );
+// FIXME
+// FIXME  		if( maybe.isPresent() )
+// FIXME  		{
+// FIXME  			final UUID uuid = maybe.get();
+// FIXME  			for( final PlayerEntity player : AppEng.proxy.getPlayers() )
+// FIXME  			{
+// FIXME  				if( player.getUniqueID().equals( uuid ) )
+// FIXME  				{
+// FIXME  					return player;
+// FIXME  				}
+// FIXME  			}
+// FIXME  		}
 
 		return null;
 	}
@@ -90,42 +87,44 @@ final class PlayerData implements IWorldPlayerData, IOnWorldStartable, IOnWorldS
 	@Override
 	public int getPlayerID( @Nonnull final GameProfile profile )
 	{
-		Preconditions.checkNotNull( profile );
-		Preconditions.checkNotNull( this.config.getCategory( "players" ) );
-		Preconditions.checkState( profile.isComplete() );
-
-		final ConfigCategory players = this.config.getCategory( "players" );
-		final String uuid = profile.getId().toString();
-		final Property maybePlayerID = players.get( uuid );
-
-		if( maybePlayerID != null && maybePlayerID.isIntValue() )
-		{
-			return maybePlayerID.getInt();
-		}
-		else
-		{
-			final int newPlayerID = this.nextPlayer();
-			final Property newPlayer = new Property( uuid, String.valueOf( newPlayerID ), Property.Type.INTEGER );
-			players.put( uuid, newPlayer );
-			this.playerMapping.put( newPlayerID, profile.getId() ); // add to reverse map
-			this.config.save();
-
-			return newPlayerID;
-		}
+		return -1;
+// FIXME		Preconditions.checkNotNull( profile );
+// FIXME		Preconditions.checkNotNull( this.config.getCategory( "players" ) );
+// FIXME		Preconditions.checkState( profile.isComplete() );
+// FIXME
+// FIXME		final ConfigCategory players = this.config.getCategory( "players" );
+// FIXME		final String uuid = profile.getId().toString();
+// FIXME		final Property maybePlayerID = players.get( uuid );
+// FIXME
+// FIXME		if( maybePlayerID != null && maybePlayerID.isIntValue() )
+// FIXME		{
+// FIXME			return maybePlayerID.getInt();
+// FIXME		}
+// FIXME		else
+// FIXME		{
+// FIXME			final int newPlayerID = this.nextPlayer();
+// FIXME			final Property newPlayer = new Property( uuid, String.valueOf( newPlayerID ), Property.Type.INTEGER );
+// FIXME			players.put( uuid, newPlayer );
+// FIXME			this.playerMapping.put( newPlayerID, profile.getId() ); // add to reverse map
+// FIXME			this.config.save();
+// FIXME
+// FIXME			return newPlayerID;
+// FIXME		}
 	}
 
 	private int nextPlayer()
 	{
-		final int r = this.lastPlayerID;
-		this.lastPlayerID++;
-		this.config.get( LAST_PLAYER_CATEGORY, LAST_PLAYER_KEY, this.lastPlayerID ).set( this.lastPlayerID );
-		return r;
+// FIXME		final int r = this.lastPlayerID;
+// FIXME		this.lastPlayerID++;
+// FIXME		this.config.get( LAST_PLAYER_CATEGORY, LAST_PLAYER_KEY, this.lastPlayerID ).set( this.lastPlayerID );
+// FIXME		return r;
+		return 0;
 	}
 
 	@Override
 	public void onWorldStart()
 	{
-		this.lastPlayerID = this.config.get( LAST_PLAYER_CATEGORY, LAST_PLAYER_KEY, LAST_PLAYER_DEFAULT ).getInt( LAST_PLAYER_DEFAULT );
+		// FIXME this.lastPlayerID = this.config.get( LAST_PLAYER_CATEGORY, LAST_PLAYER_KEY, LAST_PLAYER_DEFAULT ).getInt( LAST_PLAYER_DEFAULT );
 
 		this.config.save();
 	}

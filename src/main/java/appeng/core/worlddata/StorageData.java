@@ -26,10 +26,9 @@ import java.util.WeakHashMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.electronwill.nightconfig.core.CommentedConfig;
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.google.common.base.Preconditions;
-
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
 
 import appeng.core.AELog;
 import appeng.me.GridStorage;
@@ -50,11 +49,11 @@ final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOn
 	private static final String GRID_STORAGE_CATEGORY = "gridstorage";
 
 	private final Map<GridStorageSearch, WeakReference<GridStorageSearch>> loadedStorage = new WeakHashMap<>( 10 );
-	private final Configuration config;
+	private final CommentedFileConfig config;
 
 	private long lastGridStorage;
 
-	public StorageData( @Nonnull final Configuration settingsFile )
+	public StorageData( @Nonnull final CommentedFileConfig settingsFile )
 	{
 		Preconditions.checkNotNull( settingsFile );
 
@@ -72,20 +71,21 @@ final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOn
 	@Override
 	public GridStorage getGridStorage( final long storageID )
 	{
-		final GridStorageSearch gss = new GridStorageSearch( storageID );
-		final WeakReference<GridStorageSearch> result = this.loadedStorage.get( gss );
-
-		if( result == null || result.get() == null )
-		{
-			final String id = String.valueOf( storageID );
-			final String data = this.config.get( "gridstorage", id, "" ).getString();
-			final GridStorage thisStorage = new GridStorage( data, storageID, gss );
-			gss.setGridStorage( new WeakReference<>( thisStorage ) );
-			this.loadedStorage.put( gss, new WeakReference<>( gss ) );
-			return thisStorage;
-		}
-
-		return result.get().getGridStorage().get();
+		return null;
+// FIXME		final GridStorageSearch gss = new GridStorageSearch( storageID );
+// FIXME		final WeakReference<GridStorageSearch> result = this.loadedStorage.get( gss );
+// FIXME
+// FIXME		if( result == null || result.get() == null )
+// FIXME		{
+// FIXME			final String id = String.valueOf( storageID );
+// FIXME			final String data = this.config.get( "gridstorage", id, "" ).getString();
+// FIXME			final GridStorage thisStorage = new GridStorage( data, storageID, gss );
+// FIXME			gss.setGridStorage( new WeakReference<>( thisStorage ) );
+// FIXME			this.loadedStorage.put( gss, new WeakReference<>( gss ) );
+// FIXME			return thisStorage;
+// FIXME		}
+// FIXME
+// FIXME		return result.get().getGridStorage().get();
 	}
 
 	/**
@@ -107,59 +107,61 @@ final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOn
 	@Override
 	public long nextGridStorage()
 	{
-		final long r = this.lastGridStorage;
-		this.lastGridStorage++;
-		this.config.get( "Counters", "lastGridStorage", this.lastGridStorage ).set( Long.toString( this.lastGridStorage ) );
-		return r;
+// FIXME		final long r = this.lastGridStorage;
+// FIXME		this.lastGridStorage++;
+// FIXME		this.config.get( "Counters", "lastGridStorage", this.lastGridStorage ).set( Long.toString( this.lastGridStorage ) );
+// FIXME		return r;
+		return 0;
 	}
 
 	@Override
 	public void destroyGridStorage( final long id )
 	{
-		final String stringID = String.valueOf( id );
-		this.config.getCategory( "gridstorage" ).remove( stringID );
+// FIXME		final String stringID = String.valueOf( id );
+// FIXME		this.config.getCategory( "gridstorage" ).remove( stringID );
 	}
 
 	@Override
 	public int getNextOrderedValue( final String name )
 	{
-		final Property p = this.config.get( "orderedValues", name, 0 );
-		final int myValue = p.getInt();
-		p.set( myValue + 1 );
-		return myValue;
+// FIXME		final Property p = this.config.get( "orderedValues", name, 0 );
+// FIXME		final int myValue = p.getInt();
+// FIXME		p.set( myValue + 1 );
+// FIXME		return myValue;
+		return 0;
 	}
 
 	@Override
 	public void onWorldStart()
 	{
-		final String lastString = this.config.get( LAST_GRID_STORAGE_CATEGORY, LAST_GRID_STORAGE_KEY, LAST_GRID_STORAGE_DEFAULT ).getString();
-
-		try
-		{
-			this.lastGridStorage = Long.parseLong( lastString );
-		}
-		catch( final NumberFormatException err )
-		{
-			AELog.warn( "The config contained a value which was not represented as a Long: %s", lastString );
-
-			this.lastGridStorage = 0;
-		}
+// FIXME		final String lastString = this.config.get( LAST_GRID_STORAGE_CATEGORY, LAST_GRID_STORAGE_KEY, LAST_GRID_STORAGE_DEFAULT ).getString();
+// FIXME
+// FIXME		try
+// FIXME		{
+// FIXME			this.lastGridStorage = Long.parseLong( lastString );
+// FIXME		}
+// FIXME		catch( final NumberFormatException err )
+// FIXME		{
+// FIXME			AELog.warn( "The config contained a value which was not represented as a Long: %s", lastString );
+// FIXME
+// FIXME			this.lastGridStorage = 0;
+// FIXME		}
 	}
 
 	@Override
 	public void onWorldStop()
 	{
-		// populate new data
-		for( final GridStorageSearch gs : this.loadedStorage.keySet() )
-		{
-			final GridStorage thisStorage = gs.getGridStorage().get();
-			if( thisStorage != null && thisStorage.getGrid() != null && !thisStorage.getGrid().isEmpty() )
-			{
-				final String value = thisStorage.getValue();
-				this.config.get( GRID_STORAGE_CATEGORY, String.valueOf( thisStorage.getID() ), value ).set( value );
-			}
-		}
-
-		this.config.save();
+// FIXME		// populate new data
+// FIXME		for( final GridStorageSearch gs : this.loadedStorage.keySet() )
+// FIXME		{
+// FIXME			final GridStorage thisStorage = gs.getGridStorage().get();
+// FIXME			if( thisStorage != null && thisStorage.getGrid() != null && !thisStorage.getGrid().isEmpty() )
+// FIXME			{
+// FIXME				final String value = thisStorage.getValue();
+// FIXME				this.config.get( GRID_STORAGE_CATEGORY, String.valueOf( thisStorage.getID() ), value ).set( value );
+// FIXME			}
+// FIXME		}
+// FIXME
+// FIXME		this.config.save();
 	}
 }

@@ -19,7 +19,6 @@
 package appeng.core.sync.packets;
 
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -67,7 +66,7 @@ public class PacketTargetFluidStack extends AppEngPacket
 
 		this.stack = stack;
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
 		data.writeInt( this.getPacketID() );
 		if( stack != null )
 		{

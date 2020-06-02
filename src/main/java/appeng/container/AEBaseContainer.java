@@ -26,11 +26,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -38,7 +40,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
@@ -97,18 +98,37 @@ public abstract class AEBaseContainer extends Container
 	private int ticksSinceCheck = 900;
 	private IAEItemStack clientRequestedTargetItem = null;
 
-	public AEBaseContainer( final PlayerInventory ip, final TileEntity myTile, final IPart myPart )
+	public AEBaseContainer( ContainerType<?> containerType, int id, final PlayerInventory ip, final TileEntity myTile, final IPart myPart )
 	{
-		this( ip, myTile, myPart, null );
+		this( containerType, id, ip, myTile, myPart, null );
 	}
 
-	public AEBaseContainer( final PlayerInventory ip, final TileEntity myTile, final IPart myPart, final IGuiItemObject gio )
+	public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileEntity myTile, final IPart myPart, final IGuiItemObject gio )
 	{
+		super(containerType, id);
 		this.invPlayer = ip;
 		this.tileEntity = myTile;
 		this.part = myPart;
 		this.obj = gio;
 		this.mySrc = new PlayerSource( ip.player, this.getActionHost() );
+		this.prepareSync();
+	}
+
+	public AEBaseContainer(ContainerType<?> containerType, int id, final PlayerInventory ip, final Object anchor )
+	{
+		super(containerType, id);
+		this.invPlayer = ip;
+		this.tileEntity = anchor instanceof TileEntity ? (TileEntity) anchor : null;
+		this.part = anchor instanceof IPart ? (IPart) anchor : null;
+		this.obj = anchor instanceof IGuiItemObject ? (IGuiItemObject) anchor : null;
+
+		if( this.tileEntity == null && this.part == null && this.obj == null )
+		{
+			throw new IllegalArgumentException( "Must have a valid anchor, instead " + anchor + " in " + ip );
+		}
+
+		this.mySrc = new PlayerSource( ip.player, this.getActionHost() );
+
 		this.prepareSync();
 	}
 
@@ -149,23 +169,6 @@ public abstract class AEBaseContainer extends Container
 				}
 			}
 		}
-	}
-
-	public AEBaseContainer( final PlayerInventory ip, final Object anchor )
-	{
-		this.invPlayer = ip;
-		this.tileEntity = anchor instanceof TileEntity ? (TileEntity) anchor : null;
-		this.part = anchor instanceof IPart ? (IPart) anchor : null;
-		this.obj = anchor instanceof IGuiItemObject ? (IGuiItemObject) anchor : null;
-
-		if( this.tileEntity == null && this.part == null && this.obj == null )
-		{
-			throw new IllegalArgumentException( "Must have a valid anchor, instead " + anchor + " in " + ip );
-		}
-
-		this.mySrc = new PlayerSource( ip.player, this.getActionHost() );
-
-		this.prepareSync();
 	}
 
 	public IAEItemStack getTargetStack()
@@ -310,11 +313,11 @@ public abstract class AEBaseContainer extends Container
 			{
 				if( this.locked.contains( j + i * 9 + 9 ) )
 				{
-					this.addSlotToContainer( new SlotDisabled( ih, j + i * 9 + 9, 8 + j * 18 + offsetX, offsetY + i * 18 ) );
+					this.addSlot( new SlotDisabled( ih, j + i * 9 + 9, 8 + j * 18 + offsetX, offsetY + i * 18 ) );
 				}
 				else
 				{
-					this.addSlotToContainer( new SlotPlayerInv( ih, j + i * 9 + 9, 8 + j * 18 + offsetX, offsetY + i * 18 ) );
+					this.addSlot( new SlotPlayerInv( ih, j + i * 9 + 9, 8 + j * 18 + offsetX, offsetY + i * 18 ) );
 				}
 			}
 		}
@@ -324,23 +327,23 @@ public abstract class AEBaseContainer extends Container
 		{
 			if( this.locked.contains( i ) )
 			{
-				this.addSlotToContainer( new SlotDisabled( ih, i, 8 + i * 18 + offsetX, 58 + offsetY ) );
+				this.addSlot( new SlotDisabled( ih, i, 8 + i * 18 + offsetX, 58 + offsetY ) );
 			}
 			else
 			{
-				this.addSlotToContainer( new SlotPlayerHotBar( ih, i, 8 + i * 18 + offsetX, 58 + offsetY ) );
+				this.addSlot( new SlotPlayerHotBar( ih, i, 8 + i * 18 + offsetX, 58 + offsetY ) );
 			}
 		}
 	}
 
 	@Override
-	protected Slot addSlotToContainer( final Slot newSlot )
+	protected Slot addSlot(final Slot newSlot )
 	{
 		if( newSlot instanceof AppEngSlot )
 		{
 			final AppEngSlot s = (AppEngSlot) newSlot;
 			s.setContainer( this );
-			return super.addSlotToContainer( newSlot );
+			return super.addSlot( newSlot );
 		}
 		else
 		{
@@ -654,7 +657,7 @@ public abstract class AEBaseContainer extends Container
 		return ( (AppEngSlot) s ).isDraggable();
 	}
 
-	public void doAction( final PlayerEntityMP player, final InventoryAction action, final int slot, final long id )
+	public void doAction( final ServerPlayerEntity player, final InventoryAction action, final int slot, final long id )
 	{
 		if( slot >= 0 && slot < this.inventorySlots.size() )
 		{
@@ -960,7 +963,7 @@ public abstract class AEBaseContainer extends Container
 
 				break;
 			case CREATIVE_DUPLICATE:
-				if( player.capabilities.isCreativeMode && slotItem != null )
+				if( player.abilities.isCreativeMode && slotItem != null )
 				{
 					final ItemStack is = slotItem.createItemStack();
 					is.setCount( is.getMaxStackSize() );
@@ -1012,7 +1015,7 @@ public abstract class AEBaseContainer extends Container
 		}
 	}
 
-	protected void updateHeld( final PlayerEntityMP p )
+	protected void updateHeld( final ServerPlayerEntity p )
 	{
 		if( Platform.isServer() )
 		{
@@ -1099,7 +1102,7 @@ public abstract class AEBaseContainer extends Container
 						{
 							NetworkHandler.instance()
 									.sendTo( new PacketValueConfig( "CustomName", this.getCustomName() ),
-											(PlayerEntityMP) this.getPlayerInventory().player );
+											(ServerPlayerEntity) this.getPlayerInventory().player );
 						}
 						catch( final IOException e )
 						{

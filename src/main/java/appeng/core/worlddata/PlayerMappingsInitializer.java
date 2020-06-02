@@ -23,11 +23,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import net.minecraftforge.common.config.ConfigCategory;
-import net.minecraftforge.common.config.Property;
+import com.electronwill.nightconfig.core.Config;
 
 import appeng.core.AELog;
-import appeng.util.UUIDMatcher;
 
 
 /**
@@ -38,7 +36,7 @@ class PlayerMappingsInitializer
 	/**
 	 * Internal immutable mapping
 	 */
-	private final Map<Integer, UUID> playerMappings;
+	// FIXME private final Map<Integer, UUID> playerMappings;
 
 	/**
 	 * Creates the initializer for the player mappings.
@@ -50,35 +48,35 @@ class PlayerMappingsInitializer
 	 *
 	 * @param playerList the category for the player list, generally extracted using the "players" tag
 	 */
-	PlayerMappingsInitializer( final ConfigCategory playerList )
+	PlayerMappingsInitializer(final Config config, String prefix )
 	{
-		// Matcher for UUIDs
-		final UUIDMatcher matcher = new UUIDMatcher();
-
-		// Initial capacity for mappings
-		final int capacity = playerList.size();
-
-		// Mappings for the IDs is a regular HashMap
-		this.playerMappings = new HashMap<>( capacity );
-
-		// Iterates through every pair of UUID to ID
-		for( final Map.Entry<String, Property> entry : playerList.getValues().entrySet() )
-		{
-			final String maybeUUID = entry.getKey();
-			final int id = entry.getValue().getInt();
-
-			if( matcher.isUUID( maybeUUID ) )
-			{
-				final UUID uuidString = UUID.fromString( maybeUUID );
-
-				this.playerMappings.put( id, uuidString );
-			}
-			else
-			{
-				AELog.warn(
-						"The configuration for players contained an outdated entry instead an expected UUID " + maybeUUID + " for the player " + id + ". Please clean this up." );
-			}
-		}
+// FIXME		// Matcher for UUIDs
+// FIXME		final UUIDMatcher matcher = new UUIDMatcher();
+// FIXME
+// FIXME		// Initial capacity for mappings
+// FIXME		final int capacity = playerList.size();
+// FIXME
+// FIXME		// Mappings for the IDs is a regular HashMap
+// FIXME		this.playerMappings = new HashMap<>( capacity );
+// FIXME
+// FIXME		// Iterates through every pair of UUID to ID
+// FIXME		for( final Map.Entry<String, Property> entry : playerList.getValues().entrySet() )
+// FIXME		{
+// FIXME			final String maybeUUID = entry.getKey();
+// FIXME			final int id = entry.getValue().getInt();
+// FIXME
+// FIXME			if( matcher.isUUID( maybeUUID ) )
+// FIXME			{
+// FIXME				final UUID uuidString = UUID.fromString( maybeUUID );
+// FIXME
+// FIXME				this.playerMappings.put( id, uuidString );
+// FIXME			}
+// FIXME			else
+// FIXME			{
+// FIXME				AELog.warn(
+// FIXME						"The configuration for players contained an outdated entry instead an expected UUID " + maybeUUID + " for the player " + id + ". Please clean this up." );
+// FIXME			}
+// FIXME		}
 	}
 
 	/**

@@ -26,7 +26,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import appeng.core.Api;
-import io.netty.buffer.ByteBuf;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -38,7 +37,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -113,15 +111,14 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 		i.putBoolean( "Craft", this.isCraftable() );
 	}
 
-	public static AEItemStack fromPacket( final ByteBuf data )
+	public static AEItemStack fromPacket( final PacketBuffer data )
 	{
 		final byte mask = data.readByte();
 		final byte stackType = (byte) ( ( mask & 0x0C ) >> 2 );
 		final byte countReqType = (byte) ( ( mask & 0x30 ) >> 4 );
 		final boolean isCraftable = ( mask & 0x40 ) > 0;
 
-		final PacketBuffer p = new PacketBuffer( data );
-		final ItemStack itemstack = p.readItemStack();
+		final ItemStack itemstack = data.readItemStack();
 		final long stackSize = getPacketValue( stackType, data );
 		final long countRequestable = getPacketValue( countReqType, data );
 

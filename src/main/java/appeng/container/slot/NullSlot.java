@@ -22,11 +22,10 @@ package appeng.container.slot;
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
-
+// FIXME seems unused
 public class NullSlot extends Slot
 {
 
@@ -82,12 +81,6 @@ public class NullSlot extends Slot
 	public ItemStack decrStackSize( final int par1 )
 	{
 		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public boolean isHere( final IInventory inv, final int slotIn )
-	{
-		return false;
 	}
 
 	@Override

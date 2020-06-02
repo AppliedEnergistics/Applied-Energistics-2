@@ -54,8 +54,8 @@ public class CrankTESR extends TileEntityRenderer<TileCrank>
 		Tessellator tessellator = Tessellator.getInstance();
 		this.bindTexture( TextureMap.LOCATION_BLOCKS_TEXTURE );
 		RenderHelper.disableStandardItemLighting();
-		GlStateManager.blendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA );
-		GlStateManager.enableBlend();
+		RenderSystem.blendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA );
+		RenderSystem.enableBlend();
 		GlStateManager.disableCull();
 
 		if( Minecraft.isAmbientOcclusionEnabled() )

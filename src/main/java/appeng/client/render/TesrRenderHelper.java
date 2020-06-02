@@ -19,15 +19,11 @@
 package appeng.client.render;
 
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.item.ItemStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
+
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.util.Direction;
 
-import appeng.api.storage.data.IAEItemStack;
 import appeng.util.IWideReadableNumberConverter;
 import appeng.util.ReadableNumberConverter;
 
@@ -44,9 +40,9 @@ public class TesrRenderHelper
 	 * Move the current coordinate system to the center of the given block face, assuming that the origin is currently
 	 * at the center of a block.
 	 */
-	public static void moveToFace( Direction face )
+	public static void moveToFace( MatrixStack mStack, Direction face )
 	{
-		GlStateManager.translate( face.getXOffset() * 0.50, face.getYOffset() * 0.50, face.getZOffset() * 0.50 );
+		mStack.translate( face.getXOffset() * 0.50, face.getYOffset() * 0.50, face.getZOffset() * 0.50 );
 	}
 
 	/**
@@ -54,39 +50,39 @@ public class TesrRenderHelper
 	 * the given face as if it was
 	 * a 2D canvas.
 	 */
-	public static void rotateToFace( Direction face, byte spin )
+	public static void rotateToFace( MatrixStack mStack, Direction face, byte spin )
 	{
 		switch( face )
 		{
 			case UP:
-				GlStateManager.scale( 1.0f, -1.0f, 1.0f );
-				GlStateManager.rotate( 90.0f, 1.0f, 0.0f, 0.0f );
-				GlStateManager.rotate( spin * 90.0F, 0, 0, 1 );
+				mStack.scale( 1.0f, -1.0f, 1.0f );
+				mStack.rotate( Vector3f.XP.rotationDegrees( 90.0F ) );
+				mStack.rotate( Vector3f.ZP.rotationDegrees( spin * 90.0F ) );
 				break;
 
 			case DOWN:
-				GlStateManager.scale( 1.0f, -1.0f, 1.0f );
-				GlStateManager.rotate( -90.0f, 1.0f, 0.0f, 0.0f );
-				GlStateManager.rotate( spin * -90.0F, 0, 0, 1 );
+				mStack.scale( 1.0f, -1.0f, 1.0f );
+				mStack.rotate( Vector3f.XP.rotationDegrees( -90.0F ) );
+				mStack.rotate( Vector3f.ZP.rotationDegrees( spin * -90.0F ) );
 				break;
 
 			case EAST:
-				GlStateManager.scale( -1.0f, -1.0f, -1.0f );
-				GlStateManager.rotate( -90.0f, 0.0f, 1.0f, 0.0f );
+				mStack.scale( -1.0f, -1.0f, -1.0f );
+				mStack.rotate( Vector3f.YP.rotationDegrees( -90.0F ) );
 				break;
 
 			case WEST:
-				GlStateManager.scale( -1.0f, -1.0f, -1.0f );
-				GlStateManager.rotate( 90.0f, 0.0f, 1.0f, 0.0f );
+				mStack.scale( -1.0f, -1.0f, -1.0f );
+				mStack.rotate( Vector3f.YP.rotationDegrees( 90.0F ) );
 				break;
 
 			case NORTH:
-				GlStateManager.scale( -1.0f, -1.0f, -1.0f );
+				mStack.scale( -1.0f, -1.0f, -1.0f );
 				break;
 
 			case SOUTH:
-				GlStateManager.scale( -1.0f, -1.0f, -1.0f );
-				GlStateManager.rotate( 180.0f, 0.0f, 1.0f, 0.0f );
+				mStack.scale( -1.0f, -1.0f, -1.0f );
+				mStack.rotate( Vector3f.YP.rotationDegrees( 180.0F ) );
 				break;
 
 			default:
@@ -94,53 +90,53 @@ public class TesrRenderHelper
 		}
 	}
 
-	/**
-	 * Render an item in 2D.
-	 */
-	public static void renderItem2d( ItemStack itemStack, float scale )
-	{
-		if( !itemStack.isEmpty() )
-		{
-			OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, 240.f, 240.0f );
-
-			GlStateManager.pushMatrix();
-
-			// The Z-scaling by 0.0001 causes the model to be visually "flattened"
-			// This cannot replace a proper projection, but it's cheap and gives the desired
-			// effect at least from head-on
-			GlStateManager.scale( scale / 32.0f, scale / 32.0f, 0.0001f );
-			// Position the item icon at the top middle of the panel
-			GlStateManager.translate( -8, -11, 0 );
-
-			RenderItem renderItem = Minecraft.getInstance().getRenderItem();
-			renderItem.renderItemAndEffectIntoGUI( itemStack, 0, 0 );
-
-			GlStateManager.popMatrix();
-		}
-	}
-
-	/**
-	 * Render an item in 2D and the given text below it.
-	 *
-	 * @param spacing Specifies how far apart the item and the item stack amount are rendered.
-	 */
-	public static void renderItem2dWithAmount( IAEItemStack itemStack, float itemScale, float spacing )
-	{
-		final ItemStack renderStack = itemStack.asItemStackRepresentation();
-
-		TesrRenderHelper.renderItem2d( renderStack, itemScale );
-
-		final long stackSize = itemStack.getStackSize();
-		final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm( stackSize );
-
-		// Render the item count
-		final FontRenderer fr = Minecraft.getInstance().fontRenderer;
-		final int width = fr.getStringWidth( renderedStackSize );
-		GlStateManager.translate( 0.0f, spacing, 0 );
-		GlStateManager.scale( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );
-		GlStateManager.translate( -0.5f * width, 0.0f, 0.5f );
-		fr.drawString( renderedStackSize, 0, 0, 0 );
-
-	}
-
+	//TODO, A different approach will have to be used for this from TESRs, -covers, i have ideas.
+	//	/**
+	//	 * Render an item in 2D.
+	//	 */
+	//	public static void renderItem2d( ItemStack itemStack, float scale )
+	//	{
+	//		if( !itemStack.isEmpty() )
+	//		{
+	//			RenderSystem.glMultiTexCoord2f( GL13.GL_TEXTURE22, 240.f, 240.0f );
+	//
+	//			RenderSystem.pushMatrix();
+	//
+	//			// The Z-scaling by 0.0001 causes the model to be visually "flattened"
+	//			// This cannot replace a proper projection, but it's cheap and gives the desired
+	//			// effect at least from head-on
+	//			RenderSystem.scaled( scale / 32.0f, scale / 32.0f, 0.0001f );
+	//			// Position the item icon at the top middle of the panel
+	//			RenderSystem.translated( -8, -11, 0 );
+	//
+	//			ItemRenderer renderItem = Minecraft.getInstance().getItemRenderer();
+	//			renderItem.renderItemAndEffectIntoGUI( itemStack, 0, 0 );
+	//
+	//			RenderSystem.popMatrix();
+	//		}
+	//	}
+	//
+	//	/**
+	//	 * Render an item in 2D and the given text below it.
+	//	 *
+	//	 * @param spacing Specifies how far apart the item and the item stack amount are rendered.
+	//	 */
+	//	public static void renderItem2dWithAmount( IAEItemStack itemStack, float itemScale, float spacing )
+	//	{
+	//		final ItemStack renderStack = itemStack.asItemStackRepresentation();
+	//
+	//		TesrRenderHelper.renderItem2d( renderStack, itemScale );
+	//
+	//		final long stackSize = itemStack.getStackSize();
+	//		final String renderedStackSize = NUMBER_CONVERTER.toWideReadableForm( stackSize );
+	//
+	//		// Render the item count
+	//		final FontRenderer fr = Minecraft.getInstance().fontRenderer;
+	//		final int width = fr.getStringWidth( renderedStackSize );
+	//		RenderSystem.translated( 0.0f, spacing, 0 );
+	//		RenderSystem.scaled( 1.0f / 62.0f, 1.0f / 62.0f, 1.0f / 62.0f );
+	//		RenderSystem.translated( -0.5f * width, 0.0f, 0.5f );
+	//		fr.drawString( renderedStackSize, 0, 0, 0 );
+	//
+	//	}
 }

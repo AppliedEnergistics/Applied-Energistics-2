@@ -75,7 +75,7 @@ public class GuiTabButton extends Button implements ITooltip
 	{
 		if( this.visible )
 		{
-			GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
+			RenderSystem.color4f( 1.0f, 1.0f, 1.0f, 1.0f );
 			minecraft.renderEngine.bindTexture( new ResourceLocation( "appliedenergistics2", "textures/guis/states.png" ) );
 			this.hovered = x >= this.x && y >= this.y && x < this.x + this.width && y < this.y + this.height;
 
@@ -100,10 +100,10 @@ public class GuiTabButton extends Button implements ITooltip
 				this.zLevel = 100.0F;
 				this.itemRenderer.zLevel = 100.0F;
 
-				GlStateManager.enableDepth();
+				RenderSystem.enableDepthTest();
 				RenderHelper.enableGUIStandardItemLighting();
 				this.itemRenderer.renderItemAndEffectIntoGUI( this.myItem, offsetX + this.x + 3, this.y + 3 );
-				GlStateManager.disableDepth();
+				RenderSystem.disableDepthTest();
 
 				this.itemRenderer.zLevel = 0.0F;
 				this.zLevel = 0.0F;

@@ -29,10 +29,10 @@ import java.util.Map.Entry;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -646,7 +646,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 			if( this.canCraft( details, details.getCondensedInputs() ) )
 			{
-				InventoryCrafting ic = null;
+				CraftingInventory ic = null;
 
 				for( final ICraftingMedium m : cc.getMediums( e.getKey() ) )
 				{
@@ -676,7 +676,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 								continue;
 							}
 
-							ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
+							ic = new CraftingInventory( new ContainerNull(), 3, 3 );
 							boolean found = false;
 
 							for( int x = 0; x < input.length; x++ )
@@ -1156,7 +1156,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			data.setTag( "link", link );
 		}
 
-		final NBTTagList list = new NBTTagList();
+		final ListNBT list = new ListNBT();
 		for( final Entry<ICraftingPatternDetails, TaskProgress> e : this.tasks.entrySet() )
 		{
 			final CompoundNBT item = this.writeItem( AEItemStack.fromItemStack( e.getKey().getPattern() ) );
@@ -1184,9 +1184,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		return out;
 	}
 
-	private NBTTagList writeList( final IItemList<IAEItemStack> myList )
+	private ListNBT writeList( final IItemList<IAEItemStack> myList )
 	{
-		final NBTTagList out = new NBTTagList();
+		final ListNBT out = new ListNBT();
 
 		for( final IAEItemStack ais : myList )
 		{
@@ -1215,7 +1215,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	public void readFromNBT( final CompoundNBT data )
 	{
 		this.finalOutput = AEItemStack.fromNBT( (CompoundNBT) data.getTag( "finalOutput" ) );
-		for( final IAEItemStack ais : this.readList( (NBTTagList) data.getTag( "inventory" ) ) )
+		for( final IAEItemStack ais : this.readList( (ListNBT) data.getTag( "inventory" ) ) )
 		{
 			this.inventory.injectItems( ais, Actionable.MODULATE, this.machineSrc );
 		}
@@ -1230,7 +1230,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			this.submitLink( this.myLastLink );
 		}
 
-		final NBTTagList list = data.getTagList( "tasks", 10 );
+		final ListNBT list = data.getTagList( "tasks", 10 );
 		for( int x = 0; x < list.tagCount(); x++ )
 		{
 			final CompoundNBT item = list.getCompoundTagAt( x );
@@ -1248,7 +1248,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 			}
 		}
 
-		this.waitingFor = this.readList( (NBTTagList) data.getTag( "waitingFor" ) );
+		this.waitingFor = this.readList( (ListNBT) data.getTag( "waitingFor" ) );
 		for( final IAEItemStack is : this.waitingFor )
 		{
 			this.postCraftingStatusChange( is.copy() );
@@ -1280,7 +1280,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 		}
 	}
 
-	private IItemList<IAEItemStack> readList( final NBTTagList tag )
+	private IItemList<IAEItemStack> readList( final ListNBT tag )
 	{
 		final IItemList<IAEItemStack> out = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 

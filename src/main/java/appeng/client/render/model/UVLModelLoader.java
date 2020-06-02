@@ -64,6 +64,7 @@ import net.minecraft.client.renderer.model.ItemOverride;
 import net.minecraft.client.renderer.model.ItemTransformVec3f;
 import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
@@ -351,7 +352,7 @@ public enum UVLModelLoader implements ICustomModelLoader
 				Pair<Float, Float> brightness = UVLModelWrapper.this.uvlightmap.get( face );
 				if( brightness != null )
 				{
-					VertexFormat newFormat = VertexFormats.getFormatWithLightMap( quad.getFormat() );
+					VertexFormat newFormat = DefaultVertexFormats.BLOCK;
 					UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder( newFormat );
 					VertexLighterFlat trans = new VertexLighterFlat( Minecraft.getInstance().getBlockColors() )
 					{

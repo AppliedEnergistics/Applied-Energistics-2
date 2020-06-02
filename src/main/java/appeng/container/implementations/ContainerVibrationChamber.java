@@ -42,7 +42,7 @@ public class ContainerVibrationChamber extends AEBaseContainer implements IProgr
 		super( ip, vibrationChamber, null );
 		this.vibrationChamber = vibrationChamber;
 
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.FUEL, vibrationChamber.getInternalInventory(), 0, 80, 37, this
+		this.addSlot( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.FUEL, vibrationChamber.getInternalInventory(), 0, 80, 37, this
 				.getPlayerInventory() ) );
 
 		this.bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );

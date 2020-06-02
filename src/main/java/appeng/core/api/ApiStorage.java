@@ -27,11 +27,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.MutableClassToInstanceMap;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
@@ -162,7 +160,7 @@ public class ApiStorage implements IStorageHelper
 		}
 
 		@Override
-		public IAEItemStack readFromPacket( ByteBuf input ) throws IOException
+		public IAEItemStack readFromPacket( PacketBuffer input ) throws IOException
 		{
 			Preconditions.checkNotNull( input );
 
@@ -209,7 +207,7 @@ public class ApiStorage implements IStorageHelper
 				}
 				else
 				{
-					return AEFluidStack.fromFluidStack( FluidUtil.getFluidContained( is ) );
+					return AEFluidStack.fromFluidStack( FluidUtil.getFluidContained( is ).orElse( null ) );
 				}
 			}
 
@@ -217,7 +215,7 @@ public class ApiStorage implements IStorageHelper
 		}
 
 		@Override
-		public IAEFluidStack readFromPacket( ByteBuf input ) throws IOException
+		public IAEFluidStack readFromPacket( PacketBuffer input ) throws IOException
 		{
 			Preconditions.checkNotNull( input );
 

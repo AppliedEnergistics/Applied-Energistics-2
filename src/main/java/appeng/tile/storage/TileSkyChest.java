@@ -22,7 +22,6 @@ package appeng.tile.storage;
 import java.io.IOException;
 
 import appeng.block.storage.BlockSkyChest;
-import io.netty.buffer.ByteBuf;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,6 +32,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.tile.AEBaseInvTile;
@@ -43,6 +43,7 @@ public class TileSkyChest extends AEBaseInvTile implements ITickableTileEntity, 
 {
 
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 9 * 4 );
+
 	// server
 	private int numPlayersUsing;
 	// client..
@@ -62,7 +63,7 @@ public class TileSkyChest extends AEBaseInvTile implements ITickableTileEntity, 
 	}
 
 	@Override
-	protected boolean readFromStream( final ByteBuf data ) throws IOException
+	protected boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
 		final boolean c = super.readFromStream( data );
 		final int wasOpen = this.getPlayerOpen();
@@ -74,12 +75,6 @@ public class TileSkyChest extends AEBaseInvTile implements ITickableTileEntity, 
 		}
 
 		return c; // TESR yo!
-	}
-
-	@Override
-	public boolean requiresTESR()
-	{
-		return true;
 	}
 
 	@Override
@@ -147,17 +142,9 @@ public class TileSkyChest extends AEBaseInvTile implements ITickableTileEntity, 
 	@Override
 	public void tick()
 	{
-		int i = this.pos.getX();
-		int j = this.pos.getY();
-		int k = this.pos.getZ();
-
 		this.prevLidAngle = this.lidAngle;
-		float f1 = 0.1F;
-
 		if( this.numPlayersUsing == 0 && this.lidAngle > 0.0F || this.numPlayersUsing > 0 && this.lidAngle < 1.0F )
 		{
-			float f2 = this.lidAngle;
-
 			if( this.numPlayersUsing > 0 )
 			{
 				this.lidAngle += 0.1F;
@@ -167,17 +154,7 @@ public class TileSkyChest extends AEBaseInvTile implements ITickableTileEntity, 
 				this.lidAngle -= 0.1F;
 			}
 
-			if( this.lidAngle > 1.0F )
-			{
-				this.lidAngle = 1.0F;
-			}
-
-			float f3 = 0.5F;
-
-			if( this.lidAngle < 0.0F )
-			{
-				this.lidAngle = 0.0F;
-			}
+			this.lidAngle = MathHelper.clamp(this.lidAngle, 0, 1);
 		}
 	}
 
@@ -185,26 +162,6 @@ public class TileSkyChest extends AEBaseInvTile implements ITickableTileEntity, 
 	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
 	{
 
-	}
-
-	public float getLidAngle()
-	{
-		return this.lidAngle;
-	}
-
-	public void setLidAngle( final float lidAngle )
-	{
-		this.lidAngle = lidAngle;
-	}
-
-	public float getPrevLidAngle()
-	{
-		return this.prevLidAngle;
-	}
-
-	public void setPrevLidAngle( float prevLidAngle )
-	{
-		this.prevLidAngle = prevLidAngle;
 	}
 
 	public int getPlayerOpen()

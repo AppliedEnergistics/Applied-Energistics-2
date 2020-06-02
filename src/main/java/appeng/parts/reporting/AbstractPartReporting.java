@@ -21,11 +21,10 @@ package appeng.parts.reporting;
 
 import java.io.IOException;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -139,7 +138,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	}
 
 	@Override
-	public void writeToStream( final ByteBuf data ) throws IOException
+	public void writeToStream( final PacketBuffer data ) throws IOException
 	{
 		super.writeToStream( data );
 		this.clientFlags = this.getSpin() & 3;
@@ -171,7 +170,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	}
 
 	@Override
-	public boolean readFromStream( final ByteBuf data ) throws IOException
+	public boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
 		super.readFromStream( data );
 		final int oldFlags = this.getClientFlags();

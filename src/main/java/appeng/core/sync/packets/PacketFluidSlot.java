@@ -22,14 +22,12 @@ package appeng.core.sync.packets;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Container;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.sync.AppEngPacket;
@@ -45,11 +43,11 @@ public class PacketFluidSlot extends AppEngPacket
 	public PacketFluidSlot( final PacketBuffer stream )
 	{
 		this.list = new HashMap<>();
-		CompoundNBT tag = ByteBufUtils.readTag( stream );
+		CompoundNBT tag = stream.readCompoundTag();
 
-		for( final String key : tag.getKeySet() )
+		for( final String key : tag.keySet() )
 		{
-			this.list.put( Integer.parseInt( key ), AEFluidStack.fromNBT( tag.getCompoundTag( key ) ) );
+			this.list.put( Integer.parseInt( key ), AEFluidStack.fromNBT( tag.getCompound( key ) ) );
 		}
 	}
 
@@ -65,12 +63,12 @@ public class PacketFluidSlot extends AppEngPacket
 			{
 				fs.getValue().writeToNBT( tag );
 			}
-			sendTag.setTag( fs.getKey().toString(), tag );
+			sendTag.put( fs.getKey().toString(), tag );
 		}
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
 		data.writeInt( this.getPacketID() );
-		ByteBufUtils.writeTag( data, sendTag );
+		data.writeCompoundTag( sendTag );
 		this.configureWrite( data );
 	}
 

@@ -48,14 +48,14 @@ public class GuiOptionalFluidSlot extends GuiFluidSlot
 	@Override
 	public void drawBackground( int guileft, int guitop )
 	{
-		GlStateManager.enableBlend();
+		RenderSystem.enableBlend();
 		if( this.isSlotEnabled() )
 		{
-			GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
+			RenderSystem.color4f( 1.0F, 1.0F, 1.0F, 1.0F );
 		}
 		else
 		{
-			GlStateManager.color( 1.0F, 1.0F, 1.0F, 0.4F );
+			RenderSystem.color4f( 1.0F, 1.0F, 1.0F, 0.4F );
 		}
 		this.drawTexturedModalRect( guileft + this.xPos() - 1, guitop + this.yPos() - 1, this.srcX - 1, this.srcY - 1, this.getWidth() + 2,
 				this.getHeight() + 2 );

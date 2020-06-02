@@ -19,24 +19,15 @@
 package appeng.fluids.util;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-
 import javax.annotation.Nonnull;
-
-import io.netty.buffer.ByteBuf;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
 
-import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IFluidStorageChannel;
@@ -119,7 +110,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		return fluid;
 	}
 
-	public static IAEFluidStack fromPacket( final ByteBuf buffer ) throws IOException
+	public static IAEFluidStack fromPacket( final PacketBuffer buffer ) throws IOException
 	{
 		final byte mask = buffer.readByte();
 		final byte stackType = (byte) ( ( mask & 0x0C ) >> 2 );
@@ -130,22 +121,12 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		// don't send this...
 		final CompoundNBT d = new CompoundNBT();
 
-		final byte len2 = buffer.readByte();
-		final byte[] name = new byte[len2];
-		buffer.readBytes( name, 0, len2 );
-
-		d.setString( "FluidName", new String( name, "UTF-8" ) );
-		d.setByte( "Count", (byte) 0 );
+		d.putString( "FluidName", buffer.readString() );
+		d.putByte( "Amount", (byte) 0 );
 
 		if( hasTagCompound )
 		{
-			final int len = buffer.readInt();
-
-			final byte[] bd = new byte[len];
-			buffer.readBytes( bd );
-
-			final DataInputStream di = new DataInputStream( new ByteArrayInputStream( bd ) );
-			d.setTag( "Tag", CompressedStreamTools.read( di ) );
+			d.put( "Tag", buffer.readCompoundTag() );
 		}
 
 		final long stackSize = getPacketValue( stackType, buffer );
@@ -181,19 +162,19 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	@Override
 	public void writeToNBT( final CompoundNBT data )
 	{
-		data.setString( "FluidName", this.fluid.getName() );
-		data.setByte( "Count", (byte) 0 );
-		data.setLong( "Cnt", this.getStackSize() );
-		data.setLong( "Req", this.getCountRequestable() );
-		data.setBoolean( "Craft", this.isCraftable() );
+		data.putString( "FluidName", this.fluid.getRegistryName().toString() );
+		data.putByte( "Count", (byte) 0 );
+		data.putLong( "Cnt", this.getStackSize() );
+		data.putLong( "Req", this.getCountRequestable() );
+		data.putBoolean( "Craft", this.isCraftable() );
 
 		if( this.hasTagCompound() )
 		{
-			data.setTag( "Tag", this.tagCompound );
+			data.put( "Tag", this.tagCompound );
 		}
 		else
 		{
-			data.removeTag( "Tag" );
+			data.remove( "Tag" );
 		}
 	}
 
@@ -240,7 +221,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	{
 		if( this.fluid != other.fluid )
 		{
-			return this.fluid.getName().compareTo( other.fluid.getName() );
+			return this.fluid.getRegistryName().compareTo( other.fluid.getRegistryName() );
 		}
 
 		if( Platform.itemComparisons().isNbtTagEqual( this.tagCompound, other.tagCompound ) )
@@ -273,7 +254,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 		else if( other instanceof FluidStack )
 		{
 			final FluidStack is = (FluidStack) other;
-			return is.getFluid() == this.fluid && Platform.itemComparisons().isNbtTagEqual( this.tagCompound, is.tag );
+			return is.getFluid() == this.fluid && Platform.itemComparisons().isNbtTagEqual( this.tagCompound, is.getTag() );
 		}
 		return false;
 	}
@@ -281,7 +262,7 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 	@Override
 	public String toString()
 	{
-		return this.getStackSize() + "x" + this.getFluidStack().getFluid().getName() + " " + this.tagCompound;
+		return this.getStackSize() + "x" + this.getFluidStack().getFluid().getRegistryName() + " " + this.tagCompound;
 	}
 
 	@Override
@@ -334,21 +315,10 @@ public final class AEFluidStack extends AEStack<IAEFluidStack> implements IAEFlu
 
 	private void writeToStream( final PacketBuffer buffer ) throws IOException
 	{
-		final byte[] name = this.fluid.getName().getBytes( "UTF-8" );
-		buffer.writeByte( (byte) name.length );
-		buffer.writeBytes( name );
+		buffer.writeString( fluid.getRegistryName().toString() );
 		if( this.hasTagCompound() )
 		{
-			final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-			final DataOutputStream data = new DataOutputStream( bytes );
-
-			CompressedStreamTools.write( this.tagCompound, data );
-
-			final byte[] tagBytes = bytes.toByteArray();
-			final int size = tagBytes.length;
-
-			buffer.writeInt( size );
-			buffer.writeBytes( tagBytes );
+			buffer.writeCompoundTag( tagCompound );
 		}
 	}
 }

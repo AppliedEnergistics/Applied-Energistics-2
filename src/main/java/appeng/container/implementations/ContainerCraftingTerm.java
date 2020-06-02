@@ -21,7 +21,7 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -60,11 +60,11 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 		{
 			for( int x = 0; x < 3; x++ )
 			{
-				this.addSlotToContainer( this.craftingSlots[x + y * 3] = new SlotCraftingMatrix( this, crafting, x + y * 3, 37 + x * 18, -72 + y * 18 ) );
+				this.addSlot( this.craftingSlots[x + y * 3] = new SlotCraftingMatrix( this, crafting, x + y * 3, 37 + x * 18, -72 + y * 18 ) );
 			}
 		}
 
-		this.addSlotToContainer( this.outputSlot = new SlotCraftingTerm( this.getPlayerInv().player, this.getActionSource(), this
+		this.addSlot( this.outputSlot = new SlotCraftingTerm( this.getPlayerInv().player, this.getActionSource(), this
 				.getPowerSource(), monitorable, crafting, crafting, this.output, 131, -72 + 18, this ) );
 
 		this.bindPlayerInventory( ip, 0, 0 );
@@ -80,7 +80,7 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 	public void onCraftMatrixChanged( IInventory inventory )
 	{
 		final ContainerNull cn = new ContainerNull();
-		final InventoryCrafting ic = new InventoryCrafting( cn, 3, 3 );
+		final CraftingInventory ic = new CraftingInventory( cn, 3, 3 );
 
 		for( int x = 0; x < 9; x++ )
 		{

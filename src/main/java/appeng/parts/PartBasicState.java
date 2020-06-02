@@ -21,9 +21,8 @@ package appeng.parts;
 
 import java.io.IOException;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
@@ -60,7 +59,7 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 	}
 
 	@Override
-	public void writeToStream( final ByteBuf data ) throws IOException
+	public void writeToStream( final PacketBuffer data ) throws IOException
 	{
 		super.writeToStream( data );
 
@@ -94,7 +93,7 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
 	}
 
 	@Override
-	public boolean readFromStream( final ByteBuf data ) throws IOException
+	public boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
 		final boolean eh = super.readFromStream( data );
 

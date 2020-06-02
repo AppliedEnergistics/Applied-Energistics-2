@@ -24,11 +24,11 @@ import java.util.List;
 import java.util.Optional;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.InventoryCraftResult;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
@@ -36,12 +36,11 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.storage.IMEMonitor;
@@ -104,25 +103,25 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		{
 			for( int x = 0; x < 3; x++ )
 			{
-				this.addSlotToContainer( this.craftingSlots[x + y * 3] = new SlotFakeCraftingMatrix( this.crafting, x + y * 3, 18 + x * 18, -76 + y * 18 ) );
+				this.addSlot( this.craftingSlots[x + y * 3] = new SlotFakeCraftingMatrix( this.crafting, x + y * 3, 18 + x * 18, -76 + y * 18 ) );
 			}
 		}
 
-		this.addSlotToContainer( this.craftSlot = new SlotPatternTerm( ip.player, this.getActionSource(), this
+		this.addSlot( this.craftSlot = new SlotPatternTerm( ip.player, this.getActionSource(), this
 				.getPowerSource(), monitorable, this.crafting, patternInv, this.cOut, 110, -76 + 18, this, 2, this ) );
 		this.craftSlot.setIIcon( -1 );
 
 		for( int y = 0; y < 3; y++ )
 		{
-			this.addSlotToContainer( this.outputSlots[y] = new SlotPatternOutputs( output, this, y, 110, -76 + y * 18, 0, 0, 1 ) );
+			this.addSlot( this.outputSlots[y] = new SlotPatternOutputs( output, this, y, 110, -76 + y * 18, 0, 0, 1 ) );
 			this.outputSlots[y].setRenderDisabled( false );
 			this.outputSlots[y].setIIcon( -1 );
 		}
 
-		this.addSlotToContainer(
+		this.addSlot(
 				this.patternSlotIN = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.BLANK_PATTERN, patternInv, 0, 147, -72 - 9, this
 						.getPlayerInventory() ) );
-		this.addSlotToContainer(
+		this.addSlot(
 				this.patternSlotOUT = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ENCODED_PATTERN, patternInv, 1, 147, -72 + 34, this
 						.getPlayerInventory() ) );
 
@@ -164,7 +163,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	private ItemStack getAndUpdateOutput()
 	{
 		final World world = this.getPlayerInv().player.world;
-		final InventoryCrafting ic = new InventoryCrafting( this, 3, 3 );
+		final CraftingInventory ic = new CraftingInventory( this, 3, 3 );
 
 		for( int x = 0; x < ic.getSizeInventory(); x++ )
 		{
@@ -248,8 +247,8 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		// encode the slot.
 		final CompoundNBT encodedValue = new CompoundNBT();
 
-		final NBTTagList tagIn = new NBTTagList();
-		final NBTTagList tagOut = new NBTTagList();
+		final ListNBT tagIn = new ListNBT();
+		final ListNBT tagOut = new ListNBT();
 
 		for( final ItemStack i : in )
 		{
@@ -395,16 +394,16 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			if( extracted != null )
 			{
 				inv.addItems( extracted.createItemStack() );
-				if( p instanceof PlayerEntityMP )
+				if( p instanceof ServerPlayerEntity )
 				{
-					this.updateHeld( (PlayerEntityMP) p );
+					this.updateHeld( (ServerPlayerEntity) p );
 				}
 				this.detectAndSendChanges();
 				return;
 			}
 
-			final InventoryCrafting ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
-			final InventoryCrafting real = new InventoryCrafting( new ContainerNull(), 3, 3 );
+			final CraftingInventory ic = new CraftingInventory( new ContainerNull(), 3, 3 );
+			final CraftingInventory real = new CraftingInventory( new ContainerNull(), 3, 3 );
 
 			for( int x = 0; x < 9; x++ )
 			{
@@ -455,9 +454,9 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 				}
 
 				inv.addItems( is );
-				if( p instanceof PlayerEntityMP )
+				if( p instanceof ServerPlayerEntity )
 				{
-					this.updateHeld( (PlayerEntityMP) p );
+					this.updateHeld( (ServerPlayerEntity) p );
 				}
 				this.detectAndSendChanges();
 			}
@@ -519,9 +518,9 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 						listener.sendSlotContents( this, slot.slotNumber, slot.getStack() );
 					}
 				}
-				if( listener instanceof PlayerEntityMP )
+				if( listener instanceof ServerPlayerEntity )
 				{
-					( (PlayerEntityMP) listener ).isChangingQuantityOnly = false;
+					( (ServerPlayerEntity) listener ).isChangingQuantityOnly = false;
 				}
 			}
 			this.detectAndSendChanges();

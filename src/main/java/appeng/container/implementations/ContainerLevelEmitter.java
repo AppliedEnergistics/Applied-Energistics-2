@@ -78,25 +78,25 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 		final IItemHandler upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
 		if( this.availableUpgrades() > 0 )
 		{
-			this.addSlotToContainer(
+			this.addSlot(
 					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getPlayerInventory() ) )
 							.setNotDraggable() );
 		}
 		if( this.availableUpgrades() > 1 )
 		{
-			this.addSlotToContainer(
+			this.addSlot(
 					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.getPlayerInventory() ) )
 							.setNotDraggable() );
 		}
 		if( this.availableUpgrades() > 2 )
 		{
-			this.addSlotToContainer(
+			this.addSlot(
 					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.getPlayerInventory() ) )
 							.setNotDraggable() );
 		}
 		if( this.availableUpgrades() > 3 )
 		{
-			this.addSlotToContainer(
+			this.addSlot(
 					( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.getPlayerInventory() ) )
 							.setNotDraggable() );
 		}
@@ -104,7 +104,7 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 		final IItemHandler inv = this.getUpgradeable().getInventoryByName( "config" );
 		final int y = 40;
 		final int x = 80 + 44;
-		this.addSlotToContainer( new SlotFakeTypeOnly( inv, 0, x, y ) );
+		this.addSlot( new SlotFakeTypeOnly( inv, 0, x, y ) );
 	}
 
 	@Override

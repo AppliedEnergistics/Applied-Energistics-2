@@ -84,16 +84,16 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	}
 
 	@Override
-	public void initGui()
+	public void init()
 	{
-		super.initGui();
+		super.init();
 
 		this.units = new GuiImgButton( this.guiLeft - 18, this.guiTop + 8, Settings.POWER_UNITS, AEConfig.instance().selectedPowerUnit() );
-		this.buttonList.add( this.units );
+		this.addButton( this.units );
 	}
 
 	@Override
-	public void drawScreen( final int mouseX, final int mouseY, final float btn )
+	public void render(final int mouseX, final int mouseY, final float btn )
 	{
 
 		final int gx = ( this.width - this.xSize ) / 2;
@@ -126,7 +126,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 			}
 		}
 
-		super.drawScreen( mouseX, mouseY, btn );
+		super.render( mouseX, mouseY, btn );
 	}
 
 	@Override
@@ -134,14 +134,14 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 	{
 		final ContainerNetworkStatus ns = (ContainerNetworkStatus) this.inventorySlots;
 
-		this.fontRenderer.drawString( GuiText.NetworkDetails.getLocal(), 8, 6, 4210752 );
+		this.font.drawString( GuiText.NetworkDetails.getLocal(), 8, 6, 4210752 );
 
-		this.fontRenderer.drawString( GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong( ns.getCurrentPower(), false ), 13, 16, 4210752 );
-		this.fontRenderer.drawString( GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong( ns.getMaxPower(), false ), 13, 26, 4210752 );
+		this.font.drawString( GuiText.StoredPower.getLocal() + ": " + Platform.formatPowerLong( ns.getCurrentPower(), false ), 13, 16, 4210752 );
+		this.font.drawString( GuiText.MaxPower.getLocal() + ": " + Platform.formatPowerLong( ns.getMaxPower(), false ), 13, 26, 4210752 );
 
-		this.fontRenderer.drawString( GuiText.PowerInputRate.getLocal() + ": " + Platform.formatPowerLong( ns.getAverageAddition(), true ), 13, 143 - 10,
+		this.font.drawString( GuiText.PowerInputRate.getLocal() + ": " + Platform.formatPowerLong( ns.getAverageAddition(), true ), 13, 143 - 10,
 				4210752 );
-		this.fontRenderer.drawString( GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong( ns.getPowerUsage(), true ), 13, 143 - 20, 4210752 );
+		this.font.drawString( GuiText.PowerUsageRate.getLocal() + ": " + Platform.formatPowerLong( ns.getPowerUsage(), true ), 13, 143 - 20, 4210752 );
 
 		final int sectionLength = 30;
 
@@ -170,8 +170,8 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 					str = Long.toString( refStack.getStackSize() / 1000 ) + 'k';
 				}
 
-				final int w = this.fontRenderer.getStringWidth( str );
-				this.fontRenderer.drawString( str, (int) ( ( x * sectionLength + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * 18 + yo + 6 ) * 2,
+				final int w = this.font.getStringWidth( str );
+				this.font.drawString( str, (int) ( ( x * sectionLength + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ), ( y * 18 + yo + 6 ) * 2,
 						4210752 );
 
 				GlStateManager.popMatrix();
@@ -257,8 +257,8 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource
 
 			if( myStack != null )
 			{
-				ITooltipFlag.TooltipFlags tooltipFlag = this.mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL;
-				List<String> currentToolTip = stack.getTooltip( this.mc.player, tooltipFlag );
+				ITooltipFlag.TooltipFlags tooltipFlag = this.minecraft.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL;
+				List<String> currentToolTip = stack.getTooltip( this.minecraft.player, tooltipFlag );
 
 				while( currentToolTip.size() > 1 )
 				{

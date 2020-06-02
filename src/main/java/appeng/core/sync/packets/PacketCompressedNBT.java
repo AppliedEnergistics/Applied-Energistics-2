@@ -27,7 +27,6 @@ import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
@@ -50,7 +49,7 @@ public class PacketCompressedNBT extends AppEngPacket
 	// input.
 	private final CompoundNBT in;
 	// output...
-	private final ByteBuf data;
+	private final PacketBuffer data;
 	private final GZIPOutputStream compressFrame;
 
 	public PacketCompressedNBT( final PacketBuffer stream )
@@ -85,7 +84,7 @@ public class PacketCompressedNBT extends AppEngPacket
 	public PacketCompressedNBT( final CompoundNBT din ) throws IOException
 	{
 
-		this.data = Unpooled.buffer( 2048 );
+		this.data = new PacketBuffer( Unpooled.buffer( 2048 ) );
 		this.data.writeInt( this.getPacketID() );
 
 		this.in = din;

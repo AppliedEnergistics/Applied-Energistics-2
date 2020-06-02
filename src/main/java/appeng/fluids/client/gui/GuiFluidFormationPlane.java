@@ -33,9 +33,9 @@ public class GuiFluidFormationPlane extends GuiUpgradeable
 	}
 
 	@Override
-	public void initGui()
+	public void init()
 	{
-		super.initGui();
+		super.init();
 
 		final int xo = 8;
 		final int yo = 23 + 6;
@@ -63,7 +63,7 @@ public class GuiFluidFormationPlane extends GuiUpgradeable
 	@Override
 	protected void addButtons()
 	{
-		this.buttonList.add( this.priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRender ) );
+		this.addButton( this.priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRender ) );
 	}
 
 	@Override

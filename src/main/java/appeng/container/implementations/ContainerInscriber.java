@@ -24,7 +24,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.features.IInscriberRecipe;
 import appeng.container.guisync.GuiSync;
@@ -63,14 +62,14 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 
 		IItemHandler inv = te.getInternalInventory();
 
-		this.addSlotToContainer(
+		this.addSlot(
 				this.top = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, inv, 0, 45, 16, this.getPlayerInventory() ) );
-		this.addSlotToContainer(
+		this.addSlot(
 				this.bottom = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_PLATE, inv, 1, 45, 62, this.getPlayerInventory() ) );
-		this.addSlotToContainer(
+		this.addSlot(
 				this.middle = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.INSCRIBER_INPUT, inv, 2, 63, 39, this.getPlayerInventory() ) );
 
-		this.addSlotToContainer( new SlotOutput( inv, 3, 113, 40, -1 ) );
+		this.addSlot( new SlotOutput( inv, 3, 113, 40, -1 ) );
 	}
 
 	@Override

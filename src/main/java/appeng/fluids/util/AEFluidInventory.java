@@ -6,11 +6,12 @@ import java.util.Objects;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AELog;
 import appeng.util.Platform;
+
+import javax.annotation.Nonnull;
 
 
 public class AEFluidInventory implements IAEFluidTank
@@ -18,13 +19,12 @@ public class AEFluidInventory implements IAEFluidTank
 	private final IAEFluidStack[] fluids;
 	private final IAEFluidInventory handler;
 	private final int capacity;
-	private IFluidTankProperties[] props = null;
 
-	public AEFluidInventory( final IAEFluidInventory handler, final int slots, final int capcity )
+	public AEFluidInventory( final IAEFluidInventory handler, final int slots, final int capacity )
 	{
 		this.fluids = new IAEFluidStack[slots];
 		this.handler = handler;
-		this.capacity = capcity;
+		this.capacity = capacity;
 	}
 
 	public AEFluidInventory( final IAEFluidInventory handler, final int slots )
@@ -87,33 +87,46 @@ public class AEFluidInventory implements IAEFluidTank
 	}
 
 	@Override
-	public IFluidTankProperties[] getTankProperties()
-	{
-		if( this.props == null )
-		{
-			this.props = new IFluidTankProperties[this.getSlots()];
-			for( int i = 0; i < this.getSlots(); ++i )
-			{
-				this.props[i] = new FluidTankPropertiesWrapper( i );
-			}
-
-		}
-		return this.props;
+	public int getTanks() {
+		return this.fluids.length;
 	}
 
-	public int fill( final int slot, final FluidStack resource, final boolean doFill )
-	{
-		if( resource == null || resource.amount <= 0 )
+	@Nonnull
+	@Override
+	public FluidStack getFluidInTank(int tank) {
+		if (tank < 0 || tank >= fluids.length) {
+			return FluidStack.EMPTY;
+		}
+		return fluids[tank] == null ? FluidStack.EMPTY : fluids[tank].getFluidStack();
+	}
+
+	@Override
+	public int getTankCapacity(int tank) {
+		return Math.min( this.capacity, Integer.MAX_VALUE );
+	}
+
+	@Override
+	public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+		return stack != FluidStack.EMPTY;
+	}
+
+	@Override
+	public int fill(FluidStack resource, FluidAction action) {
+		if( resource == null || resource == FluidStack.EMPTY || resource.getAmount() <= 0 )
 		{
 			return 0;
+		}
+
+		// Find a suitable slot
+		int slot = indexOfFluid(resource);
+		if (slot == -1) {
+			slot = indexOfEmptySlot();
+			if (slot == -1) {
+				return 0;
+			}
 		}
 
 		final IAEFluidStack fluid = this.fluids[slot];
-
-		if( fluid != null && !fluid.equals( resource ) )
-		{
-			return 0;
-		}
 
 		int amountToStore = this.capacity;
 
@@ -122,9 +135,9 @@ public class AEFluidInventory implements IAEFluidTank
 			amountToStore -= fluid.getStackSize();
 		}
 
-		amountToStore = Math.min( amountToStore, resource.amount );
+		amountToStore = Math.min( amountToStore, resource.getAmount() );
 
-		if( doFill )
+		if( action == FluidAction.EXECUTE )
 		{
 			if( fluid == null )
 			{
@@ -140,6 +153,100 @@ public class AEFluidInventory implements IAEFluidTank
 		return amountToStore;
 	}
 
+	@Override
+	public FluidStack drain( final FluidStack fluid, final FluidAction action )
+	{
+		if( fluid == null || fluid.getAmount() <= 0 )
+		{
+			return null;
+		}
+
+		final FluidStack resource = fluid.copy();
+
+		FluidStack totalDrained = null;
+		for( int slot = 0; slot < this.getSlots(); ++slot )
+		{
+			FluidStack drain = this.drain( slot, resource, action == FluidAction.EXECUTE );
+			if( drain != null )
+			{
+				if( totalDrained == null )
+				{
+					totalDrained = drain;
+				}
+				else
+				{
+					totalDrained.setAmount(totalDrained.getAmount() + drain.getAmount());
+				}
+
+				resource.setAmount(resource.getAmount() - drain.getAmount());
+				if( resource.getAmount() <= 0 )
+				{
+					break;
+				}
+			}
+		}
+		return totalDrained;
+	}
+
+	@Override
+	public FluidStack drain( final int maxDrain, final FluidAction action )
+	{
+		if( maxDrain == 0 )
+		{
+			return null;
+		}
+
+		FluidStack totalDrained = null;
+		int toDrain = maxDrain;
+
+		for( int slot = 0; slot < this.getSlots(); ++slot )
+		{
+			if( totalDrained == null )
+			{
+				totalDrained = this.drain( slot, toDrain, action == FluidAction.EXECUTE );
+				if( totalDrained != null )
+				{
+					toDrain -= totalDrained.getAmount();
+				}
+			}
+			else
+			{
+				FluidStack copy = totalDrained.copy();
+				copy.setAmount(toDrain);
+				FluidStack drain = this.drain( slot, copy, action == FluidAction.EXECUTE );
+				if( drain != null )
+				{
+					totalDrained.setAmount(totalDrained.getAmount() + drain.getAmount());
+					toDrain -= drain.getAmount();
+				}
+			}
+
+			if( toDrain <= 0 )
+			{
+				break;
+			}
+		}
+		return totalDrained;
+	}
+
+	private int indexOfFluid(FluidStack resource) {
+		for (int slot = 0; slot < fluids.length; slot++) {
+			if (fluids[slot] != null && fluids[slot].getFluidStack().isFluidEqual(resource)) {
+				return slot;
+			}
+		}
+		return -1;
+	}
+
+	private int indexOfEmptySlot() {
+		for (int slot = 0; slot < fluids.length; slot++) {
+			if (fluids[slot] == null) {
+				return slot;
+			}
+		}
+		return -1;
+	}
+
 	public FluidStack drain( final int slot, final FluidStack resource, final boolean doDrain )
 	{
 		final IAEFluidStack fluid = this.fluids[slot];
@@ -147,7 +254,7 @@ public class AEFluidInventory implements IAEFluidTank
 		{
 			return null;
 		}
-		return this.drain( slot, resource.amount, doDrain );
+		return this.drain( slot, resource.getAmount(), doDrain );
 	}
 
 	public FluidStack drain( final int slot, final int maxDrain, boolean doDrain )
@@ -177,111 +284,11 @@ public class AEFluidInventory implements IAEFluidTank
 		return stack;
 	}
 
-	@Override
-	public int fill( final FluidStack fluid, final boolean doFill )
-	{
-		if( fluid == null || fluid.amount <= 0 )
-		{
-			return 0;
-		}
-
-		final FluidStack insert = fluid.copy();
-
-		int totalFillAmount = 0;
-		for( int slot = 0; slot < this.getSlots(); ++slot )
-		{
-			int fillAmount = this.fill( slot, insert, doFill );
-			totalFillAmount += fillAmount;
-			insert.amount -= fillAmount;
-			if( insert.amount <= 0 )
-			{
-				break;
-			}
-		}
-		return totalFillAmount;
-	}
-
-	@Override
-	public FluidStack drain( final FluidStack fluid, final boolean doDrain )
-	{
-		if( fluid == null || fluid.amount <= 0 )
-		{
-			return null;
-		}
-
-		final FluidStack resource = fluid.copy();
-
-		FluidStack totalDrained = null;
-		for( int slot = 0; slot < this.getSlots(); ++slot )
-		{
-			FluidStack drain = this.drain( slot, resource, doDrain );
-			if( drain != null )
-			{
-				if( totalDrained == null )
-				{
-					totalDrained = drain;
-				}
-				else
-				{
-					totalDrained.amount += drain.amount;
-				}
-
-				resource.amount -= drain.amount;
-				if( resource.amount <= 0 )
-				{
-					break;
-				}
-			}
-		}
-		return totalDrained;
-	}
-
-	@Override
-	public FluidStack drain( final int maxDrain, final boolean doDrain )
-	{
-		if( maxDrain == 0 )
-		{
-			return null;
-		}
-
-		FluidStack totalDrained = null;
-		int toDrain = maxDrain;
-
-		for( int slot = 0; slot < this.getSlots(); ++slot )
-		{
-			if( totalDrained == null )
-			{
-				totalDrained = this.drain( slot, toDrain, doDrain );
-				if( totalDrained != null )
-				{
-					toDrain -= totalDrained.amount;
-				}
-			}
-			else
-			{
-				FluidStack copy = totalDrained.copy();
-				copy.amount = toDrain;
-				FluidStack drain = this.drain( slot, copy, doDrain );
-				if( drain != null )
-				{
-					totalDrained.amount += drain.amount;
-					toDrain -= drain.amount;
-				}
-			}
-
-			if( toDrain <= 0 )
-			{
-				break;
-			}
-		}
-		return totalDrained;
-	}
-
 	public void writeToNBT( final CompoundNBT data, final String name )
 	{
 		final CompoundNBT c = new CompoundNBT();
 		this.writeToNBT( c );
-		data.setTag( name, c );
+		data.put( name, c );
 	}
 
 	private void writeToNBT( final CompoundNBT target )
@@ -297,7 +304,7 @@ public class AEFluidInventory implements IAEFluidTank
 					this.fluids[x].writeToNBT( c );
 				}
 
-				target.setTag( "#" + x, c );
+				target.put( "#" + x, c );
 			}
 			catch( final Exception ignored )
 			{
@@ -307,8 +314,8 @@ public class AEFluidInventory implements IAEFluidTank
 
 	public void readFromNBT( final CompoundNBT data, final String name )
 	{
-		final CompoundNBT c = data.getCompoundTag( name );
-		if( c != null )
+		final CompoundNBT c = data.getCompound( name );
+		if( !c.isEmpty() )
 		{
 			this.readFromNBT( c );
 		}
@@ -320,9 +327,9 @@ public class AEFluidInventory implements IAEFluidTank
 		{
 			try
 			{
-				final CompoundNBT c = target.getCompoundTag( "#" + x );
+				final CompoundNBT c = target.getCompound( "#" + x );
 
-				if( c != null )
+				if( !c.isEmpty() )
 				{
 					this.fluids[x] = AEFluidStack.fromNBT( c );
 				}
@@ -334,49 +341,4 @@ public class AEFluidInventory implements IAEFluidTank
 		}
 	}
 
-	private class FluidTankPropertiesWrapper implements IFluidTankProperties
-	{
-		private final int slot;
-
-		public FluidTankPropertiesWrapper( final int slot )
-		{
-			this.slot = slot;
-		}
-
-		@Override
-		public FluidStack getContents()
-		{
-			return AEFluidInventory.this.fluids[this.slot] == null ? null : AEFluidInventory.this.fluids[this.slot].getFluidStack();
-		}
-
-		@Override
-		public int getCapacity()
-		{
-			return Math.min( AEFluidInventory.this.capacity, Integer.MAX_VALUE );
-		}
-
-		@Override
-		public boolean canFill()
-		{
-			return true;
-		}
-
-		@Override
-		public boolean canDrain()
-		{
-			return true;
-		}
-
-		@Override
-		public boolean canFillFluidType( FluidStack fluidStack )
-		{
-			return true;
-		}
-
-		@Override
-		public boolean canDrainFluidType( FluidStack fluidStack )
-		{
-			return fluidStack != null;
-		}
-	}
 }

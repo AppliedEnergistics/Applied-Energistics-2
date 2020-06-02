@@ -64,7 +64,7 @@ public class GuiToggleButton extends Button implements ITooltip
 		{
 			final int iconIndex = this.getIconIndex();
 
-			GlStateManager.color( 1.0f, 1.0f, 1.0f, 1.0f );
+			RenderSystem.color4f( 1.0f, 1.0f, 1.0f, 1.0f );
 			par1Minecraft.renderEngine.bindTexture( new ResourceLocation( "appliedenergistics2", "textures/guis/states.png" ) );
 			this.hovered = par2 >= this.x && par3 >= this.y && par2 < this.x + this.width && par3 < this.y + this.height;
 

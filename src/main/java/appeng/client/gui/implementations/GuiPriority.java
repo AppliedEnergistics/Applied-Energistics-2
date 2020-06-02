@@ -62,24 +62,24 @@ public class GuiPriority extends AEBaseGui
 	}
 
 	@Override
-	public void initGui()
+	public void init()
 	{
-		super.initGui();
+		super.init();
 
 		final int a = AEConfig.instance().priorityByStacksAmounts( 0 );
 		final int b = AEConfig.instance().priorityByStacksAmounts( 1 );
 		final int c = AEConfig.instance().priorityByStacksAmounts( 2 );
 		final int d = AEConfig.instance().priorityByStacksAmounts( 3 );
 
-		this.buttonList.add( this.plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 32, 22, 20, "+" + a ) );
-		this.buttonList.add( this.plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 32, 28, 20, "+" + b ) );
-		this.buttonList.add( this.plus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 32, 32, 20, "+" + c ) );
-		this.buttonList.add( this.plus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 32, 38, 20, "+" + d ) );
+		this.addButton( this.plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 32, 22, 20, "+" + a ) );
+		this.addButton( this.plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 32, 28, 20, "+" + b ) );
+		this.addButton( this.plus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 32, 32, 20, "+" + c ) );
+		this.addButton( this.plus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 32, 38, 20, "+" + d ) );
 
-		this.buttonList.add( this.minus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 69, 22, 20, "-" + a ) );
-		this.buttonList.add( this.minus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 69, 28, 20, "-" + b ) );
-		this.buttonList.add( this.minus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 69, 32, 20, "-" + c ) );
-		this.buttonList.add( this.minus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 69, 38, 20, "-" + d ) );
+		this.addButton( this.minus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 69, 22, 20, "-" + a ) );
+		this.addButton( this.minus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 69, 28, 20, "-" + b ) );
+		this.addButton( this.minus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 69, 32, 20, "-" + c ) );
+		this.addButton( this.minus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 69, 38, 20, "-" + d ) );
 
 		final ContainerPriority con = ( (ContainerPriority) this.inventorySlots );
 		final ItemStack myIcon = con.getPriorityHost().getItemStackRepresentation();
@@ -87,10 +87,10 @@ public class GuiPriority extends AEBaseGui
 
 		if( this.OriginalGui != null && !myIcon.isEmpty() )
 		{
-			this.buttonList.add( this.originalGuiBtn = new GuiTabButton( this.guiLeft + 154, this.guiTop, myIcon, myIcon.getDisplayName(), this.itemRender ) );
+			this.addButton( this.originalGuiBtn = new GuiTabButton( this.guiLeft + 154, this.guiTop, myIcon, myIcon.getDisplayName(), this.itemRender ) );
 		}
 
-		this.priority = new GuiNumberBox( this.fontRenderer, this.guiLeft + 62, this.guiTop + 57, 59, this.fontRenderer.FONT_HEIGHT, Long.class );
+		this.priority = new GuiNumberBox( this.font, this.guiLeft + 62, this.guiTop + 57, 59, this.font.FONT_HEIGHT, Long.class );
 		this.priority.setEnableBackgroundDrawing( false );
 		this.priority.setMaxStringLength( 16 );
 		this.priority.setTextColor( 0xFFFFFF );
@@ -102,7 +102,7 @@ public class GuiPriority extends AEBaseGui
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		this.fontRenderer.drawString( GuiText.Priority.getLocal(), 8, 6, 4210752 );
+		this.font.drawString( GuiText.Priority.getLocal(), 8, 6, 4210752 );
 	}
 
 	@Override

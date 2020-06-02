@@ -3,12 +3,12 @@ package appeng.client.gui.widgets;
 
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
 
-public abstract class GuiCustomSlot extends Gui implements ITooltip
+public abstract class GuiCustomSlot extends AbstractGui implements ITooltip
 {
 	private final int x;
 	private final int y;

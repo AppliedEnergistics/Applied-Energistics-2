@@ -38,24 +38,6 @@ public class WrapperInvItemHandler implements IInventory
 	}
 
 	@Override
-	public String getName()
-	{
-		return null;
-	}
-
-	@Override
-	public boolean hasCustomName()
-	{
-		return false;
-	}
-
-	@Override
-	public ITextComponent getDisplayName()
-	{
-		return null;
-	}
-
-	@Override
 	public int getSizeInventory()
 	{
 		return this.inv.getSlots();
@@ -130,24 +112,6 @@ public class WrapperInvItemHandler implements IInventory
 	public boolean isItemValidForSlot( int index, ItemStack stack )
 	{
 		return this.inv.isItemValid( index, stack );
-	}
-
-	@Override
-	public int getField( int id )
-	{
-		return 0;
-	}
-
-	@Override
-	public void setField( int id, int value )
-	{
-		// NOP
-	}
-
-	@Override
-	public int getFieldCount()
-	{
-		return 0;
 	}
 
 	@Override

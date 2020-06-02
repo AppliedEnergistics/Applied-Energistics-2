@@ -26,12 +26,6 @@ public class TileSkyCompass extends AEBaseTile
 {
 
 	@Override
-	public boolean requiresTESR()
-	{
-		return true;
-	}
-
-	@Override
 	public boolean hasFastRenderer()
 	{
 		return true;

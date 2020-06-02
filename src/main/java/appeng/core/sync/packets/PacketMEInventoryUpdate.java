@@ -29,11 +29,10 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import javax.annotation.Nullable;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
@@ -66,7 +65,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	private final byte ref;
 
 	@Nullable
-	private final ByteBuf data;
+	private final PacketBuffer data;
 	@Nullable
 	private final GZIPOutputStream compressFrame;
 
@@ -96,7 +95,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 			}
 		} ) )
 		{
-			final ByteBuf uncompressed = Unpooled.buffer( stream.readableBytes() );
+			final PacketBuffer uncompressed = new PacketBuffer( Unpooled.buffer( stream.readableBytes() ) );
 			final byte[] tmp = new byte[TEMP_BUFFER_SIZE];
 
 			while( gzReader.available() != 0 )
@@ -132,7 +131,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	public PacketMEInventoryUpdate( final byte ref ) throws IOException
 	{
 		this.ref = ref;
-		this.data = Unpooled.buffer( OPERATION_BYTE_LIMIT );
+		this.data = new PacketBuffer( Unpooled.buffer( OPERATION_BYTE_LIMIT ) );
 		this.data.writeInt( this.getPacketID() );
 		this.data.writeByte( this.ref );
 
@@ -152,7 +151,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	@OnlyIn( Dist.CLIENT )
 	public void clientPacketData( final INetworkInfo network, final PlayerEntity player )
 	{
-		final GuiScreen gs = Minecraft.getInstance().currentScreen;
+		final Screen gs = Minecraft.getInstance().currentScreen;
 
 		if( gs instanceof GuiCraftConfirm )
 		{
@@ -196,7 +195,7 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 
 	public void appendItem( final IAEItemStack is ) throws IOException, BufferOverflowException
 	{
-		final ByteBuf tmp = Unpooled.buffer( OPERATION_BYTE_LIMIT );
+		final PacketBuffer tmp = new PacketBuffer( Unpooled.buffer( OPERATION_BYTE_LIMIT ) );
 		is.writeToPacket( tmp );
 
 		this.compressFrame.flush();

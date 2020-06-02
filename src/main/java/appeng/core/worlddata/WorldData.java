@@ -19,6 +19,7 @@
 package appeng.core.worlddata;
 
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
@@ -26,12 +27,17 @@ import java.util.concurrent.ThreadFactory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import com.electronwill.nightconfig.toml.TomlFormat;
+import com.electronwill.nightconfig.toml.TomlParser;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.dimension.Dimension;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.config.Configuration;
 
 import appeng.core.AEConfig;
 import appeng.services.CompassService;
@@ -71,7 +77,7 @@ public final class WorldData implements IWorldData
 	private final File spawnDirectory;
 	private final File compassDirectory;
 
-	// FIXME private final Configuration sharedConfig;
+	private final CommentedFileConfig sharedConfig;
 
 	private WorldData( @Nonnull final File worldDirectory )
 	{
@@ -83,7 +89,8 @@ public final class WorldData implements IWorldData
 		this.compassDirectory = new File( this.ae2directory, COMPASS_DIR_NAME );
 
 		final File settingsFile = new File( this.ae2directory, SETTING_FILE_NAME );
-		this.sharedConfig = new Configuration( settingsFile, AEConfig.VERSION );
+		this.sharedConfig = CommentedFileConfig.of( settingsFile, TomlFormat.instance() );
+		this.sharedConfig.load();
 
 		final PlayerData playerData = new PlayerData( this.sharedConfig );
 		final StorageData storageData = new StorageData( this.sharedConfig );
@@ -124,10 +131,15 @@ public final class WorldData implements IWorldData
 	 */
 	public static void onServerAboutToStart( MinecraftServer server )
 	{
-		File worldDirectory = DimensionManager.getCurrentSaveRootDirectory();
+		// FIXME: Possibly replace this with WorldData
+		File worldDirectory = null;
+		ServerWorld overworld = DimensionManager.getWorld(server, DimensionType.OVERWORLD, false, false);
+		if (overworld != null) {
+			worldDirectory = overworld.getSaveHandler().getWorldDirectory();
+		}
 		if( worldDirectory == null )
 		{
-			worldDirectory = server.getActiveAnvilConverter().getSaveLoader( server.getFolderName(), false ).getWorldDirectory();
+			worldDirectory = server.getActiveAnvilConverter().getSaveLoader( server.getFolderName(), server ).getWorldDirectory();
 		}
 		final WorldData newInstance = new WorldData( worldDirectory );
 

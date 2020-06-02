@@ -34,7 +34,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.AEApi;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
@@ -135,13 +134,13 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	}
 
 	@Override
-	public void initGui()
+	public void init()
 	{
-		super.initGui();
+		super.init();
 		this.setScrollBar();
 		this.cancel = new GuiButton( 0, this.guiLeft + CANCEL_LEFT_OFFSET, this.guiTop + this.ySize - CANCEL_TOP_OFFSET, CANCEL_WIDTH, CANCEL_HEIGHT, GuiText.Cancel
 				.getLocal() );
-		this.buttonList.add( this.cancel );
+		this.addButton( this.cancel );
 	}
 
 	private void setScrollBar()
@@ -153,7 +152,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 	}
 
 	@Override
-	public void drawScreen( final int mouseX, final int mouseY, final float btn )
+	public void render(final int mouseX, final int mouseY, final float btn )
 	{
 		this.cancel.enabled = !this.visual.isEmpty();
 
@@ -188,7 +187,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 			}
 		}
 
-		super.drawScreen( mouseX, mouseY, btn );
+		super.render( mouseX, mouseY, btn );
 	}
 
 	@Override
@@ -203,7 +202,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 			title += " - " + etaTimeText;
 		}
 
-		this.fontRenderer.drawString( title, TITLE_LEFT_OFFSET, TITLE_TOP_OFFSET, TEXT_COLOR );
+		this.font.drawString( title, TITLE_LEFT_OFFSET, TITLE_TOP_OFFSET, TEXT_COLOR );
 
 		int x = 0;
 		int y = 0;
@@ -254,7 +253,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 					final int bgColor = ( active ? AEColor.GREEN.blackVariant : AEColor.YELLOW.blackVariant ) | BACKGROUND_ALPHA;
 					final int startX = ( x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET ) * 2;
 					final int startY = ( ( y * offY + ITEMSTACK_TOP_OFFSET ) - 3 ) * 2;
-					drawRect( startX, startY, startX + ( SECTION_LENGTH * 2 ), startY + ( offY * 2 ) - 2, bgColor );
+					fill( startX, startY, startX + ( SECTION_LENGTH * 2 ), startY + ( offY * 2 ) - 2, bgColor );
 				}
 
 				final int negY = ( ( lines - 1 ) * 5 ) / 2;
@@ -263,8 +262,8 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 				if( stored != null && stored.getStackSize() > 0 )
 				{
 					final String str = GuiText.Stored.getLocal() + ": " + converter.toWideReadableForm( stored.getStackSize() );
-					final int w = 4 + this.fontRenderer.getStringWidth( str );
-					this.fontRenderer.drawString( str, (int) ( ( x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - ( w * 0.5 ) ) * 2 ),
+					final int w = 4 + this.font.getStringWidth( str );
+					this.font.drawString( str, (int) ( ( x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - ( w * 0.5 ) ) * 2 ),
 							( y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY ) * 2, TEXT_COLOR );
 
 					if( this.tooltip == z - viewStart )
@@ -278,9 +277,9 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 				if( activeStack != null && activeStack.getStackSize() > 0 )
 				{
 					final String str = GuiText.Crafting.getLocal() + ": " + converter.toWideReadableForm( activeStack.getStackSize() );
-					final int w = 4 + this.fontRenderer.getStringWidth( str );
+					final int w = 4 + this.font.getStringWidth( str );
 
-					this.fontRenderer.drawString( str, (int) ( ( x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - ( w * 0.5 ) ) * 2 ),
+					this.font.drawString( str, (int) ( ( x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - ( w * 0.5 ) ) * 2 ),
 							( y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY ) * 2, TEXT_COLOR );
 
 					if( this.tooltip == z - viewStart )
@@ -294,9 +293,9 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource
 				if( pendingStack != null && pendingStack.getStackSize() > 0 )
 				{
 					final String str = GuiText.Scheduled.getLocal() + ": " + converter.toWideReadableForm( pendingStack.getStackSize() );
-					final int w = 4 + this.fontRenderer.getStringWidth( str );
+					final int w = 4 + this.font.getStringWidth( str );
 
-					this.fontRenderer.drawString( str, (int) ( ( x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - ( w * 0.5 ) ) * 2 ),
+					this.font.drawString( str, (int) ( ( x * ( 1 + SECTION_LENGTH ) + ITEMSTACK_LEFT_OFFSET + SECTION_LENGTH - 19 - ( w * 0.5 ) ) * 2 ),
 							( y * offY + ITEMSTACK_TOP_OFFSET + 6 - negY + downY ) * 2, TEXT_COLOR );
 
 					if( this.tooltip == z - viewStart )

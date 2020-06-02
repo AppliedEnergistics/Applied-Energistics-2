@@ -19,21 +19,16 @@
 package appeng.core.sync.packets;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerEntityMP;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
@@ -48,6 +43,7 @@ import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.core.Api;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.IContainerCraftingPacket;
@@ -73,13 +69,13 @@ public class PacketJEIRecipe extends AppEngPacket
 			this.recipe = new ItemStack[9][];
 			for( int x = 0; x < this.recipe.length; x++ )
 			{
-				final NBTTagList list = comp.getTagList( "#" + x, 10 );
-				if( list.tagCount() > 0 )
+				final ListNBT list = comp.getList( "#" + x, 10 );
+				if( list.size() > 0 )
 				{
-					this.recipe[x] = new ItemStack[list.tagCount()];
-					for( int y = 0; y < list.tagCount(); y++ )
+					this.recipe[x] = new ItemStack[list.size()];
+					for( int y = 0; y < list.size(); y++ )
 					{
-						this.recipe[x][y] = new ItemStack( list.getCompoundTagAt( y ) );
+						this.recipe[x][y] = ItemStack.read( list.getCompound( y ) );
 					}
 				}
 			}
@@ -101,7 +97,7 @@ public class PacketJEIRecipe extends AppEngPacket
 	@Override
 	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
 	{
-		final PlayerEntityMP pmp = (PlayerEntityMP) player;
+		final ServerPlayerEntity pmp = (ServerPlayerEntity) player;
 		final Container con = pmp.openContainer;
 
 		if( !( con instanceof IContainerCraftingPacket ) )

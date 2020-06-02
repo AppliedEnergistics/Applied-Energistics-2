@@ -21,11 +21,10 @@ package appeng.core.sync.packets;
 
 import java.io.IOException;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -81,7 +80,7 @@ public class PacketInventoryAction extends AppEngPacket
 		this.id = 0;
 		this.slotItem = slotItem;
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
 
 		data.writeInt( this.getPacketID() );
 		data.writeInt( action.ordinal() );
@@ -109,7 +108,7 @@ public class PacketInventoryAction extends AppEngPacket
 		this.id = id;
 		this.slotItem = null;
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
 
 		data.writeInt( this.getPacketID() );
 		data.writeInt( action.ordinal() );
@@ -123,7 +122,7 @@ public class PacketInventoryAction extends AppEngPacket
 	@Override
 	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
 	{
-		final PlayerEntityMP sender = (PlayerEntityMP) player;
+		final ServerPlayerEntity sender = (ServerPlayerEntity) player;
 		if( sender.openContainer instanceof AEBaseContainer )
 		{
 			final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;

@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -160,7 +160,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 	}
 
 	// TODO: This is really hacky and NEEDS to be solved with a full container/gui refactoring.
-	protected IRecipe findRecipe( InventoryCrafting ic, World world )
+	protected IRecipe findRecipe( CraftingInventory ic, World world )
 	{
 		if( this.container instanceof ContainerCraftingTerm )
 		{
@@ -178,7 +178,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 
 	// TODO: This is really hacky and NEEDS to be solved with a full container/gui refactoring.
 	@Override
-	protected NonNullList<ItemStack> getRemainingItems( InventoryCrafting ic, World world )
+	protected NonNullList<ItemStack> getRemainingItems( CraftingInventory ic, World world )
 	{
 		if( this.container instanceof ContainerCraftingTerm )
 		{
@@ -213,7 +213,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 			// add one of each item to the items on the board...
 			if( Platform.isServer() )
 			{
-				final InventoryCrafting ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
+				final CraftingInventory ic = new CraftingInventory( new ContainerNull(), 3, 3 );
 				for( int x = 0; x < 9; x++ )
 				{
 					ic.setInventorySlotContents( x, this.getPattern().getStackInSlot( x ) );

@@ -24,7 +24,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 import appeng.container.slot.AppEngSlot;
-import appeng.items.misc.ItemEncodedPattern;
 import appeng.util.Platform;
 
 
@@ -63,15 +62,15 @@ public class SlotDisconnected extends AppEngSlot
 		if( Platform.isClient() )
 		{
 			final ItemStack is = super.getStack();
-			if( !is.isEmpty() && is.getItem() instanceof ItemEncodedPattern )
-			{
-				final ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
-				final ItemStack out = iep.getOutput( is );
-				if( !out.isEmpty() )
-				{
-					return out;
-				}
-			}
+			// FIXME if( !is.isEmpty() && is.getItem() instanceof ItemEncodedPattern )
+			// FIXME {
+			// FIXME 	final ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
+			// FIXME 	final ItemStack out = iep.getOutput( is );
+			// FIXME 	if( !out.isEmpty() )
+			// FIXME 	{
+			// FIXME 		return out;
+			// FIXME 	}
+			// FIXME }
 		}
 		return super.getStack();
 	}

@@ -29,7 +29,6 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import javax.annotation.Nullable;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
@@ -68,7 +67,7 @@ public class PacketMEFluidInventoryUpdate extends AppEngPacket
 	private final byte ref;
 
 	@Nullable
-	private final ByteBuf data;
+	private final PacketBuffer data;
 	@Nullable
 	private final GZIPOutputStream compressFrame;
 
@@ -99,7 +98,7 @@ public class PacketMEFluidInventoryUpdate extends AppEngPacket
 		} ) )
 		{
 
-			final ByteBuf uncompressed = Unpooled.buffer( stream.readableBytes() );
+			final PacketBuffer uncompressed = new PacketBuffer( Unpooled.buffer( stream.readableBytes() ) );
 			final byte[] tmp = new byte[TEMP_BUFFER_SIZE];
 
 			while( gzReader.available() != 0 )
@@ -135,7 +134,7 @@ public class PacketMEFluidInventoryUpdate extends AppEngPacket
 	public PacketMEFluidInventoryUpdate( final byte ref ) throws IOException
 	{
 		this.ref = ref;
-		this.data = Unpooled.buffer( OPERATION_BYTE_LIMIT );
+		this.data = new PacketBuffer( Unpooled.buffer( OPERATION_BYTE_LIMIT ) );
 		this.data.writeInt( this.getPacketID() );
 		this.data.writeByte( this.ref );
 

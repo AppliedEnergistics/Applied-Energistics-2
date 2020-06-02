@@ -75,7 +75,7 @@ import appeng.util.Platform;
 public class DualityFluidInterface implements IGridTickable, IStorageMonitorable, IAEFluidInventory, IUpgradeableHost, IConfigManagerHost
 {
 	public static final int NUMBER_OF_TANKS = 6;
-	public static final int TANK_CAPACITY = Fluid.BUCKET_VOLUME * 4;
+	public static final int TANK_CAPACITY = FluidAttributes.BUCKET_VOLUME * 4;
 
 	private final ConfigManager cm = new ConfigManager( this );
 	private final AENetworkProxy gridProxy;

@@ -19,11 +19,10 @@
 package appeng.core.sync.packets;
 
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -58,7 +57,7 @@ public class PacketPartPlacement extends AppEngPacket
 	// api
 	public PacketPartPlacement( final BlockPos pos, final Direction face, final float eyeHeight, final Hand hand )
 	{
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
 
 		data.writeInt( this.getPacketID() );
 		data.writeInt( pos.getX() );
@@ -74,7 +73,7 @@ public class PacketPartPlacement extends AppEngPacket
 	@Override
 	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
 	{
-		final PlayerEntityMP sender = (PlayerEntityMP) player;
+		final ServerPlayerEntity sender = (ServerPlayerEntity) player;
 		AppEng.proxy.updateRenderMode( sender );
 		PartPlacement.setEyeHeight( this.eyeHeight );
 		PartPlacement.place( sender.getHeldItem( this.hand ), new BlockPos( this.x, this.y, this.z ), Direction.values()[this.face], sender, this.hand,

@@ -19,11 +19,7 @@
 package appeng.core.sync;
 
 
-import java.io.ByteArrayInputStream;
-
 import org.apache.commons.lang3.tuple.Pair;
-
-import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.IPacket;
@@ -56,10 +52,10 @@ public abstract class AppEngPacket
 		throw new UnsupportedOperationException( "This packet ( " + this.getPacketID() + " does not implement a client side handler." );
 	}
 
-	protected void configureWrite( final ByteBuf data )
+	protected void configureWrite( final PacketBuffer data )
 	{
 		data.capacity( data.readableBytes() );
-		this.p = new PacketBuffer( data );
+		this.p = data;
 	}
 
 	public IPacket<?> toPacket( NetworkDirection direction )
@@ -76,28 +72,5 @@ public abstract class AppEngPacket
 
 		// FIXME  return direction.buildPacket( Pair.of( p, 0 ), NetworkHandler.instance().getChannel() ).getThis();
 		return null;
-	}
-
-	// TODO: Figure out why Forge/Minecraft on the server sets the stream data buffer to PooledUnsafeDirectByteBuf
-
-	public ByteArrayInputStream getPacketByteArray( ByteBuf stream, int readerIndex, int readableBytes )
-	{
-		final ByteArrayInputStream bytes;
-		if( stream.hasArray() )
-		{
-			bytes = new ByteArrayInputStream( stream.array(), readerIndex, readableBytes );
-		}
-		else
-		{
-			byte[] data = new byte[stream.capacity()];
-			stream.getBytes( readerIndex, data, 0, readableBytes );
-			bytes = new ByteArrayInputStream( data );
-		}
-		return bytes;
-	}
-
-	public ByteArrayInputStream getPacketByteArray( ByteBuf stream )
-	{
-		return this.getPacketByteArray( stream, 0, stream.readableBytes() );
 	}
 }

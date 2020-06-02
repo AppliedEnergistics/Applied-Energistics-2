@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import appeng.core.AELog;
-import io.netty.buffer.ByteBuf;
+
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.block.BlockState;
@@ -199,7 +199,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		return data;
 	}
 
-	private boolean readUpdateData( ByteBuf stream )
+	private boolean readUpdateData( PacketBuffer stream )
 	{
 		boolean output = false;
 
@@ -248,7 +248,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	@Override
 	public void handleUpdateTag( CompoundNBT tag )
 	{
-		final ByteBuf stream = Unpooled.copiedBuffer( tag.getByteArray( "X" ) );
+		final PacketBuffer stream = new PacketBuffer( Unpooled.copiedBuffer( tag.getByteArray( "X" ) ) );
 
 		if( this.readUpdateData( stream ) )
 		{
@@ -256,7 +256,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		}
 	}
 
-	protected boolean readFromStream( final ByteBuf data ) throws IOException
+	protected boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
 		if( this.canBeRotated() )
 		{
@@ -490,11 +490,6 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		this.markDirty();
 		this.markDirtyQueued = false;
 		return null;
-	}
-
-	public boolean requiresTESR()
-	{
-		return false;
 	}
 
 	public void setName( final String name )

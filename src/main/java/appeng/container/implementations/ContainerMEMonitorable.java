@@ -25,13 +25,12 @@ import java.nio.BufferOverflowException;
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.SecurityPermissions;
@@ -169,7 +168,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 				this.cellView[y] = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.VIEW_CELL, ( (IViewCellStorage) monitorable )
 						.getViewCellStorage(), y, 206, y * 18 + 8, this.getPlayerInventory() );
 				this.cellView[y].setAllowEdit( this.canAccessViewCells );
-				this.addSlotToContainer( this.cellView[y] );
+				this.addSlot( this.cellView[y] );
 			}
 		}
 
@@ -204,11 +203,11 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 					this.clientCM.putSetting( set, sideLocal );
 					for( final IContainerListener crafter : this.listeners )
 					{
-						if( crafter instanceof PlayerEntityMP )
+						if( crafter instanceof ServerPlayerEntity )
 						{
 							try
 							{
-								NetworkHandler.instance().sendTo( new PacketValueConfig( set.name(), sideLocal.name() ), (PlayerEntityMP) crafter );
+								NetworkHandler.instance().sendTo( new PacketValueConfig( set.name(), sideLocal.name() ), (ServerPlayerEntity) crafter );
 							}
 							catch( final IOException e )
 							{
@@ -249,7 +248,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 						{
 							if( c instanceof PlayerEntity )
 							{
-								NetworkHandler.instance().sendTo( piu, (PlayerEntityMP) c );
+								NetworkHandler.instance().sendTo( piu, (ServerPlayerEntity) c );
 							}
 						}
 					}
@@ -345,14 +344,14 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 					}
 					catch( final BufferOverflowException boe )
 					{
-						NetworkHandler.instance().sendTo( piu, (PlayerEntityMP) c );
+						NetworkHandler.instance().sendTo( piu, (ServerPlayerEntity) c );
 
 						piu = new PacketMEInventoryUpdate();
 						piu.appendItem( send );
 					}
 				}
 
-				NetworkHandler.instance().sendTo( piu, (PlayerEntityMP) c );
+				NetworkHandler.instance().sendTo( piu, (ServerPlayerEntity) c );
 			}
 			catch( final IOException e )
 			{

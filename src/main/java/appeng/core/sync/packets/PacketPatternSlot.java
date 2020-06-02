@@ -21,17 +21,17 @@ package appeng.core.sync.packets;
 
 import java.io.IOException;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.implementations.ContainerPatternTerm;
+import appeng.core.Api;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.item.AEItemStack;
@@ -59,7 +59,7 @@ public class PacketPatternSlot extends AppEngPacket
 		}
 	}
 
-	private IAEItemStack readItem( final ByteBuf stream )
+	private IAEItemStack readItem( final PacketBuffer stream )
 	{
 		final boolean hasItem = stream.readBoolean();
 
@@ -78,7 +78,7 @@ public class PacketPatternSlot extends AppEngPacket
 		this.slotItem = slotItem;
 		this.shift = shift;
 
-		final ByteBuf data = Unpooled.buffer();
+		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
 
 		data.writeInt( this.getPacketID() );
 
@@ -94,7 +94,7 @@ public class PacketPatternSlot extends AppEngPacket
 		this.configureWrite( data );
 	}
 
-	private void writeItem( final IAEItemStack slotItem, final ByteBuf data ) throws IOException
+	private void writeItem( final IAEItemStack slotItem, final PacketBuffer data ) throws IOException
 	{
 		if( slotItem == null )
 		{
@@ -110,7 +110,7 @@ public class PacketPatternSlot extends AppEngPacket
 	@Override
 	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
 	{
-		final PlayerEntityMP sender = (PlayerEntityMP) player;
+		final ServerPlayerEntity sender = (ServerPlayerEntity) player;
 		if( sender.openContainer instanceof ContainerPatternTerm )
 		{
 			final ContainerPatternTerm patternTerminal = (ContainerPatternTerm) sender.openContainer;

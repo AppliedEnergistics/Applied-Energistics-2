@@ -22,8 +22,6 @@ package appeng.tile.crafting;
 import java.io.IOException;
 import java.util.Optional;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -51,7 +49,7 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	private AEColor paintedColor = AEColor.TRANSPARENT;
 
 	@Override
-	protected boolean readFromStream( final ByteBuf data ) throws IOException
+	protected boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
 		final boolean c = super.readFromStream( data );
 		final AEColor oldPaintedColor = this.paintedColor;
@@ -139,12 +137,6 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	public IAEItemStack getJobProgress()
 	{
 		return this.dspPlay; // AEItemStack.create( new ItemStack( Items.DIAMOND, 64 ) );
-	}
-
-	@Override
-	public boolean requiresTESR()
-	{
-		return this.dspPlay != null;
 	}
 
 	@Override

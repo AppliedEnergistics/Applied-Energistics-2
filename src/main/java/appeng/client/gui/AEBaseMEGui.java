@@ -83,7 +83,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 					currentToolTip.add( format );
 				}
 
-				this.drawHoveringText( currentToolTip, x, y, this.fontRenderer );
+				this.drawHoveringText( currentToolTip, x, y, this.font );
 
 				return;
 			}
@@ -95,7 +95,7 @@ public abstract class AEBaseMEGui extends AEBaseGui
 
 				currentToolTip.add( TextFormatting.GRAY + format );
 
-				this.drawHoveringText( currentToolTip, x, y, this.fontRenderer );
+				this.drawHoveringText( currentToolTip, x, y, this.font );
 
 				return;
 			}

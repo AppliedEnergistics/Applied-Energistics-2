@@ -107,7 +107,7 @@ public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluid
 	@Override
 	public IAEFluidStack injectItems( IAEFluidStack input, Actionable type, IActionSource src )
 	{
-		if( this.blocked || input == null || input.getStackSize() < Fluid.BUCKET_VOLUME )
+		if( this.blocked || input == null || input.getStackSize() < FluidAttributes.BUCKET_VOLUME )
 		{
 			// need a full bucket
 			return input;
@@ -124,16 +124,16 @@ public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluid
 			if( type == Actionable.MODULATE )
 			{
 				final FluidStack fs = input.getFluidStack();
-				fs.amount = Fluid.BUCKET_VOLUME;
+				fs.amount = FluidAttributes.BUCKET_VOLUME;
 
-				final FluidTank tank = new FluidTank( fs, Fluid.BUCKET_VOLUME );
+				final FluidTank tank = new FluidTank( fs, FluidAttributes.BUCKET_VOLUME );
 				if( !FluidUtil.tryPlaceFluid( null, w, pos, tank, fs ) )
 				{
 					return input;
 				}
 			}
 			final IAEFluidStack ret = input.copy();
-			ret.setStackSize( input.getStackSize() - Fluid.BUCKET_VOLUME );
+			ret.setStackSize( input.getStackSize() - FluidAttributes.BUCKET_VOLUME );
 			return ret.getStackSize() == 0 ? null : ret;
 		}
 		this.blocked = true;

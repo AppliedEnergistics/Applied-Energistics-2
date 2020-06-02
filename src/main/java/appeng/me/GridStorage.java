@@ -121,7 +121,7 @@ public class GridStorage implements IGridStorage
 		return this.internalGrid == null ? null : this.internalGrid.get();
 	}
 
-	void setGrid( final Grid grid )
+	void setGrid( final IGrid grid )
 	{
 		this.internalGrid = new WeakReference<>( grid );
 	}

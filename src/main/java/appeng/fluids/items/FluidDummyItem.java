@@ -19,12 +19,12 @@
 package appeng.fluids.items;
 
 
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraft.fluid.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
 import appeng.items.AEBaseItem;
@@ -39,16 +39,19 @@ import appeng.items.AEBaseItem;
  */
 public class FluidDummyItem extends AEBaseItem
 {
-	@Override
-	public String getItemStackDisplayName( ItemStack stack )
-	{
 
+	public FluidDummyItem(Properties properties) {
+		super(properties);
+	}
+
+	@Override
+	public String getTranslationKey(ItemStack stack) {
 		FluidStack fluidStack = this.getFluidStack( stack );
 		if( fluidStack == null )
 		{
-			fluidStack = new FluidStack( FluidRegistry.WATER, Fluid.BUCKET_VOLUME );
+			fluidStack = new FluidStack( Fluids.WATER, FluidAttributes.BUCKET_VOLUME );
 		}
-		return fluidStack.getLocalizedName();
+		return fluidStack.getTranslationKey();
 	}
 
 	public FluidStack getFluidStack( ItemStack is )
@@ -65,19 +68,18 @@ public class FluidDummyItem extends AEBaseItem
 	{
 		if( fs == null )
 		{
-			is.setTagCompound( null );
+			is.setTag( null );
 		}
 		else
 		{
 			CompoundNBT tag = new CompoundNBT();
 			fs.writeToNBT( tag );
-			is.setTagCompound( tag );
+			is.setTag( tag );
 		}
 	}
 
 	@Override
-	protected void getCheckedSubItems( final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
-	{
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		// Don't show this item in CreativeTabs
 	}
 }

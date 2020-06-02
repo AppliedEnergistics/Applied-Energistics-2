@@ -44,19 +44,19 @@ public class GuiVibrationChamber extends AEBaseGui
 	}
 
 	@Override
-	public void initGui()
+	public void init()
 	{
-		super.initGui();
+		super.init();
 
 		this.pb = new GuiProgressBar( this.cvc, "guis/vibchamber.png", 99, 36, 176, 14, 6, 18, Direction.VERTICAL );
-		this.buttonList.add( this.pb );
+		this.addButton( this.pb );
 	}
 
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		this.fontRenderer.drawString( this.getGuiDisplayName( GuiText.VibrationChamber.getLocal() ), 8, 6, 4210752 );
-		this.fontRenderer.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
+		this.font.drawString( this.getGuiDisplayName( GuiText.VibrationChamber.getLocal() ), 8, 6, 4210752 );
+		this.font.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
 		this.pb.setFullMsg( TileVibrationChamber.POWER_PER_TICK * this.cvc.getCurrentProgress() / TileVibrationChamber.DILATION_SCALING + " AE/t" );
 
@@ -64,7 +64,7 @@ public class GuiVibrationChamber extends AEBaseGui
 		{
 			final int i1 = this.cvc.getRemainingBurnTime() * 12 / 100;
 			this.bindTexture( "guis/vibchamber.png" );
-			GlStateManager.color( 1, 1, 1 );
+			RenderSystem.color4f( 1, 1, 1 );
 			final int l = -15;
 			final int k = 25;
 			this.drawTexturedModalRect( k + 56, l + 36 + 12 - i1, 176, 12 - i1, 14, i1 + 2 );

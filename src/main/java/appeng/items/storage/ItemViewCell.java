@@ -19,10 +19,11 @@
 package appeng.items.storage;
 
 
+import appeng.core.Api;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.items.IUpgradeModule;
@@ -42,9 +43,10 @@ import appeng.util.prioritylist.PrecisePriorityList;
 
 public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 {
+
 	public ItemViewCell()
 	{
-		this.setMaxStackSize( 1 );
+		super(new Item.Properties().maxStackSize(1));
 	}
 
 	public static IPartitionList<IAEItemStack> createFilter( final ItemStack[] list )

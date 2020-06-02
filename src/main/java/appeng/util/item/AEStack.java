@@ -19,7 +19,7 @@
 package appeng.util.item;
 
 
-import io.netty.buffer.ByteBuf;
+import net.minecraft.network.PacketBuffer;
 
 import appeng.api.storage.data.IAEStack;
 
@@ -31,7 +31,7 @@ public abstract class AEStack<StackType extends IAEStack<StackType>> implements 
 	private long stackSize;
 	private long countRequestable;
 
-	protected static long getPacketValue( final byte type, final ByteBuf tag )
+	protected static long getPacketValue( final byte type, final PacketBuffer tag )
 	{
 		if( type == 0 )
 		{
@@ -164,7 +164,7 @@ public abstract class AEStack<StackType extends IAEStack<StackType>> implements 
 
 	protected abstract boolean hasTagCompound();
 
-	protected void putPacketValue( final ByteBuf tag, final long num )
+	protected void putPacketValue( final PacketBuffer tag, final long num )
 	{
 		if( num <= 255 )
 		{

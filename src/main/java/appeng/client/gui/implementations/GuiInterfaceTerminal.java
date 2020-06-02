@@ -36,9 +36,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListNBT;
 
-import appeng.api.AEApi;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiScrollbar;
@@ -80,15 +79,15 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	}
 
 	@Override
-	public void initGui()
+	public void init()
 	{
-		super.initGui();
+		super.init();
 
 		this.getScrollBar().setLeft( 175 );
 		this.getScrollBar().setHeight( 106 );
 		this.getScrollBar().setTop( 18 );
 
-		this.searchField = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 104, this.offsetX ), this.guiTop + 4, 65, 12 );
+		this.searchField = new MEGuiTextField( this.font, this.guiLeft + Math.max( 104, this.offsetX ), this.guiTop + 4, 65, 12 );
 		this.searchField.setEnableBackgroundDrawing( false );
 		this.searchField.setMaxStringLength( 25 );
 		this.searchField.setTextColor( 0xFFFFFF );
@@ -99,8 +98,8 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	@Override
 	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		this.fontRenderer.drawString( this.getGuiDisplayName( GuiText.InterfaceTerminal.getLocal() ), 8, 6, 4210752 );
-		this.fontRenderer.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
+		this.font.drawString( this.getGuiDisplayName( GuiText.InterfaceTerminal.getLocal() ), 8, 6, 4210752 );
+		this.font.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
 
 		final int ex = this.getScrollBar().getCurrentScroll();
 
@@ -134,12 +133,12 @@ public class GuiInterfaceTerminal extends AEBaseGui
 					name = name + " (" + rows + ')';
 				}
 
-				while( name.length() > 2 && this.fontRenderer.getStringWidth( name ) > 155 )
+				while( name.length() > 2 && this.font.getStringWidth( name ) > 155 )
 				{
 					name = name.substring( 0, name.length() - 1 );
 				}
 
-				this.fontRenderer.drawString( name, 10, 6 + offset, 4210752 );
+				this.font.drawString( name, 10, 6 + offset, 4210752 );
 			}
 			offset += 18;
 		}
@@ -175,7 +174,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			{
 				final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
 
-				GlStateManager.color( 1, 1, 1, 1 );
+				RenderSystem.color4f( 1, 1, 1, 1 );
 				final int width = inv.getInventory().getSlots() * 18;
 				this.drawTexturedModalRect( offsetX + 7, offsetY + offset, 7, 139, width, 18 );
 			}
@@ -339,8 +338,8 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		}
 
 		// Potential later use to filter by input
-		// NBTTagList inTag = encodedValue.getTagList( "in", 10 );
-		final NBTTagList outTag = encodedValue.getTagList( "out", 10 );
+		// ListNBT inTag = encodedValue.getTagList( "in", 10 );
+		final ListNBT outTag = encodedValue.getTagList( "out", 10 );
 
 		for( int i = 0; i < outTag.tagCount(); i++ )
 		{

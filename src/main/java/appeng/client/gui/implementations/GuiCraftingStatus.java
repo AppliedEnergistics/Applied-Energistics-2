@@ -31,7 +31,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.AEApi;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IParts;
 import appeng.api.storage.ITerminalHost;
@@ -123,28 +122,28 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	}
 
 	@Override
-	public void initGui()
+	public void init()
 	{
-		super.initGui();
+		super.init();
 
 		this.selectCPU = new GuiButton( 0, this.guiLeft + 8, this.guiTop + this.ySize - 25, 150, 20, GuiText.CraftingCPU
 				.getLocal() + ": " + GuiText.NoCraftingCPUs );
 		// selectCPU.enabled = false;
-		this.buttonList.add( this.selectCPU );
+		this.addButton( this.selectCPU );
 
 		if( !this.myIcon.isEmpty() )
 		{
-			this.buttonList.add(
+			this.addButton(
 					this.originalGuiBtn = new GuiTabButton( this.guiLeft + 213, this.guiTop - 4, this.myIcon, this.myIcon.getDisplayName(), this.itemRender ) );
 			this.originalGuiBtn.setHideEdge( 13 );
 		}
 	}
 
 	@Override
-	public void drawScreen( final int mouseX, final int mouseY, final float btn )
+	public void render(final int mouseX, final int mouseY, final float btn )
 	{
 		this.updateCPUButtonText();
-		super.drawScreen( mouseX, mouseY, btn );
+		super.render( mouseX, mouseY, btn );
 	}
 
 	private void updateCPUButtonText()

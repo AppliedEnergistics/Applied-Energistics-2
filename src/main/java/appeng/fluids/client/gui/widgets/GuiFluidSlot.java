@@ -41,8 +41,8 @@ public class GuiFluidSlot extends GuiCustomSlot
 		final IAEFluidStack fs = this.getFluidStack();
 		if( fs != null )
 		{
-			GlStateManager.disableLighting();
-			GlStateManager.disableBlend();
+			RenderSystem.disableLighting();
+			RenderSystem.disableBlend();
 			final Fluid fluid = fs.getFluid();
 			mc.getTextureManager().bindTexture( TextureMap.LOCATION_BLOCKS_TEXTURE );
 			final TextureAtlasSprite sprite = mc.getTextureMapBlocks().getAtlasSprite( fluid.getStill().toString() );
@@ -52,7 +52,7 @@ public class GuiFluidSlot extends GuiCustomSlot
 			final float red = ( fluid.getColor() >> 16 & 255 ) / 255.0F;
 			final float green = ( fluid.getColor() >> 8 & 255 ) / 255.0F;
 			final float blue = ( fluid.getColor() & 255 ) / 255.0F;
-			GlStateManager.color( red, green, blue );
+			RenderSystem.color4f( red, green, blue );
 
 			this.drawTexturedModalRect( this.xPos(), this.yPos(), sprite, this.getWidth(), this.getHeight() );
 		}

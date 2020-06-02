@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketBuffer;
@@ -91,7 +89,7 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 	}
 
 	@Override
-	protected boolean readFromStream( final ByteBuf data ) throws IOException
+	protected boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
 		final boolean c = super.readFromStream( data );
 		this.rotation = data.readInt();
@@ -111,12 +109,6 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 		super.setOrientation( inForward, inUp );
 		final BlockState state = this.world.getBlockState( this.pos );
 		this.getBlockType().neighborChanged( state, this.world, this.pos, state.getBlock(), this.pos );
-	}
-
-	@Override
-	public boolean requiresTESR()
-	{
-		return true;
 	}
 
 	/**

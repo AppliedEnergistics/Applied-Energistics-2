@@ -22,8 +22,6 @@ package appeng.tile.misc;
 import java.io.IOException;
 import java.util.EnumSet;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 
@@ -63,7 +61,7 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 	}
 
 	@Override
-	public boolean readFromStream( final ByteBuf data ) throws IOException
+	public boolean readFromStream( final PacketBuffer data ) throws IOException
 	{
 		final boolean c = super.readFromStream( data );
 		final boolean hadPower = this.isPowered();
