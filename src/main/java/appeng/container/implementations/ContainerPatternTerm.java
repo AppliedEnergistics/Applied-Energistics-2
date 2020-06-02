@@ -28,7 +28,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.InventoryCraftResult;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
@@ -163,7 +163,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	private ItemStack getAndUpdateOutput()
 	{
 		final World world = this.getPlayerInv().player.world;
-		final InventoryCrafting ic = new InventoryCrafting( this, 3, 3 );
+		final CraftingInventory ic = new CraftingInventory( this, 3, 3 );
 
 		for( int x = 0; x < ic.getSizeInventory(); x++ )
 		{
@@ -402,8 +402,8 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 				return;
 			}
 
-			final InventoryCrafting ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
-			final InventoryCrafting real = new InventoryCrafting( new ContainerNull(), 3, 3 );
+			final CraftingInventory ic = new CraftingInventory( new ContainerNull(), 3, 3 );
+			final CraftingInventory real = new CraftingInventory( new ContainerNull(), 3, 3 );
 
 			for( int x = 0; x < 9; x++ )
 			{

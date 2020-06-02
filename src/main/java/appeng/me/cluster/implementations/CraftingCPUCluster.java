@@ -29,7 +29,7 @@ import java.util.Map.Entry;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -646,7 +646,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 			if( this.canCraft( details, details.getCondensedInputs() ) )
 			{
-				InventoryCrafting ic = null;
+				CraftingInventory ic = null;
 
 				for( final ICraftingMedium m : cc.getMediums( e.getKey() ) )
 				{
@@ -676,7 +676,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 								continue;
 							}
 
-							ic = new InventoryCrafting( new ContainerNull(), 3, 3 );
+							ic = new CraftingInventory( new ContainerNull(), 3, 3 );
 							boolean found = false;
 
 							for( int x = 0; x < input.length; x++ )

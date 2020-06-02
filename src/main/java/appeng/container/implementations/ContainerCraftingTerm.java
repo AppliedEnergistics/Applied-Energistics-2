@@ -21,7 +21,7 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -80,7 +80,7 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 	public void onCraftMatrixChanged( IInventory inventory )
 	{
 		final ContainerNull cn = new ContainerNull();
-		final InventoryCrafting ic = new InventoryCrafting( cn, 3, 3 );
+		final CraftingInventory ic = new CraftingInventory( cn, 3, 3 );
 
 		for( int x = 0; x < 9; x++ )
 		{

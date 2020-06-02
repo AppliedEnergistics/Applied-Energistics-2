@@ -191,6 +191,7 @@ sourceSets {
             include 'appeng/me/GridStorage*'
             include 'appeng/capabilities/*'
             include 'appeng/container/slot/AppEngSlot*'
+            include 'appeng/container/AEBaseContainer*'
         }
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
