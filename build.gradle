@@ -223,9 +223,13 @@ sourceSets {
             include 'appeng/block/grindstone/**'
             include 'appeng/tile/grindstone/**'
             include 'appeng/container/implementations/ContainerGrinder.java'
+            include 'appeng/data/**'
         }
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
+        resources {
+            srcDir 'src/generated/resources'
+        }
     }
     test {
         compileClasspath += sourceSets.api.output

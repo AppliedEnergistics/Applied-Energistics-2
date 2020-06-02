@@ -12,30 +12,30 @@ import javax.annotation.Nonnull;
 import java.nio.file.Path;
 
 
-public abstract class AE2DataProviderBase implements IDataProvider
+public interface IAE2DataProvider extends IDataProvider
 {
 
-	protected Path getPath( Path root, ResourceLocation id )
+	default Path getPath( Path root, ResourceLocation id )
 	{
 		return root.resolve( "data/" + id.getNamespace() + "/" + getDataPath() + "/" + id.getPath() + ".json" );
 	}
 
 	@Nonnull
 	@Override
-	public String getName()
+	default String getName()
 	{
 		return AppEng.MOD_NAME + "/" + getDataPath();
 	}
 
-	protected JsonElement toJson( LootTable.Builder builder )
+	default JsonElement toJson( LootTable.Builder builder )
 	{
 		return LootTableManager.toJson( finishBuilding( builder ) );
 	}
 
 	@Nonnull
-	protected abstract LootTable finishBuilding( LootTable.Builder builder );
+	LootTable finishBuilding( LootTable.Builder builder );
 
 	@Nonnull
-	abstract protected String getDataPath();
+	String getDataPath();
 
 }

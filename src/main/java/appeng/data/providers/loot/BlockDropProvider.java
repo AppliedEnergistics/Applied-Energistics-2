@@ -11,7 +11,7 @@ import com.google.gson.GsonBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.data.DirectoryCache;
 import net.minecraft.data.IDataProvider;
-import net.minecraft.item.Item;
+import net.minecraft.data.loot.BlockLootTables;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.*;
@@ -23,18 +23,18 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Function;
 
 
-public class BlockDropProvider extends AE2LootProviderBase
+public class BlockDropProvider extends BlockLootTables implements IAE2LootProvider
 {
 	public static final IBlocks BLOCKS = Api.INSTANCE.definitions().blocks();
 	public static final IMaterials MATERIALS = Api.INSTANCE.definitions().materials();
 
 	private Map<Block, Function<Block, LootTable.Builder>> overrides = ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
-			.put( BLOCKS.quartzOre().block(), silkTouchOreBuilder( Items.QUARTZ ) ) // FIXME replace with the material reference
-			.put( BLOCKS.quartzOreCharged().block(), silkTouchOreBuilder( Items.LAPIS_LAZULI ) ) // FIXME replace with the material reference
+			.put( BLOCKS.matrixFrame().block(), $ -> LootTable.builder() )
+			.put( BLOCKS.quartzOre().block(), b -> droppingItemWithFortune( b, Items.QUARTZ ) ) // FIXME replace with the material reference
+			.put( BLOCKS.quartzOreCharged().block(), b -> droppingItemWithFortune( b, Items.LAPIS_LAZULI ) ) // FIXME replace with the material reference
 			.build();
 
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -75,49 +75,16 @@ public class BlockDropProvider extends AE2LootProviderBase
 				.addLootPool( pool );
 	}
 
-	private Function<Block, LootTable.Builder> silkTouchOreBuilder( Item drop )
-	{
-		return block -> {
-			LootEntry.Builder<?> dropEntry = ItemLootEntry.builder( drop );
-			LootPool.Builder pool = LootPool.builder()
-					.name( "main" )
-					.acceptFunction( () -> ( stack, lootContext ) -> {
-						stack = stack.copy();
-						int fortune = lootContext.getLootingModifier();
-						Random rand = lootContext.getRandom();
-						if( fortune > 0 )
-						{
-							int j = rand.nextInt( fortune + 2 ) - 1;
-							if( j < 0 )
-							{
-								j = 0;
-							}
-							stack.setCount( 1 + rand.nextInt( 2 ) * ( j + 1 ) );
-						}
-						else
-						{
-							stack.setCount( 1 + rand.nextInt( 2 ) );
-						}
-						return stack;
-					} )
-					.rolls( ConstantRange.of( 1 ) )
-					.addEntry( dropEntry );
-
-			return LootTable.builder()
-					.addLootPool( pool );
-		};
-	}
-
 	@Nonnull
 	@Override
-	protected LootParameterSet getParameterSetTarget()
+	public LootParameterSet getParameterSetTarget()
 	{
 		return LootParameterSets.BLOCK;
 	}
 
 	@Nonnull
 	@Override
-	protected String getDataPath()
+	public String getDataPath()
 	{
 		return "loot_tables/blocks";
 	}
