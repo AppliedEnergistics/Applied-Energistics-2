@@ -19,21 +19,25 @@
 package appeng.client.gui.implementations;
 
 
+import appeng.core.AppEng;
 import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.client.gui.AEBaseGui;
 import appeng.container.implementations.ContainerSkyChest;
 import appeng.core.localization.GuiText;
-import appeng.integration.Integrations;
-import appeng.tile.storage.TileSkyChest;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 
-public class GuiSkyChest extends AEBaseGui
+public class GuiSkyChest extends AEBaseGui<ContainerSkyChest>
 {
 
-	public GuiSkyChest( final PlayerInventory PlayerInventory, final TileSkyChest te )
+	private static final ResourceLocation TEXTURE = new ResourceLocation(AppEng.MOD_ID, "textures/guis/skychest.png");
+
+	public GuiSkyChest( ContainerSkyChest container, PlayerInventory playerInv, ITextComponent title )
 	{
-		super( new ContainerSkyChest( PlayerInventory, te ) );
+		super( container, playerInv, title );
 		this.ySize = 195;
 	}
 
@@ -47,13 +51,14 @@ public class GuiSkyChest extends AEBaseGui
 	@Override
 	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		this.bindTexture( "guis/skychest.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+		bindTexture(TEXTURE);
+		GuiUtils.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize, 0 );
 	}
 
 	@Override
 	protected boolean enableSpaceClicking()
 	{
-		return !Integrations.invTweaks().isEnabled();
+		// FIXME return !Integrations.invTweaks().isEnabled();
+		return true;
 	}
 }

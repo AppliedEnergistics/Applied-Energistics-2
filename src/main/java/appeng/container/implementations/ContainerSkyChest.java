@@ -19,22 +19,29 @@
 package appeng.container.implementations;
 
 
+import appeng.core.AppEng;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotNormal;
 import appeng.tile.storage.TileSkyChest;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 
 
 public class ContainerSkyChest extends AEBaseContainer
 {
+	public static ContainerType<ContainerSkyChest> TYPE;
 
 	private final TileSkyChest chest;
 
-	public ContainerSkyChest( final PlayerInventory ip, final TileSkyChest chest )
+	public ContainerSkyChest(int id, final PlayerInventory ip, final TileSkyChest chest )
 	{
-		super( ip, chest, null );
+		super( TYPE, id, ip, chest, null );
 		this.chest = chest;
 
 		for( int y = 0; y < 4; y++ )
@@ -48,6 +55,15 @@ public class ContainerSkyChest extends AEBaseContainer
 		this.chest.openInventory( ip.player );
 
 		this.bindPlayerInventory( ip, 0, 195 - /* height of player inventory */82 );
+	}
+
+	public static ContainerSkyChest fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+		BlockPos pos = buf.readBlockPos();
+		TileEntity te = Minecraft.getInstance().player.world.getTileEntity(pos);
+		if (te instanceof TileSkyChest) {
+			return new ContainerSkyChest(windowId, inv, (TileSkyChest) te);
+		}
+		return null;
 	}
 
 	@Override

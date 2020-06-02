@@ -217,6 +217,9 @@ sourceSets {
             include 'appeng/container/slot/SlotOutput.java'
             include 'appeng/container/slot/AppEngCraftingSlot.java'
             include 'appeng/container/slot/SlotRestrictedInput.java'
+            include 'appeng/container/implementations/ContainerSkyChest.java'
+            include 'appeng/container/slot/SlotNormal.java'
+            include 'appeng/client/gui/implementations/GuiSkyChest.java'
         }
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output

@@ -21,17 +21,21 @@ package appeng.core;
 
 import appeng.bootstrap.IModelRegistry;
 import appeng.bootstrap.components.*;
+import appeng.client.gui.implementations.GuiSkyChest;
 import appeng.client.render.effects.ChargedOreFX;
 import appeng.client.render.effects.LightningFX;
 import appeng.client.render.effects.VibrantFX;
 import appeng.client.render.model.GlassModelLoader;
 import appeng.client.render.tesr.SkyChestTESR;
+import appeng.container.implementations.ContainerSkyChest;
 import appeng.core.stats.AeStats;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.EntityType;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
@@ -42,9 +46,14 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.GenericEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.ObjectHolder;
 
 
 final class Registration
@@ -224,6 +233,17 @@ final class Registration
 		final IForgeRegistry<TileEntityType<?>> registry = event.getRegistry();
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		definitions.getRegistry().getBootstrapComponents( ITileEntityRegistrationComponent.class ).forEachRemaining(b -> b.register( registry ) );
+	}
+
+	public void registerContainerTypes( RegistryEvent.Register<ContainerType<?>> event ) {
+		final IForgeRegistry<ContainerType<?>> registry = event.getRegistry();
+
+		ContainerSkyChest.TYPE = IForgeContainerType.create(ContainerSkyChest::fromNetwork);
+		registry.register(ContainerSkyChest.TYPE.setRegistryName(AppEng.MOD_ID, "sky_chest"));
+
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+			ScreenManager.registerFactory(ContainerSkyChest.TYPE, GuiSkyChest::new);
+		});
 	}
 
 //	@SubscribeEvent

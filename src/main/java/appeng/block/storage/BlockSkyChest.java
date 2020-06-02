@@ -21,9 +21,13 @@ package appeng.block.storage;
 
 import javax.annotation.Nullable;
 
+import appeng.container.implementations.ContainerSkyChest;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -40,6 +44,7 @@ import net.minecraft.world.World;
 import appeng.block.AEBaseTileBlock;
 import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 
 public class BlockSkyChest extends AEBaseTileBlock<TileSkyChest>
@@ -77,6 +82,15 @@ public class BlockSkyChest extends AEBaseTileBlock<TileSkyChest>
 	{
 		if( Platform.isServer() )
 		{
+			TileSkyChest tile = getTileEntity(w, pos);
+			if (tile == null) {
+				return ActionResultType.PASS;
+			}
+			INamedContainerProvider container = new SimpleNamedContainerProvider((wnd, p, pl) -> new ContainerSkyChest(wnd, p, tile), getNameTextComponent());
+			NetworkHooks.openGui((ServerPlayerEntity) player, container, buf -> {
+				buf.writeBlockPos(pos);
+			});
+
 			// FIXME Platform.openGUI( player, this.getTileEntity( w, pos ), AEPartLocation.fromFacing(hit.getFace()), GuiBridge.GUI_SKYCHEST );
 		}
 

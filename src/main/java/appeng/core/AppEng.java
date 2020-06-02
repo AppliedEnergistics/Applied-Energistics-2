@@ -108,6 +108,7 @@ public final class AppEng
 		modEventBus.addGenericListener(EntityType.class, registration::registerEntities);
 		modEventBus.addGenericListener(ParticleType.class, registration::registerParticleTypes);
 		modEventBus.addGenericListener(TileEntityType.class, registration::registerTileEntities);
+		modEventBus.addGenericListener(ContainerType.class, registration::registerContainerTypes);
 		modEventBus.addListener(registration::registerParticleFactories);
 		modEventBus.addListener(registration::registerTextures);
 

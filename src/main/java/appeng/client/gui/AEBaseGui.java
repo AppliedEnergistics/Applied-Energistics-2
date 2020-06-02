@@ -76,7 +76,7 @@ import java.util.concurrent.TimeUnit;
 
 
 //TODO, pass generic up here for Container
-public abstract class AEBaseGui extends ContainerScreen<AEBaseContainer>
+public abstract class AEBaseGui<T extends AEBaseContainer> extends ContainerScreen<T>
 {
 	private final List<InternalSlotME> meSlots = new ArrayList<>();
 	// drag y
@@ -90,7 +90,7 @@ public abstract class AEBaseGui extends ContainerScreen<AEBaseContainer>
 	private Slot bl_clicked;
 	protected final List<GuiCustomSlot> guiSlots = new ArrayList<>();
 
-	public AEBaseGui(AEBaseContainer container, PlayerInventory playerInventory, ITextComponent title) {
+	public AEBaseGui(T container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
 	}
 
@@ -937,6 +937,11 @@ public abstract class AEBaseGui extends ContainerScreen<AEBaseContainer>
 	public void bindTexture( final String file )
 	{
 		final ResourceLocation loc = new ResourceLocation( AppEng.MOD_ID, "textures/" + file );
+		this.minecraft.getTextureManager().bindTexture( loc );
+	}
+
+	public void bindTexture( final ResourceLocation loc )
+	{
 		this.minecraft.getTextureManager().bindTexture( loc );
 	}
 
