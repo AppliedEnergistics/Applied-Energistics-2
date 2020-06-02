@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "appliedenergistics2:sky_stone_small_brick"
-  },
-  "result": "appliedenergistics2:sky_stone_small_brick_stairs",
-  "count": 1
-}
