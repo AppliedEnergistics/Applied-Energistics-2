@@ -29,13 +29,10 @@ import com.google.common.base.Preconditions;
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.Direction;
-import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
-
-import appeng.client.render.VertexFormats;
+import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 
 
 /**
@@ -43,8 +40,6 @@ import appeng.client.render.VertexFormats;
  */
 public class CubeBuilder
 {
-
-	private VertexFormat format;
 
 	private final List<BakedQuad> output;
 
@@ -62,15 +57,14 @@ public class CubeBuilder
 
 	private boolean renderFullBright;
 
-	public CubeBuilder( VertexFormat format, List<BakedQuad> output )
+	public CubeBuilder( List<BakedQuad> output )
 	{
 		this.output = output;
-		this.format = format;
 	}
 
-	public CubeBuilder( VertexFormat format )
+	public CubeBuilder()
 	{
-		this( format, new ArrayList<>( 6 ) );
+		this( new ArrayList<>( 6 ) );
 	}
 
 	public void addCube( float x1, float y1, float z1, float x2, float y2, float z2 )
@@ -82,49 +76,15 @@ public class CubeBuilder
 		y2 /= 16.0f;
 		z2 /= 16.0f;
 
-		// If brightness is forced to specific values, extend the vertex format to contain the multi-texturing lightmap
-		// offset
-		VertexFormat savedFormat = null;
-		if( this.renderFullBright )
-		{
-			savedFormat = this.format;
-			this.format = VertexFormats.getFormatWithLightMap( this.format );
-		}
-
 		for( Direction face : this.drawFaces )
 		{
 			this.putFace( face, x1, y1, z1, x2, y2, z2 );
-		}
-
-		// Restore old format
-		if( savedFormat != null )
-		{
-			this.format = savedFormat;
 		}
 	}
 
 	public void addQuad( Direction face, float x1, float y1, float z1, float x2, float y2, float z2 )
 	{
-		// If brightness is forced to specific values, extend the vertex format to contain the multi-texturing lightmap
-		// offset
-		VertexFormat savedFormat = null;
-		if( this.renderFullBright )
-		{
-			savedFormat = this.format;
-			this.format = new VertexFormat( savedFormat );
-			if( !this.format.getElements().contains( DefaultVertexFormats.TEX_2S ) )
-			{
-				this.format.addElement( DefaultVertexFormats.TEX_2S );
-			}
-		}
-
 		this.putFace( face, x1, y1, z1, x2, y2, z2 );
-
-		// Restore old format
-		if( savedFormat != null )
-		{
-			this.format = savedFormat;
-		}
 	}
 
 	private static final class UvVector
@@ -140,8 +100,7 @@ public class CubeBuilder
 
 		TextureAtlasSprite texture = this.textures.get( face );
 
-		UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder( this.format );
-		builder.setTexture( texture );
+		BakedQuadBuilder builder = new BakedQuadBuilder( texture );
 		builder.setQuadOrientation( face );
 		builder.setQuadTint( -1 );
 		builder.setApplyDiffuseLighting( true );
@@ -152,10 +111,10 @@ public class CubeBuilder
 		Vector4f customUv = this.customUv.get( face );
 		if( customUv != null )
 		{
-			uv.u1 = texture.getInterpolatedU( customUv.x );
-			uv.v1 = texture.getInterpolatedV( customUv.y );
-			uv.u2 = texture.getInterpolatedU( customUv.z );
-			uv.v2 = texture.getInterpolatedV( customUv.w );
+			uv.u1 = texture.getInterpolatedU( customUv.getX() );
+			uv.v1 = texture.getInterpolatedV( customUv.getY() );
+			uv.u2 = texture.getInterpolatedU( customUv.getZ() );
+			uv.v2 = texture.getInterpolatedV( customUv.getW() );
 		}
 		else if( this.useStandardUV )
 		{
@@ -303,7 +262,7 @@ public class CubeBuilder
 	}
 
 	// uv.u1, uv.v1
-	private void putVertexTL( UnpackedBakedQuad.Builder builder, Direction face, float x, float y, float z, UvVector uv )
+	private void putVertexTL( BakedQuadBuilder builder, Direction face, float x, float y, float z, UvVector uv )
 	{
 		float u, v;
 
@@ -332,7 +291,7 @@ public class CubeBuilder
 	}
 
 	// uv.u2, uv.v1
-	private void putVertexTR( UnpackedBakedQuad.Builder builder, Direction face, float x, float y, float z, UvVector uv )
+	private void putVertexTR( BakedQuadBuilder builder, Direction face, float x, float y, float z, UvVector uv )
 	{
 		float u, v;
 
@@ -360,7 +319,7 @@ public class CubeBuilder
 	}
 
 	// uv.u2, uv.v2
-	private void putVertexBR( UnpackedBakedQuad.Builder builder, Direction face, float x, float y, float z, UvVector uv )
+	private void putVertexBR( BakedQuadBuilder builder, Direction face, float x, float y, float z, UvVector uv )
 	{
 
 		float u;
@@ -391,7 +350,7 @@ public class CubeBuilder
 	}
 
 	// uv.u1, uv.v2
-	private void putVertexBL( UnpackedBakedQuad.Builder builder, Direction face, float x, float y, float z, UvVector uv )
+	private void putVertexBL( BakedQuadBuilder builder, Direction face, float x, float y, float z, UvVector uv )
 	{
 
 		float u;
@@ -421,13 +380,14 @@ public class CubeBuilder
 		this.putVertex( builder, face, x, y, z, u, v );
 	}
 
-	private void putVertex( UnpackedBakedQuad.Builder builder, Direction face, float x, float y, float z, float u, float v )
+	private void putVertex( BakedQuadBuilder builder, Direction face, float x, float y, float z, float u, float v )
 	{
 		VertexFormat format = builder.getVertexFormat();
 
-		for( int i = 0; i < format.getElementCount(); i++ )
+		List<VertexFormatElement> elements = format.getElements();
+		for( int i = 0; i < elements.size(); i++ )
 		{
-			VertexFormatElement e = format.getElement( i );
+			VertexFormatElement e = elements.get( i );
 			switch( e.getUsage() )
 			{
 				case POSITION:
@@ -449,7 +409,7 @@ public class CubeBuilder
 					{
 						builder.put( i, u, v );
 					}
-					else
+					else if( e.getIndex() == 2 && renderFullBright )
 					{
 						// Force Brightness to 15, this is for full bright mode
 						// this vertex element will only be present in that case

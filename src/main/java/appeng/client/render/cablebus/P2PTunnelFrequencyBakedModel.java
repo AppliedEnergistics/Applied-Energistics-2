@@ -4,6 +4,7 @@ package appeng.client.render.cablebus;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 import com.google.common.cache.Cache;
@@ -11,10 +12,9 @@ import com.google.common.cache.CacheBuilder;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.Direction;
 
 import appeng.api.parts.IPartBakedModel;
@@ -24,7 +24,6 @@ import appeng.util.Platform;
 
 public class P2PTunnelFrequencyBakedModel implements IBakedModel, IPartBakedModel
 {
-	private final VertexFormat format;
 	private final TextureAtlasSprite texture;
 
 	private final static Cache<Long, List<BakedQuad>> modelCache = CacheBuilder.newBuilder().maximumSize( 100 ).build();
@@ -36,14 +35,13 @@ public class P2PTunnelFrequencyBakedModel implements IBakedModel, IPartBakedMode
 			{ 10, 4, 2 }
 	};
 
-	public P2PTunnelFrequencyBakedModel( final VertexFormat format, final TextureAtlasSprite texture )
+	public P2PTunnelFrequencyBakedModel( final TextureAtlasSprite texture )
 	{
-		this.format = format;
 		this.texture = texture;
 	}
 
 	@Override
-	public List<BakedQuad> getPartQuads( Long partFlags, long rand )
+	public List<BakedQuad> getPartQuads( Long partFlags, Random rand )
 	{
 		try
 		{
@@ -66,7 +64,7 @@ public class P2PTunnelFrequencyBakedModel implements IBakedModel, IPartBakedMode
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( BlockState state, Direction side, long rand )
+	public List<BakedQuad> getQuads( BlockState state, Direction side, Random rand )
 	{
 		if( side != null )
 		{
@@ -78,7 +76,7 @@ public class P2PTunnelFrequencyBakedModel implements IBakedModel, IPartBakedMode
 	private List<BakedQuad> getQuadsForFrequency( final short frequency, final boolean active )
 	{
 		final AEColor[] colors = Platform.p2p().toColors( frequency );
-		final CubeBuilder cb = new CubeBuilder( this.format );
+		final CubeBuilder cb = new CubeBuilder();
 
 		cb.setTexture( this.texture );
 		cb.useStandardUV();
@@ -120,6 +118,12 @@ public class P2PTunnelFrequencyBakedModel implements IBakedModel, IPartBakedMode
 	public boolean isGui3d()
 	{
 		return false;
+	}
+
+	@Override
+	public boolean func_230044_c_()
+	{
+		return false;//TODO
 	}
 
 	@Override

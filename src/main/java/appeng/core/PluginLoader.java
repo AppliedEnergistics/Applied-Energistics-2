@@ -19,6 +19,7 @@
 package appeng.core;
 
 
+import java.lang.annotation.ElementType;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.HashSet;
@@ -28,7 +29,10 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableMap;
 
-import net.minecraftforge.fml.common.discovery.ASMDataTable;
+import org.objectweb.asm.Type;
+
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.forgespi.language.ModFileScanData;
 
 import appeng.api.AEInjectable;
 import appeng.api.AEPlugin;
@@ -40,28 +44,30 @@ import appeng.api.AEPlugin;
 class PluginLoader
 {
 
-	public void loadPlugins( Collection<Object> injectables, ASMDataTable asmDataTable )
+	public void loadPlugins( Collection<Object> injectables )
 	{
 		Map<Class<?>, Object> injectableMap = mapInjectables( injectables );
-		findAndInstantiatePlugins( asmDataTable, injectableMap );
+		findAndInstantiatePlugins( injectableMap );
 	}
 
-	private static void findAndInstantiatePlugins( ASMDataTable dataTable, Map<Class<?>, Object> injectableMap )
+	private static void findAndInstantiatePlugins( Map<Class<?>, Object> injectableMap )
 	{
-		Set<ASMDataTable.ASMData> allAnnotated = dataTable.getAll( AEPlugin.class.getCanonicalName() );
+		Type aType = Type.getType( AEPlugin.class );
+		Set<ModFileScanData.AnnotationData> allAnnotated = ModList.get().getAllScanData().stream().map( ModFileScanData::getAnnotations ).flatMap( Collection::stream ).filter( a -> a.getAnnotationType().equals( aType ) ).filter( a -> a.getTargetType() == ElementType.TYPE ).collect( Collectors.toSet() );
 
-		for( ASMDataTable.ASMData candidate : allAnnotated )
+		for( ModFileScanData.AnnotationData candidate : allAnnotated )
 		{
 
+			String cName = candidate.getMemberName();
 			Class<?> aClass;
 			try
 			{
-				aClass = Class.forName( candidate.getClassName() );
+				aClass = Class.forName( cName );
 			}
 			catch( ClassNotFoundException e )
 			{
-				AELog.error( e, "Couldn't find annotated AE plugin class " + candidate.getClassName() );
-				throw new RuntimeException( "Couldn't find annotated AE plugin class " + candidate.getClassName(), e );
+				AELog.error( e, "Couldn't find annotated AE plugin class " + cName );
+				throw new RuntimeException( "Couldn't find annotated AE plugin class " + cName, e );
 			}
 
 			// Try instantiating the plugin
@@ -72,8 +78,8 @@ class PluginLoader
 			}
 			catch( Exception e )
 			{
-				AELog.error( e, "Unable to instantiate AE plugin " + candidate.getClassName() );
-				throw new RuntimeException( "Unable to instantiate AE plugin " + candidate.getClassName(), e );
+				AELog.error( e, "Unable to instantiate AE plugin " + cName );
+				throw new RuntimeException( "Unable to instantiate AE plugin " + cName, e );
 			}
 		}
 	}

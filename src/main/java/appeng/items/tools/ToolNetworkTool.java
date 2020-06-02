@@ -21,17 +21,21 @@ package appeng.items.tools;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ToolType;
 
 import appeng.api.implementations.guiobjects.IGuiItem;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
@@ -57,8 +61,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench
 
 	public ToolNetworkTool()
 	{
-		this.setMaxStackSize( 1 );
-		this.setHarvestLevel( "wrench", 0 );
+		super(new Item.Properties().maxStackSize( 1 ).addToolType( ToolType.get("wrench"), 0 ));
 	}
 
 	@Override
@@ -75,20 +78,20 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench
 		{
 			final RayTraceResult mop = AppEng.proxy.getRTR();
 
-			if( mop == null || mop.typeOfHit == RayTraceResult.Type.MISS )
+			if( mop == null || mop.getType() == RayTraceResult.Type.MISS )
 			{
-				NetworkHandler.instance().sendToServer( new PacketClick( BlockPos.ORIGIN, null, 0, 0, 0, hand ) );
+				NetworkHandler.instance().sendToServer( new PacketClick( BlockPos.ZERO, null, 0, 0, 0, hand ) );
 			}
 		}
 
-		return new ActionResult<>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
+		return new ActionResult<>( ActionResultType.SUCCESS, p.getHeldItem( hand ) );
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst( final PlayerEntity player, final World world, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
+	public ActionResultType onItemUseFirst( ItemStack stack, ItemUseContext context )
 	{
 		final RayTraceResult mop = new RayTraceResult( new Vec3d( hitX, hitY, hitZ ), side, pos );
-		final TileEntity te = world.getTileEntity( pos );
+		final TileEntity te = context.getWorld().getTileEntity( context.getPos() );
 
 		if( te instanceof IPartHost )
 		{
@@ -98,17 +101,17 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench
 			{
 				if( part.part instanceof INetworkToolAgent && !( (INetworkToolAgent) part.part ).showNetworkInfo( mop ) )
 				{
-					return EnumActionResult.FAIL;
+					return ActionResultType.FAIL;
 				}
-				else if( player.isShiftKeyDown() )
+				else if( context.getPlayer().isShiftKeyDown() )
 				{
-					return EnumActionResult.PASS;
+					return ActionResultType.PASS;
 				}
 			}
 		}
 		else if( te instanceof INetworkToolAgent && !( (INetworkToolAgent) te ).showNetworkInfo( mop ) )
 		{
-			return EnumActionResult.FAIL;
+			return ActionResultType.FAIL;
 		}
 
 		if( Platform.isClient() )
@@ -116,11 +119,11 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench
 			NetworkHandler.instance().sendToServer( new PacketClick( pos, side, hitX, hitY, hitZ, hand ) );
 		}
 
-		return EnumActionResult.SUCCESS;
+		return ActionResultType.SUCCESS;
 	}
 
 	@Override
-	public boolean doesSneakBypassUse( final ItemStack itemstack, final IBlockReader world, final BlockPos pos, final PlayerEntity player )
+	public boolean doesSneakBypassUse( ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player )
 	{
 		return true;
 	}

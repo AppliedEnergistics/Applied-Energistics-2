@@ -26,7 +26,9 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -48,6 +50,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
@@ -162,7 +165,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 	public ActionResult<ItemStack> onItemRightClick( final World world, final PlayerEntity player, final Hand hand )
 	{
 		this.disassembleDrive( player.getHeldItem( hand ), world, player );
-		return new ActionResult<>( EnumActionResult.SUCCESS, player.getHeldItem( hand ) );
+		return new ActionResult<>( ActionResultType.SUCCESS, player.getHeldItem( hand ) );
 	}
 
 	private boolean disassembleDrive( final ItemStack stack, final World world, final PlayerEntity player )
@@ -206,9 +209,9 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 					// drop empty storage cell case
 					this.dropEmptyStorageCellCase( ia, player );
 
-					if( player.inventoryContainer != null )
+					if( player.container != null )
 					{
-						player.inventoryContainer.detectAndSendChanges();
+						player.container.detectAndSendChanges();
 					}
 
 					return true;
@@ -221,9 +224,9 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 	protected abstract void dropEmptyStorageCellCase( final InventoryAdaptor ia, final PlayerEntity player );
 
 	@Override
-	public EnumActionResult onItemUseFirst( final PlayerEntity player, final World world, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
+	public ActionResultType onItemUseFirst( ItemStack stack, ItemUseContext context )
 	{
-		return this.disassembleDrive( player.getHeldItem( hand ), world, player ) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
+		return this.disassembleDrive( stack, context.getWorld(), context.getPlayer() ) ? ActionResultType.SUCCESS : ActionResultType.PASS;
 	}
 
 	@Override

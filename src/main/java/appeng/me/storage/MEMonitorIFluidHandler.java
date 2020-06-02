@@ -29,9 +29,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
-import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.StorageFilter;
@@ -43,6 +41,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
+import appeng.core.Api;
 
 
 public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITickingMonitor
@@ -75,7 +74,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 	@Override
 	public IAEFluidStack injectItems( final IAEFluidStack input, final Actionable type, final IActionSource src )
 	{
-		final int filled = this.handler.fill( input.getFluidStack(), type == Actionable.MODULATE );
+		final int filled = this.handler.fill( input.getFluidStack(), type.getFluidAction() );
 
 		if( filled == 0 )
 		{
@@ -100,9 +99,9 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 	@Override
 	public IAEFluidStack extractItems( final IAEFluidStack request, final Actionable type, final IActionSource src )
 	{
-		final FluidStack removed = this.handler.drain( request.getFluidStack(), type == Actionable.MODULATE );
+		final FluidStack removed = this.handler.drain( request.getFluidStack(), type.getFluidAction() );
 
-		if( removed == null || removed.amount == 0 )
+		if( removed == null || removed.getAmount() == 0 )
 		{
 			return null;
 		}
@@ -113,7 +112,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 		}
 
 		final IAEFluidStack o = request.copy();
-		o.setStackSize( removed.amount );
+		o.setStackSize( removed.getAmount() );
 		return o;
 	}
 
@@ -162,8 +161,8 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 			}
 			else
 			{
-				final int newSize = newIS == null ? 0 : newIS.amount;
-				final int diff = newSize - ( oldIS == null ? 0 : oldIS.amount );
+				final int newSize = newIS == null ? 0 : newIS.getAmount();
+				final int diff = newSize - ( oldIS == null ? 0 : oldIS.getAmount() );
 
 				IAEFluidStack stack = null;
 

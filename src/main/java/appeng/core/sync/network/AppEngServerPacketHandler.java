@@ -42,7 +42,7 @@ public final class AppEngServerPacketHandler extends AppEngPacketHandlerBase imp
 			final AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( packet );
 			pack.serverPacketData( manager, player );
 		}
-		catch( final InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e )
+		catch( final IllegalArgumentException e )
 		{
 			AELog.debug( e );
 		}

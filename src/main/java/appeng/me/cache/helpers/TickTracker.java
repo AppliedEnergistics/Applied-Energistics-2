@@ -90,17 +90,17 @@ public class TickTracker implements Comparable<TickTracker>
 			part.addEntityCrashInfo( crashreportcategory );
 		}
 
-		crashreportcategory.addCrashSection( "CurrentTickRate", this.getCurrentRate() );
-		crashreportcategory.addCrashSection( "MinTickRate", this.getRequest().minTickRate );
-		crashreportcategory.addCrashSection( "MaxTickRate", this.getRequest().maxTickRate );
-		crashreportcategory.addCrashSection( "MachineType", this.getGridTickable().getClass().getName() );
-		crashreportcategory.addCrashSection( "GridBlockType", this.getNode().getGridBlock().getClass().getName() );
-		crashreportcategory.addCrashSection( "ConnectedSides", this.getNode().getConnectedSides() );
+		crashreportcategory.addDetail( "CurrentTickRate", this.getCurrentRate() );
+		crashreportcategory.addDetail( "MinTickRate", this.getRequest().minTickRate );
+		crashreportcategory.addDetail( "MaxTickRate", this.getRequest().maxTickRate );
+		crashreportcategory.addDetail( "MachineType", this.getGridTickable().getClass().getName() );
+		crashreportcategory.addDetail( "GridBlockType", this.getNode().getGridBlock().getClass().getName() );
+		crashreportcategory.addDetail( "ConnectedSides", this.getNode().getConnectedSides() );
 
 		final DimensionalCoord dc = this.getNode().getGridBlock().getLocation();
 		if( dc != null )
 		{
-			crashreportcategory.addCrashSection( "Location", dc );
+			crashreportcategory.addDetail( "Location", dc );
 		}
 	}
 

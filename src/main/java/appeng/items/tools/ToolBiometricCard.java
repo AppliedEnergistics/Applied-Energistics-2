@@ -107,7 +107,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	@Override
 	public void setProfile( final ItemStack itemStack, final GameProfile profile )
 	{
-		final CompoundNBT tag = Platform.openNbtData( itemStack );
+		final CompoundNBT tag = itemStack.getOrCreateTag();
 
 		if( profile != null )
 		{
@@ -124,7 +124,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	@Override
 	public GameProfile getProfile( final ItemStack is )
 	{
-		final CompoundNBT tag = Platform.openNbtData( is );
+		final CompoundNBT tag = is.getOrCreateTag();
 		if( tag.contains( "profile" ) )
 		{
 			return NBTUtil.readGameProfile( tag.getCompound( "profile" ) );
@@ -135,7 +135,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	@Override
 	public EnumSet<SecurityPermissions> getPermissions( final ItemStack is )
 	{
-		final CompoundNBT tag = Platform.openNbtData( is );
+		final CompoundNBT tag = is.getOrCreateTag();
 		final EnumSet<SecurityPermissions> result = EnumSet.noneOf( SecurityPermissions.class );
 
 		for( final SecurityPermissions sp : SecurityPermissions.values() )
@@ -152,14 +152,14 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	@Override
 	public boolean hasPermission( final ItemStack is, final SecurityPermissions permission )
 	{
-		final CompoundNBT tag = Platform.openNbtData( is );
+		final CompoundNBT tag = is.getOrCreateTag();
 		return tag.getBoolean( permission.name() );
 	}
 
 	@Override
 	public void removePermission( final ItemStack itemStack, final SecurityPermissions permission )
 	{
-		final CompoundNBT tag = Platform.openNbtData( itemStack );
+		final CompoundNBT tag = itemStack.getOrCreateTag();
 		if( tag.contains( permission.name() ) )
 		{
 			tag.remove( permission.name() );
@@ -169,7 +169,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	@Override
 	public void addPermission( final ItemStack itemStack, final SecurityPermissions permission )
 	{
-		final CompoundNBT tag = Platform.openNbtData( itemStack );
+		final CompoundNBT tag = itemStack.getOrCreateTag();
 		tag.putBoolean( permission.name(), true );
 	}
 

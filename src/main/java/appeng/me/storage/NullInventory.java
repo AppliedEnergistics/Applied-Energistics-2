@@ -28,6 +28,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.core.Api;
 
 
 public class NullInventory<T extends IAEStack<T>> implements IMEInventoryHandler<T>

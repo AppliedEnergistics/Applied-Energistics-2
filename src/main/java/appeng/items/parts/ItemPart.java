@@ -37,6 +37,8 @@ import com.google.common.base.Preconditions;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.Hand;
@@ -49,6 +51,7 @@ import appeng.api.implementations.items.IItemGroup;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.api.util.AEColor;
+import appeng.core.Api;
 import appeng.core.features.ActivityState;
 import appeng.core.features.ItemStackSrc;
 import appeng.core.localization.GuiText;
@@ -152,14 +155,16 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 	}
 
 	@Override
-	public EnumActionResult onItemUse( final PlayerEntity player, final World w, final BlockPos pos, final Hand hand, final Direction side, final float hitX, final float hitY, final float hitZ )
+	public ActionResultType onItemUse( ItemUseContext context )
 	{
-		if( this.getTypeByStack( player.getHeldItem( hand ) ) == PartType.INVALID_TYPE )
+		PlayerEntity player = context.getPlayer();
+		ItemStack held = player.getHeldItem( context.getHand() );
+		if( this.getTypeByStack( held ) == PartType.INVALID_TYPE )
 		{
-			return EnumActionResult.FAIL;
+			return ActionResultType.FAIL;
 		}
 
-		return Api.INSTANCE.partHelper().placeBus( player.getHeldItem( hand ), pos, side, player, hand, w );
+		return Api.INSTANCE.partHelper().placeBus( held, context.getPos(), context.getFace(), player, context.getHand(), context.getWorld() );
 	}
 
 	@Override

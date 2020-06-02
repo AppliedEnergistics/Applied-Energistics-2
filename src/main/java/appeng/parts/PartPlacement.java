@@ -32,6 +32,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
@@ -71,18 +72,18 @@ public class PartPlacement
 	private final ThreadLocal<Object> placing = new ThreadLocal<>();
 	private boolean wasCanceled = false;
 
-	public static ActionResult<?> place( final ItemStack held, final BlockPos pos, Direction side, final PlayerEntity player, final Hand hand, final World world, PlaceType pass, final int depth )
+	public static ActionResultType place( final ItemStack held, final BlockPos pos, Direction side, final PlayerEntity player, final Hand hand, final World world, PlaceType pass, final int depth )
 	{
 		if( depth > 3 )
 		{
-			return ActionResult.resultFail( null );
+			return ActionResultType.FAIL;
 		}
 
 		if( !held.isEmpty() && Platform.isWrench( player, held, pos ) && player.isShiftKeyDown() )
 		{
 			if( !Platform.hasPermissions( new DimensionalCoord( world, pos ), player ) )
 			{
-				return ActionResult.resultFail( null );
+				return ActionResultType.FAIL;
 			}
 
 			final Block block = world.getBlockState( pos ).getBlock();
@@ -98,7 +99,7 @@ public class PartPlacement
 			{
 				if( !world.isRemote )
 				{
-					final LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
+					final LookDirection dir = Platform.getPlayerRay( player );
 					final RayTraceResult mop = block.getRayTraceResult( world.getBlockState( pos ), world, pos, dir.getA(), dir.getB(), mop );
 
 					if( mop != null )
@@ -137,10 +138,10 @@ public class PartPlacement
 					player.swingArm( hand );
 					NetworkHandler.instance().sendToServer( new PacketPartPlacement( pos, side, getEyeOffset( player ), hand ) );
 				}
-				return ActionResult.resultSuccess( null );
+				return ActionResultType.SUCCESS;
 			}
 
-			return ActionResult.resultFail( null );
+			return ActionResultType.FAIL;
 		}
 
 		TileEntity tile = world.getTileEntity( pos );

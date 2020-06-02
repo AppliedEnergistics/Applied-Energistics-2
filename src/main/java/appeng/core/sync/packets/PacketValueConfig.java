@@ -24,9 +24,9 @@ import java.io.IOException;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Container;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
@@ -272,7 +272,7 @@ public class PacketValueConfig extends AppEngPacket
 		}
 		else if( this.Name.equals( "CraftingStatus" ) && this.Value.equals( "Clear" ) )
 		{
-			final GuiScreen gs = Minecraft.getInstance().currentScreen;
+			final Screen gs = Minecraft.getInstance().currentScreen;
 			if( gs instanceof GuiCraftingCPU )
 			{
 				( (GuiCraftingCPU) gs ).clearItems();

@@ -1,4 +1,3 @@
-
 package appeng.client.render.model;
 
 
@@ -6,29 +5,29 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
-
 import javax.annotation.Nullable;
-import javax.vecmath.Matrix4f;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
-import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.client.model.data.EmptyModelData;
 
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.util.AEColor;
@@ -43,8 +42,6 @@ class MemoryCardBakedModel implements IBakedModel
 			AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT,
 	};
 
-	private final VertexFormat format;
-
 	private final IBakedModel baseModel;
 
 	private final TextureAtlasSprite texture;
@@ -55,14 +52,13 @@ class MemoryCardBakedModel implements IBakedModel
 
 	private final ImmutableList<BakedQuad> generalQuads;
 
-	MemoryCardBakedModel( VertexFormat format, IBakedModel baseModel, TextureAtlasSprite texture )
+	MemoryCardBakedModel( IBakedModel baseModel, TextureAtlasSprite texture )
 	{
-		this( format, baseModel, texture, DEFAULT_COLOR_CODE, createCache() );
+		this( baseModel, texture, DEFAULT_COLOR_CODE, createCache() );
 	}
 
-	private MemoryCardBakedModel( VertexFormat format, IBakedModel baseModel, TextureAtlasSprite texture, AEColor[] hash, Cache<CacheKey, MemoryCardBakedModel> modelCache )
+	private MemoryCardBakedModel( IBakedModel baseModel, TextureAtlasSprite texture, AEColor[] hash, Cache<CacheKey, MemoryCardBakedModel> modelCache )
 	{
-		this.format = format;
 		this.baseModel = baseModel;
 		this.texture = texture;
 		this.colorCode = hash;
@@ -72,16 +68,14 @@ class MemoryCardBakedModel implements IBakedModel
 
 	private static Cache<CacheKey, MemoryCardBakedModel> createCache()
 	{
-		return CacheBuilder.newBuilder()
-				.maximumSize( 100 )
-				.build();
+		return CacheBuilder.newBuilder().maximumSize( 100 ).build();
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, Random rand )
 	{
 
-		List<BakedQuad> quads = this.baseModel.getQuads( state, side, rand );
+		List<BakedQuad> quads = this.baseModel.getQuads( state, side, rand, EmptyModelData.INSTANCE );
 
 		if( side != null )
 		{
@@ -96,7 +90,7 @@ class MemoryCardBakedModel implements IBakedModel
 
 	private List<BakedQuad> buildGeneralQuads()
 	{
-		CubeBuilder builder = new CubeBuilder( this.format );
+		CubeBuilder builder = new CubeBuilder();
 
 		builder.setTexture( this.texture );
 
@@ -127,6 +121,12 @@ class MemoryCardBakedModel implements IBakedModel
 	}
 
 	@Override
+	public boolean func_230044_c_()
+	{
+		return false;//TODO
+	}
+
+	@Override
 	public boolean isBuiltInRenderer()
 	{
 		return this.baseModel.isBuiltInRenderer();
@@ -147,10 +147,10 @@ class MemoryCardBakedModel implements IBakedModel
 	@Override
 	public ItemOverrideList getOverrides()
 	{
-		return new ItemOverrideList( Collections.emptyList() )
+		return new ItemOverrideList()
 		{
 			@Override
-			public IBakedModel handleItemState( IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity )
+			public IBakedModel getModelWithOverrides( IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity )
 			{
 				try
 				{
@@ -160,7 +160,7 @@ class MemoryCardBakedModel implements IBakedModel
 						final AEColor[] colors = memoryCard.getColorCode( stack );
 
 						return MemoryCardBakedModel.this.modelCache.get( new CacheKey( colors ),
-								() -> new MemoryCardBakedModel( MemoryCardBakedModel.this.format, MemoryCardBakedModel.this.baseModel, MemoryCardBakedModel.this.texture, colors, MemoryCardBakedModel.this.modelCache ) );
+								() -> new MemoryCardBakedModel( MemoryCardBakedModel.this.baseModel, MemoryCardBakedModel.this.texture, colors, MemoryCardBakedModel.this.modelCache ) );
 					}
 				}
 				catch( ExecutionException e )
@@ -171,20 +171,13 @@ class MemoryCardBakedModel implements IBakedModel
 				return MemoryCardBakedModel.this;
 			}
 		};
-
 	}
 
 	@Override
-	public Pair<? extends IBakedModel, Matrix4f> handlePerspective( ItemCameraTransforms.TransformType type )
+	public IBakedModel handlePerspective( ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat )
 	{
-		// Delegate to the base model if possible
-		if( this.baseModel instanceof IBakedModel )
-		{
-			IBakedModel pam = this.baseModel;
-			Pair<? extends IBakedModel, Matrix4f> pair = pam.handlePerspective( type );
-			return Pair.of( this, pair.getValue() );
-		}
-		return Pair.of( this, TRSRTransformation.identity().getMatrix() );
+		baseModel.handlePerspective( cameraTransformType, mat );
+		return this;
 	}
 
 	private static class CacheKey
@@ -223,6 +216,5 @@ class MemoryCardBakedModel implements IBakedModel
 			CacheKey other = (CacheKey) obj;
 			return Arrays.equals( this.key, other.key );
 		}
-
 	}
 }

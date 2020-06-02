@@ -21,19 +21,19 @@ package appeng.items.tools.powered;
 
 import java.util.List;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -42,6 +42,7 @@ import appeng.api.config.ViewItems;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.util.IConfigManager;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.core.localization.GuiText;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.ConfigManager;
@@ -59,7 +60,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity player, final Hand hand )
 	{
 		Api.INSTANCE.registries().wireless().openWirelessTerminalGui( player.getHeldItem( hand ), w, player );
-		return new ActionResult<>( EnumActionResult.SUCCESS, player.getHeldItem( hand ) );
+		return new ActionResult<>( ActionResultType.SUCCESS, player.getHeldItem( hand ) );
 	}
 
 	@OnlyIn( Dist.CLIENT )
@@ -77,7 +78,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 
 		if( stack.hasTag() )
 		{
-            final CompoundNBT tag = stack.getOrCreateTag();
+			final CompoundNBT tag = stack.getOrCreateTag();
 			if( tag != null )
 			{
 				final String encKey = tag.getString( "encryptionKey" );
@@ -119,9 +120,8 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 	@Override
 	public IConfigManager getConfigManager( final ItemStack target )
 	{
-		final ConfigManager out = new ConfigManager( ( manager, settingName, newValue ) ->
-		{
-            final CompoundNBT data = target.getOrCreateTag();
+		final ConfigManager out = new ConfigManager( ( manager, settingName, newValue ) -> {
+			final CompoundNBT data = target.getOrCreateTag();
 			manager.writeToNBT( data );
 		} );
 
@@ -129,23 +129,23 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 		out.registerSetting( Settings.VIEW_MODE, ViewItems.ALL );
 		out.registerSetting( Settings.SORT_DIRECTION, SortDir.ASCENDING );
 
-        out.readFromNBT( target.getOrCreateTag().copy() );
+		out.readFromNBT( target.getOrCreateTag().copy() );
 		return out;
 	}
 
 	@Override
 	public String getEncryptionKey( final ItemStack item )
 	{
-        final CompoundNBT tag = item.getOrCreateTag();
+		final CompoundNBT tag = item.getOrCreateTag();
 		return tag.getString( "encryptionKey" );
 	}
 
 	@Override
 	public void setEncryptionKey( final ItemStack item, final String encKey, final String name )
 	{
-        final CompoundNBT tag = item.getOrCreateTag();
-		tag.putString("encryptionKey", encKey);
-		tag.putString("name", name);
+		final CompoundNBT tag = item.getOrCreateTag();
+		tag.putString( "encryptionKey", encKey );
+		tag.putString( "name", name );
 	}
 
 	@Override

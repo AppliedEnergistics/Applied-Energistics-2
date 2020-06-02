@@ -26,6 +26,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -47,6 +48,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
 import appeng.items.contents.CellConfig;
@@ -67,7 +69,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell<
 	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity player, final Hand hand )
 	{
 		Platform.openGUI( player, null, AEPartLocation.INTERNAL, GuiBridge.GUI_PORTABLE_CELL );
-		return new ActionResult<>( EnumActionResult.SUCCESS, player.getHeldItem( hand ) );
+		return new ActionResult<>( ActionResultType.SUCCESS, player.getHeldItem( hand ) );
 	}
 
 	@OnlyIn( Dist.CLIENT )

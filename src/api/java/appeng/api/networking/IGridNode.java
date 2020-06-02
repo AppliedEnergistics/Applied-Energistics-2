@@ -29,6 +29,7 @@ import java.util.EnumSet;
 import javax.annotation.Nonnull;
 
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import appeng.api.IAppEngApi;
@@ -91,7 +92,7 @@ public interface IGridNode
 	 * @return the world the node is located in
 	 */
 	@Nonnull
-	World getWorld();
+	IWorld getWorld();
 
 	/**
 	 * @return a set of the connected sides, INTERNAL represents an invisible connection

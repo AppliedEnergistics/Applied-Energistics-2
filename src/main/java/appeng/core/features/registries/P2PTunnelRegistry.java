@@ -31,10 +31,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 
-import appeng.api.AEApi;
 import appeng.api.config.TunnelType;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IDefinitions;
@@ -43,6 +44,7 @@ import appeng.api.definitions.IParts;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.util.AEColor;
 import appeng.capabilities.Capabilities;
+import appeng.core.Api;
 
 
 public final class P2PTunnelRegistry implements IP2PTunnelRegistry
@@ -257,10 +259,10 @@ public final class P2PTunnelRegistry implements IP2PTunnelRegistry
 	}
 
 	@Nonnull
-	private ItemStack getModItem( final String modID, final String name, final int meta )
+	private ItemStack getModItem( final String modID, final String name )
 	{
 
-		final Item item = Item.getByNameOrId( modID + ":" + name );
+		final Item item = ForgeRegistries.ITEMS.getValue( new ResourceLocation( modID + ":" + name ) );
 
 		if( item == null )
 		{

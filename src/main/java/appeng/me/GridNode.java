@@ -31,6 +31,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import appeng.api.exceptions.FailedConnectionException;
@@ -285,7 +286,7 @@ public class GridNode implements IGridNode, IPathItem
 	}
 
 	@Override
-	public World getWorld()
+	public IWorld getWorld()
 	{
 		return this.gridProxy.getLocation().getWorld();
 	}
@@ -331,8 +332,8 @@ public class GridNode implements IGridNode, IPathItem
 	{
 		if( this.myGrid == null )
 		{
-			final CompoundNBT node = nodeData.getCompoundTag( name );
-			this.playerID = node.getInteger( "p" );
+			final CompoundNBT node = nodeData.getCompound( name );
+			this.playerID = node.getInt( "p" );
 			this.setLastSecurityKey( node.getLong( "k" ) );
 
 			final long storageID = node.getLong( "g" );
@@ -356,11 +357,11 @@ public class GridNode implements IGridNode, IPathItem
 			node.putLong( "k", this.getLastSecurityKey() );
 			node.putLong( "g", this.myStorage.getID() );
 
-			nodeData.setTag( name, node );
+			nodeData.put( name, node );
 		}
 		else
 		{
-			nodeData.removeTag( name );
+			nodeData.remove( name );
 		}
 	}
 
@@ -512,7 +513,7 @@ public class GridNode implements IGridNode, IPathItem
 		}
 	}
 
-	private IGridHost findGridHost( final World world, final int x, final int y, final int z )
+	private IGridHost findGridHost( final IWorld world, final int x, final int y, final int z )
 	{
 		final BlockPos pos = new BlockPos( x, y, z );
 		if( world.isBlockLoaded( pos ) )

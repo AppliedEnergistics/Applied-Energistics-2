@@ -27,21 +27,20 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.Direction;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.AEApi;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.helpers.InvalidPatternHelper;
@@ -65,13 +64,13 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	{
 		this.clearPattern( player.getHeldItem( hand ), player );
 
-		return new ActionResult<>( EnumActionResult.SUCCESS, player.getHeldItem( hand ) );
+		return new ActionResult<>( ActionResultType.SUCCESS, player.getHeldItem( hand ) );
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst( final PlayerEntity player, final World world, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
+	public ActionResultType onItemUseFirst( ItemStack stack, ItemUseContext context )
 	{
-		return this.clearPattern( player.getHeldItem( hand ), player ) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
+		return this.clearPattern( stack, context.getPlayer() ) ? ActionResultType.SUCCESS : ActionResultType.PASS;
 	}
 
 	private boolean clearPattern( final ItemStack stack, final PlayerEntity player )
@@ -104,7 +103,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
-	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
+	public void addInformation( final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
 		final ICraftingPatternDetails details = this.getPatternForItem( stack, world );
 
@@ -150,7 +149,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 
 		if( stack.hasDisplayName() )
 		{
-			stack.removeSubCompound( "display" );
+			stack.removeChildTag( "display" );
 		}
 
 		final boolean isCrafting = details.isCraftable();

@@ -35,6 +35,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
@@ -216,11 +217,11 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 		if( target == null )
 		{
-			return new ActionResult<>( EnumActionResult.FAIL, p.getHeldItem( hand ) );
+			return new ActionResult<>( ActionResultType.FAIL, p.getHeldItem( hand ) );
 		}
 		else
 		{
-			if( target.typeOfHit == RayTraceResult.Type.BLOCK )
+			if( target.getType() == RayTraceResult.Type.BLOCK )
 			{
 				final BlockState state = w.getBlockState( target.getBlockPos() );
 				if( state.getMaterial() == Material.LAVA || state.getMaterial() == Material.WATER )
@@ -237,7 +238,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	}
 
 	@Override
-	public EnumActionResult onItemUse( PlayerEntity p, World w, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ )
+	public ActionResultType onItemUse( PlayerEntity p, World w, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ )
 	{
 		return this.onItemUse( p.getHeldItem( hand ), p, w, pos, hand, side, hitX, hitY, hitZ );
 	}

@@ -41,7 +41,7 @@ public class GuiFluidFormationPlane extends GuiUpgradeable
 		final int yo = 23 + 6;
 
 		final IAEFluidTank config = this.plane.getConfig();
-		final ContainerFluidFormationPlane container = (ContainerFluidFormationPlane) this.inventorySlots;
+		final ContainerFluidFormationPlane container = (ContainerFluidFormationPlane) this.container;
 
 		for( int y = 0; y < 7; y++ )
 		{
@@ -63,7 +63,7 @@ public class GuiFluidFormationPlane extends GuiUpgradeable
 	@Override
 	protected void addButtons()
 	{
-		this.addButton( this.priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRender ) );
+		this.addButton( this.priority = new GuiTabButton( this.guiLeft + 154, this.guiTop, 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRenderer ) );
 	}
 
 	@Override

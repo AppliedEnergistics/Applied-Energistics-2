@@ -33,7 +33,7 @@ import net.minecraft.world.World;
 import appeng.block.AEBaseTileBlock;
 
 
-public class BlockCubeGenerator extends AEBaseTileBlock
+public class BlockCubeGenerator extends AEBaseTileBlock<TileCubeGenerator>
 {
 
 	public BlockCubeGenerator()
@@ -50,7 +50,7 @@ public class BlockCubeGenerator extends AEBaseTileBlock
 			tcg.click( player );
 		}
 
-		return true;
+		return ActionResultType.SUCCESS;
 	}
 
 }

@@ -21,11 +21,10 @@ package appeng.core.stats;
 
 import com.google.gson.JsonObject;
 
-import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.advancements.critereon.ItemPredicates;
 
 import appeng.core.AppEng;
 import appeng.items.parts.ItemPart;
@@ -65,6 +64,6 @@ public class PartItemPredicate extends ItemPredicate
 
 	public static void register()
 	{
-		ItemPredicates.register( new ResourceLocation( AppEng.MOD_ID, "part" ), PartItemPredicate::deserialize );
+		ItemPredicate.register( new ResourceLocation( AppEng.MOD_ID, "part" ), PartItemPredicate::deserialize );
 	}
 }

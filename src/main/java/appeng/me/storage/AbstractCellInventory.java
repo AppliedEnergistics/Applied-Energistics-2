@@ -88,7 +88,7 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 		this.container = container;
 		this.tagCompound = o.getOrCreateTag();
 		this.storedItems = this.tagCompound.getShort( ITEM_TYPE_TAG );
-		this.storedItemCount = this.tagCompound.getInteger( ITEM_COUNT_TAG );
+		this.storedItemCount = this.tagCompound.getInt( ITEM_COUNT_TAG );
 		this.cellItems = null;
 	}
 
@@ -121,8 +121,8 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 
 			final CompoundNBT g = new CompoundNBT();
 			v.writeToNBT( g );
-			this.tagCompound.setTag( ITEM_SLOT_KEYS[x], g );
-			this.tagCompound.setInteger( ITEM_SLOT_COUNT_KEYS[x], (int) v.getStackSize() );
+			this.tagCompound.put( ITEM_SLOT_KEYS[x], g );
+			this.tagCompound.putInt( ITEM_SLOT_COUNT_KEYS[x], (int) v.getStackSize() );
 
 			x++;
 		}
@@ -132,28 +132,28 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 		this.storedItems = (short) this.cellItems.size();
 		if( this.cellItems.isEmpty() )
 		{
-			this.tagCompound.removeTag( ITEM_TYPE_TAG );
+			this.tagCompound.remove( ITEM_TYPE_TAG );
 		}
 		else
 		{
-			this.tagCompound.setShort( ITEM_TYPE_TAG, this.storedItems );
+			this.tagCompound.putShort( ITEM_TYPE_TAG, this.storedItems );
 		}
 
 		this.storedItemCount = itemCount;
 		if( itemCount == 0 )
 		{
-			this.tagCompound.removeTag( ITEM_COUNT_TAG );
+			this.tagCompound.remove( ITEM_COUNT_TAG );
 		}
 		else
 		{
-			this.tagCompound.setInteger( ITEM_COUNT_TAG, itemCount );
+			this.tagCompound.putInt( ITEM_COUNT_TAG, itemCount );
 		}
 
 		// clean any old crusty stuff...
 		for( ; x < oldStoredItems && x < this.maxItemTypes; x++ )
 		{
-			this.tagCompound.removeTag( ITEM_SLOT_KEYS[x] );
-			this.tagCompound.removeTag( ITEM_SLOT_COUNT_KEYS[x] );
+			this.tagCompound.remove( ITEM_SLOT_KEYS[x] );
+			this.tagCompound.remove( ITEM_SLOT_COUNT_KEYS[x] );
 		}
 
 		this.isPersisted = true;
@@ -195,8 +195,8 @@ public abstract class AbstractCellInventory<T extends IAEStack<T>> implements IC
 
 		for( int slot = 0; slot < types; slot++ )
 		{
-			CompoundNBT compoundTag = this.tagCompound.getCompoundTag( ITEM_SLOT_KEYS[slot] );
-			int stackSize = this.tagCompound.getInteger( ITEM_SLOT_COUNT_KEYS[slot] );
+			CompoundNBT compoundTag = this.tagCompound.getCompound( ITEM_SLOT_KEYS[slot] );
+			int stackSize = this.tagCompound.getInt( ITEM_SLOT_COUNT_KEYS[slot] );
 			needsUpdate |= !this.loadCellItem( compoundTag, stackSize );
 		}
 

@@ -77,6 +77,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.core.Api;
 import appeng.crafting.CraftingJob;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.CraftingLinkNexus;
@@ -470,7 +471,7 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
 			{
 				for( final IAEItemStack ais : this.craftableItems.keySet() )
 				{
-					if( ais.getItem() == whatToCraft.getItem() && ( !ais.getItem().getHasSubtypes() || ais.getItemDamage() == whatToCraft.getItemDamage() ) )
+					if( ais.getItem() == whatToCraft.getItem() && ( !ais.getItem().isDamageable() || ais.getItemDamage() == whatToCraft.getItemDamage() ) )
 					{
 						// TODO: check if OK
 						// TODO: this is slightly hacky, but fine as long as we only deal with itemstacks

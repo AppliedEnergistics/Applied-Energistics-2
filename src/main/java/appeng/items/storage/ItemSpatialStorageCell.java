@@ -110,7 +110,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		if( is.hasTag() )
 		{
 			final CompoundNBT c = is.getTag();
-			return new WorldCoord( c.getInteger( NBT_SIZE_X_KEY ), c.getInteger( NBT_SIZE_Y_KEY ), c.getInteger( NBT_SIZE_Z_KEY ) );
+			return new WorldCoord( c.getInt( NBT_SIZE_X_KEY ), c.getInt( NBT_SIZE_Y_KEY ), c.getInt( NBT_SIZE_Z_KEY ) );
 		}
 		return new WorldCoord( 0, 0, 0 );
 	}
@@ -121,7 +121,7 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		if( is.hasTag() )
 		{
 			final CompoundNBT c = is.getTag();
-			return c.getInteger( NBT_CELL_ID_KEY );
+			return c.getInt( NBT_CELL_ID_KEY );
 		}
 		return -1;
 	}
@@ -182,9 +182,9 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	{
         final CompoundNBT c = is.getOrCreateTag();
 
-		c.setInteger( NBT_CELL_ID_KEY, id );
-		c.setInteger( NBT_SIZE_X_KEY, size.getX() );
-		c.setInteger( NBT_SIZE_Y_KEY, size.getY() );
-		c.setInteger( NBT_SIZE_Z_KEY, size.getZ() );
+		c.putInt( NBT_CELL_ID_KEY, id );
+		c.putInt( NBT_SIZE_X_KEY, size.getX() );
+		c.putInt( NBT_SIZE_Y_KEY, size.getY() );
+		c.putInt( NBT_SIZE_Z_KEY, size.getZ() );
 	}
 }

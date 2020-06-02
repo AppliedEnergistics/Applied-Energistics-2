@@ -84,6 +84,7 @@ import appeng.container.implementations.ContainerUpgradeable;
 import appeng.container.implementations.ContainerVibrationChamber;
 import appeng.container.implementations.ContainerWireless;
 import appeng.container.implementations.ContainerWirelessTerm;
+import appeng.core.Api;
 import appeng.fluids.container.ContainerFluidFormationPlane;
 import appeng.fluids.container.ContainerFluidIO;
 import appeng.fluids.container.ContainerFluidInterface;

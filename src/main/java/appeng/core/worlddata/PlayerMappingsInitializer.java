@@ -19,6 +19,7 @@
 package appeng.core.worlddata;
 
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -86,6 +87,6 @@ class PlayerMappingsInitializer
 	 */
 	public Map<Integer, UUID> getPlayerMappings()
 	{
-		return this.playerMappings;
+		return Collections.emptyMap(); //this.playerMappings; //FIXME
 	}
 }

@@ -47,6 +47,7 @@ import appeng.api.networking.pathing.IPathingGrid;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.stats.IAdvancementTrigger;

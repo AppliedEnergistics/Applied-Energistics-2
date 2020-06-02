@@ -25,12 +25,12 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.ticking.IGridTickable;
@@ -38,6 +38,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.util.AECableType;
+import appeng.core.Api;
 import appeng.core.sync.GuiBridge;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
@@ -130,7 +131,7 @@ public abstract class PartSharedFluidBus extends PartUpgradeable implements IGri
 	{
 		final World w = self.getWorld();
 
-		if( w.getChunkProvider().getLoadedChunk( pos.getX() >> 4, pos.getZ() >> 4 ) != null )
+		if( w.getChunkProvider().isChunkLoaded( new ChunkPos( pos ) ) )
 		{
 			return w.getTileEntity( pos );
 		}

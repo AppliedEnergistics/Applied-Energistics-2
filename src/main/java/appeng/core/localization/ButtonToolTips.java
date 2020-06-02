@@ -20,6 +20,8 @@ package appeng.core.localization;
 
 
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
 
 public enum ButtonToolTips
@@ -162,14 +164,15 @@ public enum ButtonToolTips
 		this.root = r;
 	}
 
+	@Deprecated
 	public String getLocal()
 	{
-		return I18n.format( this.getTranslationKey() );
+		return getTranslationKey().getFormattedText();
 	}
 
-	public String getTranslationKey()
+	public ITextComponent getTranslationKey()
 	{
-		return this.root + '.' + this.toString();
+		return new TranslationTextComponent( this.root + '.' + this.toString() );
 	}
 
 }

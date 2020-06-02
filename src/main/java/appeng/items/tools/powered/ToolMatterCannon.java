@@ -20,7 +20,6 @@ package appeng.items.tools.powered;
 
 
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
@@ -34,9 +33,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
-import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -48,7 +47,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Upgrades;
@@ -62,6 +60,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.PlayerMessages;
@@ -89,15 +88,11 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 
 	@OnlyIn( Dist.CLIENT )
 	@Override
-	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
+	public void addInformation( final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
 		super.addInformation( stack, world, lines, advancedTooltips );
 
-		final ICellInventoryHandler<IAEItemStack> cdi = Api.INSTANCE
-				.registries()
-				.cell()
-				.getCellInventory( stack, null,
-						Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
+		final ICellInventoryHandler<IAEItemStack> cdi = Api.INSTANCE.registries().cell().getCellInventory( stack, null, Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 
 		Api.INSTANCE.client().addCellInformation( cdi, lines );
 	}
@@ -115,15 +110,10 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 				shots += cu.getInstalledUpgrades( Upgrades.SPEED );
 			}
 
-			final ICellInventoryHandler<IAEItemStack> inv = Api.INSTANCE
-					.registries()
-					.cell()
-					.getCellInventory( p.getHeldItem( hand ), null,
-							Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
+			final ICellInventoryHandler<IAEItemStack> inv = Api.INSTANCE.registries().cell().getCellInventory( p.getHeldItem( hand ), null, Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) );
 			if( inv != null )
 			{
-				final IItemList<IAEItemStack> itemList = inv
-						.getAvailableItems( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList() );
+				final IItemList<IAEItemStack> itemList = inv.getAvailableItems( Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList() );
 				IAEItemStack req = itemList.getFirstItem();
 				if( req instanceof IAEItemStack )
 				{
@@ -135,23 +125,23 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 
 						if( Platform.isClient() )
 						{
-							return new ActionResult<>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
+							return new ActionResult<>( ActionResultType.SUCCESS, p.getHeldItem( hand ) );
 						}
 
 						aeAmmo.setStackSize( 1 );
 						final ItemStack ammo = aeAmmo.createItemStack();
 						if( ammo == null )
 						{
-							return new ActionResult<>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
+							return new ActionResult<>( ActionResultType.SUCCESS, p.getHeldItem( hand ) );
 						}
 
 						aeAmmo = inv.extractItems( aeAmmo, Actionable.MODULATE, new PlayerSource( p, null ) );
 						if( aeAmmo == null )
 						{
-							return new ActionResult<>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
+							return new ActionResult<>( ActionResultType.SUCCESS, p.getHeldItem( hand ) );
 						}
 
-						final LookDirection dir = Platform.getPlayerRay( p, p.getEyeHeight() );
+						final LookDirection dir = Platform.getPlayerRay( p );
 
 						final Vec3d Vec3d = dir.getA();
 						final Vec3d Vec3d1 = dir.getB();
@@ -170,7 +160,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 							{
 								this.shootPaintBalls( type, w, p, Vec3d, Vec3d1, direction, d0, d1, d2 );
 							}
-							return new ActionResult<>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
+							return new ActionResult<>( ActionResultType.SUCCESS, p.getHeldItem( hand ) );
 						}
 						else
 						{
@@ -184,17 +174,16 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 					{
 						p.sendMessage( PlayerMessages.AmmoDepleted.get() );
 					}
-					return new ActionResult<>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
+					return new ActionResult<>( ActionResultType.SUCCESS, p.getHeldItem( hand ) );
 				}
 			}
 		}
-		return new ActionResult<>( EnumActionResult.FAIL, p.getHeldItem( hand ) );
+		return new ActionResult<>( ActionResultType.FAIL, p.getHeldItem( hand ) );
 	}
 
 	private void shootPaintBalls( final ItemStack type, final World w, final PlayerEntity p, final Vec3d Vec3d, final Vec3d Vec3d1, final Vec3d direction, final double d0, final double d1, final double d2 )
 	{
-		final AxisAlignedBB bb = new AxisAlignedBB( Math.min( Vec3d.x, Vec3d1.x ), Math.min( Vec3d.y, Vec3d1.y ), Math.min( Vec3d.z, Vec3d1.z ), Math
-				.max( Vec3d.x, Vec3d1.x ), Math.max( Vec3d.y, Vec3d1.y ), Math.max( Vec3d.z, Vec3d1.z ) ).grow( 16, 16, 16 );
+		final AxisAlignedBB bb = new AxisAlignedBB( Math.min( Vec3d.x, Vec3d1.x ), Math.min( Vec3d.y, Vec3d1.y ), Math.min( Vec3d.z, Vec3d1.z ), Math.max( Vec3d.x, Vec3d1.x ), Math.max( Vec3d.y, Vec3d1.y ), Math.max( Vec3d.z, Vec3d1.z ) ).grow( 16, 16, 16 );
 
 		Entity entity = null;
 		final List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
@@ -247,9 +236,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 
 		try
 		{
-			AppEng.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w,
-					new PacketMatterCannon( d0, d1, d2, (float) direction.x, (float) direction.y, (float) direction.z, (byte) ( pos == null ? 32 : pos.hitVec
-							.squareDistanceTo( vec ) + 1 ) ) );
+			AppEng.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, (float) direction.x, (float) direction.y, (float) direction.z, (byte) ( pos == null ? 32 : pos.hitVec.squareDistanceTo( vec ) + 1 ) ) );
 		}
 		catch( final Exception err )
 		{
@@ -263,7 +250,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 			final AEColor col = ipb.getColor( type );
 			// boolean lit = ipb.isLumen( type );
 
-			if( pos.typeOfHit == RayTraceResult.Type.ENTITY )
+			if( pos.getType() == RayTraceResult.Type.ENTITY )
 			{
 				final int id = pos.entityHit.getEntityId();
 				final PlayerColor marker = new PlayerColor( id, col, 20 * 30 );
@@ -291,8 +278,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 				final Block whatsThere = w.getBlockState( hitPos ).getBlock();
 				if( whatsThere.isReplaceable( w, hitPos ) && w.isAirBlock( hitPos ) )
 				{
-					Api.INSTANCE.definitions().blocks().paint().maybeBlock().ifPresent( paintBlock ->
-					{
+					Api.INSTANCE.definitions().blocks().paint().maybeBlock().ifPresent( paintBlock -> {
 						w.setBlockState( hitPos, paintBlock.getDefaultState(), 3 );
 					} );
 				}
@@ -314,8 +300,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 		{
 			hasDestroyed = false;
 
-			final AxisAlignedBB bb = new AxisAlignedBB( Math.min( Vec3d.x, Vec3d1.x ), Math.min( Vec3d.y, Vec3d1.y ), Math.min( Vec3d.z, Vec3d1.z ), Math
-					.max( Vec3d.x, Vec3d1.x ), Math.max( Vec3d.y, Vec3d1.y ), Math.max( Vec3d.z, Vec3d1.z ) ).grow( 16, 16, 16 );
+			final AxisAlignedBB bb = new AxisAlignedBB( Math.min( Vec3d.x, Vec3d1.x ), Math.min( Vec3d.y, Vec3d1.y ), Math.min( Vec3d.z, Vec3d1.z ), Math.max( Vec3d.x, Vec3d1.x ), Math.max( Vec3d.y, Vec3d1.y ), Math.max( Vec3d.z, Vec3d1.z ) ).grow( 16, 16, 16 );
 
 			Entity entity = null;
 			final List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
@@ -367,9 +352,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 
 			try
 			{
-				AppEng.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w,
-						new PacketMatterCannon( d0, d1, d2, (float) direction.x, (float) direction.y, (float) direction.z, (byte) ( pos == null ? 32 : pos.hitVec
-								.squareDistanceTo( vec ) + 1 ) ) );
+				AppEng.proxy.sendToAllNearExcept( null, d0, d1, d2, 128, w, new PacketMatterCannon( d0, d1, d2, (float) direction.x, (float) direction.y, (float) direction.z, (byte) ( pos == null ? 32 : pos.hitVec.squareDistanceTo( vec ) + 1 ) ) );
 			}
 			catch( final Exception err )
 			{
@@ -457,7 +440,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 	@Override
 	public FuzzyMode getFuzzyMode( final ItemStack is )
 	{
-		final String fz = Platform.openNbtData( is ).getString( "FuzzyMode" );
+		final String fz = is.getOrCreateTag().getString( "FuzzyMode" );
 		try
 		{
 			return FuzzyMode.valueOf( fz );
@@ -471,7 +454,7 @@ public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<
 	@Override
 	public void setFuzzyMode( final ItemStack is, final FuzzyMode fzMode )
 	{
-		Platform.openNbtData( is ).setString( "FuzzyMode", fzMode.name() );
+		is.getOrCreateTag().putString( "FuzzyMode", fzMode.name() );
 	}
 
 	@Override

@@ -51,7 +51,7 @@ public class GuiFluidIO extends GuiUpgradeable
 	{
 		super.init();
 
-		final ContainerFluidIO container = (ContainerFluidIO) this.inventorySlots;
+		final ContainerFluidIO container = (ContainerFluidIO) this.container;
 		final IAEFluidTank inv = this.bus.getConfig();
 		final int y = 40;
 		final int x = 80;

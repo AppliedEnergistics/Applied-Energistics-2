@@ -43,7 +43,7 @@ public class AppEngClientPacketHandler extends AppEngPacketHandlerBase implement
 			final AppEngPacket pack = PacketTypes.getPacket( packetType ).parsePacket( packet );
 			pack.clientPacketData( manager, Minecraft.getInstance().player );
 		}
-		catch( final InstantiationException | IllegalArgumentException | IllegalAccessException | InvocationTargetException e )
+		catch( final IllegalArgumentException e )
 		{
 			AELog.debug( e );
 		}

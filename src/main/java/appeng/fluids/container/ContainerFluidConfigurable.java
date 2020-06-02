@@ -6,8 +6,9 @@ import java.util.Collections;
 import java.util.Map;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IContainerListener;
+import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
@@ -32,7 +33,7 @@ public abstract class ContainerFluidConfigurable extends ContainerUpgradeable im
 
 	public abstract IAEFluidTank getFluidConfigInventory();
 
-	private FluidSyncHelper getSynchHelper()
+	private FluidSyncHelper getSyncHelper()
 	{
 		if( this.sync == null )
 		{
@@ -44,11 +45,11 @@ public abstract class ContainerFluidConfigurable extends ContainerUpgradeable im
 	@Override
 	protected ItemStack transferStackToContainer( ItemStack input )
 	{
-		FluidStack fs = FluidUtil.getFluidContained( input );
-		if( fs != null )
+		LazyOptional<FluidStack> fsOpt = FluidUtil.getFluidContained( input );
+		if( fsOpt.isPresent() )
 		{
 			final IAEFluidTank t = this.getFluidConfigInventory();
-			final IAEFluidStack stack = AEFluidStack.fromFluidStack( fs );
+			final IAEFluidStack stack = AEFluidStack.fromFluidStack( fsOpt.orElse( null ) );
 			for( int i = 0; i < t.getSlots(); ++i )
 			{
 				if( t.getFluidInSlot( i ) == null && this.isValidForConfig( i, stack ) )
@@ -86,7 +87,7 @@ public abstract class ContainerFluidConfigurable extends ContainerUpgradeable im
 	{
 		if( Platform.isServer() )
 		{
-			this.getSynchHelper().sendDiff( this.listeners );
+			this.getSyncHelper().sendDiff( this.listeners );
 
 			// clear out config items that are no longer valid (eg capacity upgrade removed)
 			final IAEFluidTank t = this.getFluidConfigInventory();
@@ -105,13 +106,13 @@ public abstract class ContainerFluidConfigurable extends ContainerUpgradeable im
 	public void addListener( IContainerListener listener )
 	{
 		super.addListener( listener );
-		this.getSynchHelper().sendFull( Collections.singleton( listener ) );
+		this.getSyncHelper().sendFull( Collections.singleton( listener ) );
 	}
 
 	@Override
 	public void receiveFluidSlots( Map<Integer, IAEFluidStack> fluids )
 	{
-		this.getSynchHelper().readPacket( fluids );
+		this.getSyncHelper().readPacket( fluids );
 	}
 
 }

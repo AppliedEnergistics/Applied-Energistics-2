@@ -21,19 +21,19 @@ package appeng.fluids.container;
 
 import java.io.IOException;
 import java.nio.BufferOverflowException;
-
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IContainerListener;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.Settings;
@@ -60,6 +60,7 @@ import appeng.api.util.IConfigurableObject;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEFluidInventoryUpdate;
 import appeng.core.sync.packets.PacketTargetFluidStack;
@@ -358,12 +359,13 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 			return;
 		}
 
-		final IFluidHandlerItem fh = FluidUtil.getFluidHandler( held );
-		if( fh == null )
+		final LazyOptional<IFluidHandlerItem> fhOpt = FluidUtil.getFluidHandler( held );
+		if( !fhOpt.isPresent() )
 		{
 			// only fluid handlers items
 			return;
 		}
+		IFluidHandlerItem fh = fhOpt.orElse( null );
 
 		if( action == InventoryAction.FILL_ITEM && this.clientRequestedTargetFluid != null )
 		{
@@ -371,7 +373,7 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 
 			// Check how much we can store in the item
 			stack.setStackSize( Integer.MAX_VALUE );
-			int amountAllowed = fh.fill( stack.getFluidStack(), false );
+			int amountAllowed = fh.fill( stack.getFluidStack(), FluidAction.SIMULATE );
 			stack.setStackSize( amountAllowed );
 
 			// Check if we can pull out of the system
@@ -382,7 +384,7 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 			}
 
 			// How much could fit into the container
-			final int canFill = fh.fill( canPull.getFluidStack(), false );
+			final int canFill = fh.fill( canPull.getFluidStack(), FluidAction.SIMULATE );
 			if( canFill == 0 )
 			{
 				return;
@@ -399,7 +401,7 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 			}
 
 			// Actually fill
-			final int used = fh.fill( pulled.getFluidStack(), true );
+			final int used = fh.fill( pulled.getFluidStack(), FluidAction.EXECUTE );
 
 			if( used != canFill )
 			{
@@ -412,37 +414,35 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 		else if( action == InventoryAction.EMPTY_ITEM )
 		{
 			// See how much we can drain from the item
-			final FluidStack extract = fh.drain( Integer.MAX_VALUE, false );
-			if( extract == null || extract.amount < 1 )
+			final FluidStack extract = fh.drain( Integer.MAX_VALUE, FluidAction.SIMULATE );
+			if( extract == null || extract.getAmount() < 1 )
 			{
 				return;
 			}
 
 			// Check if we can push into the system
-			final IAEFluidStack notStorable = Platform.poweredInsert( this.getPowerSource(), this.monitor, AEFluidStack.fromFluidStack( extract ),
-					this.getActionSource(), Actionable.SIMULATE );
+			final IAEFluidStack notStorable = Platform.poweredInsert( this.getPowerSource(), this.monitor, AEFluidStack.fromFluidStack( extract ), this.getActionSource(), Actionable.SIMULATE );
 
 			if( notStorable != null && notStorable.getStackSize() > 0 )
 			{
-				final int toStore = (int) ( extract.amount - notStorable.getStackSize() );
-				final FluidStack storable = fh.drain( toStore, false );
+				final int toStore = (int) ( extract.getAmount() - notStorable.getStackSize() );
+				final FluidStack storable = fh.drain( toStore, FluidAction.SIMULATE );
 
-				if( storable == null || storable.amount == 0 )
+				if( storable == null || storable.getAmount() == 0 )
 				{
 					return;
 				}
 				else
 				{
-					extract.amount = storable.amount;
+					extract.setAmount( storable.getAmount() );
 				}
 			}
 
 			// Actually drain
-			final FluidStack drained = fh.drain( extract, true );
-			extract.amount = drained.amount;
+			final FluidStack drained = fh.drain( extract, FluidAction.EXECUTE );
+			extract.setAmount( drained.getAmount() );
 
-			final IAEFluidStack notInserted = Platform.poweredInsert( this.getPowerSource(), this.monitor, AEFluidStack.fromFluidStack( extract ),
-					this.getActionSource() );
+			final IAEFluidStack notInserted = Platform.poweredInsert( this.getPowerSource(), this.monitor, AEFluidStack.fromFluidStack( extract ), this.getActionSource() );
 
 			if( notInserted != null && notInserted.getStackSize() > 0 )
 			{

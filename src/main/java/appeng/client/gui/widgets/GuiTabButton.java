@@ -22,6 +22,7 @@ package appeng.client.gui.widgets;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
@@ -30,13 +31,13 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiTabButton extends Button implements ITooltip
 {
-	private final RenderItem itemRenderer;
+	private final ItemRenderer itemRenderer;
 	private final String message;
 	private int hideEdge = 0;
 	private int myIcon = -1;
 	private ItemStack myItem;
 
-	public GuiTabButton( final int x, final int y, final int ico, final String message, final RenderItem ir )
+	public GuiTabButton( final int x, final int y, final int ico, final String message, final ItemRenderer ir )
 	{
 		super( 0, 0, 16, "" );
 
@@ -58,7 +59,7 @@ public class GuiTabButton extends Button implements ITooltip
 	 * @param message mouse over message
 	 * @param ir renderer
 	 */
-	public GuiTabButton( final int x, final int y, final ItemStack ico, final String message, final RenderItem ir )
+	public GuiTabButton( final int x, final int y, final ItemStack ico, final String message, final ItemRenderer ir )
 	{
 		super( 0, 0, 16, "" );
 		this.x = x;

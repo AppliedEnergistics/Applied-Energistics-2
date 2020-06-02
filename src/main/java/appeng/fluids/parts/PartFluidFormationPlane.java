@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -18,10 +17,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.fluid.Fluid;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidBlock;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
@@ -40,6 +40,7 @@ import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
+import appeng.core.Api;
 import appeng.core.sync.GuiBridge;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidInventory;
@@ -124,10 +125,10 @@ public class PartFluidFormationPlane extends PartAbstractFormationPlane<IAEFluid
 			if( type == Actionable.MODULATE )
 			{
 				final FluidStack fs = input.getFluidStack();
-				fs.amount = FluidAttributes.BUCKET_VOLUME;
+				fs.setAmount( FluidAttributes.BUCKET_VOLUME );
 
-				final FluidTank tank = new FluidTank( fs, FluidAttributes.BUCKET_VOLUME );
-				if( !FluidUtil.tryPlaceFluid( null, w, pos, tank, fs ) )
+				final FluidTank tank = new FluidTank( FluidAttributes.BUCKET_VOLUME, e -> e.isFluidEqual( fs ) );
+				if( !FluidUtil.tryPlaceFluid( null, w, Hand.MAIN_HAND, pos, tank, fs ) )
 				{
 					return input;
 				}

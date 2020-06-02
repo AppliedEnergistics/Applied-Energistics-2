@@ -1,24 +1,24 @@
-
 package appeng.client.render.model;
 
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 import java.util.function.Function;
+import javax.annotation.Nullable;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IModelTransform;
+import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.client.model.PerspectiveMapWrapper;
-import net.minecraftforge.common.model.IModelState;
-import net.minecraftforge.common.model.TRSRTransformation;
 
 import appeng.core.AppEng;
 
@@ -27,14 +27,14 @@ import appeng.core.AppEng;
  * A color applicator uses the base model, and extends it with additional layers that are colored according to the
  * selected color of the applicator.
  */
-public class ColorApplicatorModel implements IModel
+public class ColorApplicatorModel implements IUnbakedModel
 {
 
 	private static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "item/color_applicator_colored" );
 
-	private static final ResourceLocation TEXTURE_DARK = new ResourceLocation( AppEng.MOD_ID, "items/color_applicator_tip_dark" );
-	private static final ResourceLocation TEXTURE_MEDIUM = new ResourceLocation( AppEng.MOD_ID, "items/color_applicator_tip_medium" );
-	private static final ResourceLocation TEXTURE_BRIGHT = new ResourceLocation( AppEng.MOD_ID, "items/color_applicator_tip_bright" );
+	private static final Material TEXTURE_DARK = new Material( AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "items/color_applicator_tip_dark" ) );
+	private static final Material TEXTURE_MEDIUM = new Material( AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "items/color_applicator_tip_medium" ) );
+	private static final Material TEXTURE_BRIGHT = new Material( AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "items/color_applicator_tip_bright" ) );
 
 	@Override
 	public Collection<ResourceLocation> getDependencies()
@@ -43,44 +43,21 @@ public class ColorApplicatorModel implements IModel
 	}
 
 	@Override
-	public Collection<ResourceLocation> getTextures()
+	public Collection<Material> getTextures( Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors )
 	{
-		return ImmutableList.of(
-				TEXTURE_DARK,
-				TEXTURE_MEDIUM,
-				TEXTURE_BRIGHT );
+		return Arrays.asList( TEXTURE_DARK, TEXTURE_MEDIUM, TEXTURE_DARK );
 	}
 
+	@Nullable
 	@Override
-	public IBakedModel bake( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
+	public IBakedModel bakeModel( ModelBakery modelBakeryIn, Function<Material, TextureAtlasSprite> spriteGetterIn, IModelTransform transformIn, ResourceLocation locationIn )
 	{
-		IBakedModel baseModel = this.getBaseModel( state, format, bakedTextureGetter );
+		IBakedModel baseModel = modelBakeryIn.getBakedModel( MODEL_BASE, transformIn, spriteGetterIn );
 
-		TextureAtlasSprite texDark = bakedTextureGetter.apply( TEXTURE_DARK );
-		TextureAtlasSprite texMedium = bakedTextureGetter.apply( TEXTURE_MEDIUM );
-		TextureAtlasSprite texBright = bakedTextureGetter.apply( TEXTURE_BRIGHT );
+		TextureAtlasSprite texDark = spriteGetterIn.apply( TEXTURE_DARK );
+		TextureAtlasSprite texMedium = spriteGetterIn.apply( TEXTURE_MEDIUM );
+		TextureAtlasSprite texBright = spriteGetterIn.apply( TEXTURE_BRIGHT );
 
-		ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> map = PerspectiveMapWrapper.getTransforms( state );
-
-		return new ColorApplicatorBakedModel( baseModel, map, texDark, texMedium, texBright );
-	}
-
-	private IBakedModel getBaseModel( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
-	{
-		// Load the base model
-		try
-		{
-			return ModelLoaderRegistry.getModel( MODEL_BASE ).bake( state, format, bakedTextureGetter );
-		}
-		catch( Exception e )
-		{
-			throw new RuntimeException( e );
-		}
-	}
-
-	@Override
-	public IModelState getDefaultState()
-	{
-		return TRSRTransformation.identity();
+		return new ColorApplicatorBakedModel( baseModel, transformIn, texDark, texMedium, texBright );
 	}
 }

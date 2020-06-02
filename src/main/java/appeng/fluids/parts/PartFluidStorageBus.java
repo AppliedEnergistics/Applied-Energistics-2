@@ -22,7 +22,6 @@ package appeng.fluids.parts;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,10 +32,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
@@ -63,6 +62,7 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
 import appeng.capabilities.Capabilities;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.core.sync.GuiBridge;
@@ -118,7 +118,7 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 	{
 		Direction targetSide = this.getSide().getFacing().getOpposite();
 		// Prioritize a handler to directly link to another ME network
-		IStorageMonitorableAccessor accessor = target.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide );
+		IStorageMonitorableAccessor accessor = target.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide ).orElse( null );
 		if( accessor != null )
 		{
 			IStorageMonitorable inventory = accessor.getInventory( this.source );
@@ -135,7 +135,7 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 		}
 
 		// Check via cap for IItemHandler
-		IFluidHandler handlerExt = target.getCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, targetSide );
+		IFluidHandler handlerExt = target.getCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, targetSide ).orElse( null );
 		if( handlerExt != null )
 		{
 			return new FluidHandlerAdapter( handlerExt, this );
@@ -195,9 +195,7 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 	@Override
 	protected void resetCache( final boolean fullReset )
 	{
-		if( this.getHost() == null || this.getHost().getTile() == null || this.getHost().getTile().getWorld() == null || this.getHost()
-				.getTile()
-				.getWorld().isRemote )
+		if( this.getHost() == null || this.getHost().getTile() == null || this.getHost().getTile().getWorld() == null || this.getHost().getTile().getWorld().isRemote )
 		{
 			return;
 		}
@@ -267,9 +265,7 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 		{
 			if( this.getProxy().isActive() )
 			{
-				this.getProxy()
-						.getStorage()
-						.postAlterationOfStoredItems( Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ), change, this.source );
+				this.getProxy().getStorage().postAlterationOfStoredItems( Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ), change, this.source );
 			}
 		}
 		catch( final GridAccessException e )
@@ -333,8 +329,7 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 
 				if( this.getInstalledUpgrades( Upgrades.FUZZY ) > 0 )
 				{
-					this.handler.setPartitionList(
-							new FuzzyPriorityList<IAEFluidStack>( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
+					this.handler.setPartitionList( new FuzzyPriorityList<IAEFluidStack>( priorityList, (FuzzyMode) this.getConfigManager().getSetting( Settings.FUZZY_MODE ) ) );
 				}
 				else
 				{
@@ -431,16 +426,17 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 
 		final Direction targetSide = this.getSide().getFacing().getOpposite();
 
-		if( target.hasCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide ) )
+		LazyOptional<IStorageMonitorableAccessor> accessorOpt = target.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide );
+		if( accessorOpt.isPresent() )
 		{
-			return Objects.hash( target, target.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, targetSide ) );
+			return Objects.hash( target, accessorOpt.orElse( null ) );
 		}
 
-		final IFluidHandler fluidHandler = target.getCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, targetSide );
+		final IFluidHandler fluidHandler = target.getCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, targetSide ).orElse( null );
 
 		if( fluidHandler != null )
 		{
-			return Objects.hash( target, fluidHandler, fluidHandler.getTankProperties().length );
+			return Objects.hash( target, fluidHandler, fluidHandler.getTanks() );
 		}
 
 		return 0;

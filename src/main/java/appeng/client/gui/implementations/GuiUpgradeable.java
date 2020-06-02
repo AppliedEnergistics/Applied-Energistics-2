@@ -71,7 +71,7 @@ public class GuiUpgradeable extends AEBaseGui
 
 	protected boolean hasToolbox()
 	{
-		return ( (ContainerUpgradeable) this.inventorySlots ).hasToolbox();
+		return ( (ContainerUpgradeable) this.container ).hasToolbox();
 	}
 
 	@Override

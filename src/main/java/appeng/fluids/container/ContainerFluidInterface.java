@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IContainerListener;
+import net.minecraft.inventory.container.IContainerListener;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.storage.data.IAEFluidStack;

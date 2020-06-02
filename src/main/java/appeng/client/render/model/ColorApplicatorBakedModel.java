@@ -1,27 +1,24 @@
-
 package appeng.client.render.model;
 
 
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
-
+import java.util.Random;
 import javax.annotation.Nullable;
-import javax.vecmath.Matrix4f;
 
-import com.google.common.collect.ImmutableMap;
-
-import org.apache.commons.lang3.tuple.Pair;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IModelTransform;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.PerspectiveMapWrapper;
-import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraftforge.client.model.data.EmptyModelData;
 
 
 class ColorApplicatorBakedModel implements IBakedModel
@@ -29,16 +26,16 @@ class ColorApplicatorBakedModel implements IBakedModel
 
 	private final IBakedModel baseModel;
 
-	private final ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms;
+	private final IModelTransform transforms;
 
 	private final EnumMap<Direction, List<BakedQuad>> quadsBySide;
 
 	private final List<BakedQuad> generalQuads;
 
-	ColorApplicatorBakedModel( IBakedModel baseModel, ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> map, TextureAtlasSprite texDark, TextureAtlasSprite texMedium, TextureAtlasSprite texBright )
+	ColorApplicatorBakedModel( IBakedModel baseModel, IModelTransform transforms, TextureAtlasSprite texDark, TextureAtlasSprite texMedium, TextureAtlasSprite texBright )
 	{
 		this.baseModel = baseModel;
-		this.transforms = map;
+		this.transforms = transforms;
 
 		// Put the tint indices in... Since this is an item model, we are ignoring rand
 		this.generalQuads = this.fixQuadTint( null, texDark, texMedium, texBright );
@@ -51,21 +48,21 @@ class ColorApplicatorBakedModel implements IBakedModel
 
 	private List<BakedQuad> fixQuadTint( Direction facing, TextureAtlasSprite texDark, TextureAtlasSprite texMedium, TextureAtlasSprite texBright )
 	{
-		List<BakedQuad> quads = this.baseModel.getQuads( null, facing, 0 );
+		List<BakedQuad> quads = this.baseModel.getQuads( null, facing, new Random( 0 ), EmptyModelData.INSTANCE );
 		List<BakedQuad> result = new ArrayList<>( quads.size() );
 		for( BakedQuad quad : quads )
 		{
 			int tint;
 
-			if( quad.getSprite() == texDark )
+			if( quad.func_187508_a() == texDark )
 			{
 				tint = 1;
 			}
-			else if( quad.getSprite() == texMedium )
+			else if( quad.func_187508_a() == texMedium )
 			{
 				tint = 2;
 			}
-			else if( quad.getSprite() == texBright )
+			else if( quad.func_187508_a() == texBright )
 			{
 				tint = 3;
 			}
@@ -75,8 +72,7 @@ class ColorApplicatorBakedModel implements IBakedModel
 				continue;
 			}
 
-			BakedQuad newQuad = new BakedQuad( quad.getVertexData(), tint, quad.getFace(), quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad
-					.getFormat() );
+			BakedQuad newQuad = new BakedQuad( quad.getVertexData(), tint, quad.getFace(), quad.func_187508_a(), quad.shouldApplyDiffuseLighting() );
 			result.add( newQuad );
 		}
 
@@ -84,7 +80,7 @@ class ColorApplicatorBakedModel implements IBakedModel
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, Random rand )
 	{
 		if( side == null )
 		{
@@ -103,6 +99,12 @@ class ColorApplicatorBakedModel implements IBakedModel
 	public boolean isGui3d()
 	{
 		return this.baseModel.isGui3d();
+	}
+
+	@Override
+	public boolean func_230044_c_()
+	{
+		return false;//TODO
 	}
 
 	@Override
@@ -130,8 +132,8 @@ class ColorApplicatorBakedModel implements IBakedModel
 	}
 
 	@Override
-	public Pair<? extends IBakedModel, Matrix4f> handlePerspective( ItemCameraTransforms.TransformType type )
+	public IBakedModel handlePerspective( ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat )
 	{
-		return PerspectiveMapWrapper.handlePerspective( this, this.transforms, type );
+		return PerspectiveMapWrapper.handlePerspective( this, transforms, cameraTransformType, mat );
 	}
 }

@@ -22,16 +22,15 @@ package appeng.parts.automation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+import java.util.Random;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.Direction;
@@ -49,13 +48,13 @@ public class PlaneBakedModel implements IBakedModel
 
 	private final List<BakedQuad> quads;
 
-	PlaneBakedModel( VertexFormat format, TextureAtlasSprite frontTexture, TextureAtlasSprite sidesTexture, TextureAtlasSprite backTexture, PlaneConnections connections )
+	PlaneBakedModel( TextureAtlasSprite frontTexture, TextureAtlasSprite sidesTexture, TextureAtlasSprite backTexture, PlaneConnections connections )
 	{
 		this.frontTexture = frontTexture;
 
 		List<BakedQuad> quads = new ArrayList<>( 4 * 6 );
 
-		CubeBuilder builder = new CubeBuilder( format, quads );
+		CubeBuilder builder = new CubeBuilder( quads );
 
 		builder.setTextures( sidesTexture, sidesTexture, frontTexture, backTexture, sidesTexture, sidesTexture );
 
@@ -72,7 +71,7 @@ public class PlaneBakedModel implements IBakedModel
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, Random rand )
 	{
 		if( side == null )
 		{
@@ -97,6 +96,12 @@ public class PlaneBakedModel implements IBakedModel
 	}
 
 	@Override
+	public boolean func_230044_c_()
+	{
+		return false;//TODO
+	}
+
+	@Override
 	public boolean isBuiltInRenderer()
 	{
 		return false;
@@ -106,12 +111,6 @@ public class PlaneBakedModel implements IBakedModel
 	public TextureAtlasSprite getParticleTexture()
 	{
 		return this.frontTexture;
-	}
-
-	@Override
-	public ItemCameraTransforms getItemCameraTransforms()
-	{
-		return ItemCameraTransforms.DEFAULT;
 	}
 
 	@Override

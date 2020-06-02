@@ -38,6 +38,7 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
+import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -57,6 +58,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
@@ -1308,45 +1310,45 @@ public class Platform
 //		return gs.hasPermission( playerID, SecurityPermissions.BUILD );
 //	}
 //
-//	public static void configurePlayer(final PlayerEntity player, final AEPartLocation side, final TileEntity tile )
-//	{
-//		float pitch = 0.0f;
-//		float yaw = 0.0f;
-//		// player.yOffset = 1.8f;
-//
-//		switch( side )
-//		{
-//			case DOWN:
-//				pitch = 90.0f;
-//				// player.getYOffset() = -1.8f;
-//				break;
-//			case EAST:
-//				yaw = -90.0f;
-//				break;
-//			case NORTH:
-//				yaw = 180.0f;
-//				break;
-//			case SOUTH:
-//				yaw = 0.0f;
-//				break;
-//			case INTERNAL:
-//				break;
-//			case UP:
-//				pitch = 90.0f;
-//				break;
-//			case WEST:
-//				yaw = 90.0f;
-//				break;
-//		}
-//
-//		player.setLocationAndAngles(
-//				tile.getPos().getX() + 0.5,
-//				tile.getPos().getY() + 0.5,
-//				tile.getPos().getZ() + 0.5,
-//				yaw,
-//				pitch
-//		);
-//	}
+	public static void configurePlayer(final PlayerEntity player, final AEPartLocation side, final TileEntity tile )
+	{
+		float pitch = 0.0f;
+		float yaw = 0.0f;
+		// player.yOffset = 1.8f;
+
+		switch( side )
+		{
+			case DOWN:
+				pitch = 90.0f;
+				// player.getYOffset() = -1.8f;
+				break;
+			case EAST:
+				yaw = -90.0f;
+				break;
+			case NORTH:
+				yaw = 180.0f;
+				break;
+			case SOUTH:
+				yaw = 0.0f;
+				break;
+			case INTERNAL:
+				break;
+			case UP:
+				pitch = 90.0f;
+				break;
+			case WEST:
+				yaw = 90.0f;
+				break;
+		}
+
+		player.setLocationAndAngles(
+				tile.getPos().getX() + 0.5,
+				tile.getPos().getY() + 0.5,
+				tile.getPos().getZ() + 0.5,
+				yaw,
+				pitch
+		);
+	}
 //
 //	public static boolean canAccess( final AENetworkProxy gridProxy, final IActionSource src )
 //	{
@@ -1442,32 +1444,32 @@ public class Platform
 //	}
 //
 //	// TODO wtf is this?
-//	public static ItemStack getContainerItem( final ItemStack stackInSlot )
-//	{
-//		if( stackInSlot == null )
-//		{
-//			return ItemStack.EMPTY;
-//		}
-//
-//		final Item i = stackInSlot.getItem();
-//		if( i == null || !i.hasContainerItem( stackInSlot ) )
-//		{
-//			if( stackInSlot.getCount() > 1 )
-//			{
-//				stackInSlot.setCount( stackInSlot.getCount() - 1 );
-//				return stackInSlot;
-//			}
-//			return ItemStack.EMPTY;
-//		}
-//
-//		ItemStack ci = i.getContainerItem( stackInSlot.copy() );
-//		if( !ci.isEmpty() && ci.isDamageable() && ci.getDamage() == ci.getMaxDamage() )
-//		{
-//			ci = ItemStack.EMPTY;
-//		}
-//
-//		return ci;
-//	}
+	public static ItemStack getContainerItem( final ItemStack stackInSlot )
+	{
+		if( stackInSlot == null )
+		{
+			return ItemStack.EMPTY;
+		}
+
+		final Item i = stackInSlot.getItem();
+		if( i == null || !i.hasContainerItem( stackInSlot ) )
+		{
+			if( stackInSlot.getCount() > 1 )
+			{
+				stackInSlot.setCount( stackInSlot.getCount() - 1 );
+				return stackInSlot;
+			}
+			return ItemStack.EMPTY;
+		}
+
+		ItemStack ci = i.getContainerItem( stackInSlot.copy() );
+		if( !ci.isEmpty() && ci.isDamageable() && ci.getDamage() == ci.getMaxDamage() )
+		{
+			ci = ItemStack.EMPTY;
+		}
+
+		return ci;
+	}
 
 	public static void notifyBlocksOfNeighbors( final World world, final BlockPos pos )
 	{

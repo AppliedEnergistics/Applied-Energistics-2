@@ -1,8 +1,7 @@
-
 package appeng.fluids.container;
 
 
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,7 +21,7 @@ public class ContainerFluidLevelEmitter extends ContainerFluidConfigurable
 	private final PartFluidLevelEmitter lvlEmitter;
 
 	@OnlyIn( Dist.CLIENT )
-	private GuiTextField textField;
+	private TextFieldWidget textField;
 	@GuiSync( 3 )
 	public long EmitterValue = -1;
 
@@ -33,7 +32,7 @@ public class ContainerFluidLevelEmitter extends ContainerFluidConfigurable
 	}
 
 	@OnlyIn( Dist.CLIENT )
-	public void setTextField( final GuiTextField level )
+	public void setTextField( final TextFieldWidget level )
 	{
 		this.textField = level;
 		this.textField.setText( String.valueOf( this.EmitterValue ) );

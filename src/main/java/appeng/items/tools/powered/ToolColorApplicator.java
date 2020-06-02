@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.item.SnowballItem;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.text.ITextComponent;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -68,6 +70,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.block.networking.BlockCableBus;
 import appeng.block.paint.BlockPaint;
 import appeng.core.AEConfig;
+import appeng.core.Api;
 import appeng.core.localization.GuiText;
 import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.IBlockTool;
@@ -104,13 +107,13 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	}
 
 	@Override
-	public EnumActionResult onItemUse( PlayerEntity p, World w, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ )
+	public ActionResultType onItemUse( PlayerEntity p, World w, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ )
 	{
 		return this.onItemUse( p.getHeldItem( hand ), p, w, pos, hand, side, hitX, hitY, hitZ );
 	}
 
 	@Override
-	public EnumActionResult onItemUse( ItemStack is, PlayerEntity p, World w, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ )
+	public ActionResultType onItemUse( ItemStack is, PlayerEntity p, World w, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ )
 	{
 		final Block blk = w.getBlockState( pos ).getBlock();
 
@@ -137,11 +140,11 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 
 			if( !Platform.hasPermissions( new DimensionalCoord( w, pos ), p ) )
 			{
-				return EnumActionResult.FAIL;
+				return ActionResultType.FAIL;
 			}
 
 			final double powerPerUse = 100;
-			if( !paintBall.isEmpty() && paintBall.getItem() instanceof ItemSnowball )
+			if( !paintBall.isEmpty() && paintBall.getItem() instanceof SnowballItem )
 			{
 				final TileEntity te = w.getTileEntity( pos );
 				// clean cables.
@@ -153,7 +156,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 						{
 							inv.extractItems( AEItemStack.fromItemStack( paintBall ), Actionable.MODULATE, new BaseActionSource() );
 							this.extractAEPower( is, powerPerUse, Actionable.MODULATE );
-							return EnumActionResult.SUCCESS;
+							return ActionResultType.SUCCESS;
 						}
 					}
 				}
@@ -166,7 +169,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 					inv.extractItems( AEItemStack.fromItemStack( paintBall ), Actionable.MODULATE, new BaseActionSource() );
 					this.extractAEPower( is, powerPerUse, Actionable.MODULATE );
 					( (TilePaint) painted ).cleanSide( side.getOpposite() );
-					return EnumActionResult.SUCCESS;
+					return ActionResultType.SUCCESS;
 				}
 			}
 			else if( !paintBall.isEmpty() )
@@ -179,7 +182,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 					{
 						inv.extractItems( AEItemStack.fromItemStack( paintBall ), Actionable.MODULATE, new BaseActionSource() );
 						this.extractAEPower( is, powerPerUse, Actionable.MODULATE );
-						return EnumActionResult.SUCCESS;
+						return ActionResultType.SUCCESS;
 					}
 				}
 			}
@@ -190,7 +193,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			this.cycleColors( is, paintBall, 1 );
 		}
 
-		return EnumActionResult.FAIL;
+		return ActionResultType.FAIL;
 	}
 
 	@Override
@@ -220,7 +223,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			return null;
 		}
 
-		if( paintBall.getItem() instanceof ItemSnowball )
+		if( paintBall.getItem() instanceof SnowballItem )
 		{
 			return AEColor.TRANSPARENT;
 		}
@@ -251,7 +254,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		final CompoundNBT c = is.getTag();
 		if( c != null && c.contains("color") )
 		{
-			final CompoundNBT color = c.getCompoundTag( "color" );
+			final CompoundNBT color = c.getCompound( "color" );
 			final ItemStack oldColor = ItemStack.read(color);
 			if( !oldColor.isEmpty() )
 			{
@@ -336,13 +339,13 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
         final CompoundNBT data = is.getOrCreateTag();
 		if( newColor.isEmpty() )
 		{
-			data.removeTag( "color" );
+			data.remove( "color" );
 		}
 		else
 		{
 			final CompoundNBT color = new CompoundNBT();
 			newColor.write(color);
-			data.setTag( "color", color );
+			data.put( "color", color );
 		}
 	}
 
@@ -469,7 +472,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 				}
 			}
 
-			if( requestedAddition.getItem() instanceof ItemSnowball )
+			if( requestedAddition.getItem() instanceof SnowballItem )
 			{
 				return false;
 			}

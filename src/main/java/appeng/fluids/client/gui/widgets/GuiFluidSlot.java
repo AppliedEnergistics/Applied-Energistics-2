@@ -1,16 +1,19 @@
-
 package appeng.fluids.client.gui.widgets;
 
 
 import java.util.Collections;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -44,15 +47,16 @@ public class GuiFluidSlot extends GuiCustomSlot
 			RenderSystem.disableLighting();
 			RenderSystem.disableBlend();
 			final Fluid fluid = fs.getFluid();
-			mc.getTextureManager().bindTexture( TextureMap.LOCATION_BLOCKS_TEXTURE );
-			final TextureAtlasSprite sprite = mc.getTextureMapBlocks().getAtlasSprite( fluid.getStill().toString() );
+			final FluidAttributes attributes = fluid.getAttributes();
+			mc.getTextureManager().bindTexture( AtlasTexture.LOCATION_BLOCKS_TEXTURE );
+			final TextureAtlasSprite sprite = mc.getAtlasSpriteGetter( AtlasTexture.LOCATION_BLOCKS_TEXTURE ).apply( attributes.getStillTexture() );
 
 			// Set color for dynamic fluids
 			// Convert int color to RGB
-			final float red = ( fluid.getColor() >> 16 & 255 ) / 255.0F;
-			final float green = ( fluid.getColor() >> 8 & 255 ) / 255.0F;
-			final float blue = ( fluid.getColor() & 255 ) / 255.0F;
-			RenderSystem.color4f( red, green, blue );
+			final float red = ( attributes.getColor() >> 16 & 255 ) / 255.0F;
+			final float green = ( attributes.getColor() >> 8 & 255 ) / 255.0F;
+			final float blue = ( attributes.getColor() & 255 ) / 255.0F;
+			RenderSystem.color3f( red, green, blue );
 
 			this.drawTexturedModalRect( this.xPos(), this.yPos(), sprite, this.getWidth(), this.getHeight() );
 		}
@@ -62,7 +66,7 @@ public class GuiFluidSlot extends GuiCustomSlot
 	public boolean canClick( final PlayerEntity player )
 	{
 		final ItemStack mouseStack = player.inventory.getItemStack();
-		return mouseStack.isEmpty() || mouseStack.hasCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null );
+		return mouseStack.isEmpty() || mouseStack.getCapability( CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY ).isPresent();
 	}
 
 	@Override
@@ -74,11 +78,10 @@ public class GuiFluidSlot extends GuiCustomSlot
 		}
 		else if( mouseButton == 0 )
 		{
-			final FluidStack fluid = FluidUtil.getFluidContained( clickStack );
-			if( fluid != null )
-			{
+			final LazyOptional<FluidStack> fluidOpt = FluidUtil.getFluidContained( clickStack );
+			fluidOpt.ifPresent( fluid -> {
 				this.setFluidStack( AEFluidStack.fromFluidStack( fluid ) );
-			}
+			} );
 		}
 	}
 
@@ -88,7 +91,7 @@ public class GuiFluidSlot extends GuiCustomSlot
 		final IAEFluidStack fluid = this.getFluidStack();
 		if( fluid != null )
 		{
-			return fluid.getFluidStack().getLocalizedName();
+			return I18n.format( fluid.getFluidStack().getTranslationKey() );
 		}
 		return null;
 	}

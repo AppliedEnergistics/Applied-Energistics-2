@@ -24,9 +24,11 @@ import javax.annotation.Nonnull;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -98,17 +100,21 @@ public class PartFluidImportBus extends PartSharedFluidBus
 		}
 
 		final TileEntity te = this.getConnectedTE();
-
-		if( te != null && te.hasCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing().getOpposite() ) )
+		LazyOptional<IFluidHandler> fhOpt = LazyOptional.empty();
+		if( te != null )
+		{
+			te.getCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing().getOpposite() );
+		}
+		if( fhOpt.isPresent() )
 		{
 			try
 			{
-				final IFluidHandler fh = te.getCapability( CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, this.getSide().getFacing().getOpposite() );
+				final IFluidHandler fh = fhOpt.orElse( null );
 				final IMEMonitor<IAEFluidStack> inv = this.getProxy().getStorage().getInventory( this.getChannel() );
 
 				if( fh != null )
 				{
-					final FluidStack fluidStack = fh.drain( this.calculateAmountToSend(), false );
+					final FluidStack fluidStack = fh.drain( this.calculateAmountToSend(), FluidAction.SIMULATE );
 
 					if( this.filterEnabled() && !this.isInFilter( fluidStack ) )
 					{
@@ -126,7 +132,7 @@ public class PartFluidImportBus extends PartSharedFluidBus
 							aeFluidStack.decStackSize( notInserted.getStackSize() );
 						}
 
-						fh.drain( aeFluidStack.getFluidStack(), true );
+						fh.drain( aeFluidStack.getFluidStack(), FluidAction.EXECUTE );
 
 						return TickRateModulation.FASTER;
 					}

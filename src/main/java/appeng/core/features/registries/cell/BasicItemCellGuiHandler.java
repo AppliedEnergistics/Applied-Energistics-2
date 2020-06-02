@@ -15,6 +15,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEPartLocation;
+import appeng.core.Api;
 import appeng.core.sync.GuiBridge;
 import appeng.util.Platform;
 

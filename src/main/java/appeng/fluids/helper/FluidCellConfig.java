@@ -23,6 +23,8 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.fluid.Fluid;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
@@ -51,13 +53,14 @@ public class FluidCellConfig extends CellConfig
 		{
 			super.insertItem( slot, stack, simulate );
 		}
-		FluidStack fluid = FluidUtil.getFluidContained( stack );
-		if( fluid == null || !Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).isPresent() )
+		LazyOptional<FluidStack> fluidOpt = FluidUtil.getFluidContained( stack );
+		if( !fluidOpt.isPresent() || !Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).isPresent() )
 		{
 			return stack;
 		}
+		FluidStack fluid = fluidOpt.orElse( null );
 
-		fluid.amount = FluidAttributes.BUCKET_VOLUME;
+		fluid.setAmount( FluidAttributes.BUCKET_VOLUME );
 		ItemStack is = Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).get();
 		FluidDummyItem item = (FluidDummyItem) is.getItem();
 		item.setFluidStack( is, fluid );
@@ -71,13 +74,14 @@ public class FluidCellConfig extends CellConfig
 		{
 			super.setStackInSlot( slot, stack );
 		}
-		FluidStack fluid = FluidUtil.getFluidContained( stack );
-		if( fluid == null || !Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).isPresent() )
+		LazyOptional<FluidStack> fluidOpt = FluidUtil.getFluidContained( stack );
+		if( !fluidOpt.isPresent() || !Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).isPresent() )
 		{
 			return;
 		}
+		FluidStack fluid = fluidOpt.orElse( null );
 
-		fluid.amount = FluidAttributes.BUCKET_VOLUME;
+		fluid.setAmount( FluidAttributes.BUCKET_VOLUME );
 		ItemStack is = Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).get();
 		FluidDummyItem item = (FluidDummyItem) is.getItem();
 		item.setFluidStack( is, fluid );
@@ -91,12 +95,14 @@ public class FluidCellConfig extends CellConfig
 		{
 			super.isItemValid( slot, stack );
 		}
-		FluidStack fluid = FluidUtil.getFluidContained( stack );
-		if( fluid == null || !Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).isPresent() )
+		LazyOptional<FluidStack> fluidOpt = FluidUtil.getFluidContained( stack );
+		if( !fluidOpt.isPresent() || !Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).isPresent() )
 		{
 			return false;
 		}
-		fluid.amount = FluidAttributes.BUCKET_VOLUME;
+		FluidStack fluid = fluidOpt.orElse( null );
+
+		fluid.setAmount( FluidAttributes.BUCKET_VOLUME );
 		ItemStack is = Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).get();
 		FluidDummyItem item = (FluidDummyItem) is.getItem();
 		item.setFluidStack( is, fluid );

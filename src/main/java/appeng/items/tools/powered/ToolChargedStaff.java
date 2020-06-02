@@ -50,10 +50,10 @@ public class ToolChargedStaff extends AEBasePoweredItem
 			{
 				for( int x = 0; x < 2; x++ )
 				{
-					final AxisAlignedBB entityBoundingBox = target.getEntityBoundingBox();
-					final float dx = (float) ( Platform.getRandomFloat() * target.width + entityBoundingBox.minX );
-					final float dy = (float) ( Platform.getRandomFloat() * target.height + entityBoundingBox.minY );
-					final float dz = (float) ( Platform.getRandomFloat() * target.width + entityBoundingBox.minZ );
+					final AxisAlignedBB entityBoundingBox = target.getBoundingBox();
+					final float dx = (float) ( Platform.getRandomFloat() * target.getWidth() + entityBoundingBox.minX );
+					final float dy = (float) ( Platform.getRandomFloat() * target.getHeight() + entityBoundingBox.minY );
+					final float dz = (float) ( Platform.getRandomFloat() * target.getWidth() + entityBoundingBox.minZ );
 					AppEng.proxy.sendToAllNearExcept( null, dx, dy, dz, 32.0, target.world, new PacketLightning( dx, dy, dz ) );
 				}
 			}

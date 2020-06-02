@@ -54,7 +54,7 @@ public class PacketCompassResponse extends AppEngPacket
 	public PacketCompassResponse( final PacketCompassRequest req, final boolean hasResult, final boolean spin, final double radians )
 	{
 
-		final PacketBuffer data = new ( Unpooled.buffer() );
+		final PacketBuffer data = new PacketBuffer( Unpooled.buffer() );
 
 		data.writeInt( this.getPacketID() );
 		data.writeLong( this.attunement = req.attunement );

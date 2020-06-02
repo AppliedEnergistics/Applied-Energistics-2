@@ -38,14 +38,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -86,7 +84,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 
 	@OnlyIn( Dist.CLIENT )
 	@Override
-	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
+	public void addInformation( final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
 		super.addInformation( stack, world, lines, advancedTooltips );
 
@@ -98,7 +96,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 
 		if( mt == MaterialType.NAME_PRESS )
 		{
-            final CompoundNBT c = stack.getOrCreateTag();
+			final CompoundNBT c = stack.getOrCreateTag();
 			lines.add( c.getString( "InscribeName" ) );
 		}
 
@@ -223,16 +221,18 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	}
 
 	@Override
-	public EnumActionResult onItemUseFirst( final PlayerEntity player, final World world, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
+	public ActionResultType onItemUseFirst( ItemStack stack, ItemUseContext context )
 	{
+		PlayerEntity player = context.getPlayer();
+		Hand hand = context.getHand();
 		if( player.isShiftKeyDown() )
 		{
-			final TileEntity te = world.getTileEntity( pos );
+			final TileEntity te = context.getWorld().getTileEntity( context.getPos() );
 			IItemHandler upgrades = null;
 
 			if( te instanceof IPartHost )
 			{
-				final SelectedPart sp = ( (IPartHost) te ).selectPart( new Vec3d( hitX, hitY, hitZ ) );
+				final SelectedPart sp = ( (IPartHost) te ).selectPart( context.getHitVec() );
 				if( sp.part instanceof IUpgradeableHost )
 				{
 					upgrades = ( (ISegmentedInventory) sp.part ).getInventoryByName( "upgrades" );
@@ -252,17 +252,17 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 				{
 					if( player.world.isRemote )
 					{
-						return EnumActionResult.PASS;
+						return ActionResultType.PASS;
 					}
 
 					final InventoryAdaptor ad = new AdaptorItemHandler( upgrades );
 					player.setHeldItem( hand, ad.addItems( player.getHeldItem( hand ) ) );
-					return EnumActionResult.SUCCESS;
+					return ActionResultType.SUCCESS;
 				}
 			}
 		}
 
-		return super.onItemUseFirst( player, world, pos, side, hitX, hitY, hitZ, hand );
+		return super.onItemUseFirst( stack, context );
 	}
 
 	@Override
@@ -279,18 +279,14 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 
 		try
 		{
-			eqi = droppedEntity.getConstructor( World.class, double.class, double.class, double.class, ItemStack.class )
-					.newInstance( w, location.getPosX(),
-							location.getPosY(), location.getPosZ(), itemstack );
+			eqi = droppedEntity.getConstructor( World.class, double.class, double.class, double.class, ItemStack.class ).newInstance( w, location.getPosX(), location.getPosY(), location.getPosZ(), itemstack );
 		}
 		catch( final Throwable t )
 		{
 			throw new IllegalStateException( t );
 		}
 
-		eqi.motionX = location.motionX;
-		eqi.motionY = location.motionY;
-		eqi.motionZ = location.motionZ;
+		eqi.setMotion( location.getMotion() );
 
 		if( location instanceof ItemEntity && eqi instanceof ItemEntity )
 		{
@@ -379,5 +375,4 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 			return o1.compareTo( o2 );
 		}
 	}
-
 }

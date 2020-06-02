@@ -22,14 +22,13 @@ package appeng.me.cluster.implementations;
 import java.util.Iterator;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import appeng.api.AEApi;
 import appeng.api.events.LocatableEventAnnounce;
 import appeng.api.events.LocatableEventAnnounce.LocatableEvent;
 import appeng.api.exceptions.FailedConnectionException;
@@ -39,6 +38,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
+import appeng.core.Api;
 import appeng.me.cache.helpers.ConnectionWrapper;
 import appeng.me.cluster.IAECluster;
 import appeng.tile.qnb.TileQuantumBridge;
@@ -156,10 +156,7 @@ public class QuantumCluster implements ILocatable, IAECluster
 						}
 					}
 
-					sideA.connection = sideB.connection = new ConnectionWrapper( Api.INSTANCE
-							.grid()
-							.createGridConnection( sideA.getNode(),
-									sideB.getNode() ) );
+					sideA.connection = sideB.connection = new ConnectionWrapper( Api.INSTANCE.grid().createGridConnection( sideA.getNode(), sideB.getNode() ) );
 				}
 				catch( final FailedConnectionException e )
 				{
@@ -196,11 +193,11 @@ public class QuantumCluster implements ILocatable, IAECluster
 			final World theWorld = qc.center.getWorld();
 			if( !qc.isDestroyed )
 			{
-				final Chunk c = theWorld.getChunkFromBlockCoords( qc.center.getPos() );
-				if( c.isLoaded() )
+				ChunkPos cPos = new ChunkPos( qc.center.getPos() );
+				if( theWorld.getChunkProvider().isChunkLoaded( cPos ) )
 				{
-					final int id = theWorld.provider.getDimension();
-					final World cur = DimensionManager.getWorld( id );
+					final DimensionType id = theWorld.dimension.getType();
+					final World cur = theWorld.getServer().getWorld( id );
 
 					final TileEntity te = theWorld.getTileEntity( qc.center.getPos() );
 					return te != qc.center || theWorld != cur;
@@ -265,14 +262,12 @@ public class QuantumCluster implements ILocatable, IAECluster
 	@Override
 	public Iterator<IGridHost> getTiles()
 	{
-		return new ChainedIterator<>( this.getRing()[0], this.getRing()[1], this.getRing()[2], this.getRing()[3], this.getRing()[4], this
-				.getRing()[5], this.getRing()[6], this.getRing()[7], this.center );
+		return new ChainedIterator<>( this.getRing()[0], this.getRing()[1], this.getRing()[2], this.getRing()[3], this.getRing()[4], this.getRing()[5], this.getRing()[6], this.getRing()[7], this.center );
 	}
 
 	public boolean isCorner( final TileQuantumBridge tileQuantumBridge )
 	{
-		return this.getRing()[0] == tileQuantumBridge || this.getRing()[2] == tileQuantumBridge || this.getRing()[4] == tileQuantumBridge || this
-				.getRing()[6] == tileQuantumBridge;
+		return this.getRing()[0] == tileQuantumBridge || this.getRing()[2] == tileQuantumBridge || this.getRing()[4] == tileQuantumBridge || this.getRing()[6] == tileQuantumBridge;
 	}
 
 	@Override

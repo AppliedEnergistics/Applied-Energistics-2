@@ -33,6 +33,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -41,6 +42,7 @@ import appeng.api.AEApi;
 import appeng.api.definitions.IMaterials;
 import appeng.api.implementations.items.IGrowableCrystal;
 import appeng.api.recipes.ResolverResult;
+import appeng.core.Api;
 import appeng.core.localization.ButtonToolTips;
 import appeng.entity.EntityGrowingCrystal;
 import appeng.items.AEBaseItem;
@@ -92,13 +94,13 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	{
 		if( is.hasTag() )
 		{
-			return is.getTag().getInteger( "progress" );
+			return is.getTag().getInt( "progress" );
 		}
 		else
 		{
 			final int progress;
             final CompoundNBT comp = is.getOrCreateTag();
-			comp.setInteger( "progress", progress = is.getDamage() );
+			comp.putInt( "progress", progress = is.getDamage() );
 			is.setItemDamage( ( is.getDamage() / SINGLE_OFFSET ) * SINGLE_OFFSET );
 			return progress;
 		}
@@ -148,7 +150,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	private void setProgress( final ItemStack is, final int newDamage )
 	{
         final CompoundNBT comp = is.getOrCreateTag();
-		comp.setInteger( "progress", newDamage );
+		comp.putInt( "progress", newDamage );
 		is.setItemDamage( is.getDamage() / LEVEL_OFFSET * LEVEL_OFFSET );
 	}
 
@@ -162,9 +164,9 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	@OnlyIn( Dist.CLIENT )
 	public void addInformation(final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
-		lines.add( ButtonToolTips.DoesntDespawn.getLocal() );
+		lines.add( ButtonToolTips.DoesntDespawn.getTranslationKey() );
 		final int progress = getProgress( stack ) % SINGLE_OFFSET;
-		lines.add( Math.floor( (float) progress / (float) ( SINGLE_OFFSET / 100 ) ) + "%" );
+		lines.add( new StringTextComponent( Math.floor( (float) progress / (float) ( SINGLE_OFFSET / 100 ) ) + "%" ) );
 
 		super.addInformation( stack, world, lines, advancedTooltips );
 	}
@@ -227,9 +229,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	{
 		final EntityGrowingCrystal egc = new EntityGrowingCrystal( world, location.getPosX(), location.getPosY(), location.getPosZ(), itemstack );
 
-		egc.motionX = location.motionX;
-		egc.motionY = location.motionY;
-		egc.motionZ = location.motionZ;
+		egc.setMotion( location.getMotion() );
 
 		// Cannot read the pickup delay of the original item, so we
 		// use the pickup delay used for items dropped by a player instead

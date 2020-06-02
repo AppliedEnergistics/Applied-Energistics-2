@@ -19,37 +19,41 @@
 package appeng.parts.automation;
 
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 import java.util.function.Function;
+import javax.annotation.Nullable;
 
-import com.google.common.collect.Lists;
+import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IModelTransform;
+import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.common.model.IModelState;
-import net.minecraftforge.common.model.TRSRTransformation;
 
 
 /**
  * Built-in model for annihilation planes that supports connected textures.
  */
-public class PlaneModel implements IModel
+public class PlaneModel implements IUnbakedModel
 {
 
-	private final ResourceLocation frontTexture;
-	private final ResourceLocation sidesTexture;
-	private final ResourceLocation backTexture;
+	private final Material frontTexture;
+	private final Material sidesTexture;
+	private final Material backTexture;
 	private final PlaneConnections connections;
 
 	public PlaneModel( ResourceLocation frontTexture, ResourceLocation sidesTexture, ResourceLocation backTexture, PlaneConnections connections )
 	{
-		this.frontTexture = frontTexture;
-		this.sidesTexture = sidesTexture;
-		this.backTexture = backTexture;
+		this.frontTexture = new Material( AtlasTexture.LOCATION_BLOCKS_TEXTURE, frontTexture );
+		this.sidesTexture = new Material( AtlasTexture.LOCATION_BLOCKS_TEXTURE, sidesTexture );
+		this.backTexture = new Material( AtlasTexture.LOCATION_BLOCKS_TEXTURE, backTexture );
 		this.connections = connections;
 	}
 
@@ -60,25 +64,19 @@ public class PlaneModel implements IModel
 	}
 
 	@Override
-	public Collection<ResourceLocation> getTextures()
+	public Collection<Material> getTextures( Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors )
 	{
-		return Lists.newArrayList( this.frontTexture, this.sidesTexture, this.backTexture );
+		return Arrays.asList( frontTexture, sidesTexture, backTexture );
 	}
 
+	@Nullable
 	@Override
-	public IBakedModel bake( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
+	public IBakedModel bakeModel( ModelBakery modelBakeryIn, Function<Material, TextureAtlasSprite> spriteGetterIn, IModelTransform transformIn, ResourceLocation locationIn )
 	{
-		TextureAtlasSprite frontSprite = bakedTextureGetter.apply( this.frontTexture );
-		TextureAtlasSprite sidesSprite = bakedTextureGetter.apply( this.sidesTexture );
-		TextureAtlasSprite backSprite = bakedTextureGetter.apply( this.backTexture );
+		TextureAtlasSprite frontSprite = spriteGetterIn.apply( this.frontTexture );
+		TextureAtlasSprite sidesSprite = spriteGetterIn.apply( this.sidesTexture );
+		TextureAtlasSprite backSprite = spriteGetterIn.apply( this.backTexture );
 
-		return new PlaneBakedModel( format, frontSprite, sidesSprite, backSprite, this.connections );
+		return new PlaneBakedModel( frontSprite, sidesSprite, backSprite, this.connections );
 	}
-
-	@Override
-	public IModelState getDefaultState()
-	{
-		return TRSRTransformation.identity();
-	}
-
 }

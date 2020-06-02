@@ -26,6 +26,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraft.fluid.Fluid;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -57,6 +58,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.capabilities.Capabilities;
+import appeng.core.Api;
 import appeng.core.settings.TickRates;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidInventory;
@@ -403,7 +405,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 
 				// make sure strange things didn't happen...
 				final FluidStack canExtract = this.tanks.drain( slot, toStore.getFluidStack(), false );
-				if( canExtract == null || canExtract.amount != toStore.getStackSize() )
+				if( canExtract == null || canExtract.getAmount() != toStore.getStackSize() )
 				{
 					changed = true;
 				}
@@ -417,7 +419,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 						// extract items!
 						changed = true;
 						final FluidStack removed = this.tanks.drain( slot, toStore.getFluidStack(), true );
-						if( removed == null || toStore.getStackSize() != removed.amount )
+						if( removed == null || toStore.getStackSize() != removed.getAmount() )
 						{
 							throw new IllegalStateException( "bad attempt at managing tanks. ( drain )" );
 						}
@@ -494,7 +496,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 
 	public void writeToNBT( final CompoundNBT data )
 	{
-		data.setInteger( "priority", this.priority );
+		data.putInt( "priority", this.priority );
 		this.tanks.writeToNBT( data, "storage" );
 		this.config.writeToNBT( data, "config" );
 	}
@@ -503,7 +505,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 	{
 		this.config.readFromNBT( data, "config" );
 		this.tanks.readFromNBT( data, "storage" );
-		this.priority = data.getInteger( "priority" );
+		this.priority = data.getInt( "priority" );
 		this.readConfig();
 	}
 

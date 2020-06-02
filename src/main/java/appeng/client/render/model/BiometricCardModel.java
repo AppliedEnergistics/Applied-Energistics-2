@@ -1,19 +1,22 @@
-
 package appeng.client.render.model;
 
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 import java.util.function.Function;
+import javax.annotation.Nullable;
 
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import com.mojang.datafixers.util.Pair;
+
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.IModelTransform;
+import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.common.model.IModelState;
-import net.minecraftforge.common.model.TRSRTransformation;
 
 import appeng.core.AppEng;
 
@@ -22,11 +25,11 @@ import appeng.core.AppEng;
  * Model wrapper for the biometric card item model, which combines a base card layer with a "visual hash" of the player
  * name
  */
-public class BiometricCardModel implements IModel
+public class BiometricCardModel implements IUnbakedModel
 {
 
 	private static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "item/biometric_card" );
-	private static final ResourceLocation TEXTURE = new ResourceLocation( AppEng.MOD_ID, "items/biometric_card_hash" );
+	private static final Material TEXTURE = new Material( AtlasTexture.LOCATION_BLOCKS_TEXTURE, new ResourceLocation( AppEng.MOD_ID, "items/biometric_card_hash" ) );
 
 	@Override
 	public Collection<ResourceLocation> getDependencies()
@@ -35,37 +38,19 @@ public class BiometricCardModel implements IModel
 	}
 
 	@Override
-	public Collection<ResourceLocation> getTextures()
+	public Collection<Material> getTextures( Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors )
 	{
-		return Collections.singletonList( TEXTURE );
+		return Collections.singleton( TEXTURE );
 	}
 
+	@Nullable
 	@Override
-	public IBakedModel bake( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
+	public IBakedModel bakeModel( ModelBakery modelBakeryIn, Function<Material, TextureAtlasSprite> spriteGetterIn, IModelTransform transformIn, ResourceLocation locationIn )
 	{
-		TextureAtlasSprite texture = bakedTextureGetter.apply( TEXTURE );
+		TextureAtlasSprite texture = spriteGetterIn.apply( TEXTURE );
 
-		IBakedModel baseModel = this.getBaseModel( state, format, bakedTextureGetter );
+		IBakedModel baseModel = modelBakeryIn.getBakedModel( MODEL_BASE, transformIn, spriteGetterIn );
 
-		return new BiometricCardBakedModel( format, baseModel, texture );
-	}
-
-	private IBakedModel getBaseModel( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
-	{
-		// Load the base model
-		try
-		{
-			return ModelLoaderRegistry.getModel( MODEL_BASE ).bake( state, format, bakedTextureGetter );
-		}
-		catch( Exception e )
-		{
-			throw new RuntimeException( e );
-		}
-	}
-
-	@Override
-	public IModelState getDefaultState()
-	{
-		return TRSRTransformation.identity();
+		return new BiometricCardBakedModel( baseModel, texture );
 	}
 }

@@ -36,6 +36,7 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotRestrictedInput;
+import appeng.core.Api;
 import appeng.fluids.parts.PartFluidStorageBus;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.util.Platform;

@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.IContainerListener;
+import net.minecraft.inventory.container.IContainerListener;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.sync.network.NetworkHandler;

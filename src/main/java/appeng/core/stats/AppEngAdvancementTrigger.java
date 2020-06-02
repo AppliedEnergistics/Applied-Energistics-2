@@ -33,6 +33,7 @@ import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.advancements.criterion.CriterionInstance;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 
 import appeng.core.AppEng;
@@ -98,7 +99,7 @@ public class AppEngAdvancementTrigger implements ICriterionTrigger<AppEngAdvance
 	}
 
 	@Override
-	public void trigger( PlayerEntity parPlayer )
+	public void trigger( ServerPlayerEntity parPlayer )
 	{
 		AppEngAdvancementTrigger.Listeners l = this.listeners.get( parPlayer.getAdvancements() );
 

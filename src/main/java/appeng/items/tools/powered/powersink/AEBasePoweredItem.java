@@ -50,10 +50,10 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
 	public AEBasePoweredItem( final double powerCapacity )
 	{
-		this.setMaxStackSize( 1 );
-		this.setMaxDamage( 32 );
-		this.hasSubtypes = false;
-		this.setFull3D();
+		super(new Properties().maxStackSize( 1 ).maxDamage( 32 ));
+		//FIXME
+//		this.hasSubtypes = false;
+//		this.setFull3D();
 
 		this.powerCapacity = powerCapacity;
 	}

@@ -25,6 +25,7 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
@@ -310,13 +311,11 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 						final double y = ( side.yOffset != 0 ? 0 : .7 * ( Platform.getRandomFloat() - .5 ) ) + side.yOffset + .5 + te.getPos().getY();
 						final double z = ( side.zOffset != 0 ? 0 : .7 * ( Platform.getRandomFloat() - .5 ) ) + side.zOffset + .5 + te.getPos().getZ();
 
-						final EntityItem ei = new EntityItem( w, x, y, z, is.copy() );
+						final ItemEntity ei = new ItemEntity( w, x, y, z, is.copy() );
 
 						Entity result = ei;
 
-						ei.motionX = side.xOffset * 0.2;
-						ei.motionY = side.yOffset * 0.2;
-						ei.motionZ = side.zOffset * 0.2;
+						ei.setMotion( side.xOffset * 0.2, side.yOffset * 0.2, side.zOffset * 0.2 );
 
 						if( is.getItem().hasCustomEntity( is ) )
 						{

@@ -22,7 +22,7 @@ package appeng.items.materials;
 import java.util.EnumSet;
 import java.util.Set;
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -163,7 +163,8 @@ public enum MaterialType
 
 	public ItemStack stack( final int size )
 	{
-		return new ItemStack( this.getItemInstance(), size, this.getDamageValue() );
+		//FIXME
+		return new ItemStack( this.getItemInstance(), size/*, this.getDamageValue()*/ );
 	}
 
 	Set<AEFeature> getFeature()

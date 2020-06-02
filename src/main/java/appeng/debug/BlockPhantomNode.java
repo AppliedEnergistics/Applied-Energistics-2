@@ -33,7 +33,7 @@ import net.minecraft.world.World;
 import appeng.block.AEBaseTileBlock;
 
 
-public class BlockPhantomNode extends AEBaseTileBlock
+public class BlockPhantomNode extends AEBaseTileBlock<TilePhantomNode>
 {
 
 	public BlockPhantomNode()
@@ -46,7 +46,7 @@ public class BlockPhantomNode extends AEBaseTileBlock
 	{
 		final TilePhantomNode tpn = this.getTileEntity( w, pos );
 		tpn.triggerCrashMode();
-		return true;
+		return ActionResultType.SUCCESS;
 	}
 
 }
