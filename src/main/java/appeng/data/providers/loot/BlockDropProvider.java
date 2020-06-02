@@ -1,13 +1,12 @@
 package appeng.data.providers.loot;
 
 
-import appeng.api.definitions.IBlocks;
-import appeng.api.definitions.IMaterials;
-import appeng.core.Api;
 import appeng.core.AppEng;
+import appeng.data.providers.IAE2DataProvider;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import net.minecraft.block.Block;
 import net.minecraft.data.DirectoryCache;
 import net.minecraft.data.IDataProvider;
@@ -26,11 +25,8 @@ import java.util.Map;
 import java.util.function.Function;
 
 
-public class BlockDropProvider extends BlockLootTables implements IAE2LootProvider
+public class BlockDropProvider extends BlockLootTables implements IAE2DataProvider
 {
-	public static final IBlocks BLOCKS = Api.INSTANCE.definitions().blocks();
-	public static final IMaterials MATERIALS = Api.INSTANCE.definitions().materials();
-
 	private Map<Block, Function<Block, LootTable.Builder>> overrides = ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
 			.put( BLOCKS.matrixFrame().block(), $ -> LootTable.builder() )
 			.put( BLOCKS.quartzOre().block(), b -> droppingItemWithFortune( b, Items.QUARTZ ) ) // FIXME replace with the material reference
@@ -77,16 +73,20 @@ public class BlockDropProvider extends BlockLootTables implements IAE2LootProvid
 
 	@Nonnull
 	@Override
-	public LootParameterSet getParameterSetTarget()
-	{
-		return LootParameterSets.BLOCK;
-	}
-
-	@Nonnull
-	@Override
 	public String getDataPath()
 	{
 		return "loot_tables/blocks";
+	}
+
+	public JsonElement toJson( LootTable.Builder builder )
+	{
+		return LootTableManager.toJson( finishBuilding( builder ) );
+	}
+
+	@Nonnull
+	public LootTable finishBuilding( LootTable.Builder builder )
+	{
+		return builder.setParameterSet( LootParameterSets.BLOCK ).build();
 	}
 
 }
