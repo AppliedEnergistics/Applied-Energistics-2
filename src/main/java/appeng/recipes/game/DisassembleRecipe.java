@@ -19,42 +19,46 @@
 package appeng.recipes.game;
 
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
-
-import appeng.api.AEApi;
-import appeng.api.definitions.IBlocks;
-import appeng.api.definitions.IDefinitions;
-import appeng.api.definitions.IItemDefinition;
-import appeng.api.definitions.IItems;
-import appeng.api.definitions.IMaterials;
+import appeng.api.definitions.*;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.core.Api;
+import appeng.core.AppEng;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.SpecialRecipe;
+import net.minecraft.item.crafting.SpecialRecipeSerializer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 
-public final class DisassembleRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
+public final class DisassembleRecipe extends SpecialRecipe
 {
+	public static final IRecipeSerializer<DisassembleRecipe> SERIALIZER = new SpecialRecipeSerializer<>( DisassembleRecipe::new );
+
+	static
+	{
+		SERIALIZER.setRegistryName( new ResourceLocation( AppEng.MOD_ID, "disassemble_recipe" ) );
+	}
+
 	private static final ItemStack MISMATCHED_STACK = ItemStack.EMPTY;
 
 	private final Map<IItemDefinition, IItemDefinition> cellMappings;
 	private final Map<IItemDefinition, IItemDefinition> nonCellMappings;
 
-	public DisassembleRecipe()
+	public DisassembleRecipe( ResourceLocation id )
 	{
+		super( id );
+
 		final IDefinitions definitions = Api.INSTANCE.definitions();
 		final IBlocks blocks = definitions.blocks();
 		final IItems items = definitions.items();
@@ -76,12 +80,12 @@ public final class DisassembleRecipe extends net.minecraftforge.registries.IForg
 	}
 
 	@Override
-	public boolean matches(final CraftingInventory inv, final World w )
+	public boolean matches( @Nonnull final CraftingInventory inv, @Nonnull final World w )
 	{
 		return !this.getOutput( inv ).isEmpty();
 	}
 
-	@Nullable
+	@Nonnull
 	private ItemStack getOutput( final IInventory inventory )
 	{
 		int itemCount = 0;
@@ -159,9 +163,9 @@ public final class DisassembleRecipe extends net.minecraftforge.registries.IForg
 		return Optional.empty();
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
-	public ItemStack getCraftingResult( final CraftingInventory inv )
+	public ItemStack getCraftingResult( @Nonnull final CraftingInventory inv )
 	{
 		return this.getOutput( inv );
 	}
@@ -172,16 +176,11 @@ public final class DisassembleRecipe extends net.minecraftforge.registries.IForg
 		return false;
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
-	public ItemStack getRecipeOutput() // no default output..
+	public IRecipeSerializer<DisassembleRecipe> getSerializer()
 	{
-		return ItemStack.EMPTY;
+		return SERIALIZER;
 	}
 
-	@Override
-	public NonNullList<ItemStack> getRemainingItems( final CraftingInventory inv )
-	{
-		return ForgeHooks.defaultRecipeGetRemainingItems( inv );
-	}
 }

@@ -42,11 +42,10 @@ import net.minecraft.world.Explosion.Mode;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
-import appeng.api.AEApi;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.core.sync.packets.PacketMockExplosion;
 import appeng.helpers.Reflected;
 import appeng.util.Platform;

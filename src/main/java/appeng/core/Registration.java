@@ -29,6 +29,9 @@ import appeng.client.render.model.GlassModelLoader;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.container.implementations.ContainerSkyChest;
 import appeng.core.stats.AeStats;
+import appeng.recipes.conditions.FeaturesEnabled;
+import appeng.recipes.game.DisassembleRecipe;
+import appeng.recipes.ingredients.PartIngredientSerializer;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
@@ -37,6 +40,7 @@ import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
@@ -46,9 +50,11 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.GenericEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -246,35 +252,24 @@ final class Registration
 		});
 	}
 
-//	@SubscribeEvent
-//	public void registerRecipes( RegistryEvent.Register<IRecipe> event )
-//	{
-//		final IForgeRegistry<IRecipe> registry = event.getRegistry();
-//
-//		final Api api = Api.INSTANCE;
-//		final ApiDefinitions definitions = api.definitions();
-//		final Dist dist = FMLCommonHandler.instance().getEffectiveSide();
-//
-//		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_DISASSEMBLY_CRAFTING ) )
-//		{
-//			DisassembleRecipe r = new DisassembleRecipe();
-//			registry.register( r.setRegistryName( AppEng.MOD_ID.toLowerCase(), "disassemble" ) );
-//		}
-//
-//		if( AEConfig.instance().isFeatureEnabled( AEFeature.ENABLE_FACADE_CRAFTING ) )
-//		{
-//			definitions.items().facade().maybeItem().ifPresent( facadeItem ->
-//			{
-//				FacadeRecipe f = new FacadeRecipe( (ItemFacade) facadeItem );
-//				registry.register( f.setRegistryName( AppEng.MOD_ID.toLowerCase(), "facade" ) );
-//			} );
-//		}
-//
-//		definitions.getRegistry().getBootstrapComponents( IRecipeRegistrationComponent.class ).forEachRemaining( b -> b.recipeRegistration( side, registry ) );
-//
-//		final AERecipeLoader ldr = new AERecipeLoader();
-//		ldr.loadProcessingRecipes();
-//	}
+	public void registerRecipeSerializers( RegistryEvent.Register<IRecipeSerializer<?>> event )
+	{
+		IForgeRegistry<IRecipeSerializer<?>> r = event.getRegistry();
+
+		final ApiDefinitions definitions = Api.INSTANCE.definitions();
+
+		r.registerAll(
+				DisassembleRecipe.SERIALIZER
+//				FacadeRecipe.getSerializer( (ItemFacade) definitions.items().facade().item() ) FIXME reimplement facades
+//				this.factories.put( new ResourceLocation( AppEng.MOD_ID, "inscriber" ), new InscriberHandler() ); FIXME re-implement machine recipes
+//				this.factories.put( new ResourceLocation( AppEng.MOD_ID, "smelt" ), new SmeltingHandler() );
+//				this.factories.put( new ResourceLocation( AppEng.MOD_ID, "grinder" ), new GrinderHandler() );
+		);
+
+		CraftingHelper.register( FeaturesEnabled.Serializer.INSTANCE );
+
+		CraftingHelper.register( new ResourceLocation( AppEng.MOD_ID, "part" ), PartIngredientSerializer.INSTANCE );
+	}
 
 
 	public void registerEntities( RegistryEvent.Register<EntityType<?>> event )

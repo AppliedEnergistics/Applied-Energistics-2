@@ -25,7 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTier;
 import net.minecraft.item.ShovelItem;
 
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.util.Platform;
 
 

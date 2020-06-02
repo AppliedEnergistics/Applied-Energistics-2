@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "ingredient": {
-    "item": "appliedenergistics2:fluix_block"
-  },
-  "result": "appliedenergistics2:fluix_stairs",
-  "count": 1
-}

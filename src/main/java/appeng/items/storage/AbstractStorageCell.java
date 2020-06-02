@@ -51,7 +51,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.core.AEConfig;
 import appeng.core.Api;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;

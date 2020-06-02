@@ -32,13 +32,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-import appeng.api.AEApi;
 import appeng.api.definitions.IMaterials;
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.util.Platform;
 
 

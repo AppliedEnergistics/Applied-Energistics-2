@@ -25,9 +25,11 @@ package appeng.api.definitions;
 
 
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import appeng.api.features.AEFeature;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -60,7 +62,7 @@ public interface IItemDefinition extends IComparableDefinition
 	ItemStack stack( int stackSize );
 
 	/**
-	 * @return <tt>true</tt> if definition is enabled
+	 * @return an immutable set of the features of this item
 	 */
-	boolean isEnabled();
+	Set<AEFeature> features();
 }

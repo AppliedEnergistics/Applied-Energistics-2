@@ -45,7 +45,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.core.features.ActivityState;
 import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.ItemStackSrc;
@@ -113,7 +113,7 @@ public class FeatureFactory
 		{
 			for( final AEColor color : AEColor.VALID_COLORS )
 			{
-				final ActivityState state = ActivityState.from( target.isEnabled() );
+				final ActivityState state = ActivityState.from( true );
 
 				definition.add( color, new ItemStackSrc( targetItem, state ) );
 			}

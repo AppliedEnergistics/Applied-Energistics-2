@@ -5,7 +5,7 @@ import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.bootstrap.components.ITileEntityRegistrationComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.core.AppEng;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.core.features.ActivityState;
 import appeng.core.features.BlockStackSrc;
 import appeng.tile.AEBaseTile;

@@ -59,7 +59,7 @@ import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
 import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.core.features.IStackSrc;
 import appeng.core.features.MaterialStackSrc;
 import appeng.items.AEBaseItem;

@@ -5,6 +5,7 @@ import appeng.core.AppEng;
 import appeng.forge.data.providers.loot.BlockDropProvider;
 import appeng.forge.data.providers.recipes.QuartzToolRecipes;
 import appeng.forge.data.providers.recipes.SlabStairRecipes;
+import appeng.forge.data.providers.recipes.SpecialRecipes;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -24,6 +25,7 @@ public class AE2DataGenerators
 			generator.addProvider( new BlockDropProvider( dataEvent ) );
 			generator.addProvider( new SlabStairRecipes( generator ) );
 			generator.addProvider( new QuartzToolRecipes( generator ) );
+			generator.addProvider( new SpecialRecipes( generator ) );
 		}
 	}
 

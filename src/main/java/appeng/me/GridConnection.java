@@ -36,7 +36,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IReadOnlyCollection;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.me.pathfinding.IPathItem;
 import appeng.util.Platform;
 import appeng.util.ReadOnlyCollection;

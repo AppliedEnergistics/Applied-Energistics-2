@@ -23,20 +23,4 @@ public interface IAE2DataProvider extends IDataProvider
 	IBlocks BLOCKS = Api.INSTANCE.definitions().blocks();
 	IItems ITEMS = Api.INSTANCE.definitions().items();
 	IMaterials MATERIALS = Api.INSTANCE.definitions().materials();
-
-	default Path getPath( Path root, ResourceLocation id )
-	{
-		return root.resolve( "data/" + id.getNamespace() + "/" + getDataPath() + "/" + id.getPath() + ".json" );
-	}
-
-	@Nonnull
-	@Override
-	default String getName()
-	{
-		return AppEng.MOD_NAME + "/" + getDataPath();
-	}
-
-	@Nonnull
-	String getDataPath();
-
 }

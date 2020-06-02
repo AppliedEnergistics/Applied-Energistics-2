@@ -28,14 +28,10 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import appeng.bootstrap.components.ITileEntityRegistrationComponent;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -45,16 +41,12 @@ import appeng.block.AEBaseBlockItem;
 import appeng.block.AEBaseTileBlock;
 import appeng.bootstrap.components.IBlockRegistrationComponent;
 import appeng.bootstrap.components.IItemRegistrationComponent;
-import appeng.bootstrap.components.IPreInitComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
-import appeng.core.features.AEFeature;
-import appeng.core.features.ActivityState;
+import appeng.api.features.AEFeature;
 import appeng.core.features.BlockDefinition;
-import appeng.core.features.BlockStackSrc;
 import appeng.core.features.TileDefinition;
-import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
 
 
@@ -200,11 +192,11 @@ class BlockDefinitionBuilder implements IBlockBuilder
 
 		if( block instanceof AEBaseTileBlock )
 		{
-			return (T) new TileDefinition( this.registryName, (AEBaseTileBlock) block, item );
+			return (T) new TileDefinition( this.registryName, (AEBaseTileBlock) block, item, features );
 		}
 		else
 		{
-			return (T) new BlockDefinition( this.registryName, block, item );
+			return (T) new BlockDefinition( this.registryName, block, item, features );
 		}
 	}
 

@@ -42,7 +42,6 @@ import appeng.api.features.IInscriberRecipeBuilder;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.recipes.ores.IOreListener;
-import appeng.recipes.ores.OreDictionaryHandler;
 import appeng.util.Platform;
 
 

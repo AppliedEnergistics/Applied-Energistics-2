@@ -22,7 +22,6 @@ package appeng.facade;
 import java.io.IOException;
 import java.util.Optional;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -129,7 +128,7 @@ public class FacadeContainer implements IFacadeContainer
 			{
 				final int id = Math.abs( out.readInt() );
 
-				Optional<Item> maybeFacadeItem = Api.INSTANCE.definitions().items().facade().maybeItem();
+				Optional<net.minecraft.item.Item> maybeFacadeItem = Api.INSTANCE.definitions().items().facade().maybeItem();
 				if( maybeFacadeItem.isPresent() )
 				{
 					final ItemFacade ifa = (ItemFacade) maybeFacadeItem.get();
@@ -164,7 +163,7 @@ public class FacadeContainer implements IFacadeContainer
 				final ItemStack is = ItemStack.read( t );
 				if( !is.isEmpty() )
 				{
-					final Item i = is.getItem();
+					final net.minecraft.item.Item i = is.getItem();
 					if( i instanceof IFacadeItem )
 					{
 						this.storage.setFacade( x, ( (IFacadeItem) i ).createPartFromItemStack( is, AEPartLocation.fromOrdinal( x ) ) );
@@ -192,7 +191,7 @@ public class FacadeContainer implements IFacadeContainer
 			final IFacadePart part = this.getFacade( AEPartLocation.fromOrdinal( x ) );
 			if( part != null )
 			{
-				final int itemID = Item.getIdFromItem( part.getItem() );
+				final int itemID = net.minecraft.item.Item.getIdFromItem( part.getItem() );
 				out.writeInt( itemID * ( part.notAEFacade() ? -1 : 1 ) );
 			}
 		}

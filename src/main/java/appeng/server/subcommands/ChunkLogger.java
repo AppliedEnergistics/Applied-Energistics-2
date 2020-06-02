@@ -28,7 +28,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.server.ISubCommand;
 
 

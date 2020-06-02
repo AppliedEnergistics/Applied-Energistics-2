@@ -22,30 +22,19 @@ package appeng.util;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.config.SecurityPermissions;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.items.IAEWrench;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergySource;
-import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEInventory;
-import appeng.api.storage.IMEMonitorHandlerReceiver;
-import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
-import appeng.core.AEConfig;
-import appeng.core.AELog;
 import appeng.core.Api;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.core.stats.AeStats;
 import appeng.fluids.util.AEFluidStack;
 import appeng.util.helpers.ItemComparisonHelper;
@@ -76,14 +65,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
-import java.security.InvalidParameterException;
 import java.util.*;
 
 import com.google.common.base.Preconditions;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 
 /**

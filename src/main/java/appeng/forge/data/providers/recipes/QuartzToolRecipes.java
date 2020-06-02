@@ -1,7 +1,10 @@
 package appeng.forge.data.providers.recipes;
 
 
+import appeng.api.definitions.IItemDefinition;
+import appeng.core.AppEng;
 import appeng.forge.data.providers.IAE2DataProvider;
+import appeng.recipes.conditions.FeaturesEnabled;
 import com.google.common.collect.ImmutableMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
@@ -14,6 +17,7 @@ import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.tags.Tag;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.crafting.ConditionalRecipe;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -23,16 +27,16 @@ import java.util.function.Consumer;
 public class QuartzToolRecipes extends RecipeProvider implements IAE2DataProvider
 {
 
-	private Map<net.minecraft.tags.Tag<Item>, Item[]> items = ImmutableMap.of(
+	private Map<net.minecraft.tags.Tag<Item>, IItemDefinition[]> items = ImmutableMap.of(
 			Tags.Items.GEMS_QUARTZ,
-			new Item[] {
-					ITEMS.netherQuartzAxe().item(),
-					ITEMS.netherQuartzHoe().item(),
-					ITEMS.netherQuartzShovel().item(),
-					ITEMS.netherQuartzPick().item(),
-					ITEMS.netherQuartzSword().item(),
-					ITEMS.netherQuartzWrench().item(),
-					ITEMS.netherQuartzKnife().item()
+			new IItemDefinition[] {
+					ITEMS.netherQuartzAxe(),
+					ITEMS.netherQuartzHoe(),
+					ITEMS.netherQuartzShovel(),
+					ITEMS.netherQuartzPick(),
+					ITEMS.netherQuartzSword(),
+					ITEMS.netherQuartzWrench(),
+					ITEMS.netherQuartzKnife()
 			}
 			// FIXME certus quartz
 	);
@@ -88,18 +92,19 @@ public class QuartzToolRecipes extends RecipeProvider implements IAE2DataProvide
 	@Override
 	protected void registerRecipes( @Nonnull Consumer<IFinishedRecipe> consumer )
 	{
-		for( Map.Entry<Tag<Item>, Item[]> entry : items.entrySet() )
+		for( Map.Entry<Tag<Item>, IItemDefinition[]> entry : items.entrySet() )
 		{
 			Tag<Item> tag = entry.getKey();
-			Item[] tools = entry.getValue();
+			IItemDefinition[] tools = entry.getValue();
 
 			for( int i = 0; i < tools.length; i++ )
 			{
 				CharSet keySet = new CharOpenHashSet( new char[] { 'X', ' ' } );
-				ShapedRecipeBuilder builder = ShapedRecipeBuilder.shapedRecipe( tools[i] );
+
+				ShapedRecipeBuilder shapedBuilder = ShapedRecipeBuilder.shapedRecipe( tools[i].item() );
 				for( String s : patterns[i] )
 				{
-					builder.patternLine( s );
+					shapedBuilder.patternLine( s );
 
 					for( int j = 0; j < s.length(); j++ )
 					{
@@ -107,25 +112,26 @@ public class QuartzToolRecipes extends RecipeProvider implements IAE2DataProvide
 						if( !keySet.contains( c ) )
 						{
 							keySet.add( c );
-							builder.key( c, keys.get( c ) );
+							shapedBuilder.key( c, keys.get( c ) );
 						}
 					}
 				}
 
-				builder.key( 'X', tag )
-						.addCriterion( "has_" + tag.getId(), hasItem( tag ) )
-						.build( consumer );
+				shapedBuilder.key( 'X', tag )
+						.addCriterion( "has_" + tag.getId(), hasItem( tag ) );
 
+				ConditionalRecipe.builder()
+						.addCondition( new FeaturesEnabled( tools[i].features() ) )
+						.addRecipe( shapedBuilder::build )
+						.build( consumer, AppEng.MOD_ID, "tools/" + tools[i].identifier() );
 			}
 
 		}
 	}
 
-	@Nonnull
-	@Override
-	public String getDataPath()
+	@Override public String getName()
 	{
-		return "recipes/tools";
+		return AppEng.MOD_NAME + " Quartz Tools";
 	}
 
 }

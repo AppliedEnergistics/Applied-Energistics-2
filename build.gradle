@@ -223,7 +223,10 @@ sourceSets {
             include 'appeng/block/grindstone/**'
             include 'appeng/tile/grindstone/**'
             include 'appeng/container/implementations/ContainerGrinder.java'
-            include 'appeng/data/**'
+            include 'appeng/recipes/conditions/**'
+            include 'appeng/recipes/game/DisassembleRecipe.java'
+            include 'appeng/recipes/ingredients/**'
+            include 'appeng/forge/data/**'
         }
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output

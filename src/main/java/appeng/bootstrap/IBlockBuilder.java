@@ -20,16 +20,14 @@ package appeng.bootstrap;
 
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 
 import appeng.api.definitions.IBlockDefinition;
 import appeng.bootstrap.definitions.TileEntityDefinition;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 
 
 public interface IBlockBuilder

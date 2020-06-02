@@ -62,7 +62,7 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMatterCannon;

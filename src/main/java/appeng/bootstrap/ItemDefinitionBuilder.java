@@ -30,15 +30,12 @@ import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.bootstrap.components.IItemRegistrationComponent;
 import appeng.bootstrap.components.IPostInitComponent;
-import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.CreativeTab;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.core.features.ItemDefinition;
 import appeng.util.Platform;
 
@@ -134,7 +131,7 @@ class ItemDefinitionBuilder implements IItemBuilder
 		Item item = this.itemSupplier.get();
 		item.setRegistryName( AppEng.MOD_ID, this.registryName );
 
-		ItemDefinition definition = new ItemDefinition( this.registryName, item );
+		ItemDefinition definition = new ItemDefinition( this.registryName, item, features );
 
 		// Register all extra handlers
 		this.boostrapComponents.forEach( component -> this.factory.addBootstrapComponent( component.apply( item ) ) );

@@ -71,11 +71,9 @@ public class BlockDropProvider extends BlockLootTables implements IAE2DataProvid
 				.addLootPool( pool );
 	}
 
-	@Nonnull
-	@Override
-	public String getDataPath()
+	private Path getPath( Path root, ResourceLocation id )
 	{
-		return "loot_tables/blocks";
+		return root.resolve( "data/" + id.getNamespace() + "/loot_tables/blocks/" + id.getPath() + ".json" );
 	}
 
 	public JsonElement toJson( LootTable.Builder builder )
@@ -87,6 +85,13 @@ public class BlockDropProvider extends BlockLootTables implements IAE2DataProvid
 	public LootTable finishBuilding( LootTable.Builder builder )
 	{
 		return builder.setParameterSet( LootParameterSets.BLOCK ).build();
+	}
+
+	@Nonnull
+	@Override
+	public String getName()
+	{
+		return AppEng.MOD_NAME + " Block Drops";
 	}
 
 }

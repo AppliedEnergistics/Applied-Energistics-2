@@ -36,12 +36,11 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
-import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IMaterials;
 import appeng.core.AEConfig;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.core.worlddata.WorldData;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;

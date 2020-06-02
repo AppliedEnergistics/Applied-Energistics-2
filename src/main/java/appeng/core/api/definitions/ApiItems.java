@@ -23,7 +23,7 @@ import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IItems;
 import appeng.api.util.AEColoredItemDefinition;
 import appeng.bootstrap.FeatureFactory;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.items.tools.quartz.*;
 
 

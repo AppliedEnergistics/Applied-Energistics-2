@@ -19,8 +19,6 @@
 package appeng.core.sync;
 
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
@@ -28,7 +26,7 @@ import net.minecraftforge.fml.network.NetworkDirection;
 
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.features.AEFeature;
+import appeng.api.features.AEFeature;
 import appeng.core.sync.network.INetworkInfo;
 
 
