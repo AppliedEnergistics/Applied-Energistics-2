@@ -162,9 +162,13 @@ sourceSets {
             include 'appeng/server/ServerHelper.java'
             include 'appeng/core/CommonHelper.java'
             include 'appeng/helpers/IMouseWheelItem.java'
+            include 'appeng/data/**'
         }
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
+        resources {
+            srcDir 'src/generated/resources'
+        }
     }
     test {
         compileClasspath += sourceSets.api.output
