@@ -25,7 +25,7 @@ import java.nio.BufferOverflowException;
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.item.ItemStack;
@@ -207,14 +207,14 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 					}
 					catch( final BufferOverflowException boe )
 					{
-						NetworkHandler.instance().sendTo( piu, (PlayerEntityMP) c );
+						NetworkHandler.instance().sendTo( piu, (ServerPlayerEntity) c );
 
 						piu = new PacketMEFluidInventoryUpdate();
 						piu.appendFluid( send );
 					}
 				}
 
-				NetworkHandler.instance().sendTo( piu, (PlayerEntityMP) c );
+				NetworkHandler.instance().sendTo( piu, (ServerPlayerEntity) c );
 			}
 			catch( final IOException e )
 			{
@@ -281,11 +281,11 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 					this.clientCM.putSetting( set, sideLocal );
 					for( final IContainerListener crafter : this.listeners )
 					{
-						if( crafter instanceof PlayerEntityMP )
+						if( crafter instanceof ServerPlayerEntity )
 						{
 							try
 							{
-								NetworkHandler.instance().sendTo( new PacketValueConfig( set.name(), sideLocal.name() ), (PlayerEntityMP) crafter );
+								NetworkHandler.instance().sendTo( new PacketValueConfig( set.name(), sideLocal.name() ), (ServerPlayerEntity) crafter );
 							}
 							catch( final IOException e )
 							{
@@ -326,7 +326,7 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 						{
 							if( c instanceof PlayerEntity )
 							{
-								NetworkHandler.instance().sendTo( piu, (PlayerEntityMP) c );
+								NetworkHandler.instance().sendTo( piu, (ServerPlayerEntity) c );
 							}
 						}
 					}
@@ -343,7 +343,7 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 	}
 
 	@Override
-	public void doAction( PlayerEntityMP player, InventoryAction action, int slot, long id )
+	public void doAction( ServerPlayerEntity player, InventoryAction action, int slot, long id )
 	{
 		if( action != InventoryAction.FILL_ITEM && action != InventoryAction.EMPTY_ITEM )
 		{

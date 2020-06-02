@@ -25,7 +25,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.IItemHandler;
 
@@ -110,7 +110,7 @@ public class PacketPatternSlot extends AppEngPacket
 	@Override
 	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
 	{
-		final PlayerEntityMP sender = (PlayerEntityMP) player;
+		final ServerPlayerEntity sender = (ServerPlayerEntity) player;
 		if( sender.openContainer instanceof ContainerPatternTerm )
 		{
 			final ContainerPatternTerm patternTerminal = (ContainerPatternTerm) sender.openContainer;

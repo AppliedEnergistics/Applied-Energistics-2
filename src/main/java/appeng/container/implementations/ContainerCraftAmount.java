@@ -48,7 +48,7 @@ public class ContainerCraftAmount extends AEBaseContainer
 		super( ip, te );
 
 		this.craftingItem = new SlotInaccessible( new AppEngInternalInventory( null, 1 ), 0, 34, 53 );
-		this.addSlotToContainer( this.getCraftingItem() );
+		this.addSlot( this.getCraftingItem() );
 	}
 
 	@Override

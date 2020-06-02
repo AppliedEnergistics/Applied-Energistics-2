@@ -65,9 +65,9 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 			this.network = spatialIOPort.getGridNode( AEPartLocation.INTERNAL ).getGrid();
 		}
 
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.SPATIAL_STORAGE_CELLS, spatialIOPort
+		this.addSlot( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.SPATIAL_STORAGE_CELLS, spatialIOPort
 				.getInternalInventory(), 0, 52, 48, this.getPlayerInventory() ) );
-		this.addSlotToContainer(
+		this.addSlot(
 				new SlotOutput( spatialIOPort.getInternalInventory(), 1, 113, 48, SlotRestrictedInput.PlacableItemType.SPATIAL_STORAGE_CELLS.IIcon ) );
 
 		this.bindPlayerInventory( ip, 0, 197 - /* height of player inventory */82 );

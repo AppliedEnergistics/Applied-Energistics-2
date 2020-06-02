@@ -48,7 +48,7 @@ public class ContainerNetworkTool extends AEBaseContainer
 		{
 			for( int x = 0; x < 3; x++ )
 			{
-				this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, te
+				this.addSlot( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, te
 						.getInventory(), y * 3 + x, 80 - 18 + x * 18, 37 - 18 + y * 18, this.getPlayerInventory() ) ) );
 			}
 		}

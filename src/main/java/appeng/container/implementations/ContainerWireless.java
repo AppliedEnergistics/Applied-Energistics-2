@@ -43,7 +43,7 @@ public class ContainerWireless extends AEBaseContainer
 		super( ip, te, null );
 		this.wirelessTerminal = te;
 
-		this.addSlotToContainer( this.boosterSlot = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.RANGE_BOOSTER, this.wirelessTerminal
+		this.addSlot( this.boosterSlot = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.RANGE_BOOSTER, this.wirelessTerminal
 				.getInternalInventory(), 0, 80, 47, this.getPlayerInventory() ) );
 
 		this.bindPlayerInventory( ip, 0, 166 - /* height of player inventory */82 );

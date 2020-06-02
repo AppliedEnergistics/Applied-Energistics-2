@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.tileentity.TileEntity;
@@ -263,11 +263,11 @@ public class ContainerCraftConfirm extends AEBaseContainer
 					{
 						if( g instanceof PlayerEntity )
 						{
-							NetworkHandler.instance().sendTo( a, (PlayerEntityMP) g );
-							NetworkHandler.instance().sendTo( b, (PlayerEntityMP) g );
+							NetworkHandler.instance().sendTo( a, (ServerPlayerEntity) g );
+							NetworkHandler.instance().sendTo( b, (ServerPlayerEntity) g );
 							if( c != null )
 							{
-								NetworkHandler.instance().sendTo( c, (PlayerEntityMP) g );
+								NetworkHandler.instance().sendTo( c, (ServerPlayerEntity) g );
 							}
 						}
 					}

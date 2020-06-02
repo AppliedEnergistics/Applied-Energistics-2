@@ -65,7 +65,7 @@ public class ContainerIOPort extends ContainerUpgradeable
 		{
 			for( int x = 0; x < 2; x++ )
 			{
-				this.addSlotToContainer(
+				this.addSlot(
 						new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_CELLS, cells, x + y * 2, offX + x * 18, offY + y * 18, this
 								.getPlayerInventory() ) );
 			}
@@ -77,18 +77,18 @@ public class ContainerIOPort extends ContainerUpgradeable
 		{
 			for( int x = 0; x < 2; x++ )
 			{
-				this.addSlotToContainer(
+				this.addSlot(
 						new SlotOutput( cells, 6 + x + y * 2, offX + x * 18, offY + y * 18, SlotRestrictedInput.PlacableItemType.STORAGE_CELLS.IIcon ) );
 			}
 		}
 
 		final IItemHandler upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
-		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getPlayerInventory() ) )
+		this.addSlot( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getPlayerInventory() ) )
 				.setNotDraggable() );
-		this.addSlotToContainer(
+		this.addSlot(
 				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.getPlayerInventory() ) )
 						.setNotDraggable() );
-		this.addSlotToContainer(
+		this.addSlot(
 				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.getPlayerInventory() ) )
 						.setNotDraggable() );
 	}

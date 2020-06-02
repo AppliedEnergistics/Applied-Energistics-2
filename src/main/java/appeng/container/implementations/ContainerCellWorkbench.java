@@ -21,7 +21,7 @@ package appeng.container.implementations;
 
 import java.util.Iterator;
 
-import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
@@ -29,7 +29,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.CopyMode;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Settings;
@@ -94,7 +93,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 	protected void setupConfig()
 	{
 		final IItemHandler cell = this.getUpgradeable().getInventoryByName( "cell" );
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.WORKBENCH_CELL, cell, 0, 152, 8, this.getPlayerInv() ) );
+		this.addSlot( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.WORKBENCH_CELL, cell, 0, 152, 8, this.getPlayerInv() ) );
 
 		final IItemHandler inv = this.getUpgradeable().getInventoryByName( "config" );
 		final WrapperSupplierItemHandler upgradeInventory = new WrapperSupplierItemHandler( this::getCellUpgradeInventory );
@@ -107,7 +106,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 		{
 			for( int z = 0; z < 9; z++ )
 			{
-				this.addSlotToContainer( new SlotFakeTypeOnly( inv, offset, x + z * 18, y + w * 18 ) );
+				this.addSlot( new SlotFakeTypeOnly( inv, offset, x + z * 18, y + w * 18 ) );
 				offset++;
 			}
 		}
@@ -117,7 +116,7 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 			for( int z = 0; z < 8; z++ )
 			{
 				final int iSLot = zz * 8 + z;
-				this.addSlotToContainer(
+				this.addSlot(
 						new OptionalSlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgradeInventory, this, iSLot, 187 + zz * 18, 8 + 18 * z, iSLot, this
 								.getPlayerInventory() ) );
 			}
@@ -164,9 +163,9 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 						}
 					}
 
-					if( listener instanceof PlayerEntityMP )
+					if( listener instanceof ServerPlayerEntity )
 					{
-						( (PlayerEntityMP) listener ).isChangingQuantityOnly = false;
+						( (ServerPlayerEntity) listener ).isChangingQuantityOnly = false;
 					}
 				}
 			}

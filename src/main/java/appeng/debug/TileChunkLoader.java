@@ -21,7 +21,7 @@ package appeng.debug;
 
 import java.util.List;
 
-import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.math.ChunkPos;
@@ -67,8 +67,8 @@ public class TileChunkLoader extends AEBaseTile implements ITickableTileEntity
 			final MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 			if( server != null )
 			{
-				final List<PlayerEntityMP> pl = server.getPlayerList().getPlayers();
-				for( final PlayerEntityMP p : pl )
+				final List<ServerPlayerEntity> pl = server.getPlayerList().getPlayers();
+				for( final ServerPlayerEntity p : pl )
 				{
 					p.sendMessage( new TextComponentString( "Can't chunk load.." ) );
 				}

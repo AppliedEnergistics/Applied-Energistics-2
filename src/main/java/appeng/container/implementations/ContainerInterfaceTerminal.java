@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -188,7 +188,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 		{
 			try
 			{
-				NetworkHandler.instance().sendTo( new PacketCompressedNBT( this.data ), (PlayerEntityMP) this.getPlayerInv().player );
+				NetworkHandler.instance().sendTo( new PacketCompressedNBT( this.data ), (ServerPlayerEntity) this.getPlayerInv().player );
 			}
 			catch( final IOException e )
 			{
@@ -200,7 +200,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 	}
 
 	@Override
-	public void doAction( final PlayerEntityMP player, final InventoryAction action, final int slot, final long id )
+	public void doAction( final ServerPlayerEntity player, final InventoryAction action, final int slot, final long id )
 	{
 		final InvTracker inv = this.byId.get( id );
 		if( inv != null )

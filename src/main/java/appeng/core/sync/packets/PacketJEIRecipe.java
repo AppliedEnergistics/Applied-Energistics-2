@@ -28,7 +28,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -101,7 +101,7 @@ public class PacketJEIRecipe extends AppEngPacket
 	@Override
 	public void serverPacketData( final INetworkInfo manager, final PlayerEntity player )
 	{
-		final PlayerEntityMP pmp = (PlayerEntityMP) player;
+		final ServerPlayerEntity pmp = (ServerPlayerEntity) player;
 		final Container con = pmp.openContainer;
 
 		if( !( con instanceof IContainerCraftingPacket ) )

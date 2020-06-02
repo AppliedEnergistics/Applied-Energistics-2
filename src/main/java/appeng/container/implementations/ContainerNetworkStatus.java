@@ -22,7 +22,7 @@ package appeng.container.implementations;
 import java.io.IOException;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 
@@ -138,7 +138,7 @@ public class ContainerNetworkStatus extends AEBaseContainer
 				{
 					if( c instanceof PlayerEntity )
 					{
-						NetworkHandler.instance().sendTo( piu, (PlayerEntityMP) c );
+						NetworkHandler.instance().sendTo( piu, (ServerPlayerEntity) c );
 					}
 				}
 			}

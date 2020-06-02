@@ -95,33 +95,33 @@ public class ContainerMAC extends ContainerUpgradeable implements IProgressProvi
 			for( int x = 0; x < 3; x++ )
 			{
 				final SlotMACPattern s = new SlotMACPattern( this, mac, x + y * 3, offX + x * 18, offY + y * 18 );
-				this.addSlotToContainer( s );
+				this.addSlot( s );
 			}
 		}
 
 		offX = 126;
 		offY = 16;
 
-		this.addSlotToContainer(
+		this.addSlot(
 				new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ENCODED_CRAFTING_PATTERN, mac, 10, offX, offY, this.getPlayerInventory() ) );
-		this.addSlotToContainer( new SlotOutput( mac, 9, offX, offY + 32, -1 ) );
+		this.addSlot( new SlotOutput( mac, 9, offX, offY + 32, -1 ) );
 
 		offX = 122;
 		offY = 17;
 
 		final IItemHandler upgrades = this.getUpgradeable().getInventoryByName( "upgrades" );
-		this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getPlayerInventory() ) )
+		this.addSlot( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 8, this.getPlayerInventory() ) )
 				.setNotDraggable() );
-		this.addSlotToContainer(
+		this.addSlot(
 				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 1, 187, 8 + 18, this.getPlayerInventory() ) )
 						.setNotDraggable() );
-		this.addSlotToContainer(
+		this.addSlot(
 				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 2, 187, 8 + 18 * 2, this.getPlayerInventory() ) )
 						.setNotDraggable() );
-		this.addSlotToContainer(
+		this.addSlot(
 				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 3, 187, 8 + 18 * 3, this.getPlayerInventory() ) )
 						.setNotDraggable() );
-		this.addSlotToContainer(
+		this.addSlot(
 				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 4, 187, 8 + 18 * 4, this.getPlayerInventory() ) )
 						.setNotDraggable() );
 	}

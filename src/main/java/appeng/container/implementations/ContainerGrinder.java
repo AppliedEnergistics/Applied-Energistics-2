@@ -38,15 +38,15 @@ public class ContainerGrinder extends AEBaseContainer
 
 		IItemHandler inv = grinder.getInternalInventory();
 
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, inv, 0, 12, 17, this.getPlayerInventory() ) );
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, inv, 1, 12 + 18, 17, this.getPlayerInventory() ) );
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, inv, 2, 12 + 36, 17, this.getPlayerInventory() ) );
+		this.addSlot( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, inv, 0, 12, 17, this.getPlayerInventory() ) );
+		this.addSlot( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, inv, 1, 12 + 18, 17, this.getPlayerInventory() ) );
+		this.addSlot( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.ORE, inv, 2, 12 + 36, 17, this.getPlayerInventory() ) );
 
-		this.addSlotToContainer( new SlotInaccessible( inv, 6, 80, 40 ) );
+		this.addSlot( new SlotInaccessible( inv, 6, 80, 40 ) );
 
-		this.addSlotToContainer( new SlotOutput( inv, 3, 112, 63, 2 * 16 + 15 ) );
-		this.addSlotToContainer( new SlotOutput( inv, 4, 112 + 18, 63, 2 * 16 + 15 ) );
-		this.addSlotToContainer( new SlotOutput( inv, 5, 112 + 36, 63, 2 * 16 + 15 ) );
+		this.addSlot( new SlotOutput( inv, 3, 112, 63, 2 * 16 + 15 ) );
+		this.addSlot( new SlotOutput( inv, 4, 112 + 18, 63, 2 * 16 + 15 ) );
+		this.addSlot( new SlotOutput( inv, 5, 112 + 36, 63, 2 * 16 + 15 ) );
 
 		this.bindPlayerInventory( ip, 0, 176 - /* height of player inventory */82 );
 	}

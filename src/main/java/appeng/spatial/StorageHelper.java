@@ -25,7 +25,7 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntityMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -111,9 +111,9 @@ public class StorageHelper
 		// load the chunk!
 		newWorld.getChunkProvider().provideChunk( MathHelper.floor( link.x ) >> 4, MathHelper.floor( link.z ) >> 4 );
 
-		if( entity instanceof PlayerEntityMP && link.dim.provider instanceof StorageWorldProvider )
+		if( entity instanceof ServerPlayerEntity && link.dim.provider instanceof StorageWorldProvider )
 		{
-			AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger( (PlayerEntityMP) entity );
+			AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger( (ServerPlayerEntity) entity );
 		}
 
 		entity.changeDimension( link.dim.provider.getDimension(), new METeleporter( link ) );

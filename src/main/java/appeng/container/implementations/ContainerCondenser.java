@@ -51,9 +51,9 @@ public class ContainerCondenser extends AEBaseContainer implements IProgressProv
 
 		IItemHandler inv = condenser.getInternalInventory();
 
-		this.addSlotToContainer( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.TRASH, inv, 0, 51, 52, ip ) );
-		this.addSlotToContainer( new SlotOutput( inv, 1, 105, 52, -1 ) );
-		this.addSlotToContainer(
+		this.addSlot( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.TRASH, inv, 0, 51, 52, ip ) );
+		this.addSlot( new SlotOutput( inv, 1, 105, 52, -1 ) );
+		this.addSlot(
 				( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_COMPONENT, inv, 2, 101, 26, ip ) ).setStackLimit( 1 ) );
 
 		this.bindPlayerInventory( ip, 0, 197 - /* height of player inventory */82 );
