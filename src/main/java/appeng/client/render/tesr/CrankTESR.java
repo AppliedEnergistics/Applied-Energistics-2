@@ -55,7 +55,6 @@ public class CrankTESR extends TileEntityRenderer<TileCrank>
 	@Override
 	public void render(TileCrank te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers, int combinedLightIn, int combinedOverlayIn) {
 
-
 		// Apply GL transformations relative to the center of the block: 1) TE rotation and 2) crank rotation
 		ms.push();
 		ms.translate( 0.5, 0.5, 0.5 );
@@ -70,51 +69,6 @@ public class CrankTESR extends TileEntityRenderer<TileCrank>
 		dispatcher.getBlockModelRenderer().renderModelBrightnessColor(ms.getLast(), buffer, null, model, 1, 1, 1, combinedLightIn, combinedOverlayIn);
 		ms.pop();
 
-//		// Most of this is blatantly copied from FastTESR
-//		Tessellator tessellator = Tessellator.getInstance();
-//		this.bindTexture( AtlasTexture.LOCATION_BLOCKS_TEXTURE );
-//		RenderHelper.disableStandardItemLighting();
-//		RenderSystem.blendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA );
-//		RenderSystem.enableBlend();
-//		RenderSystem.disableCull();
-//
-//		if( Minecraft.isAmbientOcclusionEnabled() )
-//		{
-//			GlStateManager.shadeModel( GL11.GL_SMOOTH );
-//		}
-//		else
-//		{
-//			GlStateManager.shadeModel( GL11.GL_FLAT );
-//		}
-//
-//		BlockState blockState = te.getWorld().getBlockState( te.getPos() );
-//
-//		BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
-//		IBakedModel model = dispatcher.getModelForState( blockState );
-//
-//		BufferBuilder buffer = tessellator.getBuffer();
-//		buffer.begin( GL11.GL_QUADS, DefaultVertexFormats.BLOCK );
-//
-//		// The translation ensures the vertex buffer positions are relative to 0,0,0 instead of the block pos
-//		// This makes the translations that follow much easier
-//		buffer.setTranslation( -te.getPos().getX(), -te.getPos().getY(), -te.getPos().getZ() );
-//		dispatcher.getBlockModelRenderer().renderModel( te.getWorld(), model, blockState, te.getPos(), buffer, false );
-//		buffer.setTranslation( 0, 0, 0 );
-//
-//		matrixStackIn.push();
-//		matrixStackIn.translate( x, y, z );
-//
-//		// Apply GL transformations relative to the center of the block: 1) TE rotation and 2) crank rotation
-//		matrixStackIn.translate( 0.5, 0.5, 0.5 );
-//		FacingToRotation.get( te.getForward(), te.getUp() ).push(matrixStack);
-//		matrixStackIn.rotate( te.getVisibleRotation(), 0, 1, 0 );
-//		matrixStackIn.translate( -0.5, -0.5, -0.5 );
-//
-//		tessellator.draw();
-//
-//		matrixStackIn.pop();
-//
-//		RenderHelper.enableStandardItemLighting();
 	}
 
 }
