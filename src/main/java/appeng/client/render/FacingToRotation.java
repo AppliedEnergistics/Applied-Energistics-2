@@ -19,12 +19,14 @@
 package appeng.client.render;
 
 
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector3f;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.model.TRSRTransformation;
+import net.minecraft.util.math.Vec3i;
 
 
 /**
@@ -74,15 +76,19 @@ public enum FacingToRotation
 	// @formatter:on
 
 	private final Vector3f rot;
+	private final Quaternion xRot;
+	private final Quaternion yRot;
+	private final Quaternion zRot;
 	private final Matrix4f mat;
 
 	private FacingToRotation( Vector3f rot )
 	{
 		this.rot = rot;
-		this.mat = TRSRTransformation
-				.toVecmath( new org.lwjgl.util.vector.Matrix4f().rotate( (float) Math.toRadians( rot.x ), new org.lwjgl.util.vector.Vector3f( 1, 0, 0 ) )
-						.rotate( (float) Math.toRadians( rot.y ), new org.lwjgl.util.vector.Vector3f( 0, 1, 0 ) )
-						.rotate( (float) Math.toRadians( rot.z ), new org.lwjgl.util.vector.Vector3f( 0, 0, 1 ) ) );
+		this.mat = new Matrix4f();
+		this.mat.setIdentity();
+		this.mat.mul( xRot = Vector3f.XP.rotationDegrees( rot.getX() ) );
+		this.mat.mul( yRot = Vector3f.YP.rotationDegrees( rot.getY() ) );
+		this.mat.mul( zRot = Vector3f.ZP.rotationDegrees( rot.getZ() ) );
 	}
 
 	public Vector3f getRot()
@@ -95,16 +101,19 @@ public enum FacingToRotation
 		return new Matrix4f( this.mat );
 	}
 
-	public void glRotateCurrentMat()
+	public void push( MatrixStack mStack )
 	{
-		GlStateManager.rotate( this.rot.x, 1, 0, 0 );
-		GlStateManager.rotate( this.rot.y, 0, 1, 0 );
-		GlStateManager.rotate( this.rot.z, 0, 0, 1 );
+		mStack.rotate( xRot );
+		mStack.rotate( yRot );
+		mStack.rotate( zRot );
 	}
 
 	public Direction rotate( Direction facing )
 	{
-		return TRSRTransformation.rotate( this.mat, facing );
+		Vec3i dir = facing.getDirectionVec();
+		Vector4f vec = new Vector4f( dir.getX(), dir.getY(), dir.getZ(), 1 );
+		vec.transform( mat );
+		return Direction.getFacingFromVector( vec.getX(), vec.getY(), vec.getZ() );
 	}
 
 	public Direction resultingRotate( Direction facing )
@@ -123,5 +132,4 @@ public enum FacingToRotation
 	{
 		return values()[forward.ordinal() * 6 + up.ordinal()];
 	}
-
 }

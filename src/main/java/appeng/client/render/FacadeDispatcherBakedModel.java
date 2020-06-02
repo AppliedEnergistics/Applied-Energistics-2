@@ -22,20 +22,20 @@ package appeng.client.render;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
+import java.util.Random;
 import javax.annotation.Nullable;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
-import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 import appeng.client.render.cablebus.FacadeBuilder;
 import appeng.items.parts.ItemFacade;
@@ -48,20 +48,18 @@ import appeng.items.parts.ItemFacade;
  */
 public class FacadeDispatcherBakedModel extends DelegateBakedModel
 {
-	private final VertexFormat format;
 	private final FacadeBuilder facadeBuilder;
 	private final Int2ObjectMap<FacadeBakedItemModel> cache = new Int2ObjectArrayMap<>();
 
-	public FacadeDispatcherBakedModel( IBakedModel baseModel, VertexFormat format, FacadeBuilder facadeBuilder )
+	public FacadeDispatcherBakedModel( IBakedModel baseModel, FacadeBuilder facadeBuilder )
 	{
 		super( baseModel );
-		this.format = format;
 		this.facadeBuilder = facadeBuilder;
 	}
 
 	// This is never used. See the item override list below.
 	@Override
-	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, Random rand )
 	{
 		return Collections.emptyList();
 	}
@@ -73,6 +71,12 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel
 	}
 
 	@Override
+	public boolean func_230044_c_()
+	{
+		return false;
+	}
+
+	@Override
 	public boolean isBuiltInRenderer()
 	{
 		return false;
@@ -81,10 +85,10 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel
 	@Override
 	public ItemOverrideList getOverrides()
 	{
-		return new ItemOverrideList( Collections.emptyList() )
+		return new ItemOverrideList()
 		{
 			@Override
-			public IBakedModel handleItemState( IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity )
+			public IBakedModel getModelWithOverrides( IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity )
 			{
 				if( !( stack.getItem() instanceof ItemFacade ) )
 				{
@@ -95,13 +99,13 @@ public class FacadeDispatcherBakedModel extends DelegateBakedModel
 
 				ItemStack textureItem = itemFacade.getTextureItem( stack );
 
-				int hash = Objects.hash( textureItem.getItem().getRegistryName(), textureItem.getMetadata(), textureItem.getTag() );
+				int hash = Objects.hash( textureItem.getItem().getRegistryName(), textureItem.getTag() );
 				FacadeBakedItemModel model = FacadeDispatcherBakedModel.this.cache.get( hash );
 				if( model == null )
 				{
-				    model = new FacadeBakedItemModel(FacadeDispatcherBakedModel.this.getBaseModel(), textureItem, FacadeDispatcherBakedModel.this.facadeBuilder);
-                    FacadeDispatcherBakedModel.this.cache.put(hash, model);
-                }
+					model = new FacadeBakedItemModel( FacadeDispatcherBakedModel.this.getBaseModel(), textureItem, FacadeDispatcherBakedModel.this.facadeBuilder );
+					FacadeDispatcherBakedModel.this.cache.put( hash, model );
+				}
 
 				return model;
 			}

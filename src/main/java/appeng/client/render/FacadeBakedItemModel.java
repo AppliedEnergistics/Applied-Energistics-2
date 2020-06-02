@@ -22,15 +22,18 @@ package appeng.client.render;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
+import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.client.render.cablebus.FacadeBuilder;
 
@@ -55,7 +58,13 @@ public class FacadeBakedItemModel extends DelegateBakedModel
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, Random rand )
+	{
+		return getQuads( state, side, rand, EmptyModelData.INSTANCE );
+	}
+
+	@Override
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, Random rand, IModelData data )
 	{
 		if( side != null )
 		{
@@ -65,7 +74,7 @@ public class FacadeBakedItemModel extends DelegateBakedModel
 		{
 		    quads = new ArrayList<>();
             quads.addAll( this.facadeBuilder.buildFacadeItemQuads( this.textureStack, Direction.NORTH ) );
-            quads.addAll( this.getBaseModel().getQuads( state, side, rand ) );
+            quads.addAll( this.getBaseModel().getQuads( state, side, rand, data ) );
             quads = Collections.unmodifiableList( quads );
         }
 		return quads;
@@ -73,6 +82,12 @@ public class FacadeBakedItemModel extends DelegateBakedModel
 
 	@Override
 	public boolean isGui3d()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean func_230044_c_()
 	{
 		return false;
 	}

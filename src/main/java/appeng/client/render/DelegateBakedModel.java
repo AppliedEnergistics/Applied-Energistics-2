@@ -19,12 +19,12 @@
 package appeng.client.render;
 
 
-import javax.vecmath.Matrix4f;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 
@@ -38,10 +38,10 @@ public abstract class DelegateBakedModel implements IBakedModel
 	}
 
 	@Override
-	public Pair<? extends IBakedModel, Matrix4f> handlePerspective( ItemCameraTransforms.TransformType type )
+	public IBakedModel handlePerspective( ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat )
 	{
-		Pair<? extends IBakedModel, Matrix4f> pair = this.baseModel.handlePerspective( type );
-		return Pair.of( this, pair.getValue() );
+		baseModel.handlePerspective( cameraTransformType, mat );
+		return this;
 	}
 
 	@Override

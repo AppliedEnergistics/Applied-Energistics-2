@@ -74,7 +74,7 @@ public class FacadeItemModel implements IModel
 		IBakedModel bakedBaseModel = this.getBaseModel().bake( state, format, bakedTextureGetter );
 		FacadeBuilder facadeBuilder = new FacadeBuilder();
 
-		return new FacadeDispatcherBakedModel( bakedBaseModel, format, facadeBuilder );
+		return new FacadeDispatcherBakedModel( bakedBaseModel, facadeBuilder );
 	}
 
 	@Override

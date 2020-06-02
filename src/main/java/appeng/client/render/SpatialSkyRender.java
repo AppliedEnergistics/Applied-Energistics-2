@@ -21,21 +21,22 @@ package appeng.client.render;
 
 import java.util.Random;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraftforge.client.IRenderHandler;
 
 
-public class SpatialSkyRender extends IRenderHandler
+//TODO https://github.com/MinecraftForge/MinecraftForge/pull/6537
+public class SpatialSkyRender implements IRenderHandler
 {
 
 	private static final SpatialSkyRender INSTANCE = new SpatialSkyRender();
@@ -46,25 +47,26 @@ public class SpatialSkyRender extends IRenderHandler
 
 	public SpatialSkyRender()
 	{
-		this.dspList = GLAllocation.generateDisplayLists( 1 );
+		this.dspList = GL11.glGenLists( 1 );
 	}
 
-	public static IRenderHandler getInstance()
-	{
-		return INSTANCE;
-	}
+	//FIXME, Do not use this until the above PR is merged.
+	//	public static IRenderHandler getInstance()
+	//	{
+	//		return INSTANCE;
+	//	}
 
 	@Override
-	public void render(final float partialTicks, final ClientWorld world, final Minecraft mc )
+	public void render( final int ticks, final float partialTicks, final ClientWorld world, final Minecraft mc )
 	{
 
 		final long now = System.currentTimeMillis();
 		if( now - this.cycle > 2000 )
 		{
 			this.cycle = now;
-			GlStateManager.glNewList( this.dspList, GL11.GL_COMPILE );
+			GL11.glNewList( this.dspList, GL11.GL_COMPILE );
 			this.renderTwinkles();
-			GlStateManager.glEndList();
+			GL11.glEndList();
 		}
 
 		float fade = now - this.cycle;
@@ -72,7 +74,7 @@ public class SpatialSkyRender extends IRenderHandler
 		fade = 0.15f * ( 1.0f - Math.abs( ( fade - 1.0f ) * ( fade - 1.0f ) ) );
 
 		GlStateManager.disableFog();
-		GlStateManager.disableAlpha();
+		GlStateManager.disableAlphaTest();
 		RenderSystem.disableBlend();
 		GlStateManager.depthMask( false );
 		RenderSystem.color4f( 0.0f, 0.0f, 0.0f, 1.0f );
@@ -87,30 +89,30 @@ public class SpatialSkyRender extends IRenderHandler
 
 			if( i == 1 )
 			{
-				GlStateManager.rotate( 90.0F, 1.0F, 0.0F, 0.0F );
+				GlStateManager.rotatef( 90.0F, 1.0F, 0.0F, 0.0F );
 			}
 
 			if( i == 2 )
 			{
-				GlStateManager.rotate( -90.0F, 1.0F, 0.0F, 0.0F );
+				GlStateManager.rotatef( -90.0F, 1.0F, 0.0F, 0.0F );
 			}
 
 			if( i == 3 )
 			{
-				GlStateManager.rotate( 180.0F, 1.0F, 0.0F, 0.0F );
+				GlStateManager.rotatef( 180.0F, 1.0F, 0.0F, 0.0F );
 			}
 
 			if( i == 4 )
 			{
-				GlStateManager.rotate( 90.0F, 0.0F, 0.0F, 1.0F );
+				GlStateManager.rotatef( 90.0F, 0.0F, 0.0F, 1.0F );
 			}
 
 			if( i == 5 )
 			{
-				GlStateManager.rotate( -90.0F, 0.0F, 0.0F, 1.0F );
+				GlStateManager.rotatef( -90.0F, 0.0F, 0.0F, 1.0F );
 			}
 
-			GlStateManager.disableTexture2D();
+			GlStateManager.disableTexture();
 			VertexBuffer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION );
 			VertexBuffer.pos( -100.0D, -100.0D, -100.0D ).endVertex();
 			VertexBuffer.pos( -100.0D, -100.0D, 100.0D ).endVertex();
@@ -126,21 +128,21 @@ public class SpatialSkyRender extends IRenderHandler
 		if( fade > 0.0f )
 		{
 			GlStateManager.disableFog();
-			GlStateManager.disableAlpha();
+			GlStateManager.disableAlphaTest();
 			RenderSystem.enableBlend();
-			GlStateManager.disableTexture2D();
+			GlStateManager.disableTexture();
 			GlStateManager.depthMask( false );
-			OpenGlHelper.glBlendFunc( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0 );
+			GlStateManager.blendFuncSeparate( GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0 );
 
 			RenderHelper.disableStandardItemLighting();
 
 			RenderSystem.color4f( fade, fade, fade, 1.0f );
-			GlStateManager.callList( this.dspList );
+			GL11.glCallList( this.dspList );
 		}
 
 		GlStateManager.depthMask( true );
 		RenderSystem.enableBlend();
-		GlStateManager.enableAlpha();
+		GlStateManager.enableAlphaTest();
 		RenderSystem.enableTexture();
 		GlStateManager.enableFog();
 

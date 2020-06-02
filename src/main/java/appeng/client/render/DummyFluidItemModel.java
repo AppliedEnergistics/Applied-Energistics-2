@@ -78,7 +78,7 @@ public class DummyFluidItemModel implements IModel
 	{
 		IBakedModel bakedBaseModel = this.getBaseModel().bake( state, format, bakedTextureGetter );
 
-		return new DummyFluidDispatcherBakedModel( bakedBaseModel, format, bakedTextureGetter );
+		return new DummyFluidDispatcherBakedModel( bakedBaseModel, bakedTextureGetter );
 	}
 
 	@Override

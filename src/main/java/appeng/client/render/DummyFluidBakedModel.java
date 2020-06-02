@@ -20,6 +20,7 @@ package appeng.client.render;
 
 
 import java.util.List;
+import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -27,8 +28,8 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 
@@ -48,7 +49,7 @@ public class DummyFluidBakedModel implements IBakedModel
 	}
 
 	@Override
-	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, Random rand )
 	{
 		return this.quads;
 	}
@@ -61,6 +62,12 @@ public class DummyFluidBakedModel implements IBakedModel
 
 	@Override
 	public boolean isGui3d()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean func_230044_c_()
 	{
 		return false;
 	}

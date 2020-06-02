@@ -21,19 +21,18 @@ package appeng.client.render;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+import java.util.Random;
 import java.util.function.Function;
-
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.TransformationMatrix;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
@@ -41,8 +40,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ItemLayerModel;
-import net.minecraft.fluid.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
 import appeng.fluids.items.FluidDummyItem;
@@ -55,19 +53,17 @@ import appeng.fluids.items.FluidDummyItem;
  */
 public class DummyFluidDispatcherBakedModel extends DelegateBakedModel
 {
-	private final VertexFormat format;
 	private final Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter;
 
-	public DummyFluidDispatcherBakedModel( IBakedModel baseModel, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
+	public DummyFluidDispatcherBakedModel( IBakedModel baseModel, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
 	{
 		super( baseModel );
-		this.format = format;
 		this.bakedTextureGetter = bakedTextureGetter;
 	}
 
 	// This is never used. See the item override list below.
 	@Override
-	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, long rand )
+	public List<BakedQuad> getQuads( @Nullable BlockState state, @Nullable Direction side, Random rand )
 	{
 		return Collections.emptyList();
 	}
@@ -79,6 +75,12 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel
 	}
 
 	@Override
+	public boolean func_230044_c_()
+	{
+		return getBaseModel().func_230044_c_();
+	}
+
+	@Override
 	public boolean isBuiltInRenderer()
 	{
 		return false;
@@ -87,10 +89,10 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel
 	@Override
 	public ItemOverrideList getOverrides()
 	{
-		return new ItemOverrideList( Collections.emptyList() )
+		return new ItemOverrideList()
 		{
 			@Override
-			public IBakedModel handleItemState( IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity )
+			public IBakedModel getModelWithOverrides( IBakedModel originalModel, ItemStack stack, World world, LivingEntity entity )
 			{
 				if( !( stack.getItem() instanceof FluidDummyItem ) )
 				{
@@ -105,13 +107,14 @@ public class DummyFluidDispatcherBakedModel extends DelegateBakedModel
 					fluidStack = new FluidStack( Fluids.WATER, FluidAttributes.BUCKET_VOLUME );
 				}
 
-				TextureAtlasSprite sprite = DummyFluidDispatcherBakedModel.this.bakedTextureGetter.apply( fluidStack.getFluid().getStill( fluidStack ) );
+				FluidAttributes attributes = fluidStack.getFluid().getAttributes();
+				TextureAtlasSprite sprite = DummyFluidDispatcherBakedModel.this.bakedTextureGetter.apply( attributes.getStillTexture( fluidStack ) );
 				if( sprite == null )
 				{
 					return new DummyFluidBakedModel( ImmutableList.of() );
 				}
 
-				return new DummyFluidBakedModel( ItemLayerModel.getQuadsForSprite( 0, sprite, DummyFluidDispatcherBakedModel.this.format, Optional.empty() ) );
+				return new DummyFluidBakedModel( ItemLayerModel.getQuadsForSprite( 0, sprite, TransformationMatrix.identity() ) );
 			}
 		};
 	}
