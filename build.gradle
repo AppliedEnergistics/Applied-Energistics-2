@@ -230,6 +230,14 @@ sourceSets {
             include 'appeng/client/render/tesr/CrankTESR.java'
             include 'appeng/client/render/FacingToRotation.java'
             include 'appeng/client/gui/implementations/GuiGrinder.java'
+            include 'appeng/tile/misc/TileSkyCompass.java'
+            include 'appeng/block/misc/BlockSkyCompass.java'
+            include 'appeng/client/render/tesr/SkyCompassTESR.java'
+            include 'appeng/block/misc/SkyCompassRendering.java'
+            include 'appeng/client/render/model/SkyCompassModelLoader.java'
+            include 'appeng/client/render/model/SkyCompassModel.java'
+            include 'appeng/client/render/model/SkyCompassBakedModel.java'
+            include 'appeng/client/render/model/MatrixVertexTransformer.java'
         }
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output

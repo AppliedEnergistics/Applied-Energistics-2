@@ -19,29 +19,21 @@
 package appeng.block.misc;
 
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import appeng.bootstrap.*;
+import appeng.client.render.tesr.SkyCompassTESR;
+import appeng.tile.misc.TileSkyCompass;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.bootstrap.BlockRenderingCustomizer;
-import appeng.bootstrap.IBlockRendering;
-import appeng.bootstrap.IItemRendering;
-import appeng.client.render.model.SkyCompassModel;
-import appeng.client.render.tesr.SkyCompassTESR;
 
 
-public class SkyCompassRendering extends BlockRenderingCustomizer
+public class SkyCompassRendering extends TileEntityRenderingCustomizer<TileSkyCompass>
 {
-
-	private static final ModelResourceLocation ITEM_MODEL = new ModelResourceLocation( "appliedenergistics2:sky_compass", "normal" );
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
-	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
-	{
-		rendering.tileEntityRenderer( new SkyCompassTESR() );
-		itemRendering.model( ITEM_MODEL );
-		itemRendering.builtInModel( "models/block/builtin/sky_compass", new SkyCompassModel() );
+	public void customize(TileEntityRendering<TileSkyCompass> rendering) {
+		rendering.tileEntityRenderer( SkyCompassTESR::new );
 	}
 
 }

@@ -32,8 +32,8 @@ import appeng.core.AELog;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
@@ -65,7 +65,6 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	private String customName;
 	private Direction forward = null;
 	private Direction up = null;
-	private BlockState state;
 	private boolean markDirtyQueued = false;
 
 	public AEBaseTile(TileEntityType<?> tileEntityTypeIn) {
@@ -338,8 +337,9 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		Platform.notifyBlocksOfNeighbors( this.world, this.pos );
 	}
 
-	public void onPlacement( final ItemStack stack, final PlayerEntity player, final Direction side )
+	public void onPlacement(BlockItemUseContext context)
 	{
+		ItemStack stack = context.getItem();
 		if( stack.hasTag() )
 		{
 			this.uploadSettings( SettingsFrom.DISMANTLE_ITEM, stack.getTag() );

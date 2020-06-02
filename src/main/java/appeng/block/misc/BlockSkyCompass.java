@@ -19,48 +19,31 @@
 package appeng.block.misc;
 
 
-import java.util.Collections;
-import java.util.List;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.BlockStateContainer;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.BlockRenderType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.common.property.PropertyFloat;
 
 import appeng.block.AEBaseTileBlock;
-import appeng.helpers.ICustomCollision;
 import appeng.tile.misc.TileSkyCompass;
 
 
-public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
+public class BlockSkyCompass extends AEBaseTileBlock<TileSkyCompass>
 {
 
-	// Rotation is expressed as radians
-	public static final PropertyFloat ROTATION = new PropertyFloat( "rotation" );
-
-	public BlockSkyCompass()
+	public BlockSkyCompass(Block.Properties props)
 	{
-		super( Material.MISCELLANEOUS );
-		this.setLightOpacity( 0 );
-		this.setFullSize( false );
-		this.setOpaque( false );
-	}
-
-	@Override
-	protected BlockStateContainer createBlockState()
-	{
-		return new ExtendedBlockState( this, this.getAEStates(), new IUnlistedProperty[] { FORWARD, UP, ROTATION } );
+		super(props);
 	}
 
 	@Override
@@ -74,9 +57,11 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 		return this.canPlaceAt( w, pos, forward.getOpposite() );
 	}
 
-	private boolean canPlaceAt( final World w, final BlockPos pos, final Direction dir )
+	private boolean canPlaceAt( final IBlockReader w, final BlockPos pos, final Direction dir )
 	{
-		return w.isSideSolid( pos.offset( dir ), dir.getOpposite(), false );
+		final BlockPos test = pos.offset( dir );
+		BlockState blockstate = w.getBlockState(test);
+		return blockstate.isSolidSide(w, test, dir.getOpposite());
 	}
 
 	@Override
@@ -111,8 +96,10 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final BlockPos pos, final Entity thePlayer, final boolean b )
-	{
+	public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+
+		// TODO: This definitely needs to be memoized
+
 		final TileSkyCompass tile = this.getTileEntity( w, pos );
 		if( tile != null )
 		{
@@ -167,27 +154,20 @@ public class BlockSkyCompass extends AEBaseTileBlock implements ICustomCollision
 					break;
 			}
 
-			return Collections.singletonList( new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ ) );
+			return VoxelShapes.create(new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ ) );
 		}
-		return Collections.singletonList( new AxisAlignedBB( 0.0, 0, 0.0, 1.0, 1.0, 1.0 ) );
+		return VoxelShapes.empty();
 	}
 
 	@Override
-	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
-	{
-
+	public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+		return VoxelShapes.empty();
 	}
 
 	@Override
-	public BlockRenderType getRenderType( BlockState state )
+	public BlockRenderType getRenderType(BlockState state )
 	{
 		return BlockRenderType.ENTITYBLOCK_ANIMATED;
-	}
-
-	@Override
-	public boolean isFullBlock( BlockState state )
-	{
-		return false;
 	}
 
 }

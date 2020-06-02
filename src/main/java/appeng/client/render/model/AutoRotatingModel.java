@@ -201,11 +201,11 @@ public class AutoRotatingModel implements IBakedModel
 				for( int e = 0; e < count; e++ )
 				{
 					VertexFormatElement element = format.getElement( e );
-					if( element.getUsage() == VertexFormatElement.EnumUsage.POSITION )
+					if( element.getUsage() == VertexFormatElement.Usage.POSITION )
 					{
 						this.parent.put( e, this.transform( this.quadData[e][v] ) );
 					}
-					else if( element.getUsage() == VertexFormatElement.EnumUsage.NORMAL )
+					else if( element.getUsage() == VertexFormatElement.Usage.NORMAL )
 					{
 						this.parent.put( e, this.transformNormal( this.quadData[e][v] ) );
 					}

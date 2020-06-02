@@ -27,6 +27,8 @@ import appeng.client.render.effects.ChargedOreFX;
 import appeng.client.render.effects.LightningFX;
 import appeng.client.render.effects.VibrantFX;
 import appeng.client.render.model.GlassModelLoader;
+import appeng.client.render.model.SkyCompassBakedModel;
+import appeng.client.render.model.SkyCompassModel;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.container.implementations.ContainerGrinder;
 import appeng.container.implementations.ContainerSkyChest;
@@ -51,6 +53,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.extensions.IForgeContainerType;
@@ -201,6 +204,10 @@ final class Registration
 	@OnlyIn( Dist.CLIENT )
 	public void modelRegistryEvent( ModelRegistryEvent event )
 	{
+		// Sky compass parts
+		for (ResourceLocation dependency : SkyCompassModel.DEPENDENCIES) {
+			ModelLoader.addSpecialModel(dependency);
+		}
 
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		final IModelRegistry registry = new IModelRegistry() {

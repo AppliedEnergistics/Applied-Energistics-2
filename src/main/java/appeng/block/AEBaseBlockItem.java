@@ -21,15 +21,20 @@ package appeng.block;
 
 import java.util.List;
 
+import appeng.api.util.IOrientable;
+import appeng.api.util.IOrientableBlock;
+import appeng.block.misc.BlockSkyCompass;
+import appeng.me.helpers.IGridProxyable;
+import appeng.tile.AEBaseTile;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -73,123 +78,128 @@ public class AEBaseBlockItem extends BlockItem
 		return this.blockType.getTranslationKey();
 	}
 
+	@Override
+	public ActionResultType tryPlace(BlockItemUseContext context) {
 
-//	@Override
-//	public boolean placeBlock( final ItemStack stack, final PlayerEntity player, final World w, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final BlockState newState )
-//	{
-//		Direction up = null;
-//		Direction forward = null;
-//
-//		if( this.blockType instanceof AEBaseTileBlock )
-//		{
-//			if( this.blockType instanceof BlockLightDetector )
-//			{
-//				up = side;
-//				if( up == Direction.UP || up == Direction.DOWN )
-//				{
-//					forward = Direction.SOUTH;
-//				}
-//				else
-//				{
-//					forward = Direction.UP;
-//				}
-//			}
-//			else if( this.blockType instanceof BlockWireless || this.blockType instanceof BlockSkyCompass )
-//			{
-//				forward = side;
-//				if( forward == Direction.UP || forward == Direction.DOWN )
-//				{
-//					up = Direction.SOUTH;
-//				}
-//				else
-//				{
-//					up = Direction.UP;
-//				}
-//			}
-//			else
-//			{
-//				up = Direction.UP;
-//
-//				final byte rotation = (byte) ( MathHelper.floor( ( player.rotationYaw * 4F ) / 360F + 2.5D ) & 3 );
-//
-//				switch( rotation )
-//				{
-//					default:
-//					case 0:
-//						forward = Direction.SOUTH;
-//						break;
-//					case 1:
-//						forward = Direction.WEST;
-//						break;
-//					case 2:
-//						forward = Direction.NORTH;
-//						break;
-//					case 3:
-//						forward = Direction.EAST;
-//						break;
-//				}
-//
-//				if( player.rotationPitch > 65 )
-//				{
-//					up = forward.getOpposite();
-//					forward = Direction.UP;
-//				}
-//				else if( player.rotationPitch < -65 )
-//				{
-//					up = forward.getOpposite();
-//					forward = Direction.DOWN;
-//				}
-//			}
-//		}
-//
-//		IOrientable ori = null;
-//		if( this.blockType instanceof IOrientableBlock )
-//		{
-//			ori = ( (IOrientableBlock) this.blockType ).getOrientable( w, pos );
-//			up = side;
-//			forward = Direction.SOUTH;
-//			if( up.getYOffset() == 0 )
-//			{
-//				forward = Direction.UP;
-//			}
-//		}
-//
-//		if( !this.blockType.isValidOrientation( w, pos, forward, up ) )
-//		{
-//			return false;
-//		}
-//
-//		if( super.placeBlock( stack, player, w, pos, side, hitX, hitY, hitZ, newState ) )
-//		{
-//			if( this.blockType instanceof AEBaseTileBlock && !( this.blockType instanceof BlockLightDetector ) )
-//			{
-//				final AEBaseTile tile = ( (AEBaseTileBlock) this.blockType ).getTileEntity( w, pos );
-//				ori = tile;
-//
-//				if( tile == null )
-//				{
-//					return true;
-//				}
-//
-//				if( ori.canBeRotated() && !this.blockType.hasCustomRotation() )
-//				{
-//					ori.setOrientation( forward, up );
-//				}
-//
-//				if( tile instanceof IGridProxyable )
-//				{
-//					( (IGridProxyable) tile ).getProxy().setOwner( player );
-//				}
-//
-//				tile.onPlacement( stack, player, side );
-//			}
-//			else if( this.blockType instanceof IOrientableBlock )
-//			{
-//				ori.setOrientation( forward, up );
-//			}
-//
-//			return true;
-//		}
-//		return false;
-//	}
+		Direction up = null;
+		Direction forward = null;
+
+		Direction side = context.getFace();
+		PlayerEntity player = context.getPlayer();
+
+		if( this.blockType instanceof AEBaseTileBlock )
+		{
+			// FIXME if( this.blockType instanceof BlockLightDetector )
+			// FIXME {
+			// FIXME 	up = side;
+			// FIXME 	if( up == Direction.UP || up == Direction.DOWN )
+			// FIXME 	{
+			// FIXME 		forward = Direction.SOUTH;
+			// FIXME 	}
+			// FIXME 	else
+			// FIXME 	{
+			// FIXME 		forward = Direction.UP;
+			// FIXME 	}
+			// FIXME }
+			/* FIXME else */ if( /*this.blockType instanceof BlockWireless ||*/ this.blockType instanceof BlockSkyCompass)
+			{
+				forward = side;
+				if( forward == Direction.UP || forward == Direction.DOWN )
+				{
+					up = Direction.SOUTH;
+				}
+				else
+				{
+					up = Direction.UP;
+				}
+			}
+			else
+			{
+				up = Direction.UP;
+
+				// FIXME: investigate placementYaw
+				final byte rotation = (byte) ( MathHelper.floor( ( player.rotationYaw * 4F ) / 360F + 2.5D ) & 3 );
+
+				switch( rotation )
+				{
+					default:
+					case 0:
+						forward = Direction.SOUTH;
+						break;
+					case 1:
+						forward = Direction.WEST;
+						break;
+					case 2:
+						forward = Direction.NORTH;
+						break;
+					case 3:
+						forward = Direction.EAST;
+						break;
+				}
+
+				if( player.rotationPitch > 65 )
+				{
+					up = forward.getOpposite();
+					forward = Direction.UP;
+				}
+				else if( player.rotationPitch < -65 )
+				{
+					up = forward.getOpposite();
+					forward = Direction.DOWN;
+				}
+			}
+		}
+
+		IOrientable ori = null;
+		if( this.blockType instanceof IOrientableBlock)
+		{
+			ori = ( (IOrientableBlock) this.blockType ).getOrientable( context.getWorld(), context.getPos() );
+			up = side;
+			forward = Direction.SOUTH;
+			if( up.getYOffset() == 0 )
+			{
+				forward = Direction.UP;
+			}
+		}
+
+		if( !this.blockType.isValidOrientation( context.getWorld(), context.getPos(), forward, up ) )
+		{
+			return ActionResultType.FAIL;
+		}
+
+		ActionResultType result = super.tryPlace(context);
+		if (result != ActionResultType.SUCCESS) {
+			return result;
+		}
+
+		if( this.blockType instanceof AEBaseTileBlock /* FIXME && !( this.blockType instanceof BlockLightDetector ) */ )
+		{
+			final AEBaseTile tile = ( (AEBaseTileBlock<?>) this.blockType ).getTileEntity( context.getWorld(), context.getPos() );
+			ori = tile;
+
+			if( tile == null )
+			{
+				return ActionResultType.SUCCESS;
+			}
+
+			if( ori.canBeRotated() && !this.blockType.hasCustomRotation() )
+			{
+				ori.setOrientation( forward, up );
+			}
+
+			if( tile instanceof IGridProxyable)
+			{
+				( (IGridProxyable) tile ).getProxy().setOwner( player );
+			}
+
+			tile.onPlacement( context );
+		}
+		else if( this.blockType instanceof IOrientableBlock )
+		{
+			ori.setOrientation( forward, up );
+		}
+
+		return ActionResultType.SUCCESS;
+
+	}
 }

@@ -24,6 +24,7 @@ import java.io.File;
 import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.client.ClientHelper;
 import appeng.client.render.model.GlassModelLoader;
+import appeng.client.render.model.SkyCompassModelLoader;
 import appeng.server.ServerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
@@ -122,8 +123,7 @@ public final class AppEng
 		final ApiDefinitions definitions = Api.INSTANCE.definitions();
 		definitions.getRegistry().getBootstrapComponents( IClientSetupComponent.class ).forEachRemaining(IClientSetupComponent::setup);
 		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "glass"), GlassModelLoader.INSTANCE);
-
-
+		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "sky_compass"), SkyCompassModelLoader.INSTANCE);
 	}
 
 //	@Nonnull

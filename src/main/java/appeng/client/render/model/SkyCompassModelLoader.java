@@ -16,18 +16,29 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.tile.misc;
+package appeng.client.render.model;
 
 
-import appeng.tile.AEBaseTile;
-import net.minecraft.tileentity.TileEntityType;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
+import net.minecraft.resources.IResourceManager;
+import net.minecraftforge.client.model.IModelLoader;
 
 
-public class TileSkyCompass extends AEBaseTile
-{
+/**
+ * Allows the built-in sky compass model the be loaded from JSON.
+ */
+public class SkyCompassModelLoader implements IModelLoader<SkyCompassModel> {
 
-	public TileSkyCompass(TileEntityType<?> tileEntityTypeIn) {
-		super(tileEntityTypeIn);
-	}
+    public static final SkyCompassModelLoader INSTANCE = new SkyCompassModelLoader();
+
+    @Override
+    public void onResourceManagerReload(IResourceManager resourceManager) {
+    }
+
+    @Override
+    public SkyCompassModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
+        return new SkyCompassModel();
+    }
 
 }
