@@ -34,11 +34,14 @@ import appeng.decorative.AEDecorativeBlock;
 import appeng.decorative.solid.*;
 import appeng.tile.storage.TileSkyChest;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.SlabBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 import static appeng.decorative.solid.BlockSkyStone.SkystoneType;
 
 
@@ -438,14 +441,37 @@ public final class ApiBlocks implements IBlocks
 //				.bootstrap( ( block, item ) -> (IPostInitComponent) side -> ( (BlockCableBus) block ).setupTile() )
 //				.build();
 
-//		this.skyStoneSlab = makeSlab( "sky_stone_slab", "sky_stone_double_slab", registry, this.skyStoneBlock() );
-//		this.smoothSkyStoneSlab = makeSlab( "smooth_sky_stone_slab", "smooth_sky_stone_double_slab", registry, this.smoothSkyStoneBlock() );
-//		this.skyStoneBrickSlab = makeSlab( "sky_stone_brick_slab", "sky_stone_brick_double_slab", registry, this.skyStoneBrick() );
-//		this.skyStoneSmallBrickSlab = makeSlab( "sky_stone_small_brick_slab", "sky_stone_small_brick_double_slab", registry, this.skyStoneSmallBrick() );
-//		this.fluixSlab = makeSlab( "fluix_slab", "fluix_double_slab", registry, this.fluixBlock() );
-//		this.quartzSlab = makeSlab( "quartz_slab", "quartz_double_slab", registry, this.quartzBlock() );
-//		this.chiseledQuartzSlab = makeSlab( "chiseled_quartz_slab", "chiseled_quartz_double_slab", registry, this.chiseledQuartzBlock() );
-//		this.quartzPillarSlab = makeSlab( "quartz_pillar_slab", "quartz_pillar_double_slab", registry, this.quartzPillar() );
+		Block.Properties skystoneSlabProperties = Block.Properties.create( Material.ROCK )
+				.hardnessAndResistance( 50, 150 );
+
+		this.skyStoneSlab = deco.block( "sky_stone_slab", () -> new SlabBlock( skystoneSlabProperties ) )
+				.addFeatures( AEFeature.SKY_STONE )
+				.build();
+  		this.smoothSkyStoneSlab = deco.block( "smooth_sky_stone_slab", () -> new SlabBlock( skystoneSlabProperties ) )
+				.addFeatures( AEFeature.SKY_STONE )
+				.build();
+  		this.skyStoneBrickSlab = deco.block( "sky_stone_brick_slab", () -> new SlabBlock( skystoneSlabProperties ) )
+				.addFeatures( AEFeature.SKY_STONE )
+				.build();
+  		this.skyStoneSmallBrickSlab = deco.block( "sky_stone_small_brick_slab", () -> new SlabBlock( skystoneSlabProperties ) )
+				.addFeatures( AEFeature.SKY_STONE )
+				.build();
+
+		Block.Properties quartzSlabProperties = Block.Properties.create( Material.ROCK )
+				.hardnessAndResistance( 2.0F, 6.0F );
+
+		this.fluixSlab = deco.block( "fluix_slab", () -> new SlabBlock( quartzSlabProperties ) )
+				.addFeatures( AEFeature.FLUIX )
+				.build();
+  		this.quartzSlab = deco.block( "quartz_slab", () -> new SlabBlock( quartzSlabProperties ) )
+				.addFeatures( AEFeature.CERTUS )
+				.build();
+  		this.chiseledQuartzSlab = deco.block( "chiseled_quartz_slab", () -> new SlabBlock( quartzSlabProperties ) )
+				.addFeatures( AEFeature.CERTUS )
+				.build();
+  		this.quartzPillarSlab = deco.block( "quartz_pillar_slab", () -> new SlabBlock( quartzSlabProperties ) )
+				.addFeatures( AEFeature.CERTUS )
+				.build();
 
 //		this.itemGen = registry.block( "debug_item_gen", BlockItemGen::new )
 //				.features( AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE )
@@ -477,49 +503,6 @@ public final class ApiBlocks implements IBlocks
 	private Block createQuartzOreBlock() {
 		return new BlockQuartzOre(Block.Properties.create(Material.ROCK).hardnessAndResistance(3, 5));
 	}
-
-	// FIXME redo slabs
-//	private static IBlockDefinition makeSlab( String slabId, String doubleSlabId, FeatureFactory registry, IBlockDefinition blockDef )
-//	{
-//		if( !blockDef.maybeBlock().isPresent() )
-//		{
-//			return new BlockDefinition( slabId, null, null );
-//		}
-//
-//		Block block = blockDef.maybeBlock().get();
-//
-//		IBlockDefinition slabDef = registry.block( slabId, () -> new BlockSlabCommon.Half( block ) )
-//				.features( AEFeature.DECORATIVE_BLOCKS )
-//				.disableItem()
-//				.build();
-//
-//		if( !slabDef.maybeBlock().isPresent() )
-//		{
-//			return new BlockDefinition( slabId, null, null );
-//		}
-//
-//		SlabBlock slabBlock = (SlabBlock) slabDef.maybeBlock().get();
-//
-//		// Reigster the double slab variant as well
-//		IBlockDefinition doubleSlabDef = registry.block( doubleSlabId, () -> new CommonSlabBlock.Double( slabBlock, block ) )
-//				.features( AEFeature.DECORATIVE_BLOCKS )
-//				.disableItem()
-//				.build();
-//
-//		Verify.verify( doubleSlabDef.maybeBlock().isPresent() );
-//
-//		SlabBlock doubleSlabBlock = (SlabBlock) doubleSlabDef.maybeBlock().get();
-//
-//		// Make the slab item
-//		IItemDefinition itemDef = registry.item( slabId, () -> new ItemSlab( slabBlock, slabBlock, doubleSlabBlock ) )
-//				.features( AEFeature.DECORATIVE_BLOCKS )
-//				.build();
-//
-//		Verify.verify( itemDef.maybeItem().isPresent() );
-//
-//		// Return a new composite block definition that combines the single slab block with the slab item
-//		return new BlockDefinition( slabId, slabBlock, (BlockItem) itemDef.maybeItem().get() );
-//	}
 
 //	private static IBlockDefinition makeStairs( String registryName, FeatureFactory registry, IBlockDefinition block )
 //	{
