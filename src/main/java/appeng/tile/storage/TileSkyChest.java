@@ -25,6 +25,7 @@ import appeng.block.storage.BlockSkyChest;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.IContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.IChestLid;

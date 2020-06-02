@@ -487,6 +487,7 @@ public enum GuiBridge
 			if( this.type.isItem() )
 			{
 				final ItemStack it = player.inventory.getCurrentItem();
+				it.getCapability()
 				if( !it.isEmpty() && it.getItem() instanceof IGuiItem )
 				{
 					final Object myItem = ( (IGuiItem) it.getItem() ).getGuiObject( it, w, pos );

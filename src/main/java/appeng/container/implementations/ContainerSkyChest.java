@@ -27,10 +27,15 @@ import net.minecraft.entity.player.PlayerInventory;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotNormal;
 import appeng.tile.storage.TileSkyChest;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 
 public class ContainerSkyChest extends AEBaseContainer
@@ -64,6 +69,14 @@ public class ContainerSkyChest extends AEBaseContainer
 			return new ContainerSkyChest(windowId, inv, (TileSkyChest) te);
 		}
 		return null;
+	}
+
+	public static void open(ServerPlayerEntity player, TileSkyChest tile, ITextComponent title) {
+		BlockPos pos = tile.getPos();
+		INamedContainerProvider container = new SimpleNamedContainerProvider(
+				(wnd, p, pl) -> new ContainerSkyChest(wnd, p, tile), title
+		);
+		NetworkHooks.openGui(player, container, pos);
 	}
 
 	@Override

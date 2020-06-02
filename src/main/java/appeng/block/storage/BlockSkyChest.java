@@ -86,12 +86,8 @@ public class BlockSkyChest extends AEBaseTileBlock<TileSkyChest>
 			if (tile == null) {
 				return ActionResultType.PASS;
 			}
-			INamedContainerProvider container = new SimpleNamedContainerProvider((wnd, p, pl) -> new ContainerSkyChest(wnd, p, tile), getNameTextComponent());
-			NetworkHooks.openGui((ServerPlayerEntity) player, container, buf -> {
-				buf.writeBlockPos(pos);
-			});
 
-			// FIXME Platform.openGUI( player, this.getTileEntity( w, pos ), AEPartLocation.fromFacing(hit.getFace()), GuiBridge.GUI_SKYCHEST );
+			ContainerSkyChest.open((ServerPlayerEntity) player, tile, getNameTextComponent());
 		}
 
 		return ActionResultType.SUCCESS;

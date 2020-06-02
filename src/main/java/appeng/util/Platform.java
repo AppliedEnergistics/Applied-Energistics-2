@@ -82,6 +82,9 @@ import java.util.*;
 import com.google.common.base.Preconditions;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 
 /**
  * @author AlgorithmX2
@@ -312,13 +315,15 @@ public class Platform
 
 		return false;
 	}
-//
+
 //	public static void openGUI(@Nonnull final PlayerEntity p, @Nullable final TileEntity tile, @Nullable final AEPartLocation side, @Nonnull final GuiBridge type )
 //	{
 //		if( isClient() )
 //		{
 //			return;
 //		}
+//
+//		tile.getCapability(AEProtectedGui.class, side.getFacing())
 //
 //		int x = (int) p.getPosX();
 //		int y = (int) p.getPosY();
