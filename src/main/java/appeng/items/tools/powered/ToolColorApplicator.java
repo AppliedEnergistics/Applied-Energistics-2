@@ -188,7 +188,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 			}
 		}
 
-		if( p.isShiftKeyDown() )
+		if( p.isCrouching() )
 		{
 			this.cycleColors( is, paintBall, 1 );
 		}

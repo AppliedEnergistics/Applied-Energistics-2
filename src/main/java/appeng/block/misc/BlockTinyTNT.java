@@ -81,7 +81,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 			this.startFuse( w, pos, player );
 			w.removeBlock(pos, false);
 			heldItem.damageItem( 1, player );
-			return true;
+			return ActionResultType.SUCCESS;
 		}
 		else
 		{

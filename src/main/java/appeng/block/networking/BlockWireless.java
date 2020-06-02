@@ -111,7 +111,7 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 	{
 		final TileWireless tg = this.getTileEntity( w, pos );
 
-		if( tg != null && !player.isShiftKeyDown() )
+		if( tg != null && !player.isCrouching() )
 		{
 			if( Platform.isServer() )
 			{

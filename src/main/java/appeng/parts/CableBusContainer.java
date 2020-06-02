@@ -818,7 +818,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		{
 			// forge sends activate even when sneaking in some cases (eg emtpy hand)
 			// if sneaking try shift activate first.
-			if( player.isShiftKeyDown() && p.part.onShiftActivate( player, hand, pos ) )
+			if( player.isCrouching() && p.part.onShiftActivate( player, hand, pos ) )
 			{
 				return true;
 			}
@@ -833,7 +833,7 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 		final SelectedPart p = this.selectPart( hitVec );
 		if( p != null && p.part != null )
 		{
-			if( player.isShiftKeyDown() )
+			if( player.isCrouching() )
 			{
 				return p.part.onShiftClicked( player, hand, hitVec );
 			}

@@ -24,6 +24,7 @@ import java.util.List;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
@@ -46,6 +47,10 @@ public class TileGrinder extends AEBaseInvTile implements ICrankable
 	private final AppEngInternalInventory inv = new AppEngInternalInventory( this, 7 );
 	private final IItemHandler invExt = new WrapperFilteredItemHandler( this.inv, new GrinderFilter() );
 	private int points;
+
+	public TileGrinder(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
+	}
 
 	@Override
 	public void setOrientation( final Direction inForward, final Direction inUp )

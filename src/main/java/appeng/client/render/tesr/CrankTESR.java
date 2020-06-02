@@ -19,6 +19,7 @@
 package appeng.client.render.tesr;
 
 
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.block.BlockState;
@@ -46,6 +47,10 @@ import appeng.tile.grindstone.TileCrank;
 @OnlyIn( Dist.CLIENT )
 public class CrankTESR extends TileEntityRenderer<TileCrank>
 {
+
+	public CrankTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
+		super(rendererDispatcherIn);
+	}
 
 	@Override
 	public void render( TileCrank te, double x, double y, double z, float partialTicks, int destroyStage, float p_render_10_ )

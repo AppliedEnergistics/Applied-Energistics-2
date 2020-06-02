@@ -28,6 +28,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -50,6 +51,10 @@ public class TileCrank extends AEBaseTile implements ICustomCollision, ITickable
 
 	private int hits = 0;
 	private int rotation = 0;
+
+	public TileCrank(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
+	}
 
 	@Override
 	public void tick()

@@ -103,7 +103,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench
 				{
 					return ActionResultType.FAIL;
 				}
-				else if( context.getPlayer().isShiftKeyDown() )
+				else if( context.getPlayer().isCrouching() )
 				{
 					return ActionResultType.PASS;
 				}
@@ -138,7 +138,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench
 			}
 
 			final Block b = w.getBlockState( pos ).getBlock();
-			if( !p.isShiftKeyDown() )
+			if( !p.isCrouching() )
 			{
 				final TileEntity te = w.getTileEntity( pos );
 				if( !( te instanceof IGridHost ) )
@@ -152,7 +152,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench
 				}
 			}
 
-			if( !p.isShiftKeyDown() )
+			if( !p.isCrouching() )
 			{
 				if( p.openContainer instanceof AEBaseContainer )
 				{

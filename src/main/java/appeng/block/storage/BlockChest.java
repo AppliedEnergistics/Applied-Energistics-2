@@ -94,11 +94,11 @@ public class BlockChest extends AEBaseTileBlock
 	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
 	{
 		final TileChest tg = this.getTileEntity( w, pos );
-		if( tg != null && !p.isShiftKeyDown() )
+		if( tg != null && !p.isCrouching() )
 		{
 			if( Platform.isClient() )
 			{
-				return true;
+				return ActionResultType.SUCCESS;
 			}
 
 			if( hit != tg.getUp() )
@@ -113,9 +113,9 @@ public class BlockChest extends AEBaseTileBlock
 				}
 			}
 
-			return true;
+			return ActionResultType.SUCCESS;
 		}
 
-		return false;
+		return ActionResultType.PASS;
 	}
 }

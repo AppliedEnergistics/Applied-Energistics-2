@@ -19,9 +19,8 @@
 package appeng.block.grindstone;
 
 
-import javax.annotation.Nullable;
-
-import net.minecraft.block.material.Material;
+import appeng.block.AEBaseTileBlock;
+import appeng.tile.grindstone.TileGrinder;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
@@ -30,32 +29,25 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
-import appeng.api.util.AEPartLocation;
-import appeng.block.AEBaseTileBlock;
-import appeng.core.sync.GuiBridge;
-import appeng.tile.grindstone.TileGrinder;
-import appeng.util.Platform;
+import javax.annotation.Nullable;
 
 
-public class BlockGrinder extends AEBaseTileBlock
+public class BlockGrinder extends AEBaseTileBlock<TileGrinder>
 {
 
-	public BlockGrinder()
-	{
-		super( Material.ROCK );
-
-		this.setHardness( 3.2F );
+	public BlockGrinder(Properties props) {
+		super(props);
 	}
 
 	@Override
 	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
 	{
 		final TileGrinder tg = this.getTileEntity( w, pos );
-		if( tg != null && !p.isShiftKeyDown() )
+		if( tg != null && !p.isCrouching() )
 		{
-			Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_GRINDER );
-			return true;
+			// FIXME Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit.getFace()), GuiBridge.GUI_GRINDER );
+			return ActionResultType.SUCCESS;
 		}
-		return false;
+		return ActionResultType.PASS;
 	}
 }

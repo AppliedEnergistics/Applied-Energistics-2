@@ -100,7 +100,7 @@ public class BlockMolecularAssembler extends AEBaseTileBlock
 	public boolean onBlockActivated( final World w, final BlockPos pos, final BlockState state, final PlayerEntity p, final Hand hand, final Direction side, final float hitX, final float hitY, final float hitZ )
 	{
 		final TileMolecularAssembler tg = this.getTileEntity( w, pos );
-		if( tg != null && !p.isShiftKeyDown() )
+		if( tg != null && !p.isCrouching() )
 		{
 			Platform.openGUI( p, tg, AEPartLocation.fromFacing( side ), GuiBridge.GUI_MAC );
 			return true;

@@ -49,12 +49,6 @@ public interface IBlockBuilder
 	 */
 	IBlockBuilder disableItem();
 
-	/**
-	 * Forces this block's item to uses a custom model, instead of using the default block state as the item model.
-	 * The model has the same name as the registry name.
-	 */
-	IBlockBuilder useCustomItemModel();
-
 	IBlockBuilder item( BiFunction<Block, Item.Properties, BlockItem> factory );
 
 	<T extends IBlockDefinition> T build();

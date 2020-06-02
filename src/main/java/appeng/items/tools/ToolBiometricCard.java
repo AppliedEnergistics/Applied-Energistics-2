@@ -57,7 +57,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	@Override
 	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity p, final Hand hand )
 	{
-		if( p.isShiftKeyDown() )
+		if( p.isCrouching() )
 		{
 			this.encode( p.getHeldItem( hand ), p );
 			p.swingArm( hand );
@@ -70,7 +70,7 @@ public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 	@Override
 	public boolean itemInteractionForEntity( ItemStack is, final PlayerEntity player, final LivingEntity target, final Hand hand )
 	{
-		if( target instanceof PlayerEntity && !player.isShiftKeyDown() )
+		if( target instanceof PlayerEntity && !player.isCrouching() )
 		{
 			if( player.isCreative() )
 			{

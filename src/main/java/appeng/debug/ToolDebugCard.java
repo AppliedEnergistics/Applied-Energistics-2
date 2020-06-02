@@ -63,7 +63,7 @@ public class ToolDebugCard extends AEBaseItem
 			return EnumActionResult.PASS;
 		}
 
-		if( player.isShiftKeyDown() )
+		if( player.isCrouching() )
 		{
 			int grids = 0;
 			int totalNodes = 0;

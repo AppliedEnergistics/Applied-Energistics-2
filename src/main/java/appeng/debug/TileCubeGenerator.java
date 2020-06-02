@@ -96,7 +96,7 @@ public class TileCubeGenerator extends AEBaseTile implements ITickableTileEntity
 			{
 				this.is = ItemStack.EMPTY;
 
-				if( player.isShiftKeyDown() )
+				if( player.isCrouching() )
 				{
 					this.size--;
 				}

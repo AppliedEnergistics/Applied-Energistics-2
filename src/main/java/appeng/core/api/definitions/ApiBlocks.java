@@ -22,22 +22,28 @@ package appeng.core.api.definitions;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.ITileDefinition;
+import appeng.block.grindstone.BlockCrank;
+import appeng.block.grindstone.BlockGrinder;
 import appeng.block.misc.BlockQuartzFixture;
 import appeng.block.spatial.BlockMatrixFrame;
 import appeng.block.storage.BlockSkyChest;
 import appeng.bootstrap.*;
 import appeng.bootstrap.definitions.TileEntityDefinition;
+import appeng.client.render.tesr.CrankTESR;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.core.features.AEFeature;
 import appeng.core.features.registries.PartModels;
 import appeng.decorative.AEDecorativeBlock;
 import appeng.decorative.solid.*;
+import appeng.tile.grindstone.TileCrank;
+import appeng.tile.grindstone.TileGrinder;
 import appeng.tile.storage.TileSkyChest;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ToolType;
 
 import static appeng.decorative.solid.BlockSkyStone.SkystoneType;
 
@@ -225,16 +231,22 @@ public final class ApiBlocks implements IBlocks
 //				.tileEntity( new TileEntityDefinition( TileSkyCompass.class ) )
 //				.rendering( new SkyCompassRendering() )
 //				.build();
-//		this.grindstone = registry.block( "grindstone", BlockGrinder::new )
-//				.features( AEFeature.GRIND_STONE )
-//				.tileEntity( new TileEntityDefinition( TileGrinder.class ) )
-//				.build();
-//		this.crank = registry.block( "crank", BlockCrank::new )
-//				.features( AEFeature.GRIND_STONE )
-//				.tileEntity( new TileEntityDefinition( TileCrank.class ) )
-//				.rendering( new CrankRendering() )
-//				.useCustomItemModel()
-//				.build();
+		this.grindstone = registry.block( "grindstone", () -> new BlockGrinder(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.2f)) )
+				.features( AEFeature.GRIND_STONE )
+				.tileEntity( registry.tileEntity("grindstone", TileGrinder.class, TileGrinder::new ).build() )
+				.build();
+		this.crank = registry.block( "crank", () -> new BlockCrank(Block.Properties.create(Material.WOOD).harvestTool(ToolType.AXE).harvestLevel(0).notSolid()) )
+				.features( AEFeature.GRIND_STONE )
+				.tileEntity( registry.tileEntity("crank", TileCrank.class, TileCrank::new )
+						.rendering(new TileEntityRenderingCustomizer<TileCrank>() {
+							@Override
+							@OnlyIn(Dist.CLIENT)
+							public void customize(TileEntityRendering<TileCrank> rendering) {
+								rendering.tileEntityRenderer(CrankTESR::new);
+							}
+						})
+						.build() )
+				.build();
 //		this.inscriber = registry.block( "inscriber", BlockInscriber::new )
 //				.features( AEFeature.INSCRIBER )
 //				.tileEntity( new TileEntityDefinition( TileInscriber.class ) )

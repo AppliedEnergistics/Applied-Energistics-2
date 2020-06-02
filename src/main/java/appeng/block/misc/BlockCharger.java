@@ -75,9 +75,9 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 	@Override
 	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
 	{
-		if( player.isShiftKeyDown() )
+		if( player.isCrouching() )
 		{
-			return false;
+			return ActionResultType.PASS;
 		}
 
 		if( Platform.isServer() )
@@ -89,7 +89,7 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 			}
 		}
 
-		return true;
+		return ActionResultType.SUCCESS;
 	}
 
 	@Override

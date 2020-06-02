@@ -57,7 +57,7 @@ public class ToolReplicatorCard extends AEBaseItem
 		int y = pos.getY();
 		int z = pos.getZ();
 
-		if( player.isShiftKeyDown() )
+		if( player.isCrouching() )
 		{
 			if( world.getTileEntity( pos ) instanceof IGridHost )
 			{

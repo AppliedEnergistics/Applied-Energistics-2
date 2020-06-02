@@ -48,21 +48,21 @@ public class BlockCondenser extends AEBaseTileBlock
 	@Override
 	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
 	{
-		if( player.isShiftKeyDown() )
+		if( player.isCrouching() )
 		{
-			return false;
+			return ActionResultType.PASS;
 		}
 
 		if( Platform.isServer() )
 		{
 			final TileCondenser tc = this.getTileEntity( w, pos );
-			if( tc != null && !player.isShiftKeyDown() )
+			if( tc != null && !player.isCrouching() )
 			{
 				Platform.openGUI( player, tc, AEPartLocation.fromFacing(hit), GuiBridge.GUI_CONDENSER );
-				return true;
+				return ActionResultType.SUCCESS;
 			}
 		}
 
-		return true;
+		return ActionResultType.SUCCESS;
 	}
 }

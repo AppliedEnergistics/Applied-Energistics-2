@@ -83,9 +83,9 @@ public class BlockSecurityStation extends AEBaseTileBlock
 	@Override
 	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
 	{
-		if( p.isShiftKeyDown() )
+		if( p.isCrouching() )
 		{
-			return false;
+			return ActionResultType.PASS;
 		}
 
 		final TileSecurityStation tg = this.getTileEntity( w, pos );
@@ -93,12 +93,12 @@ public class BlockSecurityStation extends AEBaseTileBlock
 		{
 			if( Platform.isClient() )
 			{
-				return true;
+				return ActionResultType.SUCCESS;
 			}
 
 			Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_SECURITY );
-			return true;
+			return ActionResultType.SUCCESS;
 		}
-		return false;
+		return ActionResultType.PASS;
 	}
 }

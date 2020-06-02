@@ -79,7 +79,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 	@Override
 	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
 	{
-		if( player.isShiftKeyDown() )
+		if( player.isCrouching() )
 		{
 			return false;
 		}
@@ -87,14 +87,14 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 		if( Platform.isServer() )
 		{
 			final TileVibrationChamber tc = this.getTileEntity( w, pos );
-			if( tc != null && !player.isShiftKeyDown() )
+			if( tc != null && !player.isCrouching() )
 			{
 				Platform.openGUI( player, tc, AEPartLocation.fromFacing(hit), GuiBridge.GUI_VIBRATION_CHAMBER );
-				return true;
+				return ActionResultType.SUCCESS;
 			}
 		}
 
-		return true;
+		return ActionResultType.SUCCESS;
 	}
 
 	@Override

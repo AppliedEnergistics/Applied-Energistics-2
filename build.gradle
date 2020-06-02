@@ -220,6 +220,9 @@ sourceSets {
             include 'appeng/container/implementations/ContainerSkyChest.java'
             include 'appeng/container/slot/SlotNormal.java'
             include 'appeng/client/gui/implementations/GuiSkyChest.java'
+            include 'appeng/block/grindstone/**'
+            include 'appeng/tile/grindstone/**'
+            include 'appeng/container/implementations/ContainerGrinder.java'
         }
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output

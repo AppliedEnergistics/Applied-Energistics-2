@@ -146,7 +146,7 @@ public class BlockCraftingUnit extends AEBaseTileBlock
 	{
 		final TileCraftingTile tg = this.getTileEntity( w, pos );
 
-		if( tg != null && !p.isShiftKeyDown() && tg.isFormed() && tg.isActive() )
+		if( tg != null && !p.isCrouching() && tg.isFormed() && tg.isActive() )
 		{
 			if( Platform.isClient() )
 			{

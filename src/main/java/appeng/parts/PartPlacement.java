@@ -79,7 +79,7 @@ public class PartPlacement
 			return ActionResultType.FAIL;
 		}
 
-		if( !held.isEmpty() && Platform.isWrench( player, held, pos ) && player.isShiftKeyDown() )
+		if( !held.isEmpty() && Platform.isWrench( player, held, pos ) && player.isCrouching() )
 		{
 			if( !Platform.hasPermissions( new DimensionalCoord( world, pos ), player ) )
 			{
@@ -200,7 +200,7 @@ public class PartPlacement
 		if( held.isEmpty() )
 		{
 			final Block block = world.getBlockState( pos ).getBlock();
-			if( host != null && player.isShiftKeyDown() && block != null )
+			if( host != null && player.isCrouching() && block != null )
 			{
 				final LookDirection dir = Platform.getPlayerRay( player, getEyeOffset( player ) );
 				final RayTraceResult mop = block.getRayTraceResult( world.getBlockState( pos ), world, pos, dir.getA(), dir.getB(), mop );
@@ -325,7 +325,7 @@ public class PartPlacement
 
 				if( sp.part != null )
 				{
-					if( !player.isShiftKeyDown() && sp.part.onActivate( player, hand, mop.hitVec ) )
+					if( !player.isCrouching() && sp.part.onActivate( player, hand, mop.hitVec ) )
 					{
 						return ActionResult.resultFail( null );
 					}
@@ -437,7 +437,7 @@ public class PartPlacement
 				boolean supportedItem = items.memoryCard().isSameAs( held );
 				supportedItem |= items.colorApplicator().isSameAs( held );
 
-				if( event.getPlayer().isShiftKeyDown() && !held.isEmpty() && supportedItem )
+				if( event.getPlayer().isCrouching() && !held.isEmpty() && supportedItem )
 				{
 					NetworkHandler.instance().sendToServer( new PacketClick( event.getPos(), event.getFace(), 0, 0, 0, event.getHand() ) );
 				}

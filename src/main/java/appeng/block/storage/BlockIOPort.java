@@ -60,9 +60,9 @@ public class BlockIOPort extends AEBaseTileBlock
 	@Override
 	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
 	{
-		if( p.isShiftKeyDown() )
+		if( p.isCrouching() )
 		{
-			return false;
+			return ActionResultType.PASS;
 		}
 
 		final TileIOPort tg = this.getTileEntity( w, pos );
@@ -72,8 +72,8 @@ public class BlockIOPort extends AEBaseTileBlock
 			{
 				Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_IOPORT );
 			}
-			return true;
+			return ActionResultType.SUCCESS;
 		}
-		return false;
+		return ActionResultType.PASS;
 	}
 }

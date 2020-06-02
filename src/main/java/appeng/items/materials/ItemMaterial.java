@@ -225,7 +225,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	{
 		PlayerEntity player = context.getPlayer();
 		Hand hand = context.getHand();
-		if( player.isShiftKeyDown() )
+		if( player.isCrouching() )
 		{
 			final TileEntity te = context.getWorld().getTileEntity( context.getPos() );
 			IItemHandler upgrades = null;

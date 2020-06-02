@@ -47,16 +47,11 @@ import appeng.tile.AEBaseTile;
 import appeng.tile.grindstone.TileCrank;
 
 
-public class BlockCrank extends AEBaseTileBlock
+public class BlockCrank extends AEBaseTileBlock<TileCrank>
 {
 
-	public BlockCrank()
-	{
-		super( Material.WOOD );
-
-		this.setLightOpacity( 0 );
-		this.setHarvestLevel( "axe", 0 );
-		this.setFullSize( this.setOpaque( false ) );
+	public BlockCrank(Properties props) {
+		super(props);
 	}
 
 	@Override
@@ -65,7 +60,7 @@ public class BlockCrank extends AEBaseTileBlock
 		if( player instanceof FakePlayer || player == null )
 		{
 			this.dropCrank( w, pos );
-			return true;
+			return ActionResultType.SUCCESS;
 		}
 
 		final AEBaseTile tile = this.getTileEntity( w, pos );
@@ -77,7 +72,7 @@ public class BlockCrank extends AEBaseTileBlock
 			}
 		}
 
-		return true;
+		return ActionResultType.SUCCESS;
 	}
 
 	private void dropCrank( final World world, final BlockPos pos )

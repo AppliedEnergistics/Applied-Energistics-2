@@ -256,7 +256,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 			final BlockState state = w.getBlockState( pos );
 			final Block blockID = state.getBlock();
 
-			if( p.isShiftKeyDown() )
+			if( p.isCrouching() )
 			{
 				if( this.canCool( state ) )
 				{

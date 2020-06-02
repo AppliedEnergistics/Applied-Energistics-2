@@ -76,7 +76,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 
 	private boolean clearPattern( final ItemStack stack, final PlayerEntity player )
 	{
-		if( player.isShiftKeyDown() )
+		if( player.isCrouching() )
 		{
 			if( Platform.isClient() )
 			{

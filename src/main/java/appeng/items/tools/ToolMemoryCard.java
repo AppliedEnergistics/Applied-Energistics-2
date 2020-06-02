@@ -198,7 +198,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	@Override
 	public ActionResultType onItemUse( ItemUseContext context )
 	{
-		if( context.getPlayer().isShiftKeyDown() )
+		if( context.getPlayer().isCrouching() )
 		{
 			if( !context.getPlayer().world.isRemote )
 			{
@@ -215,7 +215,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	@Override
 	public ActionResult<ItemStack> onItemRightClick( World w, PlayerEntity player, Hand hand )
 	{
-		if( player.isShiftKeyDown() )
+		if( player.isCrouching() )
 		{
 			if( !w.isRemote )
 			{

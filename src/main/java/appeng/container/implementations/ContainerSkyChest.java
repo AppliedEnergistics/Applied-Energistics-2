@@ -64,7 +64,7 @@ public class ContainerSkyChest extends AEBaseContainer
 
 	public static ContainerSkyChest fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		BlockPos pos = buf.readBlockPos();
-		TileEntity te = Minecraft.getInstance().player.world.getTileEntity(pos);
+		TileEntity te = inv.player.world.getTileEntity(pos);
 		if (te instanceof TileSkyChest) {
 			return new ContainerSkyChest(windowId, inv, (TileSkyChest) te);
 		}

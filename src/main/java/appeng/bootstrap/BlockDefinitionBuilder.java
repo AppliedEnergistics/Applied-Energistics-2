@@ -139,23 +139,6 @@ class BlockDefinitionBuilder implements IBlockBuilder
 	}
 
 	@Override
-	public IBlockBuilder useCustomItemModel()
-	{
-		this.rendering( new BlockRenderingCustomizer()
-		{
-			@Override
-			@OnlyIn( Dist.CLIENT )
-			public void customize( IBlockRendering rendering, IItemRendering itemRendering )
-			{
-				ModelResourceLocation model = new ModelResourceLocation( new ResourceLocation( AppEng.MOD_ID, BlockDefinitionBuilder.this.registryName ), "inventory" );
-				itemRendering.model( model ).variants( model );
-			}
-		} );
-
-		return this;
-	}
-
-	@Override
 	public IBlockBuilder item( BiFunction<Block, Item.Properties, BlockItem> factory )
 	{
 		this.itemFactory = factory;
