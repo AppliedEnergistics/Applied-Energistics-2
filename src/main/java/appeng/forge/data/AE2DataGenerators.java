@@ -1,10 +1,10 @@
-package appeng.data;
+package appeng.forge.data;
 
 
 import appeng.core.AppEng;
-import appeng.data.providers.loot.BlockDropProvider;
-import appeng.data.providers.recipes.QuartzToolRecipes;
-import appeng.data.providers.recipes.SlabStairRecipes;
+import appeng.forge.data.providers.loot.BlockDropProvider;
+import appeng.forge.data.providers.recipes.QuartzToolRecipes;
+import appeng.forge.data.providers.recipes.SlabStairRecipes;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;

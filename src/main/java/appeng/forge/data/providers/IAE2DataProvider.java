@@ -1,4 +1,4 @@
-package appeng.data.providers;
+package appeng.forge.data.providers;
 
 
 import appeng.api.definitions.IBlocks;

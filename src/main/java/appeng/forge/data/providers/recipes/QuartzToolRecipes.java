@@ -1,7 +1,7 @@
-package appeng.data.providers.recipes;
+package appeng.forge.data.providers.recipes;
 
 
-import appeng.data.providers.IAE2DataProvider;
+import appeng.forge.data.providers.IAE2DataProvider;
 import com.google.common.collect.ImmutableMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
@@ -113,7 +113,7 @@ public class QuartzToolRecipes extends RecipeProvider implements IAE2DataProvide
 				}
 
 				builder.key( 'X', tag )
-						.addCriterion( "has_" + tag.toString(), hasItem( tag ) )
+						.addCriterion( "has_" + tag.getId(), hasItem( tag ) )
 						.build( consumer );
 
 			}
