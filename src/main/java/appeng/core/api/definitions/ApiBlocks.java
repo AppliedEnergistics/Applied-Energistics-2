@@ -25,6 +25,8 @@ import appeng.api.definitions.ITileDefinition;
 import appeng.block.grindstone.BlockCrank;
 import appeng.block.grindstone.BlockGrinder;
 import appeng.block.misc.BlockQuartzFixture;
+import appeng.block.misc.BlockSkyCompass;
+import appeng.block.misc.SkyCompassRendering;
 import appeng.block.spatial.BlockMatrixFrame;
 import appeng.block.storage.BlockSkyChest;
 import appeng.bootstrap.*;
@@ -37,6 +39,7 @@ import appeng.decorative.AEDecorativeBlock;
 import appeng.decorative.solid.*;
 import appeng.tile.grindstone.TileCrank;
 import appeng.tile.grindstone.TileGrinder;
+import appeng.tile.misc.TileSkyCompass;
 import appeng.tile.storage.TileSkyChest;
 import net.minecraft.block.Block;
 import net.minecraft.block.SlabBlock;
@@ -229,11 +232,12 @@ public final class ApiBlocks implements IBlocks
 				.tileEntity( skyChestTile )
 				.build();
 
-//		this.skyCompass = registry.block( "sky_compass", BlockSkyCompass::new )
-//				.features( AEFeature.METEORITE_COMPASS )
-//				.tileEntity( new TileEntityDefinition( TileSkyCompass.class ) )
-//				.rendering( new SkyCompassRendering() )
-//				.build();
+		this.skyCompass = registry.block( "sky_compass", () -> new BlockSkyCompass(Block.Properties.create(Material.MISCELLANEOUS)) )
+				.features( AEFeature.METEORITE_COMPASS )
+				.tileEntity( registry.tileEntity("sky_compass", TileSkyCompass.class, TileSkyCompass::new)
+						.rendering( new SkyCompassRendering() )
+						.build() )
+				.build();
 		this.grindstone = registry.block( "grindstone", () -> new BlockGrinder(Block.Properties.create(Material.ROCK).hardnessAndResistance(3.2f)) )
 				.features( AEFeature.GRIND_STONE )
 				.tileEntity( registry.tileEntity("grindstone", TileGrinder.class, TileGrinder::new ).build() )
@@ -252,17 +256,17 @@ public final class ApiBlocks implements IBlocks
 				.build();
 //		this.inscriber = registry.block( "inscriber", BlockInscriber::new )
 //				.features( AEFeature.INSCRIBER )
-//				.tileEntity( new TileEntityDefinition( TileInscriber.class ) )
+//				.tileEntity( registry.tileEntity("", TileInscriber.class, TileInscriber::new).build() )
 //				.rendering( new InscriberRendering() )
 //				.build();
 //		this.wirelessAccessPoint = registry.block( "wireless_access_point", BlockWireless::new )
 //				.features( AEFeature.WIRELESS_ACCESS_TERMINAL )
-//				.tileEntity( new TileEntityDefinition( TileWireless.class ) )
+//				.tileEntity( registry.tileEntity("", TileWireless.class, TileWireless::new).build() )
 //				.rendering( new WirelessRendering() )
 //				.build();
 //		this.charger = registry.block( "charger", BlockCharger::new )
 //				.features( AEFeature.CHARGER )
-//				.tileEntity( new TileEntityDefinition( TileCharger.class ) )
+//				.tileEntity( registry.tileEntity("", TileCharger.class, TileCharger::new).build() )
 //				.rendering( new BlockRenderingCustomizer()
 //				{
 //					@Override
@@ -290,7 +294,7 @@ public final class ApiBlocks implements IBlocks
 //				.build();
 //		this.securityStation = registry.block( "security_station", BlockSecurityStation::new )
 //				.features( AEFeature.SECURITY )
-//				.tileEntity( new TileEntityDefinition( TileSecurityStation.class ) )
+//				.tileEntity( registry.tileEntity("", TileSecurityStation.class, TileSecurityStation::new).build() )
 //				.rendering( new SecurityStationRendering() )
 //				.build();
 //		this.quantumRing = registry.block( "quantum_ring", BlockQuantumRing::new )
@@ -305,79 +309,79 @@ public final class ApiBlocks implements IBlocks
 //				.build();
 //		this.spatialPylon = registry.block( "spatial_pylon", BlockSpatialPylon::new )
 //				.features( AEFeature.SPATIAL_IO )
-//				.tileEntity( new TileEntityDefinition( TileSpatialPylon.class ) )
+//				.tileEntity( registry.tileEntity("", TileSpatialPylon.class, TileSpatialPylon::new).build() )
 //				.useCustomItemModel()
 //				.rendering( new SpatialPylonRendering() )
 //				.build();
 //		this.spatialIOPort = registry.block( "spatial_io_port", BlockSpatialIOPort::new )
 //				.features( AEFeature.SPATIAL_IO )
-//				.tileEntity( new TileEntityDefinition( TileSpatialIOPort.class ) )
+//				.tileEntity( registry.tileEntity("", TileSpatialIOPort.class, TileSpatialIOPort::new).build() )
 //				.build();
 //		this.controller = registry.block( "controller", BlockController::new )
 //				.features( AEFeature.CHANNELS )
-//				.tileEntity( new TileEntityDefinition( TileController.class ) )
+//				.tileEntity( registry.tileEntity("", TileController.class, TileController::new).build() )
 //				.useCustomItemModel()
 //				.rendering( new ControllerRendering() )
 //				.build();
 //		this.drive = registry.block( "drive", BlockDrive::new )
 //				.features( AEFeature.STORAGE_CELLS, AEFeature.ME_DRIVE )
-//				.tileEntity( new TileEntityDefinition( TileDrive.class ) )
+//				.tileEntity( registry.tileEntity("", TileDrive.class, TileDrive::new).build() )
 //				.useCustomItemModel()
 //				.rendering( new DriveRendering() )
 //				.build();
 //		this.chest = registry.block( "chest", BlockChest::new )
 //				.features( AEFeature.STORAGE_CELLS, AEFeature.ME_CHEST )
-//				.tileEntity( new TileEntityDefinition( TileChest.class ) )
+//				.tileEntity( registry.tileEntity("", TileChest.class, TileChest::new).build() )
 //				.useCustomItemModel()
 //				.rendering( new ChestRendering() )
 //				.build();
 //		this.iface = registry.block( "interface", BlockInterface::new )
 //				.features( AEFeature.INTERFACE )
-//				.tileEntity( new TileEntityDefinition( TileInterface.class ) )
+//				.tileEntity( registry.tileEntity("", TileInterface.class, TileInterface::new).build() )
 //				.build();
 //		this.fluidIface = registry.block( "fluid_interface", BlockFluidInterface::new )
 //				.features( AEFeature.FLUID_INTERFACE )
-//				.tileEntity( new TileEntityDefinition( TileFluidInterface.class ) )
+//				.tileEntity( registry.tileEntity("", TileFluidInterface.class, TileFluidInterface::new).build() )
 //				.build();
 //		this.cellWorkbench = registry.block( "cell_workbench", BlockCellWorkbench::new )
 //				.features( AEFeature.STORAGE_CELLS )
-//				.tileEntity( new TileEntityDefinition( TileCellWorkbench.class ) )
+//				.tileEntity( registry.tileEntity("", TileCellWorkbench.class, TileCellWorkbench::new).build() )
 //				.build();
 //		this.iOPort = registry.block( "io_port", BlockIOPort::new )
 //				.features( AEFeature.STORAGE_CELLS, AEFeature.IO_PORT )
-//				.tileEntity( new TileEntityDefinition( TileIOPort.class ) )
+//				.tileEntity( registry.tileEntity("", TileIOPort.class, TileIOPort::new).build() )
 //				.build();
 //		this.condenser = registry.block( "condenser", BlockCondenser::new )
 //				.features( AEFeature.CONDENSER )
-//				.tileEntity( new TileEntityDefinition( TileCondenser.class ) )
+//				.tileEntity( registry.tileEntity("", TileCondenser.class, TileCondenser::new).build() )
 //				.build();
 //		this.energyAcceptor = registry.block( "energy_acceptor", BlockEnergyAcceptor::new )
 //				.features( AEFeature.ENERGY_ACCEPTOR )
-//				.tileEntity( new TileEntityDefinition( TileEnergyAcceptor.class ) )
+//				.tileEntity( registry.tileEntity("", TileEnergyAcceptor.class, TileEnergyAcceptor::new).build() )
 //				.build();
 //		this.vibrationChamber = registry.block( "vibration_chamber", BlockVibrationChamber::new )
 //				.features( AEFeature.POWER_GEN )
-//				.tileEntity( new TileEntityDefinition( TileVibrationChamber.class ) )
+//				.tileEntity( registry.tileEntity("", TileVibrationChamber.class, TileVibrationChamber::new).build() )
 //				.build();
 //		this.quartzGrowthAccelerator = registry.block( "quartz_growth_accelerator", BlockQuartzGrowthAccelerator::new )
-//				.tileEntity( new TileEntityDefinition( TileQuartzGrowthAccelerator.class ) )
+//				.tileEntity( registry.tileEntity("", TileQuartzGrowthAccelerator.class, TileQuartzGrowthAccelerator::new).build() )
 //				.features( AEFeature.CRYSTAL_GROWTH_ACCELERATOR )
 //				.build();
 //		this.energyCell = registry.block( "energy_cell", BlockEnergyCell::new )
 //				.features( AEFeature.ENERGY_CELLS )
 //				.item( AEBaseBlockItemChargeable::new )
-//				.tileEntity( new TileEntityDefinition( TileEnergyCell.class ) )
+//				.tileEntity( registry.tileEntity("", TileEnergyCell.class, TileEnergyCell::new).build() )
 //				.rendering( new BlockEnergyCellRendering( new ResourceLocation( AppEng.MOD_ID, "energy_cell" ) ) )
 //				.build();
 //		this.energyCellDense = registry.block( "dense_energy_cell", BlockDenseEnergyCell::new )
 //				.features( AEFeature.ENERGY_CELLS, AEFeature.DENSE_ENERGY_CELLS )
 //				.item( AEBaseBlockItemChargeable::new )
-//				.tileEntity( new TileEntityDefinition( TileDenseEnergyCell.class ) )
+//				.tileEntity( registry.tileEntity("", TileDenseEnergyCell.class, TileDenseEnergyCell::new).build() )
 //				.rendering( new BlockEnergyCellRendering( new ResourceLocation( AppEng.MOD_ID, "dense_energy_cell" ) ) )
 //				.build();
 //		this.energyCellCreative = registry.block( "creative_energy_cell", BlockCreativeEnergyCell::new )
 //				.features( AEFeature.CREATIVE )
-//				.tileEntity( new TileEntityDefinition( TileCreativeEnergyCell.class ) )
+//				.tileEntity( registry.tileEntity("", TileCreativeEnergyCell.class, TileCreativeEnergyCell::new).build() )
 //				.build();
 //
 //		FeatureFactory crafting = registry.features( AEFeature.CRAFTING_CPU );
@@ -416,23 +420,23 @@ public final class ApiBlocks implements IBlocks
 //				.useCustomItemModel()
 //				.build();
 //		this.craftingMonitor = crafting.block( "crafting_monitor", BlockCraftingMonitor::new )
-//				.tileEntity( new TileEntityDefinition( TileCraftingMonitorTile.class ) )
+//				.tileEntity( registry.tileEntity("", TileCraftingMonitorTile.class, TileCraftingMonitorTile::new).build() )
 //				.rendering( new CraftingCubeRendering( "crafting_monitor", CraftingUnitType.MONITOR ) )
 //				.useCustomItemModel()
 //				.build();
 //
 //		this.molecularAssembler = registry.block( "molecular_assembler", BlockMolecularAssembler::new )
 //				.features( AEFeature.MOLECULAR_ASSEMBLER )
-//				.tileEntity( new TileEntityDefinition( TileMolecularAssembler.class ) )
+//				.tileEntity( registry.tileEntity("", TileMolecularAssembler.class, TileMolecularAssembler::new).build() )
 //				.build();
 //		this.lightDetector = registry.block( "light_detector", BlockLightDetector::new )
 //				.features( AEFeature.LIGHT_DETECTOR )
-//				.tileEntity( new TileEntityDefinition( TileLightDetector.class ) )
+//				.tileEntity( registry.tileEntity("", TileLightDetector.class, TileLightDetector::new).build() )
 //				.useCustomItemModel()
 //				.build();
 //		this.paint = registry.block( "paint", BlockPaint::new )
 //				.features( AEFeature.PAINT_BALLS )
-//				.tileEntity( new TileEntityDefinition( TilePaint.class ) )
+//				.tileEntity( registry.tileEntity("", TilePaint.class, TilePaint::new).build() )
 //				.rendering( new PaintRendering() )
 //				.build();
 //
@@ -498,27 +502,27 @@ public final class ApiBlocks implements IBlocks
 
 //		this.itemGen = registry.block( "debug_item_gen", BlockItemGen::new )
 //				.features( AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE )
-//				.tileEntity( new TileEntityDefinition( TileItemGen.class ) )
+//				.tileEntity( registry.tileEntity("", TileItemGen.class, TileItemGen::new).build() )
 //				.useCustomItemModel()
 //				.build();
 //		this.chunkLoader = registry.block( "debug_chunk_loader", BlockChunkloader::new )
 //				.features( AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE )
-//				.tileEntity( new TileEntityDefinition( TileChunkLoader.class ) )
+//				.tileEntity( registry.tileEntity("", TileChunkLoader.class, TileChunkLoader::new).build() )
 //				.useCustomItemModel()
 //				.build();
 //		this.phantomNode = registry.block( "debug_phantom_node", BlockPhantomNode::new )
 //				.features( AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE )
-//				.tileEntity( new TileEntityDefinition( TilePhantomNode.class ) )
+//				.tileEntity( registry.tileEntity("", TilePhantomNode.class, TilePhantomNode::new).build() )
 //				.useCustomItemModel()
 //				.build();
 //		this.cubeGenerator = registry.block( "debug_cube_gen", BlockCubeGenerator::new )
 //				.features( AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE )
-//				.tileEntity( new TileEntityDefinition( TileCubeGenerator.class ) )
+//				.tileEntity( registry.tileEntity("", TileCubeGenerator.class, TileCubeGenerator::new).build() )
 //				.useCustomItemModel()
 //				.build();
 //		this.energyGenerator = registry.block( "debug_energy_gen", BlockEnergyGenerator::new )
 //				.features( AEFeature.UNSUPPORTED_DEVELOPER_TOOLS, AEFeature.CREATIVE )
-//				.tileEntity( new TileEntityDefinition( TileEnergyGenerator.class ) )
+//				.tileEntity( registry.tileEntity("", TileEnergyGenerator.class, TileEnergyGenerator::new).build() )
 //				.useCustomItemModel()
 //				.build();
 	}

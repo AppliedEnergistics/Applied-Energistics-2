@@ -19,69 +19,44 @@
 package appeng.client.render.model;
 
 
+import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.renderer.model.*;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
-
-import com.google.common.collect.ImmutableList;
-
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.common.model.IModelState;
-import net.minecraftforge.common.model.TRSRTransformation;
 
 
 /**
  * The parent model for the compass baked model. Declares the dependencies for the base and pointer submodels mostly.
  */
-public class SkyCompassModel implements IModel
+public class SkyCompassModel implements IModelGeometry<SkyCompassModel>
 {
 
 	private static final ResourceLocation MODEL_BASE = new ResourceLocation( "appliedenergistics2:block/sky_compass_base" );
 
 	private static final ResourceLocation MODEL_POINTER = new ResourceLocation( "appliedenergistics2:block/sky_compass_pointer" );
 
-	private static final List<ResourceLocation> DEPENDENCIES = ImmutableList.of( MODEL_BASE, MODEL_POINTER );
+	public static final List<ResourceLocation> DEPENDENCIES = ImmutableList.of( MODEL_BASE, MODEL_POINTER );
 
 	@Override
-	public Collection<ResourceLocation> getDependencies()
-	{
-		return DEPENDENCIES;
+	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
+		IBakedModel baseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
+		IBakedModel pointerModel = bakery.getBakedModel(MODEL_POINTER, modelTransform, spriteGetter);
+
+		return new SkyCompassBakedModel( baseModel, pointerModel );
 	}
 
 	@Override
-	public Collection<ResourceLocation> getTextures()
-	{
+	public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
 		return Collections.emptyList();
 	}
 
-	@Override
-	public IBakedModel bake( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
-	{
-		IModel baseModel, pointerModel;
-		try
-		{
-			baseModel = ModelLoaderRegistry.getModel( MODEL_BASE );
-			pointerModel = ModelLoaderRegistry.getModel( MODEL_POINTER );
-		}
-		catch( Exception e )
-		{
-			throw new RuntimeException( e );
-		}
-
-		IBakedModel bakedBase = baseModel.bake( state, format, bakedTextureGetter );
-		IBakedModel bakedPointer = pointerModel.bake( state, format, bakedTextureGetter );
-		return new SkyCompassBakedModel( bakedBase, bakedPointer );
-	}
-
-	@Override
-	public IModelState getDefaultState()
-	{
-		return TRSRTransformation.identity();
-	}
 }

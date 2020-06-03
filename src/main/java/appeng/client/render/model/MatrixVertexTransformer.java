@@ -19,14 +19,15 @@
 package appeng.client.render.model;
 
 
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector4f;
-
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.pipeline.QuadGatheringTransformer;
+
+import java.util.List;
 
 
 /**
@@ -46,18 +47,19 @@ final class MatrixVertexTransformer extends QuadGatheringTransformer
 	protected void processQuad()
 	{
 		VertexFormat format = this.parent.getVertexFormat();
-		int count = format.getElementCount();
+		List<VertexFormatElement> elements = format.getElements();
+		int count = elements.size();
 
 		for( int v = 0; v < 4; v++ )
 		{
 			for( int e = 0; e < count; e++ )
 			{
-				VertexFormatElement element = format.getElement( e );
-				if( element.getUsage() == VertexFormatElement.EnumUsage.POSITION )
+				VertexFormatElement element = elements.get( e );
+				if( element.getUsage() == VertexFormatElement.Usage.POSITION )
 				{
 					this.parent.put( e, this.transform( this.quadData[e][v], element.getElementCount() ) );
 				}
-				else if( element.getUsage() == VertexFormatElement.EnumUsage.NORMAL )
+				else if( element.getUsage() == VertexFormatElement.Usage.NORMAL )
 				{
 					this.parent.put( e, this.transformNormal( this.quadData[e][v] ) );
 				}
@@ -98,38 +100,38 @@ final class MatrixVertexTransformer extends QuadGatheringTransformer
 		switch( fs.length )
 		{
 			case 3:
-				javax.vecmath.Vector3f vec = new javax.vecmath.Vector3f( fs[0], fs[1], fs[2] );
-				vec.x -= 0.5f;
-				vec.y -= 0.5f;
-				vec.z -= 0.5f;
-				this.transform.transform( vec );
-				vec.x += 0.5f;
-				vec.y += 0.5f;
-				vec.z += 0.5f;
+				Vector4f vec = new Vector4f( fs[0], fs[1], fs[2], 1 );
+				vec.setX(vec.getX() - 0.5f);
+				vec.setY(vec.getY() - 0.5f);
+				vec.setZ(vec.getZ() - 0.5f);
+				vec.transform(this.transform); // FIXME: Check this, we're using a Vec4, input is Vec3
+				vec.setX(vec.getX() + 0.5f);
+				vec.setY(vec.getY() + 0.5f);
+				vec.setZ(vec.getZ() + 0.5f);
 				return new float[] {
-						vec.x,
-						vec.y,
-						vec.z
+						vec.getX(),
+						vec.getY(),
+						vec.getZ()
 				};
 			case 4:
 				Vector4f vecc = new Vector4f( fs[0], fs[1], fs[2], fs[3] );
 				// Otherwise all translation is lost
 				if( elemCount == 3 )
 				{
-					vecc.w = 1;
+					vecc.setW(1);
 				}
-				vecc.x -= 0.5f;
-				vecc.y -= 0.5f;
-				vecc.z -= 0.5f;
-				this.transform.transform( vecc );
-				vecc.x += 0.5f;
-				vecc.y += 0.5f;
-				vecc.z += 0.5f;
+				vecc.setX(vecc.getX() - 0.5f);
+				vecc.setY(vecc.getY() - 0.5f);
+				vecc.setZ(vecc.getZ() - 0.5f);
+				vecc.transform(this.transform);
+				vecc.setX(vecc.getX() + 0.5f);
+				vecc.setY(vecc.getY() + 0.5f);
+				vecc.setZ(vecc.getZ() + 0.5f);
 				return new float[] {
-						vecc.x,
-						vecc.y,
-						vecc.z,
-						vecc.w
+						vecc.getX(),
+						vecc.getY(),
+						vecc.getZ(),
+						vecc.getW()
 				};
 
 			default:
@@ -145,23 +147,23 @@ final class MatrixVertexTransformer extends QuadGatheringTransformer
 		{
 			case 3:
 				normal = new Vector4f( fs[0], fs[1], fs[2], 0 );
-				this.transform.transform( normal );
+				normal.transform(this.transform);
 				normal.normalize();
 				return new float[] {
-						normal.x,
-						normal.y,
-						normal.z
+						normal.getX(),
+						normal.getY(),
+						normal.getZ()
 				};
 
 			case 4:
 				normal = new Vector4f( fs[0], fs[1], fs[2], fs[3] );
-				this.transform.transform( normal );
+				normal.transform(this.transform);
 				normal.normalize();
 				return new float[] {
-						normal.x,
-						normal.y,
-						normal.z,
-						normal.w
+						normal.getX(),
+						normal.getY(),
+						normal.getZ(),
+						normal.getW()
 				};
 
 			default:

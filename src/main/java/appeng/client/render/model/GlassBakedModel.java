@@ -30,7 +30,6 @@ import com.google.common.base.Strings;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -47,7 +46,6 @@ import appeng.decorative.solid.BlockQuartzGlass;
 import appeng.decorative.solid.GlassState;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.ILightReader;
-import net.minecraftforge.client.model.ModelDataManager;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;

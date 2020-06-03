@@ -122,9 +122,11 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 		return this.canPlaceAt( w, pos, up.getOpposite() );
 	}
 
-	private boolean canPlaceAt( final World w, final BlockPos pos, final Direction dir )
+	private boolean canPlaceAt( final IBlockReader w, final BlockPos pos, final Direction dir )
 	{
-		return w.isSideSolid( pos.offset( dir ), dir.getOpposite(), false );
+		final BlockPos test = pos.offset( dir );
+		BlockState blockstate = w.getBlockState(test);
+		return blockstate.isSolidSide(w, test, dir.getOpposite());
 	}
 
 	@Override

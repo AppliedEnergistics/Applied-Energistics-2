@@ -19,17 +19,23 @@
 package appeng.client.render.tesr;
 
 
+import appeng.client.render.model.SkyCompassModel;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.client.model.animation.FastTESR;
-import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.common.property.Properties;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -41,56 +47,52 @@ import appeng.tile.misc.TileSkyCompass;
 
 
 @OnlyIn( Dist.CLIENT )
-public class SkyCompassTESR extends FastTESR<TileSkyCompass>
+public class SkyCompassTESR extends TileEntityRenderer<TileSkyCompass>
 {
 
 	private static BlockRendererDispatcher blockRenderer;
 
-	@Override
-	public void renderTileEntityFast( TileSkyCompass te, double x, double y, double z, float partialTicks, int destroyStage, float var10, BufferBuilder buffer )
-	{
+	public SkyCompassTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
+		super(rendererDispatcherIn);
+	}
 
-		if( !te.hasWorld() )
-		{
-			return;
-		}
+	@Override
+	public void render(TileSkyCompass te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers, int combinedLightIn, int combinedOverlayIn) {
 
 		if( blockRenderer == null )
 		{
 			blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
 		}
 
-		BlockPos pos = te.getPos();
-		IBlockReader world = MinecraftForgeClient.getRegionRenderCache( te.getWorld(), pos );
-		BlockState state = world.getBlockState( pos );
-		if( state.getPropertyKeys().contains( Properties.StaticProperty ) )
-		{
-			state = state.with( Properties.StaticProperty, false );
-		}
+		IVertexBuilder buffer = buffers.getBuffer(Atlases.getTranslucentBlockType());
 
-		if( state instanceof IExtendedBlockState )
-		{
-			IExtendedBlockState exState = (IExtendedBlockState) state.getBlock().getExtendedState( state, world, pos );
+		BlockState blockState = te.getBlockState();
+		IBakedModel model = blockRenderer.getBlockModelShapes().getModel( blockState );
 
-			IBakedModel model = blockRenderer.getBlockModelShapes().getModelForState( exState.getClean() );
-			exState = exState.with( BlockSkyCompass.ROTATION, getRotation( te ) );
+		ModelDataMap modelData = new ModelDataMap.Builder()
+				.withInitial(SkyCompassBakedModel.ROTATION, getRotation(te))
+				.build();
 
-			// Flip forward/up for rendering, the base model is facing up without any rotation
-			Direction forward = exState.getValue( AEBaseTileBlock.FORWARD );
-			Direction up = exState.getValue( AEBaseTileBlock.UP );
-			// This ensures the needle isn't flipped by the model rotator. Since the model is symmetrical, this should
-			// not affect the appearance
-			if( forward == Direction.UP || forward == Direction.DOWN )
-			{
-				up = Direction.NORTH;
-			}
-			exState = exState.with( AEBaseTileBlock.FORWARD, up )
-					.with( AEBaseTileBlock.UP, forward );
+		ms.push();
+		// FIXME: Rotation was previously handled by an auto rotating model I think, but
+		// FIXME: Should be handled using matrices instead
+//		// Flip forward/up for rendering, the base model is facing up without any rotation
+//		Direction forward = exState.getValue( AEBaseTileBlock.FORWARD );
+//		Direction up = exState.getValue( AEBaseTileBlock.UP );
+//		// This ensures the needle isn't flipped by the model rotator. Since the model is symmetrical, this should
+//		// not affect the appearance
+//		if( forward == Direction.UP || forward == Direction.DOWN )
+//		{
+//			up = Direction.NORTH;
+//		}
+//		exState = exState.with( AEBaseTileBlock.FORWARD, up )
+//				.with( AEBaseTileBlock.UP, forward );
+//
+//		buffer.setTranslation( x - pos.getX(), y - pos.getY(), z - pos.getZ() );
 
-			buffer.setTranslation( x - pos.getX(), y - pos.getY(), z - pos.getZ() );
+		blockRenderer.getBlockModelRenderer().renderModel( ms.getLast(), buffer, null, model, 1, 1, 1, combinedLightIn, combinedOverlayIn, modelData );
+		ms.pop();
 
-			blockRenderer.getBlockModelRenderer().renderModel( world, model, exState, pos, buffer, false );
-		}
 	}
 
 	private static float getRotation( TileSkyCompass skyCompass )

@@ -3,9 +3,6 @@
     "variants": {
         "": {
             "model": "appliedenergistics2:block/crank"
-        },
-        "inventory": {
-            "model": "appliedenergistics2:block/crank_inventory"
         }
     }
 }
