@@ -238,6 +238,10 @@ sourceSets {
             include 'appeng/client/render/model/SkyCompassModel.java'
             include 'appeng/client/render/model/SkyCompassBakedModel.java'
             include 'appeng/client/render/model/MatrixVertexTransformer.java'
+            include 'appeng/client/render/model/AutoRotatingModel.java'
+            include 'appeng/client/render/cablebus/QuadRotator.java'
+            include 'appeng/thirdparty/codechicken/lib/**'
+            include 'appeng/client/render/model/AutoRotatingCacheKey.java'
         }
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output

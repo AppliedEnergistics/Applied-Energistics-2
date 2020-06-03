@@ -49,6 +49,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import appeng.api.implementations.items.IMemoryCard;
@@ -66,6 +67,9 @@ import appeng.util.SettingsFrom;
 public abstract class AEBaseTileBlock<T extends AEBaseTile> extends AEBaseBlock
 {
 
+	public static final ModelProperty<Direction> FORWARD = new ModelProperty<>();
+	public static final ModelProperty<Direction> UP = new ModelProperty<>();
+
 	@Nonnull
 	private Class<T> tileEntityClass;
 	@Nonnull
@@ -75,9 +79,6 @@ public abstract class AEBaseTileBlock<T extends AEBaseTile> extends AEBaseBlock
 	{
 		super( props );
 	}
-// FIXME
-//	public static final UnlistedDirection FORWARD = new UnlistedDirection( "forward" );
-//	public static final UnlistedDirection UP = new UnlistedDirection( "up" );
 
 	@Override
 	public BlockState getExtendedState( BlockState state, IBlockReader world, BlockPos pos )
