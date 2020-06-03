@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:dusts/ender",
+    "#forge:dusts/ender_pearl",
+    "#forge:dusts/wheat",
+    "#forge:dusts/gold",
+    "#forge:dusts/iron",
+    "#forge:dusts/fluix",
+    "#forge:dusts/nether_quartz",
+    "#forge:dusts/quartz",
+    "#forge:dusts/certus_quartz"
+  ]
+}

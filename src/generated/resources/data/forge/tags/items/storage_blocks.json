@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:storage_blocks/fluix",
+    "#forge:storage_blocks/certus_quartz"
+  ]
+}

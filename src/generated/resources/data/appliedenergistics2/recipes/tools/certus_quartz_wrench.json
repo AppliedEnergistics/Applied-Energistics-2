@@ -1,0 +1,32 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "features": [
+            "CERTUS_QUARTZ_TOOLS",
+            "QUARTZ_WRENCH"
+          ],
+          "type": "appliedenergistics2:feature"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "X X",
+          " X ",
+          "X X"
+        ],
+        "key": {
+          "X": {
+            "tag": "forge:gems/certus_quartz"
+          }
+        },
+        "result": {
+          "item": "appliedenergistics2:certus_quartz_wrench"
+        }
+      }
+    }
+  ]
+}

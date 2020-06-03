@@ -126,24 +126,6 @@ public final class ApiMaterials implements IMaterials
 
 	public ApiMaterials( FeatureFactory registry )
 	{
-
-		//				.bootstrap( item -> (IEntityRegistrationComponent) r ->
-		//				{
-		//					r.register( EntityEntryBuilder.create()
-		//							.entity( EntitySingularity.class )
-		//							.id( new ResourceLocation( "appliedenergistics2", EntitySingularity.class.getName() ), EntityIds.get( EntitySingularity.class ) )
-		//							.name( EntitySingularity.class.getSimpleName() )
-		//							.tracker( 16, 4, true )
-		//							.build() );
-		//					r.register( EntityEntryBuilder.create()
-		//							.entity( EntityChargedQuartz.class )
-		//							.id( new ResourceLocation( "appliedenergistics2", EntityChargedQuartz.class.getName() ),
-		//									EntityIds.get( EntityChargedQuartz.class ) )
-		//							.name( EntityChargedQuartz.class.getSimpleName() )
-		//							.tracker( 16, 4, true )
-		//							.build() );
-		//				} )
-
 		Item.Properties properties = new Item.Properties()
 				.group( CreativeTab.instance );
 
@@ -234,15 +216,15 @@ public final class ApiMaterials implements IMaterials
 		this.purifiedCertusQuartzCrystal = registry.item( "material_purified_certus_quartz_crystal",
 				() -> new Item( properties ) )
 				.addFeatures( AEFeature.CERTUS, AEFeature.PURE_CRYSTALS )
-				.build(); // FIXME: oreDict "crystalPureCertusQuartz"
+				.build();
 		this.purifiedNetherQuartzCrystal = registry.item( "material_purified_nether_quartz_crystal",
 				() -> new Item( properties ) )
 				.addFeatures( AEFeature.PURE_CRYSTALS )
-				.build(); // FIXME: oreDict "crystalPureNetherQuartz"
+				.build();
 		this.purifiedFluixCrystal = registry.item( "material_purified_fluix_crystal",
 				() -> new Item( properties ) )
 				.addFeatures( AEFeature.FLUIX, AEFeature.PURE_CRYSTALS )
-				.build(); // FIXME: oreDict "crystalPureFluix"
+				.build();
 
 		this.cell1kPart = registry.item( "material_cell1k_part", () -> new ItemStorageComponent( ItemStorageComponent.ComponentType.CELL1K_PART, properties ) )
 				.addFeatures( AEFeature.STORAGE_CELLS )
@@ -287,7 +269,7 @@ public final class ApiMaterials implements IMaterials
 		this.enderDust = registry.item( "material_ender_dust",
 				() -> new ItemCustomEntity( EntitySingularity::new, properties ) )
 				.addFeatures( AEFeature.QUANTUM_NETWORK_BRIDGE )
-				.build(); // FIXME: oreDict "dustEnder,dustEnderPearl"
+				.build();
 		this.flour = registry.item( "material_flour", () -> new Item( properties ) )
 				.addFeatures( AEFeature.FLOUR )
 				.build(); // FIXME: oreDict "dustWheat"

@@ -4,6 +4,7 @@ package appeng.forge.data.providers.recipes;
 import appeng.api.definitions.IItemDefinition;
 import appeng.core.AppEng;
 import appeng.forge.data.providers.IAE2DataProvider;
+import appeng.recipes.AE2Tags;
 import appeng.recipes.conditions.FeaturesEnabled;
 import com.google.common.collect.ImmutableMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
@@ -37,8 +38,17 @@ public class QuartzToolRecipes extends RecipeProvider implements IAE2DataProvide
 					ITEMS.netherQuartzSword(),
 					ITEMS.netherQuartzWrench(),
 					ITEMS.netherQuartzKnife()
+			},
+			AE2Tags.Items.GEMS_CERTUS_QUARTZ,
+			new IItemDefinition[] {
+					ITEMS.certusQuartzAxe(),
+					ITEMS.certusQuartzHoe(),
+					ITEMS.certusQuartzShovel(),
+					ITEMS.certusQuartzPick(),
+					ITEMS.certusQuartzSword(),
+					ITEMS.certusQuartzWrench(),
+					ITEMS.certusQuartzKnife()
 			}
-			// FIXME certus quartz
 	);
 
 	private String[][] patterns = {
@@ -129,7 +139,9 @@ public class QuartzToolRecipes extends RecipeProvider implements IAE2DataProvide
 		}
 	}
 
-	@Override public String getName()
+	@Nonnull
+	@Override
+	public String getName()
 	{
 		return AppEng.MOD_NAME + " Quartz Tools";
 	}

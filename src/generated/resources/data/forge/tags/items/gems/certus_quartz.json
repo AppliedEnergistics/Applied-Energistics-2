@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "appliedenergistics2:material_certus_quartz_crystal",
+    "#forge:gems/certus_quartz_charged"
+  ]
+}

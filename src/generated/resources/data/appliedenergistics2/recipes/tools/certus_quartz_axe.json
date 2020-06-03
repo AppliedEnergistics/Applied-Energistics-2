@@ -1,0 +1,35 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "features": [
+            "CERTUS_QUARTZ_TOOLS",
+            "QUARTZ_AXE"
+          ],
+          "type": "appliedenergistics2:feature"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "XX ",
+          "X/ ",
+          " / "
+        ],
+        "key": {
+          "/": {
+            "tag": "forge:rods/wooden"
+          },
+          "X": {
+            "tag": "forge:gems/certus_quartz"
+          }
+        },
+        "result": {
+          "item": "appliedenergistics2:certus_quartz_axe"
+        }
+      }
+    }
+  ]
+}
