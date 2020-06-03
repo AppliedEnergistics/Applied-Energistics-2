@@ -26,14 +26,12 @@ import appeng.client.gui.implementations.GuiSkyChest;
 import appeng.client.render.effects.ChargedOreFX;
 import appeng.client.render.effects.LightningFX;
 import appeng.client.render.effects.VibrantFX;
-import appeng.client.render.model.GlassModelLoader;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.container.implementations.ContainerGrinder;
 import appeng.container.implementations.ContainerSkyChest;
 import appeng.core.stats.AeStats;
 import appeng.recipes.conditions.FeaturesEnabled;
 import appeng.recipes.game.DisassembleRecipe;
-import appeng.recipes.ingredients.PartIngredientSerializer;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
@@ -262,8 +260,6 @@ final class Registration
 	{
 		IForgeRegistry<IRecipeSerializer<?>> r = event.getRegistry();
 
-		final ApiDefinitions definitions = Api.INSTANCE.definitions();
-
 		r.registerAll(
 				DisassembleRecipe.SERIALIZER
 //				FacadeRecipe.getSerializer( (ItemFacade) definitions.items().facade().item() ) FIXME reimplement facades
@@ -273,8 +269,6 @@ final class Registration
 		);
 
 		CraftingHelper.register( FeaturesEnabled.Serializer.INSTANCE );
-
-		CraftingHelper.register( new ResourceLocation( AppEng.MOD_ID, "part" ), PartIngredientSerializer.INSTANCE );
 	}
 
 

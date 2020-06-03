@@ -95,9 +95,7 @@ public final class EntitySingularity extends AEBaseEntityItem
 					final ItemStack other = ( (ItemEntity) e ).getItem();
 					if( !other.isEmpty() )
 					{
-						boolean matches = false;
-
-						if( matches )
+						if( materials.enderDust().isSameAs( other ) )
 						{
 							while( item.getCount() > 0 && other.getCount() > 0 )
 							{

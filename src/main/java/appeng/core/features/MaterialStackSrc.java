@@ -49,7 +49,7 @@ public class MaterialStackSrc implements IStackSrc
 	@Override
 	public Item getItem()
 	{
-		return this.src.getItemInstance();
+		return this.src.getItem();
 	}
 
 	@Override

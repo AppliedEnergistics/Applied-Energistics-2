@@ -29,8 +29,8 @@ public class BlockDropProvider extends BlockLootTables implements IAE2DataProvid
 {
 	private Map<Block, Function<Block, LootTable.Builder>> overrides = ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
 			.put( BLOCKS.matrixFrame().block(), $ -> LootTable.builder() )
-			.put( BLOCKS.quartzOre().block(), b -> droppingItemWithFortune( b, Items.QUARTZ ) ) // FIXME replace with the material reference
-			.put( BLOCKS.quartzOreCharged().block(), b -> droppingItemWithFortune( b, Items.LAPIS_LAZULI ) ) // FIXME replace with the material reference
+			.put( BLOCKS.quartzOre().block(), b -> droppingItemWithFortune( b, MATERIALS.certusQuartzCrystal().item() ) )
+			.put( BLOCKS.quartzOreCharged().block(), b -> droppingItemWithFortune( b, MATERIALS.certusQuartzCrystal().item() ) )
 			.build();
 
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();

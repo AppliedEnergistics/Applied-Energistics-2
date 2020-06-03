@@ -26,6 +26,7 @@ import appeng.api.definitions.IParts;
 import appeng.bootstrap.FeatureFactory;
 import appeng.core.api.definitions.ApiBlocks;
 import appeng.core.api.definitions.ApiItems;
+import appeng.core.api.definitions.ApiMaterials;
 import appeng.core.features.registries.PartModels;
 
 
@@ -36,7 +37,7 @@ public final class ApiDefinitions implements IDefinitions
 {
 	private final ApiBlocks blocks;
 	private final ApiItems items;
-	//private final ApiMaterials materials;
+	private final ApiMaterials materials;
 	//private final ApiParts parts;
 
 	private final FeatureFactory registry = new FeatureFactory();
@@ -45,7 +46,7 @@ public final class ApiDefinitions implements IDefinitions
 	{
 		this.blocks = new ApiBlocks( this.registry, partModels );
 		this.items = new ApiItems( this.registry );
-		//this.materials = new ApiMaterials( this.registry );
+		this.materials = new ApiMaterials( this.registry );
 		//this.parts = new ApiParts( this.registry, partModels );
 	}
 
@@ -69,7 +70,7 @@ public final class ApiDefinitions implements IDefinitions
 	@Override
 	public IMaterials materials()
 	{
-		return null /* FIXME */;
+		return materials;
 	}
 
 	@Override

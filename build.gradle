@@ -81,6 +81,7 @@ sourceSets {
             include 'appeng/core/features/registries/PartModels.java'
             include 'appeng/core/api/definitions/ApiBlocks.java'
             include 'appeng/core/api/definitions/ApiItems.java'
+            include 'appeng/core/api/definitions/ApiMaterials.java'
             include 'appeng/items/tools/quartz/**'
             include 'appeng/items/AEBaseItem.java'
             include 'appeng/util/helpers/ItemComparisonHelper.java'
@@ -230,6 +231,11 @@ sourceSets {
             include 'appeng/client/render/tesr/CrankTESR.java'
             include 'appeng/client/render/FacingToRotation.java'
             include 'appeng/client/gui/implementations/GuiGrinder.java'
+            include 'appeng/items/materials/**'
+            include 'appeng/entity/EntitySingularity.java'
+            include 'appeng/entity/EntityChargedQuartz.java'
+            include 'appeng/entity/AEBaseEntityItem.java'
+            include 'appeng/helpers/Reflected.java'
         }
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output

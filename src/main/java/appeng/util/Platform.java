@@ -44,6 +44,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -934,11 +935,11 @@ public class Platform
 //		return forward;
 //	}
 //
-//	@OnlyIn( Dist.CLIENT )
-//	public static String gui_localize( final String string )
-//	{
-//		return I18n.format( string );
-//	}
+	@OnlyIn( Dist.CLIENT )
+	public static String gui_localize( final String string )
+	{
+		return I18n.format( string );
+	}
 
 	public static LookDirection getPlayerRay(final PlayerEntity playerIn )
 	{

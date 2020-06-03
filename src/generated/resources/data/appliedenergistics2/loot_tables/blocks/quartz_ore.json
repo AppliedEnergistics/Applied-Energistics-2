@@ -38,7 +38,7 @@
                   "function": "minecraft:explosion_decay"
                 }
               ],
-              "name": "minecraft:quartz"
+              "name": "appliedenergistics2:material_certus_quartz_crystal"
             }
           ]
         }

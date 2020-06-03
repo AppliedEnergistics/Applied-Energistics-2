@@ -19,21 +19,21 @@
 package appeng.items.materials;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.google.common.base.Preconditions;
-
+import appeng.api.config.Upgrades;
+import appeng.api.definitions.IItemDefinition;
+import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.implementations.items.IItemGroup;
+import appeng.api.implementations.items.IStorageComponent;
+import appeng.api.implementations.items.IUpgradeModule;
+import appeng.api.implementations.tiles.ISegmentedInventory;
+import appeng.api.parts.IPartHost;
+import appeng.api.parts.SelectedPart;
+import appeng.bootstrap.FeatureFactory;
+import appeng.items.AEBaseItem;
+import appeng.util.InventoryAdaptor;
+import appeng.util.Platform;
+import appeng.util.inv.AdaptorItemHandler;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -43,29 +43,20 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.config.Upgrades;
-import appeng.api.implementations.IUpgradeableHost;
-import appeng.api.implementations.items.IItemGroup;
-import appeng.api.implementations.items.IStorageComponent;
-import appeng.api.implementations.items.IUpgradeModule;
-import appeng.api.implementations.tiles.ISegmentedInventory;
-import appeng.api.parts.IPartHost;
-import appeng.api.parts.SelectedPart;
-import appeng.core.AEConfig;
-import appeng.api.features.AEFeature;
-import appeng.core.features.IStackSrc;
-import appeng.core.features.MaterialStackSrc;
-import appeng.items.AEBaseItem;
-import appeng.util.InventoryAdaptor;
-import appeng.util.Platform;
-import appeng.util.inv.AdaptorItemHandler;
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public final class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule
@@ -74,30 +65,32 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 
 	private static final int KILO_SCALAR = 1024;
 
-	private final Map<Integer, MaterialType> dmgToMaterial = new HashMap<>();
+	@Nonnull
+	private final MaterialType mt;
 
-	public ItemMaterial()
+	public ItemMaterial( Properties properties, @Nonnull MaterialType mat )
 	{
-		this.setHasSubtypes( true );
-		instance = this;
+		super(properties);
+		this.mt = mat;
+	}
+
+	public static IItemDefinition item( FeatureFactory registry, Properties properties, MaterialType type )
+	{
+		type.setItem( new ItemMaterial( properties, type ) );
+		return registry.item( type.getId(), type::getItem )
+				.build();
 	}
 
 	@OnlyIn( Dist.CLIENT )
 	@Override
-	public void addInformation( final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
+	public void addInformation( @Nonnull final ItemStack stack, final World world, @Nonnull final List<ITextComponent> lines, @Nonnull final ITooltipFlag advancedTooltips )
 	{
 		super.addInformation( stack, world, lines, advancedTooltips );
-
-		final MaterialType mt = this.getTypeByStack( stack );
-		if( mt == null )
-		{
-			return;
-		}
 
 		if( mt == MaterialType.NAME_PRESS )
 		{
 			final CompoundNBT c = stack.getOrCreateTag();
-			lines.add( c.getString( "InscribeName" ) );
+			lines.add( new StringTextComponent( c.getString( "InscribeName" ) ) );
 		}
 
 		final Upgrades u = this.getType( stack );
@@ -132,22 +125,19 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 			}
 
 			final Pattern p = Pattern.compile( "(\\d+)[^\\d]" );
-			final SlightlyBetterSort s = new SlightlyBetterSort( p );
-			Collections.sort( textList, s );
-			lines.addAll( textList );
+			final SlightlyBetterSort sort = new SlightlyBetterSort( p );
+			textList.sort( sort );
+			for( String s : textList )
+			{
+				lines.add( new StringTextComponent( s ) );
+			}
 		}
-	}
-
-	public MaterialType getTypeByStack( final ItemStack is )
-	{
-		MaterialType type = this.dmgToMaterial.get( is.getDamage() );
-		return ( type != null ) ? type : MaterialType.INVALID_TYPE;
 	}
 
 	@Override
 	public Upgrades getType( final ItemStack itemstack )
 	{
-		switch( this.getTypeByStack( itemstack ) )
+		switch( mt )
 		{
 			case CARD_CAPACITY:
 				return Upgrades.CAPACITY;
@@ -166,58 +156,10 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 		}
 	}
 
-	public IStackSrc createMaterial( final MaterialType mat )
-	{
-		Preconditions.checkState( !mat.isRegistered(), "Cannot create the same material twice." );
-
-		boolean enabled = true;
-
-		for( final AEFeature f : mat.getFeature() )
-		{
-			enabled = enabled && AEConfig.instance().isFeatureEnabled( f );
-		}
-
-		mat.setStackSrc( new MaterialStackSrc( mat, enabled ) );
-
-		if( enabled )
-		{
-			mat.setItemInstance( this );
-			mat.markReady();
-			final int newMaterialNum = mat.getDamageValue();
-
-			if( this.dmgToMaterial.get( newMaterialNum ) == null )
-			{
-				this.dmgToMaterial.put( newMaterialNum, mat );
-			}
-			else
-
-			{
-				throw new IllegalStateException( "Meta Overlap detected." );
-			}
-		}
-
-		return mat.getStackSrc();
-	}
-
 	@Override
-	public String getTranslationKey( final ItemStack is )
+	public String getTranslationKey( @Nonnull final ItemStack is )
 	{
-		return "item.appliedenergistics2.material." + this.nameOf( is ).toLowerCase();
-	}
-
-	@Override
-	protected void getCheckedSubItems( final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
-	{
-		final List<MaterialType> types = Arrays.asList( MaterialType.values() );
-		Collections.sort( types, ( o1, o2 ) -> o1.name().compareTo( o2.name() ) );
-
-		for( final MaterialType mat : types )
-		{
-			if( mat.getDamageValue() >= 0 && mat.isRegistered() && mat.getItemInstance() == this )
-			{
-				itemStacks.add( new ItemStack( this, 1, mat.getDamageValue() ) );
-			}
-		}
+		return "item.appliedenergistics2.material." + mt.name().toLowerCase();
 	}
 
 	@Override
@@ -225,7 +167,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	{
 		PlayerEntity player = context.getPlayer();
 		Hand hand = context.getHand();
-		if( player.isCrouching() )
+		if( player != null && player.isCrouching() )
 		{
 			final TileEntity te = context.getWorld().getTileEntity( context.getPos() );
 			IItemHandler upgrades = null;
@@ -268,13 +210,13 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	@Override
 	public boolean hasCustomEntity( final ItemStack is )
 	{
-		return this.getTypeByStack( is ).hasCustomEntity();
+		return mt.hasCustomEntity();
 	}
 
 	@Override
 	public Entity createEntity( final World w, final Entity location, final ItemStack itemstack )
 	{
-		final Class<? extends Entity> droppedEntity = this.getTypeByStack( itemstack ).getCustomEntityClass();
+		final Class<? extends Entity> droppedEntity = mt.getCustomEntityClass();
 		final Entity eqi;
 
 		try
@@ -296,26 +238,10 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 		return eqi;
 	}
 
-	private String nameOf( final ItemStack is )
-	{
-		if( is.isEmpty() )
-		{
-			return "null";
-		}
-
-		final MaterialType mt = this.getTypeByStack( is );
-		if( mt == null )
-		{
-			return "null";
-		}
-
-		return mt.name();
-	}
-
 	@Override
 	public int getBytes( final ItemStack is )
 	{
-		switch( this.getTypeByStack( is ) )
+		switch( mt )
 		{
 			case CELL1K_PART:
 				return KILO_SCALAR;
@@ -333,7 +259,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	@Override
 	public boolean isStorageComponent( final ItemStack is )
 	{
-		switch( this.getTypeByStack( is ) )
+		switch( mt )
 		{
 			case CELL1K_PART:
 			case CELL4K_PART:

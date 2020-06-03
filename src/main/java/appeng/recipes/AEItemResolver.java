@@ -130,17 +130,6 @@ public class AEItemResolver implements ISubItemResolver
 				return null;
 			}
 
-			if( itemName.startsWith( "material." ) )
-			{
-				final String materialName = itemName.substring( itemName.indexOf( '.' ) + 1 );
-				final MaterialType mt = MaterialType.valueOf( materialName.toUpperCase() );
-				// itemName = itemName.substring( 0, itemName.indexOf( "." ) );
-				if( mt.getItemInstance() == ItemMaterial.instance && mt.getDamageValue() >= 0 && mt.isRegistered() )
-				{
-					return new ResolverResult( "material", mt.getDamageValue() );
-				}
-			}
-
 			if( itemName.startsWith( "part." ) )
 			{
 				final String partName = itemName.substring( itemName.indexOf( '.' ) + 1 );

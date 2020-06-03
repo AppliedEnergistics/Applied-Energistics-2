@@ -26,7 +26,6 @@ import appeng.api.features.ILocatableRegistry;
 import appeng.api.features.IMatterCannonAmmoRegistry;
 import appeng.api.features.IP2PTunnelRegistry;
 import appeng.api.features.IPlayerRegistry;
-import appeng.api.features.IRecipeHandlerRegistry;
 import appeng.api.features.IRegistryContainer;
 import appeng.api.features.ISpecialComparisonRegistry;
 import appeng.api.features.IWirelessTermRegistry;
