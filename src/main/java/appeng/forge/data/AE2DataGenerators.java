@@ -3,6 +3,7 @@ package appeng.forge.data;
 
 import appeng.core.AppEng;
 import appeng.forge.data.providers.loot.BlockDropProvider;
+import appeng.forge.data.providers.recipes.DecorationRecipes;
 import appeng.forge.data.providers.recipes.QuartzToolRecipes;
 import appeng.forge.data.providers.recipes.SlabStairRecipes;
 import appeng.forge.data.providers.recipes.SpecialRecipes;
@@ -26,10 +27,11 @@ public class AE2DataGenerators
 		{
 			generator.addProvider( new BlockTagProvider( generator ) );
 			generator.addProvider( new ItemTagProvider( generator ) );
+			generator.addProvider( new DecorationRecipes( generator ) );
 			generator.addProvider( new BlockDropProvider( dataEvent ) );
 			generator.addProvider( new SlabStairRecipes( generator ) );
-			generator.addProvider( new SpecialRecipes( generator ) );
 			generator.addProvider( new QuartzToolRecipes( generator ) );
+			generator.addProvider( new SpecialRecipes( generator ) );
 		}
 	}
 

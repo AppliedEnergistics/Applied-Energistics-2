@@ -1,0 +1,32 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "features": [
+            "FLUIX",
+            "PURE_CRYSTALS"
+          ],
+          "type": "appliedenergistics2:feature"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "XXX",
+          "X X",
+          "XXX"
+        ],
+        "key": {
+          "X": {
+            "tag": "appliedenergistics2:crystal_pure/fluix"
+          }
+        },
+        "result": {
+          "item": "appliedenergistics2:fluix_block"
+        }
+      }
+    }
+  ]
+}

@@ -143,7 +143,7 @@ public final class ApiMaterials implements IMaterials
 
 		this.silicon = registry.item( "material_silicon", () -> new Item( properties ) )
 				.addFeatures( AEFeature.SILICON )
-				.build(); // FIXME: oreDict "itemSilicon"
+				.build();
 		this.skyDust = registry.item( "material_sky_dust", () -> new Item( properties ) )
 				.addFeatures( AEFeature.DUSTS )
 				.build();
@@ -272,22 +272,22 @@ public final class ApiMaterials implements IMaterials
 				.build();
 		this.flour = registry.item( "material_flour", () -> new Item( properties ) )
 				.addFeatures( AEFeature.FLOUR )
-				.build(); // FIXME: oreDict "dustWheat"
+				.build();
 		this.goldDust = registry.item( "material_gold_dust", () -> new Item( properties ) )
 				.addFeatures( AEFeature.DUSTS )
-				.build(); // FIXME: oreDict "dustGold"
+				.build();
 		this.ironDust = registry.item( "material_iron_dust", () -> new Item( properties ) )
 				.addFeatures( AEFeature.DUSTS )
-				.build(); // FIXME: oreDict "dustIron"
+				.build();
 		this.fluixDust = registry.item( "material_fluix_dust", () -> new Item( properties ) )
 				.addFeatures( AEFeature.FLUIX, AEFeature.DUSTS )
-				.build(); // FIXME: oreDict "dustFluix"
+				.build();
 		this.netherQuartzDust = registry.item( "material_nether_quartz_dust", () -> new Item( properties ) )
 				.addFeatures( AEFeature.DUSTS )
-				.build(); // FIXME: oreDict "dustNetherQuartz,dustQuartz"
+				.build();
 		this.certusQuartzDust = registry.item( "material_certus_quartz_dust", () -> new Item( properties ) )
 				.addFeatures( AEFeature.DUSTS, AEFeature.CERTUS )
-				.build(); // FIXME: oreDict "dustCertusQuartz"
+				.build();
 
 		this.matterBall = registry.item( "material_matter_ball", () -> new Item( properties ) )
 				.addFeatures( AEFeature.MATTER_BALL )
@@ -296,21 +296,21 @@ public final class ApiMaterials implements IMaterials
 		this.certusQuartzCrystal = registry.item( "material_certus_quartz_crystal",
 				() -> new Item( properties ) )
 				.addFeatures( AEFeature.CERTUS )
-				.build(); // FIXME: oreDict "crystalCertusQuartz"
+				.build();
 		this.certusQuartzCrystalCharged = registry.item( "material_certus_quartz_crystal_charged",
 				() -> new ItemCustomEntity( EntityChargedQuartz::new, properties ) )
 				.addFeatures( AEFeature.CERTUS )
 				.build();
 		this.fluixCrystal = registry.item( "material_fluix_crystal", () -> new Item( properties ) )
 				.addFeatures( AEFeature.FLUIX )
-				.build(); // FIXME: oreDict "crystalFluix"
+				.build();
 		this.fluixPearl = registry.item( "material_fluix_pearl", () -> new Item( properties ) )
 				.addFeatures( AEFeature.FLUIX )
-				.build(); // FIXME: oreDict "pearlFluix"
+				.build();
 
 		this.woodenGear = registry.item( "material_wooden_gear", () -> new Item( properties ) )
 				.addFeatures( AEFeature.GRIND_STONE )
-				.build(); // FIXME: oreDict "gearWood"
+				.build();
 
 		this.wirelessReceiver = registry.item( "material_wireless", () -> new Item( properties ) )
 				.addFeatures( AEFeature.WIRELESS_ACCESS_TERMINAL )

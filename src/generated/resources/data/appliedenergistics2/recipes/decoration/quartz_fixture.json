@@ -1,0 +1,33 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "features": [
+            "DECORATIVE_LIGHTS"
+          ],
+          "type": "appliedenergistics2:feature"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "QI"
+        ],
+        "key": {
+          "Q": {
+            "tag": "forge:gems/certus_quartz_charged"
+          },
+          "I": {
+            "tag": "forge:ingots/iron"
+          }
+        },
+        "result": {
+          "item": "appliedenergistics2:quartz_fixture",
+          "count": 2
+        }
+      }
+    }
+  ]
+}

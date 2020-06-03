@@ -1,0 +1,30 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "features": [
+            "FLUIX"
+          ],
+          "type": "appliedenergistics2:feature"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "XX",
+          "XX"
+        ],
+        "key": {
+          "X": {
+            "tag": "forge:gems/fluix"
+          }
+        },
+        "result": {
+          "item": "appliedenergistics2:fluix_block"
+        }
+      }
+    }
+  ]
+}

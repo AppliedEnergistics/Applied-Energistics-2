@@ -1,0 +1,34 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "features": [
+            "DECORATIVE_LIGHTS",
+            "DECORATIVE_BLOCKS",
+            "QUARTZ_GLASS"
+          ],
+          "type": "appliedenergistics2:feature"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "dGd"
+        ],
+        "key": {
+          "d": {
+            "tag": "forge:dusts/glowstone"
+          },
+          "G": {
+            "item": "appliedenergistics2:quartz_glass"
+          }
+        },
+        "result": {
+          "item": "appliedenergistics2:quartz_vibrant_glass"
+        }
+      }
+    }
+  ]
+}

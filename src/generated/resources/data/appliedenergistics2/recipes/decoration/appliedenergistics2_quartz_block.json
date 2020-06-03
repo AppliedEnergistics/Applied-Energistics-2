@@ -1,0 +1,31 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "features": [
+            "CERTUS",
+            "DECORATIVE_BLOCKS"
+          ],
+          "type": "appliedenergistics2:feature"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "XX",
+          "XX"
+        ],
+        "key": {
+          "X": {
+            "tag": "forge:gems/certus_quartz"
+          }
+        },
+        "result": {
+          "item": "appliedenergistics2:quartz_block"
+        }
+      }
+    }
+  ]
+}

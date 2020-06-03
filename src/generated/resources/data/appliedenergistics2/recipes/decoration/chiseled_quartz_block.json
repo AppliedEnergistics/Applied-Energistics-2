@@ -1,0 +1,30 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "features": [
+            "DECORATIVE_BLOCKS"
+          ],
+          "type": "appliedenergistics2:feature"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "X",
+          "X"
+        ],
+        "key": {
+          "X": {
+            "item": "appliedenergistics2:quartz_slab"
+          }
+        },
+        "result": {
+          "item": "appliedenergistics2:chiseled_quartz_block"
+        }
+      }
+    }
+  ]
+}

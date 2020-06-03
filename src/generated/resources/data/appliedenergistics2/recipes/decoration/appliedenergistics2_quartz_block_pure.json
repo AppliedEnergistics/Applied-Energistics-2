@@ -1,0 +1,33 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "features": [
+            "CERTUS",
+            "DECORATIVE_BLOCKS",
+            "PURE_CRYSTALS"
+          ],
+          "type": "appliedenergistics2:feature"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "XXX",
+          "X X",
+          "XXX"
+        ],
+        "key": {
+          "X": {
+            "tag": "appliedenergistics2:crystal_pure/certus_quartz"
+          }
+        },
+        "result": {
+          "item": "appliedenergistics2:quartz_block"
+        }
+      }
+    }
+  ]
+}
