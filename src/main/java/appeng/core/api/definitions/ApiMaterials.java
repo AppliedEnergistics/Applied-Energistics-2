@@ -19,14 +19,28 @@
 package appeng.core.api.definitions;
 
 
-import appeng.core.CreativeTab;
-import appeng.items.materials.ItemMaterial;
-import net.minecraft.item.Item;
-
+import appeng.api.config.Upgrades;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IMaterials;
+import appeng.api.features.AEFeature;
 import appeng.bootstrap.FeatureFactory;
-import appeng.items.materials.MaterialType;
+import appeng.core.CreativeTab;
+import appeng.entity.EntityChargedQuartz;
+import appeng.entity.EntitySingularity;
+import appeng.items.materials.ItemCustomEntity;
+import appeng.items.materials.ItemStorageComponent;
+import appeng.items.materials.ItemUpgrade;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
 
 
 /**
@@ -112,112 +126,247 @@ public final class ApiMaterials implements IMaterials
 
 	public ApiMaterials( FeatureFactory registry )
 	{
-//				.rendering( new ItemRenderingCustomizer()
-//				{
-//					@Override
-//					@OnlyIn( Dist.CLIENT )
-//					public void customize( IItemRendering rendering )
-//					{
-//						rendering.meshDefinition( is -> materials.getTypeByStack( is ).getModel() );
-//						// Register a resource location for every material type
-//						rendering.variants( Arrays.stream( MaterialType.values() )
-//								.map( MaterialType::getModel )
-//								.collect( Collectors.toList() ) );
-//					}
-//				} )
-//				.bootstrap( item -> (IEntityRegistrationComponent) r ->
-//				{
-//					r.register( EntityEntryBuilder.create()
-//							.entity( EntitySingularity.class )
-//							.id( new ResourceLocation( "appliedenergistics2", EntitySingularity.class.getName() ), EntityIds.get( EntitySingularity.class ) )
-//							.name( EntitySingularity.class.getSimpleName() )
-//							.tracker( 16, 4, true )
-//							.build() );
-//					r.register( EntityEntryBuilder.create()
-//							.entity( EntityChargedQuartz.class )
-//							.id( new ResourceLocation( "appliedenergistics2", EntityChargedQuartz.class.getName() ),
-//									EntityIds.get( EntityChargedQuartz.class ) )
-//							.name( EntityChargedQuartz.class.getSimpleName() )
-//							.tracker( 16, 4, true )
-//							.build() );
-//				} )
+
+		//				.bootstrap( item -> (IEntityRegistrationComponent) r ->
+		//				{
+		//					r.register( EntityEntryBuilder.create()
+		//							.entity( EntitySingularity.class )
+		//							.id( new ResourceLocation( "appliedenergistics2", EntitySingularity.class.getName() ), EntityIds.get( EntitySingularity.class ) )
+		//							.name( EntitySingularity.class.getSimpleName() )
+		//							.tracker( 16, 4, true )
+		//							.build() );
+		//					r.register( EntityEntryBuilder.create()
+		//							.entity( EntityChargedQuartz.class )
+		//							.id( new ResourceLocation( "appliedenergistics2", EntityChargedQuartz.class.getName() ),
+		//									EntityIds.get( EntityChargedQuartz.class ) )
+		//							.name( EntityChargedQuartz.class.getSimpleName() )
+		//							.tracker( 16, 4, true )
+		//							.build() );
+		//				} )
 
 		Item.Properties properties = new Item.Properties()
 				.group( CreativeTab.instance );
 
-		this.cell2SpatialPart = ItemMaterial.item( registry, properties, MaterialType.CELL2_SPATIAL_PART ) ;
-		this.cell16SpatialPart = ItemMaterial.item( registry, properties, MaterialType.CELL16_SPATIAL_PART ) ;
-		this.cell128SpatialPart = ItemMaterial.item( registry, properties, MaterialType.CELL128_SPATIAL_PART ) ;
+		this.cell2SpatialPart = registry.item( "material_cell2_spatial_part", () -> new Item( properties ) )
+				.addFeatures( AEFeature.SPATIAL_IO )
+				.build();
+		this.cell16SpatialPart = registry.item( "material_cell16_spatial_part",
+				() -> new Item( properties ) )
+				.addFeatures( AEFeature.SPATIAL_IO )
+				.build();
+		this.cell128SpatialPart = registry.item( "material_cell128_spatial_part",
+				() -> new Item( properties ) )
+				.addFeatures( AEFeature.SPATIAL_IO )
+				.build();
 
-		this.silicon = ItemMaterial.item( registry, properties, MaterialType.SILICON ) ;
-		this.skyDust = ItemMaterial.item( registry, properties, MaterialType.SKY_DUST ) ;
+		this.silicon = registry.item( "material_silicon", () -> new Item( properties ) )
+				.addFeatures( AEFeature.SILICON )
+				.build(); // FIXME: oreDict "itemSilicon"
+		this.skyDust = registry.item( "material_sky_dust", () -> new Item( properties ) )
+				.addFeatures( AEFeature.DUSTS )
+				.build();
 
-		this.calcProcessorPress = ItemMaterial.item( registry, properties, MaterialType.CALCULATION_PROCESSOR_PRESS ) ;
-		this.engProcessorPress = ItemMaterial.item( registry, properties, MaterialType.ENGINEERING_PROCESSOR_PRESS ) ;
-		this.logicProcessorPress = ItemMaterial.item( registry, properties, MaterialType.LOGIC_PROCESSOR_PRESS ) ;
-		this.siliconPress = ItemMaterial.item( registry, properties, MaterialType.SILICON_PRESS ) ;
-		this.namePress = ItemMaterial.item( registry, properties, MaterialType.NAME_PRESS ) ;
+		this.calcProcessorPress = registry.item( "material_calculation_processor_press",
+				() -> new Item( properties ) )
+				.addFeatures( AEFeature.PRESSES )
+				.build();
+		this.engProcessorPress = registry.item( "material_engineering_processor_press",
+				() -> new Item( properties ) )
+				.addFeatures( AEFeature.PRESSES )
+				.build();
+		this.logicProcessorPress = registry.item( "material_logic_processor_press",
+				() -> new Item( properties ) )
+				.addFeatures( AEFeature.PRESSES )
+				.build();
+		this.siliconPress = registry.item( "material_silicon_press", () -> new Item( properties ) )
+				.addFeatures( AEFeature.PRESSES )
+				.build();
 
-		this.calcProcessorPrint = ItemMaterial.item( registry, properties, MaterialType.CALCULATION_PROCESSOR_PRINT ) ;
-		this.engProcessorPrint = ItemMaterial.item( registry, properties, MaterialType.ENGINEERING_PROCESSOR_PRINT ) ;
-		this.logicProcessorPrint = ItemMaterial.item( registry, properties, MaterialType.LOGIC_PROCESSOR_PRINT ) ;
-		this.siliconPrint = ItemMaterial.item( registry, properties, MaterialType.SILICON_PRINT ) ;
+		this.namePress = registry.item( "material_name_press", () -> new Item( properties )
+		{
+			@Override
+			public void addInformation( @Nonnull ItemStack is, @Nullable World world, @Nonnull List<ITextComponent> ttp, @Nonnull ITooltipFlag flags )
+			{
+				super.addInformation( is, world, ttp, flags );
 
-		this.logicProcessor = ItemMaterial.item( registry, properties, MaterialType.LOGIC_PROCESSOR ) ;
-		this.calcProcessor = ItemMaterial.item( registry, properties, MaterialType.CALCULATION_PROCESSOR ) ;
-		this.engProcessor = ItemMaterial.item( registry, properties, MaterialType.ENGINEERING_PROCESSOR ) ;
+				final CompoundNBT c = is.getOrCreateTag();
+				ttp.add( new StringTextComponent( c.getString( "InscribeName" ) ) );
+			}
+		} )
+				.addFeatures( AEFeature.PRESSES )
+				.build();
 
-		this.basicCard = ItemMaterial.item( registry, properties, MaterialType.BASIC_CARD ) ;
-		this.advCard = ItemMaterial.item( registry, properties, MaterialType.ADVANCED_CARD ) ;
+		this.calcProcessorPrint = registry.item( "material_calculation_processor_print",
+				() -> new Item( properties ) )
+				.addFeatures( AEFeature.PRINTED_CIRCUITS )
+				.build();
+		this.engProcessorPrint = registry.item( "material_engineering_processor_print",
+				() -> new Item( properties ) )
+				.addFeatures( AEFeature.PRINTED_CIRCUITS )
+				.build();
+		this.logicProcessorPrint = registry.item( "material_logic_processor_print",
+				() -> new Item( properties ) )
+				.addFeatures( AEFeature.PRINTED_CIRCUITS )
+				.build();
+		this.siliconPrint = registry.item( "material_silicon_print", () -> new Item( properties ) )
+				.addFeatures( AEFeature.PRINTED_CIRCUITS )
+				.build();
 
-		this.purifiedCertusQuartzCrystal = ItemMaterial.item( registry, properties, MaterialType.PURIFIED_CERTUS_QUARTZ_CRYSTAL ) ;
-		this.purifiedNetherQuartzCrystal = ItemMaterial.item( registry, properties, MaterialType.PURIFIED_NETHER_QUARTZ_CRYSTAL ) ;
-		this.purifiedFluixCrystal = ItemMaterial.item( registry, properties, MaterialType.PURIFIED_FLUIX_CRYSTAL ) ;
+		this.logicProcessor = registry.item( "material_logic_processor", () -> new Item( properties ) )
+				.addFeatures( AEFeature.PROCESSORS )
+				.build();
+		this.calcProcessor = registry.item( "material_calculation_processor",
+				() -> new Item( properties ) )
+				.addFeatures( AEFeature.PROCESSORS )
+				.build();
+		this.engProcessor = registry.item( "material_engineering_processor",
+				() -> new Item( properties ) )
+				.addFeatures( AEFeature.PROCESSORS )
+				.build();
 
-		this.cell1kPart = ItemMaterial.item( registry, properties, MaterialType.CELL1K_PART ) ;
-		this.cell4kPart = ItemMaterial.item( registry, properties, MaterialType.CELL4K_PART ) ;
-		this.cell16kPart = ItemMaterial.item( registry, properties, MaterialType.CELL16K_PART ) ;
-		this.cell64kPart = ItemMaterial.item( registry, properties, MaterialType.CELL64K_PART ) ;
-		this.emptyStorageCell = ItemMaterial.item( registry, properties, MaterialType.EMPTY_STORAGE_CELL ) ;
+		this.basicCard = registry.item( "material_basic_card", () -> new Item( properties ) )
+				.addFeatures( AEFeature.BASIC_CARDS )
+				.build();
+		this.advCard = registry.item( "material_advanced_card", () -> new Item( properties ) )
+				.addFeatures( AEFeature.ADVANCED_CARDS )
+				.build();
 
-		this.cardRedstone = ItemMaterial.item( registry, properties, MaterialType.CARD_REDSTONE ) ;
-		this.cardSpeed = ItemMaterial.item( registry, properties, MaterialType.CARD_SPEED ) ;
-		this.cardCapacity = ItemMaterial.item( registry, properties, MaterialType.CARD_CAPACITY ) ;
-		this.cardFuzzy = ItemMaterial.item( registry, properties, MaterialType.CARD_FUZZY ) ;
-		this.cardInverter = ItemMaterial.item( registry, properties, MaterialType.CARD_INVERTER ) ;
-		this.cardCrafting = ItemMaterial.item( registry, properties, MaterialType.CARD_CRAFTING ) ;
+		this.purifiedCertusQuartzCrystal = registry.item( "material_purified_certus_quartz_crystal",
+				() -> new Item( properties ) )
+				.addFeatures( AEFeature.CERTUS, AEFeature.PURE_CRYSTALS )
+				.build(); // FIXME: oreDict "crystalPureCertusQuartz"
+		this.purifiedNetherQuartzCrystal = registry.item( "material_purified_nether_quartz_crystal",
+				() -> new Item( properties ) )
+				.addFeatures( AEFeature.PURE_CRYSTALS )
+				.build(); // FIXME: oreDict "crystalPureNetherQuartz"
+		this.purifiedFluixCrystal = registry.item( "material_purified_fluix_crystal",
+				() -> new Item( properties ) )
+				.addFeatures( AEFeature.FLUIX, AEFeature.PURE_CRYSTALS )
+				.build(); // FIXME: oreDict "crystalPureFluix"
 
-		this.enderDust = ItemMaterial.item( registry, properties, MaterialType.ENDER_DUST ) ;
-		this.flour = ItemMaterial.item( registry, properties, MaterialType.FLOUR ) ;
-		this.goldDust = ItemMaterial.item( registry, properties, MaterialType.GOLD_DUST ) ;
-		this.ironDust = ItemMaterial.item( registry, properties, MaterialType.IRON_DUST ) ;
-		this.fluixDust = ItemMaterial.item( registry, properties, MaterialType.FLUIX_DUST ) ;
-		this.certusQuartzDust = ItemMaterial.item( registry, properties, MaterialType.CERTUS_QUARTZ_DUST ) ;
-		this.netherQuartzDust = ItemMaterial.item( registry, properties, MaterialType.NETHER_QUARTZ_DUST ) ;
+		this.cell1kPart = registry.item( "material_cell1k_part", () -> new ItemStorageComponent( ItemStorageComponent.ComponentType.CELL1K_PART, properties ) )
+				.addFeatures( AEFeature.STORAGE_CELLS )
+				.build();
+		this.cell4kPart = registry.item( "material_cell4k_part", () -> new ItemStorageComponent( ItemStorageComponent.ComponentType.CELL4K_PART, properties ) )
+				.addFeatures( AEFeature.STORAGE_CELLS )
+				.build();
+		this.cell16kPart = registry.item( "material_cell16k_part",
+				() -> new ItemStorageComponent( ItemStorageComponent.ComponentType.CELL16K_PART, properties ) )
+				.addFeatures( AEFeature.STORAGE_CELLS )
+				.build();
+		this.cell64kPart = registry.item( "material_cell64k_part",
+				() -> new ItemStorageComponent( ItemStorageComponent.ComponentType.CELL64K_PART, properties ) )
+				.addFeatures( AEFeature.STORAGE_CELLS )
+				.build();
 
-		this.matterBall = ItemMaterial.item( registry, properties, MaterialType.MATTER_BALL ) ;
+		this.emptyStorageCell = registry.item( "material_empty_storage_cell", () -> new Item( properties ) )
+				.addFeatures( AEFeature.STORAGE_CELLS )
+				.build();
 
-		this.certusQuartzCrystal = ItemMaterial.item( registry, properties, MaterialType.CERTUS_QUARTZ_CRYSTAL ) ;
-		this.certusQuartzCrystalCharged = ItemMaterial.item( registry, properties, MaterialType.CERTUS_QUARTZ_CRYSTAL_CHARGED ) ;
-		this.fluixCrystal = ItemMaterial.item( registry, properties, MaterialType.FLUIX_CRYSTAL ) ;
-		this.fluixPearl = ItemMaterial.item( registry, properties, MaterialType.FLUIX_PEARL ) ;
+		this.cardRedstone = registry.item( "material_card_redstone", () -> new ItemUpgrade( Upgrades.REDSTONE, properties ) )
+				.addFeatures( AEFeature.BASIC_CARDS )
+				.build();
+		this.cardCapacity = registry.item( "material_card_capacity", () -> new ItemUpgrade( Upgrades.CAPACITY, properties ) )
+				.addFeatures( AEFeature.BASIC_CARDS )
+				.build();
 
-		this.woodenGear = ItemMaterial.item( registry, properties, MaterialType.WOODEN_GEAR ) ;
+		this.cardFuzzy = registry.item( "material_card_fuzzy", () -> new ItemUpgrade( Upgrades.FUZZY, properties ) )
+				.addFeatures( AEFeature.ADVANCED_CARDS )
+				.build();
+		this.cardSpeed = registry.item( "material_card_speed", () -> new ItemUpgrade( Upgrades.SPEED, properties ) )
+				.addFeatures( AEFeature.ADVANCED_CARDS )
+				.build();
+		this.cardInverter = registry.item( "material_card_inverter", () -> new ItemUpgrade( Upgrades.INVERTER, properties ) )
+				.addFeatures( AEFeature.ADVANCED_CARDS )
+				.build();
 
-		this.wirelessReceiver = ItemMaterial.item( registry, properties, MaterialType.WIRELESS ) ;
-		this.wirelessBooster = ItemMaterial.item( registry, properties, MaterialType.WIRELESS_BOOSTER ) ;
+		this.cardCrafting = registry.item( "material_card_crafting", () -> new ItemUpgrade( Upgrades.CRAFTING, properties ) )
+				.addFeatures( AEFeature.ADVANCED_CARDS, AEFeature.CRAFTING_CPU )
+				.build();
 
-		this.annihilationCore = ItemMaterial.item( registry, properties, MaterialType.ANNIHILATION_CORE ) ;
-		this.formationCore = ItemMaterial.item( registry, properties, MaterialType.FORMATION_CORE ) ;
+		this.enderDust = registry.item( "material_ender_dust",
+				() -> new ItemCustomEntity( EntitySingularity::new, properties ) )
+				.addFeatures( AEFeature.QUANTUM_NETWORK_BRIDGE )
+				.build(); // FIXME: oreDict "dustEnder,dustEnderPearl"
+		this.flour = registry.item( "material_flour", () -> new Item( properties ) )
+				.addFeatures( AEFeature.FLOUR )
+				.build(); // FIXME: oreDict "dustWheat"
+		this.goldDust = registry.item( "material_gold_dust", () -> new Item( properties ) )
+				.addFeatures( AEFeature.DUSTS )
+				.build(); // FIXME: oreDict "dustGold"
+		this.ironDust = registry.item( "material_iron_dust", () -> new Item( properties ) )
+				.addFeatures( AEFeature.DUSTS )
+				.build(); // FIXME: oreDict "dustIron"
+		this.fluixDust = registry.item( "material_fluix_dust", () -> new Item( properties ) )
+				.addFeatures( AEFeature.FLUIX, AEFeature.DUSTS )
+				.build(); // FIXME: oreDict "dustFluix"
+		this.netherQuartzDust = registry.item( "material_nether_quartz_dust", () -> new Item( properties ) )
+				.addFeatures( AEFeature.DUSTS )
+				.build(); // FIXME: oreDict "dustNetherQuartz,dustQuartz"
+		this.certusQuartzDust = registry.item( "material_certus_quartz_dust", () -> new Item( properties ) )
+				.addFeatures( AEFeature.DUSTS, AEFeature.CERTUS )
+				.build(); // FIXME: oreDict "dustCertusQuartz"
 
-		this.singularity = ItemMaterial.item( registry, properties, MaterialType.SINGULARITY ) ;
-		this.qESingularity = ItemMaterial.item( registry, properties, MaterialType.QUANTUM_ENTANGLED_SINGULARITY ) ;
-		this.blankPattern = ItemMaterial.item( registry, properties, MaterialType.BLANK_PATTERN ) ;
+		this.matterBall = registry.item( "material_matter_ball", () -> new Item( properties ) )
+				.addFeatures( AEFeature.MATTER_BALL )
+				.build();
 
-		this.fluidCell1kPart = ItemMaterial.item( registry, properties, MaterialType.FLUID_CELL1K_PART ) ;
-		this.fluidCell4kPart = ItemMaterial.item( registry, properties, MaterialType.FLUID_CELL4K_PART ) ;
-		this.fluidCell16kPart = ItemMaterial.item( registry, properties, MaterialType.FLUID_CELL16K_PART ) ;
-		this.fluidCell64kPart = ItemMaterial.item( registry, properties, MaterialType.FLUID_CELL64K_PART ) ;
+		this.certusQuartzCrystal = registry.item( "material_certus_quartz_crystal",
+				() -> new Item( properties ) )
+				.addFeatures( AEFeature.CERTUS )
+				.build(); // FIXME: oreDict "crystalCertusQuartz"
+		this.certusQuartzCrystalCharged = registry.item( "material_certus_quartz_crystal_charged",
+				() -> new ItemCustomEntity( EntityChargedQuartz::new, properties ) )
+				.addFeatures( AEFeature.CERTUS )
+				.build();
+		this.fluixCrystal = registry.item( "material_fluix_crystal", () -> new Item( properties ) )
+				.addFeatures( AEFeature.FLUIX )
+				.build(); // FIXME: oreDict "crystalFluix"
+		this.fluixPearl = registry.item( "material_fluix_pearl", () -> new Item( properties ) )
+				.addFeatures( AEFeature.FLUIX )
+				.build(); // FIXME: oreDict "pearlFluix"
+
+		this.woodenGear = registry.item( "material_wooden_gear", () -> new Item( properties ) )
+				.addFeatures( AEFeature.GRIND_STONE )
+				.build(); // FIXME: oreDict "gearWood"
+
+		this.wirelessReceiver = registry.item( "material_wireless", () -> new Item( properties ) )
+				.addFeatures( AEFeature.WIRELESS_ACCESS_TERMINAL )
+				.build();
+		this.wirelessBooster = registry.item( "material_wireless_booster", () -> new Item( properties ) )
+				.addFeatures( AEFeature.WIRELESS_ACCESS_TERMINAL )
+				.build();
+
+		this.annihilationCore = registry.item( "material_annihilation_core", () -> new Item( properties ) )
+				.addFeatures( AEFeature.CORES )
+				.build();
+		this.formationCore = registry.item( "material_formation_core", () -> new Item( properties ) )
+				.addFeatures( AEFeature.CORES )
+				.build();
+
+		this.singularity = registry.item( "material_singularity", () -> new ItemCustomEntity( EntitySingularity::new, properties ) )
+				.addFeatures( AEFeature.QUANTUM_NETWORK_BRIDGE )
+				.build();
+		this.qESingularity = registry.item( "material_quantum_entangled_singularity", () -> new ItemCustomEntity( EntitySingularity::new, properties ) )
+				.addFeatures( AEFeature.QUANTUM_NETWORK_BRIDGE )
+				.build();
+
+		this.blankPattern = registry.item( "material_blank_pattern", () -> new Item( properties ) )
+				.addFeatures( AEFeature.PATTERNS )
+				.build();
+
+		this.fluidCell1kPart = registry.item( "material_fluid_cell1k_part", () -> new Item( properties ) )
+				.addFeatures( AEFeature.STORAGE_CELLS )
+				.build();
+		this.fluidCell4kPart = registry.item( "material_fluid_cell4k_part", () -> new Item( properties ) )
+				.addFeatures( AEFeature.STORAGE_CELLS )
+				.build();
+		this.fluidCell16kPart = registry.item( "material_fluid_cell16k_part", () -> new Item( properties ) )
+				.addFeatures( AEFeature.STORAGE_CELLS )
+				.build();
+		this.fluidCell64kPart = registry.item( "material_fluid_cell64k_part", () -> new Item( properties ) )
+				.addFeatures( AEFeature.STORAGE_CELLS )
+				.build();
 	}
 
 	@Override
@@ -561,4 +710,5 @@ public final class ApiMaterials implements IMaterials
 	{
 		return this.fluidCell64kPart;
 	}
+
 }
