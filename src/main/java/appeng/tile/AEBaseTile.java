@@ -19,20 +19,17 @@
 package appeng.tile;
 
 
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import appeng.api.util.ICommonTile;
+import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigurableObject;
+import appeng.api.util.IOrientable;
+import appeng.block.AEBaseTileBlock;
 import appeng.core.AELog;
-
+import appeng.core.features.IStackSrc;
+import appeng.helpers.ICustomNameObject;
+import appeng.util.Platform;
+import appeng.util.SettingsFrom;
 import io.netty.buffer.Unpooled;
-
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -44,15 +41,16 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
 
-import appeng.api.util.ICommonTile;
-import appeng.api.util.IConfigManager;
-import appeng.api.util.IConfigurableObject;
-import appeng.api.util.IOrientable;
-import appeng.core.features.IStackSrc;
-import appeng.helpers.ICustomNameObject;
-import appeng.util.Platform;
-import appeng.util.SettingsFrom;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, ICustomNameObject
@@ -504,4 +502,14 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	{
 		this.customName = name;
 	}
+
+	@Nonnull
+	@Override
+	public IModelData getModelData() {
+		return new ModelDataMap.Builder()
+				.withInitial(AEBaseTileBlock.UP, up)
+				.withInitial(AEBaseTileBlock.FORWARD, forward)
+				.build();
+	}
+
 }

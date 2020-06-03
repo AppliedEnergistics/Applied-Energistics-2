@@ -70,7 +70,7 @@ public class FeatureFactory
 		this.defaultFeatures = new AEFeature[] { AEFeature.CORE };
 		this.bootstrapComponents = new HashMap<>();
 
-		if( Platform.isClient() )
+		if( Platform.hasClientClasses() )
 		{
 			this.modelOverrideComponent = new ModelOverrideComponent();
 			this.addBootstrapComponent( this.modelOverrideComponent );
@@ -83,7 +83,7 @@ public class FeatureFactory
 	{
 		this.defaultFeatures = defaultFeatures.clone();
 		this.bootstrapComponents = parent.bootstrapComponents;
-		if( Platform.isClient() )
+		if( Platform.hasClientClasses() )
 		{
 			this.modelOverrideComponent = parent.modelOverrideComponent;
 			this.builtInModelComponent = parent.builtInModelComponent;

@@ -66,7 +66,7 @@ class ItemDefinitionBuilder implements IItemBuilder
 		this.factory = factory;
 		this.registryName = registryName;
 		this.itemSupplier = itemSupplier;
-		if( Platform.isClient() )
+		if( Platform.hasClientClasses() )
 		{
 			// FIXME this.itemRendering = new ItemRendering();
 		}
@@ -104,7 +104,7 @@ class ItemDefinitionBuilder implements IItemBuilder
 // FIXME	@Override
 // FIXME	public IItemBuilder rendering( ItemRenderingCustomizer callback )
 // FIXME	{
-// FIXME		if( Platform.isClient() )
+// FIXME		if( Platform.hasClientClasses() )
 // FIXME		{
 // FIXME			this.customizeForClient( callback );
 // FIXME		}
@@ -148,7 +148,7 @@ class ItemDefinitionBuilder implements IItemBuilder
 
 		this.factory.addBootstrapComponent( (IItemRegistrationComponent) ( side, reg ) -> reg.register( item ) );
 
-		if( Platform.isClient() )
+		if( Platform.hasClientClasses() )
 		{
 // FIXME			this.itemRendering.apply( this.factory, item );
 		}

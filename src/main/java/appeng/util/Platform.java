@@ -23,6 +23,7 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.definitions.IItemDefinition;
+import appeng.api.features.AEFeature;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.items.IAEWrench;
 import appeng.api.networking.energy.IEnergySource;
@@ -34,12 +35,11 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.Api;
-import appeng.api.features.AEFeature;
 import appeng.core.stats.AeStats;
 import appeng.fluids.util.AEFluidStack;
 import appeng.util.helpers.ItemComparisonHelper;
 import appeng.util.item.AEItemStack;
-
+import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -64,11 +64,9 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.thread.SidedThreadGroups;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
-
-import com.google.common.base.Preconditions;
-import net.minecraftforge.registries.ForgeRegistries;
 
 
 /**
@@ -339,6 +337,13 @@ public class Platform
 //			}
 //		}
 //	}
+
+	/**
+	 * @return True if client-side classes (such as Renderers) are available.
+	 */
+	public static boolean hasClientClasses() {
+		return FMLEnvironment.dist.isClient();
+	}
 
 	/*
 	 * returns true if the code is on the client.

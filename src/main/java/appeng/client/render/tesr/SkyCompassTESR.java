@@ -19,6 +19,7 @@
 package appeng.client.render.tesr;
 
 
+import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.SkyCompassModel;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -69,26 +70,25 @@ public class SkyCompassTESR extends TileEntityRenderer<TileSkyCompass>
 		BlockState blockState = te.getBlockState();
 		IBakedModel model = blockRenderer.getBlockModelShapes().getModel( blockState );
 
+		// FIXME: Rotation was previously handled by an auto rotating model I think, but
+		// FIXME: Should be handled using matrices instead
+		Direction forward = te.getForward();
+		Direction up = te.getUp();
+		// This ensures the needle isn't flipped by the model rotator. Since the model is symmetrical, this should
+		// not affect the appearance
+		if( forward == Direction.UP || forward == Direction.DOWN )
+		{
+			up = Direction.NORTH;
+		}
+		// Flip forward/up for rendering, the base model is facing up without any rotation
+		ms.push();
+		ms.translate(0.5D, 0.5D, 0.5D);
+		FacingToRotation.get(up, forward).push(ms);
+		ms.translate(-0.5D, -0.5D, -0.5D);
+
 		ModelDataMap modelData = new ModelDataMap.Builder()
 				.withInitial(SkyCompassBakedModel.ROTATION, getRotation(te))
 				.build();
-
-		ms.push();
-		// FIXME: Rotation was previously handled by an auto rotating model I think, but
-		// FIXME: Should be handled using matrices instead
-//		// Flip forward/up for rendering, the base model is facing up without any rotation
-//		Direction forward = exState.getValue( AEBaseTileBlock.FORWARD );
-//		Direction up = exState.getValue( AEBaseTileBlock.UP );
-//		// This ensures the needle isn't flipped by the model rotator. Since the model is symmetrical, this should
-//		// not affect the appearance
-//		if( forward == Direction.UP || forward == Direction.DOWN )
-//		{
-//			up = Direction.NORTH;
-//		}
-//		exState = exState.with( AEBaseTileBlock.FORWARD, up )
-//				.with( AEBaseTileBlock.UP, forward );
-//
-//		buffer.setTranslation( x - pos.getX(), y - pos.getY(), z - pos.getZ() );
 
 		blockRenderer.getBlockModelRenderer().renderModel( ms.getLast(), buffer, null, model, 1, 1, 1, combinedLightIn, combinedOverlayIn, modelData );
 		ms.pop();

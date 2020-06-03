@@ -83,7 +83,7 @@ class BlockDefinitionBuilder implements IBlockBuilder
 		this.registryName = id;
 		this.blockSupplier = blockSupplier;
 
-		if( Platform.isClient() )
+		if( Platform.hasClientClasses() )
 		{
 			 this.blockRendering = new BlockRendering();
 			 this.itemRendering = new ItemRendering();
@@ -115,7 +115,7 @@ class BlockDefinitionBuilder implements IBlockBuilder
     @Override
 	public BlockDefinitionBuilder rendering( BlockRenderingCustomizer callback )
 	{
-		if( Platform.isClient() )
+		if( Platform.hasClientClasses() )
 		{
 			this.customizeForClient( callback );
 		}
@@ -180,7 +180,7 @@ class BlockDefinitionBuilder implements IBlockBuilder
 			this.tileEntityDefinition.addBlock(block);
 		}
 
-		if( Platform.isClient() )
+		if( Platform.hasClientClasses() )
 		{
 			this.blockRendering.apply( this.factory, block );
 

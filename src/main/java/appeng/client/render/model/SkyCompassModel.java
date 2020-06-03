@@ -50,8 +50,7 @@ public class SkyCompassModel implements IModelGeometry<SkyCompassModel>
 	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
 		IBakedModel baseModel = bakery.getBakedModel(MODEL_BASE, modelTransform, spriteGetter);
 		IBakedModel pointerModel = bakery.getBakedModel(MODEL_POINTER, modelTransform, spriteGetter);
-
-		return new SkyCompassBakedModel( baseModel, pointerModel );
+		return new SkyCompassBakedModel(baseModel, pointerModel);
 	}
 
 	@Override
