@@ -51,6 +51,11 @@ public class QuadRotator
 		{
 			return quads; // This is the default orientation
 		}
+		FacingToRotation rotation = getRotation( newForward, newUp );
+		if( rotation.isRedundant() )
+		{
+			return quads;
+		}
 
 		List<BakedQuad> result = new ArrayList<>( quads.size() );
 
@@ -63,18 +68,10 @@ public class QuadRotator
 
 		for( BakedQuad quad : quads )
 		{
-			FacingToRotation rotation = getRotation( newForward, newUp );
-			if( rotation.isRedundant() )
-			{
-				result.add( quad );//Redundant rotation, just don't do anything.
-			}
-			else
-			{
-				transformer.setMatrix( rotation.getMat() );
-				pipeline.prepare( collector );
-				quad.pipe( pipeline );
-				result.add( collector.bake() );
-			}
+			transformer.setMatrix( rotation.getMat() );
+			pipeline.prepare( collector );
+			quad.pipe( pipeline );
+			result.add( collector.bake() );
 		}
 
 		return result;

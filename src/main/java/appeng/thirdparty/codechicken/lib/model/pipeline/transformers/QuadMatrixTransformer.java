@@ -21,6 +21,7 @@ package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.Vector4f;
+import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 
 import appeng.thirdparty.codechicken.lib.model.Quad;
@@ -83,6 +84,8 @@ public class QuadMatrixTransformer extends QuadTransformer
 			vertex.normal[1] = storage.getY();
 			vertex.normal[2] = storage.getZ();
 		}
+		Quad.Vertex v0 = quad.vertices[0];
+		quad.orientation = Direction.getFacingFromVector( v0.normal[0], v0.normal[1], v0.normal[2] );
 		return true;
 	}
 }
