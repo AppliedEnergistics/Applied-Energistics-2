@@ -66,29 +66,26 @@ public class MetaRotation implements IOrientable
 	{
 		final BlockState state = this.w.getBlockState( this.pos );
 
-		if( this.facingProp != null )
+		if( this.facingProp != null && state.has(this.facingProp) )
 		{
 			return state.get( this.facingProp );
 		}
 
 		// TODO 1.10.2-R - Temp
-		Axis a = state.get( BlockQuartzPillar.AXIS );
-
-		if( a == null )
-		{
-			a = Axis.Y;
+		if (state.has(BlockQuartzPillar.AXIS)) {
+			Axis a = state.get(BlockQuartzPillar.AXIS);
+			switch (a) {
+				case X:
+					return Direction.EAST;
+				case Z:
+					return Direction.SOUTH;
+				default:
+				case Y:
+					return Direction.UP;
+			}
 		}
 
-		switch( a )
-		{
-			case X:
-				return Direction.EAST;
-			case Z:
-				return Direction.SOUTH;
-			default:
-			case Y:
-				return Direction.UP;
-		}
+		return Direction.UP;
 	}
 
 	@Override

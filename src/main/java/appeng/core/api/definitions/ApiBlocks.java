@@ -324,14 +324,16 @@ public final class ApiBlocks implements IBlocks
 				.tileEntity( registry.tileEntity("security_station", TileSecurityStation.class, TileSecurityStation::new).build() )
 				.rendering( new SecurityStationRendering() )
 				.build();
+
+		TileEntityDefinition quantumRingTile = registry.tileEntity("quantum_ring", TileQuantumBridge.class, TileQuantumBridge::new).build();
 		this.quantumRing = registry.block( "quantum_ring", BlockQuantumRing::new )
 				.features( AEFeature.QUANTUM_NETWORK_BRIDGE )
-				.tileEntity( registry.tileEntity( "quantum_ring", TileQuantumBridge.class, TileQuantumBridge::new ).build() )
+				.tileEntity( quantumRingTile )
 				.rendering( new QuantumBridgeRendering() )
 				.build();
 		this.quantumLink = registry.block( "quantum_link", BlockQuantumLinkChamber::new )
 				.features( AEFeature.QUANTUM_NETWORK_BRIDGE )
-				.tileEntity( registry.tileEntity( "quantum_ring", TileQuantumBridge.class, TileQuantumBridge::new ).build() )
+				.tileEntity( quantumRingTile )
 				.rendering( new QuantumBridgeRendering() )
 				.build();
 		this.spatialPylon = registry.block( "spatial_pylon", BlockSpatialPylon::new )

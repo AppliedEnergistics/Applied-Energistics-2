@@ -28,8 +28,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -47,9 +47,6 @@ import java.util.Random;
 public class BlockLightDetector extends AEBaseTileBlock<TileLightDetector> implements IOrientableBlock
 {
 
-	// Cannot use the vanilla FACING property here because it excludes facing DOWN
-	public static final DirectionProperty FACING = DirectionProperty.create( "facing" );
-
 	// Used to alternate between two variants of the fixture on adjacent blocks
 	public static final BooleanProperty ODD = BooleanProperty.create( "odd" );
 
@@ -57,13 +54,13 @@ public class BlockLightDetector extends AEBaseTileBlock<TileLightDetector> imple
 	{
 		super( Properties.create(Material.MISCELLANEOUS).notSolid() );
 
-		this.setDefaultState( this.getDefaultState().with( FACING, Direction.UP ).with( ODD, false ) );
+		this.setDefaultState( this.getDefaultState().with(BlockStateProperties.FACING, Direction.UP ).with( ODD, false ) );
 	}
 
 	@Override
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
 		super.fillStateContainer(builder);
-		builder.add(FACING);
+		builder.add(BlockStateProperties.FACING);
 		builder.add(ODD);
 	}
 
@@ -112,6 +109,8 @@ public class BlockLightDetector extends AEBaseTileBlock<TileLightDetector> imple
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
 
+		// FIXME: We should / rather MUST use state here because at startup, this gets called without a world
+
 		final Direction up = this.getOrientable( w, pos ).getUp();
 		final double xOff = -0.3 * up.getXOffset();
 		final double yOff = -0.3 * up.getYOffset();
@@ -157,7 +156,7 @@ public class BlockLightDetector extends AEBaseTileBlock<TileLightDetector> imple
 	@Override
 	public IOrientable getOrientable( final IBlockReader w, final BlockPos pos )
 	{
-		return new MetaRotation( w, pos, FACING );
+		return new MetaRotation( w, pos, BlockStateProperties.FACING );
 	}
 
 }
