@@ -22,7 +22,7 @@ package appeng.block.storage;
 import appeng.bootstrap.BlockRenderingCustomizer;
 import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;
-import appeng.client.render.model.DriveModel;
+import net.minecraft.client.renderer.RenderType;
 
 
 public class DriveRendering extends BlockRenderingCustomizer
@@ -30,6 +30,7 @@ public class DriveRendering extends BlockRenderingCustomizer
 	@Override
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{
-		rendering.builtInModel( "models/block/builtin/drive", new DriveModel() );
+		rendering.renderType(RenderType.getCutout());
+		// FIXME rendering.builtInModel( "models/block/builtin/drive", new DriveModel() );
 	}
 }

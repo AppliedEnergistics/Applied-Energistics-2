@@ -19,16 +19,21 @@
 package appeng.block.networking;
 
 
+import appeng.parts.CableBusContainer;
+import appeng.tile.networking.TileCableBus;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
-import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraft.world.ILightReader;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEColor;
 import appeng.client.render.cablebus.CableBusRenderState;
+
+import javax.annotation.Nullable;
 
 
 /**
@@ -39,17 +44,16 @@ public class CableBusColor implements IBlockColor
 {
 
 	@Override
-	public int colorMultiplier( BlockState state, IBlockReader worldIn, BlockPos pos, int color )
-	{
+	public int getColor(BlockState state, @Nullable ILightReader worldIn, @Nullable BlockPos pos, int color) {
 
+		// FIXME: Once COLOR becomes part of the block state, change this
 		AEColor busColor = AEColor.TRANSPARENT;
 
-		if( state instanceof IExtendedBlockState )
-		{
-			CableBusRenderState renderState = ( (IExtendedBlockState) state ).getValue( BlockCableBus.RENDER_STATE_PROPERTY );
-			if( renderState != null )
-			{
-				busColor = renderState.getCableColor();
+		if (worldIn != null && pos != null) {
+			TileEntity tileEntity = worldIn.getTileEntity(pos);
+			if (tileEntity instanceof TileCableBus) {
+				CableBusContainer container = ((TileCableBus) tileEntity).getCableBus();
+				busColor = container.getColor();
 			}
 		}
 

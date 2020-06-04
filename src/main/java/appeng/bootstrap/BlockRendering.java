@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 
 class BlockRendering implements IBlockRendering
@@ -55,6 +56,9 @@ class BlockRendering implements IBlockRendering
 
 	@OnlyIn( Dist.CLIENT )
 	private RenderType renderType;
+
+	@OnlyIn( Dist.CLIENT )
+	private Predicate<RenderType> renderTypes;
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
@@ -85,13 +89,11 @@ class BlockRendering implements IBlockRendering
 		return this;
 	}
 
-	// FIXME	@OnlyIn( Dist.CLIENT )
-// FIXME	@Override
-// FIXME	public IBlockRendering stateMapper( IStateMapper mapper )
-// FIXME	{
-// FIXME		this.stateMapper = mapper;
-// FIXME		return this;
-// FIXME	}
+	@Override
+	public IBlockRendering renderType(Predicate<RenderType> typePredicate) {
+		this.renderTypes = typePredicate;
+		return this;
+	}
 
 	void apply( FeatureFactory factory, Block block )
 	{
@@ -114,13 +116,8 @@ class BlockRendering implements IBlockRendering
 			factory.addBootstrapComponent( new BlockColorComponent( block, this.blockColor ) );
 		}
 
-		if (this.renderType != null) {
-			factory.addBootstrapComponent( new RenderTypeComponent( block, this.renderType));
+		if (this.renderType != null || this.renderTypes != null) {
+			factory.addBootstrapComponent( new RenderTypeComponent( block, this.renderType, this.renderTypes));
 		}
-
-	// FIXME	if( this.stateMapper != null )
-	// FIXME	{
-	// FIXME		factory.addBootstrapComponent( new StateMapperComponent( block, this.stateMapper ) );
-	// FIXME	}
 	}
 }

@@ -19,18 +19,19 @@
 package appeng.debug;
 
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
-
 import appeng.core.AppEng;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DirectionalPlaceContext;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.StringTextComponent;
 
 
 public class TileCubeGenerator extends AEBaseTile implements ITickableTileEntity
@@ -40,6 +41,10 @@ public class TileCubeGenerator extends AEBaseTile implements ITickableTileEntity
 	private ItemStack is = ItemStack.EMPTY;
 	private int countdown = 20 * 10;
 	private PlayerEntity who = null;
+
+	public TileCubeGenerator(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
+	}
 
 	@Override
 	public void tick()
@@ -79,7 +84,10 @@ public class TileCubeGenerator extends AEBaseTile implements ITickableTileEntity
 				for( int z = -half; z < half; z++ )
 				{
 					final BlockPos p = this.pos.add( x, y - 1, z );
-					i.onItemUse( this.who, this.world, p, Hand.MAIN_HAND, side, 0.5f, 0.0f, 0.5f );
+					ItemUseContext useContext = new DirectionalPlaceContext(
+							this.world, p, side, this.is, side.getOpposite()
+					);
+					i.onItemUse(useContext);
 				}
 			}
 		}

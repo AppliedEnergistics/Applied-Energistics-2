@@ -29,6 +29,7 @@ import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.block.networking.BlockCableBus;
+import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.helpers.AEMultiTile;
 import appeng.hooks.TickHandler;
 import appeng.parts.CableBusContainer;
@@ -44,6 +45,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -56,6 +61,8 @@ import java.util.Set;
 
 public class TileCableBus extends AEBaseTile implements AEMultiTile
 {
+
+	public static final ModelProperty<CableBusRenderState> RENDER_STATE_PROPERTY = new ModelProperty<>();
 
 	private CableBusContainer cb = new CableBusContainer( this );
 
@@ -382,4 +389,20 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile
 		return super.getCapability( capabilityClass, fromSide );
 	}
 
+	@Nonnull
+	@Override
+	public IModelData getModelData() {
+		World world = getWorld();
+		if (world == null) {
+			return EmptyModelData.INSTANCE;
+		}
+
+		CableBusRenderState renderState = this.cb.getRenderState();
+		renderState.setWorld(world);
+		renderState.setPos(pos);
+		return new ModelDataMap.Builder()
+				.withInitial(RENDER_STATE_PROPERTY, renderState)
+				.build();
+
+	}
 }

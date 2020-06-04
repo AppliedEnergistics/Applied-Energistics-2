@@ -25,6 +25,7 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,6 +35,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
@@ -48,9 +53,16 @@ import appeng.util.Platform;
 public class BlockQuantumLinkChamber extends BlockQuantumBase
 {
 
+	private static final VoxelShape SHAPE;
+
+	static {
+		final double onePixel = 2.0 / 16.0;
+		SHAPE = VoxelShapes.create( new AxisAlignedBB( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
+	}
+
 	public BlockQuantumLinkChamber()
 	{
-		super( AEGlassMaterial.INSTANCE );
+		super(Properties.create(AEGlassMaterial.INSTANCE) );
 	}
 
 	@Override
@@ -82,7 +94,7 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 		{
 			if( Platform.isServer() )
 			{
-				Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_QNB );
+				// FIXME Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_QNB );
 			}
 			return ActionResultType.SUCCESS;
 		}
@@ -90,16 +102,8 @@ public class BlockQuantumLinkChamber extends BlockQuantumBase
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final BlockPos pos, final Entity thePlayer, final boolean b )
-	{
-		final double onePixel = 2.0 / 16.0;
-		return Collections.singletonList( new AxisAlignedBB( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
+	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+		return SHAPE;
 	}
 
-	@Override
-	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
-	{
-		final double onePixel = 2.0 / 16.0;
-		out.add( new AxisAlignedBB( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
-	}
 }

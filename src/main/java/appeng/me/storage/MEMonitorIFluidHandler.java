@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -131,19 +132,28 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 		int high = 0;
 		boolean changed = false;
 
-		final IFluidTankProperties[] props = this.handler.getTankProperties();
-		for( int slot = 0; slot < this.handler.getTankProperties().length; ++slot )
+		int tankCount = this.handler.getTanks();
+		for( int tank = 0; tank < tankCount; ++tank )
 		{
-			final CachedFluidStack old = this.memory.get( slot );
-			high = Math.max( high, slot );
+			final CachedFluidStack old = this.memory.get( tank );
+			high = Math.max( high, tank );
 
-			final FluidStack newIS = !props[slot].canDrain() && this.getMode() == StorageFilter.EXTRACTABLE_ONLY ? null : props[slot].getContents();
-			final FluidStack oldIS = old == null ? null : old.fluidStack;
+			FluidStack newIS = this.handler.getFluidInTank(tank);
+			if (!newIS.isEmpty() && this.getMode() == StorageFilter.EXTRACTABLE_ONLY) {
+				// We have to actually check if we could extract _anything_
+				if (this.handler.drain(1, IFluidHandler.FluidAction.SIMULATE).isEmpty()) {
+					// Just to safeguard against tanks that prevent non-bucket-size extractions
+					if (this.handler.drain(FluidAttributes.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE).isEmpty()) {
+						newIS = FluidStack.EMPTY;
+					}
+				}
+			}
+			final FluidStack oldIS = old == null ? FluidStack.EMPTY : old.fluidStack;
 
 			if( isDifferent( newIS, oldIS ) )
 			{
 				final CachedFluidStack cis = new CachedFluidStack( newIS );
-				this.memory.put( slot, cis );
+				this.memory.put( tank, cis );
 
 				if( old != null && old.aeStack != null )
 				{
@@ -161,12 +171,12 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 			}
 			else
 			{
-				final int newSize = newIS == null ? 0 : newIS.getAmount();
-				final int diff = newSize - ( oldIS == null ? 0 : oldIS.getAmount() );
+				final int newSize = newIS.isEmpty() ? 0 : newIS.getAmount();
+				final int diff = newSize - ( oldIS.isEmpty() ? 0 : oldIS.getAmount() );
 
 				IAEFluidStack stack = null;
 
-				if( newIS != null )
+				if( !newIS.isEmpty() )
 				{
 					stack = ( old == null || old.aeStack == null ? Api.INSTANCE
 							.storage()
@@ -182,7 +192,7 @@ public class MEMonitorIFluidHandler implements IMEMonitor<IAEFluidStack>, ITicki
 				if( diff != 0 && stack != null )
 				{
 					final CachedFluidStack cis = new CachedFluidStack( newIS );
-					this.memory.put( slot, cis );
+					this.memory.put( tank, cis );
 
 					final IAEFluidStack a = stack.copy();
 					a.setStackSize( diff );

@@ -37,10 +37,20 @@ import appeng.me.cluster.implementations.SpatialPylonCluster;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.AENetworkProxyMultiblock;
 import appeng.tile.grid.AENetworkTile;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelProperty;
+
+import javax.annotation.Nonnull;
 
 
 public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 {
+
+	public static final ModelProperty<Integer> STATE = new ModelProperty<>(value -> {
+		// The lower 6 bits are used
+		return ( value & ~0x3F ) == 0;
+	});
 
 	public static final int DISPLAY_END_MIN = 0x01;
 	public static final int DISPLAY_END_MAX = 0x02;
@@ -247,4 +257,14 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	{
 		return this.displayBits;
 	}
+
+	@Nonnull
+	@Override
+	public IModelData getModelData() {
+		// FIXME: Must force model data update on changes, should potentially be moved to block state (?)
+		return new  ModelDataMap.Builder()
+				.withInitial(STATE, getDisplayBits())
+				.build();
+	}
+
 }

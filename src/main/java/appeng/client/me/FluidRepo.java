@@ -122,7 +122,7 @@ public class FluidRepo
 				continue;
 			}
 
-			final String dspName = searchMod ? Platform.getModId( fs ) : Platform.getFluidDisplayName( fs );
+			final String dspName = searchMod ? Platform.getModId( fs ) : Platform.getFluidDisplayName( fs ).getString();
 			boolean foundMatchingFluidStack = false;
 			notDone = true;
 

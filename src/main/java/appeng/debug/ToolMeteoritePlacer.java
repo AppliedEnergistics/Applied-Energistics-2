@@ -20,36 +20,46 @@ package appeng.debug;
 
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
-import appeng.worldgen.MeteoritePlacer;
-import appeng.worldgen.meteorite.StandardWorld;
 
 
 public class ToolMeteoritePlacer extends AEBaseItem
 {
+
+	public ToolMeteoritePlacer(Properties properties) {
+		super(properties);
+	}
+
 	@Override
-	public ActionResultType onItemUseFirst( final PlayerEntity player, final World world, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
-	{
+	public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
 		if( Platform.isClient() )
 		{
 			return ActionResultType.PASS;
 		}
 
-		final MeteoritePlacer mp = new MeteoritePlacer();
-		final boolean worked = mp.spawnMeteorite( new StandardWorld( world ), pos.getX(), pos.getY(), pos.getZ() );
+		PlayerEntity player = context.getPlayer();
+		World world = context.getWorld();
+		BlockPos pos = context.getPos();
 
-		if( !worked )
-		{
-			player.sendMessage( new StringTextComponent( "Un-suitable Location." ) );
+		if (player == null) {
+			return ActionResultType.PASS;
 		}
+
+//FIXME 		final MeteoritePlacer mp = new MeteoritePlacer();
+//FIXME 		final boolean worked = mp.spawnMeteorite( new StandardWorld( world ), pos.getX(), pos.getY(), pos.getZ() );
+//FIXME
+//FIXME 		if( !worked )
+//FIXME 		{
+//FIXME 			player.sendMessage( new StringTextComponent( "Un-suitable Location." ) );
+//FIXME 		}
 
 		return ActionResultType.SUCCESS;
 	}

@@ -21,13 +21,14 @@ package appeng.block.networking;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.AEGlassMaterial;
+import appeng.tile.networking.TileCreativeEnergyCell;
 
 
-public class BlockCreativeEnergyCell extends AEBaseTileBlock
+public class BlockCreativeEnergyCell extends AEBaseTileBlock<TileCreativeEnergyCell>
 {
 
 	public BlockCreativeEnergyCell()
 	{
-		super( AEGlassMaterial.INSTANCE );
+		super( Properties.create(AEGlassMaterial.INSTANCE) );
 	}
 }

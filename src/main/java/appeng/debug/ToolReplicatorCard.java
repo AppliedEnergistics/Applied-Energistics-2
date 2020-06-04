@@ -19,20 +19,6 @@
 package appeng.debug;
 
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
-
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -41,15 +27,44 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 
 
 public class ToolReplicatorCard extends AEBaseItem
 {
+
+	public ToolReplicatorCard(Properties properties) {
+		super(properties);
+	}
+
 	@Override
-	public ActionResultType onItemUseFirst( final PlayerEntity player, final World world, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
-	{
+	public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
 		if( Platform.isClient() )
 		{
+			return ActionResultType.PASS;
+		}
+
+		PlayerEntity player = context.getPlayer();
+		World world = context.getWorld();
+		BlockPos pos = context.getPos();
+		Direction side = context.getFace();
+		Hand hand = context.getHand();
+
+		if (player == null) {
 			return ActionResultType.PASS;
 		}
 
@@ -66,8 +81,8 @@ public class ToolReplicatorCard extends AEBaseItem
 				tag.putInt( "y", y );
 				tag.putInt( "z", z );
 				tag.putInt( "side", side.ordinal() );
-				tag.putInt( "dimid", world.provider.getDimension() );
-				player.getHeldItem( hand ).setTagCompound( tag );
+				tag.putInt( "dimid", world.getDimension().getType().getId() );
+				player.getHeldItem( hand ).setTag( tag );
 			}
 			else
 			{
@@ -84,7 +99,7 @@ public class ToolReplicatorCard extends AEBaseItem
 				final int src_z = ish.getInt( "z" );
 				final int src_side = ish.getInt( "side" );
 				final int dimid = ish.getInt( "dimid" );
-				final World src_w = DimensionManager.getWorld( dimid );
+				final World src_w = world.getServer().getWorld(DimensionType.getById(dimid));
 
 				final TileEntity te = src_w.getTileEntity( new BlockPos( src_x, src_y, src_z ) );
 				if( te instanceof IGridHost )
@@ -136,10 +151,10 @@ public class ToolReplicatorCard extends AEBaseItem
 											if( blk != null && blk.hasTileEntity( state ) )
 											{
 												final TileEntity ote = src_w.getTileEntity( p );
-												final TileEntity nte = blk.createTileEntity( world, state );
+												final TileEntity nte = blk.createTileEntity( state, world );
 												final CompoundNBT data = new CompoundNBT();
-												ote.writeToNBT( data );
-												nte.readFromNBT( data.copy() );
+												ote.write( data );
+												nte.read( data.copy() );
 												world.setTileEntity( d, nte );
 											}
 											world.notifyBlockUpdate( d, prev, state, 3 );
@@ -175,7 +190,7 @@ public class ToolReplicatorCard extends AEBaseItem
 		return ActionResultType.SUCCESS;
 	}
 
-	private void outputMsg( final ICommandSender player, final String string )
+	private void outputMsg(final Entity player, final String string )
 	{
 		player.sendMessage( new StringTextComponent( string ) );
 	}

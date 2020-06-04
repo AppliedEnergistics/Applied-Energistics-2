@@ -39,12 +39,12 @@ import appeng.tile.spatial.TileSpatialIOPort;
 import appeng.util.Platform;
 
 
-public class BlockSpatialIOPort extends AEBaseTileBlock
+public class BlockSpatialIOPort extends AEBaseTileBlock<TileSpatialIOPort>
 {
 
 	public BlockSpatialIOPort()
 	{
-		super( Material.IRON );
+		super( Properties.create(Material.IRON) );
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class BlockSpatialIOPort extends AEBaseTileBlock
 		{
 			if( Platform.isServer() )
 			{
-				Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_SPATIAL_IO_PORT );
+				// FIXME Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_SPATIAL_IO_PORT );
 			}
 			return ActionResultType.SUCCESS;
 		}

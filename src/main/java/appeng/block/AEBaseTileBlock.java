@@ -26,21 +26,16 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import appeng.bootstrap.definitions.TileEntityDefinition;
-import appeng.core.features.TileDefinition;
 import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -57,7 +52,6 @@ import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.util.AEColor;
 import appeng.api.util.IOrientable;
-import appeng.helpers.ICustomCollision;
 import appeng.tile.AEBaseInvTile;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
@@ -78,39 +72,6 @@ public abstract class AEBaseTileBlock<T extends AEBaseTile> extends AEBaseBlock
 	public AEBaseTileBlock( final Block.Properties props )
 	{
 		super( props );
-	}
-
-	@Override
-	public BlockState getExtendedState( BlockState state, IBlockReader world, BlockPos pos )
-	{
-// FIXME
-//		// A subclass may decide it doesn't want extended block state for whatever reason
-//		if( !( state instanceof IExtendedBlockState ) )
-//		{
-//			return state;
-//		}
-//
-//		AEBaseTile tile = this.getTileEntity( world, pos );
-//		if( tile == null )
-//		{
-//			return state; // No info available
-//		}
-//
-//		IExtendedBlockState extState = (IExtendedBlockState) state;
-//		return extState.with( FORWARD, tile.getForward() ).with( UP, tile.getUp() );
-		throw new IllegalStateException();
-	}
-
-	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-		super.fillStateContainer(builder);
-
-		// TODO: Rendering stuff
-
-//		return new ExtendedBlockState( this, this.getAEStates(), new IUnlistedProperty[] {
-//				FORWARD,
-//				UP
-//		} );
 	}
 
 	// TODO : Was this change needed?
@@ -359,18 +320,6 @@ public abstract class AEBaseTileBlock<T extends AEBaseTile> extends AEBaseBlock
 	public IOrientable getOrientable(final IBlockReader w, final BlockPos pos )
 	{
 		return this.getTileEntity( w, pos );
-	}
-
-	@Override
-	public ICustomCollision getCustomCollision( final IBlockReader w, final BlockPos pos )
-	{
-		final AEBaseTile te = this.getTileEntity( w, pos );
-		if( te instanceof ICustomCollision )
-		{
-			return (ICustomCollision) te;
-		}
-
-		return super.getCustomCollision( w, pos );
 	}
 
 }

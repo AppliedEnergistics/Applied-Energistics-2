@@ -21,21 +21,22 @@ package appeng.block.networking;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.BlockStateContainer;
+
 import net.minecraft.block.BlockState;
-import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.state.EnumProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseTileBlock;
 import appeng.tile.networking.TileController;
 
 
-public class BlockController extends AEBaseTileBlock
+public class BlockController extends AEBaseTileBlock<TileController>
 {
 
 	public enum ControllerBlockState implements IStringSerializable
@@ -67,29 +68,23 @@ public class BlockController extends AEBaseTileBlock
 
 	}
 
-	public static final PropertyEnum<ControllerBlockState> CONTROLLER_STATE = PropertyEnum.create( "state", ControllerBlockState.class );
+	public static final EnumProperty<ControllerBlockState> CONTROLLER_STATE = EnumProperty.create( "state", ControllerBlockState.class );
 
-	public static final PropertyEnum<ControllerRenderType> CONTROLLER_TYPE = PropertyEnum.create( "type", ControllerRenderType.class );
+	public static final EnumProperty<ControllerRenderType> CONTROLLER_TYPE = EnumProperty.create( "type", ControllerRenderType.class );
 
 	public BlockController()
 	{
-		super( Material.IRON );
-		this.setHardness( 6 );
+		super( Block.Properties.create(Material.IRON).hardnessAndResistance(6) );
 		this.setDefaultState( this.getDefaultState()
 				.with( CONTROLLER_STATE, ControllerBlockState.offline )
 				.with( CONTROLLER_TYPE, ControllerRenderType.block ) );
 	}
 
 	@Override
-	protected IProperty[] getAEStates()
-	{
-		return new IProperty[] { CONTROLLER_STATE, CONTROLLER_TYPE };
-	}
-
-	@Override
-	protected BlockStateContainer createBlockState()
-	{
-		return new BlockStateContainer( this, this.getAEStates() );
+	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+		super.fillStateContainer(builder);
+		builder.add(CONTROLLER_STATE);
+		builder.add(CONTROLLER_TYPE);
 	}
 
 	/**
@@ -98,8 +93,9 @@ public class BlockController extends AEBaseTileBlock
 	 * get a rudimentary connected texture feel for the controller based on how it is placed.
 	 */
 	@Override
-	public BlockState getActualState( BlockState state, IBlockReader world, BlockPos pos )
-	{
+	public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos) {
+
+		// FIXME: this might work, or might _NOT_ work, but needs to be investigated
 
 		// Only used for columns, really
 		ControllerRenderType type = ControllerRenderType.block;
@@ -109,12 +105,12 @@ public class BlockController extends AEBaseTileBlock
 		int z = pos.getZ();
 
 		// Detect whether controllers are on both sides of the x, y, and z axes
-		final boolean xx = this.getTileEntity( world, x - 1, y, z ) instanceof TileController && this.getTileEntity( world, x + 1, y,
-				z ) instanceof TileController;
-		final boolean yy = this.getTileEntity( world, x, y - 1, z ) instanceof TileController && this.getTileEntity( world, x, y + 1,
-				z ) instanceof TileController;
-		final boolean zz = this.getTileEntity( world, x, y, z - 1 ) instanceof TileController && this.getTileEntity( world, x, y,
-				z + 1 ) instanceof TileController;
+		final boolean xx = this.getTileEntity(world, x - 1, y, z) != null
+				&& this.getTileEntity(world, x + 1, y, z) != null;
+		final boolean yy = this.getTileEntity(world, x, y - 1, z) != null
+				&& this.getTileEntity(world, x, y + 1, z) != null;
+		final boolean zz = this.getTileEntity(world, x, y, z - 1) != null
+				&& this.getTileEntity(world, x, y, z + 1) != null;
 
 		if( xx && !yy && !zz )
 		{
@@ -151,25 +147,6 @@ public class BlockController extends AEBaseTileBlock
 	public BlockState getExtendedState( BlockState state, IBlockReader world, BlockPos pos )
 	{
 		return state;
-	}
-
-	@Override
-	public int getMetaFromState( final BlockState state )
-	{
-		return state.get( CONTROLLER_STATE ).ordinal();
-	}
-
-	@Override
-	public BlockState getStateFromMeta( final int meta )
-	{
-		ControllerBlockState state = ControllerBlockState.values()[meta];
-		return this.getDefaultState().with( CONTROLLER_STATE, state );
-	}
-
-	@Override
-	public BlockRenderLayer getBlockLayer()
-	{
-		return BlockRenderLayer.CUTOUT;
 	}
 
 	@Override

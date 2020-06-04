@@ -54,6 +54,16 @@ public final class DamagedItemDefinition implements IItemDefinition
 		}
 	}
 
+	@Override
+	public Item item() {
+		return source.get().getItem();
+	}
+
+	@Override
+	public ItemStack stack(int stackSize) {
+		return source.get().stack(stackSize);
+	}
+
 	@Nonnull
 	@Override
 	public String identifier()

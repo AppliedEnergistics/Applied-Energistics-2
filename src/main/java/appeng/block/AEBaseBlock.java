@@ -21,22 +21,15 @@ package appeng.block;
 
 import javax.annotation.Nullable;
 
-import appeng.util.LookDirection;
-import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.state.IProperty;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.StateContainer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.*;
-import net.minecraft.util.math.shapes.EntitySelectionContext;
-import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
@@ -45,7 +38,6 @@ import net.minecraft.world.World;
 
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
-import appeng.helpers.ICustomCollision;
 
 
 public abstract class AEBaseBlock extends Block
@@ -83,12 +75,6 @@ public abstract class AEBaseBlock extends Block
 		// FIXME this.setLightLevel( 0 );
 		// FIXME this.setHardness( 2.2F );
 		// FIXME this.setHarvestLevel( "pickaxe", 0 );
-	}
-
-	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-		super.fillStateContainer(builder);
-		builder.add(getAEStates());
 	}
 
 	@Override
@@ -211,9 +197,9 @@ public abstract class AEBaseBlock extends Block
 //FIXME
 //FIXME				if( r != null )
 //FIXME				{
-//FIXME					final double xLen = ( a.x - r.hitVec.x );
-//FIXME					final double yLen = ( a.y - r.hitVec.y );
-//FIXME					final double zLen = ( a.z - r.hitVec.z );
+//FIXME					final double xLen = ( a.x - r.getHitVec().x );
+//FIXME					final double yLen = ( a.y - r.getHitVec().y );
+//FIXME					final double zLen = ( a.z - r.getHitVec().z );
 //FIXME
 //FIXME					final double thisDist = xLen * xLen + yLen * yLen + zLen * zLen;
 //FIXME					if( br == null || lastDist > thisDist )
@@ -394,21 +380,6 @@ public abstract class AEBaseBlock extends Block
 	protected boolean isValidOrientation(final IWorld w, final BlockPos pos, final Direction forward, final Direction up )
 	{
 		return true;
-	}
-
-	protected ICustomCollision getCustomCollision( final IBlockReader w, final BlockPos pos )
-	{
-		if( this instanceof ICustomCollision )
-		{
-			return (ICustomCollision) this;
-		}
-		return null;
-	}
-
-	@Deprecated
-	protected IProperty[] getAEStates()
-	{
-		return new IProperty[0];
 	}
 
 	protected boolean isOpaque()

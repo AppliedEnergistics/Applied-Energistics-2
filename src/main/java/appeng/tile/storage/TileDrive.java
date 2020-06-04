@@ -27,11 +27,16 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import appeng.block.AEBaseTileBlock;
+import appeng.block.storage.DriveSlotsState;
 import appeng.core.Api;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.implementations.tiles.IChestOrDrive;
@@ -63,9 +68,13 @@ import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
 
+import javax.annotation.Nonnull;
+
 
 public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPriorityHost
 {
+
+	public static final ModelProperty<DriveSlotsState> SLOTS_STATE = new ModelProperty<>();
 
 	private static final int BIT_POWER_MASK = 0x80000000;
 	private static final int BIT_BLINK_MASK = 0x24924924;
@@ -405,7 +414,19 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 		return Api.INSTANCE.definitions().blocks().drive().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
-// FIXME	@Override
+	@Nonnull
+	@Override
+	public IModelData getModelData() {
+
+		return new ModelDataMap.Builder()
+				.withInitial(AEBaseTileBlock.UP, getUp())
+				.withInitial(AEBaseTileBlock.FORWARD, getForward())
+				.withInitial(SLOTS_STATE, DriveSlotsState.fromChestOrDrive( this ))
+				.build();
+
+	}
+
+	// FIXME	@Override
 // FIXME	public GuiBridge getGuiBridge()
 // FIXME	{
 // FIXME		return GuiBridge.GUI_DRIVE;

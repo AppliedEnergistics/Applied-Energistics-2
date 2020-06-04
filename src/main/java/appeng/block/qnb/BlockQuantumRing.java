@@ -19,55 +19,39 @@
 package appeng.block.qnb;
 
 
-import java.util.Collections;
-import java.util.List;
-
+import appeng.tile.qnb.TileQuantumBridge;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
 
-import appeng.tile.qnb.TileQuantumBridge;
 
+public class BlockQuantumRing extends BlockQuantumBase {
 
-public class BlockQuantumRing extends BlockQuantumBase
-{
+    private static final VoxelShape SHAPE = createShape(2.0 / 16.0);
+    private static final VoxelShape SHAPE_CORNER = createShape(4.0 / 16.0);
+    private static final VoxelShape SHAPE_FORMED = createShape(1.0 / 16.0);
 
-	public BlockQuantumRing()
-	{
-		super( Material.IRON );
-	}
+    public BlockQuantumRing() {
+        super(Properties.create(Material.IRON));
+    }
 
-	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final BlockPos pos, final Entity thePlayer, final boolean b )
-	{
-		double onePixel = 2.0 / 16.0;
-		final TileQuantumBridge bridge = this.getTileEntity( w, pos );
-		if( bridge != null && bridge.isCorner() )
-		{
-			onePixel = 4.0 / 16.0;
-		}
-		else if( bridge != null && bridge.isFormed() )
-		{
-			onePixel = 1.0 / 16.0;
-		}
-		return Collections.singletonList( new AxisAlignedBB( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
-	}
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+        final TileQuantumBridge bridge = this.getTileEntity(w, pos);
+        if (bridge != null && bridge.isCorner()) {
+            return SHAPE_CORNER;
+        } else if (bridge != null && bridge.isFormed()) {
+            return SHAPE_FORMED;
+        }
+        return SHAPE;
+    }
 
-	@Override
-	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
-	{
-		double onePixel = 2.0 / 16.0;
-		final TileQuantumBridge bridge = this.getTileEntity( w, pos );
-		if( bridge != null && bridge.isCorner() )
-		{
-			onePixel = 4.0 / 16.0;
-		}
-		else if( bridge != null && bridge.isFormed() )
-		{
-			onePixel = 1.0 / 16.0;
-		}
-		out.add( new AxisAlignedBB( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
-	}
+    private static VoxelShape createShape(double onePixel) {
+        return VoxelShapes.create(new AxisAlignedBB(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
+    }
 }

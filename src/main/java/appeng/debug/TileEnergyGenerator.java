@@ -27,7 +27,10 @@ import com.google.common.math.IntMath;
 
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -44,40 +47,41 @@ public class TileEnergyGenerator extends AEBaseTile implements ITickableTileEnti
 	 */
 	private static final int BASE_ENERGY = 8;
 
+	public TileEnergyGenerator(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
+	}
+
 	@Override
 	public void tick()
 	{
-		int tier = 1;
-		final EnumSet<Direction> validEnergyReceivers = EnumSet.noneOf( Direction.class );
+		World world = this.getWorld();
+		if (world == null) {
+			return;
+		}
 
+		int tier = 1;
 		for( Direction facing : Direction.values() )
 		{
-			final TileEntity te = this.getWorld().getTileEntity( this.getPos().offset( facing ) );
+			final TileEntity te = world.getTileEntity( this.getPos().offset( facing ) );
 
 			if( te instanceof TileEnergyGenerator )
 			{
 				tier++;
 			}
-
-			if( te != null && te.hasCapability( CapabilityEnergy.ENERGY, facing.getOpposite() ) )
-			{
-				validEnergyReceivers.add( facing );
-			}
-
 		}
 
 		final int energyToInsert = IntMath.pow( BASE_ENERGY, tier );
 
-		for( Direction facing : validEnergyReceivers )
+		for( Direction facing : Direction.values() )
 		{
 			final TileEntity te = this.getWorld().getTileEntity( this.getPos().offset( facing ) );
-			final IEnergyStorage cap = te.getCapability( CapabilityEnergy.ENERGY, facing.getOpposite() );
+			final LazyOptional<IEnergyStorage> cap = te.getCapability( CapabilityEnergy.ENERGY, facing.getOpposite() );
 
-			if( cap.canReceive() )
-			{
-
-				cap.receiveEnergy( energyToInsert, false );
-			}
+			cap.ifPresent(consumer -> {
+				if (consumer.canReceive()) {
+					consumer.receiveEnergy( energyToInsert, false );
+				}
+			});
 		}
 	}
 

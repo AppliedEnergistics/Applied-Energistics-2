@@ -19,15 +19,14 @@
 package appeng.client.render.renderable;
 
 
-import net.minecraft.client.renderer.BufferBuilder;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.tileentity.TileEntity;
 
 
 public interface Renderable<T extends TileEntity>
 {
 
-	public void renderTileEntityAt( T te, double x, double y, double z, float partialTicks, int destroyStage );
-
-	public void renderTileEntityFast( T te, double x, double y, double z, float partialTicks, int destroyStage, BufferBuilder buffer );
+	void renderTileEntityAt(T te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffers, int combinedLight, int combinedOverlay);
 
 }

@@ -121,7 +121,7 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 		}
 		else if( this.selectedCpu != -1 )
 		{
-			this.myName = this.cpus.get( this.selectedCpu ).getName();
+			this.myName = this.cpus.get( this.selectedCpu ).getName().getString();
 		}
 
 		if( this.selectedCpu == -1 && this.cpus.size() > 0 )
@@ -174,7 +174,7 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 		}
 		else
 		{
-			this.myName = this.cpus.get( this.selectedCpu ).getName();
+			this.myName = this.cpus.get( this.selectedCpu ).getName().getString();
 			this.setCPU( this.cpus.get( this.selectedCpu ).getCpu() );
 		}
 	}

@@ -19,56 +19,48 @@
 package appeng.block.storage;
 
 
-import javax.annotation.Nullable;
-
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyEnum;
+import appeng.block.AEBaseTileBlock;
+import appeng.core.localization.PlayerMessages;
+import appeng.tile.storage.TileChest;
+import appeng.util.Platform;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.EnumProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
-import appeng.api.util.AEPartLocation;
-import appeng.block.AEBaseTileBlock;
-import appeng.core.localization.PlayerMessages;
-
-import appeng.tile.storage.TileChest;
-import appeng.util.Platform;
+import javax.annotation.Nullable;
 
 
-public class BlockChest extends AEBaseTileBlock
+public class BlockChest extends AEBaseTileBlock<TileChest>
 {
 
-	private final static PropertyEnum<DriveSlotState> SLOT_STATE = PropertyEnum.create( "slot_state", DriveSlotState.class );
+	private final static EnumProperty<DriveSlotState> SLOT_STATE = EnumProperty.create( "slot_state", DriveSlotState.class );
 
 	public BlockChest()
 	{
-		super( Material.IRON );
+		super( Properties.create(Material.IRON) );
 		this.setDefaultState( this.getDefaultState().with( SLOT_STATE, DriveSlotState.EMPTY ) );
 	}
 
 	@Override
-	protected IProperty[] getAEStates()
-	{
-		return new IProperty[] { SLOT_STATE };
+	protected void fillStateContainer(StateContainer.Builder builder) {
+		super.fillStateContainer(builder);
+		builder.add(SLOT_STATE);
 	}
 
 	@Override
-	public BlockRenderLayer getBlockLayer()
-	{
-		return BlockRenderLayer.CUTOUT;
-	}
+	public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld worldIn, BlockPos pos, BlockPos facingPos) {
+		// FIXME Check tile-entity updated prop
 
-	@Override
-	public BlockState getActualState( BlockState state, IBlockReader worldIn, BlockPos pos )
-	{
 		DriveSlotState slotState = DriveSlotState.EMPTY;
 
 		TileChest te = this.getTileEntity( worldIn, pos );
@@ -86,8 +78,7 @@ public class BlockChest extends AEBaseTileBlock
 			}
 		}
 
-		return super.getActualState( state, worldIn, pos )
-				.with( SLOT_STATE, slotState );
+		return state.with( SLOT_STATE, slotState );
 	}
 
 	@Override
@@ -101,9 +92,9 @@ public class BlockChest extends AEBaseTileBlock
 				return ActionResultType.SUCCESS;
 			}
 
-			if( hit != tg.getUp() )
+			if( hit.getFace() != tg.getUp() )
 			{
-				Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_CHEST );
+				// FIXME Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_CHEST );
 			}
 			else
 			{

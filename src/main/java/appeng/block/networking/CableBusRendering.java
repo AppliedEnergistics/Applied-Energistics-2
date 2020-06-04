@@ -45,6 +45,16 @@ public class CableBusRendering extends BlockRenderingCustomizer
 	@OnlyIn( Dist.CLIENT )
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{
+		/* FIXME this was previously
+		 *
+		 @Override
+		 public boolean canRenderInLayer( BlockState state, BlockRenderLayer layer )
+		 {
+		 return true;
+		 }
+		 */
+		rendering.renderType(rt -> true);
+
 		rendering.builtInModel( "models/block/builtin/cable_bus", new CableBusModel( this.partModels ) );
 		rendering.blockColor( new CableBusColor() );
 		rendering.modelCustomizer( ( loc, model ) -> model );

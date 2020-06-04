@@ -25,6 +25,7 @@ import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.client.ClientHelper;
 import appeng.client.render.model.GlassModelLoader;
 import appeng.client.render.model.SkyCompassModelLoader;
+import appeng.core.stats.AdvancementTriggers;
 import appeng.server.ServerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
@@ -152,12 +153,12 @@ public final class AppEng
 //	{
 //		return this.registration.storageDimensionID;
 //	}
-//
-//	public AdvancementTriggers getAdvancementTriggers()
-//	{
-//		return this.registration.advancementTriggers;
-//	}
-//
+
+	public AdvancementTriggers getAdvancementTriggers()
+	{
+		return null; // FIXME this.registration.advancementTriggers;
+	}
+
 //	@EventHandler
 //	private void preInit( final FMLPreInitializationEvent event )
 //	{

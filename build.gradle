@@ -97,7 +97,9 @@ sourceSets {
             include 'appeng/helpers/**'
             include 'appeng/items/**'
             include 'appeng/util/**'
+            include 'appeng/debug/**'
             include 'appeng/core/localization/**'
+            include 'appeng/core/stats/**'
             exclude 'appeng/parts/p2p/PartP2PFluids.java'
             exclude 'appeng/parts/p2p/PartP2PItems.java'
             include 'appeng/tile/AEBaseTile.java'
@@ -162,6 +164,15 @@ sourceSets {
             include 'appeng/tile/inventory/AppEngInternalInventory.java'
             include 'appeng/util/inv/filter/**'
 
+            include 'appeng/client/render/StaticBlockColor.java'
+
+            exclude 'appeng/block/paint/PaintBakedModel.java'
+            exclude 'appeng/block/paint/PaintModel.java'
+            exclude 'appeng/block/qnb/QnbFormedBakedModel.java'
+            exclude 'appeng/block/qnb/QnbFormedModel.java'
+
+            include 'appeng/client/render/spatial/SpatialPylonRendering.java'
+
 //            include 'appeng/client/ClientHelper.java'
 //            include 'appeng/server/ServerHelper.java'
             include 'appeng/block/AEBaseBlock.java'
@@ -208,6 +219,10 @@ sourceSets {
             include 'appeng/entity/**'
             include 'appeng/facade/**'
             include 'appeng/hooks/**'
+            include 'appeng/block/**'
+            include 'appeng/client/render/renderable/**'
+            include 'appeng/client/render/tesr/**'
+            include 'appeng/client/render/ColorableTileBlockColor.java'
             include 'appeng/client/render/cablebus/**'
             include 'appeng/client/render/effects/EnergyFx.java'
             include 'appeng/client/render/TesrRenderHelper.java'

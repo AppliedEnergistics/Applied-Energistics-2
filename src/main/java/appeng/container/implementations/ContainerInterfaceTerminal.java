@@ -329,7 +329,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 					final DualityInterface dual = ih.getInterfaceDuality();
 					if( gn.isActive() && dual.getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.YES )
 					{
-						this.diList.put( ih, new InvTracker( dual, dual.getPatterns(), dual.getTermName() ) );
+						this.diList.put( ih, new InvTracker( dual, dual.getPatterns(), dual.getTermName().getString() ) );
 					}
 				}
 
@@ -339,7 +339,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 					final DualityInterface dual = ih.getInterfaceDuality();
 					if( gn.isActive() && dual.getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.YES )
 					{
-						this.diList.put( ih, new InvTracker( dual, dual.getPatterns(), dual.getTermName() ) );
+						this.diList.put( ih, new InvTracker( dual, dual.getPatterns(), dual.getTermName().getString() ) );
 					}
 				}
 			}

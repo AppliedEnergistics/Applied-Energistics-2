@@ -19,11 +19,12 @@
 package appeng.block.storage;
 
 
-import javax.annotation.Nullable;
-
+import appeng.block.AEBaseTileBlock;
+import appeng.tile.storage.TileIOPort;
+import appeng.util.Platform;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
@@ -32,19 +33,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
-import appeng.api.util.AEPartLocation;
-import appeng.block.AEBaseTileBlock;
-
-import appeng.tile.storage.TileIOPort;
-import appeng.util.Platform;
+import javax.annotation.Nullable;
 
 
-public class BlockIOPort extends AEBaseTileBlock
+public class BlockIOPort extends AEBaseTileBlock<TileIOPort>
 {
 
 	public BlockIOPort()
 	{
-		super( Material.IRON );
+		super( Properties.create(Material.IRON) );
 	}
 
 	@Override
@@ -70,7 +67,7 @@ public class BlockIOPort extends AEBaseTileBlock
 		{
 			if( Platform.isServer() )
 			{
-				Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_IOPORT );
+				// FIXME Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_IOPORT );
 			}
 			return ActionResultType.SUCCESS;
 		}

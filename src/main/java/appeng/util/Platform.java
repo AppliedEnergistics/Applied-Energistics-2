@@ -58,6 +58,7 @@ import appeng.util.helpers.P2PHelper;
 import appeng.util.item.AEItemStack;
 import appeng.util.prioritylist.IPartitionList;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -89,6 +90,7 @@ import net.minecraftforge.fml.common.thread.SidedThreadGroups;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 
@@ -169,62 +171,62 @@ public class Platform
 //		final DecimalFormat df = new DecimalFormat( "#.##" );
 //		return df.format( p ) + ' ' + level + unitName + ( isRate ? "/t" : "" );
 //	}
-//
-//	public static AEPartLocation crossProduct( final AEPartLocation forward, final AEPartLocation up )
-//	{
-//		final int west_x = forward.yOffset * up.zOffset - forward.zOffset * up.yOffset;
-//		final int west_y = forward.zOffset * up.xOffset - forward.xOffset * up.zOffset;
-//		final int west_z = forward.xOffset * up.yOffset - forward.yOffset * up.xOffset;
-//
-//		switch( west_x + west_y * 2 + west_z * 3 )
-//		{
-//			case 1:
-//				return AEPartLocation.EAST;
-//			case -1:
-//				return AEPartLocation.WEST;
-//
-//			case 2:
-//				return AEPartLocation.UP;
-//			case -2:
-//				return AEPartLocation.DOWN;
-//
-//			case 3:
-//				return AEPartLocation.SOUTH;
-//			case -3:
-//				return AEPartLocation.NORTH;
-//		}
-//
-//		return AEPartLocation.INTERNAL;
-//	}
-//
-//	public static Direction crossProduct(final Direction forward, final Direction up )
-//	{
-//		final int west_x = forward.getYOffset() * up.getZOffset() - forward.getZOffset() * up.getYOffset();
-//		final int west_y = forward.getZOffset() * up.getXOffset() - forward.getXOffset() * up.getZOffset();
-//		final int west_z = forward.getXOffset() * up.getYOffset() - forward.getYOffset() * up.getXOffset();
-//
-//		switch( west_x + west_y * 2 + west_z * 3 )
-//		{
-//			case 1:
-//				return Direction.EAST;
-//			case -1:
-//				return Direction.WEST;
-//
-//			case 2:
-//				return Direction.UP;
-//			case -2:
-//				return Direction.DOWN;
-//
-//			case 3:
-//				return Direction.SOUTH;
-//			case -3:
-//				return Direction.NORTH;
-//		}
-//
-//		// something is better then nothing?
-//		return Direction.NORTH;
-//	}
-//
+
+	public static AEPartLocation crossProduct( final AEPartLocation forward, final AEPartLocation up )
+	{
+		final int west_x = forward.yOffset * up.zOffset - forward.zOffset * up.yOffset;
+		final int west_y = forward.zOffset * up.xOffset - forward.xOffset * up.zOffset;
+		final int west_z = forward.xOffset * up.yOffset - forward.yOffset * up.xOffset;
+
+		switch( west_x + west_y * 2 + west_z * 3 )
+		{
+			case 1:
+				return AEPartLocation.EAST;
+			case -1:
+				return AEPartLocation.WEST;
+
+			case 2:
+				return AEPartLocation.UP;
+			case -2:
+				return AEPartLocation.DOWN;
+
+			case 3:
+				return AEPartLocation.SOUTH;
+			case -3:
+				return AEPartLocation.NORTH;
+		}
+
+		return AEPartLocation.INTERNAL;
+	}
+
+	public static Direction crossProduct(final Direction forward, final Direction up )
+	{
+		final int west_x = forward.getYOffset() * up.getZOffset() - forward.getZOffset() * up.getYOffset();
+		final int west_y = forward.getZOffset() * up.getXOffset() - forward.getXOffset() * up.getZOffset();
+		final int west_z = forward.getXOffset() * up.getYOffset() - forward.getYOffset() * up.getXOffset();
+
+		switch( west_x + west_y * 2 + west_z * 3 )
+		{
+			case 1:
+				return Direction.EAST;
+			case -1:
+				return Direction.WEST;
+
+			case 2:
+				return Direction.UP;
+			case -2:
+				return Direction.DOWN;
+
+			case 3:
+				return Direction.SOUTH;
+			case -3:
+				return Direction.NORTH;
+		}
+
+		// something is better then nothing?
+		return Direction.NORTH;
+	}
+
 	public static <T extends Enum> T rotateEnum( T ce, final boolean backwards, final EnumSet validOptions )
 	{
 		do
@@ -725,23 +727,23 @@ public class Platform
 //		}
 //		return -1;
 //	}
-//
-//	/**
-//	 * Returns a random element from the given collection.
-//	 *
-//	 * @return null if the collection is empty
-//	 */
-//	@Nullable
-//	public static <T> T pickRandom( final Collection<T> outs )
-//	{
-//		if( outs.isEmpty() )
-//		{
-//			return null;
-//		}
-//
-//		int index = RANDOM_GENERATOR.nextInt( outs.size() );
-//		return Iterables.get( outs, index, null );
-//	}
+
+	/**
+	 * Returns a random element from the given collection.
+	 *
+	 * @return null if the collection is empty
+	 */
+	@Nullable
+	public static <T> T pickRandom( final Collection<T> outs )
+	{
+		if( outs.isEmpty() )
+		{
+			return null;
+		}
+
+		int index = RANDOM_GENERATOR.nextInt( outs.size() );
+		return Iterables.get( outs, index, null );
+	}
 
 	public static AEPartLocation rotateAround( final AEPartLocation forward, final AEPartLocation axis )
 	{

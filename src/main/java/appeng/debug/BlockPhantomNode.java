@@ -21,6 +21,7 @@ package appeng.debug;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -38,7 +39,7 @@ public class BlockPhantomNode extends AEBaseTileBlock<TilePhantomNode>
 
 	public BlockPhantomNode()
 	{
-		super( Material.IRON );
+		super( Block.Properties.create(Material.IRON) );
 	}
 
 	@Override

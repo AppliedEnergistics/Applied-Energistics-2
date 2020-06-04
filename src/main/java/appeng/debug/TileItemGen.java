@@ -28,14 +28,17 @@ import javax.annotation.Nullable;
 import net.minecraft.item.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.tile.AEBaseTile;
+import net.minecraftforge.registries.ForgeRegistries;
 
 
 public class TileItemGen extends AEBaseTile
@@ -45,26 +48,32 @@ public class TileItemGen extends AEBaseTile
 
 	private final IItemHandler handler = new QueuedItemHandler();
 
-	public TileItemGen()
-	{
+	public TileItemGen(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
 		if( POSSIBLE_ITEMS.isEmpty() )
 		{
-			for( final Object obj : Item.REGISTRY )
+			for( final Item mi : ForgeRegistries.ITEMS)
 			{
-				final Item mi = (Item) obj;
 				if( mi != null && mi != Items.AIR )
 				{
 					if( mi.isDamageable() )
 					{
+						// FIXME: Rethink if this branch is necessary
 						for( int dmg = 0; dmg < mi.getMaxDamage(); dmg++ )
 						{
-							POSSIBLE_ITEMS.add( new ItemStack( mi, 1, dmg ) );
+							ItemStack item = new ItemStack(mi, 1);
+							item.setDamage(dmg);
+							POSSIBLE_ITEMS.add(item);
 						}
 					}
 					else
 					{
+						if (mi.getGroup() == null) {
+							continue;
+						}
+
 						final NonNullList<ItemStack> list = NonNullList.create();
-						mi.getSubItems( mi.getCreativeTab(), list );
+						mi.fillItemGroup( mi.getGroup(), list );
 						POSSIBLE_ITEMS.addAll( list );
 					}
 				}
@@ -99,6 +108,11 @@ public class TileItemGen extends AEBaseTile
 		public ItemStack getStackInSlot( int slot )
 		{
 			return POSSIBLE_ITEMS.peek() != null ? POSSIBLE_ITEMS.peek().copy() : ItemStack.EMPTY;
+		}
+
+		@Override
+		public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+			return false;
 		}
 
 		@Override

@@ -27,6 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
 import appeng.api.util.AEColor;
+import net.minecraft.world.ILightReader;
 
 
 /**
@@ -43,7 +44,7 @@ public class StaticBlockColor implements IBlockColor
 	}
 
 	@Override
-	public int colorMultiplier( BlockState state, @Nullable IBlockReader worldIn, @Nullable BlockPos pos, int tintIndex )
+	public int getColor( BlockState state, @Nullable ILightReader worldIn, @Nullable BlockPos pos, int tintIndex )
 	{
 		return this.color.getVariantByTintIndex( tintIndex );
 	}

@@ -19,77 +19,35 @@
 package appeng.block.paint;
 
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
-
+import appeng.block.AEBaseTileBlock;
+import appeng.tile.misc.TilePaint;
+import appeng.util.Platform;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.MapColor;
-import net.minecraft.block.material.MaterialLiquid;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.BlockStateContainer;
 import net.minecraft.block.BlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.helpers.Splotch;
-import appeng.tile.misc.TilePaint;
-import appeng.util.Platform;
 
-
-public class BlockPaint extends AEBaseTileBlock
+public class BlockPaint extends AEBaseTileBlock<TilePaint>
 {
-
-	static final PaintSplotchesProperty SPLOTCHES = new PaintSplotchesProperty();
-
 	public BlockPaint()
 	{
-		super( new MaterialLiquid( MapColor.AIR ) );
-
-		this.setLightOpacity( 0 );
+		super(Properties.create(Material.WATER, MaterialColor.AIR));
 		this.setFullSize( false );
 		this.setOpaque( false );
-	}
-
-	@Override
-	protected BlockStateContainer createBlockState()
-	{
-		return new ExtendedBlockState( this, new IProperty[0], new IUnlistedProperty[] { SPLOTCHES } );
-	}
-
-	@Override
-	public BlockState getExtendedState( BlockState state, IBlockReader world, BlockPos pos )
-	{
-		IExtendedBlockState extState = (IExtendedBlockState) state;
-
-		TilePaint te = this.getTileEntity( world, pos );
-
-		Collection<Splotch> splotches = Collections.emptyList();
-		if( te != null )
-		{
-			splotches = te.getDots();
-		}
-
-		return extState.with( SPLOTCHES, new PaintSplotches( splotches ) );
-	}
-
-	@Override
-	public BlockRenderLayer getBlockLayer()
-	{
-		return BlockRenderLayer.CUTOUT;
 	}
 
 	@Override
@@ -100,15 +58,8 @@ public class BlockPaint extends AEBaseTileBlock
 	}
 
 	@Override
-	public AxisAlignedBB getCollisionBoundingBox( BlockState blockState, IBlockReader worldIn, BlockPos pos )
-	{
-		return null;
-	}
-
-	@Override
-	public boolean canCollideCheck( final BlockState state, final boolean hitIfLiquid )
-	{
-		return false;
+	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+		return VoxelShapes.empty();
 	}
 
 	@Override
@@ -120,18 +71,6 @@ public class BlockPaint extends AEBaseTileBlock
 		{
 			tp.neighborChanged();
 		}
-	}
-
-	@Override
-	public Item getItemDropped( final BlockState state, final Random rand, final int fortune )
-	{
-		return null;
-	}
-
-	@Override
-	public void dropBlockAsItemWithChance( final World worldIn, final BlockPos pos, final BlockState state, final float chance, final int fortune )
-	{
-
 	}
 
 	@Override
@@ -163,8 +102,12 @@ public class BlockPaint extends AEBaseTileBlock
 	}
 
 	@Override
-	public boolean isReplaceable( final IBlockReader worldIn, final BlockPos pos )
-	{
+	public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
+		return true;
+	}
+
+	@Override
+	public boolean isReplaceable(BlockState p_225541_1_, Fluid p_225541_2_) {
 		return true;
 	}
 

@@ -19,19 +19,6 @@
 package appeng.debug;
 
 
-import java.util.HashSet;
-import java.util.Set;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
-
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -51,18 +38,44 @@ import appeng.me.cache.TickManagerCache;
 import appeng.parts.p2p.PartP2PTunnel;
 import appeng.tile.networking.TileController;
 import appeng.util.Platform;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class ToolDebugCard extends AEBaseItem
 {
+
+	public ToolDebugCard(Properties properties) {
+		super(properties);
+	}
+
 	@Override
-	public ActionResultType onItemUseFirst( final PlayerEntity player, final World world, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
-	{
+	public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
 		if( Platform.isClient() )
 		{
 			return ActionResultType.PASS;
 		}
 
+		PlayerEntity player = context.getPlayer();
+		World world = context.getWorld();
+		BlockPos pos = context.getPos();
+		Direction side = context.getFace();
+
+		if (player == null) {
+			return ActionResultType.PASS;
+		}
+		
 		if( player.isCrouching() )
 		{
 			int grids = 0;
@@ -133,7 +146,7 @@ public class ToolDebugCard extends AEBaseItem
 
 					if( center.getMachine() instanceof PartP2PTunnel )
 					{
-						this.outputMsg( player, "Freq: " + ( (PartP2PTunnel) center.getMachine() ).getFrequency() );
+						this.outputMsg( player, "Freq: " + ( (PartP2PTunnel<?>) center.getMachine() ).getFrequency() );
 					}
 
 					final TickManagerCache tmc = g.getCache( ITickManager.class );
@@ -205,7 +218,7 @@ public class ToolDebugCard extends AEBaseItem
 		return ActionResultType.SUCCESS;
 	}
 
-	private void outputMsg( final ICommandSender player, final String string )
+	private void outputMsg(final Entity player, final String string )
 	{
 		player.sendMessage( new StringTextComponent( string ) );
 	}

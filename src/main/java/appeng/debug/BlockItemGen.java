@@ -19,17 +19,18 @@
 package appeng.debug;
 
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 
 import appeng.block.AEBaseTileBlock;
 
 
-public class BlockItemGen extends AEBaseTileBlock
+public class BlockItemGen extends AEBaseTileBlock<TileItemGen>
 {
 
 	public BlockItemGen()
 	{
-		super( Material.IRON );
+		super( Block.Properties.create(Material.IRON) );
 	}
 
 }

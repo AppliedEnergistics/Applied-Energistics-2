@@ -19,6 +19,7 @@
 package appeng.core.sync.packets;
 
 
+import appeng.block.networking.BlockCableBus;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.block.Block;
@@ -36,6 +37,7 @@ import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.core.Api;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
+import net.minecraft.util.math.Vec3d;
 
 
 public class PacketClick extends AppEngPacket
@@ -115,10 +117,10 @@ public class PacketClick extends AppEngPacket
 		if( this.leftClick )
 		{
 			final Block block = player.world.getBlockState( pos ).getBlock();
-//	FIXME		 if( block instanceof BlockCableBus )
-//	FIXME		 {
-//	FIXME		 	( (BlockCableBus) block ).onBlockClickPacket( player.world, pos, player, this.hand, new Vec3d( this.hitX, this.hitY, this.hitZ ) );
-//	FIXME		 }
+	 		if( block instanceof BlockCableBus)
+	 		{
+				( (BlockCableBus) block ).onBlockClickPacket( player.world, pos, player, this.hand, new Vec3d( this.hitX, this.hitY, this.hitZ ) );
+	 		}
 		}
 		else
 		{

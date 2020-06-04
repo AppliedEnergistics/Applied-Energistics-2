@@ -37,12 +37,12 @@ import appeng.tile.misc.TileCellWorkbench;
 import appeng.util.Platform;
 
 
-public class BlockCellWorkbench extends AEBaseTileBlock
+public class BlockCellWorkbench extends AEBaseTileBlock<TileCellWorkbench>
 {
 
 	public BlockCellWorkbench()
 	{
-		super( Material.IRON );
+		super( Properties.create(Material.IRON) );
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class BlockCellWorkbench extends AEBaseTileBlock
 		{
 			if( Platform.isServer() )
 			{
-				Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_CELL_WORKBENCH );
+				// FIXME Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit.getFace()), GuiBridge.GUI_CELL_WORKBENCH );
 			}
 			return ActionResultType.SUCCESS;
 		}

@@ -19,24 +19,27 @@
 package appeng.block.misc;
 
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
+import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
+import appeng.core.Api;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -47,29 +50,30 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.AEApi;
 import appeng.api.util.AEAxisAlignedBB;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.effects.LightningFX;
 import appeng.client.render.renderable.ItemRenderable;
 import appeng.client.render.tesr.ModularTESR;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import appeng.helpers.ICustomCollision;
 import appeng.tile.AEBaseTile;
 import appeng.tile.misc.TileCharger;
 import appeng.util.Platform;
 
 
-public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
+public class BlockCharger extends AEBaseTileBlock<TileCharger>
 {
 
 	public BlockCharger()
 	{
-		super( Material.IRON );
+		super( Properties.create(Material.IRON) );
 
-		this.setLightOpacity( 2 );
 		this.setFullSize( this.setOpaque( false ) );
+	}
+
+	@Override
+	public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos) {
+		return 2; // FIXME Double check this (esp. value range)
 	}
 
 	@Override
@@ -121,9 +125,9 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 				{
 					if( AppEng.proxy.shouldAddParticles( r ) )
 					{
-						final LightningFX fx = new LightningFX( w, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(), zOff + 0.5 + pos
-								.getZ(), 0.0D, 0.0D, 0.0D );
-						Minecraft.getInstance().effectRenderer.addEffect( fx );
+// FIXME						final LightningFX fx = new LightningFX( w, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(), zOff + 0.5 + pos
+// FIXME								.getZ(), 0.0D, 0.0D, 0.0D );
+// FIXME						Minecraft.getInstance().effectRenderer.addEffect( fx );
 					}
 				}
 			}
@@ -131,8 +135,8 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final BlockPos pos, final Entity thePlayer, final boolean b )
-	{
+	public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+
 		final TileCharger tile = this.getTileEntity( w, pos );
 		if( tile != null )
 		{
@@ -141,17 +145,17 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 			final Direction forward = tile.getForward();
 			final AEAxisAlignedBB bb = new AEAxisAlignedBB( twoPixels, twoPixels, twoPixels, 1.0 - twoPixels, 1.0 - twoPixels, 1.0 - twoPixels );
 
-			if( up.getFrontOffsetX() != 0 )
+			if( up.getXOffset() != 0 )
 			{
 				bb.minX = 0;
 				bb.maxX = 1;
 			}
-			if( up.getFrontOffsetY() != 0 )
+			if( up.getYOffset() != 0 )
 			{
 				bb.minY = 0;
 				bb.maxY = 1;
 			}
-			if( up.getFrontOffsetZ() != 0 )
+			if( up.getZOffset() != 0 )
 			{
 				bb.minZ = 0;
 				bb.maxZ = 1;
@@ -181,21 +185,20 @@ public class BlockCharger extends AEBaseTileBlock implements ICustomCollision
 					break;
 			}
 
-			return Collections.singletonList( bb.getBoundingBox() );
+			return VoxelShapes.create(bb.getBoundingBox());
 		}
-		return Collections.singletonList( new AxisAlignedBB( 0.0, 0, 0.0, 1.0, 1.0, 1.0 ) );
+		return VoxelShapes.create( new AxisAlignedBB( 0.0, 0, 0.0, 1.0, 1.0, 1.0 ) );
 	}
 
 	@Override
-	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
-	{
-		out.add( new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
+	public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+		return VoxelShapes.create( new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
 	}
 
 	@OnlyIn( Dist.CLIENT )
-	public static TileEntityRenderer<TileCharger> createTesr()
+	public static Function<TileEntityRendererDispatcher, TileEntityRenderer<TileCharger>> createTesr()
 	{
-		return new ModularTESR<>( new ItemRenderable<>( BlockCharger::getRenderedItem ) );
+		return dispatcher -> new ModularTESR<>( dispatcher, new ItemRenderable<>( BlockCharger::getRenderedItem ) );
 	}
 
 	@OnlyIn( Dist.CLIENT )

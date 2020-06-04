@@ -47,7 +47,6 @@ import net.minecraft.world.World;
 
 import appeng.block.AEBaseBlock;
 import appeng.entity.EntityTinyTNTPrimed;
-import appeng.helpers.ICustomCollision;
 import net.minecraft.world.server.ServerWorld;
 
 

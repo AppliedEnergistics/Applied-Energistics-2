@@ -2,6 +2,7 @@
 package appeng.block.networking;
 
 
+import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -18,6 +19,7 @@ public class WirelessRendering extends BlockRenderingCustomizer
 	@OnlyIn( Dist.CLIENT )
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{
+		rendering.renderType(RenderType.getCutout());
 		rendering.blockColor( new StaticBlockColor( AEColor.TRANSPARENT ) );
 	}
 }

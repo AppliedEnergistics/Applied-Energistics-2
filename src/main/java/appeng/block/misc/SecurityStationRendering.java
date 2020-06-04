@@ -19,6 +19,7 @@
 package appeng.block.misc;
 
 
+import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -37,6 +38,7 @@ public class SecurityStationRendering extends BlockRenderingCustomizer
 	@OnlyIn( Dist.CLIENT )
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{
+		rendering.renderType(RenderType.getCutout());
 		rendering.blockColor( ColorableTileBlockColor.INSTANCE );
 		itemRendering.color( new StaticItemColor( AEColor.TRANSPARENT ) );
 	}

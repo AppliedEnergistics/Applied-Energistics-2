@@ -37,12 +37,12 @@ import appeng.tile.misc.TileCondenser;
 import appeng.util.Platform;
 
 
-public class BlockCondenser extends AEBaseTileBlock
+public class BlockCondenser extends AEBaseTileBlock<TileCondenser>
 {
 
 	public BlockCondenser()
 	{
-		super( Material.IRON );
+		super( Properties.create(Material.IRON) );
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class BlockCondenser extends AEBaseTileBlock
 			final TileCondenser tc = this.getTileEntity( w, pos );
 			if( tc != null && !player.isCrouching() )
 			{
-				Platform.openGUI( player, tc, AEPartLocation.fromFacing(hit), GuiBridge.GUI_CONDENSER );
+				// FIXME Platform.openGUI( player, tc, AEPartLocation.fromFacing(hit), GuiBridge.GUI_CONDENSER );
 				return ActionResultType.SUCCESS;
 			}
 		}

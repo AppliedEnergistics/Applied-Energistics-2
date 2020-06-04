@@ -25,7 +25,7 @@ import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -45,13 +45,14 @@ public class SpatialPylonRendering extends BlockRenderingCustomizer
 	@OnlyIn( Dist.CLIENT )
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{
-		rendering.builtInModel( MODEL_ID.getResourcePath(), new SpatialPylonModel() );
-		rendering.stateMapper( this::mapState );
+		rendering.renderType(RenderType.getCutout());
+		// FIXME rendering.builtInModel( MODEL_ID.getResourcePath(), new SpatialPylonModel() );
+		// FIXME rendering.stateMapper( this::mapState );
 	}
 
-	private Map<BlockState, ModelResourceLocation> mapState( Block block )
-	{
-		return ImmutableMap.of( block.getDefaultState(), new ModelResourceLocation( MODEL_ID, "normal" ) );
-	}
+	// FIXME private Map<BlockState, ModelResourceLocation> mapState( Block block )
+	// FIXME {
+	// FIXME 	return ImmutableMap.of( block.getDefaultState(), new ModelResourceLocation( MODEL_ID, "normal" ) );
+	// FIXME }
 
 }

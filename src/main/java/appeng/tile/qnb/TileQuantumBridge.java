@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Optional;
 
+import appeng.block.qnb.QnbFormedState;
 import appeng.core.Api;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -32,6 +33,9 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
@@ -52,9 +56,14 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 
+import javax.annotation.Nonnull;
+
 
 public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock, ITickableTileEntity
 {
+
+	public static final ModelProperty<QnbFormedState> FORMED_STATE = new ModelProperty<>();
+
 	private final byte corner = 16;
 	private final AppEngInternalInventory internalInventory = new AppEngInternalInventory( this, 1, 1 );
 	private final byte hasSingularity = 32;
@@ -348,4 +357,16 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	{
 		return this.corner;
 	}
+
+	@Nonnull
+	@Override
+	public IModelData getModelData() {
+		// FIXME must trigger model data updates
+
+		return new ModelDataMap.Builder()
+				.withInitial(FORMED_STATE, new QnbFormedState( getAdjacentQuantumBridges(), isCorner(), isPowered() ))
+				.build();
+
+	}
+
 }

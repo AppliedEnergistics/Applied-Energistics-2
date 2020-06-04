@@ -19,20 +19,19 @@
 package appeng.debug;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
 import appeng.core.AELog;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ToolEraser extends AEBaseItem
@@ -40,11 +39,22 @@ public class ToolEraser extends AEBaseItem
 
 	private static final int BLOCK_ERASE_LIMIT = 90000;
 
+	public ToolEraser(Properties properties) {
+		super(properties);
+	}
+
 	@Override
-	public ActionResultType onItemUseFirst( final PlayerEntity player, final World world, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
-	{
+	public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
 		if( Platform.isClient() )
 		{
+			return ActionResultType.PASS;
+		}
+
+		PlayerEntity player = context.getPlayer();
+		World world = context.getWorld();
+		BlockPos pos = context.getPos();
+
+		if (player == null) {
 			return ActionResultType.PASS;
 		}
 

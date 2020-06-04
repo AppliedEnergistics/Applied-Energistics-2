@@ -27,6 +27,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -38,7 +39,6 @@ import appeng.api.definitions.IBlockDefinition;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.core.Api;
 import appeng.core.localization.GuiText;
-import appeng.util.Platform;
 
 
 public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEItemPowerStorage
@@ -65,8 +65,9 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
 
 			final double percent = internalCurrentPower / internalMaxPower;
 
-			lines.add( GuiText.StoredEnergy.getLocal() + ':' + MessageFormat.format( " {0,number,#} ", internalCurrentPower ) + Platform
-					.gui_localize( PowerUnits.AE.unlocalizedName ) + " - " + MessageFormat.format( " {0,number,#.##%} ", percent ) );
+			lines.add( GuiText.StoredEnergy.textComponent().appendText(':' + MessageFormat.format( " {0,number,#} ", internalCurrentPower ))
+				.appendSibling(new TranslationTextComponent( PowerUnits.AE.unlocalizedName ))
+					.appendText(" - " + MessageFormat.format( " {0,number,#.##%} ", percent )));
 		}
 	}
 

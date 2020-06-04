@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import appeng.core.Api;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;

@@ -19,12 +19,14 @@
 package appeng.block.networking;
 
 
-import net.minecraft.state.IProperty;
-import net.minecraft.block.properties.PropertyInteger;
+import appeng.tile.networking.TileEnergyCell;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.IntegerProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -32,34 +34,21 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import appeng.block.AEBaseTileBlock;
 import appeng.helpers.AEGlassMaterial;
 
-
-public class BlockEnergyCell extends AEBaseTileBlock
+public class BlockEnergyCell extends AEBaseTileBlock<TileEnergyCell>
 {
 
-	public static final PropertyInteger ENERGY_STORAGE = PropertyInteger.create( "fullness", 0, 7 );
-
-	@Override
-	public int getMetaFromState( final BlockState state )
-	{
-		return state.get( ENERGY_STORAGE );
-	}
-
-	@Override
-	public BlockState getStateFromMeta( final int meta )
-	{
-		return this.getDefaultState().with( ENERGY_STORAGE, Math.min( 7, Math.max( 0, meta ) ) );
-	}
+	public static final IntegerProperty ENERGY_STORAGE = IntegerProperty.create( "fullness", 0, 7 );
 
 	public BlockEnergyCell()
 	{
-		super( AEGlassMaterial.INSTANCE );
+		super( Properties.create(AEGlassMaterial.INSTANCE) );
 	}
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
 	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> itemStacks)
 	{
-		super.getSubBlocks( tabs, itemStacks );
+		super.fillItemGroup( group, itemStacks );
 
 		final ItemStack charged = new ItemStack( this, 1 );
         final CompoundNBT tag = charged.getOrCreateTag();
@@ -75,9 +64,9 @@ public class BlockEnergyCell extends AEBaseTileBlock
 	}
 
 	@Override
-	protected IProperty[] getAEStates()
-	{
-		return new IProperty[] { ENERGY_STORAGE };
+	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+		super.fillStateContainer(builder);
+		builder.add(ENERGY_STORAGE);
 	}
 
 }

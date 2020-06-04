@@ -19,8 +19,8 @@
 package appeng.client.render.tesr;
 
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -32,32 +32,34 @@ import appeng.client.render.FacingToRotation;
 import appeng.client.render.renderable.Renderable;
 import appeng.tile.AEBaseTile;
 
+import java.util.List;
+
 
 @OnlyIn( Dist.CLIENT )
 public class ModularTESR<T extends AEBaseTile> extends TileEntityRenderer<T>
 {
 
-	private final Renderable[] renderables;
+	private final List<Renderable<? super T>> renderables;
 
-	public ModularTESR( TileEntityRendererDispatcher rendererDispatcherIn, Renderable... renderables )
+	@SafeVarargs
+	public ModularTESR( TileEntityRendererDispatcher rendererDispatcherIn, Renderable<? super  T>... renderables )
 	{
 		super( rendererDispatcherIn );
-		this.renderables = renderables;
+		this.renderables = ImmutableList.copyOf(renderables);
 	}
 
 	@Override
-	public void render( T te, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn )
+	public void render( T te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers, int combinedLight, int combinedOverlay )
 	{
-		GlStateManager.pushMatrix();
-		GlStateManager.translate( x, y, z );
-		GlStateManager.translate( 0.5, 0.5, 0.5 );
-		FacingToRotation.get( te.getForward(), te.getUp() ).push(matrixStackIn);
-		GlStateManager.translate( -0.5, -0.5, -0.5 );
-		for( Renderable renderable : this.renderables )
+		ms.push();
+		ms.translate( 0.5, 0.5, 0.5 );
+		FacingToRotation.get( te.getForward(), te.getUp() ).push(ms);
+		ms.translate( -0.5, -0.5, -0.5 );
+		for( Renderable<? super T> renderable : this.renderables )
 		{
-			renderable.renderTileEntityAt( te, x, y, z, partialTicks, destroyStage );
+			renderable.renderTileEntityAt( te, partialTicks, ms, buffers, combinedLight, combinedOverlay);
 		}
-		GlStateManager.popMatrix();
+		ms.pop();
 	}
 
 }

@@ -19,85 +19,59 @@
 package appeng.block.qnb;
 
 
+import appeng.block.AEBaseTileBlock;
+import appeng.tile.qnb.TileQuantumBridge;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.block.BlockStateContainer;
 import net.minecraft.block.BlockState;
-import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
-
-import appeng.block.AEBaseTileBlock;
-import appeng.helpers.ICustomCollision;
-import appeng.tile.qnb.TileQuantumBridge;
 
 
-public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICustomCollision
+public abstract class BlockQuantumBase extends AEBaseTileBlock<TileQuantumBridge>
 {
 
 	public static final BooleanProperty FORMED = BooleanProperty.create( "formed" );
 
-	public static final QnbFormedStateProperty FORMED_STATE = new QnbFormedStateProperty();
+	private static final VoxelShape SHAPE;
 
-	public BlockQuantumBase( final Material mat )
-	{
-		super( mat );
+	static {
 		final float shave = 2.0f / 16.0f;
-		this.boundingBox = new AxisAlignedBB( shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave );
-		this.setLightOpacity( 0 );
-		this.setFullSize( this.setOpaque( false ) );
-		this.setDefaultState( this.getDefaultState().with( FORMED, false ) );
+		SHAPE = VoxelShapes.create(new AxisAlignedBB(shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave));
+	}
+
+	public BlockQuantumBase(Block.Properties props) {
+		super(props);
+		this.setFullSize(this.setOpaque(false));
+		this.setDefaultState(this.getDefaultState().with(FORMED, false));
 	}
 
 	@Override
-	protected IProperty[] getAEStates()
-	{
-		return new IProperty[] { FORMED };
+	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+		return SHAPE;
 	}
 
 	@Override
-	protected BlockStateContainer createBlockState()
-	{
-		return new ExtendedBlockState( this, this.getAEStates(), new IUnlistedProperty[] { FORMED_STATE } );
+	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+		super.fillStateContainer(builder);
+		builder.add(FORMED);
 	}
 
 	@Override
-	public BlockState getExtendedState( BlockState state, IBlockReader world, BlockPos pos )
-	{
-		IExtendedBlockState extState = (IExtendedBlockState) state;
-
-		TileQuantumBridge bridge = this.getTileEntity( world, pos );
-		if( bridge != null )
-		{
-			QnbFormedState formedState = new QnbFormedState( bridge.getAdjacentQuantumBridges(), bridge.isCorner(), bridge.isPowered() );
-			extState = extState.with( FORMED_STATE, formedState );
-		}
-
-		return extState;
-	}
-
-	@Override
-	public BlockState getActualState( BlockState state, IBlockReader worldIn, BlockPos pos )
-	{
-		TileQuantumBridge bridge = this.getTileEntity( worldIn, pos );
-		if( bridge != null )
-		{
-			state = state.with( FORMED, bridge.isFormed() );
+	public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos) {
+		TileQuantumBridge bridge = this.getTileEntity(world, pos);
+		if (bridge != null) {
+			state = state.with(FORMED, bridge.isFormed());
 		}
 		return state;
-	}
-
-	@Override
-	public BlockRenderLayer getBlockLayer()
-	{
-		return BlockRenderLayer.CUTOUT;
 	}
 
 	@Override
@@ -121,9 +95,4 @@ public abstract class BlockQuantumBase extends AEBaseTileBlock implements ICusto
 		super.onReplaced( state, w, pos, newState, isMoving );
 	}
 
-	@Override
-	public boolean isFullCube( BlockState state )
-	{
-		return false;
-	}
 }

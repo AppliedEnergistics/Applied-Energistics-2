@@ -169,7 +169,7 @@ public class ItemRepo
 				continue;
 			}
 
-			final String dspName = searchMod ? Platform.getModId( is ) : Platform.getItemDisplayName( is );
+			final String dspName = searchMod ? Platform.getModId( is ) : Platform.getItemDisplayName( is ).getString();
 			boolean foundMatchingItemStack = false;
 			notDone = true;
 

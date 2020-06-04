@@ -19,35 +19,32 @@
 package appeng.block.misc;
 
 
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-
-import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
 import appeng.core.AEConfig;
-
 import appeng.tile.AEBaseTile;
 import appeng.tile.misc.TileVibrationChamber;
 import appeng.util.Platform;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.util.Random;
 
 
-public final class BlockVibrationChamber extends AEBaseTileBlock
+public final class BlockVibrationChamber extends AEBaseTileBlock<TileVibrationChamber>
 {
 
 	// Indicates that the vibration chamber is currently working
@@ -55,25 +52,24 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 
 	public BlockVibrationChamber()
 	{
-		super( Material.IRON );
-		this.setHardness( 4.2F );
+		super( Properties.create(Material.IRON).hardnessAndResistance(4.2F) );
 		this.setDefaultState( this.getDefaultState().with( ACTIVE, false ) );
 	}
 
 	@Override
-	public BlockState getActualState( BlockState state, IBlockReader world, BlockPos pos )
-	{
+	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos) {
+		// FIXME: This must be actively done from within the tile-entity and not passively
 		TileVibrationChamber te = this.getTileEntity( world, pos );
 		boolean active = te != null && te.isOn;
 
-		return super.getActualState( state, world, pos )
+		return super.updatePostPlacement(stateIn, facing, facingState, world, pos, facingPos)
 				.with( ACTIVE, active );
 	}
 
 	@Override
-	protected IProperty[] getAEStates()
-	{
-		return new IProperty[] { ACTIVE };
+	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+		super.fillStateContainer(builder);
+		builder.add(ACTIVE);
 	}
 
 	@Override
@@ -81,7 +77,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 	{
 		if( player.isCrouching() )
 		{
-			return false;
+			return ActionResultType.PASS;
 		}
 
 		if( Platform.isServer() )
@@ -89,7 +85,7 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 			final TileVibrationChamber tc = this.getTileEntity( w, pos );
 			if( tc != null && !player.isCrouching() )
 			{
-				Platform.openGUI( player, tc, AEPartLocation.fromFacing(hit), GuiBridge.GUI_VIBRATION_CHAMBER );
+				// FIXME Platform.openGUI( player, tc, AEPartLocation.fromFacing(hit), GuiBridge.GUI_VIBRATION_CHAMBER );
 				return ActionResultType.SUCCESS;
 			}
 		}
@@ -111,34 +107,34 @@ public final class BlockVibrationChamber extends AEBaseTileBlock
 			final TileVibrationChamber tc = (TileVibrationChamber) tile;
 			if( tc.isOn )
 			{
-				float f1 = pos.getX() + 0.5F;
-				float f2 = pos.getY() + 0.5F;
-				float f3 = pos.getZ() + 0.5F;
+				double f1 = pos.getX() + 0.5F;
+				double f2 = pos.getY() + 0.5F;
+				double f3 = pos.getZ() + 0.5F;
 
 				final Direction forward = tc.getForward();
 				final Direction up = tc.getUp();
 
-				final int west_x = forward.getFrontOffsetY() * up.getFrontOffsetZ() - forward.getFrontOffsetZ() * up.getFrontOffsetY();
-				final int west_y = forward.getFrontOffsetZ() * up.getFrontOffsetX() - forward.getFrontOffsetX() * up.getFrontOffsetZ();
-				final int west_z = forward.getFrontOffsetX() * up.getFrontOffsetY() - forward.getFrontOffsetY() * up.getFrontOffsetX();
+				final int west_x = forward.getYOffset() * up.getZOffset() - forward.getZOffset() * up.getYOffset();
+				final int west_y = forward.getZOffset() * up.getXOffset() - forward.getXOffset() * up.getZOffset();
+				final int west_z = forward.getXOffset() * up.getYOffset() - forward.getYOffset() * up.getXOffset();
 
-				f1 += forward.getFrontOffsetX() * 0.6;
-				f2 += forward.getFrontOffsetY() * 0.6;
-				f3 += forward.getFrontOffsetZ() * 0.6;
+				f1 += forward.getXOffset() * 0.6;
+				f2 += forward.getYOffset() * 0.6;
+				f3 += forward.getZOffset() * 0.6;
 
-				final float ox = r.nextFloat();
-				final float oy = r.nextFloat() * 0.2f;
+				final double ox = r.nextDouble();
+				final double oy = r.nextDouble() * 0.2f;
 
-				f1 += up.getFrontOffsetX() * ( -0.3 + oy );
-				f2 += up.getFrontOffsetY() * ( -0.3 + oy );
-				f3 += up.getFrontOffsetZ() * ( -0.3 + oy );
+				f1 += up.getXOffset() * ( -0.3 + oy );
+				f2 += up.getYOffset() * ( -0.3 + oy );
+				f3 += up.getZOffset() * ( -0.3 + oy );
 
 				f1 += west_x * ( 0.3 * ox - 0.15 );
 				f2 += west_y * ( 0.3 * ox - 0.15 );
 				f3 += west_z * ( 0.3 * ox - 0.15 );
 
-				w.spawnParticle( EnumParticleTypes.SMOKE_NORMAL, f1, f2, f3, 0.0D, 0.0D, 0.0D, new int[0] );
-				w.spawnParticle( EnumParticleTypes.FLAME, f1, f2, f3, 0.0D, 0.0D, 0.0D, new int[0] );
+				w.addParticle(ParticleTypes.SMOKE, f1, f2, f3, 0.0D, 0.0D, 0.0D );
+				w.addParticle(ParticleTypes.FLAME, f1, f2, f3, 0.0D, 0.0D, 0.0D );
 			}
 		}
 	}

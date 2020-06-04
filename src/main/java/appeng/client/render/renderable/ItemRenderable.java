@@ -22,14 +22,13 @@ package appeng.client.render.renderable;
 import java.nio.FloatBuffer;
 import java.util.function.Function;
 
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.util.vector.Matrix4f;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
@@ -45,28 +44,22 @@ public class ItemRenderable<T extends TileEntity> implements Renderable<T>
 	}
 
 	@Override
-	public void renderTileEntityAt( T te, double x, double y, double z, float partialTicks, int destroyStage )
+	public void renderTileEntityAt(T te, float partialTicks, com.mojang.blaze3d.matrix.MatrixStack matrixStack, IRenderTypeBuffer buffers, int combinedLight, int combinedOverlay)
 	{
 		Pair<ItemStack, Matrix4f> pair = this.f.apply( te );
 		if( pair != null && pair.getLeft() != null )
 		{
-			GlStateManager.pushMatrix();
+			matrixStack.push();
 			if( pair.getRight() != null )
 			{
 				FloatBuffer matrix = BufferUtils.createFloatBuffer( 16 );
-				pair.getRight().store( matrix );
-				matrix.flip();
-				GlStateManager.multMatrix( matrix );
+				// FIXME pair.getRight().store( matrix );
+				// FIXME matrix.flip();
+				// FIXME matrixStack.( matrix );
 			}
-			Minecraft.getInstance().getRenderItem().renderItem( pair.getLeft(), TransformType.GROUND );
-			GlStateManager.popMatrix();
+			Minecraft.getInstance().getItemRenderer().renderItem( pair.getLeft(), ItemCameraTransforms.TransformType.GROUND, combinedLight, combinedOverlay, matrixStack, buffers );
+			matrixStack.pop();
 		}
-	}
-
-	@Override
-	public void renderTileEntityFast( T te, double x, double y, double z, float partialTicks, int destroyStage, BufferBuilder buffer )
-	{
-
 	}
 
 }

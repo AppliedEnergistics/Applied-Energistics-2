@@ -19,6 +19,7 @@
 package appeng.block.storage;
 
 
+import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -37,6 +38,8 @@ public class ChestRendering extends BlockRenderingCustomizer
 	@OnlyIn( Dist.CLIENT )
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{
+		rendering.renderType(RenderType.getCutout());
+
 		// I checked, the ME chest doesn't keep its color in item form
 		itemRendering.color( new StaticItemColor( AEColor.TRANSPARENT ) );
 		rendering.blockColor( new ColorableTileBlockColor() );

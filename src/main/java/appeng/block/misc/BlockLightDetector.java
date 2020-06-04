@@ -19,37 +19,32 @@
 package appeng.block.misc;
 
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-
+import appeng.api.util.IOrientable;
+import appeng.api.util.IOrientableBlock;
+import appeng.block.AEBaseTileBlock;
+import appeng.helpers.MetaRotation;
+import appeng.tile.misc.TileLightDetector;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.block.properties.DirectionProperty;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.block.material.Material;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-import appeng.api.util.IOrientable;
-import appeng.api.util.IOrientableBlock;
-import appeng.block.AEBaseTileBlock;
-import appeng.helpers.ICustomCollision;
-import appeng.helpers.MetaRotation;
-import appeng.tile.misc.TileLightDetector;
+import java.util.Random;
 
 
-public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBlock, ICustomCollision
+public class BlockLightDetector extends AEBaseTileBlock<TileLightDetector> implements IOrientableBlock
 {
 
 	// Cannot use the vanilla FACING property here because it excludes facing DOWN
@@ -60,48 +55,33 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 
 	public BlockLightDetector()
 	{
-		super( Material.MISCELLANEOUS );
+		super( Properties.create(Material.MISCELLANEOUS).notSolid() );
 
-		this.setDefaultState( this.blockState.getBaseState().with( FACING, Direction.UP ).with( ODD, false ) );
-		this.setLightOpacity( 0 );
-		this.setFullSize( false );
-		this.setOpaque( false );
+		this.setDefaultState( this.getDefaultState().with( FACING, Direction.UP ).with( ODD, false ) );
 	}
 
 	@Override
-	public int getMetaFromState( final BlockState state )
-	{
-		return state.get( FACING ).ordinal();
-	}
-
-	@Override
-	public BlockState getStateFromMeta( final int meta )
-	{
-		Direction facing = Direction.values()[meta];
-		return this.getDefaultState().with( FACING, facing );
-	}
-
-	@Override
-	protected IProperty[] getAEStates()
-	{
-		return new IProperty[] { FACING, ODD };
+	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+		super.fillStateContainer(builder);
+		builder.add(FACING);
+		builder.add(ODD);
 	}
 
 	@Override
 	public int getWeakPower( final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side )
 	{
-		if( w instanceof World && ( (TileLightDetector) this.getTileEntity( w, pos ) ).isReady() )
+		if( w instanceof World && this.getTileEntity( w, pos ).isReady() )
 		{
-			return ( (World) w ).getLightFromNeighbors( pos ) - 6;
+			// FIXME: This is ... uhm... fishy
+			return ( (World) w ).getLight( pos ) - 6;
 		}
 
 		return 0;
 	}
 
 	@Override
-	public void onNeighborChange( final IBlockReader world, final BlockPos pos, final BlockPos neighbor )
-	{
-		super.onNeighborChange( world, pos, neighbor );
+	public void onNeighborChange(BlockState state, IWorldReader world, BlockPos pos, BlockPos neighbor) {
+		super.onNeighborChange( state, world, pos, neighbor );
 
 		final TileLightDetector tld = this.getTileEntity( world, pos );
 		if( tld != null )
@@ -130,24 +110,18 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final BlockPos pos, final Entity thePlayer, final boolean b )
-	{
+	public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+
 		final Direction up = this.getOrientable( w, pos ).getUp();
-		final double xOff = -0.3 * up.getFrontOffsetX();
-		final double yOff = -0.3 * up.getFrontOffsetY();
-		final double zOff = -0.3 * up.getFrontOffsetZ();
-		return Collections.singletonList( new AxisAlignedBB( xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7 ) );
+		final double xOff = -0.3 * up.getXOffset();
+		final double yOff = -0.3 * up.getYOffset();
+		final double zOff = -0.3 * up.getZOffset();
+		return VoxelShapes.create( new AxisAlignedBB( xOff + 0.3, yOff + 0.3, zOff + 0.3, xOff + 0.7, yOff + 0.7, zOff + 0.7 ) );
 	}
 
 	@Override
-	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
-	{/*
-		 * double xOff = -0.15 * getUp().offsetX; double yOff = -0.15 *
-		 * getUp().offsetY; double zOff = -0.15 * getUp().offsetZ; out.add(
-		 * AxisAlignedBB.getBoundingBox( xOff + (double) x + 0.15, yOff +
-		 * (double) y + 0.15, zOff + (double) z + 0.15,// ahh xOff + (double) x
-		 * + 0.85, yOff + (double) y + 0.85, zOff + (double) z + 0.85 ) );
-		 */
+	public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+		return VoxelShapes.empty();
 	}
 
 	@Override
@@ -178,25 +152,6 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 			}
 		}
 		return false;
-	}
-
-	@Override
-	public boolean usesMetadata()
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isFullCube( BlockState state )
-	{
-		return false;
-	}
-
-	@Override
-	@OnlyIn( Dist.CLIENT )
-	public BlockRenderLayer getBlockLayer()
-	{
-		return BlockRenderLayer.CUTOUT;
 	}
 
 	@Override

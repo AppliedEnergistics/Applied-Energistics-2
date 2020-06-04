@@ -19,56 +19,53 @@
 package appeng.block.misc;
 
 
-import java.util.Random;
-
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseTileBlock;
-import appeng.client.render.effects.LightningFX;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.tile.misc.TileQuartzGrowthAccelerator;
 import appeng.util.Platform;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.Random;
 
 
-public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOrientableBlock
+public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock<TileQuartzGrowthAccelerator> implements IOrientableBlock
 {
 
 	private static final BooleanProperty POWERED = BooleanProperty.create( "powered" );
 
 	public BlockQuartzGrowthAccelerator()
 	{
-		super( Material.ROCK );
-		this.setSoundType( SoundType.METAL );
+		super( Properties.create(Material.ROCK).sound(SoundType.METAL) );
 		this.setDefaultState( this.getDefaultState().with( POWERED, false ) );
 	}
 
 	@Override
-	public BlockState getActualState( BlockState state, IBlockReader world, BlockPos pos )
-	{
+	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos) {
+		// FIXME: This is not correct since placement updates dont occur when the TE updates
 		TileQuartzGrowthAccelerator te = this.getTileEntity( world, pos );
 		boolean powered = te != null && te.isPowered();
 
-		return super.getActualState( state, world, pos )
+		return super.updatePostPlacement(stateIn, facing, facingState, world, pos, facingPos)
 				.with( POWERED, powered );
 	}
 
 	@Override
-	protected IProperty[] getAEStates()
-	{
-		return new IProperty[] { POWERED };
+	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+		super.fillStateContainer(builder);
+		builder.add(POWERED);
 	}
 
 	@OnlyIn( Dist.CLIENT )
@@ -95,9 +92,9 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOr
 			double ry = 0.5 + pos.getY();
 			double rz = 0.5 + pos.getZ();
 
-			rx += up.getFrontOffsetX() * d0;
-			ry += up.getFrontOffsetY() * d0;
-			rz += up.getFrontOffsetZ() * d0;
+			rx += up.getXOffset() * d0;
+			ry += up.getYOffset() * d0;
+			rz += up.getZOffset() * d0;
 
 			final int x = pos.getX();
 			final int y = pos.getY();
@@ -112,25 +109,25 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOr
 				case 0:
 					dx = 0.6;
 					dz = d1;
-					pt = new BlockPos( x + west.getFrontOffsetX(), y + west.getFrontOffsetY(), z + west.getFrontOffsetZ() );
+					pt = new BlockPos( x + west.getXOffset(), y + west.getYOffset(), z + west.getZOffset() );
 
 					break;
 				case 1:
 					dx = d1;
 					dz += 0.6;
-					pt = new BlockPos( x + forward.getFrontOffsetX(), y + forward.getFrontOffsetY(), z + forward.getFrontOffsetZ() );
+					pt = new BlockPos( x + forward.getXOffset(), y + forward.getYOffset(), z + forward.getZOffset() );
 
 					break;
 				case 2:
 					dx = d1;
 					dz = -0.6;
-					pt = new BlockPos( x - forward.getFrontOffsetX(), y - forward.getFrontOffsetY(), z - forward.getFrontOffsetZ() );
+					pt = new BlockPos( x - forward.getXOffset(), y - forward.getYOffset(), z - forward.getZOffset() );
 
 					break;
 				case 3:
 					dx = -0.6;
 					dz = d1;
-					pt = new BlockPos( x - west.getFrontOffsetX(), y - west.getFrontOffsetY(), z - west.getFrontOffsetZ() );
+					pt = new BlockPos( x - west.getXOffset(), y - west.getYOffset(), z - west.getZOffset() );
 
 					break;
 			}
@@ -140,23 +137,17 @@ public class BlockQuartzGrowthAccelerator extends AEBaseTileBlock implements IOr
 				return;
 			}
 
-			rx += dx * west.getFrontOffsetX();
-			ry += dx * west.getFrontOffsetY();
-			rz += dx * west.getFrontOffsetZ();
+			rx += dx * west.getXOffset();
+			ry += dx * west.getYOffset();
+			rz += dx * west.getZOffset();
 
-			rx += dz * forward.getFrontOffsetX();
-			ry += dz * forward.getFrontOffsetY();
-			rz += dz * forward.getFrontOffsetZ();
+			rx += dz * forward.getXOffset();
+			ry += dz * forward.getYOffset();
+			rz += dz * forward.getZOffset();
 
-			final LightningFX fx = new LightningFX( w, rx, ry, rz, 0.0D, 0.0D, 0.0D );
-			Minecraft.getInstance().effectRenderer.addEffect( fx );
+			// FIXME final LightningFX fx = new LightningFX( w, rx, ry, rz, 0.0D, 0.0D, 0.0D );
+			// FIXME Minecraft.getInstance().effectRenderer.addEffect( fx );
 		}
-	}
-
-	@Override
-	public boolean usesMetadata()
-	{
-		return false;
 	}
 
 }

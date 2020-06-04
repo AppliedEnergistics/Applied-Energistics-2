@@ -21,6 +21,7 @@ package appeng.debug;
 
 import java.util.EnumSet;
 
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 
 import appeng.api.networking.IGridNode;
@@ -34,6 +35,10 @@ public class TilePhantomNode extends AENetworkTile
 
 	private AENetworkProxy proxy = null;
 	private boolean crashMode = false;
+
+	public TilePhantomNode(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
+	}
 
 	@Override
 	public IGridNode getGridNode( final AEPartLocation dir )

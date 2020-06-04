@@ -19,31 +19,40 @@
 package appeng.block.networking;
 
 
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
+import appeng.api.parts.IFacadeContainer;
+import appeng.api.parts.PartItemStack;
+import appeng.api.parts.SelectedPart;
+import appeng.api.util.AEColor;
+import appeng.block.AEBaseTileBlock;
+import appeng.client.render.cablebus.CableBusBakedModel;
+import appeng.client.render.cablebus.CableBusBreakingParticle;
+import appeng.client.render.cablebus.CableBusRenderState;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketClick;
+import appeng.helpers.AEGlassMaterial;
+import appeng.parts.ICableBusContainer;
+import appeng.parts.NullCableBusContainer;
+import appeng.tile.AEBaseTile;
+import appeng.tile.networking.TileCableBus;
+import appeng.tile.networking.TileCableBusTESR;
+import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockStateContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleDigging;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.fluid.IFluidState;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.DyeColor;
-import net.minecraft.state.IProperty;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
@@ -54,43 +63,19 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import appeng.api.parts.IFacadeContainer;
-import appeng.api.parts.IFacadePart;
-import appeng.api.parts.PartItemStack;
-import appeng.api.parts.SelectedPart;
-import appeng.api.util.AEColor;
-import appeng.api.util.AEPartLocation;
-import appeng.block.AEBaseTileBlock;
-import appeng.client.UnlistedProperty;
-import appeng.client.render.cablebus.CableBusBakedModel;
-import appeng.client.render.cablebus.CableBusRenderState;
-import appeng.core.AppEng;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.PacketClick;
-import appeng.helpers.AEGlassMaterial;
-import appeng.integration.abstraction.IAEFacade;
-import appeng.parts.ICableBusContainer;
-import appeng.parts.NullCableBusContainer;
-import appeng.tile.AEBaseTile;
-import appeng.tile.networking.CableBusTESR;
-import appeng.tile.networking.TileCableBus;
-import appeng.tile.networking.TileCableBusTESR;
-import appeng.util.Platform;
+import javax.annotation.Nullable;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Random;
 
 
 public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implements IAEFacade */
 {
-
-	public static final UnlistedProperty<CableBusRenderState> RENDER_STATE_PROPERTY = new UnlistedProperty<>( "cable_bus_render_state", CableBusRenderState.class );
 
 	private static final ICableBusContainer NULL_CABLE_BUS = new NullCableBusContainer();
 
@@ -100,35 +85,16 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implem
 
 	public BlockCableBus()
 	{
-		super( AEGlassMaterial.INSTANCE );
-		this.setLightOpacity( 0 );
-		this.setFullSize( false );
-		this.setOpaque( false );
+		super( Properties.create(AEGlassMaterial.INSTANCE).notSolid() );
 
 		// this will actually be overwritten later through setupTile and the
 		// combined layers
-		this.setTileEntity( TileCableBus.class );
+		// FIXME ...uh this.setTileEntity( TileCableBus.class, TileCableBus::new );
 	}
 
 	@Override
-	public boolean isFullCube( BlockState state )
-	{
-		return false;
-	}
-
-	@Override
-	protected BlockStateContainer createBlockState()
-	{
-		return new ExtendedBlockState( this, new IProperty[0], new IUnlistedProperty[] { RENDER_STATE_PROPERTY } );
-	}
-
-	@Override
-	public BlockState getExtendedState( BlockState state, IBlockReader world, BlockPos pos )
-	{
-		CableBusRenderState renderState = this.cb( world, pos ).getRenderState();
-		renderState.setWorld( world );
-		renderState.setPos( pos );
-		return ( (IExtendedBlockState) state ).with( RENDER_STATE_PROPERTY, renderState );
+	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+		return true;
 	}
 
 	@Override
@@ -138,15 +104,8 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implem
 	}
 
 	@Override
-	public void onNeighborChange( final IBlockReader w, final BlockPos pos, final BlockPos neighbor )
-	{
+	public void onNeighborChange(BlockState state, IWorldReader w, BlockPos pos, BlockPos neighbor) {
 		this.cb( w, pos ).onNeighborChanged( w, pos, neighbor );
-	}
-
-	@Override
-	public Item getItemDropped( final BlockState state, final Random rand, final int fortune )
-	{
-		return null;
 	}
 
 	@Override
@@ -164,8 +123,7 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implem
 	}
 
 	@Override
-	public void onEntityCollidedWithBlock( final World w, final BlockPos pos, final BlockState state, final Entity entityIn )
-	{
+	public void onEntityCollision(BlockState state, World w, BlockPos pos, Entity entityIn) {
 		this.cb( w, pos ).onEntityCollision( entityIn );
 	}
 
@@ -188,26 +146,27 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implem
 	}
 
 	@Override
-	public boolean isLadder( final BlockState state, final IBlockReader world, final BlockPos pos, final LivingEntity entity )
-	{
+	public boolean isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity) {
 		return this.cb( world, pos ).isLadder( entity );
 	}
 
+// FIXME: This is now derived from the collision shape, and cannot be decided programatically anymore.
+// FIXME: see Block.hasSolidSide. We need to remove isSolidOnSide
+// FIXME	@Override
+// FIXME	public boolean isSideSolid( final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side )
+// FIXME	{
+// FIXME		return this.cb( w, pos ).isSolidOnSide( side );
+// FIXME	}
+
+
 	@Override
-	public boolean isSideSolid( final BlockState state, final IBlockReader w, final BlockPos pos, final Direction side )
-	{
-		return this.cb( w, pos ).isSolidOnSide( side );
+	public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
+		// FIXME: Potentially check the fluid one too
+		return super.isReplaceable(state, useContext) && this.cb( useContext.getWorld(), useContext.getPos() ).isEmpty();
 	}
 
 	@Override
-	public boolean isReplaceable( final IBlockReader w, final BlockPos pos )
-	{
-		return this.cb( w, pos ).isEmpty();
-	}
-
-	@Override
-	public boolean removedByPlayer( final BlockState state, final World world, final BlockPos pos, final PlayerEntity player, final boolean willHarvest )
-	{
+	public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, IFluidState fluid) {
 		if( player.abilities.isCreativeMode )
 		{
 			final AEBaseTile tile = this.getTileEntity( world, pos );
@@ -217,7 +176,7 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implem
 			}
 			// maybe ray trace?
 		}
-		return super.removedByPlayer( state, world, pos, player, willHarvest );
+		return super.removedByPlayer( state, world, pos, player, willHarvest, fluid );
 	}
 
 	@Override
@@ -232,9 +191,8 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implem
 	}
 
 	@Override
-	public ItemStack getPickBlock( final BlockState state, final RayTraceResult target, final World world, final BlockPos pos, final PlayerEntity player )
-	{
-		final Vec3d v3 = target.hitVec.subtract( pos.getX(), pos.getY(), pos.getZ() );
+	public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
+		final Vec3d v3 = target.getHitVec().subtract( pos.getX(), pos.getY(), pos.getZ() );
 		final SelectedPart sp = this.cb( world, pos ).selectPart( v3 );
 
 		if( sp.part != null )
@@ -261,7 +219,12 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implem
 			return true;
 		}
 
-		ICableBusContainer cb = this.cb( world, target.getBlockPos() );
+		if (target.getType() != Type.BLOCK) {
+			return false;
+		}
+		BlockPos blockPos = new BlockPos(target.getHitVec().x, target.getHitVec().y, target.getHitVec().z);
+
+		ICableBusContainer cb = this.cb( world, blockPos );
 
 		// Our built-in model has the actual baked sprites we need
 		IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getModelForState( this.getDefaultState() );
@@ -280,22 +243,19 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implem
 		TextureAtlasSprite texture = Platform.pickRandom( cableBusModel.getParticleTextures( renderState ) );
 		if( texture != null )
 		{
-			double x = target.hitVec.x;
-			double y = target.hitVec.y;
-			double z = target.hitVec.z;
-
-			Particle fx = new DestroyFX( world, x, y, z, 0.0D, 0.0D, 0.0D, state ).setBlockPos( target.getBlockPos() ).multipleParticleScaleBy( 0.8F );
-			fx.setParticleTexture( texture );
-			effectRenderer.addEffect( fx );
+			double x = target.getHitVec().x;
+			double y = target.getHitVec().y;
+			double z = target.getHitVec().z;
+			// FIXME: Check how this looks, probably like shit, maybe provide parts the ability to supply particle textures???
+			effectRenderer.addEffect(new CableBusBreakingParticle(world, x, y, z, texture)
+					.multipleParticleScaleBy( 0.8F ));
 		}
 
 		return true;
 	}
 
 	@Override
-	@OnlyIn( Dist.CLIENT )
-	public boolean addDestroyEffects( final World world, final BlockPos pos, final ParticleManager effectRenderer )
-	{
+	public boolean addDestroyEffects(BlockState state, World world, BlockPos pos, ParticleManager effectRenderer) {
 		ICableBusContainer cb = this.cb( world, pos );
 
 		// Our built-in model has the actual baked sprites we need
@@ -325,14 +285,14 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implem
 						// Randomly select one of the textures if the cable bus has more than just one possibility here
 						final TextureAtlasSprite texture = Platform.pickRandom( textures );
 
-						final double d0 = pos.getX() + ( j + 0.5D ) / 4.0D;
-						final double d1 = pos.getY() + ( k + 0.5D ) / 4.0D;
-						final double d2 = pos.getZ() + ( l + 0.5D ) / 4.0D;
-						final ParticleDigging particle = new DestroyFX( world, d0, d1, d2, d0 - pos.getX() - 0.5D, d1 - pos
-								.getY() - 0.5D, d2 - pos.getZ() - 0.5D, this.getDefaultState() ).setBlockPos( pos );
+						final double x = pos.getX() + ( j + 0.5D ) / 4.0D;
+						final double y = pos.getY() + ( k + 0.5D ) / 4.0D;
+						final double z = pos.getZ() + ( l + 0.5D ) / 4.0D;
 
-						particle.setParticleTexture( texture );
-						effectRenderer.addEffect( particle );
+						// FIXME: Check how this looks, probably like shit, maybe provide parts the ability to supply particle textures???
+						Particle effect = new CableBusBreakingParticle(world, x, y, z, x - pos.getX() - 0.5D,
+								y - pos.getY() - 0.5D, z - pos.getZ() - 0.5D, texture);
+						effectRenderer.addEffect(effect);
 					}
 				}
 			}
@@ -378,20 +338,21 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implem
 	}
 
 	@Override
-	public void onBlockClicked( World worldIn, BlockPos pos, PlayerEntity playerIn )
-	{
+	public void onBlockClicked(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
 		if( Platform.isClient() )
 		{
 			final RayTraceResult rtr = Minecraft.getInstance().objectMouseOver;
-			if( rtr != null && rtr.typeOfHit == Type.BLOCK && pos.equals( rtr.getBlockPos() ) )
+			if( rtr instanceof BlockRayTraceResult)
 			{
-				final Vec3d hitVec = rtr.hitVec.subtract( new Vec3d( pos ) );
+				BlockRayTraceResult brtr = (BlockRayTraceResult) rtr;
+				if (brtr.getPos().equals(pos)) {
+					final Vec3d hitVec = rtr.getHitVec().subtract(new Vec3d(pos));
 
-				if( this.cb( worldIn, pos ).clicked( playerIn, Hand.MAIN_HAND, hitVec ) )
-				{
-					NetworkHandler.instance()
-							.sendToServer(
-									new PacketClick( pos, rtr.sideHit, (float) hitVec.x, (float) hitVec.y, (float) hitVec.z, Hand.MAIN_HAND, true ) );
+					if (this.cb(worldIn, pos).clicked(player, Hand.MAIN_HAND, hitVec)) {
+						NetworkHandler.instance()
+								.sendToServer(
+										new PacketClick(pos, ((BlockRayTraceResult) rtr).getFace(), (float) hitVec.x, (float) hitVec.y, (float) hitVec.z, Hand.MAIN_HAND, true));
+					}
 				}
 			}
 		}
@@ -405,7 +366,8 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implem
 	@Override
 	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
 	{
-		return this.cb( w, pos ).activate( player, hand, new Vec3d( hitX, hitY, hitZ ) );
+		return this.cb( w, pos ).activate( player, hand, hit.getHitVec() ) ? ActionResultType.SUCCESS
+				: ActionResultType.PASS;
 	}
 
 	@Override
@@ -435,9 +397,9 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implem
 	public void setupTile()
 	{
 		noTesrTile = TileCableBus.class;
-		this.setTileEntity( noTesrTile );
+		// FIXME ... uh ... this.setTileEntity( noTesrTile );
 
-		GameRegistry.registerTileEntity( noTesrTile, AppEng.MOD_ID.toLowerCase() + ":" + "BlockCableBus" );
+		// FIXME oh no... GameRegistry.registerTileEntity( noTesrTile, AppEng.MOD_ID.toLowerCase() + ":" + "BlockCableBus" );
 
 		if( Platform.isClient() )
 		{
@@ -449,33 +411,27 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implem
 	private static void setupTesr()
 	{
 		tesrTile = TileCableBusTESR.class;
-		GameRegistry.registerTileEntity( tesrTile, AppEng.MOD_ID.toLowerCase() + ":" + "ClientOnly_TESR_CableBus" );
-		ClientRegistry.bindTileEntitySpecialRenderer( BlockCableBus.getTesrTile(), new CableBusTESR() );
+		// FIXME oh no... GameRegistry.registerTileEntity( tesrTile, AppEng.MOD_ID.toLowerCase() + ":" + "ClientOnly_TESR_CableBus" );
+		// FIXME oh no... ClientRegistry.bindTileEntitySpecialRenderer( BlockCableBus.getTesrTile(), new CableBusTESR() );
 	}
 
-	@Override
-	public boolean canRenderInLayer( BlockState state, BlockRenderLayer layer )
-	{
-		return true;
-	}
-
-	@Override
-	public BlockState getFacadeState( IBlockReader world, BlockPos pos, Direction side )
-	{
-		if( side != null )
-		{
-			IFacadeContainer container = this.fc( world, pos );
-			if( container != null )
-			{
-				IFacadePart facade = container.getFacade( AEPartLocation.fromFacing( side ) );
-				if( facade != null )
-				{
-					return facade.getBlockState();
-				}
-			}
-		}
-		return world.getBlockState( pos );
-	}
+// FIXME FACADES	@Override
+// FIXME FACADES	public BlockState getFacadeState( IBlockReader world, BlockPos pos, Direction side )
+// FIXME FACADES	{
+// FIXME FACADES		if( side != null )
+// FIXME FACADES		{
+// FIXME FACADES			IFacadeContainer container = this.fc( world, pos );
+// FIXME FACADES			if( container != null )
+// FIXME FACADES			{
+// FIXME FACADES				IFacadePart facade = container.getFacade( AEPartLocation.fromFacing( side ) );
+// FIXME FACADES				if( facade != null )
+// FIXME FACADES				{
+// FIXME FACADES					return facade.getBlockState();
+// FIXME FACADES				}
+// FIXME FACADES			}
+// FIXME FACADES		}
+// FIXME FACADES		return world.getBlockState( pos );
+// FIXME FACADES	}
 
 	public static Class<? extends AEBaseTile> getNoTesrTile()
 	{
@@ -485,16 +441,6 @@ public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implem
 	public static Class<? extends AEBaseTile> getTesrTile()
 	{
 		return tesrTile;
-	}
-
-	// Helper to get access to the protected constructor
-	@OnlyIn( Dist.CLIENT )
-	private static class DestroyFX extends ParticleDigging
-	{
-		DestroyFX( World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, BlockState state )
-		{
-			super( worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn, state );
-		}
 	}
 
 	@Override

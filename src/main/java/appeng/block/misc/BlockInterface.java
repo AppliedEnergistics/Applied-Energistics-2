@@ -19,59 +19,55 @@
 package appeng.block.misc;
 
 
-import javax.annotation.Nullable;
-
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.state.BooleanProperty;
+import appeng.api.util.IOrientable;
+import appeng.block.AEBaseTileBlock;
+import appeng.tile.misc.TileInterface;
+import appeng.util.Platform;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
-import appeng.api.util.AEPartLocation;
-import appeng.api.util.IOrientable;
-import appeng.block.AEBaseTileBlock;
-
-import appeng.tile.misc.TileInterface;
-import appeng.util.Platform;
+import javax.annotation.Nullable;
 
 
-public class BlockInterface extends AEBaseTileBlock
+public class BlockInterface extends AEBaseTileBlock<TileInterface>
 {
 
 	private static final BooleanProperty OMNIDIRECTIONAL = BooleanProperty.create( "omnidirectional" );
 
 	public BlockInterface()
 	{
-		super( Material.IRON );
+		super( Properties.create(Material.IRON) );
 	}
 
 	@Override
-	protected IProperty[] getAEStates()
-	{
-		return new IProperty[] { OMNIDIRECTIONAL };
+	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+		super.fillStateContainer(builder);
+		builder.add(OMNIDIRECTIONAL);
 	}
 
 	@Override
-	public BlockState getActualState( BlockState state, IBlockReader world, BlockPos pos )
-	{
+	public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos) {
 		// Determine whether the interface is omni-directional or not
-		TileInterface te = this.getTileEntity( world, pos );
+		TileInterface te = this.getTileEntity(world, pos);
 		boolean omniDirectional = true; // The default
-		if( te != null )
-		{
+		if (te != null) {
 			omniDirectional = te.isOmniDirectional();
 		}
 
-		return super.getActualState( state, world, pos )
-				.with( OMNIDIRECTIONAL, omniDirectional );
+		return super.updatePostPlacement(state, facing, facingState, world, pos, facingPos)
+				.with(OMNIDIRECTIONAL, omniDirectional);
 	}
 
 	@Override
@@ -87,7 +83,7 @@ public class BlockInterface extends AEBaseTileBlock
 		{
 			if( Platform.isServer() )
 			{
-				Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_INTERFACE );
+				// FIXME Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_INTERFACE );
 			}
 			return ActionResultType.SUCCESS;
 		}

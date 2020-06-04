@@ -33,7 +33,7 @@ public class ItemSorters
 
 	public static final Comparator<IAEItemStack> CONFIG_BASED_SORT_BY_NAME = ( o1, o2 ) ->
 	{
-		final int cmp = Platform.getItemDisplayName( o1 ).compareToIgnoreCase( Platform.getItemDisplayName( o2 ) );
+		final int cmp = Platform.getItemDisplayName( o1 ).getString().compareToIgnoreCase( Platform.getItemDisplayName( o2 ).getString() );
 		return applyDirection( cmp );
 	};
 
@@ -45,7 +45,7 @@ public class ItemSorters
 
 		if( cmp == 0 )
 		{
-			cmp = Platform.getItemDisplayName( o1 ).compareToIgnoreCase( Platform.getItemDisplayName( o2 ) );
+			cmp = Platform.getItemDisplayName( o1 ).getString().compareToIgnoreCase( Platform.getItemDisplayName( o2 ).getString() );
 		}
 
 		return applyDirection( cmp );

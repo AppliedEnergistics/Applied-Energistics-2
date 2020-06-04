@@ -19,45 +19,23 @@
 package appeng.block.spatial;
 
 
+import appeng.block.AEBaseTileBlock;
+import appeng.helpers.AEGlassMaterial;
+import appeng.tile.spatial.TileSpatialPylon;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockStateContainer;
 import net.minecraft.block.BlockState;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
-
-import appeng.block.AEBaseTileBlock;
-import appeng.client.render.spatial.SpatialPylonStateProperty;
-import appeng.helpers.AEGlassMaterial;
-import appeng.tile.spatial.TileSpatialPylon;
 
 
-public class BlockSpatialPylon extends AEBaseTileBlock
+public class BlockSpatialPylon extends AEBaseTileBlock<TileSpatialPylon>
 {
 
-	public static final SpatialPylonStateProperty STATE = new SpatialPylonStateProperty();
 
 	public BlockSpatialPylon()
 	{
-		super( AEGlassMaterial.INSTANCE );
-	}
-
-	@Override
-	protected BlockStateContainer createBlockState()
-	{
-		return new ExtendedBlockState( this, this.getAEStates(), new IUnlistedProperty[] { STATE } );
-	}
-
-	@Override
-	public BlockState getExtendedState( BlockState state, IBlockReader world, BlockPos pos )
-	{
-		IExtendedBlockState extState = (IExtendedBlockState) state;
-
-		return extState.with( STATE, this.getDisplayState( world, pos ) );
+		super( Properties.create(AEGlassMaterial.INSTANCE) );
 	}
 
 	@Override
@@ -79,24 +57,6 @@ public class BlockSpatialPylon extends AEBaseTileBlock
 			return tsp.getLightValue();
 		}
 		return super.getLightValue( state, w, pos );
-	}
-
-	private int getDisplayState( IBlockReader world, BlockPos pos )
-	{
-		TileSpatialPylon te = this.getTileEntity( world, pos );
-
-		if( te == null )
-		{
-			return 0;
-		}
-
-		return te.getDisplayBits();
-	}
-
-	@Override
-	public BlockRenderLayer getBlockLayer()
-	{
-		return BlockRenderLayer.CUTOUT;
 	}
 
 }

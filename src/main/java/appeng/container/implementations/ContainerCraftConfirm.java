@@ -114,7 +114,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 		}
 		else
 		{
-			this.setName( this.cpus.get( this.getSelectedCpu() ).getName() );
+			this.setName( this.cpus.get( this.getSelectedCpu() ).getName().getString() );
 			this.setCpuAvailableBytes( this.cpus.get( this.getSelectedCpu() ).getSize() );
 			this.setCpuCoProcessors( this.cpus.get( this.getSelectedCpu() ).getProcessors() );
 		}
@@ -306,7 +306,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 		}
 		else if( this.getSelectedCpu() != -1 )
 		{
-			this.setName( this.cpus.get( this.getSelectedCpu() ).getName() );
+			this.setName( this.cpus.get( this.getSelectedCpu() ).getName().getString() );
 			this.setCpuAvailableBytes( this.cpus.get( this.getSelectedCpu() ).getSize() );
 			this.setCpuCoProcessors( this.cpus.get( this.getSelectedCpu() ).getProcessors() );
 		}

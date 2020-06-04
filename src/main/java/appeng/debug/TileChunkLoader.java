@@ -19,76 +19,53 @@
 package appeng.debug;
 
 
-import java.util.List;
-
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.ForgeChunkManager.Ticket;
-import net.minecraftforge.common.ForgeChunkManager.Type;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-
 import appeng.core.AELog;
-import appeng.core.AppEng;
 import appeng.tile.AEBaseTile;
-import appeng.util.Platform;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 
-public class TileChunkLoader extends AEBaseTile implements ITickableTileEntity
-{
+public class TileChunkLoader extends AEBaseTile implements ITickableTileEntity {
 
-	private boolean requestTicket = true;
-	private Ticket ct = null;
+    public TileChunkLoader(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+    }
 
-	@Override
-	public void tick()
-	{
-		if( this.requestTicket )
-		{
-			this.requestTicket = false;
-			this.initTicket();
-		}
-	}
+    @Override
+    public void onLoad() {
+        super.onLoad();
 
-	private void initTicket()
-	{
-		if( Platform.isClient() )
-		{
-			return;
-		}
+        World world = getWorld();
+        if (world instanceof ServerWorld) {
+            ChunkPos chunkPos = new ChunkPos(getPos());
+            ((ServerWorld) world).forceChunk(chunkPos.x, chunkPos.z, true);
+        }
+    }
 
-		this.ct = ForgeChunkManager.requestTicket( AppEng.instance(), this.world, Type.NORMAL );
+    @Override
+    public void remove() {
+        World world = getWorld();
+        if (world instanceof ServerWorld) {
+            ChunkPos chunkPos = new ChunkPos(getPos());
+            ((ServerWorld) world).forceChunk(chunkPos.x, chunkPos.z, false);
+        }
+    }
 
-		if( this.ct == null )
-		{
-			final MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-			if( server != null )
-			{
-				final List<ServerPlayerEntity> pl = server.getPlayerList().getPlayers();
-				for( final ServerPlayerEntity p : pl )
-				{
-					p.sendMessage( new StringTextComponent( "Can't chunk load.." ) );
-				}
-			}
-			return;
-		}
+    @Override
+    public void tick() {
+        // Validate the force-status
+        World world = getWorld();
+        if (world instanceof ServerWorld) {
+            ChunkPos chunkPos = new ChunkPos(getPos());
+            ServerWorld serverWorld = (ServerWorld) world;
 
-		AELog.info( "New Ticket " + this.ct.toString() );
-		ForgeChunkManager.forceChunk( this.ct, new ChunkPos( this.pos.getX() >> 4, this.pos.getZ() >> 4 ) );
-	}
-
-	@Override
-	public void invalidate()
-	{
-		if( Platform.isClient() )
-		{
-			return;
-		}
-
-		AELog.info( "Released Ticket " + this.ct.toString() );
-		ForgeChunkManager.releaseTicket( this.ct );
-	}
+            if (!serverWorld.getForcedChunks().contains(chunkPos.asLong())) {
+                AELog.debug("Force-loading chunk @ %d,%d in %s", chunkPos.x, chunkPos.z, serverWorld.dimension.getType().getRegistryName());
+                serverWorld.forceChunk(chunkPos.x, chunkPos.z, false);
+            }
+        }
+    }
 }

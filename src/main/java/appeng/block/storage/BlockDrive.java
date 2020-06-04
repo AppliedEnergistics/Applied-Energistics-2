@@ -19,64 +19,27 @@
 package appeng.block.storage;
 
 
-import javax.annotation.Nullable;
-
+import appeng.block.AEBaseTileBlock;
+import appeng.tile.storage.TileDrive;
+import appeng.util.Platform;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.BlockStateContainer;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
 
-import appeng.api.util.AEPartLocation;
-import appeng.block.AEBaseTileBlock;
-import appeng.client.UnlistedProperty;
-
-import appeng.tile.storage.TileDrive;
-import appeng.util.Platform;
+import javax.annotation.Nullable;
 
 
-public class BlockDrive extends AEBaseTileBlock
+public class BlockDrive extends AEBaseTileBlock<TileDrive>
 {
-
-	public static final UnlistedProperty<DriveSlotsState> SLOTS_STATE = new UnlistedProperty<>( "drive_slots_state", DriveSlotsState.class );
 
 	public BlockDrive()
 	{
-		super( Material.IRON );
-	}
-
-	@Override
-	public BlockRenderLayer getBlockLayer()
-	{
-		return BlockRenderLayer.CUTOUT;
-	}
-
-	@Override
-	protected BlockStateContainer createBlockState()
-	{
-		return new ExtendedBlockState( this, this.getAEStates(), new IUnlistedProperty[] {
-				SLOTS_STATE,
-				FORWARD,
-				UP
-		} );
-	}
-
-	@Override
-	public BlockState getExtendedState( BlockState state, IBlockReader world, BlockPos pos )
-	{
-		TileDrive te = this.getTileEntity( world, pos );
-		IExtendedBlockState extState = (IExtendedBlockState) super.getExtendedState( state, world, pos );
-		return extState.with( SLOTS_STATE, te == null ? DriveSlotsState.createEmpty( 10 ) : DriveSlotsState.fromChestOrDrive( te ) );
+		super( Properties.create(Material.IRON) );
 	}
 
 	@Override
@@ -92,7 +55,7 @@ public class BlockDrive extends AEBaseTileBlock
 		{
 			if( Platform.isServer() )
 			{
-				Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_DRIVE );
+				// FIXME Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_DRIVE );
 			}
 			return ActionResultType.SUCCESS;
 		}

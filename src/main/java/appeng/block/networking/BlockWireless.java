@@ -19,33 +19,30 @@
 package appeng.block.networking;
 
 
-import java.util.Collections;
-import java.util.List;
-
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyEnum;
+import appeng.block.AEBaseTileBlock;
+import appeng.helpers.AEGlassMaterial;
+import appeng.tile.networking.TileWireless;
+import appeng.util.Platform;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.state.EnumProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
-import appeng.api.util.AEPartLocation;
-import appeng.block.AEBaseTileBlock;
 
-import appeng.helpers.AEGlassMaterial;
-import appeng.helpers.ICustomCollision;
-import appeng.tile.networking.TileWireless;
-import appeng.util.Platform;
-
-
-public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
+public class BlockWireless extends AEBaseTileBlock<TileWireless>
 {
 
 	enum State implements IStringSerializable
@@ -61,29 +58,22 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 		}
 	}
 
-	public static final PropertyEnum<State> STATE = PropertyEnum.create( "state", State.class );
+	public static final EnumProperty<State> STATE = EnumProperty.create( "state", State.class );
 
 	public BlockWireless()
 	{
-		super( AEGlassMaterial.INSTANCE );
-		this.setLightOpacity( 0 );
+		super( Properties.create(AEGlassMaterial.INSTANCE) );
 		this.setFullSize( false );
 		this.setOpaque( false );
 		this.setDefaultState( this.getDefaultState().with( STATE, State.OFF ) );
 	}
 
+	// FIXME This has to be triggered by the tile entity's state changing directly
 	@Override
-	public BlockRenderLayer getBlockLayer()
-	{
-		return BlockRenderLayer.CUTOUT;
-	}
-
-	@Override
-	public BlockState getActualState( BlockState state, IBlockReader worldIn, BlockPos pos )
-	{
+	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld world, BlockPos pos, BlockPos facingPos) {
 		State teState = State.OFF;
 
-		TileWireless te = this.getTileEntity( worldIn, pos );
+		TileWireless te = this.getTileEntity( world, pos );
 		if( te != null )
 		{
 			if( te.isActive() )
@@ -96,36 +86,34 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 			}
 		}
 
-		return super.getActualState( state, worldIn, pos )
+		return super.updatePostPlacement(stateIn, facing, facingState, world, pos, facingPos)
 				.with( STATE, teState );
 	}
 
 	@Override
-	protected IProperty[] getAEStates()
-	{
-		return new IProperty[] { STATE };
+	protected void fillStateContainer(StateContainer.Builder builder) {
+		super.fillStateContainer(builder);
+		builder.add(STATE);
 	}
 
 	@Override
-	public boolean onBlockActivated( final World w, final BlockPos pos, final BlockState state, final PlayerEntity player, final Hand hand, final Direction side, final float hitX, final float hitY, final float hitZ )
-	{
+	public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
 		final TileWireless tg = this.getTileEntity( w, pos );
 
 		if( tg != null && !player.isCrouching() )
 		{
 			if( Platform.isServer() )
 			{
-				Platform.openGUI( player, tg, AEPartLocation.fromFacing( side ), GuiBridge.GUI_WIRELESS );
+				// FIXME Platform.openGUI( player, tg, AEPartLocation.fromFacing( side ), GuiBridge.GUI_WIRELESS );
 			}
-			return true;
+			return ActionResultType.SUCCESS;
 		}
 
-		return super.onBlockActivated( w, pos, state, player, hand, side, hitX, hitY, hitZ );
+		return super.onBlockActivated( state, w, pos, player, hand, hit );
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final BlockPos pos, final Entity thePlayer, final boolean b )
-	{
+	public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
 		final TileWireless tile = this.getTileEntity( w, pos );
 		if( tile != null )
 		{
@@ -180,14 +168,14 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 					break;
 			}
 
-			return Collections.singletonList( new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ ) );
+			return VoxelShapes.create( new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ ) );
 		}
-		return Collections.singletonList( new AxisAlignedBB( 0.0, 0, 0.0, 1.0, 1.0, 1.0 ) );
+		return VoxelShapes.fullCube();
 	}
 
 	@Override
-	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
-	{
+	public VoxelShape getCollisionShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+
 		final TileWireless tile = this.getTileEntity( w, pos );
 		if( tile != null )
 		{
@@ -242,18 +230,17 @@ public class BlockWireless extends AEBaseTileBlock implements ICustomCollision
 					break;
 			}
 
-			out.add( new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ ) );
+			return VoxelShapes.create( new AxisAlignedBB( minX, minY, minZ, maxX, maxY, maxZ ) );
 		}
 		else
 		{
-			out.add( new AxisAlignedBB( 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 ) );
+			return VoxelShapes.fullCube();
 		}
 	}
 
 	@Override
-	public boolean isFullCube( BlockState state )
-	{
-		return false;
+	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+		return true;
 	}
 
 }

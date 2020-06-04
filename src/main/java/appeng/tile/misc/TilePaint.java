@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import appeng.block.paint.PaintSplotches;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.block.BlockState;
@@ -42,10 +43,17 @@ import appeng.api.util.AEColor;
 import appeng.helpers.Splotch;
 import appeng.items.misc.ItemPaintBall;
 import appeng.tile.AEBaseTile;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelProperty;
+
+import javax.annotation.Nonnull;
 
 
 public class TilePaint extends AEBaseTile
 {
+
+	public static final ModelProperty<PaintSplotches> SPLOTCHES = new ModelProperty<>();
 
 	private static final int LIGHT_PER_DOT = 12;
 
@@ -282,5 +290,14 @@ public class TilePaint extends AEBaseTile
 		}
 
 		return this.dots;
+	}
+
+	@Nonnull
+	@Override
+	public IModelData getModelData() {
+		// FIXME update trigger
+		return new ModelDataMap.Builder()
+				.withInitial(SPLOTCHES, new PaintSplotches(getDots()))
+				.build();
 	}
 }
