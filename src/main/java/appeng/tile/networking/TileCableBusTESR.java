@@ -20,10 +20,15 @@ package appeng.tile.networking;
 
 
 import appeng.block.networking.BlockCableBus;
+import net.minecraft.tileentity.TileEntityType;
 
 
 public class TileCableBusTESR extends TileCableBus
 {
+
+	public TileCableBusTESR(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
+	}
 
 	/**
 	 * Changes this tile to the non-TESR version, if none of the parts require dynamic rendering.

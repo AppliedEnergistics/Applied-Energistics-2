@@ -37,9 +37,7 @@ import appeng.container.implementations.ContainerCraftAmount;
 import appeng.container.implementations.ContainerCraftConfirm;
 import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.util.Platform;
 
 
 public class PacketCraftRequest extends AppEngPacket
@@ -102,7 +100,7 @@ public class PacketCraftRequest extends AppEngPacket
 					if( context != null )
 					{
 						final TileEntity te = context.getTile();
-						Platform.openGUI( player, te, cca.getOpenContext().getSide(), GuiBridge.GUI_CRAFTING_CONFIRM );
+						// FIXME Platform.openGUI( player, te, cca.getOpenContext().getSide(), GuiBridge.GUI_CRAFTING_CONFIRM );
 
 						if( player.openContainer instanceof ContainerCraftConfirm )
 						{

@@ -27,7 +27,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -50,7 +50,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.core.AEConfig;
 import appeng.core.Api;
 import appeng.core.localization.GuiText;
-import appeng.core.sync.GuiBridge;
+
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.CellUpgrades;
 import appeng.items.contents.PortableCellViewer;
@@ -68,15 +68,8 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell<
 	@Override
 	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity player, final Hand hand )
 	{
-		Platform.openGUI( player, null, AEPartLocation.INTERNAL, GuiBridge.GUI_PORTABLE_CELL );
+		// FIXME Platform.openGUI( player, null, AEPartLocation.INTERNAL, GuiBridge.GUI_PORTABLE_CELL );
 		return new ActionResult<>( ActionResultType.SUCCESS, player.getHeldItem( hand ) );
-	}
-
-	@OnlyIn( Dist.CLIENT )
-	@Override
-	public boolean isFull3D()
-	{
-		return false;
 	}
 
 	@Override
@@ -145,7 +138,7 @@ public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell<
 	@Override
 	public String getUnlocalizedGroupName( final Set<ItemStack> others, final ItemStack is )
 	{
-		return GuiText.StorageCells.getUnlocalized();
+		return GuiText.StorageCells.getTranslationKey();
 	}
 
 	@Override

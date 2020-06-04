@@ -51,6 +51,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
+import javax.annotation.Nonnull;
+
 
 @Mod(AppEng.MOD_ID)
 public final class AppEng
@@ -83,6 +85,7 @@ public final class AppEng
 		if (INSTANCE != null) {
 			throw new IllegalStateException();
 		}
+		INSTANCE = this;
 
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, AEConfig.CLIENT_SPEC);
 
@@ -126,12 +129,15 @@ public final class AppEng
 		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "sky_compass"), SkyCompassModelLoader.INSTANCE);
 	}
 
-//	@Nonnull
-//	public static AppEng instance()
-//	{
-//		return INSTANCE;
-//	}
-//
+	@Nonnull
+	public static AppEng instance()
+	{
+		if (INSTANCE == null) {
+			throw new IllegalStateException();
+		}
+		return INSTANCE;
+	}
+
 //	public Biome getStorageBiome()
 //	{
 //		return this.registration.storageBiome;

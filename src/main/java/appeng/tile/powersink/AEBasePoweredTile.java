@@ -20,12 +20,16 @@ package appeng.tile.powersink;
 
 
 import java.util.EnumSet;
+import java.util.Set;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import appeng.api.config.AccessRestriction;
@@ -35,8 +39,6 @@ import appeng.api.config.PowerUnits;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.MENetworkPowerStorage.PowerEventType;
 import appeng.capabilities.Capabilities;
-import appeng.integration.Integrations;
-import appeng.integration.abstraction.IC2PowerSink;
 import appeng.tile.AEBaseInvTile;
 
 
@@ -50,32 +52,31 @@ public abstract class AEBasePoweredTile extends AEBaseInvTile implements IAEPowe
 	private AccessRestriction internalPowerFlow = AccessRestriction.READ_WRITE;
 	// the current power buffer.
 	private double internalCurrentPower = 0;
-	private EnumSet<Direction> internalPowerSides = EnumSet.allOf( Direction.class );
+	private static final Set<Direction> ALL_SIDES = ImmutableSet.copyOf(EnumSet.allOf( Direction.class ));
+	private Set<Direction> internalPowerSides = ALL_SIDES;
 	private final IEnergyStorage forgeEnergyAdapter;
-	private Object teslaEnergyAdapter;
+	// Cache the optional to not continuously re-allocate it or the supplier
+	private final LazyOptional<IEnergyStorage> forgeEnergyAdapterOptional;
 
-	private IC2PowerSink ic2Sink;
+	// IC2 private IC2PowerSink ic2Sink;
 
-	public AEBasePoweredTile()
-	{
+	public AEBasePoweredTile(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
 		this.forgeEnergyAdapter = new ForgeEnergyAdapter( this );
-		if( Capabilities.TESLA_CONSUMER != null )
-		{
-			this.teslaEnergyAdapter = new TeslaEnergyAdapter( this );
-		}
-		this.ic2Sink = Integrations.ic2().createPowerSink( this, this );
-		this.ic2Sink.setValidFaces( this.internalPowerSides );
+		this.forgeEnergyAdapterOptional = LazyOptional.of(() -> forgeEnergyAdapter);
+		// IC2 this.ic2Sink = Integrations.ic2().createPowerSink( this, this );
+		// IC2 this.ic2Sink.setValidFaces( this.internalPowerSides );
 	}
 
-	protected EnumSet<Direction> getPowerSides()
+	protected final Set<Direction> getPowerSides()
 	{
-		return this.internalPowerSides.clone();
+		return this.internalPowerSides;
 	}
 
-	protected void setPowerSides( final EnumSet<Direction> sides )
+	protected void setPowerSides( final Set<Direction> sides )
 	{
-		this.internalPowerSides = sides;
-		this.ic2Sink.setValidFaces( sides );
+		this.internalPowerSides = ImmutableSet.copyOf(sides);
+		// IC2 this.ic2Sink.setValidFaces( sides );
 		// trigger re-calc!
 	}
 
@@ -248,65 +249,53 @@ public abstract class AEBasePoweredTile extends AEBaseInvTile implements IAEPowe
 	{
 		super.onReady();
 
-		this.ic2Sink.onLoad();
+		// IC2 this.ic2Sink.onLoad();
+	}
+
+
+
+	@Override
+	public void onChunkUnloaded()
+	{
+		super.onChunkUnloaded();
+
+		// IC2 this.ic2Sink.onChunkUnloaded();
 	}
 
 	@Override
-	public void onChunkUnload()
+	public void remove()
 	{
-		super.onChunkUnload();
+		super.remove();
 
-		this.ic2Sink.onChunkUnload();
+		// IC2 this.ic2Sink.invalidate();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Nonnull
 	@Override
-	public void invalidate()
-	{
-		super.invalidate();
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability) {
 
-		this.ic2Sink.invalidate();
+		if( capability == Capabilities.FORGE_ENERGY ) {
+			if (this.getPowerSides().equals(ALL_SIDES)) {
+				return (LazyOptional<T>) this.forgeEnergyAdapterOptional;
+			}
+		}
+
+		return super.getCapability( capability );
+
 	}
 
+	@SuppressWarnings("unchecked")
+	@Nonnull
 	@Override
-	public boolean hasCapability( Capability<?> capability, Direction facing )
-	{
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
 		if( capability == Capabilities.FORGE_ENERGY )
 		{
 			if( this.getPowerSides().contains( facing ) )
 			{
-				return true;
+				return (LazyOptional<T>) this.forgeEnergyAdapterOptional;
 			}
 		}
-		else if( capability == Capabilities.TESLA_CONSUMER )
-		{
-			if( this.getPowerSides().contains( facing ) )
-			{
-				return true;
-			}
-		}
-
-		return super.hasCapability( capability, facing );
-	}
-
-	@SuppressWarnings( "unchecked" )
-	@Override
-	public <T> T getCapability( Capability<T> capability, @Nullable Direction facing )
-	{
-		if( capability == Capabilities.FORGE_ENERGY )
-		{
-			if( this.getPowerSides().contains( facing ) )
-			{
-				return (T) this.forgeEnergyAdapter;
-			}
-		}
-		else if( capability == Capabilities.TESLA_CONSUMER )
-		{
-			if( this.getPowerSides().contains( facing ) )
-			{
-				return (T) this.teslaEnergyAdapter;
-			}
-		}
-
 		return super.getCapability( capability, facing );
 	}
 

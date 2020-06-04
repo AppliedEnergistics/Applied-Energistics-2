@@ -33,6 +33,7 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.hooks.BasicEventHooks;
@@ -94,7 +95,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	private final List<TileCraftingMonitorTile> status = new ArrayList<>();
 	private final HashMap<IMEMonitorHandlerReceiver<IAEItemStack>, Object> listeners = new HashMap<>();
 	private ICraftingLink myLastLink;
-	private String myName = "";
+	private ITextComponent myName = null;
 	private boolean isDestroyed = false;
 	/**
 	 * crafting job info
@@ -971,7 +972,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 	}
 
 	@Override
-	public String getName()
+	public ITextComponent getName()
 	{
 		return this.myName;
 	}
@@ -1258,19 +1259,19 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU
 
 	public void updateName()
 	{
-		this.myName = "";
+		this.myName = null;
 		for( final TileCraftingTile te : this.tiles )
 		{
 
 			if( te.hasCustomInventoryName() )
 			{
-				if( this.myName.length() > 0 )
+				if( this.myName != null )
 				{
-					this.myName += ' ' + te.getCustomInventoryName();
+					this.myName.appendText(" ").appendSibling(te.getCustomInventoryName());
 				}
 				else
 				{
-					this.myName = te.getCustomInventoryName();
+					this.myName = te.getCustomInventoryName().shallowCopy();
 				}
 			}
 		}

@@ -21,6 +21,7 @@ package appeng.bootstrap;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.color.IBlockColor;
@@ -54,5 +55,8 @@ public interface IBlockRendering
 
 	@OnlyIn( Dist.CLIENT )
 	IBlockRendering renderType(RenderType type);
+
+	@OnlyIn( Dist.CLIENT )
+	IBlockRendering renderType(Predicate<RenderType> type);
 
 }

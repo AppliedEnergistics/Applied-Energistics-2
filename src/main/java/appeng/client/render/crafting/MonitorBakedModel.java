@@ -78,7 +78,7 @@ class MonitorBakedModel extends CraftingCubeBakedModel
 
 		// Now add the three layered light textures
 		AEColor color = getColor( state );
-		boolean powered = state.getValue( BlockCraftingMonitor.POWERED );
+		boolean powered = state.get( BlockCraftingMonitor.POWERED );
 
 		builder.setRenderFullBright( powered );
 

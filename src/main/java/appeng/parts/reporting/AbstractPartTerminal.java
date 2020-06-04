@@ -38,7 +38,7 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IConfigManager;
-import appeng.core.sync.GuiBridge;
+
 import appeng.me.GridAccessException;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.ConfigManager;
@@ -117,16 +117,16 @@ public abstract class AbstractPartTerminal extends AbstractPartDisplay implement
 		{
 			if( Platform.isServer() )
 			{
-				Platform.openGUI( player, this.getHost().getTile(), this.getSide(), this.getGui( player ) );
+				// FIXME Platform.openGUI( player, this.getHost().getTile(), this.getSide(), this.getGui( player ) );
 			}
 		}
 		return true;
 	}
 
-	public GuiBridge getGui( final PlayerEntity player )
-	{
-		return GuiBridge.GUI_ME;
-	}
+// FIXME	public GuiBridge getGui( final PlayerEntity player )
+// FIXME	{
+// FIXME		return GuiBridge.GUI_ME;
+// FIXME	}
 
 	@Override
 	public <T extends IAEStack<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )

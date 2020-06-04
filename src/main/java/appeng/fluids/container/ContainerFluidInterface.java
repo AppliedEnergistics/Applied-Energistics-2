@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 
 import appeng.api.config.SecurityPermissions;
@@ -40,9 +41,9 @@ public class ContainerFluidInterface extends ContainerFluidConfigurable
 	private final DualityFluidInterface myDuality;
 	private final FluidSyncHelper tankSync;
 
-	public ContainerFluidInterface( final PlayerInventory ip, final IFluidInterfaceHost te )
+	public ContainerFluidInterface(ContainerType<?> containerType, int id, final PlayerInventory ip, final IFluidInterfaceHost te )
 	{
-		super( ip, te.getDualityFluidInterface().getHost() );
+		super( containerType, id,ip, te.getDualityFluidInterface().getHost() );
 
 		this.myDuality = te.getDualityFluidInterface();
 		this.tankSync = new FluidSyncHelper( this.myDuality.getTanks(), DualityFluidInterface.NUMBER_OF_TANKS );

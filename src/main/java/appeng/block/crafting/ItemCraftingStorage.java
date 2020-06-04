@@ -19,6 +19,7 @@
 package appeng.block.crafting;
 
 
+import appeng.core.Api;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
@@ -30,9 +31,8 @@ import appeng.api.features.AEFeature;
 public class ItemCraftingStorage extends AEBaseBlockItem
 {
 
-	public ItemCraftingStorage( final Block id )
-	{
-		super( id );
+	public ItemCraftingStorage(Block id, Properties props) {
+		super(id, props);
 	}
 
 	@Override

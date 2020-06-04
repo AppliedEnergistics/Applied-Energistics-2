@@ -19,15 +19,16 @@
 package appeng.helpers;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
+import appeng.util.Platform;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
-import appeng.util.Platform;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class InvalidPatternHelper
@@ -117,9 +118,10 @@ public class InvalidPatternHelper
 			return !this.stack.isEmpty();
 		}
 
-		public String getName()
+		public ITextComponent getName()
 		{
-			return this.isValid() ? Platform.getItemDisplayName( this.stack ) : this.id + '@' + String.valueOf( this.getDamage() );
+			return this.isValid() ? Platform.getItemDisplayName( this.stack.getDisplayName() )
+					: new StringTextComponent(this.id + '@' + this.getDamage());
 		}
 
 		public int getDamage()
@@ -142,13 +144,13 @@ public class InvalidPatternHelper
 			return this.stack;
 		}
 
-		public String getFormattedToolTip()
+		public ITextComponent getFormattedToolTip()
 		{
-			String result = String.valueOf( this.getCount() ) + ' ' + this.getName();
+			ITextComponent result = new StringTextComponent( this.getCount() + " " ).appendSibling( this.getName() );
 
 			if( !this.isValid() )
 			{
-				result = TextFormatting.RED + ( ' ' + result );
+				result.applyTextStyle(TextFormatting.RED);
 			}
 
 			return result;

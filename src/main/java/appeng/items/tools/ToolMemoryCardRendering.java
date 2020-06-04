@@ -8,7 +8,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.bootstrap.IItemRendering;
 import appeng.bootstrap.ItemRenderingCustomizer;
-import appeng.client.render.model.MemoryCardModel;
 import appeng.core.AppEng;
 
 
@@ -21,7 +20,7 @@ public class ToolMemoryCardRendering extends ItemRenderingCustomizer
 	@OnlyIn( Dist.CLIENT )
 	public void customize( IItemRendering rendering )
 	{
-		rendering.builtInModel( "models/item/builtin/memory_card", new MemoryCardModel() );
+		// FIXME rendering.builtInModel( "models/item/builtin/memory_card", new MemoryCardModel() );
 		rendering.model( new ModelResourceLocation( MODEL, "inventory" ) ).variants( MODEL );
 	}
 }

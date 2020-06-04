@@ -19,12 +19,13 @@
 package appeng.block.crafting;
 
 
-public class BlockCraftingStorage extends BlockCraftingUnit
+import appeng.tile.crafting.TileCraftingStorageTile;
+
+public class BlockCraftingStorage extends AbstractCraftingUnitBlock<TileCraftingStorageTile>
 {
 
-	public BlockCraftingStorage( final CraftingUnitType type )
-	{
-		super( type );
+	public BlockCraftingStorage(Properties props, CraftingUnitType type) {
+		super(props, type);
 	}
 
 }

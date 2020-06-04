@@ -19,25 +19,6 @@
 package appeng.tile.networking;
 
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IPart;
@@ -49,31 +30,52 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.block.networking.BlockCableBus;
 import appeng.helpers.AEMultiTile;
-import appeng.helpers.ICustomCollision;
 import appeng.hooks.TickHandler;
 import appeng.parts.CableBusContainer;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 
-public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomCollision
+public class TileCableBus extends AEBaseTile implements AEMultiTile
 {
 
 	private CableBusContainer cb = new CableBusContainer( this );
 
 	private int oldLV = -1; // on re-calculate light when it changes
 
+	public TileCableBus(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
+	}
+
 	@Override
-	public void readFromNBT( final CompoundNBT data )
+	public void read(final CompoundNBT data )
 	{
-		super.readFromNBT( data );
+		super.read( data );
 		this.getCableBus().readFromNBT( data );
 	}
 
 	@Override
-	public CompoundNBT writeToNBT( final CompoundNBT data )
+	public CompoundNBT write(final CompoundNBT data )
 	{
-		super.writeToNBT( data );
+		super.write( data );
 		this.getCableBus().writeToNBT( data );
 		return data;
 	}
@@ -88,7 +90,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		if( newLV != this.oldLV )
 		{
 			this.oldLV = newLV;
-			this.world.checkLight( this.pos );
+			this.world.getLightManager().checkBlock( this.pos );
 			ret = true;
 		}
 
@@ -138,9 +140,9 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public void invalidate()
+	public void remove()
 	{
-		super.invalidate();
+		super.remove();
 		this.getCableBus().removeFromWorld();
 	}
 
@@ -170,9 +172,9 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public void onChunkUnload()
+	public void onChunkUnloaded()
 	{
-		super.onChunkUnload();
+		super.onChunkUnloaded();
 		this.getCableBus().removeFromWorld();
 	}
 
@@ -188,7 +190,7 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 		if( newLV != this.oldLV )
 		{
 			this.oldLV = newLV;
-			this.world.checkLight( this.pos );
+			this.world.getLightManager().checkBlock( this.pos );
 		}
 
 		super.markForUpdate();
@@ -291,12 +293,6 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final BlockPos pos, final Entity e, final boolean visual )
-	{
-		return this.getCableBus().getSelectedBoundingBoxesFromPool( false, true, e, visual );
-	}
-
-	@Override
 	public SelectedPart selectPart( final Vec3d pos )
 	{
 		return this.getCableBus().selectPart( pos );
@@ -339,15 +335,6 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
-	{
-		for( final AxisAlignedBB bx : this.getSelectedBoundingBoxesFromPool( w, pos, e, false ) )
-		{
-			out.add( new AxisAlignedBB( bx.minX, bx.minY, bx.minZ, bx.maxX, bx.maxY, bx.maxZ ) );
-		}
-	}
-
-	@Override
 	public void notifyNeighbors()
 	{
 		if( this.world != null && this.world.isBlockLoaded( this.pos ) && !CableBusContainer.isLoading() )
@@ -379,25 +366,13 @@ public class TileCableBus extends AEBaseTile implements AEMultiTile, ICustomColl
 	}
 
 	@Override
-	public boolean hasCapability( Capability<?> capabilityClass, @Nullable Direction fromSide )
+	public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, @Nullable Direction fromSide )
 	{
 		// Note that null will be translated to INTERNAL here
 		AEPartLocation partLocation = AEPartLocation.fromFacing( fromSide );
 
 		IPart part = this.getPart( partLocation );
-		boolean result = part != null && part.hasCapability( capabilityClass );
-
-		return result || super.hasCapability( capabilityClass, fromSide );
-	}
-
-	@Override
-	public <T> T getCapability( Capability<T> capabilityClass, @Nullable Direction fromSide )
-	{
-		// Note that null will be translated to INTERNAL here
-		AEPartLocation partLocation = AEPartLocation.fromFacing( fromSide );
-
-		IPart part = this.getPart( partLocation );
-		T result = part == null ? null : part.getCapability( capabilityClass );
+		LazyOptional<T> result = part == null ? LazyOptional.empty() : part.getCapability(capabilityClass);
 
 		if( result != null )
 		{

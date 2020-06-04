@@ -29,7 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -71,9 +71,9 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 	protected final MaterialType component;
 	protected final int totalBytes;
 
-	public AbstractStorageCell( final MaterialType whichCell, final int kilobytes )
-	{
-		this.setMaxStackSize( 1 );
+	public AbstractStorageCell(Properties properties, final MaterialType whichCell, final int kilobytes ) {
+		super(properties);
+		// FIXME this.setMaxStackSize( 1 ); ---- see point of registration
 		this.totalBytes = kilobytes * 1024;
 		this.component = whichCell;
 	}
@@ -120,7 +120,7 @@ public abstract class AbstractStorageCell<T extends IAEStack<T>> extends AEBaseI
 	@Override
 	public String getUnlocalizedGroupName( final Set<ItemStack> others, final ItemStack is )
 	{
-		return GuiText.StorageCells.getUnlocalized();
+		return GuiText.StorageCells.getTranslationKey();
 	}
 
 	@Override

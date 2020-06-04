@@ -23,6 +23,7 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
@@ -54,8 +55,8 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	private IItemHandler cacheConfig = null;
 	private boolean locked = false;
 
-	public TileCellWorkbench()
-	{
+	public TileCellWorkbench(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
 		this.manager.registerSetting( Settings.COPY_MODE, CopyMode.CLEAR_ON_REMOVE );
 		this.cell.setEnableClientEvents( true );
 	}
@@ -103,9 +104,9 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	}
 
 	@Override
-	public CompoundNBT writeToNBT( final CompoundNBT data )
+	public CompoundNBT write(final CompoundNBT data )
 	{
-		super.writeToNBT( data );
+		super.write( data );
 		this.cell.writeToNBT( data, "cell" );
 		this.config.writeToNBT( data, "config" );
 		this.manager.writeToNBT( data );
@@ -113,9 +114,9 @@ public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, I
 	}
 
 	@Override
-	public void readFromNBT( final CompoundNBT data )
+	public void read(final CompoundNBT data )
 	{
-		super.readFromNBT( data );
+		super.read( data );
 		this.cell.readFromNBT( data, "cell" );
 		this.config.readFromNBT( data, "config" );
 		this.manager.readFromNBT( data );

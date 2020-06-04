@@ -29,7 +29,7 @@ import net.minecraft.tileentity.TileEntity;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerOpenContext;
 import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.GuiBridge;
+
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
 

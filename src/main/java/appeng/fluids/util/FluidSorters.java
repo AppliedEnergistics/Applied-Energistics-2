@@ -37,11 +37,12 @@ public class FluidSorters
 
 	public static final Comparator<IAEFluidStack> CONFIG_BASED_SORT_BY_NAME = ( o1, o2 ) ->
 	{
+		// FIXME: Calling .getString() to compare two untranslated strings is a problem, we need to investigate how to do this better
 		if( getDirection() == SortDir.ASCENDING )
 		{
-			return Platform.getFluidDisplayName( o1 ).compareToIgnoreCase( Platform.getFluidDisplayName( o2 ) );
+			return Platform.getFluidDisplayName( o1 ).getString().compareToIgnoreCase( Platform.getFluidDisplayName( o2 ).getString() );
 		}
-		return Platform.getFluidDisplayName( o2 ).compareToIgnoreCase( Platform.getFluidDisplayName( o1 ) );
+		return Platform.getFluidDisplayName( o2 ).getString().compareToIgnoreCase( Platform.getFluidDisplayName( o1 ).getString() );
 	};
 
 	public static final Comparator<IAEFluidStack> CONFIG_BASED_SORT_BY_MOD = new Comparator<IAEFluidStack>()
@@ -64,7 +65,8 @@ public class FluidSorters
 		{
 			if( compareToIgnoreCase == 0 )
 			{
-				return Platform.getFluidDisplayName( o2 ).compareToIgnoreCase( Platform.getFluidDisplayName( o1 ) );
+				// FIXME: Calling .getString() to compare two untranslated strings is a problem, we need to investigate how to do this better
+				return Platform.getFluidDisplayName( o2 ).getString().compareToIgnoreCase( Platform.getFluidDisplayName( o1 ).getString() );
 			}
 
 			return compareToIgnoreCase;

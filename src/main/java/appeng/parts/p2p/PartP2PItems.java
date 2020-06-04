@@ -28,6 +28,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
@@ -230,24 +231,13 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IItemHa
 		}
 	}
 
-	@Override
-	public boolean hasCapability( Capability<?> capabilityClass )
-	{
-		if( capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
-		{
-			return true;
-		}
-
-		return super.hasCapability( capabilityClass );
-	}
-
 	@SuppressWarnings( "unchecked" )
 	@Override
-	public <T> T getCapability( Capability<T> capabilityClass )
+	public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass )
 	{
 		if( capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
 		{
-			return (T) this;
+			return (LazyOptional<T>) LazyOptional.of(() ->this);
 		}
 
 		return super.getCapability( capabilityClass );

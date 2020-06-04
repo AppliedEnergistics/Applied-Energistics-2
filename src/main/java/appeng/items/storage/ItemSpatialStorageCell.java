@@ -39,7 +39,7 @@ import appeng.capabilities.Capabilities;
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
-import appeng.spatial.StorageHelper;
+import net.minecraftforge.common.util.LazyOptional;
 
 
 public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorageCell
@@ -51,9 +51,10 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 
 	private final int maxRegion;
 
-	public ItemSpatialStorageCell( final int spatialScale )
+	public ItemSpatialStorageCell( Properties props, final int spatialScale )
 	{
-		this.setMaxStackSize( 1 );
+		super(props);
+		// FIXME this.setMaxStackSize( 1 );
 		this.maxRegion = spatialScale;
 	}
 
@@ -64,13 +65,13 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 		final int id = this.getStoredDimensionID( stack );
 		if( id >= 0 )
 		{
-			lines.add( GuiText.CellId.getLocal() + ": " + id );
+			lines.add( GuiText.CellId.textComponent().appendText( ": " + id ) );
 		}
 
 		final WorldCoord wc = this.getStoredSize( stack );
 		if( wc.x > 0 )
 		{
-			lines.add( GuiText.StoredSize.getLocal() + ": " + wc.x + " x " + wc.y + " x " + wc.z );
+			lines.add( GuiText.StoredSize.textComponent().appendText( ": " + wc.x + " x " + wc.y + " x " + wc.z ) );
 		}
 	}
 
@@ -89,17 +90,19 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 	@Override
 	public ISpatialDimension getSpatialDimension()
 	{
-		final int id = AppEng.instance().getStorageDimensionID();
-		World w = DimensionManager.getWorld( id );
-		if( w == null )
-		{
-			DimensionManager.initDimension( id );
-			w = DimensionManager.getWorld( id );
-		}
+		World w = null;
+// FIXME		final int id = AppEng.instance().getStorageDimensionID();
+// FIXME		World w = DimensionManager.getWorld( id );
+// FIXME		if( w == null )
+// FIXME		{
+// FIXME			DimensionManager.initDimension( id );
+// FIXME			w = DimensionManager.getWorld( id );
+// FIXME		}
 
-		if( w != null && w.hasCapability( Capabilities.SPATIAL_DIMENSION, null ) )
+		if( w != null )
 		{
-			return w.getCapability( Capabilities.SPATIAL_DIMENSION, null );
+			LazyOptional<ISpatialDimension> spatialCap = w.getCapability(Capabilities.SPATIAL_DIMENSION, null);
+			return spatialCap.orElse(null);
 		}
 		return null;
 	}
@@ -157,10 +160,10 @@ public class ItemSpatialStorageCell extends AEBaseItem implements ISpatialStorag
 						BlockPos offset = manager.getCellDimensionOrigin( cellid );
 
 						this.setStorageCell( is, cellid, targetSize );
-						StorageHelper.getInstance()
-								.swapRegions( w, min.x + 1, min.y + 1, min.z + 1, manager.getWorld(), offset.getX(), offset.getY(),
-										offset.getZ(), targetX - 1, targetY - 1,
-										targetZ - 1 );
+						// FIXME StorageHelper.getInstance()
+						// FIXME 		.swapRegions( w, min.x + 1, min.y + 1, min.z + 1, manager.getWorld(), offset.getX(), offset.getY(),
+						// FIXME 				offset.getZ(), targetX - 1, targetY - 1,
+						// FIXME 				targetZ - 1 );
 
 						return new TransitionResult( true, 0 );
 					}

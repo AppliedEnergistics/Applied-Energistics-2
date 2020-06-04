@@ -18,13 +18,10 @@
 
 package appeng.block.crafting;
 
-
-import appeng.block.AEBaseTileBlock;
-import appeng.tile.crafting.TileMolecularAssembler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.BooleanProperty;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -32,49 +29,71 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
+import appeng.block.AEBaseTileBlock;
+import appeng.tile.crafting.TileCraftingTile;
 
-public class BlockMolecularAssembler extends AEBaseTileBlock<TileMolecularAssembler>
+
+public abstract class AbstractCraftingUnitBlock<T extends TileCraftingTile> extends AEBaseTileBlock<T>
 {
-
+	public static final BooleanProperty FORMED = BooleanProperty.create( "formed" );
 	public static final BooleanProperty POWERED = BooleanProperty.create( "powered" );
 
-	public BlockMolecularAssembler(Block.Properties props)
+	public final CraftingUnitType type;
+
+	public AbstractCraftingUnitBlock(Block.Properties props, final CraftingUnitType type )
 	{
 		super( props );
+		this.type = type;
 	}
 
 	@Override
 	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
 		super.fillStateContainer(builder);
 		builder.add(POWERED);
+		builder.add(FORMED);
 	}
 
-// FIXME: This apparently was used to update block states purely client-side... this wont work anymore :|
-// FIXME	@Override
-// FIXME	public BlockState getActualState( BlockState state, IBlockReader worldIn, BlockPos pos )
-// FIXME	{
-// FIXME		boolean powered = false;
-// FIXME		TileMolecularAssembler te = this.getTileEntity( worldIn, pos );
-// FIXME		if( te != null )
-// FIXME		{
-// FIXME			powered = te.isPowered();
-// FIXME		}
-// FIXME
-// FIXME		return super.getActualState( state, worldIn, pos ).with( POWERED, powered );
-// FIXME	}
+	@Override
+	public void neighborChanged( final BlockState state, final World worldIn, final BlockPos pos, final Block blockIn, final BlockPos fromPos, boolean isMoving )
+	{
+		final TileCraftingTile cp = this.getTileEntity( worldIn, pos );
+		if( cp != null )
+		{
+			cp.updateMultiBlock();
+		}
+	}
+
+	@Override
+	public void onReplaced(BlockState state, World w, BlockPos pos, BlockState newState, boolean isMoving)
+	{
+		final TileCraftingTile cp = this.getTileEntity( w, pos );
+		if( cp != null )
+		{
+			cp.breakCluster();
+		}
+
+		super.onReplaced( state, w, pos, newState, isMoving );
+	}
 
 	@Override
 	public ActionResultType onBlockActivated(BlockState state, World w, BlockPos pos, PlayerEntity p, Hand hand, BlockRayTraceResult hit) {
-		final TileMolecularAssembler tg = this.getTileEntity( w, pos );
-		if( tg != null && !p.isCrouching() )
+		final TileCraftingTile tg = this.getTileEntity( w, pos );
+
+		if( tg != null && !p.isCrouching() && tg.isFormed() && tg.isActive() )
 		{
-			if (!tg.isRemote()) {
-				// FIXME Platform.openGUI(p, tg, AEPartLocation.fromFacing(side), GuiBridge.GUI_MAC);
+			if ( !w.isRemote() )
+			{
+				// FIXME Platform.openGUI( p, tg, AEPartLocation.fromFacing( side ), GuiBridge.GUI_CRAFTING_CPU );
 			}
+
 			return ActionResultType.SUCCESS;
 		}
 
 		return super.onBlockActivated(state, w, pos, p, hand, hit);
 	}
 
+	public enum CraftingUnitType
+	{
+		UNIT, ACCELERATOR, STORAGE_1K, STORAGE_4K, STORAGE_16K, STORAGE_64K, MONITOR
+	}
 }

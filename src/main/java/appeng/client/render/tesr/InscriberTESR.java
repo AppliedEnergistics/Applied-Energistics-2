@@ -2,18 +2,15 @@
 package appeng.client.render.tesr;
 
 
-import org.lwjgl.opengl.GL11;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -39,32 +36,35 @@ public final class InscriberTESR extends TileEntityRenderer<TileInscriber>
 
 	private static TextureAtlasSprite textureInside;
 
+	public InscriberTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
+		super(rendererDispatcherIn);
+	}
+
 	@Override
-	public void render( final TileInscriber tile, final double x, final double y, final double z, final float partialTicks, final int destroyStage, final float p_render_10_ )
-	{
+	public void render(TileInscriber tile, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers, int combinedLight, int combinedOverlay) {
+
 		// render inscriber
 
-		GlStateManager.pushMatrix();
-		GlStateManager.translate( x, y, z );
-		GlStateManager.translate( 0.5F, 0.5F, 0.5F );
-		FacingToRotation.get( tile.getForward(), tile.getUp() ).push(matrixStack);
-		GlStateManager.translate( -0.5F, -0.5F, -0.5F );
+		ms.push();
+		ms.translate( 0.5F, 0.5F, 0.5F );
+		FacingToRotation.get( tile.getForward(), tile.getUp() ).push(ms);
+		ms.translate( -0.5F, -0.5F, -0.5F );
 
-		RenderSystem.color4f( 1.0F, 1.0F, 1.0F, 1.0F );
-		RenderSystem.disableLighting();
-		GlStateManager.disableRescaleNormal();
+		// FIXME RenderSystem.color4f( 1.0F, 1.0F, 1.0F, 1.0F );
+		// FIXME RenderSystem.disableLighting();
+		// FIXME RenderSystem.disableRescaleNormal();
 
 		// render sides of stamps
 
 		Minecraft mc = Minecraft.getInstance();
-		mc.renderEngine.bindTexture( AtlasTexture.LOCATION_BLOCKS_TEXTURE );
+//		FIXME RenderingEngine.getInstance().bindTexture( AtlasTexture.LOCATION_BLOCKS_TEXTURE );
 
 		// << 20 | light << 4;
-		final int br = tile.getWorld().getCombinedLight( tile.getPos(), 0 );
-		final int var11 = br % 65536;
-		final int var12 = br / 65536;
+		// FIXME final int br = combinedLight;
+		// FIXME final int var11 = br % 65536;
+		// FIXME final int var12 = br / 65536;
 
-		OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, var11, var12 );
+		// FIXME OpenGlHelper.setLightmapTextureCoords( OpenGlHelper.lightmapTexUnit, var11, var12 );
 
 		long absoluteProgress = 0;
 
@@ -88,8 +88,10 @@ public final class InscriberTESR extends TileEntityRenderer<TileInscriber>
 		float press = 0.2f;
 		press -= progress / 5.0f;
 
-		final BufferBuilder buffer = Tessellator.getInstance().getBuffer();
-		buffer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX );
+		IVertexBuilder buffer = buffers.getBuffer(RenderType.getSolid());
+
+//		final BufferBuilder buffer = Tessellator.getInstance().getBuffer();
+		// FIXME buffer.begin( GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX );
 
 		float middle = 0.5f;
 		middle += 0.02f;
@@ -128,7 +130,7 @@ public final class InscriberTESR extends TileEntityRenderer<TileInscriber>
 		Tessellator.getInstance().draw();
 
 		// render items.
-		RenderSystem.color4f( 1.0F, 1.0F, 1.0F, 1.0F );
+//		FIXME RenderSystem.color4f( 1.0F, 1.0F, 1.0F, 1.0F );
 
 		IItemHandler tileInv = tile.getInternalInventory();
 
@@ -159,46 +161,46 @@ public final class InscriberTESR extends TileEntityRenderer<TileInscriber>
 				}
 			}
 
-			this.renderItem( is, 0.0f, tile, x, y, z );
+			this.renderItem( ms, is, 0.0f, buffers, combinedLight, combinedOverlay );
 		}
 		else
 		{
-			this.renderItem( tileInv.getStackInSlot( 0 ), press, tile, x, y, z );
-			this.renderItem( tileInv.getStackInSlot( 1 ), -press, tile, x, y, z );
-			this.renderItem( tileInv.getStackInSlot( 2 ), 0.0f, tile, x, y, z );
+			this.renderItem( ms, tileInv.getStackInSlot( 0 ), press, buffers, combinedLight, combinedOverlay );
+			this.renderItem( ms, tileInv.getStackInSlot( 1 ), -press, buffers, combinedLight, combinedOverlay );
+			this.renderItem( ms, tileInv.getStackInSlot( 2 ), 0.0f, buffers, combinedLight, combinedOverlay );
 		}
 
-		GlStateManager.popMatrix();
-		RenderSystem.enableLighting();
-		GlStateManager.enableRescaleNormal();
+		ms.pop();
+		// FIXME RenderSystem.enableLighting();
+		// FIXME GlStateManager.enableRescaleNormal();
 	}
 
-	private void renderItem( final ItemStack stack, final float o, final AEBaseTile tile, final double x, final double y, final double z )
+	private void renderItem( MatrixStack ms, final ItemStack stack, final float o, IRenderTypeBuffer buffers, int combinedLight, int combinedOverlay )
 	{
 		if( !stack.isEmpty() )
 		{
-			final ItemStack sis = stack.copy();
+			final ItemStack sis = stack.copy(); // FIXME WHY????
 
-			GlStateManager.pushMatrix();
+			ms.push();
 			// move to center
-			GlStateManager.translate( 0.5f, 0.5f + o, 0.5f );
-			GlStateManager.rotate( 90, 1, 0, 0 );
+			ms.translate( 0.5f, 0.5f + o, 0.5f );
+			ms.rotate( new Quaternion(90, 0, 0, true) );
 			// set scale
-			GlStateManager.scale( ITEM_RENDER_SCALE, ITEM_RENDER_SCALE, ITEM_RENDER_SCALE );
+			ms.scale( ITEM_RENDER_SCALE, ITEM_RENDER_SCALE, ITEM_RENDER_SCALE );
 
 			// heuristic to scale items down much further than blocks
 			if( !( sis.getItem() instanceof BlockItem ) )
 			{
-				GlStateManager.scale( 0.5, 0.5, 0.5 );
+				ms.scale( 0.5f, 0.5f, 0.5f );
 			}
 
-			Minecraft.getInstance().getRenderItem().renderItem( sis, ItemCameraTransforms.TransformType.FIXED );
-			GlStateManager.popMatrix();
+			Minecraft.getInstance().getItemRenderer().renderItem(sis, ItemCameraTransforms.TransformType.FIXED, combinedLight, combinedOverlay, ms, buffers);
+			ms.pop();
 		}
 	}
 
 	public static void registerTexture( TextureStitchEvent.Pre event )
 	{
-		textureInside = event.getMap().registerSprite( TEXTURE_INSIDE );
+		// FIXME textureInside = event.getMap().registerSprite( TEXTURE_INSIDE );
 	}
 }

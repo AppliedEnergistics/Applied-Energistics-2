@@ -21,12 +21,11 @@ package appeng.container.implementations;
 
 import java.io.IOException;
 
+import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IContainerListener;
 
-import appeng.api.AEApi;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.CraftingItemList;
 import appeng.api.networking.crafting.ICraftingCPU;
@@ -48,6 +47,9 @@ import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.util.text.ITextComponent;
 
 
 public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorHandlerReceiver<IAEItemStack>, ICustomNameObject
@@ -56,14 +58,14 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	private final IItemList<IAEItemStack> list = Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ).createList();
 	private IGrid network;
 	private CraftingCPUCluster monitor = null;
-	private String cpuName = null;
+	private ITextComponent cpuName = null;
 
 	@GuiSync( 0 )
 	public long eta = -1;
 
-	public ContainerCraftingCPU( final PlayerInventory ip, final Object te )
+	public ContainerCraftingCPU(ContainerType<?> containerType, int id, final PlayerInventory ip, final Object te )
 	{
-		super( ip, te );
+		super( containerType, id, ip, te );
 		final IActionHost host = (IActionHost) ( te instanceof IActionHost ? te : null );
 
 		if( host != null && host.getActionableNode() != null )
@@ -121,7 +123,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 		else
 		{
 			this.setMonitor( null );
-			this.cpuName = "";
+			this.cpuName = null;
 			this.setEstimatedTime( -1 );
 		}
 	}
@@ -238,7 +240,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	}
 
 	@Override
-	public String getCustomInventoryName()
+	public ITextComponent getCustomInventoryName()
 	{
 		return this.cpuName;
 	}
@@ -246,7 +248,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 	@Override
 	public boolean hasCustomInventoryName()
 	{
-		return this.cpuName != null && this.cpuName.length() > 0;
+		return this.cpuName != null;
 	}
 
 	public long getEstimatedTime()

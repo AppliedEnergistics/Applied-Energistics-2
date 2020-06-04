@@ -1285,9 +1285,10 @@ public class CableBusContainer extends CableBusStorage implements AEMultiTile, I
 			final ItemStack textureItem = facade.getTextureItem();
 			final BlockState blockState = facade.getBlockState();
 
-			if( blockState != null && textureItem != null )
+			World world = getTile().getWorld();
+			if( blockState != null && textureItem != null && world != null )
 			{
-				return new FacadeRenderState( blockState, !facade.getBlockState().isOpaqueCube() );
+				return new FacadeRenderState( blockState, !facade.getBlockState().isOpaqueCube(world, getTile().getPos()) );
 			}
 		}
 

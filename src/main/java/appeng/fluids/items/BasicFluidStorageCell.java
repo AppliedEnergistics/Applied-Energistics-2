@@ -45,9 +45,9 @@ public final class BasicFluidStorageCell extends AbstractStorageCell<IAEFluidSta
 	private final int perType;
 	private final double idleDrain;
 
-	public BasicFluidStorageCell( final MaterialType whichCell, final int kilobytes )
+	public BasicFluidStorageCell(Properties props, final MaterialType whichCell, final int kilobytes )
 	{
-		super( whichCell, kilobytes );
+		super( props, whichCell, kilobytes );
 		switch( whichCell )
 		{
 			case FLUID_CELL1K_PART:

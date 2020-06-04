@@ -110,9 +110,48 @@ public class AEFluidInventory implements IAEFluidTank
 		return stack != FluidStack.EMPTY;
 	}
 
+	public int fill( final int slot, final FluidStack resource, final boolean doFill )
+	{
+		if( resource.isEmpty()|| resource.getAmount() <= 0 )
+		{
+			return 0;
+		}
+
+		final IAEFluidStack fluid = this.fluids[slot];
+
+		if( fluid != null && !fluid.getFluidStack().equals( resource ) )
+		{
+			return 0;
+		}
+
+		int amountToStore = this.capacity;
+
+		if( fluid != null )
+		{
+			amountToStore -= fluid.getStackSize();
+		}
+
+		amountToStore = Math.min( amountToStore, resource.getAmount() );
+
+		if( doFill )
+		{
+			if( fluid == null )
+			{
+				this.setFluidInSlot( slot, AEFluidStack.fromFluidStack( resource ) );
+			}
+			else
+			{
+				fluid.setStackSize( fluid.getStackSize() + amountToStore );
+				this.onContentChanged( slot );
+			}
+		}
+
+		return amountToStore;
+	}
+
 	@Override
 	public int fill(FluidStack resource, FluidAction action) {
-		if( resource == null || resource == FluidStack.EMPTY || resource.getAmount() <= 0 )
+		if( resource == null || resource.isEmpty() || resource.getAmount() <= 0 )
 		{
 			return 0;
 		}
@@ -158,18 +197,18 @@ public class AEFluidInventory implements IAEFluidTank
 	{
 		if( fluid == null || fluid.getAmount() <= 0 )
 		{
-			return null;
+			return FluidStack.EMPTY;
 		}
 
 		final FluidStack resource = fluid.copy();
 
-		FluidStack totalDrained = null;
+		FluidStack totalDrained = FluidStack.EMPTY;
 		for( int slot = 0; slot < this.getSlots(); ++slot )
 		{
 			FluidStack drain = this.drain( slot, resource, action == FluidAction.EXECUTE );
 			if( drain != null )
 			{
-				if( totalDrained == null )
+				if( totalDrained.isEmpty() )
 				{
 					totalDrained = drain;
 				}
@@ -193,18 +232,18 @@ public class AEFluidInventory implements IAEFluidTank
 	{
 		if( maxDrain == 0 )
 		{
-			return null;
+			return FluidStack.EMPTY;
 		}
 
-		FluidStack totalDrained = null;
+		FluidStack totalDrained = FluidStack.EMPTY;
 		int toDrain = maxDrain;
 
 		for( int slot = 0; slot < this.getSlots(); ++slot )
 		{
-			if( totalDrained == null )
+			if( totalDrained.isEmpty() )
 			{
 				totalDrained = this.drain( slot, toDrain, action == FluidAction.EXECUTE );
-				if( totalDrained != null )
+				if( totalDrained.isEmpty() )
 				{
 					toDrain -= totalDrained.getAmount();
 				}
@@ -250,7 +289,7 @@ public class AEFluidInventory implements IAEFluidTank
 	public FluidStack drain( final int slot, final FluidStack resource, final boolean doDrain )
 	{
 		final IAEFluidStack fluid = this.fluids[slot];
-		if( resource == null || fluid == null || !fluid.equals( resource ) )
+		if( resource.isEmpty() || fluid == null || !fluid.getFluidStack().equals( resource ) )
 		{
 			return null;
 		}

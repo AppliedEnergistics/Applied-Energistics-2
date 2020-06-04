@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.items.IItemHandler;
@@ -69,9 +70,9 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 	private IGrid grid;
 	private CompoundNBT data = new CompoundNBT();
 
-	public ContainerInterfaceTerminal( final PlayerInventory ip, final PartInterfaceTerminal anchor )
+	public ContainerInterfaceTerminal(ContainerType<?> containerType, int id, final PlayerInventory ip, final PartInterfaceTerminal anchor )
 	{
-		super( ip, anchor );
+		super( containerType, id, ip, anchor );
 
 		if( Platform.isServer() )
 		{
@@ -372,7 +373,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 	private void addItems( final CompoundNBT data, final InvTracker inv, final int offset, final int length )
 	{
 		final String name = '=' + Long.toString( inv.which, Character.MAX_RADIX );
-		final CompoundNBT tag = data.getCompoundTag( name );
+		final CompoundNBT tag = data.getCompound( name );
 
 		if( tag.isEmpty() )
 		{
@@ -394,10 +395,10 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer
 				is.write(itemNBT);
 			}
 
-			tag.setTag( Integer.toString( x + offset ), itemNBT );
+			tag.put( Integer.toString( x + offset ), itemNBT );
 		}
 
-		data.setTag( name, tag );
+		data.put( name, tag );
 	}
 
 	private static class InvTracker

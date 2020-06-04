@@ -27,8 +27,8 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
@@ -59,9 +59,9 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	public static final int FLUIX = SINGLE_OFFSET * 2;
 	public static final int FINAL_STAGE = SINGLE_OFFSET * 3;
 
-	public ItemCrystalSeed()
-	{
-		this.setHasSubtypes( true );
+	public ItemCrystalSeed(Properties properties) {
+		super(properties);
+		// FIXME this.setHasSubtypes( true );
 	}
 
 	@Nullable
@@ -75,9 +75,9 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 				.maybeStack( 1 )
 				.map( crystalSeedStack ->
 				{
-					crystalSeedStack.setItemDamage( certus2 );
+					// FIXME crystalSeedStack.setItemDamage( certus2 );
 					crystalSeedStack = newStyle( crystalSeedStack );
-					String itemName = crystalSeedStack.getItem().getRegistryName().getResourcePath();
+					String itemName = crystalSeedStack.getItem().getRegistryName().getPath();
 					return new ResolverResult( itemName, crystalSeedStack.getDamage(), crystalSeedStack.getTag() );
 				} )
 				.orElse( null );
@@ -101,7 +101,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 			final int progress;
             final CompoundNBT comp = is.getOrCreateTag();
 			comp.putInt( "progress", progress = is.getDamage() );
-			is.setItemDamage( ( is.getDamage() / SINGLE_OFFSET ) * SINGLE_OFFSET );
+			// FIXME is.setItemDamage( ( is.getDamage() / SINGLE_OFFSET ) * SINGLE_OFFSET );
 			return progress;
 		}
 	}
@@ -151,7 +151,7 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	{
         final CompoundNBT comp = is.getOrCreateTag();
 		comp.putInt( "progress", newDamage );
-		is.setItemDamage( is.getDamage() / LEVEL_OFFSET * LEVEL_OFFSET );
+		// FIXME is.setItemDamage( is.getDamage() / LEVEL_OFFSET * LEVEL_OFFSET );
 	}
 
 	@Override
@@ -239,22 +239,21 @@ public class ItemCrystalSeed extends AEBaseItem implements IGrowableCrystal
 	}
 
 	@Override
-	protected void getCheckedSubItems( final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
-	{
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		// lvl 0
-		itemStacks.add( newStyle( new ItemStack( this, 1, CERTUS ) ) );
-		itemStacks.add( newStyle( new ItemStack( this, 1, NETHER ) ) );
-		itemStacks.add( newStyle( new ItemStack( this, 1, FLUIX ) ) );
+		items.add( newStyle( new ItemStack( this, 1 /* FIXME , CERTUS */ ) ) );
+		items.add( newStyle( new ItemStack( this, 1 /* FIXME , NETHER */ ) ) );
+		items.add( newStyle( new ItemStack( this, 1 /* FIXME , FLUIX */ ) ) );
 
 		// lvl 1
-		itemStacks.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET + CERTUS ) ) );
-		itemStacks.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET + NETHER ) ) );
-		itemStacks.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET + FLUIX ) ) );
+		items.add( newStyle( new ItemStack( this, 1 /* FIXME , LEVEL_OFFSET + CERTUS */ ) ) );
+		items.add( newStyle( new ItemStack( this, 1 /* FIXME , LEVEL_OFFSET + NETHER */ ) ) );
+		items.add( newStyle( new ItemStack( this, 1 /* FIXME , LEVEL_OFFSET + FLUIX */ ) ) );
 
 		// lvl 2
-		itemStacks.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + CERTUS ) ) );
-		itemStacks.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + NETHER ) ) );
-		itemStacks.add( newStyle( new ItemStack( this, 1, LEVEL_OFFSET * 2 + FLUIX ) ) );
+		items.add( newStyle( new ItemStack( this, 1 /* FIXME , LEVEL_OFFSET * 2 + CERTUS */ ) ) );
+		items.add( newStyle( new ItemStack( this, 1 /* FIXME , LEVEL_OFFSET * 2 + NETHER */ ) ) );
+		items.add( newStyle( new ItemStack( this, 1 /* FIXME , LEVEL_OFFSET * 2 + FLUIX */ ) ) );
 	}
 
 }

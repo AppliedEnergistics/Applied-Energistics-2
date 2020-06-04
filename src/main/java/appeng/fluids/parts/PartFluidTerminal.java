@@ -25,7 +25,7 @@ import net.minecraft.util.ResourceLocation;
 
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
-import appeng.core.sync.GuiBridge;
+
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import appeng.parts.reporting.AbstractPartTerminal;
@@ -53,11 +53,11 @@ public class PartFluidTerminal extends AbstractPartTerminal
 		super( is );
 	}
 
-	@Override
-	public GuiBridge getGui( PlayerEntity player )
-	{
-		return GuiBridge.GUI_FLUID_TERMINAL;
-	}
+// FIXME	@Override
+// FIXME	public GuiBridge getGui( PlayerEntity player )
+// FIXME	{
+// FIXME		return GuiBridge.GUI_FLUID_TERMINAL;
+// FIXME	}
 
 	@Override
 	public IPartModel getStaticModels()

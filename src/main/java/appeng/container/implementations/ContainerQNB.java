@@ -24,14 +24,15 @@ import net.minecraft.entity.player.PlayerInventory;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.qnb.TileQuantumBridge;
+import net.minecraft.inventory.container.ContainerType;
 
 
 public class ContainerQNB extends AEBaseContainer
 {
 
-	public ContainerQNB( final PlayerInventory ip, final TileQuantumBridge quantumBridge )
+	public ContainerQNB(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileQuantumBridge quantumBridge )
 	{
-		super( ip, quantumBridge, null );
+		super( containerType, id,  ip, quantumBridge, null );
 
 		this.addSlot( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.QE_SINGULARITY, quantumBridge
 				.getInternalInventory(), 0, 80, 37, this.getPlayerInventory() ) ).setStackLimit( 1 ) );

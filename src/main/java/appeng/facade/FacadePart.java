@@ -109,7 +109,7 @@ public class FacadePart implements IFacadePart, IBoxProvider
 			return true;
 		}
 
-		return this.getBlockState().isOpaqueCube();
+		return false; // FIXME this.getBlockState().isOpaqueCube();
 	}
 
 	@Override

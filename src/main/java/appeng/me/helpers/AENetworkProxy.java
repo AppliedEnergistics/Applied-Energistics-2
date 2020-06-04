@@ -24,6 +24,7 @@ import java.util.EnumSet;
 
 import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
+import appeng.me.cache.P2PCache;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -108,13 +109,13 @@ public class AENetworkProxy implements IGridBlock
 		}
 	}
 
-	public void onChunkUnload()
+	public void onChunkUnloaded()
 	{
 		this.isReady = false;
-		this.invalidate();
+		this.remove();
 	}
 
-	public void invalidate()
+	public void remove()
 	{
 		this.isReady = false;
 		if( this.node != null )
@@ -240,23 +241,23 @@ public class AENetworkProxy implements IGridBlock
 		return pg;
 	}
 
-// FIXME	public P2PCache getP2P() throws GridAccessException
-// FIXME	{
-// FIXME		final IGrid grid = this.getGrid();
-// FIXME		if( grid == null )
-// FIXME		{
-// FIXME			throw new GridAccessException();
-// FIXME		}
-// FIXME
-// FIXME		final P2PCache pg = grid.getCache( P2PCache.class );
-// FIXME
-// FIXME		if( pg == null )
-// FIXME		{
-// FIXME			throw new GridAccessException();
-// FIXME		}
-// FIXME
-// FIXME		return pg;
-// FIXME	}
+	public P2PCache getP2P() throws GridAccessException
+	{
+		final IGrid grid = this.getGrid();
+		if( grid == null )
+		{
+			throw new GridAccessException();
+		}
+
+		final P2PCache pg = grid.getCache( P2PCache.class );
+
+		if( pg == null )
+		{
+			throw new GridAccessException();
+		}
+
+		return pg;
+	}
 
 	public ISecurityGrid getSecurity() throws GridAccessException
 	{

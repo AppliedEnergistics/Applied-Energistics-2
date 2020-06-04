@@ -30,6 +30,8 @@ import java.util.Random;
 
 import javax.annotation.Nonnull;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -50,6 +52,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
+import net.minecraftforge.common.util.LazyOptional;
 
 
 public interface IPart extends IBoxProvider, ICustomCableConnection
@@ -75,7 +78,7 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 	 * this method to be called.
 	 */
 	@OnlyIn( Dist.CLIENT )
-	default void renderDynamic( double x, double y, double z, float partialTicks, int destroyStage )
+	default void renderDynamic(float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffers, int combinedLightIn, int combinedOverlayIn)
 	{
 	}
 
@@ -333,27 +336,13 @@ public interface IPart extends IBoxProvider, ICustomCableConnection
 	 * forwarded to parts on the appropriate
 	 * side.
 	 *
-	 * @see TileEntity#hasCapability(Capability, EnumFacing)
-	 *
-	 * @return True if your part has the requested capability.
-	 */
-	default boolean hasCapability( Capability<?> capabilityClass )
-	{
-		return false;
-	}
-
-	/**
-	 * Implement this method if your part exposes capabilitys. Any requests for capabilities on the cable bus will be
-	 * forwarded to parts on the appropriate
-	 * side.
-	 *
-	 * @see TileEntity#getCapability(Capability, EnumFacing)
+	 * @see TileEntity#getCapability(Capability, net.minecraft.util.Direction)
 	 *
 	 * @return The capability or null.
 	 */
-	default <T> T getCapability( Capability<T> capabilityClass )
+	default <T> LazyOptional<T> getCapability(Capability<T> capabilityClass )
 	{
-		return null;
+		return LazyOptional.empty();
 	}
 
 	/**

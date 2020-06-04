@@ -32,7 +32,7 @@ import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.parts.IPartModel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.AppEng;
-import appeng.core.sync.GuiBridge;
+
 import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
@@ -99,25 +99,25 @@ public class PartPatternTerminal extends AbstractPartTerminal
 		this.crafting.writeToNBT( data, "craftingGrid" );
 	}
 
-	@Override
-	public GuiBridge getGui( final PlayerEntity p )
-	{
-		int x = (int) p.getPosX();
-		int y = (int) p.getPosY();
-		int z = (int) p.getPosZ();
-		if( this.getHost().getTile() != null )
-		{
-			x = this.getTile().getPos().getX();
-			y = this.getTile().getPos().getY();
-			z = this.getTile().getPos().getZ();
-		}
-
-		if( GuiBridge.GUI_PATTERN_TERMINAL.hasPermissions( this.getHost().getTile(), x, y, z, this.getSide(), p ) )
-		{
-			return GuiBridge.GUI_PATTERN_TERMINAL;
-		}
-		return GuiBridge.GUI_ME;
-	}
+// FIXME	@Override
+// FIXME	public GuiBridge getGui( final PlayerEntity p )
+// FIXME	{
+// FIXME		int x = (int) p.getPosX();
+// FIXME		int y = (int) p.getPosY();
+// FIXME		int z = (int) p.getPosZ();
+// FIXME		if( this.getHost().getTile() != null )
+// FIXME		{
+// FIXME			x = this.getTile().getPos().getX();
+// FIXME			y = this.getTile().getPos().getY();
+// FIXME			z = this.getTile().getPos().getZ();
+// FIXME		}
+// FIXME
+// FIXME		if( GuiBridge.GUI_PATTERN_TERMINAL.hasPermissions( this.getHost().getTile(), x, y, z, this.getSide(), p ) )
+// FIXME		{
+// FIXME			return GuiBridge.GUI_PATTERN_TERMINAL;
+// FIXME		}
+// FIXME		return GuiBridge.GUI_ME;
+// FIXME	}
 
 	@Override
 	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )

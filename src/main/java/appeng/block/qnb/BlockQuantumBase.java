@@ -22,7 +22,7 @@ package appeng.block.qnb;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.BooleanProperty;
+import net.minecraft.state.BooleanProperty;
 import net.minecraft.block.BlockStateContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.BlockRenderLayer;

@@ -26,11 +26,13 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.core.Api;
 import com.google.common.collect.Lists;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -100,8 +102,9 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 	private final IItemHandlerModifiable inv = new WrapperChainedItemHandler( this.topItemHandler, this.bottomItemHandler, this.sideItemHandler );
 
-	public TileInscriber()
-	{
+	public TileInscriber(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
+
 		this.getProxy().setValidSides( EnumSet.noneOf( Direction.class ) );
 		this.setInternalMaxPower( 1600 );
 		this.getProxy().setIdlePowerUsage( 0 );
@@ -542,18 +545,15 @@ public class TileInscriber extends AENetworkPowerTile implements IGridTickable, 
 
 		final ItemStack startingItem = input.copy();
 		final ItemStack renamedItem = input.copy();
-        final CompoundNBT tag = renamedItem.getOrCreateTag();
 
-		final CompoundNBT display = tag.getCompoundTag( "display" );
-		tag.setTag( "display", display );
-
-		if( name.length() > 0 )
+		final CompoundNBT display = renamedItem.getOrCreateChildTag( "display" );
+		if( !name.isEmpty() )
 		{
 			display.putString("Name", name);
 		}
 		else
 		{
-			display.removeTag( "Name" );
+			display.remove( "Name" );
 		}
 
 		final List<ItemStack> inputs = Lists.newArrayList( startingItem );

@@ -33,7 +33,7 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 
-import appeng.block.crafting.BlockCraftingUnit;
+import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.core.AppEng;
 
 
@@ -58,9 +58,9 @@ class CraftingCubeModel implements IModel
 	private final static ResourceLocation MONITOR_LIGHT_MEDIUM = texture( "monitor_light_medium" );
 	private final static ResourceLocation MONITOR_LIGHT_BRIGHT = texture( "monitor_light_bright" );
 
-	private final BlockCraftingUnit.CraftingUnitType type;
+	private final AbstractCraftingUnitBlock.CraftingUnitType type;
 
-	CraftingCubeModel( BlockCraftingUnit.CraftingUnitType type )
+	CraftingCubeModel( AbstractCraftingUnitBlock.CraftingUnitType type )
 	{
 		this.type = type;
 	}
@@ -106,7 +106,7 @@ class CraftingCubeModel implements IModel
 		}
 	}
 
-	private static TextureAtlasSprite getLightTexture( Function<ResourceLocation, TextureAtlasSprite> textureGetter, BlockCraftingUnit.CraftingUnitType type )
+	private static TextureAtlasSprite getLightTexture( Function<ResourceLocation, TextureAtlasSprite> textureGetter, AbstractCraftingUnitBlock.CraftingUnitType type )
 	{
 		switch( type )
 		{

@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import appeng.core.Api;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.inventory.CraftingInventory;
@@ -32,10 +33,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
@@ -55,7 +58,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
-import appeng.core.sync.GuiBridge;
+
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
@@ -72,6 +75,10 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 
 	// Indicates that this interface has no specific direction set
 	private boolean omniDirectional = true;
+
+	public TileInterface(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
+	}
 
 	@MENetworkEventSubscribe
 	public void stateChange( final MENetworkChannelsChanged c )
@@ -337,16 +344,10 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 	}
 
 	@Override
-	public boolean hasCapability( Capability<?> capability, @Nullable Direction facing )
+	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing )
 	{
-		return this.duality.hasCapability( capability, facing ) || super.hasCapability( capability, facing );
-	}
-
-	@Override
-	public <T> T getCapability( Capability<T> capability, @Nullable Direction facing )
-	{
-		T result = this.duality.getCapability( capability, facing );
-		if( result != null )
+		LazyOptional<T> result = this.duality.getCapability( capability, facing );
+		if( result.isPresent() )
 		{
 			return result;
 		}
@@ -359,9 +360,9 @@ public class TileInterface extends AENetworkInvTile implements IGridTickable, II
 		return Api.INSTANCE.definitions().blocks().iface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
-	@Override
-	public GuiBridge getGuiBridge()
-	{
-		return GuiBridge.GUI_INTERFACE;
-	}
+// FIXME	@Override
+// FIXME	public GuiBridge getGuiBridge()
+// FIXME	{
+// FIXME		return GuiBridge.GUI_INTERFACE;
+// FIXME	}
 }

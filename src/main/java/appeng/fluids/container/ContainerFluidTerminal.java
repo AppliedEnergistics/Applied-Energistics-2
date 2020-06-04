@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
@@ -92,9 +93,8 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 	// Holds the fluid the client wishes to extract, or null for insert
 	private IAEFluidStack clientRequestedTargetFluid = null;
 
-	public ContainerFluidTerminal( PlayerInventory ip, ITerminalHost terminal )
-	{
-		super( ip, terminal );
+	public ContainerFluidTerminal(ContainerType<?> containerType, int id, PlayerInventory ip, ITerminalHost terminal) {
+		super(containerType, id, ip, terminal);
 		this.terminal = terminal;
 		this.clientCM = new ConfigManager( this );
 

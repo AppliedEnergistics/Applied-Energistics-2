@@ -3,6 +3,7 @@ package appeng.fluids.container;
 
 
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.SecurityPermissions;
@@ -17,9 +18,9 @@ public class ContainerFluidFormationPlane extends ContainerFluidConfigurable
 {
 	private final PartFluidFormationPlane plane;
 
-	public ContainerFluidFormationPlane( final PlayerInventory ip, final PartFluidFormationPlane te )
+	public ContainerFluidFormationPlane(ContainerType<?> containerType, int id, final PlayerInventory ip, final PartFluidFormationPlane te )
 	{
-		super( ip, te );
+		super( containerType, id,ip, te );
 		this.plane = te;
 	}
 

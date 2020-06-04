@@ -23,11 +23,12 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.api.distmarker.Dist;
@@ -50,7 +51,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
 	public AEBasePoweredItem( final double powerCapacity )
 	{
-		super(new Properties().maxStackSize( 1 ).maxDamage( 32 ));
+		super(new Properties().maxStackSize( 1 ).maxDamage( 32 ).setNoRepair());
 		//FIXME
 //		this.hasSubtypes = false;
 //		this.setFull3D();
@@ -73,8 +74,9 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
 		final double percent = internalCurrentPower / internalMaxPower;
 
-		lines.add( GuiText.StoredEnergy.getLocal() + ':' + MessageFormat.format( " {0,number,#} ", internalCurrentPower ) + Platform
-				.gui_localize( PowerUnits.AE.unlocalizedName ) + " - " + MessageFormat.format( " {0,number,#.##%} ", percent ) );
+		lines.add( GuiText.StoredEnergy.textComponent().appendText( + ':' + MessageFormat.format( " {0,number,#} ", internalCurrentPower ) )
+				.appendSibling( new TranslationTextComponent( PowerUnits.AE.unlocalizedName ) )
+				.appendText( " - " + MessageFormat.format( " {0,number,#.##%} ", percent ) ) );
 	}
 
 	@Override
@@ -84,22 +86,15 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 	}
 
 	@Override
-	protected void getCheckedSubItems( final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
-	{
-		super.getCheckedSubItems( creativeTab, itemStacks );
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+		super.fillItemGroup(group, items);
 
 		final ItemStack charged = new ItemStack( this, 1 );
         final CompoundNBT tag = charged.getOrCreateTag();
 		tag.putDouble(CURRENT_POWER_NBT_KEY, this.getAEMaxPower( charged ));
 		tag.putDouble(MAX_POWER_NBT_KEY, this.getAEMaxPower( charged ));
 
-		itemStacks.add( charged );
-	}
-
-	@Override
-	public boolean isRepairable()
-	{
-		return false;
+		items.add( charged );
 	}
 
 	@Override

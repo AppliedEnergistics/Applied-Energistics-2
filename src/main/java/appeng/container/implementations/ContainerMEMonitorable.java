@@ -24,10 +24,12 @@ import java.nio.BufferOverflowException;
 
 import javax.annotation.Nonnull;
 
+import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IContainerListener;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
@@ -88,14 +90,18 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	private IConfigManager serverCM;
 	private IGridNode networkNode;
 
-	public ContainerMEMonitorable( final PlayerInventory ip, final ITerminalHost monitorable )
+
+	public ContainerMEMonitorable( ContainerType<?> containerType, int id, final PlayerInventory ip, final ITerminalHost monitorable )
 	{
-		this( ip, monitorable, true );
+		this( containerType, id, ip, monitorable, true );
 	}
 
-	protected ContainerMEMonitorable( final PlayerInventory ip, final ITerminalHost monitorable, final boolean bindInventory )
-	{
-		super( ip, monitorable instanceof TileEntity ? (TileEntity) monitorable : null, monitorable instanceof IPart ? (IPart) monitorable : null );
+	public ContainerMEMonitorable(ContainerType<?> containerType, int id, PlayerInventory ip, final ITerminalHost monitorable, final boolean bindInventory ) {
+		super( containerType,
+				id,
+				ip,
+				monitorable instanceof TileEntity ? (TileEntity) monitorable : null,
+				monitorable instanceof IPart ? (IPart) monitorable : null );
 
 		this.host = monitorable;
 		this.clientCM = new ConfigManager( this );

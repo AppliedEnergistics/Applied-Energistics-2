@@ -30,6 +30,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
@@ -64,8 +65,8 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	private QuantumCluster cluster;
 	private boolean updateStatus = false;
 
-	public TileQuantumBridge()
-	{
+	public TileQuantumBridge(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
 		this.getProxy().setValidSides( EnumSet.noneOf( Direction.class ) );
 		this.getProxy().setFlags( GridFlags.DENSE_CAPACITY );
 		this.getProxy().setIdlePowerUsage( 22 );
@@ -145,7 +146,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 				.blocks()
 				.quantumLink()
 				.maybeBlock()
-				.map( link -> this.getBlockType() == link )
+				.map( link -> this.getBlockState().getBlock() == link )
 				.orElse( false );
 	}
 
@@ -156,10 +157,10 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	}
 
 	@Override
-	public void onChunkUnload()
+	public void onChunkUnloaded()
 	{
 		this.disconnect( false );
-		super.onChunkUnload();
+		super.onChunkUnloaded();
 	}
 
 	@Override
@@ -173,7 +174,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
 		final boolean isPresent = maybeLinkBlock.isPresent() && maybeLinkStack.isPresent();
 
-		if( isPresent && this.getBlockType() == maybeLinkBlock.get() )
+		if( isPresent && this.getBlockState().getBlock() == maybeLinkBlock.get() )
 		{
 			final ItemStack linkStack = maybeLinkStack.get();
 
@@ -182,10 +183,10 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	}
 
 	@Override
-	public void invalidate()
+	public void remove()
 	{
 		this.disconnect( false );
-		super.invalidate();
+		super.remove();
 	}
 
 	@Override
@@ -218,7 +219,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 	@Override
 	public boolean isValid()
 	{
-		return !this.isInvalid();
+		return !this.isRemoved();
 	}
 
 	public void updateStatus( final QuantumCluster c, final byte flags, final boolean affectWorld )

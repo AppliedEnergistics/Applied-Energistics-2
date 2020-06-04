@@ -40,6 +40,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
@@ -415,7 +417,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 		if( this.hasCustomInventoryName() )
 		{
 			final CompoundNBT dsp = new CompoundNBT();
-			dsp.putString( "Name", this.getCustomInventoryName() );
+			dsp.putString( "Name", this.customName );
 			output.put( "display", dsp );
 		}
 
@@ -448,15 +450,15 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	}
 
 	@Override
-	public String getCustomInventoryName()
+	public ITextComponent getCustomInventoryName()
 	{
-		return this.hasCustomInventoryName() ? this.customName : this.getClass().getSimpleName();
+		return new StringTextComponent(this.hasCustomInventoryName() ? this.customName : this.getClass().getSimpleName());
 	}
 
 	@Override
 	public boolean hasCustomInventoryName()
 	{
-		return this.customName != null && this.customName.length() > 0;
+		return this.customName != null && !this.customName.isEmpty();
 	}
 
 	public void securityBreak()
@@ -468,7 +470,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	/**
 	 * Checks if this tile entity is remote (we are running on the logical client side).
 	 */
-	protected boolean isRemote() {
+	public boolean isRemote() {
 		World world = getWorld();
 		return world == null || world.isRemote();
 	}

@@ -29,6 +29,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
 import appeng.tile.AEBaseTile;
+import net.minecraft.tileentity.TileEntityType;
 
 
 public class AENetworkTile extends AEBaseTile implements IActionHost, IGridProxyable
@@ -36,17 +37,21 @@ public class AENetworkTile extends AEBaseTile implements IActionHost, IGridProxy
 
 	private final AENetworkProxy gridProxy = this.createProxy();
 
+	public AENetworkTile(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
+	}
+
 	@Override
-	public void readFromNBT( final CompoundNBT data )
+	public void read(final CompoundNBT data )
 	{
-		super.readFromNBT( data );
+		super.read( data );
 		this.getProxy().readFromNBT( data );
 	}
 
 	@Override
-	public CompoundNBT writeToNBT( final CompoundNBT data )
+	public CompoundNBT write(final CompoundNBT data )
 	{
-		super.writeToNBT( data );
+		super.write( data );
 		this.getProxy().writeToNBT( data );
 		return data;
 	}
@@ -69,10 +74,10 @@ public class AENetworkTile extends AEBaseTile implements IActionHost, IGridProxy
 	}
 
 	@Override
-	public void onChunkUnload()
+	public void onChunkUnloaded()
 	{
-		super.onChunkUnload();
-		this.getProxy().onChunkUnload();
+		super.onChunkUnloaded();
+		this.getProxy().onChunkUnloaded();
 	}
 
 	@Override
@@ -83,10 +88,10 @@ public class AENetworkTile extends AEBaseTile implements IActionHost, IGridProxy
 	}
 
 	@Override
-	public void invalidate()
+	public void remove()
 	{
-		super.invalidate();
-		this.getProxy().invalidate();
+		super.remove();
+		this.getProxy().remove();
 	}
 
 	@Override

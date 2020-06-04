@@ -24,14 +24,15 @@ import net.minecraft.entity.player.PlayerInventory;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.storage.TileDrive;
+import net.minecraft.inventory.container.ContainerType;
 
 
 public class ContainerDrive extends AEBaseContainer
 {
 
-	public ContainerDrive( final PlayerInventory ip, final TileDrive drive )
+	public ContainerDrive(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileDrive drive )
 	{
-		super( ip, drive, null );
+		super( containerType, id, ip, drive, null );
 
 		for( int y = 0; y < 5; y++ )
 		{

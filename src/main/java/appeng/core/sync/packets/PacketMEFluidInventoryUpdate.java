@@ -44,7 +44,6 @@ import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
-import appeng.fluids.client.gui.GuiFluidTerminal;
 import appeng.fluids.util.AEFluidStack;
 
 
@@ -156,10 +155,10 @@ public class PacketMEFluidInventoryUpdate extends AppEngPacket
 	{
 		final Screen gs = Minecraft.getInstance().currentScreen;
 
-		if( gs instanceof GuiFluidTerminal )
-		{
-			( (GuiFluidTerminal) gs ).postUpdate( this.list );
-		}
+		// FIXME if( gs instanceof GuiFluidTerminal )
+		// FIXME {
+		// FIXME 	( (GuiFluidTerminal) gs ).postUpdate( this.list );
+		// FIXME }
 	}
 
 	@Nullable

@@ -21,7 +21,7 @@ package appeng.helpers;
 
 import net.minecraft.item.ItemStack;
 
-import appeng.core.sync.GuiBridge;
+
 
 
 public interface IPriorityHost
@@ -39,5 +39,6 @@ public interface IPriorityHost
 
 	ItemStack getItemStackRepresentation();
 
-	GuiBridge getGuiBridge();
+	// FIXME Needs to be wired up to the static method in containers somehow
+	// FIXME GuiBridge getGuiBridge();
 }

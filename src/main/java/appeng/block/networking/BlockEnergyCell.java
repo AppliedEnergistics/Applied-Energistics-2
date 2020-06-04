@@ -41,7 +41,7 @@ public class BlockEnergyCell extends AEBaseTileBlock
 	@Override
 	public int getMetaFromState( final BlockState state )
 	{
-		return state.getValue( ENERGY_STORAGE );
+		return state.get( ENERGY_STORAGE );
 	}
 
 	@Override

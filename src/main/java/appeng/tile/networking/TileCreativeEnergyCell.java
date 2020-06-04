@@ -26,13 +26,14 @@ import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.tile.grid.AENetworkTile;
+import net.minecraft.tileentity.TileEntityType;
 
 
 public class TileCreativeEnergyCell extends AENetworkTile implements IAEPowerStorage
 {
 
-	public TileCreativeEnergyCell()
-	{
+	public TileCreativeEnergyCell(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
 		this.getProxy().setIdlePowerUsage( 0 );
 	}
 

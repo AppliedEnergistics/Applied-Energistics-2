@@ -36,7 +36,7 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.property.IExtendedBlockState;
 
-import appeng.block.crafting.BlockCraftingUnit;
+import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.client.render.cablebus.CubeBuilder;
 
 
@@ -264,7 +264,7 @@ abstract class CraftingCubeBakedModel implements IBakedModel
 		}
 
 		IExtendedBlockState extState = (IExtendedBlockState) state;
-		CraftingCubeState cubeState = extState.getValue( BlockCraftingUnit.STATE );
+		CraftingCubeState cubeState = extState.getValue( AbstractCraftingUnitBlock.STATE );
 		if( cubeState == null )
 		{
 			return EnumSet.noneOf( Direction.class );

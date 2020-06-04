@@ -32,6 +32,7 @@ import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.storage.ITerminalHost;
 import appeng.container.guisync.GuiSync;
 import appeng.util.Platform;
+import net.minecraft.inventory.container.ContainerType;
 
 
 public class ContainerCraftingStatus extends ContainerCraftingCPU
@@ -45,9 +46,9 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 	@GuiSync( 7 )
 	public String myName = "";
 
-	public ContainerCraftingStatus( final PlayerInventory ip, final ITerminalHost te )
+	public ContainerCraftingStatus(ContainerType<?> containerType, int id, final PlayerInventory ip, final ITerminalHost te )
 	{
-		super( ip, te );
+		super( containerType, id, ip, te );
 	}
 
 	@Override

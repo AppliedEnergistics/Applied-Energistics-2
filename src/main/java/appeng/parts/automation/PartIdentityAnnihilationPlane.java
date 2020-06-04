@@ -19,25 +19,21 @@
 package appeng.parts.automation;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.item.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ServerWorld;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.common.util.FakePlayerFactory;
-
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AEPartLocation;
 import appeng.items.parts.PartModels;
+import com.google.common.collect.ImmutableMap;
+import net.minecraft.block.BlockState;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
+
+import java.util.List;
 
 
 public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
@@ -78,32 +74,17 @@ public class PartIdentityAnnihilationPlane extends PartAnnihilationPlane
 	}
 
 	@Override
-	protected List<ItemStack> obtainBlockDrops(final ServerWorld w, final BlockPos pos )
-	{
-		final FakePlayer fakePlayer = FakePlayerFactory.getMinecraft( w );
-		final BlockState state = w.getBlockState( pos );
+	protected ItemStack createHarvestTool(BlockState state) {
+		ItemStack harvestTool = super.createHarvestTool(state);
 
-		if( state.getBlock().canSilkHarvest( w, pos, state, fakePlayer ) )
-		{
-			final List<ItemStack> out = new ArrayList<>( 1 );
-			final Item item = Item.getItemFromBlock( state.getBlock() );
+		// For silk touch purposes, enchant the fake tool
+		if (harvestTool != null) {
+			EnchantmentHelper.setEnchantments(ImmutableMap.of(
+					Enchantments.SILK_TOUCH, 1
+			), harvestTool);
+		}
 
-			if( item != Items.AIR )
-			{
-				int meta = 0;
-				if( item.getHasSubtypes() )
-				{
-					meta = state.getBlock().getMetaFromState( state );
-				}
-				final ItemStack itemstack = new ItemStack( item, 1, meta );
-				out.add( itemstack );
-			}
-			return out;
-		}
-		else
-		{
-			return super.obtainBlockDrops( w, pos );
-		}
+		return harvestTool;
 	}
 
 	@Override

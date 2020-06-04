@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
@@ -59,8 +60,8 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 	private final IItemHandler invExt = new WrapperFilteredItemHandler( this.inv, new SpatialIOFilter() );
 	private YesNo lastRedstoneState = YesNo.UNDECIDED;
 
-	public TileSpatialIOPort()
-	{
+	public TileSpatialIOPort(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
 		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
 	}
 
@@ -68,7 +69,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 	public CompoundNBT write(final CompoundNBT data )
 	{
 		super.write( data );
-		data.setInteger( "lastRedstoneState", this.lastRedstoneState.ordinal() );
+		data.putInt( "lastRedstoneState", this.lastRedstoneState.ordinal() );
 		return data;
 	}
 
@@ -78,7 +79,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 		super.read( data );
 		if( data.contains("lastRedstoneState") )
 		{
-			this.lastRedstoneState = YesNo.values()[data.getInteger( "lastRedstoneState" )];
+			this.lastRedstoneState = YesNo.values()[data.getInt( "lastRedstoneState" )];
 		}
 	}
 
@@ -94,7 +95,7 @@ public class TileSpatialIOPort extends AENetworkInvTile implements IWorldCallabl
 
 	public void updateRedstoneState()
 	{
-		final YesNo currentState = this.world.isBlockIndirectlyGettingPowered( this.pos ) != 0 ? YesNo.YES : YesNo.NO;
+		final YesNo currentState = this.world.getRedstonePowerFromNeighbors( this.pos ) != 0 ? YesNo.YES : YesNo.NO;
 		if( this.lastRedstoneState != currentState )
 		{
 			this.lastRedstoneState = currentState;

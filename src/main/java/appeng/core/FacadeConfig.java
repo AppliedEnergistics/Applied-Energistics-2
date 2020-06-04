@@ -19,20 +19,12 @@
 package appeng.core;
 
 
-import java.io.File;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import net.minecraft.block.Block;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.config.ConfigCategory;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-import net.minecraftforge.common.config.Property.Type;
-
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import net.minecraft.block.Block;
+import net.minecraft.util.ResourceLocation;
+
+import java.io.File;
 
 
 public class FacadeConfig
@@ -72,73 +64,73 @@ public class FacadeConfig
 	 */
 	public static void init( final File configFile )
 	{
-		final Configuration configurartion = migrate( new Configuration( configFile, CONFIG_VERSION ) );
+// FIXME		final Configuration configurartion = migrate( new Configuration( configFile, CONFIG_VERSION ) );
+// FIXME
+// FIXME		final boolean allowTileEntityFacades = configurartion
+// FIXME				.get( CONFIG_COMMON_KEY, CONFIG_COMMON_ALLOW_TILEENTITIES_KEY, false, CONFIG_COMMON_ALLOW_TILEENTITIES_COMMENT )
+// FIXME				.setRequiresMcRestart( true )
+// FIXME				.setShowInGui( false )
+// FIXME				.getBoolean();
+// FIXME
+// FIXME		final Object2IntMap<ResourceLocation> configWhiteList = new Object2IntArrayMap<>();
+// FIXME
+// FIXME		final Set<ConfigCategory> whitelist = configurartion.getCategory( CONFIG_FACADES_KEY ).getChildren();
+// FIXME		for( ConfigCategory configCategory : whitelist )
+// FIXME		{
+// FIXME			final String domain = configCategory.getName();
+// FIXME			final Map<String, Property> values = configCategory.getValues();
+// FIXME
+// FIXME			for( Entry<String, Property> entry : values.entrySet() )
+// FIXME			{
+// FIXME				configWhiteList.put( new ResourceLocation( domain, entry.getKey() ), entry.getValue().getInt() );
+// FIXME			}
+// FIXME		}
+// FIXME
+// FIXME		if( configurartion.hasChanged() )
+// FIXME		{
+// FIXME			configurartion.save();
+// FIXME		}
 
-		final boolean allowTileEntityFacades = configurartion
-				.get( CONFIG_COMMON_KEY, CONFIG_COMMON_ALLOW_TILEENTITIES_KEY, false, CONFIG_COMMON_ALLOW_TILEENTITIES_COMMENT )
-				.setRequiresMcRestart( true )
-				.setShowInGui( false )
-				.getBoolean();
-
-		final Object2IntMap<ResourceLocation> configWhiteList = new Object2IntArrayMap<>();
-
-		final Set<ConfigCategory> whitelist = configurartion.getCategory( CONFIG_FACADES_KEY ).getChildren();
-		for( ConfigCategory configCategory : whitelist )
-		{
-			final String domain = configCategory.getName();
-			final Map<String, Property> values = configCategory.getValues();
-
-			for( Entry<String, Property> entry : values.entrySet() )
-			{
-				configWhiteList.put( new ResourceLocation( domain, entry.getKey() ), entry.getValue().getInt() );
-			}
-		}
-
-		if( configurartion.hasChanged() )
-		{
-			configurartion.save();
-		}
-
-		instance = new FacadeConfig( allowTileEntityFacades, configWhiteList );
+		instance = new FacadeConfig( false, new Object2IntArrayMap<>() ); // FIXME
 	}
 
-	private static Configuration migrate( Configuration configurartion )
-	{
-		// Clear pre rv6 configs.
-		if( configurartion.getLoadedConfigVersion() == null )
-		{
-			for( String category : configurartion.getCategoryNames() )
-			{
-				final ConfigCategory c = configurartion.getCategory( category );
-				configurartion.removeCategory( c );
-			}
-		}
-
-		// Create general category, if missing
-		if( !configurartion.hasCategory( CONFIG_COMMON_KEY ) )
-		{
-			configurartion.getCategory( CONFIG_COMMON_KEY ).setComment( CONFIG_COMMON_COMMENT );
-		}
-
-		// Create whitelist, if missing
-		if( !configurartion.hasCategory( CONFIG_FACADES_KEY ) )
-		{
-			final ConfigCategory category = configurartion.getCategory( CONFIG_FACADES_KEY );
-			category.setComment( CONFIG_FACADES_COMMENT );
-
-			// Whitelist some vanilla blocks like glass
-			final ConfigCategory minecraft = new ConfigCategory( "minecraft", category );
-			minecraft.put( "glass", new Property( "glass", "16", Type.INTEGER ) );
-			minecraft.put( "stained_glass", new Property( "stained_glass", "16", Type.INTEGER ) );
-
-			// Whitelist some AE2 blocks like quartz glass
-			final ConfigCategory appliedenergistics = new ConfigCategory( "appliedenergistics2", category );
-			appliedenergistics.put( "quartz_glass", new Property( "quartz_glass", "16", Type.INTEGER ) );
-			appliedenergistics.put( "quartz_vibrant_glass", new Property( "quartz_vibrant_glass", "16", Type.INTEGER ) );
-		}
-
-		return configurartion;
-	}
+// FIXME	private static Configuration migrate( Configuration configurartion )
+// FIXME	{
+// FIXME		// Clear pre rv6 configs.
+// FIXME		if( configurartion.getLoadedConfigVersion() == null )
+// FIXME		{
+// FIXME			for( String category : configurartion.getCategoryNames() )
+// FIXME			{
+// FIXME				final ConfigCategory c = configurartion.getCategory( category );
+// FIXME				configurartion.removeCategory( c );
+// FIXME			}
+// FIXME		}
+// FIXME
+// FIXME		// Create general category, if missing
+// FIXME		if( !configurartion.hasCategory( CONFIG_COMMON_KEY ) )
+// FIXME		{
+// FIXME			configurartion.getCategory( CONFIG_COMMON_KEY ).setComment( CONFIG_COMMON_COMMENT );
+// FIXME		}
+// FIXME
+// FIXME		// Create whitelist, if missing
+// FIXME		if( !configurartion.hasCategory( CONFIG_FACADES_KEY ) )
+// FIXME		{
+// FIXME			final ConfigCategory category = configurartion.getCategory( CONFIG_FACADES_KEY );
+// FIXME			category.setComment( CONFIG_FACADES_COMMENT );
+// FIXME
+// FIXME			// Whitelist some vanilla blocks like glass
+// FIXME			final ConfigCategory minecraft = new ConfigCategory( "minecraft", category );
+// FIXME			minecraft.put( "glass", new Property( "glass", "16", Type.INTEGER ) );
+// FIXME			minecraft.put( "stained_glass", new Property( "stained_glass", "16", Type.INTEGER ) );
+// FIXME
+// FIXME			// Whitelist some AE2 blocks like quartz glass
+// FIXME			final ConfigCategory appliedenergistics = new ConfigCategory( "appliedenergistics2", category );
+// FIXME			appliedenergistics.put( "quartz_glass", new Property( "quartz_glass", "16", Type.INTEGER ) );
+// FIXME			appliedenergistics.put( "quartz_vibrant_glass", new Property( "quartz_vibrant_glass", "16", Type.INTEGER ) );
+// FIXME		}
+// FIXME
+// FIXME		return configurartion;
+// FIXME	}
 
 	public static FacadeConfig instance()
 	{

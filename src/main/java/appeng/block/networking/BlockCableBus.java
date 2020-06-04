@@ -38,9 +38,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
+import net.minecraft.item.DyeColor;
 import net.minecraft.state.IProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -48,12 +47,13 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.*;
 import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -87,7 +87,7 @@ import appeng.tile.networking.TileCableBusTESR;
 import appeng.util.Platform;
 
 
-public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
+public class BlockCableBus extends AEBaseTileBlock<TileCableBus> /* FIXME implements IAEFacade */
 {
 
 	public static final UnlistedProperty<CableBusRenderState> RENDER_STATE_PROPERTY = new UnlistedProperty<>( "cable_bus_render_state", CableBusRenderState.class );
@@ -409,12 +409,11 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 	}
 
 	@Override
-	public boolean recolorBlock( final World world, final BlockPos pos, final Direction side, final EnumDyeColor color )
-	{
-		return this.recolorBlock( world, pos, side, color, null );
+	public boolean recolorBlock(BlockState state, IWorld world, BlockPos pos, Direction side, DyeColor color) {
+		return recolorBlock(world, pos, side, color, null);
 	}
 
-	public boolean recolorBlock( final World world, final BlockPos pos, final Direction side, final EnumDyeColor color, final PlayerEntity who )
+	public boolean recolorBlock(final IBlockReader world, final BlockPos pos, final Direction side, final DyeColor color, final PlayerEntity who )
 	{
 		try
 		{
@@ -496,5 +495,41 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade
 		{
 			super( worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn, state );
 		}
+	}
+
+	@Override
+	public VoxelShape getShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+
+		// FIXME: this has to be cached, optimized, fixed in all kinds of ways
+		TileCableBus te = getTileEntity(w, pos);
+		VoxelShape result = VoxelShapes.empty();
+		if (te != null) {
+			for (final AxisAlignedBB bx : te.getCableBus().getSelectedBoundingBoxesFromPool(false, true, context.getEntity(), true)) {
+				result = VoxelShapes.or(
+						result,
+						VoxelShapes.create(new AxisAlignedBB(bx.minX, bx.minY, bx.minZ, bx.maxX, bx.maxY, bx.maxZ))
+				);
+			}
+		}
+		return result;
+
+	}
+
+	@Override
+	public VoxelShape getCollisionShape(BlockState state, IBlockReader w, BlockPos pos, ISelectionContext context) {
+
+		// FIXME: this has to be cached, optimized, fixed in all kinds of ways
+		TileCableBus te = getTileEntity(w, pos);
+		VoxelShape result = VoxelShapes.empty();
+		if (te != null) {
+			for (final AxisAlignedBB bx : te.getCableBus().getSelectedBoundingBoxesFromPool(false, true, context.getEntity(), false)) {
+				result = VoxelShapes.or(
+						result,
+						VoxelShapes.create(new AxisAlignedBB(bx.minX, bx.minY, bx.minZ, bx.maxX, bx.maxY, bx.maxZ))
+				);
+			}
+		}
+		return result;
+
 	}
 }

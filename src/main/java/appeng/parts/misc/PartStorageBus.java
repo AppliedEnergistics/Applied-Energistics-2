@@ -76,7 +76,7 @@ import appeng.capabilities.Capabilities;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
-import appeng.core.sync.GuiBridge;
+
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.helpers.Reflected;
@@ -316,7 +316,7 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 	{
 		if( Platform.isServer() )
 		{
-			Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_STORAGEBUS );
+			// FIXME Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_STORAGEBUS );
 		}
 		return true;
 	}
@@ -646,9 +646,9 @@ public class PartStorageBus extends PartUpgradeable implements IGridTickable, IC
 		return Api.INSTANCE.definitions().parts().storageBus().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
-	@Override
-	public GuiBridge getGuiBridge()
-	{
-		return GuiBridge.GUI_STORAGEBUS;
-	}
+// FIXME	@Override
+// FIXME	public GuiBridge getGuiBridge()
+// FIXME	{
+// FIXME		return GuiBridge.GUI_STORAGEBUS;
+// FIXME	}
 }

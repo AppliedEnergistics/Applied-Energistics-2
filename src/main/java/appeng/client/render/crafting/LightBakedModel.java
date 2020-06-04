@@ -24,7 +24,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.Direction;
 
-import appeng.block.crafting.BlockCraftingUnit;
+import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.client.render.cablebus.CubeBuilder;
 
 
@@ -52,7 +52,7 @@ class LightBakedModel extends CraftingCubeBakedModel
 		builder.setTexture( this.baseTexture );
 		builder.addCube( x1, y1, z1, x2, y2, z2 );
 
-		boolean powered = state.getValue( BlockCraftingUnit.POWERED );
+		boolean powered = state.get( AbstractCraftingUnitBlock.POWERED );
 		builder.setRenderFullBright( powered );
 		builder.setTexture( this.lightTexture );
 		builder.addCube( x1, y1, z1, x2, y2, z2 );

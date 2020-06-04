@@ -25,6 +25,7 @@ import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.util.Platform;
+import net.minecraft.inventory.container.ContainerType;
 
 
 public class ContainerWirelessTerm extends ContainerMEPortableCell
@@ -32,9 +33,9 @@ public class ContainerWirelessTerm extends ContainerMEPortableCell
 
 	private final WirelessTerminalGuiObject wirelessTerminalGUIObject;
 
-	public ContainerWirelessTerm( final PlayerInventory ip, final WirelessTerminalGuiObject gui )
+	public ContainerWirelessTerm(ContainerType<?> containerType, int id, final PlayerInventory ip, final WirelessTerminalGuiObject gui )
 	{
-		super( ip, gui );
+		super( containerType, id, ip, gui );
 		this.wirelessTerminalGUIObject = gui;
 	}
 

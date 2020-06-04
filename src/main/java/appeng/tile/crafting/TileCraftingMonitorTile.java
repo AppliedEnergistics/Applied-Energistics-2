@@ -22,10 +22,13 @@ package appeng.tile.crafting;
 import java.io.IOException;
 import java.util.Optional;
 
+import appeng.block.AEBaseTileBlock;
+import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -34,10 +37,17 @@ import appeng.api.implementations.tiles.IColorableTile;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEColor;
 import appeng.util.item.AEItemStack;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelProperty;
+
+import javax.annotation.Nonnull;
 
 
 public class TileCraftingMonitorTile extends TileCraftingTile implements IColorableTile
 {
+
+	public static final ModelProperty<AEColor> COLOR = new ModelProperty<>();
 
 	@OnlyIn( Dist.CLIENT )
 	private Integer dspList;
@@ -47,6 +57,10 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 
 	private IAEItemStack dspPlay;
 	private AEColor paintedColor = AEColor.TRANSPARENT;
+
+	public TileCraftingMonitorTile(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
+	}
 
 	@Override
 	protected boolean readFromStream( final PacketBuffer data ) throws IOException
@@ -88,9 +102,9 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	}
 
 	@Override
-	public void readFromNBT( final CompoundNBT data )
+	public void read(final CompoundNBT data )
 	{
-		super.readFromNBT( data );
+		super.read( data );
 		if( data.contains("paintedColor") )
 		{
 			this.paintedColor = AEColor.values()[data.getByte( "paintedColor" )];
@@ -98,10 +112,10 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 	}
 
 	@Override
-	public CompoundNBT writeToNBT( final CompoundNBT data )
+	public CompoundNBT write(final CompoundNBT data )
 	{
-		super.writeToNBT( data );
-		data.setByte( "paintedColor", (byte) this.paintedColor.ordinal() );
+		super.write( data );
+		data.putByte( "paintedColor", (byte) this.paintedColor.ordinal() );
 		return data;
 	}
 
@@ -186,4 +200,15 @@ public class TileCraftingMonitorTile extends TileCraftingTile implements IColora
 
 		return is.orElseGet( () -> super.getItemFromTile( obj ) );
 	}
+
+	@Nonnull
+	@Override
+	public IModelData getModelData() {
+		return new ModelDataMap.Builder()
+				.withInitial(AEBaseTileBlock.FORWARD, getForward())
+				.withInitial(AEBaseTileBlock.UP, getUp())
+				.withInitial(COLOR, getColor())
+				.build();
+	}
+
 }

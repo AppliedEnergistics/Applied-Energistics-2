@@ -20,6 +20,7 @@ package appeng.container.implementations;
 
 
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.FullnessMode;
@@ -42,9 +43,9 @@ public class ContainerIOPort extends ContainerUpgradeable
 	@GuiSync( 3 )
 	public OperationMode opMode = OperationMode.EMPTY;
 
-	public ContainerIOPort( final PlayerInventory ip, final TileIOPort te )
+	public ContainerIOPort(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileIOPort te )
 	{
-		super( ip, te );
+		super( containerType, id, ip, te );
 	}
 
 	@Override

@@ -22,17 +22,19 @@ package appeng.tile.crafting;
 import java.io.IOException;
 import java.util.List;
 
+import appeng.core.Api;
+import appeng.core.sync.network.TargetPoint;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.hooks.BasicEventHooks;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
@@ -95,8 +97,8 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 	private boolean forcePlan = false;
 	private boolean reboot = true;
 
-	public TileMolecularAssembler()
-	{
+	public TileMolecularAssembler(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
 		final ITileDefinition assembler = Api.INSTANCE.definitions().blocks().molecularAssembler();
 
 		this.settings = new ConfigManager( this );
@@ -221,8 +223,8 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 			{
 				final CompoundNBT compound = new CompoundNBT();
 				pattern.write(compound);
-				data.setTag( "myPlan", compound );
-				data.setInteger( "pushDirection", this.pushDirection.ordinal() );
+				data.put( "myPlan", compound );
+				data.putInt( "pushDirection", this.pushDirection.ordinal() );
 			}
 		}
 
@@ -237,7 +239,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 		super.read( data );
 		if( data.contains("myPlan") )
 		{
-			final ItemStack myPat = new ItemStack( data.getCompoundTag( "myPlan" ) );
+			final ItemStack myPat = ItemStack.read( data.getCompound( "myPlan" ) );
 
 			if( !myPat.isEmpty() && myPat.getItem() instanceof ItemEncodedPattern )
 			{
@@ -248,7 +250,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 				{
 					this.forcePlan = true;
 					this.myPlan = ph;
-					this.pushDirection = AEPartLocation.fromOrdinal( data.getInteger( "pushDirection" ) );
+					this.pushDirection = AEPartLocation.fromOrdinal( data.getInt( "pushDirection" ) );
 				}
 			}
 		}
@@ -456,7 +458,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 			final ItemStack output = this.myPlan.getOutput( this.craftingInv, this.getWorld() );
 			if( !output.isEmpty() )
 			{
-				FMLCommonHandler.instance().firePlayerCraftingEvent( Platform.getPlayer( (WorldServer) this.getWorld() ), output, this.craftingInv );
+				BasicEventHooks.firePlayerCraftingEvent( Platform.getPlayer( (ServerWorld) this.getWorld() ), output, this.craftingInv );
 
 				this.pushOut( output.copy() );
 
@@ -476,7 +478,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
 
 				try
 				{
-					final TargetPoint where = new TargetPoint( this.world.provider.getDimension(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), 32 );
+					final TargetPoint where = new TargetPoint( this.pos.getX(), this.pos.getY(), this.pos.getZ(), 32, this.world.getDimension().getType() );
 					final IAEItemStack item = AEItemStack.fromItemStack( output );
 					NetworkHandler.instance().sendToAllAround( new PacketAssemblerAnimation( this.pos, (byte) speed, item ), where );
 				}

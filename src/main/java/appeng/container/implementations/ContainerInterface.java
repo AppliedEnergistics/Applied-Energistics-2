@@ -31,6 +31,7 @@ import appeng.container.slot.SlotNormal;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
+import net.minecraft.inventory.container.ContainerType;
 
 
 public class ContainerInterface extends ContainerUpgradeable
@@ -44,9 +45,9 @@ public class ContainerInterface extends ContainerUpgradeable
 	@GuiSync( 4 )
 	public YesNo iTermMode = YesNo.YES;
 
-	public ContainerInterface( final PlayerInventory ip, final IInterfaceHost te )
+	public ContainerInterface(ContainerType<?> containerType, int id, final PlayerInventory ip, final IInterfaceHost te )
 	{
-		super( ip, te.getInterfaceDuality().getHost() );
+		super( containerType, id, ip, te.getInterfaceDuality().getHost() );
 
 		this.myDuality = te.getInterfaceDuality();
 

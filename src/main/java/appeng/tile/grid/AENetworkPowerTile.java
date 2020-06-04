@@ -29,12 +29,17 @@ import appeng.api.util.DimensionalCoord;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
 import appeng.tile.powersink.AEBasePoweredTile;
+import net.minecraft.tileentity.TileEntityType;
 
 
 public abstract class AENetworkPowerTile extends AEBasePoweredTile implements IActionHost, IGridProxyable
 {
 
 	private final AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", this.getItemFromTile( this ), true );
+
+	public AENetworkPowerTile(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
+	}
 
 	@Override
 	public void read(final CompoundNBT data )
@@ -89,17 +94,17 @@ public abstract class AENetworkPowerTile extends AEBasePoweredTile implements IA
 	}
 
 	@Override
-	public void invalidate()
+	public void remove()
 	{
-		super.invalidate();
-		this.getProxy().invalidate();
+		super.remove();
+		this.getProxy().remove();
 	}
 
 	@Override
-	public void onChunkUnload()
+	public void onChunkUnloaded()
 	{
-		super.onChunkUnload();
-		this.getProxy().onChunkUnload();
+		super.onChunkUnloaded();
+		this.getProxy().onChunkUnloaded();
 	}
 
 	@Override

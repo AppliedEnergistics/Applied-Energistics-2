@@ -19,6 +19,7 @@
 package appeng.parts.automation;
 
 
+import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -29,6 +30,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -69,6 +71,11 @@ import appeng.parts.PartBasicState;
 import appeng.util.IWorldCallable;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootParameters;
+import net.minecraftforge.common.ToolType;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.FakePlayerFactory;
 
 
 public class PartAnnihilationPlane extends PartBasicState implements IGridTickable, IWorldCallable<TickRateModulation>
@@ -478,8 +485,23 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 
 	protected List<ItemStack> obtainBlockDrops( final ServerWorld w, final BlockPos pos )
 	{
-		final ItemStack[] out = Platform.getBlockDrops( w, pos );
-		return Lists.newArrayList( out );
+		final FakePlayer fakePlayer = FakePlayerFactory.getMinecraft( w );
+		final BlockState state = w.getBlockState( pos );
+		ItemStack harvestTool = createHarvestTool(state);
+
+		// In case the block does NOT allow us to harvest it without a tool, or the proper tool,
+		// do not return anything.
+		if (harvestTool == null && !state.getMaterial().isToolNotRequired()) {
+			return Collections.emptyList();
+		}
+
+		LootContext.Builder lootContext = new LootContext.Builder(w)
+				.withRandom(w.rand)
+				.withParameter(LootParameters.POSITION, pos)
+				.withNullableParameter(LootParameters.TOOL, harvestTool)
+				.withNullableParameter(LootParameters.THIS_ENTITY, fakePlayer)
+				.withNullableParameter(LootParameters.BLOCK_ENTITY, w.getTileEntity(pos));
+		return state.getDrops(lootContext);
 	}
 
 	/**
@@ -569,4 +591,24 @@ public class PartAnnihilationPlane extends PartBasicState implements IGridTickab
 	{
 		return MODELS.getModel( this.getConnections(), this.isPowered(), this.isActive() );
 	}
+
+	/**
+	 * Creates the fake (and temporary) tool that will be used to calculate the loot tables of
+	 * a block this plane wants to break.
+	 * @param state The state of the block about to be broken.
+	 */
+	protected ItemStack createHarvestTool(BlockState state) {
+		// Try to use the right tool...
+		ToolType harvestToolType = state.getBlock().getHarvestTool(state);
+		if (harvestToolType == ToolType.AXE) {
+			return new ItemStack(Items.DIAMOND_AXE, 1);
+		} else if (harvestToolType == ToolType.SHOVEL) {
+			return new ItemStack(Items.DIAMOND_SHOVEL, 1);
+		} else if (harvestToolType == ToolType.PICKAXE) {
+			return new ItemStack(Items.DIAMOND_PICKAXE, 1);
+		} else {
+			return null;
+		}
+	}
+
 }

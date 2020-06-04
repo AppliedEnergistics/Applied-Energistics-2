@@ -46,8 +46,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
@@ -1139,7 +1143,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		this.craftingTracker.jobStateChange( link );
 	}
 
-	public String getTermName()
+	public ITextComponent getTermName()
 	{
 		final TileEntity hostTile = this.iHost.getTileEntity();
 		final World hostWorld = hostTile.getWorld();
@@ -1211,18 +1215,18 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 				if( what.getItem() != Items.AIR )
 				{
-					return what.getTranslationKey();
+					return new TranslationTextComponent(what.getTranslationKey());
 				}
 
 				final Item item = Item.getItemFromBlock( directedBlock );
 				if( item == Items.AIR )
 				{
-					return directedBlock.getTranslationKey();
+					return new TranslationTextComponent(directedBlock.getTranslationKey());
 				}
 			}
 		}
 
-		return "Nothing";
+		return new StringTextComponent("Nothing");
 	}
 
 	public long getSortValue()
@@ -1262,17 +1266,17 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 	}
 
 	@SuppressWarnings( "unchecked" )
-	public <T> T getCapability( Capability<T> capabilityClass, Direction facing )
+	public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, Direction facing )
 	{
 		if( capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
 		{
-			return (T) this.storage;
+			return (LazyOptional<T>) LazyOptional.of(() -> this.storage);
 		}
 		else if( capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR )
 		{
-			return (T) this.accessor;
+			return (LazyOptional<T>) LazyOptional.of(() -> this.accessor);
 		}
-		return null;
+		return LazyOptional.empty();
 	}
 
 	private class InterfaceRequestSource extends MachineSource

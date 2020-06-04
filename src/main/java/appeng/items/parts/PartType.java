@@ -41,16 +41,6 @@ import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.api.features.AEFeature;
 import appeng.core.localization.GuiText;
-import appeng.fluids.parts.PartFluidAnnihilationPlane;
-import appeng.fluids.parts.PartFluidExportBus;
-import appeng.fluids.parts.PartFluidFormationPlane;
-import appeng.fluids.parts.PartFluidImportBus;
-import appeng.fluids.parts.PartFluidInterface;
-import appeng.fluids.parts.PartFluidLevelEmitter;
-import appeng.fluids.parts.PartFluidStorageBus;
-import appeng.fluids.parts.PartFluidTerminal;
-import appeng.integration.IntegrationRegistry;
-import appeng.integration.IntegrationType;
 import appeng.parts.automation.PartAnnihilationPlane;
 import appeng.parts.automation.PartExportBus;
 import appeng.parts.automation.PartFormationPlane;
@@ -69,9 +59,6 @@ import appeng.parts.networking.PartDenseCableCovered;
 import appeng.parts.networking.PartDenseCableSmart;
 import appeng.parts.networking.PartQuartzFiber;
 import appeng.parts.p2p.PartP2PFEPower;
-import appeng.parts.p2p.PartP2PFluids;
-import appeng.parts.p2p.PartP2PIC2Power;
-import appeng.parts.p2p.PartP2PItems;
 import appeng.parts.p2p.PartP2PLight;
 import appeng.parts.p2p.PartP2PRedstone;
 import appeng.parts.p2p.PartP2PTunnelME;
@@ -199,20 +186,20 @@ public enum PartType
 	DARK_MONITOR( 200, "dark_monitor", EnumSet.of( AEFeature.PANELS ), EnumSet.noneOf( IntegrationType.class ), PartDarkPanel.class, "itemIlluminatedPanel" ),
 
 	STORAGE_BUS( 220, "storage_bus", EnumSet.of( AEFeature.STORAGE_BUS ), EnumSet.noneOf( IntegrationType.class ), PartStorageBus.class ),
-	FLUID_STORAGE_BUS( 221, "fluid_storage_bus", EnumSet.of( AEFeature.FLUID_STORAGE_BUS ), EnumSet
-			.noneOf( IntegrationType.class ), PartFluidStorageBus.class ),
+// FIXME	FLUID_STORAGE_BUS( 221, "fluid_storage_bus", EnumSet.of( AEFeature.FLUID_STORAGE_BUS ), EnumSet
+// FIXME			.noneOf( IntegrationType.class ), PartFluidStorageBus.class ),
 
 	IMPORT_BUS( 240, "import_bus", EnumSet.of( AEFeature.IMPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartImportBus.class ),
 
-	FLUID_IMPORT_BUS( 241, "fluid_import_bus", EnumSet.of( AEFeature.FLUID_IMPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartFluidImportBus.class ),
+// FIXME	FLUID_IMPORT_BUS( 241, "fluid_import_bus", EnumSet.of( AEFeature.FLUID_IMPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartFluidImportBus.class ),
 
 	EXPORT_BUS( 260, "export_bus", EnumSet.of( AEFeature.EXPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartExportBus.class ),
 
-	FLUID_EXPORT_BUS( 261, "fluid_export_bus", EnumSet.of( AEFeature.FLUID_EXPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartFluidExportBus.class ),
+// FIXME	FLUID_EXPORT_BUS( 261, "fluid_export_bus", EnumSet.of( AEFeature.FLUID_EXPORT_BUS ), EnumSet.noneOf( IntegrationType.class ), PartFluidExportBus.class ),
 
 	LEVEL_EMITTER( 280, "level_emitter", EnumSet.of( AEFeature.LEVEL_EMITTER ), EnumSet.noneOf( IntegrationType.class ), PartLevelEmitter.class ),
-	FLUID_LEVEL_EMITTER( 281, "fluid_level_emitter", EnumSet.of( AEFeature.FLUID_LEVEL_EMITTER ), EnumSet
-			.noneOf( IntegrationType.class ), PartFluidLevelEmitter.class ),
+// FIXME	FLUID_LEVEL_EMITTER( 281, "fluid_level_emitter", EnumSet.of( AEFeature.FLUID_LEVEL_EMITTER ), EnumSet
+// FIXME			.noneOf( IntegrationType.class ), PartFluidLevelEmitter.class ),
 
 	ANNIHILATION_PLANE( 300, "annihilation_plane", EnumSet.of( AEFeature.ANNIHILATION_PLANE ), EnumSet
 			.noneOf( IntegrationType.class ), PartAnnihilationPlane.class ),
@@ -220,13 +207,13 @@ public enum PartType
 	IDENTITY_ANNIHILATION_PLANE( 301, "identity_annihilation_plane", EnumSet.of( AEFeature.ANNIHILATION_PLANE, AEFeature.IDENTITY_ANNIHILATION_PLANE ), EnumSet
 			.noneOf( IntegrationType.class ), PartIdentityAnnihilationPlane.class ),
 
-	FLUID_ANNIHILATION_PLANE( 302, "fluid_annihilation_plane", EnumSet.of( AEFeature.FLUID_ANNIHILATION_PLANE ), EnumSet
-			.noneOf( IntegrationType.class ), PartFluidAnnihilationPlane.class ),
+// FIXME	FLUID_ANNIHILATION_PLANE( 302, "fluid_annihilation_plane", EnumSet.of( AEFeature.FLUID_ANNIHILATION_PLANE ), EnumSet
+// FIXME			.noneOf( IntegrationType.class ), PartFluidAnnihilationPlane.class ),
 
 	FORMATION_PLANE( 320, "formation_plane", EnumSet.of( AEFeature.FORMATION_PLANE ), EnumSet.noneOf( IntegrationType.class ), PartFormationPlane.class ),
 
-	FLUID_FORMATION_PLANE( 321, "fluid_formation_plane", EnumSet.of( AEFeature.FLUID_FORMATION_PLANE ), EnumSet
-			.noneOf( IntegrationType.class ), PartFluidFormationPlane.class ),
+// FIXME	FLUID_FORMATION_PLANE( 321, "fluid_formation_plane", EnumSet.of( AEFeature.FLUID_FORMATION_PLANE ), EnumSet
+// FIXME			.noneOf( IntegrationType.class ), PartFluidFormationPlane.class ),
 
 	PATTERN_TERMINAL( 340, "pattern_terminal", EnumSet.of( AEFeature.PATTERNS ), EnumSet.noneOf( IntegrationType.class ), PartPatternTerminal.class ),
 
@@ -241,7 +228,7 @@ public enum PartType
 			.noneOf( IntegrationType.class ), PartConversionMonitor.class ),
 
 	INTERFACE( 440, "interface", EnumSet.of( AEFeature.INTERFACE ), EnumSet.noneOf( IntegrationType.class ), PartInterface.class ),
-	FLUID_INTERFACE( 441, "fluid_interface", EnumSet.of( AEFeature.FLUID_INTERFACE ), EnumSet.noneOf( IntegrationType.class ), PartFluidInterface.class ),
+// FIXME	FLUID_INTERFACE( 441, "fluid_interface", EnumSet.of( AEFeature.FLUID_INTERFACE ), EnumSet.noneOf( IntegrationType.class ), PartFluidInterface.class ),
 
 	P2P_TUNNEL_ME( 460, "p2p_tunnel_me", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_ME ), EnumSet
 			.noneOf( IntegrationType.class ), PartP2PTunnelME.class, GuiText.METunnel )
@@ -263,35 +250,35 @@ public enum PartType
 		}
 	},
 
-	P2P_TUNNEL_ITEMS( 462, "p2p_tunnel_items", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_ITEMS ), EnumSet
-			.noneOf( IntegrationType.class ), PartP2PItems.class, GuiText.ItemTunnel )
-	{
-		@Override
-		String getTranslationKey()
-		{
-			return "p2p_tunnel";
-		}
-	},
-
-	P2P_TUNNEL_FLUIDS( 463, "p2p_tunnel_fluids", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_FLUIDS ), EnumSet
-			.noneOf( IntegrationType.class ), PartP2PFluids.class, GuiText.FluidTunnel )
-	{
-		@Override
-		String getTranslationKey()
-		{
-			return "p2p_tunnel";
-		}
-	},
-
-	P2P_TUNNEL_IC2( 465, "p2p_tunnel_ic2", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_EU ), EnumSet
-			.of( IntegrationType.IC2 ), PartP2PIC2Power.class, GuiText.EUTunnel )
-	{
-		@Override
-		String getTranslationKey()
-		{
-			return "p2p_tunnel";
-		}
-	},
+// FIXME	P2P_TUNNEL_ITEMS( 462, "p2p_tunnel_items", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_ITEMS ), EnumSet
+// FIXME			.noneOf( IntegrationType.class ), PartP2PItems.class, GuiText.ItemTunnel )
+// FIXME	{
+// FIXME		@Override
+// FIXME		String getTranslationKey()
+// FIXME		{
+// FIXME			return "p2p_tunnel";
+// FIXME		}
+// FIXME	},
+// FIXME
+// FIXME	P2P_TUNNEL_FLUIDS( 463, "p2p_tunnel_fluids", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_FLUIDS ), EnumSet
+// FIXME			.noneOf( IntegrationType.class ), PartP2PFluids.class, GuiText.FluidTunnel )
+// FIXME	{
+// FIXME		@Override
+// FIXME		String getTranslationKey()
+// FIXME		{
+// FIXME			return "p2p_tunnel";
+// FIXME		}
+// FIXME	},
+// FIXME
+// FIXME	P2P_TUNNEL_IC2( 465, "p2p_tunnel_ic2", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_EU ), EnumSet
+// FIXME			.of( IntegrationType.IC2 ), PartP2PIC2Power.class, GuiText.EUTunnel )
+// FIXME	{
+// FIXME		@Override
+// FIXME		String getTranslationKey()
+// FIXME		{
+// FIXME			return "p2p_tunnel";
+// FIXME		}
+// FIXME	},
 
 	P2P_TUNNEL_LIGHT( 467, "p2p_tunnel_light", EnumSet.of( AEFeature.P2P_TUNNEL, AEFeature.P2P_TUNNEL_LIGHT ), EnumSet
 			.noneOf( IntegrationType.class ), PartP2PLight.class, GuiText.LightTunnel )
@@ -317,9 +304,9 @@ public enum PartType
 	// IntegrationType.OpenComputers ), PartP2POpenComputers.class, GuiText.OCTunnel ),
 
 	INTERFACE_TERMINAL( 480, "interface_terminal", EnumSet.of( AEFeature.INTERFACE_TERMINAL ), EnumSet
-			.noneOf( IntegrationType.class ), PartInterfaceTerminal.class ),
+			.noneOf( IntegrationType.class ), PartInterfaceTerminal.class );
 
-	FLUID_TERMINAL( 520, "fluid_terminal", EnumSet.of( AEFeature.FLUID_TERMINAL ), EnumSet.noneOf( IntegrationType.class ), PartFluidTerminal.class );
+// FIXME	FLUID_TERMINAL( 520, "fluid_terminal", EnumSet.of( AEFeature.FLUID_TERMINAL ), EnumSet.noneOf( IntegrationType.class ), PartFluidTerminal.class );
 
 	private final int baseDamage;
 	private final Set<AEFeature> features;
@@ -358,8 +345,8 @@ public enum PartType
 		this.oreName = oreDict;
 
 		// The part is enabled if all features + integrations it needs are enabled
-		this.enabled = features.stream().allMatch( AEConfig.instance()::isFeatureEnabled ) && integrations.stream()
-				.allMatch( IntegrationRegistry.INSTANCE::isEnabled );
+		this.enabled = features.stream().allMatch( AEConfig.instance()::isFeatureEnabled ); /* FIXME && integrations.stream()
+				.allMatch( IntegrationRegistry.INSTANCE::isEnabled ); */
 
 		if( this.enabled )
 		{
@@ -467,3 +454,5 @@ public enum PartType
 	}
 
 }
+
+enum IntegrationType {}

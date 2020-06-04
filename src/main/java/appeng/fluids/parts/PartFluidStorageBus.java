@@ -65,7 +65,7 @@ import appeng.capabilities.Capabilities;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
-import appeng.core.sync.GuiBridge;
+
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
@@ -224,7 +224,7 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 	{
 		if( Platform.isServer() )
 		{
-			Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_STORAGEBUS_FLUID );
+			// FIXME Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_STORAGEBUS_FLUID );
 		}
 		return true;
 	}
@@ -489,9 +489,9 @@ public class PartFluidStorageBus extends PartSharedStorageBus implements IMEMoni
 		return Api.INSTANCE.definitions().parts().fluidStorageBus().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
-	@Override
-	public GuiBridge getGuiBridge()
-	{
-		return GuiBridge.GUI_STORAGEBUS_FLUID;
-	}
+// FIXME	@Override
+// FIXME	public GuiBridge getGuiBridge()
+// FIXME	{
+// FIXME		return GuiBridge.GUI_STORAGEBUS_FLUID;
+// FIXME	}
 }

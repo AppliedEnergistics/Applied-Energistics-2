@@ -156,7 +156,7 @@ public class BlockController extends AEBaseTileBlock
 	@Override
 	public int getMetaFromState( final BlockState state )
 	{
-		return state.getValue( CONTROLLER_STATE ).ordinal();
+		return state.get( CONTROLLER_STATE ).ordinal();
 	}
 
 	@Override

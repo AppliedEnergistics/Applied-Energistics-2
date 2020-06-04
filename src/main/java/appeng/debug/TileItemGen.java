@@ -31,6 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -71,23 +72,14 @@ public class TileItemGen extends AEBaseTile
 		}
 	}
 
-	@Override
-	public boolean hasCapability( Capability<?> capability, @Nullable Direction facing )
-	{
-		if( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY == capability )
-		{
-			return true;
-		}
-		return super.hasCapability( capability, facing );
-	}
-
+	@SuppressWarnings("unchecked")
 	@Override
 	@Nullable
-	public <T> T getCapability( Capability<T> capability, @Nullable Direction facing )
+	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing )
 	{
 		if( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY == capability )
 		{
-			return (T) this.handler;
+			return (LazyOptional<T>) LazyOptional.of(() ->this.handler);
 		}
 		return super.getCapability( capability, facing );
 	}

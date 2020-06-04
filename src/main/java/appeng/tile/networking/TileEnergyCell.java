@@ -33,6 +33,7 @@ import appeng.block.networking.BlockEnergyCell;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkTile;
 import appeng.util.SettingsFrom;
+import net.minecraft.tileentity.TileEntityType;
 
 
 public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
@@ -43,8 +44,8 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 
 	private byte currentMeta = -1;
 
-	public TileEnergyCell()
-	{
+	public TileEnergyCell(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
 		this.getProxy().setIdlePowerUsage( 0 );
 	}
 
@@ -58,7 +59,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	public void onReady()
 	{
 		super.onReady();
-		final int value = this.world.getBlockState( this.pos ).getValue( BlockEnergyCell.ENERGY_STORAGE );
+		final int value = this.world.getBlockState( this.pos ).get( BlockEnergyCell.ENERGY_STORAGE );
 		this.currentMeta = (byte) value;
 		this.changePowerLevel();
 	}
@@ -84,7 +85,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 
 	private void changePowerLevel()
 	{
-		if( this.notLoaded() || this.isInvalid() )
+		if( this.notLoaded() || this.isRemoved() )
 		{
 			return;
 		}
@@ -99,17 +100,17 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage
 	}
 
 	@Override
-	public CompoundNBT writeToNBT( final CompoundNBT data )
+	public CompoundNBT write(final CompoundNBT data )
 	{
-		super.writeToNBT( data );
+		super.write( data );
 		data.putDouble("internalCurrentPower", this.internalCurrentPower);
 		return data;
 	}
 
 	@Override
-	public void readFromNBT( final CompoundNBT data )
+	public void read(final CompoundNBT data )
 	{
-		super.readFromNBT( data );
+		super.read( data );
 		this.internalCurrentPower = data.getDouble( "internalCurrentPower" );
 	}
 

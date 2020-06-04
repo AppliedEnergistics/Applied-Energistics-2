@@ -19,9 +19,6 @@
 package appeng.block.misc;
 
 
-import java.util.Collections;
-import java.util.List;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
@@ -33,15 +30,19 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.item.Items;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 import appeng.block.AEBaseBlock;
@@ -50,27 +51,24 @@ import appeng.helpers.ICustomCollision;
 import net.minecraft.world.server.ServerWorld;
 
 
-public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
+public class BlockTinyTNT extends AEBaseBlock
 {
+
+	private static final VoxelShape SHAPE = VoxelShapes.create(new AxisAlignedBB( 0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f ));
 
 	public BlockTinyTNT()
 	{
-		super( Material.TNT );
-
-		this.boundingBox = new AxisAlignedBB( 0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f );
-
-		this.setLightOpacity( 2 );
-		this.setFullSize( false );
-		this.setOpaque( false );
-
-		this.setSoundType( SoundType.GROUND );
-		this.setHardness( 0F );
+		super( Properties.create(Material.TNT).hardnessAndResistance(0).sound(SoundType.GROUND).notSolid() );
 	}
 
 	@Override
-	public boolean isFullCube( BlockState state )
-	{
-		return false;
+	public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos) {
+		return 2; // FIXME: Validate that this is the correct value range
+	}
+
+	@Override
+	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+		return SHAPE;
 	}
 
 	@Override
@@ -80,7 +78,9 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 		{
 			this.startFuse( w, pos, player );
 			w.removeBlock(pos, false);
-			heldItem.damageItem( 1, player );
+			heldItem.damageItem( 1, player, p -> {
+				p.sendBreakAnimation(hand);
+			} ); // FIXME Check if onBroken is equivalent
 			return ActionResultType.SUCCESS;
 		}
 		else
@@ -103,7 +103,7 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	@Override
 	public void neighborChanged( BlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos, boolean isMoving )
 	{
-		if( world.isBlockIndirectlyGettingPowered( pos ) > 0 )
+		if( world.getRedstonePowerFromNeighbors( pos ) > 0 )
 		{
 			this.startFuse( world, pos, null );
 			world.removeBlock(pos, false);
@@ -111,11 +111,10 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 	}
 
 	@Override
-	public void onBlockAdded( final World w, final BlockPos pos, final BlockState state )
-	{
-		super.onBlockAdded( w, pos, state );
+	public void onBlockAdded(BlockState state, World w, BlockPos pos, BlockState oldState, boolean isMoving) {
+		super.onBlockAdded( state, w, pos, oldState, isMoving );
 
-		if( w.isBlockIndirectlyGettingPowered( pos ) > 0 )
+		if( w.getRedstonePowerFromNeighbors( pos ) > 0 )
 		{
 			this.startFuse( w, pos, null );
 			w.removeBlock(pos, false);
@@ -166,15 +165,4 @@ public class BlockTinyTNT extends AEBaseBlock implements ICustomCollision
 		}
 	}
 
-	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final BlockPos pos, final Entity thePlayer, final boolean b )
-	{
-		return Collections.singletonList( new AxisAlignedBB( 0.25, 0, 0.25, 0.75, 0.5, 0.75 ) );
-	}
-
-	@Override
-	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
-	{
-		out.add( new AxisAlignedBB( 0.25, 0, 0.25, 0.75, 0.5, 0.75 ) );
-	}
 }

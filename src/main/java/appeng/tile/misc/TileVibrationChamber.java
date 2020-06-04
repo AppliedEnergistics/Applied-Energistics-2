@@ -27,8 +27,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Actionable;
@@ -66,8 +67,8 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 	// client side..
 	public boolean isOn;
 
-	public TileVibrationChamber()
-	{
+	public TileVibrationChamber(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
 		this.getProxy().setIdlePowerUsage( 0 );
 		this.getProxy().setFlags();
 	}
@@ -102,7 +103,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		super.write( data );
 		data.putDouble("burnTime", this.getBurnTime());
 		data.putDouble("maxBurnTime", this.getMaxBurnTime());
-		data.setInteger( "burnSpeed", this.getBurnSpeed() );
+		data.putInt( "burnSpeed", this.getBurnSpeed() );
 		return data;
 	}
 
@@ -112,7 +113,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		super.read( data );
 		this.setBurnTime( data.getDouble( "burnTime" ) );
 		this.setMaxBurnTime( data.getDouble( "maxBurnTime" ) );
-		this.setBurnSpeed( data.getInteger( "burnSpeed" ) );
+		this.setBurnSpeed( data.getInt( "burnSpeed" ) );
 	}
 
 	@Override
@@ -151,7 +152,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		final ItemStack is = this.inv.getStackInSlot( 0 );
 		if( !is.isEmpty() )
 		{
-			final int newBurnTime = TileEntityFurnace.getItemBurnTime( is );
+			final int newBurnTime = ForgeHooks.getBurnTime( is );
 			if( newBurnTime > 0 && is.getCount() > 0 )
 			{
 				return true;
@@ -238,7 +239,7 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		final ItemStack is = this.inv.getStackInSlot( 0 );
 		if( !is.isEmpty() )
 		{
-			final int newBurnTime = TileEntityFurnace.getItemBurnTime( is );
+			final int newBurnTime = ForgeHooks.getBurnTime( is );
 			if( newBurnTime > 0 && is.getCount() > 0 )
 			{
 				this.setBurnTime( this.getBurnTime() + newBurnTime );
@@ -319,13 +320,13 @@ public class TileVibrationChamber extends AENetworkInvTile implements IGridTicka
 		@Override
 		public boolean allowExtract( IItemHandler inv, int slot, int amount )
 		{
-			return !TileEntityFurnace.isItemFuel( inv.getStackInSlot( slot ) );
+			return ForgeHooks.getBurnTime( inv.getStackInSlot( slot ) ) == 0;
 		}
 
 		@Override
 		public boolean allowInsert( IItemHandler inv, int slot, ItemStack stack )
 		{
-			return TileEntityFurnace.isItemFuel( stack );
+			return ForgeHooks.getBurnTime( stack ) != 0;
 		}
 	}
 }

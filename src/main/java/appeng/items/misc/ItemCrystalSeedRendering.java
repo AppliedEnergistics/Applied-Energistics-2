@@ -21,7 +21,6 @@ package appeng.items.misc;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -55,49 +54,49 @@ public class ItemCrystalSeedRendering extends ItemRenderingCustomizer
 	public void customize( IItemRendering rendering )
 	{
 		rendering.variants( ImmutableList.<ResourceLocation>builder().add( MODELS_CERTUS ).add( MODELS_FLUIX ).add( MODELS_NETHER ).build() );
-		rendering.meshDefinition( this.getItemMeshDefinition() );
+		// FIXME rendering.meshDefinition( this.getItemMeshDefinition() );
 	}
 
-	private ItemMeshDefinition getItemMeshDefinition()
-	{
-		return is ->
-		{
-			int damage = ItemCrystalSeed.getProgress( is );
-
-			// Split the damage value into crystal type and growth level
-			int type = damage / ItemCrystalSeed.SINGLE_OFFSET;
-			int level = ( damage % ItemCrystalSeed.SINGLE_OFFSET ) / ItemCrystalSeed.LEVEL_OFFSET;
-
-			// Determine which list of models to use based on the type of crystal
-			ModelResourceLocation[] models;
-			switch( type )
-			{
-				case 0:
-					models = MODELS_CERTUS;
-					break;
-				case 1:
-					models = MODELS_NETHER;
-					break;
-				case 2:
-					models = MODELS_FLUIX;
-					break;
-				default:
-					// We use this as the fallback for broken items
-					models = MODELS_CERTUS;
-					break;
-			}
-
-			// Return one of the 3 models based on the level
-			if( level < 0 )
-			{
-				level = 0;
-			}
-			else if( level >= models.length )
-			{
-				level = models.length - 1;
-			}
-
-			return models[level];
-		};
-	}
+	// FIXME private ItemMeshDefinition getItemMeshDefinition()
+	// FIXME {
+	// FIXME 	return is ->
+	// FIXME 	{
+	// FIXME 		int damage = ItemCrystalSeed.getProgress( is );
+// FIXME
+	// FIXME 		// Split the damage value into crystal type and growth level
+	// FIXME 		int type = damage / ItemCrystalSeed.SINGLE_OFFSET;
+	// FIXME 		int level = ( damage % ItemCrystalSeed.SINGLE_OFFSET ) / ItemCrystalSeed.LEVEL_OFFSET;
+// FIXME
+	// FIXME 		// Determine which list of models to use based on the type of crystal
+	// FIXME 		ModelResourceLocation[] models;
+	// FIXME 		switch( type )
+	// FIXME 		{
+	// FIXME 			case 0:
+	// FIXME 				models = MODELS_CERTUS;
+	// FIXME 				break;
+	// FIXME 			case 1:
+	// FIXME 				models = MODELS_NETHER;
+	// FIXME 				break;
+	// FIXME 			case 2:
+	// FIXME 				models = MODELS_FLUIX;
+	// FIXME 				break;
+	// FIXME 			default:
+	// FIXME 				// We use this as the fallback for broken items
+	// FIXME 				models = MODELS_CERTUS;
+	// FIXME 				break;
+	// FIXME 		}
+// FIXME
+	// FIXME 		// Return one of the 3 models based on the level
+	// FIXME 		if( level < 0 )
+	// FIXME 		{
+	// FIXME 			level = 0;
+	// FIXME 		}
+	// FIXME 		else if( level >= models.length )
+	// FIXME 		{
+	// FIXME 			level = models.length - 1;
+	// FIXME 		}
+// FIXME
+	// FIXME 		return models[level];
+	// FIXME 	};
+	// FIXME }
 }

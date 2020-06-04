@@ -30,7 +30,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 
-import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
@@ -114,7 +113,7 @@ public class PartP2PTunnelME extends PartP2PTunnel<PartP2PTunnelME> implements I
 	public void removeFromWorld()
 	{
 		super.removeFromWorld();
-		this.outerProxy.invalidate();
+		this.outerProxy.remove();
 	}
 
 	@Override

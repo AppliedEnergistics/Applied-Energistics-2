@@ -19,33 +19,31 @@
 package appeng.tile.networking;
 
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 
 import appeng.api.parts.IPart;
 import appeng.tile.AEBaseTile;
 
 
-public class CableBusTESR extends TileEntityRenderer<AEBaseTile>
+public class CableBusTESR extends TileEntityRenderer<TileCableBusTESR>
 {
 
+	public CableBusTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
+		super(rendererDispatcherIn);
+	}
+
 	@Override
-	public void render( AEBaseTile te, double x, double y, double z, float partialTicks, int destroyStage, float p_render_10_ )
-	{
-
-		if( !( te instanceof TileCableBusTESR ) )
-		{
-			return;
-		}
-
-		TileCableBusTESR realTe = (TileCableBusTESR) te;
-
+	public void render(TileCableBusTESR te, float partialTicks, MatrixStack ms, IRenderTypeBuffer buffers, int combinedLightIn, int combinedOverlayIn) {
 		for( Direction facing : Direction.values() )
 		{
-			IPart part = realTe.getPart( facing );
+			IPart part = te.getPart( facing );
 			if( part != null && part.requireDynamicRender() )
 			{
-				part.renderDynamic( x, y, z, partialTicks, destroyStage );
+				part.renderDynamic(partialTicks, ms, buffers, combinedLightIn, combinedOverlayIn);
 			}
 		}
 	}

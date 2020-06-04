@@ -53,7 +53,7 @@ public interface IMovableHandler
 	 * <pre>
 	 * {
 	 * 	&#064;code
-	 * 	Chunk c = world.getChunkFromBlockCoords( x, z );
+	 * 	Chunk c = world.getChunkAt( x, z );
 	 * 	c.setChunkBlockTileEntity( x &amp; 0xF, y + y, z &amp; 0xF, tile );
 	 *
 	 * 	if( c.isChunkLoaded )

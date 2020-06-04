@@ -39,7 +39,7 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.storage.channels.IFluidStorageChannel;
 import appeng.api.util.AECableType;
 import appeng.core.Api;
-import appeng.core.sync.GuiBridge;
+
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.me.GridAccessException;
@@ -107,7 +107,7 @@ public abstract class PartSharedFluidBus extends PartUpgradeable implements IGri
 	{
 		if( Platform.isServer() )
 		{
-			Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_BUS_FLUID );
+			// FIXME Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_BUS_FLUID );
 		}
 
 		return true;

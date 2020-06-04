@@ -31,6 +31,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.FluidTankProperties;
@@ -91,23 +92,13 @@ public class PartP2PFluids extends PartP2PTunnel<PartP2PFluids> implements IFlui
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public boolean hasCapability( Capability<?> capabilityClass )
+	public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass )
 	{
 		if( capabilityClass == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY )
 		{
-			return true;
-		}
-
-		return super.hasCapability( capabilityClass );
-	}
-
-	@Override
-	public <T> T getCapability( Capability<T> capabilityClass )
-	{
-		if( capabilityClass == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY )
-		{
-			return (T) this;
+			return (LazyOptional<T>) LazyOptional.of(() ->this);
 		}
 
 		return super.getCapability( capabilityClass );

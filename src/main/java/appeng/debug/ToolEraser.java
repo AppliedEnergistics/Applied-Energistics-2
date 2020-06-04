@@ -24,7 +24,7 @@ import java.util.List;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -41,11 +41,11 @@ public class ToolEraser extends AEBaseItem
 	private static final int BLOCK_ERASE_LIMIT = 90000;
 
 	@Override
-	public EnumActionResult onItemUseFirst( final PlayerEntity player, final World world, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
+	public ActionResultType onItemUseFirst( final PlayerEntity player, final World world, final BlockPos pos, final Direction side, final float hitX, final float hitY, final float hitZ, final Hand hand )
 	{
 		if( Platform.isClient() )
 		{
-			return EnumActionResult.PASS;
+			return ActionResultType.PASS;
 		}
 
 		final BlockState state = world.getBlockState( pos );
@@ -80,6 +80,6 @@ public class ToolEraser extends AEBaseItem
 
 		AELog.info( "Delete " + blocks + " blocks" );
 
-		return EnumActionResult.SUCCESS;
+		return ActionResultType.SUCCESS;
 	}
 }

@@ -27,9 +27,11 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import appeng.core.Api;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.implementations.tiles.IChestOrDrive;
@@ -50,7 +52,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
-import appeng.core.sync.GuiBridge;
+
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
 import appeng.me.helpers.MachineSource;
@@ -93,8 +95,8 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	 */
 	private int state = 0;
 
-	public TileDrive()
-	{
+	public TileDrive(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
 		this.mySrc = new MachineSource( this );
 		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
 		this.inv.setFilter( new CellValidInventoryFilter() );
@@ -174,14 +176,14 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 	{
 		super.read( data );
 		this.isCached = false;
-		this.priority = data.getInteger( "priority" );
+		this.priority = data.getInt( "priority" );
 	}
 
 	@Override
 	public CompoundNBT write(final CompoundNBT data )
 	{
 		super.write( data );
-		data.setInteger( "priority", this.priority );
+		data.putInt( "priority", this.priority );
 		return data;
 	}
 
@@ -403,9 +405,9 @@ public class TileDrive extends AENetworkInvTile implements IChestOrDrive, IPrior
 		return Api.INSTANCE.definitions().blocks().drive().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
-	@Override
-	public GuiBridge getGuiBridge()
-	{
-		return GuiBridge.GUI_DRIVE;
-	}
+// FIXME	@Override
+// FIXME	public GuiBridge getGuiBridge()
+// FIXME	{
+// FIXME		return GuiBridge.GUI_DRIVE;
+// FIXME	}
 }

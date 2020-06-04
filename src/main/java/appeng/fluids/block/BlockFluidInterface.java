@@ -31,18 +31,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
-import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
-import appeng.core.sync.GuiBridge;
+
 import appeng.fluids.tile.TileFluidInterface;
 import appeng.util.Platform;
 
 
-public class BlockFluidInterface extends AEBaseTileBlock
+public class BlockFluidInterface extends AEBaseTileBlock<TileFluidInterface>
 {
 	public BlockFluidInterface()
 	{
-		super( Material.IRON );
+		super(Properties.create( Material.IRON ));
 	}
 
 	@Override
@@ -54,11 +53,11 @@ public class BlockFluidInterface extends AEBaseTileBlock
 		}
 
 		final TileEntity tg = this.getTileEntity( w, pos );
-		if( tg instanceof TileFluidInterface )
+		if( tg != null )
 		{
 			if( Platform.isServer() )
 			{
-				Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_FLUID_INTERFACE );
+				// FIXME Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_FLUID_INTERFACE );
 			}
 			return ActionResultType.SUCCESS;
 		}

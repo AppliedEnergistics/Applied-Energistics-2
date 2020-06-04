@@ -40,7 +40,7 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
 import appeng.client.UnlistedProperty;
-import appeng.core.sync.GuiBridge;
+
 import appeng.tile.storage.TileDrive;
 import appeng.util.Platform;
 

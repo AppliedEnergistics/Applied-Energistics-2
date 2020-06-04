@@ -22,9 +22,11 @@ package appeng.container.implementations;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
@@ -47,11 +49,11 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 	private final AppEngInternalInventory output = new AppEngInternalInventory( this, 1 );
 	private final SlotCraftingMatrix[] craftingSlots = new SlotCraftingMatrix[9];
 	private final SlotCraftingTerm outputSlot;
-	private IRecipe currentRecipe;
+	private IRecipe<CraftingInventory> currentRecipe;
 
-	public ContainerCraftingTerm( final PlayerInventory ip, final ITerminalHost monitorable )
+	public ContainerCraftingTerm(ContainerType<?> containerType, int id, final PlayerInventory ip, final ITerminalHost monitorable )
 	{
-		super( ip, monitorable, false );
+		super( containerType, id, ip, monitorable, false );
 		this.ct = (PartCraftingTerminal) monitorable;
 
 		final IItemHandler crafting = this.ct.getInventoryByName( "crafting" );
@@ -89,7 +91,8 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 
 		if( this.currentRecipe == null || !this.currentRecipe.matches( ic, this.getPlayerInv().player.world ) )
 		{
-			this.currentRecipe = CraftingManager.findMatchingRecipe( ic, this.getPlayerInv().player.world );
+			World world = this.getPlayerInv().player.world;
+			this.currentRecipe = world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, world).orElse(null);
 		}
 
 		if( this.currentRecipe == null )
@@ -132,7 +135,7 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 		return true;
 	}
 
-	public IRecipe getCurrentRecipe()
+	public IRecipe<CraftingInventory> getCurrentRecipe()
 	{
 		return this.currentRecipe;
 	}

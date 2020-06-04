@@ -19,28 +19,6 @@
 package appeng.container.implementations;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IContainerListener;
-import net.minecraft.inventory.InventoryCraftResult;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotCrafting;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.PlayerInvWrapper;
-
 import appeng.api.config.Actionable;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.storage.IMEMonitor;
@@ -50,12 +28,8 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerNull;
 import appeng.container.guisync.GuiSync;
-import appeng.container.slot.IOptionalSlotHost;
-import appeng.container.slot.OptionalSlotFake;
-import appeng.container.slot.SlotFakeCraftingMatrix;
-import appeng.container.slot.SlotPatternOutputs;
-import appeng.container.slot.SlotPatternTerm;
-import appeng.container.slot.SlotRestrictedInput;
+import appeng.container.slot.*;
+import appeng.core.Api;
 import appeng.core.sync.packets.PacketPatternSlot;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.items.storage.ItemViewCell;
@@ -69,6 +43,28 @@ import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.item.AEItemStack;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.CraftResultInventory;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.CraftingResultSlot;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.PlayerInvWrapper;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 
 public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEAppEngInventory, IOptionalSlotHost, IContainerCraftingPacket
@@ -83,15 +79,15 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	private final SlotRestrictedInput patternSlotIN;
 	private final SlotRestrictedInput patternSlotOUT;
 
-	private IRecipe currentRecipe;
+	private IRecipe<CraftingInventory> currentRecipe;
 	@GuiSync( 97 )
 	public boolean craftingMode = true;
 	@GuiSync( 96 )
 	public boolean substitute = false;
 
-	public ContainerPatternTerm( final PlayerInventory ip, final ITerminalHost monitorable )
+	public ContainerPatternTerm(ContainerType<?> type, int id, final PlayerInventory ip, final ITerminalHost monitorable )
 	{
-		super( ip, monitorable, false );
+		super( type, id, ip, monitorable, false );
 		this.patternTerminal = (PartPatternTerminal) monitorable;
 
 		final IItemHandler patternInv = this.getPatternTerminal().getInventoryByName( "pattern" );
@@ -135,20 +131,20 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 	{
 		if( !this.isCraftingMode() )
 		{
-			this.craftSlot.xPos = -9000;
+			// FIXME this.craftSlot.xPos = -9000;
 
 			for( int y = 0; y < 3; y++ )
 			{
-				this.outputSlots[y].xPos = this.outputSlots[y].getX();
+				// FIXME this.outputSlots[y].xPos = this.outputSlots[y].getX();
 			}
 		}
 		else
 		{
-			this.craftSlot.xPos = this.craftSlot.getX();
+			// FIXME this.craftSlot.xPos = this.craftSlot.getX();
 
 			for( int y = 0; y < 3; y++ )
 			{
-				this.outputSlots[y].xPos = -9000;
+				// FIXME this.outputSlots[y].xPos = -9000;
 			}
 		}
 	}
@@ -172,7 +168,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 		if( this.currentRecipe == null || !this.currentRecipe.matches( ic, world ) )
 		{
-			this.currentRecipe = CraftingManager.findMatchingRecipe( ic, world );
+			this.currentRecipe = world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, world).orElse(null);
 		}
 
 		final ItemStack is;
@@ -252,20 +248,20 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
 		for( final ItemStack i : in )
 		{
-			tagIn.appendTag( this.createItemTag( i ) );
+			tagIn.add( this.createItemTag( i ) );
 		}
 
 		for( final ItemStack i : out )
 		{
-			tagOut.appendTag( this.createItemTag( i ) );
+			tagOut.add( this.createItemTag( i ) );
 		}
 
-		encodedValue.setTag( "in", tagIn );
-		encodedValue.setTag( "out", tagOut );
+		encodedValue.put( "in", tagIn );
+		encodedValue.put( "out", tagOut );
 		encodedValue.putBoolean("crafting", this.isCraftingMode());
 		encodedValue.putBoolean("substitute", this.isSubstitute());
 
-		output.setTagCompound( encodedValue );
+		output.setTag( encodedValue );
 	}
 
 	private ItemStack[] getInputs()
@@ -341,7 +337,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 		return isPattern;
 	}
 
-	private NBTBase createItemTag( final ItemStack i )
+	private INBT createItemTag( final ItemStack i )
 	{
 		final CompoundNBT c = new CompoundNBT();
 
@@ -410,7 +406,7 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 				ic.setInventorySlotContents( x, packetPatternSlot.pattern[x] == null ? ItemStack.EMPTY : packetPatternSlot.pattern[x].createItemStack() );
 			}
 
-			final IRecipe r = CraftingManager.findMatchingRecipe( ic, p.world );
+			final IRecipe<CraftingInventory> r = p.world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, p.world).orElse(null);
 
 			if( r == null )
 			{
@@ -433,14 +429,14 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 				}
 			}
 
-			final IRecipe rr = CraftingManager.findMatchingRecipe( real, p.world );
+			final IRecipe<CraftingInventory> rr = p.world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, real, p.world).orElse(null);
 
 			if( rr == r && Platform.itemComparisons().isSameItem( rr.getCraftingResult( real ), is ) )
 			{
-				final InventoryCraftResult craftingResult = new InventoryCraftResult();
+				final CraftResultInventory craftingResult = new CraftResultInventory();
 				craftingResult.setRecipeUsed( rr );
 
-				final SlotCrafting sc = new SlotCrafting( p, real, craftingResult, 0, 0, 0 );
+				final CraftingResultSlot sc = new CraftingResultSlot( p, real, craftingResult, 0, 0, 0 );
 				sc.onTake( p, is );
 
 				for( int x = 0; x < real.getSizeInventory(); x++ )
@@ -503,6 +499,8 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 			this.updateOrderOfOutputSlots();
 		}
 	}
+
+
 
 	@Override
 	public void onSlotChange( final Slot s )

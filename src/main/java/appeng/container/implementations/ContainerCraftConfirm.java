@@ -19,24 +19,6 @@
 package appeng.container.implementations;
 
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.concurrent.Future;
-
-import javax.annotation.Nonnull;
-
-import com.google.common.collect.ImmutableSet;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IContainerListener;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.World;
-
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
@@ -55,15 +37,26 @@ import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.core.AELog;
-import appeng.core.sync.GuiBridge;
+import appeng.core.Api;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
-import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.me.helpers.PlayerSource;
-import appeng.parts.reporting.PartCraftingTerminal;
-import appeng.parts.reporting.PartPatternTerminal;
-import appeng.parts.reporting.PartTerminal;
 import appeng.util.Platform;
+import com.google.common.collect.ImmutableSet;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.concurrent.Future;
 
 
 public class ContainerCraftConfirm extends AEBaseContainer
@@ -89,9 +82,8 @@ public class ContainerCraftConfirm extends AEBaseContainer
 	@GuiSync( 7 )
 	public String myName = "";
 
-	public ContainerCraftConfirm( final PlayerInventory ip, final ITerminalHost te )
-	{
-		super( ip, te );
+	public ContainerCraftConfirm(ContainerType<?> containerType, int id, PlayerInventory ip, ITerminalHost te) {
+		super(containerType, id, ip, te);
 	}
 
 	public void cycleCpu( final boolean next )
@@ -279,7 +271,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 			}
 			catch( final Throwable e )
 			{
-				this.getPlayerInv().player.sendMessage( new TextComponentString( "Error: " + e.toString() ) );
+				this.getPlayerInv().player.sendMessage( new StringTextComponent( "Error: " + e.toString() ) );
 				AELog.debug( e );
 				this.setValidContainer( false );
 				this.result = null;
@@ -322,28 +314,28 @@ public class ContainerCraftConfirm extends AEBaseContainer
 
 	public void startJob()
 	{
-		GuiBridge originalGui = null;
+		/* FIXME GuiBridge */ Object originalGui = null;
 
 		final IActionHost ah = this.getActionHost();
-		if( ah instanceof WirelessTerminalGuiObject )
-		{
-			originalGui = GuiBridge.GUI_WIRELESS_TERM;
-		}
-
-		if( ah instanceof PartTerminal )
-		{
-			originalGui = GuiBridge.GUI_ME;
-		}
-
-		if( ah instanceof PartCraftingTerminal )
-		{
-			originalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
-		}
-
-		if( ah instanceof PartPatternTerminal )
-		{
-			originalGui = GuiBridge.GUI_PATTERN_TERMINAL;
-		}
+		// FIXME if( ah instanceof WirelessTerminalGuiObject )
+		// FIXME {
+		// FIXME 	originalGui = GuiBridge.GUI_WIRELESS_TERM;
+		// FIXME }
+// FIXME
+		// FIXME if( ah instanceof PartTerminal )
+		// FIXME {
+		// FIXME 	originalGui = GuiBridge.GUI_ME;
+		// FIXME }
+// FIXME
+		// FIXME if( ah instanceof PartCraftingTerminal )
+		// FIXME {
+		// FIXME 	originalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
+		// FIXME }
+// FIXME
+		// FIXME if( ah instanceof PartPatternTerminal )
+		// FIXME {
+		// FIXME 	originalGui = GuiBridge.GUI_PATTERN_TERMINAL;
+		// FIXME }
 
 		if( this.result != null && !this.isSimulation() )
 		{
@@ -354,7 +346,7 @@ public class ContainerCraftConfirm extends AEBaseContainer
 			if( g != null && originalGui != null && this.getOpenContext() != null )
 			{
 				final TileEntity te = this.getOpenContext().getTile();
-				Platform.openGUI( this.getPlayerInventory().player, te, this.getOpenContext().getSide(), originalGui );
+				// FIXME Platform.openGUI( this.getPlayerInventory().player, te, this.getOpenContext().getSide(), originalGui );
 			}
 		}
 	}

@@ -19,8 +19,10 @@
 package appeng.client.render.crafting;
 
 
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -37,27 +39,26 @@ import appeng.tile.crafting.TileCraftingMonitorTile;
 public class CraftingMonitorTESR extends TileEntityRenderer<TileCraftingMonitorTile>
 {
 
+	public CraftingMonitorTESR(TileEntityRendererDispatcher rendererDispatcherIn) {
+		super(rendererDispatcherIn);
+	}
+
 	@Override
-	public void render( TileCraftingMonitorTile te, double x, double y, double z, float partialTicks, int destroyStage, float p_render_10_ )
-	{
-		if( te == null )
-		{
-			return;
-		}
+	public void render(TileCraftingMonitorTile te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffers, int combinedLight, int combinedOverlay) {
 
 		Direction facing = te.getForward();
 
 		IAEItemStack jobProgress = te.getJobProgress();
 		if( jobProgress != null )
 		{
-			GlStateManager.pushMatrix();
-			GlStateManager.translate( x + 0.5, y + 0.5, z + 0.5 );
+			matrixStack.push();
+			matrixStack.translate(0.5, 0.5, 0.5);
 
-			TesrRenderHelper.moveToFace( facing );
-			TesrRenderHelper.rotateToFace( facing, (byte) 0 );
-			TesrRenderHelper.renderItem2dWithAmount( jobProgress, 0.7f, 0.1f );
+			TesrRenderHelper.moveToFace( matrixStack, facing );
+			TesrRenderHelper.rotateToFace( matrixStack, facing, (byte) 0 );
+			TesrRenderHelper.renderItem2dWithAmount(matrixStack, buffers, jobProgress, 0.7f, 0.1f );
 
-			GlStateManager.popMatrix();
+			matrixStack.pop();
 		}
 	}
 }

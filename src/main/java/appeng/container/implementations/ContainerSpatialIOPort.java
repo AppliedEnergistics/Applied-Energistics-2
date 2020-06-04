@@ -33,6 +33,7 @@ import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.spatial.TileSpatialIOPort;
 import appeng.util.Platform;
+import net.minecraft.inventory.container.ContainerType;
 
 
 public class ContainerSpatialIOPort extends AEBaseContainer
@@ -56,9 +57,9 @@ public class ContainerSpatialIOPort extends AEBaseContainer
 	@GuiSync( 33 )
 	public int zSize;
 
-	public ContainerSpatialIOPort( final PlayerInventory ip, final TileSpatialIOPort spatialIOPort )
+	public ContainerSpatialIOPort(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileSpatialIOPort spatialIOPort )
 	{
-		super( ip, spatialIOPort, null );
+		super( containerType, id, ip, spatialIOPort, null );
 
 		if( Platform.isServer() )
 		{

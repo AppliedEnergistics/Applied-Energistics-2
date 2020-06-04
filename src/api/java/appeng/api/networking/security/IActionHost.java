@@ -40,6 +40,6 @@ public interface IActionHost
 	 * @return the the gridnode that actions from this IGridHost are preformed
 	 * by.
 	 */
-	@Nonnull
+	@Nonnull // FIXME fishy annotation, every caller seems to check for null
 	IGridNode getActionableNode();
 }

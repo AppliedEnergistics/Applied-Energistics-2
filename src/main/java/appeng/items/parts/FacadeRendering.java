@@ -21,7 +21,6 @@ package appeng.items.parts;
 
 import appeng.bootstrap.IItemRendering;
 import appeng.bootstrap.ItemRenderingCustomizer;
-import appeng.client.render.FacadeItemModel;
 
 
 /**
@@ -34,6 +33,6 @@ public class FacadeRendering extends ItemRenderingCustomizer
 	public void customize( IItemRendering rendering )
 	{
 		// This actually just uses the path it will look for by default, no custom model redirection needed
-		rendering.builtInModel( "models/item/facade", new FacadeItemModel() );
+		// FIXME rendering.builtInModel( "models/item/facade", new FacadeItemModel() );
 	}
 }

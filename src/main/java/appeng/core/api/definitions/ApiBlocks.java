@@ -22,23 +22,28 @@ package appeng.core.api.definitions;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.ITileDefinition;
+import appeng.block.crafting.*;
 import appeng.block.grindstone.BlockCrank;
 import appeng.block.grindstone.BlockGrinder;
-import appeng.block.misc.BlockQuartzFixture;
-import appeng.block.misc.BlockSkyCompass;
-import appeng.block.misc.SkyCompassRendering;
+import appeng.block.misc.*;
 import appeng.block.spatial.BlockMatrixFrame;
 import appeng.block.storage.BlockSkyChest;
 import appeng.bootstrap.*;
 import appeng.bootstrap.definitions.TileEntityDefinition;
+import appeng.client.render.crafting.CraftingCubeRendering;
 import appeng.client.render.tesr.CrankTESR;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.api.features.AEFeature;
 import appeng.core.features.registries.PartModels;
 import appeng.decorative.AEDecorativeBlock;
 import appeng.decorative.solid.*;
+import appeng.tile.crafting.TileCraftingMonitorTile;
+import appeng.tile.crafting.TileCraftingStorageTile;
+import appeng.tile.crafting.TileCraftingTile;
+import appeng.tile.crafting.TileMolecularAssembler;
 import appeng.tile.grindstone.TileCrank;
 import appeng.tile.grindstone.TileGrinder;
+import appeng.tile.misc.TileInscriber;
 import appeng.tile.misc.TileSkyCompass;
 import appeng.tile.storage.TileSkyChest;
 import net.minecraft.block.Block;
@@ -50,7 +55,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
-
+import static appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import static appeng.decorative.solid.BlockSkyStone.SkystoneType;
 
 
@@ -254,11 +259,12 @@ public final class ApiBlocks implements IBlocks
 						})
 						.build() )
 				.build();
-//		this.inscriber = registry.block( "inscriber", BlockInscriber::new )
-//				.features( AEFeature.INSCRIBER )
-//				.tileEntity( registry.tileEntity("", TileInscriber.class, TileInscriber::new).build() )
-//				.rendering( new InscriberRendering() )
-//				.build();
+		this.inscriber = registry.block( "inscriber", () -> new BlockInscriber(Block.Properties.create(Material.IRON)) )
+				.features( AEFeature.INSCRIBER )
+				.tileEntity( registry.tileEntity("inscriber", TileInscriber.class, TileInscriber::new)
+						.rendering(new InscriberRendering())
+						.build() )
+				.build();
 //		this.wirelessAccessPoint = registry.block( "wireless_access_point", BlockWireless::new )
 //				.features( AEFeature.WIRELESS_ACCESS_TERMINAL )
 //				.tileEntity( registry.tileEntity("", TileWireless.class, TileWireless::new).build() )
@@ -299,12 +305,12 @@ public final class ApiBlocks implements IBlocks
 //				.build();
 //		this.quantumRing = registry.block( "quantum_ring", BlockQuantumRing::new )
 //				.features( AEFeature.QUANTUM_NETWORK_BRIDGE )
-//				.tileEntity( new TileEntityDefinition( TileQuantumBridge.class, "quantum_ring" ) )
+//				.tileEntity( registry.tileEntity( TileQuantumBridge.class, "quantum_ring" ) )
 //				.rendering( new QuantumBridgeRendering() )
 //				.build();
 //		this.quantumLink = registry.block( "quantum_link", BlockQuantumLinkChamber::new )
 //				.features( AEFeature.QUANTUM_NETWORK_BRIDGE )
-//				.tileEntity( new TileEntityDefinition( TileQuantumBridge.class, "quantum_ring" ) )
+//				.tileEntity( registry.tileEntity( TileQuantumBridge.class, "quantum_ring" ) )
 //				.rendering( new QuantumBridgeRendering() )
 //				.build();
 //		this.spatialPylon = registry.block( "spatial_pylon", BlockSpatialPylon::new )
@@ -384,51 +390,74 @@ public final class ApiBlocks implements IBlocks
 //				.tileEntity( registry.tileEntity("", TileCreativeEnergyCell.class, TileCreativeEnergyCell::new).build() )
 //				.build();
 //
-//		FeatureFactory crafting = registry.features( AEFeature.CRAFTING_CPU );
-//		this.craftingUnit = crafting.block( "crafting_unit", () -> new BlockCraftingUnit( CraftingUnitType.UNIT ) )
-//				.rendering( new CraftingCubeRendering( "crafting_unit", CraftingUnitType.UNIT ) )
-//				.tileEntity( new TileEntityDefinition( TileCraftingTile.class, "crafting_unit" ) )
-//				.useCustomItemModel()
-//				.build();
-//		this.craftingAccelerator = crafting.block( "crafting_accelerator", () -> new BlockCraftingUnit( CraftingUnitType.ACCELERATOR ) )
-//				.rendering( new CraftingCubeRendering( "crafting_accelerator", CraftingUnitType.ACCELERATOR ) )
-//				.tileEntity( new TileEntityDefinition( TileCraftingTile.class, "crafting_unit" ) )
-//				.useCustomItemModel()
-//				.build();
-//		this.craftingStorage1k = crafting.block( "crafting_storage_1k", () -> new BlockCraftingStorage( CraftingUnitType.STORAGE_1K ) )
-//				.item( ItemCraftingStorage::new )
-//				.tileEntity( new TileEntityDefinition( TileCraftingStorageTile.class, "crafting_storage" ) )
-//				.rendering( new CraftingCubeRendering( "crafting_storage_1k", CraftingUnitType.STORAGE_1K ) )
-//				.useCustomItemModel()
-//				.build();
-//		this.craftingStorage4k = crafting.block( "crafting_storage_4k", () -> new BlockCraftingStorage( CraftingUnitType.STORAGE_4K ) )
-//				.item( ItemCraftingStorage::new )
-//				.tileEntity( new TileEntityDefinition( TileCraftingStorageTile.class, "crafting_storage" ) )
-//				.rendering( new CraftingCubeRendering( "crafting_storage_4k", CraftingUnitType.STORAGE_4K ) )
-//				.useCustomItemModel()
-//				.build();
-//		this.craftingStorage16k = crafting.block( "crafting_storage_16k", () -> new BlockCraftingStorage( CraftingUnitType.STORAGE_16K ) )
-//				.item( ItemCraftingStorage::new )
-//				.tileEntity( new TileEntityDefinition( TileCraftingStorageTile.class, "crafting_storage" ) )
-//				.rendering( new CraftingCubeRendering( "crafting_storage_16k", CraftingUnitType.STORAGE_16K ) )
-//				.useCustomItemModel()
-//				.build();
-//		this.craftingStorage64k = crafting.block( "crafting_storage_64k", () -> new BlockCraftingStorage( CraftingUnitType.STORAGE_64K ) )
-//				.item( ItemCraftingStorage::new )
-//				.tileEntity( new TileEntityDefinition( TileCraftingStorageTile.class, "crafting_storage" ) )
-//				.rendering( new CraftingCubeRendering( "crafting_storage_64k", CraftingUnitType.STORAGE_64K ) )
-//				.useCustomItemModel()
-//				.build();
-//		this.craftingMonitor = crafting.block( "crafting_monitor", BlockCraftingMonitor::new )
-//				.tileEntity( registry.tileEntity("", TileCraftingMonitorTile.class, TileCraftingMonitorTile::new).build() )
-//				.rendering( new CraftingCubeRendering( "crafting_monitor", CraftingUnitType.MONITOR ) )
-//				.useCustomItemModel()
-//				.build();
-//
-//		this.molecularAssembler = registry.block( "molecular_assembler", BlockMolecularAssembler::new )
-//				.features( AEFeature.MOLECULAR_ASSEMBLER )
-//				.tileEntity( registry.tileEntity("", TileMolecularAssembler.class, TileMolecularAssembler::new).build() )
-//				.build();
+
+		TileEntityDefinition craftingUnit = registry.tileEntity("crafting_unit", TileCraftingTile.class, TileCraftingTile::new)
+				.build();
+
+		FeatureFactory crafting = registry.features( AEFeature.CRAFTING_CPU );
+		Block.Properties craftingBlockProps = Block.Properties.create(Material.IRON);
+		this.craftingUnit = crafting.block( "crafting_unit", () -> new CraftingUnitBlock( craftingBlockProps, CraftingUnitType.UNIT ) )
+				.rendering( new CraftingCubeRendering( "crafting_unit", CraftingUnitType.UNIT ) )
+				.tileEntity( craftingUnit )
+				.build();
+		this.craftingAccelerator = crafting.block( "crafting_accelerator", () -> new CraftingUnitBlock( craftingBlockProps, CraftingUnitType.ACCELERATOR ) )
+				.rendering( new CraftingCubeRendering( "crafting_accelerator", CraftingUnitType.ACCELERATOR ) )
+				.tileEntity( craftingUnit )
+				.build();
+
+		TileEntityDefinition craftingStorage = registry.tileEntity("crafting_storage", TileCraftingStorageTile.class, TileCraftingStorageTile::new)
+				.build();
+		this.craftingStorage1k = crafting.block( "crafting_storage_1k", () -> new BlockCraftingStorage( craftingBlockProps, CraftingUnitType.STORAGE_1K ) )
+				.item( ItemCraftingStorage::new )
+				.tileEntity(craftingStorage)
+				.rendering( new CraftingCubeRendering( "crafting_storage_1k", CraftingUnitType.STORAGE_1K ) )
+				.build();
+		this.craftingStorage4k = crafting.block( "crafting_storage_4k", () -> new BlockCraftingStorage( craftingBlockProps, CraftingUnitType.STORAGE_4K ) )
+				.item( ItemCraftingStorage::new )
+				.tileEntity(craftingStorage)
+				.rendering( new CraftingCubeRendering( "crafting_storage_4k", CraftingUnitType.STORAGE_4K ) )
+				.build();
+		this.craftingStorage16k = crafting.block( "crafting_storage_16k", () -> new BlockCraftingStorage( craftingBlockProps, CraftingUnitType.STORAGE_16K ) )
+				.item( ItemCraftingStorage::new )
+				.tileEntity(craftingStorage)
+				.rendering( new CraftingCubeRendering( "crafting_storage_16k", CraftingUnitType.STORAGE_16K ) )
+				.build();
+		this.craftingStorage64k = crafting.block( "crafting_storage_64k", () -> new BlockCraftingStorage( craftingBlockProps, CraftingUnitType.STORAGE_64K ) )
+				.item( ItemCraftingStorage::new )
+				.tileEntity(craftingStorage)
+				.rendering( new CraftingCubeRendering( "crafting_storage_64k", CraftingUnitType.STORAGE_64K ) )
+				.build();
+		this.craftingMonitor = crafting.block( "crafting_monitor", () -> new BlockCraftingMonitor(craftingBlockProps) )
+				.tileEntity( registry.tileEntity("", TileCraftingMonitorTile.class, TileCraftingMonitorTile::new)
+						.rendering(new TileEntityRenderingCustomizer<TileCraftingMonitorTile>() {
+							@OnlyIn(Dist.CLIENT)
+							@Override
+							public void customize(TileEntityRendering<TileCraftingMonitorTile> rendering) {
+								// FIXME rendering.tileEntityRenderer(CraftingMonitorTESR::new);
+							}
+						})
+						.build() )
+				.rendering( new CraftingCubeRendering( "crafting_monitor", CraftingUnitType.MONITOR ) )
+				.build();
+
+		this.molecularAssembler = registry.block( "molecular_assembler", () -> new BlockMolecularAssembler(Block.Properties.create(Material.IRON).notSolid()) )
+				.features( AEFeature.MOLECULAR_ASSEMBLER )
+				.rendering(new BlockRenderingCustomizer() {
+					@OnlyIn(Dist.CLIENT)
+					@Override
+					public void customize(IBlockRendering rendering, IItemRendering itemRendering) {
+						// FIXME: This is an old comment, check if it still applies
+						/**
+						 * NOTE: This is only used to determine how to render an item being held in hand.
+						 * For determining block rendering, the method below is used (canRenderInLayer).
+						 */
+						rendering.renderType(RenderType.getCutout());
+						rendering.renderType(rt -> rt == RenderType.getCutout() || rt == RenderType.getTranslucent());
+					}
+				})
+				.tileEntity( registry.tileEntity("molecular_assembler", TileMolecularAssembler.class, TileMolecularAssembler::new).build() )
+				.build();
+
 //		this.lightDetector = registry.block( "light_detector", BlockLightDetector::new )
 //				.features( AEFeature.LIGHT_DETECTOR )
 //				.tileEntity( registry.tileEntity("", TileLightDetector.class, TileLightDetector::new).build() )

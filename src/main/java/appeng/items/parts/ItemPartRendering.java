@@ -34,7 +34,6 @@ import appeng.api.util.AEColor;
 import appeng.bootstrap.IItemRendering;
 import appeng.bootstrap.ItemRenderingCustomizer;
 import appeng.client.render.StaticItemColor;
-import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
 import appeng.core.AppEng;
 import appeng.core.features.registries.PartModels;
 import appeng.parts.automation.PlaneConnections;
@@ -59,7 +58,7 @@ public class ItemPartRendering extends ItemRenderingCustomizer
 	public void customize( IItemRendering rendering )
 	{
 
-		rendering.meshDefinition( this::getItemMeshDefinition );
+		// FIXME rendering.meshDefinition( this::getItemMeshDefinition );
 
 		rendering.color( new StaticItemColor( AEColor.TRANSPARENT ) );
 
@@ -130,7 +129,7 @@ public class ItemPartRendering extends ItemRenderingCustomizer
 		}
 
 		// base p2p model with frequency
-		rendering.builtInModel( "models/part/builtin/p2p_tunnel_frequency", new P2PTunnelFrequencyModel() );
+		// FIXME rendering.builtInModel( "models/part/builtin/p2p_tunnel_frequency", new P2PTunnelFrequencyModel() );
 
 		List<ResourceLocation> partResourceLocs = modelNames.stream()
 				.map( name -> new ResourceLocation( AppEng.MOD_ID, name ) )

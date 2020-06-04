@@ -25,7 +25,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
@@ -70,7 +70,7 @@ public class TileChunkLoader extends AEBaseTile implements ITickableTileEntity
 				final List<ServerPlayerEntity> pl = server.getPlayerList().getPlayers();
 				for( final ServerPlayerEntity p : pl )
 				{
-					p.sendMessage( new TextComponentString( "Can't chunk load.." ) );
+					p.sendMessage( new StringTextComponent( "Can't chunk load.." ) );
 				}
 			}
 			return;

@@ -19,34 +19,6 @@
 package appeng.items.parts;
 
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.google.common.base.Preconditions;
-
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-import appeng.api.AEApi;
 import appeng.api.implementations.items.IItemGroup;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
@@ -56,6 +28,21 @@ import appeng.core.features.ActivityState;
 import appeng.core.features.ItemStackSrc;
 import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
+import com.google.common.base.Preconditions;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.util.Map.Entry;
 
 
 public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
@@ -66,11 +53,11 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 	public static ItemPart instance;
 	private final Map<Integer, PartTypeWithVariant> registered;
 
-	public ItemPart()
-	{
+	public ItemPart(Properties properties) {
+		super(properties);
 		this.registered = new HashMap<>( INITIAL_REGISTERED_CAPACITY );
 
-		this.setHasSubtypes( true );
+//		FIXME this.setHasSubtypes( true );
 
 		instance = this;
 	}
@@ -113,7 +100,7 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 
 		final int partDamage = mat.getBaseDamage() + varID;
 		final ActivityState state = ActivityState.from( enabled );
-		final ItemStackSrc output = new ItemStackSrc( this, partDamage, state );
+		final ItemStackSrc output = new ItemStackSrc( this/* FIXME, partDamage */, state );
 
 		final PartTypeWithVariant pti = new PartTypeWithVariant( mat, varID );
 
@@ -175,7 +162,7 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 	}
 
 	@Override
-	public String getItemStackDisplayName( final ItemStack is )
+	public ITextComponent getDisplayName(final ItemStack is )
 	{
 		final PartType pt = this.getTypeByStack( is );
 
@@ -187,27 +174,26 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 			final PartTypeWithVariant registeredPartType = this.registered.get( itemDamage );
 			if( registeredPartType != null )
 			{
-				return super.getItemStackDisplayName( is ) + " - " + variants[registeredPartType.variant].toString();
+				return super.getDisplayName( is ).appendText(" - ").appendSibling(new TranslationTextComponent(variants[registeredPartType.variant].translationKey));
 			}
 		}
 
 		if( pt.getExtraName() != null )
 		{
-			return super.getItemStackDisplayName( is ) + " - " + pt.getExtraName().getLocal();
+			return super.getDisplayName( is ).appendText(" - ").appendSibling(pt.getExtraName().textComponent());
 		}
 
-		return super.getItemStackDisplayName( is );
+		return super.getDisplayName( is );
 	}
 
 	@Override
-	protected void getCheckedSubItems( final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
-	{
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		final List<Entry<Integer, PartTypeWithVariant>> types = new ArrayList<>( this.registered.entrySet() );
 		Collections.sort( types, REGISTERED_COMPARATOR );
 
 		for( final Entry<Integer, PartTypeWithVariant> part : types )
 		{
-			itemStacks.add( new ItemStack( this, 1, part.getKey() ) );
+			items.add( new ItemStack( this, 1/* FIXME, part.getKey() */ ) );
 		}
 	}
 
@@ -227,8 +213,7 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 
 	@Nullable
 	@Override
-	public IPart createPartFromItemStack( final ItemStack is )
-	{
+	public IPart createPartFromItemStack( final ItemStack is ) {
 		final PartType type = this.getTypeByStack( is );
 		final Class<? extends IPart> part = type.getPart();
 		if( part == null )
@@ -245,22 +230,7 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 
 			return type.getConstructor().newInstance( is );
 		}
-		catch( final InstantiationException e )
-		{
-			throw new IllegalStateException( "Unable to construct IBusPart from IBusItem : " + part
-					.getName() + " ; Possibly didn't have correct constructor( ItemStack )", e );
-		}
-		catch( final IllegalAccessException e )
-		{
-			throw new IllegalStateException( "Unable to construct IBusPart from IBusItem : " + part
-					.getName() + " ; Possibly didn't have correct constructor( ItemStack )", e );
-		}
-		catch( final InvocationTargetException e )
-		{
-			throw new IllegalStateException( "Unable to construct IBusPart from IBusItem : " + part
-					.getName() + " ; Possibly didn't have correct constructor( ItemStack )", e );
-		}
-		catch( final NoSuchMethodException e )
+		catch( final InstantiationException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e )
 		{
 			throw new IllegalStateException( "Unable to construct IBusPart from IBusItem : " + part
 					.getName() + " ; Possibly didn't have correct constructor( ItemStack )", e );
@@ -332,11 +302,11 @@ public final class ItemPart extends AEBaseItem implements IPartItem, IItemGroup
 
 		if( group && importBus && exportBus && ( u == PartType.IMPORT_BUS || u == PartType.EXPORT_BUS ) )
 		{
-			return GuiText.IOBuses.getUnlocalized();
+			return GuiText.IOBuses.getTranslationKey();
 		}
 		if( group && importBusFluids && exportBusFluids && ( u == PartType.FLUID_IMPORT_BUS || u == PartType.FLUID_EXPORT_BUS ) )
 		{
-			return GuiText.IOBusesFluids.getUnlocalized();
+			return GuiText.IOBusesFluids.getTranslationKey();
 		}
 
 		return null;

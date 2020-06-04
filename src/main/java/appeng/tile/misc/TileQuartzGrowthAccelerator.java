@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.EnumSet;
 
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 
 import appeng.api.implementations.IPowerChannelState;
@@ -41,8 +42,8 @@ public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPower
 
 	private boolean hasPower = false;
 
-	public TileQuartzGrowthAccelerator()
-	{
+	public TileQuartzGrowthAccelerator(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
 		this.getProxy().setValidSides( EnumSet.noneOf( Direction.class ) );
 		this.getProxy().setFlags();
 		this.getProxy().setIdlePowerUsage( 8 );

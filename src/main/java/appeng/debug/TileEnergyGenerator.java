@@ -29,6 +29,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -80,23 +81,14 @@ public class TileEnergyGenerator extends AEBaseTile implements ITickableTileEnti
 		}
 	}
 
-	@Override
-	public boolean hasCapability( Capability<?> capability, @Nullable Direction facing )
-	{
-		if( capability == CapabilityEnergy.ENERGY )
-		{
-			return true;
-		}
-		return super.hasCapability( capability, facing );
-	}
-
+	@SuppressWarnings("unchecked")
 	@Override
 	@Nullable
-	public <T> T getCapability( Capability<T> capability, @Nullable Direction facing )
+	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing )
 	{
 		if( capability == CapabilityEnergy.ENERGY )
 		{
-			return (T) this;
+			return (LazyOptional<T>) LazyOptional.of(() ->this);
 		}
 		return super.getCapability( capability, facing );
 	}

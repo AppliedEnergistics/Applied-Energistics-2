@@ -30,7 +30,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 
-import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
@@ -140,7 +139,7 @@ public class PartToggleBus extends PartBasicState
 	public void removeFromWorld()
 	{
 		super.removeFromWorld();
-		this.getOuterProxy().invalidate();
+		this.getOuterProxy().remove();
 	}
 
 	@Override

@@ -24,30 +24,23 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.BlockItemSpecial;
-import net.minecraft.item.ItemFirework;
-import net.minecraft.item.ItemSkull;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -70,7 +63,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
 import appeng.core.AEConfig;
 import appeng.core.Api;
-import appeng.core.sync.GuiBridge;
+
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
 import appeng.me.storage.MEInventoryHandler;
@@ -79,6 +72,8 @@ import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
+
+import javax.annotation.Nullable;
 
 
 public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
@@ -200,7 +195,7 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 	{
 		if( Platform.isServer() )
 		{
-			Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_FORMATION_PLANE );
+			// FIXME Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_FORMATION_PLANE );
 		}
 		return true;
 	}
@@ -237,14 +232,13 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 		final World w = te.getWorld();
 		final AEPartLocation side = this.getSide();
 
-		final BlockPos tePos = te.getPos().offset( side.getFacing() );
+		final BlockPos placePos = te.getPos().offset( side.getFacing() );
 
-		if( w.getBlockState( tePos ).getBlock().isReplaceable( w, tePos ) )
+		if( w.getBlockState( placePos ).getMaterial().isReplaceable() )
 		{
-			if( placeBlock == YesNo.YES && ( i instanceof BlockItem || i instanceof BlockItemSpecial || i instanceof IPlantable || i instanceof ItemSkull || i instanceof ItemFirework || i instanceof IPartItem || i == Item
-					.getItemFromBlock( Blocks.REEDS ) ) )
+			if( placeBlock == YesNo.YES && ( i instanceof BlockItem || i instanceof IPlantable || i instanceof FireworkStarItem || i instanceof FireworkRocketItem || i instanceof IPartItem ) )
 			{
-				final PlayerEntity player = Platform.getPlayer( (WorldServer) w );
+				final PlayerEntity player = Platform.getPlayer( (ServerWorld) w );
 				Platform.configurePlayer( player, side, this.getTile() );
 				Hand hand = player.getActiveHand();
 				player.setHeldItem( hand, is );
@@ -253,38 +247,44 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 				worked = true;
 				if( type == Actionable.MODULATE )
 				{
-					if( i instanceof IPlantable || i instanceof ItemSkull || i == Item.getItemFromBlock( Blocks.REEDS ) )
+					// The side the plane is attached to will be considered the look direction
+					// in terms of placing an item
+					Direction lookDirection = side.getFacing();
+
+					// FIXME No idea what any of this is _supposed_ to do, comment badly needed
+					if ( i instanceof IPlantable || i instanceof WallOrFloorItem )
 					{
 						boolean Worked = false;
 
+						// Up or Down, Attempt 1??
 						if( side.xOffset == 0 && side.zOffset == 0 )
 						{
-							Worked = i.onItemUse( player, w, tePos.offset( side.getFacing() ), hand, side.getFacing().getOpposite(), side.xOffset,
-									side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
+							Worked = i.onItemUse( new DirectionalPlaceContext(w, placePos.offset( side.getFacing() ), lookDirection, is, side.getFacing()) ) == ActionResultType.SUCCESS;
 						}
 
+						// Up or Down, Attempt 2??
 						if( !Worked && side.xOffset == 0 && side.zOffset == 0 )
 						{
-							Worked = i.onItemUse( player, w, tePos.offset( side.getFacing().getOpposite() ), hand, side.getFacing(), side.xOffset,
-									side.yOffset, side.zOffset ) == EnumActionResult.SUCCESS;
+							Worked = i.onItemUse( new DirectionalPlaceContext(w, placePos.offset( side.getFacing().getOpposite() ), lookDirection, is, side.getFacing().getOpposite()) )
+								== ActionResultType.SUCCESS;
 						}
 
+						// Horizontal, attempt 1??
 						if( !Worked && side.yOffset == 0 )
 						{
-							Worked = i.onItemUse( player, w, tePos.offset( Direction.DOWN ), hand, Direction.UP, side.xOffset, side.yOffset,
-									side.zOffset ) == EnumActionResult.SUCCESS;
+							Worked = i.onItemUse( new DirectionalPlaceContext(w, placePos.offset( Direction.DOWN ), lookDirection, is, Direction.DOWN) ) == ActionResultType.SUCCESS;
 						}
 
 						if( !Worked )
 						{
-							i.onItemUse( player, w, tePos, hand, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset );
+							i.onItemUse( new DirectionalPlaceContext(w, placePos, lookDirection, is, lookDirection.getOpposite()) );
 						}
 
 						maxStorage -= is.getCount();
 					}
 					else
 					{
-						i.onItemUse( player, w, tePos, hand, side.getFacing().getOpposite(), side.xOffset, side.yOffset, side.zOffset );
+						i.onItemUse( new DirectionalPlaceContext(w, placePos, lookDirection, is, lookDirection.getOpposite()) );
 						maxStorage -= is.getCount();
 					}
 				}
@@ -300,7 +300,7 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 			{
 				worked = true;
 
-				final int sum = this.countEntitesAround( w, tePos );
+				final int sum = this.countEntitesAround( w, placePos );
 
 				if( sum < AEConfig.instance().getFormationPlaneEntityLimit() )
 				{
@@ -344,7 +344,7 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 			}
 		}
 
-		this.blocked = !w.getBlockState( tePos ).getBlock().isReplaceable( w, tePos );
+		this.blocked = !w.getBlockState( placePos ).getMaterial().isReplaceable();
 
 		if( worked )
 		{
@@ -378,11 +378,11 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 		return Api.INSTANCE.definitions().parts().formationPlane().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
-	@Override
-	public GuiBridge getGuiBridge()
-	{
-		return GuiBridge.GUI_FORMATION_PLANE;
-	}
+// FIXME	@Override
+// FIXME	public GuiBridge getGuiBridge()
+// FIXME	{
+// FIXME		return GuiBridge.GUI_FORMATION_PLANE;
+// FIXME	}
 
 	private int countEntitesAround( World world, BlockPos pos )
 	{
@@ -391,4 +391,11 @@ public class PartFormationPlane extends PartAbstractFormationPlane<IAEItemStack>
 
 		return list.size();
 	}
+
+	private class ForcedItemUseContext extends ItemUseContext {
+		protected ForcedItemUseContext(World worldIn, @Nullable PlayerEntity player, Hand handIn, ItemStack heldItem, BlockRayTraceResult rayTraceResultIn) {
+			super(worldIn, player, handIn, heldItem, rayTraceResultIn);
+		}
+	}
+
 }

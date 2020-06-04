@@ -34,7 +34,7 @@ import net.minecraft.world.World;
 
 import appeng.api.util.AEPartLocation;
 import appeng.block.AEBaseTileBlock;
-import appeng.core.sync.GuiBridge;
+
 import appeng.tile.storage.TileIOPort;
 import appeng.util.Platform;
 

@@ -25,13 +25,15 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Optional;
 
+import appeng.client.render.crafting.CraftingCubeState;
+import appeng.core.Api;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
@@ -44,8 +46,8 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.WorldCoord;
-import appeng.block.crafting.BlockCraftingUnit;
-import appeng.block.crafting.BlockCraftingUnit.CraftingUnitType;
+import appeng.block.crafting.AbstractCraftingUnitBlock;
+import appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCalculator;
@@ -54,18 +56,28 @@ import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.AENetworkProxyMultiblock;
 import appeng.tile.grid.AENetworkTile;
 import appeng.util.Platform;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
+import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelProperty;
+
+import javax.annotation.Nonnull;
 
 
 public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IPowerChannelState
 {
+
+	public static final ModelProperty<CraftingCubeState> STATE = new ModelProperty<>();
 
 	private final CraftingCPUCalculator calc = new CraftingCPUCalculator( this );
 	private CompoundNBT previousState = null;
 	private boolean isCoreBlock = false;
 	private CraftingCPUCluster cluster;
 
-	public TileCraftingTile()
-	{
+	public TileCraftingTile(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
 		this.getProxy().setFlags( GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL );
 		this.getProxy().setValidSides( EnumSet.noneOf( Direction.class ) );
 	}
@@ -79,7 +91,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	@Override
 	protected ItemStack getItemFromTile( final Object obj )
 	{
-		Optional<ItemStack> is = Optional.empty();
+		Optional<ItemStack> is;
 
 		if( ( (TileCraftingTile) obj ).isAccelerator() )
 		{
@@ -117,7 +129,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 			return false;
 		}
 
-		final BlockCraftingUnit unit = (BlockCraftingUnit) this.world.getBlockState( this.pos ).getBlock();
+		final AbstractCraftingUnitBlock unit = (AbstractCraftingUnitBlock) this.world.getBlockState( this.pos ).getBlock();
 		return unit.type == CraftingUnitType.ACCELERATOR;
 	}
 
@@ -147,7 +159,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 
 	public void updateMeta( final boolean updateFormed )
 	{
-		if( this.world == null || this.notLoaded() || this.isInvalid() )
+		if( this.world == null || this.notLoaded() || this.isRemoved() )
 		{
 			return;
 		}
@@ -163,9 +175,9 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 		final BlockState current = this.world.getBlockState( this.pos );
 
 		// The tile might try to update while being destroyed
-		if( current.getBlock() instanceof BlockCraftingUnit )
+		if( current.getBlock() instanceof AbstractCraftingUnitBlock)
 		{
-			final BlockState newState = current.with( BlockCraftingUnit.POWERED, power ).with( BlockCraftingUnit.FORMED, formed );
+			final BlockState newState = current.with( AbstractCraftingUnitBlock.POWERED, power ).with( AbstractCraftingUnitBlock.FORMED, formed );
 
 			if( current != newState )
 			{
@@ -192,15 +204,15 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	{
 		if( Platform.isClient() )
 		{
-			return this.world.getBlockState( this.pos ).getValue( BlockCraftingUnit.FORMED );
+			return this.world.getBlockState( this.pos ).get( AbstractCraftingUnitBlock.FORMED );
 		}
 		return this.cluster != null;
 	}
 
 	@Override
-	public CompoundNBT writeToNBT( final CompoundNBT data )
+	public CompoundNBT write(final CompoundNBT data )
 	{
-		super.writeToNBT( data );
+		super.write( data );
 		data.putBoolean("core", this.isCoreBlock());
 		if( this.isCoreBlock() && this.cluster != null )
 		{
@@ -210,9 +222,9 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	}
 
 	@Override
-	public void readFromNBT( final CompoundNBT data )
+	public void read(final CompoundNBT data )
 	{
-		super.readFromNBT( data );
+		super.read( data );
 		this.setCoreBlock( data.getBoolean( "core" ) );
 		if( this.isCoreBlock() )
 		{
@@ -347,7 +359,7 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	{
 		if( Platform.isClient() )
 		{
-			return this.world.getBlockState( this.pos ).getValue( BlockCraftingUnit.POWERED );
+			return this.world.getBlockState( this.pos ).get( AbstractCraftingUnitBlock.POWERED );
 		}
 		return this.getProxy().isActive();
 	}
@@ -381,4 +393,34 @@ public class TileCraftingTile extends AENetworkTile implements IAEMultiBlock, IP
 	{
 		this.previousState = previousState;
 	}
+
+	// FIXME: REMOVE AND MOVE TO IDynamicBakedModel!
+	@Nonnull
+	@Override
+	public IModelData getModelData() {
+		if (world == null) {
+			return EmptyModelData.INSTANCE;
+		}
+
+		EnumSet<Direction> connections = EnumSet.noneOf( Direction.class );
+
+		for( Direction facing : Direction.values() )
+		{
+			if( this.isConnected( world, pos, facing ) )
+			{
+				connections.add( facing );
+			}
+		}
+
+		return new ModelDataMap.Builder()
+				.withInitial(STATE, new CraftingCubeState( connections ))
+				.build();
+	}
+
+	private boolean isConnected( IBlockReader world, BlockPos pos, Direction side )
+	{
+		BlockPos adjacentPos = pos.offset( side );
+		return world.getBlockState( adjacentPos ).getBlock() instanceof AbstractCraftingUnitBlock;
+	}
+
 }

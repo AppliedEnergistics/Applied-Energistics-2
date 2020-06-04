@@ -39,7 +39,7 @@ import net.minecraft.world.World;
 import appeng.api.util.AEPartLocation;
 import appeng.client.EffectType;
 import appeng.core.AppEng;
-import appeng.core.sync.GuiBridge;
+
 import appeng.helpers.AEGlassMaterial;
 import appeng.tile.qnb.TileQuantumBridge;
 import appeng.util.Platform;

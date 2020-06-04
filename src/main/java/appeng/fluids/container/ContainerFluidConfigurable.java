@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
@@ -26,9 +27,9 @@ public abstract class ContainerFluidConfigurable extends ContainerUpgradeable im
 {
 	private FluidSyncHelper sync = null;
 
-	public ContainerFluidConfigurable( PlayerInventory ip, IUpgradeableHost te )
+	public ContainerFluidConfigurable(ContainerType<?> containerType, int id, PlayerInventory ip, IUpgradeableHost te )
 	{
-		super( ip, te );
+		super( containerType, id, ip, te );
 	}
 
 	public abstract IAEFluidTank getFluidConfigInventory();

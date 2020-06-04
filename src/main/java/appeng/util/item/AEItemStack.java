@@ -49,7 +49,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	private AESharedItemStack sharedStack;
 
 	@OnlyIn( Dist.CLIENT )
-	private String displayName;
+	private ITextComponent displayName;
 	@OnlyIn( Dist.CLIENT )
 	private List<ITextComponent> tooltip;
 	@OnlyIn( Dist.CLIENT )
@@ -273,7 +273,7 @@ public final class AEItemStack extends AEStack<IAEItemStack> implements IAEItemS
 	}
 
 	@OnlyIn( Dist.CLIENT )
-	public String getDisplayName()
+	public ITextComponent getDisplayName()
 	{
 		if( this.displayName == null )
 		{

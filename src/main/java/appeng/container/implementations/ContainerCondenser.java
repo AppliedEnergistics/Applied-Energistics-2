@@ -20,6 +20,7 @@ package appeng.container.implementations;
 
 
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.CondenserOutput;
@@ -44,9 +45,9 @@ public class ContainerCondenser extends AEBaseContainer implements IProgressProv
 	@GuiSync( 2 )
 	public CondenserOutput output = CondenserOutput.TRASH;
 
-	public ContainerCondenser( final PlayerInventory ip, final TileCondenser condenser )
+	public ContainerCondenser(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileCondenser condenser )
 	{
-		super( ip, condenser, null );
+		super( containerType, id, ip, condenser, null );
 		this.condenser = condenser;
 
 		IItemHandler inv = condenser.getInternalInventory();

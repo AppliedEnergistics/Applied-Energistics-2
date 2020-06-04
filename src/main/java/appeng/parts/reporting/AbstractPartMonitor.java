@@ -21,6 +21,8 @@ package appeng.parts.reporting;
 
 import java.io.IOException;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -250,7 +252,7 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 
 	@Override
 	@OnlyIn( Dist.CLIENT )
-	public void renderDynamic( double x, double y, double z, float partialTicks, int destroyStage )
+	public void renderDynamic(float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffers, int combinedLightIn, int combinedOverlayIn)
 	{
 
 		if( ( this.getClientFlags() & ( PartPanel.POWERED_FLAG | PartPanel.CHANNEL_FLAG ) ) != ( PartPanel.POWERED_FLAG | PartPanel.CHANNEL_FLAG ) )
@@ -265,16 +267,16 @@ public abstract class AbstractPartMonitor extends AbstractPartDisplay implements
 			return;
 		}
 
-		GlStateManager.pushMatrix();
-		GlStateManager.translate( x + 0.5, y + 0.5, z + 0.5 );
+		matrixStack.push();
+		matrixStack.translate( 0.5, 0.5, 0.5 );
 
 		Direction facing = this.getSide().getFacing();
 
-		TesrRenderHelper.moveToFace( facing );
-		TesrRenderHelper.rotateToFace( facing, this.getSpin() );
-		TesrRenderHelper.renderItem2dWithAmount( ais, 0.8f, 0.17f );
+		TesrRenderHelper.moveToFace( matrixStack, facing );
+		TesrRenderHelper.rotateToFace( matrixStack, facing, this.getSpin() );
+		TesrRenderHelper.renderItem2dWithAmount(matrixStack, buffers, ais, 0.8f, 0.17f );
 
-		GlStateManager.popMatrix();
+		matrixStack.pop();
 
 	}
 

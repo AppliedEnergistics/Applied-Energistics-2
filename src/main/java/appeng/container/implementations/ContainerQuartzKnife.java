@@ -21,8 +21,10 @@ package appeng.container.implementations;
 
 import javax.annotation.Nonnull;
 
+import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.MinecraftForge;
@@ -45,9 +47,9 @@ public class ContainerQuartzKnife extends AEBaseContainer
 	private final IItemHandler inSlot = new AppEngInternalInventory( null, 1, 1 );
 	private String myName = "";
 
-	public ContainerQuartzKnife( final PlayerInventory ip, final QuartzKnifeObj te )
+	public ContainerQuartzKnife(ContainerType<?> containerType, int id, final PlayerInventory ip, final QuartzKnifeObj te )
 	{
-		super( ip, null, null );
+		super( containerType, id, ip, null, null );
 		this.toolInv = te;
 
 		this.addSlot( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.METAL_INGOTS, this.inSlot, 0, 94, 44, ip ) );
@@ -120,7 +122,7 @@ public class ContainerQuartzKnife extends AEBaseContainer
 			{
 				if( ContainerQuartzKnife.this.myName.length() > 0 )
 				{
-					return Api.INSTANCE.definitions().materials().namePress().maybeStack( 1 ).map( namePressStack ->
+					return Api.INSTANCE.definitions().materials().namePress().maybeStack( 1 ).map(namePressStack ->
 					{
                         final CompoundNBT compound = namePressStack.getOrCreateTag();
 						compound.putString("InscribeName", ContainerQuartzKnife.this.myName);
@@ -161,14 +163,11 @@ public class ContainerQuartzKnife extends AEBaseContainer
 				{
 					final ItemStack item = ContainerQuartzKnife.this.toolInv.getItemStack();
 					final ItemStack before = item.copy();
-					item.damageItem( 1, ContainerQuartzKnife.this.getPlayerInv().player );
-
-					if( item.getCount() == 0 )
-					{
+					item.damageItem( 1, ContainerQuartzKnife.this.getPlayerInv().player, p -> {
 						ContainerQuartzKnife.this.getPlayerInv()
 								.setInventorySlotContents( ContainerQuartzKnife.this.getPlayerInv().currentItem, ItemStack.EMPTY );
 						MinecraftForge.EVENT_BUS.post( new PlayerDestroyItemEvent( ContainerQuartzKnife.this.getPlayerInv().player, before, null ) );
-					}
+					} );
 
 					ContainerQuartzKnife.this.detectAndSendChanges();
 				}

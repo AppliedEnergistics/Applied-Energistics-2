@@ -36,7 +36,7 @@ import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerCraftAmount;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
-import appeng.core.sync.GuiBridge;
+
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketCraftRequest;
 import appeng.core.sync.packets.PacketSwitchGuis;

@@ -21,12 +21,11 @@ package appeng.items.tools.powered.powersink;
 
 import javax.annotation.Nullable;
 
-import net.darkhax.tesla.api.ITeslaConsumer;
-import net.darkhax.tesla.api.ITeslaHolder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import appeng.api.config.Actionable;
@@ -45,41 +44,21 @@ class PoweredItemCapabilities implements ICapabilityProvider, IEnergyStorage
 
 	private final IAEItemPowerStorage item;
 
-	private final Object teslaAdapter;
-
 	PoweredItemCapabilities( ItemStack is, IAEItemPowerStorage item )
 	{
 		this.is = is;
 		this.item = item;
-		if( Capabilities.TESLA_CONSUMER != null || Capabilities.TESLA_HOLDER != null )
-		{
-			this.teslaAdapter = new TeslaAdapter();
-		}
-		else
-		{
-			this.teslaAdapter = null;
-		}
-	}
-
-	@Override
-	public boolean hasCapability( Capability<?> capability, @Nullable Direction facing )
-	{
-		return capability == Capabilities.FORGE_ENERGY || capability == Capabilities.TESLA_CONSUMER || capability == Capabilities.TESLA_HOLDER;
 	}
 
 	@SuppressWarnings( "unchecked" )
 	@Override
-	public <T> T getCapability( Capability<T> capability, @Nullable Direction facing )
+	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing )
 	{
 		if( capability == Capabilities.FORGE_ENERGY )
 		{
-			return (T) this;
+			return (LazyOptional<T>) LazyOptional.of(() -> this);
 		}
-		else if( capability == Capabilities.TESLA_CONSUMER || capability == Capabilities.TESLA_HOLDER )
-		{
-			return (T) this.teslaAdapter;
-		}
-		return null;
+		return LazyOptional.empty();
 	}
 
 	@Override
@@ -121,25 +100,4 @@ class PoweredItemCapabilities implements ICapabilityProvider, IEnergyStorage
 		return true;
 	}
 
-	private class TeslaAdapter implements ITeslaConsumer, ITeslaHolder
-	{
-
-		@Override
-		public long givePower( long power, boolean simulated )
-		{
-			return PoweredItemCapabilities.this.receiveEnergy( (int) power, simulated );
-		}
-
-		@Override
-		public long getStoredPower()
-		{
-			return PoweredItemCapabilities.this.getEnergyStored();
-		}
-
-		@Override
-		public long getCapacity()
-		{
-			return PoweredItemCapabilities.this.getMaxEnergyStored();
-		}
-	}
 }

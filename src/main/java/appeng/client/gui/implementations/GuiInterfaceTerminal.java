@@ -218,7 +218,7 @@ public class GuiInterfaceTerminal extends AEBaseGui<ContainerInterfaceTerminal>
 			this.refreshList = true;
 		}
 
-		for( final Object oKey : in.getKeySet() )
+		for( final Object oKey : in.keySet() )
 		{
 			final String key = (String) oKey;
 			if( key.startsWith( "=" ) )
@@ -226,7 +226,7 @@ public class GuiInterfaceTerminal extends AEBaseGui<ContainerInterfaceTerminal>
 				try
 				{
 					final long id = Long.parseLong( key.substring( 1 ), Character.MAX_RADIX );
-					final CompoundNBT invData = in.getCompoundTag( key );
+					final CompoundNBT invData = in.getCompound( key );
 					final ClientDCInternalInv current = this.getById( id, invData.getLong( "sortBy" ), invData.getString( "un" ) );
 
 					for( int x = 0; x < current.getInventory().getSlots(); x++ )
@@ -234,7 +234,7 @@ public class GuiInterfaceTerminal extends AEBaseGui<ContainerInterfaceTerminal>
 						final String which = Integer.toString( x );
 						if( invData.contains(which) )
 						{
-							current.getInventory().setStackInSlot( x, new ItemStack( invData.getCompoundTag( which ) ) );
+							current.getInventory().setStackInSlot( x, ItemStack.read( invData.getCompound( which ) ) );
 						}
 					}
 				}

@@ -19,18 +19,22 @@
 package appeng.tile.misc;
 
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.core.Api;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraft.fluid.Fluid;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -60,6 +64,8 @@ import appeng.util.inv.WrapperChainedItemHandler;
 import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.filter.AEItemFilters;
 
+import java.util.function.Predicate;
+
 
 public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, IConfigurableObject
 {
@@ -79,8 +85,8 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 
 	private double storedPower = 0;
 
-	public TileCondenser()
-	{
+	public TileCondenser(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
 		this.cm.registerSetting( Settings.CONDENSER_OUTPUT, CondenserOutput.TRASH );
 	}
 
@@ -219,35 +225,21 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		this.storedPower = storedPower;
 	}
 
-	@Override
-	public boolean hasCapability( Capability<?> capability, Direction facing )
-	{
-		if( capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY )
-		{
-			return true;
-		}
-		else if( capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR )
-		{
-			return true;
-		}
-		return super.hasCapability( capability, facing );
-	}
-
 	@SuppressWarnings( "unchecked" )
 	@Override
-	public <T> T getCapability( Capability<T> capability, @Nullable Direction facing )
+	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing )
 	{
 		if( capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
 		{
-			return (T) this.externalInv;
+			return (LazyOptional<T>) LazyOptional.of(() -> this.externalInv);
 		}
 		else if( capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY )
 		{
-			return (T) this.fluidHandler;
+			return (LazyOptional<T>) LazyOptional.of(() -> this.fluidHandler);
 		}
 		else if( capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR )
 		{
-			return (T) this.meHandler;
+			return (LazyOptional<T>) LazyOptional.of(() -> this.meHandler);
 		}
 		return super.getCapability( capability, facing );
 	}
@@ -260,6 +252,11 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		{
 			// We only expose the void slot
 			return 1;
+		}
+
+		@Override
+		public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+			return slot == 0;
 		}
 
 		@Override
@@ -296,45 +293,76 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		}
 	}
 
-	private static final IFluidTankProperties[] EMPTY = { new FluidTankProperties( null, FluidAttributes.BUCKET_VOLUME, true, false ) };
-
 	/**
 	 * A fluid handler that exposes a 1 bucket tank that can only be filled, and - when filled - will add power
 	 * to this condenser.
 	 */
-	private class FluidHandler implements IFluidHandler
+	private class FluidHandler implements IFluidTank, IFluidHandler
 	{
 
+		@Nonnull
 		@Override
-		public IFluidTankProperties[] getTankProperties()
-		{
-			return EMPTY;
+		public FluidStack getFluid() {
+			return FluidStack.EMPTY;
 		}
 
 		@Override
-		public int fill( FluidStack resource, boolean doFill )
-		{
-			if( doFill )
+		public int getFluidAmount() {
+			return 0;
+		}
+
+		@Override
+		public int getCapacity() {
+			return FluidAttributes.BUCKET_VOLUME;
+		}
+
+		@Override
+		public boolean isFluidValid(FluidStack stack) {
+			return stack != FluidStack.EMPTY;
+		}
+
+		@Override
+		public int fill(FluidStack resource, FluidAction action) {
+			if( action == FluidAction.EXECUTE )
 			{
 				final IStorageChannel<IAEFluidStack> chan = Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class );
-				TileCondenser.this.addPower( ( resource == null ? 0.0 : (double) resource.amount ) / chan.transferFactor() );
+				TileCondenser.this.addPower( ( resource == null ? 0.0 : (double) resource.getAmount() ) / chan.transferFactor() );
 			}
 
-			return resource == null ? 0 : resource.amount;
+			return resource == null ? 0 : resource.getAmount();
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
-		public FluidStack drain( FluidStack resource, boolean doDrain )
-		{
-			return null;
+		public FluidStack drain(int maxDrain, FluidAction action) {
+			return FluidStack.EMPTY;
 		}
 
-		@Nullable
+		@Nonnull
 		@Override
-		public FluidStack drain( int maxDrain, boolean doDrain )
-		{
-			return null;
+		public FluidStack drain(FluidStack resource, FluidAction action) {
+			return FluidStack.EMPTY;
+		}
+
+		@Override
+		public int getTanks() {
+			return 1;
+		}
+
+		@Nonnull
+		@Override
+		public FluidStack getFluidInTank(int tank) {
+			return FluidStack.EMPTY;
+		}
+
+		@Override
+		public int getTankCapacity(int tank) {
+			return tank == 0 ? getCapacity() : 0;
+		}
+
+		@Override
+		public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+			return tank == 0 && isFluidValid(stack);
 		}
 	}
 

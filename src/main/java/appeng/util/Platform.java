@@ -22,40 +22,63 @@ package appeng.util;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.features.AEFeature;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.implementations.items.IAEWrench;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.energy.IEnergySource;
+import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.networking.security.ISecurityGrid;
+import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEInventory;
+import appeng.api.storage.IMEMonitor;
+import appeng.api.storage.IMEMonitorHandlerReceiver;
+import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
+import appeng.core.AEConfig;
+import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.stats.AeStats;
 import appeng.fluids.util.AEFluidStack;
+import appeng.me.GridAccessException;
+import appeng.me.GridNode;
+import appeng.me.helpers.AENetworkProxy;
 import appeng.util.helpers.ItemComparisonHelper;
+import appeng.util.helpers.P2PHelper;
 import appeng.util.item.AEItemStack;
+import appeng.util.prioritylist.IPartitionList;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -99,12 +122,12 @@ public class Platform
 		return ITEM_COMPARISON_HELPER;
 	}
 
-// FIXME	private static final P2PHelper P2P_HELPER = new P2PHelper();
-//
-//	public static P2PHelper p2p()
-//	{
-//		return P2P_HELPER;
-//	}
+	private static final P2PHelper P2P_HELPER = new P2PHelper();
+
+	public static P2PHelper p2p()
+	{
+		return P2P_HELPER;
+	}
 
 	public static Random getRandom()
 	{
@@ -393,20 +416,12 @@ public class Platform
 
 		ServerWorld serverWorld = (ServerWorld) w;
 
-		List<ItemStack> out = new ArrayList<>();
 		final BlockState state = w.getBlockState( pos );
 		final TileEntity tileEntity = w.getTileEntity(pos);
 
-		if( state != null )
-		{
-			out = Block.getDrops(state, serverWorld, pos, tileEntity);
-		}
+		List<ItemStack> out = Block.getDrops(state, serverWorld, pos, tileEntity);
 
-		if( out == null )
-		{
-			return new ItemStack[0];
-		}
-		return out.toArray( new ItemStack[out.size()] );
+		return out.toArray(new ItemStack[0]);
 	}
 
 //	public static AEPartLocation cycleOrientations( final AEPartLocation dir, final boolean upAndDown )
@@ -550,18 +565,18 @@ public class Platform
 		return n == null ? "** Null" : n.getNamespace(); // FIXME: Check if namespace == mod
 	}
 
-	public static String getItemDisplayName( final Object o )
+	public static ITextComponent getItemDisplayName( final Object o )
 	{
 		if( o == null )
 		{
-			return "** Null";
+			return new StringTextComponent( "** Null");
 		}
 
 		ItemStack itemStack = ItemStack.EMPTY;
 		if( o instanceof AEItemStack )
 		{
-			final String n = ( (AEItemStack) o ).getDisplayName();
-			return n == null ? "** Null" : n;
+			final ITextComponent n = ( (AEItemStack) o ).getDisplayName();
+			return n == null ? new StringTextComponent("** Null") : n;
 		}
 		else if( o instanceof ItemStack )
 		{
@@ -569,32 +584,31 @@ public class Platform
 		}
 		else
 		{
-			return "**Invalid Object";
+			return new StringTextComponent("**Invalid Object");
 		}
 
 		try
 		{
-			// FIXME: Double-check that this is TRULY translated
-			return itemStack.getDisplayName().getString();
+			return itemStack.getDisplayName();
 		}
 		catch( final Exception errA )
 		{
 			try
 			{
-				return itemStack.getTranslationKey();
+				return new TranslationTextComponent(itemStack.getTranslationKey());
 			}
 			catch( final Exception errB )
 			{
-				return "** Exception";
+				return new StringTextComponent("** Exception");
 			}
 		}
 	}
 
-	public static String getFluidDisplayName( Object o )
+	public static ITextComponent getFluidDisplayName( Object o )
 	{
 		if( o == null )
 		{
-			return "** Null";
+			return new StringTextComponent("** Null");
 		}
 		FluidStack fluidStack = null;
 		if( o instanceof AEFluidStack)
@@ -607,15 +621,14 @@ public class Platform
 		}
 		else
 		{
-			return "**Invalid Object";
+			return new StringTextComponent("**Invalid Object");
 		}
-		// FIXME: Check that this is truly translated
-		String n = fluidStack.getDisplayName().getString();
-		if( n == null || "".equalsIgnoreCase( n ) )
+		ITextComponent n = fluidStack.getDisplayName();
+		if( n == null )
 		{
-			n = fluidStack.getTranslationKey();
+			n = new TranslationTextComponent(fluidStack.getTranslationKey());
 		}
-		return n == null ? "** Null" : n;
+		return n;
 	}
 
 	public static boolean isWrench(final PlayerEntity player, final ItemStack eq, final BlockPos pos )
@@ -729,216 +742,216 @@ public class Platform
 //		int index = RANDOM_GENERATOR.nextInt( outs.size() );
 //		return Iterables.get( outs, index, null );
 //	}
-//
-//	public static AEPartLocation rotateAround( final AEPartLocation forward, final AEPartLocation axis )
-//	{
-//		if( axis == AEPartLocation.INTERNAL || forward == AEPartLocation.INTERNAL )
-//		{
-//			return forward;
-//		}
-//
-//		switch( forward )
-//		{
-//			case DOWN:
-//				switch( axis )
-//				{
-//					case DOWN:
-//						return forward;
-//					case UP:
-//						return forward;
-//					case NORTH:
-//						return AEPartLocation.EAST;
-//					case SOUTH:
-//						return AEPartLocation.WEST;
-//					case EAST:
-//						return AEPartLocation.NORTH;
-//					case WEST:
-//						return AEPartLocation.SOUTH;
-//					default:
-//						break;
-//				}
-//				break;
-//			case UP:
-//				switch( axis )
-//				{
-//					case NORTH:
-//						return AEPartLocation.WEST;
-//					case SOUTH:
-//						return AEPartLocation.EAST;
-//					case EAST:
-//						return AEPartLocation.SOUTH;
-//					case WEST:
-//						return AEPartLocation.NORTH;
-//					default:
-//						break;
-//				}
-//				break;
-//			case NORTH:
-//				switch( axis )
-//				{
-//					case UP:
-//						return AEPartLocation.WEST;
-//					case DOWN:
-//						return AEPartLocation.EAST;
-//					case EAST:
-//						return AEPartLocation.UP;
-//					case WEST:
-//						return AEPartLocation.DOWN;
-//					default:
-//						break;
-//				}
-//				break;
-//			case SOUTH:
-//				switch( axis )
-//				{
-//					case UP:
-//						return AEPartLocation.EAST;
-//					case DOWN:
-//						return AEPartLocation.WEST;
-//					case EAST:
-//						return AEPartLocation.DOWN;
-//					case WEST:
-//						return AEPartLocation.UP;
-//					default:
-//						break;
-//				}
-//				break;
-//			case EAST:
-//				switch( axis )
-//				{
-//					case UP:
-//						return AEPartLocation.NORTH;
-//					case DOWN:
-//						return AEPartLocation.SOUTH;
-//					case NORTH:
-//						return AEPartLocation.UP;
-//					case SOUTH:
-//						return AEPartLocation.DOWN;
-//					default:
-//						break;
-//				}
-//			case WEST:
-//				switch( axis )
-//				{
-//					case UP:
-//						return AEPartLocation.SOUTH;
-//					case DOWN:
-//						return AEPartLocation.NORTH;
-//					case NORTH:
-//						return AEPartLocation.DOWN;
-//					case SOUTH:
-//						return AEPartLocation.UP;
-//					default:
-//						break;
-//				}
-//			default:
-//				break;
-//		}
-//		return forward;
-//	}
-//
-//	public static Direction rotateAround(final Direction forward, final Direction axis )
-//	{
-//		switch( forward )
-//		{
-//			case DOWN:
-//				switch( axis )
-//				{
-//					case DOWN:
-//						return forward;
-//					case UP:
-//						return forward;
-//					case NORTH:
-//						return Direction.EAST;
-//					case SOUTH:
-//						return Direction.WEST;
-//					case EAST:
-//						return Direction.NORTH;
-//					case WEST:
-//						return Direction.SOUTH;
-//					default:
-//						break;
-//				}
-//				break;
-//			case UP:
-//				switch( axis )
-//				{
-//					case NORTH:
-//						return Direction.WEST;
-//					case SOUTH:
-//						return Direction.EAST;
-//					case EAST:
-//						return Direction.SOUTH;
-//					case WEST:
-//						return Direction.NORTH;
-//					default:
-//						break;
-//				}
-//				break;
-//			case NORTH:
-//				switch( axis )
-//				{
-//					case UP:
-//						return Direction.WEST;
-//					case DOWN:
-//						return Direction.EAST;
-//					case EAST:
-//						return Direction.UP;
-//					case WEST:
-//						return Direction.DOWN;
-//					default:
-//						break;
-//				}
-//				break;
-//			case SOUTH:
-//				switch( axis )
-//				{
-//					case UP:
-//						return Direction.EAST;
-//					case DOWN:
-//						return Direction.WEST;
-//					case EAST:
-//						return Direction.DOWN;
-//					case WEST:
-//						return Direction.UP;
-//					default:
-//						break;
-//				}
-//				break;
-//			case EAST:
-//				switch( axis )
-//				{
-//					case UP:
-//						return Direction.NORTH;
-//					case DOWN:
-//						return Direction.SOUTH;
-//					case NORTH:
-//						return Direction.UP;
-//					case SOUTH:
-//						return Direction.DOWN;
-//					default:
-//						break;
-//				}
-//			case WEST:
-//				switch( axis )
-//				{
-//					case UP:
-//						return Direction.SOUTH;
-//					case DOWN:
-//						return Direction.NORTH;
-//					case NORTH:
-//						return Direction.DOWN;
-//					case SOUTH:
-//						return Direction.UP;
-//					default:
-//						break;
-//				}
-//			default:
-//				break;
-//		}
-//		return forward;
-//	}
-//
+
+	public static AEPartLocation rotateAround( final AEPartLocation forward, final AEPartLocation axis )
+	{
+		if( axis == AEPartLocation.INTERNAL || forward == AEPartLocation.INTERNAL )
+		{
+			return forward;
+		}
+
+		switch( forward )
+		{
+			case DOWN:
+				switch( axis )
+				{
+					case DOWN:
+						return forward;
+					case UP:
+						return forward;
+					case NORTH:
+						return AEPartLocation.EAST;
+					case SOUTH:
+						return AEPartLocation.WEST;
+					case EAST:
+						return AEPartLocation.NORTH;
+					case WEST:
+						return AEPartLocation.SOUTH;
+					default:
+						break;
+				}
+				break;
+			case UP:
+				switch( axis )
+				{
+					case NORTH:
+						return AEPartLocation.WEST;
+					case SOUTH:
+						return AEPartLocation.EAST;
+					case EAST:
+						return AEPartLocation.SOUTH;
+					case WEST:
+						return AEPartLocation.NORTH;
+					default:
+						break;
+				}
+				break;
+			case NORTH:
+				switch( axis )
+				{
+					case UP:
+						return AEPartLocation.WEST;
+					case DOWN:
+						return AEPartLocation.EAST;
+					case EAST:
+						return AEPartLocation.UP;
+					case WEST:
+						return AEPartLocation.DOWN;
+					default:
+						break;
+				}
+				break;
+			case SOUTH:
+				switch( axis )
+				{
+					case UP:
+						return AEPartLocation.EAST;
+					case DOWN:
+						return AEPartLocation.WEST;
+					case EAST:
+						return AEPartLocation.DOWN;
+					case WEST:
+						return AEPartLocation.UP;
+					default:
+						break;
+				}
+				break;
+			case EAST:
+				switch( axis )
+				{
+					case UP:
+						return AEPartLocation.NORTH;
+					case DOWN:
+						return AEPartLocation.SOUTH;
+					case NORTH:
+						return AEPartLocation.UP;
+					case SOUTH:
+						return AEPartLocation.DOWN;
+					default:
+						break;
+				}
+			case WEST:
+				switch( axis )
+				{
+					case UP:
+						return AEPartLocation.SOUTH;
+					case DOWN:
+						return AEPartLocation.NORTH;
+					case NORTH:
+						return AEPartLocation.DOWN;
+					case SOUTH:
+						return AEPartLocation.UP;
+					default:
+						break;
+				}
+			default:
+				break;
+		}
+		return forward;
+	}
+
+	public static Direction rotateAround(final Direction forward, final Direction axis )
+	{
+		switch( forward )
+		{
+			case DOWN:
+				switch( axis )
+				{
+					case DOWN:
+						return forward;
+					case UP:
+						return forward;
+					case NORTH:
+						return Direction.EAST;
+					case SOUTH:
+						return Direction.WEST;
+					case EAST:
+						return Direction.NORTH;
+					case WEST:
+						return Direction.SOUTH;
+					default:
+						break;
+				}
+				break;
+			case UP:
+				switch( axis )
+				{
+					case NORTH:
+						return Direction.WEST;
+					case SOUTH:
+						return Direction.EAST;
+					case EAST:
+						return Direction.SOUTH;
+					case WEST:
+						return Direction.NORTH;
+					default:
+						break;
+				}
+				break;
+			case NORTH:
+				switch( axis )
+				{
+					case UP:
+						return Direction.WEST;
+					case DOWN:
+						return Direction.EAST;
+					case EAST:
+						return Direction.UP;
+					case WEST:
+						return Direction.DOWN;
+					default:
+						break;
+				}
+				break;
+			case SOUTH:
+				switch( axis )
+				{
+					case UP:
+						return Direction.EAST;
+					case DOWN:
+						return Direction.WEST;
+					case EAST:
+						return Direction.DOWN;
+					case WEST:
+						return Direction.UP;
+					default:
+						break;
+				}
+				break;
+			case EAST:
+				switch( axis )
+				{
+					case UP:
+						return Direction.NORTH;
+					case DOWN:
+						return Direction.SOUTH;
+					case NORTH:
+						return Direction.UP;
+					case SOUTH:
+						return Direction.DOWN;
+					default:
+						break;
+				}
+			case WEST:
+				switch( axis )
+				{
+					case UP:
+						return Direction.SOUTH;
+					case DOWN:
+						return Direction.NORTH;
+					case NORTH:
+						return Direction.DOWN;
+					case SOUTH:
+						return Direction.UP;
+					default:
+						break;
+				}
+			default:
+				break;
+		}
+		return forward;
+	}
+
 //	@OnlyIn( Dist.CLIENT )
 //	public static String gui_localize( final String string )
 //	{
@@ -970,90 +983,83 @@ public class Platform
 		return new LookDirection( from, to );
 	}
 
-//	public static RayTraceResult rayTrace(final PlayerEntity p, final boolean hitBlocks, final boolean hitEntities )
-//	{
-//		final World w = p.getEntityWorld();
-//
-//		final float f = 1.0F;
-//		float f1 = p.prevRotationPitch + ( p.rotationPitch - p.prevRotationPitch ) * f;
-//		final float f2 = p.prevRotationYaw + ( p.rotationYaw - p.prevRotationYaw ) * f;
-//		final double d0 = p.prevPosX + ( p.getPosX() - p.prevPosX ) * f;
-//		final double d1 = p.prevPosY + ( p.getPosY() - p.prevPosY ) * f + 1.62D - p.getYOffset();
-//		final double d2 = p.prevPosZ + ( p.getPosZ() - p.prevPosZ ) * f;
-//		final Vec3d vec3 = new Vec3d( d0, d1, d2 );
-//		final float f3 = MathHelper.cos( -f2 * 0.017453292F - (float) Math.PI );
-//		final float f4 = MathHelper.sin( -f2 * 0.017453292F - (float) Math.PI );
-//		final float f5 = -MathHelper.cos( -f1 * 0.017453292F );
-//		final float f6 = MathHelper.sin( -f1 * 0.017453292F );
-//		final float f7 = f4 * f5;
-//		final float f8 = f3 * f5;
-//		final double d3 = 32.0D;
-//
-//		final Vec3d vec31 = vec3.add( f7 * d3, f6 * d3, f8 * d3 );
-//
-//		final AxisAlignedBB bb = new AxisAlignedBB( Math.min( vec3.x, vec31.x ), Math.min( vec3.y, vec31.y ), Math.min( vec3.z,
-//				vec31.z ), Math.max( vec3.x, vec31.x ), Math.max( vec3.y, vec31.y ), Math.max( vec3.z, vec31.z ) ).grow(
-//						16, 16, 16 );
-//
-//		Entity entity = null;
-//		double closest = 9999999.0D;
-//		if( hitEntities )
-//		{
-//			final List list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
-//
-//			for( int l = 0; l < list.size(); ++l )
-//			{
-//				final Entity entity1 = (Entity) list.get( l );
-//
-//				if( entity1.isAlive() && entity1 != p && !( entity1 instanceof ItemEntity) )
-//				{
-//					// prevent killing / flying of mounts.
-//					if( entity1.isRidingOrBeingRiddenBy( p ) )
-//					{
-//						continue;
-//					}
-//
-//					f1 = 0.3F;
-//					// FIXME: Three different bounding boxes available, should double-check
-//					final AxisAlignedBB boundingBox = entity1.getBoundingBox().grow( f1, f1, f1 );
-//					final Vec3d rtResult = boundingBox.rayTrace( vec3, vec31 ).orElse(null);
-//
-//					if( rtResult != null )
-//					{
-//						final double nd = vec3.squareDistanceTo( rtResult );
-//
-//						if( nd < closest )
-//						{
-//							entity = entity1;
-//							closest = nd;
-//						}
-//					}
-//				}
-//			}
-//		}
-//
-//		RayTraceResult pos = null;
-//		Vec3d vec = null;
-//
-//		if( hitBlocks )
-//		{
-//			vec = new Vec3d( d0, d1, d2 );
-//			// FIXME: passing p as entity here might be incorrect
-//			pos = w.rayTraceBlocks( new RayTraceContext(vec3, vec31, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.ANY, p) );
-//		}
-//
-//		if( entity != null && pos != null && pos.getHitVec().squareDistanceTo( vec ) > closest )
-//		{
-//			pos = new EntityRayTraceResult( entity );
-//		}
-//		else if( entity != null && pos == null )
-//		{
-//			pos = new EntityRayTraceResult( entity );
-//		}
-//
-//		return pos;
-//	}
-//
+	public static RayTraceResult rayTrace(final PlayerEntity p, final boolean hitBlocks, final boolean hitEntities )
+	{
+		final World w = p.getEntityWorld();
+
+		final float f = 1.0F;
+		float f1 = p.prevRotationPitch + ( p.rotationPitch - p.prevRotationPitch ) * f;
+		final float f2 = p.prevRotationYaw + ( p.rotationYaw - p.prevRotationYaw ) * f;
+		final double d0 = p.prevPosX + ( p.getPosX() - p.prevPosX ) * f;
+		final double d1 = p.prevPosY + ( p.getPosY() - p.prevPosY ) * f + 1.62D - p.getYOffset();
+		final double d2 = p.prevPosZ + ( p.getPosZ() - p.prevPosZ ) * f;
+		final Vec3d vec3 = new Vec3d( d0, d1, d2 );
+		final float f3 = MathHelper.cos( -f2 * 0.017453292F - (float) Math.PI );
+		final float f4 = MathHelper.sin( -f2 * 0.017453292F - (float) Math.PI );
+		final float f5 = -MathHelper.cos( -f1 * 0.017453292F );
+		final float f6 = MathHelper.sin( -f1 * 0.017453292F );
+		final float f7 = f4 * f5;
+		final float f8 = f3 * f5;
+		final double d3 = 32.0D;
+
+		final Vec3d vec31 = vec3.add( f7 * d3, f6 * d3, f8 * d3 );
+
+		final AxisAlignedBB bb = new AxisAlignedBB( Math.min( vec3.x, vec31.x ), Math.min( vec3.y, vec31.y ), Math.min( vec3.z,
+				vec31.z ), Math.max( vec3.x, vec31.x ), Math.max( vec3.y, vec31.y ), Math.max( vec3.z, vec31.z ) ).grow(
+						16, 16, 16 );
+
+		Entity entity = null;
+		double closest = 9999999.0D;
+		if( hitEntities )
+		{
+			final List<Entity> list = w.getEntitiesWithinAABBExcludingEntity( p, bb );
+
+			for (final Entity entity1 : list) {
+				if (entity1.isAlive() && entity1 != p && !(entity1 instanceof ItemEntity)) {
+					// prevent killing / flying of mounts.
+					if (entity1.isRidingOrBeingRiddenBy(p)) {
+						continue;
+					}
+
+					f1 = 0.3F;
+					// FIXME: Three different bounding boxes available, should double-check
+					final AxisAlignedBB boundingBox = entity1.getBoundingBox().grow(f1, f1, f1);
+					final Vec3d rtResult = boundingBox.rayTrace(vec3, vec31).orElse(null);
+
+					if (rtResult != null) {
+						final double nd = vec3.squareDistanceTo(rtResult);
+
+						if (nd < closest) {
+							entity = entity1;
+							closest = nd;
+						}
+					}
+				}
+			}
+		}
+
+		RayTraceResult pos = null;
+		Vec3d vec = null;
+
+		if( hitBlocks )
+		{
+			vec = new Vec3d( d0, d1, d2 );
+			// FIXME: passing p as entity here might be incorrect
+			pos = w.rayTraceBlocks( new RayTraceContext(vec3, vec31, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.ANY, p) );
+		}
+
+		if( entity != null && pos != null && pos.getHitVec().squareDistanceTo( vec ) > closest )
+		{
+			pos = new EntityRayTraceResult( entity );
+		}
+		else if( entity != null && pos == null )
+		{
+			pos = new EntityRayTraceResult( entity );
+		}
+
+		return pos;
+	}
+
 	public static <T extends IAEStack<T>> T poweredExtraction( final IEnergySource energy, final IMEInventory<T> cell, final T request, final IActionSource src )
 	{
 		return poweredExtraction( energy, cell, request, src, Actionable.MODULATE );
@@ -1168,142 +1174,142 @@ public class Platform
 
 		return input;
 	}
-//
-//	@SuppressWarnings( { "rawtypes", "unchecked" } )
-//	public static void postChanges( final IStorageGrid gs, final ItemStack removed, final ItemStack added, final IActionSource src )
-//	{
-//		for( final IStorageChannel<?> chan : Api.INSTANCE.storage().storageChannels() )
-//		{
-//			final IItemList<?> myChanges = chan.createList();
-//
-//			if( !removed.isEmpty() )
-//			{
-//				final IMEInventory myInv = Api.INSTANCE.registries().cell().getCellInventory( removed, null, chan );
-//				if( myInv != null )
-//				{
-//					myInv.getAvailableItems( myChanges );
-//					for( final IAEStack is : myChanges )
-//					{
-//						is.setStackSize( -is.getStackSize() );
-//					}
-//				}
-//			}
-//			if( !added.isEmpty() )
-//			{
-//				final IMEInventory myInv = Api.INSTANCE.registries().cell().getCellInventory( added, null, chan );
-//				if( myInv != null )
-//				{
-//					myInv.getAvailableItems( myChanges );
-//				}
-//
-//			}
-//			gs.postAlterationOfStoredItems( chan, myChanges, src );
-//		}
-//	}
-//
-//	public static <T extends IAEStack<T>> void postListChanges( final IItemList<T> before, final IItemList<T> after, final IMEMonitorHandlerReceiver<T> meMonitorPassthrough, final IActionSource source )
-//	{
-//		final List<T> changes = new ArrayList<>();
-//
-//		for( final T is : before )
-//		{
-//			is.setStackSize( -is.getStackSize() );
-//		}
-//
-//		for( final T is : after )
-//		{
-//			before.add( is );
-//		}
-//
-//		for( final T is : before )
-//		{
-//			if( is.getStackSize() != 0 )
-//			{
-//				changes.add( is );
-//			}
-//		}
-//
-//		if( !changes.isEmpty() )
-//		{
-//			meMonitorPassthrough.postChange( null, changes, source );
-//		}
-//	}
-//
-//	public static boolean securityCheck( final GridNode a, final GridNode b )
-//	{
-//		if( a.getLastSecurityKey() == -1 && b.getLastSecurityKey() == -1 )
-//		{
-//			return true;
-//		}
-//		else if( a.getLastSecurityKey() == b.getLastSecurityKey() )
-//		{
-//			return true;
-//		}
-//
-//		final boolean a_isSecure = isPowered( a.getGrid() ) && a.getLastSecurityKey() != -1;
-//		final boolean b_isSecure = isPowered( b.getGrid() ) && b.getLastSecurityKey() != -1;
-//
-//		if( AEConfig.instance().isFeatureEnabled( AEFeature.LOG_SECURITY_AUDITS ) )
-//		{
-//			final String locationA = a.getGridBlock().isWorldAccessible() ? a.getGridBlock().getLocation().toString() : "notInWorld";
-//			final String locationB = b.getGridBlock().isWorldAccessible() ? b.getGridBlock().getLocation().toString() : "notInWorld";
-//
-//			AELog.info( "Audit: Node A [isSecure=%b, key=%d, playerID=%d, location={%s}] vs Node B[isSecure=%b, key=%d, playerID=%d, location={%s}]",
-//					a_isSecure, a.getLastSecurityKey(), a.getPlayerID(), locationA, b_isSecure, b.getLastSecurityKey(), b.getPlayerID(), locationB );
-//		}
-//
-//		// can't do that son...
-//		if( a_isSecure && b_isSecure )
-//		{
-//			return false;
-//		}
-//
-//		if( !a_isSecure && b_isSecure )
-//		{
-//			return checkPlayerPermissions( b.getGrid(), a.getPlayerID() );
-//		}
-//
-//		if( a_isSecure && !b_isSecure )
-//		{
-//			return checkPlayerPermissions( a.getGrid(), b.getPlayerID() );
-//		}
-//
-//		return true;
-//	}
-//
-//	private static boolean isPowered( final IGrid grid )
-//	{
-//		if( grid == null )
-//		{
-//			return false;
-//		}
-//
-//		final IEnergyGrid eg = grid.getCache( IEnergyGrid.class );
-//		return eg.isNetworkPowered();
-//	}
-//
-//	private static boolean checkPlayerPermissions( final IGrid grid, final int playerID )
-//	{
-//		if( grid == null )
-//		{
-//			return true;
-//		}
-//
-//		final ISecurityGrid gs = grid.getCache( ISecurityGrid.class );
-//
-//		if( gs == null )
-//		{
-//			return true;
-//		}
-//
-//		if( !gs.isAvailable() )
-//		{
-//			return true;
-//		}
-//
-//		return gs.hasPermission( playerID, SecurityPermissions.BUILD );
-//	}
-//
+
+	@SuppressWarnings( { "rawtypes", "unchecked" } )
+	public static void postChanges(final IStorageGrid gs, final ItemStack removed, final ItemStack added, final IActionSource src )
+	{
+		for( final IStorageChannel<?> chan : Api.INSTANCE.storage().storageChannels() )
+		{
+			final IItemList<?> myChanges = chan.createList();
+
+			if( !removed.isEmpty() )
+			{
+				final IMEInventory myInv = Api.INSTANCE.registries().cell().getCellInventory( removed, null, chan );
+				if( myInv != null )
+				{
+					myInv.getAvailableItems( myChanges );
+					for( final IAEStack is : myChanges )
+					{
+						is.setStackSize( -is.getStackSize() );
+					}
+				}
+			}
+			if( !added.isEmpty() )
+			{
+				final IMEInventory myInv = Api.INSTANCE.registries().cell().getCellInventory( added, null, chan );
+				if( myInv != null )
+				{
+					myInv.getAvailableItems( myChanges );
+				}
+
+			}
+			gs.postAlterationOfStoredItems( chan, myChanges, src );
+		}
+	}
+
+	public static <T extends IAEStack<T>> void postListChanges(final IItemList<T> before, final IItemList<T> after, final IMEMonitorHandlerReceiver<T> meMonitorPassthrough, final IActionSource source )
+	{
+		final List<T> changes = new ArrayList<>();
+
+		for( final T is : before )
+		{
+			is.setStackSize( -is.getStackSize() );
+		}
+
+		for( final T is : after )
+		{
+			before.add( is );
+		}
+
+		for( final T is : before )
+		{
+			if( is.getStackSize() != 0 )
+			{
+				changes.add( is );
+			}
+		}
+
+		if( !changes.isEmpty() )
+		{
+			meMonitorPassthrough.postChange( null, changes, source );
+		}
+	}
+
+	public static boolean securityCheck(final GridNode a, final GridNode b )
+	{
+		if( a.getLastSecurityKey() == -1 && b.getLastSecurityKey() == -1 )
+		{
+			return true;
+		}
+		else if( a.getLastSecurityKey() == b.getLastSecurityKey() )
+		{
+			return true;
+		}
+
+		final boolean a_isSecure = isPowered( a.getGrid() ) && a.getLastSecurityKey() != -1;
+		final boolean b_isSecure = isPowered( b.getGrid() ) && b.getLastSecurityKey() != -1;
+
+		if( AEConfig.instance().isFeatureEnabled( AEFeature.LOG_SECURITY_AUDITS ) )
+		{
+			final String locationA = a.getGridBlock().isWorldAccessible() ? a.getGridBlock().getLocation().toString() : "notInWorld";
+			final String locationB = b.getGridBlock().isWorldAccessible() ? b.getGridBlock().getLocation().toString() : "notInWorld";
+
+			AELog.info( "Audit: Node A [isSecure=%b, key=%d, playerID=%d, location={%s}] vs Node B[isSecure=%b, key=%d, playerID=%d, location={%s}]",
+					a_isSecure, a.getLastSecurityKey(), a.getPlayerID(), locationA, b_isSecure, b.getLastSecurityKey(), b.getPlayerID(), locationB );
+		}
+
+		// can't do that son...
+		if( a_isSecure && b_isSecure )
+		{
+			return false;
+		}
+
+		if( !a_isSecure && b_isSecure )
+		{
+			return checkPlayerPermissions( b.getGrid(), a.getPlayerID() );
+		}
+
+		if( a_isSecure && !b_isSecure )
+		{
+			return checkPlayerPermissions( a.getGrid(), b.getPlayerID() );
+		}
+
+		return true;
+	}
+
+	private static boolean isPowered( final IGrid grid )
+	{
+		if( grid == null )
+		{
+			return false;
+		}
+
+		final IEnergyGrid eg = grid.getCache( IEnergyGrid.class );
+		return eg.isNetworkPowered();
+	}
+
+	private static boolean checkPlayerPermissions(final IGrid grid, final int playerID )
+	{
+		if( grid == null )
+		{
+			return true;
+		}
+
+		final ISecurityGrid gs = grid.getCache( ISecurityGrid.class );
+
+		if( gs == null )
+		{
+			return true;
+		}
+
+		if( !gs.isAvailable() )
+		{
+			return true;
+		}
+
+		return gs.hasPermission( playerID, SecurityPermissions.BUILD );
+	}
+
 	public static void configurePlayer(final PlayerEntity player, final AEPartLocation side, final TileEntity tile )
 	{
 		float pitch = 0.0f;
@@ -1343,100 +1349,100 @@ public class Platform
 				pitch
 		);
 	}
-//
-//	public static boolean canAccess( final AENetworkProxy gridProxy, final IActionSource src )
-//	{
-//		try
-//		{
-//			if( src.player().isPresent() )
-//			{
-//				return gridProxy.getSecurity().hasPermission( src.player().get(), SecurityPermissions.BUILD );
-//			}
-//			else if( src.machine().isPresent() )
-//			{
-//				final IActionHost te = src.machine().get();
-//				final IGridNode n = te.getActionableNode();
-//				if( n == null )
-//				{
-//					return false;
-//				}
-//
-//				final int playerID = n.getPlayerID();
-//				return gridProxy.getSecurity().hasPermission( playerID, SecurityPermissions.BUILD );
-//			}
-//			else
-//			{
-//				return false;
-//			}
-//		}
-//		catch( final GridAccessException gae )
-//		{
-//			return false;
-//		}
-//	}
-//
-//	public static ItemStack extractItemsByRecipe(final IEnergySource energySrc, final IActionSource mySrc, final IMEMonitor<IAEItemStack> src, final World w, final IRecipe r, final ItemStack output, final CraftingInventory ci, final ItemStack providedTemplate, final int slot, final IItemList<IAEItemStack> items, final Actionable realForFake, final IPartitionList<IAEItemStack> filter )
-//	{
-//		if( energySrc.extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.9 )
-//		{
-//			if( providedTemplate == null )
-//			{
-//				return ItemStack.EMPTY;
-//			}
-//
-//			final AEItemStack ae_req = AEItemStack.fromItemStack( providedTemplate );
-//			ae_req.setStackSize( 1 );
-//
-//			if( filter == null || filter.isListed( ae_req ) )
-//			{
-//				final IAEItemStack ae_ext = src.extractItems( ae_req, realForFake, mySrc );
-//				if( ae_ext != null )
-//				{
-//					final ItemStack extracted = ae_ext.createItemStack();
-//					if( !extracted.isEmpty() )
-//					{
-//						energySrc.extractAEPower( 1, realForFake, PowerMultiplier.CONFIG );
-//						return extracted;
-//					}
-//				}
-//			}
-//
-//			final boolean checkFuzzy = ae_req.getOre().isPresent() || /* FIXME providedTemplate.getDamage() == OreDictionary.WILDCARD_VALUE || */ providedTemplate.hasTag()
-//					|| providedTemplate.isDamageable();
-//
-//			if( items != null && checkFuzzy )
-//			{
-//				for( final IAEItemStack x : items )
-//				{
-//					final ItemStack sh = x.getDefinition();
-//					if( ( Platform.itemComparisons().isEqualItemType( providedTemplate, sh ) || ae_req.sameOre( x ) ) && !ItemStack.areItemsEqual( sh,
-//							output ) )
-//					{ // Platform.isSameItemType( sh, providedTemplate )
-//						final ItemStack cp = sh.copy();
-//						cp.setCount( 1 );
-//						ci.setInventorySlotContents( slot, cp );
-//						if( r.matches( ci, w ) && ItemStack.areItemsEqual( r.getCraftingResult( ci ), output ) )
-//						{
-//							final IAEItemStack ax = x.copy();
-//							ax.setStackSize( 1 );
-//							if( filter == null || filter.isListed( ax ) )
-//							{
-//								final IAEItemStack ex = src.extractItems( ax, realForFake, mySrc );
-//								if( ex != null )
-//								{
-//									energySrc.extractAEPower( 1, realForFake, PowerMultiplier.CONFIG );
-//									return ex.createItemStack();
-//								}
-//							}
-//						}
-//						ci.setInventorySlotContents( slot, providedTemplate );
-//					}
-//				}
-//			}
-//		}
-//		return ItemStack.EMPTY;
-//	}
-//
+
+	public static boolean canAccess(final AENetworkProxy gridProxy, final IActionSource src )
+	{
+		try
+		{
+			if( src.player().isPresent() )
+			{
+				return gridProxy.getSecurity().hasPermission( src.player().get(), SecurityPermissions.BUILD );
+			}
+			else if( src.machine().isPresent() )
+			{
+				final IActionHost te = src.machine().get();
+				final IGridNode n = te.getActionableNode();
+				if( n == null )
+				{
+					return false;
+				}
+
+				final int playerID = n.getPlayerID();
+				return gridProxy.getSecurity().hasPermission( playerID, SecurityPermissions.BUILD );
+			}
+			else
+			{
+				return false;
+			}
+		}
+		catch( final GridAccessException gae )
+		{
+			return false;
+		}
+	}
+
+	public static ItemStack extractItemsByRecipe(final IEnergySource energySrc, final IActionSource mySrc, final IMEMonitor<IAEItemStack> src, final World w, final IRecipe<CraftingInventory> r, final ItemStack output, final CraftingInventory ci, final ItemStack providedTemplate, final int slot, final IItemList<IAEItemStack> items, final Actionable realForFake, final IPartitionList<IAEItemStack> filter )
+	{
+		if( energySrc.extractAEPower( 1, Actionable.SIMULATE, PowerMultiplier.CONFIG ) > 0.9 )
+		{
+			if( providedTemplate == null )
+			{
+				return ItemStack.EMPTY;
+			}
+
+			final AEItemStack ae_req = AEItemStack.fromItemStack( providedTemplate );
+			ae_req.setStackSize( 1 );
+
+			if( filter == null || filter.isListed( ae_req ) )
+			{
+				final IAEItemStack ae_ext = src.extractItems( ae_req, realForFake, mySrc );
+				if( ae_ext != null )
+				{
+					final ItemStack extracted = ae_ext.createItemStack();
+					if( !extracted.isEmpty() )
+					{
+						energySrc.extractAEPower( 1, realForFake, PowerMultiplier.CONFIG );
+						return extracted;
+					}
+				}
+			}
+
+			final boolean checkFuzzy = /* FIXME ae_req.getOre().isPresent() || FIXME providedTemplate.getDamage() == OreDictionary.WILDCARD_VALUE || */ providedTemplate.hasTag()
+					|| providedTemplate.isDamageable();
+
+			if( items != null && checkFuzzy )
+			{
+				for( final IAEItemStack x : items )
+				{
+					final ItemStack sh = x.getDefinition();
+					if( ( Platform.itemComparisons().isEqualItemType( providedTemplate, sh ) /* FIXME || ae_req.sameOre( x ) */ ) && !ItemStack.areItemsEqual( sh,
+							output ) )
+					{ // Platform.isSameItemType( sh, providedTemplate )
+						final ItemStack cp = sh.copy();
+						cp.setCount( 1 );
+						ci.setInventorySlotContents( slot, cp );
+						if( r.matches( ci, w ) && ItemStack.areItemsEqual( r.getCraftingResult( ci ), output ) )
+						{
+							final IAEItemStack ax = x.copy();
+							ax.setStackSize( 1 );
+							if( filter == null || filter.isListed( ax ) )
+							{
+								final IAEItemStack ex = src.extractItems( ax, realForFake, mySrc );
+								if( ex != null )
+								{
+									energySrc.extractAEPower( 1, realForFake, PowerMultiplier.CONFIG );
+									return ex.createItemStack();
+								}
+							}
+						}
+						ci.setInventorySlotContents( slot, providedTemplate );
+					}
+				}
+			}
+		}
+		return ItemStack.EMPTY;
+	}
+
 //	// TODO wtf is this?
 	public static ItemStack getContainerItem( final ItemStack stackInSlot )
 	{
@@ -1544,12 +1550,12 @@ public class Platform
 //		}
 //	}
 //
-//	public static float getEyeOffset( final PlayerEntity player )
-//	{
-//		assert player.world.isRemote : "Valid only on client";
-//		// FIXME: The entire premise of this seems broken
-//		return (float) ( player.getPosY() + player.getEyeHeight() - /* FIXME player.getDefaultEyeHeight()*/ 1.62F );
-//	}
+	public static float getEyeOffset( final PlayerEntity player )
+	{
+		assert player.world.isRemote : "Valid only on client";
+		// FIXME: The entire premise of this seems broken
+		return (float) ( player.getPosY() + player.getEyeHeight() - /* FIXME player.getDefaultEyeHeight()*/ 1.62F );
+	}
 //
 //	// public static void addStat( final int playerID, final Achievement achievement )
 //	// {

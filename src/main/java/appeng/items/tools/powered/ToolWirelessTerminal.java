@@ -30,6 +30,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -63,13 +64,6 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 		return new ActionResult<>( ActionResultType.SUCCESS, player.getHeldItem( hand ) );
 	}
 
-	@OnlyIn( Dist.CLIENT )
-	@Override
-	public boolean isFull3D()
-	{
-		return false;
-	}
-
 	@Override
 	@OnlyIn( Dist.CLIENT )
 	public void addInformation( final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
@@ -85,17 +79,17 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 
 				if( encKey == null || encKey.isEmpty() )
 				{
-					lines.add( GuiText.Unlinked.getLocal() );
+					lines.add( GuiText.Unlinked.textComponent() );
 				}
 				else
 				{
-					lines.add( GuiText.Linked.getLocal() );
+					lines.add( GuiText.Linked.textComponent() );
 				}
 			}
 		}
 		else
 		{
-			lines.add( I18n.format( "AppEng.GuiITooltip.Unlinked" ) );
+			lines.add( new TranslationTextComponent( "AppEng.GuiITooltip.Unlinked" ) );
 		}
 	}
 

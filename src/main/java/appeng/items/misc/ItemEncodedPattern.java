@@ -19,25 +19,6 @@
 package appeng.items.misc;
 
 
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
@@ -48,6 +29,26 @@ import appeng.helpers.InvalidPatternHelper;
 import appeng.helpers.PatternHelper;
 import appeng.items.AEBaseItem;
 import appeng.util.Platform;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 
 public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternItem
@@ -115,34 +116,35 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 				return;
 			}
 
-			stack.setStackDisplayName( TextFormatting.RED + GuiText.InvalidPattern.getLocal() );
+			stack.setDisplayName(new TranslationTextComponent(GuiText.InvalidPattern.getTranslationKey())
+				.applyTextStyle(TextFormatting.RED));
 
 			InvalidPatternHelper invalid = new InvalidPatternHelper( stack );
 
-			final String label = ( invalid.isCraftable() ? GuiText.Crafts.getLocal() : GuiText.Creates.getLocal() ) + ": ";
-			final String and = ' ' + GuiText.And.getLocal() + ' ';
-			final String with = GuiText.With.getLocal() + ": ";
+			final ITextComponent label = new TranslationTextComponent( invalid.isCraftable() ? GuiText.Crafts.getTranslationKey() : GuiText.Creates.getTranslationKey() ).appendText(": ");
+			final ITextComponent and = new StringTextComponent(" ").appendSibling(new TranslationTextComponent(GuiText.And.getTranslationKey())).appendText(" ");
+			final ITextComponent with = new TranslationTextComponent(GuiText.With.getTranslationKey()).appendText(": ");
 
 			boolean first = true;
 			for( final InvalidPatternHelper.PatternIngredient output : invalid.getOutputs() )
 			{
-				lines.add( ( first ? label : and ) + output.getFormattedToolTip() );
+				lines.add( ( first ? label : and ).shallowCopy().appendSibling(output.getFormattedToolTip()) );
 				first = false;
 			}
 
 			first = true;
 			for( final InvalidPatternHelper.PatternIngredient input : invalid.getInputs() )
 			{
-				lines.add( ( first ? with : and ) + input.getFormattedToolTip() );
+				lines.add( ( first ? with : and ).shallowCopy().appendSibling(input.getFormattedToolTip()) );
 				first = false;
 			}
 
 			if( invalid.isCraftable() )
 			{
-				final String substitutionLabel = GuiText.Substitute.getLocal() + " ";
-				final String canSubstitute = invalid.canSubstitute() ? GuiText.Yes.getLocal() : GuiText.No.getLocal();
+				final ITextComponent substitutionLabel = new TranslationTextComponent(GuiText.Substitute.getTranslationKey()).appendText(" ");
+				final ITextComponent canSubstitute = new TranslationTextComponent(invalid.canSubstitute() ? GuiText.Yes.getTranslationKey() : GuiText.No.getTranslationKey());
 
-				lines.add( substitutionLabel + canSubstitute );
+				lines.add( substitutionLabel.appendSibling(canSubstitute) );
 			}
 
 			return;
@@ -159,9 +161,9 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 		final IAEItemStack[] in = details.getCondensedInputs();
 		final IAEItemStack[] out = details.getCondensedOutputs();
 
-		final String label = ( isCrafting ? GuiText.Crafts.getLocal() : GuiText.Creates.getLocal() ) + ": ";
-		final String and = ' ' + GuiText.And.getLocal() + ' ';
-		final String with = GuiText.With.getLocal() + ": ";
+		final ITextComponent label = ( isCrafting ? GuiText.Crafts.textComponent() : GuiText.Creates.textComponent() ).appendText(": ");
+		final ITextComponent and = new StringTextComponent(" ").appendSibling(GuiText.And.textComponent()).appendText(" ");
+		final ITextComponent with = GuiText.With.textComponent().appendText(": ");
 
 		boolean first = true;
 		for( final IAEItemStack anOut : out )
@@ -171,7 +173,7 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 				continue;
 			}
 
-			lines.add( ( first ? label : and ) + anOut.getStackSize() + ' ' + Platform.getItemDisplayName( anOut ) );
+			lines.add( ( first ? label : and ).shallowCopy().appendText(anOut.getStackSize() + " ").appendSibling(Platform.getItemDisplayName( anOut )));
 			first = false;
 		}
 
@@ -183,16 +185,16 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 				continue;
 			}
 
-			lines.add( ( first ? with : and ) + anIn.getStackSize() + ' ' + Platform.getItemDisplayName( anIn ) );
+			lines.add((first ? with : and).shallowCopy().appendText(anIn.getStackSize() + " ").appendSibling(Platform.getItemDisplayName(anIn)));
 			first = false;
 		}
 
 		if( isCrafting )
 		{
-			final String substitutionLabel = GuiText.Substitute.getLocal() + " ";
-			final String canSubstitute = substitute ? GuiText.Yes.getLocal() : GuiText.No.getLocal();
+			final ITextComponent substitutionLabel = GuiText.Substitute.textComponent().appendText(" ");
+			final ITextComponent canSubstitute = substitute ? GuiText.Yes.textComponent() : GuiText.No.textComponent();
 
-			lines.add( substitutionLabel + canSubstitute );
+			lines.add( substitutionLabel.appendSibling(canSubstitute) );
 		}
 	}
 

@@ -26,11 +26,12 @@ import javax.annotation.Nullable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.events.MENetworkChannelsChanged;
@@ -44,7 +45,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.core.Api;
-import appeng.core.sync.GuiBridge;
+
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.helpers.IPriorityHost;
@@ -54,6 +55,10 @@ import appeng.tile.grid.AENetworkTile;
 public class TileFluidInterface extends AENetworkTile implements IGridTickable, IFluidInterfaceHost, IPriorityHost
 {
 	private final DualityFluidInterface duality = new DualityFluidInterface( this.getProxy(), this );
+
+	public TileFluidInterface(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
+	}
 
 	@MENetworkEventSubscribe
 	public void stateChange( final MENetworkChannelsChanged c )
@@ -98,17 +103,17 @@ public class TileFluidInterface extends AENetworkTile implements IGridTickable, 
 	}
 
 	@Override
-	public CompoundNBT writeToNBT( final CompoundNBT data )
+	public CompoundNBT write(final CompoundNBT data )
 	{
-		super.writeToNBT( data );
+		super.write( data );
 		this.duality.writeToNBT( data );
 		return data;
 	}
 
 	@Override
-	public void readFromNBT( final CompoundNBT data )
+	public void read(final CompoundNBT data )
 	{
-		super.readFromNBT( data );
+		super.read( data );
 		this.duality.readFromNBT( data );
 	}
 
@@ -143,16 +148,10 @@ public class TileFluidInterface extends AENetworkTile implements IGridTickable, 
 	}
 
 	@Override
-	public boolean hasCapability( Capability<?> capability, @Nullable Direction facing )
+	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing )
 	{
-		return this.duality.hasCapability( capability, facing ) || super.hasCapability( capability, facing );
-	}
-
-	@Override
-	public <T> T getCapability( Capability<T> capability, @Nullable Direction facing )
-	{
-		T result = this.duality.getCapability( capability, facing );
-		if( result != null )
+		LazyOptional<T> result = this.duality.getCapability( capability, facing );
+		if( result.isPresent() )
 		{
 			return result;
 		}
@@ -183,9 +182,9 @@ public class TileFluidInterface extends AENetworkTile implements IGridTickable, 
 		return Api.INSTANCE.definitions().blocks().fluidIface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
-	@Override
-	public GuiBridge getGuiBridge()
-	{
-		return GuiBridge.GUI_FLUID_INTERFACE;
-	}
+// FIXME	@Override
+// FIXME	public GuiBridge getGuiBridge()
+// FIXME	{
+// FIXME		return GuiBridge.GUI_FLUID_INTERFACE;
+// FIXME	}
 }

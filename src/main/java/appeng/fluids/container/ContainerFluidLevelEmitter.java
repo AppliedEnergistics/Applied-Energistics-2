@@ -4,6 +4,7 @@ package appeng.fluids.container;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -25,9 +26,9 @@ public class ContainerFluidLevelEmitter extends ContainerFluidConfigurable
 	@GuiSync( 3 )
 	public long EmitterValue = -1;
 
-	public ContainerFluidLevelEmitter( final PlayerInventory ip, final PartFluidLevelEmitter te )
+	public ContainerFluidLevelEmitter(ContainerType<?> containerType, int id, final PlayerInventory ip, final PartFluidLevelEmitter te )
 	{
-		super( ip, te );
+		super( containerType, id,ip, te );
 		this.lvlEmitter = te;
 	}
 

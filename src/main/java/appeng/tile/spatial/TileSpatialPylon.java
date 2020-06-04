@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.EnumSet;
 
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 
 import appeng.api.networking.GridFlags;
@@ -58,8 +59,8 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	private SpatialPylonCluster cluster;
 	private boolean didHaveLight = false;
 
-	public TileSpatialPylon()
-	{
+	public TileSpatialPylon(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
 		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL, GridFlags.MULTIBLOCK );
 		this.getProxy().setIdlePowerUsage( 0.5 );
 		this.getProxy().setValidSides( EnumSet.noneOf( Direction.class ) );
@@ -72,10 +73,10 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	}
 
 	@Override
-	public void onChunkUnload()
+	public void onChunkUnloaded()
 	{
 		this.disconnect( false );
-		super.onChunkUnload();
+		super.onChunkUnloaded();
 	}
 
 	@Override
@@ -86,10 +87,10 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 	}
 
 	@Override
-	public void invalidate()
+	public void remove()
 	{
 		this.disconnect( false );
-		super.invalidate();
+		super.remove();
 	}
 
 	public void neighborChanged()
@@ -195,8 +196,7 @@ public class TileSpatialPylon extends AENetworkTile implements IAEMultiBlock
 		if( hasLight != this.didHaveLight )
 		{
 			this.didHaveLight = hasLight;
-			this.world.checkLight( this.pos );
-			// world.updateAllLightTypes( xCoord, yCoord, zCoord );
+			this.world.getLightManager().checkBlock( this.pos );
 		}
 	}
 

@@ -26,9 +26,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraft.fluid.Fluid;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.AEApi;
@@ -231,21 +233,16 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 		return new DimensionalCoord( this.iHost.getTileEntity() );
 	}
 
-	public boolean hasCapability( Capability<?> capabilityClass, Direction facing )
-	{
-		return capabilityClass == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR;
-	}
-
 	@SuppressWarnings( "unchecked" )
-	public <T> T getCapability( Capability<T> capabilityClass, Direction facing )
+	public <T> LazyOptional<T> getCapability( Capability<T> capabilityClass, Direction facing )
 	{
 		if( capabilityClass == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY )
 		{
-			return (T) this.tanks;
+			return (LazyOptional<T>) LazyOptional.of(() -> this.tanks);
 		}
 		else if( capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR )
 		{
-			return (T) this.accessor;
+			return (LazyOptional<T>) LazyOptional.of(() -> this.accessor);
 		}
 		return null;
 	}

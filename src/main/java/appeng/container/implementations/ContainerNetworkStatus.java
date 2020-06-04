@@ -21,9 +21,12 @@ package appeng.container.implementations;
 
 import java.io.IOException;
 
+import appeng.api.parts.IPart;
+import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 
 import appeng.api.AEApi;
@@ -43,6 +46,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import net.minecraft.tileentity.TileEntity;
 
 
 public class ContainerNetworkStatus extends AEBaseContainer
@@ -59,9 +63,8 @@ public class ContainerNetworkStatus extends AEBaseContainer
 	private IGrid network;
 	private int delay = 40;
 
-	public ContainerNetworkStatus( final PlayerInventory ip, final INetworkTool te )
-	{
-		super( ip, null, null );
+	public ContainerNetworkStatus(ContainerType<?> containerType, int id, PlayerInventory ip, final INetworkTool te) {
+		super(containerType, id, ip, null, null);
 		final IGridHost host = te.getGridHost();
 
 		if( host != null )

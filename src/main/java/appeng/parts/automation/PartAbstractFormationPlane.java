@@ -191,7 +191,7 @@ public abstract class PartAbstractFormationPlane<T extends IAEStack<T>> extends 
 
 			final BlockPos tePos = te.getPos().offset( side.getFacing() );
 
-			this.blocked = !w.getBlockState( tePos ).getBlock().isReplaceable( w, tePos );
+			this.blocked = !w.getBlockState( tePos ).getMaterial().isReplaceable();
 		}
 	}
 

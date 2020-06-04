@@ -39,7 +39,7 @@ public class ItemPaintBallRendering extends ItemRenderingCustomizer
 	{
 		rendering.color( ItemPaintBallRendering::getColorFromItemstack );
 		rendering.variants( MODEL_NORMAL, MODEL_SHIMMER );
-		rendering.meshDefinition( is -> ItemPaintBall.isLumen( is ) ? MODEL_SHIMMER : MODEL_NORMAL );
+		// FIXME rendering.meshDefinition( is -> ItemPaintBall.isLumen( is ) ? MODEL_SHIMMER : MODEL_NORMAL );
 	}
 
 	private static int getColorFromItemstack( ItemStack stack, int tintIndex )

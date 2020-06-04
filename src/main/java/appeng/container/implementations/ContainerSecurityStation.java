@@ -19,9 +19,11 @@
 package appeng.container.implementations;
 
 
+import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IContainerListener;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -53,9 +55,9 @@ public class ContainerSecurityStation extends ContainerMEMonitorable implements 
 	@GuiSync( 0 )
 	public int permissionMode = 0;
 
-	public ContainerSecurityStation( final PlayerInventory ip, final ITerminalHost monitorable )
+	public ContainerSecurityStation(ContainerType<?> containerType, int id, final PlayerInventory ip, final ITerminalHost monitorable )
 	{
-		super( ip, monitorable, false );
+		super( containerType, id, ip, monitorable, false );
 
 		this.securityBox = (TileSecurityStation) monitorable;
 

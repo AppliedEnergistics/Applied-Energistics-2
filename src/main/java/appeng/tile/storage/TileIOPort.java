@@ -23,9 +23,11 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import appeng.core.Api;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -95,8 +97,8 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	private ItemStack currentCell;
 	private Map<IStorageChannel<?>, IMEInventory<?>> cachedInventories;
 
-	public TileIOPort()
-	{
+	public TileIOPort(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
 		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
 		this.manager = new ConfigManager( this );
 		this.manager.registerSetting( Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE );
@@ -115,7 +117,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		super.write( data );
 		this.manager.writeToNBT( data );
 		this.upgrades.writeToNBT( data, "upgrades" );
-		data.setInteger( "lastRedstoneState", this.lastRedstoneState.ordinal() );
+		data.putInt( "lastRedstoneState", this.lastRedstoneState.ordinal() );
 		return data;
 	}
 
@@ -127,7 +129,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 		this.upgrades.readFromNBT( data, "upgrades" );
 		if( data.contains("lastRedstoneState") )
 		{
-			this.lastRedstoneState = YesNo.values()[data.getInteger( "lastRedstoneState" )];
+			this.lastRedstoneState = YesNo.values()[data.getInt( "lastRedstoneState" )];
 		}
 	}
 
@@ -164,7 +166,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 
 	public void updateRedstoneState()
 	{
-		final YesNo currentState = this.world.isBlockIndirectlyGettingPowered( this.pos ) != 0 ? YesNo.YES : YesNo.NO;
+		final YesNo currentState = this.world.getRedstonePowerFromNeighbors( this.pos ) != 0 ? YesNo.YES : YesNo.NO;
 		if( this.lastRedstoneState != currentState )
 		{
 			this.lastRedstoneState = currentState;
@@ -509,9 +511,7 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 	 * Adds the items in the upgrade slots to the drop list.
 	 *
 	 * @param w world
-	 * @param x x pos of tile entity
-	 * @param y y pos of tile entity
-	 * @param z z pos of tile entity
+	 * @param pos pos of tile entity
 	 * @param drops drops of tile entity
 	 */
 	@Override

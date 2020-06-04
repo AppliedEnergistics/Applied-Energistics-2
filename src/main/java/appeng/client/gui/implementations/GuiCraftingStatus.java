@@ -41,7 +41,7 @@ import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerCraftingStatus;
 import appeng.core.AELog;
 import appeng.core.localization.GuiText;
-import appeng.core.sync.GuiBridge;
+
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.core.sync.packets.PacketValueConfig;

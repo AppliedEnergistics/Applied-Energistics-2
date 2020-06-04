@@ -33,6 +33,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -70,12 +71,14 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	@OnlyIn( Dist.CLIENT )
 	public void addInformation( final ItemStack stack, final World world, final List<ITextComponent> lines, final ITooltipFlag advancedTooltips )
 	{
-		lines.add( this.getLocalizedName( this.getSettingsName( stack ) + ".name", this.getSettingsName( stack ) ) );
+		String firstLineKey = this.getFirstValidTranslationKey( this.getSettingsName( stack ) + ".name", this.getSettingsName( stack ) );
+		lines.add( new TranslationTextComponent(firstLineKey));
 
 		final CompoundNBT data = this.getData( stack );
 		if( data.contains( "tooltip" ) )
 		{
-			lines.add( I18n.translateToLocal( this.getLocalizedName( data.getString( "tooltip" ) + ".name", data.getString( "tooltip" ) ) ) );
+			String tooltipKey = getFirstValidTranslationKey( data.getString( "tooltip" ) + ".name", data.getString( "tooltip" ) );
+			lines.add( new TranslationTextComponent(tooltipKey) );
 		}
 
 		if( data.contains( "freq" ) )
@@ -83,7 +86,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 			final short freq = data.getShort( "freq" );
 			final String freqTooltip = TextFormatting.BOLD + Platform.p2p().toHexString( freq );
 
-			lines.add( I18n.translateToLocalFormatted( "gui.tooltips.appliedenergistics2.P2PFrequency", freqTooltip ) );
+			lines.add( new TranslationTextComponent( "gui.tooltips.appliedenergistics2.P2PFrequency", freqTooltip ) );
 		}
 	}
 
@@ -94,14 +97,13 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	 *
 	 * @return localized name
 	 */
-	private String getLocalizedName( final String... name )
+	private String getFirstValidTranslationKey( final String... name )
 	{
 		for( final String n : name )
 		{
-			final String l = I18n.translateToLocal( n );
-			if( !l.equals( n ) )
+			if( I18n.hasKey(n) )
 			{
-				return l;
+				return n;
 			}
 		}
 
@@ -126,7 +128,7 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	{
 		final CompoundNBT c = is.getOrCreateTag();
 		final String name = c.getString( "Config" );
-		return name == null || name.isEmpty() ? GuiText.Blank.getUnlocalized() : name;
+		return name.isEmpty() ? GuiText.Blank.getTranslationKey() : name;
 	}
 
 	@Override
@@ -134,10 +136,6 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 	{
 		final CompoundNBT c = is.getOrCreateTag();
 		CompoundNBT o = c.getCompound( "Data" );
-		if( o == null )
-		{
-			o = new CompoundNBT();
-		}
 		return o.copy();
 	}
 

@@ -21,7 +21,9 @@ package appeng.container.implementations;
 
 import java.util.Iterator;
 
+import appeng.core.Api;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -56,9 +58,9 @@ public class ContainerStorageBus extends ContainerUpgradeable
 	@GuiSync( 4 )
 	public StorageFilter storageFilter = StorageFilter.EXTRACTABLE_ONLY;
 
-	public ContainerStorageBus( final PlayerInventory ip, final PartStorageBus te )
+	public ContainerStorageBus(ContainerType<?> containerType, int id, final PlayerInventory ip, final PartStorageBus te )
 	{
-		super( ip, te );
+		super( containerType, id, ip, te );
 		this.storageBus = te;
 	}
 

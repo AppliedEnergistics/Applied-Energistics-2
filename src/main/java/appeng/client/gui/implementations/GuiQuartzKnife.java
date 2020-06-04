@@ -21,7 +21,7 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.client.gui.AEBaseGui;
@@ -38,7 +38,7 @@ import net.minecraftforge.fml.client.gui.GuiUtils;
 public class GuiQuartzKnife extends AEBaseGui<ContainerQuartzKnife>
 {
 
-	private GuiTextField name;
+	private TextFieldWidget name;
 
 	public GuiQuartzKnife(ContainerQuartzKnife container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
@@ -50,7 +50,7 @@ public class GuiQuartzKnife extends AEBaseGui<ContainerQuartzKnife>
 	{
 		super.init();
 
-		this.name = new GuiTextField( 0, this.font, this.guiLeft + 24, this.guiTop + 32, 79, this.font.FONT_HEIGHT );
+		this.name = new TextFieldWidget( 0, this.font, this.guiLeft + 24, this.guiTop + 32, 79, this.font.FONT_HEIGHT );
 		this.name.setEnableBackgroundDrawing( false );
 		this.name.setMaxStringLength( 32 );
 		this.name.setTextColor( 0xFFFFFF );

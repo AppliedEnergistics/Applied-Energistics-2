@@ -22,6 +22,7 @@ package appeng.fluids.container;
 import java.util.Iterator;
 
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.AccessRestriction;
@@ -59,9 +60,9 @@ public class ContainerFluidStorageBus extends ContainerFluidConfigurable
 	@GuiSync( 4 )
 	public StorageFilter storageFilter = StorageFilter.EXTRACTABLE_ONLY;
 
-	public ContainerFluidStorageBus( PlayerInventory ip, PartFluidStorageBus te )
+	public ContainerFluidStorageBus(ContainerType<?> containerType, int id, PlayerInventory ip, PartFluidStorageBus te )
 	{
-		super( ip, te );
+		super( containerType, id,ip, te );
 		this.storageBus = te;
 	}
 

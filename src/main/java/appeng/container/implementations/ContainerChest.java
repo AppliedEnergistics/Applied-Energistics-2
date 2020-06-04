@@ -24,6 +24,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.storage.TileChest;
+import net.minecraft.inventory.container.ContainerType;
 
 
 public class ContainerChest extends AEBaseContainer
@@ -31,9 +32,9 @@ public class ContainerChest extends AEBaseContainer
 
 	private final TileChest chest;
 
-	public ContainerChest( final PlayerInventory ip, final TileChest chest )
+	public ContainerChest( ContainerType<?> containerType, int id, final PlayerInventory ip, final TileChest chest )
 	{
-		super( ip, chest, null );
+		super( containerType, id, ip, chest, null );
 		this.chest = chest;
 
 		this.addSlot( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.STORAGE_CELLS, this.chest.getInternalInventory(), 1, 80, 37, this

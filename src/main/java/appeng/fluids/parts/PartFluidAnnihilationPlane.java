@@ -4,15 +4,29 @@ package appeng.fluids.parts;
 
 import java.util.List;
 
+import appeng.core.Api;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.IBucketPickupHandler;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.stats.Stats;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Direction;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -244,19 +258,23 @@ public class PartFluidAnnihilationPlane extends PartBasicState implements IGridT
 		final TileEntity te = this.getTile();
 		final World w = te.getWorld();
 		final BlockPos pos = te.getPos().offset( this.getSide().getFacing() );
-		final BlockState state = w.getBlockState( pos );
-		final Block block = state.getBlock();
 
-		if( block instanceof IFluidBlock || block instanceof BlockLiquid )
-		{
-			final IFluidHandler fh = FluidUtil.getFluidHandler( w, pos, null );
-			final IAEFluidStack blockFluid = AEFluidStack.fromFluidStack( fh.drain( Integer.MAX_VALUE, false ) );
+		BlockState blockstate = w.getBlockState(pos);
+		if (blockstate.getBlock() instanceof IBucketPickupHandler) {
+			IFluidState fluidState = blockstate.getFluidState();
 
-			if( blockFluid != null )
-			{
+			Fluid fluid = fluidState.getFluid();
+			if (fluid != Fluids.EMPTY && fluidState.isSource()) {
+
+				// Attempt to store the fluid in the network
+				final IAEFluidStack blockFluid = AEFluidStack.fromFluidStack( new FluidStack(fluidState.getFluid(), FluidAttributes.BUCKET_VOLUME) );
 				if( this.storeFluid( blockFluid, false ) )
 				{
-					this.storeFluid( AEFluidStack.fromFluidStack( fh.drain( Integer.MAX_VALUE, true ) ), true );
+					// If that would succeed, actually slurp up the liquid as if we were using a bucket
+					// This _MIGHT_ change the liquid, and if it does, and we dont have enough space,
+					// tough luck. you loose the source block.
+					fluid = ((IBucketPickupHandler)blockstate.getBlock()).pickupFluid(w, pos, blockstate);
+					this.storeFluid( AEFluidStack.fromFluidStack( new FluidStack( fluid, FluidAttributes.BUCKET_VOLUME) ), true );
 
 					AppEng.proxy.sendToAllNearExcept( null, pos.getX(), pos.getY(), pos.getZ(), 64, w,
 							new PacketTransitionEffect( pos.getX(), pos.getY(), pos.getZ(), this.getSide(), true ) );

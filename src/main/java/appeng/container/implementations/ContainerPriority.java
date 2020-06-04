@@ -19,9 +19,10 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -40,18 +41,18 @@ public class ContainerPriority extends AEBaseContainer
 	private final IPriorityHost priHost;
 
 	@OnlyIn( Dist.CLIENT )
-	private GuiTextField textField;
+	private TextFieldWidget textField;
 	@GuiSync( 2 )
 	public long PriorityValue = -1;
 
-	public ContainerPriority( final PlayerInventory ip, final IPriorityHost te )
+	public ContainerPriority(ContainerType<?> containerType, int id, final PlayerInventory ip, final IPriorityHost te )
 	{
-		super( ip, (TileEntity) ( te instanceof TileEntity ? te : null ), (IPart) ( te instanceof IPart ? te : null ) );
+		super( containerType, id, ip, (TileEntity) ( te instanceof TileEntity ? te : null ), (IPart) ( te instanceof IPart ? te : null ) );
 		this.priHost = te;
 	}
 
 	@OnlyIn( Dist.CLIENT )
-	public void setTextField( final GuiTextField level )
+	public void setTextField( final TextFieldWidget level )
 	{
 		this.textField = level;
 		this.textField.setText( String.valueOf( this.PriorityValue ) );

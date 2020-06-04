@@ -41,10 +41,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkDirection;
 
 import appeng.api.storage.data.IAEItemStack;
-import appeng.client.gui.implementations.GuiCraftConfirm;
-import appeng.client.gui.implementations.GuiCraftingCPU;
-import appeng.client.gui.implementations.GuiMEMonitorable;
-import appeng.client.gui.implementations.GuiNetworkStatus;
 import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -153,25 +149,25 @@ public class PacketMEInventoryUpdate extends AppEngPacket
 	{
 		final Screen gs = Minecraft.getInstance().currentScreen;
 
-		if( gs instanceof GuiCraftConfirm )
-		{
-			( (GuiCraftConfirm) gs ).postUpdate( this.list, this.ref );
-		}
-
-		if( gs instanceof GuiCraftingCPU )
-		{
-			( (GuiCraftingCPU) gs ).postUpdate( this.list, this.ref );
-		}
-
-		if( gs instanceof GuiMEMonitorable )
-		{
-			( (GuiMEMonitorable) gs ).postUpdate( this.list );
-		}
-
-		if( gs instanceof GuiNetworkStatus )
-		{
-			( (GuiNetworkStatus) gs ).postUpdate( this.list );
-		}
+// FIXME		if( gs instanceof GuiCraftConfirm )
+// FIXME		{
+// FIXME			( (GuiCraftConfirm) gs ).postUpdate( this.list, this.ref );
+// FIXME		}
+// FIXME
+// FIXME		if( gs instanceof GuiCraftingCPU )
+// FIXME		{
+// FIXME			( (GuiCraftingCPU) gs ).postUpdate( this.list, this.ref );
+// FIXME		}
+// FIXME
+// FIXME		if( gs instanceof GuiMEMonitorable )
+// FIXME		{
+// FIXME			( (GuiMEMonitorable) gs ).postUpdate( this.list );
+// FIXME		}
+// FIXME
+// FIXME		if( gs instanceof GuiNetworkStatus )
+// FIXME		{
+// FIXME			( (GuiNetworkStatus) gs ).postUpdate( this.list );
+// FIXME		}
 	}
 
 	@Nullable

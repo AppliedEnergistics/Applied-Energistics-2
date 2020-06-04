@@ -32,6 +32,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -50,6 +51,10 @@ public class TilePaint extends AEBaseTile
 
 	private int isLit = 0;
 	private List<Splotch> dots = null;
+
+	public TilePaint(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
+	}
 
 	@Override
 	public boolean canBeRotated()

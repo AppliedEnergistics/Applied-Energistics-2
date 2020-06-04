@@ -27,6 +27,7 @@ import appeng.container.interfaces.IProgressProvider;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.misc.TileVibrationChamber;
 import appeng.util.Platform;
+import net.minecraft.inventory.container.ContainerType;
 
 
 public class ContainerVibrationChamber extends AEBaseContainer implements IProgressProvider
@@ -37,9 +38,9 @@ public class ContainerVibrationChamber extends AEBaseContainer implements IProgr
 	@GuiSync( 1 )
 	public int remainingBurnTime = 0;
 
-	public ContainerVibrationChamber( final PlayerInventory ip, final TileVibrationChamber vibrationChamber )
+	public ContainerVibrationChamber(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileVibrationChamber vibrationChamber )
 	{
-		super( ip, vibrationChamber, null );
+		super( containerType, id, ip, vibrationChamber, null );
 		this.vibrationChamber = vibrationChamber;
 
 		this.addSlot( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.FUEL, vibrationChamber.getInternalInventory(), 0, 80, 37, this

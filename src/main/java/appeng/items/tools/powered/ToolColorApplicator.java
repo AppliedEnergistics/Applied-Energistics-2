@@ -19,41 +19,6 @@
 package appeng.items.tools.powered;
 
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import net.minecraft.item.SnowballItem;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.text.ITextComponent;
-import org.apache.commons.lang3.text.WordUtils;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockColored;
-import net.minecraft.block.BlockStainedGlass;
-import net.minecraft.block.BlockStainedGlassPane;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.ItemSnowball;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.oredict.OreDictionary;
-
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.implementations.items.IItemGroup;
@@ -82,6 +47,27 @@ import appeng.me.helpers.BaseActionSource;
 import appeng.tile.misc.TilePaint;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.SnowballItem;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.items.IItemHandler;
+import org.apache.commons.lang3.text.WordUtils;
+
+import java.util.*;
 
 
 public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCell<IAEItemStack>, IItemGroup, IBlockTool, IMouseWheelItem
@@ -95,9 +81,9 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		{
 			final String dyeName = color.dye.getTranslationKey();
 			final String oreDictName = "dye" + WordUtils.capitalize( dyeName );
-			final int oreDictId = OreDictionary.getOreID( oreDictName );
+			// FIXME final int oreDictId = OreDictionary.getOreID( oreDictName );
 
-			ORE_TO_COLOR.put( oreDictId, color );
+			// FIXME ORE_TO_COLOR.put( oreDictId, color );
 		}
 	}
 
@@ -197,18 +183,18 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	}
 
 	@Override
-	public String getItemStackDisplayName( final ItemStack par1ItemStack )
+	public ITextComponent getDisplayName( final ItemStack is )
 	{
-		String extra = GuiText.Empty.getLocal();
+		ITextComponent extra = GuiText.Empty.textComponent();
 
-		final AEColor selected = this.getActiveColor( par1ItemStack );
+		final AEColor selected = this.getActiveColor( is );
 
 		if( selected != null && Platform.isClient() )
 		{
-			extra = Platform.gui_localize( selected.translationKey);
+			extra = new TranslationTextComponent(selected.translationKey);
 		}
 
-		return super.getItemStackDisplayName( par1ItemStack ) + " - " + extra;
+		return super.getDisplayName( is ).appendText(" - ").appendSibling( extra );
 	}
 
 	public AEColor getActiveColor( final ItemStack tol )
@@ -235,15 +221,15 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		}
 		else
 		{
-			final int[] id = OreDictionary.getOreIDs( paintBall );
-
-			for( final int oreID : id )
-			{
-				if( ORE_TO_COLOR.containsKey( oreID ) )
-				{
-					return ORE_TO_COLOR.get( oreID );
-				}
-			}
+			// FIXME final int[] id = OreDictionary.getOreIDs( paintBall );
+// FIXME
+			// FIXME for( final int oreID : id )
+			// FIXME {
+			// FIXME 	if( ORE_TO_COLOR.containsKey( oreID ) )
+			// FIXME 	{
+			// FIXME 		return ORE_TO_COLOR.get( oreID );
+			// FIXME 	}
+			// FIXME }
 		}
 
 		return null;
@@ -353,63 +339,63 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	{
 		final BlockState state = w.getBlockState( pos );
 
-		if( blk instanceof BlockColored )
-		{
-			final EnumDyeColor color = state.getValue( BlockColored.COLOR );
+// FIXME		if( blk instanceof BlockColored )
+// FIXME		{
+// FIXME			final DyeColor color = state.get( BlockColored.COLOR );
+// FIXME
+// FIXME			if( newColor.dye == color )
+// FIXME			{
+// FIXME				return false;
+// FIXME			}
+// FIXME
+// FIXME			return w.setBlockState( pos, state.with( BlockColored.COLOR, newColor.dye ) );
+// FIXME		}
 
-			if( newColor.dye == color )
-			{
-				return false;
-			}
+//		if( blk == Blocks.GLASS )
+//		{
+//			return w.setBlockState( pos, Blocks.STAINED_GLASS.getDefaultState().with( BlockStainedGlass.COLOR, newColor.dye ) );
+//		}
+//
+//		if( blk == Blocks.STAINED_GLASS )
+//		{
+//			final DyeColor color = state.get( BlockStainedGlass.COLOR );
+//
+//			if( newColor.dye == color )
+//			{
+//				return false;
+//			}
+//
+//			return w.setBlockState( pos, state.with( BlockStainedGlass.COLOR, newColor.dye ) );
+//		}
 
-			return w.setBlockState( pos, state.with( BlockColored.COLOR, newColor.dye ) );
-		}
-
-		if( blk == Blocks.GLASS )
-		{
-			return w.setBlockState( pos, Blocks.STAINED_GLASS.getDefaultState().with( BlockStainedGlass.COLOR, newColor.dye ) );
-		}
-
-		if( blk == Blocks.STAINED_GLASS )
-		{
-			final EnumDyeColor color = state.getValue( BlockStainedGlass.COLOR );
-
-			if( newColor.dye == color )
-			{
-				return false;
-			}
-
-			return w.setBlockState( pos, state.with( BlockStainedGlass.COLOR, newColor.dye ) );
-		}
-
-		if( blk == Blocks.GLASS_PANE )
-		{
-			return w.setBlockState( pos, Blocks.STAINED_GLASS_PANE.getDefaultState().with( BlockStainedGlassPane.COLOR, newColor.dye ) );
-		}
-
-		if( blk == Blocks.STAINED_GLASS_PANE )
-		{
-			final EnumDyeColor color = state.getValue( BlockStainedGlassPane.COLOR );
-
-			if( newColor.dye == color )
-			{
-				return false;
-			}
-
-			return w.setBlockState( pos, state.with( BlockStainedGlassPane.COLOR, newColor.dye ) );
-		}
-
-		if( blk == Blocks.HARDENED_CLAY )
-		{
-			return w.setBlockState( pos, Blocks.STAINED_HARDENED_CLAY.getDefaultState().with( BlockColored.COLOR, newColor.dye ) );
-		}
+//		if( blk == Blocks.GLASS_PANE )
+//		{
+//			return w.setBlockState( pos, Blocks.STAINED_GLASS_PANE.getDefaultState().with( BlockStainedGlassPane.COLOR, newColor.dye ) );
+//		}
+//
+//		if( blk == Blocks.STAINED_GLASS_PANE )
+//		{
+//			final DyeColor color = state.get( BlockStainedGlassPane.COLOR );
+//
+//			if( newColor.dye == color )
+//			{
+//				return false;
+//			}
+//
+//			return w.setBlockState( pos, state.with( BlockStainedGlassPane.COLOR, newColor.dye ) );
+//		}
+//
+//		if( blk == Blocks.HARDENED_CLAY )
+//		{
+//			return w.setBlockState( pos, Blocks.STAINED_HARDENED_CLAY.getDefaultState().with( BlockColored.COLOR, newColor.dye ) );
+//		}
 
 		if( blk instanceof BlockCableBus )
 		{
 			return ( (BlockCableBus) blk ).recolorBlock( w, pos, side, newColor.dye, p );
 		}
 
-		return blk.recolorBlock( w, pos, side, newColor.dye );
+		return blk.recolorBlock( state, w, pos, side, newColor.dye );
 	}
 
 	public void cycleColors( final ItemStack is, final ItemStack paintBall, final int i )
@@ -460,25 +446,25 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	@Override
 	public boolean isBlackListed( final ItemStack cellItem, final IAEItemStack requestedAddition )
 	{
-		if( requestedAddition != null )
-		{
-			final int[] id = OreDictionary.getOreIDs( requestedAddition.getDefinition() );
-
-			for( final int x : id )
-			{
-				if( ORE_TO_COLOR.containsKey( x ) )
-				{
-					return false;
-				}
-			}
-
-			if( requestedAddition.getItem() instanceof SnowballItem )
-			{
-				return false;
-			}
-
-			return !( requestedAddition.getItem() instanceof ItemPaintBall && requestedAddition.getItemDamage() < 20 );
-		}
+// FIXME		if( requestedAddition != null )
+// FIXME		{
+// FIXME			final int[] id = OreDictionary.getOreIDs( requestedAddition.getDefinition() );
+// FIXME
+// FIXME			for( final int x : id )
+// FIXME			{
+// FIXME				if( ORE_TO_COLOR.containsKey( x ) )
+// FIXME				{
+// FIXME					return false;
+// FIXME				}
+// FIXME			}
+// FIXME
+// FIXME			if( requestedAddition.getItem() instanceof SnowballItem )
+// FIXME			{
+// FIXME				return false;
+// FIXME			}
+// FIXME
+// FIXME			return !( requestedAddition.getItem() instanceof ItemPaintBall && requestedAddition.getItemDamage() < 20 );
+// FIXME		}
 		return true;
 	}
 
@@ -509,7 +495,7 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 	@Override
 	public String getUnlocalizedGroupName( final Set<ItemStack> others, final ItemStack is )
 	{
-		return GuiText.StorageCells.getUnlocalized();
+		return GuiText.StorageCells.getTranslationKey();
 	}
 
 	@Override

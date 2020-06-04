@@ -26,6 +26,7 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.AEConfig;
 import appeng.tile.networking.TileWireless;
+import net.minecraft.inventory.container.ContainerType;
 
 
 public class ContainerWireless extends AEBaseContainer
@@ -38,9 +39,9 @@ public class ContainerWireless extends AEBaseContainer
 	@GuiSync( 2 )
 	public long drain = 0;
 
-	public ContainerWireless( final PlayerInventory ip, final TileWireless te )
+	public ContainerWireless(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileWireless te )
 	{
-		super( ip, te, null );
+		super( containerType, id, ip, te, null );
 		this.wirelessTerminal = te;
 
 		this.addSlot( this.boosterSlot = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.RANGE_BOOSTER, this.wirelessTerminal

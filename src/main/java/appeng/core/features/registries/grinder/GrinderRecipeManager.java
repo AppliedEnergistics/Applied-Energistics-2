@@ -41,11 +41,10 @@ import appeng.api.features.IInscriberRecipe;
 import appeng.api.features.IInscriberRecipeBuilder;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.recipes.ores.IOreListener;
 import appeng.util.Platform;
 
 
-public final class GrinderRecipeManager implements IGrinderRegistry, IOreListener
+public final class GrinderRecipeManager implements IGrinderRegistry // FIXME, IOreListener
 {
 	private final Map<CacheKey, IGrinderRecipe> recipes;
 	private final Map<ItemStack, String> ores;
@@ -84,7 +83,7 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 
 		this.addIngot( "Wheat", new ItemStack( Items.WHEAT ) );
 
-		OreDictionaryHandler.INSTANCE.observe( this );
+		// FIXME OreDictionaryHandler.INSTANCE.observe( this );
 	}
 
 	@Override
@@ -162,29 +161,29 @@ public final class GrinderRecipeManager implements IGrinderRegistry, IOreListene
 		return this.dustToOreRatio.remove( oredictName ) != null;
 	}
 
-	@Override
-	public void oreRegistered( final String name, final ItemStack item )
-	{
-		if( !AEConfig.instance().getGrinderBlackList().contains( name ) && ( name.startsWith( "ore" ) || name.startsWith( "crystal" ) || name
-				.startsWith( "gem" ) || name.startsWith( "ingot" ) || name.startsWith( "dust" ) ) )
-		{
-			for( final String ore : AEConfig.instance().getGrinderOres() )
-			{
-				if( name.equals( "ore" + ore ) )
-				{
-					this.addOre( ore, item );
-				}
-				else if( name.equals( "crystal" + ore ) || name.equals( "ingot" + ore ) || name.equals( "gem" + ore ) )
-				{
-					this.addIngot( ore, item );
-				}
-				else if( name.equals( "dust" + ore ) )
-				{
-					this.addDust( ore, item );
-				}
-			}
-		}
-	}
+// FIXME	@Override
+// FIXME	public void oreRegistered( final String name, final ItemStack item )
+// FIXME	{
+// FIXME		if( !AEConfig.instance().getGrinderBlackList().contains( name ) && ( name.startsWith( "ore" ) || name.startsWith( "crystal" ) || name
+// FIXME				.startsWith( "gem" ) || name.startsWith( "ingot" ) || name.startsWith( "dust" ) ) )
+// FIXME		{
+// FIXME			for( final String ore : AEConfig.instance().getGrinderOres() )
+// FIXME			{
+// FIXME				if( name.equals( "ore" + ore ) )
+// FIXME				{
+// FIXME					this.addOre( ore, item );
+// FIXME				}
+// FIXME				else if( name.equals( "crystal" + ore ) || name.equals( "ingot" + ore ) || name.equals( "gem" + ore ) )
+// FIXME				{
+// FIXME					this.addIngot( ore, item );
+// FIXME				}
+// FIXME				else if( name.equals( "dust" + ore ) )
+// FIXME				{
+// FIXME					this.addDust( ore, item );
+// FIXME				}
+// FIXME			}
+// FIXME		}
+// FIXME	}
 
 	private boolean injectRecipe( final IGrinderRecipe grinderRecipe )
 	{

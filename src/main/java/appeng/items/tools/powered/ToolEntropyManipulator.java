@@ -26,14 +26,13 @@ import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockTNT;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.TNTBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.Items;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -41,6 +40,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
@@ -68,23 +69,23 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.STONE.getDefaultState() ),
 				new InWorldToolOperationResult( Blocks.COBBLESTONE.getDefaultState() ) );
-		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.STONEBRICK.getDefaultState() ),
-				new InWorldToolOperationResult( Blocks.STONEBRICK.getStateFromMeta( 2 ) ) );
+// FIXME		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.STONE_BRICKS.getDefaultState() ),
+// FIXME				new InWorldToolOperationResult( Blocks.STONE_BRICKS.getStateFromMeta( 2 ) ) );
 		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.LAVA, true ), new InWorldToolOperationResult( Blocks.OBSIDIAN.getDefaultState() ) );
-		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.FLOWING_LAVA, true ),
-				new InWorldToolOperationResult( Blocks.OBSIDIAN.getDefaultState() ) );
+// FIXME		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.FLOWING_LAVA, true ),
+// FIXME				new InWorldToolOperationResult( Blocks.OBSIDIAN.getDefaultState() ) );
 		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.GRASS, true ), new InWorldToolOperationResult( Blocks.DIRT.getDefaultState() ) );
 
 		final List<ItemStack> snowBalls = new ArrayList<>();
 		snowBalls.add( new ItemStack( Items.SNOWBALL ) );
-		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.FLOWING_WATER, true ), new InWorldToolOperationResult( null, snowBalls ) );
+// FIXME		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.FLOWING_WATER, true ), new InWorldToolOperationResult( null, snowBalls ) );
 		this.coolDown.put( new InWorldToolOperationIngredient( Blocks.WATER, true ), new InWorldToolOperationResult( Blocks.ICE.getDefaultState() ) );
 
 		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.ICE.getDefaultState() ), new InWorldToolOperationResult( Blocks.WATER.getDefaultState() ) );
-		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.FLOWING_WATER, true ), new InWorldToolOperationResult() );
+// FIXME		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.FLOWING_WATER, true ), new InWorldToolOperationResult() );
 		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.WATER, true ), new InWorldToolOperationResult() );
-		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.SNOW, true ),
-				new InWorldToolOperationResult( Blocks.FLOWING_WATER.getStateFromMeta( 7 ) ) );
+// FIXME		this.heatUp.put( new InWorldToolOperationIngredient( Blocks.SNOW, true ),
+// FIXME				new InWorldToolOperationResult( Blocks.FLOWING_WATER.getStateFromMeta( 7 ) ) );
 	}
 
 	private static class InWorldToolOperationIngredient
@@ -213,28 +214,26 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	@Override
 	public ActionResult<ItemStack> onItemRightClick( final World w, final PlayerEntity p, final Hand hand )
 	{
-		final RayTraceResult target = this.rayTrace( w, p, true );
+		final RayTraceResult target = this.rayTrace( w, p, RayTraceContext.FluidMode.ANY );
 
-		if( target == null )
+		if( target.getType() != RayTraceResult.Type.BLOCK )
 		{
 			return new ActionResult<>( ActionResultType.FAIL, p.getHeldItem( hand ) );
 		}
 		else
 		{
-			if( target.getType() == RayTraceResult.Type.BLOCK )
+			BlockPos pos = ((BlockRayTraceResult) target).getPos();
+			final BlockState state = w.getBlockState( pos );
+			if( state.getMaterial() == Material.LAVA || state.getMaterial() == Material.WATER )
 			{
-				final BlockState state = w.getBlockState( target.getBlockPos() );
-				if( state.getMaterial() == Material.LAVA || state.getMaterial() == Material.WATER )
+				if( Platform.hasPermissions( new DimensionalCoord( w, pos ), p ) )
 				{
-					if( Platform.hasPermissions( new DimensionalCoord( w, target.getBlockPos() ), p ) )
-					{
-						this.onItemUse( p, w, target.getBlockPos(), hand, Direction.UP, 0.0F, 0.0F, 0.0F );
-					}
+					this.onItemUse( p, w, pos, hand, Direction.UP, 0.0F, 0.0F, 0.0F );
 				}
 			}
 		}
 
-		return new ActionResult<>( EnumActionResult.SUCCESS, p.getHeldItem( hand ) );
+		return new ActionResult<>( ActionResultType.SUCCESS, p.getHeldItem( hand ) );
 	}
 
 	@Override
@@ -244,13 +243,13 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	}
 
 	@Override
-	public ActionResult onItemUse( ItemStack item, PlayerEntity p, World w, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ )
+	public ActionResultType onItemUse( ItemStack item, PlayerEntity p, World w, BlockPos pos, Hand hand, Direction side, float hitX, float hitY, float hitZ )
 	{
 		if( this.getAECurrentPower( item ) > 1600 )
 		{
 			if( !p.canPlayerEdit( pos, side, item ) )
 			{
-				return EnumActionResult.FAIL;
+				return ActionResultType.FAIL;
 			}
 
 			final BlockState state = w.getBlockState( pos );
@@ -262,30 +261,30 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 				{
 					this.extractAEPower( item, 1600, Actionable.MODULATE );
 					this.cool( state, w, pos );
-					return EnumActionResult.SUCCESS;
+					return ActionResultType.SUCCESS;
 				}
 			}
 			else
 			{
-				if( blockID instanceof BlockTNT )
+				if( blockID instanceof TNTBlock)
 				{
 					w.removeBlock(pos, false);
-					( (BlockTNT) blockID ).explode( w, pos, state, p );
-					return EnumActionResult.SUCCESS;
+					( (TNTBlock) blockID ).explode( w, pos );
+					return ActionResultType.SUCCESS;
 				}
 
 				if( blockID instanceof BlockTinyTNT )
 				{
 					w.removeBlock(pos, false);
 					( (BlockTinyTNT) blockID ).startFuse( w, pos, p );
-					return EnumActionResult.SUCCESS;
+					return ActionResultType.SUCCESS;
 				}
 
 				if( this.canHeat( state ) )
 				{
 					this.extractAEPower( item, 1600, Actionable.MODULATE );
 					this.heat( state, w, pos );
-					return EnumActionResult.SUCCESS;
+					return ActionResultType.SUCCESS;
 				}
 
 				final ItemStack[] stack = Platform.getBlockDrops( w, pos );
@@ -295,26 +294,26 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 				for( final ItemStack i : stack )
 				{
-					final ItemStack result = FurnaceRecipes.instance().getSmeltingResult( i );
-
-					if( !result.isEmpty() )
-					{
-						if( result.getItem() instanceof BlockItem )
-						{
-							if( Block.getBlockFromItem( result.getItem() ) == blockID && result.getItem().getDamage( result ) == blockID
-									.getMetaFromState( state ) )
-							{
-								canFurnaceable = false;
-							}
-						}
-						hasFurnaceable = true;
-						out.add( result );
-					}
-					else
-					{
-						canFurnaceable = false;
-						out.add( i );
-					}
+// FIXME					final ItemStack result = FurnaceRecipes.instance().getSmeltingResult( i );
+// FIXME
+// FIXME					if( !result.isEmpty() )
+// FIXME					{
+// FIXME						if( result.getItem() instanceof BlockItem )
+// FIXME						{
+// FIXME							if( Block.getBlockFromItem( result.getItem() ) == blockID && result.getItem().getDamage( result ) == blockID
+// FIXME									.getMetaFromState( state ) )
+// FIXME							{
+// FIXME								canFurnaceable = false;
+// FIXME							}
+// FIXME						}
+// FIXME						hasFurnaceable = true;
+// FIXME						out.add( result );
+// FIXME					}
+// FIXME					else
+// FIXME					{
+// FIXME						canFurnaceable = false;
+// FIXME						out.add( i );
+// FIXME					}
 				}
 
 				if( hasFurnaceable && canFurnaceable )
@@ -322,7 +321,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 					this.extractAEPower( item, 1600, Actionable.MODULATE );
 					final InWorldToolOperationResult or = InWorldToolOperationResult.getBlockOperationResult( out.toArray( new ItemStack[out.size()] ) );
 					w.playSound( p, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.PLAYERS, 1.0F,
-							itemRand.nextFloat() * 0.4F + 0.8F );
+							random.nextFloat() * 0.4F + 0.8F );
 
 					if( or.getBlockState() == null )
 					{
@@ -338,7 +337,7 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 						Platform.spawnDrops( w, pos, or.getDrops() );
 					}
 
-					return EnumActionResult.SUCCESS;
+					return ActionResultType.SUCCESS;
 				}
 				else
 				{
@@ -346,22 +345,22 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 
 					if( !p.canPlayerEdit( offsetPos, side, item ) )
 					{
-						return EnumActionResult.FAIL;
+						return ActionResultType.FAIL;
 					}
 
 					if( w.isAirBlock( offsetPos ) )
 					{
 						this.extractAEPower( item, 1600, Actionable.MODULATE );
 						w.playSound( p, offsetPos.getX() + 0.5D, offsetPos.getY() + 0.5D, offsetPos.getZ() + 0.5D, SoundEvents.ITEM_FLINTANDSTEEL_USE,
-								SoundCategory.PLAYERS, 1.0F, itemRand.nextFloat() * 0.4F + 0.8F );
+								SoundCategory.PLAYERS, 1.0F, random.nextFloat() * 0.4F + 0.8F );
 						w.setBlockState( offsetPos, Blocks.FIRE.getDefaultState() );
 					}
 
-					return EnumActionResult.SUCCESS;
+					return ActionResultType.SUCCESS;
 				}
 			}
 		}
 
-		return EnumActionResult.PASS;
+		return ActionResultType.PASS;
 	}
 }

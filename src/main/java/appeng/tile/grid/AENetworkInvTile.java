@@ -27,12 +27,17 @@ import appeng.api.util.AEPartLocation;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.IGridProxyable;
 import appeng.tile.AEBaseInvTile;
+import net.minecraft.tileentity.TileEntityType;
 
 
 public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionHost, IGridProxyable
 {
 
 	private final AENetworkProxy gridProxy = new AENetworkProxy( this, "proxy", this.getItemFromTile( this ), true );
+
+	public AENetworkInvTile(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
+	}
 
 	@Override
 	public void read(final CompoundNBT data )
@@ -68,10 +73,10 @@ public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionH
 	}
 
 	@Override
-	public void onChunkUnload()
+	public void onChunkUnloaded()
 	{
-		super.onChunkUnload();
-		this.getProxy().onChunkUnload();
+		super.onChunkUnloaded();
+		this.getProxy().onChunkUnloaded();
 	}
 
 	@Override
@@ -82,10 +87,10 @@ public abstract class AENetworkInvTile extends AEBaseInvTile implements IActionH
 	}
 
 	@Override
-	public void invalidate()
+	public void remove()
 	{
-		super.invalidate();
-		this.getProxy().invalidate();
+		super.remove();
+		this.getProxy().remove();
 	}
 
 	@Override

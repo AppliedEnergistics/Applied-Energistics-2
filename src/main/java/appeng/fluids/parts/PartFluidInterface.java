@@ -30,6 +30,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.Upgrades;
@@ -50,7 +51,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.core.Api;
 import appeng.core.AppEng;
-import appeng.core.sync.GuiBridge;
+
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.helpers.IPriorityHost;
@@ -138,7 +139,7 @@ public class PartFluidInterface extends PartBasicState implements IGridTickable,
 	{
 		if( Platform.isServer() )
 		{
-			Platform.openGUI( p, this.getTileEntity(), this.getSide(), GuiBridge.GUI_FLUID_INTERFACE );
+			// FIXME Platform.openGUI( p, this.getTileEntity(), this.getSide(), GuiBridge.GUI_FLUID_INTERFACE );
 		}
 
 		return true;
@@ -204,13 +205,7 @@ public class PartFluidInterface extends PartBasicState implements IGridTickable,
 	}
 
 	@Override
-	public boolean hasCapability( Capability<?> capabilityClass )
-	{
-		return this.duality.hasCapability( capabilityClass, this.getSide().getFacing() );
-	}
-
-	@Override
-	public <T> T getCapability( Capability<T> capabilityClass )
+	public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass )
 	{
 		return this.duality.getCapability( capabilityClass, this.getSide().getFacing() );
 	}
@@ -239,9 +234,9 @@ public class PartFluidInterface extends PartBasicState implements IGridTickable,
 		return Api.INSTANCE.definitions().parts().fluidIface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
-	@Override
-	public GuiBridge getGuiBridge()
-	{
-		return GuiBridge.GUI_FLUID_INTERFACE;
-	}
+// FIXME	@Override
+// FIXME	public GuiBridge getGuiBridge()
+// FIXME	{
+// FIXME		return GuiBridge.GUI_FLUID_INTERFACE;
+// FIXME	}
 }

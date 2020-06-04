@@ -38,9 +38,9 @@ public class ItemPaintBall extends AEBaseItem
 
 	private static final int DAMAGE_THRESHOLD = 20;
 
-	public ItemPaintBall()
-	{
-		this.setHasSubtypes( true );
+	public ItemPaintBall(Properties properties) {
+		super(properties);
+		// FIXME this.setHasSubtypes( true );
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class ItemPaintBall extends AEBaseItem
 		{
 			if( c != AEColor.TRANSPARENT )
 			{
-				itemStacks.add( new ItemStack( this, 1, c.ordinal() ) );
+				itemStacks.add( new ItemStack( this, 1 /* FIXME, c.ordinal() */ ) );
 			}
 		}
 
@@ -92,7 +92,7 @@ public class ItemPaintBall extends AEBaseItem
 		{
 			if( c != AEColor.TRANSPARENT )
 			{
-				itemStacks.add( new ItemStack( this, 1, DAMAGE_THRESHOLD + c.ordinal() ) );
+				itemStacks.add( new ItemStack( this, 1 /* FIXME , DAMAGE_THRESHOLD + c.ordinal() */ ) );
 			}
 		}
 	}

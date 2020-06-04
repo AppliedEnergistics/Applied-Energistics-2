@@ -20,6 +20,7 @@ package appeng.container.implementations;
 
 
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
@@ -37,9 +38,9 @@ public class ContainerNetworkTool extends AEBaseContainer
 	@GuiSync( 1 )
 	public boolean facadeMode;
 
-	public ContainerNetworkTool( final PlayerInventory ip, final INetworkTool te )
+	public ContainerNetworkTool(ContainerType<?> containerType, int id, final PlayerInventory ip, final INetworkTool te )
 	{
-		super( ip, null, null );
+		super( containerType, id, ip, null, null );
 		this.toolInv = te;
 
 		this.lockPlayerInventorySlot( ip.currentItem );

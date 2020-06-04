@@ -26,18 +26,21 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.FluidTankProperties;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.AccessRestriction;
@@ -84,7 +87,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
 import appeng.capabilities.Capabilities;
-import appeng.core.sync.GuiBridge;
+
 import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.IPriorityHost;
 import appeng.me.GridAccessException;
@@ -121,8 +124,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	private Accessor accessor;
 	private IFluidHandler fluidHandler;
 
-	public TileChest()
-	{
+	public TileChest(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
 		this.setInternalMaxPower( PowerMultiplier.CONFIG.multiply( 40 ) );
 		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
 		this.config.registerSetting( Settings.SORT_BY, SortOrder.NAME );
@@ -311,7 +314,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	@Override
 	public boolean isCellBlinking( final int slot )
 	{
-		final long now = this.world.getTotalWorldTime();
+		final long now = this.world.getGameTime();
 		if( now - this.lastStateChange > 8 )
 		{
 			return false;
@@ -384,7 +387,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	{
 		super.writeToStream( data );
 
-		if( this.world.getTotalWorldTime() - this.lastStateChange > 8 )
+		if( this.world.getGameTime() - this.lastStateChange > 8 )
 		{
 			this.state = 0;
 		}
@@ -422,7 +425,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		final AEColor oldPaintedColor = this.paintedColor;
 		this.paintedColor = AEColor.values()[data.readByte()];
 
-		this.lastStateChange = this.world.getTotalWorldTime();
+		this.lastStateChange = this.world.getGameTime();
 
 		return oldPaintedColor != this.paintedColor || ( this.state & 0xDB6DB6DB ) != ( oldState & 0xDB6DB6DB ) || c;
 	}
@@ -432,7 +435,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	{
 		super.read( data );
 		this.config.readFromNBT( data );
-		this.priority = data.getInteger( "priority" );
+		this.priority = data.getInt( "priority" );
 		if( data.contains("paintedColor") )
 		{
 			this.paintedColor = AEColor.values()[data.getByte( "paintedColor" )];
@@ -444,8 +447,8 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	{
 		super.write( data );
 		this.config.writeToNBT( data );
-		data.setInteger( "priority", this.priority );
-		data.setByte( "paintedColor", (byte) this.paintedColor.ordinal() );
+		data.putInt( "priority", this.priority );
+		data.putByte( "paintedColor", (byte) this.paintedColor.ordinal() );
 		return data;
 	}
 
@@ -589,7 +592,7 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 	@Override
 	public void blinkCell( final int slot )
 	{
-		final long now = this.world.getTotalWorldTime();
+		final long now = this.world.getGameTime();
 		if( now - this.lastStateChange > 8 )
 		{
 			this.state = 0;
@@ -787,33 +790,18 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		}
 	}
 
-	@Override
-	public boolean hasCapability( Capability<?> capability, Direction facing )
-	{
-		this.updateHandler();
-		if( capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && this.fluidHandler != null && facing != this.getForward() )
-		{
-			return true;
-		}
-		if( capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR && this.accessor != null && facing != this.getForward() )
-		{
-			return true;
-		}
-		return super.hasCapability( capability, facing );
-	}
-
 	@SuppressWarnings( "unchecked" )
 	@Override
-	public <T> T getCapability( Capability<T> capability, @Nullable Direction facing )
+	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing )
 	{
 		this.updateHandler();
 		if( capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && this.fluidHandler != null && facing != this.getForward() )
 		{
-			return (T) this.fluidHandler;
+			return (LazyOptional<T>) LazyOptional.of(() -> this.fluidHandler);
 		}
 		if( capability == Capabilities.STORAGE_MONITORABLE_ACCESSOR && this.accessor != null && facing != this.getForward() )
 		{
-			return (T) this.accessor;
+			return (LazyOptional<T>) LazyOptional.of(() -> this.accessor);
 		}
 		return super.getCapability( capability, facing );
 	}
@@ -832,52 +820,82 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		}
 	}
 
-	private class FluidHandler implements IFluidHandler
+	private class FluidHandler implements IFluidHandler, IFluidTank
 	{
-		private final IFluidTankProperties[] TANK_PROPS = new IFluidTankProperties[] { new FluidTankProperties( null, FluidAttributes.BUCKET_VOLUME ) };
+
+		private boolean canAcceptLiquids() {
+			return TileChest.this.cellHandler != null && TileChest.this.cellHandler.getChannel() == Api.INSTANCE.storage().getStorageChannel(IFluidStorageChannel.class);
+		}
+
+		@Nonnull
+		@Override
+		public FluidStack getFluid() {
+			return FluidStack.EMPTY;
+		}
 
 		@Override
-		public int fill( final FluidStack resource, final boolean doFill )
-		{
-			TileChest.this.updateHandler();
-			if( TileChest.this.cellHandler != null && TileChest.this.cellHandler
-					.getChannel() == Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ) )
-			{
-				final IAEFluidStack results = Platform.poweredInsert( TileChest.this, TileChest.this.cellHandler, AEFluidStack.fromFluidStack( resource ),
-						TileChest.this.mySrc, doFill ? Actionable.MODULATE : Actionable.SIMULATE );
-
-				if( results == null )
-				{
-					return resource.amount;
-				}
-				return resource.amount - (int) results.getStackSize();
-			}
+		public int getFluidAmount() {
 			return 0;
 		}
 
 		@Override
-		public FluidStack drain( final FluidStack resource, final boolean doDrain )
-		{
-			return null;
+		public int getCapacity() {
+			return canAcceptLiquids() ? FluidAttributes.BUCKET_VOLUME : 0;
 		}
 
 		@Override
-		public FluidStack drain( final int maxDrain, final boolean doDrain )
-		{
-			return null;
+		public boolean isFluidValid(FluidStack stack) {
+			return canAcceptLiquids();
 		}
 
 		@Override
-		public IFluidTankProperties[] getTankProperties()
-		{
+		public int getTanks() {
+			return 1;
+		}
+
+		@Nonnull
+		@Override
+		public FluidStack getFluidInTank(int tank) {
+			return FluidStack.EMPTY;
+		}
+
+		@Override
+		public int getTankCapacity(int tank) {
+			return tank == 0 ? FluidAttributes.BUCKET_VOLUME : 0;
+		}
+
+		@Override
+		public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+			return tank == 0;
+		}
+
+		@Override
+		public int fill(FluidStack resource, FluidAction action) {
 			TileChest.this.updateHandler();
-
-			if( TileChest.this.cellHandler != null && TileChest.this.cellHandler
-					.getChannel() == Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ) )
+			if( canAcceptLiquids() )
 			{
-				return this.TANK_PROPS;
+				final IAEFluidStack results = Platform.poweredInsert( TileChest.this, TileChest.this.cellHandler, AEFluidStack.fromFluidStack( resource ),
+						TileChest.this.mySrc, action == FluidAction.EXECUTE ? Actionable.MODULATE : Actionable.SIMULATE );
+
+				if( results == null )
+				{
+					return resource.getAmount();
+				}
+				return resource.getAmount() - (int) results.getStackSize();
 			}
-			return null;
+			return 0;
+		}
+
+		@Nonnull
+		@Override
+		public FluidStack drain(FluidStack resource, FluidAction action) {
+			return FluidStack.EMPTY;
+		}
+
+		@Nonnull
+		@Override
+		public FluidStack drain(int maxDrain, FluidAction action) {
+			return FluidStack.EMPTY;
 		}
 	}
 
@@ -925,22 +943,22 @@ public class TileChest extends AENetworkPowerTile implements IMEChest, ITerminal
 		return Api.INSTANCE.definitions().blocks().chest().maybeStack( 1 ).orElse( ItemStack.EMPTY );
 	}
 
-	@Override
-	public GuiBridge getGuiBridge()
-	{
-		this.updateHandler();
-		if( this.cellHandler != null )
-		{
-			if( this.cellHandler.getChannel() == Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) )
-			{
-				return GuiBridge.GUI_ME;
-			}
-			if( this.cellHandler.getChannel() == Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ) )
-			{
-				return GuiBridge.GUI_FLUID_TERMINAL;
-			}
-		}
-		return null;
-	}
+// FIXME	@Override
+// FIXME	public GuiBridge getGuiBridge()
+// FIXME	{
+// FIXME		this.updateHandler();
+// FIXME		if( this.cellHandler != null )
+// FIXME		{
+// FIXME			if( this.cellHandler.getChannel() == Api.INSTANCE.storage().getStorageChannel( IItemStorageChannel.class ) )
+// FIXME			{
+// FIXME				return GuiBridge.GUI_ME;
+// FIXME			}
+// FIXME			if( this.cellHandler.getChannel() == Api.INSTANCE.storage().getStorageChannel( IFluidStorageChannel.class ) )
+// FIXME			{
+// FIXME				return GuiBridge.GUI_FLUID_TERMINAL;
+// FIXME			}
+// FIXME		}
+// FIXME		return null;
+// FIXME	}
 
 }

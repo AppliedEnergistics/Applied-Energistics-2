@@ -26,7 +26,7 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.BooleanProperty;
+import net.minecraft.state.BooleanProperty;
 import net.minecraft.block.properties.DirectionProperty;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -71,7 +71,7 @@ public class BlockLightDetector extends AEBaseTileBlock implements IOrientableBl
 	@Override
 	public int getMetaFromState( final BlockState state )
 	{
-		return state.getValue( FACING ).ordinal();
+		return state.get( FACING ).ordinal();
 	}
 
 	@Override

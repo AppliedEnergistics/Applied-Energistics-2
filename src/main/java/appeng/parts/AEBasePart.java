@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import appeng.core.Api;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.crash.CrashReportCategory;
@@ -40,6 +41,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -185,7 +187,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	}
 
 	@Override
-	public String getCustomInventoryName()
+	public ITextComponent getCustomInventoryName()
 	{
 		return this.getItemStack().getDisplayName();
 	}
@@ -198,7 +200,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 
 	public void addEntityCrashInfo( final CrashReportCategory crashreportcategory )
 	{
-		crashreportcategory.addCrashSection( "Part Side", this.getSide() );
+		crashreportcategory.addDetail( "Part Side", this.getSide() );
 	}
 
 	@Override
@@ -207,7 +209,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 		if( type == PartItemStack.NETWORK )
 		{
 			final ItemStack copy = this.is.copy();
-			copy.setTagCompound( null );
+			copy.setTag( null );
 			return copy;
 		}
 		return this.is;
@@ -282,7 +284,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 	@Override
 	public void removeFromWorld()
 	{
-		this.proxy.invalidate();
+		this.proxy.remove();
 	}
 
 	@Override
@@ -368,7 +370,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 		if( this instanceof IPriorityHost )
 		{
 			final IPriorityHost pHost = (IPriorityHost) this;
-			pHost.setPriority( compound.getInteger( "priority" ) );
+			pHost.setPriority( compound.getInt( "priority" ) );
 		}
 
 		final IItemHandler inv = this.getInventoryByName( "config" );
@@ -404,7 +406,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 		if( this instanceof IPriorityHost )
 		{
 			final IPriorityHost pHost = (IPriorityHost) this;
-			output.setInteger( "priority", pHost.getPriority() );
+			output.putInt( "priority", pHost.getPriority() );
 		}
 
 		final IItemHandler inv = this.getInventoryByName( "config" );

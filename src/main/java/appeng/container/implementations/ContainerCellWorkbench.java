@@ -21,10 +21,12 @@ package appeng.container.implementations;
 
 import java.util.Iterator;
 
+import appeng.core.Api;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IContainerListener;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
@@ -58,9 +60,9 @@ public class ContainerCellWorkbench extends ContainerUpgradeable
 	private ItemStack prevStack = ItemStack.EMPTY;
 	private int lastUpgrades = 0;
 
-	public ContainerCellWorkbench( final PlayerInventory ip, final TileCellWorkbench te )
+	public ContainerCellWorkbench(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileCellWorkbench te )
 	{
-		super( ip, te );
+		super( containerType, id, ip, te );
 		this.workBench = te;
 	}
 

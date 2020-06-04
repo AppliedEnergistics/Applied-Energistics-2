@@ -20,6 +20,7 @@ package appeng.tile.networking;
 
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
@@ -34,8 +35,9 @@ import appeng.util.inv.InvOperation;
 
 public class TileEnergyAcceptor extends AENetworkPowerTile
 {
-	public TileEnergyAcceptor()
-	{
+
+	public TileEnergyAcceptor(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
 		this.getProxy().setIdlePowerUsage( 0.0 );
 		this.setInternalMaxPower( 0 );
 	}

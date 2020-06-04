@@ -19,9 +19,10 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.IItemHandler;
@@ -45,7 +46,7 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 	private final PartLevelEmitter lvlEmitter;
 
 	@OnlyIn( Dist.CLIENT )
-	private GuiTextField textField;
+	private TextFieldWidget textField;
 	@GuiSync( 2 )
 	public LevelType lvType;
 	@GuiSync( 3 )
@@ -53,14 +54,14 @@ public class ContainerLevelEmitter extends ContainerUpgradeable
 	@GuiSync( 4 )
 	public YesNo cmType;
 
-	public ContainerLevelEmitter( final PlayerInventory ip, final PartLevelEmitter te )
+	public ContainerLevelEmitter( ContainerType<?> containerType, int id, final PlayerInventory ip, final PartLevelEmitter te )
 	{
-		super( ip, te );
+		super( containerType, id, ip, te );
 		this.lvlEmitter = te;
 	}
 
 	@OnlyIn( Dist.CLIENT )
-	public void setTextField( final GuiTextField level )
+	public void setTextField( final TextFieldWidget level )
 	{
 		this.textField = level;
 		this.textField.setText( String.valueOf( this.EmitterValue ) );

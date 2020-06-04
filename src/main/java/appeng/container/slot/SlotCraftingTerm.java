@@ -28,14 +28,13 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
@@ -161,12 +160,12 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 	}
 
 	// TODO: This is really hacky and NEEDS to be solved with a full container/gui refactoring.
-	protected IRecipe findRecipe( CraftingInventory ic, World world )
+	protected IRecipe<CraftingInventory> findRecipe( CraftingInventory ic, World world )
 	{
 		if( this.container instanceof ContainerCraftingTerm )
 		{
 			final ContainerCraftingTerm containerTerminal = (ContainerCraftingTerm) this.container;
-			final IRecipe recipe = containerTerminal.getCurrentRecipe();
+			final IRecipe<CraftingInventory> recipe = containerTerminal.getCurrentRecipe();
 
 			if( recipe != null && recipe.matches( ic, world ) )
 			{
@@ -174,7 +173,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 			}
 		}
 
-		return CraftingManager.findMatchingRecipe( ic, world );
+		return world.getRecipeManager().getRecipe( IRecipeType.CRAFTING, ic, world ).orElse(null);
 	}
 
 	// TODO: This is really hacky and NEEDS to be solved with a full container/gui refactoring.
@@ -184,7 +183,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 		if( this.container instanceof ContainerCraftingTerm )
 		{
 			final ContainerCraftingTerm containerTerminal = (ContainerCraftingTerm) this.container;
-			final IRecipe recipe = containerTerminal.getCurrentRecipe();
+			final IRecipe<CraftingInventory> recipe = containerTerminal.getCurrentRecipe();
 
 			if( recipe != null && recipe.matches( ic, world ) )
 			{
@@ -192,7 +191,9 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 			}
 		}
 
-		return CraftingManager.getRemainingItems( ic, world );
+		return world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, ic, world)
+				.map(r -> r.getRemainingItems(ic))
+				.orElse(NonNullList.create());
 	}
 
 	private int capCraftingAttempts( final int maxTimesToCraft )
@@ -220,12 +221,12 @@ public class SlotCraftingTerm extends AppEngCraftingSlot
 					ic.setInventorySlotContents( x, this.getPattern().getStackInSlot( x ) );
 				}
 
-				final IRecipe r = this.findRecipe( ic, p.world );
+				final IRecipe<CraftingInventory> r = this.findRecipe( ic, p.world );
 
 				if( r == null )
 				{
 					final Item target = request.getItem();
-					if( target.isDamageable() && target.isRepairable() )
+					if( target.isDamageable() && target.isRepairable(request) )
 					{
 						boolean isBad = false;
 						for( int x = 0; x < ic.getSizeInventory(); x++ )

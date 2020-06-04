@@ -33,10 +33,10 @@ import java.util.regex.Pattern;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
@@ -45,6 +45,8 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -76,9 +78,9 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 
 	private final Map<Integer, MaterialType> dmgToMaterial = new HashMap<>();
 
-	public ItemMaterial()
-	{
-		this.setHasSubtypes( true );
+	public ItemMaterial(Properties properties) {
+		super(properties);
+		// FIXME this.setHasSubtypes( true );
 		instance = this;
 	}
 
@@ -97,16 +99,16 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 		if( mt == MaterialType.NAME_PRESS )
 		{
 			final CompoundNBT c = stack.getOrCreateTag();
-			lines.add( c.getString( "InscribeName" ) );
+			lines.add( new StringTextComponent( c.getString( "InscribeName" ) ) );
 		}
 
 		final Upgrades u = this.getType( stack );
 		if( u != null )
 		{
-			final List<String> textList = new ArrayList<>();
+			final List<ITextComponent> textList = new ArrayList<>();
 			for( final Entry<ItemStack, Integer> j : u.getSupported().entrySet() )
 			{
-				String name = null;
+				ITextComponent name = null;
 
 				final int limit = j.getValue();
 
@@ -116,13 +118,13 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 					final String str = ig.getUnlocalizedGroupName( u.getSupported().keySet(), j.getKey() );
 					if( str != null )
 					{
-						name = Platform.gui_localize( str ) + ( limit > 1 ? " (" + limit + ')' : "" );
+						name = new TranslationTextComponent( str ).appendText( limit > 1 ? " (" + limit + ')' : "" );
 					}
 				}
 
 				if( name == null )
 				{
-					name = j.getKey().getDisplayName() + ( limit > 1 ? " (" + limit + ')' : "" );
+					name = j.getKey().getDisplayName().appendText( ( limit > 1 ? " (" + limit + ')' : "" ) );
 				}
 
 				if( !textList.contains( name ) )
@@ -132,8 +134,9 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 			}
 
 			final Pattern p = Pattern.compile( "(\\d+)[^\\d]" );
+			// FIXME This comparison is not great...
 			final SlightlyBetterSort s = new SlightlyBetterSort( p );
-			Collections.sort( textList, s );
+			textList.sort(s);
 			lines.addAll( textList );
 		}
 	}
@@ -206,8 +209,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	}
 
 	@Override
-	protected void getCheckedSubItems( final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
-	{
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		final List<MaterialType> types = Arrays.asList( MaterialType.values() );
 		Collections.sort( types, ( o1, o2 ) -> o1.name().compareTo( o2.name() ) );
 
@@ -215,7 +217,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 		{
 			if( mat.getDamageValue() >= 0 && mat.isRegistered() && mat.getItemInstance() == this )
 			{
-				itemStacks.add( new ItemStack( this, 1, mat.getDamageValue() ) );
+				items.add( new ItemStack( this, 1/* FIXME, mat.getDamageValue() */ ) );
 			}
 		}
 	}
@@ -345,7 +347,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 		return false;
 	}
 
-	private static class SlightlyBetterSort implements Comparator<String>
+	private static class SlightlyBetterSort implements Comparator<ITextComponent>
 	{
 		private final Pattern pattern;
 
@@ -355,12 +357,12 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 		}
 
 		@Override
-		public int compare( final String o1, final String o2 )
+		public int compare( final ITextComponent o1, final ITextComponent o2 )
 		{
 			try
 			{
-				final Matcher a = this.pattern.matcher( o1 );
-				final Matcher b = this.pattern.matcher( o2 );
+				final Matcher a = this.pattern.matcher( o1.getString() );
+				final Matcher b = this.pattern.matcher( o2.getString() );
 				if( a.find() && b.find() )
 				{
 					final int ia = Integer.parseInt( a.group( 1 ) );
@@ -372,7 +374,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 			{
 				// ek!
 			}
-			return o1.compareTo( o2 );
+			return o1.getString().compareTo( o2.getString() );
 		}
 	}
 }

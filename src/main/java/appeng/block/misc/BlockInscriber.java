@@ -19,66 +19,44 @@
 package appeng.block.misc;
 
 
-import javax.annotation.Nullable;
-
-import net.minecraft.block.material.Material;
+import appeng.block.AEBaseTileBlock;
+import appeng.tile.misc.TileInscriber;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.BlockRenderType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-import appeng.api.util.AEPartLocation;
-import appeng.block.AEBaseTileBlock;
-import appeng.core.sync.GuiBridge;
-import appeng.tile.misc.TileInscriber;
-import appeng.util.Platform;
+import javax.annotation.Nullable;
 
+public class BlockInscriber extends AEBaseTileBlock<TileInscriber> {
 
-public class BlockInscriber extends AEBaseTileBlock
-{
+    public BlockInscriber(Properties props) {
+        super(props);
+    }
 
-	public BlockInscriber()
-	{
-		super( Material.IRON );
+    @Override
+    public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos) {
+        return 2; // FIXME validate this. a) possibly not required because of getShape b) value range. was 2 in 1.10
+    }
 
-		this.setLightOpacity( 2 );
-		this.setFullSize( this.setOpaque( false ) );
-	}
+    @Override
+    public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit) {
+        if (!p.isCrouching()) {
+            final TileInscriber tg = this.getTileEntity(w, pos);
+            if (tg != null) {
+				if (!tg.isRemote()) {
+					//	FIXME			Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit.getFace()), GuiBridge.GUI_INSCRIBER );
+				}
+                return ActionResultType.SUCCESS;
+            }
+        }
+        return ActionResultType.PASS;
 
-	@Override
-	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity p, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)
-	{
-		if( p.isCrouching() )
-		{
-			return ActionResultType.PASS;
-		}
+    }
 
-		final TileInscriber tg = this.getTileEntity( w, pos );
-		if( tg != null )
-		{
-			if( Platform.isServer() )
-			{
-				Platform.openGUI( p, tg, AEPartLocation.fromFacing(hit), GuiBridge.GUI_INSCRIBER );
-			}
-			return ActionResultType.SUCCESS;
-		}
-		return ActionResultType.PASS;
-	}
-
-	@Override
-	public BlockRenderType getRenderType( BlockState state )
-	{
-		return BlockRenderType.MODEL;
-	}
-
-	@Override
-	public String getTranslationKey( final ItemStack is )
-	{
-		return super.getTranslationKey( is );
-	}
 }

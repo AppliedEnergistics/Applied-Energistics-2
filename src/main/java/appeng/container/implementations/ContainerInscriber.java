@@ -19,8 +19,10 @@
 package appeng.container.implementations;
 
 
+import appeng.core.Api;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -55,9 +57,9 @@ public class ContainerInscriber extends ContainerUpgradeable implements IProgres
 	@GuiSync( 3 )
 	public int processingTime = -1;
 
-	public ContainerInscriber( final PlayerInventory ip, final TileInscriber te )
+	public ContainerInscriber(ContainerType<?> containerType, int id, final PlayerInventory ip, final TileInscriber te )
 	{
-		super( ip, te );
+		super( containerType, id, ip, te );
 		this.ti = te;
 
 		IItemHandler inv = te.getInternalInventory();

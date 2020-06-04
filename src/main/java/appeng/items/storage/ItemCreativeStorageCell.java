@@ -43,9 +43,10 @@ import appeng.items.contents.CellConfig;
 public class ItemCreativeStorageCell extends AEBaseItem implements ICellWorkbenchItem
 {
 
-	public ItemCreativeStorageCell()
+	public ItemCreativeStorageCell(Properties props)
 	{
-		this.setMaxStackSize( 1 );
+		super(props);
+		// FIXME this.setMaxStackSize( 1 );
 	}
 
 	@Override

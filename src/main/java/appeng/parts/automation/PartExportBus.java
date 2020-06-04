@@ -57,7 +57,7 @@ import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
-import appeng.core.sync.GuiBridge;
+
 import appeng.helpers.MultiCraftingTracker;
 import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
@@ -220,7 +220,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 	{
 		if( Platform.isServer() )
 		{
-			Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_BUS );
+			// FIXME Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_BUS );
 		}
 		return true;
 	}

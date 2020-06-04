@@ -21,6 +21,7 @@ package appeng.container.implementations;
 
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -66,9 +67,9 @@ public class ContainerUpgradeable extends AEBaseContainer implements IOptionalSl
 	private int tbSlot;
 	private NetworkToolViewer tbInventory;
 
-	public ContainerUpgradeable( final PlayerInventory ip, final IUpgradeableHost te )
+	public ContainerUpgradeable(ContainerType<?> containerType, int id, final PlayerInventory ip, final IUpgradeableHost te )
 	{
-		super( ip, (TileEntity) ( te instanceof TileEntity ? te : null ), (IPart) ( te instanceof IPart ? te : null ) );
+		super( containerType, id, ip, (TileEntity) ( te instanceof TileEntity ? te : null ), (IPart) ( te instanceof IPart ? te : null ) );
 		this.upgradeable = te;
 
 		World w = null;

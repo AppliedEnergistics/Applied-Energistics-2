@@ -24,12 +24,14 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
+import appeng.core.Api;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -92,8 +94,8 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 	private AEColor paintedColor = AEColor.TRANSPARENT;
 	private boolean isActive = false;
 
-	public TileSecurityStation()
-	{
+	public TileSecurityStation(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
 		this.getProxy().setFlags( GridFlags.REQUIRE_CHANNEL );
 		this.getProxy().setIdlePowerUsage( 2.0 );
 		difference++;
@@ -156,11 +158,11 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 	}
 
 	@Override
-	public CompoundNBT writeToNBT( final CompoundNBT data )
+	public CompoundNBT write(final CompoundNBT data )
 	{
-		super.writeToNBT( data );
+		super.write( data );
 		this.cm.writeToNBT( data );
-		data.setByte( "paintedColor", (byte) this.paintedColor.ordinal() );
+		data.putByte( "paintedColor", (byte) this.paintedColor.ordinal() );
 
 		data.putLong( "securityKey", this.securityKey );
 		this.getConfigSlot().writeToNBT( data, "config" );
@@ -172,18 +174,18 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 		{
 			final CompoundNBT it = new CompoundNBT();
 			ais.createItemStack().write(it);
-			storedItems.setTag( String.valueOf( offset ), it );
+			storedItems.put( String.valueOf( offset ), it );
 			offset++;
 		}
 
-		data.setTag( "storedItems", storedItems );
+		data.put( "storedItems", storedItems );
 		return data;
 	}
 
 	@Override
-	public void readFromNBT( final CompoundNBT data )
+	public void read(final CompoundNBT data )
 	{
-		super.readFromNBT( data );
+		super.read( data );
 		this.cm.readFromNBT( data );
 		if( data.contains("paintedColor") )
 		{
@@ -193,10 +195,10 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 		this.securityKey = data.getLong( "securityKey" );
 		this.getConfigSlot().readFromNBT( data, "config" );
 
-		final CompoundNBT storedItems = data.getCompoundTag( "storedItems" );
-		for( final Object key : storedItems.getKeySet() )
+		final CompoundNBT storedItems = data.getCompound( "storedItems" );
+		for( final Object key : storedItems.keySet() )
 		{
-			final NBTBase obj = storedItems.getTag( (String) key );
+			final INBT obj = storedItems.get( (String) key );
 			if( obj instanceof CompoundNBT )
 			{
 				this.inventory.getStoredItems().add( AEItemStack.fromItemStack( ItemStack.read((CompoundNBT) obj) ) );
@@ -236,9 +238,9 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 	}
 
 	@Override
-	public void onChunkUnload()
+	public void onChunkUnloaded()
 	{
-		super.onChunkUnload();
+		super.onChunkUnloaded();
 		MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.UNREGISTER ) );
 		this.isActive = false;
 	}
@@ -255,9 +257,9 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
 	}
 
 	@Override
-	public void invalidate()
+	public void remove()
 	{
-		super.invalidate();
+		super.remove();
 		MinecraftForge.EVENT_BUS.post( new LocatableEventAnnounce( this, LocatableEvent.UNREGISTER ) );
 		this.isActive = false;
 	}

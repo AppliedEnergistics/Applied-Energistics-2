@@ -27,7 +27,7 @@ import net.minecraft.util.math.Vec3d;
 
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
-import appeng.core.sync.GuiBridge;
+
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import appeng.util.Platform;
@@ -57,7 +57,7 @@ public class PartInterfaceTerminal extends AbstractPartDisplay
 		{
 			if( Platform.isServer() )
 			{
-				Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_INTERFACE_TERMINAL );
+				// FIXME Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_INTERFACE_TERMINAL );
 			}
 		}
 		return true;

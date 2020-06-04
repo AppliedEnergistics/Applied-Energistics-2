@@ -10,7 +10,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import appeng.api.util.AEColor;
 import appeng.bootstrap.IItemRendering;
 import appeng.bootstrap.ItemRenderingCustomizer;
-import appeng.client.render.model.ColorApplicatorModel;
 import appeng.core.AppEng;
 
 
@@ -24,10 +23,10 @@ public class ToolColorApplicatorRendering extends ItemRenderingCustomizer
 	@OnlyIn( Dist.CLIENT )
 	public void customize( IItemRendering rendering )
 	{
-		rendering.builtInModel( "models/item/builtin/color_applicator_colored", new ColorApplicatorModel() );
+		// FIXME rendering.builtInModel( "models/item/builtin/color_applicator_colored", new ColorApplicatorModel() );
 		rendering.variants( MODEL_COLORED, MODEL_UNCOLORED );
 		rendering.color( this::getColor );
-		rendering.meshDefinition( this::getMesh );
+		// FIXME rendering.meshDefinition( this::getMesh );
 	}
 
 	private ModelResourceLocation getMesh( ItemStack itemStack )

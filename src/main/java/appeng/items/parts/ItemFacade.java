@@ -25,30 +25,18 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.block.Blocks;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.BlockRenderType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import appeng.api.AEApi;
 import appeng.api.exceptions.MissingDefinitionException;
 import appeng.api.parts.IAlphaPassItem;
 import appeng.api.util.AEPartLocation;
@@ -67,9 +55,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 	private List<ItemStack> subTypes = null;
 
-	public ItemFacade()
-	{
-		this.setHasSubtypes( true );
+	public ItemFacade(Properties properties) {
+		super(properties);
+		// FIXME this.setHasSubtypes( true );
 	}
 
 	@Override
@@ -97,10 +85,9 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 	}
 
 	@Override
-	protected void getCheckedSubItems( final CreativeTabs creativeTab, final NonNullList<ItemStack> itemStacks )
-	{
+	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
 		this.calculateSubTypes();
-		itemStacks.addAll( this.subTypes );
+		items.addAll( this.subTypes );
 	}
 
 	private void calculateSubTypes()
@@ -118,14 +105,15 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 						continue;
 					}
 
-					final NonNullList<ItemStack> tmpList = NonNullList.create();
-					b.getSubBlocks( b.getCreativeTabToDisplayOn(), tmpList );
-					for( final ItemStack l : tmpList )
-					{
-						final ItemStack facade = this.createFacadeForItem( l, false );
-						if( !facade.isEmpty() )
-						{
-							this.subTypes.add( facade );
+					Item blockItem = b.asItem();
+					if (blockItem != null && blockItem.getGroup() != null) {
+						final NonNullList<ItemStack> tmpList = NonNullList.create();
+						b.fillItemGroup(blockItem.getGroup(), tmpList);
+						for (final ItemStack l : tmpList) {
+							final ItemStack facade = this.createFacadeForItem(l, false);
+							if (!facade.isEmpty()) {
+								this.subTypes.add(facade);
+							}
 						}
 					}
 				}
@@ -150,14 +138,14 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			return ItemStack.EMPTY;
 		}
 
-		final int metadata = itemStack.getItem().getMetadata( itemStack.getDamage() );
+		final int metadata = 0; // FIXME itemStack.getItem().getMetadata( itemStack.getDamage() );
 
 		// Try to get the block state based on the item stack's meta. If this fails, don't consider it for a facade
 		// This for example fails for Pistons because they hardcoded an invalid meta value in vanilla
 		BlockState blockState;
 		try
 		{
-			blockState = block.getStateFromMeta( metadata );
+			blockState = null; // FIXME block.getStateFromMeta( metadata );
 		}
 		catch( Exception e )
 		{
@@ -171,7 +159,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 
 		final BlockState defaultState = block.getDefaultState();
 		final boolean isTileEntity = block.hasTileEntity( defaultState );
-		final boolean isFullCube = block.isFullCube( defaultState );
+		final boolean isFullCube = true; // FIXME defaultState.isFullCube( defaultState );
 
 		final boolean isTileEntityAllowed = !isTileEntity || ( areTileEntitiesEnabled && isWhiteListed );
 		final boolean isBlockAllowed = isFullCube || isWhiteListed;
@@ -267,11 +255,11 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			return Blocks.GLASS.getDefaultState();
 		}
 
-		int metadata = baseItemStack.getItem().getMetadata( baseItemStack );
+		int metadata = 0; // FIXME baseItemStack.getItem().getMetadata( baseItemStack );
 
 		try
 		{
-			return block.getStateFromMeta( metadata );
+			return null; // FIXME block.getStateFromMeta( metadata );
 		}
 		catch( Exception e )
 		{
@@ -329,7 +317,7 @@ public class ItemFacade extends AEBaseItem implements IFacadeItem, IAlphaPassIte
 			return false;
 		}
 
-		Block blk = blockState.getBlock();
-		return blk.canRenderInLayer( blockState, BlockRenderLayer.TRANSLUCENT );
+		return RenderTypeLookup.canRenderInLayer( blockState, RenderType.getTranslucent() )
+				|| RenderTypeLookup.canRenderInLayer( blockState, RenderType.getTranslucentNoCrumbling() );
 	}
 }

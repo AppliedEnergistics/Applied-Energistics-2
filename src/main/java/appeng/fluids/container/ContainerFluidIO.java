@@ -23,6 +23,7 @@ import net.minecraft.entity.player.PlayerInventory;
 
 import appeng.fluids.parts.PartSharedFluidBus;
 import appeng.fluids.util.IAEFluidTank;
+import net.minecraft.inventory.container.ContainerType;
 
 
 /**
@@ -34,9 +35,9 @@ public class ContainerFluidIO extends ContainerFluidConfigurable
 {
 	private final PartSharedFluidBus bus;
 
-	public ContainerFluidIO( PlayerInventory ip, PartSharedFluidBus te )
+	public ContainerFluidIO(ContainerType<?> containerType, int id, PlayerInventory ip, PartSharedFluidBus te )
 	{
-		super( ip, te );
+		super( containerType, id,ip, te );
 		this.bus = te;
 	}
 

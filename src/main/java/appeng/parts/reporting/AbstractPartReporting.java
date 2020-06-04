@@ -44,6 +44,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.me.GridAccessException;
 import appeng.parts.AEBasePart;
 import appeng.util.Platform;
+import net.minecraft.world.World;
 
 
 /**
@@ -134,7 +135,7 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 	public void writeToNBT( final CompoundNBT data )
 	{
 		super.writeToNBT( data );
-		data.setByte( "spin", this.getSpin() );
+		data.putByte( "spin", this.getSpin() );
 	}
 
 	@Override
@@ -255,7 +256,9 @@ public abstract class AbstractPartReporting extends AEBasePart implements IPartM
 		if( this.opacity < 0 )
 		{
 			final TileEntity te = this.getTile();
-			this.opacity = 255 - te.getWorld().getBlockLightOpacity( te.getPos().offset( this.getSide().getFacing() ) );
+			World world = te.getWorld();
+			BlockPos pos = te.getPos().offset(this.getSide().getFacing());
+			this.opacity = 255 - world.getBlockState(pos).getOpacity(world, pos);
 		}
 
 		return (int) ( emit * ( this.opacity / 255.0f ) );

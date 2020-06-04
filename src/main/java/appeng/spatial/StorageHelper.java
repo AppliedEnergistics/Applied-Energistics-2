@@ -22,6 +22,7 @@ package appeng.spatial;
 import java.util.ArrayList;
 import java.util.List;
 
+import appeng.core.Api;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -30,7 +31,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.ServerWorld;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.ITeleporter;
 
 import appeng.api.AEApi;
@@ -63,13 +65,13 @@ public class StorageHelper
 	 */
 	private Entity teleportEntity( Entity entity, final TelDestination link )
 	{
-		final WorldServer oldWorld;
-		final WorldServer newWorld;
+		final ServerWorld oldWorld;
+		final ServerWorld newWorld;
 
 		try
 		{
-			oldWorld = (WorldServer) entity.world;
-			newWorld = (WorldServer) link.dim;
+			oldWorld = (ServerWorld) entity.world;
+			newWorld = (ServerWorld) link.dim;
 		}
 		catch( final Throwable e )
 		{
@@ -116,7 +118,7 @@ public class StorageHelper
 			AppEng.instance().getAdvancementTriggers().getSpatialExplorer().trigger( (ServerPlayerEntity) entity );
 		}
 
-		entity.changeDimension( link.dim.provider.getDimension(), new METeleporter( link ) );
+		entity.changeDimension( link.dim.getDimension().getType(), new METeleporter( link ) );
 
 		if( !passangersOnOtherSide.isEmpty() )
 		{

@@ -22,8 +22,10 @@ package appeng.tile.networking;
 import java.util.EnumSet;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
@@ -49,8 +51,8 @@ public class TileController extends AENetworkPowerTile
 {
 	private boolean isValid = false;
 
-	public TileController()
-	{
+	public TileController(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
 		this.setInternalMaxPower( 8000 );
 		this.setInternalPublicPowerStorage( true );
 		this.getProxy().setIdlePowerUsage( 3 );
@@ -126,7 +128,7 @@ public class TileController extends AENetworkPowerTile
 			metaState = ControllerBlockState.offline;
 		}
 
-		if( this.checkController( this.pos ) && this.world.getBlockState( this.pos ).getValue( BlockController.CONTROLLER_STATE ) != metaState )
+		if( this.checkController( this.pos ) && this.world.getBlockState( this.pos ).get( BlockController.CONTROLLER_STATE ) != metaState )
 		{
 			this.world.setBlockState( this.pos, this.world.getBlockState( this.pos ).with( BlockController.CONTROLLER_STATE, metaState ) );
 		}
@@ -209,7 +211,7 @@ public class TileController extends AENetworkPowerTile
 	 */
 	private boolean checkController( final BlockPos pos )
 	{
-		if( this.world.getChunkProvider().getLoadedChunk( pos.getX() >> 4, pos.getZ() >> 4 ) != null )
+		if( this.world.getChunkProvider().isChunkLoaded( new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4)) )
 		{
 			return this.world.getTileEntity( pos ) instanceof TileController;
 		}

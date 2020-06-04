@@ -111,6 +111,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements IAEAppEngInven
 		return this.getInternalInventory();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {

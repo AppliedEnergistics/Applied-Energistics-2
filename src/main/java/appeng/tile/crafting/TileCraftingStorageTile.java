@@ -21,16 +21,21 @@ package appeng.tile.crafting;
 
 import java.util.Optional;
 
+import appeng.core.Api;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.AEApi;
 import appeng.api.definitions.IBlocks;
-import appeng.block.crafting.BlockCraftingUnit;
+import appeng.block.crafting.AbstractCraftingUnitBlock;
+import net.minecraft.tileentity.TileEntityType;
 
 
 public class TileCraftingStorageTile extends TileCraftingTile
 {
 	private static final int KILO_SCALAR = 1024;
+
+	public TileCraftingStorageTile(TileEntityType<?> tileEntityTypeIn) {
+		super(tileEntityTypeIn);
+	}
 
 	@Override
 	protected ItemStack getItemFromTile( final Object obj )
@@ -77,12 +82,12 @@ public class TileCraftingStorageTile extends TileCraftingTile
 	@Override
 	public int getStorageBytes()
 	{
-		if( this.world == null || this.notLoaded() || this.isInvalid() )
+		if( this.world == null || this.notLoaded() || this.isRemoved() )
 		{
 			return 0;
 		}
 
-		final BlockCraftingUnit unit = (BlockCraftingUnit) this.world.getBlockState( this.pos ).getBlock();
+		final AbstractCraftingUnitBlock unit = (AbstractCraftingUnitBlock) this.world.getBlockState( this.pos ).getBlock();
 		switch( unit.type )
 		{
 			default:

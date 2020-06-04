@@ -20,16 +20,15 @@ package appeng.items.tools;
 
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
@@ -48,7 +47,7 @@ import appeng.api.util.DimensionalCoord;
 import appeng.api.util.INetworkToolAgent;
 import appeng.container.AEBaseContainer;
 import appeng.core.AppEng;
-import appeng.core.sync.GuiBridge;
+
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketClick;
 import appeng.items.AEBaseItem;
@@ -90,12 +89,12 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench
 	@Override
 	public ActionResultType onItemUseFirst( ItemStack stack, ItemUseContext context )
 	{
-		final RayTraceResult mop = new RayTraceResult( new Vec3d( hitX, hitY, hitZ ), side, pos );
+		final BlockRayTraceResult mop = new BlockRayTraceResult( context.getHitVec(), context.getFace(), context.getPos(), context.isInside() );
 		final TileEntity te = context.getWorld().getTileEntity( context.getPos() );
 
 		if( te instanceof IPartHost )
 		{
-			final SelectedPart part = ( (IPartHost) te ).selectPart( mop.hitVec );
+			final SelectedPart part = ( (IPartHost) te ).selectPart( mop.getHitVec() );
 
 			if( part.part != null || part.facade != null )
 			{
@@ -116,7 +115,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench
 
 		if( Platform.isClient() )
 		{
-			NetworkHandler.instance().sendToServer( new PacketClick( pos, side, hitX, hitY, hitZ, hand ) );
+			NetworkHandler.instance().sendToServer( new PacketClick( context.getPos(), context.getFace(), context.getPos().getX(), context.getPos().getY(), context.getPos().getZ(), context.getHand() ) );
 		}
 
 		return ActionResultType.SUCCESS;
@@ -137,15 +136,15 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench
 				return false;
 			}
 
-			final Block b = w.getBlockState( pos ).getBlock();
+			final BlockState bs = w.getBlockState( pos );
 			if( !p.isCrouching() )
 			{
 				final TileEntity te = w.getTileEntity( pos );
 				if( !( te instanceof IGridHost ) )
 				{
-					if( b.rotateBlock( w, pos, side ) )
+					if( bs.rotate( w, pos, Rotation.CLOCKWISE_90 ) != bs )
 					{
-						b.neighborChanged( Platform.AIR_BLOCK.getDefaultState(), w, pos, Platform.AIR_BLOCK, null, false );
+						bs.neighborChanged( w, pos, Platform.AIR_BLOCK, pos, false );
 						p.swingArm( hand );
 						return !w.isRemote;
 					}
@@ -163,23 +162,24 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench
 
 				if( te instanceof IGridHost )
 				{
-					Platform.openGUI( p, te, AEPartLocation.fromFacing( side ), GuiBridge.GUI_NETWORK_STATUS );
+					// FIXME Platform.openGUI( p, te, AEPartLocation.fromFacing( side ), GuiBridge.GUI_NETWORK_STATUS );
 				}
 				else
 				{
-					Platform.openGUI( p, null, AEPartLocation.INTERNAL, GuiBridge.GUI_NETWORK_TOOL );
+					// FIXME Platform.openGUI( p, null, AEPartLocation.INTERNAL, GuiBridge.GUI_NETWORK_TOOL );
 				}
 
 				return true;
 			}
 			else
 			{
-				b.onBlockActivated( w, pos, w.getBlockState( pos ), p, hand, side, hitX, hitY, hitZ );
+				BlockRayTraceResult rtr = new BlockRayTraceResult(new Vec3d(hitX, hitY, hitZ), side, pos, false);
+				bs.onBlockActivated( w, p, hand, rtr );
 			}
 		}
 		else
 		{
-			Platform.openGUI( p, null, AEPartLocation.INTERNAL, GuiBridge.GUI_NETWORK_TOOL );
+			// FIXME Platform.openGUI( p, null, AEPartLocation.INTERNAL, GuiBridge.GUI_NETWORK_TOOL );
 		}
 
 		return false;

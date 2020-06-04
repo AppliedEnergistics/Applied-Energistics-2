@@ -8,7 +8,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.bootstrap.IItemRendering;
 import appeng.bootstrap.ItemRenderingCustomizer;
-import appeng.client.render.model.BiometricCardModel;
 import appeng.core.AppEng;
 
 
@@ -21,7 +20,7 @@ public class ToolBiometricCardRendering extends ItemRenderingCustomizer
 	@OnlyIn( Dist.CLIENT )
 	public void customize( IItemRendering rendering )
 	{
-		rendering.builtInModel( "models/item/builtin/biometric_card", new BiometricCardModel() );
+		// FIXME rendering.builtInModel( "models/item/builtin/biometric_card", new BiometricCardModel() );
 		rendering.model( new ModelResourceLocation( MODEL, "inventory" ) ).variants( MODEL );
 	}
 }

@@ -82,27 +82,18 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 		return energyStorageOpt.orElse( NULL_ENERGY_STORAGE );
 	}
 
-	@Override
-	public boolean hasCapability( @Nonnull Capability<?> capability )
-	{
-		if( capability == Capabilities.FORGE_ENERGY )
-		{
-			return true;
-		}
-		return super.hasCapability( capability );
-	}
-
+	@SuppressWarnings("unchecked")
 	@Nullable
 	@Override
-	public <T> T getCapability( @Nonnull Capability<T> capability )
+	public <T> LazyOptional<T> getCapability( @Nonnull Capability<T> capability )
 	{
 		if( capability == Capabilities.FORGE_ENERGY )
 		{
 			if( this.isOutput() )
 			{
-				return (T) this.outputHandler;
+				return (LazyOptional<T>) LazyOptional.of(() -> this.outputHandler);
 			}
-			return (T) this.inputHandler;
+			return (LazyOptional<T>) LazyOptional.of(() ->this.inputHandler);
 		}
 		return super.getCapability( capability );
 	}
