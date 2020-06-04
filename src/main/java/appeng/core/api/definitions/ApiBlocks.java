@@ -38,6 +38,7 @@ import appeng.block.spatial.BlockSpatialPylon;
 import appeng.block.storage.*;
 import appeng.bootstrap.*;
 import appeng.bootstrap.components.IEntityRegistrationComponent;
+import appeng.bootstrap.components.IPostInitComponent;
 import appeng.bootstrap.components.IPreInitComponent;
 import appeng.bootstrap.definitions.TileEntityDefinition;
 import appeng.client.render.crafting.CraftingCubeRendering;
@@ -84,83 +85,82 @@ import static appeng.decorative.solid.BlockSkyStone.SkystoneType;
  */
 public final class ApiBlocks implements IBlocks
 {
-	// FIXME: Make everything final again when porting is done
-	private  IBlockDefinition quartzOre;
-	private  IBlockDefinition quartzOreCharged;
-	private  IBlockDefinition matrixFrame;
-	private  IBlockDefinition quartzBlock;
-	private  IBlockDefinition quartzPillar;
-	private  IBlockDefinition chiseledQuartzBlock;
-	private  IBlockDefinition quartzGlass;
-	private  IBlockDefinition quartzVibrantGlass;
-	private  IBlockDefinition quartzFixture;
-	private  IBlockDefinition fluixBlock;
-	private  IBlockDefinition skyStoneBlock;
-	private  IBlockDefinition smoothSkyStoneBlock;
-	private  IBlockDefinition skyStoneBrick;
-	private  IBlockDefinition skyStoneSmallBrick;
-	private  IBlockDefinition skyStoneChest;
-	private  IBlockDefinition smoothSkyStoneChest;
-	private  IBlockDefinition skyCompass;
-	private  ITileDefinition grindstone;
-	private  ITileDefinition crank;
-	private  ITileDefinition inscriber;
-	private  ITileDefinition wirelessAccessPoint;
-	private  ITileDefinition charger;
-	private  IBlockDefinition tinyTNT;
-	private  ITileDefinition securityStation;
-	private  ITileDefinition quantumRing;
-	private  ITileDefinition quantumLink;
-	private  ITileDefinition spatialPylon;
-	private  ITileDefinition spatialIOPort;
-	private  ITileDefinition multiPart;
-	private  ITileDefinition controller;
-	private  ITileDefinition drive;
-	private  ITileDefinition chest;
-	private  ITileDefinition iface;
-	private  ITileDefinition fluidIface;
-	private  ITileDefinition cellWorkbench;
-	private  ITileDefinition iOPort;
-	private  ITileDefinition condenser;
-	private  ITileDefinition energyAcceptor;
-	private  ITileDefinition vibrationChamber;
-	private  ITileDefinition quartzGrowthAccelerator;
-	private  ITileDefinition energyCell;
-	private  ITileDefinition energyCellDense;
-	private  ITileDefinition energyCellCreative;
-	private  ITileDefinition craftingUnit;
-	private  ITileDefinition craftingAccelerator;
-	private  ITileDefinition craftingStorage1k;
-	private  ITileDefinition craftingStorage4k;
-	private  ITileDefinition craftingStorage16k;
-	private  ITileDefinition craftingStorage64k;
-	private  ITileDefinition craftingMonitor;
-	private  ITileDefinition molecularAssembler;
-	private  ITileDefinition lightDetector;
-	private  ITileDefinition paint;
-	private  IBlockDefinition skyStoneStairs;
-	private  IBlockDefinition smoothSkyStoneStairs;
-	private  IBlockDefinition skyStoneBrickStairs;
-	private  IBlockDefinition skyStoneSmallBrickStairs;
-	private  IBlockDefinition fluixStairs;
-	private  IBlockDefinition quartzStairs;
-	private  IBlockDefinition chiseledQuartzStairs;
-	private  IBlockDefinition quartzPillarStairs;
+	private final IBlockDefinition quartzOre;
+	private final IBlockDefinition quartzOreCharged;
+	private final IBlockDefinition matrixFrame;
+	private final IBlockDefinition quartzBlock;
+	private final IBlockDefinition quartzPillar;
+	private final IBlockDefinition chiseledQuartzBlock;
+	private final IBlockDefinition quartzGlass;
+	private final IBlockDefinition quartzVibrantGlass;
+	private final IBlockDefinition quartzFixture;
+	private final IBlockDefinition fluixBlock;
+	private final IBlockDefinition skyStoneBlock;
+	private final IBlockDefinition smoothSkyStoneBlock;
+	private final IBlockDefinition skyStoneBrick;
+	private final IBlockDefinition skyStoneSmallBrick;
+	private final IBlockDefinition skyStoneChest;
+	private final IBlockDefinition smoothSkyStoneChest;
+	private final IBlockDefinition skyCompass;
+	private final ITileDefinition grindstone;
+	private final ITileDefinition crank;
+	private final ITileDefinition inscriber;
+	private final ITileDefinition wirelessAccessPoint;
+	private final ITileDefinition charger;
+	private final IBlockDefinition tinyTNT;
+	private final ITileDefinition securityStation;
+	private final ITileDefinition quantumRing;
+	private final ITileDefinition quantumLink;
+	private final ITileDefinition spatialPylon;
+	private final ITileDefinition spatialIOPort;
+	private final ITileDefinition multiPart;
+	private final ITileDefinition controller;
+	private final ITileDefinition drive;
+	private final ITileDefinition chest;
+	private final ITileDefinition iface;
+	private final ITileDefinition fluidIface;
+	private final ITileDefinition cellWorkbench;
+	private final ITileDefinition iOPort;
+	private final ITileDefinition condenser;
+	private final ITileDefinition energyAcceptor;
+	private final ITileDefinition vibrationChamber;
+	private final ITileDefinition quartzGrowthAccelerator;
+	private final ITileDefinition energyCell;
+	private final ITileDefinition energyCellDense;
+	private final ITileDefinition energyCellCreative;
+	private final ITileDefinition craftingUnit;
+	private final ITileDefinition craftingAccelerator;
+	private final ITileDefinition craftingStorage1k;
+	private final ITileDefinition craftingStorage4k;
+	private final ITileDefinition craftingStorage16k;
+	private final ITileDefinition craftingStorage64k;
+	private final ITileDefinition craftingMonitor;
+	private final ITileDefinition molecularAssembler;
+	private final ITileDefinition lightDetector;
+	private final ITileDefinition paint;
+	private final IBlockDefinition skyStoneStairs;
+	private final IBlockDefinition smoothSkyStoneStairs;
+	private final IBlockDefinition skyStoneBrickStairs;
+	private final IBlockDefinition skyStoneSmallBrickStairs;
+	private final IBlockDefinition fluixStairs;
+	private final IBlockDefinition quartzStairs;
+	private final IBlockDefinition chiseledQuartzStairs;
+	private final IBlockDefinition quartzPillarStairs;
 
-	private  IBlockDefinition skyStoneSlab;
-	private  IBlockDefinition smoothSkyStoneSlab;
-	private  IBlockDefinition skyStoneBrickSlab;
-	private  IBlockDefinition skyStoneSmallBrickSlab;
-	private  IBlockDefinition fluixSlab;
-	private  IBlockDefinition quartzSlab;
-	private  IBlockDefinition chiseledQuartzSlab;
-	private  IBlockDefinition quartzPillarSlab;
+	private final IBlockDefinition skyStoneSlab;
+	private final IBlockDefinition smoothSkyStoneSlab;
+	private final IBlockDefinition skyStoneBrickSlab;
+	private final IBlockDefinition skyStoneSmallBrickSlab;
+	private final IBlockDefinition fluixSlab;
+	private final IBlockDefinition quartzSlab;
+	private final IBlockDefinition chiseledQuartzSlab;
+	private final IBlockDefinition quartzPillarSlab;
 
-	private  IBlockDefinition itemGen;
-	private  IBlockDefinition chunkLoader;
-	private  IBlockDefinition phantomNode;
-	private  IBlockDefinition cubeGenerator;
-	private  IBlockDefinition energyGenerator;
+	private final IBlockDefinition itemGen;
+	private final IBlockDefinition chunkLoader;
+	private final IBlockDefinition phantomNode;
+	private final IBlockDefinition cubeGenerator;
+	private final IBlockDefinition energyGenerator;
 
 	private static final Block.Properties QUARTZ_PROPERTIES = Block.Properties.create(Material.ROCK)
 			.hardnessAndResistance(3, 5);
@@ -519,14 +519,14 @@ public final class ApiBlocks implements IBlocks
   		this.quartzPillarStairs = deco.block( "quartz_pillar_stairs", () -> new StairsBlock(this.quartzPillar().block()::getDefaultState, QUARTZ_PROPERTIES) )
 				.addFeatures( AEFeature.CERTUS )
 				.build();
-//
-//		this.multiPart = registry.block( "cable_bus", BlockCableBus::new )
-//				.rendering( new CableBusRendering( partModels ) )
-//				// (handled in BlockCableBus.java and its setupTile())
-//				// .tileEntity( TileCableBus.class )
-//				// TODO: why the custom registration?
-//				.bootstrap( ( block, item ) -> (IPostInitComponent) side -> ( (BlockCableBus) block ).setupTile() )
-//				.build();
+
+		this.multiPart = registry.block( "cable_bus", BlockCableBus::new )
+				.rendering( new CableBusRendering( partModels ) )
+				// (handled in BlockCableBus.java and its setupTile())
+				// .tileEntity( TileCableBus.class )
+				// TODO: why the custom registration?
+				.bootstrap( ( block, item ) -> (IPostInitComponent) side -> ( (BlockCableBus) block ).setupTile() )
+				.build();
 
 		this.skyStoneSlab = deco.block( "sky_stone_slab", () -> new SlabBlock( SKYSTONE_PROPERTIES ) )
 				.addFeatures( AEFeature.SKY_STONE )

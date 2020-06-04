@@ -113,7 +113,8 @@ public abstract class AEBaseTileBlock<T extends AEBaseTile> extends AEBaseBlock
 		}
 
 		final TileEntity te = w.getTileEntity( pos );
-		if( this.tileEntityClass.isInstance( te ) )
+		// FIXME: This gets called as part of building the block state cache
+		if( this.tileEntityClass != null && this.tileEntityClass.isInstance( te ) )
 		{
 			return this.tileEntityClass.cast(te);
 		}
