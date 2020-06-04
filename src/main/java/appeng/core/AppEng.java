@@ -23,6 +23,8 @@ import java.io.File;
 
 import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.client.ClientHelper;
+import appeng.client.render.model.AutoRotatingModel;
+import appeng.client.render.model.AutoRotatingModelLoader;
 import appeng.client.render.model.GlassModelLoader;
 import appeng.client.render.model.SkyCompassModelLoader;
 import appeng.core.stats.AdvancementTriggers;
@@ -128,6 +130,7 @@ public final class AppEng
 		definitions.getRegistry().getBootstrapComponents( IClientSetupComponent.class ).forEachRemaining(IClientSetupComponent::setup);
 		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "glass"), GlassModelLoader.INSTANCE);
 		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "sky_compass"), SkyCompassModelLoader.INSTANCE);
+		ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, "auto_rotating"), AutoRotatingModelLoader.INSTANCE);
 	}
 
 	@Nonnull

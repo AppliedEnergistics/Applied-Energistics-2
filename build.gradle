@@ -279,6 +279,8 @@ sourceSets {
             include 'appeng/client/render/model/SkyCompassBakedModel.java'
             include 'appeng/client/render/model/MatrixVertexTransformer.java'
             include 'appeng/client/render/model/AutoRotatingModel.java'
+            include 'appeng/client/render/model/AutoRotatingBakedModel.java'
+            include 'appeng/client/render/model/AutoRotatingModelLoader.java'
             include 'appeng/client/render/cablebus/QuadRotator.java'
             include 'appeng/thirdparty/codechicken/lib/**'
             include 'appeng/client/render/model/AutoRotatingCacheKey.java'

@@ -26,13 +26,14 @@ import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.util.Direction;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.Vec3i;
 
 
 /**
  * TODO: Removed useless stuff.
  */
-public enum FacingToRotation
+public enum FacingToRotation implements IStringSerializable
 {
 
 	// DUNSWE
@@ -136,5 +137,10 @@ public enum FacingToRotation
 	public static FacingToRotation get( Direction forward, Direction up )
 	{
 		return values()[forward.ordinal() * 6 + up.ordinal()];
+	}
+
+	@Override
+	public String getName() {
+		return name().toLowerCase();
 	}
 }

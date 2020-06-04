@@ -127,8 +127,6 @@ public final class InscriberTESR extends TileEntityRenderer<TileInscriber>
 			buffer.pos( 1.0 - TwoPx, middle - press, TwoPx ).tex( tas.getInterpolatedU( 2 ), tas.getInterpolatedV( 3 ) ).endVertex();
 		}
 
-		Tessellator.getInstance().draw();
-
 		// render items.
 //		FIXME RenderSystem.color4f( 1.0F, 1.0F, 1.0F, 1.0F );
 

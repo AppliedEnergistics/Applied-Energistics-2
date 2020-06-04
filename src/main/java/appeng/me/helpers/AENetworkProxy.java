@@ -24,7 +24,9 @@ import java.util.EnumSet;
 
 import appeng.core.Api;
 import appeng.core.worlddata.WorldData;
+import appeng.hooks.TickHandler;
 import appeng.me.cache.P2PCache;
+import appeng.parts.networking.PartCable;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -104,8 +106,7 @@ public class AENetworkProxy implements IGridBlock
 	{
 		if( this.gp instanceof AEBaseTile )
 		{
-			throw new IllegalStateException(); // FIXME just here to remember for sure
-			// FIXME TickHandler.INSTANCE.addInit( (AEBaseTile) this.gp );
+			TickHandler.INSTANCE.addInit( (AEBaseTile) this.gp );
 		}
 	}
 
@@ -328,10 +329,10 @@ public class AENetworkProxy implements IGridBlock
 	@Override
 	public void onGridNotification( final GridNotification notification )
 	{
-		// FIXME if( this.gp instanceof PartCable )
-		// FIXME {
-		// FIXME 	( (PartCable) this.gp ).markForUpdate();
-		// FIXME }
+		if( this.gp instanceof PartCable)
+		{
+			( (PartCable) this.gp ).markForUpdate();
+		}
 	}
 
 	@Override
