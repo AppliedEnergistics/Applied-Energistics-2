@@ -33,9 +33,9 @@ public class ToolQuartzPickaxe extends PickaxeItem
 {
 	private final AEFeature type;
 
-	public ToolQuartzPickaxe( final AEFeature type )
+	public ToolQuartzPickaxe( Item.Properties props, final AEFeature type )
 	{
-		super( ItemTier.IRON, 1, -2.8F, ( new Item.Properties() ).group( ItemGroup.TOOLS ) );
+		super( ItemTier.IRON, 1, -2.8F, props );
 		this.type = type;
 	}
 

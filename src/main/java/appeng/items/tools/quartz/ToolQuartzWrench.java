@@ -22,6 +22,7 @@ package appeng.items.tools.quartz;
 import appeng.core.CreativeTab;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -38,11 +39,9 @@ import appeng.util.Platform;
 public class ToolQuartzWrench extends AEBaseItem implements IAEWrench
 {
 
-	public ToolQuartzWrench()
+	public ToolQuartzWrench(Item.Properties props)
 	{
-		super( new Properties()
-				.group(ItemGroup.TOOLS)
-				.maxStackSize( 1 ) );
+		super( props );
 	}
 
 	@Override

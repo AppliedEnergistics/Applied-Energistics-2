@@ -95,9 +95,9 @@ public class FeatureFactory
 		return new BlockDefinitionBuilder( this, id, block ).features( this.defaultFeatures );
 	}
 
-	public IItemBuilder item( String id, Supplier<Item> item )
+	public IItemBuilder item( String id, Function<Item.Properties, Item> itemFactory )
 	{
-		return new ItemDefinitionBuilder( this, id, item ).features( this.defaultFeatures );
+		return new ItemDefinitionBuilder( this, id, itemFactory ).features( this.defaultFeatures );
 	}
 
 	public <T extends AEBaseTile> TileEntityBuilder<T> tileEntity(String id, Class<T> teClass, Function<TileEntityType<T>, T> factory)

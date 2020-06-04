@@ -49,9 +49,8 @@ import appeng.util.Platform;
 
 public class ToolBiometricCard extends AEBaseItem implements IBiometricCard
 {
-	public ToolBiometricCard()
-	{
-		super( new Properties().maxStackSize( 1 ) );
+	public ToolBiometricCard(Properties properties) {
+		super(properties);
 	}
 
 	@Override

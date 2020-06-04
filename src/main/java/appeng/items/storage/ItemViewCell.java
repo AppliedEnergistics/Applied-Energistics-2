@@ -44,12 +44,11 @@ import appeng.util.prioritylist.PrecisePriorityList;
 public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
 {
 
-	public ItemViewCell()
-	{
-		super(new Item.Properties().maxStackSize(1));
+	public ItemViewCell(Properties properties) {
+		super(properties);
 	}
 
-	public static IPartitionList<IAEItemStack> createFilter( final ItemStack[] list )
+	public static IPartitionList<IAEItemStack> createFilter(final ItemStack[] list )
 	{
 		IPartitionList<IAEItemStack> myPartitionList = null;
 

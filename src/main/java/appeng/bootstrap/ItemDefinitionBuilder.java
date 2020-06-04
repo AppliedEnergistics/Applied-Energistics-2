@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -38,6 +39,8 @@ import appeng.core.CreativeTab;
 import appeng.api.features.AEFeature;
 import appeng.core.features.ItemDefinition;
 import appeng.util.Platform;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 
 class ItemDefinitionBuilder implements IItemBuilder
@@ -47,28 +50,29 @@ class ItemDefinitionBuilder implements IItemBuilder
 
 	private final String registryName;
 
-	private final Supplier<Item> itemSupplier;
+	private final Function<Item.Properties, Item> itemFactory;
 
 	private final EnumSet<AEFeature> features = EnumSet.noneOf( AEFeature.class );
 
 	private final List<Function<Item, IBootstrapComponent>> boostrapComponents = new ArrayList<>();
 
+	private final Item.Properties props = new Item.Properties();
+
 	private Supplier<IDispenseItemBehavior> dispenserBehaviorSupplier;
 
-// FIXME
-//	@OnlyIn( Dist.CLIENT )
-//	private ItemRendering itemRendering;
-//
+	@OnlyIn( Dist.CLIENT )
+	private ItemRendering itemRendering;
+
 	private ItemGroup itemGroup = CreativeTab.instance;
 
-	ItemDefinitionBuilder( FeatureFactory factory, String registryName, Supplier<Item> itemSupplier )
+	ItemDefinitionBuilder( FeatureFactory factory, String registryName, Function<Item.Properties, Item> itemFactory )
 	{
 		this.factory = factory;
 		this.registryName = registryName;
-		this.itemSupplier = itemSupplier;
+		this.itemFactory = itemFactory;
 		if( Platform.hasClientClasses() )
 		{
-			// FIXME this.itemRendering = new ItemRendering();
+			this.itemRendering = new ItemRendering();
 		}
 	}
 
@@ -101,16 +105,23 @@ class ItemDefinitionBuilder implements IItemBuilder
 		return this;
 	}
 
-// FIXME	@Override
-// FIXME	public IItemBuilder rendering( ItemRenderingCustomizer callback )
-// FIXME	{
-// FIXME		if( Platform.hasClientClasses() )
-// FIXME		{
-// FIXME			this.customizeForClient( callback );
-// FIXME		}
-// FIXME
-// FIXME		return this;
-// FIXME	}
+	@Override
+	public IItemBuilder props( Consumer<Item.Properties> consumer )
+	{
+		consumer.accept(props);
+		return this;
+	}
+
+	@Override
+	public IItemBuilder rendering( ItemRenderingCustomizer callback )
+	{
+		if( Platform.hasClientClasses() )
+		{
+			this.customizeForClient( callback );
+		}
+
+		return this;
+	}
 
 	@Override
 	public IItemBuilder dispenserBehavior( Supplier<IDispenseItemBehavior> behavior )
@@ -119,16 +130,18 @@ class ItemDefinitionBuilder implements IItemBuilder
 		return this;
 	}
 
-// FIXME	@OnlyIn( Dist.CLIENT )
-// FIXME	private void customizeForClient( ItemRenderingCustomizer callback )
-// FIXME	{
-// FIXME		callback.customize( this.itemRendering );
-// FIXME	}
+	@OnlyIn( Dist.CLIENT )
+	private void customizeForClient( ItemRenderingCustomizer callback )
+	{
+		callback.customize( this.itemRendering );
+	}
 
 	@Override
 	public ItemDefinition build()
 	{
-		Item item = this.itemSupplier.get();
+		props.group(itemGroup);
+
+		Item item = this.itemFactory.apply(props);
 		item.setRegistryName( AppEng.MOD_ID, this.registryName );
 
 		ItemDefinition definition = new ItemDefinition( this.registryName, item, features );
@@ -150,7 +163,7 @@ class ItemDefinitionBuilder implements IItemBuilder
 
 		if( Platform.hasClientClasses() )
 		{
-// FIXME			this.itemRendering.apply( this.factory, item );
+			this.itemRendering.apply( this.factory, item );
 		}
 
 		return definition;

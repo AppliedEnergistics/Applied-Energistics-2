@@ -29,6 +29,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -73,9 +74,9 @@ import appeng.util.Platform;
 public class ToolMatterCannon extends AEBasePoweredItem implements IStorageCell<IAEItemStack>
 {
 
-	public ToolMatterCannon()
+	public ToolMatterCannon(Item.Properties props)
 	{
-		super( AEConfig.instance().getMatterCannonBattery() );
+		super( AEConfig.instance().getMatterCannonBattery(), props );
 	}
 
 	@OnlyIn( Dist.CLIENT )

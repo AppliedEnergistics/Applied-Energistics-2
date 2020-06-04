@@ -20,6 +20,7 @@ package appeng.items.tools.powered;
 
 
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -35,9 +36,9 @@ import appeng.util.Platform;
 public class ToolChargedStaff extends AEBasePoweredItem
 {
 
-	public ToolChargedStaff()
+	public ToolChargedStaff(Item.Properties props)
 	{
-		super( AEConfig.instance().getChargedStaffBattery() );
+		super( AEConfig.instance().getChargedStaffBattery(), props );
 	}
 
 	@Override

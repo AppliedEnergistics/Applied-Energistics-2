@@ -24,6 +24,7 @@ import java.util.List;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -47,7 +48,11 @@ public final class EntityChargedQuartz extends AEBaseEntityItem
 	private int delay = 0;
 	private int transformTime = 0;
 
-	public EntityChargedQuartz( final World w, final double x, final double y, final double z, final ItemStack is )
+	public EntityChargedQuartz(EntityType<? extends EntityChargedQuartz> entityType, World world) {
+		super(entityType, world);
+	}
+
+	public EntityChargedQuartz(final World w, final double x, final double y, final double z, final ItemStack is )
 	{
 		super( w, x, y, z, is );
 	}

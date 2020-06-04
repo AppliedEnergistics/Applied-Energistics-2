@@ -24,6 +24,7 @@ import java.util.List;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
@@ -52,9 +53,9 @@ import appeng.util.ConfigManager;
 public class ToolWirelessTerminal extends AEBasePoweredItem implements IWirelessTermHandler
 {
 
-	public ToolWirelessTerminal()
+	public ToolWirelessTerminal(Item.Properties props)
 	{
-		super( AEConfig.instance().getWirelessTerminalBattery() );
+		super( AEConfig.instance().getWirelessTerminalBattery(), props );
 	}
 
 	@Override

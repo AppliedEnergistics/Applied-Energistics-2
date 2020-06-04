@@ -33,9 +33,9 @@ public class ToolQuartzAxe extends AxeItem
 {
 	private final AEFeature type;
 
-	public ToolQuartzAxe( final AEFeature type )
+	public ToolQuartzAxe( Item.Properties props, final AEFeature type )
 	{
-		super( ItemTier.IRON, 6.0F, -3.1F, ( new Item.Properties() ).group( ItemGroup.TOOLS ) );
+		super( ItemTier.IRON, 6.0F, -3.1F, props );
 		this.type = type;
 	}
 

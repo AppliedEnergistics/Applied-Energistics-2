@@ -11,6 +11,7 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.util.IClientHelper;
 import appeng.core.localization.GuiText;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 
 public class ApiClientHelper implements IClientHelper
@@ -27,10 +28,15 @@ public class ApiClientHelper implements IClientHelper
 
 		if( cellInventory != null )
 		{
-			lines.add( cellInventory.getUsedBytes() + " " + GuiText.Of.getLocal() + ' ' + cellInventory.getTotalBytes() + ' ' + GuiText.BytesUsed.getLocal() );
+			lines.add(new StringTextComponent(cellInventory.getUsedBytes() + " ")
+					.appendSibling(GuiText.Of.textComponent())
+					.appendText(" " + cellInventory.getTotalBytes() + " ")
+					.appendSibling(GuiText.BytesUsed.textComponent()));
 
-			lines.add( cellInventory.getStoredItemTypes() + " " + GuiText.Of.getLocal() + ' ' + cellInventory.getTotalItemTypes() + ' ' + GuiText.Types
-					.getLocal() );
+			lines.add(new StringTextComponent(cellInventory.getStoredItemTypes() + " ")
+					.appendSibling(GuiText.Of.textComponent())
+					.appendText(" " + cellInventory.getTotalItemTypes() + " ")
+					.appendSibling(GuiText.Types.textComponent()));
 		}
 
 		if( handler.isPreformatted() )
@@ -39,11 +45,15 @@ public class ApiClientHelper implements IClientHelper
 
 			if( handler.isFuzzy() )
 			{
-				lines.add( GuiText.Partitioned.getLocal() + " - " + list + ' ' + GuiText.Fuzzy.getLocal() );
+				lines.add( GuiText.Partitioned.textComponent()
+						.appendText(" - " + list + " ")
+						.appendSibling(GuiText.Fuzzy.textComponent()));
 			}
 			else
 			{
-				lines.add( GuiText.Partitioned.getLocal() + " - " + list + ' ' + GuiText.Precise.getLocal() );
+				lines.add( GuiText.Partitioned.textComponent()
+						.appendText(" - " + list + " ")
+						.appendSibling(GuiText.Precise.textComponent()));
 			}
 		}
 

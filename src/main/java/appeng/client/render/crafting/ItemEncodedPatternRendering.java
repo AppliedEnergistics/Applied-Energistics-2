@@ -2,7 +2,6 @@
 package appeng.client.render.crafting;
 
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -21,8 +20,8 @@ public class ItemEncodedPatternRendering extends ItemRenderingCustomizer
 	@OnlyIn( Dist.CLIENT )
 	public void customize( IItemRendering rendering )
 	{
-		rendering.builtInModel( "models/item/builtin/encoded_pattern", new ItemEncodedPatternModel() );
-		rendering.model( new ModelResourceLocation( MODEL, "inventory" ) ).variants( MODEL );
+		// FIXME rendering.builtInModel( "models/item/builtin/encoded_pattern", new ItemEncodedPatternModel() );
+		// FIXME rendering.model( new ModelResourceLocation( MODEL, "inventory" ) ).variants( MODEL );
 	}
 
 }

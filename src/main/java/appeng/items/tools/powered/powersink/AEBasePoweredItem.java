@@ -21,6 +21,7 @@ package appeng.items.tools.powered.powersink;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.function.DoubleSupplier;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemGroup;
@@ -47,14 +48,12 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 {
 	private static final String CURRENT_POWER_NBT_KEY = "internalCurrentPower";
 	private static final String MAX_POWER_NBT_KEY = "internalMaxPower";
-	private final double powerCapacity;
+	private final DoubleSupplier powerCapacity;
 
-	public AEBasePoweredItem( final double powerCapacity )
+	public AEBasePoweredItem(final DoubleSupplier powerCapacity, Properties props )
 	{
-		super(new Properties().maxStackSize( 1 ).maxDamage( 32 ).setNoRepair());
-		//FIXME
-//		this.hasSubtypes = false;
-//		this.setFull3D();
+		super(props);
+// FIXME this.setFull3D();
 
 		this.powerCapacity = powerCapacity;
 	}
@@ -153,7 +152,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 	@Override
 	public double getAEMaxPower( final ItemStack is )
 	{
-		return this.powerCapacity;
+		return this.powerCapacity.getAsDouble();
 	}
 
 	@Override

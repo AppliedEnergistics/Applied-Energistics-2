@@ -62,9 +62,8 @@ public class ToolMemoryCard extends AEBaseItem implements IMemoryCard
 			AEColor.TRANSPARENT,
 			};
 
-	public ToolMemoryCard()
-	{
-		super( new Properties().maxStackSize( 1 ) );
+	public ToolMemoryCard(Properties properties) {
+		super(properties);
 	}
 
 	@Override

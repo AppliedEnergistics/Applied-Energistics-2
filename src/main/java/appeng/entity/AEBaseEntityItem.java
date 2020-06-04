@@ -32,9 +32,9 @@ import net.minecraft.world.World;
 public abstract class AEBaseEntityItem extends ItemEntity
 {
 
-	public AEBaseEntityItem( final World world )
+	public AEBaseEntityItem( EntityType<? extends AEBaseEntityItem> entityType, final World world )
 	{
-		super( EntityType.ITEM, world );
+		super( entityType, world );
 	}
 
 	public AEBaseEntityItem( final World world, final double x, final double y, final double z, final ItemStack stack )

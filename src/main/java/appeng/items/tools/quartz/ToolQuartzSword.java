@@ -33,9 +33,9 @@ public class ToolQuartzSword extends SwordItem
 {
 	private final AEFeature type;
 
-	public ToolQuartzSword( AEFeature type )
+	public ToolQuartzSword( Item.Properties props, AEFeature type )
 	{
-		super( ItemTier.IRON, 3, -2.4F, ( new Item.Properties() ).group( ItemGroup.COMBAT ) );
+		super( ItemTier.IRON, 3, -2.4F, props );
 		this.type = type;
 	}
 

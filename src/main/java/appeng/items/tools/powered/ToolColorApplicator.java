@@ -51,6 +51,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SnowballItem;
 import net.minecraft.nbt.CompoundNBT;
@@ -87,9 +88,9 @@ public class ToolColorApplicator extends AEBasePoweredItem implements IStorageCe
 		}
 	}
 
-	public ToolColorApplicator()
+	public ToolColorApplicator(Item.Properties props)
 	{
-		super( AEConfig.instance().getColorApplicatorBattery() );
+		super( AEConfig.instance().getColorApplicatorBattery(), props );
 	}
 
 	@Override

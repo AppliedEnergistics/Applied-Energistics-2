@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -43,10 +44,9 @@ public final class EntitySingularity extends AEBaseEntityItem
 
 	private static int randTickSeed = 0;
 
-	@Reflected
-	public EntitySingularity( final World w )
+	public EntitySingularity(EntityType<? extends EntitySingularity> entityType, final World w )
 	{
-		super( w );
+		super( entityType, w );
 	}
 
 	public EntitySingularity( final World w, final double x, final double y, final double z, final ItemStack is )

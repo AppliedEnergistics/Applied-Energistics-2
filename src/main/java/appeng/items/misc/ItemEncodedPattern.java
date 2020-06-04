@@ -56,9 +56,8 @@ public class ItemEncodedPattern extends AEBaseItem implements ICraftingPatternIt
 	// rather simple client side caching.
 	private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<>();
 
-	public ItemEncodedPattern()
-	{
-		super(new Item.Properties().maxStackSize(1));
+	public ItemEncodedPattern(Properties properties) {
+		super(properties);
 	}
 
 	@Override

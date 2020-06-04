@@ -88,10 +88,10 @@ public final class ApiParts implements IParts
 
 	public ApiParts( FeatureFactory registry, PartModels partModels )
 	{
-		final ItemPart itemPart = new ItemPart();
-		registry.item( "part", () -> itemPart )
-				.rendering( new ItemPartRendering( partModels, itemPart ) )
+		IItemDefinition itemPartDef = registry.item( "part", ItemPart::new )
+				.rendering( new ItemPartRendering( partModels ) )
 				.build();
+		final ItemPart itemPart = (ItemPart) itemPartDef.item();
 
 		// Register all part models
 		for( PartType partType : PartType.values() )
@@ -126,9 +126,9 @@ public final class ApiParts implements IParts
 		this.fluidFormationPlane = new DamagedItemDefinition( "part.plane.fluid_formation", itemPart.createPart( PartType.FLUID_FORMATION_PLANE ) );
 		this.p2PTunnelME = new DamagedItemDefinition( "part.tunnel.me", itemPart.createPart( PartType.P2P_TUNNEL_ME ) );
 		this.p2PTunnelRedstone = new DamagedItemDefinition( "part.tunnel.redstone", itemPart.createPart( PartType.P2P_TUNNEL_REDSTONE ) );
-		this.p2PTunnelItems = new DamagedItemDefinition( "part.tunnel.item", itemPart.createPart( PartType.P2P_TUNNEL_ITEMS ) );
-		this.p2PTunnelFluids = new DamagedItemDefinition( "part.tunnel.fluid", itemPart.createPart( PartType.P2P_TUNNEL_FLUIDS ) );
-		this.p2PTunnelEU = new DamagedItemDefinition( "part.tunnel.eu", itemPart.createPart( PartType.P2P_TUNNEL_IC2 ) );
+		this.p2PTunnelItems = null; // FIXME new DamagedItemDefinition( "part.tunnel.item", itemPart.createPart( PartType.P2P_TUNNEL_ITEMS ) );
+		this.p2PTunnelFluids = null; // FIXME new DamagedItemDefinition( "part.tunnel.fluid", itemPart.createPart( PartType.P2P_TUNNEL_FLUIDS ) );
+		this.p2PTunnelEU = null; // FIXME new DamagedItemDefinition( "part.tunnel.eu", itemPart.createPart( PartType.P2P_TUNNEL_IC2 ) );
 		this.p2PTunnelFE = new DamagedItemDefinition( "part.tunnel.fe", itemPart.createPart( PartType.P2P_TUNNEL_FE ) );
 		this.p2PTunnelLight = new DamagedItemDefinition( "part.tunnel.light", itemPart.createPart( PartType.P2P_TUNNEL_LIGHT ) );
 		// this.p2PTunnelOpenComputers = new DamagedItemDefinition( itemMultiPart.createPart(

@@ -24,6 +24,7 @@ import java.util.Set;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
@@ -60,9 +61,9 @@ import appeng.util.Platform;
 
 public class ToolPortableCell extends AEBasePoweredItem implements IStorageCell<IAEItemStack>, IGuiItem, IItemGroup
 {
-	public ToolPortableCell()
+	public ToolPortableCell(Item.Properties props)
 	{
-		super( AEConfig.instance().getPortableCellBattery() );
+		super( AEConfig.instance().getPortableCellBattery(), props );
 	}
 
 	@Override

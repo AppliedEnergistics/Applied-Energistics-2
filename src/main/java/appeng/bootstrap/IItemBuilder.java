@@ -19,6 +19,7 @@
 package appeng.bootstrap;
 
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -44,7 +45,9 @@ public interface IItemBuilder
 
 	IItemBuilder itemGroup( ItemGroup tab );
 
-//FIXME	IItemBuilder rendering( ItemRenderingCustomizer callback );
+	IItemBuilder props(Consumer<Item.Properties> customizer);
+
+	IItemBuilder rendering( ItemRenderingCustomizer callback );
 
 	/**
 	 * Registers a custom dispenser behavior for this item.

@@ -21,6 +21,7 @@ package appeng.entity;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -43,7 +44,11 @@ public final class EntityGrowingCrystal extends ItemEntity
 
 	private int progress_1000 = 0;
 
-	public EntityGrowingCrystal( final World w, final double x, final double y, final double z, final ItemStack is )
+	public EntityGrowingCrystal(EntityType<? extends EntityGrowingCrystal> type, World world) {
+		super(type, world);
+	}
+
+	public EntityGrowingCrystal(final World w, final double x, final double y, final double z, final ItemStack is )
 	{
 		super( w, x, y, z, is );
 		this.setNoDespawn();

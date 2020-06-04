@@ -33,9 +33,9 @@ public class ToolQuartzHoe extends HoeItem
 {
 	private final AEFeature type;
 
-	public ToolQuartzHoe( final AEFeature type )
+	public ToolQuartzHoe( Item.Properties props, final AEFeature type )
 	{
-		super( ItemTier.IRON, -1.0F, ( new Item.Properties() ).group( ItemGroup.TOOLS ) );
+		super( ItemTier.IRON, -1.0F, props);
 		this.type = type;
 	}
 

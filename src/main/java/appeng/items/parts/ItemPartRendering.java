@@ -45,12 +45,9 @@ public class ItemPartRendering extends ItemRenderingCustomizer
 
 	private final PartModels partModels;
 
-	private final ItemPart item;
-
-	public ItemPartRendering( PartModels partModels, ItemPart item )
+	public ItemPartRendering( PartModels partModels )
 	{
 		this.partModels = partModels;
-		this.item = item;
 	}
 
 	@Override
@@ -137,10 +134,10 @@ public class ItemPartRendering extends ItemRenderingCustomizer
 		this.partModels.registerModels( partResourceLocs );
 	}
 
-	private ModelResourceLocation getItemMeshDefinition( ItemStack is )
-	{
-		PartType partType = this.item.getTypeByStack( is );
-		int variant = this.item.variantOf( is.getDamage() );
-		return partType.getItemModels().get( variant );
-	}
+	// FIXME private ModelResourceLocation getItemMeshDefinition( ItemStack is )
+	// FIXME {
+	// FIXME 	PartType partType = this.item.getTypeByStack( is );
+	// FIXME 	int variant = this.item.variantOf( is.getDamage() );
+	// FIXME 	return partType.getItemModels().get( variant );
+	// FIXME }
 }

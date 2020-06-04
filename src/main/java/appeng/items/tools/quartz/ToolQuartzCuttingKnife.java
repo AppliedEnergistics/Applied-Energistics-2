@@ -42,13 +42,9 @@ public class ToolQuartzCuttingKnife extends AEBaseItem implements IGuiItem
 {
 	private final AEFeature type;
 
-	public ToolQuartzCuttingKnife( final AEFeature type )
+	public ToolQuartzCuttingKnife( Item.Properties props, final AEFeature type )
 	{
-		super(new Item.Properties()
-				.group(ItemGroup.TOOLS)
-				.maxStackSize(1)
-				.maxDamage(50)
-				.setNoRepair());
+		super(props);
 		this.type = type;
 	}
 

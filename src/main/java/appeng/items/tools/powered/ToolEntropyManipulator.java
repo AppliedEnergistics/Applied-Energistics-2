@@ -31,6 +31,7 @@ import net.minecraft.block.TNTBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ActionResult;
@@ -60,9 +61,9 @@ public class ToolEntropyManipulator extends AEBasePoweredItem implements IBlockT
 	private final Map<InWorldToolOperationIngredient, InWorldToolOperationResult> heatUp;
 	private final Map<InWorldToolOperationIngredient, InWorldToolOperationResult> coolDown;
 
-	public ToolEntropyManipulator()
+	public ToolEntropyManipulator(Item.Properties props)
 	{
-		super( AEConfig.instance().getEntropyManipulatorBattery() );
+		super( AEConfig.instance().getEntropyManipulatorBattery(), props );
 
 		this.heatUp = new HashMap<>();
 		this.coolDown = new HashMap<>();

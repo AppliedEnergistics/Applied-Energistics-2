@@ -33,9 +33,9 @@ public class ToolQuartzSpade extends ShovelItem
 {
 	private final AEFeature type;
 
-	public ToolQuartzSpade( final AEFeature type )
+	public ToolQuartzSpade( Item.Properties props, final AEFeature type )
 	{
-		super( ItemTier.IRON, 1.5F, -3.0F, ( new Item.Properties() ).group( ItemGroup.TOOLS ) );
+		super( ItemTier.IRON, 1.5F, -3.0F, props );
 		this.type = type;
 	}
 

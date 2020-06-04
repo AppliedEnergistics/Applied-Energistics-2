@@ -58,9 +58,8 @@ import appeng.util.Platform;
 public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench
 {
 
-	public ToolNetworkTool()
-	{
-		super(new Item.Properties().maxStackSize( 1 ).addToolType( ToolType.get("wrench"), 0 ));
+	public ToolNetworkTool(Properties properties) {
+		super(properties);
 	}
 
 	@Override

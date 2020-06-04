@@ -35,6 +35,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
+import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -68,7 +69,7 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost
 	public static final String PACKET_CHANNEL = "AE";
 
 	// Config instance
-	private static AEConfig instance;
+	private static final AEConfig instance = new AEConfig();
 
 	private final IConfigManager settings = new ConfigManager( this );
 
@@ -138,9 +139,6 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost
 	@SubscribeEvent
 	public static void onModConfigEvent(final ModConfig.ModConfigEvent configEvent) {
 		if (configEvent.getConfig().getSpec() == CLIENT_SPEC) {
-			if (instance == null) {
-				instance = new AEConfig();
-			}
 			instance.syncConfig(CLIENT);
 		}
 	}
@@ -529,34 +527,34 @@ public final class AEConfig implements IConfigurableObject, IConfigManagerHost
 		return this.oreDoublePercentage;
 	}
 
-	public int getWirelessTerminalBattery()
+	public DoubleSupplier getWirelessTerminalBattery()
 	{
-		return this.wirelessTerminalBattery;
+		return () -> this.wirelessTerminalBattery;
 	}
 
-	public int getEntropyManipulatorBattery()
+	public DoubleSupplier getEntropyManipulatorBattery()
 	{
-		return this.entropyManipulatorBattery;
+		return () -> this.entropyManipulatorBattery;
 	}
 
-	public int getMatterCannonBattery()
+	public DoubleSupplier getMatterCannonBattery()
 	{
-		return this.matterCannonBattery;
+		return () -> this.matterCannonBattery;
 	}
 
-	public int getPortableCellBattery()
+	public DoubleSupplier getPortableCellBattery()
 	{
-		return this.portableCellBattery;
+		return () -> this.portableCellBattery;
 	}
 
-	public int getColorApplicatorBattery()
+	public DoubleSupplier getColorApplicatorBattery()
 	{
-		return this.colorApplicatorBattery;
+		return () -> this.colorApplicatorBattery;
 	}
 
-	public int getChargedStaffBattery()
+	public DoubleSupplier getChargedStaffBattery()
 	{
-		return this.chargedStaffBattery;
+		return () -> this.chargedStaffBattery;
 	}
 
 	public float getSpawnChargedChance()

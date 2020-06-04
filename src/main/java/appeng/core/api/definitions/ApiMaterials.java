@@ -22,8 +22,8 @@ package appeng.core.api.definitions;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -35,7 +35,6 @@ import appeng.bootstrap.ItemRenderingCustomizer;
 import appeng.bootstrap.components.IEntityRegistrationComponent;
 import appeng.core.features.DamagedItemDefinition;
 import appeng.entity.EntityChargedQuartz;
-import appeng.entity.EntityIds;
 import appeng.entity.EntitySingularity;
 import appeng.items.materials.ItemMaterial;
 import appeng.items.materials.MaterialType;
@@ -124,15 +123,14 @@ public final class ApiMaterials implements IMaterials
 
 	public ApiMaterials( FeatureFactory registry )
 	{
-		final ItemMaterial materials = new ItemMaterial();
-		registry.item( "material", () -> materials )
+		IItemDefinition materialDef = registry.item( "material", ItemMaterial::new )
 				.rendering( new ItemRenderingCustomizer()
 				{
 					@Override
 					@OnlyIn( Dist.CLIENT )
 					public void customize( IItemRendering rendering )
 					{
-						rendering.meshDefinition( is -> materials.getTypeByStack( is ).getModel() );
+						// FIXME rendering.meshDefinition( is -> materials.getTypeByStack( is ).getModel() );
 						// Register a resource location for every material type
 						rendering.variants( Arrays.stream( MaterialType.values() )
 								.map( MaterialType::getModel )
@@ -141,21 +139,23 @@ public final class ApiMaterials implements IMaterials
 				} )
 				.bootstrap( item -> (IEntityRegistrationComponent) r ->
 				{
-					r.register( EntityEntryBuilder.create()
-							.entity( EntitySingularity.class )
-							.id( new ResourceLocation( "appliedenergistics2", EntitySingularity.class.getName() ), EntityIds.get( EntitySingularity.class ) )
-							.name( EntitySingularity.class.getSimpleName() )
-							.tracker( 16, 4, true )
-							.build() );
-					r.register( EntityEntryBuilder.create()
-							.entity( EntityChargedQuartz.class )
-							.id( new ResourceLocation( "appliedenergistics2", EntityChargedQuartz.class.getName() ),
-									EntityIds.get( EntityChargedQuartz.class ) )
-							.name( EntityChargedQuartz.class.getSimpleName() )
-							.tracker( 16, 4, true )
-							.build() );
+					r.register( EntityType.Builder.<EntitySingularity>create(EntitySingularity::new, EntityClassification.MISC)
+							.setTrackingRange(16)
+							.setUpdateInterval(4)
+							.setShouldReceiveVelocityUpdates(true)
+							.build("appliedenergistics2:singularity")
+							.setRegistryName("appliedenergistics2:singularity")
+					);
+					r.register( EntityType.Builder.<EntityChargedQuartz>create(EntityChargedQuartz::new, EntityClassification.MISC)
+							.setTrackingRange(16)
+							.setUpdateInterval(4)
+							.setShouldReceiveVelocityUpdates(true)
+							.build("appliedenergistics2:charged_quartz")
+							.setRegistryName("appliedenergistics2:charged_quartz")
+					);
 				} )
 				.build();
+		final ItemMaterial materials = (ItemMaterial) materialDef.item();
 
 		this.cell2SpatialPart = new DamagedItemDefinition( "material.cell.spatial.2", materials.createMaterial( MaterialType.CELL2_SPATIAL_PART ) );
 		this.cell16SpatialPart = new DamagedItemDefinition( "material.cell.spatial.16", materials.createMaterial( MaterialType.CELL16_SPATIAL_PART ) );

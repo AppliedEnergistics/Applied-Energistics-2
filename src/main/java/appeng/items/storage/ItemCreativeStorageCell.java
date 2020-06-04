@@ -46,7 +46,6 @@ public class ItemCreativeStorageCell extends AEBaseItem implements ICellWorkbenc
 	public ItemCreativeStorageCell(Properties props)
 	{
 		super(props);
-		// FIXME this.setMaxStackSize( 1 );
 	}
 
 	@Override
