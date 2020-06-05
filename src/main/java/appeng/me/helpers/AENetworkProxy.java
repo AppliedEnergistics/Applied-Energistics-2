@@ -166,7 +166,7 @@ public class AENetworkProxy implements IGridBlock
 		else if( this.node != null && this.owner != null )
 		{
 			final GameProfile profile = this.owner.getGameProfile();
-			final int playerID = WorldData.instance().playerData().getPlayerID( profile );
+			final int playerID = WorldData.instance().playerData().getMePlayerId( profile );
 
 			this.node.setPlayerID( playerID );
 			this.owner = null;

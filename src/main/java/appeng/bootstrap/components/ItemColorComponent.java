@@ -39,7 +39,7 @@ public class ItemColorComponent implements IInitComponent
 	}
 
 	@Override
-	public void initialize( Dist dist )
+	public void initialize()
 	{
 		Minecraft.getInstance().getItemColors().register( this.itemColor, this.item );
 	}

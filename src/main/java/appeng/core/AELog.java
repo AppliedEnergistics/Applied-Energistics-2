@@ -22,6 +22,7 @@ package appeng.core;
 import javax.annotation.Nonnull;
 
 import appeng.tile.AEBaseTile;
+import appeng.util.Platform;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,8 +57,7 @@ public final class AELog
 	 */
 	private static Logger getLogger()
 	{
-// FIXME		return Platform.isServer() ? SERVER : CLIENT;
-		throw new IllegalStateException();
+		return Platform.isServer() ? SERVER : CLIENT;
 	}
 
 	/**

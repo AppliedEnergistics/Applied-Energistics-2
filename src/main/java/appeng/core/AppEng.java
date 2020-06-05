@@ -24,12 +24,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import appeng.bootstrap.components.IClientSetupComponent;
+import appeng.bootstrap.components.IInitComponent;
 import appeng.client.ClientHelper;
 import appeng.client.render.model.AutoRotatingModel;
 import appeng.client.render.model.AutoRotatingModelLoader;
 import appeng.client.render.model.GlassModelLoader;
 import appeng.client.render.model.SkyCompassModelLoader;
 import appeng.core.stats.AdvancementTriggers;
+import appeng.core.worlddata.WorldData;
+import appeng.hooks.TickHandler;
+import appeng.parts.PartPlacement;
 import appeng.server.ServerHelper;
 import com.google.gson.Gson;
 import net.minecraft.block.Block;
@@ -45,6 +49,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.CrashReportExtender;
 import net.minecraftforge.fml.DistExecutor;
@@ -58,6 +63,10 @@ import appeng.core.crash.ModCrashEnhancement;
 import appeng.services.export.ExportConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import javax.annotation.Nonnull;
@@ -125,9 +134,22 @@ public final class AppEng
 		// Register client-only events
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(this::clientSetup));
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> modEventBus.addListener(registration::modelRegistryEvent));
+
+		MinecraftForge.EVENT_BUS.addListener( TickHandler.INSTANCE::unloadWorld );
+		MinecraftForge.EVENT_BUS.addListener( TickHandler.INSTANCE::onTick );
+		MinecraftForge.EVENT_BUS.addListener( this::serverAboutToStart );
+		MinecraftForge.EVENT_BUS.addListener( this::serverStopped );
+		MinecraftForge.EVENT_BUS.addListener( this::serverStopping );
+
+		MinecraftForge.EVENT_BUS.register( new PartPlacement() );
 	}
 
 	private void commonSetup(FMLCommonSetupEvent event) {
+
+		ApiDefinitions definitions = Api.INSTANCE.definitions();
+		definitions.getRegistry().getBootstrapComponents( IInitComponent.class ).forEachRemaining(IInitComponent::initialize);
+
+		Registration.setupInternalRegistries();
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -283,26 +305,23 @@ public final class AppEng
 //
 //		imcHandler.handleIMCEvent( event );
 //	}
-//
-//	@EventHandler
-//	private void serverAboutToStart( final FMLServerAboutToStartEvent evt )
-//	{
-//		WorldData.onServerAboutToStart( evt.getServer() );
-//	}
-//
-//	@EventHandler
-//	private void serverStopping( final FMLServerStoppingEvent event )
-//	{
-//		WorldData.instance().onServerStopping();
-//	}
-//
-//	@EventHandler
-//	private void serverStopped( final FMLServerStoppedEvent event )
-//	{
-//		WorldData.instance().onServerStoppped();
-//		TickHandler.INSTANCE.shutdown();
-//	}
-//
+
+	private void serverAboutToStart( final FMLServerStartedEvent evt )
+	{
+		WorldData.onServerAboutToStart( evt.getServer() );
+	}
+
+	private void serverStopping( final FMLServerStoppingEvent event )
+	{
+		WorldData.instance().onServerStopping();
+	}
+
+	private void serverStopped( final FMLServerStoppedEvent event )
+	{
+		WorldData.instance().onServerStoppped();
+		TickHandler.INSTANCE.shutdown();
+	}
+
 //	@EventHandler
 //	private void serverStarting( final FMLServerStartingEvent evt )
 //	{

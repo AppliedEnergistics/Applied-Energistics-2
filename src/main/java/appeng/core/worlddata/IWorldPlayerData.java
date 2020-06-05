@@ -25,6 +25,8 @@ import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.player.PlayerEntity;
 
+import java.util.UUID;
+
 
 /**
  * @author thatsIch
@@ -33,8 +35,13 @@ import net.minecraft.entity.player.PlayerEntity;
  */
 public interface IWorldPlayerData
 {
+	/**
+	 * Gets the UUID of the Minecraft profile associated with the given ME player id.
+	 * @param playerID An ME player id.
+	 * @return Null if the ME player id is unknown, otherwise the unique id of the Minecraft profile it originates from.
+	 */
 	@Nullable
-	PlayerEntity getPlayerFromID( int playerID );
+	UUID getProfileId(int playerID );
 
-	int getPlayerID( GameProfile profile );
+	int getMePlayerId(GameProfile profile );
 }

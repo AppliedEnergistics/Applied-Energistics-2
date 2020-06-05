@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import appeng.core.Api;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -237,7 +238,7 @@ public final class MeteoritePlacer
 
 						if( Math.random() > PRESSES_SPAWN_CHANCE )
 						{
-							r = WorldData.instance().storageData().getNextOrderedValue( "presses" );
+							r = WorldData.instance().storageData().getNextOrderedValue( "presses", 0 );
 						}
 						else
 						{

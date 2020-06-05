@@ -19,19 +19,19 @@
 package appeng.core.worlddata;
 
 
-import java.util.Optional;
-import java.util.UUID;
+import appeng.core.AELog;
+import appeng.core.AppEng;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.mojang.authlib.GameProfile;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.storage.WorldSavedData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.google.common.base.Preconditions;
-import com.mojang.authlib.GameProfile;
-
-import net.minecraft.entity.player.PlayerEntity;
-
-import appeng.core.AppEng;
+import java.util.Map;
+import java.util.UUID;
 
 
 /**
@@ -43,97 +43,83 @@ import appeng.core.AppEng;
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-final class PlayerData implements IWorldPlayerData, IOnWorldStartable, IOnWorldStoppable
-{
-	private static final String LAST_PLAYER_CATEGORY = "Counters";
-	private static final String LAST_PLAYER_KEY = "lastPlayer";
-	private static final int LAST_PLAYER_DEFAULT = 0;
+final class PlayerData extends WorldSavedData implements IWorldPlayerData {
 
-	private final CommentedFileConfig config;
-	// FIXME  private final IWorldPlayerMapping playerMapping;
+    public static final String NAME = AppEng.MOD_ID + "_players";
+    public static final String TAG_PLAYER_IDS = "playerIds";
+    public static final String TAG_PROFILE_IDS = "profileIds";
 
-	private int lastPlayerID;
+    private final BiMap<UUID, Integer> mapping = HashBiMap.create();
 
-	public PlayerData( @Nonnull final CommentedFileConfig configFile )
-	{
-		Preconditions.checkNotNull( configFile );
+    // Caches the highest assigned player id + 1
+    private int nextPlayerId = 0;
 
-		this.config = configFile;
+    public PlayerData() {
+        super(NAME);
+    }
 
-		// FIXME  this.playerMapping = new PlayerMapping( config, "players." );
-	}
+    @Nullable
+    @Override
+    public UUID getProfileId(final int playerId) {
+        return this.mapping.inverse().get(playerId);
+    }
 
-	@Nullable
-	@Override
-	public PlayerEntity getPlayerFromID( final int playerID )
-	{
-// FIXME  		final Optional<UUID> maybe = this.playerMapping.get( playerID );
-// FIXME
-// FIXME  		if( maybe.isPresent() )
-// FIXME  		{
-// FIXME  			final UUID uuid = maybe.get();
-// FIXME  			for( final PlayerEntity player : AppEng.proxy.getPlayers() )
-// FIXME  			{
-// FIXME  				if( player.getUniqueID().equals( uuid ) )
-// FIXME  				{
-// FIXME  					return player;
-// FIXME  				}
-// FIXME  			}
-// FIXME  		}
+    @Override
+    public int getMePlayerId(@Nonnull final GameProfile profile) {
+        Preconditions.checkNotNull(profile);
 
-		return null;
-	}
+        final UUID uuid = profile.getId();
+        Integer playerId = mapping.get(uuid);
 
-	@Override
-	public int getPlayerID( @Nonnull final GameProfile profile )
-	{
-		return -1;
-// FIXME		Preconditions.checkNotNull( profile );
-// FIXME		Preconditions.checkNotNull( this.config.getCategory( "players" ) );
-// FIXME		Preconditions.checkState( profile.isComplete() );
-// FIXME
-// FIXME		final ConfigCategory players = this.config.getCategory( "players" );
-// FIXME		final String uuid = profile.getId().toString();
-// FIXME		final Property maybePlayerID = players.get( uuid );
-// FIXME
-// FIXME		if( maybePlayerID != null && maybePlayerID.isIntValue() )
-// FIXME		{
-// FIXME			return maybePlayerID.getInt();
-// FIXME		}
-// FIXME		else
-// FIXME		{
-// FIXME			final int newPlayerID = this.nextPlayer();
-// FIXME			final Property newPlayer = new Property( uuid, String.valueOf( newPlayerID ), Property.Type.INTEGER );
-// FIXME			players.put( uuid, newPlayer );
-// FIXME			this.playerMapping.put( newPlayerID, profile.getId() ); // add to reverse map
-// FIXME			this.config.save();
-// FIXME
-// FIXME			return newPlayerID;
-// FIXME		}
-	}
+        if (playerId == null) {
+            playerId = this.nextPlayerId++;
+            this.mapping.put(profile.getId(), playerId);
+            markDirty();
 
-	private int nextPlayer()
-	{
-// FIXME		final int r = this.lastPlayerID;
-// FIXME		this.lastPlayerID++;
-// FIXME		this.config.get( LAST_PLAYER_CATEGORY, LAST_PLAYER_KEY, this.lastPlayerID ).set( this.lastPlayerID );
-// FIXME		return r;
-		return 0;
-	}
+            AELog.info("Assigning ME player id {} to Minecraft profile {} ({})", playerId, profile.getId(), profile.getName());
+        }
 
-	@Override
-	public void onWorldStart()
-	{
-		// FIXME this.lastPlayerID = this.config.get( LAST_PLAYER_CATEGORY, LAST_PLAYER_KEY, LAST_PLAYER_DEFAULT ).getInt( LAST_PLAYER_DEFAULT );
+        return playerId;
+    }
 
-		this.config.save();
-	}
+    @Override
+    public void read(CompoundNBT nbt) {
+        int[] playerIds = nbt.getIntArray(TAG_PLAYER_IDS);
+        long[] profileIds = nbt.getLongArray(TAG_PROFILE_IDS);
 
-	@Override
-	public void onWorldStop()
-	{
-		this.config.save();
+        if (playerIds.length * 2 != profileIds.length) {
+            throw new IllegalStateException("Plaer ID mapping is corrupted. "
+                    + playerIds.length + " player IDs vs. " + profileIds.length
+                    + " profile IDs (latter must be 2 * the former)");
+        }
 
-		this.lastPlayerID = 0;
-	}
+        this.mapping.clear();
+        int highestPlayerId = -1;
+        for (int i = 0; i < playerIds.length; i++) {
+            int playerId = playerIds[i];
+            UUID profileId = new UUID(profileIds[i * 2], profileIds[i * 2 + 1]);
+            highestPlayerId = Math.max(playerId, highestPlayerId);
+            mapping.put(profileId, playerId);
+            AELog.debug("AE player ID {} is assigned to profile ID {}", playerId, profileId);
+        }
+        this.nextPlayerId = highestPlayerId + 1;
+    }
+
+    @Override
+    public CompoundNBT write(CompoundNBT compound) {
+        int index = 0;
+        int[] playerIds = new int[mapping.size()];
+        long[] profileIds = new long[mapping.size() * 2];
+        for (Map.Entry<UUID, Integer> entry : mapping.entrySet()) {
+            profileIds[index * 2] = entry.getKey().getMostSignificantBits();
+            profileIds[index * 2 + 1] = entry.getKey().getLeastSignificantBits();
+            playerIds[index++] = entry.getValue();
+        }
+
+        compound.putIntArray(TAG_PLAYER_IDS, playerIds);
+        compound.putLongArray(TAG_PROFILE_IDS, profileIds);
+
+        return compound;
+    }
+
 }

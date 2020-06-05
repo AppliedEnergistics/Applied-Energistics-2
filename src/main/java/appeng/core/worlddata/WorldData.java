@@ -19,29 +19,13 @@
 package appeng.core.worlddata;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.util.List;
-import java.util.concurrent.ThreadFactory;
+import com.google.common.base.Preconditions;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.electronwill.nightconfig.toml.TomlFormat;
-import com.electronwill.nightconfig.toml.TomlParser;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.dimension.Dimension;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.DimensionManager;
-
-import appeng.core.AEConfig;
-import appeng.services.CompassService;
-import appeng.services.compass.CompassThreadFactory;
 
 
 /**
@@ -57,11 +41,10 @@ import appeng.services.compass.CompassThreadFactory;
  */
 public final class WorldData implements IWorldData
 {
-	private static final String AE2_DIRECTORY_NAME = "AE2";
-	private static final String SETTING_FILE_NAME = "settings.cfg";
-	private static final String SPAWNDATA_DIR_NAME = "spawndata";
-	private static final String COMPASS_DIR_NAME = "compass";
 
+	/**
+	 * Is null while no MinecraftServer exists.
+	 */
 	@Nullable
 	private static IWorldData instance;
 
@@ -70,44 +53,29 @@ public final class WorldData implements IWorldData
 	private final IWorldCompassData compassData;
 	private final IWorldSpawnData spawnData;
 
-	private final List<IOnWorldStartable> startables;
-	private final List<IOnWorldStoppable> stoppables;
-
-	private final File ae2directory;
-	private final File spawnDirectory;
-	private final File compassDirectory;
-
-	private final CommentedFileConfig sharedConfig;
-
-	private WorldData( @Nonnull final File worldDirectory )
+	private WorldData( @Nonnull final MinecraftServer server )
 	{
-		Preconditions.checkNotNull( worldDirectory );
-		Preconditions.checkArgument( worldDirectory.isDirectory() );
+		Preconditions.checkNotNull( server );
 
-		this.ae2directory = new File( worldDirectory, AE2_DIRECTORY_NAME );
-		this.spawnDirectory = new File( this.ae2directory, SPAWNDATA_DIR_NAME );
-		this.compassDirectory = new File( this.ae2directory, COMPASS_DIR_NAME );
+		// Attach shared data to the server's overworld dimension
+		ServerWorld overworld = server.getWorld(DimensionType.OVERWORLD);
+		if (overworld == null) {
+			throw new IllegalStateException("The server doesn't have an Overworld dimension we could store our data on!");
+		}
 
-		final File settingsFile = new File( this.ae2directory, SETTING_FILE_NAME );
-		this.sharedConfig = CommentedFileConfig.of( settingsFile, TomlFormat.instance() );
-		this.sharedConfig.load();
+		final PlayerData playerData = overworld.getSavedData().getOrCreate(PlayerData::new, PlayerData.NAME);
+		final StorageData storageData = overworld.getSavedData().getOrCreate(StorageData::new, StorageData.NAME);
 
-		final PlayerData playerData = new PlayerData( this.sharedConfig );
-		final StorageData storageData = new StorageData( this.sharedConfig );
-
-		final ThreadFactory compassThreadFactory = new CompassThreadFactory();
-		final CompassService compassService = new CompassService( this.compassDirectory, compassThreadFactory );
-		final CompassData compassData = new CompassData( this.compassDirectory, compassService );
-
-		final IWorldSpawnData spawnData = new SpawnData( this.spawnDirectory );
+//		final ThreadFactory compassThreadFactory = new CompassThreadFactory();
+//		final CompassService compassService = new CompassService( this.compassDirectory, compassThreadFactory );
+//		final CompassData compassData = new CompassData( this.compassDirectory, compassService );
+//
+//		final IWorldSpawnData spawnData = new SpawnData( this.spawnDirectory );
 
 		this.playerData = playerData;
 		this.storageData = storageData;
-		this.compassData = compassData;
-		this.spawnData = spawnData;
-
-		this.startables = Lists.<IOnWorldStartable>newArrayList( playerData, storageData );
-		this.stoppables = Lists.<IOnWorldStoppable>newArrayList( playerData, storageData, compassData );
+		this.compassData = null; // compassData;
+		this.spawnData = null; // spawnData;
 	}
 
 	/**
@@ -131,65 +99,19 @@ public final class WorldData implements IWorldData
 	 */
 	public static void onServerAboutToStart( MinecraftServer server )
 	{
-		// FIXME: Possibly replace this with WorldData
-		File worldDirectory = null;
-		ServerWorld overworld = DimensionManager.getWorld(server, DimensionType.OVERWORLD, false, false);
-		if (overworld != null) {
-			worldDirectory = overworld.getSaveHandler().getWorldDirectory();
-		}
-		if( worldDirectory == null )
-		{
-			worldDirectory = server.getActiveAnvilConverter().getSaveLoader( server.getFolderName(), server ).getWorldDirectory();
-		}
-		final WorldData newInstance = new WorldData( worldDirectory );
-
-		instance = newInstance;
-		newInstance.onServerStarting();
-	}
-
-	private void onServerStarting()
-	{
-		// check if ae2 folder already exists, else create
-		if( !this.ae2directory.isDirectory() && !this.ae2directory.mkdir() )
-		{
-			throw new IllegalStateException( "Failed to create " + this.ae2directory.getAbsolutePath() );
-		}
-
-		// check if compass folder already exists, else create
-		if( !this.compassDirectory.isDirectory() && !this.compassDirectory.mkdir() )
-		{
-			throw new IllegalStateException( "Failed to create " + this.compassDirectory.getAbsolutePath() );
-		}
-
-		// check if spawn data dir already exists, else create
-		if( !this.spawnDirectory.isDirectory() && !this.spawnDirectory.mkdir() )
-		{
-			throw new IllegalStateException( "Failed to create " + this.spawnDirectory.getAbsolutePath() );
-		}
-
-		for( final IOnWorldStartable startable : this.startables )
-		{
-			startable.onWorldStart();
-		}
-
-		this.startables.clear();
+		instance = new WorldData(server);
 	}
 
 	@Override
 	public void onServerStopping()
 	{
-		for( final IOnWorldStoppable stoppable : this.stoppables )
-		{
-			stoppable.onWorldStop();
-		}
+		compassData.service().kill();
 	}
 
 	@Override
 	public void onServerStoppped()
 	{
 		Preconditions.checkNotNull( instance );
-
-		this.stoppables.clear();
 		instance = null;
 	}
 

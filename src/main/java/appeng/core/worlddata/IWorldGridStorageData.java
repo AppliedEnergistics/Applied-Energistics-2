@@ -32,15 +32,12 @@ import appeng.me.GridStorage;
  */
 public interface IWorldGridStorageData
 {
-	@Nullable
 	GridStorage getGridStorage( long storageID );
 
 	@Nonnull
 	GridStorage getNewGridStorage();
 
-	long nextGridStorage();
-
 	void destroyGridStorage( long id );
 
-	int getNextOrderedValue( String name );
+	int getNextOrderedValue( String name, int firstValue );
 }

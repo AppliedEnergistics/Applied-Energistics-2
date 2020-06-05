@@ -156,7 +156,7 @@ public class SecurityCache implements ISecurityGrid
 		Preconditions.checkNotNull( perm );
 
 		final GameProfile profile = player.getGameProfile();
-		final int playerID = WorldData.instance().playerData().getPlayerID( profile );
+		final int playerID = WorldData.instance().playerData().getMePlayerId( profile );
 
 		return this.hasPermission( playerID, perm );
 	}

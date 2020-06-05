@@ -19,20 +19,15 @@
 package appeng.core.worlddata;
 
 
-import java.lang.ref.WeakReference;
-import java.util.Map;
-import java.util.WeakHashMap;
+import appeng.core.AELog;
+import appeng.core.AppEng;
+import appeng.me.GridStorage;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.storage.WorldSavedData;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.electronwill.nightconfig.core.CommentedConfig;
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.google.common.base.Preconditions;
-
-import appeng.core.AELog;
-import appeng.me.GridStorage;
-import appeng.me.GridStorageSearch;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -40,24 +35,26 @@ import appeng.me.GridStorageSearch;
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOnWorldStoppable
+final class StorageData extends WorldSavedData implements IWorldGridStorageData
 {
-	private static final String LAST_GRID_STORAGE_CATEGORY = "Counters";
-	private static final String LAST_GRID_STORAGE_KEY = "lastGridStorage";
-	private static final int LAST_GRID_STORAGE_DEFAULT = 0;
 
-	private static final String GRID_STORAGE_CATEGORY = "gridstorage";
+	public static final String NAME = AppEng.MOD_ID + "_storage";
 
-	private final Map<GridStorageSearch, WeakReference<GridStorageSearch>> loadedStorage = new WeakHashMap<>( 10 );
-	private final CommentedFileConfig config;
+	private static final String TAG_NEXT_ID = "nextId";
+	public static final String TAG_ORDERED_VALUES = "orderedValues";
+	public static final String TAG_STORAGE = "storage";
 
-	private long lastGridStorage;
+	private final Map<Long, GridStorage> storage = new HashMap<>();
 
-	public StorageData( @Nonnull final CommentedFileConfig settingsFile )
-	{
-		Preconditions.checkNotNull( settingsFile );
+	// id that will be assigned to the next new grid, this needs to be persisted
+	// because grids can be removed and we do not want to re-assign the same id twice
+	private long nextGridId;
 
-		this.config = settingsFile;
+	// Stores once-per-save values. I.e. which storage press to drop next in a spawned meteor
+	private final Map<String, Integer> orderedValues = new HashMap<>();
+
+	public StorageData() {
+		super(NAME);
 	}
 
 	/**
@@ -67,25 +64,18 @@ final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOn
 	 *
 	 * @return corresponding grid storage
 	 */
-	@Nullable
 	@Override
 	public GridStorage getGridStorage( final long storageID )
 	{
-		return null;
-// FIXME		final GridStorageSearch gss = new GridStorageSearch( storageID );
-// FIXME		final WeakReference<GridStorageSearch> result = this.loadedStorage.get( gss );
-// FIXME
-// FIXME		if( result == null || result.get() == null )
-// FIXME		{
-// FIXME			final String id = String.valueOf( storageID );
-// FIXME			final String data = this.config.get( "gridstorage", id, "" ).getString();
-// FIXME			final GridStorage thisStorage = new GridStorage( data, storageID, gss );
-// FIXME			gss.setGridStorage( new WeakReference<>( thisStorage ) );
-// FIXME			this.loadedStorage.put( gss, new WeakReference<>( gss ) );
-// FIXME			return thisStorage;
-// FIXME		}
-// FIXME
-// FIXME		return result.get().getGridStorage().get();
+		GridStorage result = storage.get(storageID);
+
+		if( result == null )
+		{
+			result = new GridStorage(storageID);
+			storage.put(storageID, result);
+		}
+
+		return result;
 	}
 
 	/**
@@ -95,73 +85,80 @@ final class StorageData implements IWorldGridStorageData, IOnWorldStartable, IOn
 	@Override
 	public GridStorage getNewGridStorage()
 	{
-		final long storageID = this.nextGridStorage();
-		final GridStorageSearch gss = new GridStorageSearch( storageID );
-		final GridStorage newStorage = new GridStorage( storageID, gss );
-		gss.setGridStorage( new WeakReference<>( newStorage ) );
-		this.loadedStorage.put( gss, new WeakReference<>( gss ) );
-
-		return newStorage;
-	}
-
-	@Override
-	public long nextGridStorage()
-	{
-// FIXME		final long r = this.lastGridStorage;
-// FIXME		this.lastGridStorage++;
-// FIXME		this.config.get( "Counters", "lastGridStorage", this.lastGridStorage ).set( Long.toString( this.lastGridStorage ) );
-// FIXME		return r;
-		return 0;
+		return getGridStorage(nextGridId++);
 	}
 
 	@Override
 	public void destroyGridStorage( final long id )
 	{
-// FIXME		final String stringID = String.valueOf( id );
-// FIXME		this.config.getCategory( "gridstorage" ).remove( stringID );
+		this.storage.remove(id);
 	}
 
 	@Override
-	public int getNextOrderedValue( final String name )
+	public int getNextOrderedValue( final String name, int firstValue )
 	{
-// FIXME		final Property p = this.config.get( "orderedValues", name, 0 );
-// FIXME		final int myValue = p.getInt();
-// FIXME		p.set( myValue + 1 );
-// FIXME		return myValue;
-		return 0;
+		return orderedValues.merge(name, firstValue, (oldValue, value) -> oldValue + 1);
 	}
 
 	@Override
-	public void onWorldStart()
-	{
-// FIXME		final String lastString = this.config.get( LAST_GRID_STORAGE_CATEGORY, LAST_GRID_STORAGE_KEY, LAST_GRID_STORAGE_DEFAULT ).getString();
-// FIXME
-// FIXME		try
-// FIXME		{
-// FIXME			this.lastGridStorage = Long.parseLong( lastString );
-// FIXME		}
-// FIXME		catch( final NumberFormatException err )
-// FIXME		{
-// FIXME			AELog.warn( "The config contained a value which was not represented as a Long: %s", lastString );
-// FIXME
-// FIXME			this.lastGridStorage = 0;
-// FIXME		}
+	public void read(CompoundNBT tag) {
+
+		nextGridId = tag.getLong(TAG_NEXT_ID);
+
+		// Load serialized grid storage
+		CompoundNBT storageTag = tag.getCompound(TAG_STORAGE);
+		for (String storageIdStr : storageTag.keySet()) {
+			long storageId;
+			try {
+				storageId = Long.parseLong(storageIdStr);
+			} catch (NumberFormatException e) {
+				AELog.warn("Unable to load grid storage with malformed id: '{}'", storageIdStr);
+				continue;
+			}
+			storage.put(storageId, new GridStorage(storageId, storageTag.getCompound(storageIdStr)));
+		}
+
+		// Load ordered values map
+		CompoundNBT orderedValuesTag = tag.getCompound(TAG_ORDERED_VALUES);
+		this.orderedValues.clear();
+		for (String key : orderedValuesTag.keySet()) {
+			this.orderedValues.put(key, orderedValuesTag.getInt(key));
+		}
+
 	}
 
 	@Override
-	public void onWorldStop()
-	{
-// FIXME		// populate new data
-// FIXME		for( final GridStorageSearch gs : this.loadedStorage.keySet() )
-// FIXME		{
-// FIXME			final GridStorage thisStorage = gs.getGridStorage().get();
-// FIXME			if( thisStorage != null && thisStorage.getGrid() != null && !thisStorage.getGrid().isEmpty() )
-// FIXME			{
-// FIXME				final String value = thisStorage.getValue();
-// FIXME				this.config.get( GRID_STORAGE_CATEGORY, String.valueOf( thisStorage.getID() ), value ).set( value );
-// FIXME			}
-// FIXME		}
-// FIXME
-// FIXME		this.config.save();
+	public CompoundNBT write(CompoundNBT tag) {
+
+		tag.putLong(TAG_NEXT_ID, nextGridId);
+
+		// Save serialized grid storage
+		CompoundNBT storageTag = new CompoundNBT();
+		for (Map.Entry<Long, GridStorage> entry : storage.entrySet()) {
+
+			GridStorage gridStorage = entry.getValue();
+
+			if (gridStorage.getGrid() == null || gridStorage.getGrid().isEmpty()) {
+				continue;
+			}
+
+			try {
+				entry.getValue().saveState();
+			} catch (Exception e) {
+				AELog.warn("Failed to save state of Grid {}, storing last known value instead.", entry.getKey(), e);
+			}
+			storageTag.put(String.valueOf(entry.getKey()), entry.getValue().dataObject());
+		}
+		tag.put(TAG_STORAGE, storageTag);
+
+		// Save ordered values
+		CompoundNBT orderedValuesTag = new CompoundNBT();
+		for (Map.Entry<String, Integer> entry : orderedValues.entrySet()) {
+			orderedValuesTag.putInt(entry.getKey(), entry.getValue());
+		}
+		tag.put(TAG_ORDERED_VALUES, orderedValuesTag);
+
+		return tag;
 	}
+
 }

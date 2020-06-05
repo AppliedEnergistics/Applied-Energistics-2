@@ -19,19 +19,13 @@
 package appeng.me;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.WeakHashMap;
-
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.CompoundNBT;
-
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridStorage;
-import appeng.core.AELog;
 import appeng.core.worlddata.WorldData;
+import net.minecraft.nbt.CompoundNBT;
+
+import java.lang.ref.WeakReference;
+import java.util.WeakHashMap;
 
 
 public class GridStorage implements IGridStorage
@@ -39,49 +33,30 @@ public class GridStorage implements IGridStorage
 
 	private final long myID;
 	private final CompoundNBT data;
-	private final GridStorageSearch mySearchEntry; // keep myself in the list until I'm
 	private final WeakHashMap<GridStorage, Boolean> divided = new WeakHashMap<>();
 	private WeakReference<IGrid> internalGrid = null;
-
-	// lost...
 
 	/**
 	 * for use with world settings
 	 *
 	 * @param id ID of grid storage
-	 * @param gss grid storage search
 	 */
-	public GridStorage( final long id, final GridStorageSearch gss )
+	public GridStorage( final long id )
 	{
 		this.myID = id;
-		this.mySearchEntry = gss;
 		this.data = new CompoundNBT();
 	}
 
 	/**
 	 * for use with world settings
 	 *
-	 * @param input array of bytes string
+	 * @param data The Grid data.
 	 * @param id ID of grid storage
-	 * @param gss grid storage search
 	 */
-	public GridStorage( final String input, final long id, final GridStorageSearch gss )
+	public GridStorage( final long id, final CompoundNBT data )
 	{
 		this.myID = id;
-		this.mySearchEntry = gss;
-		CompoundNBT myTag = null;
-
-		try
-		{
-			final byte[] byteData = javax.xml.bind.DatatypeConverter.parseBase64Binary( input );
-			myTag = CompressedStreamTools.readCompressed( new ByteArrayInputStream( byteData ) );
-		}
-		catch( final Throwable t )
-		{
-			myTag = new CompoundNBT();
-		}
-
-		this.data = myTag;
+		this.data = data;
 	}
 
 	/**
@@ -90,30 +65,16 @@ public class GridStorage implements IGridStorage
 	public GridStorage()
 	{
 		this.myID = 0;
-		this.mySearchEntry = null;
 		this.data = new CompoundNBT();
 	}
 
-	public String getValue()
+	public void saveState()
 	{
-	// FIXME	final Grid currentGrid = (Grid) this.getGrid();
-	// FIXME	if( currentGrid != null )
-	// FIXME	{
-	// FIXME		currentGrid.saveState();
-	// FIXME	}
-
-		try
+		final Grid currentGrid = (Grid) this.getGrid();
+		if( currentGrid != null )
 		{
-			final ByteArrayOutputStream out = new ByteArrayOutputStream();
-			CompressedStreamTools.writeCompressed( this.data, out );
-			return javax.xml.bind.DatatypeConverter.printBase64Binary( out.toByteArray() );
+			currentGrid.saveState();
 		}
-		catch( final IOException e )
-		{
-			AELog.debug( e );
-		}
-
-		return "";
 	}
 
 	public IGrid getGrid()

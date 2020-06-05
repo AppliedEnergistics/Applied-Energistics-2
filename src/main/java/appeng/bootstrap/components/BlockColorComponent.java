@@ -39,7 +39,7 @@ public class BlockColorComponent implements IInitComponent
 	}
 
 	@Override
-	public void initialize( Dist dist )
+	public void initialize()
 	{
 		Minecraft.getInstance().getBlockColors().register( this.blockColor, this.block );
 	}

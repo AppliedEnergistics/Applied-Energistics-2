@@ -19,6 +19,15 @@
 package appeng.core;
 
 
+import appeng.api.features.IRegistryContainer;
+import appeng.api.networking.IGridCacheRegistry;
+import appeng.api.networking.crafting.ICraftingGrid;
+import appeng.api.networking.energy.IEnergyGrid;
+import appeng.api.networking.pathing.IPathingGrid;
+import appeng.api.networking.security.ISecurityGrid;
+import appeng.api.networking.spatial.ISpatialCache;
+import appeng.api.networking.storage.IStorageGrid;
+import appeng.api.networking.ticking.ITickManager;
 import appeng.bootstrap.IModelRegistry;
 import appeng.bootstrap.components.*;
 import appeng.client.gui.implementations.GuiGrinder;
@@ -32,7 +41,13 @@ import appeng.client.render.model.SkyCompassModel;
 import appeng.client.render.tesr.SkyChestTESR;
 import appeng.container.implementations.ContainerGrinder;
 import appeng.container.implementations.ContainerSkyChest;
+import appeng.core.features.registries.cell.BasicCellHandler;
+import appeng.core.features.registries.cell.BasicItemCellGuiHandler;
+import appeng.core.features.registries.cell.CreativeCellHandler;
 import appeng.core.stats.AeStats;
+import appeng.core.stats.PartItemPredicate;
+import appeng.fluids.registries.BasicFluidCellGuiHandler;
+import appeng.me.cache.*;
 import appeng.recipes.conditions.FeaturesEnabled;
 import appeng.recipes.game.DisassembleRecipe;
 import appeng.recipes.ingredients.PartIngredientSerializer;
@@ -46,6 +61,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
+import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -150,50 +166,39 @@ final class Registration
 //	{
 //		registry.addNewSubItemResolver( new AEItemResolver() );
 //	}
-//
-//	public void initialize( @Nonnull final FMLInitializationEvent event, @Nonnull final File recipeDirectory )
-//	{
-//		Preconditions.checkNotNull( event );
-//		Preconditions.checkNotNull( recipeDirectory );
-//		Preconditions.checkArgument( !recipeDirectory.isFile() );
-//
-//		final Api api = Api.INSTANCE;
-//		final IRegistryContainer registries = api.registries();
-//
-//		ApiDefinitions definitions = api.definitions();
-//		definitions.getRegistry().getBootstrapComponents( IInitComponent.class ).forEachRemaining( b -> b.initialize( event.getSide() ) );
-//
-//		MinecraftForge.EVENT_BUS.register( TickHandler.INSTANCE );
-//
-//		MinecraftForge.EVENT_BUS.register( new PartPlacement() );
-//
-//		final IGridCacheRegistry gcr = registries.gridCache();
-//		gcr.registerGridCache( ITickManager.class, TickManagerCache.class );
-//		gcr.registerGridCache( IEnergyGrid.class, EnergyGridCache.class );
-//		gcr.registerGridCache( IPathingGrid.class, PathGridCache.class );
-//		gcr.registerGridCache( IStorageGrid.class, GridStorageCache.class );
-//		gcr.registerGridCache( P2PCache.class, P2PCache.class );
-//		gcr.registerGridCache( ISpatialCache.class, SpatialPylonCache.class );
-//		gcr.registerGridCache( ISecurityGrid.class, SecurityCache.class );
-//		gcr.registerGridCache( ICraftingGrid.class, CraftingGridCache.class );
-//
-//		registries.cell().addCellHandler( new BasicCellHandler() );
-//		registries.cell().addCellHandler( new CreativeCellHandler() );
-//		registries.cell().addCellGuiHandler( new BasicItemCellGuiHandler() );
-//		registries.cell().addCellGuiHandler( new BasicFluidCellGuiHandler() );
-//
-//		api.definitions().materials().matterBall().maybeStack( 1 ).ifPresent( ammoStack ->
-//		{
-//			final double weight = 32;
-//
-//			registries.matterCannon().registerAmmo( ammoStack, weight );
-//		} );
-//
-//		PartItemPredicate.register();
-//		Stats.register();
-//		this.advancementTriggers = new AdvancementTriggers( new CriterionTrigggerRegistry() );
-//	}
-//
+
+	public static void setupInternalRegistries()
+	{
+		final Api api = Api.INSTANCE;
+		final IRegistryContainer registries = api.registries();
+
+		final IGridCacheRegistry gcr = registries.gridCache();
+		gcr.registerGridCache( ITickManager.class, TickManagerCache.class );
+		gcr.registerGridCache( IEnergyGrid.class, EnergyGridCache.class );
+		gcr.registerGridCache( IPathingGrid.class, PathGridCache.class );
+		gcr.registerGridCache( IStorageGrid.class, GridStorageCache.class );
+		gcr.registerGridCache( P2PCache.class, P2PCache.class );
+		gcr.registerGridCache( ISpatialCache.class, SpatialPylonCache.class );
+		gcr.registerGridCache( ISecurityGrid.class, SecurityCache.class );
+		gcr.registerGridCache( ICraftingGrid.class, CraftingGridCache.class );
+
+		registries.cell().addCellHandler( new BasicCellHandler() );
+		registries.cell().addCellHandler( new CreativeCellHandler() );
+		registries.cell().addCellGuiHandler( new BasicItemCellGuiHandler() );
+		registries.cell().addCellGuiHandler( new BasicFluidCellGuiHandler() );
+
+		api.definitions().materials().matterBall().maybeStack( 1 ).ifPresent( ammoStack ->
+		{
+			final double weight = 32;
+
+			registries.matterCannon().registerAmmo( ammoStack, weight );
+		} );
+
+		PartItemPredicate.register();
+		// FIXME Stats.register();
+		// FIXME this.advancementTriggers = new AdvancementTriggers( new CriterionTrigggerRegistry() );
+	}
+
 //	@SubscribeEvent
 //	public void registerBiomes( RegistryEvent.Register<Biome> event )
 //	{

@@ -27,5 +27,5 @@ import appeng.bootstrap.IBootstrapComponent;
 @FunctionalInterface
 public interface IInitComponent extends IBootstrapComponent
 {
-	void initialize( Dist dist );
+	void initialize();
 }

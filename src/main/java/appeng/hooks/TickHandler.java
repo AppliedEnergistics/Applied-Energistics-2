@@ -144,7 +144,6 @@ public class TickHandler
 		this.getRepo().clear();
 	}
 
-	@SubscribeEvent
 	public void unloadWorld( final WorldEvent.Unload ev )
 	{
 		if( Platform.isServer() ) // for no there is no reason to care about this on the client...
@@ -170,7 +169,6 @@ public class TickHandler
 		}
 	}
 
-	@SubscribeEvent
 	public void onTick( final TickEvent ev )
 	{
 
