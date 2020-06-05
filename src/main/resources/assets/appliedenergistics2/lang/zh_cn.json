@@ -409,9 +409,9 @@
   "item.appliedenergistics2.view_cell": "显示元件",
   "item.appliedenergistics2.facade": "线缆伪装板",
 
-  "item.appliedenergistics2.crystal_seed.certus": "赛特斯石英种子",
-  "item.appliedenergistics2.crystal_seed.nether": "下界石英种子",
-  "item.appliedenergistics2.crystal_seed.fluix": "福鲁伊克斯种子",
+  "item.appliedenergistics2.certus_crystal_seed": "赛特斯石英种子",
+  "item.appliedenergistics2.nether_crystal_seed": "下界石英种子",
+  "item.appliedenergistics2.fluix_crystal_seed": "福鲁伊克斯种子",
   "item.appliedenergistics2.material.invalid_type": "该物品被禁用.",
   "item.appliedenergistics2.material.advanced_card": "高级卡",
   "item.appliedenergistics2.material.annihilation_core": "破坏核心",

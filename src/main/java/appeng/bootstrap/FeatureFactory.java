@@ -36,9 +36,13 @@ import appeng.tile.AEBaseTile;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -98,6 +102,11 @@ public class FeatureFactory
 	public IItemBuilder item( String id, Function<Item.Properties, Item> itemFactory )
 	{
 		return new ItemDefinitionBuilder( this, id, itemFactory ).features( this.defaultFeatures );
+	}
+
+	public <T extends Entity> EntityBuilder<T> entity(String id, EntityType.IFactory<T> factory, EntityClassification classification)
+	{
+		return new EntityBuilder<T>( this, id, factory, classification ).features( this.defaultFeatures );
 	}
 
 	public <T extends AEBaseTile> TileEntityBuilder<T> tileEntity(String id, Class<T> teClass, Function<TileEntityType<T>, T> factory)

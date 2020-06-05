@@ -409,9 +409,9 @@
   "item.appliedenergistics2.view_cell": "View Cell",
   "item.appliedenergistics2.facade": "Cable Facade",
 
-  "item.appliedenergistics2.crystal_seed.certus": "Certus Quartz Seed",
-  "item.appliedenergistics2.crystal_seed.nether": "Nether Quartz Seed",
-  "item.appliedenergistics2.crystal_seed.fluix": "Fluix Seed",
+  "item.appliedenergistics2.certus_crystal_seed": "Certus Quartz Seed",
+  "item.appliedenergistics2.nether_crystal_seed": "Nether Quartz Seed",
+  "item.appliedenergistics2.fluix_crystal_seed": "Fluix Seed",
   "item.appliedenergistics2.material.invalid_type": "This Item Is Disabled.",
   "item.appliedenergistics2.material.advanced_card": "Advanced Card",
   "item.appliedenergistics2.material.annihilation_core": "Annihilation Core",

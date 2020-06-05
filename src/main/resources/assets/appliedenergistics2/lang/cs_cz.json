@@ -319,9 +319,9 @@
   "item.appliedenergistics2.view_cell": "Zobrazit článek",
   "item.appliedenergistics2.facade": "Kabelová fasáda",
 
-  "item.appliedenergistics2.crystal_seed.certus": "Semínko nakloněného křemene",
-  "item.appliedenergistics2.crystal_seed.nether": "Semínko křemene",
-  "item.appliedenergistics2.crystal_seed.fluix": "Semínko Fluixu",
+  "item.appliedenergistics2.certus_crystal_seed": "Semínko nakloněného křemene",
+  "item.appliedenergistics2.nether_crystal_seed": "Semínko křemene",
+  "item.appliedenergistics2.fluix_crystal_seed": "Semínko Fluixu",
   "item.appliedenergistics2.material.invalid_type": "Tento předmět je zakázaný.",
   "item.appliedenergistics2.material.advanced_card": "Pokročilá karta",
   "item.appliedenergistics2.material.annihilation_core": "Jádro zkázy",

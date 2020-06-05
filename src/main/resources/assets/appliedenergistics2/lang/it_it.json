@@ -340,9 +340,9 @@
   "item.appliedenergistics2.view_cell": "Cella olografica",
   "item.appliedenergistics2.facade": "Facciata per cavo",
 
-  "item.appliedenergistics2.crystal_seed.certus": "Seme di quarzo certus",
-  "item.appliedenergistics2.crystal_seed.nether": "Seme di quarzo degli Inferi",
-  "item.appliedenergistics2.crystal_seed.fluix": "Seme di fluix",
+  "item.appliedenergistics2.certus_crystal_seed": "Seme di quarzo certus",
+  "item.appliedenergistics2.nether_crystal_seed": "Seme di quarzo degli Inferi",
+  "item.appliedenergistics2.fluix_crystal_seed": "Seme di fluix",
   "item.appliedenergistics2.material.invalid_type": "Quest'oggetto è disabilitato.",
   "item.appliedenergistics2.material.advanced_card": "Scheda avanzata",
   "item.appliedenergistics2.material.annihilation_core": "Nucleo di annientamento",

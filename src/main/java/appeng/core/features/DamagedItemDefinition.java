@@ -37,31 +37,22 @@ import appeng.api.definitions.IItemDefinition;
 public final class DamagedItemDefinition implements IItemDefinition
 {
 	private final String identifier;
-	private final Optional<IStackSrc> source;
+	private final IStackSrc source;
 
 	public DamagedItemDefinition( @Nonnull final String identifier, @Nonnull final IStackSrc source )
 	{
 		this.identifier = Preconditions.checkNotNull( identifier );
-		Preconditions.checkNotNull( source );
-
-		if( source.isEnabled() )
-		{
-			this.source = Optional.of( source );
-		}
-		else
-		{
-			this.source = Optional.empty();
-		}
+		this.source = Preconditions.checkNotNull( source );
 	}
 
 	@Override
 	public Item item() {
-		return source.get().getItem();
+		return source.getItem();
 	}
 
 	@Override
 	public ItemStack stack(int stackSize) {
-		return source.get().stack(stackSize);
+		return source.stack(stackSize);
 	}
 
 	@Nonnull
@@ -74,13 +65,13 @@ public final class DamagedItemDefinition implements IItemDefinition
 	@Override
 	public Optional<Item> maybeItem()
 	{
-		return this.source.map( IStackSrc::getItem );
+		return Optional.of(this.source.getItem());
 	}
 
 	@Override
 	public Optional<ItemStack> maybeStack( final int stackSize )
 	{
-		return this.source.map( input -> input.stack( stackSize ) );
+		return Optional.of(this.source.stack(stackSize));
 	}
 
 	@Override
@@ -97,7 +88,7 @@ public final class DamagedItemDefinition implements IItemDefinition
 			return false;
 		}
 
-		return comparableStack.getItem() == this.source.get().getItem();
+		return comparableStack.getItem() == this.source.getItem();
 	}
 
 }

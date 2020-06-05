@@ -26,6 +26,7 @@ import appeng.bootstrap.FeatureFactory;
 import appeng.api.features.AEFeature;
 import appeng.bootstrap.components.IEntityRegistrationComponent;
 import appeng.client.render.crafting.ItemEncodedPatternRendering;
+import appeng.core.Api;
 import appeng.core.CreativeTabFacade;
 import appeng.debug.ToolDebugCard;
 import appeng.debug.ToolEraser;
@@ -53,6 +54,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.common.ToolType;
+import org.lwjgl.system.APIUtil;
 
 import java.util.function.Consumer;
 
@@ -105,7 +107,9 @@ public final class ApiItems implements IItems
 	private final IItemDefinition spatialCell128;
 
 	private final IItemDefinition facade;
-	private final IItemDefinition crystalSeed;
+	private final IItemDefinition certusCrystalSeed;
+	private final IItemDefinition fluixCrystalSeed;
+	private final IItemDefinition netherQuartzSeed;
 
 	// rv1
 	private final IItemDefinition encodedPattern;
@@ -123,7 +127,7 @@ public final class ApiItems implements IItems
 
 	private final IItemDefinition dummyFluidItem;
 
-	public ApiItems( FeatureFactory registry )
+	public ApiItems(FeatureFactory registry, ApiMaterials materials)
 	{
 		FeatureFactory certusTools = registry.features( AEFeature.CERTUS_QUARTZ_TOOLS );
 		this.certusQuartzAxe = certusTools.item( "certus_quartz_axe", props -> new ToolQuartzAxe( props, AEFeature.CERTUS_QUARTZ_TOOLS ) )
@@ -270,19 +274,21 @@ public final class ApiItems implements IItems
 				.itemGroup( CreativeTabFacade.instance )
 				.rendering( new FacadeRendering() )
 				.build();
-		this.crystalSeed = registry.item( "crystal_seed", ItemCrystalSeed::new )
+
+		this.certusCrystalSeed = registry.item( "certus_crystal_seed", props -> new ItemCrystalSeed(props, materials.purifiedCertusQuartzCrystal().item()) )
 				.features( AEFeature.CRYSTAL_SEEDS )
-				.rendering( new ItemCrystalSeedRendering() )
-				.bootstrap( item -> (IEntityRegistrationComponent) r ->
-				{
-					r.register( EntityType.Builder.<EntityGrowingCrystal>create(EntityGrowingCrystal::new, EntityClassification.MISC)
-							.setTrackingRange(16)
-							.setUpdateInterval(4)
-							.setShouldReceiveVelocityUpdates(true)
-							.build("appliedenergistics2:growing_crystal")
-							.setRegistryName("appliedenergistics2:growing_crystal")
-					);
-				} )
+				.build();
+		this.fluixCrystalSeed = registry.item( "fluix_crystal_seed", props -> new ItemCrystalSeed(props, materials.purifiedFluixCrystal().item()) )
+				.features( AEFeature.CRYSTAL_SEEDS )
+			.build();
+		this.netherQuartzSeed = registry.item( "nether_quartz_seed", props -> new ItemCrystalSeed(props, materials.purifiedNetherQuartzCrystal().item()) )
+				.features( AEFeature.CRYSTAL_SEEDS )
+			.build();
+
+		registry.<EntityGrowingCrystal>entity("growing_crystal", EntityGrowingCrystal::new, EntityClassification.MISC)
+				.customize(builder -> builder.setTrackingRange(16)
+						.setUpdateInterval(4)
+						.setShouldReceiveVelocityUpdates(true))
 				.build();
 
 		// rv1
@@ -525,9 +531,18 @@ public final class ApiItems implements IItems
 	}
 
 	@Override
-	public IItemDefinition crystalSeed()
-	{
-		return this.crystalSeed;
+	public IItemDefinition certusCrystalSeed() {
+		return certusCrystalSeed;
+	}
+
+	@Override
+	public IItemDefinition fluixCrystalSeed() {
+		return fluixCrystalSeed;
+	}
+
+	@Override
+	public IItemDefinition netherQuartzSeed() {
+		return netherQuartzSeed;
 	}
 
 	@Override

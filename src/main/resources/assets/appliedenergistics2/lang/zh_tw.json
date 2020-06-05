@@ -390,9 +390,9 @@
   "item.appliedenergistics2.view_cell": "顯示元件",
   "item.appliedenergistics2.facade": "線纜偽裝板",
 
-  "item.appliedenergistics2.crystal_seed.certus": "賽特斯石英種子",
-  "item.appliedenergistics2.crystal_seed.nether": "地獄石英鐘子",
-  "item.appliedenergistics2.crystal_seed.fluix": "福魯伊克斯種子",
+  "item.appliedenergistics2.certus_crystal_seed": "賽特斯石英種子",
+  "item.appliedenergistics2.nether_crystal_seed": "地獄石英鐘子",
+  "item.appliedenergistics2.fluix_crystal_seed": "福魯伊克斯種子",
   "item.appliedenergistics2.material.invalid_type": "這個物品被禁用。",
   "item.appliedenergistics2.material.advanced_card": "高級卡",
   "item.appliedenergistics2.material.annihilation_core": "破壞核心",

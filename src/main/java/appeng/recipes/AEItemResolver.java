@@ -19,10 +19,6 @@
 package appeng.recipes;
 
 
-import appeng.core.Api;
-import net.minecraft.item.ItemStack;
-
-import appeng.api.AEApi;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItems;
 import appeng.api.definitions.IParts;
@@ -31,12 +27,13 @@ import appeng.api.recipes.ResolverResult;
 import appeng.api.recipes.ResolverResultSet;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
+import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.items.materials.ItemMaterial;
 import appeng.items.materials.MaterialType;
-import appeng.items.misc.ItemCrystalSeed;
 import appeng.items.parts.ItemPart;
 import appeng.items.parts.PartType;
+import net.minecraft.item.ItemStack;
 
 
 public class AEItemResolver implements ISubItemResolver
@@ -116,15 +113,15 @@ public class AEItemResolver implements ISubItemResolver
 			{
 				if( itemName.equalsIgnoreCase( "crystal_seed.certus" ) )
 				{
-					return ItemCrystalSeed.getResolver( ItemCrystalSeed.CERTUS );
+					return new ResolverResultSet( "certus_crystal_seed", items.certusCrystalSeed().stack( 1 ) );
 				}
 				if( itemName.equalsIgnoreCase( "crystal_seed.nether" ) )
 				{
-					return ItemCrystalSeed.getResolver( ItemCrystalSeed.NETHER );
+					return new ResolverResultSet( "nether_crystal_seed", items.netherQuartzSeed().stack( 1 ) );
 				}
 				if( itemName.equalsIgnoreCase( "crystal_seed.fluix" ) )
 				{
-					return ItemCrystalSeed.getResolver( ItemCrystalSeed.FLUIX );
+					return new ResolverResultSet( "fluix_crystal_seed", items.fluixCrystalSeed().stack( 1 ) );
 				}
 
 				return null;

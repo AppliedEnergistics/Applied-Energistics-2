@@ -359,9 +359,9 @@
   "item.appliedenergistics2.view_cell": "Sichtzelle",
   "item.appliedenergistics2.facade": "Kabelfassade",
 
-  "item.appliedenergistics2.crystal_seed.certus": "Certusquarzkeim",
-  "item.appliedenergistics2.crystal_seed.nether": "Netherquarzkeim",
-  "item.appliedenergistics2.crystal_seed.fluix": "Fluixkeim",
+  "item.appliedenergistics2.certus_crystal_seed": "Certusquarzkeim",
+  "item.appliedenergistics2.nether_crystal_seed": "Netherquarzkeim",
+  "item.appliedenergistics2.fluix_crystal_seed": "Fluixkeim",
   "item.appliedenergistics2.material.invalid_type": "Dieses Item ist deaktiviert.",
   "item.appliedenergistics2.material.advanced_card": "Fortgeschrittene Karte",
   "item.appliedenergistics2.material.annihilation_core": "Annihilationskern",

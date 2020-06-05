@@ -36,7 +36,6 @@ import appeng.api.networking.energy.IAEPowerStorage;
  */
 public interface IAEItemPowerStorage
 {
-
 	/**
 	 * Inject amt, power into the device, it will store what it can, and return
 	 * the amount unable to be stored.
@@ -72,4 +71,5 @@ public interface IAEItemPowerStorage
 	 * @return access restriction of network
 	 */
 	AccessRestriction getPowerFlow( ItemStack stack );
+
 }

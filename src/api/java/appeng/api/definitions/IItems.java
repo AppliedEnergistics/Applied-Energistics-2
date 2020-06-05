@@ -104,7 +104,11 @@ public interface IItems
 
 	IItemDefinition facade();
 
-	IItemDefinition crystalSeed();
+	IItemDefinition certusCrystalSeed();
+
+	IItemDefinition fluixCrystalSeed();
+
+	IItemDefinition netherQuartzSeed();
 
 	IItemDefinition dummyFluidItem();
 

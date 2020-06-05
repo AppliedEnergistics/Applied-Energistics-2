@@ -303,9 +303,9 @@
   "item.appliedenergistics2.view_cell": "Celda de Visión",
   "item.appliedenergistics2.facade": "Fachada de Cable",
 
-  "item.appliedenergistics2.crystal_seed.certus": "Semilla de Cuarzo Certus",
-  "item.appliedenergistics2.crystal_seed.nether": "Semilla de Cuarzo",
-  "item.appliedenergistics2.crystal_seed.fluix": "Semilla de Fluix",
+  "item.appliedenergistics2.certus_crystal_seed": "Semilla de Cuarzo Certus",
+  "item.appliedenergistics2.nether_crystal_seed": "Semilla de Cuarzo",
+  "item.appliedenergistics2.fluix_crystal_seed": "Semilla de Fluix",
   "item.appliedenergistics2.material.advanced_card": "Tarjeta Avanzada",
   "item.appliedenergistics2.material.annihilation_core": "Núcleo de Absorción",
   "item.appliedenergistics2.material.basic_card": "Tarjeta Básica",

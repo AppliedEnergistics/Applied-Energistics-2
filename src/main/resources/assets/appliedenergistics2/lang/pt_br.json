@@ -393,9 +393,9 @@
   "item.appliedenergistics2.view_cell": "Célula de Visualização",
   "item.appliedenergistics2.facade": "Fachada de Cabos",
 
-  "item.appliedenergistics2.crystal_seed.certus": "Semente de Quartzo Certus",
-  "item.appliedenergistics2.crystal_seed.nether": "Semente de Quartzo do Nether",
-  "item.appliedenergistics2.crystal_seed.fluix": "Semente de Fluix",
+  "item.appliedenergistics2.certus_crystal_seed": "Semente de Quartzo Certus",
+  "item.appliedenergistics2.nether_crystal_seed": "Semente de Quartzo do Nether",
+  "item.appliedenergistics2.fluix_crystal_seed": "Semente de Fluix",
   "item.appliedenergistics2.material.invalid_type": "Esse item está Desativado.",
   "item.appliedenergistics2.material.advanced_card": "Cartão Avançado",
   "item.appliedenergistics2.material.annihilation_core": "Núcleo de Aniquilação",

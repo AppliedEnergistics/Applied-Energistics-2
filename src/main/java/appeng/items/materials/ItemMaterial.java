@@ -72,16 +72,14 @@ import appeng.util.inv.AdaptorItemHandler;
 
 public final class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule
 {
-	public static ItemMaterial instance;
 
 	private static final int KILO_SCALAR = 1024;
 
-	private final Map<Integer, MaterialType> dmgToMaterial = new HashMap<>();
+	private final MaterialType materialType;
 
-	public ItemMaterial(Properties properties) {
+	public ItemMaterial(Properties properties, MaterialType materialType) {
 		super(properties);
-		// FIXME this.setHasSubtypes( true );
-		instance = this;
+		this.materialType = materialType;
 	}
 
 	@OnlyIn( Dist.CLIENT )
@@ -90,13 +88,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	{
 		super.addInformation( stack, world, lines, advancedTooltips );
 
-		final MaterialType mt = this.getTypeByStack( stack );
-		if( mt == null )
-		{
-			return;
-		}
-
-		if( mt == MaterialType.NAME_PRESS )
+		if( materialType == MaterialType.NAME_PRESS )
 		{
 			final CompoundNBT c = stack.getOrCreateTag();
 			lines.add( new StringTextComponent( c.getString( "InscribeName" ) ) );
@@ -141,16 +133,10 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 		}
 	}
 
-	public MaterialType getTypeByStack( final ItemStack is )
-	{
-		MaterialType type = this.dmgToMaterial.get( is.getDamage() );
-		return ( type != null ) ? type : MaterialType.INVALID_TYPE;
-	}
-
 	@Override
 	public Upgrades getType( final ItemStack itemstack )
 	{
-		switch( this.getTypeByStack( itemstack ) )
+		switch( materialType )
 		{
 			case CARD_CAPACITY:
 				return Upgrades.CAPACITY;
@@ -166,59 +152,6 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 				return Upgrades.CRAFTING;
 			default:
 				return null;
-		}
-	}
-
-	public IStackSrc createMaterial( final MaterialType mat )
-	{
-		Preconditions.checkState( !mat.isRegistered(), "Cannot create the same material twice." );
-
-		boolean enabled = true;
-
-		for( final AEFeature f : mat.getFeature() )
-		{
-			enabled = enabled && AEConfig.instance().isFeatureEnabled( f );
-		}
-
-		mat.setStackSrc( new MaterialStackSrc( mat, enabled ) );
-
-		if( enabled )
-		{
-			mat.setItemInstance( this );
-			mat.markReady();
-			final int newMaterialNum = mat.getDamageValue();
-
-			if( this.dmgToMaterial.get( newMaterialNum ) == null )
-			{
-				this.dmgToMaterial.put( newMaterialNum, mat );
-			}
-			else
-
-			{
-				throw new IllegalStateException( "Meta Overlap detected." );
-			}
-		}
-
-		return mat.getStackSrc();
-	}
-
-	@Override
-	public String getTranslationKey( final ItemStack is )
-	{
-		return "item.appliedenergistics2.material." + this.nameOf( is ).toLowerCase();
-	}
-
-	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-		final List<MaterialType> types = Arrays.asList( MaterialType.values() );
-		Collections.sort( types, ( o1, o2 ) -> o1.name().compareTo( o2.name() ) );
-
-		for( final MaterialType mat : types )
-		{
-			if( mat.getDamageValue() >= 0 && mat.isRegistered() && mat.getItemInstance() == this )
-			{
-				items.add( new ItemStack( this, 1/* FIXME, mat.getDamageValue() */ ) );
-			}
 		}
 	}
 
@@ -270,13 +203,13 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	@Override
 	public boolean hasCustomEntity( final ItemStack is )
 	{
-		return this.getTypeByStack( is ).hasCustomEntity();
+		return materialType.hasCustomEntity();
 	}
 
 	@Override
 	public Entity createEntity( final World w, final Entity location, final ItemStack itemstack )
 	{
-		final Class<? extends Entity> droppedEntity = this.getTypeByStack( itemstack ).getCustomEntityClass();
+		final Class<? extends Entity> droppedEntity = materialType.getCustomEntityClass();
 		final Entity eqi;
 
 		try
@@ -298,26 +231,10 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 		return eqi;
 	}
 
-	private String nameOf( final ItemStack is )
-	{
-		if( is.isEmpty() )
-		{
-			return "null";
-		}
-
-		final MaterialType mt = this.getTypeByStack( is );
-		if( mt == null )
-		{
-			return "null";
-		}
-
-		return mt.name();
-	}
-
 	@Override
 	public int getBytes( final ItemStack is )
 	{
-		switch( this.getTypeByStack( is ) )
+		switch( materialType )
 		{
 			case CELL1K_PART:
 				return KILO_SCALAR;
@@ -335,7 +252,7 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
 	@Override
 	public boolean isStorageComponent( final ItemStack is )
 	{
-		switch( this.getTypeByStack( is ) )
+		switch( materialType )
 		{
 			case CELL1K_PART:
 			case CELL4K_PART:

@@ -230,9 +230,9 @@
   "item.appliedenergistics2.view_cell": "Vizionează Celulă",
   "item.appliedenergistics2.facade": "Faţadă de Cablu",
 
-  "item.appliedenergistics2.crystal_seed.certus": "Sămânţă de Cuarţ Certus",
-  "item.appliedenergistics2.crystal_seed.nether": "Sămânţă de Cuarţ de Iad",
-  "item.appliedenergistics2.crystal_seed.fluix": "Sămânţă de Fluix",
+  "item.appliedenergistics2.certus_crystal_seed": "Sămânţă de Cuarţ Certus",
+  "item.appliedenergistics2.nether_crystal_seed": "Sămânţă de Cuarţ de Iad",
+  "item.appliedenergistics2.fluix_crystal_seed": "Sămânţă de Fluix",
   "item.appliedenergistics2.material.advanced_card": "Cartelă Avansată",
   "item.appliedenergistics2.material.annihilation_core": "Centru de Anihilaţie",
   "item.appliedenergistics2.material.basic_card": "Cartelă de Bază",

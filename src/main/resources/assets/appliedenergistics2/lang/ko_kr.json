@@ -404,9 +404,9 @@
   "item.appliedenergistics2.view_cell": "뷰 셀",
   "item.appliedenergistics2.facade": "케이블 덮개",
 
-  "item.appliedenergistics2.crystal_seed.certus": "서투스 석영 씨앗",
-  "item.appliedenergistics2.crystal_seed.nether": "지옥 석영 씨앗",
-  "item.appliedenergistics2.crystal_seed.fluix": "액정 씨앗",
+  "item.appliedenergistics2.certus_crystal_seed": "서투스 석영 씨앗",
+  "item.appliedenergistics2.nether_crystal_seed": "지옥 석영 씨앗",
+  "item.appliedenergistics2.fluix_crystal_seed": "액정 씨앗",
   "item.appliedenergistics2.material.invalid_type": "이 아이템은 비활성화됨",
   "item.appliedenergistics2.material.advanced_card": "고급 카드",
   "item.appliedenergistics2.material.annihilation_core": "소멸 코어",

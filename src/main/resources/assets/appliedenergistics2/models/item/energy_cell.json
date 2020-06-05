@@ -1,3 +1,47 @@
 {
-  "parent": "MISSING"
+  "parent": "appliedenergistics2:block/energy_cell/energy_cell0",
+  "overrides": [
+    {
+      "predicate": {
+        "appliedenergistics2:fill_level": 0.125
+      },
+      "model": "appliedenergistics2:block/energy_cell/energy_cell1"
+    },
+    {
+      "predicate": {
+        "appliedenergistics2:fill_level": 0.25
+      },
+      "model": "appliedenergistics2:block/energy_cell/energy_cell2"
+    },
+    {
+      "predicate": {
+        "appliedenergistics2:fill_level": 0.375
+      },
+      "model": "appliedenergistics2:block/energy_cell/energy_cell3"
+    },
+    {
+      "predicate": {
+        "appliedenergistics2:fill_level": 0.5
+      },
+      "model": "appliedenergistics2:block/energy_cell/energy_cell4"
+    },
+    {
+      "predicate": {
+        "appliedenergistics2:fill_level": 0.625
+      },
+      "model": "appliedenergistics2:block/energy_cell/energy_cell5"
+    },
+    {
+      "predicate": {
+        "appliedenergistics2:fill_level": 0.75
+      },
+      "model": "appliedenergistics2:block/energy_cell/energy_cell6"
+    },
+    {
+      "predicate": {
+        "appliedenergistics2:fill_level": 0.875
+      },
+      "model": "appliedenergistics2:block/energy_cell/energy_cell7"
+    }
+  ]
 }

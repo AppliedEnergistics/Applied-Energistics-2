@@ -19,19 +19,6 @@
 package appeng.block;
 
 
-import java.text.MessageFormat;
-import java.util.List;
-
-import net.minecraft.block.Block;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnits;
@@ -39,6 +26,19 @@ import appeng.api.definitions.IBlockDefinition;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.core.Api;
 import appeng.core.localization.GuiText;
+import net.minecraft.block.Block;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.text.MessageFormat;
+import java.util.List;
 
 
 public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEItemPowerStorage
@@ -46,6 +46,13 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
 
 	public AEBaseBlockItemChargeable(Block id, Properties props) {
 		super(id, props);
+
+		addPropertyOverride(new ResourceLocation("appliedenergistics2:fill_level"), (is, world, entity) -> {
+			double curPower = getAECurrentPower(is);
+			double maxPower = getAEMaxPower(is);
+
+			return (int) Math.round(100 * curPower / maxPower);
+		});
 	}
 
 	@Override
@@ -153,4 +160,5 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
 		final CompoundNBT nbt = is.getOrCreateTag();
 		nbt.putDouble("internalCurrentPower", amt);
 	}
+
 }

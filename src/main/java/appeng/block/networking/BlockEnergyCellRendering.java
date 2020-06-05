@@ -29,6 +29,7 @@ import appeng.bootstrap.IBlockRendering;
 import appeng.bootstrap.IItemRendering;
 
 
+// FIXME REMOVE
 public class BlockEnergyCellRendering extends BlockRenderingCustomizer
 {
 
@@ -42,37 +43,6 @@ public class BlockEnergyCellRendering extends BlockRenderingCustomizer
 	@Override
 	public void customize( IBlockRendering rendering, IItemRendering itemRendering )
 	{
-		// FIXME itemRendering.meshDefinition( this::getItemModel );
 		// Note: Since we use the block models, we dont need to register custom variants
-	}
-
-	/**
-	 * Determines which version of the energy cell model should be used depending on the fill factor
-	 * of the item stack.
-	 */
-// FIXME 	private ModelResourceLocation getItemModel( ItemStack is )
-// FIXME 	{
-// FIXME 		double fillFactor = getFillFactor( is );
-// FIXME
-// FIXME 		int storageLevel = TileEnergyCell.getStorageLevelFromFillFactor( fillFactor );
-// FIXME 		return new ModelResourceLocation( this.baseModel, "fullness=" + storageLevel );
-// FIXME 	}
-
-	/**
-	 * Helper method that returns the energy fill factor (between 0 and 1) of a given item stack.
-	 * Returns 0 if the item stack has no fill factor.
-	 */
-	private static double getFillFactor( ItemStack is )
-	{
-		if( !( is.getItem() instanceof IAEItemPowerStorage ) )
-		{
-			return 0;
-		}
-
-		AEBaseBlockItemChargeable itemChargeable = (AEBaseBlockItemChargeable) is.getItem();
-		double curPower = itemChargeable.getAECurrentPower( is );
-		double maxPower = itemChargeable.getAEMaxPower( is );
-
-		return curPower / maxPower;
 	}
 }
