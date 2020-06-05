@@ -19,21 +19,18 @@
 package appeng.items.tools.quartz;
 
 
-import appeng.core.CreativeTab;
+import appeng.api.implementations.items.IAEWrench;
+import appeng.api.util.DimensionalCoord;
+import appeng.block.AEBaseBlock;
+import appeng.items.AEBaseItem;
+import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-
-import appeng.api.implementations.items.IAEWrench;
-import appeng.api.util.DimensionalCoord;
-import appeng.items.AEBaseItem;
-import appeng.util.Platform;
 
 
 public class ToolQuartzWrench extends AEBaseItem implements IAEWrench
@@ -45,22 +42,24 @@ public class ToolQuartzWrench extends AEBaseItem implements IAEWrench
 	}
 
 	@Override
-	public ActionResultType onItemUse( ItemUseContext context )
-	{
-		final Block b = context.getWorld().getBlockState( context.getPos() ).getBlock();
+	public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
 		if( !context.getPlayer().isCrouching() && Platform.hasPermissions( new DimensionalCoord( context.getWorld(), context.getPos() ),
 				context.getPlayer() ) )
 		{
-			if( Platform.isClient() )
-			{
-				// TODO 1.10-R - if we return FAIL on client, action will not be sent to server. Fix that in all Block#onItemUseFirst overrides.
-				return !context.getWorld().isRemote ? ActionResultType.SUCCESS : ActionResultType.PASS;
-			}
 
-			if( b.rotate( context.getWorld().getBlockState( context.getPos() ), context.getWorld(), context.getPos(), Rotation.CLOCKWISE_90 ) != null )
-			{
-				context.getPlayer().swingArm( context.getHand() );
-				return !context.getWorld().isRemote ? ActionResultType.SUCCESS : ActionResultType.FAIL;
+			Block block = context.getWorld().getBlockState(context.getPos()).getBlock();
+			if (block instanceof AEBaseBlock) {
+				if( Platform.isClient() )
+				{
+					// TODO 1.10-R - if we return FAIL on client, action will not be sent to server. Fix that in all Block#onItemUseFirst overrides.
+					return !context.getWorld().isRemote ? ActionResultType.SUCCESS : ActionResultType.PASS;
+				}
+
+				AEBaseBlock aeBlock = (AEBaseBlock) block;
+				if (aeBlock.rotateAroundFaceAxis(context.getWorld(), context.getPos(), context.getFace())) {
+					context.getPlayer().swingArm(context.getHand());
+					return !context.getWorld().isRemote ? ActionResultType.SUCCESS : ActionResultType.FAIL;
+				}
 			}
 		}
 		return ActionResultType.PASS;

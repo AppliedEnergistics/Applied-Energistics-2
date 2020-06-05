@@ -20,6 +20,8 @@ package appeng.core;
 
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 import appeng.bootstrap.components.IClientSetupComponent;
 import appeng.client.ClientHelper;
@@ -29,7 +31,10 @@ import appeng.client.render.model.GlassModelLoader;
 import appeng.client.render.model.SkyCompassModelLoader;
 import appeng.core.stats.AdvancementTriggers;
 import appeng.server.ServerHelper;
+import com.google.gson.Gson;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.model.BlockModelDefinition;
+import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
@@ -46,6 +51,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.config.ModConfig;
 
 import appeng.core.crash.ModCrashEnhancement;

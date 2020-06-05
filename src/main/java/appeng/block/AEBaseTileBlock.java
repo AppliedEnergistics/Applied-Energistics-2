@@ -26,6 +26,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.client.render.FacingToRotation;
 import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
@@ -33,12 +34,16 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DyeColor;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.EnumProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
@@ -150,18 +155,6 @@ public abstract class AEBaseTileBlock<T extends AEBaseTile> extends AEBaseBlock
 
 		// super will remove the TE, as it is not an instance of BlockContainer
 		super.onReplaced( state, w, pos, newState, isMoving );
-	}
-
-	@Override
-	public Direction[] getValidRotations(BlockState state, IBlockReader world, BlockPos pos)
-	{
-		final AEBaseTile obj = this.getTileEntity( world, pos );
-		if( obj != null && obj.canBeRotated() )
-		{
-			return Direction.values();
-		}
-
-		return super.getValidRotations( state, world, pos );
 	}
 
 	@Override

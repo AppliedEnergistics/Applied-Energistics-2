@@ -19,29 +19,35 @@
 package appeng.client.render.model;
 
 
-import java.util.List;
-import java.util.Random;
-
-import appeng.client.render.cablebus.QuadRotator;
+import appeng.block.AEBaseTileBlock;
+import appeng.client.render.FacingToRotation;
+import com.google.common.base.Objects;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
-
-import appeng.block.AEBaseTileBlock;
-import appeng.client.render.FacingToRotation;
+import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
+import net.minecraftforge.client.model.pipeline.IVertexConsumer;
+import net.minecraftforge.client.model.pipeline.QuadGatheringTransformer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 
 public class AutoRotatingBakedModel implements IBakedModel
@@ -67,8 +73,37 @@ public class AutoRotatingBakedModel implements IBakedModel
 	private List<BakedQuad> getRotatedModel( BlockState state, Direction side, Direction forward, Direction up )
 	{
 		FacingToRotation f2r = FacingToRotation.get( forward, up );
-		List<BakedQuad> original = AutoRotatingBakedModel.this.parent.getQuads( state, f2r.resultingRotate( side ), new Random(0), EmptyModelData.INSTANCE );
-		return new QuadRotator().rotateQuads(original, forward, up);
+		List<BakedQuad> original = AutoRotatingBakedModel.this.parent.getQuads( state, f2r.resultingRotate( side ), new Random(0) );
+		List<BakedQuad> rotated = new ArrayList<>( original.size() );
+		for( BakedQuad quad : original )
+		{
+			BakedQuadBuilder builder = new BakedQuadBuilder();
+			VertexRotator rot = new VertexRotator( f2r, quad.getFace() );
+			rot.setParent( builder );
+			quad.pipe( rot );
+			if( quad.getFace() != null )
+			{
+				builder.setQuadOrientation( f2r.rotate( quad.getFace() ) );
+			}
+			else
+			{
+				builder.setQuadOrientation( null );
+
+			}
+			BakedQuad unpackedQuad = builder.build();
+
+			// Make a copy of it to resolve the vertex data and throw away the unpacked stuff
+			// This also fixes a bug in Forge's UnpackedBakedQuad, which unpacks a byte-based normal like 0,0,-1
+			// to 0,0,-0.99607843. We replace these normals with the proper 0,0,-1 when rotation, which
+			// causes a bug in the AO lighter, if an unpacked quad pipes this value back to it.
+			// Packing it back to the vanilla vertex format will fix this inconsistency because it converts
+			// the normal back to a byte-based format, which then re-applies Forge's own bug when piping it
+			// to the AO lighter, thus fixing our problem.
+			BakedQuad packedQuad = new BakedQuad( unpackedQuad.getVertexData(), quad.getTintIndex(), unpackedQuad.getFace(), quad.func_187508_a(), quad
+					.shouldApplyDiffuseLighting() );
+			rotated.add( packedQuad );
+		}
+		return rotated;
 	}
 
 	@Override
@@ -137,4 +172,162 @@ public class AutoRotatingBakedModel implements IBakedModel
 
 	}
 
+	public static class VertexRotator extends QuadGatheringTransformer
+	{
+		private final FacingToRotation f2r;
+		private final Direction face;
+
+		public VertexRotator( FacingToRotation f2r, Direction face )
+		{
+			this.f2r = f2r;
+			this.face = face;
+		}
+
+		@Override
+		public void setParent( IVertexConsumer parent )
+		{
+			super.setParent( parent );
+			if( Objects.equal( this.getVertexFormat(), parent.getVertexFormat() ) )
+			{
+				return;
+			}
+			this.setVertexFormat( parent.getVertexFormat() );
+		}
+
+		@Override
+		protected void processQuad()
+		{
+			VertexFormat format = this.parent.getVertexFormat();
+			ImmutableList<VertexFormatElement> elements = format.getElements();
+
+			for( int v = 0; v < 4; v++ )
+			{
+				for( int e = 0; e < elements.size(); e++ )
+				{
+					VertexFormatElement element = elements.get( e );
+					if( element.getUsage() == VertexFormatElement.Usage.POSITION )
+					{
+						this.parent.put( e, this.transform( this.quadData[e][v] ) );
+					}
+					else if( element.getUsage() == VertexFormatElement.Usage.NORMAL )
+					{
+						this.parent.put( e, this.transformNormal( this.quadData[e][v] ) );
+					}
+					else
+					{
+						this.parent.put( e, this.quadData[e][v] );
+					}
+				}
+			}
+		}
+
+		private float[] transform( float[] fs )
+		{
+			switch( fs.length )
+			{
+				case 3:
+					Vector4f vec = new Vector4f( fs[0], fs[1], fs[2], 1 );
+					vec.setX(vec.getX() - 0.5f);
+					vec.setY(vec.getY() - 0.5f);
+					vec.setZ(vec.getZ() - 0.5f);
+					vec.transform(this.f2r.getMat());
+					vec.setX(vec.getX() + 0.5f);
+					vec.setY(vec.getY() + 0.5f);
+					vec.setZ(vec.getZ() + 0.5f);
+					return new float[] { vec.getX(), vec.getY(), vec.getZ() };
+				case 4:
+					Vector4f vecc = new Vector4f( fs[0], fs[1], fs[2], fs[3] );
+					vecc.setX(vecc.getX() - 0.5f);
+					vecc.setY(vecc.getY() - 0.5f);
+					vecc.setZ(vecc.getZ() - 0.5f);
+					vecc.transform(this.f2r.getMat());
+					vecc.setX(vecc.getX() + 0.5f);
+					vecc.setY(vecc.getY() + 0.5f);
+					vecc.setZ(vecc.getZ() + 0.5f);
+					return new float[] { vecc.getX(), vecc.getY(), vecc.getZ(), vecc.getW() };
+
+				default:
+					return fs;
+			}
+		}
+
+		private float[] transformNormal( float[] fs )
+		{
+			if( this.face == null )
+			{
+				switch( fs.length )
+				{
+					case 3:
+						Vector4f vec = new Vector4f( fs[0], fs[1], fs[2], 0 );
+						vec.transform( this.f2r.getMat() );
+						return new float[] {
+								vec.getX(),
+								vec.getY(),
+								vec.getZ()
+						};
+					case 4:
+						Vector4f vec4 = new Vector4f( fs[0], fs[1], fs[2], fs[3] );
+						vec4.transform( this.f2r.getMat() );
+						return new float[] {
+								vec4.getX(),
+								vec4.getY(),
+								vec4.getZ(),
+								0
+						};
+
+					default:
+						return fs;
+				}
+			}
+			else
+			{
+				switch( fs.length )
+				{
+					case 3:
+						Vec3i vec = this.f2r.rotate( this.face ).getDirectionVec();
+						return new float[] {
+								vec.getX(),
+								vec.getY(),
+								vec.getZ()
+						};
+					case 4:
+						Vector4f veccc = new Vector4f( fs[0], fs[1], fs[2], fs[3] );
+						Vec3i vecc = this.f2r.rotate( this.face ).getDirectionVec();
+						return new float[] {
+								vecc.getX(),
+								vecc.getY(),
+								vecc.getZ(),
+								veccc.getW()
+						};
+
+					default:
+						return fs;
+				}
+			}
+		}
+
+		@Override
+		public void setQuadTint( int tint )
+		{
+			this.parent.setQuadTint( tint );
+		}
+
+		@Override
+		public void setQuadOrientation( Direction orientation )
+		{
+			this.parent.setQuadOrientation( orientation );
+		}
+
+		@Override
+		public void setApplyDiffuseLighting( boolean diffuse )
+		{
+			this.parent.setApplyDiffuseLighting( diffuse );
+		}
+
+		@Override
+		public void setTexture( TextureAtlasSprite texture )
+		{
+			this.parent.setTexture( texture );
+		}
+	}
 }

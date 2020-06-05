@@ -24,12 +24,14 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseTileBlock;
+import appeng.client.render.FacingToRotation;
 import appeng.core.AELog;
 import appeng.core.features.IStackSrc;
 import appeng.helpers.ICustomNameObject;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 import io.netty.buffer.Unpooled;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -63,8 +65,8 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	private int renderFragment = 0;
 	@Nullable
 	private String customName;
-	private Direction forward = null;
-	private Direction up = null;
+	private Direction forward = Direction.NORTH;
+	private Direction up = Direction.UP;
 	private boolean markDirtyQueued = false;
 
 	public AEBaseTile(TileEntityType<?> tileEntityTypeIn) {
@@ -293,6 +295,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 			{
 				AELog.blockUpdate( this.pos, this );
 				this.world.notifyBlockUpdate( this.pos, this.getBlockState(), this.getBlockState(), 3 );
+				this.requestModelDataUpdate();
 			}
 		}
 	}
@@ -311,20 +314,12 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	@Override
 	public Direction getForward()
 	{
-		if( this.forward == null )
-		{
-			return Direction.NORTH;
-		}
 		return this.forward;
 	}
 
 	@Override
 	public Direction getUp()
 	{
-		if( this.up == null )
-		{
-			return Direction.UP;
-		}
 		return this.up;
 	}
 

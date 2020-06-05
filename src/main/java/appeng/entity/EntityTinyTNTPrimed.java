@@ -54,8 +54,7 @@ import appeng.util.Platform;
 public final class EntityTinyTNTPrimed extends TNTEntity implements IEntityAdditionalSpawnData
 {
 
-	@Reflected
-	public EntityTinyTNTPrimed( EntityType<? extends TNTEntity> type, World worldIn )
+	public EntityTinyTNTPrimed( EntityType<? extends EntityTinyTNTPrimed> type, World worldIn )
 	{
 		super( type, worldIn );
 		this.preventEntitySpawning = true;

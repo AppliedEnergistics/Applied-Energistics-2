@@ -21,6 +21,7 @@ package appeng.block;
 
 import javax.annotation.Nullable;
 
+import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -234,17 +235,18 @@ public abstract class AEBaseBlock extends Block
 		return 0;
 	}
 
-	@Override
-	public BlockState rotate(BlockState state, IWorld w, BlockPos pos, Rotation direction) {
+	/**
+	 * Rotates around the given Axis (usually the current up axis).
+	 */
+	public boolean rotateAroundFaceAxis(IWorld w, BlockPos pos, Direction face) {
 		final IOrientable rotatable = this.getOrientable( w, pos );
 
 		if( rotatable != null && rotatable.canBeRotated() )
 		{
 			if( this.hasCustomRotation() )
 			{
-				// FIXME this.customRotateBlock( rotatable, axis );
-				// FIXME return true;
-				throw new IllegalStateException();
+				this.customRotateBlock( rotatable, face );
+				return true;
 			}
 			else
 			{
@@ -253,26 +255,19 @@ public abstract class AEBaseBlock extends Block
 
 				for( int rs = 0; rs < 4; rs++ )
 				{
-					// FIXME forward = Platform.rotateAround( forward, axis );
-					// FIXME up = Platform.rotateAround( up, axis );
+					forward = Platform.rotateAround( forward, face );
+					up = Platform.rotateAround( up, face );
 
 					if( this.isValidOrientation( w, pos, forward, up ) )
 					{
 						rotatable.setOrientation( forward, up );
-						// FIXME
-						throw new IllegalStateException();
+						return true;
 					}
 				}
 			}
 		}
 
-		return state;
-	}
-
-	@Override
-	public Direction[] getValidRotations(BlockState state, IBlockReader world, BlockPos pos)
-	{
-		return new Direction[0];
+		return false;
 	}
 
 	public ActionResultType onActivated(final World w, final BlockPos pos, final PlayerEntity player, final Hand hand, final @Nullable ItemStack heldItem, final BlockRayTraceResult hit)

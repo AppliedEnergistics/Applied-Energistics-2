@@ -50,6 +50,7 @@ import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.stats.AeStats;
 import appeng.fluids.util.AEFluidStack;
+import appeng.hooks.TickHandler;
 import appeng.me.GridAccessException;
 import appeng.me.GridNode;
 import appeng.me.helpers.AENetworkProxy;
@@ -1476,7 +1477,7 @@ public class Platform
 	{
 		if( !world.isRemote )
 		{
-//		FIXME	TickHandler.INSTANCE.addCallable( world, new BlockUpdate( pos ) );
+			TickHandler.INSTANCE.addCallable( world, new BlockUpdate( pos ) );
 		}
 	}
 

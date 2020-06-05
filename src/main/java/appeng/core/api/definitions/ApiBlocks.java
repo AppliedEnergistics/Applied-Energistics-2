@@ -51,6 +51,7 @@ import appeng.core.features.registries.PartModels;
 import appeng.debug.*;
 import appeng.decorative.AEDecorativeBlock;
 import appeng.decorative.solid.*;
+import appeng.entity.EntityTinyTNTPrimed;
 import appeng.fluids.block.BlockFluidInterface;
 import appeng.fluids.tile.TileFluidInterface;
 import appeng.hooks.DispenserBehaviorTinyTNT;
@@ -72,6 +73,8 @@ import appeng.tile.storage.TileSkyChest;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -279,7 +282,7 @@ public final class ApiBlocks implements IBlocks
 						})
 						.build() )
 				.build();
-		this.inscriber = registry.block( "inscriber", () -> new BlockInscriber(Block.Properties.create(Material.IRON)) )
+		this.inscriber = registry.block( "inscriber", () -> new BlockInscriber(Block.Properties.create(Material.IRON).notSolid()) )
 				.features( AEFeature.INSCRIBER )
 				.tileEntity( registry.tileEntity("inscriber", TileInscriber.class, TileInscriber::new)
 						.rendering(new InscriberRendering())
@@ -310,13 +313,13 @@ public final class ApiBlocks implements IBlocks
 						new DispenserBehaviorTinyTNT() ) )
 				.bootstrap( ( block, item ) -> (IEntityRegistrationComponent) r ->
 				{
-//	FIXME				r.register( EntityEntryBuilder.create()
-//	FIXME						.entity( EntityTinyTNTPrimed.class )
-//	FIXME						.id( new ResourceLocation( "appliedenergistics2", EntityTinyTNTPrimed.class.getName() ),
-//	FIXME								EntityIds.get( EntityTinyTNTPrimed.class ) )
-//	FIXME						.name( "EntityTinyTNTPrimed" )
-//	FIXME						.tracker( 16, 4, true )
-//	FIXME						.build() );
+					r.register(EntityType.Builder.<EntityTinyTNTPrimed>create(EntityTinyTNTPrimed::new, EntityClassification.MISC)
+							.setTrackingRange(16)
+							.setUpdateInterval(4)
+							.setShouldReceiveVelocityUpdates(true)
+							.build(AppEng.MOD_ID + ":tiny_tnt_primed")
+							.setRegistryName(AppEng.MOD_ID + ":tiny_tnt_primed")
+					);
 				} )
 				.build();
 		this.securityStation = registry.block( "security_station", BlockSecurityStation::new )
