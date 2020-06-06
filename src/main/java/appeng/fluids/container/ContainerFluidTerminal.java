@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 import appeng.api.config.*;
 import appeng.container.ContainerLocator;
 import appeng.container.helper.PartContainerHelper;
+import appeng.container.helper.PartOrTileContainerHelper;
 import appeng.fluids.parts.PartFluidFormationPlane;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -81,12 +82,12 @@ import appeng.util.Platform;
 public class ContainerFluidTerminal extends AEBaseContainer implements IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEFluidStack>
 {
 
-	public static ContainerType<ContainerFluidFormationPlane> TYPE;
+	public static ContainerType<ContainerFluidTerminal> TYPE;
 
-	private static final PartContainerHelper<ContainerFluidFormationPlane, PartFluidFormationPlane> helper
-			= new PartContainerHelper<>(ContainerFluidFormationPlane::new, PartFluidFormationPlane.class, SecurityPermissions.BUILD);
+	private static final PartOrTileContainerHelper<ContainerFluidTerminal, ITerminalHost> helper
+			= new PartOrTileContainerHelper<>(ContainerFluidTerminal::new, ITerminalHost.class, SecurityPermissions.BUILD);
 
-	public static ContainerFluidFormationPlane fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
+	public static ContainerFluidTerminal fromNetwork(int windowId, PlayerInventory inv, PacketBuffer buf) {
 		return helper.fromNetwork(windowId, inv, buf);
 	}
 
@@ -106,8 +107,8 @@ public class ContainerFluidTerminal extends AEBaseContainer implements IConfigMa
 	// Holds the fluid the client wishes to extract, or null for insert
 	private IAEFluidStack clientRequestedTargetFluid = null;
 
-	public ContainerFluidTerminal(ContainerType<?> containerType, int id, PlayerInventory ip, ITerminalHost terminal) {
-		super(containerType, id, ip, terminal);
+	public ContainerFluidTerminal(int id, PlayerInventory ip, ITerminalHost terminal) {
+		super(TYPE, id, ip, terminal);
 		this.terminal = terminal;
 		this.clientCM = new ConfigManager( this );
 

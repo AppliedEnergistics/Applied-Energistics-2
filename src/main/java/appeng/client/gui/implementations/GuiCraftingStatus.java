@@ -35,10 +35,8 @@ import net.minecraft.util.text.ITextComponent;
 import java.io.IOException;
 
 
-public class GuiCraftingStatus extends GuiCraftingCPU
+public class GuiCraftingStatus extends GuiCraftingCPU<ContainerCraftingStatus>
 {
-
-	private final ContainerCraftingStatus craftingStatus;
 
 	private final AESubGui subGui;
 
@@ -46,7 +44,6 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 
 	public GuiCraftingStatus(ContainerCraftingStatus container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
-		this.craftingStatus = container;
 		this.subGui = new AESubGui(this, container.getTarget());
 	}
 
@@ -76,20 +73,20 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	{
 		String btnTextText = GuiText.NoCraftingJobs.getLocal();
 
-		if( this.craftingStatus.selectedCpu >= 0 )// && status.selectedCpu < status.cpus.size() )
+		if( this.container.selectedCpu >= 0 )// && status.selectedCpu < status.cpus.size() )
 		{
-			if( this.craftingStatus.myName.length() > 0 )
+			if( this.container.myName.length() > 0 )
 			{
-				final String name = this.craftingStatus.myName.substring( 0, Math.min( 20, this.craftingStatus.myName.length() ) );
+				final String name = this.container.myName.substring( 0, Math.min( 20, this.container.myName.length() ) );
 				btnTextText = GuiText.CPUs.getLocal() + ": " + name;
 			}
 			else
 			{
-				btnTextText = GuiText.CPUs.getLocal() + ": #" + this.craftingStatus.selectedCpu;
+				btnTextText = GuiText.CPUs.getLocal() + ": #" + this.container.selectedCpu;
 			}
 		}
 
-		if( this.craftingStatus.noCPU )
+		if( this.container.noCPU )
 		{
 			btnTextText = GuiText.NoCraftingJobs.getLocal();
 		}

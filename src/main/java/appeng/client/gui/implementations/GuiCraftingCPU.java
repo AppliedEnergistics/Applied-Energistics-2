@@ -54,7 +54,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
-public class GuiCraftingCPU extends AEBaseGui<ContainerCraftingCPU> implements ISortSource
+public class GuiCraftingCPU<T extends ContainerCraftingCPU> extends AEBaseGui<T> implements ISortSource
 {
 	private static final int GUI_HEIGHT = 184;
 	private static final int GUI_WIDTH = 238;
@@ -89,7 +89,7 @@ public class GuiCraftingCPU extends AEBaseGui<ContainerCraftingCPU> implements I
 	private Button cancel;
 	private int tooltip = -1;
 
-	public GuiCraftingCPU(ContainerCraftingCPU container, PlayerInventory playerInventory, ITextComponent title) {
+	public GuiCraftingCPU(T container, PlayerInventory playerInventory, ITextComponent title) {
 		super(container, playerInventory, title);
 		this.ySize = GUI_HEIGHT;
 		this.xSize = GUI_WIDTH;
